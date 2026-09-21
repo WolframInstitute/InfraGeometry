@@ -8,31 +8,10 @@ Needs["WolframInstitute`Infrageometry`"]
 geodesicGraph = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicGraph;
 walkSequence  = WolframInstitute`SyntheticInfrageometry`PackageScope`walkSequence;
 
-(* ===== Radar Basis ===== *)
-
-VerificationTest[
-  With[{g = PathGraph[Range[5]]},
-    InfraRadarBasisQ[g, First @ FindInfraRadarBasis[g]]
-  ],
-  True,
-  TestID -> "FindInfraRadarBasis-path-returns-basis"
-]
-
-VerificationTest[
-  With[{g = PathGraph[Range[5]]},
-    Length[First @ FindInfraRadarBasis[g]] == 1
-  ],
-  True,
-  TestID -> "RadarBasis-path-size-one"
-]
-
-VerificationTest[
-  With[{g = CycleGraph[6]},
-    InfraRadarBasisQ[g, First @ FindInfraRadarBasis[g]]
-  ],
-  True,
-  TestID -> "FindInfraRadarBasis-cycle-returns-basis"
-]
+(* The FindInfraRadarBasis / InfraRadarBasisQ deprecation aliases were deleted with the
+   Coordinatization merge (PacletSplit T3, per Work/Backlog/APISurfaceCleanup.md).  What
+   they tested is the ResolvingSetQ-path-endpoint-resolves, ResolvingSetQ-cycle-two-resolves
+   and MetricDimension-path tests, which arrive with the rest of the suite in T2c. *)
 
 VerificationTest[
   With[{g = PathGraph[Range[5]], b = {1}},

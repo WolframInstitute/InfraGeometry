@@ -167,16 +167,22 @@ PackageExport[FindSegmentHull]
 PackageExport[SegmentHullQ]
 
 (* InfraSet.wl *)
-(* the Alexandrov-topology layer moved to the Infrageometry paclet; InfraBoundary / InfraInterior are the synthetic front-ends over it *)
+(* AlexandrovTopology / GraphTopology are the complex-side layer and stay in the Infrageometry paclet; the ball topology came here with BallTopology.wl *)
 PackageExport[FindInfraEquidistantSet]
 PackageExport[FindAdvancingInfraFront]
 PackageExport[InfraBoundary]
 PackageExport[InfraInterior]
 PackageExport[InfraVolume]
 
-(* Coordinatization.wl -- RadarCoordinates / ResistanceCoordinates live in the Infrageometry paclet; the multiset overloads and the deprecation aliases stay here *)
-PackageExport[FindInfraRadarBasis]
-PackageExport[InfraRadarBasisQ]
+(* Coordinatization.wl *)
+PackageExport[RadarCoordinates]
+PackageExport[ResolvingSetQ]
+PackageExport[FindResolvingSet]
+PackageExport[MetricDimension]
+PackageExport[ResistanceCoordinates]
+PackageExport[FindBallCover]
+PackageExport[BallCoverQ]
+PackageExport[DominationNumber]
 PackageExport[OrthogonalCoordinates]
 PackageExport[FindInfraOrthogonalFrame]
 PackageExport[FindInfraSpanningAxes]
@@ -330,5 +336,10 @@ PackageExport[InfraSubstrateCode]
 (* UniformLengthDiscretization.wl *)
 PackageExport[UniformLengthGraph]
 PackageExport[UniformLengthEmbedding]
+
+(* OllivierCurvature.wl *)
+PackageExport[OllivierRicciCurvature]
+PackageExport[EffectiveResistance]
+PackageExport[ResistanceQ]
 
 ClearAll["WolframInstitute`SyntheticInfrageometry`**`*", "WolframInstitute`SyntheticInfrageometry`*"]
