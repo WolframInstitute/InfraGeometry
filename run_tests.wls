@@ -1,12 +1,10 @@
 #!/usr/bin/env wolframscript
 
 $pacletDir = DirectoryName[$InputFileName];
-$sisterDir = FileNameJoin[{ParentDirectory[$pacletDir], "..", "Infrageometry", "Infrageometry", "Infrageometry"}];
 
-(* Load the dev sister paclet first so the synthetic paclet's
-   Needs[...Infrageometry...] resolves to the in-tree version, not whatever
-   stale copy may be installed globally. *)
-If[DirectoryQ[$sisterDir], PacletDirectoryLoad[$sisterDir]];
+(* No sister paclet is loaded: since the PacletSplit this paclet depends on
+   WolframInstitute`Infrageometry` not at all, and loading it here would only
+   let a pre-split copy shadow the symbols that moved in. *)
 
 PacletDirectoryLoad[$pacletDir <> "/SyntheticInfrageometry"];
 Needs["WolframInstitute`SyntheticInfrageometry`"];
