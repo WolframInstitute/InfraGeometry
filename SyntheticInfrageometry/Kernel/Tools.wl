@@ -1,7 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageImport["WolframInstitute`Infrageometry`"]
-
 PackageScope[dagGeodesics]
 PackageScope[dagLayers]
 PackageScope[SeparatingSetQ]

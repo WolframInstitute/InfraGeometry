@@ -1,8 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageImport["WolframInstitute`Infrageometry`"]
-
-
 (* ===================== FindInfraBall ===================== *)
 
 (* the closed ball { v : d(c, v) <= r }, a sorted vertex list.  The centre goes through the anchor rule, and an anchor of several vertices weights one carrier rather than multiplying objects: the ball of a set is its closed r-neighbourhood, the union of the balls around its members *)

@@ -1,7 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageImport["WolframInstitute`Infrageometry`"]
-
 PackageScope[findPointPool]
 PackageScope[selectFromPointSpace]
 PackageScope[infraPointVertices]

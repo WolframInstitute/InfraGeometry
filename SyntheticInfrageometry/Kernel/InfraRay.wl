@@ -1,8 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageImport["WolframInstitute`Infrageometry`"]
-
-
 (* ===================== FindInfraRay ===================== *)
 
 (* a ray from o through v: a geodesic o ... v ... e with d(o, e) == d(o, v) + d(v, e) and no neighbour of e one step farther from o -- the InfraRayQ class under every Method; the longest ones are SelectInfraWalk[graph, rays, All, "From" -> "MaxLength"].  The count-less call is one ray as a substrate path graph, a bounded count a List of them, All the pool: one DAG with source o, the o -> v geodesic bundle glued at v to the extension graph beyond v, whose o -> sink paths are exactly the rays -- a sink has no neighbour one step farther from o, which is InfraRayQ's far-end test.  "Exhaustive" with All is the pool itself, and every bounded count streams rays off it in candidate ("Greedy", "Exhaustive") or random ("RandomGreedy") order *)

@@ -8,9 +8,6 @@ PacletObject[
     "PublisherID" -> "WolframInstitute",
     "License" -> "MIT",
     "PrimaryContext" -> "WolframInstitute`SyntheticInfrageometry`",
-    "Dependencies" -> {
-      {"WolframInstitute/Infrageometry", "1.0+"}
-    },
     "Extensions" -> {
       {
         "Kernel",

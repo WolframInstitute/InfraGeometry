@@ -1,10 +1,5 @@
 BeginTestSection["Coordinatization"]
 
-(* Ensure the sister paclet is on $ContextPath for symbols (EffectiveResistance,
-   etc.) referenced in tests below; the parent paclet imports it transitively
-   but TestReport's parse may otherwise create them in Global` first. *)
-Needs["WolframInstitute`Infrageometry`"]
-
 geodesicGraph = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicGraph;
 walkSequence  = WolframInstitute`SyntheticInfrageometry`PackageScope`walkSequence;
 
