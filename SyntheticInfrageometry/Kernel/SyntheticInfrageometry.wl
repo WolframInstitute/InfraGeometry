@@ -215,8 +215,6 @@ PackageExport[ProjectivePlaneGraphQ]
 (* GraphEnumeration.wl *)
 PackageExport[EnumerateGraphs]
 
-(* graph generation (TessellationGraph) relocated to the Infrageometry paclet *)
-
 (* InfraScene.wl *)
 PackageExport[InfraScene]
 PackageExport[FindInfraScene]
@@ -250,5 +248,87 @@ PackageExport[InfraSceneViewer]
 (* InfraEquality.wl *)
 PackageExport[InfraEqualQ]
 
+(* ---- moved from the Infrageometry paclet, PacletSplit T2a; T9b regroups by branch ---- *)
+
+(* VolumeGrowth.wl *)
+PackageExport[BallHull]
+PackageExport[BallVolumes]
+PackageExport[ShellAreas]
+PackageExport[CylinderVolumes]
+PackageExport[TubeVolumes]
+PackageExport[IntervalVolumes]
+PackageExport[GeodesicIntervalGraph]
+PackageExport[GeodesicOccupation]
+PackageExport[GeodesicEdgeOccupation]
+PackageExport[LogDifferenceQuotients]
+PackageExport[VolumeGrowthObservables]
+PackageExport[DimensionCurvatureFit]
+
+(* TessellationGraphs.wl *)
+PackageExport[TessellationGraph]
+PackageExport[TorusTessellation]
+PackageExport[TessellationCurvature]
+PackageExport[TessellationEulerCharacteristic]
+PackageExport[TessellationGenus]
+PackageExport[TessellationNeighborhoodGraph]
+PackageExport[CosetEnumeration]
+PackageExport[LowIndexMaps]
+PackageExport[RotationMapGraph]
+
+(* Displacements.wl *)
+PackageExport[DisplacementCompose]
+PackageExport[DisplacementScale]
+PackageExport[DisplacementNegative]
+PackageExport[DisplacementInverse]
+PackageExport[DisplacementSum]
+PackageExport[DisplacementCommutator]
+PackageExport[DisplacementBracket]
+PackageExport[DisplacementMagnitude]
+PackageExport[DisplacementReduce]
+PackageExport[DisplacementSingleValuedQ]
+PackageExport[DisplacementBijectionQ]
+PackageExport[DisplacementIsomorphismQ]
+PackageExport[ContinuousDisplacementQ]
+PackageExport[RandomDisplacement]
+PackageExport[FindKillingDisplacement]
+PackageExport[KillingDisplacementMagnitude]
+PackageExport[PolarDisplacements]
+PackageExport[GradientDisplacement]
+PackageExport[TranslationDisplacement]
+PackageExport[DisplacementPlot]
+
+(* Boundary.wl *)
+PackageExport[GraphBoundary]
+PackageExport[GraphInterior]
+PackageExport[GraphExteriorBoundary]
+PackageExport[BoundarylessGraph]
+PackageExport[GraphEccentricities]
+PackageExport[CenterGraph]
+PackageExport[RelativeEccentricity]
+
+(* BallTopology.wl *)
+PackageExport[BallTopology]
+PackageExport[TopologicalClosure]
+PackageExport[TopologicalInterior]
+PackageExport[TopologicalBoundary]
+PackageExport[TopologicalNeighborhood]
+PackageExport[ContinuousMapQ]
+PackageExport[TopologyGraph]
+
+(* ExampleGraphs.wl *)
+PackageExport[SierpinskiGraph]
+PackageExport[BetheGraph]
+PackageExport[BranchingSequenceTree]
+PackageExport[InflateGraph]
+PackageExport[InflatedVertex]
+
+(* InfraSubstrate.wl *)
+PackageExport[InfraSubstrate]
+PackageExport[InfraSubstrateStyle]
+PackageExport[InfraSubstrateCode]
+
+(* UniformLengthDiscretization.wl *)
+PackageExport[UniformLengthGraph]
+PackageExport[UniformLengthEmbedding]
 
 ClearAll["WolframInstitute`SyntheticInfrageometry`**`*", "WolframInstitute`SyntheticInfrageometry`*"]
