@@ -674,7 +674,10 @@ VerificationTest[
     n |-> AllTrue[
       { DownValues, UpValues, SubValues, OwnValues, FormatValues, NValues },
       f |-> ReleaseHold @ Map[ f, ToExpression[ n, InputForm, Hold ] ] === { } ] ],
-  { "InfraBall", "InfraCircle", "InfraEllipse", "InfraEllipticShell", "InfraGeometricStep",
+  (* InflatedVertex is not a scene token: it is the inert label InflateGraph stamps on the
+     copies it makes.  It arrived with ExampleGraphs.wl in the paclet split (T2a). *)
+  { "InflatedVertex",
+    "InfraBall", "InfraCircle", "InfraEllipse", "InfraEllipticShell", "InfraGeometricStep",
     "InfraIntersectQ", "InfraLine", "InfraPlane", "InfraPoint", "InfraPolygon", "InfraPolyline",
     "InfraRay", "InfraRevolution", "InfraSegment", "InfraShell", "InfraTriangle", "InfraWalk" },
   TestID -> "InfraScene-valueless-exports-are-scene-tokens"
