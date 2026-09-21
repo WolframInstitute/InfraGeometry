@@ -1,8 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageImport["WolframInstitute`Infrageometry`"]
-
-
 PackageScope[circlePool]
 
 

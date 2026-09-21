@@ -1,8 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageImport["WolframInstitute`Infrageometry`"]
-
-
 (* the set instance is gone: a set IS the sorted, duplicate-free vertex List, the shape Wolfram's own set algebra takes -- Union, Intersection, Complement, SubsetQ, Subgraph and HighlightGraph all read it directly.  Everything below returns one; the Association is reserved for densities, where multiplicity is real.
    The head is gone outright, scene language included: every other Infra head names a construction and survives as its token, but a literal vertex set is dispatched by shape *)
 

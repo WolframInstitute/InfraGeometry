@@ -1,7 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageImport["WolframInstitute`Infrageometry`"]
-
 PackageScope[findSegmentCore]
 PackageScope[extensionPool]
 PackageScope[seedBundles]
