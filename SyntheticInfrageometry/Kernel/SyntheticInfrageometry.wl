@@ -1,7 +1,7 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-(* Tools.wl *)
-PackageExport[InfraDensity]
+(* ---- synthetic: objects and their properties --------------------------- *)
+(* The observer constructs. Which Euclidean statement survives on a graph? *)
 
 (* InfraPoint.wl -- InfraPoint is a scene-language token only, never a payload wrapper *)
 PackageExport[InfraPoint]
@@ -174,19 +174,6 @@ PackageExport[InfraBoundary]
 PackageExport[InfraInterior]
 PackageExport[InfraVolume]
 
-(* Coordinatization.wl *)
-PackageExport[RadarCoordinates]
-PackageExport[ResolvingSetQ]
-PackageExport[FindResolvingSet]
-PackageExport[MetricDimension]
-PackageExport[ResistanceCoordinates]
-PackageExport[FindBallCover]
-PackageExport[BallCoverQ]
-PackageExport[DominationNumber]
-PackageExport[OrthogonalCoordinates]
-PackageExport[FindInfraOrthogonalFrame]
-PackageExport[FindInfraSpanningAxes]
-
 (* TarskiGeometry.wl *)
 PackageExport[BetweennessQ]
 PackageExport[EquidistanceQ]
@@ -218,8 +205,8 @@ PackageExport[WhiteheadW2Q]
 PackageExport[WhiteheadW3Q]
 PackageExport[ProjectivePlaneGraphQ]
 
-(* GraphEnumeration.wl *)
-PackageExport[EnumerateGraphs]
+(* InfraEquality.wl *)
+PackageExport[InfraEqualQ]
 
 (* InfraScene.wl *)
 PackageExport[InfraScene]
@@ -251,10 +238,8 @@ PackageExport[ShellViewer]
 PackageExport[CircleViewer]
 PackageExport[InfraSceneViewer]
 
-(* InfraEquality.wl *)
-PackageExport[InfraEqualQ]
-
-(* ---- moved from the Infrageometry paclet, PacletSplit T2a; T9b regroups by branch ---- *)
+(* ---- Riemannian: measurements of the substrate ------------------------- *)
+(* The observer measures. Which tensor do the numbers see? *)
 
 (* VolumeGrowth.wl *)
 PackageExport[BallHull]
@@ -337,9 +322,34 @@ PackageExport[InfraSubstrateCode]
 PackageExport[UniformLengthGraph]
 PackageExport[UniformLengthEmbedding]
 
+(* Coordinatization.wl *)
+PackageExport[RadarCoordinates]
+PackageExport[ResolvingSetQ]
+PackageExport[FindResolvingSet]
+PackageExport[MetricDimension]
+PackageExport[ResistanceCoordinates]
+PackageExport[FindBallCover]
+PackageExport[BallCoverQ]
+PackageExport[DominationNumber]
+PackageExport[OrthogonalCoordinates]
+PackageExport[FindInfraOrthogonalFrame]
+PackageExport[FindInfraSpanningAxes]
+
 (* OllivierCurvature.wl *)
 PackageExport[OllivierRicciCurvature]
 PackageExport[EffectiveResistance]
 PackageExport[ResistanceQ]
+
+(* ---- symplectic: dynamics of an action on paths ------------------------ *)
+(* The observer moves. What is conserved? Declared, no kernel code yet. *)
+
+(* ---- infrastructure: not a branch -------------------------------------- *)
+(* Usage.wl declares no exports -- the ::usage registry lives there. *)
+
+(* Tools.wl *)
+PackageExport[InfraDensity]
+
+(* GraphEnumeration.wl *)
+PackageExport[EnumerateGraphs]
 
 ClearAll["WolframInstitute`SyntheticInfrageometry`**`*", "WolframInstitute`SyntheticInfrageometry`*"]
