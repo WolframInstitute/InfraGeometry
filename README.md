@@ -33,13 +33,33 @@ The capabilities of an infra-observer are determined by what the substrate lets 
 - performing an empirical study of whether ambiguous infra-geometric constructions converge to a unique construction at macroscopic scale as the substrate is refined
 - incorporating hypergraphs and n-ary relations, or developing a new exotic infra-geometry for them
 
-## 🌿 Three branches
+## 🌿 The branches of infrageometry
 
-Since the paclet split of 2026-09-22 (**0.14.0**) the paclet is geometry on a graph in three branches, and `Kernel/SyntheticInfrageometry.wl` groups its exports under the same three headings.
+Geometry on a graph, in branches. A symbol's branch is decided by what the observer *does* with the substrate, not by the file it sits in.
 
-- **Synthetic** — the observer *constructs*; which Euclidean statement survives? Points, segments, walks, lines, rays, circles, ellipses, shells, balls, polygons, planes, quadrics, and the Tarski / Alexandrov / projective axioms over them.
-- **Riemannian** — the observer *measures*; which tensor do the numbers see? Volume growth and the dimension / curvature estimators read off it, coordinatization by landmarks and by resistance, boundary and eccentricity, the displacement algebra, tessellated and uniform-length substrates, Ollivier curvature and effective resistance. This arrived from the [Infrageometry](https://github.com/WolframInstitute/Infrageometry) paclet — ten files, 76 symbols — which keeps the combinatorial core (complexes, cochains, Hodge/Dirac, Rips and persistence). The two paclets are independent; neither imports the other.
-- **Symplectic** — the observer *moves*; what is conserved? Declared, and empty of kernel code.
+### Euclidean Infrageometry
+
+*The observer constructs.* Which Euclidean statement survives on a graph? Points, segments, walks, lines, rays, circles, ellipses, shells, balls, polygons, planes, quadrics and revolutions; perpendicularity, betweenness, equidistance; and the axiom systems over them — Tarski, Alexandrov comparison, projective. A construction is judged by whether it reproduces the straightedge-and-compass answer, and where it fails, by *how* it fails: ties, non-uniqueness, and the budget the observer must spend to resolve them.
+
+This is the original programme of this paclet, and the rest of this README describes it.
+
+### Riemannian Infrageometry
+
+*The observer measures.* Which tensor do the numbers see? Volume growth of balls, shells, tubes and cylinders, and the dimension and curvature estimators composed on it; Ollivier-Ricci curvature and effective resistance; coordinatization by landmarks and by resistance; boundary, interior and eccentricity; the displacement algebra; tessellated and uniform-length substrates; convergence of a sequence of graphs to a manifold. A measurement is judged against the continuum quantity it is meant to detect, in the scale window where the detection is valid.
+
+This branch arrived from the [Infrageometry](https://github.com/WolframInstitute/Infrageometry) paclet in **0.14.0** (2026-09-22), and the **inverse pipeline** — graph → `r`-isometric embedding → manifold learning → `(M, g)` — came with it.
+
+### Symplectic Infrageometry
+
+*The observer moves.* What is conserved? A state is a vertex together with a journey and a pace; the cost of a journey is `Σ l² / 2t`, momentum is pace times progress, and a closed walk reads the canonical 1-form as `∮ λ`. **Provisional, and empty of kernel code** — the definition still needs refining, in particular which of the path-space structures is primitive and which is derived.
+
+### Calculus on complexes
+
+Differential forms and cochains on a graph — vertex-anchored forms against clique cochains, the `R` / `I` restriction and integration maps, the corrected differential, the wedge and the cup (ordered, alternating, and `∪₁`) — together with the ball-intersection complexes that interpolate Vietoris–Rips and Čech, their filtrations and the `(r, k)` bifiltration. Arrived in **0.15.0**.
+
+### What is *not* here
+
+Constructions that need no distance at all stay in the sibling [Infrageometry](https://github.com/WolframInstitute/Infrageometry) paclet: complexes built from a graph and their closures, Hodge and Dirac operators, connection and Green matrices, Lefschetz theory, persistence, meshes, hypergraphs, simplicial sets, and quantum calculus. The two paclets are independent — neither imports the other, and in a fresh kernel their contexts share no names.
 
 ## ✨ Usage
 
@@ -69,6 +89,8 @@ Ready-made example substrates and ambient styles for the analyses: **[LLM-genera
 | Infrageometric convergence | The path metric homogenizes to a polyhedral norm and the Dirichlet energy to a quadratic form; they agree only in dimension 1 |  |
 | Tube volumes | The counting measure of a graph ball, tubes over a shell, Gray's expansion, the sphere moments |  |
 | Round-trip reconstruction benchmark | Torus / sphere / saddle through the forward and inverse maps; Betti recovery, curvature-sign loss |  |
+| Forms and cochains | Vertex-anchored forms vs. clique cochains, the ordered and alternating cochain conventions, wedge/cup/cup-1, and the Steenrod primitive on a torus | [LLM](https://www.wolframcloud.com/obj/hajek_pavel/Infrageometry/FormsAndCochains.nb) |
+| Homotopy transfer on graph cochains | A-infinity products, Massey products, and the transfer to cohomology from one Hodge contraction | [LLM](https://www.wolframcloud.com/obj/hajek_pavel/Infrageometry/AInfinityTransfer.nb) |
 
 ## ⚖️ License
 

@@ -462,3 +462,50 @@ EffectiveResistance::usage = "EffectiveResistance[g, u, v] returns the Klein-Ran
 
 ResistanceQ::usage = "ResistanceQ[r] tests whether a real symmetric n x n matrix r with zero diagonal is realisable as a resistance distance matrix (Klein-Randic / Schoenberg negative-type criterion: the centred Gram matrix is positive semidefinite).";
 
+(* ---- BallIntersectionComplex.wl and DifferentialForms.wl, arrived 2026-09-22 ---- *)
+
+MiniballRadius::usage = "MiniballRadius[pts] returns the radius of the smallest enclosing ball of the points (BoundingRegion[pts, 'MinBall']).";
+
+BallIntersectionComplex::usage = "BallIntersectionComplex[data, r, k] returns the order-k ball-intersection complex of closed radius-r balls: a simplex is admitted iff every k-subset of its balls has a common point. k = 2 is Vietoris-Rips (equal to VietorisRipsComplex[data, 2 r]), k = Infinity is Cech (the nerve), 2 < k < Infinity interpolates. Options: 'Metric'->EuclideanDistance|matrix|Graph|fn (Euclidean uses the exact miniball test, other metrics an intrinsic intersection oracle over the sample points), 'IntersectionTest'->fn applied to the common region (default = non-empty), 'MaxDimension'->k.";
+
+CechComplex::usage = "CechComplex[data, r] returns the Cech complex (nerve) of closed radius-r balls = BallIntersectionComplex[data, r, Infinity].";
+
+BallIntersectionFiltrationValue::usage = "BallIntersectionFiltrationValue[data, sigma, k] returns f_k(sigma), the birth radius of sigma in the order-k complex: the max miniball radius over its k-subsets (its own miniball when |sigma| <= k). Monotone under faces.";
+
+BallIntersectionFiltration::usage = "BallIntersectionFiltration[data, radii, k] returns association r -> BallIntersectionComplex[data, r, k] over the sorted radii, ready for PersistenceIntervals.";
+
+CechFiltration::usage = "CechFiltration[data, radii] = BallIntersectionFiltration[data, radii, Infinity].";
+
+BallIntersectionBifiltration::usage = "BallIntersectionBifiltration[data, radii, orders] returns the (r, k) object as association k -> (association r -> complex); for fixed r the nesting C^(k) contains C^(k+1) as k grows, saturating to Cech at k = d + 1 for convex balls (Helly).";
+
+FormValue::usage = "FormValue[w, v, tuple] gives the value of the germ of form w at vertex v on a tuple of neighbours of v, alternating in the tuple.";
+
+CochainValue::usage = "CochainValue[a, tuple] gives the value of the ALTERNATING cochain a on an arbitrary vertex tuple, by the sign of the permutation taking it to increasing order; 0 off the complex. Do not apply it to the output of OrderedCochainCup or CochainCupOne, which are ordered cochains.";
+
+OrderedCochainValue::usage = "OrderedCochainValue[a, tuple] gives the value of the ORDERED cochain a on an increasing vertex tuple, 0 off the complex, and Missing[\"NonIncreasingTuple\", tuple] otherwise. This is the correct accessor for the output of OrderedCochainCup and CochainCupOne.";
+
+FormDegree::usage = "FormDegree[w] gives the degree of form w, read off a stored germ.";
+
+CochainDegree::usage = "CochainDegree[a] gives the degree of cochain a: one less than the number of vertices of a stored cell.";
+
+ZeroForm::usage = "ZeroForm[g, f] is the vertex function f (an association or a function) as a 0-form on g.";
+
+RestrictionMap::usage = "RestrictionMap[g, a] is the form R a obtained from the alternating cochain a by reading it with the base vertex prepended; it vanishes off cliques.";
+
+IntegrationMap::usage = "IntegrationMap[g, w] is the alternating cochain I w obtained by averaging the germs of w over the vertices of each clique with the orientation sign. I is a left inverse of RestrictionMap and a chain map.";
+
+Coboundary::usage = "Coboundary[g, a] is the coboundary of cochain a: the alternating sum over the faces of every clique one dimension up. It agrees on the alternating and the ordered convention.";
+
+FormDifferential::usage = "FormDifferential[g, w] is the differential of form w: the graph gradient on 0-forms, and on 1-forms the difference of germ values corrected by the transport term from the neighbouring germs.";
+
+NaiveDifferential::usage = "NaiveDifferential[g, w] is the differential of the 1-form w with the transport term dropped; integrating it loses the factor (k+1)/(k+2).";
+
+FormWedge::usage = "FormWedge[w, e] is the wedge product of forms, the exterior product on each tangent fiber. It is strictly associative and graded-commutative, but its differential fails Leibniz.";
+
+CochainCup::usage = "CochainCup[g, a, b] is the cup product of ALTERNATING cochains: the full antisymmetrisation of the Alexander-Whitney formula over the (p+q+1)! orderings of each clique. It needs no vertex order, is unital, graded-commutative and a derivation for the coboundary, and is NOT associative; its 1/(p+q+1)! normalisation is the one agreeing with the cup product on cohomology. For the associative Alexander-Whitney formula use OrderedCochainCup.";
+
+OrderedCochainCup::usage = "OrderedCochainCup[g, a, b] is the bare Alexander-Whitney cup product of ORDERED cochains, a(v0..vp) b(vp..v_{p+q}) on each increasing clique. Associative and unital but not graded-commutative, and well defined only in the ordered convention: the Alexander-Whitney cup of two alternating cochains is not alternating, so read the result with OrderedCochainValue. It is what the Steenrod tower and the A-infinity comparison need.";
+
+CochainCupOne::usage = "CochainCupOne[g, a, b] is the Steenrod cup-1 product of ORDERED cochains. For closed a and b it is a primitive for the graded commutator: Coboundary[g, CochainCupOne[g, a, b]] equals OrderedCochainCup[g, a, b] - (-1)^(p q) OrderedCochainCup[g, b, a]. It vanishes when a has degree 0.";
+
+AntisymmetrizedCup::usage = "AntisymmetrizedCup[g, a, b] is an alias of CochainCup, the name the antisymmetrised product carried before it became the cup product.";

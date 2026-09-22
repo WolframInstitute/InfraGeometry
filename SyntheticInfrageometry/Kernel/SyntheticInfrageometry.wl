@@ -340,6 +340,35 @@ PackageExport[OllivierRicciCurvature]
 PackageExport[EffectiveResistance]
 PackageExport[ResistanceQ]
 
+(* BallIntersectionComplex.wl -- arrived from the Infrageometry paclet 2026-09-22;
+   the complex of a family of metric balls, so it reads the metric *)
+PackageExport[MiniballRadius]
+PackageExport[BallIntersectionComplex]
+PackageExport[CechComplex]
+PackageExport[BallIntersectionFiltrationValue]
+PackageExport[BallIntersectionFiltration]
+PackageExport[CechFiltration]
+PackageExport[BallIntersectionBifiltration]
+
+(* DifferentialForms.wl -- arrived from the Infrageometry paclet 2026-09-22;
+   the cochain calculus the measurements are written in *)
+PackageExport[FormValue]
+PackageExport[CochainValue]
+PackageExport[OrderedCochainValue]
+PackageExport[FormDegree]
+PackageExport[CochainDegree]
+PackageExport[ZeroForm]
+PackageExport[RestrictionMap]
+PackageExport[IntegrationMap]
+PackageExport[Coboundary]
+PackageExport[FormDifferential]
+PackageExport[NaiveDifferential]
+PackageExport[FormWedge]
+PackageExport[CochainCup]
+PackageExport[OrderedCochainCup]
+PackageExport[CochainCupOne]
+PackageExport[AntisymmetrizedCup]
+
 (* ---- symplectic: dynamics of an action on paths ------------------------ *)
 (* The observer moves. What is conserved? Declared, no kernel code yet. *)
 
