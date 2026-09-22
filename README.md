@@ -84,10 +84,6 @@ carrier under `All`.
 
 This branch arrived from the [Infrageometry](https://github.com/WolframInstitute/Infrageometry) paclet in **0.14.0** (2026-09-22), and the **inverse pipeline** — graph → `r`-isometric embedding → manifold learning → `(M, g)` — came with it.
 
-### Symplectic Infrageometry
-
-*The observer moves.* What is conserved? A state is a vertex together with a journey and a pace; the cost of a journey is `Σ l² / 2t`, momentum is pace times progress, and a closed walk reads the canonical 1-form as `∮ λ`. **Provisional, and empty of kernel code** — the definition still needs refining, in particular which of the path-space structures is primitive and which is derived.
-
 ### Calculus on complexes
 
 Differential forms and cochains on a graph — vertex-anchored forms against clique cochains, the `R` / `I` restriction and integration maps, the corrected differential, the wedge and the cup (ordered, alternating, and `∪₁`) — together with the ball-intersection complexes that interpolate Vietoris–Rips and Čech, their filtrations and the `(r, k)` bifiltration. Arrived in **0.15.0**.
