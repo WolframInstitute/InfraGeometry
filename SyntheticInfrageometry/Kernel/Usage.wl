@@ -17,7 +17,7 @@ InfraReachableQ::usage = "InfraReachableQ[graph, p1, p2] tests whether p1 and p2
 
 (* ===================== InfraSegment ===================== *)
 
-InfraSegment::usage = "InfraSegment[p1, p2] inside InfraScene is the geodesic-segment construction; FindInfraSegment is the search. A segment itself is a Graph -- a directed path on the substrate vertices -- and the whole interval I(p1, p2) is the directed acyclic graph FindInfraSegment[graph, p1, p2, All] gives.";
+InfraSegment::usage = "InfraSegment[graph, p, q] is the geodesic interval I(p, q) as one object standing for every geodesic from p to q: seg[[i]] and seg[[i ;; j]] enumerate them in canonical order, Normal all, and seg[\"Multiplicity\"], seg[\"InfraDensity\"], seg[\"Length\"], seg[\"Graph\"] read the geodesic DAG without enumerating. Inside InfraScene, InfraSegment[p, q] is the construction token; FindInfraSegment is the search.";
 FindInfraSegment::usage = "FindInfraSegment[graph, p1, p2] gives one geodesic from p1 to p2 as a directed path graph; a trailing n | UpTo[n] enumerates that many as a List, All gives the whole interval as one geodesic DAG. Option Method.";
 ExtendInfraSegment::usage = "ExtendInfraSegment[graph, seg, kspec] gives the geodesics containing seg extended by at most kspec edges per side, inextensible within that budget; kspec Infinity gives the lines through seg. ExtendInfraSegment[graph, a, b, c, d] gives the x with B(a, b, x) and d(b, x) == d(c, d) (Tarski A4). Options Method, \"Direction\".";
 InfraWalkQ::usage = "InfraWalkQ[graph, walk] tests whether walk is a walk: consecutive vertices adjacent (revisits allowed).";
@@ -40,7 +40,7 @@ ConcatenateInfraWalk::usage = "ConcatenateInfraWalk[path1, path2] joins every co
 
 (* ===================== InfraLine ===================== *)
 
-InfraLine::usage = "InfraLine[p, q] inside InfraScene is the inextensible-geodesic construction through p and q, InfraLine[path] the lines containing a given walk; FindInfraLine is the search. A line itself is a directed path graph on the substrate vertices.";
+InfraLine::usage = "InfraLine[graph, p, q] is the pool of lines -- inextensible geodesics -- through p and q as one object; InfraLine[graph, walk] the lines containing a walk graph or an InfraSegment. line[[i]] enumerates in canonical order, Normal all; \"Multiplicity\", \"InfraDensity\", \"Length\", \"Graph\" read the DAGs. Inside InfraScene, InfraLine[p, q] and InfraLine[path] are the construction tokens; FindInfraLine is the search.";
 FindInfraLine::usage = "FindInfraLine[graph, p1, p2] gives the lines through p1 and p2, the inextensible geodesics containing them; FindInfraLine[graph, segment] those containing segment. Options Method, \"Direction\".";
 FindInfraParallel::usage = "FindInfraParallel[graph, line, p] gives one parallel to line through p: a geodesic through p inextensible within the level set { v : d(v, line) == d(p, line) }; a trailing n | UpTo[n] | All sets the count, All giving the pool. Option Method.";
 FindInfraPerpendicular::usage = "FindInfraPerpendicular[graph, line, point] gives the lines through point perpendicular to line. Options Method, \"Radius\".";
@@ -81,8 +81,9 @@ BallHullQ::usage = "BallHullQ[graph, S] tests whether S is ball-convex, i.e. an 
 
 (* ===================== InfraCircle ===================== *)
 
-InfraCircle::usage = "InfraCircle[center, r] inside InfraScene is the metric-circle construction -- a shortest cycle in the level surface separating center from beyond; FindInfraCircle is the search. A circle itself is a Graph, a directed cycle on the substrate vertices.";
+InfraCircle::usage = "InfraCircle[graph, c, p] is the object of circles around c through p: the shortest simple cycles through p in the band of radius d(c, p) that separate c from beyond, with p their source and sink. circle[[i]] enumerates them as directed cycle graphs, \"Multiplicity\", \"InfraDensity\", \"Length\", \"Graph\" read the carrier. Option \"Tolerance\" (t or {tIn, tOut}) widens the band about d(c, p). Inside InfraScene, InfraCircle[center, r] is the construction token; FindInfraCircle is the search by radius.";
 FindInfraCircle::usage = "FindInfraCircle[graph, c, r] gives one circle around c at radius r: a shortest cycle in the level surface separating c from beyond; r may be a band {rmin, rmax}; All gives the circle pool. Options Properties, Method.";
+InfraArc::usage = "InfraArc[graph, c, p, q] is the arc around c from p to q as one object: the shortest paths from p to q inside the band of radius d(c, p), one geodesic DAG with source p and sink q. arc[[i]] enumerates, \"Multiplicity\", \"InfraDensity\", \"Length\", \"Graph\" read the DAG. Option \"Tolerance\" (t or {tIn, tOut}) widens the band.";
 FindInfraCycle::usage = "FindInfraCycle[graph, n] gives the n shortest simple cycles of graph; FindInfraCycle[graph, {kmin, kmax}, n] restricts their length.";
 InfraCircleQ::usage = "InfraCircleQ[graph, cycle] tests whether cycle is a cyclic edge chain whose vertex set is a metric shell.";
 
@@ -123,7 +124,7 @@ FindInfraBisectingHyperplane::usage = "FindInfraBisectingHyperplane[graph, p1, p
 
 (* ===================== InfraRay ===================== *)
 
-InfraRay::usage = "InfraRay[O, v] inside InfraScene is the ray from O through v -- a geodesic that cannot be prolonged past its last vertex; FindInfraRay is the search. A ray itself is a directed path graph on the substrate vertices.";
+InfraRay::usage = "InfraRay[graph, o, v] is the pool of rays from o through v -- geodesics from o through v that cannot be prolonged past their last vertex -- as one object, one DAG with source o; InfraRay[graph, o] is the pencil, every ray from o. ray[[i]] enumerates in canonical order, Normal all; \"Multiplicity\", \"InfraDensity\", \"Length\", \"Graph\" read the DAG. Inside InfraScene, InfraRay[o, v] is the construction token; FindInfraRay is the search.";
 FindInfraRay::usage = "FindInfraRay[graph, O, v] gives the rays from O through v: the geodesics from O containing v that cannot be prolonged past their last vertex. Option Method.";
 InfraRayQ::usage = "InfraRayQ[graph, ray] tests whether ray is a pointed half-line: a geodesic from its own first vertex that cannot be prolonged past its last.";
 
@@ -262,18 +263,18 @@ InfraIntersectQ::usage = "InfraIntersectQ[s1, s2] asserts inside an InfraScene t
 (* ===================== Highlights / Viewers ===================== *)
 
 $InfraPointColor::usage   = "Default highlight color for points -- the shape classes Point and Density.";
-$InfraSegmentColor::usage = "Default highlight color naming the segment construction. No shape defaults to it -- a caller cites it by name.";
-$InfraLineColor::usage    = "Default highlight color naming the line construction. No shape defaults to it -- a caller cites it by name.";
+$InfraSegmentColor::usage = "Default highlight color of the segment construction: the InfraSegment object draws in it when the palette is off, and a caller cites it by name.";
+$InfraLineColor::usage    = "Default highlight color of the line construction: the InfraLine object draws in it when the palette is off, and a caller cites it by name.";
 $InfraShellColor::usage   = "Default highlight color naming the shell construction. No shape defaults to it -- a caller cites it by name.";
 $InfraBallColor::usage    = "Default highlight color for vertex sets -- the shape classes Set and SetFamily.";
 $InfraPlaneColor::usage   = "Default highlight color naming the plane construction. No shape defaults to it -- a caller cites it by name.";
-$InfraCircleColor::usage  = "Default highlight color naming the circle construction. No shape defaults to it -- a caller cites it by name.";
-$InfraRayColor::usage     = "Default highlight color naming the ray construction. No shape defaults to it -- a caller cites it by name.";
+$InfraCircleColor::usage  = "Default highlight color of the circle construction: the InfraCircle and InfraArc objects draw in it when the palette is off, and a caller cites it by name.";
+$InfraRayColor::usage     = "Default highlight color of the ray construction: the InfraRay object draws in it when the palette is off, and a caller cites it by name.";
 $InfraWalkColor::usage    = "Default highlight color for walk graphs -- the shape classes Walk, Polyline and PolylineFamily.";
 $InfraTopologyColor::usage = "Default highlight color for topology overlays.";
-$InfraPalette::usage = "$InfraPalette is the Dataset of default colors, one row per named color, with columns \"Primitive\", \"Color\", \"Symbol\" and \"Shapes\" -- the shape classes that default to that color. Both the $Infra*Color symbols and InfraSceneHighlight read from it. Seven of the ten colors name a construction, which no carrier remembers, so no shape reaches them.";
+$InfraPalette::usage = "$InfraPalette is the Dataset of default colors, one row per named color, with columns \"Primitive\", \"Color\", \"Symbol\" and \"Shapes\" -- the shape classes that default to that color. Both the $Infra*Color symbols and InfraSceneHighlight read from it. A bare carrier does not remember its construction, so only three colors are reachable from a shape; the Euclidean objects InfraSegment, InfraRay, InfraLine, InfraCircle and InfraArc remember theirs and reach four more.";
 
-InfraSceneHighlight::usage = "InfraSceneHighlight[graph, objects] renders shapes -- vertices, vertex lists, densities, walk graphs and lists of them -- diffusely on graph, intensity scaling with multiplicity and colors blending across objects. Options \"OpacityRange\", \"ThicknessRange\", \"PointSizeRange\", \"Arrowheads\" (Automatic = off; True = Arrowheads[Medium]; or an explicit head spec -- one head at the end of each path object, sized from the plot rather than the stroke). A single object takes a head of its own with obj -> True, obj -> Arrowheads[...] or Style[obj, ...], and obj -> False turns one off, overriding the option for that object.";
+InfraSceneHighlight::usage = "InfraSceneHighlight[graph, objects] renders shapes -- vertices, vertex lists, densities, walk graphs and lists of them -- and the Euclidean objects InfraSegment, InfraRay, InfraLine, InfraCircle, InfraArc diffusely on graph, intensity scaling with multiplicity and colors blending across objects. Options \"OpacityRange\", \"ThicknessRange\", \"PointSizeRange\", \"Arrowheads\" (Automatic = off; True = Arrowheads[Medium]; or an explicit head spec -- one head at the end of each path object, sized from the plot rather than the stroke). A single object takes a head of its own with obj -> True, obj -> Arrowheads[...] or Style[obj, ...], and obj -> False turns one off, overriding the option for that object.";
 InfraSceneViewer::usage = "InfraSceneViewer[scene, graph] is an interactive step-by-step visualisation of an InfraScene on a graph.";
 PointViewer::usage = "PointViewer[graph] is an interactive viewer for selecting points; PointViewer[graph, sym] stores the selection in sym.";
 SegmentViewer::usage = "SegmentViewer[graph] is an interactive viewer for exploring geodesic segments.";

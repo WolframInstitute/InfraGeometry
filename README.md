@@ -43,6 +43,41 @@ Geometry on a graph, in branches. A symbol's branch is decided by what the obser
 
 This is the original programme of this paclet, and the rest of this README describes it.
 
+#### The `EuclideanInfrageometry` category
+
+Since **0.16.0** the branch has a named category, laid out the way
+[WolframInstitute/PureMath](https://github.com/WolframInstitute/PureMath) lays out its fields: the
+kernel code in `Kernel/EuclideanInfrageometry/`, the tests mirroring it in `Tests/EuclideanInfrageometry/`,
+and one concept article describing the category
+([`Wiki/Concepts/EuclideanInfrageometry.md`](../Wiki/Concepts/EuclideanInfrageometry.md) in the dev repo).
+It is synthetic infrageometry on *surface-like* graphs — graphs whose metric balls are discs and whose
+metric shells are cycles — and holds the one-dimensional Euclidean objects together with the scene
+language and the renderer that draw them: `InfraSegment`, `InfraRay`, `InfraLine`, `InfraCircle`,
+`InfraArc`, `InfraScene`, `InfraSceneHighlight` and the viewers.
+
+Each object head evaluates, with the substrate as its first argument, to an **object** standing for
+the whole family of walks its definition admits, carried as geodesic DAGs and never enumerated unless
+asked:
+
+```wolfram
+seg = InfraSegment[g, p, q]          (* every geodesic from p to q *)
+ray = InfraRay[g, o, v]              (* every ray from o through v; InfraRay[g, o] the pencil *)
+line = InfraLine[g, p, q]            (* every line through p and q *)
+circle = InfraCircle[g, c, p, "Tolerance" -> 1]   (* every shortest separating cycle through p in the band of radius d(c, p) +- 1 *)
+arc = InfraArc[g, c, p, q]           (* the shortest paths from p to q inside that band *)
+
+seg[[1]]                (* the first geodesic in canonical order, a directed path graph *)
+seg[[1 ;; 3]]           (* the first three *)
+Normal[seg]             (* all of them *)
+seg["Multiplicity"]     (* how many, by dynamic programming *)
+seg[["InfraDensity"]]   (* <| v -> number of geodesics through v |> *)
+InfraSceneHighlight[g, {seg, circle}]
+```
+
+Without the substrate the same heads are the `InfraScene` tokens: `InfraSegment[p, q]` names a
+segment to be solved for. The `Find*` symbols remain the search — one instance, `n`, or the bare
+carrier under `All`.
+
 ### Riemannian Infrageometry
 
 *The observer measures.* Which tensor do the numbers see? Volume growth of balls, shells, tubes and cylinders, and the dimension and curvature estimators composed on it; Ollivier-Ricci curvature and effective resistance; coordinatization by landmarks and by resistance; boundary, interior and eccentricity; the displacement algebra; tessellated and uniform-length substrates; convergence of a sequence of graphs to a manifold. A measurement is judged against the continuum quantity it is meant to detect, in the scale window where the detection is valid.

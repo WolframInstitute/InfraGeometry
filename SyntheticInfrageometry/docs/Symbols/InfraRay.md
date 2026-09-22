@@ -12,9 +12,13 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 ## Usage
 
-<code>[InfraRay]()[{*ray1*, …, *rayk*}]</code> is a bundle of rays, each a geodesic from a base vertex to an endpoint it cannot be prolonged past, given as a vertex sequence.
+<code>[InfraRay]()[*g*, *o*, *v*]</code> is the pool of rays from *o* through *v* on the graph *g* as one object: every geodesic from *o* through *v* that cannot be prolonged past its last vertex, carried as one DAG with source *o*.
 
-<code>[InfraRay]()[{*dag1*, …, *dagk*}]</code> is the pool form: one DAG with the base vertex as source per anchor pair, whose source-to-sink paths are the rays.
+<code>[InfraRay]()[*g*, *o*]</code> is the pencil at *o*: every ray from *o*.
+
+<code>[InfraRay]()[*o*, *v*]</code> inside an [InfraScene]() is the ray construction token; [FindInfraRay]() is the search.
+
+`ray[[i]]`, `ray[[i ;; j]]` and `Normal[ray]` enumerate the rays in canonical order; `ray["Multiplicity"]`, `ray["InfraDensity"]`, `ray["Length"]` (the lengths present, since rays end on several layers), `ray["Graph"]` read the DAG.
 
 ## Details & Options
 

@@ -1,5 +1,7 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
+(* WolframInstitute`SyntheticInfrageometry` :: EuclideanInfrageometry :: InfraScene *)
+
 PackageScope[sceneAssertionRules]
 PackageScope[resolveExpression]
 PackageScope[extractBranches]

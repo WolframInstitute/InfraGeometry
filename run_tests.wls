@@ -9,7 +9,7 @@ $pacletDir = DirectoryName[$InputFileName];
 PacletDirectoryLoad[$pacletDir <> "/SyntheticInfrageometry"];
 Needs["WolframInstitute`SyntheticInfrageometry`"];
 
-$testFiles = FileNames["*.wlt", FileNameJoin[{$pacletDir, "SyntheticInfrageometry", "Tests"}]];
+$testFiles = FileNames["*.wlt", FileNameJoin[{$pacletDir, "SyntheticInfrageometry", "Tests"}], Infinity];
 
 Print["Running ", Length[$testFiles], " test files..."];
 Print[""];

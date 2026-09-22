@@ -4,6 +4,119 @@ PackageScope[findLineExtensions]
 PackageScope[canonicalLine]
 PackageScope[allCanonicalLines]
 
+(* WolframInstitute`SyntheticInfrageometry` :: EuclideanInfrageometry :: InfraLine *)
+
+
+(* ===================== InfraLine ===================== *)
+
+(* the lines through p and q as an object.  InfraLine[graph, p, q] evaluates to InfraLine[<| "Atoms" -> {dag, ...}, "Points" -> {p, q} |>] and stands for every inextensible geodesic through p and q at once -- the line pool, one geodesic DAG per admissible pair of ends, the carrier FindInfraLine[graph, p, q, All] builds; InfraLine[graph, walk] the lines containing a walk graph or a geodesic DAG, InfraLine[graph, segment] those containing an InfraSegment object.  line[[i]] is the i-th line in canonical order, line[[i ;; j]] a List, Normal all; "Multiplicity", "InfraDensity", "EdgeDensity", "Length" (the lengths present), "Graph" (the union of the atoms, which over-generates: the lines are the atoms' own paths) and "VertexList" are read off the DAGs.  Without the graph, InfraLine[p, q] and InfraLine[path] are the InfraScene tokens *)
+
+InfraLine[ graph_Graph, p_, q : Except[ _Rule | _RuleDelayed | _Graph ] ] :=
+  InfraLine @ <|
+    "Atoms" -> Map[ Graph[ Sort @ VertexList @ #, Sort @ EdgeList @ # ] &,
+      Select[ Replace[ FindInfraLine[ graph, p, q, All ], dag_Graph :> { dag } ], GraphQ[ # ] && EdgeCount[ # ] > 0 & ] ],
+    "Points" -> { p, q } |>
+
+InfraLine[ graph_Graph, seed_Graph ] :=
+  InfraLine @ <|
+    "Atoms" -> Map[ Graph[ Sort @ VertexList @ #, Sort @ EdgeList @ # ] &,
+      Select[ Replace[ FindInfraLine[ graph, seed, All ], dag_Graph :> { dag } ], GraphQ[ # ] && EdgeCount[ # ] > 0 & ] ],
+    "Points" -> { First @ Select[ VertexList @ seed, VertexInDegree[ seed, # ] == 0 & ],
+                  First @ Select[ VertexList @ seed, VertexOutDegree[ seed, # ] == 0 & ] } |>
+
+InfraLine[ graph_Graph, segment : InfraSegment[ _Association ] ] :=
+  InfraLine @ <|
+    "Atoms" -> Map[ Graph[ Sort @ VertexList @ #, Sort @ EdgeList @ # ] &,
+      Select[ Replace[ FindInfraLine[ graph, segment[ "Atoms" ], All ], dag_Graph :> { dag } ], GraphQ[ # ] && EdgeCount[ # ] > 0 & ] ],
+    "Points" -> segment[ "Endpoints" ] |>
+
+
+(* ===================== The InfraLine object ===================== *)
+
+(* the object protocol, one copy per head so that InfraLine stands on its own: the atoms are geodesic DAGs whose source-to-sink paths are exactly the realisations, sorted so that the depth-first descent lists them in one lexicographic order.  Part enumerates on demand and the properties read the path-count DP off the atoms *)
+
+InfraLine[ data_Association ][ "Graph" ] :=
+  Graph[ Union @@ ( VertexList /@ data[ "Atoms" ] ), Union @@ ( EdgeList /@ data[ "Atoms" ] ) ]
+
+(* the number of realisations: the occupation of an atom's source counts its source-to-sink paths *)
+InfraLine[ data_Association ][ "Multiplicity" ] := Total[ Max @ GeodesicOccupation @ # & /@ data[ "Atoms" ] ]
+
+(* the occupation <| v -> m |>: the realisations through v *)
+InfraLine[ data_Association ][ "InfraDensity" ] := KeySort @ Merge[ GeodesicOccupation /@ data[ "Atoms" ], Total ]
+
+(* the edge occupation keyed by the sorted vertex pair *)
+InfraLine[ data_Association ][ "EdgeDensity" ] :=
+  KeySort @ Merge[ KeyMap[ Sort[ List @@ # ] &, GeodesicEdgeOccupation @ # ] & /@ data[ "Atoms" ], Total ]
+
+(* the realisation length: one number when every realisation shares it, the sorted list of the lengths present otherwise *)
+InfraLine[ data_Association ][ "Length" ] :=
+  Replace[
+    Union @@ Map[ atom |-> With[ { source = First @ Select[ VertexList @ atom, VertexInDegree[ atom, # ] == 0 & ] },
+        Union[ GraphDistance[ atom, source, # ] & /@ Select[ VertexList @ atom, VertexOutDegree[ atom, # ] == 0 & ] ] ],
+      data[ "Atoms" ] ],
+    { one_ } :> one ]
+
+InfraLine[ data_Association ][ "VertexList" ] := Union @@ ( VertexList /@ data[ "Atoms" ] )
+
+InfraLine[ data_Association ][ "Realizations" ] := InfraLine[ data ][[ All ]]
+InfraLine[ data_Association ][ "Realizations", n : ( _Integer | All ) ] := InfraLine[ data ][[ 1 ;; n ]]
+InfraLine[ data_Association ][ "Realizations", UpTo[ n_Integer ] ] := InfraLine[ data ][[ 1 ;; n ]]
+
+InfraLine[ data_Association ][ "Properties" ] :=
+  Union[ Keys @ data, { "Graph", "Length", "Multiplicity", "InfraDensity", "EdgeDensity", "Realizations", "VertexList", "Properties" } ]
+
+InfraLine[ data_Association ][ prop_String ] := Lookup[ data, prop, Missing[ "KeyAbsent", prop ] ]
+
+InfraLine /: Part[ obj : InfraLine[ _Association ], prop_String ] := obj[ prop ]
+
+(* obj[[i]], obj[[i ;; j]], obj[[All]]: the realisations in canonical order -- atom by atom, and within an atom the depth-first descent of its sorted edges -- streamed only as far as asked *)
+InfraLine /: Part[ obj : InfraLine[ data_Association ], spec : ( _Integer | _Span | All ) ] :=
+  With[ { n = obj[ "Multiplicity" ] },
+    { range = Replace[ spec, {
+        All -> { 1, n, 1 },
+        i_Integer :> { If[ i < 0, n + 1 + i, i ], If[ i < 0, n + 1 + i, i ], 1 },
+        Span[ a_, b_, s_ : 1 ] :> { Replace[ a, k_Integer /; k < 0 :> n + 1 + k ],
+                                   Replace[ b, { All -> n, k_Integer /; k < 0 :> n + 1 + k } ], s } } ] },
+    { paths = Module[ { found = { }, descend },
+        descend[ out_, path_ ] := With[ { nexts = Lookup[ out, Key @ Last @ path, { } ] },
+          If[ nexts === { },
+            ( AppendTo[ found, path ]; If[ Length @ found >= range[[ 2 ]], Throw[ found, InfraLine ] ] ),
+            Scan[ descend[ out, Append[ path, # ] ] &, nexts ] ] ];
+        Catch[
+          Scan[ atom |-> With[ { out = GroupBy[ List @@@ EdgeList @ atom, First -> Last ] },
+              Scan[ descend[ out, { # } ] &, Select[ VertexList @ atom, VertexInDegree[ atom, # ] == 0 & ] ] ],
+            data[ "Atoms" ] ];
+          found, InfraLine ] ] },
+    Which[
+      ! IntegerQ @ spec,
+        PathGraph[ #, DirectedEdges -> True ] & /@ Take[ paths, { range[[ 1 ]], Min[ range[[ 2 ]], Length @ paths ], range[[ 3 ]] } ],
+      1 <= range[[ 1 ]] <= n,
+        PathGraph[ #, DirectedEdges -> True ] & @ paths[[ range[[ 1 ]] ]],
+      True,
+        Message[ Part::partw, spec, obj ]; $Failed ] ]
+
+InfraLine /: Normal[ obj : InfraLine[ _Association ] ] := obj[[ All ]]
+InfraLine /: Length[ obj : InfraLine[ _Association ] ] := obj[ "Multiplicity" ]
+InfraLine /: First[ obj : InfraLine[ _Association ] ] := obj[[ 1 ]]
+InfraLine /: VertexList[ obj : InfraLine[ _Association ] ] := obj[ "VertexList" ]
+InfraLine /: HighlightGraph[ graph_Graph, obj : InfraLine[ data_Association ], rest___ ] := HighlightGraph[ graph, data[ "Atoms" ], rest ]
+
+InfraLine /: MakeBoxes[ obj : InfraLine[ data_Association ], fmt_ ] :=
+  BoxForm`ArrangeSummaryBox[ InfraLine, obj,
+    Graphics[ { $InfraLineColor, AbsoluteThickness[ 1.5 ], AbsolutePointSize[ 4 ], Line[ { { -1.3, 0 }, { 1.3, 0 } } ], Point[ { { -0.5, 0 }, { 0.5, 0 } } ] },
+      PlotRange -> { { -1.4, 1.4 }, { -1.4, 1.4 } }, AspectRatio -> 1, Background -> None,
+      ImageSize -> Dynamic[ { Automatic, 3.5 CurrentValue[ "FontCapHeight" ] / AbsoluteCurrentValue[ Magnification ] } ] ],
+    Join[
+      KeyValueMap[ { key, value } |-> BoxForm`SummaryItem[ { ToLowerCase[ key ] <> ": ", value } ],
+        KeyDrop[ data, { "Atoms", "Graph", "Closed", "Band" } ] ],
+      { BoxForm`SummaryItem[ { "multiplicity: ", obj[ "Multiplicity" ] } ],
+        BoxForm`SummaryItem[ { "length: ", obj[ "Length" ] } ] } ],
+    Join[
+      KeyValueMap[ { key, value } |-> BoxForm`SummaryItem[ { ToLowerCase[ key ] <> ": ", value } ], KeyTake[ data, { "Band" } ] ],
+      { BoxForm`SummaryItem[ { "vertices: ", Length @ obj[ "VertexList" ] } ],
+        BoxForm`SummaryItem[ { "atoms: ", Length @ data[ "Atoms" ] } ] } ],
+    fmt, "Interpretable" -> Automatic ]
+
 
 (* ===================== FindInfraLine ===================== *)
 
@@ -293,6 +406,9 @@ InfraLineQ[ graph_Graph, segment_List ] /; Length[ segment ] >= 2 :=
   NoneTrue[ AdjacencyList[ graph, Last @ segment ], GraphDistance[ graph, First @ segment, # ] == Length[ segment ] & ]
 
 InfraLineQ[ _Graph, segment_List ] /; Length[ segment ] < 2 := False
+
+InfraLineQ[ graph_Graph, obj : ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ] :=
+  With[ { reps = Normal @ obj }, reps =!= { } && AllTrue[ reps, InfraLineQ[ graph, # ] & ] ]
 
 
 (* ===================== InfraParallelQ ===================== *)

@@ -66,7 +66,7 @@ methodOptions[ { _String, opts___ } ]   := { opts }
 
 (* ===================== The shape reader ===================== *)
 
-(* THE SHAPE IS THE KIND -- nothing is wrapped.  A point is a vertex of the substrate carrying its label verbatim, a set / multiset / density is <| v -> m |> with a List the uniform case one Counts away, and a walk -- like every 1-d object -- is a Graph, a directed path being one walk and a DAG a bundle of them.
+(* THE SHAPE IS THE KIND -- nothing is wrapped, with one exception: the five Euclidean objects InfraSegment, InfraRay, InfraLine, InfraCircle and InfraArc, each head[<| "Atoms" -> {dag, ...}, ... |>] standing for a whole geodesic family, which every reader below opens through the object's own properties (Normal, "InfraDensity", "VertexList").  A point is a vertex of the substrate carrying its label verbatim, a set / multiset / density is <| v -> m |> with a List the uniform case one Counts away, and a walk -- like every 1-d object -- is a Graph, a directed path being one walk and a DAG a bundle of them.
    The substrate is an argument because a vertex label may itself be a List ({i, j} on a tessellation), and then only the graph separates the point row from the multiset row.  walkQ takes it for uniformity: the general walk family lives on {i, v} position pairs, whose vertices are not substrate vertices, so there is nothing graph-relative to check. *)
 
 pointQ[ graph_Graph, x_ ] := VertexQ[ graph, x ]
@@ -81,6 +81,7 @@ walkQ[ _Graph, x_ ] := GraphQ[ x ]
 inkClass[ graph_Graph, x_ ] := Which[
   pointQ[ graph, x ],                                              "Point",
   AssociationQ[ x ],                                               "Density",
+  MatchQ[ x, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ], StringDrop[ SymbolName @ Head @ x, 5 ],
   GraphQ[ x ],                                                     "Walk",
   chainedWalksQ[ x ],                                              "Polyline",
   MatchQ[ x, { __Graph } ],                                        "Walk",
@@ -448,6 +449,7 @@ infraSpread[ fam_Association ]       := Keys @ fam
 infraSpread[ w_Graph ]               := walkRealisations @ w
 infraSpread[ ws : { __Graph } ]      := Catenate[ walkRealisations /@ ws ]
 infraSpread[ { } ]                   := { }
+infraSpread[ obj : ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ] := infraSpread @ Normal @ obj
 infraSpread[ other_ ]                := { other }
 
 
@@ -517,6 +519,7 @@ infraVertexSet[ ws : { __Graph } ] := Union @@ ( walkVertexSet /@ ws )
 infraVertexSet[ { } ]              := { }
 infraVertexSet[ sets : { __List } ] := Union @@ ( infraVertexSet /@ sets )
 infraVertexSet[ list_List ]        := vertexSet @ list
+infraVertexSet[ obj : ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ] := obj[ "VertexList" ]
 infraVertexSet[ v_ ]               := { v }
 
 infraVertexSet[ graph_Graph, x_ ]  := Keys @ toDensity[ graph, x ]
@@ -578,6 +581,7 @@ infraNumReps[ _List ]             := 1
 toDensity[ graph_Graph, x_ ] := Which[
   pointQ[ graph, x ],                                   <| x -> 1 |>,
   AssociationQ[ x ],                                    KeySort @ x,
+  MatchQ[ x, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ], x[ "InfraDensity" ],
   GraphQ[ x ],                                          KeySort @ infraVertexMultiset @ x,
   ListQ[ x ] && AllTrue[ x, VertexQ[ graph, # ] & ],    KeySort @ Counts @ x,
   MatchQ[ x, { ( _Graph | _List ) .. } ],               KeySort @ Merge[ toDensity[ graph, # ] & /@ x, Total ],

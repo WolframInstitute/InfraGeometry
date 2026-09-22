@@ -12,11 +12,11 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 ## Usage
 
-<code>[InfraSegment]()[{*path1*, …, *pathk*}]</code> is a segment given by a set of geodesics.
+<code>[InfraSegment]()[*g*, *p*, *q*]</code> is the geodesic interval from *p* to *q* on the graph *g* as one object: every geodesic from *p* to *q* at once, carried as a geodesic DAG.
 
-<code>[InfraSegment]()[*dag*]</code> is the same segment given by its geodesic DAG.
+<code>[InfraSegment]()[*p*, *q*]</code> inside an [InfraScene]() is the segment construction token; [FindInfraSegment]() is the search.
 
-<code>[InfraSegment]()[{*dag1*, …, *dagk*}]</code> is the pool form: one geodesic DAG per pair of ends, as returned by [ExtendInfraSegment]() and by [FindInfraSegment]() over several anchors.
+`seg[[i]]`, `seg[[i ;; j]]` and `Normal[seg]` enumerate the geodesics in canonical order as directed path graphs; `seg["Multiplicity"]`, `seg["InfraDensity"]`, `seg["EdgeDensity"]`, `seg["Length"]`, `seg["Graph"]` and `seg["VertexList"]` read the DAG without enumerating.
 
 ## Details & Options
 

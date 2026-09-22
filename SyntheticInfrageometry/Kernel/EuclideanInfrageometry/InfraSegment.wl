@@ -4,6 +4,106 @@ PackageScope[findSegmentCore]
 PackageScope[extensionPool]
 PackageScope[seedBundles]
 
+(* WolframInstitute`SyntheticInfrageometry` :: EuclideanInfrageometry :: InfraSegment *)
+
+
+(* ===================== InfraSegment ===================== *)
+
+(* the geodesic interval I(p, q) as an object.  InfraSegment[graph, p, q] evaluates to InfraSegment[<| "Atoms" -> {dag}, "Endpoints" -> {p, q} |>] and stands for every geodesic from p to q at once -- one geodesic DAG per endpoint pair the anchors spread to, the carrier FindInfraSegment[graph, p, q, All] builds -- so the family is never enumerated unless asked: seg[[i]] is the i-th geodesic in canonical order, seg[[i ;; j]] a List of them, Normal all, and seg["Multiplicity"], seg["InfraDensity"], seg["EdgeDensity"], seg["Length"], seg["Graph"], seg["VertexList"] are read off the DAG.  Without the graph, InfraSegment[p, q] is the InfraScene token *)
+
+InfraSegment[ graph_Graph, p_, q : Except[ _Rule | _RuleDelayed ] ] :=
+  InfraSegment @ <|
+    "Atoms" -> Map[ Graph[ Sort @ VertexList @ #, Sort @ EdgeList @ # ] &,
+      Select[ Replace[ FindInfraSegment[ graph, p, q, All ], dag_Graph :> { dag } ], GraphQ[ # ] && EdgeCount[ # ] > 0 & ] ],
+    "Endpoints" -> { p, q } |>
+
+
+(* ===================== The InfraSegment object ===================== *)
+
+(* the object protocol, one copy per head so that InfraSegment stands on its own: the atoms are geodesic DAGs whose source-to-sink paths are exactly the realisations, sorted so that the depth-first descent lists them in one lexicographic order.  Part enumerates on demand and the properties read the path-count DP off the atoms *)
+
+InfraSegment[ data_Association ][ "Graph" ] :=
+  Graph[ Union @@ ( VertexList /@ data[ "Atoms" ] ), Union @@ ( EdgeList /@ data[ "Atoms" ] ) ]
+
+(* the number of realisations: the occupation of an atom's source counts its source-to-sink paths *)
+InfraSegment[ data_Association ][ "Multiplicity" ] := Total[ Max @ GeodesicOccupation @ # & /@ data[ "Atoms" ] ]
+
+(* the occupation <| v -> m |>: the realisations through v *)
+InfraSegment[ data_Association ][ "InfraDensity" ] := KeySort @ Merge[ GeodesicOccupation /@ data[ "Atoms" ], Total ]
+
+(* the edge occupation keyed by the sorted vertex pair *)
+InfraSegment[ data_Association ][ "EdgeDensity" ] :=
+  KeySort @ Merge[ KeyMap[ Sort[ List @@ # ] &, GeodesicEdgeOccupation @ # ] & /@ data[ "Atoms" ], Total ]
+
+(* the realisation length: one number when every realisation shares it, the sorted list of the lengths present otherwise *)
+InfraSegment[ data_Association ][ "Length" ] :=
+  Replace[
+    Union @@ Map[ atom |-> With[ { source = First @ Select[ VertexList @ atom, VertexInDegree[ atom, # ] == 0 & ] },
+        Union[ GraphDistance[ atom, source, # ] & /@ Select[ VertexList @ atom, VertexOutDegree[ atom, # ] == 0 & ] ] ],
+      data[ "Atoms" ] ],
+    { one_ } :> one ]
+
+InfraSegment[ data_Association ][ "VertexList" ] := Union @@ ( VertexList /@ data[ "Atoms" ] )
+
+InfraSegment[ data_Association ][ "Realizations" ] := InfraSegment[ data ][[ All ]]
+InfraSegment[ data_Association ][ "Realizations", n : ( _Integer | All ) ] := InfraSegment[ data ][[ 1 ;; n ]]
+InfraSegment[ data_Association ][ "Realizations", UpTo[ n_Integer ] ] := InfraSegment[ data ][[ 1 ;; n ]]
+
+InfraSegment[ data_Association ][ "Properties" ] :=
+  Union[ Keys @ data, { "Graph", "Length", "Multiplicity", "InfraDensity", "EdgeDensity", "Realizations", "VertexList", "Properties" } ]
+
+InfraSegment[ data_Association ][ prop_String ] := Lookup[ data, prop, Missing[ "KeyAbsent", prop ] ]
+
+InfraSegment /: Part[ obj : InfraSegment[ _Association ], prop_String ] := obj[ prop ]
+
+(* obj[[i]], obj[[i ;; j]], obj[[All]]: the realisations in canonical order -- atom by atom, and within an atom the depth-first descent of its sorted edges -- streamed only as far as asked *)
+InfraSegment /: Part[ obj : InfraSegment[ data_Association ], spec : ( _Integer | _Span | All ) ] :=
+  With[ { n = obj[ "Multiplicity" ] },
+    { range = Replace[ spec, {
+        All -> { 1, n, 1 },
+        i_Integer :> { If[ i < 0, n + 1 + i, i ], If[ i < 0, n + 1 + i, i ], 1 },
+        Span[ a_, b_, s_ : 1 ] :> { Replace[ a, k_Integer /; k < 0 :> n + 1 + k ],
+                                   Replace[ b, { All -> n, k_Integer /; k < 0 :> n + 1 + k } ], s } } ] },
+    { paths = Module[ { found = { }, descend },
+        descend[ out_, path_ ] := With[ { nexts = Lookup[ out, Key @ Last @ path, { } ] },
+          If[ nexts === { },
+            ( AppendTo[ found, path ]; If[ Length @ found >= range[[ 2 ]], Throw[ found, InfraSegment ] ] ),
+            Scan[ descend[ out, Append[ path, # ] ] &, nexts ] ] ];
+        Catch[
+          Scan[ atom |-> With[ { out = GroupBy[ List @@@ EdgeList @ atom, First -> Last ] },
+              Scan[ descend[ out, { # } ] &, Select[ VertexList @ atom, VertexInDegree[ atom, # ] == 0 & ] ] ],
+            data[ "Atoms" ] ];
+          found, InfraSegment ] ] },
+    Which[
+      ! IntegerQ @ spec,
+        PathGraph[ #, DirectedEdges -> True ] & /@ Take[ paths, { range[[ 1 ]], Min[ range[[ 2 ]], Length @ paths ], range[[ 3 ]] } ],
+      1 <= range[[ 1 ]] <= n,
+        PathGraph[ #, DirectedEdges -> True ] & @ paths[[ range[[ 1 ]] ]],
+      True,
+        Message[ Part::partw, spec, obj ]; $Failed ] ]
+
+InfraSegment /: Normal[ obj : InfraSegment[ _Association ] ] := obj[[ All ]]
+InfraSegment /: Length[ obj : InfraSegment[ _Association ] ] := obj[ "Multiplicity" ]
+InfraSegment /: First[ obj : InfraSegment[ _Association ] ] := obj[[ 1 ]]
+InfraSegment /: VertexList[ obj : InfraSegment[ _Association ] ] := obj[ "VertexList" ]
+InfraSegment /: HighlightGraph[ graph_Graph, obj : InfraSegment[ data_Association ], rest___ ] := HighlightGraph[ graph, data[ "Atoms" ], rest ]
+
+InfraSegment /: MakeBoxes[ obj : InfraSegment[ data_Association ], fmt_ ] :=
+  BoxForm`ArrangeSummaryBox[ InfraSegment, obj,
+    Graphics[ { $InfraSegmentColor, AbsoluteThickness[ 1.5 ], AbsolutePointSize[ 4 ], Line[ { { -1, 0 }, { 1, 0 } } ], Point[ { { -1, 0 }, { 1, 0 } } ] },
+      PlotRange -> { { -1.4, 1.4 }, { -1.4, 1.4 } }, AspectRatio -> 1, Background -> None,
+      ImageSize -> Dynamic[ { Automatic, 3.5 CurrentValue[ "FontCapHeight" ] / AbsoluteCurrentValue[ Magnification ] } ] ],
+    Join[
+      KeyValueMap[ { key, value } |-> BoxForm`SummaryItem[ { ToLowerCase[ key ] <> ": ", value } ],
+        KeyDrop[ data, { "Atoms", "Graph", "Closed", "Band" } ] ],
+      { BoxForm`SummaryItem[ { "multiplicity: ", obj[ "Multiplicity" ] } ],
+        BoxForm`SummaryItem[ { "length: ", obj[ "Length" ] } ] } ],
+    Join[
+      KeyValueMap[ { key, value } |-> BoxForm`SummaryItem[ { ToLowerCase[ key ] <> ": ", value } ], KeyTake[ data, { "Band" } ] ],
+      { BoxForm`SummaryItem[ { "vertices: ", Length @ obj[ "VertexList" ] } ],
+        BoxForm`SummaryItem[ { "atoms: ", Length @ data[ "Atoms" ] } ] } ],
+    fmt, "Interpretable" -> Automatic ]
+
 
 (* ===================== FindInfraSegment ===================== *)
 
@@ -185,6 +285,9 @@ InfraWalkQ[ graph_Graph, path_List ] /; Length[ path ] >= 2 :=
 
 InfraWalkQ[ _Graph, path_List ] /; Length[ path ] < 2 := False
 
+InfraWalkQ[ graph_Graph, obj : ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ] :=
+  With[ { reps = Normal @ obj }, reps =!= { } && AllTrue[ reps, InfraWalkQ[ graph, # ] & ] ]
+
 
 (* ===================== InfraSegmentQ ===================== *)
 
@@ -199,6 +302,9 @@ InfraSegmentQ[ graph_Graph, segment_List ] /; Length[ segment ] >= 2 :=
   AllTrue[ Partition[ segment, 2, 1 ], EdgeQ[ graph, UndirectedEdge @@ # ] & ]
 
 InfraSegmentQ[ _Graph, segment_List ] /; Length[ segment ] < 2 := False
+
+InfraSegmentQ[ graph_Graph, obj : ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ] :=
+  With[ { reps = Normal @ obj }, reps =!= { } && AllTrue[ reps, InfraSegmentQ[ graph, # ] & ] ]
 
 
 (* ===================== UniqueInfraSegmentQ ===================== *)

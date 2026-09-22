@@ -1,5 +1,7 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
+(* WolframInstitute`SyntheticInfrageometry` :: EuclideanInfrageometry :: InfraSceneInteractive *)
+
 
 $InfraSegmentSelectOptions = { None, "Central", "Peripheral", "EmbeddingClosest" };
 

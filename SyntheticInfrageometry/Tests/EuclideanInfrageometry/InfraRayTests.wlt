@@ -200,3 +200,51 @@ VerificationTest[
 ]
 
 EndTestSection[]
+
+(* ===== InfraRay[graph, o, v] and InfraRay[graph, o]: the ray pool as an object ===== *)
+
+(* the realisations are exactly the rays from o through v *)
+VerificationTest[
+  With[{g = GridGraph[{3, 3}]},
+    {d = GraphDistanceMatrix[g]},
+    {rays = Catenate @ Table[
+        Select[FindPath[g, 1, e, {d[[1, e]]}, All],
+          path |-> MemberQ[path, 2] && NoneTrue[AdjacencyList[g, e], d[[1, #]] == d[[1, e]] + 1 &]],
+        {e, DeleteCases[VertexList[g], 1]}]},
+    {ray = InfraRay[g, 1, 2]},
+    Sort[VertexList /@ Normal[ray]] === Sort[rays] && ray["Multiplicity"] == Length[rays] && InfraRayQ[g, ray]],
+  True,
+  TestID -> "InfraRay-object-realisations-are-the-rays"
+]
+
+(* the pencil: every ray from the centre of the 3 x 3 grid, counted without enumeration *)
+VerificationTest[
+  With[{g = GridGraph[{3, 3}]}, {pencil = InfraRay[g, 5]},
+    {pencil["Multiplicity"], Length[pencil], pencil["Direction"], Sort[VertexList /@ Normal[pencil]] === Sort[PencilDirections[g, 5]]}],
+  {8, 8, None, True},
+  TestID -> "InfraRay-pencil-is-every-ray-from-the-origin"
+]
+
+(* rays end on several layers, so "Length" lists the lengths present; the origin carries the full multiplicity *)
+VerificationTest[
+  With[{g = GridGraph[{3, 3}]}, {pencil = InfraRay[g, 5]},
+    {pencil["Length"], pencil["InfraDensity"][5] == pencil["Multiplicity"],
+     Sort @ Union[EdgeCount /@ Normal[pencil]] === Flatten[{pencil["Length"]}]}],
+  {2, True, True},
+  TestID -> "InfraRay-Length-and-origin-density"
+]
+
+(* Part enumerates in canonical order *)
+VerificationTest[
+  With[{g = GridGraph[{3, 3}]}, {ray = InfraRay[g, 1, 2]}, {all = Normal[ray]},
+    ray[[1]] === First[all] && ray[[1 ;; 2]] === Take[all, 2] && VertexList /@ all === Sort[VertexList /@ all]],
+  True,
+  TestID -> "InfraRay-Part-in-canonical-order"
+]
+
+(* the scene token stays inert *)
+VerificationTest[
+  InfraRay[1, 2],
+  InfraRay[1, 2],
+  TestID -> "InfraRay-token-without-graph-stays-inert"
+]

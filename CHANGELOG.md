@@ -2,6 +2,41 @@
 
 ## Unreleased
 
+- **The `EuclideanInfrageometry` category, 0.16.0** (2026-09-22). The kernel gains its first named
+  category in the `WolframInstitute/PureMath` layout: `Kernel/EuclideanInfrageometry/` holds
+  `InfraSegment.wl`, `InfraRay.wl`, `InfraLine.wl`, `InfraCircle.wl`, `InfraScene.wl`,
+  `InfraSceneVisualization.wl` and `InfraSceneInteractive.wl`, `Tests/EuclideanInfrageometry/` mirrors
+  it, and the test runners discover `.wlt` files recursively. The `Package` loader reads subfolders
+  as it reads the root, so nothing else moves.
+
+- **Breaking:** the five Euclidean object heads evaluate. `InfraSegment[g, p, q]`, `InfraRay[g, o, v]`
+  (and `InfraRay[g, o]`, the pencil), `InfraLine[g, p, q]` (also through a walk graph or an
+  `InfraSegment`), the new `InfraCircle[g, c, p]` and the new symbol `InfraArc[g, c, p, q]` each
+  return `head[<| "Atoms" -> {dag, ...}, anchors ... |>]`, an object standing for the whole family:
+  `obj[[i]]`, `obj[[i ;; j]]`, `Normal`, `First` enumerate in canonical order; `"Multiplicity"` /
+  `Length`, `"InfraDensity"`, `"EdgeDensity"`, `"Length"`, `"Graph"`, `"VertexList"` read the DP off the
+  atoms; `HighlightGraph`, `InfraSceneHighlight`, `InfraDensity` and the `*Q` predicates accept the
+  objects; each has a summary box. Without the substrate the heads stay the `InfraScene` tokens.
+  Each head carries its own complete copy of the protocol (the self-contained rule) on the exported
+  `FindInfraSegment` / `FindInfraRay` / `FindInfraLine` carriers and `GeodesicIntervalGraph` /
+  `GeodesicOccupation` / `GeodesicEdgeOccupation`. `Find*` is unchanged.
+
+- **The circle through a point.** `InfraCircle[g, c, p, "Tolerance" -> t | {tIn, tOut}]` is the family
+  of shortest simple cycles through `p` in the band `d(c, p) - tIn .. d(c, p) + tOut` that separate `c`
+  from beyond, carried by the circle pool cut along a radial seam through `p` with every atom rotated
+  to start at `p` (source `p`, sinks adjacent to `p`, closing edge implicit); exact on planar bands the
+  seam cuts open, the length sweep under `::uncertified` otherwise, the message firing only when the
+  sweep finds circles the carrier could not hold. Verified against brute force on grids (families up
+  to 256) and on triangular and hexagonal patches. `"Graph"` is the atoms' union with the closing
+  edges, oriented alike where shared positions allow; it is acyclic away from `p` in most cases but
+  not all, since two circles can pass a neighbour of `p` once leaving and once returning.
+
+- `InfraRayQ` on a `List` of graphs reached the vertex-list rule first and failed; the graph rules now
+  precede it.
+
+- `$infraShapeColors` gains the classes `Segment`, `Ray`, `Line`, `Circle` (and `Arc`, drawn as a
+  circle), so the objects reach their construction's colour when the palette is off.
+
 - **The documentation tree follows the walk rename** (NotebookWalkAudit T3). The three sets now coincide: 187 exported symbols, 187 `docs/Symbols/*.md` sources, 187 built reference pages. Ten pages for symbols the kernel no longer exports are deleted — `InfraPath`, `InfraPathQ`, `FindInfraPath`, `ExtendInfraPath`, `ConcatenateInfraPath`, `SelectInfraPath`, `SelectInfraCycle`, `$InfraPathColor`, `UniquePencilQ`, `FindForwardDeformation` — and the whole walk family gains one: `FindInfraWalk`, `FindInfraGeodesic`, `ExtendInfraWalk`, `ExtendInfraGeodesic`, `SelectInfraWalk`, `ConcatenateInfraWalk`, `InfraWalk`, `InfraWalkQ`, `InfraGeodesicQ`, `InfraImmersedQ`, `InfraGenericQ`, `InfraWalkCrossingQ`, `WalkSingularities`, `$InfraWalkColor`, `$InfraAccentPointSize`, `$InfraPointSizes`, `$InfraStrikeOutPalette`, with `InfraDeformationSize` and `InfraDensity`. Cross-references to the deleted wrapper heads are swept: `InfraMeasure` and `InfraEffectivePoint` become `InfraDensity`, `InfraSet` a vertex `List` or a density, `InfraString` the free loop.
 
 - **Nothing tropical** (NotebookWalkAudit T2b). `TropicalConvexityGuide.nb` and `TropicalConvexityTutorial.nb` are deleted with their four cross-references. Both documented four `MetricAlgebra.wl` symbols under a tropical title and had no `docs/` source. No symbol lost documentation.

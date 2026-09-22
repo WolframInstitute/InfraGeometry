@@ -666,9 +666,11 @@ VerificationTest[
 
 (* An exported symbol with no definitions of any kind can only be a scene token:
    an assertion head, a construction constructor, or the step container.  The
-   symbols below are exactly those: since T5 every construction head is one, the
-   payload rules having gone with the payloads.  One more means a symbol was
-   exported with a usage message and no meaning, which is how InfraPlaneQ hid. *)
+   symbols below are exactly those.  The five Euclidean object heads -- InfraSegment,
+   InfraRay, InfraLine, InfraCircle, InfraArc -- left the list on 2026-09-22: with the
+   substrate as first argument they evaluate to objects, and only without it stay tokens.
+   One more means a symbol was exported with a usage message and no meaning, which is
+   how InfraPlaneQ hid. *)
 VerificationTest[
   Select[ Names[ "WolframInstitute`SyntheticInfrageometry`*" ],
     n |-> AllTrue[
@@ -677,9 +679,9 @@ VerificationTest[
   (* InflatedVertex is not a scene token: it is the inert label InflateGraph stamps on the
      copies it makes.  It arrived with ExampleGraphs.wl in the paclet split (T2a). *)
   { "InflatedVertex",
-    "InfraBall", "InfraCircle", "InfraEllipse", "InfraEllipticShell", "InfraGeometricStep",
-    "InfraIntersectQ", "InfraLine", "InfraPlane", "InfraPoint", "InfraPolygon", "InfraPolyline",
-    "InfraRay", "InfraRevolution", "InfraSegment", "InfraShell", "InfraTriangle", "InfraWalk" },
+    "InfraBall", "InfraEllipse", "InfraEllipticShell", "InfraGeometricStep",
+    "InfraIntersectQ", "InfraPlane", "InfraPoint", "InfraPolygon", "InfraPolyline",
+    "InfraRevolution", "InfraShell", "InfraTriangle", "InfraWalk" },
   TestID -> "InfraScene-valueless-exports-are-scene-tokens"
 ]
 

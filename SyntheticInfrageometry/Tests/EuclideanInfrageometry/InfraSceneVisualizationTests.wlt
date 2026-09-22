@@ -461,18 +461,19 @@ VerificationTest[
   TestID -> "InfraSceneHighlight-no-weight-exceeds-one"
 ]
 
-(* the named palette records which SHAPE class defaults to each colour.  Seven of the
-   ten name a construction, which no carrier remembers, so no shape claims them. *)
+(* the named palette records which SHAPE class defaults to each colour.  A bare carrier
+   does not remember its construction, so Shell, Plane and Topology are claimed by no shape;
+   the five Euclidean objects remember theirs and claim Segment, Line, Circle (with Arc) and Ray. *)
 VerificationTest[
   Normal[ $InfraPalette ][[ All, { "Primitive", "Shapes" } ]],
   { <| "Primitive" -> "Point",    "Shapes" -> { "Point", "Density" } |>,
-    <| "Primitive" -> "Segment",  "Shapes" -> { } |>,
-    <| "Primitive" -> "Line",     "Shapes" -> { } |>,
+    <| "Primitive" -> "Segment",  "Shapes" -> { "Segment" } |>,
+    <| "Primitive" -> "Line",     "Shapes" -> { "Line" } |>,
     <| "Primitive" -> "Shell",    "Shapes" -> { } |>,
     <| "Primitive" -> "Ball",     "Shapes" -> { "Set", "SetFamily" } |>,
     <| "Primitive" -> "Plane",    "Shapes" -> { } |>,
-    <| "Primitive" -> "Circle",   "Shapes" -> { } |>,
-    <| "Primitive" -> "Ray",      "Shapes" -> { } |>,
+    <| "Primitive" -> "Circle",   "Shapes" -> { "Circle", "Arc" } |>,
+    <| "Primitive" -> "Ray",      "Shapes" -> { "Ray" } |>,
     <| "Primitive" -> "Path",     "Shapes" -> { "Walk", "Polyline", "PolylineFamily" } |>,
     <| "Primitive" -> "Topology", "Shapes" -> { } |> },
   TestID -> "InfraPalette-shapes-not-heads"

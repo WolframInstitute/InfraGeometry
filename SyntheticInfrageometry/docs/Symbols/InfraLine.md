@@ -12,9 +12,13 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 ## Usage
 
-<code>[InfraLine]()[{*line1*, …, *linek*}]</code> is a bundle of lines, each an inextensible geodesic given as a vertex sequence.
+<code>[InfraLine]()[*g*, *p*, *q*]</code> is the pool of lines through *p* and *q* on the graph *g* as one object: every inextensible geodesic through *p* and *q*, carried as one geodesic DAG per admissible pair of ends.
 
-<code>[InfraLine]()[{*dag1*, …, *dagk*}]</code> is the pool form: one geodesic DAG per pair of ends, whose source-to-sink paths are the lines with those ends.
+<code>[InfraLine]()[*g*, *walk*]</code> is the pool of lines containing a walk graph, a geodesic DAG or an [InfraSegment]() object.
+
+<code>[InfraLine]()[*p*, *q*]</code> and <code>[InfraLine]()[*path*]</code> inside an [InfraScene]() are the line construction tokens; [FindInfraLine]() is the search.
+
+`line[[i]]`, `line[[i ;; j]]` and `Normal[line]` enumerate the lines in canonical order; `line["Multiplicity"]`, `line["InfraDensity"]`, `line["Length"]`, `line["Graph"]` read the DAGs.
 
 ## Details & Options
 

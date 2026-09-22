@@ -15,7 +15,13 @@ PackageExport[FindClosestInfraPoint]
 PackageExport[SelectInfraPoint]
 PackageExport[InfraReachableQ]
 
-(* InfraSegment.wl *)
+(* ---- EuclideanInfrageometry: Kernel/EuclideanInfrageometry/ ------------- *)
+(* The Euclidean objects and the scene they are drawn in.  Each construction head
+   evaluates, with the substrate as its first argument, to an object standing for the
+   whole family -- InfraSegment[g, p, q], InfraRay[g, o, v], InfraLine[g, p, q],
+   InfraCircle[g, c, p], InfraArc[g, c, p, q] -- and without it stays the InfraScene token *)
+
+(* EuclideanInfrageometry/InfraSegment.wl *)
 PackageExport[InfraSegment]
 PackageExport[FindInfraSegment]
 PackageExport[ExtendInfraSegment]
@@ -36,7 +42,8 @@ PackageExport[ExtendInfraWalk]
 PackageExport[ExtendInfraGeodesic]
 PackageExport[ConcatenateInfraWalk]
 
-(* InfraLine.wl *)
+(* EuclideanInfrageometry/InfraLine.wl *)
+PackageExport[InfraLine]
 PackageExport[FindInfraLine]
 PackageExport[FindInfraParallel]
 PackageExport[FindInfraPerpendicular]
@@ -77,8 +84,9 @@ PackageExport[InfraBallQ]
 PackageExport[FindBallHull]
 PackageExport[BallHullQ]
 
-(* InfraCircle.wl *)
+(* EuclideanInfrageometry/InfraCircle.wl *)
 PackageExport[InfraCircle]
+PackageExport[InfraArc]
 PackageExport[FindInfraCircle]
 PackageExport[FindInfraCycle]
 PackageExport[InfraCircleQ]
@@ -104,7 +112,7 @@ PackageExport[InfraEllipseQ]
 PackageExport[InfraPlane]
 PackageExport[FindInfraBisectingHyperplane]
 
-(* InfraRay.wl *)
+(* EuclideanInfrageometry/InfraRay.wl *)
 PackageExport[InfraRay]
 PackageExport[FindInfraRay]
 PackageExport[InfraRayQ]
@@ -208,19 +216,18 @@ PackageExport[ProjectivePlaneGraphQ]
 (* InfraEquality.wl *)
 PackageExport[InfraEqualQ]
 
-(* InfraScene.wl *)
+(* EuclideanInfrageometry/InfraScene.wl *)
 PackageExport[InfraScene]
 PackageExport[FindInfraScene]
 PackageExport[InfraInstance]
 PackageExport[InfraGeometricStep]
-PackageExport[InfraLine]
 PackageExport[InfraIntersection]
 PackageExport[InfraUnion]
 PackageExport[InfraDistance]
 PackageExport[InfraPlaneQ]
 PackageExport[InfraIntersectQ]
 
-(* InfraSceneVisualization.wl *)
+(* EuclideanInfrageometry/InfraSceneVisualization.wl *)
 PackageExport[InfraSceneHighlight]
 PackageExport[$InfraPointColor]
 PackageExport[$InfraSegmentColor]
@@ -231,7 +238,7 @@ PackageExport[$InfraRayColor]
 PackageExport[$InfraWalkColor]
 PackageExport[$InfraLineColor]
 
-(* InfraSceneInteractive.wl *)
+(* EuclideanInfrageometry/InfraSceneInteractive.wl *)
 PackageExport[PointViewer]
 PackageExport[SegmentViewer]
 PackageExport[ShellViewer]

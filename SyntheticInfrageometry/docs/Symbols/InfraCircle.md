@@ -12,9 +12,13 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 ## Usage
 
-<code>[InfraCircle]()[{*cycle*}]</code> is a circle given by one cycle.
+<code>[InfraCircle]()[*g*, *c*, *p*]</code> is the object of circles around *c* through *p* on the graph *g*: the shortest simple cycles through *p* in the band of radius *d*(*c*, *p*) that separate *c* from beyond, with *p* their source and sink.
 
-<code>[InfraCircle]()[{*cycle1*, …, *cyclek*}]</code> is a circle given by several.
+<code>[InfraCircle]()[*g*, *c*, *p*, "Tolerance" -> *t*]</code> widens the band to *d*(*c*, *p*) ± *t*; `{tIn, tOut}` widens it asymmetrically.
+
+<code>[InfraCircle]()[*center*, *r*]</code> inside an [InfraScene]() is the circle construction token by radius; [FindInfraCircle]() is the search by radius.
+
+`circle[[i]]`, `circle[[i ;; j]]` and `Normal[circle]` enumerate the circles as directed cycle graphs; `circle["Multiplicity"]`, `circle["InfraDensity"]`, `circle["EdgeDensity"]`, `circle["Length"]`, `circle["Graph"]` read the carrier.
 
 ## Details & Options
 
