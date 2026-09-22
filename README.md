@@ -33,6 +33,14 @@ The capabilities of an infra-observer are determined by what the substrate lets 
 - performing an empirical study of whether ambiguous infra-geometric constructions converge to a unique construction at macroscopic scale as the substrate is refined
 - incorporating hypergraphs and n-ary relations, or developing a new exotic infra-geometry for them
 
+## 🌿 Three branches
+
+Since the paclet split of 2026-09-22 (**0.14.0**) the paclet is geometry on a graph in three branches, and `Kernel/SyntheticInfrageometry.wl` groups its exports under the same three headings.
+
+- **Synthetic** — the observer *constructs*; which Euclidean statement survives? Points, segments, walks, lines, rays, circles, ellipses, shells, balls, polygons, planes, quadrics, and the Tarski / Alexandrov / projective axioms over them.
+- **Riemannian** — the observer *measures*; which tensor do the numbers see? Volume growth and the dimension / curvature estimators read off it, coordinatization by landmarks and by resistance, boundary and eccentricity, the displacement algebra, tessellated and uniform-length substrates, Ollivier curvature and effective resistance. This arrived from the [Infrageometry](https://github.com/WolframInstitute/Infrageometry) paclet — ten files, 76 symbols — which keeps the combinatorial core (complexes, cochains, Hodge/Dirac, Rips and persistence). The two paclets are independent; neither imports the other.
+- **Symplectic** — the observer *moves*; what is conserved? Declared, and empty of kernel code.
+
 ## ✨ Usage
 
 Install from the Wolfram Cloud:
@@ -44,15 +52,23 @@ Needs["WolframInstitute`SyntheticInfrageometry`"]
 
 Explore the paclet in the **[LLM-generated presentation notebook](https://www.wolframcloud.com/obj/hajek_pavel/SyntheticInfrageometry/Presentation.nb)** (runs on the Wolfram Cloud).
 
-Ready-made example substrates and ambient styles for the analyses: **[LLM-generated example-graphs notebook](https://www.wolframcloud.com/obj/hajek_pavel/ExampleGraphs.nb)** (runs on the Wolfram Cloud).
+Ready-made example substrates and ambient styles for the analyses: **[LLM-generated example-graphs notebook](https://www.wolframcloud.com/obj/hajek_pavel/ExampleGraphs.nb)** (runs on the Wolfram Cloud; `ExampleGraphs` and `InfraSubstrate` live here since 0.14.0).
 
 ## 📓 Research Notebooks — "Math from code"
 
-> ⚠️ LLM versions generated directly from the codebase via [ClaudePluginComputationalResearch](https://github.com/WolframInstitute/ClaudePluginComputationalResearch) with no warranty of correctness. Humans are welcome to publish their own versions alongside.
+> ⚠️ LLM versions generated directly from the codebase via [ClaudePluginComputationalResearch](https://github.com/WolframInstitute/ClaudePluginComputationalResearch) with no warranty of correctness. Humans are welcome to publish their own versions alongside. Rows with no link are built from sources in `ResearchNotebooks/` and not published.
 
 | Notebook | Description | Versions |
 |----------|-------------|----------|
 | EmergentEuclid | Emergent Euclidean geometry on graphs: infra-Euclidean primitives, Tarski's axioms as decidable graph properties, locality of the Euclidean regime, and behavior under edge subdivision | [LLM](https://www.wolframcloud.com/obj/hajek_pavel/SyntheticInfrageometry/EmergentEuclid.nb) |
+| Vectors and displacements | Algebra of discrete vector fields and their flows | [LLM](https://www.wolframcloud.com/obj/hajek_pavel/Infrageometry/Displacements.nb) |
+| Displacements on graphs | Metric inverse, negative, continuity, commutator, and bracket of graph displacements | [LLM](https://www.wolframcloud.com/obj/hajek_pavel/Infrageometry/Displacement1.nb) |
+| What volume growth determines | Ball and sphere growth give dimension and scalar curvature and nothing else at any order; the four ball measures and the Ehrhart reciprocity behind `HalfBoundary` |  |
+| The Riemann tensor from graph measurements | Ricci / Weyl decomposition and norms, tube-volume Ricci projections, two Weyl routes, distance distributions |  |
+| Exact volume growth on tessellation graphs | Growth series of the eight constructible uniform tilings, reciprocity failures, torus quotients below the systole |  |
+| Infrageometric convergence | The path metric homogenizes to a polyhedral norm and the Dirichlet energy to a quadratic form; they agree only in dimension 1 |  |
+| Tube volumes | The counting measure of a graph ball, tubes over a shell, Gray's expansion, the sphere moments |  |
+| Round-trip reconstruction benchmark | Torus / sphere / saddle through the forward and inverse maps; Betti recovery, curvature-sign loss |  |
 
 ## ⚖️ License
 
