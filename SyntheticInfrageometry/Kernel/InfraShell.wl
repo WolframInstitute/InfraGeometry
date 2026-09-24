@@ -42,7 +42,7 @@ FindInfraShell[ graph_Graph, p_, r_,
           ]
         ]
       ]
-    ], toDensity[ graph, p ], r ]
+    ], InfraDensity[ graph, p ], r ]
 
 
 admissibleShell[ localG_Graph, center_, radius_, properties_List ] :=

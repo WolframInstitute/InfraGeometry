@@ -2,7 +2,6 @@ BeginTestSection["Tools"]
 
 (* the shape reader and the anchor rule are internal, so the tests reach them by
    their PackageScope context *)
-toDensity           = WolframInstitute`SyntheticInfrageometry`PackageScope`toDensity;
 pointQ              = WolframInstitute`SyntheticInfrageometry`PackageScope`pointQ;
 multisetQ           = WolframInstitute`SyntheticInfrageometry`PackageScope`multisetQ;
 walkQ               = WolframInstitute`SyntheticInfrageometry`PackageScope`walkQ;
@@ -148,7 +147,7 @@ VerificationTest[
 (* a vertex a graph does not have is neither a point nor -- being an atom -- a multiset *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
-    { pointQ[ g, 99 ], multisetQ[ g, 99 ], toDensity[ g, 99 ] } ],
+    { pointQ[ g, 99 ], multisetQ[ g, 99 ], InfraDensity[ g, 99 ] } ],
   { False, False, <| 99 -> 1 |> },
   TestID -> "shape-reader-off-substrate-vertex"
 ]
@@ -158,7 +157,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
     With[ { dag = FindInfraSegment[ g, 1, 9, All ] },
-      toDensity[ g, dag ] === KeySort @ infraVertexMultiset @ dag ] ],
+      InfraDensity[ g, dag ] === KeySort @ infraVertexMultiset @ dag ] ],
   True,
   TestID -> "walk-anchor-reads-as-occupation"
 ]
@@ -180,8 +179,8 @@ VerificationTest[
 VerificationTest[
   With[ { g = PathGraph @ Range[ 4 ] },
     { Counts[ { 1, 1, 2 } ],
-      toDensity[ g, { 1, 1, 2 } ],
-      Keys @ toDensity[ g, { 1, 1, 2 } ] } ],
+      InfraDensity[ g, { 1, 1, 2 } ],
+      Keys @ InfraDensity[ g, { 1, 1, 2 } ] } ],
   { <| 1 -> 2, 2 -> 1 |>,
     <| 1 -> 2, 2 -> 1 |>,
     { 1, 2 } },
@@ -193,9 +192,9 @@ VerificationTest[
    through a single step *)
 VerificationTest[
   With[ { g = PathGraph @ Range[ 4 ] },
-    { toDensity[ g, 1 ],
-      toDensity[ g, <| 1 -> 1, 2 -> 1 |> ], toDensity[ g, { 1, 1, 2 } ],
-      toDensity[ g, <| 1 -> 3 |> ], toDensity[ g, PathGraph[ { 1, 2, 3 }, DirectedEdges -> True ] ] } ],
+    { InfraDensity[ g, 1 ],
+      InfraDensity[ g, <| 1 -> 1, 2 -> 1 |> ], InfraDensity[ g, { 1, 1, 2 } ],
+      InfraDensity[ g, <| 1 -> 3 |> ], InfraDensity[ g, PathGraph[ { 1, 2, 3 }, DirectedEdges -> True ] ] } ],
   { <| 1 -> 1 |>,
     <| 1 -> 1, 2 -> 1 |>,
     <| 1 -> 2, 2 -> 1 |>,
@@ -317,7 +316,7 @@ VerificationTest[
 ]
 
 (* the substrate is an argument: on a graph whose vertex labels are lists, { 1, 1 } is a
-   point on one graph and a two-element set on another -- the same distinction toDensity
+   point on one graph and a two-element set on another -- the same distinction InfraDensity
    makes, and the reason inkClass is not a set of DownValues *)
 VerificationTest[
   With[ { listLabelled = MeshConnectivityGraph @ DiscretizeRegion[ Rectangle[], MaxCellMeasure -> 0.1 ] },

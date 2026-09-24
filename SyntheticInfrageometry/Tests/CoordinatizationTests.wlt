@@ -804,7 +804,7 @@ VerificationTest[
 
 (* ===== Anchors on shapes: the anchor rule, not a per-head coercion ===== *)
 
-(* every anchor of RadarCoordinates is read through toDensity, so a set, a density
+(* every anchor of RadarCoordinates is read through InfraDensity, so a set, a density
    and a walk graph with the same support give the same distance -- the aggregation
    runs over the support in each case *)
 VerificationTest[

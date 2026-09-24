@@ -1,4 +1,3 @@
-toDensity = WolframInstitute`SyntheticInfrageometry`PackageScope`toDensity;
 pointQ    = WolframInstitute`SyntheticInfrageometry`PackageScope`pointQ;
 multisetQ = WolframInstitute`SyntheticInfrageometry`PackageScope`multisetQ;
 walkQ     = WolframInstitute`SyntheticInfrageometry`PackageScope`walkQ;
@@ -29,8 +28,8 @@ VerificationTest[
 VerificationTest[
   With[ { g = PathGraph @ Range[ 7 ],
           t = Graph[ { {1, 1}, {2, 1} }, { {1, 1} <-> {2, 1} } ] },
-    { toDensity[ g, 3 ], toDensity[ g, { 3, 1, 3 } ], toDensity[ g, <| 3 -> 2 |> ],
-      toDensity[ t, {1, 1} ] } ],
+    { InfraDensity[ g, 3 ], InfraDensity[ g, { 3, 1, 3 } ], InfraDensity[ g, <| 3 -> 2 |> ],
+      InfraDensity[ t, {1, 1} ] } ],
   { <| 3 -> 1 |>, <| 1 -> 1, 3 -> 2 |>, <| 3 -> 2 |>, <| {1, 1} -> 1 |> },
   TestID -> "anchor-rule-reads-every-shape"
 ]
@@ -123,9 +122,9 @@ VerificationTest[
     { g = GridGraph[ {4, 4} ],
       snake = Catenate @ Table[ With[ { row = Range[ 4 (i - 1) + 1, 4 i ] }, If[ OddQ[ i ], row, Reverse[ row ] ] ], { i, 4 } ] },
     { InfraVolume[ g, geodesicGraph @ snake, "Measure" -> "WithoutBoundary" ],
-      InfraVolume[ g, toDensity[ g, snake ], "Measure" -> "WithoutBoundary" ],
+      InfraVolume[ g, InfraDensity[ g, snake ], "Measure" -> "WithoutBoundary" ],
       InfraVolume[ g, geodesicGraph @ snake, "Measure" -> "FullCount" ]
-        === InfraVolume[ g, toDensity[ g, snake ], "Measure" -> "FullCount" ] } ],
+        === InfraVolume[ g, InfraDensity[ g, snake ], "Measure" -> "FullCount" ] } ],
   { 2, 16, True },
   TestID -> "InfraVolume-line-vs-set-spanning-curve"
 ]
@@ -259,7 +258,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     With[ { ball = FindInfraBall[ g, 13, 2 ] },
-      { d = toDensity[ g, ball ] },
+      { d = InfraDensity[ g, ball ] },
       { Keys @ d === Sort @ ball,
         Values @ d === ConstantArray[ 1, Length @ d ],
         d === KeySort @ infraVertexMultiset @ ball } ]
@@ -274,7 +273,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     With[ { shell = FindInfraShell[ g, 13, { 2, 2 } ] },
       { ListQ @ shell,
-        MatchQ[ FindInfraSegment[ g, toDensity[ g, shell ], 13, All ], { __Graph } ],
+        MatchQ[ FindInfraSegment[ g, InfraDensity[ g, shell ], 13, All ], { __Graph } ],
         MatchQ[ FindInfraSegment[ g, shell, 13, All ], { __Graph } ] } ]
   ],
   { True, True, True },
@@ -318,7 +317,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
     With[{dag = FindInfraSegment[g, 1, 16, All]},
-      toDensity[g, dag] === toDensity[g, geodesicGraph /@ infraSpread @ dag]]],
+      InfraDensity[g, dag] === InfraDensity[g, geodesicGraph /@ infraSpread @ dag]]],
   True,
   TestID -> "density-DAG-and-enumerated-supports-are-SameQ"
 ]
@@ -327,7 +326,7 @@ VerificationTest[
    whole enumerated family, they agree with the DP on the DAG. *)
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    {m = toDensity[g, FindInfraSegment[g, 1, 16, All]]},
+    {m = InfraDensity[g, FindInfraSegment[g, 1, 16, All]]},
     {paths = infraSpread @ FindInfraSegment[g, 1, 16, All]},
     AllTrue[Keys[m], m[#] == Count[paths, p_ /; MemberQ[p, #]] &]],
   True,
@@ -338,7 +337,7 @@ VerificationTest[
    even when their supports were discovered in different orders. *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}]},
-    toDensity[g, <| 9 -> 1, 1 -> 1 |>] === toDensity[g, {9, 1}] === <| 1 -> 1, 9 -> 1 |>],
+    InfraDensity[g, <| 9 -> 1, 1 -> 1 |>] === InfraDensity[g, {9, 1}] === <| 1 -> 1, 9 -> 1 |>],
   True,
   TestID -> "density-key-order-canonicalised"
 ]

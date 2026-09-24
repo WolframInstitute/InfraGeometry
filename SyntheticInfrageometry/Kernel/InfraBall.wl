@@ -5,7 +5,7 @@ Package["WolframInstitute`SyntheticInfrageometry`"]
 (* the closed ball { v : d(c, v) <= r }, a sorted vertex list.  The centre goes through the anchor rule, and an anchor of several vertices weights one carrier rather than multiplying objects: the ball of a set is its closed r-neighbourhood, the union of the balls around its members *)
 
 FindInfraBall[ graph_Graph, c_, r_ ] :=
-  With[ { centers = Keys @ toDensity[ graph, c ] },
+  With[ { centers = Keys @ InfraDensity[ graph, c ] },
     vertexSet @ Select[ VertexList[ graph ],
       v |-> AnyTrue[ centers, GraphDistance[ graph, #, v ] <= r & ] ] ]
 

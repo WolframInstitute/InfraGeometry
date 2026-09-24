@@ -2,7 +2,6 @@ BeginTestSection["EuclideanPredicates"]
 
 geodesicGraph = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicGraph;
 infraSpread   = WolframInstitute`SyntheticInfrageometry`PackageScope`infraSpread;
-toDensity     = WolframInstitute`SyntheticInfrageometry`PackageScope`toDensity;
 
 (* ===== InfraWalkQ ===== *)
 
@@ -646,7 +645,7 @@ VerificationTest[
          AllTrue[rp, InfraRegularPolygonQ[g, #, {1}] &]],
      With[{rv = FindInfraRevolution[g, {1, 2, 3}, 1]},
        InfraRevolutionQ[g, rv, {1, 2, 3}, 1] ===
-         InfraRevolutionQ[g, toDensity[g, rv], {1, 2, 3}, 1]]}],
+         InfraRevolutionQ[g, InfraDensity[g, rv], {1, 2, 3}, 1]]}],
   {True, True, True},
   TestID -> "bundle-verdict-is-conjunction-over-realisations"
 ]
@@ -665,8 +664,8 @@ VerificationTest[
    set-shaped predicates must accept both. *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
-    {InfraShellQ[g, toDensity[g, FindInfraShell[g, 13, 2]]],
-     InfraBallQ[g, toDensity[g, FindInfraBall[g, 13, 2]]]}],
+    {InfraShellQ[g, InfraDensity[g, FindInfraShell[g, 13, 2]]],
+     InfraBallQ[g, InfraDensity[g, FindInfraBall[g, 13, 2]]]}],
   {True, True},
   TestID -> "set-predicates-accept-densities"
 ]

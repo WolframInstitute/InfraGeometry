@@ -56,7 +56,7 @@ FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
           ]
         ]
       ]
-    ], toDensity[ graph, p1 ], toDensity[ graph, p2 ] ]
+    ], InfraDensity[ graph, p1 ], InfraDensity[ graph, p2 ] ]
 
 admissibleBisectingHyperplane[ graph_Graph, aux_Graph, p1_, p2_, properties_List ] :=
   With[ { tests = propertyPredicate[ graph, aux, p1, p2, # ] & /@ properties },

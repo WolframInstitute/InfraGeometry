@@ -8,10 +8,7 @@ PackageScope[findGreedyMinimalAdmissible]
 PackageScope[countLimit]
 PackageScope[takeUpTo]
 PackageScope[allGeodesics]
-PackageScope[frontierSweep]
 PackageScope[greedyFrontierSweep]
-PackageScope[windowCandidateFn]
-PackageScope[excludedSpecies]
 PackageScope[applyPruning]
 PackageScope[resolveMethod]
 PackageScope[greedyBranch]
@@ -45,7 +42,6 @@ PackageScope[positionSpelledQ]
 PackageScope[walkSequence]
 PackageScope[walkRealisations]
 PackageScope[walkVertexSet]
-PackageScope[toDensity]
 PackageScope[linePointSet]
 PackageScope[cycleToVertexSequence]
 PackageScope[methodName]
@@ -62,6 +58,10 @@ methodName[ { m_String, ___ } ] := m
 
 methodOptions[ _String ]                := { }
 methodOptions[ { _String, opts___ } ]   := { opts }
+
+
+propertiesSubOpts[ s_String ]              := { }
+propertiesSubOpts[ { _String, opts___ } ]  := { opts }
 
 
 (* ===================== The shape reader ===================== *)
@@ -200,32 +200,12 @@ applyPruning[ paths_List, p_?NumericQ /; 0 < p < 1 ]     :=
     If[ kept === { }, RandomSample[ paths, 1 ], kept ] ]
 
 
-(* ===================== Frontier sweep ===================== *)
-
-(* BFS frontier from p1 to p2, applyPruning capping the live frontier per layer.  terminalQ = True ends a branch at its first arrival at p2; False emits every arrival and keeps extending through it, so the caller's candidateFn must bound the depth *)
-
-frontierSweep[ graph_Graph, p1_, p2_, candidateFn_, prune_, count_, terminalQ_ : True ] :=
-  Module[ { frontier, completed = { }, extended },
-    If[ p1 === p2, Return[ { } ] ];
-    If[ ! VertexQ[ graph, p1 ] || ! VertexQ[ graph, p2 ], Return[ { } ] ];
-    If[ GraphDistance[ graph, p1, p2 ] === Infinity, Return[ { } ] ];
-    frontier = { { p1 } };
-    While[ frontier =!= { } && Length[ completed ] < count,
-      extended = Flatten[
-        ( path |-> ( Append[ path, # ] & ) /@ candidateFn[ graph, path ] ) /@ frontier,
-        1 ];
-      completed = Join[ completed, Select[ extended, Last[ # ] === p2 & ] ];
-      frontier  = applyPruning[
-        If[ terminalQ, Select[ extended, Last[ # ] =!= p2 & ], extended ], prune ]
-    ];
-    Take[ completed, UpTo[ count ] ]
-  ]
-
+(* ===================== Lazy descent ===================== *)
 
 (* lazy depth-first descent from p1 to p2: take the admissible candidates in candidateFn order, backtrack when a branch dead-ends, and stop after count completions accepted by acceptQ.  Complete, so a finite count is exact -- the certified-instance engine Automatic resolves to for a bounded count.
    maxSteps caps the depth; a walk-family caller with revisits allowed needs it to guarantee termination.  terminalQ = True ends a branch at its first arrival at p2, False keeps descending through it. *)
 
-(* the closures are held in Module locals, never inlined into descend's RHS: a candidateFn built by windowCandidateFn is a Function[{g, walk}, ...], and substituting a pattern variable of the same name would rewrite the closure's own parameter list *)
+(* the closures are held in Module locals, never inlined into descend's RHS: a candidateFn is a Function[{g, walk}, ...], and substituting a pattern variable of the same name would rewrite the closure's own parameter list *)
 
 greedyFrontierSweep[ graph_Graph, p1_, p2_, candidateFn_, acceptQ_, maxSteps_, count_,
     branch_ : Identity, terminalQ_ : True ] :=
@@ -243,108 +223,6 @@ greedyFrontierSweep[ graph_Graph, p1_, p2_, candidateFn_, acceptQ_, maxSteps_, c
       Catch[ descend[ { p1 } ]; acc, greedyFrontierSweep ]
     ]
   ]
-
-
-(* ===================== Window-rule machinery ===================== *)
-
-
-propertiesSubOpts[ s_String ]              := { }
-propertiesSubOpts[ { _String, opts___ } ]  := { opts }
-
-
-(* every rule sees one thing -- the window: the last <= scale vertices of the walk with the candidate appended (the whole walk at scale Infinity).  Constraints are checked first and commute, the singularity exclusions reading the whole walk prefix since their violations are monotone under extension; selectors follow in list order, each refining the previous ties *)
-
-windowCandidateFn[ graph_Graph, scale_, rules_List, fnSym_ ] :=
-  With[ { species = windowRuleSpecies[ #, fnSym ] & /@ rules },
-    { constraints = Pick[ rules, species, "Constraint" ],
-      selectors   = windowSelector[ graph, scale, # ] & /@ Pick[ rules, species, "Selector" ] },
-    { g, walk } |->
-      Fold[ #2[ walk, #1 ] &,
-        Select[ AdjacencyList[ g, Last @ walk ],
-          w |-> AllTrue[ constraints, windowRuleQ[ g, scale, #, walk, w ] & ] ],
-        selectors ]
-  ]
-
-
-(* fnSym is the calling head symbol, not fnSym::badproperty -- a MessageName passed as a bare argument evaluates to its template string, so Message would emit Message::name *)
-
-windowRuleSpecies[ rule_, fnSym_ ] :=
-  Switch[ rule,
-    "Minimizing" | "Simple" | "Immersed" | "Generic" |
-      ( "Exclude" -> ( "SelfIntersections" | "SelfTangencies" | "Cusps" | "TriplePoints" |
-          { ( "SelfIntersections" | "SelfTangencies" | "Cusps" | "TriplePoints" ) .. } ) ),
-                                          "Constraint",
-    "Straightest",                        "Selector",
-    { "Minimal", _ } | { "Maximal", _ },  "Selector",
-    _String | { _String, ___ } | _Rule,
-      ( Message[ MessageName[ fnSym, "badproperty" ], rule ]; Throw[ $Failed ] ),
-    _,                                    "Constraint"
-  ]
-
-
-(* the species a rule list forbids: "Simple", "Immersed" and "Generic" name the standard exclusion sets, "Generic" adding endpoint freeness on the finished two-point walk *)
-excludedSpecies[ rules_List ] := Union @@ Replace[ rules, {
-  "Simple"   -> { "SelfIntersections" },
-  "Immersed" -> { "Cusps" },
-  "Generic"  -> { "Cusps", "SelfTangencies", "TriplePoints" },
-  ( "Exclude" -> s_ ) :> Flatten @ { s },
-  _ -> { } }, { 1 } ]
-
-
-(* "Minimizing": the window is a shortest path. *)
-windowRuleQ[ g_Graph, scale_, "Minimizing", walk_List, w_ ] :=
-  With[ { win = walkWindow[ walk, scale ] },
-    GraphDistance[ g, First @ win, w ] == Length[ win ] ]
-
-(* each excluded species is refused exactly at the step that would create it, so per-step pruning is exact; endpoint freeness is not monotone and is the caller's finished-walk check *)
-windowRuleQ[ g_Graph, scale_, rule : "Simple" | "Immersed" | "Generic" | ( "Exclude" -> _List ), walk_List, w_ ] :=
-  AllTrue[ excludedSpecies @ { rule }, windowRuleQ[ g, scale, "Exclude" -> #, walk, w ] & ]
-
-windowRuleQ[ _Graph, _, "Exclude" -> "SelfIntersections", walk_List, w_ ] := ! MemberQ[ walk, w ]
-
-(* an apex can only form at the tip *)
-windowRuleQ[ _Graph, _, "Exclude" -> "Cusps", walk_List, w_ ] :=
-  Length[ walk ] < 2 || walk[[ -2 ]] =!= w
-
-windowRuleQ[ _Graph, _, "Exclude" -> "TriplePoints", walk_List, w_ ] := Count[ walk, w ] <= 1
-
-(* a repeated edge opens a repeated arc unless it is the mirror of a cusp, the stretch between the two traversals then being a palindrome *)
-windowRuleQ[ _Graph, _, "Exclude" -> "SelfTangencies", walk_List, w_ ] :=
-  NoneTrue[ Range[ Length[ walk ] - 1 ],
-    p |-> ( walk[[ p ]] === Last[ walk ] && walk[[ p + 1 ]] === w ) ||
-      ( walk[[ p ]] === w && walk[[ p + 1 ]] === Last[ walk ] && ! PalindromeQ[ walk[[ p + 1 ;; ]] ] ) ]
-
-(* a bare predicate is a custom local law on the window *)
-windowRuleQ[ _Graph, scale_, pred_, walk_List, w_ ] :=
-  pred @ Append[ walkWindow[ walk, scale ], w ]
-
-
-(* "Straightest": maximise the distance tuple from the candidate back along the window, nearest first -- the immediate predecessor sits at distance 1 for every candidate and carries no information *)
-windowSelector[ graph_Graph, scale_, "Straightest" ] :=
-  With[ { vidx = AssociationThread[ VertexList[ graph ], Range @ VertexCount[ graph ] ],
-          dmat = GraphDistanceMatrix[ graph ] },
-    { walk, candidates } |->
-      With[ { historyIdx = vidx /@ Reverse @ Most @ walkWindow[ walk, scale ] },
-        If[ candidates === { } || historyIdx === { }, candidates,
-          MaximalBy[ candidates, w |-> dmat[[ historyIdx, vidx[ w ] ]] ] ]
-      ]
-  ]
-
-windowSelector[ _Graph, scale_, { "Minimal", f_ } ] :=
-  { walk, candidates } |->
-    If[ candidates === { }, candidates,
-      MinimalBy[ candidates, w |-> f @ Append[ walkWindow[ walk, scale ], w ] ] ]
-
-windowSelector[ _Graph, scale_, { "Maximal", f_ } ] :=
-  { walk, candidates } |->
-    If[ candidates === { }, candidates,
-      MaximalBy[ candidates, w |-> f @ Append[ walkWindow[ walk, scale ], w ] ] ]
-
-
-(* The walk-side of the window: its last <= scale vertices. *)
-
-walkWindow[ walk_List, Infinity ]          := walk
-walkWindow[ walk_List, scale_Integer ]     := Take[ walk, -Min[ scale, Length[ walk ] ] ]
 
 
 (* ===================== Separating sets ===================== *)
@@ -443,7 +321,7 @@ loneBundle[ other_ ]        := other
 
 (* ===================== The realisation spread ===================== *)
 
-(* the REALISATION spread, not the anchor rule: an Association spreads over its support, a walk graph into the vertex sequences it stands for, a list of graphs into all of theirs; anything else -- a bare vertex, and a walk or a set written as a vertex list -- is one realisation.  toDensity is where a List is read as a multiset *)
+(* the REALISATION spread, not the anchor rule: an Association spreads over its support, a walk graph into the vertex sequences it stands for, a list of graphs into all of theirs; anything else -- a bare vertex, and a walk or a set written as a vertex list -- is one realisation.  InfraDensity is where a List is read as a multiset *)
 
 infraSpread[ fam_Association ]       := Keys @ fam
 infraSpread[ w_Graph ]               := walkRealisations @ w
@@ -511,7 +389,7 @@ dagLayers[ dag_Graph ] :=
 
 (* ===================== Vertex sets of shapes ===================== *)
 
-(* the support of any shape, without the graph: a density's keys, a walk graph's vertices (substrate-spelled through the position pairs), the union over a list of graphs or of vertex lists, a vertex list itself.  With the graph in hand, Keys @ toDensity[graph, x] is the anchor-rule reading and tells a list-labelled vertex from a set *)
+(* the support of any shape, without the graph: a density's keys, a walk graph's vertices (substrate-spelled through the position pairs), the union over a list of graphs or of vertex lists, a vertex list itself.  With the graph in hand, Keys @ InfraDensity[graph, x] is the anchor-rule reading and tells a list-labelled vertex from a set *)
 
 infraVertexSet[ fam_Association ]  := Keys @ fam
 infraVertexSet[ w_Graph ]          := walkVertexSet @ w
@@ -522,7 +400,7 @@ infraVertexSet[ list_List ]        := vertexSet @ list
 infraVertexSet[ obj : ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ] := obj[ "VertexList" ]
 infraVertexSet[ v_ ]               := { v }
 
-infraVertexSet[ graph_Graph, x_ ]  := Keys @ toDensity[ graph, x ]
+infraVertexSet[ graph_Graph, x_ ]  := Keys @ InfraDensity[ graph, x ]
 
 
 PackageScope[hullVertices]
@@ -570,30 +448,23 @@ infraNumReps[ sets : { __List } ] := Length @ sets
 infraNumReps[ _List ]             := 1
 
 
-(* ===================== Instances, families, densities ===================== *)
-
-(* A MULTISET is a finitely supported measure, <| atom -> weight |>, and carries no head: Counts, Merge, KeyMap, Total and KeySelect are its algebra, Keys its support.  A List is the multiset with uniform weight, one Counts away.  A DENSITY is the 0-d case, a multiset on bare vertices -- the marginal of anything to the vertex set, with respect to the counting measure.
-
-   the ANCHOR RULE: every anchor argument of every construction is read through toDensity, so points, sets and objects all work in every construction under one coercion.  A vertex is the unit mass, a List its Counts, an Association itself, a graph its vertex occupation, a list of graphs or of vertex lists the sum over its members.  The branches are ordered rather than left to DownValue sorting, since a vertex label may itself be a List and only pointQ tells the two rows apart.
-
-   keys sorted, so densities built by different routes compare SameQ; this was the one guarantee the old measure head carried *)
-
-toDensity[ graph_Graph, x_ ] := Which[
-  pointQ[ graph, x ],                                   <| x -> 1 |>,
-  AssociationQ[ x ],                                    KeySort @ x,
-  MatchQ[ x, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ], x[ "InfraDensity" ],
-  GraphQ[ x ],                                          KeySort @ infraVertexMultiset @ x,
-  ListQ[ x ] && AllTrue[ x, VertexQ[ graph, # ] & ],    KeySort @ Counts @ x,
-  MatchQ[ x, { ( _Graph | _List ) .. } ],               KeySort @ Merge[ toDensity[ graph, # ] & /@ x, Total ],
-  ListQ[ x ],                                           KeySort @ Counts @ x,
-  True,                                                 <| x -> 1 |> ]
-
-
 (* ===================== InfraDensity ===================== *)
 
-(* the marginal of any shape to the vertex set, <| v -> m |>, with respect to the counting measure: the anchor rule made public, and the ONE coercion in the API.  Counts promotes a List to a density, Keys demotes it back to the set, and Merge / KeyMap / Total / KeySelect are the rest of its algebra -- so no normalisation belongs here.  Vertex-only: the renderer computes its edge weights internally, off infraEdgeMultiset *)
+(* the marginal of a shape to the vertex set, <| v -> m |>: the anchor rule every construction reads its anchors through.  The branches are ordered because a vertex label may itself be a List *)
 
-InfraDensity[ graph_Graph, x_ ] := toDensity[ graph, x ]
+InfraDensity[ graph_Graph, x_ ] := Which[
+  VertexQ[ graph, x ],                                  <| x -> 1 |>,
+  AssociationQ[ x ],                                    KeySort @ x,
+  MatchQ[ x, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ], x[ "InfraDensity" ],
+  GraphQ[ x ],                                          KeySort @ Which[
+    AllTrue[ VertexList @ x, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ x ] === Range @ VertexCount @ x,
+      Counts[ Last /@ VertexList @ x ],
+    ! LoopFreeGraphQ[ x ] || ! AcyclicGraphQ[ x ],      Counts @ VertexList @ x,
+    True,                                               GeodesicOccupation @ x ],
+  ListQ[ x ] && AllTrue[ x, VertexQ[ graph, # ] & ],    KeySort @ Counts @ x,
+  MatchQ[ x, { ( _Graph | _List ) .. } ],               KeySort @ Merge[ InfraDensity[ graph, # ] & /@ x, Total ],
+  ListQ[ x ],                                           KeySort @ Counts @ x,
+  True,                                                 <| x -> 1 |> ]
 
 
 (* the edges of one realisation: a vertex sequence read as a walk, as a closed walk, or as a set with its induced edges.  Keyed by sorted pair {a, b}, which the renderer remaps to UndirectedEdge *)

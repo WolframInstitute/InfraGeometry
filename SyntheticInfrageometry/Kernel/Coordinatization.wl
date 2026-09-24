@@ -12,7 +12,7 @@ PackageScope[resistanceEmbeddingMatrix]
 
 (* the distance vector (d(v, b1), ..., d(v, bk)).  An anchor is a vertex, a set, a density
    or a walk graph; "AnchorAggregation" reduces its support to one distance.  On a bare
-   vertex toDensity gives <| v -> 1 |>, on which every aggregation is the distance itself,
+   vertex InfraDensity gives <| v -> 1 |>, on which every aggregation is the distance itself,
    so the crisp case needs no separate rule. *)
 
 Options[ RadarCoordinates ] = { "AnchorAggregation" -> Min };
@@ -277,10 +277,10 @@ FindInfraSpanningAxes[ g_Graph, n_Integer : 1, opts : OptionsPattern[] ] :=
 
 (* ===================== Helpers: anchor distance ===================== *)
 
-(* one row, not two: toDensity already sends a bare vertex to <| v -> 1 |>, on which every aggregation is the distance itself *)
+(* one row, not two: InfraDensity already sends a bare vertex to <| v -> 1 |>, on which every aggregation is the distance itself *)
 
 infraAnchorDistance[ g_Graph, v_, anchor_, agg_ ] :=
-  agg[ GraphDistance[ g, v, # ] & /@ Keys @ toDensity[ g, anchor ] ]
+  agg[ GraphDistance[ g, v, # ] & /@ Keys @ InfraDensity[ g, anchor ] ]
 
 
 (* ===================== Helpers: orthogonal coordinates ===================== *)

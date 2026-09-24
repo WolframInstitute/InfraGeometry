@@ -1,4 +1,3 @@
-toDensity          = WolframInstitute`SyntheticInfrageometry`PackageScope`toDensity;
 geodesicGraph      = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicGraph;
 geodesicCycleGraph = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicCycleGraph;
 walkGraph          = WolframInstitute`SyntheticInfrageometry`PackageScope`walkGraph;
@@ -71,7 +70,7 @@ VerificationTest[
     With[ {
         pts  = Take[ VertexList @ g, 2 ],
         opts = Options @
-          InfraSceneHighlight[ g, { toDensity[ g, Take[ VertexList @ g, 2 ] ] -> Red } ] },
+          InfraSceneHighlight[ g, { InfraDensity[ g, Take[ VertexList @ g, 2 ] ] -> Red } ] },
       Length @ Flatten @ Cases[ opts,
         HoldPattern[ VertexShapeFunction -> rules_ ] :>
           Cases[ rules, ( v_ -> _ ) /; MemberQ[ pts, v ] ], Infinity ] > 0 &&
@@ -320,7 +319,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 7, 7 } ] },
     { (* a UNIFORM effective point (here a ball) is uniformly bright: its diffuseness
          is its extent, not a per-vertex fade *)
-      Union @ Cases[ Options @ InfraSceneHighlight[ g, { toDensity[ g, FindInfraBall[ g, 25, 2 ] ] } ],
+      Union @ Cases[ Options @ InfraSceneHighlight[ g, { InfraDensity[ g, FindInfraBall[ g, 25, 2 ] ] } ],
         AbsolutePointSize[ s_ ] :> s, Infinity ],
       (* a NON-uniform effective point draws its heaviest vertex full and the rest smaller *)
       With[ { sizes = Cases[ Options @ InfraSceneHighlight[ g, { FindInfraMidpoint[ g, 1, 49 ] } ],

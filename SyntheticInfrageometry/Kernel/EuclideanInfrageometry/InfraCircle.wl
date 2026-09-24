@@ -323,7 +323,7 @@ FindInfraCircle[ graph_Graph, p_, r_,
   Catch @ With[
     { properties = OptionValue[ FindInfraCircle, { opts }, Properties ],
       methodSpec = resolveMethod[ OptionValue[ FindInfraCircle, { opts }, Method ], count ],
-      anchors = Tuples[ { Keys @ toDensity[ graph, p ], infraSpread @ r } ] },
+      anchors = Tuples[ { Keys @ InfraDensity[ graph, p ], infraSpread @ r } ] },
     { methodHead = methodName @ methodSpec },
     If[ ! MatchQ[ methodHead, "Exhaustive" | "Greedy" | "RandomGreedy" ],
       Message[ FindInfraCircle::badmethod, methodSpec ]; Throw[ $Failed ] ];
@@ -336,7 +336,7 @@ FindInfraCircle[ graph_Graph, p_, r_,
       If[ pool === Null || pool === $Failed,
         (* a refusal costs nothing on an empty family, so ::uncertified fires only when circles exist that the carrier could not hold *)
         With[ { swept = spreadFind[ geodesicCycleGraph, count,
-                  findCircleSweep[ graph, ##, properties, count, branch, pruning ] &, toDensity[ graph, p ], r ] },
+                  findCircleSweep[ graph, ##, properties, count, branch, pruning ] &, InfraDensity[ graph, p ], r ] },
           If[ pool === $Failed && swept =!= { } && swept =!= $Failed,
             Message[ FindInfraCircle::uncertified, r, p ] ];
           swept ],

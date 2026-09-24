@@ -19,7 +19,7 @@ InfraEqualQ[ graph_Graph, a_, b_, OptionsPattern[] ] :=
     ]
   ]
 
-equalityMultiset[ graph_Graph, obj_ ] := toDensity[ graph, obj ]
+equalityMultiset[ graph_Graph, obj_ ] := InfraDensity[ graph, obj ]
 
 multisetCapMass[ a_Association, b_Association ] :=
   Total @ KeyValueMap[ { k, v } |-> Min[ v, Lookup[ b, k, 0 ] ], a ]

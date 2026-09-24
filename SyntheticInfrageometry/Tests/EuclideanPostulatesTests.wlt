@@ -7,7 +7,6 @@ walkSequence       = WolframInstitute`SyntheticInfrageometry`PackageScope`walkSe
 infraSpread        = WolframInstitute`SyntheticInfrageometry`PackageScope`infraSpread;
 infraNumReps       = WolframInstitute`SyntheticInfrageometry`PackageScope`infraNumReps;
 infraEdgeMultiset  = WolframInstitute`SyntheticInfrageometry`PackageScope`infraEdgeMultiset;
-toDensity          = WolframInstitute`SyntheticInfrageometry`PackageScope`toDensity;
 closedWalkGraph = WolframInstitute`SyntheticInfrageometry`PackageScope`closedWalkGraph;
 walkSeq[ w_Graph ] := Last /@ VertexList[ w ]
 walkSeqs[ ws_List ] := walkSeq /@ ws
@@ -659,7 +658,7 @@ VerificationTest[
   With[{g = GridGraph[{4, 4}]},
     With[{pool = FindInfraLine[g, 1, 6, All]},
       infraNumReps @ pool === Length @ infraSpread @ pool &&
-      Total @ toDensity[g, pool] === Total[Length /@ infraSpread @ pool]
+      Total @ InfraDensity[g, pool] === Total[Length /@ infraSpread @ pool]
     ]
   ],
   True,
@@ -1662,7 +1661,7 @@ VerificationTest[
     With[ { pool = ExtendInfraSegment[ g, { 6, 7 }, 2, All ] },
       MatchQ[ pool, { _Graph, __Graph } ] &&
       infraNumReps @ pool === Length @ infraSpread @ pool &&
-      Total @ toDensity[ g, pool ] === Total[ Length /@ infraSpread @ pool ] &&
+      Total @ InfraDensity[ g, pool ] === Total[ Length /@ infraSpread @ pool ] &&
       Sort @ Union[ First /@ infraSpread @ pool ] === { 1, 9, 14 } &&
       Sort @ Union[ Last /@ infraSpread @ pool ] === { 4, 12, 15 }
     ]

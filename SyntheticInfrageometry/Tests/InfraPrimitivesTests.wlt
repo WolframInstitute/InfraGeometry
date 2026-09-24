@@ -1,4 +1,3 @@
-toDensity       = WolframInstitute`SyntheticInfrageometry`PackageScope`toDensity;
 walkGraph       = WolframInstitute`SyntheticInfrageometry`PackageScope`walkGraph;
 geodesicGraph   = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicGraph;
 polylineToKnots = WolframInstitute`SyntheticInfrageometry`PackageScope`polylineToKnots;
@@ -16,7 +15,7 @@ polylineToKnots = WolframInstitute`SyntheticInfrageometry`PackageScope`polylineT
 
 (* a List is one Counts away from the density; repetition becomes mass *)
 VerificationTest[
-  { toDensity[ PathGraph @ Range[ 3 ], { 1, 1, 2 } ], Counts[ { a, a, b } ] },
+  { InfraDensity[ PathGraph @ Range[ 3 ], { 1, 1, 2 } ], Counts[ { a, a, b } ] },
   { <| 1 -> 2, 2 -> 1 |>, <| a -> 2, b -> 1 |> },
   TestID -> "list-reads-as-density-counts"
 ]

@@ -80,7 +80,7 @@ Options[ InfraDistance ] = { "Aggregation" -> Min }
 InfraDistance[ g_Graph, p_, q_, OptionsPattern[] ] :=
   OptionValue[ "Aggregation" ] @
     Flatten @ Outer[ GraphDistance[ g, #1, #2 ] &,
-      infraVertexSet[ g, p ], infraVertexSet[ g, q ], 1 ]
+      Keys @ InfraDensity[ g, p ], Keys @ InfraDensity[ g, q ], 1 ]
 
 
 (* ===================== InfraIntersection / InfraUnion ===================== *)

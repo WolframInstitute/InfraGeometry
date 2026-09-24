@@ -117,18 +117,38 @@ Options[ FindInfraRay ] = { Method -> Automatic };
 
 FindInfraRay[ graph_Graph, origin_, v_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
-  geodesicFind[ count,
-    { o, w } |-> Catch @ With[ {
-        methodHead = methodName @ resolveMethod[ OptionValue[ FindInfraRay, { opts }, Method ], count ] },
-      If[ ! MatchQ[ methodHead, "Exhaustive" | "Greedy" | "RandomGreedy" ],
-        Message[ FindInfraRay::badmethod, methodHead ]; Throw[ $Failed ] ];
-      With[ { pool = Graph @ Sort @ Join[ EdgeList @ GeodesicIntervalGraph[ graph, o, w ],
-                                          EdgeList @ GeodesicExtensionGraph[ graph, { o, w } ] ] },
-        Which[
-          EdgeCount @ pool == 0,                        { },
-          methodHead === "Exhaustive" && count === All, { pool },
-          True, dagGeodesics[ pool, count, greedyBranch[ methodHead /. "Exhaustive" -> "Greedy" ] ] ] ] ],
-    toDensity[ graph, origin ], toDensity[ graph, v ] ]
+  With[ {
+      method = Replace[ OptionValue[ FindInfraRay, { opts }, Method ],
+                 { Automatic :> If[ count === All, "Exhaustive", "Greedy" ], { m_String, ___ } :> m } ],
+      cap    = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
+    { branch = If[ method === "RandomGreedy", RandomSample, Identity ] },
+    If[ ! MatchQ[ method, "Exhaustive" | "Greedy" | "RandomGreedy" ],
+      Message[ FindInfraRay::badmethod, method ]; $Failed,
+      With[ { rays = DeleteDuplicates[ If[ GraphQ @ #, #, PathGraph[ #, DirectedEdges -> True ] ] & /@ DeleteDuplicates @ Catenate[
+          ( { o, w } |-> With[ {
+                pool = Graph @ Sort @ Join[ EdgeList @ GeodesicIntervalGraph[ graph, o, w ],
+                                            EdgeList @ GeodesicExtensionGraph[ graph, { o, w } ] ] },
+              { sources = Select[ VertexList @ pool, VertexInDegree[ pool, # ] == 0 & ] },
+              Which[
+                EdgeCount @ pool == 0,                    { },
+                method === "Exhaustive" && count === All, { pool },
+                count === All,
+                  Catenate @ Catenate @ Table[ FindPath[ pool, s, t, Infinity, All ],
+                    { s, sources }, { t, Select[ VertexList @ pool, VertexOutDegree[ pool, # ] == 0 & ] } ],
+                (* the lazy descent of the pool from its source, stopping at cap rays *)
+                True,
+                  Module[ { acc = { }, out = GroupBy[ List @@@ EdgeList @ pool, First -> Last ], descend },
+                    descend[ path_ ] := With[ { nexts = Lookup[ out, Key @ Last @ path, { } ] },
+                      If[ nexts === { },
+                        AppendTo[ acc, path ]; If[ Length @ acc >= cap, Throw[ acc, descend ] ],
+                        Scan[ descend[ Append[ path, # ] ] &, branch @ nexts ] ] ];
+                    Catch[ Scan[ descend[ { # } ] &, branch @ sources ]; acc, descend ] ] ] ] ) @@@
+            Tuples[ Keys @ InfraDensity[ graph, # ] & /@ { origin, v } ] ] ] },
+        Switch[ count,
+          Automatic, First[ rays, { } ],
+          All,       Replace[ rays, { one_Graph } :> one ],
+          _UpTo,     Take[ rays, count ],
+          _,         If[ Length @ rays < count, $Failed, Take[ rays, count ] ] ] ] ] ]
 
 
 (* ===================== InfraRayQ ===================== *)
@@ -138,7 +158,22 @@ FindInfraRay[ graph_Graph, origin_, v_,
 (* the graph rules first: a List of graphs is a family, and only a bare vertex list is one ray *)
 InfraRayQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraRayQ[ graph, # ] & ]
 
-InfraRayQ[ graph_Graph, w_Graph ] := AllTrue[ walkRealisations @ w, InfraRayQ[ graph, # ] & ]
+InfraRayQ[ graph_Graph, w_Graph ] :=
+  With[ { vs = VertexList @ w },
+    { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+      scan = v |-> Reap[ DepthFirstScan[ w, v, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
+    AllTrue[
+      Which[
+        ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
+          { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
+              If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
+        spelled,            { Last /@ SortBy[ vs, First ] },
+        EdgeCount @ w == 0, List /@ vs,
+        DirectedGraphQ @ w,
+          Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
+            { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
+        True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ],
+      InfraRayQ[ graph, # ] & ] ]
 
 InfraRayQ[ graph_Graph, obj : ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ] :=
   With[ { reps = Normal @ obj }, reps =!= { } && AllTrue[ reps, InfraRayQ[ graph, # ] & ] ]

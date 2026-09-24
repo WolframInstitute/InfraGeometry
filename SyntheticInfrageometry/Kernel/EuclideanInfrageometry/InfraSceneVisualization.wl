@@ -149,7 +149,7 @@ infraInk[ graph_Graph, obj : ( InfraSegment | InfraRay | InfraLine | InfraCircle
 
 infraInk[ graph_Graph, obj_ ] := With[ { class = inkClass[ graph, obj ] },
   Join[
-    <| "Class" -> class, "Verts" -> toDensity[ graph, obj ], "Edges" -> <||>,
+    <| "Class" -> class, "Verts" -> InfraDensity[ graph, obj ], "Edges" -> <||>,
        "Norm" -> 1, "Strokes" -> { }, "Dots" -> False, "Knots" -> { } |>,
     Switch[ class,
       "Point",
