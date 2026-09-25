@@ -296,17 +296,79 @@ InfraGeodesicQ[ _Graph, walk_List, ___ ] /; Length[ walk ] < 2 := False
 
 WalkSingularities[ ws : { __Graph } ] := WalkSingularities /@ ws
 
+(* a core of minimal period p < m is the m/p fold cover of its period loop: one repeated arc tiling the cycle; a cyclic inverse run touching an apex of the reflection i -> s - i is a cusp *)
+
+WalkSingularities[ w_Graph ] /; ! LoopFreeGraphQ[ w ] || ! AcyclicGraphQ[ w ] := With[
+  { vs = VertexList @ w },
+  { core = If[ AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+      Last /@ SortBy[ vs, First ],
+      Reap[ DepthFirstScan[ w, First @ vs, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] },
+  { m = Length @ core },
+  { cyc = i |-> Mod[ i - 1, m ] + 1,
+    period = SelectFirst[ Divisors @ m, d |-> core === RotateLeft[ core, d ] ],
+    cyclicRuns = set |-> With[ { runs = Split[ Sort @ set, #2 == #1 + 1 & ] },
+      If[ Length[ runs ] >= 2 && First[ First @ runs ] == 1 && Last[ Last @ runs ] == m,
+        Prepend[ runs[[ 2 ;; -2 ]], Join[ Last @ runs, First @ runs ] ],
+        runs ] ],
+    (* the traversals of one arc form a group of oriented intervals, the first ascending and each later one descending when it runs the arc backwards *)
+    arcGroups = ts |-> Values @ GroupBy[
+      ( pos |-> With[ { arc = core[[ Mod[ pos - 1, m ] + 1 ]] },
+          { key = First @ Sort @ { arc, Reverse @ arc } },
+          key -> { pos, arc === key } ] ) /@ DeleteDuplicates @ ts,
+      First -> Last,
+      ps |-> With[ { sorted = SortBy[ DeleteDuplicates @ ps, First @ First @ # & ] },
+        { flip = ! Last @ First @ sorted },
+        ( { pos, direct } |-> If[ Xor[ direct, flip ],
+            { First @ pos, Last @ pos }, { Last @ pos, First @ pos } ] ) @@@ sorted ] ] },
+  { traversals = Join[
+      If[ period < m, { Partition[ Range @ m, period ] }, { } ],
+      Catenate @ Table[
+        { First[ # ] + Range[ 0, Length[ # ] - 1 ], cyc[ First[ # ] + d ] + Range[ 0, Length[ # ] - 1 ] } & /@
+          Select[ cyclicRuns @ Select[ Range @ m, i |-> core[[ i ]] === core[[ cyc[ i + d ] ]] ],
+            run |-> 2 <= Length[ run ] < m ],
+        { d, 2, Floor[ m / 2 ] } ],
+      Catenate @ Table[
+        { First[ # ] + Range[ 0, Length[ # ] - 1 ], cyc[ s - Last[ # ] ] + Range[ 0, Length[ # ] - 1 ] } & /@
+          Select[ cyclicRuns @
+              Select[ Range @ m, i |-> cyc[ s - i ] =!= i && core[[ i ]] === core[[ cyc[ s - i ] ]] ],
+            run |-> Length[ run ] >= 2 &&
+              NoneTrue[ run, i |-> cyc[ s - i ] === cyc[ i + 2 ] || cyc[ s - i ] === cyc[ i - 2 ] ] ],
+        { s, 0, m - 1 } ] ] },
+  <|
+    "SelfIntersections" -> Select[ Values @ PositionIndex @ core, Length[ # ] >= 2 & ],
+    "SelfTangencies" -> arcGroups[ Catenate @ traversals ],
+    "Cusps" -> ( i |-> With[
+        { k = LengthWhile[ Range @ Floor[ ( m - 1 ) / 2 ],
+            t |-> core[[ cyc[ i - t ] ]] === core[[ cyc[ i + t ] ]] ] },
+        cyc /@ Range[ i - k, i + k ] ] ) /@
+      Select[ Range @ m, i |-> core[[ cyc[ i - 1 ] ]] === core[[ cyc[ i + 1 ] ]] ]
+  |> ]
+
 WalkSingularities[ w_Graph ] :=
-  If[ closedWalkQ @ w, cyclicCensus @ walkSequence @ w, openCensus @ walkSequence @ w ]
-
-WalkSingularities[ walk_List ] := openCensus @ walk
-
+  With[ { vs = VertexList @ w },
+    WalkSingularities @ Which[
+      AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs, Last /@ SortBy[ vs, First ],
+      EdgeCount[ w ] == 0, vs,
+      True,
+        Reap[ DepthFirstScan[ w,
+          SelectFirst[ vs, If[ DirectedGraphQ @ w, VertexInDegree[ w, # ] == 0, VertexDegree[ w, # ] == 1 ] &, First @ vs ],
+          { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] ]
 
 (* direct blocks v_i === v_{i+d} and inverse blocks v_i === v_{s-i} on maximal runs of two or more positions; an inverse run reaching the apex s/2 is the mirror of a cusp, not a repeated arc *)
 
-openCensus[ walk_List ] := With[
-  { m = Length @ walk },
-  { traversals = Join[
+WalkSingularities[ walk_List ] := With[
+  { m = Length @ walk,
+    maximalRuns = set |-> Split[ Sort @ set, #2 == #1 + 1 & ] },
+  { arcGroups = ts |-> Values @ GroupBy[
+      ( pos |-> With[ { arc = walk[[ Mod[ pos - 1, m ] + 1 ]] },
+          { key = First @ Sort @ { arc, Reverse @ arc } },
+          key -> { pos, arc === key } ] ) /@ DeleteDuplicates @ ts,
+      First -> Last,
+      ps |-> With[ { sorted = SortBy[ DeleteDuplicates @ ps, First @ First @ # & ] },
+        { flip = ! Last @ First @ sorted },
+        ( { pos, direct } |-> If[ Xor[ direct, flip ],
+            { First @ pos, Last @ pos }, { Last @ pos, First @ pos } ] ) @@@ sorted ] ],
+    traversals = Join[
       Catenate @ Table[
         { #, # + d } & /@
           Select[ maximalRuns @ Select[ Range[ m - d ], i |-> walk[[ i ]] === walk[[ i + d ]] ],
@@ -320,67 +382,12 @@ openCensus[ walk_List ] := With[
         { s, 3, 2 m - 1 } ] ] },
   <|
     "SelfIntersections" -> Select[ Values @ PositionIndex @ walk, Length[ # ] >= 2 & ],
-    "SelfTangencies" -> arcGroups[ walk, Catenate @ traversals ],
+    "SelfTangencies" -> arcGroups[ Catenate @ traversals ],
     "Cusps" -> ( i |-> With[
         { k = LengthWhile[ Range @ Min[ i - 1, m - i ], t |-> walk[[ i - t ]] === walk[[ i + t ]] ] },
         Range[ i - k, i + k ] ] ) /@
       Select[ Range[ 2, m - 1 ], i |-> walk[[ i - 1 ]] === walk[[ i + 1 ]] ]
   |> ]
-
-
-(* a core of minimal period p < m is the m/p fold cover of its period loop: one repeated arc tiling the cycle; a cyclic inverse run touching an apex of the reflection i -> s - i is a cusp *)
-
-cyclicCensus[ core_List ] := With[
-  { m = Length @ core },
-  { cyc = i |-> Mod[ i - 1, m ] + 1,
-    period = SelectFirst[ Divisors @ m, d |-> core === RotateLeft[ core, d ] ] },
-  { traversals = Join[
-      If[ period < m, { Partition[ Range @ m, period ] }, { } ],
-      Catenate @ Table[
-        { First[ # ] + Range[ 0, Length[ # ] - 1 ], cyc[ First[ # ] + d ] + Range[ 0, Length[ # ] - 1 ] } & /@
-          Select[ cyclicRuns[ Select[ Range @ m, i |-> core[[ i ]] === core[[ cyc[ i + d ] ]] ], m ],
-            run |-> 2 <= Length[ run ] < m ],
-        { d, 2, Floor[ m / 2 ] } ],
-      Catenate @ Table[
-        { First[ # ] + Range[ 0, Length[ # ] - 1 ], cyc[ s - Last[ # ] ] + Range[ 0, Length[ # ] - 1 ] } & /@
-          Select[ cyclicRuns[
-              Select[ Range @ m, i |-> cyc[ s - i ] =!= i && core[[ i ]] === core[[ cyc[ s - i ] ]] ], m ],
-            run |-> Length[ run ] >= 2 &&
-              NoneTrue[ run, i |-> cyc[ s - i ] === cyc[ i + 2 ] || cyc[ s - i ] === cyc[ i - 2 ] ] ],
-        { s, 0, m - 1 } ] ] },
-  <|
-    "SelfIntersections" -> Select[ Values @ PositionIndex @ core, Length[ # ] >= 2 & ],
-    "SelfTangencies" -> arcGroups[ core, Catenate @ traversals ],
-    "Cusps" -> ( i |-> With[
-        { k = LengthWhile[ Range @ Floor[ ( m - 1 ) / 2 ],
-            t |-> core[[ cyc[ i - t ] ]] === core[[ cyc[ i + t ] ]] ] },
-        cyc /@ Range[ i - k, i + k ] ] ) /@
-      Select[ Range @ m, i |-> core[[ cyc[ i - 1 ] ]] === core[[ cyc[ i + 1 ] ]] ]
-  |> ]
-
-
-(* the traversals of one arc form a group of oriented intervals, the first ascending and each later one descending when it runs the arc backwards *)
-
-arcGroups[ core_List, traversals_List ] := With[
-  { m = Length @ core },
-  { keyed = ( pos |-> With[ { arc = core[[ Mod[ pos - 1, m ] + 1 ]] },
-        { key = First @ Sort @ { arc, Reverse @ arc } },
-        key -> { pos, arc === key } ] ) /@ DeleteDuplicates @ traversals },
-  Values @ GroupBy[ keyed, First -> Last,
-    ps |-> With[ { sorted = SortBy[ DeleteDuplicates @ ps, First @ First @ # & ] },
-      { flip = ! Last @ First @ sorted },
-      ( { pos, direct } |-> If[ Xor[ direct, flip ],
-          { First @ pos, Last @ pos }, { Last @ pos, First @ pos } ] ) @@@ sorted ] ] ]
-
-
-maximalRuns[ set_List ] := Split[ Sort @ set, #2 == #1 + 1 & ]
-
-
-cyclicRuns[ set_List, m_ ] := With[
-  { runs = maximalRuns @ set },
-  If[ Length[ runs ] >= 2 && First[ First @ runs ] == 1 && Last[ Last @ runs ] == m,
-    Prepend[ runs[[ 2 ;; -2 ]], Join[ Last @ runs, First @ runs ] ],
-    runs ] ]
 
 
 (* ===================== InfraImmersedQ / InfraGenericQ ===================== *)
@@ -389,32 +396,63 @@ cyclicRuns[ set_List, m_ ] := With[
 
 InfraImmersedQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraImmersedQ[ graph, # ] & ]
 
-InfraImmersedQ[ graph_Graph, w_Graph ] /; closedWalkQ[ w ] :=
-  With[ { core = walkSequence @ w },
-    InfraWalkQ[ graph, closeWalk @ core ] && cyclicCensus[ core ][ "Cusps" ] === { } ]
+InfraImmersedQ[ graph_Graph, w_Graph ] /; ! LoopFreeGraphQ[ w ] || ! AcyclicGraphQ[ w ] :=
+  With[ { vs = VertexList @ w },
+    { core = If[ AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+        Last /@ SortBy[ vs, First ],
+        Reap[ DepthFirstScan[ w, First @ vs, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] },
+    InfraWalkQ[ graph, If[ First @ core === Last @ core, core, Append[ core, First @ core ] ] ] &&
+    WalkSingularities[ w ][ "Cusps" ] === { } ]
 
-InfraImmersedQ[ graph_Graph, w_Graph ] := AllTrue[ walkRealisations @ w, InfraImmersedQ[ graph, # ] & ]
+InfraImmersedQ[ graph_Graph, w_Graph ] :=
+  With[ { vs = VertexList @ w },
+    { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs },
+    AllTrue[
+      Which[
+        EdgeCount @ w == 0, List /@ If[ spelled, Last /@ vs, vs ],
+        spelled,            { Last /@ SortBy[ vs, First ] },
+        DirectedGraphQ @ w,
+          Catenate @ Catenate @ Table[ FindPath[ w, a, b, Infinity, All ],
+            { a, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { b, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
+        True, { Reap[ DepthFirstScan[ w, SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ],
+          { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] } ],
+      InfraImmersedQ[ graph, # ] & ] ]
 
 InfraImmersedQ[ graph_Graph, walk_List ] :=
-  InfraWalkQ[ graph, walk ] && openCensus[ walk ][ "Cusps" ] === { }
+  InfraWalkQ[ graph, walk ] && WalkSingularities[ walk ][ "Cusps" ] === { }
 
 
 (* generic walk: immersed and in general position -- no repeated arc, every self-intersection a double point, the endpoints of an open walk off the curve *)
 
 InfraGenericQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraGenericQ[ graph, # ] & ]
 
-InfraGenericQ[ graph_Graph, w_Graph ] /; closedWalkQ[ w ] :=
-  With[ { core = walkSequence @ w },
-    InfraWalkQ[ graph, closeWalk @ core ] &&
-    With[ { c = cyclicCensus @ core },
+InfraGenericQ[ graph_Graph, w_Graph ] /; ! LoopFreeGraphQ[ w ] || ! AcyclicGraphQ[ w ] :=
+  With[ { vs = VertexList @ w },
+    { core = If[ AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+        Last /@ SortBy[ vs, First ],
+        Reap[ DepthFirstScan[ w, First @ vs, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] },
+    InfraWalkQ[ graph, If[ First @ core === Last @ core, core, Append[ core, First @ core ] ] ] &&
+    With[ { c = WalkSingularities @ w },
       c[ "Cusps" ] === { } && c[ "SelfTangencies" ] === { } &&
       AllTrue[ c[ "SelfIntersections" ], Length[ # ] == 2 & ] ] ]
 
-InfraGenericQ[ graph_Graph, w_Graph ] := AllTrue[ walkRealisations @ w, InfraGenericQ[ graph, # ] & ]
+InfraGenericQ[ graph_Graph, w_Graph ] :=
+  With[ { vs = VertexList @ w },
+    { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs },
+    AllTrue[
+      Which[
+        EdgeCount @ w == 0, List /@ If[ spelled, Last /@ vs, vs ],
+        spelled,            { Last /@ SortBy[ vs, First ] },
+        DirectedGraphQ @ w,
+          Catenate @ Catenate @ Table[ FindPath[ w, a, b, Infinity, All ],
+            { a, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { b, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
+        True, { Reap[ DepthFirstScan[ w, SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ],
+          { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] } ],
+      InfraGenericQ[ graph, # ] & ] ]
 
 InfraGenericQ[ graph_Graph, walk_List ] :=
   InfraWalkQ[ graph, walk ] &&
-  With[ { c = openCensus @ walk },
+  With[ { c = WalkSingularities @ walk },
     c[ "Cusps" ] === { } && c[ "SelfTangencies" ] === { } &&
     AllTrue[ c[ "SelfIntersections" ], Length[ # ] == 2 && FreeQ[ #, 1 | Length @ walk ] & ] ]
 
@@ -426,47 +464,57 @@ InfraGenericQ[ graph_Graph, walk_List ] :=
 InfraWalkCrossingQ[ graph_Graph, ws : { __Graph }, at_, r_Integer ] :=
   AllTrue[ ws, InfraWalkCrossingQ[ graph, #, at, r ] & ]
 
-InfraWalkCrossingQ[ graph_Graph, w_Graph, at_, r_Integer ] /; closedWalkQ[ w ] :=
-  walkCrossingQ[ graph, walkSequence @ w, True, at, r ]
+InfraWalkCrossingQ[ graph_Graph, w_Graph, at_, r_Integer ] /; LoopFreeGraphQ[ w ] && AcyclicGraphQ[ w ] :=
+  With[ { vs = VertexList @ w },
+    { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs },
+    AllTrue[
+      Which[
+        EdgeCount @ w == 0, List /@ If[ spelled, Last /@ vs, vs ],
+        spelled,            { Last /@ SortBy[ vs, First ] },
+        DirectedGraphQ @ w,
+          Catenate @ Catenate @ Table[ FindPath[ w, a, b, Infinity, All ],
+            { a, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { b, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
+        True, { Reap[ DepthFirstScan[ w, SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ],
+          { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] } ],
+      InfraWalkCrossingQ[ graph, #, at, r ] & ] ]
 
-InfraWalkCrossingQ[ graph_Graph, w_Graph, at_, r_Integer ] :=
-  AllTrue[ walkRealisations @ w, InfraWalkCrossingQ[ graph, #, at, r ] & ]
+(* a closed walk graph is read on its cyclic core, a vertex list as an open walk.  The ambient point names the double visit; a vertex visited once or more than twice is no crossing.  A vertex label that is itself a pair of integers is written <| v -> 1 |>, the position pair winning the tie *)
 
-InfraWalkCrossingQ[ graph_Graph, walk_List, at_, r_Integer ] :=
-  walkCrossingQ[ graph, walk, False, at, r ]
-
-
-(* the ambient point names the double visit; a vertex visited once or more than twice is no crossing.  A vertex label that is itself a pair of integers is written <| v -> 1 |>, the position pair winning the tie *)
-
-walkCrossingQ[ graph_, core_List, closedQ_, at : Except[ { _Integer, _Integer } ], r_ ] :=
-  With[ { ps = Select[ Range @ Length @ core, core[[ # ]] === Replace[ at, fam_Association :> First @ Keys @ fam ] & ] },
-    Length[ ps ] == 2 && walkCrossingQ[ graph, core, closedQ, ps, r ] ]
-
-walkCrossingQ[ graph_, core_List, closedQ_, { i_Integer, j_Integer }, r_ ] := With[
-  { m = Length @ core, v = core[[ i ]] },
-  { localG = NeighborhoodGraph[ graph, { v }, r + 1 ] },
-  { d = AssociationThread[ VertexList @ localG, GraphDistance[ localG, v ] ] },
-  { at = t |-> core[[ Mod[ t - 1, m ] + 1 ]],
-    dist = t |-> If[ closedQ || 1 <= t <= m,
-      Lookup[ d, Key @ core[[ Mod[ t - 1, m ] + 1 ]], Infinity ], Missing[ ] ] },
-  (* the excursion through B(v, r-1) around a visit, and the radial arc out of an exit: the walk while it sits on the sphere, then its first step onto the outer ring -- Missing when it turns back or ends first *)
-  { excursion = p |-> {
-      p - LengthWhile[ Range[ p - 1, p - m, -1 ], t |-> TrueQ[ dist[ t ] <= r - 1 ] ],
-      p + LengthWhile[ Range[ p + 1, p + m ], t |-> TrueQ[ dist[ t ] <= r - 1 ] ] },
-    radial = { start, step } |-> With[
-      { ps = NestWhileList[ # + step &, start, dist[ # ] === r &, 1, m ] },
-      If[ dist[ Last @ ps ] === r + 1, at /@ ps, Missing[ ] ] ] },
-  { ei = excursion @ i, ej = excursion @ j },
-  { exitsI = { First[ ei ] - 1, Last[ ei ] + 1 }, exitsJ = { First[ ej ] - 1, Last[ ej ] + 1 } },
-  { band = Subgraph[ localG, Select[ VertexList @ localG, r <= d[ # ] <= r + 1 & ] ],
-    cutI = { radial[ First @ exitsI, -1 ], radial[ Last @ exitsI, 1 ] },
-    cutJ = { radial[ First @ exitsJ, -1 ], radial[ Last @ exitsJ, 1 ] } },
-  core[[ j ]] === v &&
-  ! IntersectingQ[ Mod[ Range @@ ei - 1, m ] + 1, Mod[ Range @@ ej - 1, m ] + 1 ] &&
-  AllTrue[ Join[ exitsI, exitsJ ], dist[ # ] === r & ] &&
-  FreeQ[ { cutI, cutJ }, _Missing ] &&
-  SeparatesQ[ band, DeleteDuplicates[ Join @@ cutJ ], at @ First @ exitsI, at @ Last @ exitsI ] &&
-  SeparatesQ[ band, DeleteDuplicates[ Join @@ cutI ], at @ First @ exitsJ, at @ Last @ exitsJ ] ]
+InfraWalkCrossingQ[ graph_Graph, x : ( _Graph | _List ), at_, r_Integer ] /;
+    If[ GraphQ @ x, ! LoopFreeGraphQ[ x ] || ! AcyclicGraphQ[ x ], ! MatchQ[ x, { __Graph } ] ] :=
+  With[ { closedQ = GraphQ @ x, vs = If[ GraphQ @ x, VertexList @ x, { } ] },
+    { core = Which[
+        ! closedQ, x,
+        AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs, Last /@ SortBy[ vs, First ],
+        True, Reap[ DepthFirstScan[ x, First @ vs, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] },
+    { ps = If[ MatchQ[ at, { _Integer, _Integer } ], at,
+        Select[ Range @ Length @ core, core[[ # ]] === Replace[ at, fam_Association :> First @ Keys @ fam ] & ] ],
+      crossQ = { i, j } |-> With[
+        { m = Length @ core, v = core[[ i ]] },
+        { localG = NeighborhoodGraph[ graph, { v }, r + 1 ] },
+        { d = AssociationThread[ VertexList @ localG, GraphDistance[ localG, v ] ] },
+        { vertexAt = t |-> core[[ Mod[ t - 1, m ] + 1 ]],
+          dist = t |-> If[ closedQ || 1 <= t <= m,
+            Lookup[ d, Key @ core[[ Mod[ t - 1, m ] + 1 ]], Infinity ], Missing[ ] ] },
+        (* the excursion through B(v, r-1) around a visit, and the radial arc out of an exit: the walk while it sits on the sphere, then its first step onto the outer ring -- Missing when it turns back or ends first *)
+        { excursion = p |-> {
+            p - LengthWhile[ Range[ p - 1, p - m, -1 ], t |-> TrueQ[ dist[ t ] <= r - 1 ] ],
+            p + LengthWhile[ Range[ p + 1, p + m ], t |-> TrueQ[ dist[ t ] <= r - 1 ] ] },
+          radial = { start, step } |-> With[
+            { steps = NestWhileList[ # + step &, start, dist[ # ] === r &, 1, m ] },
+            If[ dist[ Last @ steps ] === r + 1, vertexAt /@ steps, Missing[ ] ] ] },
+        { ei = excursion @ i, ej = excursion @ j },
+        { exitsI = { First[ ei ] - 1, Last[ ei ] + 1 }, exitsJ = { First[ ej ] - 1, Last[ ej ] + 1 } },
+        { band = Subgraph[ localG, Select[ VertexList @ localG, r <= d[ # ] <= r + 1 & ] ],
+          cutI = { radial[ First @ exitsI, -1 ], radial[ Last @ exitsI, 1 ] },
+          cutJ = { radial[ First @ exitsJ, -1 ], radial[ Last @ exitsJ, 1 ] } },
+        core[[ j ]] === v &&
+        ! IntersectingQ[ Mod[ Range @@ ei - 1, m ] + 1, Mod[ Range @@ ej - 1, m ] + 1 ] &&
+        AllTrue[ Join[ exitsI, exitsJ ], dist[ # ] === r & ] &&
+        FreeQ[ { cutI, cutJ }, _Missing ] &&
+        SeparatesQ[ band, DeleteDuplicates[ Join @@ cutJ ], vertexAt @ First @ exitsI, vertexAt @ Last @ exitsI ] &&
+        SeparatesQ[ band, DeleteDuplicates[ Join @@ cutI ], vertexAt @ First @ exitsJ, vertexAt @ Last @ exitsJ ] ] },
+    Length[ ps ] == 2 && crossQ @@ ps ]
 
 
 (* ===================== ExtendInfraWalk ===================== *)
@@ -737,10 +785,37 @@ ExtendInfraGeodesic[ graph_Graph, seed_,
 
 ConcatenateInfraWalk[ path1_, path2_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
-  spreadFind[ walkGraph, count,
-    { walk1, walk2 } |->
-      If[ Last[ walk1 ] === First[ walk2 ], { Join[ walk1, Rest @ walk2 ] }, { } ],
-    path1, path2 ]
+  With[ { walksOf = w |-> With[ { vs = VertexList @ w },
+      { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+        scan = root |-> Reap[ DepthFirstScan[ w, root, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
+      Which[
+        ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
+          { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
+              If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
+        EdgeCount @ w == 0, List /@ If[ spelled, Last /@ vs, vs ],
+        spelled,            { Last /@ SortBy[ vs, First ] },
+        DirectedGraphQ @ w,
+          Catenate @ Catenate @ Table[ FindPath[ w, a, b, Infinity, All ],
+            { a, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { b, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
+        True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ] },
+    { spread = x |-> Which[
+        AssociationQ @ x,         Keys @ x,
+        GraphQ @ x,               walksOf @ x,
+        MatchQ[ x, { __Graph } ], Catenate[ walksOf /@ x ],
+        x === { },                { },
+        MatchQ[ x, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ],
+          Catenate[ walksOf /@ Normal @ x ],
+        True,                     { x } ] },
+    { reps = DeleteDuplicates[
+        PathGraph[ MapIndexed[ { First @ #2, #1 } &, # ], DirectedEdges -> True ] & /@
+          DeleteDuplicates @ Catenate[
+            ( { walk1, walk2 } |->
+                If[ Last[ walk1 ] === First[ walk2 ], { Join[ walk1, Rest @ walk2 ] }, { } ] ) @@@
+              Tuples[ { spread @ path1, spread @ path2 } ] ] ] },
+    Switch[ count,
+      All,   reps,
+      _UpTo, Take[ reps, count ],
+      _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
 
 
 (* ===================== Scene-DSL constructor ===================== *)
