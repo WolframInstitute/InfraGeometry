@@ -1,8 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageScope[commonRadiusFn]
-PackageScope[metricMatrix]
-
 
 (*** Order-k ball-intersection complexes (Vietoris-Rips <-> Cech) ***)
 
@@ -19,11 +16,22 @@ MiniballRadius[pts_List] := BoundingRegion[N @ pts, "MinBall"][[2]]
 Options[BallIntersectionComplex] = {"Metric" -> Automatic, "IntersectionTest" -> Automatic, "MaxDimension" -> Infinity};
 BallIntersectionComplex[data_List, r_ ? NumericQ, k : (_Integer | Infinity) : Infinity, OptionsPattern[]] :=
     Module[
-        {n = Length[data], metric, itest, maxDim, radius, qualify, admitted, prev, prevQ, m, cands},
+        {n = Length[data], metric, itest, maxDim, rows, radius, qualify, admitted, prev, prevQ, m, cands},
         metric = Replace[OptionValue["Metric"], Automatic -> EuclideanDistance];
         itest = OptionValue["IntersectionTest"];
         maxDim = OptionValue["MaxDimension"];
-        radius = commonRadiusFn[data, metric];
+        (* on a graph a common point may be any vertex, so the rows range over V while the columns track the centres *)
+        rows = Which[
+            metric === EuclideanDistance, None,
+            GraphQ[metric], GraphDistanceMatrix[metric][[ Flatten[FirstPosition[VertexList[metric], #] & /@ data] ]],
+            MatrixQ[metric], metric,
+            True, Outer[metric, data, data, 1]
+        ];
+        radius = Which[
+            metric === EuclideanDistance, s |-> MiniballRadius[data[[s]]],
+            GraphQ[metric], s |-> Min[Max /@ Transpose[rows[[s]]]],
+            True, s |-> Min[Max /@ rows[[All, s]]]
+        ];
         qualify = If[itest === Automatic,
             s |-> radius[s] <= r,
             s |-> TrueQ[itest[RegionIntersection @@ (Ball[data[[#]], r] & /@ s)]]
@@ -47,26 +55,23 @@ BallIntersectionComplex[data_List, r_ ? NumericQ, k : (_Integer | Infinity) : In
 CechComplex[data_List, r_ ? NumericQ, opts : OptionsPattern[BallIntersectionComplex]] :=
     BallIntersectionComplex[data, r, Infinity, opts]
 
-(* radius at which the |s| balls first acquire a common point: miniball of the
-   centres (Euclidean) or, over a finite metric, the smallest r for which some
-   sample point lies within r of every centre (intrinsic intersection oracle). *)
-commonRadiusFn[data_, EuclideanDistance] := s |-> MiniballRadius[data[[s]]]
-(* graph metric: data are centre vertices (any subset of V); a common point may be
-   ANY vertex, so candidates range over all of V while columns track the centres. *)
-commonRadiusFn[data_, g_ ? GraphQ] :=
-    With[{rows = GraphDistanceMatrix[g][[ Flatten[FirstPosition[VertexList[g], #] & /@ data] ]]},
-        s |-> Min[Max /@ Transpose[rows[[s]]]]]
-commonRadiusFn[data_, metric_] := With[{mat = metricMatrix[data, metric]}, s |-> Min[Max /@ mat[[All, s]]]]
-
-metricMatrix[data_, m_ ? MatrixQ] := m
-metricMatrix[data_, g_ ? GraphQ] := GraphDistanceMatrix[g]
-metricMatrix[data_, f_] := Outer[f, data, data, 1]
-
 (* birth radius of sigma in C^(k): max miniball over its k-subsets (its own
    miniball when |sigma| <= k), monotone under faces. *)
 Options[BallIntersectionFiltrationValue] = {"Metric" -> Automatic};
 BallIntersectionFiltrationValue[data_List, sigma_List, k : (_Integer | Infinity) : Infinity, OptionsPattern[]] :=
-    With[{radius = commonRadiusFn[data, Replace[OptionValue["Metric"], Automatic -> EuclideanDistance]]},
+    With[
+        {metric = Replace[OptionValue["Metric"], Automatic -> EuclideanDistance]},
+        {rows = Which[
+            metric === EuclideanDistance, None,
+            GraphQ[metric], GraphDistanceMatrix[metric][[ Flatten[FirstPosition[VertexList[metric], #] & /@ data] ]],
+            MatrixQ[metric], metric,
+            True, Outer[metric, data, data, 1]
+        ]},
+        {radius = Which[
+            metric === EuclideanDistance, s |-> MiniballRadius[data[[s]]],
+            GraphQ[metric], s |-> Min[Max /@ Transpose[rows[[s]]]],
+            True, s |-> Min[Max /@ rows[[All, s]]]
+        ]},
         If[Length[sigma] <= k, radius[sigma], Max[radius /@ Subsets[sigma, {k}]]]
     ]
 

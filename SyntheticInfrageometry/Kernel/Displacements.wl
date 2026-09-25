@@ -1,12 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageScope[displacementGammaSet]
-PackageScope[displacementNegativeAt]
-PackageScope[displacementSetCenters]
-PackageScope[displacementDistances]
-PackageScope[displacementGeodesicCounts]
-PackageScope[displacementSetDistance]
-
 
 (* ===================== Displacements ===================== *)
 
@@ -33,9 +26,32 @@ DisplacementCompose[ displacements__Association ] :=
 
 (* (t D)(v): endpoints of the geodesics v -> D(v) scaled to t times their length *)
 DisplacementScale[ graph_Graph, displacement_Association, t_ ] :=
-  AssociationMap[
-    ( Union @@ Table[ displacementGammaSet[ graph, #, target, t ], { target, displacement @ # } ] ) &,
-    Keys @ displacement ]
+  With[
+    { distancesFrom = source |-> AssociationThread[ VertexList @ graph, GraphDistance[ graph, source ] ] },
+    { countsFrom = source |-> With[ { dist = distancesFrom[ source ] },
+        Fold[
+          { counts, vertex } |-> Append[ counts, vertex -> Total @ Lookup[ counts,
+            Select[ AdjacencyList[ graph, vertex ], dist[ # ] == dist[ vertex ] - 1 & ] ] ],
+          Association[ source -> 1 ],
+          SortBy[ Select[ VertexList @ graph, 0 < dist[ # ] < Infinity & ], dist ] ] ] },
+    (* gamma(t), a = gamma(0), b = gamma(1): the points on the ray a -> b, or its opposite for t < 0, closest to |t| d(a, b) from a, and among them the maximal geodesic flux sigma(p, q) sigma(q, s) / sigma(p, s) through the middle of the aligned triple *)
+    { gamma = { a, b } |-> With[
+        { da = distancesFrom[ a ], db = distancesFrom[ b ], sigmaA = countsFrom[ a ], sigmaB = countsFrom[ b ] },
+        { ray = Select[ VertexList @ graph,
+            If[ t >= 0,
+              da[ # ] + db[ # ] == da[ b ] || da[ # ] == da[ b ] + db[ # ],
+              db[ # ] == da[ # ] + da[ b ]
+            ] & ] },
+        { closest = MinimalBy[ ray, Abs[ da[ # ] - Abs[ t ] da[ b ] ] & ] },
+        MaximalBy[ closest,
+          Which[
+            t < 0,                        sigmaA[ # ] sigmaA[ b ] / sigmaB[ # ],
+            da[ # ] + db[ # ] == da[ b ], sigmaA[ # ] sigmaB[ # ] / sigmaA[ b ],
+            True,                         sigmaA[ b ] sigmaB[ # ] / sigmaA[ # ]
+          ] & ] ] },
+    AssociationMap[
+      ( Union @@ Table[ gamma[ #, target ], { target, displacement @ # } ] ) &,
+      Keys @ displacement ] ]
 
 DisplacementNegative[ graph_Graph, displacement_Association ] :=
   DisplacementScale[ graph, displacement, -1 ]
@@ -53,7 +69,7 @@ DisplacementSum[ graph_Graph, displacement1_Association, displacement2_Associati
   With[ { order12 = DisplacementCompose[ displacement1, displacement2 ],
           order21 = DisplacementCompose[ displacement2, displacement1 ] },
     AssociationMap[
-      ( Union @@ Flatten[ Table[ displacementGammaSet[ graph, end1, end2, 1/2 ],
+      ( Union @@ Flatten[ Table[ DisplacementScale[ graph, <| end1 -> { end2 } |>, 1/2 ][ end1 ],
           { end1, order12 @ # }, { end2, order21 @ # } ], 1 ] ) &,
       Keys @ displacement1 ] ]
 
@@ -78,8 +94,8 @@ DisplacementCommutator[
       { points, step } |-> Union @@ ( step /@ points ),
       { point },
       { displacement1, displacement2,
-        displacementNegativeAt[ graph, displacement1, # ] &,
-        displacementNegativeAt[ graph, displacement2, # ] & } ]
+        DisplacementNegative[ graph, <| # -> displacement1 @ # |> ][ # ] &,
+        DisplacementNegative[ graph, <| # -> displacement2 @ # |> ][ # ] & } ]
   ]
 
 (* metric commutator Phi_{-Y} . Phi_{-X} . Phi_Y . Phi_X *)
@@ -98,7 +114,12 @@ DisplacementMagnitude[ graph_Graph, displacement_Association ] :=
    graph distances, centre drawn from the set itself), iterated to a fixed
    point; ties keep the set multivalued *)
 DisplacementReduce[ graph_Graph, displacement_Association ] :=
-  Map[ FixedPoint[ displacementSetCenters @ graph, # ] &, displacement ]
+  Map[
+    FixedPoint[
+      targets |-> MinimalBy[ targets,
+        { candidate } |-> Max @ Table[ GraphDistance[ graph, candidate, target ], { target, targets } ] ],
+      # ] &,
+    displacement ]
 
 
 (* ===================== Predicates ===================== *)
@@ -124,10 +145,18 @@ ContinuousDisplacementQ[ graph_Graph, displacement_Association, opts : OptionsPa
    strong: every cross-pair is close *)
 ContinuousDisplacementQ[
     graph_Graph, displacement_Association, k_, OptionsPattern[] ] :=
-  AllTrue[ EdgeList @ graph,
-    { edge } |-> displacementSetDistance[
-      graph, displacement @ First @ edge, displacement @ Last @ edge,
-      OptionValue[ Method ] ] <= k ]
+  With[
+    { setDistance = Switch[ OptionValue[ Method ],
+        "Weak", { targets1, targets2 } |->
+          Min @ Flatten @ Outer[ GraphDistance[ graph, #1, #2 ] &, targets1, targets2, 1, 1 ],
+        "Hausdorff", { targets1, targets2 } |->
+          Max[
+            Max @ Map[ target1 |-> Min @ Map[ GraphDistance[ graph, target1, # ] &, targets2 ], targets1 ],
+            Max @ Map[ target2 |-> Min @ Map[ GraphDistance[ graph, target2, # ] &, targets1 ], targets2 ] ],
+        "Strong", { targets1, targets2 } |->
+          Max @ Flatten @ Outer[ GraphDistance[ graph, #1, #2 ] &, targets1, targets2, 1, 1 ] ] },
+    AllTrue[ EdgeList @ graph,
+      { edge } |-> setDistance[ displacement @ First @ edge, displacement @ Last @ edge ] <= k ] ]
 
 
 (* ===================== Canonical displacements ===================== *)
@@ -140,7 +169,7 @@ Options[ PolarDisplacements ] = { "Direction" -> "Outward" };
 
 PolarDisplacements[ graph_Graph, center_, OptionsPattern[] ] :=
   With[
-    { dist = displacementDistances[ graph, center ],
+    { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ],
       sign = Switch[ OptionValue[ "Direction" ], "Outward", 1, "Inward", -1 ] },
     { AssociationMap[
         { v } |-> Replace[ Select[ AdjacencyList[ graph, v ], dist[ # ] == dist[ v ] + sign & ], { } -> { v } ],
@@ -260,62 +289,3 @@ DisplacementPlot[ graph_Graph, displacements : { __Association }, OptionsPattern
     ]
   ]
 
-
-(* ===================== Helpers ===================== *)
-
-(* gamma(t) on the extended geodesic a = gamma(0), b = gamma(1): points on the
-   ray a -> b (t >= 0) or its opposite ray (t < 0) at distance closest to
-   |t| d(a, b) from a; among those the straightest, by maximal geodesic flux
-   sigma(p, q) sigma(q, s) / sigma(p, s) through the middle point of the
-   aligned triple (Menger betweenness) *)
-displacementGammaSet[ graph_, a_, b_, t_ ] :=
-  With[
-    { da = displacementDistances[ graph, a ], db = displacementDistances[ graph, b ],
-      sigmaA = displacementGeodesicCounts[ graph, a ], sigmaB = displacementGeodesicCounts[ graph, b ] },
-    { ray = Select[ VertexList @ graph,
-        If[ t >= 0,
-          da[ # ] + db[ # ] == da[ b ] || da[ # ] == da[ b ] + db[ # ],
-          db[ # ] == da[ # ] + da[ b ]
-        ] & ] },
-    { closest = MinimalBy[ ray, Abs[ da[ # ] - Abs[ t ] da[ b ] ] & ] },
-    MaximalBy[ closest,
-      Which[
-        t < 0,                        sigmaA[ # ] sigmaA[ b ] / sigmaB[ # ],
-        da[ # ] + db[ # ] == da[ b ], sigmaA[ # ] sigmaB[ # ] / sigmaA[ b ],
-        True,                         sigmaA[ b ] sigmaB[ # ] / sigmaA[ # ]
-      ] & ]
-  ]
-
-(* the negative displacement evaluated lazily at one point *)
-displacementNegativeAt[ graph_, displacement_, point_ ] :=
-  Union @@ Table[ displacementGammaSet[ graph, point, target, -1 ], { target, displacement @ point } ]
-
-(* one centre step: members of minimal eccentricity within the set *)
-displacementSetCenters[ graph_ ][ targets_List ] :=
-  MinimalBy[ targets,
-    { candidate } |-> Max @ Table[ GraphDistance[ graph, candidate, target ], { target, targets } ] ]
-
-displacementSetDistance[ graph_, targets1_, targets2_, "Weak" ] :=
-  Min @ Flatten @ Outer[ GraphDistance[ graph, #1, #2 ] &, targets1, targets2, 1, 1 ]
-
-displacementSetDistance[ graph_, targets1_, targets2_, "Hausdorff" ] :=
-  Max[
-    Max @ Map[ target1 |-> Min @ Map[ GraphDistance[ graph, target1, # ] &, targets2 ], targets1 ],
-    Max @ Map[ target2 |-> Min @ Map[ GraphDistance[ graph, target2, # ] &, targets1 ], targets2 ] ]
-
-displacementSetDistance[ graph_, targets1_, targets2_, "Strong" ] :=
-  Max @ Flatten @ Outer[ GraphDistance[ graph, #1, #2 ] &, targets1, targets2, 1, 1 ]
-
-displacementDistances[ graph_, source_ ] :=
-  AssociationThread[ VertexList @ graph, GraphDistance[ graph, source ] ]
-
-(* sigma(source, v): number of geodesics, by BFS layers *)
-displacementGeodesicCounts[ graph_, source_ ] :=
-  Module[ { dist = displacementDistances[ graph, source ], counts = Association[ source -> 1 ] },
-    Do[
-      counts[ vertex ] = Total @ Lookup[ counts,
-        Select[ AdjacencyList[ graph, vertex ], dist[ # ] == dist[ vertex ] - 1 & ] ],
-      { vertex, SortBy[ Select[ VertexList @ graph, 0 < dist[ # ] < Infinity & ], dist ] }
-    ];
-    counts
-  ]

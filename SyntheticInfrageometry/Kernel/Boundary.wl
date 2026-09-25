@@ -1,7 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageScope[meshSurfaceVertices]
-
 
 (* ===================== Inner vertex boundary / interior ===================== *)
 
@@ -51,17 +49,15 @@ GraphExteriorBoundary[g_Graph, OptionsPattern[]] :=
 		Select[VertexList[g], deg[#] < threshold &]
 	]
 
-GraphExteriorBoundary[mr_MeshRegion, OptionsPattern[]] := meshSurfaceVertices[mr]
-
-
 (* surface vertices lie on a boundary face: a (d-1)-subset of a top simplex occurring in exactly one top cell *)
-meshSurfaceVertices[mr_MeshRegion] := With[
-	{d = RegionDimension[mr]},
-	If[d <= 1,
-		{},
-		Union @@ Keys @ Select[Counts[Sort /@ Catenate[Subsets[First[#], {d}] & /@ MeshCells[mr, d]]], # == 1 &]
+GraphExteriorBoundary[mr_MeshRegion, OptionsPattern[]] :=
+	With[
+		{d = RegionDimension[mr]},
+		If[d <= 1,
+			{},
+			Union @@ Keys @ Select[Counts[Sort /@ Catenate[Subsets[First[#], {d}] & /@ MeshCells[mr, d]]], # == 1 &]
+		]
 	]
-]
 
 
 (* ===================== Boundaryless graph ===================== *)
@@ -78,8 +74,10 @@ Options[BoundarylessGraph] = Join[{Method -> "AverageDegree", "KeepCoordinates" 
 
 BoundarylessGraph[g_Graph, opts : OptionsPattern[]] :=
 	With[
-		{coords = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-		{h = rimEdgeTrim[g, GraphExteriorBoundary[g, Method -> OptionValue[Method]]]},
+		{coords = AssociationThread[VertexList[g], GraphEmbedding[g]],
+		 bQ = Association @ Thread[GraphExteriorBoundary[g, Method -> OptionValue[Method]] -> True]},
+		{trimmed = EdgeDelete[g, Select[EdgeList[g], TrueQ[bQ[#[[1]]]] && TrueQ[bQ[#[[2]]]] &]]},
+		{h = VertexDelete[trimmed, Pick[VertexList[trimmed], VertexDegree[trimmed], 0]]},
 		If[Length @ First @ coords === 3, Graph3D, Graph][h,
 			Sequence @@ FilterRules[{opts}, Options[Graph]],
 			Sequence @@ If[TrueQ @ OptionValue["KeepCoordinates"],
@@ -88,19 +86,15 @@ BoundarylessGraph[g_Graph, opts : OptionsPattern[]] :=
 
 BoundarylessGraph[mr_MeshRegion, opts : OptionsPattern[]] :=
 	With[
-		{coords = MeshCoordinates[mr], edges = UndirectedEdge @@@ (First /@ MeshCells[mr, 1])},
-		{h = rimEdgeTrim[Graph[Range @ Length @ coords, edges], GraphExteriorBoundary[mr]]},
+		{coords = MeshCoordinates[mr], edges = UndirectedEdge @@@ (First /@ MeshCells[mr, 1]),
+		 bQ = Association @ Thread[GraphExteriorBoundary[mr] -> True]},
+		{mesh = Graph[Range @ Length @ coords, edges]},
+		{trimmed = EdgeDelete[mesh, Select[EdgeList[mesh], TrueQ[bQ[#[[1]]]] && TrueQ[bQ[#[[2]]]] &]]},
+		{h = VertexDelete[trimmed, Pick[VertexList[trimmed], VertexDegree[trimmed], 0]]},
 		Graph[h,
 			Sequence @@ FilterRules[{opts}, Options[Graph]],
 			Sequence @@ If[TrueQ @ OptionValue["KeepCoordinates"],
 				{VertexCoordinates -> coords[[VertexList[h]]]}, {}]]
-	]
-
-rimEdgeTrim[g_, boundary_] :=
-	With[
-		{bQ = Association @ Thread[boundary -> True]},
-		{h = EdgeDelete[g, Select[EdgeList[g], TrueQ[bQ[#[[1]]]] && TrueQ[bQ[#[[2]]]] &]]},
-		VertexDelete[h, Pick[VertexList[h], VertexDegree[h], 0]]
 	]
 
 
