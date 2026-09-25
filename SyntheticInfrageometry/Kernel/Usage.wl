@@ -205,8 +205,6 @@ InfraVolume::usage = "InfraVolume[graph, s] gives the volume of a vertex set, mu
 
 (* ===================== Coordinatization ===================== *)
 
-FindInfraRadarBasis::usage = "FindInfraRadarBasis[graph, n, m] gives resolving sets by ascending size. Deprecated: use FindResolvingSet in the Infrageometry paclet.";
-InfraRadarBasisQ::usage = "InfraRadarBasisQ[graph, basis] tests whether basis is a resolving set. Deprecated: use ResolvingSetQ in the Infrageometry paclet.";
 OrthogonalCoordinates::usage = "OrthogonalCoordinates[graph, c, axes, v] gives the integer displacement of v along each axis through the centre c; without v, the association over all vertices. Option \"SelectCoordinate\".";
 FindInfraOrthogonalFrame::usage = "FindInfraOrthogonalFrame[graph, c, axisLength] gives frames of mutually perpendicular geodesic axes through the centre c. Options Method, \"AxisCount\", \"BranchSampleSize\", \"SelectCoordinate\".";
 FindInfraSpanningAxes::usage = "FindInfraSpanningAxes[graph, n] gives n mutually well-separated longest geodesics across graph, with no fixed centre. Options \"AxisDistance\", \"MinLength\", \"MinSeparation\", \"AxisThickness\", \"RandomPick\".";

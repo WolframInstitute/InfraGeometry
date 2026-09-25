@@ -1,6 +1,6 @@
 geodesicGraph      = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicGraph;
 geodesicCycleGraph = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicCycleGraph;
-walkGraph          = WolframInstitute`SyntheticInfrageometry`PackageScope`walkGraph;
+walkGraph          = walk |-> PathGraph[ MapIndexed[ { First @ #2, #1 } &, walk ], DirectedEdges -> True ];
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },

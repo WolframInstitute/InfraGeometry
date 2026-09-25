@@ -1,7 +1,8 @@
 BeginTestSection["Homotopy"]
 
-walkGraph       = WolframInstitute`SyntheticInfrageometry`PackageScope`walkGraph;
-closedWalkGraph = WolframInstitute`SyntheticInfrageometry`PackageScope`closedWalkGraph;
+walkGraph       = walk |-> PathGraph[ MapIndexed[ { First @ #2, #1 } &, walk ], DirectedEdges -> True ];
+closedWalkGraph = walk |-> With[ { core = MapIndexed[ { First @ #2, #1 } &, If[ Length[ walk ] >= 2 && First @ walk === Last @ walk, Most @ walk, walk ] ] },
+  Graph[ core, DirectedEdge @@@ Partition[ core, 2, 1, 1 ] ] ];
 geodesicCycleGraph = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicCycleGraph;
 infraSpread        = WolframInstitute`SyntheticInfrageometry`PackageScope`infraSpread;
 walkSeq[ w_Graph ] := Last /@ VertexList[ w ]

@@ -1,6 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageScope[closeWalk]
 
 
 (* ===================== The chain shape ===================== *)
@@ -399,9 +398,3 @@ HomotopyMoveTypes[ arg_List ] := Which[
   MatchQ[ arg, { { __Graph } .. } ],    HomotopyMoveTypes /@ arg,
   AllTrue[ arg, MatchQ[ _List ] ],      MapThread[ HomotopyMoveType, { Most @ arg, Rest @ arg } ],
   True,                                 $Failed ]
-
-
-(* ===================== Helpers kept for callers outside this file ===================== *)
-
-closeWalk[ cycle_List ] :=
-  If[ First[ cycle ] === Last[ cycle ], cycle, Append[ cycle, First[ cycle ] ] ]

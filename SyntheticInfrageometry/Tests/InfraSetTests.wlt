@@ -1,9 +1,5 @@
-pointQ    = WolframInstitute`SyntheticInfrageometry`PackageScope`pointQ;
-multisetQ = WolframInstitute`SyntheticInfrageometry`PackageScope`multisetQ;
-walkQ     = WolframInstitute`SyntheticInfrageometry`PackageScope`walkQ;
 geodesicGraph        = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicGraph;
 infraSpread          = WolframInstitute`SyntheticInfrageometry`PackageScope`infraSpread;
-infraVertexMultiset  = WolframInstitute`SyntheticInfrageometry`PackageScope`infraVertexMultiset;
 
 BeginTestSection["InfraSet"]
 
@@ -261,7 +257,7 @@ VerificationTest[
       { d = InfraDensity[ g, ball ] },
       { Keys @ d === Sort @ ball,
         Values @ d === ConstantArray[ 1, Length @ d ],
-        d === KeySort @ infraVertexMultiset @ ball } ]
+        d === KeySort @ Counts @ ball } ]
   ],
   { True, True, True },
   TestID -> "set-density-is-all-ones-on-the-support"
@@ -283,9 +279,9 @@ VerificationTest[
 (* the shape is the kind: a vertex, a multiset and a walk graph are three reads *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
-    { pointQ[ g, 7 ], multisetQ[ g, <| 3 -> 1, 4 -> 1 |> ],
-      walkQ[ g, geodesicGraph @ { 1, 2, 3 } ] } ],
-  { True, True, True },
+    { InfraDensity[ g, 7 ], InfraDensity[ g, <| 3 -> 1, 4 -> 1 |> ],
+      InfraDensity[ g, geodesicGraph @ { 1, 2, 3 } ] } ],
+  { <| 7 -> 1 |>, <| 3 -> 1, 4 -> 1 |>, <| 1 -> 1, 2 -> 1, 3 -> 1 |> },
   TestID -> "shapes-stay-distinct"
 ]
 

@@ -10,6 +10,21 @@ PackageScope[applySelectOption]
 PackageScope[constructionPatternQ]
 PackageScope[dispatchConstruction]
 PackageScope[evaluateConstruction]
+PackageScope[pointQ]
+PackageScope[closedWalkQ]
+PackageScope[positionSpelledQ]
+PackageScope[walkSequence]
+PackageScope[walkRealisations]
+PackageScope[closeWalk]
+PackageScope[dagGeodesics]
+PackageScope[walkVertexSet]
+PackageScope[infraSpread]
+PackageScope[vertexSet]
+PackageScope[infraVertexSet]
+PackageScope[polylineToVertexSeq]
+PackageScope[embeddingClosestCycles]
+PackageScope[EmbeddingCircleDistance]
+PackageScope[resolveEmbeddingCoords]
 
 
 (* ===================== Helpers ===================== *)
@@ -272,3 +287,117 @@ FindInfraScene[ scene_InfraScene, graph_Graph, nSteps_Integer, init_Association,
           ! SubsetQ[ Keys @ b, vars ] ||
             TrueQ[ resolveExpression[ #, b, graph ] ] ] & /@ scene[ "Assertions" ] ) ] ]
   ]
+
+
+(* ===================== The shape readers ===================== *)
+
+pointQ[ graph_Graph, x_ ] := VertexQ[ graph, x ]
+
+closedWalkQ[ w_Graph ] := ! LoopFreeGraphQ[ w ] || ! AcyclicGraphQ[ w ]
+
+positionSpelledQ[ w_Graph ] :=
+  AllTrue[ VertexList @ w, MatchQ[ { _Integer, _ } ] ] &&
+  Sort[ First /@ VertexList @ w ] === Range @ VertexCount @ w
+
+(* the vertex sequence of one walk graph, the cyclic core of a closed one; a substrate path or cycle is read by following its edges from an end, or from its first vertex when it has none *)
+walkSequence[ w_Graph ] := Which[
+  positionSpelledQ @ w, Last /@ SortBy[ VertexList @ w, First ],
+  EdgeCount[ w ] == 0,  VertexList @ w,
+  True,
+    With[ { start = SelectFirst[ VertexList @ w,
+              If[ DirectedGraphQ @ w, VertexInDegree[ w, # ] == 0, VertexDegree[ w, # ] == 1 ] &,
+              First @ VertexList @ w ],
+            nextOf = If[ DirectedGraphQ @ w,
+              { u, prev } |-> First[ VertexOutComponent[ w, { u }, { 1 } ], None ],
+              { u, prev } |-> First[ DeleteCases[ AdjacencyList[ w, u ], prev ], None ] ] },
+      { seq = TakeWhile[
+          First /@ NestList[ { nextOf @@ #, First @ # } &, { start, None }, VertexCount @ w ],
+          # =!= None & ] },
+      If[ closedWalkQ @ w, Most @ seq, seq ] ] ]
+
+(* the walks a graph stands for, as vertex sequences: one for a path graph or a cycle (closed, first vertex repeated at the end), the source -> sink paths for a DAG *)
+walkRealisations[ w_Graph ] := Which[
+  closedWalkQ @ w,      { closeWalk @ walkSequence @ w },
+  positionSpelledQ @ w, Map[ Last, dagGeodesics @ w, { 2 } ],
+  DirectedGraphQ @ w,   dagGeodesics @ w,
+  True,                 { walkSequence @ w } ]
+
+closeWalk[ cycle_List ] :=
+  If[ First[ cycle ] === Last[ cycle ], cycle, Append[ cycle, First[ cycle ] ] ]
+
+(* all source -> sink directed paths, the one exponential step, materialised on demand *)
+
+dagGeodesics[ dag_Graph ] := Which[
+  VertexCount[ dag ] == 0, { },
+  EdgeCount[ dag ] == 0,   List /@ VertexList[ dag ],
+  True,
+    With[ { srcs = Select[ VertexList[ dag ], VertexInDegree[ dag, # ] == 0 & ],
+            snks = Select[ VertexList[ dag ], VertexOutDegree[ dag, # ] == 0 & ] },
+      DeleteDuplicates @ Catenate @ Catenate @
+        Table[ FindPath[ dag, s, t, Infinity, All ], { s, srcs }, { t, snks } ] ] ]
+
+walkVertexSet[ w_Graph ] :=
+  Sort @ DeleteDuplicates @ If[ positionSpelledQ @ w, Last /@ VertexList @ w, VertexList @ w ]
+
+(* the REALISATION spread, not the anchor rule: an Association spreads over its support, a walk graph into the vertex sequences it stands for, a list of graphs into all of theirs; anything else -- a bare vertex, and a walk or a set written as a vertex list -- is one realisation.  InfraDensity is where a List is read as a multiset *)
+
+infraSpread[ fam_Association ]       := Keys @ fam
+infraSpread[ w_Graph ]               := walkRealisations @ w
+infraSpread[ ws : { __Graph } ]      := Catenate[ walkRealisations /@ ws ]
+infraSpread[ { } ]                   := { }
+infraSpread[ obj : ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ] := infraSpread @ Normal @ obj
+infraSpread[ other_ ]                := { other }
+
+vertexSet[ vs_List ] := Sort @ DeleteDuplicates @ vs
+
+infraVertexSet[ fam_Association ]  := Keys @ fam
+infraVertexSet[ w_Graph ]          := walkVertexSet @ w
+infraVertexSet[ ws : { __Graph } ] := Union @@ ( walkVertexSet /@ ws )
+infraVertexSet[ { } ]              := { }
+infraVertexSet[ sets : { __List } ] := Union @@ ( infraVertexSet /@ sets )
+infraVertexSet[ list_List ]        := vertexSet @ list
+infraVertexSet[ obj : ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ] := obj[ "VertexList" ]
+infraVertexSet[ v_ ]               := { v }
+
+infraVertexSet[ graph_Graph, x_ ]  := Keys @ InfraDensity[ graph, x ]
+
+(* consecutive legs share their endpoint, so Rest drops the duplicate when joining *)
+
+polylineToVertexSeq[ { } ] := { }
+polylineToVertexSeq[ legs : { __Graph } ] :=
+  Fold[ Join[ #1, Rest @ walkSequence @ #2 ] &, walkSequence @ First @ legs, Rest @ legs ]
+
+(* the scene engine's circle ranking *)
+
+embeddingClosestCycles[ graph_Graph, cycles_List, center_, radius_ ] /; Length[ cycles ] <= 1 := cycles
+
+embeddingClosestCycles[ graph_Graph, cycles_List, center_, radius_ ] :=
+  With[ { coords = resolveEmbeddingCoords[ graph, Automatic ],
+          vertexIndex = AssociationThread[ VertexList[ graph ], Range @ VertexCount[ graph ] ] },
+    { centerIdx = vertexIndex[ center ] },
+    MinimalBy[ cycles,
+      cycle |-> EmbeddingCircleDistance[ coords, Lookup[ vertexIndex, cycle ], centerIdx, radius ] ]
+  ]
+
+
+(* plane Hausdorff between the embedded closed polyline of a cycle and the Euclidean circle *)
+
+EmbeddingCircleDistance[ coords_List, cycle_List, centerIdx_Integer, radius_ ] /; Length[ cycle ] >= 3 :=
+  With[ { centerPt = coords[[ centerIdx ]], cyclePts = coords[[ cycle ]] },
+    { nPts = Max[ 64, 4 * Length[ cycle ] ] },
+    { circlePoints = Table[
+        centerPt + radius * { Cos[ t ], Sin[ t ] },
+        { t, 0, 2 Pi - 2 Pi / nPts, 2 Pi / nPts } ] },
+    RegionHausdorffDistance[
+      Line[ Append[ cyclePts, First[ cyclePts ] ] ],
+      Line[ Append[ circlePoints, First[ circlePoints ] ] ] ]
+  ]
+
+EmbeddingCircleDistance[ _List, cycle_List, _Integer, _ ] /; Length[ cycle ] < 3 := Infinity
+
+
+(* Automatic = GraphEmbedding under SpringEmbedding, the closest built-in to the edge-length-preserving criterion *)
+
+resolveEmbeddingCoords[ graph_Graph, Automatic ] :=
+  GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ]
+resolveEmbeddingCoords[ _, coords_List ] := coords

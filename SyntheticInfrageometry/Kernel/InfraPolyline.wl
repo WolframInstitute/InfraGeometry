@@ -1,8 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageScope[polylineToVertexSeqs]
-PackageScope[polylineToVertexSeq]
-PackageScope[polylineToKnots]
 
 
 (* ===================== FindInfraPolylineSubdivision ===================== *)
@@ -27,26 +24,6 @@ FindInfraPolylineSubdivision[ graph_Graph, path_List, OptionsPattern[] ] :=
     AppendTo[ knots, n ];
     MapThread[ { a, b } |-> PathGraph[ path[[ a ;; b ]], DirectedEdges -> True ], { Most @ knots, Rest @ knots } ]
   ]
-
-
-(* ===================== polylineToVertexSeqs ===================== *)
-
-(* consecutive legs share their endpoint, so Rest drops the duplicate when joining *)
-
-polylineToVertexSeqs[ polys_List ] := polylineToVertexSeq /@ polys
-
-polylineToVertexSeq[ { } ] := { }
-polylineToVertexSeq[ legs : { __Graph } ] :=
-  Fold[ Join[ #1, Rest @ walkSequence @ #2 ] &, walkSequence @ First @ legs, Rest @ legs ]
-
-
-(* ===================== polylineToKnots ===================== *)
-
-(* the knots are { First[leg_1], Last[leg_1], ..., Last[leg_k] } *)
-
-polylineToKnots[ { } ] := { }
-polylineToKnots[ legs : { __Graph } ] :=
-  Prepend[ Last @ walkSequence @ # & /@ legs, First @ walkSequence @ First @ legs ]
 
 
 (* ===================== InfraPolylineQ ===================== *)

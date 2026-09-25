@@ -2,6 +2,9 @@ Package["WolframInstitute`SyntheticInfrageometry`"]
 
 (* WolframInstitute`SyntheticInfrageometry` :: EuclideanInfrageometry :: InfraSceneInteractive *)
 
+PackageScope[geodesicGraph]
+PackageScope[geodesicCycleGraph]
+
 
 $InfraSegmentSelectOptions = { None, "Central", "Peripheral", "EmbeddingClosest" };
 
@@ -281,3 +284,14 @@ SetAttributes[ iconButton, HoldRest ]
 
 iconButton[ icon_, action_ ] :=
   MouseAppearance[ EventHandler[ icon, { "MouseClicked" :> action }, PassEventsUp -> False ], "LinkHand" ]
+
+
+(* ===================== The viewers' carriers ===================== *)
+
+geodesicGraph[ seq_List ] := PathGraph[ seq, DirectedEdges -> True ]
+geodesicGraph[ w_Graph ]  := w
+
+geodesicCycleGraph[ seq_List ] :=
+  With[ { core = If[ Length[ seq ] >= 2 && First @ seq === Last @ seq, Most @ seq, seq ] },
+    Graph[ core, DirectedEdge @@@ Partition[ core, 2, 1, 1 ] ] ]
+geodesicCycleGraph[ w_Graph ] := w

@@ -1,13 +1,14 @@
 BeginTestSection["EuclideanPostulates"]
 
-walkGraph       = WolframInstitute`SyntheticInfrageometry`PackageScope`walkGraph;
+walkGraph       = walk |-> PathGraph[ MapIndexed[ { First @ #2, #1 } &, walk ], DirectedEdges -> True ];
 geodesicGraph      = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicGraph;
 geodesicCycleGraph = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicCycleGraph;
 walkSequence       = WolframInstitute`SyntheticInfrageometry`PackageScope`walkSequence;
 infraSpread        = WolframInstitute`SyntheticInfrageometry`PackageScope`infraSpread;
 infraNumReps       = WolframInstitute`SyntheticInfrageometry`PackageScope`infraNumReps;
 infraEdgeMultiset  = WolframInstitute`SyntheticInfrageometry`PackageScope`infraEdgeMultiset;
-closedWalkGraph = WolframInstitute`SyntheticInfrageometry`PackageScope`closedWalkGraph;
+closedWalkGraph = walk |-> With[ { core = MapIndexed[ { First @ #2, #1 } &, If[ Length[ walk ] >= 2 && First @ walk === Last @ walk, Most @ walk, walk ] ] },
+  Graph[ core, DirectedEdge @@@ Partition[ core, 2, 1, 1 ] ] ];
 walkSeq[ w_Graph ] := Last /@ VertexList[ w ]
 walkSeqs[ ws_List ] := walkSeq /@ ws
 
@@ -357,7 +358,7 @@ VerificationTest[
 VerificationTest[
   With[{s = FindInfraSegment[GridGraph[{3, 3}], 1, 9, All]},
     {GraphQ[s], DirectedGraphQ[s], infraNumReps @ s,
-     Max @ Values @ WolframInstitute`SyntheticInfrageometry`PackageScope`dagLayers[s],
+     Max @ GraphDistance[s, 1],
      Sort @ VertexList[s]}
   ],
   {True, True, 6, 4, Range[9]},

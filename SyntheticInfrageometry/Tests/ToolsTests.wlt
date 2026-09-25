@@ -2,19 +2,16 @@ BeginTestSection["Tools"]
 
 (* the shape reader and the anchor rule are internal, so the tests reach them by
    their PackageScope context *)
-pointQ              = WolframInstitute`SyntheticInfrageometry`PackageScope`pointQ;
-multisetQ           = WolframInstitute`SyntheticInfrageometry`PackageScope`multisetQ;
-walkQ               = WolframInstitute`SyntheticInfrageometry`PackageScope`walkQ;
 inkClass            = WolframInstitute`SyntheticInfrageometry`PackageScope`inkClass;
 bundleQ             = WolframInstitute`SyntheticInfrageometry`PackageScope`bundleQ;
 chainedWalksQ       = WolframInstitute`SyntheticInfrageometry`PackageScope`chainedWalksQ;
 geodesicGraph       = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicGraph;
 geodesicCycleGraph  = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicCycleGraph;
-walkGraph           = WolframInstitute`SyntheticInfrageometry`PackageScope`walkGraph;
+walkGraph           = walk |-> PathGraph[ MapIndexed[ { First @ #2, #1 } &, walk ], DirectedEdges -> True ];
 infraSpread         = WolframInstitute`SyntheticInfrageometry`PackageScope`infraSpread;
-infraVertexMultiset = WolframInstitute`SyntheticInfrageometry`PackageScope`infraVertexMultiset;
 infraEdgeMultiset   = WolframInstitute`SyntheticInfrageometry`PackageScope`infraEdgeMultiset;
-closedWalkGraph     = WolframInstitute`SyntheticInfrageometry`PackageScope`closedWalkGraph;
+closedWalkGraph     = walk |-> With[ { core = MapIndexed[ { First @ #2, #1 } &, If[ Length[ walk ] >= 2 && First @ walk === Last @ walk, Most @ walk, walk ] ] },
+  Graph[ core, DirectedEdge @@@ Partition[ core, 2, 1, 1 ] ] ];
 
 g33 = GridGraph[ { 3, 3 } ];
 
@@ -122,14 +119,8 @@ VerificationTest[
 (* the three rows of the ontology, on a graph whose vertices are integers *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ], w = PathGraph[ { 1, 2, 3 }, DirectedEdges -> True ] },
-    { pointQ[ g, 5 ], multisetQ[ g, 5 ], walkQ[ g, 5 ],
-      pointQ[ g, { 1, 2 } ], multisetQ[ g, { 1, 2 } ], walkQ[ g, { 1, 2 } ],
-      pointQ[ g, <| 1 -> 2 |> ], multisetQ[ g, <| 1 -> 2 |> ], walkQ[ g, <| 1 -> 2 |> ],
-      pointQ[ g, w ], multisetQ[ g, w ], walkQ[ g, w ] } ],
-  { True, False, False,
-    False, True, False,
-    False, True, False,
-    False, False, True },
+    { InfraDensity[ g, 5 ], InfraDensity[ g, { 1, 2 } ], InfraDensity[ g, <| 1 -> 2 |> ], InfraDensity[ g, w ] } ],
+  { <| 5 -> 1 |>, <| 1 -> 1, 2 -> 1 |>, <| 1 -> 2 |>, <| 1 -> 1, 2 -> 1, 3 -> 1 |> },
   TestID -> "shape-reader-three-rows"
 ]
 
@@ -138,17 +129,16 @@ VerificationTest[
 VerificationTest[
   With[ { t = Graph[ { { 1, 1 }, { 2, 1 } }, { { 1, 1 } <-> { 2, 1 } } ],
           g = GridGraph[ { 3, 3 } ] },
-    { pointQ[ t, { 1, 1 } ], multisetQ[ t, { 1, 1 } ],
-      pointQ[ g, { 1, 1 } ], multisetQ[ g, { 1, 1 } ] } ],
-  { True, False, False, True },
+    { InfraDensity[ t, { 1, 1 } ], InfraDensity[ g, { 1, 1 } ] } ],
+  { <| { 1, 1 } -> 1 |>, <| 1 -> 2 |> },
   TestID -> "shape-reader-is-graph-relative"
 ]
 
 (* a vertex a graph does not have is neither a point nor -- being an atom -- a multiset *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
-    { pointQ[ g, 99 ], multisetQ[ g, 99 ], InfraDensity[ g, 99 ] } ],
-  { False, False, <| 99 -> 1 |> },
+    { VertexQ[ g, 99 ], InfraDensity[ g, 99 ] } ],
+  { False, <| 99 -> 1 |> },
   TestID -> "shape-reader-off-substrate-vertex"
 ]
 
@@ -157,7 +147,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
     With[ { dag = FindInfraSegment[ g, 1, 9, All ] },
-      InfraDensity[ g, dag ] === KeySort @ infraVertexMultiset @ dag ] ],
+      InfraDensity[ g, dag ] === KeySort @ GeodesicOccupation @ dag ] ],
   True,
   TestID -> "walk-anchor-reads-as-occupation"
 ]
@@ -249,9 +239,9 @@ VerificationTest[
    occupation is the sum *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
-    KeySort @ infraVertexMultiset @ FindInfraSegment[ g, <| 1 -> 1, 3 -> 1 |>, 9, All ] ===
-    KeySort @ Merge[ { infraVertexMultiset @ FindInfraSegment[ g, 1, 9, All ],
-                       infraVertexMultiset @ FindInfraSegment[ g, 3, 9, All ] }, Total ] ],
+    KeySort @ Merge[ GeodesicOccupation /@ FindInfraSegment[ g, <| 1 -> 1, 3 -> 1 |>, 9, All ], Total ] ===
+    KeySort @ Merge[ { GeodesicOccupation @ FindInfraSegment[ g, 1, 9, All ],
+                       GeodesicOccupation @ FindInfraSegment[ g, 3, 9, All ] }, Total ] ],
   True,
   TestID -> "Multi-source-family-is-the-union"
 ]

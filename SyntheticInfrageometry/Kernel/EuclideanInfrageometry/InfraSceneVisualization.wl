@@ -22,6 +22,17 @@ PackageScope[$InfraEdgeThickness]
 PackageScope[$InfraPointSize]
 PackageScope[$InfraSceneImageSize]
 PackageScope[infraInk]
+PackageScope[inkClass]
+PackageScope[bundleQ]
+PackageScope[chainedWalksQ]
+PackageScope[walkGraphs]
+PackageScope[infraEdgeMultiset]
+PackageScope[infraNumReps]
+PackageScope[walkEdges]
+PackageScope[cycleEdges]
+PackageScope[setEdges]
+PackageScope[polylineToVertexSeqs]
+PackageScope[polylineToKnots]
 PackageScope[parseHighlightStyle]
 PackageScope[normalizeHighlightSpec]
 
@@ -341,3 +352,74 @@ InfraSceneHighlight[ graph_Graph, multiObjects_List, opts : OptionsPattern[] ] :
           ImageSize -> OptionValue[ ImageSize ] ]
     ]
   ]
+
+
+(* ===================== The ink readers ===================== *)
+
+inkClass[ graph_Graph, x_ ] := Which[
+  pointQ[ graph, x ],                                              "Point",
+  AssociationQ[ x ],                                               "Density",
+  MatchQ[ x, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ], StringDrop[ SymbolName @ Head @ x, 5 ],
+  GraphQ[ x ],                                                     "Walk",
+  chainedWalksQ[ x ],                                              "Polyline",
+  MatchQ[ x, { __Graph } ],                                        "Walk",
+  MatchQ[ x, { { __Graph } .. } ] && AllTrue[ x, chainedWalksQ ],  "PolylineFamily",
+  MatchQ[ x, { { __Graph } .. } ],                                 "Walk",
+  ListQ[ x ] && SubsetQ[ VertexList @ graph, x ],                  "Set",
+  MatchQ[ x, { __List } ],                                         "SetFamily",
+  True,                                                            "Set" ]
+
+(* a branching DAG stands for many walks with no single stroke; a path graph, a directed cycle and a position-spelled walk each stand for one *)
+bundleQ[ w_Graph ] := ! closedWalkQ[ w ] && ! positionSpelledQ[ w ] && ! PathGraphQ[ w ]
+
+(* consecutive legs of a polyline share their knot, and a leg is an open geodesic -- the closure of a polygon is the chain closing, not a leg *)
+chainedWalksQ[ legs : { _Graph, __Graph } ] :=
+  NoneTrue[ legs, closedWalkQ ] &&
+  AllTrue[ Partition[ walkSequence /@ legs, 2, 1 ], Last @ First @ # === First @ Last @ # & ]
+chainedWalksQ[ _ ] := False
+
+walkGraphs[ w_Graph ]                 := { w }
+walkGraphs[ ws : { __Graph } ]        := ws
+walkGraphs[ ws : { { __Graph } .. } ] := Catenate @ ws
+
+(* the raw count of appearances across realisations, keyed by sorted vertex pair; a set's edges are the induced subgraph's, hence the graph *)
+
+infraEdgeMultiset[ _, _Association ] := <||>
+infraEdgeMultiset[ g_, w_Graph ] := Which[
+  closedWalkQ @ w,      Counts @ cycleEdges @ walkSequence @ w,
+  positionSpelledQ @ w, Merge[ Counts[ walkEdges @ # ] & /@ walkRealisations @ w, Total ],
+  True,                 KeyMap[ Sort[ List @@ # ] &, GeodesicEdgeOccupation[ w ] ] ]
+infraEdgeMultiset[ g_, ws : { __Graph } ]  := Merge[ infraEdgeMultiset[ g, # ] & /@ ws, Total ]
+infraEdgeMultiset[ _, { } ]                := <||>
+infraEdgeMultiset[ g_, sets : { __List } ] := Merge[ Counts[ setEdges[ g, # ] ] & /@ sets, Total ]
+infraEdgeMultiset[ g_, vs_List ]           := Counts @ setEdges[ g, vs ]
+
+(* N = the number of realisations the marginal was summed over: a density's largest mass, a walk's 1, a DAG's geodesic count, a list's sum over its members.  A measure normalises by its HEAVIEST mass, not its total: the channel encodes RELATIVE mass within the object, so the modal vertex draws full and lighter ones fade *)
+
+infraNumReps[ fam_Association ] := If[ Length @ fam === 0, 1, Max @ fam ]
+infraNumReps[ w_Graph ] :=
+  If[ closedWalkQ @ w || positionSpelledQ @ w, 1,
+    With[ { occ = GeodesicOccupation[ w ] }, If[ Length @ occ === 0, 1, Max @ Values @ occ ] ] ]
+infraNumReps[ ws : { __Graph } ]  := Max[ Total[ infraNumReps /@ ws ], 1 ]
+infraNumReps[ { } ]               := 1
+infraNumReps[ sets : { __List } ] := Length @ sets
+infraNumReps[ _List ]             := 1
+
+(* the edges of one realisation: a vertex sequence read as a walk, as a closed walk, or as a set with its induced edges.  Keyed by sorted pair {a, b}, which the renderer remaps to UndirectedEdge *)
+
+walkEdges[ seq_List ] :=
+  If[ Length @ seq >= 2, Sort /@ Partition[ seq, 2, 1 ], { } ]
+
+cycleEdges[ seq_List ] :=
+  walkEdges @ If[ Length @ seq >= 2 && First @ seq === Last @ seq, seq, Append[ seq, First @ seq ] ]
+
+setEdges[ None, _ ]           := { }
+setEdges[ g_Graph, vs_List ]  := Sort /@ ( List @@@ EdgeList @ Subgraph[ g, vs ] )
+
+polylineToVertexSeqs[ polys_List ] := polylineToVertexSeq /@ polys
+
+(* the knots are { First[leg_1], Last[leg_1], ..., Last[leg_k] } *)
+
+polylineToKnots[ { } ] := { }
+polylineToKnots[ legs : { __Graph } ] :=
+  Prepend[ Last @ walkSequence @ # & /@ legs, First @ walkSequence @ First @ legs ]

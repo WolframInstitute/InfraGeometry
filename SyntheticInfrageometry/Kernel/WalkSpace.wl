@@ -1,10 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageScope[HausdorffDistance]
-PackageScope[MinimalSeparationDistance]
-PackageScope[EmbeddingCircleDistance]
-PackageScope[resolveEmbeddingCoords]
-PackageScope[parseEmbeddingMethod]
 
 
 (* ===================== SelectInfraWalk ===================== *)
@@ -500,75 +495,3 @@ InfraDeformationSize[ ref_List, def_List ] := With[
     s = LengthWhile[ Transpose @ { Take[ Reverse @ ref, m ], Take[ Reverse @ def, m ] }, Apply @ SameQ ] },
   Max[ 0, ( Length[ ref ] - 1 ) - ( p - 1 ) - ( s - 1 ) ]
 ]
-
-
-(* ===================== Helpers kept for callers outside this file ===================== *)
-
-(* HausdorffDistance: symmetric "max one-sided gap" between two vertex sets. *)
-
-HausdorffDistance[ d_List, setX_, setY_ ] :=
-  With[ { distSubMatrix = d[[ setX, setY ]] },
-    Max[ Max[ Min /@ distSubMatrix ], Max[ Min /@ Transpose @ distSubMatrix ] ]
-  ]
-
-HausdorffDistance[ g_Graph, setX_List, setY_List ] :=
-  With[ { distSubMatrix = Outer[ GraphDistance[ g, #1, #2 ] &, setX, setY, 1 ] },
-    Max[ Max[ Min /@ distSubMatrix ], Max[ Min /@ Transpose @ distSubMatrix ] ]
-  ]
-
-
-MinimalSeparationDistance[ d_List, setX_, setY_ ] :=
-  Min[ d[[ setX, setY ]] ]
-
-MinimalSeparationDistance[ g_Graph, setX_List, setY_List ] :=
-  Min[ Outer[ GraphDistance[ g, #1, #2 ] &, setX, setY, 1 ] ]
-
-
-(* the scene engine's circle ranking *)
-
-PackageScope[embeddingClosestCycles]
-
-embeddingClosestCycles[ graph_Graph, cycles_List, center_, radius_ ] /; Length[ cycles ] <= 1 := cycles
-
-embeddingClosestCycles[ graph_Graph, cycles_List, center_, radius_ ] :=
-  With[ { coords = resolveEmbeddingCoords[ graph, Automatic ],
-          vertexIndex = AssociationThread[ VertexList[ graph ], Range @ VertexCount[ graph ] ] },
-    { centerIdx = vertexIndex[ center ] },
-    MinimalBy[ cycles,
-      cycle |-> EmbeddingCircleDistance[ coords, Lookup[ vertexIndex, cycle ], centerIdx, radius ] ]
-  ]
-
-
-(* plane Hausdorff between the embedded closed polyline of a cycle and the Euclidean circle *)
-
-EmbeddingCircleDistance[ coords_List, cycle_List, centerIdx_Integer, radius_ ] /; Length[ cycle ] >= 3 :=
-  With[ { centerPt = coords[[ centerIdx ]], cyclePts = coords[[ cycle ]] },
-    { nPts = Max[ 64, 4 * Length[ cycle ] ] },
-    { circlePoints = Table[
-        centerPt + radius * { Cos[ t ], Sin[ t ] },
-        { t, 0, 2 Pi - 2 Pi / nPts, 2 Pi / nPts } ] },
-    RegionHausdorffDistance[
-      Line[ Append[ cyclePts, First[ cyclePts ] ] ],
-      Line[ Append[ circlePoints, First[ circlePoints ] ] ] ]
-  ]
-
-EmbeddingCircleDistance[ _List, cycle_List, _Integer, _ ] /; Length[ cycle ] < 3 := Infinity
-
-
-parseEmbeddingMethod[ spec_, poolDefault_String : "ShortestPaths" ] :=
-  Replace[ spec, {
-    "Embedding" -> <| "Coordinates" -> Automatic, "Pool" -> poolDefault, "Pruning" -> Infinity |>,
-    { "Embedding", subOpts___ } :> <|
-      "Coordinates" -> ( "Coordinates" /. { subOpts } /. "Coordinates" -> Automatic ),
-      "Pool"        -> ( "Pool"        /. { subOpts } /. "Pool"        -> poolDefault ),
-      "Pruning"     -> ( "Pruning"     /. { subOpts } /. "Pruning"     -> Infinity )
-    |>,
-    _ -> <| "Coordinates" -> Automatic, "Pool" -> poolDefault, "Pruning" -> Infinity |>
-  } ]
-
-
-(* Automatic = GraphEmbedding under SpringEmbedding, the closest built-in to the edge-length-preserving criterion *)
-
-resolveEmbeddingCoords[ graph_Graph, Automatic ] :=
-  GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ]
-resolveEmbeddingCoords[ _, coords_List ] := coords

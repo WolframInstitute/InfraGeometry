@@ -1,6 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageScope[infraPointVertices]
 
 
 (* ===================== FindInfraPoint ===================== *)
@@ -433,8 +432,6 @@ SelectInfraPoint[ graph_Graph, countSpec : ( _Integer | UpTo[ _Integer ] | All )
 
 InfraReachableQ[ graph_Graph, p1_, p2_ ] :=
   IntersectingQ[ VertexComponent[ graph, Keys @ InfraDensity[ graph, p1 ] ], Keys @ InfraDensity[ graph, p2 ] ]
-
-infraPointVertices[ graph_Graph, x_ ] := Keys @ InfraDensity[ graph, x ]
 
 
 (* ===================== Scene-DSL constructor ===================== *)

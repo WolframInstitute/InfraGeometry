@@ -1,4 +1,4 @@
-walkGraph       = WolframInstitute`SyntheticInfrageometry`PackageScope`walkGraph;
+walkGraph       = walk |-> PathGraph[ MapIndexed[ { First @ #2, #1 } &, walk ], DirectedEdges -> True ];
 geodesicGraph   = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicGraph;
 polylineToKnots = WolframInstitute`SyntheticInfrageometry`PackageScope`polylineToKnots;
 
