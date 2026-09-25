@@ -1,7 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageScope[findSegmentCore]
-
 (* WolframInstitute`SyntheticInfrageometry` :: EuclideanInfrageometry :: InfraSegment *)
 
 
@@ -159,36 +157,6 @@ FindInfraSegment[ graph_Graph, p1_, p2_,
               All,       Replace[ paths, { one_Graph } :> one ],
               _UpTo,     Take[ paths, count ],
               _,         If[ Length @ paths < count, $Failed, Take[ paths, count ] ] ] ] ] ] ]
-
-
-findSegmentCore[ _Graph, p1_, p1_, ___ ] := { }
-
-findSegmentCore[ graph_Graph, p1_, p2_,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[ FindInfraSegment ] ] :=
-  With[ { methodSpec = resolveMethod[ OptionValue[ FindInfraSegment, { opts }, Method ], count ] },
-    Switch[ methodName @ methodSpec,
-      "Exhaustive",
-        If[ countLimit @ count === 1,
-          With[ { path = FindShortestPath[ graph, p1, p2 ] },
-            If[ path === { }, { }, { path } ] ],
-          With[ { d = GraphDistance[ graph, p1, p2 ] },
-            If[ d === Infinity, { },
-              FindPath[ graph, p1, p2, { d }, count /. UpTo[ k_ ] :> k ] ] ]
-        ],
-      (* the pool structure already IS the lazy descent: the DAG's bounded DFS
-         stops at `count` geodesics, so the greedy branch is complete and exact *)
-      "Greedy",
-        dagGeodesics[ GeodesicIntervalGraph[ graph, p1, p2 ], count ],
-      "RandomGreedy",
-        With[ { dag = GeodesicIntervalGraph[ graph, p1, p2 ] },
-          greedyFrontierSweep[ dag, p1, p2,
-            { d, w } |-> DeleteCases[ VertexOutComponent[ d, { Last @ w }, 1 ], Last @ w ],
-            True &, Infinity, count, RandomSample ] ],
-      _,
-        Message[ FindInfraSegment::badmethod, methodSpec ]; $Failed
-    ]
-  ]
 
 
 (* ===================== ExtendInfraSegment ===================== *)

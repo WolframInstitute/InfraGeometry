@@ -6,14 +6,22 @@ Package["WolframInstitute`SyntheticInfrageometry`"]
 (* v, w lie in the same direction at O: some ray from O through v contains w.  On lines this was CollinearQ[graph, {O, v, w}] under another name, and it called the two sides of O one direction *)
 
 SameDirectionQ[ graph_Graph, O_, v_, w_ ] :=
-  v === w || AnyTrue[ infraSpread @ FindInfraRay[ graph, O, v, All ], MemberQ[ #, w ] & ]
+  v === w || AnyTrue[
+    Catenate[
+      ( dag |-> With[ { paths = Catenate @ Catenate @ Table[ FindPath[ dag, src, snk, Infinity, All ],
+          { src, Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ] },
+          { snk, Select[ VertexList @ dag, VertexOutDegree[ dag, # ] == 0 & ] } ] },
+        If[ AllTrue[ VertexList @ dag, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ dag ] === Range @ VertexCount @ dag,
+          Map[ Last, paths, { 2 } ], paths ] ] ) /@
+        Replace[ FindInfraRay[ graph, O, v, All ], dag_Graph :> { dag } ] ],
+    MemberQ[ #, w ] & ]
 
 
 (* some canonical line contains every listed vertex *)
 
 CollinearQ[ graph_Graph, verts_List ] :=
   Length[ DeleteDuplicates @ verts ] <= 1 ||
-    Length[ infraSpread @ FindInfraCommonLine[ graph, verts, UpTo[ 1 ] ] ] > 0
+    FindInfraCommonLine[ graph, verts, UpTo[ 1 ] ] =!= { }
 
 
 (* the listed lines share a common vertex: the dual of collinearity *)
@@ -27,7 +35,7 @@ ConcurrentQ[ graph_Graph, lines_List ] :=
 (* exactly one canonical line contains every listed vertex *)
 
 UniqueCollinearQ[ graph_Graph, verts_List ] :=
-  Length[ infraSpread @ FindInfraCommonLine[ graph, verts, All ] ] == 1
+  Length @ FindInfraCommonLine[ graph, verts, UpTo[ 2 ] ] == 1
 
 
 (* the listed lines share exactly one common vertex *)
@@ -44,24 +52,40 @@ UniqueConcurrentQ[ graph_Graph, lines_List ] :=
        some line through {A, C} meets some line through {B, D}.        *)
 
 WhiteheadW1Q[ graph_Graph ] :=
-  AllTrue[ allCanonicalLines[ graph ], Length[ # ] >= 3 & ]
+  AllTrue[
+    DeleteDuplicates @ Catenate[
+      ( pair |-> ( l |-> First @ Sort @ { l, Reverse[ l ] } ) /@ Catenate[
+          ( dag |-> With[ { paths = Catenate @ Catenate @ Table[ FindPath[ dag, src, snk, Infinity, All ],
+              { src, Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ] },
+              { snk, Select[ VertexList @ dag, VertexOutDegree[ dag, # ] == 0 & ] } ] },
+            If[ AllTrue[ VertexList @ dag, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ dag ] === Range @ VertexCount @ dag,
+              Map[ Last, paths, { 2 } ], paths ] ] ) /@
+            Replace[ FindInfraLine[ graph, pair[[ 1 ]], pair[[ 2 ]], All ], dag_Graph :> { dag } ] ] ) /@
+        Subsets[ VertexList @ graph, { 2 } ] ],
+    Length[ # ] >= 3 & ]
 
 WhiteheadW2Q[ graph_Graph ] :=
   AllTrue[ Subsets[ VertexList[ graph ], { 2 } ],
     UniqueCollinearQ[ graph, # ] & ]
 
 WhiteheadW3Q[ graph_Graph ] :=
-  Module[ { verts },
-    verts = VertexList[ graph ];
+  With[ { verts = VertexList[ graph ],
+          linesThrough = { a, b } |-> Catenate[
+            ( dag |-> With[ { paths = Catenate @ Catenate @ Table[ FindPath[ dag, src, snk, Infinity, All ],
+                { src, Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ] },
+                { snk, Select[ VertexList @ dag, VertexOutDegree[ dag, # ] == 0 & ] } ] },
+              If[ AllTrue[ VertexList @ dag, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ dag ] === Range @ VertexCount @ dag,
+                Map[ Last, paths, { 2 } ], paths ] ] ) /@
+              Replace[ FindInfraLine[ graph, a, b, All ], dag_Graph :> { dag } ] ] },
     AllTrue[ Tuples[ verts, 4 ],
       abcd |-> If[ Length @ DeleteDuplicates @ abcd < 4, True,
         With[ { A = abcd[[ 1 ]], B = abcd[[ 2 ]], C = abcd[[ 3 ]], D = abcd[[ 4 ]] },
-          { abLines = infraSpread @ FindInfraLine[ graph, A, B, All ],
-            cdLines = infraSpread @ FindInfraLine[ graph, C, D, All ] },
+          { abLines = linesThrough[ A, B ],
+            cdLines = linesThrough[ C, D ] },
           If[ ! AnyTrue[ Tuples[ { abLines, cdLines } ], IntersectingQ @@ # & ],
             True,
-            With[ { acLines = infraSpread @ FindInfraLine[ graph, A, C, All ],
-                    bdLines = infraSpread @ FindInfraLine[ graph, B, D, All ] },
+            With[ { acLines = linesThrough[ A, C ],
+                    bdLines = linesThrough[ B, D ] },
               AnyTrue[ Tuples[ { acLines, bdLines } ], IntersectingQ @@ # & ]
             ]
           ]
