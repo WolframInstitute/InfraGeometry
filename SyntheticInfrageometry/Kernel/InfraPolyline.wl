@@ -25,7 +25,7 @@ FindInfraPolylineSubdivision[ graph_Graph, path_List, OptionsPattern[] ] :=
       ],
       { i, 2, n } ];
     AppendTo[ knots, n ];
-    MapThread[ { a, b } |-> geodesicGraph @ path[[ a ;; b ]], { Most @ knots, Rest @ knots } ]
+    MapThread[ { a, b } |-> PathGraph[ path[[ a ;; b ]], DirectedEdges -> True ], { Most @ knots, Rest @ knots } ]
   ]
 
 
@@ -59,7 +59,12 @@ InfraPolylineQ[ graph_Graph, polys : { { ___Graph } .. } ] :=
 InfraPolylineQ[ _Graph, { } ] := True
 
 InfraPolylineQ[ graph_Graph, legs : { __Graph } ] :=
-  With[ { seqs = walkSequence /@ legs },
+  With[ { seqs = ( w |-> With[ { vs = VertexList @ w },
+        If[ AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+          Last /@ SortBy[ vs, First ],
+          Reap[ DepthFirstScan[ w,
+            SelectFirst[ vs, If[ DirectedGraphQ @ w, VertexInDegree[ w, # ] == 0, VertexDegree[ w, # ] == 1 ] &, First @ vs ],
+            { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] ] ) /@ legs },
     AllTrue[ seqs, InfraSegmentQ[ graph, # ] & ] &&
     AllTrue[ Partition[ seqs, 2, 1 ], pair |-> Last[ pair[[ 1 ]] ] === First[ pair[[ 2 ]] ] ] ]
 

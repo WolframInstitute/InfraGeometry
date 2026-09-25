@@ -191,12 +191,19 @@ InfraRayQ[ _Graph, ray_List ] /; Length[ ray ] < 2 := False
 (* the pencil at O is the set of rays from O; a ray leaves O through exactly one neighbour, so the ray pools over the neighbours partition it, and the cardinality is their path count, read off the DP without enumeration *)
 
 PencilDirections[ graph_Graph, origin_ ] :=
-  Catenate[ infraSpread @ FindInfraRay[ graph, origin, #, All ] & /@ AdjacencyList[ graph, origin ] ]
+  Catenate[
+    ( dag |-> With[ { paths = Catenate @ Catenate @ Table[ FindPath[ dag, src, snk, Infinity, All ],
+          { src, Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ] },
+          { snk, Select[ VertexList @ dag, VertexOutDegree[ dag, # ] == 0 & ] } ] },
+        If[ AllTrue[ VertexList @ dag, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ dag ] === Range @ VertexCount @ dag,
+          Map[ Last, paths, { 2 } ], paths ] ] ) /@
+      Catenate[ Replace[ FindInfraRay[ graph, origin, #, All ], dag_Graph :> { dag } ] & /@ AdjacencyList[ graph, origin ] ] ]
 
 PencilCardinality[ graph_Graph, origin_ ] :=
-  Total[ Replace[ FindInfraRay[ graph, origin, #, All ],
-      { { } -> 0, dag_Graph :> infraNumReps @ dag, dags_List :> Total[ infraNumReps /@ dags ] } ] & /@
-    AdjacencyList[ graph, origin ] ]
+  Total[
+    ( dag |-> If[ AllTrue[ VertexList @ dag, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ dag ] === Range @ VertexCount @ dag, 1,
+        With[ { occ = GeodesicOccupation @ dag }, If[ Length @ occ === 0, 1, Max @ Values @ occ ] ] ] ) /@
+      Catenate[ Replace[ FindInfraRay[ graph, origin, #, All ], dag_Graph :> { dag } ] & /@ AdjacencyList[ graph, origin ] ] ]
 
 
 (* ===================== Scene-DSL constructor ===================== *)

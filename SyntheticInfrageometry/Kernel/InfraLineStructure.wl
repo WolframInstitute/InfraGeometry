@@ -1,8 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageScope[edgeRanking]
-PackageScope[canonicalLineSeq]
-
 
 (* ===================== InfraLineStructure wrapper ===================== *)
 
@@ -55,38 +52,30 @@ Options[ FindLineStructure ] = { Method -> "Lexicographic" };
 FindLineStructure[ graph_Graph, opts : OptionsPattern[] ] :=
   With[
     { rank = Association @ MapIndexed[ #1 -> First[ #2 ] &,
-        edgeRanking[ graph, EdgeList @ graph, OptionValue[ Method ] ] ] },
+        With[ { edges = EdgeList @ graph },
+          Replace[ OptionValue[ Method ], {
+            "Lexicographic" :> SortBy[ edges, Sort @* Apply[ List ] ],
+            "Random"        :> RandomSample @ edges,
+            (* resistance is only a ranking key, so machine PseudoInverse is fine; the 2^(-i) weights supply genericity *)
+            "Resistance"    :> With[
+              { lp = PseudoInverse @ N @ KirchhoffMatrix @ graph, idx = First /@ PositionIndex @ VertexList @ graph },
+              SortBy[ edges,
+                e |-> { With[ { a = idx[ First @ e ], b = idx[ Last @ e ] }, lp[[ a, a ]] + lp[[ b, b ]] - 2 lp[[ a, b ]] ],
+                        Sort @ Apply[ List, e ] } ] ],
+            (* sorted endpoints break w-ties, so the ranking is always a total order *)
+            ( "Weight" -> w_ ) :> SortBy[ edges, e |-> { w[ e ], Sort @ Apply[ List, e ] } ] } ] ] ] },
     { wg = Graph[ graph, EdgeWeight -> ( ( 1 + 2^( -rank[ # ] ) ) & /@ EdgeList @ graph ) ] },
     { spf = FindShortestPath[ wg, All, All ] },
     { paths = DeleteCases[
         Association @ Map[ Sort[ # ] -> spf @@ # &, Subsets[ VertexList[ graph ], { 2 } ] ],
         { } ] },
-    { cands = DeleteDuplicates[ canonicalLineSeq /@ Values @ paths ] },
+    { cands = DeleteDuplicates[ First @ Sort @ { #, Reverse @ # } & /@ Values @ paths ] },
     (* maximal lines: chosen paths that are not a contiguous infix, either orientation, of a strictly longer chosen path *)
     InfraLineStructure @ Select[ cands,
       c |-> NoneTrue[ cands,
         o |-> o =!= c &&
           ( SequencePosition[ o, c, 1 ] =!= { } || SequencePosition[ Reverse @ o, c, 1 ] =!= { } ) ] ]
   ]
-
-
-(* the edges in ranked order; the ranking key is the only thing a Method changes *)
-edgeRanking[ graph_, edges_, "Lexicographic" ] := SortBy[ edges, Sort @* Apply[ List ] ]
-
-edgeRanking[ graph_, edges_, "Random" ] := RandomSample @ edges
-
-(* resistance is only a ranking key, so machine PseudoInverse is fine; the 2^(-i) weights supply genericity *)
-edgeRanking[ graph_, edges_, "Resistance" ] :=
-  With[
-    { lp = PseudoInverse @ N @ KirchhoffMatrix @ graph, idx = First /@ PositionIndex @ VertexList @ graph },
-    SortBy[ edges,
-      e |-> { With[ { a = idx[ First @ e ], b = idx[ Last @ e ] }, lp[[ a, a ]] + lp[[ b, b ]] - 2 lp[[ a, b ]] ],
-              Sort @ Apply[ List, e ] } ]
-  ]
-
-(* sorted endpoints break w-ties, so the ranking is always a total order *)
-edgeRanking[ graph_, edges_, ( "Weight" -> w_ ) ] :=
-  SortBy[ edges, e |-> { w[ e ], Sort @ Apply[ List, e ] } ]
 
 
 (* ===================== ConsistentPathSystemQ ===================== *)
@@ -102,7 +91,7 @@ ConsistentPathSystemQ[ graph_Graph, lines : { __List } ] :=
     GatherBy[
       Catenate @ Map[
         line |-> Catenate @ Table[
-          Sort @ { line[[ i ]], line[[ j ]] } -> canonicalLineSeq @ line[[ i ;; j ]],
+          Sort @ { line[[ i ]], line[[ j ]] } -> First @ Sort @ { line[[ i ;; j ]], Reverse @ line[[ i ;; j ]] },
           { i, Length @ line - 1 }, { j, i + 1, Length @ line } ],
         lines ],
       First ],
@@ -114,9 +103,5 @@ ConsistentPathSystemQ[ graph_Graph, paths_Association ] :=
       AllTrue[ Subsets[ Range @ Length @ p, { 2 } ],
         ij |-> With[ { subkey = Sort @ { p[[ First @ ij ]], p[[ Last @ ij ]] } },
           KeyExistsQ[ paths, subkey ] &&
-            canonicalLineSeq[ p[[ First @ ij ;; Last @ ij ]] ] === canonicalLineSeq @ paths[ subkey ] ] ] ] ]
-
-
-(* canonical orientation of a vertex sequence (lex-least of it and its reverse) *)
-canonicalLineSeq[ p_List ] := First @ Sort @ { p, Reverse @ p }
-
+            First @ Sort @ { p[[ First @ ij ;; Last @ ij ]], Reverse @ p[[ First @ ij ;; Last @ ij ]] } ===
+              First @ Sort @ { paths[ subkey ], Reverse @ paths[ subkey ] } ] ] ] ]
