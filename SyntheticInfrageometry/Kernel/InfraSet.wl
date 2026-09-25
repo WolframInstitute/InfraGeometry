@@ -95,8 +95,8 @@ InfraVolume[ g_Graph, w : ( _Graph | { __Graph } ), opts : OptionsPattern[] ] :=
           ! LoopFreeGraphQ @ x || ! AcyclicGraphQ @ x,
             { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
                 If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
+          EdgeCount @ x == 0, List /@ If[ spelled, Last /@ vs, vs ],
           spelled,            { Last /@ SortBy[ vs, First ] },
-          EdgeCount @ x == 0, List /@ vs,
           DirectedGraphQ @ x,
             Catenate @ Catenate @ Table[ FindPath[ x, s, t, Infinity, All ],
               { s, Select[ vs, VertexInDegree[ x, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ x, # ] == 0 & ] } ],

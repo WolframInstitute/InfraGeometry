@@ -523,8 +523,8 @@ InfraLineQ[ graph_Graph, w_Graph ] :=
         ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
           { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
               If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
+        EdgeCount @ w == 0, List /@ If[ spelled, Last /@ vs, vs ],
         spelled,            { Last /@ SortBy[ vs, First ] },
-        EdgeCount @ w == 0, List /@ vs,
         DirectedGraphQ @ w,
           Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
             { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
