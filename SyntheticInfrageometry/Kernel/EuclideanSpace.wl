@@ -1,8 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageScope[findInfraScale]
-PackageScope[findInfraSum]
-
 
 (* ===================== InfraScalarProduct ===================== *)
 
@@ -14,13 +11,17 @@ InfraScalarProduct::badmethod = "Method `1` is not supported by InfraScalarProdu
 Options[ InfraScalarProduct ] = { Method -> "Alexandrov" };
 
 InfraScalarProduct[ graph_Graph, o_, u_, v_, OptionsPattern[] ] :=
-  Switch[ methodName @ OptionValue[ Method ],
+  Switch[ Replace[ OptionValue[ Method ], { m_String, ___ } :> m ],
     "Alexandrov",
-      With[ { k = Lookup[ methodOptions @ OptionValue[ Method ], "Curvature", 0 ],
+      With[ { k = Lookup[ Replace[ OptionValue[ Method ], { { _String, opt___ } :> { opt }, _ -> { } } ], "Curvature", 0 ],
               d = { a, b } |-> GraphDistance[ graph, a, b ] },
+        { s = Sqrt @ Abs @ k },
         If[ k === 0,
           ( d[ o, u ]^2 + d[ o, v ]^2 - d[ u, v ]^2 ) / 2,
-          d[ o, u ] d[ o, v ] comparisonAngleCos[ d[ u, v ], d[ o, u ], d[ o, v ], k ]
+          d[ o, u ] d[ o, v ] Which[
+            k == 0, ( d[ o, u ]^2 + d[ o, v ]^2 - d[ u, v ]^2 ) / ( 2 d[ o, u ] d[ o, v ] ),
+            k > 0,  ( Cos[ d[ u, v ] s ] - Cos[ d[ o, u ] s ] Cos[ d[ o, v ] s ] ) / ( Sin[ d[ o, u ] s ] Sin[ d[ o, v ] s ] ),
+            k < 0,  ( Cosh[ d[ o, u ] s ] Cosh[ d[ o, v ] s ] - Cosh[ d[ u, v ] s ] ) / ( Sinh[ d[ o, u ] s ] Sinh[ d[ o, v ] s ] ) ]
         ]
       ],
     "Parallelogram",
@@ -42,7 +43,7 @@ InfraScalarProduct[ graph_Graph, o_, u_, v_, OptionsPattern[] ] :=
 
 (* ===================== FindInfraLinearCombination ===================== *)
 
-(* Sum_i lambda_i u_i from o: each scaled term via findInfraScale, the partial sums composed pairwise left-to-right *)
+(* Sum_i lambda_i u_i from o: each scaled term lambda u, the partial sums composed pairwise left-to-right *)
 
 Options[ FindInfraLinearCombination ] = {
   "ScaleMethod" -> Automatic,
@@ -51,27 +52,106 @@ Options[ FindInfraLinearCombination ] = {
 
 FindInfraLinearCombination[ graph_Graph, o_, terms_List,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[] ] :=
-  With[ { lambdas = terms[[ All, 1 ]], us = terms[[ All, 2 ]],
-          scaleM = OptionValue[ "ScaleMethod" ], sumM = OptionValue[ "SumMethod" ] },
-    spreadFind[ Identity, count,
-      Function[ Null,
-        With[ { thisO = #1, thisUs = { ##2 } },
-          { scaled = MapThread[ findInfraScale[ graph, thisO, #2, #1, scaleM ] &,
-                                { lambdas, thisUs } ] },
-          If[ Length[ scaled ] == 0,
-            { thisO },
-            Fold[
-              { acc, next } |->
-                DeleteDuplicates @ Flatten @ Outer[
-                  findInfraSum[ graph, thisO, #1, #2, sumM ] &, acc, next, 1 ],
-              First @ scaled, Rest @ scaled
-            ]
-          ]
-        ]
-      ],
-      o, Sequence @@ us
-    ]
-  ]
+  Module[ { asList, bsList, mids },
+    With[ { lambdas = terms[[ All, 1 ]], us = terms[[ All, 2 ]],
+            scaleM = OptionValue[ "ScaleMethod" ], sumM = OptionValue[ "SumMethod" ],
+            walksOf = w |-> With[ { vs = VertexList @ w },
+              { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+                scan = root |-> Reap[ DepthFirstScan[ w, root, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
+              Which[
+                ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
+                  { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
+                      If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
+                EdgeCount @ w == 0, List /@ If[ spelled, Last /@ vs, vs ],
+                spelled,            { Last /@ SortBy[ vs, First ] },
+                DirectedGraphQ @ w,
+                  Catenate @ Catenate @ Table[ FindPath[ w, a, b, Infinity, All ],
+                    { a, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { b, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
+                True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ],
+            (* the midpoints of a, b: the vertices at distance d(a, b)/2 from both, none when d(a, b) is odd *)
+            midpoint = { a, b } |->
+              With[ { r = GraphDistance[ graph, a, b ] },
+                If[ EvenQ[ r ],
+                  Select[ VertexList[ graph ],
+                    GraphDistance[ graph, a, # ] == r/2 &&
+                    GraphDistance[ graph, b, # ] == r/2 & ],
+                  { } ] ] },
+      { spread = x |-> Which[
+          AssociationQ @ x,         Keys @ x,
+          GraphQ @ x,               walksOf @ x,
+          MatchQ[ x, { __Graph } ], Catenate[ walksOf /@ x ],
+          x === { },                { },
+          True,                     { x } ] },
+      (* lambda * u from o: "Metric" the vertex collinear with o, u at distance |lambda| r, "Line" the index snap along FindInfraLine, "Midpoint" dyadic bisection for lambda in [0, 1] *)
+      { scale = { o0, u, lambda } |-> With[
+          { method = Replace[ scaleM, Automatic :> Which[
+              IntegerQ[ lambda ], "Metric",
+              Element[ Rationalize[ lambda, 0 ], Rationals ] &&
+                IntegerQ[ Log2 @ Denominator @ Rationalize[ lambda, 0 ] ] &&
+                0 <= lambda <= 1, "Midpoint",
+              True, "Line" ] ] },
+          Which[
+            lambda === 0, { o0 },
+            lambda === 1, { u },
+            method === "Metric",
+              With[ { r = GraphDistance[ graph, o0, u ] },
+                If[ r === Infinity, { },
+                  DeleteDuplicates @ Select[ VertexList[ graph ],
+                    GraphDistance[ graph, o0, # ] == Abs[ lambda ] r &&
+                    If[ lambda > 0,
+                      GraphDistance[ graph, o0, # ] + GraphDistance[ graph, #, u ] == r ||
+                        r + GraphDistance[ graph, u, # ] == GraphDistance[ graph, o0, # ],
+                      GraphDistance[ graph, #, o0 ] + r == GraphDistance[ graph, #, u ]
+                    ] & ] ] ],
+            method === "Line",
+              If[ GraphDistance[ graph, o0, u ] === Infinity, { },
+                DeleteDuplicates @ Flatten @ ( ( line |->
+                  With[ { oIdx = First @ FirstPosition[ line, o0, { 0 } ],
+                          uIdx = First @ FirstPosition[ line, u, { 0 } ] },
+                    { targetIdx = oIdx + Round[ lambda ( uIdx - oIdx ) ] },
+                    If[ oIdx > 0 && uIdx > 0 && 1 <= targetIdx <= Length[ line ],
+                      { line[[ targetIdx ]] }, { } ]
+                  ] ) /@ spread @ FindInfraLine[ graph, o0, u, All ] ) ],
+            method === "Midpoint" && 0 < lambda < 1,
+              With[ { rational = Rationalize[ lambda, 0 ] },
+                { depth = If[ Element[ rational, Rationals ] && IntegerQ[ Log2 @ Denominator[ rational ] ],
+                    Log2 @ Denominator[ rational ], 8 ] },
+                asList = { o0 };
+                bsList = { u };
+                Do[
+                  mids = DeleteDuplicates @ Flatten @ Outer[ midpoint, asList, bsList, 1 ];
+                  If[ mids === { }, Break[ ] ];
+                  If[ bit == 0, bsList = mids, asList = mids ],
+                  { bit, IntegerDigits[ Round[ lambda 2^depth ], 2, depth ] } ];
+                asList ] ] ],
+        (* u + v from o: "Metric" { w : d(u, w) == d(o, v), d(v, w) == d(o, u), w != o }, "Parallel" the intersection of the parallels through u and through v *)
+        sum = { o0, u, v } |-> Switch[ sumM,
+          "Metric",
+            With[ { rU = GraphDistance[ graph, o0, u ], rV = GraphDistance[ graph, o0, v ] },
+              DeleteDuplicates @ Select[ VertexList[ graph ],
+                GraphDistance[ graph, u, # ] == rV &&
+                GraphDistance[ graph, v, # ] == rU &&
+                # =!= o0 & ] ],
+          "Parallel",
+            With[ { parallelsAtU = Catenate[ spread @ FindInfraParallel[ graph, #, u, All ] & /@ spread @ FindInfraLine[ graph, o0, v, All ] ],
+                    parallelsAtV = Catenate[ spread @ FindInfraParallel[ graph, #, v, All ] & /@ spread @ FindInfraLine[ graph, o0, u, All ] ] },
+              DeleteDuplicates @ DeleteCases[
+                Flatten @ Outer[ Intersection, parallelsAtU, parallelsAtV, 1 ],
+                o0 | u | v ] ] ] },
+      { reps = DeleteDuplicates @ Flatten[
+          Map[ tuple |-> With[ { thisO = First @ tuple },
+              { scaled = MapThread[ scale[ thisO, #2, #1 ] &, { lambdas, Rest @ tuple } ] },
+              If[ Length[ scaled ] == 0,
+                { thisO },
+                Fold[
+                  { acc, next } |->
+                    DeleteDuplicates @ Flatten @ Outer[ sum[ thisO, #1, #2 ] &, acc, next, 1 ],
+                  First @ scaled, Rest @ scaled ] ] ],
+            Tuples[ spread /@ Prepend[ us, o ] ] ], 1 ] },
+      Switch[ count,
+        All,   reps,
+        _UpTo, Take[ reps, count ],
+        _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ] ]
 
 
 (* ===================== InfraAngle ===================== *)
@@ -88,7 +168,7 @@ InfraAngle[ graph_Graph, triple : { _, _, _ }, opts : OptionsPattern[] ] /;
   InfraAngle[ graph, triple /. fam_Association :> First @ Keys @ fam, opts ]
 
 InfraAngle[ graph_Graph, { q1_, p_, q2_ }, OptionsPattern[] ] :=
-  Switch[ methodName @ OptionValue[ Method ],
+  Switch[ Replace[ OptionValue[ Method ], { m_String, ___ } :> m ],
     "Arclength",
       With[ { radius = Min[ GraphDistance[ graph, p, q1 ], GraphDistance[ graph, p, q2 ] ] },
         { rem = VertexDelete[ graph,
@@ -96,111 +176,13 @@ InfraAngle[ graph_Graph, { q1_, p_, q2_ }, OptionsPattern[] ] :=
         GraphDistance[ rem, q1, q2 ] / radius
       ],
     "Alexandrov",
-      With[ { k = Lookup[ methodOptions @ OptionValue[ Method ], "Curvature", 0 ] },
-        ArcCos @ comparisonAngleCos[
-          GraphDistance[ graph, q1, q2 ],
-          GraphDistance[ graph, p, q1 ],
-          GraphDistance[ graph, p, q2 ],
-          k ]
+      With[ { k = Lookup[ Replace[ OptionValue[ Method ], { { _String, opt___ } :> { opt }, _ -> { } } ], "Curvature", 0 ],
+              a = GraphDistance[ graph, q1, q2 ], b = GraphDistance[ graph, p, q1 ], c = GraphDistance[ graph, p, q2 ] },
+        { s = Sqrt @ Abs @ k },
+        ArcCos @ Which[
+          k == 0, ( b^2 + c^2 - a^2 ) / ( 2 b c ),
+          k > 0,  ( Cos[ a s ] - Cos[ b s ] Cos[ c s ] ) / ( Sin[ b s ] Sin[ c s ] ),
+          k < 0,  ( Cosh[ b s ] Cosh[ c s ] - Cosh[ a s ] ) / ( Sinh[ b s ] Sinh[ c s ] ) ]
       ],
     _, Message[ InfraAngle::badmethod, OptionValue[ Method ] ]; $Failed
-  ]
-
-
-(* ===================== Helpers: findInfraScale ===================== *)
-
-(* lambda * u from o: "Metric" the vertex collinear with o, u at distance |lambda| r, "Line" the index snap along FindInfraLine, "Midpoint" dyadic bisection for lambda in [0, 1] *)
-
-findInfraScale[ graph_Graph, o_, u_, lambda_, Automatic ] :=
-  Which[
-    IntegerQ[ lambda ],
-      findInfraScale[ graph, o, u, lambda, "Metric" ],
-    Element[ Rationalize[ lambda, 0 ], Rationals ] &&
-      IntegerQ[ Log2 @ Denominator @ Rationalize[ lambda, 0 ] ] &&
-      0 <= lambda <= 1,
-      findInfraScale[ graph, o, u, lambda, "Midpoint" ],
-    True,
-      findInfraScale[ graph, o, u, lambda, "Line" ]
-  ]
-
-findInfraScale[ graph_Graph, o_, u_, 0, "Metric" ] := { o }
-findInfraScale[ graph_Graph, o_, u_, 1, "Metric" ] := { u }
-findInfraScale[ graph_Graph, o_, u_, lambda_, "Metric" ] :=
-  With[ { r = GraphDistance[ graph, o, u ] },
-    If[ r === Infinity, { },
-      With[ { target = Abs[ lambda ] r },
-        DeleteDuplicates @ Select[ VertexList[ graph ],
-          GraphDistance[ graph, o, # ] == target &&
-          If[ lambda > 0,
-            GraphDistance[ graph, o, # ] + GraphDistance[ graph, #, u ] == r ||
-              r + GraphDistance[ graph, u, # ] == GraphDistance[ graph, o, # ],
-            GraphDistance[ graph, #, o ] + r == GraphDistance[ graph, #, u ]
-          ] & ]
-      ]
-    ]
-  ]
-
-findInfraScale[ graph_Graph, o_, u_, 0, "Line" ] := { o }
-findInfraScale[ graph_Graph, o_, u_, 1, "Line" ] := { u }
-findInfraScale[ graph_Graph, o_, u_, lambda_, "Line" ] :=
-  With[ { r = GraphDistance[ graph, o, u ] },
-    If[ r === Infinity, { },
-      With[ { lines = infraSpread @ FindInfraLine[ graph, o, u, All ] },
-        DeleteDuplicates @ Flatten @ ( ( line |->
-          With[ { oIdx = First @ FirstPosition[ line, o, { 0 } ],
-                  uIdx = First @ FirstPosition[ line, u, { 0 } ] },
-            { targetIdx = oIdx + Round[ lambda ( uIdx - oIdx ) ] },
-            If[ oIdx > 0 && uIdx > 0 && 1 <= targetIdx <= Length[ line ],
-              { line[[ targetIdx ]] }, { } ]
-          ] ) /@ lines )
-      ]
-    ]
-  ]
-
-findInfraScale[ graph_Graph, o_, u_, 0, "Midpoint" ] := { o }
-findInfraScale[ graph_Graph, o_, u_, 1, "Midpoint" ] := { u }
-findInfraScale[ graph_Graph, o_, u_, lambda_, "Midpoint" ] /; 0 < lambda < 1 :=
-  Module[ { asList = { o }, bsList = { u }, mids,
-            rational = Rationalize[ lambda, 0 ] },
-    With[ { depth = If[ Element[ rational, Rationals ] && IntegerQ[ Log2 @ Denominator[ rational ] ],
-                       Log2 @ Denominator[ rational ], 8 ] },
-      With[ { bits = IntegerDigits[ Round[ lambda 2^depth ], 2, depth ],
-              midpointer = { a, b } |->
-                With[ { r = GraphDistance[ graph, a, b ] },
-                  If[ EvenQ[ r ],
-                    Select[ VertexList[ graph ],
-                      GraphDistance[ graph, a, # ] == r/2 &&
-                      GraphDistance[ graph, b, # ] == r/2 & ],
-                    { } ] ] },
-        Do[
-          mids = DeleteDuplicates @ Flatten @ Outer[ midpointer, asList, bsList, 1 ];
-          If[ mids === { }, Break[ ] ];
-          If[ bit == 0, bsList = mids, asList = mids ],
-          { bit, bits } ]
-      ];
-      asList
-    ]
-  ]
-
-
-(* ===================== Helpers: findInfraSum ===================== *)
-
-(* u + v from o: "Metric" { w : d(u, w) == d(o, v), d(v, w) == d(o, u), w != o }, "Parallel" the intersection of the parallels through u and through v *)
-
-findInfraSum[ graph_Graph, o_, u_, v_, "Metric" ] :=
-  With[ { rU = GraphDistance[ graph, o, u ], rV = GraphDistance[ graph, o, v ] },
-    DeleteDuplicates @ Select[ VertexList[ graph ],
-      GraphDistance[ graph, u, # ] == rV &&
-      GraphDistance[ graph, v, # ] == rU &&
-      # =!= o & ]
-  ]
-
-findInfraSum[ graph_Graph, o_, u_, v_, "Parallel" ] :=
-  With[ { linesOV = infraSpread @ FindInfraLine[ graph, o, v, All ],
-          linesOU = infraSpread @ FindInfraLine[ graph, o, u, All ] },
-    { parallelsAtU = Catenate[ infraSpread @ FindInfraParallel[ graph, #, u, All ] & /@ linesOV ],
-      parallelsAtV = Catenate[ infraSpread @ FindInfraParallel[ graph, #, v, All ] & /@ linesOU ] },
-    DeleteDuplicates @ DeleteCases[
-      Flatten @ Outer[ Intersection, parallelsAtU, parallelsAtV, 1 ],
-      o | u | v ]
   ]

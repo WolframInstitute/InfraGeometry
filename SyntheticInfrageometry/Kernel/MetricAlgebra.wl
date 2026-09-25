@@ -75,8 +75,8 @@ MedianVertices[ graph_Graph, vs_List ] :=
 Options[ FindSegmentHull ] = { "LineStructure" -> None };
 
 FindSegmentHull[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], OptionsPattern[] ] :=
-  With[ { spec = OptionValue[ "LineStructure" ], S = hullVertices @ s },
-    vertexSet @ If[ spec === None,
+  With[ { spec = OptionValue[ "LineStructure" ], S = Keys @ InfraDensity[ graph, s ] },
+    Union @ If[ spec === None,
       FixedPoint[
         T |-> Union[ T, Catenate @ Map[
           pair |-> MetricInterval[ graph, pair[[ 1 ]], pair[[ 2 ]] ], Subsets[ T, { 2 } ] ] ],
@@ -99,4 +99,4 @@ FindSegmentHull[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], OptionsPattern
 Options[ SegmentHullQ ] = { "LineStructure" -> None };
 
 SegmentHullQ[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], opts : OptionsPattern[] ] :=
-  With[ { vs = hullVertices @ s }, FindSegmentHull[ graph, vs, opts ] === Union @ vs ]
+  With[ { vs = Keys @ InfraDensity[ graph, s ] }, FindSegmentHull[ graph, vs, opts ] === vs ]

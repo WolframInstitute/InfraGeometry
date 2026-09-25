@@ -7,11 +7,25 @@ Package["WolframInstitute`SyntheticInfrageometry`"]
 
 TurningAngles[ _Graph, { } ] := { }
 
-(* a walk graph is read as its vertex sequence, closed when it is a cycle *)
-TurningAngles[ graph_Graph, w_Graph ] := TurningAngles[ graph, First @ walkRealisations @ w ]
-
-(* turning happens only at the knots of a polyline -- a List of geodesic legs -- since the interior of each leg is straight by construction *)
-TurningAngles[ graph_Graph, legs : { __Graph } ] := TurningAngles[ graph, polylineToKnots @ legs ]
+(* a walk graph is read as its vertex sequence, closed when it is a cycle; turning happens only at the knots of a polyline -- a List of geodesic legs -- since the interior of each leg is straight by construction *)
+TurningAngles[ graph_Graph, x : ( _Graph | { __Graph } ) ] :=
+  With[ { walksOf = w |-> With[ { vs = VertexList @ w },
+      { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+        scan = root |-> Reap[ DepthFirstScan[ w, root, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
+      Which[
+        ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
+          { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
+              If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
+        EdgeCount @ w == 0, List /@ If[ spelled, Last /@ vs, vs ],
+        spelled,            { Last /@ SortBy[ vs, First ] },
+        DirectedGraphQ @ w,
+          Catenate @ Catenate @ Table[ FindPath[ w, a, b, Infinity, All ],
+            { a, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { b, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
+        True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ] },
+    TurningAngles[ graph,
+      If[ GraphQ @ x,
+        First @ walksOf @ x,
+        Prepend[ Last @ First @ walksOf @ # & /@ x, First @ First @ walksOf @ First @ x ] ] ] ]
 
 TurningAngles[ graph_Graph, path : { __ } ] /; ! MatchQ[ path, { __Graph } ] :=
   With[ { triples =
