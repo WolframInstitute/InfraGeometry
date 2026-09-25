@@ -486,6 +486,7 @@ InfraCircleQ[ graph_Graph, w_Graph ] :=
       scan = v |-> Reap[ DepthFirstScan[ w, v, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
     AllTrue[
       Which[
+        vs === { },         { },
         ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
           { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
               If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
