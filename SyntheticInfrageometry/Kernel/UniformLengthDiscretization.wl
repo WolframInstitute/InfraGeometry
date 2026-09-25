@@ -1,16 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageScope[hardSphereFixup]
-PackageScope[fibonacciSeed]
-PackageScope[uniformLengthSeed]
-PackageScope[packRetraction]
-PackageScope[packMeasure]
-PackageScope[contactGraph]
-PackageScope[contactEdgeLengths]
-PackageScope[iterativeProjectionPack]
-PackageScope[constrainedPack]
-PackageScope[uniformLengthRepulsion]
-
 
 (* ===================== Unit-length discretization & embedding ===================== *)
 
@@ -20,117 +9,6 @@ PackageScope[uniformLengthRepulsion]
    surface -- and returns that contact graph; UniformLengthEmbedding is the inverse, realising
    an abstract graph in R^d with every edge a unit segment (the iterative sibling of
    the declarative ComplexEmbedding). *)
-
-
-(* one pass: every pair of centers closer than 2r is pushed apart to distance exactly 2r *)
-hardSphereFixup[points_ ? MatrixQ, radius_] := Module[{disp = 0. points, neighbors},
-	neighbors = Nearest[points -> "Index"][points, {Infinity, 2. radius}];
-	Do[
-		With[{v = points[[i]] - points[[j]], dist = EuclideanDistance[points[[i]], points[[j]]]},
-			If[10.^-12 < dist < 2 radius,
-				With[{delta = 0.5 (2 radius - dist) v / dist},
-					disp[[i]] += delta; disp[[j]] -= delta
-				]
-			]
-		],
-		{i, Length[points]}, {j, Select[neighbors[[i]], # > i &]}
-	];
-	points + disp
-]
-
-
-(* near-uniform points on the unit 2-sphere: golden-angle azimuth, equal-area height *)
-fibonacciSeed[n_Integer] := Table[
-	With[{phi = N[Pi (3 - Sqrt[5])] i, z = 1. - 2. (i + 0.5) / n},
-		With[{r = Sqrt[1. - z^2]}, {r Cos[phi], r Sin[phi], z}]
-	],
-	{i, 0, n - 1}
-]
-
-
-(* deterministic Fibonacci seed for a Sphere or ellipsoid shell; random sample inside/on any other region *)
-uniformLengthSeed[Sphere[c : {_, _, _} : {0, 0, 0}, r_ : 1], n_] := (c + r # & ) /@ fibonacciSeed[n]
-uniformLengthSeed[RegionBoundary[Ellipsoid[c : {_, _, _}, s : {_, _, _}]], n_] := (c + s # & ) /@ fibonacciSeed[n]
-uniformLengthSeed[region_, n_] := RandomPoint[region, n]
-
-
-(* retraction of a point list back into/onto the region: project onto a Sphere, radially confine
-   to a Ball/Ellipsoid, nearest-point otherwise (RegionNearest fills solids, projects surfaces) *)
-packRetraction[Sphere[c : {_, _, _} : {0, 0, 0}, r_ : 1]] := pts |-> (c + r Normalize[# - c] & ) /@ pts
-packRetraction[Ball[c : {_, _, _} : {0, 0, 0}, r_ : 1]] := pts |-> (If[EuclideanDistance[c, #] <= r, #, c + r Normalize[# - c]] & ) /@ pts
-packRetraction[Ellipsoid[c : {_, _, _}, s : {_, _, _}]] := pts |-> (With[{q = (# - c) / s}, If[q . q <= 1, #, c + (# - c) / Sqrt[q . q]]] & ) /@ pts
-packRetraction[RegionBoundary[Ellipsoid[c : {_, _, _}, s : {_, _, _}]]] := pts |-> (c + (# - c) / Sqrt[Total[((# - c) / s)^2]] & ) /@ pts
-packRetraction[region_] := pts |-> RegionNearest[region, pts]
-
-
-(* content (length / area / volume in the region's own dimension) used to calibrate the packing
-   radius; analytic for the common heads, RegionMeasure otherwise *)
-packMeasure[Sphere[_ : {0, 0, 0}, r_ : 1]] := 4. Pi r^2
-packMeasure[Ball[_ : {0, 0, 0}, r_ : 1]] := 4. Pi r^3 / 3
-packMeasure[Ellipsoid[_, {a_, b_, c_}]] := 4. Pi a b c / 3
-packMeasure[RegionBoundary[Ellipsoid[_, {a_, b_, c_}]]] := With[{p = 1.6075}, 4. Pi ((a^p b^p + a^p c^p + b^p c^p) / 3)^(1 / p)]
-packMeasure[region_] := RegionMeasure[region]
-
-
-(* iterative projection: alternate hard-sphere fixup with a retraction onto the region *)
-iterativeProjectionPack[seed_, radius_, retract_, step_, maxIter_, tol_] := Module[{points = N[seed], previous, iter = 0},
-	While[iter < maxIter,
-		previous = points;
-		points = hardSphereFixup[points, radius];
-		points = points + step (retract[points] - points);
-		If[Max[Norm /@ (points - previous)] < tol, Break[]];
-		iter++
-	];
-	points
-]
-
-
-(* declarative packing: minimize total squared region distance subject to |x_i - x_j| >= 2r;
-   KKT activity makes the contact constraints tight, so contacts land at exactly 2r.  RegionDistance
-   is zero inside a solid (so the points fill it) and is NumericQ-guarded so NMinimize only ever
-   evaluates it on concrete points *)
-constrainedPack[seed_, radius_, region_] := Module[{
-	dim = Length[First[seed]], vars, dist
-},
-	dist[p : {__ ? NumericQ}] := RegionDistance[region, p];
-	vars = Table[Unique["ulx"], Length[seed], dim];
-	Partition[
-		Flatten[vars] /. Last @ NMinimize[
-			{
-				Total[dist[#]^2 & /@ vars],
-				And @@ Flatten @ Table[
-					(vars[[i]] - vars[[j]]) . (vars[[i]] - vars[[j]]) >= (2 radius)^2,
-					{i, Length[vars]}, {j, i + 1, Length[vars]}
-				]
-			},
-			Flatten[vars]
-		],
-		dim
-	]
-]
-
-
-(* edges between center pairs whose distance lies in the relative contact band 2r (1 +/- tol);
-   tol is a fraction of 2r so the first neighbor shell is caught at any radius scale.  Carries
-   the packing as coordinates *)
-contactGraph[points_, radius_, tol_] := With[{nf = Nearest[points -> "Index"], band = 2 radius tol},
-	Graph[
-		Range[Length[points]],
-		Flatten @ Table[
-			UndirectedEdge[i, #] & /@ Select[
-				nf[points[[i]], {Infinity, 2 radius + band}],
-				# > i && Abs[EuclideanDistance[points[[i]], points[[#]]] - 2 radius] <= band &
-			],
-			{i, Length[points]}
-		],
-		VertexCoordinates -> points
-	]
-]
-
-
-(* lengths of the contact edges -- an exactness probe for the relaxation *)
-contactEdgeLengths[points_, radius_, tol_] :=
-	EuclideanDistance[points[[#[[1]]]], points[[#[[2]]]]] & /@ (List @@@ EdgeList[contactGraph[points, radius, tol]])
 
 
 Options[UniformLengthGraph] = {
@@ -153,26 +31,92 @@ Options[UniformLengthGraph] = {
 UniformLengthGraph[region_ ? RegionQ, n_Integer, opts : OptionsPattern[]] := Module[{
 	radius = OptionValue["Radius"],
 	dim = RegionDimension[region],
-	points
+	fibonacci, seed, retract, points, previous, iter = 0, disp, neighbors, regionDistance, vars
 },
 	radius = If[radius === Automatic,
-		0.5 OptionValue["Overpack"] Switch[dim,
-			1, packMeasure[region] / n,
-			2, Sqrt[2 packMeasure[region] / (n Sqrt[3.])],
-			_, 1.12 (packMeasure[region] / n)^(1 / 3)
+		With[{measure = Replace[region, {
+				Sphere[_ : {0, 0, 0}, r_ : 1] :> 4. Pi r^2,
+				Ball[_ : {0, 0, 0}, r_ : 1] :> 4. Pi r^3 / 3,
+				Ellipsoid[_, {a_, b_, c_}] :> 4. Pi a b c / 3,
+				RegionBoundary[Ellipsoid[_, {a_, b_, c_}]] :> 4. Pi ((a^1.6075 b^1.6075 + a^1.6075 c^1.6075 + b^1.6075 c^1.6075) / 3)^(1 / 1.6075),
+				_ :> RegionMeasure[region]
+			}]},
+			0.5 OptionValue["Overpack"] Switch[dim,
+				1, measure / n,
+				2, Sqrt[2 measure / (n Sqrt[3.])],
+				_, 1.12 (measure / n)^(1 / 3)
+			]
 		],
 		N[radius]
 	];
+	fibonacci = Table[
+		With[{phi = N[Pi (3 - Sqrt[5])] i, z = 1. - 2. (i + 0.5) / n}, {rho = Sqrt[1. - z^2]}, {rho Cos[phi], rho Sin[phi], z}],
+		{i, 0, n - 1}
+	];
+	seed = Replace[region, {
+		Sphere[c : {_, _, _} : {0, 0, 0}, r_ : 1] :> (c + r # & ) /@ fibonacci,
+		RegionBoundary[Ellipsoid[c : {_, _, _}, s : {_, _, _}]] :> (c + s # & ) /@ fibonacci,
+		_ :> RandomPoint[region, n]
+	}];
 	points = Switch[OptionValue[Method],
 		"ConstrainedPacking",
-			constrainedPack[uniformLengthSeed[region, n], radius, region],
+			regionDistance[p : {__ ? NumericQ}] := RegionDistance[region, p];
+			vars = Table[Unique["ulx"], Length[seed], Length[First[seed]]];
+			Partition[
+				Flatten[vars] /. Last @ NMinimize[
+					{
+						Total[regionDistance[#]^2 & /@ vars],
+						And @@ Flatten @ Table[
+							(vars[[i]] - vars[[j]]) . (vars[[i]] - vars[[j]]) >= (2 radius)^2,
+							{i, Length[vars]}, {j, i + 1, Length[vars]}
+						]
+					},
+					Flatten[vars]
+				],
+				Length[First[seed]]
+			],
 		_,
-			iterativeProjectionPack[
-				uniformLengthSeed[region, n], radius, packRetraction[region],
-				OptionValue["ProjectionStep"], OptionValue["MaxIterations"], OptionValue["Tolerance"]
-			]
+			retract = Replace[region, {
+				Sphere[c : {_, _, _} : {0, 0, 0}, r_ : 1] :> (pts |-> (c + r Normalize[# - c] & ) /@ pts),
+				Ball[c : {_, _, _} : {0, 0, 0}, r_ : 1] :> (pts |-> (If[EuclideanDistance[c, #] <= r, #, c + r Normalize[# - c]] & ) /@ pts),
+				Ellipsoid[c : {_, _, _}, s : {_, _, _}] :> (pts |-> (With[{q = (# - c) / s}, If[q . q <= 1, #, c + (# - c) / Sqrt[q . q]]] & ) /@ pts),
+				RegionBoundary[Ellipsoid[c : {_, _, _}, s : {_, _, _}]] :> (pts |-> (c + (# - c) / Sqrt[Total[((# - c) / s)^2]] & ) /@ pts),
+				_ :> (pts |-> RegionNearest[region, pts])
+			}];
+			points = N[seed];
+			While[iter < OptionValue["MaxIterations"],
+				previous = points;
+				disp = 0. points;
+				neighbors = Nearest[points -> "Index"][points, {Infinity, 2. radius}];
+				Do[
+					With[{v = points[[i]] - points[[j]], dist = EuclideanDistance[points[[i]], points[[j]]]},
+						If[10.^-12 < dist < 2 radius,
+							With[{delta = 0.5 (2 radius - dist) v / dist},
+								disp[[i]] += delta; disp[[j]] -= delta
+							]
+						]
+					],
+					{i, Length[points]}, {j, Select[neighbors[[i]], # > i &]}
+				];
+				points = points + disp;
+				points = points + OptionValue["ProjectionStep"] (retract[points] - points);
+				If[Max[Norm /@ (points - previous)] < OptionValue["Tolerance"], Break[]];
+				iter++
+			];
+			points
 	];
-	With[{cg = contactGraph[points, radius, OptionValue["ContactTolerance"]]},
+	With[{nf = Nearest[points -> "Index"], band = 2 radius OptionValue["ContactTolerance"]},
+		{cg = Graph[
+			Range[Length[points]],
+			Flatten @ Table[
+				UndirectedEdge[i, #] & /@ Select[
+					nf[points[[i]], {Infinity, 2 radius + band}],
+					# > i && Abs[EuclideanDistance[points[[i]], points[[#]]] - 2 radius] <= band &
+				],
+				{i, Length[points]}
+			],
+			VertexCoordinates -> points
+		]},
 		If[OptionValue["KeepCoordinates"], cg, Graph[cg, VertexCoordinates -> Automatic]]
 	]
 ]
@@ -197,7 +141,7 @@ UniformLengthEmbedding[graph_ ? GraphQ, opts : OptionsPattern[]] := Module[{
 	repulse = OptionValue["NonEdgeRepulsion"],
 	maxStep = OptionValue["MaxStepPerVertex"],
 	init = OptionValue["InitialEmbedding"],
-	vlist = VertexList[graph], n, vIdx, edges, points, previous, d, iter = 0, norms
+	vlist = VertexList[graph], n, vIdx, edges, points, previous, d, iter = 0, norms, acc
 },
 	n = Length[vlist];
 	vIdx = AssociationThread[vlist -> Range[n]];
@@ -224,7 +168,23 @@ UniformLengthEmbedding[graph_ ? GraphQ, opts : OptionsPattern[]] := Module[{
 			],
 			{k, Length[edges]}
 		];
-		If[repulse > 0., d += uniformLengthRepulsion[points, edges, repulse]];
+		(* soft repulsion between nearby non-adjacent pairs, preventing degenerate collapse *)
+		If[repulse > 0.,
+			acc = 0. points;
+			With[{es = AssociationThread[Sort /@ edges -> True], neighbors = Nearest[points -> "Index"][points, {Infinity, 0.9}]},
+				Do[
+					If[j > i && ! KeyExistsQ[es, Sort[{i, j}]],
+						With[{v = points[[i]] - points[[j]], dist = EuclideanDistance[points[[i]], points[[j]]]},
+							If[10.^-12 < dist < 0.9,
+								With[{delta = repulse 0.5 (0.9 - dist) v / dist}, acc[[i]] += delta; acc[[j]] -= delta]
+							]
+						]
+					],
+					{i, Length[points]}, {j, neighbors[[i]]}
+				]
+			];
+			d += acc
+		];
 		(* clip per-vertex moves so long initial edges do not make the relaxation diverge *)
 		norms = Norm /@ d;
 		d = MapThread[If[#2 > maxStep, #1 (maxStep / #2), #1] &, {d, norms}];
@@ -235,25 +195,3 @@ UniformLengthEmbedding[graph_ ? GraphQ, opts : OptionsPattern[]] := Module[{
 	points
 ]
 
-
-(* soft repulsion between nearby non-adjacent pairs, preventing degenerate collapse *)
-uniformLengthRepulsion[points_, edges_, strength_] := Module[{
-	n = Length[points], acc = 0. points,
-	es = AssociationThread[Sort /@ edges -> True],
-	neighbors = Nearest[points -> "Index"][points, {Infinity, 0.9}]
-},
-	Do[
-		Do[
-			If[j > i && ! KeyExistsQ[es, Sort[{i, j}]],
-				With[{v = points[[i]] - points[[j]], dist = EuclideanDistance[points[[i]], points[[j]]]},
-					If[10.^-12 < dist < 0.9,
-						With[{delta = strength 0.5 (0.9 - dist) v / dist}, acc[[i]] += delta; acc[[j]] -= delta]
-					]
-				]
-			],
-			{j, neighbors[[i]]}
-		],
-		{i, n}
-	];
-	acc
-]

@@ -538,7 +538,7 @@ VerificationTest[
 
 (* Straight-axis tiebreaker: on GridGraph[{5,5}] at the central vertex 13
    both straight row+column axes and L-staircase axes exist with the same
-   length 5; the axisSortKey now ranks by ascending endpoint-geodesic
+   length 5; the axis order ranks by ascending endpoint-geodesic
    multiplicity, so the straight frame {11..15, 3-8-13-18-23} (multiplicity
    1 each) outranks any L (multiplicity > 1). *)
 

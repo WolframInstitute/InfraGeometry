@@ -5,9 +5,6 @@ Package["WolframInstitute`SyntheticInfrageometry`"]
    resolving sets, the resistance-matching spectral embedding, minimum ball covers,
    and the orthogonal-frame and spanning-axis searches built on them. *)
 
-PackageScope[resistanceEmbeddingMatrix]
-
-
 (* ===================== Radar coordinates & resolving sets ===================== *)
 
 (* the distance vector (d(v, b1), ..., d(v, bk)).  An anchor is a vertex, a set, a density
@@ -20,7 +17,7 @@ Options[ RadarCoordinates ] = { "AnchorAggregation" -> Min };
 RadarCoordinates[ g_Graph, b_List, v : Except[ _Rule | _RuleDelayed | _Association ], opts : OptionsPattern[] ] /;
   MemberQ[ VertexList[ g ], v ] :=
   With[ { agg = OptionValue[ "AnchorAggregation" ] },
-    infraAnchorDistance[ g, v, #, agg ] & /@ b
+    ( anchor |-> agg[ GraphDistance[ g, v, # ] & /@ Keys @ InfraDensity[ g, anchor ] ] ) /@ b
   ]
 
 (* Outer over a crisp basis stays the fast path: one GraphDistance call per (vertex, anchor) *)
@@ -83,10 +80,15 @@ Options[ResistanceCoordinates] = {"Rescaling" -> "ResistanceMatching", "Dimensio
    (Klein-Randic).  "Rescaling" -> "None" gives plain Laplacian eigenvectors,
    "Diffusion" -> t the diffusion-map embedding; "Origin" -> v recentres on v. *)
 ResistanceCoordinates[g_Graph, opts : OptionsPattern[]] :=
-    With[{mat = resistanceEmbeddingMatrix[g, OptionValue["Rescaling"], OptionValue["Dimension"]], origin = OptionValue["Origin"]},
-        With[{originVec = If[origin === None, ConstantArray[0., Length @ First @ mat], mat[[ First @ FirstPosition[VertexList[g], origin] ]]]},
-            AssociationThread[VertexList[g], # - originVec & /@ mat]
-        ]
+    With[{es = Eigensystem[N @ Normal @ KirchhoffMatrix[g]], rescaling = OptionValue["Rescaling"], dimSpec = OptionValue["Dimension"], origin = OptionValue["Origin"]},
+        {ord = Ordering[es[[1]]]},
+        {vals = es[[1, ord]], vecs = es[[2, ord]]},
+        {keep = Select[Range @ Length @ vals, vals[[#]] > 10^-10 Max[Abs @ vals, 1] &]},
+        {idx = Take[keep, Replace[dimSpec, {Automatic | All :> Length[keep], UpTo[k_Integer] :> Min[k, Length[keep]], k_Integer :> Min[k, Length[keep]]}]]},
+        {weights = Replace[rescaling, {"ResistanceMatching" :> 1 / Sqrt[vals[[idx]]], "None" :> ConstantArray[1, Length[idx]], ("Diffusion" -> t_) :> Exp[-t vals[[idx]]]}]},
+        {mat = Transpose[weights vecs[[idx]]]},
+        {originVec = If[origin === None, ConstantArray[0., Length @ First @ mat], mat[[ First @ FirstPosition[VertexList[g], origin] ]]]},
+        AssociationThread[VertexList[g], # - originVec & /@ mat]
     ]
 
 ResistanceCoordinates[g_Graph, v_, opts : OptionsPattern[]] /; MemberQ[VertexList[g], v] :=
@@ -184,16 +186,29 @@ DominationNumber[g_Graph, r_ : 1, targets : (_List | All) : All] := Length @ Fin
 Options[ OrthogonalCoordinates ] = { "SelectCoordinate" -> "Centered" };
 
 OrthogonalCoordinates[ g_Graph, c_, axes_List, v_, opts : OptionsPattern[] ] /;
-    pointQ[ g, v ] :=
+    VertexQ[ g, v ] :=
   With[ {
-      centerVs  = infraVertexSet[ g, c ],
-      axisPaths = Replace[ #, w_Graph :> First @ walkRealisations @ w ] & /@ axes,
-      sel       = OptionValue[ "SelectCoordinate" ]
+      centerVs  = Keys @ InfraDensity[ g, c ],
+      axisPaths = Replace[ #, w_Graph :> With[ { vs = VertexList @ w },
+        { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+          scan = u |-> Reap[ DepthFirstScan[ w, u, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
+        Which[
+          ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
+            If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
+              If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ],
+          spelled,            Last /@ SortBy[ vs, First ],
+          EdgeCount @ w == 0, If[ DirectedGraphQ @ w, Take[ vs, 1 ], vs ],
+          DirectedGraphQ @ w,
+            First @ Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
+              { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
+          True, scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] ] ] ] & /@ axes,
+      sel       = OptionValue[ "SelectCoordinate" ],
+      (* every 0-based layer tied at the minimum distance from u to the axis *)
+      layerIndex = { axis, u } |-> With[ { dists = GraphDistance[ g, u, # ] & /@ axis }, Flatten @ Position[ dists, Min @ dists ] - 1 ]
     },
     Map[
-      axis |-> selectCoordinate[ sel,
-        axisLayerIndex[ g, axis, v ] -
-          First @ axisLayerIndex[ g, axis, perAxisAnchor[ axis, centerVs ] ] ],
+      axis |-> With[ { ix = layerIndex[ axis, v ] - First @ layerIndex[ axis, SelectFirst[ centerVs, MemberQ[ axis, # ] &, First @ centerVs ] ] },
+        Switch[ sel, "Centered", If[ MemberQ[ ix, 0 ], 0, Round @ Median[ ix ] ], All, ix, _, sel @ ix ] ],
       axisPaths ]
   ]
 
@@ -213,39 +228,117 @@ Options[ FindInfraOrthogonalFrame ] = {
   "SelectCoordinate" -> "Centered"
 };
 
-axisLengthPattern = All | _Integer | _UpTo | { _, _ };
+(* the closures live in Module locals and never in the RHS of a recursive definition: a pattern variable of the same name as a closure's own parameter would rewrite it on substitution *)
 
-FindInfraOrthogonalFrame[ g_Graph, c_, axisLength : axisLengthPattern, opts : OptionsPattern[] ] /; pointQ[ g, c ] :=
-  With[ { result = findOrthogonalFrameCore[ g, c, axisLength, 1, { opts } ] },
-    If[ result =!= { }, wrapFrame @ First @ result, $Failed ]
+FindInfraOrthogonalFrame[ g_Graph, c_, axisLength : ( All | _Integer | _UpTo | { _, _ } ),
+    count : ( All | UpTo[ _Integer ] | _Integer ) : Automatic, opts : OptionsPattern[] ] /; VertexQ[ g, c ] :=
+  Module[ { frames = { }, canonForms = { }, layerIndex, centredQ, canonical, axisMult, axisKey, frameKey, enumerate, perpQ,
+            recordQ, recurseQ, dfs },
+    With[
+      { lengths = Replace[ axisLength, { All -> { 1, Infinity }, k_Integer :> { k, k }, UpTo[ k_ ] :> { 1, k } } ] },
+      { minLength = First @ lengths, maxDepth = Last @ lengths },
+      (* Localize: every distance the search needs lies in B(c, 2 maxDepth). *)
+      { localG = If[ maxDepth === Infinity, g, NeighborhoodGraph[ g, c, 2 maxDepth ] ] },
+      { spray = GeodesicSprayGraph[ localG, c, "AxisLength" -> Replace[ maxDepth, Infinity -> All ] ],
+        axisCountSpec = "AxisCount" /. { opts } /. "AxisCount" -> Automatic,
+        methodSpec = Replace[ Method /. { opts } /. Method -> Automatic, Automatic -> "Exhaustive" ],
+        sel = "SelectCoordinate" /. { opts } /. "SelectCoordinate" -> "Centered",
+        limit = Replace[ count, { Automatic -> 1, UpTo[ k_ ] :> k } ] },
+      { method = Replace[ methodSpec, { m_String, ___ } :> m ] },
+      { sampleSize = If[ method === "Greedy", All,
+            "BranchSampleSize" /. { opts } /. "BranchSampleSize" -> All ],
+        maxFrames  = If[ method === "Greedy" && IntegerQ @ limit, limit, Infinity ] },
+      layerIndex = { axis, u } |-> With[ { dists = GraphDistance[ localG, u, # ] & /@ axis }, Flatten @ Position[ dists, Min @ dists ] - 1 ];
+      (* the same condition as the OrthogonalCoordinates coordinate of w being 0 *)
+      centredQ = { axis, w } |-> With[ { ix = layerIndex[ axis, w ] - First @ layerIndex[ axis, c ] },
+        Switch[ sel, "Centered", If[ MemberQ[ ix, 0 ], 0, Round @ Median[ ix ] ], All, ix, _, sel @ ix ] === 0 ];
+      canonical = axes |-> Sort[ First @ Sort[ { #, Reverse @ # } ] & /@ axes ];
+      (* precomputed via GeodesicMultiplicityMatrix so the per-axis lookup is O(1) *)
+      axisMult = With[ { mMat = Last @ GeodesicMultiplicityMatrix[ localG ],
+                         posMap = AssociationThread[ VertexList[ localG ] -> Range @ VertexCount[ localG ] ] },
+        axis |-> mMat[[ posMap[ First @ axis ], posMap[ Last @ axis ] ]] ];
+      (* length first, then ascending endpoint-geodesic-multiplicity so straight axes outrank L-shapes on grids, then lex-min for determinism *)
+      axisKey = axis |-> { -Length[ axis ], axisMult[ axis ], Min[ axis, Reverse @ axis ] };
+      frameKey = frame |-> { -Length[ frame ], -Total[ Length /@ frame ], Total[ axisMult /@ frame ], canonical[ frame ] };
+      (* every candidate line through c with both half-axes of depth >= minLength, paired by antipodal endpoints and deduped on the orientation-canonical sequence *)
+      enumerate = dag |-> With[
+        { dist = AssociationThread[ VertexList[ dag ], GraphDistance[ dag, c, # ] & /@ VertexList[ dag ] ],
+          halvesByEnd = GroupBy[ Catenate[ FindPath[ dag, c, #, Infinity, All ] & /@ VertexList[ dag ] ], Last ] },
+        { vertsAtDepth = Select[ VertexList[ dag ], dist[ # ] >= minLength & ] },
+        DeleteDuplicatesBy[
+          Catenate @ Map[
+            pair |-> Flatten[
+              Outer[
+                { hPos, hNeg } |-> Join[ Reverse @ hNeg, Rest @ hPos ],
+                halvesByEnd[ pair[[ 1 ]] ], halvesByEnd[ pair[[ 2 ]] ], 1 ], 1 ],
+            Select[ Subsets[ vertsAtDepth, { 2 } ],
+              pair |-> GraphDistance[ localG, pair[[ 1 ]], pair[[ 2 ]] ] === dist[ pair[[ 1 ]] ] + dist[ pair[[ 2 ]] ] ]
+          ],
+          First @ Sort[ { #, Reverse @ # } ] & ] ];
+      perpQ = If[ method === "Predicate",
+        With[ { subOpts = Replace[ methodSpec, { { _String, o___ } :> { o }, _ -> { } } ] },
+          { testVal = "Test" /. subOpts /. { "Test" -> Automatic } },
+          { predOpts = Join[
+              If[ testVal === Automatic, { }, { Method -> testVal } ],
+              Cases[ subOpts, ( "Radius" | "Tolerance" | "Equality" ) -> _ ] ] },
+          { chosen, cand } |-> AllTrue[ chosen, prev |-> InfraPerpendicularQ[ localG, prev, cand, Sequence @@ predOpts ] ] ],
+        (* default oracle: every vertex of every previously chosen axis projects to the centre on the candidate *)
+        { chosen, cand } |-> AllTrue[ chosen, prev |-> AllTrue[ prev, w |-> centredQ[ cand, w ] ] ] ];
+      recordQ = { len, vAxes } |-> Switch[ axisCountSpec,
+        Automatic, vAxes === { } && len > 0,
+        All,       len > 0,
+        _Integer,  len === axisCountSpec,
+        _UpTo,     len === First @ axisCountSpec || ( vAxes === { } && len > 0 ) ];
+      recurseQ = { len, vAxes } |-> Switch[ axisCountSpec,
+        Automatic | All,  vAxes =!= { },
+        _Integer,         len < axisCountSpec && vAxes =!= { },
+        _UpTo,            len < First @ axisCountSpec && vAxes =!= { } ];
+      dfs[ sub_, currentAxes_ ] :=
+        With[ { len = Length[ currentAxes ], validAxes = Select[ enumerate[ sub ], perpQ[ currentAxes, # ] & ] },
+          If[ recordQ[ len, validAxes ] && ! MemberQ[ canonForms, canonical[ currentAxes ] ],
+            AppendTo[ canonForms, canonical[ currentAxes ] ];
+            AppendTo[ frames, currentAxes ];
+            If[ Length[ frames ] >= maxFrames, Throw[ Null ] ]
+          ];
+          If[ recurseQ[ len, validAxes ],
+            Scan[
+              axis |-> dfs[ Subgraph[ sub, Select[ VertexList[ sub ], centredQ[ axis, # ] & ] ], Append[ currentAxes, axis ] ],
+              If[ sampleSize === All || Length[ validAxes ] <= sampleSize,
+                SortBy[ validAxes, axisKey ],
+                RandomSample[ SortBy[ validAxes, axisKey ], sampleSize ] ] ]
+          ]
+        ];
+      Catch[ dfs[ spray, { } ] ];
+      frames = If[ method === "Greedy", frames, SortBy[ frames, frameKey ] ];
+      Switch[ count,
+        Automatic, If[ frames =!= { }, PathGraph[ #, DirectedEdges -> True ] & /@ First @ frames, $Failed ],
+        All,       Map[ PathGraph[ #, DirectedEdges -> True ] &, frames, { 2 } ],
+        _UpTo,     Map[ PathGraph[ #, DirectedEdges -> True ] &, Take[ frames, count ], { 2 } ],
+        _,         If[ Length[ frames ] >= count, Map[ PathGraph[ #, DirectedEdges -> True ] &, Take[ frames, count ], { 2 } ], $Failed ] ]
+    ]
   ]
 
-FindInfraOrthogonalFrame[ g_Graph, c_, axisLength : axisLengthPattern, All, opts : OptionsPattern[] ] /; pointQ[ g, c ] :=
-  wrapFrame /@ findOrthogonalFrameCore[ g, c, axisLength, All, { opts } ]
-
-FindInfraOrthogonalFrame[ g_Graph, c_, axisLength : axisLengthPattern, UpTo[ n_Integer ], opts : OptionsPattern[] ] /; pointQ[ g, c ] :=
-  wrapFrame /@ Take[ findOrthogonalFrameCore[ g, c, axisLength, n, { opts } ], UpTo[ n ] ]
-
-FindInfraOrthogonalFrame[ g_Graph, c_, axisLength : axisLengthPattern, n_Integer, opts : OptionsPattern[] ] /; pointQ[ g, c ] :=
-  With[ { result = findOrthogonalFrameCore[ g, c, axisLength, n, { opts } ] },
-    If[ Length[ result ] >= n, wrapFrame /@ Take[ result, n ], $Failed ]
-  ]
-
-
-FindInfraOrthogonalFrame[ g_Graph, ip_Association, axisLength : axisLengthPattern, opts : OptionsPattern[] ] /; SubsetQ[ VertexList[ g ], Keys @ ip ] :=
-  With[ { result = findOrthogonalFrameCore[ g, ip, axisLength, 1, { opts } ] },
-    If[ result =!= { }, wrapFrame @ First @ result, $Failed ]
-  ]
-
-FindInfraOrthogonalFrame[ g_Graph, ip_Association, axisLength : axisLengthPattern, All, opts : OptionsPattern[] ] /; SubsetQ[ VertexList[ g ], Keys @ ip ] :=
-  wrapFrame /@ findOrthogonalFrameCore[ g, ip, axisLength, All, { opts } ]
-
-FindInfraOrthogonalFrame[ g_Graph, ip_Association, axisLength : axisLengthPattern, UpTo[ n_Integer ], opts : OptionsPattern[] ] /; SubsetQ[ VertexList[ g ], Keys @ ip ] :=
-  wrapFrame /@ Take[ findOrthogonalFrameCore[ g, ip, axisLength, n, { opts } ], UpTo[ n ] ]
-
-FindInfraOrthogonalFrame[ g_Graph, ip_Association, axisLength : axisLengthPattern, n_Integer, opts : OptionsPattern[] ] /; SubsetQ[ VertexList[ g ], Keys @ ip ] :=
-  With[ { result = findOrthogonalFrameCore[ g, ip, axisLength, n, { opts } ] },
-    If[ Length[ result ] >= n, wrapFrame /@ Take[ result, n ], $Failed ]
+FindInfraOrthogonalFrame[ g_Graph, ip_Association, axisLength : ( All | _Integer | _UpTo | { _, _ } ),
+    count : ( All | UpTo[ _Integer ] | _Integer ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ VertexList[ g ], Keys @ ip ] :=
+  With[
+    { method = Replace[ Replace[ Method /. { opts } /. Method -> Automatic, Automatic -> "Exhaustive" ], { m_String, ___ } :> m ],
+      limit = Replace[ count, { Automatic -> 1, UpTo[ k_ ] :> k } ],
+      canonical = axes |-> Sort[ First @ Sort[ { #, Reverse @ # } ] & /@ axes ],
+      axisMult = With[ { mMat = Last @ GeodesicMultiplicityMatrix[ g ],
+                         posMap = AssociationThread[ VertexList[ g ] -> Range @ VertexCount[ g ] ] },
+        axis |-> mMat[[ posMap[ First @ axis ], posMap[ Last @ axis ] ]] ] },
+    { allFrames = DeleteDuplicatesBy[
+        Catenate @ Map[ Map[ VertexList, FindInfraOrthogonalFrame[ g, #, axisLength, All, opts ], { 2 } ] &, Keys @ ip ],
+        canonical ] },
+    { frames = Take[
+        If[ method === "Greedy", allFrames,
+          SortBy[ allFrames, frame |-> { -Length[ frame ], -Total[ Length /@ frame ], Total[ axisMult /@ frame ], canonical[ frame ] } ] ],
+        UpTo[ If[ limit === All, Infinity, limit ] ] ] },
+    Switch[ count,
+      Automatic, If[ frames =!= { }, PathGraph[ #, DirectedEdges -> True ] & /@ First @ frames, $Failed ],
+      All,       Map[ PathGraph[ #, DirectedEdges -> True ] &, frames, { 2 } ],
+      _UpTo,     Map[ PathGraph[ #, DirectedEdges -> True ] &, Take[ frames, count ], { 2 } ],
+      _,         If[ Length[ frames ] >= count, Map[ PathGraph[ #, DirectedEdges -> True ] &, Take[ frames, count ], { 2 } ], $Failed ] ]
   ]
 
 
@@ -262,269 +355,23 @@ Options[ FindInfraSpanningAxes ] = {
 };
 
 FindInfraSpanningAxes[ g_Graph, All, opts : OptionsPattern[] ] :=
-  With[ { distMatrix = GraphDistanceMatrix[ g ] },
-    { minLength = Replace[ OptionValue[ "MinLength" ], Automatic -> Max[ distMatrix ] ] },
-    orthogonalGreedy[ g, findLongestPaths[ g, All, Max[ distMatrix ] - minLength ], { opts } ]
-  ]
-
-FindInfraSpanningAxes[ g_Graph, UpTo[ n_Integer ], opts : OptionsPattern[] ] :=
-  Take[ FindInfraSpanningAxes[ g, All, opts ], UpTo[ n ] ]
-
-FindInfraSpanningAxes[ g_Graph, n_Integer : 1, opts : OptionsPattern[] ] :=
-  With[ { result = FindInfraSpanningAxes[ g, UpTo[ n ], opts ] },
-    If[ Length[ result ] >= n, Take[ result, n ], $Failed ]
-  ]
-
-(* ===================== Helpers: anchor distance ===================== *)
-
-(* one row, not two: InfraDensity already sends a bare vertex to <| v -> 1 |>, on which every aggregation is the distance itself *)
-
-infraAnchorDistance[ g_Graph, v_, anchor_, agg_ ] :=
-  agg[ GraphDistance[ g, v, # ] & /@ Keys @ InfraDensity[ g, anchor ] ]
-
-
-(* ===================== Helpers: orthogonal coordinates ===================== *)
-
-(* every 0-based layer tied at the minimum distance from v to the axis; callers reduce the list via "SelectCoordinate" *)
-
-axisLayerIndex[ g_Graph, axis_List, v_ ] :=
-  With[ { dists = GraphDistance[ g, v, # ] & /@ axis },
-    Flatten @ Position[ dists, Min @ dists ] - 1
-  ]
-
-axisLayerIndex[ g_Graph, dag_Graph, v_ ] :=
-  With[ { verts = VertexList[ dag ] },
-    { sources = Select[ verts, VertexInDegree[ dag, # ] == 0 & ] },
-    { depth = u |-> Min[ GraphDistance[ dag, #, u ] & /@ sources ] },
-    { layers = Table[ Select[ verts, depth[ # ] == k & ], { k, 0, Max[ depth /@ verts ] } ],
-      dists  = GraphDistance[ g, v, # ] & /@ verts },
-    { proj = Pick[ verts, dists, Min @ dists ] },
-    Flatten @ Table[ Position[ layers, u ][[ All, 1 ]] - 1, { u, proj } ]
-  ]
-
-
-selectCoordinate[ "Centered", shifted_List ] :=
-  If[ MemberQ[ shifted, 0 ], 0, Round @ Median[ shifted ] ]
-selectCoordinate[ All, ix_List ] := ix
-selectCoordinate[ f_,   ix_List ] := f @ ix
-
-
-perAxisAnchor[ axis_List, vs_List ] :=
-  SelectFirst[ vs, MemberQ[ axis, # ] &, First @ vs ]
-
-perAxisAnchor[ axis_Graph, vs_List ] :=
-  SelectFirst[ vs, MemberQ[ VertexList @ axis, # ] &, First @ vs ]
-
-
-(* ===================== Helpers: orthogonal-frame search ===================== *)
-
-
-allHalfAxes[ dag_Graph, c_ ] :=
-  Catenate[ FindPath[ dag, c, #, Infinity, All ] & /@ VertexList[ dag ] ]
-
-
-(* every candidate line through c with both half-axes of depth >= minLength, paired by antipodal endpoints and deduped on the orientation-canonical sequence *)
-
-enumerateAxes[ g_Graph, dag_Graph, c_, minLength_Integer ] :=
-  With[ { dist = AssociationThread[ VertexList[ dag ], GraphDistance[ dag, c, # ] & /@ VertexList[ dag ] ],
-          halvesByEnd = GroupBy[ allHalfAxes[ dag, c ], Last ] },
-    { vertsAtDepth = Select[ VertexList[ dag ], dist[ # ] >= minLength & ] },
-    DeleteDuplicatesBy[
-      Catenate @ Map[
-        pair |-> Flatten[
-          Outer[
-            { hPos, hNeg } |-> Join[ Reverse @ hNeg, Rest @ hPos ],
-            halvesByEnd[ pair[[ 1 ]] ], halvesByEnd[ pair[[ 2 ]] ], 1 ], 1 ],
-        Select[ Subsets[ vertsAtDepth, { 2 } ],
-          pair |-> GraphDistance[ g, pair[[ 1 ]], pair[[ 2 ]] ] === dist[ pair[[ 1 ]] ] + dist[ pair[[ 2 ]] ] ]
-      ],
-      First @ Sort[ { #, Reverse @ # } ] &
-    ]
-  ]
-
-
-(* length first, then ascending endpoint-geodesic-multiplicity so straight axes outrank L-shapes on grids, then lex-min for determinism *)
-
-axisSortKey[ axisMult_ ][ axis_List ] :=
-  { -Length[ axis ], axisMult[ axis ], Min[ axis, Reverse @ axis ] }
-
-
-(* the same condition as the OrthogonalCoordinates coordinate of w being 0 *)
-
-projectsToCenterQ[ g_Graph, axis_, c_, w_, sel_ ] :=
-  selectCoordinate[ sel,
-    axisLayerIndex[ g, axis, w ] - First @ axisLayerIndex[ g, axis, c ] ] === 0
-
-
-restrictDagToCenter[ g_Graph, dag_Graph, axis_List, c_, sel_ ] :=
-  Subgraph[ dag, Select[ VertexList[ dag ], projectsToCenterQ[ g, axis, c, #, sel ] & ] ]
-
-
-canonicalFrame[ axes_List ] :=
-  Sort[ First @ Sort[ { #, Reverse @ # } ] & /@ axes ]
-
-
-frameSortKey[ axisMult_ ][ frame_List ] :=
-  { -Length[ frame ], -Total[ Length /@ frame ],
-    Total[ axisMult /@ frame ], canonicalFrame[ frame ] }
-
-
-(* precomputed via GeodesicMultiplicityMatrix so the per-axis lookup is O(1) *)
-
-axisMultiplicityFn[ g_Graph ] :=
-  With[ { mMat   = Last @ GeodesicMultiplicityMatrix[ g ],
-          posMap = AssociationThread[ VertexList[ g ] -> Range @ VertexCount[ g ] ] },
-    axis |-> mMat[[ posMap[ First @ axis ], posMap[ Last @ axis ] ]]
-  ]
-
-
-recordFrameQ[ Automatic ][ len_, vAxes_ ] := vAxes === { } && len > 0
-recordFrameQ[ All       ][ len_, _ ]       := len > 0
-recordFrameQ[ n_Integer ][ len_, _ ]       := len === n
-recordFrameQ[ UpTo[ n_ ] ][ len_, vAxes_ ] := len === n || ( vAxes === { } && len > 0 )
-
-recurseDFSQ[ Automatic ][ _, vAxes_ ]     := vAxes =!= { }
-recurseDFSQ[ All       ][ _, vAxes_ ]     := vAxes =!= { }
-recurseDFSQ[ n_Integer ][ len_, vAxes_ ]  := len < n && vAxes =!= { }
-recurseDFSQ[ UpTo[ n_ ] ][ len_, vAxes_ ] := len < n && vAxes =!= { }
-
-
-orthogonalFrameDFS[ g_Graph, c_, fullDag_Graph, axisCountSpec_, minLength_, sampleSize_, maxFrames_, sel_, axisMult_, perpQ_ ] :=
-  Module[ { frames = { }, canonForms = { }, dfs },
-    dfs[ dag_, currentAxes_ ] :=
-      Module[ { len, axisCands, validAxes, sortedAxes, sampledAxes, canon },
-        len = Length[ currentAxes ];
-        axisCands = enumerateAxes[ g, dag, c, minLength ];
-        validAxes = Select[ axisCands, perpQ[ currentAxes, # ] & ];
-        If[ recordFrameQ[ axisCountSpec ][ len, validAxes ],
-          canon = canonicalFrame[ currentAxes ];
-          If[ ! MemberQ[ canonForms, canon ],
-            AppendTo[ canonForms, canon ];
-            AppendTo[ frames, currentAxes ];
-            If[ Length[ frames ] >= maxFrames, Throw[ Null ] ]
-          ]
-        ];
-        If[ recurseDFSQ[ axisCountSpec ][ len, validAxes ],
-          sortedAxes = SortBy[ validAxes, axisSortKey[ axisMult ] ];
-          sampledAxes = If[ sampleSize === All || Length[ sortedAxes ] <= sampleSize,
-            sortedAxes,
-            RandomSample[ sortedAxes, sampleSize ] ];
-          Scan[
-            axis |-> dfs[ restrictDagToCenter[ g, dag, axis, c, sel ], Append[ currentAxes, axis ] ],
-            sampledAxes ]
-        ]
-      ];
-    Catch[ dfs[ fullDag, { } ] ];
-    frames
-  ]
-
-
-parseAxisLengthSpec[ All ]            := { 1, Infinity }
-parseAxisLengthSpec[ n_Integer ]      := { n, n }
-parseAxisLengthSpec[ UpTo[ n_ ] ]     := { 1, n }
-parseAxisLengthSpec[ { min_, max_ } ] := { min, max }
-
-
-resolveSearchMethod[ opts_List ] :=
-  Replace[ Method /. opts /. Method -> Automatic, Automatic -> "Exhaustive" ]
-
-
-(* default oracle: every vertex of every previously chosen axis projects to the centre on the candidate *)
-
-inlineFramePerpQ[ g_Graph, c_, sel_ ][ currentAxes_, cand_ ] :=
-  AllTrue[ currentAxes,
-    prev |-> AllTrue[ prev, w |-> projectsToCenterQ[ g, cand, c, w, sel ] ] ]
-
-
-predicateFramePerpQ[ g_Graph, predOpts_List ][ currentAxes_, cand_ ] :=
-  AllTrue[ currentAxes, prev |-> InfraPerpendicularQ[ g, prev, cand, Sequence @@ predOpts ] ]
-
-
-resolveFramePerpQ[ g_Graph, c_, sel_, methodSpec_ ] :=
-  If[ methodName @ methodSpec === "Predicate",
-    predicateFramePerpQ[ g, predicateSubOpts @ propertiesSubOpts @ methodSpec ],
-    inlineFramePerpQ[ g, c, sel ]
-  ]
-
-
-predicateSubOpts[ subOpts_List ] :=
-  With[ { testVal = "Test" /. subOpts /. { "Test" -> Automatic } },
-    Join[
-      If[ testVal === Automatic, { }, { Method -> testVal } ],
-      Cases[ subOpts, ( "Radius" | "Tolerance" | "Equality" ) -> _ ]
-    ]
-  ]
-
-
-findOrthogonalFrameCore[ g_Graph, c_, axisLength_, count_, opts_List ] /; pointQ[ g, c ] :=
-  Module[ { minLength, maxDepth, localG },
-    { minLength, maxDepth } = parseAxisLengthSpec[ axisLength ];
-    (* Localize: every distance the search needs lies in B(c, 2 maxDepth). *)
-    localG = If[ maxDepth === Infinity, g, NeighborhoodGraph[ g, c, 2 maxDepth ] ];
-    With[ { dag = GeodesicSprayGraph[ localG, c, "AxisLength" -> Replace[ maxDepth, Infinity -> All ] ],
-            axisCountSpec = "AxisCount" /. opts /. "AxisCount" -> Automatic,
-            methodSpec = resolveSearchMethod[ opts ],
-            sel = "SelectCoordinate" /. opts /. "SelectCoordinate" -> "Centered",
-            axisMult = axisMultiplicityFn[ localG ] },
-      { method = methodName @ methodSpec,
-        perpQ  = resolveFramePerpQ[ localG, c, sel, methodSpec ] },
-      { sampleSize = If[ method === "Greedy", All,
-            "BranchSampleSize" /. opts /. "BranchSampleSize" -> All ],
-        maxFrames  = If[ method === "Greedy" && IntegerQ @ count, count, Infinity ] },
-      { frames = orthogonalFrameDFS[ localG, c, dag, axisCountSpec, minLength, sampleSize, maxFrames, sel, axisMult, perpQ ] },
-      If[ method === "Greedy", frames, SortBy[ frames, frameSortKey[ axisMult ] ] ]
-    ]
-  ]
-
-findOrthogonalFrameCore[ g_Graph, fam_Association, axisLength_, count_, opts_List ] :=
-  With[ { method = methodName @ resolveSearchMethod[ opts ],
-          axisMult = axisMultiplicityFn[ g ] },
-    { perSource = Map[ findOrthogonalFrameCore[ g, #, axisLength, All, opts ] &, Keys @ fam ] },
-    { allFrames = DeleteDuplicatesBy[ Catenate @ perSource, canonicalFrame ] },
-    { sortedFrames = If[ method === "Greedy", allFrames, SortBy[ allFrames, frameSortKey[ axisMult ] ] ],
-      maxFrames    = If[ count === All, Infinity, count ] },
-    Take[ sortedFrames, UpTo[ maxFrames ] ]
-  ]
-
-
-wrapFrame[ frame_List ] := geodesicGraph /@ frame
-
-
-(* ===================== Helpers: longest paths / spanning axes ===================== *)
-
-findLongestPaths[ g_Graph, n_, epsilon_ : 0 ] :=
-  With[ { distMatrix = GraphDistanceMatrix[ g ], vertices = VertexList[ g ] },
-    { maxDist = Max[ distMatrix ] },
-    { pairs = Select[
-        DeleteDuplicatesBy[ Position[ distMatrix, _?( # >= maxDist - epsilon & ) ], Sort ],
-        #[[ 1 ]] =!= #[[ 2 ]] & ] },
-    { numPairs = Length[ pairs ] },
-    If[ numPairs == 0, { },
-      With[ { counts = If[ n === All,
-            ConstantArray[ All, numPairs ],
-            RandomSample @ Table[ Quotient[ n, numPairs ] + Boole[ i <= Mod[ n, numPairs ] ], { i, numPairs } ] ] },
-        Flatten[
-          Cases[
-            Transpose[ { pairs, counts } ],
-            { { i_, j_ }, cnt_ /; cnt =!= 0 } :>
-              FindPath[ g, vertices[[ i ]], vertices[[ j ]], { distMatrix[[ i, j ]] }, cnt ] ],
-          1 ]
-      ]
-    ]
-  ]
-
-
-orthogonalGreedy[ g_Graph, paths_List, opts_List ] :=
-  Module[ { axes, candidates, next, previousIndices, previousEndpoints, separation, closeAxes, scores,
-            vertices = VertexList[ g ],
-            distMatrix = GraphDistanceMatrix[ g ],
-            distanceFunction = "AxisDistance" /. opts /. "AxisDistance" -> "MinEndpoint",
-            thickness = "AxisThickness" /. opts /. "AxisThickness" -> 0,
-            pick = If[ ! TrueQ[ "RandomPick" /. opts /. "RandomPick" -> False ], First, RandomChoice ] },
-    If[ paths === { }, Return[ { } ] ];
-    With[ { vertexIndex = AssociationThread[ vertices, Range @ Length @ vertices ],
-            minSeparation = Replace[ "MinSeparation" /. opts /. "MinSeparation" -> Automatic,
-              Automatic -> ( Length[ First[ paths ] ] - 1 ) / 2 ] },
+  Module[ { axes, candidates, next, previousIndices, previousEndpoints, separation, closeAxes, scores },
+    With[ { vertices = VertexList[ g ], distMatrix = GraphDistanceMatrix[ g ] },
+      { maxDist = Max[ distMatrix ] },
+      { epsilon = maxDist - Replace[ OptionValue[ "MinLength" ], Automatic -> maxDist ] },
+      { paths = Flatten[
+          FindPath[ g, vertices[[ #[[ 1 ]] ]], vertices[[ #[[ 2 ]] ]], { distMatrix[[ #[[ 1 ]], #[[ 2 ]] ]] }, All ] & /@ Select[
+            DeleteDuplicatesBy[ Position[ distMatrix, _?( # >= maxDist - epsilon & ) ], Sort ],
+            #[[ 1 ]] =!= #[[ 2 ]] & ],
+          1 ],
+        distanceFunction = "AxisDistance" /. { opts } /. "AxisDistance" -> "MinEndpoint",
+        thickness = "AxisThickness" /. { opts } /. "AxisThickness" -> 0,
+        pick = If[ ! TrueQ[ "RandomPick" /. { opts } /. "RandomPick" -> False ], First, RandomChoice ],
+        vertexIndex = AssociationThread[ vertices, Range @ Length @ vertices ],
+        hausdorff = sub |-> Max[ Max[ Min /@ sub ], Max[ Min /@ Transpose @ sub ] ] },
+      { minSeparation = Replace[ "MinSeparation" /. { opts } /. "MinSeparation" -> Automatic,
+          Automatic :> ( Length[ First[ paths, { } ] ] - 1 ) / 2 ] },
+      If[ paths === { }, Return[ { } ] ];
       axes = { pick[ paths ] };
       previousIndices = Lookup[ vertexIndex, axes[[ 1 ]] ];
       previousEndpoints = { vertexIndex[ axes[[ 1, 1 ]] ], vertexIndex[ axes[[ 1, -1 ]] ] };
@@ -536,9 +383,9 @@ orthogonalGreedy[ g_Graph, paths_List, opts_List ] :=
                 distMatrix[[ vertexIndex[ #[[ 1 ]] ], previousEndpoints ]],
                 distMatrix[[ vertexIndex[ #[[ -1 ]] ], previousEndpoints ]] ] & ) /@ candidates,
           "Hausdorff",
-            ( p |-> HausdorffDistance[ distMatrix, Lookup[ vertexIndex, p ], previousIndices ] ) /@ candidates,
+            ( p |-> hausdorff[ distMatrix[[ Lookup[ vertexIndex, p ], previousIndices ]] ] ) /@ candidates,
           "Separation",
-            ( p |-> MinimalSeparationDistance[ distMatrix, Lookup[ vertexIndex, p ], previousIndices ] ) /@ candidates,
+            ( p |-> Min[ distMatrix[[ Lookup[ vertexIndex, p ], previousIndices ]] ] ) /@ candidates,
           _, Return[ axes ]
         ];
         separation = Max[ scores ];
@@ -546,7 +393,7 @@ orthogonalGreedy[ g_Graph, paths_List, opts_List ] :=
         next = pick[ candidates[[ Flatten @ Position[ scores, separation ] ]] ];
         closeAxes = If[ thickness == 0, { next },
           Select[ candidates,
-            HausdorffDistance[ distMatrix, Lookup[ vertexIndex, # ], Lookup[ vertexIndex, next ] ] <= thickness & ] ];
+            hausdorff[ distMatrix[[ Lookup[ vertexIndex, # ], Lookup[ vertexIndex, next ] ]] ] <= thickness & ] ];
         axes = Join[ axes, closeAxes ];
         previousIndices = Union[ previousIndices, Flatten[ Lookup[ vertexIndex, # ] & /@ closeAxes ] ];
         previousEndpoints = Union[ previousEndpoints,
@@ -557,15 +404,10 @@ orthogonalGreedy[ g_Graph, paths_List, opts_List ] :=
     ]
   ]
 
+FindInfraSpanningAxes[ g_Graph, UpTo[ n_Integer ], opts : OptionsPattern[] ] :=
+  Take[ FindInfraSpanningAxes[ g, All, opts ], UpTo[ n ] ]
 
-(* ===================== Helpers: resistance embedding ===================== *)
-
-resistanceEmbeddingMatrix[g_Graph, rescaling_, dimSpec_] :=
-    With[{es = Eigensystem[N @ Normal @ KirchhoffMatrix[g]]},
-        {ord = Ordering[es[[1]]]},
-        {vals = es[[1, ord]], vecs = es[[2, ord]]},
-        {keep = Select[Range @ Length @ vals, vals[[#]] > 10^-10 Max[Abs @ vals, 1] &]},
-        {idx = Take[keep, Replace[dimSpec, {Automatic | All :> Length[keep], UpTo[k_Integer] :> Min[k, Length[keep]], k_Integer :> Min[k, Length[keep]]}]]},
-        {weights = Replace[rescaling, {"ResistanceMatching" :> 1 / Sqrt[vals[[idx]]], "None" :> ConstantArray[1, Length[idx]], ("Diffusion" -> t_) :> Exp[-t vals[[idx]]]}]},
-        Transpose[weights vecs[[idx]]]
-    ]
+FindInfraSpanningAxes[ g_Graph, n_Integer : 1, opts : OptionsPattern[] ] :=
+  With[ { result = FindInfraSpanningAxes[ g, UpTo[ n ], opts ] },
+    If[ Length[ result ] >= n, Take[ result, n ], $Failed ]
+  ]

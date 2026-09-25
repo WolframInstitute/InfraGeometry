@@ -1,13 +1,10 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageScope[triangleReplace]
-
-
 
 (* ===================== Sierpinski graph (trivalent) ===================== *)
 
 (* SierpinskiGraph[n] is the trivalent Sierpinski graph: start from the 3-simplex K_4
-   (the tetrahedron) and iterate corner-cutting (truncation) n-1 times.  triangleReplace
+   (the tetrahedron) and iterate corner-cutting (truncation) n-1 times.  Each step
    replaces every vertex by a triangle, its three incident edges reattaching to the
    corners -- on a cubic graph this is truncation, so the graph stays 3-regular at every
    generation (4*3^(n-1) vertices; n=2 is the truncated tetrahedron).  Combinatorial
@@ -15,16 +12,16 @@ PackageScope[triangleReplace]
    wrap in Graph3D) for the tetrahedral picture. *)
 
 SierpinskiGraph[ n_Integer, opts : OptionsPattern[ Graph ] ] :=
-  Graph[ Nest[ triangleReplace, CompleteGraph[ 4 ], n - 1 ], opts ]
-
-triangleReplace[ g_ ] :=
   Graph[
-    Join[
-      Flatten @ Table[ UndirectedEdge[ { v, i }, { v, j } ], { v, VertexList @ g }, { i, 1, 2 }, { j, i + 1, 3 } ],
-      ( e |-> UndirectedEdge[
-          { e[[ 1 ]], First @ FirstPosition[ AdjacencyList[ g, e[[ 1 ]] ], e[[ 2 ]] ] },
-          { e[[ 2 ]], First @ FirstPosition[ AdjacencyList[ g, e[[ 2 ]] ], e[[ 1 ]] ] } ] ) /@ EdgeList @ g ]
-  ]
+    Nest[
+      g |-> Graph[
+        Join[
+          Flatten @ Table[ UndirectedEdge[ { v, i }, { v, j } ], { v, VertexList @ g }, { i, 1, 2 }, { j, i + 1, 3 } ],
+          ( e |-> UndirectedEdge[
+              { e[[ 1 ]], First @ FirstPosition[ AdjacencyList[ g, e[[ 1 ]] ], e[[ 2 ]] ] },
+              { e[[ 2 ]], First @ FirstPosition[ AdjacencyList[ g, e[[ 2 ]] ], e[[ 1 ]] ] } ] ) /@ EdgeList @ g ] ],
+      CompleteGraph[ 4 ], n - 1 ],
+    opts ]
 
 
 (* ===================== Bethe lattice ===================== *)
@@ -72,52 +69,37 @@ Options[ InflateGraph ] = {
 
 InflateGraph[ g_Graph, opts : OptionsPattern[ { InflateGraph, Graph } ] ] :=
   With[
-    { radius = inflationSample @ OptionValue[ InflateGraph, { opts }, "Radius" ],
+    { sample = spec |-> Replace[ spec, { k_ ? NumericQ :> Round @ k, { a_, b_ } :> RandomInteger[ { Round @ a, Round @ b } ] } ] },
+    { radius = sample @ OptionValue[ InflateGraph, { opts }, "Radius" ],
       density = OptionValue[ InflateGraph, { opts }, "Density" ],
       innerSpec = OptionValue[ InflateGraph, { opts }, "ExtraEdges" ],
       extraSpec = OptionValue[ InflateGraph, { opts }, "ExtraVertices" ] },
     { fibers = AssociationMap[
-        v |-> Array[ InflatedVertex[ v, # ] &, inflationSample @ extraSpec ],
+        v |-> Array[ InflatedVertex[ v, # ] &, sample @ extraSpec ],
         VertexList @ g ] },
+    { edges = Join[
+        Catenate @ KeyValueMap[ { v, fiber } |-> ( UndirectedEdge[ v, # ] & /@ fiber ), fibers ],
+        Catenate @ Map[
+          fiber |-> With[ { m = sample @ innerSpec, pairs = Subsets[ fiber, { 2 } ] },
+            UndirectedEdge @@@ RandomSample[ pairs, Min[ m, Length @ pairs ] ] ],
+          Values @ fibers ],
+        Catenate @ Map[
+          v |-> With[ { near = VertexList @ NeighborhoodGraph[ g, v, radius ] },
+            { reach = Catenate @ Lookup[ fibers, near ] },
+            { candidates = DeleteCases[ Tuples[ { fibers @ v, Join[ reach, near ] } ], { x_, x_ } ] },
+            UndirectedEdge @@@ RandomSample[
+              candidates,
+              Min[ RandomInteger @ Round[ density Length[ reach ] / Max[ Length @ near, 1 ] ], Length @ candidates ] ] ],
+          VertexList @ g ] ] },
+    { coords = AssociationThread[ VertexList @ g, GraphEmbedding @ g ] },
+    { jitter = Ball[ ConstantArray[ 0, Length @ First @ coords ],
+        0.3 Mean[ EuclideanDistance @@ Lookup[ coords, List @@ # ] & /@ EdgeList @ g ] ] },
     Graph[
-      EdgeAdd[ g,
-        Join[
-          Catenate @ KeyValueMap[ { v, fiber } |-> ( UndirectedEdge[ v, # ] & /@ fiber ), fibers ],
-          Catenate @ Map[ fiber |-> inflationFiberEdges[ fiber, inflationSample @ innerSpec ], Values @ fibers ],
-          Catenate @ Map[ v |-> inflationCrossEdges[ g, fibers, v, radius, density ], VertexList @ g ] ] ],
+      EdgeAdd[ g, edges ],
       Sequence @@ FilterRules[ { opts }, Options @ Graph ],
-      VertexCoordinates -> inflationCoordinates[ g, fibers ] ]
-  ]
-
-inflationSample[ n_?NumericQ ] := Round @ n
-
-inflationSample[ { a_, b_ } ] := RandomInteger[ { Round @ a, Round @ b } ]
-
-(* fiber vertices are scattered close to their base vertex, at a fraction of the mean edge length
-   and inside a ball of the embedding's own dimension, so the inflated graph still reads as a
-   thickened patch rather than as spikes flung outward by the layout engine *)
-inflationCoordinates[ g_, fibers_ ] :=
-  With[ { coords = AssociationThread[ VertexList @ g, GraphEmbedding @ g ] },
-    { scale = 0.3 Mean[ EuclideanDistance @@ Lookup[ coords, List @@ # ] & /@ EdgeList @ g ] },
-    { jitter = Ball[ ConstantArray[ 0, Length @ First @ coords ], scale ] },
-    Normal @ Join[
-      coords,
-      Association @ Catenate @ KeyValueMap[
-        { v, fiber } |-> ( # -> coords[ v ] + RandomPoint @ jitter & /@ fiber ),
-        fibers ] ]
-  ]
-
-inflationFiberEdges[ fiber_, m_ ] :=
-  With[ { pairs = Subsets[ fiber, { 2 } ] },
-    UndirectedEdge @@@ RandomSample[ pairs, Min[ m, Length @ pairs ] ] ]
-
-(* edges from v's fiber out to the fibers within radius: the count scales with how much fiber is in
-   reach per base vertex in reach, so density is a per-neighbour rate rather than a raw edge count *)
-inflationCrossEdges[ g_, fibers_, v_, radius_, density_ ] :=
-  With[ { near = VertexList @ NeighborhoodGraph[ g, v, radius ] },
-    { reach = Catenate @ Lookup[ fibers, near ] },
-    { candidates = DeleteCases[ Tuples[ { fibers @ v, Join[ reach, near ] } ], { x_, x_ } ] },
-    UndirectedEdge @@@ RandomSample[
-      candidates,
-      Min[ RandomInteger @ Round[ density Length[ reach ] / Max[ Length @ near, 1 ] ], Length @ candidates ] ]
+      VertexCoordinates -> Normal @ Join[
+        coords,
+        Association @ Catenate @ KeyValueMap[
+          { v, fiber } |-> ( # -> coords[ v ] + RandomPoint @ jitter & /@ fiber ),
+          fibers ] ] ]
   ]

@@ -2137,10 +2137,9 @@ VerificationTest[
 (* the roster construction is deterministic given the random state: two fresh (unmemoized)
    builds of the same raw size spec agree vertex for vertex *)
 VerificationTest[
-    With[{build = Symbol @ First @ Names["WolframInstitute`*`substrateCode"]},
-      {seed = Hash @ {"SquareMeshGraph", 0.013}},
-      {g1 = (SeedRandom[seed]; ReleaseHold @ build["SquareMeshGraph", 0.013]),
-       g2 = (SeedRandom[seed]; ReleaseHold @ build["SquareMeshGraph", 0.013])},
+    With[{seed = Hash @ {"SquareMeshGraph", 0.013}},
+      {g1 = (SeedRandom[seed]; InfraSubstrate["SquareMeshGraph", 0.013]),
+       g2 = (SeedRandom[seed]; InfraSubstrate["SquareMeshGraph", 0.013])},
       {VertexList @ g1 === VertexList @ g2, EdgeList @ g1 === EdgeList @ g2}],
     {True, True},
     TestID -> "InfraSubstrate-seeded-generation"

@@ -1,7 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageScope[wasserstein1]
-
 
 (* ===================== Ollivier-Ricci curvature ===================== *)
 
@@ -17,31 +15,19 @@ OllivierRicciCurvature[g_Graph] := Module[{vs, idx, adj, dist},
 	dist = GraphDistanceMatrix[g];
 	AssociationMap[
 		e |-> With[{nu = adj[e[[1]]], nv = adj[e[[2]]]},
-			1 - wasserstein1[
-				ConstantArray[1.0 / Length[nu], Length[nu]],
-				ConstantArray[1.0 / Length[nv], Length[nv]],
-				dist[[idx /@ nu, idx /@ nv]]
+			{m = Length[nu], n = Length[nv], costs = dist[[idx /@ nu, idx /@ nv]], vars = Array[t, {Length[nu], Length[nv]}]},
+			1 - LinearOptimization[
+				Total[Flatten[costs * vars]],
+				Join[
+					Table[Total[vars[[i, All]]] == 1.0 / m, {i, m}],
+					Table[Total[vars[[All, j]]] == 1.0 / n, {j, n}],
+					Thread[Flatten[vars] >= 0]
+				],
+				Flatten[vars],
+				"PrimalMinimumValue"
 			] / dist[[idx[e[[1]]], idx[e[[2]]]]]
 		],
 		EdgeList[g]
-	]
-]
-
-
-(* Wasserstein-1 distance between probability vectors mu, nu on finite
-   point sets given the m-by-n cost matrix.  Solved as a transport LP. *)
-
-wasserstein1[mu_List, nu_List, costs_List] := Module[{m = Length[mu], n = Length[nu], vars},
-	vars = Array[t, {m, n}];
-	LinearOptimization[
-		Total[Flatten[costs * vars]],
-		Join[
-			Table[Total[vars[[i, All]]] == mu[[i]], {i, m}],
-			Table[Total[vars[[All, j]]] == nu[[j]], {j, n}],
-			Thread[Flatten[vars] >= 0]
-		],
-		Flatten[vars],
-		"PrimalMinimumValue"
 	]
 ]
 
