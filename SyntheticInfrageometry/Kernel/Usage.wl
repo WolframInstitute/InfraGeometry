@@ -147,6 +147,7 @@ InfraRevolutionQ::usage = "InfraRevolutionQ[graph, vs, axis, profile] tests whet
 InfraScalarProduct::usage = "InfraScalarProduct[graph, o, u, v] gives the base-point-relative product d(o, u) d(o, v) cos(theta), at curvature 0 the polar form (d(o,u)^2 + d(o,v)^2 - d(u,v)^2)/2. Option Method.";
 FindInfraLinearCombination::usage = "FindInfraLinearCombination[graph, o, {{lambda1, u1}, ...}] gives the vertex realisations of Sum_i lambda_i u_i based at o. Options \"ScaleMethod\", \"SumMethod\".";
 InfraAngle::usage = "InfraAngle[graph, {q1, p, q2}] gives the angle at p in radians. Option Method (\"Arclength\", \"Alexandrov\").";
+InfraMetricTensor::usage = "InfraMetricTensor[graph, p] gives the matrix of d(p, u)/d(p, v) over v, w with u the vertex of I(p, w) closest to v; with r, over the shell FindInfraShell[graph, p, r]. Option \"SelectCoordinate\".";
 
 (* ===================== InfraCurveGeometry ===================== *)
 
