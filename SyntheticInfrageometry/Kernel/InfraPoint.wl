@@ -1,6 +1,5 @@
 Package["WolframInstitute`SyntheticInfrageometry`"]
 
-PackageScope[selectFromPointSpace]
 PackageScope[infraPointVertices]
 
 
@@ -86,74 +85,63 @@ FindInfraPoint[ graph_Graph, n_Integer, opts : OptionsPattern[] ] :=
     If[ Length[ result ] < n, $Failed, result ] ]
 
 
-(* an unrecognised selector must raise ::badfrom rather than fall through to the whole vertex pool, which reads as a legitimate random draw *)
-
-fromPointSpecQ[ graph_Graph, spec_ ] :=
-  pointQ[ graph, spec ] ||
-  MatchQ[ spec, All | "Random" | "Center" | "Periphery" | { "Center", _Integer | Infinity }
-                | _Association | _Rule | _List ]
-
-
-anchorDistMatchQ[ allDists_List, idx_Integer, d_?NumericQ ]                  := allDists[[ idx ]] == d
-anchorDistMatchQ[ allDists_List, idx_Integer, { lo_?NumericQ, hi_?NumericQ } ] := lo <= allDists[[ idx ]] <= hi
-anchorDistMatchQ[ allDists_List, idx_Integer, "Max" ]                        :=
-  allDists[[ idx ]] == Max @ Select[ allDists, # < Infinity & ]
-
-
-(* among the max-min-gap cliques, the n-subset of minimal variance of pairwise distances *)
-
-mostEquidistantSubset[ cliques_List, distMatrix_, pool_List, n_Integer ] :=
-  With[ { idx = AssociationThread[ pool -> Range @ Length @ pool ],
-          subsets = DeleteDuplicates[ Sort /@ Catenate[ Subsets[ #, { n } ] & /@ cliques ] ] },
-    If[ n < 3,
-      First @ subsets,
-      First @ MinimalBy[ subsets,
-        s |-> Variance[ distMatrix[[ idx @ #[[ 1 ]], idx @ #[[ 2 ]] ]] & /@ Subsets[ s, { 2 } ] ] ] ]
-  ]
-
-
 (* ===================== FindInfraMidpoint ===================== *)
 
 (* the vertices at the index closest to the centre index (n + 1)/2: an odd distance gives two of them, an even one a single vertex *)
 
 Options[ FindInfraMidpoint ] = { Method -> "Metric", "Tolerance" -> 0 };
 
-(* occupation of the central index band, vertex -> mass: a walk contributes 1 per band vertex, a substrate DAG -- a path graph included -- reads the band off its layers weighted by geodesic occupation, exactly as the enumerated family would *)
-
-indexBandMasses[ frac_, tol_ ][ dag_Graph ] :=
-  With[ { layers = dagLayers[ dag ] },
-    If[ Length @ layers === 0, <||>,
-      With[ { occ = GeodesicOccupation[ dag ], len = Max[ 0, Values @ layers ] },
-        { offs = Abs[ # - frac * len ] & /@ layers },
-        KeyTake[ occ, Keys @ Select[ offs, # <= Min[ Values @ offs ] + tol & ] ] ] ] ]
-
-indexBandMasses[ frac_, tol_ ][ walk_List ] :=
-  With[ { offsets = Abs[ Range[ Length @ walk ] - ( 1 + frac ( Length @ walk - 1 ) ) ] },
-    Counts @ Pick[ walk, Thread[ offsets <= Min[ offsets ] + tol ], True ] ]
-
-(* the carriers a shape marginalises over: a substrate DAG or path graph is one carrier read by DP, a closed or position-spelled walk graph its vertex sequences, a list of graphs or of walks their union, a vertex list one walk *)
-
-bandCarriers[ w_Graph ]            := If[ closedWalkQ @ w || positionSpelledQ @ w, walkRealisations @ w, { w } ]
-bandCarriers[ ws : { __Graph } ]   := Catenate[ bandCarriers /@ ws ]
-bandCarriers[ { } ]                := { }
-bandCarriers[ walks : { __List } ] := walks
-bandCarriers[ walk_List ]          := { walk }
-
-bandMasses[ frac_, tol_, x_ ] := KeySort @ Merge[ indexBandMasses[ frac, tol ] /@ bandCarriers @ x, Total ]
-
-FindInfraMidpoint[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPattern[] ] /; ! pointQ[ graph, x ] :=
-  With[ { method = methodName @ OptionValue[ Method ], tol = OptionValue[ "Tolerance" ] },
+FindInfraMidpoint[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPattern[] ] /; ! VertexQ[ graph, x ] :=
+  With[ { method = Replace[ OptionValue[ Method ], { m_String, ___ } :> m ], tol = OptionValue[ "Tolerance" ],
+          walksOf = w |-> With[ { vs = VertexList @ w },
+              { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+                scan = root |-> Reap[ DepthFirstScan[ w, root, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
+              Which[
+                ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
+                  { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
+                      If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
+                EdgeCount @ w == 0, List /@ If[ spelled, Last /@ vs, vs ],
+                spelled,            { Last /@ SortBy[ vs, First ] },
+                DirectedGraphQ @ w,
+                  Catenate @ Catenate @ Table[ FindPath[ w, a, b, Infinity, All ],
+                    { a, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { b, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
+                True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ] },
+    (* occupation of the central index band, vertex -> mass: a walk contributes 1 per band vertex, a substrate DAG -- a path graph included -- reads the band off its layers weighted by geodesic occupation, exactly as the enumerated family would; a closed or position-spelled walk graph is read as its vertex sequences *)
+    { band = c |-> If[ GraphQ @ c,
+        With[ { layers = If[ VertexCount[ c ] == 0, <||>,
+                  AssociationThread[ VertexList[ c ],
+                    GraphDistance[ c, First @ Select[ VertexList[ c ], VertexInDegree[ c, # ] == 0 & ] ] ] ] },
+          If[ Length @ layers === 0, <||>,
+            With[ { occ = GeodesicOccupation[ c ], len = Max[ 0, Values @ layers ] },
+              { offs = Abs[ # - 1/2 * len ] & /@ layers },
+              KeyTake[ occ, Keys @ Select[ offs, # <= Min[ Values @ offs ] + tol & ] ] ] ] ],
+        With[ { offsets = Abs[ Range[ Length @ c ] - ( 1 + 1/2 ( Length @ c - 1 ) ) ] },
+          Counts @ Pick[ c, Thread[ offsets <= Min[ offsets ] + tol ], True ] ] ],
+      carriers = w |-> If[ ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w ||
+          AllTrue[ VertexList @ w, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ w ] === Range @ VertexCount @ w,
+        walksOf @ w, { w } ] },
     Switch[ method,
       "Metric",
-        bandMasses[ 1/2, tol, x ],
+        KeySort @ Merge[ band /@ Which[
+            GraphQ @ x,               carriers @ x,
+            MatchQ[ x, { __Graph } ], Catenate[ carriers /@ x ],
+            x === { },                { },
+            MatchQ[ x, { __List } ],  x,
+            True,                     { x } ], Total ],
       "Embedding",
         (* closest vertex to the coord-space midpoint of the endpoints *)
-        With[ { walks = infraSpread @ x, embOpts = parseEmbeddingMethod @ OptionValue[ Method ] },
-          { coords = resolveEmbeddingCoords[ graph, embOpts[ "Coordinates" ] ],
+        With[ { walks = Which[
+                  GraphQ @ x,               walksOf @ x,
+                  MatchQ[ x, { __Graph } ], Catenate[ walksOf /@ x ],
+                  x === { },                { },
+                  True,                     { x } ],
+                embOpts = Replace[ OptionValue[ Method ], { { _String, opt___ } :> { opt }, _ -> { } } ] },
+          { coords = Replace[ "Coordinates" /. embOpts /. "Coordinates" -> Automatic,
+              Automatic :> GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ] ],
             vertexIndex = AssociationThread[ VertexList[ graph ], Range @ VertexCount[ graph ] ] },
           { target = ( coords[[ vertexIndex[ First @ First @ walks ] ]] +
                        coords[[ vertexIndex[ Last @ First @ walks ] ]] ) / 2,
-            pool = If[ embOpts[ "Pool" ] === "AllPaths",
+            pool = If[ ( "Pool" /. embOpts /. "Pool" -> "ShortestPaths" ) === "AllPaths",
                      VertexList[ graph ], DeleteDuplicates @ Catenate @ walks ] },
           <| First @
             SortBy[ pool, v |-> EuclideanDistance[ coords[[ vertexIndex[ v ] ]], target ] ] -> 1 |> ]
@@ -170,20 +158,58 @@ FindInfraMidpoint[ graph_Graph, p1_, p2 : Except[ _Rule | _RuleDelayed ], opts :
 
 Options[ FindInfraGoldenSection ] = { Method -> "Metric", "Tolerance" -> 0 };
 
-FindInfraGoldenSection[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPattern[] ] /; ! pointQ[ graph, x ] :=
-  With[ { method = methodName @ OptionValue[ Method ], tol = OptionValue[ "Tolerance" ] },
+FindInfraGoldenSection[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPattern[] ] /; ! VertexQ[ graph, x ] :=
+  With[ { method = Replace[ OptionValue[ Method ], { m_String, ___ } :> m ], tol = OptionValue[ "Tolerance" ],
+          walksOf = w |-> With[ { vs = VertexList @ w },
+              { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+                scan = root |-> Reap[ DepthFirstScan[ w, root, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
+              Which[
+                ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
+                  { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
+                      If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
+                EdgeCount @ w == 0, List /@ If[ spelled, Last /@ vs, vs ],
+                spelled,            { Last /@ SortBy[ vs, First ] },
+                DirectedGraphQ @ w,
+                  Catenate @ Catenate @ Table[ FindPath[ w, a, b, Infinity, All ],
+                    { a, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { b, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
+                True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ] },
+    (* occupation of the central index band, vertex -> mass: a walk contributes 1 per band vertex, a substrate DAG -- a path graph included -- reads the band off its layers weighted by geodesic occupation, exactly as the enumerated family would; a closed or position-spelled walk graph is read as its vertex sequences *)
+    { band = c |-> If[ GraphQ @ c,
+        With[ { layers = If[ VertexCount[ c ] == 0, <||>,
+                  AssociationThread[ VertexList[ c ],
+                    GraphDistance[ c, First @ Select[ VertexList[ c ], VertexInDegree[ c, # ] == 0 & ] ] ] ] },
+          If[ Length @ layers === 0, <||>,
+            With[ { occ = GeodesicOccupation[ c ], len = Max[ 0, Values @ layers ] },
+              { offs = Abs[ # - N[ 1 / GoldenRatio ] * len ] & /@ layers },
+              KeyTake[ occ, Keys @ Select[ offs, # <= Min[ Values @ offs ] + tol & ] ] ] ] ],
+        With[ { offsets = Abs[ Range[ Length @ c ] - ( 1 + N[ 1 / GoldenRatio ] ( Length @ c - 1 ) ) ] },
+          Counts @ Pick[ c, Thread[ offsets <= Min[ offsets ] + tol ], True ] ] ],
+      carriers = w |-> If[ ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w ||
+          AllTrue[ VertexList @ w, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ w ] === Range @ VertexCount @ w,
+        walksOf @ w, { w } ] },
     Switch[ method,
       "Metric",
-        bandMasses[ N[ 1 / GoldenRatio ], tol, x ],
+        KeySort @ Merge[ band /@ Which[
+            GraphQ @ x,               carriers @ x,
+            MatchQ[ x, { __Graph } ], Catenate[ carriers /@ x ],
+            x === { },                { },
+            MatchQ[ x, { __List } ],  x,
+            True,                     { x } ], Total ],
       "Embedding",
         (* closest vertex to the coord-space golden point p1 + (p2 - p1)/phi *)
-        With[ { walks = infraSpread @ x, embOpts = parseEmbeddingMethod @ OptionValue[ Method ] },
-          { coords = resolveEmbeddingCoords[ graph, embOpts[ "Coordinates" ] ],
+        With[ { walks = Which[
+                  GraphQ @ x,               walksOf @ x,
+                  MatchQ[ x, { __Graph } ], Catenate[ walksOf /@ x ],
+                  x === { },                { },
+                  True,                     { x } ],
+                embOpts = Replace[ OptionValue[ Method ], { { _String, opt___ } :> { opt }, _ -> { } } ] },
+          { coords = Replace[ "Coordinates" /. embOpts /. "Coordinates" -> Automatic,
+              Automatic :> GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ] ],
             vertexIndex = AssociationThread[ VertexList[ graph ], Range @ VertexCount[ graph ] ] },
           { target = coords[[ vertexIndex[ First @ First @ walks ] ]] +
                      ( coords[[ vertexIndex[ Last @ First @ walks ] ]] -
                        coords[[ vertexIndex[ First @ First @ walks ] ]] ) / N[ GoldenRatio ],
-            pool = If[ embOpts[ "Pool" ] === "AllPaths",
+            pool = If[ ( "Pool" /. embOpts /. "Pool" -> "ShortestPaths" ) === "AllPaths",
                      VertexList[ graph ], DeleteDuplicates @ Catenate @ walks ] },
           <| First @
             SortBy[ pool, v |-> EuclideanDistance[ coords[[ vertexIndex[ v ] ]], target ] ] -> 1 |> ]
@@ -200,15 +226,19 @@ FindInfraGoldenSection[ graph_Graph, p1_, p2 : Except[ _Rule | _RuleDelayed ], o
 
 FindInfraReflection[ graph_Graph, x_, a_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
-  spreadFind[ Identity, count,
-    { x0, a0 } |-> With[ { r = GraphDistance[ graph, a0, x0 ] },
-      If[ r === Infinity, {},
-        (* Localize: reflection lives in B(a, r), straddle-paths stay in B(a, 2 r). *)
-        With[ { localG = NeighborhoodGraph[ graph, a0, 2 r ] },
-          Select[ VertexList[ localG ],
-            y |-> BetweennessQ[ localG, x0, a0, y ] && GraphDistance[ localG, a0, y ] === r ] ]
-      ]
-    ], InfraDensity[ graph, x ], InfraDensity[ graph, a ] ]
+  With[ { reps = DeleteDuplicates @ Flatten[
+      ( { x0, a0 } |-> With[ { r = GraphDistance[ graph, a0, x0 ] },
+          If[ r === Infinity, {},
+            (* Localize: reflection lives in B(a, r), straddle-paths stay in B(a, 2 r). *)
+            With[ { localG = NeighborhoodGraph[ graph, a0, 2 r ] },
+              Select[ VertexList[ localG ],
+                y |-> BetweennessQ[ localG, x0, a0, y ] && GraphDistance[ localG, a0, y ] === r ] ]
+          ]
+        ] ) @@@ Tuples[ { Keys @ InfraDensity[ graph, x ], Keys @ InfraDensity[ graph, a ] } ], 1 ] },
+    Switch[ count,
+      All,   reps,
+      _UpTo, Take[ reps, count ],
+      _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
 
 
 (* ===================== CompleteInfraEquilateralTriangle ===================== *)
@@ -219,14 +249,18 @@ Options[ CompleteInfraEquilateralTriangle ] = { Method -> "Metric" };
 
 CompleteInfraEquilateralTriangle[ graph_Graph, p1_, p2_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[] ] :=
-  spreadFind[ Identity, count,
-    { q1, q2 } |-> With[ { r = GraphDistance[ graph, q1, q2 ] },
-      If[ r === Infinity, {},
-        Intersection[
-          Select[ VertexList[ graph ], GraphDistance[ graph, q1, # ] == r & ],
-          Select[ VertexList[ graph ], GraphDistance[ graph, q2, # ] == r & ] ]
-      ]
-    ], InfraDensity[ graph, p1 ], InfraDensity[ graph, p2 ] ]
+  With[ { reps = DeleteDuplicates @ Flatten[
+      ( { q1, q2 } |-> With[ { r = GraphDistance[ graph, q1, q2 ] },
+          If[ r === Infinity, {},
+            Intersection[
+              Select[ VertexList[ graph ], GraphDistance[ graph, q1, # ] == r & ],
+              Select[ VertexList[ graph ], GraphDistance[ graph, q2, # ] == r & ] ]
+          ]
+        ] ) @@@ Tuples[ { Keys @ InfraDensity[ graph, p1 ], Keys @ InfraDensity[ graph, p2 ] } ], 1 ] },
+    Switch[ count,
+      All,   reps,
+      _UpTo, Take[ reps, count ],
+      _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
 
 
 (* ===================== FindInfraCommonPoint ===================== *)
@@ -235,10 +269,15 @@ CompleteInfraEquilateralTriangle[ graph_Graph, p1_, p2_,
 
 FindInfraCommonPoint[ graph_Graph, lines_List,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
-  With[ { vs = If[ Length[ lines ] == 0, {},
-        Apply[ Intersection, linePointSet /@ lines ] ] },
-    countTake[ vs, count ]
-  ]
+  With[ { support = w |-> Union @
+      If[ AllTrue[ VertexList @ w, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ w ] === Range @ VertexCount @ w,
+        Last /@ VertexList @ w, VertexList @ w ] },
+    { reps = If[ Length[ lines ] == 0, {},
+        Apply[ Intersection, Replace[ lines, { g_Graph :> support @ g, gs : { __Graph } :> Union @@ ( support /@ gs ) }, { 1 } ] ] ] },
+    Switch[ count,
+      All,   reps,
+      _UpTo, Take[ reps, count ],
+      _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
 
 
 (* ===================== FindClosestInfraPoint ===================== *)
@@ -247,8 +286,34 @@ FindInfraCommonPoint[ graph_Graph, lines_List,
 
 FindClosestInfraPoint[ graph_Graph, line_, point_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
-  spreadFind[ Identity, count,
-    { line0, point0 } |-> MinimalBy[ line0, GraphDistance[ graph, point0, # ] & ], line, InfraDensity[ graph, point ] ]
+  With[ { walksOf = w |-> With[ { vs = VertexList @ w },
+      { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+        scan = root |-> Reap[ DepthFirstScan[ w, root, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
+      Which[
+        ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
+          { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
+              If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
+        EdgeCount @ w == 0, List /@ If[ spelled, Last /@ vs, vs ],
+        spelled,            { Last /@ SortBy[ vs, First ] },
+        DirectedGraphQ @ w,
+          Catenate @ Catenate @ Table[ FindPath[ w, a, b, Infinity, All ],
+            { a, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { b, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
+        True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ] },
+    { spread = x |-> Which[
+        AssociationQ @ x,         Keys @ x,
+        GraphQ @ x,               walksOf @ x,
+        MatchQ[ x, { __Graph } ], Catenate[ walksOf /@ x ],
+        x === { },                { },
+        MatchQ[ x, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ],
+          Catenate[ walksOf /@ Normal @ x ],
+        True,                     { x } ] },
+    { reps = DeleteDuplicates @ Flatten[
+        ( { line0, point0 } |-> MinimalBy[ line0, GraphDistance[ graph, point0, # ] & ] ) @@@
+          Tuples[ { spread @ line, Keys @ InfraDensity[ graph, point ] } ], 1 ] },
+    Switch[ count,
+      All,   reps,
+      _UpTo, Take[ reps, count ],
+      _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
 
 
 (* ===================== SelectInfraPoint ===================== *)
@@ -258,12 +323,94 @@ SelectInfraPoint::badfrom = "\"From\" specification `1` is not supported by Sele
 
 Options[ SelectInfraPoint ] = { "From" -> All, "Distance" -> None, "MaxCliques" -> All };
 
-SelectInfraPoint[ graph_Graph, vertices_List, UpTo[ n_Integer ], opts : OptionsPattern[] ] :=
-  With[ { from = OptionValue[ "From" ] },
-    If[ ! fromPointSpecQ[ graph, from ],
-      Message[ SelectInfraPoint::badfrom, from ]; $Failed,
-      selectFromPointSpace[ graph, vertices, n, from,
-        OptionValue[ "Distance" ], OptionValue[ "MaxCliques" ] ] ] ]
+(* an unrecognised selector must raise ::badfrom rather than fall through to the whole vertex pool, which reads as a legitimate random draw *)
+
+SelectInfraPoint[ graph_Graph, vertices_List, UpTo[ nMax_Integer ], opts : OptionsPattern[] ] :=
+  With[ { fromSpec = OptionValue[ "From" ], distSpec = OptionValue[ "Distance" ], maxCl = OptionValue[ "MaxCliques" ] },
+    Which[
+      ! ( VertexQ[ graph, fromSpec ] || MatchQ[ fromSpec, All | "Random" | "Center" | "Periphery" |
+            { "Center", _Integer | Infinity } | _Association | _Rule | _List ] ),
+        Message[ SelectInfraPoint::badfrom, fromSpec ]; $Failed,
+      Length[ vertices ] <= 1, vertices,
+      True,
+        Module[ { vIdx, subMatrix, poolIdx, pool, poolSubMatrix, finiteMax, range,
+                  auxiliaryGraph, cliques, thresholds, n },
+          vIdx = Lookup[ AssociationThread[ VertexList @ graph, Range @ VertexCount @ graph ], vertices ];
+          subMatrix = GraphDistanceMatrix[ graph ][[ vIdx, vIdx ]];
+          poolIdx = Which[
+            fromSpec === All, Range @ Length @ vertices,
+            fromSpec === "Center" || fromSpec === "Periphery",
+              With[ { scores = Max /@ subMatrix },
+                Flatten @ Position[ scores, If[ fromSpec === "Center", Min, Max ] @ scores, { 1 }, Heads -> False ] ],
+            MatchQ[ fromSpec, _ -> _ ],
+              With[ { anchors = If[ AssociationQ @ First @ fromSpec, Keys @ First @ fromSpec, { First @ fromSpec } ],
+                      spec = Last @ fromSpec,
+                      vertexIndex = AssociationThread[ VertexList[ graph ] -> Range @ VertexCount[ graph ] ] },
+                { anchorDists = Association[ # -> GraphDistance[ graph, # ] & /@ anchors ] },
+                Flatten @ Position[ vertices,
+                  v_ /; AllTrue[ anchors, a |-> With[ { allDists = anchorDists[ a ], idx = vertexIndex[ v ] },
+                    ListQ[ allDists ] && IntegerQ[ idx ] && Switch[ spec,
+                      _?NumericQ,                 allDists[[ idx ]] == spec,
+                      { _?NumericQ, _?NumericQ }, First @ spec <= allDists[[ idx ]] <= Last @ spec,
+                      "Max",                      allDists[[ idx ]] == Max @ Select[ allDists, # < Infinity & ],
+                      _,                          False ] ] ],
+                  { 1 }, Heads -> False ] ],
+            AssociationQ @ fromSpec,
+              Flatten @ Position[ vertices, Alternatives @@ Keys @ fromSpec, { 1 }, Heads -> False ],
+            MemberQ[ vertices, fromSpec ],
+              { First @ FirstPosition[ vertices, fromSpec ] },
+            ListQ @ fromSpec,
+              Flatten @ Position[ vertices, Alternatives @@ fromSpec, { 1 }, Heads -> False ],
+            True, Range @ Length @ vertices ];
+          pool = vertices[[ poolIdx ]];
+          n = Min[ nMax, Length[ pool ] ];
+          Which[
+            poolIdx === { }, { },
+            distSpec === None || n <= 1, If[ n >= Length[ pool ], pool, RandomSample[ pool, n ] ],
+            True,
+              poolSubMatrix = subMatrix[[ poolIdx, poolIdx ]];
+              finiteMax = Replace[ Max @ Select[ Flatten @ poolSubMatrix, # < Infinity & ],
+                _?( ! NumericQ @ # & ) -> 0 ];
+              poolSubMatrix = Replace[ poolSubMatrix, Infinity -> finiteMax + 1, { 2 } ];
+              Which[
+                distSpec === "Max" || distSpec === "Spread",
+                  thresholds = Reverse @ DeleteCases[ Union @@ poolSubMatrix, 0 | _?( # > finiteMax & ) ];
+                  cliques = { };
+                  Do[
+                    auxiliaryGraph = AdjacencyGraph[ pool,
+                      UnitStep[ poolSubMatrix - d ] * UnitStep[ finiteMax - poolSubMatrix ]
+                        * ( 1 - IdentityMatrix[ Length[ pool ] ] ) ];
+                    cliques = FindClique[ auxiliaryGraph, { n, VertexCount[ auxiliaryGraph ] }, maxCl ];
+                    If[ cliques =!= { }, Break[ ] ],
+                    { d, thresholds } ];
+                  Which[
+                    cliques === { }, { },
+                    (* among the max-min-gap cliques, the n-subset of minimal variance of pairwise distances *)
+                    distSpec === "Spread",
+                      With[ { idx = AssociationThread[ pool -> Range @ Length @ pool ],
+                              subsets = DeleteDuplicates[ Sort /@ Catenate[ Subsets[ #, { n } ] & /@ cliques ] ] },
+                        If[ n < 3,
+                          First @ subsets,
+                          First @ MinimalBy[ subsets,
+                            sub |-> Variance[ poolSubMatrix[[ idx @ #[[ 1 ]], idx @ #[[ 2 ]] ]] & /@ Subsets[ sub, { 2 } ] ] ] ] ],
+                    True, RandomSample[ RandomChoice @ cliques, UpTo[ n ] ] ],
+                True,
+                  range = Replace[ distSpec,
+                    { d_?NumericQ                  :> { d, d },
+                      { dMin_?NumericQ, Infinity } :> { dMin, finiteMax },
+                      { dMin_?NumericQ, dMax_?NumericQ } :> { dMin, dMax },
+                      _ :> { 0, finiteMax } } ];
+                  auxiliaryGraph = AdjacencyGraph[ pool,
+                    UnitStep[ poolSubMatrix - range[[ 1 ]] ] * UnitStep[ range[[ 2 ]] - poolSubMatrix ]
+                      * ( 1 - IdentityMatrix[ Length[ pool ] ] ) ];
+                  cliques = FindClique[ auxiliaryGraph,
+                    { Min[ n, VertexCount[ auxiliaryGraph ] ], VertexCount[ auxiliaryGraph ] }, maxCl ];
+                  If[ cliques === { }, { }, RandomSample[ RandomChoice @ cliques, UpTo[ n ] ] ]
+              ]
+          ]
+        ]
+    ]
+  ]
 
 SelectInfraPoint[ graph_Graph, vertices_List, All, opts : OptionsPattern[] ] :=
   SelectInfraPoint[ graph, vertices, UpTo[ Length[ vertices ] ], opts ]
@@ -275,90 +422,10 @@ SelectInfraPoint[ graph_Graph, vertices_List, n_Integer : 1, opts : OptionsPatte
 (* a density or a walk graph selects from its support; a set is a vertex list already *)
 SelectInfraPoint[ graph_Graph, shape : _Association | _Graph | { __Graph },
                   countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] :=
-  SelectInfraPoint[ graph, infraVertexSet[ graph, shape ], countSpec, opts ]
+  SelectInfraPoint[ graph, Keys @ InfraDensity[ graph, shape ], countSpec, opts ]
 
 SelectInfraPoint[ graph_Graph, countSpec : ( _Integer | UpTo[ _Integer ] | All ), opts : OptionsPattern[] ] :=
   SelectInfraPoint[ graph, #, countSpec, opts ] &
-
-
-selectFromPointSpace[ _Graph, vertices_List, _Integer, _, _, _ ] /; Length[ vertices ] <= 1 := vertices
-
-selectFromPointSpace[ graph_Graph, vertices_List, nMax_Integer,
-                      fromSpec_, distSpec_, maxCl_ ] :=
-  Module[ { vIdx, subMatrix, poolIdx, pool, poolSubMatrix, finiteMax, range,
-            auxiliaryGraph, cliques, thresholds, n },
-    vIdx = Lookup[ AssociationThread[ VertexList @ graph, Range @ VertexCount @ graph ], vertices ];
-    subMatrix = GraphDistanceMatrix[ graph ][[ vIdx, vIdx ]];
-    poolIdx = pointPoolPositions[ graph, vertices, fromSpec, subMatrix ];
-    If[ poolIdx === { }, Return[ { } ] ];
-    pool = vertices[[ poolIdx ]];
-    n = Min[ nMax, Length[ pool ] ];
-    If[ distSpec === None || n <= 1,
-      Return[ If[ n >= Length[ pool ], pool, RandomSample[ pool, n ] ] ] ];
-    poolSubMatrix = subMatrix[[ poolIdx, poolIdx ]];
-    finiteMax = Replace[ Max @ Select[ Flatten @ poolSubMatrix, # < Infinity & ],
-      _?( ! NumericQ @ # & ) -> 0 ];
-    poolSubMatrix = Replace[ poolSubMatrix, Infinity -> finiteMax + 1, { 2 } ];
-    Which[
-      distSpec === "Max" || distSpec === "Spread",
-        thresholds = Reverse @ DeleteCases[ Union @@ poolSubMatrix, 0 | _?( # > finiteMax & ) ];
-        cliques = { };
-        Do[
-          auxiliaryGraph = AdjacencyGraph[ pool,
-            UnitStep[ poolSubMatrix - d ] * UnitStep[ finiteMax - poolSubMatrix ]
-              * ( 1 - IdentityMatrix[ Length[ pool ] ] ) ];
-          cliques = FindClique[ auxiliaryGraph, { n, VertexCount[ auxiliaryGraph ] }, maxCl ];
-          If[ cliques =!= { }, Break[ ] ],
-          { d, thresholds } ];
-        Which[
-          cliques === { }, { },
-          distSpec === "Spread", mostEquidistantSubset[ cliques, poolSubMatrix, pool, n ],
-          True, RandomSample[ RandomChoice @ cliques, UpTo[ n ] ] ],
-      True,
-        range = Replace[ distSpec,
-          { d_?NumericQ                  :> { d, d },
-            { dMin_?NumericQ, Infinity } :> { dMin, finiteMax },
-            { dMin_?NumericQ, dMax_?NumericQ } :> { dMin, dMax },
-            _ :> { 0, finiteMax } } ];
-        auxiliaryGraph = AdjacencyGraph[ pool,
-          UnitStep[ poolSubMatrix - range[[ 1 ]] ] * UnitStep[ range[[ 2 ]] - poolSubMatrix ]
-            * ( 1 - IdentityMatrix[ Length[ pool ] ] ) ];
-        cliques = FindClique[ auxiliaryGraph,
-          { Min[ n, VertexCount[ auxiliaryGraph ] ], VertexCount[ auxiliaryGraph ] }, maxCl ];
-        If[ cliques === { }, { }, RandomSample[ RandomChoice @ cliques, UpTo[ n ] ] ]
-    ]
-  ]
-
-
-pointPoolPositions[ _Graph, vertices_List, All, _ ] := Range @ Length @ vertices
-
-pointPoolPositions[ _, _, "Center", subMatrix_ ] :=
-  With[ { scores = Max /@ subMatrix },
-    Flatten @ Position[ scores, Min @ scores, { 1 }, Heads -> False ] ]
-
-pointPoolPositions[ _, _, "Periphery", subMatrix_ ] :=
-  With[ { scores = Max /@ subMatrix },
-    Flatten @ Position[ scores, Max @ scores, { 1 }, Heads -> False ] ]
-
-pointPoolPositions[ graph_Graph, vertices_List, ( anchor_ -> spec_ ), _ ] :=
-  With[ { anchors = infraSpread[ anchor ],
-          vertexIndex = AssociationThread[ VertexList[ graph ] -> Range @ VertexCount[ graph ] ] },
-    { anchorDists = Association[ # -> GraphDistance[ graph, # ] & /@ anchors ] },
-    Flatten @ Position[ vertices,
-      v_ /; AllTrue[ anchors, a |-> anchorDistMatchQ[ anchorDists[ a ], vertexIndex[ v ], spec ] ],
-      { 1 }, Heads -> False ]
-  ]
-
-pointPoolPositions[ _, vertices_List, fam_Association, _ ] :=
-  Flatten @ Position[ vertices, Alternatives @@ Keys @ fam, { 1 }, Heads -> False ]
-
-pointPoolPositions[ _, vertices_List, v_, _ ] /; MemberQ[ vertices, v ] :=
-  { First @ FirstPosition[ vertices, v ] }
-
-pointPoolPositions[ _, vertices_List, list_List, _ ] :=
-  Flatten @ Position[ vertices, Alternatives @@ list, { 1 }, Heads -> False ]
-
-pointPoolPositions[ _, vertices_List, _, _ ] := Range @ Length @ vertices
 
 
 (* ===================== InfraReachableQ ===================== *)
