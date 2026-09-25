@@ -59,12 +59,11 @@ FindInfraLinearCombination[ graph_Graph, o_, terms_List,
               { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
                 scan = root |-> Reap[ DepthFirstScan[ w, root, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
               Which[
-                vs === { },         { },
                 ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
                   { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
                       If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
+                EdgeCount @ w == 0, List /@ If[ spelled, Last /@ vs, vs ],
                 spelled,            { Last /@ SortBy[ vs, First ] },
-                EdgeCount @ w == 0, List /@ vs,
                 DirectedGraphQ @ w,
                   Catenate @ Catenate @ Table[ FindPath[ w, a, b, Infinity, All ],
                     { a, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { b, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
