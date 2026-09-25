@@ -17,67 +17,56 @@ FindInfraEllipse[ graph_Graph, foci : { _, _ }, c_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
   Catch @ With[ {
       properties = OptionValue[ FindInfraEllipse, { opts }, Properties ],
-      methodSpec = resolveMethod[ OptionValue[ FindInfraEllipse, { opts }, Method ], count ] },
-    { methodHead = methodName @ methodSpec },
+      methodSpec = Replace[ OptionValue[ FindInfraEllipse, { opts }, Method ], Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ] },
+    { methodHead = Replace[ methodSpec, { m_String, ___ } :> m ] },
     If[ ! MatchQ[ methodHead, "Exhaustive" | "Greedy" | "RandomGreedy" ],
       Message[ FindInfraEllipse::badmethod, methodSpec ]; Throw[ $Failed ] ];
-    With[ { branch  = greedyBranch[ methodHead /. "Exhaustive" -> "Greedy" ],
-            pruning = "Pruning" /. propertiesSubOpts[ methodSpec ] /. "Pruning" -> Infinity },
-      spreadFind[ geodesicCycleGraph, count,
-        findEllipseSweep[ graph, ##, properties, count, branch, pruning ] &,
-        foci, c ] ]
-  ]
-
-
-findEllipseSweep[ graph_Graph, foci_List, c_, properties_List, count_, branch_, pruning_ ] :=
-  Module[ { unknown, range, verts, idx, dm, row1, row2,
-            levelGraph, vertsTest, tied, needed, k, kMax, batch, matching, accumulated },
-    Catch[
-      unknown = Complement[ properties, { "Separating", "Shortest" } ];
-      If[ unknown =!= { },
-        Message[ FindInfraEllipse::badproperty, First @ unknown ]; Throw[ $Failed ] ];
-      range      = Replace[ c, d_?NumericQ :> { d, d } ];
-      verts      = VertexList[ graph ];
-      idx        = AssociationThread[ verts, Range @ Length @ verts ];
-      dm         = GraphDistanceMatrix[ graph ];
-      row1       = dm[[ idx @ foci[[ 1 ]] ]];
-      row2       = dm[[ idx @ foci[[ 2 ]] ]];
-      levelGraph = Subgraph[ graph, ellipticLevelSet[ verts, row1, row2, range ] ];
-      vertsTest  = admissibleEllipticCycleVerts[ graph, verts, row1, row2, range,
-                     DeleteCases[ properties, "Shortest" ] ];
-      tied       = MemberQ[ properties, "Shortest" ];
-      needed     = countLimit @ count;
-      kMax       = VertexCount[ levelGraph ];
-      accumulated = { };
-      k = 3;
-      While[ k <= kMax,
-        batch    = branch @ applyPruning[ cycleToVertexSequence /@ FindCycle[ levelGraph, { k }, All ], pruning ];
-        matching = Select[ batch, vertsTest ];
-        If[ matching =!= { },
-          accumulated = Join[ accumulated, matching ];
-          If[ tied || Length[ accumulated ] >= needed, Break[ ] ]
-        ];
-        k++
-      ];
-      accumulated
-    ]
-  ]
-
-
-admissibleEllipticCycleVerts[ graph_Graph, verts_List, row1_List, row2_List, range_List,
-    properties_List ] :=
-  With[ { nf = ellipticNearFar[ verts, row1, row2, range ] },
-    { tests = propertyPredicateEllipticCycle[ graph, nf[[ 1 ]], nf[[ 2 ]], # ] & /@ properties },
-    v |-> AllTrue[ tests, # @ v & ]
-  ]
-
-
-propertyPredicateEllipticCycle[ graph_Graph, nearVerts_List, farVerts_List, "Separating" ] :=
-  verts |-> nearVerts =!= { } && farVerts =!= { } &&
-            SeparatesQ[ graph, verts, First @ nearVerts, First @ farVerts ]
-
-propertyPredicateEllipticCycle[ _, _, _, other_ ] :=
-  ( Message[ FindInfraEllipse::badproperty, other ]; Throw[ $Failed ] )
+    With[ { branch  = If[ methodHead === "RandomGreedy", RandomSample, Identity ],
+            pruning = "Pruning" /. Replace[ methodSpec, { { _String, o___ } :> { o }, _ -> { } } ] /. "Pruning" -> Infinity,
+            needed  = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
+      { results = Apply[
+          { foci0, c0 } |-> With[ { unknown = Complement[ properties, { "Separating", "Shortest" } ] },
+            If[ unknown =!= { },
+              Message[ FindInfraEllipse::badproperty, First @ unknown ]; $Failed,
+              With[ {
+                  range = Replace[ c0, d_?NumericQ :> { d, d } ],
+                  verts = VertexList[ graph ],
+                  dm    = GraphDistanceMatrix[ graph ] },
+                { idx = AssociationThread[ verts, Range @ Length @ verts ] },
+                { sums = dm[[ idx @ foci0[[ 1 ]] ]] + dm[[ idx @ foci0[[ 2 ]] ]] },
+                { levelGraph = Subgraph[ graph, Pick[ verts, Thread[ range[[ 1 ]] <= sums <= range[[ 2 ]] ] ] ],
+                  nearVerts  = Pick[ verts, Thread[ sums < range[[ 1 ]] ] ],
+                  farVerts   = Pick[ verts, Thread[ sums > range[[ 2 ]] ] ] },
+                { vertsTest = If[ MemberQ[ properties, "Separating" ],
+                    vs |-> nearVerts =!= { } && farVerts =!= { } &&
+                           SeparatesQ[ graph, vs, First @ nearVerts, First @ farVerts ],
+                    True & ],
+                  tied = MemberQ[ properties, "Shortest" ] },
+                Catch[
+                  Fold[
+                    { accumulated, k } |-> With[ {
+                        matching = Select[
+                          branch @ With[ { cycles = First /@ # & /@ FindCycle[ levelGraph, { k }, All ] },
+                            Replace[ pruning, {
+                              Infinity      :> cycles,
+                              n_Integer     :> If[ Length @ cycles <= n, cycles, RandomSample[ cycles, n ] ],
+                              keep_?NumericQ :> If[ cycles === { }, { },
+                                With[ { kept = Select[ cycles, RandomReal[ ] < keep & ] },
+                                  If[ kept === { }, RandomSample[ cycles, 1 ], kept ] ] ] } ] ],
+                          vertsTest ] },
+                      If[ matching =!= { } && ( tied || Length[ accumulated ] + Length[ matching ] >= needed ),
+                        Throw[ Join[ accumulated, matching ], FindInfraEllipse ],
+                        Join[ accumulated, matching ] ] ],
+                    { }, Range[ 3, VertexCount @ levelGraph ] ],
+                  FindInfraEllipse ] ] ] ],
+          Tuples[ { { foci }, Replace[ c, { fam_Association :> Keys @ fam, other_ :> { other } } ] } ], { 1 } ] },
+      If[ MemberQ[ results, $Failed ], $Failed,
+        With[ { reps = DeleteDuplicates[ Graph[ #, DirectedEdge @@@ Partition[ #, 2, 1, 1 ] ] & /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
+          Switch[ count,
+            Automatic, First[ reps, { } ],
+            All,       reps,
+            _UpTo,     Take[ reps, count ],
+            _,         If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ] ] ] ]
 
 
 (* ===================== InfraEllipseQ ===================== *)
@@ -86,7 +75,23 @@ propertyPredicateEllipticCycle[ _, _, _, other_ ] :=
 
 InfraEllipseQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraEllipseQ[ graph, # ] & ]
 
-InfraEllipseQ[ graph_Graph, w_Graph ] := AllTrue[ walkRealisations @ w, InfraEllipseQ[ graph, # ] & ]
+InfraEllipseQ[ graph_Graph, w_Graph ] :=
+  With[ { vs = VertexList @ w },
+    { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+      scan = v |-> Reap[ DepthFirstScan[ w, v, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
+    AllTrue[
+      Which[
+        vs === { },         { },
+        ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
+          { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
+              If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
+        spelled,            { Last /@ SortBy[ vs, First ] },
+        EdgeCount @ w == 0, List /@ vs,
+        DirectedGraphQ @ w,
+          Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
+            { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
+        True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ],
+      InfraEllipseQ[ graph, # ] & ] ]
 
 InfraEllipseQ[ graph_Graph, cycle_List ] /; Length[ cycle ] >= 3 :=
   With[ {
