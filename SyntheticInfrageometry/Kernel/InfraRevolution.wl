@@ -7,92 +7,61 @@ Package["WolframInstitute`SyntheticInfrageometry`"]
 
 Options[ FindInfraRevolution ] = { "Form" -> "Solid", Method -> "Voronoi" };
 
-(* "Balls": the sublevel set { v : min_i (d(v, c_i) - r_i) <= 0 } of the varying-radius tube function; no geodesic extension, so cyclic and non-extendable axes work too *)
-
-FindInfraRevolution[ graph_Graph, axis_, profile_, opts : OptionsPattern[ ] ] /;
-  OptionValue[ FindInfraRevolution, { opts }, Method ] === "Balls" :=
-  With[
-    { positions = DeleteDuplicates /@ Transpose @ parseAxes @ axis,
-      surface = OptionValue[ FindInfraRevolution, { opts }, "Form" ] === "Surface" },
-    { radii = profileRadii[ profile, Length @ positions ] },
-    { candidates = VertexList @ NeighborhoodGraph[ graph, Union @@ positions, Max @ radii ],
-      slack = v |-> Min @ MapThread[
-        { posVerts, r } |-> Min[ GraphDistance[ graph, v, # ] & /@ posVerts ] - r,
-        { positions, radii } ] },
-    (* constant radius: the r-neighborhood of the axis IS the union of balls, so the candidate set is already the answer *)
-    vertexSet @ If[ ! surface && Equal @@ radii,
-      candidates,
-      Select[ candidates, If[ surface, slack[ # ] == 0, slack[ # ] <= 0 ] & ] ]
-  ]
-
 FindInfraRevolution[ graph_Graph, axis_, profile_, opts : OptionsPattern[ ] ] :=
-  With[ { axisPaths = parseAxes @ axis,
-          cmp = If[ OptionValue[ "Form" ] === "Surface", Equal, LessEqual ],
-          method = OptionValue[ Method ] },
+  With[
+    { walksOf = w |-> With[ { vs = VertexList @ w },
+        { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+          scan = v |-> Reap[ DepthFirstScan[ w, v, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
+        Which[
+          ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
+            { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
+                If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
+          spelled,            { Last /@ SortBy[ vs, First ] },
+          EdgeCount @ w == 0, List /@ vs,
+          DirectedGraphQ @ w,
+            Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
+              { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
+          True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ] },
+    { axisPaths = Which[
+        GraphQ @ axis,                        walksOf @ axis,
+        MatchQ[ axis, { __Graph } ],          Catenate[ walksOf /@ axis ],
+        MatchQ[ axis, { _List, ___List } ],   axis,
+        True,                                 { axis } ] },
     { n = Length @ First @ axisPaths,
-      ext = extendAxisByOne[ graph, parseAxes @ axis ] },
-    { radii = profileRadii[ profile, n ],
-      positions = First @ ext,
-      origRange = Last @ ext },
-    vertexSet[ Union @@ MapThread[
-      { posVerts, r, i } |->
-        Select[ VertexList @ NeighborhoodGraph[ graph, posVerts, r ],
-          v |-> With[ { dists = Min[ GraphDistance[ graph, v, # ] & /@ # ] & /@ positions },
-            cmp[ dists[[ i ]], r ] && Switch[ method,
-              "Voronoi",                dists[[ i ]] === Min @ dists,
-              "PerpendicularBisector",  bisectorPasses[ dists, i, Length @ positions ] ] ] ],
-      { positions[[ origRange ]], radii, origRange } ] ]
-  ]
-
-
-parseAxes[ w_Graph ]                    := walkRealisations @ w
-parseAxes[ ws : { __Graph } ]           := Catenate[ walkRealisations /@ ws ]
-parseAxes[ paths : { _List, ___List } ] := paths
-parseAxes[ path_List ]                  := { path }
-
-
-profileRadii[ r_?NumericQ, n_Integer ] := ConstantArray[ Round @ r, n ]
-profileRadii[ prof_List, n_Integer ]   := Round /@ prof
-profileRadii[ prof_, n_Integer ]       := Round /@ ( prof /@ Range[ n ] )
-
-
-(* for each axis path, the vertices adjacent to its endpoint that extend it as a geodesic; origRange picks the indices of the original axis *)
-
-extendAxisByOne[ graph_Graph, axisPaths : { { _ }, ___ } ] :=
-  { DeleteDuplicates /@ Transpose @ axisPaths, Range @ Length @ First @ axisPaths }
-
-extendAxisByOne[ graph_Graph, axisPaths_List ] :=
-  With[ { n = Length @ First @ axisPaths,
-          origPositions = DeleteDuplicates /@ Transpose @ axisPaths },
-    { leftExt  = Union @@ ( oneStepExtensionLeft [ graph, # ] & /@ axisPaths ),
-      rightExt = Union @@ ( oneStepExtensionRight[ graph, # ] & /@ axisPaths ) },
-    Which[
-      leftExt === { } && rightExt === { },  { origPositions, Range @ n },
-      leftExt === { },                       { Append[ origPositions, rightExt ], Range @ n },
-      rightExt === { },                      { Prepend[ origPositions, leftExt  ], Range[ 2, n + 1 ] },
-      True,                                  { Join[ { leftExt }, origPositions, { rightExt } ], Range[ 2, n + 1 ] } ]
-  ]
-
-
-oneStepExtensionLeft[ graph_Graph, path_List ] :=
-  With[ { n = Length @ path },
-    Select[ AdjacencyList[ graph, First @ path ],
-      v |-> ! MemberQ[ path, v ] &&
-            AllTrue[ Range @ n, GraphDistance[ graph, v, path[[ # ]] ] === # & ] ] ]
-
-
-oneStepExtensionRight[ graph_Graph, path_List ] :=
-  With[ { n = Length @ path },
-    Select[ AdjacencyList[ graph, Last @ path ],
-      v |-> ! MemberQ[ path, v ] &&
-            AllTrue[ Range @ n, GraphDistance[ graph, v, path[[ # ]] ] === n - # + 1 & ] ] ]
-
-
-bisectorPasses[ dists_, i_, totalPos_ ] :=
-  Which[
-    i == 1,         dists[[ i ]] === Min @ dists,
-    i == totalPos,  dists[[ i ]] === Min @ dists,
-    True,           dists[[ i - 1 ]] === dists[[ i + 1 ]] ]
+      origPositions = DeleteDuplicates /@ Transpose @ axisPaths,
+      surface = OptionValue[ "Form" ] === "Surface",
+      method = OptionValue[ Method ] },
+    { radii = Round /@ Which[ NumericQ @ profile, ConstantArray[ profile, n ], ListQ @ profile, profile, True, profile /@ Range[ n ] ] },
+    If[ method === "Balls",
+      (* "Balls": the sublevel set { v : min_i (d(v, c_i) - r_i) <= 0 } of the varying-radius tube function; no geodesic extension, so cyclic and non-extendable axes work too *)
+      With[
+        { candidates = VertexList @ NeighborhoodGraph[ graph, Union @@ origPositions, Max @ radii ],
+          slack = v |-> Min @ MapThread[
+            { posVerts, r } |-> Min[ GraphDistance[ graph, v, # ] & /@ posVerts ] - r,
+            { origPositions, radii } ] },
+        (* constant radius: the r-neighborhood of the axis IS the union of balls, so the candidate set is already the answer *)
+        Union @ If[ ! surface && Equal @@ radii,
+          candidates,
+          Select[ candidates, If[ surface, slack[ # ] == 0, slack[ # ] <= 0 ] & ] ] ],
+      (* the right extension of a path is the left extension of its reverse *)
+      With[
+        { extension = paths |-> If[ n == 1, { },
+            Union @@ ( path |-> Select[ AdjacencyList[ graph, First @ path ],
+              v |-> ! MemberQ[ path, v ] &&
+                    AllTrue[ Range @ Length @ path, GraphDistance[ graph, v, path[[ # ]] ] === # & ] ] ) /@ paths ] },
+        { leftExt  = extension @ axisPaths,
+          rightExt = extension[ Reverse /@ axisPaths ] },
+        { positions = Join[ If[ leftExt === { }, { }, { leftExt } ], origPositions, If[ rightExt === { }, { }, { rightExt } ] ],
+          origRange = Range @ n + If[ leftExt === { }, 0, 1 ] },
+        Union @@ MapThread[
+          { posVerts, r, i } |->
+            Select[ VertexList @ NeighborhoodGraph[ graph, posVerts, r ],
+              v |-> With[ { dists = Min[ GraphDistance[ graph, v, # ] & /@ # ] & /@ positions },
+                If[ surface, dists[[ i ]] == r, dists[[ i ]] <= r ] && Switch[ method,
+                  "Voronoi",                dists[[ i ]] === Min @ dists,
+                  "PerpendicularBisector",
+                    If[ i == 1 || i == Length @ positions, dists[[ i ]] === Min @ dists, dists[[ i - 1 ]] === dists[[ i + 1 ]] ] ] ] ],
+          { origPositions, radii, origRange } ] ] ] ]
 
 
 (* ===================== FindInfraCylinder ===================== *)
@@ -109,8 +78,26 @@ FindInfraCylinder[ graph_Graph, axis_, radius_, opts : OptionsPattern[ ] ] :=
 Options[ FindInfraCone ] = Join[ Options[ FindInfraRevolution ], { "Apex" -> First } ];
 
 FindInfraCone[ graph_Graph, axis_, slope_, opts : OptionsPattern[ ] ] :=
-  With[ { n = Length @ First @ parseAxes @ axis,
-          apex = OptionValue[ "Apex" ] },
+  With[
+    { walksOf = w |-> With[ { vs = VertexList @ w },
+        { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+          scan = v |-> Reap[ DepthFirstScan[ w, v, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
+        Which[
+          ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
+            { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
+                If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
+          spelled,            { Last /@ SortBy[ vs, First ] },
+          EdgeCount @ w == 0, List /@ vs,
+          DirectedGraphQ @ w,
+            Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
+              { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
+          True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ],
+      apex = OptionValue[ "Apex" ] },
+    { n = Length @ First @ Which[
+        GraphQ @ axis,                        walksOf @ axis,
+        MatchQ[ axis, { __Graph } ],          Catenate[ walksOf /@ axis ],
+        MatchQ[ axis, { _List, ___List } ],   axis,
+        True,                                 { axis } ] },
     FindInfraRevolution[ graph, axis,
       slope * If[ apex === Last, Range[ n - 1, 0, -1 ], Range[ 0, n - 1 ] ],
       FilterRules[ { opts }, Options[ FindInfraRevolution ] ] ]
@@ -120,7 +107,7 @@ FindInfraCone[ graph_Graph, axis_, slope_, opts : OptionsPattern[ ] ] :=
 (* ===================== InfraRevolutionQ ===================== *)
 
 InfraRevolutionQ[ graph_Graph, vs_List, axis_, profile_, opts : OptionsPattern[ FindInfraRevolution ] ] :=
-  vertexSet @ vs === FindInfraRevolution[ graph, axis, profile, opts ]
+  Union @ vs === FindInfraRevolution[ graph, axis, profile, opts ]
 
 InfraRevolutionQ[ graph_Graph, o_Association, axis_, profile_,
     opts : OptionsPattern[ FindInfraRevolution ] ] :=

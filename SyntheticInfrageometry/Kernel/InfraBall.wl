@@ -6,7 +6,7 @@ Package["WolframInstitute`SyntheticInfrageometry`"]
 
 FindInfraBall[ graph_Graph, c_, r_ ] :=
   With[ { centers = Keys @ InfraDensity[ graph, c ] },
-    vertexSet @ Select[ VertexList[ graph ],
+    Union @ Select[ VertexList[ graph ],
       v |-> AnyTrue[ centers, GraphDistance[ graph, #, v ] <= r & ] ] ]
 
 
@@ -33,13 +33,13 @@ InfraBallQ[ graph_Graph, vs_List ] :=
 (* the intersection of all closed balls containing S: the smallest ball-convex (Mazur) superset *)
 
 FindBallHull[ graph_Graph, s_ ] :=
-  vertexSet @ BallHull[ graph, hullVertices @ s ]
+  Union @ BallHull[ graph, Keys @ InfraDensity[ graph, s ] ]
 
 (* S is ball-convex: it equals its own ball hull (an intersection of balls). *)
 
 BallHullQ[ graph_Graph, s_ ] :=
-  With[ { vs = hullVertices @ s },
-    Sort @ BallHull[ graph, vs ] === Union @ vs ]
+  With[ { vs = Keys @ InfraDensity[ graph, s ] },
+    Sort @ BallHull[ graph, vs ] === vs ]
 
 
 (* ===================== Scene-DSL constructor ===================== *)

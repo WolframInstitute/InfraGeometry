@@ -15,11 +15,11 @@ FindInfraEquidistantSet[ graph_Graph, pts_List, { lo_Integer, hi_Integer } ] /; 
   With[
     { rows  = GraphDistance[ graph, # ] & /@ pts },
     { diffs = Transpose @ MapThread[ Subtract, { Most[ rows ], Rest[ rows ] } ] },
-    vertexSet @ Pick[ VertexList[ graph ], AllTrue[ #, lo <= # <= hi & ] & /@ diffs ]
+    Union @ Pick[ VertexList[ graph ], AllTrue[ #, lo <= # <= hi & ] & /@ diffs ]
   ]
 
 FindInfraEquidistantSet[ graph_Graph, pts_List /; Length[ pts ] <= 1, { _Integer, _Integer } ] :=
-  vertexSet @ VertexList[ graph ]
+  Union @ VertexList[ graph ]
 
 
 (* ===================== FindAdvancingInfraFront ===================== *)
@@ -30,7 +30,7 @@ FindInfraEquidistantSet[ graph_Graph, pts_List /; Length[ pts ] <= 1, { _Integer
 FindAdvancingInfraFront[ graph_Graph, origin_, steps_Integer ] :=
   With[
     { vl  = VertexList[ graph ],
-      src = infraPointVertices[ graph, origin ] },
+      src = Keys @ InfraDensity[ graph, origin ] },
     { adj  = AssociationMap[ AdjacencyList[ graph, # ] &, vl ],
       vidx = AssociationThread[ vl, Range[ Length @ vl ] ],
       dm   = GraphDistanceMatrix[ graph ] },
@@ -42,7 +42,7 @@ FindAdvancingInfraFront[ graph_Graph, origin_, steps_Integer ] :=
               { out = Select[ adj @ u, dp[ # ] == dp[ u ] + 1 & ],
                 in  = Select[ adj @ u, dp[ # ] == dp[ u ] - 1 & ] },
               Which[ out =!= { }, out, in =!= { }, in, True, { u } ] ] ) /@ cur ] } ] },
-    vertexSet /@ NestList[ step, { src, src }, steps ][[ All, 2 ]]
+    Union /@ NestList[ step, { src, src }, steps ][[ All, 2 ]]
   ]
 
 
@@ -56,29 +56,24 @@ Options[ InfraBoundary ] = { Method -> "Combinatorial" };
 Options[ InfraInterior ] = { Method -> "Combinatorial" };
 
 InfraBoundary[ g_Graph, s_, OptionsPattern[] ] :=
-  With[ { vs = infraSetVertices[ g, s ] },
-    Switch[ methodName @ OptionValue[ Method ],
-      "Combinatorial", vertexSet @ GraphBoundary[ g, vs ],
-      "Alexandrov",    vertexSet @ TopologicalBoundary[
-        BallTopology[ g, Lookup[ methodOptions @ OptionValue[ Method ], "Radius", 1 ] ], vs ],
+  With[ { vs = Keys @ InfraDensity[ g, s ] },
+    Switch[ Replace[ OptionValue[ Method ], { m_String, ___ } :> m ],
+      "Combinatorial", Union @ GraphBoundary[ g, vs ],
+      "Alexandrov",    Union @ TopologicalBoundary[
+        BallTopology[ g, Lookup[ Replace[ OptionValue[ Method ], { { _String, o___ } :> { o }, _ -> { } } ], "Radius", 1 ] ], vs ],
       _, Message[ InfraBoundary::badmethod, OptionValue[ Method ] ]; $Failed
     ]
   ]
 
 InfraInterior[ g_Graph, s_, OptionsPattern[] ] :=
-  With[ { vs = infraSetVertices[ g, s ] },
-    Switch[ methodName @ OptionValue[ Method ],
-      "Combinatorial", vertexSet @ GraphInterior[ g, vs ],
-      "Alexandrov",    vertexSet @ TopologicalInterior[
-        BallTopology[ g, Lookup[ methodOptions @ OptionValue[ Method ], "Radius", 1 ] ], vs ],
+  With[ { vs = Keys @ InfraDensity[ g, s ] },
+    Switch[ Replace[ OptionValue[ Method ], { m_String, ___ } :> m ],
+      "Combinatorial", Union @ GraphInterior[ g, vs ],
+      "Alexandrov",    Union @ TopologicalInterior[
+        BallTopology[ g, Lookup[ Replace[ OptionValue[ Method ], { { _String, o___ } :> { o }, _ -> { } } ], "Radius", 1 ] ], vs ],
       _, Message[ InfraInterior::badmethod, OptionValue[ Method ] ]; $Failed
     ]
   ]
-
-
-(* the support of any shape, read by the anchor rule: a vertex, a vertex list, a density, a walk graph or a family all marginalise to their vertices *)
-
-infraSetVertices[ g_Graph, s_ ] := infraVertexSet[ g, s ]
 
 
 (* ===================== InfraVolume ===================== *)
@@ -93,7 +88,20 @@ Options[ InfraVolume ] = { "Measure" -> "FullCount", Method -> "Combinatorial" }
 (* a walk graph or a bundle realises the union of its walks as path graphs -- only their own consecutive edges, so distinct lines are not joined and a line never gains the chords of its induced subgraph.  A vertex is then interior iff every g-edge at it is a line edge, so a 1-D curve has nearly empty interior *)
 InfraVolume[ g_Graph, w : ( _Graph | { __Graph } ), opts : OptionsPattern[] ] :=
   With[
-    { walks = infraSpread @ w },
+    { walksOf = x |-> With[ { vs = VertexList @ x },
+        { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+          scan = v |-> Reap[ DepthFirstScan[ x, v, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
+        Which[
+          ! LoopFreeGraphQ @ x || ! AcyclicGraphQ @ x,
+            { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
+                If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
+          spelled,            { Last /@ SortBy[ vs, First ] },
+          EdgeCount @ x == 0, List /@ vs,
+          DirectedGraphQ @ x,
+            Catenate @ Catenate @ Table[ FindPath[ x, s, t, Infinity, All ],
+              { s, Select[ vs, VertexInDegree[ x, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ x, # ] == 0 & ] } ],
+          True, { scan @ SelectFirst[ vs, VertexDegree[ x, # ] == 1 &, First @ vs ] } ] ] },
+    { walks = If[ GraphQ @ w, walksOf @ w, Catenate[ walksOf /@ w ] ] },
     { h = Graph[ Union @@ walks,
         DeleteDuplicates[ Sort /@ Catenate[ (UndirectedEdge @@@ Partition[ #, 2, 1 ] &) /@ walks ] ] ] },
     Switch[ OptionValue[ "Measure" ],
@@ -106,7 +114,7 @@ InfraVolume[ g_Graph, w : ( _Graph | { __Graph } ), opts : OptionsPattern[] ] :=
   ]
 
 InfraVolume[ g_Graph, s_, opts : OptionsPattern[] ] :=
-  With[ { vs = infraSetVertices[ g, s ] },
+  With[ { vs = Keys @ InfraDensity[ g, s ] },
     Switch[ OptionValue[ "Measure" ],
       "FullCount",       Length[ vs ],
       "WithoutBoundary", Length[ InfraInterior[ g, vs, Method -> OptionValue[ Method ] ] ],
