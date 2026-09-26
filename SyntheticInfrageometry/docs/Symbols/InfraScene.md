@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`Infrageometry`]
 Paclet: WolframInstitute/SyntheticInfrageometry
 URI: WolframInstitute/SyntheticInfrageometry/ref/InfraScene
 Keywords: [scene, construction, Euclid I.10, constraint, ruler and compass]
-SeeAlso: [FindInfraScene, InfraGeometricStep, InfraInstance, InfraSceneViewer, InfraIntersection]
+SeeAlso: [FindInfraScene, InfraGeometricStep, InfraSceneInstance, InfraSceneViewer, InfraIntersection]
 RelatedGuides: [EuclideanGeometryGuide]
 ---
 

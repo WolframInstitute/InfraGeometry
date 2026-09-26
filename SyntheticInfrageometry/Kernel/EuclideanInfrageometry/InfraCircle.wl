@@ -202,9 +202,6 @@ InfraCircleQ[ graph_Graph, cycle_List ] /; Length[ cycle ] >= 3 :=
 
 InfraCircleQ[ _Graph, cycle_List ] /; Length[ cycle ] < 3 := False
 
-InfraCircleQ[ graph_Graph, obj : ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ] :=
-  With[ { reps = Normal @ obj }, reps =!= { } && AllTrue[ reps, InfraCircleQ[ graph, # ] & ] ]
-
 
 (* ===================== Scene-DSL constructor ===================== *)
 

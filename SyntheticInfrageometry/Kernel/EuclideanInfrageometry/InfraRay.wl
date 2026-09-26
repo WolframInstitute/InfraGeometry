@@ -59,6 +59,9 @@ FindInfraRay[ graph_Graph, p_, q_,
 
 InfraRayQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraRayQ[ graph, # ] & ]
 
+(* a family of instances, the shape FindInfraRay[graph, o, v, n | UpTo[n] | All] returns *)
+InfraRayQ[ graph_Graph, ws : { { ___ } .. } ] := AllTrue[ ws, InfraRayQ[ graph, # ] & ]
+
 InfraRayQ[ graph_Graph, w_Graph ] :=
   With[ { vs = VertexList @ w },
     { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,

@@ -22,28 +22,15 @@ sortReps[ x_ ] := Sort @ Replace[ reps @ x, l_List :> Sort @ l, { 1 } ]
 
 (* ===================== Distance-matrix family ===================== *)
 
-VerificationTest[
-  classInvariantQ[ m |-> FindInfraSegment[ GridGraph[ { 4, 4 } ], 1, 16, All, Method -> m ] ],
-  True,
-  TestID -> "FindInfraSegment-class-invariant-under-Method"
-]
+(* FindInfraSegment, FindInfraLine, FindInfraRay and FindInfraCircle left the Method
+   ladder on 2026-09-26 (EuclideanInertHeads): the count fixes the mode and the only
+   modifiers are "RandomChoice" / "Pruning" on InfraVertexList, so they carry no Method
+   axis of their own to be invariant under any more. *)
 
 VerificationTest[
   classInvariantQ[ m |-> ExtendInfraSegment[ TorusGraph[ { 4, 5 } ], { 1, 2 }, Infinity, All, Method -> m ] ],
   True,
   TestID -> "ExtendInfraSegment-class-invariant-under-Method"
-]
-
-VerificationTest[
-  classInvariantQ[ m |-> FindInfraLine[ TorusGraph[ { 4, 5 } ], 1, 2, All, Method -> m ] ],
-  True,
-  TestID -> "FindInfraLine-class-invariant-under-Method"
-]
-
-VerificationTest[
-  classInvariantQ[ m |-> FindInfraRay[ TorusGraph[ { 4, 5 } ], 1, 2, All, Method -> m ] ],
-  True,
-  TestID -> "FindInfraRay-class-invariant-under-Method"
 ]
 
 (* the parallels through the centre of the 5 x 5 grid in the level set of its first row: one chain, the middle row *)
@@ -170,26 +157,6 @@ VerificationTest[
 ]
 
 
-(* ===================== Circle family ===================== *)
-
-(* the band {2, 4} around the centre of the 9 x 9 grid: one pool atom carrying sixteen shortest separating circles, the class under every Method *)
-VerificationTest[
-  With[ { call = m |-> FindInfraCircle[ GridGraph[ { 9, 9 } ], 41, { 2, 4 }, All, Method -> m ] },
-    { classInvariantQ[ call ], Length @ reps @ call[ "Exhaustive" ] } ],
-  { True, 16 },
-  TestID -> "FindInfraCircle-pool-class-invariant-under-Method"
-]
-
-(* off the default Properties the family comes from the length sweep, which every Method runs alike *)
-VerificationTest[
-  classInvariantQ[ m |-> FindInfraCircle[ GridGraph[ { 4, 4 } ], 6, { 1, 2 }, All, Properties -> { "Separating" }, Method -> m ] ],
-  True,
-  TestID -> "FindInfraCircle-sweep-class-invariant-under-Method"
-]
-
-
-
-
 (* ===================== Ellipse family ===================== *)
 
 (* the elliptic level band {4, 8} of the foci 25, 12 on the 7 x 7 grid: the sweep's shortest separating grade, the same class under every Method *)
@@ -224,10 +191,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ], t = TorusGraph[ { 4, 5 } ] },
     AllTrue[
-      { m |-> FindInfraSegment[ g, 1, 16, Method -> m ],
-        m |-> ExtendInfraSegment[ g, { 6, 7 }, 2, Method -> m ],
-        m |-> FindInfraLine[ t, 1, 2, Method -> m ],
-        m |-> FindInfraRay[ g, 6, 7, Method -> m ],
+      { m |-> ExtendInfraSegment[ g, { 6, 7 }, 2, Method -> m ],
         m |-> FindInfraParallel[ g, Range[ 4 ], 10, Method -> m ],
         m |-> FindInfraWalk[ g, 1, UpTo[ 4 ], Method -> m ],
         m |-> FindInfraWalk[ g, 1, 16, { 6 }, Method -> m ],
@@ -237,7 +201,6 @@ VerificationTest[
         m |-> FindInfraShell[ g, 6, { 1, 2 }, Properties -> { "Separating" }, Method -> m ],
         m |-> FindInfraBisectingHyperplane[ g, 1, 4, { -1, 1 }, Properties -> { "Separating" }, Method -> m ],
         m |-> FindInfraEllipticShell[ g, { 6, 11 }, { 3, 4 }, Properties -> { "Separating" }, Method -> m ],
-        m |-> FindInfraCircle[ g, 6, { 1, 2 }, Method -> m ],
         m |-> FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, Method -> m ],
         m |-> FindInfraTriangle[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, Method -> m ],
         m |-> FindInfraEllipse[ GridGraph[ { 7, 7 } ], { 25, 12 }, { 4, 8 }, Method -> m ],
@@ -254,10 +217,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ], t = TorusGraph[ { 4, 5 } ] },
     AllTrue[
-      { m |-> FindInfraSegment[ g, 1, 16, All, Method -> m ],
-        m |-> ExtendInfraSegment[ g, { 6, 7 }, 2, All, Method -> m ],
-        m |-> FindInfraLine[ g, 1, 2, All, Method -> m ],
-        m |-> FindInfraRay[ g, 6, 7, All, Method -> m ],
+      { m |-> ExtendInfraSegment[ g, { 6, 7 }, 2, All, Method -> m ],
         m |-> FindInfraParallel[ g, Range[ 4 ], 10, All, Method -> m ],
         m |-> FindInfraWalk[ g, 1, UpTo[ 4 ], All, Method -> m ],
         m |-> ExtendInfraWalk[ g, { 1, 2 }, UpTo[ 2 ], All, Method -> m ],
@@ -266,8 +226,6 @@ VerificationTest[
         m |-> FindInfraShell[ g, 6, { 1, 2 }, All, Properties -> { "Separating" }, Method -> m ],
         m |-> FindInfraBisectingHyperplane[ g, 1, 4, { -1, 1 }, All, Properties -> { "Separating" }, Method -> m ],
         m |-> FindInfraEllipticShell[ g, { 6, 11 }, { 3, 4 }, All, Properties -> { "Separating" }, Method -> m ],
-        m |-> FindInfraCircle[ g, 6, { 1, 2 }, All, Method -> m ],
-        m |-> FindInfraCircle[ g, 6, { 1, 2 }, All, Properties -> { "Separating" }, Method -> m ],
         m |-> FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All, Method -> m ],
         m |-> FindInfraTriangle[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All, Method -> m ],
         m |-> FindInfraEllipse[ GridGraph[ { 7, 7 } ], { 25, 12 }, { 4, 8 }, All, Method -> m ],

@@ -55,7 +55,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     Head @ InfraSceneHighlight[ g,
       { FindInfraSegment[ g, 1, 16, All ] -> Blue,
-        FindInfraCircle[ g, 1, 2, All ] -> Green } ]
+        FindInfraCircle[ g, 1, "Radius" -> 2, All ] -> Green } ]
   ],
   Graph,
   TestID -> "InfraSceneHighlight-mixed-segment-and-circle"
@@ -462,17 +462,18 @@ VerificationTest[
 
 (* the named palette records which SHAPE class defaults to each colour.  A bare carrier
    does not remember its construction, so Shell, Plane and Topology are claimed by no shape;
-   the five Euclidean objects remember theirs and claim Segment, Line, Circle (with Arc) and Ray. *)
+   the five Euclidean heads are inert now (EuclideanInertHeads) and dispatch to a plain
+   vertex list before a scene ever renders one, so they claim no shape either any more. *)
 VerificationTest[
   Normal[ $InfraPalette ][[ All, { "Primitive", "Shapes" } ]],
   { <| "Primitive" -> "Point",    "Shapes" -> { "Point", "Density" } |>,
-    <| "Primitive" -> "Segment",  "Shapes" -> { "Segment" } |>,
-    <| "Primitive" -> "Line",     "Shapes" -> { "Line" } |>,
+    <| "Primitive" -> "Segment",  "Shapes" -> { } |>,
+    <| "Primitive" -> "Line",     "Shapes" -> { } |>,
     <| "Primitive" -> "Shell",    "Shapes" -> { } |>,
     <| "Primitive" -> "Ball",     "Shapes" -> { "Set", "SetFamily" } |>,
     <| "Primitive" -> "Plane",    "Shapes" -> { } |>,
-    <| "Primitive" -> "Circle",   "Shapes" -> { "Circle", "Arc" } |>,
-    <| "Primitive" -> "Ray",      "Shapes" -> { "Ray" } |>,
+    <| "Primitive" -> "Circle",   "Shapes" -> { } |>,
+    <| "Primitive" -> "Ray",      "Shapes" -> { } |>,
     <| "Primitive" -> "Path",     "Shapes" -> { "Walk", "Polyline", "PolylineFamily" } |>,
     <| "Primitive" -> "Topology", "Shapes" -> { } |> },
   TestID -> "InfraPalette-shapes-not-heads"
@@ -484,9 +485,9 @@ VerificationTest[
     ( { obj, colour } |-> MemberQ[
         Cases[ ToBoxes @ InfraSceneHighlight[ g, { obj }, "Palette" -> None ], _RGBColor, Infinity ],
         colour ] ) @@@ {
-      { 6,                            $InfraPointColor },
-      { FindInfraBall[ g, 6, 1 ],     $InfraBallColor  },
-      { FindInfraSegment[ g, 1, 16 ], $InfraWalkColor  } } ],
+      { 6,                                    $InfraPointColor },
+      { FindInfraBall[ g, 6, 1 ],             $InfraBallColor  },
+      { geodesicGraph @ FindInfraSegment[ g, 1, 16 ], $InfraWalkColor  } } ],
   { True, True, True },
   TestID -> "InfraSceneHighlight-shape-keyed-colour-when-palette-off"
 ]
@@ -519,7 +520,7 @@ VerificationTest[
    is counted in the BOXES: arrowSpec is a Module local inside the EdgeShapeFunction body, so
    it only resolves when that function is called to draw. *)
 VerificationTest[
-  With[ { g = GridGraph[ { 5, 5 } ] }, With[ { seg = FindInfraSegment[ g, 1, 25 ] },
+  With[ { g = GridGraph[ { 5, 5 } ] }, With[ { seg = geodesicGraph @ FindInfraSegment[ g, 1, 25 ] },
     { Count[ ToBoxes @ InfraSceneHighlight[ g, { seg } ], ArrowBox, Infinity, Heads -> True ] > 0,
       Count[ ToBoxes @ InfraSceneHighlight[ g, { seg }, "Arrowheads" -> True ], ArrowBox, Infinity, Heads -> True ] > 0 } ] ],
   { False, True },
@@ -538,7 +539,7 @@ VerificationTest[
    against an armed option.  One ArrowBox per armed path object. *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    With[ { a = FindInfraSegment[ g, 1, 5 ], b = FindInfraSegment[ g, 21, 25 ] },
+    With[ { a = geodesicGraph @ FindInfraSegment[ g, 1, 5 ], b = geodesicGraph @ FindInfraSegment[ g, 21, 25 ] },
       ( heads = ( e |-> Count[ ToBoxes @ e, ArrowBox, Infinity, Heads -> True ] ) );
       { heads @ InfraSceneHighlight[ g, { a -> True, b } ],
         heads @ InfraSceneHighlight[ g, { Style[ a, Arrowheads[ 0.09 ] ], b } ],
@@ -552,7 +553,7 @@ VerificationTest[
    never surfaces as an ArrowheadsBox. *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    With[ { seg = FindInfraSegment[ g, 1, 5 ] },
+    With[ { seg = geodesicGraph @ FindInfraSegment[ g, 1, 5 ] },
       DeleteDuplicates @ Cases[
         Options[ InfraSceneHighlight[ g, { seg -> Arrowheads[ 0.09 ] }, "Arrowheads" -> True ],
           EdgeShapeFunction ], _Arrowheads, Infinity ] ] ],

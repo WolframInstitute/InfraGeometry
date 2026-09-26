@@ -160,8 +160,6 @@ FindInfraParallel[ graph_Graph, line_, p_,
               AssociationQ @ line, Keys @ line,
               GraphQ @ line, walksOf @ line,
               MatchQ[ line, { __Graph } ], Catenate[ walksOf /@ line ],
-              MatchQ[ line, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ],
-                Catenate[ walksOf /@ Normal @ line ],
               line === { }, { },
               True, { line } ],
             Keys @ InfraDensity[ graph, p ] } ] },
@@ -322,8 +320,6 @@ FindInfraPerpendicular[ graph_Graph, line_, point_,
           AssociationQ @ line, Keys @ line,
           GraphQ @ line, walksOf @ line,
           MatchQ[ line, { __Graph } ], Catenate[ walksOf /@ line ],
-          MatchQ[ line, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ],
-            Catenate[ walksOf /@ Normal @ line ],
           line === { }, { },
           True, { line } ],
         Keys @ InfraDensity[ graph, point ] } ] },
@@ -345,7 +341,6 @@ FindInfraCommonLine[ graph_Graph, verts_List,
     { uverts = DeleteDuplicates @ Catenate[ Map[ x |-> Which[
           AssociationQ @ x,                  Keys @ x,
           MatchQ[ x, _Graph | { __Graph } ], Union @@ ( If[ spelledQ @ #, Last /@ VertexList @ #, VertexList @ # ] & /@ Flatten[ { x } ] ),
-          MatchQ[ x, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ], x[ "VertexList" ],
           MatchQ[ x, { __List } ],           Union @@ x,
           ListQ @ x,                         Union @ x,
           True,                              { x } ], verts ] ] },
@@ -366,6 +361,9 @@ FindInfraCommonLine[ graph_Graph, verts_List,
 (* a geodesic inextensible at both ends: no neighbour of either endpoint prolongs the distance between them *)
 
 InfraLineQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraLineQ[ graph, # ] & ]
+
+(* a family of instances, the shape FindInfraLine[graph, p, q, n | UpTo[n] | All] returns *)
+InfraLineQ[ graph_Graph, ws : { { ___ } .. } ] := AllTrue[ ws, InfraLineQ[ graph, # ] & ]
 
 InfraLineQ[ graph_Graph, w_Graph ] :=
   With[ { vs = VertexList @ w },
@@ -390,9 +388,6 @@ InfraLineQ[ graph_Graph, segment_List ] /; Length[ segment ] >= 2 :=
   NoneTrue[ AdjacencyList[ graph, Last @ segment ], GraphDistance[ graph, First @ segment, # ] == Length[ segment ] & ]
 
 InfraLineQ[ _Graph, segment_List ] /; Length[ segment ] < 2 := False
-
-InfraLineQ[ graph_Graph, obj : ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ] :=
-  With[ { reps = Normal @ obj }, reps =!= { } && AllTrue[ reps, InfraLineQ[ graph, # ] & ] ]
 
 
 (* ===================== InfraParallelQ ===================== *)
@@ -560,7 +555,6 @@ FindLineHull[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], OptionsPattern[] 
             AssociationQ @ s,                  Keys @ s,
             MatchQ[ s, _Graph | { __Graph } ], Union @@ ( If[ AllTrue[ VertexList @ #, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ # ] === Range @ VertexCount @ #,
                 Last /@ VertexList @ #, VertexList @ # ] & /@ Flatten[ { s } ] ),
-            MatchQ[ s, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ], s[ "VertexList" ],
             MatchQ[ s, { __List } ],           Union @@ s,
             ListQ @ s,                         Union @ s,
             True,                              { s } ] },
@@ -578,7 +572,6 @@ LineHullQ[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], opts : OptionsPatter
       AssociationQ @ s,                  Keys @ s,
       MatchQ[ s, _Graph | { __Graph } ], Union @@ ( If[ AllTrue[ VertexList @ #, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ # ] === Range @ VertexCount @ #,
           Last /@ VertexList @ #, VertexList @ # ] & /@ Flatten[ { s } ] ),
-      MatchQ[ s, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ], s[ "VertexList" ],
       MatchQ[ s, { __List } ],           Union @@ s,
       ListQ @ s,                         Union @ s,
       True,                              { s } ] },

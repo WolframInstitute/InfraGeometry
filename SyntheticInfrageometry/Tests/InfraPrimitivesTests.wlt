@@ -116,9 +116,10 @@ VerificationTest[
   TestID -> "set-volume-is-Length"
 ]
 
-(* the source and the sink of an interval DAG are its in- and out-degree-0 vertices *)
+(* the source and the sink of the segment's interval DAG are its in- and out-degree-0
+   vertices *)
 VerificationTest[
-  With[ { dag = FindInfraSegment[ GridGraph[ { 5, 5 } ], 1, 25, All ] },
+  With[ { dag = InfraMeasurement[ GridGraph[ { 5, 5 } ], InfraSegment[ 1, 25 ], "Graph" ] },
     { Pick[ VertexList @ dag, VertexInDegree @ dag, 0 ],
       Pick[ VertexList @ dag, VertexOutDegree @ dag, 0 ] } ],
   { { 1 }, { 25 } },
@@ -219,7 +220,7 @@ VerificationTest[
         FindInfraLine[ g, 1, 3 ],
         FindInfraRay[ g, 1, 4 ],
         FindInfraCycle[ g, 1 ],
-        FindInfraCircle[ g, 6, 1 ],
+        FindInfraCircle[ g, 6, "Radius" -> 1 ],
         FindInfraTriangle[ g, { 1, 4, 13 } ],
         FindInfraPolygon[ g, { 1, 4, 13 } ],
         FindInfraEllipse[ g, { 1, 16 }, 6 ],

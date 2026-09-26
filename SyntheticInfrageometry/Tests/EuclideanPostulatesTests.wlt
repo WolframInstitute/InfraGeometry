@@ -253,171 +253,11 @@ VerificationTest[
   TestID -> "FindInfraPoint-multi-anchor-pool-no-distance"
 ]
 
-(* ===== FindInfraSegment ===== *)
-
-VerificationTest[
-  With[{g = PathGraph[Range[5]]},
-    infraSpread @ FindInfraSegment[g, 1, 5, All]
-  ],
-  {{1, 2, 3, 4, 5}},
-  TestID -> "FindInfraSegment-unique-path"
-]
-
-VerificationTest[
-  With[{g = PathGraph[Range[5]]},
-    With[{segs = infraSpread @ FindInfraSegment[g, 1, 3, All]},
-      Length[segs] == 1 && Length[First[segs]] == 3
-    ]
-  ],
-  True,
-  TestID -> "FindInfraSegment-correct-length"
-]
-
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]},
-    With[{segs = infraSpread @ FindInfraSegment[g, 1, 9, All]},
-      AllTrue[segs, Length[#] == 5 &]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraSegment-GridGraph-all-geodesics-same-length"
-]
-
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]},
-    With[{segs = (SelectInfraWalk[g, infraSpread @ FindInfraSegment[g, 1, 9, All],All, "From" -> "Center", "Metric" -> "Frechet"])},
-      Length[segs] >= 1 && AllTrue[segs, Length[#] == 5 &]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraSegment-SelectInfraWalk-Center-Frechet"
-]
-
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]},
-    With[{segs = EmbeddingClosest[g, infraSpread @ FindInfraSegment[g, 1, 9, All], {1, 9}]},
-      Length[segs] >= 1 && AllTrue[segs, Length[#] == 5 &]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraSegment-EmbeddingClosest"
-]
-
-VerificationTest[
-  FindInfraSegment[PathGraph[Range[5]], 1, 1, UpTo[1]],
-  { },
-  TestID -> "FindInfraSegment-same-point-empty"
-]
-
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]},
-    With[{segs = (SelectInfraWalk[g, infraSpread @ FindInfraSegment[g, 1, 9, All],All, "From" -> "Center", "Metric" -> "Hausdorff"])},
-      Length[segs] >= 1
-    ]
-  ],
-  True,
-  TestID -> "FindInfraSegment-SelectInfraWalk-Center-Hausdorff"
-]
-
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]},
-    With[{segs = (SelectInfraWalk[g, infraSpread @ FindInfraSegment[g, 1, 9, All],All, "From" -> "Periphery"])},
-      Length[segs] >= 1
-    ]
-  ],
-  True,
-  TestID -> "FindInfraSegment-SelectInfraWalk-Periphery"
-]
-
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]},
-    With[{segs = EmbeddingClosest[g, {1, 9}] @ SelectInfraWalk[g, All, "From" -> "Center"] @
-        (infraSpread @ FindInfraSegment[g, 1, 9, All])},
-      Length[segs] >= 1 && AllTrue[segs, Length[#] == 5 &]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraSegment-chained-operator-form"
-]
-
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]},
-    With[{segs = infraSpread @ FindInfraSegment[g, 1, 9, UpTo[2]]},
-      Length[segs] <= 2 && AllTrue[segs, Length[#] == 5 &]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraSegment-upto-soft-cap"
-]
-
-(* ===== FindInfraSegment geodesic-DAG default form ===== *)
-
-(* All over vertex endpoints returns the compact geodesic interval DAG, a bare
-   Graph; its invariants are read off the DAG with Wolfram's own operations --
-   the family size, the common geodesic length, and the interval vertex set. *)
-VerificationTest[
-  With[{s = FindInfraSegment[GridGraph[{3, 3}], 1, 9, All]},
-    {GraphQ[s], DirectedGraphQ[s], infraNumReps @ s,
-     Max @ GraphDistance[s, 1],
-     Sort @ VertexList[s]}
-  ],
-  {True, True, 6, 4, Range[9]},
-  TestID -> "FindInfraSegment-default-is-geodesic-dag"
-]
-
-(* the DAG-form density equals the density of the enumerated family *)
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]},
-    {s = FindInfraSegment[g, 1, 9, All]},
-    InfraDensity[g, s] === InfraDensity[g, geodesicGraph /@ infraSpread @ s]
-  ],
-  True,
-  TestID -> "FindInfraSegment-dag-density-matches-enumeration"
-]
-
-(* the DAG stands for the whole family, and a bounded count is a prefix of it *)
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]},
-    {Length[infraSpread @ FindInfraSegment[g, 1, 9, All]],
-     Length[FindInfraSegment[g, 1, 9, UpTo[3]]]}
-  ],
-  {6, 3},
-  TestID -> "FindInfraSegment-dag-realizations-bridge"
-]
-
-VerificationTest[
-  With[{r = FindInfraSegment[GridGraph[{3, 3}], 1, 9, 3]},
-    MatchQ[r, {_Graph, _Graph, _Graph}] && Length[infraSpread @ r] == 3
-  ],
-  True,
-  TestID -> "FindInfraSegment-explicit-count-enumerates"
-]
-
-(* ===== FindInfraSegment carries no Properties axis ===== *)
-
-(* The symbol is the whole class: a rule narrowing the geodesic bundle is a local
-   law at an infra-scale, hence a FindInfraGeodesic call. *)
-
-VerificationTest[
-  FindInfraSegment[GridGraph[{3, 3}], 1, 9, 1, Properties -> {"Minimizing"}],
-  $Failed,
-  {FindInfraSegment::badproperty},
-  TestID -> "FindInfraSegment-Properties-axis-rejected"
-]
-
-VerificationTest[
-  FindInfraSegment[GridGraph[{3, 3}], 1, 9, 1, Properties -> {"Bogus"}],
-  $Failed,
-  {FindInfraSegment::badproperty},
-  TestID -> "FindInfraSegment-badproperty-message"
-]
-
-VerificationTest[
-  FindInfraSegment[GridGraph[{3, 3}], 1, 9, 1, Method -> "Unknown"],
-  $Failed,
-  {FindInfraSegment::badmethod},
-  TestID -> "FindInfraSegment-badmethod-message"
-]
+(* FindInfraSegment's members, densities and count contract are pinned against
+   brute force in InfraSegmentTests.wlt / InfraMeasurementTests.wlt
+   (EuclideanInertHeads, T2); this section tested the old Method / Properties /
+   DAG-return API, since removed -- the count-less call is a vertex list, not a
+   geodesic DAG, and there is no Properties or Method axis to reject any more. *)
 
 (* The narrowed bundles now come from FindInfraGeodesic at scale Infinity, where
    "Minimizing" is the segment class and a selector refines it. *)
@@ -460,15 +300,7 @@ VerificationTest[
   TestID -> "FindInfraGeodesic-Minimal-UpTo-truncates"
 ]
 
-(* "Greedy" Method on the segment class falls back to FindShortestPath. *)
-
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]},
-    Length @ infraSpread @ FindInfraSegment[g, 1, 9, 1, Method -> "Greedy"]
-  ],
-  1,
-  TestID -> "FindInfraSegment-Greedy-default-properties"
-]
+(* FindInfraSegment carries no Method any more (EuclideanInertHeads, T2). *)
 
 
 (* ===== FindInfraWalk (walk family) ===== *)
@@ -519,7 +351,7 @@ VerificationTest[
   With[{g = GridGraph[{3, 3}]},
     Sort @ walkSeqs @ FindInfraGeodesic[g, 1, 9, Infinity, Infinity, All,
         Properties -> {"Simple", "Minimizing"}] ===
-      Sort @ infraSpread @ FindInfraSegment[g, 1, 9, All]
+      Sort @ FindInfraSegment[g, 1, 9, All]
   ],
   True,
   TestID -> "FindInfraGeodesic-Minimizing-scale-Infinity-equals-geodesics"
@@ -571,125 +403,9 @@ VerificationTest[
   TestID -> "FindInfraGeodesic-Simple-Minimal-valid-walks"
 ]
 
-(* ===== FindInfraLine ===== *)
-
-VerificationTest[
-  With[{g = PathGraph[Range[5]]},
-    walkSequence @ FindInfraLine[g, 2, 4]
-  ],
-  {1, 2, 3, 4, 5},
-  TestID -> "FindInfraLine-extends-from-points"
-]
-
-VerificationTest[
-  With[{g = PathGraph[Range[5]]},
-    Length @ First @ infraSpread @ FindInfraLine[g, 2, 4]
-  ],
-  5,
-  TestID -> "FindInfraLine-extends-to-full-path"
-]
-
-VerificationTest[
-  With[{g = PathGraph[Range[5]]},
-    walkSequence @ FindInfraLine[g, 1, 5]
-  ],
-  {1, 2, 3, 4, 5},
-  TestID -> "FindInfraLine-already-maximal"
-]
-
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]},
-    With[{exts = Take[SelectInfraWalk[g, infraSpread @ FindInfraLine[g, 5, 6, All], All, "From" -> "Center"], UpTo[3]]},
-      Length[exts] >= 1 && AllTrue[exts, Length[#] > 2 &]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraLine-with-SelectInfraWalk-Center"
-]
-
-VerificationTest[
-  With[{g = PathGraph[Range[5]]},
-    Length @ infraSpread @ FindInfraLine[g, 2, 4, UpTo[5]] >= 1
-  ],
-  True,
-  TestID -> "FindInfraLine-upto-soft"
-]
-
-(* the class is inextensibility, not length: the short line {1, 2, 3} is a line although the diameter is 3 *)
-VerificationTest[
-  With[{g = Graph[{1 <-> 2, 2 <-> 3, 2 <-> 4, 4 <-> 5}]},
-    infraSpread @ FindInfraLine[g, 1, 3, All]
-  ],
-  {{1, 2, 3}},
-  TestID -> "FindInfraLine-keeps-short-inextensible-line"
-]
-
-(* C_6 through the edge 1-2: the ends {6, 5} and {3, 4} are each admissible alone, but (5, 4) is not jointly geodesic (d(5, 4) = 1), so the pool is the two extension DAGs plus the compatibility relation, three lines *)
-VerificationTest[
-  Sort @ infraSpread @ FindInfraLine[CycleGraph[6], 1, 2, All],
-  Sort @ {{6, 1, 2, 3}, {1, 2, 3, 4}, {5, 6, 1, 2}},
-  TestID -> "FindInfraLine-C6-compatibility"
-]
-
-(* one class under every Method: the greedy enumeration and the exhaustive pool agree, and every member is a line *)
-VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    With[{exh = Sort @ infraSpread @ FindInfraLine[g, 1, 2, All, Method -> "Exhaustive"],
-          grd = Sort @ infraSpread @ FindInfraLine[g, 1, 2, All, Method -> "Greedy"]},
-      exh === grd && AllTrue[exh, InfraLineQ[g, #] &]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraLine-class-invariant-GridGraph"
-]
-
-VerificationTest[
-  With[{g = TorusGraph[{4, 5}]},
-    With[{exh = Sort @ infraSpread @ FindInfraLine[g, 1, 2, All, Method -> "Exhaustive"],
-          grd = Sort @ infraSpread @ FindInfraLine[g, 1, 2, All, Method -> "Greedy"]},
-      exh === grd && AllTrue[exh, InfraLineQ[g, #] &]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraLine-class-invariant-TorusGraph"
-]
-
-(* the pool carries the family by DP: its multiplicity and occupation are those of the enumerated lines *)
-VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    With[{pool = FindInfraLine[g, 1, 6, All]},
-      infraNumReps @ pool === Length @ infraSpread @ pool &&
-      Total @ InfraDensity[g, pool] === Total[Length /@ infraSpread @ pool]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraLine-pool-DP-counts-match-enumeration"
-]
-
-(* the longest lines are a selection on the pool: SelectInfraWalk reads the atoms' lengths and keeps the pool form *)
-VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    With[{pool = FindInfraLine[g, 1, 2, All]},
-      With[{longest = SelectInfraWalk[g, pool, All, "From" -> "MaxLength"]},
-        MatchQ[longest, _Graph | {__Graph}] &&
-        Sort @ infraSpread @ longest === Sort @ MaximalBy[infraSpread @ pool, Length]
-      ]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraLine-longest-by-SelectInfraWalk-GridGraph"
-]
-
-VerificationTest[
-  With[{g = TorusGraph[{4, 5}]},
-    With[{pool = FindInfraLine[g, 1, 2, All]},
-      Sort @ infraSpread @ SelectInfraWalk[g, pool, All, "From" -> "MaxLength"] ===
-        Sort @ MaximalBy[infraSpread @ pool, Length]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraLine-longest-by-SelectInfraWalk-TorusGraph"
-]
+(* FindInfraLine's atoms, members, densities and the C6 compatibility fixture are
+   pinned against brute force in InfraLineTests.wlt (EuclideanInertHeads, T3); this
+   whole section tested the old Method / Properties / DAG-pool API, since removed. *)
 
 (* ===== FindInfraShell ===== *)
 
@@ -839,26 +555,8 @@ VerificationTest[
   TestID -> "FindInfraBisectingHyperplane-RandomGreedy-seeded-reproducible"
 ]
 
-(* Both greedy methods descend the geodesic interval, so every witness either
-   produces is a genuine geodesic; the random one draws a different descent per
-   seed while "Greedy" is reproducible without one. *)
-
-VerificationTest[
-  With[ { g = GridGraph[ { 6, 6 } ] },
-    { AllTrue[ infraSpread @ FindInfraSegment[ g, 1, 36, 4, Method -> "Greedy" ],
-        InfraSegmentQ[ g, # ] & ],
-      AllTrue[ Range[ 1, 6 ],
-        s |-> InfraSegmentQ[ g,
-          BlockRandom[ First @ FindInfraSegment[ g, 1, 36, 1, Method -> "RandomGreedy" ],
-            RandomSeeding -> s ] ] ],
-      Length @ DeleteDuplicates @ Table[
-        BlockRandom[ First @ FindInfraSegment[ g, 1, 36, 1, Method -> "RandomGreedy" ],
-          RandomSeeding -> s ],
-        { s, 1, 10 } ] > 1 }
-  ],
-  { True, True, True },
-  TestID -> "FindInfraSegment-greedy-methods-give-geodesics"
-]
+(* FindInfraSegment carries no Method any more (EuclideanInertHeads, T2): its "RandomChoice"
+   modifier on InfraVertexList is the uniform witness now, tested in InfraMeasurementTests.wlt. *)
 
 
 VerificationTest[
@@ -967,289 +665,11 @@ VerificationTest[
   TestID -> "FindInfraOsculatingShell-sorted-by-radius"
 ]
 
-(* ===== FindInfraCircle ===== *)
-
-(* Default Properties -> {"Separating", "Shortest"}: tied-shortest separating cycles. *)
-
-VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    With[{circles = infraSpread @ FindInfraCircle[g, 6, {1, 2}, All]},
-      Length[circles] >= 1 && AllTrue[circles, Length[#] >= 3 &]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraCircle-returns-cycles"
-]
-
-(* PetersenGraph[] is non-planar, so the circle pool refuses and the family
-   comes from the cycle sweep instead -- reported by ::uncertified. *)
-VerificationTest[
-  With[{g = PetersenGraph[]},
-    Length @ infraSpread @ FindInfraCircle[g, 1, {1, 2}, All] >= 1
-  ],
-  True,
-  {FindInfraCircle::uncertified},
-  TestID -> "FindInfraCircle-all-cycles"
-]
-
-(* Default Properties include "Shortest": every returned cycle has the
-   minimum admissible length, so all lengths are equal. *)
-
-VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    With[{lengths = Length /@ infraSpread @ FindInfraCircle[g, 6, {1, 2}, All]},
-      Length[Union[lengths]] == 1
-    ]
-  ],
-  True,
-  TestID -> "FindInfraCircle-default-tied-shortest"
-]
-
-(* the no-count canonical bundle lists a shortest cycle first. *)
-
-VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    With[{shortest = First @ infraSpread @ FindInfraCircle[g, 6, {1, 2}],
-          allLengths = Length /@ infraSpread @ FindInfraCircle[g, 6, {1, 2}, All]},
-      Length[shortest] == Min[allLengths]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraCircle-default-returns-shortest"
-]
-
-(* Separating disconnects c from { d > rmax } and the shortest such cycle
-   hugs the inner edge rmin, so widening the outer radius does not lengthen
-   it: shortest({rmin, rmax+1}) == shortest({rmin, rmax}).  (The old
-   mean-pinned separating test failed this -- {2,4} came out longer than
-   {2,3}.) *)
-
-VerificationTest[
-  With[{g = GridGraph[{11, 11}]},
-    With[{inner = Min[Length /@ infraSpread @ FindInfraCircle[g, First @ GraphCenter[g], {2, 3}]],
-          wide  = Min[Length /@ infraSpread @ FindInfraCircle[g, First @ GraphCenter[g], {2, 4}]]},
-      wide == inner
-    ]
-  ],
-  True,
-  TestID -> "FindInfraCircle-shortest-hugs-inner-edge"
-]
-
-(* Properties -> {"Separating"} (no "Shortest") accepts longer separating
-   cycles too; cycles are length-ordered. *)
-
-VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    With[{lengths = Length /@ infraSpread @ FindInfraCircle[g, 6, {1, 2}, All, Properties -> {"Separating"}]},
-      Length[lengths] >= 1 && lengths === Sort[lengths]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraCircle-drop-Shortest-length-ordered"
-]
-
-(* All returned cycles sit inside the level-set range. *)
-
-VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    With[{circles = infraSpread @ FindInfraCircle[g, 6, {1, 2}, All, Properties -> {"Separating"}]},
-      Length[circles] >= 1 &&
-      AllTrue[circles, vs |-> AllTrue[vs, v |-> 1 <= GraphDistance[g, 6, v] <= 2]]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraCircle-Separating-all-in-level-set"
-]
-
-(* Property "Connected" is not meaningful for cycles -> ::badproperty. *)
-
-VerificationTest[
-  FindInfraCircle[GridGraph[{4, 4}], 6, {1, 2}, 1, Properties -> {"Connected"}],
-  $Failed,
-  {FindInfraCircle::badproperty},
-  TestID -> "FindInfraCircle-badproperty-Connected"
-]
-
-
-VerificationTest[
-  FindInfraCircle[GridGraph[{4, 4}], 6, {1, 2}, 1, Properties -> {"Bogus"}],
-  $Failed,
-  {FindInfraCircle::badproperty},
-  TestID -> "FindInfraCircle-badproperty-unknown"
-]
-
-VerificationTest[
-  FindInfraCircle[GridGraph[{4, 4}], 6, {1, 2}, 1, Method -> "Bogus"],
-  $Failed,
-  {FindInfraCircle::badmethod},
-  TestID -> "FindInfraCircle-badmethod"
-]
-
-
-(* ===== the circle pool: count All / count-less form ===== *)
-
-(* On a certified band count = All gives the pool -- one arc-folded geodesic DAG
-   per atom -- and every realisation of it is a genuine metric circle that
-   separates the centre from outside the band. *)
-
-VerificationTest[
-  With[{g = GridGraph[{11, 11}], c = 61},
-    With[{pool = FindInfraCircle[g, c, {2, 4}, All]},
-      MatchQ[pool, {__Graph}] &&
-      AllTrue[walkSequence /@ pool,
-        cyc |-> DuplicateFreeQ[cyc] &&
-          AllTrue[Partition[Append[cyc, First[cyc]], 2, 1], EdgeQ[g, UndirectedEdge @@ #] &]] &&
-      AllTrue[walkSequence /@ pool,
-        cyc |-> AllTrue[
-          SelectFirst[ConnectedComponents[VertexDelete[g, cyc]], MemberQ[#, c] &],
-          GraphDistance[g, c, #] <= 4 &]]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraCircle-pool-realisations-are-separating-circles"
-]
-
-(* The pool's realisations are exactly the separating cycles of its own length:
-   an independent single-length-class enumeration finds the same set. *)
-
-VerificationTest[
-  With[{g = GridGraph[{11, 11}], c = 61},
-    With[{pool = FindInfraCircle[g, c, {2, 4}, All]},
-      {level = Subgraph[g, Select[VertexList[g], 2 <= GraphDistance[g, c, #] <= 4 &]]},
-      {byHand = Select[First /@ (List @@@ #) & /@ FindCycle[level, {First @ Union[EdgeCount /@ pool]}, All],
-         cyc |-> With[{cc = SelectFirst[ConnectedComponents[VertexDelete[g, cyc]], MemberQ[#, c] &]},
-           cc =!= Missing["NotFound"] && AllTrue[cc, GraphDistance[g, c, #] <= 4 &]]]},
-      Sort[Sort /@ (walkSequence /@ pool)] === Sort[Sort /@ byHand]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraCircle-pool-equals-single-length-class-enumeration"
-]
-
-(* Every cycle is tied at the minimum circumference, so the class has one edge
-   count, and a cycle graph has as many edges as vertices. *)
-
-VerificationTest[
-  With[{cycles = FindInfraCircle[GridGraph[{11, 11}], 61, {2, 4}, All]},
-    Union[EdgeCount /@ cycles] === Union[Length /@ (walkSequence /@ cycles)]
-  ],
-  True,
-  TestID -> "FindInfraCircle-pool-Length-is-the-common-circumference"
-]
-
-(* Property 3, the point of the pool: the marginals come off the atom DAGs by
-   dynamic programming and agree with the enumerated ones. *)
-
-VerificationTest[
-  With[{g = GridGraph[{11, 11}]},
-    {pool = FindInfraCircle[g, 61, {2, 4}, All]},
-    {enumerated = geodesicCycleGraph /@ infraSpread @ pool},
-    infraNumReps @ pool === Length[infraSpread @ pool] &&
-    InfraDensity[g, pool] === InfraDensity[g, enumerated] &&
-    KeySort[infraEdgeMultiset[g, pool]] === KeySort[infraEdgeMultiset[g, enumerated]]
-  ],
-  True,
-  TestID -> "FindInfraCircle-pool-marginals-agree-with-enumeration"
-]
-
-(* A family too large to list: on a 25x25 grid band the count is a perfect
-   fourth power, the circle factoring into four independent quadrant arcs.
-   Enumeration cannot reach it; the DP answers in milliseconds. *)
-
-VerificationTest[
-  infraNumReps @ FindInfraCircle[GridGraph[{25, 25}], 313, {5, 9}, All],
-  41^4,
-  TestID -> "FindInfraCircle-pool-counts-an-unenumerable-family"
-]
-
-(* Lazy materialisation: a bounded count streams circles off the pool instead of
-   enumerating the family. *)
-
-VerificationTest[
-  With[{g = GridGraph[{25, 25}]},
-    With[{cycles = walkSequence /@ FindInfraCircle[g, 313, {5, 9}, UpTo[5]]},
-      Length[cycles] === 5 &&
-      AllTrue[cycles, Length[#] === 40 &] &&
-      AllTrue[cycles,
-        cyc |-> DuplicateFreeQ[cyc] &&
-          AllTrue[Partition[Append[cyc, First[cyc]], 2, 1], EdgeQ[g, UndirectedEdge @@ #] &]]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraCircle-pool-bounded-count-is-lazy"
-]
-
-(* Off the certified class the answer is still exact -- it comes from the cycle
-   sweep -- and ::uncertified says the pool was refused.  PetersenGraph[] is
-   non-planar, so winding about the centre is undefined and the atom-invariance
-   of separation fails. *)
-
-VerificationTest[
-  With[{g = PetersenGraph[]},
-    With[{cycles = walkSequence /@ FindInfraCircle[g, 1, {1, 2}, All]},
-      cycles =!= {} &&
-      AllTrue[cycles,
-        cyc |-> DuplicateFreeQ[cyc] &&
-          AllTrue[Partition[Append[cyc, First[cyc]], 2, 1], EdgeQ[g, UndirectedEdge @@ #] &]]
-    ]
-  ],
-  True,
-  {FindInfraCircle::uncertified},
-  TestID -> "FindInfraCircle-uncertified-falls-back-and-stays-exact"
-]
-
-(* An honestly empty family is not a refusal: a cycle graph's band carries no
-   separating cycle, nothing is lost, and no message is emitted. *)
-
-VerificationTest[
-  infraSpread @ FindInfraCircle[CycleGraph[6], 1, {1, 2}, All],
-  {},
-  TestID -> "FindInfraCircle-empty-family-is-quiet"
-]
-
-(* The pool is no longer a carrier the caller can see: every Properties setting
-   returns the same shape, a List of cycle graphs, and only the default one is
-   answered lazily off the pool (that is the bounded-count test above).  Under
-   the default the class is the tied-shortest one, so it is the smallest. *)
-
-VerificationTest[
-  With[{g = GridGraph[{11, 11}]},
-    With[{classes = {
-        FindInfraCircle[g, 61, {2, 4}, All],
-        FindInfraCircle[g, 61, {2, 4}, All, Properties -> {"Shortest", "Separating"}],
-        FindInfraCircle[g, 61, {2, 4}, All, Properties -> {"Separating"}],
-        FindInfraCircle[g, 61, {2, 4}, All, Properties -> {}]}},
-      { MatchQ[#, {__Graph}] & /@ classes,
-        First @ classes === classes[[2]],
-        Length @ First @ classes < Length @ classes[[3]] < Length @ Last @ classes } ] ],
-  {{True, True, True, True}, True, True},
-  TestID -> "FindInfraCircle-every-Properties-returns-cycle-graphs"
-]
-
-(* Under the default ({Separating, Shortest}) every returned cycle has the
-   same length, so SelectInfraWalk's longest / shortest circumference
-   selectors are trivially uniform.  Drop "Shortest" to get multiple lengths
-   and exercise the selector. *)
-
-VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    With[{circles = SelectInfraWalk[g, infraSpread @ FindInfraCircle[g, 6, {1, 2}, All, Properties -> {"Separating"}], All, "From" -> "MaxLength", "Cyclic" -> True]},
-      Length[circles] >= 1 && Length[Union[Length /@ circles]] == 1
-    ]
-  ],
-  True,
-  TestID -> "FindInfraCircle-SelectInfraWalk-MaxLength-uniform"
-]
-
-VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    With[{circles = SelectInfraWalk[g, infraSpread @ FindInfraCircle[g, 6, {1, 2}, All, Properties -> {"Separating"}], All, "From" -> "MinLength", "Cyclic" -> True]},
-      Length[circles] >= 1 && Length[Union[Length /@ circles]] == 1
-    ]
-  ],
-  True,
-  TestID -> "FindInfraCircle-SelectInfraWalk-MinLength"
-]
+(* FindInfraCircle's seam necklaces, "RadiusDelta" / "Radius" forms, cyclic instances,
+   and the Q_4 / octagon / Petersen fixtures are pinned against brute force in
+   InfraCircleTests.wlt (EuclideanInertHeads, T4); this section and the circle-pool
+   section that followed it tested the old Method / Properties / DAG-pool API and the
+   positional-tuple radius spec (a bare {rmin, rmax} third argument), both removed. *)
 
 (* ===== FindInfraParallel ===== *)
 
@@ -1344,7 +764,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     Length @ EmbeddingClosest[ g,
-      FindInfraCircle[ g, 6, { 1, 2 }, All, Properties -> { "Separating" } ],
+      FindInfraCircle[ g, 6, "Radius" -> { 1, 2 }, All ],
       { 6, 1.5 } ] >= 1
   ],
   True,
@@ -1371,73 +791,10 @@ VerificationTest[
 ]
 
 
-(* ===== FindInfraLine unified Method axis ===== *)
-
-VerificationTest[
-  With[ { g = GridGraph[ { 4, 4 } ] },
-    Sort @ infraSpread @ FindInfraLine[ g, 1, 16, All, Method -> "Exhaustive" ] ===
-      Sort @ infraSpread @ FindInfraLine[ g, 1, 16, All, Method -> Automatic ]
-  ],
-  True,
-  TestID -> "FindInfraLine-Exhaustive-equals-Automatic"
-]
-
-(* ===== FindInfraLine / FindInfraParallel: "Greedy" vs "RandomGreedy" ===== *)
-
-(* "Greedy" (candidate order) is fully deterministic -- no randomness is consumed. *)
-VerificationTest[
-  With[ { g = GridGraph[ { 6, 6 } ] },
-    FindInfraLine[ g, 1, 2, 1, Method -> "Greedy" ] === FindInfraLine[ g, 1, 2, 1, Method -> "Greedy" ]
-  ],
-  True,
-  TestID -> "FindInfraLine-Greedy-deterministic"
-]
-
-(* Regression guard: growing both sides of a Greedy line must re-derive the
-   cross-distance against the OTHER side's live frontier, not the original
-   anchor -- else the two arms can fail to concatenate into a geodesic. *)
-VerificationTest[
-  With[ { g = GridGraph[ { 7, 7 } ] },
-    AllTrue[ Range[ 1, 48 ],
-      p |-> InfraSegmentQ[ g, First @ FindInfraLine[ g, p, p + 1, 1, Method -> "Greedy" ] ] ]
-  ],
-  True,
-  TestID -> "FindInfraLine-Greedy-BothSides-is-geodesic"
-]
-
-(* "RandomGreedy" (random branch order) is reproducible given an ambient
-   SeedRandom -- no seed is threaded as a parameter. *)
-VerificationTest[
-  With[ { g = GridGraph[ { 6, 6 } ] },
-    BlockRandom[ FindInfraLine[ g, 1, 2, 1, Method -> "RandomGreedy" ], RandomSeeding -> 11 ] ===
-      BlockRandom[ FindInfraLine[ g, 1, 2, 1, Method -> "RandomGreedy" ], RandomSeeding -> 11 ]
-  ],
-  True,
-  TestID -> "FindInfraLine-RandomGreedy-seeded-reproducible"
-]
-
-(* Different seeds explore different admissible chains where the graph branches. *)
-VerificationTest[
-  With[ { g = GridGraph[ { 8, 8 } ] },
-    Length @ DeleteDuplicates @ Table[
-      BlockRandom[ First @ FindInfraLine[ g, 20, 21, 1, Method -> "RandomGreedy" ], RandomSeeding -> s ],
-      { s, 1, 10 } ]
-  ],
-  _Integer?( # > 1 & ),
-  SameTest -> MatchQ,
-  TestID -> "FindInfraLine-RandomGreedy-varies-across-seeds"
-]
-
-(* Every RandomGreedy realisation is still a genuine geodesic (BothSides fix applies here too). *)
-VerificationTest[
-  With[ { g = GridGraph[ { 7, 7 } ] },
-    AllTrue[ Range[ 1, 5 ],
-      s |-> InfraSegmentQ[ g,
-        BlockRandom[ First @ FindInfraLine[ g, 25, 26, 1, Method -> "RandomGreedy" ], RandomSeeding -> s ] ] ]
-  ],
-  True,
-  TestID -> "FindInfraLine-RandomGreedy-BothSides-is-geodesic"
-]
+(* FindInfraLine carries no Method axis any more (EuclideanInertHeads, T3): the count
+   fixes the mode, and its class is pinned against brute force in InfraLineTests.wlt.
+   The Greedy / RandomGreedy determinism and BothSides regression guards above stay
+   meaningful only for FindInfraParallel, which the walk-family item left untouched. *)
 
 VerificationTest[
   With[ { g = GridGraph[ { 6, 6 } ], line = First @ FindInfraLine[ GridGraph[ { 6, 6 } ], 1, 2, 1 ] },
@@ -1460,8 +817,8 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    With[ { seg = First @ infraSpread @ FindInfraSegment[ g, 1, 6, All ] },
-      With[ { lines = infraSpread @ FindInfraLine[ g, seg, All ] },
+    With[ { seg = First @ FindInfraSegment[ g, 1, 6, All ] },
+      With[ { lines = FindInfraLine[ g, seg, All ] },
         ListQ[ lines ] && AllTrue[ lines,
           lst |-> Length[ lst ] >= Length[ seg ] && MemberQ[ Partition[ lst, Length @ seg, 1 ], seg ] ]
       ]
@@ -1473,9 +830,9 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    With[ { seg = First @ infraSpread @ FindInfraSegment[ g, 1, 6, All ] },
-      Sort @ infraSpread @ FindInfraLine[ g, seg, All ] ===
-        Sort @ Select[ infraSpread @ FindInfraLine[ g, 1, 6, All ],
+    With[ { seg = First @ FindInfraSegment[ g, 1, 6, All ] },
+      Sort @ FindInfraLine[ g, seg, All ] ===
+        Sort @ Select[ FindInfraLine[ g, 1, 6, All ],
           lst |-> Length[ lst ] >= Length[ seg ] && MemberQ[ Partition[ lst, Length @ seg, 1 ], seg ] ]
     ]
   ],
@@ -1485,7 +842,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = PathGraph[ Range[ 5 ] ] },
-    walkSequence /@ FindInfraLine[ g, { 2, 3 }, 1 ] === { { 1, 2, 3, 4, 5 } }
+    FindInfraLine[ g, { 2, 3 }, 1 ] === { { 1, 2, 3, 4, 5 } }
   ],
   True,
   TestID -> "FindInfraLine-segment-PathGraph-recovers-full-path"
@@ -1498,51 +855,9 @@ VerificationTest[
 ]
 
 
-(* ===== "Direction" option on FindInfraLine ===== *)
-
-(* Forward-only extension of {3, 4} on PathGraph[7]: left end pinned at 3,
-   right end extended to 7. *)
-VerificationTest[
-  walkSequence /@ FindInfraLine[ PathGraph[ Range[ 7 ] ], { 3, 4 }, 1,
-    "Direction" -> "Forward" ],
-  { { 3, 4, 5, 6, 7 } },
-  TestID -> "FindInfraLine-segment-Direction-Forward"
-]
-
-(* Backward-only extension of {3, 4} on PathGraph[7]: right end pinned at 4,
-   left end extended to 1. *)
-VerificationTest[
-  walkSequence /@ FindInfraLine[ PathGraph[ Range[ 7 ] ], { 3, 4 }, 1,
-    "Direction" -> "Backward" ],
-  { { 1, 2, 3, 4 } },
-  TestID -> "FindInfraLine-segment-Direction-Backward"
-]
-
-VerificationTest[
-  FindInfraLine[ PathGraph[ Range[ 7 ] ], { 3, 4 }, 1 ] ===
-    FindInfraLine[ PathGraph[ Range[ 7 ] ], { 3, 4 }, 1,
-      "Direction" -> "BothSides" ],
-  True,
-  TestID -> "FindInfraLine-segment-Direction-BothSides-default"
-]
-
-(* Forward on the two-point form: p1 fixed as line start. *)
-VerificationTest[
-  AllTrue[
-    infraSpread @ FindInfraLine[ PathGraph[ Range[ 7 ] ], 3, 4, All,
-      "Direction" -> "Forward" ],
-    line |-> First[ line ] === 3 ],
-  True,
-  TestID -> "FindInfraLine-two-point-Direction-Forward-starts-at-p1"
-]
-
-VerificationTest[
-  FindInfraLine[ PathGraph[ Range[ 5 ] ], { 2, 3 }, 1,
-    "Direction" -> "Sideways" ],
-  $Failed,
-  {FindInfraLine::baddirection},
-  TestID -> "FindInfraLine-baddirection"
-]
+(* FindInfraLine carries no "Direction" option any more (EuclideanInertHeads, T3):
+   both the point form and the FindInfraLine[g, seq] prolongation form always grow
+   from both ends, and there is no ::baddirection message left to raise. *)
 
 
 (* ===== ExtendInfraSegment: the extension pool on the distance matrix ===== *)
@@ -1550,11 +865,11 @@ VerificationTest[
 (* kspec Infinity is the line pool: FindInfraLine[g, seg] is ExtendInfraSegment[g, seg, Infinity], on a walk seed and on a geodesic-DAG seed *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    With[ { seg = FindInfraSegment[ g, 1, 11, All ] },
+    With[ { seg = InfraMeasurement[ g, InfraSegment[ 1, 11 ], "Graph" ] },
       Sort @ infraSpread @ ExtendInfraSegment[ g, { 6, 7 }, Infinity, All ] ===
-        Sort @ infraSpread @ FindInfraLine[ g, 6, 7, All ] &&
+        Sort @ FindInfraLine[ g, 6, 7, All ] &&
       Sort @ infraSpread @ ExtendInfraSegment[ g, seg, Infinity, All ] ===
-        Sort @ infraSpread @ FindInfraLine[ g, seg, All ]
+        Sort @ FindInfraLine[ g, 1, 11, All ]
     ]
   ],
   True,
@@ -1564,7 +879,7 @@ VerificationTest[
 (* kspec 0 is the bundle itself: all six geodesics from 1 to 11 *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    With[ { seg = FindInfraSegment[ g, 1, 11, All ] },
+    With[ { seg = InfraMeasurement[ g, InfraSegment[ 1, 11 ], "Graph" ] },
       Sort @ infraSpread @ ExtendInfraSegment[ g, seg, 0, All ] === Sort @ infraSpread @ seg
     ]
   ],
@@ -1621,7 +936,7 @@ VerificationTest[
 (* a geodesic-DAG seed extends as one object, the same set the walk engine gets by spreading over the six geodesics *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    With[ { seg = FindInfraSegment[ g, 1, 11, All ] },
+    With[ { seg = InfraMeasurement[ g, InfraSegment[ 1, 11 ], "Graph" ] },
       Sort @ infraSpread @ ExtendInfraSegment[ g, seg, 1, All ] ===
         Sort @ walkSeqs @ ExtendInfraGeodesic[ g, seg, Infinity, UpTo[ 1 ], All, Properties -> { "Minimizing" } ]
     ]
@@ -1732,8 +1047,8 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 10, 10 } ], p = 45 },
-    Sort[ Sort /@ infraSpread @ FindInfraCircle[ g, p, { 1, 2 }, All ] ] ===
-      Sort[ Sort /@ infraSpread @ FindInfraCircle[ NeighborhoodGraph[ g, p, 4 ], p, { 1, 2 }, All ] ]
+    Sort[ Sort /@ FindInfraCircle[ g, p, "Radius" -> { 1, 2 }, All ] ] ===
+      Sort[ Sort /@ FindInfraCircle[ NeighborhoodGraph[ g, p, 4 ], p, "Radius" -> { 1, 2 }, All ] ]
   ],
   True,
   TestID -> "FindInfraCircle-locality-Metric"
@@ -1744,16 +1059,16 @@ VerificationTest[
    enumeration, never invents realisations) *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
-    With[ { family = infraSpread @ FindInfraLine[ g, 1, 9, All ] },
-      MemberQ[ family, First @ infraSpread @ FindInfraLine[ g, 1, 9, 1 ] ] &&
-        SubsetQ[ family, infraSpread @ FindInfraLine[ g, 1, 9, UpTo[ 3 ] ] ] ]
+    With[ { family = FindInfraLine[ g, 1, 9, All ] },
+      MemberQ[ family, First @ FindInfraLine[ g, 1, 9, 1 ] ] &&
+        SubsetQ[ family, FindInfraLine[ g, 1, 9, UpTo[ 3 ] ] ] ]
   ],
   True,
   TestID -> "FindInfraLine-cap-subset-of-family"
 ]
 
 VerificationTest[
-  Length @ infraSpread @ FindInfraLine[ GridGraph[ { 3, 3 } ], 1, 9, 3 ],
+  Length @ FindInfraLine[ GridGraph[ { 3, 3 } ], 1, 9, 3 ],
   3,
   TestID -> "FindInfraLine-strict-count-exact"
 ]
@@ -1762,7 +1077,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
     With[ { longest = SelectInfraWalk[ g, FindInfraLine[ g, 1, 9, All ], All, "From" -> "MaxLength" ] },
-      AllTrue[ infraSpread @ longest, Length[ # ] - 1 == GraphDiameter[ g ] & ] ]
+      AllTrue[ longest, Length[ # ] - 1 == GraphDiameter[ g ] & ] ]
   ],
   True,
   TestID -> "FindInfraLine-diameter-lines-by-MaxLength"

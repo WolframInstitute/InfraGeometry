@@ -142,26 +142,15 @@ VerificationTest[
   TestID -> "shape-reader-off-substrate-vertex"
 ]
 
-(* a walk anchor reads as its vertex occupation, so a DAG contributes the geodesic
-   count at each vertex rather than a unit mass *)
+(* a family of realisations reads as its vertex occupation, the sum of the per-member
+   Counts, rather than a unit mass -- FindInfraSegment[g, p, q] no longer wraps its
+   family in a DAG (EuclideanInertHeads), so the occupation is just Merge/Total *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
-    With[ { dag = FindInfraSegment[ g, 1, 9, All ] },
-      InfraDensity[ g, dag ] === KeySort @ GeodesicOccupation @ dag ] ],
+    With[ { paths = FindInfraSegment[ g, 1, 9, All ] },
+      InfraDensity[ g, paths ] === KeySort @ Merge[ Counts /@ paths, Total ] ] ],
   True,
   TestID -> "walk-anchor-reads-as-occupation"
-]
-
-
-(* ===== a class is a set of realisations, and the anchor rule deduplicates ===== *)
-
-(* a repeated anchor is one anchor: the mass is read, the support spread over *)
-VerificationTest[
-  With[ { g = GridGraph[ { 3, 3 } ] },
-    { FindInfraSegment[ g, { 1, 1 }, 9, All ] === FindInfraSegment[ g, 1, 9, All ],
-      FindInfraSegment[ g, <| 1 -> 5 |>, 9, All ] === FindInfraSegment[ g, 1, 9, All ] } ],
-  { True, True },
-  TestID -> "anchor-repetition-collapses"
 ]
 
 (* the multiset layer is a headless <| atom -> weight |> Association: repetition in
@@ -202,61 +191,14 @@ VerificationTest[
   TestID -> "density-algebra-is-the-Association-s-own"
 ]
 
-(* the measure is CONSTRUCTED at a projection off a bundle, never carried by it:
-   the endpoints are a set-level fact (every geodesic of a family shares them, and
-   they are the degree-0 vertices of the DAG), the midpoint a genuine density *)
+(* the measure is CONSTRUCTED at a projection off a family, never carried by it:
+   the endpoints are a set-level fact (every geodesic of the family shares them),
+   the midpoint a genuine density *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ], s = FindInfraSegment[ GridGraph[ { 3, 3 } ], 1, 9, All ] },
-    { Pick[ VertexList @ s, VertexInDegree @ s, 0 ],
-      Pick[ VertexList @ s, VertexOutDegree @ s, 0 ],
-      FindInfraMidpoint[ g, s ] } ],
+    { Union[ First /@ s ], Union[ Last /@ s ], FindInfraMidpoint[ g, s ] } ],
   { { 1 }, { 9 }, <| 3 -> 1, 5 -> 4, 7 -> 1 |> },
   TestID -> "Measure-constructed-at-projection"
-]
-
-(* anchor masses do NOT propagate: a construction sees a density's support,
-   so the family (and its measure) is the same weighted or not *)
-VerificationTest[
-  With[ { g = GridGraph[ { 3, 3 } ] },
-    InfraDensity[ g, FindInfraSegment[ g, <| 1 -> 2, 3 -> 1 |>, 9, All ] ] ===
-    InfraDensity[ g, FindInfraSegment[ g, <| 1 -> 1, 3 -> 1 |>, 9, All ] ] ],
-  True,
-  TestID -> "Anchor-masses-do-not-propagate"
-]
-
-(* ===== the DAG carries the family it stands for ===== *)
-
-(* the compact DAG and the enumerated family carry the same density *)
-VerificationTest[
-  With[ { g = GridGraph[ { 3, 3 } ] },
-    With[ { dag = FindInfraSegment[ g, 1, 9, All ] },
-      InfraDensity[ g, dag ] === InfraDensity[ g, geodesicGraph /@ infraSpread @ dag ] ] ],
-  True,
-  TestID -> "DAG-equals-enumerated-density"
-]
-
-(* a multi-source family is the plain union of the per-source families: its raw
-   occupation is the sum *)
-VerificationTest[
-  With[ { g = GridGraph[ { 3, 3 } ] },
-    KeySort @ Merge[ GeodesicOccupation /@ FindInfraSegment[ g, <| 1 -> 1, 3 -> 1 |>, 9, All ], Total ] ===
-    KeySort @ Merge[ { GeodesicOccupation @ FindInfraSegment[ g, 1, 9, All ],
-                       GeodesicOccupation @ FindInfraSegment[ g, 3, 9, All ] }, Total ] ],
-  True,
-  TestID -> "Multi-source-family-is-the-union"
-]
-
-(* DAG-native midpoint equals the enumerated midpoint, both parities *)
-VerificationTest[
-  With[ { g = GridGraph[ { 4, 4 } ] },
-    { With[ { dag = FindInfraSegment[ g, 1, 16, All ] },
-        KeySort @ FindInfraMidpoint[ g, dag ] ===
-          KeySort @ FindInfraMidpoint[ g, geodesicGraph /@ infraSpread @ dag ] ],
-      With[ { dag = FindInfraSegment[ g, 1, 12, All ] },
-        KeySort @ FindInfraMidpoint[ g, dag ] ===
-          KeySort @ FindInfraMidpoint[ g, geodesicGraph /@ infraSpread @ dag ] ] } ],
-  { True, True },
-  TestID -> "DAG-midpoint-equals-enumeration"
 ]
 
 (* a bounded count is a prefix of the whole class, and a strict count fails on
@@ -264,22 +206,22 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     { Length @ FindInfraSegment[ g, 1, 16, UpTo[ 2 ] ],
-      SubsetQ[ infraSpread @ FindInfraSegment[ g, 1, 16, All ],
-               infraSpread @ FindInfraSegment[ g, 1, 16, UpTo[ 2 ] ] ],
+      SubsetQ[ FindInfraSegment[ g, 1, 16, All ],
+               FindInfraSegment[ g, 1, 16, UpTo[ 2 ] ] ],
       FindInfraSegment[ g, 1, 16, 1000 ] } ],
   { 2, True, $Failed },
   TestID -> "bounded-count-is-a-prefix"
 ]
 
-(* the count contract on FindInfraSegment: count-less is ONE path graph, a bounded
-   count a List of them, All the interval DAG *)
+(* the count contract on FindInfraSegment: count-less is ONE vertex list, a bounded
+   count a List of them, All the whole class -- no DAG any more (EuclideanInertHeads) *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
-    { GraphQ @ FindInfraSegment[ g, 1, 9 ],
-      MatchQ[ FindInfraSegment[ g, 1, 9, 1 ], { _Graph } ],
-      MatchQ[ FindInfraSegment[ g, 1, 9, UpTo[ 100 ] ], { __Graph } ],
-      GraphQ @ FindInfraSegment[ g, 1, 9, All ],
-      Length @ infraSpread @ FindInfraSegment[ g, 1, 9, All ] === 6,
+    { MatchQ[ FindInfraSegment[ g, 1, 9 ], { __Integer } ],
+      MatchQ[ FindInfraSegment[ g, 1, 9, 1 ], { { __Integer } } ],
+      MatchQ[ FindInfraSegment[ g, 1, 9, UpTo[ 100 ] ], { { __Integer } .. } ],
+      MatchQ[ FindInfraSegment[ g, 1, 9, All ], { { __Integer } .. } ],
+      Length @ FindInfraSegment[ g, 1, 9, All ] === 6,
       FindInfraSegment[ g, 1, 9, 7 ] === $Failed } ],
   { True, True, True, True, True, True },
   TestID -> "FindInfraSegment-count-contract"
@@ -288,7 +230,10 @@ VerificationTest[
 (* ===================== the ink table keys on shape ===================== *)
 
 (* inkClass is the renderer's reading of the shape, and of nothing else -- there is no
-   head left to consult.  One row per class, on the 5x5 grid. *)
+   head left to consult.  One row per class, on the 5x5 grid.  Since EuclideanInertHeads
+   a FindInfraSegment instance is a plain vertex list, with no Graph wrapper telling an
+   ordered walk from an unordered set -- it inks as "Set" / "SetFamily" like any other
+   vertex-list shape, a rendering-fidelity question the InfraHighlightGraph item owns *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     inkClass[ g, # ] & /@ {
@@ -296,12 +241,12 @@ VerificationTest[
       <| 1 -> 2, 7 -> 1 |>,                     (* a density *)
       FindInfraBall[ g, 13, 1 ],                (* a 2-d construction: one sorted vertex List *)
       FindInfraShell[ g, 1, 2, All ],           (* a family of them *)
-      FindInfraSegment[ g, 1, 25 ],             (* one walk: a substrate path graph *)
-      FindInfraSegment[ g, 1, 25, All ],        (* the bundle: the interval DAG *)
-      FindInfraSegment[ g, 1, 25, UpTo[ 3 ] ],  (* a List of walks *)
+      FindInfraSegment[ g, 1, 25 ],             (* one instance: a vertex list *)
+      FindInfraSegment[ g, 1, 25, All ],        (* the family: a List of vertex lists *)
+      FindInfraSegment[ g, 1, 25, UpTo[ 3 ] ],  (* a List of vertex lists *)
       FindInfraTriangle[ g, { 1, 4, 21 } ],     (* a closed chain of legs *)
       FindInfraTriangle[ g, { 1, 4, 21 }, UpTo[ 3 ] ] } ],
-  { "Point", "Density", "Set", "SetFamily", "Walk", "Walk", "Walk", "Polyline", "PolylineFamily" },
+  { "Point", "Density", "Set", "SetFamily", "Set", "SetFamily", "SetFamily", "Polyline", "PolylineFamily" },
   TestID -> "inkClass-one-row-per-shape"
 ]
 
@@ -323,16 +268,18 @@ VerificationTest[
     { chainedWalksQ @ FindInfraTriangle[ g, { 1, 4, 21 } ],
       chainedWalksQ @ FindInfraSegment[ g, 1, 25, UpTo[ 4 ] ],
       chainedWalksQ @ { FindInfraSegment[ g, 1, 25 ] },
-      chainedWalksQ @ FindInfraCircle[ g, 13, 2, UpTo[ 2 ] ] } ],
+      chainedWalksQ @ FindInfraCircle[ g, 13, "Radius" -> 2, UpTo[ 2 ] ] } ],
   { True, False, False, False },
   TestID -> "chainedWalksQ-polyline-versus-bundle"
 ]
 
 (* a branching DAG stands for many walks with no single stroke; a path graph, a directed
-   cycle and a position-spelled walk each stand for one *)
+   cycle and a position-spelled walk each stand for one.  A FindInfraSegment family is a
+   plain List since EuclideanInertHeads, so the branching-DAG example is now the head's
+   own "Graph" property instead *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    bundleQ /@ { FindInfraSegment[ g, 1, 25, All ], FindInfraSegment[ g, 1, 25 ],
+    bundleQ /@ { InfraMeasurement[ g, InfraSegment[ 1, 25 ], "Graph" ], walkGraph @ FindInfraSegment[ g, 1, 25 ],
       geodesicCycleGraph @ { 1, 2, 7, 6 }, walkGraph @ { 1, 2, 7, 2, 3 } } ],
   { True, False, False, False },
   TestID -> "bundleQ-only-a-branching-dag"

@@ -14,6 +14,8 @@ PackageExport[FindInfraCommonPoint]
 PackageExport[FindClosestInfraPoint]
 PackageExport[SelectInfraPoint]
 PackageExport[InfraReachableQ]
+PackageExport[RandomInfraPoint]
+PackageExport[InfraCenter]
 
 (* ---- EuclideanInfrageometry: Kernel/EuclideanInfrageometry/ ------------- *)
 (* The Euclidean objects and the scene they are drawn in.  Each head -- InfraSegment[p1, ..., pk],
@@ -228,7 +230,7 @@ PackageExport[InfraEqualQ]
 (* EuclideanInfrageometry/InfraScene.wl *)
 PackageExport[InfraScene]
 PackageExport[FindInfraScene]
-PackageExport[InfraInstance]
+PackageExport[InfraSceneInstance]
 PackageExport[InfraGeometricStep]
 PackageExport[InfraIntersection]
 PackageExport[InfraUnion]

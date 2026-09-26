@@ -241,6 +241,9 @@ InfraWalkQ[ _Graph, path_List ] /; Length[ path ] < 2 := False
 
 InfraSegmentQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraSegmentQ[ graph, # ] & ]
 
+(* a family of instances, the shape FindInfraSegment[graph, p, q, n | UpTo[n] | All] returns *)
+InfraSegmentQ[ graph_Graph, ws : { { ___ } .. } ] := AllTrue[ ws, InfraSegmentQ[ graph, # ] & ]
+
 InfraSegmentQ[ graph_Graph, w_Graph ] :=
   With[ { vs = VertexList @ w },
     { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,

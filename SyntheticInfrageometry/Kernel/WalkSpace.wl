@@ -436,8 +436,6 @@ GeodesicExtensionGraph[ g_Graph, { p1_, p2_ } ] :=
         GraphQ @ x,                   walksOf @ x,
         MatchQ[ x, { __Graph } ],     Catenate[ walksOf /@ x ],
         x === { },                    { },
-        MatchQ[ x, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ],
-          Catenate[ walksOf /@ Normal @ x ],
         True,                         { x } ], { p1, p2 } ] ] },
     Replace[ GeodesicExtensionGraph[ g, # ] & /@ pairs, { one_ } :> one ] /; pairs =!= { { p1, p2 } } ]
 

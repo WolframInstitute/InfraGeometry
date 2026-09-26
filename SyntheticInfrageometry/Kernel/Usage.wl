@@ -14,6 +14,8 @@ FindInfraCommonPoint::usage = "FindInfraCommonPoint[graph, lines] gives the poin
 FindClosestInfraPoint::usage = "FindClosestInfraPoint[graph, line, point] gives the vertices of line at minimum graph distance from point.";
 SelectInfraPoint::usage = "SelectInfraPoint[graph, vertices] draws a vertex from a supplied bundle under graph distance; a trailing n | UpTo[n] | All sets the count. Options \"From\", \"Distance\", \"MaxCliques\".";
 InfraReachableQ::usage = "InfraReachableQ[graph, p1, p2] tests whether p1 and p2 have realisations in the same connected component.";
+RandomInfraPoint::usage = "RandomInfraPoint[graph] gives a uniformly random vertex. RandomInfraPoint[graph, p, d] gives a uniformly random vertex at distance d from p.";
+InfraCenter::usage = "InfraCenter[graph] gives a vertex of least eccentricity.";
 
 (* ===================== InfraMeasurement ===================== *)
 
@@ -261,8 +263,8 @@ EnumerateGraphs::usage = "EnumerateGraphs[n, predQ] gives the connected n-vertex
 (* ===================== Scenes ===================== *)
 
 InfraScene::usage = "InfraScene[objects, hypotheses] builds a scene descriptor from symbolic objects and construction or assertion hypotheses. Properties \"Steps\", \"Constructions\", \"Assertions\", \"DependencyGraph\".";
-FindInfraScene::usage = "FindInfraScene[scene, graph] solves a scene on a graph and gives the resulting InfraInstance bindings. Option \"PruneProbability\".";
-InfraInstance::usage = "InfraInstance[bindings] wraps a solved binding association; InfraInstance[bindings, sym] reads one object out of it.";
+FindInfraScene::usage = "FindInfraScene[scene, graph] solves a scene on a graph and gives the resulting InfraSceneInstance bindings. Option \"PruneProbability\".";
+InfraSceneInstance::usage = "InfraSceneInstance[bindings] wraps a solved binding association; InfraSceneInstance[bindings, sym] reads one object out of it.";
 InfraGeometricStep::usage = "InfraGeometricStep[{hyp1, ...}] groups hypotheses into one construction step of a scene; a second argument labels it.";
 InfraIntersection::usage = "InfraIntersection[graph, obj1, obj2, ...] gives the vertex-set intersection of shapes on graph -- vertex lists, densities, walk graphs, bundles -- as a sorted List. On Euclidean heads it is inert and InfraMeasurement gives it the common support and the product density. Inside InfraScene it is the token InfraIntersection[c1, c2], the engine supplying the graph.";
 InfraUnion::usage = "InfraUnion[graph, obj1, obj2, ...] gives the vertex-set union of shapes on graph as a sorted List. On Euclidean heads it is inert and InfraMeasurement gives it the joint support and the sum density. Inside InfraScene it is the token InfraUnion[c1, c2], the engine supplying the graph.";

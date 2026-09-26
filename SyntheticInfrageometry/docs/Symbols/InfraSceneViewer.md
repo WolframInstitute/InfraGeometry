@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`Infrageometry`]
 Paclet: WolframInstitute/SyntheticInfrageometry
 URI: WolframInstitute/SyntheticInfrageometry/ref/InfraSceneViewer
 Keywords: [viewer, interactive, construction, step, branch]
-SeeAlso: [InfraScene, FindInfraScene, InfraSceneHighlight, InfraInstance, InfraGeometricStep]
+SeeAlso: [InfraScene, FindInfraScene, InfraSceneHighlight, InfraSceneInstance, InfraGeometricStep]
 RelatedGuides: [VisualizationGuide]
 ---
 

@@ -54,12 +54,11 @@ $infraColors = <|
   "Topology" -> RGBColor[ 0.85, 0.55, 0.75 ]
 |>;
 
-(* which colour each SHAPE class is drawn in when the addition-order palette is switched off.  A bare carrier does not remember its construction -- a ball and a bisecting hyperplane are the same vertex list -- so only three colours are reachable from a shape; the five Euclidean objects (InfraSegment, InfraRay, InfraLine, InfraCircle, InfraArc) do remember theirs and reach four more.  The rest stay in $infraColors as the palette a caller cites by name *)
+(* which colour each SHAPE class is drawn in when the addition-order palette is switched off.  A bare carrier does not remember its construction -- a ball and a bisecting hyperplane are the same vertex list, and the five Euclidean heads (InfraSegment, InfraRay, InfraLine, InfraCircle, InfraArc) are inert and dispatch to a plain vertex list before a scene ever renders them -- so only three colours are reachable from a shape.  The rest stay in $infraColors as the palette a caller cites by name *)
 $infraShapeColors = <|
   "Point" -> "Point", "Density" -> "Point",
   "Set" -> "Ball", "SetFamily" -> "Ball",
-  "Walk" -> "Path", "Polyline" -> "Path", "PolylineFamily" -> "Path",
-  "Segment" -> "Segment", "Ray" -> "Ray", "Line" -> "Line", "Circle" -> "Circle", "Arc" -> "Circle"
+  "Walk" -> "Path", "Polyline" -> "Path", "PolylineFamily" -> "Path"
 |>;
 
 $InfraPointColor    = $infraColors[ "Point" ];
@@ -149,14 +148,6 @@ normalizeHighlightSpec[ x_ ]                 := { x }
 (* ===================== The ink table ===================== *)
 
 (* ONE ROW PER SHAPE CLASS -- what an object contributes to each rendering channel, read off its shape by inkClass and off nothing else.  "Verts" / "Edges" are raw occupation counts and "Norm" the heaviest mass they are divided by, so a channel encodes relative mass within the object; "Strokes" are the vertex sequences drawn as one joined line, "Dots" whether the point-size channel is on, "Knots" the vertices drawn as points on top of the sides *)
-
-(* a Euclidean object reads its own occupation, edge occupation and class off its properties; a single realisation is one stroke, closed when the object is *)
-infraInk[ graph_Graph, obj : ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ] :=
-  With[ { verts = obj[ "InfraDensity" ] },
-    <| "Class" -> inkClass[ graph, obj ], "Verts" -> verts, "Edges" -> obj[ "EdgeDensity" ],
-       "Norm" -> Max[ 1, Max @ verts ],
-       "Strokes" -> If[ obj[ "Multiplicity" ] == 1, Catenate[ walkRealisations /@ Normal @ obj ], { } ],
-       "Dots" -> False, "Knots" -> { } |> ]
 
 infraInk[ graph_Graph, obj_ ] := With[ { class = inkClass[ graph, obj ] },
   Join[
@@ -359,7 +350,6 @@ InfraSceneHighlight[ graph_Graph, multiObjects_List, opts : OptionsPattern[] ] :
 inkClass[ graph_Graph, x_ ] := Which[
   pointQ[ graph, x ],                                              "Point",
   AssociationQ[ x ],                                               "Density",
-  MatchQ[ x, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ], StringDrop[ SymbolName @ Head @ x, 5 ],
   GraphQ[ x ],                                                     "Walk",
   chainedWalksQ[ x ],                                              "Polyline",
   MatchQ[ x, { __Graph } ],                                        "Walk",

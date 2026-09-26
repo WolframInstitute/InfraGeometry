@@ -197,16 +197,16 @@ InfraScene[ data_Association ][ prop_String ] := data[ prop ]
 
 (* ===================== Instance accessors ===================== *)
 
-InfraInstance[ inst_InfraInstance, sym_ ] /; ! ListQ[ sym ] :=
+InfraSceneInstance[ inst_InfraSceneInstance, sym_ ] /; ! ListQ[ sym ] :=
   inst[[ 1 ]][ sym ]
 
-InfraInstance[ inst_InfraInstance, syms_List ] :=
+InfraSceneInstance[ inst_InfraSceneInstance, syms_List ] :=
   inst[[ 1 ]] /@ syms
 
-InfraInstance[ bindings_Association, sym_ ] /; ! ListQ[ sym ] :=
+InfraSceneInstance[ bindings_Association, sym_ ] /; ! ListQ[ sym ] :=
   bindings[ sym ]
 
-InfraInstance[ bindings_Association, syms_List ] :=
+InfraSceneInstance[ bindings_Association, syms_List ] :=
   bindings /@ syms
 
 
@@ -280,7 +280,7 @@ FindInfraScene[ scene_InfraScene, graph_Graph, nSteps_Integer, init_Association,
                 UnitStep[ RandomReal[ { 0, 1 }, Length @ branches ] - prob ], 1 ] },
               If[ kept === {}, { RandomChoice @ branches }, kept ] ] ] ] ],
       { step, Take[ scene[ "Steps" ], UpTo[ nSteps ] ] } ];
-    InfraInstance /@ If[ scene[ "Assertions" ] === {}, branches,
+    InfraSceneInstance /@ If[ scene[ "Assertions" ] === {}, branches,
       Select[ branches, b |-> And @@ (
         With[ { vars = Intersection[
               Cases[ #, Alternatives @@ objects, { 0, Infinity } ], objects ] },
@@ -345,7 +345,6 @@ infraSpread[ fam_Association ]       := Keys @ fam
 infraSpread[ w_Graph ]               := walkRealisations @ w
 infraSpread[ ws : { __Graph } ]      := Catenate[ walkRealisations /@ ws ]
 infraSpread[ { } ]                   := { }
-infraSpread[ obj : ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ] := infraSpread @ Normal @ obj
 infraSpread[ other_ ]                := { other }
 
 vertexSet[ vs_List ] := Sort @ DeleteDuplicates @ vs
@@ -356,7 +355,6 @@ infraVertexSet[ ws : { __Graph } ] := Union @@ ( walkVertexSet /@ ws )
 infraVertexSet[ { } ]              := { }
 infraVertexSet[ sets : { __List } ] := Union @@ ( infraVertexSet /@ sets )
 infraVertexSet[ list_List ]        := vertexSet @ list
-infraVertexSet[ obj : ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ] := obj[ "VertexList" ]
 infraVertexSet[ v_ ]               := { v }
 
 infraVertexSet[ graph_Graph, x_ ]  := Keys @ InfraDensity[ graph, x ]
