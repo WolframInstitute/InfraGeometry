@@ -5,222 +5,79 @@ Package["WolframInstitute`SyntheticInfrageometry`"]
 
 (* ===================== InfraLine ===================== *)
 
-(* the lines through p and q as an object.  InfraLine[graph, p, q] evaluates to InfraLine[<| "Atoms" -> {dag, ...}, "Points" -> {p, q} |>] and stands for every inextensible geodesic through p and q at once -- the line pool, one geodesic DAG per admissible pair of ends, the carrier FindInfraLine[graph, p, q, All] builds; InfraLine[graph, walk] the lines containing a walk graph or a geodesic DAG, InfraLine[graph, segment] those containing an InfraSegment object.  line[[i]] is the i-th line in canonical order, line[[i ;; j]] a List, Normal all; "Multiplicity", "InfraDensity", "EdgeDensity", "Length" (the lengths present), "Graph" (the union of the atoms, which over-generates: the lines are the atoms' own paths) and "VertexList" are read off the DAGs.  Without the graph, InfraLine[p, q] and InfraLine[path] are the InfraScene tokens *)
+(* InfraLine[p, q] is inert: the line through p and q.  Its graph is the List of atoms K_{a, b} = I(a, p) union I(p, q) union I(q, b), one per pair of ends compatible with (p, q) -- d(a, b) == d(a, p) + d(p, q) + d(q, b) -- and maximal -- no neighbour of a or of b lengthens d(a, b).  The chains of K_{a, b} are exactly the inextensible geodesics from a to b through p and then q, and every such geodesic is a chain of exactly one atom, while the union of the atoms is not faithful (design Thm. line).  InfraLine[p, p] is every maximal geodesic through p, once per orientation *)
 
-InfraLine[ graph_Graph, p_, q : Except[ _Rule | _RuleDelayed | _Graph ] ] :=
-  InfraLine @ <|
-    "Atoms" -> Map[ Graph[ Sort @ VertexList @ #, Sort @ EdgeList @ # ] &,
-      Select[ Replace[ FindInfraLine[ graph, p, q, All ], dag_Graph :> { dag } ], GraphQ[ # ] && EdgeCount[ # ] > 0 & ] ],
-    "Points" -> { p, q } |>
-
-InfraLine[ graph_Graph, seed_Graph ] :=
-  InfraLine @ <|
-    "Atoms" -> Map[ Graph[ Sort @ VertexList @ #, Sort @ EdgeList @ # ] &,
-      Select[ Replace[ FindInfraLine[ graph, seed, All ], dag_Graph :> { dag } ], GraphQ[ # ] && EdgeCount[ # ] > 0 & ] ],
-    "Points" -> { First @ Select[ VertexList @ seed, VertexInDegree[ seed, # ] == 0 & ],
-                  First @ Select[ VertexList @ seed, VertexOutDegree[ seed, # ] == 0 & ] } |>
-
-InfraLine[ graph_Graph, segment : InfraSegment[ _Association ] ] :=
-  InfraLine @ <|
-    "Atoms" -> Map[ Graph[ Sort @ VertexList @ #, Sort @ EdgeList @ # ] &,
-      Select[ Replace[ FindInfraLine[ graph, segment[ "Atoms" ], All ], dag_Graph :> { dag } ], GraphQ[ # ] && EdgeCount[ # ] > 0 & ] ],
-    "Points" -> segment[ "Endpoints" ] |>
-
-
-(* ===================== The InfraLine object ===================== *)
-
-(* the object protocol, one copy per head so that InfraLine stands on its own: the atoms are geodesic DAGs whose source-to-sink paths are exactly the realisations, sorted so that the depth-first descent lists them in one lexicographic order.  Part enumerates on demand and the properties read the path-count DP off the atoms *)
-
-InfraLine[ data_Association ][ "Graph" ] :=
-  Graph[ Union @@ ( VertexList /@ data[ "Atoms" ] ), Union @@ ( EdgeList /@ data[ "Atoms" ] ) ]
-
-(* the number of realisations: the occupation of an atom's source counts its source-to-sink paths *)
-InfraLine[ data_Association ][ "Multiplicity" ] := Total[ Max @ GeodesicOccupation @ # & /@ data[ "Atoms" ] ]
-
-(* the occupation <| v -> m |>: the realisations through v *)
-InfraLine[ data_Association ][ "InfraDensity" ] := KeySort @ Merge[ GeodesicOccupation /@ data[ "Atoms" ], Total ]
-
-(* the edge occupation keyed by the sorted vertex pair *)
-InfraLine[ data_Association ][ "EdgeDensity" ] :=
-  KeySort @ Merge[ KeyMap[ Sort[ List @@ # ] &, GeodesicEdgeOccupation @ # ] & /@ data[ "Atoms" ], Total ]
-
-(* the realisation length: one number when every realisation shares it, the sorted list of the lengths present otherwise *)
-InfraLine[ data_Association ][ "Length" ] :=
-  Replace[
-    Union @@ Map[ atom |-> With[ { source = First @ Select[ VertexList @ atom, VertexInDegree[ atom, # ] == 0 & ] },
-        Union[ GraphDistance[ atom, source, # ] & /@ Select[ VertexList @ atom, VertexOutDegree[ atom, # ] == 0 & ] ] ],
-      data[ "Atoms" ] ],
-    { one_ } :> one ]
-
-InfraLine[ data_Association ][ "VertexList" ] := Union @@ ( VertexList /@ data[ "Atoms" ] )
-
-InfraLine[ data_Association ][ "Realizations" ] := InfraLine[ data ][[ All ]]
-InfraLine[ data_Association ][ "Realizations", n : ( _Integer | All ) ] := InfraLine[ data ][[ 1 ;; n ]]
-InfraLine[ data_Association ][ "Realizations", UpTo[ n_Integer ] ] := InfraLine[ data ][[ 1 ;; n ]]
-
-InfraLine[ data_Association ][ "Properties" ] :=
-  Union[ Keys @ data, { "Graph", "Length", "Multiplicity", "InfraDensity", "EdgeDensity", "Realizations", "VertexList", "Properties" } ]
-
-InfraLine[ data_Association ][ prop_String ] := Lookup[ data, prop, Missing[ "KeyAbsent", prop ] ]
-
-InfraLine /: Part[ obj : InfraLine[ _Association ], prop_String ] := obj[ prop ]
-
-(* obj[[i]], obj[[i ;; j]], obj[[All]]: the realisations in canonical order -- atom by atom, and within an atom the depth-first descent of its sorted edges -- streamed only as far as asked *)
-InfraLine /: Part[ obj : InfraLine[ data_Association ], spec : ( _Integer | _Span | All ) ] :=
-  With[ { n = obj[ "Multiplicity" ] },
-    { range = Replace[ spec, {
-        All -> { 1, n, 1 },
-        i_Integer :> { If[ i < 0, n + 1 + i, i ], If[ i < 0, n + 1 + i, i ], 1 },
-        Span[ a_, b_, s_ : 1 ] :> { Replace[ a, k_Integer /; k < 0 :> n + 1 + k ],
-                                   Replace[ b, { All -> n, k_Integer /; k < 0 :> n + 1 + k } ], s } } ] },
-    { paths = Module[ { found = { }, descend },
-        descend[ out_, path_ ] := With[ { nexts = Lookup[ out, Key @ Last @ path, { } ] },
-          If[ nexts === { },
-            ( AppendTo[ found, path ]; If[ Length @ found >= range[[ 2 ]], Throw[ found, InfraLine ] ] ),
-            Scan[ descend[ out, Append[ path, # ] ] &, nexts ] ] ];
-        Catch[
-          Scan[ atom |-> With[ { out = GroupBy[ List @@@ EdgeList @ atom, First -> Last ] },
-              Scan[ descend[ out, { # } ] &, Select[ VertexList @ atom, VertexInDegree[ atom, # ] == 0 & ] ] ],
-            data[ "Atoms" ] ];
-          found, InfraLine ] ] },
-    Which[
-      ! IntegerQ @ spec,
-        PathGraph[ #, DirectedEdges -> True ] & /@ Take[ paths, { range[[ 1 ]], Min[ range[[ 2 ]], Length @ paths ], range[[ 3 ]] } ],
-      1 <= range[[ 1 ]] <= n,
-        PathGraph[ #, DirectedEdges -> True ] & @ paths[[ range[[ 1 ]] ]],
-      True,
-        Message[ Part::partw, spec, obj ]; $Failed ] ]
-
-InfraLine /: Normal[ obj : InfraLine[ _Association ] ] := obj[[ All ]]
-InfraLine /: Length[ obj : InfraLine[ _Association ] ] := obj[ "Multiplicity" ]
-InfraLine /: First[ obj : InfraLine[ _Association ] ] := obj[[ 1 ]]
-InfraLine /: VertexList[ obj : InfraLine[ _Association ] ] := obj[ "VertexList" ]
-InfraLine /: HighlightGraph[ graph_Graph, obj : InfraLine[ data_Association ], rest___ ] := HighlightGraph[ graph, data[ "Atoms" ], rest ]
-
-InfraLine /: MakeBoxes[ obj : InfraLine[ data_Association ], fmt_ ] :=
-  BoxForm`ArrangeSummaryBox[ InfraLine, obj,
-    Graphics[ { $InfraLineColor, AbsoluteThickness[ 1.5 ], AbsolutePointSize[ 4 ], Line[ { { -1.3, 0 }, { 1.3, 0 } } ], Point[ { { -0.5, 0 }, { 0.5, 0 } } ] },
-      PlotRange -> { { -1.4, 1.4 }, { -1.4, 1.4 } }, AspectRatio -> 1, Background -> None,
-      ImageSize -> Dynamic[ { Automatic, 3.5 CurrentValue[ "FontCapHeight" ] / AbsoluteCurrentValue[ Magnification ] } ] ],
-    Join[
-      KeyValueMap[ { key, value } |-> BoxForm`SummaryItem[ { ToLowerCase[ key ] <> ": ", value } ],
-        KeyDrop[ data, { "Atoms", "Graph", "Closed", "Band" } ] ],
-      { BoxForm`SummaryItem[ { "multiplicity: ", obj[ "Multiplicity" ] } ],
-        BoxForm`SummaryItem[ { "length: ", obj[ "Length" ] } ] } ],
-    Join[
-      KeyValueMap[ { key, value } |-> BoxForm`SummaryItem[ { ToLowerCase[ key ] <> ": ", value } ], KeyTake[ data, { "Band" } ] ],
-      { BoxForm`SummaryItem[ { "vertices: ", Length @ obj[ "VertexList" ] } ],
-        BoxForm`SummaryItem[ { "atoms: ", Length @ data[ "Atoms" ] } ] } ],
-    fmt, "Interpretable" -> Automatic ]
+InfraMeasurement[ graph_Graph,
+    InfraLine[ p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ] ], "Graph" ] :=
+  With[ { vs = VertexList @ graph, dm = GraphDistanceMatrix @ graph },
+    { idx = AssociationThread[ vs, Range @ Length @ vs ] },
+    { dist = dm[[ idx @ #1, idx @ #2 ]] & },
+    { d = dist[ p, q ] },
+    { pairs = If[ d === Infinity, { },
+        Select[
+          Tuples @ { Select[ vs, dist[ #, q ] == dist[ #, p ] + d & ],
+                     Select[ vs, dist[ p, # ] == d + dist[ q, # ] & ] },
+          Apply[ { a, b } |->
+            dist[ a, b ] == dist[ a, p ] + d + dist[ q, b ] &&
+            NoneTrue[ AdjacencyList[ graph, a ], dist[ #, b ] > dist[ a, b ] & ] &&
+            NoneTrue[ AdjacencyList[ graph, b ], dist[ a, # ] > dist[ a, b ] & ] ] ] ] },
+    Map[
+      Apply[ { a, b } |-> With[ {
+            support = Select[ vs,
+              dist[ a, # ] + dist[ #, p ] == dist[ a, p ] ||
+              dist[ p, # ] + dist[ #, q ] == d ||
+              dist[ q, # ] + dist[ #, b ] == dist[ q, b ] & ] },
+          { inside = AssociationThread[ support, True ] },
+          Graph[ support,
+            Catenate @ Map[
+              v |-> DirectedEdge[ v, # ] & /@ Select[ AdjacencyList[ graph, v ],
+                TrueQ @ Lookup[ inside, Key @ # ] && dist[ a, # ] == dist[ a, v ] + 1 & ],
+              support ] ] ] ],
+      pairs ] ]
 
 
 (* ===================== FindInfraLine ===================== *)
 
-(* a line through p1, p2: an inextensible geodesic s ... p1 ... p2 ... e, with d(s, e) == d(s, p1) + d(p1, p2) + d(p2, e) and no neighbour of s or e prolonging it -- the extension pool of the p1 -> p2 bundle at kspec Infinity, as ExtendInfraSegment builds it.  The count-less call is one line as a substrate path graph, a bounded count a List of them, All the pool: one geodesic DAG per admissible endpoint pair (s, e) -- the s -> p1 interval, the p1 -> p2 bundle and the p2 -> e interval glued at p1 and p2 -- a lone atom standing alone.  Distinct endpoints give disjoint families, so the per-atom DP gives count and occupation without enumeration.  One class under every Method; the longest ones are SelectInfraWalk[graph, lines, All, "From" -> "MaxLength"] *)
+(* a line through p and q: an inextensible geodesic a ... p ... q ... b.  Found on the substrate directly, by prolonging a geodesic from p to q one geodesic step at a time -- every prolongation at the back, then every prolongation at the front -- and kept when neither end can be prolonged, independently of the atoms.  FindInfraLine[graph, seq] prolongs a given geodesic instead of searching for one *)
 
-FindInfraLine::badmethod    = "Method `1` is not supported by FindInfraLine.";
-FindInfraLine::badproperty  = "Property `1` is not supported by FindInfraLine (FindInfraLine accepts only Properties -> {}).";
-FindInfraLine::baddirection = "Direction `1` is not supported by FindInfraLine.";
+FindInfraLine[ graph_Graph, p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic ] /;
+    ! ListQ[ p ] || VertexQ[ graph, p ] :=
+  With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
+    { lines = Fold[
+        { found, seed } |-> If[ Length @ found >= cap, found,
+          Join[ found,
+            FindInfraLine[ graph, seed, If[ cap === Infinity, All, UpTo[ cap - Length @ found ] ] ] ] ],
+        { }, FindInfraSegment[ graph, p, q, If[ cap === Infinity, All, UpTo[ cap ] ] ] ] },
+    Switch[ count,
+      Automatic, First[ lines, { } ],
+      All,       lines,
+      _UpTo,     Take[ lines, count ],
+      _,         If[ Length @ lines < count, $Failed, Take[ lines, count ] ] ] ]
 
-Options[ FindInfraLine ] = {
-  Properties  -> { },
-  Method      -> Automatic,
-  "Direction" -> "BothSides"
-};
-
-(* a list can be a genuine vertex (TessellationGraph labels its torus {i, j}), so the guard admits it.  The bundle is the interval I(q1, q2) of each anchor pair, and an end pair (s, e) is admissible iff d(s, e) == d(s, q1) + d(q1, q2) + d(q2, e) and no neighbour of a free end prolongs it *)
-FindInfraLine[ graph_Graph, p1_, p2_,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    ( ! ListQ[ p1 ] || VertexQ[ graph, p1 ] ) && ! GraphQ[ p1 ] :=
-  Module[ { acc, descend },
-    With[ {
-        properties = OptionValue[ FindInfraLine, { opts }, Properties ],
-        method     = Replace[ OptionValue[ FindInfraLine, { opts }, Method ],
-                       { Automatic :> If[ count === All, "Exhaustive", "Greedy" ], { m_String, ___ } :> m } ],
-        direction  = OptionValue[ FindInfraLine, { opts }, "Direction" ],
-        cap        = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
-      { branch = If[ method === "RandomGreedy", RandomSample, Identity ] },
-      descend[ e_, dag_, walk_ ] := (
-        If[ Last @ walk === e, AppendTo[ acc, walk ]; If[ Length @ acc >= cap, Throw[ Null, descend ] ] ];
-        If[ Last @ walk =!= e,
-          Scan[ descend[ e, dag, Append[ walk, # ] ] &,
-            branch @ DeleteCases[ VertexOutComponent[ dag, { Last @ walk }, 1 ], Last @ walk ] ] ] );
-      Which[
-        properties =!= { },
-          Message[ FindInfraLine::badproperty, properties ]; $Failed,
-        ! MatchQ[ direction, "Forward" | "Backward" | "BothSides" ],
-          Message[ FindInfraLine::baddirection, direction ]; $Failed,
-        ! MatchQ[ method, "Exhaustive" | "Greedy" | "RandomGreedy" ],
-          Message[ FindInfraLine::badmethod, method ]; $Failed,
-        True,
-          With[ { lines = DeleteDuplicates[ If[ GraphQ @ #, #, PathGraph[ #, DirectedEdges -> True ] ] & /@
-              DeleteDuplicates @ Catenate[ ( { q1, q2 } |-> With[ { bundle = GeodesicIntervalGraph[ graph, q1, q2 ] },
-                If[ VertexCount @ bundle == 0, { },
-                  With[ {
-                      dm = GraphDistanceMatrix @ graph,
-                      vidx = AssociationThread[ VertexList @ graph, Range @ VertexCount @ graph ],
-                      leftExt  = GeodesicExtensionGraph[ graph, { q2, q1 } ],
-                      rightExt = GeodesicExtensionGraph[ graph, { q1, q2 } ] },
-                    { dist = dm[[ vidx @ #1, vidx @ #2 ]] & },
-                    { d = dist[ q1, q2 ],
-                      pairs = Tuples[ {
-                        If[ direction === "Forward",  { q1 }, VertexList @ leftExt ],
-                        If[ direction === "Backward", { q2 }, VertexList @ rightExt ] } ] },
-                    { admissibleQ = { s, e } |-> dist[ s, e ] == dist[ s, q1 ] + d + dist[ q2, e ] &&
-                        ( direction === "Forward"  || NoneTrue[ AdjacencyList[ graph, s ], dist[ #, e ] == dist[ s, e ] + 1 & ] ) &&
-                        ( direction === "Backward" || NoneTrue[ AdjacencyList[ graph, e ], dist[ s, # ] == dist[ s, e ] + 1 & ] ),
-                      atom = { s, e } |-> Graph @ Sort @ Join[
-                        EdgeList @ ReverseGraph @ Subgraph[ leftExt,
-                          Select[ VertexList @ leftExt, dist[ q1, # ] + dist[ #, s ] == dist[ q1, s ] & ] ],
-                        EdgeList @ bundle,
-                        EdgeList @ Subgraph[ rightExt,
-                          Select[ VertexList @ rightExt, dist[ q2, # ] + dist[ #, e ] == dist[ q2, e ] & ] ] ] },
-                    If[ method === "Exhaustive" && count === All,
-                      atom @@@ Select[ pairs, admissibleQ @@ # & ],
-                      acc = { };
-                      Catch[
-                        Scan[ Apply[ { s, e } |-> If[ admissibleQ[ s, e ],
-                            With[ { dag = atom[ s, e ] },
-                              If[ s =!= e && VertexQ[ dag, s ] && VertexQ[ dag, e ] && GraphDistance[ dag, s, e ] < Infinity,
-                                descend[ e, dag, { s } ] ] ] ] ],
-                          branch @ pairs ],
-                        descend ];
-                      acc ] ] ] ] ) @@@
-                Tuples[ Keys @ InfraDensity[ graph, # ] & /@ { p1, p2 } ] ] ] },
-            Switch[ count,
-              Automatic, First[ lines, { } ],
-              All,       Replace[ lines, { one_Graph } :> one ],
-              _UpTo,     Take[ lines, count ],
-              _,         If[ Length @ lines < count, $Failed, Take[ lines, count ] ] ] ] ] ] ]
-
-
-(* the lines through a segment -- a walk, a geodesic DAG extended as one object, a vertex sequence, or anything spreading to walks -- are its extensions at kspec Infinity *)
-
-FindInfraLine[ graph_Graph, seg : ( _Graph | { __Graph } ),
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
-  With[ {
-      properties = OptionValue[ FindInfraLine, { opts }, Properties ],
-      method     = Replace[ OptionValue[ FindInfraLine, { opts }, Method ],
-                     { Automatic :> If[ count === All, "Exhaustive", "Greedy" ], { m_String, ___ } :> m } ],
-      direction  = OptionValue[ FindInfraLine, { opts }, "Direction" ] },
-    Which[
-      properties =!= { }, Message[ FindInfraLine::badproperty, properties ]; $Failed,
-      ! MatchQ[ direction, "Forward" | "Backward" | "BothSides" ], Message[ FindInfraLine::baddirection, direction ]; $Failed,
-      ! MatchQ[ method, "Exhaustive" | "Greedy" | "RandomGreedy" ], Message[ FindInfraLine::badmethod, method ]; $Failed,
-      True, ExtendInfraSegment[ graph, seg, Infinity, count, opts ] ] ]
-
-FindInfraLine[ graph_Graph, segment_List, count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] /; Length[ segment ] >= 2 && ! VertexQ[ graph, segment ] :=
-  With[ {
-      properties = OptionValue[ FindInfraLine, { opts }, Properties ],
-      method     = Replace[ OptionValue[ FindInfraLine, { opts }, Method ],
-                     { Automatic :> If[ count === All, "Exhaustive", "Greedy" ], { m_String, ___ } :> m } ],
-      direction  = OptionValue[ FindInfraLine, { opts }, "Direction" ] },
-    Which[
-      properties =!= { }, Message[ FindInfraLine::badproperty, properties ]; $Failed,
-      ! MatchQ[ direction, "Forward" | "Backward" | "BothSides" ], Message[ FindInfraLine::baddirection, direction ]; $Failed,
-      ! MatchQ[ method, "Exhaustive" | "Greedy" | "RandomGreedy" ], Message[ FindInfraLine::badmethod, method ]; $Failed,
-      True, ExtendInfraSegment[ graph, segment, Infinity, count, opts ] ] ]
+FindInfraLine[ graph_Graph, seq_List,
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic ] /;
+    seq =!= { } && ! VertexQ[ graph, seq ] :=
+  Module[ { acc = { }, back, front },
+    With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
+            vs = VertexList @ graph, dm = GraphDistanceMatrix @ graph },
+      { idx = AssociationThread[ vs, Range @ Length @ vs ] },
+      { dist = dm[[ idx @ #1, idx @ #2 ]] & },
+      front[ path_ ] := With[ { nexts = Sort @ Select[ AdjacencyList[ graph, Last @ path ],
+            dist[ First @ path, # ] == Length @ path & ] },
+        If[ nexts === { },
+          If[ NoneTrue[ AdjacencyList[ graph, First @ path ], dist[ #, Last @ path ] == Length @ path & ],
+            AppendTo[ acc, path ]; If[ Length @ acc >= cap, Throw[ Null, front ] ] ],
+          Scan[ front[ Append[ path, # ] ] &, nexts ] ] ];
+      back[ path_ ] := ( front @ path;
+        Scan[ back[ Prepend[ path, # ] ] &,
+          Sort @ Select[ AdjacencyList[ graph, First @ path ], dist[ #, Last @ path ] == Length @ path & ] ] );
+      Catch[ back @ seq; Null, front ];
+      Switch[ count,
+        Automatic, First[ acc, { } ],
+        All,       acc,
+        _UpTo,     Take[ acc, count ],
+        _,         If[ Length @ acc < count, $Failed, Take[ acc, count ] ] ] ] ]
 
 
 (* ===================== FindInfraParallel ===================== *)
@@ -494,12 +351,8 @@ FindInfraCommonLine[ graph_Graph, verts_List,
           True,                              { x } ], verts ] ] },
     { common = If[ Length[ uverts ] < 2, { },
         DeleteDuplicates @ Select[
-          ( l |-> First @ Sort @ { l, Reverse[ l ] } ) /@ Catenate[
-            ( dag |-> With[ { paths = Catenate @ Catenate @ Table[ FindPath[ dag, src, snk, Infinity, All ],
-                  { src, Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ] },
-                  { snk, Select[ VertexList @ dag, VertexOutDegree[ dag, # ] == 0 & ] } ] },
-                If[ spelledQ @ dag, Map[ Last, paths, { 2 } ], paths ] ] ) /@
-              Replace[ FindInfraLine[ graph, First @ uverts, uverts[[ 2 ]], All ], dag_Graph :> { dag } ] ],
+          ( l |-> First @ Sort @ { l, Reverse[ l ] } ) /@
+            FindInfraLine[ graph, First @ uverts, uverts[[ 2 ]], All ],
           line |-> SubsetQ[ line, uverts ] ] ] },
     { lines = DeleteDuplicates[ PathGraph[ #, DirectedEdges -> True ] & /@ common ] },
     Switch[ count,
@@ -685,13 +538,8 @@ InfraPerpendicularQ[ graph_Graph, l1_, l2_, OptionsPattern[] ] :=
 
 LineCount[ graph_Graph ] :=
   Length @ DeleteDuplicates @ Catenate[
-    ( pair |-> ( l |-> First @ Sort @ { l, Reverse[ l ] } ) /@ Catenate[
-        ( dag |-> With[ { paths = Catenate @ Catenate @ Table[ FindPath[ dag, src, snk, Infinity, All ],
-              { src, Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ] },
-              { snk, Select[ VertexList @ dag, VertexOutDegree[ dag, # ] == 0 & ] } ] },
-            If[ AllTrue[ VertexList @ dag, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ dag ] === Range @ VertexCount @ dag,
-              Map[ Last, paths, { 2 } ], paths ] ] ) /@
-          Replace[ FindInfraLine[ graph, pair[[ 1 ]], pair[[ 2 ]], All ], dag_Graph :> { dag } ] ] ) /@
+    ( pair |-> ( l |-> First @ Sort @ { l, Reverse[ l ] } ) /@
+        FindInfraLine[ graph, pair[[ 1 ]], pair[[ 2 ]], All ] ) /@
       Subsets[ VertexList @ graph, { 2 } ] ]
 
 
@@ -704,13 +552,8 @@ Options[ FindLineHull ] = { "LineStructure" -> None };
 FindLineHull[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], OptionsPattern[] ] :=
   With[ { lines = Replace[ OptionValue[ "LineStructure" ], {
             None :> DeleteDuplicates @ Catenate[
-              ( pair |-> ( l |-> First @ Sort @ { l, Reverse[ l ] } ) /@ Catenate[
-                  ( dag |-> With[ { paths = Catenate @ Catenate @ Table[ FindPath[ dag, src, snk, Infinity, All ],
-                        { src, Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ] },
-                        { snk, Select[ VertexList @ dag, VertexOutDegree[ dag, # ] == 0 & ] } ] },
-                      If[ AllTrue[ VertexList @ dag, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ dag ] === Range @ VertexCount @ dag,
-                        Map[ Last, paths, { 2 } ], paths ] ] ) /@
-                    Replace[ FindInfraLine[ graph, pair[[ 1 ]], pair[[ 2 ]], All ], dag_Graph :> { dag } ] ] ) /@
+              ( pair |-> ( l |-> First @ Sort @ { l, Reverse[ l ] } ) /@
+                  FindInfraLine[ graph, pair[[ 1 ]], pair[[ 2 ]], All ] ) /@
                 Subsets[ VertexList @ graph, { 2 } ] ],
             ls_InfraLineStructure :> ls[ "Lines" ] } ],
           S = Which[
@@ -750,13 +593,8 @@ UniversalLineQ[ graph_Graph, { u_, v_ } ] :=
   AnyTrue[ ConnectedComponents @ graph,
     c |-> ContainsAll[ c, { u, v } ] &&
       Union @ Catenate @ Select[ DeleteDuplicates @ Catenate[
-          ( pair |-> ( l |-> First @ Sort @ { l, Reverse[ l ] } ) /@ Catenate[
-              ( dag |-> With[ { paths = Catenate @ Catenate @ Table[ FindPath[ dag, src, snk, Infinity, All ],
-                    { src, Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ] },
-                    { snk, Select[ VertexList @ dag, VertexOutDegree[ dag, # ] == 0 & ] } ] },
-                  If[ AllTrue[ VertexList @ dag, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ dag ] === Range @ VertexCount @ dag,
-                    Map[ Last, paths, { 2 } ], paths ] ] ) /@
-                Replace[ FindInfraLine[ graph, pair[[ 1 ]], pair[[ 2 ]], All ], dag_Graph :> { dag } ] ] ) /@
+          ( pair |-> ( l |-> First @ Sort @ { l, Reverse[ l ] } ) /@
+              FindInfraLine[ graph, pair[[ 1 ]], pair[[ 2 ]], All ] ) /@
             Subsets[ VertexList @ graph, { 2 } ] ],
         ContainsAll[ #, { u, v } ] & ] === Sort @ c ]
 
@@ -768,9 +606,7 @@ UniversalLineQ[ graph_Graph ] :=
 
 dispatchConstruction[ graph_Graph, InfraLine[ path_List, opts___Rule ] ] :=
   capBranches[
-    applySelectOption[ graph,
-      infraSpread @ FindInfraLine[ graph, path, All,
-        Sequence @@ FilterRules[ { opts }, Options[ FindInfraLine ] ] ],
+    applySelectOption[ graph, FindInfraLine[ graph, path, All ],
       "Select" /. { opts } /. "Select" -> None,
       False, <| "Endpoints" -> { First @ path, Last @ path } |> ],
     extractBranches[ { opts } ] ]
@@ -778,9 +614,7 @@ dispatchConstruction[ graph_Graph, InfraLine[ path_List, opts___Rule ] ] :=
 dispatchConstruction[ graph_Graph, InfraLine[ p1_, p2_, opts___Rule ] ] /;
   MemberQ[ VertexList @ graph, p1 ] :=
   capBranches[
-    applySelectOption[ graph,
-      infraSpread @ FindInfraLine[ graph, p1, p2, All,
-        Sequence @@ FilterRules[ { opts }, Options[ FindInfraLine ] ] ],
+    applySelectOption[ graph, FindInfraLine[ graph, p1, p2, All ],
       "Select" /. { opts } /. "Select" -> None,
       False, <| "Endpoints" -> { p1, p2 } |> ],
     extractBranches[ { opts } ] ]

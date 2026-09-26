@@ -48,8 +48,8 @@ ConcatenateInfraWalk::usage = "ConcatenateInfraWalk[path1, path2] joins every co
 
 (* ===================== InfraLine ===================== *)
 
-InfraLine::usage = "InfraLine[graph, p, q] is the pool of lines -- inextensible geodesics -- through p and q as one object; InfraLine[graph, walk] the lines containing a walk graph or an InfraSegment. line[[i]] enumerates in canonical order, Normal all; \"Multiplicity\", \"InfraDensity\", \"Length\", \"Graph\" read the DAGs. Inside InfraScene, InfraLine[p, q] and InfraLine[path] are the construction tokens; FindInfraLine is the search.";
-FindInfraLine::usage = "FindInfraLine[graph, p1, p2] gives the lines through p1 and p2, the inextensible geodesics containing them; FindInfraLine[graph, segment] those containing segment. Options Method, \"Direction\".";
+InfraLine::usage = "InfraLine[p, q] is the inert line through p and q, whose graph is the List of atoms I(a, p) + I(p, q) + I(q, b) over the maximal compatible end pairs (a, b). InfraMeasurement and InfraVertexList evaluate it on a graph; FindInfraLine is the search.";
+FindInfraLine::usage = "FindInfraLine[graph, p, q] gives one line through p and q as a vertex list -- an inextensible geodesic through both; a trailing n | UpTo[n] | All gives a List. FindInfraLine[graph, seq] prolongs a given geodesic.";
 FindInfraParallel::usage = "FindInfraParallel[graph, line, p] gives one parallel to line through p: a geodesic through p inextensible within the level set { v : d(v, line) == d(p, line) }; a trailing n | UpTo[n] | All sets the count, All giving the pool. Option Method.";
 FindInfraPerpendicular::usage = "FindInfraPerpendicular[graph, line, point] gives the lines through point perpendicular to line. Options Method, \"Radius\".";
 FindInfraCommonLine::usage = "FindInfraCommonLine[graph, vertices] gives the canonical lines containing every listed vertex.";
