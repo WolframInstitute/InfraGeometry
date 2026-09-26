@@ -5,195 +5,104 @@ Package["WolframInstitute`SyntheticInfrageometry`"]
 
 (* ===================== InfraCircle ===================== *)
 
-(* the circles around c through p as an object.  A circle around c through p is a shortest simple cycle of the band { v : r - tIn <= d(c, v) <= r + tOut }, r = d(c, p), that passes through p and separates c from { v : d(c, v) > r + tOut }; InfraCircle[graph, c, p] evaluates to InfraCircle[<| "Atoms" -> {dag, ...}, "Center" -> c, "Point" -> p, "Band" -> {rmin, rmax}, "Graph" -> union, "Closed" -> True |>] and stands for all of them at once.  The carrier is the circle pool cut along a radial seam through p (CirclePoolStructure): an atom is a contiguous arc S of the seam with a pair (u, v) of cut-shell ends and stands for the cycles S ++ (a v-u geodesic of the cut shell); the atoms through p are rotated to start at p, so each is a DAG with source p, sinks adjacent to p and the closing edge implicit -- exact on a planar local graph whose band the seam cuts open, and off that class the cycles through p come from the length sweep, one path atom each, under ::uncertified.  "Graph" is the union of the atoms with their closing edges, the atoms oriented alike wherever the positions they share allow it; its directed closed walks through p are exactly the circles when it is acyclic away from p, which need not be -- two circles can pass a neighbour of p once leaving and once returning.  circle[[i]] is the i-th circle as a directed cycle graph, "Multiplicity", "InfraDensity", "EdgeDensity" and "Length" the DP.  Without the graph, InfraCircle[c, r] is the InfraScene token *)
+(* InfraCircle[c, p] and InfraCircle[c, "Radius" -> r | {r, s}] are inert: the circles of the band W = { v : rmin <= d(c, v) <= rmax } around c, a circle being a shortest cycle of the band graph A = G[W] whose removal leaves c in a component that reaches no further than rmax.  The point form takes the band d(c, p) widened by "RadiusDelta" -> dOut | {dIn, dOut}.  Its graph is the List of necklaces of a radial seam sigma -- the band part of a geodesic from c to just outside the band, taken through p in the point form.  On a run S = (s1, ..., sm) of sigma the necklace N(S, u, v), with u ~ s1 and v ~ sm in one component of the cut band A - V(sigma), is s1 -> ... -> sm -> v together with the interval DAG of the cut band from v to u; its closing arrow u -> s1 is left out, so it is a DAG whose chains are exactly the cycles S v gamma u, all of the one length m + 1 + d(v, u) (design Thm. seam).  Kept are the necklaces of least length among those whose cycles separate, and in the point form only those whose run meets p.  Their cycles always separate, and they are every circle exactly once under the winding functional (W) and the one-run hypothesis (T), which neither head certifies -- hence "Faithful" -> Undetermined.  Runs are read in seam order alone, which is what picks one of the two orientations of each cycle *)
 
-InfraCircle::uncertified = "The circle carrier of the band `1` around `2` is not certified exact; the circles through `3` come from the cycle sweep instead.";
+InfraMeasurement[ graph_Graph, InfraCircle[ center_, spec_, opts___Rule ], "Graph" ] :=
+  With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ],
+          delta = Replace[ Lookup[ { opts }, "RadiusDelta", 0 ], d : Except[ _List ] :> { 0, d } ] },
+    { band = Replace[ spec, {
+        ( "Radius" -> rs_ ) :> Replace[ rs, k : Except[ _List ] :> { k, k } ],
+        p_ :> Lookup[ dist, Key @ p ] + { - First @ delta, Last @ delta } } ] },
+    { rmin = Max[ 1, First @ band ], rmax = Last @ band },
+    { local = Subgraph[ graph, Select[ VertexList @ graph, Lookup[ dist, Key @ # ] <= rmax + 1 & ] ] },
+    { ends = SortBy[ Select[ VertexList @ local, Lookup[ dist, Key @ # ] > rmax & ], Lookup[ dist, Key @ # ] & ] },
+    { radial = Which[
+        ends === { }, { },
+        MatchQ[ spec, _Rule ], FindShortestPath[ local, center, First @ ends ],
+        True, With[ { outward = SelectFirst[ ends,
+              Lookup[ dist, Key @ spec ] + GraphDistance[ local, spec, # ] == Lookup[ dist, Key @ # ] & ] },
+          If[ MissingQ @ outward, { },
+            Join[ FindShortestPath[ local, center, spec ], Rest @ FindShortestPath[ local, spec, outward ] ] ] ] ] },
+    { seam = Select[ radial, rmin <= Lookup[ dist, Key @ # ] <= rmax & ],
+      bandGraph = Subgraph[ local, Select[ VertexList @ local, rmin <= Lookup[ dist, Key @ # ] <= rmax & ] ] },
+    { cut = VertexDelete[ bandGraph, seam ] },
+    { cutVs = VertexList @ cut },
+    { cdm = If[ cutVs === { }, { }, GraphDistanceMatrix @ cut ],
+      cidx = AssociationThread[ cutVs, Range @ Length @ cutVs ] },
+    { cd = cdm[[ cidx @ #1, cidx @ #2 ]] & },
+    { necklaces = Catenate @ Map[
+        run |-> Map[
+          pair |-> With[ { u = First @ pair, v = Last @ pair },
+            { duv = cd[ Last @ pair, First @ pair ] },
+            { support = If[ duv === Infinity, { }, Select[ cutVs, cd[ v, # ] + cd[ #, u ] == duv & ] ] },
+            { inside = AssociationThread[ support, True ] },
+            If[ duv === Infinity, Nothing,
+              <| "Length" -> Length @ run + duv + 1,
+                 "Cycle"  -> Join[ run, FindShortestPath[ cut, v, u ] ],
+                 "Graph"  -> Graph[ Join[ run, support ],
+                   Join[ DirectedEdge @@@ Partition[ Append[ run, v ], 2, 1 ],
+                     Catenate @ Map[
+                       w |-> DirectedEdge[ w, # ] & /@ Select[ AdjacencyList[ cut, w ],
+                         TrueQ @ Lookup[ inside, Key @ # ] && cd[ v, # ] == cd[ v, w ] + 1 & ],
+                       support ] ] ] |> ] ],
+          If[ Length @ run == 1,
+            Subsets[ Intersection[ AdjacencyList[ bandGraph, First @ run ], cutVs ], { 2 } ],
+            Tuples[ Intersection[ AdjacencyList[ bandGraph, # ], cutVs ] & /@ { First @ run, Last @ run } ] ] ],
+        Select[
+          Catenate @ Table[ Take[ seam, { i, j } ], { i, Length @ seam }, { j, i, Length @ seam } ],
+          MatchQ[ spec, _Rule ] || MemberQ[ #, spec ] & ] ] },
+    Replace[
+      Catch @ Scan[
+        class |-> With[ { admissible = Select[ class,
+              necklace |-> AllTrue[ VertexComponent[ VertexDelete[ local, necklace[ "Cycle" ] ], center ],
+                Lookup[ dist, Key @ # ] <= rmax & ] ] },
+          If[ admissible =!= { }, Throw[ #[ "Graph" ] & /@ admissible ] ] ],
+        Values @ KeySort @ GroupBy[ necklaces, #[ "Length" ] & ] ],
+      Null -> { } ] ]
 
-Options[ InfraCircle ] = { "Tolerance" -> 0 };
+(* a member closes, so its length is one more than the length of a chain of a necklace *)
 
-InfraCircle[ graph_Graph, center_, p_, OptionsPattern[] ] :=
-  With[ { r = GraphDistance[ graph, center, p ],
-          tolerance = Replace[ OptionValue[ "Tolerance" ], t : Except[ _List ] :> { t, t } ] },
-    { band = { Max[ 1, r - First @ tolerance ], r + Last @ tolerance } },
-    { localG = If[ r === Infinity, Graph[ { }, { } ], NeighborhoodGraph[ graph, center, Last @ band + 2 ] ] },
-    { dist = AssociationThread[ VertexList @ localG, GraphDistance[ localG, center ] ] },
-    { shellVs = Select[ VertexList @ localG, First @ band <= dist[ # ] <= Last @ band & ],
-      outside  = Select[ VertexList @ localG, dist[ # ] == Last @ band + 1 & ] },
-    { shell = Subgraph[ localG, shellVs ],
-      separatingQ = verts |-> With[ { component = SelectFirst[ ConnectedComponents @ VertexDelete[ localG, verts ], MemberQ[ #, center ] & ] },
-        component =!= Missing[ "NotFound" ] && AllTrue[ component, dist[ # ] <= Last @ band & ] ],
-      (* the seam is a radial geodesic through p when one reaches the outside, and c's first radial geodesic otherwise -- p then sits in the cut shell and the atoms through it are sub-DAGs *)
-      seam = If[ outside === { }, { },
-        With[ { radial = Select[ outside, dist[ # ] == r + GraphDistance[ localG, p, # ] & ] },
-          Take[ If[ radial === { }, FindShortestPath[ localG, center, First @ outside ],
-                    Join[ FindShortestPath[ localG, center, p ], Rest @ FindShortestPath[ localG, p, First @ radial ] ] ],
-                { First @ band + 1, Last @ band + 1 } ] ] ] },
-    { cut = VertexDelete[ shell, seam ], cutSet = Complement[ shellVs, seam ] },
-    { atoms = Catenate @ Map[
-        arc |-> Map[
-          ends |-> With[ { u = First @ ends, v = Last @ ends },
-            { dvu = GraphDistance[ cut, v, u ], i = FirstPosition[ arc, p, { 0 } ][[ 1 ]] },
-            { edges = Which[
-                dvu === Infinity, None,
-                i > 0,
-                  Join[ DirectedEdge @@@ Partition[ Join[ arc[[ i ;; ]], { v } ], 2, 1 ],
-                        EdgeList @ GeodesicIntervalGraph[ cut, v, u ],
-                        DirectedEdge @@@ Partition[ Join[ { u }, arc[[ ;; i - 1 ]] ], 2, 1 ] ],
-                MemberQ[ cutSet, p ] && GraphDistance[ cut, v, p ] + GraphDistance[ cut, p, u ] == dvu,
-                  Join[ EdgeList @ GeodesicIntervalGraph[ cut, p, u ],
-                        DirectedEdge @@@ Partition[ Join[ { u }, arc, { v } ], 2, 1 ],
-                        DeleteCases[ EdgeList @ GeodesicIntervalGraph[ cut, v, p ], DirectedEdge[ _, p ] ] ],
-                True, None ] },
-            If[ edges === None, Nothing,
-              <| "Length" -> Length @ arc + dvu + 1,
-                 "Graph" -> Graph[ Union @ Prepend[ Catenate[ List @@@ edges ], p ], Sort @ edges ] |> ] ],
-          If[ Length @ arc == 1,
-            Subsets[ Intersection[ AdjacencyList[ shell, First @ arc ], cutSet ], { 2 } ],
-            Tuples[ { Intersection[ AdjacencyList[ shell, First @ arc ], cutSet ],
-                      Intersection[ AdjacencyList[ shell, Last @ arc ], cutSet ] } ] ] ],
-        Catenate @ Table[ Take[ seam, { i, j } ], { i, Length @ seam }, { j, i, Length @ seam } ] ] },
-    (* the shortest length class with a separating representative; separation is an atom invariant on the certified class, so one path per atom decides *)
-    { pool = Replace[
-        Catch @ Scan[
-          class |-> With[ { admissible = Select[ class,
-              atom |-> separatingQ @ NestWhileList[ First @ VertexOutComponent[ atom[ "Graph" ], { # }, { 1 } ] &, p,
-                VertexOutDegree[ atom[ "Graph" ], # ] > 0 & ] ] },
-            If[ admissible =!= { }, Throw[ #[ "Graph" ] & /@ admissible ] ] ],
-          Values @ KeySort @ GroupBy[ atoms, #[ "Length" ] & ] ],
-        Null -> { } ] },
-    (* certified when the local graph is planar and the seam cut the band open -- a non-empty pool, nothing outside, or a shell with no cycle at all; off that class the cycles through p are swept by length, and since a refusal costs nothing on an empty family the message fires only when circles exist that the carrier could not hold *)
-    { carrier = If[ PlanarGraphQ @ localG && ( pool =!= { } || outside === { } || AcyclicGraphQ @ shell ), pool,
-        With[ { cycles = Replace[
-            Catch @ Scan[
-              k |-> With[ { found = Select[ First /@ # & /@ FindCycle[ shell, { k }, All ], MemberQ[ #, p ] && separatingQ[ # ] & ] },
-                If[ found =!= { }, Throw @ found ] ],
-              Range[ 3, VertexCount @ shell ] ],
-            Null -> { } ] },
-          If[ cycles =!= { }, Message[ InfraCircle::uncertified, band, center, p ] ];
-          PathGraph[ RotateLeft[ #, FirstPosition[ #, p ][[ 1 ]] - 1 ], DirectedEdges -> True ] & /@ cycles ] ] },
-    (* one orientation for the union: two atoms sharing a vertex off p agree on its position or on its mirror image, a 2-colouring of the atoms; where neither holds the atoms stay as built *)
-    { positions = AssociationThread[ VertexList @ #, GraphDistance[ #, p ] ] & /@ carrier, n = Length @ carrier },
-    { circumference = If[ carrier === { }, 0, Max[ Values @ First @ positions ] + 1 ] },
-    { constraints = Catch @ Flatten[ Table[
-        With[ { shared = DeleteCases[ Intersection[ Keys @ positions[[ i ]], Keys @ positions[[ j ]] ], p ] },
-          Which[
-            shared === { }, { },
-            AllTrue[ shared, positions[[ i ]][ # ] == positions[[ j ]][ # ] & ],
-              { UndirectedEdge[ { i, 1 }, { j, 1 } ], UndirectedEdge[ { i, -1 }, { j, -1 } ] },
-            AllTrue[ shared, positions[[ i ]][ # ] == circumference - positions[[ j ]][ # ] & ],
-              { UndirectedEdge[ { i, 1 }, { j, -1 } ], UndirectedEdge[ { i, -1 }, { j, 1 } ] },
-            True, Throw[ $Failed ] ] ],
-        { i, n }, { j, i + 1, n } ], 2 ] },
-    { components = If[ constraints === $Failed, $Failed,
-        ConnectedComponents @ Graph[ Flatten[ Table[ { i, s }, { i, n }, { s, { 1, -1 } } ], 1 ], constraints ] ] },
-    { signs = If[ components === $Failed || AnyTrue[ components, Length @ DeleteDuplicates[ First /@ # ] < Length @ # & ],
-        ConstantArray[ 1, n ],
-        Lookup[ Association @ Catenate[ Map[ component |-> ( First @ # -> Last @ # ) & /@ component,
-            Select[ components, MemberQ[ #, { Min[ First /@ # ], 1 } ] & ] ] ], Range @ n, 1 ] ] },
-    { oriented = MapThread[
-        { atom, sign } |-> If[ sign == 1, atom,
-          Graph[ VertexList @ atom, Join[ DeleteCases[ Reverse /@ EdgeList @ atom, DirectedEdge[ _, p ] ],
-            DirectedEdge[ p, # ] & /@ Select[ VertexList @ atom, VertexOutDegree[ atom, # ] == 0 & ] ] ] ],
-        { carrier, signs } ] },
-    { closing = Catenate @ Map[ atom |-> DirectedEdge[ #, p ] & /@ Select[ VertexList @ atom, VertexOutDegree[ atom, # ] == 0 & ], oriented ] },
-    InfraCircle @ <|
-      "Atoms"  -> Map[ Graph[ Sort @ VertexList @ #, Sort @ EdgeList @ # ] &, Select[ oriented, EdgeCount[ # ] > 0 & ] ],
-      "Center" -> center, "Point" -> p, "Band" -> band, "Closed" -> True,
-      "Graph"  -> Graph[ Union @@ ( VertexList /@ oriented ), Union[ Catenate[ EdgeList /@ oriented ], closing ] ] |> ]
-
-
-(* ===================== The InfraCircle object ===================== *)
-
-(* the object protocol, one copy per head so that InfraCircle stands on its own: the atoms are geodesic DAGs whose source-to-sink paths are exactly the realisations, sorted so that the depth-first descent lists them in one lexicographic order.  Part enumerates on demand and the properties read the path-count DP off the atoms *)
-
-InfraCircle[ data_Association ][ "Graph" ] :=
-  Lookup[ data, "Graph",
-    Graph[ Union @@ ( VertexList /@ data[ "Atoms" ] ), Union @@ ( EdgeList /@ data[ "Atoms" ] ) ] ]
-
-(* the number of realisations: the occupation of an atom's source counts its source-to-sink paths *)
-InfraCircle[ data_Association ][ "Multiplicity" ] := Total[ Max @ GeodesicOccupation @ # & /@ data[ "Atoms" ] ]
-
-(* the occupation <| v -> m |>: the realisations through v *)
-InfraCircle[ data_Association ][ "InfraDensity" ] := KeySort @ Merge[ GeodesicOccupation /@ data[ "Atoms" ], Total ]
-
-(* the edge occupation keyed by the sorted vertex pair; the closing edges of the circles carry the paths that end at their sink *)
-InfraCircle[ data_Association ][ "EdgeDensity" ] :=
-  KeySort @ Merge[ Join[
-      KeyMap[ Sort[ List @@ # ] &, GeodesicEdgeOccupation @ # ] & /@ data[ "Atoms" ],
-      Map[ atom |-> With[ { occupation = GeodesicOccupation @ atom },
-          Association[ Sort[ { #, data[ "Point" ] } ] -> occupation[ # ] & /@
-            Select[ VertexList @ atom, VertexOutDegree[ atom, # ] == 0 & ] ] ],
-        data[ "Atoms" ] ] ],
-    Total ]
-
-(* the realisation length: one number when every realisation shares it, the sorted list of the lengths present otherwise *)
-InfraCircle[ data_Association ][ "Length" ] :=
+InfraMeasurement[ graph_Graph, obj : InfraCircle[ _, _, ___Rule ], "Length" ] :=
   Replace[
-    Union @@ Map[ atom |-> With[ { source = First @ Select[ VertexList @ atom, VertexInDegree[ atom, # ] == 0 & ] },
-        Union[ GraphDistance[ atom, source, # ] & /@ Select[ VertexList @ atom, VertexOutDegree[ atom, # ] == 0 & ] ] + 1 ],
-      data[ "Atoms" ] ],
+    Union @@ Map[
+      dag |-> DeleteCases[ Infinity ] @ Union @ Flatten @ Table[ 1 + GraphDistance[ dag, s, t ],
+          { s, Pick[ VertexList @ dag, VertexInDegree @ dag, 0 ] },
+          { t, Pick[ VertexList @ dag, VertexOutDegree @ dag, 0 ] } ],
+      InfraMeasurement[ graph, obj, "Graph" ] ],
     { one_ } :> one ]
 
-InfraCircle[ data_Association ][ "VertexList" ] := Union @@ ( VertexList /@ data[ "Atoms" ] )
+(* every member also traverses the closing arrow u -> s1 that opening the necklace left out *)
 
-InfraCircle[ data_Association ][ "Realizations" ] := InfraCircle[ data ][[ All ]]
-InfraCircle[ data_Association ][ "Realizations", n : ( _Integer | All ) ] := InfraCircle[ data ][[ 1 ;; n ]]
-InfraCircle[ data_Association ][ "Realizations", UpTo[ n_Integer ] ] := InfraCircle[ data ][[ 1 ;; n ]]
+InfraMeasurement[ graph_Graph, obj : InfraCircle[ _, _, ___Rule ], "EdgeDensity" ] :=
+  KeySort @ Merge[
+    Map[
+      dag |-> With[ { inNbr = GroupBy[ EdgeList @ dag, Last -> First ],
+                      outNbr = GroupBy[ EdgeList @ dag, First -> Last ],
+                      order = TopologicalSort @ dag,
+                      source = First @ Pick[ VertexList @ dag, VertexInDegree @ dag, 0 ],
+                      sink = First @ Pick[ VertexList @ dag, VertexOutDegree @ dag, 0 ] },
+        { alpha = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ inNbr, Key @ w, { } ],
+                { { } -> 1, ps_ :> Total @ Lookup[ a, Key /@ ps ] } ] ], <| |>, order ],
+          beta = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ outNbr, Key @ w, { } ],
+                { { } -> 1, qs_ :> Total @ Lookup[ a, Key /@ qs ] } ] ], <| |>, Reverse @ order ] },
+        Append[
+          Association[ # -> Lookup[ alpha, Key @ First @ # ] Lookup[ beta, Key @ Last @ # ] & /@ EdgeList @ dag ],
+          DirectedEdge[ sink, source ] -> Lookup[ alpha, Key @ sink ] ] ],
+      InfraMeasurement[ graph, obj, "Graph" ] ],
+    Total ]
 
-InfraCircle[ data_Association ][ "Properties" ] :=
-  Union[ Keys @ data, { "Graph", "Length", "Multiplicity", "InfraDensity", "EdgeDensity", "Realizations", "VertexList", "Properties" } ]
+(* a circle has no first vertex and no orientation, so a member is any rotation of a chain of a necklace, in either direction *)
 
-InfraCircle[ data_Association ][ prop_String ] := Lookup[ data, prop, Missing[ "KeyAbsent", prop ] ]
+InfraMemberQ[ graph_Graph, obj : InfraCircle[ _, _, ___Rule ], path_List ] :=
+  path =!= { } &&
+  AnyTrue[ InfraMeasurement[ graph, obj, "Graph" ],
+    dag |-> AnyTrue[
+      Join[ NestList[ RotateLeft, path, Length @ path - 1 ],
+            NestList[ RotateLeft, Reverse @ path, Length @ path - 1 ] ],
+      rot |-> VertexQ[ dag, First @ rot ] && VertexInDegree[ dag, First @ rot ] == 0 &&
+        VertexQ[ dag, Last @ rot ] && VertexOutDegree[ dag, Last @ rot ] == 0 &&
+        AllTrue[ Partition[ rot, 2, 1 ], EdgeQ[ dag, DirectedEdge @@ # ] & ] ] ]
 
-InfraCircle /: Part[ obj : InfraCircle[ _Association ], prop_String ] := obj[ prop ]
-
-(* obj[[i]], obj[[i ;; j]], obj[[All]]: the realisations in canonical order -- atom by atom, and within an atom the depth-first descent of its sorted edges -- streamed only as far as asked *)
-InfraCircle /: Part[ obj : InfraCircle[ data_Association ], spec : ( _Integer | _Span | All ) ] :=
-  With[ { n = obj[ "Multiplicity" ] },
-    { range = Replace[ spec, {
-        All -> { 1, n, 1 },
-        i_Integer :> { If[ i < 0, n + 1 + i, i ], If[ i < 0, n + 1 + i, i ], 1 },
-        Span[ a_, b_, s_ : 1 ] :> { Replace[ a, k_Integer /; k < 0 :> n + 1 + k ],
-                                   Replace[ b, { All -> n, k_Integer /; k < 0 :> n + 1 + k } ], s } } ] },
-    { paths = Module[ { found = { }, descend },
-        descend[ out_, path_ ] := With[ { nexts = Lookup[ out, Key @ Last @ path, { } ] },
-          If[ nexts === { },
-            ( AppendTo[ found, path ]; If[ Length @ found >= range[[ 2 ]], Throw[ found, InfraCircle ] ] ),
-            Scan[ descend[ out, Append[ path, # ] ] &, nexts ] ] ];
-        Catch[
-          Scan[ atom |-> With[ { out = GroupBy[ List @@@ EdgeList @ atom, First -> Last ] },
-              Scan[ descend[ out, { # } ] &, Select[ VertexList @ atom, VertexInDegree[ atom, # ] == 0 & ] ] ],
-            data[ "Atoms" ] ];
-          found, InfraCircle ] ] },
-    Which[
-      ! IntegerQ @ spec,
-        Graph[ #, DirectedEdge @@@ Partition[ #, 2, 1, 1 ] ] & /@ Take[ paths, { range[[ 1 ]], Min[ range[[ 2 ]], Length @ paths ], range[[ 3 ]] } ],
-      1 <= range[[ 1 ]] <= n,
-        Graph[ #, DirectedEdge @@@ Partition[ #, 2, 1, 1 ] ] & @ paths[[ range[[ 1 ]] ]],
-      True,
-        Message[ Part::partw, spec, obj ]; $Failed ] ]
-
-InfraCircle /: Normal[ obj : InfraCircle[ _Association ] ] := obj[[ All ]]
-InfraCircle /: Length[ obj : InfraCircle[ _Association ] ] := obj[ "Multiplicity" ]
-InfraCircle /: First[ obj : InfraCircle[ _Association ] ] := obj[[ 1 ]]
-InfraCircle /: VertexList[ obj : InfraCircle[ _Association ] ] := obj[ "VertexList" ]
-InfraCircle /: HighlightGraph[ graph_Graph, obj : InfraCircle[ data_Association ], rest___ ] := HighlightGraph[ graph, data[ "Atoms" ], rest ]
-
-InfraCircle /: MakeBoxes[ obj : InfraCircle[ data_Association ], fmt_ ] :=
-  BoxForm`ArrangeSummaryBox[ InfraCircle, obj,
-    Graphics[ { $InfraCircleColor, AbsoluteThickness[ 1.5 ], AbsolutePointSize[ 4 ], Circle[ { 0, 0 }, 1 ], Point[ { { 0, 0 }, { 1, 0 } } ] },
-      PlotRange -> { { -1.4, 1.4 }, { -1.4, 1.4 } }, AspectRatio -> 1, Background -> None,
-      ImageSize -> Dynamic[ { Automatic, 3.5 CurrentValue[ "FontCapHeight" ] / AbsoluteCurrentValue[ Magnification ] } ] ],
-    Join[
-      KeyValueMap[ { key, value } |-> BoxForm`SummaryItem[ { ToLowerCase[ key ] <> ": ", value } ],
-        KeyDrop[ data, { "Atoms", "Graph", "Closed", "Band" } ] ],
-      { BoxForm`SummaryItem[ { "multiplicity: ", obj[ "Multiplicity" ] } ],
-        BoxForm`SummaryItem[ { "length: ", obj[ "Length" ] } ] } ],
-    Join[
-      KeyValueMap[ { key, value } |-> BoxForm`SummaryItem[ { ToLowerCase[ key ] <> ": ", value } ], KeyTake[ data, { "Band" } ] ],
-      { BoxForm`SummaryItem[ { "vertices: ", Length @ obj[ "VertexList" ] } ],
-        BoxForm`SummaryItem[ { "atoms: ", Length @ data[ "Atoms" ] } ] } ],
-    fmt, "Interpretable" -> Automatic ]
 
 
 (* ===================== InfraArc ===================== *)
@@ -304,148 +213,36 @@ InfraArc /: MakeBoxes[ obj : InfraArc[ data_Association ], fmt_ ] :=
 
 (* ===================== FindInfraCircle ===================== *)
 
-(* a circle of radius r around c is a simple cycle in the level surface at distance ~r from c, returned as a directed cycle graph on the substrate vertices; the count-less call is one circle, a bounded count and All a List of them -- closed walks have no acyclic union to carry them, so All enumerates.
-   On the default Properties, a single anchor and an integer band the family is carried internally by the circle pool, polynomial in |V| however large the family is, and a bounded count streams circles off its atoms in candidate ("Greedy", "Exhaustive") or random ("RandomGreedy") order; otherwise by the FindCycle length sweep, which materialises every shorter cycle first.  One class under every Method *)
+(* a circle of the band around c, as a cyclic vertex list: a shortest cycle of the band graph whose removal leaves c in a component reaching no further than the band, and in the point form one through p.  The substrate is swept directly, length by length with FindCycle, independently of the necklaces -- so it is the check on them, and it still answers where no seam cuts the band open, or where nothing lies beyond the band and separation is vacuous.  The count-less call is one circle, a bounded count or All a List of them *)
 
-FindInfraCircle::badproperty = "Property `1` is not supported by FindInfraCircle.";
-FindInfraCircle::badmethod   = "Method `1` is not supported by FindInfraCircle.";
-FindInfraCircle::uncertified = "The circle pool of the band `1` around `2` is not certified exact; the family comes from the cycle sweep instead, so it is enumerated rather than carried.";
+Options[ FindInfraCircle ] = { "RadiusDelta" -> 0 };
 
-Options[ FindInfraCircle ] = {
-  Properties -> { "Separating", "Shortest" },
-  Method     -> Automatic
-};
-
-FindInfraCircle[ graph_Graph, p_, r_,
+FindInfraCircle[ graph_Graph, center_, spec_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
-  Catch @ With[
-    { properties = OptionValue[ FindInfraCircle, { opts }, Properties ],
-      methodSpec = Replace[ OptionValue[ FindInfraCircle, { opts }, Method ], Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ],
-      anchors = Tuples[ { Keys @ InfraDensity[ graph, p ], Replace[ r, { fam_Association :> Keys @ fam, other_ :> { other } } ] } ] },
-    { methodHead = Replace[ methodSpec, { m_String, ___ } :> m ] },
-    If[ ! MatchQ[ methodHead, "Exhaustive" | "Greedy" | "RandomGreedy" ],
-      Message[ FindInfraCircle::badmethod, methodSpec ]; Throw[ $Failed ] ];
-    With[
-      { branch = If[ methodHead === "RandomGreedy", RandomSample, Identity ],
-        cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
-        pruning = Replace[ methodSpec,
-          { { "Exhaustive", subs___ } :> ( "Pruning" /. { subs } /. "Pruning" -> Infinity ), _ :> Infinity } ],
-        (* the circle pool: a radial seam P -- one geodesic from c to just outside the band, kept inside it -- meets every separating cycle and cuts the annulus into a disk, and an atom is a contiguous arc S of P with a pair (u, v) of cut-shell vertices flanking its ends, carrying the cycles S ++ (a v-u geodesic of the shell minus P).  $Failed when not certified: separation is an atom invariant exactly when winding about c is defined, on a planar local graph, and an empty pool with a non-empty exterior is the signature of a band no radial seam cuts open *)
-        pool = If[ Length @ anchors === 1 && Sort @ properties === { "Separating", "Shortest" },
-          With[ { center = anchors[[ 1, 1 ]], band = Replace[ anchors[[ 1, 2 ]], d_?NumericQ :> { d, d } ] },
-            If[ ! AllTrue[ band, IntegerQ ], $Failed,
-              With[
-                { localG = NeighborhoodGraph[ graph, center, Last @ band + 2 ] },
-                { dist = AssociationThread[ VertexList @ localG, GraphDistance[ localG, center ] ] },
-                { outside = Select[ VertexList @ localG, Lookup[ dist, Key @ # ] === Last @ band + 1 & ],
-                  shellVs = Select[ VertexList @ localG,
-                    First @ band <= Lookup[ dist, Key @ # ] <= Last @ band & ] },
-                { shell = Subgraph[ localG, shellVs ],
-                  seam = If[ outside === { }, { },
-                    Take[ FindShortestPath[ localG, center, First @ outside ],
-                      { First @ band + 1, Last @ band + 1 } ] ] },
-                { cut = VertexDelete[ shell, seam ], cutSet = Complement[ shellVs, seam ] },
-                { dags = Catenate @ Map[
-                    arc |-> Map[
-                      ends |-> With[ { interval = GeodesicIntervalGraph[ cut, Last @ ends, First @ ends ] },
-                        Graph[ Join[ arc, VertexList @ interval ],
-                          Join[ DirectedEdge @@@ Partition[ Append[ arc, Last @ ends ], 2, 1 ],
-                                EdgeList @ interval ] ] ],
-                      Select[
-                        If[ Length @ arc === 1,
-                          Subsets[ Intersection[ AdjacencyList[ shell, First @ arc ], cutSet ], { 2 } ],
-                          Tuples[ Intersection[ AdjacencyList[ shell, # ], cutSet ] & /@
-                            { First @ arc, Last @ arc } ] ],
-                        GraphDistance[ cut, Last @ #, First @ # ] < Infinity & ] ],
-                    Catenate @ Table[ Take[ seam, { i, j } ],
-                      { i, Length @ seam }, { j, i, Length @ seam } ] ],
-                  separating = verts |-> With[ { cc = SelectFirst[ ConnectedComponents @ VertexDelete[ localG, verts ], MemberQ[ #, center ] & ] },
-                    cc =!= Missing[ "NotFound" ] && AllTrue[ cc, GraphDistance[ localG, center, # ] <= Last @ band & ] ] },
-                (* the shortest length class with a separating representative; separation is an atom invariant on the certified class, so one path per atom decides *)
-                { admissible = Replace[
-                    Catch @ Scan[
-                      class |-> With[
-                        { found = Select[ class,
-                            dag |-> With[ { out = GroupBy[ List @@@ EdgeList @ dag, First -> Last ] },
-                              separating @ NestWhileList[ u |-> First @ Lookup[ out, Key @ u ],
-                                First @ Select[ VertexList @ dag, v |-> VertexInDegree[ dag, v ] == 0 ],
-                                u |-> Lookup[ out, Key @ u, { } ] =!= { } ] ] ] },
-                        If[ found =!= { }, Throw @ found ] ],
-                      Values @ KeySort @ GroupBy[ dags,
-                        dag |-> 1 + Max @ GraphDistance[ dag, First @ Select[ VertexList @ dag, v |-> VertexInDegree[ dag, v ] == 0 ] ] ] ],
-                    Null -> { } ] },
-                If[ PlanarGraphQ @ localG && ( admissible =!= { } || outside === { } ), admissible, $Failed ] ] ] ],
-          Null ] },
-      { cycleGraph = seq |-> Graph[ seq, DirectedEdge @@@ Partition[ seq, 2, 1, 1 ] ] },
-      If[ pool === Null || pool === $Failed,
-        (* a refusal costs nothing on an empty family, so ::uncertified fires only when circles exist that the carrier could not hold *)
-        With[ { swept = With[ { results = Apply[
-                  { center, rr } |-> With[ { unknown = Complement[ properties, { "Separating", "Shortest" } ] },
-                    If[ unknown =!= { },
-                      Message[ FindInfraCircle::badproperty, First @ unknown ]; $Failed,
-                      With[ { range = Replace[ rr, d_?NumericQ :> { d, d } ] },
-                        { localG = If[ NumericQ[ range[[ 2 ]] ],
-                            NeighborhoodGraph[ graph, center, Ceiling[ range[[ 2 ]] ] + 2 ], graph ] },
-                        { levelGraph = Subgraph[ localG, Select[ VertexList[ localG ],
-                            range[[ 1 ]] <= GraphDistance[ localG, center, # ] <= range[[ 2 ]] & ] ],
-                          (* the shortest separating cycle hugs the inner edge rmin, with no clean cut at the mean -- which is why this differs from the SeparatingSetQ FindInfraShell uses *)
-                          vertsTest = If[ MemberQ[ properties, "Separating" ],
-                            verts |-> With[ { cc = SelectFirst[ ConnectedComponents @ VertexDelete[ localG, verts ], MemberQ[ #, center ] & ] },
-                              cc =!= Missing[ "NotFound" ] && AllTrue[ cc, GraphDistance[ localG, center, # ] <= range[[ 2 ]] & ] ],
-                            True & ],
-                          tied = MemberQ[ properties, "Shortest" ] },
-                        (* the first non-empty length grade is certified only by exhausting the shorter ones, so every Method runs the same sweep and branch only orders the ties *)
-                        Catch[
-                          Fold[
-                            { accumulated, k } |-> With[ {
-                                matching = Select[
-                                  branch @ With[ { cycles = First /@ # & /@ FindCycle[ levelGraph, { k }, All ] },
-                                    Replace[ pruning, {
-                                      Infinity       :> cycles,
-                                      n_Integer      :> If[ Length @ cycles <= n, cycles, RandomSample[ cycles, n ] ],
-                                      keep_?NumericQ :> If[ cycles === { }, { },
-                                        With[ { kept = Select[ cycles, RandomReal[ ] < keep & ] },
-                                          If[ kept === { }, RandomSample[ cycles, 1 ], kept ] ] ] } ] ],
-                                  vertsTest ] },
-                              If[ matching =!= { } && ( tied || Length[ accumulated ] + Length[ matching ] >= cap ),
-                                Throw[ Join[ accumulated, matching ], FindInfraCircle ],
-                                Join[ accumulated, matching ] ] ],
-                            { }, Range[ 3, VertexCount @ levelGraph ] ],
-                          FindInfraCircle ] ] ] ],
-                  anchors, { 1 } ] },
-              If[ MemberQ[ results, $Failed ], $Failed,
-                With[ { reps = DeleteDuplicates[ cycleGraph /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
-                  Switch[ count,
-                    Automatic, First[ reps, { } ],
-                    All,       reps,
-                    _UpTo,     Take[ reps, count ],
-                    _,         If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ] ] ] },
-          If[ pool === $Failed && swept =!= { } && swept =!= $Failed,
-            Message[ FindInfraCircle::uncertified, r, p ] ];
-          swept ],
-        With[ { reps = cycleGraph /@ If[ cap === Infinity,
-              Catenate @ Map[
-                dag |-> DeleteDuplicates @ Catenate @ Catenate @ Table[ FindPath[ dag, s, t, Infinity, All ],
-                  { s, Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ] },
-                  { t, Select[ VertexList @ dag, VertexOutDegree[ dag, # ] == 0 & ] } ],
-                branch @ pool ],
-              Module[ { acc = { }, pick = branch, limit = cap, go },
-                (* bounded DFS with early Throw -- a built-in cannot stop mid-enumeration; branch orders the candidates at every node (RandomSample is "RandomGreedy") *)
-                go[ out_, path_ ] := With[ { nexts = Lookup[ out, Key @ Last @ path, { } ] },
-                  If[ nexts === { },
-                    ( AppendTo[ acc, path ]; If[ Length @ acc >= limit, Throw[ acc, go ] ] ),
-                    Scan[ go[ out, Append[ path, # ] ] &, pick @ nexts ] ] ];
-                Catch[
-                  Scan[ dag |-> With[ { out = GroupBy[ List @@@ EdgeList @ dag, First -> Last ] },
-                      Scan[ go[ out, { # } ] &, pick @ Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ] ] ],
-                    pick @ pool ];
-                  acc, go ] ] ] },
-          Switch[ count,
-            Automatic, First[ reps, { } ],
-            All,       reps,
-            _UpTo,     Take[ reps, count ],
-            _,         If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
-      ] ] ]
+  With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ],
+          delta = Replace[ OptionValue[ FindInfraCircle, { opts }, "RadiusDelta" ],
+                    d : Except[ _List ] :> { 0, d } ] },
+    { band = Replace[ spec, {
+        ( "Radius" -> rs_ ) :> Replace[ rs, k : Except[ _List ] :> { k, k } ],
+        p_ :> Lookup[ dist, Key @ p ] + { - First @ delta, Last @ delta } } ] },
+    { rmin = Max[ 1, First @ band ], rmax = Last @ band },
+    { local = Subgraph[ graph, Select[ VertexList @ graph, Lookup[ dist, Key @ # ] <= rmax + 1 & ] ] },
+    { bandGraph = Subgraph[ local, Select[ VertexList @ local, rmin <= Lookup[ dist, Key @ # ] <= rmax & ] ] },
+    { circles = Replace[
+        Catch @ Scan[
+          k |-> With[ { found = Select[ First /@ # & /@ FindCycle[ bandGraph, { k }, All ],
+                cycle |-> ( MatchQ[ spec, _Rule ] || MemberQ[ cycle, spec ] ) &&
+                  AllTrue[ VertexComponent[ VertexDelete[ local, cycle ], center ],
+                    Lookup[ dist, Key @ # ] <= rmax & ] ] },
+            If[ found =!= { }, Throw @ found ] ],
+          Range[ 3, VertexCount @ bandGraph ] ],
+        Null -> { } ] },
+    Switch[ count,
+      Automatic, First[ circles, { } ],
+      All,       circles,
+      _UpTo,     Take[ circles, count ],
+      _,         If[ Length @ circles < count, $Failed, Take[ circles, count ] ] ] ]
+
 
 
 (* ===================== FindInfraCycle ===================== *)
@@ -518,7 +315,7 @@ InfraCircleQ[ graph_Graph, obj : ( InfraSegment | InfraRay | InfraLine | InfraCi
 dispatchConstruction[ graph_Graph, InfraCircle[ center_, r_, opts___Rule ] ] :=
   capBranches[
     applySelectOption[ graph,
-      walkSequence /@ FindInfraCircle[ graph, center, r, All ],
+      FindInfraCircle[ graph, center, "Radius" -> r, All ],
       "Select" /. { opts } /. "Select" -> None,
       True, <| "Center" -> center,
                "Radius" -> If[ NumericQ[ r ], r, Mean[ r ] ] |> ],

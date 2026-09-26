@@ -126,7 +126,7 @@ CircleViewer[ g_Graph ] :=
       With[ {
           circles = If[ r < 1, {},
             Take[
-              applySelectOption[ g, walkSequence /@ FindInfraCircle[ g, p, r, All ],
+              applySelectOption[ g, FindInfraCircle[ g, p, "Radius" -> r, All ],
                 sel, True, <| "Center" -> p, "Radius" -> r |> ],
               UpTo[ n ] ] ] },
         EventHandler[

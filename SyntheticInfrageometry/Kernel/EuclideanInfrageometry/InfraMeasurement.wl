@@ -5,7 +5,7 @@ Package["WolframInstitute`SyntheticInfrageometry`"]
 
 (* ===================== InfraMeasurement ===================== *)
 
-(* the measurements of a Euclidean head, every one of them read off its graph, whose chains are the members: with alpha the forward and beta the backward chain count of the DAG, the number of members is the total of alpha over the sinks, the number through v is alpha(v) beta(v) and the number through v -> w is alpha(v) beta(w) (design Prop. count).  Over a List of graphs the counts add, because such a List is a List of alternatives -- one exception, the polyline InfraSegment[p1, ..., pk], whose List is the pieces of one member and whose own clauses in InfraSegment.wl multiply instead; it is excluded here by pattern, since a conditioned first argument and a head-shaped one cannot be ordered by specificity *)
+(* the measurements of a Euclidean head, every one of them read off its graph, whose chains are the members: with alpha the forward and beta the backward chain count of the DAG, the number of members is the total of alpha over the sinks, the number through v is alpha(v) beta(v) and the number through v -> w is alpha(v) beta(w) (design Prop. count).  Over a List of graphs the counts add, because such a List is a List of alternatives -- one exception, the polyline InfraSegment[p1, ..., pk], whose List is the pieces of one member and whose own clauses in InfraSegment.wl multiply instead; it is excluded here by pattern, since a conditioned first argument and a head-shaped one cannot be ordered by specificity.  InfraCircle is excluded the same way from the three measurements that read a member as open: its necklaces are alternatives, but its members close over the arrow that opening a necklace left out *)
 
 InfraMeasurement[ graph_Graph, objs : { __ }, spec_ ] := InfraMeasurement[ graph, #, spec ] & /@ objs
 
@@ -48,7 +48,7 @@ InfraMeasurement[ graph_Graph, obj : Except[ _List ], "VertexDensity" ] :=
     Total ]
 
 
-InfraMeasurement[ graph_Graph, obj : Except[ _List ], "EdgeDensity" ] :=
+InfraMeasurement[ graph_Graph, obj : Except[ _List | InfraCircle[ _, _, ___ ] ], "EdgeDensity" ] :=
   KeySort @ Merge[
     Map[
       dag |-> With[ { inNbr = GroupBy[ EdgeList @ dag, Last -> First ],
@@ -63,7 +63,8 @@ InfraMeasurement[ graph_Graph, obj : Except[ _List ], "EdgeDensity" ] :=
     Total ]
 
 
-InfraMeasurement[ graph_Graph, obj : Except[ _List | InfraSegment[ _, _, __ ] ], "Length" ] :=
+InfraMeasurement[ graph_Graph,
+    obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraCircle[ _, _, ___ ] ], "Length" ] :=
   Replace[
     Union @@ Map[
       dag |-> DeleteCases[ Infinity ] @ Union @ Flatten @ Table[ GraphDistance[ dag, s, t ],
@@ -141,7 +142,8 @@ InfraVertexList[ graph_Graph, obj : Except[ _List | InfraSegment[ _, _, __ ] ],
 
 (* a vertex list is a member when it is a source-to-sink chain of one of the object's graphs *)
 
-InfraMemberQ[ graph_Graph, obj : Except[ _List | InfraSegment[ _, _, __ ] ], path_List ] :=
+InfraMemberQ[ graph_Graph,
+    obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraCircle[ _, _, ___ ] ], path_List ] :=
   path =!= { } &&
   AnyTrue[ Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ],
     dag |-> VertexQ[ dag, First @ path ] && VertexInDegree[ dag, First @ path ] == 0 &&

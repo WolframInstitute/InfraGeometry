@@ -89,8 +89,8 @@ BallHullQ::usage = "BallHullQ[graph, S] tests whether S is ball-convex, i.e. an 
 
 (* ===================== InfraCircle ===================== *)
 
-InfraCircle::usage = "InfraCircle[graph, c, p] is the object of circles around c through p: the shortest simple cycles through p in the band of radius d(c, p) that separate c from beyond, with p their source and sink. circle[[i]] enumerates them as directed cycle graphs, \"Multiplicity\", \"InfraDensity\", \"Length\", \"Graph\" read the carrier. Option \"Tolerance\" (t or {tIn, tOut}) widens the band about d(c, p). Inside InfraScene, InfraCircle[center, r] is the construction token; FindInfraCircle is the search by radius.";
-FindInfraCircle::usage = "FindInfraCircle[graph, c, r] gives one circle around c at radius r: a shortest cycle in the level surface separating c from beyond; r may be a band {rmin, rmax}; All gives the circle pool. Options Properties, Method.";
+InfraCircle::usage = "InfraCircle[c, p] is the inert circle around c through p and InfraCircle[c, \"Radius\" -> r | {r, s}] the circles of a band; its graph is the List of necklaces of a radial seam. Option \"RadiusDelta\" widens the band about d(c, p).";
+FindInfraCircle::usage = "FindInfraCircle[graph, c, p] gives one circle around c through p as a cyclic vertex list; \"Radius\" -> r | {r, s} in place of p takes a band. A trailing n | UpTo[n] | All gives a List. Option \"RadiusDelta\".";
 InfraArc::usage = "InfraArc[graph, c, p, q] is the arc around c from p to q as one object: the shortest paths from p to q inside the band of radius d(c, p), one geodesic DAG with source p and sink q. arc[[i]] enumerates, \"Multiplicity\", \"InfraDensity\", \"Length\", \"Graph\" read the DAG. Option \"Tolerance\" (t or {tIn, tOut}) widens the band.";
 FindInfraCycle::usage = "FindInfraCycle[graph, n] gives the n shortest simple cycles of graph; FindInfraCycle[graph, {kmin, kmax}, n] restricts their length.";
 InfraCircleQ::usage = "InfraCircleQ[graph, cycle] tests whether cycle is a cyclic edge chain whose vertex set is a metric shell.";
