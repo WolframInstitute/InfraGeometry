@@ -162,4 +162,28 @@ VerificationTest[
   TestID -> "InfraLine-InfraMemberQ-accepts-exactly-the-members"
 ]
 
+(* ===== small fixtures ===== *)
+
+(* a line is inextensible, not longest: {1, 2, 3} is a line although the diameter is 3 *)
+VerificationTest[
+  With[{g = Graph[{1 <-> 2, 2 <-> 3, 2 <-> 4, 4 <-> 5}]},
+    {FindInfraLine[g, 1, 3, All], InfraVertexList[g, InfraLine[1, 3], All]}],
+  {{{1, 2, 3}}, {{1, 2, 3}}},
+  TestID -> "FindInfraLine-keeps-short-inextensible-line"
+]
+
+VerificationTest[
+  With[{g = PathGraph[Range[5]]}, {FindInfraLine[g, 1, 5], InfraVertexList[g, InfraLine[1, 5], All]}],
+  {Range[5], {Range[5]}},
+  TestID -> "FindInfraLine-already-maximal"
+]
+
+VerificationTest[
+  With[{g = TorusGraph[{4, 5}]}, {lines = FindInfraLine[g, 1, 2, All]},
+    {Sort[lines] === Sort[InfraVertexList[g, InfraLine[1, 2], All]], Length[lines],
+     AllTrue[lines, InfraLineQ[g, #] &]}],
+  {True, 24, True},
+  TestID -> "FindInfraLine-agrees-with-the-graph-TorusGraph"
+]
+
 EndTestSection[]

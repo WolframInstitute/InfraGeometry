@@ -285,4 +285,23 @@ VerificationTest[
   TestID -> "bundleQ-only-a-branching-dag"
 ]
 
+(* ===================== the interval DAG carries the family it stands for ===================== *)
+
+VerificationTest[
+  With[ { g = GridGraph[ { 4, 4 } ] },
+    InfraDensity[ g, InfraMeasurement[ g, InfraSegment[ 1, 16 ], "Graph" ] ] ===
+      InfraMeasurement[ g, InfraSegment[ 1, 16 ], "VertexDensity" ] ],
+  True,
+  TestID -> "DAG-equals-enumerated-density"
+]
+
+(* both parities of d(1, t) *)
+VerificationTest[
+  With[ { g = GridGraph[ { 4, 4 } ] },
+    FindInfraMidpoint[ g, InfraMeasurement[ g, InfraSegment[ 1, # ], "Graph" ] ] === FindInfraMidpoint[ g, 1, # ] & /@
+      { 16, 12 } ],
+  { True, True },
+  TestID -> "DAG-midpoint-equals-enumeration"
+]
+
 EndTestSection[]

@@ -123,4 +123,12 @@ VerificationTest[
   TestID -> "PencilDirections-Cardinality-agree-hypercube"
 ]
 
+VerificationTest[
+  With[{g = TorusGraph[{4, 5}]}, {rays = FindInfraRay[g, 1, 2, All]},
+    {Sort[rays] === Sort[InfraVertexList[g, InfraRay[1, 2], All]], Length[rays],
+     AllTrue[rays, InfraRayQ[g, #] &]}],
+  {True, 6, True},
+  TestID -> "FindInfraRay-agrees-with-the-graph-TorusGraph"
+]
+
 EndTestSection[]

@@ -500,6 +500,43 @@ VerificationTest[
   TestID -> "SelectInfraWalk-Min-operator-form-keeps-the-shape"
 ]
 
+VerificationTest[
+  With[ { g = GridGraph[ { 3, 3 } ],
+          degSumScore = path |-> Total[
+            ( VertexDegree[ GridGraph[ { 3, 3 } ], #[[ 1 ]] ] +
+              VertexDegree[ GridGraph[ { 3, 3 } ], #[[ 2 ]] ] & ) /@
+              Partition[ path, 2, 1 ] ] },
+    With[ { picked = SelectInfraWalk[ g, InfraMeasurement[ g, InfraSegment[ 1, 9 ], "Graph" ], 1,
+              "From" -> { "Min", degSumScore } ] },
+      MatchQ[ picked, { _Graph } ] && MemberQ[ FindInfraSegment[ g, 1, 9, All ], walkSequence @ First @ picked ] ]
+  ],
+  True,
+  TestID -> "SelectInfraWalk-Min-on-a-DAG-returns-a-path-graph"
+]
+
+(* ===== the interval DAG against its enumerated geodesics ===== *)
+
+(* the most-visited geodesics of the DAG are those of the enumerated family *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    Sort[ walkSequence /@ SelectInfraWalk[ g, InfraMeasurement[ g, InfraSegment[ 1, 25 ], "Graph" ], All,
+      "From" -> "MostVisited" ] ] ===
+    Sort[ SelectInfraWalk[ g, FindInfraSegment[ g, 1, 25, All ], All, "From" -> "MostVisited" ] ]
+  ],
+  True,
+  TestID -> "SelectInfraWalk-MostVisited-DAG-equals-enumeration"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 3, 3 } ] },
+    With[ { segs = EmbeddingClosest[ g, { 1, 9 } ] @ SelectInfraWalk[ g, All, "From" -> "Center" ] @
+        FindInfraSegment[ g, 1, 9, All ] },
+      Length[ segs ] >= 1 && AllTrue[ segs, Length[ # ] == 5 && InfraSegmentQ[ g, # ] & ] ]
+  ],
+  True,
+  TestID -> "SelectInfraWalk-EmbeddingClosest-chained-operator-form"
+]
+
 
 EndTestSection[]
 

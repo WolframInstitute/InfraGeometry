@@ -190,4 +190,57 @@ VerificationTest[
   TestID -> "InfraCircle-necklaces-are-opened-DAGs"
 ]
 
+(* ===== the family against the search and the brute force ===== *)
+
+VerificationTest[
+  With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, "Radius" -> {2, 4}]},
+    {brute = cycleSets[bruteCircles[g, 61, "Radius" -> {2, 4}, {0, 0}]]},
+    {Length[brute], cycleSets[FindInfraCircle[g, 61, "Radius" -> {2, 4}, All]] === brute,
+     cycleSets[InfraVertexList[g, cir, All]] === brute}],
+  {16, True, True},
+  TestID -> "InfraCircle-search-graph-and-brute-force-agree"
+]
+
+(* widening the band keeps the least circumference *)
+VerificationTest[
+  With[{g = GridGraph[{11, 11}]},
+    InfraMeasurement[g, InfraCircle[61, "Radius" -> #], "Length"] & /@ {{2, 3}, {2, 4}}],
+  {16, 16},
+  TestID -> "InfraCircle-Length-is-the-least-circumference"
+]
+
+VerificationTest[
+  With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, "Radius" -> {2, 4}]},
+    InfraMeasurement[g, cir, "EdgeDensity"] ===
+      KeySort @ Counts @ Catenate[Apply[DirectedEdge, Partition[#, 2, 1, 1], {1}] & /@ InfraVertexList[g, cir, All]]],
+  True,
+  TestID -> "InfraCircle-EdgeDensity-equals-the-enumeration"
+]
+
+(* ===== a family too large to list ===== *)
+
+(* the circle of the band (5, 9) factors into four independent quadrant arcs of 41 choices each *)
+VerificationTest[
+  InfraMeasurement[GridGraph[{25, 25}], InfraCircle[313, "Radius" -> {5, 9}], "Cardinality"],
+  41^4,
+  TestID -> "InfraCircle-counts-an-unenumerable-family"
+]
+
+VerificationTest[
+  With[{g = GridGraph[{25, 25}]}, {cycles = InfraVertexList[g, InfraCircle[313, "Radius" -> {5, 9}], 5]},
+    {Length[cycles], Union[Length /@ cycles],
+     AllTrue[cycles, cyc |-> DuplicateFreeQ[cyc] &&
+       AllTrue[Partition[Append[cyc, First @ cyc], 2, 1], EdgeQ[g, UndirectedEdge @@ #] &]]}],
+  {5, {40}, True},
+  TestID -> "InfraCircle-bounded-count-is-lazy"
+]
+
+(* a cycle graph's band carries no separating cycle *)
+VerificationTest[
+  {FindInfraCircle[CycleGraph[6], 1, "Radius" -> {1, 2}, All],
+   InfraVertexList[CycleGraph[6], InfraCircle[1, "Radius" -> {1, 2}], All]},
+  {{}, {}},
+  TestID -> "FindInfraCircle-empty-family-is-quiet"
+]
+
 EndTestSection[]

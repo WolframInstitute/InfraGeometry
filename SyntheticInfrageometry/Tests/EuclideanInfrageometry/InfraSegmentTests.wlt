@@ -128,4 +128,11 @@ VerificationTest[
   TestID -> "InfraSegment-predicates-on-vertex-lists"
 ]
 
+(* the segment from a point to itself is the one-vertex walk *)
+VerificationTest[
+  FindInfraSegment[GridGraph[{3, 3}], 5, 5, All],
+  {{5}},
+  TestID -> "FindInfraSegment-same-point"
+]
+
 EndTestSection[]
