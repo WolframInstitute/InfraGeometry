@@ -5,14 +5,14 @@ Package["WolframInstitute`SyntheticInfrageometry`"]
 
 (* ===================== InfraMeasurement ===================== *)
 
-(* the measurements of a Euclidean head, every one of them read off its graph, whose chains are the members: with alpha the forward and beta the backward chain count of the DAG, the number of members is the total of alpha over the sinks, the number through v is alpha(v) beta(v) and the number through v -> w is alpha(v) beta(w) (design Prop. count).  Over a List of graphs the counts add, because such a List is a List of alternatives -- one exception, the polyline InfraSegment[p1, ..., pk], whose List is the pieces of one member and whose own clauses in InfraSegment.wl multiply instead; it is excluded here by pattern, since a conditioned first argument and a head-shaped one cannot be ordered by specificity.  InfraCircle is excluded the same way from the three measurements that read a member as open: its necklaces are alternatives, but its members close over the arrow that opening a necklace left out *)
+(* the measurements of a Euclidean head, every one of them read off its graph, whose chains are the members: with alpha the forward and beta the backward chain count of the DAG, the number of members is the total of alpha over the sinks, the number through v is alpha(v) beta(v) and the number through v -> w is alpha(v) beta(w) (design Prop. count).  Over a List of graphs the counts add, because such a List is a List of alternatives -- two exceptions, the polylines InfraSegment[p1, ..., pk] and InfraArc[c, {p1, ..., pk}], whose Lists are the pieces of one member and whose own clauses multiply instead; they are excluded here by pattern, since a conditioned first argument and a head-shaped one cannot be ordered by specificity.  InfraCircle is excluded the same way from the three measurements that read a member as open: its necklaces are alternatives, but its members close over the arrow that opening a necklace left out.  The support of an object is the keys of its vertex density, which is what every volume and the subgraph read *)
 
 InfraMeasurement[ graph_Graph, objs : { __ }, spec_ ] := InfraMeasurement[ graph, #, spec ] & /@ objs
 
 InfraMeasurement[ graph_Graph, obj : Except[ _List ], props : { __String } ] :=
   AssociationMap[ InfraMeasurement[ graph, obj, # ] &, props ]
 
-InfraMeasurement[ graph_Graph, obj : Except[ _List ], All ] :=
+InfraMeasurement[ graph_Graph, obj : Except[ _List | InfraIntersection[ __ ] | InfraUnion[ __ ] ], All ] :=
   InfraMeasurement[ graph, obj,
     { "Graph", "Faithful", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph",
       "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume" } ]
@@ -23,7 +23,8 @@ InfraMeasurement[ _Graph, ( InfraSegment | InfraRay | InfraLine )[ __ ], "Faithf
 InfraMeasurement[ _Graph, ( InfraCircle | InfraArc )[ __ ], "Faithful" ] := Undetermined
 
 
-InfraMeasurement[ graph_Graph, obj : Except[ _List | InfraSegment[ _, _, __ ] ], "Cardinality" ] :=
+InfraMeasurement[ graph_Graph,
+    obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ }, ___ ] ], "Cardinality" ] :=
   Total @ Map[
     dag |-> With[ { inNbr = GroupBy[ EdgeList @ dag, Last -> First ] },
       { alpha = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ inNbr, Key @ w, { } ],
@@ -33,7 +34,8 @@ InfraMeasurement[ graph_Graph, obj : Except[ _List | InfraSegment[ _, _, __ ] ],
     Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ] ]
 
 
-InfraMeasurement[ graph_Graph, obj : Except[ _List ], "VertexDensity" ] :=
+InfraMeasurement[ graph_Graph,
+    obj : Except[ _List | InfraIntersection[ __ ] | InfraUnion[ __ ] ], "VertexDensity" ] :=
   KeySort @ Merge[
     Map[
       dag |-> With[ { inNbr = GroupBy[ EdgeList @ dag, Last -> First ],
@@ -64,7 +66,8 @@ InfraMeasurement[ graph_Graph, obj : Except[ _List | InfraCircle[ _, _, ___ ] ],
 
 
 InfraMeasurement[ graph_Graph,
-    obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraCircle[ _, _, ___ ] ], "Length" ] :=
+    obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ }, ___ ] |
+                  InfraCircle[ _, _, ___ ] ], "Length" ] :=
   Replace[
     Union @@ Map[
       dag |-> DeleteCases[ Infinity ] @ Union @ Flatten @ Table[ GraphDistance[ dag, s, t ],
@@ -75,16 +78,16 @@ InfraMeasurement[ graph_Graph,
 
 
 InfraMeasurement[ graph_Graph, obj : Except[ _List ], "Subgraph" ] :=
-  Subgraph[ graph, Union @@ Map[ VertexList, Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ] ] ]
+  Subgraph[ graph, Keys @ InfraMeasurement[ graph, obj, "VertexDensity" ] ]
 
 
 InfraMeasurement[ graph_Graph, obj : Except[ _List ], "Volume" ] :=
-  Length[ Union @@ Map[ VertexList, Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ] ] ]
+  Length @ InfraMeasurement[ graph, obj, "VertexDensity" ]
 
 
 (* the vertices of the support with a neighbour outside it *)
 InfraMeasurement[ graph_Graph, obj : Except[ _List ], "BoundaryVolume" ] :=
-  With[ { support = Union @@ Map[ VertexList, Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ] ] },
+  With[ { support = Keys @ InfraMeasurement[ graph, obj, "VertexDensity" ] },
     { inside = AssociationThread[ support, True ] },
     Count[ support, v_ /; AnyTrue[ AdjacencyList[ graph, v ], ! TrueQ @ Lookup[ inside, Key @ # ] & ] ] ]
 
@@ -102,7 +105,8 @@ InfraMeasurement[ graph_Graph, obj : Except[ _List ], "HalfBoundaryVolume" ] :=
 
 (* the members of a head, each as a vertex list: a walk on its graph from a source to a sink, in lexicographic order under a count, drawn with probability beta(w) / beta(v) at each arrow under "RandomChoice" -- so every member is drawn with probability 1 / N (design Proposal uniform) -- and thinned by a random fraction q of the candidates at each step under "Pruning" -> q *)
 
-InfraVertexList[ graph_Graph, obj : Except[ _List | InfraSegment[ _, _, __ ] ],
+InfraVertexList[ graph_Graph,
+    obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ }, ___ ] ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
   Module[ { acc = { }, descend, draw },
     With[ {
@@ -143,7 +147,8 @@ InfraVertexList[ graph_Graph, obj : Except[ _List | InfraSegment[ _, _, __ ] ],
 (* a vertex list is a member when it is a source-to-sink chain of one of the object's graphs *)
 
 InfraMemberQ[ graph_Graph,
-    obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraCircle[ _, _, ___ ] ], path_List ] :=
+    obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ }, ___ ] |
+                  InfraCircle[ _, _, ___ ] ], path_List ] :=
   path =!= { } &&
   AnyTrue[ Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ],
     dag |-> VertexQ[ dag, First @ path ] && VertexInDegree[ dag, First @ path ] == 0 &&
@@ -157,7 +162,22 @@ InfraMemberQ[ graph_Graph,
 
 InfraSubgraph[ graph_Graph, obj_ -> t_Integer ] :=
   Subgraph[ graph,
-    VertexList @ NeighborhoodGraph[ graph,
-      Union @@ Map[ VertexList, Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ] ], t ] ]
+    VertexList @ NeighborhoodGraph[ graph, Keys @ InfraMeasurement[ graph, obj, "VertexDensity" ], t ] ]
 
 InfraSubgraph[ graph_Graph, obj : Except[ _Rule | _RuleDelayed ] ] := InfraMeasurement[ graph, obj, "Subgraph" ]
+
+
+(* ===================== InfraIntersection / InfraUnion ===================== *)
+
+(* heads on heads: the support of the intersection is the common vertices and its density the product occ1(v) occ2(v), the number of pairs of members meeting at v, while the union takes the whole support and the sum.  A meeting point is diffuse or multiple exactly when that density has several clusters, and picking one cluster is a choice at the call site *)
+
+InfraMeasurement[ graph_Graph, InfraIntersection[ objs__ ], "VertexDensity" ] :=
+  With[ { densities = InfraMeasurement[ graph, #, "VertexDensity" ] & /@ { objs } },
+    KeySort @ KeyTake[ Merge[ densities, Apply[ Times ] ], Intersection @@ ( Keys /@ densities ) ] ]
+
+InfraMeasurement[ graph_Graph, InfraUnion[ objs__ ], "VertexDensity" ] :=
+  KeySort @ Merge[ InfraMeasurement[ graph, #, "VertexDensity" ] & /@ { objs }, Total ]
+
+InfraMeasurement[ graph_Graph, obj : ( InfraIntersection | InfraUnion )[ __ ], All ] :=
+  InfraMeasurement[ graph, obj,
+    { "VertexDensity", "Subgraph", "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume" } ]

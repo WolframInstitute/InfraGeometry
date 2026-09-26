@@ -91,9 +91,13 @@ BallHullQ::usage = "BallHullQ[graph, S] tests whether S is ball-convex, i.e. an 
 
 InfraCircle::usage = "InfraCircle[c, p] is the inert circle around c through p and InfraCircle[c, \"Radius\" -> r | {r, s}] the circles of a band; its graph is the List of necklaces of a radial seam. Option \"RadiusDelta\" widens the band about d(c, p).";
 FindInfraCircle::usage = "FindInfraCircle[graph, c, p] gives one circle around c through p as a cyclic vertex list; \"Radius\" -> r | {r, s} in place of p takes a band. A trailing n | UpTo[n] | All gives a List. Option \"RadiusDelta\".";
-InfraArc::usage = "InfraArc[graph, c, p, q] is the arc around c from p to q as one object: the shortest paths from p to q inside the band of radius d(c, p), one geodesic DAG with source p and sink q. arc[[i]] enumerates, \"Multiplicity\", \"InfraDensity\", \"Length\", \"Graph\" read the DAG. Option \"Tolerance\" (t or {tIn, tOut}) widens the band.";
 FindInfraCycle::usage = "FindInfraCycle[graph, n] gives the n shortest simple cycles of graph; FindInfraCycle[graph, {kmin, kmax}, n] restricts their length.";
 InfraCircleQ::usage = "InfraCircleQ[graph, cycle] tests whether cycle is a cyclic edge chain whose vertex set is a metric shell.";
+
+(* ===================== InfraArc ===================== *)
+
+InfraArc::usage = "InfraArc[c, {p1, ..., pk}] is the inert arc around c from p1 to pk through the intermediate points: the geodesics of the band graph of the circle through p1. Option \"RadiusDelta\" widens the band.";
+FindInfraArc::usage = "FindInfraArc[graph, c, {p1, ..., pk}] gives one arc around c through the points as a vertex list; a trailing n | UpTo[n] | All gives a List. Option \"RadiusDelta\".";
 
 (* ===================== InfraPolygon ===================== *)
 
@@ -260,8 +264,8 @@ InfraScene::usage = "InfraScene[objects, hypotheses] builds a scene descriptor f
 FindInfraScene::usage = "FindInfraScene[scene, graph] solves a scene on a graph and gives the resulting InfraInstance bindings. Option \"PruneProbability\".";
 InfraInstance::usage = "InfraInstance[bindings] wraps a solved binding association; InfraInstance[bindings, sym] reads one object out of it.";
 InfraGeometricStep::usage = "InfraGeometricStep[{hyp1, ...}] groups hypotheses into one construction step of a scene; a second argument labels it.";
-InfraIntersection::usage = "InfraIntersection[graph, obj1, obj2, ...] gives the vertex-set intersection of shapes on graph -- vertex lists, densities, walk graphs, bundles -- as a sorted List. Inside InfraScene it is the token InfraIntersection[c1, c2], the engine supplying the graph.";
-InfraUnion::usage = "InfraUnion[graph, obj1, obj2, ...] gives the vertex-set union of shapes on graph as a sorted List. Inside InfraScene it is the token InfraUnion[c1, c2], the engine supplying the graph.";
+InfraIntersection::usage = "InfraIntersection[graph, obj1, obj2, ...] gives the vertex-set intersection of shapes on graph -- vertex lists, densities, walk graphs, bundles -- as a sorted List. On Euclidean heads it is inert and InfraMeasurement gives it the common support and the product density. Inside InfraScene it is the token InfraIntersection[c1, c2], the engine supplying the graph.";
+InfraUnion::usage = "InfraUnion[graph, obj1, obj2, ...] gives the vertex-set union of shapes on graph as a sorted List. On Euclidean heads it is inert and InfraMeasurement gives it the joint support and the sum density. Inside InfraScene it is the token InfraUnion[c1, c2], the engine supplying the graph.";
 InfraDistance::usage = "InfraDistance[graph, p, q] gives the graph distance between two Infra* objects, aggregated over their vertex sets. Option \"Aggregation\".";
 InfraPlaneQ::usage = "InfraPlaneQ[graph, h, p1, p2] tests whether h lies in the bisector slab of p1, p2 and separates them; a trailing window widens the slab. The graph-free InfraPlaneQ[h, p1, p2] is the inert InfraScene assertion.";
 InfraIntersectQ::usage = "InfraIntersectQ[s1, s2] asserts inside an InfraScene that two sets intersect; it stays inert until bindings resolve, which is why it exists rather than the built-in IntersectingQ.";

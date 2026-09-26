@@ -189,4 +189,70 @@ VerificationTest[
   TestID -> "InfraMeasurement-list-valued-vertex-labels"
 ]
 
+(* ===== InfraIntersection / InfraUnion ===== *)
+
+(* the meeting point of a segment and a circle: the density counts the pairs (geodesic, circle)
+   meeting at v, so it is the product of the two occupations on the common vertices *)
+VerificationTest[
+  With[{g = GridGraph[{9, 9}], c = 41},
+    {seg = InfraSegment[41, 59], cir = InfraCircle[c, "Radius" -> {2, 3}]},
+    {ds = InfraMeasurement[g, seg, "VertexDensity"],
+     dc = InfraMeasurement[g, cir, "VertexDensity"]},
+    {meet = InfraMeasurement[g, InfraIntersection[seg, cir], "VertexDensity"]},
+    {Keys @ meet === Sort @ Intersection[Keys @ ds, Keys @ dc],
+     Values @ meet === (Lookup[ds, Key @ #] Lookup[dc, Key @ #] & /@ Keys @ meet),
+     meet =!= <||>}],
+  {True, True, True},
+  TestID -> "InfraIntersection-segment-meets-circle-density"
+]
+
+(* two triangles of the grid meeting at a corner: 3 x 3 geodesics through 8, 6 x 6 through 13 *)
+VerificationTest[
+  With[{g = GridGraph[{5, 5}]},
+    InfraMeasurement[g, InfraIntersection[InfraSegment[1, 13], InfraSegment[5, 13]], "VertexDensity"]],
+  <|3 -> 1, 8 -> 9, 13 -> 36|>,
+  TestID -> "InfraIntersection-two-triangles-of-the-grid"
+]
+
+(* the union takes the joint support and the sum of the occupations *)
+VerificationTest[
+  With[{g = GridGraph[{5, 5}]},
+    {a = InfraSegment[1, 13], b = InfraSegment[13, 25]},
+    {both = InfraMeasurement[g, InfraUnion[a, b], "VertexDensity"]},
+    both === KeySort @ Merge[{InfraMeasurement[g, a, "VertexDensity"],
+                              InfraMeasurement[g, b, "VertexDensity"]}, Total]],
+  True,
+  TestID -> "InfraUnion-density-is-the-sum"
+]
+
+(* the volumes of an intersection and a union read the same support the density does *)
+VerificationTest[
+  With[{g = GridGraph[{5, 5}]},
+    {a = InfraSegment[1, 13], b = InfraSegment[13, 25]},
+    {InfraMeasurement[g, InfraUnion[a, b], "Volume"] ===
+       Length @ Union[Keys @ InfraMeasurement[g, a, "VertexDensity"],
+                      Keys @ InfraMeasurement[g, b, "VertexDensity"]],
+     InfraMeasurement[g, InfraIntersection[a, b], "Volume"],
+     Sort @ VertexList @ InfraMeasurement[g, InfraIntersection[a, b], "Subgraph"]}],
+  {True, 1, {13}},
+  TestID -> "InfraIntersection-volumes-off-the-support"
+]
+
+(* an intersection has no members, so All lists only the properties it has *)
+VerificationTest[
+  Keys @ InfraMeasurement[GridGraph[{5, 5}],
+    InfraIntersection[InfraSegment[1, 25], InfraSegment[5, 21]], All],
+  {"VertexDensity", "Subgraph", "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume"},
+  TestID -> "InfraIntersection-All-lists-its-own-properties"
+]
+
+(* heads on heads are inert without a graph *)
+VerificationTest[
+  {InfraIntersection[InfraSegment[1, 5], InfraCircle[1, 2]],
+   InfraUnion[InfraSegment[1, 5], InfraCircle[1, 2]]},
+  {InfraIntersection[InfraSegment[1, 5], InfraCircle[1, 2]],
+   InfraUnion[InfraSegment[1, 5], InfraCircle[1, 2]]},
+  TestID -> "InfraIntersection-on-heads-stays-inert"
+]
+
 EndTestSection[]

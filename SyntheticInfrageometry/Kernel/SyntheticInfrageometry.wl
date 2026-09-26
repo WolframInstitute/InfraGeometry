@@ -92,10 +92,13 @@ PackageExport[BallHullQ]
 
 (* EuclideanInfrageometry/InfraCircle.wl *)
 PackageExport[InfraCircle]
-PackageExport[InfraArc]
 PackageExport[FindInfraCircle]
 PackageExport[FindInfraCycle]
 PackageExport[InfraCircleQ]
+
+(* EuclideanInfrageometry/InfraArc.wl *)
+PackageExport[InfraArc]
+PackageExport[FindInfraArc]
 
 (* InfraPolygon.wl *)
 PackageExport[InfraPolygon]

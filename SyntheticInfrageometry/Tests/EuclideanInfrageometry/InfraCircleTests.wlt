@@ -190,41 +190,4 @@ VerificationTest[
   TestID -> "InfraCircle-necklaces-are-opened-DAGs"
 ]
 
-(* ===== InfraArc ===== *)
-
-(* the arc is the geodesic interval inside the band: antipodes on the hexagon give the two half-rings *)
-VerificationTest[
-  With[{g = TessellationNeighborhoodGraph[{3, 6}, 5]}, {c = First @ GraphCenter[g]},
-    {ring = Select[VertexList[g], GraphDistance[g, c, #] == 2 &]},
-    {shell = Subgraph[g, ring]},
-    {p = First @ ring}, {q = First @ Select[ring, GraphDistance[shell, First @ ring, #] == 6 &]},
-    {arc = InfraArc[g, c, p, q]},
-    {arc["Multiplicity"], arc["Length"], Sort[VertexList /@ Normal[arc]] === Sort[FindPath[shell, p, q, {6}, All]],
-     Sort[VertexList[arc]] === Sort[ring]}],
-  {2, 6, True, True},
-  TestID -> "InfraArc-antipodes-give-both-half-rings"
-]
-
-(* a short arc is one path; the closing arc back to p is a circle's complement *)
-VerificationTest[
-  With[{g = TessellationNeighborhoodGraph[{3, 6}, 5]}, {c = First @ GraphCenter[g]},
-    {ring = Select[VertexList[g], GraphDistance[g, c, #] == 2 &]},
-    {shell = Subgraph[g, ring]},
-    {p = First @ ring}, {q = First @ Select[ring, GraphDistance[shell, First @ ring, #] == 2 &]},
-    {arc = InfraArc[g, c, p, q]},
-    {arc["Multiplicity"], arc["Length"], InfraSegmentQ[shell, arc], First[arc] === arc[[1]]}],
-  {1, 2, True, True},
-  TestID -> "InfraArc-short-arc"
-]
-
-(* a point off the band gives the empty arc; the tolerance admits it *)
-VerificationTest[
-  With[{g = GridGraph[{7, 7}]}, {c = 25},
-    {p = First @ Select[VertexList[g], GraphDistance[g, c, #] == 2 &], q = First @ Select[VertexList[g], GraphDistance[g, c, #] == 3 &]},
-    {InfraArc[g, c, p, q]["Multiplicity"] == 0, InfraArc[g, c, p, q, "Tolerance" -> {0, 1}]["Multiplicity"] > 0,
-     InfraArc[g, c, p, q, "Tolerance" -> {0, 1}]["Band"] === {2, 3}}],
-  {True, True, True},
-  TestID -> "InfraArc-band-membership"
-]
-
 EndTestSection[]
