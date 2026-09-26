@@ -14,7 +14,7 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 <code>[InfraRayQ]()[*g*, *ray*]</code> tests whether *ray* is a ray in *g*: a geodesic from its own first vertex that cannot be prolonged past its last.
 
-<code>[InfraRayQ]()[*g*, *rays*]</code> tests every ray of an [InfraRay]() bundle or pool.
+<code>[InfraRayQ]()[*g*, {*ray1*, …}]</code> tests every ray of a list, such as the one <code>[FindInfraRay]()[*g*, *O*, *v*, All]</code> returns.
 
 ## Details & Options
 
@@ -29,7 +29,7 @@ Inextensibility is required **only at the far end**. The origin is an endpoint b
 
 Sequences shorter than two vertices are `False`: a single vertex has no direction.
 
-The predicate is the companion of [FindInfraRay](), which grows rays on a DAG whose sinks are exactly the inextensible ends, so every ray that finder returns satisfies it — under every `Method`, by construction.
+The predicate is the companion of [FindInfraRay](), which prolongs a geodesic outward until no neighbour prolongs it, so every ray that finder returns satisfies it.
 
 ## Basic Examples
 
@@ -53,7 +53,7 @@ InfraRayQ[PathGraph[Range[5]], {3, 4, 5}]
 
 ## Properties and Relations
 
-Every ray [FindInfraRay]() produces satisfies the predicate; the pool is accepted as a whole.
+Every ray [FindInfraRay]() produces satisfies the predicate; the list is accepted as a whole.
 
 ```wl
 With[
@@ -66,7 +66,7 @@ Dropping the far vertex breaks inextensibility, so the truncation is no longer a
 ```wl
 With[
   {g = GridGraph[{5, 5}]},
-  {ray = FindInfraRay[g, 1, 13, All]["First"]},
+  {ray = FindInfraRay[g, 1, 13]},
   {InfraRayQ[g, ray], InfraRayQ[g, Most @ ray]}]
 ```
 

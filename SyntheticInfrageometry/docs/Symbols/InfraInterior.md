@@ -9,7 +9,7 @@ URI: WolframInstitute/SyntheticInfrageometry/ref/InfraInterior
 
 ## Usage
 
-`InfraInterior[g, s]` is the interior of the vertex set s (a bare vertex list or any Infra* object) in g, returned as an InfraSet.
+`InfraInterior[g, s]` is the interior of the vertex set s (a vertex list, a density or a walk graph) in g, returned as a sorted vertex list.
 
 ## Details & Options
 

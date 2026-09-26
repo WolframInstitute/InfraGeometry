@@ -20,7 +20,7 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 ## Details & Options
 
-A Euclidean head is inert: it holds its points and options and computes nothing on its own. `InfraMeasurement` is what evaluates it, reading every property off the head's **graph** — a directed graph whose source-to-sink chains (or, for a closed head, whose directed cycles) are exactly the head's members — by one forward and one backward sweep of a dynamic-programming count, never by enumeration.
+A Euclidean head is inert: it holds its points and options and computes nothing on its own. `InfraMeasurement` is what evaluates it, reading every property off the head's **graph** — an acyclic directed graph whose source-to-sink chains are exactly the head's members — by one forward and one backward sweep of a dynamic-programming count, never by enumeration. A circle's graph is a `List` of necklaces, each **opened** at its closing arrow *u* -> *s1*: an acyclic DAG with one source *s1* and one sink *u*. A circle's member is the open chain *s1* … *u* read cyclically, a cyclic vertex list whose first vertex is not repeated.
 
 The properties:
 
@@ -29,8 +29,8 @@ The properties:
 | `"Graph"` | the object's own graph: one `Graph`, or a `List` of them for a family of alternatives (a line's atoms, a circle's necklaces) or for the pieces of a polyline |
 | `"Cardinality"` | the number of members |
 | `"Length"` | the common length of the members, or a `List` of lengths when they differ |
-| `"VertexDensity"` | `<\|v -> occ(v)\|>`, the number of members through *v* |
-| `"EdgeDensity"` | `<\|v \[DirectedEdge] w -> occ(v -> w)\|>` |
+| `"VertexDensity"` | `<\|v -> occ(v)\|>`, the number of members through *v*; on a polyline, the sum of the piece densities |
+| `"EdgeDensity"` | `<\|v \[DirectedEdge] w -> occ(v -> w)\|>`, the number of members through the arrow; on a polyline, the sum of the piece densities |
 | `"Subgraph"` | the induced subgraph of the support, same as [InfraSubgraph]() |
 | `"Faithful"` | `True` on a segment, ray or line; [Undetermined]() on a circle or an arc, whose graph is proved faithful only under a hypothesis this paclet does not certify |
 | `"Volume"`, `"BoundaryVolume"`, `"InteriorVolume"`, `"HalfBoundaryVolume"` | the size of the support and its boundary counts |
@@ -39,7 +39,9 @@ The support of every object — what `"Subgraph"` and the four volumes read — 
 
 [InfraIntersection]() and [InfraUnion]() are heads on heads: neither is a family of walks, so neither has a `"Graph"`, `"Cardinality"`, `"Length"`, `"EdgeDensity"` or `"Faithful"`, and their `All` lists only the density, the subgraph and the four volumes. The intersection's `"VertexDensity"` is the product of the two objects' densities on their common vertices, the union's the sum.
 
-A circle or a circle band takes `"Radius" -> r | {r, s}` in place of a point, or widens the circle through a point with `"RadiusDelta" -> delta | {deltaIn, deltaOut}` (default `0`).
+A circle or a circle band takes `"Radius" -> r | {r, s}` in place of a point, or widens the circle through a point with `"RadiusDelta" -> delta | {deltaIn, deltaOut}` (default `0`). A scalar *delta* means `{0, delta}`, outward only.
+
+On a polyline <code>[InfraSegment]()[*p1*, …, *pk*]</code> the densities are not member counts: they are the sums of the piece densities. On the 5 × 5 grid, <code>[InfraSegment]()[1, 13, 25]</code> has 36 members, while its density at the centre 13 is 12.
 
 ## Basic Examples
 

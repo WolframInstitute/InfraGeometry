@@ -5,78 +5,74 @@ Context: WolframInstitute`SyntheticInfrageometry`
 ContextPath: [WolframInstitute`Infrageometry`]
 Paclet: WolframInstitute/SyntheticInfrageometry
 URI: WolframInstitute/SyntheticInfrageometry/ref/InfraLine
-Keywords: [line, inextensible geodesic, pool, wrapper, geodesic DAG]
-SeeAlso: [FindInfraLine, InfraLineQ, InfraSegment, InfraRay, InfraDensity]
+Keywords: [line, inextensible geodesic, atoms, inert head]
+SeeAlso: [FindInfraLine, InfraLineQ, InfraMeasurement, InfraVertexList, InfraSegment, InfraRay]
 RelatedGuides: [EuclideanGeometryGuide]
 ---
 
 ## Usage
 
-<code>[InfraLine]()[*g*, *p*, *q*]</code> is the pool of lines through *p* and *q* on the graph *g* as one object: every inextensible geodesic through *p* and *q*, carried as one geodesic DAG per admissible pair of ends.
+<code>[InfraLine]()[*p*, *q*]</code> is the line through *p* and *q*: every inextensible geodesic through *p* and then *q*. It is inert; [InfraMeasurement]() and [InfraVertexList]() evaluate it on a graph.
 
-<code>[InfraLine]()[*g*, *walk*]</code> is the pool of lines containing a walk graph, a geodesic DAG or an [InfraSegment]() object.
-
-<code>[InfraLine]()[*p*, *q*]</code> and <code>[InfraLine]()[*path*]</code> inside an [InfraScene]() are the line construction tokens; [FindInfraLine]() is the search.
-
-`line[[i]]`, `line[[i ;; j]]` and `Normal[line]` enumerate the lines in canonical order; `line["Multiplicity"]`, `line["InfraDensity"]`, `line["Length"]`, `line["Graph"]` read the DAGs.
+<code>[InfraLine]()[*p*, *q*]</code> inside an [InfraScene]() is the line construction token; [FindInfraLine]() is the search.
 
 ## Details & Options
 
-[FindInfraLine]() returns the enumerated form for a bounded count and the pool form for `All`. The two describe the same object; the pool stays small where the enumeration is astronomical — 5 242 880 lines through two vertices of a 313-vertex square-tiling patch fit in 104 DAGs.
+Definition: a line is an inextensible geodesic — a shortest path that no neighbour of either end prolongs.
 
-Accessors on either form:
+Its graph — <code>[InfraMeasurement]()[*g*, *line*, "Graph"]</code> — is a `List` of DAGs, one per pair of ends (*a*, *b*) that is compatible, *d(a, b) = d(a, p) + d(p, q) + d(q, b)*, and maximal, no neighbour of *a* or *b* lengthening *d(a, b)*. The DAG for (*a*, *b*) is the union of the intervals *I(a, p)*, *I(p, q)* and *I(q, b)*. Its chains are exactly the lines with those ends, and every line is a chain of exactly one DAG, so `"Faithful"` is `True`.
 
-| Accessor | Gives |
-|---|---|
-| `["Realizations"]` | the lines as vertex sequences; on the pool `["Realizations", n]`, `UpTo[n]` or `All` enumerates lazily, atom by atom |
-| `["Length"]` | edge counts — one per line on the enumerated form, one per DAG on the pool |
-| `["Multiplicity"]` | how many lines the object holds, by the path-count DP on the pool |
-| `["Measure"]` | the per-vertex occupation, the fraction of lines through each vertex |
-| `["OccupationCount"]` | the same as a count |
-| `["Graph"]` | the DAGs of the pool |
-| `["Vertices"]` | the vertices covered |
-| `["First"]` | one line |
+The list is not optional. The union of the DAGs can carry chains that are not geodesics: through the edge 1–2 of the 6-cycle there are three DAGs and three lines, while their union would add a fourth path that is not a geodesic.
 
-`line[[i]]` is the *i*-th position across all lines as a measured [InfraEffectivePoint](): its weight at a vertex is the number of lines passing through that vertex at that position. On the pool this is the *i*-th layer of every DAG weighted by geodesic occupation, computed without enumeration; *i* may be negative.
+The DAGs are alternatives, so the counts add across them. The family can be astronomical while the list stays small.
 
-Rendered like [InfraSegment]() by [InfraSceneHighlight]() — sequential-edge semantics.
-
-Inside an [InfraScene](), <code>[InfraLine]()[*p*, *q*]</code> names a line to be solved for.
+With *p* = *q*, <code>[InfraLine]()[*p*, *p*]</code> is every maximal geodesic through *p*, once per orientation.
 
 ## Basic Examples
 
-`All` gives the pool. Two DAGs carry the twelve lines through an interior edge of the grid.
+Twelve lines pass the interior edge 6–7 of a 4 × 4 grid, carried by two DAGs.
 
 ```wl
 With[
-  {lines = FindInfraLine[GridGraph[{4, 4}], 6, 7, All]},
-  {Length @ lines["Graph"], lines["Multiplicity"], lines["Length"]}]
+  {g = GridGraph[{4, 4}]},
+  {line = InfraLine[6, 7]},
+  {Length @ InfraMeasurement[g, line, "Graph"], InfraMeasurement[g, line, "Cardinality"],
+   InfraMeasurement[g, line, "Length"]}
+]
 ```
 
-A bounded count gives the enumerated form.
+Two of them.
 
 ```wl
-FindInfraLine[CycleGraph[6], 1, 2, 2, Method -> "Greedy"]
+InfraVertexList[GridGraph[{4, 4}], InfraLine[6, 7], 2]
 ```
 
-Enumerate the pool on demand.
+Through an edge of the 6-cycle there are three lines, one per DAG.
 
 ```wl
-FindInfraLine[GridGraph[{4, 4}], 6, 7, All]["Realizations", UpTo[2]]
+With[
+  {g = CycleGraph[6]},
+  {Length @ InfraMeasurement[g, InfraLine[1, 2], "Graph"], InfraVertexList[g, InfraLine[1, 2], All]}
+]
 ```
 
 ## Properties and Relations
 
-The first position across the pool is a measured point: every line starts at one of the two ends 1 and 13, six at each.
-
-```wl
-FindInfraLine[GridGraph[{4, 4}], 6, 7, All][[1]]
-```
-
-The measure is the fraction of lines through each vertex; the anchors carry all of them.
+The anchors lie on every line, so their density is the cardinality.
 
 ```wl
 With[
-  {measure = FindInfraLine[GridGraph[{4, 4}], 6, 7, All]["Measure"]},
-  {measure[6], measure[7], measure[1]}]
+  {g = GridGraph[{4, 4}]},
+  {density = InfraMeasurement[g, InfraLine[6, 7], "VertexDensity"]},
+  {density[6], density[7], density[1]}
+]
+```
+
+Every member satisfies [InfraLineQ]().
+
+```wl
+With[
+  {g = GridGraph[{4, 4}]},
+  InfraLineQ[g, InfraVertexList[g, InfraLine[6, 7], All]]
+]
 ```

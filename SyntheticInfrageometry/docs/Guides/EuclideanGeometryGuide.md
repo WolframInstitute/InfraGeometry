@@ -15,25 +15,34 @@ Euclidean geometry rebuilt inside a graph. The graph is all there is: no ambient
 
 ### Points
 
-- `InfraPoint` a point given by a set of candidate vertices, optionally weighted
-- `FindInfraPoint` the whole vertex set as one candidate family, narrowed by `"From"` and `"Distance"`
+- `InfraPoint` the scene token for a point; a point is a bare vertex
+- `FindInfraPoint` points drawn from a candidate pool, narrowed by `"From"` and `"Distance"`
+- `RandomInfraPoint` a uniformly random vertex, or one at a given distance from a point
+- `InfraCenter` a vertex of least eccentricity
 - `SelectInfraPoint` the same narrowing applied to a bundle you already hold
 - `FindInfraMidpoint` vertices *m* with *d(a,m) = d(m,b) = d(a,b)/2*, over all geodesics
 - `FindClosestInfraPoint` the vertices of a line nearest a given point
 - `FindInfraReflection` the reflection of a point in a line
-- `InfraSet` an arbitrary vertex subset, coercing any wrapper to its vertices
+
+### Measuring a Euclidean object
+
+- `InfraMeasurement` evaluates an inert segment, ray, line, circle or arc on a graph: its graph, cardinality, length, densities and volumes
+- `InfraVertexList` the members of an object as vertex lists, one, several, all or a uniform random one
+- `InfraMemberQ` whether a vertex list is a member of an object
+- `InfraSubgraph` the subgraph induced on the support of an object
+- `Undetermined` the value of `"Faithful"` where the object's graph is faithful only under an uncertified hypothesis
 
 ### Segments and lines
 
-- `InfraSegment` the set of all geodesics between two vertices
-- `FindInfraSegment` that set, as a compact interval DAG or enumerated
+- `InfraSegment` the set of all geodesics between two vertices, as an inert head; a polyline with more points
+- `FindInfraSegment` one geodesic, or a list of them, as vertex lists
 - `MetricInterval` the vertices lying on some geodesic between two points
-- `InfraLine` an inextensible geodesic, or the pool of them as geodesic DAGs
-- `FindInfraLine` the lines through two points, or containing a segment or a whole geodesic bundle, read off the distance matrix
-- `ExtendInfraSegment` the geodesics containing a segment or bundle, extended by a budget per side; also Tarski's segment-construction step
+- `InfraLine` the inextensible geodesics through two points, as an inert head
+- `FindInfraLine` one line through two points or containing a given geodesic, or a list of them, as vertex lists
+- `ExtendInfraSegment` the geodesics containing a segment, extended by a budget per side; also Tarski's segment-construction step
 - `GeodesicExtensionGraph` the DAG of geodesic extensions of a segment beyond its end, the engine behind lines and rays
 - `InfraWalk`, `FindInfraWalk`, `ExtendInfraWalk` walks, where revisiting a vertex is allowed
-- `InfraRay`, `FindInfraRay` a geodesic from a base vertex that cannot be prolonged past its far end, which is how direction is expressed
+- `InfraRay`, `FindInfraRay` the geodesics from a base vertex that cannot be prolonged past their far end, which is how direction is expressed: the inert head and the search
 - `PencilDirections`, `PencilCardinality` the rays leaving a vertex, and how many there are
 - `InfraPolyline`, `FindInfraPolylineSubdivision` a walk cut into geodesic legs
 
@@ -41,7 +50,8 @@ Euclidean geometry rebuilt inside a graph. The graph is all there is: no ambient
 
 - `InfraShell`, `FindInfraShell` the level surface *{v : d(c,v) = r}*, a vertex set
 - `InfraBall`, `FindInfraBall` the closed ball *{v : d(c,v) <= r}*, whose volume is an exact polynomial on a lattice
-- `InfraCircle`, `FindInfraCircle` a simple cycle inside a level surface, empty at single radius on a lattice
+- `InfraCircle`, `FindInfraCircle` the shortest separating cycles of a band around a centre, empty at single radius on a lattice: the inert head and the search
+- `InfraArc`, `FindInfraArc` the minor arcs of a circle between two points: the inert head and the search
 - `InfraEllipse`, `FindInfraEllipse` the sum-of-distances band around two foci
 - `InfraPlane`, `FindInfraBisectingHyperplane` the perpendicular bisector, empty at odd distance
 

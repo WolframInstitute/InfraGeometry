@@ -18,7 +18,7 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 ## Details & Options
 
-A member is a source-to-sink chain of the head's graph — [InfraMeasurement]()`[graph, obj, "Graph"]` — read off in lexicographic order; for a circle it is the chain's cyclic closure. A closed count under a non-negative integer *n* that exceeds the number of members gives `$Failed`, matching every `Find*` count contract.
+A member is a source-to-sink chain of the head's graph — [InfraMeasurement]()`[graph, obj, "Graph"]` — read off in lexicographic order. A circle's graph is a `List` of necklaces, each opened at its closing arrow *u* -> *s1*, so each is an acyclic DAG with one source and one sink; a circle's member is the open chain *s1* … *u*, a cyclic vertex list whose first vertex is not repeated. A closed count under a non-negative integer *n* that exceeds the number of members gives `$Failed`, matching every `Find*` count contract.
 
 Two modifiers, given after the count:
 

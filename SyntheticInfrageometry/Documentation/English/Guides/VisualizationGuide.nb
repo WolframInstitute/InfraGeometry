@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[     19382,        422]
-NotebookOptionsPosition[     14745,        361]
-NotebookOutlinePosition[     15062,        375]
-CellTagsIndexPosition[     15019,        372]
+NotebookDataLength[     18651,        412]
+NotebookOptionsPosition[     14014,        351]
+NotebookOutlinePosition[     14331,        365]
+CellTagsIndexPosition[     14288,        362]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -215,95 +215,83 @@ Cell[BoxData[
  RowBox[{"Grid", "[", 
   RowBox[{
    RowBox[{"{", 
-    RowBox[{"MapThread", "[", "\n", "   ", 
+    RowBox[{"MapThread", "[", 
      RowBox[{
-      RowBox[{
-       RowBox[{"{", 
-        RowBox[{
-        "g", ",", " ", "br", ",", " ", "cr", ",", " ", "props", ",", " ", "d",
-          ",", " ", "seed"}], "}"}], " ", "|->", "\n", "     ", 
-       RowBox[{"With", "[", "\n", "       ", 
-        RowBox[{
-         RowBox[{"{", 
-          RowBox[{"c", " ", "=", " ", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"SeedRandom", "[", "seed", "]"}], ";", " ", 
-             RowBox[{"First", " ", "@", " ", 
+      RowBox[{"Function", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"g", ",", "br", ",", "cr", ",", "d", ",", "seed"}], "}"}], ",", 
+        RowBox[{"With", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"c", "=", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"SeedRandom", "[", "seed", "]"}], ";", 
               RowBox[{"FindInfraPoint", "[", 
-               RowBox[{"g", ",", " ", 
-                RowBox[{"\"\<From\>\"", " ", "->", " ", "\"\<Center\>\""}]}], 
-               "]"}]}]}], ")"}]}], "}"}], ",", "\n", "       ", 
-         RowBox[{"{", 
-          RowBox[{"b", " ", "=", " ", 
-           RowBox[{"First", " ", "@", " ", 
+               RowBox[{"g", ",", 
+                RowBox[{"\"\<From\>\"", "\[Rule]", "\"\<Center\>\""}]}], 
+               "]"}]}], ")"}]}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"b", "=", 
             RowBox[{"FindInfraPoint", "[", 
-             RowBox[{"g", ",", " ", 
-              RowBox[{"\"\<From\>\"", " ", "->", " ", 
-               RowBox[{"c", " ", "->", " ", "d"}]}]}], "]"}]}]}], "}"}], ",", 
-         "\n", "       ", 
-         RowBox[{"InfraSceneHighlight", "[", 
-          RowBox[{"g", ",", "\n", "         ", 
-           RowBox[{"{", 
-            RowBox[{
-             RowBox[{"FindInfraBall", "[", 
-              RowBox[{"g", ",", " ", "c", ",", " ", "br"}], "]"}], ",", "\n", 
-             "          ", 
-             RowBox[{"FindInfraShell", "[", 
-              RowBox[{"g", ",", " ", 
-               RowBox[{"c", "[", 
-                RowBox[{"[", 
-                 RowBox[{"1", ",", " ", "1"}], "]"}], "]"}], ",", " ", "cr"}],
-               "]"}], ",", "\n", "          ", 
-             RowBox[{"FindInfraCircle", "[", 
-              RowBox[{"g", ",", " ", 
-               RowBox[{"c", "[", 
-                RowBox[{"[", 
-                 RowBox[{"1", ",", " ", "1"}], "]"}], "]"}], ",", " ", "cr", ",",
-                " ", "All", ",", " ", 
-               RowBox[{"Properties", " ", "->", " ", "props"}]}], "]"}], ",", 
-             "\n", "          ", 
-             RowBox[{"FindInfraSegment", "[", 
-              RowBox[{"g", ",", " ", 
-               RowBox[{"c", "[", 
-                RowBox[{"[", 
-                 RowBox[{"1", ",", " ", "1"}], "]"}], "]"}], ",", " ", 
-               RowBox[{"b", "[", 
-                RowBox[{"[", 
-                 RowBox[{"1", ",", " ", "1"}], "]"}], "]"}]}], "]"}], ",", 
-             "\n", "          ", "c", ",", " ", "b"}], "}"}], ",", "\n", 
-           "         ", 
-           RowBox[{"ImageSize", " ", "->", " ", "300"}]}], "]"}]}], "]"}]}], ",",
-       "\n", "   ", 
+             RowBox[{"g", ",", 
+              RowBox[{"\"\<From\>\"", "\[Rule]", 
+               RowBox[{"c", "\[Rule]", "d"}]}]}], "]"}]}], "}"}], ",", 
+          RowBox[{"InfraSceneHighlight", "[", 
+           RowBox[{"g", ",", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"FindInfraBall", "[", 
+                RowBox[{"g", ",", "c", ",", "br"}], "]"}], "\[Rule]", 
+               "$InfraBallColor"}], ",", 
+              RowBox[{
+               RowBox[{"FindInfraShell", "[", 
+                RowBox[{"g", ",", "c", ",", "cr"}], "]"}], "\[Rule]", 
+               "$InfraShellColor"}], ",", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"Graph", "[", 
+                   RowBox[{"DirectedEdge", "@@@", 
+                    RowBox[{"Partition", "[", 
+                    RowBox[{"#1", ",", "2", ",", "1", ",", "1"}], "]"}]}], 
+                   "]"}], "&"}], ")"}], "/@", 
+                RowBox[{"FindInfraCircle", "[", 
+                 RowBox[{"g", ",", "c", ",", 
+                  RowBox[{"\"\<Radius\>\"", "\[Rule]", "cr"}], ",", "All"}], 
+                 "]"}]}], "\[Rule]", "$InfraCircleColor"}], ",", 
+              RowBox[{
+               RowBox[{"FindInfraSegment", "[", 
+                RowBox[{"g", ",", "c", ",", "b"}], "]"}], "\[Rule]", 
+               "$InfraSegmentColor"}], ",", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"c", ",", "b"}], "}"}], "\[Rule]", 
+               "$InfraPointColor"}]}], "}"}], ",", 
+            RowBox[{"ImageSize", "\[Rule]", "300"}]}], "]"}]}], "]"}]}], 
+       "]"}], ",", 
       RowBox[{"{", 
-       RowBox[{"graphs", ",", " ", 
+       RowBox[{"graphs", ",", 
         RowBox[{"{", 
-         RowBox[{"2", ",", " ", "2", ",", " ", "1"}], "}"}], ",", " ", 
-        RowBox[{"{", 
-         RowBox[{
-          RowBox[{"{", 
-           RowBox[{"3", ",", " ", "4"}], "}"}], ",", " ", 
-          RowBox[{"{", 
-           RowBox[{"3", ",", " ", "5"}], "}"}], ",", " ", 
-          RowBox[{"{", 
-           RowBox[{"2", ",", " ", "3"}], "}"}]}], "}"}], ",", "\n", "    ", 
+         RowBox[{"2", ",", "2", ",", "1"}], "}"}], ",", 
         RowBox[{"{", 
          RowBox[{
           RowBox[{"{", 
-           RowBox[{"\"\<Separating\>\"", ",", " ", "\"\<Shortest\>\""}], 
-           "}"}], ",", " ", 
+           RowBox[{"3", ",", "4"}], "}"}], ",", 
           RowBox[{"{", 
-           RowBox[{"\"\<Separating\>\"", ",", " ", "\"\<Shortest\>\""}], 
-           "}"}], ",", " ", 
-          RowBox[{"{", "\"\<Shortest\>\"", "}"}]}], "}"}], ",", " ", 
+           RowBox[{"3", ",", "5"}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"2", ",", "3"}], "}"}]}], "}"}], ",", 
         RowBox[{"{", 
-         RowBox[{"6", ",", " ", "7", ",", " ", "5"}], "}"}], ",", " ", 
+         RowBox[{"6", ",", "7", ",", "5"}], "}"}], ",", 
         RowBox[{"{", 
-         RowBox[{"2", ",", " ", "3", ",", " ", "5"}], "}"}]}], "}"}]}], "]"}],
-     "}"}], ",", " ", 
-   RowBox[{"Spacings", " ", "->", " ", 
+         RowBox[{"2", ",", "3", ",", "5"}], "}"}]}], "}"}]}], "]"}], "}"}], ",", 
+   RowBox[{"Spacings", "\[Rule]", 
     RowBox[{"{", 
-     RowBox[{"2", ",", " ", "2"}], "}"}]}]}], "]"}]], "Input",ExpressionUUID->\
+     RowBox[{"2", ",", "2"}], "}"}]}]}], "]"}]], "Input",ExpressionUUID->\
 "f5e20a19-c611-4442-9657-032b29c06b11"],
 
 Cell["\<\
@@ -313,47 +301,49 @@ size.\
 \>", "CodeText",ExpressionUUID->"f589b6c6-1958-48a4-839b-3932d4476c38"],
 
 Cell[BoxData[
- RowBox[{"With", "[", "\n", "  ", 
+ RowBox[{"With", "[", 
   RowBox[{
    RowBox[{"{", 
-    RowBox[{"c", " ", "=", " ", 
+    RowBox[{"g", "=", 
+     RowBox[{
+     "graphs", "\[LeftDoubleBracket]", "1", "\[RightDoubleBracket]"}]}], 
+    "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"c", "=", 
      RowBox[{"(", 
       RowBox[{
-       RowBox[{"SeedRandom", "[", "2", "]"}], ";", " ", 
-       RowBox[{"First", " ", "@", " ", 
-        RowBox[{"FindInfraPoint", "[", 
-         RowBox[{
-          RowBox[{"graphs", "[", 
-           RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
-          RowBox[{"\"\<From\>\"", " ", "->", " ", "\"\<Center\>\""}]}], 
-         "]"}]}]}], ")"}]}], "}"}], ",", "\n", "  ", 
+       RowBox[{"SeedRandom", "[", "2", "]"}], ";", 
+       RowBox[{"FindInfraPoint", "[", 
+        RowBox[{"g", ",", 
+         RowBox[{"\"\<From\>\"", "\[Rule]", "\"\<Center\>\""}]}], "]"}]}], 
+      ")"}]}], "}"}], ",", 
    RowBox[{"InfraSceneHighlight", "[", 
-    RowBox[{
-     RowBox[{"graphs", "[", 
-      RowBox[{"[", "1", "]"}], "]"}], ",", "\n", "    ", 
+    RowBox[{"g", ",", 
      RowBox[{"{", 
       RowBox[{
        RowBox[{
-        RowBox[{"InfraCircle", "[", 
-         RowBox[{"FindInfraCircle", "[", 
+        RowBox[{
+         RowBox[{"(", 
           RowBox[{
-           RowBox[{"graphs", "[", 
-            RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
-           RowBox[{"c", "[", 
-            RowBox[{"[", 
-             RowBox[{"1", ",", " ", "1"}], "]"}], "]"}], ",", " ", 
-           RowBox[{"{", 
-            RowBox[{"3", ",", " ", "4"}], "}"}], ",", " ", "All"}], "]"}], 
-         "]"}], " ", "->", "\n", "       ", 
+           RowBox[{"Graph", "[", 
+            RowBox[{"DirectedEdge", "@@@", 
+             RowBox[{"Partition", "[", 
+              RowBox[{"#1", ",", "2", ",", "1", ",", "1"}], "]"}]}], "]"}], 
+           "&"}], ")"}], "/@", 
+         RowBox[{"FindInfraCircle", "[", 
+          RowBox[{"g", ",", "c", ",", 
+           RowBox[{"\"\<Radius\>\"", "\[Rule]", 
+            RowBox[{"{", 
+             RowBox[{"3", ",", "4"}], "}"}]}], ",", "All"}], "]"}]}], "\[Rule]", 
         RowBox[{"Directive", "[", 
-         RowBox[{"$InfraCircleColor", ",", " ", 
-          RowBox[{"AbsoluteThickness", "[", "6", "]"}]}], "]"}]}], ",", " ", 
-       "c"}], "}"}], ",", "\n", "    ", 
-     RowBox[{"\"\<PointSizeRange\>\"", " ", "->", " ", 
+         RowBox[{"$InfraCircleColor", ",", 
+          RowBox[{"AbsoluteThickness", "[", "6", "]"}]}], "]"}]}], ",", 
+       RowBox[{"c", "\[Rule]", "$InfraPointColor"}]}], "}"}], ",", 
+     RowBox[{"\"\<PointSizeRange\>\"", "\[Rule]", 
       RowBox[{"{", 
-       RowBox[{"14", ",", " ", "14"}], "}"}]}], ",", " ", 
-     RowBox[{"ImageSize", " ", "->", " ", "300"}]}], "]"}]}], "]"}]], "Input",\
-ExpressionUUID->"f1723494-10b7-4ea8-86b7-a8aae5adf508"],
+       RowBox[{"14", ",", "14"}], "}"}]}], ",", 
+     RowBox[{"ImageSize", "\[Rule]", "300"}]}], "]"}]}], "]"}]], "Input",Expre\
+ssionUUID->"f1723494-10b7-4ea8-86b7-a8aae5adf508"],
 
 Cell["Tutorial", "Section",ExpressionUUID->"1091c861-5dd2-4c0b-bb54-adab9daf3a64"],
 
@@ -419,11 +409,11 @@ Cell[4979, 116, 103, 0, 70, "CodeText",ExpressionUUID->"a9ff8819-da6a-4c32-9f32-
 Cell[5085, 118, 3500, 89, 70, "Code",ExpressionUUID->"0d91232c-f52d-4819-8762-c95755abf821",
  InitializationCell->True],
 Cell[8588, 209, 153, 2, 70, "CodeText",ExpressionUUID->"b3162466-4ce0-4187-b373-fac643978405"],
-Cell[8744, 213, 3906, 93, 70, "Input",ExpressionUUID->"f5e20a19-c611-4442-9657-032b29c06b11"],
-Cell[12653, 308, 243, 4, 70, "CodeText",ExpressionUUID->"f589b6c6-1958-48a4-839b-3932d4476c38"],
-Cell[12899, 314, 1635, 41, 70, "Input",ExpressionUUID->"f1723494-10b7-4ea8-86b7-a8aae5adf508"],
-Cell[14537, 357, 82, 0, 70, "Section",ExpressionUUID->"1091c861-5dd2-4c0b-bb54-adab9daf3a64"],
-Cell[14622, 359, 119, 0, 70, "Item",ExpressionUUID->"76915354-cffd-485e-92b3-c564f182fcab"]
+Cell[8744, 213, 3214, 81, 70, "Input",ExpressionUUID->"f5e20a19-c611-4442-9657-032b29c06b11"],
+Cell[11961, 296, 243, 4, 70, "CodeText",ExpressionUUID->"f589b6c6-1958-48a4-839b-3932d4476c38"],
+Cell[12207, 302, 1596, 43, 70, "Input",ExpressionUUID->"f1723494-10b7-4ea8-86b7-a8aae5adf508"],
+Cell[13806, 347, 82, 0, 70, "Section",ExpressionUUID->"1091c861-5dd2-4c0b-bb54-adab9daf3a64"],
+Cell[13891, 349, 119, 0, 70, "Item",ExpressionUUID->"76915354-cffd-485e-92b3-c564f182fcab"]
 }
 ]
 *)

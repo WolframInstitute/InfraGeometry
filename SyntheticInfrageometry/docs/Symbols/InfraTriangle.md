@@ -9,10 +9,8 @@ URI: WolframInstitute/SyntheticInfrageometry/ref/InfraTriangle
 
 ## Usage
 
-`InfraTriangle[{poly}]` is the unary form, where poly = {seg1, seg2, seg3} is a closed chain of three unary InfraSegment sides; InfraTriangle[{poly1, ...}] is the multi-realisation form.
+`InfraTriangle[{a, b, c}]` inside InfraScene is the geodesic triangle on three corners, the n = 3 case of InfraPolygon; FindInfraTriangle is the search.
 
 ## Details & Options
 
-Accessors ["Sides"], ["Length"], ["Vertices"] as for InfraPolygon.
-
-Find* returns one wrapper carrying the requested realisations.
+A triangle itself is the List of its three sides, one directed path graph each.

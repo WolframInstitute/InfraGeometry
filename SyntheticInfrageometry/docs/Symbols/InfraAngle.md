@@ -52,7 +52,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 5 &]},
-  {line = First @ First @ FindInfraLine[g, c, far, 1]},
+  {line = FindInfraLine[g, c, far]},
   {i = First @ FirstPosition[line, c]},
   <|"opposite arms" -> N @ InfraAngle[g, {line[[i - 4]], c, line[[i + 4]]}, Method -> "Alexandrov"],
     "same direction" -> N @ InfraAngle[g, {line[[i + 4]], c, line[[i + 2]]}, Method -> "Alexandrov"]|>]
@@ -64,10 +64,10 @@ The Alexandrov method is the closed form in three distances, and agrees with it 
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {q1 = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {q2 = Last @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {d1 = GraphDistance[g, c, q1], d2 = GraphDistance[g, c, q2], ch = GraphDistance[g, q1, q2]},
-  {N @ InfraAngle[g, {q1, c, q2}, Method -> "Alexandrov"],
+  {x1 = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
+  {x2 = Last @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
+  {d1 = GraphDistance[g, c, x1], d2 = GraphDistance[g, c, x2], ch = GraphDistance[g, x1, x2]},
+  {N @ InfraAngle[g, {x1, c, x2}, Method -> "Alexandrov"],
    ArcCos[(d1^2 + d2^2 - ch^2)/(2. d1 d2)]}]
 ```
 
@@ -78,7 +78,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 5 &]},
-  {line = First @ First @ FindInfraLine[g, c, far, 1]},
+  {line = FindInfraLine[g, c, far]},
   {i = First @ FirstPosition[line, c]},
   {arms = {line[[i - 4]], c, line[[i + 4]]}},
   <|"Arclength" -> N @ InfraAngle[g, arms], "Alexandrov" -> N @ InfraAngle[g, arms, Method -> "Alexandrov"]|>]

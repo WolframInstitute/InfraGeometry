@@ -9,7 +9,7 @@ URI: WolframInstitute/SyntheticInfrageometry/ref/FindSegmentHull
 
 ## Usage
 
-`FindSegmentHull[graph, S]` returns the smallest superset of S closed under MetricInterval (the segment operator), as an InfraSet.
+`FindSegmentHull[graph, S]` returns the smallest superset of S closed under MetricInterval (the segment operator), as a sorted vertex list.
 
 ## Details & Options
 

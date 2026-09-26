@@ -48,7 +48,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line = First @ First @ FindInfraLine[g, c, far, 1]},
+  {line = FindInfraLine[g, c, far]},
   InfraParallelQ[g, line, line]]
 ```
 
@@ -58,13 +58,13 @@ Concentric shells are parallel. Each vertex of the outer one is at the same dist
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {s2 = First @ First @ FindInfraShell[g, c, 2]},
-  {s3 = First @ First @ FindInfraShell[g, c, 3]},
-  {s4 = First @ First @ FindInfraShell[g, c, 4]},
-  <|"shell 3 to shell 2" -> InfraParallelQ[g, s2, s3],
-    "shell 4 to shell 2" -> InfraParallelQ[g, s2, s4],
-    "distances 3 to 2" -> Union @ Table[Min[GraphDistance[g, v, #] & /@ s2], {v, s3}],
-    "distances 4 to 2" -> Union @ Table[Min[GraphDistance[g, v, #] & /@ s2], {v, s4}]|>]
+  {sh2 = FindInfraShell[g, c, 2]},
+  {sh3 = FindInfraShell[g, c, 3]},
+  {sh4 = FindInfraShell[g, c, 4]},
+  <|"shell 3 to shell 2" -> InfraParallelQ[g, sh2, sh3],
+    "shell 4 to shell 2" -> InfraParallelQ[g, sh2, sh4],
+    "distances 3 to 2" -> Union @ Table[Min[GraphDistance[g, v, #] & /@ sh2], {v, sh3}],
+    "distances 4 to 2" -> Union @ Table[Min[GraphDistance[g, v, #] & /@ sh2], {v, sh4}]|>]
 ```
 
 Neither shell is a line, which shows the predicate does not require one.
@@ -73,7 +73,7 @@ Neither shell is a line, which shows the predicate does not require one.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  InfraLineQ[g, First @ First @ FindInfraShell[g, c, 3]]]
+  InfraLineQ[g, FindInfraShell[g, c, 3]]]
 ```
 
 Two maximal geodesics chosen independently are generally not parallel, because the distance between them varies along their length.
@@ -83,9 +83,9 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {l1 = First @ First @ FindInfraLine[g, c, far, 1]},
-  {p = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[l1, #] &]},
-  {l2 = First @ First @ FindInfraLine[g, p, SelectFirst[VertexList[g], GraphDistance[g, p, #] == 4 &], 1]},
-  <|"parallel" -> InfraParallelQ[g, l1, l2],
-    "distances from l2 to l1" -> Union @ Table[Min[GraphDistance[g, v, #] & /@ l1], {v, l2}]|>]
+  {line1 = FindInfraLine[g, c, far]},
+  {p = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line1, #] &]},
+  {line2 = FindInfraLine[g, p, SelectFirst[VertexList[g], GraphDistance[g, p, #] == 4 &]]},
+  <|"parallel" -> InfraParallelQ[g, line1, line2],
+    "distances from line2 to line1" -> Union @ Table[Min[GraphDistance[g, v, #] & /@ line1], {v, line2}]|>]
 ```

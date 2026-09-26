@@ -61,5 +61,5 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 6 &]},
-  AllTrue[First @ First @ FindInfraBisectingHyperplane[g, a, b], EquidistanceQ[g, a, #, b, #] &]]
+  AllTrue[FindInfraBisectingHyperplane[g, a, b], EquidistanceQ[g, a, #, b, #] &]]
 ```

@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[     17198,        364]
-NotebookOptionsPosition[     12725,        305]
-NotebookOutlinePosition[     13042,        319]
-CellTagsIndexPosition[     12999,        316]
+NotebookDataLength[     16193,        345]
+NotebookOptionsPosition[     11720,        286]
+NotebookOutlinePosition[     12037,        300]
+CellTagsIndexPosition[     11994,        297]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -191,91 +191,72 @@ Cell[BoxData[
  RowBox[{"Grid", "[", 
   RowBox[{
    RowBox[{"{", 
-    RowBox[{"MapThread", "[", "\n", "   ", 
+    RowBox[{"MapThread", "[", 
      RowBox[{
-      RowBox[{
-       RowBox[{"{", 
-        RowBox[{"g", ",", " ", "d", ",", " ", "seed"}], "}"}], " ", "|->", 
-       "\n", "     ", 
-       RowBox[{"With", "[", "\n", "       ", 
-        RowBox[{
-         RowBox[{"{", 
-          RowBox[{"a", " ", "=", " ", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"SeedRandom", "[", "seed", "]"}], ";", " ", 
-             RowBox[{"First", " ", "@", " ", 
+      RowBox[{"Function", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"g", ",", "d", ",", "seed"}], "}"}], ",", 
+        RowBox[{"With", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"a", "=", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"SeedRandom", "[", "seed", "]"}], ";", 
               RowBox[{"FindInfraPoint", "[", 
-               RowBox[{"g", ",", " ", 
-                RowBox[{"\"\<From\>\"", " ", "->", " ", "\"\<Center\>\""}]}], 
-               "]"}]}]}], ")"}]}], "}"}], ",", "\n", "       ", 
-         RowBox[{"{", 
-          RowBox[{"b", " ", "=", " ", 
-           RowBox[{"First", " ", "@", " ", 
+               RowBox[{"g", ",", 
+                RowBox[{"\"\<From\>\"", "\[Rule]", "\"\<Center\>\""}]}], 
+               "]"}]}], ")"}]}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"b", "=", 
             RowBox[{"FindInfraPoint", "[", 
-             RowBox[{"g", ",", " ", 
-              RowBox[{"\"\<From\>\"", " ", "->", " ", 
-               RowBox[{"a", " ", "->", " ", "d"}]}]}], "]"}]}]}], "}"}], ",", 
-         "\n", "       ", 
-         RowBox[{"{", 
-          RowBox[{
-           RowBox[{"a0", " ", "=", " ", 
-            RowBox[{"a", "[", 
-             RowBox[{"[", 
-              RowBox[{"1", ",", " ", "1"}], "]"}], "]"}]}], ",", " ", 
-           RowBox[{"b0", " ", "=", " ", 
-            RowBox[{"b", "[", 
-             RowBox[{"[", 
-              RowBox[{"1", ",", " ", "1"}], "]"}], "]"}]}]}], "}"}], ",", 
-         "\n", "       ", 
-         RowBox[{"{", 
-          RowBox[{
-           RowBox[{"interval", " ", "=", " ", 
-            RowBox[{"InfraSet", "[", 
+             RowBox[{"g", ",", 
+              RowBox[{"\"\<From\>\"", "\[Rule]", 
+               RowBox[{"a", "\[Rule]", "d"}]}]}], "]"}]}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"interval", "=", 
              RowBox[{"Select", "[", 
               RowBox[{
-               RowBox[{"VertexList", "[", "g", "]"}], ",", " ", 
-               RowBox[{"v", " ", "|->", " ", 
+               RowBox[{"VertexList", "[", "g", "]"}], ",", 
+               RowBox[{
                 RowBox[{"BetweennessQ", "[", 
-                 RowBox[{"g", ",", " ", "a0", ",", " ", "v", ",", " ", "b0"}],
-                  "]"}]}]}], "]"}], "]"}]}], ",", "\n", "        ", 
-           RowBox[{"bundle", " ", "=", " ", 
-            RowBox[{"FindInfraSegment", "[", 
-             RowBox[{"g", ",", " ", "a0", ",", " ", "b0", ",", " ", 
-              RowBox[{"UpTo", "[", "40", "]"}]}], "]"}]}], ",", "\n", 
-           "        ", 
-           RowBox[{"doubled", " ", "=", " ", 
-            RowBox[{"InfraPoint", "[", 
+                 RowBox[{"g", ",", "a", ",", "#1", ",", "b"}], "]"}], "&"}]}],
+               "]"}]}], ",", 
+            RowBox[{"bundle", "=", 
+             RowBox[{"FindInfraSegment", "[", 
+              RowBox[{"g", ",", "a", ",", "b", ",", 
+               RowBox[{"UpTo", "[", "40", "]"}]}], "]"}]}], ",", 
+            RowBox[{"doubled", "=", 
              RowBox[{"ExtendInfraSegment", "[", 
               RowBox[{
-              "g", ",", " ", "a0", ",", " ", "b0", ",", " ", "a0", ",", " ", 
-               "b0", ",", " ", "All"}], "]"}], "]"}]}]}], "}"}], ",", "\n", 
-         "       ", 
-         RowBox[{"{", 
-          RowBox[{"mids", " ", "=", " ", 
-           RowBox[{"FindInfraMidpoint", "[", 
-            RowBox[{"g", ",", " ", 
-             RowBox[{"InfraSegment", "[", "bundle", "]"}]}], "]"}]}], "}"}], ",",
-          "\n", "       ", 
-         RowBox[{"InfraSceneHighlight", "[", 
-          RowBox[{"g", ",", "\n", "         ", 
-           RowBox[{"{", 
-            RowBox[{"interval", ",", " ", "bundle", ",", " ", 
-             RowBox[{"doubled", " ", "->", " ", "StandardPurple"}], ",", " ", 
-             "mids", ",", " ", "a", ",", " ", "b"}], "}"}], ",", "\n", 
-           "         ", 
-           RowBox[{"ImageSize", " ", "->", " ", "300"}]}], "]"}]}], "]"}]}], ",",
-       "\n", "   ", 
+              "g", ",", "a", ",", "b", ",", "a", ",", "b", ",", "All"}], 
+              "]"}]}]}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"mids", "=", 
+            RowBox[{"FindInfraMidpoint", "[", 
+             RowBox[{"g", ",", "bundle"}], "]"}]}], "}"}], ",", 
+          RowBox[{"InfraSceneHighlight", "[", 
+           RowBox[{"g", ",", 
+            RowBox[{"{", 
+             RowBox[{"interval", ",", "bundle", ",", 
+              RowBox[{"doubled", "\[Rule]", "StandardPurple"}], ",", "mids", ",", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"a", ",", "b"}], "}"}], "\[Rule]", 
+               "$InfraPointColor"}]}], "}"}], ",", 
+            RowBox[{"ImageSize", "\[Rule]", "300"}]}], "]"}]}], "]"}]}], 
+       "]"}], ",", 
       RowBox[{"{", 
-       RowBox[{"graphs", ",", " ", 
+       RowBox[{"graphs", ",", 
         RowBox[{"{", 
-         RowBox[{"7", ",", " ", "7", ",", " ", "4"}], "}"}], ",", " ", 
+         RowBox[{"7", ",", "7", ",", "4"}], "}"}], ",", 
         RowBox[{"{", 
-         RowBox[{"2", ",", " ", "3", ",", " ", "5"}], "}"}]}], "}"}]}], "]"}],
-     "}"}], ",", " ", 
-   RowBox[{"Spacings", " ", "->", " ", 
+         RowBox[{"2", ",", "3", ",", "5"}], "}"}]}], "}"}]}], "]"}], "}"}], ",", 
+   RowBox[{"Spacings", "\[Rule]", 
     RowBox[{"{", 
-     RowBox[{"2", ",", " ", "2"}], "}"}]}]}], "]"}]], "Input",ExpressionUUID->\
+     RowBox[{"2", ",", "2"}], "}"}]}]}], "]"}]], "Input",ExpressionUUID->\
 "45529605-6cff-480f-b00c-c2d75e34d1f3"],
 
 Cell["Tutorial", "Section",ExpressionUUID->"0ab9991e-e464-45a7-9c80-a47e1f856ac9"],
@@ -358,14 +339,14 @@ Cell[5304, 121, 101, 0, 70, "CodeText",ExpressionUUID->"aec39024-36a8-496c-9b8b-
 Cell[5408, 123, 2303, 60, 70, "Code",ExpressionUUID->"204c17d1-9600-4787-8858-a46f4dabf9a9",
  InitializationCell->True],
 Cell[7714, 185, 153, 2, 70, "CodeText",ExpressionUUID->"f55b43ac-b4f5-44f2-bb80-b93d0f3b15e7"],
-Cell[7870, 189, 3781, 89, 70, "Input",ExpressionUUID->"45529605-6cff-480f-b00c-c2d75e34d1f3"],
-Cell[11654, 280, 82, 0, 70, "Section",ExpressionUUID->"0ab9991e-e464-45a7-9c80-a47e1f856ac9"],
-Cell[11739, 282, 120, 0, 70, "Item",ExpressionUUID->"8a854cb0-6154-46de-b361-d889075c1386"],
-Cell[11862, 284, 84, 0, 70, "Section",ExpressionUUID->"760a595a-32b1-41f6-b7fb-b5acca46c222"],
-Cell[11949, 286, 292, 5, 70, "Item",ExpressionUUID->"f58de625-add1-4f7a-ae44-19e4b9222004"],
-Cell[12244, 293, 174, 3, 70, "Item",ExpressionUUID->"a4c61f6a-1c45-4b68-bc14-ee4ff3860cc1"],
-Cell[12421, 298, 166, 3, 70, "Item",ExpressionUUID->"b3374f12-e8f7-4adf-8f66-0776f5d9d521"],
-Cell[12590, 303, 131, 0, 70, "Item",ExpressionUUID->"1c469b65-d620-43c6-a683-ff412101a2a2"]
+Cell[7870, 189, 2776, 70, 70, "Input",ExpressionUUID->"45529605-6cff-480f-b00c-c2d75e34d1f3"],
+Cell[10649, 261, 82, 0, 70, "Section",ExpressionUUID->"0ab9991e-e464-45a7-9c80-a47e1f856ac9"],
+Cell[10734, 263, 120, 0, 70, "Item",ExpressionUUID->"8a854cb0-6154-46de-b361-d889075c1386"],
+Cell[10857, 265, 84, 0, 70, "Section",ExpressionUUID->"760a595a-32b1-41f6-b7fb-b5acca46c222"],
+Cell[10944, 267, 292, 5, 70, "Item",ExpressionUUID->"f58de625-add1-4f7a-ae44-19e4b9222004"],
+Cell[11239, 274, 174, 3, 70, "Item",ExpressionUUID->"a4c61f6a-1c45-4b68-bc14-ee4ff3860cc1"],
+Cell[11416, 279, 166, 3, 70, "Item",ExpressionUUID->"b3374f12-e8f7-4adf-8f66-0776f5d9d521"],
+Cell[11585, 284, 131, 0, 70, "Item",ExpressionUUID->"1c469b65-d620-43c6-a683-ff412101a2a2"]
 }
 ]
 *)

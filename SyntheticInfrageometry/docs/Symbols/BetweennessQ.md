@@ -43,7 +43,7 @@ Association @ Table[
      {g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]},
      {a = First @ GraphCenter[g]},
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
-     AllTrue[FindInfraMidpoint[g, a, b]["Realizations"], BetweennessQ[g, a, #, b] &]],
+     AllTrue[Keys @ FindInfraMidpoint[g, a, b], BetweennessQ[g, a, #, b] &]],
    {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```
 
@@ -67,8 +67,8 @@ With[
   {a = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
   InfraSceneHighlight[g,
-    {InfraSet[Select[VertexList[g], BetweennessQ[g, a, #, b] &]] -> $InfraShellColor,
-     InfraSet[{a, b}] -> $InfraPointColor},
+    {Select[VertexList[g], BetweennessQ[g, a, #, b] &] -> $InfraShellColor,
+     {a, b} -> $InfraPointColor},
     "PointSizeRange" -> 15,
     VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
     ImageSize -> 320]]

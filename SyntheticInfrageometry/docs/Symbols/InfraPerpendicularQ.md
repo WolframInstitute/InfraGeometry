@@ -46,24 +46,24 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {l1 = First @ First @ FindInfraLine[g, c, far, 1]},
+  {l1 = FindInfraLine[g, c, far]},
   {p = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[l1, #] &]},
-  {l2 = First @ First @ FindInfraPerpendicular[g, l1, p, 1, "Radius" -> 3]},
+  {l2 = VertexList @ First @ FindInfraPerpendicular[g, l1, p, 1, "Radius" -> 3]},
   <|"default (Subset)" -> InfraPerpendicularQ[g, l1, l2],
     "Overlap" -> InfraPerpendicularQ[g, l1, l2, Method -> {"Projection", "Equality" -> "Overlap"}],
     "common vertices" -> Intersection[l1, l2]|>]
 ```
 
-The four methods on the same pair of lines. They do not agree, and are not meant to.
+The four methods on the same pair of lines. They are not equivalent, though on this pair all four reject.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {l1 = First @ First @ FindInfraLine[g, c, far, 1]},
+  {l1 = FindInfraLine[g, c, far]},
   {p = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[l1, #] &]},
-  {l2 = First @ First @ FindInfraPerpendicular[g, l1, p, 1, "Radius" -> 3]},
+  {l2 = VertexList @ First @ FindInfraPerpendicular[g, l1, p, 1, "Radius" -> 3]},
   Association @ Table[
     ToString[m] -> InfraPerpendicularQ[g, l1, l2, Method -> m],
     {m, {"Projection", "Coordinate", "Arclength", {"Alexandrov", "Curvature" -> 0}}}]]
@@ -78,6 +78,6 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {l1 = First @ First @ FindInfraLine[g, c, far, 1]},
+  {l1 = FindInfraLine[g, c, far]},
   InfraPerpendicularQ[g, l1, Complement[VertexList[g], l1][[1 ;; 3]]]]
 ```

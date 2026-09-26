@@ -20,7 +20,7 @@ The vertex set is {*e* : *d(p1, e) = d(p1, p2) + d(p2, e)*} — the vertices tha
 
 The set is closed under such a step: if *u* is in it and *v* is a neighbour of *u* one step farther from *p1*, then *v* is in it too. So the directed paths from *p2* are exactly the geodesics from *p2* that stay geodesic behind any *p1* → *p2* geodesic, and the **sinks** are the vertices past which no such geodesic can be prolonged — the ends of the rays from *p1* through *p2*.
 
-This is the shared engine of the distance-matrix family. The ray pool of [FindInfraRay]() is the geodesic bundle from *p1* to *p2* glued at *p2* to this DAG. The two sides of a line through *p1* and *p2* are <code>[GeodesicExtensionGraph]()[*g*, {*p2*, *p1*}]</code> and <code>[GeodesicExtensionGraph]()[*g*, {*p1*, *p2*}]</code>, and [FindInfraLine]() and [ExtendInfraSegment]() pick their ends from these two, subject to joint geodesicity.
+This is the shared engine of the distance-matrix family. The graph of <code>[InfraRay]()[*p1*, *p2*]</code> is the geodesic interval from *p1* to *p2* glued at *p2* to this DAG. The two sides of a line through *p1* and *p2* are <code>[GeodesicExtensionGraph]()[*g*, {*p2*, *p1*}]</code> and <code>[GeodesicExtensionGraph]()[*g*, {*p1*, *p2*}]</code>, and <code>[InfraLine]()[*p1*, *p2*]</code> and [ExtendInfraSegment]() pick their ends from these two, subject to joint geodesicity.
 
 With *p1* = *p2* the condition is empty and the result is the whole spray, <code>[GeodesicSprayGraph]()[*g*, *p1*]</code>.
 
@@ -52,10 +52,10 @@ With[
 
 ## Scope
 
-Wrapper anchors give one DAG per pair.
+A density anchor gives one DAG per pair.
 
 ```wl
-Length @ GeodesicExtensionGraph[GridGraph[{3, 3}], {InfraSet[{1, 3}], 5}]
+Length @ GeodesicExtensionGraph[GridGraph[{3, 3}], {<|1 -> 1, 3 -> 1|>, 5}]
 ```
 
 The two sides of a line through the edge 1–2 of the 6-cycle.
@@ -82,8 +82,8 @@ With[
   {g = GridGraph[{4, 4}]},
   {h = GeodesicExtensionGraph[g, {1, 6}]},
   AllTrue[VertexList[h],
-    v |-> AllTrue[
-      Select[AdjacencyList[g, v], GraphDistance[g, 1, #] == GraphDistance[g, 1, v] + 1 &],
+    vx |-> AllTrue[
+      Select[AdjacencyList[g, vx], GraphDistance[g, 1, #] == GraphDistance[g, 1, vx] + 1 &],
       MemberQ[VertexList[h], #] &]]]
 ```
 
@@ -94,5 +94,5 @@ With[
   {g = GridGraph[{4, 4}]},
   {h = GeodesicExtensionGraph[g, {6, 7}]},
   Sort @ Select[VertexList[h], VertexOutDegree[h, #] == 0 &] ===
-    Sort @ DeleteDuplicates[Last /@ FindInfraRay[g, 6, 7, All]["Realizations"]]]
+    Sort @ DeleteDuplicates[Last /@ FindInfraRay[g, 6, 7, All]]]
 ```

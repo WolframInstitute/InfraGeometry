@@ -12,21 +12,21 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 ## Usage
 
-<code>[FindInfraParallel]()[*g*, *line*, *p*]</code> gives one parallel to *line* through *p* in *g* — a geodesic through *p* that stays at the distance *d(p, line)* from *line* and cannot be prolonged at that distance — as an [InfraLine]() wrapper.
+<code>[FindInfraParallel]()[*g*, *line*, *p*]</code> gives one parallel to *line* through *p* in *g* — a geodesic through *p* that stays at the distance *d(p, line)* from *line* and cannot be prolonged at that distance — as a directed path graph.
 
-<code>[FindInfraParallel]()[*g*, *line*, *p*, *n*]</code> gives exactly *n* parallels or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives the whole class.
+<code>[FindInfraParallel]()[*g*, *line*, *p*, *n*]</code> gives a `List` of exactly *n* parallels or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives the whole class as a pool of DAGs.
 
 ## Details & Options
 
 Write *L* for the level set $\{v : d(v, line) = d(p, line)\}$. A parallel to *line* through *p* is a geodesic *s … p … e* of *g* — so *d(s, e) = d(s, p) + d(p, e)* — with every vertex in *L*, such that no neighbour of *s* or *e* in *L* prolongs it. This reads Euclid's fifth postulate intrinsically: constant distance is what a metric can say about parallelism without a notion of direction. Inextensibility is measured inside *L*, not in *g*, so a parallel need not be a line of *g*.
 
-*line* is a vertex sequence or an [InfraLine]() wrapper, which spreads over its realisations. Each parallel appears once, oriented so that *s* precedes *e* in canonical order.
+*line* is a vertex sequence, a walk graph, or a list of walk graphs, which spreads over its walks. Each parallel appears once, oriented so that *s* precedes *e* in canonical order.
 
-On the square grid the classical picture survives: through a vertex of a parallel row there is exactly one parallel to a row, and it is the row. Off a line that bends, the level set bends with it, and a geodesic inside it soon has to leave — the parallels are then few and short. Below, through a vertex at distance 2 from a line through the centre, the square tiling has one parallel of 10 edges beside a line of 24, the irregular mesh two of 4 and 3 edges, the hexagonal tiling a single edge. A vertex with no neighbour in its level set has no parallel at all: the class is empty, not the one-vertex walk.
+On the square grid the classical picture survives: through a vertex of a parallel row there is exactly one parallel to a row, and it is the row. Off a line that bends, the level set bends with it, and a geodesic inside it soon has to leave — the parallels are then few and short. Below, through a vertex at distance 2 from a line through the centre, the square tiling has one parallel of 10 edges beside a line of 24, the irregular mesh two, of 4 and 5 edges, the hexagonal tiling a single edge. A vertex with no neighbour in its level set has no parallel at all: the class is empty, not the one-vertex walk.
 
 [InfraParallelQ]() asks a different question, and the two do not match. The predicate tests that two vertex sets are disjoint and at constant distance, and does not require either to be a geodesic. So it accepts pairs this function never returns — concentric shells, for instance, are parallel by that test — while every parallel returned here passes it.
 
-The class is carried by a **pool**: one geodesic DAG per admissible pair of ends (*s*, *e*), the *s → p* and *p → e* intervals cut down to *L* and glued at *p*. `All` reads every atom into explicit vertex sequences, and a bounded count streams parallels off the atoms — the count-less call is one parallel, deterministic. `["Length"]` gives one edge count per parallel.
+The class is carried by a **pool**: one geodesic DAG per admissible pair of ends (*s*, *e*), the *s → p* and *p → e* intervals cut down to *L* and glued at *p*. Under the default `Method`, `All` returns the pool itself — a `List` of DAGs, a single atom giving the one DAG. A bounded count streams parallels off the atoms as directed path graphs, and the count-less call is one parallel, deterministic.
 
 | Option | Values | Meaning |
 |---|---|---|
@@ -52,9 +52,9 @@ Association @ Table[
      {g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]},
      {c = First @ GraphCenter[g]},
      {far = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-     {line = First @ FindInfraLine[g, c, far]["Realizations"]},
+     {line = FindInfraLine[g, c, far]},
      {p = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line, #] &]},
-     FindInfraParallel[g, line, p, All]["Length"]],
+     EdgeCount /@ FindInfraParallel[g, line, p, UpTo[10]]],
    {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```
 
@@ -66,11 +66,11 @@ With[
   {c = First @ GraphCenter[g]},
   {far = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
   {line = FindInfraLine[g, c, far]},
-  {p = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[First @ line["Realizations"], #] &]},
+  {p = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line, #] &]},
   InfraSceneHighlight[g,
     {line -> $InfraLineColor,
      FindInfraParallel[g, line, p] -> $InfraSegmentColor,
-     InfraSet[{c, p}] -> $InfraPointColor},
+     {c, p} -> $InfraPointColor},
     "PointSizeRange" -> 15,
     VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
     ImageSize -> 340]]
@@ -81,20 +81,20 @@ With[
 Playfair's axiom on the grid: through a vertex of the third row there is exactly one parallel to the first row, and it is the row.
 
 ```wl
-FindInfraParallel[GridGraph[{5, 5}], Range[5], 13, All]["Realizations"]
+FindInfraParallel[GridGraph[{5, 5}], Range[5], 13, All]
 ```
 
 The level set at distance 1 from a diagonal is eight isolated vertices, so through any of them there is no parallel.
 
 ```wl
-FindInfraParallel[GridGraph[{5, 5}], {1, 7, 13, 19, 25}, 8, All]["Realizations"]
+FindInfraParallel[GridGraph[{5, 5}], {1, 7, 13, 19, 25}, 8, All]
 ```
 
-A strict count that cannot be met is `$Failed`; the line may be given as an [InfraLine]() wrapper.
+A strict count that cannot be met is `$Failed`; the line may be given as a walk graph.
 
 ```wl
 {FindInfraParallel[GridGraph[{5, 5}], Range[5], 13, 2],
- FindInfraParallel[GridGraph[{5, 5}], InfraLine[{Range[5]}], 13]["Realizations"]}
+ FindInfraParallel[GridGraph[{5, 5}], PathGraph[Range[5], DirectedEdges -> True], 13]}
 ```
 
 ## Options
@@ -108,9 +108,9 @@ With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line = First @ FindInfraLine[g, c, far]["Realizations"]},
+  {line = FindInfraLine[g, c, far]},
   {p = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line, #] &]},
-  SameQ @@ (Sort @ FindInfraParallel[g, line, p, All, Method -> #]["Realizations"] & /@
+  SameQ @@ (Sort[VertexList /@ FindInfraParallel[g, line, p, UpTo[100], Method -> #]] & /@
      {"Exhaustive", "Greedy", "RandomGreedy"})]
 ```
 
@@ -121,13 +121,13 @@ Every parallel is a geodesic, and [InfraParallelQ]() accepts it — as it accept
 ```wl
 With[
   {g = GridGraph[{5, 5}]},
-  {row = First @ FindInfraParallel[g, Range[5], 13]["Realizations"]},
+  {row = FindInfraParallel[g, Range[5], 13]},
   {InfraSegmentQ[g, row], InfraParallelQ[g, Range[5], row],
-   InfraParallelQ[g, First @ First @ FindInfraShell[g, 13, 1], First @ First @ FindInfraShell[g, 13, 2]]}]
+   InfraParallelQ[g, FindInfraShell[g, 13, 1], FindInfraShell[g, 13, 2]]}]
 ```
 
 Parallelism runs both ways: the first row is the parallel to the third row through a vertex of the first.
 
 ```wl
-FindInfraParallel[GridGraph[{5, 5}], Range[11, 15], 3, All]["Realizations"]
+FindInfraParallel[GridGraph[{5, 5}], Range[11, 15], 3, All]
 ```

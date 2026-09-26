@@ -5,16 +5,16 @@ Context: WolframInstitute`SyntheticInfrageometry`
 ContextPath: [WolframInstitute`Infrageometry`]
 Paclet: WolframInstitute/SyntheticInfrageometry
 URI: WolframInstitute/SyntheticInfrageometry/ref/FindInfraRay
-Keywords: [ray, half-line, direction, pool, distance matrix, Euclid Postulate 2]
-SeeAlso: [InfraRay, InfraRayQ, PencilDirections, PencilCardinality, FindInfraLine, GeodesicExtensionGraph, FindInfraSegment, SameDirectionQ]
+Keywords: [ray, half-line, direction, pencil, Euclid Postulate 2]
+SeeAlso: [InfraRay, InfraRayQ, InfraVertexList, PencilDirections, PencilCardinality, FindInfraLine, GeodesicExtensionGraph, FindInfraSegment, SameDirectionQ]
 RelatedGuides: [EuclideanGeometryGuide]
 ---
 
 ## Usage
 
-<code>[FindInfraRay]()[*g*, *O*, *v*]</code> gives one ray from *O* through *v* in *g* — a geodesic from *O* containing *v* that cannot be prolonged past its last vertex — as an [InfraRay]() wrapper.
+<code>[FindInfraRay]()[*g*, *O*, *v*]</code> gives one ray from *O* through *v* in *g* — a geodesic from *O* containing *v* that cannot be prolonged past its last vertex — as a vertex list.
 
-<code>[FindInfraRay]()[*g*, *O*, *v*, *n*]</code> gives exactly *n* rays or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives the whole class as a pool.
+<code>[FindInfraRay]()[*g*, *O*, *v*, *n*]</code> gives a `List` of exactly *n* rays or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives every ray.
 
 ## Details & Options
 
@@ -22,15 +22,11 @@ A ray from *O* through *v* is a geodesic *O … v … e* with *d(O, e) = d(O, v)
 
 Rays are how direction is expressed without a vector space. There is no tangent space on a graph, so "the direction from *O* towards *v*" is not a vector but the *family* of rays from *O* containing *v* — and like every other family here it is large. [PencilDirections]() and [PencilCardinality]() count the rays leaving a vertex, the graph's stand-in for the sphere of directions; [SameDirectionQ]() compares directions.
 
-The pool is a single DAG with source *O*: the geodesic bundle from *O* to *v* glued at *v* to <code>[GeodesicExtensionGraph]()[*g*, {*O*, *v*}]</code>. The extension set is closed under a farther step, so the sinks of that DAG are exactly the inextensible ends and every path from *O* to a sink is a ray. There is no compatibility condition on one side, so the finder agrees with [InfraRayQ]() by construction. `All` returns <code>[InfraRay]()[{*dag*}]</code>; its `["Multiplicity"]` is the path count and `["Length"]` lists one length per ray, since rays to different sinks differ in length. A bounded count streams rays off the DAG.
+The search runs on the substrate directly: a geodesic from *O* to *v*, prolonged one outward step at a time until no neighbour prolongs it. It does not read the graph of <code>[InfraRay]()[*O*, *v*]</code>, so it is the check on that graph, and it returns exactly the shapes [InfraVertexList]() gives for that head. To count the rays without enumerating them, use [InfraMeasurement]().
 
-<code>[FindInfraRay]()[*g*, *O*, *O*, All]</code> is every ray from *O* — the pencil. A density anchor `<|v -> m|>` spreads to one DAG per pair.
+<code>[FindInfraRay]()[*g*, *O*, *O*, All]</code> is every ray from *O* — the pencil.
 
-The longest rays are a selection on the result, `SelectInfraWalk[g, rays, All, "From" -> "MaxLength"]`.
-
-| Option | Values | Meaning |
-|---|---|---|
-| `Method` | `Automatic` (default), `"Exhaustive"`, `{"Exhaustive", "Pruning" -> spec}`, `"Greedy"`, `"RandomGreedy"` | `Automatic` resolves by the count: `All` to `"Exhaustive"`, the pool; a bounded or absent count to `"Greedy"`, which takes the branches of the DAG in candidate order, so the count-less call is deterministic. `"RandomGreedy"` takes them in random order, seeded by an ambient `SeedRandom`. The class is the same under every value; `"Pruning"` is accepted and inert, the pool having no frontier to cap. |
+The count-less call is one ray, deterministic. There is no `Method` and no `Properties`.
 
 Corresponding notions in the classical axiom systems:
 
@@ -43,7 +39,7 @@ Corresponding notions in the classical axiom systems:
 
 ## Basic Examples
 
-How many rays leave the centre of each substrate through a vertex at distance 5.
+How many rays leave the centre of each substrate through a vertex at distance 5, counted on the head without enumerating a ray.
 
 ```wl
 Association @ Table[
@@ -51,22 +47,21 @@ Association @ Table[
      {g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]},
      {a = First @ GraphCenter[g]},
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
-     FindInfraRay[g, a, b, All]["Multiplicity"]],
+     InfraMeasurement[g, InfraRay[a, b], "Cardinality"]],
    {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```
 
-Three rays from the centre of each substrate. Each starts at the origin and runs to the edge of the patch; they are drawn off the pool in random order, `"RandomGreedy"` being the explicit random call, with the seed in front of it.
+Three rays from the centre of each substrate. Each starts at the origin and runs to the edge of the patch.
 
 ```wl
-SeedRandom[1]; Row[Table[
+Row[Table[
    With[
      {g = InfraSubstrate[name, "Medium", "Gray", "KeepCoordinates" -> True]},
      {a = First @ GraphCenter[g]},
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
      Labeled[
        InfraSceneHighlight[g,
-         {FindInfraRay[g, a, b, UpTo[3], Method -> "RandomGreedy"] -> $InfraRayColor,
-          InfraPoint[a] -> $InfraPointColor},
+         {FindInfraRay[g, a, b, UpTo[3]] -> $InfraRayColor, {a} -> $InfraPointColor},
          "PointSizeRange" -> 15,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
          ImageSize -> 250],
@@ -76,12 +71,10 @@ SeedRandom[1]; Row[Table[
 
 ## Scope
 
-Five rays leave vertex 6 of the grid through its neighbour 7; two stop at the corner 4 after three steps, three reach the corner 16 after four. The pool is one DAG.
+Five rays leave vertex 6 of the grid through its neighbour 7; two stop at the corner 4 after three steps, three reach the corner 16 after four.
 
 ```wl
-With[
-  {rays = FindInfraRay[GridGraph[{4, 4}], 6, 7, All]},
-  {rays["Multiplicity"], rays["Length"], rays["Realizations"]}]
+FindInfraRay[GridGraph[{4, 4}], 6, 7, All]
 ```
 
 The count-less call is one ray, the same one every time.
@@ -93,18 +86,12 @@ FindInfraRay[GridGraph[{4, 4}], 6, 7]
 Both geodesics from 1 to its antipode on the 6-cycle are rays: nothing lies farther from 1 than 4.
 
 ```wl
-FindInfraRay[CycleGraph[6], 1, 4, All]["Realizations"]
-```
-
-A multi-vertex anchor spreads over the origins.
-
-```wl
-FindInfraRay[CycleGraph[6], InfraSet[{1, 2}], 4, All]["Realizations"]
+FindInfraRay[CycleGraph[6], 1, 4, All]
 ```
 
 ## Properties and Relations
 
-Every ray satisfies [InfraRayQ](); the predicate accepts the pool.
+Every ray satisfies [InfraRayQ]().
 
 ```wl
 InfraRayQ[GridGraph[{4, 4}], FindInfraRay[GridGraph[{4, 4}], 6, 7, All]]
@@ -117,21 +104,20 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
-  {ray = FindInfraRay[g, a, b, All]["First"]},
+  {ray = FindInfraRay[g, a, b]},
   {First[ray] === a, GraphDistance[g, a, #] & /@ ray === Range[0, Length[ray] - 1]}]
 ```
 
-With the origin as its own direction the pool is the whole spray, and its rays are the pencil.
+With the origin as its own direction the rays are the pencil.
 
 ```wl
-Sort @ FindInfraRay[CycleGraph[6], 1, 1, All]["Realizations"] === Sort @ PencilDirections[CycleGraph[6], 1]
+Sort @ FindInfraRay[CycleGraph[6], 1, 1, All] === Sort @ PencilDirections[CycleGraph[6], 1]
 ```
 
-The class is the same under every `Method`.
+The search agrees with the graph of the head.
 
 ```wl
 With[
   {g = GridGraph[{4, 4}]},
-  SameQ @@ (Sort @ FindInfraRay[g, 6, 7, All, Method -> #]["Realizations"] & /@
-     {"Exhaustive", "Greedy", "RandomGreedy"})]
+  Sort @ FindInfraRay[g, 6, 7, All] === Sort @ InfraVertexList[g, InfraRay[6, 7], All]]
 ```

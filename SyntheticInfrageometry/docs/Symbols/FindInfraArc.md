@@ -18,13 +18,13 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 ## Details & Options
 
-Searches the band graph directly — `FindPath` at the band distance between consecutive points, folded together at the knots — independently of [InfraArc]()'s own graph, so it is the check on that graph rather than a reader of it: it answers even where the band has no seam to cut open. Returns exactly the vertex-list shapes [InfraVertexList]() gives for `InfraArc[c, {p1, ..., pk}]`.
+Searches the band graph directly — `FindPath` at the band distance between consecutive points, folded together at the knots — independently of [InfraArc]()'s own graph, so it is the check on that graph rather than a reader of it. Returns exactly the vertex-list shapes [InfraVertexList]() gives for `InfraArc[c, {p1, ..., pk}]`.
 
-Option `"RadiusDelta" -> delta | {deltaIn, deltaOut}` widens the band about *d*(*c*, *p1*), same as on [InfraArc]() and [InfraCircle](). No `Method`, no `Properties`.
+Option `"RadiusDelta" -> delta | {deltaIn, deltaOut}` widens the band about *d*(*c*, *p1*), same as on [InfraArc]() and [InfraCircle](). A scalar *delta* means `{0, delta}`, outward only; the default is `0`. No `Method`, no `Properties`.
 
 ## Basic Examples
 
-One minor arc between two points on the boundary ring of a grid, then both of them.
+One minor arc between two points on the ring at distance 2 from the centre of a grid, then both of them.
 
 ```wl
 FindInfraArc[GridGraph[{5, 5}], 13, {7, 19}, "RadiusDelta" -> 1]

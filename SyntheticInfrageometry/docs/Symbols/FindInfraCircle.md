@@ -5,33 +5,32 @@ Context: WolframInstitute`SyntheticInfrageometry`
 ContextPath: [WolframInstitute`Infrageometry`]
 Paclet: WolframInstitute/SyntheticInfrageometry
 URI: WolframInstitute/SyntheticInfrageometry/ref/FindInfraCircle
-Keywords: [circle, level surface, separating cycle, circle pool, girth, Euclid Postulate 3]
-SeeAlso: [InfraCircle, FindInfraShell, FindInfraBall, InfraCircleQ, FindInfraEllipse]
+Keywords: [circle, band, separating cycle, girth, Euclid Postulate 3]
+SeeAlso: [InfraCircle, InfraVertexList, FindInfraShell, FindInfraBall, InfraCircleQ, FindInfraArc]
 RelatedGuides: [EuclideanGeometryGuide]
 ---
 
 ## Usage
 
-<code>[FindInfraCircle]()[*g*, *c*, *r*]</code> gives one infra-circle around *c* at radius *r* in *g*: a shortest cycle in the level surface at radius *r* that separates *c* from what lies beyond, as an [InfraCircle]() wrapper. *r* is a scalar or a band `{rmin, rmax}`.
+<code>[FindInfraCircle]()[*g*, *c*, *p*]</code> gives one circle around *c* through the point *p* in *g*, as a cyclic vertex list.
 
-<code>[FindInfraCircle]()[*g*, *c*, *r*, *n*]</code> gives exactly *n* circles or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives the whole class, as the circle pool where one exists.
+<code>[FindInfraCircle]()[*g*, *c*, "Radius" -> *r*]</code> gives one circle around *c* at radius *r*; `"Radius" -> {r, s}` takes the band *r* ≤ *d(c, v)* ≤ *s*.
+
+<code>[FindInfraCircle]()[*g*, *c*, *spec*, *n*]</code> gives a `List` of exactly *n* circles or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives every circle.
 
 ## Details & Options
 
-The level surface at radius *r* around *c* is $\{v : d(c,v) = r\}$, or $\{v : r_{\min} \le d(c,v) \le r_{\max}\}$ for a band. A circle is a simple cycle inside that level surface which separates *c* from everything beyond it; the canonical ones are the shortest, and the count-less call returns one of them.
+The band around *c* is $\{v : r \le d(c,v) \le s\}$. A circle is a shortest cycle of the subgraph induced on the band whose removal leaves *c* in a component reaching no further than the band. The point form takes the band at *d(c, p)* and keeps the circles through *p*.
+
+A circle is returned as a cyclic vertex list: the edge from the last vertex back to the first is implicit, and the first vertex is not repeated.
 
 **A circle need not exist.** On a lattice a single distance shell contains no two adjacent vertices, so it spans no cycle at all and the result is empty. This is not a defect of the definition — it is what a sphere of one-vertex thickness is on a lattice.
 
 Thickening the radius to a band fixes it, and **the band thickness that suffices tracks the girth of the tiling**. On the square grid, girth 4, a two-thick band `{r, r+1}` already carries a cycle. On the hexagonal tiling, girth 6, it does not: `{r, r+1}` is still empty and the band has to reach `{r, r+2}`. On an irregular mesh a single shell usually works, since its vertices are adjacent by accident of the triangulation.
 
-The class is carried two ways. Under the default `Properties`, a single anchor and an integer band, the circles are the source-to-sink paths of a **pool** of geodesic DAGs — the level surface cut open along a radial seam: `All` returns <code>[InfraCircle]()[{*dag*, …}]</code>, whose `["Multiplicity"]` counts the circles without enumerating one, and a bounded count streams circles off the atoms. Below, the band `{4, 5}` on the irregular mesh holds 75 circles in one pool. Off that class — other `Properties`, several anchors, or a band the seam cannot cut open, reported by `::uncertified` — the family is enumerated by a cycle sweep over the level surface, length by length, stopping at the first non-empty length when `"Shortest"` is present.
+The search sweeps the band directly, length by length with `FindCycle`. It does not read the necklaces of <code>[InfraCircle]()[*c*, …]</code>, so it is the check on them, and it still answers where no seam cuts the band open, or where nothing lies beyond the band and separation is vacuous. It returns exactly the shapes [InfraVertexList]() gives for that head. To count circles without enumerating them, use [InfraMeasurement]().
 
-Option `Properties` defaults to `{"Separating", "Shortest"}`, the canonical infra-circle. Dropping `"Shortest"` gives all separating cycles in order of length; dropping `"Separating"` allows any simple cycle in the level surface. `"Connected"` is not a valid property — a cycle is connected.
-
-| Option | Values | Meaning |
-|---|---|---|
-| `Properties` | `{"Separating", "Shortest"}` (default), `{"Separating"}`, `{"Shortest"}`, `{}` | which cycles of the level surface count, conjoined. |
-| `Method` | `Automatic` (default), `"Exhaustive"`, `{"Exhaustive", "Pruning" -> spec}`, `"Greedy"`, `"RandomGreedy"` | `Automatic` resolves by the count: `All` to `"Exhaustive"`, a bounded or absent count to `"Greedy"`. The class is the same under every value; `"Greedy"` and `"Exhaustive"` take the atoms and their branches in candidate order, `"RandomGreedy"` in random order, seeded by an ambient `SeedRandom`. `"Pruning" -> n | p | Infinity` caps the cycles the sweep keeps per length — the result is then the shortest among the survivors — and is inert on the pool, which has no frontier. |
+Option `"RadiusDelta" -> {deltaIn, deltaOut}` widens the band of the point form to *d(c, p)* − *deltaIn* ≤ *d(c, v)* ≤ *d(c, p)* + *deltaOut*. A scalar `"RadiusDelta" -> delta` means `{0, delta}`, outward only. The default is `0`. There is no `Method` and no `Properties`.
 
 Corresponding notions in the classical axiom systems:
 
@@ -51,7 +50,7 @@ Association @ Table[
    name -> With[
      {g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]},
      {c = First @ GraphCenter[g]},
-     FindInfraCircle[g, c, 4, All]["Multiplicity"]],
+     Length @ FindInfraCircle[g, c, "Radius" -> 4, All]],
    {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```
 
@@ -62,21 +61,21 @@ Association @ Table[
    band -> With[
      {g = InfraSubstrate["HexagonalTilingGraph", "Medium", "KeepCoordinates" -> True]},
      {c = First @ GraphCenter[g]},
-     FindInfraCircle[g, c, band, All]["Multiplicity"]],
+     Length @ FindInfraCircle[g, c, "Radius" -> band, All]],
    {band, {4, {4, 5}, {4, 6}}}]
 ```
 
-The circle around the centre of each lattice, at the band each one needs; on both it is unique.
+A circle around the centre of each lattice, at the band each one needs, drawn as its directed cycle.
 
 ```wl
 Row[Table[
    With[
      {g = InfraSubstrate[First[spec], "Medium", "Gray", "KeepCoordinates" -> True]},
      {c = First @ GraphCenter[g]},
+     {circle = FindInfraCircle[g, c, "Radius" -> Last[spec]]},
      Labeled[
        InfraSceneHighlight[g,
-         {FindInfraCircle[g, c, Last[spec]] -> $InfraCircleColor,
-          InfraPoint[c] -> $InfraPointColor},
+         {Graph[DirectedEdge @@@ Partition[circle, 2, 1, 1]] -> $InfraCircleColor, {c} -> $InfraPointColor},
          "PointSizeRange" -> 15,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
          ImageSize -> 250],
@@ -86,69 +85,44 @@ Row[Table[
 
 ## Scope
 
-On the irregular mesh the band `{4, 5}` holds 75 circles. `All` returns them as one pool without enumerating them; the count-less call is one of them, 28 edges long.
-
-```wl
-With[
-  {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {FindInfraCircle[g, c, {4, 5}, All]["Multiplicity"], FindInfraCircle[g, c, {4, 5}]["Length"]}]
-```
-
-A bounded count streams circles off the pool; a strict count that cannot be met is `$Failed`. Sixteen circles lie in the band `{2, 4}` around the centre of a 9×9 grid.
+Sixteen circles lie in the band `{2, 4}` around the centre of a 9 × 9 grid. A bounded count gives a list, and a strict count that cannot be met is `$Failed`.
 
 ```wl
 With[
   {g = GridGraph[{9, 9}]},
-  {FindInfraCircle[g, 41, {2, 4}, All]["Multiplicity"],
-   Length @ FindInfraCircle[g, 41, {2, 4}, 3]["Realizations"],
-   FindInfraCircle[g, 41, {2, 4}, 20]}]
+  {Length @ FindInfraCircle[g, 41, "Radius" -> {2, 4}, All],
+   Length @ FindInfraCircle[g, 41, "Radius" -> {2, 4}, 3],
+   FindInfraCircle[g, 41, "Radius" -> {2, 4}, 20]}]
 ```
 
-## Options
-
-### Properties
-
-Without `"Shortest"` every separating cycle in the band is returned, by length: 256 of them in the band `{1, 3}` around the centre of a 7×7 grid, from one of length 8 to 81 of length 16.
+The count-less call is one circle, the same every time.
 
 ```wl
-Tally[Length /@ FindInfraCircle[GridGraph[{7, 7}], 25, {1, 3}, All, Properties -> {"Separating"}]["Realizations"]]
+FindInfraCircle[GridGraph[{9, 9}], 41, "Radius" -> {2, 4}]
 ```
 
-### Method
-
-The class is the same under every `Method`; only the order in which circles come off the pool differs.
+The point form: a circle through a vertex at distance 2 from the centre of a 5 × 5 grid, the band widened one step outward.
 
 ```wl
-With[
-  {g = GridGraph[{9, 9}]},
-  SameQ @@ (Sort @ FindInfraCircle[g, 41, {2, 4}, All, Method -> #]["Realizations"] & /@
-     {"Exhaustive", "Greedy", "RandomGreedy"})]
-```
-
-The count-less call is deterministic; `"RandomGreedy"` takes the pool in random order, so the seed goes in front.
-
-```wl
-SeedRandom[1]; With[
-  {g = GridGraph[{9, 9}]},
-  {FindInfraCircle[g, 41, {2, 4}] === FindInfraCircle[g, 41, {2, 4}],
-   FindInfraCircle[g, 41, {2, 4}, Method -> "RandomGreedy"]["Realizations"]}]
-```
-
-Off the pool the family comes from the cycle sweep, and `"Pruning"` caps the cycles kept per length: the 256 separating cycles above become one per length.
-
-```wl
-Length @ FindInfraCircle[GridGraph[{7, 7}], 25, {1, 3}, All,
-   Properties -> {"Separating"}, Method -> {"Exhaustive", "Pruning" -> 1}]["Realizations"]
+FindInfraCircle[GridGraph[{5, 5}], 13, 7, "RadiusDelta" -> 1]
 ```
 
 ## Properties and Relations
 
-A circle lies in the level surface: every one of its vertices belongs to the shell at the same band.
+A circle lies in its band, and its last vertex is adjacent to its first.
 
 ```wl
 With[
   {g = GridGraph[{9, 9}]},
-  {circle = First @ FindInfraCircle[g, 41, {2, 4}]["Realizations"]},
-  SubsetQ[First @ First @ FindInfraShell[g, 41, {2, 4}], circle]]
+  {circle = FindInfraCircle[g, 41, "Radius" -> {2, 4}]},
+  {SubsetQ[FindInfraShell[g, 41, {2, 4}], circle], EdgeQ[g, UndirectedEdge[Last @ circle, First @ circle]]}]
+```
+
+The search finds as many circles as the head counts.
+
+```wl
+With[
+  {g = GridGraph[{9, 9}]},
+  {Length @ FindInfraCircle[g, 41, "Radius" -> {2, 4}, All],
+   InfraMeasurement[g, InfraCircle[41, "Radius" -> {2, 4}], "Cardinality"]}]
 ```

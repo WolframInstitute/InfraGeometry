@@ -76,7 +76,7 @@ ConsistentPathSystemQ::usage = "ConsistentPathSystemQ[graph, obj] tests whether 
 InfraShell::usage = "InfraShell[center, r] inside InfraScene is the metric shell of radius r about center -- a level set of the distance from center; FindInfraShell is the search. A shell itself is a sorted vertex list.";
 FindInfraShell::usage = "FindInfraShell[graph, c, r] gives the metric shell { v : d(c, v) == r }; r may be a band {rmin, rmax}. Options Properties, Method.";
 FindInfraOsculatingShell::usage = "FindInfraOsculatingShell[graph, path, i, k] gives the shells whose level set contains the k-vertex window of path centred at position i, one per osculating centre.";
-FindAdvancingInfraFront::usage = "FindAdvancingInfraFront[graph, origin, steps] gives the foliation by a bouncing wavefront as a List of multisets <|v -> 1, ...|>: each front steps one geodesic step outward and reflects inward where it cannot.";
+FindAdvancingInfraFront::usage = "FindAdvancingInfraFront[graph, origin, steps] gives the foliation by a bouncing wavefront as a List of sorted vertex lists: each front steps one geodesic step outward and reflects inward where it cannot.";
 FindInfraShellCenter::usage = "FindInfraShellCenter[graph, shell] recovers {center, radii} from a shell. Option Method.";
 InfraShellQ::usage = "InfraShellQ[graph, vertexSet] tests whether vertexSet is a metric shell { v : d(c, v) == r } for some centre c and radius r.";
 SeparatesQ::usage = "SeparatesQ[graph, vertexSet, u, v] tests whether deleting vertexSet disconnects u from v.";
@@ -91,14 +91,14 @@ BallHullQ::usage = "BallHullQ[graph, S] tests whether S is ball-convex, i.e. an 
 
 (* ===================== InfraCircle ===================== *)
 
-InfraCircle::usage = "InfraCircle[c, p] is the inert circle around c through p and InfraCircle[c, \"Radius\" -> r | {r, s}] the circles of a band; its graph is the List of necklaces of a radial seam. Option \"RadiusDelta\" widens the band about d(c, p).";
+InfraCircle::usage = "InfraCircle[c, p] is the inert circle around c through p and InfraCircle[c, \"Radius\" -> r | {r, s}] the circles of a band; its graph is the List of necklaces of a radial seam. Option \"RadiusDelta\" widens the band: a scalar d means {0, d}, outward only.";
 FindInfraCircle::usage = "FindInfraCircle[graph, c, p] gives one circle around c through p as a cyclic vertex list; \"Radius\" -> r | {r, s} in place of p takes a band. A trailing n | UpTo[n] | All gives a List. Option \"RadiusDelta\".";
 FindInfraCycle::usage = "FindInfraCycle[graph, n] gives the n shortest simple cycles of graph; FindInfraCycle[graph, {kmin, kmax}, n] restricts their length.";
 InfraCircleQ::usage = "InfraCircleQ[graph, cycle] tests whether cycle is a cyclic edge chain whose vertex set is a metric shell.";
 
 (* ===================== InfraArc ===================== *)
 
-InfraArc::usage = "InfraArc[c, {p1, ..., pk}] is the inert arc around c from p1 to pk through the intermediate points: the geodesics of the band graph of the circle through p1. Option \"RadiusDelta\" widens the band.";
+InfraArc::usage = "InfraArc[c, {p1, ..., pk}] is the inert arc around c from p1 to pk through the intermediate points: the geodesics of the band graph of the circle through p1. Option \"RadiusDelta\" widens the band: a scalar d means {0, d}, outward only.";
 FindInfraArc::usage = "FindInfraArc[graph, c, {p1, ..., pk}] gives one arc around c through the points as a vertex list; a trailing n | UpTo[n] | All gives a List. Option \"RadiusDelta\".";
 
 (* ===================== InfraPolygon ===================== *)
@@ -286,7 +286,7 @@ $InfraWalkColor::usage    = "Default highlight color for walk graphs -- the shap
 $InfraTopologyColor::usage = "Default highlight color for topology overlays.";
 $InfraPalette::usage = "$InfraPalette is the Dataset of default colors, one row per named color, with columns \"Primitive\", \"Color\", \"Symbol\" and \"Shapes\" -- the shape classes that default to that color. Both the $Infra*Color symbols and InfraSceneHighlight read from it. A bare carrier does not remember its construction, so only three colors are reachable from a shape; the Euclidean objects InfraSegment, InfraRay, InfraLine, InfraCircle and InfraArc remember theirs and reach four more.";
 
-InfraSceneHighlight::usage = "InfraSceneHighlight[graph, objects] renders shapes -- vertices, vertex lists, densities, walk graphs and lists of them -- and the Euclidean objects InfraSegment, InfraRay, InfraLine, InfraCircle, InfraArc diffusely on graph, intensity scaling with multiplicity and colors blending across objects. Options \"OpacityRange\", \"ThicknessRange\", \"PointSizeRange\", \"Arrowheads\" (Automatic = off; True = Arrowheads[Medium]; or an explicit head spec -- one head at the end of each path object, sized from the plot rather than the stroke). A single object takes a head of its own with obj -> True, obj -> Arrowheads[...] or Style[obj, ...], and obj -> False turns one off, overriding the option for that object.";
+InfraSceneHighlight::usage = "InfraSceneHighlight[graph, objects] renders shapes -- vertices, vertex lists, densities, walk graphs and lists of them -- diffusely on graph; a Euclidean head is drawn through InfraMeasurement, its \"Graph\" or its \"VertexDensity\", intensity scaling with multiplicity and colors blending across objects. Options \"OpacityRange\", \"ThicknessRange\", \"PointSizeRange\", \"Arrowheads\" (Automatic = off; True = Arrowheads[Medium]; or an explicit head spec -- one head at the end of each path object, sized from the plot rather than the stroke). A single object takes a head of its own with obj -> True, obj -> Arrowheads[...] or Style[obj, ...], and obj -> False turns one off, overriding the option for that object.";
 InfraSceneViewer::usage = "InfraSceneViewer[scene, graph] is an interactive step-by-step visualisation of an InfraScene on a graph.";
 PointViewer::usage = "PointViewer[graph] is an interactive viewer for selecting points; PointViewer[graph, sym] stores the selection in sym.";
 SegmentViewer::usage = "SegmentViewer[graph] is an interactive viewer for exploring geodesic segments.";

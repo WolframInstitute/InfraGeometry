@@ -9,7 +9,7 @@ URI: WolframInstitute/SyntheticInfrageometry/ref/FindBallHull
 
 ## Usage
 
-`FindBallHull[graph, S]` returns the ball hull of S as an InfraSet: the intersection of all closed balls containing S, the smallest ball-convex (Mazur) superset.
+`FindBallHull[graph, S]` returns the ball hull of S as a sorted vertex list: the intersection of all closed balls containing S, the smallest ball-convex (Mazur) superset.
 
 ## Details & Options
 

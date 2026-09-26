@@ -9,6 +9,6 @@ URI: WolframInstitute/SyntheticInfrageometry/ref/FindInfraCycle
 
 ## Usage
 
-`FindInfraCycle[graph, n]` returns n shortest simple cycles as unary InfraCircle[{cycle}] wrappers (sorted by length); UpTo[n] returns up to n; All returns all.
+`FindInfraCycle[graph, n]` returns the n shortest simple cycles of graph, sorted by length, as a List of directed cycle graphs; UpTo[n] returns up to n; All returns all.
 
-`FindInfraCycle[graph, {k}, n]` and FindInfraCycle[graph, {kMin, kMax}, n] restrict cycle length.
+`FindInfraCycle[graph, {k}, n]` and `FindInfraCycle[graph, {kMin, kMax}, n]` restrict cycle length.

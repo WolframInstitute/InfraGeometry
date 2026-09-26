@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[     66124,       1675]
-NotebookOptionsPosition[     57074,       1504]
-NotebookOutlinePosition[     58283,       1540]
-CellTagsIndexPosition[     58203,       1535]
+NotebookDataLength[     69384,       1715]
+NotebookOptionsPosition[     60666,       1549]
+NotebookOutlinePosition[     61875,       1585]
+CellTagsIndexPosition[     61795,       1580]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -24,7 +24,7 @@ Cell["FindInfraPolygon", "ObjectName",
  CellID->1224892054,ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec"],
 
 Cell[TextData[{
- Cell["   ", "ModInfo",ExpressionUUID->"a6362dfa-1064-423f-bf6d-908a51db2c1a"],
+ Cell["   ", "ModInfo",ExpressionUUID->"b7d6cbef-9214-4fda-8ea5-28b648d3808f"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -41,7 +41,7 @@ Cell[TextData[{
       StyleBox["p1", "TI"], ",", " ", "\[Ellipsis]", ",", " ", 
       StyleBox["pn", "TI"]}], "}"}]}], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "89d968ed-9ecc-412a-b84a-9f1070dfcbcb"],
+  "ea619aa4-6b89-4e5a-bc8b-c700d0ce7b52"],
  "\[LineSeparator]",
  "gives one polygon with corners ",
  StyleBox["p1", "TI"],
@@ -52,19 +52,13 @@ Cell[TextData[{
  " \[LongDash] a geodesic between each pair of consecutive corners, the last \
 side returning to ",
  StyleBox["p1", "TI"],
- " \[LongDash] as an ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraPolygon"]], 
-    "paclet:WolframInstitute/SyntheticInfrageometry/ref/InfraPolygon", 
-    "WolframInstitute/SyntheticInfrageometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "98194b38-8396-4fc5-806f-691a54754f79"],
- " wrapper.",
+ " \[LongDash] as the ",
+ Cell[BoxData["List"], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "ef34c2de-b00c-4e7a-8c53-67376d5593f0"],
+ " of its sides, one directed path graph each.",
  "\n",
- Cell["   ", "ModInfo",ExpressionUUID->"cb03a056-2796-4545-966b-f8d22e237963"],
+ Cell["   ", "ModInfo",ExpressionUUID->"566c9ff6-0024-4a9e-9c74-c89c3508a264"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -82,27 +76,31 @@ side returning to ",
       StyleBox["pn", "TI"]}], "}"}], ",", " ", 
     StyleBox["m", "TI"]}], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "0d38eae3-90e2-4396-ac9c-ed0b3d550a85"],
+  "f533c118-5da3-4686-abb7-56f67d6239da"],
  "\[LineSeparator]",
- "gives exactly ",
+ "gives a ",
+ Cell[BoxData["List"], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "c4b06b88-c81b-4b49-8b7e-45643fdd8d20"],
+ " of exactly ",
  StyleBox["m", "TI"],
  " polygons or ",
  Cell[BoxData["$Failed"], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "4d5cc0f4-0447-4378-ac1e-16329e9c1ada"],
+  "54c57390-fea9-4f51-98e1-951bc4a15480"],
  "; ",
  Cell[BoxData[
   RowBox[{"UpTo", "[", "m", "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "ba0c2a8f-b11a-4947-ae74-7b7968a3845a"],
+  "aae1b434-31a3-4574-9132-d2fc456b0795"],
  " gives up to ",
  StyleBox["m", "TI"],
  "; ",
  Cell[BoxData["All"], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "94e16b44-7b08-43f9-b106-a9667776dd8f"],
+  "f57eff8c-c3db-4e81-9d81-eff90339b768"],
  " gives the whole class."
-}], "Usage",ExpressionUUID->"ab5bddda-0943-412e-b072-b61dda7ff561"],
+}], "Usage",ExpressionUUID->"669952f3-aaed-403c-9194-908707318b5a"],
 
 Cell[TextData[{
  "A polygon with corners ",
@@ -123,45 +121,15 @@ Cell[TextData[{
  StyleBox["pn", "TI"],
  " back to ",
  StyleBox["p1", "TI"],
- ". Corners are vertices or ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraPoint"]], 
-    "paclet:WolframInstitute/SyntheticInfrageometry/ref/InfraPoint", 
-    "WolframInstitute/SyntheticInfrageometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "07d6bc8b-8cad-4029-9c90-7cb366c95fef"],
- " atoms; each realisation is a list of ",
+ ". Corners are vertices; each polygon is the ",
+ Cell[BoxData["List"], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "71269d59-014c-42af-a2a9-b10aaf6e7685"],
+ " of its ",
  StyleBox["n", "TI"],
- " unary ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraSegment"]], 
-    "paclet:WolframInstitute/SyntheticInfrageometry/ref/InfraSegment", 
-    "WolframInstitute/SyntheticInfrageometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "a491f805-8aa9-476d-8225-17a17a565ecb"],
- " sides, and ",
- Cell[BoxData[
-  RowBox[{"[", "\"\<Sides\>\"", "]"}]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "5a083143-04db-4308-b3b9-145425be24a9"],
- ", ",
- Cell[BoxData[
-  RowBox[{"[", "\"\<Length\>\"", "]"}]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "59d5d19a-29ad-4647-805e-5af8240e7ac4"],
- " (the perimeter, in edges) and ",
- Cell[BoxData[
-  RowBox[{"[", "\"\<Vertices\>\"", "]"}]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "797b37b6-e92a-48db-89c6-41c514b2d73d"],
- " read them."
-}], "Notes",ExpressionUUID->"31454881-3f48-43d5-9c2f-2132e658eddd"],
+ " sides, one directed path graph each, and its perimeter is the total edge \
+count of the sides."
+}], "Notes",ExpressionUUID->"127f4ce2-df01-4020-9e79-68ef249f8979"],
 
 Cell[TextData[{
  "The class is the Cartesian ",
@@ -171,50 +139,50 @@ Cell[TextData[{
  StyleBox["k", "TI"],
  " geodesics contributes a factor ",
  StyleBox["k", "TI"],
- ". On a 5\[Times]5 grid the square on the four corners has one realisation, \
-while the diamond on the four side midpoints has 6^4 = 1296, every side being \
-a diagonal with six geodesics."
-}], "Notes",ExpressionUUID->"20cc3fa9-6395-47a5-89ff-6dfa65262f4f"],
+ ". On a 5\[Times]5 grid the square on the four corners has one member, while \
+the diamond on the four side midpoints has 6^4 = 1296, every side being a \
+diagonal with six geodesics."
+}], "Notes",ExpressionUUID->"e33a02f9-c72f-4611-ad65-60cf6f362fce"],
 
 Cell["\<\
 Nothing in the definition keeps the sides apart. A side may run back over \
 another: on the 3\[Times]3 grid with corners 1, 3, 9 the side from 9 to 1 may \
 retrace the two others, and the class admits it, since each side is a \
 geodesic on its own.\
-\>", "Notes",ExpressionUUID->"6cefa99d-2615-48c2-a30d-8da52e988e4a"],
+\>", "Notes",ExpressionUUID->"190b5325-5f81-4faa-9560-03056a7e8295"],
 
 Cell[TextData[{
  Cell[BoxData["All"], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "c6b3c56e-a166-47a6-acdd-473ad697f77d"],
+  "48dda54e-7d11-4f0a-be62-a87a4eec21ba"],
  " forms the product. A bounded count never does: it streams that many \
 geodesics per side and reads the first members of their product off a \
 mixed-radix index, so the count-less call \[LongDash] one polygon, the first \
 geodesic of every side \[LongDash] is cheap and deterministic, and a strict \
 count is exact."
-}], "Notes",ExpressionUUID->"39c5c1f1-3ba6-45bc-b88a-d0a541133f58"],
+}], "Notes",ExpressionUUID->"18df869d-4264-42e1-9e2f-db7bb8d9fbb2"],
 
 Cell[BoxData[GridBox[{
    {Cell["      ", "ModInfo",ExpressionUUID->
-     "9e4d40c6-74a6-4d92-b696-979c729c2fbe"], Cell["Option", "TableText",
-     FontWeight->Bold,ExpressionUUID->"173f62d0-d042-4150-b2dd-de7ea27e9514"],
+     "63b98c98-f4e8-45d0-add5-a8ba56af560e"], Cell["Option", "TableText",
+     FontWeight->Bold,ExpressionUUID->"b04fa9d8-9bbe-439a-b09d-4a8895a54c07"],
      Cell["Values", "TableText",
-     FontWeight->Bold,ExpressionUUID->"921ce536-2837-4dce-a9e3-193080a11e95"],
+     FontWeight->Bold,ExpressionUUID->"d270aaa9-44a3-4dd8-9efd-b18d4f72825d"],
      Cell["Meaning", "TableText",
-     FontWeight->Bold,ExpressionUUID->"cc2f8e93-b9e4-46cd-8a6c-0416aa39165b"]},
+     FontWeight->Bold,ExpressionUUID->"fe82353a-8d79-431f-9c73-748564d40380"]},
    {Cell["      ", "ModInfo",ExpressionUUID->
-     "bd0bb8b2-ec17-4189-91c7-a0e58f662a3b"], Cell[TextData[Cell[BoxData[
+     "a957e368-9a7e-430a-a51e-b5d05bd6693f"], Cell[TextData[Cell[BoxData[
     "Method"], "InlineFormula",
      FontSize->0.9 Inherited,ExpressionUUID->
-     "d7a1a5c2-27b1-4c5d-9b09-467144e6fb55"]], "TableText",ExpressionUUID->
-     "1ea4f21c-cd8e-4d9f-8b2f-6aa0b9fc8ddb"], Cell[TextData[{
+     "2e4be626-3fb7-4ac6-82bc-8433bd4ab480"]], "TableText",ExpressionUUID->
+     "22c679d5-5cd9-45c5-a8e4-903f628b9d95"], Cell[TextData[{
      Cell[BoxData["Automatic"], "InlineFormula",
       FontSize->0.9 Inherited,ExpressionUUID->
-      "86bc34c7-3533-4ff9-a5f9-0ea9ce37e4be"],
+      "45760a16-4ad9-439c-aa18-b5bc7db68208"],
      " (default), ",
      Cell[BoxData["\"\<Exhaustive\>\""], "InlineFormula",
       FontSize->0.9 Inherited,ExpressionUUID->
-      "89831af5-a936-450d-b965-3674f3643017"],
+      "d3fa166e-612c-41c2-8f57-7887ee5e30e9"],
      ", ",
      Cell[BoxData[
       RowBox[{"{", 
@@ -222,107 +190,107 @@ Cell[BoxData[GridBox[{
         RowBox[{"\"\<Pruning\>\"", " ", "->", " ", "spec"}]}], "}"}]], 
       "InlineFormula",
       FontSize->0.9 Inherited,ExpressionUUID->
-      "b5f820a5-ed1d-496d-92ce-22005a4ac2fb"],
+      "68c14a84-a053-40ff-8a09-3fed577f5a0a"],
      ", ",
      Cell[BoxData["\"\<Greedy\>\""], "InlineFormula",
       FontSize->0.9 Inherited,ExpressionUUID->
-      "5fc69a0a-a9c9-46c2-a697-43572f07d396"],
+      "131b8691-3ff8-48fa-b4a5-a5ee0b438183"],
      ", ",
      Cell[BoxData["\"\<RandomGreedy\>\""], "InlineFormula",
       FontSize->0.9 Inherited,ExpressionUUID->
-      "cb5b20cf-cfb2-4df7-8216-451be4dd5c3d"]
-    }], "TableText",ExpressionUUID->"c91897c6-a91e-4ef4-815a-b7b9ca99880b"], 
+      "0551f0bb-63fa-4125-9b08-52bc0a64d43d"]
+    }], "TableText",ExpressionUUID->"a94df8ce-fdbb-455a-a520-bad2a13ee00f"], 
     Cell[TextData[{
      "forwarded to the side geodesics. ",
      Cell[BoxData["Automatic"], "InlineFormula",
       FontSize->0.9 Inherited,ExpressionUUID->
-      "f6555343-0f9d-48e3-90a0-739cf7f1d388"],
+      "5131895c-6991-4b9f-a06b-a838271593bc"],
      " resolves by the count: ",
      Cell[BoxData["All"], "InlineFormula",
       FontSize->0.9 Inherited,ExpressionUUID->
-      "bcb4a66f-f1f8-4617-9490-e3883183fced"],
+      "8ecca6ff-4142-4b35-bccf-65705bce8e9c"],
      " to ",
      Cell[BoxData["\"\<Exhaustive\>\""], "InlineFormula",
       FontSize->0.9 Inherited,ExpressionUUID->
-      "453b98ab-18a3-49a6-aecb-d121855deb36"],
+      "a8146ab2-0baf-4bfe-9aef-3e14b588f357"],
      ", a bounded or absent count to ",
      Cell[BoxData["\"\<Greedy\>\""], "InlineFormula",
       FontSize->0.9 Inherited,ExpressionUUID->
-      "592f94f4-6472-4f6d-ac15-6cda70c9eb55"],
+      "7234d4b0-8909-4f26-b9e3-0a805f9e11a2"],
      ". The class is the same under every value; ",
      Cell[BoxData["\"\<Greedy\>\""], "InlineFormula",
       FontSize->0.9 Inherited,ExpressionUUID->
-      "f5147e67-8ce4-4303-8fa5-cc97b91741e1"],
+      "0979f07c-b415-43ca-8b3f-1ed08340cb70"],
      " and ",
      Cell[BoxData["\"\<Exhaustive\>\""], "InlineFormula",
       FontSize->0.9 Inherited,ExpressionUUID->
-      "e1b3516e-9cd3-42c6-a530-16dbb1dc20c4"],
+      "ec6c3044-db76-4f0f-b630-c2a21c1c5a5a"],
      " take each side's geodesics in candidate order, ",
      Cell[BoxData["\"\<RandomGreedy\>\""], "InlineFormula",
       FontSize->0.9 Inherited,ExpressionUUID->
-      "114408ee-6612-494c-8ad5-463762b85cef"],
+      "9b2a276d-8273-461a-b7cc-d9ebef2dde4b"],
      " in random order, seeded by an ambient ",
      Cell[BoxData["SeedRandom"], "InlineFormula",
       FontSize->0.9 Inherited,ExpressionUUID->
-      "5c08d803-174e-4388-88f7-c8cf6427b484"],
+      "9623cf2c-6932-4776-bab5-fbd698403c0f"],
      ". ",
      Cell[BoxData["\"\<Pruning\>\""], "InlineFormula",
       FontSize->0.9 Inherited,ExpressionUUID->
-      "ce83b474-d6c6-43cb-8a37-d40b718024a9"],
+      "184b89e5-09cc-48de-b1b5-d8c1de38751d"],
      " is accepted and inert: the sides come off geodesic pools, which have \
 no frontier to cap."
-    }], "TableText",ExpressionUUID->"a41e0156-e3af-4fdb-b7a3-7cc4486991b3"]}
-  }]], "3ColumnTableMod",ExpressionUUID->"8776fa3b-89d3-4029-a8bb-\
-9b3cb848e793"],
+    }], "TableText",ExpressionUUID->"125a85fc-aa9d-4732-bab3-ea588114af9e"]}
+  }]], "3ColumnTableMod",ExpressionUUID->"c60dc470-8583-406e-b0ae-\
+a6f25e633af9"],
 
 Cell[TextData[{
  "Sides chosen by a local rule \[LongDash] straightest, curvature-minimising \
 \[LongDash] are not a polygon option: build them with ",
- Cell[BoxData["FindInfraGeodesic"], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "2aa56c14-9ef3-4559-b804-795f6d519bc7"],
- " and assemble the ",
  Cell[BoxData[
   TemplateBox[{
     Cell[
-     TextData["InfraPolygon"]], 
-    "paclet:WolframInstitute/SyntheticInfrageometry/ref/InfraPolygon", 
+     TextData["FindInfraGeodesic"]], 
+    "paclet:WolframInstitute/SyntheticInfrageometry/ref/FindInfraGeodesic", 
     "WolframInstitute/SyntheticInfrageometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "93b6289b-b2d3-4908-a247-13edced3ebfa"],
- "."
-}], "Notes",ExpressionUUID->"97a6746a-fe72-4728-9d0a-34f136821938"],
+  "bfbd1476-a222-4977-9b62-01f48f204b49"],
+ " and assemble the ",
+ Cell[BoxData["List"], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "52a4b084-77d5-4b61-a0f0-d782b9950bc6"],
+ " of sides."
+}], "Notes",ExpressionUUID->"4a7e81e7-f7b9-41d2-a91a-36271974da53"],
 
-Cell["Corresponding notions in the classical axiom systems:", "Notes",ExpressionUUID->"502e7a20-8a68-4335-8c80-05cd16da6312"],
+Cell["Corresponding notions in the classical axiom systems:", "Notes",ExpressionUUID->"59e4220a-b99f-4325-95b2-bf018bf9ae58"],
 
 Cell[BoxData[GridBox[{
    {Cell["      ", "ModInfo",ExpressionUUID->
-     "efa14102-9c6c-4061-ba34-262e724f6486"], Cell["System", "TableText",
-     FontWeight->Bold,ExpressionUUID->"a4b59559-50a8-4fcd-8846-c6be67702739"],
+     "ba2cf3ff-a71c-4723-9ed7-0d89fda776ab"], Cell["System", "TableText",
+     FontWeight->Bold,ExpressionUUID->"3638d935-d1fa-4b40-8eb7-1d72b4612181"],
      Cell["Name", "TableText",
-     FontWeight->Bold,ExpressionUUID->"af6b8fe5-6069-4309-a16d-9fce86a54b04"],
+     FontWeight->Bold,ExpressionUUID->"83f211f0-1d91-482b-92ea-3a4163836fd4"],
      Cell["Statement", "TableText",
-     FontWeight->Bold,ExpressionUUID->"bee21cde-3edb-4935-9501-404eb0baf057"]},
+     FontWeight->Bold,ExpressionUUID->"d9551f44-7ae4-47f4-82b0-9ddfb46fb632"]},
    {Cell["      ", "ModInfo",ExpressionUUID->
-     "4dc8ade7-7e14-49e4-bf5c-f7820af973d1"], Cell[
+     "de80e32f-57b3-44da-bd48-5968b4a7d07e"], Cell[
     "Euclid", "TableText",ExpressionUUID->
-     "01cc2356-8afe-4ebb-9889-ed175f22c4cf"], Cell[
+     "74a0dbae-24da-4dd3-838e-679474ff96a6"], Cell[
     "Definition 19", "TableText",ExpressionUUID->
-     "ffde4185-68a5-4fa8-8b14-f407499b242d"], Cell["\<\
+     "48729305-8844-4163-829d-b95862987615"], Cell["\<\
 Rectilinear figures are those contained by straight lines: trilateral, \
 quadrilateral, multilateral.\
-\>", "TableText",ExpressionUUID->"cadec7c1-51b6-4884-bfe6-fee7da3655f9"]},
+\>", "TableText",ExpressionUUID->"dd8574d5-0d94-4566-aa19-c1b41d901d1d"]},
    {Cell["      ", "ModInfo",ExpressionUUID->
-     "bc2164f9-e317-4a4f-bbe7-1d3be06509ad"], Cell[
+     "acfa2a4b-8fbb-4bf9-85ff-2f6fbbbe2187"], Cell[
     "Hilbert", "TableText",ExpressionUUID->
-     "219979d6-5226-4c48-83ce-3572bf585521"], Cell[
+     "f8abb6d5-249e-4165-8542-8ed41c9ef43d"], Cell[
     "(defined)", "TableText",ExpressionUUID->
-     "bb7f3daf-a983-4f71-a08c-8c66523f0049"], Cell["\<\
+     "89f95ec0-2496-476c-baef-a443aaa5ac44"], Cell["\<\
 A polygon is a closed broken line of segments, defined from betweenness.\
-\>", "TableText",ExpressionUUID->"39739b0e-c118-4418-84ab-691433a3b1f5"]}
-  }]], "3ColumnTableMod",ExpressionUUID->"d87dc3e3-f133-4db7-bede-\
-197c776647fb"]
+\>", "TableText",ExpressionUUID->"fce9e135-b676-43bd-9f63-985d5c3bd21e"]}
+  }]], "3ColumnTableMod",ExpressionUUID->"1a9454ef-84a8-49f0-bdfb-\
+c01d3e3a47f0"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -351,7 +319,7 @@ Cell[TextData[{
     "WolframInstitute/SyntheticInfrageometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "9787d176-7c04-48ce-b9b3-73b3c7a5f795"],
+  "c199b3e0-e9fe-49b1-a38d-3036c7287690"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -361,7 +329,7 @@ Cell[TextData[{
     "WolframInstitute/SyntheticInfrageometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "f15d5eb2-8f5d-42a9-91f6-266ab76d37ad"],
+  "2b465d05-d52d-4235-be4c-b79997762ece"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -372,7 +340,7 @@ FindInfraRegularPolygon",
     "WolframInstitute/SyntheticInfrageometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "a3dcff35-2b56-4d2e-a4b9-04bfeb80260b"],
+  "cd273fe9-2dd9-4b79-8142-b29c95f64795"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -382,7 +350,7 @@ FindInfraRegularPolygon",
     "WolframInstitute/SyntheticInfrageometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "df314dd3-80b9-484c-8dc3-6ab8aa36f0e9"],
+  "00fe5e9f-29e8-4b18-bb50-83ff8880650d"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -392,8 +360,8 @@ FindInfraRegularPolygon",
     "WolframInstitute/SyntheticInfrageometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "d6ae493d-2b09-46df-914f-c3385158f1af"]
-}], "SeeAlso",ExpressionUUID->"bf153115-d2a6-40ba-b705-f74d6ae1b076"]
+  "2ed0874c-aa45-4db5-bfa7-57a92cf86950"]
+}], "SeeAlso",ExpressionUUID->"5efc66c5-ad87-4969-8ddb-fce0bd492d10"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -421,8 +389,8 @@ Cell[TextData[Cell[BoxData[
   ButtonData->
    "paclet:WolframInstitute/SyntheticInfrageometry/guide/\
 EuclideanGeometryGuide"]], \
-"InlineFormula",ExpressionUUID->"8e74619c-0f9b-4b8f-9346-5773b0a32d8c"]], \
-"MoreAbout",ExpressionUUID->"487b72f6-cc72-4ff2-9359-ac5ed3677660"]
+"InlineFormula",ExpressionUUID->"0e552cd1-e570-41d2-b2c1-4540bcd22e5a"]], \
+"MoreAbout",ExpressionUUID->"020aa837-6f1e-4c4a-93fd-7c5be9b0596f"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -483,9 +451,9 @@ Cell[BoxData[
  CellID->880084151,ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42"],
 
 Cell["\<\
-The square on the four corners of a 5\[Times]5 grid has one realisation; the \
+The square on the four corners of a 5\[Times]5 grid has one member; the \
 diamond on the four side midpoints has 1296.\
-\>", "ExampleText",ExpressionUUID->"21ed7461-3c43-4f27-825d-0b9c9eb4e2e9"],
+\>", "ExampleText",ExpressionUUID->"fccc12ce-6011-449e-814e-0ddb5c595caa"],
 
 Cell[CellGroupData[{
 
@@ -500,32 +468,28 @@ Cell[BoxData[
    RowBox[{"{", 
     RowBox[{
      RowBox[{"Length", " ", "@", " ", 
-      RowBox[{
-       RowBox[{"FindInfraPolygon", "[", 
-        RowBox[{"g", ",", " ", 
-         RowBox[{"{", 
-          RowBox[{"1", ",", " ", "5", ",", " ", "25", ",", " ", "21"}], "}"}],
-          ",", " ", "All"}], "]"}], "[", "\"\<Realizations\>\"", "]"}]}], ",",
-      "\n", "   ", 
+      RowBox[{"FindInfraPolygon", "[", 
+       RowBox[{"g", ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"1", ",", " ", "5", ",", " ", "25", ",", " ", "21"}], "}"}], 
+        ",", " ", "All"}], "]"}]}], ",", "\n", "   ", 
      RowBox[{"Length", " ", "@", " ", 
-      RowBox[{
-       RowBox[{"FindInfraPolygon", "[", 
-        RowBox[{"g", ",", " ", 
-         RowBox[{"{", 
-          RowBox[{"3", ",", " ", "15", ",", " ", "23", ",", " ", "11"}], 
-          "}"}], ",", " ", "All"}], "]"}], "[", "\"\<Realizations\>\"", 
-       "]"}]}]}], "}"}]}], "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"c48f5c93-4cb3-419e-a5a6-c629089fabfb"],
+      RowBox[{"FindInfraPolygon", "[", 
+       RowBox[{"g", ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"3", ",", " ", "15", ",", " ", "23", ",", " ", "11"}], "}"}],
+         ",", " ", "All"}], "]"}]}]}], "}"}]}], "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"58662446-cf71-4b98-b439-5900d9450b3c"],
 
 Cell[BoxData[
  RowBox[{"{", 
   RowBox[{"1", ",", "1296"}], "}"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"6b1fe2c0-0403-450b-a2f8-53763255adb4"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"a005d5fc-3018-4fa0-a468-5e1b644f45cf"]
 }, Open  ]],
 
 Cell["\<\
 Three of the diamonds, streamed off the class in random order.\
-\>", "ExampleText",ExpressionUUID->"c24f1061-bdf1-4d2d-b832-54c8ed62d710"],
+\>", "ExampleText",ExpressionUUID->"0e732a97-90be-4c28-86fd-79b46c1cccd9"],
 
 Cell[CellGroupData[{
 
@@ -554,14 +518,13 @@ Cell[BoxData[
            RowBox[{"Method", " ", "->", " ", "\"\<RandomGreedy\>\""}]}], 
           "]"}], " ", "->", " ", "$InfraSegmentColor"}], ",", "\n", "     ", 
         RowBox[{
-         RowBox[{"InfraSet", "[", 
-          RowBox[{"{", 
-           RowBox[{"3", ",", " ", "15", ",", " ", "23", ",", " ", "11"}], 
-           "}"}], "]"}], " ", "->", " ", "$InfraPointColor"}]}], "}"}], ",", 
-      "\n", "    ", 
+         RowBox[{"{", 
+          RowBox[{"3", ",", " ", "15", ",", " ", "23", ",", " ", "11"}], 
+          "}"}], " ", "->", " ", "$InfraPointColor"}]}], "}"}], ",", "\n", 
+      "    ", 
       RowBox[{"ImageSize", " ", "->", " ", "300"}]}], "]"}]}], 
    "]"}]}]], "Input",
- CellLabel->"In[2]:= ",ExpressionUUID->"49206ee3-1d2a-4053-9617-c80e00df25b6"],
+ CellLabel->"In[2]:= ",ExpressionUUID->"7c6766ed-b92b-4a43-802f-74f2980d8ab2"],
 
 Cell[BoxData[
  GraphicsBox[
@@ -581,277 +544,378 @@ Cell[BoxData[
           24}, {15}, {19}, {25}, {16}, {22}, {17}, {21}, {23}, {18}, {22}, {
           24}, {19}, {23}, {25}, {20}, {24}}}, Pattern}]}, {
       EdgeShapeFunction -> {
-        UndirectedEdge[15, 20] -> ({}& ), UndirectedEdge[14, 15] -> ({}& ), 
-         UndirectedEdge[12, 17] -> ({}& ), UndirectedEdge[17, 18] -> ({
+        UndirectedEdge[23, 24] -> ({}& ), UndirectedEdge[6, 7] -> ({
            JoinForm["Round"], 
            If[
-            And[
-            WolframInstitute`SyntheticInfrageometry`InfraSceneVisualization`\
-PackagePrivate`arrowSpec$16726 =!= None, 
+            And[Part[{{
+                 UndirectedEdge[6, 7], 
+                 UndirectedEdge[2, 7]}, {{2., 1.}, {2., 2.}, {1., 2.}}, True, 
+                None}, 4] =!= None, 
              Part[{{
-                UndirectedEdge[17, 18], 
-                UndirectedEdge[12, 17]}, {{4., 3.}, {4., 2.}, {3., 2.}}, 
-               False}, 3]], 
-            Apply[
-            Sequence, {
-             WolframInstitute`SyntheticInfrageometry`InfraSceneVisualization`\
-PackagePrivate`arrowSpec$16726, 
+                UndirectedEdge[6, 7], 
+                UndirectedEdge[2, 7]}, {{2., 1.}, {2., 2.}, {1., 2.}}, True, 
+               None}, 3]], 
+            Apply[Sequence, {
+              Part[{{
+                 UndirectedEdge[6, 7], 
+                 UndirectedEdge[2, 7]}, {{2., 1.}, {2., 2.}, {1., 2.}}, True, 
+                None}, 4], 
               Arrow[
                Part[{{
-                  UndirectedEdge[17, 18], 
-                  UndirectedEdge[12, 17]}, {{4., 3.}, {4., 2.}, {3., 2.}}, 
-                 False}, 2]]}], 
+                  UndirectedEdge[6, 7], 
+                  UndirectedEdge[2, 7]}, {{2., 1.}, {2., 2.}, {1., 2.}}, True,
+                  None}, 2]]}], 
             Line[
              Part[{{
-                UndirectedEdge[17, 18], 
-                UndirectedEdge[12, 17]}, {{4., 3.}, {4., 2.}, {3., 2.}}, 
-               False}, 2]]]}& ), UndirectedEdge[2, 7] -> ({
+                UndirectedEdge[6, 7], 
+                UndirectedEdge[2, 7]}, {{2., 1.}, {2., 2.}, {1., 2.}}, True, 
+               None}, 2]]]}& ), UndirectedEdge[15, 20] -> ({}& ), 
+         UndirectedEdge[13, 14] -> ({}& ), UndirectedEdge[1, 6] -> ({
            JoinForm["Round"], 
            If[
-            And[
-            WolframInstitute`SyntheticInfrageometry`InfraSceneVisualization`\
-PackagePrivate`arrowSpec$16726 =!= None, 
+            And[Part[{{
+                 UndirectedEdge[1, 6], 
+                 UndirectedEdge[1, 2]}, {{2., 1.}, {1., 1.}, {1., 2.}}, True, 
+                None}, 4] =!= None, 
              Part[{{
-                UndirectedEdge[2, 7], 
-                UndirectedEdge[2, 3]}, {{2., 2.}, {1., 2.}, {1., 3.}}, True}, 
-              3]], 
-            Apply[
-            Sequence, {
-             WolframInstitute`SyntheticInfrageometry`InfraSceneVisualization`\
-PackagePrivate`arrowSpec$16726, 
+                UndirectedEdge[1, 6], 
+                UndirectedEdge[1, 2]}, {{2., 1.}, {1., 1.}, {1., 2.}}, True, 
+               None}, 3]], 
+            Apply[Sequence, {
+              Part[{{
+                 UndirectedEdge[1, 6], 
+                 UndirectedEdge[1, 2]}, {{2., 1.}, {1., 1.}, {1., 2.}}, True, 
+                None}, 4], 
               Arrow[
                Part[{{
-                  UndirectedEdge[2, 7], 
-                  UndirectedEdge[2, 3]}, {{2., 2.}, {1., 2.}, {1., 3.}}, 
-                 True}, 2]]}], 
+                  UndirectedEdge[1, 6], 
+                  UndirectedEdge[1, 2]}, {{2., 1.}, {1., 1.}, {1., 2.}}, True,
+                  None}, 2]]}], 
             Line[
              Part[{{
-                UndirectedEdge[2, 7], 
-                UndirectedEdge[2, 3]}, {{2., 2.}, {1., 2.}, {1., 3.}}, True}, 
-              2]]]}& ), UndirectedEdge[13, 14] -> ({
+                UndirectedEdge[1, 6], 
+                UndirectedEdge[1, 2]}, {{2., 1.}, {1., 1.}, {1., 2.}}, True, 
+               None}, 2]]]}& ), UndirectedEdge[2, 7] -> ({}& ), 
+         UndirectedEdge[18, 23] -> ({}& ), UndirectedEdge[14, 15] -> ({}& ), 
+         UndirectedEdge[12, 13] -> ({}& ), UndirectedEdge[6, 11] -> ({}& ), 
+         UndirectedEdge[8, 13] -> ({}& ), UndirectedEdge[1, 2] -> ({}& ), 
+         UndirectedEdge[3, 8] -> ({
            JoinForm["Round"], 
            If[
-            And[
-            WolframInstitute`SyntheticInfrageometry`InfraSceneVisualization`\
-PackagePrivate`arrowSpec$16726 =!= None, 
+            And[Part[{{
+                 UndirectedEdge[3, 8], 
+                 UndirectedEdge[8, 13], 
+                 UndirectedEdge[13, 14], 
+                 UndirectedEdge[14, 15], 
+                 UndirectedEdge[15, 20], 
+                 UndirectedEdge[19, 20], 
+                 UndirectedEdge[19, 24], 
+                 UndirectedEdge[23, 24], 
+                 UndirectedEdge[18, 23]}, {{1., 3.}, {2., 3.}, {3., 3.}, {3., 
+                4.}, {3., 5.}, {4., 5.}, {4., 4.}, {5., 4.}, {5., 3.}, {4., 
+                3.}}, False, None}, 4] =!= None, 
              Part[{{
+                UndirectedEdge[3, 8], 
+                UndirectedEdge[8, 13], 
                 UndirectedEdge[13, 14], 
                 UndirectedEdge[14, 15], 
                 UndirectedEdge[15, 20], 
                 UndirectedEdge[19, 20], 
-                UndirectedEdge[18, 19]}, {{3., 3.}, {3., 4.}, {3., 5.}, {4., 
-               5.}, {4., 4.}, {4., 3.}}, False}, 3]], 
-            Apply[
-            Sequence, {
-             WolframInstitute`SyntheticInfrageometry`InfraSceneVisualization`\
-PackagePrivate`arrowSpec$16726, 
+                UndirectedEdge[19, 24], 
+                UndirectedEdge[23, 24], 
+                UndirectedEdge[18, 23]}, {{1., 3.}, {2., 3.}, {3., 3.}, {3., 
+               4.}, {3., 5.}, {4., 5.}, {4., 4.}, {5., 4.}, {5., 3.}, {4., 
+               3.}}, False, None}, 3]], 
+            Apply[Sequence, {
+              Part[{{
+                 UndirectedEdge[3, 8], 
+                 UndirectedEdge[8, 13], 
+                 UndirectedEdge[13, 14], 
+                 UndirectedEdge[14, 15], 
+                 UndirectedEdge[15, 20], 
+                 UndirectedEdge[19, 20], 
+                 UndirectedEdge[19, 24], 
+                 UndirectedEdge[23, 24], 
+                 UndirectedEdge[18, 23]}, {{1., 3.}, {2., 3.}, {3., 3.}, {3., 
+                4.}, {3., 5.}, {4., 5.}, {4., 4.}, {5., 4.}, {5., 3.}, {4., 
+                3.}}, False, None}, 4], 
               Arrow[
                Part[{{
+                  UndirectedEdge[3, 8], 
+                  UndirectedEdge[8, 13], 
                   UndirectedEdge[13, 14], 
                   UndirectedEdge[14, 15], 
                   UndirectedEdge[15, 20], 
                   UndirectedEdge[19, 20], 
-                  UndirectedEdge[18, 19]}, {{3., 3.}, {3., 4.}, {3., 5.}, {4.,
-                  5.}, {4., 4.}, {4., 3.}}, False}, 2]]}], 
+                  UndirectedEdge[19, 24], 
+                  UndirectedEdge[23, 24], 
+                  UndirectedEdge[18, 23]}, {{1., 3.}, {2., 3.}, {3., 3.}, {3.,
+                  4.}, {3., 5.}, {4., 5.}, {4., 4.}, {5., 4.}, {5., 3.}, {4., 
+                 3.}}, False, None}, 2]]}], 
             Line[
              Part[{{
+                UndirectedEdge[3, 8], 
+                UndirectedEdge[8, 13], 
                 UndirectedEdge[13, 14], 
                 UndirectedEdge[14, 15], 
                 UndirectedEdge[15, 20], 
                 UndirectedEdge[19, 20], 
-                UndirectedEdge[18, 19]}, {{3., 3.}, {3., 4.}, {3., 5.}, {4., 
-               5.}, {4., 4.}, {4., 3.}}, False}, 2]]]}& ), 
-         UndirectedEdge[18, 19] -> ({}& ), UndirectedEdge[18, 23] -> ({
+                UndirectedEdge[19, 24], 
+                UndirectedEdge[23, 24], 
+                UndirectedEdge[18, 23]}, {{1., 3.}, {2., 3.}, {3., 3.}, {3., 
+               4.}, {3., 5.}, {4., 5.}, {4., 4.}, {5., 4.}, {5., 3.}, {4., 
+               3.}}, False, None}, 2]]]}& ), UndirectedEdge[17, 18] -> ({
            JoinForm["Round"], 
            If[
-            And[
-            WolframInstitute`SyntheticInfrageometry`InfraSceneVisualization`\
-PackagePrivate`arrowSpec$16726 =!= None, 
+            And[Part[{{
+                 UndirectedEdge[17, 18], 
+                 UndirectedEdge[12, 17]}, {{4., 3.}, {4., 2.}, {3., 2.}}, 
+                False, None}, 4] =!= None, 
              Part[{{
-                UndirectedEdge[18, 23], 
-                UndirectedEdge[18, 23]}, {{4., 3.}, {5., 3.}, {4., 3.}}, 
-               False}, 3]], 
-            Apply[
-            Sequence, {
-             WolframInstitute`SyntheticInfrageometry`InfraSceneVisualization`\
-PackagePrivate`arrowSpec$16726, 
+                UndirectedEdge[17, 18], 
+                UndirectedEdge[12, 17]}, {{4., 3.}, {4., 2.}, {3., 2.}}, 
+               False, None}, 3]], 
+            Apply[Sequence, {
+              Part[{{
+                 UndirectedEdge[17, 18], 
+                 UndirectedEdge[12, 17]}, {{4., 3.}, {4., 2.}, {3., 2.}}, 
+                False, None}, 4], 
               Arrow[
                Part[{{
-                  UndirectedEdge[18, 23], 
-                  UndirectedEdge[18, 23]}, {{4., 3.}, {5., 3.}, {4., 3.}}, 
-                 False}, 2]]}], 
+                  UndirectedEdge[17, 18], 
+                  UndirectedEdge[12, 17]}, {{4., 3.}, {4., 2.}, {3., 2.}}, 
+                 False, None}, 2]]}], 
             Line[
              Part[{{
-                UndirectedEdge[18, 23], 
-                UndirectedEdge[18, 23]}, {{4., 3.}, {5., 3.}, {4., 3.}}, 
-               False}, 2]]]}& ), UndirectedEdge[11, 12] -> ({
+                UndirectedEdge[17, 18], 
+                UndirectedEdge[12, 17]}, {{4., 3.}, {4., 2.}, {3., 2.}}, 
+               False, None}, 2]]]}& ), UndirectedEdge[11, 12] -> ({
            JoinForm["Round"], 
            If[
-            And[
-            WolframInstitute`SyntheticInfrageometry`InfraSceneVisualization`\
-PackagePrivate`arrowSpec$16726 =!= None, 
+            And[Part[{{
+                 UndirectedEdge[11, 12], 
+                 UndirectedEdge[6, 11]}, {{3., 2.}, {3., 1.}, {2., 1.}}, 
+                False, None}, 4] =!= None, 
              Part[{{
                 UndirectedEdge[11, 12], 
-                UndirectedEdge[11, 12]}, {{3., 2.}, {3., 1.}, {3., 2.}}, 
-               False}, 3]], 
-            Apply[
-            Sequence, {
-             WolframInstitute`SyntheticInfrageometry`InfraSceneVisualization`\
-PackagePrivate`arrowSpec$16726, 
+                UndirectedEdge[6, 11]}, {{3., 2.}, {3., 1.}, {2., 1.}}, False,
+                None}, 3]], 
+            Apply[Sequence, {
+              Part[{{
+                 UndirectedEdge[11, 12], 
+                 UndirectedEdge[6, 11]}, {{3., 2.}, {3., 1.}, {2., 1.}}, 
+                False, None}, 4], 
               Arrow[
                Part[{{
                   UndirectedEdge[11, 12], 
-                  UndirectedEdge[11, 12]}, {{3., 2.}, {3., 1.}, {3., 2.}}, 
-                 False}, 2]]}], 
+                  UndirectedEdge[6, 11]}, {{3., 2.}, {3., 1.}, {2., 1.}}, 
+                 False, None}, 2]]}], 
             Line[
              Part[{{
                 UndirectedEdge[11, 12], 
-                UndirectedEdge[11, 12]}, {{3., 2.}, {3., 1.}, {3., 2.}}, 
-               False}, 2]]]}& ), UndirectedEdge[19, 20] -> ({}& ), 
-         UndirectedEdge[2, 3] -> ({}& )}, 
-       EdgeStyle -> {UndirectedEdge[2, 3] -> Directive[
+                UndirectedEdge[6, 11]}, {{3., 2.}, {3., 1.}, {2., 1.}}, False,
+                None}, 2]]]}& ), UndirectedEdge[12, 17] -> ({}& ), 
+         UndirectedEdge[19, 20] -> ({}& ), UndirectedEdge[19, 24] -> ({}& ), 
+         UndirectedEdge[13, 18] -> ({
+           JoinForm["Round"], 
+           If[
+            And[Part[{{
+                 UndirectedEdge[13, 18], 
+                 UndirectedEdge[12, 13]}, {{4., 3.}, {3., 3.}, {3., 2.}}, 
+                False, None}, 4] =!= None, 
+             Part[{{
+                UndirectedEdge[13, 18], 
+                UndirectedEdge[12, 13]}, {{4., 3.}, {3., 3.}, {3., 2.}}, 
+               False, None}, 3]], 
+            Apply[Sequence, {
+              Part[{{
+                 UndirectedEdge[13, 18], 
+                 UndirectedEdge[12, 13]}, {{4., 3.}, {3., 3.}, {3., 2.}}, 
+                False, None}, 4], 
+              Arrow[
+               Part[{{
+                  UndirectedEdge[13, 18], 
+                  UndirectedEdge[12, 13]}, {{4., 3.}, {3., 3.}, {3., 2.}}, 
+                 False, None}, 2]]}], 
+            Line[
+             Part[{{
+                UndirectedEdge[13, 18], 
+                UndirectedEdge[12, 13]}, {{4., 3.}, {3., 3.}, {3., 2.}}, 
+               False, None}, 2]]]}& )}, 
+       EdgeStyle -> {UndirectedEdge[17, 18] -> Directive[
+           RGBColor[0.790588, 0.201176, 0.], 
+           Opacity[0.5], 
+           AbsoluteThickness[1.5], 
+           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[8, 13] -> Directive[
+           RGBColor[0.790588, 0.201176, 0.], 
+           Opacity[0.7], 
+           AbsoluteThickness[4.5], 
+           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[2, 3] -> Directive[
+           RGBColor[0.790588, 0.201176, 0.], 
+           Opacity[0.7], 
+           AbsoluteThickness[4.5], 
+           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[6, 7] -> Directive[
+           RGBColor[0.790588, 0.201176, 0.], 
+           Opacity[0.5], 
+           AbsoluteThickness[1.5], 
+           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[15, 20] -> Directive[
+           RGBColor[0.790588, 0.201176, 0.], 
+           Opacity[0.7], 
+           AbsoluteThickness[4.5], 
+           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[13, 18] -> Directive[
            RGBColor[0.790588, 0.201176, 0.], 
            Opacity[0.6], 
            AbsoluteThickness[3.], 
-           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[7, 8] -> Directive[
+           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[19, 24] -> Directive[
+           RGBColor[0.790588, 0.201176, 0.], 
+           Opacity[0.7], 
+           AbsoluteThickness[4.5], 
+           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[6, 11] -> Directive[
+           RGBColor[0.790588, 0.201176, 0.], 
+           Opacity[0.7], 
+           AbsoluteThickness[4.5], 
+           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[1, 6] -> Directive[
            RGBColor[0.790588, 0.201176, 0.], 
            Opacity[0.6], 
            AbsoluteThickness[3.], 
-           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[7, 12] -> Directive[
-           RGBColor[0.790588, 0.201176, 0.], 
-           Opacity[0.8], 
-           AbsoluteThickness[6.], 
-           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[18, 19] -> Directive[
-           RGBColor[0.790588, 0.201176, 0.], 
-           Opacity[1.], 
-           AbsoluteThickness[9.], 
-           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[13, 14] -> Directive[
-           RGBColor[0.790588, 0.201176, 0.], 
-           Opacity[1.], 
-           AbsoluteThickness[9.], 
            RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[14, 15] -> Directive[
            RGBColor[0.790588, 0.201176, 0.], 
-           Opacity[1.], 
-           AbsoluteThickness[9.], 
-           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[2, 7] -> Directive[
+           Opacity[0.7], 
+           AbsoluteThickness[4.5], 
+           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[18, 23] -> Directive[
+           RGBColor[0.790588, 0.201176, 0.], 
+           Opacity[0.7], 
+           AbsoluteThickness[4.5], 
+           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[12, 17] -> Directive[
+           RGBColor[0.790588, 0.201176, 0.], 
+           Opacity[0.5], 
+           AbsoluteThickness[1.5], 
+           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[3, 8] -> Directive[
+           RGBColor[0.790588, 0.201176, 0.], 
+           Opacity[0.7], 
+           AbsoluteThickness[4.5], 
+           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[19, 20] -> Directive[
+           RGBColor[0.790588, 0.201176, 0.], 
+           Opacity[0.7], 
+           AbsoluteThickness[4.5], 
+           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[1, 2] -> Directive[
            RGBColor[0.790588, 0.201176, 0.], 
            Opacity[0.6], 
            AbsoluteThickness[3.], 
+           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[13, 14] -> Directive[
+           RGBColor[0.790588, 0.201176, 0.], 
+           Opacity[0.7], 
+           AbsoluteThickness[4.5], 
+           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[23, 24] -> Directive[
+           RGBColor[0.790588, 0.201176, 0.], 
+           Opacity[0.7], 
+           AbsoluteThickness[4.5], 
+           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[2, 7] -> Directive[
+           RGBColor[0.790588, 0.201176, 0.], 
+           Opacity[0.5], 
+           AbsoluteThickness[1.5], 
+           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[11, 12] -> Directive[
+           RGBColor[0.790588, 0.201176, 0.], 
+           Opacity[0.7], 
+           AbsoluteThickness[4.5], 
            RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[12, 13] -> Directive[
            RGBColor[0.790588, 0.201176, 0.], 
            Opacity[0.6], 
            AbsoluteThickness[3.], 
-           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[18, 23] -> Directive[
-           RGBColor[0.790588, 0.201176, 0.], 
-           Opacity[1.6], 
-           AbsoluteThickness[18.], 
-           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[11, 12] -> Directive[
-           RGBColor[0.790588, 0.201176, 0.], 
-           Opacity[1.6], 
-           AbsoluteThickness[18.], 
-           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[12, 17] -> Directive[
-           RGBColor[0.790588, 0.201176, 0.], 
-           Opacity[1.], 
-           AbsoluteThickness[9.], 
-           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[17, 18] -> Directive[
-           RGBColor[0.790588, 0.201176, 0.], 
-           Opacity[1.], 
-           AbsoluteThickness[9.], 
-           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[15, 20] -> Directive[
-           RGBColor[0.790588, 0.201176, 0.], 
-           Opacity[1.], 
-           AbsoluteThickness[9.], 
-           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[3, 8] -> Directive[
-           RGBColor[0.790588, 0.201176, 0.], 
-           Opacity[1.4], 
-           AbsoluteThickness[15.], 
-           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[8, 13] -> Directive[
-           RGBColor[0.790588, 0.201176, 0.], 
-           Opacity[1.2], 
-           AbsoluteThickness[12.], 
-           RGBColor[0.92, 0.45, 0.3]], UndirectedEdge[19, 20] -> Directive[
-           RGBColor[0.790588, 0.201176, 0.], 
-           Opacity[1.], 
-           AbsoluteThickness[9.], 
            RGBColor[0.92, 0.45, 0.3]]}, 
-       GraphHighlight -> {7, 20, 18, 17, 19, 14, 8, 12, 13, 2}, 
-       GraphHighlightStyle -> {19 -> {VertexStyle -> {
+       GraphHighlight -> {18, 14, 6, 2, 20, 12, 1, 24, 17, 19, 13, 7, 8}, 
+       GraphHighlightStyle -> {7 -> {VertexStyle -> {
              Directive[
               RGBColor[0.790588, 0.201176, 0.], 
-              Opacity[1.], 
-              RGBColor[0.92, 0.45, 0.3]]}}, 17 -> {VertexStyle -> {
-             Directive[
-              RGBColor[0.790588, 0.201176, 0.], 
-              Opacity[1.], 
-              RGBColor[0.92, 0.45, 0.3]]}}, 14 -> {VertexStyle -> {
-             Directive[
-              RGBColor[0.790588, 0.201176, 0.], 
-              Opacity[1.], 
-              RGBColor[0.92, 0.45, 0.3]]}}, 7 -> {VertexStyle -> {
-             Directive[
-              RGBColor[0.790588, 0.201176, 0.], 
-              Opacity[0.8], 
-              RGBColor[0.92, 0.45, 0.3]]}}, 12 -> {VertexStyle -> {
-             Directive[
-              RGBColor[0.790588, 0.201176, 0.], 
-              Opacity[1.6], 
-              RGBColor[0.92, 0.45, 0.3]]}}, 18 -> {VertexStyle -> {
-             Directive[
-              RGBColor[0.790588, 0.201176, 0.], 
-              Opacity[1.6], 
-              RGBColor[0.92, 0.45, 0.3]]}}, 8 -> {VertexStyle -> {
-             Directive[
-              RGBColor[0.790588, 0.201176, 0.], 
-              Opacity[1.4], 
-              RGBColor[0.92, 0.45, 0.3]]}}, 13 -> {VertexStyle -> {
-             Directive[
-              RGBColor[0.790588, 0.201176, 0.], 
-              Opacity[1.2], 
-              RGBColor[0.92, 0.45, 0.3]]}}, 2 -> {VertexStyle -> {
+              Opacity[0.5], 
+              RGBColor[0.92, 0.45, 0.3]]}}, 1 -> {VertexStyle -> {
              Directive[
               RGBColor[0.790588, 0.201176, 0.], 
               Opacity[0.6], 
+              RGBColor[0.92, 0.45, 0.3]]}}, 14 -> {VertexStyle -> {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.7], 
               RGBColor[0.92, 0.45, 0.3]]}}, 20 -> {VertexStyle -> {
              Directive[
               RGBColor[0.790588, 0.201176, 0.], 
-              Opacity[1.], 
+              Opacity[0.7], 
+              RGBColor[0.92, 0.45, 0.3]]}}, 8 -> {VertexStyle -> {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.7], 
+              RGBColor[0.92, 0.45, 0.3]]}}, 6 -> {VertexStyle -> {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.7], 
+              RGBColor[0.92, 0.45, 0.3]]}}, 17 -> {VertexStyle -> {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.5], 
+              RGBColor[0.92, 0.45, 0.3]]}}, 12 -> {VertexStyle -> {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.7], 
+              RGBColor[0.92, 0.45, 0.3]]}}, 13 -> {VertexStyle -> {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.9], 
+              RGBColor[0.92, 0.45, 0.3]]}}, 19 -> {VertexStyle -> {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.7], 
+              RGBColor[0.92, 0.45, 0.3]]}}, 2 -> {VertexStyle -> {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.7], 
+              RGBColor[0.92, 0.45, 0.3]]}}, 18 -> {VertexStyle -> {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.7], 
+              RGBColor[0.92, 0.45, 0.3]]}}, 24 -> {VertexStyle -> {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.7], 
               RGBColor[0.92, 0.45, 0.3]]}}}, 
        GraphLayout -> {"GridEmbedding", "Dimension" -> {5, 5}}, ImageSize -> 
-       300, VertexShapeFunction -> {23 -> (Append[{
+       300, VertexShapeFunction -> {15 -> (Append[{
             RGBColor[0.95, 0.08, 0.08], 
             Opacity[1.], 
-            AbsolutePointSize[6]}, 
+            AbsolutePointSize[6], 
+            RGBColor[0.95, 0.08, 0.08]}, 
            Point[#]]& ), 3 -> (Append[{
             RGBColor[0.95, 0.08, 0.08], 
             Opacity[1.], 
-            AbsolutePointSize[6]}, 
-           Point[#]]& ), 15 -> (Append[{
-            RGBColor[0.95, 0.08, 0.08], 
-            Opacity[1.], 
-            AbsolutePointSize[6]}, 
+            AbsolutePointSize[6], 
+            RGBColor[0.95, 0.08, 0.08]}, 
            Point[#]]& ), 11 -> (Append[{
             RGBColor[0.95, 0.08, 0.08], 
             Opacity[1.], 
-            AbsolutePointSize[6]}, 
+            AbsolutePointSize[6], 
+            RGBColor[0.95, 0.08, 0.08]}, 
+           Point[#]]& ), 23 -> (Append[{
+            RGBColor[0.95, 0.08, 0.08], 
+            Opacity[1.], 
+            AbsolutePointSize[6], 
+            RGBColor[0.95, 0.08, 0.08]}, 
            Point[#]]& )}}]]}, 
     TagBox[GraphicsGroupBox[{
        {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], 
-        LineBox[{
-         DynamicLocation["VertexID$1", Automatic, Center], DynamicLocation[
-          "VertexID$2", Automatic, Center]}], 
-        LineBox[{
-         DynamicLocation["VertexID$1", Automatic, Center], DynamicLocation[
-          "VertexID$6", Automatic, Center]}], 
         {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[3.], Opacity[0.6]}, 
         {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[3.], Opacity[0.6], 
-         {JoinForm["Round"], LineBox[{{2., 2.}, {1., 2.}, {1., 3.}}]}}, 
+         {JoinForm["Round"], LineBox[{{2., 1.}, {1., 1.}, {1., 2.}}]}}, 
+        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[4.5], Opacity[0.7], 
+         LineBox[{
+          DynamicLocation["VertexID$2", Automatic, Center], DynamicLocation[
+           "VertexID$3", Automatic, Center]}]}, 
+        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[1.5], Opacity[0.5]}, 
         LineBox[{
          DynamicLocation["VertexID$3", Automatic, Center], DynamicLocation[
           "VertexID$4", Automatic, Center]}], 
-        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[15.], Opacity[1.4], 
-         LineBox[{
-          DynamicLocation["VertexID$3", Automatic, Center], DynamicLocation[
-           "VertexID$8", Automatic, Center]}]}, 
+        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[4.5], Opacity[0.7], 
+         {JoinForm["Round"], 
+          LineBox[{{1., 3.}, {2., 3.}, {3., 3.}, {3., 4.}, {3., 5.}, {4., 
+           5.}, {4., 4.}, {5., 4.}, {5., 3.}, {4., 3.}}]}}, 
         LineBox[{
          DynamicLocation["VertexID$4", Automatic, Center], DynamicLocation[
           "VertexID$5", Automatic, Center]}], 
@@ -861,27 +925,19 @@ PackagePrivate`arrowSpec$16726,
         LineBox[{
          DynamicLocation["VertexID$5", Automatic, Center], DynamicLocation[
           "VertexID$10", Automatic, Center]}], 
+        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[1.5], Opacity[0.5], 
+         {JoinForm["Round"], LineBox[{{2., 1.}, {2., 2.}, {1., 2.}}]}}, 
+        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[4.5], Opacity[0.7]}, 
         LineBox[{
-         DynamicLocation["VertexID$6", Automatic, Center], DynamicLocation[
-          "VertexID$7", Automatic, Center]}], 
+         DynamicLocation["VertexID$7", Automatic, Center], DynamicLocation[
+          "VertexID$8", Automatic, Center]}], 
         LineBox[{
-         DynamicLocation["VertexID$6", Automatic, Center], DynamicLocation[
-          "VertexID$11", Automatic, Center]}], 
-        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[3.], Opacity[0.6], 
-         LineBox[{
-          DynamicLocation["VertexID$7", Automatic, Center], DynamicLocation[
-           "VertexID$8", Automatic, Center]}]}, 
-        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[6.], Opacity[0.8], 
-         LineBox[{
-          DynamicLocation["VertexID$7", Automatic, Center], DynamicLocation[
-           "VertexID$12", Automatic, Center]}]}, 
+         DynamicLocation["VertexID$7", Automatic, Center], DynamicLocation[
+          "VertexID$12", Automatic, Center]}], 
         LineBox[{
          DynamicLocation["VertexID$8", Automatic, Center], DynamicLocation[
           "VertexID$9", Automatic, Center]}], 
-        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[12.], Opacity[1.2], 
-         LineBox[{
-          DynamicLocation["VertexID$8", Automatic, Center], DynamicLocation[
-           "VertexID$13", Automatic, Center]}]}, 
+        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[4.5], Opacity[0.7]}, 
         LineBox[{
          DynamicLocation["VertexID$9", Automatic, Center], DynamicLocation[
           "VertexID$10", Automatic, Center]}], 
@@ -891,46 +947,38 @@ PackagePrivate`arrowSpec$16726,
         LineBox[{
          DynamicLocation["VertexID$10", Automatic, Center], DynamicLocation[
           "VertexID$15", Automatic, Center]}], 
-        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[18.], Opacity[1.6], 
-         {JoinForm["Round"], LineBox[{{3., 2.}, {3., 1.}, {3., 2.}}]}}, 
+        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[4.5], Opacity[0.7], 
+         {JoinForm["Round"], LineBox[{{3., 2.}, {3., 1.}, {2., 1.}}]}}, 
         LineBox[{
          DynamicLocation["VertexID$11", Automatic, Center], DynamicLocation[
           "VertexID$16", Automatic, Center]}], 
+        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[3.], Opacity[0.6]}, 
+        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[1.5], Opacity[0.5]}, 
+        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[4.5], Opacity[0.7]}, 
         {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[3.], Opacity[0.6], 
-         LineBox[{
-          DynamicLocation["VertexID$12", Automatic, Center], DynamicLocation[
-           "VertexID$13", Automatic, Center]}]}, 
-        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[9.], Opacity[1.]}, 
-        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[9.], Opacity[1.], 
-         {JoinForm["Round"], 
-          LineBox[{{3., 3.}, {3., 4.}, {3., 5.}, {4., 5.}, {4., 4.}, {4., 
-           3.}}]}}, 
-        LineBox[{
-         DynamicLocation["VertexID$13", Automatic, Center], DynamicLocation[
-          "VertexID$18", Automatic, Center]}], 
-        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[9.], Opacity[1.]}, 
+         {JoinForm["Round"], LineBox[{{4., 3.}, {3., 3.}, {3., 2.}}]}}, 
+        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[4.5], Opacity[0.7]}, 
         LineBox[{
          DynamicLocation["VertexID$14", Automatic, Center], DynamicLocation[
           "VertexID$19", Automatic, Center]}], 
-        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[9.], Opacity[1.]}, 
+        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[4.5], Opacity[0.7]}, 
         LineBox[{
          DynamicLocation["VertexID$16", Automatic, Center], DynamicLocation[
           "VertexID$17", Automatic, Center]}], 
         LineBox[{
          DynamicLocation["VertexID$16", Automatic, Center], DynamicLocation[
           "VertexID$21", Automatic, Center]}], 
-        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[9.], Opacity[1.], 
+        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[1.5], Opacity[0.5], 
          {JoinForm["Round"], LineBox[{{4., 3.}, {4., 2.}, {3., 2.}}]}}, 
         LineBox[{
          DynamicLocation["VertexID$17", Automatic, Center], DynamicLocation[
           "VertexID$22", Automatic, Center]}], 
-        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[9.], Opacity[1.]}, 
-        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[18.], Opacity[1.6], 
-         {JoinForm["Round"], LineBox[{{4., 3.}, {5., 3.}, {4., 3.}}]}}, 
-        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[9.], Opacity[1.]}, 
         LineBox[{
-         DynamicLocation["VertexID$19", Automatic, Center], DynamicLocation[
-          "VertexID$24", Automatic, Center]}], 
+         DynamicLocation["VertexID$18", Automatic, Center], DynamicLocation[
+          "VertexID$19", Automatic, Center]}], 
+        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[4.5], Opacity[0.7]}, 
+        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[4.5], Opacity[0.7]}, 
+        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[4.5], Opacity[0.7]}, 
         LineBox[{
          DynamicLocation["VertexID$20", Automatic, Center], DynamicLocation[
           "VertexID$25", Automatic, Center]}], 
@@ -940,18 +988,18 @@ PackagePrivate`arrowSpec$16726,
         LineBox[{
          DynamicLocation["VertexID$22", Automatic, Center], DynamicLocation[
           "VertexID$23", Automatic, Center]}], 
-        LineBox[{
-         DynamicLocation["VertexID$23", Automatic, Center], DynamicLocation[
-          "VertexID$24", Automatic, Center]}], 
+        {RGBColor[0.92, 0.45, 0.3], AbsoluteThickness[4.5], Opacity[0.7]}, 
         LineBox[{
          DynamicLocation["VertexID$24", Automatic, Center], DynamicLocation[
           "VertexID$25", Automatic, Center]}]}, 
        {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-        TagBox[DiskBox[{1., 1.}, 0.03700564971751412],
+        TagBox[
+         {RGBColor[0.92, 0.45, 0.3], Opacity[0.6], 
+          DiskBox[{1., 1.}, 0.03700564971751412]},
          "DynamicName",
          BoxID -> "VertexID$1"], 
         TagBox[
-         {RGBColor[0.92, 0.45, 0.3], Opacity[0.6], 
+         {RGBColor[0.92, 0.45, 0.3], Opacity[0.7], 
           DiskBox[{1., 2.}, 0.03700564971751412]},
          "DynamicName",
          BoxID -> "VertexID$2"], 
@@ -966,16 +1014,18 @@ PackagePrivate`arrowSpec$16726,
         TagBox[DiskBox[{1., 5.}, 0.03700564971751412],
          "DynamicName",
          BoxID -> "VertexID$5"], 
-        TagBox[DiskBox[{2., 1.}, 0.03700564971751412],
+        TagBox[
+         {RGBColor[0.92, 0.45, 0.3], Opacity[0.7], 
+          DiskBox[{2., 1.}, 0.03700564971751412]},
          "DynamicName",
          BoxID -> "VertexID$6"], 
         TagBox[
-         {RGBColor[0.92, 0.45, 0.3], Opacity[0.8], 
+         {RGBColor[0.92, 0.45, 0.3], Opacity[0.5], 
           DiskBox[{2., 2.}, 0.03700564971751412]},
          "DynamicName",
          BoxID -> "VertexID$7"], 
         TagBox[
-         {RGBColor[0.92, 0.45, 0.3], Opacity[1.4], 
+         {RGBColor[0.92, 0.45, 0.3], Opacity[0.7], 
           DiskBox[{2., 3.}, 0.03700564971751412]},
          "DynamicName",
          BoxID -> "VertexID$8"], 
@@ -991,17 +1041,17 @@ PackagePrivate`arrowSpec$16726,
          "DynamicName",
          BoxID -> "VertexID$11"], 
         TagBox[
-         {RGBColor[0.92, 0.45, 0.3], Opacity[1.6], 
+         {RGBColor[0.92, 0.45, 0.3], Opacity[0.7], 
           DiskBox[{3., 2.}, 0.03700564971751412]},
          "DynamicName",
          BoxID -> "VertexID$12"], 
         TagBox[
-         {RGBColor[0.92, 0.45, 0.3], Opacity[1.2], 
+         {RGBColor[0.92, 0.45, 0.3], Opacity[0.9], 
           DiskBox[{3., 3.}, 0.03700564971751412]},
          "DynamicName",
          BoxID -> "VertexID$13"], 
         TagBox[
-         {RGBColor[0.92, 0.45, 0.3], Opacity[1.], 
+         {RGBColor[0.92, 0.45, 0.3], Opacity[0.7], 
           DiskBox[{3., 4.}, 0.03700564971751412]},
          "DynamicName",
          BoxID -> "VertexID$14"], 
@@ -1014,22 +1064,22 @@ PackagePrivate`arrowSpec$16726,
          "DynamicName",
          BoxID -> "VertexID$16"], 
         TagBox[
-         {RGBColor[0.92, 0.45, 0.3], Opacity[1.], 
+         {RGBColor[0.92, 0.45, 0.3], Opacity[0.5], 
           DiskBox[{4., 2.}, 0.03700564971751412]},
          "DynamicName",
          BoxID -> "VertexID$17"], 
         TagBox[
-         {RGBColor[0.92, 0.45, 0.3], Opacity[1.6], 
+         {RGBColor[0.92, 0.45, 0.3], Opacity[0.7], 
           DiskBox[{4., 3.}, 0.03700564971751412]},
          "DynamicName",
          BoxID -> "VertexID$18"], 
         TagBox[
-         {RGBColor[0.92, 0.45, 0.3], Opacity[1.], 
+         {RGBColor[0.92, 0.45, 0.3], Opacity[0.7], 
           DiskBox[{4., 4.}, 0.03700564971751412]},
          "DynamicName",
          BoxID -> "VertexID$19"], 
         TagBox[
-         {RGBColor[0.92, 0.45, 0.3], Opacity[1.], 
+         {RGBColor[0.92, 0.45, 0.3], Opacity[0.7], 
           DiskBox[{4., 5.}, 0.03700564971751412]},
          "DynamicName",
          BoxID -> "VertexID$20"], 
@@ -1044,7 +1094,9 @@ PackagePrivate`arrowSpec$16726,
           PointBox[{5., 3.}]},
          "DynamicName",
          BoxID -> "VertexID$23"], 
-        TagBox[DiskBox[{5., 4.}, 0.03700564971751412],
+        TagBox[
+         {RGBColor[0.92, 0.45, 0.3], Opacity[0.7], 
+          DiskBox[{5., 4.}, 0.03700564971751412]},
          "DynamicName",
          BoxID -> "VertexID$24"], 
         TagBox[DiskBox[{5., 5.}, 0.03700564971751412],
@@ -1056,7 +1108,7 @@ PackagePrivate`arrowSpec$16726,
   FormatType->TraditionalForm,
   FrameTicks->None,
   ImageSize->300]], "Output",
- CellLabel->"Out[2]= ",ExpressionUUID->"a1217726-254d-41a8-8db8-5b7c9a987e57"]
+ CellLabel->"Out[2]= ",ExpressionUUID->"89e13036-04bd-48c8-b7b5-9cc06e24b2e6"]
 }, Open  ]]
 }, Open  ]],
 
@@ -1091,9 +1143,9 @@ Cell[TextData[{
 and ",
  Cell[BoxData["$Failed"], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "12d00d83-bd7b-4e31-83e7-3c83fc43a523"],
+  "ae10ca84-671d-48a5-8dff-239dc748c600"],
  " when the class is smaller."
-}], "ExampleText",ExpressionUUID->"236b0e81-d4cf-4466-82aa-20a60e2f4ecb"],
+}], "ExampleText",ExpressionUUID->"2502c833-5854-45bc-a61f-1d871d2e54d4"],
 
 Cell[CellGroupData[{
 
@@ -1107,109 +1159,108 @@ Cell[BoxData[
        RowBox[{"5", ",", " ", "5"}], "}"}], "]"}]}], "}"}], ",", "\n", "  ", 
    RowBox[{"{", 
     RowBox[{
-     RowBox[{
-      RowBox[{"FindInfraPolygon", "[", 
-       RowBox[{"g", ",", " ", 
-        RowBox[{"{", 
-         RowBox[{"3", ",", " ", "15", ",", " ", "23", ",", " ", "11"}], 
-         "}"}]}], "]"}], "[", "\"\<Length\>\"", "]"}], ",", "\n", "   ", 
-     RowBox[{"Length", " ", "@", " ", 
-      RowBox[{
+     RowBox[{"Total", "[", 
+      RowBox[{"EdgeCount", " ", "/@", " ", 
        RowBox[{"FindInfraPolygon", "[", 
         RowBox[{"g", ",", " ", 
          RowBox[{"{", 
           RowBox[{"3", ",", " ", "15", ",", " ", "23", ",", " ", "11"}], 
-          "}"}], ",", " ", 
-         RowBox[{"UpTo", "[", "2000", "]"}]}], "]"}], 
-       "[", "\"\<Realizations\>\"", "]"}]}], ",", "\n", "   ", 
+          "}"}]}], "]"}]}], "]"}], ",", "\n", "   ", 
+     RowBox[{"Length", " ", "@", " ", 
+      RowBox[{"FindInfraPolygon", "[", 
+       RowBox[{"g", ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"3", ",", " ", "15", ",", " ", "23", ",", " ", "11"}], "}"}],
+         ",", " ", 
+        RowBox[{"UpTo", "[", "2000", "]"}]}], "]"}]}], ",", "\n", "   ", 
      RowBox[{"FindInfraPolygon", "[", 
       RowBox[{"g", ",", " ", 
        RowBox[{"{", 
         RowBox[{"3", ",", " ", "15", ",", " ", "23", ",", " ", "11"}], "}"}], 
        ",", " ", "2000"}], "]"}]}], "}"}]}], "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"5120c3d5-3410-4fc6-843b-9d3a4bfa36ef"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"9a506aec-048f-4272-8ea5-cf887487725d"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"16", ",", "1296", ",", "$Failed"}], "}"}]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"47afffbd-73d4-4f7a-855d-a1c94deb3112"]
+}, Open  ]],
+
+Cell["A side may retrace the others.", "ExampleText",ExpressionUUID->"39eda9d5-223f-41b8-bee3-f159c82a233d"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"FindInfraPolygon", "[", 
+  RowBox[{
+   RowBox[{"GridGraph", "[", 
+    RowBox[{"{", 
+     RowBox[{"3", ",", " ", "3"}], "}"}], "]"}], ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", " ", "3", ",", " ", "9"}], "}"}]}], "]"}]], "Input",
+ CellLabel->"In[2]:= ",ExpressionUUID->"2a42905c-5f3e-4e49-8ce3-d3c2529acac3"],
 
 Cell[BoxData[
  RowBox[{"{", 
   RowBox[{
-   RowBox[{"{", "16", "}"}], ",", "1296", ",", "$Failed"}], "}"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"3fd5eb32-25f9-4341-beb4-2bcfb5987e19"]
-}, Open  ]],
-
-Cell["A side may retrace the others.", "ExampleText",ExpressionUUID->"93cec85c-cfa8-4460-9aef-de73cc78a9a2"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{
-  RowBox[{"FindInfraPolygon", "[", 
-   RowBox[{
-    RowBox[{"GridGraph", "[", 
-     RowBox[{"{", 
-      RowBox[{"3", ",", " ", "3"}], "}"}], "]"}], ",", " ", 
-    RowBox[{"{", 
-     RowBox[{"1", ",", " ", "3", ",", " ", "9"}], "}"}]}], "]"}], 
-  "[", "\"\<Realizations\>\"", "]"}]], "Input",
- CellLabel->"In[2]:= ",ExpressionUUID->"d18cb44c-40ec-4cd9-b77a-3733553da1ce"],
-
-Cell[BoxData[
- RowBox[{"{", 
-  RowBox[{"{", 
-   RowBox[{
-    RowBox[{"InfraSegment", "[", 
-     RowBox[{"{", 
-      RowBox[{"{", 
-       RowBox[{"1", ",", "2", ",", "3"}], "}"}], "}"}], "]"}], ",", 
-    RowBox[{"InfraSegment", "[", 
-     RowBox[{"{", 
-      RowBox[{"{", 
-       RowBox[{"3", ",", "6", ",", "9"}], "}"}], "}"}], "]"}], ",", 
-    RowBox[{"InfraSegment", "[", 
-     RowBox[{"{", 
-      RowBox[{"{", 
-       RowBox[{"9", ",", "6", ",", "3", ",", "2", ",", "1"}], "}"}], "}"}], 
-     "]"}]}], "}"}], "}"}]], "Output",
- CellLabel->"Out[2]= ",ExpressionUUID->"a6708109-c9fe-40f7-bbf2-3f0036a740d8"]
-}, Open  ]],
-
-Cell[TextData[{
- "Corners may be ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraPoint"]], 
-    "paclet:WolframInstitute/SyntheticInfrageometry/ref/InfraPoint", 
-    "WolframInstitute/SyntheticInfrageometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "0403e682-fa47-4c22-b8c1-be15740850c6"],
- " atoms."
-}], "ExampleText",ExpressionUUID->"9ae37228-199b-4a46-95f2-fa0b65a83a14"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{
-  RowBox[{"FindInfraPolygon", "[", 
-   RowBox[{
-    RowBox[{"GridGraph", "[", 
-     RowBox[{"{", 
-      RowBox[{"5", ",", " ", "5"}], "}"}], "]"}], ",", " ", 
-    RowBox[{"InfraPoint", " ", "/@", " ", 
-     RowBox[{"{", 
-      RowBox[{"1", ",", " ", "5", ",", " ", "25", ",", " ", "21"}], "}"}]}]}],
-    "]"}], "[", "\"\<Vertices\>\"", "]"}]], "Input",
- CellLabel->"In[3]:= ",ExpressionUUID->"13f254aa-9180-4669-a55d-bd0f3139a472"],
-
-Cell[BoxData[
- RowBox[{"{", 
-  RowBox[{"{", 
-   RowBox[{
-    RowBox[{"InfraPoint", "[", "1", "]"}], ",", 
-    RowBox[{"InfraPoint", "[", "5", "]"}], ",", 
-    RowBox[{"InfraPoint", "[", "25", "]"}], ",", 
-    RowBox[{"InfraPoint", "[", "21", "]"}]}], "}"}], "}"}]], "Output",
- CellLabel->"Out[3]= ",ExpressionUUID->"40dcd54d-7068-4c57-a884-79434989aa2f"]
+   GraphicsBox[
+    NamespaceBox["NetworkGraphics",
+     DynamicModuleBox[{Typeset`graph = HoldComplete[
+       Graph[{1, 2, 3}, {{{1, 2}, {2, 3}}, Null}]]}, 
+      TagBox[
+       GraphicsGroupBox[
+        GraphicsComplexBox[{{0., 3.6739403974420594`*^-16}, {1., 
+         2.4492935982947064`*^-16}, {2., 0.}}, {
+          {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
+           Medium], ArrowBox[{{1, 2}, {2, 3}}, 0.02261146496815286]}, 
+          {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+           DiskBox[1, 0.02261146496815286], DiskBox[2, 0.02261146496815286], 
+           DiskBox[3, 0.02261146496815286]}}]],
+       MouseAppearanceTag["NetworkGraphics"]],
+      AllowKernelInitialization->False]],
+    DefaultBaseStyle->"NetworkGraphics",
+    FormatType->TraditionalForm,
+    FrameTicks->None], ",", 
+   GraphicsBox[
+    NamespaceBox["NetworkGraphics",
+     DynamicModuleBox[{Typeset`graph = HoldComplete[
+       Graph[{3, 6, 9}, {{{1, 2}, {2, 3}}, Null}]]}, 
+      TagBox[
+       GraphicsGroupBox[
+        GraphicsComplexBox[{{0., 3.6739403974420594`*^-16}, {1., 
+         2.4492935982947064`*^-16}, {2., 0.}}, {
+          {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
+           Medium], ArrowBox[{{1, 2}, {2, 3}}, 0.02261146496815286]}, 
+          {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+           DiskBox[1, 0.02261146496815286], DiskBox[2, 0.02261146496815286], 
+           DiskBox[3, 0.02261146496815286]}}]],
+       MouseAppearanceTag["NetworkGraphics"]],
+      AllowKernelInitialization->False]],
+    DefaultBaseStyle->"NetworkGraphics",
+    FormatType->TraditionalForm,
+    FrameTicks->None], ",", 
+   GraphicsBox[
+    NamespaceBox["NetworkGraphics",
+     DynamicModuleBox[{Typeset`graph = HoldComplete[
+       Graph[{9, 8, 5, 4, 1}, {{{1, 2}, {2, 3}, {3, 4}, {4, 5}}, Null}]]}, 
+      TagBox[
+       GraphicsGroupBox[
+        GraphicsComplexBox[{{0., 7.347880794884119*^-16}, {1., 
+         6.123233995736766*^-16}, {2., 4.898587196589413*^-16}, {3., 
+         2.4492935982947064`*^-16}, {4., 0.}}, {
+          {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
+           Medium], 
+           ArrowBox[{{1, 2}, {2, 3}, {3, 4}, {4, 5}}, 0.03700564971751412]}, 
+          {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+           DiskBox[1, 0.03700564971751412], DiskBox[2, 0.03700564971751412], 
+           DiskBox[3, 0.03700564971751412], DiskBox[4, 0.03700564971751412], 
+           DiskBox[5, 0.03700564971751412]}}]],
+       MouseAppearanceTag["NetworkGraphics"]],
+      AllowKernelInitialization->False]],
+    DefaultBaseStyle->"NetworkGraphics",
+    FormatType->TraditionalForm,
+    FrameTicks->None]}], "}"}]], "Output",
+ CellLabel->"Out[2]= ",ExpressionUUID->"2535561c-5631-4dff-aaa8-6840e1b5baad"]
 }, Open  ]]
 }, Open  ]],
 
@@ -1231,15 +1282,15 @@ Cell[BoxData[
 
 Cell[CellGroupData[{
 
-Cell["Method", "ExampleSubsection",ExpressionUUID->"f019f22a-3035-4d2e-9a60-0f9b33635bbb"],
+Cell["Method", "ExampleSubsection",ExpressionUUID->"ac6e48fe-160f-4b15-a9a4-1dc93016e082"],
 
 Cell[TextData[{
  "The class is the same under every ",
  Cell[BoxData["Method"], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "401df9fe-5682-4c73-bd53-b0fee551695b"],
+  "37b41cfe-ff1b-40d0-980c-0d4a870a64be"],
  "; only the order in which polygons come off it differs."
-}], "ExampleText",ExpressionUUID->"5ce3c811-305c-43a2-a176-b5d77536063c"],
+}], "ExampleText",ExpressionUUID->"fc1f2050-84f3-4a69-8891-80af6e3651dd"],
 
 Cell[CellGroupData[{
 
@@ -1256,22 +1307,20 @@ Cell[BoxData[
      RowBox[{
       RowBox[{
        RowBox[{"Sort", " ", "@", " ", 
-        RowBox[{
-         RowBox[{"FindInfraPolygon", "[", 
-          RowBox[{"g", ",", " ", 
-           RowBox[{"{", 
-            RowBox[{"3", ",", " ", "15", ",", " ", "23", ",", " ", "11"}], 
-            "}"}], ",", " ", "All", ",", " ", 
-           RowBox[{"Method", " ", "->", " ", "#"}]}], "]"}], 
-         "[", "\"\<Realizations\>\"", "]"}]}], " ", "&"}], " ", "/@", "\n", 
-      "     ", 
+        RowBox[{"FindInfraPolygon", "[", 
+         RowBox[{"g", ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"3", ",", " ", "15", ",", " ", "23", ",", " ", "11"}], 
+           "}"}], ",", " ", "All", ",", " ", 
+          RowBox[{"Method", " ", "->", " ", "#"}]}], "]"}]}], " ", "&"}], " ",
+       "/@", "\n", "     ", 
       RowBox[{"{", 
        RowBox[{"\"\<Exhaustive\>\"", ",", " ", "\"\<Greedy\>\"", ",", 
         " ", "\"\<RandomGreedy\>\""}], "}"}]}], ")"}]}]}], "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"929b5cf9-4acf-4af7-b1af-1fb710ea5709"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"609743ee-019e-4328-80b6-a0d85f73748f"],
 
 Cell[BoxData["True"], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"67e65114-0779-4bf0-986a-0aebc33da59d"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"ba795988-cbec-497c-a635-0835fc757d45"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
@@ -1302,7 +1351,7 @@ Cell[TextData[{
     "WolframInstitute/SyntheticInfrageometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "36fc1ef5-bae4-4c7b-8b4a-aeed9ffa1370"],
+  "340d9998-4c80-460c-bc58-3590dc2aef0b"],
  ", and a three-corner polygon is a ",
  Cell[BoxData[
   TemplateBox[{
@@ -1312,9 +1361,9 @@ Cell[TextData[{
     "WolframInstitute/SyntheticInfrageometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "71ea626f-9328-49d1-a67f-27264e1b61e6"],
+  "2e4d00a9-8ffb-471a-a385-453498ed1363"],
  "."
-}], "ExampleText",ExpressionUUID->"6aaf82a2-bcb7-4777-914f-1a675f868643"],
+}], "ExampleText",ExpressionUUID->"fd926313-9226-414c-9671-a2c5655c0d28"],
 
 Cell[CellGroupData[{
 
@@ -1336,31 +1385,27 @@ Cell[BoxData[
           RowBox[{"1", ",", " ", "3", ",", " ", "9"}], "}"}], ",", " ", 
          "All"}], "]"}]}], "]"}], ",", "\n", "   ", 
      RowBox[{
-      RowBox[{
-       RowBox[{"FindInfraPolygon", "[", 
-        RowBox[{"g", ",", " ", 
-         RowBox[{"{", 
-          RowBox[{"1", ",", " ", "3", ",", " ", "9"}], "}"}], ",", " ", 
-         "All"}], "]"}], "[", "\"\<Realizations\>\"", "]"}], " ", "===", " ", 
-      
-      RowBox[{
-       RowBox[{"FindInfraTriangle", "[", 
-        RowBox[{"g", ",", " ", 
-         RowBox[{"{", 
-          RowBox[{"1", ",", " ", "3", ",", " ", "9"}], "}"}], ",", " ", 
-         "All"}], "]"}], "[", "\"\<Realizations\>\"", "]"}]}]}], "}"}]}], 
-  "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"867ca336-7a52-45a0-89d3-e3d0c140bba2"],
+      RowBox[{"FindInfraPolygon", "[", 
+       RowBox[{"g", ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"1", ",", " ", "3", ",", " ", "9"}], "}"}], ",", " ", 
+        "All"}], "]"}], " ", "===", " ", 
+      RowBox[{"FindInfraTriangle", "[", 
+       RowBox[{"g", ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"1", ",", " ", "3", ",", " ", "9"}], "}"}], ",", " ", 
+        "All"}], "]"}]}]}], "}"}]}], "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"a15e60f9-119d-45aa-8d34-9e7d676a66ec"],
 
 Cell[BoxData[
  RowBox[{"{", 
   RowBox[{"True", ",", "True"}], "}"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"67860cd4-f6a1-4134-a719-3189340b2aa0"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"8f63213f-ad6d-437c-8017-88a12cb4504c"]
 }, Open  ]],
 
 Cell["\<\
 The perimeter is the sum of the corner distances around the cycle.\
-\>", "ExampleText",ExpressionUUID->"162e83d9-6ff0-47dc-a786-ca48d2aea89b"],
+\>", "ExampleText",ExpressionUUID->"4f4923b4-fc4a-44a5-b910-837b849c91ad"],
 
 Cell[CellGroupData[{
 
@@ -1378,11 +1423,11 @@ Cell[BoxData[
       RowBox[{"3", ",", " ", "15", ",", " ", "23", ",", " ", "11"}], "}"}]}], 
     "}"}], ",", "\n", "  ", 
    RowBox[{
-    RowBox[{"First", " ", "@", " ", 
-     RowBox[{
+    RowBox[{"Total", "[", 
+     RowBox[{"EdgeCount", " ", "/@", " ", 
       RowBox[{"FindInfraPolygon", "[", 
-       RowBox[{"g", ",", " ", "corners"}], "]"}], "[", "\"\<Length\>\"", 
-      "]"}]}], " ", "===", "\n", "    ", 
+       RowBox[{"g", ",", " ", "corners"}], "]"}]}], "]"}], " ", "===", "\n", 
+    "    ", 
     RowBox[{"Total", "[", 
      RowBox[{
       RowBox[{
@@ -1394,10 +1439,10 @@ Cell[BoxData[
          RowBox[{"corners", ",", " ", 
           RowBox[{"First", " ", "@", " ", "corners"}]}], "]"}], ",", " ", "2",
          ",", " ", "1"}], "]"}]}], "]"}]}]}], "]"}]], "Input",
- CellLabel->"In[2]:= ",ExpressionUUID->"053d9dd9-7b7e-49a3-9704-1a8711886ba6"],
+ CellLabel->"In[2]:= ",ExpressionUUID->"aa3a6500-8186-42ac-8251-7b30066e8cfd"],
 
 Cell[BoxData["True"], "Output",
- CellLabel->"Out[2]= ",ExpressionUUID->"fcd45b5b-105a-4f4e-908a-e44360375cc0"]
+ CellLabel->"Out[2]= ",ExpressionUUID->"d8cefdb1-2e66-48d4-a60e-3571029455c5"]
 }, Open  ]]
 }, Open  ]],
 
@@ -1473,7 +1518,7 @@ Cell["WolframInstitute`SyntheticInfrageometry`", "Categorization",
 
 Cell["WolframInstitute/SyntheticInfrageometry/ref/FindInfraPolygon", \
 "Categorization",
- CellLabel->"URI",ExpressionUUID->"cba91602-8659-4348-8100-94f4d37acc8a"]
+ CellLabel->"URI",ExpressionUUID->"203d9140-179b-4e50-a8c9-13feed0c88b6"]
 }, Closed]],
 
 Cell["Keywords", "KeywordsSection",
@@ -1527,14 +1572,14 @@ ExpressionUUID->"c207366e-060a-406b-a297-9e30e1628f43"
 (*CellTagsOutline
 CellTagsIndex->{
  "ExtendedExamples"->{
-  Cell[42262, 1064, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+  Cell[45195, 1116, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
    CellTags->"ExtendedExamples",
    CellID->533848431]}
  }
 *)
 (*CellTagsIndex
 CellTagsIndex->{
- {"ExtendedExamples", 58008, 1528}
+ {"ExtendedExamples", 61600, 1573}
  }
 *)
 (*NotebookFileOutline
@@ -1542,138 +1587,133 @@ Notebook[{
 Cell[CellGroupData[{
 Cell[576, 22, 114, 1, 70, "ObjectName",ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec",
  CellID->1224892054],
-Cell[693, 25, 2676, 79, 70, "Usage",ExpressionUUID->"ab5bddda-0943-412e-b072-b61dda7ff561"],
-Cell[3372, 106, 1806, 57, 70, "Notes",ExpressionUUID->"31454881-3f48-43d5-9c2f-2132e658eddd"],
-Cell[5181, 165, 508, 11, 70, "Notes",ExpressionUUID->"20cc3fa9-6395-47a5-89ff-6dfa65262f4f"],
-Cell[5692, 178, 328, 5, 70, "Notes",ExpressionUUID->"6cefa99d-2615-48c2-a30d-8da52e988e4a"],
-Cell[6023, 185, 527, 9, 70, "Notes",ExpressionUUID->"39c5c1f1-3ba6-45bc-b88a-d0a541133f58"],
-Cell[6553, 196, 3703, 79, 70, "3ColumnTableMod",ExpressionUUID->"8776fa3b-89d3-4029-a8bb-9b3cb848e793"],
-Cell[10259, 277, 722, 17, 70, "Notes",ExpressionUUID->"97a6746a-fe72-4728-9d0a-34f136821938"],
-Cell[10984, 296, 125, 0, 70, "Notes",ExpressionUUID->"502e7a20-8a68-4335-8c80-05cd16da6312"],
-Cell[11112, 298, 1451, 26, 70, "3ColumnTableMod",ExpressionUUID->"d87dc3e3-f133-4db7-bede-197c776647fb"]
+Cell[693, 25, 2639, 77, 70, "Usage",ExpressionUUID->"669952f3-aaed-403c-9194-908707318b5a"],
+Cell[3335, 104, 786, 27, 70, "Notes",ExpressionUUID->"127f4ce2-df01-4020-9e79-68ef249f8979"],
+Cell[4124, 133, 503, 11, 70, "Notes",ExpressionUUID->"e33a02f9-c72f-4611-ad65-60cf6f362fce"],
+Cell[4630, 146, 328, 5, 70, "Notes",ExpressionUUID->"190b5325-5f81-4faa-9560-03056a7e8295"],
+Cell[4961, 153, 527, 9, 70, "Notes",ExpressionUUID->"18df869d-4264-42e1-9e2f-db7bb8d9fbb2"],
+Cell[5491, 164, 3703, 79, 70, "3ColumnTableMod",ExpressionUUID->"c60dc470-8583-406e-b0ae-a6f25e633af9"],
+Cell[9197, 245, 728, 17, 70, "Notes",ExpressionUUID->"4a7e81e7-f7b9-41d2-a91a-36271974da53"],
+Cell[9928, 264, 125, 0, 70, "Notes",ExpressionUUID->"59e4220a-b99f-4325-95b2-bf018bf9ae58"],
+Cell[10056, 266, 1451, 26, 70, "3ColumnTableMod",ExpressionUUID->"1a9454ef-84a8-49f0-bdfb-c01d3e3a47f0"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[12600, 329, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
+Cell[11544, 297, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
  CellID->1559318232],
-Cell[13062, 344, 1932, 51, 70, "SeeAlso",ExpressionUUID->"bf153115-d2a6-40ba-b705-f74d6ae1b076"]
+Cell[12006, 312, 1932, 51, 70, "SeeAlso",ExpressionUUID->"5efc66c5-ad87-4969-8ddb-fce0bd492d10"]
 }, Open  ]],
-Cell[15009, 398, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
+Cell[13953, 366, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
  CellID->792424486],
 Cell[CellGroupData[{
-Cell[15469, 414, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
+Cell[14413, 382, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
  CellID->38303248],
-Cell[15588, 417, 332, 7, 70, "MoreAbout",ExpressionUUID->"487b72f6-cc72-4ff2-9359-ac5ed3677660"]
+Cell[14532, 385, 332, 7, 70, "MoreAbout",ExpressionUUID->"020aa837-6f1e-4c4a-93fd-7c5be9b0596f"]
 }, Open  ]],
-Cell[15935, 427, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
+Cell[14879, 395, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
  CellID->47113304],
 Cell[CellGroupData[{
-Cell[16431, 444, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
+Cell[15375, 412, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
  CellID->1718580883],
-Cell[16965, 460, 285, 5, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
+Cell[15909, 428, 285, 5, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
  CellID->1969679695]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[17287, 470, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
+Cell[16231, 438, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
  CellID->880084151],
-Cell[17732, 484, 209, 3, 70, "ExampleText",ExpressionUUID->"21ed7461-3c43-4f27-825d-0b9c9eb4e2e9"],
+Cell[16676, 452, 204, 3, 70, "ExampleText",ExpressionUUID->"fccc12ce-6011-449e-814e-0ddb5c595caa"],
 Cell[CellGroupData[{
-Cell[17966, 491, 1017, 26, 70, "Input",ExpressionUUID->"c48f5c93-4cb3-419e-a5a6-c629089fabfb"],
-Cell[18986, 519, 155, 3, 70, "Output",ExpressionUUID->"6b1fe2c0-0403-450b-a2f8-53763255adb4"]
+Cell[16905, 459, 890, 22, 70, "Input",ExpressionUUID->"58662446-cf71-4b98-b439-5900d9450b3c"],
+Cell[17798, 483, 155, 3, 70, "Output",ExpressionUUID->"a005d5fc-3018-4fa0-a468-5e1b644f45cf"]
 }, Open  ]],
-Cell[19156, 525, 148, 2, 70, "ExampleText",ExpressionUUID->"c24f1061-bdf1-4d2d-b832-54c8ed62d710"],
+Cell[17968, 489, 148, 2, 70, "ExampleText",ExpressionUUID->"0e732a97-90be-4c28-86fd-79b46c1cccd9"],
 Cell[CellGroupData[{
-Cell[19329, 531, 1275, 32, 70, "Input",ExpressionUUID->"49206ee3-1d2a-4053-9617-c80e00df25b6"],
-Cell[20607, 565, 21606, 493, 70, "Output",ExpressionUUID->"a1217726-254d-41a8-8db8-5b7c9a987e57"]
+Cell[18141, 495, 1230, 31, 70, "Input",ExpressionUUID->"7c6766ed-b92b-4a43-802f-74f2980d8ab2"],
+Cell[19374, 528, 25772, 582, 70, "Output",ExpressionUUID->"89e13036-04bd-48c8-b7b5-9cc06e24b2e6"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[42262, 1064, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+Cell[45195, 1116, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
  CellTags->"ExtendedExamples",
  CellID->533848431],
 Cell[CellGroupData[{
-Cell[42774, 1081, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
+Cell[45707, 1133, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
  CellID->1293636265],
-Cell[43019, 1088, 336, 7, 70, "ExampleText",ExpressionUUID->"236b0e81-d4cf-4466-82aa-20a60e2f4ecb"],
+Cell[45952, 1140, 336, 7, 70, "ExampleText",ExpressionUUID->"2502c833-5854-45bc-a61f-1d871d2e54d4"],
 Cell[CellGroupData[{
-Cell[43380, 1099, 1204, 30, 70, "Input",ExpressionUUID->"5120c3d5-3410-4fc6-843b-9d3a4bfa36ef"],
-Cell[44587, 1131, 196, 4, 70, "Output",ExpressionUUID->"3fd5eb32-25f9-4341-beb4-2bcfb5987e19"]
+Cell[46313, 1151, 1180, 29, 70, "Input",ExpressionUUID->"9a506aec-048f-4272-8ea5-cf887487725d"],
+Cell[47496, 1182, 172, 3, 70, "Output",ExpressionUUID->"47afffbd-73d4-4f7a-855d-a1c94deb3112"]
 }, Open  ]],
-Cell[44798, 1138, 108, 0, 70, "ExampleText",ExpressionUUID->"93cec85c-cfa8-4460-9aef-de73cc78a9a2"],
+Cell[47683, 1188, 108, 0, 70, "ExampleText",ExpressionUUID->"39eda9d5-223f-41b8-bee3-f159c82a233d"],
 Cell[CellGroupData[{
-Cell[44931, 1142, 394, 10, 70, "Input",ExpressionUUID->"d18cb44c-40ec-4cd9-b77a-3733553da1ce"],
-Cell[45328, 1154, 608, 17, 70, "Output",ExpressionUUID->"a6708109-c9fe-40f7-bbf2-3f0036a740d8"]
-}, Open  ]],
-Cell[45951, 1174, 452, 12, 70, "ExampleText",ExpressionUUID->"9ae37228-199b-4a46-95f2-fa0b65a83a14"],
-Cell[CellGroupData[{
-Cell[46428, 1190, 455, 11, 70, "Input",ExpressionUUID->"13f254aa-9180-4669-a55d-bd0f3139a472"],
-Cell[46886, 1203, 354, 8, 70, "Output",ExpressionUUID->"40dcd54d-7068-4c57-a884-79434989aa2f"]
+Cell[47816, 1192, 338, 8, 70, "Input",ExpressionUUID->"2a42905c-5f3e-4e49-8ce3-d3c2529acac3"],
+Cell[48157, 1202, 2872, 60, 70, "Output",ExpressionUUID->"2535561c-5631-4dff-aaa8-6840e1b5baad"]
 }, Open  ]]
 }, Open  ]],
-Cell[47267, 1215, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
+Cell[51056, 1266, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
  CellID->1020263627],
 Cell[CellGroupData[{
-Cell[47557, 1224, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
+Cell[51346, 1275, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
  CellID->2061341341],
 Cell[CellGroupData[{
-Cell[47826, 1233, 90, 0, 70, "ExampleSubsection",ExpressionUUID->"f019f22a-3035-4d2e-9a60-0f9b33635bbb"],
-Cell[47919, 1235, 315, 6, 70, "ExampleText",ExpressionUUID->"5ce3c811-305c-43a2-a176-b5d77536063c"],
+Cell[51615, 1284, 90, 0, 70, "ExampleSubsection",ExpressionUUID->"ac6e48fe-160f-4b15-a9a4-1dc93016e082"],
+Cell[51708, 1286, 315, 6, 70, "ExampleText",ExpressionUUID->"fc1f2050-84f3-4a69-8891-80af6e3651dd"],
 Cell[CellGroupData[{
-Cell[48259, 1245, 1005, 25, 70, "Input",ExpressionUUID->"929b5cf9-4acf-4af7-b1af-1fb710ea5709"],
-Cell[49267, 1272, 110, 1, 70, "Output",ExpressionUUID->"67e65114-0779-4bf0-986a-0aebc33da59d"]
+Cell[52048, 1296, 936, 23, 70, "Input",ExpressionUUID->"609743ee-019e-4328-80b6-a0d85f73748f"],
+Cell[52987, 1321, 110, 1, 70, "Output",ExpressionUUID->"ba795988-cbec-497c-a635-0835fc757d45"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
-Cell[49416, 1278, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
+Cell[53136, 1327, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
  CellID->258228157],
 Cell[CellGroupData[{
-Cell[49689, 1287, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
+Cell[53409, 1336, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
  CellID->2123667759],
-Cell[49951, 1294, 846, 22, 70, "ExampleText",ExpressionUUID->"6aaf82a2-bcb7-4777-914f-1a675f868643"],
+Cell[53671, 1343, 846, 22, 70, "ExampleText",ExpressionUUID->"fd926313-9226-414c-9671-a2c5655c0d28"],
 Cell[CellGroupData[{
-Cell[50822, 1320, 1199, 32, 70, "Input",ExpressionUUID->"867ca336-7a52-45a0-89d3-e3d0c140bba2"],
-Cell[52024, 1354, 158, 3, 70, "Output",ExpressionUUID->"67860cd4-f6a1-4134-a719-3189340b2aa0"]
+Cell[54542, 1369, 1077, 28, 70, "Input",ExpressionUUID->"a15e60f9-119d-45aa-8d34-9e7d676a66ec"],
+Cell[55622, 1399, 158, 3, 70, "Output",ExpressionUUID->"8f63213f-ad6d-437c-8017-88a12cb4504c"]
 }, Open  ]],
-Cell[52197, 1360, 152, 2, 70, "ExampleText",ExpressionUUID->"162e83d9-6ff0-47dc-a786-ca48d2aea89b"],
+Cell[55795, 1405, 152, 2, 70, "ExampleText",ExpressionUUID->"4f4923b4-fc4a-44a5-b910-837b849c91ad"],
 Cell[CellGroupData[{
-Cell[52374, 1366, 1152, 30, 70, "Input",ExpressionUUID->"053d9dd9-7b7e-49a3-9704-1a8711886ba6"],
-Cell[53529, 1398, 110, 1, 70, "Output",ExpressionUUID->"fcd45b5b-105a-4f4e-908a-e44360375cc0"]
+Cell[55972, 1411, 1146, 30, 70, "Input",ExpressionUUID->"aa3a6500-8186-42ac-8251-7b30066e8cfd"],
+Cell[57121, 1443, 110, 1, 70, "Output",ExpressionUUID->"d8cefdb1-2e66-48d4-a60e-3571029455c5"]
 }, Open  ]]
 }, Open  ]],
-Cell[53666, 1403, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
+Cell[57258, 1448, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
  CellID->1305812373],
-Cell[53921, 1410, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
+Cell[57513, 1455, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
  CellID->1653164318],
-Cell[54181, 1417, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
+Cell[57773, 1462, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
  CellID->589267740]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[54467, 1427, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
+Cell[58059, 1472, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
  CellID->311882160],
-Cell[54580, 1430, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
+Cell[58172, 1475, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
  CellID->341476719],
 Cell[CellGroupData[{
-Cell[55081, 1446, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
+Cell[58673, 1491, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
  CellID->1755438392],
-Cell[55569, 1461, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
+Cell[59161, 1506, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
  CellID->686433507],
-Cell[55706, 1465, 167, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
+Cell[59298, 1510, 167, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
  CellID->605800465],
-Cell[55876, 1469, 164, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
+Cell[59468, 1514, 164, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
  CellID->468444828],
-Cell[56043, 1473, 162, 2, 70, "Categorization",ExpressionUUID->"cba91602-8659-4348-8100-94f4d37acc8a"]
+Cell[59635, 1518, 162, 2, 70, "Categorization",ExpressionUUID->"203d9140-179b-4e50-a8c9-13feed0c88b6"]
 }, Closed]],
-Cell[56220, 1478, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
+Cell[59812, 1523, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
  CellID->477174294],
 Cell[CellGroupData[{
-Cell[56355, 1483, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
+Cell[59947, 1528, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
  CellID->1872225408],
-Cell[56478, 1486, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
+Cell[60070, 1531, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
  CellID->1562036412],
-Cell[56630, 1490, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
+Cell[60222, 1535, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
  CellID->158391909],
-Cell[56770, 1494, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
+Cell[60362, 1539, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
  CellID->1360575930],
-Cell[56909, 1498, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
+Cell[60501, 1543, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
  CellID->793782254]
 }, Closed]]
 }, Open  ]]
