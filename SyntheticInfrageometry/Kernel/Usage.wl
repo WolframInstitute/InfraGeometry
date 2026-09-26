@@ -15,10 +15,18 @@ FindClosestInfraPoint::usage = "FindClosestInfraPoint[graph, line, point] gives 
 SelectInfraPoint::usage = "SelectInfraPoint[graph, vertices] draws a vertex from a supplied bundle under graph distance; a trailing n | UpTo[n] | All sets the count. Options \"From\", \"Distance\", \"MaxCliques\".";
 InfraReachableQ::usage = "InfraReachableQ[graph, p1, p2] tests whether p1 and p2 have realisations in the same connected component.";
 
+(* ===================== InfraMeasurement ===================== *)
+
+Undetermined::usage = "Undetermined is the value of the measurement \"Faithful\" on a head whose graph is faithful only under a hypothesis this paclet does not certify.";
+InfraMeasurement::usage = "InfraMeasurement[graph, obj, property] measures a Euclidean head on graph: \"Graph\", \"Cardinality\", \"Length\", \"VertexDensity\", \"EdgeDensity\", \"Subgraph\", \"Faithful\", \"Volume\", \"BoundaryVolume\", \"InteriorVolume\", \"HalfBoundaryVolume\". A List of properties gives an Association, All gives them all, a List of heads measures each.";
+InfraVertexList::usage = "InfraVertexList[graph, obj] gives one member of obj as a vertex list; a trailing n | UpTo[n] | All gives a List of them. Modifiers \"RandomChoice\" (a uniform member) and \"Pruning\" -> q.";
+InfraMemberQ::usage = "InfraMemberQ[graph, obj, path] tests whether the vertex list path is a member of obj.";
+InfraSubgraph::usage = "InfraSubgraph[graph, obj] gives the subgraph of graph induced on the support of obj; InfraSubgraph[graph, obj -> t] thickens the support by t steps.";
+
 (* ===================== InfraSegment ===================== *)
 
-InfraSegment::usage = "InfraSegment[graph, p, q] is the geodesic interval I(p, q) as one object standing for every geodesic from p to q: seg[[i]] and seg[[i ;; j]] enumerate them in canonical order, Normal all, and seg[\"Multiplicity\"], seg[\"InfraDensity\"], seg[\"Length\"], seg[\"Graph\"] read the geodesic DAG without enumerating. Inside InfraScene, InfraSegment[p, q] is the construction token; FindInfraSegment is the search.";
-FindInfraSegment::usage = "FindInfraSegment[graph, p1, p2] gives one geodesic from p1 to p2 as a directed path graph; a trailing n | UpTo[n] enumerates that many as a List, All gives the whole interval as one geodesic DAG. Option Method.";
+InfraSegment::usage = "InfraSegment[p1, ..., pk] is the inert polyline of the segments [p1, p2], ..., [p(k-1), pk]; InfraSegment[p, q] is the segment itself, whose graph is the geodesic interval I(p, q). InfraMeasurement and InfraVertexList evaluate it on a graph; FindInfraSegment is the search.";
+FindInfraSegment::usage = "FindInfraSegment[graph, p, q] gives one geodesic from p to q as a vertex list; a trailing n | UpTo[n] | All gives a List of them.";
 ExtendInfraSegment::usage = "ExtendInfraSegment[graph, seg, kspec] gives the geodesics containing seg extended by at most kspec edges per side, inextensible within that budget; kspec Infinity gives the lines through seg. ExtendInfraSegment[graph, a, b, c, d] gives the x with B(a, b, x) and d(b, x) == d(c, d) (Tarski A4). Options Method, \"Direction\".";
 InfraWalkQ::usage = "InfraWalkQ[graph, walk] tests whether walk is a walk: consecutive vertices adjacent (revisits allowed).";
 InfraSegmentQ::usage = "InfraSegmentQ[graph, walk] tests whether walk is a geodesic.";
@@ -124,8 +132,8 @@ FindInfraBisectingHyperplane::usage = "FindInfraBisectingHyperplane[graph, p1, p
 
 (* ===================== InfraRay ===================== *)
 
-InfraRay::usage = "InfraRay[graph, o, v] is the pool of rays from o through v -- geodesics from o through v that cannot be prolonged past their last vertex -- as one object, one DAG with source o; InfraRay[graph, o] is the pencil, every ray from o. ray[[i]] enumerates in canonical order, Normal all; \"Multiplicity\", \"InfraDensity\", \"Length\", \"Graph\" read the DAG. Inside InfraScene, InfraRay[o, v] is the construction token; FindInfraRay is the search.";
-FindInfraRay::usage = "FindInfraRay[graph, O, v] gives the rays from O through v: the geodesics from O containing v that cannot be prolonged past their last vertex. Option Method.";
+InfraRay::usage = "InfraRay[p, q] is the inert ray from p through q, whose graph is the ray DAG R(p, q); InfraRay[p, p] is the pencil at p. InfraMeasurement and InfraVertexList evaluate it on a graph; FindInfraRay is the search.";
+FindInfraRay::usage = "FindInfraRay[graph, p, q] gives one ray from p through q as a vertex list -- a geodesic from p through q that no neighbour of its last vertex prolongs; a trailing n | UpTo[n] | All gives a List of them.";
 InfraRayQ::usage = "InfraRayQ[graph, ray] tests whether ray is a pointed half-line: a geodesic from its own first vertex that cannot be prolonged past its last.";
 
 (* ===================== InfraPolyline ===================== *)

@@ -1,113 +1,131 @@
 BeginTestSection["InfraSegment"]
 
-(* ===== InfraSegment[graph, p, q] stands for every geodesic ===== *)
+(* ===== the head is inert ===== *)
 
-(* the realisations are exactly the geodesics, as directed path graphs *)
 VerificationTest[
-  With[{g = GridGraph[{3, 3}]}, {seg = InfraSegment[g, 1, 9]},
-    Sort[VertexList /@ Normal[seg]] === Sort[FindPath[g, 1, 9, {4}, All]]],
-  True,
-  TestID -> "InfraSegment-realisations-are-the-geodesics"
+  {InfraSegment[1, 9], InfraSegment[1, 9, 3]},
+  {InfraSegment[1, 9], InfraSegment[1, 9, 3]},
+  TestID -> "InfraSegment-head-is-inert"
 ]
 
-(* canonical order: lexicographic in the vertex labels *)
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]}, {seg = InfraSegment[g, 1, 9]},
-    VertexList /@ Normal[seg] === Sort[FindPath[g, 1, 9, {4}, All]]],
-  True,
-  TestID -> "InfraSegment-canonical-order-is-lexicographic"
-]
+(* ===== the graph is the interval DAG and its chains are the geodesics ===== *)
 
-(* the multiplicity is the geodesic count, read by DP, and Length agrees *)
+(* I(p, q) = { v : d(p, v) + d(v, q) == d(p, q) }, arrows by rising d(p, .) *)
 VerificationTest[
-  With[{g = GridGraph[{3, 3}]}, {seg = InfraSegment[g, 1, 9]},
-    {seg["Multiplicity"], Length[seg]} === {GeodesicMultiplicity[g, 1, 9], GeodesicMultiplicity[g, 1, 9]}],
-  True,
-  TestID -> "InfraSegment-multiplicity-is-the-geodesic-count"
-]
-
-(* Part enumerates on demand: an index, a span, a negative index, First *)
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]}, {seg = InfraSegment[g, 1, 9]}, {all = Normal[seg]},
-    {seg[[1]] === First[all], seg[[1 ;; 2]] === Take[all, 2], seg[[-1]] === Last[all], First[seg] === First[all],
-     seg[[2 ;; 5 ;; 2]] === all[[2 ;; 5 ;; 2]], seg[[All]] === all}],
-  {True, True, True, True, True, True},
-  TestID -> "InfraSegment-Part-enumerates-in-canonical-order"
-]
-
-(* the occupation density counts the geodesics through each vertex *)
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]}, {seg = InfraSegment[g, 1, 9]},
-    seg["InfraDensity"] === KeySort @ Counts @ Catenate @ FindPath[g, 1, 9, {4}, All] &&
-    seg[["InfraDensity"]] === seg["InfraDensity"] &&
-    InfraDensity[g, seg] === seg["InfraDensity"]],
-  True,
-  TestID -> "InfraSegment-InfraDensity-is-the-occupation"
-]
-
-(* the edge occupation sums to length times multiplicity *)
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]}, {seg = InfraSegment[g, 1, 9]},
-    Total[seg["EdgeDensity"]] == seg["Length"] seg["Multiplicity"] && seg["Length"] == GraphDistance[g, 1, 9]],
-  True,
-  TestID -> "InfraSegment-EdgeDensity-and-Length"
-]
-
-(* the vertex list is the metric interval; the graph is the acyclic interval DAG *)
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]}, {seg = InfraSegment[g, 1, 9]},
-    Sort[VertexList[seg]] === Sort[MetricInterval[g, 1, 9]] && AcyclicGraphQ[seg["Graph"]] &&
-    Sort[VertexList[seg["Graph"]]] === Sort[VertexList[GeodesicIntervalGraph[g, 1, 9]]]],
-  True,
-  TestID -> "InfraSegment-VertexList-is-the-metric-interval"
-]
-
-(* the predicates accept the object *)
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]}, {seg = InfraSegment[g, 1, 9]},
-    {InfraSegmentQ[g, seg], InfraWalkQ[g, seg], InfraLineQ[g, seg]}],
+  With[{g = GridGraph[{4, 4}]}, {dag = InfraMeasurement[g, InfraSegment[2, 15], "Graph"]},
+    {Sort[VertexList[dag]] === Sort[Select[VertexList[g],
+       GraphDistance[g, 2, #] + GraphDistance[g, #, 15] == GraphDistance[g, 2, 15] &]],
+     AllTrue[EdgeList[dag], GraphDistance[g, 2, Last[#]] == GraphDistance[g, 2, First[#]] + 1 &],
+     AcyclicGraphQ[dag]}],
   {True, True, True},
-  TestID -> "InfraSegment-predicates-accept-the-object"
+  TestID -> "InfraSegment-graph-is-the-interval-DAG"
 ]
 
-(* anchors spread: a density on one end gives one atom per pair and the multiplicities add *)
+(* a DAG with a unique source and a unique sink *)
 VerificationTest[
-  With[{g = GridGraph[{3, 3}]}, {seg = InfraSegment[g, <|1 -> 1, 3 -> 1|>, 9]},
-    {Length[seg["Atoms"]], seg["Multiplicity"]} === {2, GeodesicMultiplicity[g, 1, 9] + GeodesicMultiplicity[g, 3, 9]}],
+  With[{g = GridGraph[{4, 4}]}, {dag = InfraMeasurement[g, InfraSegment[2, 15], "Graph"]},
+    {Pick[VertexList[dag], VertexInDegree[dag], 0], Pick[VertexList[dag], VertexOutDegree[dag], 0]}],
+  {{2}, {15}},
+  TestID -> "InfraSegment-graph-has-one-source-and-one-sink"
+]
+
+(* the members are exactly the geodesics, on graphs with very different interval shapes *)
+VerificationTest[
+  AllTrue[
+    {{GridGraph[{4, 4}], 1, 16}, {CycleGraph[6], 1, 4}, {HypercubeGraph[4], 1, 16},
+     {PetersenGraph[], 1, 3}, {PathGraph[Range[7]], 2, 6}},
+    Apply[{g, p, q} |->
+      Sort[InfraVertexList[g, InfraSegment[p, q], All]] === Sort[FindPath[g, p, q, {GraphDistance[g, p, q]}, All]]]],
   True,
-  TestID -> "InfraSegment-anchor-spread-adds-atoms"
+  TestID -> "InfraSegment-members-are-the-geodesics"
 ]
 
-(* no geodesic, no realisation *)
+(* every vertex and every arrow of the DAG lies on a member *)
 VerificationTest[
-  With[{seg = InfraSegment[Graph[{1, 2}, {}], 1, 2]},
-    {seg["Multiplicity"], Normal[seg], seg["InfraDensity"], VertexList[seg]}],
-  {0, {}, <||>, {}},
-  TestID -> "InfraSegment-disconnected-endpoints-give-the-empty-object"
+  With[{g = GridGraph[{4, 4}]}, {obj = InfraSegment[1, 16]},
+    {Min[InfraMeasurement[g, obj, "VertexDensity"]] > 0, Min[InfraMeasurement[g, obj, "EdgeDensity"]] > 0}],
+  {True, True},
+  TestID -> "InfraSegment-every-vertex-and-arrow-lies-on-a-member"
 ]
 
-(* an index past the family is a Part error *)
+(* ===== the polyline ===== *)
+
+(* the graph of a polyline is the List of its pieces' DAGs *)
 VerificationTest[
-  InfraSegment[GridGraph[{3, 3}], 1, 9][[7]],
-  $Failed,
-  {Part::partw},
-  TestID -> "InfraSegment-Part-out-of-range"
+  With[{g = GridGraph[{3, 3}]}, {gs = InfraMeasurement[g, InfraSegment[1, 9, 3], "Graph"]},
+    {Head /@ gs, Length[gs], Sort[VertexList[Last[gs]]]}],
+  {{Graph, Graph}, 2, {3, 6, 9}},
+  TestID -> "InfraSegment-polyline-graph-is-a-list-of-pieces"
 ]
 
-(* the object renders, alone and among shapes, and the summary box is interpretable *)
+(* a member concatenates one chain per piece, so the pieces are factors *)
 VerificationTest[
-  With[{g = GridGraph[{3, 3}]}, {seg = InfraSegment[g, 1, 9]},
-    {Head @ InfraSceneHighlight[g, seg], Head @ InfraSceneHighlight[g, {seg -> Red, 5}], Head @ HighlightGraph[g, seg],
-     Head @ ToBoxes[seg]}],
-  {Graph, Graph, Graph, InterpretationBox},
-  TestID -> "InfraSegment-renders-and-formats"
+  With[{g = GridGraph[{3, 3}]}, {obj = InfraSegment[1, 5, 9]},
+    {InfraMeasurement[g, obj, "Cardinality"] ===
+       InfraMeasurement[g, InfraSegment[1, 5], "Cardinality"] InfraMeasurement[g, InfraSegment[5, 9], "Cardinality"],
+     Length[InfraVertexList[g, obj, All]] === InfraMeasurement[g, obj, "Cardinality"],
+     InfraMeasurement[g, obj, "Length"] === GraphDistance[g, 1, 5] + GraphDistance[g, 5, 9],
+     AllTrue[InfraVertexList[g, obj, All], Length[#] === InfraMeasurement[g, obj, "Length"] + 1 &]}],
+  {True, True, True, True},
+  TestID -> "InfraSegment-polyline-members-concatenate-the-pieces"
 ]
 
-(* the scene token is untouched: without the graph the head stays inert *)
+(* the union of the pieces is not faithful, which is why the graph stays a List: the polyline
+   p, q, p retraces its one edge, and a union would carry both orientations of it *)
 VerificationTest[
-  InfraSegment[1, 9],
-  InfraSegment[1, 9],
-  TestID -> "InfraSegment-token-without-graph-stays-inert"
+  With[{g = GridGraph[{3, 3}]},
+    {InfraVertexList[g, InfraSegment[1, 2, 1], All], InfraMeasurement[g, InfraSegment[1, 2, 1], "Cardinality"]}],
+  {{{1, 2, 1}}, 1},
+  TestID -> "InfraSegment-polyline-may-retrace-a-side"
+]
+
+(* membership on a polyline cuts the path at the knots *)
+VerificationTest[
+  With[{g = GridGraph[{3, 3}]}, {obj = InfraSegment[1, 5, 9]},
+    {AllTrue[InfraVertexList[g, obj, All], InfraMemberQ[g, obj, #] &],
+     InfraMemberQ[g, obj, {1, 2, 3, 6, 9}]}],
+  {True, False},
+  TestID -> "InfraSegment-polyline-membership"
+]
+
+(* ===== FindInfraSegment: the independent search ===== *)
+
+(* the search and the graph agree on the whole class *)
+VerificationTest[
+  AllTrue[
+    {{GridGraph[{4, 4}], 1, 16}, {CycleGraph[6], 1, 4}, {HypercubeGraph[4], 1, 16}, {PetersenGraph[], 1, 3}},
+    Apply[{g, p, q} |->
+      Sort[FindInfraSegment[g, p, q, All]] === Sort[InfraVertexList[g, InfraSegment[p, q], All]]]],
+  True,
+  TestID -> "FindInfraSegment-agrees-with-the-graph"
+]
+
+(* the count contract: one geodesic, a List under a count, the class under All *)
+VerificationTest[
+  With[{g = CycleGraph[6]},
+    {InfraSegmentQ[g, FindInfraSegment[g, 1, 4]],
+     Length[FindInfraSegment[g, 1, 4, 2]], Length[FindInfraSegment[g, 1, 4, UpTo[9]]],
+     FindInfraSegment[g, 1, 4, 5]}],
+  {True, 2, 2, $Failed},
+  TestID -> "FindInfraSegment-count-contract"
+]
+
+(* unreachable endpoints have no geodesic *)
+VerificationTest[
+  With[{g = Graph[{1, 2}, {}]}, {FindInfraSegment[g, 1, 2], FindInfraSegment[g, 1, 2, All]}],
+  {{}, {}},
+  TestID -> "FindInfraSegment-disconnected-endpoints"
+]
+
+(* ===== the predicates ===== *)
+
+VerificationTest[
+  With[{g = GridGraph[{3, 3}]},
+    {InfraSegmentQ[g, {1, 2, 3, 6, 9}], InfraSegmentQ[g, {1, 2, 5, 4, 7, 8, 9}],
+     InfraWalkQ[g, {1, 2, 5, 4, 7, 8, 9}], InfraWalkQ[g, {1, 3}],
+     UniqueInfraSegmentQ[g, 1, 3], UniqueInfraSegmentQ[g, 1, 9]}],
+  {True, False, True, False, True, False},
+  TestID -> "InfraSegment-predicates-on-vertex-lists"
 ]
 
 EndTestSection[]

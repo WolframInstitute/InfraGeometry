@@ -16,10 +16,16 @@ PackageExport[SelectInfraPoint]
 PackageExport[InfraReachableQ]
 
 (* ---- EuclideanInfrageometry: Kernel/EuclideanInfrageometry/ ------------- *)
-(* The Euclidean objects and the scene they are drawn in.  Each construction head
-   evaluates, with the substrate as its first argument, to an object standing for the
-   whole family -- InfraSegment[g, p, q], InfraRay[g, o, v], InfraLine[g, p, q],
-   InfraCircle[g, c, p], InfraArc[g, c, p, q] -- and without it stays the InfraScene token *)
+(* The Euclidean objects and the scene they are drawn in.  Each head -- InfraSegment[p1, ..., pk],
+   InfraRay[p, q], InfraLine[p, q], InfraCircle[c, p], InfraArc[c, pts] -- is inert and computes
+   nothing; a graph in front of it evaluates it, through InfraMeasurement and InfraVertexList *)
+
+(* EuclideanInfrageometry/InfraMeasurement.wl *)
+PackageExport[InfraMeasurement]
+PackageExport[Undetermined]
+PackageExport[InfraVertexList]
+PackageExport[InfraMemberQ]
+PackageExport[InfraSubgraph]
 
 (* EuclideanInfrageometry/InfraSegment.wl *)
 PackageExport[InfraSegment]
