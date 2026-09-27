@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- **`InfraMetricTensor`, the interval-projection metric tensor.** `InfraMetricTensor[g, p]` is the matrix
+  over vertex pairs `(v, w)` of `d(p, u) / d(p, v)`, with `u` the vertex of the interval `I(p, w)` closest
+  to `v`; `InfraMetricTensor[g, p, r]` restricts it to the shell `FindInfraShell[g, p, r]`. Option
+  `"SelectCoordinate" -> Min | Max | Mean | Median | All | f` reduces tied feet. In the plane it is
+  `max(0, cos θ)` on a circle; on the square grid it is `1 - d(v, w)/(2r)` on every shell. Every row comes
+  from one `GraphDistanceMatrix`. Reference page and a line in `EuclideanGeometryGuide`.
+
 - **The `EuclideanInfrageometry` category, 0.16.0** (2026-09-22). The kernel gains its first named
   category in the `WolframInstitute/PureMath` layout: `Kernel/EuclideanInfrageometry/` holds
   `InfraSegment.wl`, `InfraRay.wl`, `InfraLine.wl`, `InfraCircle.wl`, `InfraScene.wl`,
