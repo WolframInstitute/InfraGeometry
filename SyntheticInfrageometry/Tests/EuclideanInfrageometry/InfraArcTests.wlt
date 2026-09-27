@@ -134,16 +134,16 @@ VerificationTest[
   TestID -> "InfraArc-polyline-pieces-are-factors"
 ]
 
-(* the density of a polyline is the sum of the piece densities, the knot counted in both *)
+(* the density of a polyline counts its members, the knot once *)
 VerificationTest[
   With[{g = GridGraph[{9, 9}], c = 41},
     {poly = InfraArc[c, {25, 57, 21}, "RadiusDelta" -> 2]},
-    {a = InfraArc[c, {25, 57}, "RadiusDelta" -> 2], b = InfraArc[c, {57, 21}, "RadiusDelta" -> 2]},
-    InfraMeasurement[g, poly, "VertexDensity"] ===
-      KeySort @ Merge[{InfraMeasurement[g, a, "VertexDensity"],
-                       InfraMeasurement[g, b, "VertexDensity"]}, Total]],
-  True,
-  TestID -> "InfraArc-polyline-density-is-the-sum"
+    {members = InfraVertexList[g, poly, All]},
+    {InfraMeasurement[g, poly, "VertexDensity"] === KeySort @ Counts @ Catenate @ members,
+     InfraMeasurement[g, poly, "EdgeDensity"] ===
+       KeySort @ Counts @ Catenate[DirectedEdge @@@ Partition[#, 2, 1] & /@ members]}],
+  {True, True},
+  TestID -> "InfraArc-polyline-density-counts-members"
 ]
 
 (* a polyline member passes through the knot, is a member, and the search finds the same family *)

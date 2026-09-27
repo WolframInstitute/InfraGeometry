@@ -88,6 +88,26 @@ VerificationTest[
   TestID -> "InfraSegment-polyline-membership"
 ]
 
+(* the density of a polyline counts its members: a vertex of one piece lies on every member of the
+   others, and a knot is visited once *)
+VerificationTest[
+  With[{g = GridGraph[{6, 6}]}, {obj = InfraSegment[1, 16, 36]},
+    {members = InfraVertexList[g, obj, All]},
+    {InfraMeasurement[g, obj, "VertexDensity"] === KeySort @ Counts @ Catenate @ members,
+     InfraMeasurement[g, obj, "EdgeDensity"] ===
+       KeySort @ Counts @ Catenate[DirectedEdge @@@ Partition[#, 2, 1] & /@ members],
+     InfraMeasurement[g, obj, "VertexDensity"][16] === InfraMeasurement[g, obj, "Cardinality"]}],
+  {True, True, True},
+  TestID -> "InfraSegment-polyline-density-counts-members"
+]
+
+(* a retraced side is visited twice at the vertex it returns to *)
+VerificationTest[
+  With[{g = GridGraph[{3, 3}]}, InfraMeasurement[g, InfraSegment[1, 2, 1], "VertexDensity"]],
+  <|1 -> 2, 2 -> 1|>,
+  TestID -> "InfraSegment-polyline-density-on-a-retraced-side"
+]
+
 (* ===== FindInfraSegment: the independent search ===== *)
 
 (* the search and the graph agree on the whole class *)

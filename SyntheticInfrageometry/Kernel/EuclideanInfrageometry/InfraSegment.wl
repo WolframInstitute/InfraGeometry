@@ -49,6 +49,26 @@ InfraVertexList[ graph_Graph,
       _UpTo,     Take[ members, count ],
       _,         If[ Length @ members < count, $Failed, Take[ members, count ] ] ] ]
 
+(* the density counts members: a vertex on occ_i(v) chains of piece i lies on occ_i(v) times the product of the other pieces' counts, and an inner knot, which both pieces meeting there count, once less *)
+
+InfraMeasurement[ graph_Graph,
+    InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ], "VertexDensity" ] :=
+  With[ { pieces = InfraSegment @@@ Partition[ { pts }, 2, 1 ] },
+    { counts = InfraMeasurement[ graph, #, "Cardinality" ] & /@ pieces },
+    KeySort @ DeleteCases[ 0 ] @ Merge[
+      Append[
+        MapIndexed[ { piece, i } |-> ( Times @@ Delete[ counts, i ] ) InfraMeasurement[ graph, piece, "VertexDensity" ], pieces ],
+        - ( Times @@ counts ) Counts @ Take[ { pts }, { 2, -2 } ] ],
+      Total ] ]
+
+InfraMeasurement[ graph_Graph,
+    InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ], "EdgeDensity" ] :=
+  With[ { pieces = InfraSegment @@@ Partition[ { pts }, 2, 1 ] },
+    { counts = InfraMeasurement[ graph, #, "Cardinality" ] & /@ pieces },
+    KeySort @ DeleteCases[ 0 ] @ Merge[
+      MapIndexed[ { piece, i } |-> ( Times @@ Delete[ counts, i ] ) InfraMeasurement[ graph, piece, "EdgeDensity" ], pieces ],
+      Total ] ]
+
 (* the knots cut the path at prescribed positions: every chain of the piece p_i -> p_(i+1) has length d(p_i, p_(i+1)) *)
 
 InfraMemberQ[ graph_Graph,
