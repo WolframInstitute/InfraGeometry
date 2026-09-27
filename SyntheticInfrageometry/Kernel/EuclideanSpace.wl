@@ -195,11 +195,10 @@ InfraAngle[ graph_Graph, { q1_, p_, q2_ }, OptionsPattern[] ] :=
 Options[ InfraMetricTensor ] = { "SelectCoordinate" -> Min };
 
 InfraMetricTensor[ graph_Graph, p_, r : ( _Integer | All ) : All, OptionsPattern[] ] :=
-  With[ { verts = VertexList @ graph, sel = OptionValue[ "SelectCoordinate" ] },
-    { dp = GraphDistance[ graph, p ], vidx = AssociationThread[ verts, Range @ Length @ verts ] },
-    { shell = If[ r === All, verts, Sort @ Pick[ verts, dp, r ] ] },
-    { dS = If[ r === All, GraphDistanceMatrix @ graph, GraphDistance[ graph, # ] & /@ shell ] },
-    { dpS = dp[[ Lookup[ vidx, shell ] ]] },
+  With[ { verts = VertexList @ graph, dm = GraphDistanceMatrix @ graph, sel = OptionValue[ "SelectCoordinate" ] },
+    { dp = dm[[ VertexIndex[ graph, p ] ]] },
+    { s = If[ r === All, All, VertexIndex[ graph, # ] & /@ Sort @ Pick[ verts, dp, r ] ] },
+    { dS = dm[[ s ]], dpS = dp[[ s ]] },
     Transpose @ MapThread[
       { dw, k } |-> With[ { iw = Pick[ Range @ Length @ verts, dp + dw, k ] },
         { idx = dp[[ iw ]], M = dS[[ All, iw ]] },
