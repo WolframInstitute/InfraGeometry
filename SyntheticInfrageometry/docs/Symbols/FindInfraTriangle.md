@@ -12,15 +12,15 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 ## Usage
 
-<code>[FindInfraTriangle]()[*g*, {*a*, *b*, *c*}]</code> gives one triangle with corners *a*, *b*, *c* in *g* — a geodesic on each side — as an [InfraTriangle]() wrapper.
+<code>[FindInfraTriangle]()[*g*, {*a*, *b*, *c*}]</code> gives one triangle with corners *a*, *b*, *c* in *g* — a geodesic on each side — as the `List` of its three sides, one directed path graph each.
 
-<code>[FindInfraTriangle]()[*g*, {*a*, *b*, *c*}, *n*]</code> gives exactly *n* triangles or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives the whole class.
+<code>[FindInfraTriangle]()[*g*, {*a*, *b*, *c*}, *n*]</code> gives a `List` of exactly *n* triangles or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives the whole class.
 
 ## Details & Options
 
-A triangle with corners *a*, *b*, *c* is three geodesics, *a … b*, *b … c* and *c … a*. It is the three-corner case of [FindInfraPolygon]() and shares its engine, options and defaults: corners are vertices or [InfraPoint]() atoms, each realisation is a list of three unary [InfraSegment]() sides, and `["Sides"]`, `["Length"]` (the perimeter, in edges) and `["Vertices"]` read them.
+A triangle with corners *a*, *b*, *c* is three geodesics, *a … b*, *b … c* and *c … a*. It is the three-corner case of [FindInfraPolygon]() and shares its engine, options and defaults: corners are vertices, each triangle is the `List` of its three sides, one directed path graph each, and its perimeter is the total edge count of the sides.
 
-The class is the product of the three geodesic classes, so the count multiplies. Below, the triangle on the centre of each substrate and two vertices at distance 4 from it and from each other has 18 realisations on the irregular mesh, 36 on the square tiling and 8 on the hexagonal — all of perimeter 12.
+The class is the product of the three geodesic classes, so the count multiplies. Below, the triangle on the centre of each substrate and two vertices at distance 4 from it and from each other has 18 members on the irregular mesh, 36 on the square tiling and 8 on the hexagonal — all of perimeter 12.
 
 Nothing in the definition keeps the sides apart. On the 3×3 grid with corners 1, 3, 9 the side from 9 to 1 may retrace the two others, and the class admits it, since each side is a geodesic on its own.
 
@@ -49,7 +49,7 @@ Association @ Table[
      {c = First @ GraphCenter[g]},
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
      {d = Last @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 && GraphDistance[g, b, #] == 4 &]},
-     Length @ FindInfraTriangle[g, {c, b, d}, All]["Realizations"]],
+     Length @ FindInfraTriangle[g, {c, b, d}, All]],
    {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```
 
@@ -65,7 +65,7 @@ Row[Table[
      Labeled[
        InfraSceneHighlight[g,
          {FindInfraTriangle[g, {c, b, d}, All] -> $InfraSegmentColor,
-          InfraSet[{c, b, d}] -> $InfraPointColor},
+          {c, b, d} -> $InfraPointColor},
          "PointSizeRange" -> 15,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
          ImageSize -> 250],
@@ -80,8 +80,8 @@ On the 3×3 grid the corners 1, 3, 9 carry six triangles. The count-less call is
 ```wl
 With[
   {g = GridGraph[{3, 3}]},
-  {FindInfraTriangle[g, {1, 3, 9}]["Realizations"],
-   Length @ FindInfraTriangle[g, {1, 3, 9}, All]["Realizations"],
+  {FindInfraTriangle[g, {1, 3, 9}],
+   Length @ FindInfraTriangle[g, {1, 3, 9}, All],
    FindInfraTriangle[g, {1, 3, 9}, 7]}]
 ```
 
@@ -94,9 +94,9 @@ The class is the same under every `Method`; only the order in which triangles co
 ```wl
 SeedRandom[1]; With[
   {g = GridGraph[{3, 3}]},
-  {SameQ @@ (Sort @ FindInfraTriangle[g, {1, 3, 9}, All, Method -> #]["Realizations"] & /@
+  {SameQ @@ (Sort @ FindInfraTriangle[g, {1, 3, 9}, All, Method -> #] & /@
       {"Exhaustive", "Greedy", "RandomGreedy"}),
-   FindInfraTriangle[g, {1, 3, 9}, Method -> "RandomGreedy"]["Realizations"]}]
+   FindInfraTriangle[g, {1, 3, 9}, Method -> "RandomGreedy"]}]
 ```
 
 ## Properties and Relations
@@ -107,7 +107,7 @@ Every triangle satisfies [InfraTriangleQ](), and the class is the polygon class 
 With[
   {g = GridGraph[{3, 3}]},
   {InfraTriangleQ[g, FindInfraTriangle[g, {1, 3, 9}, All]],
-   FindInfraTriangle[g, {1, 3, 9}, All]["Realizations"] === FindInfraPolygon[g, {1, 3, 9}, All]["Realizations"]}]
+   FindInfraTriangle[g, {1, 3, 9}, All] === FindInfraPolygon[g, {1, 3, 9}, All]}]
 ```
 
 The perimeter is the sum of the three corner distances.
@@ -118,5 +118,5 @@ With[
   {c = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
   {d = Last @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 && GraphDistance[g, b, #] == 4 &]},
-  First @ FindInfraTriangle[g, {c, b, d}]["Length"] === GraphDistance[g, c, b] + GraphDistance[g, b, d] + GraphDistance[g, d, c]]
+  Total[EdgeCount /@ FindInfraTriangle[g, {c, b, d}]] === GraphDistance[g, c, b] + GraphDistance[g, b, d] + GraphDistance[g, d, c]]
 ```

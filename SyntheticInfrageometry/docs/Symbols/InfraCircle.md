@@ -5,83 +5,105 @@ Context: WolframInstitute`SyntheticInfrageometry`
 ContextPath: [WolframInstitute`Infrageometry`]
 Paclet: WolframInstitute/SyntheticInfrageometry
 URI: WolframInstitute/SyntheticInfrageometry/ref/InfraCircle
-Keywords: [circle, cycle, level surface, wrapper, closure]
-SeeAlso: [FindInfraCircle, InfraShell, InfraEllipse, InfraPolygon, HomotopicQ]
+Keywords: [circle, band, separating cycle, necklace, seam, inert head]
+SeeAlso: [FindInfraCircle, InfraArc, InfraMeasurement, InfraVertexList, Undetermined, InfraShell]
 RelatedGuides: [EuclideanGeometryGuide]
 ---
 
 ## Usage
 
-<code>[InfraCircle]()[*g*, *c*, *p*]</code> is the object of circles around *c* through *p* on the graph *g*: the shortest simple cycles through *p* in the band of radius *d*(*c*, *p*) that separate *c* from beyond, with *p* their source and sink.
+<code>[InfraCircle]()[*c*, *p*]</code> is the circle around *c* through *p*. It is inert; [InfraMeasurement]() and [InfraVertexList]() evaluate it on a graph.
 
-<code>[InfraCircle]()[*g*, *c*, *p*, "Tolerance" -> *t*]</code> widens the band to *d*(*c*, *p*) ± *t*; `{tIn, tOut}` widens it asymmetrically.
+<code>[InfraCircle]()[*c*, "Radius" -> *r*]</code> is the family of circles around *c* at radius *r*, and <code>[InfraCircle]()[*c*, "Radius" -> {*r*, *s*}]</code> the family in the band *r* ≤ *d(c, v)* ≤ *s*.
 
-<code>[InfraCircle]()[*center*, *r*]</code> inside an [InfraScene]() is the circle construction token by radius; [FindInfraCircle]() is the search by radius.
-
-`circle[[i]]`, `circle[[i ;; j]]` and `Normal[circle]` enumerate the circles as directed cycle graphs; `circle["Multiplicity"]`, `circle["InfraDensity"]`, `circle["EdgeDensity"]`, `circle["Length"]`, `circle["Graph"]` read the carrier.
+<code>[InfraCircle]()[*c*, *r*]</code> inside an [InfraScene]() is the circle construction token by radius; [FindInfraCircle]() is the search.
 
 ## Details & Options
 
-Definition: an infra-circle is a simple cycle lying in a level surface of the metric.
+Definition: a circle of the band *W* around *c* is a shortest cycle of the subgraph induced on *W* whose removal leaves *c* in a component that reaches no further than the band.
 
-A realisation is an **open** vertex sequence. The edge from the last vertex back to the first is implicit.
+The point form takes the band at *d(c, p)* and keeps the circles through *p*. Option `"RadiusDelta" -> {deltaIn, deltaOut}` widens it to *d(c, p)* − *deltaIn* ≤ *d(c, v)* ≤ *d(c, p)* + *deltaOut*. A scalar `"RadiusDelta" -> delta` means `{0, delta}`, outward only. The default is `0`.
 
-So a circle of *k* vertices has *k* edges. `["Length"]` gives the edge count per realisation, as a list, and it equals the vertex count. For a path wrapper such as [InfraSegment]() the edge count is one less than the vertex count. That is the difference between a cycle wrapper and a path wrapper.
+**A circle need not exist.** On a lattice a single distance shell has no two adjacent vertices, so it spans no cycle and the family is empty. Widening the radius to a band fixes it.
 
-A cycle is always connected. This is why `"Connected"` is not an admissible property on [FindInfraCircle]().
+Its graph — <code>[InfraMeasurement]()[*g*, *circle*, "Graph"]</code> — is a `List` of necklaces, cut from the band along a radial seam: a geodesic from *c* to just outside the band. A necklace is a DAG with one source *s1* and one sink *u*. It is the cycle family **opened** at its closing arrow *u* -> *s1*, which is left out, so the DAG is acyclic.
 
-[InfraShell]() is the set-shaped companion. The shell is the level surface itself. The circle is a cycle inside it. On a lattice the shell has no cycle at all, so the circle is empty until the radius is widened to a band.
+A member is the open chain *s1* … *u*, read cyclically: a cyclic vertex list whose first vertex is not repeated. Its `"Length"` counts the closing edge too, so a circle of *k* vertices has length *k*.
 
-[InfraSceneHighlight]() draws the multi form with sequential edges and closes it automatically. Passing an already-closed sequence is harmless: the closure is not doubled.
+Every member separates. That the necklaces carry every circle exactly once needs two hypotheses on the substrate — the winding functional and the one-run hypothesis — which nothing here certifies. So `"Faithful"` is [Undetermined]().
 
-For homotopy a circle is read as a free loop — a closed walk taken modulo rotation — since it has no base point.
-
-Inside an [InfraScene](), `InfraCircle[center, radius]` names a circle to be solved for.
+Inside an [InfraScene](), the token `InfraCircle[c, r]` still reads *r* as a radius, unlike the head, where a bare second argument is always a point. This is an open inconsistency.
 
 ## Basic Examples
 
-The circle of a square grid at band `{4, 5}`. Its length equals its vertex count, because the closure is implicit.
+The band `{4, 5}` around the centre of a square grid: the number of circles, their length, and the number of necklaces carrying them.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {circ = FindInfraCircle[g, c, {4, 5}]},
-  <|"realisations" -> Length @ First @ circ,
-    "length (edges)" -> circ["Length"],
-    "vertices in first" -> Length @ First @ First @ circ|>]
+  {circle = InfraCircle[c, "Radius" -> {4, 5}]},
+  {InfraMeasurement[g, circle, "Cardinality"], InfraMeasurement[g, circle, "Length"],
+   Length @ InfraMeasurement[g, circle, "Graph"]}
+]
 ```
 
-Drawn on the substrate, with the centre marked.
+At a single radius the lattice has no circle.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "Gray", "KeepCoordinates" -> True]},
+  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  InfraSceneHighlight[g,
-    {FindInfraCircle[g, c, {4, 5}] -> $InfraCircleColor, InfraPoint[c] -> $InfraPointColor},
-    "PointSizeRange" -> 15,
-    VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
-    ImageSize -> 340]]
+  InfraMeasurement[g, InfraCircle[c, "Radius" -> 4], "Cardinality"]
+]
+```
+
+A member is a cyclic vertex list.
+
+```wl
+InfraVertexList[GridGraph[{5, 5}], InfraCircle[13, "Radius" -> {1, 2}]]
+```
+
+The point form: the circles through a vertex at distance 4, with the band widened one step outward.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
+  {c = First @ GraphCenter[g]},
+  {p = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
+  InfraMeasurement[g, InfraCircle[c, p, "RadiusDelta" -> 1], {"Cardinality", "Length"}]
+]
 ```
 
 ## Properties and Relations
 
-A circle lies inside its shell.
+A circle lies in its band, and consecutive vertices are adjacent, the last and the first too.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  SubsetQ[First @ First @ FindInfraShell[g, c, {4, 5}], First @ First @ FindInfraCircle[g, c, {4, 5}]]]
+  {g = GridGraph[{9, 9}]},
+  {cyc = InfraVertexList[g, InfraCircle[41, "Radius" -> {2, 4}]]},
+  {SubsetQ[FindInfraShell[g, 41, {2, 4}], cyc],
+   AllTrue[Partition[cyc, 2, 1, 1], EdgeQ[g, UndirectedEdge @@ #] &]}
+]
 ```
 
-Consecutive vertices are adjacent, and so are the last and the first.
+[FindInfraCircle]() searches the band directly and finds as many circles.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {cyc = First @ First @ FindInfraCircle[g, c, {4, 5}]},
-  AllTrue[Partition[Append[cyc, First[cyc]], 2, 1], EdgeQ[g, UndirectedEdge @@ #] &]]
+  {g = GridGraph[{9, 9}]},
+  {InfraMeasurement[g, InfraCircle[41, "Radius" -> {2, 4}], "Cardinality"],
+   Length @ FindInfraCircle[g, 41, "Radius" -> {2, 4}, All]}
+]
+```
+
+The necklace is acyclic, and its closing arrow runs from its sink back to its source.
+
+```wl
+With[
+  {neck = First @ InfraMeasurement[GridGraph[{5, 5}], InfraCircle[13, "Radius" -> {1, 2}], "Graph"]},
+  {AcyclicGraphQ[neck], Select[VertexList[neck], VertexInDegree[neck, #] == 0 &],
+   Select[VertexList[neck], VertexOutDegree[neck, #] == 0 &]}
+]
 ```

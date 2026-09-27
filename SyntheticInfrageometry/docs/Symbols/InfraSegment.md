@@ -5,116 +5,98 @@ Context: WolframInstitute`SyntheticInfrageometry`
 ContextPath: [WolframInstitute`Infrageometry`]
 Paclet: WolframInstitute/SyntheticInfrageometry
 URI: WolframInstitute/SyntheticInfrageometry/ref/InfraSegment
-Keywords: [segment, geodesic bundle, interval DAG, multiplicity, wrapper]
-SeeAlso: [FindInfraSegment, ExtendInfraSegment, InfraPoint, InfraLine, InfraDensity, MetricInterval]
+Keywords: [segment, geodesic, interval DAG, polyline, inert head]
+SeeAlso: [FindInfraSegment, InfraMeasurement, InfraVertexList, ExtendInfraSegment, InfraLine, MetricInterval]
 RelatedGuides: [EuclideanGeometryGuide]
 ---
 
 ## Usage
 
-<code>[InfraSegment]()[*g*, *p*, *q*]</code> is the geodesic interval from *p* to *q* on the graph *g* as one object: every geodesic from *p* to *q* at once, carried as a geodesic DAG.
+<code>[InfraSegment]()[*p*, *q*]</code> is the segment from *p* to *q*: every geodesic from *p* to *q* at once. It is inert; [InfraMeasurement]() and [InfraVertexList]() evaluate it on a graph.
+
+<code>[InfraSegment]()[*p1*, *p2*, …, *pk*]</code> is the polyline of the segments [*p1*, *p2*], …, [*p(k-1)*, *pk*].
 
 <code>[InfraSegment]()[*p*, *q*]</code> inside an [InfraScene]() is the segment construction token; [FindInfraSegment]() is the search.
 
-`seg[[i]]`, `seg[[i ;; j]]` and `Normal[seg]` enumerate the geodesics in canonical order as directed path graphs; `seg["Multiplicity"]`, `seg["InfraDensity"]`, `seg["EdgeDensity"]`, `seg["Length"]`, `seg["Graph"]` and `seg["VertexList"]` read the DAG without enumerating.
-
 ## Details & Options
 
-Definition: an infra-segment between *a* and *b* is the set of all geodesics from *a* to *b*.
+Definition: an infra-segment between *p* and *q* is the set of all geodesics from *p* to *q*.
 
 It carries no weights. The geodesics are equally admissible, so nothing distinguishes them.
 
-There are three forms of the same object.
+The head holds its two points and computes nothing. Its graph — <code>[InfraMeasurement]()[*g*, *seg*, "Graph"]</code> — is the geodesic interval: the vertices *v* with *d(p, v) + d(v, q) = d(p, q)*, with arrows of rising distance from *p*. Its source-to-sink chains are exactly the geodesics, each once, so `"Faithful"` is `True`.
 
-- The **enumerated** form is a list of paths, what a bounded count produces.
-- The **DAG** form is a graph: the geodesic interval. `All` produces it for one pair of endpoints.
-- The **pool** form is a list of DAGs, one per pair of ends — the return of [ExtendInfraSegment]()[*g*, *seed*, *kspec*, All] and of [FindInfraSegment]() spread over wrapper anchors. A lone atom collapses to the DAG form.
+Every count is read off that graph by dynamic programming, never by enumeration. The graph stays small where the family is large: two vertices at distance 5 on a square grid have 10 geodesics and a 12-vertex graph.
 
-The DAG is preferred because the number of geodesics grows fast while the DAG stays small. On a square grid, two vertices at distance 5 have 10 geodesics and a 12-vertex DAG.
+A polyline is the one head whose `List` of graphs is not a family of alternatives. Its members are concatenations of one geodesic per piece, so its `"Cardinality"` is the product over the pieces and its `"Length"` the sum. Its `"VertexDensity"` stays the sum of the piece densities.
 
-A measure appears when you project. `seg[[i]]` is the *i*-th position across all realisations, returned as a measured [InfraPoint](). Its weight at a vertex is the number of geodesics passing through that vertex at that position. Position 1 is the start, so it carries the full multiplicity. This is how [FindInfraMidpoint]() gets its weights.
-
-DAG accessors:
-
-| Accessor | Gives |
-|---|---|
-| `["Graph"]` | the interval DAG itself |
-| `["Vertices"]` | the vertices it covers |
-| `["Length"]` | the edge count |
-| `["Multiplicity"]` | how many geodesics it represents |
-| `["Measure"]` | the per-vertex occupation |
-| `["Start"]`, `["End"]` | the endpoints |
-| `["Realizations", n]` | enumerate on demand; `UpTo[n]` and `All` also work |
-
-On the pool the accessors are sized by the atoms, never by the family: `["Length"]` is one number per DAG, `["Start"]` and `["End"]` are the [InfraSet]() of sources and of sinks, `["Multiplicity"]` and `["Measure"]` sum the per-atom counts, `["Realizations", n]` enumerates lazily atom by atom, and `seg[[i]]` is the *i*-th layer of every atom weighted by occupation. A 20 × 20 grid edge has about 9 × 10⁹ lines through it in two atoms, so nothing here enumerates by default.
-
-Endpoints are deduplicated. Every geodesic of a family shares them. A walk keeps endpoint multiplicity instead, because walks can end anywhere.
-
-Inside an [InfraScene](), `InfraSegment[p, q]` names a segment to be solved for.
+A member is a vertex list; [InfraVertexList]() reads one, several or all of them, and [InfraMemberQ]() tests one.
 
 ## Basic Examples
 
-`All` gives the interval DAG. Every geodesic is a directed path through it.
+The graph of a segment on the square grid. Every geodesic is a directed path through it.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
-  FindInfraSegment[g, a, b, All]["Graph"]
+  InfraMeasurement[g, InfraSegment[a, b], "Graph"]
 ]
 ```
 
-The DAG is small where the enumeration is large.
+The graph is small where the family is large.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
-  {seg = FindInfraSegment[g, a, b, All]},
-  <|"DAG vertices" -> Length @ seg["Vertices"], "length" -> seg["Length"],
-    "multiplicity" -> seg["Multiplicity"], "start" -> seg["Start"], "end" -> seg["End"]|>]
+  {seg = InfraSegment[a, b]},
+  <|"geodesics" -> InfraMeasurement[g, seg, "Cardinality"],
+    "length" -> InfraMeasurement[g, seg, "Length"],
+    "graph vertices" -> VertexCount @ InfraMeasurement[g, seg, "Graph"]|>
+]
 ```
 
-Indexing by position gives a measured point. Position 1 is the start and carries every geodesic.
+The members are vertex lists.
+
+```wl
+InfraVertexList[GridGraph[{4, 4}], InfraSegment[1, 11], All]
+```
+
+A polyline through the centre of a 5 × 5 grid: 36 members, each 8 edges long, and 12 of them — the six geodesics in, times the six out, counted once per piece — pass the centre.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
-  {seg = FindInfraSegment[g, a, b, All]},
-  {seg[[1]], seg[[3]]}]
-```
-
-The pool form: one DAG per pair of ends. Extending an edge of the grid by one step on each side gives seven ends pairs, each carrying one geodesic here.
-
-```wl
-With[
-  {pool = ExtendInfraSegment[GridGraph[{4, 4}], {6, 7}, 1, All]},
-  {Length @ pool["Graph"], pool["Multiplicity"], pool["Start"], pool["End"]}]
+  {g = GridGraph[{5, 5}]},
+  {poly = InfraSegment[1, 13, 25]},
+  {InfraMeasurement[g, poly, "Cardinality"], InfraMeasurement[g, poly, "Length"],
+   InfraMeasurement[g, poly, "VertexDensity"][13]}
+]
 ```
 
 ## Properties and Relations
 
-The vertices of the DAG are the metric interval between the endpoints.
+The support of the segment is the metric interval between its endpoints.
 
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
-  Sort @ FindInfraSegment[g, a, b, All]["Vertices"] === Sort @ MetricInterval[g, a, b]]
+  Sort @ Keys @ InfraMeasurement[g, InfraSegment[a, b], "VertexDensity"] === Sort @ MetricInterval[g, a, b]
+]
 ```
 
-The length of the DAG is the graph distance, and every realisation has it.
+The cardinality is the number of members, and every member has the graph distance as its length.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
-  {seg = FindInfraSegment[g, a, b, All]},
-  {seg["Length"] === GraphDistance[g, a, b], Union[Length[#] - 1 & /@ seg["Realizations"]] === {seg["Length"]}}]
+  {g = GridGraph[{5, 5}]},
+  {seg = InfraSegment[1, 19]},
+  {members = InfraVertexList[g, seg, All]},
+  {Length @ members === InfraMeasurement[g, seg, "Cardinality"],
+   Union[Length[#] - 1 & /@ members] === {GraphDistance[g, 1, 19]}}
+]
 ```

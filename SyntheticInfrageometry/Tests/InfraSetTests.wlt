@@ -263,19 +263,6 @@ VerificationTest[
   TestID -> "set-density-is-all-ones-on-the-support"
 ]
 
-(* a density and the List over the same support are both legal anchors, and both
-   spread: several sources give the List of interval DAGs, one per source *)
-VerificationTest[
-  With[ { g = GridGraph[ { 5, 5 } ] },
-    With[ { shell = FindInfraShell[ g, 13, { 2, 2 } ] },
-      { ListQ @ shell,
-        MatchQ[ FindInfraSegment[ g, InfraDensity[ g, shell ], 13, All ], { __Graph } ],
-        MatchQ[ FindInfraSegment[ g, shell, 13, All ], { __Graph } ] } ]
-  ],
-  { True, True, True },
-  TestID -> "multiset-anchor-spreads"
-]
-
 (* the shape is the kind: a vertex, a multiset and a walk graph are three reads *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
@@ -296,37 +283,17 @@ VerificationTest[
   TestID -> "DAG-support-is-MetricInterval"
 ]
 
-(* The DAG and the family it stands for have the same support. *)
-VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    With[{dag = FindInfraSegment[g, 1, 16, All]},
-      InfraUnion[ g, dag ] === InfraUnion[ g, ## ] & @@ ( geodesicGraph /@ infraSpread @ dag )]],
-  True,
-  TestID -> "DAG-support-equals-its-family's"
-]
-
 (* ===== density canonical form ===== *)
 
-(* Multiplicities survive the DAG -> density conversion: the compact DAG and the
-   enumerated family of the same segment give the SAME density.  They used to
-   differ by association key order alone, which broke SameQ equality. *)
-VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    With[{dag = FindInfraSegment[g, 1, 16, All]},
-      InfraDensity[g, dag] === InfraDensity[g, geodesicGraph /@ infraSpread @ dag]]],
-  True,
-  TestID -> "density-DAG-and-enumerated-supports-are-SameQ"
-]
-
 (* The weights are the true geodesic occupation: counted by brute force over the
-   whole enumerated family, they agree with the DP on the DAG. *)
+   whole enumerated family, they agree with the raw InfraDensity merge. *)
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
     {m = InfraDensity[g, FindInfraSegment[g, 1, 16, All]]},
-    {paths = infraSpread @ FindInfraSegment[g, 1, 16, All]},
+    {paths = FindInfraSegment[g, 1, 16, All]},
     AllTrue[Keys[m], m[#] == Count[paths, p_ /; MemberQ[p, #]] &]],
   True,
-  TestID -> "density-DAG-weights-are-true-occupation"
+  TestID -> "density-weights-are-true-occupation"
 ]
 
 (* Densities come out key-sorted, so equal ones built by different routes are SameQ

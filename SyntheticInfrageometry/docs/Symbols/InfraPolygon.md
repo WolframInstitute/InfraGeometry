@@ -9,10 +9,8 @@ URI: WolframInstitute/SyntheticInfrageometry/ref/InfraPolygon
 
 ## Usage
 
-`InfraPolygon[{poly}]` is the unary form, where poly = {seg1, ..., segn} is a closed chain of unary InfraSegment sides; InfraPolygon[{poly1, ..., polyk}] is the multi-realisation form.
+`InfraPolygon[{v1, ..., vn}]` inside InfraScene is the closed geodesic chain through the given corners; `InfraPolygon[pool, n]` is the n-gon search over a pool. FindInfraPolygon is the search.
 
 ## Details & Options
 
-Accessors ["Sides"] (the InfraSegment legs per realisation), ["Length"] (perimeter edge count per realisation), ["Vertices"] (corner vertices as InfraPoint atoms).
-
-Find* returns one wrapper carrying the requested realisations.
+A polygon itself is the List of its sides, one directed path graph each, consecutive sides sharing a corner. Its perimeter is the total edge count of the sides.

@@ -19,7 +19,7 @@ VerificationTest[
     scene = InfraScene[{p}, {p == InfraPoint[]}],
     g = PathGraph[Range[5]]
   },
-    MatchQ[FindInfraScene[scene, g], {__InfraInstance}]
+    MatchQ[FindInfraScene[scene, g], {__InfraSceneInstance}]
   ],
   True,
   TestID -> "FindInfraScene-returns-list-of-instances"
@@ -45,7 +45,7 @@ VerificationTest[
     }],
     g = PathGraph[Range[5]]
   },
-    AllTrue[FindInfraScene[scene, g], MatchQ[InfraInstance[_Association]]]
+    AllTrue[FindInfraScene[scene, g], MatchQ[InfraSceneInstance[_Association]]]
   ],
   True,
   TestID -> "FindInfraScene-instances-wrap-associations"
@@ -228,7 +228,7 @@ VerificationTest[
     }],
     g = PathGraph[Range[5]]
   },
-    AllTrue[FindInfraScene[scene, g], MatchQ[InfraInstance[_Association]]]
+    AllTrue[FindInfraScene[scene, g], MatchQ[InfraSceneInstance[_Association]]]
   ],
   True,
   TestID -> "InfraGeometricStep-FindInfraScene"
@@ -335,7 +335,7 @@ VerificationTest[
 ]
 
 
-(* ===== InfraInstance accessor ===== *)
+(* ===== InfraSceneInstance accessor ===== *)
 
 VerificationTest[
   With[{
@@ -345,11 +345,11 @@ VerificationTest[
     g = PathGraph[Range[5]]
   },
     With[{inst = First @ FindInfraScene[scene, g]},
-      InfraInstance[inst, p] === inst[[1]][p]
+      InfraSceneInstance[inst, p] === inst[[1]][p]
     ]
   ],
   True,
-  TestID -> "InfraInstance-accessor-wrapped-single-symbol"
+  TestID -> "InfraSceneInstance-accessor-wrapped-single-symbol"
 ]
 
 VerificationTest[
@@ -360,11 +360,11 @@ VerificationTest[
     g = PathGraph[Range[5]]
   },
     With[{inst = First @ FindInfraScene[scene, g]},
-      InfraInstance[inst, {p, q, s}] === {inst[[1]][p], inst[[1]][q], inst[[1]][s]}
+      InfraSceneInstance[inst, {p, q, s}] === {inst[[1]][p], inst[[1]][q], inst[[1]][s]}
     ]
   ],
   True,
-  TestID -> "InfraInstance-accessor-wrapped-symbol-list"
+  TestID -> "InfraSceneInstance-accessor-wrapped-symbol-list"
 ]
 
 VerificationTest[
@@ -375,11 +375,11 @@ VerificationTest[
     g = PathGraph[Range[5]]
   },
     With[{inst = First @ FindInfraScene[scene, g]},
-      InfraInstance[inst[[1]], p] === inst[[1]][p]
+      InfraSceneInstance[inst[[1]], p] === inst[[1]][p]
     ]
   ],
   True,
-  TestID -> "InfraInstance-accessor-bare-association-single-symbol"
+  TestID -> "InfraSceneInstance-accessor-bare-association-single-symbol"
 ]
 
 VerificationTest[
@@ -390,11 +390,11 @@ VerificationTest[
     g = PathGraph[Range[5]]
   },
     With[{inst = First @ FindInfraScene[scene, g]},
-      InfraInstance[inst[[1]], {p, q, s}] === {inst[[1]][p], inst[[1]][q], inst[[1]][s]}
+      InfraSceneInstance[inst[[1]], {p, q, s}] === {inst[[1]][p], inst[[1]][q], inst[[1]][s]}
     ]
   ],
   True,
-  TestID -> "InfraInstance-accessor-bare-association-symbol-list"
+  TestID -> "InfraSceneInstance-accessor-bare-association-symbol-list"
 ]
 
 (* ===== InfraDistance top-level form ===== *)
@@ -614,8 +614,8 @@ VerificationTest[
     Sort @ DeleteDuplicates[
       #[[ 1 ]][ ec ] & /@ Quiet[ FindInfraScene[ scene, g, <| ea -> 1, eb -> 7 |> ], FindInfraCircle::uncertified ] ] ===
     Sort @ Quiet @ Intersection[
-      Union @@ infraSpread @ FindInfraCircle[ g, 1, 2, All ],
-      Union @@ infraSpread @ FindInfraCircle[ g, 7, 2, All ] ]
+      Union @@ FindInfraCircle[ g, 1, "Radius" -> GraphDistance[ g, 1, 7 ], All ],
+      Union @@ FindInfraCircle[ g, 7, "Radius" -> GraphDistance[ g, 1, 7 ], All ] ]
   ],
   True,
   TestID -> "FindInfraScene-EuclidI1-agrees-with-FindInfraCircle"
@@ -667,10 +667,11 @@ VerificationTest[
 (* An exported symbol with no definitions of any kind can only be a scene token:
    an assertion head, a construction constructor, or the step container.  The
    symbols below are exactly those.  The five Euclidean object heads -- InfraSegment,
-   InfraRay, InfraLine, InfraCircle, InfraArc -- left the list on 2026-09-22: with the
-   substrate as first argument they evaluate to objects, and only without it stay tokens.
-   One more means a symbol was exported with a usage message and no meaning, which is
-   how InfraPlaneQ hid. *)
+   InfraRay, InfraLine, InfraCircle, InfraArc -- rejoined the list on 2026-09-26
+   (EuclideanInertHeads): the heads themselves are always inert now, with no clause of
+   their own at any arity -- every behaviour lives on InfraMeasurement, InfraVertexList
+   and dispatchConstruction instead.  One more means a symbol was exported with a usage
+   message and no meaning, which is how InfraPlaneQ hid. *)
 VerificationTest[
   Select[ Names[ "WolframInstitute`SyntheticInfrageometry`*" ],
     n |-> AllTrue[
@@ -679,9 +680,10 @@ VerificationTest[
   (* InflatedVertex is not a scene token: it is the inert label InflateGraph stamps on the
      copies it makes.  It arrived with ExampleGraphs.wl in the paclet split (T2a). *)
   { "InflatedVertex",
-    "InfraBall", "InfraEllipse", "InfraEllipticShell", "InfraGeometricStep",
-    "InfraIntersectQ", "InfraPlane", "InfraPoint", "InfraPolygon", "InfraPolyline",
-    "InfraRevolution", "InfraShell", "InfraTriangle", "InfraWalk" },
+    "InfraArc", "InfraBall", "InfraCircle", "InfraEllipse", "InfraEllipticShell",
+    "InfraGeometricStep", "InfraIntersectQ", "InfraLine", "InfraPlane", "InfraPoint",
+    "InfraPolygon", "InfraPolyline", "InfraRay", "InfraRevolution", "InfraSegment",
+    "InfraShell", "InfraTriangle", "InfraWalk", "Undetermined" },
   TestID -> "InfraScene-valueless-exports-are-scene-tokens"
 ]
 
@@ -751,8 +753,8 @@ VerificationTest[
     {c = First @ VertexList @ g},
     {scene = InfraScene[{p}, {p == InfraIntersection[InfraBall[c, 1], InfraBall[c, 2]]}]},
     {instances = FindInfraScene[scene, g]},
-    AllTrue[instances, VertexQ[g, InfraInstance[#, p]] &] &&
-      Sort[InfraInstance[#, p] & /@ instances] === Sort @ FindInfraBall[g, c, 1]],
+    AllTrue[instances, VertexQ[g, InfraSceneInstance[#, p]] &] &&
+      Sort[InfraSceneInstance[#, p] & /@ instances] === Sort @ FindInfraBall[g, c, 1]],
   True,
   TestID -> "InfraScene-intersection-binds-substrate-vertices"
 ]

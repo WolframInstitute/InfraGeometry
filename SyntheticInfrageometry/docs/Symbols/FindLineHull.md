@@ -9,7 +9,7 @@ URI: WolframInstitute/SyntheticInfrageometry/ref/FindLineHull
 
 ## Usage
 
-`FindLineHull[graph, S]` returns the smallest superset of S closed under the line operator (the maximal geodesics through each pair), as an InfraSet.
+`FindLineHull[graph, S]` returns the smallest superset of S closed under the line operator (the maximal geodesics through each pair), as a sorted vertex list.
 
 ## Details & Options
 

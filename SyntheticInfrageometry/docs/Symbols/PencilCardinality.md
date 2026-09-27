@@ -16,7 +16,7 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 ## Details & Options
 
-The pencil at *O* is the set of rays from *O* ([PencilDirections]()). A ray leaves *O* through exactly one neighbour, so its size is the sum over the neighbours *w* of the path count of the ray pool <code>[FindInfraRay]()[*g*, *O*, *w*, All]</code> — read off each pool's `["Multiplicity"]` by dynamic programming, never by enumerating rays.
+The pencil at *O* is the set of rays from *O* ([PencilDirections]()). Its size is <code>[InfraMeasurement]()[*g*, [InfraRay]()[*O*, *O*], "Cardinality"]</code>: the chain count of the pencil's graph, read off by dynamic programming, never by enumerating rays.
 
 The count is at least the degree of *O*, with equality when every direction continues uniquely to a unique end. Its excess over the degree measures how much the graph branches ahead of *O*; on a lattice it is large.
 

@@ -12,7 +12,7 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 ## Usage
 
-<code>[FindInfraPerpendicular]()[*g*, *line*, *point*]</code> gives lines through *point* perpendicular to *line*, as [InfraLine]() realisations.
+<code>[FindInfraPerpendicular]()[*g*, *line*, *point*]</code> gives the lines through *point* perpendicular to *line*, as a `List` of directed path graphs.
 
 A count *n* gives exactly *n* or `$Failed`; `UpTo[n]` up to *n*; `All` all of them.
 
@@ -50,8 +50,8 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line = First @ First @ FindInfraLine[g, c, far, 1]},
-  Length @ First @ FindInfraPerpendicular[g, line, c, All]]
+  {line = FindInfraLine[g, c, far]},
+  Length @ FindInfraPerpendicular[g, line, c, All]]
 ```
 
 Off the line, the family is large, and `"Radius"` controls it.
@@ -61,10 +61,10 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line = First @ First @ FindInfraLine[g, c, far, 1]},
+  {line = FindInfraLine[g, c, far]},
   {p = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line, #] &]},
   Association @ Table[
-    r -> Length @ First @ FindInfraPerpendicular[g, line, p, All, "Radius" -> r], {r, {2, 3}}]]
+    r -> Length @ FindInfraPerpendicular[g, line, p, All, "Radius" -> r], {r, {2, 3}}]]
 ```
 
 Three perpendiculars through a point, drawn with the line they cross.
@@ -74,12 +74,12 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "Gray", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line = First @ First @ FindInfraLine[g, c, far, 1]},
+  {line = FindInfraLine[g, c, far]},
   {p = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line, #] &]},
   InfraSceneHighlight[g,
-    {InfraLine[{line}] -> $InfraLineColor,
+    {line -> $InfraLineColor,
      FindInfraPerpendicular[g, line, p, UpTo[3], "Radius" -> 3] -> $InfraCircleColor,
-     InfraPoint[p] -> $InfraPointColor},
+     {p} -> $InfraPointColor},
     "PointSizeRange" -> 16,
     VertexShapeFunction -> ({AbsolutePointSize[3], Point[#]} &),
     ImageSize -> 340]]

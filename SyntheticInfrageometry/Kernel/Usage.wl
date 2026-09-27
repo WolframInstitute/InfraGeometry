@@ -14,11 +14,21 @@ FindInfraCommonPoint::usage = "FindInfraCommonPoint[graph, lines] gives the poin
 FindClosestInfraPoint::usage = "FindClosestInfraPoint[graph, line, point] gives the vertices of line at minimum graph distance from point.";
 SelectInfraPoint::usage = "SelectInfraPoint[graph, vertices] draws a vertex from a supplied bundle under graph distance; a trailing n | UpTo[n] | All sets the count. Options \"From\", \"Distance\", \"MaxCliques\".";
 InfraReachableQ::usage = "InfraReachableQ[graph, p1, p2] tests whether p1 and p2 have realisations in the same connected component.";
+RandomInfraPoint::usage = "RandomInfraPoint[graph] gives a uniformly random vertex. RandomInfraPoint[graph, p, d] gives a uniformly random vertex at distance d from p.";
+InfraCenter::usage = "InfraCenter[graph] gives a vertex of least eccentricity.";
+
+(* ===================== InfraMeasurement ===================== *)
+
+Undetermined::usage = "Undetermined is the value of the measurement \"Faithful\" on a head whose graph is faithful only under a hypothesis this paclet does not certify.";
+InfraMeasurement::usage = "InfraMeasurement[graph, obj, property] measures a Euclidean head on graph: \"Graph\", \"Cardinality\", \"Length\", \"VertexDensity\", \"EdgeDensity\", \"Subgraph\", \"Faithful\", \"Volume\", \"BoundaryVolume\", \"InteriorVolume\", \"HalfBoundaryVolume\". A List of properties gives an Association, All gives them all, a List of heads measures each.";
+InfraVertexList::usage = "InfraVertexList[graph, obj] gives one member of obj as a vertex list; a trailing n | UpTo[n] | All gives a List of them. Modifiers \"RandomChoice\" (a uniform member) and \"Pruning\" -> q.";
+InfraMemberQ::usage = "InfraMemberQ[graph, obj, path] tests whether the vertex list path is a member of obj.";
+InfraSubgraph::usage = "InfraSubgraph[graph, obj] gives the subgraph of graph induced on the support of obj; InfraSubgraph[graph, obj -> t] thickens the support by t steps.";
 
 (* ===================== InfraSegment ===================== *)
 
-InfraSegment::usage = "InfraSegment[graph, p, q] is the geodesic interval I(p, q) as one object standing for every geodesic from p to q: seg[[i]] and seg[[i ;; j]] enumerate them in canonical order, Normal all, and seg[\"Multiplicity\"], seg[\"InfraDensity\"], seg[\"Length\"], seg[\"Graph\"] read the geodesic DAG without enumerating. Inside InfraScene, InfraSegment[p, q] is the construction token; FindInfraSegment is the search.";
-FindInfraSegment::usage = "FindInfraSegment[graph, p1, p2] gives one geodesic from p1 to p2 as a directed path graph; a trailing n | UpTo[n] enumerates that many as a List, All gives the whole interval as one geodesic DAG. Option Method.";
+InfraSegment::usage = "InfraSegment[p1, ..., pk] is the inert polyline of the segments [p1, p2], ..., [p(k-1), pk]; InfraSegment[p, q] is the segment itself, whose graph is the geodesic interval I(p, q). InfraMeasurement and InfraVertexList evaluate it on a graph; FindInfraSegment is the search.";
+FindInfraSegment::usage = "FindInfraSegment[graph, p, q] gives one geodesic from p to q as a vertex list; a trailing n | UpTo[n] | All gives a List of them.";
 ExtendInfraSegment::usage = "ExtendInfraSegment[graph, seg, kspec] gives the geodesics containing seg extended by at most kspec edges per side, inextensible within that budget; kspec Infinity gives the lines through seg. ExtendInfraSegment[graph, a, b, c, d] gives the x with B(a, b, x) and d(b, x) == d(c, d) (Tarski A4). Options Method, \"Direction\".";
 InfraWalkQ::usage = "InfraWalkQ[graph, walk] tests whether walk is a walk: consecutive vertices adjacent (revisits allowed).";
 InfraSegmentQ::usage = "InfraSegmentQ[graph, walk] tests whether walk is a geodesic.";
@@ -40,8 +50,8 @@ ConcatenateInfraWalk::usage = "ConcatenateInfraWalk[path1, path2] joins every co
 
 (* ===================== InfraLine ===================== *)
 
-InfraLine::usage = "InfraLine[graph, p, q] is the pool of lines -- inextensible geodesics -- through p and q as one object; InfraLine[graph, walk] the lines containing a walk graph or an InfraSegment. line[[i]] enumerates in canonical order, Normal all; \"Multiplicity\", \"InfraDensity\", \"Length\", \"Graph\" read the DAGs. Inside InfraScene, InfraLine[p, q] and InfraLine[path] are the construction tokens; FindInfraLine is the search.";
-FindInfraLine::usage = "FindInfraLine[graph, p1, p2] gives the lines through p1 and p2, the inextensible geodesics containing them; FindInfraLine[graph, segment] those containing segment. Options Method, \"Direction\".";
+InfraLine::usage = "InfraLine[p, q] is the inert line through p and q, whose graph is the List of atoms I(a, p) + I(p, q) + I(q, b) over the maximal compatible end pairs (a, b). InfraMeasurement and InfraVertexList evaluate it on a graph; FindInfraLine is the search.";
+FindInfraLine::usage = "FindInfraLine[graph, p, q] gives one line through p and q as a vertex list -- an inextensible geodesic through both; a trailing n | UpTo[n] | All gives a List. FindInfraLine[graph, seq] prolongs a given geodesic.";
 FindInfraParallel::usage = "FindInfraParallel[graph, line, p] gives one parallel to line through p: a geodesic through p inextensible within the level set { v : d(v, line) == d(p, line) }; a trailing n | UpTo[n] | All sets the count, All giving the pool. Option Method.";
 FindInfraPerpendicular::usage = "FindInfraPerpendicular[graph, line, point] gives the lines through point perpendicular to line. Options Method, \"Radius\".";
 FindInfraCommonLine::usage = "FindInfraCommonLine[graph, vertices] gives the canonical lines containing every listed vertex.";
@@ -66,7 +76,7 @@ ConsistentPathSystemQ::usage = "ConsistentPathSystemQ[graph, obj] tests whether 
 InfraShell::usage = "InfraShell[center, r] inside InfraScene is the metric shell of radius r about center -- a level set of the distance from center; FindInfraShell is the search. A shell itself is a sorted vertex list.";
 FindInfraShell::usage = "FindInfraShell[graph, c, r] gives the metric shell { v : d(c, v) == r }; r may be a band {rmin, rmax}. Options Properties, Method.";
 FindInfraOsculatingShell::usage = "FindInfraOsculatingShell[graph, path, i, k] gives the shells whose level set contains the k-vertex window of path centred at position i, one per osculating centre.";
-FindAdvancingInfraFront::usage = "FindAdvancingInfraFront[graph, origin, steps] gives the foliation by a bouncing wavefront as a List of multisets <|v -> 1, ...|>: each front steps one geodesic step outward and reflects inward where it cannot.";
+FindAdvancingInfraFront::usage = "FindAdvancingInfraFront[graph, origin, steps] gives the foliation by a bouncing wavefront as a List of sorted vertex lists: each front steps one geodesic step outward and reflects inward where it cannot.";
 FindInfraShellCenter::usage = "FindInfraShellCenter[graph, shell] recovers {center, radii} from a shell. Option Method.";
 InfraShellQ::usage = "InfraShellQ[graph, vertexSet] tests whether vertexSet is a metric shell { v : d(c, v) == r } for some centre c and radius r.";
 SeparatesQ::usage = "SeparatesQ[graph, vertexSet, u, v] tests whether deleting vertexSet disconnects u from v.";
@@ -81,11 +91,15 @@ BallHullQ::usage = "BallHullQ[graph, S] tests whether S is ball-convex, i.e. an 
 
 (* ===================== InfraCircle ===================== *)
 
-InfraCircle::usage = "InfraCircle[graph, c, p] is the object of circles around c through p: the shortest simple cycles through p in the band of radius d(c, p) that separate c from beyond, with p their source and sink. circle[[i]] enumerates them as directed cycle graphs, \"Multiplicity\", \"InfraDensity\", \"Length\", \"Graph\" read the carrier. Option \"Tolerance\" (t or {tIn, tOut}) widens the band about d(c, p). Inside InfraScene, InfraCircle[center, r] is the construction token; FindInfraCircle is the search by radius.";
-FindInfraCircle::usage = "FindInfraCircle[graph, c, r] gives one circle around c at radius r: a shortest cycle in the level surface separating c from beyond; r may be a band {rmin, rmax}; All gives the circle pool. Options Properties, Method.";
-InfraArc::usage = "InfraArc[graph, c, p, q] is the arc around c from p to q as one object: the shortest paths from p to q inside the band of radius d(c, p), one geodesic DAG with source p and sink q. arc[[i]] enumerates, \"Multiplicity\", \"InfraDensity\", \"Length\", \"Graph\" read the DAG. Option \"Tolerance\" (t or {tIn, tOut}) widens the band.";
+InfraCircle::usage = "InfraCircle[c, p] is the inert circle around c through p and InfraCircle[c, \"Radius\" -> r | {r, s}] the circles of a band; its graph is the List of necklaces of a radial seam. Option \"RadiusDelta\" widens the band: a scalar d means {0, d}, outward only.";
+FindInfraCircle::usage = "FindInfraCircle[graph, c, p] gives one circle around c through p as a cyclic vertex list; \"Radius\" -> r | {r, s} in place of p takes a band. A trailing n | UpTo[n] | All gives a List. Option \"RadiusDelta\".";
 FindInfraCycle::usage = "FindInfraCycle[graph, n] gives the n shortest simple cycles of graph; FindInfraCycle[graph, {kmin, kmax}, n] restricts their length.";
 InfraCircleQ::usage = "InfraCircleQ[graph, cycle] tests whether cycle is a cyclic edge chain whose vertex set is a metric shell.";
+
+(* ===================== InfraArc ===================== *)
+
+InfraArc::usage = "InfraArc[c, {p1, ..., pk}] is the inert arc around c from p1 to pk through the intermediate points: the geodesics of the band graph of the circle through p1. Option \"RadiusDelta\" widens the band: a scalar d means {0, d}, outward only.";
+FindInfraArc::usage = "FindInfraArc[graph, c, {p1, ..., pk}] gives one arc around c through the points as a vertex list; a trailing n | UpTo[n] | All gives a List. Option \"RadiusDelta\".";
 
 (* ===================== InfraPolygon ===================== *)
 
@@ -124,8 +138,8 @@ FindInfraBisectingHyperplane::usage = "FindInfraBisectingHyperplane[graph, p1, p
 
 (* ===================== InfraRay ===================== *)
 
-InfraRay::usage = "InfraRay[graph, o, v] is the pool of rays from o through v -- geodesics from o through v that cannot be prolonged past their last vertex -- as one object, one DAG with source o; InfraRay[graph, o] is the pencil, every ray from o. ray[[i]] enumerates in canonical order, Normal all; \"Multiplicity\", \"InfraDensity\", \"Length\", \"Graph\" read the DAG. Inside InfraScene, InfraRay[o, v] is the construction token; FindInfraRay is the search.";
-FindInfraRay::usage = "FindInfraRay[graph, O, v] gives the rays from O through v: the geodesics from O containing v that cannot be prolonged past their last vertex. Option Method.";
+InfraRay::usage = "InfraRay[p, q] is the inert ray from p through q, whose graph is the ray DAG R(p, q); InfraRay[p, p] is the pencil at p. InfraMeasurement and InfraVertexList evaluate it on a graph; FindInfraRay is the search.";
+FindInfraRay::usage = "FindInfraRay[graph, p, q] gives one ray from p through q as a vertex list -- a geodesic from p through q that no neighbour of its last vertex prolongs; a trailing n | UpTo[n] | All gives a List of them.";
 InfraRayQ::usage = "InfraRayQ[graph, ray] tests whether ray is a pointed half-line: a geodesic from its own first vertex that cannot be prolonged past its last.";
 
 (* ===================== InfraPolyline ===================== *)
@@ -250,11 +264,11 @@ EnumerateGraphs::usage = "EnumerateGraphs[n, predQ] gives the connected n-vertex
 (* ===================== Scenes ===================== *)
 
 InfraScene::usage = "InfraScene[objects, hypotheses] builds a scene descriptor from symbolic objects and construction or assertion hypotheses. Properties \"Steps\", \"Constructions\", \"Assertions\", \"DependencyGraph\".";
-FindInfraScene::usage = "FindInfraScene[scene, graph] solves a scene on a graph and gives the resulting InfraInstance bindings. Option \"PruneProbability\".";
-InfraInstance::usage = "InfraInstance[bindings] wraps a solved binding association; InfraInstance[bindings, sym] reads one object out of it.";
+FindInfraScene::usage = "FindInfraScene[scene, graph] solves a scene on a graph and gives the resulting InfraSceneInstance bindings. Option \"PruneProbability\".";
+InfraSceneInstance::usage = "InfraSceneInstance[bindings] wraps a solved binding association; InfraSceneInstance[bindings, sym] reads one object out of it.";
 InfraGeometricStep::usage = "InfraGeometricStep[{hyp1, ...}] groups hypotheses into one construction step of a scene; a second argument labels it.";
-InfraIntersection::usage = "InfraIntersection[graph, obj1, obj2, ...] gives the vertex-set intersection of shapes on graph -- vertex lists, densities, walk graphs, bundles -- as a sorted List. Inside InfraScene it is the token InfraIntersection[c1, c2], the engine supplying the graph.";
-InfraUnion::usage = "InfraUnion[graph, obj1, obj2, ...] gives the vertex-set union of shapes on graph as a sorted List. Inside InfraScene it is the token InfraUnion[c1, c2], the engine supplying the graph.";
+InfraIntersection::usage = "InfraIntersection[graph, obj1, obj2, ...] gives the vertex-set intersection of shapes on graph -- vertex lists, densities, walk graphs, bundles -- as a sorted List. On Euclidean heads it is inert and InfraMeasurement gives it the common support and the product density. Inside InfraScene it is the token InfraIntersection[c1, c2], the engine supplying the graph.";
+InfraUnion::usage = "InfraUnion[graph, obj1, obj2, ...] gives the vertex-set union of shapes on graph as a sorted List. On Euclidean heads it is inert and InfraMeasurement gives it the joint support and the sum density. Inside InfraScene it is the token InfraUnion[c1, c2], the engine supplying the graph.";
 InfraDistance::usage = "InfraDistance[graph, p, q] gives the graph distance between two Infra* objects, aggregated over their vertex sets. Option \"Aggregation\".";
 InfraPlaneQ::usage = "InfraPlaneQ[graph, h, p1, p2] tests whether h lies in the bisector slab of p1, p2 and separates them; a trailing window widens the slab. The graph-free InfraPlaneQ[h, p1, p2] is the inert InfraScene assertion.";
 InfraIntersectQ::usage = "InfraIntersectQ[s1, s2] asserts inside an InfraScene that two sets intersect; it stays inert until bindings resolve, which is why it exists rather than the built-in IntersectingQ.";
@@ -273,7 +287,7 @@ $InfraWalkColor::usage    = "Default highlight color for walk graphs -- the shap
 $InfraTopologyColor::usage = "Default highlight color for topology overlays.";
 $InfraPalette::usage = "$InfraPalette is the Dataset of default colors, one row per named color, with columns \"Primitive\", \"Color\", \"Symbol\" and \"Shapes\" -- the shape classes that default to that color. Both the $Infra*Color symbols and InfraSceneHighlight read from it. A bare carrier does not remember its construction, so only three colors are reachable from a shape; the Euclidean objects InfraSegment, InfraRay, InfraLine, InfraCircle and InfraArc remember theirs and reach four more.";
 
-InfraSceneHighlight::usage = "InfraSceneHighlight[graph, objects] renders shapes -- vertices, vertex lists, densities, walk graphs and lists of them -- and the Euclidean objects InfraSegment, InfraRay, InfraLine, InfraCircle, InfraArc diffusely on graph, intensity scaling with multiplicity and colors blending across objects. Options \"OpacityRange\", \"ThicknessRange\", \"PointSizeRange\", \"Arrowheads\" (Automatic = off; True = Arrowheads[Medium]; or an explicit head spec -- one head at the end of each path object, sized from the plot rather than the stroke). A single object takes a head of its own with obj -> True, obj -> Arrowheads[...] or Style[obj, ...], and obj -> False turns one off, overriding the option for that object.";
+InfraSceneHighlight::usage = "InfraSceneHighlight[graph, objects] renders shapes -- vertices, vertex lists, densities, walk graphs and lists of them -- diffusely on graph; a Euclidean head is drawn through InfraMeasurement, its \"Graph\" or its \"VertexDensity\", intensity scaling with multiplicity and colors blending across objects. Options \"OpacityRange\", \"ThicknessRange\", \"PointSizeRange\", \"Arrowheads\" (Automatic = off; True = Arrowheads[Medium]; or an explicit head spec -- one head at the end of each path object, sized from the plot rather than the stroke). A single object takes a head of its own with obj -> True, obj -> Arrowheads[...] or Style[obj, ...], and obj -> False turns one off, overriding the option for that object.";
 InfraSceneViewer::usage = "InfraSceneViewer[scene, graph] is an interactive step-by-step visualisation of an InfraScene on a graph.";
 PointViewer::usage = "PointViewer[graph] is an interactive viewer for selecting points; PointViewer[graph, sym] stores the selection in sym.";
 SegmentViewer::usage = "SegmentViewer[graph] is an interactive viewer for exploring geodesic segments.";

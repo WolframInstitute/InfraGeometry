@@ -305,7 +305,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
     Sort @ walkSeqs @ FindInfraGeodesic[ g, 1, 9, Infinity, Infinity, All ] ===
-      Sort @ infraSpread @ FindInfraSegment[ g, 1, 9, All ]
+      Sort @ FindInfraSegment[ g, 1, 9, All ]
   ],
   True,
   TestID -> "FindInfraGeodesic-scale-Infinity-is-the-segment-class"
@@ -337,7 +337,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
     SubsetQ[
-      Sort @ infraSpread @ FindInfraSegment[ g, 1, 9, All ],
+      Sort @ FindInfraSegment[ g, 1, 9, All ],
       Sort @ walkSeqs @ FindInfraGeodesic[ g, 1, 9, Infinity, Infinity, All,
         Properties -> { "Minimizing", "Straightest" } ] ]
   ],
@@ -350,7 +350,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
     Sort @ walkSeqs @ FindInfraGeodesic[ g, 1, 9, Infinity, Infinity, All,
       Properties -> { "Minimizing", { "Maximal", 1 & } } ] ===
-      Sort @ infraSpread @ FindInfraSegment[ g, 1, 9, All ]
+      Sort @ FindInfraSegment[ g, 1, 9, All ]
   ],
   True,
   TestID -> "FindInfraGeodesic-constant-selector-is-vacuous"

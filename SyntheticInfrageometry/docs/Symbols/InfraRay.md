@@ -5,61 +5,66 @@ Context: WolframInstitute`SyntheticInfrageometry`
 ContextPath: [WolframInstitute`Infrageometry`]
 Paclet: WolframInstitute/SyntheticInfrageometry
 URI: WolframInstitute/SyntheticInfrageometry/ref/InfraRay
-Keywords: [ray, half-line, direction, pool, wrapper]
-SeeAlso: [FindInfraRay, InfraRayQ, PencilDirections, InfraLine, InfraSegment]
+Keywords: [ray, half-line, direction, pencil, inert head]
+SeeAlso: [FindInfraRay, InfraRayQ, InfraMeasurement, InfraVertexList, PencilDirections, InfraLine, InfraSegment]
 RelatedGuides: [EuclideanGeometryGuide]
 ---
 
 ## Usage
 
-<code>[InfraRay]()[*g*, *o*, *v*]</code> is the pool of rays from *o* through *v* on the graph *g* as one object: every geodesic from *o* through *v* that cannot be prolonged past its last vertex, carried as one DAG with source *o*.
+<code>[InfraRay]()[*p*, *q*]</code> is the ray from *p* through *q*: every geodesic from *p* through *q* that cannot be prolonged past its last vertex. It is inert; [InfraMeasurement]() and [InfraVertexList]() evaluate it on a graph.
 
-<code>[InfraRay]()[*g*, *o*]</code> is the pencil at *o*: every ray from *o*.
+<code>[InfraRay]()[*p*, *p*]</code> is the pencil at *p*: every ray from *p*.
 
-<code>[InfraRay]()[*o*, *v*]</code> inside an [InfraScene]() is the ray construction token; [FindInfraRay]() is the search.
-
-`ray[[i]]`, `ray[[i ;; j]]` and `Normal[ray]` enumerate the rays in canonical order; `ray["Multiplicity"]`, `ray["InfraDensity"]`, `ray["Length"]` (the lengths present, since rays end on several layers), `ray["Graph"]` read the DAG.
+<code>[InfraRay]()[*p*, *q*]</code> inside an [InfraScene]() is the ray construction token; [FindInfraRay]() is the search.
 
 ## Details & Options
 
-[FindInfraRay]() returns the enumerated form for a bounded count and the pool form for `All`. Every ray begins at the base vertex *O*; rays to different sinks differ in length, so `["Length"]` on the pool lists one length per ray, read off the sink layers and the path counts rather than by enumeration.
+Its graph — <code>[InfraMeasurement]()[*g*, *ray*, "Graph"]</code> — is one DAG with source *p*: the geodesic interval from *p* to *q* glued at *q* to <code>[GeodesicExtensionGraph]()[*g*, {*p*, *q*}]</code>. Its sinks are exactly the inextensible ends, so its source-to-sink chains are exactly the rays, and `"Faithful"` is `True`.
 
-Accessors on either form:
+Rays to different sinks differ in length, so `"Length"` is a `List` of the lengths present.
 
-| Accessor | Gives |
-|---|---|
-| `["Realizations"]` | the rays as vertex sequences; on the pool `["Realizations", n]`, `UpTo[n]` or `All` enumerates lazily |
-| `["Length"]` | one edge count per ray |
-| `["Multiplicity"]` | how many rays the object holds |
-| `["Measure"]` | the per-vertex occupation, the fraction of rays through each vertex |
-| `["Graph"]` | the DAGs of the pool |
-| `["Vertices"]` | the vertices covered |
-| `["First"]` | one ray |
-
-Rendered like [InfraSegment]() by [InfraSceneHighlight]() — sequential-edge semantics.
-
-Inside an [InfraScene](), <code>[InfraRay]()[*O*, *v*]</code> names a ray to be solved for.
+Every member begins at *p*. A member is a vertex list; [InfraVertexList]() reads one, several or all of them.
 
 ## Basic Examples
 
-`All` gives the pool: one DAG carrying the five rays from 6 through 7 on the grid.
+Five rays leave 6 through 7 on a 4 × 4 grid. Two stop at the corner 4 after three steps, three reach the corner 16 after four.
 
 ```wl
 With[
-  {rays = FindInfraRay[GridGraph[{4, 4}], 6, 7, All]},
-  {Length @ rays["Graph"], rays["Multiplicity"], rays["Length"]}]
+  {g = GridGraph[{4, 4}]},
+  {ray = InfraRay[6, 7]},
+  {InfraMeasurement[g, ray, "Cardinality"], InfraMeasurement[g, ray, "Length"]}
+]
 ```
 
-A bounded count gives the enumerated form.
+```wl
+InfraVertexList[GridGraph[{4, 4}], InfraRay[6, 7], All]
+```
+
+The pencil at a vertex of the 6-cycle: two rays, both ending at the antipode.
 
 ```wl
-FindInfraRay[GridGraph[{4, 4}], 6, 7, 2, Method -> "Greedy"]
+InfraVertexList[CycleGraph[6], InfraRay[1, 1], All]
 ```
 
 ## Properties and Relations
 
-The origin lies on every ray, so its measure is 1.
+The origin lies on every ray, so its density is the cardinality.
 
 ```wl
-FindInfraRay[GridGraph[{4, 4}], 6, 7, All]["Measure"][6]
+With[
+  {g = GridGraph[{4, 4}]},
+  {ray = InfraRay[6, 7]},
+  InfraMeasurement[g, ray, "VertexDensity"][6] === InfraMeasurement[g, ray, "Cardinality"]
+]
+```
+
+Every member satisfies [InfraRayQ]().
+
+```wl
+With[
+  {g = GridGraph[{4, 4}]},
+  InfraRayQ[g, InfraVertexList[g, InfraRay[6, 7], All]]
+]
 ```

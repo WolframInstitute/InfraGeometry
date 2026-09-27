@@ -12,21 +12,17 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 ## Usage
 
-<code>[FindInfraPoint]()[*g*]</code> gives one point of *g*, as an [InfraPoint]() atom.
+<code>[FindInfraPoint]()[*g*]</code> gives one point of *g*, as a vertex.
 
-<code>[FindInfraPoint]()[*g*, *n*]</code> gives *n* points, as a list of *n* atoms. Exactly *n* or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives every vertex of the pool.
+<code>[FindInfraPoint]()[*g*, *n*]</code> gives *n* points, as a vertex list. Exactly *n* or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives every vertex of the pool.
 
 ## Details & Options
 
 Definition: a point of *g* drawn from the `"From"` candidate pool.
 
-The count always means **how many points you get**; the `"Distance"` option constrains **which** ones. With a distance condition the returned list is therefore one mutually-constrained tuple — three points pairwise at maximum distance is a joint condition, and a plain list of atoms states it without ambiguity.
+The count always means **how many points you get**; the `"Distance"` option constrains **which** ones. With a distance condition the returned list is therefore one mutually-constrained tuple — three points pairwise at maximum distance is a joint condition, and a plain vertex list states it without ambiguity.
 
-The whole pool as a *region* is a coercion, not a return value:
-
-```wl
-InfraSet @ FindInfraPoint[g, All]
-```
+The whole pool is <code>[FindInfraPoint]()[*g*, All]</code>, a vertex list.
 
 Options:
 
@@ -55,7 +51,7 @@ Corresponding notions in the classical axiom systems:
 
 ## Basic Examples
 
-One point is an atom; the calling triple gives a list of them.
+One point is a vertex; the calling triple gives a list of them.
 
 ```wl
 With[
@@ -78,8 +74,8 @@ Centre and periphery drawn together. The periphery of a patch is its rim.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "Gray", "KeepCoordinates" -> True]},
   InfraSceneHighlight[g,
-    {InfraSet @ FindInfraPoint[g, All, "From" -> "Periphery"] -> $InfraShellColor,
-     InfraSet @ FindInfraPoint[g, All, "From" -> "Center"] -> $InfraPointColor},
+    {FindInfraPoint[g, All, "From" -> "Periphery"] -> $InfraShellColor,
+     FindInfraPoint[g, All, "From" -> "Center"] -> $InfraPointColor},
     "PointSizeRange" -> 16,
     VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
     ImageSize -> 340]]
@@ -91,18 +87,18 @@ Keeping a draw off the rim. The balls are a nested family, so `q` reads directly
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "Gray", "KeepCoordinates" -> True]},
   InfraSceneHighlight[g,
-    {InfraSet @ VertexList @ CenterGraph[g, 0.8] -> $InfraShellColor,
-     InfraSet @ VertexList @ CenterGraph[g, 0.4] -> $InfraPointColor},
+    {VertexList @ CenterGraph[g, 0.8] -> $InfraShellColor,
+     VertexList @ CenterGraph[g, 0.4] -> $InfraPointColor},
     "PointSizeRange" -> 16,
     VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
     ImageSize -> 340]]
 ```
 
-A tuple of three mutually most-distant points comes back as three atoms.
+A tuple of three mutually most-distant points comes back as three vertices.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {t = FindInfraPoint[g, 3, "Distance" -> "Max"]},
-  <|"count" -> Length[t], "vertices" -> (#["Vertex"] & /@ t)|>]
+  <|"count" -> Length[t], "vertices" -> t|>]
 ```

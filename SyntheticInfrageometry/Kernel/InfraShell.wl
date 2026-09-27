@@ -131,8 +131,6 @@ FindInfraOsculatingShell[ graph_Graph, path_, i_Integer, k_Integer,
       GraphQ @ path,               walksOf @ path,
       MatchQ[ path, { __Graph } ], Catenate[ walksOf /@ path ],
       path === { },                { },
-      MatchQ[ path, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ],
-        Catenate[ walksOf /@ Normal @ path ],
       True,                        { path } ];
     vlist = VertexList @ graph;
     vidx  = AssociationThread[ vlist -> Range @ Length @ vlist ];

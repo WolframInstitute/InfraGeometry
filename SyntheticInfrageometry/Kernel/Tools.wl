@@ -8,7 +8,6 @@ Package["WolframInstitute`SyntheticInfrageometry`"]
 InfraDensity[ graph_Graph, x_ ] := Which[
   VertexQ[ graph, x ],                                  <| x -> 1 |>,
   AssociationQ[ x ],                                    KeySort @ x,
-  MatchQ[ x, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ], x[ "InfraDensity" ],
   GraphQ[ x ],                                          KeySort @ Which[
     AllTrue[ VertexList @ x, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ x ] === Range @ VertexCount @ x,
       Counts[ Last /@ VertexList @ x ],

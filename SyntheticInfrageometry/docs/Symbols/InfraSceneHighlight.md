@@ -22,7 +22,7 @@ This is the only rendering primitive in the paclet. Every viewer and every figur
 
 The principle is diffuse rendering. A construction is a family, not a choice. So the picture shows the whole family, and multiplicity sets the intensity. An edge on many geodesics is drawn strongly. An edge on few is drawn faintly. No single realisation is privileged.
 
-Objects are given as `obj -> style` entries. With no style, the colour comes from the wrapper head via [$InfraPalette](): points red, segments orange, circles teal, and so on.
+Objects are given as `obj -> style` entries: a vertex, a vertex list, a list of vertex lists, a density or a walk graph. With no style, the colour comes from the shape via [$InfraPalette](). The Euclidean heads — [InfraSegment](), [InfraCircle]() and the rest — are inert and are not drawn directly: draw their members, from [InfraVertexList](), or their `"VertexDensity"`.
 
 Options:
 
@@ -54,7 +54,7 @@ With[
   InfraSceneHighlight[g,
     {FindInfraSegment[g, a, b, All] -> $InfraSegmentColor,
      FindInfraMidpoint[g, a, b] -> $InfraCircleColor,
-     InfraSet[{a, b}] -> $InfraPointColor},
+     {a, b} -> $InfraPointColor},
     "PointSizeRange" -> 18,
     VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
     ImageSize -> 380]]
@@ -80,8 +80,8 @@ Row[Table[
 
 ## Properties and Relations
 
-The colour of each head is a row of [$InfraPalette]().
+The circle colour is a row of [$InfraPalette]().
 
 ```wl
-Normal @ $InfraPalette[Select[MemberQ[#Heads, InfraCircle] &], {"Primitive", "Symbol"}]
+Normal @ $InfraPalette[Select[#Primitive === "Circle" &], {"Primitive", "Symbol"}]
 ```

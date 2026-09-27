@@ -84,6 +84,20 @@ FindInfraPoint[ graph_Graph, n_Integer, opts : OptionsPattern[] ] :=
     If[ Length[ result ] < n, $Failed, result ] ]
 
 
+(* ===================== RandomInfraPoint / InfraCenter ===================== *)
+
+(* a uniformly random vertex, or a uniformly random vertex at distance d from p *)
+
+RandomInfraPoint[ graph_Graph ] := RandomChoice @ VertexList @ graph
+
+RandomInfraPoint[ graph_Graph, p_, d_ ] :=
+  RandomChoice @ Select[ VertexList @ graph, GraphDistance[ graph, p, # ] == d & ]
+
+(* a vertex of least eccentricity *)
+
+InfraCenter[ graph_Graph ] := First @ GraphCenter @ graph
+
+
 (* ===================== FindInfraMidpoint ===================== *)
 
 (* the vertices at the index closest to the centre index (n + 1)/2: an odd distance gives two of them, an even one a single vertex *)
@@ -133,6 +147,7 @@ FindInfraMidpoint[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPattern[] 
                   GraphQ @ x,               walksOf @ x,
                   MatchQ[ x, { __Graph } ], Catenate[ walksOf /@ x ],
                   x === { },                { },
+                  MatchQ[ x, { __List } ],  x,
                   True,                     { x } ],
                 embOpts = Replace[ OptionValue[ Method ], { { _String, opt___ } :> { opt }, _ -> { } } ] },
           { coords = Replace[ "Coordinates" /. embOpts /. "Coordinates" -> Automatic,
@@ -200,6 +215,7 @@ FindInfraGoldenSection[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPatte
                   GraphQ @ x,               walksOf @ x,
                   MatchQ[ x, { __Graph } ], Catenate[ walksOf /@ x ],
                   x === { },                { },
+                  MatchQ[ x, { __List } ],  x,
                   True,                     { x } ],
                 embOpts = Replace[ OptionValue[ Method ], { { _String, opt___ } :> { opt }, _ -> { } } ] },
           { coords = Replace[ "Coordinates" /. embOpts /. "Coordinates" -> Automatic,
@@ -272,7 +288,7 @@ FindInfraCommonPoint[ graph_Graph, lines_List,
       If[ AllTrue[ VertexList @ w, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ w ] === Range @ VertexCount @ w,
         Last /@ VertexList @ w, VertexList @ w ] },
     { reps = If[ Length[ lines ] == 0, {},
-        Apply[ Intersection, Replace[ lines, { g_Graph :> support @ g, gs : { __Graph } :> Union @@ ( support /@ gs ) }, { 1 } ] ] ] },
+        Apply[ Intersection, Replace[ lines, { g_Graph :> support @ g, gs : { __Graph } :> Union @@ ( support /@ gs ), ws : { __List } :> Union @@ ws }, { 1 } ] ] ] },
     Switch[ count,
       All,   reps,
       _UpTo, Take[ reps, count ],
@@ -303,8 +319,6 @@ FindClosestInfraPoint[ graph_Graph, line_, point_,
         GraphQ @ x,               walksOf @ x,
         MatchQ[ x, { __Graph } ], Catenate[ walksOf /@ x ],
         x === { },                { },
-        MatchQ[ x, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ _Association ] ],
-          Catenate[ walksOf /@ Normal @ x ],
         True,                     { x } ] },
     { reps = DeleteDuplicates @ Flatten[
         ( { line0, point0 } |-> MinimalBy[ line0, GraphDistance[ graph, point0, # ] & ] ) @@@

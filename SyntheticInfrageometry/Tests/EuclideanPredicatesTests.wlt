@@ -552,7 +552,7 @@ VerificationTest[
 (* Every ray FindInfraRay produces satisfies its own predicate. *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
-    AllTrue[infraSpread @ FindInfraRay[g, 1, 13, All], InfraRayQ[g, #] &]],
+    AllTrue[FindInfraRay[g, 1, 13, All], InfraRayQ[g, #] &]],
   True,
   TestID -> "InfraRayQ-FindInfraRay-roundtrip-grid"
 ]
@@ -560,7 +560,7 @@ VerificationTest[
 (* Truncating a ray leaves its far end extensible, so it is no longer a ray. *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
-    InfraRayQ[g, Most @ First @ infraSpread @ FindInfraRay[g, 1, 13, All]]],
+    InfraRayQ[g, Most @ First @ FindInfraRay[g, 1, 13, All]]],
   False,
   TestID -> "InfraRayQ-truncated-far-end-false"
 ]
@@ -626,7 +626,7 @@ VerificationTest[
    exact radius.  Pre-existing; the wrappers hid it by answering vacuously.) *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
-    {FindInfraCircle[g, 13, 2], InfraCircleQ[g, FindInfraCircle[g, 13, 2]],
+    {FindInfraCircle[g, 13, "Radius" -> 2], InfraCircleQ[g, FindInfraCircle[g, 13, "Radius" -> 2]],
      FindInfraEllipse[g, {11, 15}, 6], InfraEllipseQ[g, FindInfraEllipse[g, {11, 15}, 6]]}],
   {{ }, False, { }, False},
   TestID -> "an-empty-class-is-the-empty-List"

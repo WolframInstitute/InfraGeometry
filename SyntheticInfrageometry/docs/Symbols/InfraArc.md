@@ -5,30 +5,48 @@ Context: WolframInstitute`SyntheticInfrageometry`
 ContextPath: [WolframInstitute`Infrageometry`]
 Paclet: WolframInstitute/SyntheticInfrageometry
 URI: WolframInstitute/SyntheticInfrageometry/ref/InfraArc
-Keywords: [arc, circle, band, geodesic interval, object]
-SeeAlso: [InfraCircle, InfraSegment, FindInfraCircle, GeodesicIntervalGraph, InfraDensity]
+Keywords: [arc, circle, band, minor arc, inert head]
+SeeAlso: [FindInfraArc, InfraCircle, InfraSegment, InfraMeasurement, InfraVertexList, Undetermined]
 RelatedGuides: [EuclideanGeometryGuide]
 ---
 
 ## Usage
 
-<code>[InfraArc]()[*g*, *c*, *p*, *q*]</code> is the arc around *c* from *p* to *q* on the graph *g* as one object: the shortest paths from *p* to *q* inside the band of radius *d*(*c*, *p*), carried as one geodesic DAG with source *p* and sink *q*.
+<code>[InfraArc]()[*c*, {*p*, *q*}]</code> is the arc around *c* from *p* to *q*: the minor arcs of the circle through *p* and *q*. It is inert; [InfraMeasurement]() and [InfraVertexList]() evaluate it on a graph.
 
-<code>[InfraArc]()[*g*, *c*, *p*, *q*, "Tolerance" -> *t*]</code> widens the band to *d*(*c*, *p*) ± *t*; `{tIn, tOut}` widens it asymmetrically.
+<code>[InfraArc]()[*c*, {*p1*, …, *pk*}]</code> is the polyline of the minor arcs from each point to the next.
 
 ## Details & Options
 
-Definition: with *r* = *d*(*c*, *p*) and the band *B* = { *v* : *r* − *t*<sub>in</sub> ≤ *d*(*c*, *v*) ≤ *r* + *t*<sub>out</sub> }, the arc from *p* to *q* is the set of shortest *p*–*q* paths of the subgraph induced on *B*. It is the geodesic interval of the band, so the same object [InfraSegment]() is on the whole graph.
+Definition: with *r* = *d(c, p)*, the band *W* is the shell { *v* : *d(c, v)* = *r* }, widened by `"RadiusDelta"`. A minor arc from *p* to *q* is a geodesic from *p* to *q* of the subgraph induced on *W*.
+
+Option `"RadiusDelta" -> {deltaIn, deltaOut}` widens the band to *r* − *deltaIn* ≤ *d(c, v)* ≤ *r* + *deltaOut*. A scalar `"RadiusDelta" -> delta` means `{0, delta}`, outward only. The default is `0`.
+
+Its graph — <code>[InfraMeasurement]()[*g*, *arc*, "Graph"]</code> — is the geodesic interval of the band from *p* to *q*, with arrows of rising band distance from *p*. It is the same object [InfraSegment]() is on the whole graph. Its chains are those geodesics, all of one length.
+
+That they are exactly the minor arcs needs the winding functional on the substrate, and *p* and *q* on a common circle. Nothing here certifies either, so `"Faithful"` is [Undetermined]().
 
 The arc is empty when *q* leaves the band or the band disconnects *p* from *q*.
 
-Antipodal points on a ring carry both half-rings; the circle through *p* is the arc that returns to *p*, see [InfraCircle]().
-
-The object protocol: `arc[[i]]`, `arc[[i ;; j]]`, `Normal[arc]` enumerate the arcs as directed path graphs in canonical order; `arc["Multiplicity"]`, `arc["InfraDensity"]`, `arc["EdgeDensity"]`, `arc["Length"]`, `arc["Graph"]`, `arc["VertexList"]` read the DAG; `arc["Center"]`, `arc["Endpoints"]`, `arc["Band"]` are the anchors.
+A polyline arc reads each piece on the band of the circle through its own first point. Its members concatenate one arc per piece, so its `"Cardinality"` is the product over the pieces.
 
 ## Basic Examples
 
-The two half-rings between antipodes of the radius-2 hexagon on a triangular patch.
+Two vertices at distance 2 from the centre of a 5 × 5 grid, on opposite sides. With the band widened one step, two minor arcs join them, one each way round.
+
+```wl
+With[
+  {g = GridGraph[{5, 5}]},
+  {arc = InfraArc[13, {7, 19}, "RadiusDelta" -> 1]},
+  {InfraMeasurement[g, arc, "Cardinality"], InfraMeasurement[g, arc, "Length"]}
+]
+```
+
+```wl
+InfraVertexList[GridGraph[{5, 5}], InfraArc[13, {7, 19}, "RadiusDelta" -> 1], All]
+```
+
+The two half-rings between antipodes of the radius-2 hexagon on a triangular patch, drawn with the centre.
 
 ```wl
 With[
@@ -36,8 +54,27 @@ With[
   {c = First @ GraphCenter[g]},
   {ring = Select[VertexList[g], GraphDistance[g, c, #] == 2 &]},
   {p = First @ ring},
-  {q = First @ Select[ring, GraphDistance[Subgraph[g, ring], First @ ring, #] == 6 &]},
-  {arc = InfraArc[g, c, p, q]},
-  {arc["Multiplicity"], arc["Length"], InfraSceneHighlight[g, {arc, c}]}
+  {q = First @ Select[ring, GraphDistance[Subgraph[g, ring], p, #] == 6 &]},
+  {arc = InfraArc[c, {p, q}]},
+  {InfraMeasurement[g, arc, "Cardinality"], InfraMeasurement[g, arc, "Length"],
+   InfraSceneHighlight[g, {InfraVertexList[g, arc, All] -> $InfraCircleColor, {c} -> $InfraPointColor}]}
 ]
+```
+
+## Properties and Relations
+
+[FindInfraArc]() searches the band directly and finds the same arcs.
+
+```wl
+With[
+  {g = GridGraph[{5, 5}]},
+  Sort @ InfraVertexList[g, InfraArc[13, {7, 19}, "RadiusDelta" -> 1], All] ===
+    Sort @ FindInfraArc[g, 13, {7, 19}, All, "RadiusDelta" -> 1]
+]
+```
+
+The circle's and the arc's `"Faithful"` are both [Undetermined]().
+
+```wl
+InfraMeasurement[GridGraph[{5, 5}], InfraArc[13, {7, 19}, "RadiusDelta" -> 1], "Faithful"]
 ```

@@ -1,250 +1,134 @@
 BeginTestSection["InfraRay"]
 
-realisations = WolframInstitute`SyntheticInfrageometry`PackageScope`infraSpread;
-walkSequence = WolframInstitute`SyntheticInfrageometry`PackageScope`walkSequence;
-infraNumReps = WolframInstitute`SyntheticInfrageometry`PackageScope`infraNumReps;
+(* ===== the head is inert ===== *)
 
-(* ===== FindInfraRay: the class ===== *)
-
-(* A ray from o through v is a geodesic from o containing v that cannot be prolonged past its
-   last vertex.  The whole class, against a brute-force FindPath enumeration. *)
 VerificationTest[
-  With[{g = GridGraph[{3, 3}]},
-    {d = GraphDistanceMatrix[g]},
-    {rays = Catenate @ Table[
-        Select[FindPath[g, 1, e, {d[[1, e]]}, All],
-          path |-> MemberQ[path, 2] && NoneTrue[AdjacencyList[g, e], d[[1, #]] == d[[1, e]] + 1 &]],
-        {e, DeleteCases[VertexList[g], 1]}]},
-    Sort @ realisations @ FindInfraRay[g, 1, 2, All] === Sort @ rays],
-  True,
-  TestID -> "FindInfraRay-class-equals-brute-force-grid-neighbour"
+  {InfraRay[1, 2], InfraRay[5, 5]},
+  {InfraRay[1, 2], InfraRay[5, 5]},
+  TestID -> "InfraRay-head-is-inert"
 ]
 
+(* ===== the graph is the ray DAG ===== *)
+
+(* R(p, q) = I(p, q) union F(p, q), F(p, q) = { v : d(p, v) == d(p, q) + d(q, v) } *)
+VerificationTest[
+  With[{g = GridGraph[{4, 4}]}, {dag = InfraMeasurement[g, InfraRay[6, 7], "Graph"]},
+    {k = GraphDistance[g, 6, 7]},
+    {Sort[VertexList[dag]] === Sort[Select[VertexList[g],
+       GraphDistance[g, 6, #] + GraphDistance[g, #, 7] == k ||
+       GraphDistance[g, 6, #] == k + GraphDistance[g, 7, #] &]],
+     AllTrue[EdgeList[dag], GraphDistance[g, 6, Last[#]] == GraphDistance[g, 6, First[#]] + 1 &],
+     Pick[VertexList[dag], VertexInDegree[dag], 0]}],
+  {True, True, {6}},
+  TestID -> "InfraRay-graph-is-the-ray-DAG-from-the-origin"
+]
+
+(* the part of the ray DAG within d(p, q) of p is the interval DAG *)
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    {d = GraphDistanceMatrix[g]},
-    {rays = Catenate @ Table[
-        Select[FindPath[g, 1, e, {d[[1, e]]}, All],
-          path |-> MemberQ[path, 6] && NoneTrue[AdjacencyList[g, e], d[[1, #]] == d[[1, e]] + 1 &]],
-        {e, DeleteCases[VertexList[g], 1]}]},
-    Sort @ realisations @ FindInfraRay[g, 1, 6, All] === Sort @ rays],
+    {k = GraphDistance[g, 6, 7]},
+    Sort[EdgeList[Subgraph[InfraMeasurement[g, InfraRay[6, 7], "Graph"],
+        Select[VertexList[g], GraphDistance[g, 6, #] <= k &]]]] ===
+      Sort[EdgeList[InfraMeasurement[g, InfraSegment[6, 7], "Graph"]]]],
   True,
-  TestID -> "FindInfraRay-class-equals-brute-force-grid-diagonal"
+  TestID -> "InfraRay-graph-restricted-to-the-interval"
 ]
 
-VerificationTest[
-  With[{g = PetersenGraph[]},
-    {d = GraphDistanceMatrix[g]},
-    {rays = Catenate @ Table[
-        Select[FindPath[g, 1, e, {d[[1, e]]}, All],
-          path |-> MemberQ[path, 2] && NoneTrue[AdjacencyList[g, e], d[[1, #]] == d[[1, e]] + 1 &]],
-        {e, DeleteCases[VertexList[g], 1]}]},
-    Sort @ realisations @ FindInfraRay[g, 1, 2, All] === Sort @ rays],
-  True,
-  TestID -> "FindInfraRay-class-equals-brute-force-petersen"
-]
+(* ===== the members are the inextensible geodesics through q ===== *)
 
-(* The FindInfraRayMaximality spread table: every (origin, neighbour) pair on the seven
-   fixtures, every emitted ray satisfies InfraRayQ.  At 0.13.17 six of the seven failed. *)
+(* against a brute-force enumeration of every geodesic out of p that reaches q and stops *)
 VerificationTest[
   AllTrue[
-    {PathGraph[Range[7]], CycleGraph[7], GridGraph[{3, 3}], GridGraph[{4, 4}], GridGraph[{5, 5}],
+    {{GridGraph[{3, 3}], 1, 2}, {GridGraph[{4, 4}], 1, 6}, {PetersenGraph[], 1, 2},
+     {HypercubeGraph[3], 1, 2}, {CycleGraph[7], 1, 2}},
+    Apply[{g, p, q} |->
+      Sort[InfraVertexList[g, InfraRay[p, q], All]] === Sort[Catenate[Table[
+        Select[FindPath[g, p, e, {GraphDistance[g, p, e]}, All],
+          path |-> MemberQ[path, q] && NoneTrue[AdjacencyList[g, e],
+            GraphDistance[g, p, #] == GraphDistance[g, p, e] + 1 &]],
+        {e, DeleteCases[VertexList[g], p]}]]]]],
+  True,
+  TestID -> "InfraRay-members-equal-the-brute-force-class"
+]
+
+(* every member is a ray *)
+VerificationTest[
+  AllTrue[
+    {PathGraph[Range[7]], CycleGraph[7], GridGraph[{3, 3}], GridGraph[{4, 4}],
      PetersenGraph[], HypercubeGraph[3]},
-    g |-> AllTrue[
-      Join[List @@@ EdgeList[g], Reverse /@ List @@@ EdgeList[g]],
-      pair |-> InfraRayQ[g, FindInfraRay[g, pair[[1]], pair[[2]], All]]]],
+    g |-> AllTrue[Join[List @@@ EdgeList[g], Reverse /@ List @@@ EdgeList[g]],
+      pair |-> AllTrue[InfraVertexList[g, InfraRay @@ pair, All], InfraRayQ[g, #] &]]],
   True,
-  TestID -> "FindInfraRay-InfraRayQ-agree-on-spread-table"
+  TestID -> "InfraRay-members-satisfy-InfraRayQ-on-the-spread-table"
 ]
 
-(* One class under every Method. *)
 VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    SameQ @@ (Sort @ realisations @ FindInfraRay[g, 6, 7, All, Method -> #] & /@
-      {"Exhaustive", "Greedy", "RandomGreedy"})],
+  {InfraVertexList[PathGraph[Range[7]], InfraRay[4, 7], All],
+   Sort[InfraVertexList[CycleGraph[6], InfraRay[1, 4], All]]},
+  {{{4, 5, 6, 7}}, {{1, 2, 3, 4}, {1, 6, 5, 4}}},
+  TestID -> "InfraRay-small-fixtures"
+]
+
+(* the cardinality is read off the DAG, without enumeration *)
+VerificationTest[
+  With[{g = GridGraph[{5, 5}]},
+    AllTrue[{{1, 2}, {13, 14}, {13, 8}, {7, 12}},
+      pair |-> InfraMeasurement[g, InfraRay @@ pair, "Cardinality"] ===
+        Length[InfraVertexList[g, InfraRay @@ pair, All]]]],
   True,
-  TestID -> "FindInfraRay-class-invariant-under-Method"
+  TestID -> "InfraRay-Cardinality-agrees-with-enumeration"
 ]
 
-(* Rays from o through o are all the rays from o: the pool is the spray of o. *)
-VerificationTest[
-  Sort @ realisations @ FindInfraRay[CycleGraph[6], 1, 1, All],
-  Sort @ PencilDirections[CycleGraph[6], 1],
-  TestID -> "FindInfraRay-origin-as-direction-gives-the-pencil"
-]
+(* ===== FindInfraRay: the independent search ===== *)
 
-(* ===== FindInfraRay: the shapes ===== *)
-
-(* the count-less call is one ray, a directed path graph on the substrate starting at the origin *)
 VerificationTest[
-  With[{g = GridGraph[{4, 4}]}, {r = FindInfraRay[g, 6, 7]},
-    GraphQ[r] && InfraRayQ[g, r] &&
-      First @ walkSequence @ r === 6 && MemberQ[VertexList @ r, 7]],
+  AllTrue[
+    {{GridGraph[{4, 4}], 6, 7}, {CycleGraph[6], 1, 4}, {PetersenGraph[], 1, 2}, {HypercubeGraph[3], 1, 2}},
+    Apply[{g, p, q} |-> Sort[FindInfraRay[g, p, q, All]] === Sort[InfraVertexList[g, InfraRay[p, q], All]]]],
   True,
-  TestID -> "FindInfraRay-count-less-is-one-ray"
-]
-
-(* All is the pool, one DAG with source o whose o -> sink paths are the rays; its DP count is the family size *)
-VerificationTest[
-  With[{r = FindInfraRay[GridGraph[{4, 4}], 6, 7, All]},
-    GraphQ[r] && AcyclicGraphQ[r] &&
-      infraNumReps[r] === Length @ realisations @ r &&
-      Pick[VertexList @ r, VertexInDegree @ r, 0] === {6}],
-  True,
-  TestID -> "FindInfraRay-pool-is-a-DAG-from-the-origin"
+  TestID -> "FindInfraRay-agrees-with-the-graph"
 ]
 
 VerificationTest[
-  realisations @ FindInfraRay[PathGraph[Range[7]], 4, 7, All],
-  {{4, 5, 6, 7}},
-  TestID -> "FindInfraRay-PathGraph-toward-end"
+  With[{g = CycleGraph[6]},
+    {InfraRayQ[g, FindInfraRay[g, 1, 4]], Length[FindInfraRay[g, 1, 4, UpTo[9]]], FindInfraRay[g, 1, 4, 5]}],
+  {True, 2, $Failed},
+  TestID -> "FindInfraRay-count-contract"
 ]
 
-VerificationTest[
-  Sort @ realisations @ FindInfraRay[CycleGraph[6], 1, 4, All],
-  {{1, 2, 3, 4}, {1, 6, 5, 4}},
-  TestID -> "FindInfraRay-CycleGraph6-antipode-two-realisations"
-]
+(* ===== the pencil ===== *)
 
-VerificationTest[
-  With[{r = FindInfraRay[GridGraph[{3, 3}], 1, 9, 1]},
-    MatchQ[r, {_Graph}] && First @ walkSequence @ First @ r === 1 &&
-      Last @ walkSequence @ First @ r === 9],
-  True,
-  TestID -> "FindInfraRay-GridGraph-strict-1"
-]
-
-VerificationTest[
-  FindInfraRay[CycleGraph[6], 1, 4, 5],
-  $Failed,
-  TestID -> "FindInfraRay-strict-shortfall"
-]
-
-VerificationTest[
-  Length @ FindInfraRay[CycleGraph[6], 1, 4, UpTo[10]],
-  2,
-  TestID -> "FindInfraRay-UpTo-soft"
-]
-
-(* From 2 the ray through 4 runs on to 5: d(2, 5) == 3 == d(2, 4) + 1, and 6 is no farther.  Two origins give two pools. *)
-VerificationTest[
-  Sort @ realisations @ FindInfraRay[CycleGraph[6], <| 1 -> 1, 2 -> 1 |>, 4, All],
-  {{1, 2, 3, 4}, {1, 6, 5, 4}, {2, 3, 4, 5}},
-  TestID -> "FindInfraRay-multi-anchor-spreads-over-origins"
-]
-
-VerificationTest[
-  FindInfraRay[CycleGraph[6], 1, 4, Method -> "Nonsense"],
-  $Failed,
-  {FindInfraRay::badmethod},
-  TestID -> "FindInfraRay-badmethod"
-]
-
-(* ===== PencilDirections, PencilCardinality: the pencil is the set of rays ===== *)
-
-VerificationTest[
-  Sort @ PencilDirections[PathGraph[Range[7]], 4],
-  {{4, 3, 2, 1}, {4, 5, 6, 7}},
-  TestID -> "PencilDirections-PathGraph-two-rays"
-]
-
-VerificationTest[
-  PencilCardinality[PathGraph[Range[7]], 4],
-  2,
-  TestID -> "PencilCardinality-PathGraph"
-]
-
-VerificationTest[
-  PencilCardinality[CycleGraph[6], 1],
-  2,
-  TestID -> "PencilCardinality-CycleGraph6"
-]
-
-VerificationTest[
-  PencilCardinality[CycleGraph[7], 1],
-  2,
-  TestID -> "PencilCardinality-CycleGraph7"
-]
-
-(* Centre of the 3x3 grid: two rays through each of the four neighbours, ending at the corners. *)
-VerificationTest[
-  PencilCardinality[GridGraph[{3, 3}], 5],
-  8,
-  TestID -> "PencilCardinality-GridGraph3x3-centre"
-]
-
+(* the pencil at O is the ray from O through O itself: every maximal geodesic out of O *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}]},
-    AllTrue[PencilDirections[g, 5], First[#] === 5 && InfraRayQ[g, #] &]],
+    {PencilCardinality[g, 5], Length[PencilDirections[g, 5]],
+     AllTrue[PencilDirections[g, 5], First[#] === 5 && InfraRayQ[g, #] &],
+     Sort[PencilDirections[g, 5]] ===
+       Sort[Catenate[FindInfraRay[g, 5, #, All] & /@ AdjacencyList[g, 5]]]}],
+  {8, 8, True, True},
+  TestID -> "PencilDirections-is-every-ray-from-the-origin"
+]
+
+VerificationTest[
+  {Sort[PencilDirections[PathGraph[Range[7]], 4]], PencilCardinality[PathGraph[Range[7]], 4],
+   PencilCardinality[CycleGraph[6], 1], PencilCardinality[CycleGraph[7], 1],
+   PencilCardinality[HypercubeGraph[3], 1]},
+  {{{4, 3, 2, 1}, {4, 5, 6, 7}}, 2, 2, 2, 6},
+  TestID -> "PencilCardinality-small-fixtures"
+]
+
+VerificationTest[
+  Length[PencilDirections[HypercubeGraph[3], 1]] === PencilCardinality[HypercubeGraph[3], 1],
   True,
-  TestID -> "PencilDirections-are-rays-from-O"
-]
-
-VerificationTest[
-  Count[PencilDirections[CycleGraph[6], 1], ray_ /; MemberQ[ray, 4]],
-  2,
-  TestID -> "PencilDirections-CycleGraph6-antipode-two-rays"
-]
-
-(* DP count against enumeration. *)
-VerificationTest[
-  Length @ PencilDirections[GridGraph[{3, 3}], 5],
-  PencilCardinality[GridGraph[{3, 3}], 5],
-  TestID -> "PencilDirections-Cardinality-agree-grid"
-]
-
-VerificationTest[
-  Length @ PencilDirections[HypercubeGraph[3], 1],
-  PencilCardinality[HypercubeGraph[3], 1],
   TestID -> "PencilDirections-Cardinality-agree-hypercube"
 ]
 
+VerificationTest[
+  With[{g = TorusGraph[{4, 5}]}, {rays = FindInfraRay[g, 1, 2, All]},
+    {Sort[rays] === Sort[InfraVertexList[g, InfraRay[1, 2], All]], Length[rays],
+     AllTrue[rays, InfraRayQ[g, #] &]}],
+  {True, 6, True},
+  TestID -> "FindInfraRay-agrees-with-the-graph-TorusGraph"
+]
+
 EndTestSection[]
-
-(* ===== InfraRay[graph, o, v] and InfraRay[graph, o]: the ray pool as an object ===== *)
-
-(* the realisations are exactly the rays from o through v *)
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]},
-    {d = GraphDistanceMatrix[g]},
-    {rays = Catenate @ Table[
-        Select[FindPath[g, 1, e, {d[[1, e]]}, All],
-          path |-> MemberQ[path, 2] && NoneTrue[AdjacencyList[g, e], d[[1, #]] == d[[1, e]] + 1 &]],
-        {e, DeleteCases[VertexList[g], 1]}]},
-    {ray = InfraRay[g, 1, 2]},
-    Sort[VertexList /@ Normal[ray]] === Sort[rays] && ray["Multiplicity"] == Length[rays] && InfraRayQ[g, ray]],
-  True,
-  TestID -> "InfraRay-object-realisations-are-the-rays"
-]
-
-(* the pencil: every ray from the centre of the 3 x 3 grid, counted without enumeration *)
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]}, {pencil = InfraRay[g, 5]},
-    {pencil["Multiplicity"], Length[pencil], pencil["Direction"], Sort[VertexList /@ Normal[pencil]] === Sort[PencilDirections[g, 5]]}],
-  {8, 8, None, True},
-  TestID -> "InfraRay-pencil-is-every-ray-from-the-origin"
-]
-
-(* rays end on several layers, so "Length" lists the lengths present; the origin carries the full multiplicity *)
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]}, {pencil = InfraRay[g, 5]},
-    {pencil["Length"], pencil["InfraDensity"][5] == pencil["Multiplicity"],
-     Sort @ Union[EdgeCount /@ Normal[pencil]] === Flatten[{pencil["Length"]}]}],
-  {2, True, True},
-  TestID -> "InfraRay-Length-and-origin-density"
-]
-
-(* Part enumerates in canonical order *)
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]}, {ray = InfraRay[g, 1, 2]}, {all = Normal[ray]},
-    ray[[1]] === First[all] && ray[[1 ;; 2]] === Take[all, 2] && VertexList /@ all === Sort[VertexList /@ all]],
-  True,
-  TestID -> "InfraRay-Part-in-canonical-order"
-]
-
-(* the scene token stays inert *)
-VerificationTest[
-  InfraRay[1, 2],
-  InfraRay[1, 2],
-  TestID -> "InfraRay-token-without-graph-stays-inert"
-]

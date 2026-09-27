@@ -13,6 +13,6 @@ URI: WolframInstitute/SyntheticInfrageometry/ref/NullHomotopicQ
 
 ## Details & Options
 
-Accepts a bare closed walk (auto-closed via {cycle, First[cycle]}), an InfraLoop[{...}], InfraString[{...}], or InfraCircle[{...}] (Cartesian-AllTrue over realisations).
+Accepts a bare closed walk (auto-closed via {cycle, First[cycle]}), a directed cycle graph, or a List of cycle graphs (all must be null-homotopic).
 
 Inherits FindInfraHomotopy options.

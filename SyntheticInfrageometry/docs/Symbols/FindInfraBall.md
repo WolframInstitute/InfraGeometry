@@ -12,7 +12,7 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 ## Usage
 
-<code>[FindInfraBall]()[*g*, *c*, *r*]</code> gives the closed metric ball $B_r(c) = \{v : d(c,v) \le r\}$ as an [InfraBall]() wrapper.
+<code>[FindInfraBall]()[*g*, *c*, *r*]</code> gives the closed metric ball $B_r(c) = \{v : d(c,v) \le r\}$ as a sorted vertex list.
 
 ## Details & Options
 
@@ -22,7 +22,7 @@ On a flat lattice the volume is an exact polynomial in *r*, and it is the polyno
 
 That quadratic growth is what the dimension estimators read. The log-difference quotient of the volume sequence converges to 2 on either lattice, and the anisotropy of the ball — square rather than round — is a genuine feature of the substrate, not an artefact.
 
-A multi-anchor centre (an [InfraPoint]() wrapper, possibly weighted) spreads into one realisation per centre, carrying that centre's mass. The `["Volume"]` accessor gives the per-realisation vertex count as a list.
+A vertex list or a density as the centre gives the closed *r*-neighbourhood of the whole anchor: one vertex set, not one ball per centre.
 
 Corresponding notions in the classical axiom systems:
 
@@ -41,7 +41,7 @@ Association @ Table[
    name -> With[
      {g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]},
      {c = First @ GraphCenter[g]},
-     Table[First @ FindInfraBall[g, c, r]["Volume"], {r, 0, 5}]],
+     Table[Length @ FindInfraBall[g, c, r], {r, 0, 5}]],
    {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```
 
@@ -51,7 +51,7 @@ The square grid's volumes agree with $2r^2+2r+1$ exactly.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  Table[First @ FindInfraBall[g, c, r]["Volume"], {r, 0, 5}] === Table[2 r^2 + 2 r + 1, {r, 0, 5}]]
+  Table[Length @ FindInfraBall[g, c, r], {r, 0, 5}] === Table[2 r^2 + 2 r + 1, {r, 0, 5}]]
 ```
 
 The ball of radius 4 on each substrate. It is a diamond on the square grid, not a disk: the metric is $\ell^1$ and the ball shows it.
@@ -63,10 +63,10 @@ Row[Table[
      {c = First @ GraphCenter[g]},
      Labeled[
        InfraSceneHighlight[g,
-         {FindInfraBall[g, c, 4] -> $InfraBallColor, InfraPoint[c] -> $InfraPointColor},
+         {FindInfraBall[g, c, 4] -> $InfraBallColor, {c} -> $InfraPointColor},
          "PointSizeRange" -> 15,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
          ImageSize -> 250],
-       Text[name <> ": " <> ToString[First @ FindInfraBall[g, c, 4]["Volume"]] <> " vertices"]]],
+       Text[name <> ": " <> ToString[Length @ FindInfraBall[g, c, 4]] <> " vertices"]]],
    {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```

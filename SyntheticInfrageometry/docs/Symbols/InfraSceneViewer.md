@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`Infrageometry`]
 Paclet: WolframInstitute/SyntheticInfrageometry
 URI: WolframInstitute/SyntheticInfrageometry/ref/InfraSceneViewer
 Keywords: [viewer, interactive, construction, step, branch]
-SeeAlso: [InfraScene, FindInfraScene, InfraSceneHighlight, InfraInstance, InfraGeometricStep]
+SeeAlso: [InfraScene, FindInfraScene, InfraSceneHighlight, InfraSceneInstance, InfraGeometricStep]
 RelatedGuides: [VisualizationGuide]
 ---
 
@@ -49,12 +49,12 @@ ClearAll[a, b, cA, cB, u];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {p1 = First @ GraphCenter[g]},
-  {p2 = SelectFirst[VertexList[g], GraphDistance[g, p1, #] == 8 &]},
+  {p2 = SelectFirst[VertexList[g], GraphDistance[g, p1, #] == 4 &]},
   {scene = InfraScene[{a, b, cA, cB, u},
      {InfraGeometricStep[{a == InfraPoint[p1]}, "point a"],
       InfraGeometricStep[{b == InfraPoint[p2]}, "point b"],
-      InfraGeometricStep[{cA == InfraCircle[a, {4, 5}]}, "circle around a"],
-      InfraGeometricStep[{cB == InfraCircle[b, {4, 5}]}, "circle around b"],
+      InfraGeometricStep[{cA == InfraCircle[a, 4]}, "circle around a"],
+      InfraGeometricStep[{cB == InfraCircle[b, 4]}, "circle around b"],
       InfraGeometricStep[{u == InfraIntersection[cA, cB]}, "they meet"]}]},
   Head @ InfraSceneViewer[scene, g]]
 ```
@@ -62,21 +62,20 @@ With[
 The first three steps as stills: the two points, then the circle about the first. This is what the viewer shows as you step, drawn without the interface.
 
 ```wl
-ClearAll[a, b, cA];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "Gray", "KeepCoordinates" -> True]},
   {p1 = First @ GraphCenter[g]},
-  {p2 = SelectFirst[VertexList[g], GraphDistance[g, p1, #] == 8 &]},
+  {p2 = SelectFirst[VertexList[g], GraphDistance[g, p1, #] == 4 &]},
   Row[{
     Labeled[
-      InfraSceneHighlight[g, {InfraSet[{p1, p2}] -> $InfraPointColor},
+      InfraSceneHighlight[g, {{p1, p2} -> $InfraPointColor},
         "PointSizeRange" -> 18,
         VertexShapeFunction -> ({AbsolutePointSize[2], Point[#]} &), ImageSize -> 250],
       Text["points a and b"]],
     Labeled[
       InfraSceneHighlight[g,
-        {FindInfraCircle[g, p1, {4, 5}] -> $InfraCircleColor,
-         InfraSet[{p1, p2}] -> $InfraPointColor},
+        {(Graph[DirectedEdge @@@ Partition[#, 2, 1, 1]] & /@ FindInfraCircle[g, p1, "Radius" -> 4, All]) -> $InfraCircleColor,
+         {p1, p2} -> $InfraPointColor},
         "PointSizeRange" -> 18,
         VertexShapeFunction -> ({AbsolutePointSize[2], Point[#]} &), ImageSize -> 250],
       Text["circle around a"]]}]]

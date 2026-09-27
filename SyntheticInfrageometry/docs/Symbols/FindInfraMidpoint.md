@@ -14,7 +14,7 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 <code>[FindInfraMidpoint]()[*g*, *a*, *b*]</code> gives the midpoint vertices of *a* and *b* in the graph *g*, unioned over every geodesic between them.
 
-<code>[FindInfraMidpoint]()[*g*, [InfraSegment]()[{*walks*}]]</code> uses the supplied walks instead of all geodesics.
+<code>[FindInfraMidpoint]()[*g*, {*walk1*, …}]</code> uses the supplied walks — vertex lists or walk graphs — instead of all geodesics.
 
 ## Details & Options
 
@@ -51,23 +51,24 @@ Row[Table[
      Labeled[
        InfraSceneHighlight[g,
          {FindInfraSegment[g, a, b, All] -> $InfraSegmentColor,
-          InfraSet[{a, b}] -> $InfraPointColor,
-          InfraPoint[m["Realizations"]] -> $InfraCircleColor},
+          {a, b} -> $InfraPointColor,
+          Keys[m] -> $InfraCircleColor},
          "PointSizeRange" -> 17,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
          ImageSize -> 250],
-       Text[name <> ": " <> ToString[Length @ m["Realizations"]] <> " midpoints"]]],
+       Text[name <> ": " <> ToString[Length @ m] <> " midpoints"]]],
    {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```
 
-On the square grid the geodesics between the two vertices are centred on three different vertices. The measure records what fraction of them chooses each.
+On the square grid the geodesics between the two vertices are centred on three different vertices. Dividing the density by its total gives the fraction of them that chooses each.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Large", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 6 &]},
-  Normal @ InfraMeasure @ FindInfraMidpoint[g, a, b]]
+  {m = FindInfraMidpoint[g, a, b]},
+  Normal[m / Total[m]]]
 ```
 
 At odd distance no vertex sits halfway, and the central pair of each geodesic is returned instead.
@@ -77,7 +78,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Large", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
-  {GraphDistance[g, a, b], FindInfraMidpoint[g, a, b]["Realizations"]}]
+  {GraphDistance[g, a, b], Keys @ FindInfraMidpoint[g, a, b]}]
 ```
 
 ## Properties and Relations
@@ -89,5 +90,5 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Large", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 6 &]},
-  AllTrue[FindInfraMidpoint[g, a, b]["Realizations"], BetweennessQ[g, a, #, b] &]]
+  AllTrue[Keys @ FindInfraMidpoint[g, a, b], BetweennessQ[g, a, #, b] &]]
 ```

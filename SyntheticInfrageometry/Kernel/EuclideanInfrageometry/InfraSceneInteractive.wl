@@ -51,7 +51,7 @@ SegmentViewer[ g_Graph ] :=
       With[ {
           segments = If[ p1 === p2 || GraphDistance[ g, p1, p2 ] === Infinity, {},
             Take[
-              applySelectOption[ g, infraSpread @ FindInfraSegment[ g, p1, p2, All ],
+              applySelectOption[ g, FindInfraSegment[ g, p1, p2, All ],
                 sel, False, <| "Endpoints" -> { p1, p2 } |> ],
               UpTo[ n ] ] ] },
         EventHandler[
@@ -126,7 +126,7 @@ CircleViewer[ g_Graph ] :=
       With[ {
           circles = If[ r < 1, {},
             Take[
-              applySelectOption[ g, walkSequence /@ FindInfraCircle[ g, p, r, All ],
+              applySelectOption[ g, FindInfraCircle[ g, p, "Radius" -> r, All ],
                 sel, True, <| "Center" -> p, "Radius" -> r |> ],
               UpTo[ n ] ] ] },
         EventHandler[

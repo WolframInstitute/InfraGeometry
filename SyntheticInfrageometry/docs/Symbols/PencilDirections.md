@@ -16,7 +16,7 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 ## Details & Options
 
-The pencil at a vertex *O* is the set of rays from *O* — the graph's analogue of the unit tangent sphere, one element per direction. A ray leaves *O* through exactly one neighbour, so the pencil is the union of <code>[FindInfraRay]()[*g*, *O*, *w*, All]</code> over the neighbours *w* of *O*, and that is how it is computed: one ray pool per neighbour, enumerated.
+The pencil at a vertex *O* is the set of rays from *O* — the graph's analogue of the unit tangent sphere, one element per direction. A ray leaves *O* through exactly one neighbour, so the pencil is the union of <code>[FindInfraRay]()[*g*, *O*, *w*, All]</code> over the neighbours *w* of *O*. It is computed as <code>[FindInfraRay]()[*g*, *O*, *O*, All]</code>, the rays from *O* with *O* as its own direction.
 
 Every element starts at *O* and satisfies [InfraRayQ](). Opposite rays are distinct elements; [SameDirectionQ]() is the predicate that identifies them.
 
@@ -60,8 +60,8 @@ With[
   {Length @ PencilDirections[g, 1], PencilCardinality[g, 1]}]
 ```
 
-The pencil is the ray pool with the origin as its own direction.
+The pencil is the family of rays with the origin as its own direction.
 
 ```wl
-Sort @ PencilDirections[CycleGraph[6], 1] === Sort @ FindInfraRay[CycleGraph[6], 1, 1, All]["Realizations"]
+Sort @ PencilDirections[CycleGraph[6], 1] === Sort @ FindInfraRay[CycleGraph[6], 1, 1, All]
 ```
