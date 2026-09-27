@@ -1,6 +1,7 @@
 walkGraph       = walk |-> PathGraph[ MapIndexed[ { First @ #2, #1 } &, walk ], DirectedEdges -> True ];
 geodesicGraph   = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicGraph;
-polylineToKnots = WolframInstitute`SyntheticInfrageometry`PackageScope`polylineToKnots;
+walkSequence    = WolframInstitute`SyntheticInfrageometry`PackageScope`walkSequence;
+polylineToKnots = legs |-> If[ legs === { }, { }, Prepend[ Last @ walkSequence @ # & /@ legs, First @ walkSequence @ First @ legs ] ];
 
 (* Nothing is wrapped: the shape is the kind.  A point is a vertex, a set a sorted
    vertex list, a density <| v -> m |>, and every 1-d object a Graph.  So the

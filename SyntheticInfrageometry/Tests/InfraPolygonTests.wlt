@@ -2,7 +2,7 @@ BeginTestSection["InfraPolygon"]
 
 geodesicGraph   = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicGraph;
 walkSequence    = WolframInstitute`SyntheticInfrageometry`PackageScope`walkSequence;
-polylineToKnots = WolframInstitute`SyntheticInfrageometry`PackageScope`polylineToKnots;
+polylineToKnots = legs |-> If[ legs === { }, { }, Prepend[ Last @ walkSequence @ # & /@ legs, First @ walkSequence @ First @ legs ] ];
 
 (* ===================== a polygon is its List of geodesic legs ===================== *)
 

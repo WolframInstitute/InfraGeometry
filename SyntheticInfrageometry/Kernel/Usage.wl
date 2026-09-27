@@ -36,7 +36,7 @@ UniqueInfraSegmentQ::usage = "UniqueInfraSegmentQ[graph, u, v] tests whether the
 
 (* ===================== InfraWalk ===================== *)
 
-InfraWalk::usage = "InfraWalk[p1, ..., pk] inside InfraScene is the literal walk through p1, ..., pk. A walk itself is a Graph: a directed path on the position pairs {i, v}, a closed walk a directed cycle on them; Last /@ VertexList gives the vertex sequence.";
+InfraWalk::usage = "InfraWalk[p1, ..., pk] inside InfraScene is the literal walk through p1, ..., pk, and InfraWalk[{p1, ..., pk}] in InfraHighlightGraph one oriented walk. A walk itself is a Graph: a directed path on the position pairs {i, v}, a closed walk a directed cycle on them; Last /@ VertexList gives the vertex sequence.";
 FindInfraWalk::usage = "FindInfraWalk[graph, p1, kspec] grows the walks from p1 in the class cut by the Properties rules (default {\"Simple\"}) until a stopping condition or the budget kspec (UpTo[k], {k}, {lo, hi}, Infinity) stops them; FindInfraWalk[graph, p1, p2, kspec] keeps those ending at p2. Each walk is a path graph on position pairs. Options \"InfraScale\", Properties, \"StoppingCondition\", Method.";
 FindInfraGeodesic::usage = "FindInfraGeodesic[graph, p1, scale, kspec] grows the geodesics at infra-scale scale from p1 -- FindInfraWalk at \"InfraScale\" -> scale with \"Minimizing\" among the rules; FindInfraGeodesic[graph, p1, p2, scale, kspec] keeps those ending at p2. Options Properties, \"StoppingCondition\", Method.";
 InfraGeodesicQ::usage = "InfraGeodesicQ[graph, walk, scale] tests whether every window of scale consecutive vertices of walk plus the next one is a shortest path; scale 1 gives InfraWalkQ and Infinity gives InfraSegmentQ.";
@@ -274,19 +274,19 @@ InfraIntersectQ::usage = "InfraIntersectQ[s1, s2] asserts inside an InfraScene t
 
 (* ===================== Highlights / Viewers ===================== *)
 
-$InfraPointColor::usage   = "Default highlight color for points -- the shape classes Point and Density.";
-$InfraSegmentColor::usage = "Default highlight color of the segment construction: the InfraSegment object draws in it when the palette is off, and a caller cites it by name.";
-$InfraLineColor::usage    = "Default highlight color of the line construction: the InfraLine object draws in it when the palette is off, and a caller cites it by name.";
-$InfraShellColor::usage   = "Default highlight color naming the shell construction. No shape defaults to it -- a caller cites it by name.";
-$InfraBallColor::usage    = "Default highlight color for vertex sets -- the shape classes Set and SetFamily.";
-$InfraPlaneColor::usage   = "Default highlight color naming the plane construction. No shape defaults to it -- a caller cites it by name.";
-$InfraCircleColor::usage  = "Default highlight color of the circle construction: the InfraCircle and InfraArc objects draw in it when the palette is off, and a caller cites it by name.";
-$InfraRayColor::usage     = "Default highlight color of the ray construction: the InfraRay object draws in it when the palette is off, and a caller cites it by name.";
-$InfraWalkColor::usage    = "Default highlight color for walk graphs -- the shape classes Walk, Polyline and PolylineFamily.";
-$InfraTopologyColor::usage = "Default highlight color for topology overlays.";
-$InfraPalette::usage = "$InfraPalette is the Dataset of default colors, one row per named color, with columns \"Primitive\", \"Color\", \"Symbol\" and \"Shapes\" -- the shape classes that default to that color. Both the $Infra*Color symbols and InfraSceneHighlight read from it. A bare carrier does not remember its construction, so only three colors are reachable from a shape; the Euclidean objects InfraSegment, InfraRay, InfraLine, InfraCircle and InfraArc remember theirs and reach four more.";
+$InfraPointColor::usage   = "Named color of points; the knots of a leg chain draw in it. A caller cites it in a Directive.";
+$InfraSegmentColor::usage = "Named color of segments, for a caller to cite in a Directive.";
+$InfraLineColor::usage    = "Named color of lines, for a caller to cite in a Directive.";
+$InfraShellColor::usage   = "Named color of shells, for a caller to cite in a Directive.";
+$InfraBallColor::usage    = "Named color of balls, for a caller to cite in a Directive.";
+$InfraPlaneColor::usage   = "Named color of planes, for a caller to cite in a Directive.";
+$InfraCircleColor::usage  = "Named color of circles and arcs, for a caller to cite in a Directive.";
+$InfraRayColor::usage     = "Named color of rays, for a caller to cite in a Directive.";
+$InfraWalkColor::usage    = "Named color of walks, for a caller to cite in a Directive.";
+$InfraTopologyColor::usage = "Named color of topology overlays, for a caller to cite in a Directive.";
+$InfraPalette::usage = "$InfraPalette is the Dataset of the named colors, one row per color, with columns \"Primitive\", \"Color\" and \"Symbol\".";
 
-InfraSceneHighlight::usage = "InfraSceneHighlight[graph, objects] renders shapes -- vertices, vertex lists, densities, walk graphs and lists of them -- diffusely on graph; a Euclidean head is drawn through InfraMeasurement, its \"Graph\" or its \"VertexDensity\", intensity scaling with multiplicity and colors blending across objects. Options \"OpacityRange\", \"ThicknessRange\", \"PointSizeRange\", \"Arrowheads\" (Automatic = off; True = Arrowheads[Medium]; or an explicit head spec -- one head at the end of each path object, sized from the plot rather than the stroke). A single object takes a head of its own with obj -> True, obj -> Arrowheads[...] or Style[obj, ...], and obj -> False turns one off, overriding the option for that object.";
+InfraHighlightGraph::usage = "InfraHighlightGraph[graph, {obj1, obj2, ...}] draws the sum of the objects' densities on graph, the i-th object in the i-th palette color; a Directive styles the objects after it. Options \"OpacityRange\", \"ThicknessRange\", \"PointSizeRange\", \"Arrowheads\", \"Palette\".";
 InfraSceneViewer::usage = "InfraSceneViewer[scene, graph] is an interactive step-by-step visualisation of an InfraScene on a graph.";
 PointViewer::usage = "PointViewer[graph] is an interactive viewer for selecting points; PointViewer[graph, sym] stores the selection in sym.";
 SegmentViewer::usage = "SegmentViewer[graph] is an interactive viewer for exploring geodesic segments.";

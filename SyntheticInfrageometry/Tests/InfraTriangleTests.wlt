@@ -1,6 +1,7 @@
 BeginTestSection["InfraTriangle"]
 
-polylineToKnots = WolframInstitute`SyntheticInfrageometry`PackageScope`polylineToKnots;
+walkSequence    = WolframInstitute`SyntheticInfrageometry`PackageScope`walkSequence;
+polylineToKnots = legs |-> If[ legs === { }, { }, Prepend[ Last @ walkSequence @ # & /@ legs, First @ walkSequence @ First @ legs ] ];
 
 (* a triangle is its three geodesic sides, one directed path graph each, closing on the first corner *)
 

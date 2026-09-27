@@ -2,7 +2,7 @@ BeginTestSection["InfraPolyline"]
 
 geodesicGraph = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicGraph;
 walkSequence  = WolframInstitute`SyntheticInfrageometry`PackageScope`walkSequence;
-polylineToKnots = WolframInstitute`SyntheticInfrageometry`PackageScope`polylineToKnots;
+polylineToKnots = legs |-> If[ legs === { }, { }, Prepend[ Last @ walkSequence @ # & /@ legs, First @ walkSequence @ First @ legs ] ];
 
 (* a polyline is its geodesic legs: a List of directed path graphs on the substrate, consecutive legs sharing their knot *)
 
@@ -114,14 +114,14 @@ VerificationTest[
 
 (* ===================== Visualisation ===================== *)
 
-(* a polyline is a legal HighlightGraph argument and draws through InfraSceneHighlight *)
+(* a polyline is a legal HighlightGraph argument and draws through InfraHighlightGraph *)
 
 VerificationTest[
   With[ { poly = FindInfraPolylineSubdivision[ PathGraph @ Range[ 11 ], Range[ 11 ], "MaxLength" -> 3 ] },
     { Head @ HighlightGraph[ PathGraph @ Range[ 11 ], poly ],
-      Head @ InfraSceneHighlight[ PathGraph @ Range[ 11 ], { poly } ] } ],
+      Head @ InfraHighlightGraph[ PathGraph @ Range[ 11 ], { poly } ] } ],
   { Graph, Graph },
-  TestID -> "InfraSceneHighlight-accepts-polyline"
+  TestID -> "InfraHighlightGraph-accepts-polyline"
 ]
 
 EndTestSection[]

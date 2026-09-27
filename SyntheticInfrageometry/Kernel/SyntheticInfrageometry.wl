@@ -239,7 +239,7 @@ PackageExport[InfraPlaneQ]
 PackageExport[InfraIntersectQ]
 
 (* EuclideanInfrageometry/InfraSceneVisualization.wl *)
-PackageExport[InfraSceneHighlight]
+PackageExport[InfraHighlightGraph]
 PackageExport[$InfraPointColor]
 PackageExport[$InfraSegmentColor]
 PackageExport[$InfraShellColor]

@@ -5,8 +5,6 @@ geodesicGraph      = WolframInstitute`SyntheticInfrageometry`PackageScope`geodes
 geodesicCycleGraph = WolframInstitute`SyntheticInfrageometry`PackageScope`geodesicCycleGraph;
 walkSequence       = WolframInstitute`SyntheticInfrageometry`PackageScope`walkSequence;
 infraSpread        = WolframInstitute`SyntheticInfrageometry`PackageScope`infraSpread;
-infraNumReps       = WolframInstitute`SyntheticInfrageometry`PackageScope`infraNumReps;
-infraEdgeMultiset  = WolframInstitute`SyntheticInfrageometry`PackageScope`infraEdgeMultiset;
 closedWalkGraph = walk |-> With[ { core = MapIndexed[ { First @ #2, #1 } &, If[ Length[ walk ] >= 2 && First @ walk === Last @ walk, Most @ walk, walk ] ] },
   Graph[ core, DirectedEdge @@@ Partition[ core, 2, 1, 1 ] ] ];
 walkSeq[ w_Graph ] := Last /@ VertexList[ w ]
@@ -976,7 +974,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     With[ { pool = ExtendInfraSegment[ g, { 6, 7 }, 2, All ] },
       MatchQ[ pool, { _Graph, __Graph } ] &&
-      infraNumReps @ pool === Length @ infraSpread @ pool &&
+      Total[ Max @ GeodesicOccupation @ # & /@ pool ] === Length @ infraSpread @ pool &&
       Total @ InfraDensity[ g, pool ] === Total[ Length /@ infraSpread @ pool ] &&
       Sort @ Union[ First /@ infraSpread @ pool ] === { 1, 9, 14 } &&
       Sort @ Union[ Last /@ infraSpread @ pool ] === { 4, 12, 15 }
