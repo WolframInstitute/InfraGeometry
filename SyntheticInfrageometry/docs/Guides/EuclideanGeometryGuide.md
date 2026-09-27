@@ -66,6 +66,7 @@ Euclidean geometry rebuilt inside a graph. The graph is all there is: no ambient
 
 - `InfraAngle` an angle at a vertex, by arclength on the punched-out boundary or by comparison triangle
 - `InfraScalarProduct` the polar form of the metric at a base point
+- `InfraMetricTensor` the metric tensor at a base point, read from where vertices project onto intervals
 - `InfraCurvature` a local curvature from the growth of balls
 - `ComparisonTriangle`, `InfraComparisonTriangle`, `CATInequalityQ` the CAT(k) comparison layer
 - `TurningAngles`, `TotalCurvature`, `TurningNumber` curvature along a walk

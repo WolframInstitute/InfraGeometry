@@ -35,7 +35,8 @@ InfraMeasurement[ graph_Graph,
 
 
 InfraMeasurement[ graph_Graph,
-    obj : Except[ _List | InfraIntersection[ __ ] | InfraUnion[ __ ] ], "VertexDensity" ] :=
+    obj : Except[ _List | InfraIntersection[ __ ] | InfraUnion[ __ ] |
+                  InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ }, ___ ] ], "VertexDensity" ] :=
   KeySort @ Merge[
     Map[
       dag |-> With[ { inNbr = GroupBy[ EdgeList @ dag, Last -> First ],
@@ -50,7 +51,9 @@ InfraMeasurement[ graph_Graph,
     Total ]
 
 
-InfraMeasurement[ graph_Graph, obj : Except[ _List | InfraCircle[ _, _, ___ ] ], "EdgeDensity" ] :=
+InfraMeasurement[ graph_Graph,
+    obj : Except[ _List | InfraCircle[ _, _, ___ ] |
+                  InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ }, ___ ] ], "EdgeDensity" ] :=
   KeySort @ Merge[
     Map[
       dag |-> With[ { inNbr = GroupBy[ EdgeList @ dag, Last -> First ],

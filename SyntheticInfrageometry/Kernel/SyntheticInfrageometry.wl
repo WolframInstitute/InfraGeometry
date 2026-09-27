@@ -146,6 +146,7 @@ PackageExport[InfraRevolutionQ]
 PackageExport[InfraScalarProduct]
 PackageExport[FindInfraLinearCombination]
 PackageExport[InfraAngle]
+PackageExport[InfraMetricTensor]
 
 (* InfraCurveGeometry.wl *)
 PackageExport[TurningAngles]
