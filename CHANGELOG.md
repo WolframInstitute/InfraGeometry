@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **0.17.2** (2026-09-27): `InfraHighlightGraph` (below).
+
 - **Breaking: `InfraSceneHighlight` is renamed `InfraHighlightGraph` and draws densities**
   (InfraHighlightGraph, 2026-09-27). No alias. Every object in the list becomes a vertex density
   and an edge density — a vertex, a density, `InfraWalk[{p1, ..., pk}]`, a Euclidean head (its
