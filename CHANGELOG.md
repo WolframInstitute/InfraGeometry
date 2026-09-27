@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- **0.17.1** (2026-09-27): `InfraMetricTensor` (below), the polyline density fix and the bundle sums.
+
+- **The density of a polyline counts its members.** `InfraSegment[g, p1, ..., pk]` and
+  `InfraArc[g, c, {p1, ..., pk}]` gave the sum of the piece densities; a vertex of piece `i` now counts
+  `occ_i(v)` times the product of the other pieces' counts, an inner knot once less.
+
+- **Bundles sum by `GroupBy`.** `InfraDensity` of a list and the edge multiset of `InfraSceneHighlight`
+  no longer use `Merge[..., Total]`, which is quadratic in the member count: 89 s to 8 s on 24389 walks.
+
 - **`InfraMetricTensor`, the interval-projection metric tensor.** `InfraMetricTensor[g, p]` is the matrix
   over vertex pairs `(v, w)` of `d(p, u) / d(p, v)`, with `u` the vertex of the interval `I(p, w)` closest
   to `v`; `InfraMetricTensor[g, p, r]` restricts it to the shell `FindInfraShell[g, p, r]`. Option
