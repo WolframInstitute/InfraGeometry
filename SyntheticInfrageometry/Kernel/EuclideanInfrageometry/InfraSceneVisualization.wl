@@ -372,16 +372,16 @@ walkGraphs[ w_Graph ]                 := { w }
 walkGraphs[ ws : { __Graph } ]        := ws
 walkGraphs[ ws : { { __Graph } .. } ] := Catenate @ ws
 
-(* the raw count of appearances across realisations, keyed by sorted vertex pair; a set's edges are the induced subgraph's, hence the graph *)
+(* the raw count of appearances across realisations, keyed by sorted vertex pair; a set's edges are the induced subgraph's, hence the graph.  A bundle sums by GroupBy, since Merge[ ..., Total ] is quadratic in the member count *)
 
 infraEdgeMultiset[ _, _Association ] := <||>
 infraEdgeMultiset[ g_, w_Graph ] := Which[
   closedWalkQ @ w,      Counts @ cycleEdges @ walkSequence @ w,
   positionSpelledQ @ w, Merge[ Counts[ walkEdges @ # ] & /@ walkRealisations @ w, Total ],
   True,                 KeyMap[ Sort[ List @@ # ] &, GeodesicEdgeOccupation[ w ] ] ]
-infraEdgeMultiset[ g_, ws : { __Graph } ]  := Merge[ infraEdgeMultiset[ g, # ] & /@ ws, Total ]
+infraEdgeMultiset[ g_, ws : { __Graph } ]  := GroupBy[ Catenate[ Normal[ infraEdgeMultiset[ g, # ] ] & /@ ws ], First -> Last, Total ]
 infraEdgeMultiset[ _, { } ]                := <||>
-infraEdgeMultiset[ g_, sets : { __List } ] := Merge[ Counts[ setEdges[ g, # ] ] & /@ sets, Total ]
+infraEdgeMultiset[ g_, sets : { __List } ] := Counts[ Catenate[ setEdges[ g, # ] & /@ sets ] ]
 infraEdgeMultiset[ g_, vs_List ]           := Counts @ setEdges[ g, vs ]
 
 (* N = the number of realisations the marginal was summed over: a density's largest mass, a walk's 1, a DAG's geodesic count, a list's sum over its members.  A measure normalises by its HEAVIEST mass, not its total: the channel encodes RELATIVE mass within the object, so the modal vertex draws full and lighter ones fade *)
