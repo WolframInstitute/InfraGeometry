@@ -25,7 +25,7 @@ PointViewer[ g_Graph, sym_: None ] :=
           "Distance" -> Switch[ separation, "None", None, "Max", "Max", "Range", distRange ] ] },
         If[ sym =!= None, sym = pts ];
         (* a point family is a density, not a set: the ink reads a bare vertex List as a region *)
-        InfraHighlightGraph[ g, { InfraDensity[ g, pts ] -> $InfraPointColor }, ImageSize -> 600 ] ],
+        InfraHighlightGraph[ g, { Directive[ $InfraPointColor ], InfraDensity[ g, pts ] }, ImageSize -> 600 ] ],
       Grid[ {
         { Control[ { { n, 1, "Points" }, ControlType -> InputField } ],
           Control[ { { from, "Random", "From" }, { "Random", "Center", "Periphery" } } ] },
@@ -49,14 +49,15 @@ SegmentViewer[ g_Graph ] :=
     Manipulate[
       seed;
       With[ {
-          segments = If[ p1 === p2 || GraphDistance[ g, p1, p2 ] === Infinity, {},
+          segments = If[ sel === None || p1 === p2 || GraphDistance[ g, p1, p2 ] === Infinity, {},
             Take[
               applySelectOption[ g, FindInfraSegment[ g, p1, p2, All ],
                 sel, False, <| "Endpoints" -> { p1, p2 } |> ],
               UpTo[ n ] ] ] },
         EventHandler[
           HighlightGraph[
-            InfraHighlightGraph[ g, { geodesicGraph /@ segments -> $InfraSegmentColor } ],
+            InfraHighlightGraph[ g, { Directive[ $InfraSegmentColor ],
+              If[ sel === None, InfraSegment[ p1, p2 ], geodesicGraph /@ segments ] } ],
             { Style[ p1, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ],
               Style[ p2, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] },
             ImageSize -> 600 ],
@@ -92,7 +93,7 @@ ShellViewer[ g_Graph ] :=
             Take[ FindInfraShell[ g, p, r, All, Properties -> properties ], UpTo[ n ] ] ] },
         EventHandler[
           HighlightGraph[
-            InfraHighlightGraph[ g, { shells -> $InfraShellColor } ],
+            InfraHighlightGraph[ g, { Directive[ $InfraShellColor ], shells } ],
             { Style[ p, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] },
             ImageSize -> 600 ],
           { "MouseClicked" :> With[ { mp = MousePosition[ "Graphics" ] },
@@ -124,14 +125,15 @@ CircleViewer[ g_Graph ] :=
     Manipulate[
       seed;
       With[ {
-          circles = If[ r < 1, {},
+          circles = If[ sel === None || r < 1, {},
             Take[
               applySelectOption[ g, FindInfraCircle[ g, p, "Radius" -> r, All ],
                 sel, True, <| "Center" -> p, "Radius" -> r |> ],
               UpTo[ n ] ] ] },
         EventHandler[
           HighlightGraph[
-            InfraHighlightGraph[ g, { geodesicCycleGraph /@ circles -> $InfraCircleColor } ],
+            InfraHighlightGraph[ g, { Directive[ $InfraCircleColor ],
+              If[ sel === None, InfraCircle[ p, "Radius" -> r ], geodesicCycleGraph /@ circles ] } ],
             { Style[ p, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] },
             ImageSize -> 600 ],
           { "MouseClicked" :> With[ { mp = MousePosition[ "Graphics" ] },

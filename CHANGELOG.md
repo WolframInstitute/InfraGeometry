@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- **Breaking: `InfraSceneHighlight` is renamed `InfraHighlightGraph` and draws densities**
+  (InfraHighlightGraph, 2026-09-27). No alias. Every object in the list becomes a vertex density
+  and an edge density — a vertex, a density, `InfraWalk[{p1, ..., pk}]`, a Euclidean head (its
+  `"VertexDensity"` and `"EdgeDensity"`), an intersection or union of heads, a walk graph, a leg
+  chain, a region, a list of these. Each is divided by its heaviest mass and the objects are summed:
+  strength capped at 1, colour the mass-weighted blend, so overlaps show both objects. A head draws
+  the edges its members use, never the chords of its support; an object with one member is one
+  stroke. A `Directive` in the list styles the objects after it; `obj -> style` stays. The `i`-th
+  object takes the `i`-th colour of `$InfraStrikeOutPalette`. Removed: the seven shape classes,
+  `"Palette" -> None` and the `"Shapes"` column of `$InfraPalette`. The viewers draw
+  `InfraSegment` and `InfraCircle` heads when no selector is set.
+
 - **The `EuclideanInfrageometry` category, 0.16.0** (2026-09-22). The kernel gains its first named
   category in the `WolframInstitute/PureMath` layout: `Kernel/EuclideanInfrageometry/` holds
   `InfraSegment.wl`, `InfraRay.wl`, `InfraLine.wl`, `InfraCircle.wl`, `InfraScene.wl`,

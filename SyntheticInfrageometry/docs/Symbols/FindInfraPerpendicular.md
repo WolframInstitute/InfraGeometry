@@ -76,7 +76,7 @@ With[
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
   {line = FindInfraLine[g, c, far]},
   {p = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line, #] &]},
-  InfraSceneHighlight[g,
+  InfraHighlightGraph[g,
     {line -> $InfraLineColor,
      FindInfraPerpendicular[g, line, p, UpTo[3], "Radius" -> 3] -> $InfraCircleColor,
      {p} -> $InfraPointColor},

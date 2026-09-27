@@ -1,0 +1,87 @@
+---
+Template: Symbol
+Name: InfraHighlightGraph
+Context: WolframInstitute`SyntheticInfrageometry`
+ContextPath: [WolframInstitute`Infrageometry`]
+Paclet: WolframInstitute/SyntheticInfrageometry
+URI: WolframInstitute/SyntheticInfrageometry/ref/InfraHighlightGraph
+Keywords: [visualization, diffuse rendering, density, highlight, palette]
+SeeAlso: [InfraSceneViewer, InfraScene, InfraMeasurement, $InfraPalette, InfraDensity, InfraWalk]
+RelatedGuides: [VisualizationGuide]
+---
+
+## Usage
+
+<code>[InfraHighlightGraph]()[*g*, {*obj1*, *obj2*, ...}]</code> draws the sum of the objects' densities on *g*, the *i*-th object in the *i*-th palette color.
+
+<code>[InfraHighlightGraph]()[*g*, *obj*]</code> draws a single object.
+
+## Details & Options
+
+This is the only rendering primitive in the paclet. Every viewer and every figure calls it. The name follows `HighlightGraph`.
+
+Every object becomes a vertex density and an edge density:
+
+- a vertex, or a density `<|v -> m|>`: its own mass, no edges;
+- `InfraWalk[{p1, ..., pk}]`: visit counts and the traversal counts of its steps;
+- a Euclidean head — [InfraSegment](), [InfraCircle]() and the rest: its `"VertexDensity"` and `"EdgeDensity"` from [InfraMeasurement]();
+- a walk graph, a cycle graph or a DAG: its occupation;
+- a leg chain: the walk through its legs, with its knots drawn on top;
+- a vertex list: a region, `1` on its vertices and on the edges of its induced subgraph;
+- a list of these: the sum of its members.
+
+Each object is divided by its own heaviest mass, so every object reaches full strength somewhere. The objects are then summed. At each vertex and edge the strength is the sum, capped at `1`, and the color is the blend of the objects' colors weighted by their masses. Where objects overlap, the figure shows both.
+
+A head draws the edges its members use, never the chords of its support. An object with one member is drawn as one joined stroke; a family is drawn edge by edge.
+
+The list is read like a `Graphics` list. A `Directive` styles every object after it, until the next `Directive`. An entry `obj -> style` styles one object. A color in either replaces the palette color.
+
+Options:
+
+| Option | Values | Default |
+|---|---|---|
+| `"OpacityRange"` | `None`, a scalar, or `{min, max}` | `{0.4, 1.}` |
+| `"ThicknessRange"` | `None`, a scalar, or `{min, max}` | base `9.` |
+| `"PointSizeRange"` | `None`, a scalar, or `{min, max}` | base `6` for an object with no edges |
+| `"Arrowheads"` | `Automatic`, `True`, or an `Arrowheads` spec | off |
+| `"Palette"` | a list of colors | [$InfraStrikeOutPalette]() |
+
+A scalar is the value at full strength. A pair is an envelope, interpolated by strength. An explicit `Opacity`, thickness or point size in an object's style turns that object's range off. `VertexSize` is in graph units.
+
+## Basic Examples
+
+Three heads, in palette order.
+
+```wl
+With[{g = GridGraph[{21, 21}]},
+  InfraHighlightGraph[g,
+    {InfraSegment[221, 226], InfraCircle[221, 226, "RadiusDelta" -> 1],
+     InfraArc[221, {226, 116}, "RadiusDelta" -> 1]}]]
+```
+
+A `Directive` colors the objects after it.
+
+```wl
+With[{g = GridGraph[{21, 21}]},
+  InfraHighlightGraph[g,
+    {FindInfraBall[g, 221, 3], Directive[$InfraCircleColor],
+     InfraCircle[221, 226, "RadiusDelta" -> 1]}]]
+```
+
+Overlaps add. The two segments share the edge at their start and blend there. The walk is one stroke.
+
+```wl
+With[{g = GridGraph[{21, 21}]},
+  InfraHighlightGraph[g,
+    {InfraSegment[221, 266], InfraSegment[221, 180],
+     InfraWalk[{215, 216, 217, 238, 259, 260, 261}]},
+    "Arrowheads" -> True]]
+```
+
+## Properties and Relations
+
+The palette is Jeremy's strike-out sequence.
+
+```wl
+Take[$InfraStrikeOutPalette, 3]
+```

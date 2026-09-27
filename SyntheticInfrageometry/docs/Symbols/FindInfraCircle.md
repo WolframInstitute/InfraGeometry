@@ -74,7 +74,7 @@ Row[Table[
      {c = First @ GraphCenter[g]},
      {circle = FindInfraCircle[g, c, "Radius" -> Last[spec]]},
      Labeled[
-       InfraSceneHighlight[g,
+       InfraHighlightGraph[g,
          {Graph[DirectedEdge @@@ Partition[circle, 2, 1, 1]] -> $InfraCircleColor, {c} -> $InfraPointColor},
          "PointSizeRange" -> 15,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),

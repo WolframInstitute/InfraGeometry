@@ -57,7 +57,7 @@ With[
   {q = First @ Select[ring, GraphDistance[Subgraph[g, ring], p, #] == 6 &]},
   {arc = InfraArc[c, {p, q}]},
   {InfraMeasurement[g, arc, "Cardinality"], InfraMeasurement[g, arc, "Length"],
-   InfraSceneHighlight[g, {InfraVertexList[g, arc, All] -> $InfraCircleColor, {c} -> $InfraPointColor}]}
+   InfraHighlightGraph[g, {InfraVertexList[g, arc, All] -> $InfraCircleColor, {c} -> $InfraPointColor}]}
 ]
 ```
 

@@ -60,7 +60,7 @@ Row[Table[
      {a = First @ GraphCenter[g]},
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
      Labeled[
-       InfraSceneHighlight[g,
+       InfraHighlightGraph[g,
          {FindInfraRay[g, a, b, UpTo[3]] -> $InfraRayColor, {a} -> $InfraPointColor},
          "PointSizeRange" -> 15,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),

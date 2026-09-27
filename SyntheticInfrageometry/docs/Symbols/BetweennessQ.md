@@ -66,7 +66,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "Gray", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
-  InfraSceneHighlight[g,
+  InfraHighlightGraph[g,
     {Select[VertexList[g], BetweennessQ[g, a, #, b] &] -> $InfraShellColor,
      {a, b} -> $InfraPointColor},
     "PointSizeRange" -> 15,

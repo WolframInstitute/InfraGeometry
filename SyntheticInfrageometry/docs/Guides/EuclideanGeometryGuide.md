@@ -90,7 +90,7 @@ Euclidean geometry rebuilt inside a graph. The graph is all there is: no ambient
 
 ### Substrates and drawing
 
-- `InfraSceneHighlight` the one rendering primitive; intensity follows multiplicity
+- `InfraHighlightGraph` the one rendering primitive; intensity follows multiplicity
 - `InfraScene`, `FindInfraScene`, `InfraGeometricStep` a construction stated as constraints and then solved
 - `InfraSceneViewer` a construction stepped through interactively
 - `$InfraPalette` the colour of each object head, in one place

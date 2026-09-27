@@ -17,4 +17,4 @@ Find* returns one wrapper carrying the requested realisations.
 
 Scene-language constructor InfraShell[center, radius] is used inside InfraScene.
 
-The multi form is consumed by InfraSceneHighlight (induced-subgraph semantics).
+The multi form is consumed by InfraHighlightGraph (induced-subgraph semantics).

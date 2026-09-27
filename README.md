@@ -53,30 +53,27 @@ and one concept article describing the category
 It is synthetic infrageometry on *surface-like* graphs — graphs whose metric balls are discs and whose
 metric shells are cycles — and holds the one-dimensional Euclidean objects together with the scene
 language and the renderer that draw them: `InfraSegment`, `InfraRay`, `InfraLine`, `InfraCircle`,
-`InfraArc`, `InfraScene`, `InfraSceneHighlight` and the viewers.
+`InfraArc`, `InfraScene`, `InfraHighlightGraph` and the viewers.
 
-Each object head evaluates, with the substrate as its first argument, to an **object** standing for
-the whole family of walks its definition admits, carried as geodesic DAGs and never enumerated unless
-asked:
+Each object head is inert: it holds its points and computes nothing. Its one theorem is its
+`"Graph"`, a DAG whose chains are exactly the walks its definition admits, read through
+`InfraMeasurement` and never enumerated unless asked:
 
 ```wolfram
-seg = InfraSegment[g, p, q]          (* every geodesic from p to q *)
-ray = InfraRay[g, o, v]              (* every ray from o through v; InfraRay[g, o] the pencil *)
-line = InfraLine[g, p, q]            (* every line through p and q *)
-circle = InfraCircle[g, c, p, "Tolerance" -> 1]   (* every shortest separating cycle through p in the band of radius d(c, p) +- 1 *)
-arc = InfraArc[g, c, p, q]           (* the shortest paths from p to q inside that band *)
+seg = InfraSegment[p, q]                          (* every geodesic from p to q *)
+ray = InfraRay[o, v]                              (* every ray from o through v; InfraRay[o, o] the pencil *)
+line = InfraLine[p, q]                            (* every line through p and q *)
+circle = InfraCircle[c, p, "RadiusDelta" -> 1]    (* the circles around c through p in a band of width 1 *)
+arc = InfraArc[c, {p, q}]                         (* the minor arcs from p to q *)
 
-seg[[1]]                (* the first geodesic in canonical order, a directed path graph *)
-seg[[1 ;; 3]]           (* the first three *)
-Normal[seg]             (* all of them *)
-seg["Multiplicity"]     (* how many, by dynamic programming *)
-seg[["InfraDensity"]]   (* <| v -> number of geodesics through v |> *)
-InfraSceneHighlight[g, {seg, circle}]
+InfraMeasurement[g, seg, "Cardinality"]           (* how many, by dynamic programming *)
+InfraMeasurement[g, seg, "VertexDensity"]         (* <| v -> number of geodesics through v |> *)
+InfraVertexList[g, seg, 3]                        (* the first three, as vertex lists *)
+InfraHighlightGraph[g, {seg, circle}]             (* both families, summed, in palette order *)
 ```
 
-Without the substrate the same heads are the `InfraScene` tokens: `InfraSegment[p, q]` names a
-segment to be solved for. The `Find*` symbols remain the search — one instance, `n`, or the bare
-carrier under `All`.
+The same heads are the `InfraScene` tokens. The `Find*` symbols remain the independent search — one
+instance as a vertex list, or `n`, `UpTo[n]`, `All` of them.
 
 ### Riemannian Infrageometry
 

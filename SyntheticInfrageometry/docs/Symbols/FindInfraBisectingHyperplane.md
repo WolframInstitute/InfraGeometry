@@ -56,7 +56,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "Gray", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 6 &]},
-  InfraSceneHighlight[g,
+  InfraHighlightGraph[g,
     {FindInfraBisectingHyperplane[g, a, b] -> $InfraPlaneColor,
      {a, b} -> $InfraPointColor},
     "PointSizeRange" -> 15,

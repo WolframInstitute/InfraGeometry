@@ -9,4 +9,4 @@ URI: WolframInstitute/SyntheticInfrageometry/ref/$InfraWalkColor
 
 ## Usage
 
-Default highlight color for walk graphs -- the shape classes Walk, Polyline and PolylineFamily.
+Named color of walks, for a caller to cite in a Directive in InfraHighlightGraph.

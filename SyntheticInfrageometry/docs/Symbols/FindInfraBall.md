@@ -62,7 +62,7 @@ Row[Table[
      {g = InfraSubstrate[name, "Medium", "Gray", "KeepCoordinates" -> True]},
      {c = First @ GraphCenter[g]},
      Labeled[
-       InfraSceneHighlight[g,
+       InfraHighlightGraph[g,
          {FindInfraBall[g, c, 4] -> $InfraBallColor, {c} -> $InfraPointColor},
          "PointSizeRange" -> 15,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),

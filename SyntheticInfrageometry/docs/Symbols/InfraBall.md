@@ -15,4 +15,4 @@ URI: WolframInstitute/SyntheticInfrageometry/ref/InfraBall
 
 Scene-language constructor InfraBall[center, radius] is used inside InfraScene.
 
-The multi form is consumed by InfraSceneHighlight (induced-subgraph semantics).
+The multi form is consumed by InfraHighlightGraph (induced-subgraph semantics).
