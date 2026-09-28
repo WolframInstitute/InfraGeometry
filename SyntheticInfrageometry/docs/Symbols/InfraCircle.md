@@ -36,6 +36,16 @@ Inside an [InfraScene](), the token `InfraCircle[c, r]` still reads *r* as a rad
 
 ## Basic Examples
 
+The circles of the band `{2, 4}` about the centre of a grid: sixteen of them, each of length 16. An edge is drawn as strongly as the number of circles through it.
+
+```wl
+With[
+  {g = GridGraph[{9, 9}]},
+  {circle = InfraCircle[41, "Radius" -> {2, 4}]},
+  {InfraHighlightGraph[g, {circle -> $InfraCircleColor, Directive[$InfraPointColor], 41}, ImageSize -> 250],
+   InfraMeasurement[g, circle, {"Cardinality", "Length"}]}]
+```
+
 The band `{4, 5}` around the centre of a square grid: the number of circles, their length, and the number of necklaces carrying them.
 
 ```wl

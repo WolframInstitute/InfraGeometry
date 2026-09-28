@@ -18,9 +18,19 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 ## Details & Options
 
-Same as `InfraMeasurement[graph, obj, "Subgraph"]`; the support itself is `Keys @ InfraMeasurement[graph, obj, "VertexDensity"]`. Works on [InfraIntersection]() and [InfraUnion]() as well as on the five Euclidean heads, since every one of them carries a `"VertexDensity"`.
+Same as <code>[InfraMeasurement]()[*graph*, *obj*, "Subgraph"]</code>; the support itself is <code>Keys @ [InfraMeasurement]()[*graph*, *obj*, "VertexDensity"]</code>. Works on [InfraIntersection]() and [InfraUnion]() as well as on the five Euclidean heads, since every one of them carries a `"VertexDensity"`.
 
 ## Basic Examples
+
+A segment on a grid and its support thickened by one step: 9 vertices, then 21.
+
+```wl
+With[
+  {g = GridGraph[{9, 9}]},
+  {seg = InfraSegment[41, 61]},
+  {InfraHighlightGraph[g, {VertexList @ InfraSubgraph[g, seg -> 1], seg}, ImageSize -> 250],
+   VertexCount @ InfraSubgraph[g, seg], VertexCount @ InfraSubgraph[g, seg -> 1]}]
+```
 
 The metric interval of a segment, and the same interval widened by one step on every side.
 
@@ -38,4 +48,15 @@ With[
   {seg = InfraSegment[7, 19]},
   VertexCount @ InfraSubgraph[g, seg -> 1]
 ]
+```
+
+## Properties and Relations
+
+The subgraph is the one [InfraMeasurement]() gives.
+
+```wl
+With[
+  {g = GridGraph[{9, 9}]},
+  {circle = InfraCircle[41, "Radius" -> {2, 4}]},
+  InfraSubgraph[g, circle] === InfraMeasurement[g, circle, "Subgraph"]]
 ```
