@@ -6,7 +6,7 @@ Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/Experimental
 Keywords: [experimental, index, kernel files, synthetic, Riemannian]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [EuclideanGeometryGuide, RiemannianGeometryGuide]
 ---
 
 ## Abstract

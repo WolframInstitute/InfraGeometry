@@ -6,7 +6,7 @@ Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/EuclideanGeometryGuide
 Keywords: [Euclidean geometry, graph, geodesic, inert head, point, segment, ray, line, arc, circle, scene, substrate]
-RelatedGuides: [Experimental]
+RelatedGuides: [RiemannianGeometryGuide, Experimental]
 ---
 
 ## Abstract
