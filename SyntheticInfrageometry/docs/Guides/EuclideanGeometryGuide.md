@@ -17,9 +17,9 @@ A Euclidean object is an inert head: InfraSegment[p, q], InfraRay[p, q], InfraLi
 
 ### Surface graphs
 
-- **InfraSubstrate** — the named example substrates at size "Small", "Medium" or "Large": the tilings, meshes and closed surfaces the other pages draw on; InfraSubstrate[] lists the roster
-- **TessellationGraph** — the regular map {p, q} or the uniform map of a vertex configuration as a graph, sized to a flat torus or to a hyperbolic quotient
-- **TorusTessellation** — the m × n flat torus carrying the square, triangular or hexagonal tessellation
+- `InfraSubstrate` the named example substrates at size "Small", "Medium" or "Large": the tilings, meshes and closed surfaces the other pages draw on; InfraSubstrate[] lists the roster
+- `TessellationGraph` the regular map {p, q} or the uniform map of a vertex configuration as a graph, sized to a flat torus or to a hyperbolic quotient
+- `TorusTessellation` the m × n flat torus carrying the square, triangular or hexagonal tessellation
 
 ### Points
 

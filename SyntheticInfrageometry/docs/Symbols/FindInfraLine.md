@@ -59,7 +59,7 @@ Three of them on each substrate.
 ```wl
 Row[Table[
    With[
-     {g = InfraSubstrate[name, "Medium", "Gray", "KeepCoordinates" -> True]},
+     {g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]},
      {a = First @ GraphCenter[g]},
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
      Labeled[

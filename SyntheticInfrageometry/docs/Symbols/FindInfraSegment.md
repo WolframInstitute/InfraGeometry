@@ -44,7 +44,7 @@ Every geodesic between two vertices at distance 6, on the discretized plane, the
 ```wl
 Row[Table[
    With[
-     {g = InfraSubstrate[name, "Large", "Gray", "KeepCoordinates" -> True]},
+     {g = InfraSubstrate[name, "Large", "KeepCoordinates" -> True]},
      {a = First @ GraphCenter[g]},
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 6 &]},
      {segs = FindInfraSegment[g, a, b, All]},

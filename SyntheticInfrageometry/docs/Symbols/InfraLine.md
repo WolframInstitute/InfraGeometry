@@ -30,6 +30,16 @@ With *p* = *q*, <code>[InfraLine]()[*p*, *p*]</code> is every maximal geodesic t
 
 ## Basic Examples
 
+The line through the centre of a grid and a vertex two steps up and two across. It runs both ways, to the two opposite corners: 2520 lines, each of length 16, the diameter of the grid.
+
+```wl
+With[
+  {g = GridGraph[{9, 9}]},
+  {line = InfraLine[41, 61]},
+  {InfraHighlightGraph[g, {line, Directive[$InfraPointColor], 41, 61}, ImageSize -> 250],
+   InfraMeasurement[g, line, "Cardinality"]}]
+```
+
 Twelve lines pass the interior edge 6–7 of a 4 × 4 grid, carried by two DAGs.
 
 ```wl

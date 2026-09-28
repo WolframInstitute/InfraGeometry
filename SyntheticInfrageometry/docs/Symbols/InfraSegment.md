@@ -34,7 +34,17 @@ A member is a vertex list; [InfraVertexList]() reads one, several or all of them
 
 ## Basic Examples
 
-The graph of a segment on the square grid. Every geodesic is a directed path through it.
+The segment between two vertices of a grid, two steps apart in each direction: six geodesics, filling the rectangle they span. An edge is drawn as strongly as the number of geodesics through it.
+
+```wl
+With[
+  {g = GridGraph[{9, 9}]},
+  {seg = InfraSegment[41, 61]},
+  {InfraHighlightGraph[g, {seg, Directive[$InfraPointColor], 41, 61}, ImageSize -> 250],
+   InfraMeasurement[g, seg, "Cardinality"]}]
+```
+
+The graph of a segment on the square tiling. Every geodesic is a directed path through it.
 
 ```wl
 With[

@@ -54,6 +54,7 @@ Corresponding notions in the classical axiom systems:
 One point is a vertex; the calling triple gives a list of them.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {FindInfraPoint[g], Length @ FindInfraPoint[g, All], VertexCount[g]}]
@@ -72,7 +73,7 @@ Centre and periphery drawn together. The periphery of a patch is its rim.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "Gray", "KeepCoordinates" -> True]},
+  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   InfraHighlightGraph[g,
     {FindInfraPoint[g, All, "From" -> "Periphery"] -> $InfraShellColor,
      FindInfraPoint[g, All, "From" -> "Center"] -> $InfraPointColor},
@@ -85,7 +86,7 @@ Keeping a draw off the rim. The balls are a nested family, so `q` reads directly
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "Gray", "KeepCoordinates" -> True]},
+  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   InfraHighlightGraph[g,
     {VertexList @ CenterGraph[g, 0.8] -> $InfraShellColor,
      VertexList @ CenterGraph[g, 0.4] -> $InfraPointColor},
@@ -97,6 +98,7 @@ With[
 A tuple of three mutually most-distant points comes back as three vertices.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {t = FindInfraPoint[g, 3, "Distance" -> "Max"]},

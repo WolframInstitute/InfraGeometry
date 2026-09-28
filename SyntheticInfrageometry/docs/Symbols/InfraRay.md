@@ -28,6 +28,16 @@ Every member begins at *p*. A member is a vertex list; [InfraVertexList]() reads
 
 ## Basic Examples
 
+The ray from the centre of a grid through a vertex two steps up and two across. Past that vertex it spreads until it reaches the corner, where no step leads farther away: 36 rays.
+
+```wl
+With[
+  {g = GridGraph[{9, 9}]},
+  {ray = InfraRay[41, 61]},
+  {InfraHighlightGraph[g, {ray, Directive[$InfraPointColor], 41, 61}, ImageSize -> 250],
+   InfraMeasurement[g, ray, "Cardinality"]}]
+```
+
 Five rays leave 6 through 7 on a 4 × 4 grid. Two stop at the corner 4 after three steps, three reach the corner 16 after four.
 
 ```wl
