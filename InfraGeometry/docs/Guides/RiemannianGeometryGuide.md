@@ -21,7 +21,7 @@ The Riemannian branch measures the substrate instead of constructing on it. Its 
 - `FindInfraGeodesic` the geodesics at infra-scale s from p1, or from p1 to p2: every window of s consecutive vertices plus the next one is a shortest path; a trailing count gives a List of them
 - `InfraGeodesicQ` whether a walk is a geodesic at infra-scale s; scale 1 is InfraWalkQ and Infinity is InfraSegmentQ
 - `ExtendInfraGeodesic` continues a seed walk as a geodesic at infra-scale s, by a budget of edges per growing side
-- **GeodesicIntervalGraph** — the metric interval I(u, v) = {w : d(u, w) + d(w, v) = d(u, v)} as a directed acyclic graph whose directed u-v paths are exactly the geodesics, built from the distance fields without listing them
+- `GeodesicIntervalGraph` the metric interval I(u, v) = {w : d(u, w) + d(w, v) = d(u, v)} as a directed acyclic graph whose directed u-v paths are exactly the geodesics, built from the distance fields without listing them
 - `GeodesicSprayGraph` the breadth-first DAG rooted at c, whose source-to-sink paths are exactly the maximal geodesics from c; a list of pairs gives the union of their geodesics
 
 ### Balls and shells
@@ -41,12 +41,12 @@ The Riemannian branch measures the substrate instead of constructing on it. Its 
 
 ### Volume measurements
 
-- **BallVolumes** — the ball volume profile {V(0), ..., V(ecc)}, V(r) = |B_r(v)|, at a vertex, a list of vertices or All; "Measure" chooses the convention for the outermost layer
-- **ShellAreas** — the shell profile A(r) = V(r) - V(r - 1), the radial derivative of BallVolumes under the same measure; Accumulate recovers BallVolumes
-- **TubeVolumes** — the tube profile T(s) = |{w : d(w, core) <= s}| about a vertex list, about the interval I(p, q), or one profile per target
-- **LogDifferenceQuotients** — the discrete d log w / d log r of a sequence, q(r) = (log w(r) - log w(r - 1)) / (log(r + 1) - log r); a sequence of Around values carries its spread into error bars
-- **DimensionCurvatureFit** — dimension and scalar curvature from log-difference quotients by regression on r(r + 1), the intercept and the slope, for the ball, sphere, tube or tube-mantle probe
-- **VolumeGrowthObservables** — the ball and sphere fits at a vertex over a window as one Association: profiles, quotients, fits and the windows used
+- `BallVolumes` the ball volume profile {V(0), ..., V(ecc)}, V(r) = |B_r(v)|, at a vertex, a list of vertices or All; "Measure" chooses the convention for the outermost layer
+- `ShellAreas` the shell profile A(r) = V(r) - V(r - 1), the radial derivative of BallVolumes under the same measure; Accumulate recovers BallVolumes
+- `TubeVolumes` the tube profile T(s) = |{w : d(w, core) <= s}| about a vertex list, about the interval I(p, q), or one profile per target
+- `LogDifferenceQuotients` the discrete d log w / d log r of a sequence, q(r) = (log w(r) - log w(r - 1)) / (log(r + 1) - log r); a sequence of Around values carries its spread into error bars
+- `DimensionCurvatureFit` dimension and scalar curvature from log-difference quotients by regression on r(r + 1), the intercept and the slope, for the ball, sphere, tube or tube-mantle probe
+- `VolumeGrowthObservables` the ball and sphere fits at a vertex over a window as one Association: profiles, quotients, fits and the windows used
 
 ### The ball intersection complex
 

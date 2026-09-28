@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraMetricTensor
 Keywords: [metric tensor, Gram matrix, projection, interval, cosine, tangent space, Euclid II.12]
 SeeAlso: [InfraScalarProduct, InfraAngle, MetricInterval, FindClosestInfraPoint, FindInfraShell, OrthogonalCoordinates]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [RiemannianGeometryGuide]
 ---
 
 ## Usage

@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[     18279,        492]
-NotebookOptionsPosition[     12952,        383]
-NotebookOutlinePosition[     14065,        416]
-CellTagsIndexPosition[     13986,        411]
+NotebookDataLength[    163685,       3788]
+NotebookOptionsPosition[    155402,       3630]
+NotebookOutlinePosition[    156604,       3666]
+CellTagsIndexPosition[    156523,       3661]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -24,7 +24,7 @@ Cell["GeodesicSprayGraph", "ObjectName",
  CellID->1224892054,ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec"],
 
 Cell[TextData[{
- Cell["   ", "ModInfo",ExpressionUUID->"d7bdb9c1-cf58-45f1-939a-1501a7940f95"],
+ Cell["   ", "ModInfo",ExpressionUUID->"410d0213-6d6e-47ba-a811-a099c151dc26"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -35,15 +35,22 @@ Cell[TextData[{
     "PackageLink",
     BaseStyle->"InlineFormula"], "[", 
    RowBox[{
-    StyleBox["graph", "TI"], ",", " ", 
+    StyleBox["g", "TI"], ",", " ", 
     StyleBox["c", "TI"]}], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "610130c4-62c4-4981-b5c8-236b7ab7269a"],
+  "2d6fdafe-b108-45bb-ae74-ffb163201479"],
  "\[LineSeparator]",
- "returns the BFS DAG rooted at c: a directed graph with edge u -> v whenever \
-d(c, v) = d(c, u) + 1 and u-v is an edge of graph.",
+ "gives the directed acyclic graph of all geodesics from ",
+ StyleBox["c", "TI"],
+ ": an edge ",
+ StyleBox["u \[RightArrow] v", "TI"],
+ " for every edge of ",
+ StyleBox["g", "TI"],
+ " with ",
+ StyleBox["d(c, v) = d(c, u) + 1", "TI"],
+ ".",
  "\n",
- Cell["   ", "ModInfo",ExpressionUUID->"17fb3241-1a9b-4485-9a03-f121dff07983"],
+ Cell["   ", "ModInfo",ExpressionUUID->"6bd75953-27b4-4dcf-b403-73feab09df9b"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -54,17 +61,18 @@ d(c, v) = d(c, u) + 1 and u-v is an edge of graph.",
     "PackageLink",
     BaseStyle->"InlineFormula"], "[", 
    RowBox[{
-    StyleBox["graph", "TI"], ",", " ", 
+    StyleBox["g", "TI"], ",", " ", 
     RowBox[{"{", 
      RowBox[{
-      StyleBox["c1", "TI"], ",", " ", "...", ",", " ", 
-      StyleBox["ck", "TI"]}], "}"}]}], "]"}]], "InlineFormula",
+      StyleBox["c1", "TI"], ",", " ", 
+      StyleBox["c2", "TI"], ",", " ", "\[Ellipsis]"}], "}"}]}], "]"}]], 
+  "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "929de93c-0f4d-4fee-b495-4ec879e05b91"],
+  "88a8a8a3-83b2-4a12-a7ea-d70de17b8f75"],
  "\[LineSeparator]",
- "uses multi-source BFS.",
+ "measures the distance from the nearest of the sources.",
  "\n",
- Cell["   ", "ModInfo",ExpressionUUID->"dc055737-981b-47cc-8888-dbb2b00ec877"],
+ Cell["   ", "ModInfo",ExpressionUUID->"fbba864c-a508-4b31-bb98-23db1f5198bd"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -75,24 +83,138 @@ d(c, v) = d(c, u) + 1 and u-v is an edge of graph.",
     "PackageLink",
     BaseStyle->"InlineFormula"], "[", 
    RowBox[{
-    StyleBox["graph", "TI"], ",", " ", 
-    StyleBox["pairs", "TI"]}], "]"}]], "InlineFormula",
+    StyleBox["g", "TI"], ",", " ", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        StyleBox["u1", "TI"], ",", " ", 
+        StyleBox["v1", "TI"]}], "}"}], ",", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        StyleBox["u2", "TI"], ",", " ", 
+        StyleBox["v2", "TI"]}], "}"}], ",", " ", "\[Ellipsis]"}], "}"}]}], 
+   "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "93f5f249-4751-4b7c-b279-4f4ca7801972"],
+  "9c3ef5d6-99e3-44de-ba4b-44aa65ec6f73"],
  "\[LineSeparator]",
- "returns the union of geodesics between the listed vertex pairs."
-}], "Usage",ExpressionUUID->"dbe45e6d-3284-460f-9528-b0d57e6fddfa"],
+ "gives the union of geodesics between the listed pairs."
+}], "Usage",ExpressionUUID->"95045373-018f-41e3-88aa-6e9eac612944"],
+
+Cell[TextData[{
+ "Definition: the spray at ",
+ StyleBox["c", "TI"],
+ " orients every edge of ",
+ StyleBox["g", "TI"],
+ " that joins two consecutive shells about ",
+ StyleBox["c", "TI"],
+ " outward, from the shell of radius ",
+ StyleBox["r", "TI"],
+ " to that of radius ",
+ StyleBox["r", "TI"],
+ " + 1. Edges inside one shell are dropped."
+}], "Notes",ExpressionUUID->"28a001e7-1064-4731-b769-9a7458ca0d70"],
+
+Cell[TextData[{
+ "Its directed paths starting at ",
+ StyleBox["c", "TI"],
+ " are exactly the geodesics from ",
+ StyleBox["c", "TI"],
+ ", each once, and the paths from ",
+ StyleBox["c", "TI"],
+ " to a sink are the maximal ones \[LongDash] the geodesics that cannot be \
+continued away from ",
+ StyleBox["c", "TI"],
+ ". It is the graph analogue of the exponential map at ",
+ StyleBox["c", "TI"],
+ ": every direction the observer can walk in without turning back towards ",
+ StyleBox["c", "TI"],
+ ", with the branching left in."
+}], "Notes",ExpressionUUID->"aa5d0474-0e86-4f65-b8b7-629cafaeefaf"],
 
 Cell["\<\
-Options: \"AxisLength\" (truncate the source-spray DAG at depth k; default \
-All), \"PathThickness\" (per-pair Hausdorff threshold; 0 keeps one geodesic \
-per pair, Infinity keeps all), \"Directed\".\
-\>", "Notes",ExpressionUUID->"1058e202-5b67-48a4-8d1d-c04df10562e1"],
+With several sources the distance is to the nearest source, so the spray \
+grows out of the whole set.\
+\>", "Notes",ExpressionUUID->"42ae1283-4c25-4ef4-bc46-2c3ee890d882"],
 
 Cell["\<\
-Sinks are peripheral vertices reachable from c; directed paths c -> sink are \
-exactly the maximal geodesics from c.\
-\>", "Notes",ExpressionUUID->"fffbf4ca-0167-4f2b-a27c-56cc4302c2c8"]
+The pair form picks geodesics between each pair and takes the union of their \
+path graphs. It enumerates, unlike the other two forms.\
+\>", "Notes",ExpressionUUID->"22f1e102-2a5e-444b-8b20-9c152a14cf79"],
+
+Cell["Options:", "Notes",ExpressionUUID->"1ec99d63-70c1-4899-9187-e7e1da7805e6"],
+
+Cell[BoxData[GridBox[{
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "4bd814d9-acad-40f2-b216-a410a4958272"], Cell["Option", "TableText",
+     FontWeight->Bold,ExpressionUUID->"dc383613-2eb8-4188-8197-353c892ceb46"],
+     Cell["Default", "TableText",
+     FontWeight->Bold,ExpressionUUID->"a9696dc2-0b09-4711-9a1f-1fdffcb61fdf"],
+     Cell["Values", "TableText",
+     FontWeight->Bold,ExpressionUUID->"53f8a0b8-b0f9-4006-b139-ba272e2b555d"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "38af68f6-8d4d-469b-b5a7-662879cc7586"], Cell[TextData[Cell[
+    BoxData["\"\<AxisLength\>\""], "InlineFormula",
+     FontSize->0.9 Inherited,ExpressionUUID->
+     "5ec86c45-2555-49b6-88b3-733e13d2d48c"]], "TableText",ExpressionUUID->
+     "f2f21ece-f50e-47da-b1ef-d6f60b247585"], Cell[TextData[Cell[BoxData[
+    "All"], "InlineFormula",
+     FontSize->0.9 Inherited,ExpressionUUID->
+     "37a7499b-5352-49ae-a5c9-5a95fbbaed87"]], "TableText",ExpressionUUID->
+     "419401fa-b801-4499-ac6c-6ee6eae99f22"], Cell[TextData[{
+     "a depth ",
+     StyleBox["k", "TI"],
+     ": keep only the vertices within distance ",
+     StyleBox["k", "TI"],
+     " of the sources"
+    }], "TableText",ExpressionUUID->"835df78c-1428-4299-8839-1e1d0d7d6f17"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "17f75a45-ce96-4398-b260-4374df1bf6cc"], Cell[TextData[Cell[
+    BoxData["\"\<PathThickness\>\""], "InlineFormula",
+     FontSize->0.9 Inherited,ExpressionUUID->
+     "5cd9b410-4f10-4307-b50c-2a511d56133c"]], "TableText",ExpressionUUID->
+     "fdc1b4e8-9b56-4cde-9f4c-fb56d16d1c67"], Cell[TextData[Cell[BoxData[
+    "0"], "InlineFormula",
+     FontSize->0.9 Inherited,ExpressionUUID->
+     "851f3baf-351f-4872-8e35-84601b408c96"]], "TableText",ExpressionUUID->
+     "fe4ce18f-b9dd-42e7-9aac-1183f07220e6"], Cell[TextData[{
+     "pair form only: ",
+     Cell[BoxData["0"], "InlineFormula",
+      FontSize->0.9 Inherited,ExpressionUUID->
+      "4714d8fa-8085-440d-aebc-f16d76a34433"],
+     " keeps one geodesic per pair, ",
+     Cell[BoxData["Infinity"], "InlineFormula",
+      FontSize->0.9 Inherited,ExpressionUUID->
+      "fb958bfa-6703-44cb-a9a8-57e8ea851857"],
+     " all of them, ",
+     StyleBox["t", "TI"],
+     " those within Hausdorff distance ",
+     StyleBox["t", "TI"],
+     " of the first"
+    }], "TableText",ExpressionUUID->"d6b5edf1-e2b9-48f4-b17e-f1d61e913f4b"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "677028ee-1567-4607-a33e-f859b9a8f607"], Cell[TextData[Cell[
+    BoxData["\"\<Directed\>\""], "InlineFormula",
+     FontSize->0.9 Inherited,ExpressionUUID->
+     "fe40f743-75e9-45dd-9e07-de4f75e23471"]], "TableText",ExpressionUUID->
+     "ed73565d-2cc8-40e9-bc41-edde91c6f9ff"], Cell[TextData[Cell[BoxData[
+    "True"], "InlineFormula",
+     FontSize->0.9 Inherited,ExpressionUUID->
+     "5a9761ad-1679-4ae3-870d-e327c9bc9208"]], "TableText",ExpressionUUID->
+     "73f127d2-a588-4a0e-87b3-c161bc519507"], Cell[TextData[{
+     Cell[BoxData["False"], "InlineFormula",
+      FontSize->0.9 Inherited,ExpressionUUID->
+      "8c88883c-99db-4cc4-adb0-2cbc4baf9eeb"],
+     " keeps the same edges undirected"
+    }], "TableText",ExpressionUUID->"2eb389fe-6212-4b35-ae62-3acab61cfc58"]}
+  }]], "3ColumnTableMod",ExpressionUUID->"630c6e9f-4884-4b3a-82b1-\
+a36fcc07152b"],
+
+Cell[TextData[{
+ "The spray keeps the embedding of ",
+ StyleBox["g", "TI"],
+ ", so it is drawn in place."
+}], "Notes",ExpressionUUID->"4217b0a8-1771-494a-bef0-47962cf1974a"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -114,45 +236,55 @@ Cell[TextData[{
 
 Cell[TextData[{
  Cell[BoxData[
-  TagBox[
-   FrameBox["\<\"XXXX\"\>"],
-   "FunctionPlaceholder"]], "InlineSeeAlsoFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "04f1f4f6-42ff-41c1-be38-c72199e55033"],
+  TemplateBox[{
+    Cell[
+     TextData["GeodesicIntervalGraph"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/GeodesicIntervalGraph", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "c6d7a34e-60d5-453a-9a97-31ca6d6730c8"],
+ " \[FilledVerySmallSquare] ",
  Cell[BoxData[
-  RowBox[{
-  Cell[TextData[StyleBox[
-   " \[FilledVerySmallSquare] ", "InlineSeparator"]],ExpressionUUID->
-    "e52cc72c-b17b-4daf-ba13-e4031a732989"], 
-   DynamicModuleBox[{$CellContext`nbobj$$ = NotebookObject[
-     FrontEndObject[
-      LinkObject["i7bzb_shm", 209, 9]], 22], $CellContext`cellobj$$ = 
-    CellObject[6753]}, 
-    TemplateBox[{
-      GraphicsBox[{{
-         Thickness[0.06], 
-         StrokeForm[
-          Hue[0.4167, 0.406, 0.502]], 
-         CircleBox[{0, 0}]}, {
-         Thickness[0.06], 
-         StrokeForm[
-          Hue[0.4167, 0.406, 0.502]], 
-         LineBox[{{0, 0.62}, {0, -0.62}}]}, {
-         Thickness[0.06], 
-         StrokeForm[
-          Hue[0.4167, 0.406, 0.502]], 
-         LineBox[{{-0.62, 0}, {0.62, 0}}]}}, 
-       ImagePadding -> {{1., 1.}, {2.4, 1.}}, ImageSize -> 16, 
-       PlotRange -> {{-1.06, 1.06}, {-1.06, 1.06}}, 
-       BaselinePosition -> (Center -> 
-        Center)], $CellContext`nbobj$$, $CellContext`cellobj$$},
-     "InlineListingAddButton"],
-    Initialization:>($CellContext`nbobj$$ = 
-      EvaluationNotebook[]; $CellContext`cellobj$$ = EvaluationCell[])]}]], 
-  "InlineListingAddButton",ExpressionUUID->
-  "ac548b96-3ee5-484c-99df-e6462c430c8c"]
-}], "SeeAlso",
- CellID->173389911,ExpressionUUID->"a2765fad-d0fd-4f94-9539-78ed28f4fade"]
+  TemplateBox[{
+    Cell[
+     TextData["GeodesicExtensionGraph"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/GeodesicExtensionGraph", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "763883f2-fe48-42fb-9493-95df57723b28"],
+ " \[FilledVerySmallSquare] ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["FindInfraGeodesic"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraGeodesic", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "31d01fe6-19f3-4313-9cec-a7ba8e19324d"],
+ " \[FilledVerySmallSquare] ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["FindInfraShell"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraShell", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "298aa688-9718-438e-bbb0-d34467d40a67"],
+ " \[FilledVerySmallSquare] ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["BallVolumes"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/BallVolumes", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "d2e9f742-d0c3-42e3-bd95-de21cde8f0c0"]
+}], "SeeAlso",ExpressionUUID->"041ace7b-22ee-4d66-a31e-eaf012a8149b"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -169,8 +301,19 @@ Cell[TextData[{
 }], "TechNotesSection",
  CellID->792424486,ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74"],
 
+Cell[CellGroupData[{
+
 Cell["Related Guides", "MoreAboutSection",
  CellID->38303248,ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5"],
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox["RiemannianGeometryGuide",
+  BaseStyle->"Link",
+  ButtonData->
+   "paclet:WolframInstitute/InfraGeometry/guide/RiemannianGeometryGuide"]], \
+"InlineFormula",ExpressionUUID->"9dd4198d-3415-4f7f-8f3d-927b328d00cd"]], \
+"MoreAbout",ExpressionUUID->"56f70207-e9d8-4156-beca-df73d09dd32f"]
+}, Open  ]],
 
 Cell[TextData[{
  "Related Links",
@@ -206,12 +349,13 @@ Needs[\[Ellipsis]].", "MoreInfoText"], BaseStyle -> "IFrameBox"]],
  CellID->1718580883,ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5"],
 
 Cell[BoxData[{
- RowBox[{"Needs", "[", "\"\<WolframInstitute`InfraGeometry`\>\"", 
-  "]"}], "\n", 
+ RowBox[{"Needs", "[", "\"\<WolframInstitute`InfraGeometry`\>\"", "]"}], "\n", 
  RowBox[{"Needs", "[", "\"\<WolframInstitute`DiscreteGeometry`\>\"", 
   "]"}]}], "ExampleInitialization",
  CellID->1969679695,ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502"]
 }, Open  ]],
+
+Cell[CellGroupData[{
 
 Cell[BoxData[
  InterpretationBox[GridBox[{
@@ -226,6 +370,2946 @@ Cell[BoxData[
    }],
   $Line = 0; Null]], "PrimaryExamplesSection",
  CellID->880084151,ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42"],
+
+Cell["\<\
+The spray at the centre of a grid, drawn by the geodesics through each edge, \
+and the spray itself cut at depth 3.\
+\>", "ExampleText",ExpressionUUID->"665b73a9-017f-4e27-9cd8-eb9b747f11ec"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"g", " ", "=", " ", 
+     RowBox[{"GridGraph", "[", 
+      RowBox[{"{", 
+       RowBox[{"9", ",", " ", "9"}], "}"}], "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"Row", "[", 
+    RowBox[{
+     RowBox[{"{", "\n", "    ", 
+      RowBox[{
+       RowBox[{"InfraHighlightGraph", "[", 
+        RowBox[{"g", ",", " ", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"GeodesicSprayGraph", "[", 
+            RowBox[{"g", ",", " ", "41"}], "]"}], ",", " ", 
+           RowBox[{"Directive", "[", "$InfraPointColor", "]"}], ",", " ", 
+           "41"}], "}"}], ",", " ", 
+         RowBox[{"ImageSize", " ", "->", " ", "180"}]}], "]"}], ",", "\n", 
+       "    ", 
+       RowBox[{"Graph", "[", 
+        RowBox[{
+         RowBox[{"GeodesicSprayGraph", "[", 
+          RowBox[{"g", ",", " ", "41", ",", " ", 
+           RowBox[{"\"\<AxisLength\>\"", " ", "->", " ", "3"}]}], "]"}], ",", 
+         " ", 
+         RowBox[{"ImageSize", " ", "->", " ", "180"}]}], "]"}]}], "}"}], ",", 
+     " ", 
+     RowBox[{"Spacer", "[", "20", "]"}]}], "]"}]}], "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"11b53461-39a6-4ef2-9ee4-4193f2375802"],
+
+Cell[BoxData[
+ TemplateBox[{
+   TemplateBox[{20}, "Spacer1"], 
+   GraphicsBox[
+    NamespaceBox["NetworkGraphics", 
+     DynamicModuleBox[{Typeset`graph = HoldComplete[
+         Graph[{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+           19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
+           36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52,
+           53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
+           70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81}, {Null, 
+           SparseArray[Automatic, {81, 81}, 0, {1, {CompressedData["
+1:eJwt0CFIQwEARdGvKCrKRHFsosgXDAaDYUEQDIaFBcMPCwNBxoJBnMFgGAgL
+CwsLCwbDYGAwGAwLBoMwMCwsGBYWFgTBsGBYWDB4RB+c/OBu5ovR+UQQBFHw
+t0mmmWWeGEuskGCVdUK22GaHXVLssc8Bh6TJcPT/kSXHMScUOOWMCy65osQ1
+ZSpUqVHnhlsaNLnjngceafHEMy+0eaVDlzd69BnwzgefDPlixJjv3ygCTTHD
+HAssskycJGtsEPID+mEkMg==
+              "], {{2}, {10}, {1}, {3}, {11}, {2}, {4}, {12}, {3}, {5}, {
+              13}, {4}, {6}, {14}, {5}, {7}, {15}, {6}, {8}, {16}, {7}, {9}, {
+              17}, {8}, {18}, {1}, {11}, {19}, {2}, {10}, {12}, {20}, {3}, {
+              11}, {13}, {21}, {4}, {12}, {14}, {22}, {5}, {13}, {15}, {23}, {
+              6}, {14}, {16}, {24}, {7}, {15}, {17}, {25}, {8}, {16}, {18}, {
+              26}, {9}, {17}, {27}, {10}, {20}, {28}, {11}, {19}, {21}, {
+              29}, {12}, {20}, {22}, {30}, {13}, {21}, {23}, {31}, {14}, {
+              22}, {24}, {32}, {15}, {23}, {25}, {33}, {16}, {24}, {26}, {
+              34}, {17}, {25}, {27}, {35}, {18}, {26}, {36}, {19}, {29}, {
+              37}, {20}, {28}, {30}, {38}, {21}, {29}, {31}, {39}, {22}, {
+              30}, {32}, {40}, {23}, {31}, {33}, {41}, {24}, {32}, {34}, {
+              42}, {25}, {33}, {35}, {43}, {26}, {34}, {36}, {44}, {27}, {
+              35}, {45}, {28}, {38}, {46}, {29}, {37}, {39}, {47}, {30}, {
+              38}, {40}, {48}, {31}, {39}, {41}, {49}, {32}, {40}, {42}, {
+              50}, {33}, {41}, {43}, {51}, {34}, {42}, {44}, {52}, {35}, {
+              43}, {45}, {53}, {36}, {44}, {54}, {37}, {47}, {55}, {38}, {
+              46}, {48}, {56}, {39}, {47}, {49}, {57}, {40}, {48}, {50}, {
+              58}, {41}, {49}, {51}, {59}, {42}, {50}, {52}, {60}, {43}, {
+              51}, {53}, {61}, {44}, {52}, {54}, {62}, {45}, {53}, {63}, {
+              46}, {56}, {64}, {47}, {55}, {57}, {65}, {48}, {56}, {58}, {
+              66}, {49}, {57}, {59}, {67}, {50}, {58}, {60}, {68}, {51}, {
+              59}, {61}, {69}, {52}, {60}, {62}, {70}, {53}, {61}, {63}, {
+              71}, {54}, {62}, {72}, {55}, {65}, {73}, {56}, {64}, {66}, {
+              74}, {57}, {65}, {67}, {75}, {58}, {66}, {68}, {76}, {59}, {
+              67}, {69}, {77}, {60}, {68}, {70}, {78}, {61}, {69}, {71}, {
+              79}, {62}, {70}, {72}, {80}, {63}, {71}, {81}, {64}, {74}, {
+              65}, {73}, {75}, {66}, {74}, {76}, {67}, {75}, {77}, {68}, {
+              76}, {78}, {69}, {77}, {79}, {70}, {78}, {80}, {71}, {79}, {
+              81}, {72}, {80}}}, Pattern}]}, {
+          EdgeStyle -> {UndirectedEdge[57, 66] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4385714285714286], 
+               AbsoluteThickness[0.5785714285714285]], UndirectedEdge[39, 40] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4642857142857143], 
+               AbsoluteThickness[0.9642857142857142]], UndirectedEdge[59, 68] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[74, 75] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.43214285714285716`], 
+               AbsoluteThickness[0.4821428571428571]], UndirectedEdge[62, 71] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[47, 56] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4257142857142857], 
+               AbsoluteThickness[0.38571428571428573`]], 
+             UndirectedEdge[6, 15] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4085714285714286], 
+               AbsoluteThickness[0.12857142857142856`]], 
+             UndirectedEdge[17, 18] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[2, 3] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.43214285714285716`], 
+               AbsoluteThickness[0.4821428571428571]], UndirectedEdge[3, 12] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[78, 79] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.41071428571428575`], 
+               AbsoluteThickness[0.1607142857142857]], UndirectedEdge[60, 69] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4257142857142857], 
+               AbsoluteThickness[0.38571428571428573`]], 
+             UndirectedEdge[15, 24] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4257142857142857], 
+               AbsoluteThickness[0.38571428571428573`]], 
+             UndirectedEdge[44, 53] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4085714285714286], 
+               AbsoluteThickness[0.12857142857142856`]], 
+             UndirectedEdge[72, 81] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.47500000000000003`], 
+               AbsoluteThickness[1.125]], UndirectedEdge[50, 59] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4642857142857143], 
+               AbsoluteThickness[0.9642857142857142]], UndirectedEdge[24, 25] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4385714285714286], 
+               AbsoluteThickness[0.5785714285714285]], UndirectedEdge[14, 15] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4085714285714286], 
+               AbsoluteThickness[0.12857142857142856`]], 
+             UndirectedEdge[28, 37] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4021428571428572], 
+               AbsoluteThickness[0.03214285714285714]], UndirectedEdge[6, 7] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.41071428571428575`], 
+               AbsoluteThickness[0.1607142857142857]], UndirectedEdge[25, 34] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4385714285714286], 
+               AbsoluteThickness[0.5785714285714285]], UndirectedEdge[44, 45] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4042857142857143], 
+               AbsoluteThickness[0.06428571428571428]], 
+             UndirectedEdge[67, 68] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4085714285714286], 
+               AbsoluteThickness[0.12857142857142856`]], 
+             UndirectedEdge[40, 41] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.55], 
+               AbsoluteThickness[2.25]], UndirectedEdge[80, 81] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.47500000000000003`], 
+               AbsoluteThickness[1.125]], UndirectedEdge[52, 61] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4385714285714286], 
+               AbsoluteThickness[0.5785714285714285]], UndirectedEdge[40, 49] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[73, 74] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.47500000000000003`], 
+               AbsoluteThickness[1.125]], UndirectedEdge[48, 57] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4385714285714286], 
+               AbsoluteThickness[0.5785714285714285]], UndirectedEdge[13, 22] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4257142857142857], 
+               AbsoluteThickness[0.38571428571428573`]], 
+             UndirectedEdge[32, 41] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.55], 
+               AbsoluteThickness[2.25]], UndirectedEdge[49, 50] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[8, 17] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[35, 36] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4085714285714286], 
+               AbsoluteThickness[0.12857142857142856`]], 
+             UndirectedEdge[7, 16] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[25, 26] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4385714285714286], 
+               AbsoluteThickness[0.5785714285714285]], UndirectedEdge[51, 60] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[15, 16] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4257142857142857], 
+               AbsoluteThickness[0.38571428571428573`]], 
+             UndirectedEdge[56, 65] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[60, 61] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4385714285714286], 
+               AbsoluteThickness[0.5785714285714285]], UndirectedEdge[70, 79] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[21, 22] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4385714285714286], 
+               AbsoluteThickness[0.5785714285714285]], UndirectedEdge[3, 4] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.41071428571428575`], 
+               AbsoluteThickness[0.1607142857142857]], UndirectedEdge[17, 26] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[33, 42] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[57, 58] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4385714285714286], 
+               AbsoluteThickness[0.5785714285714285]], UndirectedEdge[36, 45] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4021428571428572], 
+               AbsoluteThickness[0.03214285714285714]], 
+             UndirectedEdge[79, 80] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.43214285714285716`], 
+               AbsoluteThickness[0.4821428571428571]], UndirectedEdge[70, 71] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[8, 9] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.47500000000000003`], 
+               AbsoluteThickness[1.125]], UndirectedEdge[4, 5] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4021428571428572], 
+               AbsoluteThickness[0.03214285714285714]], 
+             UndirectedEdge[41, 42] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.55], 
+               AbsoluteThickness[2.25]], UndirectedEdge[55, 64] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.43214285714285716`], 
+               AbsoluteThickness[0.4821428571428571]], UndirectedEdge[23, 24] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[46, 55] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.41071428571428575`], 
+               AbsoluteThickness[0.1607142857142857]], UndirectedEdge[33, 34] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[58, 59] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[54, 63] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.41071428571428575`], 
+               AbsoluteThickness[0.1607142857142857]], UndirectedEdge[14, 23] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[5, 14] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4042857142857143], 
+               AbsoluteThickness[0.06428571428571428]], 
+             UndirectedEdge[65, 66] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[22, 31] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[37, 46] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4021428571428572], 
+               AbsoluteThickness[0.03214285714285714]], 
+             UndirectedEdge[56, 57] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4385714285714286], 
+               AbsoluteThickness[0.5785714285714285]], UndirectedEdge[58, 67] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4257142857142857], 
+               AbsoluteThickness[0.38571428571428573`]], 
+             UndirectedEdge[16, 17] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[50, 51] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[27, 36] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.41071428571428575`], 
+               AbsoluteThickness[0.1607142857142857]], UndirectedEdge[55, 56] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[31, 40] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[26, 35] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4257142857142857], 
+               AbsoluteThickness[0.38571428571428573`]], 
+             UndirectedEdge[53, 54] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4085714285714286], 
+               AbsoluteThickness[0.12857142857142856`]], 
+             UndirectedEdge[29, 38] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4085714285714286], 
+               AbsoluteThickness[0.12857142857142856`]], 
+             UndirectedEdge[30, 39] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[30, 31] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[19, 20] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[77, 78] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4021428571428572], 
+               AbsoluteThickness[0.03214285714285714]], UndirectedEdge[1, 2] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.47500000000000003`], 
+               AbsoluteThickness[1.125]], UndirectedEdge[21, 30] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4385714285714286], 
+               AbsoluteThickness[0.5785714285714285]], UndirectedEdge[2, 11] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[18, 27] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.43214285714285716`], 
+               AbsoluteThickness[0.4821428571428571]], UndirectedEdge[61, 62] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4385714285714286], 
+               AbsoluteThickness[0.5785714285714285]], UndirectedEdge[43, 52] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[13, 14] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4085714285714286], 
+               AbsoluteThickness[0.12857142857142856`]], 
+             UndirectedEdge[35, 44] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4085714285714286], 
+               AbsoluteThickness[0.12857142857142856`]], 
+             UndirectedEdge[23, 32] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4642857142857143], 
+               AbsoluteThickness[0.9642857142857142]], UndirectedEdge[12, 13] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4257142857142857], 
+               AbsoluteThickness[0.38571428571428573`]], 
+             UndirectedEdge[52, 53] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4257142857142857], 
+               AbsoluteThickness[0.38571428571428573`]], 
+             UndirectedEdge[62, 63] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[10, 19] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.43214285714285716`], 
+               AbsoluteThickness[0.4821428571428571]], UndirectedEdge[41, 50] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.55], 
+               AbsoluteThickness[2.25]], UndirectedEdge[16, 25] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4385714285714286], 
+               AbsoluteThickness[0.5785714285714285]], UndirectedEdge[19, 28] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.41071428571428575`], 
+               AbsoluteThickness[0.1607142857142857]], UndirectedEdge[22, 23] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[26, 27] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[12, 21] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4385714285714286], 
+               AbsoluteThickness[0.5785714285714285]], UndirectedEdge[68, 77] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4042857142857143], 
+               AbsoluteThickness[0.06428571428571428]], 
+             UndirectedEdge[29, 30] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4257142857142857], 
+               AbsoluteThickness[0.38571428571428573`]], 
+             UndirectedEdge[1, 10] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.47500000000000003`], 
+               AbsoluteThickness[1.125]], UndirectedEdge[69, 78] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4085714285714286], 
+               AbsoluteThickness[0.12857142857142856`]], 
+             UndirectedEdge[66, 75] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[75, 76] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.41071428571428575`], 
+               AbsoluteThickness[0.1607142857142857]], UndirectedEdge[67, 76] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4085714285714286], 
+               AbsoluteThickness[0.12857142857142856`]], 
+             UndirectedEdge[48, 49] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[20, 21] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4385714285714286], 
+               AbsoluteThickness[0.5785714285714285]], UndirectedEdge[42, 51] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[11, 20] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[51, 52] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[63, 72] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.43214285714285716`], 
+               AbsoluteThickness[0.4821428571428571]], UndirectedEdge[34, 43] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[32, 33] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[42, 43] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4642857142857143], 
+               AbsoluteThickness[0.9642857142857142]], UndirectedEdge[71, 80] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[24, 33] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[53, 62] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4257142857142857], 
+               AbsoluteThickness[0.38571428571428573`]], UndirectedEdge[7, 8] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.43214285714285716`], 
+               AbsoluteThickness[0.4821428571428571]], UndirectedEdge[38, 39] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[59, 60] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[64, 73] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.47500000000000003`], 
+               AbsoluteThickness[1.125]], UndirectedEdge[46, 47] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4085714285714286], 
+               AbsoluteThickness[0.12857142857142856`]], 
+             UndirectedEdge[65, 74] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[76, 77] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4021428571428572], 
+               AbsoluteThickness[0.03214285714285714]], 
+             UndirectedEdge[66, 67] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4257142857142857], 
+               AbsoluteThickness[0.38571428571428573`]], 
+             UndirectedEdge[45, 54] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4021428571428572], 
+               AbsoluteThickness[0.03214285714285714]], 
+             UndirectedEdge[11, 12] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[38, 47] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4085714285714286], 
+               AbsoluteThickness[0.12857142857142856`]], 
+             UndirectedEdge[68, 69] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4085714285714286], 
+               AbsoluteThickness[0.12857142857142856`]], 
+             UndirectedEdge[9, 18] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.47500000000000003`], 
+               AbsoluteThickness[1.125]], UndirectedEdge[31, 32] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[43, 44] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[61, 70] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4385714285714286], 
+               AbsoluteThickness[0.5785714285714285]], UndirectedEdge[4, 13] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4085714285714286], 
+               AbsoluteThickness[0.12857142857142856`]], 
+             UndirectedEdge[28, 29] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4085714285714286], 
+               AbsoluteThickness[0.12857142857142856`]], 
+             UndirectedEdge[20, 29] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4257142857142857], 
+               AbsoluteThickness[0.38571428571428573`]], 
+             UndirectedEdge[39, 48] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.42142857142857143`], 
+               AbsoluteThickness[0.3214285714285714]], UndirectedEdge[34, 35] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4257142857142857], 
+               AbsoluteThickness[0.38571428571428573`]], 
+             UndirectedEdge[37, 38] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4042857142857143], 
+               AbsoluteThickness[0.06428571428571428]], 
+             UndirectedEdge[69, 70] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4257142857142857], 
+               AbsoluteThickness[0.38571428571428573`]], 
+             UndirectedEdge[71, 72] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[64, 65] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[10, 11] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[49, 58] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4428571428571429], 
+               AbsoluteThickness[0.6428571428571428]], UndirectedEdge[5, 6] -> 
+             Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4021428571428572], 
+               AbsoluteThickness[0.03214285714285714]], 
+             UndirectedEdge[47, 48] -> Directive[
+               RGBColor[0.790588, 0.201176, 0.], 
+               Opacity[0.4257142857142857], 
+               AbsoluteThickness[0.38571428571428573`]]}, 
+           GraphHighlight -> {24, 47, 77, 55, 15, 5, 79, 75, 30, 58, 56, 39, 
+            25, 18, 6, 80, 21, 2, 42, 28, 12, 4, 9, 49, 70, 1, 78, 31, 35, 33,
+             38, 68, 64, 16, 14, 40, 61, 19, 37, 23, 34, 51, 29, 17, 26, 69, 
+            63, 20, 13, 59, 74, 27, 72, 7, 54, 8, 48, 57, 45, 71, 10, 62, 81, 
+            46, 44, 53, 43, 11, 36, 76, 52, 65, 32, 67, 66, 3, 73, 22, 60, 
+            50}, GraphHighlightStyle -> {43 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 23 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 5 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4042857142857143]]}}, 8 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.47500000000000003`]]}}, 68 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.42142857142857143`]]}}, 80 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.47500000000000003`]]}}, 46 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.41071428571428575`]]}}, 76 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.41071428571428575`]]}}, 28 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.41071428571428575`]]}}, 67 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4342857142857143]]}}, 19 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.43214285714285716`]]}}, 10 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.47500000000000003`]]}}, 61 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.47714285714285715`]]}}, 54 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.41071428571428575`]]}}, 22 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 65 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4857142857142857]]}}, 9 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.55]]}}, 31 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4857142857142857]]}}, 70 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 33 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4857142857142857]]}}, 60 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 75 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.43214285714285716`]]}}, 55 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.43214285714285716`]]}}, 48 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 50 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.55]]}}, 71 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4857142857142857]]}}, 30 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 72 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.47500000000000003`]]}}, 57 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.47714285714285715`]]}}, 26 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 11 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4857142857142857]]}}, 53 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4342857142857143]]}}, 14 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.42142857142857143`]]}}, 64 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.47500000000000003`]]}}, 81 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.55]]}}, 52 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 25 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.47714285714285715`]]}}, 63 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.43214285714285716`]]}}, 7 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.43214285714285716`]]}}, 56 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 29 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4342857142857143]]}}, 1 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.55]]}}, 38 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.42142857142857143`]]}}, 69 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4342857142857143]]}}, 32 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.55]]}}, 77 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4042857142857143]]}}, 40 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.55]]}}, 78 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.41071428571428575`]]}}, 20 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 66 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 35 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4342857142857143]]}}, 44 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.42142857142857143`]]}}, 42 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.55]]}}, 4 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.41071428571428575`]]}}, 18 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.47500000000000003`]]}}, 62 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 27 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.43214285714285716`]]}}, 47 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4342857142857143]]}}, 15 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4342857142857143]]}}, 6 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.41071428571428575`]]}}, 24 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 2 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.47500000000000003`]]}}, 49 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4857142857142857]]}}, 59 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 36 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.41071428571428575`]]}}, 37 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4042857142857143]]}}, 21 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.47714285714285715`]]}}, 12 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 73 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.55]]}}, 17 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4857142857142857]]}}, 34 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 39 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 58 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}, 3 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.43214285714285716`]]}}, 51 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4857142857142857]]}}, 79 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.43214285714285716`]]}}, 45 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4042857142857143]]}}, 74 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.47500000000000003`]]}}, 13 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4342857142857143]]}}, 16 -> {VertexStyle -> {
+                 Directive[
+                  RGBColor[0.790588, 0.201176, 0.], 
+                  Opacity[0.4642857142857143]]}}}, 
+           GraphLayout -> {"GridEmbedding", "Dimension" -> {9, 9}}, ImageSize -> 
+           180, VertexShapeFunction -> {41 -> (Append[{
+                RGBColor[0.8702939999999999, 0.140588, 0.04], 
+                Opacity[1.], 
+                AbsolutePointSize[6]}, 
+               Point[#]]& )}}]]}, 
+      TagBox[
+       GraphicsGroupBox[{{
+          Directive[
+           Opacity[0.7], 
+           Hue[0.6, 0.7, 0.7], 
+           CapForm["Round"]], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$1", Automatic, Center], 
+             DynamicLocation["VertexID$2", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.47500000000000003`], 
+             AbsoluteThickness[1.125]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$1", Automatic, Center], 
+             DynamicLocation["VertexID$10", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.47500000000000003`], 
+             AbsoluteThickness[1.125]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$2", Automatic, Center], 
+             DynamicLocation["VertexID$3", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.43214285714285716`], 
+             AbsoluteThickness[0.4821428571428571]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$2", Automatic, Center], 
+             DynamicLocation["VertexID$11", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$3", Automatic, Center], 
+             DynamicLocation["VertexID$4", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.41071428571428575`], 
+             AbsoluteThickness[0.1607142857142857]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$3", Automatic, Center], 
+             DynamicLocation["VertexID$12", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$4", Automatic, Center], 
+             DynamicLocation["VertexID$5", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4021428571428572], 
+             AbsoluteThickness[0.03214285714285714]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$4", Automatic, Center], 
+             DynamicLocation["VertexID$13", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4085714285714286], 
+             AbsoluteThickness[0.12857142857142856`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$5", Automatic, Center], 
+             DynamicLocation["VertexID$6", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4021428571428572], 
+             AbsoluteThickness[0.03214285714285714]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$5", Automatic, Center], 
+             DynamicLocation["VertexID$14", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4042857142857143], 
+             AbsoluteThickness[0.06428571428571428]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$6", Automatic, Center], 
+             DynamicLocation["VertexID$7", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.41071428571428575`], 
+             AbsoluteThickness[0.1607142857142857]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$6", Automatic, Center], 
+             DynamicLocation["VertexID$15", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4085714285714286], 
+             AbsoluteThickness[0.12857142857142856`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$7", Automatic, Center], 
+             DynamicLocation["VertexID$8", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.43214285714285716`], 
+             AbsoluteThickness[0.4821428571428571]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$7", Automatic, Center], 
+             DynamicLocation["VertexID$16", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$8", Automatic, Center], 
+             DynamicLocation["VertexID$9", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.47500000000000003`], 
+             AbsoluteThickness[1.125]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$8", Automatic, Center], 
+             DynamicLocation["VertexID$17", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$9", Automatic, Center], 
+             DynamicLocation["VertexID$18", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.47500000000000003`], 
+             AbsoluteThickness[1.125]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$10", Automatic, Center], 
+             DynamicLocation["VertexID$11", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$10", Automatic, Center], 
+             DynamicLocation["VertexID$19", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.43214285714285716`], 
+             AbsoluteThickness[0.4821428571428571]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$11", Automatic, Center], 
+             DynamicLocation["VertexID$12", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$11", Automatic, Center], 
+             DynamicLocation["VertexID$20", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$12", Automatic, Center], 
+             DynamicLocation["VertexID$13", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4257142857142857], 
+             AbsoluteThickness[0.38571428571428573`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$12", Automatic, Center], 
+             DynamicLocation["VertexID$21", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4385714285714286], 
+             AbsoluteThickness[0.5785714285714285]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$13", Automatic, Center], 
+             DynamicLocation["VertexID$14", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4085714285714286], 
+             AbsoluteThickness[0.12857142857142856`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$13", Automatic, Center], 
+             DynamicLocation["VertexID$22", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4257142857142857], 
+             AbsoluteThickness[0.38571428571428573`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$14", Automatic, Center], 
+             DynamicLocation["VertexID$15", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4085714285714286], 
+             AbsoluteThickness[0.12857142857142856`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$14", Automatic, Center], 
+             DynamicLocation["VertexID$23", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$15", Automatic, Center], 
+             DynamicLocation["VertexID$16", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4257142857142857], 
+             AbsoluteThickness[0.38571428571428573`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$15", Automatic, Center], 
+             DynamicLocation["VertexID$24", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4257142857142857], 
+             AbsoluteThickness[0.38571428571428573`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$16", Automatic, Center], 
+             DynamicLocation["VertexID$17", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$16", Automatic, Center], 
+             DynamicLocation["VertexID$25", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4385714285714286], 
+             AbsoluteThickness[0.5785714285714285]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$17", Automatic, Center], 
+             DynamicLocation["VertexID$18", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$17", Automatic, Center], 
+             DynamicLocation["VertexID$26", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$18", Automatic, Center], 
+             DynamicLocation["VertexID$27", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.43214285714285716`], 
+             AbsoluteThickness[0.4821428571428571]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$19", Automatic, Center], 
+             DynamicLocation["VertexID$20", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$19", Automatic, Center], 
+             DynamicLocation["VertexID$28", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.41071428571428575`], 
+             AbsoluteThickness[0.1607142857142857]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$20", Automatic, Center], 
+             DynamicLocation["VertexID$21", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4385714285714286], 
+             AbsoluteThickness[0.5785714285714285]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$20", Automatic, Center], 
+             DynamicLocation["VertexID$29", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4257142857142857], 
+             AbsoluteThickness[0.38571428571428573`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$21", Automatic, Center], 
+             DynamicLocation["VertexID$22", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4385714285714286], 
+             AbsoluteThickness[0.5785714285714285]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$21", Automatic, Center], 
+             DynamicLocation["VertexID$30", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4385714285714286], 
+             AbsoluteThickness[0.5785714285714285]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$22", Automatic, Center], 
+             DynamicLocation["VertexID$23", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$22", Automatic, Center], 
+             DynamicLocation["VertexID$31", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$23", Automatic, Center], 
+             DynamicLocation["VertexID$24", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$23", Automatic, Center], 
+             DynamicLocation["VertexID$32", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4642857142857143], 
+             AbsoluteThickness[0.9642857142857142]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$24", Automatic, Center], 
+             DynamicLocation["VertexID$25", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4385714285714286], 
+             AbsoluteThickness[0.5785714285714285]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$24", Automatic, Center], 
+             DynamicLocation["VertexID$33", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$25", Automatic, Center], 
+             DynamicLocation["VertexID$26", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4385714285714286], 
+             AbsoluteThickness[0.5785714285714285]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$25", Automatic, Center], 
+             DynamicLocation["VertexID$34", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4385714285714286], 
+             AbsoluteThickness[0.5785714285714285]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$26", Automatic, Center], 
+             DynamicLocation["VertexID$27", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$26", Automatic, Center], 
+             DynamicLocation["VertexID$35", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4257142857142857], 
+             AbsoluteThickness[0.38571428571428573`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$27", Automatic, Center], 
+             DynamicLocation["VertexID$36", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.41071428571428575`], 
+             AbsoluteThickness[0.1607142857142857]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$28", Automatic, Center], 
+             DynamicLocation["VertexID$29", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4085714285714286], 
+             AbsoluteThickness[0.12857142857142856`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$28", Automatic, Center], 
+             DynamicLocation["VertexID$37", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4021428571428572], 
+             AbsoluteThickness[0.03214285714285714]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$29", Automatic, Center], 
+             DynamicLocation["VertexID$30", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4257142857142857], 
+             AbsoluteThickness[0.38571428571428573`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$29", Automatic, Center], 
+             DynamicLocation["VertexID$38", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4085714285714286], 
+             AbsoluteThickness[0.12857142857142856`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$30", Automatic, Center], 
+             DynamicLocation["VertexID$31", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$30", Automatic, Center], 
+             DynamicLocation["VertexID$39", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$31", Automatic, Center], 
+             DynamicLocation["VertexID$32", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$31", Automatic, Center], 
+             DynamicLocation["VertexID$40", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$32", Automatic, Center], 
+             DynamicLocation["VertexID$33", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$32", Automatic, Center], 
+             DynamicLocation["VertexID$41", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.55], 
+             AbsoluteThickness[2.25]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$33", Automatic, Center], 
+             DynamicLocation["VertexID$34", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$33", Automatic, Center], 
+             DynamicLocation["VertexID$42", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$34", Automatic, Center], 
+             DynamicLocation["VertexID$35", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4257142857142857], 
+             AbsoluteThickness[0.38571428571428573`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$34", Automatic, Center], 
+             DynamicLocation["VertexID$43", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$35", Automatic, Center], 
+             DynamicLocation["VertexID$36", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4085714285714286], 
+             AbsoluteThickness[0.12857142857142856`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$35", Automatic, Center], 
+             DynamicLocation["VertexID$44", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4085714285714286], 
+             AbsoluteThickness[0.12857142857142856`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$36", Automatic, Center], 
+             DynamicLocation["VertexID$45", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4021428571428572], 
+             AbsoluteThickness[0.03214285714285714]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$37", Automatic, Center], 
+             DynamicLocation["VertexID$38", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4042857142857143], 
+             AbsoluteThickness[0.06428571428571428]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$37", Automatic, Center], 
+             DynamicLocation["VertexID$46", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4021428571428572], 
+             AbsoluteThickness[0.03214285714285714]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$38", Automatic, Center], 
+             DynamicLocation["VertexID$39", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$38", Automatic, Center], 
+             DynamicLocation["VertexID$47", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4085714285714286], 
+             AbsoluteThickness[0.12857142857142856`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$39", Automatic, Center], 
+             DynamicLocation["VertexID$40", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4642857142857143], 
+             AbsoluteThickness[0.9642857142857142]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$39", Automatic, Center], 
+             DynamicLocation["VertexID$48", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$40", Automatic, Center], 
+             DynamicLocation["VertexID$41", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.55], 
+             AbsoluteThickness[2.25]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$40", Automatic, Center], 
+             DynamicLocation["VertexID$49", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$41", Automatic, Center], 
+             DynamicLocation["VertexID$42", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.55], 
+             AbsoluteThickness[2.25]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$41", Automatic, Center], 
+             DynamicLocation["VertexID$50", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.55], 
+             AbsoluteThickness[2.25]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$42", Automatic, Center], 
+             DynamicLocation["VertexID$43", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4642857142857143], 
+             AbsoluteThickness[0.9642857142857142]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$42", Automatic, Center], 
+             DynamicLocation["VertexID$51", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$43", Automatic, Center], 
+             DynamicLocation["VertexID$44", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$43", Automatic, Center], 
+             DynamicLocation["VertexID$52", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$44", Automatic, Center], 
+             DynamicLocation["VertexID$45", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4042857142857143], 
+             AbsoluteThickness[0.06428571428571428]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$44", Automatic, Center], 
+             DynamicLocation["VertexID$53", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4085714285714286], 
+             AbsoluteThickness[0.12857142857142856`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$45", Automatic, Center], 
+             DynamicLocation["VertexID$54", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4021428571428572], 
+             AbsoluteThickness[0.03214285714285714]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$46", Automatic, Center], 
+             DynamicLocation["VertexID$47", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4085714285714286], 
+             AbsoluteThickness[0.12857142857142856`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$46", Automatic, Center], 
+             DynamicLocation["VertexID$55", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.41071428571428575`], 
+             AbsoluteThickness[0.1607142857142857]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$47", Automatic, Center], 
+             DynamicLocation["VertexID$48", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4257142857142857], 
+             AbsoluteThickness[0.38571428571428573`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$47", Automatic, Center], 
+             DynamicLocation["VertexID$56", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4257142857142857], 
+             AbsoluteThickness[0.38571428571428573`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$48", Automatic, Center], 
+             DynamicLocation["VertexID$49", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$48", Automatic, Center], 
+             DynamicLocation["VertexID$57", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4385714285714286], 
+             AbsoluteThickness[0.5785714285714285]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$49", Automatic, Center], 
+             DynamicLocation["VertexID$50", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$49", Automatic, Center], 
+             DynamicLocation["VertexID$58", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$50", Automatic, Center], 
+             DynamicLocation["VertexID$51", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$50", Automatic, Center], 
+             DynamicLocation["VertexID$59", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4642857142857143], 
+             AbsoluteThickness[0.9642857142857142]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$51", Automatic, Center], 
+             DynamicLocation["VertexID$52", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$51", Automatic, Center], 
+             DynamicLocation["VertexID$60", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$52", Automatic, Center], 
+             DynamicLocation["VertexID$53", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4257142857142857], 
+             AbsoluteThickness[0.38571428571428573`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$52", Automatic, Center], 
+             DynamicLocation["VertexID$61", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4385714285714286], 
+             AbsoluteThickness[0.5785714285714285]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$53", Automatic, Center], 
+             DynamicLocation["VertexID$54", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4085714285714286], 
+             AbsoluteThickness[0.12857142857142856`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$53", Automatic, Center], 
+             DynamicLocation["VertexID$62", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4257142857142857], 
+             AbsoluteThickness[0.38571428571428573`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$54", Automatic, Center], 
+             DynamicLocation["VertexID$63", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.41071428571428575`], 
+             AbsoluteThickness[0.1607142857142857]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$55", Automatic, Center], 
+             DynamicLocation["VertexID$56", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$55", Automatic, Center], 
+             DynamicLocation["VertexID$64", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.43214285714285716`], 
+             AbsoluteThickness[0.4821428571428571]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$56", Automatic, Center], 
+             DynamicLocation["VertexID$57", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4385714285714286], 
+             AbsoluteThickness[0.5785714285714285]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$56", Automatic, Center], 
+             DynamicLocation["VertexID$65", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$57", Automatic, Center], 
+             DynamicLocation["VertexID$58", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4385714285714286], 
+             AbsoluteThickness[0.5785714285714285]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$57", Automatic, Center], 
+             DynamicLocation["VertexID$66", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4385714285714286], 
+             AbsoluteThickness[0.5785714285714285]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$58", Automatic, Center], 
+             DynamicLocation["VertexID$59", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$58", Automatic, Center], 
+             DynamicLocation["VertexID$67", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4257142857142857], 
+             AbsoluteThickness[0.38571428571428573`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$59", Automatic, Center], 
+             DynamicLocation["VertexID$60", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$59", Automatic, Center], 
+             DynamicLocation["VertexID$68", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$60", Automatic, Center], 
+             DynamicLocation["VertexID$61", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4385714285714286], 
+             AbsoluteThickness[0.5785714285714285]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$60", Automatic, Center], 
+             DynamicLocation["VertexID$69", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4257142857142857], 
+             AbsoluteThickness[0.38571428571428573`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$61", Automatic, Center], 
+             DynamicLocation["VertexID$62", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4385714285714286], 
+             AbsoluteThickness[0.5785714285714285]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$61", Automatic, Center], 
+             DynamicLocation["VertexID$70", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4385714285714286], 
+             AbsoluteThickness[0.5785714285714285]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$62", Automatic, Center], 
+             DynamicLocation["VertexID$63", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$62", Automatic, Center], 
+             DynamicLocation["VertexID$71", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$63", Automatic, Center], 
+             DynamicLocation["VertexID$72", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.43214285714285716`], 
+             AbsoluteThickness[0.4821428571428571]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$64", Automatic, Center], 
+             DynamicLocation["VertexID$65", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$64", Automatic, Center], 
+             DynamicLocation["VertexID$73", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.47500000000000003`], 
+             AbsoluteThickness[1.125]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$65", Automatic, Center], 
+             DynamicLocation["VertexID$66", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$65", Automatic, Center], 
+             DynamicLocation["VertexID$74", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$66", Automatic, Center], 
+             DynamicLocation["VertexID$67", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4257142857142857], 
+             AbsoluteThickness[0.38571428571428573`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$66", Automatic, Center], 
+             DynamicLocation["VertexID$75", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$67", Automatic, Center], 
+             DynamicLocation["VertexID$68", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4085714285714286], 
+             AbsoluteThickness[0.12857142857142856`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$67", Automatic, Center], 
+             DynamicLocation["VertexID$76", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4085714285714286], 
+             AbsoluteThickness[0.12857142857142856`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$68", Automatic, Center], 
+             DynamicLocation["VertexID$69", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4085714285714286], 
+             AbsoluteThickness[0.12857142857142856`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$68", Automatic, Center], 
+             DynamicLocation["VertexID$77", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4042857142857143], 
+             AbsoluteThickness[0.06428571428571428]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$69", Automatic, Center], 
+             DynamicLocation["VertexID$70", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4257142857142857], 
+             AbsoluteThickness[0.38571428571428573`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$69", Automatic, Center], 
+             DynamicLocation["VertexID$78", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4085714285714286], 
+             AbsoluteThickness[0.12857142857142856`]]}, StripOnInput -> 
+           False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$70", Automatic, Center], 
+             DynamicLocation["VertexID$71", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$70", Automatic, Center], 
+             DynamicLocation["VertexID$79", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.42142857142857143`], 
+             AbsoluteThickness[0.3214285714285714]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$71", Automatic, Center], 
+             DynamicLocation["VertexID$72", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$71", Automatic, Center], 
+             DynamicLocation["VertexID$80", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4428571428571429], 
+             AbsoluteThickness[0.6428571428571428]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$72", Automatic, Center], 
+             DynamicLocation["VertexID$81", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.47500000000000003`], 
+             AbsoluteThickness[1.125]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$73", Automatic, Center], 
+             DynamicLocation["VertexID$74", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.47500000000000003`], 
+             AbsoluteThickness[1.125]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$74", Automatic, Center], 
+             DynamicLocation["VertexID$75", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.43214285714285716`], 
+             AbsoluteThickness[0.4821428571428571]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$75", Automatic, Center], 
+             DynamicLocation["VertexID$76", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.41071428571428575`], 
+             AbsoluteThickness[0.1607142857142857]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$76", Automatic, Center], 
+             DynamicLocation["VertexID$77", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4021428571428572], 
+             AbsoluteThickness[0.03214285714285714]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$77", Automatic, Center], 
+             DynamicLocation["VertexID$78", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.4021428571428572], 
+             AbsoluteThickness[0.03214285714285714]]}, StripOnInput -> False], 
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$78", Automatic, Center], 
+             DynamicLocation["VertexID$79", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.41071428571428575`], 
+             AbsoluteThickness[0.1607142857142857]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$79", Automatic, Center], 
+             DynamicLocation["VertexID$80", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.43214285714285716`], 
+             AbsoluteThickness[0.4821428571428571]]}, StripOnInput -> False], 
+          
+          StyleBox[
+           LineBox[{
+             DynamicLocation["VertexID$80", Automatic, Center], 
+             DynamicLocation["VertexID$81", Automatic, Center]}], {
+            Directive[
+             RGBColor[0.790588, 0.201176, 0.], 
+             Opacity[0.47500000000000003`], 
+             AbsoluteThickness[1.125]]}, StripOnInput -> False]}, {
+          Directive[
+           Hue[0.6, 0.5, 1.], 
+           EdgeForm[
+            Directive[
+             GrayLevel[0], 
+             Opacity[0.7]]]], 
+          TagBox[
+           StyleBox[
+            DiskBox[{1., 1.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.55]]}, StripOnInput -> False], "DynamicName", BoxID -> 
+           "VertexID$1"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{1., 2.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.47500000000000003`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$2"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{1., 3.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.43214285714285716`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$3"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{1., 4.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.41071428571428575`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$4"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{1., 5.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4042857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$5"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{1., 6.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.41071428571428575`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$6"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{1., 7.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.43214285714285716`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$7"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{1., 8.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.47500000000000003`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$8"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{1., 9.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.55]]}, StripOnInput -> False], "DynamicName", BoxID -> 
+           "VertexID$9"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{2., 1.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.47500000000000003`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$10"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{2., 2.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4857142857142857]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$11"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{2., 3.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$12"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{2., 4.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4342857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$13"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{2., 5.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.42142857142857143`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$14"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{2., 6.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4342857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$15"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{2., 7.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$16"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{2., 8.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4857142857142857]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$17"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{2., 9.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.47500000000000003`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$18"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{3., 1.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.43214285714285716`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$19"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{3., 2.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$20"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{3., 3.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.47714285714285715`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$21"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{3., 4.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$22"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{3., 5.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$23"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{3., 6.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$24"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{3., 7.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.47714285714285715`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$25"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{3., 8.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$26"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{3., 9.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.43214285714285716`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$27"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{4., 1.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.41071428571428575`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$28"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{4., 2.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4342857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$29"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{4., 3.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$30"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{4., 4.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4857142857142857]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$31"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{4., 5.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.55]]}, StripOnInput -> False], "DynamicName", BoxID -> 
+           "VertexID$32"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{4., 6.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4857142857142857]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$33"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{4., 7.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$34"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{4., 8.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4342857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$35"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{4., 9.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.41071428571428575`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$36"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{5., 1.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4042857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$37"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{5., 2.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.42142857142857143`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$38"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{5., 3.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$39"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{5., 4.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.55]]}, StripOnInput -> False], "DynamicName", BoxID -> 
+           "VertexID$40"], 
+          TagBox[{
+            RGBColor[0.8702939999999999, 0.140588, 0.04], 
+            Opacity[1.], 
+            AbsolutePointSize[6], 
+            PointBox[{5., 5.}]}, "DynamicName", BoxID -> "VertexID$41"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{5., 6.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.55]]}, StripOnInput -> False], "DynamicName", BoxID -> 
+           "VertexID$42"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{5., 7.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$43"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{5., 8.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.42142857142857143`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$44"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{5., 9.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4042857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$45"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{6., 1.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.41071428571428575`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$46"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{6., 2.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4342857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$47"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{6., 3.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$48"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{6., 4.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4857142857142857]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$49"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{6., 5.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.55]]}, StripOnInput -> False], "DynamicName", BoxID -> 
+           "VertexID$50"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{6., 6.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4857142857142857]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$51"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{6., 7.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$52"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{6., 8.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4342857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$53"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{6., 9.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.41071428571428575`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$54"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{7., 1.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.43214285714285716`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$55"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{7., 2.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$56"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{7., 3.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.47714285714285715`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$57"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{7., 4.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$58"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{7., 5.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$59"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{7., 6.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$60"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{7., 7.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.47714285714285715`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$61"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{7., 8.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$62"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{7., 9.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.43214285714285716`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$63"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{8., 1.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.47500000000000003`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$64"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{8., 2.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4857142857142857]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$65"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{8., 3.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$66"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{8., 4.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4342857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$67"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{8., 5.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.42142857142857143`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$68"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{8., 6.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4342857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$69"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{8., 7.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4642857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$70"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{8., 8.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4857142857142857]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$71"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{8., 9.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.47500000000000003`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$72"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{9., 1.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.55]]}, StripOnInput -> False], "DynamicName", BoxID -> 
+           "VertexID$73"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{9., 2.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.47500000000000003`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$74"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{9., 3.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.43214285714285716`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$75"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{9., 4.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.41071428571428575`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$76"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{9., 5.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.4042857142857143]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$77"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{9., 6.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.41071428571428575`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$78"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{9., 7.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.43214285714285716`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$79"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{9., 8.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.47500000000000003`]]}, StripOnInput -> False], 
+           "DynamicName", BoxID -> "VertexID$80"], 
+          TagBox[
+           StyleBox[
+            DiskBox[{9., 9.}, 0.05783410138248847], {
+             Directive[
+              RGBColor[0.790588, 0.201176, 0.], 
+              Opacity[0.55]]}, StripOnInput -> False], "DynamicName", BoxID -> 
+           "VertexID$81"]}}], 
+       MouseAppearanceTag["NetworkGraphics"]], AllowKernelInitialization -> 
+      False]], {
+    FormatType -> TraditionalForm, FrameTicks -> None, ImageSize -> 180, 
+     DefaultBaseStyle -> "NetworkGraphics"}], 
+   GraphicsBox[
+    NamespaceBox["NetworkGraphics", 
+     DynamicModuleBox[{Typeset`graph = HoldComplete[
+         Graph[{14, 22, 23, 24, 30, 31, 32, 33, 34, 38, 39, 40, 41, 42, 43, 
+          44, 48, 49, 50, 51, 52, 58, 59, 60, 
+          68}, {{{3, 1}, {3, 2}, {6, 2}, {3, 4}, {7, 3}, {8, 4}, {6, 5}, {11, 
+           5}, {7, 6}, {12, 6}, {7, 8}, {13, 7}, {8, 9}, {14, 8}, {15, 9}, {
+           11, 10}, {12, 11}, {11, 17}, {13, 12}, {12, 18}, {13, 14}, {13, 
+           19}, {14, 15}, {14, 20}, {15, 16}, {15, 21}, {18, 17}, {19, 18}, {
+           18, 22}, {19, 20}, {19, 23}, {20, 21}, {20, 24}, {23, 22}, {23, 
+           24}, {23, 25}}, Null}, {
+          GraphLayout -> {"Dimension" -> 2}, ImageSize -> 180, 
+           VertexCoordinates -> CompressedData["
+1:eJxTTMoPSmViYGCQBGIQDQUOEEoESnNAaQE0Prq8BA51AjhoETQ+un4ZNHW4
+3IVujggOWgKNj26+Apo6XP5CN0cCBy2DRuPyF4wP06cAlwcACbkSBw==
+            "]}]]}, 
+      TagBox[
+       GraphicsGroupBox[
+        GraphicsComplexBox[CompressedData["
+1:eJxTTMoPSmViYGCQBGIQDQUOEEoESnNAaQE0Prq8BA51AjhoETQ+un4ZNHW4
+3IVujggOWgKNj26+Apo6XP5CN0cCBy2DRuPyF4wP06cAlwcACbkSBw==
+         "], {{
+           Arrowheads[0.02019881556683587], 
+           Directive[
+            Opacity[0.7], 
+            Hue[0.6, 0.7, 0.7], 
+            CapForm["Round"]], 
+           ArrowBox[{3, 1}, 0.04847715736040609], 
+           ArrowBox[{3, 2}, 0.04847715736040609], 
+           ArrowBox[{3, 4}, 0.04847715736040609], 
+           ArrowBox[{6, 2}, 0.04847715736040609], 
+           ArrowBox[{6, 5}, 0.04847715736040609], 
+           ArrowBox[{7, 3}, 0.04847715736040609], 
+           ArrowBox[{7, 6}, 0.04847715736040609], 
+           ArrowBox[{7, 8}, 0.04847715736040609], 
+           ArrowBox[{8, 4}, 0.04847715736040609], 
+           ArrowBox[{8, 9}, 0.04847715736040609], 
+           ArrowBox[{11, 5}, 0.04847715736040609], 
+           ArrowBox[{11, 10}, 0.04847715736040609], 
+           ArrowBox[{11, 17}, 0.04847715736040609], 
+           ArrowBox[{12, 6}, 0.04847715736040609], 
+           ArrowBox[{12, 11}, 0.04847715736040609], 
+           ArrowBox[{12, 18}, 0.04847715736040609], 
+           ArrowBox[{13, 7}, 0.04847715736040609], 
+           ArrowBox[{13, 12}, 0.04847715736040609], 
+           ArrowBox[{13, 14}, 0.04847715736040609], 
+           ArrowBox[{13, 19}, 0.04847715736040609], 
+           ArrowBox[{14, 8}, 0.04847715736040609], 
+           ArrowBox[{14, 15}, 0.04847715736040609], 
+           ArrowBox[{14, 20}, 0.04847715736040609], 
+           ArrowBox[{15, 9}, 0.04847715736040609], 
+           ArrowBox[{15, 16}, 0.04847715736040609], 
+           ArrowBox[{15, 21}, 0.04847715736040609], 
+           ArrowBox[{18, 17}, 0.04847715736040609], 
+           ArrowBox[{18, 22}, 0.04847715736040609], 
+           ArrowBox[{19, 18}, 0.04847715736040609], 
+           ArrowBox[{19, 20}, 0.04847715736040609], 
+           ArrowBox[{19, 23}, 0.04847715736040609], 
+           ArrowBox[{20, 21}, 0.04847715736040609], 
+           ArrowBox[{20, 24}, 0.04847715736040609], 
+           ArrowBox[{23, 22}, 0.04847715736040609], 
+           ArrowBox[{23, 24}, 0.04847715736040609], 
+           ArrowBox[{23, 25}, 0.04847715736040609]}, {
+           Directive[
+            Hue[0.6, 0.5, 1.], 
+            EdgeForm[
+             Directive[
+              GrayLevel[0], 
+              Opacity[0.7]]]], 
+           DiskBox[1, 0.04847715736040609], 
+           DiskBox[2, 0.04847715736040609], 
+           DiskBox[3, 0.04847715736040609], 
+           DiskBox[4, 0.04847715736040609], 
+           DiskBox[5, 0.04847715736040609], 
+           DiskBox[6, 0.04847715736040609], 
+           DiskBox[7, 0.04847715736040609], 
+           DiskBox[8, 0.04847715736040609], 
+           DiskBox[9, 0.04847715736040609], 
+           DiskBox[10, 0.04847715736040609], 
+           DiskBox[11, 0.04847715736040609], 
+           DiskBox[12, 0.04847715736040609], 
+           DiskBox[13, 0.04847715736040609], 
+           DiskBox[14, 0.04847715736040609], 
+           DiskBox[15, 0.04847715736040609], 
+           DiskBox[16, 0.04847715736040609], 
+           DiskBox[17, 0.04847715736040609], 
+           DiskBox[18, 0.04847715736040609], 
+           DiskBox[19, 0.04847715736040609], 
+           DiskBox[20, 0.04847715736040609], 
+           DiskBox[21, 0.04847715736040609], 
+           DiskBox[22, 0.04847715736040609], 
+           DiskBox[23, 0.04847715736040609], 
+           DiskBox[24, 0.04847715736040609], 
+           DiskBox[25, 0.04847715736040609]}}]], 
+       MouseAppearanceTag["NetworkGraphics"]], AllowKernelInitialization -> 
+      False]], {
+    FormatType -> TraditionalForm, FrameTicks -> None, ImageSize -> 180, 
+     DefaultBaseStyle -> "NetworkGraphics"}]},
+  "RowWithSeparator"]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"518921db-a147-4caf-9b87-bf37bc96bdae"]
+}, Open  ]],
+
+Cell["\<\
+The spray from the centre covers the grid, and its sinks are the four corners.\
+\>", "ExampleText",ExpressionUUID->"b8c8af46-6c71-4360-9222-d039b3147dda"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"g", " ", "=", " ", 
+     RowBox[{"GridGraph", "[", 
+      RowBox[{"{", 
+       RowBox[{"9", ",", " ", "9"}], "}"}], "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{"sprayDag", " ", "=", " ", 
+     RowBox[{"GeodesicSprayGraph", "[", 
+      RowBox[{"g", ",", " ", "41"}], "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"VertexCount", "[", "sprayDag", "]"}], ",", " ", 
+     RowBox[{"EdgeCount", "[", "sprayDag", "]"}], ",", " ", 
+     RowBox[{"Select", "[", 
+      RowBox[{
+       RowBox[{"VertexList", "[", "sprayDag", "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"VertexOutDegree", "[", 
+          RowBox[{"sprayDag", ",", " ", "#"}], "]"}], " ", "==", " ", "0"}], 
+        " ", "&"}]}], "]"}]}], "}"}]}], "]"}]], "Input",
+ CellLabel->"In[2]:= ",ExpressionUUID->"5bb87fa8-f0c2-4f17-bdc8-812d55565967"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"81", ",", "144", ",", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", "9", ",", "73", ",", "81"}], "}"}]}], "}"}]], "Output",
+ CellLabel->"Out[2]= ",ExpressionUUID->"3b77201a-4d16-4a71-bac8-55e81f745c2e"]
+}, Open  ]],
+
+Cell["The maximal geodesics from the centre: 70 to each corner.", \
+"ExampleText",ExpressionUUID->"a887539a-124b-460e-b438-bc30e323e63c"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"sprayDag", " ", "=", " ", 
+     RowBox[{"GeodesicSprayGraph", "[", 
+      RowBox[{
+       RowBox[{"GridGraph", "[", 
+        RowBox[{"{", 
+         RowBox[{"9", ",", " ", "9"}], "}"}], "]"}], ",", " ", "41"}], 
+      "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"Length", " ", "/@", " ", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"FindPath", "[", 
+        RowBox[{
+        "sprayDag", ",", " ", "41", ",", " ", "#", ",", " ", "Infinity", ",", 
+         " ", "All"}], "]"}], " ", "&"}], " ", "/@", " ", 
+      RowBox[{"{", 
+       RowBox[{"1", ",", " ", "9", ",", " ", "73", ",", " ", "81"}], "}"}]}], 
+     ")"}]}]}], "]"}]], "Input",
+ CellLabel->"In[3]:= ",ExpressionUUID->"65d01022-7c2b-4481-8430-f9002dd923d8"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"70", ",", "70", ",", "70", ",", "70"}], "}"}]], "Output",
+ CellLabel->"Out[3]= ",ExpressionUUID->"2c11f970-6651-4709-83aa-e5d53e14271c"]
+}, Open  ]]
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -258,12 +3342,58 @@ Cell[BoxData[
   $Line = 0; Null]], "ExampleSection",
  CellID->1020263627,ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7"],
 
+Cell[CellGroupData[{
+
 Cell[BoxData[
  InterpretationBox[Cell[
   "Options", "ExampleSection",ExpressionUUID->
    "b26b6366-7922-4236-a426-38c0f5de13f0"],
   $Line = 0; Null]], "ExampleSection",
  CellID->2061341341,ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0"],
+
+Cell[CellGroupData[{
+
+Cell["PathThickness", "ExampleSubsection",ExpressionUUID->"e08e5404-f95f-4f4b-94ae-c15403004dd4"],
+
+Cell["\<\
+One geodesic between the pair, every geodesic, or those within distance 1 of \
+the first.\
+\>", "ExampleText",ExpressionUUID->"9ec1fb59-bf57-4348-8acc-dac4a0985598"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"g", " ", "=", " ", 
+     RowBox[{"GridGraph", "[", 
+      RowBox[{"{", 
+       RowBox[{"9", ",", " ", "9"}], "}"}], "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{"EdgeCount", " ", "@", " ", 
+      RowBox[{"GeodesicSprayGraph", "[", 
+       RowBox[{"g", ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"{", 
+          RowBox[{"1", ",", " ", "21"}], "}"}], "}"}], ",", " ", 
+        RowBox[{"\"\<PathThickness\>\"", " ", "->", " ", "t"}]}], "]"}]}], ",",
+      " ", 
+     RowBox[{"{", 
+      RowBox[{"t", ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"0", ",", " ", "1", ",", " ", "Infinity"}], "}"}]}], "}"}]}], 
+    "]"}]}], "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"dfcc7d99-bd04-4281-910d-342e1fedc748"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"4", ",", "10", ",", "12"}], "}"}]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"97302647-2030-4c14-ab3b-0b98e226cd85"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
 
 Cell[BoxData[
  InterpretationBox[Cell[
@@ -272,12 +3402,131 @@ Cell[BoxData[
   $Line = 0; Null]], "ExampleSection",
  CellID->258228157,ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95"],
 
+Cell[CellGroupData[{
+
 Cell[BoxData[
  InterpretationBox[Cell[
   "Properties & Relations", "ExampleSection",ExpressionUUID->
    "d18b1e1f-4c4c-49a5-bb54-1e5e145ddf4e"],
   $Line = 0; Null]], "ExampleSection",
  CellID->2123667759,ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438"],
+
+Cell[TextData[{
+ "A layer of the spray is a shell: the vertices at depth ",
+ StyleBox["r", "TI"],
+ " are ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["FindInfraShell"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraShell", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "76061702-4994-4fa2-a915-33cb6ced6821"],
+ Cell[BoxData[
+  RowBox[{"[", 
+   RowBox[{"g", ",", " ", "c", ",", " ", "r"}], "]"}]], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "bac1ded4-52bb-4535-bfb3-24675bb65e34"],
+ ", and their number is the shell area."
+}], "ExampleText",ExpressionUUID->"72de68dd-fb7e-46ed-803f-7f9f9d40443b"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"g", " ", "=", " ", 
+     RowBox[{"GridGraph", "[", 
+      RowBox[{"{", 
+       RowBox[{"9", ",", " ", "9"}], "}"}], "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{"sprayDag", " ", "=", " ", 
+     RowBox[{"GeodesicSprayGraph", "[", 
+      RowBox[{"g", ",", " ", "41", ",", " ", 
+       RowBox[{"\"\<AxisLength\>\"", " ", "->", " ", "3"}]}], "]"}]}], "}"}], 
+   ",", "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"Sort", " ", "@", " ", 
+       RowBox[{"Complement", "[", 
+        RowBox[{
+         RowBox[{"VertexList", "[", "sprayDag", "]"}], ",", " ", 
+         RowBox[{"FindInfraBall", "[", 
+          RowBox[{"g", ",", " ", "41", ",", " ", "2"}], "]"}]}], "]"}]}], " ",
+       "===", " ", 
+      RowBox[{"FindInfraShell", "[", 
+       RowBox[{"g", ",", " ", "41", ",", " ", "3"}], "]"}]}], ",", "\n", 
+     "   ", 
+     RowBox[{
+      RowBox[{"VertexCount", "[", "sprayDag", "]"}], " ", "===", " ", 
+      RowBox[{"BallVolumes", "[", 
+       RowBox[{"g", ",", " ", "41", ",", " ", "3"}], "]"}]}]}], "}"}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"1e9556ad-b8ea-4232-b8b6-34f335dc2569"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"True", ",", "True"}], "}"}]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"297a2a36-c0ef-49b1-b60c-51ce65e4fea8"]
+}, Open  ]],
+
+Cell[TextData[{
+ "The geodesics from ",
+ StyleBox["c", "TI"],
+ " to ",
+ StyleBox["v", "TI"],
+ " are the paths of the spray from ",
+ StyleBox["c", "TI"],
+ " to ",
+ StyleBox["v", "TI"],
+ "; the ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["GeodesicIntervalGraph"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/GeodesicIntervalGraph", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "b9d67675-2dea-40b1-8af8-74a1837330ee"],
+ " holds the same family."
+}], "ExampleText",ExpressionUUID->"7bac5ded-c326-40b0-98b7-b6c8d3adaac0"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"g", " ", "=", " ", 
+     RowBox[{"GridGraph", "[", 
+      RowBox[{"{", 
+       RowBox[{"9", ",", " ", "9"}], "}"}], "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{
+    RowBox[{"Sort", " ", "@", " ", 
+     RowBox[{"FindPath", "[", 
+      RowBox[{
+       RowBox[{"GeodesicSprayGraph", "[", 
+        RowBox[{"g", ",", " ", "41"}], "]"}], ",", " ", "41", ",", " ", "61", 
+       ",", " ", "Infinity", ",", " ", "All"}], "]"}]}], " ", "===", "\n", 
+    "    ", 
+    RowBox[{"Sort", " ", "@", " ", 
+     RowBox[{"FindPath", "[", 
+      RowBox[{
+       RowBox[{"GeodesicIntervalGraph", "[", 
+        RowBox[{"g", ",", " ", "41", ",", " ", "61"}], "]"}], ",", " ", "41", 
+       ",", " ", "61", ",", " ", "Infinity", ",", " ", "All"}], "]"}]}]}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[2]:= ",ExpressionUUID->"befb9b82-9a17-4f18-9a5c-365de5097f4d"],
+
+Cell[BoxData["True"], "Output",
+ CellLabel->"Out[2]= ",ExpressionUUID->"80a1e1ad-a902-4903-9cd7-d5b7ea7fecf6"]
+}, Open  ]]
+}, Open  ]],
 
 Cell[BoxData[
  InterpretationBox[Cell[
@@ -349,10 +3598,8 @@ Cell["WolframInstitute`InfraGeometry`", "Categorization",
  CellLabel->"Context",
  CellID->468444828,ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191"],
 
-Cell["\<\
-WolframInstitute/InfraGeometry/ref/GeodesicSprayGraph\
-\>", "Categorization",
- CellLabel->"URI",ExpressionUUID->"8f7118f4-a11e-4110-8a6e-2dafe570ae57"]
+Cell["WolframInstitute/InfraGeometry/ref/GeodesicSprayGraph", "Categorization",
+ CellLabel->"URI",ExpressionUUID->"b2f80623-6207-4faa-920c-850ca67f5800"]
 }, Closed]],
 
 Cell["Keywords", "KeywordsSection",
@@ -386,8 +3633,11 @@ WindowMargins->{{5, Automatic}, {Automatic, 0}},
 TaggingRules->{
  "Metadata" -> {
    "title" -> "GeodesicSprayGraph", "context" -> 
-    "WolframInstitute`InfraGeometry`", "keywords" -> {}, "summary" -> 
-    "", "paclet" -> "WolframInstitute/InfraGeometry", "uri" -> 
+    "WolframInstitute`InfraGeometry`", 
+    "keywords" -> {
+     "geodesic spray", "exponential map", "breadth-first search", 
+      "geodesic DAG", "shortest paths"}, "summary" -> "", "paclet" -> 
+    "WolframInstitute/InfraGeometry", "uri" -> 
     "WolframInstitute/InfraGeometry/ref/GeodesicSprayGraph", "type" -> 
     "Symbol", "index" -> True, "language" -> "en"}},
 CreateCellID->True,
@@ -403,14 +3653,14 @@ ExpressionUUID->"c207366e-060a-406b-a297-9e30e1628f43"
 (*CellTagsOutline
 CellTagsIndex->{
  "ExtendedExamples"->{
-  Cell[7773, 231, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+  Cell[144935, 3315, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
    CellTags->"ExtendedExamples",
    CellID->533848431]}
  }
 *)
 (*CellTagsIndex
 CellTagsIndex->{
- {"ExtendedExamples", 13793, 404}
+ {"ExtendedExamples", 156327, 3654}
  }
 *)
 (*NotebookFileOutline
@@ -418,79 +3668,125 @@ Notebook[{
 Cell[CellGroupData[{
 Cell[576, 22, 116, 1, 70, "ObjectName",ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec",
  CellID->1224892054],
-Cell[695, 25, 2186, 58, 70, "Usage",ExpressionUUID->"dbe45e6d-3284-460f-9528-b0d57e6fddfa"],
-Cell[2884, 85, 279, 4, 70, "Notes",ExpressionUUID->"1058e202-5b67-48a4-8d1d-c04df10562e1"],
-Cell[3166, 91, 196, 3, 70, "Notes",ExpressionUUID->"fffbf4ca-0167-4f2b-a27c-56cc4302c2c8"]
+Cell[695, 25, 2545, 76, 70, "Usage",ExpressionUUID->"95045373-018f-41e3-88aa-6e9eac612944"],
+Cell[3243, 103, 406, 12, 70, "Notes",ExpressionUUID->"28a001e7-1064-4731-b769-9a7458ca0d70"],
+Cell[3652, 117, 593, 15, 70, "Notes",ExpressionUUID->"aa5d0474-0e86-4f65-b8b7-629cafaeefaf"],
+Cell[4248, 134, 182, 3, 70, "Notes",ExpressionUUID->"42ae1283-4c25-4ef4-bc46-2c3ee890d882"],
+Cell[4433, 139, 214, 3, 70, "Notes",ExpressionUUID->"22f1e102-2a5e-444b-8b20-9c152a14cf79"],
+Cell[4650, 144, 80, 0, 70, "Notes",ExpressionUUID->"1ec99d63-70c1-4899-9187-e7e1da7805e6"],
+Cell[4733, 146, 3282, 64, 70, "3ColumnTableMod",ExpressionUUID->"630c6e9f-4884-4b3a-82b1-a36fcc07152b"],
+Cell[8018, 212, 173, 4, 70, "Notes",ExpressionUUID->"4217b0a8-1771-494a-bef0-47962cf1974a"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3399, 99, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
+Cell[8228, 221, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
  CellID->1559318232],
-Cell[3861, 114, 1543, 40, 70, "SeeAlso",ExpressionUUID->"a2765fad-d0fd-4f94-9539-78ed28f4fade",
- CellID->173389911]
+Cell[8690, 236, 1848, 50, 70, "SeeAlso",ExpressionUUID->"041ace7b-22ee-4d66-a31e-eaf012a8149b"]
 }, Open  ]],
-Cell[5419, 157, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
+Cell[10553, 289, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
  CellID->792424486],
-Cell[5857, 171, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
+Cell[CellGroupData[{
+Cell[11013, 305, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
  CellID->38303248],
-Cell[5976, 174, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
+Cell[11132, 308, 323, 6, 70, "MoreAbout",ExpressionUUID->"56f70207-e9d8-4156-beca-df73d09dd32f"]
+}, Open  ]],
+Cell[11470, 317, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
  CellID->47113304],
 Cell[CellGroupData[{
-Cell[6472, 191, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
+Cell[11966, 334, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
  CellID->1718580883],
-Cell[7006, 207, 285, 5, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
+Cell[12500, 350, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
  CellID->1969679695]
 }, Open  ]],
-Cell[7306, 215, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
- CellID->880084151],
 Cell[CellGroupData[{
-Cell[7773, 231, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+Cell[12813, 359, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
+ CellID->880084151],
+Cell[13258, 373, 201, 3, 70, "ExampleText",ExpressionUUID->"665b73a9-017f-4e27-9cd8-eb9b747f11ec"],
+Cell[CellGroupData[{
+Cell[13484, 380, 1228, 31, 70, "Input",ExpressionUUID->"11b53461-39a6-4ef2-9ee4-4193f2375802"],
+Cell[14715, 413, 127589, 2821, 70, "Output",ExpressionUUID->"518921db-a147-4caf-9b87-bf37bc96bdae"]
+}, Open  ]],
+Cell[142319, 3237, 164, 2, 70, "ExampleText",ExpressionUUID->"b8c8af46-6c71-4360-9222-d039b3147dda"],
+Cell[CellGroupData[{
+Cell[142508, 3243, 959, 24, 70, "Input",ExpressionUUID->"5bb87fa8-f0c2-4f17-bdc8-812d55565967"],
+Cell[143470, 3269, 236, 5, 70, "Output",ExpressionUUID->"3b77201a-4d16-4a71-bac8-55e81f745c2e"]
+}, Open  ]],
+Cell[143721, 3277, 137, 1, 70, "ExampleText",ExpressionUUID->"a887539a-124b-460e-b438-bc30e323e63c"],
+Cell[CellGroupData[{
+Cell[143883, 3282, 824, 22, 70, "Input",ExpressionUUID->"65d01022-7c2b-4481-8430-f9002dd923d8"],
+Cell[144710, 3306, 176, 3, 70, "Output",ExpressionUUID->"2c11f970-6651-4709-83aa-e5d53e14271c"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[144935, 3315, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
  CellTags->"ExtendedExamples",
  CellID->533848431],
-Cell[8263, 246, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
+Cell[145425, 3330, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
  CellID->1293636265],
-Cell[8508, 253, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
+Cell[145670, 3337, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
  CellID->1020263627],
-Cell[8776, 260, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
+Cell[CellGroupData[{
+Cell[145960, 3346, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
  CellID->2061341341],
-Cell[9023, 267, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
+Cell[CellGroupData[{
+Cell[146229, 3355, 97, 0, 70, "ExampleSubsection",ExpressionUUID->"e08e5404-f95f-4f4b-94ae-c15403004dd4"],
+Cell[146329, 3357, 175, 3, 70, "ExampleText",ExpressionUUID->"9ec1fb59-bf57-4348-8acc-dac4a0985598"],
+Cell[CellGroupData[{
+Cell[146529, 3364, 854, 23, 70, "Input",ExpressionUUID->"dfcc7d99-bd04-4281-910d-342e1fedc748"],
+Cell[147386, 3389, 164, 3, 70, "Output",ExpressionUUID->"97302647-2030-4c14-ab3b-0b98e226cd85"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[147589, 3397, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
  CellID->258228157],
-Cell[9274, 274, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
+Cell[CellGroupData[{
+Cell[147862, 3406, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
  CellID->2123667759],
-Cell[9536, 281, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
+Cell[148124, 3413, 734, 19, 70, "ExampleText",ExpressionUUID->"72de68dd-fb7e-46ed-803f-7f9f9d40443b"],
+Cell[CellGroupData[{
+Cell[148883, 3436, 1239, 32, 70, "Input",ExpressionUUID->"1e9556ad-b8ea-4232-b8b6-34f335dc2569"],
+Cell[150125, 3470, 158, 3, 70, "Output",ExpressionUUID->"297a2a36-c0ef-49b1-b60c-51ce65e4fea8"]
+}, Open  ]],
+Cell[150298, 3476, 631, 20, 70, "ExampleText",ExpressionUUID->"7bac5ded-c326-40b0-98b7-b6c8d3adaac0"],
+Cell[CellGroupData[{
+Cell[150954, 3500, 927, 23, 70, "Input",ExpressionUUID->"befb9b82-9a17-4f18-9a5c-365de5097f4d"],
+Cell[151884, 3525, 110, 1, 70, "Output",ExpressionUUID->"80a1e1ad-a902-4903-9cd7-d5b7ea7fecf6"]
+}, Open  ]]
+}, Open  ]],
+Cell[152021, 3530, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
  CellID->1305812373],
-Cell[9791, 288, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
+Cell[152276, 3537, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
  CellID->1653164318],
-Cell[10051, 295, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
+Cell[152536, 3544, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
  CellID->589267740]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[10337, 305, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
+Cell[152822, 3554, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
  CellID->311882160],
-Cell[10450, 308, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
+Cell[152935, 3557, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
  CellID->341476719],
 Cell[CellGroupData[{
-Cell[10951, 324, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
+Cell[153436, 3573, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
  CellID->1755438392],
-Cell[11439, 339, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
+Cell[153924, 3588, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
  CellID->686433507],
-Cell[11576, 343, 167, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
+Cell[154061, 3592, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
  CellID->605800465],
-Cell[11746, 347, 164, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
+Cell[154222, 3596, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
  CellID->468444828],
-Cell[11913, 351, 170, 3, 70, "Categorization",ExpressionUUID->"8f7118f4-a11e-4110-8a6e-2dafe570ae57"]
+Cell[154380, 3600, 153, 1, 70, "Categorization",ExpressionUUID->"b2f80623-6207-4faa-920c-850ca67f5800"]
 }, Closed]],
-Cell[12098, 357, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
+Cell[154548, 3604, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
  CellID->477174294],
 Cell[CellGroupData[{
-Cell[12233, 362, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
+Cell[154683, 3609, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
  CellID->1872225408],
-Cell[12356, 365, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
+Cell[154806, 3612, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
  CellID->1562036412],
-Cell[12508, 369, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
+Cell[154958, 3616, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
  CellID->158391909],
-Cell[12648, 373, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
+Cell[155098, 3620, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
  CellID->1360575930],
-Cell[12787, 377, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
+Cell[155237, 3624, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
  CellID->793782254]
 }, Closed]]
 }, Open  ]]
