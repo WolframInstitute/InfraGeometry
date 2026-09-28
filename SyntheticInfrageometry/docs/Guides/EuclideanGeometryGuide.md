@@ -1,97 +1,67 @@
 ---
 Template: Guide
 Name: EuclideanGeometryGuide
+Title: Euclidean Infrageometry
+Context: WolframInstitute`SyntheticInfrageometry`
 Paclet: WolframInstitute/SyntheticInfrageometry
 URI: WolframInstitute/SyntheticInfrageometry/guide/EuclideanGeometryGuide
-Keywords: [Euclidean geometry, graph, geodesic, synthetic, Euclid, Tarski]
-RelatedGuides: [SyntheticInfrageometryGuide, TarskiGeometryGuide, VisualizationGuide]
+Keywords: [Euclidean geometry, graph, geodesic, inert head, point, segment, ray, line, arc, circle, scene, substrate]
+RelatedGuides: [Experimental]
 ---
 
 ## Abstract
 
-Euclidean geometry rebuilt inside a graph. The graph is all there is: no ambient space, no coordinates. Each Euclidean notion is redefined using graph properties alone, and the shortest-path metric is the layer these definitions sit on. Two things change from the plane. A construction returns a *set* of admissible answers rather than one, so uniqueness fails generically. And some objects fail to exist at all — a circle of a single radius is empty on a lattice, and a perpendicular bisector is empty at odd distance. Both are results, not defects.
+A Euclidean object is an inert head: InfraSegment[p, q], InfraRay[p, q], InfraLine[p, q], InfraCircle[c, p] and InfraArc[c, {p, q}] hold their points and compute nothing. Its members and its properties are read off a graph: a graph in front of the head evaluates it, InfraVertexList gives a member and InfraMeasurement gives its graph, cardinality, length and densities. A point is a vertex of the substrate and has no head. Each object is a family, every geodesic from p to q or every ray from p through q, and its graph is a digraph whose chains, or directed cycles, are exactly the members, each once; so what the plane answers with one point, the graph answers with a family and its occupation density, and an object the graph cannot carry, such as a circle of a single radius on a bipartite grid, is empty. A Find function searches the same family without the graph and returns what InfraVertexList returns. A scene states a construction as inert heads and hypotheses and is solved on a graph; InfraHighlightGraph draws the summed densities of a list of objects.
 
 ## Functions
 
+### Surface graphs
+
+- **InfraSubstrate** — the named example substrates at size "Small", "Medium" or "Large": the tilings, meshes and closed surfaces the other pages draw on; InfraSubstrate[] lists the roster
+- **TessellationGraph** — the regular map {p, q} or the uniform map of a vertex configuration as a graph, sized to a flat torus or to a hyperbolic quotient
+- **TorusTessellation** — the m × n flat torus carrying the square, triangular or hexagonal tessellation
+
 ### Points
 
-- `InfraPoint` the scene token for a point; a point is a bare vertex
-- `FindInfraPoint` points drawn from a candidate pool, narrowed by `"From"` and `"Distance"`
+- `InfraPoint` the scene token for a point; a point is a vertex of the substrate, carrying its label verbatim
+- `FindInfraPoint` a vertex drawn from the candidate pool, narrowed by "From" and "Distance"; a trailing count gives a List of vertices
+- `FindInfraMidpoint` the density of the middle vertices of every geodesic from p1 to p2, one vertex at even distance and two at odd
 - `RandomInfraPoint` a uniformly random vertex, or one at a given distance from a point
-- `InfraCenter` a vertex of least eccentricity
-- `SelectInfraPoint` the same narrowing applied to a bundle you already hold
-- `FindInfraMidpoint` vertices *m* with *d(a,m) = d(m,b) = d(a,b)/2*, over all geodesics
-- `FindClosestInfraPoint` the vertices of a line nearest a given point
-- `FindInfraReflection` the reflection of a point in a line
 
-### Measuring a Euclidean object
+### Segments
 
-- `InfraMeasurement` evaluates an inert segment, ray, line, circle or arc on a graph: its graph, cardinality, length, densities and volumes
-- `InfraVertexList` the members of an object as vertex lists, one, several, all or a uniform random one
-- `InfraMemberQ` whether a vertex list is a member of an object
-- `InfraSubgraph` the subgraph induced on the support of an object
-- `Undetermined` the value of `"Faithful"` where the object's graph is faithful only under an uncertified hypothesis
+- `InfraSegment` the inert segment from p to q, every geodesic between them at once; with more points, the polyline of their consecutive segments
+- `FindInfraSegment` one geodesic from p to q as a vertex list; a trailing count gives a List of them
+- `InfraSegmentQ` whether a vertex list is a geodesic
 
-### Segments and lines
+### Rays and lines
 
-- `InfraSegment` the set of all geodesics between two vertices, as an inert head; a polyline with more points
-- `FindInfraSegment` one geodesic, or a list of them, as vertex lists
-- `MetricInterval` the vertices lying on some geodesic between two points
-- `InfraLine` the inextensible geodesics through two points, as an inert head
-- `FindInfraLine` one line through two points or containing a given geodesic, or a list of them, as vertex lists
-- `ExtendInfraSegment` the geodesics containing a segment, extended by a budget per side; also Tarski's segment-construction step
-- `GeodesicExtensionGraph` the DAG of geodesic extensions of a segment beyond its end, the engine behind lines and rays
-- `InfraWalk`, `FindInfraWalk`, `ExtendInfraWalk` walks, where revisiting a vertex is allowed
-- `InfraRay`, `FindInfraRay` the geodesics from a base vertex that cannot be prolonged past their far end, which is how direction is expressed: the inert head and the search
-- `PencilDirections`, `PencilCardinality` the rays leaving a vertex, and how many there are
-- `InfraPolyline`, `FindInfraPolylineSubdivision` a walk cut into geodesic legs
+- `InfraRay` the inert ray from p through q: the geodesics from p through q that no neighbour of their last vertex prolongs; InfraRay[p, p] is the pencil at p
+- `FindInfraRay` one ray from p through q as a vertex list; a trailing count gives a List of them
+- `InfraLine` the inert line through p and q: the geodesics through both that no neighbour of either endpoint prolongs
+- `FindInfraLine` one line through p and q as a vertex list, or the prolongations of a given geodesic; a trailing count gives a List
 
-### Circles, shells and balls
+### Arcs and circles
 
-- `InfraShell`, `FindInfraShell` the level surface *{v : d(c,v) = r}*, a vertex set
-- `InfraBall`, `FindInfraBall` the closed ball *{v : d(c,v) <= r}*, whose volume is an exact polynomial on a lattice
-- `InfraCircle`, `FindInfraCircle` the shortest separating cycles of a band around a centre, empty at single radius on a lattice: the inert head and the search
-- `InfraArc`, `FindInfraArc` the minor arcs of a circle between two points: the inert head and the search
-- `InfraEllipse`, `FindInfraEllipse` the sum-of-distances band around two foci
-- `InfraPlane`, `FindInfraBisectingHyperplane` the perpendicular bisector, empty at odd distance
+- `InfraCircle` the inert circle around c through p: the shortest cycles through p that separate c from the outside of its band; "Radius" -> r or {r, s} in place of p takes the whole band
+- `FindInfraCircle` one circle around c through p as a cyclic vertex list; a trailing count gives a List of them
+- `InfraArc` the inert arc around c from p1 to pk through the intermediate points: the geodesics of the band graph of the circle through p1
+- `FindInfraArc` one arc around c through the points as a vertex list; a trailing count gives a List of them
 
-### Polygons and triangles
+### Properties
 
-- `InfraTriangle`, `FindInfraTriangle` three vertices with their connecting segments
-- `InfraPolygon`, `FindInfraPolygon` a cyclic vertex sequence
-- `FindInfraRegularPolygon` cycles whose diagonals all have prescribed lengths
-- `CompleteInfraEquilateralTriangle` the apexes completing two given vertices to an equilateral triangle
+- `InfraMeasurement` a property of a head on a graph: "Graph", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph", "Faithful" and the volumes; a List of properties gives an Association, All gives every property
+- `InfraVertexList` one member of a head as a vertex list; a trailing count gives a List of them, "RandomChoice" a uniformly random member
+- `InfraMemberQ` whether a vertex list is a member of a head
+- `InfraSubgraph` the subgraph induced on the support of a head; obj -> t thickens the support by t steps
+- `InfraDensity` the marginal of any shape to the vertex set with respect to the counting measure: a vertex, a vertex list, a density, a walk graph; the one coercion in the API
 
-### Measurement
+### Scenes
 
-- `InfraAngle` an angle at a vertex, by arclength on the punched-out boundary or by comparison triangle
-- `InfraScalarProduct` the polar form of the metric at a base point
-- `InfraMetricTensor` the metric tensor at a base point, read from where vertices project onto intervals
-- `InfraCurvature` a local curvature from the growth of balls
-- `ComparisonTriangle`, `InfraComparisonTriangle`, `CATInequalityQ` the CAT(k) comparison layer
-- `TurningAngles`, `TotalCurvature`, `TurningNumber` curvature along a walk
+- `InfraScene` a construction stated before any graph: the objects, and hypotheses that construct them with inert heads or assert relations between them
+- `FindInfraScene` a scene solved on a graph, step by step; a List of InfraSceneInstance bindings, one per admissible combination
+- `InfraSceneInstance` the solved bindings of one instance; a second argument reads one object out of it
 
-### Predicates
+### Drawing
 
-- `InfraWalkQ`, `InfraSegmentQ`, `InfraLineQ` a strict hierarchy: walk, then geodesic, then inextensible geodesic
-- `UniqueInfraSegmentQ` whether the geodesic between two points is unique, so whether Euclid's first postulate holds sharply
-- `InfraParallelQ`, `FindInfraParallel` constant distance to a line
-- `InfraPerpendicularQ`, `FindInfraPerpendicular` right angles, with several inequivalent methods
-- `InfraShellQ`, `InfraBallQ`, `InfraCircleQ`, `InfraEllipseQ`, `InfraPolygonQ`, `InfraTriangleQ` membership tests for each shape
-- `SeparatesQ` whether a vertex set disconnects one point from another
-- `InfraEqualQ` equality of two infra-objects, under a choice of set or multiset semantics
-
-### Axioms
-
-- `BetweennessQ` Tarski's *B(u,w,v)*: *d(u,w) + d(w,v) = d(u,v)*
-- `EquidistanceQ` Tarski's congruence: *d(a,b) = d(c,d)*
-- `TarskiAxiomQ` all eleven axioms tested at once on a graph
-- `TarskiStructure`, `TarskiBetweennessTensor`, `TarskiEquidistanceClasses` the two primitives as explicit data
-- `FindTarskiCounterexample` a witness to an axiom failing
-
-### Substrates and drawing
-
-- `InfraHighlightGraph` the one rendering primitive; intensity follows multiplicity
-- `InfraScene`, `FindInfraScene`, `InfraGeometricStep` a construction stated as constraints and then solved
-- `InfraSceneViewer` a construction stepped through interactively
-- `$InfraPalette` the colour of each object head, in one place
+- `InfraHighlightGraph` draws the summed densities of a list of objects on a graph, the i-th object in the i-th palette color; a Directive styles the objects after it
