@@ -3,13 +3,13 @@
 $pacletDir = DirectoryName[$InputFileName];
 
 (* No sister paclet is loaded: since the PacletSplit this paclet depends on
-   WolframInstitute`Infrageometry` not at all, and loading it here would only
+   WolframInstitute`DiscreteGeometry` not at all, and loading it here would only
    let a pre-split copy shadow the symbols that moved in. *)
 
-PacletDirectoryLoad[$pacletDir <> "/SyntheticInfrageometry"];
-Needs["WolframInstitute`SyntheticInfrageometry`"];
+PacletDirectoryLoad[$pacletDir <> "/InfraGeometry"];
+Needs["WolframInstitute`InfraGeometry`"];
 
-$testFiles = FileNames["*.wlt", FileNameJoin[{$pacletDir, "SyntheticInfrageometry", "Tests"}], Infinity];
+$testFiles = FileNames["*.wlt", FileNameJoin[{$pacletDir, "InfraGeometry", "Tests"}], Infinity];
 
 Print["Running ", Length[$testFiles], " test files..."];
 Print[""];

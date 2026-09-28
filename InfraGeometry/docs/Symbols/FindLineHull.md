@@ -1,0 +1,22 @@
+---
+Template: Symbol
+Name: FindLineHull
+Context: WolframInstitute`InfraGeometry`
+ContextPath: [WolframInstitute`DiscreteGeometry`]
+Paclet: WolframInstitute/InfraGeometry
+URI: WolframInstitute/InfraGeometry/ref/FindLineHull
+---
+
+## Usage
+
+`FindLineHull[graph, S]` returns the smallest superset of S closed under the line operator (the maximal geodesics through each pair), as a sorted vertex list.
+
+## Details & Options
+
+Options:
+
+| Option | Values |
+|---|---|
+| `"LineStructure"` | None (default), or an InfraLineStructure / list of lines -- closes under that fixed line family instead of all maximal geodesics |
+
+S is any Infra* object, a list of them, or a bare vertex list.

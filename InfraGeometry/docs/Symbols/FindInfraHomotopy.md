@@ -1,0 +1,24 @@
+---
+Template: Symbol
+Name: FindInfraHomotopy
+Context: WolframInstitute`InfraGeometry`
+ContextPath: [WolframInstitute`DiscreteGeometry`]
+Paclet: WolframInstitute/InfraGeometry
+URI: WolframInstitute/InfraGeometry/ref/FindInfraHomotopy
+---
+
+## Usage
+
+`FindInfraHomotopy[graph, a, b]` returns {InfraHomotopy[{chain}]} of elementary moves from a to b (both must share a wrapper head; InfraCircle coerces to InfraString); n / UpTo[n] / All controls multiplicity.
+
+## Details & Options
+
+Options:
+
+| Option | Values |
+|---|---|
+| `Method` | "Exhaustive" (default), "Greedy" |
+| `"FreeHomotopy"` | -- |
+| `"NullHomotopicCycles"` | -- |
+| `"MaxLength"` | -- |
+| `"MaxMoves"` | -- |

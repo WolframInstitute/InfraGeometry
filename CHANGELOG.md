@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **1.0.0** (2026-09-28): the paclet is renamed `WolframInstitute/InfraGeometry`, context `WolframInstitute`InfraGeometry``; the paclet directory, the loader `Kernel/InfraGeometry.wl` and the guide `InfraGeometryGuide` follow, and every reference to the sibling paclet names it `DiscreteGeometry` (formerly `Infrageometry`). No symbol changed. The cloud object `SyntheticInfrageometry.paclet` is frozen at 0.17.2; new installs use `InfraGeometry.paclet`.
+
 - **0.17.2** (2026-09-27): `InfraHighlightGraph` (below).
 
 - **Breaking: `InfraSceneHighlight` is renamed `InfraHighlightGraph` and draws densities**

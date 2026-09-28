@@ -1,0 +1,807 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Wolfram 15.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       154,          7]
+NotebookDataLength[     28734,        798]
+NotebookOptionsPosition[     21135,        651]
+NotebookOutlinePosition[     22301,        685]
+CellTagsIndexPosition[     22222,        680]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["PencilDirections", "ObjectName",
+ CellID->1224892054,ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec"],
+
+Cell[TextData[{
+ Cell["   ", "ModInfo",ExpressionUUID->"70bc74ae-cde8-47c0-90d0-0feba0fad4f0"],
+ Cell[BoxData[
+  RowBox[{
+   TemplateBox[{
+     Cell[
+      TextData["PencilDirections"]], 
+     "paclet:WolframInstitute/InfraGeometry/ref/PencilDirections", 
+     "WolframInstitute/InfraGeometry Package Symbol"},
+    "PackageLink",
+    BaseStyle->"InlineFormula"], "[", 
+   RowBox[{
+    StyleBox["g", "TI"], ",", " ", 
+    ButtonBox["O",
+     BaseStyle->"Link"]}], "]"}]], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "098fe09c-3078-4732-9b65-9b8f2fad68b6"],
+ "\[LineSeparator]",
+ "gives the pencil at ",
+ StyleBox["O", "TI"],
+ ": every ray from ",
+ StyleBox["O", "TI"],
+ " in ",
+ StyleBox["g", "TI"],
+ ", as a list of vertex sequences.",
+ "\n"
+}], "Usage",ExpressionUUID->"631cf7f9-c8fb-488e-a6e0-d7184bd73b7b"],
+
+Cell[TextData[{
+ "The pencil at a vertex ",
+ StyleBox["O", "TI"],
+ " is the set of rays from ",
+ StyleBox["O", "TI"],
+ " \[LongDash] the graph's analogue of the unit tangent sphere, one element \
+per direction. A ray leaves ",
+ StyleBox["O", "TI"],
+ " through exactly one neighbour, so the pencil is the union of ",
+ Cell[BoxData[
+  RowBox[{
+   TemplateBox[{
+     Cell[
+      TextData["FindInfraRay"]], 
+     "paclet:WolframInstitute/InfraGeometry/ref/FindInfraRay", 
+     "WolframInstitute/InfraGeometry Package Symbol"},
+    "PackageLink",
+    BaseStyle->"InlineFormula"], "[", 
+   RowBox[{
+    StyleBox["g", "TI"], ",", " ", 
+    ButtonBox["O",
+     BaseStyle->"Link"], ",", " ", 
+    StyleBox["w", "TI"], ",", " ", 
+    ButtonBox["All",
+     BaseStyle->"Link"]}], "]"}]], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "b7e83fe8-3169-457b-a8c2-08bc8ce3f54a"],
+ " over the neighbours ",
+ StyleBox["w", "TI"],
+ " of ",
+ StyleBox["O", "TI"],
+ ". It is computed as ",
+ Cell[BoxData[
+  RowBox[{
+   TemplateBox[{
+     Cell[
+      TextData["FindInfraRay"]], 
+     "paclet:WolframInstitute/InfraGeometry/ref/FindInfraRay", 
+     "WolframInstitute/InfraGeometry Package Symbol"},
+    "PackageLink",
+    BaseStyle->"InlineFormula"], "[", 
+   RowBox[{
+    StyleBox["g", "TI"], ",", " ", 
+    ButtonBox["O",
+     BaseStyle->"Link"], ",", " ", 
+    ButtonBox["O",
+     BaseStyle->"Link"], ",", " ", 
+    ButtonBox["All",
+     BaseStyle->"Link"]}], "]"}]], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "e7eb257d-7d8e-4040-8f2d-91d857f89a02"],
+ ", the rays from ",
+ StyleBox["O", "TI"],
+ " with ",
+ StyleBox["O", "TI"],
+ " as its own direction."
+}], "Notes",ExpressionUUID->"885ae841-e87b-4a8d-bd2d-db5e4ff82f0f"],
+
+Cell[TextData[{
+ "Every element starts at ",
+ StyleBox["O", "TI"],
+ " and satisfies ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["InfraRayQ"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/InfraRayQ", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "45d44287-abcd-44d6-8c52-691f5c829606"],
+ ". Opposite rays are distinct elements; ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["SameDirectionQ"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/SameDirectionQ", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "10c36519-4a1a-46fc-8800-8cf9729761d8"],
+ " is the predicate that identifies them."
+}], "Notes",ExpressionUUID->"f5f0de60-79d8-4e51-824b-73ce6a2f1d29"],
+
+Cell[TextData[{
+ "There is no pencil object. ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["PencilCardinality"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/PencilCardinality", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "c3315766-92aa-4dc2-aaac-6772688f1cf6"],
+ " gives the size of the pencil without enumerating it."
+}], "Notes",ExpressionUUID->"089688c5-9f4c-41a0-aefb-ead08482e328"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "See Also",
+ Cell[BoxData[
+  TemplateBox[{"SeeAlso", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell[
+       "Insert links to any related reference (function) pages.", 
+        "MoreInfoText"], BaseStyle -> "IFrameBox"]], "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "b7caa910-e086-4d39-871e-e78bfb02a4b9"]
+}], "SeeAlsoSection",
+ CellID->1559318232,ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["PencilCardinality"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/PencilCardinality", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "1629e0b6-b516-4dc7-9411-df8e4835d2b2"],
+ " \[FilledVerySmallSquare] ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["FindInfraRay"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraRay", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "282c28fb-8ef9-4cce-b3e1-e5a701ff68ae"],
+ " \[FilledVerySmallSquare] ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["InfraRayQ"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/InfraRayQ", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "f29c7339-24af-4b2f-aee5-e106148afe37"],
+ " \[FilledVerySmallSquare] ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["LineCount"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/LineCount", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "ca70cc63-56c0-4273-9d48-45373861a42e"],
+ " \[FilledVerySmallSquare] ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["SameDirectionQ"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/SameDirectionQ", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "bb8c3a5e-850a-43a8-b450-554a96ab9af0"],
+ " \[FilledVerySmallSquare] ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["UniqueCollinearQ"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/UniqueCollinearQ", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "14299780-a2ad-4fc8-bb92-d49d8e656a55"]
+}], "SeeAlso",ExpressionUUID->"3de92c13-9e09-4af9-aff8-dc985046c57d"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Tech Notes",
+ Cell[BoxData[
+  TemplateBox[{"TechNotes", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell["Insert links to related tech notes.", "MoreInfoText"], BaseStyle -> 
+       "IFrameBox"]], "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "a0027a76-2f69-4270-bf06-cff364aa09d7"]
+}], "TechNotesSection",
+ CellID->792424486,ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74"],
+
+Cell[CellGroupData[{
+
+Cell["Related Guides", "MoreAboutSection",
+ CellID->38303248,ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5"],
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox["EuclideanGeometryGuide",
+  BaseStyle->"Link",
+  ButtonData->
+   "paclet:WolframInstitute/InfraGeometry/guide/\
+EuclideanGeometryGuide"]], \
+"InlineFormula",ExpressionUUID->"0c493ac8-b099-4dbb-b1ce-33537607f000"]], \
+"MoreAbout",ExpressionUUID->"1681c679-87c2-4bf8-abbd-b22e7c537ba2"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Related Links",
+ Cell[BoxData[
+  TemplateBox[{"RelatedLinks", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell[
+       "Insert links to any related page, including web pages.", 
+        "MoreInfoText"], BaseStyle -> "IFrameBox"]], "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "88f916ad-99d1-4784-a15f-dfa2faf44f02"]
+}], "RelatedLinksSection",
+ CellID->47113304,ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Examples Initialization",
+ Cell[BoxData[
+  TemplateBox[{"ExamplesInitialization", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell[
+       "Input that is to be evaluated before any examples are run, e.g. \
+Needs[\[Ellipsis]].", "MoreInfoText"], BaseStyle -> "IFrameBox"]], 
+     "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "1ca4d14a-308f-4a68-bbf6-e6901ce2ab4c"]
+}], "ExamplesInitializationSection",
+ CellID->1718580883,ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5"],
+
+Cell[BoxData[{
+ RowBox[{"Needs", "[", "\"\<WolframInstitute`InfraGeometry`\>\"", 
+  "]"}], "\n", 
+ RowBox[{"Needs", "[", "\"\<WolframInstitute`DiscreteGeometry`\>\"", 
+  "]"}]}], "ExampleInitialization",
+ CellID->1969679695,ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[GridBox[{
+    {
+     StyleBox[
+      RowBox[{"Basic", " ", "Examples"}], "PrimaryExamplesSection"], 
+     ButtonBox[
+      RowBox[{
+       RowBox[{"More", " ", "Examples"}], " ", "\[RightTriangle]"}],
+      BaseStyle->"ExtendedExamplesLink",
+      ButtonData:>"ExtendedExamples"]}
+   }],
+  $Line = 0; Null]], "PrimaryExamplesSection",
+ CellID->880084151,ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42"],
+
+Cell["\<\
+The pencil at the middle of a path has two rays, one to each leaf.\
+\>", "ExampleText",ExpressionUUID->"909b2554-2381-4d51-bf96-91cc283fdf65"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"PencilDirections", "[", 
+  RowBox[{
+   RowBox[{"PathGraph", "[", 
+    RowBox[{"Range", "[", "7", "]"}], "]"}], ",", " ", "4"}], "]"}]], "Input",\
+
+ CellLabel->"In[1]:= ",ExpressionUUID->"f2fcd70c-9eac-4689-8bab-496a93b36836"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"4", ",", "3", ",", "2", ",", "1"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"4", ",", "5", ",", "6", ",", "7"}], "}"}]}], "}"}]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"0b0bed55-7fda-495b-9b5b-07e7e49e0b60"]
+}, Open  ]],
+
+Cell["On the 6-cycle both rays from 1 end at the antipode.", "ExampleText",ExpressionUUID->"25dea25d-fb49-43f9-863b-b73250a588d5"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"PencilDirections", "[", 
+  RowBox[{
+   RowBox[{"CycleGraph", "[", "6", "]"}], ",", " ", "1"}], "]"}]], "Input",
+ CellLabel->"In[2]:= ",ExpressionUUID->"6a5e1f6b-858a-4b62-8d0e-6a81cd0296b5"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"1", ",", "2", ",", "3", ",", "4"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", "6", ",", "5", ",", "4"}], "}"}]}], "}"}]], "Output",
+ CellLabel->"Out[2]= ",ExpressionUUID->"29789272-8cf3-4bed-a3e2-acefccc5acd4"]
+}, Open  ]],
+
+Cell["\<\
+From the centre of a 3 \[Times] 3 grid eight rays leave, two through each \
+neighbour, each ending at a corner.\
+\>", "ExampleText",ExpressionUUID->"3ec9ff18-7774-4ac5-a044-a5448ce2ba41"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"PencilDirections", "[", 
+  RowBox[{
+   RowBox[{"GridGraph", "[", 
+    RowBox[{"{", 
+     RowBox[{"3", ",", " ", "3"}], "}"}], "]"}], ",", " ", "5"}], 
+  "]"}]], "Input",
+ CellLabel->"In[3]:= ",ExpressionUUID->"6f5cdaf0-c94a-4bf5-bd3f-89e8c35f4dfb"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"5", ",", "2", ",", "1"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"5", ",", "2", ",", "3"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"5", ",", "4", ",", "1"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"5", ",", "4", ",", "7"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"5", ",", "6", ",", "3"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"5", ",", "6", ",", "9"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"5", ",", "8", ",", "7"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"5", ",", "8", ",", "9"}], "}"}]}], "}"}]], "Output",
+ CellLabel->"Out[3]= ",ExpressionUUID->"7507fe4e-02e4-4b57-8706-6d30697269af"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "More Examples",
+ Cell[BoxData[
+  TemplateBox[{"MoreExamples", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell["Extended examples in standardized sections.", "MoreInfoText"], 
+       BaseStyle -> "IFrameBox"]], "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "352b6acf-a93b-4224-8779-658881cdabd0"]
+}], "ExtendedExamplesSection",
+ CellTags->"ExtendedExamples",
+ CellID->533848431,ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Scope", "ExampleSection",ExpressionUUID->
+   "32e79d70-f7af-47ff-bb41-513374ef55db"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1293636265,ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Generalizations & Extensions", "ExampleSection",ExpressionUUID->
+   "a148ce84-caec-4483-aa99-5b7bd6d55bf1"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1020263627,ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Options", "ExampleSection",ExpressionUUID->
+   "b26b6366-7922-4236-a426-38c0f5de13f0"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->2061341341,ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Applications", "ExampleSection",ExpressionUUID->
+   "d5715ee2-1cae-4f33-89b2-0e99ea9caa6e"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->258228157,ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Properties & Relations", "ExampleSection",ExpressionUUID->
+   "d18b1e1f-4c4c-49a5-bb54-1e5e145ddf4e"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->2123667759,ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438"],
+
+Cell[TextData[{
+ "Every element of the pencil starts at ",
+ StyleBox["O", "TI"],
+ " and is a ray."
+}], "ExampleText",ExpressionUUID->"881df075-3224-4ac4-94f9-2029e8661c36"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"g", " ", "=", " ", 
+     RowBox[{"GridGraph", "[", 
+      RowBox[{"{", 
+       RowBox[{"3", ",", " ", "3"}], "}"}], "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"AllTrue", "[", 
+    RowBox[{
+     RowBox[{"PencilDirections", "[", 
+      RowBox[{"g", ",", " ", "5"}], "]"}], ",", " ", 
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        RowBox[{"First", "[", "#", "]"}], " ", "===", " ", "5"}], " ", "&&", 
+       " ", 
+       RowBox[{"InfraRayQ", "[", 
+        RowBox[{"g", ",", " ", "#"}], "]"}]}], " ", "&"}]}], "]"}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"51d48d49-d86c-4fa9-a96e-cb911c45c599"],
+
+Cell[BoxData["True"], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"0949e44e-383b-41e3-b596-17a235b65b4e"]
+}, Open  ]],
+
+Cell[TextData[{
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["PencilCardinality"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/PencilCardinality", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "d5a07b79-7e07-4c66-be03-9d23338161ea"],
+ " counts the same set without enumerating it."
+}], "ExampleText",ExpressionUUID->"1db3b291-9628-46b4-a594-8d893207dd40"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"g", " ", "=", " ", 
+     RowBox[{"HypercubeGraph", "[", "3", "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Length", " ", "@", " ", 
+      RowBox[{"PencilDirections", "[", 
+       RowBox[{"g", ",", " ", "1"}], "]"}]}], ",", " ", 
+     RowBox[{"PencilCardinality", "[", 
+      RowBox[{"g", ",", " ", "1"}], "]"}]}], "}"}]}], "]"}]], "Input",
+ CellLabel->"In[2]:= ",ExpressionUUID->"9f11fc9f-1981-4a62-8086-35161263f56a"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"6", ",", "6"}], "}"}]], "Output",
+ CellLabel->"Out[2]= ",ExpressionUUID->"486c07a9-e7c5-4021-a439-2d5421bf4c92"]
+}, Open  ]],
+
+Cell["\<\
+The pencil is the family of rays with the origin as its own direction.\
+\>", "ExampleText",ExpressionUUID->"a60f903c-65c8-44df-a783-4f9b08f56313"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Sort", " ", "@", " ", 
+   RowBox[{"PencilDirections", "[", 
+    RowBox[{
+     RowBox[{"CycleGraph", "[", "6", "]"}], ",", " ", "1"}], "]"}]}], " ", "===",
+   " ", 
+  RowBox[{"Sort", " ", "@", " ", 
+   RowBox[{"FindInfraRay", "[", 
+    RowBox[{
+     RowBox[{"CycleGraph", "[", "6", "]"}], ",", " ", "1", ",", " ", "1", ",",
+      " ", "All"}], "]"}]}]}]], "Input",
+ CellLabel->"In[3]:= ",ExpressionUUID->"bb5fffdf-4c31-4767-941a-ec0d494b03e2"],
+
+Cell[BoxData["True"], "Output",
+ CellLabel->"Out[3]= ",ExpressionUUID->"97b10b3b-57dc-460a-9f64-4fbb36997e5b"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Possible Issues", "ExampleSection",ExpressionUUID->
+   "dda06a82-eb41-4b48-8510-6cb821647761"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1305812373,ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Interactive Examples", "ExampleSection",ExpressionUUID->
+   "e1fe5ce4-66df-44f8-b96d-14ea9265eaf2"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1653164318,ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Neat Examples", "ExampleSection",ExpressionUUID->
+   "898193c6-0d9f-4097-90dd-7bc455972e43"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->589267740,ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Metadata", "MetadataSection",
+ CellID->311882160,ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd"],
+
+Cell[TextData[{
+ "New in: ",
+ Cell["XX", "HistoryData",
+  CellTags->"New",ExpressionUUID->"c83e5b59-d200-4539-afdc-500ed06d3c87"],
+ " | Modified in: ",
+ Cell[" ", "HistoryData",
+  CellTags->"Modified",ExpressionUUID->"d4e38c0c-d937-44f2-85a5-7c0e8fc755ab"],
+ " | Obsolete in: ",
+ Cell[" ", "HistoryData",
+  CellTags->"Obsolete",ExpressionUUID->
+  "4c68d818-8923-4121-80f8-cf0eabb4c0de"]
+}], "History",
+ CellID->341476719,ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Categorization",
+ Cell[BoxData[
+  TemplateBox[{"Metadata", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell[
+       "Metadata such as page URI, context, and type of documentation page.", 
+        "MoreInfoText"], BaseStyle -> "IFrameBox"]], "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "4b3d4122-3cd4-481f-a8ff-5aefbb03e00d"]
+}], "CategorizationSection",
+ CellID->1755438392,ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329"],
+
+Cell["Symbol", "Categorization",
+ CellLabel->"Entity Type",
+ CellID->686433507,ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a"],
+
+Cell["WolframInstitute/InfraGeometry", "Categorization",
+ CellLabel->"Paclet Name",
+ CellID->605800465,ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec"],
+
+Cell["WolframInstitute`InfraGeometry`", "Categorization",
+ CellLabel->"Context",
+ CellID->468444828,ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191"],
+
+Cell["WolframInstitute/InfraGeometry/ref/PencilDirections", \
+"Categorization",
+ CellLabel->"URI",ExpressionUUID->"e6ab3332-5d45-4136-8768-41eee93d78b3"]
+}, Closed]],
+
+Cell["Keywords", "KeywordsSection",
+ CellID->477174294,ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6"],
+
+Cell[CellGroupData[{
+
+Cell["Syntax Templates", "TemplatesSection",
+ CellID->1872225408,ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c"],
+
+Cell[BoxData[""], "Template",
+ CellLabel->"Additional Function Template",
+ CellID->1562036412,ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72"],
+
+Cell[BoxData[""], "Template",
+ CellLabel->"Arguments Pattern",
+ CellID->158391909,ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec"],
+
+Cell[BoxData[""], "Template",
+ CellLabel->"Local Variables",
+ CellID->1360575930,ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9"],
+
+Cell[BoxData[""], "Template",
+ CellLabel->"Color Equal Signs",
+ CellID->793782254,ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648"]
+}, Closed]]
+}, Open  ]]
+},
+WindowSize->{700, 770},
+WindowMargins->{{5, Automatic}, {Automatic, 0}},
+TaggingRules->{
+ "Metadata" -> {
+   "title" -> "PencilDirections", "context" -> 
+    "WolframInstitute`InfraGeometry`", 
+    "keywords" -> {"pencil", "ray", "direction", "unit tangent sphere"}, 
+    "summary" -> "", "paclet" -> "WolframInstitute/InfraGeometry", 
+    "uri" -> "WolframInstitute/InfraGeometry/ref/PencilDirections", 
+    "type" -> "Symbol", "index" -> True, "language" -> "en"}},
+CreateCellID->True,
+CellContext->CellGroup,
+FrontEndVersion->"15.0 for Mac OS X ARM (64-bit) (July 2, 2026)",
+StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "FunctionPageStylesExt.nb", 
+  CharacterEncoding -> "UTF-8"],
+ExpressionUUID->"c207366e-060a-406b-a297-9e30e1628f43"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "ExtendedExamples"->{
+  Cell[12889, 403, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+   CellTags->"ExtendedExamples",
+   CellID->533848431]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"ExtendedExamples", 22028, 673}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[576, 22, 114, 1, 70, "ObjectName",ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec",
+ CellID->1224892054],
+Cell[693, 25, 845, 26, 70, "Usage",ExpressionUUID->"631cf7f9-c8fb-488e-a6e0-d7184bd73b7b"],
+Cell[1541, 53, 1770, 56, 70, "Notes",ExpressionUUID->"885ae841-e87b-4a8d-bd2d-db5e4ff82f0f"],
+Cell[3314, 111, 911, 24, 70, "Notes",ExpressionUUID->"f5f0de60-79d8-4e51-824b-73ce6a2f1d29"],
+Cell[4228, 137, 518, 12, 70, "Notes",ExpressionUUID->"089688c5-9f4c-41a0-aefb-ead08482e328"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4783, 154, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
+ CellID->1559318232],
+Cell[5245, 169, 2265, 60, 70, "SeeAlso",ExpressionUUID->"3de92c13-9e09-4af9-aff8-dc985046c57d"]
+}, Open  ]],
+Cell[7525, 232, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
+ CellID->792424486],
+Cell[CellGroupData[{
+Cell[7985, 248, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
+ CellID->38303248],
+Cell[8104, 251, 332, 7, 70, "MoreAbout",ExpressionUUID->"1681c679-87c2-4bf8-abbd-b22e7c537ba2"]
+}, Open  ]],
+Cell[8451, 261, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
+ CellID->47113304],
+Cell[CellGroupData[{
+Cell[8947, 278, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
+ CellID->1718580883],
+Cell[9481, 294, 285, 5, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
+ CellID->1969679695]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[9803, 304, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
+ CellID->880084151],
+Cell[10248, 318, 152, 2, 70, "ExampleText",ExpressionUUID->"909b2554-2381-4d51-bf96-91cc283fdf65"],
+Cell[CellGroupData[{
+Cell[10425, 324, 249, 6, 70, "Input",ExpressionUUID->"f2fcd70c-9eac-4689-8bab-496a93b36836"],
+Cell[10677, 332, 290, 7, 70, "Output",ExpressionUUID->"0b0bed55-7fda-495b-9b5b-07e7e49e0b60"]
+}, Open  ]],
+Cell[10982, 342, 130, 0, 70, "ExampleText",ExpressionUUID->"25dea25d-fb49-43f9-863b-b73250a588d5"],
+Cell[CellGroupData[{
+Cell[11137, 346, 214, 4, 70, "Input",ExpressionUUID->"6a5e1f6b-858a-4b62-8d0e-6a81cd0296b5"],
+Cell[11354, 352, 290, 7, 70, "Output",ExpressionUUID->"29789272-8cf3-4bed-a3e2-acefccc5acd4"]
+}, Open  ]],
+Cell[11659, 362, 197, 3, 70, "ExampleText",ExpressionUUID->"3ec9ff18-7774-4ac5-a044-a5448ce2ba41"],
+Cell[CellGroupData[{
+Cell[11881, 369, 272, 7, 70, "Input",ExpressionUUID->"6f5cdaf0-c94a-4bf5-bd3f-89e8c35f4dfb"],
+Cell[12156, 378, 684, 19, 70, "Output",ExpressionUUID->"7507fe4e-02e4-4b57-8706-6d30697269af"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[12889, 403, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+ CellTags->"ExtendedExamples",
+ CellID->533848431],
+Cell[13379, 418, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
+ CellID->1293636265],
+Cell[13624, 425, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
+ CellID->1020263627],
+Cell[13892, 432, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
+ CellID->2061341341],
+Cell[14139, 439, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
+ CellID->258228157],
+Cell[CellGroupData[{
+Cell[14412, 448, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
+ CellID->2123667759],
+Cell[14674, 455, 172, 4, 70, "ExampleText",ExpressionUUID->"881df075-3224-4ac4-94f9-2029e8661c36"],
+Cell[CellGroupData[{
+Cell[14871, 463, 712, 20, 70, "Input",ExpressionUUID->"51d48d49-d86c-4fa9-a96e-cb911c45c599"],
+Cell[15586, 485, 110, 1, 70, "Output",ExpressionUUID->"0949e44e-383b-41e3-b596-17a235b65b4e"]
+}, Open  ]],
+Cell[15711, 489, 483, 11, 70, "ExampleText",ExpressionUUID->"1db3b291-9628-46b4-a594-8d893207dd40"],
+Cell[CellGroupData[{
+Cell[16219, 504, 540, 13, 70, "Input",ExpressionUUID->"9f11fc9f-1981-4a62-8086-35161263f56a"],
+Cell[16762, 519, 152, 3, 70, "Output",ExpressionUUID->"486c07a9-e7c5-4021-a439-2d5421bf4c92"]
+}, Open  ]],
+Cell[16929, 525, 156, 2, 70, "ExampleText",ExpressionUUID->"a60f903c-65c8-44df-a783-4f9b08f56313"],
+Cell[CellGroupData[{
+Cell[17110, 531, 477, 12, 70, "Input",ExpressionUUID->"bb5fffdf-4c31-4767-941a-ec0d494b03e2"],
+Cell[17590, 545, 110, 1, 70, "Output",ExpressionUUID->"97b10b3b-57dc-460a-9f64-4fbb36997e5b"]
+}, Open  ]]
+}, Open  ]],
+Cell[17727, 550, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
+ CellID->1305812373],
+Cell[17982, 557, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
+ CellID->1653164318],
+Cell[18242, 564, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
+ CellID->589267740]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[18528, 574, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
+ CellID->311882160],
+Cell[18641, 577, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
+ CellID->341476719],
+Cell[CellGroupData[{
+Cell[19142, 593, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
+ CellID->1755438392],
+Cell[19630, 608, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
+ CellID->686433507],
+Cell[19767, 612, 167, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
+ CellID->605800465],
+Cell[19937, 616, 164, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
+ CellID->468444828],
+Cell[20104, 620, 162, 2, 70, "Categorization",ExpressionUUID->"e6ab3332-5d45-4136-8768-41eee93d78b3"]
+}, Closed]],
+Cell[20281, 625, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
+ CellID->477174294],
+Cell[CellGroupData[{
+Cell[20416, 630, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
+ CellID->1872225408],
+Cell[20539, 633, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
+ CellID->1562036412],
+Cell[20691, 637, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
+ CellID->158391909],
+Cell[20831, 641, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
+ CellID->1360575930],
+Cell[20970, 645, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
+ CellID->793782254]
+}, Closed]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

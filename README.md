@@ -1,6 +1,8 @@
 > ⚠️ **Actively developed, experimental research code.** It undergoes frequent cleanings and refactors, and the API may change without notice.
 
-# 📐 SyntheticInfrageometry
+# 📐 InfraGeometry
+
+Named `SyntheticInfrageometry` until 2026-09-28; renamed with 1.0.0, context `WolframInstitute`InfraGeometry``, paclet `WolframInstitute/InfraGeometry`. The old cloud object `SyntheticInfrageometry.paclet` stays at 0.17.2 for older notebooks. The combinatorial sibling, formerly `Infrageometry`, is now [DiscreteGeometry](https://github.com/WolframInstitute/DiscreteGeometry).
 
 This repository contains experimental code that studies what geometric constructions an observer constrained to a discrete substrate, the so-called **infra-observer**, would develop.
 
@@ -79,7 +81,7 @@ instance as a vertex list, or `n`, `UpTo[n]`, `All` of them.
 
 *The observer measures.* Which tensor do the numbers see? Volume growth of balls, shells, tubes and cylinders, and the dimension and curvature estimators composed on it; Ollivier-Ricci curvature and effective resistance; coordinatization by landmarks and by resistance; boundary, interior and eccentricity; the displacement algebra; tessellated and uniform-length substrates; convergence of a sequence of graphs to a manifold. A measurement is judged against the continuum quantity it is meant to detect, in the scale window where the detection is valid.
 
-This branch arrived from the [Infrageometry](https://github.com/WolframInstitute/Infrageometry) paclet in **0.14.0** (2026-09-22), and the **inverse pipeline** — graph → `r`-isometric embedding → manifold learning → `(M, g)` — came with it.
+This branch arrived from the [DiscreteGeometry](https://github.com/WolframInstitute/DiscreteGeometry) paclet in **0.14.0** (2026-09-22), and the **inverse pipeline** — graph → `r`-isometric embedding → manifold learning → `(M, g)` — came with it.
 
 ### Calculus on complexes
 
@@ -87,18 +89,18 @@ Differential forms and cochains on a graph — vertex-anchored forms against cli
 
 ### What is *not* here
 
-Constructions that need no distance at all stay in the sibling [Infrageometry](https://github.com/WolframInstitute/Infrageometry) paclet: complexes built from a graph and their closures, Hodge and Dirac operators, connection and Green matrices, Lefschetz theory, persistence, meshes, hypergraphs, simplicial sets, and quantum calculus. The two paclets are independent — neither imports the other, and in a fresh kernel their contexts share no names.
+Constructions that need no distance at all stay in the sibling [DiscreteGeometry](https://github.com/WolframInstitute/DiscreteGeometry) paclet: complexes built from a graph and their closures, Hodge and Dirac operators, connection and Green matrices, Lefschetz theory, persistence, meshes, hypergraphs, simplicial sets, and quantum calculus. The two paclets are independent — neither imports the other, and in a fresh kernel their contexts share no names.
 
 ## ✨ Usage
 
 Install from the Wolfram Cloud:
 
 ```wolfram
-PacletInstall["https://www.wolframcloud.com/obj/hajek_pavel/SyntheticInfrageometry.paclet", ForceVersionInstall -> True]
-Needs["WolframInstitute`SyntheticInfrageometry`"]
+PacletInstall["https://www.wolframcloud.com/obj/hajek_pavel/InfraGeometry.paclet", ForceVersionInstall -> True]
+Needs["WolframInstitute`InfraGeometry`"]
 ```
 
-Explore the paclet in the **[LLM-generated presentation notebook](https://www.wolframcloud.com/obj/hajek_pavel/SyntheticInfrageometry/Presentation.nb)** (runs on the Wolfram Cloud).
+Explore the paclet in the **[LLM-generated presentation notebook](https://www.wolframcloud.com/obj/hajek_pavel/InfraGeometry/Presentation.nb)** (runs on the Wolfram Cloud).
 
 Ready-made example substrates and ambient styles for the analyses: **[LLM-generated example-graphs notebook](https://www.wolframcloud.com/obj/hajek_pavel/ExampleGraphs.nb)** (runs on the Wolfram Cloud; `ExampleGraphs` and `InfraSubstrate` live here since 0.14.0).
 
@@ -108,7 +110,7 @@ Ready-made example substrates and ambient styles for the analyses: **[LLM-genera
 
 | Notebook | Description | Versions |
 |----------|-------------|----------|
-| EmergentEuclid | Emergent Euclidean geometry on graphs: infra-Euclidean primitives, Tarski's axioms as decidable graph properties, locality of the Euclidean regime, and behavior under edge subdivision | [LLM](https://www.wolframcloud.com/obj/hajek_pavel/SyntheticInfrageometry/EmergentEuclid.nb) |
+| EmergentEuclid | Emergent Euclidean geometry on graphs: infra-Euclidean primitives, Tarski's axioms as decidable graph properties, locality of the Euclidean regime, and behavior under edge subdivision | [LLM](https://www.wolframcloud.com/obj/hajek_pavel/InfraGeometry/EmergentEuclid.nb) |
 | Vectors and displacements | Algebra of discrete vector fields and their flows | [LLM](https://www.wolframcloud.com/obj/hajek_pavel/Infrageometry/Displacements.nb) |
 | Displacements on graphs | Metric inverse, negative, continuity, commutator, and bracket of graph displacements | [LLM](https://www.wolframcloud.com/obj/hajek_pavel/Infrageometry/Displacement1.nb) |
 | What volume growth determines | Ball and sphere growth give dimension and scalar curvature and nothing else at any order; the four ball measures and the Ehrhart reciprocity behind `HalfBoundary` |  |
