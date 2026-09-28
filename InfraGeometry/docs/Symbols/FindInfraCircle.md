@@ -43,6 +43,17 @@ Corresponding notions in the classical axiom systems:
 
 ## Basic Examples
 
+A circle about the centre of a grid through a vertex two steps away, the band widened one step outward, drawn as a closed walk.
+
+```wl
+With[
+  {g = GridGraph[{9, 9}]},
+  {cyc = FindInfraCircle[g, 41, 23, "RadiusDelta" -> 1]},
+  {InfraHighlightGraph[g, {InfraWalk[Append[cyc, First @ cyc]] -> $InfraCircleColor, Directive[$InfraPointColor], 41, 23},
+     ImageSize -> 250],
+   Length @ cyc}]
+```
+
 At a single radius the circle exists on the irregular mesh and is empty on both lattices — the shell has no two adjacent vertices to make a cycle from.
 
 ```wl
@@ -70,7 +81,7 @@ A circle around the centre of each lattice, at the band each one needs, drawn as
 ```wl
 Row[Table[
    With[
-     {g = InfraSubstrate[First[spec], "Medium", "Gray", "KeepCoordinates" -> True]},
+     {g = InfraSubstrate[First[spec], "Medium", "KeepCoordinates" -> True]},
      {c = First @ GraphCenter[g]},
      {circle = FindInfraCircle[g, c, "Radius" -> Last[spec]]},
      Labeled[

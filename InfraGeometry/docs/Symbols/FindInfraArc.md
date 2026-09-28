@@ -24,6 +24,28 @@ Option `"RadiusDelta" -> delta | {deltaIn, deltaOut}` widens the band about *d*(
 
 ## Basic Examples
 
+One of the eight minor arcs of a quarter circle of radius 3 about the centre of a grid, on the band widened one step each way, drawn as a walk.
+
+```wl
+With[
+  {g = GridGraph[{9, 9}]},
+  {found = FindInfraArc[g, 41, {14, 44}, "RadiusDelta" -> {1, 1}]},
+  {InfraHighlightGraph[g, {InfraWalk[found] -> $InfraCircleColor, Directive[$InfraPointColor], 41, 14, 44}, ImageSize -> 250],
+   found}]
+```
+
+A trailing count gives a `List`; all eight are there.
+
+```wl
+Length @ FindInfraArc[GridGraph[{9, 9}], 41, {14, 44}, All, "RadiusDelta" -> {1, 1}]
+```
+
+Through an intermediate point the arc is a polyline of minor arcs, one per piece.
+
+```wl
+FindInfraArc[GridGraph[{9, 9}], 41, {14, 44, 68}, "RadiusDelta" -> 1]
+```
+
 One minor arc between two points on the ring at distance 2 from the centre of a grid, then both of them.
 
 ```wl

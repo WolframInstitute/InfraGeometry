@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraHighlightGraph
 Keywords: [visualization, diffuse rendering, density, highlight, palette]
 SeeAlso: [InfraSceneViewer, InfraScene, InfraMeasurement, $InfraPalette, InfraDensity, InfraWalk]
-RelatedGuides: [VisualizationGuide]
+RelatedGuides: [EuclideanGeometryGuide]
 ---
 
 ## Usage
@@ -28,7 +28,9 @@ Every object becomes a vertex density and an edge density:
 - a walk graph, a cycle graph or a DAG: its occupation;
 - a leg chain: the walk through its legs, with its knots drawn on top;
 - a vertex list: a region, `1` on its vertices and on the edges of its induced subgraph;
-- a list of these: the sum of its members.
+- a list of vertex lists or of graphs, such as the members of a head or a bundle: the sum of its members.
+
+A list of heads or of walks is not one object; give them as separate entries, styled alike with a `Directive`.
 
 Each object is divided by its own heaviest mass, so every object reaches full strength somewhere. The objects are then summed. At each vertex and edge the strength is the sum, capped at `1`, and the color is the blend of the objects' colors weighted by their masses. Where objects overlap, the figure shows both.
 
@@ -84,4 +86,13 @@ The palette is Jeremy's strike-out sequence.
 
 ```wl
 Take[$InfraStrikeOutPalette, 3]
+```
+
+A list of vertex lists is one object, the sum of its members: here the six geodesics of a segment, which draw as the head does.
+
+```wl
+With[
+  {g = GridGraph[{9, 9}]},
+  {InfraHighlightGraph[g, {InfraVertexList[g, InfraSegment[41, 61], All]}, ImageSize -> 250],
+   InfraHighlightGraph[g, {InfraSegment[41, 61]}, ImageSize -> 250]}]
 ```

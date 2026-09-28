@@ -56,7 +56,7 @@ Three rays from the centre of each substrate. Each starts at the origin and runs
 ```wl
 Row[Table[
    With[
-     {g = InfraSubstrate[name, "Medium", "Gray", "KeepCoordinates" -> True]},
+     {g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]},
      {a = First @ GraphCenter[g]},
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
      Labeled[

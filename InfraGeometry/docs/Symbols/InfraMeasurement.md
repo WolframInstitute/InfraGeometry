@@ -26,7 +26,7 @@ The properties:
 
 | Property | Value |
 |---|---|
-| `"Graph"` | the object's own graph: one `Graph`, or a `List` of them for a family of alternatives (a line's atoms, a circle's necklaces) or for the pieces of a polyline |
+| `"Graph"` | the object's own graph: one `Graph`, or a `List` of them for a family of alternatives (the DAGs of a line or a ray, the necklaces of a circle) or for the pieces of a polyline |
 | `"Cardinality"` | the number of members |
 | `"Length"` | the common length of the members, or a `List` of lengths when they differ |
 | `"VertexDensity"` | `<\|v -> occ(v)\|>`, the number of members through *v*; on a polyline, the sum of the piece densities |
@@ -45,6 +45,22 @@ On a polyline <code>[InfraSegment]()[*p1*, …, *pk*]</code> the densities are n
 
 ## Basic Examples
 
+The segment between the centre of a grid and a vertex two steps up and two across, drawn by its densities: six geodesics of length 4, and four of them pass the vertex in the middle.
+
+```wl
+With[
+  {g = GridGraph[{9, 9}]},
+  {seg = InfraSegment[41, 61]},
+  {InfraHighlightGraph[g, {seg, Directive[$InfraPointColor], 41, 61}, ImageSize -> 250],
+   InfraMeasurement[g, seg, {"Cardinality", "Length"}], InfraMeasurement[g, seg, "VertexDensity"][51]}]
+```
+
+The graph of the same segment: its source-to-sink chains are the six geodesics.
+
+```wl
+InfraMeasurement[GridGraph[{9, 9}], InfraSegment[41, 61], "Graph"]
+```
+
 The segment between two vertices of a grid: its cardinality, length, and every property at once.
 
 ```wl
@@ -61,4 +77,30 @@ With[
   {seg = InfraSegment[7, 19]},
   InfraMeasurement[g, seg, All]
 ]
+```
+
+A list of heads is measured head by head.
+
+```wl
+InfraMeasurement[GridGraph[{9, 9}], {InfraSegment[41, 61], InfraCircle[41, "Radius" -> {2, 4}]}, "Cardinality"]
+```
+
+## Properties and Relations
+
+The support is the key set of the vertex density, and its size is the `"Volume"`.
+
+```wl
+With[
+  {g = GridGraph[{9, 9}]},
+  {seg = InfraSegment[41, 61]},
+  Length @ InfraMeasurement[g, seg, "VertexDensity"] === InfraMeasurement[g, seg, "Volume"]]
+```
+
+An intersection of two heads has no members, only a support and a density, the product of the two.
+
+```wl
+With[
+  {g = GridGraph[{9, 9}]},
+  {x = InfraIntersection[InfraSegment[41, 61], InfraCircle[41, "Radius" -> {2, 4}]]},
+  {Keys @ InfraMeasurement[g, x, All], InfraMeasurement[g, x, "VertexDensity"]}]
 ```

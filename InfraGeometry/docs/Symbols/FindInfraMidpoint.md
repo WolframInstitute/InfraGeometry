@@ -39,12 +39,12 @@ Corresponding notions in the classical axiom systems:
 
 ## Basic Examples
 
-The midpoint of two vertices at distance 6, on the discretized plane, the square grid and the hexagonal tiling. The count differs with the substrate: one midpoint on the irregular mesh, three on the square grid, two on the hexagonal tiling.
+The midpoint of two vertices at distance 6, on the discretized plane, the square grid and the hexagonal tiling. The count differs with the substrate: two midpoints on the irregular mesh, three on the square grid, two on the hexagonal tiling.
 
 ```wl
 Row[Table[
    With[
-     {g = InfraSubstrate[name, "Large", "Gray", "KeepCoordinates" -> True]},
+     {g = InfraSubstrate[name, "Large", "KeepCoordinates" -> True]},
      {a = First @ GraphCenter[g]},
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 6 &]},
      {m = FindInfraMidpoint[g, a, b]},

@@ -32,6 +32,22 @@ A polyline arc reads each piece on the band of the circle through its own first 
 
 ## Basic Examples
 
+A quarter of the circle of radius 3 about the centre of a grid, on the band widened one step each way: eight minor arcs, each of length 6, drawn as strongly as the number of arcs through each edge.
+
+```wl
+With[
+  {g = GridGraph[{9, 9}]},
+  {arc = InfraArc[41, {14, 44}, "RadiusDelta" -> {1, 1}]},
+  {InfraHighlightGraph[g, {arc -> $InfraCircleColor, Directive[$InfraPointColor], 41, 14, 44}, ImageSize -> 250],
+   InfraMeasurement[g, arc, {"Cardinality", "Length"}]}]
+```
+
+On the bare distance shell the two points are joined by no arc: a shell of a lattice has no two adjacent vertices.
+
+```wl
+InfraMeasurement[GridGraph[{9, 9}], InfraArc[41, {14, 44}], "Cardinality"]
+```
+
 Two vertices at distance 2 from the centre of a 5 × 5 grid, on opposite sides. With the band widened one step, two minor arcs join them, one each way round.
 
 ```wl
