@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraPoint
 Keywords: [point, random vertex, distance]
 SeeAlso: [InfraCenter, FindInfraPoint]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

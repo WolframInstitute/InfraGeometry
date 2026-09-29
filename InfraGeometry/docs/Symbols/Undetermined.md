@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/Undetermined
 Keywords: [faithful, circle, arc, hypothesis, uncertified]
 SeeAlso: [InfraMeasurement, InfraCircle, InfraArc]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

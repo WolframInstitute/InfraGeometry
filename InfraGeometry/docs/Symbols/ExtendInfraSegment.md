@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/ExtendInfraSegment
 Keywords: [segment extension, geodesic extension, pool, distance matrix, Tarski A4, segment construction]
 SeeAlso: [FindInfraSegment, InfraSegment, FindInfraLine, GeodesicExtensionGraph, InfraPoint, TarskiSegmentConstructionQ]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

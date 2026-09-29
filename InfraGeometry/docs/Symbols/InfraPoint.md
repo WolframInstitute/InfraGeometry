@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraPoint
 Keywords: [point, vertex, scene token, density]
 SeeAlso: [FindInfraPoint, RandomInfraPoint, InfraCenter, InfraDensity, InfraScene]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

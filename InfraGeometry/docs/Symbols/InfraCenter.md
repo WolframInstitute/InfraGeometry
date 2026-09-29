@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraCenter
 Keywords: [point, center, eccentricity]
 SeeAlso: [RandomInfraPoint, GraphCenter]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

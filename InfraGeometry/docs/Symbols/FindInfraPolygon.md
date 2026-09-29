@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraPolygon
 Keywords: [polygon, corners, geodesic sides, product class, Euclid Definition 19]
 SeeAlso: [InfraPolygon, FindInfraTriangle, FindInfraRegularPolygon, FindInfraSegment, InfraPolygonQ]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

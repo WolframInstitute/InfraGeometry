@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraRayQ
 Keywords: [ray, half-line, geodesic, inextensible, predicate]
 SeeAlso: [InfraRay, FindInfraRay, PencilDirections, InfraSegmentQ, InfraLineQ]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

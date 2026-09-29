@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/LineCount
 Keywords: [line, count, inextensible geodesic]
 SeeAlso: [FindInfraLine, InfraLineQ, PencilCardinality, UniversalLineQ, FindLineStructure]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSceneViewer
 Keywords: [viewer, interactive, construction, step, branch]
 SeeAlso: [InfraScene, FindInfraScene, InfraHighlightGraph, InfraSceneInstance, InfraGeometricStep]
-RelatedGuides: [VisualizationGuide]
+RelatedGuides: [EuclideanGeometryGuide]
 ---
 
 ## Usage

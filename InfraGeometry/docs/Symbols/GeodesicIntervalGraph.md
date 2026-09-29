@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/GeodesicIntervalGraph
 Keywords: [metric interval, geodesic DAG, shortest paths, geodesic count, segment]
 SeeAlso: [MetricInterval, FindInfraSegment, InfraSegment, GeodesicSprayGraph, GeodesicExtensionGraph, TubeVolumes]
-RelatedGuides: [RiemannianGeometryGuide]
+RelatedGuides: [EuclideanGeometryGuide]
 ---
 
 ## Usage

@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/GeodesicExtensionGraph
 Keywords: [geodesic extension, DAG, spray, line pool, ray pool, distance matrix]
 SeeAlso: [GeodesicSprayGraph, FindInfraLine, FindInfraRay, ExtendInfraSegment, FindInfraSegment, InfraDensity]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

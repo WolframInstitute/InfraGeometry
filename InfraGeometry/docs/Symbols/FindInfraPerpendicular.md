@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraPerpendicular
 Keywords: [perpendicular, Euclid I.12, foot, right angle, radius]
 SeeAlso: [InfraPerpendicularQ, FindInfraParallel, FindInfraLine, FindClosestInfraPoint, InfraAngle]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

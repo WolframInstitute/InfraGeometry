@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSegmentQ
 Keywords: [segment, geodesic, shortest path, predicate]
 SeeAlso: [InfraSegment, FindInfraSegment, InfraWalkQ, InfraGeodesicQ, InfraLineQ, InfraRayQ, InfraMemberQ]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

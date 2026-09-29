@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraParallelQ
 Keywords: [parallel, constant distance, level set, Euclid Definition 23]
 SeeAlso: [FindInfraParallel, InfraPerpendicularQ, InfraLineQ, FindInfraShell, FindInfraLine]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

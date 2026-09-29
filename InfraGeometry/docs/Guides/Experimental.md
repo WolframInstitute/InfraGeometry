@@ -17,6 +17,8 @@ Every exported symbol that no other guide of the site covers, one section per ke
 
 ### Synthetic · InfraPoint.wl
 
+- `InfraPoint` the scene-language token for the point search, FindInfraPoint minus the graph
+- `FindInfraMidpoint` the density of the middle vertices of every geodesic from p1 to p2, one vertex at even distance, two at odd
 - `FindInfraGoldenSection` the density at the golden-ratio index along every geodesic from p1 to p2
 - `FindInfraReflection` the reflections x' of x through a
 - `CompleteInfraEquilateralTriangle` the apexes equidistant from p1 and p2 at distance d(p1, p2) (Euclid I.1)
@@ -24,16 +26,20 @@ Every exported symbol that no other guide of the site covers, one section per ke
 - `FindClosestInfraPoint` the vertices of a line at minimum graph distance from a point
 - `SelectInfraPoint` draws a vertex from a supplied bundle under graph distance
 - `InfraReachableQ` whether p1 and p2 have realisations in the same connected component
+- `RandomInfraPoint` a uniformly random vertex, or one at distance d from p
 - `InfraCenter` a vertex of least eccentricity
 
 ### Synthetic · InfraMeasurement.wl
 
 - `Undetermined` the value of the measurement "Faithful" on a head whose graph is faithful only under a hypothesis this paclet does not certify
+- `InfraSubgraph` the subgraph induced on the support of an object; obj -> t thickens the support by t steps
 
 ### Synthetic · InfraSegment.wl
 
+- `FindInfraSegment` one geodesic from p to q as a vertex list; a trailing count gives a List of them
 - `ExtendInfraSegment` the geodesics containing a segment, extended by at most kspec edges per side
 - `InfraWalkQ` whether consecutive vertices of a walk are adjacent, revisits allowed
+- `InfraSegmentQ` whether a walk is a geodesic
 - `UniqueInfraSegmentQ` whether the u-v geodesic is unique
 
 ### Synthetic · InfraWalk.wl
@@ -49,6 +55,7 @@ Every exported symbol that no other guide of the site covers, one section per ke
 
 ### Synthetic · InfraLine.wl
 
+- `FindInfraLine` one line through p and q as a vertex list, an inextensible geodesic through both; a trailing count gives a List of them
 - `FindInfraParallel` one parallel to a line through p
 - `FindInfraPerpendicular` the lines through a point perpendicular to a line
 - `FindInfraCommonLine` the canonical lines containing every listed vertex
@@ -85,12 +92,17 @@ Every exported symbol that no other guide of the site covers, one section per ke
 
 ### Synthetic · InfraBall.wl
 
+- `FindInfraBall` the closed ball {v : d(c, v) <= r} as a sorted vertex list
 - `InfraBallQ` whether a vertex set is a closed metric ball
 
 ### Synthetic · InfraCircle.wl
 
 - `FindInfraCycle` the n shortest simple cycles of a graph
 - `InfraCircleQ` whether a cycle is a cyclic edge chain whose vertex set is a metric shell
+
+### Synthetic · InfraArc.wl
+
+- `FindInfraArc` one arc around c through the points as a vertex list; a trailing count gives a List of them
 
 ### Synthetic · InfraPolygon.wl
 
@@ -119,6 +131,7 @@ Every exported symbol that no other guide of the site covers, one section per ke
 
 ### Synthetic · InfraRay.wl
 
+- `FindInfraRay` one ray from p through q as a vertex list, a geodesic from p through q that no neighbour of its last vertex prolongs; a trailing count gives a List of them
 - `InfraRayQ` whether a ray is a pointed half-line
 - `PencilDirections` the pencil at O, every ray from O
 - `PencilCardinality` the number of rays from O, counted on the ray pools without enumeration
@@ -141,7 +154,6 @@ Every exported symbol that no other guide of the site covers, one section per ke
 
 - `InfraScalarProduct` the base-point-relative product d(o, u) d(o, v) cos(theta), at curvature 0 the polar form of the metric
 - `FindInfraLinearCombination` the vertex realisations of a linear combination of vertices, based at o
-- `InfraAngle` the angle at p in radians
 
 ### Synthetic · InfraCurveGeometry.wl
 
@@ -232,7 +244,7 @@ Every exported symbol that no other guide of the site covers, one section per ke
 
 ### Synthetic · InfraScene.wl
 
-- `InfraGeometricStep` groups hypotheses into one construction step of a scene
+- `InfraSceneInstance` wraps a solved binding association; with a symbol, reads one object out of it
 - `InfraIntersection` the vertex-set intersection of shapes on a graph
 - `InfraUnion` the vertex-set union of shapes on a graph, as a sorted list
 - `InfraDistance` the graph distance between two infra-objects, aggregated over their vertex sets
@@ -256,7 +268,6 @@ Every exported symbol that no other guide of the site covers, one section per ke
 - `SegmentViewer` an interactive viewer for exploring geodesic segments
 - `ShellViewer` an interactive viewer for exploring metric shells
 - `CircleViewer` an interactive viewer for exploring separating cycles
-- `InfraSceneViewer` an interactive step-by-step visualisation of an InfraScene on a graph
 
 ### Riemannian · VolumeGrowth.wl
 

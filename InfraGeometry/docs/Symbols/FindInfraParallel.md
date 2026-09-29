@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraParallel
 Keywords: [parallel, parallel postulate, Playfair, Euclid Postulate 5, level set, pool]
 SeeAlso: [InfraParallelQ, FindInfraLine, InfraLine, FindInfraPerpendicular, InfraLineQ, FindInfraBisectingHyperplane]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

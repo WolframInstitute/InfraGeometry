@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/PencilDirections
 Keywords: [pencil, ray, direction, unit tangent sphere]
 SeeAlso: [PencilCardinality, FindInfraRay, InfraRayQ, LineCount, SameDirectionQ, UniqueCollinearQ]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

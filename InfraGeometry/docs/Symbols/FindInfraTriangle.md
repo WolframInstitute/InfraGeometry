@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraTriangle
 Keywords: [triangle, corners, geodesic sides, product class, Euclid I.22]
 SeeAlso: [InfraTriangle, FindInfraPolygon, CompleteInfraEquilateralTriangle, FindInfraSegment, InfraTriangleQ, ComparisonTriangle]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

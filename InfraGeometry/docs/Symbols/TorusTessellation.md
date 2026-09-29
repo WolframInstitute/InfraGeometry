@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/TorusTessellation
 Keywords: [torus, flat torus, square lattice, triangular lattice, honeycomb, Cayley graph, wraparound]
 SeeAlso: [TessellationGraph, InfraSubstrate, FindInfraShell, InfraSegment, InfraHighlightGraph]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [SubstratesGuide]
 ---
 
 ## Usage

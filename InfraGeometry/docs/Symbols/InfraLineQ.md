@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraLineQ
 Keywords: [line, inextensible geodesic, predicate]
 SeeAlso: [FindInfraLine, InfraLine, InfraSegmentQ, InfraRayQ]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

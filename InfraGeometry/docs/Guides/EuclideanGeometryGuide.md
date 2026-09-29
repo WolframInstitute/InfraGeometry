@@ -44,6 +44,8 @@ Synthetic geometry of Euclidean-like objects in graphs. We provide a language fo
 - `InfraMeasurement` a property of a head on a graph: "Graph", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph", "Faithful" and the volumes; a List of properties gives an Association, All gives every property
 - `InfraDensity` the marginal of any shape to the vertex set with respect to the counting measure: a vertex, a vertex list, a density, a walk graph; the one coercion in the API
 - `InfraVertexList` one member of a head as a vertex list; a trailing count gives a List of them, "RandomChoice" a uniformly random member
+- `InfraMemberQ` whether a vertex list is a member of a head on a graph; the form whose head has unknowns, true when some parameters make the vertex set its evaluation, waits
+- waits: FindInfraParameters, the inverse of every head: the values of its unknowns for which a vertex set is its evaluation, one parameter set as an Association, a trailing count a List of them, a condition list fixing some
 
 ### Substrates and Drawing
 

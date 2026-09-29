@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/PencilCardinality
 Keywords: [pencil, ray, direction, count]
 SeeAlso: [PencilDirections, FindInfraRay, InfraRay, LineCount, UniqueCollinearQ]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

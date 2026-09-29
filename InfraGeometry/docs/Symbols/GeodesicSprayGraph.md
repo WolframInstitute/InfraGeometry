@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/GeodesicSprayGraph
 Keywords: [geodesic spray, exponential map, breadth-first search, geodesic DAG, shortest paths]
 SeeAlso: [GeodesicIntervalGraph, GeodesicExtensionGraph, FindInfraGeodesic, FindInfraShell, BallVolumes]
-RelatedGuides: [RiemannianGeometryGuide]
+RelatedGuides: [EuclideanGeometryGuide]
 ---
 
 ## Usage

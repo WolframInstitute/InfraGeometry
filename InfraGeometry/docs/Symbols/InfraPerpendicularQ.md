@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraPerpendicularQ
 Keywords: [perpendicular, right angle, projection, foot, tolerance]
 SeeAlso: [FindInfraPerpendicular, InfraParallelQ, InfraAngle, InfraEqualQ, InfraLineQ]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

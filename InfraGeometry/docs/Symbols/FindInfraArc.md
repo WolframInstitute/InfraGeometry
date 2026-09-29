@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraArc
 Keywords: [arc, circle, band, search]
 SeeAlso: [InfraArc, InfraVertexList, FindInfraCircle, FindInfraSegment]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

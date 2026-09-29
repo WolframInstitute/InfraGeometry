@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraMidpoint
 Keywords: [midpoint, geodesic, bisection, effective point, Euclid I.10]
 SeeAlso: [FindInfraSegment, InfraPoint, InfraDensity, FindInfraReflection, BetweennessQ]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraBall
 Keywords: [ball, disk, volume growth, dimension, neighborhood]
 SeeAlso: [InfraBall, FindInfraShell, BallVolumes, InfraBallQ, FindBallHull, FindInfraCircle]
-RelatedGuides: [RiemannianGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage
