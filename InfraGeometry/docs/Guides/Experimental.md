@@ -6,12 +6,12 @@ Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/Experimental
 Keywords: [experimental, index, kernel files, synthetic, Riemannian]
-RelatedGuides: [EuclideanGeometryGuide, RiemannianGeometryGuide]
+RelatedGuides: [EuclideanGeometryGuide, RiemannianGeometryGuide, TopologicalPropertiesGuide, TangentSpacesAndFormsGuide, FiberBundlesGuide, SubstratesGuide]
 ---
 
 ## Abstract
 
-Every exported symbol that the Euclidean guide and the Riemannian guide do not cover, one section per kernel file: the synthetic branch first, then the Riemannian branch, then the infrastructure. The symplectic branch has no code yet. Each entry is the symbol's usage message cut to one line. A linked name opens its existing reference page, which has not been revised for this site; a name in bold has no reference page.
+Every exported symbol that no other guide of the site covers, one section per kernel file: the synthetic branch first, then the Riemannian branch, then the infrastructure. The symplectic branch has no code yet. Each entry is the symbol's usage message cut to one line. A linked name opens its existing reference page, which has not been revised for this site; a name in bold has no reference page.
 
 ## Functions
 
@@ -86,8 +86,6 @@ Every exported symbol that the Euclidean guide and the Riemannian guide do not c
 ### Synthetic · InfraBall.wl
 
 - `InfraBallQ` whether a vertex set is a closed metric ball
-- `FindBallHull` the ball hull of S, as a multiset
-- `BallHullQ` whether S is ball-convex, an intersection of closed balls
 
 ### Synthetic · InfraCircle.wl
 
@@ -262,7 +260,6 @@ Every exported symbol that the Euclidean guide and the Riemannian guide do not c
 
 ### Riemannian · VolumeGrowth.wl
 
-- **BallHull** — the ball hull of a vertex subset S of g
 - **CylinderVolumes** — the matrix of cylinder volumes between every source-target pair
 - **IntervalVolumes** — the volume profile of the interval between p and q, over the slack r
 - **GeodesicOccupation** — the per-vertex geodesic occupation over a geodesic DAG
@@ -270,36 +267,9 @@ Every exported symbol that the Euclidean guide and the Riemannian guide do not c
 
 ### Riemannian · TessellationGraphs.wl
 
-- **TessellationCurvature** — the combinatorial Gaussian curvature at a vertex of a {p, q} regular map or of a uniform map
-- **TessellationEulerCharacteristic** — the Euler characteristic V - E + F of the realised tessellation graph
-- **TessellationGenus** — the orientable genus of the realised tessellation graph
-- **TessellationNeighborhoodGraph** — the radius-r ball cut from the infinite regular {p, q} tessellation of its covering surface
 - **CosetEnumeration** — the Todd-Coxeter index of a subgroup of the von Dyck group D(p, q, 2)
 - **LowIndexMaps** — every {p, q} map of index at most maxIndex up to isomorphism, by low-index subgroup enumeration
 - **RotationMapGraph** — the 1-skeleton of the orientable map of a rotation pair {x, y}
-
-### Riemannian · Displacements.wl
-
-- **DisplacementCompose** — composes displacements as flows, the leftmost acting first
-- **DisplacementScale** — scales displacement d by t
-- **DisplacementNegative** — the metric negative of d
-- **DisplacementInverse** — reverses the relation d
-- **DisplacementSum** — the bisector of the two composition orders of d1 and d2
-- **DisplacementCommutator** — the commutator loop of two displacements, selected by Method
-- **DisplacementBracket** — the scale-dependent metric bracket candidate, the commutator with Method -> "Negative"
-- **DisplacementMagnitude** — the maximal step length of displacement d
-- **DisplacementReduce** — contracts each value set of d to its metric centre, iterated to a fixed point
-- **DisplacementSingleValuedQ** — whether every value of displacement d is a single vertex
-- **DisplacementBijectionQ** — whether displacement d is a single-valued permutation of the vertex set
-- **DisplacementIsomorphismQ** — whether displacement d is a graph automorphism of g
-- **ContinuousDisplacementQ** — tests k-continuity of displacement d
-- **RandomDisplacement** — generates a random continuous displacement of magnitude at most r
-- **FindKillingDisplacement** — finds the nontrivial graph automorphism of least displacement magnitude, as a displacement
-- **KillingDisplacementMagnitude** — the least magnitude of a nonidentity graph automorphism, or Infinity when g is asymmetric
-- **PolarDisplacements** — the polar pair of radial and angular displacements at centre c
-- **GradientDisplacement** — the steepest-ascent displacement of a vertex function f
-- **TranslationDisplacement** — translates along the graph embedding
-- **DisplacementPlot** — draws displacement d as bent arcs over the graph's own embedding
 
 ### Riemannian · Boundary.wl
 
@@ -311,28 +281,11 @@ Every exported symbol that the Euclidean guide and the Riemannian guide do not c
 - **CenterGraph** — the substrate cut to a fraction q of the way out from its centre
 - **RelativeEccentricity** — the eccentricity of each vertex rescaled to run from 0 at the radius to 1 at the diameter
 
-### Riemannian · BallTopology.wl
-
-- **BallTopology** — the Hasse diagram of the r-ball specialization preorder on the vertices of g
-- **TopologicalClosure** — the closure of a vertex list in a specialization-preorder digraph
-- **TopologicalInterior** — the interior of a vertex list in a specialization-preorder digraph
-- **TopologicalBoundary** — the two-sided boundary, closure minus interior, of a vertex list in a specialization-preorder digraph
-- **TopologicalNeighborhood** — the unique minimal open neighborhood of a vertex list in a specialization-preorder digraph
-- **ContinuousMapQ** — whether a vertex map is continuous from one preorder digraph to another
-- **TopologyGraph** — draws g overlaid with the Hasse arrows of a specialization-preorder digraph
-
 ### Riemannian · ExampleGraphs.wl
 
 - **SierpinskiGraph** — the trivalent Sierpinski graph
 - **BetheGraph** — the finite Bethe lattice, or Cayley tree, of n shells and coordination number z
 - **BranchingSequenceTree** — the spherically symmetric rooted tree whose offspring count depends only on depth
-- **InflateGraph** — grows a fiber of extra vertices over every vertex of g and adds random edges between nearby fibers
-- **InflatedVertex** — the i-th fiber vertex over base vertex v in a graph produced by InflateGraph
-
-### Riemannian · InfraSubstrate.wl
-
-- **InfraSubstrateStyle** — the Graph options a substrate backdrop is drawn with at a given size
-- **InfraSubstrateCode** — the code behind InfraSubstrate[name, size]
 
 ### Riemannian · UniformLengthDiscretization.wl
 
@@ -346,9 +299,6 @@ Every exported symbol that the Euclidean guide and the Riemannian guide do not c
 - **FindResolvingSet** — up to n resolving sets, or metric bases, of g by ascending size
 - **MetricDimension** — the metric dimension of g
 - **ResistanceCoordinates** — the spectral embedding whose squared distances are the effective resistances
-- **FindBallCover** — a minimum r-ball cover of g
-- **BallCoverQ** — whether the radius-r balls around the centres S cover every vertex of g
-- **DominationNumber** — the r-domination number of g
 - `OrthogonalCoordinates` the integer displacement of v along each axis through the centre c
 - `FindInfraOrthogonalFrame` frames of mutually perpendicular geodesic axes through the centre c
 - `FindInfraSpanningAxes` n mutually well-separated longest geodesics across a graph, with no fixed centre
@@ -358,35 +308,6 @@ Every exported symbol that the Euclidean guide and the Riemannian guide do not c
 - **OllivierRicciCurvature** — the Ollivier-Ricci curvature of every edge, with the uniform measure on each neighbourhood
 - **EffectiveResistance** — the Klein-Randic resistance distance R(u, v), from the pseudoinverse of the graph Laplacian
 - **ResistanceQ** — whether a symmetric matrix with zero diagonal is realisable as a resistance distance matrix
-
-### Riemannian · BallIntersectionComplex.wl
-
-- **MiniballRadius** — the radius of the smallest enclosing ball of the points
-- **BallIntersectionComplex** — the order-k ball-intersection complex of closed radius-r balls
-- **CechComplex** — the Cech complex, or nerve, of closed radius-r balls
-- **BallIntersectionFiltrationValue** — the birth radius of a simplex in the order-k complex
-- **BallIntersectionFiltration** — the order-k complexes over the sorted radii, ready for PersistenceIntervals
-- **CechFiltration** — the Cech complexes over the sorted radii
-- **BallIntersectionBifiltration** — the complexes over both the radius r and the order k
-
-### Riemannian · DifferentialForms.wl
-
-- **FormValue** — the value of the germ of form w at vertex v on a tuple of neighbours of v, alternating in the tuple
-- **CochainValue** — the value of an alternating cochain on an arbitrary vertex tuple, by the sign of the sorting permutation
-- **OrderedCochainValue** — the value of an ordered cochain on an increasing vertex tuple, 0 off the complex
-- **FormDegree** — the degree of form w, read off a stored germ
-- **CochainDegree** — the degree of cochain a
-- **ZeroForm** — a vertex function f as a 0-form on g
-- **RestrictionMap** — the form obtained from an alternating cochain by reading it with the base vertex prepended
-- **IntegrationMap** — the alternating cochain obtained by averaging the germs of a form over the vertices of each clique, with the orientation sign
-- **Coboundary** — the coboundary of cochain a
-- **FormDifferential** — the differential of form w
-- **NaiveDifferential** — the differential of a 1-form with the transport term dropped
-- **FormWedge** — the wedge product of forms, the exterior product on each tangent fiber
-- **CochainCup** — the cup product of alternating cochains
-- **OrderedCochainCup** — the bare Alexander-Whitney cup product of ordered cochains
-- **CochainCupOne** — the Steenrod cup-1 product of ordered cochains
-- **AntisymmetrizedCup** — an alias of CochainCup, the name the antisymmetrised product carried before it became the cup product
 
 ### Infrastructure · GraphEnumeration.wl
 
