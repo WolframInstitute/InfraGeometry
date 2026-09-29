@@ -11,7 +11,7 @@ RelatedGuides: [EuclideanGeometryGuide, RiemannianGeometryGuide, TopologicalProp
 
 ## Abstract
 
-A fibered graph is a graph with a projection onto a base graph, the preimage of each base vertex its fiber. It is a fiber bundle when the fibers are isomorphic and the edges over each base edge lift consistently. A connection chooses how an edge of the base lifts to the fibers; transport along a closed walk of the base returns a permutation of the fiber, its holonomy, and the connection is flat when every holonomy is trivial. A section picks a vertex of each fiber. The basic symbols of this layer exist in the InfraGaugeTheory paclet and are to be copied here, so every section of this guide still waits.
+A fibered graph is a graph with a projection onto a base graph, the preimage of each base vertex its fiber. It is a fiber bundle when the fibers are isomorphic and the edges over each base edge lift consistently. A connection chooses how an edge of the base lifts to the fibers; transport along a closed walk of the base returns a permutation of the fiber, its holonomy, and the connection is flat when every holonomy is trivial. A section picks a vertex of each fiber. The Levi-Civita connection is the connection of the tangent spaces that the metric singles out. The basic symbols of this layer exist in the InfraGaugeTheory paclet and are to be copied here, so every section of this guide still waits.
 
 ## Functions
 
@@ -22,6 +22,7 @@ A fibered graph is a graph with a projection onto a base graph, the preimage of 
 ### Connections and holonomy
 
 - waits: connections and their holonomy, copied from InfraGaugeTheory, where they are ConnectionQ, RandomConnection, ParallelTransport, HolonomyMatrix and FlatConnectionQ
+- waits: the Levi-Civita connection on the tangent spaces, copied from InfraGaugeTheory, where it is FindInfraLeviCivitaConnection with InfraParallelTransport, InfraHolonomy and InfraConnectionCurvature
 
 ### Sections
 
