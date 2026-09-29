@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **1.0.1** (2026-09-29): four new guides from the PacletBlueprint, *Topological Properties*, *Tangent Spaces and Forms*, *Fiber Bundles* and *Substrates*; the Experimental guide keeps 170 entries, the rest now on those guides, and the Riemannian guide hands them its covering dimension, ball intersection complex, tangent germs and Levi-Civita sections. Documentation only; no kernel change.
+
 - **1.0.0** (2026-09-28): the paclet is renamed `WolframInstitute/InfraGeometry`, context `WolframInstitute`InfraGeometry``; the paclet directory, the loader `Kernel/InfraGeometry.wl` and the guide `InfraGeometryGuide` follow, and every reference to the sibling paclet names it `DiscreteGeometry` (formerly `Infrageometry`). No symbol changed. The cloud object `SyntheticInfrageometry.paclet` is frozen at 0.17.2; new installs use `InfraGeometry.paclet`.
 
 - **0.17.2** (2026-09-27): `InfraHighlightGraph` (below).
