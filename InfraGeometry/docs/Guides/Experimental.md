@@ -265,32 +265,12 @@ Every exported symbol that no other guide of the site covers, one section per ke
 - **GeodesicOccupation** — the per-vertex geodesic occupation over a geodesic DAG
 - **GeodesicEdgeOccupation** — the per-edge geodesic occupation over a geodesic DAG
 
-### Riemannian · TessellationGraphs.wl
-
-- **CosetEnumeration** — the Todd-Coxeter index of a subgroup of the von Dyck group D(p, q, 2)
-- **LowIndexMaps** — every {p, q} map of index at most maxIndex up to isomorphism, by low-index subgroup enumeration
-- **RotationMapGraph** — the 1-skeleton of the orientable map of a rotation pair {x, y}
-
 ### Riemannian · Boundary.wl
 
 - **GraphBoundary** — the inner vertex boundary of S in g, the vertices where an edge of g escapes S
 - **GraphInterior** — the interior of S in g, S minus its GraphBoundary
-- **GraphExteriorBoundary** — the exterior-boundary, rim, vertices of the whole graph, detected from vertex degrees
-- **BoundarylessGraph** — deletes every edge joining two rim vertices and then the vertices this isolates
 - **GraphEccentricities** — the eccentricity of every vertex, in VertexList order
-- **CenterGraph** — the substrate cut to a fraction q of the way out from its centre
 - **RelativeEccentricity** — the eccentricity of each vertex rescaled to run from 0 at the radius to 1 at the diameter
-
-### Riemannian · ExampleGraphs.wl
-
-- **SierpinskiGraph** — the trivalent Sierpinski graph
-- **BetheGraph** — the finite Bethe lattice, or Cayley tree, of n shells and coordination number z
-- **BranchingSequenceTree** — the spherically symmetric rooted tree whose offspring count depends only on depth
-
-### Riemannian · UniformLengthDiscretization.wl
-
-- **UniformLengthGraph** — the contact graph of a hard-sphere packing relaxed in a region, filling a solid or meshing a surface
-- **UniformLengthEmbedding** — embeds a graph in R^d so that every edge is a unit segment
 
 ### Riemannian · Coordinatization.wl
 

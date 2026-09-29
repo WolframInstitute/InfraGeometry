@@ -11,7 +11,7 @@ RelatedGuides: [EuclideanGeometryGuide, RiemannianGeometryGuide, TopologicalProp
 
 ## Abstract
 
-The substrate is the graph the observer lives on. InfraSubstrate names the example substrates every figure is built on, at three sizes, with the style they are drawn in and the code that builds them. The tessellation graphs are the regular and uniform maps: a Platonic solid, a flat torus or a hyperbolic quotient, and the ball cut from an infinite tiling of the plane, the hyperbolic plane or the sphere. A tessellation carries its combinatorial curvature, Euler characteristic and genus, which say what surface the graph is. Any substrate can be inflated: InflateGraph grows a fiber of extra vertices over every vertex, and InfraSubstrate applies it through its Inflate option. Two sections still wait: warped products, whose one example today is the Kasner graph in the dev repo's experimental code, and a test whether a graph is surface-like, that is, whether at the scale of the constructions its metric balls are discs and its metric shells are cycles.
+The substrate is the graph the observer lives on. InfraSubstrate names the example substrates every figure is built on, at three sizes, with the style they are drawn in and the code that builds them. The tessellation graphs are the regular and uniform maps: a Platonic solid, a flat torus or a hyperbolic quotient, and the ball cut from an infinite tiling of the plane, the hyperbolic plane or the sphere. A tessellation carries its combinatorial curvature, Euler characteristic and genus, which say what surface the graph is. A uniform-length graph is the contact graph of a hard-sphere packing of a region, a manifold discretised so that its edges have nearly equal length; the example graphs add fractals and trees. A substrate is prepared by cutting it to its centre or removing its rim, and any substrate can be inflated: InflateGraph grows a fiber of extra vertices over every vertex, and InfraSubstrate applies it through its Inflate option. Every function InfraSubstrate builds its roster from is on this page. Two sections still wait: warped products, whose one example today is the Kasner graph in the dev repo's experimental code, and a test whether a graph is surface-like, that is, whether at the scale of the constructions its metric balls are discs and its metric shells are cycles.
 
 ## Functions
 
@@ -27,12 +27,35 @@ The substrate is the graph the observer lives on. InfraSubstrate names the examp
 - `TorusTessellation` the flat-torus graph carrying the square, triangular or hexagonal tessellation
 - **TessellationNeighborhoodGraph** — the radius-r ball cut from the infinite regular {p, q} tessellation, with its embedding
 
+### Maps behind the tessellations
+
+- **CosetEnumeration** — the Todd-Coxeter index of a subgroup of the von Dyck group D(p, q, 2)
+- **LowIndexMaps** — every {p, q} map of index at most maxIndex up to isomorphism, by low-index subgroup enumeration
+- **RotationMapGraph** — the 1-skeleton of the orientable map of a rotation pair {x, y}
+
+### Uniform-length graphs
+
+- **UniformLengthGraph** — the contact graph of a hard-sphere packing relaxed in a region, filling a solid or meshing a surface
+- **UniformLengthEmbedding** — embeds a graph in R^d so that every edge is a unit segment
+
+### Other example graphs
+
+- **SierpinskiGraph** — the trivalent Sierpinski graph
+- **BetheGraph** — the finite Bethe lattice, or Cayley tree, of n shells and coordination number z
+- **BranchingSequenceTree** — the spherically symmetric rooted tree whose offspring count depends only on depth
+
 ### Surface-like graphs
 
 - **TessellationCurvature** — the combinatorial Gaussian curvature at a vertex of a regular or uniform map; its sign says spherical, flat or hyperbolic
 - **TessellationEulerCharacteristic** — the Euler characteristic V - E + F of a tessellation graph
 - **TessellationGenus** — the orientable genus of a tessellation graph, from its Euler characteristic
 - waits: a test whether a graph is surface-like at a scale, its metric balls discs and its metric shells cycles
+
+### Preparing a substrate
+
+- **CenterGraph** — the substrate cut to a fraction q of the way out from its centre
+- **BoundarylessGraph** — deletes every edge joining two rim vertices and then the vertices this isolates, an open window onto the geometry
+- **GraphExteriorBoundary** — the rim vertices of the whole graph, detected from vertex degrees
 
 ### Inflated substrates
 
