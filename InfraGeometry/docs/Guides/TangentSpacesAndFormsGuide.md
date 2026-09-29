@@ -69,4 +69,4 @@ The first-order structure of a substrate: the tangent space at a vertex, the dis
 
 ### The tautological 1-form
 
-- waits: the tautological 1-form on the cotangent space, copied from InfraGaugeTheory, where it is InfraTautologicalOneForm with GraphCotangentBundle
+- waits: the cotangent space and the tautological 1-form, copied from InfraGaugeTheory, where they are GraphCotangentBundle, CotangentFlip, InfraTautologicalSection and InfraTautologicalOneForm, the last evaluated by InfraCanonicalOneForm
