@@ -202,13 +202,13 @@ VerificationTest[
   TestID -> "FindInfraScene-InfraCircle-FindInfraCircle"
 ]
 
-(* ===== InfraGeometricStep ===== *)
+(* ===== InfraStep ===== *)
 
 VerificationTest[
   With[{
     scene = InfraScene[{a, b, s}, {
-      InfraGeometricStep[{a == InfraPoint[], b == InfraPoint[]}, "pick points"],
-      InfraGeometricStep[{s == InfraSegment[a, b]}, "draw segment"]
+      InfraStep[{a == InfraPoint[], b == InfraPoint[]}, "pick points"],
+      InfraStep[{s == InfraSegment[a, b]}, "draw segment"]
     }],
     g = PathGraph[Range[5]]
   },
@@ -217,28 +217,28 @@ VerificationTest[
     scene["Labels"] === {"pick points", "draw segment"}
   ],
   True,
-  TestID -> "InfraGeometricStep-scene-construction"
+  TestID -> "InfraStep-scene-construction"
 ]
 
 VerificationTest[
   With[{
     scene = InfraScene[{a, b, s}, {
-      InfraGeometricStep[{a == InfraPoint[], b == InfraPoint[]}],
-      InfraGeometricStep[{s == InfraSegment[a, b]}]
+      InfraStep[{a == InfraPoint[], b == InfraPoint[]}],
+      InfraStep[{s == InfraSegment[a, b]}]
     }],
     g = PathGraph[Range[5]]
   },
     AllTrue[FindInfraScene[scene, g], MatchQ[InfraSceneInstance[_Association]]]
   ],
   True,
-  TestID -> "InfraGeometricStep-FindInfraScene"
+  TestID -> "InfraStep-FindInfraScene"
 ]
 
 VerificationTest[
   With[{
     sceneManual = InfraScene[{p, q, s}, {
-      InfraGeometricStep[{p == InfraPoint[], q == InfraPoint[]}],
-      InfraGeometricStep[{s == InfraSegment[p, q]}]
+      InfraStep[{p == InfraPoint[], q == InfraPoint[]}],
+      InfraStep[{s == InfraSegment[p, q]}]
     }],
     sceneAuto = InfraScene[{p, q, s}, {
       p == InfraPoint[], q == InfraPoint[], s == InfraSegment[p, q]
@@ -248,14 +248,14 @@ VerificationTest[
     Length[FindInfraScene[sceneManual, g]] == Length[FindInfraScene[sceneAuto, g]]
   ],
   True,
-  TestID -> "InfraGeometricStep-same-results-as-auto"
+  TestID -> "InfraStep-same-results-as-auto"
 ]
 
 VerificationTest[
   With[{
     scene = InfraScene[{a, b, s}, {
-      InfraGeometricStep[{a == InfraPoint[], b == InfraPoint[]}],
-      InfraGeometricStep[{s == InfraSegment[a, b]}],
+      InfraStep[{a == InfraPoint[], b == InfraPoint[]}],
+      InfraStep[{s == InfraSegment[a, b]}],
       InfraDistance[a, b] >= 3
     }],
     g = PathGraph[Range[5]]
@@ -264,7 +264,7 @@ VerificationTest[
       inst |-> GraphDistance[g, inst[[1]][a], inst[[1]][b]] >= 3]
   ],
   True,
-  TestID -> "InfraGeometricStep-global-assertion"
+  TestID -> "InfraStep-global-assertion"
 ]
 
 (* ===== Initial Bindings ===== *)
@@ -636,7 +636,7 @@ VerificationTest[
 (* A real predicate outside the scene table is refused on the same grounds. *)
 VerificationTest[
   InfraScene[ { ua, us }, {
-    InfraGeometricStep[ { ua == InfraPoint[ ] } ], InfraGeodesicQ[ us ] } ],
+    InfraStep[ { ua == InfraPoint[ ] } ], InfraGeodesicQ[ us ] } ],
   $Failed,
   { InfraScene::badassertion },
   TestID -> "InfraScene-unknown-assertion-head-refused-manual-steps"
@@ -681,9 +681,9 @@ VerificationTest[
      copies it makes.  It arrived with ExampleGraphs.wl in the paclet split (T2a). *)
   { "InflatedVertex",
     "InfraArc", "InfraBall", "InfraCircle", "InfraEllipse", "InfraEllipticShell",
-    "InfraGeometricStep", "InfraIntersectQ", "InfraLine", "InfraPlane", "InfraPoint",
+    "InfraIntersectQ", "InfraLine", "InfraPlane", "InfraPoint",
     "InfraPolygon", "InfraPolyline", "InfraRay", "InfraRevolution", "InfraSegment",
-    "InfraShell", "InfraTriangle", "InfraWalk", "Undetermined" },
+    "InfraShell", "InfraStep", "InfraTriangle", "InfraWalk", "Undetermined" },
   TestID -> "InfraScene-valueless-exports-are-scene-tokens"
 ]
 
@@ -708,11 +708,11 @@ VerificationTest[
 
 VerificationTest[
   With[ { scene = InfraScene[ { sa, sb }, {
-      InfraGeometricStep[ { sa == InfraPoint[ ] } ],
-      InfraGeometricStep[ { sb == InfraPoint[ ] } ] } ] },
+      InfraStep[ { sa == InfraPoint[ ] } ],
+      InfraStep[ { sb == InfraPoint[ ] } ] } ] },
     scene[ "ManualSteps" ] === True && scene[ "Steps" ] === { { sa }, { sb } } ],
   True,
-  TestID -> "InfraScene-token-InfraGeometricStep-carries-a-step"
+  TestID -> "InfraScene-token-InfraStep-carries-a-step"
 ]
 
 (* Every scene assertion delegates to a named predicate.  InfraPlaneQ was the

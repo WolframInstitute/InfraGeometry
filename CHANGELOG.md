@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **1.1.0** (2026-09-29): **breaking — four renames to the names of the Euclidean guide scheme**
+  (EuclideanGuideScheme T4). No aliases. `InfraHighlightGraph` is `InfraSubstrateHighlight`,
+  `InfraGeometricStep` is `InfraStep`, `GeodesicIntervalGraph` is `SegmentGraph` (the graph of
+  `InfraSegment[u, v]`) and `GeodesicSprayGraph` is `SprayGraph`; definitions, options and return
+  shapes are unchanged. Their reference pages move with them. The Euclidean guide is rewritten to
+  the six sections of the user's scheme and lists all four; every export the scheme does not name
+  moves to the Experimental or the Riemannian guide (T2, T3).
+
 - **1.0.1** (2026-09-29): four new guides from the PacletBlueprint, *Topological Properties*, *Tangent Spaces and Forms*, *Fiber Bundles* and *Substrates*; the Experimental guide keeps 170 entries, the rest now on those guides, and the Riemannian guide hands them its covering dimension, ball intersection complex, tangent germs and Levi-Civita sections. Documentation only; no kernel change.
 
 - **1.0.0** (2026-09-28): the paclet is renamed `WolframInstitute/InfraGeometry`, context `WolframInstitute`InfraGeometry``; the paclet directory, the loader `Kernel/InfraGeometry.wl` and the guide `InfraGeometryGuide` follow, and every reference to the sibling paclet names it `DiscreteGeometry` (formerly `Infrageometry`). No symbol changed. The cloud object `SyntheticInfrageometry.paclet` is frozen at 0.17.2; new installs use `InfraGeometry.paclet`.

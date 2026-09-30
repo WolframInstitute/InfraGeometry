@@ -1,18 +1,18 @@
 ---
 Template: Symbol
-Name: GeodesicIntervalGraph
+Name: SegmentGraph
 Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
-URI: WolframInstitute/InfraGeometry/ref/GeodesicIntervalGraph
+URI: WolframInstitute/InfraGeometry/ref/SegmentGraph
 Keywords: [metric interval, geodesic DAG, shortest paths, geodesic count, segment]
-SeeAlso: [MetricInterval, FindInfraSegment, InfraSegment, GeodesicSprayGraph, GeodesicExtensionGraph, TubeVolumes]
+SeeAlso: [MetricInterval, FindInfraSegment, InfraSegment, SprayGraph, GeodesicExtensionGraph, TubeVolumes]
 RelatedGuides: [EuclideanGeometryGuide]
 ---
 
 ## Usage
 
-<code>[GeodesicIntervalGraph]()[*g*, *u*, *v*]</code> gives the metric interval between *u* and *v* as a directed acyclic graph whose directed paths from *u* to *v* are exactly the geodesics from *u* to *v*.
+<code>[SegmentGraph]()[*g*, *u*, *v*]</code> gives the metric interval between *u* and *v* as a directed acyclic graph whose directed paths from *u* to *v* are exactly the geodesics from *u* to *v*.
 
 ## Details & Options
 
@@ -33,9 +33,9 @@ The interval between two vertices of a grid, two steps apart in each direction, 
 ```wl
 With[
   {g = GridGraph[{9, 9}]},
-  {intervalDag = GeodesicIntervalGraph[g, 41, 61]},
+  {intervalDag = SegmentGraph[g, 41, 61]},
   Row[{
-    InfraHighlightGraph[g, {intervalDag, Directive[$InfraPointColor], 41, 61}, ImageSize -> 180],
+    InfraSubstrateHighlight[g, {intervalDag, Directive[$InfraPointColor], 41, 61}, ImageSize -> 180],
     Graph[intervalDag, ImageSize -> 120]}, Spacer[20]]]
 ```
 
@@ -43,7 +43,7 @@ Its size and its number of paths from source to sink.
 
 ```wl
 With[
-  {intervalDag = GeodesicIntervalGraph[GridGraph[{9, 9}], 41, 61]},
+  {intervalDag = SegmentGraph[GridGraph[{9, 9}], 41, 61]},
   {VertexCount[intervalDag], EdgeCount[intervalDag], Length @ FindPath[intervalDag, 41, 61, Infinity, All]}]
 ```
 
@@ -52,7 +52,7 @@ Corner to corner on a 21 × 21 grid: the whole grid, 840 edges, and 137,846,528,
 ```wl
 With[
   {g = GridGraph[{21, 21}]},
-  {intervalDag = GeodesicIntervalGraph[g, 1, 441]},
+  {intervalDag = SegmentGraph[g, 1, 441]},
   {VertexCount[intervalDag], EdgeCount[intervalDag], InfraMeasurement[g, InfraSegment[1, 441], "Cardinality"]}]
 ```
 
@@ -63,7 +63,7 @@ The vertices are the [MetricInterval](), the paths are the geodesics that [FindI
 ```wl
 With[
   {g = GridGraph[{9, 9}]},
-  {intervalDag = GeodesicIntervalGraph[g, 41, 61]},
+  {intervalDag = SegmentGraph[g, 41, 61]},
   {Sort @ VertexList[intervalDag] === Sort @ MetricInterval[g, 41, 61],
    Sort @ FindPath[intervalDag, 41, 61, Infinity, All] === Sort @ FindInfraSegment[g, 41, 61, All],
    Sort @ EdgeList[intervalDag] === Sort @ EdgeList @ InfraMeasurement[g, InfraSegment[41, 61], "Graph"]}]
@@ -72,5 +72,5 @@ With[
 Two vertices in different components have an empty interval.
 
 ```wl
-VertexCount @ GeodesicIntervalGraph[Graph[{1 <-> 2, 3 <-> 4}], 1, 4]
+VertexCount @ SegmentGraph[Graph[{1 <-> 2, 3 <-> 4}], 1, 4]
 ```

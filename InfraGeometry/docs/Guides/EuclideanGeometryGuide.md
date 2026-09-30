@@ -50,19 +50,19 @@ Synthetic geometry of Euclidean-like objects in graphs. We provide a language fo
 ### Substrates and Drawing
 
 - `InfraSubstrate` the named example substrates at size "Small", "Medium" or "Large": the tilings, meshes and closed surfaces the other pages draw on; InfraSubstrate[] lists the roster
-- waits: InfraSubstrateHighlight, the new name of [InfraHighlightGraph](), which draws the summed densities of a list of objects on a graph, the i-th object in the i-th palette color
+- `InfraSubstrateHighlight` the summed densities of a list of objects drawn on a graph, the i-th object in the i-th palette color; a Directive styles the objects after it
 
 ### Multi-constructions
 
 - Whereas the causal graph of Euclidean constructions is causally invariant, the branchial graphs in infrageometry are non-trivial due to multi-constructions.
 - `InfraScene` a construction stated before any graph: the objects, and hypotheses that construct them with inert heads or assert relations between them
-- waits: InfraStep, one construction encapsulated as a step of a scene, the new name of [InfraGeometricStep]()
+- `InfraStep` one construction encapsulated as a step of a scene; a second argument labels it
 - `FindInfraScene` a scene solved on a graph, step by step; a List of InfraSceneInstance bindings, one per admissible combination
 - `InfraSceneViewer` a step-by-step view of a scene on a graph; an interactive multi-construction stepper in the causal and branchial direction waits
 
 ### Underlying graphs
 
-- waits: IntervalGraph, the new name of [GeodesicIntervalGraph](): the interval I(p, q) as a directed acyclic graph whose directed p-q paths are exactly the geodesics
-- waits: SprayGraph, the new name of [GeodesicSprayGraph](): the breadth-first DAG rooted at c, whose source-to-sink paths are exactly the maximal geodesics from c
+- `SegmentGraph` the interval I(p, q) as a directed acyclic graph whose directed p-q paths are exactly the geodesics: the graph of InfraSegment[p, q]
+- `SprayGraph` the breadth-first DAG rooted at c, whose source-to-sink paths are exactly the maximal geodesics from c
 - waits: ArcGraph, the band interval DAG of an arc, whose chains are its members; internal today
 - waits: BeamGraph, the graph of a line: the List of its atoms, whose chains are the lines

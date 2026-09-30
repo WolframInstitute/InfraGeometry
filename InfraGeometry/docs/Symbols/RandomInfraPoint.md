@@ -32,7 +32,7 @@ With[
   {g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {draws = Table[RandomInfraPoint[g, c, 3], 5]},
-  InfraHighlightGraph[g, {FindInfraShell[g, c, 3], c, draws}, ImageSize -> 250]]
+  InfraSubstrateHighlight[g, {FindInfraShell[g, c, 3], c, draws}, ImageSize -> 250]]
 ```
 
 A random vertex of a grid, and a random vertex at distance 2 from its center.

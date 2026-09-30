@@ -58,7 +58,7 @@ With[
   {g = GridGraph[{9, 9}]},
   {ballSet = FindInfraBall[g, 41, 3]},
   Labeled[
-    InfraHighlightGraph[g, {ballSet -> $InfraBallColor, Directive[$InfraPointColor], Sequence @@ FindInfraShell[g, 41, 3]},
+    InfraSubstrateHighlight[g, {ballSet -> $InfraBallColor, Directive[$InfraPointColor], Sequence @@ FindInfraShell[g, 41, 3]},
       ImageSize -> 220],
     BallVolumes[g, 41, 3, "Measure" -> #] & /@ {"FullCount", "WithoutBoundary", "HalfBoundary"}]]
 ```

@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/TorusTessellation
 Keywords: [torus, flat torus, square lattice, triangular lattice, honeycomb, Cayley graph, wraparound]
-SeeAlso: [TessellationGraph, InfraSubstrate, FindInfraShell, InfraSegment, InfraHighlightGraph]
+SeeAlso: [TessellationGraph, InfraSubstrate, FindInfraShell, InfraSegment, InfraSubstrateHighlight]
 RelatedGuides: [SubstratesGuide]
 ---
 
@@ -39,7 +39,7 @@ Between two points half-way round the square torus there are two geodesics, one 
 ```wl
 With[
   {g = InfraSubstrate["SquareTorusGraph", "Small", "KeepCoordinates" -> True]},
-  InfraHighlightGraph[g,
+  InfraSubstrateHighlight[g,
     {InfraSegment[{1, 1}, {6, 1}], Directive[$InfraPointColor], {1, 1}, {6, 1}},
     ImageSize -> 300]]
 ```

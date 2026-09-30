@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSceneViewer
 Keywords: [viewer, interactive, construction, step, branch]
-SeeAlso: [InfraScene, FindInfraScene, InfraHighlightGraph, InfraSceneInstance, InfraGeometricStep]
+SeeAlso: [InfraScene, FindInfraScene, InfraSubstrateHighlight, InfraSceneInstance, InfraStep]
 RelatedGuides: [EuclideanGeometryGuide]
 ---
 
@@ -18,7 +18,7 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 ## Details & Options
 
-Definition: the viewer solves the scene one step at a time and draws the objects bound so far, through [InfraHighlightGraph]().
+Definition: the viewer solves the scene one step at a time and draws the objects bound so far, through [InfraSubstrateHighlight]().
 
 It exists because a construction is a sequence, not a picture. Reading Euclid I.10 as a single figure hides the order; stepping it shows which object each later one depends on.
 
@@ -36,7 +36,7 @@ Branch and Diffuse are the two ways to look at a family. Diffuse draws every rea
 
 Fixed matters on long constructions. Without it, each step re-solves against every branch of the previous ones and the instance count multiplies. Fixing a branch collapses that.
 
-The rendering options `"OpacityRange"`, `"ThicknessRange"`, `"PointSizeRange"` and `ImageSize` are passed through to [InfraHighlightGraph]().
+The rendering options `"OpacityRange"`, `"ThicknessRange"`, `"PointSizeRange"` and `ImageSize` are passed through to [InfraSubstrateHighlight]().
 
 For a static figure, solve the steps yourself with [FindInfraScene]() and lay them out as a grid. That is what the last example does.
 
@@ -51,11 +51,11 @@ With[
   {p1 = First @ GraphCenter[g]},
   {p2 = SelectFirst[VertexList[g], GraphDistance[g, p1, #] == 4 &]},
   {scene = InfraScene[{a, b, cA, cB, u},
-     {InfraGeometricStep[{a == InfraPoint[p1]}, "point a"],
-      InfraGeometricStep[{b == InfraPoint[p2]}, "point b"],
-      InfraGeometricStep[{cA == InfraCircle[a, 4]}, "circle around a"],
-      InfraGeometricStep[{cB == InfraCircle[b, 4]}, "circle around b"],
-      InfraGeometricStep[{u == InfraIntersection[cA, cB]}, "they meet"]}]},
+     {InfraStep[{a == InfraPoint[p1]}, "point a"],
+      InfraStep[{b == InfraPoint[p2]}, "point b"],
+      InfraStep[{cA == InfraCircle[a, 4]}, "circle around a"],
+      InfraStep[{cB == InfraCircle[b, 4]}, "circle around b"],
+      InfraStep[{u == InfraIntersection[cA, cB]}, "they meet"]}]},
   Head @ InfraSceneViewer[scene, g]]
 ```
 
@@ -68,12 +68,12 @@ With[
   {p2 = SelectFirst[VertexList[g], GraphDistance[g, p1, #] == 4 &]},
   Row[{
     Labeled[
-      InfraHighlightGraph[g, {{p1, p2} -> $InfraPointColor},
+      InfraSubstrateHighlight[g, {{p1, p2} -> $InfraPointColor},
         "PointSizeRange" -> 18,
         VertexShapeFunction -> ({AbsolutePointSize[2], Point[#]} &), ImageSize -> 250],
       Text["points a and b"]],
     Labeled[
-      InfraHighlightGraph[g,
+      InfraSubstrateHighlight[g,
         {(Graph[DirectedEdge @@@ Partition[#, 2, 1, 1]] & /@ FindInfraCircle[g, p1, "Radius" -> 4, All]) -> $InfraCircleColor,
          {p1, p2} -> $InfraPointColor},
         "PointSizeRange" -> 18,

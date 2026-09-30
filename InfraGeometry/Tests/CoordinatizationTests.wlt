@@ -339,28 +339,28 @@ VerificationTest[
 
 
 VerificationTest[
-  Sort @ VertexList @ GeodesicSprayGraph[GridGraph[{3, 3}], 5],
+  Sort @ VertexList @ SprayGraph[GridGraph[{3, 3}], 5],
   Range[9],
-  TestID -> "GeodesicSprayGraph-3x3-vertices"
+  TestID -> "SprayGraph-3x3-vertices"
 ]
 
 VerificationTest[
-  Length @ EdgeList @ GeodesicSprayGraph[PathGraph[Range[5]], 3],
+  Length @ EdgeList @ SprayGraph[PathGraph[Range[5]], 3],
   4,
-  TestID -> "GeodesicSprayGraph-path-edges-symmetric"
+  TestID -> "SprayGraph-path-edges-symmetric"
 ]
 
 VerificationTest[
-  Sort @ Select[VertexList[GeodesicSprayGraph[GridGraph[{3, 3}], 5]],
-    VertexOutDegree[GeodesicSprayGraph[GridGraph[{3, 3}], 5], #] == 0 &],
+  Sort @ Select[VertexList[SprayGraph[GridGraph[{3, 3}], 5]],
+    VertexOutDegree[SprayGraph[GridGraph[{3, 3}], 5], #] == 0 &],
   {1, 3, 7, 9},
-  TestID -> "GeodesicSprayGraph-3x3-sinks-are-corners"
+  TestID -> "SprayGraph-3x3-sinks-are-corners"
 ]
 
 VerificationTest[
-  Length @ VertexList @ GeodesicSprayGraph[GridGraph[{3, 3}], 5, "AxisLength" -> 1],
+  Length @ VertexList @ SprayGraph[GridGraph[{3, 3}], 5, "AxisLength" -> 1],
   5,
-  TestID -> "GeodesicSprayGraph-AxisLength-truncation"
+  TestID -> "SprayGraph-AxisLength-truncation"
 ]
 
 (* ===== FindInfraSpanningAxes (no-center form) ===== *)

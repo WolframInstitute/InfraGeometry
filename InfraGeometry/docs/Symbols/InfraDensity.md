@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraDensity
 Keywords: [density, occupation, marginal, counting measure, multiset, support]
-SeeAlso: [InfraMeasurement, InfraVertexList, InfraHighlightGraph, FindInfraSegment, FindInfraMidpoint, InfraIntersection]
+SeeAlso: [InfraMeasurement, InfraVertexList, InfraSubstrateHighlight, FindInfraSegment, FindInfraMidpoint, InfraIntersection]
 RelatedGuides: [EuclideanGeometryGuide]
 ---
 
@@ -43,7 +43,7 @@ The six geodesics from the centre of a grid to a vertex two steps up and two acr
 With[
   {g = GridGraph[{9, 9}]},
   {dens = InfraDensity[g, FindInfraSegment[g, 41, 61, All]]},
-  {InfraHighlightGraph[g, dens, "PointSizeRange" -> {4, 16}, ImageSize -> 250], dens}]
+  {InfraSubstrateHighlight[g, dens, "PointSizeRange" -> {4, 16}, ImageSize -> 250], dens}]
 ```
 
 A vertex, a vertex list with a repeat, and a density.

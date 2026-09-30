@@ -37,7 +37,7 @@ With[
       ballA == InfraBall[pA, 2], shellB == InfraShell[pB, 2],
       meet == InfraIntersection[ballA, shellB]}]},
   With[{solved = FindInfraScene[constr, g]},
-    InfraHighlightGraph[g,
+    InfraSubstrateHighlight[g,
       Join[{InfraSceneInstance[First @ solved, ballA] -> $InfraBallColor,
             InfraSceneInstance[First @ solved, shellB] -> $InfraCircleColor,
             Directive[$InfraPointColor]},

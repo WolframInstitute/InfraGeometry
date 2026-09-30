@@ -29,7 +29,7 @@ With[
   {g = GridGraph[{9, 9}]},
   {seg = InfraSegment[41, 61]},
   {member = {41, 42, 51, 52, 61}, detour = {41, 42, 43, 44, 53, 62, 61}},
-  {InfraHighlightGraph[g, {InfraWalk[member], InfraWalk[detour], Directive[$InfraPointColor], 41, 61}, ImageSize -> 250],
+  {InfraSubstrateHighlight[g, {InfraWalk[member], InfraWalk[detour], Directive[$InfraPointColor], 41, 61}, ImageSize -> 250],
    InfraMemberQ[g, seg, member], InfraMemberQ[g, seg, detour]}]
 ```
 

@@ -28,7 +28,7 @@ A segment on a grid and its support thickened by one step: 9 vertices, then 21.
 With[
   {g = GridGraph[{9, 9}]},
   {seg = InfraSegment[41, 61]},
-  {InfraHighlightGraph[g, {VertexList @ InfraSubgraph[g, seg -> 1], seg}, ImageSize -> 250],
+  {InfraSubstrateHighlight[g, {VertexList @ InfraSubgraph[g, seg -> 1], seg}, ImageSize -> 250],
    VertexCount @ InfraSubgraph[g, seg], VertexCount @ InfraSubgraph[g, seg -> 1]}]
 ```
 

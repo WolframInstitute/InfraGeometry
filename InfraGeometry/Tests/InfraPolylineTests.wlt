@@ -114,14 +114,14 @@ VerificationTest[
 
 (* ===================== Visualisation ===================== *)
 
-(* a polyline is a legal HighlightGraph argument and draws through InfraHighlightGraph *)
+(* a polyline is a legal HighlightGraph argument and draws through InfraSubstrateHighlight *)
 
 VerificationTest[
   With[ { poly = FindInfraPolylineSubdivision[ PathGraph @ Range[ 11 ], Range[ 11 ], "MaxLength" -> 3 ] },
     { Head @ HighlightGraph[ PathGraph @ Range[ 11 ], poly ],
-      Head @ InfraHighlightGraph[ PathGraph @ Range[ 11 ], { poly } ] } ],
+      Head @ InfraSubstrateHighlight[ PathGraph @ Range[ 11 ], { poly } ] } ],
   { Graph, Graph },
-  TestID -> "InfraHighlightGraph-accepts-polyline"
+  TestID -> "InfraSubstrateHighlight-accepts-polyline"
 ]
 
 EndTestSection[]

@@ -30,7 +30,7 @@ One of the eight minor arcs of a quarter circle of radius 3 about the centre of 
 With[
   {g = GridGraph[{9, 9}]},
   {found = FindInfraArc[g, 41, {14, 44}, "RadiusDelta" -> {1, 1}]},
-  {InfraHighlightGraph[g, {InfraWalk[found] -> $InfraCircleColor, Directive[$InfraPointColor], 41, 14, 44}, ImageSize -> 250],
+  {InfraSubstrateHighlight[g, {InfraWalk[found] -> $InfraCircleColor, Directive[$InfraPointColor], 41, 14, 44}, ImageSize -> 250],
    found}]
 ```
 

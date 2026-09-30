@@ -49,7 +49,7 @@ Row[Table[
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 6 &]},
      {m = FindInfraMidpoint[g, a, b]},
      Labeled[
-       InfraHighlightGraph[g,
+       InfraSubstrateHighlight[g,
          {FindInfraSegment[g, a, b, All] -> $InfraSegmentColor,
           {a, b} -> $InfraPointColor,
           Keys[m] -> $InfraCircleColor},

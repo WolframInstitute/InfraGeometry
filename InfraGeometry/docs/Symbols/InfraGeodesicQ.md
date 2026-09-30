@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraGeodesicQ
 Keywords: [geodesic, infra-scale, locally shortest, walk, test]
-SeeAlso: [FindInfraGeodesic, ExtendInfraGeodesic, InfraWalkQ, InfraSegmentQ, GeodesicIntervalGraph]
+SeeAlso: [FindInfraGeodesic, ExtendInfraGeodesic, InfraWalkQ, InfraSegmentQ, SegmentGraph]
 RelatedGuides: [RiemannianGeometryGuide]
 ---
 
@@ -33,7 +33,7 @@ With[
   {g = GridGraph[{9, 9}]},
   Row[Table[
     Labeled[
-      InfraHighlightGraph[g, InfraWalk[walk], ImageSize -> 180],
+      InfraSubstrateHighlight[g, InfraWalk[walk], ImageSize -> 180],
       Select[{1, 2, 3, 4, Infinity}, InfraGeodesicQ[g, walk, #] &]],
     {walk, {{41, 42, 51, 50, 41, 42}, {41, 42, 43, 52, 61, 60, 59, 50}, {41, 42, 51, 52, 61, 62}}}]]]
 ```
@@ -63,5 +63,5 @@ A geodesic interval graph passes as a whole, since all its paths from the source
 ```wl
 With[
   {g = GridGraph[{9, 9}]},
-  InfraGeodesicQ[g, GeodesicIntervalGraph[g, 41, 61]]]
+  InfraGeodesicQ[g, SegmentGraph[g, 41, 61]]]
 ```

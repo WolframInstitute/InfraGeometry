@@ -126,10 +126,10 @@ normalizeHighlightSpec[ Directive[ d___ ] ]  := { d }
 normalizeHighlightSpec[ x_ ]                 := { x }
 
 
-(* ===================== InfraHighlightGraph ===================== *)
+(* ===================== InfraSubstrateHighlight ===================== *)
 
 (* a channel value is None, a scalar base measure t -- a fuzzy object distributes it as t * count/norm, conserving the total measure across realisations -- or a {min, max} envelope interpolated by weight, whose floor keeps rare elements visible *)
-Options[ InfraHighlightGraph ] = Join[
+Options[ InfraSubstrateHighlight ] = Join[
   {
     "OpacityRange"   :> $InfraOpacityRange,
     "ThicknessRange" :> $InfraEdgeThickness,
@@ -141,11 +141,11 @@ Options[ InfraHighlightGraph ] = Join[
   Options[ HighlightGraph ]
 ];
 
-InfraHighlightGraph[ graph_Graph, obj : Except[_List], opts : OptionsPattern[] ] :=
-  InfraHighlightGraph[ graph, { obj }, opts ]
+InfraSubstrateHighlight[ graph_Graph, obj : Except[_List], opts : OptionsPattern[] ] :=
+  InfraSubstrateHighlight[ graph, { obj }, opts ]
 
 (* the cumulative density of the objects: each object's vertex and edge density divided by its heaviest mass, summed at every element and capped at 1, the colour the blend of the objects' colours weighted by those masses *)
-InfraHighlightGraph[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
+InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
   Module[ { ranges, palette, objects, entries, vMasses, eMasses },
 
     ranges = <|

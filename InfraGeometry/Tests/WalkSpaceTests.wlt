@@ -319,35 +319,35 @@ VerificationTest[
   TestID -> "SelectInfraWalk-empty-All-passthrough"
 ]
 
-(* ===== GeodesicSprayGraph ===== *)
+(* ===== SprayGraph ===== *)
 
 VerificationTest[
-  GraphQ @ GeodesicSprayGraph[ PathGraph[ Range[ 5 ] ], { { 1, 5 } } ],
+  GraphQ @ SprayGraph[ PathGraph[ Range[ 5 ] ], { { 1, 5 } } ],
   True,
-  TestID -> "GeodesicSprayGraph-returns-graph"
+  TestID -> "SprayGraph-returns-graph"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
-    EdgeCount @ GeodesicSprayGraph[ g, { { 1, 9 } }, "PathThickness" -> Infinity ] >
-    EdgeCount @ GeodesicSprayGraph[ g, { { 1, 9 } }, "PathThickness" -> 0 ]
+    EdgeCount @ SprayGraph[ g, { { 1, 9 } }, "PathThickness" -> Infinity ] >
+    EdgeCount @ SprayGraph[ g, { { 1, 9 } }, "PathThickness" -> 0 ]
   ],
   True,
-  TestID -> "GeodesicSprayGraph-thickness-grows"
+  TestID -> "SprayGraph-thickness-grows"
 ]
 
 VerificationTest[
-  DirectedGraphQ @ GeodesicSprayGraph[ CycleGraph[ 6 ], { { 1, 4 } }, "Directed" -> False ],
+  DirectedGraphQ @ SprayGraph[ CycleGraph[ 6 ], { { 1, 4 } }, "Directed" -> False ],
   False,
-  TestID -> "GeodesicSprayGraph-undirected"
+  TestID -> "SprayGraph-undirected"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
-    SubsetQ[ VertexList[ g ], VertexList @ GeodesicSprayGraph[ g, { { 1, 9 }, { 3, 7 } } ] ]
+    SubsetQ[ VertexList[ g ], VertexList @ SprayGraph[ g, { { 1, 9 }, { 3, 7 } } ] ]
   ],
   True,
-  TestID -> "GeodesicSprayGraph-multi-pair"
+  TestID -> "SprayGraph-multi-pair"
 ]
 
 (* ===== PathSubgraph ===== *)
@@ -673,12 +673,12 @@ VerificationTest[
    stay aligned with the substrate *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    With[ { spray = GeodesicSprayGraph[ g, 1 ] },
+    With[ { spray = SprayGraph[ g, 1 ] },
       Sort @ Cases[ Options[ spray, VertexCoordinates ], _ -> vc_ :> Length @ vc ] =!= { } &&
         VertexList[ spray ] === VertexList[ g ] ]
   ],
   True,
-  TestID -> "GeodesicSprayGraph-keeps-base-coordinates"
+  TestID -> "SprayGraph-keeps-base-coordinates"
 ]
 
 (* FindInfraCommonPoint accepts the compact geodesic-DAG segment form *)
@@ -698,10 +698,10 @@ VerificationTest[
    multiset are the multi-source forms *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    { GeodesicSprayGraph[ g, 1 ] === GeodesicSprayGraph[ g, 1 ],
-      GeodesicSprayGraph[ g, { 1, 4 } ] === GeodesicSprayGraph[ g, <| 1 -> 1, 4 -> 1 |> ] } ],
+    { SprayGraph[ g, 1 ] === SprayGraph[ g, 1 ],
+      SprayGraph[ g, { 1, 4 } ] === SprayGraph[ g, <| 1 -> 1, 4 -> 1 |> ] } ],
   { True, True },
-  TestID -> "GeodesicSprayGraph-accepts-vertices-and-multisets"
+  TestID -> "SprayGraph-accepts-vertices-and-multisets"
 ]
 (* ===== "From" validation ===== *)
 

@@ -132,8 +132,8 @@ FindInfraParallel[ graph_Graph, line_, p_,
                     NoneTrue[ AdjacencyList[ graph, e ], MemberQ[ level, # ] && dist[ s, # ] == dist[ s, e ] + 1 & ],
                   (* the glued intervals cut down to L, then to the vertices on some s -> e path: empty when every geodesic through p leaves L.  s and e are listed explicitly, since the cut can strip a side of all its edges *)
                   atom = { s, e } |-> With[ { dag = Graph[ { s, e }, Join[
-                        EdgeList @ Subgraph[ #, Intersection[ VertexList @ #, level ] ] & @ GeodesicIntervalGraph[ graph, s, p0 ],
-                        EdgeList @ Subgraph[ #, Intersection[ VertexList @ #, level ] ] & @ GeodesicIntervalGraph[ graph, p0, e ] ] ] },
+                        EdgeList @ Subgraph[ #, Intersection[ VertexList @ #, level ] ] & @ SegmentGraph[ graph, s, p0 ],
+                        EdgeList @ Subgraph[ #, Intersection[ VertexList @ #, level ] ] & @ SegmentGraph[ graph, p0, e ] ] ] },
                       Subgraph[ dag, Intersection[ VertexOutComponent[ dag, s ], VertexInComponent[ dag, e ] ] ] ],
                   cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
                   branch = If[ methodHead === "RandomGreedy", RandomSample, Identity ] },

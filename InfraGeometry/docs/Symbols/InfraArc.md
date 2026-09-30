@@ -38,7 +38,7 @@ A quarter of the circle of radius 3 about the centre of a grid, on the band wide
 With[
   {g = GridGraph[{9, 9}]},
   {arc = InfraArc[41, {14, 44}, "RadiusDelta" -> {1, 1}]},
-  {InfraHighlightGraph[g, {arc -> $InfraCircleColor, Directive[$InfraPointColor], 41, 14, 44}, ImageSize -> 250],
+  {InfraSubstrateHighlight[g, {arc -> $InfraCircleColor, Directive[$InfraPointColor], 41, 14, 44}, ImageSize -> 250],
    InfraMeasurement[g, arc, {"Cardinality", "Length"}]}]
 ```
 
@@ -73,7 +73,7 @@ With[
   {q = First @ Select[ring, GraphDistance[Subgraph[g, ring], p, #] == 6 &]},
   {arc = InfraArc[c, {p, q}]},
   {InfraMeasurement[g, arc, "Cardinality"], InfraMeasurement[g, arc, "Length"],
-   InfraHighlightGraph[g, {InfraVertexList[g, arc, All] -> $InfraCircleColor, {c} -> $InfraPointColor}]}
+   InfraSubstrateHighlight[g, {InfraVertexList[g, arc, All] -> $InfraCircleColor, {c} -> $InfraPointColor}]}
 ]
 ```
 

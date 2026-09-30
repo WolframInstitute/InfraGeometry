@@ -288,16 +288,16 @@ IntervalVolumes[g_Graph, p_, targets : (_List | All), range : (_Integer | {_Inte
 	]
 
 
-(* ===================== Geodesic interval graph ===================== *)
+(* ===================== SegmentGraph ===================== *)
 
-(* GeodesicIntervalGraph[g, u, v]: the metric interval I(u, v) as a directed
+(* SegmentGraph[g, u, v]: the metric interval I(u, v) as a directed
    acyclic graph -- vertices { w : d(u, w) + d(w, v) == d(u, v) } (= the
    CylinderVolumes support, the union of all u-v geodesics), edges w -> x for
    adjacent w, x in the interval with d(u, x) == d(u, w) + 1.  Directed paths
    u -> v are exactly the u-v geodesics.  Built from two distance fields, never
    enumerating paths, so it is polynomial even when the geodesic count is not. *)
 
-GeodesicIntervalGraph[g_Graph, u_, v_] :=
+SegmentGraph[g_Graph, u_, v_] :=
 	Module[{du = AssociationThread[VertexList[g], GraphDistance[g, u]],
 			dv = AssociationThread[VertexList[g], GraphDistance[g, v]], duv, interval, inSet},
 		duv = du[v];
@@ -340,7 +340,7 @@ GeodesicOccupation[dag_Graph] :=
 		AssociationMap[Lookup[sigmaIn, Key[#]] Lookup[sigmaOut, Key[#]] &, VertexList[dag]]
 	]
 
-GeodesicOccupation[g_Graph, u_, v_] := GeodesicOccupation[GeodesicIntervalGraph[g, u, v]]
+GeodesicOccupation[g_Graph, u_, v_] := GeodesicOccupation[SegmentGraph[g, u, v]]
 
 
 (* GeodesicEdgeOccupation[dag]: the per-edge geodesic occupation
@@ -363,7 +363,7 @@ GeodesicEdgeOccupation[dag_Graph] :=
 		Association[(# -> Lookup[sigmaIn, Key[First[#]]] Lookup[sigmaOut, Key[Last[#]]]) & /@ EdgeList[dag]]
 	]
 
-GeodesicEdgeOccupation[g_Graph, u_, v_] := GeodesicEdgeOccupation[GeodesicIntervalGraph[g, u, v]]
+GeodesicEdgeOccupation[g_Graph, u_, v_] := GeodesicEdgeOccupation[SegmentGraph[g, u, v]]
 
 
 (* ===================== Log-difference quotients ===================== *)

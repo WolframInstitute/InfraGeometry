@@ -15,4 +15,4 @@ URI: WolframInstitute/InfraGeometry/ref/InfraPolyline
 
 A polyline itself is the List of its legs, one directed path graph each, consecutive legs sharing a knot (the last vertex of one leg is the first of the next). FindInfraPolylineSubdivision chunks a walk into such legs, and InfraPolylineQ tests the shape.
 
-Consumed by InfraHighlightGraph, which draws the legs as one chain with the knots on top.
+Consumed by InfraSubstrateHighlight, which draws the legs as one chain with the knots on top.

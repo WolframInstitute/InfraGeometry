@@ -218,7 +218,7 @@ OrthogonalCoordinates[ g_Graph, c_, axes_List, opts : OptionsPattern[] ] :=
 
 (* ===================== FindInfraOrthogonalFrame ===================== *)
 
-(* build GeodesicSprayGraph[g, c], enumerate candidate lines via antipodal DAG-vertex pairs, then DFS the choice tree, filtering by perpendicularity at each step.
+(* build SprayGraph[g, c], enumerate candidate lines via antipodal DAG-vertex pairs, then DFS the choice tree, filtering by perpendicularity at each step.
    Perpendicular at c: every vertex w of B has c's axis-index on A among w's tied closest positions on A, and symmetrically. *)
 
 Options[ FindInfraOrthogonalFrame ] = {
@@ -239,7 +239,7 @@ FindInfraOrthogonalFrame[ g_Graph, c_, axisLength : ( All | _Integer | _UpTo | {
       { minLength = First @ lengths, maxDepth = Last @ lengths },
       (* Localize: every distance the search needs lies in B(c, 2 maxDepth). *)
       { localG = If[ maxDepth === Infinity, g, NeighborhoodGraph[ g, c, 2 maxDepth ] ] },
-      { spray = GeodesicSprayGraph[ localG, c, "AxisLength" -> Replace[ maxDepth, Infinity -> All ] ],
+      { spray = SprayGraph[ localG, c, "AxisLength" -> Replace[ maxDepth, Infinity -> All ] ],
         axisCountSpec = "AxisCount" /. { opts } /. "AxisCount" -> Automatic,
         methodSpec = Replace[ Method /. { opts } /. Method -> Automatic, Automatic -> "Exhaustive" ],
         sel = "SelectCoordinate" /. { opts } /. "SelectCoordinate" -> "Centered",

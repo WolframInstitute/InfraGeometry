@@ -55,7 +55,7 @@ The shells of radius 1 to 4 about the centre of a grid, of 4, 8, 12 and 16 verti
 With[
   {g = GridGraph[{9, 9}]},
   Labeled[
-    InfraHighlightGraph[g, Table[FindInfraShell[g, 41, r] -> $InfraShellColor, {r, 1, 4}], ImageSize -> 220],
+    InfraSubstrateHighlight[g, Table[FindInfraShell[g, 41, r] -> $InfraShellColor, {r, 1, 4}], ImageSize -> 220],
     ShellAreas[g, 41, {1, 4}]]]
 ```
 

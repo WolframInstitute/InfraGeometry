@@ -48,7 +48,7 @@ With[
   {g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
   {centre = InfraCenter[g]},
   {picks = FindInfraPoint[g, 3, "From" -> centre -> 4]},
-  InfraHighlightGraph[g, {centre, picks}, ImageSize -> 250]]
+  InfraSubstrateHighlight[g, {centre, picks}, ImageSize -> 250]]
 ```
 
 A point finder returns vertices — one, or a list.
@@ -75,9 +75,9 @@ In a scene the token is solved on the graph. Here *a* is the centre of a 5 × 5 
 Module[{a, b, c},
   With[
     {scene = InfraScene[{a, b, c},
-       {InfraGeometricStep[{a == InfraPoint["Center"]}, "a"],
-        InfraGeometricStep[{b == InfraPoint[a, 3]}, "b"],
-        InfraGeometricStep[{c == InfraPoint["Periphery"]}, "c"]}]},
+       {InfraStep[{a == InfraPoint["Center"]}, "a"],
+        InfraStep[{b == InfraPoint[a, 3]}, "b"],
+        InfraStep[{c == InfraPoint["Periphery"]}, "c"]}]},
     {instances = FindInfraScene[scene, GridGraph[{5, 5}]]},
     {Length[instances], InfraSceneInstance[First[instances], a], InfraSceneInstance[First[instances], b]}]]
 ```

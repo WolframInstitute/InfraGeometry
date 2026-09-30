@@ -13,4 +13,4 @@ $InfraPalette is a Dataset of the named object colors, one row per primitive wit
 
 ## Details & Options
 
-The $Infra*Color symbols read from it. InfraHighlightGraph colors objects by their order in the list, from $InfraStrikeOutPalette; a named color reaches a figure through a Directive.
+The $Infra*Color symbols read from it. InfraSubstrateHighlight colors objects by their order in the list, from $InfraStrikeOutPalette; a named color reaches a figure through a Directive.

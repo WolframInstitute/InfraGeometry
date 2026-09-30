@@ -36,7 +36,7 @@ The line through the centre of a grid and a vertex two steps up and two across. 
 With[
   {g = GridGraph[{9, 9}]},
   {line = InfraLine[41, 61]},
-  {InfraHighlightGraph[g, {line, Directive[$InfraPointColor], 41, 61}, ImageSize -> 250],
+  {InfraSubstrateHighlight[g, {line, Directive[$InfraPointColor], 41, 61}, ImageSize -> 250],
    InfraMeasurement[g, line, "Cardinality"]}]
 ```
 

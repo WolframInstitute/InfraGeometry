@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSceneInstance
 Keywords: [scene, instance, binding, solution]
-SeeAlso: [FindInfraScene, InfraScene, InfraHighlightGraph, InfraSceneViewer]
+SeeAlso: [FindInfraScene, InfraScene, InfraSubstrateHighlight, InfraSceneViewer]
 RelatedGuides: [Experimental]
 ---
 
@@ -20,7 +20,7 @@ RelatedGuides: [Experimental]
 
 [FindInfraScene]() returns a `List` of instances, one per branch. An instance is inert: it holds its bindings and computes nothing.
 
-A value is what the construction of the object realised on the graph: a vertex for a point or an intersection, a vertex list for a segment, a ray or a line, a cyclic vertex list for a circle. So an instance's objects are drawn by [InfraHighlightGraph]() directly, a circle once it is closed into a walk.
+A value is what the construction of the object realised on the graph: a vertex for a point or an intersection, a vertex list for a segment, a ray or a line, a cyclic vertex list for a circle. So an instance's objects are drawn by [InfraSubstrateHighlight]() directly, a circle once it is closed into a walk.
 
 An object the instance does not bind reads as `Missing["KeyAbsent", x]`. The second argument also reads a bare `Association` of bindings.
 
@@ -37,7 +37,7 @@ With[
       circleA == InfraCircle[pA, {4, 5}], circleB == InfraCircle[pB, {4, 5}],
       meet == InfraIntersection[circleA, circleB]}]},
   With[{first = First @ FindInfraScene[scene, g]},
-    {InfraHighlightGraph[g,
+    {InfraSubstrateHighlight[g,
        {InfraWalk[Append[#, First @ #]] & @ InfraSceneInstance[first, circleA],
         InfraWalk[Append[#, First @ #]] & @ InfraSceneInstance[first, circleB],
         Directive[$InfraPointColor], InfraSceneInstance[first, pA], InfraSceneInstance[first, pB],

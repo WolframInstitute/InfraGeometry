@@ -42,7 +42,7 @@ The successive shells around the centre of the square grid: nested rings, each o
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  InfraHighlightGraph[g,
+  InfraSubstrateHighlight[g,
     Table[FindInfraShell[g, c, r] -> $InfraShellColor, {r, 1, 5}],
     "PointSizeRange" -> 13,
     VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),

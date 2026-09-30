@@ -47,7 +47,7 @@ With[
   Row[Table[
     With[{extList = ExtendInfraGeodesic[g, {41, 42}, sc, {3}, All, "Direction" -> "Forward"]},
       Labeled[
-        InfraHighlightGraph[g, {extList, Directive[$InfraPointColor], InfraWalk[{41, 42}]}, ImageSize -> 180],
+        InfraSubstrateHighlight[g, {extList, Directive[$InfraPointColor], InfraWalk[{41, 42}]}, ImageSize -> 180],
         Row[{"scale ", sc, ": ", Length @ extList}]]],
     {sc, {2, 3, Infinity}}]]]
 ```

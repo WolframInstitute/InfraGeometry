@@ -22,7 +22,7 @@ FindInfraPolygon[ graph_Graph, vertices_List /; Length[ vertices ] >= 3,
       If[ ! MatchQ[ method, "Exhaustive" | "Greedy" | "RandomGreedy" ],
         Message[ FindInfraPolygon::badmethod, methodSpec ]; $Failed,
         With[ { sides = Apply[ { a, b } |->
-              With[ { dag = If[ method === "Exhaustive" || a === b, Null, GeodesicIntervalGraph[ graph, a, b ] ] },
+              With[ { dag = If[ method === "Exhaustive" || a === b, Null, SegmentGraph[ graph, a, b ] ] },
                 Which[
                   a === b, { },
                   method === "Exhaustive",

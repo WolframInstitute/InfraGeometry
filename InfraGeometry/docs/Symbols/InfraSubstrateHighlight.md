@@ -1,10 +1,10 @@
 ---
 Template: Symbol
-Name: InfraHighlightGraph
+Name: InfraSubstrateHighlight
 Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
-URI: WolframInstitute/InfraGeometry/ref/InfraHighlightGraph
+URI: WolframInstitute/InfraGeometry/ref/InfraSubstrateHighlight
 Keywords: [visualization, diffuse rendering, density, highlight, palette]
 SeeAlso: [InfraSceneViewer, InfraScene, InfraMeasurement, $InfraPalette, InfraDensity, InfraWalk]
 RelatedGuides: [EuclideanGeometryGuide]
@@ -12,9 +12,9 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 ## Usage
 
-<code>[InfraHighlightGraph]()[*g*, {*obj1*, *obj2*, ...}]</code> draws the sum of the objects' densities on *g*, the *i*-th object in the *i*-th palette color.
+<code>[InfraSubstrateHighlight]()[*g*, {*obj1*, *obj2*, ...}]</code> draws the sum of the objects' densities on *g*, the *i*-th object in the *i*-th palette color.
 
-<code>[InfraHighlightGraph]()[*g*, *obj*]</code> draws a single object.
+<code>[InfraSubstrateHighlight]()[*g*, *obj*]</code> draws a single object.
 
 ## Details & Options
 
@@ -56,7 +56,7 @@ Three heads, in palette order.
 
 ```wl
 With[{g = GridGraph[{21, 21}]},
-  InfraHighlightGraph[g,
+  InfraSubstrateHighlight[g,
     {InfraSegment[221, 226], InfraCircle[221, 226, "RadiusDelta" -> 1],
      InfraArc[221, {226, 116}, "RadiusDelta" -> 1]}]]
 ```
@@ -65,7 +65,7 @@ A `Directive` colors the objects after it.
 
 ```wl
 With[{g = GridGraph[{21, 21}]},
-  InfraHighlightGraph[g,
+  InfraSubstrateHighlight[g,
     {FindInfraBall[g, 221, 3], Directive[$InfraCircleColor],
      InfraCircle[221, 226, "RadiusDelta" -> 1]}]]
 ```
@@ -74,7 +74,7 @@ Overlaps add. The two segments share the edge at their start and blend there. Th
 
 ```wl
 With[{g = GridGraph[{21, 21}]},
-  InfraHighlightGraph[g,
+  InfraSubstrateHighlight[g,
     {InfraSegment[221, 266], InfraSegment[221, 180],
      InfraWalk[{215, 216, 217, 238, 259, 260, 261}]},
     "Arrowheads" -> True]]
@@ -93,6 +93,6 @@ A list of vertex lists is one object, the sum of its members: here the six geode
 ```wl
 With[
   {g = GridGraph[{9, 9}]},
-  {InfraHighlightGraph[g, {InfraVertexList[g, InfraSegment[41, 61], All]}, ImageSize -> 250],
-   InfraHighlightGraph[g, {InfraSegment[41, 61]}, ImageSize -> 250]}]
+  {InfraSubstrateHighlight[g, {InfraVertexList[g, InfraSegment[41, 61], All]}, ImageSize -> 250],
+   InfraSubstrateHighlight[g, {InfraSegment[41, 61]}, ImageSize -> 250]}]
 ```

@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraScene
 Keywords: [scene, construction, Euclid I.1, hypothesis, assertion, ruler and compass]
-SeeAlso: [FindInfraScene, InfraSceneInstance, InfraGeometricStep, InfraIntersection, InfraDistance, InfraSceneViewer]
+SeeAlso: [FindInfraScene, InfraSceneInstance, InfraStep, InfraIntersection, InfraDistance, InfraSceneViewer]
 RelatedGuides: [EuclideanGeometryGuide]
 ---
 
@@ -14,7 +14,7 @@ RelatedGuides: [EuclideanGeometryGuide]
 
 <code>[InfraScene]()[{*x1*, *x2*, …}, {*hyp1*, *hyp2*, …}]</code> is a construction stated before any graph: the objects *xi*, and hypotheses that construct them or assert relations between them.
 
-<code>[InfraScene]()[{*x1*, …}, {[InfraGeometricStep]()[{*hyp1*, …}, *label*], …}]</code> groups the hypotheses into labelled steps.
+<code>[InfraScene]()[{*x1*, …}, {[InfraStep]()[{*hyp1*, …}, *label*], …}]</code> groups the hypotheses into labelled steps.
 
 ## Details & Options
 
@@ -28,7 +28,7 @@ Inside a scene the token `InfraCircle[x, r]` reads *r* as a radius. As a head, a
 
 An assertion is a predicate on objects: a comparison of [InfraDistance]() values, or one of the `Infra*Q` tests without its graph (`InfraSegmentQ[s]`, `InfraCircleQ[c]`, `InfraParallelQ[l1, l2]` and a few more). The graph is supplied when the scene is solved, and a branch survives only if every assertion holds on it. An `Infra*Q` test that cannot be given the graph is refused with `InfraScene::badassertion`.
 
-Without [InfraGeometricStep](), the steps are the levels of the dependency graph of the constructions: first the objects that depend on no other object, then those that depend only on them, and so on. With it, the steps are the ones written, in order.
+Without [InfraStep](), the steps are the levels of the dependency graph of the constructions: first the objects that depend on no other object, then those that depend only on them, and so on. With it, the steps are the ones written, in order.
 
 The objects are ordinary symbols, so they must have no value when the scene is built; `ClearAll` them first.
 
@@ -45,14 +45,14 @@ ClearAll[pA, pB, circleA, circleB, meet];
 With[
   {g = GridGraph[{13, 13}]},
   {scene = InfraScene[{pA, pB, circleA, circleB, meet},
-     {InfraGeometricStep[{pA == InfraPoint[83]}, "point A"],
-      InfraGeometricStep[{pB == InfraPoint[87]}, "point B"],
-      InfraGeometricStep[{circleA == InfraCircle[pA, {4, 5}]}, "circle about A"],
-      InfraGeometricStep[{circleB == InfraCircle[pB, {4, 5}]}, "circle about B"],
-      InfraGeometricStep[{meet == InfraIntersection[circleA, circleB]}, "where they meet"]}]},
+     {InfraStep[{pA == InfraPoint[83]}, "point A"],
+      InfraStep[{pB == InfraPoint[87]}, "point B"],
+      InfraStep[{circleA == InfraCircle[pA, {4, 5}]}, "circle about A"],
+      InfraStep[{circleB == InfraCircle[pB, {4, 5}]}, "circle about B"],
+      InfraStep[{meet == InfraIntersection[circleA, circleB]}, "where they meet"]}]},
   With[{solved = FindInfraScene[scene, g]},
     With[{first = First @ solved},
-      InfraHighlightGraph[g,
+      InfraSubstrateHighlight[g,
         Join[{InfraWalk[Append[#, First @ #]] & @ InfraSceneInstance[first, circleA],
               InfraWalk[Append[#, First @ #]] & @ InfraSceneInstance[first, circleB],
               Directive[$InfraPointColor], 83, 87},
@@ -66,11 +66,11 @@ The objects, the step labels and the steps.
 ClearAll[pA, pB, circleA, circleB, meet];
 With[
   {scene = InfraScene[{pA, pB, circleA, circleB, meet},
-     {InfraGeometricStep[{pA == InfraPoint[83]}, "point A"],
-      InfraGeometricStep[{pB == InfraPoint[87]}, "point B"],
-      InfraGeometricStep[{circleA == InfraCircle[pA, {4, 5}]}, "circle about A"],
-      InfraGeometricStep[{circleB == InfraCircle[pB, {4, 5}]}, "circle about B"],
-      InfraGeometricStep[{meet == InfraIntersection[circleA, circleB]}, "where they meet"]}]},
+     {InfraStep[{pA == InfraPoint[83]}, "point A"],
+      InfraStep[{pB == InfraPoint[87]}, "point B"],
+      InfraStep[{circleA == InfraCircle[pA, {4, 5}]}, "circle about A"],
+      InfraStep[{circleB == InfraCircle[pB, {4, 5}]}, "circle about B"],
+      InfraStep[{meet == InfraIntersection[circleA, circleB]}, "where they meet"]}]},
   {scene["Objects"], scene["Labels"], scene["Steps"]}]
 ```
 

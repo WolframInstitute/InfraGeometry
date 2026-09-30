@@ -74,7 +74,7 @@ Centre and periphery drawn together. The periphery of a patch is its rim.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  InfraHighlightGraph[g,
+  InfraSubstrateHighlight[g,
     {FindInfraPoint[g, All, "From" -> "Periphery"] -> $InfraShellColor,
      FindInfraPoint[g, All, "From" -> "Center"] -> $InfraPointColor},
     "PointSizeRange" -> 16,
@@ -87,7 +87,7 @@ Keeping a draw off the rim. The balls are a nested family, so `q` reads directly
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  InfraHighlightGraph[g,
+  InfraSubstrateHighlight[g,
     {VertexList @ CenterGraph[g, 0.8] -> $InfraShellColor,
      VertexList @ CenterGraph[g, 0.4] -> $InfraPointColor},
     "PointSizeRange" -> 16,

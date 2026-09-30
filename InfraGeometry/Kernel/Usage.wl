@@ -36,7 +36,7 @@ UniqueInfraSegmentQ::usage = "UniqueInfraSegmentQ[graph, u, v] tests whether the
 
 (* ===================== InfraWalk ===================== *)
 
-InfraWalk::usage = "InfraWalk[p1, ..., pk] inside InfraScene is the literal walk through p1, ..., pk, and InfraWalk[{p1, ..., pk}] in InfraHighlightGraph one oriented walk. A walk itself is a Graph: a directed path on the position pairs {i, v}, a closed walk a directed cycle on them; Last /@ VertexList gives the vertex sequence.";
+InfraWalk::usage = "InfraWalk[p1, ..., pk] inside InfraScene is the literal walk through p1, ..., pk, and InfraWalk[{p1, ..., pk}] in InfraSubstrateHighlight one oriented walk. A walk itself is a Graph: a directed path on the position pairs {i, v}, a closed walk a directed cycle on them; Last /@ VertexList gives the vertex sequence.";
 FindInfraWalk::usage = "FindInfraWalk[graph, p1, kspec] grows the walks from p1 in the class cut by the Properties rules (default {\"Simple\"}) until a stopping condition or the budget kspec (UpTo[k], {k}, {lo, hi}, Infinity) stops them; FindInfraWalk[graph, p1, p2, kspec] keeps those ending at p2. Each walk is a path graph on position pairs. Options \"InfraScale\", Properties, \"StoppingCondition\", Method.";
 FindInfraGeodesic::usage = "FindInfraGeodesic[graph, p1, scale, kspec] grows the geodesics at infra-scale scale from p1 -- FindInfraWalk at \"InfraScale\" -> scale with \"Minimizing\" among the rules; FindInfraGeodesic[graph, p1, p2, scale, kspec] keeps those ending at p2. Options Properties, \"StoppingCondition\", Method.";
 InfraGeodesicQ::usage = "InfraGeodesicQ[graph, walk, scale] tests whether every window of scale consecutive vertices of walk plus the next one is a shortest path; scale 1 gives InfraWalkQ and Infinity gives InfraSegmentQ.";
@@ -182,7 +182,7 @@ InfraCurvature::usage = "InfraCurvature[graph, v] gives the local Alexandrov upp
 SelectInfraWalk::usage = "SelectInfraWalk[graph, walks] draws a walk from a bundle -- vertex lists or walk graphs, cycle graphs selecting as closed walks -- treated as a metric space. Options \"From\", \"Distance\", \"Metric\", \"MaxCliques\", \"Cyclic\".";
 EmbeddingClosest::usage = "EmbeddingClosest[graph, bundle, ref] keeps the bundle elements drawn closest to a Euclidean reference under GraphEmbedding; ref is {p1, p2}, {center, radius}, or a curve.";
 FindEmbeddingClosestPath::usage = "FindEmbeddingClosestPath[graph, curve] snaps an embedded curve to a walk graph, mapping sampled points to nearest vertices and joining them by geodesics.";
-GeodesicSprayGraph::usage = "GeodesicSprayGraph[graph, c] gives the BFS DAG rooted at c, whose directed source-to-sink paths are exactly the maximal geodesics from c; GeodesicSprayGraph[graph, pairs] gives the union of geodesics between listed pairs.";
+SprayGraph::usage = "SprayGraph[graph, c] gives the BFS DAG rooted at c, whose directed source-to-sink paths are exactly the maximal geodesics from c; SprayGraph[graph, pairs] gives the union of geodesics between listed pairs.";
 GeodesicExtensionGraph::usage = "GeodesicExtensionGraph[graph, {p1, p2}] gives the DAG of geodesic extensions of the segment p1 -> p2 beyond p2: the vertices e with d(p1, e) == d(p1, p2) + d(p2, e), edges along increasing distance from p1; wrapper anchors give one DAG per pair.";
 PathSubgraph::usage = "PathSubgraph[graph, u, v] gives the union of all shortest u-v paths; a trailing length cap or All widens it to longer simple paths.";
 InfraDeformationSize::usage = "InfraDeformationSize[ref, walk] gives the number of ref edges that walk replaces -- Length[ref] - 1 less the shared prefix and suffix.";
@@ -266,7 +266,7 @@ EnumerateGraphs::usage = "EnumerateGraphs[n, predQ] gives the connected n-vertex
 InfraScene::usage = "InfraScene[objects, hypotheses] builds a scene descriptor from symbolic objects and construction or assertion hypotheses. Properties \"Steps\", \"Constructions\", \"Assertions\", \"DependencyGraph\".";
 FindInfraScene::usage = "FindInfraScene[scene, graph] solves a scene on a graph and gives the resulting InfraSceneInstance bindings. Option \"PruneProbability\".";
 InfraSceneInstance::usage = "InfraSceneInstance[bindings] wraps a solved binding association; InfraSceneInstance[bindings, sym] reads one object out of it.";
-InfraGeometricStep::usage = "InfraGeometricStep[{hyp1, ...}] groups hypotheses into one construction step of a scene; a second argument labels it.";
+InfraStep::usage = "InfraStep[{hyp1, ...}] groups hypotheses into one construction step of a scene; a second argument labels it.";
 InfraIntersection::usage = "InfraIntersection[graph, obj1, obj2, ...] gives the vertex-set intersection of shapes on graph -- vertex lists, densities, walk graphs, bundles -- as a sorted List. On Euclidean heads it is inert and InfraMeasurement gives it the common support and the product density. Inside InfraScene it is the token InfraIntersection[c1, c2], the engine supplying the graph.";
 InfraUnion::usage = "InfraUnion[graph, obj1, obj2, ...] gives the vertex-set union of shapes on graph as a sorted List. On Euclidean heads it is inert and InfraMeasurement gives it the joint support and the sum density. Inside InfraScene it is the token InfraUnion[c1, c2], the engine supplying the graph.";
 InfraDistance::usage = "InfraDistance[graph, p, q] gives the graph distance between two Infra* objects, aggregated over their vertex sets. Option \"Aggregation\".";
@@ -287,7 +287,7 @@ $InfraWalkColor::usage    = "Named color of walks, for a caller to cite in a Dir
 $InfraTopologyColor::usage = "Named color of topology overlays, for a caller to cite in a Directive.";
 $InfraPalette::usage = "$InfraPalette is the Dataset of the named colors, one row per color, with columns \"Primitive\", \"Color\" and \"Symbol\".";
 
-InfraHighlightGraph::usage = "InfraHighlightGraph[graph, {obj1, obj2, ...}] draws the sum of the objects' densities on graph, the i-th object in the i-th palette color; a Directive styles the objects after it. Options \"OpacityRange\", \"ThicknessRange\", \"PointSizeRange\", \"Arrowheads\", \"Palette\".";
+InfraSubstrateHighlight::usage = "InfraSubstrateHighlight[graph, {obj1, obj2, ...}] draws the sum of the objects' densities on graph, the i-th object in the i-th palette color; a Directive styles the objects after it. Options \"OpacityRange\", \"ThicknessRange\", \"PointSizeRange\", \"Arrowheads\", \"Palette\".";
 InfraSceneViewer::usage = "InfraSceneViewer[scene, graph] is an interactive step-by-step visualisation of an InfraScene on a graph.";
 PointViewer::usage = "PointViewer[graph] is an interactive viewer for selecting points; PointViewer[graph, sym] stores the selection in sym.";
 SegmentViewer::usage = "SegmentViewer[graph] is an interactive viewer for exploring geodesic segments.";
@@ -318,7 +318,7 @@ TubeVolumes::usage = "TubeVolumes[g, core] gives the tube profile {T(0), ..., T(
 
 IntervalVolumes::usage = "IntervalVolumes[g, p, q] gives the profile {I(0), ..., I(rMax)} of the interval at slack r, I(r) = |{x : d(p, x) + d(x, q) <= d(p, q) + r}|; IntervalVolumes[g, p, targets] gives one profile per target. Slack slot as the radius slot of BallVolumes; option \"Measure\" (\"FullCount\", \"WithoutBoundary\", \"HalfBoundary\").";
 
-GeodesicIntervalGraph::usage = "GeodesicIntervalGraph[g, u, v] gives the metric interval I(u, v) = { w : d(u, w) + d(w, v) == d(u, v) } (all u-v geodesics) as a directed acyclic graph, edges w -> x oriented along increasing distance from u so directed u -> v paths are exactly the geodesics; built from distance fields without enumerating paths.";
+SegmentGraph::usage = "SegmentGraph[g, u, v] gives the metric interval I(u, v) = { w : d(u, w) + d(w, v) == d(u, v) } as a directed acyclic graph whose directed u -> v paths are exactly the u-v geodesics: the graph of InfraSegment[u, v].";
 
 GeodesicOccupation::usage = "GeodesicOccupation[dag] gives the association w -> c(w) of per-vertex geodesic occupation over a geodesic DAG, c(w) = (number of source -> w paths) * (number of w -> sink paths) by topological-order DP, with family size Max[c]; GeodesicOccupation[g, u, v] builds the u-v geodesic DAG first.";
 

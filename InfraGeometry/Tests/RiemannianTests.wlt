@@ -1594,16 +1594,16 @@ VerificationTest[
 ]
 
 
-(* ===== GeodesicIntervalGraph / GeodesicOccupation ===== *)
+(* ===== SegmentGraph / GeodesicOccupation ===== *)
 
 (* the interval graph is a directed acyclic graph whose vertices are the metric interval (= the CylinderVolumes support) *)
 VerificationTest[
-    With[{g = GridGraph[{3, 3}], ig = GeodesicIntervalGraph[GridGraph[{3, 3}], 1, 9]},
+    With[{g = GridGraph[{3, 3}], ig = SegmentGraph[GridGraph[{3, 3}], 1, 9]},
         {AcyclicGraphQ[ig], DirectedGraphQ[ig],
          Sort[VertexList[ig]] === Sort @ Flatten @ Position[GraphDistance[g, 1] + GraphDistance[g, 9], GraphDistance[g, 1, 9]]}
     ],
     {True, True, True},
-    TestID -> "GeodesicIntervalGraph-dag-interval"
+    TestID -> "SegmentGraph-dag-interval"
 ]
 
 (* per-vertex occupation equals brute-force enumeration of every geodesic *)
@@ -1647,7 +1647,7 @@ VerificationTest[
             Flatten @ Join[
                 Table[UndirectedEdge[{i, j}, {i + 1, j}], {i, 2}, {j, 3}],
                 Table[UndirectedEdge[{i, j}, {i, j + 1}], {i, 3}, {j, 2}]]]},
-        FreeQ[GeodesicEdgeOccupation[GeodesicIntervalGraph[gList, {1, 1}, {3, 3}]], _Missing]
+        FreeQ[GeodesicEdgeOccupation[SegmentGraph[gList, {1, 1}, {3, 3}]], _Missing]
     ],
     True,
     TestID -> "GeodesicEdgeOccupation-list-vertex-labels"
@@ -1656,7 +1656,7 @@ VerificationTest[
 (* the DAG-form accessor agrees with the (g, u, v) form *)
 VerificationTest[
     With[{g = GridGraph[{4, 4}]},
-        GeodesicOccupation[GeodesicIntervalGraph[g, 1, 16]] === GeodesicOccupation[g, 1, 16]
+        GeodesicOccupation[SegmentGraph[g, 1, 16]] === GeodesicOccupation[g, 1, 16]
     ],
     True,
     TestID -> "GeodesicOccupation-dag-form-agrees"
@@ -1690,9 +1690,9 @@ VerificationTest[
 
 (* disconnected endpoints: the interval graph is empty *)
 VerificationTest[
-    VertexCount @ GeodesicIntervalGraph[Graph[{1, 2, 3}, {1 <-> 2}], 1, 3],
+    VertexCount @ SegmentGraph[Graph[{1, 2, 3}, {1 <-> 2}], 1, 3],
     0,
-    TestID -> "GeodesicIntervalGraph-disconnected-empty"
+    TestID -> "SegmentGraph-disconnected-empty"
 ]
 
 

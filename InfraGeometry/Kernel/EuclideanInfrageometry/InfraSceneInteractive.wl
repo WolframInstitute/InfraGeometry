@@ -25,7 +25,7 @@ PointViewer[ g_Graph, sym_: None ] :=
           "Distance" -> Switch[ separation, "None", None, "Max", "Max", "Range", distRange ] ] },
         If[ sym =!= None, sym = pts ];
         (* a point family is a density, not a set: the ink reads a bare vertex List as a region *)
-        InfraHighlightGraph[ g, { Directive[ $InfraPointColor ], InfraDensity[ g, pts ] }, ImageSize -> 600 ] ],
+        InfraSubstrateHighlight[ g, { Directive[ $InfraPointColor ], InfraDensity[ g, pts ] }, ImageSize -> 600 ] ],
       Grid[ {
         { Control[ { { n, 1, "Points" }, ControlType -> InputField } ],
           Control[ { { from, "Random", "From" }, { "Random", "Center", "Periphery" } } ] },
@@ -56,7 +56,7 @@ SegmentViewer[ g_Graph ] :=
               UpTo[ n ] ] ] },
         EventHandler[
           HighlightGraph[
-            InfraHighlightGraph[ g, { Directive[ $InfraSegmentColor ],
+            InfraSubstrateHighlight[ g, { Directive[ $InfraSegmentColor ],
               If[ sel === None, InfraSegment[ p1, p2 ], geodesicGraph /@ segments ] } ],
             { Style[ p1, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ],
               Style[ p2, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] },
@@ -93,7 +93,7 @@ ShellViewer[ g_Graph ] :=
             Take[ FindInfraShell[ g, p, r, All, Properties -> properties ], UpTo[ n ] ] ] },
         EventHandler[
           HighlightGraph[
-            InfraHighlightGraph[ g, { Directive[ $InfraShellColor ], shells } ],
+            InfraSubstrateHighlight[ g, { Directive[ $InfraShellColor ], shells } ],
             { Style[ p, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] },
             ImageSize -> 600 ],
           { "MouseClicked" :> With[ { mp = MousePosition[ "Graphics" ] },
@@ -132,7 +132,7 @@ CircleViewer[ g_Graph ] :=
               UpTo[ n ] ] ] },
         EventHandler[
           HighlightGraph[
-            InfraHighlightGraph[ g, { Directive[ $InfraCircleColor ],
+            InfraSubstrateHighlight[ g, { Directive[ $InfraCircleColor ],
               If[ sel === None, InfraCircle[ p, "Radius" -> r ], geodesicCycleGraph /@ circles ] } ],
             { Style[ p, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] },
             ImageSize -> 600 ],
@@ -170,7 +170,7 @@ InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <||>, opt
       labels  = scene[ "Labels" ],
       objects = scene[ "Objects" ],
       imgW    = OptionValue[ InfraSceneViewer, { opts }, ImageSize ],
-      hlOpts  = FilterRules[ Join[ { opts }, Options[ InfraSceneViewer ] ], Options[ InfraHighlightGraph ] ],
+      hlOpts  = FilterRules[ Join[ { opts }, Options[ InfraSceneViewer ] ], Options[ InfraSubstrateHighlight ] ],
       objStep = Association @@ Flatten[ MapIndexed[
         { syms, i } |-> ( ( # -> First[ i ] ) & /@ Flatten[ { syms } ] ), scene[ "Steps" ] ] ] },
     DynamicModule[ {
@@ -230,8 +230,8 @@ InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <||>, opt
           } }, Alignment -> { { Left, Right }, Center },
             ItemSize -> { { Scaled[ .4 ], Scaled[ .6 ] }, Automatic } ],
           Dynamic @ If[ shown === { },
-            InfraHighlightGraph[ graph, { }, Sequence @@ hlOpts, ImageSize -> imgW ],
-            InfraHighlightGraph[ graph,
+            InfraSubstrateHighlight[ graph, { }, Sequence @@ hlOpts, ImageSize -> imgW ],
+            InfraSubstrateHighlight[ graph,
               If[ mode === "Diffuse",
                 (* a binding is already a shape, so the realisations of one object across the shown branches are its bundle or its family; only a point needs promoting, its realisations being bare vertices that as a bare List would ink as one region *)
                 With[ { boundKeys = Keys @ First[ shown ][[ 1 ]] },

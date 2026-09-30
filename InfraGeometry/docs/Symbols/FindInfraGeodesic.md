@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraGeodesic
 Keywords: [geodesic, infra-scale, locally shortest, walk, Riemannian geodesic]
-SeeAlso: [InfraGeodesicQ, ExtendInfraGeodesic, FindInfraWalk, FindInfraSegment, GeodesicIntervalGraph, GeodesicSprayGraph]
+SeeAlso: [InfraGeodesicQ, ExtendInfraGeodesic, FindInfraWalk, FindInfraSegment, SegmentGraph, SprayGraph]
 RelatedGuides: [RiemannianGeometryGuide]
 ---
 
@@ -50,7 +50,7 @@ With[
   Row[Table[
     With[{geos = FindInfraGeodesic[g, 41, 61, sc, UpTo[8], All]},
       Labeled[
-        InfraHighlightGraph[g, {geos, Directive[$InfraPointColor], 41, 61}, ImageSize -> 180],
+        InfraSubstrateHighlight[g, {geos, Directive[$InfraPointColor], 41, 61}, ImageSize -> 180],
         Row[{"scale ", sc, ": ", Length @ geos}]]],
     {sc, {2, 3, Infinity}}]]]
 ```

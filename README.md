@@ -55,7 +55,7 @@ and one concept article describing the category
 It is synthetic infrageometry on *surface-like* graphs — graphs whose metric balls are discs and whose
 metric shells are cycles — and holds the one-dimensional Euclidean objects together with the scene
 language and the renderer that draw them: `InfraSegment`, `InfraRay`, `InfraLine`, `InfraCircle`,
-`InfraArc`, `InfraScene`, `InfraHighlightGraph` and the viewers.
+`InfraArc`, `InfraScene`, `InfraSubstrateHighlight` and the viewers.
 
 Each object head is inert: it holds its points and computes nothing. Its one theorem is its
 `"Graph"`, a DAG whose chains are exactly the walks its definition admits, read through
@@ -71,7 +71,7 @@ arc = InfraArc[c, {p, q}]                         (* the minor arcs from p to q 
 InfraMeasurement[g, seg, "Cardinality"]           (* how many, by dynamic programming *)
 InfraMeasurement[g, seg, "VertexDensity"]         (* <| v -> number of geodesics through v |> *)
 InfraVertexList[g, seg, 3]                        (* the first three, as vertex lists *)
-InfraHighlightGraph[g, {seg, circle}]             (* both families, summed, in palette order *)
+InfraSubstrateHighlight[g, {seg, circle}]         (* both families, summed, in palette order *)
 ```
 
 The same heads are the `InfraScene` tokens. The `Find*` symbols remain the independent search — one

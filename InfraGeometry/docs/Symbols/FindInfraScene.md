@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraScene
 Keywords: [scene, construction, solve, branch, binding, instance]
-SeeAlso: [InfraScene, InfraSceneInstance, InfraGeometricStep, InfraHighlightGraph, InfraSceneViewer]
+SeeAlso: [InfraScene, InfraSceneInstance, InfraStep, InfraSubstrateHighlight, InfraSceneViewer]
 RelatedGuides: [EuclideanGeometryGuide]
 ---
 
@@ -41,7 +41,7 @@ With[
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[41], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
   With[{solved = FindInfraScene[scene, g]},
-    {InfraHighlightGraph[g, {InfraSceneInstance[#, seg1] & /@ solved, Directive[$InfraPointColor], 41}, ImageSize -> 250],
+    {InfraSubstrateHighlight[g, {InfraSceneInstance[#, seg1] & /@ solved, Directive[$InfraPointColor], 41}, ImageSize -> 250],
      Length @ solved}]]
 ```
 

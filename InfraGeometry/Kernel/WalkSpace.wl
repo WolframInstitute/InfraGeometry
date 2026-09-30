@@ -336,24 +336,24 @@ FindEmbeddingClosestPath[ graph_Graph, curve_ ] :=
   ]
 
 
-(* ===================== GeodesicSprayGraph ===================== *)
+(* ===================== SprayGraph ===================== *)
 
 (* [g, c]: the BFS DAG of all geodesics from c -- edge u -> v whenever d(c, v) = d(c, u) + 1 and u-v is a g-edge.  [g, <| v -> m |>]: the same with d_c replaced by min_i d(ci, v).  [g, pairs]: the union of geodesics between the listed pairs *)
 
-Options[ GeodesicSprayGraph ] = {
+Options[ SprayGraph ] = {
   "AxisLength"    -> All,
   "PathThickness" -> 0,
   "Directed"      -> True
 };
 
-GeodesicSprayGraph[ g_Graph, c_, opts : OptionsPattern[] ] /; MemberQ[ VertexList[ g ], c ] :=
-  GeodesicSprayGraph[ g, <| c -> 1 |>, opts ]
+SprayGraph[ g_Graph, c_, opts : OptionsPattern[] ] /; MemberQ[ VertexList[ g ], c ] :=
+  SprayGraph[ g, <| c -> 1 |>, opts ]
 
-GeodesicSprayGraph[ g_Graph, sources_List, opts : OptionsPattern[] ] /; SubsetQ[ VertexList[ g ], sources ] :=
-  GeodesicSprayGraph[ g, KeySort @ AssociationMap[ 1 &, sources ], opts ]
+SprayGraph[ g_Graph, sources_List, opts : OptionsPattern[] ] /; SubsetQ[ VertexList[ g ], sources ] :=
+  SprayGraph[ g, KeySort @ AssociationMap[ 1 &, sources ], opts ]
 
 (* the spray keeps the base graph's embedding, so its figures stay aligned with the substrate *)
-GeodesicSprayGraph[ g_Graph, fam_Association, OptionsPattern[] ] /; SubsetQ[ VertexList[ g ], Keys @ fam ] :=
+SprayGraph[ g_Graph, fam_Association, OptionsPattern[] ] /; SubsetQ[ VertexList[ g ], Keys @ fam ] :=
   With[ { dist = AssociationThread[ VertexList[ g ], Min /@ Transpose[ GraphDistance[ g, # ] & /@ Keys @ fam ] ],
           depth = Replace[ OptionValue[ "AxisLength" ], All -> Infinity ],
           directed = OptionValue[ "Directed" ],
@@ -372,7 +372,7 @@ GeodesicSprayGraph[ g_Graph, fam_Association, OptionsPattern[] ] /; SubsetQ[ Ver
     ]
   ]
 
-GeodesicSprayGraph[ g_Graph, pairs : { { _, _ } .. }, OptionsPattern[] ] :=
+SprayGraph[ g_Graph, pairs : { { _, _ } .. }, OptionsPattern[] ] :=
   With[ { thickness = OptionValue[ "PathThickness" ],
           directed  = OptionValue[ "Directed" ],
           vertexToIndex = AssociationThread[ VertexList[ g ], Range @ VertexCount[ g ] ],

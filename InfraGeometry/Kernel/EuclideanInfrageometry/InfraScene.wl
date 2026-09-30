@@ -117,12 +117,12 @@ InfraScene::badassertion = "`1` is not a scene assertion the graph can be \
 injected into; it stays inert, so the scene would reject every branch without a \
 message.";
 
-(* Manual-step form: hypotheses contain explicit InfraGeometricStep blocks. *)
+(* Manual-step form: hypotheses contain explicit InfraStep blocks. *)
 InfraScene[ objects_List, hypotheses_List ] /;
-  MemberQ[ hypotheses, _InfraGeometricStep ] :=
+  MemberQ[ hypotheses, _InfraStep ] :=
   Module[ { gSteps, perStep, constructions, steps, labels, assertions },
 
-    gSteps = Cases[ hypotheses, _InfraGeometricStep ];
+    gSteps = Cases[ hypotheses, _InfraStep ];
 
     perStep = Map[
       gStep |-> With[ { hyps = gStep[[ 1 ]] },
@@ -137,7 +137,7 @@ InfraScene[ objects_List, hypotheses_List ] /;
     labels = #[ "Label" ] & /@ perStep;
     assertions = Join[
       Select[ hypotheses,
-        h |-> ! MatchQ[ h, _InfraGeometricStep ] && ! constructionPatternQ[ objects, h ] ],
+        h |-> ! MatchQ[ h, _InfraStep ] && ! constructionPatternQ[ objects, h ] ],
       Flatten[ #[ "Assertions" ] & /@ perStep ] ];
 
     With[ { undecidable = undecidableAssertions[ assertions ] },

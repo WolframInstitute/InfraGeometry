@@ -42,7 +42,7 @@ The circles of the band `{2, 4}` about the centre of a grid: sixteen of them, ea
 With[
   {g = GridGraph[{9, 9}]},
   {circle = InfraCircle[41, "Radius" -> {2, 4}]},
-  {InfraHighlightGraph[g, {circle -> $InfraCircleColor, Directive[$InfraPointColor], 41}, ImageSize -> 250],
+  {InfraSubstrateHighlight[g, {circle -> $InfraCircleColor, Directive[$InfraPointColor], 41}, ImageSize -> 250],
    InfraMeasurement[g, circle, {"Cardinality", "Length"}]}]
 ```
 

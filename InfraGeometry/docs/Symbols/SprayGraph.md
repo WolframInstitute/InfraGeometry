@@ -1,22 +1,22 @@
 ---
 Template: Symbol
-Name: GeodesicSprayGraph
+Name: SprayGraph
 Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
-URI: WolframInstitute/InfraGeometry/ref/GeodesicSprayGraph
+URI: WolframInstitute/InfraGeometry/ref/SprayGraph
 Keywords: [geodesic spray, exponential map, breadth-first search, geodesic DAG, shortest paths]
-SeeAlso: [GeodesicIntervalGraph, GeodesicExtensionGraph, FindInfraGeodesic, FindInfraShell, BallVolumes]
+SeeAlso: [SegmentGraph, GeodesicExtensionGraph, FindInfraGeodesic, FindInfraShell, BallVolumes]
 RelatedGuides: [EuclideanGeometryGuide]
 ---
 
 ## Usage
 
-<code>[GeodesicSprayGraph]()[*g*, *c*]</code> gives the directed acyclic graph of all geodesics from *c*: an edge *u → v* for every edge of *g* with *d(c, v) = d(c, u) + 1*.
+<code>[SprayGraph]()[*g*, *c*]</code> gives the directed acyclic graph of all geodesics from *c*: an edge *u → v* for every edge of *g* with *d(c, v) = d(c, u) + 1*.
 
-<code>[GeodesicSprayGraph]()[*g*, {*c1*, *c2*, …}]</code> measures the distance from the nearest of the sources.
+<code>[SprayGraph]()[*g*, {*c1*, *c2*, …}]</code> measures the distance from the nearest of the sources.
 
-<code>[GeodesicSprayGraph]()[*g*, {{*u1*, *v1*}, {*u2*, *v2*}, …}]</code> gives the union of geodesics between the listed pairs.
+<code>[SprayGraph]()[*g*, {{*u1*, *v1*}, {*u2*, *v2*}, …}]</code> gives the union of geodesics between the listed pairs.
 
 ## Details & Options
 
@@ -46,8 +46,8 @@ The spray at the centre of a grid, drawn by the geodesics through each edge, and
 With[
   {g = GridGraph[{9, 9}]},
   Row[{
-    InfraHighlightGraph[g, {GeodesicSprayGraph[g, 41], Directive[$InfraPointColor], 41}, ImageSize -> 180],
-    Graph[GeodesicSprayGraph[g, 41, "AxisLength" -> 3], ImageSize -> 180]}, Spacer[20]]]
+    InfraSubstrateHighlight[g, {SprayGraph[g, 41], Directive[$InfraPointColor], 41}, ImageSize -> 180],
+    Graph[SprayGraph[g, 41, "AxisLength" -> 3], ImageSize -> 180]}, Spacer[20]]]
 ```
 
 The spray from the centre covers the grid, and its sinks are the four corners.
@@ -55,7 +55,7 @@ The spray from the centre covers the grid, and its sinks are the four corners.
 ```wl
 With[
   {g = GridGraph[{9, 9}]},
-  {sprayDag = GeodesicSprayGraph[g, 41]},
+  {sprayDag = SprayGraph[g, 41]},
   {VertexCount[sprayDag], EdgeCount[sprayDag], Select[VertexList[sprayDag], VertexOutDegree[sprayDag, #] == 0 &]}]
 ```
 
@@ -63,7 +63,7 @@ The maximal geodesics from the centre: 70 to each corner.
 
 ```wl
 With[
-  {sprayDag = GeodesicSprayGraph[GridGraph[{9, 9}], 41]},
+  {sprayDag = SprayGraph[GridGraph[{9, 9}], 41]},
   Length /@ (FindPath[sprayDag, 41, #, Infinity, All] & /@ {1, 9, 73, 81})]
 ```
 
@@ -76,7 +76,7 @@ One geodesic between the pair, every geodesic, or those within distance 1 of the
 ```wl
 With[
   {g = GridGraph[{9, 9}]},
-  Table[EdgeCount @ GeodesicSprayGraph[g, {{1, 21}}, "PathThickness" -> t], {t, {0, 1, Infinity}}]]
+  Table[EdgeCount @ SprayGraph[g, {{1, 21}}, "PathThickness" -> t], {t, {0, 1, Infinity}}]]
 ```
 
 ## Properties and Relations
@@ -86,16 +86,16 @@ A layer of the spray is a shell: the vertices at depth *r* are [FindInfraShell](
 ```wl
 With[
   {g = GridGraph[{9, 9}]},
-  {sprayDag = GeodesicSprayGraph[g, 41, "AxisLength" -> 3]},
+  {sprayDag = SprayGraph[g, 41, "AxisLength" -> 3]},
   {Sort @ Complement[VertexList[sprayDag], FindInfraBall[g, 41, 2]] === FindInfraShell[g, 41, 3],
    VertexCount[sprayDag] === BallVolumes[g, 41, 3]}]
 ```
 
-The geodesics from *c* to *v* are the paths of the spray from *c* to *v*; the [GeodesicIntervalGraph]() holds the same family.
+The geodesics from *c* to *v* are the paths of the spray from *c* to *v*; the [SegmentGraph]() holds the same family.
 
 ```wl
 With[
   {g = GridGraph[{9, 9}]},
-  Sort @ FindPath[GeodesicSprayGraph[g, 41], 41, 61, Infinity, All] ===
-    Sort @ FindPath[GeodesicIntervalGraph[g, 41, 61], 41, 61, Infinity, All]]
+  Sort @ FindPath[SprayGraph[g, 41], 41, 61, Infinity, All] ===
+    Sort @ FindPath[SegmentGraph[g, 41, 61], 41, 61, Infinity, All]]
 ```

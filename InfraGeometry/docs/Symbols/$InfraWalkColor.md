@@ -9,4 +9,4 @@ URI: WolframInstitute/InfraGeometry/ref/$InfraWalkColor
 
 ## Usage
 
-Named color of walks, for a caller to cite in a Directive in InfraHighlightGraph.
+Named color of walks, for a caller to cite in a Directive in InfraSubstrateHighlight.

@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/GeodesicExtensionGraph
 Keywords: [geodesic extension, DAG, spray, line pool, ray pool, distance matrix]
-SeeAlso: [GeodesicSprayGraph, FindInfraLine, FindInfraRay, ExtendInfraSegment, FindInfraSegment, InfraDensity]
+SeeAlso: [SprayGraph, FindInfraLine, FindInfraRay, ExtendInfraSegment, FindInfraSegment, InfraDensity]
 RelatedGuides: [Experimental]
 ---
 
@@ -22,7 +22,7 @@ The set is closed under such a step: if *u* is in it and *v* is a neighbour of *
 
 This is the shared engine of the distance-matrix family. The graph of <code>[InfraRay]()[*p1*, *p2*]</code> is the geodesic interval from *p1* to *p2* glued at *p2* to this DAG. The two sides of a line through *p1* and *p2* are <code>[GeodesicExtensionGraph]()[*g*, {*p2*, *p1*}]</code> and <code>[GeodesicExtensionGraph]()[*g*, {*p1*, *p2*}]</code>, and <code>[InfraLine]()[*p1*, *p2*]</code> and [ExtendInfraSegment]() pick their ends from these two, subject to joint geodesicity.
 
-With *p1* = *p2* the condition is empty and the result is the whole spray, <code>[GeodesicSprayGraph]()[*g*, *p1*]</code>.
+With *p1* = *p2* the condition is empty and the result is the whole spray, <code>[SprayGraph]()[*g*, *p1*]</code>.
 
 A density anchor `<|v -> m|>` spreads to one DAG per pair of anchor vertices, returned as a list. A bare vertex list is one anchor, not a family.
 
@@ -72,7 +72,7 @@ With the anchor as its own direction the extension graph is the spray.
 ```wl
 With[
   {g = GridGraph[{3, 3}]},
-  Sort @ EdgeList @ GeodesicExtensionGraph[g, {5, 5}] === Sort @ EdgeList @ GeodesicSprayGraph[g, 5]]
+  Sort @ EdgeList @ GeodesicExtensionGraph[g, {5, 5}] === Sort @ EdgeList @ SprayGraph[g, 5]]
 ```
 
 The vertex set is closed under a farther step: every neighbour of a vertex in the graph that lies one step farther from *p1* is in the graph.

@@ -44,7 +44,7 @@ Every exported symbol that no other guide of the site covers, one section per ke
 
 ### Synthetic · InfraWalk.wl
 
-- `InfraWalk` the literal walk through p1, ..., pk, inside InfraScene and InfraHighlightGraph
+- `InfraWalk` the literal walk through p1, ..., pk, inside InfraScene and InfraSubstrateHighlight
 - `FindInfraWalk` grows the walks from p1 in the class cut by the Properties rules until a stopping condition or the budget stops them
 - `WalkSingularities` the self-intersections, self-tangencies and cusps of a walk
 - `InfraImmersedQ` whether a walk is immersed, a walk with no cusp

@@ -37,7 +37,7 @@ With[
   {seg = InfraSegment[41, 61]},
   SeedRandom[3];
   With[{picks = InfraVertexList[g, seg, 1, "RandomChoice"]},
-    {InfraHighlightGraph[g, {seg, InfraWalk[First @ picks]}, ImageSize -> 250], picks}]]
+    {InfraSubstrateHighlight[g, {seg, InfraWalk[First @ picks]}, ImageSize -> 250], picks}]]
 ```
 
 One geodesic, then every geodesic, of a segment on a grid.

@@ -63,7 +63,7 @@ Row[Table[
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
      {d = Last @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 && GraphDistance[g, b, #] == 4 &]},
      Labeled[
-       InfraHighlightGraph[g,
+       InfraSubstrateHighlight[g,
          {FindInfraTriangle[g, {c, b, d}, All] -> $InfraSegmentColor,
           {c, b, d} -> $InfraPointColor},
          "PointSizeRange" -> 15,

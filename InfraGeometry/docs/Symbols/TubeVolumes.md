@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/TubeVolumes
 Keywords: [tube volume, tubular neighbourhood, Gray tube formula, Ricci curvature, directional growth, metric interval]
-SeeAlso: [BallVolumes, ShellAreas, GeodesicIntervalGraph, MetricInterval, FindInfraBall, DimensionCurvatureFit]
+SeeAlso: [BallVolumes, ShellAreas, SegmentGraph, MetricInterval, FindInfraBall, DimensionCurvatureFit]
 RelatedGuides: [RiemannianGeometryGuide]
 ---
 
@@ -26,7 +26,7 @@ Definition: the tube of radius *s* about a vertex set *K* is *T_s(K) = {w : d(w,
 
 The tube reads the curvature along a direction, which the ball cannot. For a geodesic of length *L* and direction *v* on a Riemannian manifold, Gray's tube formula is *Vol T_s = ω_(d−1) s^(d−1) L (1 − (R + Ric(v, v)) s² / (6(d + 1)) + O(s⁴))*. The regression of [DimensionCurvatureFit]() with `"Probe" -> "Tube"` reads *R + Ric(v, v)*, and subtracting the scalar curvature read by the ball leaves the Ricci curvature in the direction *v*.
 
-The pair form takes as core the metric interval *I(p, q) = {w : d(p, w) + d(w, q) = d(p, q)}*, the union of all geodesics from *p* to *q*, which is the vertex set of [GeodesicIntervalGraph](). On a lattice the interval is fat: on the square grid it is the rectangle spanned by *p* and *q*, and a tube about it is exactly *(a + 1)(b + 1) + 2s(a + b + 2) + 2s(s − 1)* vertices, with *a* and *b* the two coordinate differences. The spread of the tube volumes over a shell of targets is then the spread of the rectangles, not curvature.
+The pair form takes as core the metric interval *I(p, q) = {w : d(p, w) + d(w, q) = d(p, q)}*, the union of all geodesics from *p* to *q*, which is the vertex set of [SegmentGraph](). On a lattice the interval is fat: on the square grid it is the rectangle spanned by *p* and *q*, and a tube about it is exactly *(a + 1)(b + 1) + 2s(a + b + 2) + 2s(s − 1)* vertices, with *a* and *b* the two coordinate differences. The spread of the tube volumes over a shell of targets is then the spread of the rectangles, not curvature.
 
 The target form reads every profile off one distance matrix, so the distribution of tube volumes over a shell of *p* is one call.
 
@@ -55,7 +55,7 @@ With[
   {g = GridGraph[{9, 9}]},
   {coreSeq = {39, 40, 41, 42, 43}},
   Labeled[
-    InfraHighlightGraph[g, {FindInfraBall[g, coreSeq, 2] -> $InfraBallColor, InfraWalk[coreSeq] -> $InfraSegmentColor},
+    InfraSubstrateHighlight[g, {FindInfraBall[g, coreSeq, 2] -> $InfraBallColor, InfraWalk[coreSeq] -> $InfraSegmentColor},
       ImageSize -> 220],
     TubeVolumes[g, coreSeq, {0, 2}]]]
 ```

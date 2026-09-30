@@ -49,7 +49,7 @@ A circle about the centre of a grid through a vertex two steps away, the band wi
 With[
   {g = GridGraph[{9, 9}]},
   {cyc = FindInfraCircle[g, 41, 23, "RadiusDelta" -> 1]},
-  {InfraHighlightGraph[g, {InfraWalk[Append[cyc, First @ cyc]] -> $InfraCircleColor, Directive[$InfraPointColor], 41, 23},
+  {InfraSubstrateHighlight[g, {InfraWalk[Append[cyc, First @ cyc]] -> $InfraCircleColor, Directive[$InfraPointColor], 41, 23},
      ImageSize -> 250],
    Length @ cyc}]
 ```
@@ -85,7 +85,7 @@ Row[Table[
      {c = First @ GraphCenter[g]},
      {circle = FindInfraCircle[g, c, "Radius" -> Last[spec]]},
      Labeled[
-       InfraHighlightGraph[g,
+       InfraSubstrateHighlight[g,
          {Graph[DirectedEdge @@@ Partition[circle, 2, 1, 1]] -> $InfraCircleColor, {c} -> $InfraPointColor},
          "PointSizeRange" -> 15,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),

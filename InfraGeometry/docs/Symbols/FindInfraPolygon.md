@@ -55,7 +55,7 @@ Three of the diamonds, streamed off the class in random order.
 ```wl
 SeedRandom[1]; With[
   {g = GridGraph[{5, 5}]},
-  InfraHighlightGraph[g,
+  InfraSubstrateHighlight[g,
     {FindInfraPolygon[g, {3, 15, 23, 11}, UpTo[3], Method -> "RandomGreedy"] -> $InfraSegmentColor,
      {3, 15, 23, 11} -> $InfraPointColor},
     ImageSize -> 300]]
