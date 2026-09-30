@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/BetweennessQ
 Keywords: [betweenness, Tarski, geodesic, metric interval]
 SeeAlso: [EquidistanceQ, MetricInterval, FindInfraSegment, FindInfraMidpoint, TarskiAxiomQ]
-RelatedGuides: [TarskiGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage

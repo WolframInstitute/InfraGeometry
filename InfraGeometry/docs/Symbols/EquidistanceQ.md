@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/EquidistanceQ
 Keywords: [equidistance, congruence, Tarski, four-place relation]
 SeeAlso: [BetweennessQ, TarskiStructure, TarskiEquidistanceClasses, FindInfraBisectingHyperplane, TarskiAxiomQ]
-RelatedGuides: [TarskiGeometryGuide]
+RelatedGuides: [Experimental]
 ---
 
 ## Usage
