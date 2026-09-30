@@ -22,5 +22,5 @@ Euclidean geometry rebuilt inside a graph. The graph is all there is: no ambient
 
 - The paclet has three branches. The synthetic branch constructs: points, segments, walks, lines, rays, circles, ellipses, shells, balls, polygons, planes, quadrics, and the Tarski and projective axioms over them. The Riemannian branch measures: volume growth, the dimension and curvature estimators read off it, coordinatization, the metric tensor. The symplectic branch is declared and empty.
 - Install with <code>PacletInstall[ResourceObject["https://www.wolframcloud.com/obj/hajek_pavel/DeployedResources/Paclet/WolframInstitute/InfraGeometry"], ForceVersionInstall -> True]</code>, then load with <code>Needs["WolframInstitute\`InfraGeometry\`"]</code>.
-- Substrates come from `InfraSubstrate` in the sister paclet WolframInstitute/DiscreteGeometry, so an example is one line and the reader never sees setup code.
+- `InfraSubstrate` lives in this paclet, in the Riemannian branch (`Kernel/InfraSubstrate.wl`); the Euclidean guide lists it under Substrates and Drawing because every construction needs a substrate. An example is one line and the reader never sees setup code.
 - The [EuclideanGeometryGuide]() is the landing page; every symbol it lists has a reference page.
