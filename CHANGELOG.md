@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **1.1.1** (unreleased, DocsSiteRelease): documentation only; no kernel change. The docs site is rebuilt from `docs/` at 1.1 and republished; the seven hand-made guide and tutorial pairs without a source are retired; the Experimental guide is checked against the export list; `InfraSubstrate` is named a Riemannian-branch file in the resource definition. The README's presentation and example-graphs notebooks are rebuilt from `Wiki/Notebooks/` and open without a login; the dead `EmergentEuclid` link, which had no source, is dropped.
+
 - **1.1.0** (2026-09-29): **breaking — four renames to the names of the Euclidean guide scheme**
   (EuclideanGuideScheme T4). No aliases. `InfraHighlightGraph` is `InfraSubstrateHighlight`,
   `InfraGeometricStep` is `InfraStep`, `GeodesicIntervalGraph` is `SegmentGraph` (the graph of

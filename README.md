@@ -110,7 +110,6 @@ Ready-made example substrates and ambient styles for the analyses: **[LLM-genera
 
 | Notebook | Description | Versions |
 |----------|-------------|----------|
-| EmergentEuclid | Emergent Euclidean geometry on graphs: infra-Euclidean primitives, Tarski's axioms as decidable graph properties, locality of the Euclidean regime, and behavior under edge subdivision | [LLM](https://www.wolframcloud.com/obj/hajek_pavel/InfraGeometry/EmergentEuclid.nb) |
 | Vectors and displacements | Algebra of discrete vector fields and their flows | [LLM](https://www.wolframcloud.com/obj/hajek_pavel/Infrageometry/Displacements.nb) |
 | Displacements on graphs | Metric inverse, negative, continuity, commutator, and bracket of graph displacements | [LLM](https://www.wolframcloud.com/obj/hajek_pavel/Infrageometry/Displacement1.nb) |
 | What volume growth determines | Ball and sphere growth give dimension and scalar curvature and nothing else at any order; the four ball measures and the Ehrhart reciprocity behind `HalfBoundary` |  |
