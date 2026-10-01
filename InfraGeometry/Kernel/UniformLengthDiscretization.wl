@@ -1,15 +1,11 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-(* ===================== Unit-length discretization & embedding ===================== *)
-
 (* The contact graph of a relaxed hard-sphere packing has all edges at exactly 2r:
    two touching spheres of radius r have centers at distance 2r by geometry, not by
    force balance.  UniformLengthGraph packs a region as given -- filling a solid, meshing a
    surface -- and returns that contact graph; UniformLengthEmbedding is the inverse, realising
    an abstract graph in R^d with every edge a unit segment (the iterative sibling of
    the declarative ComplexEmbedding). *)
-
 
 Options[UniformLengthGraph] = {
 	Method -> "IterativeProjection",
@@ -121,7 +117,6 @@ UniformLengthGraph[region_ ? RegionQ, n_Integer, opts : OptionsPattern[]] := Mod
 	]
 ]
 
-
 Options[UniformLengthEmbedding] = {
 	"Dimension" -> 3,
 	"MaxIterations" -> 500,
@@ -147,11 +142,9 @@ UniformLengthEmbedding[graph_ ? GraphQ, opts : OptionsPattern[]] := Module[{
 	vIdx = AssociationThread[vlist -> Range[n]];
 	edges = {vIdx[#[[1]]], vIdx[#[[2]]]} & /@ EdgeList[graph];
 	points = N @ If[init === Automatic, GraphEmbedding[graph, "SpringElectricalEmbedding", dim], init];
-	(* a flat 3D spring layout has no third-axis spread: perturb to break the degeneracy *)
 	If[dim == 3 && Max[Abs[points[[All, 3]]]] < 10.^-6,
 		points += RandomReal[{-0.01, 0.01}, Dimensions[points]]
 	];
-	(* rescale so the mean edge starts near length 1 *)
 	With[{m = Mean[EuclideanDistance[points[[#[[1]]]], points[[#[[2]]]]] & /@ edges]},
 		If[m > 10.^-12, points /= m]
 	];
@@ -168,7 +161,6 @@ UniformLengthEmbedding[graph_ ? GraphQ, opts : OptionsPattern[]] := Module[{
 			],
 			{k, Length[edges]}
 		];
-		(* soft repulsion between nearby non-adjacent pairs, preventing degenerate collapse *)
 		If[repulse > 0.,
 			acc = 0. points;
 			With[{es = AssociationThread[Sort /@ edges -> True], neighbors = Nearest[points -> "Index"][points, {Infinity, 0.9}]},
@@ -185,7 +177,6 @@ UniformLengthEmbedding[graph_ ? GraphQ, opts : OptionsPattern[]] := Module[{
 			];
 			d += acc
 		];
-		(* clip per-vertex moves so long initial edges do not make the relaxation diverge *)
 		norms = Norm /@ d;
 		d = MapThread[If[#2 > maxStep, #1 (maxStep / #2), #1] &, {d, norms}];
 		points += d;

@@ -1,8 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-(* ===================== Displacements ===================== *)
-
 (* A displacement is an association v -> { w1, w2, ... } (multivalued in
    general; values are always lists), thought of as v -> exp_v(r X) for a
    vector field X at scale r = DisplacementMagnitude -- a section of the
@@ -20,11 +17,9 @@ Package["WolframInstitute`InfraGeometry`"]
   targets. Genuine metric ties stay multivalued and DisplacementReduce
   contracts them by iterated centres. *)
 
-(* flows act left to right: DisplacementCompose[X, Y] = Phi_Y . Phi_X *)
 DisplacementCompose[ displacements__Association ] :=
   Fold[ { done, next } |-> ( Union @@ Lookup[ next, # ] & ) /@ done, { displacements } ]
 
-(* (t D)(v): endpoints of the geodesics v -> D(v) scaled to t times their length *)
 DisplacementScale[ graph_Graph, displacement_Association, t_ ] :=
   With[
     { distancesFrom = source |-> AssociationThread[ VertexList @ graph, GraphDistance[ graph, source ] ] },
@@ -75,7 +70,6 @@ DisplacementSum[ graph_Graph, displacement1_Association, displacement2_Associati
 
 Options[ DisplacementCommutator ] = { Method -> "Inverse" };
 
-(* commutator loop using relation inverse or metric negative *)
 DisplacementCommutator[
     graph_Graph, displacement1_Association, displacement2_Association,
     opts : OptionsPattern[] ] :=
@@ -98,7 +92,6 @@ DisplacementCommutator[
         DisplacementNegative[ graph, <| # -> displacement2 @ # |> ][ # ] & } ]
   ]
 
-(* metric commutator Phi_{-Y} . Phi_{-X} . Phi_Y . Phi_X *)
 DisplacementBracket[ graph_Graph, displacement1_Association, displacement2_Association ] :=
   DisplacementCommutator[ graph, displacement1, displacement2, Method -> "Negative" ]
 
@@ -110,9 +103,6 @@ DisplacementMagnitude[ graph_Graph, displacement_Association ] :=
     { point, targets } |-> Max @ Table[ GraphDistance[ graph, point, target ], { target, targets } ],
     displacement ]
 
-(* contract each value set to its centre (minimal eccentricity under the mutual
-   graph distances, centre drawn from the set itself), iterated to a fixed
-   point; ties keep the set multivalued *)
 DisplacementReduce[ graph_Graph, displacement_Association ] :=
   Map[
     FixedPoint[
@@ -120,9 +110,6 @@ DisplacementReduce[ graph_Graph, displacement_Association ] :=
         { candidate } |-> Max @ Table[ GraphDistance[ graph, candidate, target ], { target, targets } ] ],
       # ] &,
     displacement ]
-
-
-(* ===================== Predicates ===================== *)
 
 DisplacementSingleValuedQ[ displacement_Association ] :=
   AllTrue[ Values @ displacement, Length @ # == 1 & ]
@@ -141,8 +128,6 @@ Options[ ContinuousDisplacementQ ] = { Method -> "Weak" };
 ContinuousDisplacementQ[ graph_Graph, displacement_Association, opts : OptionsPattern[] ] :=
   ContinuousDisplacementQ[ graph, displacement, 1, opts ]
 
-(* weak: one close pair; Hausdorff: every target has a close partner;
-   strong: every cross-pair is close *)
 ContinuousDisplacementQ[
     graph_Graph, displacement_Association, k_, OptionsPattern[] ] :=
   With[
@@ -158,13 +143,6 @@ ContinuousDisplacementQ[
     AllTrue[ EdgeList @ graph,
       { edge } |-> setDistance[ displacement @ First @ edge, displacement @ Last @ edge ] <= k ] ]
 
-
-(* ===================== Canonical displacements ===================== *)
-
-(* polar pair at a centre: { radial, angular } -- radial steps along the
-   geodesics from the centre (outward by default, inward with
-   "Direction" -> "Inward"), angular steps along the cross edges of equal
-   distance; a vertex with no admissible step stays put *)
 Options[ PolarDisplacements ] = { "Direction" -> "Outward" };
 
 PolarDisplacements[ graph_Graph, center_, OptionsPattern[] ] :=
@@ -179,31 +157,18 @@ PolarDisplacements[ graph_Graph, center_, OptionsPattern[] ] :=
         VertexList @ graph ] }
   ]
 
-(* steepest ascent of a vertex function: v -> the neighbours maximising the
-   increase of f; local maxima stay put.  The outward radial displacement is
-   the gradient of the distance from the centre. *)
 GradientDisplacement[ graph_Graph, f_Association ] :=
   AssociationMap[
     { v } |-> With[ { best = MaximalBy[ AdjacencyList[ graph, v ], f ] },
       If[ f @ First @ best > f @ v, best, { v } ] ],
     VertexList @ graph ]
 
-(* translation along an embedding: v -> vertices whose coordinates are nearest
-   to position(v) + vector *)
 TranslationDisplacement[ graph_Graph, vector_List ] :=
   With[
     { position = AssociationThread[ VertexList @ graph, GraphEmbedding @ graph ],
       nearest = Nearest[ GraphEmbedding @ graph -> VertexList @ graph ] },
     AssociationMap[ nearest[ position @ # + vector ] &, VertexList @ graph ] ]
 
-
-(* ===================== Generation ===================== *)
-
-(* random continuous displacement: breadth-first shell extension -- targets
-   drawn from the radius ball, kept within one step of the targets of
-   already-assigned neighbours -- followed by repair sweeps over the edges
-   still violating 1-continuity, restarting from a fresh draw if a run of
-   sweeps fails to converge *)
 RandomDisplacement[ graph_Graph, radius_ : 1 ] :=
   Module[ { targets, order, violating },
     order = First @ Last @ Reap[ BreadthFirstScan[ graph, First @ VertexList @ graph,
@@ -239,8 +204,6 @@ RandomDisplacement[ graph_Graph, radius_ : 1 ] :=
       { 5 } ];
     targets ]
 
-(* smallest Killing displacement: nontrivial graph automorphism of minimal
-   magnitude, as a displacement *)
 FindKillingDisplacement[ graph_Graph ] :=
   First @ FindKillingDisplacement[ graph, All ]
 
@@ -259,11 +222,6 @@ KillingDisplacementMagnitude[ graph_Graph ] :=
     Map[ DisplacementMagnitude[ graph, # ] &, FindKillingDisplacement[ graph, All ] ],
     Infinity ]
 
-
-(* ===================== Plotting ===================== *)
-
-(* displacements as bent arcs v -> w over the graph's own embedding; the k-th
-   displacement of the sequence gets the k-th Standard (ColorData 97) colour *)
 Options[ DisplacementPlot ] = { ImageSize -> 320 };
 
 DisplacementPlot[ graph_Graph, displacement_Association, opts : OptionsPattern[] ] :=

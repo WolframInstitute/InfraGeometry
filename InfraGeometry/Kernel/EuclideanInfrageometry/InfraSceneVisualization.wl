@@ -24,11 +24,6 @@ PackageScope[infraInk]
 PackageScope[parseHighlightStyle]
 PackageScope[normalizeHighlightSpec]
 
-
-(* ===================== Palette ===================== *)
-
-(* the one place an object colour is written down; a literal rather than a shipped asset, so $InfraPointColor does not depend on file I/O at load time *)
-
 $infraColors = <|
   "Point"    -> RGBColor[ 0.95, 0.08, 0.08 ],
   "Segment"  -> RGBColor[ 0.92, 0.45, 0.30 ],
@@ -62,22 +57,15 @@ $InfraPalette := Dataset @ KeyValueMap[
 
 $InfraOpacityRange  = { 0.40, 1.0 };
 $InfraEdgeThickness = 9.0;
-(* at 14 a single-realisation point swallowed several mesh cells on a Medium plane *)
 $InfraPointSize     = 6;
 
-(* one absolute value per class, independent of the graph, with three-pixel gaps so the classes stay distinguishable; the accent is a separate role, not a class *)
 $InfraPointSizes      = <| Small -> 4, Medium -> 7, Large -> 10 |>;
 $InfraAccentPointSize = 12;
 
 $InfraSceneImageSize = Medium;
 
-(* colours belong to the ORDER objects are added to a scene, not to object types *)
 $InfraStrikeOutPalette := ColorData[ 112, "ColorList" ];
 
-
-(* ===================== Per-object style spec ===================== *)
-
-(* True resolves to Arrowheads[Medium], a symbolic size that scales with the plot rather than with the stroke *)
 resolveArrowSpec[ spec_ ] := Replace[ spec, {
   Automatic | None | False -> None,
   True :> Arrowheads[ Medium ],
@@ -98,7 +86,6 @@ parseHighlightStyle[ spec_, defaults_Association ] :=
           MapAt[ Append[ #, d ] &, rec, "EdgeDir" ],
         ( d : ( _PointSize | _AbsolutePointSize ) ) :>
           MapAt[ Append[ #, d ] &, rec, "VertexDir" ],
-        (* an object's own arrowhead, True on and False off: caught here so it reaches the stroke instead of being buried in a vertex/edge Directive, where it would do nothing *)
         ( a : ( _Arrowheads | True | False ) ) :> Append[ rec, "Arrowheads" -> resolveArrowSpec[ a ] ],
         c_?ColorQ :> Append[ rec, "Color" -> c ],
         d_ :> MapAt[ Append[ #, d ] &, MapAt[ Append[ #, d ] &, rec, "VertexDir" ], "EdgeDir" ]
@@ -107,7 +94,6 @@ parseHighlightStyle[ spec_, defaults_Association ] :=
         "VertexDir" -> { }, "EdgeDir" -> { }, "EdgeStyle" -> None,
         "EdgeShapeFunction" -> None, "VertexSize" -> None, "VertexShapeFunction" -> None |> ],
       normalizeHighlightSpec @ spec ],
-    (* an explicit appearance directive supersedes the matching count-driven diffusion: suppress the *Range so the user's value is the only one emitted on that channel *)
     r_Association :> With[ {
         edgeThick  = ! FreeQ[ { r[ "EdgeDir" ], r[ "EdgeStyle" ] },
           Thickness | AbsoluteThickness | Thick | Thin ],
@@ -125,10 +111,6 @@ normalizeHighlightSpec[ list_List ]          := list
 normalizeHighlightSpec[ Directive[ d___ ] ]  := { d }
 normalizeHighlightSpec[ x_ ]                 := { x }
 
-
-(* ===================== InfraSubstrateHighlight ===================== *)
-
-(* a channel value is None, a scalar base measure t -- a fuzzy object distributes it as t * count/norm, conserving the total measure across realisations -- or a {min, max} envelope interpolated by weight, whose floor keeps rare elements visible *)
 Options[ InfraSubstrateHighlight ] = Join[
   {
     "OpacityRange"   :> $InfraOpacityRange,
@@ -144,7 +126,6 @@ Options[ InfraSubstrateHighlight ] = Join[
 InfraSubstrateHighlight[ graph_Graph, obj : Except[_List], opts : OptionsPattern[] ] :=
   InfraSubstrateHighlight[ graph, { obj }, opts ]
 
-(* the cumulative density of the objects: each object's vertex and edge density divided by its heaviest mass, summed at every element and capped at 1, the colour the blend of the objects' colours weighted by those masses *)
 InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
   Module[ { ranges, palette, objects, entries, vMasses, eMasses },
 
@@ -158,7 +139,6 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
       Automatic :> $InfraStrikeOutPalette,
       c : Except[ _List ] :> { c } } ];
 
-    (* a Directive styles every object after it until the next one, as in Graphics; obj -> style and Style[obj, ...] add to it for that object alone *)
     objects = DeleteCases[
       Last @ Fold[
         { state, item } |-> Replace[ item, {
@@ -184,7 +164,6 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
              Automatic :> If[ ink[ "EdgeDensity" ] === <| |>, $InfraPointSize, None ] ] ] |> ],
       objects ];
 
-    (* the knots of a leg chain ride on top of its stroke as one more point density; appended last, so no listed object's palette slot moves *)
     entries = Join[ entries,
       Cases[ entries, e_Association /; e[ "Knots" ] =!= { } :>
         With[ { record = parseHighlightStyle[ Automatic, ranges ], knots = KeySort @ Counts @ e[ "Knots" ] },
@@ -196,7 +175,6 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
     vMasses = Merge[ ( e |-> ( { e[ "Color" ], #, e[ "Record" ] } & /@ e[ "Verts" ] ) ) /@ entries, Identity ];
     eMasses = Merge[ ( e |-> ( { e[ "Color" ], #, e[ "Record" ] } & /@ e[ "Edges" ] ) ) /@ entries, Identity ];
 
-    (* colour and opacity ride per-element Style[] specs; thickness and point size are rerouted to top-level EdgeStyle / VertexShapeFunction, which HighlightGraph silently ignores inside Style[] *)
     With[ {
         lerp  = { spec, w } |-> If[ ListQ @ spec, spec[[ 1 ]] + ( spec[[ 2 ]] - spec[[ 1 ]] ) w, spec w ],
         blend = cs |-> {
@@ -204,7 +182,6 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
           Min[ 1, Total @ cs[[ All, 2 ]] ],
           cs[[ -1, 3 ]] } },
       {
-          (* all edge styling rides top-level EdgeStyle: HighlightGraph gives a highlight Style priority over EdgeStyle and drops AbsoluteThickness inside it, so an edge listed both ways renders at default thickness *)
           edgeData = KeyValueMap[
             { ue, cs } |-> With[ { el = blend @ cs },
               { color = el[[ 1 ]], w = el[[ 2 ]], rec = el[[ 3 ]] },
@@ -229,7 +206,6 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
               Which[
                 rec[ "VertexShapeFunction" ] =!= None,
                   <| "VSF" -> ( v -> rec[ "VertexShapeFunction" ] ) |>,
-                (* point sizing is rerouted to a top-level VertexShapeFunction, since HighlightGraph drops it inside Style[] specs *)
                 rec[ "PointSizeRange" ] =!= None || ! FreeQ[ vDirs, _AbsolutePointSize | _PointSize ],
                   With[ { body = Flatten[ { color, oList,
                       If[ rec[ "PointSizeRange" ] === None, { },
@@ -244,7 +220,6 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
           coords    = AssociationThread[ VertexList @ graph -> GraphEmbedding @ graph ],
           edgeStyle = Association @ Cases[ edgeData, kv_Association :> kv[ "EdgeStyle" ] ]
         },
-        (* a walk is one stroke: HighlightGraph draws each edge separately with a butt cap and ignores a CapForm / JoinForm in the edge directive, so a bend leaves a wedge of background bitten out of the ribbon.  Each maximal run of equal-styled consecutive steps is redrawn as one joined Line, carried by the EdgeShapeFunction of its first unclaimed edge; each edge takes at most one rule, since Graph keeps only the first *)
         {
           strokes = Catenate @ Cases[ entries,
             e_Association /; e[ "Record" ][ "EdgeShapeFunction" ] === None && ListQ[ e[ "Walk" ] ] && Length[ e[ "Walk" ] ] >= 2 :>
@@ -287,26 +262,17 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
     ]
   ]
 
-
-(* ===================== The ink ===================== *)
-
-(* every object as a vertex density <| v -> m |> and an edge density <| UndirectedEdge[v, w] -> m |>, with the vertex order of an object that has one member and the knots of a leg chain.  The branches are ordered because a vertex label may itself be a List *)
-
 infraInk[ graph_Graph, x_ ] := Which[
-  (* a vertex or a density: its own mass *)
   VertexQ[ graph, x ] || AssociationQ[ x ],
     <| "VertexDensity" -> InfraDensity[ graph, x ], "EdgeDensity" -> <| |>, "Walk" -> None, "Knots" -> { } |>,
-  (* one walk: visit counts, a closed walk's return not counted again, and traversal counts of its steps *)
   MatchQ[ x, InfraWalk[ _List ] ] && ! VertexQ[ graph, First @ x ],
     With[ { walk = First @ x },
       <| "VertexDensity" -> InfraDensity[ graph, If[ Length @ walk > 1 && First @ walk === Last @ walk, Most @ walk, walk ] ],
          "EdgeDensity"   -> KeySort @ Counts[ UndirectedEdge @@ Sort @ # & /@ Partition[ walk, 2, 1 ] ],
          "Walk"          -> walk,
          "Knots"         -> { } |> ],
-  (* heads on heads: their vertex density *)
   MatchQ[ x, ( InfraIntersection | InfraUnion )[ __ ] ],
     <| "VertexDensity" -> InfraMeasurement[ graph, x, "VertexDensity" ], "EdgeDensity" -> <| |>, "Walk" -> None, "Knots" -> { } |>,
-  (* a Euclidean head: its measurements, the two directions of an edge summed; one member keeps its order, closed when its closing step carries mass *)
   MatchQ[ x, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ __ ] ],
     With[ {
         edges  = KeySort @ GroupBy[ Normal @ InfraMeasurement[ graph, x, "EdgeDensity" ],
@@ -318,7 +284,6 @@ infraInk[ graph_Graph, x_ ] := Which[
              KeyExistsQ[ edges, UndirectedEdge @@ Sort @ { Last @ member, First @ member } ],
            Append[ member, First @ member ], member ],
          "Knots"         -> { } |> ],
-  (* a walk graph, a cycle graph or a DAG: its occupation, read off its one walk when it has one *)
   GraphQ[ x ],
     With[ { walk = Which[
         closedWalkQ @ x,                     closeWalk @ walkSequence @ x,
@@ -330,19 +295,16 @@ infraInk[ graph_Graph, x_ ] := Which[
            KeySort @ Counts[ UndirectedEdge @@ Sort @ # & /@ Partition[ walk, 2, 1 ] ] ],
          "Walk"          -> walk,
          "Knots"         -> { } |> ],
-  (* a leg chain -- consecutive open legs sharing their endpoint -- is the walk through its legs, with its knots *)
   MatchQ[ x, { _Graph, __Graph } ] && NoneTrue[ x, closedWalkQ ] &&
     AllTrue[ Partition[ walkSequence /@ x, 2, 1 ], Last @ First @ # === First @ Last @ # & ],
     With[ { knots = Prepend[ Last @ walkSequence @ # & /@ x, First @ walkSequence @ First @ x ] },
       Append[ infraInk[ graph, InfraWalk @ polylineToVertexSeq @ x ],
         "Knots" -> If[ First @ knots === Last @ knots, Most @ knots, knots ] ] ],
-  (* a region: a unit mass on its vertices and on the edges of its induced subgraph *)
   ListQ[ x ] && AllTrue[ x, VertexQ[ graph, # ] & ],
     <| "VertexDensity" -> InfraDensity[ graph, x ],
        "EdgeDensity"   -> KeySort @ Counts[ UndirectedEdge @@ Sort[ List @@ # ] & /@ EdgeList @ Subgraph[ graph, x ] ],
        "Walk"          -> None,
        "Knots"         -> { } |>,
-  (* a bundle or a family -- of walks, sets, heads or any mix: the sum of its members, summed by GroupBy as InfraDensity sums them *)
   MatchQ[ x, { __ } ],
     With[ { members = infraInk[ graph, # ] & /@ x },
       <| "VertexDensity" -> KeySort @ GroupBy[ Catenate[ Normal @ #[ "VertexDensity" ] & /@ members ], First -> Last, Total ],

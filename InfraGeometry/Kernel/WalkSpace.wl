@@ -1,10 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-
-(* ===================== SelectInfraWalk ===================== *)
-
-
 SelectInfraWalk::badfrom = "\"From\" specification `1` is not supported by SelectInfraWalk. Supported: All, \"Center\", \"Periphery\", \"MostVisited\", \"Bottleneck\", \"MinLength\", \"MaxLength\", anchor -> spec, {\"Min\", scoreFn}, {\"Max\", scoreFn}.";
 
 Options[ SelectInfraWalk ] = {
@@ -15,8 +10,6 @@ Options[ SelectInfraWalk ] = {
   "Cyclic"     -> False
 };
 
-
-(* a line or segment-extension pool's atoms are tied in length within and ordered across, so the length selectors pick whole atoms and keep the pool form; every other selector reads the realisations *)
 SelectInfraWalk[ graph_Graph, dags : { __Graph },
             countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] /;
     NoneTrue[ dags, ! LoopFreeGraphQ @ # || ! AcyclicGraphQ @ # ||
@@ -29,7 +22,6 @@ SelectInfraWalk[ graph_Graph, dags : { __Graph },
     If[ countSpec === All, Replace[ picked, { one_Graph } :> one ],
       SelectInfraWalk[ graph, picked, countSpec, "From" -> All ] ] ]
 
-(* a bundle of walk graphs selects on its vertex sequences and comes back as the graphs picked; a closed or position-spelled walk graph is one walk, a substrate DAG spreads into its geodesics, and closed walks are cycle graphs, so "Cyclic" is read off the shape *)
 SelectInfraWalk[ graph_Graph, walks : { __Graph },
             countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] :=
   With[ {
@@ -53,7 +45,6 @@ SelectInfraWalk[ graph_Graph, walks : { __Graph },
         "Cyclic" -> ( ! LoopFreeGraphQ @ First @ carriers || ! AcyclicGraphQ @ First @ carriers ), opts ] },
     If[ result === $Failed, $Failed, Lookup[ AssociationThread[ seqs -> carriers ], result ] ] ]
 
-(* the most-visited geodesics of a DAG are the longest additive-weight source -> sink paths under node weight c(v) and edge weight w -> x = f(w) b(x), the forward / backward path counts, so only the optimal geodesics are ever enumerated *)
 SelectInfraWalk[ graph_Graph, dag_Graph,
             countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] /;
     ! ( ! LoopFreeGraphQ @ dag || ! AcyclicGraphQ @ dag ) &&
@@ -102,7 +93,6 @@ SelectInfraWalk[ graph_Graph, w_Graph,
             { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ] ] ] ],
     countSpec, opts ]
 
-(* the pool is the walks the selector keeps; with "Distance" set the selection is the max-spread clique of that size under the path-space metric, Hausdorff or the order-respecting Frechet pairing, rotation-minimised when cyclic.  An unrecognised selector must raise ::badfrom rather than fall through to the whole bundle, which reads as a legitimate random draw *)
 SelectInfraWalk[ graph_Graph, walks_List, UpTo[ n_Integer ], opts : OptionsPattern[] ] :=
   Module[ { thresholds, cliques, auxiliaryGraph },
     With[ { from = OptionValue[ "From" ], distSpec = OptionValue[ "Distance" ], cyclic = TrueQ @ OptionValue[ "Cyclic" ],
@@ -118,7 +108,6 @@ SelectInfraWalk[ graph_Graph, walks_List, UpTo[ n_Integer ], opts : OptionsPatte
               positionsOf = { scores, pick } |-> Flatten @ Position[ scores, pick @ scores, { 1 }, Heads -> False ] },
             { distMatrix  = If[ needsMatrix, GraphDistanceMatrix @ graph, None ],
               vertexIndex = If[ needsMatrix, AssociationThread[ VertexList @ graph, Range @ VertexCount @ graph ], None ],
-              (* the unequal-length pairing reads the resampled positions as vertex indices, exactly as it was written *)
               baseDist = If[ agg === None,
                 { d, x, y } |-> ( m |-> Max[ Max[ Min /@ m ], Max[ Min /@ Transpose @ m ] ] ) @ d[[ x, y ]],
                 { d, x, y } |-> If[ Length @ x === Length @ y, agg @ Diagonal @ d[[ x, y ]],
@@ -142,7 +131,6 @@ SelectInfraWalk[ graph_Graph, walks_List, UpTo[ n_Integer ], opts : OptionsPatte
                 "MaxLength" :> positionsOf[ Length /@ walks, Max ],
                 ( { "Min", scoreFn_ } ) :> positionsOf[ scoreFn /@ walks, Min ],
                 ( { "Max", scoreFn_ } ) :> positionsOf[ scoreFn /@ walks, Max ],
-                (* Total picks the max total occupation ("MostVisited"), Min the max-min bottleneck, the widest continuous corridor ("Bottleneck") *)
                 visit : ( "MostVisited" | "Bottleneck" ) :> With[ {
                     edgeSeqs = If[ cyclic,
                       s |-> Sort /@ If[ Length @ s >= 2 && First @ s === Last @ s, Partition[ s, 2, 1 ], Partition[ s, 2, 1, 1 ] ],
@@ -218,11 +206,6 @@ SelectInfraWalk[ graph_Graph, walks_List, n_Integer : 1, opts : OptionsPattern[]
 SelectInfraWalk[ graph_Graph, countSpec : ( _Integer | UpTo[ _Integer ] | All ), opts : OptionsPattern[] ] :=
   SelectInfraWalk[ graph, #, countSpec, opts ] &
 
-
-(* ===================== EmbeddingClosest ===================== *)
-
-(* --- walk graphs: select on the vertex sequences, return the graphs picked; a DAG spreads into its geodesics, a cycle graph ranks as a cycle against the Euclidean circle --- *)
-
 EmbeddingClosest[ graph_Graph, w_Graph, ref_ ] := EmbeddingClosest[ graph, { w }, ref ]
 
 EmbeddingClosest[ graph_Graph, paths : { __Graph }, ref_ ] :=
@@ -260,9 +243,6 @@ EmbeddingClosest[ graph_Graph, paths : { __Graph }, ref_ ] :=
                     Line[ Append[ pts, First @ pts ] ],
                     Line[ Append[ circlePoints, First @ circlePoints ] ] ] ] ] ] ] ] ] ]
 
-
-(* --- segment-shape: bundle of paths, reference {p1, p2}, ranked by the plane Hausdorff distance between the embedded polyline and the straight segment p1 p2 --- *)
-
 EmbeddingClosest[ graph_Graph, paths_List, { p1_, p2_ } ] /; Length[ paths ] <= 1 := paths
 
 EmbeddingClosest[ graph_Graph, paths_List, { p1_, p2_ } ] :=
@@ -273,9 +253,6 @@ EmbeddingClosest[ graph_Graph, paths_List, { p1_, p2_ } ] :=
       path |-> If[ Length @ path >= 2, RegionHausdorffDistance[ Line[ coords[[ Lookup[ vertexIndex, path ] ]] ], Line[ ends ] ], 0 ] ]
   ]
 
-
-(* --- shell-shape: a List of vertex sets ranked by the directed Hausdorff distance to the Euclidean sphere of radius r, Max over set vertices of |EuclideanDistance(v, c) - r| --- *)
-
 EmbeddingClosest[ graph_Graph, sets_List, { center_, radius_?NumericQ } ] :=
   With[ { coords = GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ],
           vertexIndex = AssociationThread[ VertexList[ graph ], Range @ VertexCount[ graph ] ] },
@@ -285,9 +262,6 @@ EmbeddingClosest[ graph_Graph, sets_List, { center_, radius_?NumericQ } ] :=
         Max[ Abs[ EuclideanDistance[ centerPt, # ] - radius ] & /@
               coords[[ Lookup[ vertexIndex, set ] ]] ] ] ]
   ]
-
-
-(* --- curve-shape: a length-2 bare list stays a {p1, p2} vertex reference, so explicit coordinates must be wrapped in Line[...]; a spline is sampled densely before the plane Hausdorff distance is taken --- *)
 
 EmbeddingClosest[ graph_Graph, paths_List, crv_ ] /;
     ( MatchQ[ crv, _Line | _BSplineCurve | _BezierCurve ] ||
@@ -308,18 +282,10 @@ EmbeddingClosest[ graph_Graph, paths_List, crv_ ] /;
         Line[ curvePts ] ] ]
   ]
 
-
-(* --- operator form --- *)
-
 EmbeddingClosest[ graph_Graph, ref_List ] := EmbeddingClosest[ graph, #, ref ] &
 
 EmbeddingClosest[ graph_Graph, crv : ( _Line | _BSplineCurve | _BezierCurve ) ] :=
   EmbeddingClosest[ graph, #, crv ] &
-
-
-(* ===================== FindEmbeddingClosestPath ===================== *)
-
-(* sample the curve, map each sample to its nearest vertex under the embedding, drop consecutive repeats, and join successive anchors by geodesics *)
 
 FindEmbeddingClosestPath[ graph_Graph, curve_ ] :=
   With[ { coords = GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ],
@@ -335,9 +301,6 @@ FindEmbeddingClosestPath[ graph_Graph, curve_ ] :=
     PathGraph[ MapIndexed[ { First @ #2, #1 } &, walk ], DirectedEdges -> True ]
   ]
 
-
-(* ===================== SprayGraph ===================== *)
-
 (* [g, c]: the BFS DAG of all geodesics from c -- edge u -> v whenever d(c, v) = d(c, u) + 1 and u-v is a g-edge.  [g, <| v -> m |>]: the same with d_c replaced by min_i d(ci, v).  [g, pairs]: the union of geodesics between the listed pairs *)
 
 Options[ SprayGraph ] = {
@@ -352,7 +315,6 @@ SprayGraph[ g_Graph, c_, opts : OptionsPattern[] ] /; MemberQ[ VertexList[ g ], 
 SprayGraph[ g_Graph, sources_List, opts : OptionsPattern[] ] /; SubsetQ[ VertexList[ g ], sources ] :=
   SprayGraph[ g, KeySort @ AssociationMap[ 1 &, sources ], opts ]
 
-(* the spray keeps the base graph's embedding, so its figures stay aligned with the substrate *)
 SprayGraph[ g_Graph, fam_Association, OptionsPattern[] ] /; SubsetQ[ VertexList[ g ], Keys @ fam ] :=
   With[ { dist = AssociationThread[ VertexList[ g ], Min /@ Transpose[ GraphDistance[ g, # ] & /@ Keys @ fam ] ],
           depth = Replace[ OptionValue[ "AxisLength" ], All -> Infinity ],
@@ -399,9 +361,6 @@ SprayGraph[ g_Graph, pairs : { { _, _ } .. }, OptionsPattern[] ] :=
     GraphUnion @@ ( PathGraph[ #, DirectedEdges -> directed ] & /@ selectedPaths )
   ]
 
-
-(* ===================== GeodesicExtensionGraph ===================== *)
-
 (* [g, {p1, p2}]: the DAG of all geodesic extensions of the segment p1 -> p2 beyond p2 -- vertex set { e : d(p1, e) == d(p1, p2) + d(p2, e) }, edges u -> v the g-edges with d(p1, v) == d(p1, u) + 1 -- so its directed paths from the source p2 are exactly the geodesics from p2 that stay geodesic behind any p1 -> p2 geodesic.  The set is closed under such steps (d(p1, v) <= d(p1, p2) + d(p2, v) <= d(p1, u) + 1 forces equality), so the edges need no membership test.  Wrapper anchors spread to one DAG per anchor pair *)
 
 GeodesicExtensionGraph[ g_Graph, { p1_, p2_ } ] /; VertexQ[ g, p1 ] && VertexQ[ g, p2 ] :=
@@ -414,7 +373,6 @@ GeodesicExtensionGraph[ g_Graph, { p1_, p2_ } ] /; VertexQ[ g, p1 ] && VertexQ[ 
       VertexCoordinates -> Lookup[ coords, pool ] ]
   ]
 
-(* an Association spreads over its support, a walk graph into the vertex sequences it stands for, a list of graphs into all of theirs; anything else is one realisation *)
 GeodesicExtensionGraph[ g_Graph, { p1_, p2_ } ] :=
   With[ {
       walksOf = w |-> With[ { vs = VertexList @ w },
@@ -439,9 +397,6 @@ GeodesicExtensionGraph[ g_Graph, { p1_, p2_ } ] :=
         True,                         { x } ], { p1, p2 } ] ] },
     Replace[ GeodesicExtensionGraph[ g, # ] & /@ pairs, { one_ } :> one ] /; pairs =!= { { p1, p2 } } ]
 
-
-(* ===================== PathSubgraph ===================== *)
-
 (* the union of all simple u-v paths of length at most k; Automatic is the geodesic case k = d(u, v) *)
 
 Options[ PathSubgraph ] = { "Directed" -> True };
@@ -461,11 +416,6 @@ PathSubgraph[ g_Graph, u_, v_, lengthSpec : ( _Integer | UpTo[ _Integer ] | All 
       ]
     ]
   ]
-
-
-(* ===================== InfraDeformationSize ===================== *)
-
-(* L - sharedPrefixEdges - sharedSuffixEdges: the width of the window on which the two walks differ.  One-sided, measured in the reference's edges, so not a symmetric walk-space metric.  A walk graph is read as its vertex sequence, the cyclic core when it is closed *)
 
 InfraDeformationSize[ ref_, ws : { __Graph } ] := InfraDeformationSize[ ref, # ] & /@ ws
 

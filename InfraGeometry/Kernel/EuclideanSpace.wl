@@ -1,8 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-(* ===================== InfraScalarProduct ===================== *)
-
 (* "Alexandrov": <u, v>_o = d(o, u) d(o, v) cos theta_k with theta_k the comparison angle at o in M_k^2; k = 0 collapses to (d(o,u)^2 + d(o,v)^2 - d(u,v)^2) / 2.
    "Parallelogram": the polarisation (||u + v||_o^2 - ||u - v||_o^2) / 4 over realisations of u + v and u - v on the substrate. *)
 
@@ -39,11 +36,6 @@ InfraScalarProduct[ graph_Graph, o_, u_, v_, OptionsPattern[] ] :=
       ],
     _, Message[ InfraScalarProduct::badmethod, OptionValue[ Method ] ]; $Failed
   ]
-
-
-(* ===================== FindInfraLinearCombination ===================== *)
-
-(* Sum_i lambda_i u_i from o: each scaled term lambda u, the partial sums composed pairwise left-to-right *)
 
 Options[ FindInfraLinearCombination ] = {
   "ScaleMethod" -> Automatic,
@@ -82,7 +74,6 @@ FindInfraLinearCombination[ graph_Graph, o_, terms_List,
           MatchQ[ x, { __Graph } ], Catenate[ walksOf /@ x ],
           x === { },                { },
           True,                     { x } ] },
-      (* lambda * u from o: "Metric" the vertex collinear with o, u at distance |lambda| r, "Line" the index snap along FindInfraLine, "Midpoint" dyadic bisection for lambda in [0, 1] *)
       { scale = { o0, u, lambda } |-> With[
           { method = Replace[ scaleM, Automatic :> Which[
               IntegerQ[ lambda ], "Metric",
@@ -153,9 +144,6 @@ FindInfraLinearCombination[ graph_Graph, o_, terms_List,
         _UpTo, Take[ reps, count ],
         _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ] ]
 
-
-(* ===================== InfraAngle ===================== *)
-
 (* "Arclength": remove the open ball B(p, min(d(p, q1), d(p, q2))) and normalise d(q1, q2) in the rest by the radius, a synthetic radian measure of the detour around p.
    "Alexandrov": the comparison-triangle angle in M_k^2. *)
 
@@ -186,9 +174,6 @@ InfraAngle[ graph_Graph, { q1_, p_, q2_ }, OptionsPattern[] ] :=
       ],
     _, Message[ InfraAngle::badmethod, OptionValue[ Method ] ]; $Failed
   ]
-
-
-(* ===================== InfraMetricTensor ===================== *)
 
 (* T[v, w] = d(p, u) / d(p, v) with u the vertex of I(p, w) closest to v; in Euclidean space clamp(cos theta, 0, |w|/|v|), on a shell max(0, cos theta) (Euclid II.12-13) *)
 

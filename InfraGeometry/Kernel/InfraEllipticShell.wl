@@ -1,8 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-(* ===================== FindInfraEllipticShell ===================== *)
-
 (* the level set { v : cMin <= d(p1, v) + d(p2, v) <= cMax }, a sorted vertex list; under Properties its minimal admissible subsets, one per instance *)
 
 FindInfraEllipticShell::badmethod   = "Method `1` is not supported by FindInfraEllipticShell.";
@@ -43,12 +40,10 @@ FindInfraEllipticShell[ graph_Graph, foci : { _, _ }, c_,
                     _,            Message[ FindInfraEllipticShell::badproperty, property ]; Throw[ $Failed ] ],
                   properties ] },
               { admissible = t |-> AllTrue[ tests, # @ t & ] },
-              (* admissible and the branch are held in Module locals, not inlined into descend's RHS: a closure's own parameter would be rewritten by a pattern variable of the same name on substitution *)
               Module[ { admitQ = admissible, pick = If[ methodHead === "Greedy", Identity, RandomSample ],
                         cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
                         acc = { }, seen = <||>, descend, frontier, next, removable, key },
                 Switch[ methodHead,
-                  (* breadth-first over the peel DAG with Sort @ T the canonical key; the pruning is a beam width or a Bernoulli keep probability with a one-element floor *)
                   "Exhaustive",
                     If[ ! admitQ[ levelSet ], { },
                       frontier = { Sort @ levelSet };
@@ -72,7 +67,6 @@ FindInfraEllipticShell[ graph_Graph, foci : { _, _ }, c_,
                           { T, frontier } ];
                         frontier = next ];
                       DeleteDuplicates @ acc ],
-                  (* DeleteCases keeps the order of the set, so every state is canonical and is its own visited key *)
                   "Greedy" | "RandomGreedy",
                     If[ ! admitQ[ levelSet ], { },
                       descend[ T_ ] :=
@@ -94,9 +88,6 @@ FindInfraEllipticShell[ graph_Graph, foci : { _, _ }, c_,
           All,       reps,
           _UpTo,     Take[ reps, count ],
           _,         If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ] ] ]
-
-
-(* ===================== InfraEllipticShellQ ===================== *)
 
 (* vs is an elliptic shell iff there are foci p1, p2 and a constant c with vs == { v : d(p1, v) + d(p2, v) == c } *)
 

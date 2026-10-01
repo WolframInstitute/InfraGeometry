@@ -1,8 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-(* ===================== FindInfraBisectingHyperplane ===================== *)
-
 (* the bisector slab B = { v : lo <= d(p1, v) - d(p2, v) <= hi }, a sorted vertex list; under Properties the minimal admissible subsets of the slab, one per instance.  On a non-bipartite graph the strict equidistant set may fail to separate, so widen the window to {-1, 1} to recover the parity-stranded band. *)
 
 FindInfraBisectingHyperplane::badmethod   = "Method `1` is not supported by FindInfraBisectingHyperplane.";
@@ -35,7 +32,6 @@ FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
           If[ properties === { },
             { bisector },
             Catch @ With[
-              (* aux graph on bisector + {q1, q2}: direct edges plus pairs joined through components of the complement *)
               { aux = With[ { nodes = Union[ bisector, { q1, q2 } ] },
                   { components = ConnectedComponents @ Subgraph[ graph,
                       Complement[ VertexList[ graph ], nodes ] ] },
@@ -54,12 +50,10 @@ FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
                     _,            Message[ FindInfraBisectingHyperplane::badproperty, property ]; Throw[ $Failed ] ],
                   properties ] },
               { admissible = T |-> AllTrue[ tests, # @ T & ] },
-              (* admissible and the branch are held in Module locals, not inlined into descend's RHS: a closure's own parameter would be rewritten by a pattern variable of the same name on substitution *)
               Module[ { admitQ = admissible, pick = If[ methodHead === "Greedy", Identity, RandomSample ],
                         cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
                         acc = { }, seen = <||>, descend, frontier, next, removable, key },
                 Switch[ methodHead,
-                  (* breadth-first over the peel DAG with Sort @ T the canonical key; the pruning is a beam width or a Bernoulli keep probability with a one-element floor *)
                   "Exhaustive",
                     If[ ! admitQ[ bisector ], { },
                       frontier = { Sort @ bisector };
@@ -83,7 +77,6 @@ FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
                           { T, frontier } ];
                         frontier = next ];
                       DeleteDuplicates @ acc ],
-                  (* DeleteCases keeps the order of the set, so every state is canonical and is its own visited key *)
                   "Greedy" | "RandomGreedy",
                     If[ ! admitQ[ bisector ], { },
                       descend[ T_ ] :=
@@ -106,11 +99,6 @@ FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
           _UpTo,     Take[ reps, count ],
           _,         If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ] ] ]
 
-
-(* ===================== InfraPlaneQ ===================== *)
-
-(* h sits inside the bisector slab and separates p1 from p2; the three-argument form is the inert scene assertion *)
-
 InfraPlaneQ[ graph_Graph, fam_Association, p1_, p2_, window_ : 0 ] :=
   InfraPlaneQ[ graph, Keys @ fam, p1, p2, window ]
 
@@ -123,9 +111,6 @@ InfraPlaneQ[ graph_Graph, h_List, p1_, p2_, window_ : 0 ] :=
     AllTrue[ h,
       bounds[[ 1 ]] <= GraphDistance[ graph, p1, # ] - GraphDistance[ graph, p2, # ] <= bounds[[ 2 ]] & ]
   ]
-
-
-(* ===================== Scene-DSL constructor ===================== *)
 
 dispatchConstruction[ graph_Graph, InfraPlane[ p1_, p2_, opts___Rule ] ] :=
   dispatchConstruction[ graph, InfraPlane[ p1, p2, { 0, 0 }, opts ] ]

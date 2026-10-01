@@ -2,9 +2,6 @@ Package["WolframInstitute`InfraGeometry`"]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraArc *)
 
-
-(* ===================== InfraArc ===================== *)
-
 (* InfraArc[c, {p, q}] is inert: the minor arcs of the circles around c through p and q, a minor arc being a geodesic of the band graph A = G[W] on the band W = { v : rmin <= d(c, v) <= rmax } of the circle through p, widened by "RadiusDelta" -> dOut | {dIn, dOut}.  Its graph is the interval DAG I_A(p, q) = { v in W : d_A(p, v) + d_A(v, q) == d_A(p, q) } with the arrows of rising d_A(p, .), whose chains are exactly those geodesics -- and hence, under the winding functional (W) and for p, q on a common circle, exactly the minor arcs, all of length d_A(p, q) (design Thm. arc).  Neither hypothesis is certified here, so "Faithful" is Undetermined.  More points give the polyline of the consecutive minor arcs, each read on the band of the circle through its own first point -- one band, since the arc asks its points to lie on a common circle *)
 
 InfraMeasurement[ graph_Graph, InfraArc[ center_, { p_, q_ }, opts___Rule ], "Graph" ] :=
@@ -29,8 +26,6 @@ InfraMeasurement[ graph_Graph, InfraArc[ center_, { p_, q_ }, opts___Rule ], "Gr
 InfraMeasurement[ graph_Graph, InfraArc[ center_, pts : { _, _, __ }, opts___Rule ], "Graph" ] :=
   InfraMeasurement[ graph, InfraArc[ center, #, opts ], "Graph" ] & /@ Partition[ pts, 2, 1 ]
 
-(* a member of the polyline is one chain per piece, so the pieces are factors where alternatives would add *)
-
 InfraMeasurement[ graph_Graph, InfraArc[ center_, pts : { _, _, __ }, opts___Rule ], "Cardinality" ] :=
   Times @@ ( InfraMeasurement[ graph, InfraArc[ center, #, opts ], "Cardinality" ] & /@ Partition[ pts, 2, 1 ] )
 
@@ -50,8 +45,6 @@ InfraVertexList[ graph_Graph, InfraArc[ center_, pts : { _, _, __ }, opts___Rule
       _UpTo,     Take[ members, count ],
       _,         If[ Length @ members < count, $Failed, Take[ members, count ] ] ] ]
 
-(* the density counts members: a vertex on occ_i(v) chains of piece i lies on occ_i(v) times the product of the other pieces' counts, and an inner knot, which both pieces meeting there count, once less *)
-
 InfraMeasurement[ graph_Graph, InfraArc[ center_, pts : { _, _, __ }, opts___Rule ], "VertexDensity" ] :=
   With[ { pieces = InfraArc[ center, #, opts ] & /@ Partition[ pts, 2, 1 ] },
     { counts = InfraMeasurement[ graph, #, "Cardinality" ] & /@ pieces },
@@ -68,19 +61,12 @@ InfraMeasurement[ graph_Graph, InfraArc[ center_, pts : { _, _, __ }, opts___Rul
       MapIndexed[ { piece, i } |-> ( Times @@ Delete[ counts, i ] ) InfraMeasurement[ graph, piece, "EdgeDensity" ], pieces ],
       Total ] ]
 
-(* the knots cut the path at prescribed positions: every chain of the piece p_i -> p_(i+1) has length d_A(p_i, p_(i+1)) *)
-
 InfraMemberQ[ graph_Graph, InfraArc[ center_, pts : { _, _, __ }, opts___Rule ], path_List ] :=
   With[ { pieces = InfraArc[ center, #, opts ] & /@ Partition[ pts, 2, 1 ] },
     { cuts = Accumulate @ Prepend[ InfraMeasurement[ graph, #, "Length" ] & /@ pieces, 1 ] },
     TrueQ[ Last @ cuts == Length @ path ] &&
       AllTrue[ Range @ Length @ pieces,
         i |-> InfraMemberQ[ graph, pieces[[ i ]], Take[ path, { cuts[[ i ]], cuts[[ i + 1 ]] } ] ] ] ]
-
-
-(* ===================== FindInfraArc ===================== *)
-
-(* an arc around c through the points, as a vertex list: a geodesic of the band graph from each point to the next, concatenated at the knots -- the band searched directly by FindPath, independently of the interval DAG.  The count-less call is one arc, a bounded count or All a List of them *)
 
 Options[ FindInfraArc ] = { "RadiusDelta" -> 0 };
 

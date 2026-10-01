@@ -1,8 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-(* ===================== FindInfraEllipse ===================== *)
-
 (* an ellipse for foci {p1, p2} is a simple cycle in the induced subgraph on { v : cMin <= d(p1, v) + d(p2, v) <= cMax }, returned as a directed cycle graph on the substrate vertices; the count-less call is one ellipse, a bounded count and All a List of them -- closed walks have no acyclic union to carry them.  The family is carried by the FindCycle length sweep, which materialises every shorter cycle first; there is no elliptic pool, the circle's carrier having no two-focus analogue.  One class under every Method: branch orders the ties within a length grade, pruning caps the cycles kept per grade *)
 
 FindInfraEllipse::badproperty = "Property `1` is not supported by FindInfraEllipse.";
@@ -67,9 +64,6 @@ FindInfraEllipse[ graph_Graph, foci : { _, _ }, c_,
             All,       reps,
             _UpTo,     Take[ reps, count ],
             _,         If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ] ] ] ]
-
-
-(* ===================== InfraEllipseQ ===================== *)
 
 (* cycle is an ellipse iff it is a cyclic path whose vertex set is an elliptic shell. *)
 

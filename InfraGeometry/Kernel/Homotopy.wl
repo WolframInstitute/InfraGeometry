@@ -1,17 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-
-(* ===================== The chain shape ===================== *)
-
-(* a homotopy is a CHAIN of walks, and a walk is a Graph, so a chain is { w1, ..., wm } -- a List of directed path graphs for an open homotopy, of directed cycles for a closed one.  HighlightGraph takes it directly, Length is the number of moves plus one, First and Last are its ends.  The InfraHomotopy head is gone with the other payload wrappers: ["Realizations"] is the List a bounded count or All already returns, ["Mass"] is Length, and ["Weights"] was always all-ones *)
-
-(* the homotopy class is read off the shape and one option.  An open walk -- a vertex list or a path graph -- is a path with its endpoints fixed, slid by "FreeHomotopy"; a closed walk -- a cycle graph, a circle included -- is a loop with its base point fixed, quotiented by rotation into the free loop by "FreeHomotopy", whose canonical form is the lex-least rotation of the cyclic core.  Both arguments of a two-walk question must be open or both closed *)
-
-
-(* ===================== FindInfraHomotopy ===================== *)
-
-
 FindInfraHomotopy::mismatch  = "The first walk is `1` and the second `2`; both must be open or both closed.";
 FindInfraHomotopy::badmethod = "Method `1` is not supported by FindInfraHomotopy.";
 
@@ -23,7 +11,6 @@ Options[ FindInfraHomotopy ] = {
   "MaxMoves"            -> Infinity
 };
 
-(* a chain from a to b of elementary moves -- a consecutive duplicate, a spur, or one arc of a declared face swapped for the complementary arc -- with endpoint slides on a free path and base-point rotation on a free loop.  "Exhaustive" is the breadth-first search of walk-space within "MaxLength", "Greedy" the descent to the neighbour of smallest symmetric Hausdorff distance to b, without backtracking *)
 FindInfraHomotopy[ graph_Graph, a_, b_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : Automatic, opts : OptionsPattern[] ] :=
   Module[ { parent, frontier, next, found, layer, chain, current, visited, steps, nbrs, best },
@@ -85,7 +72,6 @@ FindInfraHomotopy[ graph_Graph, a_, b_,
                         Select[ faces, Length[ # ] >= 3 & ] ] },
                     { maxLen = OptionValue[ FindInfraHomotopy, { opts }, "MaxLength" ] /.
                         Automatic :> Max[ Length @ startW, Length @ targetW ] + 2 * Max[ 3, Length /@ cycles ],
-                      (* a face (f_1, ..., f_k) read either way round: each cut (s, L) trades the L edges from slot s + 1 for the complementary k - L edges, reversed *)
                       faceMoves = Catenate @ Map[
                         face |-> DeleteDuplicates @ Select[
                           Flatten[ Table[ { c[[ s + 1 ;; s + L + 1 ]], Reverse @ c[[ s + L + 1 ;; s + Length @ face + 1 ]] },
@@ -109,7 +95,6 @@ FindInfraHomotopy[ graph_Graph, a_, b_,
                           Append[ p, # ] & /@ vN[ Last @ p ],
                           Prepend[ p, # ] & /@ vN[ First @ p ],
                           If[ Length @ p >= 2, { Most @ p, Rest @ p }, { } ] ], { } ] ] },
-                    (* a free loop is moved from every base point of its closed walk, so no rotation-anchored face move is missed *)
                     { neighboursOf = If[ canonicalize,
                         p |-> Catenate[ moves /@ ( lp |-> If[ Length @ lp <= 1, { lp },
                             DeleteDuplicates @ Table[ ( r |-> Append[ r, First @ r ] ) @ RotateLeft[ Most @ lp, k ], { k, 0, Length @ lp - 2 } ] ] ) @
@@ -149,10 +134,6 @@ FindInfraHomotopy[ graph_Graph, a_, b_,
                 _UpTo,     Take[ reps, count ],
                 _,         If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ] } ] ] ] ]
 
-
-(* ===================== FindInfraHomotopyRepresentativeHomotopy ===================== *)
-
-
 Options[ FindInfraHomotopyRepresentativeHomotopy ] = {
   Method                -> "Exhaustive",
   "FreeHomotopy"        -> False,
@@ -161,7 +142,6 @@ Options[ FindInfraHomotopyRepresentativeHomotopy ] = {
   "MaxMoves"            -> Infinity
 };
 
-(* the chains obj -> ... -> m ending at the length-shortest walks m of obj's class, read off the exhausted breadth-first search of walk-space within "MaxLength" *)
 FindInfraHomotopyRepresentativeHomotopy[ graph_Graph, obj_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : Automatic, opts : OptionsPattern[] ] :=
   Module[ { parent, frontier, next, layer },
@@ -210,7 +190,6 @@ FindInfraHomotopyRepresentativeHomotopy[ graph_Graph, obj_,
           Select[ faces, Length[ # ] >= 3 & ] ] },
       { canon = If[ canonicalize, canonical, Identity ],
         coerce = w |-> Which[ canonicalize, canonical @ w, closedQ, closeUp @ w, True, w ],
-        (* a face (f_1, ..., f_k) read either way round: each cut (s, L) trades the L edges from slot s + 1 for the complementary k - L edges, reversed *)
         faceMoves = Catenate @ Map[
           face |-> DeleteDuplicates @ Select[
             Flatten[ Table[ { c[[ s + 1 ;; s + L + 1 ]], Reverse @ c[[ s + L + 1 ;; s + Length @ face + 1 ]] },
@@ -234,7 +213,6 @@ FindInfraHomotopyRepresentativeHomotopy[ graph_Graph, obj_,
             Append[ p, # ] & /@ vN[ Last @ p ],
             Prepend[ p, # ] & /@ vN[ First @ p ],
             If[ Length @ p >= 2, { Most @ p, Rest @ p }, { } ] ], { } ] ] },
-      (* a free loop is moved from every base point of its closed walk, so no rotation-anchored face move is missed *)
       { neighboursOf = If[ canonicalize,
           p |-> Catenate[ moves /@ ( lp |-> If[ Length @ lp <= 1, { lp },
               DeleteDuplicates @ Table[ ( r |-> Append[ r, First @ r ] ) @ RotateLeft[ Most @ lp, k ], { k, 0, Length @ lp - 2 } ] ] ) @
@@ -262,10 +240,6 @@ FindInfraHomotopyRepresentativeHomotopy[ graph_Graph, obj_,
           _UpTo,     Take[ reps, count ],
           _,         If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ] ] ]
 
-
-(* ===================== FindInfraHomotopyRepresentative ===================== *)
-
-
 Options[ FindInfraHomotopyRepresentative ] = {
   Method                -> "Exhaustive",
   "FreeHomotopy"        -> False,
@@ -274,7 +248,6 @@ Options[ FindInfraHomotopyRepresentative ] = {
   "MaxMoves"            -> Infinity
 };
 
-(* the length-shortest walks of obj's homotopy class, the ends of its representative chains, in the shape obj had *)
 FindInfraHomotopyRepresentative[ graph_Graph, obj_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[] ] :=
   With[ { reps = DeleteDuplicates[ Last /@ FindInfraHomotopyRepresentativeHomotopy[ graph, obj, All, opts ] ] },
@@ -283,10 +256,6 @@ FindInfraHomotopyRepresentative[ graph_Graph, obj_,
       All,       reps,
       _UpTo,     Take[ reps, count ],
       _,         If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
-
-
-(* ===================== HomotopicQ ===================== *)
-
 
 HomotopicQ::mismatch = FindInfraHomotopy::mismatch;
 
@@ -298,7 +267,6 @@ Options[ HomotopicQ ] = {
   "MaxMoves"            -> Infinity
 };
 
-(* every realisation of a is homotopic to every realisation of b: the breadth-first search of FindInfraHomotopy reaches it, a closed realisation passed as the cycle on its closed walk *)
 HomotopicQ[ graph_Graph, a_, b_, opts : OptionsPattern[] ] :=
   With[ {
       closedOf = x |-> Replace[ x, { w_Graph | { w_Graph, ___Graph } :> ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w, _ -> False } ],
@@ -330,9 +298,6 @@ HomotopicQ[ graph_Graph, a_, b_, opts : OptionsPattern[] ] :=
       AllTrue[ Tuples[ { spread @ a, spread @ b } ],
         pair |-> MatchQ[ pair, { _List, _List } ] &&
           FindInfraHomotopy[ graph, Sequence @@ If[ closedQ, loopOf /@ pair, pair ], Method -> "Exhaustive", opts ] =!= { } ] ] ]
-
-
-(* ===================== NullHomotopicQ ===================== *)
 
 (* a closed walk is null-homotopic iff it is homotopic, as a based loop, to the constant walk at its base point; a vertex list or an open walk graph is read as closed *)
 
@@ -370,11 +335,6 @@ NullHomotopicQ[ graph_Graph, w_Graph, opts : OptionsPattern[] ] :=
         True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ],
     NullHomotopicQ[ graph, #, opts ] & ]
 
-
-(* ===================== Move classification ===================== *)
-
-(* an elementary move replaces one arc of a cycle by the complementary one, so it changes walk length by |newArc| - |oldArc| *)
-
 HomotopyMoveType[ walk1_List, walk2_List ] :=
   Which[
     Length[ walk2 ] < Length[ walk1 ], "Contract",
@@ -382,11 +342,9 @@ HomotopyMoveType[ walk1_List, walk2_List ] :=
     True,                              "Lateral"
   ]
 
-(* a walk graph carries one vertex per position of its sequence -- the cyclic core when it is closed, which shifts both lengths by one and so leaves the comparison alone *)
 HomotopyMoveType[ w1_Graph, w2_Graph ] :=
   HomotopyMoveType[ VertexList @ w1, VertexList @ w2 ]
 
-(* one chain -- of walk graphs, or of bare vertex lists -- gives its move sequence; a List of chains gives one sequence each.  The rows are ordered rather than left to DownValue sorting: a List of chains is itself a List of Lists, so it satisfies the vertex-list row too *)
 HomotopyMoveTypes[ arg_List ] := Which[
   MatchQ[ arg, { __Graph } ],           MapThread[ HomotopyMoveType, { Most @ arg, Rest @ arg } ],
   MatchQ[ arg, { { __Graph } .. } ],    HomotopyMoveTypes /@ arg,

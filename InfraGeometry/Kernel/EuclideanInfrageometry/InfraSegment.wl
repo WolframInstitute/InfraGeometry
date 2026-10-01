@@ -2,9 +2,6 @@ Package["WolframInstitute`InfraGeometry`"]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraSegment *)
 
-
-(* ===================== InfraSegment ===================== *)
-
 (* InfraSegment[p1, ..., pk] is inert: the polyline of the segments [p_i, p_(i+1)], k >= 2, and for k == 2 the segment itself.  Its graph is the interval DAG I(p, q) = { v : d(p, v) + d(v, q) == d(p, q) } with the arrows v -> w of rising d(p, .), whose chains are exactly the geodesics from p to q (design Thm. segment), and for a polyline the List of the pieces' DAGs, a member concatenating one chain per piece *)
 
 InfraMeasurement[ graph_Graph,
@@ -24,8 +21,6 @@ InfraMeasurement[ graph_Graph,
 InfraMeasurement[ graph_Graph,
     InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ], "Graph" ] :=
   InfraMeasurement[ graph, InfraSegment @@ #, "Graph" ] & /@ Partition[ { pts }, 2, 1 ]
-
-(* a member of a polyline is one chain per piece, so the pieces are factors where the atoms of a line are alternatives *)
 
 InfraMeasurement[ graph_Graph,
     InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ], "Cardinality" ] :=
@@ -48,8 +43,6 @@ InfraVertexList[ graph_Graph,
       All,       members,
       _UpTo,     Take[ members, count ],
       _,         If[ Length @ members < count, $Failed, Take[ members, count ] ] ] ]
-
-(* the density counts members: a vertex on occ_i(v) chains of piece i lies on occ_i(v) times the product of the other pieces' counts, and an inner knot, which both pieces meeting there count, once less *)
 
 InfraMeasurement[ graph_Graph,
     InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ], "VertexDensity" ] :=
@@ -79,9 +72,6 @@ InfraMemberQ[ graph_Graph,
       AllTrue[ Range @ Length @ pieces,
         i |-> InfraMemberQ[ graph, InfraSegment @@ pieces[[ i ]], Take[ path, { cuts[[ i ]], cuts[[ i + 1 ]] } ] ] ] ]
 
-
-(* ===================== FindInfraSegment ===================== *)
-
 (* a geodesic (p = v0, v1, ..., vk = q) with k = d(p, q), as a vertex list -- the substrate searched directly by FindPath, independently of the interval DAG.  The count-less call is one geodesic, a bounded count a List of them, All the whole class *)
 
 FindInfraSegment[ graph_Graph, p_, q_,
@@ -97,11 +87,6 @@ FindInfraSegment[ graph_Graph, p_, q_,
       All,       geodesics,
       _UpTo,     Take[ geodesics, count ],
       _,         If[ Length @ geodesics < count, $Failed, Take[ geodesics, count ] ] ] ]
-
-
-(* ===================== ExtendInfraSegment ===================== *)
-
-(* the geodesics containing a geodesic bundle from p1 to p2, extended past its ends by at most kspec edges per free side and inextensible within that budget: kspec Infinity gives the lines through the bundle (FindInfraLine), kspec 0 the bundle itself.  The seed is a walk, a geodesic DAG extended as one object, or anything spreading to walks; the 6-ary form is Tarski A4 *)
 
 ExtendInfraSegment::badproperty  = "Property `1` is not supported by ExtendInfraSegment; local rules on the extension moved to ExtendInfraGeodesic[graph, seed, scale, kspec].";
 ExtendInfraSegment::badmethod    = "Method `1` is not supported by ExtendInfraSegment.";
@@ -202,7 +187,6 @@ ExtendInfraSegment[ graph_Graph, seed_,
               _UpTo,     Take[ lines, count ],
               _,         If[ Length @ lines < count, $Failed, Take[ lines, count ] ] ] ] ] ] ]
 
-
 (* Tarski A4: find x with B(a, b, x) and d(b, x) == d(c, d); the last vertex slot excludes rules so an optioned 3-argument call never lands here *)
 
 ExtendInfraSegment[ graph_Graph, a_, b_, c_, d : Except[ _Rule | _RuleDelayed ],
@@ -213,22 +197,12 @@ ExtendInfraSegment[ graph_Graph, a_, b_, c_, d : Except[ _Rule | _RuleDelayed ],
           x |-> BetweennessQ[ graph, a, b, x ] && GraphDistance[ graph, b, x ] === target ] ] },
     Switch[ count, All, vs, _UpTo, Take[ vs, count ], _, If[ Length @ vs < count, $Failed, Take[ vs, count ] ] ] ]
 
-
-(* ===================== Scene-DSL constructor ===================== *)
-
-(* inside a scene the head is the construction token and the scene engine binds its vertex sequences *)
-
 dispatchConstruction[ graph_Graph, InfraSegment[ p1_, p2_, opts___Rule ] ] :=
   capBranches[
     applySelectOption[ graph, FindInfraSegment[ graph, p1, p2, All ],
       "Select" /. { opts } /. "Select" -> None,
       False, <| "Endpoints" -> { p1, p2 } |> ],
     extractBranches[ { opts } ] ]
-
-
-(* ===================== InfraWalkQ ===================== *)
-
-(* consecutive vertices adjacent, revisits allowed: InfraWalkQ superset InfraSegmentQ superset InfraLineQ *)
 
 InfraWalkQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraWalkQ[ graph, # ] & ]
 
@@ -254,14 +228,10 @@ InfraWalkQ[ graph_Graph, path_List ] /; Length[ path ] >= 2 :=
 
 InfraWalkQ[ _Graph, path_List ] /; Length[ path ] < 2 := False
 
-
-(* ===================== InfraSegmentQ ===================== *)
-
 (* consecutive vertices adjacent and the total edge count equal to d(v0, vk); a graph -- one path or a DAG -- passes iff every walk it stands for does *)
 
 InfraSegmentQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraSegmentQ[ graph, # ] & ]
 
-(* a family of instances, the shape FindInfraSegment[graph, p, q, n | UpTo[n] | All] returns *)
 InfraSegmentQ[ graph_Graph, ws : { { ___ } .. } ] := AllTrue[ ws, InfraSegmentQ[ graph, # ] & ]
 
 InfraSegmentQ[ graph_Graph, w_Graph ] :=
@@ -286,11 +256,6 @@ InfraSegmentQ[ graph_Graph, segment_List ] /; Length[ segment ] >= 2 :=
   AllTrue[ Partition[ segment, 2, 1 ], EdgeQ[ graph, UndirectedEdge @@ # ] & ]
 
 InfraSegmentQ[ _Graph, segment_List ] /; Length[ segment ] < 2 := False
-
-
-(* ===================== UniqueInfraSegmentQ ===================== *)
-
-(* a geodetic graph: every vertex pair admits a unique geodesic *)
 
 UniqueInfraSegmentQ[ graph_Graph, u_, v_ ] := GeodesicMultiplicity[ graph, u, v ] == 1
 

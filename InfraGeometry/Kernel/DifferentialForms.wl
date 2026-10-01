@@ -1,64 +1,20 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-(* Differential forms on the tangent fibers of a graph vs. cochains on its clique
-   complex, and the maps R (restriction) and I (integration) between them.
-   Forms:    <|v -> <|{w1<...<wk} -> c|>|>   -- alternating germ on tuples of neighbours of v (sparse).
-   Cochains: <|{v0<...<vk} -> c|>            -- function on (k+1)-cliques (sparse), sorted representative only.
-   The (k+1)-cliques are read by FindClique, not by the DiscreteGeometry paclet's GraphComplex[g, {k+1}],
-   so that this file carries no dependency on that paclet.
-
-   TWO CONVENTIONS SHARE THAT ONE STORAGE FORMAT, AND THEY ARE NOT INTERCHANGEABLE.
-
-   * ALTERNATING cochains. The stored value determines the value on every ordering of the
-     tuple, by the sign of the permutation. This is the orientation convention: it needs no
-     choice of vertex order, and it is the convention of forms, of RestrictionMap and of
-     IntegrationMap. Read it with CochainValue.
-
-   * ORDERED cochains. The stored value is the value on the increasing tuple and on no
-     other; the object is a cochain of the simplicial complex with its vertices ordered by
-     <. Read it with OrderedCochainValue.
-
-   Coboundary agrees on both, because every face of an increasing tuple is increasing.
-   The products do not, so there are two cup products and they carry different names.
-
-   * CochainCup is THE cup product: the full antisymmetrisation of the Alexander-Whitney
-     formula, acting on ALTERNATING cochains. It needs no vertex order, is unital, graded-
-     commutative and a derivation for the coboundary, and is not associative. Its
-     1/(p+q+1)! normalisation is forced by agreement with the cup product on cohomology.
-   * OrderedCochainCup is the bare Alexander-Whitney formula on ORDERED cochains. It is
-     associative and unital but not graded-commutative, and it is well defined only in the
-     ordered convention -- the Alexander-Whitney cup of two alternating cochains is not
-     alternating, so reading its result with CochainValue returns a different cochain.
-     It is kept because the Steenrod tower and the A-infinity comparison need an
-     associative product. *)
-
-(* ===================== Evaluation ===================== *)
-
-(* value of the germ omega_v on an arbitrary tuple of neighbours, alternating *)
 FormValue[omega_, v_, tuple_List] := Signature[tuple] * Lookup[Lookup[omega, Key[v], <||>], Key[Sort[tuple]], 0]
 
-(* value of an ALTERNATING cochain on an arbitrary vertex tuple, 0 off the complex *)
 CochainValue[alpha_, tuple_List] := Signature[tuple] * Lookup[alpha, Key[Sort[tuple]], 0]
 
-(* value of an ORDERED cochain: defined on increasing tuples only, 0 off the complex.
-   A non-increasing tuple is not an error in the caller but a convention mismatch, so it
-   returns Missing rather than a number that would silently be wrong. *)
 OrderedCochainValue[alpha_, tuple_List] :=
     If[ OrderedQ[tuple] && DuplicateFreeQ[tuple],
         Lookup[alpha, Key[tuple], 0],
         Missing["NonIncreasingTuple", tuple]
     ]
 
-(* k = form / cochain degree, read off a nonempty stored key *)
 FormDegree[omega_] := Length @ First @ Keys @ First @ Select[Values[omega], # =!= <||> &]
 CochainDegree[alpha_] := Length[First[Keys[alpha]]] - 1
 
-(* ===================== Restriction and integration ===================== *)
-
-(* canonical 0-form from a scalar function or association on the vertices *)
 ZeroForm[g_, f_] := AssociationMap[v |-> <|{} -> f[v]|>, VertexList[g]]
 
-(* R : cochain -> form, (R alpha)_v(w1..wk) = alpha(v, w1..wk); zero off cliques *)
 RestrictionMap[g_, alpha_] := GroupBy[
     Flatten @ Table[
         With[{face = DeleteCases[clique, v]}, v -> (face -> CochainValue[alpha, Prepend[face, v]])],
@@ -76,8 +32,6 @@ IntegrationMap[g_, omega_] := If[AllTrue[Values[omega], # === <||> &], <||>, Wit
     ]
 ]]
 
-(* ===================== Differentials ===================== *)
-
 (* coboundary delta on cochains, (delta alpha)(v0..v_{k+1}) = sum_i (-1)^i alpha(v0..^vi..v_{k+1}) *)
 Coboundary[g_, alpha_] := If[alpha === <||>, <||>, With[{k = CochainDegree[alpha]},
     DeleteCases[0] @ Association @ Map[
@@ -86,8 +40,6 @@ Coboundary[g_, alpha_] := If[alpha === <||>, <||>, With[{k = CochainDegree[alpha
     ]
 ]]
 
-(* exterior derivative d on forms: gradient on 0-forms, corrected d on 1-forms *)
-(* on 0-forms (d f)_v(w) = f(w) - f(v); on 1-forms (d omega)_v(w1,w2) = omega_v(w1) - omega_v(w2) + 1/2 [omega_{w1}(w2) - omega_{w2}(w1)] *)
 FormDifferential[g_, omega_] := Which[
     AllTrue[Values[omega], # === <||> &], <||>,
     FormDegree[omega] == 0, AssociationMap[
@@ -104,7 +56,6 @@ FormDifferential[g_, omega_] := Which[
     ]
 ]
 
-(* naive differential on 1-forms, (d_naive omega)_v(w1,w2) = omega_v(w1) - omega_v(w2) (opposite face dropped) *)
 NaiveDifferential[g_, omega_] := If[AllTrue[Values[omega], # === <||> &], <||>, AssociationMap[
     v |-> DeleteCases[0] @ Association @ Map[
         pair |-> pair -> FormValue[omega, v, {pair[[1]]}] - FormValue[omega, v, {pair[[2]]}],
@@ -112,8 +63,6 @@ NaiveDifferential[g_, omega_] := If[AllTrue[Values[omega], # === <||> &], <||>, 
     ],
     VertexList[g]
 ]]
-
-(* ===================== Products ===================== *)
 
 (* wedge product of forms, the exterior product on each Lambda(T_v G)^* (a shuffle sum) *)
 FormWedge[omega_, eta_] := If[AllTrue[Values[omega], # === <||> &] || AllTrue[Values[eta], # === <||> &], <||>,
@@ -131,10 +80,6 @@ FormWedge[omega_, eta_] := If[AllTrue[Values[omega], # === <||> &] || AllTrue[Va
     ]
 ]
 
-(* Alexander-Whitney cup product on ORDERED cochains,
-     (alpha cup beta)(v0<..<v_{p+q}) = alpha(v0..vp) beta(vp..v_{p+q}).
-   Associative and unital, not graded-commutative. The result is an ORDERED cochain: read it
-   with OrderedCochainValue, never with CochainValue. *)
 OrderedCochainCup[g_, alpha_, beta_] := If[alpha === <||> || beta === <||>, <||>, With[{p = CochainDegree[alpha], q = CochainDegree[beta]},
     DeleteCases[0] @ Association @ Map[
         clique |-> clique -> Lookup[alpha, Key[Take[clique, p + 1]], 0] Lookup[beta, Key[Take[clique, -(q + 1)]], 0],
@@ -174,7 +119,4 @@ CochainCup[g_, alpha_, beta_] := If[alpha === <||> || beta === <||>, <||>, With[
     ]
 ]]
 
-(* AntisymmetrizedCup was the name of the antisymmetrised product before it became THE cup
-   product; kept as an alias so existing callers, notably the A-infinity engine's
-   AltCupStructure, keep working *)
 AntisymmetrizedCup[g_, alpha_, beta_] := CochainCup[g, alpha, beta]

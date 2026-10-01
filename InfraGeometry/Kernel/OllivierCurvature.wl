@@ -1,8 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-(* ===================== Ollivier-Ricci curvature ===================== *)
-
 (* kappa(u, v) = 1 - W_1(mu_u, mu_v) / d(u, v),
    mu_x = uniform on the open neighborhood N(x); idleness alpha = 0;
    W_1 is the Wasserstein-1 (Earth-Mover) distance under graph distance,
@@ -31,9 +28,6 @@ OllivierRicciCurvature[g_Graph] := Module[{vs, idx, adj, dist},
 	]
 ]
 
-
-(* ===================== Effective resistance ===================== *)
-
 (* Klein-Randic resistance distance R(u, v) = (e_u - e_v)^T L^+ (e_u - e_v),
    where L^+ is the Moore-Penrose pseudoinverse of the graph Laplacian
    (= the 0-block of GreenOperatorMatrix[GraphComplex[g]]).  Three forms:
@@ -59,7 +53,6 @@ EffectiveResistance[g_Graph, vs_List] /; SubsetQ[VertexList[g], vs] :=
           ix = AssociationThread[VertexList[g], Range @ VertexCount[g]] /@ vs},
         full[[ix, ix]]
     ]
-
 
 (* Klein-Randic / Schoenberg negative-type predicate: a real symmetric
    n x n matrix R with zero diagonal is realisable as a resistance

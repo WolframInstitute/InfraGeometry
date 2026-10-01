@@ -1,13 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-(* ===================== The walk shape ===================== *)
-
-(* a walk is a Graph, never a wrapper: a directed path graph on the position pairs {i, v} (walkGraph, Tools.wl), a closed walk a directed cycle on them (closedWalkGraph).  The engines below grow vertex sequences and hand them to walkGraph at the boundary; EdgeCount is the length, Last /@ VertexList the vertex sequence, GraphUnion the bundle, and a walk given as a bare vertex list is accepted wherever a walk is read.  InfraWalk itself survives only as the scene-DSL token InfraWalk[v1, ..., vk] at the foot of this file *)
-
-
-(* ===================== FindInfraWalk ===================== *)
-
 (* growth from a seed under the Properties rules until a stopping condition fires, the length budget kspec is spent, or no admissible step remains.  Every rule reads the window -- the last <= "InfraScale" vertices with the candidate, the whole walk at the default scale Infinity.  The default class {"Simple"} is the simple paths; "Generic" (InfraGenericQ's read per step, endpoint freeness added on the finished curve), "Immersed" and the bare class {} are opt-in.
    A rule excluding self-intersections, triple points or self-tangencies bounds the class by itself, as does "Minimizing" at scale Infinity, so kspec Infinity is legal under the default; without a bounding rule it is refused, since a stopping condition may never fire.
    kspec is UpTo[k] (at most k edges), {k} (exactly k), {lo, hi} or Infinity, never a bare integer: with no wrapper to mark it, a bare integer after p1 is the endpoint p2 of the two-point form and an Association its multiset -- on an integer-labelled substrate a budget and a vertex would otherwise collide.  A count needs an explicit kspec before it for the same reason.  When both readings fit (a vertex label that is also a {k} or {lo, hi} list) the pointed one wins *)
@@ -27,8 +19,6 @@ Options[ FindInfraWalk ] = {
 
 FindInfraWalk[ graph_Graph, p1_, opts : OptionsPattern[] ] :=
   FindInfraWalk[ graph, p1, Infinity, Automatic, opts ]
-
-(* the pointed walk is the forward extension of the one-vertex walk at each anchor; the refusals are checked here so that they carry FindInfraWalk's name *)
 
 FindInfraWalk[ graph_Graph, p1_,
     kspec : ( UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ),
@@ -55,7 +45,6 @@ FindInfraWalk[ graph_Graph, p1_,
     If[ IntegerQ[ base ] &&
         ( MemberQ[ excluded, "SelfIntersections" ] || ( scale === Infinity && MemberQ[ rules, "Minimizing" ] ) ),
       Message[ FindInfraWalk::deadevent ] ];
-    (* a rule excluding self-intersections, triple points or self-tangencies bounds the class, as does "Minimizing" on the whole walk; a local rule alone leaves it infinite, since a walk can wind a long cycle forever *)
     If[ kspec === Infinity && ! ( ( scale === Infinity && MemberQ[ rules, "Minimizing" ] ) ||
           IntersectingQ[ excluded, { "SelfIntersections", "TriplePoints", "SelfTangencies" } ] ),
       Message[ FindInfraWalk::unbounded, scale ]; Throw[ $Failed ] ];
@@ -72,8 +61,6 @@ FindInfraWalk[ graph_Graph, p1_,
         All,       walks,
         _UpTo,     Take[ walks, count ],
         _,         If[ Length @ walks < count, $Failed, Take[ walks, count ] ] ] ] ]
-
-(* the walks from p1 ending at p2.  The branch may stop at its first arrival at p2 exactly when no accepted walk revisits its endpoint -- no self-intersections, "Generic", or "Minimizing" on the whole walk; a finite-scale rule lets a walk pass through p2 and return *)
 
 FindInfraWalk[ graph_Graph, p1_, p2_,
     kspec : ( UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ) : Infinity,
@@ -130,7 +117,6 @@ FindInfraWalk[ graph_Graph, p1_, p2_,
                       "SelfIntersections", ! MemberQ[ walk, w ],
                       "Cusps",             Length[ walk ] < 2 || walk[[ -2 ]] =!= w,
                       "TriplePoints",      Count[ walk, w ] <= 1,
-                      (* a repeated edge opens a repeated arc unless it is the mirror of a cusp, the stretch between the two traversals then being a palindrome *)
                       "SelfTangencies",    NoneTrue[ Range[ Length[ walk ] - 1 ],
                         p |-> ( walk[[ p ]] === Last[ walk ] && walk[[ p + 1 ]] === w ) ||
                           ( walk[[ p ]] === w && walk[[ p + 1 ]] === Last[ walk ] && ! PalindromeQ[ walk[[ p + 1 ;; ]] ] ) ] ] ] ] ] ],
@@ -159,7 +145,6 @@ FindInfraWalk[ graph_Graph, p1_, p2_,
                   If[ survivors === { }, RandomSample[ paths, 1 ], survivors ] ] ] },
             cands = { g, walk } |-> Fold[ #2[ walk, #1 ] &,
               Select[ AdjacencyList[ g, Last @ walk ], w |-> AllTrue[ checks, #[ walk, w ] & ] ], selectors ];
-            (* endpoint freeness is the one census condition the moving tip cannot prune; checked on the finished walk *)
             keepQ = If[ MemberQ[ rules, "Generic" ],
               w |-> lengthQ[ w ] && Count[ w, First @ w ] === 1 && Count[ w, Last @ w ] === 1,
               lengthQ ];
@@ -184,11 +169,9 @@ FindInfraWalk[ graph_Graph, p1_, p2_,
                   IntersectingQ[ excluded, { "SelfIntersections", "TriplePoints", "SelfTangencies" } ] ),
               Message[ FindInfraWalk::unbounded, scale ]; Throw[ $Failed ] ];
             Which[
-              (* a geodesic is simple, hence immersed, generic, and minimizing in every window at every scale: the canonical count-less witness, which is what "Greedy" -- and so the default -- means on this signature *)
               methodHead === "Greedy" && kspec === Infinity && cap === 1 && events === { } &&
                 AllTrue[ rules, MatchQ[ #, "Minimizing" | "Simple" | "Immersed" | "Generic" | ( "Exclude" -> _ ) ] & ],
                 Replace[ FindShortestPath[ graph, q1, q2 ], { { } -> { }, path_ :> { path } } ],
-              (* breadth-first over the candidate frontier, "Pruning" capping it per layer; an early stop on the count is unsound when a completion can still be rejected, by an exact or range length or by the endpoint check *)
               MatchQ[ methodHead, "Exhaustive" | "Greedy" | "RandomGreedy" ] &&
                 ( ! VertexQ[ graph, q1 ] || ! VertexQ[ graph, q2 ] || GraphDistance[ graph, q1, q2 ] === Infinity ), { },
               methodHead === "Exhaustive",
@@ -201,7 +184,6 @@ FindInfraWalk[ graph_Graph, p1_, p2_,
                     completed = Join[ completed, Select[ extended, Last[ # ] === q2 & ] ];
                     frontier = prunedOf @ If[ terminal, Select[ extended, Last[ # ] =!= q2 & ], extended ] ];
                   Select[ Take[ completed, UpTo[ limit ] ], keepQ ] ],
-              (* depth-first with backtracking, the first cap completions: complete, so a finite count is exact *)
               methodHead === "Greedy" || methodHead === "RandomGreedy",
                 descend[ walk_ ] := (
                   If[ Last @ walk === q2 && keepQ @ walk,
@@ -221,13 +203,6 @@ FindInfraWalk[ graph_Graph, p1_, p2_,
           All,       walks,
           _UpTo,     Take[ walks, count ],
           _,         If[ Length @ walks < count, $Failed, Take[ walks, count ] ] ] ] ] ]
-
-
-(* ===================== FindInfraGeodesic ===================== *)
-
-(* a geodesic at infra-scale r: a walk in which every window -- the last r vertices together with the next one -- is a shortest path, any further rule holding on the window too.  The class degenerates at both ends of the ladder: r = 1 asks only for adjacency, r = Infinity for a segment.  The wrapper is FindInfraWalk at "InfraScale" -> r with "Minimizing" always among the rules -- the name promises the rule -- so the bare class at a finite scale is FindInfraWalk with Properties -> { }.
-   Candidates are local, so p2 never enters a window: a selector may steer the walk away from p2 and leave no realisation, which is the honest answer for an observer whose horizon is r.  FindInfraSegment's geodesic DAG is the target-aware optimisation of the constraint-only case r = Infinity.
-   The scale is a bare integer, so on an integer-labelled substrate [g, p1, x, ...] reads x as the scale when the rest parses as kspec and count, and as p2 otherwise.  Both readings fit only at [g, p1, x, Infinity] and [g, p1, x, Infinity, n] with x a vertex; there the pointed reading is the class at scale x with no budget, infinite and refused unless a rule bounds it, so it wins only when a rule does, and the call is otherwise the two-point form at scale Infinity *)
 
 Options[ FindInfraGeodesic ] = {
   Properties          -> { },
@@ -264,11 +239,6 @@ FindInfraGeodesic[ graph_Graph, p1_, p2_,
     Properties -> DeleteDuplicates @ Prepend[ OptionValue[ FindInfraGeodesic, { opts }, Properties ], "Minimizing" ],
     Sequence @@ FilterRules[ { opts }, Except[ Properties ] ] ]
 
-
-(* ===================== InfraGeodesicQ ===================== *)
-
-(* every window of r consecutive vertices with the next one is a shortest path; the ladder is exact at both ends: r = 1 is InfraWalkQ, r = Infinity is InfraSegmentQ *)
-
 InfraGeodesicQ[ graph_Graph, ws : { __Graph }, scale : ( _Integer | Infinity ) : Infinity ] :=
   AllTrue[ ws, InfraGeodesicQ[ graph, #, scale ] & ]
 
@@ -298,14 +268,7 @@ InfraGeodesicQ[ graph_Graph, walk_List,
 
 InfraGeodesicQ[ _Graph, walk_List, ___ ] /; Length[ walk ] < 2 := False
 
-
-(* ===================== WalkSingularities ===================== *)
-
-(* an invariant of the vertex sequence: the coincidences v_i === v_j, the maximal repeated arcs, and the mirrored blocks v_{i-t} === v_{i+t} around an apex.  A closed walk -- a cycle graph -- is read on its cyclic core, an interval lifted past m being read mod m; a substrate path or cycle graph never repeats a vertex and so has the empty census *)
-
 WalkSingularities[ ws : { __Graph } ] := WalkSingularities /@ ws
-
-(* a core of minimal period p < m is the m/p fold cover of its period loop: one repeated arc tiling the cycle; a cyclic inverse run touching an apex of the reflection i -> s - i is a cusp *)
 
 WalkSingularities[ w_Graph ] /; ! LoopFreeGraphQ[ w ] || ! AcyclicGraphQ[ w ] := With[
   { vs = VertexList @ w },
@@ -319,7 +282,6 @@ WalkSingularities[ w_Graph ] /; ! LoopFreeGraphQ[ w ] || ! AcyclicGraphQ[ w ] :=
       If[ Length[ runs ] >= 2 && First[ First @ runs ] == 1 && Last[ Last @ runs ] == m,
         Prepend[ runs[[ 2 ;; -2 ]], Join[ Last @ runs, First @ runs ] ],
         runs ] ],
-    (* the traversals of one arc form a group of oriented intervals, the first ascending and each later one descending when it runs the arc backwards *)
     arcGroups = ts |-> Values @ GroupBy[
       ( pos |-> With[ { arc = core[[ Mod[ pos - 1, m ] + 1 ]] },
           { key = First @ Sort @ { arc, Reverse @ arc } },
@@ -363,8 +325,6 @@ WalkSingularities[ w_Graph ] :=
           SelectFirst[ vs, If[ DirectedGraphQ @ w, VertexInDegree[ w, # ] == 0, VertexDegree[ w, # ] == 1 ] &, First @ vs ],
           { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] ]
 
-(* direct blocks v_i === v_{i+d} and inverse blocks v_i === v_{s-i} on maximal runs of two or more positions; an inverse run reaching the apex s/2 is the mirror of a cusp, not a repeated arc *)
-
 WalkSingularities[ walk_List ] := With[
   { m = Length @ walk,
     maximalRuns = set |-> Split[ Sort @ set, #2 == #1 + 1 & ] },
@@ -398,11 +358,6 @@ WalkSingularities[ walk_List ] := With[
       Select[ Range[ 2, m - 1 ], i |-> walk[[ i - 1 ]] === walk[[ i + 1 ]] ]
   |> ]
 
-
-(* ===================== InfraImmersedQ / InfraGenericQ ===================== *)
-
-(* immersed walk: a walk with no cusp *)
-
 InfraImmersedQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraImmersedQ[ graph, # ] & ]
 
 InfraImmersedQ[ graph_Graph, w_Graph ] /; ! LoopFreeGraphQ[ w ] || ! AcyclicGraphQ[ w ] :=
@@ -429,9 +384,6 @@ InfraImmersedQ[ graph_Graph, w_Graph ] :=
 
 InfraImmersedQ[ graph_Graph, walk_List ] :=
   InfraWalkQ[ graph, walk ] && WalkSingularities[ walk ][ "Cusps" ] === { }
-
-
-(* generic walk: immersed and in general position -- no repeated arc, every self-intersection a double point, the endpoints of an open walk off the curve *)
 
 InfraGenericQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraGenericQ[ graph, # ] & ]
 
@@ -465,9 +417,6 @@ InfraGenericQ[ graph_Graph, walk_List ] :=
     c[ "Cusps" ] === { } && c[ "SelfTangencies" ] === { } &&
     AllTrue[ c[ "SelfIntersections" ], Length[ # ] == 2 && FreeQ[ #, 1 | Length @ walk ] & ] ]
 
-
-(* ===================== InfraWalkCrossingQ ===================== *)
-
 (* a double visit of v is a crossing at scale r when each pass through B(v, r-1), continued along its radial arcs through the shell {r, r+1}, separates the other pass's exits on that shell.  Two 0-spheres link only in S^1: on a surface-like substrate this is the interleaving of the two germ pairs, and where the shell stays connected after a radial cut nothing is a crossing *)
 
 InfraWalkCrossingQ[ graph_Graph, ws : { __Graph }, at_, r_Integer ] :=
@@ -487,8 +436,6 @@ InfraWalkCrossingQ[ graph_Graph, w_Graph, at_, r_Integer ] /; LoopFreeGraphQ[ w 
           { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] } ],
       InfraWalkCrossingQ[ graph, #, at, r ] & ] ]
 
-(* a closed walk graph is read on its cyclic core, a vertex list as an open walk.  The ambient point names the double visit; a vertex visited once or more than twice is no crossing.  A vertex label that is itself a pair of integers is written <| v -> 1 |>, the position pair winning the tie *)
-
 InfraWalkCrossingQ[ graph_Graph, x : ( _Graph | _List ), at_, r_Integer ] /;
     If[ GraphQ @ x, ! LoopFreeGraphQ[ x ] || ! AcyclicGraphQ[ x ], ! MatchQ[ x, { __Graph } ] ] :=
   With[ { closedQ = GraphQ @ x, vs = If[ GraphQ @ x, VertexList @ x, { } ] },
@@ -505,7 +452,6 @@ InfraWalkCrossingQ[ graph_Graph, x : ( _Graph | _List ), at_, r_Integer ] /;
         { vertexAt = t |-> core[[ Mod[ t - 1, m ] + 1 ]],
           dist = t |-> If[ closedQ || 1 <= t <= m,
             Lookup[ d, Key @ core[[ Mod[ t - 1, m ] + 1 ]], Infinity ], Missing[ ] ] },
-        (* the excursion through B(v, r-1) around a visit, and the radial arc out of an exit: the walk while it sits on the sphere, then its first step onto the outer ring -- Missing when it turns back or ends first *)
         { excursion = p |-> {
             p - LengthWhile[ Range[ p - 1, p - m, -1 ], t |-> TrueQ[ dist[ t ] <= r - 1 ] ],
             p + LengthWhile[ Range[ p + 1, p + m ], t |-> TrueQ[ dist[ t ] <= r - 1 ] ] },
@@ -525,9 +471,6 @@ InfraWalkCrossingQ[ graph_Graph, x : ( _Graph | _List ), at_, r_Integer ] /;
         SeparatesQ[ band, DeleteDuplicates[ Join @@ cutI ], vertexAt @ First @ exitsJ, vertexAt @ Last @ exitsJ ] ] },
     Length[ ps ] == 2 && crossQ @@ ps ]
 
-
-(* ===================== ExtendInfraWalk ===================== *)
-
 (* continues a seed walk under the Properties rules, each read on the window of the last <= "InfraScale" vertices: Find seeds with points and owns the two-point sugar, Extend seeds with walks and owns "Direction".  kspec is the extension budget, in added edges per growing side -- UpTo[k], {k}, {lo, hi} or Infinity, as for FindInfraWalk -- and is mandatory-finite whenever the class is infinite.  The seed is a vertex list, a walk graph, or a bundle of either.
    "BothSides" offers three moves per outer step -- both sides, back only, front only, joint first so a greedy witness keeps the synchronous trajectory -- and re-checks the joined step against the monotone whole-walk constraints its sides cannot see alone, so the walk freezes only when no side can move and the class is the whole two-sided extension class.  Its budget is Max[la, ra], the edges added on the longer side, invariant under the order the moves are taken.  Stopping conditions replay over the seed, so a deadline may already sit inside it and the seed come back unextended; a two-ended walk has no single tip for the event clock, so they require "Forward" or "Backward". *)
 
@@ -546,8 +489,6 @@ Options[ ExtendInfraWalk ] = {
   Method              -> Automatic,
   "Direction"         -> "BothSides"
 };
-
-(* the closures live in Module locals and never in the RHS of a recursive definition: a pattern variable of the same name as a closure's own parameter would rewrite it on substitution *)
 
 ExtendInfraWalk[ graph_Graph, seed_,
     kspec : ( UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ) : Infinity,
@@ -603,7 +544,6 @@ ExtendInfraWalk[ graph_Graph, seed_,
                 { k_ }       :> ( # == k & ),
                 { lo_, hi_ } :> ( lo <= # <= hi & ),
                 UpTo[ k_ ]   :> ( # <= k & ) } ],
-              (* the species a rule list forbids: "Simple", "Immersed" and "Generic" name the standard exclusion sets *)
               speciesOf  = rule |-> Replace[ rule, {
                 "Simple"   -> { "SelfIntersections" },
                 "Immersed" -> { "Cusps" },
@@ -629,7 +569,6 @@ ExtendInfraWalk[ graph_Graph, seed_,
                     ( Message[ ExtendInfraWalk::badproperty, rule ]; Throw[ $Failed ] ),
                   _,                                                     "Constraint" ],
                 rules ] },
-            (* each excluded species is refused exactly at the step that would create it, so per-step pruning is exact; a bare predicate is a custom local law on the window *)
             { checks = Map[ rule |-> If[ rule === "Minimizing",
                   { walk, w } |-> GraphDistance[ graph, First @ window @ walk, w ] == Length @ window @ walk,
                   If[ speciesOf @ rule === { },
@@ -638,12 +577,10 @@ ExtendInfraWalk[ graph_Graph, seed_,
                       "SelfIntersections", ! MemberQ[ walk, w ],
                       "Cusps",             Length[ walk ] < 2 || walk[[ -2 ]] =!= w,
                       "TriplePoints",      Count[ walk, w ] <= 1,
-                      (* a repeated edge opens a repeated arc unless it is the mirror of a cusp, the stretch between the two traversals then being a palindrome *)
                       "SelfTangencies",    NoneTrue[ Range[ Length[ walk ] - 1 ],
                         p |-> ( walk[[ p ]] === Last[ walk ] && walk[[ p + 1 ]] === w ) ||
                           ( walk[[ p ]] === w && walk[[ p + 1 ]] === Last[ walk ] && ! PalindromeQ[ walk[[ p + 1 ;; ]] ] ) ] ] ] ] ] ],
                 Pick[ rules, species, "Constraint" ] ],
-              (* "Straightest" maximises the distance tuple from the candidate back along the window, nearest first -- the immediate predecessor sits at distance 1 for every candidate and carries no information *)
               selectors = Map[ rule |-> Switch[ rule,
                   "Straightest",
                     With[ { vidx = AssociationThread[ VertexList @ graph, Range @ VertexCount @ graph ],
@@ -667,7 +604,6 @@ ExtendInfraWalk[ graph_Graph, seed_,
                   "SelfTangencies"    -> ( w |-> WalkSingularities[ w ][ "SelfTangencies" ] === { } ) }, { 1 } ],
                 If[ scale === Infinity && MemberQ[ rules, "Minimizing" ],
                   { w |-> GraphDistance[ graph, First @ w, Last @ w ] == Length[ w ] - 1 }, { } ],
-                (* a window of scale + 1 vertices holds a vertex of each side only when the seed is shorter than the scale *)
                 If[ IntegerQ[ scale ] && Length[ walk0 ] < scale && MemberQ[ rules, "Minimizing" ],
                   { w |-> InfraGeodesicQ[ graph, w, scale ] }, { } ] ],
               prunedOf = paths |-> Which[
@@ -676,7 +612,6 @@ ExtendInfraWalk[ graph_Graph, seed_,
                 paths === { },        { },
                 True, With[ { survivors = Select[ paths, RandomReal[ ] < pruning & ] },
                   If[ survivors === { }, RandomSample[ paths, 1 ], survivors ] ] ] },
-            (* constraints are checked first and commute; selectors follow in list order, each refining the previous ties *)
             cands = { g, walk } |-> Fold[ #2[ walk, #1 ] &,
               Select[ AdjacencyList[ g, Last @ walk ], w |-> AllTrue[ checks, #[ walk, w ] & ] ], selectors ];
             keepQ   = lengthQ;
@@ -696,7 +631,6 @@ ExtendInfraWalk[ graph_Graph, seed_,
                       MapThread[ If[ #1 === 1 && #2 === 0, Length[ walk ] - 1 + #3[[ 2 ]], Infinity ] &, { fired, rem, ev } ],
                       Last @ prev ] } ] ];
             dlFn = If[ ev === { }, Infinity &, walk |-> Last @ state @ walk ];
-            (* the three moves of one outer step, joint first; a side draws candidates only while its own added-edge count is under the budget *)
             step = { walk, la, ra, br } |->
               With[ { backCands = If[ la < stepsMax, br @ cands[ graph, Reverse @ walk ], { } ],
                       fwdCands  = If[ ra < stepsMax, br @ cands[ graph, walk ], { } ] },
@@ -709,15 +643,12 @@ ExtendInfraWalk[ graph_Graph, seed_,
             If[ MatchQ[ events, { { "SelfIntersection", _, _ } } ] &&
                 ( MemberQ[ excluded, "SelfIntersections" ] || ( scale === Infinity && MemberQ[ rules, "Minimizing" ] ) ),
               Message[ ExtendInfraWalk::deadevent ] ];
-            (* the class is finite once no vertex may be revisited or visited a third time, or no arc repeated, or the whole walk minimizes *)
             If[ kmax === Infinity && ! ( ( scale === Infinity && MemberQ[ rules, "Minimizing" ] ) ||
                   IntersectingQ[ excluded, { "SelfIntersections", "TriplePoints", "SelfTangencies" } ] ),
               Message[ ExtendInfraWalk::unbounded, scale ]; Throw[ $Failed ] ];
             If[ ! MatchQ[ methodHead, "Exhaustive" | "Greedy" | "RandomGreedy" ],
               Message[ ExtendInfraWalk::badmethod, methodSpec ]; Throw[ $Failed ] ];
-            (* a walk is a geodesic only if every sub-walk is, so a seed that is not one has no extension under "Minimizing" *)
             If[ MemberQ[ rules, "Minimizing" ] && Length[ walk0 ] >= 2 && ! InfraGeodesicQ[ graph, walk0, scale ], Throw[ { } ] ];
-            (* one side grows: the lazy depth-first descent emits a walk when the budget or the deadline is spent or no admissible step remains, and is complete, so a finite count is exact; the breadth-first sweep caps the live frontier by "Pruning" *)
             emit[ walk_ ] := If[ keepQ @ walk,
               AppendTo[ acc, walk ];
               If[ Length @ acc >= cap, Throw[ acc, emit ] ] ];
@@ -771,11 +702,6 @@ ExtendInfraWalk[ graph_Graph, seed_,
           _UpTo,     Take[ walks, count ],
           _,         If[ Length @ walks < count, $Failed, Take[ walks, count ] ] ] ] ] ]
 
-
-(* ===================== ExtendInfraGeodesic ===================== *)
-
-(* continues a seed walk as a geodesic at infra-scale scale: ExtendInfraWalk at "InfraScale" -> scale with "Minimizing" always among the rules *)
-
 Options[ ExtendInfraGeodesic ] = {
   Properties          -> { },
   "StoppingCondition" -> None,
@@ -790,11 +716,6 @@ ExtendInfraGeodesic[ graph_Graph, seed_,
   ExtendInfraWalk[ graph, seed, kspec, count, "InfraScale" -> scale,
     Properties -> DeleteDuplicates @ Prepend[ OptionValue[ ExtendInfraGeodesic, { opts }, Properties ], "Minimizing" ],
     Sequence @@ FilterRules[ { opts }, Except[ Properties ] ] ]
-
-
-(* ===================== ConcatenateInfraWalk ===================== *)
-
-(* path concatenation: all pairs (walk1, walk2) with Last[walk1] === First[walk2] *)
 
 ConcatenateInfraWalk[ path1_, path2_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
@@ -828,11 +749,6 @@ ConcatenateInfraWalk[ path1_, path2_,
       All,   reps,
       _UpTo, Take[ reps, count ],
       _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
-
-
-(* ===================== Scene-DSL constructor ===================== *)
-
-(* InfraWalk[v1, ..., vk] inside a scene is the literal walk; the scene engine binds the vertex sequence, as for every construction token *)
 
 dispatchConstruction[ graph_Graph, InfraWalk[ vs__ ] ] :=
   With[ { walk = { vs } },

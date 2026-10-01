@@ -1,8 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-(* ===================== FindInfraShell ===================== *)
-
 (* a vertex subset of the level surface { v : rmin <= d(c, v) <= rmax }, a sorted vertex list; the count-less call is one shell, a bounded count and All a List of them -- the level set itself without Properties, the minimal admissible subsets under them *)
 
 FindInfraShell::badmethod   = "Method `1` is not supported by FindInfraShell.";
@@ -34,7 +31,6 @@ FindInfraShell[ graph_Graph, p_, r_,
           { levelSet },
           Catch[
             admissible = With[ { tests = Replace[ properties, {
-                  (* t separates: removing it leaves a component around p0 inside the closed ball B(p0, radius), every other vertex strictly beyond radius *)
                   "Separating" -> ( t |-> With[ { rem = VertexDelete[ localG, t ] },
                     { centerComp = SelectFirst[ ConnectedComponents[ rem ], MemberQ[ #, p0 ] & ] },
                     centerComp =!= Missing[ "NotFound" ] &&
@@ -43,7 +39,6 @@ FindInfraShell[ graph_Graph, p_, r_,
                   "Connected"  -> ( t |-> t =!= { } && ConnectedGraphQ @ Subgraph[ localG, t ] ),
                   other_       :> ( Message[ FindInfraShell::badproperty, other ]; Throw[ $Failed ] ) }, { 1 } ] },
               t |-> AllTrue[ tests, # @ t & ] ];
-            (* the closures are held in Module locals, never inlined into descend's RHS: substituting a pattern variable of the same name would rewrite a closure's own parameter list *)
             Switch[ methodHead,
               "Exhaustive",
                 If[ ! admissible[ levelSet ], { },
@@ -61,7 +56,6 @@ FindInfraShell[ graph_Graph, p_, r_,
                           If[ ! KeyExistsQ[ seen, key ],
                             seen[ key ] = True;
                             AppendTo[ next, key ] ],
-                          (* a beam width, or a Bernoulli keep probability floored at one vertex so the peel never dies by chance *)
                           { v, Switch[ pruning,
                               Infinity, removable,
                               _Integer, If[ Length[ removable ] <= pruning, removable, RandomSample[ removable, pruning ] ],
@@ -73,7 +67,6 @@ FindInfraShell[ graph_Graph, p_, r_,
                   ];
                   DeleteDuplicates @ minimals
                 ],
-              (* DeleteCases keeps the order of the level set, so every state is its own visited key *)
               "Greedy" | "RandomGreedy",
                 If[ ! admissible[ levelSet ], { },
                   cap  = Replace[ count, { All | Infinity -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ];
@@ -102,9 +95,6 @@ FindInfraShell[ graph_Graph, p_, r_,
           All,       shells,
           _UpTo,     Take[ shells, count ],
           _,         If[ Length @ shells < count, $Failed, Take[ shells, count ] ] ] ] ] ]
-
-
-(* ===================== FindInfraOsculatingShell ===================== *)
 
 (* for every c equidistant from all k window vertices at common distance r, the level set { v : d(c, v) == r } *)
 
@@ -156,12 +146,6 @@ FindInfraOsculatingShell[ graph_Graph, path_, i_Integer, k_Integer,
       _,     If[ Length @ sets < count, $Failed, Take[ sets, count ] ] ]
   ]
 
-
-(* ===================== FindInfraShellCenter ===================== *)
-
-(* "MaximalChordsBisectors": bisect the shell's longest chords and bin the midpoints by radius, mass = how many chords bisect at that vertex; an even chord gives one estimate at r = d/2, an odd chord splits into r = Floor[d/2] (nearer the lower endpoint) and r = Ceil[d/2].
-   "EquidistantPoints": the exact centers -- every vertex equidistant from the whole shell at a common finite radius > 0. *)
-
 FindInfraShellCenter::badmethod     = "Method `1` is not MaximalChordsBisectors or EquidistantPoints.";
 FindInfraShellCenter::badmaximality = "Maximality `1` is not PerVertex or Diameter.";
 FindInfraShellCenter::baddistance   = "Distance `1` is not Extrinsic or Intrinsic.";
@@ -207,7 +191,6 @@ FindInfraShellCenter[ graph_Graph, vs_List, OptionsPattern[] ] :=
               { kept = Select[ chords,
                   With[ { d = dm[[ idx @ #[[ 1 ]], idx @ #[[ 2 ]] ]] },
                     Switch[ parity, All, True, "Even", EvenQ[ d ], "Odd", OddQ[ d ] ] ] & ] },
-              (* the vertices on some a-b geodesic at a middle distance r in { Floor[d/2], Ceil[d/2] } from a *)
               { radiiBins = GroupBy[ Catenate[ Map[
                   chord |-> With[ { ab = Sort @ chord, verts = Keys @ idx },
                     { ia = idx @ ab[[ 1 ]], ib = idx @ ab[[ 2 ]] },
@@ -223,9 +206,6 @@ FindInfraShellCenter[ graph_Graph, vs_List, OptionsPattern[] ] :=
           KeyValueMap[ { r, cs } |-> { KeySort @ AssociationMap[ 1 &, cs ], r }, KeySort @ GroupBy[ centers, ds ] ] ],
       _, Message[ FindInfraShellCenter::badmethod, spec ]; $Failed ] ]
 
-
-(* ===================== InfraShellQ ===================== *)
-
 (* vs is a metric shell iff some c is equidistant from all of vs at a common finite radius r and vs is exactly { v : d(c, v) == r } *)
 
 InfraShellQ[ graph_Graph, fam_Association ] := InfraShellQ[ graph, Keys @ fam ]
@@ -240,18 +220,10 @@ InfraShellQ[ graph_Graph, vs_List ] :=
       Sort @ Select[ VertexList[ graph ], GraphDistance[ graph, c, # ] === First[ ds ] & ] === Sort[ vs ]
     ] ]
 
-
-(* ===================== SeparatesQ ===================== *)
-
-(* deleting vs disconnects u from v; endpoint deletion does not count as separation *)
-
 SeparatesQ[ graph_Graph, vs_List, u_, v_ ] :=
   If[ MemberQ[ vs, u ] || MemberQ[ vs, v ], False,
     GraphDistance[ VertexDelete[ graph, vs ], u, v ] === Infinity
   ]
-
-
-(* ===================== Scene-DSL constructor ===================== *)
 
 dispatchConstruction[ graph_Graph, InfraShell[ center_, r_, opts___Rule ] ] :=
   capBranches[

@@ -1,8 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-(* ===================== FindInfraRevolution ===================== *)
-
 (* each axis path is extended by the vertices v adjacent to its endpoint with d(v, path[[k]]) = k (left) or n - k + 1 (right) for every k, i.e. those prolonging the axis as a geodesic *)
 
 Options[ FindInfraRevolution ] = { "Form" -> "Solid", Method -> "Voronoi" };
@@ -39,11 +36,9 @@ FindInfraRevolution[ graph_Graph, axis_, profile_, opts : OptionsPattern[ ] ] :=
           slack = v |-> Min @ MapThread[
             { posVerts, r } |-> Min[ GraphDistance[ graph, v, # ] & /@ posVerts ] - r,
             { origPositions, radii } ] },
-        (* constant radius: the r-neighborhood of the axis IS the union of balls, so the candidate set is already the answer *)
         Union @ If[ ! surface && Equal @@ radii,
           candidates,
           Select[ candidates, If[ surface, slack[ # ] == 0, slack[ # ] <= 0 ] & ] ] ],
-      (* the right extension of a path is the left extension of its reverse *)
       With[
         { extension = paths |-> If[ n == 1, { },
             Union @@ ( path |-> Select[ AdjacencyList[ graph, First @ path ],
@@ -63,17 +58,11 @@ FindInfraRevolution[ graph_Graph, axis_, profile_, opts : OptionsPattern[ ] ] :=
                     If[ i == 1 || i == Length @ positions, dists[[ i ]] === Min @ dists, dists[[ i - 1 ]] === dists[[ i + 1 ]] ] ] ] ],
           { origPositions, radii, origRange } ] ] ] ]
 
-
-(* ===================== FindInfraCylinder ===================== *)
-
 Options[ FindInfraCylinder ] = Join[ FilterRules[ Options[ FindInfraRevolution ], Except[ Method ] ], { Method -> "Balls" } ];
 
 FindInfraCylinder[ graph_Graph, axis_, radius_, opts : OptionsPattern[ ] ] :=
   FindInfraRevolution[ graph, axis, radius, Method -> OptionValue[ Method ],
     FilterRules[ { opts }, Except[ Method ] ] ]
-
-
-(* ===================== FindInfraCone ===================== *)
 
 Options[ FindInfraCone ] = Join[ Options[ FindInfraRevolution ], { "Apex" -> First } ];
 
@@ -103,18 +92,12 @@ FindInfraCone[ graph_Graph, axis_, slope_, opts : OptionsPattern[ ] ] :=
       FilterRules[ { opts }, Options[ FindInfraRevolution ] ] ]
   ]
 
-
-(* ===================== InfraRevolutionQ ===================== *)
-
 InfraRevolutionQ[ graph_Graph, vs_List, axis_, profile_, opts : OptionsPattern[ FindInfraRevolution ] ] :=
   Union @ vs === FindInfraRevolution[ graph, axis, profile, opts ]
 
 InfraRevolutionQ[ graph_Graph, o_Association, axis_, profile_,
     opts : OptionsPattern[ FindInfraRevolution ] ] :=
   InfraRevolutionQ[ graph, Keys @ o, axis, profile, opts ]
-
-
-(* ===================== Scene-DSL constructor ===================== *)
 
 dispatchConstruction[ graph_Graph, InfraRevolution[ axis_, profile_, opts___Rule ] ] :=
   capBranches[

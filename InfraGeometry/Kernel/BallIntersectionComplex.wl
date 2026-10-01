@@ -1,14 +1,10 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-(*** Order-k ball-intersection complexes (Vietoris-Rips <-> Cech) ***)
-
 (* Convention: closed balls B(x, r), equal radii. Two meet iff d(x_i, x_j) <= 2 r,
    so BallIntersectionComplex[data, r, 2] = VietorisRipsComplex[data, 2 r]. For equal
    radii a common intersection point exists iff the smallest enclosing ball of the
    centres has radius <= r, so the Cech filtration value is the miniball radius. *)
 
-(* radius of the smallest ball containing the points *)
 MiniballRadius[pts_List] := BoundingRegion[N @ pts, "MinBall"][[2]]
 
 (* sigma admitted iff every k-subset of its balls has a common point;
@@ -20,7 +16,6 @@ BallIntersectionComplex[data_List, r_ ? NumericQ, k : (_Integer | Infinity) : In
         metric = Replace[OptionValue["Metric"], Automatic -> EuclideanDistance];
         itest = OptionValue["IntersectionTest"];
         maxDim = OptionValue["MaxDimension"];
-        (* on a graph a common point may be any vertex, so the rows range over V while the columns track the centres *)
         rows = Which[
             metric === EuclideanDistance, None,
             GraphQ[metric], GraphDistanceMatrix[metric][[ Flatten[FirstPosition[VertexList[metric], #] & /@ data] ]],
@@ -88,7 +83,6 @@ CechFiltration[data_List, radii : {__ ? NumericQ}, opts : OptionsPattern[BallInt
 BallIntersectionBifiltration[data_List, radii : {__ ? NumericQ}, orders : {__}, opts : OptionsPattern[BallIntersectionComplex]] :=
     AssociationMap[BallIntersectionFiltration[data, radii, #, opts] &, orders]
 
-(* index-keyed data associations *)
 BallIntersectionComplex[data_Association, r_, k : (_Integer | Infinity) : Infinity, opts : OptionsPattern[]] := BallIntersectionComplex[Values[data], r, k, opts]
 CechComplex[data_Association, r_, opts : OptionsPattern[]] := CechComplex[Values[data], r, opts]
 BallIntersectionFiltration[data_Association, radii_List, k : (_Integer | Infinity) : Infinity, opts : OptionsPattern[]] := BallIntersectionFiltration[Values[data], radii, k, opts]

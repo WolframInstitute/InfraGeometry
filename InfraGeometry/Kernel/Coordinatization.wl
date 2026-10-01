@@ -1,12 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-(* Metric coordinatization and covering of a graph: landmark (radar) coordinates and
-   resolving sets, the resistance-matching spectral embedding, minimum ball covers,
-   and the orthogonal-frame and spanning-axis searches built on them. *)
-
-(* ===================== Radar coordinates & resolving sets ===================== *)
-
 (* the distance vector (d(v, b1), ..., d(v, bk)).  An anchor is a vertex, a set, a density
    or a walk graph; "AnchorAggregation" reduces its support to one distance.  On a bare
    vertex InfraDensity gives <| v -> 1 |>, on which every aggregation is the distance itself,
@@ -39,9 +32,6 @@ RadarCoordinates[ g_Graph, b_List, fam_Association, opts : OptionsPattern[] ] /;
 ResolvingSetQ[ g_Graph, b_List ] :=
     DuplicateFreeQ[ Outer[ GraphDistance[ g, #1, #2 ] &, VertexList[ g ], b, 1 ] ]
 
-(* up to n resolving sets (metric bases) by ascending size; m restricts the
-   candidate sizes (All, an integer max, {min, max}, or {exact}). Subsets are
-   enumerated in size-then-Gosper order so the first found is smallest. *)
 FindResolvingSet[g_Graph, n_Integer : 1, m_ : All] :=
     Module[{v = VertexList[g], dm = GraphDistanceMatrix[g], vc = VertexCount[g], found = {}, mask, last},
         Map[v[[#]] &,
@@ -57,7 +47,6 @@ FindResolvingSet[g_Graph, n_Integer : 1, m_ : All] :=
                                     If[Length[found] >= n, Throw[found]]
                                 ]
                             ];
-                            (* Gosper's hack: next k-subset bitmask in lex order. *)
                             mask = With[{c = BitAnd[mask, -mask]}, {r = mask + c},
                                 BitOr[r, Quotient[BitXor[r, mask], 4 c]]]
                         ]
@@ -69,10 +58,7 @@ FindResolvingSet[g_Graph, n_Integer : 1, m_ : All] :=
         ]
     ]
 
-(* metric dimension: size of a smallest resolving set *)
 MetricDimension[g_Graph] := Length @ First @ FindResolvingSet[g, 1, All]
-
-(* ===================== Resistance coordinates ===================== *)
 
 Options[ResistanceCoordinates] = {"Rescaling" -> "ResistanceMatching", "Dimension" -> Automatic, "Origin" -> None};
 
@@ -94,29 +80,9 @@ ResistanceCoordinates[g_Graph, opts : OptionsPattern[]] :=
 ResistanceCoordinates[g_Graph, v_, opts : OptionsPattern[]] /; MemberQ[VertexList[g], v] :=
     ResistanceCoordinates[g, opts][v]
 
-(* the multiset query: one embedding, read at each key *)
 ResistanceCoordinates[ g_Graph, fam_Association, opts : OptionsPattern[] ] /; SubsetQ[ VertexList[ g ], Keys @ fam ] :=
   With[ { all = ResistanceCoordinates[ g, opts ] }, all /@ Keys @ fam ]
 
-(* ===================== Ball covers & domination ===================== *)
-
-(* a minimum r-ball cover: a smallest centre set (chosen from all of V) whose radius-r balls
-   cover the targets (every vertex by default, or a given subset) as a set-cover integer program.
-   For a target subset the candidate centres are pruned to B_r(targets) -- a centre outside it covers
-   no target, so the minimum is unchanged -- and the cover relation is read off bounded depth-r
-   neighbourhoods, so the full GraphDistanceMatrix is never formed (the slow part for a small subset
-   of a large graph).
-   count = 1 (default) returns one cover as a centre list; n / UpTo[n] return up to n distinct
-   minimum covers; All returns every one. Enumerating all minimum covers is #P-hard (the count of
-   minimum set covers), so All / n>1 brute-force the size-k centre subsets and are cheap only for small g.
-   Method -> "Exhaustive" (default) is the exact integer program; "Greedy" repeatedly takes the centre
-   covering the most still-uncovered targets -- O(gamma) ball lookups, but NOT minimum in general (it
-   over-counts even on vertex-transitive graphs: the cuboctahedron has gamma = 3 yet every greedy run
-   returns 4). "Symmetric" returns the smallest Aut(g)-symmetric cover -- a minimum-size union of
-   automorphism orbits whose balls cover the targets; exact when a minimum cover is orbit-shaped (a
-   perfect / near-perfect code, as on vertex-transitive graphs), an upper bound otherwise, and far
-   cheaper than the full program on highly symmetric graphs. "Greedy" / "Symmetric" return a single
-   cover and ignore count. *)
 Options[FindBallCover] = {Method -> "Exhaustive"};
 FindBallCover[g_Graph, r_ : 1, targets : (_List | All) : All, count : (_Integer | All | UpTo[_Integer]) : 1, opts : OptionsPattern[]] :=
     With[
@@ -176,12 +142,7 @@ BallCoverQ[g_Graph, r_, s_List, targets : (_List | All) : All] :=
         AllTrue[rows, row |-> AnyTrue[pos, j |-> row[[j]] <= r]]
     ]
 
-(* r-domination number: size of a minimum r-ball cover (of the targets) *)
 DominationNumber[g_Graph, r_ : 1, targets : (_List | All) : All] := Length @ FindBallCover[g, r, targets]
-
-(* ===================== OrthogonalCoordinates ===================== *)
-
-(* projects v onto each axis ai through the centre c by shortest-path distance, signed relative to the first centre-order vertex lying on the axis; a tied projection is reduced by "SelectCoordinate" *)
 
 Options[ OrthogonalCoordinates ] = { "SelectCoordinate" -> "Centered" };
 
@@ -203,7 +164,6 @@ OrthogonalCoordinates[ g_Graph, c_, axes_List, v_, opts : OptionsPattern[] ] /;
               { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
           True, scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] ] ] ] & /@ axes,
       sel       = OptionValue[ "SelectCoordinate" ],
-      (* every 0-based layer tied at the minimum distance from u to the axis *)
       layerIndex = { axis, u } |-> With[ { dists = GraphDistance[ g, u, # ] & /@ axis }, Flatten @ Position[ dists, Min @ dists ] - 1 ]
     },
     Map[
@@ -215,20 +175,12 @@ OrthogonalCoordinates[ g_Graph, c_, axes_List, v_, opts : OptionsPattern[] ] /;
 OrthogonalCoordinates[ g_Graph, c_, axes_List, opts : OptionsPattern[] ] :=
   Association[ # -> OrthogonalCoordinates[ g, c, axes, #, opts ] & /@ VertexList[ g ] ]
 
-
-(* ===================== FindInfraOrthogonalFrame ===================== *)
-
-(* build SprayGraph[g, c], enumerate candidate lines via antipodal DAG-vertex pairs, then DFS the choice tree, filtering by perpendicularity at each step.
-   Perpendicular at c: every vertex w of B has c's axis-index on A among w's tied closest positions on A, and symmetrically. *)
-
 Options[ FindInfraOrthogonalFrame ] = {
   Method             -> Automatic,
   "AxisCount"        -> Automatic,
   "BranchSampleSize" -> All,
   "SelectCoordinate" -> "Centered"
 };
-
-(* the closures live in Module locals and never in the RHS of a recursive definition: a pattern variable of the same name as a closure's own parameter would rewrite it on substitution *)
 
 FindInfraOrthogonalFrame[ g_Graph, c_, axisLength : ( All | _Integer | _UpTo | { _, _ } ),
     count : ( All | UpTo[ _Integer ] | _Integer ) : Automatic, opts : OptionsPattern[] ] /; VertexQ[ g, c ] :=
@@ -237,7 +189,6 @@ FindInfraOrthogonalFrame[ g_Graph, c_, axisLength : ( All | _Integer | _UpTo | {
     With[
       { lengths = Replace[ axisLength, { All -> { 1, Infinity }, k_Integer :> { k, k }, UpTo[ k_ ] :> { 1, k } } ] },
       { minLength = First @ lengths, maxDepth = Last @ lengths },
-      (* Localize: every distance the search needs lies in B(c, 2 maxDepth). *)
       { localG = If[ maxDepth === Infinity, g, NeighborhoodGraph[ g, c, 2 maxDepth ] ] },
       { spray = SprayGraph[ localG, c, "AxisLength" -> Replace[ maxDepth, Infinity -> All ] ],
         axisCountSpec = "AxisCount" /. { opts } /. "AxisCount" -> Automatic,
@@ -249,15 +200,12 @@ FindInfraOrthogonalFrame[ g_Graph, c_, axisLength : ( All | _Integer | _UpTo | {
             "BranchSampleSize" /. { opts } /. "BranchSampleSize" -> All ],
         maxFrames  = If[ method === "Greedy" && IntegerQ @ limit, limit, Infinity ] },
       layerIndex = { axis, u } |-> With[ { dists = GraphDistance[ localG, u, # ] & /@ axis }, Flatten @ Position[ dists, Min @ dists ] - 1 ];
-      (* the same condition as the OrthogonalCoordinates coordinate of w being 0 *)
       centredQ = { axis, w } |-> With[ { ix = layerIndex[ axis, w ] - First @ layerIndex[ axis, c ] },
         Switch[ sel, "Centered", If[ MemberQ[ ix, 0 ], 0, Round @ Median[ ix ] ], All, ix, _, sel @ ix ] === 0 ];
       canonical = axes |-> Sort[ First @ Sort[ { #, Reverse @ # } ] & /@ axes ];
-      (* precomputed via GeodesicMultiplicityMatrix so the per-axis lookup is O(1) *)
       axisMult = With[ { mMat = Last @ GeodesicMultiplicityMatrix[ localG ],
                          posMap = AssociationThread[ VertexList[ localG ] -> Range @ VertexCount[ localG ] ] },
         axis |-> mMat[[ posMap[ First @ axis ], posMap[ Last @ axis ] ]] ];
-      (* length first, then ascending endpoint-geodesic-multiplicity so straight axes outrank L-shapes on grids, then lex-min for determinism *)
       axisKey = axis |-> { -Length[ axis ], axisMult[ axis ], Min[ axis, Reverse @ axis ] };
       frameKey = frame |-> { -Length[ frame ], -Total[ Length /@ frame ], Total[ axisMult /@ frame ], canonical[ frame ] };
       (* every candidate line through c with both half-axes of depth >= minLength, paired by antipodal endpoints and deduped on the orientation-canonical sequence *)
@@ -282,7 +230,6 @@ FindInfraOrthogonalFrame[ g_Graph, c_, axisLength : ( All | _Integer | _UpTo | {
               If[ testVal === Automatic, { }, { Method -> testVal } ],
               Cases[ subOpts, ( "Radius" | "Tolerance" | "Equality" ) -> _ ] ] },
           { chosen, cand } |-> AllTrue[ chosen, prev |-> InfraPerpendicularQ[ localG, prev, cand, Sequence @@ predOpts ] ] ],
-        (* default oracle: every vertex of every previously chosen axis projects to the centre on the candidate *)
         { chosen, cand } |-> AllTrue[ chosen, prev |-> AllTrue[ prev, w |-> centredQ[ cand, w ] ] ] ];
       recordQ = { len, vAxes } |-> Switch[ axisCountSpec,
         Automatic, vAxes === { } && len > 0,
@@ -340,11 +287,6 @@ FindInfraOrthogonalFrame[ g_Graph, ip_Association, axisLength : ( All | _Integer
       _UpTo,     Map[ PathGraph[ #, DirectedEdges -> True ] &, Take[ frames, count ], { 2 } ],
       _,         If[ Length[ frames ] >= count, Map[ PathGraph[ #, DirectedEdges -> True ] &, Take[ frames, count ], { 2 } ], $Failed ] ]
   ]
-
-
-(* ===================== FindInfraSpanningAxes ===================== *)
-
-(* no-center form: greedy mutually-separated longest geodesics across the whole graph *)
 
 Options[ FindInfraSpanningAxes ] = {
   "AxisDistance"  -> "MinEndpoint",

@@ -1,9 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-
-(* ===================== FindInfraPolylineSubdivision ===================== *)
-
 (* the fewest geodesic legs with knots on the walk, each leg a shortest path of length <= MaxLength.  A polyline is its legs: a List of directed path graphs on the substrate vertices, consecutive legs sharing their knot -- the knots are a fact about the subdivision, not about the walk, so they are kept as the leg ends rather than dissolved into one graph *)
 
 Options[ FindInfraPolylineSubdivision ] = { "MaxLength" -> Infinity };
@@ -25,11 +21,6 @@ FindInfraPolylineSubdivision[ graph_Graph, path_List, OptionsPattern[] ] :=
     MapThread[ { a, b } |-> PathGraph[ path[[ a ;; b ]], DirectedEdges -> True ], { Most @ knots, Rest @ knots } ]
   ]
 
-
-(* ===================== InfraPolylineQ ===================== *)
-
-(* every leg a geodesic in graph, consecutive legs sharing their endpoint *)
-
 InfraPolylineQ[ graph_Graph, polys : { { ___Graph } .. } ] :=
   AllTrue[ polys, InfraPolylineQ[ graph, # ] & ]
 
@@ -46,9 +37,6 @@ InfraPolylineQ[ graph_Graph, legs : { __Graph } ] :=
     AllTrue[ Partition[ seqs, 2, 1 ], pair |-> Last[ pair[[ 1 ]] ] === First[ pair[[ 2 ]] ] ] ]
 
 InfraPolylineQ[ _Graph, _ ] := False
-
-
-(* ===================== Scene-DSL constructor ===================== *)
 
 dispatchConstruction[ graph_Graph, InfraPolyline[ path_, opts___Rule ] ] :=
   capBranches[

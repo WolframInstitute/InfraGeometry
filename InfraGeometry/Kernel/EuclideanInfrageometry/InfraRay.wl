@@ -2,9 +2,6 @@ Package["WolframInstitute`InfraGeometry`"]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraRay *)
 
-
-(* ===================== InfraRay ===================== *)
-
 (* InfraRay[p, q] is inert: the ray from p through q.  Its graph is the ray DAG R(p, q) = I(p, q) union F(p, q), F(p, q) = { v : d(p, v) == d(p, q) + d(q, v) }, with the arrows v -> w of rising d(p, .); its chains from p to a sink are exactly the geodesics from p through q that cannot be prolonged while staying geodesic (design Thm. ray).  InfraRay[p, p] is the pencil at p, every maximal geodesic out of p *)
 
 InfraMeasurement[ graph_Graph,
@@ -22,9 +19,6 @@ InfraMeasurement[ graph_Graph,
         v |-> DirectedEdge[ v, # ] & /@ Select[ AdjacencyList[ graph, v ],
           TrueQ @ Lookup[ inside, Key @ # ] && Lookup[ dp, Key @ # ] == Lookup[ dp, Key @ v ] + 1 & ],
         support ] ] ]
-
-
-(* ===================== FindInfraRay ===================== *)
 
 (* a ray from p through q: a geodesic p ... q ... e with d(p, e) == d(p, q) + d(q, e) that no neighbour of e prolongs.  Found on the substrate directly, by prolonging a geodesic from p to q one outward step at a time, independently of the ray DAG *)
 
@@ -52,14 +46,8 @@ FindInfraRay[ graph_Graph, p_, q_,
         _UpTo,     Take[ acc, count ],
         _,         If[ Length @ acc < count, $Failed, Take[ acc, count ] ] ] ] ]
 
-
-(* ===================== InfraRayQ ===================== *)
-
-(* a geodesic inextensible at its far end only: the origin is an endpoint by fiat, which is what distinguishes a ray from a line *)
-
 InfraRayQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraRayQ[ graph, # ] & ]
 
-(* a family of instances, the shape FindInfraRay[graph, o, v, n | UpTo[n] | All] returns *)
 InfraRayQ[ graph_Graph, ws : { { ___ } .. } ] := AllTrue[ ws, InfraRayQ[ graph, # ] & ]
 
 InfraRayQ[ graph_Graph, w_Graph ] :=
@@ -86,17 +74,9 @@ InfraRayQ[ graph_Graph, ray_List ] /; Length[ ray ] >= 2 :=
 
 InfraRayQ[ _Graph, ray_List ] /; Length[ ray ] < 2 := False
 
-
-(* ===================== PencilDirections / PencilCardinality ===================== *)
-
-(* the pencil at O is the set of rays from O, which is the ray from O through O itself *)
-
 PencilDirections[ graph_Graph, origin_ ] := FindInfraRay[ graph, origin, origin, All ]
 
 PencilCardinality[ graph_Graph, origin_ ] := InfraMeasurement[ graph, InfraRay[ origin, origin ], "Cardinality" ]
-
-
-(* ===================== Scene-DSL constructor ===================== *)
 
 dispatchConstruction[ graph_Graph, InfraRay[ origin_, v_, opts___Rule ] ] :=
   capBranches[

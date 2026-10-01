@@ -1,7 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-(* ===================== Specialization preorder ===================== *)
-
 (* BallTopology[g, r]: Hasse diagram of the specialization preorder of the
    Alexandrov topology on V(g) with closed-set subbasis the closed r-balls.
    Directed edge q -> p iff B_r(p) subset B_r(q), transitive edges removed.
@@ -20,33 +18,19 @@ BallTopology[graph_Graph, r_, OptionsPattern[]] :=
 		If[TrueQ @ OptionValue["Dual"], ReverseGraph @ hasse, hasse]
 	]
 
-
-(* ===================== Closure / interior / boundary / neighborhood ===== *)
-
-(* All operate on a preorder digraph topo and a bare vertex list, returning a
-   bare vertex list. Carrier V = VertexList[topo]. *)
-
-(* cl(S) = union of the down-sets (in-components) of the vertices of S. *)
 TopologicalClosure[topo_Graph, verts_List] :=
 	Union @@ Map[v |-> VertexInComponent[topo, {v}], verts]
 
-(* int(S) = V \ cl(V \ S). *)
 TopologicalInterior[topo_Graph, verts_List] :=
 	With[{vertices = VertexList[topo]},
 		Complement[vertices, TopologicalClosure[topo, Complement[vertices, verts]]]
 	]
 
-(* bd(S) = cl(S) \ int(S); the two-sided topological boundary. *)
 TopologicalBoundary[topo_Graph, verts_List] :=
 	Complement[TopologicalClosure[topo, verts], TopologicalInterior[topo, verts]]
 
-(* The unique minimal open neighborhood of S: the principal up-set (out-components),
-   well defined because Alexandrov topologies are closed under arbitrary intersection. *)
 TopologicalNeighborhood[topo_Graph, verts_List] :=
 	Union @@ Map[v |-> VertexOutComponent[topo, {v}], verts]
-
-
-(* ===================== Continuity ===================== *)
 
 (* ContinuousMapQ[f, topo1, topo2]: the vertex map f is continuous iff it is
    monotone for the specialization preorders -- every Hasse edge q -> p of topo1
@@ -59,11 +43,6 @@ ContinuousMapQ[f_, topo1_Graph, topo2_Graph] :=
 		AllTrue[EdgeList[topo1], e |-> EdgeQ[tgtClosure, map @ e[[1]] -> map @ e[[2]]]]
 	]
 
-
-(* ===================== Display ===================== *)
-
-(* TopologyGraph[g, topo]: the underlying graph (gray) overlaid with the topology's
-   Hasse arrows. Pure visualization -- the operators above never need it. *)
 TopologyGraph[graph_Graph, topo_Graph] :=
 	With[{coords = Thread[VertexList[graph] -> GraphEmbedding[graph]]},
 		Show[

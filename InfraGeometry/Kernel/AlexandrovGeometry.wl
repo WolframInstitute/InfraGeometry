@@ -1,8 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-(* ===================== ComparisonTriangle ===================== *)
-
-
 Options[ ComparisonTriangle ] = { "Curvature" -> 0 };
 
 ComparisonTriangle[ a_?Positive, b_?Positive, c_?Positive, OptionsPattern[] ] :=
@@ -32,11 +29,7 @@ ComparisonTriangle[ g_Graph, p_, q_, r_, opts : OptionsPattern[] ] :=
     opts
   ]
 
-
 InfraComparisonTriangle[ data_Association ][ key_String ] := data[ key ]
-
-
-(* ===================== CATInequalityQ ===================== *)
 
 (* "ApexSide" tests d(apex, x)^2 <= d_k_bar(apex', x')^2 over the interior probes x of the opposite side, "TwoRays" every cross-ray pair.
    Equivalent in a length space (Bridson-Haefliger II.1.7), inequivalent on a graph, where the sides are vertex sets rather than arcs.
@@ -92,9 +85,6 @@ CATInequalityQ[ g_Graph, { p_, q_, r_ }, Optional[ k_?NumericQ, 0 ], OptionsPatt
         apexOK[ p, q, r, c, b, a ] && apexOK[ q, p, r, c, a, b ] && apexOK[ r, p, q, b, a, c ]
     ]
   ]
-
-
-(* ===================== InfraCurvature ===================== *)
 
 (* the worst Euclidean deficit over the triangles inside B_L(v), divided by L^2 so it is scale-comparable across graphs *)
 

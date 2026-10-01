@@ -1,8 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-(* ===================== Ball hull ===================== *)
-
 (* BallHull[g, S]: intersection of all closed metric balls containing S, the
    smallest ball-convex (Mazur) superset of S.  For each center c the smallest
    enclosing radius is r_c = max_{s in S} d(c, s); v lies in the hull iff
@@ -17,9 +14,6 @@ BallHull[g_Graph, S_List] :=
 			Pick[VertexList[g], AllTrue[NonNegative] /@ Transpose[radii - dist], True]
 		]
 	]
-
-
-(* ===================== Ball volumes ===================== *)
 
 (* V(r) = |B_r(v)| as the List {V(0), ..., V(ecc(v))} (position i is radius i - 1).  Object
    slot 2 (single vertex, list, or All), radius slot 3 (All -> the full profile; r_Integer
@@ -44,9 +38,6 @@ BallVolumes[g_Graph, opts : OptionsPattern[]] := BallVolumes[g, All, All, opts]
 BallVolumes[g_Graph, pts : (All | _List | Except[_Rule | _RuleDelayed]), opts : OptionsPattern[]] :=
 	BallVolumes[g, pts, All, opts]
 
-(* the all/list form reads every vertex's distances off one GraphDistanceMatrix:
-   one optimized all-pairs call is ~200x faster than V separate GraphDistance BFS
-   calls (each carries a fixed graph-to-internal-rep overhead paid V times) *)
 BallVolumes[g_Graph,
 	vertices : (_List | All),
 	range : (_Integer | {_Integer, _Integer} | All),
@@ -86,25 +77,6 @@ BallVolumes[g_Graph,
 		{at = r |-> If[0 <= r < Length[c], c[[r + 1]], Last[c]]},
 		Switch[range, All, c, _Integer, at[range], _, at /@ Range @@ range]
 	]
-
-
-(* ===================== Shell areas ===================== *)
-
-(* A(r) = V(r) - V(r-1) as the List {A(0), ..., A(ecc(v))}, with V(-1) = 0: the radial
-   derivative of BallVolumes under the SAME "Measure", so Accumulate[ShellAreas] == BallVolumes
-   measure for measure.  Object slot 2 and radius slot 3 are BallVolumes'; a finite window
-   pads past eccentricity with 0, the empty shell.
-     "FullCount"        |S_r(v)| -- the discrete geodesic-sphere area, the crystallography /
-                        OEIS coordination sequence, A(1) = the coordination number (default)
-     "WithoutBoundary"  the interior shell, |S_r| shifted one radius in a lattice bulk
-     "HalfBoundary"     (A(r) + A(r-1))/2, the centred shell count; A(0) = 1/2, since
-                        dB_0 = {v} whenever v has a neighbour
-     "ExpandingFront"   |F_t|, the size of the advancing front at step t, which continues
-                        past the eccentricity where the metric shell dies
-   Every branch is the direct count -- the histogram of the distance vector, the histogram of
-   its closed-neighbourhood maximum, their mean, the front cardinalities -- so nothing is
-   accumulated and then differenced back: this is BallVolumes' work less one Accumulate.
-   The sphere probe of VolumeGrowthObservables runs on the "FullCount" shell. *)
 
 Options[ShellAreas] = {"Measure" -> "FullCount"};
 
@@ -151,9 +123,6 @@ ShellAreas[g_Graph,
 		Switch[range, All, c, _Integer, at[range], _, at /@ Range @@ range]
 	]
 
-
-(* ===================== Cylinder volumes ===================== *)
-
 (* CylinderVolumes[g, sources, targets, s] gives the matrix of cylinder volumes
    between every source-target pair: the cylinder from p to q is the metric
    interval I(p, q) = { w : d(p, w) + d(w, q) == d(p, q) } (the union of all
@@ -178,9 +147,6 @@ CylinderVolumes[g_Graph, sources_List, targets_List, s_Integer : 0] :=
 			sources, targets, 1]
 	]
 
-
-(* ===================== Tube volumes ===================== *)
-
 (* T(s) = |{ w : d(w, S) <= s }|, the tube-volume profile of a vertex set S, as the List
    {T(0), ..., T(sMax)} with T(0) = |S|, saturating at the component of S.  The core S is
    any vertex list -- a geodesic segment, a cycle (capless tube), a submanifold sample;
@@ -195,7 +161,6 @@ CylinderVolumes[g_Graph, sources_List, targets_List, s_Integer : 0] :=
 
 Options[TubeVolumes] = {"Measure" -> "FullCount"};
 
-(* one BFS from a virtual vertex joined to the core -- no distance matrix *)
 TubeVolumes[g_Graph, core_List, range : (_Integer | {_Integer, _Integer} | All) : All, OptionsPattern[]] /;
 	! MemberQ[VertexList[g], core] :=
 	With[{aux = Unique["tubeSource"], vs = VertexList[g]},
@@ -239,9 +204,6 @@ TubeVolumes[g_Graph, p_, targets : (_List | All), range : (_Integer | {_Integer,
 				Switch[range, All, c, _Integer, at[range], _, at /@ Range @@ range]],
 			{qi, qis}]
 	]
-
-
-(* ===================== Interval volumes ===================== *)
 
 (* |I(p, q; r)| for the interval at slack r, I(p, q; r) = { x : d(p, x) + d(x, q) <= d(p, q) + r }
    (the two-focus ellipsoid; I(p, q; 0) is the metric interval), as the List {I(0), ..., I(rMax)}
@@ -287,9 +249,6 @@ IntervalVolumes[g_Graph, p_, targets : (_List | All), range : (_Integer | {_Inte
 			{qi, qis}]
 	]
 
-
-(* ===================== SegmentGraph ===================== *)
-
 (* SegmentGraph[g, u, v]: the metric interval I(u, v) as a directed
    acyclic graph -- vertices { w : d(u, w) + d(w, v) == d(u, v) } (= the
    CylinderVolumes support, the union of all u-v geodesics), edges w -> x for
@@ -313,20 +272,6 @@ SegmentGraph[g_Graph, u_, v_] :=
 		]
 	]
 
-
-(* ===================== Geodesic occupation ===================== *)
-
-(* GeodesicOccupation[dag]: the per-vertex geodesic occupation c(w) =
-   sigma_in(w) * sigma_out(w) over a geodesic DAG, where sigma_in(w) is the
-   number of source -> w directed paths and sigma_out(w) the number of w -> sink
-   paths (the Brandes shortest-path-count decomposition).  c(w) is the number of
-   maximal directed paths through w; the family size M = Max c (attained at the
-   endpoints).  Two topological-order DP sweeps, never enumerating the paths.
-   GeodesicOccupation[g, u, v] builds the u-v geodesic DAG first. *)
-
-(* Key[] wraps every vertex lookup: a list-valued vertex label (a {i, j} grid
-   or tessellation label) would otherwise be read by Lookup / assoc[...] as a
-   LIST OF KEYS, silently returning Missing instead of the count. *)
 GeodesicOccupation[dag_Graph] :=
 	Module[{order = TopologicalSort[dag],
 			inNbr = GroupBy[EdgeList[dag], Last -> First],
@@ -341,14 +286,6 @@ GeodesicOccupation[dag_Graph] :=
 	]
 
 GeodesicOccupation[g_Graph, u_, v_] := GeodesicOccupation[SegmentGraph[g, u, v]]
-
-
-(* GeodesicEdgeOccupation[dag]: the per-edge geodesic occupation
-   c(u -> v) = sigma_in(u) * sigma_out(v) over a geodesic DAG -- the number of
-   maximal directed paths through the edge, keyed by the DAG's DirectedEdges;
-   the edge companion of GeodesicOccupation, same two topological-order DP
-   sweeps, never enumerating the paths.  GeodesicEdgeOccupation[g, u, v]
-   builds the u-v geodesic DAG first. *)
 
 GeodesicEdgeOccupation[dag_Graph] :=
 	Module[{order = TopologicalSort[dag],
@@ -365,20 +302,7 @@ GeodesicEdgeOccupation[dag_Graph] :=
 
 GeodesicEdgeOccupation[g_Graph, u_, v_] := GeodesicEdgeOccupation[SegmentGraph[g, u, v]]
 
-
-(* ===================== Log-difference quotients ===================== *)
-
-(* q(r) = (Log w(r) - Log w(r-1)) / (Log(r+1) - Log r): the discrete d Log w / d Log r
-   of any sequence w = {w(0), w(1), ...} against the log index, the log-log slope at
-   each step.  Log[Ratios[Range[n]], Ratios[w]] == ResourceFunction["LogDifferences"][w].
-   For a ball-volume sequence this is the volume-growth dimension estimator SW's
-   dimension chapters plot.  Accepts any numeric -- or Around -- sequence: feed it
-   BallVolumes[g, v], or aggregate first and let the spread propagate, e.g.
-   LogDifferenceQuotients[MeanAround /@ Transpose[BallVolumes[g, subset, {0, R}]]]. *)
 LogDifferenceQuotients[w_List] := Log[Ratios[Range[Length[w]]], Ratios[N[w]]]
-
-
-(* ===================== Volume-growth observables ===================== *)
 
 (* The growth observables at a vertex -- raw profiles and the fitted dimension / scalar
    curvature -- from the Bishop-Gromov regression of the log-difference quotient q(r) on
@@ -422,9 +346,7 @@ VolumeGrowthObservables[g_Graph,
 	With[
 		{listed = vertices === All || ListQ[vertices] && ! MemberQ[VertexList[g], vertices],
 		 dimOpt = OptionValue["Dimension"],
-		 (* q(r) = (Log f(r) - Log f(r-1)) / (Log r - Log(r-1)) on [r, r+1]: the radius-consistent log-log slope, not the index-based LogDifferenceQuotients *)
 		 radialQuotients = f |-> Table[(Log[N @ f[[r + 2]]] - Log[N @ f[[r + 1]]]) / (Log[r + 1.] - Log[r]), {r, 1, Length[f] - 2}]},
-		(* the quotients q are indexed by radius 1, 2, ...; the Automatic window searches every interval, prefix sums making each residual O(1) *)
 		{windowedFit = {q, probe} |-> With[
 			{r = Range[Length[q]], x = N[Range[Length[q]] (Range[Length[q]] + 1)]},
 			{sel = Which[
@@ -458,7 +380,6 @@ VolumeGrowthObservables[g_Graph,
 			]
 		]},
 		{fits = MapThread[
-			(* A(r) is non-monotonic on a finite graph, peaking where the ball meets the rim or wraps around, so an Automatic window fits only the radii up to the peak *)
 			{w, a} |-> With[
 				{peak = If[window === Automatic, First @ Ordering[a, -1], Length[a]]},
 				{qBall = radialQuotients[w], ballFit = windowedFit[radialQuotients[Take[w, UpTo[peak]]], "Ball"], qSph = radialQuotients[Take[a, peak]]},

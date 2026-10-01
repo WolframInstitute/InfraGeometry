@@ -1,8 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-(* ===================== Inner vertex boundary / interior ===================== *)
-
 (* GraphBoundary[g, S]: inner vertex boundary. Two input forms, one notion (a
    vertex is boundary iff some g-edge at it escapes the given object):
      - vertex list S: the object is the INDUCED subgraph, so "escaping g-edge"
@@ -27,17 +24,6 @@ GraphInterior[g_Graph, h_Graph] :=
 GraphInterior[g_Graph, subset_List] :=
 	Complement[subset, GraphBoundary[g, subset]]
 
-
-(* ===================== Exterior boundary ===================== *)
-
-(* GraphExteriorBoundary[x]: the rim of the whole object -- exact for a MeshRegion
-   (the vertices lying on a boundary facet), heuristic for a bare Graph (the
-   degree-deficient vertices).  Method -> "AverageDegree" (default, for meshes:
-   below-average degree), "MaxDegree" (for lattices: less than full degree).
-   Complements GraphBoundary, the inner boundary of a SUBSET: as its own subset
-   the whole graph has empty inner boundary, so the rim must be detected from
-   the object (mesh facets) or guessed from degrees. *)
-
 Options[GraphExteriorBoundary] = {Method -> "AverageDegree"};
 
 GraphExteriorBoundary[g_Graph, OptionsPattern[]] :=
@@ -49,7 +35,6 @@ GraphExteriorBoundary[g_Graph, OptionsPattern[]] :=
 		Select[VertexList[g], deg[#] < threshold &]
 	]
 
-(* surface vertices lie on a boundary face: a (d-1)-subset of a top simplex occurring in exactly one top cell *)
 GraphExteriorBoundary[mr_MeshRegion, OptionsPattern[]] :=
 	With[
 		{d = RegionDimension[mr]},
@@ -58,17 +43,6 @@ GraphExteriorBoundary[mr_MeshRegion, OptionsPattern[]] :=
 			Union @@ Keys @ Select[Counts[Sort /@ Catenate[Subsets[First[#], {d}] & /@ MeshCells[mr, d]]], # == 1 &]
 		]
 	]
-
-
-(* ===================== Boundaryless graph ===================== *)
-
-(* BoundarylessGraph[x]: delete every edge joining two exterior-boundary
-   vertices -- the rim contour -- then drop only the vertices this isolates.
-   No other vertex is removed: a boundary vertex with an inward edge survives
-   as a whisker, so the result models an OPEN window onto the geometry, with
-   no visible boundary contour.  One rule for both forms; only the boundary
-   detector differs (exact surface for a MeshRegion, degree heuristic for a
-   Graph). *)
 
 Options[BoundarylessGraph] = Join[{Method -> "AverageDegree", "KeepCoordinates" -> True}, Options[Graph]];
 
@@ -97,16 +71,6 @@ BoundarylessGraph[mr_MeshRegion, opts : OptionsPattern[]] :=
 				{VertexCoordinates -> coords[[VertexList[h]]]}, {}]]
 	]
 
-
-(* ===================== Relative eccentricity ===================== *)
-
-(* RelativeEccentricity[x]: t(v) = (e(v) - radius) / (diameter - radius), the scale-free
-   depth coordinate of a finite metric space -- 0 exactly on the center, 1 exactly on the
-   periphery. Takes a graph or a distance matrix, and returns one number per point in
-   VertexList / row order. Degenerate when diameter == radius (a vertex-transitive graph)
-   or the space is disconnected: there every point is at once center and periphery, and t
-   is identically 0. *)
-
 (* GraphEccentricities[x]: e(v) = max_w d(v, w), one per point in VertexList / row order --
    the list form VertexEccentricity lacks (it takes one vertex at a time). Absolute, in
    hops: the honest quantity, bounded by GraphRadius and GraphDiameter. *)
@@ -115,14 +79,12 @@ GraphEccentricities[g_Graph] := GraphEccentricities @ GraphDistanceMatrix[g]
 
 GraphEccentricities[distMatrix_List] := Max /@ distMatrix
 
-
 RelativeEccentricity[x : (_Graph | _List)] :=
 	With[
 		{ecc = GraphEccentricities[x]},
 		{r = Min[ecc], d = Max[ecc]},
 		If[! NumericQ[d] || d == r, ConstantArray[0, Length[ecc]], (ecc - r) / (d - r)]
 	]
-
 
 CenterGraph[g_Graph, q : _?NumericQ : 1] :=
 	If[! ConnectedGraphQ[g],

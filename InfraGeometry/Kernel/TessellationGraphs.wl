@@ -1,17 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-(* ===================== The unified tessellation generator ===================== *)
-
-(* Regular maps as coset graphs of (2,p,q)-generated groups; see Wiki/Concepts/RegularMaps.md.
-   Refs: Coxeter & Moser, Generators and Relations for Discrete Groups (1957);
-   Jones & Singerman, Theory of maps on orientable surfaces (1978);
-   Conder's census of regular maps (math.auckland.ac.nz/~conder). *)
-
-(* n-th smallest regular map of type {p, q}, dispatched by Method. Automatic takes the fast realiser
-   per curvature -- finite group (spherical), flat torus (Euclidean), PSL(2,ell) congruence quotient
-   (hyperbolic, falling back to the coset enumeration at index 24); "Platonic" | "Torus" | "PSL2"
-   force one of them, "CosetEnumeration" (sub-option "MaxIndex") the general low-index method. *)
 Options[TessellationGraph] = {Method -> Automatic};
 
 TessellationGraph[{p_Integer, q_Integer}, n_Integer : 1, opts : OptionsPattern[{TessellationGraph, Graph}]] :=
@@ -74,7 +62,6 @@ TessellationGraph[{p_Integer, q_Integer}, {r_Cycles, s_Cycles}, opts : OptionsPa
         _?(Apply[SameQ])]]},
     Graph[map, Sequence @@ FilterRules[{opts}, Options[Graph]]]];
 
-(* the first (r, s) of orders p, q with r s an involution that together generate grp *)
 TessellationGraph[{p_Integer, q_Integer}, grp_ /; ! MatchQ[grp, _Integer | {_Integer, _Integer} | _Rule | {___Rule}], opts : OptionsPattern[{TessellationGraph, Graph}]] :=
   TessellationGraph[{p, q},
     With[{ord = GroupOrder[grp], e = GroupElements[grp]},
@@ -85,13 +72,6 @@ TessellationGraph[{p_Integer, q_Integer}, grp_ /; ! MatchQ[grp, _Integer | {_Int
           Missing["NotFound"]]]],
     opts];
 
-(* Uniform / Archimedean maps: vertex-transitive tilings by regular polygons of several sizes, with
-   vertex configuration (f_1. ... .f_k) -- the cyclic sequence of face sizes around every vertex.
-   Curvature dispatch on the angle defect Sum 1/f_i - (k-2)/2: spherical (Archimedean solids,
-   prisms, antiprisms), Euclidean (Conway operators on a flat-torus seed), hyperbolic (the same
-   operators on a hyperbolic regular seed); a regular configuration forwards to {p, q}.
-   See Wiki/Concepts/UniformMaps.md. Refs: Grunbaum & Shephard, Tilings and Patterns (1987);
-   Conway, Burgiel & Goodman-Strauss, The Symmetries of Things (2008). *)
 TessellationGraph[config_List /; Length[config] >= 3, n_Integer : 1, opts : OptionsPattern[{TessellationGraph, Graph}]] :=
   With[
     {defect = Total[1/config] - (Length[config] - 2)/2,
@@ -126,8 +106,6 @@ TessellationGraph[config_List /; Length[config] >= 3, n_Integer : 1, opts : Opti
           Flatten[Table[{{f[[i]], fe[[i]]}, {f[[Mod[i, len] + 1]], fe[[i]]}}, {i, len}], 1]]) /@ fcs},
        {faces = Join[vpoly, fpoly]},
        {SimpleGraph @ Graph @ Flatten[boundaryEdges /@ faces], faces}]},
-    (* the faces of a regular-map 1-skeleton are its girth cycles; rectify {p,q} = (p.q.p.q),
-       truncate {p,q} = (q.2p.2p), expand = rectify rectify = (p.4.q.4), bevel = truncate rectify = (4.2p.2q) *)
     {conway = {ops, graph} |-> First @ Fold[#2 @@ #1 &,
        {graph, cycleVertices /@ FindCycle[graph, {First @ Select[Range[3, EdgeCount[graph] + 1], FindCycle[graph, {#}, 1] =!= {} &, 1]}, All]},
        ops]},
@@ -173,15 +151,6 @@ TessellationGraph::badmethod = "Unknown Method `1`; use Automatic, \"Platonic\",
 TessellationGraph::deferred =
   "The uniform map `1` is not built by this constructor (snub, elongated, and other non-Conway families are not yet supported).";
 
-(* ===================== Torus tessellations ===================== *)
-
-(* TorusTessellation[{m, n}, shape] returns the vertex-transitive flat-torus
-   Cayley graph carrying the regular {p, q}-tessellation indicated by shape;
-   shape defaults to "Triangular" (the most isotropic discrete plane).
-     "Square"     -- {4, 4}, 4-regular, Cay(Z_m x Z_n, {+-e_1, +-e_2})
-     "Triangular" -- {3, 6}, 6-regular, Cay(Z_m x Z_n, {+-e_1, +-e_2, +-(e_1+e_2)})
-     "Hexagonal"  -- {6, 3}, 3-regular, two-orbit Cay on Z_m x Z_n x Z_2 *)
-
 TorusTessellation[ { m_Integer, n_Integer }, opts : OptionsPattern[ ] ] :=
   TorusTessellation[ { m, n }, "Triangular", opts ]
 
@@ -210,34 +179,19 @@ TorusTessellation[ { m_Integer, n_Integer }, "Hexagonal", opts : OptionsPattern[
     opts
   ]
 
-
-(* ===================== Unwrapped tessellation patches ===================== *)
-
-(* TessellationNeighborhoodGraph[{p, q}, r] is the radius-r graph-distance ball cut from the
-   infinite regular {p, q} tessellation of its covering surface -- the non-compact
-   companion to TessellationGraph (which wraps the tiling onto a compact torus / coset
-   quotient). One ring-growth skeleton, dispatched by curvature (p-2)(q-2): the
-   Euclidean plane (== 4), the hyperbolic plane (> 4), or the closing-up sphere (< 4);
-   interior vertices have degree q, the cut boundary fewer. *)
 TessellationNeighborhoodGraph[{p_Integer, q_Integer}, r_Integer : 3, opts : OptionsPattern[Graph]] :=
   Module[{seed, reflect, snap, inRegion, toVec, tol, ref, faces, frontier, seen, new},
     {seed, reflect, snap, inRegion, toVec, tol, ref} = Which[
-      (* spherical: regular p-gon of angular circumradius cos R = cot(pi/p)cot(pi/q) on the unit sphere,
-         reflected across the great-circle planes of its edges; the tiling closes up into the Platonic graph *)
       (p - 2) (q - 2) < 4,
         With[{cR = Cot[Pi/p] Cot[Pi/q]}, {sR = Sqrt[1 - cR^2]},
           {N @ Table[{sR Cos[2 Pi k/p], sR Sin[2 Pi k/p], cR}, {k, 0, p - 1}],
            {a, b, z} |-> With[{nv = Normalize @ Cross[a, b]}, z - 2 (z . nv) nv],
            Round[Mean @ #, 10.^-5] &, True &, Identity, 10.^-3, {0, 0, 1}}],
-      (* Euclidean: unit regular p-gon, line reflections; B_r lies within distance r*edge of the centre *)
       (p - 2) (q - 2) == 4,
         With[{e = 2 Sin[Pi/p]},
           {N @ Table[Exp[I 2 Pi k/p], {k, 0, p - 1}],
            {a, b, z} |-> a + (b - a) Conjugate[(z - a)/(b - a)],
            Round[Mean @ #, 10.^-6] &, Abs[#] <= 1 + (r + 1) e &, {Re @ #, Im @ #} &, 10.^-6, {0, 0}}],
-      (* hyperbolic: regular p-gon of circumradius cosh R = cot(pi/p)cot(pi/q) in the Poincare disk,
-         reflected by inversion in the circle orthogonal to the disk through each edge (a diameter
-         reflection when the edge is radial); B_r lies within hyperbolic distance R + r*edge *)
       True,
         With[{cc = Cot[Pi/p] Cot[Pi/q]}, {r0 = Tanh[ArcCosh[cc]/2], rr = ArcCosh[cc]},
           {polygon = N @ Table[r0 Exp[I 2 Pi k/p], {k, 0, p - 1}]},
@@ -250,8 +204,6 @@ TessellationNeighborhoodGraph[{p_Integer, q_Integer}, r_Integer : 3, opts : Opti
                (o |-> o + (Abs[o]^2 - 1)/Conjugate[z - o]) @
                  (((Abs[a]^2 + 1) Im[b] - (Abs[b]^2 + 1) Im[a])/(2 det) + I ((Abs[b]^2 + 1) Re[a] - (Abs[a]^2 + 1) Re[b])/(2 det))]],
            Round[Mean @ #, 10.^-5] &, 2 ArcTanh[Abs[#]] <= rho &, {Re @ #, Im @ #} &, 10.^-5, {0, 0}}]];
-    (* grow one reflection ring at a time, keeping a face only when its centroid lies in the bounded
-       region, so the growth self-terminates; snapped centroids dedup faces reached along different paths *)
     faces = {seed}; frontier = {seed}; seen = <|snap[seed] -> True|>;
     While[frontier =!= {},
       new = Flatten[Reap[Do[Do[
@@ -259,7 +211,6 @@ TessellationNeighborhoodGraph[{p_Integer, q_Integer}, r_Integer : 3, opts : Opti
             If[inRegion @ Mean @ nf && ! KeyExistsQ[seen, k], seen[k] = True; Sow @ nf]],
         {i, p}], {f, frontier}]][[2]], 1];
       faces = Join[faces, new]; frontier = new];
-    (* coincident corners agree to ~1e-12 and distinct ones are separated by >> tol, so snapping merges them *)
     With[{vecs = toVec /@ Flatten[faces, 1]},
       {keys = Round[vecs, tol]},
       {uniq = DeleteDuplicates @ keys},
@@ -276,9 +227,6 @@ TessellationNeighborhoodGraph[{p_Integer, q_Integer}, r_Integer : 3, opts : Opti
           VertexList[tiling][[First @ Ordering[SquaredEuclideanDistance[ref, #] & /@ GraphEmbedding @ tiling, 1]]], r],
         Sequence @@ FilterRules[{opts}, Options[Graph]]]]];
 
-(* m x n rectangular patch of the Euclidean {p,q} tiling: the flat-torus construction with the
-   wrap-around identifications dropped, so the patch has a boundary; dangling degree-1 hexagonal
-   sites are trimmed *)
 TessellationNeighborhoodGraph[{p_Integer, q_Integer}, {m_Integer, n_Integer}, opts : OptionsPattern[Graph]] :=
   If[(p - 2) (q - 2) == 4,
     Graph[
@@ -309,16 +257,6 @@ TessellationNeighborhoodGraph[{p_Integer, q_Integer}, {m_Integer, n_Integer}, op
 TessellationNeighborhoodGraph::eucrect =
   "The rectangular form is defined only for a Euclidean {p,q} ((p-2)(q-2)==4); `1` is not Euclidean -- use an integer radius.";
 
-(* a vertex configuration (longer than a {p, q} Schlafli symbol) cuts the radius-r ball from
-   the infinite uniform / Archimedean tiling of that configuration, grown one corona at a time,
-   dispatched on the angle defect Sum 1/f_i - (k-2)/2: a regular configuration forwards to the
-   {p, q} engine; a Euclidean one (defect 0) grows in the plane; a hyperbolic one (defect < 0) in
-   the Poincare disk; a spherical one (defect > 0) is the finite Archimedean solid, whose ball
-   saturates to the whole solid. The snub / elongated Euclidean families are chiral and stay deferred.
-   One corona engine for the plane (u = 1, unit edges) and the Poincare disk (u = cosh(s/2) > 1, edge
-   length s): angles are veridical in both, so only polygon placement, the direction at a vertex and
-   the edge step depend on u. The interior angle of a regular f-gon is 2 ArcSin[Cos[Pi/f] / u]
-   (u = 1 gives (f-2) Pi / f), and the common edge length makes the corners sum to 2 Pi. *)
 TessellationNeighborhoodGraph[config_List /; Length[config] >= 3, r_Integer : 3, opts : OptionsPattern[Graph]] :=
   Module[{defect = Total[1/config] - (Length[config] - 2)/2, edge, u, s, angle, mob, imob, place, direction, step, inRegion,
       faces, seen, growing = True, added, g},
@@ -337,9 +275,6 @@ TessellationNeighborhoodGraph[config_List /; Length[config] >= 3, r_Integer : 3,
         angle = f |-> 2 ArcSin[Cos[Pi / f] / u];
         mob = {a, z} |-> (z + a) / (1 + Conjugate[a] z);
         imob = {a, z} |-> (z - a) / (1 - Conjugate[a] z);
-        (* the regular f-gon sharing directed edge a -> b and lying to its left. Euclidean: each corner
-           turns left by 2 Pi / f. Hyperbolic: the origin-centred f-gon of circumradius
-           sinh R = sinh(s/2) / sin(Pi/f), carried by the disk isometry taking its first edge onto a -> b *)
         place = If[u === 1,
           {a, b, f} |-> FoldList[Plus, a, Table[(b - a) Exp[I 2. Pi k / f], {k, 0, f - 2}]],
           {a, b, f} |-> With[{rho = Tanh[ArcSinh[Sinh[ArcCosh[u]] / Sin[Pi / f]] / 2]},
@@ -353,9 +288,6 @@ TessellationNeighborhoodGraph[config_List /; Length[config] >= 3, r_Integer : 3,
         inRegion = If[u === 1, Abs[#] <= r + 2.5 &, Abs[#] < 1 && 2 ArcTanh[Abs[#]] <= (r + 2) s &];
         faces = Select[MapThread[place[0, step[0, #2], #1] &, {config, Most @ Prepend[Accumulate[angle /@ config], 0.]}], inRegion[Mean @ #] &];
         seen = Association[(Round[Mean @ #, 10.^-5] -> True) & /@ faces];
-        (* complete every boundary vertex whose partial corona pins its configuration: when the placed
-           sizes, read CCW from the open boundary, match a unique rotation / reflection of config, the
-           remaining sizes are placed CCW from the exposed edge; an ambiguous or complete corona adds nothing *)
         While[growing, growing = False;
           Do[added = If[2 Pi - Total[angle /@ corner[[All, 2]]] < 0.01, {},
               With[{v = corner[[1, 1]], sizes = corner[[All, 2]], starts = corner[[All, 3]], ends = corner[[All, 4]]},
@@ -397,8 +329,6 @@ TessellationNeighborhoodGraph[config_List /; Length[config] >= 3, r_Integer : 3,
 TessellationNeighborhoodGraph::deferred =
   "The unwrapped patch of the uniform tiling `1` is not built (the Euclidean snub / elongated families are chiral -- use TessellationGraph for their compact quotient).";
 
-(* ===================== Map invariants: curvature, Euler characteristic, genus ===================== *)
-
 (* combinatorial (angle-defect) Gaussian curvature at a vertex of the map:
    kappa = Sum 1/f_i - (k - 2)/2; sign is spherical / flat / hyperbolic and the geometric
    angle defect is 2 Pi kappa. Depends only on the local configuration, not the realisation.
@@ -419,10 +349,8 @@ TessellationEulerCharacteristic[graph_Graph] :=
   TessellationEulerCharacteristic[graph,
     ConstantArray[First @ Select[Range[3, EdgeCount[graph] + 1], FindCycle[graph, {#}, 1] =!= {} &, 1], First @ Union @ VertexDegree @ graph]];
 
-(* orientable genus from the Euler characteristic: g = (2 - chi)/2 *)
 TessellationGenus[graph_Graph, spec_List] := (2 - TessellationEulerCharacteristic[graph, spec]) / 2;
 TessellationGenus[graph_Graph] := (2 - TessellationEulerCharacteristic[graph]) / 2;
-
 
 (* ===================== General coset enumeration (Todd-Coxeter / low-index) =====================
 
@@ -435,8 +363,6 @@ TessellationGenus[graph_Graph] := (2 - TessellationEulerCharacteristic[graph]) /
    Consumed by TessellationGraph's Method -> "CosetEnumeration" above.
    Word alphabet for subgroup generators: 1 = x, 2 = x^-1, 3 = y, 4 = y^-1. *)
 
-(* [D(p,q,2) : H] for H = <subwords> by Todd-Coxeter with coincidence processing; $Failed if it
-   exceeds maxc (infinite or too large). Run on the cyclic stabilizers it gives V, E, F directly. *)
 CosetEnumeration[p_, q_, subwords_, maxc_] := Module[
   {rels = {ConstantArray[1, p], ConstantArray[3, q], {1, 3, 1, 3}}, cosetInv = {2, 1, 4, 3}, tab = {{0, 0, 0, 0}}, repl = {1}, n = 1, rep, merge, coinc, scan, defc, w, c, i, g, qq = {}},
   rep[x0_] := Module[{x = x0}, While[repl[[x]] != x, x = repl[[x]]]; x];
@@ -472,7 +398,6 @@ CosetEnumeration[p_, q_, subwords_, maxc_] := Module[
     c++];
   If[n > maxc + 5, $Failed, Count[Range[n], _?(rep[#] == # &)]]];
 
-(* skeleton of a rotation map {x, y}: vertices = y-cycles, edges = 2-cycles of (x y) joining them *)
 RotationMapGraph[{x_, y_}] := Module[{ycyc = First @ PermutationCycles[y], vlab},
   vlab = Association @@ Flatten[MapIndexed[Function[{cyc, i}, (# -> First[i]) & /@ cyc], ycyc]];
   Graph[Range[Length[ycyc]], (UndirectedEdge @@ (vlab /@ #)) & /@ First @ PermutationCycles[PermutationProduct[x, y]]]];

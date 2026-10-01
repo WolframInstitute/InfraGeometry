@@ -1,9 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-(* ===================== Graph enumeration ===================== *)
-
-
 Options[ EnumerateGraphs ] = { "From" -> Automatic };
 
 EnumerateGraphs[ n_, predQ_, All, opts : OptionsPattern[] ] :=

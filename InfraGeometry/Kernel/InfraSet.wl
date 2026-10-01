@@ -1,11 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-(* the set instance is gone: a set IS the sorted, duplicate-free vertex List, the shape Wolfram's own set algebra takes -- Union, Intersection, Complement, SubsetQ, Subgraph and HighlightGraph all read it directly.  Everything below returns one; the Association is reserved for densities, where multiplicity is real.
-   The head is gone outright, scene language included: every other Infra head names a construction and survives as its token, but a literal vertex set is dispatched by shape *)
-
-
-(* ===================== FindInfraEquidistantSet ===================== *)
-
 (* { v : d(p1, v) == ... == d(pn, v) }, the intersection of the n-1 consecutive bisectors Bis(p_i, p_{i+1}); the window thickens each to lo <= d(p_i, v) - d(p_{i+1}, v) <= hi *)
 
 FindInfraEquidistantSet[ graph_Graph, pts_List ] :=
@@ -20,9 +14,6 @@ FindInfraEquidistantSet[ graph_Graph, pts_List, { lo_Integer, hi_Integer } ] /; 
 
 FindInfraEquidistantSet[ graph_Graph, pts_List /; Length[ pts ] <= 1, { _Integer, _Integer } ] :=
   Union @ VertexList[ graph ]
-
-
-(* ===================== FindAdvancingInfraFront ===================== *)
 
 (* each vertex u of the front S_i steps one shell outward from S_{i-1} -- to the neighbours v with d(S_{i-1}, v) = d(S_{i-1}, u) + 1 -- and reflects where there is no outward neighbour, stepping back to a neighbour at d(u) - 1.
    The state is the pair (S_{i-1}, S_i), so this is a NestList on consecutive fronts: the discrete second-order (wave-equation) form, momentum carried as the trailing front. *)
@@ -44,10 +35,6 @@ FindAdvancingInfraFront[ graph_Graph, origin_, steps_Integer ] :=
               Which[ out =!= { }, out, in =!= { }, in, True, { u } ] ] ) /@ cur ] } ] },
     Union /@ NestList[ step, { src, src }, steps ][[ All, 2 ]]
   ]
-
-
-(* ===================== InfraBoundary / InfraInterior ===================== *)
-
 
 InfraBoundary::badmethod = "Method `1` is not supported by InfraBoundary.";
 InfraInterior::badmethod = "Method `1` is not supported by InfraInterior.";
@@ -75,14 +62,8 @@ InfraInterior[ g_Graph, s_, OptionsPattern[] ] :=
     ]
   ]
 
-
-(* ===================== InfraVolume ===================== *)
-
-
 InfraVolume::badmeasure = "Measure `1` is not supported by InfraVolume; use \"FullCount\", \"WithoutBoundary\", \"HalfBoundary\", or \"Boundary\".";
 
-(* the measures of Infrageometry's BallVolumes on an arbitrary set S with boundary dS = GraphBoundary[g, S]:
-   "FullCount" = |S|, "WithoutBoundary" = |S| - |dS|, "HalfBoundary" = |S| - |dS|/2, and "Boundary" = |dS| itself *)
 Options[ InfraVolume ] = { "Measure" -> "FullCount", Method -> "Combinatorial" };
 
 (* a walk graph or a bundle realises the union of its walks as path graphs -- only their own consecutive edges, so distinct lines are not joined and a line never gains the chords of its induced subgraph.  A vertex is then interior iff every g-edge at it is a line edge, so a 1-D curve has nearly empty interior *)

@@ -1,15 +1,8 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-(* ===================== FindInfraPolygon ===================== *)
-
-(* a polygon through the listed corners is its sides: one geodesic (p_i, p_{i+1 mod n}) per consecutive pair, each a directed path graph on the substrate vertices, consecutive sides sharing their corner and the last closing on the first.  The instance is the List of sides, since a corner is a fact about the polygon and not about the closed walk, which may even retrace a side; the count-less call is one polygon, a bounded count and All a List of them, and the Cartesian product over sides is the class *)
-
 FindInfraPolygon::badmethod = "Method `1` is not supported by FindInfraPolygon.";
 
 Options[ FindInfraPolygon ] = { Method -> Automatic };
-
-(* "Exhaustive" with All forms the product; a bounded count streams that many geodesics per side, in candidate ("Greedy", "Exhaustive") or random ("RandomGreedy") order, and reads members of their product off its mixed-radix index *)
 
 FindInfraPolygon[ graph_Graph, vertices_List /; Length[ vertices ] >= 3,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
@@ -17,7 +10,6 @@ FindInfraPolygon[ graph_Graph, vertices_List /; Length[ vertices ] >= 3,
     With[ { methodSpec = Replace[ OptionValue[ FindInfraPolygon, { opts }, Method ], Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ],
             cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
       { method = Replace[ methodSpec, { m_String, ___ } :> m ],
-        (* a bounded count streams more geodesics per side than it needs: with one per side the product is a single tuple, and a witness has no room to avoid degeneracy *)
         sideCap = If[ count === All, Infinity, Max[ 8, 2 cap ] ] },
       If[ ! MatchQ[ method, "Exhaustive" | "Greedy" | "RandomGreedy" ],
         Message[ FindInfraPolygon::badmethod, methodSpec ]; $Failed,
@@ -30,7 +22,6 @@ FindInfraPolygon[ graph_Graph, vertices_List /; Length[ vertices ] >= 3,
                       If[ d === Infinity, { }, FindPath[ graph, a, b, { d }, Replace[ sideCap, Infinity -> All ] ] ] ],
                   VertexCount @ dag == 0, { },
                   method === "Greedy" && count === All, FindPath[ dag, a, b, Infinity, All ],
-                  (* the interval DAG is the pool, so its lazy descent is complete and exact: out-edges in edge order for "Greedy", shuffled at every vertex for "RandomGreedy" *)
                   True,
                     With[ { out = GroupBy[ List @@@ EdgeList @ dag, First -> Last ] },
                       descend[ path_ ] := If[ Last @ path === b,
@@ -41,7 +32,6 @@ FindInfraPolygon[ graph_Graph, vertices_List /; Length[ vertices ] >= 3,
                       acc = { };
                       Catch[ descend[ { a } ]; acc, descend ] ] ] ],
               Partition[ Append[ vertices, First @ vertices ], 2, 1 ], { 1 } ] },
-          (* a bounded count takes the product's members in mixed-radix order, but a degenerate polygon -- one whose closed side sequence walks an edge twice, the 1-3-9 triangle of GridGraph[{3,3}] closing along 9-6-3-2-1 -- is a poor witness for a class that also holds honest ones.  The scan window is wide enough to pass over the degenerate prefix and still exact: it yields Min[n, |class|] polygons, degenerate ones only once the window is spent *)
           { polygons = Map[ PathGraph[ #, DirectedEdges -> True ] &,
               If[ count === All, Tuples @ sides,
                 With[ { sizes = Length /@ sides,
@@ -58,11 +48,6 @@ FindInfraPolygon[ graph_Graph, vertices_List /; Length[ vertices ] >= 3,
             _UpTo,     Take[ polygons, count ],
             _,         If[ Length @ polygons < count, $Failed, Take[ polygons, count ] ] ] ] ] ] ]
 
-
-(* ===================== InfraPolygonQ ===================== *)
-
-(* every side a geodesic and consecutive sides, cyclically, sharing their endpoint *)
-
 InfraPolygonQ[ graph_Graph, polys : { { __Graph } .. } ] :=
   AllTrue[ polys, InfraPolygonQ[ graph, # ] & ]
 
@@ -77,9 +62,6 @@ InfraPolygonQ[ graph_Graph, sides : { __Graph } ] :=
     AllTrue[ Partition[ Append[ seqs, First @ seqs ], 2, 1 ], pair |-> Last[ pair[[ 1 ]] ] === First[ pair[[ 2 ]] ] ] ]
 
 InfraPolygonQ[ _Graph, _ ] := False
-
-
-(* ===================== FindInfraRegularPolygon ===================== *)
 
 (* a regular n-gon w.r.t. the metric tuple As is a cyclic sequence v_1, ..., v_n with d(v_i, v_{i+k mod n}) satisfying As[[k]] for every i and k; a slot is an exact integer, a range {lo, hi} constant across i, or Automatic.  The instance is the polygon on those corners: its sides, one shortest path each.
 
@@ -139,7 +121,6 @@ FindInfraRegularPolygon[ graph_Graph, As_List, n_Integer /; n >= 3,
                 _Integer,               AllTrue[ ds, # === slot & ],
                 { _Integer, _Integer }, Length[ Union @ ds ] === 1 && slot[[ 1 ]] <= First @ ds <= slot[[ 2 ]],
                 Automatic,              Length[ Union @ ds ] === 1 ] ] },
-          (* a beam width (integer cap, random sampling if exceeded) or a Bernoulli keep probability, with a one-element floor so the bundle never dies by chance *)
           { ordered = If[ methodHead === "RandomGreedy", RandomSample, Identity ] @ Which[
               pruning === Infinity, candidates,
               IntegerQ[ pruning ] && pruning >= 1,
@@ -160,11 +141,6 @@ FindInfraRegularPolygon[ graph_Graph, As_List, n_Integer /; n >= 3,
             All,       polygons,
             _UpTo,     Take[ polygons, count ],
             _,         If[ Length @ polygons < count, $Failed, Take[ polygons, count ] ] ] ] ] ]
-
-
-(* ===================== InfraRegularPolygonQ ===================== *)
-
-(* the corner cycle carries the test; a polygon is read at its corners, a cycle graph as its closed walk *)
 
 InfraRegularPolygonQ[ graph_Graph, cycle_List, As_List ] /;
     Length[ cycle ] >= 3 && ! MatchQ[ cycle, { __Graph } | { { __Graph } .. } ] :=
@@ -208,11 +184,6 @@ InfraRegularPolygonQ[ graph_Graph, w_Graph, As_List ] :=
           SelectFirst[ vs, If[ DirectedGraphQ @ w, VertexInDegree[ w, # ] == 0, VertexDegree[ w, # ] == 1 ] &, First @ vs ],
           { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] ],
     As ]
-
-
-(* ===================== Scene-DSL constructors ===================== *)
-
-(* the scene engine binds the closed corner sequence of a regular polygon and the closed vertex sequence of a polygon through corners *)
 
 dispatchConstruction[ graph_Graph, InfraPolygon[ As_List, n_Integer, opts___Rule ] ] :=
   capBranches[

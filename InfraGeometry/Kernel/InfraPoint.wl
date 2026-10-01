@@ -1,11 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-
-
-(* ===================== FindInfraPoint ===================== *)
-
-(* "Distance" constrains which points: r fixes the mutual distance exactly, {dMin, dMax} a range, "Max" maximises the minimum pairwise gap, "Spread" breaks the "Max" ties toward minimal variance of the pairwise distances *)
-
 FindInfraPoint::badfrom = "\"From\" specification `1` is not supported by FindInfraPoint. Supported: All, \"Random\", \"Center\", \"Periphery\", {\"Center\", cap}, anchor -> spec, a vertex, a vertex list, a density.";
 
 Options[ FindInfraPoint ] = { "From" -> "Random", "Distance" -> None, "MaxCliques" -> All };
@@ -13,14 +7,12 @@ Options[ FindInfraPoint ] = { "From" -> "Random", "Distance" -> None, "MaxClique
 FindInfraPoint[ graph_Graph, count : ( UpTo[ _Integer ] | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
   Module[ { from = OptionValue[ "From" ], dist = OptionValue[ "Distance" ], maxCl = OptionValue[ "MaxCliques" ],
             n = Replace[ count, { UpTo[ k_ ] :> k, Automatic -> 1 } ], pool, distMatrix, finiteMax, cliques },
-    (* an unrecognised selector must raise ::badfrom rather than fall through to the whole vertex pool, which reads as a legitimate random draw *)
     If[ ! ( VertexQ[ graph, from ] || MatchQ[ from, All | "Random" | "Center" | "Periphery" |
           { "Center", _Integer | Infinity } | _Association | _Rule | _List ] ),
       Message[ FindInfraPoint::badfrom, from ]; Return[ $Failed ] ];
     pool = Which[
       from === "Center",    GraphCenter @ graph,
       from === "Periphery", GraphPeriphery @ graph,
-      (* orbit of c |-> NeighborhoodGraph[c, GraphCenter[c]], stopping at a fixed point or when the centre-neighbourhood first disconnects *)
       MatchQ[ from, { "Center", _Integer | Infinity } ] && ConnectedGraphQ @ graph,
         With[ { final = NestWhile[ NeighborhoodGraph[ #, GraphCenter @ # ] &, graph,
                   ConnectedGraphQ[ #2 ] && VertexCount[ #1 ] != VertexCount[ #2 ] &, 2, Last @ from ] },
@@ -60,7 +52,6 @@ FindInfraPoint[ graph_Graph, count : ( UpTo[ _Integer ] | Automatic ) : Automati
                 { d, Reverse @ DeleteCases[ Union @@ distMatrix, 0 | _?( # > finiteMax & ) ] } ];
               Which[
                 cliques === { }, { },
-                (* among the max-min-gap cliques, the n-subset of minimal variance of pairwise distances *)
                 dist === "Spread",
                   With[ { idx = AssociationThread[ pool -> Range @ Length @ pool ],
                           subsets = DeleteDuplicates[ Sort /@ Catenate[ Subsets[ #, { n } ] & /@ cliques ] ] },
@@ -83,24 +74,12 @@ FindInfraPoint[ graph_Graph, n_Integer, opts : OptionsPattern[] ] :=
   With[ { result = FindInfraPoint[ graph, UpTo[ n ], opts ] },
     If[ Length[ result ] < n, $Failed, result ] ]
 
-
-(* ===================== RandomInfraPoint / InfraCenter ===================== *)
-
-(* a uniformly random vertex, or a uniformly random vertex at distance d from p *)
-
 RandomInfraPoint[ graph_Graph ] := RandomChoice @ VertexList @ graph
 
 RandomInfraPoint[ graph_Graph, p_, d_ ] :=
   RandomChoice @ Select[ VertexList @ graph, GraphDistance[ graph, p, # ] == d & ]
 
-(* a vertex of least eccentricity *)
-
 InfraCenter[ graph_Graph ] := First @ GraphCenter @ graph
-
-
-(* ===================== FindInfraMidpoint ===================== *)
-
-(* the vertices at the index closest to the centre index (n + 1)/2: an odd distance gives two of them, an even one a single vertex *)
 
 Options[ FindInfraMidpoint ] = { Method -> "Metric", "Tolerance" -> 0 };
 
@@ -119,7 +98,6 @@ FindInfraMidpoint[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPattern[] 
                   Catenate @ Catenate @ Table[ FindPath[ w, a, b, Infinity, All ],
                     { a, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { b, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
                 True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ] },
-    (* occupation of the central index band, vertex -> mass: a walk contributes 1 per band vertex, a substrate DAG -- a path graph included -- reads the band off its layers weighted by geodesic occupation, exactly as the enumerated family would; a closed or position-spelled walk graph is read as its vertex sequences *)
     { band = c |-> If[ GraphQ @ c,
         With[ { layers = If[ VertexCount[ c ] == 0, <||>,
                   AssociationThread[ VertexList[ c ],
@@ -142,7 +120,6 @@ FindInfraMidpoint[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPattern[] 
             MatchQ[ x, { __List } ],  x,
             True,                     { x } ], Total ],
       "Embedding",
-        (* closest vertex to the coord-space midpoint of the endpoints *)
         With[ { walks = Which[
                   GraphQ @ x,               walksOf @ x,
                   MatchQ[ x, { __Graph } ], Catenate[ walksOf /@ x ],
@@ -165,11 +142,6 @@ FindInfraMidpoint[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPattern[] 
 FindInfraMidpoint[ graph_Graph, p1_, p2 : Except[ _Rule | _RuleDelayed ], opts : OptionsPattern[] ] :=
   FindInfraMidpoint[ graph, FindInfraSegment[ graph, p1, p2, All ], opts ]
 
-
-(* ===================== FindInfraGoldenSection ===================== *)
-
-(* AB/AS == AS/SB, i.e. AS == AB/phi: the vertex at the index closest to 1 + (n - 1)/phi.  The golden index is irrational, so it is a single vertex per walk *)
-
 Options[ FindInfraGoldenSection ] = { Method -> "Metric", "Tolerance" -> 0 };
 
 FindInfraGoldenSection[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPattern[] ] /; ! VertexQ[ graph, x ] :=
@@ -187,7 +159,6 @@ FindInfraGoldenSection[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPatte
                   Catenate @ Catenate @ Table[ FindPath[ w, a, b, Infinity, All ],
                     { a, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { b, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
                 True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ] },
-    (* occupation of the central index band, vertex -> mass: a walk contributes 1 per band vertex, a substrate DAG -- a path graph included -- reads the band off its layers weighted by geodesic occupation, exactly as the enumerated family would; a closed or position-spelled walk graph is read as its vertex sequences *)
     { band = c |-> If[ GraphQ @ c,
         With[ { layers = If[ VertexCount[ c ] == 0, <||>,
                   AssociationThread[ VertexList[ c ],
@@ -210,7 +181,6 @@ FindInfraGoldenSection[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPatte
             MatchQ[ x, { __List } ],  x,
             True,                     { x } ], Total ],
       "Embedding",
-        (* closest vertex to the coord-space golden point p1 + (p2 - p1)/phi *)
         With[ { walks = Which[
                   GraphQ @ x,               walksOf @ x,
                   MatchQ[ x, { __Graph } ], Catenate[ walksOf /@ x ],
@@ -234,9 +204,6 @@ FindInfraGoldenSection[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPatte
 FindInfraGoldenSection[ graph_Graph, p1_, p2 : Except[ _Rule | _RuleDelayed ], opts : OptionsPattern[] ] :=
   FindInfraGoldenSection[ graph, FindInfraSegment[ graph, p1, p2, All ], opts ]
 
-
-(* ===================== FindInfraReflection ===================== *)
-
 (* y with BetweennessQ[x, a, y] and d(a, y) = d(a, x): the geodesic continuation of x past a at the same distance *)
 
 FindInfraReflection[ graph_Graph, x_, a_,
@@ -244,7 +211,6 @@ FindInfraReflection[ graph_Graph, x_, a_,
   With[ { reps = DeleteDuplicates @ Flatten[
       ( { x0, a0 } |-> With[ { r = GraphDistance[ graph, a0, x0 ] },
           If[ r === Infinity, {},
-            (* Localize: reflection lives in B(a, r), straddle-paths stay in B(a, 2 r). *)
             With[ { localG = NeighborhoodGraph[ graph, a0, 2 r ] },
               Select[ VertexList[ localG ],
                 y |-> BetweennessQ[ localG, x0, a0, y ] && GraphDistance[ localG, a0, y ] === r ] ]
@@ -254,9 +220,6 @@ FindInfraReflection[ graph_Graph, x_, a_,
       All,   reps,
       _UpTo, Take[ reps, count ],
       _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
-
-
-(* ===================== CompleteInfraEquilateralTriangle ===================== *)
 
 (* Euclid I.1: c with d(p1, c) = d(p2, c) = d(p1, p2), the intersection of the two spheres *)
 
@@ -277,11 +240,6 @@ CompleteInfraEquilateralTriangle[ graph_Graph, p1_, p2_,
       _UpTo, Take[ reps, count ],
       _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
 
-
-(* ===================== FindInfraCommonPoint ===================== *)
-
-(* the intersection of the listed lines *)
-
 FindInfraCommonPoint[ graph_Graph, lines_List,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
   With[ { support = w |-> Union @
@@ -293,11 +251,6 @@ FindInfraCommonPoint[ graph_Graph, lines_List,
       All,   reps,
       _UpTo, Take[ reps, count ],
       _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
-
-
-(* ===================== FindClosestInfraPoint ===================== *)
-
-(* metric argmin: the vertices of line at minimum distance from point, not the Euclid I.12 foot FindInfraPerpendicular runs *)
 
 FindClosestInfraPoint[ graph_Graph, line_, point_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
@@ -328,15 +281,9 @@ FindClosestInfraPoint[ graph_Graph, line_, point_,
       _UpTo, Take[ reps, count ],
       _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
 
-
-(* ===================== SelectInfraPoint ===================== *)
-
-
 SelectInfraPoint::badfrom = "\"From\" specification `1` is not supported by SelectInfraPoint. Supported: All, \"Random\", \"Center\", \"Periphery\", anchor -> spec, a vertex, a vertex list, a density.";
 
 Options[ SelectInfraPoint ] = { "From" -> All, "Distance" -> None, "MaxCliques" -> All };
-
-(* an unrecognised selector must raise ::badfrom rather than fall through to the whole vertex pool, which reads as a legitimate random draw *)
 
 SelectInfraPoint[ graph_Graph, vertices_List, UpTo[ nMax_Integer ], opts : OptionsPattern[] ] :=
   With[ { fromSpec = OptionValue[ "From" ], distSpec = OptionValue[ "Distance" ], maxCl = OptionValue[ "MaxCliques" ] },
@@ -398,7 +345,6 @@ SelectInfraPoint[ graph_Graph, vertices_List, UpTo[ nMax_Integer ], opts : Optio
                     { d, thresholds } ];
                   Which[
                     cliques === { }, { },
-                    (* among the max-min-gap cliques, the n-subset of minimal variance of pairwise distances *)
                     distSpec === "Spread",
                       With[ { idx = AssociationThread[ pool -> Range @ Length @ pool ],
                               subsets = DeleteDuplicates[ Sort /@ Catenate[ Subsets[ #, { n } ] & /@ cliques ] ] },
@@ -432,7 +378,6 @@ SelectInfraPoint[ graph_Graph, vertices_List, n_Integer : 1, opts : OptionsPatte
   With[ { result = SelectInfraPoint[ graph, vertices, UpTo[ n ], opts ] },
     If[ ListQ[ result ] && Length[ result ] < n, $Failed, result ] ]
 
-(* a density or a walk graph selects from its support; a set is a vertex list already *)
 SelectInfraPoint[ graph_Graph, shape : _Association | _Graph | { __Graph },
                   countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] :=
   SelectInfraPoint[ graph, Keys @ InfraDensity[ graph, shape ], countSpec, opts ]
@@ -440,25 +385,14 @@ SelectInfraPoint[ graph_Graph, shape : _Association | _Graph | { __Graph },
 SelectInfraPoint[ graph_Graph, countSpec : ( _Integer | UpTo[ _Integer ] | All ), opts : OptionsPattern[] ] :=
   SelectInfraPoint[ graph, #, countSpec, opts ] &
 
-
-(* ===================== InfraReachableQ ===================== *)
-(* single multi-source BFS via VertexComponent: visits only the components touched by p1's realisations *)
-
 InfraReachableQ[ graph_Graph, p1_, p2_ ] :=
   IntersectingQ[ VertexComponent[ graph, Keys @ InfraDensity[ graph, p1 ] ], Keys @ InfraDensity[ graph, p2 ] ]
-
-
-(* ===================== Scene-DSL constructor ===================== *)
-
-(* InfraPoint survives ONLY here, as the scene-language token for the point search -- FindInfraPoint minus the graph.  It is not a payload wrapper: it has no accessors and no function returns it *)
 
 dispatchConstruction[ graph_Graph, InfraPoint[ ] ] :=
   VertexList @ graph
 
 dispatchConstruction[ graph_Graph, InfraPoint[ v_ ] ] /; pointQ[ graph, v ] :=
   { v }
-
-(* the shapes are literals in the scene language and name themselves, so a bound multiset or vertex list flows into a scene with no token around it *)
 
 dispatchConstruction[ graph_Graph, vs_List ] /;
     vs =!= { } && ! pointQ[ graph, vs ] && SubsetQ[ VertexList @ graph, vs ] :=

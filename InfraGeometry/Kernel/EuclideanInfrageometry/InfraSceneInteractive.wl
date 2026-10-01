@@ -5,15 +5,10 @@ Package["WolframInstitute`InfraGeometry`"]
 PackageScope[geodesicGraph]
 PackageScope[geodesicCycleGraph]
 
-
 $InfraSegmentSelectOptions = { None, "Central", "Peripheral", "EmbeddingClosest" };
 
 $InfraCircleSelectOptions = { None, "Central", "Peripheral",
   "MinLength", "MaxLength", "EmbeddingClosest" };
-
-
-(* ===================== Per-object viewers ===================== *)
-
 
 SetAttributes[ PointViewer, HoldRest ]
 
@@ -24,7 +19,6 @@ PointViewer[ g_Graph, sym_: None ] :=
       With[ { pts = FindInfraPoint[ g, UpTo[ n ], "From" -> from, "MaxCliques" -> 100,
           "Distance" -> Switch[ separation, "None", None, "Max", "Max", "Range", distRange ] ] },
         If[ sym =!= None, sym = pts ];
-        (* a point family is a density, not a set: the ink reads a bare vertex List as a region *)
         InfraSubstrateHighlight[ g, { Directive[ $InfraPointColor ], InfraDensity[ g, pts ] }, ImageSize -> 600 ] ],
       Grid[ {
         { Control[ { { n, 1, "Points" }, ControlType -> InputField } ],
@@ -39,7 +33,6 @@ PointViewer[ g_Graph, sym_: None ] :=
       SaveDefinitions -> True
     ]
   ]
-
 
 SegmentViewer[ g_Graph ] :=
   With[ {
@@ -80,7 +73,6 @@ SegmentViewer[ g_Graph ] :=
     ]
   ]
 
-
 ShellViewer[ g_Graph ] :=
   With[ {
       initPt      = RandomChoice[ VertexList[ g ] ],
@@ -114,7 +106,6 @@ ShellViewer[ g_Graph ] :=
       SaveDefinitions -> True
     ]
   ]
-
 
 CircleViewer[ g_Graph ] :=
   With[ {
@@ -152,10 +143,6 @@ CircleViewer[ g_Graph ] :=
       SaveDefinitions -> True
     ]
   ]
-
-
-(* ===================== InfraSceneViewer ===================== *)
-
 
 Options[ InfraSceneViewer ] = {
   "OpacityRange"   :> $InfraOpacityRange,
@@ -233,7 +220,6 @@ InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <||>, opt
             InfraSubstrateHighlight[ graph, { }, Sequence @@ hlOpts, ImageSize -> imgW ],
             InfraSubstrateHighlight[ graph,
               If[ mode === "Diffuse",
-                (* a binding is already a shape, so the realisations of one object across the shown branches are its bundle or its family; only a point needs promoting, its realisations being bare vertices that as a bare List would ink as one region *)
                 With[ { boundKeys = Keys @ First[ shown ][[ 1 ]] },
                   ( obj |-> With[ { reps = DeleteDuplicates[ #[[ 1 ]][ obj ] & /@ shown ] },
                       If[ AllTrue[ reps, pointQ[ graph, # ] & ], KeySort @ Counts @ reps, reps ] ] ) /@
@@ -244,10 +230,6 @@ InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <||>, opt
       ]
     ]
   ]
-
-
-(* ===================== Viewer chrome ===================== *)
-
 
 makeIcon[ icon_, roundedSide_: "both", widthFactor_: 1, heightFactor_: 1,
     background_: LightDarkSwitched[ GrayLevel[ .9 ], GrayLevel[ .3 ] ] ] :=
@@ -286,9 +268,6 @@ SetAttributes[ iconButton, HoldRest ]
 
 iconButton[ icon_, action_ ] :=
   MouseAppearance[ EventHandler[ icon, { "MouseClicked" :> action }, PassEventsUp -> False ], "LinkHand" ]
-
-
-(* ===================== The viewers' carriers ===================== *)
 
 geodesicGraph[ seq_List ] := PathGraph[ seq, DirectedEdges -> True ]
 geodesicGraph[ w_Graph ]  := w
