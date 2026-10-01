@@ -27,12 +27,6 @@ The substrate is the graph the observer lives on. InfraSubstrate names the examp
 - `TorusTessellation` the flat-torus graph carrying the square, triangular or hexagonal tessellation
 - **TessellationNeighborhoodGraph** — the radius-r ball cut from the infinite regular {p, q} tessellation, with its embedding
 
-### Maps behind the tessellations
-
-- **CosetEnumeration** — the Todd-Coxeter index of a subgroup of the von Dyck group D(p, q, 2)
-- **LowIndexMaps** — every {p, q} map of index at most maxIndex up to isomorphism, by low-index subgroup enumeration
-- **RotationMapGraph** — the 1-skeleton of the orientable map of a rotation pair {x, y}
-
 ### Uniform-length graphs
 
 - **UniformLengthGraph** — the contact graph of a hard-sphere packing relaxed in a region, filling a solid or meshing a surface

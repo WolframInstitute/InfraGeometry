@@ -1,5 +1,9 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+PackageScope[ CosetEnumeration ]
+PackageScope[ LowIndexMaps ]
+PackageScope[ RotationMapGraph ]
+
 Options[ TessellationGraph ] = { Method -> Automatic }
 
 TessellationGraph[ { p_Integer, q_Integer }, n_Integer : 1, opts : OptionsPattern[ { TessellationGraph, Graph } ] ] /;
