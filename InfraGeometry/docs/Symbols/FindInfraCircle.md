@@ -43,79 +43,97 @@ Corresponding notions in the classical axiom systems:
 
 ## Basic Examples
 
-A circle about the centre of a grid through a vertex two steps away, the band widened one step outward, drawn as a closed walk.
+A circle about the centre through a vertex two steps away, the band widened one step outward, drawn as a closed walk, beside its length.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {cyc = FindInfraCircle[g, 41, 23, "RadiusDelta" -> 1]},
-  {InfraSubstrateHighlight[g, {InfraWalk[Append[cyc, First @ cyc]] -> $InfraCircleColor, Directive[$InfraPointColor], 41, 23},
-     ImageSize -> 250],
-   Length @ cyc}]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
+  {closedWalk = FindInfraCircle[g, c, p, "RadiusDelta" -> 1]},
+  {InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]] -> $InfraCircleColor, Directive[$InfraPointColor], c, p}],
+   Length @ closedWalk}]
 ```
 
-At a single radius the circle exists on the irregular mesh and is empty on both lattices — the shell has no two adjacent vertices to make a cycle from.
+At a single radius the circle exists on the irregular mesh and is empty on both lattices: the shell has no two adjacent vertices to make a cycle from. Each picture shows the shell and the circles found in it, labelled by their number.
 
 ```wl
-Association @ Table[
-   name -> With[
-     {g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]},
-     {c = First @ GraphCenter[g]},
-     Length @ FindInfraCircle[g, c, "Radius" -> 4, All]],
-   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
+Row @ Table[
+  With[
+    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    {c = InfraCenter[g]},
+    {circles = FindInfraCircle[g, c, "Radius" -> 4, All]},
+    Labeled[
+      InfraSubstrateHighlight[g,
+        {FindInfraShell[g, c, 4] -> $InfraShellColor,
+         Table[Graph[DirectedEdge @@@ Partition[circle, 2, 1, 1]], {circle, circles}] -> $InfraCircleColor}],
+      Length @ circles]],
+  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```
 
-Thickening the radius to a band produces a genuine circle, and the thickness needed follows the girth: `{4, 5}` suffices on the square grid, while the hexagonal tiling needs `{4, 6}`.
+Thickening the radius to a band produces a genuine circle, and the thickness needed follows the girth: the hexagonal tiling needs the band `{4, 6}`.
 
 ```wl
-Association @ Table[
-   band -> With[
-     {g = InfraSubstrate["HexagonalTilingGraph", "Medium", "KeepCoordinates" -> True]},
-     {c = First @ GraphCenter[g]},
-     Length @ FindInfraCircle[g, c, "Radius" -> band, All]],
-   {band, {4, {4, 5}, {4, 6}}}]
+Row @ Table[
+  With[
+    {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
+    {c = InfraCenter[g]},
+    {circles = FindInfraCircle[g, c, "Radius" -> band, All]},
+    Labeled[
+      InfraSubstrateHighlight[g,
+        {FindInfraShell[g, c, band] -> $InfraShellColor,
+         Table[Graph[DirectedEdge @@@ Partition[circle, 2, 1, 1]], {circle, circles}] -> $InfraCircleColor}],
+      Length @ circles]],
+  {band, {4, {4, 5}, {4, 6}}}]
 ```
 
 A circle around the centre of each lattice, at the band each one needs, drawn as its directed cycle.
 
 ```wl
-Row[Table[
-   With[
-     {g = InfraSubstrate[First[spec], "Medium", "KeepCoordinates" -> True]},
-     {c = First @ GraphCenter[g]},
-     {circle = FindInfraCircle[g, c, "Radius" -> Last[spec]]},
-     Labeled[
-       InfraSubstrateHighlight[g,
-         {Graph[DirectedEdge @@@ Partition[circle, 2, 1, 1]] -> $InfraCircleColor, {c} -> $InfraPointColor},
-         "PointSizeRange" -> 15,
-         VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
-         ImageSize -> 250],
-       Text[First[spec] <> ", band " <> ToString[Last[spec]]]]],
-   {spec, {{"SquareTilingGraph", {4, 5}}, {"HexagonalTilingGraph", {4, 6}}}}]]
+GraphicsRow @ Table[
+  With[
+    {g = InfraSubstrate[First @ spec, "Small", "KeepCoordinates" -> True]},
+    {c = InfraCenter[g]},
+    {circle = FindInfraCircle[g, c, "Radius" -> Last @ spec]},
+    InfraSubstrateHighlight[g, {Graph[DirectedEdge @@@ Partition[circle, 2, 1, 1]] -> $InfraCircleColor, Directive[$InfraPointColor], c},
+      "Arrowheads" -> True]],
+  {spec, {{"SquareTilingGraph", {4, 5}}, {"HexagonalTilingGraph", {4, 6}}, {"TriangularTilingGraph", 4}}}]
 ```
 
 ## Scope
 
-Sixteen circles lie in the band `{2, 4}` around the centre of a 9 × 9 grid. A bounded count gives a list, and a strict count that cannot be met is `$Failed`.
+The band `{2, 4}` around the centre of the square tiling, every circle in it drawn at once. A bounded count gives a list, and a strict count that cannot be met is `$Failed`.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {Length @ FindInfraCircle[g, 41, "Radius" -> {2, 4}, All],
-   Length @ FindInfraCircle[g, 41, "Radius" -> {2, 4}, 3],
-   FindInfraCircle[g, 41, "Radius" -> {2, 4}, 20]}]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {circles = FindInfraCircle[g, c, "Radius" -> {2, 4}, All]},
+  {InfraSubstrateHighlight[g, {Table[Graph[DirectedEdge @@@ Partition[circle, 2, 1, 1]], {circle, circles}] -> $InfraCircleColor}],
+   Length @ circles, Length @ FindInfraCircle[g, c, "Radius" -> {2, 4}, 3], FindInfraCircle[g, c, "Radius" -> {2, 4}, 20]}]
 ```
 
 The count-less call is one circle, the same every time.
 
 ```wl
-FindInfraCircle[GridGraph[{9, 9}], 41, "Radius" -> {2, 4}]
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {closedWalk = FindInfraCircle[g, c, "Radius" -> {2, 4}]},
+  {InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]] -> $InfraCircleColor, Directive[$InfraPointColor], c}],
+   closedWalk}]
 ```
 
-The point form: a circle through a vertex at distance 2 from the centre of a 5 × 5 grid, the band widened one step outward.
+The point form on the triangular tiling: a circle through a vertex at distance 2 from the centre.
 
 ```wl
-FindInfraCircle[GridGraph[{5, 5}], 13, 7, "RadiusDelta" -> 1]
+With[
+  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
+  {closedWalk = FindInfraCircle[g, c, p]},
+  {InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]] -> $InfraCircleColor, Directive[$InfraPointColor], c, p}],
+   closedWalk}]
 ```
 
 ## Properties and Relations
@@ -124,16 +142,21 @@ A circle lies in its band, and its last vertex is adjacent to its first.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {circle = FindInfraCircle[g, 41, "Radius" -> {2, 4}]},
-  {SubsetQ[FindInfraShell[g, 41, {2, 4}], circle], EdgeQ[g, UndirectedEdge[Last @ circle, First @ circle]]}]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {band = FindInfraShell[g, c, {2, 4}]},
+  {closedWalk = FindInfraCircle[g, c, "Radius" -> {2, 4}]},
+  {InfraSubstrateHighlight[g, {band -> $InfraShellColor, InfraWalk[Append[closedWalk, First @ closedWalk]] -> $InfraCircleColor}],
+   SubsetQ[band, closedWalk], EdgeQ[g, UndirectedEdge[Last @ closedWalk, First @ closedWalk]]}]
 ```
 
 The search finds as many circles as the head counts.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {Length @ FindInfraCircle[g, 41, "Radius" -> {2, 4}, All],
-   InfraMeasurement[g, InfraCircle[41, "Radius" -> {2, 4}], "Cardinality"]}]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {circle = InfraCircle[c, "Radius" -> {2, 4}]},
+  {InfraSubstrateHighlight[g, {circle -> $InfraCircleColor, Directive[$InfraPointColor], c}],
+   Length @ FindInfraCircle[g, c, "Radius" -> {2, 4}, All], InfraMeasurement[g, circle, "Cardinality"]}]
 ```

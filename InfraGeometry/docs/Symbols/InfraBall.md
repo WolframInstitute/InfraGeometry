@@ -26,23 +26,24 @@ Balls are the probe of the volume measurements. [BallVolumes]() counts them at e
 
 ## Basic Examples
 
-A ball of radius 2 about the centre of a grid and the shell of radius 2 about a point two steps away. They meet in three vertices, one per branch.
+A ball of radius 2 about the centre and the shell of radius 2 about a point two steps away. They meet in a few vertices, one per branch.
 
 ```wl
 ClearAll[pA, pB, ballA, shellB, meet];
 With[
-  {g = GridGraph[{9, 9}]},
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
   {constr = InfraScene[{pA, pB, ballA, shellB, meet},
-     {pA == InfraPoint[41], pB == InfraPoint[43],
+     {pA == InfraPoint[c], pB == InfraPoint[b],
       ballA == InfraBall[pA, 2], shellB == InfraShell[pB, 2],
       meet == InfraIntersection[ballA, shellB]}]},
-  With[{solved = FindInfraScene[constr, g]},
-    InfraSubstrateHighlight[g,
-      Join[{InfraSceneInstance[First @ solved, ballA] -> $InfraBallColor,
-            InfraSceneInstance[First @ solved, shellB] -> $InfraCircleColor,
-            Directive[$InfraPointColor]},
-        InfraSceneInstance[#, meet] & /@ solved],
-      ImageSize -> 250]]]
+  {solved = FindInfraScene[constr, g]},
+  InfraSubstrateHighlight[g,
+    Join[{InfraSceneInstance[First @ solved, ballA] -> $InfraBallColor,
+          InfraSceneInstance[First @ solved, shellB] -> $InfraShellColor,
+          Directive[$InfraPointColor]},
+      InfraSceneInstance[#, meet] & /@ solved]]]
 ```
 
 The ball bound in the scene is the one [FindInfraBall]() computes.
@@ -50,19 +51,25 @@ The ball bound in the scene is the one [FindInfraBall]() computes.
 ```wl
 ClearAll[pA, ballA];
 With[
-  {g = GridGraph[{9, 9}]},
-  {constr = InfraScene[{pA, ballA}, {pA == InfraPoint[41], ballA == InfraBall[pA, 2]}]},
-  InfraSceneInstance[First @ FindInfraScene[constr, g], ballA] === FindInfraBall[g, 41, 2]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {constr = InfraScene[{pA, ballA}, {pA == InfraPoint[c], ballA == InfraBall[pA, 2]}]},
+  {ball = InfraSceneInstance[First @ FindInfraScene[constr, g], ballA]},
+  {InfraSubstrateHighlight[g, {ball -> $InfraBallColor, Directive[$InfraPointColor], c}],
+   ball === FindInfraBall[g, c, 2]}]
 ```
 
 ## Properties and Relations
 
-A ball about a point that is itself a choice gives one ball per choice: here one for each of the eight vertices at distance 2 from the centre.
+A ball about a point that is itself a choice gives one ball per choice: here one for each vertex at distance 2 from the centre. The balls are drawn summed, with the size of each.
 
 ```wl
 ClearAll[pA, pB, ballB];
 With[
-  {g = GridGraph[{9, 9}]},
-  {constr = InfraScene[{pA, pB, ballB}, {pA == InfraPoint[41], pB == InfraPoint[pA, 2], ballB == InfraBall[pB, 1]}]},
-  Length /@ (InfraSceneInstance[#, ballB] & /@ FindInfraScene[constr, g])]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {constr = InfraScene[{pA, pB, ballB}, {pA == InfraPoint[c], pB == InfraPoint[pA, 2], ballB == InfraBall[pB, 1]}]},
+  {balls = InfraSceneInstance[#, ballB] & /@ FindInfraScene[constr, g]},
+  {InfraSubstrateHighlight[g, {balls -> $InfraBallColor, Directive[$InfraPointColor], c}],
+   Length /@ balls}]
 ```

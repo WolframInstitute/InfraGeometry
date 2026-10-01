@@ -22,50 +22,54 @@ Unlike [InfraSegmentQ]() or [InfraLineQ](), which test *path* against the genera
 
 ## Basic Examples
 
-Two walks from the centre of a grid to a vertex two steps up and two across: a geodesic, which is a member of the segment, and a detour of length 6, which is not.
+Two walks from the centre to a vertex four steps away: a shortest path, which is a member of the segment, and a detour through a third vertex, which is not.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {seg = InfraSegment[41, 61]},
-  {member = {41, 42, 51, 52, 61}, detour = {41, 42, 43, 44, 53, 62, 61}},
-  {InfraSubstrateHighlight[g, {InfraWalk[member], InfraWalk[detour], Directive[$InfraPointColor], 41, 61}, ImageSize -> 250],
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {x = (SeedRandom[7]; RandomInfraPoint[g, a, 3])},
+  {seg = InfraSegment[a, b]},
+  {member = InfraVertexList[g, seg]},
+  {detour = InfraVertexList[g, InfraSegment[a, x, b]]},
+  {InfraSubstrateHighlight[g, {InfraWalk[member], InfraWalk[detour], Directive[$InfraPointColor], a, b}],
    InfraMemberQ[g, seg, member], InfraMemberQ[g, seg, detour]}]
 ```
 
-A geodesic found independently by `FindInfraSegment` is a member of the matching segment head; an arbitrary longer walk between the same endpoints is not.
+A shortest path found independently by [FindInfraSegment]() is a member of the matching segment head.
 
 ```wl
 With[
-  {g = GridGraph[{5, 5}]},
-  {seg = InfraSegment[7, 19]},
-  InfraMemberQ[g, seg, FindInfraSegment[g, 7, 19]]
-]
-```
-
-```wl
-With[
-  {g = GridGraph[{5, 5}]},
-  {seg = InfraSegment[7, 19]},
-  InfraMemberQ[g, seg, {7, 2, 3, 8, 13, 18, 19}]
-]
+  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 5])},
+  {onePath = FindInfraSegment[g, a, b]},
+  {InfraSubstrateHighlight[g, {InfraSegment[a, b], InfraWalk[onePath]}], InfraMemberQ[g, InfraSegment[a, b], onePath]}]
 ```
 
 A circle's member is recognised up to rotation and direction.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {circle = InfraCircle[41, "Radius" -> {2, 4}]},
-  InfraMemberQ[g, circle, RotateLeft[Reverse @ InfraVertexList[g, circle], 3]]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {circle = InfraCircle[c, "Radius" -> {2, 4}]},
+  {turned = RotateLeft[Reverse @ InfraVertexList[g, circle], 3]},
+  {InfraSubstrateHighlight[g, {InfraWalk[Append[turned, First @ turned]] -> $InfraCircleColor, Directive[$InfraPointColor], c}, "Arrowheads" -> True],
+   InfraMemberQ[g, circle, turned]}]
 ```
 
 ## Properties and Relations
 
-A geodesic between other points is a segment, but not a member of this one.
+A shortest path between other points is a segment, but not a member of this one.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {InfraSegmentQ[g, {41, 42, 43}], InfraMemberQ[g, InfraSegment[41, 61], {41, 42, 43}]}]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {other = InfraVertexList[g, InfraSegment[a, First @ AdjacencyList[g, a]]]},
+  {InfraSubstrateHighlight[g, {InfraSegment[a, b], InfraWalk[other]}],
+   InfraSegmentQ[g, other], InfraMemberQ[g, InfraSegment[a, b], other]}]
 ```

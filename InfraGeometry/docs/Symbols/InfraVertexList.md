@@ -29,59 +29,61 @@ Two modifiers, given after the count:
 
 ## Basic Examples
 
-A uniformly random geodesic of a segment, drawn over the whole family. `SeedRandom` in front fixes the draw.
+A uniformly random shortest path of a segment, drawn over the whole family. `SeedRandom` in front fixes the draw.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {seg = InfraSegment[41, 61]},
-  SeedRandom[3];
-  With[{picks = InfraVertexList[g, seg, 1, "RandomChoice"]},
-    {InfraSubstrateHighlight[g, {seg, InfraWalk[First @ picks]}, ImageSize -> 250], picks}]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {seg = InfraSegment[a, b]},
+  {pick = (SeedRandom[3]; First @ InfraVertexList[g, seg, 1, "RandomChoice"])},
+  {InfraSubstrateHighlight[g, {seg, InfraWalk[pick]}], pick}]
 ```
 
-One geodesic, then every geodesic, of a segment on a grid.
+One member of a segment is one shortest path.
 
 ```wl
 With[
-  {g = GridGraph[{5, 5}]},
-  {seg = InfraSegment[7, 19]},
-  InfraVertexList[g, seg]
-]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {member = InfraVertexList[g, InfraSegment[a, b]]},
+  {InfraSubstrateHighlight[g, {InfraWalk[member], Directive[$InfraPointColor], a, b}], member}]
 ```
 
-```wl
-With[
-  {g = GridGraph[{5, 5}]},
-  {seg = InfraSegment[7, 19]},
-  Length @ InfraVertexList[g, seg, All]
-]
-```
-
-A uniformly random geodesic, reproducible by seed.
+Every member at once, and their number.
 
 ```wl
 With[
-  {g = GridGraph[{5, 5}]},
-  {seg = InfraSegment[7, 19]},
-  SeedRandom[1];
-  InfraVertexList[g, seg, 1, "RandomChoice"]
-]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {members = InfraVertexList[g, InfraSegment[a, b], All]},
+  {GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], Directive[$InfraPointColor], a, b}], {member, members}],
+   Length @ members}]
 ```
 
 A closed count that cannot be met is `$Failed`; `UpTo` takes what there is.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {seg = InfraSegment[41, 61]},
-  {InfraVertexList[g, seg, 7], Length @ InfraVertexList[g, seg, UpTo[7]]}]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {seg = InfraSegment[a, b]},
+  {InfraSubstrateHighlight[g, {InfraVertexList[g, seg, UpTo[20]]}],
+   InfraVertexList[g, seg, 20], Length @ InfraVertexList[g, seg, UpTo[20]]}]
 ```
 
-A member of a circle is a cyclic vertex list: the closing edge is implicit.
+A member of a circle is a cyclic vertex list: the closing edge is implicit, and drawn as a walk it is added back.
 
 ```wl
-InfraVertexList[GridGraph[{9, 9}], InfraCircle[41, "Radius" -> {2, 4}]]
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {closedWalk = InfraVertexList[g, InfraCircle[c, "Radius" -> {2, 4}]]},
+  {InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]] -> $InfraCircleColor, Directive[$InfraPointColor], c}], closedWalk}]
 ```
 
 ## Properties and Relations
@@ -90,8 +92,11 @@ Every member is a member, and there are as many as the head counts.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {seg = InfraSegment[41, 61]},
-  With[{picks = InfraVertexList[g, seg, All]},
-    {AllTrue[picks, InfraMemberQ[g, seg, #] &], Length @ picks === InfraMeasurement[g, seg, "Cardinality"]}]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {seg = InfraSegment[a, b]},
+  {members = InfraVertexList[g, seg, All]},
+  {InfraSubstrateHighlight[g, {members}],
+   AllTrue[members, InfraMemberQ[g, seg, #] &], Length @ members === InfraMeasurement[g, seg, "Cardinality"]}]
 ```

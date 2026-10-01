@@ -60,30 +60,38 @@ Options:
 The shell of radius 4 about the centre, on the discretized plane, the square tiling and the hexagonal tiling. The same definition gives three different shapes.
 
 ```wl
+Row @ Table[
+  With[
+    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    {c = InfraCenter[g]},
+    Labeled[InfraSubstrateHighlight[g, {FindInfraShell[g, c, 4], c}], name]],
+  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
+```
+
+One substrate of each of the first four classes, labelled by the number of substrates in the class.
+
+```wl
 Row[Table[
-   With[
-     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-     {c = InfraCenter[g]},
-     Labeled[InfraSubstrateHighlight[g, {FindInfraShell[g, c, 4], c}, ImageSize -> 200], name]],
-   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
+  Labeled[InfraSubstrate[First @ InfraSubstrate[][class], "Small"], class <> ": " <> ToString[Length @ InfraSubstrate[][class]]],
+  {class, {"OpenManifold", "ClosedManifold", "Fractal", "Exotic"}}], Spacer[20]]
 ```
 
-The number of substrates in each class.
+The three sizes of the square tiling, labelled by their number of vertices.
 
 ```wl
-Normal[Length /@ InfraSubstrate[]]
-```
-
-The three sizes of the square tiling.
-
-```wl
-Table[VertexCount @ InfraSubstrate["SquareTilingGraph", size], {size, {"Small", "Medium", "Large"}}]
+Row @ Table[
+  With[
+    {g = InfraSubstrate["SquareTilingGraph", size, "KeepCoordinates" -> True]},
+    Labeled[g, VertexCount[g]]],
+  {size, {"Small", "Medium", "Large"}}]
 ```
 
 A raw size: the square tiling cut at radius 5.
 
 ```wl
-VertexCount @ InfraSubstrate["SquareTilingGraph", 5]
+With[
+  {g = InfraSubstrate["SquareTilingGraph", 5, "KeepCoordinates" -> True]},
+  {g, VertexCount[g]}]
 ```
 
 ## Options
@@ -93,9 +101,9 @@ VertexCount @ InfraSubstrate["SquareTilingGraph", 5]
 By default the discretized square is laid out by springs. With `"KeepCoordinates" -> True` it is drawn in the unit square it was cut from.
 
 ```wl
-Row[{
-  InfraSubstrate["SquareMeshGraph", "Small", ImageSize -> 200],
-  InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True, ImageSize -> 200]}]
+GraphicsRow[{
+  InfraSubstrate["SquareMeshGraph", "Small"],
+  InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}]
 ```
 
 ## Properties and Relations
@@ -103,6 +111,7 @@ Row[{
 The square torus substrate is the [TorusTessellation]() graph, placed in space.
 
 ```wl
-Sort @ EdgeList @ InfraSubstrate["SquareTorusGraph", "Small"] ===
-  Sort @ EdgeList @ TorusTessellation[{10, 10}, "Square"]
+With[
+  {g = InfraSubstrate["SquareTorusGraph", "Small"]},
+  {g, Sort @ EdgeList[g] === Sort @ EdgeList @ TorusTessellation[{10, 10}, "Square"]}]
 ```

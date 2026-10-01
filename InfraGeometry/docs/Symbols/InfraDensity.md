@@ -37,30 +37,38 @@ It is the raw marginal and takes no options. The two normalisations are one divi
 
 ## Basic Examples
 
-The six geodesics from the centre of a grid to a vertex two steps up and two across, as a density: both end points are covered six times, the middle vertex four times. Each vertex is drawn as large as its mass.
+The shortest paths from the centre to a vertex four steps away, as a density: both end points are covered by every path, the middle vertices by fewer. Each vertex is drawn as large as its mass.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {dens = InfraDensity[g, FindInfraSegment[g, 41, 61, All]]},
-  {InfraSubstrateHighlight[g, dens, "PointSizeRange" -> {4, 16}, ImageSize -> 250], dens}]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {density = InfraDensity[g, FindInfraSegment[g, a, b, All]]},
+  {InfraSubstrateHighlight[g, {density}, "PointSizeRange" -> {4, 16}], density}]
 ```
 
 A vertex, a vertex list with a repeat, and a density.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {InfraDensity[g, 41], InfraDensity[g, {42, 41, 42}], InfraDensity[g, <|42 -> 2, 41 -> 1|>]}]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = First @ AdjacencyList[g, a]},
+  {densities = {InfraDensity[g, a], InfraDensity[g, {b, a, b}], InfraDensity[g, <|b -> 2, a -> 1|>]}},
+  {GraphicsRow @ Table[InfraSubstrateHighlight[g, {density}, "PointSizeRange" -> {4, 16}], {density, densities}], densities}]
 ```
 
-The two normalisations.
+The two normalisations: by the heaviest mass, which the drawing uses, and by the total mass, a probability.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {dens = InfraDensity[g, FindInfraSegment[g, 41, 61, All]]},
-  {dens[51] / Max[dens], Total[dens / Total[dens]]}]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {density = InfraDensity[g, FindInfraSegment[g, a, b, All]]},
+  {InfraSubstrateHighlight[g, {density / Max[density]}, "PointSizeRange" -> {4, 16}],
+   Max[density / Max[density]], Total[density / Total[density]]}]
 ```
 
 ## Properties and Relations
@@ -69,20 +77,33 @@ The density of a head's members is the head's `"VertexDensity"`, and so is the d
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {seg = InfraSegment[41, 61]},
-  {InfraDensity[g, InfraVertexList[g, seg, All]] === InfraMeasurement[g, seg, "VertexDensity"],
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {seg = InfraSegment[a, b]},
+  {InfraSubstrateHighlight[g, {InfraDensity[g, InfraVertexList[g, seg, All]]}, "PointSizeRange" -> {4, 16}],
+   InfraDensity[g, InfraVertexList[g, seg, All]] === InfraMeasurement[g, seg, "VertexDensity"],
    InfraDensity[g, InfraMeasurement[g, seg, "Graph"]] === InfraMeasurement[g, seg, "VertexDensity"]}]
 ```
 
-A head itself is not read.
+A head itself is not read: the call stays unevaluated, while the drawing reads the head's densities.
 
 ```wl
-InfraDensity[GridGraph[{9, 9}], InfraSegment[41, 61]]
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {seg = InfraSegment[a, b]},
+  {InfraSubstrateHighlight[g, {seg}], InfraDensity[g, seg]}]
 ```
 
-[FindInfraMidpoint]() returns a density: the number of geodesics centred at each vertex.
+[FindInfraMidpoint]() returns a density: the number of shortest paths centred at each vertex.
 
 ```wl
-FindInfraMidpoint[GridGraph[{9, 9}], 41, 61]
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {midpoint = FindInfraMidpoint[g, a, b]},
+  {InfraSubstrateHighlight[g, {InfraSegment[a, b], midpoint}], midpoint}]
 ```

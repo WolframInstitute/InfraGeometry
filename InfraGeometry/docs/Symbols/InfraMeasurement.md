@@ -45,44 +45,61 @@ On a polyline <code>[InfraSegment]()[*p1*, …, *pk*]</code> the densities are n
 
 ## Basic Examples
 
-The segment between the centre of a grid and a vertex two steps up and two across, drawn by its densities: six geodesics of length 4, and four of them pass the vertex in the middle.
+A segment from the centre to a vertex four steps away, drawn by its densities, beside its number of shortest paths and their length.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {seg = InfraSegment[41, 61]},
-  {InfraSubstrateHighlight[g, {seg, Directive[$InfraPointColor], 41, 61}, ImageSize -> 250],
-   InfraMeasurement[g, seg, {"Cardinality", "Length"}], InfraMeasurement[g, seg, "VertexDensity"][51]}]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {seg = InfraSegment[a, b]},
+  {InfraSubstrateHighlight[g, {seg, Directive[$InfraPointColor], a, b}],
+   InfraMeasurement[g, seg, "Cardinality"], InfraMeasurement[g, seg, "Length"]}]
 ```
 
-The graph of the same segment: its source-to-sink chains are the six geodesics.
-
-```wl
-InfraMeasurement[GridGraph[{9, 9}], InfraSegment[41, 61], "Graph"]
-```
-
-The segment between two vertices of a grid: its cardinality, length, and every property at once.
+The graph of the same segment: its source-to-sink chains are the shortest paths.
 
 ```wl
 With[
-  {g = GridGraph[{5, 5}]},
-  {seg = InfraSegment[7, 19]},
-  InfraMeasurement[g, seg, {"Cardinality", "Length"}]
-]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  InfraMeasurement[g, InfraSegment[a, b], "Graph"]]
 ```
+
+The vertex density drawn alone, and the graph of the segment drawn on the substrate.
 
 ```wl
 With[
-  {g = GridGraph[{5, 5}]},
-  {seg = InfraSegment[7, 19]},
-  InfraMeasurement[g, seg, All]
-]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {seg = InfraSegment[a, b]},
+  GraphicsRow[{
+    InfraSubstrateHighlight[g, {InfraMeasurement[g, seg, "VertexDensity"]}],
+    InfraSubstrateHighlight[g, {InfraMeasurement[g, seg, "Graph"]}]}]]
+```
+
+Every property at once, here named beside the subgraph the segment occupies.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {all = InfraMeasurement[g, InfraSegment[a, b], All]},
+  {InfraSubstrateHighlight[g, {all["Subgraph"]}], Keys @ all}]
 ```
 
 A list of heads is measured head by head.
 
 ```wl
-InfraMeasurement[GridGraph[{9, 9}], {InfraSegment[41, 61], InfraCircle[41, "Radius" -> {2, 4}]}, "Cardinality"]
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {heads = {InfraSegment[a, b], InfraCircle[a, "Radius" -> {2, 4}]}},
+  {InfraSubstrateHighlight[g, heads], InfraMeasurement[g, heads, "Cardinality"]}]
 ```
 
 ## Properties and Relations
@@ -91,16 +108,23 @@ The support is the key set of the vertex density, and its size is the `"Volume"`
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {seg = InfraSegment[41, 61]},
-  Length @ InfraMeasurement[g, seg, "VertexDensity"] === InfraMeasurement[g, seg, "Volume"]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {seg = InfraSegment[a, b]},
+  {support = Keys @ InfraMeasurement[g, seg, "VertexDensity"]},
+  {InfraSubstrateHighlight[g, {support}], Length @ support === InfraMeasurement[g, seg, "Volume"]}]
 ```
 
-An intersection of two heads has no members, only a support and a density, the product of the two.
+An intersection of two heads has no members, only a support and a density, the product of the two. The segment and the circles, then their intersection.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {x = InfraIntersection[InfraSegment[41, 61], InfraCircle[41, "Radius" -> {2, 4}]]},
-  {Keys @ InfraMeasurement[g, x, All], InfraMeasurement[g, x, "VertexDensity"]}]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {seg = InfraSegment[a, b]},
+  {circle = InfraCircle[a, "Radius" -> {2, 4}]},
+  {density = InfraMeasurement[g, InfraIntersection[seg, circle], "VertexDensity"]},
+  {GraphicsRow[{InfraSubstrateHighlight[g, {seg, circle}], InfraSubstrateHighlight[g, {density}]}], density}]
 ```

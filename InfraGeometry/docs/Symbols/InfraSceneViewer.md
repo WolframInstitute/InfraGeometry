@@ -42,41 +42,36 @@ For a static figure, solve the steps yourself with [FindInfraScene]() and lay th
 
 ## Basic Examples
 
-Build a scene and open the viewer on it. The result is a `Manipulate`.
+Build a scene and open the viewer on it. The slider steps through the construction.
 
 ```wl
 ClearAll[a, b, cA, cB, u];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
-  {p1 = First @ GraphCenter[g]},
-  {p2 = SelectFirst[VertexList[g], GraphDistance[g, p1, #] == 4 &]},
+  {p1 = InfraCenter[g]},
+  {p2 = (SeedRandom[1]; RandomInfraPoint[g, p1, 4])},
   {scene = InfraScene[{a, b, cA, cB, u},
      {InfraStep[{a == InfraPoint[p1]}, "point a"],
       InfraStep[{b == InfraPoint[p2]}, "point b"],
       InfraStep[{cA == InfraCircle[a, 4]}, "circle around a"],
       InfraStep[{cB == InfraCircle[b, 4]}, "circle around b"],
       InfraStep[{u == InfraIntersection[cA, cB]}, "they meet"]}]},
-  Head @ InfraSceneViewer[scene, g]]
+  InfraSceneViewer[scene, g]]
 ```
 
-The first three steps as stills: the two points, then the circle about the first. This is what the viewer shows as you step, drawn without the interface.
+The first steps as stills: the two points, then the circle about the first. This is what the viewer shows as you step, drawn without the interface.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
-  {p1 = First @ GraphCenter[g]},
-  {p2 = SelectFirst[VertexList[g], GraphDistance[g, p1, #] == 4 &]},
+  {p1 = InfraCenter[g]},
+  {p2 = (SeedRandom[1]; RandomInfraPoint[g, p1, 4])},
+  {circles = FindInfraCircle[g, p1, "Radius" -> 4, All]},
   Row[{
-    Labeled[
-      InfraSubstrateHighlight[g, {{p1, p2} -> $InfraPointColor},
-        "PointSizeRange" -> 18,
-        VertexShapeFunction -> ({AbsolutePointSize[2], Point[#]} &), ImageSize -> 250],
-      Text["points a and b"]],
+    Labeled[InfraSubstrateHighlight[g, {{p1, p2} -> $InfraPointColor}], "points a and b"],
     Labeled[
       InfraSubstrateHighlight[g,
-        {(Graph[DirectedEdge @@@ Partition[#, 2, 1, 1]] & /@ FindInfraCircle[g, p1, "Radius" -> 4, All]) -> $InfraCircleColor,
-         {p1, p2} -> $InfraPointColor},
-        "PointSizeRange" -> 18,
-        VertexShapeFunction -> ({AbsolutePointSize[2], Point[#]} &), ImageSize -> 250],
-      Text["circle around a"]]}]]
+        {Table[Graph[DirectedEdge @@@ Partition[circle, 2, 1, 1]], {circle, circles}] -> $InfraCircleColor,
+         {p1, p2} -> $InfraPointColor}],
+      "circle around a"]}]]
 ```

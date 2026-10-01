@@ -51,56 +51,50 @@ Corresponding notions in the classical axiom systems:
 
 ## Basic Examples
 
-One point is a vertex; the calling triple gives a list of them.
+One point is a vertex. `SeedRandom` in front fixes the draw.
 
 ```wl
-SeedRandom[1];
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {FindInfraPoint[g], Length @ FindInfraPoint[g, All], VertexCount[g]}]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {p = (SeedRandom[1]; FindInfraPoint[g])},
+  {InfraSubstrateHighlight[g, {p}], p}]
 ```
 
-`"From"` selects the metrically special vertices. Here the centre is one vertex and the periphery is many.
+The calling triple gives a list of vertices: here five of them.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  <|"centre" -> FindInfraPoint[g, All, "From" -> "Center"],
-    "periphery count" -> Length @ FindInfraPoint[g, All, "From" -> "Periphery"]|>]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {points = (SeedRandom[1]; FindInfraPoint[g, 5])},
+  {InfraSubstrateHighlight[g, {points}], points}]
 ```
 
-Centre and periphery drawn together. The periphery of a patch is its rim.
+`"From"` selects the metrically special vertices. The centre is one vertex, and the periphery of a patch is its rim.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  InfraSubstrateHighlight[g,
-    {FindInfraPoint[g, All, "From" -> "Periphery"] -> $InfraShellColor,
-     FindInfraPoint[g, All, "From" -> "Center"] -> $InfraPointColor},
-    "PointSizeRange" -> 16,
-    VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
-    ImageSize -> 340]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {centre = FindInfraPoint[g, All, "From" -> "Center"]},
+  {periphery = FindInfraPoint[g, All, "From" -> "Periphery"]},
+  {InfraSubstrateHighlight[g, {periphery -> $InfraShellColor, centre -> $InfraPointColor}],
+   centre, Length @ periphery}]
 ```
 
 Keeping a draw off the rim. The balls are a nested family, so `q` reads directly as the fraction of the way out a point is allowed to sit.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   InfraSubstrateHighlight[g,
     {VertexList @ CenterGraph[g, 0.8] -> $InfraShellColor,
-     VertexList @ CenterGraph[g, 0.4] -> $InfraPointColor},
-    "PointSizeRange" -> 16,
-    VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
-    ImageSize -> 340]]
+     VertexList @ CenterGraph[g, 0.4] -> $InfraPointColor}]]
 ```
 
-A tuple of three mutually most-distant points comes back as three vertices.
+A tuple of three mutually most-distant points.
 
 ```wl
-SeedRandom[1];
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {t = FindInfraPoint[g, 3, "Distance" -> "Max"]},
-  <|"count" -> Length[t], "vertices" -> t|>]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {corners = (SeedRandom[1]; FindInfraPoint[g, 3, "Distance" -> "Max"])},
+  {InfraSubstrateHighlight[g, {corners}], corners}]
 ```

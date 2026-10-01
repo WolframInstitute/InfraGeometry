@@ -50,49 +50,63 @@ A scalar is the value at full strength. A pair is an envelope, interpolated by s
 
 ## Basic Examples
 
-Three heads, in palette order.
+Three heads, in palette order: a segment, a circle and an arc.
 
 ```wl
-With[{g = GridGraph[{21, 21}]},
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 5])},
+  {q = (SeedRandom[2]; RandomInfraPoint[g, c, 5])},
   InfraSubstrateHighlight[g,
-    {InfraSegment[221, 226], InfraCircle[221, 226, "RadiusDelta" -> 1],
-     InfraArc[221, {226, 116}, "RadiusDelta" -> 1]}]]
+    {InfraSegment[c, p], InfraCircle[c, p, "RadiusDelta" -> 1], InfraArc[c, {p, q}, "RadiusDelta" -> 1]}]]
 ```
 
 A `Directive` colors the objects after it.
 
 ```wl
-With[{g = GridGraph[{21, 21}]},
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 5])},
   InfraSubstrateHighlight[g,
-    {FindInfraBall[g, 221, 3], Directive[$InfraCircleColor],
-     InfraCircle[221, 226, "RadiusDelta" -> 1]}]]
+    {FindInfraBall[g, c, 3], Directive[$InfraCircleColor], InfraCircle[c, p, "RadiusDelta" -> 1]}]]
 ```
 
-Overlaps add. The two segments share the edge at their start and blend there. The walk is one stroke.
+Overlaps add. The two segments share their start and blend there. The walk is one stroke.
 
 ```wl
-With[{g = GridGraph[{21, 21}]},
-  InfraSubstrateHighlight[g,
-    {InfraSegment[221, 266], InfraSegment[221, 180],
-     InfraWalk[{215, 216, 217, 238, 259, 260, 261}]},
-    "Arrowheads" -> True]]
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 5])},
+  {q = (SeedRandom[2]; RandomInfraPoint[g, c, 5])},
+  {walk = InfraVertexList[g, InfraSegment[p, q]]},
+  InfraSubstrateHighlight[g, {InfraSegment[c, p], InfraSegment[c, q], InfraWalk[walk]}, "Arrowheads" -> True]]
 ```
 
 ## Properties and Relations
 
-The palette is Jeremy's strike-out sequence.
-
-```wl
-Take[$InfraStrikeOutPalette, 3]
-```
-
-A list of vertex lists is one object, the sum of its members: here the six geodesics of a segment, which draw as the head does.
+The palette is Jeremy's strike-out sequence: three segments drawn in its first three colours.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {InfraSubstrateHighlight[g, {InfraVertexList[g, InfraSegment[41, 61], All]}, ImageSize -> 250],
-   InfraSubstrateHighlight[g, {InfraSegment[41, 61]}, ImageSize -> 250]}]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {ends = (SeedRandom[1]; FindInfraPoint[g, 3, "From" -> c -> 5])},
+  {InfraSubstrateHighlight[g, Table[InfraSegment[c, end], {end, ends}]], Take[$InfraStrikeOutPalette, 3]}]
+```
+
+A list of vertex lists is one object, the sum of its members: here the shortest paths of a segment, which draw as the head does.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  GraphicsRow[{
+    InfraSubstrateHighlight[g, {InfraVertexList[g, InfraSegment[a, b], All]}],
+    InfraSubstrateHighlight[g, {InfraSegment[a, b]}]}]]
 ```
 
 A list of heads is one object too: two crossing segments in one color.

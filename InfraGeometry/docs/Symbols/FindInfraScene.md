@@ -32,49 +32,60 @@ Option `"PruneProbability" -> q` drops each branch with probability *q* after ev
 
 ## Basic Examples
 
-A point, a second point two steps from it, and the segment between them, solved on a grid: eight choices of the second point and one or two geodesics to each, twelve instances in all. Their segments, summed, cover the ball of radius 2.
+A point, a second point two steps from it, and the segment between them, solved on the square tiling: one instance per choice of the second point and of the shortest path to it. Their segments, summed, cover the ball of radius 2.
 
 ```wl
 ClearAll[pA, pB, seg1];
 With[
-  {g = GridGraph[{9, 9}]},
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
   {scene = InfraScene[{pA, pB, seg1},
-     {pA == InfraPoint[41], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
-  With[{solved = FindInfraScene[scene, g]},
-    {InfraSubstrateHighlight[g, {InfraSceneInstance[#, seg1] & /@ solved, Directive[$InfraPointColor], 41}, ImageSize -> 250],
-     Length @ solved}]]
+     {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
+  {solved = FindInfraScene[scene, g]},
+  {InfraSubstrateHighlight[g, {InfraSceneInstance[#, seg1] & /@ solved, Directive[$InfraPointColor], c}],
+   Length @ solved}]
 ```
 
-One instance.
+One instance, and its segment drawn.
 
 ```wl
 ClearAll[pA, pB, seg1];
 With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
   {scene = InfraScene[{pA, pB, seg1},
-     {pA == InfraPoint[41], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
-  First @ FindInfraScene[scene, GridGraph[{9, 9}]]]
+     {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
+  {instance = First @ FindInfraScene[scene, g]},
+  {InfraSubstrateHighlight[g, {InfraSceneInstance[instance, seg1], Directive[$InfraPointColor], c}], instance}]
 ```
 
 ## Scope
 
-The steps are read off the dependencies, one object each here. Solving the first two gives the eight choices of the second point, with no segment yet.
+The steps are read off the dependencies, one object each here. Solving the first two gives the choices of the second point, with no segment yet: the shell of radius 2.
 
 ```wl
 ClearAll[pA, pB, seg1];
 With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
   {scene = InfraScene[{pA, pB, seg1},
-     {pA == InfraPoint[41], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
-  {scene["Steps"], Length @ FindInfraScene[scene, GridGraph[{9, 9}], 2]}]
+     {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
+  {points = InfraSceneInstance[#, pB] & /@ FindInfraScene[scene, g, 2]},
+  {InfraSubstrateHighlight[g, {points, Directive[$InfraPointColor], c}], scene["Steps"], Length @ points}]
 ```
 
-Fixing the second point in advance leaves only the segment to choose: the six geodesics from 41 to 61.
+Fixing the second point in advance leaves only the segment to choose: one instance per shortest path.
 
 ```wl
 ClearAll[pA, pB, seg1];
 With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
   {scene = InfraScene[{pA, pB, seg1},
-     {pA == InfraPoint[41], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
-  InfraSceneInstance[#, seg1] & /@ FindInfraScene[scene, GridGraph[{9, 9}], <|pB -> 61|>]]
+     {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
+  {segments = InfraSceneInstance[#, seg1] & /@ FindInfraScene[scene, g, <|pB -> b|>]},
+  {InfraSubstrateHighlight[g, {segments, Directive[$InfraPointColor], c, b}], Length @ segments}]
 ```
 
 ## Options
@@ -86,18 +97,25 @@ Half of the branches dropped at every step, reproducibly.
 ```wl
 ClearAll[pA, pB, seg1];
 With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
   {scene = InfraScene[{pA, pB, seg1},
-     {pA == InfraPoint[41], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
-  SeedRandom[1];
-  InfraSceneInstance[#, seg1] & /@ FindInfraScene[scene, GridGraph[{9, 9}], "PruneProbability" -> 0.5]]
+     {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
+  {segments = (SeedRandom[1]; InfraSceneInstance[#, seg1] & /@ FindInfraScene[scene, g, "PruneProbability" -> 0.5])},
+  {InfraSubstrateHighlight[g, {segments, Directive[$InfraPointColor], c}], Length @ segments}]
 ```
 
 ## Properties and Relations
 
-The instances are the choices made: as many as the points at distance 2 weighted by their geodesics.
+The instances are the choices made: as many as the points at distance 2, weighted by their shortest paths.
 
 ```wl
+ClearAll[pA, pB, seg1];
 With[
-  {g = GridGraph[{9, 9}]},
-  Total[InfraMeasurement[g, InfraSegment[41, #], "Cardinality"] & /@ FindInfraShell[g, 41, 2]]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {scene = InfraScene[{pA, pB, seg1},
+     {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
+  {InfraSubstrateHighlight[g, {FindInfraShell[g, c, 2] -> $InfraShellColor, Directive[$InfraPointColor], c}],
+   Length @ FindInfraScene[scene, g] === Total @ Table[InfraMeasurement[g, InfraSegment[c, through], "Cardinality"], {through, FindInfraShell[g, c, 2]}]}]
 ```

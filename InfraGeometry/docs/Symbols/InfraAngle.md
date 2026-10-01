@@ -24,7 +24,7 @@ Writing *d1 = d(p,q1)*, *d2 = d(p,q2)* and *c = d(q1,q2)*, that is
 
 This is the comparison angle, and it is a closed form in three distances. Nothing else about the graph enters. It always lies in *[0, π]*.
 
-Two values come out exactly right. If *q1* and *q2* lie on opposite arms of one geodesic through *p*, then *c = d1 + d2* and the angle is exactly π. If *q2* lies on a geodesic from *p* to *q1*, then *c = |d1 − d2|* and the angle is exactly 0.
+Two values come out exactly right. If *q1* and *q2* lie on opposite arms of one shortest path through *p*, then *c = d1 + d2* and the angle is exactly π. If *q2* lies on a shortest path from *p* to *q1*, then *c = |d1 − d2|* and the angle is exactly 0.
 
 Because only three distances enter, the comparison angle cannot separate configurations that share them. On a square grid the metric is ℓ¹ and the chord saturates early: two vertices on the same shell of radius 4 can be at distance 8 from each other without lying on a common line through the centre, and the angle then reads π just as a straight line does. This is a property of the substrate, not an error.
 
@@ -45,41 +45,44 @@ Corresponding notions in the classical axiom systems:
 
 ## Basic Examples
 
-Three configurations at the centre of a square grid. Opposite arms of a line give exactly π. The same direction gives exactly 0.
+Two configurations at the centre of the square tiling, each arm drawn along the line. Opposite arms of a line give exactly π. The same direction gives exactly 0.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {far = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 5 &]},
-  {line = FindInfraLine[g, c, far]},
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {line = FindInfraLine[g, c, (SeedRandom[1]; RandomInfraPoint[g, c, 5])]},
   {i = First @ FirstPosition[line, c]},
-  <|"opposite arms" -> N @ InfraAngle[g, {line[[i - 4]], c, line[[i + 4]]}, Method -> "Alexandrov"],
-    "same direction" -> N @ InfraAngle[g, {line[[i + 4]], c, line[[i + 2]]}, Method -> "Alexandrov"]|>]
+  {opposite = {line[[i - 4]], c, line[[i + 4]]}},
+  {same = {line[[i + 4]], c, line[[i + 2]]}},
+  {GraphicsRow[{
+     InfraSubstrateHighlight[g, {InfraWalk[line[[i ;; i - 4 ;; -1]]], InfraWalk[line[[i ;; i + 4]]], Directive[$InfraPointColor], Sequence @@ opposite}],
+     InfraSubstrateHighlight[g, {InfraWalk[line[[i ;; i + 4]]], InfraWalk[line[[i ;; i + 2]]], Directive[$InfraPointColor], Sequence @@ same}]}],
+   N @ InfraAngle[g, opposite, Method -> "Alexandrov"], N @ InfraAngle[g, same, Method -> "Alexandrov"]}]
 ```
 
-The Alexandrov method is the closed form in three distances, and agrees with it exactly.
+The Alexandrov method is the closed form in three distances, and agrees with it exactly. The triangle is drawn by its three segments.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {x1 = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {x2 = Last @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {d1 = GraphDistance[g, c, x1], d2 = GraphDistance[g, c, x2], ch = GraphDistance[g, x1, x2]},
-  {N @ InfraAngle[g, {x1, c, x2}, Method -> "Alexandrov"],
-   ArcCos[(d1^2 + d2^2 - ch^2)/(2. d1 d2)]}]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {x1 = (SeedRandom[1]; RandomInfraPoint[g, c, 4])},
+  {x2 = (SeedRandom[4]; RandomInfraPoint[g, c, 4])},
+  {d1 = GraphDistance[g, c, x1], d2 = GraphDistance[g, c, x2], chord = GraphDistance[g, x1, x2]},
+  {InfraSubstrateHighlight[g, {InfraSegment[c, x1], InfraSegment[c, x2], InfraSegment[x1, x2], Directive[$InfraPointColor], c, x1, x2}],
+   N @ InfraAngle[g, {x1, c, x2}, Method -> "Alexandrov"], ArcCos[(d1^2 + d2^2 - chord^2)/(2. d1 d2)]}]
 ```
 
 The two methods answer different questions. On the straight-line case, arclength gives 3 where the comparison angle gives π.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {far = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 5 &]},
-  {line = FindInfraLine[g, c, far]},
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {line = FindInfraLine[g, c, (SeedRandom[1]; RandomInfraPoint[g, c, 5])]},
   {i = First @ FirstPosition[line, c]},
   {arms = {line[[i - 4]], c, line[[i + 4]]}},
-  <|"Arclength" -> N @ InfraAngle[g, arms], "Alexandrov" -> N @ InfraAngle[g, arms, Method -> "Alexandrov"]|>]
+  {InfraSubstrateHighlight[g, {InfraWalk[line[[i - 4 ;; i + 4]]], Directive[$InfraPointColor], Sequence @@ arms}],
+   N @ InfraAngle[g, arms], N @ InfraAngle[g, arms, Method -> "Alexandrov"]}]
 ```
