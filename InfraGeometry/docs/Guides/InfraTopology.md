@@ -48,4 +48,3 @@ The topological properties of a substrate are read off its metric balls. The clo
 - **BallHull** — the intersection of all closed balls containing a vertex set, the smallest ball-convex superset
 - `FindBallHull` the ball hull of any shape, a vertex, a vertex list, a density or a walk, as a sorted vertex list
 - `BallHullQ` whether a vertex set is ball-convex, equal to its own ball hull
-- waits: InfraBallHull, the intersection of all balls of one radius r containing a set of points, planned with the Euclidean Infrageometry guide

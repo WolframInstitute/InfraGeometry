@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraRay
 Keywords: [ray, half-line, direction, pencil, Euclid Postulate 2]
 SeeAlso: [InfraRay, InfraRayQ, InfraVertexList, PencilDirections, PencilCardinality, FindInfraLine, GeodesicExtensionGraph, FindInfraSegment, SameDirectionQ]
-RelatedGuides: [Experimental]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

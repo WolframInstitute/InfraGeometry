@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraMidpoint
 Keywords: [midpoint, geodesic, bisection, effective point, Euclid I.10]
 SeeAlso: [FindInfraSegment, InfraPoint, InfraDensity, FindInfraReflection, BetweennessQ]
-RelatedGuides: [Experimental]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
@@ -26,7 +26,7 @@ At odd $d(a,b)$ no vertex lies at half the distance. The two central vertices of
 
 The result is the density `<|v -> m|>` of candidates, *m* counting the geodesics centred at *v*; dividing by `Total` gives the fraction centred at each vertex.
 
-Option `Method` takes `"Metric"` (default), which reads the graph distance, or `"Embedding"`, which ranks candidates by an embedding of the geodesic bundle.
+Option `Method` takes `"Metric"` (default), which reads the graph distance.
 
 Corresponding notions in the classical axiom systems:
 

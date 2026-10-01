@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraSegment
 Keywords: [segment, geodesic, shortest path, Euclid Postulate 1]
 SeeAlso: [InfraSegment, InfraVertexList, FindInfraLine, FindInfraMidpoint, UniqueInfraSegmentQ, MetricInterval]
-RelatedGuides: [Experimental]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

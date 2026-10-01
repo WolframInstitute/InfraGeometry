@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSceneInstance
 Keywords: [scene, instance, binding, solution]
 SeeAlso: [FindInfraScene, InfraScene, InfraSubstrateHighlight, InfraSceneViewer]
-RelatedGuides: [Experimental]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

@@ -5,6 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraIntersection
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

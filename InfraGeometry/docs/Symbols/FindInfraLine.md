@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraLine
 Keywords: [line, inextensible geodesic, Euclid Postulate 2, parallel postulate]
 SeeAlso: [InfraLine, InfraLineQ, InfraVertexList, ExtendInfraSegment, GeodesicExtensionGraph, FindInfraSegment, FindInfraRay, FindInfraParallel, LineCount]
-RelatedGuides: [Experimental]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
