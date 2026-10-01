@@ -61,7 +61,7 @@ InfraPerpendicularQ::usage = "InfraPerpendicularQ[graph, l1, l2] tests whether t
 PencilDirections::usage = "PencilDirections[graph, O] gives the pencil at O: every ray from O, as a list of vertex sequences.";
 PencilCardinality::usage = "PencilCardinality[graph, O] gives the number of rays from O, counted on the ray pools without enumeration.";
 LineCount::usage = "LineCount[graph] gives the number of distinct canonical maximal geodesics in graph.";
-FindLineHull::usage = "FindLineHull[graph, S] gives, as the multiset <|v -> 1, ...|>, the smallest superset of S closed under the line operator. Option \"LineStructure\".";
+FindLineHull::usage = "FindLineHull[graph, S] gives, as a sorted vertex list, the smallest superset of S closed under the line operator. Option \"LineStructure\".";
 LineHullQ::usage = "LineHullQ[graph, S] tests whether S is closed under the line operator.";
 UniversalLineQ::usage = "UniversalLineQ[graph] tests whether some pair spans a line filling a whole connected component (Chen-Chvatal); UniversalLineQ[graph, {u, v}] tests one line.";
 
@@ -86,7 +86,7 @@ SeparatesQ::usage = "SeparatesQ[graph, vertexSet, u, v] tests whether deleting v
 InfraBall::usage = "InfraBall[center, r] inside InfraScene is the closed metric ball of radius r about center; FindInfraBall is the search. A ball itself is a sorted vertex list.";
 FindInfraBall::usage = "FindInfraBall[graph, c, r] gives the closed ball { v : d(c, v) <= r }.";
 InfraBallQ::usage = "InfraBallQ[graph, vertexSet] tests whether vertexSet is a closed metric ball.";
-FindBallHull::usage = "FindBallHull[graph, S] gives, as the multiset <|v -> 1, ...|>, the ball hull of S: the intersection of all closed balls containing S, the smallest ball-convex superset.";
+FindBallHull::usage = "FindBallHull[graph, S] gives, as a sorted vertex list, the ball hull of S: the intersection of all closed balls containing S, the smallest ball-convex superset.";
 BallHullQ::usage = "BallHullQ[graph, S] tests whether S is ball-convex, i.e. an intersection of closed balls.";
 
 (* ===================== InfraCircle ===================== *)
@@ -203,7 +203,7 @@ MetricInterval::usage = "MetricInterval[graph, u, v] gives { w : d(u, w) + d(w, 
 GeodesicMultiplicity::usage = "GeodesicMultiplicity[graph, u, v] gives the number of distinct geodesics from u to v.";
 GeodesicMultiplicityMatrix::usage = "GeodesicMultiplicityMatrix[graph] gives {D, M} with D the distance matrix and M the matrix of geodesic counts.";
 MedianVertices::usage = "MedianVertices[graph, vs] gives the vertices minimising the sum of distances to vs.";
-FindSegmentHull::usage = "FindSegmentHull[graph, S] gives, as the multiset <|v -> 1, ...|>, the smallest superset of S closed under MetricInterval -- the geodesic convex hull. Option \"LineStructure\".";
+FindSegmentHull::usage = "FindSegmentHull[graph, S] gives, as a sorted vertex list, the smallest superset of S closed under MetricInterval -- the geodesic convex hull. Option \"LineStructure\".";
 SegmentHullQ::usage = "SegmentHullQ[graph, S] tests whether S is geodesically convex.";
 
 (* ===================== Visit measure ===================== *)
@@ -212,11 +212,11 @@ InfraDensity::usage = "InfraDensity[graph, x] gives the marginal of any shape to
 
 (* ===================== Sets ===================== *)
 
-(* a set is the multiset <| v -> m |> itself -- Keys is the support, Length the size -- so there is no head to document.  Unlike every other Infra head it names no construction, so it is not a scene token either: a literal vertex set is dispatched by shape *)
-FindInfraEquidistantSet::usage = "FindInfraEquidistantSet[graph, {p1, ..., pn}] gives { v : d(p1, v) == ... == d(pn, v) } as the multiset <|v -> 1, ...|>; a trailing {lo, hi} thickens each bisector to a slab.";
-InfraBoundary::usage = "InfraBoundary[graph, s] gives, as the multiset <|v -> 1, ...|>, the boundary of a vertex set, multiset or Infra* object. Option Method (\"Combinatorial\", \"Alexandrov\").";
-InfraInterior::usage = "InfraInterior[graph, s] gives, as the multiset <|v -> 1, ...|>, the interior of a vertex set, multiset or Infra* object. Option Method (\"Combinatorial\", \"Alexandrov\").";
-InfraVolume::usage = "InfraVolume[graph, s] gives the volume of a vertex set, multiset or Infra* object. Options \"Measure\" (\"FullCount\", \"WithoutBoundary\", \"HalfBoundary\", \"Boundary\"), Method.";
+(* a set is a sorted vertex List itself, so there is no head to document.  Unlike every other Infra head it names no construction, so it is not a scene token either: a literal vertex set is dispatched by shape *)
+FindInfraEquidistantSet::usage = "FindInfraEquidistantSet[graph, {p1, ..., pn}] gives { v : d(p1, v) == ... == d(pn, v) } as a sorted vertex list; a trailing {lo, hi} thickens each bisector to a slab.";
+InfraBoundary::usage = "InfraBoundary[graph, s] gives, as a sorted vertex list, the boundary of a vertex set, density or shape. Option Method (\"Combinatorial\", \"Alexandrov\").";
+InfraInterior::usage = "InfraInterior[graph, s] gives, as a sorted vertex list, the interior of a vertex set, density or shape. Option Method (\"Combinatorial\", \"Alexandrov\").";
+InfraVolume::usage = "InfraVolume[graph, s] gives the volume of a vertex set, density or shape. Options \"Measure\" (\"FullCount\", \"WithoutBoundary\", \"HalfBoundary\", \"Boundary\"), Method.";
 
 (* ===================== Coordinatization ===================== *)
 
@@ -267,8 +267,8 @@ InfraScene::usage = "InfraScene[objects, hypotheses] builds a scene descriptor f
 FindInfraScene::usage = "FindInfraScene[scene, graph] solves a scene on a graph and gives the resulting InfraSceneInstance bindings. Option \"PruneProbability\".";
 InfraSceneInstance::usage = "InfraSceneInstance[bindings] wraps a solved binding association; InfraSceneInstance[bindings, sym] reads one object out of it.";
 InfraStep::usage = "InfraStep[{hyp1, ...}] groups hypotheses into one construction step of a scene; a second argument labels it.";
-InfraIntersection::usage = "InfraIntersection[graph, obj1, obj2, ...] gives the vertex-set intersection of shapes on graph -- vertex lists, densities, walk graphs, bundles -- as a sorted List. On Euclidean heads it is inert and InfraMeasurement gives it the common support and the product density. Inside InfraScene it is the token InfraIntersection[c1, c2], the engine supplying the graph.";
-InfraUnion::usage = "InfraUnion[graph, obj1, obj2, ...] gives the vertex-set union of shapes on graph as a sorted List. On Euclidean heads it is inert and InfraMeasurement gives it the joint support and the sum density. Inside InfraScene it is the token InfraUnion[c1, c2], the engine supplying the graph.";
+InfraIntersection::usage = "InfraIntersection[graph, obj1, obj2, ...] gives the vertex-set intersection of shapes on graph -- vertex lists, densities, walk graphs, bundles -- as a sorted List. On Euclidean heads it is inert and InfraMeasurement gives it the common support and the product density. Inside InfraScene it is the token InfraIntersection[c1, c2], one branch per common vertex, the engine supplying the graph.";
+InfraUnion::usage = "InfraUnion[graph, obj1, obj2, ...] gives the vertex-set union of shapes on graph as a sorted List. On Euclidean heads it is inert and InfraMeasurement gives it the joint support and the sum density. Inside InfraScene it is the token InfraUnion[c1, c2], one branch per vertex of either, the engine supplying the graph.";
 InfraDistance::usage = "InfraDistance[graph, p, q] gives the graph distance between two Infra* objects, aggregated over their vertex sets. Option \"Aggregation\".";
 InfraPlaneQ::usage = "InfraPlaneQ[graph, h, p1, p2] tests whether h lies in the bisector slab of p1, p2 and separates them; a trailing window widens the slab. The graph-free InfraPlaneQ[h, p1, p2] is the inert InfraScene assertion.";
 InfraIntersectQ::usage = "InfraIntersectQ[s1, s2] asserts inside an InfraScene that two sets intersect; it stays inert until bindings resolve, which is why it exists rather than the built-in IntersectingQ.";

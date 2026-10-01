@@ -760,4 +760,41 @@ VerificationTest[
 ]
 
 
+(* the union token: every vertex of either of two named balls is one branch, and
+   the branches are exactly the union of the two balls taken by hand *)
+VerificationTest[
+  With[{g = GridGraph[{5, 5}]},
+    {scene = InfraScene[{ba, bb, m}, {ba == InfraBall[7, 1], bb == InfraBall[9, 1], m == InfraUnion[ba, bb]}]},
+    Sort[InfraSceneInstance[#, m] & /@ FindInfraScene[scene, g]] ===
+      Union[FindInfraBall[g, 7, 1], FindInfraBall[g, 9, 1]]],
+  True,
+  TestID -> "InfraScene-union-token-binds-every-vertex-of-either"
+]
+
+(* the meet is contained in the union, scene for scene *)
+VerificationTest[
+  With[{g = GridGraph[{5, 5}]},
+    {meet = InfraScene[{ba, bb, m}, {ba == InfraBall[7, 1], bb == InfraBall[9, 1], m == InfraIntersection[ba, bb]}],
+     join = InfraScene[{ba, bb, m}, {ba == InfraBall[7, 1], bb == InfraBall[9, 1], m == InfraUnion[ba, bb]}]},
+    {ps = InfraSceneInstance[#, m] & /@ FindInfraScene[meet, g], qs = InfraSceneInstance[#, m] & /@ FindInfraScene[join, g]},
+    ps =!= {} && SubsetQ[qs, ps] && Length[qs] > Length[ps]],
+  True,
+  TestID -> "InfraScene-meet-inside-union"
+]
+
+(* Euclid I.1 with the union in place of the meet: every vertex at distance d(a, b)
+   from a or from b, the two circles taken by hand *)
+VerificationTest[
+  With[{g = PetersenGraph[]},
+    {scene = InfraScene[{ea, eb, ec}, {
+       ec == InfraUnion[InfraCircle[ea, InfraDistance[ea, eb]], InfraCircle[eb, InfraDistance[ea, eb]]]}]},
+    Sort @ DeleteDuplicates[InfraSceneInstance[#, ec] & /@
+        Quiet[FindInfraScene[scene, g, <|ea -> 1, eb -> 7|>], FindInfraCircle::uncertified]] ===
+      Sort @ Quiet @ Union[
+        Union @@ FindInfraCircle[g, 1, "Radius" -> GraphDistance[g, 1, 7], All],
+        Union @@ FindInfraCircle[g, 7, "Radius" -> GraphDistance[g, 1, 7], All]]],
+  True,
+  TestID -> "InfraScene-union-of-two-circles-agrees-with-FindInfraCircle"
+]
+
 EndTestSection[]

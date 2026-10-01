@@ -71,7 +71,7 @@ Three perpendiculars through a point, drawn with the line they cross.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "Gray", "KeepCoordinates" -> True]},
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
   {line = FindInfraLine[g, c, far]},

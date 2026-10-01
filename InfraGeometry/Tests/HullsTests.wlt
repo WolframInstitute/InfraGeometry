@@ -247,4 +247,13 @@ VerificationTest[
   TestID -> "FindBallHull-input-form-invariance"
 ]
 
+(* each hull is a set: a sorted, duplicate-free vertex List containing S *)
+VerificationTest[
+  With[{g = GridGraph[{5, 5}], s = {1, 7}},
+    {hulls = {FindLineHull[g, s], FindBallHull[g, s], FindSegmentHull[g, s]}},
+    AllTrue[hulls, ListQ[#] && # === Union[#] && SubsetQ[#, s] && SubsetQ[VertexList[g], #] &]],
+  True,
+  TestID -> "hulls-are-sorted-vertex-lists"
+]
+
 EndTestSection[]

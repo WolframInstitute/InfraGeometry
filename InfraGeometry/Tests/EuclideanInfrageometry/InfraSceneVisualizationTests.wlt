@@ -663,3 +663,21 @@ VerificationTest[
   { { AbsoluteThickness[ 4 ] }, { AbsoluteThickness[ 8 ] }, True },
   TestID -> "InfraSubstrateHighlight-overlap-sums-strength-and-blends-colour"
 ]
+
+(* a list of heads, or of walks, as one entry is a family: its ink is the sum of its members' inks *)
+VerificationTest[
+  With[{g = GridGraph[{5, 5}], a = InfraSegment[1, 13], b = InfraSegment[7, 19]},
+    {one = infraInk[g, {a, b}], ia = infraInk[g, a], ib = infraInk[g, b]},
+    one["VertexDensity"] === KeySort[Merge[{ia["VertexDensity"], ib["VertexDensity"]}, Total]] &&
+      one["EdgeDensity"] === KeySort[Merge[{ia["EdgeDensity"], ib["EdgeDensity"]}, Total]]],
+  True,
+  TestID -> "infraInk-list-of-heads-is-the-sum"
+]
+
+VerificationTest[
+  With[{g = GridGraph[{5, 5}]},
+    {Head @ InfraSubstrateHighlight[g, {{InfraSegment[1, 13], InfraSegment[7, 19]}}],
+     Head @ InfraSubstrateHighlight[g, {{InfraWalk[{1, 2, 3}], InfraWalk[{3, 8, 13}]}}]}],
+  {Graph, Graph},
+  TestID -> "InfraSubstrateHighlight-list-of-heads-or-walks-is-one-object"
+]
