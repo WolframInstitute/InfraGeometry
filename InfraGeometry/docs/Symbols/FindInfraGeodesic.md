@@ -88,10 +88,11 @@ With[
 
 ## Possible Issues
 
-On a substrate labelled by integers the third argument is read as the scale whenever the rest parses as a budget and a count. So `FindInfraGeodesic[g, 41, 61, Infinity]` asks for geodesics from 41 at scale 61, with no budget, and is refused with a `FindInfraWalk::unbounded` message. Give the budget explicitly in the two-point form.
+On a substrate labelled by integers, `FindInfraGeodesic[g, 1, 3, Infinity]` fits two readings: the geodesics from 1 at scale 3 with no budget, and the geodesics from 1 to 3 at scale `Infinity`. The first is an infinite class, so the call is the second. A rule in `Properties` that bounds the class, such as `"Simple"`, makes the first reading finite, and then it wins: on a hexagon the simple geodesics at scale 3 run round to the far side.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {Quiet @ FindInfraGeodesic[g, 41, 61, Infinity], Last /@ VertexList @ FindInfraGeodesic[g, 41, 61, Infinity, Infinity]}]
+  {g = CycleGraph[6]},
+  {Last /@ VertexList @ FindInfraGeodesic[g, 1, 3, Infinity],
+    Last /@ VertexList @ FindInfraGeodesic[g, 1, 3, Infinity, Properties -> {"Simple"}]}]
 ```
