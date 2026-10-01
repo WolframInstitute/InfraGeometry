@@ -236,12 +236,12 @@ KillingDisplacementMagnitude[ graph_Graph ] :=
     Map[ DisplacementMagnitude[ graph, # ] &, FindKillingDisplacement[ graph, All ] ],
     Infinity ]
 
-Options[ DisplacementPlot ] = { ImageSize -> 320 }
+Options[ DisplacementPlot ] = Options[ Graphics ]
 
 DisplacementPlot[ graph_Graph, displacement_Association, opts : OptionsPattern[] ] :=
   DisplacementPlot[ graph, { displacement }, opts ]
 
-DisplacementPlot[ graph_Graph, displacements : { __Association }, OptionsPattern[] ] :=
+DisplacementPlot[ graph_Graph, displacements : { __Association }, opts : OptionsPattern[] ] :=
   With[
     { position = AssociationThread[ VertexList @ graph, GraphEmbedding @ graph ] },
     Show[
@@ -257,7 +257,7 @@ DisplacementPlot[ graph_Graph, displacements : { __Association }, OptionsPattern
           { ColorData[ 97 ][ index ], Arrowheads[ 0.02 ],
             Arrow @ BezierCurve @ { #[[ 1 ]], ( #[[ 1 ]] + #[[ 2 ]] )/2 + 0.2 { 1, -1 } Reverse[ #[[ 2 ]] - #[[ 1 ]] ], #[[ 2 ]] } & /@ pairs } ],
         { index, Length @ displacements } ],
-      ImageSize -> OptionValue[ ImageSize ]
+      Sequence @@ FilterRules[ { opts }, Options[ Graphics ] ]
     ]
   ]
 

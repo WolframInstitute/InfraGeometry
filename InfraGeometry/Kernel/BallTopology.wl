@@ -48,12 +48,12 @@ TopologyGraph[ graph_Graph, topo_Graph ] :=
 		Show[
 			Graph[ graph,
 				VertexCoordinates -> coords,
-				EdgeStyle -> Directive[ GrayLevel[ 0.70 ], Thickness[ 0.006 ] ] ],
+				EdgeStyle -> Directive[ Opacity[ 0.4, StandardBlue ], Thickness[ 0.006 ] ] ],
 			Graph[ VertexList[ graph ], EdgeList[ topo ],
 				DirectedEdges -> True,
 				VertexCoordinates -> coords,
 				VertexStyle -> Transparent,
 				VertexLabels -> None,
-				EdgeStyle -> Directive[ RGBColor[ 0.42, 0.55, 0.78 ], Thickness[ 0.005 ], Arrowheads[ Medium ] ] ]
+				EdgeStyle -> Directive[ StandardBlue, Thickness[ 0.005 ], Arrowheads[ Medium ] ] ]
 		]
 	]

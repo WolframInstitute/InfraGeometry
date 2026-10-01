@@ -19,7 +19,7 @@ PointViewer[ g_Graph, sym_: None ] :=
       With[ { pts = FindInfraPoint[ g, UpTo[ n ], "From" -> from, "MaxCliques" -> 100,
           "Distance" -> Switch[ separation, "None", None, "Max", "Max", "Range", distRange ] ] },
         If[ sym =!= None, sym = pts ];
-        InfraSubstrateHighlight[ g, { Directive[ $InfraPointColor ], InfraDensity[ g, pts ] }, ImageSize -> 600 ] ],
+        InfraSubstrateHighlight[ g, { Directive[ $InfraPointColor ], InfraDensity[ g, pts ] } ] ],
       Grid[ {
         { Control[ { { n, 1, "Points" }, ControlType -> InputField } ],
           Control[ { { from, "Random", "From" }, { "Random", "Center", "Periphery" } } ] },
@@ -52,8 +52,7 @@ SegmentViewer[ g_Graph ] :=
             InfraSubstrateHighlight[ g, { Directive[ $InfraSegmentColor ],
               If[ sel === None, InfraSegment[ p1, p2 ], geodesicGraph /@ segments ] } ],
             { Style[ p1, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ],
-              Style[ p2, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] },
-            ImageSize -> 600 ],
+              Style[ p2, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] } ],
           { "MouseClicked" :> With[ { mp = MousePosition[ "Graphics" ] },
             If[ mp =!= None,
               With[ { clicked = First @ nearestFunc[ mp ] },
@@ -86,8 +85,7 @@ ShellViewer[ g_Graph ] :=
         EventHandler[
           HighlightGraph[
             InfraSubstrateHighlight[ g, { Directive[ $InfraShellColor ], shells } ],
-            { Style[ p, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] },
-            ImageSize -> 600 ],
+            { Style[ p, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] } ],
           { "MouseClicked" :> With[ { mp = MousePosition[ "Graphics" ] },
             If[ mp =!= None,
               With[ { clicked = First @ nearestFunc[ mp ] }, p = clicked; seed++ ] ] ] },
@@ -125,8 +123,7 @@ CircleViewer[ g_Graph ] :=
           HighlightGraph[
             InfraSubstrateHighlight[ g, { Directive[ $InfraCircleColor ],
               If[ sel === None, InfraCircle[ p, "Radius" -> r ], geodesicCycleGraph /@ circles ] } ],
-            { Style[ p, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] },
-            ImageSize -> 600 ],
+            { Style[ p, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] } ],
           { "MouseClicked" :> With[ { mp = MousePosition[ "Graphics" ] },
             If[ mp =!= None,
               With[ { clicked = First @ nearestFunc[ mp ] }, p = clicked; seed++ ] ] ] },
@@ -243,7 +240,7 @@ makeIcon[ icon_, roundedSide_: "both", widthFactor_: 1, heightFactor_: 1,
   Graphics[ {
     { background, Rectangle[ { -widthFactor, -heightFactor }, { widthFactor, heightFactor },
       RoundingRadius -> Switch[ roundedSide, "left", { Left -> .5 }, "right", { Right -> .5 }, "both", .5 ] ] },
-    { Thick, RGBColor[ 0.161, 0.667, 0.887 ], icon } },
+    { Thick, StandardBlue, icon } },
     ImageSize -> 20 { widthFactor, heightFactor }, AspectRatio -> Full, PlotRangePadding -> None ]
 
 leftArrowIcon  :=
@@ -252,7 +249,7 @@ rightArrowIcon :=
   makeIcon[ Line[ { { -.25, .5 }, { .25, 0 }, { -.25, -.5 } } ], "right", 1, 1.45 ]
 
 downChevron :=
-  Graphics[ { RGBColor[ 0.161, 0.667, 0.887 ], Thick, CapForm[ "Round" ],
+  Graphics[ { StandardBlue, Thick, CapForm[ "Round" ],
     Line[ { { -1, .35 }, { 0, -.5 }, { 1, .35 } } ] },
     ImageSize -> 11, AspectRatio -> 1, PlotRangePadding -> None ]
 
@@ -268,14 +265,14 @@ textChip[ content_ ] :=
   Framed[
     Style[ content, 13, Bold, FontFamily -> "Helvetica", LightDarkSwitched[ GrayLevel[ .15 ], White ] ],
     Background -> LightDarkSwitched[ GrayLevel[ .9 ], GrayLevel[ .3 ] ],
-    FrameStyle -> RGBColor[ 0.161, 0.667, 0.887 ], RoundingRadius -> 5,
+    FrameStyle -> StandardBlue, RoundingRadius -> 5,
     FrameMargins -> { { 10, 10 }, { 5, 5 } }, ContentPadding -> False ]
 
 alertChip[ content_ ] :=
   Framed[
-    Style[ content, 13, Bold, FontFamily -> "Helvetica", RGBColor[ 0.75, 0.25, 0.2 ] ],
-    Background -> LightDarkSwitched[ RGBColor[ 0.99, 0.93, 0.92 ], GrayLevel[ .25 ] ],
-    FrameStyle -> RGBColor[ 0.86, 0.35, 0.3 ], RoundingRadius -> 5,
+    Style[ content, 13, Bold, FontFamily -> "Helvetica", StandardRed ],
+    Background -> LightDarkSwitched[ Lighter[ StandardRed, 0.9 ], GrayLevel[ .25 ] ],
+    FrameStyle -> StandardRed, RoundingRadius -> 5,
     FrameMargins -> { { 10, 10 }, { 5, 5 } }, ContentPadding -> False ]
 
 SetAttributes[ iconButton, HoldRest ]

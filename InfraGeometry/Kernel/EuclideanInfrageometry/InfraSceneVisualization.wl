@@ -19,7 +19,6 @@ PackageScope[ $infraColors ]
 PackageScope[ $InfraOpacityRange ]
 PackageScope[ $InfraEdgeThickness ]
 PackageScope[ $InfraPointSize ]
-PackageScope[ $InfraSceneImageSize ]
 PackageScope[ infraInk ]
 PackageScope[ parseHighlightStyle ]
 PackageScope[ normalizeHighlightSpec ]
@@ -62,8 +61,6 @@ $InfraPointSize     = 6
 
 $InfraPointSizes      = <| Small -> 4, Medium -> 7, Large -> 10 |>
 $InfraAccentPointSize = 12
-
-$InfraSceneImageSize = Medium
 
 $InfraStrikeOutPalette :=
   ColorData[ 112, "ColorList" ]
@@ -124,8 +121,7 @@ Options[ InfraSubstrateHighlight ] = Join[
     "ThicknessRange" :> $InfraEdgeThickness,
     "PointSizeRange" -> Automatic,
     "Arrowheads"     -> Automatic,
-    "Palette"        -> Automatic,
-    ImageSize        :> $InfraSceneImageSize
+    "Palette"        -> Automatic
   },
   Options[ HighlightGraph ]
 ]
@@ -256,8 +252,7 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
             VertexShapeFunction -> Cases[ vertexData, kv_Association /; KeyExistsQ[ kv, "VSF" ] :> kv[ "VSF" ] ],
             VertexSize          -> DeleteCases[ Cases[ vertexData, kv_Association /; KeyExistsQ[ kv, "VSize" ] :> kv[ "VSize" ] ], Nothing ]
           }, _ -> { } ],
-          FilterRules[ { opts }, Options @ HighlightGraph ],
-          ImageSize -> OptionValue[ ImageSize ] ]
+          FilterRules[ { opts }, Options @ HighlightGraph ] ]
     ]
 
 infraInk[ graph_Graph, x_ ] :=
