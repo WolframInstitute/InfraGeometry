@@ -1,8 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-FindInfraHomotopy::mismatch  = "The first walk is `1` and the second `2`; both must be open or both closed.";
-FindInfraHomotopy::badmethod = "Method `1` is not supported by FindInfraHomotopy.";
-
 Options[ FindInfraHomotopy ] = {
   Method                -> "Exhaustive",
   "FreeHomotopy"        -> False,
@@ -12,7 +9,8 @@ Options[ FindInfraHomotopy ] = {
 };
 
 FindInfraHomotopy[ graph_Graph, a_, b_,
-    count : ( _Integer | UpTo[ _Integer ] | All ) : Automatic, opts : OptionsPattern[] ] :=
+    count : ( _Integer | UpTo[ _Integer ] | All ) : Automatic, opts : OptionsPattern[] ]/;
+    MatchQ[ OptionValue[ FindInfraHomotopy, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | { "Exhaustive" | "Greedy", ___ } ] :=
   Module[ { parent, frontier, next, found, layer, chain, current, visited, steps, nbrs, best },
     With[ {
         closedOf = x |-> Replace[ x, { w_Graph | { w_Graph, ___Graph } :> ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w, _ -> False } ],
@@ -51,9 +49,7 @@ FindInfraHomotopy[ graph_Graph, a_, b_,
           w |-> PathGraph[ MapIndexed[ { First @ #2, #1 } &, w ], DirectedEdges -> True ] ] },
       { canon = If[ canonicalize, canonical, Identity ],
         coerce = w |-> Which[ canonicalize, canonical @ w, closedQ, closeUp @ w, True, w ] },
-      If[ closedQ =!= closedOf @ b,
-        Message[ FindInfraHomotopy::mismatch, If[ closedQ, "closed", "open" ], If[ closedQ, "open", "closed" ] ]; $Failed,
-        Replace[
+      Replace[
           Map[ pair |-> With[ { startW = coerce @ pair[[ 1 ]], targetW = coerce @ pair[[ 2 ]] },
               Which[
                 startW === targetW, { { startW } },
@@ -122,17 +118,14 @@ FindInfraHomotopy[ graph_Graph, a_, b_,
                           best = First @ SortBy[ nbrs, { score, Length, Identity } ];
                           If[ score @ best >= score @ current && best =!= targetW, Break[ ] ];
                           AppendTo[ chain, best ]; visited[ best ] = True; current = best; steps++ ];
-                        If[ Last @ chain =!= targetW, { }, { chain } ],
-                      _,
-                        Message[ FindInfraHomotopy::badmethod, spec ]; $Failed ] ] ] ],
+                        If[ Last @ chain =!= targetW, { }, { chain } ] ] ] ] ],
             Tuples[ { spread @ a, spread @ b } ] ],
-          { r_ /; MemberQ[ r, $Failed ] :> $Failed,
-            r_ :> With[ { reps = DeleteDuplicates[ Map[ shape, DeleteDuplicates @ Flatten[ r, 1 ], { 2 } ] ] },
+          r_ :> With[ { reps = DeleteDuplicates[ Map[ shape, DeleteDuplicates @ Flatten[ r, 1 ], { 2 } ] ] },
               Switch[ count,
                 Automatic, First[ reps, { } ],
                 All,       reps,
                 _UpTo,     Take[ reps, count ],
-                _,         If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ] } ] ] ] ]
+                _,         If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ] ] /; closedQ === closedOf @ b ] ]
 
 Options[ FindInfraHomotopyRepresentativeHomotopy ] = {
   Method                -> "Exhaustive",
@@ -238,7 +231,7 @@ FindInfraHomotopyRepresentativeHomotopy[ graph_Graph, obj_,
           Automatic, First[ reps, { } ],
           All,       reps,
           _UpTo,     Take[ reps, count ],
-          _,         If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ] ] ]
+          _,         If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ] ] ]
 
 Options[ FindInfraHomotopyRepresentative ] = {
   Method                -> "Exhaustive",
@@ -255,9 +248,7 @@ FindInfraHomotopyRepresentative[ graph_Graph, obj_,
       Automatic, First[ reps, { } ],
       All,       reps,
       _UpTo,     Take[ reps, count ],
-      _,         If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
-
-HomotopicQ::mismatch = FindInfraHomotopy::mismatch;
+      _,         If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ]
 
 Options[ HomotopicQ ] = {
   Method                -> "Exhaustive",
@@ -293,11 +284,9 @@ HomotopicQ[ graph_Graph, a_, b_, opts : OptionsPattern[] ] :=
         MatchQ[ x, { __Graph } ],     Catenate[ walksOf /@ x ],
         x === { },                    { },
         True,                         { x } ] },
-    If[ closedQ =!= closedOf @ b,
-      Message[ HomotopicQ::mismatch, If[ closedQ, "closed", "open" ], If[ closedQ, "open", "closed" ] ]; $Failed,
-      AllTrue[ Tuples[ { spread @ a, spread @ b } ],
+    AllTrue[ Tuples[ { spread @ a, spread @ b } ],
         pair |-> MatchQ[ pair, { _List, _List } ] &&
-          FindInfraHomotopy[ graph, Sequence @@ If[ closedQ, loopOf /@ pair, pair ], Method -> "Exhaustive", opts ] =!= { } ] ] ]
+          FindInfraHomotopy[ graph, Sequence @@ If[ closedQ, loopOf /@ pair, pair ], Method -> "Exhaustive", opts ] =!= { } ] /; closedQ === closedOf @ b ]
 
 (* a closed walk is null-homotopic iff it is homotopic, as a based loop, to the constant walk at its base point; a vertex list or an open walk graph is read as closed *)
 
@@ -345,8 +334,7 @@ HomotopyMoveType[ walk1_List, walk2_List ] :=
 HomotopyMoveType[ w1_Graph, w2_Graph ] :=
   HomotopyMoveType[ VertexList @ w1, VertexList @ w2 ]
 
-HomotopyMoveTypes[ arg_List ] := Which[
+HomotopyMoveTypes[ arg_List ] /; MatchQ[ arg, { __Graph } | { { __Graph } .. } ] || AllTrue[ arg, MatchQ[ _List ] ] := Which[
   MatchQ[ arg, { __Graph } ],           MapThread[ HomotopyMoveType, { Most @ arg, Rest @ arg } ],
   MatchQ[ arg, { { __Graph } .. } ],    HomotopyMoveTypes /@ arg,
-  AllTrue[ arg, MatchQ[ _List ] ],      MapThread[ HomotopyMoveType, { Most @ arg, Rest @ arg } ],
-  True,                                 $Failed ]
+  AllTrue[ arg, MatchQ[ _List ] ],      MapThread[ HomotopyMoveType, { Most @ arg, Rest @ arg } ] ]

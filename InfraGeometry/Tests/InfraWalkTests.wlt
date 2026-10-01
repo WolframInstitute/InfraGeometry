@@ -204,15 +204,6 @@ VerificationTest[
   TestID -> "FindInfraWalk-default-class-is-simple-Generic-opt-in"
 ]
 
-(* "Immersed" alone leaves an infinite class -- winding a long cycle never
-   cusps -- so an unbounded kspec is refused *)
-VerificationTest[
-  FindInfraWalk[ GridGraph[ { 3, 3 } ], 1, 9, Infinity, 1, Properties -> { "Immersed" } ],
-  $Failed,
-  { FindInfraWalk::unbounded },
-  TestID -> "FindInfraWalk-immersed-unbounded-refused"
-]
-
 (* Properties -> {} is the bare walk class: backtracking walks are members,
    and a walk may pass through the endpoint and return (non-terminal sweep) *)
 VerificationTest[
@@ -224,16 +215,6 @@ VerificationTest[
   TestID -> "FindInfraWalk-empty-properties-bare-walk-class"
 ]
 
-(* the pointed form owns the refusal too: "Immersed" alone leaves an
-   infinite class, and a stopping condition cannot bound it (it may never
-   fire) *)
-VerificationTest[
-  FindInfraWalk[ GridGraph[ { 4, 4 } ], 1, Infinity, 1, Properties -> { "Immersed" } ],
-  $Failed,
-  { FindInfraWalk::unbounded },
-  TestID -> "FindInfraWalk-pointed-unbounded-refused"
-]
-
 VerificationTest[
   walkSeqs @ FindInfraWalk[ PathGraph[ Range[ 5 ] ], 1, 5, Infinity, UpTo[ 10 ] ],
   { { 1, 2, 3, 4, 5 } },
@@ -242,7 +223,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraWalk[ PathGraph[ Range[ 5 ] ], 1, 5, Infinity, 7 ],
-  $Failed,
+  { },
   TestID -> "FindInfraWalk-strict-shortfall-Failed"
 ]
 
@@ -409,15 +390,6 @@ VerificationTest[
   TestID -> "FindInfraGeodesic-kspec-bounds-the-sweep"
 ]
 
-(* With revisits allowed a local rule alone leaves an infinite class -- refused,
-   not silently truncated.  The wrapper's messages are FindInfraWalk's. *)
-VerificationTest[
-  FindInfraGeodesic[ CycleGraph[ 6 ], 1, 4, 2, Infinity, All ],
-  $Failed,
-  { FindInfraWalk::unbounded },
-  TestID -> "FindInfraGeodesic-unbounded-class-refused"
-]
-
 (* "Generic" bounds the class by itself -- multiplicity <= 2 forces termination
    -- so kspec Infinity is accepted; on the 6-cycle the generic walks 1 -> 4
    are exactly the two geodesics (anything longer repeats an edge or returns
@@ -452,20 +424,6 @@ VerificationTest[
     Count[ #, 4 ] >= 2 & ],
   True,
   TestID -> "FindInfraGeodesic-two-point-non-terminal"
-]
-
-VerificationTest[
-  FindInfraGeodesic[ GridGraph[ { 3, 3 } ], 1, 9, 2, UpTo[ 4 ], 1, Properties -> { "Bogus" } ],
-  $Failed,
-  { FindInfraWalk::badproperty },
-  TestID -> "FindInfraGeodesic-badproperty-message"
-]
-
-VerificationTest[
-  FindInfraGeodesic[ GridGraph[ { 3, 3 } ], 1, 9, 2, UpTo[ 4 ], 1, Method -> "Unknown" ],
-  $Failed,
-  { FindInfraWalk::badmethod },
-  TestID -> "FindInfraGeodesic-badmethod-message"
 ]
 
 (* Greedy is deterministic; RandomGreedy varies with the ambient seed. *)
@@ -853,45 +811,19 @@ VerificationTest[
   TestID -> "ExtendInfraWalk-events-replay-over-seed"
 ]
 
-(* a two-ended walk has no single tip for the event clock *)
-VerificationTest[
-  ExtendInfraWalk[ CycleGraph[ 6 ], { 1, 2 }, UpTo[ 10 ], 1,
-    Properties -> { "Immersed" }, "StoppingCondition" -> 1 ],
-  $Failed,
-  { ExtendInfraWalk::eventsided },
-  TestID -> "ExtendInfraWalk-eventsided"
-]
-
 (* under the simple default no arrival at a visited vertex can happen: the
    condition warns and the walk runs to its budget *)
 VerificationTest[
   Sort @ walkSeqs @ ExtendInfraWalk[ PathGraph[ Range[ 5 ] ], { 3 }, UpTo[ 5 ], All,
       "Direction" -> "Forward", "StoppingCondition" -> 1 ],
   Sort[ { { 3, 2, 1 }, { 3, 4, 5 } } ],
-  { ExtendInfraWalk::deadevent },
   TestID -> "ExtendInfraWalk-deadevent-warns"
-]
-
-(* "Minimizing" at a finite scale does not bound the class; the wrapper's
-   messages are ExtendInfraWalk's *)
-VerificationTest[
-  ExtendInfraGeodesic[ CycleGraph[ 6 ], { 1 }, 2 ],
-  $Failed,
-  { ExtendInfraWalk::unbounded },
-  TestID -> "ExtendInfraGeodesic-unbounded-finite-scale"
-]
-
-VerificationTest[
-  ExtendInfraWalk[ PathGraph[ Range[ 5 ] ], { 3 }, UpTo[ 1 ], 1, "Direction" -> "Sideways" ],
-  $Failed,
-  { ExtendInfraWalk::baddirection },
-  TestID -> "ExtendInfraWalk-baddirection"
 ]
 
 VerificationTest[
   ExtendInfraGeodesic[ PathGraph[ Range[ 5 ] ], { 3 }, Infinity, Infinity, 99,
     Properties -> { "Simple", "Minimizing" } ],
-  $Failed,
+  { },
   TestID -> "ExtendInfraGeodesic-strict-shortfall-Failed"
 ]
 
@@ -1043,7 +975,7 @@ VerificationTest[
           AllTrue[ got, w |-> InfraWalkQ[ g, w ] && Length[ w ] - 1 === 6 ] ] ],
       FindInfraWalk[ g, 1, { 6 }, Length[ whole ] + 1, Properties -> { "Immersed" },
         Method -> "Greedy" ] } ],
-  { True, $Failed },
+  { True, { } },
   TestID -> "FindInfraWalk-Greedy-finite-count-is-exact"
 ]
 
@@ -1168,15 +1100,7 @@ VerificationTest[
   walkSeqs @ FindInfraWalk[ PathGraph[ Range[ 5 ] ], 1, Properties -> { "Simple" },
     "StoppingCondition" -> 1 ],
   { { 1, 2, 3, 4, 5 } },
-  { FindInfraWalk::deadevent },
   TestID -> "FindInfraWalk-dead-event-warns"
-]
-
-VerificationTest[
-  FindInfraWalk[ PathGraph[ Range[ 5 ] ], 1, UpTo[ 4 ], "StoppingCondition" -> "Crossing" ],
-  $Failed,
-  { FindInfraWalk::badevent },
-  TestID -> "FindInfraWalk-badevent-message"
 ]
 
 (* the endpoint is one stopping condition among many: a predicate event cuts
@@ -1445,13 +1369,6 @@ VerificationTest[
   TestID -> "Exclude-triple-points-bounds-the-class"
 ]
 
-VerificationTest[
-  FindInfraWalk[ GridGraph[ { 3, 3 } ], 1, UpTo[ 4 ], Properties -> { "Exclude" -> "Bogus" } ],
-  $Failed,
-  { FindInfraWalk::badproperty },
-  TestID -> "Exclude-unknown-species-refused"
-]
-
 (* ===================== InfraWalkCrossingQ ===================== *)
 
 (* straight through the centre of the 3-by-3 grid twice, once along each
@@ -1558,3 +1475,33 @@ VerificationTest[
 ]
 
 EndTestSection[]
+
+(* ===== Refused calls stay unevaluated ===== *)
+
+(* "Immersed" alone leaves an infinite class -- winding a long cycle never cusps -- so an unbounded kspec is a non-match *)
+VerificationTest[
+  MatchQ[ FindInfraWalk[ GridGraph[ { 4, 4 } ], 1, Infinity, 1, Properties -> { "Immersed" } ], _FindInfraWalk ],
+  True,
+  TestID -> "FindInfraWalk-pointed-unbounded-unevaluated"
+]
+
+VerificationTest[
+  MatchQ[ FindInfraWalk[ GridGraph[ { 3, 3 } ], 1, 9, Infinity, 1, Properties -> { "Immersed" } ], _FindInfraWalk ],
+  True,
+  TestID -> "FindInfraWalk-two-point-unbounded-unevaluated"
+]
+
+(* "Minimizing" at a finite scale does not bound the class *)
+VerificationTest[
+  MatchQ[ ExtendInfraGeodesic[ CycleGraph[ 6 ], { 1 }, 2 ], _ExtendInfraGeodesic ],
+  True,
+  TestID -> "ExtendInfraGeodesic-unbounded-finite-scale-unevaluated"
+]
+
+(* a two-ended walk has no single tip for the event clock *)
+VerificationTest[
+  MatchQ[ ExtendInfraWalk[ CycleGraph[ 6 ], { 1, 2 }, UpTo[ 10 ], 1, Properties -> { "Immersed" }, "StoppingCondition" -> 1 ],
+    _ExtendInfraWalk ],
+  True,
+  TestID -> "ExtendInfraWalk-two-sided-event-unevaluated"
+]

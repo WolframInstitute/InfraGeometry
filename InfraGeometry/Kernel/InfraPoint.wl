@@ -1,15 +1,13 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-FindInfraPoint::badfrom = "\"From\" specification `1` is not supported by FindInfraPoint. Supported: All, \"Random\", \"Center\", \"Periphery\", {\"Center\", cap}, anchor -> spec, a vertex, a vertex list, a density.";
-
 Options[ FindInfraPoint ] = { "From" -> "Random", "Distance" -> None, "MaxCliques" -> All };
 
-FindInfraPoint[ graph_Graph, count : ( UpTo[ _Integer ] | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
+FindInfraPoint[ graph_Graph, count : ( UpTo[ _Integer ] | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    VertexQ[ graph, OptionValue[ FindInfraPoint, { opts }, "From" ] ] ||
+      MatchQ[ OptionValue[ FindInfraPoint, { opts }, "From" ],
+        All | "Random" | "Center" | "Periphery" | { "Center", _Integer | Infinity } | _Association | _Rule | _List ] :=
   Module[ { from = OptionValue[ "From" ], dist = OptionValue[ "Distance" ], maxCl = OptionValue[ "MaxCliques" ],
             n = Replace[ count, { UpTo[ k_ ] :> k, Automatic -> 1 } ], pool, distMatrix, finiteMax, cliques },
-    If[ ! ( VertexQ[ graph, from ] || MatchQ[ from, All | "Random" | "Center" | "Periphery" |
-          { "Center", _Integer | Infinity } | _Association | _Rule | _List ] ),
-      Message[ FindInfraPoint::badfrom, from ]; Return[ $Failed ] ];
     pool = Which[
       from === "Center",    GraphCenter @ graph,
       from === "Periphery", GraphPeriphery @ graph,
@@ -68,11 +66,12 @@ FindInfraPoint[ graph_Graph, count : ( UpTo[ _Integer ] | Automatic ) : Automati
                 If[ cliques === { }, { }, RandomSample[ RandomChoice @ cliques, UpTo[ n ] ] ] ] ] ] ] ] ]
 
 FindInfraPoint[ graph_Graph, All, opts : OptionsPattern[] ] :=
-  FindInfraPoint[ graph, UpTo[ VertexCount[ graph ] ], opts ]
+  With[ { result = FindInfraPoint[ graph, UpTo[ VertexCount[ graph ] ], opts ] },
+    result /; ListQ[ result ] ]
 
 FindInfraPoint[ graph_Graph, n_Integer, opts : OptionsPattern[] ] :=
   With[ { result = FindInfraPoint[ graph, UpTo[ n ], opts ] },
-    If[ Length[ result ] < n, $Failed, result ] ]
+    If[ Length[ result ] < n, { }, result ] /; ListQ[ result ] ]
 
 RandomInfraPoint[ graph_Graph ] := RandomChoice @ VertexList @ graph
 
@@ -219,7 +218,7 @@ FindInfraReflection[ graph_Graph, x_, a_,
     Switch[ count,
       All,   reps,
       _UpTo, Take[ reps, count ],
-      _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
+      _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ]
 
 (* Euclid I.1: c with d(p1, c) = d(p2, c) = d(p1, p2), the intersection of the two spheres *)
 
@@ -238,7 +237,7 @@ CompleteInfraEquilateralTriangle[ graph_Graph, p1_, p2_,
     Switch[ count,
       All,   reps,
       _UpTo, Take[ reps, count ],
-      _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
+      _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ]
 
 FindInfraCommonPoint[ graph_Graph, lines_List,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
@@ -250,7 +249,7 @@ FindInfraCommonPoint[ graph_Graph, lines_List,
     Switch[ count,
       All,   reps,
       _UpTo, Take[ reps, count ],
-      _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
+      _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ]
 
 FindClosestInfraPoint[ graph_Graph, line_, point_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
@@ -279,18 +278,16 @@ FindClosestInfraPoint[ graph_Graph, line_, point_,
     Switch[ count,
       All,   reps,
       _UpTo, Take[ reps, count ],
-      _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
-
-SelectInfraPoint::badfrom = "\"From\" specification `1` is not supported by SelectInfraPoint. Supported: All, \"Random\", \"Center\", \"Periphery\", anchor -> spec, a vertex, a vertex list, a density.";
+      _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ]
 
 Options[ SelectInfraPoint ] = { "From" -> All, "Distance" -> None, "MaxCliques" -> All };
 
-SelectInfraPoint[ graph_Graph, vertices_List, UpTo[ nMax_Integer ], opts : OptionsPattern[] ] :=
+SelectInfraPoint[ graph_Graph, vertices_List, UpTo[ nMax_Integer ], opts : OptionsPattern[] ] /;
+    VertexQ[ graph, OptionValue[ SelectInfraPoint, { opts }, "From" ] ] ||
+      MatchQ[ OptionValue[ SelectInfraPoint, { opts }, "From" ],
+        All | "Random" | "Center" | "Periphery" | { "Center", _Integer | Infinity } | _Association | _Rule | _List ] :=
   With[ { fromSpec = OptionValue[ "From" ], distSpec = OptionValue[ "Distance" ], maxCl = OptionValue[ "MaxCliques" ] },
     Which[
-      ! ( VertexQ[ graph, fromSpec ] || MatchQ[ fromSpec, All | "Random" | "Center" | "Periphery" |
-            { "Center", _Integer | Infinity } | _Association | _Rule | _List ] ),
-        Message[ SelectInfraPoint::badfrom, fromSpec ]; $Failed,
       Length[ vertices ] <= 1, vertices,
       True,
         Module[ { vIdx, subMatrix, poolIdx, pool, poolSubMatrix, finiteMax, range,
@@ -372,11 +369,12 @@ SelectInfraPoint[ graph_Graph, vertices_List, UpTo[ nMax_Integer ], opts : Optio
   ]
 
 SelectInfraPoint[ graph_Graph, vertices_List, All, opts : OptionsPattern[] ] :=
-  SelectInfraPoint[ graph, vertices, UpTo[ Length[ vertices ] ], opts ]
+  With[ { result = SelectInfraPoint[ graph, vertices, UpTo[ Length[ vertices ] ], opts ] },
+    result /; ListQ[ result ] ]
 
 SelectInfraPoint[ graph_Graph, vertices_List, n_Integer : 1, opts : OptionsPattern[] ] :=
   With[ { result = SelectInfraPoint[ graph, vertices, UpTo[ n ], opts ] },
-    If[ ListQ[ result ] && Length[ result ] < n, $Failed, result ] ]
+    If[ Length[ result ] < n, { }, result ] /; ListQ[ result ] ]
 
 SelectInfraPoint[ graph_Graph, shape : _Association | _Graph | { __Graph },
                   countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] :=

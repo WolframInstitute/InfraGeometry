@@ -36,38 +36,34 @@ FindAdvancingInfraFront[ graph_Graph, origin_, steps_Integer ] :=
     Union /@ NestList[ step, { src, src }, steps ][[ All, 2 ]]
   ]
 
-InfraBoundary::badmethod = "Method `1` is not supported by InfraBoundary.";
-InfraInterior::badmethod = "Method `1` is not supported by InfraInterior.";
-
 Options[ InfraBoundary ] = { Method -> "Combinatorial" };
 Options[ InfraInterior ] = { Method -> "Combinatorial" };
 
-InfraBoundary[ g_Graph, s_, OptionsPattern[] ] :=
+InfraBoundary[ g_Graph, s_, opts : OptionsPattern[] ] /;
+    MatchQ[ OptionValue[ InfraBoundary, { opts }, Method ], "Combinatorial" | "Alexandrov" | { "Combinatorial" | "Alexandrov", ___ } ] :=
   With[ { vs = Keys @ InfraDensity[ g, s ] },
     Switch[ Replace[ OptionValue[ Method ], { m_String, ___ } :> m ],
       "Combinatorial", Union @ GraphBoundary[ g, vs ],
       "Alexandrov",    Union @ TopologicalBoundary[
-        BallTopology[ g, Lookup[ Replace[ OptionValue[ Method ], { { _String, o___ } :> { o }, _ -> { } } ], "Radius", 1 ] ], vs ],
-      _, Message[ InfraBoundary::badmethod, OptionValue[ Method ] ]; $Failed
+        BallTopology[ g, Lookup[ Replace[ OptionValue[ Method ], { { _String, o___ } :> { o }, _ -> { } } ], "Radius", 1 ] ], vs ]
     ]
   ]
 
-InfraInterior[ g_Graph, s_, OptionsPattern[] ] :=
+InfraInterior[ g_Graph, s_, opts : OptionsPattern[] ] /;
+    MatchQ[ OptionValue[ InfraInterior, { opts }, Method ], "Combinatorial" | "Alexandrov" | { "Combinatorial" | "Alexandrov", ___ } ] :=
   With[ { vs = Keys @ InfraDensity[ g, s ] },
     Switch[ Replace[ OptionValue[ Method ], { m_String, ___ } :> m ],
       "Combinatorial", Union @ GraphInterior[ g, vs ],
       "Alexandrov",    Union @ TopologicalInterior[
-        BallTopology[ g, Lookup[ Replace[ OptionValue[ Method ], { { _String, o___ } :> { o }, _ -> { } } ], "Radius", 1 ] ], vs ],
-      _, Message[ InfraInterior::badmethod, OptionValue[ Method ] ]; $Failed
+        BallTopology[ g, Lookup[ Replace[ OptionValue[ Method ], { { _String, o___ } :> { o }, _ -> { } } ], "Radius", 1 ] ], vs ]
     ]
   ]
-
-InfraVolume::badmeasure = "Measure `1` is not supported by InfraVolume; use \"FullCount\", \"WithoutBoundary\", \"HalfBoundary\", or \"Boundary\".";
 
 Options[ InfraVolume ] = { "Measure" -> "FullCount", Method -> "Combinatorial" };
 
 (* a walk graph or a bundle realises the union of its walks as path graphs -- only their own consecutive edges, so distinct lines are not joined and a line never gains the chords of its induced subgraph.  A vertex is then interior iff every g-edge at it is a line edge, so a 1-D curve has nearly empty interior *)
-InfraVolume[ g_Graph, w : ( _Graph | { __Graph } ), opts : OptionsPattern[] ] :=
+InfraVolume[ g_Graph, w : ( _Graph | { __Graph } ), opts : OptionsPattern[] ] /;
+    MatchQ[ OptionValue[ InfraVolume, { opts }, "Measure" ], "FullCount" | "WithoutBoundary" | "HalfBoundary" | "Boundary" ] :=
   With[
     { walksOf = x |-> With[ { vs = VertexList @ x },
         { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
@@ -89,19 +85,18 @@ InfraVolume[ g_Graph, w : ( _Graph | { __Graph } ), opts : OptionsPattern[] ] :=
       "FullCount",       VertexCount[ h ],
       "WithoutBoundary", Length @ GraphInterior[ g, h ],
       "HalfBoundary",    VertexCount[ h ] - Length[ GraphBoundary[ g, h ] ] / 2,
-      "Boundary",        Length @ GraphBoundary[ g, h ],
-      _, Message[ InfraVolume::badmeasure, OptionValue[ "Measure" ] ]; $Failed
+      "Boundary",        Length @ GraphBoundary[ g, h ]
     ]
   ]
 
-InfraVolume[ g_Graph, s_, opts : OptionsPattern[] ] :=
+InfraVolume[ g_Graph, s_, opts : OptionsPattern[] ] /;
+    MatchQ[ OptionValue[ InfraVolume, { opts }, "Measure" ], "FullCount" | "WithoutBoundary" | "HalfBoundary" | "Boundary" ] :=
   With[ { vs = Keys @ InfraDensity[ g, s ] },
     Switch[ OptionValue[ "Measure" ],
       "FullCount",       Length[ vs ],
       "WithoutBoundary", Length[ InfraInterior[ g, vs, Method -> OptionValue[ Method ] ] ],
       "HalfBoundary",    Length[ vs ] - Length[ InfraBoundary[ g, vs, Method -> OptionValue[ Method ] ] ] / 2,
-      "Boundary",        Length[ InfraBoundary[ g, vs, Method -> OptionValue[ Method ] ] ],
-      _, Message[ InfraVolume::badmeasure, OptionValue[ "Measure" ] ]; $Failed
+      "Boundary",        Length[ InfraBoundary[ g, vs, Method -> OptionValue[ Method ] ] ]
     ]
   ]
 

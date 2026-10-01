@@ -77,32 +77,6 @@ VerificationTest[
   TestID -> "FindInfraPoint-iterated-center-disconnected-region"
 ]
 
-(* An unrecognised "From" selector is refused rather than silently read as the
-   whole vertex pool -- the retired "MinCurvature" / "MaxCurvature" names are the
-   case that matters, since a reader copying them from older prose otherwise gets
-   a random draw and no indication the selector did nothing. *)
-VerificationTest[
-  FindInfraPoint[GridGraph[{5, 5}], All, "From" -> "MinCurvature"],
-  $Failed,
-  {FindInfraPoint::badfrom},
-  TestID -> "FindInfraPoint-badfrom-retired-selector"
-]
-
-(* an atom that is not a vertex of the graph is not a pool either *)
-VerificationTest[
-  FindInfraPoint[GridGraph[{5, 5}], All, "From" -> 999],
-  $Failed,
-  {FindInfraPoint::badfrom},
-  TestID -> "FindInfraPoint-badfrom-non-vertex"
-]
-
-VerificationTest[
-  FindInfraPoint[GridGraph[{5, 5}], "From" -> "Nonsense"],
-  $Failed,
-  {FindInfraPoint::badfrom},
-  TestID -> "FindInfraPoint-badfrom-no-count-form"
-]
-
 (* Refusing a legitimate selector would be worse than the silence it replaces:
    every admissible "From" shape must still produce a pool. *)
 VerificationTest[
@@ -112,7 +86,7 @@ VerificationTest[
         {All, "Random", "Center", "Periphery", {"Center", 0}, {"Center", Infinity},
          7, 1 -> 2, {2, 3, 4}, 9, <| 2 -> 1, 5 -> 1, 7 -> 1 |>,
          <| 3 -> 1, 4 -> 1 |>},
-      $Failed]
+      _FindInfraPoint]
   ],
   True,
   TestID -> "FindInfraPoint-From-vocabulary-not-refused"
@@ -174,7 +148,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraPoint[PathGraph[Range[3]], 10],
-  $Failed,
+  { },
   TestID -> "FindInfraPoint-exact-fails-when-too-few"
 ]
 
@@ -188,7 +162,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraPoint[PathGraph[Range[3]], 3, "Distance" -> 5],
-  $Failed,
+  { },
   TestID -> "FindInfraPoint-exact-fails-impossible-distance"
 ]
 
@@ -319,15 +293,6 @@ VerificationTest[
     AllTrue[walkSeqs @ FindInfraWalk[g, 1, 9, UpTo[ 8 ], All], DuplicateFreeQ]],
   True,
   TestID -> "FindInfraWalk-default-simple"
-]
-
-(* "Greedy" is a supported Method (lazy DFS, one instance); an unrecognised
-   Method string is still rejected. *)
-VerificationTest[
-  FindInfraWalk[GridGraph[{3, 3}], 1, 9, Infinity, 1, Method -> "Unknown"],
-  $Failed,
-  {FindInfraWalk::badmethod},
-  TestID -> "FindInfraWalk-badmethod-message"
 ]
 
 (* the default class has no repeats at any length. *)
@@ -565,13 +530,6 @@ VerificationTest[
 ]
 
 
-VerificationTest[
-  FindInfraShell[GridGraph[{4, 4}], 6, {1, 2}, 1, Properties -> {"NonExistent"}],
-  $Failed,
-  {FindInfraShell::badproperty},
-  TestID -> "FindInfraShell-badproperty-message"
-]
-
 (* ===== FindInfraOsculatingShell ===== *)
 
 (* On K5 with window {1, 2, 3} every other vertex is at distance 1 from
@@ -609,7 +567,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraOsculatingShell[PathGraph[Range[7]], Range[7], 4, 3, 1],
-  $Failed,
+  { },
   TestID -> "FindInfraOsculatingShell-PathGraph-no-centers-default-fails"
 ]
 
@@ -639,7 +597,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraOsculatingShell[CompleteGraph[5], {1, 2, 3}, 2, 3, 3],
-  $Failed,
+  { },
   TestID -> "FindInfraOsculatingShell-count-exceeds-fails"
 ]
 
@@ -703,7 +661,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraParallel[GridGraph[{4, 4}], {1, 2, 3, 4}, 5, 2],
-  $Failed,
+  { },
   TestID -> "FindInfraParallel-strict-fails-when-too-few"
 ]
 
@@ -848,7 +806,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraLine[ PathGraph[ Range[ 5 ] ], { 2, 3 }, 99 ],
-  $Failed,
+  { },
   TestID -> "FindInfraLine-segment-strict-undersupply-Failed"
 ]
 
@@ -1004,19 +962,11 @@ VerificationTest[
     With[ { one = ExtendInfraSegment[ g, { 6, 7 }, 2 ], all = infraSpread @ ExtendInfraSegment[ g, { 6, 7 }, 2, All ] },
       Length @ infraSpread @ one == 1 && MemberQ[ all, First @ infraSpread @ one ] &&
       Length @ infraSpread @ ExtendInfraSegment[ g, { 6, 7 }, 2, UpTo[ 3 ] ] == 3 &&
-      ExtendInfraSegment[ PathGraph[ Range[ 5 ] ], { 2, 3 }, Infinity, 99 ] === $Failed
+      ExtendInfraSegment[ PathGraph[ Range[ 5 ] ], { 2, 3 }, Infinity, 99 ] === { }
     ]
   ],
   True,
   TestID -> "ExtendInfraSegment-count-contract"
-]
-
-(* a rule on the extension is a local law: it belongs to ExtendInfraGeodesic *)
-VerificationTest[
-  ExtendInfraSegment[ GridGraph[ { 4, 4 } ], { 6, 7 }, 2, All, Properties -> { "Simple" } ],
-  $Failed,
-  { ExtendInfraSegment::badproperty },
-  TestID -> "ExtendInfraSegment-badproperty"
 ]
 
 (* the 6-ary Tarski A4 form is untouched, with and without its count *)

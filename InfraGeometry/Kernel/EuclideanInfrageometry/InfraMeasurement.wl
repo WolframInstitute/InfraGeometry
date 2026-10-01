@@ -120,7 +120,7 @@ InfraVertexList[ graph_Graph,
           Automatic, First[ members, { } ],
           All,       members,
           _UpTo,     Take[ members, count ],
-          _,         If[ Length @ members < count, $Failed, Take[ members, count ] ] ] ] ] ]
+          _,         If[ Length @ members < count, { }, Take[ members, count ] ] ] ] ] ]
 
 InfraMemberQ[ graph_Graph,
     obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ }, ___ ] |

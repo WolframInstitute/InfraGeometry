@@ -2,16 +2,15 @@ Package["WolframInstitute`InfraGeometry`"]
 
 (* a vertex subset of the level surface { v : rmin <= d(c, v) <= rmax }, a sorted vertex list; the count-less call is one shell, a bounded count and All a List of them -- the level set itself without Properties, the minimal admissible subsets under them *)
 
-FindInfraShell::badmethod   = "Method `1` is not supported by FindInfraShell.";
-FindInfraShell::badproperty = "Property `1` is not supported by FindInfraShell.";
-
 Options[ FindInfraShell ] = {
   Properties -> { },
   Method     -> Automatic
 };
 
 FindInfraShell[ graph_Graph, p_, r_,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ]/;
+    SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraShell, { opts }, Properties ] ] &&
+      MatchQ[ OptionValue[ FindInfraShell, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
   With[ { results = Map[
       p0 |-> Module[ { properties, methodSpec, methodHead, pruning, range, localG, levelSet, radius, admissible,
                        cap, acc, seen, pick, descend, frontier, minimals, next, removable, key },
@@ -29,15 +28,13 @@ FindInfraShell[ graph_Graph, p_, r_,
         radius = If[ NumericQ[ r ], r, Mean[ r ] ];
         If[ properties === { },
           { levelSet },
-          Catch[
-            admissible = With[ { tests = Replace[ properties, {
+          admissible = With[ { tests = Replace[ properties, {
                   "Separating" -> ( t |-> With[ { rem = VertexDelete[ localG, t ] },
                     { centerComp = SelectFirst[ ConnectedComponents[ rem ], MemberQ[ #, p0 ] & ] },
                     centerComp =!= Missing[ "NotFound" ] &&
                     AllTrue[ centerComp, GraphDistance[ localG, p0, # ] <= radius & ] &&
                     AllTrue[ Complement[ VertexList[ rem ], centerComp ], GraphDistance[ localG, p0, # ] > radius & ] ] ),
-                  "Connected"  -> ( t |-> t =!= { } && ConnectedGraphQ @ Subgraph[ localG, t ] ),
-                  other_       :> ( Message[ FindInfraShell::badproperty, other ]; Throw[ $Failed ] ) }, { 1 } ] },
+                  "Connected"  -> ( t |-> t =!= { } && ConnectedGraphQ @ Subgraph[ localG, t ] ) }, { 1 } ] },
               t |-> AllTrue[ tests, # @ t & ] ];
             Switch[ methodHead,
               "Exhaustive",
@@ -82,26 +79,25 @@ FindInfraShell[ graph_Graph, p_, r_,
                           If[ Length @ acc >= cap, Throw[ acc, descend ] ],
                           Scan[ descend[ DeleteCases[ T, # ] ] &, pick @ peelable ] ] ] ];
                   Catch[ descend[ levelSet ]; acc, descend ]
-                ],
-              _,              Message[ FindInfraShell::badmethod, methodSpec ]; $Failed
+                ]
             ]
-          ]
         ]
       ], Keys @ InfraDensity[ graph, p ] ] },
-    If[ MemberQ[ results, $Failed ], $Failed,
-      With[ { shells = DeleteDuplicates[ Union /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
+    With[ { shells = DeleteDuplicates[ Union /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
         Switch[ count,
           Automatic, First[ shells, { } ],
           All,       shells,
           _UpTo,     Take[ shells, count ],
-          _,         If[ Length @ shells < count, $Failed, Take[ shells, count ] ] ] ] ] ]
+          _,         If[ Length @ shells < count, { }, Take[ shells, count ] ] ] ] ]
 
 (* for every c equidistant from all k window vertices at common distance r, the level set { v : d(c, v) == r } *)
 
 Options[ FindInfraOsculatingShell ] = Options[ FindInfraShell ];
 
 FindInfraOsculatingShell[ graph_Graph, path_, i_Integer, k_Integer,
-    count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[ ] ] :=
+    count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[ ] ]/;
+    SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraOsculatingShell, { opts }, Properties ] ] &&
+      MatchQ[ OptionValue[ FindInfraOsculatingShell, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
   Module[ { walksOf, walks, vlist, vidx, dm, pairs, sets },
     walksOf = w |-> With[ { vs = VertexList @ w },
       { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
@@ -143,20 +139,20 @@ FindInfraOsculatingShell[ graph_Graph, path_, i_Integer, k_Integer,
     Switch[ count,
       All,   sets,
       _UpTo, Take[ sets, count ],
-      _,     If[ Length @ sets < count, $Failed, Take[ sets, count ] ] ]
+      _,     If[ Length @ sets < count, { }, Take[ sets, count ] ] ]
   ]
-
-FindInfraShellCenter::badmethod     = "Method `1` is not MaximalChordsBisectors or EquidistantPoints.";
-FindInfraShellCenter::badmaximality = "Maximality `1` is not PerVertex or Diameter.";
-FindInfraShellCenter::baddistance   = "Distance `1` is not Extrinsic or Intrinsic.";
-FindInfraShellCenter::badparity     = "Parity `1` is not All, Even, or Odd.";
 
 Options[ FindInfraShellCenter ] = { Method -> "MaximalChordsBisectors" };
 
 FindInfraShellCenter[ graph_Graph, fam_Association, opts : OptionsPattern[] ] :=
   FindInfraShellCenter[ graph, Keys @ fam, opts ]
 
-FindInfraShellCenter[ graph_Graph, vs_List, OptionsPattern[] ] :=
+FindInfraShellCenter[ graph_Graph, vs_List, opts : OptionsPattern[] ] /;
+    MatchQ[ OptionValue[ FindInfraShellCenter, { opts }, Method ],
+      "MaximalChordsBisectors" | "EquidistantPoints" | { "EquidistantPoints", ___ } |
+        ( { "MaximalChordsBisectors", o___ } /; MatchQ[ Lookup[ { o }, "Maximality", "PerVertex" ], "PerVertex" | "Diameter" ] &&
+          MatchQ[ Lookup[ { o }, "Distance", "Extrinsic" ], "Extrinsic" | "Intrinsic" ] &&
+          MatchQ[ Lookup[ { o }, "Parity", All ], All | "Even" | "Odd" ] ) ] :=
   With[ { spec = OptionValue[ Method ] },
     { mopts = Replace[ spec, { { _String, o___ } :> { o }, _ -> { } } ] },
     { maximality = Lookup[ mopts, "Maximality", "PerVertex" ],
@@ -164,11 +160,6 @@ FindInfraShellCenter[ graph_Graph, vs_List, OptionsPattern[] ] :=
       parity     = Lookup[ mopts, "Parity", All ] },
     Switch[ Replace[ spec, { m_String, ___ } :> m ],
       "MaximalChordsBisectors",
-        Which[
-          ! MatchQ[ maximality, "PerVertex" | "Diameter" ], Message[ FindInfraShellCenter::badmaximality, maximality ]; $Failed,
-          ! MatchQ[ distance, "Extrinsic" | "Intrinsic" ],  Message[ FindInfraShellCenter::baddistance, distance ]; $Failed,
-          ! MatchQ[ parity, All | "Even" | "Odd" ],         Message[ FindInfraShellCenter::badparity, parity ]; $Failed,
-          True,
             With[ { dm  = GraphDistanceMatrix[ graph ],
                     idx = AssociationThread[ VertexList[ graph ] -> Range @ VertexCount @ graph ] },
               { dsel = If[ distance === "Intrinsic",
@@ -199,12 +190,11 @@ FindInfraShellCenter[ graph_Graph, vs_List, OptionsPattern[] ] :=
                     Cases[ Transpose @ { verts, dm[[ ia ]], dm[[ All, ib ]] },
                       { v_, da_, db_ } /; da + db == d && MemberQ[ half, da ] :> { v, da } ] ],
                   kept ] ], Last -> First ] },
-              KeyValueMap[ { r, vlist } |-> { KeySort @ Counts @ vlist, r }, KeySort @ radiiBins ] ] ],
+              KeyValueMap[ { r, vlist } |-> { KeySort @ Counts @ vlist, r }, KeySort @ radiiBins ] ],
       "EquidistantPoints",
         With[ { ds = AssociationThread[ VertexList[ graph ], GraphDistance[ graph, First @ vs ] ] },
           { centers = Select[ FindInfraEquidistantSet[ graph, vs ], c |-> 0 < ds[ c ] < Infinity ] },
-          KeyValueMap[ { r, cs } |-> { KeySort @ AssociationMap[ 1 &, cs ], r }, KeySort @ GroupBy[ centers, ds ] ] ],
-      _, Message[ FindInfraShellCenter::badmethod, spec ]; $Failed ] ]
+          KeyValueMap[ { r, cs } |-> { KeySort @ AssociationMap[ 1 &, cs ], r }, KeySort @ GroupBy[ centers, ds ] ] ] ] ]
 
 (* vs is a metric shell iff some c is equidistant from all of vs at a common finite radius r and vs is exactly { v : d(c, v) == r } *)
 

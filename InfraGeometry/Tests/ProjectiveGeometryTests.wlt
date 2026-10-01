@@ -50,7 +50,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraCommonLine[PathGraph[Range[5]], {1, 3}, 2],
-  $Failed,
+  { },
   TestID -> "FindInfraCommonLine-strict-fails-when-too-few"
 ]
 
@@ -110,7 +110,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraCommonPoint[PathGraph[Range[5]], {{1, 2}, {3, 4}}, 1],
-  $Failed,
+  { },
   TestID -> "FindInfraCommonPoint-strict-fails-when-empty"
 ]
 

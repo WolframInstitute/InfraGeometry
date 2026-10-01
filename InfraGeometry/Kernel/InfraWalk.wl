@@ -4,12 +4,6 @@ Package["WolframInstitute`InfraGeometry`"]
    A rule excluding self-intersections, triple points or self-tangencies bounds the class by itself, as does "Minimizing" at scale Infinity, so kspec Infinity is legal under the default; without a bounding rule it is refused, since a stopping condition may never fire.
    kspec is UpTo[k] (at most k edges), {k} (exactly k), {lo, hi} or Infinity, never a bare integer: with no wrapper to mark it, a bare integer after p1 is the endpoint p2 of the two-point form and an Association its multiset -- on an integer-labelled substrate a budget and a vertex would otherwise collide.  A count needs an explicit kspec before it for the same reason.  When both readings fit (a vertex label that is also a {k} or {lo, hi} list) the pointed one wins *)
 
-FindInfraWalk::badproperty = "Property `1` is not a walk rule; the rules are \"Minimizing\", \"Simple\", \"Immersed\", \"Generic\", \"Exclude\" -> species, \"Straightest\", {\"Minimal\", f}, {\"Maximal\", f}, or a predicate on the window; species are \"SelfIntersections\", \"SelfTangencies\", \"Cusps\", \"TriplePoints\".";
-FindInfraWalk::badmethod   = "Method `1` is not supported.";
-FindInfraWalk::unbounded   = "the walk class at scale `1` is infinite without a length bound: give a finite kspec, add \"Simple\", \"Generic\" or an \"Exclude\" of \"SelfIntersections\", \"TriplePoints\" or \"SelfTangencies\", or ask \"Minimizing\" at scale Infinity.";
-FindInfraWalk::badevent    = "Stopping condition `1` is not supported; give n (stop at the n-th arrival at a visited vertex), a predicate on the walk so far, or {spec, \"Delay\" -> k}.";
-FindInfraWalk::deadevent   = "the stopping condition awaits a self-intersection the Properties constraints exclude; the walk runs to its budget.";
-
 Options[ FindInfraWalk ] = {
   "InfraScale"        -> Infinity,
   Properties          -> { "Simple" },
@@ -18,58 +12,64 @@ Options[ FindInfraWalk ] = {
 };
 
 FindInfraWalk[ graph_Graph, p1_, opts : OptionsPattern[] ] :=
-  FindInfraWalk[ graph, p1, Infinity, Automatic, opts ]
+  With[ { result = FindInfraWalk[ graph, p1, Infinity, Automatic, opts ] },
+    result /; Head[ result ] =!= FindInfraWalk ]
 
 FindInfraWalk[ graph_Graph, p1_,
     kspec : ( UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ),
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
-  Catch @ With[ {
-      scale     = OptionValue[ FindInfraWalk, { opts }, "InfraScale" ],
-      rules     = OptionValue[ FindInfraWalk, { opts }, Properties ],
-      condition = OptionValue[ FindInfraWalk, { opts }, "StoppingCondition" ],
-      spec      = Replace[ OptionValue[ FindInfraWalk, { opts }, Method ], Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ] },
-    { base     = NestWhile[ First, condition, MatchQ[ { _, "Delay" -> _Integer?NonNegative } ] ],
-      excluded = Union @@ Replace[ rules, {
-        "Simple"   -> { "SelfIntersections" },
-        "Immersed" -> { "Cusps" },
-        "Generic"  -> { "Cusps", "SelfTangencies", "TriplePoints" },
-        ( "Exclude" -> s_ ) :> Flatten @ { s },
-        _ -> { } }, { 1 } ] },
-    If[ ! ( base === None || ( IntegerQ[ base ] && base >= 1 ) || ! MatchQ[ base, None | _Integer | _List | _String | _Rule ] ),
-      Message[ FindInfraWalk::badevent, base ]; Throw[ $Failed ] ];
-    Scan[ rule |-> If[ MatchQ[ rule, _String | { _String, ___ } | _Rule ] && ! MatchQ[ rule,
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    With[ { rules = OptionValue[ FindInfraWalk, { opts }, Properties ],
+            scale = OptionValue[ FindInfraWalk, { opts }, "InfraScale" ],
+            base  = NestWhile[ First, OptionValue[ FindInfraWalk, { opts }, "StoppingCondition" ], MatchQ[ { _, "Delay" -> _Integer?NonNegative } ] ] },
+      { excluded = Union @@ Replace[ rules, {
+          "Simple" -> { "SelfIntersections" }, "Immersed" -> { "Cusps" }, "Generic" -> { "Cusps", "SelfTangencies", "TriplePoints" },
+          ( "Exclude" -> sp_ ) :> Flatten @ { sp }, _ -> { } }, { 1 } ] },
+      MatchQ[ OptionValue[ FindInfraWalk, { opts }, Method ],
+          Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] &&
+        ( base === None || ( IntegerQ[ base ] && base >= 1 ) || ! MatchQ[ base, None | _Integer | _List | _String | _Rule ] ) &&
+        AllTrue[ rules, rule |-> ! MatchQ[ rule, _String | { _String, ___ } | _Rule ] || MatchQ[ rule,
           "Minimizing" | "Simple" | "Immersed" | "Generic" | "Straightest" | { "Minimal", _ } | { "Maximal", _ } |
-          ( "Exclude" -> ( "SelfIntersections" | "SelfTangencies" | "Cusps" | "TriplePoints" |
-              { ( "SelfIntersections" | "SelfTangencies" | "Cusps" | "TriplePoints" ) .. } ) ) ],
-        Message[ FindInfraWalk::badproperty, rule ]; Throw[ $Failed ] ], rules ];
-    If[ IntegerQ[ base ] &&
-        ( MemberQ[ excluded, "SelfIntersections" ] || ( scale === Infinity && MemberQ[ rules, "Minimizing" ] ) ),
-      Message[ FindInfraWalk::deadevent ] ];
-    If[ kspec === Infinity && ! ( ( scale === Infinity && MemberQ[ rules, "Minimizing" ] ) ||
-          IntersectingQ[ excluded, { "SelfIntersections", "TriplePoints", "SelfTangencies" } ] ),
-      Message[ FindInfraWalk::unbounded, scale ]; Throw[ $Failed ] ];
-    If[ ! MatchQ[ Replace[ spec, { m_String, ___ } :> m ], "Exhaustive" | "Greedy" | "RandomGreedy" ],
-      Message[ FindInfraWalk::badmethod, spec ]; Throw[ $Failed ] ];
-    With[ { walks = DeleteDuplicates @ Catenate[
-        If[ VertexQ[ graph, # ],
-          Quiet[ ExtendInfraWalk[ graph, { # }, kspec, Replace[ count, { Automatic -> UpTo[ 1 ], n_Integer :> UpTo[ n ] } ],
-            "InfraScale" -> scale, Properties -> rules, "StoppingCondition" -> condition,
-            Method -> OptionValue[ FindInfraWalk, { opts }, Method ], "Direction" -> "Forward" ], ExtendInfraWalk::deadevent ],
-          { } ] & /@ Replace[ p1, { fam_Association :> Keys @ fam, x_ :> { x } } ] ] },
-      Switch[ count,
-        Automatic, First[ walks, { } ],
-        All,       walks,
-        _UpTo,     Take[ walks, count ],
-        _,         If[ Length @ walks < count, $Failed, Take[ walks, count ] ] ] ] ]
+            ( "Exclude" -> ( "SelfIntersections" | "SelfTangencies" | "Cusps" | "TriplePoints" |
+              { ( "SelfIntersections" | "SelfTangencies" | "Cusps" | "TriplePoints" ) .. } ) ) ] ] &&
+        ( kspec =!= Infinity || ( scale === Infinity && MemberQ[ rules, "Minimizing" ] ) ||
+          IntersectingQ[ excluded, { "SelfIntersections", "TriplePoints", "SelfTangencies" } ] ) ] :=
+  With[ { walks = DeleteDuplicates @ Catenate[
+      If[ VertexQ[ graph, # ],
+        ExtendInfraWalk[ graph, { # }, kspec, Replace[ count, { Automatic -> UpTo[ 1 ], n_Integer :> UpTo[ n ] } ],
+          "InfraScale" -> OptionValue[ FindInfraWalk, { opts }, "InfraScale" ],
+          Properties -> OptionValue[ FindInfraWalk, { opts }, Properties ],
+          "StoppingCondition" -> OptionValue[ FindInfraWalk, { opts }, "StoppingCondition" ],
+          Method -> OptionValue[ FindInfraWalk, { opts }, Method ], "Direction" -> "Forward" ],
+        { } ] & /@ Replace[ p1, { fam_Association :> Keys @ fam, x_ :> { x } } ] ] },
+    Switch[ count,
+      Automatic, First[ walks, { } ],
+      All,       walks,
+      _UpTo,     Take[ walks, count ],
+      _,         If[ Length @ walks < count, { }, Take[ walks, count ] ] ] ]
 
 FindInfraWalk[ graph_Graph, p1_, p2_,
     kspec : ( UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ) : Infinity,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    VertexQ[ graph, p2 ] || AssociationQ[ p2 ] :=
+    ( VertexQ[ graph, p2 ] || AssociationQ[ p2 ] ) &&
+    With[ { rules = OptionValue[ FindInfraWalk, { opts }, Properties ],
+            scale = OptionValue[ FindInfraWalk, { opts }, "InfraScale" ],
+            base  = NestWhile[ First, OptionValue[ FindInfraWalk, { opts }, "StoppingCondition" ], MatchQ[ { _, "Delay" -> _Integer?NonNegative } ] ] },
+      { excluded = Union @@ Replace[ rules, {
+          "Simple" -> { "SelfIntersections" }, "Immersed" -> { "Cusps" }, "Generic" -> { "Cusps", "SelfTangencies", "TriplePoints" },
+          ( "Exclude" -> sp_ ) :> Flatten @ { sp }, _ -> { } }, { 1 } ] },
+      MatchQ[ OptionValue[ FindInfraWalk, { opts }, Method ],
+          Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] &&
+        ( base === None || ( IntegerQ[ base ] && base >= 1 ) || ! MatchQ[ base, None | _Integer | _List | _String | _Rule ] ) &&
+        AllTrue[ rules, rule |-> ! MatchQ[ rule, _String | { _String, ___ } | _Rule ] || MatchQ[ rule,
+          "Minimizing" | "Simple" | "Immersed" | "Generic" | "Straightest" | { "Minimal", _ } | { "Maximal", _ } |
+            ( "Exclude" -> ( "SelfIntersections" | "SelfTangencies" | "Cusps" | "TriplePoints" |
+              { ( "SelfIntersections" | "SelfTangencies" | "Cusps" | "TriplePoints" ) .. } ) ) ] ] &&
+        ( kspec =!= Infinity || ( scale === Infinity && MemberQ[ rules, "Minimizing" ] ) ||
+          IntersectingQ[ excluded, { "SelfIntersections", "TriplePoints", "SelfTangencies" } ] ) ] :=
   With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
     { results = ( { q1, q2 } |-> If[ q1 === q2, { },
         Module[ { cands, keepQ, stepFn, dlFn, pick, ev, state, acc = { }, frontier, completed = { }, extended, descend },
-          Catch @ With[ {
+          With[ {
               scale      = OptionValue[ FindInfraWalk, { opts }, "InfraScale" ],
               rules      = OptionValue[ FindInfraWalk, { opts }, Properties ],
               condition  = OptionValue[ FindInfraWalk, { opts }, "StoppingCondition" ],
@@ -95,8 +95,7 @@ FindInfraWalk[ graph_Graph, p1_, p2_,
               events   = With[ { entries = Which[
                     base === None,                  { },
                     IntegerQ[ base ] && base >= 1,  { { "SelfIntersection", 0, base } },
-                    ! MatchQ[ base, None | _Integer | _List | _String | _Rule ], { { base, 0, 1 } },
-                    True, ( Message[ FindInfraWalk::badevent, base ]; Throw[ $Failed ] ) ] },
+                    True,                           { { base, 0, 1 } } ] },
                 If[ MatchQ[ condition, { _, "Delay" -> _Integer?NonNegative } ],
                   { #[[ 1 ]], condition[[ 2, 2 ]], #[[ 3 ]] } & /@ entries, entries ] ],
               species  = Map[ rule |-> Switch[ rule,
@@ -105,8 +104,6 @@ FindInfraWalk[ graph_Graph, p1_, p2_,
                         { ( "SelfIntersections" | "SelfTangencies" | "Cusps" | "TriplePoints" ) .. } ) ),
                                                                          "Constraint",
                   "Straightest" | { "Minimal", _ } | { "Maximal", _ },  "Selector",
-                  _String | { _String, ___ } | _Rule,
-                    ( Message[ FindInfraWalk::badproperty, rule ]; Throw[ $Failed ] ),
                   _,                                                     "Constraint" ],
                 rules ] },
             { checks = Map[ rule |-> If[ rule === "Minimizing",
@@ -162,12 +159,6 @@ FindInfraWalk[ graph_Graph, p1_, p2_,
                       Last @ prev ] } ] ];
             dlFn = walk |-> Last @ state @ walk;
             stepFn = If[ ev === { }, cands, { g, walk } |-> If[ Length[ walk ] - 1 >= dlFn @ walk, { }, cands[ g, walk ] ] ];
-            If[ MatchQ[ events, { { "SelfIntersection", _, _ } } ] &&
-                ( MemberQ[ excluded, "SelfIntersections" ] || ( scale === Infinity && MemberQ[ rules, "Minimizing" ] ) ),
-              Message[ FindInfraWalk::deadevent ] ];
-            If[ kmax === Infinity && ! ( ( scale === Infinity && MemberQ[ rules, "Minimizing" ] ) ||
-                  IntersectingQ[ excluded, { "SelfIntersections", "TriplePoints", "SelfTangencies" } ] ),
-              Message[ FindInfraWalk::unbounded, scale ]; Throw[ $Failed ] ];
             Which[
               methodHead === "Greedy" && kspec === Infinity && cap === 1 && events === { } &&
                 AllTrue[ rules, MatchQ[ #, "Minimizing" | "Simple" | "Immersed" | "Generic" | ( "Exclude" -> _ ) ] & ],
@@ -191,18 +182,15 @@ FindInfraWalk[ graph_Graph, p1_, p2_,
                     If[ Length @ acc >= cap, Throw[ acc, descend ] ] ];
                   If[ ( ! terminal || Last @ walk =!= q2 ) && Length[ walk ] - 1 < kmax,
                     Scan[ descend[ Append[ walk, # ] ] &, pick @ stepFn[ graph, walk ] ] ] );
-                Catch[ descend[ { q1 } ]; acc, descend ],
-              True,
-                Message[ FindInfraWalk::badmethod, methodSpec ]; $Failed ] ] ] ] ) @@@
+                Catch[ descend[ { q1 } ]; acc, descend ] ] ] ] ] ) @@@
       Tuples[ Replace[ #, { fam_Association :> Keys @ fam, x_ :> { x } } ] & /@ { p1, p2 } ] },
-    If[ MemberQ[ results, $Failed ], $Failed,
-      With[ { walks = DeleteDuplicates[ ( seq |-> PathGraph[ MapIndexed[ { First @ #2, #1 } &, seq ], DirectedEdges -> True ] ) /@
+    With[ { walks = DeleteDuplicates[ ( seq |-> PathGraph[ MapIndexed[ { First @ #2, #1 } &, seq ], DirectedEdges -> True ] ) /@
                 DeleteDuplicates @ Catenate @ results ] },
         Switch[ count,
           Automatic, First[ walks, { } ],
           All,       walks,
           _UpTo,     Take[ walks, count ],
-          _,         If[ Length @ walks < count, $Failed, Take[ walks, count ] ] ] ] ] ]
+          _,         If[ Length @ walks < count, { }, Take[ walks, count ] ] ] ] ]
 
 Options[ FindInfraGeodesic ] = {
   Properties          -> { },
@@ -211,9 +199,10 @@ Options[ FindInfraGeodesic ] = {
 };
 
 FindInfraGeodesic[ graph_Graph, p1_, scale : ( _Integer | Infinity ), opts : OptionsPattern[] ] :=
-  FindInfraWalk[ graph, p1, Infinity, Automatic, "InfraScale" -> scale,
-    Properties -> DeleteDuplicates @ Prepend[ OptionValue[ FindInfraGeodesic, { opts }, Properties ], "Minimizing" ],
-    Sequence @@ FilterRules[ { opts }, Except[ Properties ] ] ]
+  With[ { result = FindInfraWalk[ graph, p1, Infinity, Automatic, "InfraScale" -> scale,
+      Properties -> DeleteDuplicates @ Prepend[ OptionValue[ FindInfraGeodesic, { opts }, Properties ], "Minimizing" ],
+      Sequence @@ FilterRules[ { opts }, Except[ Properties ] ] ] },
+    result /; Head[ result ] =!= FindInfraWalk ]
 
 FindInfraGeodesic[ graph_Graph, p1_,
     scale : ( _Integer | Infinity ),
@@ -226,18 +215,20 @@ FindInfraGeodesic[ graph_Graph, p1_,
           ( "Exclude" -> sp_ ) :> Flatten @ { sp },
           _ -> { } }, { 1 } ],
         { "SelfIntersections", "TriplePoints", "SelfTangencies" } ] ) :=
-  FindInfraWalk[ graph, p1, kspec, count, "InfraScale" -> scale,
-    Properties -> DeleteDuplicates @ Prepend[ OptionValue[ FindInfraGeodesic, { opts }, Properties ], "Minimizing" ],
-    Sequence @@ FilterRules[ { opts }, Except[ Properties ] ] ]
+  With[ { result = FindInfraWalk[ graph, p1, kspec, count, "InfraScale" -> scale,
+      Properties -> DeleteDuplicates @ Prepend[ OptionValue[ FindInfraGeodesic, { opts }, Properties ], "Minimizing" ],
+      Sequence @@ FilterRules[ { opts }, Except[ Properties ] ] ] },
+    result /; Head[ result ] =!= FindInfraWalk ]
 
 FindInfraGeodesic[ graph_Graph, p1_, p2_,
     scale : ( _Integer | Infinity ),
     kspec : ( UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ) : Infinity,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
     VertexQ[ graph, p2 ] || AssociationQ[ p2 ] :=
-  FindInfraWalk[ graph, p1, p2, kspec, count, "InfraScale" -> scale,
-    Properties -> DeleteDuplicates @ Prepend[ OptionValue[ FindInfraGeodesic, { opts }, Properties ], "Minimizing" ],
-    Sequence @@ FilterRules[ { opts }, Except[ Properties ] ] ]
+  With[ { result = FindInfraWalk[ graph, p1, p2, kspec, count, "InfraScale" -> scale,
+      Properties -> DeleteDuplicates @ Prepend[ OptionValue[ FindInfraGeodesic, { opts }, Properties ], "Minimizing" ],
+      Sequence @@ FilterRules[ { opts }, Except[ Properties ] ] ] },
+    result /; Head[ result ] =!= FindInfraWalk ]
 
 InfraGeodesicQ[ graph_Graph, ws : { __Graph }, scale : ( _Integer | Infinity ) : Infinity ] :=
   AllTrue[ ws, InfraGeodesicQ[ graph, #, scale ] & ]
@@ -474,13 +465,6 @@ InfraWalkCrossingQ[ graph_Graph, x : ( _Graph | _List ), at_, r_Integer ] /;
 (* continues a seed walk under the Properties rules, each read on the window of the last <= "InfraScale" vertices: Find seeds with points and owns the two-point sugar, Extend seeds with walks and owns "Direction".  kspec is the extension budget, in added edges per growing side -- UpTo[k], {k}, {lo, hi} or Infinity, as for FindInfraWalk -- and is mandatory-finite whenever the class is infinite.  The seed is a vertex list, a walk graph, or a bundle of either.
    "BothSides" offers three moves per outer step -- both sides, back only, front only, joint first so a greedy witness keeps the synchronous trajectory -- and re-checks the joined step against the monotone whole-walk constraints its sides cannot see alone, so the walk freezes only when no side can move and the class is the whole two-sided extension class.  Its budget is Max[la, ra], the edges added on the longer side, invariant under the order the moves are taken.  Stopping conditions replay over the seed, so a deadline may already sit inside it and the seed come back unextended; a two-ended walk has no single tip for the event clock, so they require "Forward" or "Backward". *)
 
-ExtendInfraWalk::badproperty  = "Property `1` is not a walk rule; the rules are \"Minimizing\", \"Simple\", \"Immersed\", \"Generic\", \"Exclude\" -> species, \"Straightest\", {\"Minimal\", f}, {\"Maximal\", f}, or a predicate on the window; species are \"SelfIntersections\", \"SelfTangencies\", \"Cusps\", \"TriplePoints\".";
-ExtendInfraWalk::badmethod    = "Method `1` is not supported.";
-ExtendInfraWalk::baddirection = "Direction `1` is not supported; give \"Forward\", \"Backward\" or \"BothSides\".";
-ExtendInfraWalk::badevent     = "Stopping condition `1` is not supported; give n (stop at the n-th arrival at a visited vertex), a predicate on the walk so far, or {spec, \"Delay\" -> k}.";
-ExtendInfraWalk::deadevent    = "the stopping condition awaits a self-intersection the Properties constraints exclude; the walk runs to its budget.";
-ExtendInfraWalk::eventsided   = "stopping conditions read the walk at a single growing tip; extend with \"Direction\" -> \"Forward\" or \"Backward\".";
-ExtendInfraWalk::unbounded    = "the extension class at scale `1` is infinite without a length bound: give a finite kspec, add \"Simple\", \"Generic\" or an \"Exclude\" of \"SelfIntersections\", \"TriplePoints\" or \"SelfTangencies\", or ask \"Minimizing\" at scale Infinity.";
 
 Options[ ExtendInfraWalk ] = {
   "InfraScale"        -> Infinity,
@@ -492,7 +476,24 @@ Options[ ExtendInfraWalk ] = {
 
 ExtendInfraWalk[ graph_Graph, seed_,
     kspec : ( UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ) : Infinity,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    With[ { rules = OptionValue[ ExtendInfraWalk, { opts }, Properties ],
+            scale = OptionValue[ ExtendInfraWalk, { opts }, "InfraScale" ],
+            base  = NestWhile[ First, OptionValue[ ExtendInfraWalk, { opts }, "StoppingCondition" ], MatchQ[ { _, "Delay" -> _Integer?NonNegative } ] ] },
+      { excluded = Union @@ Replace[ rules, {
+          "Simple" -> { "SelfIntersections" }, "Immersed" -> { "Cusps" }, "Generic" -> { "Cusps", "SelfTangencies", "TriplePoints" },
+          ( "Exclude" -> sp_ ) :> Flatten @ { sp }, _ -> { } }, { 1 } ] },
+      MatchQ[ OptionValue[ ExtendInfraWalk, { opts }, Method ],
+          Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] &&
+        ( MatchQ[ OptionValue[ ExtendInfraWalk, { opts }, "Direction" ], "Forward" | "Backward" ] ||
+          ( base === None && OptionValue[ ExtendInfraWalk, { opts }, "Direction" ] === "BothSides" ) ) &&
+        ( base === None || ( IntegerQ[ base ] && base >= 1 ) || ! MatchQ[ base, None | _Integer | _List | _String | _Rule ] ) &&
+        AllTrue[ rules, rule |-> ! MatchQ[ rule, _String | { _String, ___ } | _Rule ] || MatchQ[ rule,
+          "Minimizing" | "Simple" | "Immersed" | "Generic" | "Straightest" | { "Minimal", _ } | { "Maximal", _ } |
+            ( "Exclude" -> ( "SelfIntersections" | "SelfTangencies" | "Cusps" | "TriplePoints" |
+              { ( "SelfIntersections" | "SelfTangencies" | "Cusps" | "TriplePoints" ) .. } ) ) ] ] &&
+        ( kspec =!= Infinity || ( scale === Infinity && MemberQ[ rules, "Minimizing" ] ) ||
+          IntersectingQ[ excluded, { "SelfIntersections", "TriplePoints", "SelfTangencies" } ] ) ] :=
   With[ {
       cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
       walksOf = w |-> With[ { vs = VertexList @ w },
@@ -555,8 +556,7 @@ ExtendInfraWalk[ graph_Graph, seed_,
               events   = With[ { entries = Which[
                     base === None,                  { },
                     IntegerQ[ base ] && base >= 1,  { { "SelfIntersection", 0, base } },
-                    ! MatchQ[ base, None | _Integer | _List | _String | _Rule ], { { base, 0, 1 } },
-                    True, ( Message[ ExtendInfraWalk::badevent, base ]; Throw[ $Failed ] ) ] },
+                    True,                           { { base, 0, 1 } } ] },
                 If[ MatchQ[ condition, { _, "Delay" -> _Integer?NonNegative } ],
                   { #[[ 1 ]], condition[[ 2, 2 ]], #[[ 3 ]] } & /@ entries, entries ] ],
               species  = Map[ rule |-> Switch[ rule,
@@ -565,8 +565,6 @@ ExtendInfraWalk[ graph_Graph, seed_,
                         { ( "SelfIntersections" | "SelfTangencies" | "Cusps" | "TriplePoints" ) .. } ) ),
                                                                          "Constraint",
                   "Straightest" | { "Minimal", _ } | { "Maximal", _ },  "Selector",
-                  _String | { _String, ___ } | _Rule,
-                    ( Message[ ExtendInfraWalk::badproperty, rule ]; Throw[ $Failed ] ),
                   _,                                                     "Constraint" ],
                 rules ] },
             { checks = Map[ rule |-> If[ rule === "Minimizing",
@@ -638,16 +636,6 @@ ExtendInfraWalk[ graph_Graph, seed_,
                   Flatten[ Outer[ { Prepend[ Append[ walk, #2 ], #1 ], la + 1, ra + 1 } &, backCands, fwdCands, 1 ], 1 ],
                   { Append[ walk, # ], la, ra + 1 } & /@ fwdCands,
                   { Prepend[ walk, # ], la + 1, ra } & /@ backCands ] ];
-            If[ events =!= { } && direction === "BothSides",
-              Message[ ExtendInfraWalk::eventsided ]; Throw[ $Failed ] ];
-            If[ MatchQ[ events, { { "SelfIntersection", _, _ } } ] &&
-                ( MemberQ[ excluded, "SelfIntersections" ] || ( scale === Infinity && MemberQ[ rules, "Minimizing" ] ) ),
-              Message[ ExtendInfraWalk::deadevent ] ];
-            If[ kmax === Infinity && ! ( ( scale === Infinity && MemberQ[ rules, "Minimizing" ] ) ||
-                  IntersectingQ[ excluded, { "SelfIntersections", "TriplePoints", "SelfTangencies" } ] ),
-              Message[ ExtendInfraWalk::unbounded, scale ]; Throw[ $Failed ] ];
-            If[ ! MatchQ[ methodHead, "Exhaustive" | "Greedy" | "RandomGreedy" ],
-              Message[ ExtendInfraWalk::badmethod, methodSpec ]; Throw[ $Failed ] ];
             If[ MemberQ[ rules, "Minimizing" ] && Length[ walk0 ] >= 2 && ! InfraGeodesicQ[ graph, walk0, scale ], Throw[ { } ] ];
             emit[ walk_ ] := If[ keepQ @ walk,
               AppendTo[ acc, walk ];
@@ -690,17 +678,15 @@ ExtendInfraWalk[ graph_Graph, seed_,
                       seen[ st ] = True;
                       With[ { nexts = Select[ step[ walk, la, ra, pick ], filterQ[ First @ # ] & ] },
                         If[ nexts === { }, emitBoth[ walk, la, ra ], Scan[ descendBoth, nexts ] ] ] ];
-                  Catch[ descendBoth[ { walk0, 0, 0 } ]; acc, emitBoth ] ],
-              _, Message[ ExtendInfraWalk::baddirection, direction ]; Throw[ $Failed ] ] ] ] ],
+                  Catch[ descendBoth[ { walk0, 0, 0 } ]; acc, emitBoth ] ] ] ] ] ],
       seedWalks ] },
-    If[ MemberQ[ results, $Failed ], $Failed,
-      With[ { walks = DeleteDuplicates[ ( seq |-> PathGraph[ MapIndexed[ { First @ #2, #1 } &, seq ], DirectedEdges -> True ] ) /@
+    With[ { walks = DeleteDuplicates[ ( seq |-> PathGraph[ MapIndexed[ { First @ #2, #1 } &, seq ], DirectedEdges -> True ] ) /@
                 DeleteDuplicates @ Catenate @ results ] },
         Switch[ count,
           Automatic, First[ walks, { } ],
           All,       walks,
           _UpTo,     Take[ walks, count ],
-          _,         If[ Length @ walks < count, $Failed, Take[ walks, count ] ] ] ] ] ]
+          _,         If[ Length @ walks < count, { }, Take[ walks, count ] ] ] ] ]
 
 Options[ ExtendInfraGeodesic ] = {
   Properties          -> { },
@@ -713,9 +699,10 @@ ExtendInfraGeodesic[ graph_Graph, seed_,
     scale : ( _Integer | Infinity ),
     kspec : ( UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ) : Infinity,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
-  ExtendInfraWalk[ graph, seed, kspec, count, "InfraScale" -> scale,
-    Properties -> DeleteDuplicates @ Prepend[ OptionValue[ ExtendInfraGeodesic, { opts }, Properties ], "Minimizing" ],
-    Sequence @@ FilterRules[ { opts }, Except[ Properties ] ] ]
+  With[ { result = ExtendInfraWalk[ graph, seed, kspec, count, "InfraScale" -> scale,
+      Properties -> DeleteDuplicates @ Prepend[ OptionValue[ ExtendInfraGeodesic, { opts }, Properties ], "Minimizing" ],
+      Sequence @@ FilterRules[ { opts }, Except[ Properties ] ] ] },
+    result /; Head[ result ] =!= ExtendInfraWalk ]
 
 ConcatenateInfraWalk[ path1_, path2_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
@@ -748,7 +735,7 @@ ConcatenateInfraWalk[ path1_, path2_,
     Switch[ count,
       All,   reps,
       _UpTo, Take[ reps, count ],
-      _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ]
+      _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ]
 
 dispatchConstruction[ graph_Graph, InfraWalk[ vs__ ] ] :=
   With[ { walk = { vs } },

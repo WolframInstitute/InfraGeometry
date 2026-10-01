@@ -258,10 +258,10 @@ FindInfraOrthogonalFrame[ g_Graph, c_, axisLength : ( All | _Integer | _UpTo | {
       Catch[ dfs[ spray, { } ] ];
       frames = If[ method === "Greedy", frames, SortBy[ frames, frameKey ] ];
       Switch[ count,
-        Automatic, If[ frames =!= { }, PathGraph[ #, DirectedEdges -> True ] & /@ First @ frames, $Failed ],
+        Automatic, If[ frames =!= { }, PathGraph[ #, DirectedEdges -> True ] & /@ First @ frames, { } ],
         All,       Map[ PathGraph[ #, DirectedEdges -> True ] &, frames, { 2 } ],
         _UpTo,     Map[ PathGraph[ #, DirectedEdges -> True ] &, Take[ frames, count ], { 2 } ],
-        _,         If[ Length[ frames ] >= count, Map[ PathGraph[ #, DirectedEdges -> True ] &, Take[ frames, count ], { 2 } ], $Failed ] ]
+        _,         If[ Length[ frames ] >= count, Map[ PathGraph[ #, DirectedEdges -> True ] &, Take[ frames, count ], { 2 } ], { } ] ]
     ]
   ]
 
@@ -282,10 +282,10 @@ FindInfraOrthogonalFrame[ g_Graph, ip_Association, axisLength : ( All | _Integer
           SortBy[ allFrames, frame |-> { -Length[ frame ], -Total[ Length /@ frame ], Total[ axisMult /@ frame ], canonical[ frame ] } ] ],
         UpTo[ If[ limit === All, Infinity, limit ] ] ] },
     Switch[ count,
-      Automatic, If[ frames =!= { }, PathGraph[ #, DirectedEdges -> True ] & /@ First @ frames, $Failed ],
+      Automatic, If[ frames =!= { }, PathGraph[ #, DirectedEdges -> True ] & /@ First @ frames, { } ],
       All,       Map[ PathGraph[ #, DirectedEdges -> True ] &, frames, { 2 } ],
       _UpTo,     Map[ PathGraph[ #, DirectedEdges -> True ] &, Take[ frames, count ], { 2 } ],
-      _,         If[ Length[ frames ] >= count, Map[ PathGraph[ #, DirectedEdges -> True ] &, Take[ frames, count ], { 2 } ], $Failed ] ]
+      _,         If[ Length[ frames ] >= count, Map[ PathGraph[ #, DirectedEdges -> True ] &, Take[ frames, count ], { 2 } ], { } ] ]
   ]
 
 Options[ FindInfraSpanningAxes ] = {
@@ -351,5 +351,5 @@ FindInfraSpanningAxes[ g_Graph, UpTo[ n_Integer ], opts : OptionsPattern[] ] :=
 
 FindInfraSpanningAxes[ g_Graph, n_Integer : 1, opts : OptionsPattern[] ] :=
   With[ { result = FindInfraSpanningAxes[ g, UpTo[ n ], opts ] },
-    If[ Length[ result ] >= n, Take[ result, n ], $Failed ]
+    If[ Length[ result ] >= n, Take[ result, n ], { } ]
   ]

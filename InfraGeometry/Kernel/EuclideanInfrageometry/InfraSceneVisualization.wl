@@ -148,7 +148,7 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
           obj_                 :> { First @ state, Append[ Last @ state, obj -> First @ state ] } } ],
         { { }, { } },
         items ],
-      ( $Failed | { } ) -> _ ];
+      { } -> _ ];
 
     entries = MapIndexed[
       { item, idx } |-> With[ {

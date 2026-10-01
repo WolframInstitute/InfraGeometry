@@ -92,7 +92,7 @@ VerificationTest[
 VerificationTest[
   With[{g = CycleGraph[6]},
     {InfraRayQ[g, FindInfraRay[g, 1, 4]], Length[FindInfraRay[g, 1, 4, UpTo[9]]], FindInfraRay[g, 1, 4, 5]}],
-  {True, 2, $Failed},
+  {True, 2, { }},
   TestID -> "FindInfraRay-count-contract"
 ]
 

@@ -44,7 +44,7 @@ FindInfraRay[ graph_Graph, p_, q_,
         Automatic, First[ acc, { } ],
         All,       acc,
         _UpTo,     Take[ acc, count ],
-        _,         If[ Length @ acc < count, $Failed, Take[ acc, count ] ] ] ] ]
+        _,         If[ Length @ acc < count, { }, Take[ acc, count ] ] ] ] ]
 
 InfraRayQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraRayQ[ graph, # ] & ]
 

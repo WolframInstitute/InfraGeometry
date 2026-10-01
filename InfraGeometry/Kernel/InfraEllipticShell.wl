@@ -2,16 +2,15 @@ Package["WolframInstitute`InfraGeometry`"]
 
 (* the level set { v : cMin <= d(p1, v) + d(p2, v) <= cMax }, a sorted vertex list; under Properties its minimal admissible subsets, one per instance *)
 
-FindInfraEllipticShell::badmethod   = "Method `1` is not supported by FindInfraEllipticShell.";
-FindInfraEllipticShell::badproperty = "Property `1` is not supported by FindInfraEllipticShell.";
-
 Options[ FindInfraEllipticShell ] = {
   Properties -> { },
   Method     -> Automatic
 };
 
 FindInfraEllipticShell[ graph_Graph, foci : { _, _ }, c_,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ]/;
+    SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraEllipticShell, { opts }, Properties ] ] &&
+      MatchQ[ OptionValue[ FindInfraEllipticShell, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
   With[ {
       properties = OptionValue[ FindInfraEllipticShell, { opts }, Properties ],
       methodSpec = Replace[ OptionValue[ FindInfraEllipticShell, { opts }, Method ], Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ] },
@@ -29,15 +28,14 @@ FindInfraEllipticShell[ graph_Graph, foci : { _, _ }, c_,
           { levelSet = Pick[ verts, Thread[ range[[ 1 ]] <= sums <= range[[ 2 ]] ] ] },
           If[ properties === { },
             { levelSet },
-            Catch @ With[
+            With[
               { nearVerts = Pick[ verts, Thread[ sums < range[[ 1 ]] ] ],
                 farVerts  = Pick[ verts, Thread[ sums > range[[ 2 ]] ] ] },
               { tests = Map[
                   property |-> Switch[ property,
                     "Separating", t |-> nearVerts =!= { } && farVerts =!= { } &&
                                     SeparatesQ[ graph, t, First @ nearVerts, First @ farVerts ],
-                    "Connected",  t |-> t =!= { } && ConnectedGraphQ @ Subgraph[ graph, t ],
-                    _,            Message[ FindInfraEllipticShell::badproperty, property ]; Throw[ $Failed ] ],
+                    "Connected",  t |-> t =!= { } && ConnectedGraphQ @ Subgraph[ graph, t ] ],
                   properties ] },
               { admissible = t |-> AllTrue[ tests, # @ t & ] },
               Module[ { admitQ = admissible, pick = If[ methodHead === "Greedy", Identity, RandomSample ],
@@ -77,17 +75,14 @@ FindInfraEllipticShell[ graph_Graph, foci : { _, _ }, c_,
                               AppendTo[ acc, T ];
                               If[ Length @ acc >= cap, Throw[ acc, descend ] ],
                               Scan[ descend[ DeleteCases[ T, # ] ] &, pick @ peelable ] ] ] ];
-                      Catch[ descend[ levelSet ]; acc, descend ] ],
-                  _,
-                    Message[ FindInfraEllipticShell::badmethod, methodSpec ]; $Failed ] ] ] ] ],
+                      Catch[ descend[ levelSet ]; acc, descend ] ] ] ] ] ] ],
         Tuples[ { { foci }, Replace[ c, { fam_Association :> Keys @ fam, other_ :> { other } } ] } ], { 1 } ] },
-    If[ MemberQ[ results, $Failed ], $Failed,
-      With[ { reps = DeleteDuplicates[ Union /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
+    With[ { reps = DeleteDuplicates[ Union /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
         Switch[ count,
           Automatic, First[ reps, { } ],
           All,       reps,
           _UpTo,     Take[ reps, count ],
-          _,         If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ] ] ]
+          _,         If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ] ]
 
 (* vs is an elliptic shell iff there are foci p1, p2 and a constant c with vs == { v : d(p1, v) + d(p2, v) == c } *)
 

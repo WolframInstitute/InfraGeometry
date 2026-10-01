@@ -95,12 +95,10 @@ InfraIntersection[ graph_Graph, args__ ] /; AllTrue[ { args }, MatchQ[ $infraRea
 InfraUnion[ graph_Graph, args__ ] /; AllTrue[ { args }, MatchQ[ $infraRealisationPattern ] ] :=
   Union @@ ( infraVertexSet[ graph, # ] & /@ { args } )
 
-InfraScene::badassertion = "`1` is not a scene assertion the graph can be \
-injected into; it stays inert, so the scene would reject every branch without a \
-message.";
-
 InfraScene[ objects_List, hypotheses_List ] /;
-  MemberQ[ hypotheses, _InfraStep ] :=
+  MemberQ[ hypotheses, _InfraStep ] &&
+    undecidableAssertions[ Select[ Join[ DeleteCases[ hypotheses, _InfraStep ], Catenate[ First /@ Cases[ hypotheses, _InfraStep ] ] ],
+      ! constructionPatternQ[ objects, # ] & ] ] === { } :=
   Module[ { gSteps, perStep, constructions, steps, labels, assertions },
 
     gSteps = Cases[ hypotheses, _InfraStep ];
@@ -121,11 +119,6 @@ InfraScene[ objects_List, hypotheses_List ] /;
         h |-> ! MatchQ[ h, _InfraStep ] && ! constructionPatternQ[ objects, h ] ],
       Flatten[ #[ "Assertions" ] & /@ perStep ] ];
 
-    With[ { undecidable = undecidableAssertions[ assertions ] },
-      If[ undecidable =!= { },
-        Message[ InfraScene::badassertion, First @ undecidable ];
-        Return[ $Failed, Module ] ] ];
-
     InfraScene[ <|
       "Objects"         -> objects,
       "Constructions"   -> constructions,
@@ -137,15 +130,13 @@ InfraScene[ objects_List, hypotheses_List ] /;
     |> ]
   ]
 
-InfraScene[ objects_List, hypotheses_List ] :=
+InfraScene[ objects_List, hypotheses_List ] /;
+    undecidableAssertions[ Select[ Join[ DeleteCases[ hypotheses, _InfraStep ], Catenate[ First /@ Cases[ hypotheses, _InfraStep ] ] ],
+      ! constructionPatternQ[ objects, # ] & ] ] === { } :=
   Module[ { constructions, assertions, dag, steps = { }, remaining },
     constructions = Association @ Cases[ hypotheses,
       ( key_ == rhs_ ) /; constructionPatternQ[ objects, key == rhs ] :> ( key -> rhs ) ];
     assertions = Select[ hypotheses, ! constructionPatternQ[ objects, # ] & ];
-    With[ { undecidable = undecidableAssertions[ assertions ] },
-      If[ undecidable =!= { },
-        Message[ InfraScene::badassertion, First @ undecidable ];
-        Return[ $Failed, Module ] ] ];
     dag = Graph[ objects,
       Flatten @ KeyValueMap[
         { key, rhs } |-> With[ {

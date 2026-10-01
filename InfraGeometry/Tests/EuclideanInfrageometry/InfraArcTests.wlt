@@ -78,7 +78,7 @@ VerificationTest[
      Length @ InfraVertexList[g, arc, 2],
      Length @ InfraVertexList[g, arc, UpTo[n + 5]] === n,
      InfraVertexList[g, arc, n + 5]}],
-  {True, 2, True, $Failed},
+  {True, 2, True, { }},
   TestID -> "InfraArc-count-contract"
 ]
 

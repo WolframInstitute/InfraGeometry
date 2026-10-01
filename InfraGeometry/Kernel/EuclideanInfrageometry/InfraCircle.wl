@@ -120,7 +120,7 @@ FindInfraCircle[ graph_Graph, center_, spec_,
       Automatic, First[ circles, { } ],
       All,       circles,
       _UpTo,     Take[ circles, count ],
-      _,         If[ Length @ circles < count, $Failed, Take[ circles, count ] ] ] ]
+      _,         If[ Length @ circles < count, { }, Take[ circles, count ] ] ] ]
 
 FindInfraCycle[ graph_Graph, n : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
   FindInfraCycle[ graph, { 1, VertexCount[ graph ] }, n ]
@@ -131,7 +131,7 @@ FindInfraCycle[ graph_Graph, { k_Integer },
     Switch[ n,
       All,   reps,
       _UpTo, Take[ reps, n ],
-      _,     If[ Length @ reps < n, $Failed, Take[ reps, n ] ] ] ]
+      _,     If[ Length @ reps < n, { }, Take[ reps, n ] ] ] ]
 
 FindInfraCycle[ graph_Graph, { kMin_Integer, kMax_ },
     n : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
@@ -142,7 +142,7 @@ FindInfraCycle[ graph_Graph, { kMin_Integer, kMax_ },
     Switch[ n,
       All,   reps,
       _UpTo, Take[ reps, n ],
-      _,     If[ Length @ reps < n, $Failed, Take[ reps, n ] ] ] ]
+      _,     If[ Length @ reps < n, { }, Take[ reps, n ] ] ] ]
 
 (* a metric circle iff consecutive vertices and the wrap-around are adjacent and the vertex set is a metric shell; a cycle graph is read as its closed walk *)
 

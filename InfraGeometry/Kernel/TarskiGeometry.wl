@@ -136,7 +136,10 @@ TarskiAxiomQ[ graph_Graph ] :=
     "Continuity"               -> TarskiContinuityQ[ graph ]
   |>
 
-FindTarskiCounterexample[ graph_Graph, predQ_Symbol, All ] :=
+FindTarskiCounterexample[ graph_Graph,
+    predQ : ( TarskiCongruenceReflexivityQ | TarskiCongruenceTransitivityQ | TarskiCongruenceIdentityQ | TarskiSegmentConstructionQ |
+      TarskiFiveSegmentsQ | TarskiBetweennessIdentityQ | TarskiInnerPaschQ | TarskiLowerDimensionQ | TarskiUpperDimensionQ |
+      TarskiEuclidAxiomQ ), All ] :=
   Switch[ predQ,
     TarskiCongruenceReflexivityQ,   { },
     TarskiCongruenceTransitivityQ,  { },
@@ -198,16 +201,15 @@ FindTarskiCounterexample[ graph_Graph, predQ_Symbol, All ] :=
           EquidistanceQ[ graph, c, p, c, q ] &&
           ! CollinearQ[ graph, { a, b, c } ]
         ] ],
-    TarskiEuclidAxiomQ,             { },
-    TarskiContinuityQ,              $Failed
+    TarskiEuclidAxiomQ,             { }
   ]
 
 FindTarskiCounterexample[ graph_Graph, predQ_Symbol, UpTo[ n_Integer ] ] :=
   With[ { result = FindTarskiCounterexample[ graph, predQ, All ] },
-    If[ ListQ[ result ], Take[ result, UpTo[ n ] ], result ]
+    Take[ result, UpTo[ n ] ] /; ListQ[ result ]
   ]
 
 FindTarskiCounterexample[ graph_Graph, predQ_Symbol, n_Integer : 1 ] :=
   With[ { result = FindTarskiCounterexample[ graph, predQ, UpTo[ n ] ] },
-    Which[ ! ListQ[ result ], result, Length[ result ] < n, $Failed, True, result ]
+    If[ Length[ result ] < n, { }, result ] /; ListQ[ result ]
   ]

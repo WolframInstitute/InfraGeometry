@@ -189,7 +189,7 @@ VerificationTest[
       SubsetQ[ FindInfraSegment[ g, 1, 16, All ],
                FindInfraSegment[ g, 1, 16, UpTo[ 2 ] ] ],
       FindInfraSegment[ g, 1, 16, 1000 ] } ],
-  { 2, True, $Failed },
+  { 2, True, { } },
   TestID -> "bounded-count-is-a-prefix"
 ]
 
@@ -202,7 +202,7 @@ VerificationTest[
       MatchQ[ FindInfraSegment[ g, 1, 9, UpTo[ 100 ] ], { { __Integer } .. } ],
       MatchQ[ FindInfraSegment[ g, 1, 9, All ], { { __Integer } .. } ],
       Length @ FindInfraSegment[ g, 1, 9, All ] === 6,
-      FindInfraSegment[ g, 1, 9, 7 ] === $Failed } ],
+      FindInfraSegment[ g, 1, 9, 7 ] === { } } ],
   { True, True, True, True, True, True },
   TestID -> "FindInfraSegment-count-contract"
 ]

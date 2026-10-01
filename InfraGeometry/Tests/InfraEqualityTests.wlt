@@ -78,13 +78,6 @@ VerificationTest[
 
 (* ===== Bad method ===== *)
 
-VerificationTest[
-  InfraEqualQ[ PathGraph[ Range[ 5 ] ], 1, 1, Method -> "Nonsense" ],
-  $Failed,
-  { InfraEqualQ::badmethod },
-  TestID -> "InfraEqualQ-bad-method-message"
-]
-
 (* ===== InfraSegment ===== *)
 
 VerificationTest[

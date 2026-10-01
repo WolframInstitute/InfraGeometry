@@ -1,7 +1,5 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-SelectInfraWalk::badfrom = "\"From\" specification `1` is not supported by SelectInfraWalk. Supported: All, \"Center\", \"Periphery\", \"MostVisited\", \"Bottleneck\", \"MinLength\", \"MaxLength\", anchor -> spec, {\"Min\", scoreFn}, {\"Max\", scoreFn}.";
-
 Options[ SelectInfraWalk ] = {
   "From"       -> All,
   "Distance"   -> None,
@@ -43,7 +41,7 @@ SelectInfraWalk[ graph_Graph, walks : { __Graph },
     { seqs = seqOf /@ carriers },
     { result = SelectInfraWalk[ graph, seqs, countSpec,
         "Cyclic" -> ( ! LoopFreeGraphQ @ First @ carriers || ! AcyclicGraphQ @ First @ carriers ), opts ] },
-    If[ result === $Failed, $Failed, Lookup[ AssociationThread[ seqs -> carriers ], result ] ] ]
+    Lookup[ AssociationThread[ seqs -> carriers ], result ] /; ListQ[ result ] ]
 
 SelectInfraWalk[ graph_Graph, dag_Graph,
             countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] /;
@@ -77,8 +75,7 @@ SelectInfraWalk[ graph_Graph, dag_Graph,
       If[ Last @ path === sink, AppendTo[ out, path ],
         Scan[ x |-> tightDFS[ Append[ path, x ] ], tight[ Last @ path ] ] ] ];
     tightDFS[ { source } ];
-    With[ { result = SelectInfraWalk[ graph, out, countSpec, "From" -> All ] },
-      If[ result === $Failed, $Failed, PathGraph[ #, DirectedEdges -> True ] & /@ result ] ]
+    PathGraph[ #, DirectedEdges -> True ] & /@ SelectInfraWalk[ graph, out, countSpec, "From" -> All ]
   ]
 
 SelectInfraWalk[ graph_Graph, w_Graph,
@@ -93,13 +90,13 @@ SelectInfraWalk[ graph_Graph, w_Graph,
             { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ] ] ] ],
     countSpec, opts ]
 
-SelectInfraWalk[ graph_Graph, walks_List, UpTo[ n_Integer ], opts : OptionsPattern[] ] :=
+SelectInfraWalk[ graph_Graph, walks_List, UpTo[ n_Integer ], opts : OptionsPattern[] ] /;
+    MatchQ[ OptionValue[ SelectInfraWalk, { opts }, "From" ],
+      All | "Center" | "Periphery" | "MostVisited" | "Bottleneck" | "MinLength" | "MaxLength" | _Rule | { "Min" | "Max", _ } ] :=
   Module[ { thresholds, cliques, auxiliaryGraph },
     With[ { from = OptionValue[ "From" ], distSpec = OptionValue[ "Distance" ], cyclic = TrueQ @ OptionValue[ "Cyclic" ],
             metric = OptionValue[ "Metric" ], maxCl = OptionValue[ "MaxCliques" ] },
       Which[
-        ! MatchQ[ from, All | "Center" | "Periphery" | "MostVisited" | "Bottleneck" | "MinLength" | "MaxLength" | _Rule | { "Min" | "Max", _ } ],
-          Message[ SelectInfraWalk::badfrom, from ]; $Failed,
         Length @ walks <= 1, walks,
         True,
           With[ {
@@ -197,11 +194,12 @@ SelectInfraWalk[ graph_Graph, walks_List, UpTo[ n_Integer ], opts : OptionsPatte
                       If[ found === { }, { }, RandomSample[ RandomChoice[ found ], UpTo[ size ] ] ] ] ] ] ] ] ] ] ]
 
 SelectInfraWalk[ graph_Graph, walks_List, All, opts : OptionsPattern[] ] :=
-  SelectInfraWalk[ graph, walks, UpTo[ Length[ walks ] ], opts ]
+  With[ { result = SelectInfraWalk[ graph, walks, UpTo[ Length[ walks ] ], opts ] },
+    result /; ListQ[ result ] ]
 
 SelectInfraWalk[ graph_Graph, walks_List, n_Integer : 1, opts : OptionsPattern[] ] :=
   With[ { result = SelectInfraWalk[ graph, walks, UpTo[ n ], opts ] },
-    If[ ListQ[ result ] && Length[ result ] < n, $Failed, result ] ]
+    If[ Length[ result ] < n, { }, result ] /; ListQ[ result ] ]
 
 SelectInfraWalk[ graph_Graph, countSpec : ( _Integer | UpTo[ _Integer ] | All ), opts : OptionsPattern[] ] :=
   SelectInfraWalk[ graph, #, countSpec, opts ] &

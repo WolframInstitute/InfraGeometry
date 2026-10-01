@@ -45,7 +45,7 @@ FindInfraLine[ graph_Graph, p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rul
       Automatic, First[ lines, { } ],
       All,       lines,
       _UpTo,     Take[ lines, count ],
-      _,         If[ Length @ lines < count, $Failed, Take[ lines, count ] ] ] ]
+      _,         If[ Length @ lines < count, { }, Take[ lines, count ] ] ] ]
 
 FindInfraLine[ graph_Graph, seq_List,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic ] /;
@@ -69,12 +69,9 @@ FindInfraLine[ graph_Graph, seq_List,
         Automatic, First[ acc, { } ],
         All,       acc,
         _UpTo,     Take[ acc, count ],
-        _,         If[ Length @ acc < count, $Failed, Take[ acc, count ] ] ] ] ]
+        _,         If[ Length @ acc < count, { }, Take[ acc, count ] ] ] ] ]
 
 (* a parallel to line through p: an inextensible geodesic s ... p ... e of graph inside the level set L = { v : d(v, line) == r }, r = d(p, line) -- d(s, e) == d(s, p) + d(p, e), every vertex in L, and no neighbour of s or e in L prolonging it.  The pool is one geodesic DAG per admissible end pair (s, e): the s -> p and p -> e intervals cut down to L and glued at p, oriented so that s precedes e in canonical order.  One class under every Method -- "Exhaustive" with All returns the pool itself, as FindInfraLine does, and a bounded count streams geodesics off the atoms in candidate ("Greedy", "Exhaustive") or random ("RandomGreedy") order *)
-
-FindInfraParallel::badmethod   = "Method `1` is not supported by FindInfraParallel.";
-FindInfraParallel::badproperty = "Property `1` is not supported by FindInfraParallel (FindInfraParallel accepts only Properties -> {}).";
 
 Options[ FindInfraParallel ] = {
   Properties -> { },
@@ -82,7 +79,9 @@ Options[ FindInfraParallel ] = {
 };
 
 FindInfraParallel[ graph_Graph, line_, p_,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ]/;
+    OptionValue[ FindInfraParallel, { opts }, Properties ] === { } &&
+      MatchQ[ OptionValue[ FindInfraParallel, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
   Module[ { found, descend },
     descend[ out_, pick_, limit_, path_ ] := With[ { nexts = Lookup[ out, Key @ Last @ path, { } ] },
       If[ nexts === { },
@@ -101,14 +100,10 @@ FindInfraParallel[ graph_Graph, line_, p_,
               If[ spelled, Map[ Last, #, { 2 } ], # ] & @ Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
                 { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
             True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ] },
-      { results = ( { line0, p0 } |-> Catch @ With[ {
-            properties = OptionValue[ FindInfraParallel, { opts }, Properties ],
+      { results = ( { line0, p0 } |-> With[ {
             methodHead = Replace[ OptionValue[ FindInfraParallel, { opts }, Method ],
                            { Automatic :> If[ count === All, "Exhaustive", "Greedy" ], { m_String, ___ } :> m } ],
             verts = VertexList @ graph },
-          If[ properties =!= { }, Message[ FindInfraParallel::badproperty, properties ]; Throw[ $Failed ] ];
-          If[ ! MatchQ[ methodHead, "Exhaustive" | "Greedy" | "RandomGreedy" ],
-            Message[ FindInfraParallel::badmethod, methodHead ]; Throw[ $Failed ] ];
           With[ { dm = GraphDistanceMatrix[ graph ], vidx = AssociationThread[ verts, Range @ Length @ verts ] },
             { dist = dm[[ vidx @ #1, vidx @ #2 ]] &,
               lineDist = Min @ dm[[ vidx @ #, vidx /@ line0 ]] & },
@@ -150,14 +145,13 @@ FindInfraParallel[ graph_Graph, line_, p_,
               line === { }, { },
               True, { line } ],
             Keys @ InfraDensity[ graph, p ] } ] },
-      If[ MemberQ[ results, $Failed ], $Failed,
-        With[ { parallels = DeleteDuplicates[ If[ GraphQ @ #, #, PathGraph[ #, DirectedEdges -> True ] ] & /@
+      With[ { parallels = DeleteDuplicates[ If[ GraphQ @ #, #, PathGraph[ #, DirectedEdges -> True ] ] & /@
             DeleteDuplicates @ Flatten[ results, 1 ] ] },
           Switch[ count,
             Automatic, First[ parallels, { } ],
             All,       Replace[ parallels, { one_Graph } :> one ],
             _UpTo,     Take[ parallels, count ],
-            _,         If[ Length @ parallels < count, $Failed, Take[ parallels, count ] ] ] ] ] ] ]
+            _,         If[ Length @ parallels < count, { }, Take[ parallels, count ] ] ] ] ] ]
 
 (* ===================== Sketch: Method dispatch (NOT WIRED) =====================
    Two honest, computable parallelism criteria; see Wiki/Concepts/Parallelism.md
@@ -221,15 +215,18 @@ FindInfraParallel[ graph_Graph, line_, p_,
 
    ============================================================================= *)
 
-FindInfraPerpendicular::badmethod = "Method `1` is not supported by FindInfraPerpendicular.";
-
 Options[ FindInfraPerpendicular ] = {
   Method   -> "Metric",
   "Radius" -> All
 };
 
 FindInfraPerpendicular[ graph_Graph, line_, point_,
-    count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[] ] :=
+    count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[] ]/;
+    MatchQ[ OptionValue[ FindInfraPerpendicular, { opts }, Method ],
+      "Metric" | "Projection" | "Coordinate" | "Arclength" | "Alexandrov" |
+        { "Metric" | "Projection" | "Arclength" | "Alexandrov", ___ } |
+        ( { "Coordinate", o___ } /; MatchQ[ Lookup[ { o }, "ZeroTest", "Mean" ],
+          "Mean" | "Median" | "Contains" | { "Mean" | "Median" | "Contains", ___ } | Except[ _String | { _String, ___ } ] ] ) ] :=
   With[ {
       walksOf = w |-> With[ { vs = VertexList @ w },
           { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
@@ -293,8 +290,7 @@ FindInfraPerpendicular[ graph_Graph, line_, point_,
             Select[
               DeleteDuplicates @ Map[ canonical, Catenate[
                 Map[ neighbor |-> extensions @ { point0, neighbor }, AdjacencyList[ workGraph, point0 ] ] ] ],
-              InfraPerpendicularQ[ graph, line0, #, Method -> spec, "Radius" -> radius ] & ],
-          _, Message[ FindInfraPerpendicular::badmethod, spec ]; $Failed
+              InfraPerpendicularQ[ graph, line0, #, Method -> spec, "Radius" -> radius ] & ]
         ] ] ) @@@
       Tuples[ {
         Which[
@@ -304,12 +300,11 @@ FindInfraPerpendicular[ graph_Graph, line_, point_,
           line === { }, { },
           True, { line } ],
         Keys @ InfraDensity[ graph, point ] } ] },
-    If[ MemberQ[ results, $Failed ], $Failed,
-      With[ { perpendiculars = DeleteDuplicates[ PathGraph[ #, DirectedEdges -> True ] & /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
+    With[ { perpendiculars = DeleteDuplicates[ PathGraph[ #, DirectedEdges -> True ] & /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
         Switch[ count,
           All,   Replace[ perpendiculars, { one_Graph } :> one ],
           _UpTo, Take[ perpendiculars, count ],
-          _,     If[ Length @ perpendiculars < count, $Failed, Take[ perpendiculars, count ] ] ] ] ] ]
+          _,     If[ Length @ perpendiculars < count, { }, Take[ perpendiculars, count ] ] ] ] ]
 
 FindInfraCommonLine[ graph_Graph, verts_List,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
@@ -329,7 +324,7 @@ FindInfraCommonLine[ graph_Graph, verts_List,
     Switch[ count,
       All,   Replace[ lines, { one_Graph } :> one ],
       _UpTo, Take[ lines, count ],
-      _,     If[ Length @ lines < count, $Failed, Take[ lines, count ] ] ] ]
+      _,     If[ Length @ lines < count, { }, Take[ lines, count ] ] ] ]
 
 InfraLineQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraLineQ[ graph, # ] & ]
 
@@ -396,15 +391,16 @@ InfraParallelQ[ graph_Graph,
       pair |-> InfraParallelQ[ graph, pair[[ 1 ]], pair[[ 2 ]], threshold ] ]
   ]
 
-InfraPerpendicularQ::badmethod   = "Method `1` is not supported by InfraPerpendicularQ.";
-InfraPerpendicularQ::badzerotest = "ZeroTest `1` is not supported by InfraPerpendicularQ \"Coordinate\".";
-
 Options[ InfraPerpendicularQ ] = {
   Method   -> "Projection",
   "Radius" -> All
 };
 
-InfraPerpendicularQ[ graph_Graph, l1_, l2_, OptionsPattern[] ] :=
+InfraPerpendicularQ[ graph_Graph, l1_, l2_, opts : OptionsPattern[] ] /;
+    MatchQ[ OptionValue[ InfraPerpendicularQ, { opts }, Method ],
+      "Projection" | "Coordinate" | "Arclength" | "Alexandrov" | { "Projection" | "Arclength" | "Alexandrov", ___ } |
+        ( { "Coordinate", o___ } /; MatchQ[ Lookup[ { o }, "ZeroTest", "Mean" ],
+          "Mean" | "Median" | "Contains" | { "Mean" | "Median" | "Contains", ___ } | Except[ _String | { _String, ___ } ] ] ) ] :=
   With[ {
       seqOf = w |-> With[ { vs = VertexList @ w },
         If[ AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
@@ -474,15 +470,13 @@ InfraPerpendicularQ[ graph_Graph, l1_, l2_, OptionsPattern[] ] :=
                   "Mean",     Abs[ N @ Mean[ c12 ] ]   <= ztTol && Abs[ N @ Mean[ c21 ] ]   <= ztTol,
                   "Median",   Abs[ N @ Median[ c12 ] ] <= ztTol && Abs[ N @ Median[ c21 ] ] <= ztTol,
                   "Contains", Min[ c12 ] - ztTol <= 0 <= Max[ c12 ] + ztTol
-                           && Min[ c21 ] - ztTol <= 0 <= Max[ c21 ] + ztTol,
-                  _,          Message[ InfraPerpendicularQ::badzerotest, zeroTest ]; False ],
+                           && Min[ c21 ] - ztTol <= 0 <= Max[ c21 ] + ztTol ],
               True, TrueQ @ zeroTest[ c12 ] && TrueQ @ zeroTest[ c21 ] ] ] ] ] },
     Which[
       Length[ common ] == 0,                          False,
       mtdHead === "Projection",                       AllTrue[ common, projectionQ ],
       mtdHead === "Coordinate",                       AllTrue[ common, coordinateQ ],
-      MemberQ[ { "Arclength", "Alexandrov" }, mtdHead ], AllTrue[ common, angleQ ],
-      True, Message[ InfraPerpendicularQ::badmethod, mtd ]; $Failed
+      MemberQ[ { "Arclength", "Alexandrov" }, mtdHead ], AllTrue[ common, angleQ ]
     ]
   ]
 

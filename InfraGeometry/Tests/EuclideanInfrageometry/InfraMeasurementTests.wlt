@@ -117,7 +117,7 @@ VerificationTest[
 (* a strict count larger than the family has no answer *)
 VerificationTest[
   InfraVertexList[CycleGraph[6], InfraSegment[1, 4], 5],
-  $Failed,
+  { },
   TestID -> "InfraVertexList-strict-shortfall"
 ]
 

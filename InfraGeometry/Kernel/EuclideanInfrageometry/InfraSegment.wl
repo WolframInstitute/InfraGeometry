@@ -42,7 +42,7 @@ InfraVertexList[ graph_Graph,
       Automatic, First[ members, { } ],
       All,       members,
       _UpTo,     Take[ members, count ],
-      _,         If[ Length @ members < count, $Failed, Take[ members, count ] ] ] ]
+      _,         If[ Length @ members < count, { }, Take[ members, count ] ] ] ]
 
 InfraMeasurement[ graph_Graph,
     InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ], "VertexDensity" ] :=
@@ -86,11 +86,7 @@ FindInfraSegment[ graph_Graph, p_, q_,
       Automatic, First[ geodesics, { } ],
       All,       geodesics,
       _UpTo,     Take[ geodesics, count ],
-      _,         If[ Length @ geodesics < count, $Failed, Take[ geodesics, count ] ] ] ]
-
-ExtendInfraSegment::badproperty  = "Property `1` is not supported by ExtendInfraSegment; local rules on the extension moved to ExtendInfraGeodesic[graph, seed, scale, kspec].";
-ExtendInfraSegment::badmethod    = "Method `1` is not supported by ExtendInfraSegment.";
-ExtendInfraSegment::baddirection = "Direction `1` is not supported by ExtendInfraSegment.";
+      _,         If[ Length @ geodesics < count, { }, Take[ geodesics, count ] ] ] ]
 
 Options[ ExtendInfraSegment ] = {
   Properties  -> { },
@@ -102,10 +98,12 @@ Options[ ExtendInfraSegment ] = {
 
 ExtendInfraSegment[ graph_Graph, seed_,
     kspec : ( _Integer | UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ) : Infinity,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    OptionValue[ ExtendInfraSegment, { opts }, Properties ] === { } &&
+      MatchQ[ OptionValue[ ExtendInfraSegment, { opts }, "Direction" ], "Forward" | "Backward" | "BothSides" ] &&
+      MatchQ[ OptionValue[ ExtendInfraSegment, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
   Module[ { acc, descend },
     With[ {
-        properties = OptionValue[ ExtendInfraSegment, { opts }, Properties ],
         method     = Replace[ OptionValue[ ExtendInfraSegment, { opts }, Method ],
                        { Automatic :> If[ count === All, "Exhaustive", "Greedy" ], { m_String, ___ } :> m } ],
         direction  = OptionValue[ ExtendInfraSegment, { opts }, "Direction" ],
@@ -136,15 +134,7 @@ ExtendInfraSegment[ graph_Graph, seed_,
         If[ Last @ walk =!= e,
           Scan[ descend[ e, dag, Append[ walk, # ] ] &,
             branch @ DeleteCases[ VertexOutComponent[ dag, { Last @ walk }, 1 ], Last @ walk ] ] ] );
-      Which[
-        properties =!= { },
-          Message[ ExtendInfraSegment::badproperty, properties ]; $Failed,
-        ! MatchQ[ direction, "Forward" | "Backward" | "BothSides" ],
-          Message[ ExtendInfraSegment::baddirection, direction ]; $Failed,
-        ! MatchQ[ method, "Exhaustive" | "Greedy" | "RandomGreedy" ],
-          Message[ ExtendInfraSegment::badmethod, method ]; $Failed,
-        True,
-          With[ { lines = DeleteDuplicates[ If[ GraphQ @ #, #, PathGraph[ #, DirectedEdges -> True ] ] & /@
+      With[ { lines = DeleteDuplicates[ If[ GraphQ @ #, #, PathGraph[ #, DirectedEdges -> True ] ] & /@
               DeleteDuplicates @ Catenate[ Map[ bundle |-> If[ VertexCount @ bundle == 0, { },
                 With[ {
                     p1 = First @ Select[ VertexList @ bundle, VertexInDegree[ bundle, # ] == 0 & ],
@@ -185,7 +175,7 @@ ExtendInfraSegment[ graph_Graph, seed_,
               Automatic, First[ lines, { } ],
               All,       Replace[ lines, { one_Graph } :> one ],
               _UpTo,     Take[ lines, count ],
-              _,         If[ Length @ lines < count, $Failed, Take[ lines, count ] ] ] ] ] ] ]
+              _,         If[ Length @ lines < count, { }, Take[ lines, count ] ] ] ] ] ]
 
 (* Tarski A4: find x with B(a, b, x) and d(b, x) == d(c, d); the last vertex slot excludes rules so an optioned 3-argument call never lands here *)
 
@@ -195,7 +185,7 @@ ExtendInfraSegment[ graph_Graph, a_, b_, c_, d : Except[ _Rule | _RuleDelayed ],
     { vs = If[ target === Infinity, { },
         Select[ VertexList[ graph ],
           x |-> BetweennessQ[ graph, a, b, x ] && GraphDistance[ graph, b, x ] === target ] ] },
-    Switch[ count, All, vs, _UpTo, Take[ vs, count ], _, If[ Length @ vs < count, $Failed, Take[ vs, count ] ] ] ]
+    Switch[ count, All, vs, _UpTo, Take[ vs, count ], _, If[ Length @ vs < count, { }, Take[ vs, count ] ] ] ]
 
 dispatchConstruction[ graph_Graph, InfraSegment[ p1_, p2_, opts___Rule ] ] :=
   capBranches[

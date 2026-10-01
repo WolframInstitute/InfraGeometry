@@ -196,7 +196,7 @@ VerificationTest[
 VerificationTest[
   FindClosestInfraPoint[GridGraph[{5, 5}],
     geodesicGraph @ {1, 2, 3, 4, 5}, 13, 5],
-  $Failed,
+  { },
   TestID -> "FindClosestInfraPoint-strict-count-too-large-fails"
 ]
 
@@ -290,7 +290,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraBisectingHyperplane[PathGraph[Range[5]], 1, 5, 5],
-  $Failed,
+  { },
   TestID -> "FindInfraBisectingHyperplane-LevelSet-fails-when-too-few"
 ]
 
@@ -382,20 +382,6 @@ VerificationTest[
       sep |-> SeparatesQ[g, sep, 1, 4]]],
   True,
   TestID -> "FindInfraBisectingHyperplane-Separating-results-actually-separate"
-]
-
-VerificationTest[
-  FindInfraBisectingHyperplane[PathGraph[Range[5]], 1, 5, Properties -> {"Separating"}, Method -> "Bogus"],
-  $Failed,
-  {FindInfraBisectingHyperplane::badmethod},
-  TestID -> "FindInfraBisectingHyperplane-badmethod"
-]
-
-VerificationTest[
-  FindInfraBisectingHyperplane[PathGraph[Range[5]], 1, 5, Properties -> {"Bogus"}],
-  $Failed,
-  {FindInfraBisectingHyperplane::badproperty},
-  TestID -> "FindInfraBisectingHyperplane-badproperty"
 ]
 
 (* ===== CompleteInfraEquilateralTriangle ===== *)

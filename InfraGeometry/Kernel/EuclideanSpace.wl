@@ -3,11 +3,10 @@ Package["WolframInstitute`InfraGeometry`"]
 (* "Alexandrov": <u, v>_o = d(o, u) d(o, v) cos theta_k with theta_k the comparison angle at o in M_k^2; k = 0 collapses to (d(o,u)^2 + d(o,v)^2 - d(u,v)^2) / 2.
    "Parallelogram": the polarisation (||u + v||_o^2 - ||u - v||_o^2) / 4 over realisations of u + v and u - v on the substrate. *)
 
-InfraScalarProduct::badmethod = "Method `1` is not supported by InfraScalarProduct.";
-
 Options[ InfraScalarProduct ] = { Method -> "Alexandrov" };
 
-InfraScalarProduct[ graph_Graph, o_, u_, v_, OptionsPattern[] ] :=
+InfraScalarProduct[ graph_Graph, o_, u_, v_, opts : OptionsPattern[] ] /;
+    MatchQ[ OptionValue[ InfraScalarProduct, { opts }, Method ], "Alexandrov" | "Parallelogram" | { "Alexandrov" | "Parallelogram", ___ } ] :=
   Switch[ Replace[ OptionValue[ Method ], { m_String, ___ } :> m ],
     "Alexandrov",
       With[ { k = Lookup[ Replace[ OptionValue[ Method ], { { _String, opt___ } :> { opt }, _ -> { } } ], "Curvature", 0 ],
@@ -26,15 +25,14 @@ InfraScalarProduct[ graph_Graph, o_, u_, v_, OptionsPattern[] ] :=
                 graph, o, { { 1, u }, {  1, v } }, All, "ScaleMethod" -> "Line" ],
               minus = FindInfraLinearCombination[
                 graph, o, { { 1, u }, { -1, v } }, All, "ScaleMethod" -> "Line" ] },
-        If[ plus === { } || minus === { }, $Failed,
+        If[ plus === { } || minus === { }, { },
           With[ { vals = DeleteDuplicates @ Flatten @ Outer[
                 ( GraphDistance[ graph, o, #1 ]^2 - GraphDistance[ graph, o, #2 ]^2 ) / 4 &,
                 plus, minus ] },
             If[ Length[ vals ] == 1, First @ vals, vals ]
           ]
         ]
-      ],
-    _, Message[ InfraScalarProduct::badmethod, OptionValue[ Method ] ]; $Failed
+      ]
   ]
 
 Options[ FindInfraLinearCombination ] = {
@@ -142,12 +140,10 @@ FindInfraLinearCombination[ graph_Graph, o_, terms_List,
       Switch[ count,
         All,   reps,
         _UpTo, Take[ reps, count ],
-        _,     If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ] ]
+        _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ] ]
 
 (* "Arclength": remove the open ball B(p, min(d(p, q1), d(p, q2))) and normalise d(q1, q2) in the rest by the radius, a synthetic radian measure of the detour around p.
    "Alexandrov": the comparison-triangle angle in M_k^2. *)
-
-InfraAngle::badmethod = "Method `1` is not supported by InfraAngle.";
 
 Options[ InfraAngle ] = { Method -> "Arclength" };
 
@@ -155,7 +151,8 @@ InfraAngle[ graph_Graph, triple : { _, _, _ }, opts : OptionsPattern[] ] /;
     ! FreeQ[ triple, _Association ] :=
   InfraAngle[ graph, triple /. fam_Association :> First @ Keys @ fam, opts ]
 
-InfraAngle[ graph_Graph, { q1_, p_, q2_ }, OptionsPattern[] ] :=
+InfraAngle[ graph_Graph, { q1_, p_, q2_ }, opts : OptionsPattern[] ] /;
+    MatchQ[ OptionValue[ InfraAngle, { opts }, Method ], "Arclength" | "Alexandrov" | { "Arclength" | "Alexandrov", ___ } ] :=
   Switch[ Replace[ OptionValue[ Method ], { m_String, ___ } :> m ],
     "Arclength",
       With[ { radius = Min[ GraphDistance[ graph, p, q1 ], GraphDistance[ graph, p, q2 ] ] },
@@ -171,8 +168,7 @@ InfraAngle[ graph_Graph, { q1_, p_, q2_ }, OptionsPattern[] ] :=
           k == 0, ( b^2 + c^2 - a^2 ) / ( 2 b c ),
           k > 0,  ( Cos[ a s ] - Cos[ b s ] Cos[ c s ] ) / ( Sin[ b s ] Sin[ c s ] ),
           k < 0,  ( Cosh[ b s ] Cosh[ c s ] - Cosh[ a s ] ) / ( Sinh[ b s ] Sinh[ c s ] ) ]
-      ],
-    _, Message[ InfraAngle::badmethod, OptionValue[ Method ] ]; $Failed
+      ]
   ]
 
 (* T[v, w] = d(p, u) / d(p, v) with u the vertex of I(p, w) closest to v; in Euclidean space clamp(cos theta, 0, |w|/|v|), on a shell max(0, cos theta) (Euclid II.12-13) *)

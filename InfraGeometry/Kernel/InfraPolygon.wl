@@ -1,19 +1,16 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-FindInfraPolygon::badmethod = "Method `1` is not supported by FindInfraPolygon.";
-
 Options[ FindInfraPolygon ] = { Method -> Automatic };
 
 FindInfraPolygon[ graph_Graph, vertices_List /; Length[ vertices ] >= 3,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    MatchQ[ OptionValue[ FindInfraPolygon, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
   Module[ { acc, descend },
     With[ { methodSpec = Replace[ OptionValue[ FindInfraPolygon, { opts }, Method ], Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ],
             cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
       { method = Replace[ methodSpec, { m_String, ___ } :> m ],
         sideCap = If[ count === All, Infinity, Max[ 8, 2 cap ] ] },
-      If[ ! MatchQ[ method, "Exhaustive" | "Greedy" | "RandomGreedy" ],
-        Message[ FindInfraPolygon::badmethod, methodSpec ]; $Failed,
-        With[ { sides = Apply[ { a, b } |->
+      With[ { sides = Apply[ { a, b } |->
               With[ { dag = If[ method === "Exhaustive" || a === b, Null, SegmentGraph[ graph, a, b ] ] },
                 Which[
                   a === b, { },
@@ -46,7 +43,7 @@ FindInfraPolygon[ graph_Graph, vertices_List /; Length[ vertices ] >= 3,
             Automatic, First[ polygons, { } ],
             All,       polygons,
             _UpTo,     Take[ polygons, count ],
-            _,         If[ Length @ polygons < count, $Failed, Take[ polygons, count ] ] ] ] ] ] ]
+            _,         If[ Length @ polygons < count, { }, Take[ polygons, count ] ] ] ] ] ]
 
 InfraPolygonQ[ graph_Graph, polys : { { __Graph } .. } ] :=
   AllTrue[ polys, InfraPolygonQ[ graph, # ] & ]
@@ -67,10 +64,6 @@ InfraPolygonQ[ _Graph, _ ] := False
 
    The family is carried by the FindCycle candidate sweep, filtered by the slot predicates.  The sweep is not lazy -- every n-cycle of the candidate graph is materialised before any is tested -- so "Greedy" and "RandomGreedy" here only order what the count takes, in candidate and random order respectively; the class is the same under all three *)
 
-FindInfraRegularPolygon::badproperty = "Property `1` is not supported by FindInfraRegularPolygon.";
-FindInfraRegularPolygon::badmethod   = "Method `1` is not supported by FindInfraRegularPolygon.";
-FindInfraRegularPolygon::badcount    = "Diagonal tuple `1` has length exceeding Floor[n/2] for n = `2`.";
-
 Options[ FindInfraRegularPolygon ] = {
   Properties -> { },
   Method     -> Automatic,
@@ -78,22 +71,15 @@ Options[ FindInfraRegularPolygon ] = {
 };
 
 FindInfraRegularPolygon[ graph_Graph, As_List, n_Integer /; n >= 3,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    1 <= Length[ As ] <= Floor[ n / 2 ] && OptionValue[ FindInfraRegularPolygon, { opts }, Properties ] === { } &&
+      MatchQ[ OptionValue[ FindInfraRegularPolygon, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
   With[ {
-      properties = OptionValue[ FindInfraRegularPolygon, { opts }, Properties ],
       methodSpec = Replace[ OptionValue[ FindInfraRegularPolygon, { opts }, Method ],
                      Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ],
       fromSpec   = OptionValue[ FindInfraRegularPolygon, { opts }, "From" ] },
     { methodHead = Replace[ methodSpec, { m_String, ___ } :> m ] },
-    Which[
-      properties =!= { },
-        Message[ FindInfraRegularPolygon::badproperty, First @ properties ]; $Failed,
-      Length[ As ] < 1 || Length[ As ] > Floor[ n / 2 ],
-        Message[ FindInfraRegularPolygon::badcount, As, n ]; $Failed,
-      ! MatchQ[ methodHead, "Exhaustive" | "Greedy" | "RandomGreedy" ],
-        Message[ FindInfraRegularPolygon::badmethod, methodSpec ]; $Failed,
-      True,
-        With[ { normalize = a |-> Replace[ a, {
+    With[ { normalize = a |-> Replace[ a, {
                   fam_Association :> Keys @ fam,
                   list_List /; AllTrue[ list, MatchQ[ _Association ] ] :> list[[ All, 1, 1 ]] } ] },
           { from = Replace[ fromSpec, {
@@ -140,7 +126,7 @@ FindInfraRegularPolygon[ graph_Graph, As_List, n_Integer /; n >= 3,
             Automatic, First[ polygons, { } ],
             All,       polygons,
             _UpTo,     Take[ polygons, count ],
-            _,         If[ Length @ polygons < count, $Failed, Take[ polygons, count ] ] ] ] ] ]
+            _,         If[ Length @ polygons < count, { }, Take[ polygons, count ] ] ] ] ]
 
 InfraRegularPolygonQ[ graph_Graph, cycle_List, As_List ] /;
     Length[ cycle ] >= 3 && ! MatchQ[ cycle, { __Graph } | { { __Graph } .. } ] :=

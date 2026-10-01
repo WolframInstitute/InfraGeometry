@@ -43,7 +43,7 @@ InfraVertexList[ graph_Graph, InfraArc[ center_, pts : { _, _, __ }, opts___Rule
       Automatic, First[ members, { } ],
       All,       members,
       _UpTo,     Take[ members, count ],
-      _,         If[ Length @ members < count, $Failed, Take[ members, count ] ] ] ]
+      _,         If[ Length @ members < count, { }, Take[ members, count ] ] ] ]
 
 InfraMeasurement[ graph_Graph, InfraArc[ center_, pts : { _, _, __ }, opts___Rule ], "VertexDensity" ] :=
   With[ { pieces = InfraArc[ center, #, opts ] & /@ Partition[ pts, 2, 1 ] },
@@ -93,4 +93,4 @@ FindInfraArc[ graph_Graph, center_, pts : { _, _, ___ },
       Automatic, First[ arcs, { } ],
       All,       arcs,
       _UpTo,     Take[ arcs, count ],
-      _,         If[ Length @ arcs < count, $Failed, Take[ arcs, count ] ] ] ]
+      _,         If[ Length @ arcs < count, { }, Take[ arcs, count ] ] ] ]

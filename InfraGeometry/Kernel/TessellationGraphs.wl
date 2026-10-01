@@ -2,13 +2,16 @@ Package["WolframInstitute`InfraGeometry`"]
 
 Options[TessellationGraph] = {Method -> Automatic};
 
-TessellationGraph[{p_Integer, q_Integer}, n_Integer : 1, opts : OptionsPattern[{TessellationGraph, Graph}]] :=
+TessellationGraph[{p_Integer, q_Integer}, n_Integer : 1, opts : OptionsPattern[{TessellationGraph, Graph}]] /;
+    MatchQ[OptionValue[TessellationGraph, FilterRules[{opts}, Options[TessellationGraph]], Method],
+      Automatic | "Platonic" | "Torus" | "PSL2" | "Congruence" | "CosetEnumeration" |
+        {Automatic | "Platonic" | "Torus" | "PSL2" | "Congruence" | "CosetEnumeration", ___}] :=
   Module[{found = {}, ell = 1, gens},
     With[{method = OptionValue[TessellationGraph, FilterRules[{opts}, Options[TessellationGraph]], Method], c = (p - 2) (q - 2)},
       {name = If[ListQ[method], First[method], method],
        budget = If[ListQ[method], Lookup[Rest[method], "MaxIndex", 24], If[c < 4, 4 p q / (2 p + 2 q - p q), 24]]},
       {cosetMap = {} |-> With[{maps = SortBy[Select[LowIndexMaps[p, q, budget], #["Regular"] &], #["Index"] &]},
-         If[Length[maps] < n, $Failed, TessellationGraph[{p, q}, maps[[n]]["Generators"]]]]},
+         If[Length[maps] < n, Missing["NotFound"], TessellationGraph[{p, q}, maps[[n]]["Generators"]]]]},
       {g = Switch[{name, Sign[c - 4]},
         {Automatic, -1} | {"Platonic", _},
           TessellationGraph[{p, q}, <|{3, 3} -> AlternatingGroup[4], {3, 4} -> SymmetricGroup[4], {4, 3} -> SymmetricGroup[4],
@@ -34,14 +37,13 @@ TessellationGraph[{p_Integer, q_Integer}, n_Integer : 1, opts : OptionsPattern[{
                   {r, rs}, {s, ss}];
                 Missing["NotFound"]]];
             If[Head[gens] === List, AppendTo[found, gens]]];
-          Which[Length[found] >= n, TessellationGraph[{p, q}, Last[found]], name === Automatic, cosetMap[], True, $Failed],
-        {"CosetEnumeration", _}, cosetMap[],
-        _, Message[TessellationGraph::badmethod, name]; $Failed]},
-      If[GraphQ[g], Graph[g, Sequence @@ FilterRules[{opts}, Options[Graph]]], g]]];
+          Which[Length[found] >= n, TessellationGraph[{p, q}, Last[found]], name === Automatic, cosetMap[], True, Missing["NotFound"]],
+        {"CosetEnumeration", _}, cosetMap[]]},
+      Graph[g, Sequence @@ FilterRules[{opts}, Options[Graph]]] /; GraphQ[g]]];
 
 TessellationGraph[{p_Integer, q_Integer}, {m_Integer, n_Integer}, opts : OptionsPattern[{TessellationGraph, Graph}]] :=
   With[{g = TorusTessellation[{m, n}, <|{4, 4} -> "Square", {3, 6} -> "Triangular", {6, 3} -> "Hexagonal"|>[{p, q}]]},
-    If[GraphQ[g], Graph[g, Sequence @@ FilterRules[{opts}, Options[Graph]]], g]];
+    Graph[g, Sequence @@ FilterRules[{opts}, Options[Graph]]] /; GraphQ[g]];
 
 (* 1-skeleton of the regular map of type {p, q} carried by the (2,p,q)-generation
    r^p == s^q == (rs)^2 == 1: the coset graph on the vertex cosets G/<s>, joined by
@@ -118,7 +120,7 @@ TessellationGraph[config_List /; Length[config] >= 3, n_Integer : 1, opts : Opti
        Length[key] == 3 && MemberQ[key, 4], {{rectify, truncate}, DeleteCases[key, 4]/2},
        Length[key] == 3 && Length[Union @ key] == 2,
          {{truncate}, {First[Select[key, Count[key, #] == 2 &]]/2, First[Select[key, Count[key, #] == 1 &]]}},
-       True, $Failed]},
+       True, None]},
     {map = Which[
        Equal @@ config, TessellationGraph[{First @ config, Length @ config}, n],
        defect > 0, Which[
@@ -134,22 +136,17 @@ TessellationGraph[config_List /; Length[config] >= 3, n_Integer : 1, opts : Opti
              Table[UndirectedEdge[{2, i}, {2, Mod[i, k] + 1}], {i, k}],
              Table[UndirectedEdge[{1, i}, {2, i}], {i, k}],
              Table[UndirectedEdge[{1, i}, {2, Mod[i, k] + 1}], {i, k}]]],
-         True, Message[TessellationGraph::deferred, config]; $Failed],
+         True, Missing["NotAvailable"]],
        defect == 0, Switch[key,
          {3, 6, 3, 6}, conway[{rectify}, TorusTessellation[{size, size}, "Triangular"]],
          {3, 4, 6, 4}, conway[{rectify, rectify}, TorusTessellation[{size, size}, "Triangular"]],
          {4, 6, 12}, conway[{rectify, truncate}, TorusTessellation[{size, size}, "Triangular"]],
          {4, 8, 8}, conway[{truncate}, TorusTessellation[{size, size}, "Square"]],
          {3, 12, 12}, conway[{truncate}, TorusTessellation[{size, size}, "Hexagonal"]],
-         _, Message[TessellationGraph::deferred, key]; $Failed],
-       seed === $Failed, Message[TessellationGraph::deferred, config]; $Failed,
+         _, Missing["NotAvailable"]],
+       seed === None, Missing["NotAvailable"],
        True, conway[First @ seed, TessellationGraph[Last @ seed, n]]]},
-    If[GraphQ[map], Graph[map, Sequence @@ FilterRules[{opts}, Options[Graph]]], map]];
-
-TessellationGraph::badmethod = "Unknown Method `1`; use Automatic, \"Platonic\", \"Torus\", \"PSL2\", or \"CosetEnumeration\".";
-
-TessellationGraph::deferred =
-  "The uniform map `1` is not built by this constructor (snub, elongated, and other non-Conway families are not yet supported).";
+    Graph[map, Sequence @@ FilterRules[{opts}, Options[Graph]]] /; GraphQ[map]];
 
 TorusTessellation[ { m_Integer, n_Integer }, opts : OptionsPattern[ ] ] :=
   TorusTessellation[ { m, n }, "Triangular", opts ]
@@ -227,8 +224,7 @@ TessellationNeighborhoodGraph[{p_Integer, q_Integer}, r_Integer : 3, opts : Opti
           VertexList[tiling][[First @ Ordering[SquaredEuclideanDistance[ref, #] & /@ GraphEmbedding @ tiling, 1]]], r],
         Sequence @@ FilterRules[{opts}, Options[Graph]]]]];
 
-TessellationNeighborhoodGraph[{p_Integer, q_Integer}, {m_Integer, n_Integer}, opts : OptionsPattern[Graph]] :=
-  If[(p - 2) (q - 2) == 4,
+TessellationNeighborhoodGraph[{p_Integer, q_Integer}, {m_Integer, n_Integer}, opts : OptionsPattern[Graph]] /; (p - 2) (q - 2) == 4 :=
     Graph[
       Switch[{p, q},
         {4, 4}, GridGraph[{m, n}],
@@ -251,24 +247,20 @@ TessellationNeighborhoodGraph[{p_Integer, q_Integer}, {m_Integer, n_Integer}, op
               VertexCoordinates -> Flatten[Table[
                 {{i, j, 0} -> i a0 + j a1, {i, j, 1} -> i a0 + j a1 + d}, {i, 0, m}, {j, 0, n}], 2]]},
             Subgraph[g, Select[VertexList @ g, VertexDegree[g, #] > 1 &]]]],
-      Sequence @@ FilterRules[{opts}, Options[Graph]]],
-    Message[TessellationNeighborhoodGraph::eucrect, {p, q}]; $Failed];
-
-TessellationNeighborhoodGraph::eucrect =
-  "The rectangular form is defined only for a Euclidean {p,q} ((p-2)(q-2)==4); `1` is not Euclidean -- use an integer radius.";
+      Sequence @@ FilterRules[{opts}, Options[Graph]]];
 
 TessellationNeighborhoodGraph[config_List /; Length[config] >= 3, r_Integer : 3, opts : OptionsPattern[Graph]] :=
   Module[{defect = Total[1/config] - (Length[config] - 2)/2, edge, u, s, angle, mob, imob, place, direction, step, inRegion,
-      faces, seen, growing = True, added, g},
-    g = Which[
+      faces, seen, growing = True, added},
+    With[{g = Which[
       Equal @@ config, TessellationNeighborhoodGraph[{First @ config, Length @ config}, r],
       defect > 0, With[{solid = TessellationGraph[config]},
-        If[GraphQ[solid], NeighborhoodGraph[solid, First @ VertexList @ solid, r], $Failed]],
+        If[GraphQ[solid], NeighborhoodGraph[solid, First @ VertexList @ solid, r], Missing["NotAvailable"]]],
       defect == 0 && ! MemberQ[{{3, 6, 3, 6}, {3, 4, 6, 4}, {4, 6, 12}, {4, 8, 8}, {3, 12, 12}},
           First @ Sort @ Join[
             Table[RotateLeft[config, i], {i, 0, Length[config] - 1}],
             Table[RotateLeft[Reverse @ config, i], {i, 0, Length[config] - 1}]]],
-        Message[TessellationNeighborhoodGraph::deferred, config]; $Failed,
+        Missing["NotAvailable"],
       True,
         u = If[defect == 0, 1, Re[edge /. FindRoot[Total[2 ArcSin[Cos[Pi / #] / edge] & /@ config] == 2 Pi, {edge, 1.3}]]];
         s = If[u === 1, 1, 2 ArcCosh[u]];
@@ -323,11 +315,8 @@ TessellationNeighborhoodGraph[config_List /; Length[config] >= 3, r_Integer : 3,
           {tiling = Graph[Range @ Length @ uniq, edges,
              VertexCoordinates -> Lookup[GroupBy[Transpose[{keys, vecs}], First -> Last, Mean], uniq]]},
           NeighborhoodGraph[tiling,
-            VertexList[tiling][[First @ Ordering[SquaredEuclideanDistance[{0, 0}, #] & /@ GraphEmbedding @ tiling, 1]]], r]]];
-    If[GraphQ[g], Graph[g, Sequence @@ FilterRules[{opts}, Options[Graph]]], g]];
-
-TessellationNeighborhoodGraph::deferred =
-  "The unwrapped patch of the uniform tiling `1` is not built (the Euclidean snub / elongated families are chiral -- use TessellationGraph for their compact quotient).";
+            VertexList[tiling][[First @ Ordering[SquaredEuclideanDistance[{0, 0}, #] & /@ GraphEmbedding @ tiling, 1]]], r]]]},
+      Graph[g, Sequence @@ FilterRules[{opts}, Options[Graph]]] /; GraphQ[g]]];
 
 (* combinatorial (angle-defect) Gaussian curvature at a vertex of the map:
    kappa = Sum 1/f_i - (k - 2)/2; sign is spherical / flat / hyperbolic and the geometric
@@ -415,20 +404,19 @@ LowIndexMaps[p_, q_, maxIndex_] := Module[
           f = c; i = 1; While[i <= len && t[[f, rel[[i]]]] != 0, f = t[[f, rel[[i]]]]; i++];
           b = c; j = len; While[j >= i && t[[b, cosetInv[[rel[[j]]]]]] != 0, b = t[[b, cosetInv[[rel[[j]]]]]]; j--];
           Which[
-            i == j + 1, If[f != b, Throw[$Failed]],
+            i == j + 1, If[f != b, Throw[Nothing]],
             i == j,
-              If[t[[f, rel[[i]]]] != 0 && t[[f, rel[[i]]]] != b, Throw[$Failed]];
-              If[t[[b, cosetInv[[rel[[i]]]]]] != 0 && t[[b, cosetInv[[rel[[i]]]]]] != f, Throw[$Failed]];
+              If[t[[f, rel[[i]]]] != 0 && t[[f, rel[[i]]]] != b, Throw[Nothing]];
+              If[t[[b, cosetInv[[rel[[i]]]]]] != 0 && t[[b, cosetInv[[rel[[i]]]]]] != f, Throw[Nothing]];
               t[[f, rel[[i]]]] = b; t[[b, cosetInv[[rel[[i]]]]]] = f; changed = True,
             True, Null],
           {c, m}, {rel, rels}]];
       t]);
   search[tt_] := With[{size = Length[tt], slot = FirstPosition[tt, 0, {0, 0}, {2}]}, {c = First[slot], g = Last[slot]},
     If[c == 0, AppendTo[out, tt],
-      Scan[search, DeleteCases[close /@ Join[
+      Scan[search, close /@ Join[
           (e |-> ReplacePart[tt, {{c, g} -> e, {e, cosetInv[[g]]} -> c}]) /@ Select[Range[size], tt[[#, cosetInv[[g]]]] == 0 &],
-          If[size < maxIndex, {ReplacePart[Append[tt, {0, 0, 0, 0}], {{c, g} -> size + 1, {size + 1, cosetInv[[g]]} -> c}]}, {}]],
-        $Failed]]]];
+          If[size < maxIndex, {ReplacePart[Append[tt, {0, 0, 0, 0}], {{c, g} -> size + 1, {size + 1, cosetInv[[g]]} -> c}]}, {}]]]]];
   canonical[tt_] := First @ Sort @ Table[
     map = ConstantArray[0, Length[tt]]; nxt = 2; map[[base]] = 1; queue = {base};
     While[queue =!= {}, cur = First[queue]; queue = Rest[queue];

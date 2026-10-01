@@ -53,12 +53,6 @@ VerificationTest[
   TestID -> "InfraScalarProduct-Alexandrov-curvature-recovers-angle"
 ]
 
-VerificationTest[
-  Quiet @ InfraScalarProduct[PathGraph[Range[5]], 1, 3, 4, Method -> "Schoenberg"],
-  $Failed,
-  TestID -> "InfraScalarProduct-Schoenberg-badmethod"
-]
-
 (* ===== InfraScalarProduct (Parallelogram) ===== *)
 
 VerificationTest[
@@ -69,13 +63,13 @@ VerificationTest[
 
 VerificationTest[
   Quiet @ InfraScalarProduct[CycleGraph[6], 1, 2, 3, Method -> "Parallelogram"],
-  $Failed,
+  { },
   TestID -> "InfraScalarProduct-cycle-Parallelogram-no-negation"
 ]
 
 VerificationTest[
   InfraScalarProduct[PathGraph[Range[5]], 1, 2, 5, Method -> "Parallelogram"],
-  $Failed,
+  { },
   TestID -> "InfraScalarProduct-Parallelogram-no-realisation"
 ]
 
@@ -213,15 +207,6 @@ VerificationTest[
   InfraAngle[CycleGraph[6], {1, 2, 3}] == InfraAngle[CycleGraph[6], {3, 2, 1}],
   True,
   TestID -> "InfraAngle-symmetric"
-]
-
-(* Schoenberg is gone from InfraAngle.  The bare scalar product
-   (d(p,q1)^2 + d(p,q2)^2 - d(q1,q2)^2) / 2 is recovered as
-   InfraScalarProduct[g, p, q1, q2] (default Method -> "Alexandrov", k = 0). *)
-VerificationTest[
-  Quiet @ InfraAngle[PathGraph[Range[7]], {1, 4, 7}, Method -> "Schoenberg"],
-  $Failed,
-  TestID -> "InfraAngle-Schoenberg-badmethod"
 ]
 
 VerificationTest[

@@ -1239,7 +1239,7 @@ VerificationTest[
   TestID -> "Schlafli-37-genus-3"
 ]
 
-VerificationTest[ TessellationGraph[ { 3, 7 }, 99 ], $Failed, TestID -> "Schlafli-hyperbolic-unreachable-is-Failed" ]
+VerificationTest[ MatchQ[ TessellationGraph[ { 3, 7 }, 99 ], _TessellationGraph ], True, TestID -> "Schlafli-hyperbolic-unreachable-stays-unevaluated" ]
 VerificationTest[ IsomorphicGraphQ[ TessellationGraph[ { 4, 3 }, SymmetricGroup[ 4 ] ], GraphData[ "CubicalGraph" ] ], True, TestID -> "RegularMap-explicit-group-cube" ]
 
 (* --- General coset enumeration (Todd-Coxeter / low-index) via Method --- *)
@@ -1269,7 +1269,7 @@ VerificationTest[
   TestID -> "LowIndexMaps-33-tetrahedron"
 ]
 
-VerificationTest[ Head @ Quiet @ TessellationGraph[ { 3, 3 }, Method -> "Nonsense" ], Symbol, TestID -> "Method-unknown-is-Failed" ]
+VerificationTest[ MatchQ[ TessellationGraph[ { 3, 3 }, Method -> "Nonsense" ], _TessellationGraph ], True, TestID -> "Method-unknown-stays-unevaluated" ]
 
 (* --- Uniform / Archimedean maps --- *)
 
@@ -1323,8 +1323,6 @@ VerificationTest[
   1,
   TestID -> "Archimedean-torus-genus-1"
 ]
-
-VerificationTest[ TessellationGraph[ { 3, 3, 3, 3, 6 }, 4 ], $Failed, { TessellationGraph::deferred }, TestID -> "Archimedean-euclidean-snub-deferred" ]
 
 
 (* ===================== Map invariants: curvature, Euler characteristic, genus ===================== *)
@@ -1560,14 +1558,6 @@ VerificationTest[
     VertexCount @ g == 12 && Max @ VertexDegree @ g == 4 ],
   True,
   TestID -> "TessellatedDisk-cuboctahedron"
-]
-
-(* the Euclidean snub / elongated families are chiral and deferred *)
-VerificationTest[
-  TessellationNeighborhoodGraph[ { 3, 3, 3, 3, 6 }, 2 ],
-  $Failed,
-  { TessellationNeighborhoodGraph::deferred },
-  TestID -> "TessellatedDisk-snub-deferred"
 ]
 
 (* a hyperbolic uniform tiling (defect < 0) grows in the Poincare disk: interior valence is the

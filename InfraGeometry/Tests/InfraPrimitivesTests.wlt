@@ -161,7 +161,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraCycle[ TreeGraph[ { 1 -> 2, 2 -> 3 } ], 1 ],
-  $Failed,
+  { },
   TestID -> "FindInfraCycle-tree-no-cycles"
 ]
 

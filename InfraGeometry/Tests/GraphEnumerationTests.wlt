@@ -43,7 +43,7 @@ VerificationTest[
 
 VerificationTest[
   EnumerateGraphs[4, ConnectedGraphQ, 7],
-  $Failed,
+  { },
   TestID -> "EnumerateGraphs-strict-undershoot-fails"
 ]
 

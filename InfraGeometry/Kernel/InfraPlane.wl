@@ -2,21 +2,22 @@ Package["WolframInstitute`InfraGeometry`"]
 
 (* the bisector slab B = { v : lo <= d(p1, v) - d(p2, v) <= hi }, a sorted vertex list; under Properties the minimal admissible subsets of the slab, one per instance.  On a non-bipartite graph the strict equidistant set may fail to separate, so widen the window to {-1, 1} to recover the parity-stranded band. *)
 
-FindInfraBisectingHyperplane::badmethod   = "Method `1` is not supported by FindInfraBisectingHyperplane.";
-FindInfraBisectingHyperplane::badproperty = "Property `1` is not supported by FindInfraBisectingHyperplane.";
-
 Options[ FindInfraBisectingHyperplane ] = {
   Properties -> { },
   Method     -> Automatic
 };
 
 FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ]/;
+    SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraBisectingHyperplane, { opts }, Properties ] ] &&
+      MatchQ[ OptionValue[ FindInfraBisectingHyperplane, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
   FindInfraBisectingHyperplane[ graph, p1, p2, { 0, 0 }, count, opts ]
 
 FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
     window : { _Integer, _Integer },
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ]/;
+    SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraBisectingHyperplane, { opts }, Properties ] ] &&
+      MatchQ[ OptionValue[ FindInfraBisectingHyperplane, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
   With[ {
       properties = OptionValue[ FindInfraBisectingHyperplane, { opts }, Properties ],
       methodSpec = Replace[ OptionValue[ FindInfraBisectingHyperplane, { opts }, Method ], Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ] },
@@ -31,7 +32,7 @@ FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
               { q1, q2 } ] },
           If[ properties === { },
             { bisector },
-            Catch @ With[
+            With[
               { aux = With[ { nodes = Union[ bisector, { q1, q2 } ] },
                   { components = ConnectedComponents @ Subgraph[ graph,
                       Complement[ VertexList[ graph ], nodes ] ] },
@@ -46,8 +47,7 @@ FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
               { tests = Map[
                   property |-> Switch[ property,
                     "Separating", T |-> SeparatesQ[ aux, T, q1, q2 ],
-                    "Connected",  T |-> T =!= { } && ConnectedGraphQ @ Subgraph[ graph, T ],
-                    _,            Message[ FindInfraBisectingHyperplane::badproperty, property ]; Throw[ $Failed ] ],
+                    "Connected",  T |-> T =!= { } && ConnectedGraphQ @ Subgraph[ graph, T ] ],
                   properties ] },
               { admissible = T |-> AllTrue[ tests, # @ T & ] },
               Module[ { admitQ = admissible, pick = If[ methodHead === "Greedy", Identity, RandomSample ],
@@ -87,17 +87,14 @@ FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
                               AppendTo[ acc, T ];
                               If[ Length @ acc >= cap, Throw[ acc, descend ] ],
                               Scan[ descend[ DeleteCases[ T, # ] ] &, pick @ peelable ] ] ] ];
-                      Catch[ descend[ bisector ]; acc, descend ] ],
-                  _,
-                    Message[ FindInfraBisectingHyperplane::badmethod, methodSpec ]; $Failed ] ] ] ] ],
+                      Catch[ descend[ bisector ]; acc, descend ] ] ] ] ] ] ],
         Tuples[ { Keys @ InfraDensity[ graph, p1 ], Keys @ InfraDensity[ graph, p2 ] } ], { 1 } ] },
-    If[ MemberQ[ results, $Failed ], $Failed,
-      With[ { reps = DeleteDuplicates[ Union /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
+    With[ { reps = DeleteDuplicates[ Union /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
         Switch[ count,
           Automatic, First[ reps, { } ],
           All,       reps,
           _UpTo,     Take[ reps, count ],
-          _,         If[ Length @ reps < count, $Failed, Take[ reps, count ] ] ] ] ] ]
+          _,         If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ] ]
 
 InfraPlaneQ[ graph_Graph, fam_Association, p1_, p2_, window_ : 0 ] :=
   InfraPlaneQ[ graph, Keys @ fam, p1, p2, window ]
