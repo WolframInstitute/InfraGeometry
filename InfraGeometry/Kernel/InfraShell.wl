@@ -8,139 +8,116 @@ Options[ FindInfraShell ] = {
 };
 
 FindInfraShell[ graph_Graph, p_, r_,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ]/;
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
     SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraShell, { opts }, Properties ] ] &&
-      MatchQ[ OptionValue[ FindInfraShell, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
-  With[ { results = Map[
-      p0 |-> Module[ { properties, methodSpec, methodHead, pruning, range, localG, levelSet, radius, admissible,
-                       cap, acc, seen, pick, descend, frontier, minimals, next, removable, key },
-        properties = OptionValue[ FindInfraShell, { opts }, Properties ];
-        methodSpec = Replace[ OptionValue[ FindInfraShell, { opts }, Method ], Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ];
-        methodHead = Replace[ methodSpec, { m_String, ___ } :> m ];
-        pruning    = Replace[ methodSpec,
-                      { { "Exhaustive", subs___ } :> ( "Pruning" /. { subs } /. "Pruning" -> Infinity ),
-                        _ :> Infinity } ];
-        range = Replace[ r, d_?NumericQ :> { d, d } ];
-        localG = If[ NumericQ[ range[[ 2 ]] ],
-                     NeighborhoodGraph[ graph, p0, Ceiling[ range[[ 2 ]] ] + 1 ], graph ];
-        levelSet = Select[ VertexList[ localG ],
-          range[[ 1 ]] <= GraphDistance[ localG, p0, # ] <= range[[ 2 ]] & ];
-        radius = If[ NumericQ[ r ], r, Mean[ r ] ];
-        If[ properties === { },
-          { levelSet },
-          admissible = With[ { tests = Replace[ properties, {
-                  "Separating" -> ( t |-> With[ { rem = VertexDelete[ localG, t ] },
-                    { centerComp = SelectFirst[ ConnectedComponents[ rem ], MemberQ[ #, p0 ] & ] },
-                    centerComp =!= Missing[ "NotFound" ] &&
-                    AllTrue[ centerComp, GraphDistance[ localG, p0, # ] <= radius & ] &&
-                    AllTrue[ Complement[ VertexList[ rem ], centerComp ], GraphDistance[ localG, p0, # ] > radius & ] ] ),
-                  "Connected"  -> ( t |-> t =!= { } && ConnectedGraphQ @ Subgraph[ localG, t ] ) }, { 1 } ] },
-              t |-> AllTrue[ tests, # @ t & ] ];
-            Switch[ methodHead,
-              "Exhaustive",
-                If[ ! admissible[ levelSet ], { },
-                  frontier = { Sort @ levelSet };
-                  seen = <| Sort @ levelSet -> True |>;
-                  minimals = { };
-                  While[ frontier =!= { },
-                    next = { };
-                    Do[
-                      removable = Select[ T, v |-> admissible[ DeleteCases[ T, v ] ] ];
-                      If[ removable === { },
-                        AppendTo[ minimals, T ],
-                        Do[
-                          key = Sort @ DeleteCases[ T, v ];
-                          If[ ! KeyExistsQ[ seen, key ],
-                            seen[ key ] = True;
-                            AppendTo[ next, key ] ],
-                          { v, Switch[ pruning,
-                              Infinity, removable,
-                              _Integer, If[ Length[ removable ] <= pruning, removable, RandomSample[ removable, pruning ] ],
-                              _,        With[ { kept = Select[ removable, RandomReal[ ] < pruning & ] },
-                                          If[ kept === { }, RandomSample[ removable, 1 ], kept ] ] ] } ]
-                      ],
-                      { T, frontier } ];
-                    frontier = next;
-                  ];
-                  DeleteDuplicates @ minimals
-                ],
-              "Greedy" | "RandomGreedy",
-                If[ ! admissible[ levelSet ], { },
-                  cap  = Replace[ count, { All | Infinity -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ];
-                  acc  = { };
-                  seen = <||>;
-                  pick = If[ methodHead === "Greedy", Identity, RandomSample ];
-                  descend[ T_ ] :=
-                    If[ ! KeyExistsQ[ seen, T ],
-                      seen[ T ] = True;
-                      With[ { peelable = Select[ T, w |-> admissible[ DeleteCases[ T, w ] ] ] },
-                        If[ peelable === { },
-                          AppendTo[ acc, T ];
-                          If[ Length @ acc >= cap, Throw[ acc, descend ] ],
-                          Scan[ descend[ DeleteCases[ T, # ] ] &, pick @ peelable ] ] ] ];
-                  Catch[ descend[ levelSet ]; acc, descend ]
-                ]
-            ]
-        ]
-      ], Keys @ InfraDensity[ graph, p ] ] },
-    With[ { shells = DeleteDuplicates[ Union /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
-        Switch[ count,
-          Automatic, First[ shells, { } ],
-          All,       shells,
-          _UpTo,     Take[ shells, count ],
-          _,         If[ Length @ shells < count, { }, Take[ shells, count ] ] ] ] ]
+      MatchQ[ OptionValue[ FindInfraShell, { opts }, Method ],
+        Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
+  With[ {
+      properties = OptionValue[ FindInfraShell, { opts }, Properties ],
+      methodSpec = Replace[ OptionValue[ FindInfraShell, { opts }, Method ], Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ],
+      range = Replace[ r, d_?NumericQ :> { d, d } ],
+      radius = If[ NumericQ[ r ], r, Mean[ r ] ] },
+    { methodHead = Replace[ methodSpec, { m_String, ___ } :> m ],
+      pruning = Replace[ methodSpec, { { "Exhaustive", subs___ } :> ( "Pruning" /. { subs } /. "Pruning" -> Infinity ), _ :> Infinity } ],
+      cap = Replace[ count, { All | Infinity -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
+    { results = Map[
+        p0 |-> With[ { localG = If[ NumericQ[ range[[ 2 ]] ], NeighborhoodGraph[ graph, p0, Ceiling[ range[[ 2 ]] ] + 1 ], graph ] },
+          { levelSet = Select[ VertexList[ localG ], range[[ 1 ]] <= GraphDistance[ localG, p0, # ] <= range[[ 2 ]] & ] },
+          If[ properties === { },
+            { levelSet },
+            With[ { tests = Replace[ properties, {
+                    "Separating" -> ( t |-> With[ { rem = VertexDelete[ localG, t ] },
+                      { centerComp = SelectFirst[ ConnectedComponents[ rem ], MemberQ[ #, p0 ] & ] },
+                      centerComp =!= Missing[ "NotFound" ] &&
+                      AllTrue[ centerComp, GraphDistance[ localG, p0, # ] <= radius & ] &&
+                      AllTrue[ Complement[ VertexList[ rem ], centerComp ], GraphDistance[ localG, p0, # ] > radius & ] ] ),
+                    "Connected"  -> ( t |-> t =!= { } && ConnectedGraphQ @ Subgraph[ localG, t ] ) }, { 1 } ] },
+              { admissible = t |-> AllTrue[ tests, # @ t & ],
+                pick = If[ methodHead === "Greedy", Identity, RandomSample ] },
+              { descend = { self, state, T } |-> If[ Length @ First @ state >= cap || KeyExistsQ[ Last @ state, T ],
+                  state,
+                  With[ { marked = { First @ state, Append[ Last @ state, T -> True ] },
+                          peelable = Select[ T, w |-> admissible[ DeleteCases[ T, w ] ] ] },
+                    If[ peelable === { },
+                      { Append[ First @ marked, T ], Last @ marked },
+                      Fold[ { s, w } |-> self[ self, s, DeleteCases[ T, w ] ], marked, pick @ peelable ] ] ] ] },
+              Which[
+                ! admissible[ levelSet ], { },
+                methodHead === "Exhaustive",
+                  DeleteDuplicates @ Last @ NestWhile[
+                    state |-> With[ { rows = Map[
+                        T |-> With[ { removable = Select[ T, v |-> admissible[ DeleteCases[ T, v ] ] ] },
+                          If[ removable === { },
+                            { { T }, { } },
+                            { { }, Map[ v |-> Sort @ DeleteCases[ T, v ], Switch[ pruning,
+                                Infinity, removable,
+                                _Integer, If[ Length[ removable ] <= pruning, removable, RandomSample[ removable, pruning ] ],
+                                _,        With[ { kept = Select[ removable, RandomReal[ ] < pruning & ] },
+                                            If[ kept === { }, RandomSample[ removable, 1 ], kept ] ] ] ] } ] ],
+                        First @ state ] },
+                      { DeleteDuplicates @ Catenate @ rows[[ All, 2 ]], Join[ Last @ state, Catenate @ rows[[ All, 1 ]] ] } ],
+                    { { Sort @ levelSet }, { } },
+                    First @ # =!= { } & ],
+                True,
+                  First @ descend[ descend, { { }, <||> }, levelSet ] ] ] ] ],
+        Keys @ InfraDensity[ graph, p ] ] },
+    { shells = DeleteDuplicates[ Union /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
+    Switch[ count,
+      Automatic, First[ shells, { } ],
+      All,       shells,
+      _UpTo,     Take[ shells, count ],
+      _,         If[ Length @ shells < count, { }, Take[ shells, count ] ] ] ]
 
 (* for every c equidistant from all k window vertices at common distance r, the level set { v : d(c, v) == r } *)
 
 Options[ FindInfraOsculatingShell ] = Options[ FindInfraShell ];
 
 FindInfraOsculatingShell[ graph_Graph, path_, i_Integer, k_Integer,
-    count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[ ] ]/;
+    count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[ ] ] /;
     SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraOsculatingShell, { opts }, Properties ] ] &&
-      MatchQ[ OptionValue[ FindInfraOsculatingShell, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
-  Module[ { walksOf, walks, vlist, vidx, dm, pairs, sets },
-    walksOf = w |-> With[ { vs = VertexList @ w },
-      { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
-        scan = v |-> Reap[ DepthFirstScan[ w, v, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
-      Which[
-        ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
-          { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
-              If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
-        EdgeCount @ w == 0, List /@ If[ spelled, Last /@ vs, vs ],
-        spelled,            { Last /@ SortBy[ vs, First ] },
-        DirectedGraphQ @ w,
-          Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
-            { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
-        True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ];
-    walks = Which[
-      AssociationQ @ path,         Keys @ path,
-      GraphQ @ path,               walksOf @ path,
-      MatchQ[ path, { __Graph } ], Catenate[ walksOf /@ path ],
-      path === { },                { },
-      True,                        { path } ];
-    vlist = VertexList @ graph;
-    vidx  = AssociationThread[ vlist -> Range @ Length @ vlist ];
-    dm    = GraphDistanceMatrix @ graph;
-    pairs = SortBy[
-      DeleteDuplicates @ Flatten[
-        Map[
-          walk |-> With[ {
-              lo = Clip[ i - Floor[ ( k - 1 ) / 2 ], { 1, Length @ walk } ],
-              hi = Clip[ i + Ceiling[ ( k - 1 ) / 2 ], { 1, Length @ walk } ] },
-            { cols = Lookup[ vidx, walk[[ lo ;; hi ]] ] },
-            MapThread[
-              If[ SameQ @@ #2, { #1, First @ #2 }, Nothing ] &,
-              { vlist, dm[[ All, cols ]] } ]
-          ],
-          walks ],
-        1 ],
-      { Last, First } ];
-    sets = DeleteDuplicates @ Catenate[ FindInfraShell[ graph, #[[ 1 ]], #[[ 2 ]], All, opts ] & /@ pairs ];
+      MatchQ[ OptionValue[ FindInfraOsculatingShell, { opts }, Method ],
+        Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
+  With[ {
+      walksOf = w |-> With[ { vs = VertexList @ w },
+        { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+          scan = v |-> Reap[ DepthFirstScan[ w, v, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
+        Which[
+          ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
+            { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
+                If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
+          EdgeCount @ w == 0, List /@ If[ spelled, Last /@ vs, vs ],
+          spelled,            { Last /@ SortBy[ vs, First ] },
+          DirectedGraphQ @ w,
+            Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
+              { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
+          True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ],
+      vlist = VertexList @ graph,
+      dm = GraphDistanceMatrix @ graph },
+    { walks = Which[
+        AssociationQ @ path,         Keys @ path,
+        GraphQ @ path,               walksOf @ path,
+        MatchQ[ path, { __Graph } ], Catenate[ walksOf /@ path ],
+        path === { },                { },
+        True,                        { path } ],
+      vidx = AssociationThread[ vlist -> Range @ Length @ vlist ] },
+    { pairs = SortBy[
+        DeleteDuplicates @ Flatten[
+          Map[
+            walk |-> With[ {
+                lo = Clip[ i - Floor[ ( k - 1 ) / 2 ], { 1, Length @ walk } ],
+                hi = Clip[ i + Ceiling[ ( k - 1 ) / 2 ], { 1, Length @ walk } ] },
+              { cols = Lookup[ vidx, walk[[ lo ;; hi ]] ] },
+              MapThread[
+                If[ SameQ @@ #2, { #1, First @ #2 }, Nothing ] &,
+                { vlist, dm[[ All, cols ]] } ] ],
+            walks ],
+          1 ],
+        { Last, First } ] },
+    { sets = DeleteDuplicates @ Catenate[ FindInfraShell[ graph, #[[ 1 ]], #[[ 2 ]], All, opts ] & /@ pairs ] },
     Switch[ count,
       All,   sets,
       _UpTo, Take[ sets, count ],
-      _,     If[ Length @ sets < count, { }, Take[ sets, count ] ] ]
-  ]
+      _,     If[ Length @ sets < count, { }, Take[ sets, count ] ] ] ]
 
 Options[ FindInfraShellCenter ] = { Method -> "MaximalChordsBisectors" };
 

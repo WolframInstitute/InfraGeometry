@@ -89,38 +89,43 @@ InfraMeasurement[ graph_Graph, obj : Except[ _List ], "HalfBoundaryVolume" ] :=
 InfraVertexList[ graph_Graph,
     obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ }, ___ ] ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  Module[ { acc = { }, descend, draw },
-    With[ {
-        cap     = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
-        prune   = Lookup[ Association @ Cases[ { mods }, _Rule ], "Pruning", 0 ],
-        randomQ = MemberQ[ { mods }, "RandomChoice" ],
-        dags    = Select[ Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ], VertexCount[ # ] > 0 & ] },
-      { engines = Map[
-          dag |-> With[ { out = GroupBy[ List @@@ EdgeList @ dag, First -> Last ] },
-            { beta = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ out, Key @ w, { } ],
-                    { { } -> 1, qs_ :> Total @ Lookup[ a, Key /@ qs ] } ] ],
-                <| |>, Reverse @ TopologicalSort @ dag ] },
-            { out, beta, Sort @ Pick[ VertexList @ dag, VertexInDegree @ dag, 0 ] } ],
-          dags ] },
-      descend[ out_, path_ ] := With[ { nexts = Sort @ Lookup[ out, Key @ Last @ path, { } ] },
-        If[ nexts === { },
-          AppendTo[ acc, path ]; If[ Length @ acc >= cap, Throw[ Null, descend ] ],
-          Scan[ descend[ out, Append[ path, # ] ] &,
-            If[ prune > 0, Select[ nexts, RandomReal[ ] >= prune & ], nexts ] ] ] ];
-      draw[ { out_, beta_, sources_ } ] :=
+  With[ {
+      cap     = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
+      prune   = Lookup[ Association @ Cases[ { mods }, _Rule ], "Pruning", 0 ],
+      randomQ = MemberQ[ { mods }, "RandomChoice" ],
+      dags    = Select[ Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ], VertexCount[ # ] > 0 & ] },
+    { engines = Map[
+        dag |-> With[ { out = GroupBy[ List @@@ EdgeList @ dag, First -> Last ] },
+          { beta = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ out, Key @ w, { } ],
+                  { { } -> 1, qs_ :> Total @ Lookup[ a, Key /@ qs ] } ] ],
+              <| |>, Reverse @ TopologicalSort @ dag ] },
+          { out, beta, Sort @ Pick[ VertexList @ dag, VertexInDegree @ dag, 0 ] } ],
+        dags ] },
+    { draw = { out, beta, sources } |->
         NestWhile[
           path |-> With[ { nexts = Lookup[ out, Key @ Last @ path, { } ] },
             Append[ path, RandomChoice[ Lookup[ beta, Key /@ nexts ] -> nexts ] ] ],
           { RandomChoice[ Lookup[ beta, Key /@ sources ] -> sources ] },
-          path |-> Lookup[ out, Key @ Last @ path, { } ] =!= { } ];
-      With[ { members = If[ randomQ && cap < Infinity && engines =!= { },
-            Table[ draw @ RandomChoice[ ( Total @ Lookup[ #[[ 2 ]], Key /@ #[[ 3 ]] ] & /@ engines ) -> engines ], cap ],
-            Catch[ Scan[ e |-> Scan[ descend[ e[[ 1 ]], { # } ] &, e[[ 3 ]] ], engines ]; Null, descend ]; acc ] },
-        Switch[ count,
-          Automatic, First[ members, { } ],
-          All,       members,
-          _UpTo,     Take[ members, count ],
-          _,         If[ Length @ members < count, { }, Take[ members, count ] ] ] ] ] ]
+          path |-> Lookup[ out, Key @ Last @ path, { } ] =!= { } ] },
+    { members = If[ randomQ && cap < Infinity && engines =!= { },
+        Table[ draw @@ RandomChoice[ ( Total @ Lookup[ #[[ 2 ]], Key /@ #[[ 3 ]] ] & /@ engines ) -> engines ], cap ],
+        Catenate @ Last @ Reap @ Fold[
+          { found, engine } |-> With[ { out = First @ engine },
+            Last @ NestWhile[
+              Apply[ { stack, got } |-> With[ { path = First @ stack },
+                { nexts = Sort @ Lookup[ out, Key @ Last @ path, { } ] },
+                If[ nexts === { },
+                  ( Sow[ path ]; { Rest @ stack, got + 1 } ),
+                  { Join[ Append[ path, # ] & /@ If[ prune > 0, Select[ nexts, RandomReal[ ] >= prune & ], nexts ], Rest @ stack ],
+                    got } ] ] ],
+              { List /@ Last @ engine, found },
+              state |-> First @ state =!= { } && Last @ state < cap ] ],
+          0, engines ] ] },
+    Switch[ count,
+      Automatic, First[ members, { } ],
+      All,       members,
+      _UpTo,     Take[ members, count ],
+      _,         If[ Length @ members < count, { }, Take[ members, count ] ] ] ]
 
 InfraMemberQ[ graph_Graph,
     obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ }, ___ ] |

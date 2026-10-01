@@ -50,13 +50,8 @@ WhiteheadW3Q[ graph_Graph ] :=
   ]
 
 ProjectivePlaneGraphQ[ graph_Graph ] :=
-  Module[ { verts },
-    verts = VertexList[ graph ];
-    Length[ verts ] >= 4 &&
+  VertexCount[ graph ] >= 4 &&
     WhiteheadW1Q[ graph ] &&
     WhiteheadW2Q[ graph ] &&
     WhiteheadW3Q[ graph ] &&
-    AnyTrue[ Subsets[ verts, { 4 } ],
-      quad |-> ! AnyTrue[ Subsets[ quad, { 3 } ], CollinearQ[ graph, # ] & ]
-    ]
-  ]
+    AnyTrue[ Subsets[ VertexList[ graph ], { 4 } ], quad |-> ! AnyTrue[ Subsets[ quad, { 3 } ], CollinearQ[ graph, # ] & ] ]

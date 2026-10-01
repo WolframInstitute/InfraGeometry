@@ -29,21 +29,20 @@ GeodesicMultiplicity[ graph_Graph, u_, v_ ] :=
 (* D the distance matrix, M[i, j] = (A^{D[i,j]})[i, j] the number of geodesics from i to j *)
 
 GeodesicMultiplicityMatrix[ graph_Graph ] :=
-  Module[ { V, n, dMat, A, mMat, powers, maxD, finiteD },
-    V = VertexList[ graph ];
-    n = Length[ V ];
-    dMat = GraphDistanceMatrix[ graph ];
-    A = Normal @ AdjacencyMatrix[ graph ];
-    finiteD = Cases[ Flatten @ dMat, _Integer ];
-    maxD = If[ finiteD === {}, 0, Max @ finiteD ];
-    powers = NestList[ #.A &, IdentityMatrix[ n ], maxD ];
-    mMat = Table[
-      With[ { d = dMat[[ i, j ]] },
-        If[ d === Infinity, 0, powers[[ d + 1, i, j ]] ]
-      ],
-      { i, n }, { j, n }
-    ];
-    { dMat, mMat }
+  With[
+    { n = VertexCount[ graph ], dMat = GraphDistanceMatrix[ graph ], A = Normal @ AdjacencyMatrix[ graph ] },
+    { finiteD = Cases[ Flatten @ dMat, _Integer ] },
+    { powers = NestList[ # . A &, IdentityMatrix[ n ], If[ finiteD === { }, 0, Max @ finiteD ] ] },
+    {
+      dMat,
+      Table[
+        With[ { d = dMat[[ i, j ]] },
+          If[ d === Infinity, 0, powers[[ d + 1, i, j ]] ]
+        ],
+        { i, n },
+        { j, n }
+      ]
+    }
   ]
 
 (* argmin over w of Sum_x d(w, x) for x in vs; a graph is median iff every triple has a unique median, and median graphs are the 1-skeletons of CAT(0) cube complexes (Chepoi 2000, https://doi.org/10.1006/aama.1999.0681) *)

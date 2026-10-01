@@ -127,60 +127,52 @@ InfraSubstrateHighlight[ graph_Graph, obj : Except[_List], opts : OptionsPattern
   InfraSubstrateHighlight[ graph, { obj }, opts ]
 
 InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
-  Module[ { ranges, palette, objects, entries, vMasses, eMasses },
-
-    ranges = <|
-      "OpacityRange"   -> OptionValue[ "OpacityRange" ],
-      "ThicknessRange" -> OptionValue[ "ThicknessRange" ],
-      "PointSizeRange" -> OptionValue[ "PointSizeRange" ],
-      "Arrowheads"     -> resolveArrowSpec @ OptionValue[ "Arrowheads" ] |>;
-
-    palette = Replace[ OptionValue[ "Palette" ], {
-      Automatic :> $InfraStrikeOutPalette,
-      c : Except[ _List ] :> { c } } ];
-
-    objects = DeleteCases[
-      Last @ Fold[
-        { state, item } |-> Replace[ item, {
-          d_Directive          :> { List @@ d, Last @ state },
-          Style[ obj_, dirs__ ] :> { First @ state, Append[ Last @ state, obj -> Join[ First @ state, { dirs } ] ] },
-          ( obj_ -> spec_ )    :> { First @ state, Append[ Last @ state, obj -> Join[ First @ state, normalizeHighlightSpec @ spec ] ] },
-          obj_                 :> { First @ state, Append[ Last @ state, obj -> First @ state ] } } ],
-        { { }, { } },
-        items ],
-      { } -> _ ];
-
-    entries = MapIndexed[
-      { item, idx } |-> With[ {
-          ink    = infraInk[ graph, First @ item ],
-          record = parseHighlightStyle[ Last @ item, ranges ] },
-        { mass = Max[ Values @ ink[ "VertexDensity" ], Values @ ink[ "EdgeDensity" ] ] },
-        <| "Verts"  -> ink[ "VertexDensity" ] / mass,
-           "Edges"  -> ink[ "EdgeDensity" ] / mass,
-           "Walk"   -> ink[ "Walk" ],
-           "Knots"  -> ink[ "Knots" ],
-           "Color"  -> Lookup[ record, "Color", palette[[ 1 + Mod[ First @ idx - 1, Length @ palette ] ]] ],
-           "Record" -> Append[ record, "PointSizeRange" -> Replace[ record[ "PointSizeRange" ],
-             Automatic :> If[ ink[ "EdgeDensity" ] === <| |>, $InfraPointSize, None ] ] ] |> ],
-      objects ];
-
-    entries = Join[ entries,
-      Cases[ entries, e_Association /; e[ "Knots" ] =!= { } :>
-        With[ { record = parseHighlightStyle[ Automatic, ranges ], knots = KeySort @ Counts @ e[ "Knots" ] },
-          <| "Verts" -> knots / Max @ knots, "Edges" -> <| |>, "Walk" -> None, "Knots" -> { },
-             "Color" -> $InfraPointColor,
-             "Record" -> Append[ record,
-               "PointSizeRange" -> Replace[ record[ "PointSizeRange" ], Automatic :> $InfraPointSize ] ] |> ] ] ];
-
-    vMasses = Merge[ ( e |-> ( { e[ "Color" ], #, e[ "Record" ] } & /@ e[ "Verts" ] ) ) /@ entries, Identity ];
-    eMasses = Merge[ ( e |-> ( { e[ "Color" ], #, e[ "Record" ] } & /@ e[ "Edges" ] ) ) /@ entries, Identity ];
-
-    With[ {
-        lerp  = { spec, w } |-> If[ ListQ @ spec, spec[[ 1 ]] + ( spec[[ 2 ]] - spec[[ 1 ]] ) w, spec w ],
-        blend = cs |-> {
-          Replace[ DeleteDuplicates @ cs[[ All, 1 ]], { { c_ } :> c, _ :> Blend[ cs[[ All, 1 ]], cs[[ All, 2 ]] ] } ],
-          Min[ 1, Total @ cs[[ All, 2 ]] ],
-          cs[[ -1, 3 ]] } },
+  With[ {
+      ranges = <|
+        "OpacityRange"   -> OptionValue[ "OpacityRange" ],
+        "ThicknessRange" -> OptionValue[ "ThicknessRange" ],
+        "PointSizeRange" -> OptionValue[ "PointSizeRange" ],
+        "Arrowheads"     -> resolveArrowSpec @ OptionValue[ "Arrowheads" ] |>,
+      palette = Replace[ OptionValue[ "Palette" ], {
+        Automatic :> $InfraStrikeOutPalette,
+        c : Except[ _List ] :> { c } } ],
+      objects = DeleteCases[
+        Last @ Fold[
+          { state, item } |-> Replace[ item, {
+            d_Directive          :> { List @@ d, Last @ state },
+            Style[ obj_, dirs__ ] :> { First @ state, Append[ Last @ state, obj -> Join[ First @ state, { dirs } ] ] },
+            ( obj_ -> spec_ )    :> { First @ state, Append[ Last @ state, obj -> Join[ First @ state, normalizeHighlightSpec @ spec ] ] },
+            obj_                 :> { First @ state, Append[ Last @ state, obj -> First @ state ] } } ],
+          { { }, { } },
+          items ],
+        { } -> _ ] },
+    { objectEntries = MapIndexed[
+        { item, idx } |-> With[ {
+            ink    = infraInk[ graph, First @ item ],
+            record = parseHighlightStyle[ Last @ item, ranges ] },
+          { mass = Max[ Values @ ink[ "VertexDensity" ], Values @ ink[ "EdgeDensity" ] ] },
+          <| "Verts"  -> ink[ "VertexDensity" ] / mass,
+             "Edges"  -> ink[ "EdgeDensity" ] / mass,
+             "Walk"   -> ink[ "Walk" ],
+             "Knots"  -> ink[ "Knots" ],
+             "Color"  -> Lookup[ record, "Color", palette[[ 1 + Mod[ First @ idx - 1, Length @ palette ] ]] ],
+             "Record" -> Append[ record, "PointSizeRange" -> Replace[ record[ "PointSizeRange" ],
+               Automatic :> If[ ink[ "EdgeDensity" ] === <| |>, $InfraPointSize, None ] ] ] |> ],
+        objects ] },
+    { entries = Join[ objectEntries,
+        Cases[ objectEntries, e_Association /; e[ "Knots" ] =!= { } :>
+          With[ { record = parseHighlightStyle[ Automatic, ranges ], knots = KeySort @ Counts @ e[ "Knots" ] },
+            <| "Verts" -> knots / Max @ knots, "Edges" -> <| |>, "Walk" -> None, "Knots" -> { },
+               "Color" -> $InfraPointColor,
+               "Record" -> Append[ record,
+                 "PointSizeRange" -> Replace[ record[ "PointSizeRange" ], Automatic :> $InfraPointSize ] ] |> ] ] ] },
+    { vMasses = Merge[ ( e |-> ( { e[ "Color" ], #, e[ "Record" ] } & /@ e[ "Verts" ] ) ) /@ entries, Identity ],
+      eMasses = Merge[ ( e |-> ( { e[ "Color" ], #, e[ "Record" ] } & /@ e[ "Edges" ] ) ) /@ entries, Identity ] },
+    { lerp  = { spec, w } |-> If[ ListQ @ spec, spec[[ 1 ]] + ( spec[[ 2 ]] - spec[[ 1 ]] ) w, spec w ],
+      blend = cs |-> {
+        Replace[ DeleteDuplicates @ cs[[ All, 1 ]], { { c_ } :> c, _ :> Blend[ cs[[ All, 1 ]], cs[[ All, 2 ]] ] } ],
+        Min[ 1, Total @ cs[[ All, 2 ]] ],
+        cs[[ -1, 3 ]] } },
       {
           edgeData = KeyValueMap[
             { ue, cs } |-> With[ { el = blend @ cs },
@@ -260,7 +252,6 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
           FilterRules[ { opts }, Options @ HighlightGraph ],
           ImageSize -> OptionValue[ ImageSize ] ]
     ]
-  ]
 
 infraInk[ graph_Graph, x_ ] := Which[
   VertexQ[ graph, x ] || AssociationQ[ x ],

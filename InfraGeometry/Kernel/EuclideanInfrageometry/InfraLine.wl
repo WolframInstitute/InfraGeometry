@@ -50,26 +50,34 @@ FindInfraLine[ graph_Graph, p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rul
 FindInfraLine[ graph_Graph, seq_List,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic ] /;
     seq =!= { } && ! VertexQ[ graph, seq ] :=
-  Module[ { acc = { }, back, front },
-    With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
-            vs = VertexList @ graph, dm = GraphDistanceMatrix @ graph },
-      { idx = AssociationThread[ vs, Range @ Length @ vs ] },
-      { dist = dm[[ idx @ #1, idx @ #2 ]] & },
-      front[ path_ ] := With[ { nexts = Sort @ Select[ AdjacencyList[ graph, Last @ path ],
-            dist[ First @ path, # ] == Length @ path & ] },
-        If[ nexts === { },
-          If[ NoneTrue[ AdjacencyList[ graph, First @ path ], dist[ #, Last @ path ] == Length @ path & ],
-            AppendTo[ acc, path ]; If[ Length @ acc >= cap, Throw[ Null, front ] ] ],
-          Scan[ front[ Append[ path, # ] ] &, nexts ] ] ];
-      back[ path_ ] := ( front @ path;
-        Scan[ back[ Prepend[ path, # ] ] &,
-          Sort @ Select[ AdjacencyList[ graph, First @ path ], dist[ #, Last @ path ] == Length @ path & ] ] );
-      Catch[ back @ seq; Null, front ];
-      Switch[ count,
-        Automatic, First[ acc, { } ],
-        All,       acc,
-        _UpTo,     Take[ acc, count ],
-        _,         If[ Length @ acc < count, { }, Take[ acc, count ] ] ] ] ]
+  With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
+          vs = VertexList @ graph, dm = GraphDistanceMatrix @ graph },
+    { idx = AssociationThread[ vs, Range @ Length @ vs ] },
+    { dist = dm[[ idx @ #1, idx @ #2 ]] & },
+    { lines = Catenate @ Last @ Reap @ NestWhile[
+        Apply[ { backs, found } |-> With[ { seed = First @ backs },
+          { Join[
+              Prepend[ seed, # ] & /@ Sort @ Select[ AdjacencyList[ graph, First @ seed ], dist[ #, Last @ seed ] == Length @ seed & ],
+              Rest @ backs ],
+            Last @ NestWhile[
+              Apply[ { fronts, got } |-> With[ { path = First @ fronts },
+                { nexts = Sort @ Select[ AdjacencyList[ graph, Last @ path ], dist[ First @ path, # ] == Length @ path & ] },
+                Which[
+                  nexts =!= { },
+                    { Join[ Append[ path, # ] & /@ nexts, Rest @ fronts ], got },
+                  NoneTrue[ AdjacencyList[ graph, First @ path ], dist[ #, Last @ path ] == Length @ path & ],
+                    ( Sow[ path ]; { Rest @ fronts, got + 1 } ),
+                  True,
+                    { Rest @ fronts, got } ] ] ],
+              { { seed }, found },
+              state |-> First @ state =!= { } && Last @ state < cap ] } ] ],
+        { { seq }, 0 },
+        state |-> First @ state =!= { } && Last @ state < cap ] },
+    Switch[ count,
+      Automatic, First[ lines, { } ],
+      All,       lines,
+      _UpTo,     Take[ lines, count ],
+      _,         If[ Length @ lines < count, { }, Take[ lines, count ] ] ] ]
 
 (* a parallel to line through p: an inextensible geodesic s ... p ... e of graph inside the level set L = { v : d(v, line) == r }, r = d(p, line) -- d(s, e) == d(s, p) + d(p, e), every vertex in L, and no neighbour of s or e in L prolonging it.  The pool is one geodesic DAG per admissible end pair (s, e): the s -> p and p -> e intervals cut down to L and glued at p, oriented so that s precedes e in canonical order.  One class under every Method -- "Exhaustive" with All returns the pool itself, as FindInfraLine does, and a bounded count streams geodesics off the atoms in candidate ("Greedy", "Exhaustive") or random ("RandomGreedy") order *)
 
@@ -81,13 +89,9 @@ Options[ FindInfraParallel ] = {
 FindInfraParallel[ graph_Graph, line_, p_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ]/;
     OptionValue[ FindInfraParallel, { opts }, Properties ] === { } &&
-      MatchQ[ OptionValue[ FindInfraParallel, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
-  Module[ { found, descend },
-    descend[ out_, pick_, limit_, path_ ] := With[ { nexts = Lookup[ out, Key @ Last @ path, { } ] },
-      If[ nexts === { },
-        ( AppendTo[ found, path ]; If[ Length @ found >= limit, Throw[ found, descend ] ] ),
-        Scan[ descend[ out, pick, limit, Append[ path, # ] ] &, pick @ nexts ] ] ];
-    With[ {
+      MatchQ[ OptionValue[ FindInfraParallel, { opts }, Method ],
+        Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
+  With[ {
         walksOf = w |-> With[ { vs = VertexList @ w },
           { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
             scan = v |-> Reap[ DepthFirstScan[ w, v, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
@@ -131,11 +135,14 @@ FindInfraParallel[ graph_Graph, line_, p_,
                             { s, Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ] },
                             { t, Select[ VertexList @ dag, VertexOutDegree[ dag, # ] == 0 & ] } ],
                         True,
-                          found = { };
-                          Catch[
-                            Scan[ descend[ GroupBy[ List @@@ EdgeList @ dag, First -> Last ], branch, cap - Length @ acc, { # } ] &,
-                              branch @ Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ] ];
-                            found, descend ] ] ] ] ],
+                          With[ { out = GroupBy[ List @@@ EdgeList @ dag, First -> Last ], need = cap - Length @ acc },
+                            Catenate @ Last @ Reap @ NestWhile[
+                              Apply[ { stack, found } |-> With[ { nexts = Lookup[ out, Key @ Last @ First @ stack, { } ] },
+                                If[ nexts === { },
+                                  ( Sow[ First @ stack ]; { Rest @ stack, found + 1 } ),
+                                  { Join[ Append[ First @ stack, # ] & /@ branch @ nexts, Rest @ stack ], found } ] ] ],
+                              { List /@ branch @ Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ], 0 },
+                              state |-> First @ state =!= { } && Last @ state < need ] ] ] ] ] ],
                     { }, branch @ Tuples[ { level, level } ] ] ] ] ] ] ] ) @@@
           Tuples[ {
             Which[
@@ -145,13 +152,13 @@ FindInfraParallel[ graph_Graph, line_, p_,
               line === { }, { },
               True, { line } ],
             Keys @ InfraDensity[ graph, p ] } ] },
-      With[ { parallels = DeleteDuplicates[ If[ GraphQ @ #, #, PathGraph[ #, DirectedEdges -> True ] ] & /@
-            DeleteDuplicates @ Flatten[ results, 1 ] ] },
-          Switch[ count,
-            Automatic, First[ parallels, { } ],
-            All,       Replace[ parallels, { one_Graph } :> one ],
-            _UpTo,     Take[ parallels, count ],
-            _,         If[ Length @ parallels < count, { }, Take[ parallels, count ] ] ] ] ] ]
+      { parallels = DeleteDuplicates[ If[ GraphQ @ #, #, PathGraph[ #, DirectedEdges -> True ] ] & /@
+          DeleteDuplicates @ Flatten[ results, 1 ] ] },
+      Switch[ count,
+        Automatic, First[ parallels, { } ],
+        All,       Replace[ parallels, { one_Graph } :> one ],
+        _UpTo,     Take[ parallels, count ],
+        _,         If[ Length @ parallels < count, { }, Take[ parallels, count ] ] ] ]
 
 (* ===================== Sketch: Method dispatch (NOT WIRED) =====================
    Two honest, computable parallelism criteria; see Wiki/Concepts/Parallelism.md
@@ -176,27 +183,18 @@ FindInfraParallel[ graph_Graph, line_, p_,
    Sketch of the transversal branch (Euclid I.27, alternate-angle equality):
 
      findTransversalParallel[ graph_Graph, line_List, p_ ] :=
-       Module[ { pencil, lineDist = v |-> Min[ GraphDistance[ graph, v, # ] & /@ line ] },
-         pencil = #[[ 1, 1 ]] & /@ FindInfraLine[ graph, p, All ];
-         Select[ pencil, candidate |->
-           DisjointQ[ candidate, line ] &&
-           transversalAngleEqualQ[ graph, line, candidate ] ]
-       ]
+       Select[ #[[ 1, 1 ]] & /@ FindInfraLine[ graph, p, All ], candidate |->
+         DisjointQ[ candidate, line ] &&
+         transversalAngleEqualQ[ graph, line, candidate ] ]
 
      transversalAngleEqualQ[ graph_Graph, l1_List, l2_List ] :=
-       Module[ { dm, minPair, a, b, ap, bp, alpha, beta },
-         dm = Outer[ GraphDistance[ graph, #1, #2 ] &, l1, l2 ];
-         minPair = First @ Position[ dm, Min @@ Flatten @ dm ];
-         a  = l1[[ minPair[[ 1 ]] ]];
-         b  = l2[[ minPair[[ 2 ]] ]];
-         ap = l1[[ If[ minPair[[ 1 ]] == Length[ l1 ],
-                       minPair[[ 1 ]] - 1, minPair[[ 1 ]] + 1 ] ]];
-         bp = l2[[ If[ minPair[[ 2 ]] == Length[ l2 ],
-                       minPair[[ 2 ]] - 1, minPair[[ 2 ]] + 1 ] ]];
-         alpha = InfraAngle[ graph, { ap, a, b } ];
-         beta  = InfraAngle[ graph, { bp, b, a } ];
-         alpha == beta
-       ]
+       With[ { dm = Outer[ GraphDistance[ graph, #1, #2 ] &, l1, l2 ] },
+         { minPair = First @ Position[ dm, Min @@ Flatten @ dm ] },
+         { a  = l1[[ minPair[[ 1 ]] ]],
+           b  = l2[[ minPair[[ 2 ]] ]],
+           ap = l1[[ If[ minPair[[ 1 ]] == Length[ l1 ], minPair[[ 1 ]] - 1, minPair[[ 1 ]] + 1 ] ]],
+           bp = l2[[ If[ minPair[[ 2 ]] == Length[ l2 ], minPair[[ 2 ]] - 1, minPair[[ 2 ]] + 1 ] ]] },
+         InfraAngle[ graph, { ap, a, b } ] == InfraAngle[ graph, { bp, b, a } ] ]
 
    Edge cases to settle on implementation:
      - Non-unique shortest transversal: require equality for all of them.

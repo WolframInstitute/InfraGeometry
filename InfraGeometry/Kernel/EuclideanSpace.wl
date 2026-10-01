@@ -42,8 +42,7 @@ Options[ FindInfraLinearCombination ] = {
 
 FindInfraLinearCombination[ graph_Graph, o_, terms_List,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[] ] :=
-  Module[ { asList, bsList, mids },
-    With[ { lambdas = terms[[ All, 1 ]], us = terms[[ All, 2 ]],
+  With[ { lambdas = terms[[ All, 1 ]], us = terms[[ All, 2 ]],
             scaleM = OptionValue[ "ScaleMethod" ], sumM = OptionValue[ "SumMethod" ],
             walksOf = w |-> With[ { vs = VertexList @ w },
               { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
@@ -105,15 +104,18 @@ FindInfraLinearCombination[ graph_Graph, o_, terms_List,
               With[ { rational = Rationalize[ lambda, 0 ] },
                 { depth = If[ Element[ rational, Rationals ] && IntegerQ[ Log2 @ Denominator[ rational ] ],
                     Log2 @ Denominator[ rational ], 8 ] },
-                asList = { o0 };
-                bsList = { u };
-                Do[
-                  mids = DeleteDuplicates @ Flatten @ Outer[ midpoint, asList, bsList, 1 ];
-                  If[ mids === { }, Break[ ] ];
-                  If[ bit == 0, bsList = mids, asList = mids ],
-                  { bit, IntegerDigits[ Round[ lambda 2^depth ], 2, depth ] } ];
-                asList ] ] ],
-        (* u + v from o: "Metric" { w : d(u, w) == d(o, v), d(v, w) == d(o, u), w != o }, "Parallel" the intersection of the parallels through u and through v *)
+                { bits = IntegerDigits[ Round[ lambda 2^depth ], 2, depth ] },
+                First @ Fold[
+                  { state, bit } |-> If[ Last @ state, state,
+                    With[ { mids = DeleteDuplicates @ Flatten @ Outer[ midpoint, state[[ 1 ]], state[[ 2 ]], 1 ] },
+                      Which[
+                        mids === { }, { state[[ 1 ]], state[[ 2 ]], True },
+                        bit == 0,     { state[[ 1 ]], mids, False },
+                        True,         { mids, state[[ 2 ]], False } ] ] ],
+                  { { o0 }, { u }, False },
+                  bits ] ] ] ],
+        (* u + v from o: "Metric" { w : d(u, w) == d(o, v), d(v, w) == d(o, u), w != o },
+           "Parallel" the intersection of the parallels through u and through v *)
         sum = { o0, u, v } |-> Switch[ sumM,
           "Metric",
             With[ { rU = GraphDistance[ graph, o0, u ], rV = GraphDistance[ graph, o0, v ] },
@@ -140,7 +142,7 @@ FindInfraLinearCombination[ graph_Graph, o_, terms_List,
       Switch[ count,
         All,   reps,
         _UpTo, Take[ reps, count ],
-        _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ] ]
+        _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ]
 
 (* "Arclength": remove the open ball B(p, min(d(p, q1), d(p, q2))) and normalise d(q1, q2) in the rest by the radius, a synthetic radian measure of the detour around p.
    "Alexandrov": the comparison-triangle angle in M_k^2. *)

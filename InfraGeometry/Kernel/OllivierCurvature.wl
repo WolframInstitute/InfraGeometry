@@ -5,40 +5,40 @@ Package["WolframInstitute`InfraGeometry`"]
    W_1 is the Wasserstein-1 (Earth-Mover) distance under graph distance,
    solved as a transport LP via LinearOptimization. *)
 
-OllivierRicciCurvature[g_Graph] := Module[{vs, idx, adj, dist},
-	vs   = VertexList[g];
-	idx  = AssociationThread[vs, Range @ Length @ vs];
-	adj  = AssociationMap[AdjacencyList[g, #] &, vs];
-	dist = GraphDistanceMatrix[g];
-	AssociationMap[
-		e |-> With[{nu = adj[e[[1]]], nv = adj[e[[2]]]},
-			{m = Length[nu], n = Length[nv], costs = dist[[idx /@ nu, idx /@ nv]], vars = Array[t, {Length[nu], Length[nv]}]},
-			1 - LinearOptimization[
-				Total[Flatten[costs * vars]],
-				Join[
-					Table[Total[vars[[i, All]]] == 1.0 / m, {i, m}],
-					Table[Total[vars[[All, j]]] == 1.0 / n, {j, n}],
-					Thread[Flatten[vars] >= 0]
-				],
-				Flatten[vars],
-				"PrimalMinimumValue"
-			] / dist[[idx[e[[1]]], idx[e[[2]]]]]
-		],
-		EdgeList[g]
-	]
-]
+OllivierRicciCurvature[ g_Graph ] :=
+  With[
+    { vs = VertexList[ g ], dist = GraphDistanceMatrix[ g ] },
+    { idx = AssociationThread[ vs, Range @ Length @ vs ], adj = AssociationMap[ AdjacencyList[ g, # ] &, vs ] },
+    AssociationMap[
+      e |-> With[
+        { nu = adj[ e[[ 1 ]] ], nv = adj[ e[[ 2 ]] ] },
+        { m = Length[ nu ], n = Length[ nv ], costs = dist[[ idx /@ nu, idx /@ nv ]], vars = Array[ t, { Length[ nu ], Length[ nv ] } ] },
+        1 - LinearOptimization[
+          Total[ Flatten[ costs * vars ] ],
+          Join[
+            Table[ Total[ vars[[ i, All ]] ] == 1.0 / m, { i, m } ],
+            Table[ Total[ vars[[ All, j ]] ] == 1.0 / n, { j, n } ],
+            Thread[ Flatten[ vars ] >= 0 ]
+          ],
+          Flatten[ vars ],
+          "PrimalMinimumValue"
+        ] / dist[[ idx[ e[[ 1 ]] ], idx[ e[[ 2 ]] ] ]]
+      ],
+      EdgeList[ g ]
+    ]
+  ]
 
 (* Klein-Randic resistance distance R(u, v) = (e_u - e_v)^T L^+ (e_u - e_v),
    where L^+ is the Moore-Penrose pseudoinverse of the graph Laplacian
    (= the 0-block of GreenOperatorMatrix[GraphComplex[g]]).  Three forms:
    pair, full V x V matrix, submatrix on a vertex list. *)
 
-EffectiveResistance[g_Graph] := Module[{lp, n, d},
-    lp = PseudoInverse[N @ Normal @ KirchhoffMatrix[g]];
-    n = VertexCount[g];
-    d = Diagonal[lp];
-    Table[d[[i]] + d[[j]] - 2 lp[[i, j]], {i, n}, {j, n}]
-]
+EffectiveResistance[ g_Graph ] :=
+  With[
+    { lp = PseudoInverse[ N @ Normal @ KirchhoffMatrix[ g ] ], n = VertexCount[ g ] },
+    { d = Diagonal[ lp ] },
+    Table[ d[[ i ]] + d[[ j ]] - 2 lp[[ i, j ]], { i, n }, { j, n } ]
+  ]
 
 EffectiveResistance[g_Graph, u_, v_] /; MemberQ[VertexList[g], u] && MemberQ[VertexList[g], v] :=
     With[{lp = PseudoInverse[N @ Normal @ KirchhoffMatrix[g]],

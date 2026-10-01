@@ -6,48 +6,48 @@ FindInfraPoint[ graph_Graph, count : ( UpTo[ _Integer ] | Automatic ) : Automati
     VertexQ[ graph, OptionValue[ FindInfraPoint, { opts }, "From" ] ] ||
       MatchQ[ OptionValue[ FindInfraPoint, { opts }, "From" ],
         All | "Random" | "Center" | "Periphery" | { "Center", _Integer | Infinity } | _Association | _Rule | _List ] :=
-  Module[ { from = OptionValue[ "From" ], dist = OptionValue[ "Distance" ], maxCl = OptionValue[ "MaxCliques" ],
-            n = Replace[ count, { UpTo[ k_ ] :> k, Automatic -> 1 } ], pool, distMatrix, finiteMax, cliques },
-    pool = Which[
-      from === "Center",    GraphCenter @ graph,
-      from === "Periphery", GraphPeriphery @ graph,
-      MatchQ[ from, { "Center", _Integer | Infinity } ] && ConnectedGraphQ @ graph,
-        With[ { final = NestWhile[ NeighborhoodGraph[ #, GraphCenter @ # ] &, graph,
-                  ConnectedGraphQ[ #2 ] && VertexCount[ #1 ] != VertexCount[ #2 ] &, 2, Last @ from ] },
-          If[ ConnectedGraphQ @ final, GraphCenter @ final, VertexList @ final ] ],
-      MatchQ[ from, { "Center", _ } ] || StringQ @ from, VertexList @ graph,
-      AssociationQ @ from,  Keys @ from,
-      MatchQ[ from, _Rule ],
-        With[ { anchors = Keys @ InfraDensity[ graph, First @ from ], spec = Last @ from,
-                vertexIndex = AssociationThread[ VertexList @ graph -> Range @ VertexCount @ graph ] },
-          { anchorDists = Association[ # -> GraphDistance[ graph, # ] & /@ anchors ] },
-          Select[ VertexList @ graph, v |-> AllTrue[ anchors, a |->
-            With[ { d = anchorDists[ a ][[ vertexIndex @ v ]] },
-              Switch[ spec,
-                _?NumericQ,                   d == spec,
-                { _?NumericQ, _?NumericQ },   First @ spec <= d <= Last @ spec,
-                "Max",                        d == Max @ Select[ anchorDists @ a, # < Infinity & ],
-                _,                            False ] ] ] ] ],
-      VertexQ[ graph, from ], { from },
-      ListQ @ from,           from,
-      True,                   VertexList @ graph ];
+  With[ { from = OptionValue[ "From" ], dist = OptionValue[ "Distance" ], maxCl = OptionValue[ "MaxCliques" ],
+          n = Replace[ count, { UpTo[ k_ ] :> k, Automatic -> 1 } ] },
+    { pool = Which[
+        from === "Center",    GraphCenter @ graph,
+        from === "Periphery", GraphPeriphery @ graph,
+        MatchQ[ from, { "Center", _Integer | Infinity } ] && ConnectedGraphQ @ graph,
+          With[ { final = NestWhile[ NeighborhoodGraph[ #, GraphCenter @ # ] &, graph,
+                    ConnectedGraphQ[ #2 ] && VertexCount[ #1 ] != VertexCount[ #2 ] &, 2, Last @ from ] },
+            If[ ConnectedGraphQ @ final, GraphCenter @ final, VertexList @ final ] ],
+        MatchQ[ from, { "Center", _ } ] || StringQ @ from, VertexList @ graph,
+        AssociationQ @ from,  Keys @ from,
+        MatchQ[ from, _Rule ],
+          With[ { anchors = Keys @ InfraDensity[ graph, First @ from ], spec = Last @ from,
+                  vertexIndex = AssociationThread[ VertexList @ graph -> Range @ VertexCount @ graph ] },
+            { anchorDists = Association[ # -> GraphDistance[ graph, # ] & /@ anchors ] },
+            Select[ VertexList @ graph, v |-> AllTrue[ anchors, a |->
+              With[ { d = anchorDists[ a ][[ vertexIndex @ v ]] },
+                Switch[ spec,
+                  _?NumericQ,                   d == spec,
+                  { _?NumericQ, _?NumericQ },   First @ spec <= d <= Last @ spec,
+                  "Max",                        d == Max @ Select[ anchorDists @ a, # < Infinity & ],
+                  _,                            False ] ] ] ] ],
+        VertexQ[ graph, from ], { from },
+        ListQ @ from,           from,
+        True,                   VertexList @ graph ] },
     Which[
       count === Automatic,     RandomChoice @ pool,
       n == 1 || dist === None, RandomSample[ pool, UpTo[ n ] ],
       True,
         With[ { vertexIndex = Lookup[ AssociationThread[ VertexList @ graph, Range @ VertexCount @ graph ], pool ] },
-          distMatrix = GraphDistanceMatrix[ graph ][[ vertexIndex, vertexIndex ]];
-          finiteMax = Max @ Select[ Flatten @ distMatrix, # < Infinity & ];
-          distMatrix = Replace[ distMatrix, Infinity -> finiteMax + 1, { 2 } ];
-          With[ { mask = 1 - IdentityMatrix @ Length @ vertexIndex },
-            If[ dist === "Max" || dist === "Spread",
-              cliques = { };
-              Do[
-                cliques = FindClique[
-                  AdjacencyGraph[ pool, UnitStep[ distMatrix - d ] * UnitStep[ finiteMax - distMatrix ] * mask ],
-                  { n, Length @ pool }, maxCl ];
-                If[ cliques =!= { }, Break[ ] ],
-                { d, Reverse @ DeleteCases[ Union @@ distMatrix, 0 | _?( # > finiteMax & ) ] } ];
+          { poolMatrix = GraphDistanceMatrix[ graph ][[ vertexIndex, vertexIndex ]] },
+          { finiteMax = Max @ Select[ Flatten @ poolMatrix, # < Infinity & ] },
+          { distMatrix = Replace[ poolMatrix, Infinity -> finiteMax + 1, { 2 } ],
+            mask = 1 - IdentityMatrix @ Length @ vertexIndex },
+          If[ dist === "Max" || dist === "Spread",
+            With[ { cliques = Fold[
+                { found, d } |-> If[ found =!= { }, found,
+                  FindClique[
+                    AdjacencyGraph[ pool, UnitStep[ distMatrix - d ] * UnitStep[ finiteMax - distMatrix ] * mask ],
+                    { n, Length @ pool }, maxCl ] ],
+                { },
+                Reverse @ DeleteCases[ Union @@ distMatrix, 0 | _?( # > finiteMax & ) ] ] },
               Which[
                 cliques === { }, { },
                 dist === "Spread",
@@ -56,14 +56,14 @@ FindInfraPoint[ graph_Graph, count : ( UpTo[ _Integer ] | Automatic ) : Automati
                     If[ n < 3, First @ subsets,
                       First @ MinimalBy[ subsets,
                         s |-> Variance[ distMatrix[[ idx @ #[[ 1 ]], idx @ #[[ 2 ]] ]] & /@ Subsets[ s, { 2 } ] ] ] ] ],
-                True, RandomSample[ RandomChoice @ cliques, UpTo[ n ] ] ],
-              With[ { range = Replace[ dist,
-                      { d_?NumericQ :> { d, d },
-                        { dMin_, dMax_ } :> { dMin, dMax /. Infinity -> finiteMax } } ] },
-                cliques = FindClique[
+                True, RandomSample[ RandomChoice @ cliques, UpTo[ n ] ] ] ],
+            With[ { range = Replace[ dist,
+                    { d_?NumericQ :> { d, d },
+                      { dMin_, dMax_ } :> { dMin, dMax /. Infinity -> finiteMax } } ] },
+              { cliques = FindClique[
                   AdjacencyGraph[ pool, UnitStep[ distMatrix - range[[ 1 ]] ] * UnitStep[ range[[ 2 ]] - distMatrix ] * mask ],
-                  { Min[ n, Length @ pool ], Length @ pool }, maxCl ];
-                If[ cliques === { }, { }, RandomSample[ RandomChoice @ cliques, UpTo[ n ] ] ] ] ] ] ] ] ]
+                  { Min[ n, Length @ pool ], Length @ pool }, maxCl ] },
+              If[ cliques === { }, { }, RandomSample[ RandomChoice @ cliques, UpTo[ n ] ] ] ] ] ] ] ]
 
 FindInfraPoint[ graph_Graph, All, opts : OptionsPattern[] ] :=
   With[ { result = FindInfraPoint[ graph, UpTo[ VertexCount[ graph ] ], opts ] },
@@ -290,11 +290,9 @@ SelectInfraPoint[ graph_Graph, vertices_List, UpTo[ nMax_Integer ], opts : Optio
     Which[
       Length[ vertices ] <= 1, vertices,
       True,
-        Module[ { vIdx, subMatrix, poolIdx, pool, poolSubMatrix, finiteMax, range,
-                  auxiliaryGraph, cliques, thresholds, n },
-          vIdx = Lookup[ AssociationThread[ VertexList @ graph, Range @ VertexCount @ graph ], vertices ];
-          subMatrix = GraphDistanceMatrix[ graph ][[ vIdx, vIdx ]];
-          poolIdx = Which[
+        With[ { vIdx = Lookup[ AssociationThread[ VertexList @ graph, Range @ VertexCount @ graph ], vertices ] },
+          { subMatrix = GraphDistanceMatrix[ graph ][[ vIdx, vIdx ]] },
+          { poolIdx = Which[
             fromSpec === All, Range @ Length @ vertices,
             fromSpec === "Center" || fromSpec === "Periphery",
               With[ { scores = Max /@ subMatrix },
@@ -318,55 +316,48 @@ SelectInfraPoint[ graph_Graph, vertices_List, UpTo[ nMax_Integer ], opts : Optio
               { First @ FirstPosition[ vertices, fromSpec ] },
             ListQ @ fromSpec,
               Flatten @ Position[ vertices, Alternatives @@ fromSpec, { 1 }, Heads -> False ],
-            True, Range @ Length @ vertices ];
-          pool = vertices[[ poolIdx ]];
-          n = Min[ nMax, Length[ pool ] ];
+            True, Range @ Length @ vertices ] },
+          { pool = vertices[[ poolIdx ]] },
+          { n = Min[ nMax, Length[ pool ] ] },
           Which[
             poolIdx === { }, { },
             distSpec === None || n <= 1, If[ n >= Length[ pool ], pool, RandomSample[ pool, n ] ],
             True,
-              poolSubMatrix = subMatrix[[ poolIdx, poolIdx ]];
-              finiteMax = Replace[ Max @ Select[ Flatten @ poolSubMatrix, # < Infinity & ],
-                _?( ! NumericQ @ # & ) -> 0 ];
-              poolSubMatrix = Replace[ poolSubMatrix, Infinity -> finiteMax + 1, { 2 } ];
-              Which[
-                distSpec === "Max" || distSpec === "Spread",
-                  thresholds = Reverse @ DeleteCases[ Union @@ poolSubMatrix, 0 | _?( # > finiteMax & ) ];
-                  cliques = { };
-                  Do[
-                    auxiliaryGraph = AdjacencyGraph[ pool,
-                      UnitStep[ poolSubMatrix - d ] * UnitStep[ finiteMax - poolSubMatrix ]
-                        * ( 1 - IdentityMatrix[ Length[ pool ] ] ) ];
-                    cliques = FindClique[ auxiliaryGraph, { n, VertexCount[ auxiliaryGraph ] }, maxCl ];
-                    If[ cliques =!= { }, Break[ ] ],
-                    { d, thresholds } ];
-                  Which[
-                    cliques === { }, { },
-                    distSpec === "Spread",
-                      With[ { idx = AssociationThread[ pool -> Range @ Length @ pool ],
-                              subsets = DeleteDuplicates[ Sort /@ Catenate[ Subsets[ #, { n } ] & /@ cliques ] ] },
-                        If[ n < 3,
-                          First @ subsets,
-                          First @ MinimalBy[ subsets,
-                            sub |-> Variance[ poolSubMatrix[[ idx @ #[[ 1 ]], idx @ #[[ 2 ]] ]] & /@ Subsets[ sub, { 2 } ] ] ] ] ],
-                    True, RandomSample[ RandomChoice @ cliques, UpTo[ n ] ] ],
-                True,
-                  range = Replace[ distSpec,
-                    { d_?NumericQ                  :> { d, d },
-                      { dMin_?NumericQ, Infinity } :> { dMin, finiteMax },
-                      { dMin_?NumericQ, dMax_?NumericQ } :> { dMin, dMax },
-                      _ :> { 0, finiteMax } } ];
-                  auxiliaryGraph = AdjacencyGraph[ pool,
-                    UnitStep[ poolSubMatrix - range[[ 1 ]] ] * UnitStep[ range[[ 2 ]] - poolSubMatrix ]
-                      * ( 1 - IdentityMatrix[ Length[ pool ] ] ) ];
-                  cliques = FindClique[ auxiliaryGraph,
-                    { Min[ n, VertexCount[ auxiliaryGraph ] ], VertexCount[ auxiliaryGraph ] }, maxCl ];
-                  If[ cliques === { }, { }, RandomSample[ RandomChoice @ cliques, UpTo[ n ] ] ]
-              ]
-          ]
-        ]
-    ]
-  ]
+              With[ { rawSubMatrix = subMatrix[[ poolIdx, poolIdx ]] },
+                { finiteMax = Replace[ Max @ Select[ Flatten @ rawSubMatrix, # < Infinity & ], _?( ! NumericQ @ # & ) -> 0 ] },
+                { poolSubMatrix = Replace[ rawSubMatrix, Infinity -> finiteMax + 1, { 2 } ] },
+                Which[
+                  distSpec === "Max" || distSpec === "Spread",
+                    With[ { cliques = Fold[
+                        { found, d } |-> If[ found =!= { }, found,
+                          With[ { auxiliaryGraph = AdjacencyGraph[ pool,
+                              UnitStep[ poolSubMatrix - d ] * UnitStep[ finiteMax - poolSubMatrix ]
+                                * ( 1 - IdentityMatrix[ Length[ pool ] ] ) ] },
+                            FindClique[ auxiliaryGraph, { n, VertexCount[ auxiliaryGraph ] }, maxCl ] ] ],
+                        { },
+                        Reverse @ DeleteCases[ Union @@ poolSubMatrix, 0 | _?( # > finiteMax & ) ] ] },
+                      Which[
+                        cliques === { }, { },
+                        distSpec === "Spread",
+                          With[ { idx = AssociationThread[ pool -> Range @ Length @ pool ],
+                                  subsets = DeleteDuplicates[ Sort /@ Catenate[ Subsets[ #, { n } ] & /@ cliques ] ] },
+                            If[ n < 3,
+                              First @ subsets,
+                              First @ MinimalBy[ subsets,
+                                sub |-> Variance[ poolSubMatrix[[ idx @ #[[ 1 ]], idx @ #[[ 2 ]] ]] & /@ Subsets[ sub, { 2 } ] ] ] ] ],
+                        True, RandomSample[ RandomChoice @ cliques, UpTo[ n ] ] ] ],
+                  True,
+                    With[ { range = Replace[ distSpec,
+                        { d_?NumericQ                  :> { d, d },
+                          { dMin_?NumericQ, Infinity } :> { dMin, finiteMax },
+                          { dMin_?NumericQ, dMax_?NumericQ } :> { dMin, dMax },
+                          _ :> { 0, finiteMax } } ] },
+                      { auxiliaryGraph = AdjacencyGraph[ pool,
+                          UnitStep[ poolSubMatrix - range[[ 1 ]] ] * UnitStep[ range[[ 2 ]] - poolSubMatrix ]
+                            * ( 1 - IdentityMatrix[ Length[ pool ] ] ) ] },
+                      { cliques = FindClique[ auxiliaryGraph,
+                          { Min[ n, VertexCount[ auxiliaryGraph ] ], VertexCount[ auxiliaryGraph ] }, maxCl ] },
+                      If[ cliques === { }, { }, RandomSample[ RandomChoice @ cliques, UpTo[ n ] ] ] ] ] ] ] ] ] ]
 
 SelectInfraPoint[ graph_Graph, vertices_List, All, opts : OptionsPattern[] ] :=
   With[ { result = SelectInfraPoint[ graph, vertices, UpTo[ Length[ vertices ] ], opts ] },
@@ -418,19 +409,15 @@ dispatchConstruction[ graph_Graph, InfraPoint[ origin_, dist_ ] ] /; ! MatchQ[ d
       If[ MemberQ[ VertexList @ graph, origin ], { origin }, origin ] ] ], 1 ]
 
 dispatchConstruction[ graph_Graph, InfraPoint[ n_Integer, opts___Rule ] ] :=
-  Module[ { dist, distMatrix, finiteMax, dMin, dMax, auxGraph, cliques },
-    dist          = "Distance" /. { opts } /. "Distance" -> "Max";
-    distMatrix    = GraphDistanceMatrix @ graph;
-    finiteMax     = Max @ Select[ Flatten @ distMatrix, # < Infinity & ];
-    { dMin, dMax } = Switch[ dist,
-      "Max", { finiteMax, finiteMax },
-      _List, dist /. Infinity -> finiteMax,
-      _,     { dist, finiteMax } ];
-    auxGraph = Graph[ VertexList @ graph,
-      UndirectedEdge @@@ Select[ Subsets[ VertexList @ graph, { 2 } ],
-        pair |-> With[ { d = GraphDistance[ graph, pair[[ 1 ]], pair[[ 2 ]] ] },
-          dMin <= d <= dMax ] ] ];
-    cliques = Select[ FindClique[ auxGraph, { n, VertexCount @ auxGraph }, All ],
-      Length @ # >= n & ];
-    If[ cliques === {}, {}, RandomSample[ #, n ] & /@ cliques ]
-  ]
+  With[ { dist = "Distance" /. { opts } /. "Distance" -> "Max",
+          finiteMax = Max @ Select[ Flatten @ GraphDistanceMatrix @ graph, # < Infinity & ] },
+    { bounds = Switch[ dist,
+        "Max", { finiteMax, finiteMax },
+        _List, dist /. Infinity -> finiteMax,
+        _,     { dist, finiteMax } ] },
+    { auxGraph = Graph[ VertexList @ graph,
+        UndirectedEdge @@@ Select[ Subsets[ VertexList @ graph, { 2 } ],
+          pair |-> With[ { d = GraphDistance[ graph, pair[[ 1 ]], pair[[ 2 ]] ] },
+            bounds[[ 1 ]] <= d <= bounds[[ 2 ]] ] ] ] },
+    { cliques = Select[ FindClique[ auxGraph, { n, VertexCount @ auxGraph }, All ], Length @ # >= n & ] },
+    If[ cliques === { }, { }, RandomSample[ #, n ] & /@ cliques ] ]

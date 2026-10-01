@@ -15,19 +15,23 @@ FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
 
 FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
     window : { _Integer, _Integer },
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ]/;
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
     SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraBisectingHyperplane, { opts }, Properties ] ] &&
-      MatchQ[ OptionValue[ FindInfraBisectingHyperplane, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
+      MatchQ[ OptionValue[ FindInfraBisectingHyperplane, { opts }, Method ],
+        Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
   With[ {
       properties = OptionValue[ FindInfraBisectingHyperplane, { opts }, Properties ],
-      methodSpec = Replace[ OptionValue[ FindInfraBisectingHyperplane, { opts }, Method ], Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ] },
+      methodSpec = Replace[ OptionValue[ FindInfraBisectingHyperplane, { opts }, Method ],
+        Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ] },
     { methodHead = Replace[ methodSpec, { m_String, ___ } :> m ],
-      pruning    = Replace[ methodSpec, { { "Exhaustive", subs___ } :> ( "Pruning" /. { subs } /. "Pruning" -> Infinity ), _ :> Infinity } ] },
+      pruning    = Replace[ methodSpec,
+                    { { "Exhaustive", subs___ } :> ( "Pruning" /. { subs } /. "Pruning" -> Infinity ),
+                      _ :> Infinity } ] },
     { results = Apply[
         { q1, q2 } |-> With[ {
             bisector = Complement[
               Pick[ VertexList[ graph ],
-                MapThread[ { x, y } |-> window[[1]] <= x - y <= window[[2]],
+                MapThread[ { x, y } |-> window[[ 1 ]] <= x - y <= window[[ 2 ]],
                   { GraphDistance[ graph, q1 ], GraphDistance[ graph, q2 ] } ] ],
               { q1, q2 } ] },
           If[ properties === { },
@@ -50,44 +54,34 @@ FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
                     "Connected",  T |-> T =!= { } && ConnectedGraphQ @ Subgraph[ graph, T ] ],
                   properties ] },
               { admissible = T |-> AllTrue[ tests, # @ T & ] },
-              Module[ { admitQ = admissible, pick = If[ methodHead === "Greedy", Identity, RandomSample ],
-                        cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
-                        acc = { }, seen = <||>, descend, frontier, next, removable, key },
-                Switch[ methodHead,
-                  "Exhaustive",
-                    If[ ! admitQ[ bisector ], { },
-                      frontier = { Sort @ bisector };
-                      seen = <| Sort @ bisector -> True |>;
-                      While[ frontier =!= { },
-                        next = { };
-                        Do[
-                          removable = Select[ T, v |-> admitQ[ DeleteCases[ T, v ] ] ];
+              { pick = If[ methodHead === "Greedy", Identity, RandomSample ],
+                cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
+              { descend = { self, state, T } |-> If[ Length @ First @ state >= cap || KeyExistsQ[ Last @ state, T ],
+                  state,
+                  With[ { marked = { First @ state, Append[ Last @ state, T -> True ] },
+                          peelable = Select[ T, w |-> admissible[ DeleteCases[ T, w ] ] ] },
+                    If[ peelable === { },
+                      { Append[ First @ marked, T ], Last @ marked },
+                      Fold[ { s, w } |-> self[ self, s, DeleteCases[ T, w ] ], marked, pick @ peelable ] ] ] ] },
+              Which[
+                ! admissible[ bisector ], { },
+                methodHead === "Exhaustive",
+                  DeleteDuplicates @ Last @ NestWhile[
+                    state |-> With[ { rows = Map[
+                        T |-> With[ { removable = Select[ T, v |-> admissible[ DeleteCases[ T, v ] ] ] },
                           If[ removable === { },
-                            AppendTo[ acc, T ],
-                            Do[
-                              key = Sort @ DeleteCases[ T, v ];
-                              If[ ! KeyExistsQ[ seen, key ],
-                                seen[ key ] = True;
-                                AppendTo[ next, key ] ],
-                              { v, Replace[ pruning, {
-                                  Infinity     :> removable,
-                                  n_Integer    :> If[ Length @ removable <= n, removable, RandomSample[ removable, n ] ],
-                                  p_?NumericQ  :> With[ { kept = Select[ removable, RandomReal[ ] < p & ] },
-                                    If[ kept === { }, RandomSample[ removable, 1 ], kept ] ] } ] } ] ],
-                          { T, frontier } ];
-                        frontier = next ];
-                      DeleteDuplicates @ acc ],
-                  "Greedy" | "RandomGreedy",
-                    If[ ! admitQ[ bisector ], { },
-                      descend[ T_ ] :=
-                        If[ ! KeyExistsQ[ seen, T ],
-                          seen[ T ] = True;
-                          With[ { peelable = Select[ T, w |-> admitQ[ DeleteCases[ T, w ] ] ] },
-                            If[ peelable === { },
-                              AppendTo[ acc, T ];
-                              If[ Length @ acc >= cap, Throw[ acc, descend ] ],
-                              Scan[ descend[ DeleteCases[ T, # ] ] &, pick @ peelable ] ] ] ];
-                      Catch[ descend[ bisector ]; acc, descend ] ] ] ] ] ] ],
+                            { { T }, { } },
+                            { { }, Map[ v |-> Sort @ DeleteCases[ T, v ], Replace[ pruning, {
+                                Infinity     :> removable,
+                                n_Integer    :> If[ Length @ removable <= n, removable, RandomSample[ removable, n ] ],
+                                p_?NumericQ  :> With[ { kept = Select[ removable, RandomReal[ ] < p & ] },
+                                  If[ kept === { }, RandomSample[ removable, 1 ], kept ] ] } ] ] } ] ],
+                        First @ state ] },
+                      { DeleteDuplicates @ Catenate @ rows[[ All, 2 ]], Join[ Last @ state, Catenate @ rows[[ All, 1 ]] ] } ],
+                    { { Sort @ bisector }, { } },
+                    First @ # =!= { } & ],
+                True,
+                  First @ descend[ descend, { { }, <||> }, bisector ] ] ] ] ],
         Tuples[ { Keys @ InfraDensity[ graph, p1 ], Keys @ InfraDensity[ graph, p2 ] } ], { 1 } ] },
     With[ { reps = DeleteDuplicates[ Union /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
         Switch[ count,

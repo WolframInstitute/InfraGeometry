@@ -2,44 +2,83 @@ Package["WolframInstitute`InfraGeometry`"]
 
 Options[TessellationGraph] = {Method -> Automatic};
 
-TessellationGraph[{p_Integer, q_Integer}, n_Integer : 1, opts : OptionsPattern[{TessellationGraph, Graph}]] /;
-    MatchQ[OptionValue[TessellationGraph, FilterRules[{opts}, Options[TessellationGraph]], Method],
+TessellationGraph[ { p_Integer, q_Integer }, n_Integer : 1, opts : OptionsPattern[ { TessellationGraph, Graph } ] ] /;
+    MatchQ[ OptionValue[ TessellationGraph, FilterRules[ { opts }, Options[ TessellationGraph ] ], Method ],
       Automatic | "Platonic" | "Torus" | "PSL2" | "Congruence" | "CosetEnumeration" |
-        {Automatic | "Platonic" | "Torus" | "PSL2" | "Congruence" | "CosetEnumeration", ___}] :=
-  Module[{found = {}, ell = 1, gens},
-    With[{method = OptionValue[TessellationGraph, FilterRules[{opts}, Options[TessellationGraph]], Method], c = (p - 2) (q - 2)},
-      {name = If[ListQ[method], First[method], method],
-       budget = If[ListQ[method], Lookup[Rest[method], "MaxIndex", 24], If[c < 4, 4 p q / (2 p + 2 q - p q), 24]]},
-      {cosetMap = {} |-> With[{maps = SortBy[Select[LowIndexMaps[p, q, budget], #["Regular"] &], #["Index"] &]},
-         If[Length[maps] < n, Missing["NotFound"], TessellationGraph[{p, q}, maps[[n]]["Generators"]]]]},
-      {g = Switch[{name, Sign[c - 4]},
-        {Automatic, -1} | {"Platonic", _},
-          TessellationGraph[{p, q}, <|{3, 3} -> AlternatingGroup[4], {3, 4} -> SymmetricGroup[4], {4, 3} -> SymmetricGroup[4],
-            {3, 5} -> AlternatingGroup[5], {5, 3} -> AlternatingGroup[5]|>[{p, q}]],
-        {Automatic, 0} | {"Torus", _},
-          TorusTessellation[{n, n}, <|{4, 4} -> "Square", {3, 6} -> "Triangular", {6, 3} -> "Hexagonal"|>[{p, q}]],
-        {Automatic, 1} | {"PSL2" | "Congruence", _},
-          While[Length[found] < n && ell < 50,
-            ell = NextPrime[ell];
-            gens = With[
-              {grp = PermutationGroup[
-                 ({a, b, cc, d} |-> With[{pts = Append[Range[0, ell - 1], Infinity], ix = z |-> If[z === Infinity, ell + 1, z + 1]},
-                   PermutationCycles @ Map[
-                     ix @ Which[
-                       # === Infinity, If[Mod[cc, ell] == 0, Infinity, Mod[a PowerMod[cc, -1, ell], ell]],
-                       Mod[cc # + d, ell] == 0, Infinity,
-                       True, Mod[(a # + b) PowerMod[Mod[cc # + d, ell], -1, ell], ell]] &,
-                     pts]]) @@@ {{1, 1, 0, 1}, {0, -1, 1, 0}}]},
-              {ord = GroupOrder[grp], e = GroupElements[grp]},
-              {rs = Select[e, PermutationOrder[#] == p &], ss = Select[e, PermutationOrder[#] == q &]},
-              Catch[
-                Do[If[PermutationOrder[PermutationProduct[r, s]] == 2 && GroupOrder[PermutationGroup[{r, s}]] == ord, Throw[{r, s}]],
-                  {r, rs}, {s, ss}];
-                Missing["NotFound"]]];
-            If[Head[gens] === List, AppendTo[found, gens]]];
-          Which[Length[found] >= n, TessellationGraph[{p, q}, Last[found]], name === Automatic, cosetMap[], True, Missing["NotFound"]],
-        {"CosetEnumeration", _}, cosetMap[]]},
-      Graph[g, Sequence @@ FilterRules[{opts}, Options[Graph]]] /; GraphQ[g]]];
+        { Automatic | "Platonic" | "Torus" | "PSL2" | "Congruence" | "CosetEnumeration", ___ } ] :=
+  With[
+    { method = OptionValue[ TessellationGraph, FilterRules[ { opts }, Options[ TessellationGraph ] ], Method ], c = ( p - 2 ) ( q - 2 ) },
+    {
+      name = If[ ListQ[ method ], First[ method ], method ],
+      budget = If[ ListQ[ method ], Lookup[ Rest[ method ], "MaxIndex", 24 ], If[ c < 4, 4 p q / ( 2 p + 2 q - p q ), 24 ] ]
+    },
+    {
+      cosetMap = { } |-> With[
+        { maps = SortBy[ Select[ LowIndexMaps[ p, q, budget ], #[ "Regular" ] & ], #[ "Index" ] & ] },
+        If[ Length[ maps ] < n, Missing[ "NotFound" ], TessellationGraph[ { p, q }, maps[[ n ]][ "Generators" ] ] ]
+      ]
+    },
+    {
+      g = Switch[ { name, Sign[ c - 4 ] },
+        { Automatic, -1 } | { "Platonic", _ },
+        TessellationGraph[
+          { p, q },
+          <|
+            { 3, 3 } -> AlternatingGroup[ 4 ], { 3, 4 } -> SymmetricGroup[ 4 ], { 4, 3 } -> SymmetricGroup[ 4 ],
+            { 3, 5 } -> AlternatingGroup[ 5 ], { 5, 3 } -> AlternatingGroup[ 5 ]
+          |>[ { p, q } ]
+        ],
+        { Automatic, 0 } | { "Torus", _ },
+        TorusTessellation[ { n, n }, <| { 4, 4 } -> "Square", { 3, 6 } -> "Triangular", { 6, 3 } -> "Hexagonal" |>[ { p, q } ] ],
+        { Automatic, 1 } | { "PSL2" | "Congruence", _ },
+        With[
+          {
+            found = First @ NestWhile[
+              Apply[ { acc, previous } |-> With[
+                { ell = NextPrime[ previous ] },
+                {
+                  grp = PermutationGroup[
+                    ( { a, b, cc, d } |-> With[
+                      { pts = Append[ Range[ 0, ell - 1 ], Infinity ], ix = z |-> If[ z === Infinity, ell + 1, z + 1 ] },
+                      PermutationCycles @ Map[
+                        ix @ Which[
+                          # === Infinity, If[ Mod[ cc, ell ] == 0, Infinity, Mod[ a PowerMod[ cc, -1, ell ], ell ] ],
+                          Mod[ cc # + d, ell ] == 0, Infinity,
+                          True, Mod[ ( a # + b ) PowerMod[ Mod[ cc # + d, ell ], -1, ell ], ell ]
+                        ] &,
+                        pts
+                      ]
+                    ] ) @@@ { { 1, 1, 0, 1 }, { 0, -1, 1, 0 } }
+                  ]
+                },
+                { ord = GroupOrder[ grp ], e = GroupElements[ grp ] },
+                { rs = Select[ e, PermutationOrder[ # ] == p & ], ss = Select[ e, PermutationOrder[ # ] == q & ] },
+                {
+                  gens = Catch[
+                    Do[
+                      If[ PermutationOrder[ PermutationProduct[ r, s ] ] == 2 && GroupOrder[ PermutationGroup[ { r, s } ] ] == ord,
+                        Throw[ { r, s } ]
+                      ],
+                      { r, rs },
+                      { s, ss }
+                    ];
+                    Missing[ "NotFound" ]
+                  ]
+                },
+                { If[ Head[ gens ] === List, Append[ acc, gens ], acc ], ell }
+              ] ],
+              { { }, 1 },
+              Apply[ { acc, ell } |-> Length[ acc ] < n && ell < 50 ]
+            ]
+          },
+          Which[ Length[ found ] >= n, TessellationGraph[ { p, q }, Last[ found ] ], name === Automatic, cosetMap[ ], True, Missing[ "NotFound" ] ]
+        ],
+        { "CosetEnumeration", _ },
+        cosetMap[ ]
+      ]
+    },
+    Graph[ g, Sequence @@ FilterRules[ { opts }, Options[ Graph ] ] ] /; GraphQ[ g ]
+  ]
 
 TessellationGraph[{p_Integer, q_Integer}, {m_Integer, n_Integer}, opts : OptionsPattern[{TessellationGraph, Graph}]] :=
   With[{g = TorusTessellation[{m, n}, <|{4, 4} -> "Square", {3, 6} -> "Triangular", {6, 3} -> "Hexagonal"|>[{p, q}]]},
@@ -64,15 +103,24 @@ TessellationGraph[{p_Integer, q_Integer}, {r_Cycles, s_Cycles}, opts : OptionsPa
         _?(Apply[SameQ])]]},
     Graph[map, Sequence @@ FilterRules[{opts}, Options[Graph]]]];
 
-TessellationGraph[{p_Integer, q_Integer}, grp_ /; ! MatchQ[grp, _Integer | {_Integer, _Integer} | _Rule | {___Rule}], opts : OptionsPattern[{TessellationGraph, Graph}]] :=
-  TessellationGraph[{p, q},
-    With[{ord = GroupOrder[grp], e = GroupElements[grp]},
-      Module[{rs = Select[e, PermutationOrder[#] == p &], ss = Select[e, PermutationOrder[#] == q &]},
-        Catch[
-          Do[If[PermutationOrder[PermutationProduct[r, s]] == 2 && GroupOrder[PermutationGroup[{r, s}]] == ord, Throw[{r, s}]],
-            {r, rs}, {s, ss}];
-          Missing["NotFound"]]]],
-    opts];
+TessellationGraph[ { p_Integer, q_Integer }, grp_ /; ! MatchQ[ grp, _Integer | { _Integer, _Integer } | _Rule | { ___Rule } ],
+    opts : OptionsPattern[ { TessellationGraph, Graph } ] ] :=
+  TessellationGraph[
+    { p, q },
+    With[
+      { ord = GroupOrder[ grp ], e = GroupElements[ grp ] },
+      { rs = Select[ e, PermutationOrder[ # ] == p & ], ss = Select[ e, PermutationOrder[ # ] == q & ] },
+      Catch[
+        Do[
+          If[ PermutationOrder[ PermutationProduct[ r, s ] ] == 2 && GroupOrder[ PermutationGroup[ { r, s } ] ] == ord, Throw[ { r, s } ] ],
+          { r, rs },
+          { s, ss }
+        ];
+        Missing[ "NotFound" ]
+      ]
+    ],
+    opts
+  ]
 
 TessellationGraph[config_List /; Length[config] >= 3, n_Integer : 1, opts : OptionsPattern[{TessellationGraph, Graph}]] :=
   With[
@@ -176,53 +224,117 @@ TorusTessellation[ { m_Integer, n_Integer }, "Hexagonal", opts : OptionsPattern[
     opts
   ]
 
-TessellationNeighborhoodGraph[{p_Integer, q_Integer}, r_Integer : 3, opts : OptionsPattern[Graph]] :=
-  Module[{seed, reflect, snap, inRegion, toVec, tol, ref, faces, frontier, seen, new},
-    {seed, reflect, snap, inRegion, toVec, tol, ref} = Which[
-      (p - 2) (q - 2) < 4,
-        With[{cR = Cot[Pi/p] Cot[Pi/q]}, {sR = Sqrt[1 - cR^2]},
-          {N @ Table[{sR Cos[2 Pi k/p], sR Sin[2 Pi k/p], cR}, {k, 0, p - 1}],
-           {a, b, z} |-> With[{nv = Normalize @ Cross[a, b]}, z - 2 (z . nv) nv],
-           Round[Mean @ #, 10.^-5] &, True &, Identity, 10.^-3, {0, 0, 1}}],
-      (p - 2) (q - 2) == 4,
-        With[{e = 2 Sin[Pi/p]},
-          {N @ Table[Exp[I 2 Pi k/p], {k, 0, p - 1}],
-           {a, b, z} |-> a + (b - a) Conjugate[(z - a)/(b - a)],
-           Round[Mean @ #, 10.^-6] &, Abs[#] <= 1 + (r + 1) e &, {Re @ #, Im @ #} &, 10.^-6, {0, 0}}],
-      True,
-        With[{cc = Cot[Pi/p] Cot[Pi/q]}, {r0 = Tanh[ArcCosh[cc]/2], rr = ArcCosh[cc]},
-          {polygon = N @ Table[r0 Exp[I 2 Pi k/p], {k, 0, p - 1}]},
-          {elen = ArcCosh[1 + 2 Abs[polygon[[1]] - polygon[[2]]]^2/((1 - Abs[polygon[[1]]]^2) (1 - Abs[polygon[[2]]]^2))]},
-          {rho = rr + (r + 1) elen},
-          {polygon,
-           {a, b, z} |-> With[{det = Im[Conjugate[a] b]},
-             If[Abs[det] < 10.^-12,
-               Exp[2 I Arg[a]] Conjugate[z],
-               (o |-> o + (Abs[o]^2 - 1)/Conjugate[z - o]) @
-                 (((Abs[a]^2 + 1) Im[b] - (Abs[b]^2 + 1) Im[a])/(2 det) + I ((Abs[b]^2 + 1) Re[a] - (Abs[a]^2 + 1) Re[b])/(2 det))]],
-           Round[Mean @ #, 10.^-5] &, 2 ArcTanh[Abs[#]] <= rho &, {Re @ #, Im @ #} &, 10.^-5, {0, 0}}]];
-    faces = {seed}; frontier = {seed}; seen = <|snap[seed] -> True|>;
-    While[frontier =!= {},
-      new = Flatten[Reap[Do[Do[
-          With[{nf = reflect[f[[i]], f[[Mod[i, p] + 1]], #] & /@ f}, {k = snap @ nf},
-            If[inRegion @ Mean @ nf && ! KeyExistsQ[seen, k], seen[k] = True; Sow @ nf]],
-        {i, p}], {f, frontier}]][[2]], 1];
-      faces = Join[faces, new]; frontier = new];
-    With[{vecs = toVec /@ Flatten[faces, 1]},
-      {keys = Round[vecs, tol]},
-      {uniq = DeleteDuplicates @ keys},
-      {idOf = AssociationThread[uniq -> Range @ Length @ uniq]},
-      {fids = Lookup[idOf, #] & /@ TakeList[keys, Length /@ faces]},
-      {edges = DeleteCases[
-         DeleteDuplicates @ Flatten[
-           (fc |-> UndirectedEdge @@ Sort[#] & /@ Partition[Append[fc, First @ fc], 2, 1]) /@ fids],
-         _?(Apply[SameQ])]},
-      {tiling = Graph[Range @ Length @ uniq, edges,
-         VertexCoordinates -> Lookup[GroupBy[Transpose[{keys, vecs}], First -> Last, Mean], uniq]]},
+TessellationNeighborhoodGraph[ { p_Integer, q_Integer }, r_Integer : 3, opts : OptionsPattern[ Graph ] ] :=
+  With[
+    {
+      geometry = Which[
+        ( p - 2 ) ( q - 2 ) < 4,
+        With[ { cR = Cot[ Pi / p ] Cot[ Pi / q ] }, { sR = Sqrt[ 1 - cR ^ 2 ] },
+          {
+            N @ Table[ { sR Cos[ 2 Pi k / p ], sR Sin[ 2 Pi k / p ], cR }, { k, 0, p - 1 } ],
+            { a, b, z } |-> With[ { nv = Normalize @ Cross[ a, b ] }, z - 2 ( z . nv ) nv ],
+            Round[ Mean @ #, 10. ^ -5 ] &,
+            True &,
+            Identity,
+            10. ^ -3,
+            { 0, 0, 1 }
+          }
+        ],
+        ( p - 2 ) ( q - 2 ) == 4,
+        With[ { e = 2 Sin[ Pi / p ] },
+          {
+            N @ Table[ Exp[ I 2 Pi k / p ], { k, 0, p - 1 } ],
+            { a, b, z } |-> a + ( b - a ) Conjugate[ ( z - a ) / ( b - a ) ],
+            Round[ Mean @ #, 10. ^ -6 ] &,
+            Abs[ # ] <= 1 + ( r + 1 ) e &,
+            { Re @ #, Im @ # } &,
+            10. ^ -6,
+            { 0, 0 }
+          }
+        ],
+        True,
+        With[ { cc = Cot[ Pi / p ] Cot[ Pi / q ] }, { r0 = Tanh[ ArcCosh[ cc ] / 2 ], rr = ArcCosh[ cc ] },
+          { polygon = N @ Table[ r0 Exp[ I 2 Pi k / p ], { k, 0, p - 1 } ] },
+          {
+            elen = ArcCosh[
+              1 + 2 Abs[ polygon[[ 1 ]] - polygon[[ 2 ]] ] ^ 2 / ( ( 1 - Abs[ polygon[[ 1 ]] ] ^ 2 ) ( 1 - Abs[ polygon[[ 2 ]] ] ^ 2 ) )
+            ]
+          },
+          { rho = rr + ( r + 1 ) elen },
+          {
+            polygon,
+            { a, b, z } |-> With[ { det = Im[ Conjugate[ a ] b ] },
+              If[ Abs[ det ] < 10. ^ -12,
+                Exp[ 2 I Arg[ a ] ] Conjugate[ z ],
+                ( o |-> o + ( Abs[ o ] ^ 2 - 1 ) / Conjugate[ z - o ] ) @
+                  (
+                    ( ( Abs[ a ] ^ 2 + 1 ) Im[ b ] - ( Abs[ b ] ^ 2 + 1 ) Im[ a ] ) / ( 2 det ) +
+                      I ( ( Abs[ b ] ^ 2 + 1 ) Re[ a ] - ( Abs[ a ] ^ 2 + 1 ) Re[ b ] ) / ( 2 det )
+                  )
+              ]
+            ],
+            Round[ Mean @ #, 10. ^ -5 ] &,
+            2 ArcTanh[ Abs[ # ] ] <= rho &,
+            { Re @ #, Im @ # } &,
+            10. ^ -5,
+            { 0, 0 }
+          }
+        ]
+      ]
+    },
+    {
+      seed = geometry[[ 1 ]],
+      reflect = geometry[[ 2 ]],
+      snap = geometry[[ 3 ]],
+      inRegion = geometry[[ 4 ]],
+      toVec = geometry[[ 5 ]],
+      tol = geometry[[ 6 ]],
+      ref = geometry[[ 7 ]]
+    },
+    {
+      faces = First @ NestWhile[
+        Apply[ { done, frontier, seen } |-> With[
+          {
+            fresh = Select[
+              Flatten[ Table[ reflect[ f[[ i ]], f[[ Mod[ i, p ] + 1 ]], # ] & /@ f, { f, frontier }, { i, p } ], 1 ],
+              nf |-> inRegion @ Mean @ nf && ! KeyExistsQ[ seen, snap @ nf ]
+            ]
+          },
+          { new = fresh[[ First /@ Values @ PositionIndex[ snap /@ fresh ] ]] },
+          { Join[ done, new ], new, Join[ seen, AssociationThread[ snap /@ new -> True ] ] }
+        ] ],
+        { { seed }, { seed }, <| snap[ seed ] -> True |> },
+        Apply[ { done, frontier, seen } |-> frontier =!= { } ]
+      ]
+    },
+    With[ { vecs = toVec /@ Flatten[ faces, 1 ] },
+      { keys = Round[ vecs, tol ] },
+      { uniq = DeleteDuplicates @ keys },
+      { idOf = AssociationThread[ uniq -> Range @ Length @ uniq ] },
+      { fids = Lookup[ idOf, # ] & /@ TakeList[ keys, Length /@ faces ] },
+      {
+        edges = DeleteCases[
+          DeleteDuplicates @ Flatten[ ( fc |-> UndirectedEdge @@ Sort[ # ] & /@ Partition[ Append[ fc, First @ fc ], 2, 1 ] ) /@ fids ],
+          _?( Apply[ SameQ ] )
+        ]
+      },
+      {
+        tiling = Graph[
+          Range @ Length @ uniq,
+          edges,
+          VertexCoordinates -> Lookup[ GroupBy[ Transpose[ { keys, vecs } ], First -> Last, Mean ], uniq ]
+        ]
+      },
       Graph[
-        NeighborhoodGraph[tiling,
-          VertexList[tiling][[First @ Ordering[SquaredEuclideanDistance[ref, #] & /@ GraphEmbedding @ tiling, 1]]], r],
-        Sequence @@ FilterRules[{opts}, Options[Graph]]]]];
+        NeighborhoodGraph[
+          tiling,
+          VertexList[ tiling ][[ First @ Ordering[ SquaredEuclideanDistance[ ref, # ] & /@ GraphEmbedding @ tiling, 1 ] ]],
+          r
+        ],
+        Sequence @@ FilterRules[ { opts }, Options[ Graph ] ]
+      ]
+    ]
+  ]
 
 TessellationNeighborhoodGraph[{p_Integer, q_Integer}, {m_Integer, n_Integer}, opts : OptionsPattern[Graph]] /; (p - 2) (q - 2) == 4 :=
     Graph[
@@ -249,74 +361,145 @@ TessellationNeighborhoodGraph[{p_Integer, q_Integer}, {m_Integer, n_Integer}, op
             Subgraph[g, Select[VertexList @ g, VertexDegree[g, #] > 1 &]]]],
       Sequence @@ FilterRules[{opts}, Options[Graph]]];
 
-TessellationNeighborhoodGraph[config_List /; Length[config] >= 3, r_Integer : 3, opts : OptionsPattern[Graph]] :=
-  Module[{defect = Total[1/config] - (Length[config] - 2)/2, edge, u, s, angle, mob, imob, place, direction, step, inRegion,
-      faces, seen, growing = True, added},
-    With[{g = Which[
-      Equal @@ config, TessellationNeighborhoodGraph[{First @ config, Length @ config}, r],
-      defect > 0, With[{solid = TessellationGraph[config]},
-        If[GraphQ[solid], NeighborhoodGraph[solid, First @ VertexList @ solid, r], Missing["NotAvailable"]]],
-      defect == 0 && ! MemberQ[{{3, 6, 3, 6}, {3, 4, 6, 4}, {4, 6, 12}, {4, 8, 8}, {3, 12, 12}},
+TessellationNeighborhoodGraph[ config_List /; Length[ config ] >= 3, r_Integer : 3, opts : OptionsPattern[ Graph ] ] :=
+  With[
+    { defect = Total[ 1 / config ] - ( Length[ config ] - 2 ) / 2 },
+    {
+      g = Which[
+        Equal @@ config, TessellationNeighborhoodGraph[ { First @ config, Length @ config }, r ],
+        defect > 0,
+        With[ { solid = TessellationGraph[ config ] },
+          If[ GraphQ[ solid ], NeighborhoodGraph[ solid, First @ VertexList @ solid, r ], Missing[ "NotAvailable" ] ]
+        ],
+        defect == 0 && ! MemberQ[
+          { { 3, 6, 3, 6 }, { 3, 4, 6, 4 }, { 4, 6, 12 }, { 4, 8, 8 }, { 3, 12, 12 } },
           First @ Sort @ Join[
-            Table[RotateLeft[config, i], {i, 0, Length[config] - 1}],
-            Table[RotateLeft[Reverse @ config, i], {i, 0, Length[config] - 1}]]],
-        Missing["NotAvailable"],
-      True,
-        u = If[defect == 0, 1, Re[edge /. FindRoot[Total[2 ArcSin[Cos[Pi / #] / edge] & /@ config] == 2 Pi, {edge, 1.3}]]];
-        s = If[u === 1, 1, 2 ArcCosh[u]];
-        angle = f |-> 2 ArcSin[Cos[Pi / f] / u];
-        mob = {a, z} |-> (z + a) / (1 + Conjugate[a] z);
-        imob = {a, z} |-> (z - a) / (1 - Conjugate[a] z);
-        place = If[u === 1,
-          {a, b, f} |-> FoldList[Plus, a, Table[(b - a) Exp[I 2. Pi k / f], {k, 0, f - 2}]],
-          {a, b, f} |-> With[{rho = Tanh[ArcSinh[Sinh[ArcCosh[u]] / Sin[Pi / f]] / 2]},
-            {std = Table[rho Exp[I 2. Pi j / f], {j, 0, f - 1}]},
-            {theta = Arg[imob[a, b]] - Arg[imob[std[[1]], std[[2]]]]},
-            Table[mob[a, Exp[I theta] imob[std[[1]], std[[j]]]], {j, 1, f}]]];
-        direction = If[u === 1, {v, w} |-> Arg[w - v], {v, w} |-> Arg[imob[v, w]]];
-        step = If[u === 1, {v, dir} |-> v + Exp[I dir], {v, dir} |-> mob[v, Tanh[s / 2] Exp[I dir]]];
-        (* grow to a margin past radius r, so B_r is contained: graph distance >= Euclidean distance for
-           unit edges, and hyperbolic edges have length s *)
-        inRegion = If[u === 1, Abs[#] <= r + 2.5 &, Abs[#] < 1 && 2 ArcTanh[Abs[#]] <= (r + 2) s &];
-        faces = Select[MapThread[place[0, step[0, #2], #1] &, {config, Most @ Prepend[Accumulate[angle /@ config], 0.]}], inRegion[Mean @ #] &];
-        seen = Association[(Round[Mean @ #, 10.^-5] -> True) & /@ faces];
-        While[growing, growing = False;
-          Do[added = If[2 Pi - Total[angle /@ corner[[All, 2]]] < 0.01, {},
-              With[{v = corner[[1, 1]], sizes = corner[[All, 2]], starts = corner[[All, 3]], ends = corner[[All, 4]]},
-                {begin = SelectFirst[starts, a |-> NoneTrue[ends, Abs[Mod[a - # + Pi, 2 Pi] - Pi] < 10.^-3 &]]},
-                {order = SortBy[Range @ Length @ sizes, Mod[starts[[#]] - begin, 2 Pi] &]},
-                {endAngle = ends[[Last @ order]],
-                 remaining = DeleteDuplicates @ Cases[
-                   Join @@ (Table[RotateLeft[#, i], {i, 0, Length @ config - 1}] & /@ {config, Reverse @ config}),
-                   sq_ /; Take[sq, Length @ order] === sizes[[order]] :> Drop[sq, Length @ order]]},
-                If[Length @ remaining != 1, {},
-                  Last @ Fold[
-                    {state, size} |-> With[{poly = place[v, First @ state, size]},
-                      {poly[[-1]],
-                       If[! KeyExistsQ[seen, Round[Mean @ poly, 10.^-5]] && inRegion[Mean @ poly],
-                         Append[Last @ state, poly], Last @ state]}],
-                    {step[v, endAngle], {}}, First @ remaining]]]];
-            If[added =!= {},
-              faces = Join[faces, added]; (seen[Round[Mean @ #, 10.^-5]] = True) & /@ added; growing = True],
-            {corner, Values @ GroupBy[
-              Flatten[(poly |-> With[{len = Length @ poly},
-                Table[With[{v = poly[[i]], nxt = poly[[Mod[i, len] + 1]], prv = poly[[Mod[i - 2, len] + 1]]},
-                  {Round[{Re @ v, Im @ v}, 10.^-5], v, len, direction[v, nxt], direction[v, prv]}], {i, len}]]) /@ faces, 1],
-              First -> Rest]}]];
-        With[{vecs = {Re @ #, Im @ #} & /@ Flatten[faces, 1]},
-          {keys = Round[vecs, 10.^-5]},
-          {uniq = DeleteDuplicates @ keys},
-          {idOf = AssociationThread[uniq -> Range @ Length @ uniq]},
-          {fids = Lookup[idOf, #] & /@ TakeList[keys, Length /@ faces]},
-          {edges = DeleteCases[
-             DeleteDuplicates @ Flatten[
-               (fc |-> UndirectedEdge @@ Sort[#] & /@ Partition[Append[fc, First @ fc], 2, 1]) /@ fids],
-             _?(Apply[SameQ])]},
-          {tiling = Graph[Range @ Length @ uniq, edges,
-             VertexCoordinates -> Lookup[GroupBy[Transpose[{keys, vecs}], First -> Last, Mean], uniq]]},
-          NeighborhoodGraph[tiling,
-            VertexList[tiling][[First @ Ordering[SquaredEuclideanDistance[{0, 0}, #] & /@ GraphEmbedding @ tiling, 1]]], r]]]},
-      Graph[g, Sequence @@ FilterRules[{opts}, Options[Graph]]] /; GraphQ[g]]];
+            Table[ RotateLeft[ config, i ], { i, 0, Length[ config ] - 1 } ],
+            Table[ RotateLeft[ Reverse @ config, i ], { i, 0, Length[ config ] - 1 } ]
+          ]
+        ],
+        Missing[ "NotAvailable" ],
+        True,
+        With[
+          { u = If[ defect == 0, 1, Re[ edge /. FindRoot[ Total[ 2 ArcSin[ Cos[ Pi / # ] / edge ] & /@ config ] == 2 Pi, { edge, 1.3 } ] ] ] },
+          {
+            s = If[ u === 1, 1, 2 ArcCosh[ u ] ],
+            angle = f |-> 2 ArcSin[ Cos[ Pi / f ] / u ],
+            mob = { a, z } |-> ( z + a ) / ( 1 + Conjugate[ a ] z ),
+            imob = { a, z } |-> ( z - a ) / ( 1 - Conjugate[ a ] z )
+          },
+          {
+            place = If[ u === 1,
+              { a, b, f } |-> FoldList[ Plus, a, Table[ ( b - a ) Exp[ I 2. Pi k / f ], { k, 0, f - 2 } ] ],
+              { a, b, f } |-> With[ { rho = Tanh[ ArcSinh[ Sinh[ ArcCosh[ u ] ] / Sin[ Pi / f ] ] / 2 ] },
+                { std = Table[ rho Exp[ I 2. Pi j / f ], { j, 0, f - 1 } ] },
+                { theta = Arg[ imob[ a, b ] ] - Arg[ imob[ std[[ 1 ]], std[[ 2 ]] ] ] },
+                Table[ mob[ a, Exp[ I theta ] imob[ std[[ 1 ]], std[[ j ]] ] ], { j, 1, f } ]
+              ]
+            ],
+            direction = If[ u === 1, { v, w } |-> Arg[ w - v ], { v, w } |-> Arg[ imob[ v, w ] ] ],
+            step = If[ u === 1, { v, dir } |-> v + Exp[ I dir ], { v, dir } |-> mob[ v, Tanh[ s / 2 ] Exp[ I dir ] ] ],
+            (* grow to a margin past radius r, so B_r is contained: graph distance >= Euclidean distance for
+               unit edges, and hyperbolic edges have length s *)
+            inRegion = If[ u === 1, Abs[ # ] <= r + 2.5 &, Abs[ # ] < 1 && 2 ArcTanh[ Abs[ # ] ] <= ( r + 2 ) s & ]
+          },
+          {
+            start = Select[
+              MapThread[ place[ 0, step[ 0, #2 ], #1 ] &, { config, Most @ Prepend[ Accumulate[ angle /@ config ], 0. ] } ],
+              inRegion[ Mean @ # ] &
+            ]
+          },
+          {
+            faces = First @ NestWhile[
+              Apply[ { current, seen, growing } |-> Fold[
+                { acc, corner } |-> With[
+                  { done = acc[[ 1 ]], known = acc[[ 2 ]] },
+                  {
+                    added = If[ 2 Pi - Total[ angle /@ corner[[ All, 2 ]] ] < 0.01,
+                      { },
+                      With[ { v = corner[[ 1, 1 ]], sizes = corner[[ All, 2 ]], starts = corner[[ All, 3 ]], ends = corner[[ All, 4 ]] },
+                        { begin = SelectFirst[ starts, a |-> NoneTrue[ ends, Abs[ Mod[ a - # + Pi, 2 Pi ] - Pi ] < 10. ^ -3 & ] ] },
+                        { order = SortBy[ Range @ Length @ sizes, Mod[ starts[[ # ]] - begin, 2 Pi ] & ] },
+                        {
+                          endAngle = ends[[ Last @ order ]],
+                          remaining = DeleteDuplicates @ Cases[
+                            Join @@ ( Table[ RotateLeft[ #, i ], { i, 0, Length @ config - 1 } ] & /@ { config, Reverse @ config } ),
+                            sq_ /; Take[ sq, Length @ order ] === sizes[[ order ]] :> Drop[ sq, Length @ order ]
+                          ]
+                        },
+                        If[ Length @ remaining != 1,
+                          { },
+                          Last @ Fold[
+                            { state, size } |-> With[ { poly = place[ v, First @ state, size ] },
+                              {
+                                poly[[ -1 ]],
+                                If[ ! KeyExistsQ[ known, Round[ Mean @ poly, 10. ^ -5 ] ] && inRegion[ Mean @ poly ],
+                                  Append[ Last @ state, poly ],
+                                  Last @ state
+                                ]
+                              }
+                            ],
+                            { step[ v, endAngle ], { } },
+                            First @ remaining
+                          ]
+                        ]
+                      ]
+                    ]
+                  },
+                  If[ added =!= { },
+                    { Join[ done, added ], Join[ known, AssociationThread[ ( Round[ Mean @ #, 10. ^ -5 ] & /@ added ) -> True ] ], True },
+                    acc
+                  ]
+                ],
+                { current, seen, False },
+                Values @ GroupBy[
+                  Flatten[
+                    ( poly |-> With[ { len = Length @ poly },
+                      Table[
+                        With[ { v = poly[[ i ]], nxt = poly[[ Mod[ i, len ] + 1 ]], prv = poly[[ Mod[ i - 2, len ] + 1 ]] },
+                          { Round[ { Re @ v, Im @ v }, 10. ^ -5 ], v, len, direction[ v, nxt ], direction[ v, prv ] }
+                        ],
+                        { i, len }
+                      ]
+                    ] ) /@ current,
+                    1
+                  ],
+                  First -> Rest
+                ]
+              ] ],
+              { start, Association[ ( Round[ Mean @ #, 10. ^ -5 ] -> True ) & /@ start ], True },
+              Apply[ { current, seen, growing } |-> growing ]
+            ]
+          },
+          With[ { vecs = { Re @ #, Im @ # } & /@ Flatten[ faces, 1 ] },
+            { keys = Round[ vecs, 10. ^ -5 ] },
+            { uniq = DeleteDuplicates @ keys },
+            { idOf = AssociationThread[ uniq -> Range @ Length @ uniq ] },
+            { fids = Lookup[ idOf, # ] & /@ TakeList[ keys, Length /@ faces ] },
+            {
+              edges = DeleteCases[
+                DeleteDuplicates @ Flatten[ ( fc |-> UndirectedEdge @@ Sort[ # ] & /@ Partition[ Append[ fc, First @ fc ], 2, 1 ] ) /@ fids ],
+                _?( Apply[ SameQ ] )
+              ]
+            },
+            {
+              tiling = Graph[
+                Range @ Length @ uniq,
+                edges,
+                VertexCoordinates -> Lookup[ GroupBy[ Transpose[ { keys, vecs } ], First -> Last, Mean ], uniq ]
+              ]
+            },
+            NeighborhoodGraph[
+              tiling,
+              VertexList[ tiling ][[ First @ Ordering[ SquaredEuclideanDistance[ { 0, 0 }, # ] & /@ GraphEmbedding @ tiling, 1 ] ]],
+              r
+            ]
+          ]
+        ]
+      ]
+    },
+    Graph[ g, Sequence @@ FilterRules[ { opts }, Options[ Graph ] ] ] /; GraphQ[ g ]
+  ]
 
 (* combinatorial (angle-defect) Gaussian curvature at a vertex of the map:
    kappa = Sum 1/f_i - (k - 2)/2; sign is spherical / flat / hyperbolic and the geometric
@@ -387,9 +570,12 @@ CosetEnumeration[p_, q_, subwords_, maxc_] := Module[
     c++];
   If[n > maxc + 5, $Failed, Count[Range[n], _?(rep[#] == # &)]]];
 
-RotationMapGraph[{x_, y_}] := Module[{ycyc = First @ PermutationCycles[y], vlab},
-  vlab = Association @@ Flatten[MapIndexed[Function[{cyc, i}, (# -> First[i]) & /@ cyc], ycyc]];
-  Graph[Range[Length[ycyc]], (UndirectedEdge @@ (vlab /@ #)) & /@ First @ PermutationCycles[PermutationProduct[x, y]]]];
+RotationMapGraph[ { x_, y_ } ] :=
+  With[
+    { ycyc = First @ PermutationCycles[ y ] },
+    { vlab = Association @@ Flatten[ MapIndexed[ { cyc, i } |-> ( # -> First[ i ] ) & /@ cyc, ycyc ] ] },
+    Graph[ Range[ Length[ ycyc ] ], ( UndirectedEdge @@ ( vlab /@ # ) ) & /@ First @ PermutationCycles[ PermutationProduct[ x, y ] ] ]
+  ]
 
 (* every genuine {p,q} map of index <= maxIndex up to isomorphism:
    <|"Index", "Generators" -> {Cycles x, Cycles y}, "Skeleton", "Regular", "Genus"|>. The subgroups are the

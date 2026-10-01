@@ -165,16 +165,22 @@ InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <||>, opt
         fixStack = { }, hiddenSteps = { },
         shown = { }, shownStep = 1, deadQ = False },
       With[ {
-          effInit = Function[ If[ fixStack === { }, init, Last[ fixStack ][[ 2 ]] ] ],
+          effInit = ( If[ fixStack === { }, init, Last[ fixStack ][[ 2 ]] ] ) &,
           shownQ  = obj |-> ! MemberQ[ hiddenSteps, objStep[ obj ] ] },
         {
-          refresh = Function[
+          refresh = (
             With[ { new = FindInfraScene[ scene, graph, step, effInit[ ] ] },
-              If[ new === { }, deadQ = True,
-                deadQ = False; shown = new; shownStep = step;
-                branch = Min[ branch, Length @ new ] ] ] ] },
+              If[ new === { },
+                deadQ = True,
+                deadQ = False;
+                shown = new;
+                shownStep = step;
+                branch = Min[ branch, Length @ new ] ] ] ) & },
         {
-          goStep = s |-> ( step = Clip[ s, { 1, nSteps } ]; branch = 1; refresh[ ] ) },
+          goStep = s |-> (
+            step = Clip[ s, { 1, nSteps } ];
+            branch = 1;
+            refresh[ ] ) },
         refresh[ ];
         Pane[ Column[ {
           Grid[ { {
@@ -195,7 +201,7 @@ InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <||>, opt
               If[ MemberQ[ hiddenSteps, step ], eyeClosedIcon, eyeOpenIcon ],
               If[ MemberQ[ hiddenSteps, step ],
                 hiddenSteps = DeleteCases[ hiddenSteps, step ],
-                AppendTo[ hiddenSteps, step ] ] ]
+                hiddenSteps = Append[ hiddenSteps, step ] ] ]
           } }, Alignment -> { { Center, Center, Right }, Center },
             ItemSize -> { { 2.4, Scaled[ .8 ], 2.4 }, Automatic } ],
           Grid[ { {
@@ -205,8 +211,9 @@ InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <||>, opt
               mode === "Diffuse", textChip[ Row[ { Length @ shown, " branches diffused" } ] ],
               True, Row[ {
                 Checkbox[ Dynamic[ MemberQ[ fixStack[[ All, 1 ]], step ],
-                  nv |-> ( If[ nv,
-                      AppendTo[ fixStack, { step, shown[[ Min[ branch, Length @ shown ], 1 ]] } ],
+                  nv |-> (
+                    If[ nv,
+                      fixStack = Append[ fixStack, { step, shown[[ Min[ branch, Length @ shown ], 1 ]] } ],
                       fixStack = Select[ fixStack, First[ # ] < step & ] ];
                     refresh[ ] ) ] ], " Fixed",
                 Spacer[ 14 ],

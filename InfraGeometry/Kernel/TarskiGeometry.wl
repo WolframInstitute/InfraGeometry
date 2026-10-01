@@ -64,28 +64,21 @@ TarskiSegmentConstructionQ[ graph_Graph ] :=
 Options[ TarskiFiveSegmentsQ ] = { "MaxTuples" -> 200000 };
 
 TarskiFiveSegmentsQ[ graph_Graph, OptionsPattern[] ] :=
-  Module[ { count = 0, ok = True, capHit = False,
-            vs = VertexList[ graph ], cap = OptionValue[ "MaxTuples" ] },
-    Catch[
-      Do[
-        count++;
-        If[ count > cap, capHit = True; Throw[ Null ] ];
-        With[ {
-          a = eight[[ 1 ]], b = eight[[ 2 ]], c = eight[[ 3 ]], d = eight[[ 4 ]],
-          ap = eight[[ 5 ]], bp = eight[[ 6 ]], cp = eight[[ 7 ]], dp = eight[[ 8 ]] },
-          If[ a =!= b &&
-              GraphDistance[ graph, a, b ] === GraphDistance[ graph, ap, bp ] &&
-              GraphDistance[ graph, b, c ] === GraphDistance[ graph, bp, cp ] &&
-              GraphDistance[ graph, a, d ] === GraphDistance[ graph, ap, dp ] &&
-              GraphDistance[ graph, b, d ] === GraphDistance[ graph, bp, dp ] &&
-              BetweennessQ[ graph, a, b, c ] && BetweennessQ[ graph, ap, bp, cp ] &&
-              GraphDistance[ graph, c, d ] =!= GraphDistance[ graph, cp, dp ],
-            ok = False; Throw[ Null ] ]
-        ],
-        { eight, Tuples[ vs, 8 ] } ]
-    ];
-    Which[ ! ok, False, capHit, Indeterminate, True, True ]
-  ]
+  With[ { vs = VertexList[ graph ], cap = OptionValue[ "MaxTuples" ] },
+    Which[
+      AnyTrue[ Take[ Tuples[ vs, 8 ], UpTo[ cap ] ],
+        eight |-> With[ {
+            a = eight[[ 1 ]], b = eight[[ 2 ]], c = eight[[ 3 ]], d = eight[[ 4 ]],
+            ap = eight[[ 5 ]], bp = eight[[ 6 ]], cp = eight[[ 7 ]], dp = eight[[ 8 ]] },
+          a =!= b &&
+          GraphDistance[ graph, a, b ] === GraphDistance[ graph, ap, bp ] &&
+          GraphDistance[ graph, b, c ] === GraphDistance[ graph, bp, cp ] &&
+          GraphDistance[ graph, a, d ] === GraphDistance[ graph, ap, dp ] &&
+          GraphDistance[ graph, b, d ] === GraphDistance[ graph, bp, dp ] &&
+          BetweennessQ[ graph, a, b, c ] && BetweennessQ[ graph, ap, bp, cp ] &&
+          GraphDistance[ graph, c, d ] =!= GraphDistance[ graph, cp, dp ] ] ], False,
+      Length[ vs ]^8 > cap, Indeterminate,
+      True, True ] ]
 
 TarskiBetweennessIdentityQ[ graph_Graph ] :=
   AllTrue[ Tuples[ VertexList[ graph ], 2 ],
@@ -151,27 +144,17 @@ FindTarskiCounterexample[ graph_Graph,
         tuple |-> Length @ ExtendInfraSegment[ graph,
           tuple[[ 1 ]], tuple[[ 2 ]], tuple[[ 3 ]], tuple[[ 4 ]], UpTo[ 1 ] ] === 0 ],
     TarskiFiveSegmentsQ,
-      Module[ { found = { }, count = 0, cap = 200000 },
-        Catch[
-          Do[
-            With[ {
-              a = eight[[ 1 ]], b = eight[[ 2 ]], c = eight[[ 3 ]], d = eight[[ 4 ]],
-              ap = eight[[ 5 ]], bp = eight[[ 6 ]], cp = eight[[ 7 ]], dp = eight[[ 8 ]] },
-              count++;
-              If[ count > cap, Throw[ Null ] ];
-              If[ a =!= b &&
-                  GraphDistance[ graph, a, b ] === GraphDistance[ graph, ap, bp ] &&
-                  GraphDistance[ graph, b, c ] === GraphDistance[ graph, bp, cp ] &&
-                  GraphDistance[ graph, a, d ] === GraphDistance[ graph, ap, dp ] &&
-                  GraphDistance[ graph, b, d ] === GraphDistance[ graph, bp, dp ] &&
-                  BetweennessQ[ graph, a, b, c ] && BetweennessQ[ graph, ap, bp, cp ] &&
-                  GraphDistance[ graph, c, d ] =!= GraphDistance[ graph, cp, dp ],
-                AppendTo[ found, eight ] ]
-            ],
-            { eight, Tuples[ VertexList[ graph ], 8 ] } ]
-        ];
-        found
-      ],
+      Select[ Take[ Tuples[ VertexList[ graph ], 8 ], UpTo[ 200000 ] ],
+        eight |-> With[ {
+            a = eight[[ 1 ]], b = eight[[ 2 ]], c = eight[[ 3 ]], d = eight[[ 4 ]],
+            ap = eight[[ 5 ]], bp = eight[[ 6 ]], cp = eight[[ 7 ]], dp = eight[[ 8 ]] },
+          a =!= b &&
+          GraphDistance[ graph, a, b ] === GraphDistance[ graph, ap, bp ] &&
+          GraphDistance[ graph, b, c ] === GraphDistance[ graph, bp, cp ] &&
+          GraphDistance[ graph, a, d ] === GraphDistance[ graph, ap, dp ] &&
+          GraphDistance[ graph, b, d ] === GraphDistance[ graph, bp, dp ] &&
+          BetweennessQ[ graph, a, b, c ] && BetweennessQ[ graph, ap, bp, cp ] &&
+          GraphDistance[ graph, c, d ] =!= GraphDistance[ graph, cp, dp ] ] ],
     TarskiBetweennessIdentityQ,
       Cases[ Tuples[ VertexList[ graph ], 2 ],
         pair_ /;

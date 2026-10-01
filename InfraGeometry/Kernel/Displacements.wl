@@ -170,39 +170,52 @@ TranslationDisplacement[ graph_Graph, vector_List ] :=
     AssociationMap[ nearest[ position @ # + vector ] &, VertexList @ graph ] ]
 
 RandomDisplacement[ graph_Graph, radius_ : 1 ] :=
-  Module[ { targets, order, violating },
-    order = First @ Last @ Reap[ BreadthFirstScan[ graph, First @ VertexList @ graph,
-      { "DiscoverVertex" -> ( Sow[ #1 ] & ) } ] ];
-    Do[
-      targets = Association[];
-      Do[
-        targets[ vertex ] = With[
-          { neighborTargets = Catenate @ Lookup[ targets,
-              Intersection[ AdjacencyList[ graph, vertex ], Keys @ targets ], { } ],
-            ball = Union[ { vertex }, AdjacencyList[ graph, vertex, radius ] ] },
-          { admissible = Fold[ Intersection, ball,
-              Table[ Union[ { target }, AdjacencyList[ graph, target ] ], { target, neighborTargets } ] ] },
+  With[
+    {
+      order = First @ Last @ Reap[ BreadthFirstScan[ graph, First @ VertexList @ graph, { "DiscoverVertex" -> ( Sow[ #1 ] & ) } ] ],
+      ballOf = vertex |-> Union[ { vertex }, AdjacencyList[ graph, vertex, radius ] ]
+    },
+    {
+      assign = targets |-> Fold[
+        { acc, vertex } |-> Join[ acc, <| vertex -> With[
+          { neighborTargets = Catenate @ Lookup[ acc, Intersection[ AdjacencyList[ graph, vertex ], Keys @ acc ], { } ], ball = ballOf[ vertex ] },
+          { admissible = Fold[ Intersection, ball, Table[ Union[ { target }, AdjacencyList[ graph, target ] ], { target, neighborTargets } ] ] },
           { RandomChoice @ If[ admissible === { },
-              MinimalBy[ ball, { candidate } |->
-                Max @ Table[ GraphDistance[ graph, candidate, target ], { target, neighborTargets } ] ],
-              admissible ] } ],
-        { vertex, order } ];
-      Do[
-        violating = Union @ Catenate @ Select[ List @@@ EdgeList[ graph ],
-          { edge } |-> GraphDistance[ graph, First @ targets @ First @ edge, First @ targets @ Last @ edge ] > 1 ];
-        If[ violating === { }, Break[ ] ];
-        Do[
-          targets[ vertex ] = With[
-            { neighborTargets = Catenate @ Lookup[ targets, AdjacencyList[ graph, vertex ] ],
-              ball = Union[ { vertex }, AdjacencyList[ graph, vertex, radius ] ] },
-            { RandomChoice @ MinimalBy[ ball, { candidate } |->
-                { Max @ Table[ GraphDistance[ graph, candidate, target ], { target, neighborTargets } ],
-                  GraphDistance[ graph, vertex, candidate ] } ] } ],
-          { vertex, violating } ],
-        { 50 } ];
-      If[ violating === { }, Break[ ] ],
-      { 5 } ];
-    targets ]
+              MinimalBy[ ball, { candidate } |-> Max @ Table[ GraphDistance[ graph, candidate, target ], { target, neighborTargets } ] ],
+              admissible ] }
+        ] |> ],
+        targets,
+        order
+      ],
+      repair = { targets, violating } |-> Fold[
+        { acc, vertex } |-> Join[ acc, <| vertex -> With[
+          { neighborTargets = Catenate @ Lookup[ acc, AdjacencyList[ graph, vertex ] ], ball = ballOf[ vertex ] },
+          { RandomChoice @ MinimalBy[ ball, { candidate } |->
+              { Max @ Table[ GraphDistance[ graph, candidate, target ], { target, neighborTargets } ], GraphDistance[ graph, vertex, candidate ] } ] }
+        ] |> ],
+        targets,
+        violating
+      ],
+      violatingOf = targets |-> Union @ Catenate @ Select[ List @@@ EdgeList[ graph ],
+        { edge } |-> GraphDistance[ graph, First @ targets @ First @ edge, First @ targets @ Last @ edge ] > 1 ]
+    },
+    First @ NestWhile[
+      attempt |-> NestWhile[
+        Apply[ { targets, previous } |-> With[
+          { violating = violatingOf[ targets ] },
+          { If[ violating === { }, targets, repair[ targets, violating ] ], violating }
+        ] ],
+        { assign[ <| |> ], None },
+        Last[ # ] =!= { } &,
+        1,
+        50
+      ],
+      { None, None },
+      Last[ # ] =!= { } &,
+      1,
+      5
+    ]
+  ]
 
 FindKillingDisplacement[ graph_Graph ] :=
   First @ FindKillingDisplacement[ graph, All ]

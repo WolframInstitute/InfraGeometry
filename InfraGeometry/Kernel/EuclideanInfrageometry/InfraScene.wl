@@ -99,26 +99,20 @@ InfraScene[ objects_List, hypotheses_List ] /;
   MemberQ[ hypotheses, _InfraStep ] &&
     undecidableAssertions[ Select[ Join[ DeleteCases[ hypotheses, _InfraStep ], Catenate[ First /@ Cases[ hypotheses, _InfraStep ] ] ],
       ! constructionPatternQ[ objects, # ] & ] ] === { } :=
-  Module[ { gSteps, perStep, constructions, steps, labels, assertions },
-
-    gSteps = Cases[ hypotheses, _InfraStep ];
-
-    perStep = Map[
-      gStep |-> With[ { hyps = gStep[[ 1 ]] },
-        <| "Constructions" -> Association @ Cases[ hyps,
-              ( key_ == rhs_ ) /; constructionPatternQ[ objects, key == rhs ] :> ( key -> rhs ) ],
-           "Assertions" -> Select[ hyps, ! constructionPatternQ[ objects, # ] & ],
-           "Label"      -> If[ Length @ gStep >= 2, gStep[[ 2 ]], None ] |> ],
-      gSteps ];
-
-    constructions = Join @@ ( #[ "Constructions" ] & /@ perStep );
-    steps  = Flatten[ If[ ListQ @ #, #, { # } ] & /@ Keys @ #[ "Constructions" ] ] & /@ perStep;
-    labels = #[ "Label" ] & /@ perStep;
-    assertions = Join[
-      Select[ hypotheses,
-        h |-> ! MatchQ[ h, _InfraStep ] && ! constructionPatternQ[ objects, h ] ],
-      Flatten[ #[ "Assertions" ] & /@ perStep ] ];
-
+  With[ { gSteps = Cases[ hypotheses, _InfraStep ] },
+    { perStep = Map[
+        gStep |-> With[ { hyps = gStep[[ 1 ]] },
+          <| "Constructions" -> Association @ Cases[ hyps,
+                ( key_ == rhs_ ) /; constructionPatternQ[ objects, key == rhs ] :> ( key -> rhs ) ],
+             "Assertions" -> Select[ hyps, ! constructionPatternQ[ objects, # ] & ],
+             "Label"      -> If[ Length @ gStep >= 2, gStep[[ 2 ]], None ] |> ],
+        gSteps ] },
+    { constructions = Join @@ ( #[ "Constructions" ] & /@ perStep ),
+      steps         = Flatten[ If[ ListQ @ #, #, { # } ] & /@ Keys @ #[ "Constructions" ] ] & /@ perStep,
+      labels        = #[ "Label" ] & /@ perStep,
+      assertions    = Join[
+        Select[ hypotheses, h |-> ! MatchQ[ h, _InfraStep ] && ! constructionPatternQ[ objects, h ] ],
+        Flatten[ #[ "Assertions" ] & /@ perStep ] ] },
     InfraScene[ <|
       "Objects"         -> objects,
       "Constructions"   -> constructions,
@@ -127,30 +121,29 @@ InfraScene[ objects_List, hypotheses_List ] /;
       "Steps"           -> steps,
       "Labels"          -> labels,
       "ManualSteps"     -> True
-    |> ]
-  ]
+    |> ] ]
 
 InfraScene[ objects_List, hypotheses_List ] /;
     undecidableAssertions[ Select[ Join[ DeleteCases[ hypotheses, _InfraStep ], Catenate[ First /@ Cases[ hypotheses, _InfraStep ] ] ],
       ! constructionPatternQ[ objects, # ] & ] ] === { } :=
-  Module[ { constructions, assertions, dag, steps = { }, remaining },
-    constructions = Association @ Cases[ hypotheses,
-      ( key_ == rhs_ ) /; constructionPatternQ[ objects, key == rhs ] :> ( key -> rhs ) ];
-    assertions = Select[ hypotheses, ! constructionPatternQ[ objects, # ] & ];
-    dag = Graph[ objects,
-      Flatten @ KeyValueMap[
-        { key, rhs } |-> With[ {
-            deps    = Intersection[ Cases[ rhs, Alternatives @@ objects, Infinity ], objects ],
-            targets = If[ ListQ @ key, key, { key } ] },
-          DirectedEdge[ #1, #2 ] & @@@ Tuples[ { deps, targets } ] ],
-        constructions ],
-      DirectedEdges -> True ];
-    remaining = VertexList @ dag;
-    While[ remaining =!= { },
-      With[ { current = Select[ remaining,
-          v |-> VertexInDegree[ Subgraph[ dag, remaining ], v ] == 0 ] },
-        AppendTo[ steps, current ];
-        remaining = Complement[ remaining, current ] ] ];
+  With[ {
+      constructions = Association @ Cases[ hypotheses,
+        ( key_ == rhs_ ) /; constructionPatternQ[ objects, key == rhs ] :> ( key -> rhs ) ],
+      assertions = Select[ hypotheses, ! constructionPatternQ[ objects, # ] & ] },
+    { dag = Graph[ objects,
+        Flatten @ KeyValueMap[
+          { key, rhs } |-> With[ {
+              deps    = Intersection[ Cases[ rhs, Alternatives @@ objects, Infinity ], objects ],
+              targets = If[ ListQ @ key, key, { key } ] },
+            DirectedEdge[ #1, #2 ] & @@@ Tuples[ { deps, targets } ] ],
+          constructions ],
+        DirectedEdges -> True ] },
+    { steps = First @ NestWhile[
+        Apply[ { done, remaining } |->
+          With[ { current = Select[ remaining, v |-> VertexInDegree[ Subgraph[ dag, remaining ], v ] == 0 ] },
+            { Append[ done, current ], Complement[ remaining, current ] } ] ],
+        { { }, VertexList @ dag },
+        state |-> Last @ state =!= { } ] },
     InfraScene[ <|
       "Objects"         -> objects,
       "Constructions"   -> constructions,
@@ -159,8 +152,7 @@ InfraScene[ objects_List, hypotheses_List ] /;
       "Steps"           -> steps,
       "Labels"          -> ConstantArray[ None, Length @ steps ],
       "ManualSteps"     -> False
-    |> ]
-  ]
+    |> ] ]
 
 InfraScene[ data_Association ][ prop_String ] := data[ prop ]
 
@@ -209,36 +201,28 @@ FindInfraScene[ scene_InfraScene, graph_Graph, init_Association, opts : OptionsP
 
 FindInfraScene[ scene_InfraScene, graph_Graph, nSteps_Integer, init_Association,
     opts : OptionsPattern[] ] :=
-  Module[ { branches = { init }, prob = OptionValue[ "PruneProbability" ],
-            objects = scene[ "Objects" ] },
-    Do[
-      With[ { effective = Select[ step,
-          ! KeyExistsQ[ First[ branches, <||> ], # ] & ] },
-        If[ effective =!= {},
-          branches = With[ { constructions = scene[ "Constructions" ] },
-            { tuplesInStep = Select[ Select[ Keys @ constructions, ListQ ],
-                ContainsAny[ #, effective ] & ] },
-            Fold[
-              { currentBranches, key } |->
-                Flatten[ evaluateConstruction[ graph, key, constructions[ key ], # ] & /@
-                  currentBranches, 1 ],
-              branches,
-              Join[
-                Select[ Complement[ effective, Flatten @ tuplesInStep ],
-                  KeyExistsQ[ constructions, # ] & ],
-                tuplesInStep ] ] ];
-          If[ prob > 0,
-            branches = With[ { kept = Pick[ branches,
-                UnitStep[ RandomReal[ { 0, 1 }, Length @ branches ] - prob ], 1 ] },
-              If[ kept === {}, { RandomChoice @ branches }, kept ] ] ] ] ],
-      { step, Take[ scene[ "Steps" ], UpTo[ nSteps ] ] } ];
-    InfraSceneInstance /@ If[ scene[ "Assertions" ] === {}, branches,
+  With[ { prob = OptionValue[ "PruneProbability" ], objects = scene[ "Objects" ], constructions = scene[ "Constructions" ] },
+    { branches = Fold[
+        { current, step } |-> With[ { effective = Select[ step, ! KeyExistsQ[ First[ current, <| |> ], # ] & ] },
+          If[ effective === { }, current,
+            With[ { tuplesInStep = Select[ Select[ Keys @ constructions, ListQ ], ContainsAny[ #, effective ] & ] },
+              { grown = Fold[
+                  { currentBranches, key } |->
+                    Flatten[ evaluateConstruction[ graph, key, constructions[ key ], # ] & /@ currentBranches, 1 ],
+                  current,
+                  Join[
+                    Select[ Complement[ effective, Flatten @ tuplesInStep ], KeyExistsQ[ constructions, # ] & ],
+                    tuplesInStep ] ] },
+              If[ prob > 0,
+                With[ { kept = Pick[ grown, UnitStep[ RandomReal[ { 0, 1 }, Length @ grown ] - prob ], 1 ] },
+                  If[ kept === { }, { RandomChoice @ grown }, kept ] ],
+                grown ] ] ] ],
+        { init },
+        Take[ scene[ "Steps" ], UpTo[ nSteps ] ] ] },
+    InfraSceneInstance /@ If[ scene[ "Assertions" ] === { }, branches,
       Select[ branches, b |-> And @@ (
-        With[ { vars = Intersection[
-              Cases[ #, Alternatives @@ objects, { 0, Infinity } ], objects ] },
-          ! SubsetQ[ Keys @ b, vars ] ||
-            TrueQ[ resolveExpression[ #, b, graph ] ] ] & /@ scene[ "Assertions" ] ) ] ]
-  ]
+        With[ { vars = Intersection[ Cases[ #, Alternatives @@ objects, { 0, Infinity } ], objects ] },
+          ! SubsetQ[ Keys @ b, vars ] || TrueQ[ resolveExpression[ #, b, graph ] ] ] & /@ scene[ "Assertions" ] ) ] ] ]
 
 pointQ[ graph_Graph, x_ ] := VertexQ[ graph, x ]
 

@@ -3,8 +3,7 @@ Package["WolframInstitute`InfraGeometry`"]
 Options[ EnumerateGraphs ] = { "From" -> Automatic };
 
 EnumerateGraphs[ n_, predQ_, All, opts : OptionsPattern[] ] :=
-  Module[ { source },
-    source = OptionValue[ "From" ];
+  With[ { source = OptionValue[ "From" ] },
     If[ source === Automatic,
       Select[
         SortBy[ GraphData /@ GraphData[ "Connected", n ], EdgeList @ CanonicalGraph @ # & ],

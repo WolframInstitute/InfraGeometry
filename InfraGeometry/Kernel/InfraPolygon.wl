@@ -4,46 +4,49 @@ Options[ FindInfraPolygon ] = { Method -> Automatic };
 
 FindInfraPolygon[ graph_Graph, vertices_List /; Length[ vertices ] >= 3,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    MatchQ[ OptionValue[ FindInfraPolygon, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
-  Module[ { acc, descend },
-    With[ { methodSpec = Replace[ OptionValue[ FindInfraPolygon, { opts }, Method ], Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ],
-            cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
-      { method = Replace[ methodSpec, { m_String, ___ } :> m ],
-        sideCap = If[ count === All, Infinity, Max[ 8, 2 cap ] ] },
-      With[ { sides = Apply[ { a, b } |->
-              With[ { dag = If[ method === "Exhaustive" || a === b, Null, SegmentGraph[ graph, a, b ] ] },
-                Which[
-                  a === b, { },
-                  method === "Exhaustive",
-                    With[ { d = GraphDistance[ graph, a, b ] },
-                      If[ d === Infinity, { }, FindPath[ graph, a, b, { d }, Replace[ sideCap, Infinity -> All ] ] ] ],
-                  VertexCount @ dag == 0, { },
-                  method === "Greedy" && count === All, FindPath[ dag, a, b, Infinity, All ],
-                  True,
-                    With[ { out = GroupBy[ List @@@ EdgeList @ dag, First -> Last ] },
-                      descend[ path_ ] := If[ Last @ path === b,
-                        AppendTo[ acc, path ]; If[ Length @ acc >= sideCap, Throw[ acc, descend ] ],
-                        Scan[ descend[ Append[ path, # ] ] &,
-                          If[ method === "Greedy", Lookup[ out, Key @ Last @ path, { } ],
-                            RandomSample @ DeleteCases[ VertexOutComponent[ dag, { Last @ path }, 1 ], Last @ path ] ] ] ];
-                      acc = { };
-                      Catch[ descend[ { a } ]; acc, descend ] ] ] ],
-              Partition[ Append[ vertices, First @ vertices ], 2, 1 ], { 1 } ] },
-          { polygons = Map[ PathGraph[ #, DirectedEdges -> True ] &,
-              If[ count === All, Tuples @ sides,
-                With[ { sizes = Length /@ sides,
-                        retracesQ = tuple |-> ! DuplicateFreeQ[ Sort /@ Partition[ Join @@ Prepend[ Rest /@ Rest @ tuple, First @ tuple ], 2, 1 ] ] },
-                  { total = Times @@ sizes },
-                  { scanned = Table[
-                      MapThread[ Part, { sides, 1 + IntegerDigits[ j, MixedRadix @ sizes, Length @ sides ] } ],
-                      { j, 0, Min[ total, Max[ 200, 20 cap ] ] - 1 } ] },
-                  Take[ Join[ Select[ scanned, ! retracesQ @ # & ], Select[ scanned, retracesQ ] ], UpTo[ Min[ cap, total ] ] ] ] ],
-              { 2 } ] },
-          Switch[ count,
-            Automatic, First[ polygons, { } ],
-            All,       polygons,
-            _UpTo,     Take[ polygons, count ],
-            _,         If[ Length @ polygons < count, { }, Take[ polygons, count ] ] ] ] ] ]
+    MatchQ[ OptionValue[ FindInfraPolygon, { opts }, Method ],
+      Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
+  With[ { methodSpec = Replace[ OptionValue[ FindInfraPolygon, { opts }, Method ], Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ],
+          cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
+    { method = Replace[ methodSpec, { m_String, ___ } :> m ],
+      sideCap = If[ count === All, Infinity, Max[ 8, 2 cap ] ] },
+    { sides = Apply[
+        { a, b } |-> With[ { dag = If[ method === "Exhaustive" || a === b, Null, SegmentGraph[ graph, a, b ] ] },
+          Which[
+            a === b, { },
+            method === "Exhaustive",
+              With[ { d = GraphDistance[ graph, a, b ] },
+                If[ d === Infinity, { }, FindPath[ graph, a, b, { d }, Replace[ sideCap, Infinity -> All ] ] ] ],
+            VertexCount @ dag == 0, { },
+            method === "Greedy" && count === All, FindPath[ dag, a, b, Infinity, All ],
+            True,
+              With[ { out = GroupBy[ List @@@ EdgeList @ dag, First -> Last ] },
+                { descend = { self, path, need } |-> If[ Last @ path === b,
+                    { path },
+                    Fold[
+                      { found, next } |-> If[ Length @ found >= need,
+                        found,
+                        Join[ found, self[ self, Append[ path, next ], need - Length @ found ] ] ],
+                      { },
+                      If[ method === "Greedy", Lookup[ out, Key @ Last @ path, { } ],
+                        RandomSample @ DeleteCases[ VertexOutComponent[ dag, { Last @ path }, 1 ], Last @ path ] ] ] ] },
+                descend[ descend, { a }, sideCap ] ] ] ],
+        Partition[ Append[ vertices, First @ vertices ], 2, 1 ], { 1 } ] },
+    { polygons = Map[ PathGraph[ #, DirectedEdges -> True ] &,
+        If[ count === All, Tuples @ sides,
+          With[ { sizes = Length /@ sides,
+                  retracesQ = tuple |-> ! DuplicateFreeQ[ Sort /@ Partition[ Join @@ Prepend[ Rest /@ Rest @ tuple, First @ tuple ], 2, 1 ] ] },
+            { total = Times @@ sizes },
+            { scanned = Table[
+                MapThread[ Part, { sides, 1 + IntegerDigits[ j, MixedRadix @ sizes, Length @ sides ] } ],
+                { j, 0, Min[ total, Max[ 200, 20 cap ] ] - 1 } ] },
+            Take[ Join[ Select[ scanned, ! retracesQ @ # & ], Select[ scanned, retracesQ ] ], UpTo[ Min[ cap, total ] ] ] ] ],
+        { 2 } ] },
+    Switch[ count,
+      Automatic, First[ polygons, { } ],
+      All,       polygons,
+      _UpTo,     Take[ polygons, count ],
+      _,         If[ Length @ polygons < count, { }, Take[ polygons, count ] ] ] ]
 
 InfraPolygonQ[ graph_Graph, polys : { { __Graph } .. } ] :=
   AllTrue[ polys, InfraPolygonQ[ graph, # ] & ]

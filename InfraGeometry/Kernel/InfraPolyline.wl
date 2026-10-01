@@ -8,18 +8,15 @@ FindInfraPolylineSubdivision[ _Graph, path_List, OptionsPattern[] ] /; Length[ p
   { }
 
 FindInfraPolylineSubdivision[ graph_Graph, path_List, OptionsPattern[] ] :=
-  Module[ { maxLength = OptionValue[ "MaxLength" ], n = Length[ path ],
-            knots = { 1 }, last = 1, d },
-    Do[
-      d = GraphDistance[ graph, path[[ last ]], path[[ i ]] ];
-      If[ d > maxLength || i - last != d,
-        AppendTo[ knots, i - 1 ];
-        last = i - 1
-      ],
-      { i, 2, n } ];
-    AppendTo[ knots, n ];
-    MapThread[ { a, b } |-> PathGraph[ path[[ a ;; b ]], DirectedEdges -> True ], { Most @ knots, Rest @ knots } ]
-  ]
+  With[ { maxLength = OptionValue[ "MaxLength" ], n = Length[ path ] },
+    { knots = Append[
+        First @ Fold[
+          { state, i } |-> With[ { d = GraphDistance[ graph, path[[ Last @ state ]], path[[ i ]] ] },
+            If[ d > maxLength || i - Last @ state != d, { Append[ First @ state, i - 1 ], i - 1 }, state ] ],
+          { { 1 }, 1 },
+          Range[ 2, n ] ],
+        n ] },
+    MapThread[ { a, b } |-> PathGraph[ path[[ a ;; b ]], DirectedEdges -> True ], { Most @ knots, Rest @ knots } ] ]
 
 InfraPolylineQ[ graph_Graph, polys : { { ___Graph } .. } ] :=
   AllTrue[ polys, InfraPolylineQ[ graph, # ] & ]

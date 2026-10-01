@@ -8,9 +8,10 @@ Options[ FindInfraEllipticShell ] = {
 };
 
 FindInfraEllipticShell[ graph_Graph, foci : { _, _ }, c_,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ]/;
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
     SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraEllipticShell, { opts }, Properties ] ] &&
-      MatchQ[ OptionValue[ FindInfraEllipticShell, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
+      MatchQ[ OptionValue[ FindInfraEllipticShell, { opts }, Method ],
+        Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
   With[ {
       properties = OptionValue[ FindInfraEllipticShell, { opts }, Properties ],
       methodSpec = Replace[ OptionValue[ FindInfraEllipticShell, { opts }, Method ], Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ] },
@@ -38,44 +39,34 @@ FindInfraEllipticShell[ graph_Graph, foci : { _, _ }, c_,
                     "Connected",  t |-> t =!= { } && ConnectedGraphQ @ Subgraph[ graph, t ] ],
                   properties ] },
               { admissible = t |-> AllTrue[ tests, # @ t & ] },
-              Module[ { admitQ = admissible, pick = If[ methodHead === "Greedy", Identity, RandomSample ],
-                        cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
-                        acc = { }, seen = <||>, descend, frontier, next, removable, key },
-                Switch[ methodHead,
-                  "Exhaustive",
-                    If[ ! admitQ[ levelSet ], { },
-                      frontier = { Sort @ levelSet };
-                      seen = <| Sort @ levelSet -> True |>;
-                      While[ frontier =!= { },
-                        next = { };
-                        Do[
-                          removable = Select[ T, v |-> admitQ[ DeleteCases[ T, v ] ] ];
+              { pick = If[ methodHead === "Greedy", Identity, RandomSample ],
+                cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
+              { descend = { self, state, T } |-> If[ Length @ First @ state >= cap || KeyExistsQ[ Last @ state, T ],
+                  state,
+                  With[ { marked = { First @ state, Append[ Last @ state, T -> True ] },
+                          peelable = Select[ T, w |-> admissible[ DeleteCases[ T, w ] ] ] },
+                    If[ peelable === { },
+                      { Append[ First @ marked, T ], Last @ marked },
+                      Fold[ { s, w } |-> self[ self, s, DeleteCases[ T, w ] ], marked, pick @ peelable ] ] ] ] },
+              Which[
+                ! admissible[ levelSet ], { },
+                methodHead === "Exhaustive",
+                  DeleteDuplicates @ Last @ NestWhile[
+                    state |-> With[ { rows = Map[
+                        T |-> With[ { removable = Select[ T, v |-> admissible[ DeleteCases[ T, v ] ] ] },
                           If[ removable === { },
-                            AppendTo[ acc, T ],
-                            Do[
-                              key = Sort @ DeleteCases[ T, v ];
-                              If[ ! KeyExistsQ[ seen, key ],
-                                seen[ key ] = True;
-                                AppendTo[ next, key ] ],
-                              { v, Replace[ pruning, {
-                                  Infinity     :> removable,
-                                  n_Integer    :> If[ Length @ removable <= n, removable, RandomSample[ removable, n ] ],
-                                  p_?NumericQ  :> With[ { kept = Select[ removable, RandomReal[ ] < p & ] },
-                                    If[ kept === { }, RandomSample[ removable, 1 ], kept ] ] } ] } ] ],
-                          { T, frontier } ];
-                        frontier = next ];
-                      DeleteDuplicates @ acc ],
-                  "Greedy" | "RandomGreedy",
-                    If[ ! admitQ[ levelSet ], { },
-                      descend[ T_ ] :=
-                        If[ ! KeyExistsQ[ seen, T ],
-                          seen[ T ] = True;
-                          With[ { peelable = Select[ T, w |-> admitQ[ DeleteCases[ T, w ] ] ] },
-                            If[ peelable === { },
-                              AppendTo[ acc, T ];
-                              If[ Length @ acc >= cap, Throw[ acc, descend ] ],
-                              Scan[ descend[ DeleteCases[ T, # ] ] &, pick @ peelable ] ] ] ];
-                      Catch[ descend[ levelSet ]; acc, descend ] ] ] ] ] ] ],
+                            { { T }, { } },
+                            { { }, Map[ v |-> Sort @ DeleteCases[ T, v ], Replace[ pruning, {
+                                Infinity     :> removable,
+                                n_Integer    :> If[ Length @ removable <= n, removable, RandomSample[ removable, n ] ],
+                                p_?NumericQ  :> With[ { kept = Select[ removable, RandomReal[ ] < p & ] },
+                                  If[ kept === { }, RandomSample[ removable, 1 ], kept ] ] } ] ] } ] ],
+                        First @ state ] },
+                      { DeleteDuplicates @ Catenate @ rows[[ All, 2 ]], Join[ Last @ state, Catenate @ rows[[ All, 1 ]] ] } ],
+                    { { Sort @ levelSet }, { } },
+                    First @ # =!= { } & ],
+                True,
+                  First @ descend[ descend, { { }, <||> }, levelSet ] ] ] ] ],
         Tuples[ { { foci }, Replace[ c, { fam_Association :> Keys @ fam, other_ :> { other } } ] } ], { 1 } ] },
     With[ { reps = DeleteDuplicates[ Union /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
         Switch[ count,
@@ -92,14 +83,9 @@ InfraEllipticShellQ[ graph_Graph, sets : { __List } ] /; ! AllTrue[ sets, Vertex
   AllTrue[ sets, InfraEllipticShellQ[ graph, # ] & ]
 
 InfraEllipticShellQ[ graph_Graph, vs_List ] :=
-  Module[ { verts, idx, dm },
-    verts = VertexList[ graph ];
-    idx   = AssociationThread[ verts, Range @ Length @ verts ];
-    dm    = GraphDistanceMatrix[ graph ];
+  With[ { verts = VertexList[ graph ], dm = GraphDistanceMatrix[ graph ] },
+    { idx = AssociationThread[ verts, Range @ Length @ verts ] },
     AnyTrue[ Subsets[ verts, { 2 } ], fociPair |->
       With[ { sums = dm[[ idx @ fociPair[[ 1 ]] ]] + dm[[ idx @ fociPair[[ 2 ]] ]] },
         { c = sums[[ idx @ First @ vs ]] },
-        Sort[ vs ] === Sort @ Pick[ verts, Thread[ sums == c ] ]
-      ]
-    ]
-  ]
+        Sort[ vs ] === Sort @ Pick[ verts, Thread[ sums == c ] ] ] ] ]

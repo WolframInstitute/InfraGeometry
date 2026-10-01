@@ -24,27 +24,27 @@ InfraMeasurement[ graph_Graph,
 
 FindInfraRay[ graph_Graph, p_, q_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic ] :=
-  Module[ { acc = { }, descend },
-    With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
-            dp  = AssociationThread[ VertexList @ graph, GraphDistance[ graph, p ] ] },
-      { k = Lookup[ dp, Key @ q ] },
-      descend[ path_ ] := With[ { nexts = Sort @ Select[ AdjacencyList[ graph, Last @ path ],
-            Lookup[ dp, Key @ # ] == Lookup[ dp, Key @ Last @ path ] + 1 & ] },
-        If[ nexts === { },
-          AppendTo[ acc, path ]; If[ Length @ acc >= cap, Throw[ Null, descend ] ],
-          Scan[ descend[ Append[ path, # ] ] &, nexts ] ] ];
-      Catch[
-        Scan[ descend,
-          Which[
+  With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
+          dp  = AssociationThread[ VertexList @ graph, GraphDistance[ graph, p ] ] },
+    { k = Lookup[ dp, Key @ q ] },
+    { rays = Catenate @ Last @ Reap @ NestWhile[
+        Apply[ { stack, found } |-> With[ { path = First @ stack },
+          { nexts = Sort @ Select[ AdjacencyList[ graph, Last @ path ],
+              Lookup[ dp, Key @ # ] == Lookup[ dp, Key @ Last @ path ] + 1 & ] },
+          If[ nexts === { },
+            ( Sow[ path ]; { Rest @ stack, found + 1 } ),
+            { Join[ Append[ path, # ] & /@ nexts, Rest @ stack ], found } ] ] ],
+        { Which[
             k === Infinity, { },
             k === 0,        { { p } },
-            True,           FindPath[ graph, p, q, { k }, Replace[ cap, Infinity -> All ] ] ] ];
-        Null, descend ];
-      Switch[ count,
-        Automatic, First[ acc, { } ],
-        All,       acc,
-        _UpTo,     Take[ acc, count ],
-        _,         If[ Length @ acc < count, { }, Take[ acc, count ] ] ] ] ]
+            True,           FindPath[ graph, p, q, { k }, Replace[ cap, Infinity -> All ] ] ],
+          0 },
+        state |-> First @ state =!= { } && Last @ state < cap ] },
+    Switch[ count,
+      Automatic, First[ rays, { } ],
+      All,       rays,
+      _UpTo,     Take[ rays, count ],
+      _,         If[ Length @ rays < count, { }, Take[ rays, count ] ] ] ]
 
 InfraRayQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraRayQ[ graph, # ] & ]
 

@@ -10,41 +10,48 @@ MiniballRadius[pts_List] := BoundingRegion[N @ pts, "MinBall"][[2]]
 (* sigma admitted iff every k-subset of its balls has a common point;
    k = 2 is Vietoris-Rips (pairwise), k = Infinity is Cech (full nerve). *)
 Options[BallIntersectionComplex] = {"Metric" -> Automatic, "IntersectionTest" -> Automatic, "MaxDimension" -> Infinity};
-BallIntersectionComplex[data_List, r_ ? NumericQ, k : (_Integer | Infinity) : Infinity, OptionsPattern[]] :=
-    Module[
-        {n = Length[data], metric, itest, maxDim, rows, radius, qualify, admitted, prev, prevQ, m, cands},
-        metric = Replace[OptionValue["Metric"], Automatic -> EuclideanDistance];
-        itest = OptionValue["IntersectionTest"];
-        maxDim = OptionValue["MaxDimension"];
-        rows = Which[
-            metric === EuclideanDistance, None,
-            GraphQ[metric], GraphDistanceMatrix[metric][[ Flatten[FirstPosition[VertexList[metric], #] & /@ data] ]],
-            MatrixQ[metric], metric,
-            True, Outer[metric, data, data, 1]
-        ];
-        radius = Which[
-            metric === EuclideanDistance, s |-> MiniballRadius[data[[s]]],
-            GraphQ[metric], s |-> Min[Max /@ Transpose[rows[[s]]]],
-            True, s |-> Min[Max /@ rows[[All, s]]]
-        ];
-        qualify = If[itest === Automatic,
-            s |-> radius[s] <= r,
-            s |-> TrueQ[itest[RegionIntersection @@ (Ball[data[[#]], r] & /@ s)]]
-        ];
-        admitted = {List /@ Range[n]};
-        m = 2;
-        While[Last[admitted] =!= {} && m <= maxDim + 1,
-            prev = Last[admitted];
-            prevQ = AssociationThread[prev -> True];
-            cands = DeleteDuplicates @ Map[Sort,
-                Catenate[(s |-> (Append[s, #] & /@ Complement[Range[n], s])) /@ prev]
-            ];
-            cands = Select[cands, AllTrue[Subsets[#, {m - 1}], KeyExistsQ[prevQ, #] &] &];
-            AppendTo[admitted, If[m <= k, Select[cands, qualify], cands]];
-            m++
-        ];
-        Catenate[admitted]
-    ]
+BallIntersectionComplex[ data_List, r_ ? NumericQ, k : ( _Integer | Infinity ) : Infinity, OptionsPattern[] ] :=
+  With[
+    {
+      n = Length[ data ],
+      metric = Replace[ OptionValue[ "Metric" ], Automatic -> EuclideanDistance ],
+      itest = OptionValue[ "IntersectionTest" ],
+      maxDim = OptionValue[ "MaxDimension" ]
+    },
+    {
+      rows = Which[
+        metric === EuclideanDistance, None,
+        GraphQ[ metric ], GraphDistanceMatrix[ metric ][[ Flatten[ FirstPosition[ VertexList[ metric ], # ] & /@ data ] ]],
+        MatrixQ[ metric ], metric,
+        True, Outer[ metric, data, data, 1 ]
+      ]
+    },
+    {
+      radius = Which[
+        metric === EuclideanDistance, s |-> MiniballRadius[ data[[ s ]] ],
+        GraphQ[ metric ], s |-> Min[ Max /@ Transpose[ rows[[ s ]] ] ],
+        True, s |-> Min[ Max /@ rows[[ All, s ]] ]
+      ]
+    },
+    {
+      qualify = If[ itest === Automatic,
+        s |-> radius[ s ] <= r,
+        s |-> TrueQ[ itest[ RegionIntersection @@ ( Ball[ data[[ # ]], r ] & /@ s ) ] ]
+      ]
+    },
+    Catenate[ First /@ NestWhileList[
+      Apply[ { prev, m } |-> With[
+        { prevQ = AssociationThread[ prev -> True ] },
+        { cands = Select[
+            DeleteDuplicates @ Map[ Sort, Catenate[ ( s |-> ( Append[ s, # ] & /@ Complement[ Range[ n ], s ] ) ) /@ prev ] ],
+            AllTrue[ Subsets[ #, { m - 1 } ], KeyExistsQ[ prevQ, # ] & ] &
+          ] },
+        { If[ m <= k, Select[ cands, qualify ], cands ], m + 1 }
+      ] ],
+      { List /@ Range[ n ], 2 },
+      Apply[ { prev, m } |-> prev =!= { } && m <= maxDim + 1 ]
+    ] ]
+  ]
 
 (* the nerve: a simplex iff all its balls share a common point *)
 CechComplex[data_List, r_ ? NumericQ, opts : OptionsPattern[BallIntersectionComplex]] :=

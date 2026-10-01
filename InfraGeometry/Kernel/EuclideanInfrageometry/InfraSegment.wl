@@ -101,9 +101,9 @@ ExtendInfraSegment[ graph_Graph, seed_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
     OptionValue[ ExtendInfraSegment, { opts }, Properties ] === { } &&
       MatchQ[ OptionValue[ ExtendInfraSegment, { opts }, "Direction" ], "Forward" | "Backward" | "BothSides" ] &&
-      MatchQ[ OptionValue[ ExtendInfraSegment, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
-  Module[ { acc, descend },
-    With[ {
+      MatchQ[ OptionValue[ ExtendInfraSegment, { opts }, Method ],
+        Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
+  With[ {
         method     = Replace[ OptionValue[ ExtendInfraSegment, { opts }, Method ],
                        { Automatic :> If[ count === All, "Exhaustive", "Greedy" ], { m_String, ___ } :> m } ],
         direction  = OptionValue[ ExtendInfraSegment, { opts }, "Direction" ],
@@ -129,12 +129,7 @@ ExtendInfraSegment[ graph_Graph, seed_,
             AssociationQ @ seed,           Keys @ seed,
             seed === { },                  { },
             True,                          { seed } ] ] },
-      descend[ e_, dag_, walk_ ] := (
-        If[ Last @ walk === e, AppendTo[ acc, walk ]; If[ Length @ acc >= cap, Throw[ Null, descend ] ] ];
-        If[ Last @ walk =!= e,
-          Scan[ descend[ e, dag, Append[ walk, # ] ] &,
-            branch @ DeleteCases[ VertexOutComponent[ dag, { Last @ walk }, 1 ], Last @ walk ] ] ] );
-      With[ { lines = DeleteDuplicates[ If[ GraphQ @ #, #, PathGraph[ #, DirectedEdges -> True ] ] & /@
+      { lines = DeleteDuplicates[ If[ GraphQ @ #, #, PathGraph[ #, DirectedEdges -> True ] ] & /@
               DeleteDuplicates @ Catenate[ Map[ bundle |-> If[ VertexCount @ bundle == 0, { },
                 With[ {
                     p1 = First @ Select[ VertexList @ bundle, VertexInDegree[ bundle, # ] == 0 & ],
@@ -162,20 +157,29 @@ ExtendInfraSegment[ graph_Graph, seed_,
                         Select[ VertexList @ rightExt, dist[ p2, # ] + dist[ #, e ] == dist[ p2, e ] & ] ] ] },
                   If[ method === "Exhaustive" && count === All,
                     atom @@@ Select[ pairs, admissibleQ @@ # & ],
-                    acc = { };
-                    Catch[
-                      Scan[ Apply[ { s, e } |-> If[ admissibleQ[ s, e ],
-                          With[ { dag = atom[ s, e ] },
+                    With[ { candidates = branch @ pairs },
+                      Catenate @ Last @ Reap @ NestWhile[
+                        Apply[ { i, found } |-> { i + 1, If[ ! admissibleQ @@ candidates[[ i ]], found,
+                          With[ { dag = atom @@ candidates[[ i ]], s = candidates[[ i, 1 ]], e = candidates[[ i, 2 ]] },
                             If[ s =!= e && VertexQ[ dag, s ] && VertexQ[ dag, e ] && GraphDistance[ dag, s, e ] < Infinity,
-                              descend[ e, dag, { s } ] ] ] ] ],
-                        branch @ pairs ],
-                      descend ];
-                    acc ] ] ], bundles ] ] ] },
+                              Last @ NestWhile[
+                                Apply[ { stack, got } |-> With[ { walk = First @ stack },
+                                  If[ Last @ walk === e,
+                                    ( Sow[ walk ]; { Rest @ stack, got + 1 } ),
+                                    { Join[ Append[ walk, # ] & /@
+                                        branch @ DeleteCases[ VertexOutComponent[ dag, { Last @ walk }, 1 ], Last @ walk ],
+                                        Rest @ stack ],
+                                      got } ] ] ],
+                                { { { s } }, found },
+                                state |-> First @ state =!= { } && Last @ state < cap ],
+                              found ] ] ] } ],
+                        { 1, 0 },
+                        state |-> First @ state <= Length @ candidates && Last @ state < cap ] ] ] ] ], bundles ] ] ] },
             Switch[ count,
               Automatic, First[ lines, { } ],
               All,       Replace[ lines, { one_Graph } :> one ],
               _UpTo,     Take[ lines, count ],
-              _,         If[ Length @ lines < count, { }, Take[ lines, count ] ] ] ] ] ]
+              _,         If[ Length @ lines < count, { }, Take[ lines, count ] ] ] ]
 
 (* Tarski A4: find x with B(a, b, x) and d(b, x) == d(c, d); the last vertex slot excludes rules so an optioned 3-argument call never lands here *)
 
