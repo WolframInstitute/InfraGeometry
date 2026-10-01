@@ -1,16 +1,15 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
+InfraLineStructure[ lines_List ][ "Lines" ]        :=
+  lines
+InfraLineStructure[ lines_List ][ "Realizations" ] :=
+  lines
+InfraLineStructure[ lines_List ][ "First" ]        :=
+  First @ lines
 
-(* ===================== InfraLineStructure wrapper ===================== *)
+InfraLineStructure[ lines_List ][ "Length" ] :=
+  ( Length[ # ] - 1 ) & /@ lines
 
-
-InfraLineStructure[ lines_List ][ "Lines" ]        := lines
-InfraLineStructure[ lines_List ][ "Realizations" ] := lines
-InfraLineStructure[ lines_List ][ "First" ]        := First @ lines
-
-InfraLineStructure[ lines_List ][ "Length" ] := ( Length[ # ] - 1 ) & /@ lines
-
-(* consistency makes P(u, v) well-defined when the pair lies on several lines *)
 InfraLineStructure[ lines_List ][ "Paths" ] :=
   Association @ Flatten @ Table[
     With[ { line = lines[[ k ]] },
@@ -37,16 +36,13 @@ InfraLineStructure[ lines_List ][ "Path", u_, v_ ] :=
     { i = First @ FirstPosition[ line, u ], j = First @ FirstPosition[ line, v ] },
     If[ i <= j, line[[ i ;; j ]], Reverse @ line[[ j ;; i ]] ] ]
 
-InfraLineStructure /: Part[ InfraLineStructure[ lines_List ], i_Integer ] := lines[[ i ]]
+InfraLineStructure /: Part[ InfraLineStructure[ lines_List ], i_Integer ] :=
+  lines[[ i ]]
 
+Options[ FindLineStructure ] = { Method -> "Lexicographic" }
 
-(* ===================== FindLineStructure ===================== *)
-
-(* a consistent geodesic path system: one shortest path P(u, v) per pair, subpath-closed.  Consistency comes from a single generically-independent edge weighting -- the unique min-weight path per pair is automatically consistent *)
-
-Options[ FindLineStructure ] = { Method -> "Lexicographic" };
-
-(* every Method reduces to an edge ranking e_1, ..., e_|E|, then w(e_i) = 1 + 2^(-i): distinct subset sums of {2^(-i)} make the min-weight path unique per pair (consistent), and total perturbation < 1 keeps hop-count dominant (true geodesics).
+(* every Method reduces to an edge ranking e_1, ..., e_|E|, then w(e_i) = 1 + 2^(-i): distinct subset sums of {2^(-i)} make the min-weight path
+   unique per pair (consistent), and total perturbation < 1 keeps hop-count dominant (true geodesics).
    Exact Rationals -- machine reals underflow near |E| ~ 50 and re-collide *)
 
 FindLineStructure[ graph_Graph, opts : OptionsPattern[] ] :=
@@ -62,7 +58,6 @@ FindLineStructure[ graph_Graph, opts : OptionsPattern[] ] :=
               SortBy[ edges,
                 e |-> { With[ { a = idx[ First @ e ], b = idx[ Last @ e ] }, lp[[ a, a ]] + lp[[ b, b ]] - 2 lp[[ a, b ]] ],
                         Sort @ Apply[ List, e ] } ] ],
-            (* sorted endpoints break w-ties, so the ranking is always a total order *)
             ( "Weight" -> w_ ) :> SortBy[ edges, e |-> { w[ e ], Sort @ Apply[ List, e ] } ] } ] ] ] },
     { wg = Graph[ graph, EdgeWeight -> ( ( 1 + 2^( -rank[ # ] ) ) & /@ EdgeList @ graph ) ] },
     { spf = FindShortestPath[ wg, All, All ] },
@@ -70,17 +65,14 @@ FindLineStructure[ graph_Graph, opts : OptionsPattern[] ] :=
         Association @ Map[ Sort[ # ] -> spf @@ # &, Subsets[ VertexList[ graph ], { 2 } ] ],
         { } ] },
     { cands = DeleteDuplicates[ First @ Sort @ { #, Reverse @ # } & /@ Values @ paths ] },
-    (* maximal lines: chosen paths that are not a contiguous infix, either orientation, of a strictly longer chosen path *)
     InfraLineStructure @ Select[ cands,
       c |-> NoneTrue[ cands,
         o |-> o =!= c &&
           ( SequencePosition[ o, c, 1 ] =!= { } || SequencePosition[ Reverse @ o, c, 1 ] =!= { } ) ] ]
   ]
 
-
-(* ===================== ConsistentPathSystemQ ===================== *)
-
-(* consistent (subpath-closed) iff every contiguous stretch of a chosen path is itself the chosen path between its endpoints: Cizma-Linial consistency = Bellman's principle of optimality *)
+(* consistent (subpath-closed) iff every contiguous stretch of a chosen path is itself the chosen path between its endpoints: Cizma-Linial
+   consistency = Bellman's principle of optimality *)
 
 ConsistentPathSystemQ[ graph_Graph, ls_InfraLineStructure ] :=
   ConsistentPathSystemQ[ graph, ls[ "Lines" ] ]

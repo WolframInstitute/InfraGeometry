@@ -137,7 +137,7 @@ VerificationTest[
   With[{g = CycleGraph[6]},
     {InfraLineQ[g, FindInfraLine[g, 1, 2]], Length[FindInfraLine[g, 1, 2, 2]],
      Length[FindInfraLine[g, 1, 2, UpTo[9]]], FindInfraLine[g, 1, 2, 5]}],
-  {True, 2, 3, $Failed},
+  {True, 2, 3, { }},
   TestID -> "FindInfraLine-count-contract"
 ]
 

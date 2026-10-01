@@ -126,7 +126,7 @@ VerificationTest[
     {InfraSegmentQ[g, FindInfraSegment[g, 1, 4]],
      Length[FindInfraSegment[g, 1, 4, 2]], Length[FindInfraSegment[g, 1, 4, UpTo[9]]],
      FindInfraSegment[g, 1, 4, 5]}],
-  {True, 2, 2, $Failed},
+  {True, 2, 2, { }},
   TestID -> "FindInfraSegment-count-contract"
 ]
 

@@ -177,26 +177,12 @@ VerificationTest[
 ]
 
 VerificationTest[
-  FindInfraShellCenter[GridGraph[{3, 3}], {1, 9}, Method -> "Bogus"],
-  $Failed,
-  {FindInfraShellCenter::badmethod},
-  TestID -> "FindInfraShellCenter-bad-method"
-]
-
-VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     FindInfraShellCenter[g, FindInfraShell[g, 13, 2]] ===
       FindInfraShellCenter[g, Select[VertexList[g], GraphDistance[g, 13, #] == 2 &]]
   ],
   True,
   TestID -> "FindInfraShellCenter-accepts-InfraShell-wrapper"
-]
-
-VerificationTest[
-  FindInfraShellCenter[GridGraph[{3, 3}], {1, 9}, Method -> {"MaximalChordsBisectors", "Distance" -> "Bogus"}],
-  $Failed,
-  {FindInfraShellCenter::baddistance},
-  TestID -> "FindInfraShellCenter-bad-distance"
 ]
 
 (* within the radius-2 estimate, the heaviest support vertex is the true center 13 *)
@@ -326,16 +312,6 @@ VerificationTest[
   TestID -> "InfraPerpendicularQ-Alexandrov-empty-half-False"
 ]
 
-(* Schoenberg has been removed from InfraPerpendicularQ's method dispatch
-   (it carries the same geometric content as {"Alexandrov", "Curvature" -> 0});
-   passing it now reports the standard badmethod error. *)
-VerificationTest[
-  InfraPerpendicularQ[PathGraph[Range[5]], {1, 2, 3}, {3, 4, 5}, Method -> "Schoenberg"],
-  $Failed,
-  {InfraPerpendicularQ::badmethod},
-  TestID -> "InfraPerpendicularQ-Schoenberg-badmethod"
-]
-
 (* Coordinate method (ZeroTest -> "Mean" default): GridGraph by 4-fold
    symmetry sends every projection foot to the centre, so the mean signed
    coordinate is exactly 0 in both directions and the test passes. *)
@@ -379,14 +355,6 @@ VerificationTest[
   TestID -> "InfraPerpendicularQ-Coordinate-Mean-nested-tolerance-True"
 ]
 
-VerificationTest[
-  InfraPerpendicularQ[GridGraph[{5, 5}], {11, 12, 13, 14, 15}, {3, 8, 13, 18, 23},
-                      Method -> {"Coordinate", "ZeroTest" -> "Bogus"}],
-  False,
-  {InfraPerpendicularQ::badzerotest},
-  TestID -> "InfraPerpendicularQ-Coordinate-badzerotest"
-]
-
 (* Radius -> k localises to the k-neighborhood of the common vertex; with
    k = 1 the line restricted to the immediate neighborhood is too short for
    the isosceles-pair algorithm to find any feet (empty projection), so the
@@ -410,13 +378,6 @@ VerificationTest[
   InfraPerpendicularQ[PathGraph[Range[6]], {1, 2}, {5, 6}, Method -> "Alexandrov"],
   False,
   TestID -> "InfraPerpendicularQ-empty-intersection-False"
-]
-
-VerificationTest[
-  InfraPerpendicularQ[PathGraph[Range[5]], {1, 2, 3}, {3, 4, 5}, Method -> "BogusMethod"],
-  $Failed,
-  {InfraPerpendicularQ::badmethod},
-  TestID -> "InfraPerpendicularQ-badmethod"
 ]
 
 (* ===== SeparatesQ ===== *)

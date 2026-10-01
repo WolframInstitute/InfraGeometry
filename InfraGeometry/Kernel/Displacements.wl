@@ -1,7 +1,4 @@
-Package["WolframInstitute`InfraGeometry`"]
-
-
-(* ===================== Displacements ===================== *)
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* A displacement is an association v -> { w1, w2, ... } (multivalued in
    general; values are always lists), thought of as v -> exp_v(r X) for a
@@ -20,11 +17,9 @@ Package["WolframInstitute`InfraGeometry`"]
   targets. Genuine metric ties stay multivalued and DisplacementReduce
   contracts them by iterated centres. *)
 
-(* flows act left to right: DisplacementCompose[X, Y] = Phi_Y . Phi_X *)
 DisplacementCompose[ displacements__Association ] :=
   Fold[ { done, next } |-> ( Union @@ Lookup[ next, # ] & ) /@ done, { displacements } ]
 
-(* (t D)(v): endpoints of the geodesics v -> D(v) scaled to t times their length *)
 DisplacementScale[ graph_Graph, displacement_Association, t_ ] :=
   With[
     { distancesFrom = source |-> AssociationThread[ VertexList @ graph, GraphDistance[ graph, source ] ] },
@@ -34,7 +29,8 @@ DisplacementScale[ graph_Graph, displacement_Association, t_ ] :=
             Select[ AdjacencyList[ graph, vertex ], dist[ # ] == dist[ vertex ] - 1 & ] ] ],
           Association[ source -> 1 ],
           SortBy[ Select[ VertexList @ graph, 0 < dist[ # ] < Infinity & ], dist ] ] ] },
-    (* gamma(t), a = gamma(0), b = gamma(1): the points on the ray a -> b, or its opposite for t < 0, closest to |t| d(a, b) from a, and among them the maximal geodesic flux sigma(p, q) sigma(q, s) / sigma(p, s) through the middle of the aligned triple *)
+    (* gamma(t), a = gamma(0), b = gamma(1): the points on the ray a -> b, or its opposite for t < 0, closest to |t| d(a, b) from a, and among them
+       the maximal geodesic flux sigma(p, q) sigma(q, s) / sigma(p, s) through the middle of the aligned triple *)
     { gamma = { a, b } |-> With[
         { da = distancesFrom[ a ], db = distancesFrom[ b ], sigmaA = countsFrom[ a ], sigmaB = countsFrom[ b ] },
         { ray = Select[ VertexList @ graph,
@@ -73,9 +69,8 @@ DisplacementSum[ graph_Graph, displacement1_Association, displacement2_Associati
           { end1, order12 @ # }, { end2, order21 @ # } ], 1 ] ) &,
       Keys @ displacement1 ] ]
 
-Options[ DisplacementCommutator ] = { Method -> "Inverse" };
+Options[ DisplacementCommutator ] = { Method -> "Inverse" }
 
-(* commutator loop using relation inverse or metric negative *)
 DisplacementCommutator[
     graph_Graph, displacement1_Association, displacement2_Association,
     opts : OptionsPattern[] ] :=
@@ -98,7 +93,6 @@ DisplacementCommutator[
         DisplacementNegative[ graph, <| # -> displacement2 @ # |> ][ # ] & } ]
   ]
 
-(* metric commutator Phi_{-Y} . Phi_{-X} . Phi_Y . Phi_X *)
 DisplacementBracket[ graph_Graph, displacement1_Association, displacement2_Association ] :=
   DisplacementCommutator[ graph, displacement1, displacement2, Method -> "Negative" ]
 
@@ -110,9 +104,6 @@ DisplacementMagnitude[ graph_Graph, displacement_Association ] :=
     { point, targets } |-> Max @ Table[ GraphDistance[ graph, point, target ], { target, targets } ],
     displacement ]
 
-(* contract each value set to its centre (minimal eccentricity under the mutual
-   graph distances, centre drawn from the set itself), iterated to a fixed
-   point; ties keep the set multivalued *)
 DisplacementReduce[ graph_Graph, displacement_Association ] :=
   Map[
     FixedPoint[
@@ -120,9 +111,6 @@ DisplacementReduce[ graph_Graph, displacement_Association ] :=
         { candidate } |-> Max @ Table[ GraphDistance[ graph, candidate, target ], { target, targets } ] ],
       # ] &,
     displacement ]
-
-
-(* ===================== Predicates ===================== *)
 
 DisplacementSingleValuedQ[ displacement_Association ] :=
   AllTrue[ Values @ displacement, Length @ # == 1 & ]
@@ -136,13 +124,11 @@ DisplacementIsomorphismQ[ graph_Graph, displacement_Association ] :=
     AllTrue[ EdgeList @ graph,
       EdgeQ[ graph, UndirectedEdge @@ Catenate @ Lookup[ displacement, List @@ # ] ] & ]
 
-Options[ ContinuousDisplacementQ ] = { Method -> "Weak" };
+Options[ ContinuousDisplacementQ ] = { Method -> "Weak" }
 
 ContinuousDisplacementQ[ graph_Graph, displacement_Association, opts : OptionsPattern[] ] :=
   ContinuousDisplacementQ[ graph, displacement, 1, opts ]
 
-(* weak: one close pair; Hausdorff: every target has a close partner;
-   strong: every cross-pair is close *)
 ContinuousDisplacementQ[
     graph_Graph, displacement_Association, k_, OptionsPattern[] ] :=
   With[
@@ -158,14 +144,7 @@ ContinuousDisplacementQ[
     AllTrue[ EdgeList @ graph,
       { edge } |-> setDistance[ displacement @ First @ edge, displacement @ Last @ edge ] <= k ] ]
 
-
-(* ===================== Canonical displacements ===================== *)
-
-(* polar pair at a centre: { radial, angular } -- radial steps along the
-   geodesics from the centre (outward by default, inward with
-   "Direction" -> "Inward"), angular steps along the cross edges of equal
-   distance; a vertex with no admissible step stays put *)
-Options[ PolarDisplacements ] = { "Direction" -> "Outward" };
+Options[ PolarDisplacements ] = { "Direction" -> "Outward" }
 
 PolarDisplacements[ graph_Graph, center_, OptionsPattern[] ] :=
   With[
@@ -179,68 +158,66 @@ PolarDisplacements[ graph_Graph, center_, OptionsPattern[] ] :=
         VertexList @ graph ] }
   ]
 
-(* steepest ascent of a vertex function: v -> the neighbours maximising the
-   increase of f; local maxima stay put.  The outward radial displacement is
-   the gradient of the distance from the centre. *)
 GradientDisplacement[ graph_Graph, f_Association ] :=
   AssociationMap[
     { v } |-> With[ { best = MaximalBy[ AdjacencyList[ graph, v ], f ] },
       If[ f @ First @ best > f @ v, best, { v } ] ],
     VertexList @ graph ]
 
-(* translation along an embedding: v -> vertices whose coordinates are nearest
-   to position(v) + vector *)
 TranslationDisplacement[ graph_Graph, vector_List ] :=
   With[
     { position = AssociationThread[ VertexList @ graph, GraphEmbedding @ graph ],
       nearest = Nearest[ GraphEmbedding @ graph -> VertexList @ graph ] },
     AssociationMap[ nearest[ position @ # + vector ] &, VertexList @ graph ] ]
 
-
-(* ===================== Generation ===================== *)
-
-(* random continuous displacement: breadth-first shell extension -- targets
-   drawn from the radius ball, kept within one step of the targets of
-   already-assigned neighbours -- followed by repair sweeps over the edges
-   still violating 1-continuity, restarting from a fresh draw if a run of
-   sweeps fails to converge *)
 RandomDisplacement[ graph_Graph, radius_ : 1 ] :=
-  Module[ { targets, order, violating },
-    order = First @ Last @ Reap[ BreadthFirstScan[ graph, First @ VertexList @ graph,
-      { "DiscoverVertex" -> ( Sow[ #1 ] & ) } ] ];
-    Do[
-      targets = Association[];
-      Do[
-        targets[ vertex ] = With[
-          { neighborTargets = Catenate @ Lookup[ targets,
-              Intersection[ AdjacencyList[ graph, vertex ], Keys @ targets ], { } ],
-            ball = Union[ { vertex }, AdjacencyList[ graph, vertex, radius ] ] },
-          { admissible = Fold[ Intersection, ball,
-              Table[ Union[ { target }, AdjacencyList[ graph, target ] ], { target, neighborTargets } ] ] },
+  With[
+    {
+      order = First @ Last @ Reap[ BreadthFirstScan[ graph, First @ VertexList @ graph, { "DiscoverVertex" -> ( Sow[ #1 ] & ) } ] ],
+      ballOf = vertex |-> Union[ { vertex }, AdjacencyList[ graph, vertex, radius ] ]
+    },
+    {
+      assign = targets |-> Fold[
+        { acc, vertex } |-> Join[ acc, <| vertex -> With[
+          { neighborTargets = Catenate @ Lookup[ acc, Intersection[ AdjacencyList[ graph, vertex ], Keys @ acc ], { } ], ball = ballOf[ vertex ] },
+          { admissible = Fold[ Intersection, ball, Table[ Union[ { target }, AdjacencyList[ graph, target ] ], { target, neighborTargets } ] ] },
           { RandomChoice @ If[ admissible === { },
-              MinimalBy[ ball, { candidate } |->
-                Max @ Table[ GraphDistance[ graph, candidate, target ], { target, neighborTargets } ] ],
-              admissible ] } ],
-        { vertex, order } ];
-      Do[
-        violating = Union @ Catenate @ Select[ List @@@ EdgeList[ graph ],
-          { edge } |-> GraphDistance[ graph, First @ targets @ First @ edge, First @ targets @ Last @ edge ] > 1 ];
-        If[ violating === { }, Break[ ] ];
-        Do[
-          targets[ vertex ] = With[
-            { neighborTargets = Catenate @ Lookup[ targets, AdjacencyList[ graph, vertex ] ],
-              ball = Union[ { vertex }, AdjacencyList[ graph, vertex, radius ] ] },
-            { RandomChoice @ MinimalBy[ ball, { candidate } |->
-                { Max @ Table[ GraphDistance[ graph, candidate, target ], { target, neighborTargets } ],
-                  GraphDistance[ graph, vertex, candidate ] } ] } ],
-          { vertex, violating } ],
-        { 50 } ];
-      If[ violating === { }, Break[ ] ],
-      { 5 } ];
-    targets ]
+              MinimalBy[ ball, { candidate } |-> Max @ Table[ GraphDistance[ graph, candidate, target ], { target, neighborTargets } ] ],
+              admissible ] }
+        ] |> ],
+        targets,
+        order
+      ],
+      repair = { targets, violating } |-> Fold[
+        { acc, vertex } |-> Join[ acc, <| vertex -> With[
+          { neighborTargets = Catenate @ Lookup[ acc, AdjacencyList[ graph, vertex ] ], ball = ballOf[ vertex ] },
+          { RandomChoice @ MinimalBy[ ball, { candidate } |->
+              { Max @ Table[ GraphDistance[ graph, candidate, target ], { target, neighborTargets } ], GraphDistance[ graph, vertex, candidate ] } ] }
+        ] |> ],
+        targets,
+        violating
+      ],
+      violatingOf = targets |-> Union @ Catenate @ Select[ List @@@ EdgeList[ graph ],
+        { edge } |-> GraphDistance[ graph, First @ targets @ First @ edge, First @ targets @ Last @ edge ] > 1 ]
+    },
+    First @ NestWhile[
+      attempt |-> NestWhile[
+        Apply[ { targets, previous } |-> With[
+          { violating = violatingOf[ targets ] },
+          { If[ violating === { }, targets, repair[ targets, violating ] ], violating }
+        ] ],
+        { assign[ <| |> ], None },
+        Last[ # ] =!= { } &,
+        1,
+        50
+      ],
+      { None, None },
+      Last[ # ] =!= { } &,
+      1,
+      5
+    ]
+  ]
 
-(* smallest Killing displacement: nontrivial graph automorphism of minimal
-   magnitude, as a displacement *)
 FindKillingDisplacement[ graph_Graph ] :=
   First @ FindKillingDisplacement[ graph, All ]
 
@@ -259,17 +236,12 @@ KillingDisplacementMagnitude[ graph_Graph ] :=
     Map[ DisplacementMagnitude[ graph, # ] &, FindKillingDisplacement[ graph, All ] ],
     Infinity ]
 
-
-(* ===================== Plotting ===================== *)
-
-(* displacements as bent arcs v -> w over the graph's own embedding; the k-th
-   displacement of the sequence gets the k-th Standard (ColorData 97) colour *)
-Options[ DisplacementPlot ] = { ImageSize -> 320 };
+Options[ DisplacementPlot ] = Options[ Graphics ]
 
 DisplacementPlot[ graph_Graph, displacement_Association, opts : OptionsPattern[] ] :=
   DisplacementPlot[ graph, { displacement }, opts ]
 
-DisplacementPlot[ graph_Graph, displacements : { __Association }, OptionsPattern[] ] :=
+DisplacementPlot[ graph_Graph, displacements : { __Association }, opts : OptionsPattern[] ] :=
   With[
     { position = AssociationThread[ VertexList @ graph, GraphEmbedding @ graph ] },
     Show[
@@ -285,7 +257,7 @@ DisplacementPlot[ graph_Graph, displacements : { __Association }, OptionsPattern
           { ColorData[ 97 ][ index ], Arrowheads[ 0.02 ],
             Arrow @ BezierCurve @ { #[[ 1 ]], ( #[[ 1 ]] + #[[ 2 ]] )/2 + 0.2 { 1, -1 } Reverse[ #[[ 2 ]] - #[[ 1 ]] ], #[[ 2 ]] } & /@ pairs } ],
         { index, Length @ displacements } ],
-      ImageSize -> OptionValue[ ImageSize ]
+      Sequence @@ FilterRules[ { opts }, Options[ Graphics ] ]
     ]
   ]
 

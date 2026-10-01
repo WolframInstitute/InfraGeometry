@@ -1,11 +1,12 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraLine *)
 
-
-(* ===================== InfraLine ===================== *)
-
-(* InfraLine[p, q] is inert: the line through p and q.  Its graph is the List of atoms K_{a, b} = I(a, p) union I(p, q) union I(q, b), one per pair of ends compatible with (p, q) -- d(a, b) == d(a, p) + d(p, q) + d(q, b) -- and maximal -- no neighbour of a or of b lengthens d(a, b).  The chains of K_{a, b} are exactly the inextensible geodesics from a to b through p and then q, and every such geodesic is a chain of exactly one atom, while the union of the atoms is not faithful (design Thm. line).  InfraLine[p, p] is every maximal geodesic through p, once per orientation *)
+(* InfraLine[p, q] is inert: the line through p and q.  Its graph is the List of atoms K_{a, b} = I(a, p) union I(p, q) union I(q, b), one per pair
+   of ends compatible with (p, q) -- d(a, b) == d(a, p) + d(p, q) + d(q, b) -- and maximal -- no neighbour of a or of b lengthens d(a, b).  The
+   chains of K_{a, b} are exactly the inextensible geodesics from a to b through p and then q, and every such geodesic is a chain of exactly one
+   atom, while the union of the atoms is not faithful (design Thm. line).  InfraLine[p, p] is every maximal geodesic through p, once per orientation
+   *)
 
 InfraMeasurement[ graph_Graph,
     InfraLine[ p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ] ], "Graph" ] :=
@@ -35,11 +36,6 @@ InfraMeasurement[ graph_Graph,
               support ] ] ] ],
       pairs ] ]
 
-
-(* ===================== FindInfraLine ===================== *)
-
-(* a line through p and q: an inextensible geodesic a ... p ... q ... b.  Found on the substrate directly, by prolonging a geodesic from p to q one geodesic step at a time -- every prolongation at the back, then every prolongation at the front -- and kept when neither end can be prolonged, independently of the atoms.  FindInfraLine[graph, seq] prolongs a given geodesic instead of searching for one *)
-
 FindInfraLine[ graph_Graph, p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic ] /;
     ! ListQ[ p ] || VertexQ[ graph, p ] :=
@@ -53,53 +49,57 @@ FindInfraLine[ graph_Graph, p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rul
       Automatic, First[ lines, { } ],
       All,       lines,
       _UpTo,     Take[ lines, count ],
-      _,         If[ Length @ lines < count, $Failed, Take[ lines, count ] ] ] ]
+      _,         If[ Length @ lines < count, { }, Take[ lines, count ] ] ] ]
 
 FindInfraLine[ graph_Graph, seq_List,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic ] /;
     seq =!= { } && ! VertexQ[ graph, seq ] :=
-  Module[ { acc = { }, back, front },
-    With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
-            vs = VertexList @ graph, dm = GraphDistanceMatrix @ graph },
-      { idx = AssociationThread[ vs, Range @ Length @ vs ] },
-      { dist = dm[[ idx @ #1, idx @ #2 ]] & },
-      front[ path_ ] := With[ { nexts = Sort @ Select[ AdjacencyList[ graph, Last @ path ],
-            dist[ First @ path, # ] == Length @ path & ] },
-        If[ nexts === { },
-          If[ NoneTrue[ AdjacencyList[ graph, First @ path ], dist[ #, Last @ path ] == Length @ path & ],
-            AppendTo[ acc, path ]; If[ Length @ acc >= cap, Throw[ Null, front ] ] ],
-          Scan[ front[ Append[ path, # ] ] &, nexts ] ] ];
-      back[ path_ ] := ( front @ path;
-        Scan[ back[ Prepend[ path, # ] ] &,
-          Sort @ Select[ AdjacencyList[ graph, First @ path ], dist[ #, Last @ path ] == Length @ path & ] ] );
-      Catch[ back @ seq; Null, front ];
-      Switch[ count,
-        Automatic, First[ acc, { } ],
-        All,       acc,
-        _UpTo,     Take[ acc, count ],
-        _,         If[ Length @ acc < count, $Failed, Take[ acc, count ] ] ] ] ]
+  With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
+          vs = VertexList @ graph, dm = GraphDistanceMatrix @ graph },
+    { idx = AssociationThread[ vs, Range @ Length @ vs ] },
+    { dist = dm[[ idx @ #1, idx @ #2 ]] & },
+    { lines = Catenate @ Last @ Reap @ NestWhile[
+        Apply[ { backs, found } |-> With[ { seed = First @ backs },
+          { Join[
+              Prepend[ seed, # ] & /@ Sort @ Select[ AdjacencyList[ graph, First @ seed ], dist[ #, Last @ seed ] == Length @ seed & ],
+              Rest @ backs ],
+            Last @ NestWhile[
+              Apply[ { fronts, got } |-> With[ { path = First @ fronts },
+                { nexts = Sort @ Select[ AdjacencyList[ graph, Last @ path ], dist[ First @ path, # ] == Length @ path & ] },
+                Which[
+                  nexts =!= { },
+                    { Join[ Append[ path, # ] & /@ nexts, Rest @ fronts ], got },
+                  NoneTrue[ AdjacencyList[ graph, First @ path ], dist[ #, Last @ path ] == Length @ path & ],
+                    ( Sow[ path ]; { Rest @ fronts, got + 1 } ),
+                  True,
+                    { Rest @ fronts, got } ] ] ],
+              { { seed }, found },
+              state |-> First @ state =!= { } && Last @ state < cap ] } ] ],
+        { { seq }, 0 },
+        state |-> First @ state =!= { } && Last @ state < cap ] },
+    Switch[ count,
+      Automatic, First[ lines, { } ],
+      All,       lines,
+      _UpTo,     Take[ lines, count ],
+      _,         If[ Length @ lines < count, { }, Take[ lines, count ] ] ] ]
 
-
-(* ===================== FindInfraParallel ===================== *)
-
-(* a parallel to line through p: an inextensible geodesic s ... p ... e of graph inside the level set L = { v : d(v, line) == r }, r = d(p, line) -- d(s, e) == d(s, p) + d(p, e), every vertex in L, and no neighbour of s or e in L prolonging it.  The pool is one geodesic DAG per admissible end pair (s, e): the s -> p and p -> e intervals cut down to L and glued at p, oriented so that s precedes e in canonical order.  One class under every Method -- "Exhaustive" with All returns the pool itself, as FindInfraLine does, and a bounded count streams geodesics off the atoms in candidate ("Greedy", "Exhaustive") or random ("RandomGreedy") order *)
-
-FindInfraParallel::badmethod   = "Method `1` is not supported by FindInfraParallel.";
-FindInfraParallel::badproperty = "Property `1` is not supported by FindInfraParallel (FindInfraParallel accepts only Properties -> {}).";
+(* a parallel to line through p: an inextensible geodesic s ... p ... e of graph inside the level set L = { v : d(v, line) == r }, r = d(p, line) --
+   d(s, e) == d(s, p) + d(p, e), every vertex in L, and no neighbour of s or e in L prolonging it.  The pool is one geodesic DAG per admissible end
+   pair (s, e): the s -> p and p -> e intervals cut down to L and glued at p, oriented so that s precedes e in canonical order.  One class under
+   every Method -- "Exhaustive" with All returns the pool itself, as FindInfraLine does, and a bounded count streams geodesics off the atoms in
+   candidate ("Greedy", "Exhaustive") or random ("RandomGreedy") order *)
 
 Options[ FindInfraParallel ] = {
   Properties -> { },
   Method     -> Automatic
-};
+}
 
 FindInfraParallel[ graph_Graph, line_, p_,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
-  Module[ { found, descend },
-    descend[ out_, pick_, limit_, path_ ] := With[ { nexts = Lookup[ out, Key @ Last @ path, { } ] },
-      If[ nexts === { },
-        ( AppendTo[ found, path ]; If[ Length @ found >= limit, Throw[ found, descend ] ] ),
-        Scan[ descend[ out, pick, limit, Append[ path, # ] ] &, pick @ nexts ] ] ];
-    With[ {
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ]/;
+    OptionValue[ FindInfraParallel, { opts }, Properties ] === { } &&
+      MatchQ[ OptionValue[ FindInfraParallel, { opts }, Method ],
+        Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
+  With[ {
         walksOf = w |-> With[ { vs = VertexList @ w },
           { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
             scan = v |-> Reap[ DepthFirstScan[ w, v, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
@@ -112,14 +112,10 @@ FindInfraParallel[ graph_Graph, line_, p_,
               If[ spelled, Map[ Last, #, { 2 } ], # ] & @ Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
                 { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
             True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ] },
-      { results = ( { line0, p0 } |-> Catch @ With[ {
-            properties = OptionValue[ FindInfraParallel, { opts }, Properties ],
+      { results = ( { line0, p0 } |-> With[ {
             methodHead = Replace[ OptionValue[ FindInfraParallel, { opts }, Method ],
                            { Automatic :> If[ count === All, "Exhaustive", "Greedy" ], { m_String, ___ } :> m } ],
             verts = VertexList @ graph },
-          If[ properties =!= { }, Message[ FindInfraParallel::badproperty, properties ]; Throw[ $Failed ] ];
-          If[ ! MatchQ[ methodHead, "Exhaustive" | "Greedy" | "RandomGreedy" ],
-            Message[ FindInfraParallel::badmethod, methodHead ]; Throw[ $Failed ] ];
           With[ { dm = GraphDistanceMatrix[ graph ], vidx = AssociationThread[ verts, Range @ Length @ verts ] },
             { dist = dm[[ vidx @ #1, vidx @ #2 ]] &,
               lineDist = Min @ dm[[ vidx @ #, vidx /@ line0 ]] & },
@@ -130,7 +126,6 @@ FindInfraParallel[ graph_Graph, line_, p_,
                     dist[ s, e ] == dist[ s, p0 ] + dist[ p0, e ] &&
                     NoneTrue[ AdjacencyList[ graph, s ], MemberQ[ level, # ] && dist[ #, e ] == dist[ s, e ] + 1 & ] &&
                     NoneTrue[ AdjacencyList[ graph, e ], MemberQ[ level, # ] && dist[ s, # ] == dist[ s, e ] + 1 & ],
-                  (* the glued intervals cut down to L, then to the vertices on some s -> e path: empty when every geodesic through p leaves L.  s and e are listed explicitly, since the cut can strip a side of all its edges *)
                   atom = { s, e } |-> With[ { dag = Graph[ { s, e }, Join[
                         EdgeList @ Subgraph[ #, Intersection[ VertexList @ #, level ] ] & @ SegmentGraph[ graph, s, p0 ],
                         EdgeList @ Subgraph[ #, Intersection[ VertexList @ #, level ] ] & @ SegmentGraph[ graph, p0, e ] ] ] },
@@ -138,7 +133,6 @@ FindInfraParallel[ graph_Graph, line_, p_,
                   cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
                   branch = If[ methodHead === "RandomGreedy", RandomSample, Identity ] },
                 If[ methodHead === "Exhaustive" && count === All,
-                  (* the atoms themselves, as FindInfraLine returns them: an atom whose cut leaves no s -> e path carries no parallel and is dropped, so the pool's realisations are exactly the enumerated family *)
                   Select[ atom @@@ Select[ Tuples[ { level, level } ], admissibleQ @@ # & ],
                     VertexCount[ # ] > 0 & ],
                   Fold[ { acc, pair } |-> If[ Length @ acc >= cap || ! admissibleQ @@ pair, acc,
@@ -149,11 +143,14 @@ FindInfraParallel[ graph_Graph, line_, p_,
                             { s, Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ] },
                             { t, Select[ VertexList @ dag, VertexOutDegree[ dag, # ] == 0 & ] } ],
                         True,
-                          found = { };
-                          Catch[
-                            Scan[ descend[ GroupBy[ List @@@ EdgeList @ dag, First -> Last ], branch, cap - Length @ acc, { # } ] &,
-                              branch @ Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ] ];
-                            found, descend ] ] ] ] ],
+                          With[ { out = GroupBy[ List @@@ EdgeList @ dag, First -> Last ], need = cap - Length @ acc },
+                            Catenate @ Last @ Reap @ NestWhile[
+                              Apply[ { stack, found } |-> With[ { nexts = Lookup[ out, Key @ Last @ First @ stack, { } ] },
+                                If[ nexts === { },
+                                  ( Sow[ First @ stack ]; { Rest @ stack, found + 1 } ),
+                                  { Join[ Append[ First @ stack, # ] & /@ branch @ nexts, Rest @ stack ], found } ] ] ],
+                              { List /@ branch @ Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ], 0 },
+                              state |-> First @ state =!= { } && Last @ state < need ] ] ] ] ] ],
                     { }, branch @ Tuples[ { level, level } ] ] ] ] ] ] ] ) @@@
           Tuples[ {
             Which[
@@ -163,15 +160,13 @@ FindInfraParallel[ graph_Graph, line_, p_,
               line === { }, { },
               True, { line } ],
             Keys @ InfraDensity[ graph, p ] } ] },
-      If[ MemberQ[ results, $Failed ], $Failed,
-        With[ { parallels = DeleteDuplicates[ If[ GraphQ @ #, #, PathGraph[ #, DirectedEdges -> True ] ] & /@
-            DeleteDuplicates @ Flatten[ results, 1 ] ] },
-          Switch[ count,
-            Automatic, First[ parallels, { } ],
-            All,       Replace[ parallels, { one_Graph } :> one ],
-            _UpTo,     Take[ parallels, count ],
-            _,         If[ Length @ parallels < count, $Failed, Take[ parallels, count ] ] ] ] ] ] ]
-
+      { parallels = DeleteDuplicates[ If[ GraphQ @ #, #, PathGraph[ #, DirectedEdges -> True ] ] & /@
+          DeleteDuplicates @ Flatten[ results, 1 ] ] },
+      Switch[ count,
+        Automatic, First[ parallels, { } ],
+        All,       Replace[ parallels, { one_Graph } :> one ],
+        _UpTo,     Take[ parallels, count ],
+        _,         If[ Length @ parallels < count, { }, Take[ parallels, count ] ] ] ]
 
 (* ===================== Sketch: Method dispatch (NOT WIRED) =====================
    Two honest, computable parallelism criteria; see Wiki/Concepts/Parallelism.md
@@ -196,27 +191,18 @@ FindInfraParallel[ graph_Graph, line_, p_,
    Sketch of the transversal branch (Euclid I.27, alternate-angle equality):
 
      findTransversalParallel[ graph_Graph, line_List, p_ ] :=
-       Module[ { pencil, lineDist = v |-> Min[ GraphDistance[ graph, v, # ] & /@ line ] },
-         pencil = #[[ 1, 1 ]] & /@ FindInfraLine[ graph, p, All ];
-         Select[ pencil, candidate |->
-           DisjointQ[ candidate, line ] &&
-           transversalAngleEqualQ[ graph, line, candidate ] ]
-       ]
+       Select[ #[[ 1, 1 ]] & /@ FindInfraLine[ graph, p, All ], candidate |->
+         DisjointQ[ candidate, line ] &&
+         transversalAngleEqualQ[ graph, line, candidate ] ]
 
      transversalAngleEqualQ[ graph_Graph, l1_List, l2_List ] :=
-       Module[ { dm, minPair, a, b, ap, bp, alpha, beta },
-         dm = Outer[ GraphDistance[ graph, #1, #2 ] &, l1, l2 ];
-         minPair = First @ Position[ dm, Min @@ Flatten @ dm ];
-         a  = l1[[ minPair[[ 1 ]] ]];
-         b  = l2[[ minPair[[ 2 ]] ]];
-         ap = l1[[ If[ minPair[[ 1 ]] == Length[ l1 ],
-                       minPair[[ 1 ]] - 1, minPair[[ 1 ]] + 1 ] ]];
-         bp = l2[[ If[ minPair[[ 2 ]] == Length[ l2 ],
-                       minPair[[ 2 ]] - 1, minPair[[ 2 ]] + 1 ] ]];
-         alpha = InfraAngle[ graph, { ap, a, b } ];
-         beta  = InfraAngle[ graph, { bp, b, a } ];
-         alpha == beta
-       ]
+       With[ { dm = Outer[ GraphDistance[ graph, #1, #2 ] &, l1, l2 ] },
+         { minPair = First @ Position[ dm, Min @@ Flatten @ dm ] },
+         { a  = l1[[ minPair[[ 1 ]] ]],
+           b  = l2[[ minPair[[ 2 ]] ]],
+           ap = l1[[ If[ minPair[[ 1 ]] == Length[ l1 ], minPair[[ 1 ]] - 1, minPair[[ 1 ]] + 1 ] ]],
+           bp = l2[[ If[ minPair[[ 2 ]] == Length[ l2 ], minPair[[ 2 ]] - 1, minPair[[ 2 ]] + 1 ] ]] },
+         InfraAngle[ graph, { ap, a, b } ] == InfraAngle[ graph, { bp, b, a } ] ]
 
    Edge cases to settle on implementation:
      - Non-unique shortest transversal: require equality for all of them.
@@ -235,19 +221,18 @@ FindInfraParallel[ graph_Graph, line_, p_,
 
    ============================================================================= *)
 
-
-(* ===================== FindInfraPerpendicular ===================== *)
-
-
-FindInfraPerpendicular::badmethod = "Method `1` is not supported by FindInfraPerpendicular.";
-
 Options[ FindInfraPerpendicular ] = {
   Method   -> "Metric",
   "Radius" -> All
-};
+}
 
 FindInfraPerpendicular[ graph_Graph, line_, point_,
-    count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[] ] :=
+    count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[] ]/;
+    MatchQ[ OptionValue[ FindInfraPerpendicular, { opts }, Method ],
+      "Metric" | "Projection" | "Coordinate" | "Arclength" | "Alexandrov" |
+        { "Metric" | "Projection" | "Arclength" | "Alexandrov", ___ } |
+        ( { "Coordinate", o___ } /; MatchQ[ Lookup[ { o }, "ZeroTest", "Mean" ],
+          "Mean" | "Median" | "Contains" | { "Mean" | "Median" | "Contains", ___ } | Except[ _String | { _String, ___ } ] ] ) ] :=
   With[ {
       walksOf = w |-> With[ { vs = VertexList @ w },
           { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
@@ -265,7 +250,8 @@ FindInfraPerpendicular[ graph_Graph, line_, point_,
           spec   = OptionValue[ FindInfraPerpendicular, { opts }, Method   ],
           radius = OptionValue[ FindInfraPerpendicular, { opts }, "Radius" ] },
         { workGraph = If[ radius === All, graph, NeighborhoodGraph[ graph, point0, radius ] ] },
-        (* the LONGEST lines through a segment: each side extended independently, joint geodesicity d(s, e) == d(s, p1) + d + d(p2, e), and only the maxima of d(s, p1) + d(p2, e) kept *)
+        (* the LONGEST lines through a segment: each side extended independently, joint geodesicity d(s, e) == d(s, p1) + d + d(p2, e), and only the
+           maxima of d(s, p1) + d(p2, e) kept *)
         { extensions = segment |-> If[ Length[ segment ] < 2, { segment },
             With[ { p1 = First[ segment ], p2 = Last[ segment ], verts = VertexList[ workGraph ] },
               (* one compiled all-pairs matrix: the pair enumeration is quadratic, and per-pair GraphDistance re-ran a BFS each time *)
@@ -290,7 +276,6 @@ FindInfraPerpendicular[ graph_Graph, line_, point_,
                   ] & /@ maxPairs ] ] ] ],
           canonical = l |-> First @ Sort @ { l, Reverse[ l ] } },
         Switch[ Replace[ spec, { m_String, ___ } :> m ],
-          (* Euclid I.12: the feet are the isosceles base midpoints of the pairs equidistant from point *)
           "Metric",
             With[ { localLine = Select[ line0, MemberQ[ VertexList[ workGraph ], # ] & ] },
               { distances = GraphDistance[ workGraph, point0, # ] & /@ localLine },
@@ -312,8 +297,7 @@ FindInfraPerpendicular[ graph_Graph, line_, point_,
             Select[
               DeleteDuplicates @ Map[ canonical, Catenate[
                 Map[ neighbor |-> extensions @ { point0, neighbor }, AdjacencyList[ workGraph, point0 ] ] ] ],
-              InfraPerpendicularQ[ graph, line0, #, Method -> spec, "Radius" -> radius ] & ],
-          _, Message[ FindInfraPerpendicular::badmethod, spec ]; $Failed
+              InfraPerpendicularQ[ graph, line0, #, Method -> spec, "Radius" -> radius ] & ]
         ] ] ) @@@
       Tuples[ {
         Which[
@@ -323,17 +307,11 @@ FindInfraPerpendicular[ graph_Graph, line_, point_,
           line === { }, { },
           True, { line } ],
         Keys @ InfraDensity[ graph, point ] } ] },
-    If[ MemberQ[ results, $Failed ], $Failed,
-      With[ { perpendiculars = DeleteDuplicates[ PathGraph[ #, DirectedEdges -> True ] & /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
+    With[ { perpendiculars = DeleteDuplicates[ PathGraph[ #, DirectedEdges -> True ] & /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
         Switch[ count,
           All,   Replace[ perpendiculars, { one_Graph } :> one ],
           _UpTo, Take[ perpendiculars, count ],
-          _,     If[ Length @ perpendiculars < count, $Failed, Take[ perpendiculars, count ] ] ] ] ] ]
-
-
-(* ===================== FindInfraCommonLine ===================== *)
-
-(* the canonical lines containing every listed vertex, a canonical line being the lexicographic minimum of a line and its reversal *)
+          _,     If[ Length @ perpendiculars < count, { }, Take[ perpendiculars, count ] ] ] ] ]
 
 FindInfraCommonLine[ graph_Graph, verts_List,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
@@ -353,17 +331,13 @@ FindInfraCommonLine[ graph_Graph, verts_List,
     Switch[ count,
       All,   Replace[ lines, { one_Graph } :> one ],
       _UpTo, Take[ lines, count ],
-      _,     If[ Length @ lines < count, $Failed, Take[ lines, count ] ] ] ]
+      _,     If[ Length @ lines < count, { }, Take[ lines, count ] ] ] ]
 
+InfraLineQ[ graph_Graph, ws : { __Graph } ] :=
+  AllTrue[ ws, InfraLineQ[ graph, # ] & ]
 
-(* ===================== InfraLineQ ===================== *)
-
-(* a geodesic inextensible at both ends: no neighbour of either endpoint prolongs the distance between them *)
-
-InfraLineQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraLineQ[ graph, # ] & ]
-
-(* a family of instances, the shape FindInfraLine[graph, p, q, n | UpTo[n] | All] returns *)
-InfraLineQ[ graph_Graph, ws : { { ___ } .. } ] := AllTrue[ ws, InfraLineQ[ graph, # ] & ]
+InfraLineQ[ graph_Graph, ws : { { ___ } .. } ] :=
+  AllTrue[ ws, InfraLineQ[ graph, # ] & ]
 
 InfraLineQ[ graph_Graph, w_Graph ] :=
   With[ { vs = VertexList @ w },
@@ -387,10 +361,8 @@ InfraLineQ[ graph_Graph, segment_List ] /; Length[ segment ] >= 2 :=
   NoneTrue[ AdjacencyList[ graph, First @ segment ], GraphDistance[ graph, #, Last @ segment ] == Length[ segment ] & ] &&
   NoneTrue[ AdjacencyList[ graph, Last @ segment ], GraphDistance[ graph, First @ segment, # ] == Length[ segment ] & ]
 
-InfraLineQ[ _Graph, segment_List ] /; Length[ segment ] < 2 := False
-
-
-(* ===================== InfraParallelQ ===================== *)
+InfraLineQ[ _Graph, segment_List ] /; Length[ segment ] < 2 :=
+  False
 
 (* l1, l2 disjoint and d(v, l2) constant over v in l1, up to threshold *)
 
@@ -406,7 +378,6 @@ InfraParallelQ[ graph_Graph, l1_List, l2_List, threshold_ : 0 ] :=
       Max[ lineDistances ] - Min[ lineDistances ] <= threshold ]
   ]
 
-(* a walk graph or a bundle on either side: the verdict is the conjunction over the walks it stands for *)
 InfraParallelQ[ graph_Graph,
     l1 : _Graph | { __Graph } | _List,
     l2 : _Graph | { __Graph } | _List,
@@ -430,19 +401,16 @@ InfraParallelQ[ graph_Graph,
       pair |-> InfraParallelQ[ graph, pair[[ 1 ]], pair[[ 2 ]], threshold ] ]
   ]
 
-
-(* ===================== InfraPerpendicularQ ===================== *)
-
-
-InfraPerpendicularQ::badmethod   = "Method `1` is not supported by InfraPerpendicularQ.";
-InfraPerpendicularQ::badzerotest = "ZeroTest `1` is not supported by InfraPerpendicularQ \"Coordinate\".";
-
 Options[ InfraPerpendicularQ ] = {
   Method   -> "Projection",
   "Radius" -> All
-};
+}
 
-InfraPerpendicularQ[ graph_Graph, l1_, l2_, OptionsPattern[] ] :=
+InfraPerpendicularQ[ graph_Graph, l1_, l2_, opts : OptionsPattern[] ] /;
+    MatchQ[ OptionValue[ InfraPerpendicularQ, { opts }, Method ],
+      "Projection" | "Coordinate" | "Arclength" | "Alexandrov" | { "Projection" | "Arclength" | "Alexandrov", ___ } |
+        ( { "Coordinate", o___ } /; MatchQ[ Lookup[ { o }, "ZeroTest", "Mean" ],
+          "Mean" | "Median" | "Contains" | { "Mean" | "Median" | "Contains", ___ } | Except[ _String | { _String, ___ } ] ] ) ] :=
   With[ {
       seqOf = w |-> With[ { vs = VertexList @ w },
         If[ AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
@@ -460,7 +428,6 @@ InfraPerpendicularQ[ graph_Graph, l1_, l2_, OptionsPattern[] ] :=
         { localG,
           If[ ball === All, seq1, Select[ seq1, MemberQ[ ball, # ] & ] ],
           If[ ball === All, seq2, Select[ seq2, MemberQ[ ball, # ] & ] ] } ],
-      (* Euclid I.12: the feet are the isosceles base midpoints of the pairs equidistant from point *)
       feet = { h, line, point } |-> With[ { localLine = Select[ line, MemberQ[ VertexList[ h ], # ] & ] },
         { distances = GraphDistance[ h, point, # ] & /@ localLine },
         DeleteCases[ DeleteDuplicates @ Flatten[
@@ -479,7 +446,6 @@ InfraPerpendicularQ[ graph_Graph, l1_, l2_, OptionsPattern[] ] :=
           SubsetQ[ localCommon, proj12 ] && SubsetQ[ localCommon, proj21 ],
           InfraEqualQ[ graph, InfraDensity[ graph, proj12 ], InfraDensity[ graph, localCommon ], Method -> equality ] &&
           InfraEqualQ[ graph, InfraDensity[ graph, proj21 ], InfraDensity[ graph, localCommon ], Method -> equality ] ] ],
-      (* the four corner-wedge angles at p equal: in the Euclidean limit they sum to 2 Pi so equality forces Pi/2, and on a graph the angle is not additive around p, so equality at a common value is the honest test *)
       angleQ = p |-> With[ { loc = localize @ p, tol = Lookup[ mtdOpts, "Tolerance", 0 ] },
         { s1 = loc[[ 2 ]], s2 = loc[[ 3 ]] },
         { i1 = FirstPosition[ s1, p, { 0 }, { 1 }, Heads -> False ][[ 1 ]],
@@ -495,7 +461,8 @@ InfraPerpendicularQ[ graph_Graph, l1_, l2_, OptionsPattern[] ] :=
                 { First[ h1L ], p, Last [ h2R ] },
                 { Last [ h1R ], p, First[ h2L ] },
                 { Last [ h1R ], p, Last [ h2R ] } } ) ] ],
-      (* signed coordinates of the projection feet along the receiving line: perpendicular iff the cloud is balanced around p, rather than contained in the intersection as in "Projection" *)
+      (* signed coordinates of the projection feet along the receiving line: perpendicular iff the cloud is balanced around p, rather than contained
+         in the intersection as in "Projection" *)
       coordinateQ = p |-> With[ { loc = localize @ p, zeroTest = Lookup[ mtdOpts, "ZeroTest", "Mean" ] },
         { s1 = loc[[ 2 ]], s2 = loc[[ 3 ]] },
         { i1 = FirstPosition[ s1, p, { 0 }, { 1 }, Heads -> False ][[ 1 ]],
@@ -514,22 +481,15 @@ InfraPerpendicularQ[ graph_Graph, l1_, l2_, OptionsPattern[] ] :=
                   "Mean",     Abs[ N @ Mean[ c12 ] ]   <= ztTol && Abs[ N @ Mean[ c21 ] ]   <= ztTol,
                   "Median",   Abs[ N @ Median[ c12 ] ] <= ztTol && Abs[ N @ Median[ c21 ] ] <= ztTol,
                   "Contains", Min[ c12 ] - ztTol <= 0 <= Max[ c12 ] + ztTol
-                           && Min[ c21 ] - ztTol <= 0 <= Max[ c21 ] + ztTol,
-                  _,          Message[ InfraPerpendicularQ::badzerotest, zeroTest ]; False ],
-              (* user-supplied predicate function *)
+                           && Min[ c21 ] - ztTol <= 0 <= Max[ c21 ] + ztTol ],
               True, TrueQ @ zeroTest[ c12 ] && TrueQ @ zeroTest[ c21 ] ] ] ] ] },
     Which[
       Length[ common ] == 0,                          False,
       mtdHead === "Projection",                       AllTrue[ common, projectionQ ],
       mtdHead === "Coordinate",                       AllTrue[ common, coordinateQ ],
-      MemberQ[ { "Arclength", "Alexandrov" }, mtdHead ], AllTrue[ common, angleQ ],
-      True, Message[ InfraPerpendicularQ::badmethod, mtd ]; $Failed
+      MemberQ[ { "Arclength", "Alexandrov" }, mtdHead ], AllTrue[ common, angleQ ]
     ]
   ]
-
-
-(* ===================== LineCount ===================== *)
-
 
 LineCount[ graph_Graph ] :=
   Length @ DeleteDuplicates @ Catenate[
@@ -537,12 +497,7 @@ LineCount[ graph_Graph ] :=
         FindInfraLine[ graph, pair[[ 1 ]], pair[[ 2 ]], All ] ) /@
       Subsets[ VertexList @ graph, { 2 } ] ]
 
-
-(* ===================== FindLineHull / LineHullQ ===================== *)
-
-(* the smallest superset closed under L(u, v) = the maximal geodesics through u, v: the De Bruijn-Erdos / Chen-Chvatal collinearity closure *)
-
-Options[ FindLineHull ] = { "LineStructure" -> None };
+Options[ FindLineHull ] = { "LineStructure" -> None }
 
 FindLineHull[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], OptionsPattern[] ] :=
   With[ { lines = Replace[ OptionValue[ "LineStructure" ], {
@@ -553,7 +508,8 @@ FindLineHull[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], OptionsPattern[] 
             ls_InfraLineStructure :> ls[ "Lines" ] } ],
           S = Which[
             AssociationQ @ s,                  Keys @ s,
-            MatchQ[ s, _Graph | { __Graph } ], Union @@ ( If[ AllTrue[ VertexList @ #, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ # ] === Range @ VertexCount @ #,
+            MatchQ[ s, _Graph | { __Graph } ],
+            Union @@ ( If[ AllTrue[ VertexList @ #, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ # ] === Range @ VertexCount @ #,
                 Last /@ VertexList @ #, VertexList @ # ] & /@ Flatten[ { s } ] ),
             MatchQ[ s, { __List } ],           Union @@ s,
             ListQ @ s,                         Union @ s,
@@ -564,23 +520,18 @@ FindLineHull[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], OptionsPattern[] 
     ]
   ]
 
-
-Options[ LineHullQ ] = { "LineStructure" -> None };
+Options[ LineHullQ ] = { "LineStructure" -> None }
 
 LineHullQ[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], opts : OptionsPattern[] ] :=
   With[ { vs = Which[
       AssociationQ @ s,                  Keys @ s,
-      MatchQ[ s, _Graph | { __Graph } ], Union @@ ( If[ AllTrue[ VertexList @ #, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ # ] === Range @ VertexCount @ #,
+      MatchQ[ s, _Graph | { __Graph } ],
+      Union @@ ( If[ AllTrue[ VertexList @ #, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ # ] === Range @ VertexCount @ #,
           Last /@ VertexList @ #, VertexList @ # ] & /@ Flatten[ { s } ] ),
       MatchQ[ s, { __List } ],           Union @@ s,
       ListQ @ s,                         Union @ s,
       True,                              { s } ] },
     FindLineHull[ graph, vs, opts ] === Union @ vs ]
-
-
-(* ===================== UniversalLineQ ===================== *)
-
-(* the Chen-Chvatal line L(u, v) = the union of all maximal geodesics through both; universal when it fills a connected component *)
 
 UniversalLineQ[ graph_Graph, { u_, v_ } ] :=
   AnyTrue[ ConnectedComponents @ graph,
@@ -593,9 +544,6 @@ UniversalLineQ[ graph_Graph, { u_, v_ } ] :=
 
 UniversalLineQ[ graph_Graph ] :=
   AnyTrue[ Subsets[ VertexList @ graph, { 2 } ], UniversalLineQ[ graph, # ] & ]
-
-
-(* ===================== Scene-DSL constructor ===================== *)
 
 dispatchConstruction[ graph_Graph, InfraLine[ path_List, opts___Rule ] ] :=
   capBranches[

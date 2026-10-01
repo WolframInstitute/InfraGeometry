@@ -1,11 +1,4 @@
-Package["WolframInstitute`InfraGeometry`"]
-
-
-
-(* ===================== SelectInfraWalk ===================== *)
-
-
-SelectInfraWalk::badfrom = "\"From\" specification `1` is not supported by SelectInfraWalk. Supported: All, \"Center\", \"Periphery\", \"MostVisited\", \"Bottleneck\", \"MinLength\", \"MaxLength\", anchor -> spec, {\"Min\", scoreFn}, {\"Max\", scoreFn}.";
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 Options[ SelectInfraWalk ] = {
   "From"       -> All,
@@ -13,10 +6,8 @@ Options[ SelectInfraWalk ] = {
   "Metric"     -> "Hausdorff",
   "MaxCliques" -> All,
   "Cyclic"     -> False
-};
+}
 
-
-(* a line or segment-extension pool's atoms are tied in length within and ordered across, so the length selectors pick whole atoms and keep the pool form; every other selector reads the realisations *)
 SelectInfraWalk[ graph_Graph, dags : { __Graph },
             countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] /;
     NoneTrue[ dags, ! LoopFreeGraphQ @ # || ! AcyclicGraphQ @ # ||
@@ -29,7 +20,6 @@ SelectInfraWalk[ graph_Graph, dags : { __Graph },
     If[ countSpec === All, Replace[ picked, { one_Graph } :> one ],
       SelectInfraWalk[ graph, picked, countSpec, "From" -> All ] ] ]
 
-(* a bundle of walk graphs selects on its vertex sequences and comes back as the graphs picked; a closed or position-spelled walk graph is one walk, a substrate DAG spreads into its geodesics, and closed walks are cycle graphs, so "Cyclic" is read off the shape *)
 SelectInfraWalk[ graph_Graph, walks : { __Graph },
             countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] :=
   With[ {
@@ -51,44 +41,40 @@ SelectInfraWalk[ graph_Graph, walks : { __Graph },
     { seqs = seqOf /@ carriers },
     { result = SelectInfraWalk[ graph, seqs, countSpec,
         "Cyclic" -> ( ! LoopFreeGraphQ @ First @ carriers || ! AcyclicGraphQ @ First @ carriers ), opts ] },
-    If[ result === $Failed, $Failed, Lookup[ AssociationThread[ seqs -> carriers ], result ] ] ]
+    Lookup[ AssociationThread[ seqs -> carriers ], result ] /; ListQ[ result ] ]
 
-(* the most-visited geodesics of a DAG are the longest additive-weight source -> sink paths under node weight c(v) and edge weight w -> x = f(w) b(x), the forward / backward path counts, so only the optimal geodesics are ever enumerated *)
 SelectInfraWalk[ graph_Graph, dag_Graph,
             countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] /;
     ! ( ! LoopFreeGraphQ @ dag || ! AcyclicGraphQ @ dag ) &&
     ! ( AllTrue[ VertexList @ dag, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ dag ] === Range @ VertexCount @ dag ) &&
     OptionValue[ SelectInfraWalk, { opts }, "From" ] === "MostVisited" &&
     OptionValue[ SelectInfraWalk, { opts }, "Distance" ] === None :=
-  Module[ { topo = TopologicalSort @ dag, edges = List @@@ EdgeList @ dag,
-            cap = Replace[ countSpec, { All -> Infinity, UpTo[ k_ ] :> k } ],
-            source, sink, succ, pred, fwd, bwd, vC, eC, suf, pre, sStar, tight, out, tightDFS },
-    source = SelectFirst[ topo, VertexInDegree[ dag, # ] == 0 & ];
-    sink   = SelectFirst[ topo, VertexOutDegree[ dag, # ] == 0 & ];
-    succ = GroupBy[ edges, First -> Last ];
-    pred = GroupBy[ edges, Last -> First ];
-    fwd = <| source -> 1 |>;
-    Do[ fwd[ w ] = Total @ Lookup[ fwd, Lookup[ pred, w, { } ], 0 ], { w, DeleteCases[ topo, source ] } ];
-    bwd = <| sink -> 1 |>;
-    Do[ bwd[ w ] = Total @ Lookup[ bwd, Lookup[ succ, w, { } ], 0 ], { w, Reverse @ DeleteCases[ topo, sink ] } ];
-    vC = AssociationMap[ fwd[ # ] bwd[ # ] &, topo ];
-    eC = AssociationThread[ edges -> ( fwd[ #[[ 1 ]] ] bwd[ #[[ 2 ]] ] & /@ edges ) ];
-    suf = <| sink -> vC[ sink ] |>;
-    Do[ suf[ w ] = vC[ w ] + Max[ ( eC[ { w, # } ] + suf[ # ] & ) /@ Lookup[ succ, w, { } ] ],
-        { w, Reverse @ DeleteCases[ topo, sink ] } ];
-    pre = <| source -> vC[ source ] |>;
-    Do[ pre[ w ] = vC[ w ] + Max[ ( eC[ { #, w } ] + pre[ # ] & ) /@ Lookup[ pred, w, { } ] ],
-        { w, DeleteCases[ topo, source ] } ];
-    sStar = suf[ source ];
-    tight = AssociationMap[ w |-> Select[ Lookup[ succ, w, { } ], x |-> pre[ w ] + eC[ { w, x } ] + suf[ x ] == sStar ], topo ];
-    out = { };
-    tightDFS[ path_ ] := If[ Length @ out < cap,
-      If[ Last @ path === sink, AppendTo[ out, path ],
-        Scan[ x |-> tightDFS[ Append[ path, x ] ], tight[ Last @ path ] ] ] ];
-    tightDFS[ { source } ];
-    With[ { result = SelectInfraWalk[ graph, out, countSpec, "From" -> All ] },
-      If[ result === $Failed, $Failed, PathGraph[ #, DirectedEdges -> True ] & /@ result ] ]
-  ]
+  With[ { topo = TopologicalSort @ dag,
+          edges = List @@@ EdgeList @ dag,
+          cap = Replace[ countSpec, { All -> Infinity, UpTo[ k_ ] :> k } ] },
+    { source = SelectFirst[ topo, VertexInDegree[ dag, # ] == 0 & ],
+      sink   = SelectFirst[ topo, VertexOutDegree[ dag, # ] == 0 & ],
+      succ = GroupBy[ edges, First -> Last ],
+      pred = GroupBy[ edges, Last -> First ] },
+    { fwd = Fold[ { acc, w } |-> Append[ acc, w -> Total @ Lookup[ acc, Lookup[ pred, w, { } ], 0 ] ],
+        <| source -> 1 |>, DeleteCases[ topo, source ] ],
+      bwd = Fold[ { acc, w } |-> Append[ acc, w -> Total @ Lookup[ acc, Lookup[ succ, w, { } ], 0 ] ],
+        <| sink -> 1 |>, Reverse @ DeleteCases[ topo, sink ] ] },
+    { vC = AssociationMap[ fwd[ # ] bwd[ # ] &, topo ],
+      eC = AssociationThread[ edges -> ( fwd[ #[[ 1 ]] ] bwd[ #[[ 2 ]] ] & /@ edges ) ] },
+    { suf = Fold[ { acc, w } |-> Append[ acc, w -> vC[ w ] + Max[ ( eC[ { w, # } ] + acc[ # ] & ) /@ Lookup[ succ, w, { } ] ] ],
+        <| sink -> vC[ sink ] |>, Reverse @ DeleteCases[ topo, sink ] ],
+      pre = Fold[ { acc, w } |-> Append[ acc, w -> vC[ w ] + Max[ ( eC[ { #, w } ] + acc[ # ] & ) /@ Lookup[ pred, w, { } ] ] ],
+        <| source -> vC[ source ] |>, DeleteCases[ topo, source ] ] },
+    { tight = AssociationMap[ w |-> Select[ Lookup[ succ, w, { } ], x |-> pre[ w ] + eC[ { w, x } ] + suf[ x ] == suf[ source ] ], topo ] },
+    { tightDFS = { self, path, need } |-> Which[
+        need <= 0, { },
+        Last @ path === sink, { path },
+        True,
+          Fold[ { found, x } |-> If[ Length @ found >= need, found, Join[ found, self[ self, Append[ path, x ], need - Length @ found ] ] ],
+            { },
+            tight[ Last @ path ] ] ] },
+    PathGraph[ #, DirectedEdges -> True ] & /@ SelectInfraWalk[ graph, tightDFS[ tightDFS, { source }, cap ], countSpec, "From" -> All ] ]
 
 SelectInfraWalk[ graph_Graph, w_Graph,
             countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] :=
@@ -102,128 +88,119 @@ SelectInfraWalk[ graph_Graph, w_Graph,
             { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ] ] ] ],
     countSpec, opts ]
 
-(* the pool is the walks the selector keeps; with "Distance" set the selection is the max-spread clique of that size under the path-space metric, Hausdorff or the order-respecting Frechet pairing, rotation-minimised when cyclic.  An unrecognised selector must raise ::badfrom rather than fall through to the whole bundle, which reads as a legitimate random draw *)
-SelectInfraWalk[ graph_Graph, walks_List, UpTo[ n_Integer ], opts : OptionsPattern[] ] :=
-  Module[ { thresholds, cliques, auxiliaryGraph },
-    With[ { from = OptionValue[ "From" ], distSpec = OptionValue[ "Distance" ], cyclic = TrueQ @ OptionValue[ "Cyclic" ],
-            metric = OptionValue[ "Metric" ], maxCl = OptionValue[ "MaxCliques" ] },
-      Which[
-        ! MatchQ[ from, All | "Center" | "Periphery" | "MostVisited" | "Bottleneck" | "MinLength" | "MaxLength" | _Rule | { "Min" | "Max", _ } ],
-          Message[ SelectInfraWalk::badfrom, from ]; $Failed,
-        Length @ walks <= 1, walks,
-        True,
-          With[ {
-              needsMatrix = MatchQ[ from, "Center" | "Periphery" | _Rule ] || distSpec =!= None,
-              agg = Replace[ metric, { "Frechet" -> Max, "MeanFrechet" -> Mean, _ -> None } ],
-              positionsOf = { scores, pick } |-> Flatten @ Position[ scores, pick @ scores, { 1 }, Heads -> False ] },
-            { distMatrix  = If[ needsMatrix, GraphDistanceMatrix @ graph, None ],
-              vertexIndex = If[ needsMatrix, AssociationThread[ VertexList @ graph, Range @ VertexCount @ graph ], None ],
-              (* the unequal-length pairing reads the resampled positions as vertex indices, exactly as it was written *)
-              baseDist = If[ agg === None,
-                { d, x, y } |-> ( m |-> Max[ Max[ Min /@ m ], Max[ Min /@ Transpose @ m ] ] ) @ d[[ x, y ]],
-                { d, x, y } |-> If[ Length @ x === Length @ y, agg @ Diagonal @ d[[ x, y ]],
-                  With[ { m = Max[ Length @ x, Length @ y ] },
-                    agg @ MapThread[ d[[ #1, #2 ]] &,
-                      Map[ s |-> If[ Length @ s === m, Range @ m, Round @ Rescale[ Range @ m, { 1, m }, { 1, Length @ s } ] ], { x, y } ] ] ] ] ] },
-            { pathDistance = If[ cyclic,
-                { dm, xs, ys } |-> Min @ Table[ baseDist[ dm, RotateLeft[ xs, k ], ys ], { k, 0, Length @ xs - 1 } ],
-                baseDist ] },
-            { pathMatrix = If[ needsMatrix,
-                ( # + Transpose[ # ] ) & @ PadRight[
-                  Table[ pathDistance[ distMatrix, Lookup[ vertexIndex, walks[[ i ]] ], Lookup[ vertexIndex, walks[[ j ]] ] ],
-                    { i, Length @ walks }, { j, i - 1 } ],
-                  { Length @ walks, Length @ walks } ],
-                None ] },
-            { poolIdx = Replace[ from, {
-                All         :> Range @ Length @ walks,
-                "Center"    :> positionsOf[ Max /@ pathMatrix, Min ],
-                "Periphery" :> positionsOf[ Max /@ pathMatrix, Max ],
-                "MinLength" :> positionsOf[ Length /@ walks, Min ],
-                "MaxLength" :> positionsOf[ Length /@ walks, Max ],
-                ( { "Min", scoreFn_ } ) :> positionsOf[ scoreFn /@ walks, Min ],
-                ( { "Max", scoreFn_ } ) :> positionsOf[ scoreFn /@ walks, Max ],
-                (* Total picks the max total occupation ("MostVisited"), Min the max-min bottleneck, the widest continuous corridor ("Bottleneck") *)
-                visit : ( "MostVisited" | "Bottleneck" ) :> With[ {
-                    edgeSeqs = If[ cyclic,
-                      s |-> Sort /@ If[ Length @ s >= 2 && First @ s === Last @ s, Partition[ s, 2, 1 ], Partition[ s, 2, 1, 1 ] ],
-                      s |-> Sort /@ Partition[ s, 2, 1 ] ] /@ walks },
-                  { vCounts = Counts @ Catenate @ walks, eCounts = Counts @ Catenate @ edgeSeqs },
-                  positionsOf[
-                    MapThread[ If[ visit === "MostVisited", Total, Min ] @ Join[ Lookup[ vCounts, #1, 0 ], Lookup[ eCounts, #2, 0 ] ] &,
-                      { walks, edgeSeqs } ],
-                    Max ] ],
-                ( anchor_ -> spec_ ) :> With[ { anchors = Replace[ anchor, {
-                    a_Graph :> { a },
-                    as : { __Graph } :> as,
-                    seq_List /; AllTrue[ seq, ListQ ] :> seq,
-                    seq_List :> { seq } } ] },
-                  { seqs = Map[ a |-> If[ GraphQ @ a,
-                      With[ { vs = VertexList @ a },
-                        Which[
-                          AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs, Last /@ SortBy[ vs, First ],
-                          EdgeCount @ a == 0, vs,
-                          True, Reap[ DepthFirstScan[ a,
-                            SelectFirst[ vs, If[ DirectedGraphQ @ a, VertexInDegree[ a, # ] == 0, VertexDegree[ a, # ] == 1 ] &, First @ vs ],
-                            { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] ],
-                      a ], anchors ] },
-                  If[ seqs === { }, { },
-                    With[ { rows = Table[
-                        Map[ p |-> pathDistance[ distMatrix, Lookup[ vertexIndex, sq ], Lookup[ vertexIndex, p ] ], walks ],
-                        { sq, seqs } ] },
-                      Select[ Range @ Length @ walks,
-                        i |-> AllTrue[ Range @ Length @ seqs,
-                          r |-> NumericQ[ rows[[ r, i ]] ] && Switch[ spec,
-                            _?NumericQ,                    rows[[ r, i ]] == spec,
-                            { _?NumericQ, _?NumericQ },    spec[[ 1 ]] <= rows[[ r, i ]] <= spec[[ 2 ]],
-                            "Max",                         rows[[ r, i ]] == Max @ Select[ rows[[ r ]], NumericQ ],
-                            _,                             False ] ] ] ] ] ] } ] },
-            { pool = walks[[ poolIdx ]] },
-            { size = Min[ n, Length @ pool ] },
-            Which[
-              poolIdx === { }, { },
-              distSpec === None || size <= 1, If[ size >= Length @ pool, pool, RandomSample[ pool, size ] ],
-              True,
-                With[ { finiteMax = Replace[ Max @ Select[ Flatten @ pathMatrix[[ poolIdx, poolIdx ]], # < Infinity & ],
-                          _?( ! NumericQ @ # & ) -> 0 ] },
-                  { subMatrix = Replace[ pathMatrix[[ poolIdx, poolIdx ]], Infinity -> finiteMax + 1, { 2 } ] },
-                  If[ distSpec === "Max",
-                    thresholds = Reverse @ DeleteCases[ Union @@ subMatrix, 0 | _?( # > finiteMax & ) ];
-                    cliques = { };
-                    Do[
-                      auxiliaryGraph = AdjacencyGraph[ pool,
-                        UnitStep[ subMatrix - d ] * UnitStep[ finiteMax - subMatrix ]
-                          * ( 1 - IdentityMatrix[ Length @ pool ] ) ];
-                      cliques = FindClique[ auxiliaryGraph, { size, VertexCount @ auxiliaryGraph }, maxCl ];
-                      If[ cliques =!= { }, Break[ ] ],
-                      { d, thresholds } ];
-                    If[ cliques === { }, { }, RandomSample[ RandomChoice[ cliques ], UpTo[ size ] ] ],
-                    With[ { range = Replace[ distSpec,
-                        { d_?NumericQ                        :> { d, finiteMax },
-                          { dMin_?NumericQ, Infinity }       :> { dMin, finiteMax },
-                          { dMin_?NumericQ, dMax_?NumericQ } :> { dMin, dMax },
-                          _ :> { 0, finiteMax } } ] },
-                      { aux = AdjacencyGraph[ pool,
-                          UnitStep[ subMatrix - range[[ 1 ]] ] * UnitStep[ range[[ 2 ]] - subMatrix ]
-                            * ( 1 - IdentityMatrix[ Length @ pool ] ) ] },
-                      { found = FindClique[ aux, { Min[ size, VertexCount @ aux ], VertexCount @ aux }, maxCl ] },
-                      If[ found === { }, { }, RandomSample[ RandomChoice[ found ], UpTo[ size ] ] ] ] ] ] ] ] ] ] ]
+SelectInfraWalk[ graph_Graph, walks_List, UpTo[ n_Integer ], opts : OptionsPattern[] ] /;
+    MatchQ[ OptionValue[ SelectInfraWalk, { opts }, "From" ],
+      All | "Center" | "Periphery" | "MostVisited" | "Bottleneck" | "MinLength" | "MaxLength" | _Rule | { "Min" | "Max", _ } ] :=
+  With[ { from = OptionValue[ "From" ], distSpec = OptionValue[ "Distance" ], cyclic = TrueQ @ OptionValue[ "Cyclic" ],
+          metric = OptionValue[ "Metric" ], maxCl = OptionValue[ "MaxCliques" ] },
+    Which[
+      Length @ walks <= 1, walks,
+      True,
+        With[ {
+            needsMatrix = MatchQ[ from, "Center" | "Periphery" | _Rule ] || distSpec =!= None,
+            agg = Replace[ metric, { "Frechet" -> Max, "MeanFrechet" -> Mean, _ -> None } ],
+            positionsOf = { scores, pick } |-> Flatten @ Position[ scores, pick @ scores, { 1 }, Heads -> False ] },
+          { distMatrix  = If[ needsMatrix, GraphDistanceMatrix @ graph, None ],
+            vertexIndex = If[ needsMatrix, AssociationThread[ VertexList @ graph, Range @ VertexCount @ graph ], None ],
+            baseDist = If[ agg === None,
+              { d, x, y } |-> ( m |-> Max[ Max[ Min /@ m ], Max[ Min /@ Transpose @ m ] ] ) @ d[[ x, y ]],
+              { d, x, y } |-> If[ Length @ x === Length @ y, agg @ Diagonal @ d[[ x, y ]],
+                With[ { m = Max[ Length @ x, Length @ y ] },
+                  agg @ MapThread[ d[[ #1, #2 ]] &,
+                    Map[ s |-> If[ Length @ s === m, Range @ m, Round @ Rescale[ Range @ m, { 1, m }, { 1, Length @ s } ] ], { x, y } ] ] ] ] ] },
+          { pathDistance = If[ cyclic,
+              { dm, xs, ys } |-> Min @ Table[ baseDist[ dm, RotateLeft[ xs, k ], ys ], { k, 0, Length @ xs - 1 } ],
+              baseDist ] },
+          { pathMatrix = If[ needsMatrix,
+              ( # + Transpose[ # ] ) & @ PadRight[
+                Table[ pathDistance[ distMatrix, Lookup[ vertexIndex, walks[[ i ]] ], Lookup[ vertexIndex, walks[[ j ]] ] ],
+                  { i, Length @ walks }, { j, i - 1 } ],
+                { Length @ walks, Length @ walks } ],
+              None ] },
+          { poolIdx = Replace[ from, {
+              All         :> Range @ Length @ walks,
+              "Center"    :> positionsOf[ Max /@ pathMatrix, Min ],
+              "Periphery" :> positionsOf[ Max /@ pathMatrix, Max ],
+              "MinLength" :> positionsOf[ Length /@ walks, Min ],
+              "MaxLength" :> positionsOf[ Length /@ walks, Max ],
+              ( { "Min", scoreFn_ } ) :> positionsOf[ scoreFn /@ walks, Min ],
+              ( { "Max", scoreFn_ } ) :> positionsOf[ scoreFn /@ walks, Max ],
+              visit : ( "MostVisited" | "Bottleneck" ) :> With[ {
+                  edgeSeqs = If[ cyclic,
+                    s |-> Sort /@ If[ Length @ s >= 2 && First @ s === Last @ s, Partition[ s, 2, 1 ], Partition[ s, 2, 1, 1 ] ],
+                    s |-> Sort /@ Partition[ s, 2, 1 ] ] /@ walks },
+                { vCounts = Counts @ Catenate @ walks, eCounts = Counts @ Catenate @ edgeSeqs },
+                positionsOf[
+                  MapThread[ If[ visit === "MostVisited", Total, Min ] @ Join[ Lookup[ vCounts, #1, 0 ], Lookup[ eCounts, #2, 0 ] ] &,
+                    { walks, edgeSeqs } ],
+                  Max ] ],
+              ( anchor_ -> spec_ ) :> With[ { anchors = Replace[ anchor, {
+                  a_Graph :> { a },
+                  as : { __Graph } :> as,
+                  seq_List /; AllTrue[ seq, ListQ ] :> seq,
+                  seq_List :> { seq } } ] },
+                { seqs = Map[ a |-> If[ GraphQ @ a,
+                    With[ { vs = VertexList @ a },
+                      Which[
+                        AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs, Last /@ SortBy[ vs, First ],
+                        EdgeCount @ a == 0, vs,
+                        True, Reap[ DepthFirstScan[ a,
+                          SelectFirst[ vs, If[ DirectedGraphQ @ a, VertexInDegree[ a, # ] == 0, VertexDegree[ a, # ] == 1 ] &, First @ vs ],
+                          { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] ],
+                    a ], anchors ] },
+                If[ seqs === { }, { },
+                  With[ { rows = Table[
+                      Map[ p |-> pathDistance[ distMatrix, Lookup[ vertexIndex, sq ], Lookup[ vertexIndex, p ] ], walks ],
+                      { sq, seqs } ] },
+                    Select[ Range @ Length @ walks,
+                      i |-> AllTrue[ Range @ Length @ seqs,
+                        r |-> NumericQ[ rows[[ r, i ]] ] && Switch[ spec,
+                          _?NumericQ,                    rows[[ r, i ]] == spec,
+                          { _?NumericQ, _?NumericQ },    spec[[ 1 ]] <= rows[[ r, i ]] <= spec[[ 2 ]],
+                          "Max",                         rows[[ r, i ]] == Max @ Select[ rows[[ r ]], NumericQ ],
+                          _,                             False ] ] ] ] ] ] } ] },
+          { pool = walks[[ poolIdx ]] },
+          { size = Min[ n, Length @ pool ] },
+          Which[
+            poolIdx === { }, { },
+            distSpec === None || size <= 1, If[ size >= Length @ pool, pool, RandomSample[ pool, size ] ],
+            True,
+              With[ { finiteMax = Replace[ Max @ Select[ Flatten @ pathMatrix[[ poolIdx, poolIdx ]], # < Infinity & ],
+                        _?( ! NumericQ @ # & ) -> 0 ] },
+                { subMatrix = Replace[ pathMatrix[[ poolIdx, poolIdx ]], Infinity -> finiteMax + 1, { 2 } ] },
+                If[ distSpec === "Max",
+                  With[ { cliques = Last @ NestWhile[
+                      state |-> With[ { d = First @ First @ state,
+                          mask = UnitStep[ finiteMax - subMatrix ] * ( 1 - IdentityMatrix[ Length @ pool ] ) },
+                        { aux = AdjacencyGraph[ pool, UnitStep[ subMatrix - d ] * mask ] },
+                        { Rest @ First @ state, FindClique[ aux, { size, VertexCount @ aux }, maxCl ] } ],
+                      { Reverse @ DeleteCases[ Union @@ subMatrix, 0 | _?( # > finiteMax & ) ], { } },
+                      First @ # =!= { } && Last @ # === { } & ] },
+                    If[ cliques === { }, { }, RandomSample[ RandomChoice[ cliques ], UpTo[ size ] ] ] ],
+                  With[ { range = Replace[ distSpec,
+                      { d_?NumericQ                        :> { d, finiteMax },
+                        { dMin_?NumericQ, Infinity }       :> { dMin, finiteMax },
+                        { dMin_?NumericQ, dMax_?NumericQ } :> { dMin, dMax },
+                        _ :> { 0, finiteMax } } ] },
+                    { aux = AdjacencyGraph[ pool,
+                        UnitStep[ subMatrix - range[[ 1 ]] ] * UnitStep[ range[[ 2 ]] - subMatrix ]
+                          * ( 1 - IdentityMatrix[ Length @ pool ] ) ] },
+                    { found = FindClique[ aux, { Min[ size, VertexCount @ aux ], VertexCount @ aux }, maxCl ] },
+                    If[ found === { }, { }, RandomSample[ RandomChoice[ found ], UpTo[ size ] ] ] ] ] ] ] ] ] ]
 
 SelectInfraWalk[ graph_Graph, walks_List, All, opts : OptionsPattern[] ] :=
-  SelectInfraWalk[ graph, walks, UpTo[ Length[ walks ] ], opts ]
+  With[ { result = SelectInfraWalk[ graph, walks, UpTo[ Length[ walks ] ], opts ] },
+    result /; ListQ[ result ] ]
 
 SelectInfraWalk[ graph_Graph, walks_List, n_Integer : 1, opts : OptionsPattern[] ] :=
   With[ { result = SelectInfraWalk[ graph, walks, UpTo[ n ], opts ] },
-    If[ ListQ[ result ] && Length[ result ] < n, $Failed, result ] ]
+    If[ Length[ result ] < n, { }, result ] /; ListQ[ result ] ]
 
 SelectInfraWalk[ graph_Graph, countSpec : ( _Integer | UpTo[ _Integer ] | All ), opts : OptionsPattern[] ] :=
   SelectInfraWalk[ graph, #, countSpec, opts ] &
 
-
-(* ===================== EmbeddingClosest ===================== *)
-
-(* --- walk graphs: select on the vertex sequences, return the graphs picked; a DAG spreads into its geodesics, a cycle graph ranks as a cycle against the Euclidean circle --- *)
-
-EmbeddingClosest[ graph_Graph, w_Graph, ref_ ] := EmbeddingClosest[ graph, { w }, ref ]
+EmbeddingClosest[ graph_Graph, w_Graph, ref_ ] :=
+  EmbeddingClosest[ graph, { w }, ref ]
 
 EmbeddingClosest[ graph_Graph, paths : { __Graph }, ref_ ] :=
   With[ {
@@ -260,10 +237,8 @@ EmbeddingClosest[ graph_Graph, paths : { __Graph }, ref_ ] :=
                     Line[ Append[ pts, First @ pts ] ],
                     Line[ Append[ circlePoints, First @ circlePoints ] ] ] ] ] ] ] ] ] ]
 
-
-(* --- segment-shape: bundle of paths, reference {p1, p2}, ranked by the plane Hausdorff distance between the embedded polyline and the straight segment p1 p2 --- *)
-
-EmbeddingClosest[ graph_Graph, paths_List, { p1_, p2_ } ] /; Length[ paths ] <= 1 := paths
+EmbeddingClosest[ graph_Graph, paths_List, { p1_, p2_ } ] /; Length[ paths ] <= 1 :=
+  paths
 
 EmbeddingClosest[ graph_Graph, paths_List, { p1_, p2_ } ] :=
   With[ { coords = GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ],
@@ -272,9 +247,6 @@ EmbeddingClosest[ graph_Graph, paths_List, { p1_, p2_ } ] :=
     MinimalBy[ paths,
       path |-> If[ Length @ path >= 2, RegionHausdorffDistance[ Line[ coords[[ Lookup[ vertexIndex, path ] ]] ], Line[ ends ] ], 0 ] ]
   ]
-
-
-(* --- shell-shape: a List of vertex sets ranked by the directed Hausdorff distance to the Euclidean sphere of radius r, Max over set vertices of |EuclideanDistance(v, c) - r| --- *)
 
 EmbeddingClosest[ graph_Graph, sets_List, { center_, radius_?NumericQ } ] :=
   With[ { coords = GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ],
@@ -286,12 +258,10 @@ EmbeddingClosest[ graph_Graph, sets_List, { center_, radius_?NumericQ } ] :=
               coords[[ Lookup[ vertexIndex, set ] ]] ] ] ]
   ]
 
-
-(* --- curve-shape: a length-2 bare list stays a {p1, p2} vertex reference, so explicit coordinates must be wrapped in Line[...]; a spline is sampled densely before the plane Hausdorff distance is taken --- *)
-
 EmbeddingClosest[ graph_Graph, paths_List, crv_ ] /;
     ( MatchQ[ crv, _Line | _BSplineCurve | _BezierCurve ] ||
-      MatrixQ[ crv, NumericQ ] && Last[ Dimensions[ crv ] ] === 2 && Length[ crv ] >= 3 ) && Length[ paths ] <= 1 := paths
+      MatrixQ[ crv, NumericQ ] && Last[ Dimensions[ crv ] ] === 2 && Length[ crv ] >= 3 ) && Length[ paths ] <= 1 :=
+  paths
 
 EmbeddingClosest[ graph_Graph, paths_List, crv_ ] /;
     MatchQ[ crv, _Line | _BSplineCurve | _BezierCurve ] ||
@@ -308,18 +278,11 @@ EmbeddingClosest[ graph_Graph, paths_List, crv_ ] /;
         Line[ curvePts ] ] ]
   ]
 
-
-(* --- operator form --- *)
-
-EmbeddingClosest[ graph_Graph, ref_List ] := EmbeddingClosest[ graph, #, ref ] &
+EmbeddingClosest[ graph_Graph, ref_List ] :=
+  EmbeddingClosest[ graph, #, ref ] &
 
 EmbeddingClosest[ graph_Graph, crv : ( _Line | _BSplineCurve | _BezierCurve ) ] :=
   EmbeddingClosest[ graph, #, crv ] &
-
-
-(* ===================== FindEmbeddingClosestPath ===================== *)
-
-(* sample the curve, map each sample to its nearest vertex under the embedding, drop consecutive repeats, and join successive anchors by geodesics *)
 
 FindEmbeddingClosestPath[ graph_Graph, curve_ ] :=
   With[ { coords = GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ],
@@ -335,16 +298,14 @@ FindEmbeddingClosestPath[ graph_Graph, curve_ ] :=
     PathGraph[ MapIndexed[ { First @ #2, #1 } &, walk ], DirectedEdges -> True ]
   ]
 
-
-(* ===================== SprayGraph ===================== *)
-
-(* [g, c]: the BFS DAG of all geodesics from c -- edge u -> v whenever d(c, v) = d(c, u) + 1 and u-v is a g-edge.  [g, <| v -> m |>]: the same with d_c replaced by min_i d(ci, v).  [g, pairs]: the union of geodesics between the listed pairs *)
+(* [g, c]: the BFS DAG of all geodesics from c -- edge u -> v whenever d(c, v) = d(c, u) + 1 and u-v is a g-edge.  [g, <| v -> m |>]: the same with
+   d_c replaced by min_i d(ci, v).  [g, pairs]: the union of geodesics between the listed pairs *)
 
 Options[ SprayGraph ] = {
   "AxisLength"    -> All,
   "PathThickness" -> 0,
   "Directed"      -> True
-};
+}
 
 SprayGraph[ g_Graph, c_, opts : OptionsPattern[] ] /; MemberQ[ VertexList[ g ], c ] :=
   SprayGraph[ g, <| c -> 1 |>, opts ]
@@ -352,7 +313,6 @@ SprayGraph[ g_Graph, c_, opts : OptionsPattern[] ] /; MemberQ[ VertexList[ g ], 
 SprayGraph[ g_Graph, sources_List, opts : OptionsPattern[] ] /; SubsetQ[ VertexList[ g ], sources ] :=
   SprayGraph[ g, KeySort @ AssociationMap[ 1 &, sources ], opts ]
 
-(* the spray keeps the base graph's embedding, so its figures stay aligned with the substrate *)
 SprayGraph[ g_Graph, fam_Association, OptionsPattern[] ] /; SubsetQ[ VertexList[ g ], Keys @ fam ] :=
   With[ { dist = AssociationThread[ VertexList[ g ], Min /@ Transpose[ GraphDistance[ g, # ] & /@ Keys @ fam ] ],
           depth = Replace[ OptionValue[ "AxisLength" ], All -> Infinity ],
@@ -399,10 +359,10 @@ SprayGraph[ g_Graph, pairs : { { _, _ } .. }, OptionsPattern[] ] :=
     GraphUnion @@ ( PathGraph[ #, DirectedEdges -> directed ] & /@ selectedPaths )
   ]
 
-
-(* ===================== GeodesicExtensionGraph ===================== *)
-
-(* [g, {p1, p2}]: the DAG of all geodesic extensions of the segment p1 -> p2 beyond p2 -- vertex set { e : d(p1, e) == d(p1, p2) + d(p2, e) }, edges u -> v the g-edges with d(p1, v) == d(p1, u) + 1 -- so its directed paths from the source p2 are exactly the geodesics from p2 that stay geodesic behind any p1 -> p2 geodesic.  The set is closed under such steps (d(p1, v) <= d(p1, p2) + d(p2, v) <= d(p1, u) + 1 forces equality), so the edges need no membership test.  Wrapper anchors spread to one DAG per anchor pair *)
+(* [g, {p1, p2}]: the DAG of all geodesic extensions of the segment p1 -> p2 beyond p2 -- vertex set { e : d(p1, e) == d(p1, p2) + d(p2, e) }, edges
+   u -> v the g-edges with d(p1, v) == d(p1, u) + 1 -- so its directed paths from the source p2 are exactly the geodesics from p2 that stay geodesic
+   behind any p1 -> p2 geodesic.  The set is closed under such steps (d(p1, v) <= d(p1, p2) + d(p2, v) <= d(p1, u) + 1 forces equality), so the edges
+   need no membership test.  Wrapper anchors spread to one DAG per anchor pair *)
 
 GeodesicExtensionGraph[ g_Graph, { p1_, p2_ } ] /; VertexQ[ g, p1 ] && VertexQ[ g, p2 ] :=
   With[ { d1 = AssociationThread[ VertexList @ g, GraphDistance[ g, p1 ] ],
@@ -414,7 +374,6 @@ GeodesicExtensionGraph[ g_Graph, { p1_, p2_ } ] /; VertexQ[ g, p1 ] && VertexQ[ 
       VertexCoordinates -> Lookup[ coords, pool ] ]
   ]
 
-(* an Association spreads over its support, a walk graph into the vertex sequences it stands for, a list of graphs into all of theirs; anything else is one realisation *)
 GeodesicExtensionGraph[ g_Graph, { p1_, p2_ } ] :=
   With[ {
       walksOf = w |-> With[ { vs = VertexList @ w },
@@ -439,12 +398,9 @@ GeodesicExtensionGraph[ g_Graph, { p1_, p2_ } ] :=
         True,                         { x } ], { p1, p2 } ] ] },
     Replace[ GeodesicExtensionGraph[ g, # ] & /@ pairs, { one_ } :> one ] /; pairs =!= { { p1, p2 } } ]
 
-
-(* ===================== PathSubgraph ===================== *)
-
 (* the union of all simple u-v paths of length at most k; Automatic is the geodesic case k = d(u, v) *)
 
-Options[ PathSubgraph ] = { "Directed" -> True };
+Options[ PathSubgraph ] = { "Directed" -> True }
 
 PathSubgraph[ g_Graph, u_, v_, lengthSpec : ( _Integer | UpTo[ _Integer ] | All ) : Automatic, OptionsPattern[] ] :=
   With[ { k = Replace[ lengthSpec, {
@@ -462,12 +418,8 @@ PathSubgraph[ g_Graph, u_, v_, lengthSpec : ( _Integer | UpTo[ _Integer ] | All 
     ]
   ]
 
-
-(* ===================== InfraDeformationSize ===================== *)
-
-(* L - sharedPrefixEdges - sharedSuffixEdges: the width of the window on which the two walks differ.  One-sided, measured in the reference's edges, so not a symmetric walk-space metric.  A walk graph is read as its vertex sequence, the cyclic core when it is closed *)
-
-InfraDeformationSize[ ref_, ws : { __Graph } ] := InfraDeformationSize[ ref, # ] & /@ ws
+InfraDeformationSize[ ref_, ws : { __Graph } ] :=
+  InfraDeformationSize[ ref, # ] & /@ ws
 
 InfraDeformationSize[ ref_, def_Graph ] :=
   InfraDeformationSize[ ref, With[ { vs = VertexList @ def },
@@ -487,9 +439,10 @@ InfraDeformationSize[ ref_Graph, def_List ] :=
         SelectFirst[ vs, If[ DirectedGraphQ @ ref, VertexInDegree[ ref, # ] == 0, VertexDegree[ ref, # ] == 1 ] &, First @ vs ],
         { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] ], def ]
 
-InfraDeformationSize[ ref_List, def_List ] := With[
-  { m = Min[ Length @ ref, Length @ def ] },
-  { p = LengthWhile[ Transpose @ { Take[ ref, m ], Take[ def, m ] }, Apply @ SameQ ],
-    s = LengthWhile[ Transpose @ { Take[ Reverse @ ref, m ], Take[ Reverse @ def, m ] }, Apply @ SameQ ] },
-  Max[ 0, ( Length[ ref ] - 1 ) - ( p - 1 ) - ( s - 1 ) ]
-]
+InfraDeformationSize[ ref_List, def_List ] :=
+  With[
+    { m = Min[ Length @ ref, Length @ def ] },
+    { p = LengthWhile[ Transpose @ { Take[ ref, m ], Take[ def, m ] }, Apply @ SameQ ],
+      s = LengthWhile[ Transpose @ { Take[ Reverse @ ref, m ], Take[ Reverse @ def, m ] }, Apply @ SameQ ] },
+    Max[ 0, ( Length[ ref ] - 1 ) - ( p - 1 ) - ( s - 1 ) ]
+  ]

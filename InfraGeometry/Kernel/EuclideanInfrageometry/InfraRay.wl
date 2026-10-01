@@ -1,11 +1,10 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraRay *)
 
-
-(* ===================== InfraRay ===================== *)
-
-(* InfraRay[p, q] is inert: the ray from p through q.  Its graph is the ray DAG R(p, q) = I(p, q) union F(p, q), F(p, q) = { v : d(p, v) == d(p, q) + d(q, v) }, with the arrows v -> w of rising d(p, .); its chains from p to a sink are exactly the geodesics from p through q that cannot be prolonged while staying geodesic (design Thm. ray).  InfraRay[p, p] is the pencil at p, every maximal geodesic out of p *)
+(* InfraRay[p, q] is inert: the ray from p through q.  Its graph is the ray DAG R(p, q) = I(p, q) union F(p, q), F(p, q) = { v : d(p, v) == d(p, q) +
+   d(q, v) }, with the arrows v -> w of rising d(p, .); its chains from p to a sink are exactly the geodesics from p through q that cannot be
+   prolonged while staying geodesic (design Thm. ray).  InfraRay[p, p] is the pencil at p, every maximal geodesic out of p *)
 
 InfraMeasurement[ graph_Graph,
     InfraRay[ p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ] ], "Graph" ] :=
@@ -23,44 +22,38 @@ InfraMeasurement[ graph_Graph,
           TrueQ @ Lookup[ inside, Key @ # ] && Lookup[ dp, Key @ # ] == Lookup[ dp, Key @ v ] + 1 & ],
         support ] ] ]
 
-
-(* ===================== FindInfraRay ===================== *)
-
-(* a ray from p through q: a geodesic p ... q ... e with d(p, e) == d(p, q) + d(q, e) that no neighbour of e prolongs.  Found on the substrate directly, by prolonging a geodesic from p to q one outward step at a time, independently of the ray DAG *)
+(* a ray from p through q: a geodesic p ... q ... e with d(p, e) == d(p, q) + d(q, e) that no neighbour of e prolongs.  Found on the substrate
+   directly, by prolonging a geodesic from p to q one outward step at a time, independently of the ray DAG *)
 
 FindInfraRay[ graph_Graph, p_, q_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic ] :=
-  Module[ { acc = { }, descend },
-    With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
-            dp  = AssociationThread[ VertexList @ graph, GraphDistance[ graph, p ] ] },
-      { k = Lookup[ dp, Key @ q ] },
-      descend[ path_ ] := With[ { nexts = Sort @ Select[ AdjacencyList[ graph, Last @ path ],
-            Lookup[ dp, Key @ # ] == Lookup[ dp, Key @ Last @ path ] + 1 & ] },
-        If[ nexts === { },
-          AppendTo[ acc, path ]; If[ Length @ acc >= cap, Throw[ Null, descend ] ],
-          Scan[ descend[ Append[ path, # ] ] &, nexts ] ] ];
-      Catch[
-        Scan[ descend,
-          Which[
+  With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
+          dp  = AssociationThread[ VertexList @ graph, GraphDistance[ graph, p ] ] },
+    { k = Lookup[ dp, Key @ q ] },
+    { rays = Catenate @ Last @ Reap @ NestWhile[
+        Apply[ { stack, found } |-> With[ { path = First @ stack },
+          { nexts = Sort @ Select[ AdjacencyList[ graph, Last @ path ],
+              Lookup[ dp, Key @ # ] == Lookup[ dp, Key @ Last @ path ] + 1 & ] },
+          If[ nexts === { },
+            ( Sow[ path ]; { Rest @ stack, found + 1 } ),
+            { Join[ Append[ path, # ] & /@ nexts, Rest @ stack ], found } ] ] ],
+        { Which[
             k === Infinity, { },
             k === 0,        { { p } },
-            True,           FindPath[ graph, p, q, { k }, Replace[ cap, Infinity -> All ] ] ] ];
-        Null, descend ];
-      Switch[ count,
-        Automatic, First[ acc, { } ],
-        All,       acc,
-        _UpTo,     Take[ acc, count ],
-        _,         If[ Length @ acc < count, $Failed, Take[ acc, count ] ] ] ] ]
+            True,           FindPath[ graph, p, q, { k }, Replace[ cap, Infinity -> All ] ] ],
+          0 },
+        state |-> First @ state =!= { } && Last @ state < cap ] },
+    Switch[ count,
+      Automatic, First[ rays, { } ],
+      All,       rays,
+      _UpTo,     Take[ rays, count ],
+      _,         If[ Length @ rays < count, { }, Take[ rays, count ] ] ] ]
 
+InfraRayQ[ graph_Graph, ws : { __Graph } ] :=
+  AllTrue[ ws, InfraRayQ[ graph, # ] & ]
 
-(* ===================== InfraRayQ ===================== *)
-
-(* a geodesic inextensible at its far end only: the origin is an endpoint by fiat, which is what distinguishes a ray from a line *)
-
-InfraRayQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraRayQ[ graph, # ] & ]
-
-(* a family of instances, the shape FindInfraRay[graph, o, v, n | UpTo[n] | All] returns *)
-InfraRayQ[ graph_Graph, ws : { { ___ } .. } ] := AllTrue[ ws, InfraRayQ[ graph, # ] & ]
+InfraRayQ[ graph_Graph, ws : { { ___ } .. } ] :=
+  AllTrue[ ws, InfraRayQ[ graph, # ] & ]
 
 InfraRayQ[ graph_Graph, w_Graph ] :=
   With[ { vs = VertexList @ w },
@@ -84,19 +77,14 @@ InfraRayQ[ graph_Graph, ray_List ] /; Length[ ray ] >= 2 :=
   NoneTrue[ AdjacencyList[ graph, Last @ ray ],
     GraphDistance[ graph, First @ ray, # ] == Length[ ray ] & ]
 
-InfraRayQ[ _Graph, ray_List ] /; Length[ ray ] < 2 := False
+InfraRayQ[ _Graph, ray_List ] /; Length[ ray ] < 2 :=
+  False
 
+PencilDirections[ graph_Graph, origin_ ] :=
+  FindInfraRay[ graph, origin, origin, All ]
 
-(* ===================== PencilDirections / PencilCardinality ===================== *)
-
-(* the pencil at O is the set of rays from O, which is the ray from O through O itself *)
-
-PencilDirections[ graph_Graph, origin_ ] := FindInfraRay[ graph, origin, origin, All ]
-
-PencilCardinality[ graph_Graph, origin_ ] := InfraMeasurement[ graph, InfraRay[ origin, origin ], "Cardinality" ]
-
-
-(* ===================== Scene-DSL constructor ===================== *)
+PencilCardinality[ graph_Graph, origin_ ] :=
+  InfraMeasurement[ graph, InfraRay[ origin, origin ], "Cardinality" ]
 
 dispatchConstruction[ graph_Graph, InfraRay[ origin_, v_, opts___Rule ] ] :=
   capBranches[

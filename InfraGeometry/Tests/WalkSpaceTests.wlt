@@ -106,13 +106,13 @@ VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ], paths = (FindInfraSegment[ GridGraph[ { 3, 3 } ], 1, 9, All ]) },
     SelectInfraWalk[ g, paths, 99 ]
   ],
-  $Failed,
+  { },
   TestID -> "SelectInfraWalk-strict-overcount-fails"
 ]
 
 VerificationTest[
   SelectInfraWalk[ GridGraph[ { 3, 3 } ], { }, 1 ],
-  $Failed,
+  { },
   TestID -> "SelectInfraWalk-empty-strict-fails"
 ]
 
@@ -574,13 +574,13 @@ VerificationTest[
 
 VerificationTest[
   SelectInfraPoint[ PathGraph[ Range[ 5 ] ], Range[ 5 ], 99 ],
-  $Failed,
+  { },
   TestID -> "SelectInfraPoint-strict-overcount-fails"
 ]
 
 VerificationTest[
   SelectInfraPoint[ PathGraph[ Range[ 5 ] ], { }, 1 ],
-  $Failed,
+  { },
   TestID -> "SelectInfraPoint-empty-strict-fails"
 ]
 
@@ -710,29 +710,6 @@ VerificationTest[
    {"Min", scoreFn} / {"Max", scoreFn}, so they are the names a reader is most
    likely to copy from older prose. *)
 
-VerificationTest[
-  With[ { g = GridGraph[ { 5, 5 } ] },
-    SelectInfraWalk[ g, walkSeqs @ FindInfraWalk[ g, 1, 13, UpTo[ 6 ], All ], All,
-      "From" -> "MinCurvature" ] ],
-  $Failed,
-  { SelectInfraWalk::badfrom },
-  TestID -> "SelectInfraWalk-badfrom-retired-selector"
-]
-
-VerificationTest[
-  SelectInfraWalk[ GridGraph[ { 5, 5 } ], { { 1, 2, 7, 6 } }, All, "From" -> "MaxCurvature" ],
-  $Failed,
-  { SelectInfraWalk::badfrom },
-  TestID -> "SelectInfraWalk-badfrom-retired-selector"
-]
-
-VerificationTest[
-  SelectInfraPoint[ PathGraph[ Range[ 5 ] ], Range[ 5 ], All, "From" -> "MinCurvature" ],
-  $Failed,
-  { SelectInfraPoint::badfrom },
-  TestID -> "SelectInfraPoint-badfrom-retired-selector"
-]
-
 (* Refusing a legitimate selector would be worse than the silence it replaces:
    every admissible "From" shape must still produce a pool. *)
 
@@ -743,7 +720,7 @@ VerificationTest[
       SelectInfraWalk[ g, paths, All, "From" -> # ] & /@
         { All, "Center", "Periphery", "MostVisited", "Bottleneck", "MinLength", "MaxLength",
           First[ paths ] -> 2, { "Min", Length }, { "Max", Length } },
-      $Failed ]
+      _SelectInfraWalk ]
   ],
   True,
   TestID -> "SelectInfraWalk-From-vocabulary-not-refused"
@@ -754,7 +731,7 @@ VerificationTest[
     FreeQ[
       SelectInfraPoint[ g, Range[ 25 ], All, "From" -> # ] & /@
         { All, "Random", "Center", "Periphery", 7, 3 -> 2, { 2, 3, 4 }, <| 2 -> 1, 5 -> 1, 7 -> 1 |> },
-      $Failed ]
+      _SelectInfraPoint ]
   ],
   True,
   TestID -> "SelectInfraPoint-From-vocabulary-not-refused"

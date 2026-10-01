@@ -288,7 +288,7 @@ VerificationTest[
 
 VerificationTest[
   ExtendInfraSegment[PathGraph[Range[5]], 1, 2, 1, 5, 1],
-  $Failed,
+  { },
   TestID -> "ExtendInfraSegment-Tarski-PathGraph-strict-fails"
 ]
 
@@ -326,7 +326,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraReflection[PathGraph[Range[5]], 1, 4, 1],
-  $Failed,
+  { },
   TestID -> "FindInfraReflection-PathGraph-no-room-strict-fails"
 ]
 
@@ -352,7 +352,7 @@ VerificationTest[
 
 VerificationTest[
   FindTarskiCounterexample[PathGraph[Range[5]], TarskiCongruenceReflexivityQ],
-  $Failed,
+  { },
   TestID -> "FindTarskiCounterexample-AlwaysTrue-strict-fails"
 ]
 
@@ -369,8 +369,8 @@ VerificationTest[
 ]
 
 VerificationTest[
-  Quiet @ FindTarskiCounterexample[PathGraph[Range[5]], TarskiContinuityQ, All],
-  $Failed,
+  MatchQ[FindTarskiCounterexample[PathGraph[Range[5]], TarskiContinuityQ, All], _FindTarskiCounterexample],
+  True,
   TestID -> "FindTarskiCounterexample-Continuity-no-finite-witness"
 ]
 

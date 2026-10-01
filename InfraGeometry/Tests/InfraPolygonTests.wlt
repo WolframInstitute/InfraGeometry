@@ -74,7 +74,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraRegularPolygon[ CycleGraph[ 6 ], { 1, 5 }, 6, 1 ],
-  $Failed,
+  { },
   TestID -> "FindInfraRegularPolygon-cycle6-impossible-diagonal"
 ]
 
@@ -103,7 +103,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraRegularPolygon[ PathGraph[ Range[ 5 ] ], { 1 }, 4, 1 ],
-  $Failed,
+  { },
   TestID -> "FindInfraRegularPolygon-pathgraph-no-4-cycle"
 ]
 
@@ -121,7 +121,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraRegularPolygon[ PathGraph[ Range[ 5 ] ], { 2 }, 3, 1 ],
-  $Failed,
+  { },
   TestID -> "FindInfraRegularPolygon-pathgraph-distance2-no-triangle"
 ]
 
@@ -170,27 +170,6 @@ VerificationTest[
 
 (* ===================== Error messages ===================== *)
 
-VerificationTest[
-  FindInfraRegularPolygon[ CycleGraph[ 6 ], { 1 }, 6, Properties -> { "Convex" } ],
-  $Failed,
-  { FindInfraRegularPolygon::badproperty },
-  TestID -> "FindInfraRegularPolygon-badproperty"
-]
-
-VerificationTest[
-  FindInfraRegularPolygon[ CycleGraph[ 6 ], { 1 }, 6, Method -> "Embedding" ],
-  $Failed,
-  { FindInfraRegularPolygon::badmethod },
-  TestID -> "FindInfraRegularPolygon-badmethod"
-]
-
-VerificationTest[
-  FindInfraRegularPolygon[ CycleGraph[ 6 ], { 1, 2, 3, 4 }, 6 ],
-  $Failed,
-  { FindInfraRegularPolygon::badcount },
-  TestID -> "FindInfraRegularPolygon-too-many-diagonals"
-]
-
 (* ===================== Slot grammar: Automatic ===================== *)
 
 (* GridGraph[{3, 3}] unit squares: sides 1, 2-diagonals constant 2.
@@ -211,7 +190,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraRegularPolygon[ GridGraph[ { 3, 3 } ], { 1, { 3, 3 } }, 4, 1 ],
-  $Failed,
+  { },
   TestID -> "FindInfraRegularPolygon-grid-range-2diagonal-impossible"
 ]
 
@@ -368,13 +347,6 @@ VerificationTest[
     InfraPolygonQ[ GridGraph[ { 3, 3 } ], # ] & ],
   True,
   TestID -> "FindInfraPolygon-all-valid"
-]
-
-VerificationTest[
-  FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, Method -> "Bogus" ],
-  $Failed,
-  { FindInfraPolygon::badmethod },
-  TestID -> "FindInfraPolygon-badmethod"
 ]
 
 (* InfraPolygonQ rejects an open (non-closed) leg chain. *)

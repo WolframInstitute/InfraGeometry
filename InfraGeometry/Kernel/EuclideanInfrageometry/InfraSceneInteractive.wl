@@ -1,19 +1,14 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraSceneInteractive *)
 
-PackageScope[geodesicGraph]
-PackageScope[geodesicCycleGraph]
+PackageScope[ geodesicGraph ]
+PackageScope[ geodesicCycleGraph ]
 
-
-$InfraSegmentSelectOptions = { None, "Central", "Peripheral", "EmbeddingClosest" };
+$InfraSegmentSelectOptions = { None, "Central", "Peripheral", "EmbeddingClosest" }
 
 $InfraCircleSelectOptions = { None, "Central", "Peripheral",
-  "MinLength", "MaxLength", "EmbeddingClosest" };
-
-
-(* ===================== Per-object viewers ===================== *)
-
+  "MinLength", "MaxLength", "EmbeddingClosest" }
 
 SetAttributes[ PointViewer, HoldRest ]
 
@@ -24,8 +19,7 @@ PointViewer[ g_Graph, sym_: None ] :=
       With[ { pts = FindInfraPoint[ g, UpTo[ n ], "From" -> from, "MaxCliques" -> 100,
           "Distance" -> Switch[ separation, "None", None, "Max", "Max", "Range", distRange ] ] },
         If[ sym =!= None, sym = pts ];
-        (* a point family is a density, not a set: the ink reads a bare vertex List as a region *)
-        InfraSubstrateHighlight[ g, { Directive[ $InfraPointColor ], InfraDensity[ g, pts ] }, ImageSize -> 600 ] ],
+        InfraSubstrateHighlight[ g, { Directive[ $InfraPointColor ], InfraDensity[ g, pts ] } ] ],
       Grid[ {
         { Control[ { { n, 1, "Points" }, ControlType -> InputField } ],
           Control[ { { from, "Random", "From" }, { "Random", "Center", "Periphery" } } ] },
@@ -39,7 +33,6 @@ PointViewer[ g_Graph, sym_: None ] :=
       SaveDefinitions -> True
     ]
   ]
-
 
 SegmentViewer[ g_Graph ] :=
   With[ {
@@ -59,8 +52,7 @@ SegmentViewer[ g_Graph ] :=
             InfraSubstrateHighlight[ g, { Directive[ $InfraSegmentColor ],
               If[ sel === None, InfraSegment[ p1, p2 ], geodesicGraph /@ segments ] } ],
             { Style[ p1, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ],
-              Style[ p2, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] },
-            ImageSize -> 600 ],
+              Style[ p2, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] } ],
           { "MouseClicked" :> With[ { mp = MousePosition[ "Graphics" ] },
             If[ mp =!= None,
               With[ { clicked = First @ nearestFunc[ mp ] },
@@ -80,7 +72,6 @@ SegmentViewer[ g_Graph ] :=
     ]
   ]
 
-
 ShellViewer[ g_Graph ] :=
   With[ {
       initPt      = RandomChoice[ VertexList[ g ] ],
@@ -94,8 +85,7 @@ ShellViewer[ g_Graph ] :=
         EventHandler[
           HighlightGraph[
             InfraSubstrateHighlight[ g, { Directive[ $InfraShellColor ], shells } ],
-            { Style[ p, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] },
-            ImageSize -> 600 ],
+            { Style[ p, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] } ],
           { "MouseClicked" :> With[ { mp = MousePosition[ "Graphics" ] },
             If[ mp =!= None,
               With[ { clicked = First @ nearestFunc[ mp ] }, p = clicked; seed++ ] ] ] },
@@ -115,7 +105,6 @@ ShellViewer[ g_Graph ] :=
     ]
   ]
 
-
 CircleViewer[ g_Graph ] :=
   With[ {
       initPt      = RandomChoice[ VertexList[ g ] ],
@@ -134,8 +123,7 @@ CircleViewer[ g_Graph ] :=
           HighlightGraph[
             InfraSubstrateHighlight[ g, { Directive[ $InfraCircleColor ],
               If[ sel === None, InfraCircle[ p, "Radius" -> r ], geodesicCycleGraph /@ circles ] } ],
-            { Style[ p, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] },
-            ImageSize -> 600 ],
+            { Style[ p, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] } ],
           { "MouseClicked" :> With[ { mp = MousePosition[ "Graphics" ] },
             If[ mp =!= None,
               With[ { clicked = First @ nearestFunc[ mp ] }, p = clicked; seed++ ] ] ] },
@@ -153,18 +141,14 @@ CircleViewer[ g_Graph ] :=
     ]
   ]
 
-
-(* ===================== InfraSceneViewer ===================== *)
-
-
 Options[ InfraSceneViewer ] = {
   "OpacityRange"   :> $InfraOpacityRange,
   "ThicknessRange" :> $InfraEdgeThickness,
   "PointSizeRange" -> 18,
   ImageSize        -> 500
-};
+}
 
-InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <||>, opts : OptionsPattern[ ] ] :=
+InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <| |>, opts : OptionsPattern[ ] ] :=
   With[ {
       nSteps  = Length @ scene[ "Steps" ],
       labels  = scene[ "Labels" ],
@@ -178,16 +162,22 @@ InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <||>, opt
         fixStack = { }, hiddenSteps = { },
         shown = { }, shownStep = 1, deadQ = False },
       With[ {
-          effInit = Function[ If[ fixStack === { }, init, Last[ fixStack ][[ 2 ]] ] ],
+          effInit = ( If[ fixStack === { }, init, Last[ fixStack ][[ 2 ]] ] ) &,
           shownQ  = obj |-> ! MemberQ[ hiddenSteps, objStep[ obj ] ] },
         {
-          refresh = Function[
+          refresh = (
             With[ { new = FindInfraScene[ scene, graph, step, effInit[ ] ] },
-              If[ new === { }, deadQ = True,
-                deadQ = False; shown = new; shownStep = step;
-                branch = Min[ branch, Length @ new ] ] ] ] },
+              If[ new === { },
+                deadQ = True,
+                deadQ = False;
+                shown = new;
+                shownStep = step;
+                branch = Min[ branch, Length @ new ] ] ] ) & },
         {
-          goStep = s |-> ( step = Clip[ s, { 1, nSteps } ]; branch = 1; refresh[ ] ) },
+          goStep = s |-> (
+            step = Clip[ s, { 1, nSteps } ];
+            branch = 1;
+            refresh[ ] ) },
         refresh[ ];
         Pane[ Column[ {
           Grid[ { {
@@ -208,7 +198,7 @@ InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <||>, opt
               If[ MemberQ[ hiddenSteps, step ], eyeClosedIcon, eyeOpenIcon ],
               If[ MemberQ[ hiddenSteps, step ],
                 hiddenSteps = DeleteCases[ hiddenSteps, step ],
-                AppendTo[ hiddenSteps, step ] ] ]
+                hiddenSteps = Append[ hiddenSteps, step ] ] ]
           } }, Alignment -> { { Center, Center, Right }, Center },
             ItemSize -> { { 2.4, Scaled[ .8 ], 2.4 }, Automatic } ],
           Grid[ { {
@@ -218,8 +208,9 @@ InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <||>, opt
               mode === "Diffuse", textChip[ Row[ { Length @ shown, " branches diffused" } ] ],
               True, Row[ {
                 Checkbox[ Dynamic[ MemberQ[ fixStack[[ All, 1 ]], step ],
-                  nv |-> ( If[ nv,
-                      AppendTo[ fixStack, { step, shown[[ Min[ branch, Length @ shown ], 1 ]] } ],
+                  nv |-> (
+                    If[ nv,
+                      fixStack = Append[ fixStack, { step, shown[[ Min[ branch, Length @ shown ], 1 ]] } ],
                       fixStack = Select[ fixStack, First[ # ] < step & ] ];
                     refresh[ ] ) ] ], " Fixed",
                 Spacer[ 14 ],
@@ -233,7 +224,6 @@ InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <||>, opt
             InfraSubstrateHighlight[ graph, { }, Sequence @@ hlOpts, ImageSize -> imgW ],
             InfraSubstrateHighlight[ graph,
               If[ mode === "Diffuse",
-                (* a binding is already a shape, so the realisations of one object across the shown branches are its bundle or its family; only a point needs promoting, its realisations being bare vertices that as a bare List would ink as one region *)
                 With[ { boundKeys = Keys @ First[ shown ][[ 1 ]] },
                   ( obj |-> With[ { reps = DeleteDuplicates[ #[[ 1 ]][ obj ] & /@ shown ] },
                       If[ AllTrue[ reps, pointQ[ graph, # ] & ], KeySort @ Counts @ reps, reps ] ] ) /@
@@ -245,55 +235,58 @@ InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <||>, opt
     ]
   ]
 
-
-(* ===================== Viewer chrome ===================== *)
-
-
 makeIcon[ icon_, roundedSide_: "both", widthFactor_: 1, heightFactor_: 1,
     background_: LightDarkSwitched[ GrayLevel[ .9 ], GrayLevel[ .3 ] ] ] :=
   Graphics[ {
     { background, Rectangle[ { -widthFactor, -heightFactor }, { widthFactor, heightFactor },
       RoundingRadius -> Switch[ roundedSide, "left", { Left -> .5 }, "right", { Right -> .5 }, "both", .5 ] ] },
-    { Thick, RGBColor[ 0.161, 0.667, 0.887 ], icon } },
+    { Thick, StandardBlue, icon } },
     ImageSize -> 20 { widthFactor, heightFactor }, AspectRatio -> Full, PlotRangePadding -> None ]
 
-leftArrowIcon  := makeIcon[ Line[ { { .25, .5 }, { -.25, 0 }, { .25, -.5 } } ], "left", 1, 1.45 ]
-rightArrowIcon := makeIcon[ Line[ { { -.25, .5 }, { .25, 0 }, { -.25, -.5 } } ], "right", 1, 1.45 ]
+leftArrowIcon  :=
+  makeIcon[ Line[ { { .25, .5 }, { -.25, 0 }, { .25, -.5 } } ], "left", 1, 1.45 ]
+rightArrowIcon :=
+  makeIcon[ Line[ { { -.25, .5 }, { .25, 0 }, { -.25, -.5 } } ], "right", 1, 1.45 ]
 
-downChevron := Graphics[ { RGBColor[ 0.161, 0.667, 0.887 ], Thick, CapForm[ "Round" ],
-  Line[ { { -1, .35 }, { 0, -.5 }, { 1, .35 } } ] },
-  ImageSize -> 11, AspectRatio -> 1, PlotRangePadding -> None ]
+downChevron :=
+  Graphics[ { StandardBlue, Thick, CapForm[ "Round" ],
+    Line[ { { -1, .35 }, { 0, -.5 }, { 1, .35 } } ] },
+    ImageSize -> 11, AspectRatio -> 1, PlotRangePadding -> None ]
 
-eyeGlyph = { Circle[ { 0, 0 }, { .7, .45 } ], Disk[ { 0, 0 }, .18 ] };
+eyeGlyph = { Circle[ { 0, 0 }, { .7, .45 } ], Disk[ { 0, 0 }, .18 ] }
 
-eyeOpenIcon   := makeIcon[ eyeGlyph, "both", 1.2, 1 ]
-eyeClosedIcon := makeIcon[ { eyeGlyph, Line[ { { -.85, -.6 }, { .85, .6 } } ] }, "both", 1.2, 1,
-  LightDarkSwitched[ GrayLevel[ .75 ], GrayLevel[ .22 ] ] ]
+eyeOpenIcon   :=
+  makeIcon[ eyeGlyph, "both", 1.2, 1 ]
+eyeClosedIcon :=
+  makeIcon[ { eyeGlyph, Line[ { { -.85, -.6 }, { .85, .6 } } ] }, "both", 1.2, 1,
+    LightDarkSwitched[ GrayLevel[ .75 ], GrayLevel[ .22 ] ] ]
 
-textChip[ content_ ] := Framed[
-  Style[ content, 13, Bold, FontFamily -> "Helvetica", LightDarkSwitched[ GrayLevel[ .15 ], White ] ],
-  Background -> LightDarkSwitched[ GrayLevel[ .9 ], GrayLevel[ .3 ] ],
-  FrameStyle -> RGBColor[ 0.161, 0.667, 0.887 ], RoundingRadius -> 5,
-  FrameMargins -> { { 10, 10 }, { 5, 5 } }, ContentPadding -> False ]
+textChip[ content_ ] :=
+  Framed[
+    Style[ content, 13, Bold, FontFamily -> "Helvetica", LightDarkSwitched[ GrayLevel[ .15 ], White ] ],
+    Background -> LightDarkSwitched[ GrayLevel[ .9 ], GrayLevel[ .3 ] ],
+    FrameStyle -> StandardBlue, RoundingRadius -> 5,
+    FrameMargins -> { { 10, 10 }, { 5, 5 } }, ContentPadding -> False ]
 
-alertChip[ content_ ] := Framed[
-  Style[ content, 13, Bold, FontFamily -> "Helvetica", RGBColor[ 0.75, 0.25, 0.2 ] ],
-  Background -> LightDarkSwitched[ RGBColor[ 0.99, 0.93, 0.92 ], GrayLevel[ .25 ] ],
-  FrameStyle -> RGBColor[ 0.86, 0.35, 0.3 ], RoundingRadius -> 5,
-  FrameMargins -> { { 10, 10 }, { 5, 5 } }, ContentPadding -> False ]
+alertChip[ content_ ] :=
+  Framed[
+    Style[ content, 13, Bold, FontFamily -> "Helvetica", StandardRed ],
+    Background -> LightDarkSwitched[ Lighter[ StandardRed, 0.9 ], GrayLevel[ .25 ] ],
+    FrameStyle -> StandardRed, RoundingRadius -> 5,
+    FrameMargins -> { { 10, 10 }, { 5, 5 } }, ContentPadding -> False ]
 
 SetAttributes[ iconButton, HoldRest ]
 
 iconButton[ icon_, action_ ] :=
   MouseAppearance[ EventHandler[ icon, { "MouseClicked" :> action }, PassEventsUp -> False ], "LinkHand" ]
 
-
-(* ===================== The viewers' carriers ===================== *)
-
-geodesicGraph[ seq_List ] := PathGraph[ seq, DirectedEdges -> True ]
-geodesicGraph[ w_Graph ]  := w
+geodesicGraph[ seq_List ] :=
+  PathGraph[ seq, DirectedEdges -> True ]
+geodesicGraph[ w_Graph ]  :=
+  w
 
 geodesicCycleGraph[ seq_List ] :=
   With[ { core = If[ Length[ seq ] >= 2 && First @ seq === Last @ seq, Most @ seq, seq ] },
     Graph[ core, DirectedEdge @@@ Partition[ core, 2, 1, 1 ] ] ]
-geodesicCycleGraph[ w_Graph ] := w
+geodesicCycleGraph[ w_Graph ] :=
+  w

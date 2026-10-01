@@ -102,14 +102,14 @@ VerificationTest[
 (* Empty level set -> $Failed for count=1 *)
 VerificationTest[
   FindInfraEllipse[ PathGraph[ Range[ 5 ] ], { 1, 3 }, 100, 1 ],
-  $Failed,
+  { },
   TestID -> "FindInfraEllipse-empty-level-set"
 ]
 
 (* Level set with no cycle (path, not a cycle) -> $Failed for count=1 *)
 VerificationTest[
   FindInfraEllipse[ PathGraph[ Range[ 5 ] ], { 1, 3 }, 2, 1 ],
-  $Failed,
+  { },
   TestID -> "FindInfraEllipse-PathGraph-no-cycle-in-level-set"
 ]
 
@@ -146,13 +146,6 @@ VerificationTest[
     Length @ FindInfraEllipse[ GridGraph[ { 4, 4 } ], { 2, 15 }, 4, All, Properties -> { } ] },
   { True, 6 },
   TestID -> "FindInfraEllipse-countless-is-one-witness"
-]
-
-VerificationTest[
-  FindInfraEllipse[ GridGraph[ { 4, 4 } ], { 2, 15 }, 4, Method -> "Embedding" ],
-  $Failed,
-  { FindInfraEllipse::badmethod },
-  TestID -> "FindInfraEllipse-badmethod"
 ]
 
 EndTestSection[]

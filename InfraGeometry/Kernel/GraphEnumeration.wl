@@ -1,14 +1,9 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
-
-(* ===================== Graph enumeration ===================== *)
-
-
-Options[ EnumerateGraphs ] = { "From" -> Automatic };
+Options[ EnumerateGraphs ] = { "From" -> Automatic }
 
 EnumerateGraphs[ n_, predQ_, All, opts : OptionsPattern[] ] :=
-  Module[ { source },
-    source = OptionValue[ "From" ];
+  With[ { source = OptionValue[ "From" ] },
     If[ source === Automatic,
       Select[
         SortBy[ GraphData /@ GraphData[ "Connected", n ], EdgeList @ CanonicalGraph @ # & ],
@@ -23,7 +18,7 @@ EnumerateGraphs[ n_, predQ_, UpTo[ k_Integer ], opts : OptionsPattern[] ] :=
 
 EnumerateGraphs[ n_, predQ_, k_Integer, opts : OptionsPattern[] ] :=
   With[ { result = EnumerateGraphs[ n, predQ, UpTo[ k ], opts ] },
-    If[ Length[ result ] < k, $Failed, result ]
+    If[ Length[ result ] < k, { }, result ]
   ]
 
 EnumerateGraphs[ n_, predQ_, opts : OptionsPattern[] ] :=

@@ -1239,20 +1239,17 @@ VerificationTest[
   TestID -> "Schlafli-37-genus-3"
 ]
 
-VerificationTest[ TessellationGraph[ { 3, 7 }, 99 ], $Failed, TestID -> "Schlafli-hyperbolic-unreachable-is-Failed" ]
+VerificationTest[ MatchQ[ TessellationGraph[ { 3, 7 }, 99 ], _TessellationGraph ], True, TestID -> "Schlafli-hyperbolic-unreachable-stays-unevaluated" ]
 VerificationTest[ IsomorphicGraphQ[ TessellationGraph[ { 4, 3 }, SymmetricGroup[ 4 ] ], GraphData[ "CubicalGraph" ] ], True, TestID -> "RegularMap-explicit-group-cube" ]
 
 (* --- General coset enumeration (Todd-Coxeter / low-index) via Method --- *)
 
-(* Todd-Coxeter index: |D(4,3,2)| = 24, and V = [D:<y>] = 8, E = [D:<xy>] = 12, F = [D:<x>] = 6 (cube) *)
+(* the low-index method on D(4,3,2): V = [D:<y>] = 8, E = [D:<xy>] = 12, the cube *)
 VerificationTest[
-  { CosetEnumeration[ 4, 3, { }, 400 ], CosetEnumeration[ 4, 3, { { 3 } }, 400 ], CosetEnumeration[ 4, 3, { { 1, 3 } }, 400 ], CosetEnumeration[ 4, 3, { { 1 } }, 400 ] },
-  { 24, 8, 12, 6 },
-  TestID -> "CosetEnumeration-cube-VEF"
+  { VertexCount @ #, EdgeCount @ #, IsomorphicGraphQ[ #, GraphData[ "CubicalGraph" ] ] } & @ TessellationGraph[ { 4, 3 }, Method -> "CosetEnumeration" ],
+  { 8, 12, True },
+  TestID -> "CosetEnumeration-cube-VE"
 ]
-
-(* trivial subgroup of an infinite (hyperbolic) von Dyck group has infinite index *)
-VerificationTest[ CosetEnumeration[ 3, 7, { }, 60 ], $Failed, TestID -> "CosetEnumeration-hyperbolic-infinite" ]
 
 (* the general low-index method recovers the Platonic solids (Method -> "CosetEnumeration") *)
 VerificationTest[ IsomorphicGraphQ[ TessellationGraph[ { 3, 3 }, Method -> "CosetEnumeration" ], GraphData[ "TetrahedralGraph" ] ], True, TestID -> "CosetEnumeration-recovers-tetrahedron" ]
@@ -1262,14 +1259,17 @@ VerificationTest[ IsomorphicGraphQ[ TessellationGraph[ { 3, 5 }, Method -> "Cose
 VerificationTest[ IsomorphicGraphQ[ TessellationGraph[ { 4, 3 }, Method -> "Platonic" ], TessellationGraph[ { 4, 3 } ] ], True, TestID -> "Method-Platonic-matches-default" ]
 VerificationTest[ IsomorphicGraphQ[ TessellationGraph[ { 3, 7 }, Method -> "PSL2" ], TessellationGraph[ { 3, 7 } ] ], True, TestID -> "Method-PSL2-matches-default" ]
 
-(* low-index enumeration: the only genuine {3,3} map up to index 12 is the tetrahedron, regular, genus 0 *)
+(* low-index enumeration: the only regular {3,3} map up to index 12 is the tetrahedron *)
 VerificationTest[
-  { Length @ #, #[[ 1, "Index" ]], #[[ 1, "Regular" ]], #[[ 1, "Genus" ]] } &@ LowIndexMaps[ 3, 3, 12 ],
-  { 1, 12, True, 0 },
-  TestID -> "LowIndexMaps-33-tetrahedron"
+  {
+    IsomorphicGraphQ[ TessellationGraph[ { 3, 3 }, Method -> { "CosetEnumeration", "MaxIndex" -> 12 } ], GraphData[ "TetrahedralGraph" ] ],
+    MatchQ[ TessellationGraph[ { 3, 3 }, 2, Method -> { "CosetEnumeration", "MaxIndex" -> 12 } ], _TessellationGraph ]
+  },
+  { True, True },
+  TestID -> "LowIndexMaps-33-tetrahedron-unique"
 ]
 
-VerificationTest[ Head @ Quiet @ TessellationGraph[ { 3, 3 }, Method -> "Nonsense" ], Symbol, TestID -> "Method-unknown-is-Failed" ]
+VerificationTest[ MatchQ[ TessellationGraph[ { 3, 3 }, Method -> "Nonsense" ], _TessellationGraph ], True, TestID -> "Method-unknown-stays-unevaluated" ]
 
 (* --- Uniform / Archimedean maps --- *)
 
@@ -1323,8 +1323,6 @@ VerificationTest[
   1,
   TestID -> "Archimedean-torus-genus-1"
 ]
-
-VerificationTest[ TessellationGraph[ { 3, 3, 3, 3, 6 }, 4 ], $Failed, { TessellationGraph::deferred }, TestID -> "Archimedean-euclidean-snub-deferred" ]
 
 
 (* ===================== Map invariants: curvature, Euler characteristic, genus ===================== *)
@@ -1560,14 +1558,6 @@ VerificationTest[
     VertexCount @ g == 12 && Max @ VertexDegree @ g == 4 ],
   True,
   TestID -> "TessellatedDisk-cuboctahedron"
-]
-
-(* the Euclidean snub / elongated families are chiral and deferred *)
-VerificationTest[
-  TessellationNeighborhoodGraph[ { 3, 3, 3, 3, 6 }, 2 ],
-  $Failed,
-  { TessellationNeighborhoodGraph::deferred },
-  TestID -> "TessellatedDisk-snub-deferred"
 ]
 
 (* a hyperbolic uniform tiling (defect < 0) grows in the Poincare disk: interior valence is the

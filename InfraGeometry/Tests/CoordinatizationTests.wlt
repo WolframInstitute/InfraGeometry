@@ -288,7 +288,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraOrthogonalFrame[PathGraph[Range[5]], 1, All],
-  $Failed,
+  { },
   TestID -> "FindInfraOrthogonalFrame-path-endpoint-no-line"
 ]
 
@@ -304,7 +304,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraOrthogonalFrame[PathGraph[Range[5]], 3, All, 100],
-  $Failed,
+  { },
   TestID -> "FindInfraOrthogonalFrame-strict-fail-too-many"
 ]
 
@@ -323,7 +323,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraOrthogonalFrame[GridGraph[{3, 3}], 5, All, "AxisCount" -> 5],
-  $Failed,
+  { },
   TestID -> "FindInfraOrthogonalFrame-AxisCount-exact-impossible"
 ]
 
@@ -379,7 +379,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraSpanningAxes[PathGraph[Range[5]], 99],
-  $Failed,
+  { },
   TestID -> "FindInfraSpanningAxes-strict-fail-too-many"
 ]
 

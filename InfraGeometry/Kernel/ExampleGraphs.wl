@@ -1,7 +1,4 @@
-Package["WolframInstitute`InfraGeometry`"]
-
-
-(* ===================== Sierpinski graph (trivalent) ===================== *)
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* SierpinskiGraph[n] is the trivalent Sierpinski graph: start from the 3-simplex K_4
    (the tetrahedron) and iterate corner-cutting (truncation) n-1 times.  Each step
@@ -23,27 +20,8 @@ SierpinskiGraph[ n_Integer, opts : OptionsPattern[ Graph ] ] :=
       CompleteGraph[ 4 ], n - 1 ],
     opts ]
 
-
-(* ===================== Bethe lattice ===================== *)
-
-(* BetheGraph[n, z] is the finite Bethe lattice / Cayley tree of n shells and coordination
-   number z (argument order matching CompleteKaryTree[n, k]): the root branches z ways,
-   every other internal node branches z-1 (its remaining edge goes to its parent), so all
-   interior vertices are z-valent and only the depth-n boundary is 1-valent.  Distinct
-   from the rooted, irregular CompleteKaryTree (root degree k, internal degree k+1).
-   Atomic root (NestGraph reads an empty-list seed as an empty vertex set). *)
-
 BetheGraph[ n_Integer, z_Integer, opts : OptionsPattern[ Graph ] ] :=
   NestGraph[ w |-> If[ w === 0, List /@ Range @ z, Append[ w, # ] & /@ Range[ z - 1 ] ], 0, n, opts, DirectedEdges -> False ]
-
-
-(* ===================== Spherically symmetric tree ===================== *)
-
-(* BranchingSequenceTree[b] is the spherically symmetric (radially homogeneous) rooted
-   tree whose offspring count depends only on depth: a vertex at depth l has b[[l+1]]
-   children, so all vertices at a given depth share the same degree.  Length[b]+1 levels;
-   FoldList[Times, 1, b] vertices per shell.  Constant b is CompleteKaryTree; the
-   coordination-fixed cousin is BetheGraph.  Vertices are {depth, position} pairs. *)
 
 BranchingSequenceTree[ b_List, opts : OptionsPattern[ Graph ] ] :=
   NestGraph[
@@ -51,21 +29,12 @@ BranchingSequenceTree[ b_List, opts : OptionsPattern[ Graph ] ] :=
       { l + 1, ( p - 1 ) c + # } & /@ Range @ c ] &,
     { { 0, 1 } }, Length @ b, opts, DirectedEdges -> False ]
 
-
-(* ===================== Inflation ===================== *)
-
-(* InflateGraph[g] grows a fiber of extra vertices over each vertex of g: every new vertex is joined
-   to its base vertex, fibers get "ExtraEdges" internal edges, and random edges are added between
-   fibers whose base vertices lie within "Radius" in g.  The base survives as the induced subgraph
-   on VertexList[g], so g is recoverable and the perturbation only adds local dimensional noise.
-   Each option takes a constant or a {min, max} range sampled per base vertex. *)
-
 Options[ InflateGraph ] = {
   "ExtraVertices" -> { 0, 2 },
   "ExtraEdges"    -> 0,
   "Radius"        -> 1,
   "Density"       -> 1
-};
+}
 
 InflateGraph[ g_Graph, opts : OptionsPattern[ { InflateGraph, Graph } ] ] :=
   With[
