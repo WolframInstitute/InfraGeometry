@@ -227,7 +227,7 @@ FindInfraWalk[ graph_Graph, p1_, p2_,
 
 (* a geodesic at infra-scale r: a walk in which every window -- the last r vertices together with the next one -- is a shortest path, any further rule holding on the window too.  The class degenerates at both ends of the ladder: r = 1 asks only for adjacency, r = Infinity for a segment.  The wrapper is FindInfraWalk at "InfraScale" -> r with "Minimizing" always among the rules -- the name promises the rule -- so the bare class at a finite scale is FindInfraWalk with Properties -> { }.
    Candidates are local, so p2 never enters a window: a selector may steer the walk away from p2 and leave no realisation, which is the honest answer for an observer whose horizon is r.  FindInfraSegment's geodesic DAG is the target-aware optimisation of the constraint-only case r = Infinity.
-   The scale is a bare integer, so on an integer-labelled substrate [g, p1, x, ...] reads x as the scale when the rest parses as kspec and count, and as p2 otherwise -- the pointed reading wins a tie, which happens only at [g, p1, p2, Infinity]; give kspec explicitly there *)
+   The scale is a bare integer, so on an integer-labelled substrate [g, p1, x, ...] reads x as the scale when the rest parses as kspec and count, and as p2 otherwise.  Both readings fit only at [g, p1, x, Infinity] and [g, p1, x, Infinity, n] with x a vertex; there the pointed reading is the class at scale x with no budget, infinite and refused unless a rule bounds it, so it wins only when a rule does, and the call is otherwise the two-point form at scale Infinity *)
 
 Options[ FindInfraGeodesic ] = {
   Properties          -> { },
@@ -236,12 +236,21 @@ Options[ FindInfraGeodesic ] = {
 };
 
 FindInfraGeodesic[ graph_Graph, p1_, scale : ( _Integer | Infinity ), opts : OptionsPattern[] ] :=
-  FindInfraGeodesic[ graph, p1, scale, Infinity, Automatic, opts ]
+  FindInfraWalk[ graph, p1, Infinity, Automatic, "InfraScale" -> scale,
+    Properties -> DeleteDuplicates @ Prepend[ OptionValue[ FindInfraGeodesic, { opts }, Properties ], "Minimizing" ],
+    Sequence @@ FilterRules[ { opts }, Except[ Properties ] ] ]
 
 FindInfraGeodesic[ graph_Graph, p1_,
     scale : ( _Integer | Infinity ),
     kspec : ( UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ),
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    ! ( kspec === Infinity && IntegerQ[ scale ] && VertexQ[ graph, scale ] && ! IntersectingQ[
+        Union @@ Replace[ OptionValue[ FindInfraGeodesic, { opts }, Properties ], {
+          "Simple" -> { "SelfIntersections" },
+          "Generic" -> { "SelfTangencies", "TriplePoints" },
+          ( "Exclude" -> sp_ ) :> Flatten @ { sp },
+          _ -> { } }, { 1 } ],
+        { "SelfIntersections", "TriplePoints", "SelfTangencies" } ] ) :=
   FindInfraWalk[ graph, p1, kspec, count, "InfraScale" -> scale,
     Properties -> DeleteDuplicates @ Prepend[ OptionValue[ FindInfraGeodesic, { opts }, Properties ], "Minimizing" ],
     Sequence @@ FilterRules[ { opts }, Except[ Properties ] ] ]
@@ -657,7 +666,10 @@ ExtendInfraWalk[ graph_Graph, seed_,
                   "Cusps"             -> ( w |-> WalkSingularities[ w ][ "Cusps" ] === { } ),
                   "SelfTangencies"    -> ( w |-> WalkSingularities[ w ][ "SelfTangencies" ] === { } ) }, { 1 } ],
                 If[ scale === Infinity && MemberQ[ rules, "Minimizing" ],
-                  { w |-> GraphDistance[ graph, First @ w, Last @ w ] == Length[ w ] - 1 }, { } ] ],
+                  { w |-> GraphDistance[ graph, First @ w, Last @ w ] == Length[ w ] - 1 }, { } ],
+                (* a window of scale + 1 vertices holds a vertex of each side only when the seed is shorter than the scale *)
+                If[ IntegerQ[ scale ] && Length[ walk0 ] < scale && MemberQ[ rules, "Minimizing" ],
+                  { w |-> InfraGeodesicQ[ graph, w, scale ] }, { } ] ],
               prunedOf = paths |-> Which[
                 pruning === Infinity, paths,
                 IntegerQ @ pruning,   If[ Length @ paths <= pruning, paths, RandomSample[ paths, pruning ] ],
@@ -703,6 +715,8 @@ ExtendInfraWalk[ graph_Graph, seed_,
               Message[ ExtendInfraWalk::unbounded, scale ]; Throw[ $Failed ] ];
             If[ ! MatchQ[ methodHead, "Exhaustive" | "Greedy" | "RandomGreedy" ],
               Message[ ExtendInfraWalk::badmethod, methodSpec ]; Throw[ $Failed ] ];
+            (* a walk is a geodesic only if every sub-walk is, so a seed that is not one has no extension under "Minimizing" *)
+            If[ MemberQ[ rules, "Minimizing" ] && Length[ walk0 ] >= 2 && ! InfraGeodesicQ[ graph, walk0, scale ], Throw[ { } ] ];
             (* one side grows: the lazy depth-first descent emits a walk when the budget or the deadline is spent or no admissible step remains, and is complete, so a finite count is exact; the breadth-first sweep caps the live frontier by "Pruning" *)
             emit[ walk_ ] := If[ keepQ @ walk,
               AppendTo[ acc, walk ];

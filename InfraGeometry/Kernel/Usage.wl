@@ -45,7 +45,7 @@ InfraImmersedQ::usage = "InfraImmersedQ[graph, walk] tests whether walk is an im
 InfraGenericQ::usage = "InfraGenericQ[graph, walk] tests whether walk is a generic immersed curve: no cusps, no self-tangencies, every self-intersection a double point off the endpoints.";
 InfraWalkCrossingQ::usage = "InfraWalkCrossingQ[graph, walk, v, r] tests whether the double visit of walk at v is a transverse crossing at scale r: the two passes separate each other's exits on the shell {r, r+1}; {i, j} names two positions instead.";
 ExtendInfraWalk::usage = "ExtendInfraWalk[graph, seed, kspec] continues a seed walk -- a vertex list or a walk graph -- in the class cut by the Properties rules (default {\"Simple\"}) until a stopping condition or the budget kspec (UpTo[k], {k}, {lo, hi}, Infinity; edges added per growing side) stops it. Options \"InfraScale\", Properties, \"StoppingCondition\", Method, \"Direction\".";
-ExtendInfraGeodesic::usage = "ExtendInfraGeodesic[graph, seed, scale, kspec] continues a seed walk as a geodesic at infra-scale scale -- ExtendInfraWalk at \"InfraScale\" -> scale with \"Minimizing\" among the rules. Options Properties, \"StoppingCondition\", Method, \"Direction\".";
+ExtendInfraGeodesic::usage = "ExtendInfraGeodesic[graph, seed, scale, kspec] continues a seed geodesic at infra-scale scale, none when the seed is not one -- ExtendInfraWalk at \"InfraScale\" -> scale with \"Minimizing\" among the rules. Options Properties, \"StoppingCondition\", Method, \"Direction\".";
 ConcatenateInfraWalk::usage = "ConcatenateInfraWalk[path1, path2] joins every compatible walk pair, those with Last[walk1] === First[walk2].";
 
 (* ===================== InfraLine ===================== *)

@@ -18,11 +18,11 @@ RelatedGuides: [RiemannianGeometryGuide]
 
 ## Details & Options
 
-Definition: an extension of *seed* at infra-scale *s* is a walk that contains *seed* as a consecutive stretch and whose every added step keeps its window a shortest path: the last *s* vertices before the new one, together with it, are at distance *s* apart.
+Definition: an extension of *seed* at infra-scale *s* is a geodesic at infra-scale *s* that contains *seed* as a consecutive stretch: every window of *s* consecutive vertices together with the next one is a shortest path, the windows inside the seed included.
 
 This is the continuation of a geodesic as a Riemannian observer sees it. A geodesic on a manifold continues uniquely from its velocity; on a graph the continuation branches, and the scale says how much of the past the next step must respect. At scale `Infinity` the whole walk stays a shortest path, which is Euclid's second postulate read on a graph.
 
-The seed is a vertex list, a walk graph, or a list of either. It is taken as given: the rule is checked on the steps added, not on the seed.
+The seed is a vertex list, a walk graph, or a list of either. A seed that is not itself a geodesic at infra-scale *s* has no extension. Grown at both ends, the walk is checked across the seed, so the two sides cannot meet in a window that is not a shortest path.
 
 *kspec* is the budget of added edges: `UpTo[k]`, `{k}`, `{lo, hi}` or `Infinity`, as for [FindInfraGeodesic](). At both ends it counts the edges added on the longer side. At a finite scale the class is infinite, so a finite budget is required.
 
@@ -81,11 +81,10 @@ With[
 
 ## Possible Issues
 
-The seed is not tested. A seed that steps back is extended at scale 2, and the result is not a geodesic at that scale.
+A seed that steps back is a geodesic at scale 1 and not at scale 2, so it has extensions at scale 1 and none at scale 2.
 
 ```wl
 With[
   {g = GridGraph[{9, 9}]},
-  {walkSeq = Last /@ VertexList @ ExtendInfraGeodesic[g, {41, 42, 41}, 2, {2}]},
-  {walkSeq, InfraGeodesicQ[g, walkSeq, 2]}]
+  {Last /@ VertexList @ ExtendInfraGeodesic[g, {41, 42, 41}, 1, {2}], ExtendInfraGeodesic[g, {41, 42, 41}, 2, {2}]}]
 ```

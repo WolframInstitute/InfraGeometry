@@ -545,6 +545,40 @@ VerificationTest[
 ]
 
 
+(* the positional tie [g, p1, x, Infinity] on a vertex x: the pointed reading,
+   scale x with no budget, is an infinite class unless a rule bounds it, so the
+   call is the two-point form at scale Infinity, the segment class from p1 to x *)
+VerificationTest[
+  With[ { g = GridGraph[ { 9, 9 } ] },
+    { Sort @ walkSeqs @ FindInfraGeodesic[ g, 41, 61, Infinity, All ] ===
+        Sort @ FindInfraSegment[ g, 41, 61, All ],
+      InfraSegmentQ[ g, walkSeq @ FindInfraGeodesic[ g, 41, 61, Infinity ] ],
+      Through[ { First, Last } @ walkSeq @ FindInfraGeodesic[ g, 41, 61, Infinity ] ] } ],
+  { True, True, { 41, 61 } },
+  TestID -> "FindInfraGeodesic-tie-reads-the-endpoint"
+]
+
+(* a rule that bounds the pointed class keeps the pointed reading at the tie:
+   the simple geodesics from 1 at scale 3 on C6 run round to the far side and
+   do not stop at 3 *)
+VerificationTest[
+  With[ { g = CycleGraph[ 6 ] },
+    { Sort @ walkSeqs @ FindInfraGeodesic[ g, 1, 3, Infinity, All, Properties -> { "Simple" } ] ===
+        Sort @ walkSeqs @ FindInfraWalk[ g, 1, Infinity, All, "InfraScale" -> 3,
+          Properties -> { "Minimizing", "Simple" } ],
+      Sort @ walkSeqs @ FindInfraGeodesic[ g, 1, 3, Infinity, All, Properties -> { "Simple" } ] } ],
+  { True, { { 1, 2, 3, 4, 5, 6 }, { 1, 6, 5, 4, 3, 2 } } },
+  TestID -> "FindInfraGeodesic-tie-bounded-class-stays-pointed"
+]
+
+(* the three-argument form has no two-point reading: scale 3 from 1 *)
+VerificationTest[
+  walkSeqs @ FindInfraGeodesic[ CycleGraph[ 6 ], 1, 3, Properties -> { "Simple" } ],
+  { { 1, 2, 3, 4, 5, 6 } },
+  TestID -> "FindInfraGeodesic-three-argument-form-is-pointed"
+]
+
+
 (* ===================== ExtendInfraWalk / ExtendInfraGeodesic ===================== *)
 
 (* the geodesic extender is the general extender at the positional scale with
@@ -556,6 +590,36 @@ VerificationTest[
         Properties -> { "Minimizing", "Simple" } ] ],
   True,
   TestID -> "ExtendInfraGeodesic-is-ExtendInfraWalk-with-Minimizing-at-InfraScale"
+]
+
+(* the extensions of a seed at a scale are geodesics at that scale, so a seed
+   that is not one has none: the backtrack 41, 42, 41 fails at scale 2, the
+   U-turn 1, 2, 5, 4 on the 3 x 3 grid passes at 2 and fails at 3 *)
+VerificationTest[
+  With[ { g = GridGraph[ { 9, 9 } ], h = GridGraph[ { 3, 3 } ] },
+    { ExtendInfraGeodesic[ g, { 41, 42, 41 }, 2, { 2 }, All ],
+      ExtendInfraGeodesic[ g, { 41, 42, 41 }, 2, { 2 } ],
+      ExtendInfraGeodesic[ g, { 41, 42, 41 }, Infinity, UpTo[ 2 ], All ],
+      ExtendInfraWalk[ g, { 41, 42, 41 }, { 2 }, All, "InfraScale" -> 2, Properties -> { "Minimizing" } ],
+      ExtendInfraGeodesic[ h, { 1, 2, 5, 4 }, 3, UpTo[ 2 ], All ],
+      With[ { exts = walkSeqs @ ExtendInfraGeodesic[ h, { 1, 2, 5, 4 }, 2, UpTo[ 2 ], All ] },
+        exts =!= { } && AllTrue[ exts, w |-> InfraGeodesicQ[ h, w, 2 ] ] ] } ],
+  { { }, { }, { }, { }, { }, True },
+  TestID -> "ExtendInfraGeodesic-non-geodesic-seed-has-no-extension"
+]
+
+(* both sides grown from a seed shorter than the scale meet in a window the
+   two sides cannot see alone; it is re-checked, so every extension of one
+   vertex at both ends is a geodesic -- without the check 23, 32, 41, 32, 23
+   comes back at scale 2 *)
+VerificationTest[
+  With[ { g = GridGraph[ { 9, 9 } ] },
+    Table[
+      With[ { exts = walkSeqs @ ExtendInfraGeodesic[ g, seed, sc, { 2 }, All ] },
+        exts =!= { } && AllTrue[ exts, w |-> InfraGeodesicQ[ g, w, sc ] ] ],
+      { seed, { { 41 }, { 41, 42 } } }, { sc, { 2, 3, 4 } } ] ],
+  { { True, True, True }, { True, True, True } },
+  TestID -> "ExtendInfraGeodesic-BothSides-short-seed-joins-as-a-geodesic"
 ]
 
 (* under the default class the extension is bounded by itself: a simple walk
