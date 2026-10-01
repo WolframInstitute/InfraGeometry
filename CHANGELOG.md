@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **1.1.2** (2026-10-01): the Riemannian guide is closed and the first tutorial ships. The guide names only what works: the Riemann tensor leaves it for one "not here" line, `InfraSubstrate` joins the volume measurements and `MetricTensorTutorial` is its related tutorial. `MetricTensorTutorial`, the metric tensor of a graph in pictures over size and substrate, is built from `docs/Tutorials/`. Two geodesic fixes: at the tie `FindInfraGeodesic[g, p, x, Infinity]` the endpoint reading wins unless a `Properties` rule bounds the pointed class, and `ExtendInfraGeodesic` / `ExtendInfraWalk` under `"Minimizing"` give no extension of a seed that is not a geodesic at the scale (a both-sides extension from a short seed no longer joins into a non-geodesic). No new export.
+
 - **1.1.1** (2026-10-01): documentation only; no kernel change. The docs site is rebuilt from `docs/` at 1.1 and republished; the seven hand-made guide and tutorial pairs without a source are retired; the Experimental guide is checked against the export list; `InfraSubstrate` is named a Riemannian-branch file in the resource definition. The README's presentation and example-graphs notebooks are rebuilt from `Wiki/Notebooks/` and open without a login; the dead `EmergentEuclid` link, which had no source, is dropped.
 
 - **1.1.0** (2026-09-29): **breaking — four renames to the names of the Euclidean guide scheme**
