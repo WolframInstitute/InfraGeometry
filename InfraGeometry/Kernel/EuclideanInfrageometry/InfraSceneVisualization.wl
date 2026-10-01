@@ -342,8 +342,8 @@ infraInk[ graph_Graph, x_ ] := Which[
        "EdgeDensity"   -> KeySort @ Counts[ UndirectedEdge @@ Sort[ List @@ # ] & /@ EdgeList @ Subgraph[ graph, x ] ],
        "Walk"          -> None,
        "Knots"         -> { } |>,
-  (* a bundle or a family: the sum of its members, summed by GroupBy as InfraDensity sums them *)
-  MatchQ[ x, { ( _Graph | _List ) .. } ],
+  (* a bundle or a family -- of walks, sets, heads or any mix: the sum of its members, summed by GroupBy as InfraDensity sums them *)
+  MatchQ[ x, { __ } ],
     With[ { members = infraInk[ graph, # ] & /@ x },
       <| "VertexDensity" -> KeySort @ GroupBy[ Catenate[ Normal @ #[ "VertexDensity" ] & /@ members ], First -> Last, Total ],
          "EdgeDensity"   -> KeySort @ GroupBy[ Catenate[ Normal @ #[ "EdgeDensity" ] & /@ members ], First -> Last, Total ],

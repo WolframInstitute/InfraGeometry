@@ -58,7 +58,7 @@ All of them at once, drawn diffusely: a side lying on many triangles is drawn mo
 ```wl
 Row[Table[
    With[
-     {g = InfraSubstrate[name, "Medium", "Gray", "KeepCoordinates" -> True]},
+     {g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]},
      {c = First @ GraphCenter[g]},
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
      {d = Last @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 && GraphDistance[g, b, #] == 4 &]},

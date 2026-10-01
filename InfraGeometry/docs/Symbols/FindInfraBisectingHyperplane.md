@@ -53,7 +53,7 @@ The bisector of two vertices at distance 6, drawn with its endpoints. It runs cl
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "Gray", "KeepCoordinates" -> True]},
+  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 6 &]},
   InfraSubstrateHighlight[g,

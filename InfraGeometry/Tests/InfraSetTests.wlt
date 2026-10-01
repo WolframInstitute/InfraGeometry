@@ -305,4 +305,13 @@ VerificationTest[
   TestID -> "density-key-order-canonicalised"
 ]
 
+(* a set is a sorted, duplicate-free vertex List: the equidistant set, the boundary and the interior are sets *)
+VerificationTest[
+  With[{g = GridGraph[{5, 5}]},
+    {sets = {FindInfraEquidistantSet[g, {1, 5}], InfraBoundary[g, Range[15]], InfraInterior[g, Range[15]]}},
+    AllTrue[sets, ListQ[#] && # =!= {} && # === Union[#] && SubsetQ[VertexList[g], #] &]],
+  True,
+  TestID -> "set-valued-results-are-sorted-vertex-lists"
+]
+
 EndTestSection[]

@@ -63,7 +63,7 @@ The first three steps as stills: the two points, then the circle about the first
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareMeshGraph", "Medium", "Gray", "KeepCoordinates" -> True]},
+  {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {p1 = First @ GraphCenter[g]},
   {p2 = SelectFirst[VertexList[g], GraphDistance[g, p1, #] == 4 &]},
   Row[{

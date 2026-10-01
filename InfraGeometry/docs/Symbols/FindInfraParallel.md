@@ -62,7 +62,7 @@ The line and its one parallel on the square tiling.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "Gray", "KeepCoordinates" -> True]},
+  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
   {line = FindInfraLine[g, c, far]},

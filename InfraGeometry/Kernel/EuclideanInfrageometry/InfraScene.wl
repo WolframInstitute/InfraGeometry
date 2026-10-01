@@ -218,10 +218,10 @@ InfraSceneInstance[ bindings_Association, syms_List ] :=
 (* ===================== Evaluation Engine ===================== *)
 
 
-(* each operand is itself a construction, so it must be dispatched before its vertex set exists; an operand already bound to a vertex set has no dispatch rule and is read directly *)
-evaluateConstruction[ graph_Graph, sym_, InfraIntersection[ objs__ ], bindings_Association ] :=
+(* each operand is itself a construction, so it must be dispatched before its vertex set exists; an operand already bound to a vertex set has no dispatch rule and is read directly.  Every vertex of the meet or of the union is one branch *)
+evaluateConstruction[ graph_Graph, sym_, ( head : InfraIntersection | InfraUnion )[ objs__ ], bindings_Association ] :=
   Append[ bindings, sym -> # ] & /@
-    Intersection @@ Map[
+    Replace[ head, { InfraIntersection -> Intersection, InfraUnion -> Union } ] @@ Map[
       obj |-> With[ { resolved = resolveExpression[ obj, bindings, graph ] },
         { realisations = dispatchConstruction[ graph, resolved ] },
         If[ ListQ[ realisations ],
