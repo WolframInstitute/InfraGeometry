@@ -1,9 +1,9 @@
 PacletObject[
   <|
     "Name" -> "WolframInstitute/InfraGeometry",
-    "Description" -> "Axiomatic geometry on graphs and hypergraphs",
+    "Description" -> "Geometry as the effective description of graph limits, observed at a scale",
     "Creator" -> "Pavel Hajek",
-    "Version" -> "1.2.0",
+    "Version" -> "1.2.1",
     "WolframVersion" -> "14.3+",
     "PublisherID" -> "WolframInstitute",
     "License" -> "MIT",
