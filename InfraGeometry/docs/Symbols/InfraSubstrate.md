@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSubstrate
 Keywords: [substrate, example graph, surface graph, tiling, mesh, roster]
 SeeAlso: [TessellationGraph, TorusTessellation, InfraCenter, FindInfraShell, InfraSubstrateHighlight, FindInfraPoint]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraMemberQ
 Keywords: [segment, ray, line, circle, arc, inert head, membership]
 SeeAlso: [InfraVertexList, InfraMeasurement, InfraSegmentQ, InfraLineQ]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

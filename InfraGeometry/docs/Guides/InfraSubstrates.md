@@ -1,12 +1,12 @@
 ---
 Template: Guide
-Name: SubstratesGuide
-Title: Substrates
+Name: InfraSubstrates
+Title: Infra Substrates
 Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
-URI: WolframInstitute/InfraGeometry/guide/SubstratesGuide
+URI: WolframInstitute/InfraGeometry/guide/InfraSubstrates
 Keywords: [substrate, template graph, tessellation, regular map, torus, surface, surface-like, Euler characteristic, genus, inflation, warped product]
-RelatedGuides: [EuclideanGeometryGuide, RiemannianGeometryGuide, TopologicalPropertiesGuide, TangentSpacesAndFormsGuide, FiberBundlesGuide, Experimental]
+RelatedGuides: [EuclideanInfrageometry, RiemannianInfrageometry, InfraTopology, InfraAnalysis, InfraFiberBundles, Experimental]
 ---
 
 ## Abstract

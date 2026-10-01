@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSegment
 Keywords: [segment, geodesic, interval DAG, polyline, inert head]
 SeeAlso: [FindInfraSegment, InfraMeasurement, InfraVertexList, ExtendInfraSegment, InfraLine, MetricInterval]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

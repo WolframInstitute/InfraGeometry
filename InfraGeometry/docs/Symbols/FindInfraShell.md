@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraShell
 Keywords: [shell, sphere, level surface, volume growth, dimension]
 SeeAlso: [InfraShell, FindInfraBall, ShellAreas, FindInfraCircle, InfraShellQ, SeparatesQ]
-RelatedGuides: [RiemannianGeometryGuide]
+RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage

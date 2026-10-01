@@ -1,12 +1,12 @@
 ---
 Template: Guide
-Name: FiberBundlesGuide
-Title: Fiber Bundles
+Name: InfraFiberBundles
+Title: Infra Fiber Bundles
 Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
-URI: WolframInstitute/InfraGeometry/guide/FiberBundlesGuide
+URI: WolframInstitute/InfraGeometry/guide/InfraFiberBundles
 Keywords: [fiber bundle, fibered graph, base graph, fiber, connection, parallel transport, holonomy, section]
-RelatedGuides: [EuclideanGeometryGuide, RiemannianGeometryGuide, TopologicalPropertiesGuide, TangentSpacesAndFormsGuide, SubstratesGuide, Experimental]
+RelatedGuides: [EuclideanInfrageometry, RiemannianInfrageometry, InfraTopology, InfraAnalysis, InfraSubstrates, Experimental]
 ---
 
 ## Abstract

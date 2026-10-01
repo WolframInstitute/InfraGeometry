@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraScene
 Keywords: [scene, construction, Euclid I.1, hypothesis, assertion, ruler and compass]
 SeeAlso: [FindInfraScene, InfraSceneInstance, InfraStep, InfraIntersection, InfraDistance, InfraSceneViewer]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

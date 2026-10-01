@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraAngle
 Keywords: [angle, comparison triangle, Alexandrov, arclength, radian]
 SeeAlso: [InfraScalarProduct, ComparisonTriangle, CATInequalityQ, InfraPerpendicularQ, InfraCurvature]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

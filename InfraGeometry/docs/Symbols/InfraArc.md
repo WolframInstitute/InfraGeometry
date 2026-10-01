@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraArc
 Keywords: [arc, circle, band, minor arc, inert head]
 SeeAlso: [FindInfraArc, InfraCircle, InfraSegment, InfraMeasurement, InfraVertexList, Undetermined]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

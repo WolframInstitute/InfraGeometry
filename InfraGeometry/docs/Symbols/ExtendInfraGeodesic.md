@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/ExtendInfraGeodesic
 Keywords: [geodesic, extension, infra-scale, continuation, Euclid Postulate 2]
 SeeAlso: [FindInfraGeodesic, InfraGeodesicQ, ExtendInfraWalk, GeodesicExtensionGraph, ExtendInfraSegment]
-RelatedGuides: [RiemannianGeometryGuide]
+RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage

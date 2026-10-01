@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraShell
 Keywords: [shell, sphere, level set, scene token, construction]
 SeeAlso: [FindInfraShell, InfraBall, InfraScene, FindInfraScene, InfraShellQ, ShellAreas]
-RelatedGuides: [RiemannianGeometryGuide]
+RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage

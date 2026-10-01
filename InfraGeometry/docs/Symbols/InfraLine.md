@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraLine
 Keywords: [line, inextensible geodesic, atoms, inert head]
 SeeAlso: [FindInfraLine, InfraLineQ, InfraMeasurement, InfraVertexList, InfraSegment, InfraRay]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

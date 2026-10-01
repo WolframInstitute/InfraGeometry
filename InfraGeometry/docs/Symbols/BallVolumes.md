@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/BallVolumes
 Keywords: [ball volume, volume growth, coordination sequence, growth function, dimension, Bishop-Gromov]
 SeeAlso: [ShellAreas, TubeVolumes, FindInfraBall, LogDifferenceQuotients, DimensionCurvatureFit, VolumeGrowthObservables]
-RelatedGuides: [RiemannianGeometryGuide]
+RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage

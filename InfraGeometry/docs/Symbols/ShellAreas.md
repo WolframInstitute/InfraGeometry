@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/ShellAreas
 Keywords: [shell area, sphere area, coordination sequence, coordination number, volume growth, dimension]
 SeeAlso: [BallVolumes, FindInfraShell, TubeVolumes, LogDifferenceQuotients, DimensionCurvatureFit, VolumeGrowthObservables]
-RelatedGuides: [RiemannianGeometryGuide]
+RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage

@@ -6,7 +6,7 @@ Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/tutorial/MetricTensorTutorial
 Keywords: [metric tensor, tangent space, pencil, germ, geodesic, projection, cosine, convergence, tiling, mesh]
-RelatedGuides: [RiemannianGeometryGuide]
+RelatedGuides: [RiemannianInfrageometry]
 ---
 
 - Fix a base point $p$ and a scale $r$.

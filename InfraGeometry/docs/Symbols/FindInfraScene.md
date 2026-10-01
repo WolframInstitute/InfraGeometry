@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraScene
 Keywords: [scene, construction, solve, branch, binding, instance]
 SeeAlso: [InfraScene, InfraSceneInstance, InfraStep, InfraSubstrateHighlight, InfraSceneViewer]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraCircle
 Keywords: [circle, band, separating cycle, girth, Euclid Postulate 3]
 SeeAlso: [InfraCircle, InfraVertexList, FindInfraShell, FindInfraBall, InfraCircleQ, FindInfraArc]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

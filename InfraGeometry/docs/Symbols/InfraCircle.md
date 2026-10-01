@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraCircle
 Keywords: [circle, band, separating cycle, necklace, seam, inert head]
 SeeAlso: [FindInfraCircle, InfraArc, InfraMeasurement, InfraVertexList, Undetermined, InfraShell]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

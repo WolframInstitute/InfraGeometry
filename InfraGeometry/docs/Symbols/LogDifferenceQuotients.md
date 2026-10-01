@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/LogDifferenceQuotients
 Keywords: [log-log slope, growth exponent, volume-growth dimension, difference quotient, Around]
 SeeAlso: [BallVolumes, ShellAreas, TubeVolumes, DimensionCurvatureFit, VolumeGrowthObservables]
-RelatedGuides: [RiemannianGeometryGuide]
+RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage

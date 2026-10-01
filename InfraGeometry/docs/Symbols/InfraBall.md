@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraBall
 Keywords: [ball, disk, neighbourhood, scene token, construction]
 SeeAlso: [FindInfraBall, InfraShell, InfraScene, FindInfraScene, InfraBallQ, BallVolumes]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

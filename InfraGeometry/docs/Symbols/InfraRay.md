@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraRay
 Keywords: [ray, half-line, direction, pencil, inert head]
 SeeAlso: [FindInfraRay, InfraRayQ, InfraMeasurement, InfraVertexList, PencilDirections, InfraLine, InfraSegment]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

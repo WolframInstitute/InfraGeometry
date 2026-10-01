@@ -1,17 +1,17 @@
 ---
 Template: Guide
-Name: TangentSpacesAndFormsGuide
-Title: Tangent Spaces and Forms
+Name: InfraAnalysis
+Title: Infra Analysis
 Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
-URI: WolframInstitute/InfraGeometry/guide/TangentSpacesAndFormsGuide
+URI: WolframInstitute/InfraGeometry/guide/InfraAnalysis
 Keywords: [tangent space, displacement, vector field, flow, commutator, Killing, differential form, cochain, cup product, tautological 1-form]
-RelatedGuides: [EuclideanGeometryGuide, RiemannianGeometryGuide, TopologicalPropertiesGuide, FiberBundlesGuide, SubstratesGuide, Experimental]
+RelatedGuides: [EuclideanInfrageometry, RiemannianInfrageometry, InfraTopology, InfraFiberBundles, InfraSubstrates, Experimental]
 ---
 
 ## Abstract
 
-The first-order structure of a substrate: the tangent space at a vertex, the displacements that move its vertices, the differential forms and cochains, and the tautological 1-form. A displacement of scale r sends each vertex to a set of vertices within distance r, a discrete flow for time r, and it is multivalued by design. Its operations are metric: scaling moves along the geodesics from each vertex to its images, the sum is the bisector of the two orders of composition, and the commutator is the loop of the two displacements and their inverses, or of their metric negatives. A form is a germ of values at a vertex on tuples of its neighbours, a cochain a value on the cliques of the graph; the restriction and integration maps pass between the two, and the coboundary, the differential, the wedge and the cup products act on them. The tangent space and the tautological 1-form still wait: both exist in the InfraGaugeTheory paclet and are to be copied here.
+Tangent spaces and differential forms: the first-order structure of a substrate, with the tangent space at a vertex, the displacements that move its vertices, the differential forms and cochains, and the tautological 1-form. A displacement of scale r sends each vertex to a set of vertices within distance r, a discrete flow for time r, and it is multivalued by design. Its operations are metric: scaling moves along the geodesics from each vertex to its images, the sum is the bisector of the two orders of composition, and the commutator is the loop of the two displacements and their inverses, or of their metric negatives. A form is a germ of values at a vertex on tuples of its neighbours, a cochain a value on the cliques of the graph; the restriction and integration maps pass between the two, and the coboundary, the differential, the wedge and the cup products act on them. The tangent space and the tautological 1-form still wait: both exist in the InfraGaugeTheory paclet and are to be copied here.
 
 ## Functions
 

@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/DimensionCurvatureFit
 Keywords: [dimension, scalar curvature, Bishop-Gromov, volume growth, regression, Ricci curvature, tube]
 SeeAlso: [LogDifferenceQuotients, VolumeGrowthObservables, BallVolumes, ShellAreas, TubeVolumes]
-RelatedGuides: [RiemannianGeometryGuide]
+RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage

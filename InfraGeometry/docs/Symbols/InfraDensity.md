@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraDensity
 Keywords: [density, occupation, marginal, counting measure, multiset, support]
 SeeAlso: [InfraMeasurement, InfraVertexList, InfraSubstrateHighlight, FindInfraSegment, FindInfraMidpoint, InfraIntersection]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraPoint
 Keywords: [point, atom, candidate pool, centre, periphery]
 SeeAlso: [InfraPoint, InfraDensity, SelectInfraPoint, FindInfraMidpoint, FindClosestInfraPoint]
-RelatedGuides: [EuclideanGeometryGuide]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

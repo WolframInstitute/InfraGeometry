@@ -1,12 +1,12 @@
 ---
 Template: Guide
-Name: TopologicalPropertiesGuide
-Title: Topological Properties
+Name: InfraTopology
+Title: Infra Topology
 Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
-URI: WolframInstitute/InfraGeometry/guide/TopologicalPropertiesGuide
+URI: WolframInstitute/InfraGeometry/guide/InfraTopology
 Keywords: [topology, ball topology, specialization preorder, ball intersection complex, Cech complex, Vietoris-Rips, ball cover, covering dimension, ball hull]
-RelatedGuides: [EuclideanGeometryGuide, RiemannianGeometryGuide, TangentSpacesAndFormsGuide, FiberBundlesGuide, SubstratesGuide, Experimental]
+RelatedGuides: [EuclideanInfrageometry, RiemannianInfrageometry, InfraAnalysis, InfraFiberBundles, InfraSubstrates, Experimental]
 ---
 
 ## Abstract
@@ -48,4 +48,4 @@ The topological properties of a substrate are read off its metric balls. The clo
 - **BallHull** — the intersection of all closed balls containing a vertex set, the smallest ball-convex superset
 - `FindBallHull` the ball hull of any shape, a vertex, a vertex list, a density or a walk, as a sorted vertex list
 - `BallHullQ` whether a vertex set is ball-convex, equal to its own ball hull
-- waits: InfraBallHull, the intersection of all balls of one radius r containing a set of points, planned with the Euclidean guide
+- waits: InfraBallHull, the intersection of all balls of one radius r containing a set of points, planned with the Euclidean Infrageometry guide

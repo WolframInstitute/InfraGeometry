@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/VolumeGrowthObservables
 Keywords: [volume growth, dimension, scalar curvature, Bishop-Gromov, ball, sphere, fit window]
 SeeAlso: [DimensionCurvatureFit, BallVolumes, ShellAreas, LogDifferenceQuotients, TubeVolumes]
-RelatedGuides: [RiemannianGeometryGuide]
+RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage

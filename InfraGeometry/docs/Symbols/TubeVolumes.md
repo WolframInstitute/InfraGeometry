@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/TubeVolumes
 Keywords: [tube volume, tubular neighbourhood, Gray tube formula, Ricci curvature, directional growth, metric interval]
 SeeAlso: [BallVolumes, ShellAreas, SegmentGraph, MetricInterval, FindInfraBall, DimensionCurvatureFit]
-RelatedGuides: [RiemannianGeometryGuide]
+RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage
