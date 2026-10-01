@@ -1,4 +1,4 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* SierpinskiGraph[n] is the trivalent Sierpinski graph: start from the 3-simplex K_4
    (the tetrahedron) and iterate corner-cutting (truncation) n-1 times.  Each step
@@ -34,7 +34,7 @@ Options[ InflateGraph ] = {
   "ExtraEdges"    -> 0,
   "Radius"        -> 1,
   "Density"       -> 1
-};
+}
 
 InflateGraph[ g_Graph, opts : OptionsPattern[ { InflateGraph, Graph } ] ] :=
   With[

@@ -1,8 +1,17 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraCircle *)
 
-(* InfraCircle[c, p] and InfraCircle[c, "Radius" -> r | {r, s}] are inert: the circles of the band W = { v : rmin <= d(c, v) <= rmax } around c, a circle being a shortest cycle of the band graph A = G[W] whose removal leaves c in a component that reaches no further than rmax.  The point form takes the band d(c, p) widened by "RadiusDelta" -> dOut | {dIn, dOut}.  Its graph is the List of necklaces of a radial seam sigma -- the band part of a geodesic from c to just outside the band, taken through p in the point form.  On a run S = (s1, ..., sm) of sigma the necklace N(S, u, v), with u ~ s1 and v ~ sm in one component of the cut band A - V(sigma), is s1 -> ... -> sm -> v together with the interval DAG of the cut band from v to u; its closing arrow u -> s1 is left out, so it is a DAG whose chains are exactly the cycles S v gamma u, all of the one length m + 1 + d(v, u) (design Thm. seam).  Kept are the necklaces of least length among those whose cycles separate, and in the point form only those whose run meets p.  Their cycles always separate, and they are every circle exactly once under the winding functional (W) and the one-run hypothesis (T), which neither head certifies -- hence "Faithful" -> Undetermined.  Runs are read in seam order alone, which is what picks one of the two orientations of each cycle *)
+(* InfraCircle[c, p] and InfraCircle[c, "Radius" -> r | {r, s}] are inert: the circles of the band W = { v : rmin <= d(c, v) <= rmax } around c, a
+   circle being a shortest cycle of the band graph A = G[W] whose removal leaves c in a component that reaches no further than rmax.  The point form
+   takes the band d(c, p) widened by "RadiusDelta" -> dOut | {dIn, dOut}.  Its graph is the List of necklaces of a radial seam sigma -- the band part
+   of a geodesic from c to just outside the band, taken through p in the point form.  On a run S = (s1, ..., sm) of sigma the necklace N(S, u, v),
+   with u ~ s1 and v ~ sm in one component of the cut band A - V(sigma), is s1 -> ... -> sm -> v together with the interval DAG of the cut band from
+   v to u; its closing arrow u -> s1 is left out, so it is a DAG whose chains are exactly the cycles S v gamma u, all of the one length m + 1 + d(v,
+   u) (design Thm. seam).  Kept are the necklaces of least length among those whose cycles separate, and in the point form only those whose run meets
+   p.  Their cycles always separate, and they are every circle exactly once under the winding functional (W) and the one-run hypothesis (T), which
+   neither head certifies -- hence "Faithful" -> Undetermined.  Runs are read in seam order alone, which is what picks one of the two orientations of
+   each cycle *)
 
 InfraMeasurement[ graph_Graph, InfraCircle[ center_, spec_, opts___Rule ], "Graph" ] :=
   With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ],
@@ -94,7 +103,7 @@ InfraMemberQ[ graph_Graph, obj : InfraCircle[ _, _, ___Rule ], path_List ] :=
         VertexQ[ dag, Last @ rot ] && VertexOutDegree[ dag, Last @ rot ] == 0 &&
         AllTrue[ Partition[ rot, 2, 1 ], EdgeQ[ dag, DirectedEdge @@ # ] & ] ] ]
 
-Options[ FindInfraCircle ] = { "RadiusDelta" -> 0 };
+Options[ FindInfraCircle ] = { "RadiusDelta" -> 0 }
 
 FindInfraCircle[ graph_Graph, center_, spec_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
@@ -144,9 +153,11 @@ FindInfraCycle[ graph_Graph, { kMin_Integer, kMax_ },
       _UpTo, Take[ reps, n ],
       _,     If[ Length @ reps < n, { }, Take[ reps, n ] ] ] ]
 
-(* a metric circle iff consecutive vertices and the wrap-around are adjacent and the vertex set is a metric shell; a cycle graph is read as its closed walk *)
+(* a metric circle iff consecutive vertices and the wrap-around are adjacent and the vertex set is a metric shell; a cycle graph is read as its
+   closed walk *)
 
-InfraCircleQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraCircleQ[ graph, # ] & ]
+InfraCircleQ[ graph_Graph, ws : { __Graph } ] :=
+  AllTrue[ ws, InfraCircleQ[ graph, # ] & ]
 
 InfraCircleQ[ graph_Graph, w_Graph ] :=
   With[ { vs = VertexList @ w },
@@ -175,7 +186,8 @@ InfraCircleQ[ graph_Graph, cycle_List ] /; Length[ cycle ] >= 3 :=
     InfraShellQ[ graph, verts ]
   ]
 
-InfraCircleQ[ _Graph, cycle_List ] /; Length[ cycle ] < 3 := False
+InfraCircleQ[ _Graph, cycle_List ] /; Length[ cycle ] < 3 :=
+  False
 
 dispatchConstruction[ graph_Graph, InfraCircle[ center_, r_, opts___Rule ] ] :=
   capBranches[

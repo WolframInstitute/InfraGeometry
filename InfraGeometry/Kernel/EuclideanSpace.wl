@@ -1,9 +1,10 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* "Alexandrov": <u, v>_o = d(o, u) d(o, v) cos theta_k with theta_k the comparison angle at o in M_k^2; k = 0 collapses to (d(o,u)^2 + d(o,v)^2 - d(u,v)^2) / 2.
+(* "Alexandrov": <u, v>_o = d(o, u) d(o, v) cos theta_k with theta_k the comparison angle at o in M_k^2; k = 0 collapses to (d(o,u)^2 + d(o,v)^2 -
+   d(u,v)^2) / 2.
    "Parallelogram": the polarisation (||u + v||_o^2 - ||u - v||_o^2) / 4 over realisations of u + v and u - v on the substrate. *)
 
-Options[ InfraScalarProduct ] = { Method -> "Alexandrov" };
+Options[ InfraScalarProduct ] = { Method -> "Alexandrov" }
 
 InfraScalarProduct[ graph_Graph, o_, u_, v_, opts : OptionsPattern[] ] /;
     MatchQ[ OptionValue[ InfraScalarProduct, { opts }, Method ], "Alexandrov" | "Parallelogram" | { "Alexandrov" | "Parallelogram", ___ } ] :=
@@ -38,7 +39,7 @@ InfraScalarProduct[ graph_Graph, o_, u_, v_, opts : OptionsPattern[] ] /;
 Options[ FindInfraLinearCombination ] = {
   "ScaleMethod" -> Automatic,
   "SumMethod"   -> "Metric"
-};
+}
 
 FindInfraLinearCombination[ graph_Graph, o_, terms_List,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[] ] :=
@@ -144,10 +145,11 @@ FindInfraLinearCombination[ graph_Graph, o_, terms_List,
         _UpTo, Take[ reps, count ],
         _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ]
 
-(* "Arclength": remove the open ball B(p, min(d(p, q1), d(p, q2))) and normalise d(q1, q2) in the rest by the radius, a synthetic radian measure of the detour around p.
+(* "Arclength": remove the open ball B(p, min(d(p, q1), d(p, q2))) and normalise d(q1, q2) in the rest by the radius, a synthetic radian measure of
+   the detour around p.
    "Alexandrov": the comparison-triangle angle in M_k^2. *)
 
-Options[ InfraAngle ] = { Method -> "Arclength" };
+Options[ InfraAngle ] = { Method -> "Arclength" }
 
 InfraAngle[ graph_Graph, triple : { _, _, _ }, opts : OptionsPattern[] ] /;
     ! FreeQ[ triple, _Association ] :=
@@ -173,9 +175,10 @@ InfraAngle[ graph_Graph, { q1_, p_, q2_ }, opts : OptionsPattern[] ] /;
       ]
   ]
 
-(* T[v, w] = d(p, u) / d(p, v) with u the vertex of I(p, w) closest to v; in Euclidean space clamp(cos theta, 0, |w|/|v|), on a shell max(0, cos theta) (Euclid II.12-13) *)
+(* T[v, w] = d(p, u) / d(p, v) with u the vertex of I(p, w) closest to v; in Euclidean space clamp(cos theta, 0, |w|/|v|), on a shell max(0, cos
+   theta) (Euclid II.12-13) *)
 
-Options[ InfraMetricTensor ] = { "SelectCoordinate" -> Min };
+Options[ InfraMetricTensor ] = { "SelectCoordinate" -> Min }
 
 InfraMetricTensor[ graph_Graph, p_, r : ( _Integer | All ) : All, OptionsPattern[] ] :=
   With[ { verts = VertexList @ graph, dm = GraphDistanceMatrix @ graph, sel = OptionValue[ "SelectCoordinate" ] },

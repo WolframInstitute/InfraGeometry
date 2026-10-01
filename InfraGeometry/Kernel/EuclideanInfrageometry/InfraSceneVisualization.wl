@@ -1,28 +1,28 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraSceneVisualization *)
 
-PackageExport[$InfraPointColor]
-PackageExport[$InfraSegmentColor]
-PackageExport[$InfraLineColor]
-PackageExport[$InfraShellColor]
-PackageExport[$InfraBallColor]
-PackageExport[$InfraPlaneColor]
-PackageExport[$InfraCircleColor]
-PackageExport[$InfraRayColor]
-PackageExport[$InfraTopologyColor]
-PackageExport[$InfraPalette]
-PackageExport[$InfraStrikeOutPalette]
-PackageExport[$InfraPointSizes]
-PackageExport[$InfraAccentPointSize]
-PackageScope[$infraColors]
-PackageScope[$InfraOpacityRange]
-PackageScope[$InfraEdgeThickness]
-PackageScope[$InfraPointSize]
-PackageScope[$InfraSceneImageSize]
-PackageScope[infraInk]
-PackageScope[parseHighlightStyle]
-PackageScope[normalizeHighlightSpec]
+PackageExport[ $InfraPointColor ]
+PackageExport[ $InfraSegmentColor ]
+PackageExport[ $InfraLineColor ]
+PackageExport[ $InfraShellColor ]
+PackageExport[ $InfraBallColor ]
+PackageExport[ $InfraPlaneColor ]
+PackageExport[ $InfraCircleColor ]
+PackageExport[ $InfraRayColor ]
+PackageExport[ $InfraTopologyColor ]
+PackageExport[ $InfraPalette ]
+PackageExport[ $InfraStrikeOutPalette ]
+PackageExport[ $InfraPointSizes ]
+PackageExport[ $InfraAccentPointSize ]
+PackageScope[ $infraColors ]
+PackageScope[ $InfraOpacityRange ]
+PackageScope[ $InfraEdgeThickness ]
+PackageScope[ $InfraPointSize ]
+PackageScope[ $InfraSceneImageSize ]
+PackageScope[ infraInk ]
+PackageScope[ parseHighlightStyle ]
+PackageScope[ normalizeHighlightSpec ]
 
 $infraColors = <|
   "Point"    -> RGBColor[ 0.95, 0.08, 0.08 ],
@@ -35,42 +35,45 @@ $infraColors = <|
   "Ray"      -> RGBColor[ 0.95, 0.65, 0.45 ],
   "Path"     -> RGBColor[ 0.85, 0.62, 0.32 ],
   "Topology" -> RGBColor[ 0.85, 0.55, 0.75 ]
-|>;
+|>
 
-$InfraPointColor    = $infraColors[ "Point" ];
-$InfraSegmentColor  = $infraColors[ "Segment" ];
-$InfraLineColor     = $infraColors[ "Line" ];
-$InfraShellColor    = $infraColors[ "Shell" ];
-$InfraBallColor     = $infraColors[ "Ball" ];
-$InfraPlaneColor    = $infraColors[ "Plane" ];
-$InfraCircleColor   = $infraColors[ "Circle" ];
-$InfraRayColor      = $infraColors[ "Ray" ];
-$InfraWalkColor     = $infraColors[ "Path" ];
-$InfraTopologyColor = $infraColors[ "Topology" ];
+$InfraPointColor    = $infraColors[ "Point" ]
+$InfraSegmentColor  = $infraColors[ "Segment" ]
+$InfraLineColor     = $infraColors[ "Line" ]
+$InfraShellColor    = $infraColors[ "Shell" ]
+$InfraBallColor     = $infraColors[ "Ball" ]
+$InfraPlaneColor    = $infraColors[ "Plane" ]
+$InfraCircleColor   = $infraColors[ "Circle" ]
+$InfraRayColor      = $infraColors[ "Ray" ]
+$InfraWalkColor     = $infraColors[ "Path" ]
+$InfraTopologyColor = $infraColors[ "Topology" ]
 
-$InfraPalette := Dataset @ KeyValueMap[
-  { name, color } |-> <|
-    "Primitive" -> name,
-    "Color" -> color,
-    "Symbol" -> "$Infra" <> name <> "Color" |>,
-  $infraColors ]
+$InfraPalette :=
+  Dataset @ KeyValueMap[
+    { name, color } |-> <|
+      "Primitive" -> name,
+      "Color" -> color,
+      "Symbol" -> "$Infra" <> name <> "Color" |>,
+    $infraColors ]
 
-$InfraOpacityRange  = { 0.40, 1.0 };
-$InfraEdgeThickness = 9.0;
-$InfraPointSize     = 6;
+$InfraOpacityRange  = { 0.40, 1.0 }
+$InfraEdgeThickness = 9.0
+$InfraPointSize     = 6
 
-$InfraPointSizes      = <| Small -> 4, Medium -> 7, Large -> 10 |>;
-$InfraAccentPointSize = 12;
+$InfraPointSizes      = <| Small -> 4, Medium -> 7, Large -> 10 |>
+$InfraAccentPointSize = 12
 
-$InfraSceneImageSize = Medium;
+$InfraSceneImageSize = Medium
 
-$InfraStrikeOutPalette := ColorData[ 112, "ColorList" ];
+$InfraStrikeOutPalette :=
+  ColorData[ 112, "ColorList" ]
 
-resolveArrowSpec[ spec_ ] := Replace[ spec, {
-  Automatic | None | False -> None,
-  True :> Arrowheads[ Medium ],
-  a_Arrowheads :> a,
-  other_ :> Arrowheads[ other ] } ]
+resolveArrowSpec[ spec_ ] :=
+  Replace[ spec, {
+    Automatic | None | False -> None,
+    True :> Arrowheads[ Medium ],
+    a_Arrowheads :> a,
+    other_ :> Arrowheads[ other ] } ]
 
 parseHighlightStyle[ spec_, defaults_Association ] :=
   Replace[
@@ -106,10 +109,14 @@ parseHighlightStyle[ spec_, defaults_Association ] :=
         If[ vertPtSize, "PointSizeRange" -> None, Nothing ],
         If[ anyOpacity, "OpacityRange"   -> None, Nothing ] |> ] ] ]
 
-normalizeHighlightSpec[ Automatic ]          := { }
-normalizeHighlightSpec[ list_List ]          := list
-normalizeHighlightSpec[ Directive[ d___ ] ]  := { d }
-normalizeHighlightSpec[ x_ ]                 := { x }
+normalizeHighlightSpec[ Automatic ]          :=
+  { }
+normalizeHighlightSpec[ list_List ]          :=
+  list
+normalizeHighlightSpec[ Directive[ d___ ] ]  :=
+  { d }
+normalizeHighlightSpec[ x_ ]                 :=
+  { x }
 
 Options[ InfraSubstrateHighlight ] = Join[
   {
@@ -121,9 +128,9 @@ Options[ InfraSubstrateHighlight ] = Join[
     ImageSize        :> $InfraSceneImageSize
   },
   Options[ HighlightGraph ]
-];
+]
 
-InfraSubstrateHighlight[ graph_Graph, obj : Except[_List], opts : OptionsPattern[] ] :=
+InfraSubstrateHighlight[ graph_Graph, obj : Except[ _List ], opts : OptionsPattern[] ] :=
   InfraSubstrateHighlight[ graph, { obj }, opts ]
 
 InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
@@ -253,52 +260,53 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
           ImageSize -> OptionValue[ ImageSize ] ]
     ]
 
-infraInk[ graph_Graph, x_ ] := Which[
-  VertexQ[ graph, x ] || AssociationQ[ x ],
-    <| "VertexDensity" -> InfraDensity[ graph, x ], "EdgeDensity" -> <| |>, "Walk" -> None, "Knots" -> { } |>,
-  MatchQ[ x, InfraWalk[ _List ] ] && ! VertexQ[ graph, First @ x ],
-    With[ { walk = First @ x },
-      <| "VertexDensity" -> InfraDensity[ graph, If[ Length @ walk > 1 && First @ walk === Last @ walk, Most @ walk, walk ] ],
-         "EdgeDensity"   -> KeySort @ Counts[ UndirectedEdge @@ Sort @ # & /@ Partition[ walk, 2, 1 ] ],
-         "Walk"          -> walk,
-         "Knots"         -> { } |> ],
-  MatchQ[ x, ( InfraIntersection | InfraUnion )[ __ ] ],
-    <| "VertexDensity" -> InfraMeasurement[ graph, x, "VertexDensity" ], "EdgeDensity" -> <| |>, "Walk" -> None, "Knots" -> { } |>,
-  MatchQ[ x, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ __ ] ],
-    With[ {
-        edges  = KeySort @ GroupBy[ Normal @ InfraMeasurement[ graph, x, "EdgeDensity" ],
-          ( UndirectedEdge @@ Sort[ List @@ First @ # ] & ) -> Last, Total ],
-        member = If[ InfraMeasurement[ graph, x, "Cardinality" ] == 1, InfraVertexList[ graph, x ], None ] },
-      <| "VertexDensity" -> InfraMeasurement[ graph, x, "VertexDensity" ],
-         "EdgeDensity"   -> edges,
-         "Walk"          -> If[ ListQ @ member && Length @ member > 2 &&
-             KeyExistsQ[ edges, UndirectedEdge @@ Sort @ { Last @ member, First @ member } ],
-           Append[ member, First @ member ], member ],
-         "Knots"         -> { } |> ],
-  GraphQ[ x ],
-    With[ { walk = Which[
-        closedWalkQ @ x,                     closeWalk @ walkSequence @ x,
-        positionSpelledQ @ x || PathGraphQ @ x, walkSequence @ x,
-        True,                                None ] },
+infraInk[ graph_Graph, x_ ] :=
+  Which[
+    VertexQ[ graph, x ] || AssociationQ[ x ],
+      <| "VertexDensity" -> InfraDensity[ graph, x ], "EdgeDensity" -> <| |>, "Walk" -> None, "Knots" -> { } |>,
+    MatchQ[ x, InfraWalk[ _List ] ] && ! VertexQ[ graph, First @ x ],
+      With[ { walk = First @ x },
+        <| "VertexDensity" -> InfraDensity[ graph, If[ Length @ walk > 1 && First @ walk === Last @ walk, Most @ walk, walk ] ],
+           "EdgeDensity"   -> KeySort @ Counts[ UndirectedEdge @@ Sort @ # & /@ Partition[ walk, 2, 1 ] ],
+           "Walk"          -> walk,
+           "Knots"         -> { } |> ],
+    MatchQ[ x, ( InfraIntersection | InfraUnion )[ __ ] ],
+      <| "VertexDensity" -> InfraMeasurement[ graph, x, "VertexDensity" ], "EdgeDensity" -> <| |>, "Walk" -> None, "Knots" -> { } |>,
+    MatchQ[ x, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ __ ] ],
+      With[ {
+          edges  = KeySort @ GroupBy[ Normal @ InfraMeasurement[ graph, x, "EdgeDensity" ],
+            ( UndirectedEdge @@ Sort[ List @@ First @ # ] & ) -> Last, Total ],
+          member = If[ InfraMeasurement[ graph, x, "Cardinality" ] == 1, InfraVertexList[ graph, x ], None ] },
+        <| "VertexDensity" -> InfraMeasurement[ graph, x, "VertexDensity" ],
+           "EdgeDensity"   -> edges,
+           "Walk"          -> If[ ListQ @ member && Length @ member > 2 &&
+               KeyExistsQ[ edges, UndirectedEdge @@ Sort @ { Last @ member, First @ member } ],
+             Append[ member, First @ member ], member ],
+           "Knots"         -> { } |> ],
+    GraphQ[ x ],
+      With[ { walk = Which[
+          closedWalkQ @ x,                     closeWalk @ walkSequence @ x,
+          positionSpelledQ @ x || PathGraphQ @ x, walkSequence @ x,
+          True,                                None ] },
+        <| "VertexDensity" -> InfraDensity[ graph, x ],
+           "EdgeDensity"   -> If[ walk === None,
+             KeySort @ GroupBy[ Normal @ GeodesicEdgeOccupation @ x, ( UndirectedEdge @@ Sort[ List @@ First @ # ] & ) -> Last, Total ],
+             KeySort @ Counts[ UndirectedEdge @@ Sort @ # & /@ Partition[ walk, 2, 1 ] ] ],
+           "Walk"          -> walk,
+           "Knots"         -> { } |> ],
+    MatchQ[ x, { _Graph, __Graph } ] && NoneTrue[ x, closedWalkQ ] &&
+      AllTrue[ Partition[ walkSequence /@ x, 2, 1 ], Last @ First @ # === First @ Last @ # & ],
+      With[ { knots = Prepend[ Last @ walkSequence @ # & /@ x, First @ walkSequence @ First @ x ] },
+        Append[ infraInk[ graph, InfraWalk @ polylineToVertexSeq @ x ],
+          "Knots" -> If[ First @ knots === Last @ knots, Most @ knots, knots ] ] ],
+    ListQ[ x ] && AllTrue[ x, VertexQ[ graph, # ] & ],
       <| "VertexDensity" -> InfraDensity[ graph, x ],
-         "EdgeDensity"   -> If[ walk === None,
-           KeySort @ GroupBy[ Normal @ GeodesicEdgeOccupation @ x, ( UndirectedEdge @@ Sort[ List @@ First @ # ] & ) -> Last, Total ],
-           KeySort @ Counts[ UndirectedEdge @@ Sort @ # & /@ Partition[ walk, 2, 1 ] ] ],
-         "Walk"          -> walk,
-         "Knots"         -> { } |> ],
-  MatchQ[ x, { _Graph, __Graph } ] && NoneTrue[ x, closedWalkQ ] &&
-    AllTrue[ Partition[ walkSequence /@ x, 2, 1 ], Last @ First @ # === First @ Last @ # & ],
-    With[ { knots = Prepend[ Last @ walkSequence @ # & /@ x, First @ walkSequence @ First @ x ] },
-      Append[ infraInk[ graph, InfraWalk @ polylineToVertexSeq @ x ],
-        "Knots" -> If[ First @ knots === Last @ knots, Most @ knots, knots ] ] ],
-  ListQ[ x ] && AllTrue[ x, VertexQ[ graph, # ] & ],
-    <| "VertexDensity" -> InfraDensity[ graph, x ],
-       "EdgeDensity"   -> KeySort @ Counts[ UndirectedEdge @@ Sort[ List @@ # ] & /@ EdgeList @ Subgraph[ graph, x ] ],
-       "Walk"          -> None,
-       "Knots"         -> { } |>,
-  MatchQ[ x, { __ } ],
-    With[ { members = infraInk[ graph, # ] & /@ x },
-      <| "VertexDensity" -> KeySort @ GroupBy[ Catenate[ Normal @ #[ "VertexDensity" ] & /@ members ], First -> Last, Total ],
-         "EdgeDensity"   -> KeySort @ GroupBy[ Catenate[ Normal @ #[ "EdgeDensity" ] & /@ members ], First -> Last, Total ],
-         "Walk"          -> If[ Length @ members == 1, First[ members ][ "Walk" ], None ],
-         "Knots"         -> Catenate[ #[ "Knots" ] & /@ members ] |> ] ]
+         "EdgeDensity"   -> KeySort @ Counts[ UndirectedEdge @@ Sort[ List @@ # ] & /@ EdgeList @ Subgraph[ graph, x ] ],
+         "Walk"          -> None,
+         "Knots"         -> { } |>,
+    MatchQ[ x, { __ } ],
+      With[ { members = infraInk[ graph, # ] & /@ x },
+        <| "VertexDensity" -> KeySort @ GroupBy[ Catenate[ Normal @ #[ "VertexDensity" ] & /@ members ], First -> Last, Total ],
+           "EdgeDensity"   -> KeySort @ GroupBy[ Catenate[ Normal @ #[ "EdgeDensity" ] & /@ members ], First -> Last, Total ],
+           "Walk"          -> If[ Length @ members == 1, First[ members ][ "Walk" ], None ],
+           "Knots"         -> Catenate[ #[ "Knots" ] & /@ members ] |> ] ]

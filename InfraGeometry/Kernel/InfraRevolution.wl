@@ -1,8 +1,9 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* each axis path is extended by the vertices v adjacent to its endpoint with d(v, path[[k]]) = k (left) or n - k + 1 (right) for every k, i.e. those prolonging the axis as a geodesic *)
+(* each axis path is extended by the vertices v adjacent to its endpoint with d(v, path[[k]]) = k (left) or n - k + 1 (right) for every k, i.e. those
+   prolonging the axis as a geodesic *)
 
-Options[ FindInfraRevolution ] = { "Form" -> "Solid", Method -> "Voronoi" };
+Options[ FindInfraRevolution ] = { "Form" -> "Solid", Method -> "Voronoi" }
 
 FindInfraRevolution[ graph_Graph, axis_, profile_, opts : OptionsPattern[ ] ] :=
   With[
@@ -30,7 +31,8 @@ FindInfraRevolution[ graph_Graph, axis_, profile_, opts : OptionsPattern[ ] ] :=
       method = OptionValue[ Method ] },
     { radii = Round /@ Which[ NumericQ @ profile, ConstantArray[ profile, n ], ListQ @ profile, profile, True, profile /@ Range[ n ] ] },
     If[ method === "Balls",
-      (* "Balls": the sublevel set { v : min_i (d(v, c_i) - r_i) <= 0 } of the varying-radius tube function; no geodesic extension, so cyclic and non-extendable axes work too *)
+      (* "Balls": the sublevel set { v : min_i (d(v, c_i) - r_i) <= 0 } of the varying-radius tube function; no geodesic extension, so cyclic and
+         non-extendable axes work too *)
       With[
         { candidates = VertexList @ NeighborhoodGraph[ graph, Union @@ origPositions, Max @ radii ],
           slack = v |-> Min @ MapThread[
@@ -58,13 +60,13 @@ FindInfraRevolution[ graph_Graph, axis_, profile_, opts : OptionsPattern[ ] ] :=
                     If[ i == 1 || i == Length @ positions, dists[[ i ]] === Min @ dists, dists[[ i - 1 ]] === dists[[ i + 1 ]] ] ] ] ],
           { origPositions, radii, origRange } ] ] ] ]
 
-Options[ FindInfraCylinder ] = Join[ FilterRules[ Options[ FindInfraRevolution ], Except[ Method ] ], { Method -> "Balls" } ];
+Options[ FindInfraCylinder ] = Join[ FilterRules[ Options[ FindInfraRevolution ], Except[ Method ] ], { Method -> "Balls" } ]
 
 FindInfraCylinder[ graph_Graph, axis_, radius_, opts : OptionsPattern[ ] ] :=
   FindInfraRevolution[ graph, axis, radius, Method -> OptionValue[ Method ],
     FilterRules[ { opts }, Except[ Method ] ] ]
 
-Options[ FindInfraCone ] = Join[ Options[ FindInfraRevolution ], { "Apex" -> First } ];
+Options[ FindInfraCone ] = Join[ Options[ FindInfraRevolution ], { "Apex" -> First } ]
 
 FindInfraCone[ graph_Graph, axis_, slope_, opts : OptionsPattern[ ] ] :=
   With[

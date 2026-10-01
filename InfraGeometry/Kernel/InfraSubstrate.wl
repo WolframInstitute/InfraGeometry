@@ -1,24 +1,27 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
-Options[ InfraSubstrate ] = { "KeepCoordinates" -> False, "Inflate" -> None };
+Options[ InfraSubstrate ] = { "KeepCoordinates" -> False, "Inflate" -> None }
 
-InfraSubstrate[ ] := <|
-  "OpenManifold" -> {
-    "SquareMeshGraph", "CubeMeshGraph",
-    "TriangularTilingGraph", "SquareTilingGraph", "HexagonalTilingGraph", "HyperbolicTilingGraph",
-    "SquareGridGraph", "CubicGridGraph" },
-  "ClosedManifold" -> {
-    "SphereMeshGraph",
-    "SquareTorusGraph", "TriangularTorusGraph", "HexagonalTorusGraph",
-    "UniformLengthSphereGraph", "UniformLengthProlateEllipsoidGraph", "UniformLengthTriaxialEllipsoidGraph", "BuckyballGraph" },
-  "Fractal" -> { "SierpinskiTriangleGraph", "MengerCarpetGraph", "MengerSpongeGraph" },
-  "Exotic" -> { "BinaryTreeGraph", "DilutedTreeGraph", "CompleteGraph" },
-  "WolframModel" -> { "wm6655", "wm8619", "wm1811" }
-|>
+InfraSubstrate[ ] :=
+  <|
+    "OpenManifold" -> {
+      "SquareMeshGraph", "CubeMeshGraph",
+      "TriangularTilingGraph", "SquareTilingGraph", "HexagonalTilingGraph", "HyperbolicTilingGraph",
+      "SquareGridGraph", "CubicGridGraph" },
+    "ClosedManifold" -> {
+      "SphereMeshGraph",
+      "SquareTorusGraph", "TriangularTorusGraph", "HexagonalTorusGraph",
+      "UniformLengthSphereGraph", "UniformLengthProlateEllipsoidGraph", "UniformLengthTriaxialEllipsoidGraph", "BuckyballGraph" },
+    "Fractal" -> { "SierpinskiTriangleGraph", "MengerCarpetGraph", "MengerSpongeGraph" },
+    "Exotic" -> { "BinaryTreeGraph", "DilutedTreeGraph", "CompleteGraph" },
+    "WolframModel" -> { "wm6655", "wm8619", "wm1811" }
+  |>
 
-InfraSubstrate[ All ] := Catenate @ Values @ InfraSubstrate[ ]
+InfraSubstrate[ All ] :=
+  Catenate @ Values @ InfraSubstrate[ ]
 
-InfraSubstrate[ name_String ] := InfraSubstrate[ name, "Medium" ]
+InfraSubstrate[ name_String ] :=
+  InfraSubstrate[ name, "Medium" ]
 
 InfraSubstrate[ name_String, size_, style : ( _String | Automatic ) : Automatic,
     opts : OptionsPattern[ { InfraSubstrate, Graph } ] ] :=
@@ -116,9 +119,10 @@ InfraSubstrate[ name_String, size_, style : ( _String | Automatic ) : Automatic,
       Sequence @@ InfraSubstrateStyle[ name, Replace[ style, Automatic :> Replace[ size, Except[ "Small" | "Medium" | "Large" ] :>
         Which[ VertexCount @ g <= 250, "Small", VertexCount @ g <= 800, "Medium", True, "Large" ] ] ] ] ] ]
 
-Options[ InfraSubstrateCode ] = Options[ InfraSubstrate ];
+Options[ InfraSubstrateCode ] = Options[ InfraSubstrate ]
 
-InfraSubstrateCode[ name_String ] := InfraSubstrateCode[ name, "Medium" ]
+InfraSubstrateCode[ name_String ] :=
+  InfraSubstrateCode[ name, "Medium" ]
 
 InfraSubstrateCode[ name_String, size_, opts : OptionsPattern[ { InfraSubstrate, Graph } ] ] :=
   With[
@@ -234,33 +238,36 @@ InfraSubstrateCode[ name_String, size_, opts : OptionsPattern[ { InfraSubstrate,
       HoldComplete[ body_ ] :> HoldForm @ body,
       HoldComplete[ body_, args__ ] :> HoldForm @ Graph[ body, args ] } ] ]
 
-InfraSubstrateStyle[ ] := <|
-  "Default" -> { "Default", "Small", "Medium", "Large" },
-  "Custom" -> Join[
-    Cases[ DownValues[ InfraSubstrateStyle ],
-      HoldPattern[ Verbatim[ HoldPattern ][ InfraSubstrateStyle[ style_String ] ] :> _ ] /;
-        ! MemberQ[ { "Default", "Small", "Medium", "Large" }, style ] :> style ],
-    Cases[ DownValues[ InfraSubstrateStyle ],
-      HoldPattern[ Verbatim[ HoldPattern ][ InfraSubstrateStyle[ name_String, size_String ] ] :> _ ] :> { name, size } ] ]
-|>
+InfraSubstrateStyle[ ] :=
+  <|
+    "Default" -> { "Default", "Small", "Medium", "Large" },
+    "Custom" -> Join[
+      Cases[ DownValues[ InfraSubstrateStyle ],
+        HoldPattern[ Verbatim[ HoldPattern ][ InfraSubstrateStyle[ style_String ] ] :> _ ] /;
+          ! MemberQ[ { "Default", "Small", "Medium", "Large" }, style ] :> style ],
+      Cases[ DownValues[ InfraSubstrateStyle ],
+        HoldPattern[ Verbatim[ HoldPattern ][ InfraSubstrateStyle[ name_String, size_String ] ] :> _ ] :> { name, size } ] ]
+  |>
 
-InfraSubstrateStyle[ All ] := Catenate @ Values @ InfraSubstrateStyle[ ]
+InfraSubstrateStyle[ All ] :=
+  Catenate @ Values @ InfraSubstrateStyle[ ]
 
-InfraSubstrateStyle[ "Default" ] = { };
+InfraSubstrateStyle[ "Default" ] = { }
 
 InfraSubstrateStyle[ "Small" ] = {
   EdgeStyle -> Directive[ StandardGray, Opacity[ 0.35 ] ],
   VertexStyle -> Directive[ StandardGray, Opacity[ 0.5 ], EdgeForm[ { GrayLevel[ 0 ], Opacity[ 0.65 ] } ] ],
-  VertexSize -> { "Scaled", 0.013 } };
+  VertexSize -> { "Scaled", 0.013 } }
 
 InfraSubstrateStyle[ "Medium" ] = {
   EdgeStyle -> Directive[ StandardGray, Opacity[ 0.3 ] ],
   VertexStyle -> Directive[ StandardGray, Opacity[ 0.45 ], EdgeForm[ { GrayLevel[ 0 ], Opacity[ 0.6 ] } ] ],
-  VertexSize -> { "Scaled", 0.009 } };
+  VertexSize -> { "Scaled", 0.009 } }
 
 InfraSubstrateStyle[ "Large" ] = {
   EdgeStyle -> Directive[ StandardGray, Opacity[ 0.22 ] ],
   VertexStyle -> Directive[ StandardGray, Opacity[ 0.33 ], EdgeForm[ { GrayLevel[ 0 ], Opacity[ 0.45 ] } ] ],
-  VertexSize -> { "Scaled", 0.006 } };
+  VertexSize -> { "Scaled", 0.006 } }
 
-InfraSubstrateStyle[ name_String, size_String ] := InfraSubstrateStyle @ size
+InfraSubstrateStyle[ name_String, size_String ] :=
+  InfraSubstrateStyle @ size

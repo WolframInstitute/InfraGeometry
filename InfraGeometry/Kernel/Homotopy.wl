@@ -1,4 +1,4 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 Options[ FindInfraHomotopy ] = {
   Method                -> "Exhaustive",
@@ -6,7 +6,7 @@ Options[ FindInfraHomotopy ] = {
   "NullHomotopicCycles" -> { 1, 2, 3 },
   "MaxLength"           -> Automatic,
   "MaxMoves"            -> Infinity
-};
+}
 
 FindInfraHomotopy[ graph_Graph, a_, b_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : Automatic, opts : OptionsPattern[] ] /;
@@ -136,7 +136,7 @@ Options[ FindInfraHomotopyRepresentativeHomotopy ] = {
   "NullHomotopicCycles" -> { 1, 2, 3 },
   "MaxLength"           -> Automatic,
   "MaxMoves"            -> Infinity
-};
+}
 
 FindInfraHomotopyRepresentativeHomotopy[ graph_Graph, obj_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : Automatic, opts : OptionsPattern[] ] :=
@@ -244,7 +244,7 @@ Options[ FindInfraHomotopyRepresentative ] = {
   "NullHomotopicCycles" -> { 1, 2, 3 },
   "MaxLength"           -> Automatic,
   "MaxMoves"            -> Infinity
-};
+}
 
 FindInfraHomotopyRepresentative[ graph_Graph, obj_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[] ] :=
@@ -261,7 +261,7 @@ Options[ HomotopicQ ] = {
   "NullHomotopicCycles" -> { 1, 2, 3 },
   "MaxLength"           -> Automatic,
   "MaxMoves"            -> Infinity
-};
+}
 
 HomotopicQ[ graph_Graph, a_, b_, opts : OptionsPattern[] ] :=
   With[ {
@@ -291,9 +291,11 @@ HomotopicQ[ graph_Graph, a_, b_, opts : OptionsPattern[] ] :=
         True,                         { x } ] },
     AllTrue[ Tuples[ { spread @ a, spread @ b } ],
         pair |-> MatchQ[ pair, { _List, _List } ] &&
-          FindInfraHomotopy[ graph, Sequence @@ If[ closedQ, loopOf /@ pair, pair ], Method -> "Exhaustive", opts ] =!= { } ] /; closedQ === closedOf @ b ]
+          FindInfraHomotopy[ graph, Sequence @@ If[ closedQ, loopOf /@ pair, pair ], Method -> "Exhaustive",
+            opts ] =!= { } ] /; closedQ === closedOf @ b ]
 
-(* a closed walk is null-homotopic iff it is homotopic, as a based loop, to the constant walk at its base point; a vertex list or an open walk graph is read as closed *)
+(* a closed walk is null-homotopic iff it is homotopic, as a based loop, to the constant walk at its base point; a vertex list or an open walk graph
+   is read as closed *)
 
 Options[ NullHomotopicQ ] = {
   Method                -> "Exhaustive",
@@ -301,7 +303,7 @@ Options[ NullHomotopicQ ] = {
   "NullHomotopicCycles" -> { 1, 2, 3 },
   "MaxLength"           -> Automatic,
   "MaxMoves"            -> Infinity
-};
+}
 
 NullHomotopicQ[ graph_Graph, cycle_List, opts : OptionsPattern[] ] :=
   With[ { loop = walk |-> ( core |-> Graph[ core, DirectedEdge @@@ Partition[ core, 2, 1, 1 ] ] ) @
@@ -339,7 +341,8 @@ HomotopyMoveType[ walk1_List, walk2_List ] :=
 HomotopyMoveType[ w1_Graph, w2_Graph ] :=
   HomotopyMoveType[ VertexList @ w1, VertexList @ w2 ]
 
-HomotopyMoveTypes[ arg_List ] /; MatchQ[ arg, { __Graph } | { { __Graph } .. } ] || AllTrue[ arg, MatchQ[ _List ] ] := Which[
-  MatchQ[ arg, { __Graph } ],           MapThread[ HomotopyMoveType, { Most @ arg, Rest @ arg } ],
-  MatchQ[ arg, { { __Graph } .. } ],    HomotopyMoveTypes /@ arg,
-  AllTrue[ arg, MatchQ[ _List ] ],      MapThread[ HomotopyMoveType, { Most @ arg, Rest @ arg } ] ]
+HomotopyMoveTypes[ arg_List ] /; MatchQ[ arg, { __Graph } | { { __Graph } .. } ] || AllTrue[ arg, MatchQ[ _List ] ] :=
+  Which[
+    MatchQ[ arg, { __Graph } ],           MapThread[ HomotopyMoveType, { Most @ arg, Rest @ arg } ],
+    MatchQ[ arg, { { __Graph } .. } ],    HomotopyMoveTypes /@ arg,
+    AllTrue[ arg, MatchQ[ _List ] ],      MapThread[ HomotopyMoveType, { Most @ arg, Rest @ arg } ] ]

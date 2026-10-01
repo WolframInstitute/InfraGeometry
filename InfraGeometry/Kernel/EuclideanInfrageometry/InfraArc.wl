@@ -1,8 +1,13 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraArc *)
 
-(* InfraArc[c, {p, q}] is inert: the minor arcs of the circles around c through p and q, a minor arc being a geodesic of the band graph A = G[W] on the band W = { v : rmin <= d(c, v) <= rmax } of the circle through p, widened by "RadiusDelta" -> dOut | {dIn, dOut}.  Its graph is the interval DAG I_A(p, q) = { v in W : d_A(p, v) + d_A(v, q) == d_A(p, q) } with the arrows of rising d_A(p, .), whose chains are exactly those geodesics -- and hence, under the winding functional (W) and for p, q on a common circle, exactly the minor arcs, all of length d_A(p, q) (design Thm. arc).  Neither hypothesis is certified here, so "Faithful" is Undetermined.  More points give the polyline of the consecutive minor arcs, each read on the band of the circle through its own first point -- one band, since the arc asks its points to lie on a common circle *)
+(* InfraArc[c, {p, q}] is inert: the minor arcs of the circles around c through p and q, a minor arc being a geodesic of the band graph A = G[W] on
+   the band W = { v : rmin <= d(c, v) <= rmax } of the circle through p, widened by "RadiusDelta" -> dOut | {dIn, dOut}.  Its graph is the interval
+   DAG I_A(p, q) = { v in W : d_A(p, v) + d_A(v, q) == d_A(p, q) } with the arrows of rising d_A(p, .), whose chains are exactly those geodesics --
+   and hence, under the winding functional (W) and for p, q on a common circle, exactly the minor arcs, all of length d_A(p, q) (design Thm.
+   arc).  Neither hypothesis is certified here, so "Faithful" is Undetermined.  More points give the polyline of the consecutive minor arcs, each
+   read on the band of the circle through its own first point -- one band, since the arc asks its points to lie on a common circle *)
 
 InfraMeasurement[ graph_Graph, InfraArc[ center_, { p_, q_ }, opts___Rule ], "Graph" ] :=
   With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ],
@@ -68,7 +73,7 @@ InfraMemberQ[ graph_Graph, InfraArc[ center_, pts : { _, _, __ }, opts___Rule ],
       AllTrue[ Range @ Length @ pieces,
         i |-> InfraMemberQ[ graph, pieces[[ i ]], Take[ path, { cuts[[ i ]], cuts[[ i + 1 ]] } ] ] ] ]
 
-Options[ FindInfraArc ] = { "RadiusDelta" -> 0 };
+Options[ FindInfraArc ] = { "RadiusDelta" -> 0 }
 
 FindInfraArc[ graph_Graph, center_, pts : { _, _, ___ },
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=

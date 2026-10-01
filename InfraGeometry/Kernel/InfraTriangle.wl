@@ -1,6 +1,6 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
-Options[ FindInfraTriangle ] = { Method -> Automatic };
+Options[ FindInfraTriangle ] = { Method -> Automatic }
 
 FindInfraTriangle[ graph_Graph, vertices_List /; Length[ vertices ] === 3,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
@@ -14,7 +14,8 @@ InfraTriangleQ[ graph_Graph, polys : { { __Graph } .. } ] :=
 InfraTriangleQ[ graph_Graph, sides : { _Graph, _Graph, _Graph } ] :=
   InfraPolygonQ[ graph, sides ]
 
-InfraTriangleQ[ _Graph, _ ] := False
+InfraTriangleQ[ _Graph, _ ] :=
+  False
 
 dispatchConstruction[ graph_Graph, InfraTriangle[ verts_List, opts___Rule ] ] :=
   capBranches[

@@ -1,15 +1,22 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* growth from a seed under the Properties rules until a stopping condition fires, the length budget kspec is spent, or no admissible step remains.  Every rule reads the window -- the last <= "InfraScale" vertices with the candidate, the whole walk at the default scale Infinity.  The default class {"Simple"} is the simple paths; "Generic" (InfraGenericQ's read per step, endpoint freeness added on the finished curve), "Immersed" and the bare class {} are opt-in.
-   A rule excluding self-intersections, triple points or self-tangencies bounds the class by itself, as does "Minimizing" at scale Infinity, so kspec Infinity is legal under the default; without a bounding rule it is refused, since a stopping condition may never fire.
-   kspec is UpTo[k] (at most k edges), {k} (exactly k), {lo, hi} or Infinity, never a bare integer: with no wrapper to mark it, a bare integer after p1 is the endpoint p2 of the two-point form and an Association its multiset -- on an integer-labelled substrate a budget and a vertex would otherwise collide.  A count needs an explicit kspec before it for the same reason.  When both readings fit (a vertex label that is also a {k} or {lo, hi} list) the pointed one wins *)
+(* growth from a seed under the Properties rules until a stopping condition fires, the length budget kspec is spent, or no admissible step
+   remains.  Every rule reads the window -- the last <= "InfraScale" vertices with the candidate, the whole walk at the default scale Infinity.  The
+   default class {"Simple"} is the simple paths; "Generic" (InfraGenericQ's read per step, endpoint freeness added on the finished curve), "Immersed"
+   and the bare class {} are opt-in.
+   A rule excluding self-intersections, triple points or self-tangencies bounds the class by itself, as does "Minimizing" at scale Infinity, so kspec
+   Infinity is legal under the default; without a bounding rule it is refused, since a stopping condition may never fire.
+   kspec is UpTo[k] (at most k edges), {k} (exactly k), {lo, hi} or Infinity, never a bare integer: with no wrapper to mark it, a bare integer after
+   p1 is the endpoint p2 of the two-point form and an Association its multiset -- on an integer-labelled substrate a budget and a vertex would
+   otherwise collide.  A count needs an explicit kspec before it for the same reason.  When both readings fit (a vertex label that is also a {k} or
+   {lo, hi} list) the pointed one wins *)
 
 Options[ FindInfraWalk ] = {
   "InfraScale"        -> Infinity,
   Properties          -> { "Simple" },
   "StoppingCondition" -> None,
   Method              -> Automatic
-};
+}
 
 FindInfraWalk[ graph_Graph, p1_, opts : OptionsPattern[] ] :=
   With[ { result = FindInfraWalk[ graph, p1, Infinity, Automatic, opts ] },
@@ -20,7 +27,8 @@ FindInfraWalk[ graph_Graph, p1_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
     With[ { rules = OptionValue[ FindInfraWalk, { opts }, Properties ],
             scale = OptionValue[ FindInfraWalk, { opts }, "InfraScale" ],
-            base  = NestWhile[ First, OptionValue[ FindInfraWalk, { opts }, "StoppingCondition" ], MatchQ[ { _, "Delay" -> _Integer?NonNegative } ] ] },
+            base  = NestWhile[ First, OptionValue[ FindInfraWalk, { opts }, "StoppingCondition" ],
+              MatchQ[ { _, "Delay" -> _Integer?NonNegative } ] ] },
       { excluded = Union @@ Replace[ rules, {
           "Simple" -> { "SelfIntersections" }, "Immersed" -> { "Cusps" }, "Generic" -> { "Cusps", "SelfTangencies", "TriplePoints" },
           ( "Exclude" -> sp_ ) :> Flatten @ { sp }, _ -> { } }, { 1 } ] },
@@ -53,7 +61,8 @@ FindInfraWalk[ graph_Graph, p1_, p2_,
     ( VertexQ[ graph, p2 ] || AssociationQ[ p2 ] ) &&
     With[ { rules = OptionValue[ FindInfraWalk, { opts }, Properties ],
             scale = OptionValue[ FindInfraWalk, { opts }, "InfraScale" ],
-            base  = NestWhile[ First, OptionValue[ FindInfraWalk, { opts }, "StoppingCondition" ], MatchQ[ { _, "Delay" -> _Integer?NonNegative } ] ] },
+            base  = NestWhile[ First, OptionValue[ FindInfraWalk, { opts }, "StoppingCondition" ],
+              MatchQ[ { _, "Delay" -> _Integer?NonNegative } ] ] },
       { excluded = Union @@ Replace[ rules, {
           "Simple" -> { "SelfIntersections" }, "Immersed" -> { "Cusps" }, "Generic" -> { "Cusps", "SelfTangencies", "TriplePoints" },
           ( "Exclude" -> sp_ ) :> Flatten @ { sp }, _ -> { } }, { 1 } ] },
@@ -200,7 +209,7 @@ Options[ FindInfraGeodesic ] = {
   Properties          -> { },
   "StoppingCondition" -> None,
   Method              -> Automatic
-};
+}
 
 FindInfraGeodesic[ graph_Graph, p1_, scale : ( _Integer | Infinity ), opts : OptionsPattern[] ] :=
   With[ { result = FindInfraWalk[ graph, p1, Infinity, Automatic, "InfraScale" -> scale,
@@ -261,54 +270,57 @@ InfraGeodesicQ[ graph_Graph, walk_List,
     i |-> With[ { j = If[ scale === Infinity, 1, Max[ 1, i - scale ] ] },
       GraphDistance[ graph, walk[[ j ]], walk[[ i ]] ] == i - j ] ]
 
-InfraGeodesicQ[ _Graph, walk_List, ___ ] /; Length[ walk ] < 2 := False
+InfraGeodesicQ[ _Graph, walk_List, ___ ] /; Length[ walk ] < 2 :=
+  False
 
-WalkSingularities[ ws : { __Graph } ] := WalkSingularities /@ ws
+WalkSingularities[ ws : { __Graph } ] :=
+  WalkSingularities /@ ws
 
-WalkSingularities[ w_Graph ] /; ! LoopFreeGraphQ[ w ] || ! AcyclicGraphQ[ w ] := With[
-  { vs = VertexList @ w },
-  { core = If[ AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
-      Last /@ SortBy[ vs, First ],
-      Reap[ DepthFirstScan[ w, First @ vs, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] },
-  { m = Length @ core },
-  { cyc = i |-> Mod[ i - 1, m ] + 1,
-    period = SelectFirst[ Divisors @ m, d |-> core === RotateLeft[ core, d ] ],
-    cyclicRuns = set |-> With[ { runs = Split[ Sort @ set, #2 == #1 + 1 & ] },
-      If[ Length[ runs ] >= 2 && First[ First @ runs ] == 1 && Last[ Last @ runs ] == m,
-        Prepend[ runs[[ 2 ;; -2 ]], Join[ Last @ runs, First @ runs ] ],
-        runs ] ],
-    arcGroups = ts |-> Values @ GroupBy[
-      ( pos |-> With[ { arc = core[[ Mod[ pos - 1, m ] + 1 ]] },
-          { key = First @ Sort @ { arc, Reverse @ arc } },
-          key -> { pos, arc === key } ] ) /@ DeleteDuplicates @ ts,
-      First -> Last,
-      ps |-> With[ { sorted = SortBy[ DeleteDuplicates @ ps, First @ First @ # & ] },
-        { flip = ! Last @ First @ sorted },
-        ( { pos, direct } |-> If[ Xor[ direct, flip ],
-            { First @ pos, Last @ pos }, { Last @ pos, First @ pos } ] ) @@@ sorted ] ] },
-  { traversals = Join[
-      If[ period < m, { Partition[ Range @ m, period ] }, { } ],
-      Catenate @ Table[
-        { First[ # ] + Range[ 0, Length[ # ] - 1 ], cyc[ First[ # ] + d ] + Range[ 0, Length[ # ] - 1 ] } & /@
-          Select[ cyclicRuns @ Select[ Range @ m, i |-> core[[ i ]] === core[[ cyc[ i + d ] ]] ],
-            run |-> 2 <= Length[ run ] < m ],
-        { d, 2, Floor[ m / 2 ] } ],
-      Catenate @ Table[
-        { First[ # ] + Range[ 0, Length[ # ] - 1 ], cyc[ s - Last[ # ] ] + Range[ 0, Length[ # ] - 1 ] } & /@
-          Select[ cyclicRuns @
-              Select[ Range @ m, i |-> cyc[ s - i ] =!= i && core[[ i ]] === core[[ cyc[ s - i ] ]] ],
-            run |-> Length[ run ] >= 2 &&
-              NoneTrue[ run, i |-> cyc[ s - i ] === cyc[ i + 2 ] || cyc[ s - i ] === cyc[ i - 2 ] ] ],
-        { s, 0, m - 1 } ] ] },
-  <|
-    "SelfIntersections" -> Select[ Values @ PositionIndex @ core, Length[ # ] >= 2 & ],
-    "SelfTangencies" -> arcGroups[ Catenate @ traversals ],
-    "Cusps" -> ( i |-> With[
-        { k = LengthWhile[ Range @ Floor[ ( m - 1 ) / 2 ],
-            t |-> core[[ cyc[ i - t ] ]] === core[[ cyc[ i + t ] ]] ] },
-        cyc /@ Range[ i - k, i + k ] ] ) /@
-      Select[ Range @ m, i |-> core[[ cyc[ i - 1 ] ]] === core[[ cyc[ i + 1 ] ]] ]
-  |> ]
+WalkSingularities[ w_Graph ] /; ! LoopFreeGraphQ[ w ] || ! AcyclicGraphQ[ w ] :=
+  With[
+    { vs = VertexList @ w },
+    { core = If[ AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
+        Last /@ SortBy[ vs, First ],
+        Reap[ DepthFirstScan[ w, First @ vs, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] },
+    { m = Length @ core },
+    { cyc = i |-> Mod[ i - 1, m ] + 1,
+      period = SelectFirst[ Divisors @ m, d |-> core === RotateLeft[ core, d ] ],
+      cyclicRuns = set |-> With[ { runs = Split[ Sort @ set, #2 == #1 + 1 & ] },
+        If[ Length[ runs ] >= 2 && First[ First @ runs ] == 1 && Last[ Last @ runs ] == m,
+          Prepend[ runs[[ 2 ;; -2 ]], Join[ Last @ runs, First @ runs ] ],
+          runs ] ],
+      arcGroups = ts |-> Values @ GroupBy[
+        ( pos |-> With[ { arc = core[[ Mod[ pos - 1, m ] + 1 ]] },
+            { key = First @ Sort @ { arc, Reverse @ arc } },
+            key -> { pos, arc === key } ] ) /@ DeleteDuplicates @ ts,
+        First -> Last,
+        ps |-> With[ { sorted = SortBy[ DeleteDuplicates @ ps, First @ First @ # & ] },
+          { flip = ! Last @ First @ sorted },
+          ( { pos, direct } |-> If[ Xor[ direct, flip ],
+              { First @ pos, Last @ pos }, { Last @ pos, First @ pos } ] ) @@@ sorted ] ] },
+    { traversals = Join[
+        If[ period < m, { Partition[ Range @ m, period ] }, { } ],
+        Catenate @ Table[
+          { First[ # ] + Range[ 0, Length[ # ] - 1 ], cyc[ First[ # ] + d ] + Range[ 0, Length[ # ] - 1 ] } & /@
+            Select[ cyclicRuns @ Select[ Range @ m, i |-> core[[ i ]] === core[[ cyc[ i + d ] ]] ],
+              run |-> 2 <= Length[ run ] < m ],
+          { d, 2, Floor[ m / 2 ] } ],
+        Catenate @ Table[
+          { First[ # ] + Range[ 0, Length[ # ] - 1 ], cyc[ s - Last[ # ] ] + Range[ 0, Length[ # ] - 1 ] } & /@
+            Select[ cyclicRuns @
+                Select[ Range @ m, i |-> cyc[ s - i ] =!= i && core[[ i ]] === core[[ cyc[ s - i ] ]] ],
+              run |-> Length[ run ] >= 2 &&
+                NoneTrue[ run, i |-> cyc[ s - i ] === cyc[ i + 2 ] || cyc[ s - i ] === cyc[ i - 2 ] ] ],
+          { s, 0, m - 1 } ] ] },
+    <|
+      "SelfIntersections" -> Select[ Values @ PositionIndex @ core, Length[ # ] >= 2 & ],
+      "SelfTangencies" -> arcGroups[ Catenate @ traversals ],
+      "Cusps" -> ( i |-> With[
+          { k = LengthWhile[ Range @ Floor[ ( m - 1 ) / 2 ],
+              t |-> core[[ cyc[ i - t ] ]] === core[[ cyc[ i + t ] ]] ] },
+          cyc /@ Range[ i - k, i + k ] ] ) /@
+        Select[ Range @ m, i |-> core[[ cyc[ i - 1 ] ]] === core[[ cyc[ i + 1 ] ]] ]
+    |> ]
 
 WalkSingularities[ w_Graph ] :=
   With[ { vs = VertexList @ w },
@@ -320,40 +332,42 @@ WalkSingularities[ w_Graph ] :=
           SelectFirst[ vs, If[ DirectedGraphQ @ w, VertexInDegree[ w, # ] == 0, VertexDegree[ w, # ] == 1 ] &, First @ vs ],
           { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] ]
 
-WalkSingularities[ walk_List ] := With[
-  { m = Length @ walk,
-    maximalRuns = set |-> Split[ Sort @ set, #2 == #1 + 1 & ] },
-  { arcGroups = ts |-> Values @ GroupBy[
-      ( pos |-> With[ { arc = walk[[ Mod[ pos - 1, m ] + 1 ]] },
-          { key = First @ Sort @ { arc, Reverse @ arc } },
-          key -> { pos, arc === key } ] ) /@ DeleteDuplicates @ ts,
-      First -> Last,
-      ps |-> With[ { sorted = SortBy[ DeleteDuplicates @ ps, First @ First @ # & ] },
-        { flip = ! Last @ First @ sorted },
-        ( { pos, direct } |-> If[ Xor[ direct, flip ],
-            { First @ pos, Last @ pos }, { Last @ pos, First @ pos } ] ) @@@ sorted ] ],
-    traversals = Join[
-      Catenate @ Table[
-        { #, # + d } & /@
-          Select[ maximalRuns @ Select[ Range[ m - d ], i |-> walk[[ i ]] === walk[[ i + d ]] ],
-            run |-> Length[ run ] >= 2 ],
-        { d, 2, m - 2 } ],
-      Catenate @ Table[
-        { #, Reverse[ s - # ] } & /@
-          Select[ maximalRuns @ Select[ Range[ Max[ 1, s - m ], Floor[ ( s - 1 ) / 2 ] ],
-              i |-> walk[[ i ]] === walk[[ s - i ]] ],
-            run |-> Length[ run ] >= 2 && ! ( EvenQ[ s ] && Last[ run ] == s / 2 - 1 ) ],
-        { s, 3, 2 m - 1 } ] ] },
-  <|
-    "SelfIntersections" -> Select[ Values @ PositionIndex @ walk, Length[ # ] >= 2 & ],
-    "SelfTangencies" -> arcGroups[ Catenate @ traversals ],
-    "Cusps" -> ( i |-> With[
-        { k = LengthWhile[ Range @ Min[ i - 1, m - i ], t |-> walk[[ i - t ]] === walk[[ i + t ]] ] },
-        Range[ i - k, i + k ] ] ) /@
-      Select[ Range[ 2, m - 1 ], i |-> walk[[ i - 1 ]] === walk[[ i + 1 ]] ]
-  |> ]
+WalkSingularities[ walk_List ] :=
+  With[
+    { m = Length @ walk,
+      maximalRuns = set |-> Split[ Sort @ set, #2 == #1 + 1 & ] },
+    { arcGroups = ts |-> Values @ GroupBy[
+        ( pos |-> With[ { arc = walk[[ Mod[ pos - 1, m ] + 1 ]] },
+            { key = First @ Sort @ { arc, Reverse @ arc } },
+            key -> { pos, arc === key } ] ) /@ DeleteDuplicates @ ts,
+        First -> Last,
+        ps |-> With[ { sorted = SortBy[ DeleteDuplicates @ ps, First @ First @ # & ] },
+          { flip = ! Last @ First @ sorted },
+          ( { pos, direct } |-> If[ Xor[ direct, flip ],
+              { First @ pos, Last @ pos }, { Last @ pos, First @ pos } ] ) @@@ sorted ] ],
+      traversals = Join[
+        Catenate @ Table[
+          { #, # + d } & /@
+            Select[ maximalRuns @ Select[ Range[ m - d ], i |-> walk[[ i ]] === walk[[ i + d ]] ],
+              run |-> Length[ run ] >= 2 ],
+          { d, 2, m - 2 } ],
+        Catenate @ Table[
+          { #, Reverse[ s - # ] } & /@
+            Select[ maximalRuns @ Select[ Range[ Max[ 1, s - m ], Floor[ ( s - 1 ) / 2 ] ],
+                i |-> walk[[ i ]] === walk[[ s - i ]] ],
+              run |-> Length[ run ] >= 2 && ! ( EvenQ[ s ] && Last[ run ] == s / 2 - 1 ) ],
+          { s, 3, 2 m - 1 } ] ] },
+    <|
+      "SelfIntersections" -> Select[ Values @ PositionIndex @ walk, Length[ # ] >= 2 & ],
+      "SelfTangencies" -> arcGroups[ Catenate @ traversals ],
+      "Cusps" -> ( i |-> With[
+          { k = LengthWhile[ Range @ Min[ i - 1, m - i ], t |-> walk[[ i - t ]] === walk[[ i + t ]] ] },
+          Range[ i - k, i + k ] ] ) /@
+        Select[ Range[ 2, m - 1 ], i |-> walk[[ i - 1 ]] === walk[[ i + 1 ]] ]
+    |> ]
 
-InfraImmersedQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraImmersedQ[ graph, # ] & ]
+InfraImmersedQ[ graph_Graph, ws : { __Graph } ] :=
+  AllTrue[ ws, InfraImmersedQ[ graph, # ] & ]
 
 InfraImmersedQ[ graph_Graph, w_Graph ] /; ! LoopFreeGraphQ[ w ] || ! AcyclicGraphQ[ w ] :=
   With[ { vs = VertexList @ w },
@@ -380,7 +394,8 @@ InfraImmersedQ[ graph_Graph, w_Graph ] :=
 InfraImmersedQ[ graph_Graph, walk_List ] :=
   InfraWalkQ[ graph, walk ] && WalkSingularities[ walk ][ "Cusps" ] === { }
 
-InfraGenericQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraGenericQ[ graph, # ] & ]
+InfraGenericQ[ graph_Graph, ws : { __Graph } ] :=
+  AllTrue[ ws, InfraGenericQ[ graph, # ] & ]
 
 InfraGenericQ[ graph_Graph, w_Graph ] /; ! LoopFreeGraphQ[ w ] || ! AcyclicGraphQ[ w ] :=
   With[ { vs = VertexList @ w },
@@ -412,7 +427,9 @@ InfraGenericQ[ graph_Graph, walk_List ] :=
     c[ "Cusps" ] === { } && c[ "SelfTangencies" ] === { } &&
     AllTrue[ c[ "SelfIntersections" ], Length[ # ] == 2 && FreeQ[ #, 1 | Length @ walk ] & ] ]
 
-(* a double visit of v is a crossing at scale r when each pass through B(v, r-1), continued along its radial arcs through the shell {r, r+1}, separates the other pass's exits on that shell.  Two 0-spheres link only in S^1: on a surface-like substrate this is the interleaving of the two germ pairs, and where the shell stays connected after a radial cut nothing is a crossing *)
+(* a double visit of v is a crossing at scale r when each pass through B(v, r-1), continued along its radial arcs through the shell {r, r+1},
+   separates the other pass's exits on that shell.  Two 0-spheres link only in S^1: on a surface-like substrate this is the interleaving of the two
+   germ pairs, and where the shell stays connected after a radial cut nothing is a crossing *)
 
 InfraWalkCrossingQ[ graph_Graph, ws : { __Graph }, at_, r_Integer ] :=
   AllTrue[ ws, InfraWalkCrossingQ[ graph, #, at, r ] & ]
@@ -466,8 +483,15 @@ InfraWalkCrossingQ[ graph_Graph, x : ( _Graph | _List ), at_, r_Integer ] /;
         SeparatesQ[ band, DeleteDuplicates[ Join @@ cutI ], vertexAt @ First @ exitsJ, vertexAt @ Last @ exitsJ ] ] },
     Length[ ps ] == 2 && crossQ @@ ps ]
 
-(* continues a seed walk under the Properties rules, each read on the window of the last <= "InfraScale" vertices: Find seeds with points and owns the two-point sugar, Extend seeds with walks and owns "Direction".  kspec is the extension budget, in added edges per growing side -- UpTo[k], {k}, {lo, hi} or Infinity, as for FindInfraWalk -- and is mandatory-finite whenever the class is infinite.  The seed is a vertex list, a walk graph, or a bundle of either.
-   "BothSides" offers three moves per outer step -- both sides, back only, front only, joint first so a greedy witness keeps the synchronous trajectory -- and re-checks the joined step against the monotone whole-walk constraints its sides cannot see alone, so the walk freezes only when no side can move and the class is the whole two-sided extension class.  Its budget is Max[la, ra], the edges added on the longer side, invariant under the order the moves are taken.  Stopping conditions replay over the seed, so a deadline may already sit inside it and the seed come back unextended; a two-ended walk has no single tip for the event clock, so they require "Forward" or "Backward". *)
+(* continues a seed walk under the Properties rules, each read on the window of the last <= "InfraScale" vertices: Find seeds with points and owns
+   the two-point sugar, Extend seeds with walks and owns "Direction".  kspec is the extension budget, in added edges per growing side -- UpTo[k],
+   {k}, {lo, hi} or Infinity, as for FindInfraWalk -- and is mandatory-finite whenever the class is infinite.  The seed is a vertex list, a walk
+   graph, or a bundle of either.
+   "BothSides" offers three moves per outer step -- both sides, back only, front only, joint first so a greedy witness keeps the synchronous
+   trajectory -- and re-checks the joined step against the monotone whole-walk constraints its sides cannot see alone, so the walk freezes only when
+   no side can move and the class is the whole two-sided extension class.  Its budget is Max[la, ra], the edges added on the longer side, invariant
+   under the order the moves are taken.  Stopping conditions replay over the seed, so a deadline may already sit inside it and the seed come back
+   unextended; a two-ended walk has no single tip for the event clock, so they require "Forward" or "Backward". *)
 
 
 Options[ ExtendInfraWalk ] = {
@@ -476,14 +500,15 @@ Options[ ExtendInfraWalk ] = {
   "StoppingCondition" -> None,
   Method              -> Automatic,
   "Direction"         -> "BothSides"
-};
+}
 
 ExtendInfraWalk[ graph_Graph, seed_,
     kspec : ( UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ) : Infinity,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
     With[ { rules = OptionValue[ ExtendInfraWalk, { opts }, Properties ],
             scale = OptionValue[ ExtendInfraWalk, { opts }, "InfraScale" ],
-            base  = NestWhile[ First, OptionValue[ ExtendInfraWalk, { opts }, "StoppingCondition" ], MatchQ[ { _, "Delay" -> _Integer?NonNegative } ] ] },
+            base  = NestWhile[ First, OptionValue[ ExtendInfraWalk, { opts }, "StoppingCondition" ],
+              MatchQ[ { _, "Delay" -> _Integer?NonNegative } ] ] },
       { excluded = Union @@ Replace[ rules, {
           "Simple" -> { "SelfIntersections" }, "Immersed" -> { "Cusps" }, "Generic" -> { "Cusps", "SelfTangencies", "TriplePoints" },
           ( "Exclude" -> sp_ ) :> Flatten @ { sp }, _ -> { } }, { 1 } ] },
@@ -595,7 +620,8 @@ ExtendInfraWalk[ graph_Graph, seed_,
                   { walk, candidates } |-> If[ candidates === { }, candidates,
                     MaximalBy[ candidates, w |-> Last[ rule ] @ Append[ window @ walk, w ] ] ] ],
               Pick[ rules, species, "Selector" ] ],
-            (* a two-sided step can violate a whole-walk constraint each side admits alone; re-check the joined walk on the constraints monotone under extension -- a walk is a geodesic iff every sub-walk is, so a failed joined check never heals *)
+            (* a two-sided step can violate a whole-walk constraint each side admits alone; re-check the joined walk on the constraints monotone
+               under extension -- a walk is a geodesic iff every sub-walk is, so a failed joined check never heals *)
             stepChecks = Join[
               Replace[ excluded, {
                 "SelfIntersections" -> DuplicateFreeQ,
@@ -705,7 +731,7 @@ Options[ ExtendInfraGeodesic ] = {
   "StoppingCondition" -> None,
   Method              -> Automatic,
   "Direction"         -> "BothSides"
-};
+}
 
 ExtendInfraGeodesic[ graph_Graph, seed_,
     scale : ( _Integer | Infinity ),

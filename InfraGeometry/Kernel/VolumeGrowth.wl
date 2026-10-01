@@ -1,17 +1,17 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* BallHull[g, S]: intersection of all closed metric balls containing S, the
    smallest ball-convex (Mazur) superset of S.  For each center c the smallest
    enclosing radius is r_c = max_{s in S} d(c, s); v lies in the hull iff
    d(c, v) <= r_c for every c.  Read straight off the distance matrix. *)
 
-BallHull[g_Graph, subgraph_Graph] :=
-	BallHull[g, VertexList[subgraph]]
+BallHull[ g_Graph, subgraph_Graph ] :=
+	BallHull[ g, VertexList[ subgraph ] ]
 
-BallHull[g_Graph, S_List] :=
-	With[{dist = GraphDistanceMatrix[g], idx = VertexIndex[g, #] & /@ S},
-		With[{radii = Max /@ dist[[All, idx]]},
-			Pick[VertexList[g], AllTrue[NonNegative] /@ Transpose[radii - dist], True]
+BallHull[ g_Graph, S_List ] :=
+	With[ { dist = GraphDistanceMatrix[ g ], idx = VertexIndex[ g, # ] & /@ S },
+		With[ { radii = Max /@ dist[[ All, idx ]] },
+			Pick[ VertexList[ g ], AllTrue[ NonNegative ] /@ Transpose[ radii - dist ], True ]
 		]
 	]
 
@@ -31,96 +31,104 @@ BallHull[g_Graph, S_List] :=
    closed neighbourhood, so the boundary measures are one pass over the adjacency lists
    instead of one GraphInterior per radius.  The growth invariant feeding VolumeGrowthObservables. *)
 
-Options[BallVolumes] = {"Measure" -> "FullCount"};
+Options[ BallVolumes ] = { "Measure" -> "FullCount" }
 
-BallVolumes[g_Graph, opts : OptionsPattern[]] := BallVolumes[g, All, All, opts]
+BallVolumes[ g_Graph, opts : OptionsPattern[] ] :=
+  BallVolumes[ g, All, All, opts ]
 
-BallVolumes[g_Graph, pts : (All | _List | Except[_Rule | _RuleDelayed]), opts : OptionsPattern[]] :=
-	BallVolumes[g, pts, All, opts]
+BallVolumes[ g_Graph, pts : (All | _List | Except[ _Rule | _RuleDelayed ]), opts : OptionsPattern[] ] :=
+	BallVolumes[ g, pts, All, opts ]
 
-BallVolumes[g_Graph,
+BallVolumes[ g_Graph,
 	vertices : (_List | All),
-	range : (_Integer | {_Integer, _Integer} | All),
+	range : (_Integer | { _Integer, _Integer } | All),
 	OptionsPattern[]
-] /; vertices === All || ! MemberQ[VertexList[g], vertices] :=
+] /; vertices === All || ! MemberQ[ VertexList[ g ], vertices ] :=
 	With[
-		{dm = GraphDistanceMatrix[g], adj = AdjacencyMatrix[g]["AdjacencyLists"], measure = OptionValue["Measure"]},
-		{targets = If[vertices === All, VertexList[g], vertices]},
+		{ dm = GraphDistanceMatrix[ g ], adj = AdjacencyMatrix[ g ][ "AdjacencyLists" ], measure = OptionValue[ "Measure" ] },
+		{ targets = If[ vertices === All, VertexList[ g ], vertices ] },
 		MapThread[
-			{v, rho} |-> With[{bins = {0, Max @ DeleteCases[rho, Infinity] + 1, 1}},
-				{full = Accumulate @ BinCounts[rho, bins]},
-				{c = Switch[measure,
+			{ v, rho } |-> With[ { bins = { 0, Max @ DeleteCases[ rho, Infinity ] + 1, 1 } },
+				{ full = Accumulate @ BinCounts[ rho, bins ] },
+				{ c = Switch[ measure,
 					"FullCount",       full,
-					"WithoutBoundary", Accumulate @ BinCounts[MapThread[Max, {rho, Max[rho[[#]]] & /@ adj}], bins],
-					"HalfBoundary",    (full + Accumulate @ BinCounts[MapThread[Max, {rho, Max[rho[[#]]] & /@ adj}], bins]) / 2,
-					"ExpandingFront",  Accumulate[Length /@ FindAdvancingInfraFront[g, {v}, Replace[range, {All :> 2 Max @ DeleteCases[rho, Infinity], {_, b_} :> b}]]]
-				]},
-				{at = r |-> If[0 <= r < Length[c], c[[r + 1]], Last[c]]},
-				Switch[range, All, c, _Integer, at[range], _, at /@ Range @@ range]],
-			{targets, dm[[VertexIndex[g, #] & /@ targets]]}]
+					"WithoutBoundary", Accumulate @ BinCounts[ MapThread[ Max, { rho, Max[ rho[[ # ]] ] & /@ adj } ], bins ],
+					"HalfBoundary",    (full + Accumulate @ BinCounts[ MapThread[ Max, { rho, Max[ rho[[ # ]] ] & /@ adj } ], bins ]) / 2,
+					"ExpandingFront",
+ Accumulate[ Length /@ FindAdvancingInfraFront[ g, { v }, Replace[ range, { All :> 2 Max @ DeleteCases[ rho, Infinity ], { _, b_ } :> b } ] ] ]
+				] },
+				{ at = r |-> If[ 0 <= r < Length[ c ], c[[ r + 1 ]], Last[ c ] ] },
+				Switch[ range, All, c, _Integer, at[ range ], _, at /@ Range @@ range ] ],
+			{ targets, dm[[ VertexIndex[ g, # ] & /@ targets ]] } ]
 	]
 
-BallVolumes[g_Graph,
-	vertex : Except[All | _Rule | _RuleDelayed],
-	range : (_Integer | {_Integer, _Integer} | All),
+BallVolumes[ g_Graph,
+	vertex : Except[ All | _Rule | _RuleDelayed ],
+	range : (_Integer | { _Integer, _Integer } | All),
 	OptionsPattern[]
 ] :=
-	With[{rho = GraphDistance[g, vertex]},
-		{bins = {0, Max @ DeleteCases[rho, Infinity] + 1, 1}},
-		{full = Accumulate @ BinCounts[rho, bins]},
-		{c = Switch[OptionValue["Measure"],
+	With[ { rho = GraphDistance[ g, vertex ] },
+		{ bins = { 0, Max @ DeleteCases[ rho, Infinity ] + 1, 1 } },
+		{ full = Accumulate @ BinCounts[ rho, bins ] },
+		{ c = Switch[ OptionValue[ "Measure" ],
 			"FullCount",       full,
-			"WithoutBoundary", Accumulate @ BinCounts[MapThread[Max, {rho, Max[rho[[#]]] & /@ AdjacencyMatrix[g]["AdjacencyLists"]}], bins],
-			"HalfBoundary",    (full + Accumulate @ BinCounts[MapThread[Max, {rho, Max[rho[[#]]] & /@ AdjacencyMatrix[g]["AdjacencyLists"]}], bins]) / 2,
-			"ExpandingFront",  Accumulate[Length /@ FindAdvancingInfraFront[g, {vertex}, Replace[range, {All :> 2 Max @ DeleteCases[rho, Infinity], {_, b_} :> b}]]]
-		]},
-		{at = r |-> If[0 <= r < Length[c], c[[r + 1]], Last[c]]},
-		Switch[range, All, c, _Integer, at[range], _, at /@ Range @@ range]
+			"WithoutBoundary", Accumulate @ BinCounts[ MapThread[ Max, { rho, Max[ rho[[ # ]] ] & /@ AdjacencyMatrix[ g ][ "AdjacencyLists" ] } ], bins ],
+			"HalfBoundary",    (full + Accumulate @ BinCounts[ MapThread[ Max, { rho, Max[ rho[[ # ]] ] & /@ AdjacencyMatrix[ g ][ "AdjacencyLists" ] } ],
+    bins ]) / 2,
+			"ExpandingFront",  Accumulate[ Length /@ FindAdvancingInfraFront[ g, { vertex }, Replace[ range, { All :> 2 Max @ DeleteCases[ rho, Infinity ],
+        { _, b_ } :> b } ] ] ]
+		] },
+		{ at = r |-> If[ 0 <= r < Length[ c ], c[[ r + 1 ]], Last[ c ] ] },
+		Switch[ range, All, c, _Integer, at[ range ], _, at /@ Range @@ range ]
 	]
 
-Options[ShellAreas] = {"Measure" -> "FullCount"};
+Options[ ShellAreas ] = { "Measure" -> "FullCount" }
 
-ShellAreas[g_Graph, opts : OptionsPattern[]] := ShellAreas[g, All, All, opts]
+ShellAreas[ g_Graph, opts : OptionsPattern[] ] :=
+  ShellAreas[ g, All, All, opts ]
 
-ShellAreas[g_Graph, pts : (All | _List | Except[_Rule | _RuleDelayed]), opts : OptionsPattern[]] :=
-	ShellAreas[g, pts, All, opts]
+ShellAreas[ g_Graph, pts : (All | _List | Except[ _Rule | _RuleDelayed ]), opts : OptionsPattern[] ] :=
+	ShellAreas[ g, pts, All, opts ]
 
-ShellAreas[g_Graph,
+ShellAreas[ g_Graph,
 	vertices : (_List | All),
-	range : (_Integer | {_Integer, _Integer} | All),
+	range : (_Integer | { _Integer, _Integer } | All),
 	OptionsPattern[]
-] /; vertices === All || ! MemberQ[VertexList[g], vertices] :=
+] /; vertices === All || ! MemberQ[ VertexList[ g ], vertices ] :=
 	With[
-		{dm = GraphDistanceMatrix[g], adj = AdjacencyMatrix[g]["AdjacencyLists"], measure = OptionValue["Measure"]},
-		{targets = If[vertices === All, VertexList[g], vertices]},
+		{ dm = GraphDistanceMatrix[ g ], adj = AdjacencyMatrix[ g ][ "AdjacencyLists" ], measure = OptionValue[ "Measure" ] },
+		{ targets = If[ vertices === All, VertexList[ g ], vertices ] },
 		MapThread[
-			{v, rho} |-> With[{bins = {0, Max @ DeleteCases[rho, Infinity] + 1, 1}},
-				{c = Switch[measure,
-					"FullCount",       BinCounts[rho, bins],
-					"WithoutBoundary", BinCounts[MapThread[Max, {rho, Max[rho[[#]]] & /@ adj}], bins],
-					"HalfBoundary",    (BinCounts[rho, bins] + BinCounts[MapThread[Max, {rho, Max[rho[[#]]] & /@ adj}], bins]) / 2,
-					"ExpandingFront",  Length /@ FindAdvancingInfraFront[g, {v}, Replace[range, {All :> 2 Max @ DeleteCases[rho, Infinity], {_, b_} :> b}]]
-				]},
-				{at = r |-> If[0 <= r < Length[c], c[[r + 1]], 0]},
-				Switch[range, All, c, _Integer, at[range], _, at /@ Range @@ range]],
-			{targets, dm[[VertexIndex[g, #] & /@ targets]]}]
+			{ v, rho } |-> With[ { bins = { 0, Max @ DeleteCases[ rho, Infinity ] + 1, 1 } },
+				{ c = Switch[ measure,
+					"FullCount",       BinCounts[ rho, bins ],
+					"WithoutBoundary", BinCounts[ MapThread[ Max, { rho, Max[ rho[[ # ]] ] & /@ adj } ], bins ],
+					"HalfBoundary",    (BinCounts[ rho, bins ] + BinCounts[ MapThread[ Max, { rho, Max[ rho[[ # ]] ] & /@ adj } ], bins ]) / 2,
+					"ExpandingFront",
+ Length /@ FindAdvancingInfraFront[ g, { v }, Replace[ range, { All :> 2 Max @ DeleteCases[ rho, Infinity ], { _, b_ } :> b } ] ]
+				] },
+				{ at = r |-> If[ 0 <= r < Length[ c ], c[[ r + 1 ]], 0 ] },
+				Switch[ range, All, c, _Integer, at[ range ], _, at /@ Range @@ range ] ],
+			{ targets, dm[[ VertexIndex[ g, # ] & /@ targets ]] } ]
 	]
 
-ShellAreas[g_Graph,
-	vertex : Except[All | _Rule | _RuleDelayed],
-	range : (_Integer | {_Integer, _Integer} | All),
+ShellAreas[ g_Graph,
+	vertex : Except[ All | _Rule | _RuleDelayed ],
+	range : (_Integer | { _Integer, _Integer } | All),
 	OptionsPattern[]
 ] :=
-	With[{rho = GraphDistance[g, vertex]},
-		{bins = {0, Max @ DeleteCases[rho, Infinity] + 1, 1}},
-		{c = Switch[OptionValue["Measure"],
-			"FullCount",       BinCounts[rho, bins],
-			"WithoutBoundary", BinCounts[MapThread[Max, {rho, Max[rho[[#]]] & /@ AdjacencyMatrix[g]["AdjacencyLists"]}], bins],
-			"HalfBoundary",    (BinCounts[rho, bins] + BinCounts[MapThread[Max, {rho, Max[rho[[#]]] & /@ AdjacencyMatrix[g]["AdjacencyLists"]}], bins]) / 2,
-			"ExpandingFront",  Length /@ FindAdvancingInfraFront[g, {vertex}, Replace[range, {All :> 2 Max @ DeleteCases[rho, Infinity], {_, b_} :> b}]]
-		]},
-		{at = r |-> If[0 <= r < Length[c], c[[r + 1]], 0]},
-		Switch[range, All, c, _Integer, at[range], _, at /@ Range @@ range]
+	With[ { rho = GraphDistance[ g, vertex ] },
+		{ bins = { 0, Max @ DeleteCases[ rho, Infinity ] + 1, 1 } },
+		{ c = Switch[ OptionValue[ "Measure" ],
+			"FullCount",       BinCounts[ rho, bins ],
+			"WithoutBoundary", BinCounts[ MapThread[ Max, { rho, Max[ rho[[ # ]] ] & /@ AdjacencyMatrix[ g ][ "AdjacencyLists" ] } ], bins ],
+			"HalfBoundary",    (BinCounts[ rho, bins ] + BinCounts[ MapThread[ Max, { rho, Max[ rho[[ # ]] ] & /@ AdjacencyMatrix[ g ][ "AdjacencyLists" ] } ],
+    bins ]) / 2,
+			"ExpandingFront",  Length /@ FindAdvancingInfraFront[ g, { vertex }, Replace[ range, { All :> 2 Max @ DeleteCases[ rho, Infinity ], { _,
+        b_ } :> b } ] ]
+		] },
+		{ at = r |-> If[ 0 <= r < Length[ c ], c[[ r + 1 ]], 0 ] },
+		Switch[ range, All, c, _Integer, at[ range ], _, at /@ Range @@ range ]
 	]
 
 (* CylinderVolumes[g, sources, targets, s] gives the matrix of cylinder volumes
@@ -130,21 +138,21 @@ ShellAreas[g_Graph,
    vertex count.  s defaults to 0 (the bare interval).  A scalar source gives a
    flat list ordered as targets (e.g. center -> shell -> anisotropy profile). *)
 
-CylinderVolumes[g_Graph, source : Except[_List | _Rule | _RuleDelayed], targets_List, s_Integer : 0] :=
-	First @ CylinderVolumes[g, {source}, targets, s]
+CylinderVolumes[ g_Graph, source : Except[ _List | _Rule | _RuleDelayed ], targets_List, s_Integer : 0 ] :=
+	First @ CylinderVolumes[ g, { source }, targets, s ]
 
-CylinderVolumes[g_Graph, sources_List, targets_List, s_Integer : 0] :=
-	With[{dm = GraphDistanceMatrix[g], pos = PositionIndex @ VertexList[g]},
+CylinderVolumes[ g_Graph, sources_List, targets_List, s_Integer : 0 ] :=
+	With[ { dm = GraphDistanceMatrix[ g ], pos = PositionIndex @ VertexList[ g ] },
 		Outer[
-			{p, q} |-> With[{pi = pos[p][[1]], qi = pos[q][[1]]},
-				{dpq = dm[[pi, qi]]},
-				If[dpq === Infinity, 0,
-					With[{interval = Flatten @ Position[dm[[pi]] + dm[[qi]], dpq]},
-						If[s == 0, Length[interval], Count[Min /@ Transpose[dm[[interval]]], x_ /; x <= s]]
+			{ p, q } |-> With[ { pi = pos[ p ][[ 1 ]], qi = pos[ q ][[ 1 ]] },
+				{ dpq = dm[[ pi, qi ]] },
+				If[ dpq === Infinity, 0,
+					With[ { interval = Flatten @ Position[ dm[[ pi ]] + dm[[ qi ]], dpq ] },
+						If[ s == 0, Length[ interval ], Count[ Min /@ Transpose[ dm[[ interval ]] ], x_ /; x <= s ] ]
 					]
 				]
 			],
-			sources, targets, 1]
+			sources, targets, 1 ]
 	]
 
 (* T(s) = |{ w : d(w, S) <= s }|, the tube-volume profile of a vertex set S, as the List
@@ -159,50 +167,53 @@ CylinderVolumes[g_Graph, sources_List, targets_List, s_Integer : 0] :=
    (1 - (tau + Ric(v,v))/(6(n+1)) s^2 + O(s^4)) makes the quotient fit read the Ricci
    projection: DimensionCurvatureFit[..., "Probe" -> "Tube"]. *)
 
-Options[TubeVolumes] = {"Measure" -> "FullCount"};
+Options[ TubeVolumes ] = { "Measure" -> "FullCount" }
 
-TubeVolumes[g_Graph, core_List, range : (_Integer | {_Integer, _Integer} | All) : All, OptionsPattern[]] /;
-	! MemberQ[VertexList[g], core] :=
-	With[{aux = Unique["tubeSource"], vs = VertexList[g]},
-		{aug = EdgeAdd[VertexAdd[g, {aux}], UndirectedEdge[aux, #] & /@ DeleteDuplicates[core]]},
-		{rho = Lookup[AssociationThread[VertexList[aug], GraphDistance[aug, aux]], Key /@ vs] - 1},
-		{bins = {0, Max @ DeleteCases[rho, Infinity] + 1, 1}},
-		{full = Accumulate @ BinCounts[rho, bins]},
-		{c = Switch[OptionValue["Measure"],
+TubeVolumes[ g_Graph, core_List, range : (_Integer | { _Integer, _Integer } | All) : All, OptionsPattern[] ] /;
+	! MemberQ[ VertexList[ g ], core ] :=
+	With[ { aux = Unique[ "tubeSource" ], vs = VertexList[ g ] },
+		{ aug = EdgeAdd[ VertexAdd[ g, { aux } ], UndirectedEdge[ aux, # ] & /@ DeleteDuplicates[ core ] ] },
+		{ rho = Lookup[ AssociationThread[ VertexList[ aug ], GraphDistance[ aug, aux ] ], Key /@ vs ] - 1 },
+		{ bins = { 0, Max @ DeleteCases[ rho, Infinity ] + 1, 1 } },
+		{ full = Accumulate @ BinCounts[ rho, bins ] },
+		{ c = Switch[ OptionValue[ "Measure" ],
 			"FullCount",       full,
-			"WithoutBoundary", Accumulate @ BinCounts[MapThread[Max, {rho, Max[rho[[#]]] & /@ AdjacencyMatrix[g]["AdjacencyLists"]}], bins],
-			"HalfBoundary",    (full + Accumulate @ BinCounts[MapThread[Max, {rho, Max[rho[[#]]] & /@ AdjacencyMatrix[g]["AdjacencyLists"]}], bins]) / 2,
-			"ExpandingFront",  Accumulate[Length /@ FindAdvancingInfraFront[g, DeleteDuplicates[core], Replace[range, {All :> 2 Max @ DeleteCases[rho, Infinity], {_, b_} :> b}]]]
-		]},
-		{at = r |-> If[0 <= r < Length[c], c[[r + 1]], Last[c]]},
-		Switch[range, All, c, _Integer, at[range], _, at /@ Range @@ range]
+			"WithoutBoundary", Accumulate @ BinCounts[ MapThread[ Max, { rho, Max[ rho[[ # ]] ] & /@ AdjacencyMatrix[ g ][ "AdjacencyLists" ] } ], bins ],
+			"HalfBoundary",    (full + Accumulate @ BinCounts[ MapThread[ Max, { rho, Max[ rho[[ # ]] ] & /@ AdjacencyMatrix[ g ][ "AdjacencyLists" ] } ],
+    bins ]) / 2,
+			"ExpandingFront",  Accumulate[ Length /@ FindAdvancingInfraFront[ g, DeleteDuplicates[ core ], Replace[ range, { All :> 2 Max @ DeleteCases[ rho,
+          Infinity ], { _, b_ } :> b } ] ] ]
+		] },
+		{ at = r |-> If[ 0 <= r < Length[ c ], c[[ r + 1 ]], Last[ c ] ] },
+		Switch[ range, All, c, _Integer, at[ range ], _, at /@ Range @@ range ]
 	]
 
-TubeVolumes[g_Graph, p_, q_, range : (_Integer | {_Integer, _Integer} | All) : All, opts : OptionsPattern[]] /;
-	MemberQ[VertexList[g], p] && MemberQ[VertexList[g], q] :=
-	With[{vs = VertexList[g], dp = GraphDistance[g, p], dq = GraphDistance[g, q]},
-		TubeVolumes[g, Pick[vs, dp + dq, dp[[VertexIndex[g, q]]]], range, opts]
+TubeVolumes[ g_Graph, p_, q_, range : (_Integer | { _Integer, _Integer } | All) : All, opts : OptionsPattern[] ] /;
+	MemberQ[ VertexList[ g ], p ] && MemberQ[ VertexList[ g ], q ] :=
+	With[ { vs = VertexList[ g ], dp = GraphDistance[ g, p ], dq = GraphDistance[ g, q ] },
+		TubeVolumes[ g, Pick[ vs, dp + dq, dp[[ VertexIndex[ g, q ] ]] ], range, opts ]
 	]
 
-TubeVolumes[g_Graph, p_, targets : (_List | All), range : (_Integer | {_Integer, _Integer} | All) : All, OptionsPattern[]] /;
-	MemberQ[VertexList[g], p] && (targets === All || ! MemberQ[VertexList[g], targets]) :=
+TubeVolumes[ g_Graph, p_, targets : (_List | All), range : (_Integer | { _Integer, _Integer } | All) : All, OptionsPattern[] ] /;
+	MemberQ[ VertexList[ g ], p ] && (targets === All || ! MemberQ[ VertexList[ g ], targets ]) :=
 	With[
-		{dm = GraphDistanceMatrix[g], adj = AdjacencyMatrix[g]["AdjacencyLists"], vs = VertexList[g], measure = OptionValue["Measure"]},
-		{dp = dm[[VertexIndex[g, p]]], qis = If[targets === All, Range @ Length @ vs, VertexIndex[g, #] & /@ targets]},
+		{ dm = GraphDistanceMatrix[ g ], adj = AdjacencyMatrix[ g ][ "AdjacencyLists" ], vs = VertexList[ g ], measure = OptionValue[ "Measure" ] },
+		{ dp = dm[[ VertexIndex[ g, p ] ]], qis = If[ targets === All, Range @ Length @ vs, VertexIndex[ g, # ] & /@ targets ] },
 		Table[
-			With[{core = Flatten @ Position[dp + dm[[qi]], dp[[qi]]]},
-				{rho = Min /@ Transpose[dm[[core]]]},
-				{bins = {0, Max @ DeleteCases[rho, Infinity] + 1, 1}},
-				{full = Accumulate @ BinCounts[rho, bins]},
-				{c = Switch[measure,
+			With[ { core = Flatten @ Position[ dp + dm[[ qi ]], dp[[ qi ]] ] },
+				{ rho = Min /@ Transpose[ dm[[ core ]] ] },
+				{ bins = { 0, Max @ DeleteCases[ rho, Infinity ] + 1, 1 } },
+				{ full = Accumulate @ BinCounts[ rho, bins ] },
+				{ c = Switch[ measure,
 					"FullCount",       full,
-					"WithoutBoundary", Accumulate @ BinCounts[MapThread[Max, {rho, Max[rho[[#]]] & /@ adj}], bins],
-					"HalfBoundary",    (full + Accumulate @ BinCounts[MapThread[Max, {rho, Max[rho[[#]]] & /@ adj}], bins]) / 2,
-					"ExpandingFront",  Accumulate[Length /@ FindAdvancingInfraFront[g, vs[[core]], Replace[range, {All :> 2 Max @ DeleteCases[rho, Infinity], {_, b_} :> b}]]]
-				]},
-				{at = r |-> If[0 <= r < Length[c], c[[r + 1]], Last[c]]},
-				Switch[range, All, c, _Integer, at[range], _, at /@ Range @@ range]],
-			{qi, qis}]
+					"WithoutBoundary", Accumulate @ BinCounts[ MapThread[ Max, { rho, Max[ rho[[ # ]] ] & /@ adj } ], bins ],
+					"HalfBoundary",    (full + Accumulate @ BinCounts[ MapThread[ Max, { rho, Max[ rho[[ # ]] ] & /@ adj } ], bins ]) / 2,
+					"ExpandingFront",
+ Accumulate[ Length /@ FindAdvancingInfraFront[ g, vs[[ core ]], Replace[ range, { All :> 2 Max @ DeleteCases[ rho, Infinity ], { _, b_ } :> b } ] ] ]
+				] },
+				{ at = r |-> If[ 0 <= r < Length[ c ], c[[ r + 1 ]], Last[ c ] ] },
+				Switch[ range, All, c, _Integer, at[ range ], _, at /@ Range @@ range ] ],
+			{ qi, qis } ]
 	]
 
 (* |I(p, q; r)| for the interval at slack r, I(p, q; r) = { x : d(p, x) + d(x, q) <= d(p, q) + r }
@@ -213,40 +224,41 @@ TubeVolumes[g_Graph, p_, targets : (_List | All), range : (_Integer | {_Integer,
    interval the same observable.  Option "Measure": "FullCount" | "WithoutBoundary" | "HalfBoundary"
    with dI = GraphBoundary[g, I]; slack is not a radius, so there is no front. *)
 
-Options[IntervalVolumes] = {"Measure" -> "FullCount"};
+Options[ IntervalVolumes ] = { "Measure" -> "FullCount" }
 
-IntervalVolumes[g_Graph, p_, q_, range : (_Integer | {_Integer, _Integer} | All) : All, OptionsPattern[]] /;
-	MemberQ[VertexList[g], p] && MemberQ[VertexList[g], q] :=
-	With[{dp = GraphDistance[g, p], dq = GraphDistance[g, q]},
-		{rho = dp + dq - dp[[VertexIndex[g, q]]]},
-		{bins = {0, Max @ DeleteCases[rho, Infinity] + 1, 1}},
-		{full = Accumulate @ BinCounts[rho, bins]},
-		{c = Switch[OptionValue["Measure"],
+IntervalVolumes[ g_Graph, p_, q_, range : (_Integer | { _Integer, _Integer } | All) : All, OptionsPattern[] ] /;
+	MemberQ[ VertexList[ g ], p ] && MemberQ[ VertexList[ g ], q ] :=
+	With[ { dp = GraphDistance[ g, p ], dq = GraphDistance[ g, q ] },
+		{ rho = dp + dq - dp[[ VertexIndex[ g, q ] ]] },
+		{ bins = { 0, Max @ DeleteCases[ rho, Infinity ] + 1, 1 } },
+		{ full = Accumulate @ BinCounts[ rho, bins ] },
+		{ c = Switch[ OptionValue[ "Measure" ],
 			"FullCount",       full,
-			"WithoutBoundary", Accumulate @ BinCounts[MapThread[Max, {rho, Max[rho[[#]]] & /@ AdjacencyMatrix[g]["AdjacencyLists"]}], bins],
-			"HalfBoundary",    (full + Accumulate @ BinCounts[MapThread[Max, {rho, Max[rho[[#]]] & /@ AdjacencyMatrix[g]["AdjacencyLists"]}], bins]) / 2
-		]},
-		{at = r |-> If[0 <= r < Length[c], c[[r + 1]], Last[c]]},
-		Switch[range, All, c, _Integer, at[range], _, at /@ Range @@ range]
+			"WithoutBoundary", Accumulate @ BinCounts[ MapThread[ Max, { rho, Max[ rho[[ # ]] ] & /@ AdjacencyMatrix[ g ][ "AdjacencyLists" ] } ], bins ],
+			"HalfBoundary",    (full + Accumulate @ BinCounts[ MapThread[ Max, { rho, Max[ rho[[ # ]] ] & /@ AdjacencyMatrix[ g ][ "AdjacencyLists" ] } ],
+    bins ]) / 2
+		] },
+		{ at = r |-> If[ 0 <= r < Length[ c ], c[[ r + 1 ]], Last[ c ] ] },
+		Switch[ range, All, c, _Integer, at[ range ], _, at /@ Range @@ range ]
 	]
 
-IntervalVolumes[g_Graph, p_, targets : (_List | All), range : (_Integer | {_Integer, _Integer} | All) : All, OptionsPattern[]] /;
-	MemberQ[VertexList[g], p] && (targets === All || ! MemberQ[VertexList[g], targets]) :=
+IntervalVolumes[ g_Graph, p_, targets : (_List | All), range : (_Integer | { _Integer, _Integer } | All) : All, OptionsPattern[] ] /;
+	MemberQ[ VertexList[ g ], p ] && (targets === All || ! MemberQ[ VertexList[ g ], targets ]) :=
 	With[
-		{dm = GraphDistanceMatrix[g], adj = AdjacencyMatrix[g]["AdjacencyLists"], measure = OptionValue["Measure"]},
-		{dp = dm[[VertexIndex[g, p]]], qis = If[targets === All, Range @ Length @ dm, VertexIndex[g, #] & /@ targets]},
+		{ dm = GraphDistanceMatrix[ g ], adj = AdjacencyMatrix[ g ][ "AdjacencyLists" ], measure = OptionValue[ "Measure" ] },
+		{ dp = dm[[ VertexIndex[ g, p ] ]], qis = If[ targets === All, Range @ Length @ dm, VertexIndex[ g, # ] & /@ targets ] },
 		Table[
-			With[{rho = dp + dm[[qi]] - dp[[qi]]},
-				{bins = {0, Max @ DeleteCases[rho, Infinity] + 1, 1}},
-				{full = Accumulate @ BinCounts[rho, bins]},
-				{c = Switch[measure,
+			With[ { rho = dp + dm[[ qi ]] - dp[[ qi ]] },
+				{ bins = { 0, Max @ DeleteCases[ rho, Infinity ] + 1, 1 } },
+				{ full = Accumulate @ BinCounts[ rho, bins ] },
+				{ c = Switch[ measure,
 					"FullCount",       full,
-					"WithoutBoundary", Accumulate @ BinCounts[MapThread[Max, {rho, Max[rho[[#]]] & /@ adj}], bins],
-					"HalfBoundary",    (full + Accumulate @ BinCounts[MapThread[Max, {rho, Max[rho[[#]]] & /@ adj}], bins]) / 2
-				]},
-				{at = r |-> If[0 <= r < Length[c], c[[r + 1]], Last[c]]},
-				Switch[range, All, c, _Integer, at[range], _, at /@ Range @@ range]],
-			{qi, qis}]
+					"WithoutBoundary", Accumulate @ BinCounts[ MapThread[ Max, { rho, Max[ rho[[ # ]] ] & /@ adj } ], bins ],
+					"HalfBoundary",    (full + Accumulate @ BinCounts[ MapThread[ Max, { rho, Max[ rho[[ # ]] ] & /@ adj } ], bins ]) / 2
+				] },
+				{ at = r |-> If[ 0 <= r < Length[ c ], c[[ r + 1 ]], Last[ c ] ] },
+				Switch[ range, All, c, _Integer, at[ range ], _, at /@ Range @@ range ] ],
+			{ qi, qis } ]
 	]
 
 (* SegmentGraph[g, u, v]: the metric interval I(u, v) as a directed
@@ -294,7 +306,8 @@ GeodesicOccupation[ dag_Graph ] :=
     AssociationMap[ Lookup[ sigmaIn, Key[ # ] ] Lookup[ sigmaOut, Key[ # ] ] &, VertexList[ dag ] ]
   ]
 
-GeodesicOccupation[g_Graph, u_, v_] := GeodesicOccupation[SegmentGraph[g, u, v]]
+GeodesicOccupation[ g_Graph, u_, v_ ] :=
+  GeodesicOccupation[ SegmentGraph[ g, u, v ] ]
 
 GeodesicEdgeOccupation[ dag_Graph ] :=
   With[
@@ -314,9 +327,11 @@ GeodesicEdgeOccupation[ dag_Graph ] :=
     Association[ ( # -> Lookup[ sigmaIn, Key[ First[ # ] ] ] Lookup[ sigmaOut, Key[ Last[ # ] ] ] ) & /@ EdgeList[ dag ] ]
   ]
 
-GeodesicEdgeOccupation[g_Graph, u_, v_] := GeodesicEdgeOccupation[SegmentGraph[g, u, v]]
+GeodesicEdgeOccupation[ g_Graph, u_, v_ ] :=
+  GeodesicEdgeOccupation[ SegmentGraph[ g, u, v ] ]
 
-LogDifferenceQuotients[w_List] := Log[Ratios[Range[Length[w]]], Ratios[N[w]]]
+LogDifferenceQuotients[ w_List ] :=
+  Log[ Ratios[ Range[ Length[ w ] ] ], Ratios[ N[ w ] ] ]
 
 (* The growth observables at a vertex -- raw profiles and the fitted dimension / scalar
    curvature -- from the Bishop-Gromov regression of the log-difference quotient q(r) on
@@ -347,80 +362,81 @@ LogDifferenceQuotients[w_List] := Log[Ratios[Range[Length[w]]], Ratios[N[w]]]
    "BallVolumes" key exposes exactly the profile that was fitted.  Vertex slot 2 (single,
    list, or All). *)
 
-Options[VolumeGrowthObservables] = {"Measure" -> "HalfBoundary", "Dimension" -> Automatic};
+Options[ VolumeGrowthObservables ] = { "Measure" -> "HalfBoundary", "Dimension" -> Automatic }
 
-VolumeGrowthObservables[g_Graph, opts : OptionsPattern[]] :=
-	VolumeGrowthObservables[g, All, Automatic, opts]
+VolumeGrowthObservables[ g_Graph, opts : OptionsPattern[] ] :=
+	VolumeGrowthObservables[ g, All, Automatic, opts ]
 
-VolumeGrowthObservables[g_Graph,
-	vertices : Except[_Rule | _RuleDelayed],
-	window : ({_Integer, _Integer} | All | Automatic) : Automatic,
+VolumeGrowthObservables[ g_Graph,
+	vertices : Except[ _Rule | _RuleDelayed ],
+	window : ({ _Integer, _Integer } | All | Automatic) : Automatic,
 	OptionsPattern[]
 ] :=
 	With[
-		{listed = vertices === All || ListQ[vertices] && ! MemberQ[VertexList[g], vertices],
-		 dimOpt = OptionValue["Dimension"],
-		 radialQuotients = f |-> Table[(Log[N @ f[[r + 2]]] - Log[N @ f[[r + 1]]]) / (Log[r + 1.] - Log[r]), {r, 1, Length[f] - 2}]},
-		{windowedFit = {q, probe} |-> With[
-			{r = Range[Length[q]], x = N[Range[Length[q]] (Range[Length[q]] + 1)]},
-			{sel = Which[
+		{ listed = vertices === All || ListQ[ vertices ] && ! MemberQ[ VertexList[ g ], vertices ],
+		 dimOpt = OptionValue[ "Dimension" ],
+		 radialQuotients = f |-> Table[ (Log[ N @ f[[ r + 2 ]] ] - Log[ N @ f[[ r + 1 ]] ]) / (Log[ r + 1. ] - Log[ r ]), { r, 1, Length[ f ] - 2 } ] },
+		{ windowedFit = { q, probe } |-> With[
+			{ r = Range[ Length[ q ] ], x = N[ Range[ Length[ q ] ] (Range[ Length[ q ] ] + 1) ] },
+			{ sel = Which[
 				window === All, r,
-				ListQ[window], Select[r, window[[1]] <= # <= window[[2]] &],
-				Length[q] < 5, r,
+				ListQ[ window ], Select[ r, window[[ 1 ]] <= # <= window[[ 2 ]] & ],
+				Length[ q ] < 5, r,
 				True, Range @@ With[
-					{qc = Replace[q, Around[m_, _] :> m, {1}], k = Length[q], k0 = 5},
-					{sx = Prepend[Accumulate[x], 0.], sxx = Prepend[Accumulate[x^2], 0.],
-					 sq = Prepend[Accumulate[qc], 0.], sqq = Prepend[Accumulate[qc^2], 0.],
-					 sxq = Prepend[Accumulate[x qc], 0.]},
-					{rse = {i, j} |-> With[
-						{m = N[j - i + 1],
-						 ax = sx[[j + 1]] - sx[[i]], axx = sxx[[j + 1]] - sxx[[i]],
-						 aq = sq[[j + 1]] - sq[[i]], aqq = sqq[[j + 1]] - sqq[[i]],
-						 axq = sxq[[j + 1]] - sxq[[i]]},
-						{b = (m axq - ax aq) / (m axx - ax^2)},
-						Sqrt[Max[aqq - (aq - b ax) aq / m - b axq, 0.] / (m - 2)]
-					]},
-					{tol = Max[2 Quantile[Table[rse[i, i + k0 - 1], {i, 1, k - k0 + 1}], 1/4], 1.*^-10]},
+					{ qc = Replace[ q, Around[ m_, _ ] :> m, { 1 } ], k = Length[ q ], k0 = 5 },
+					{ sx = Prepend[ Accumulate[ x ], 0. ], sxx = Prepend[ Accumulate[ x^2 ], 0. ],
+					 sq = Prepend[ Accumulate[ qc ], 0. ], sqq = Prepend[ Accumulate[ qc^2 ], 0. ],
+					 sxq = Prepend[ Accumulate[ x qc ], 0. ] },
+					{ rse = { i, j } |-> With[
+						{ m = N[ j - i + 1 ],
+						 ax = sx[[ j + 1 ]] - sx[[ i ]], axx = sxx[[ j + 1 ]] - sxx[[ i ]],
+						 aq = sq[[ j + 1 ]] - sq[[ i ]], aqq = sqq[[ j + 1 ]] - sqq[[ i ]],
+						 axq = sxq[[ j + 1 ]] - sxq[[ i ]] },
+						{ b = (m axq - ax aq) / (m axx - ax^2) },
+						Sqrt[ Max[ aqq - (aq - b ax) aq / m - b axq, 0. ] / (m - 2) ]
+					] },
+					{ tol = Max[ 2 Quantile[ Table[ rse[ i, i + k0 - 1 ], { i, 1, k - k0 + 1 } ], 1/4 ], 1.*^-10 ] },
 					SelectFirst[
-						Catenate @ Table[{i, i + len - 1}, {len, k, k0, -1}, {i, 1, k - len + 1}],
-						p |-> rse[p[[1]], p[[2]]] <= tol,
-						{1, k}
+						Catenate @ Table[ { i, i + len - 1 }, { len, k, k0, -1 }, { i, 1, k - len + 1 } ],
+						p |-> rse[ p[[ 1 ]], p[[ 2 ]] ] <= tol,
+						{ 1, k }
 					]
 				]
-			]},
+			] },
 			Append[
-				DimensionCurvatureFit[Transpose[{r[[sel]], q[[sel]]}], "Probe" -> probe, "Dimension" -> dimOpt],
-				"Window" -> MinMax[r[[sel]]]
+				DimensionCurvatureFit[ Transpose[ { r[[ sel ]], q[[ sel ]] } ], "Probe" -> probe, "Dimension" -> dimOpt ],
+				"Window" -> MinMax[ r[[ sel ]] ]
 			]
-		]},
-		{fits = MapThread[
-			{w, a} |-> With[
-				{peak = If[window === Automatic, First @ Ordering[a, -1], Length[a]]},
-				{qBall = radialQuotients[w], ballFit = windowedFit[radialQuotients[Take[w, UpTo[peak]]], "Ball"], qSph = radialQuotients[Take[a, peak]]},
-				{sphFit = windowedFit[qSph, "Sphere"]},
-				{bd = ballFit["Dimension"], sd = sphFit["Dimension"]},
+		] },
+		{ fits = MapThread[
+			{ w, a } |-> With[
+				{ peak = If[ window === Automatic, First @ Ordering[ a, -1 ], Length[ a ] ] },
+				{ qBall = radialQuotients[ w ], ballFit = windowedFit[ radialQuotients[ Take[ w, UpTo[ peak ] ] ], "Ball" ],
+  qSph = radialQuotients[ Take[ a, peak ] ] },
+				{ sphFit = windowedFit[ qSph, "Sphere" ] },
+				{ bd = ballFit[ "Dimension" ], sd = sphFit[ "Dimension" ] },
 				<|
 					"BallVolumes" -> w,
 					"ShellAreas" -> a,
 					"BallLogDifferenceQuotients" -> qBall,
-					"SphereLogDifferenceQuotients" -> radialQuotients[a],
+					"SphereLogDifferenceQuotients" -> radialQuotients[ a ],
 					"BallDimension" -> bd,
 					"SphereDimension" -> sd,
-					"BallScalarCurvature" -> ballFit["ScalarCurvature"],
-					"SphereScalarCurvature" -> sphFit["ScalarCurvature"],
+					"BallScalarCurvature" -> ballFit[ "ScalarCurvature" ],
+					"SphereScalarCurvature" -> sphFit[ "ScalarCurvature" ],
 					"BallCurvatureByRadius" ->
-						Table[N[6 (bd + 2) / r^2 (1 - w[[r + 1]] Gamma[bd / 2 + 1] / (Pi^(bd / 2) r^bd))], {r, 1, Length[w] - 1}],
+						Table[ N[ 6 (bd + 2) / r^2 (1 - w[[ r + 1 ]] Gamma[ bd / 2 + 1 ] / (Pi^(bd / 2) r^bd)) ], { r, 1, Length[ w ] - 1 } ],
 					"SphereCurvatureByRadius" ->
-						Table[N[6 sd / r^2 (1 - a[[r + 1]] Gamma[sd / 2 + 1] / (sd Pi^(sd / 2) r^(sd - 1)))], {r, 1, Length[a] - 1}],
-					"SphereMeanCurvatureByRadius" -> Differences[Log[N[a]]],
-					"BallWindow" -> ballFit["Window"],
-					"SphereWindow" -> sphFit["Window"]
+						Table[ N[ 6 sd / r^2 (1 - a[[ r + 1 ]] Gamma[ sd / 2 + 1 ] / (sd Pi^(sd / 2) r^(sd - 1))) ], { r, 1, Length[ a ] - 1 } ],
+					"SphereMeanCurvatureByRadius" -> Differences[ Log[ N[ a ] ] ],
+					"BallWindow" -> ballFit[ "Window" ],
+					"SphereWindow" -> sphFit[ "Window" ]
 				|>
 			],
-			If[listed,
-				{BallVolumes[g, vertices, All, "Measure" -> OptionValue["Measure"]], ShellAreas[g, vertices, All]},
-				{{BallVolumes[g, vertices, All, "Measure" -> OptionValue["Measure"]]}, {ShellAreas[g, vertices, All]}}]]},
-		If[listed, fits, First @ fits]
+			If[ listed,
+				{ BallVolumes[ g, vertices, All, "Measure" -> OptionValue[ "Measure" ] ], ShellAreas[ g, vertices, All ] },
+				{ { BallVolumes[ g, vertices, All, "Measure" -> OptionValue[ "Measure" ] ] }, { ShellAreas[ g, vertices, All ] } } ] ] },
+		If[ listed, fits, First @ fits ]
 	]
 
 (* DimensionCurvatureFit[{{r, q(r)}, ...}]: fit dimension d and scalar curvature R to log-difference
@@ -440,26 +456,27 @@ VolumeGrowthObservables[g_Graph,
    convention is its choice: LogDifferenceQuotients (index-based) of a "FullCount" profile,
    the radius-consistent quotients VolumeGrowthObservables takes of a "HalfBoundary" profile, ... *)
 
-Options[DimensionCurvatureFit] = {"Probe" -> "Ball", "Dimension" -> Automatic};
+Options[ DimensionCurvatureFit ] = { "Probe" -> "Ball", "Dimension" -> Automatic }
 
-DimensionCurvatureFit[q : {Except[_List] ..}, opts : OptionsPattern[]] :=
-	DimensionCurvatureFit[Transpose[{Range[0, Length[q] - 1], q}], opts]
+DimensionCurvatureFit[ q : { Except[ _List ] .. }, opts : OptionsPattern[] ] :=
+	DimensionCurvatureFit[ Transpose[ { Range[ 0, Length[ q ] - 1 ], q } ], opts ]
 
-DimensionCurvatureFit[data : {{_, _} ..}, OptionsPattern[]] := With[
-	{probe = OptionValue["Probe"], dimOpt = OptionValue["Dimension"]},
-	{shift = Switch[probe, "Ball", 0, "Sphere" | "Tube", 1, "TubeMantle", 2],
-	 offset = Switch[probe, "Ball" | "Tube", 2, "Sphere" | "TubeMantle", 1],
-	 x = N[data[[All, 1]] (data[[All, 1]] + 1)], q = data[[All, 2]]},
-	{dimScalar = If[dimOpt === Automatic,
-		With[{m = Length[x], sx = Total[x], sxx = Total[x^2], sq = Total[q], sxq = Total[x q]},
-			{den = m sxx - sx^2},
-			{c2 = (m sxq - sx sq) / den, c1 = (sxx sq - sx sxq) / den},
-			{c1 + shift, -3 (c1 + offset) c2}
-		],
-		With[{sx = Total[x], sxx = Total[x^2], sxq = Total[x q]},
-			{slope = (sxq - (dimOpt - shift) sx) / sxx},
-			{N[dimOpt], -3 (dimOpt - shift + offset) slope}
-		]
-	]},
-	<|"Dimension" -> dimScalar[[1]], "ScalarCurvature" -> dimScalar[[2]]|>
-]
+DimensionCurvatureFit[ data : { { _, _ } .. }, OptionsPattern[] ] :=
+  With[
+  	{ probe = OptionValue[ "Probe" ], dimOpt = OptionValue[ "Dimension" ] },
+  	{ shift = Switch[ probe, "Ball", 0, "Sphere" | "Tube", 1, "TubeMantle", 2 ],
+  	 offset = Switch[ probe, "Ball" | "Tube", 2, "Sphere" | "TubeMantle", 1 ],
+  	 x = N[ data[[ All, 1 ]] (data[[ All, 1 ]] + 1) ], q = data[[ All, 2 ]] },
+  	{ dimScalar = If[ dimOpt === Automatic,
+  		With[ { m = Length[ x ], sx = Total[ x ], sxx = Total[ x^2 ], sq = Total[ q ], sxq = Total[ x q ] },
+  			{ den = m sxx - sx^2 },
+  			{ c2 = (m sxq - sx sq) / den, c1 = (sxx sq - sx sxq) / den },
+  			{ c1 + shift, -3 (c1 + offset) c2 }
+  		],
+  		With[ { sx = Total[ x ], sxx = Total[ x^2 ], sxq = Total[ x q ] },
+  			{ slope = (sxq - (dimOpt - shift) sx) / sxx },
+  			{ N[ dimOpt ], -3 (dimOpt - shift + offset) slope }
+  		]
+  	] },
+  	<| "Dimension" -> dimScalar[[ 1 ]], "ScalarCurvature" -> dimScalar[[ 2 ]] |>
+  ]

@@ -1,4 +1,4 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* kappa(u, v) = 1 - W_1(mu_u, mu_v) / d(u, v),
    mu_x = uniform on the open neighborhood N(x); idleness alpha = 0;
@@ -40,18 +40,18 @@ EffectiveResistance[ g_Graph ] :=
     Table[ d[[ i ]] + d[[ j ]] - 2 lp[[ i, j ]], { i, n }, { j, n } ]
   ]
 
-EffectiveResistance[g_Graph, u_, v_] /; MemberQ[VertexList[g], u] && MemberQ[VertexList[g], v] :=
-    With[{lp = PseudoInverse[N @ Normal @ KirchhoffMatrix[g]],
-          idx = AssociationThread[VertexList[g], Range @ VertexCount[g]]},
-        With[{i = idx[u], j = idx[v]},
-            lp[[i, i]] + lp[[j, j]] - 2 lp[[i, j]]
+EffectiveResistance[ g_Graph, u_, v_ ] /; MemberQ[ VertexList[ g ], u ] && MemberQ[ VertexList[ g ], v ] :=
+    With[ { lp = PseudoInverse[ N @ Normal @ KirchhoffMatrix[ g ] ],
+          idx = AssociationThread[ VertexList[ g ], Range @ VertexCount[ g ] ] },
+        With[ { i = idx[ u ], j = idx[ v ] },
+            lp[[ i, i ]] + lp[[ j, j ]] - 2 lp[[ i, j ]]
         ]
     ]
 
-EffectiveResistance[g_Graph, vs_List] /; SubsetQ[VertexList[g], vs] :=
-    With[{full = EffectiveResistance[g],
-          ix = AssociationThread[VertexList[g], Range @ VertexCount[g]] /@ vs},
-        full[[ix, ix]]
+EffectiveResistance[ g_Graph, vs_List ] /; SubsetQ[ VertexList[ g ], vs ] :=
+    With[ { full = EffectiveResistance[ g ],
+          ix = AssociationThread[ VertexList[ g ], Range @ VertexCount[ g ] ] /@ vs },
+        full[[ ix, ix ]]
     ]
 
 (* Klein-Randic / Schoenberg negative-type predicate: a real symmetric
@@ -60,15 +60,16 @@ EffectiveResistance[g_Graph, vs_List] /; SubsetQ[VertexList[g], vs] :=
        B[i, j] = (R[1, j] + R[i, 1] - R[i, j]) / 2,  i, j >= 2
    is positive semidefinite. *)
 
-ResistanceQ[r_ ? MatrixQ] :=
-    SquareMatrixQ[r] &&
-    (Transpose[r] === r || N @ Transpose[r] == N @ r) &&
-    AllTrue[Diagonal[r], # == 0 &] &&
-    With[{n = Length[r]},
+ResistanceQ[ r_ ? MatrixQ ] :=
+    SquareMatrixQ[ r ] &&
+    (Transpose[ r ] === r || N @ Transpose[ r ] == N @ r) &&
+    AllTrue[ Diagonal[ r ], # == 0 & ] &&
+    With[ { n = Length[ r ] },
         n <= 1 || AllTrue[
-            Eigenvalues[N @ Table[(r[[1, j]] + r[[i, 1]] - r[[i, j]]) / 2, {i, 2, n}, {j, 2, n}]],
+            Eigenvalues[ N @ Table[ (r[[ 1, j ]] + r[[ i, 1 ]] - r[[ i, j ]]) / 2, { i, 2, n }, { j, 2, n } ] ],
             # >= -10^-9 &
         ]
     ]
 
-ResistanceQ[_] := False
+ResistanceQ[ _ ] :=
+  False

@@ -1,30 +1,30 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraScene *)
 
-PackageScope[sceneAssertionRules]
-PackageScope[resolveExpression]
-PackageScope[extractBranches]
-PackageScope[capBranches]
-PackageScope[applySelectOption]
-PackageScope[constructionPatternQ]
-PackageScope[dispatchConstruction]
-PackageScope[evaluateConstruction]
-PackageScope[pointQ]
-PackageScope[closedWalkQ]
-PackageScope[positionSpelledQ]
-PackageScope[walkSequence]
-PackageScope[walkRealisations]
-PackageScope[closeWalk]
-PackageScope[dagGeodesics]
-PackageScope[walkVertexSet]
-PackageScope[infraSpread]
-PackageScope[vertexSet]
-PackageScope[infraVertexSet]
-PackageScope[polylineToVertexSeq]
-PackageScope[embeddingClosestCycles]
-PackageScope[EmbeddingCircleDistance]
-PackageScope[resolveEmbeddingCoords]
+PackageScope[ sceneAssertionRules ]
+PackageScope[ resolveExpression ]
+PackageScope[ extractBranches ]
+PackageScope[ capBranches ]
+PackageScope[ applySelectOption ]
+PackageScope[ constructionPatternQ ]
+PackageScope[ dispatchConstruction ]
+PackageScope[ evaluateConstruction ]
+PackageScope[ pointQ ]
+PackageScope[ closedWalkQ ]
+PackageScope[ positionSpelledQ ]
+PackageScope[ walkSequence ]
+PackageScope[ walkRealisations ]
+PackageScope[ closeWalk ]
+PackageScope[ dagGeodesics ]
+PackageScope[ walkVertexSet ]
+PackageScope[ infraSpread ]
+PackageScope[ vertexSet ]
+PackageScope[ infraVertexSet ]
+PackageScope[ polylineToVertexSeq ]
+PackageScope[ embeddingClosestCycles ]
+PackageScope[ EmbeddingCircleDistance ]
+PackageScope[ resolveEmbeddingCoords ]
 
 sceneAssertionRules[ graph_ ] :=
   { InfraDistance[ x_, y_ ]      :> GraphDistance[ graph, x, y ],
@@ -59,12 +59,17 @@ constructionPatternQ[ objects_List, h_ ] :=
   MatchQ[ h, ( key_ == _ ) /;
     ( MemberQ[ objects, key ] || ( ListQ[ key ] && SubsetQ[ objects, key ] ) ) ]
 
-capBranches[ paths_List, All ]              := paths
-capBranches[ paths_List, n_Integer ]        := Take[ paths, UpTo[ n ] ]
-capBranches[ paths_List, UpTo[ n_Integer ] ] := Take[ paths, UpTo[ n ] ]
-capBranches[ other_, _ ]                    := other
+capBranches[ paths_List, All ]              :=
+  paths
+capBranches[ paths_List, n_Integer ]        :=
+  Take[ paths, UpTo[ n ] ]
+capBranches[ paths_List, UpTo[ n_Integer ] ] :=
+  Take[ paths, UpTo[ n ] ]
+capBranches[ other_, _ ]                    :=
+  other
 
-applySelectOption[ _Graph, paths_, None, _, _ ] := paths
+applySelectOption[ _Graph, paths_, None, _, _ ] :=
+  paths
 applySelectOption[ graph_Graph, paths_, list_List, cyclic_, ctx_ ] :=
   Fold[ applySelectOption[ graph, #1, #2, cyclic, ctx ] &, paths, list ]
 applySelectOption[ graph_Graph, paths_, "EmbeddingClosest", True,  ctx_ ] :=
@@ -76,9 +81,12 @@ applySelectOption[ graph_Graph, paths_, name_String, True,  _ ] :=
 applySelectOption[ graph_Graph, paths_, name_String, False, _ ] :=
   SelectInfraWalk[ graph, paths, All, "From" -> selectFromName[ name ] ]
 
-selectFromName[ "Central"    ] := "Center"
-selectFromName[ "Peripheral" ] := "Periphery"
-selectFromName[ name_String  ] := name
+selectFromName[ "Central"    ] :=
+  "Center"
+selectFromName[ "Peripheral" ] :=
+  "Periphery"
+selectFromName[ name_String  ] :=
+  name
 
 Options[ InfraDistance ] = { "Aggregation" -> Min }
 
@@ -87,7 +95,7 @@ InfraDistance[ g_Graph, p_, q_, OptionsPattern[] ] :=
     Flatten @ Outer[ GraphDistance[ g, #1, #2 ] &,
       Keys @ InfraDensity[ g, p ], Keys @ InfraDensity[ g, q ], 1 ]
 
-$infraRealisationPattern = _List | _Association | _Graph;
+$infraRealisationPattern = _List | _Association | _Graph
 
 InfraIntersection[ graph_Graph, args__ ] /; AllTrue[ { args }, MatchQ[ $infraRealisationPattern ] ] :=
   Intersection @@ ( infraVertexSet[ graph, # ] & /@ { args } )
@@ -154,7 +162,8 @@ InfraScene[ objects_List, hypotheses_List ] /;
       "ManualSteps"     -> False
     |> ] ]
 
-InfraScene[ data_Association ][ prop_String ] := data[ prop ]
+InfraScene[ data_Association ][ prop_String ] :=
+  data[ prop ]
 
 InfraSceneInstance[ inst_InfraSceneInstance, sym_ ] /; ! ListQ[ sym ] :=
   inst[[ 1 ]][ sym ]
@@ -180,7 +189,7 @@ evaluateConstruction[ graph_Graph, sym_, ( head : InfraIntersection | InfraUnion
 
 evaluateConstruction[ graph_Graph, sym_, rhs_, bindings_Association ] :=
   With[ { results = dispatchConstruction[ graph, resolveExpression[ rhs, bindings, graph ] ] },
-    If[ ! ListQ[ results ] || results === {} || results === {{}}, {},
+    If[ ! ListQ[ results ] || results === {} || results === { {} }, {},
       Append[ bindings, sym -> # ] & /@ results ] ]
 
 evaluateConstruction[ graph_Graph, syms_List, rhs_, bindings_Association ] :=
@@ -188,13 +197,13 @@ evaluateConstruction[ graph_Graph, syms_List, rhs_, bindings_Association ] :=
     If[ ! ListQ[ tuples ] || tuples === {}, {},
       Join[ bindings, AssociationThread[ syms, # ] ] & /@ tuples ] ]
 
-Options[ FindInfraScene ] = { "PruneProbability" -> 0 };
+Options[ FindInfraScene ] = { "PruneProbability" -> 0 }
 
 FindInfraScene[ scene_InfraScene, graph_Graph, opts : OptionsPattern[] ] :=
-  FindInfraScene[ scene, graph, Length @ scene[ "Steps" ], <||>, opts ]
+  FindInfraScene[ scene, graph, Length @ scene[ "Steps" ], <| |>, opts ]
 
 FindInfraScene[ scene_InfraScene, graph_Graph, nSteps_Integer, opts : OptionsPattern[] ] :=
-  FindInfraScene[ scene, graph, nSteps, <||>, opts ]
+  FindInfraScene[ scene, graph, nSteps, <| |>, opts ]
 
 FindInfraScene[ scene_InfraScene, graph_Graph, init_Association, opts : OptionsPattern[] ] :=
   FindInfraScene[ scene, graph, Length @ scene[ "Steps" ], init, opts ]
@@ -224,73 +233,94 @@ FindInfraScene[ scene_InfraScene, graph_Graph, nSteps_Integer, init_Association,
         With[ { vars = Intersection[ Cases[ #, Alternatives @@ objects, { 0, Infinity } ], objects ] },
           ! SubsetQ[ Keys @ b, vars ] || TrueQ[ resolveExpression[ #, b, graph ] ] ] & /@ scene[ "Assertions" ] ) ] ] ]
 
-pointQ[ graph_Graph, x_ ] := VertexQ[ graph, x ]
+pointQ[ graph_Graph, x_ ] :=
+  VertexQ[ graph, x ]
 
-closedWalkQ[ w_Graph ] := ! LoopFreeGraphQ[ w ] || ! AcyclicGraphQ[ w ]
+closedWalkQ[ w_Graph ] :=
+  ! LoopFreeGraphQ[ w ] || ! AcyclicGraphQ[ w ]
 
 positionSpelledQ[ w_Graph ] :=
   AllTrue[ VertexList @ w, MatchQ[ { _Integer, _ } ] ] &&
   Sort[ First /@ VertexList @ w ] === Range @ VertexCount @ w
 
-walkSequence[ w_Graph ] := Which[
-  positionSpelledQ @ w, Last /@ SortBy[ VertexList @ w, First ],
-  EdgeCount[ w ] == 0,  VertexList @ w,
-  True,
-    With[ { start = SelectFirst[ VertexList @ w,
-              If[ DirectedGraphQ @ w, VertexInDegree[ w, # ] == 0, VertexDegree[ w, # ] == 1 ] &,
-              First @ VertexList @ w ],
-            nextOf = If[ DirectedGraphQ @ w,
-              { u, prev } |-> First[ VertexOutComponent[ w, { u }, { 1 } ], None ],
-              { u, prev } |-> First[ DeleteCases[ AdjacencyList[ w, u ], prev ], None ] ] },
-      { seq = TakeWhile[
-          First /@ NestList[ { nextOf @@ #, First @ # } &, { start, None }, VertexCount @ w ],
-          # =!= None & ] },
-      If[ closedWalkQ @ w, Most @ seq, seq ] ] ]
+walkSequence[ w_Graph ] :=
+  Which[
+    positionSpelledQ @ w, Last /@ SortBy[ VertexList @ w, First ],
+    EdgeCount[ w ] == 0,  VertexList @ w,
+    True,
+      With[ { start = SelectFirst[ VertexList @ w,
+                If[ DirectedGraphQ @ w, VertexInDegree[ w, # ] == 0, VertexDegree[ w, # ] == 1 ] &,
+                First @ VertexList @ w ],
+              nextOf = If[ DirectedGraphQ @ w,
+                { u, prev } |-> First[ VertexOutComponent[ w, { u }, { 1 } ], None ],
+                { u, prev } |-> First[ DeleteCases[ AdjacencyList[ w, u ], prev ], None ] ] },
+        { seq = TakeWhile[
+            First /@ NestList[ { nextOf @@ #, First @ # } &, { start, None }, VertexCount @ w ],
+            # =!= None & ] },
+        If[ closedWalkQ @ w, Most @ seq, seq ] ] ]
 
-walkRealisations[ w_Graph ] := Which[
-  closedWalkQ @ w,      { closeWalk @ walkSequence @ w },
-  positionSpelledQ @ w, Map[ Last, dagGeodesics @ w, { 2 } ],
-  DirectedGraphQ @ w,   dagGeodesics @ w,
-  True,                 { walkSequence @ w } ]
+walkRealisations[ w_Graph ] :=
+  Which[
+    closedWalkQ @ w,      { closeWalk @ walkSequence @ w },
+    positionSpelledQ @ w, Map[ Last, dagGeodesics @ w, { 2 } ],
+    DirectedGraphQ @ w,   dagGeodesics @ w,
+    True,                 { walkSequence @ w } ]
 
 closeWalk[ cycle_List ] :=
   If[ First[ cycle ] === Last[ cycle ], cycle, Append[ cycle, First[ cycle ] ] ]
 
-dagGeodesics[ dag_Graph ] := Which[
-  VertexCount[ dag ] == 0, { },
-  EdgeCount[ dag ] == 0,   List /@ VertexList[ dag ],
-  True,
-    With[ { srcs = Select[ VertexList[ dag ], VertexInDegree[ dag, # ] == 0 & ],
-            snks = Select[ VertexList[ dag ], VertexOutDegree[ dag, # ] == 0 & ] },
-      DeleteDuplicates @ Catenate @ Catenate @
-        Table[ FindPath[ dag, s, t, Infinity, All ], { s, srcs }, { t, snks } ] ] ]
+dagGeodesics[ dag_Graph ] :=
+  Which[
+    VertexCount[ dag ] == 0, { },
+    EdgeCount[ dag ] == 0,   List /@ VertexList[ dag ],
+    True,
+      With[ { srcs = Select[ VertexList[ dag ], VertexInDegree[ dag, # ] == 0 & ],
+              snks = Select[ VertexList[ dag ], VertexOutDegree[ dag, # ] == 0 & ] },
+        DeleteDuplicates @ Catenate @ Catenate @
+          Table[ FindPath[ dag, s, t, Infinity, All ], { s, srcs }, { t, snks } ] ] ]
 
 walkVertexSet[ w_Graph ] :=
   Sort @ DeleteDuplicates @ If[ positionSpelledQ @ w, Last /@ VertexList @ w, VertexList @ w ]
 
-infraSpread[ fam_Association ]       := Keys @ fam
-infraSpread[ w_Graph ]               := walkRealisations @ w
-infraSpread[ ws : { __Graph } ]      := Catenate[ walkRealisations /@ ws ]
-infraSpread[ { } ]                   := { }
-infraSpread[ other_ ]                := { other }
+infraSpread[ fam_Association ]       :=
+  Keys @ fam
+infraSpread[ w_Graph ]               :=
+  walkRealisations @ w
+infraSpread[ ws : { __Graph } ]      :=
+  Catenate[ walkRealisations /@ ws ]
+infraSpread[ { } ]                   :=
+  { }
+infraSpread[ other_ ]                :=
+  { other }
 
-vertexSet[ vs_List ] := Sort @ DeleteDuplicates @ vs
+vertexSet[ vs_List ] :=
+  Sort @ DeleteDuplicates @ vs
 
-infraVertexSet[ fam_Association ]  := Keys @ fam
-infraVertexSet[ w_Graph ]          := walkVertexSet @ w
-infraVertexSet[ ws : { __Graph } ] := Union @@ ( walkVertexSet /@ ws )
-infraVertexSet[ { } ]              := { }
-infraVertexSet[ sets : { __List } ] := Union @@ ( infraVertexSet /@ sets )
-infraVertexSet[ list_List ]        := vertexSet @ list
-infraVertexSet[ v_ ]               := { v }
+infraVertexSet[ fam_Association ]  :=
+  Keys @ fam
+infraVertexSet[ w_Graph ]          :=
+  walkVertexSet @ w
+infraVertexSet[ ws : { __Graph } ] :=
+  Union @@ ( walkVertexSet /@ ws )
+infraVertexSet[ { } ]              :=
+  { }
+infraVertexSet[ sets : { __List } ] :=
+  Union @@ ( infraVertexSet /@ sets )
+infraVertexSet[ list_List ]        :=
+  vertexSet @ list
+infraVertexSet[ v_ ]               :=
+  { v }
 
-infraVertexSet[ graph_Graph, x_ ]  := Keys @ InfraDensity[ graph, x ]
+infraVertexSet[ graph_Graph, x_ ]  :=
+  Keys @ InfraDensity[ graph, x ]
 
-polylineToVertexSeq[ { } ] := { }
+polylineToVertexSeq[ { } ] :=
+  { }
 polylineToVertexSeq[ legs : { __Graph } ] :=
   Fold[ Join[ #1, Rest @ walkSequence @ #2 ] &, walkSequence @ First @ legs, Rest @ legs ]
 
-embeddingClosestCycles[ graph_Graph, cycles_List, center_, radius_ ] /; Length[ cycles ] <= 1 := cycles
+embeddingClosestCycles[ graph_Graph, cycles_List, center_, radius_ ] /; Length[ cycles ] <= 1 :=
+  cycles
 
 embeddingClosestCycles[ graph_Graph, cycles_List, center_, radius_ ] :=
   With[ { coords = resolveEmbeddingCoords[ graph, Automatic ],
@@ -311,8 +341,10 @@ EmbeddingCircleDistance[ coords_List, cycle_List, centerIdx_Integer, radius_ ] /
       Line[ Append[ circlePoints, First[ circlePoints ] ] ] ]
   ]
 
-EmbeddingCircleDistance[ _List, cycle_List, _Integer, _ ] /; Length[ cycle ] < 3 := Infinity
+EmbeddingCircleDistance[ _List, cycle_List, _Integer, _ ] /; Length[ cycle ] < 3 :=
+  Infinity
 
 resolveEmbeddingCoords[ graph_Graph, Automatic ] :=
   GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ]
-resolveEmbeddingCoords[ _, coords_List ] := coords
+resolveEmbeddingCoords[ _, coords_List ] :=
+  coords

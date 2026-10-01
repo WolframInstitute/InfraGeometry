@@ -1,4 +1,4 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* The contact graph of a relaxed hard-sphere packing has all edges at exactly 2r:
    two touching spheres of radius r have centers at distance 2r by geometry, not by
@@ -7,7 +7,7 @@ Package["WolframInstitute`InfraGeometry`"]
    an abstract graph in R^d with every edge a unit segment (the iterative sibling of
    the declarative ComplexEmbedding). *)
 
-Options[UniformLengthGraph] = {
+Options[ UniformLengthGraph ] = {
 	Method -> "IterativeProjection",
 	"Radius" -> Automatic,
 	"MaxIterations" -> 200,
@@ -16,7 +16,7 @@ Options[UniformLengthGraph] = {
 	"Overpack" -> 1.,
 	"ContactTolerance" -> 0.25,
 	"KeepCoordinates" -> False
-};
+}
 
 (* unit-length graph of region: contact graph of a relaxed hard-sphere packing of n spheres in
    region, every edge length 2r.  "KeepCoordinates" -> True stores the packing in VertexCoordinates;
@@ -146,14 +146,14 @@ UniformLengthGraph[ region_ ? RegionQ, n_Integer, opts : OptionsPattern[] ] :=
     ]
   ]
 
-Options[UniformLengthEmbedding] = {
+Options[ UniformLengthEmbedding ] = {
 	"Dimension" -> 3,
 	"MaxIterations" -> 500,
 	"Tolerance" -> 10.^-7,
 	"NonEdgeRepulsion" -> 0.,
 	"MaxStepPerVertex" -> 0.15,
 	"InitialEmbedding" -> Automatic
-};
+}
 
 (* embedding f : V -> R^d realising every edge as a unit segment, by edge-spring relaxation
    from a spring-electrical start; returns coordinates in VertexList order (cf. GraphEmbedding).

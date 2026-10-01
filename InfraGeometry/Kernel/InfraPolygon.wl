@@ -1,6 +1,6 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
-Options[ FindInfraPolygon ] = { Method -> Automatic };
+Options[ FindInfraPolygon ] = { Method -> Automatic }
 
 FindInfraPolygon[ graph_Graph, vertices_List /; Length[ vertices ] >= 3,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
@@ -61,22 +61,28 @@ InfraPolygonQ[ graph_Graph, sides : { __Graph } ] :=
     AllTrue[ seqs, InfraSegmentQ[ graph, # ] & ] &&
     AllTrue[ Partition[ Append[ seqs, First @ seqs ], 2, 1 ], pair |-> Last[ pair[[ 1 ]] ] === First[ pair[[ 2 ]] ] ] ]
 
-InfraPolygonQ[ _Graph, _ ] := False
+InfraPolygonQ[ _Graph, _ ] :=
+  False
 
-(* a regular n-gon w.r.t. the metric tuple As is a cyclic sequence v_1, ..., v_n with d(v_i, v_{i+k mod n}) satisfying As[[k]] for every i and k; a slot is an exact integer, a range {lo, hi} constant across i, or Automatic.  The instance is the polygon on those corners: its sides, one shortest path each.
+(* a regular n-gon w.r.t. the metric tuple As is a cyclic sequence v_1, ..., v_n with d(v_i, v_{i+k mod n}) satisfying As[[k]] for every i and k; a
+   slot is an exact integer, a range {lo, hi} constant across i, or Automatic.  The instance is the polygon on those corners: its sides, one shortest
+   path each.
 
-   The family is carried by the FindCycle candidate sweep, filtered by the slot predicates.  The sweep is not lazy -- every n-cycle of the candidate graph is materialised before any is tested -- so "Greedy" and "RandomGreedy" here only order what the count takes, in candidate and random order respectively; the class is the same under all three *)
+   The family is carried by the FindCycle candidate sweep, filtered by the slot predicates.  The sweep is not lazy -- every n-cycle of the candidate
+   graph is materialised before any is tested -- so "Greedy" and "RandomGreedy" here only order what the count takes, in candidate and random order
+   respectively; the class is the same under all three *)
 
 Options[ FindInfraRegularPolygon ] = {
   Properties -> { },
   Method     -> Automatic,
   "From"     -> All
-};
+}
 
 FindInfraRegularPolygon[ graph_Graph, As_List, n_Integer /; n >= 3,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
     1 <= Length[ As ] <= Floor[ n / 2 ] && OptionValue[ FindInfraRegularPolygon, { opts }, Properties ] === { } &&
-      MatchQ[ OptionValue[ FindInfraRegularPolygon, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
+      MatchQ[ OptionValue[ FindInfraRegularPolygon, { opts }, Method ],
+        Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
   With[ {
       methodSpec = Replace[ OptionValue[ FindInfraRegularPolygon, { opts }, Method ],
                      Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ],
@@ -150,7 +156,8 @@ InfraRegularPolygonQ[ graph_Graph, cycle_List, As_List ] /;
   ]
 
 InfraRegularPolygonQ[ _Graph, cycle_List, _List ] /;
-    Length[ cycle ] < 3 && ! MatchQ[ cycle, { __Graph } | { { __Graph } .. } ] := False
+    Length[ cycle ] < 3 && ! MatchQ[ cycle, { __Graph } | { { __Graph } .. } ] :=
+  False
 
 InfraRegularPolygonQ[ graph_Graph, polys : { { __Graph } .. }, As_List ] :=
   AllTrue[ polys, InfraRegularPolygonQ[ graph, #, As ] & ]
@@ -180,7 +187,7 @@ dispatchConstruction[ graph_Graph, InfraPolygon[ As_List, n_Integer, opts___Rule
       Most @* polylineToVertexSeq /@ FindInfraRegularPolygon[ graph, As, n, All,
         Sequence @@ FilterRules[ { opts }, Options[ FindInfraRegularPolygon ] ] ],
       "Select" /. { opts } /. "Select" -> None,
-      True, <||> ],
+      True, <| |> ],
     extractBranches[ { opts } ] ]
 
 dispatchConstruction[ graph_Graph, InfraPolygon[ verts_List, opts___Rule ] ] :=

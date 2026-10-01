@@ -1,8 +1,10 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraSegment *)
 
-(* InfraSegment[p1, ..., pk] is inert: the polyline of the segments [p_i, p_(i+1)], k >= 2, and for k == 2 the segment itself.  Its graph is the interval DAG I(p, q) = { v : d(p, v) + d(v, q) == d(p, q) } with the arrows v -> w of rising d(p, .), whose chains are exactly the geodesics from p to q (design Thm. segment), and for a polyline the List of the pieces' DAGs, a member concatenating one chain per piece *)
+(* InfraSegment[p1, ..., pk] is inert: the polyline of the segments [p_i, p_(i+1)], k >= 2, and for k == 2 the segment itself.  Its graph is the
+   interval DAG I(p, q) = { v : d(p, v) + d(v, q) == d(p, q) } with the arrows v -> w of rising d(p, .), whose chains are exactly the geodesics from
+   p to q (design Thm. segment), and for a polyline the List of the pieces' DAGs, a member concatenating one chain per piece *)
 
 InfraMeasurement[ graph_Graph,
     InfraSegment[ p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ] ], "Graph" ] :=
@@ -72,7 +74,8 @@ InfraMemberQ[ graph_Graph,
       AllTrue[ Range @ Length @ pieces,
         i |-> InfraMemberQ[ graph, InfraSegment @@ pieces[[ i ]], Take[ path, { cuts[[ i ]], cuts[[ i + 1 ]] } ] ] ] ]
 
-(* a geodesic (p = v0, v1, ..., vk = q) with k = d(p, q), as a vertex list -- the substrate searched directly by FindPath, independently of the interval DAG.  The count-less call is one geodesic, a bounded count a List of them, All the whole class *)
+(* a geodesic (p = v0, v1, ..., vk = q) with k = d(p, q), as a vertex list -- the substrate searched directly by FindPath, independently of the
+   interval DAG.  The count-less call is one geodesic, a bounded count a List of them, All the whole class *)
 
 FindInfraSegment[ graph_Graph, p_, q_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic ] :=
@@ -92,9 +95,13 @@ Options[ ExtendInfraSegment ] = {
   Properties  -> { },
   Method      -> Automatic,
   "Direction" -> "BothSides"
-};
+}
 
-(* a bundle runs from p1 to p2.  Its candidate ends lie in the two extension graphs, and a pair (s, e) is admissible iff jointly geodesic -- d(s, e) == d(s, p1) + d(p1, p2) + d(p2, e), whichever geodesics are used -- with the larger layer passing kspec and each free side either at the budget or inextensible; its atom is I(p1, s) reversed, the bundle, and I(p2, e).  "Exhaustive" with All is the pool of atoms, and every bounded count streams geodesics off the admissible pairs in candidate ("Greedy", "Exhaustive") or random ("RandomGreedy") order, so the class is the same under every Method.  A substrate DAG or path graph is one bundle, and anything else -- a vertex list, a position-spelled walk -- spreads to its walks *)
+(* a bundle runs from p1 to p2.  Its candidate ends lie in the two extension graphs, and a pair (s, e) is admissible iff jointly geodesic -- d(s, e)
+   == d(s, p1) + d(p1, p2) + d(p2, e), whichever geodesics are used -- with the larger layer passing kspec and each free side either at the budget or
+   inextensible; its atom is I(p1, s) reversed, the bundle, and I(p2, e).  "Exhaustive" with All is the pool of atoms, and every bounded count
+   streams geodesics off the admissible pairs in candidate ("Greedy", "Exhaustive") or random ("RandomGreedy") order, so the class is the same under
+   every Method.  A substrate DAG or path graph is one bundle, and anything else -- a vertex list, a position-spelled walk -- spreads to its walks *)
 
 ExtendInfraSegment[ graph_Graph, seed_,
     kspec : ( _Integer | UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ) : Infinity,
@@ -198,7 +205,8 @@ dispatchConstruction[ graph_Graph, InfraSegment[ p1_, p2_, opts___Rule ] ] :=
       False, <| "Endpoints" -> { p1, p2 } |> ],
     extractBranches[ { opts } ] ]
 
-InfraWalkQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraWalkQ[ graph, # ] & ]
+InfraWalkQ[ graph_Graph, ws : { __Graph } ] :=
+  AllTrue[ ws, InfraWalkQ[ graph, # ] & ]
 
 InfraWalkQ[ graph_Graph, w_Graph ] :=
   With[ { vs = VertexList @ w },
@@ -220,13 +228,17 @@ InfraWalkQ[ graph_Graph, w_Graph ] :=
 InfraWalkQ[ graph_Graph, path_List ] /; Length[ path ] >= 2 :=
   AllTrue[ Partition[ path, 2, 1 ], EdgeQ[ graph, UndirectedEdge @@ # ] & ]
 
-InfraWalkQ[ _Graph, path_List ] /; Length[ path ] < 2 := False
+InfraWalkQ[ _Graph, path_List ] /; Length[ path ] < 2 :=
+  False
 
-(* consecutive vertices adjacent and the total edge count equal to d(v0, vk); a graph -- one path or a DAG -- passes iff every walk it stands for does *)
+(* consecutive vertices adjacent and the total edge count equal to d(v0, vk); a graph -- one path or a DAG -- passes iff every walk it stands for
+   does *)
 
-InfraSegmentQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraSegmentQ[ graph, # ] & ]
+InfraSegmentQ[ graph_Graph, ws : { __Graph } ] :=
+  AllTrue[ ws, InfraSegmentQ[ graph, # ] & ]
 
-InfraSegmentQ[ graph_Graph, ws : { { ___ } .. } ] := AllTrue[ ws, InfraSegmentQ[ graph, # ] & ]
+InfraSegmentQ[ graph_Graph, ws : { { ___ } .. } ] :=
+  AllTrue[ ws, InfraSegmentQ[ graph, # ] & ]
 
 InfraSegmentQ[ graph_Graph, w_Graph ] :=
   With[ { vs = VertexList @ w },
@@ -249,9 +261,11 @@ InfraSegmentQ[ graph_Graph, segment_List ] /; Length[ segment ] >= 2 :=
   GraphDistance[ graph, First[ segment ], Last[ segment ] ] == Length[ segment ] - 1 &&
   AllTrue[ Partition[ segment, 2, 1 ], EdgeQ[ graph, UndirectedEdge @@ # ] & ]
 
-InfraSegmentQ[ _Graph, segment_List ] /; Length[ segment ] < 2 := False
+InfraSegmentQ[ _Graph, segment_List ] /; Length[ segment ] < 2 :=
+  False
 
-UniqueInfraSegmentQ[ graph_Graph, u_, v_ ] := GeodesicMultiplicity[ graph, u, v ] == 1
+UniqueInfraSegmentQ[ graph_Graph, u_, v_ ] :=
+  GeodesicMultiplicity[ graph, u, v ] == 1
 
 UniqueInfraSegmentQ[ graph_Graph ] :=
   AllTrue[ Subsets[ VertexList[ graph ], { 2 } ],

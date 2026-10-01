@@ -1,6 +1,6 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
-Options[ EnumerateGraphs ] = { "From" -> Automatic };
+Options[ EnumerateGraphs ] = { "From" -> Automatic }
 
 EnumerateGraphs[ n_, predQ_, All, opts : OptionsPattern[] ] :=
   With[ { source = OptionValue[ "From" ] },

@@ -1,6 +1,6 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
-Options[ ComparisonTriangle ] = { "Curvature" -> 0 };
+Options[ ComparisonTriangle ] = { "Curvature" -> 0 }
 
 ComparisonTriangle[ a_?Positive, b_?Positive, c_?Positive, OptionsPattern[] ] :=
   With[ { k = OptionValue[ "Curvature" ] },
@@ -26,13 +26,14 @@ ComparisonTriangle[ g_Graph, p_, q_, r_, opts : OptionsPattern[] ] :=
     opts
   ]
 
-InfraComparisonTriangle[ data_Association ][ key_String ] := data[ key ]
+InfraComparisonTriangle[ data_Association ][ key_String ] :=
+  data[ key ]
 
 (* "ApexSide" tests d(apex, x)^2 <= d_k_bar(apex', x')^2 over the interior probes x of the opposite side, "TwoRays" every cross-ray pair.
    Equivalent in a length space (Bridson-Haefliger II.1.7), inequivalent on a graph, where the sides are vertex sets rather than arcs.
    Indeterminate when k > 0 and the perimeter exceeds 2 Pi / Sqrt[k]. *)
 
-Options[ CATInequalityQ ] = { Method -> "ApexSide" };
+Options[ CATInequalityQ ] = { Method -> "ApexSide" }
 
 CATInequalityQ[ g_Graph, { p_, q_, r_ }, Optional[ k_?NumericQ, 0 ], OptionsPattern[] ] :=
   With[ {
@@ -75,7 +76,7 @@ CATInequalityQ[ g_Graph, { p_, q_, r_ }, Optional[ k_?NumericQ, 0 ], OptionsPatt
 
 (* the worst Euclidean deficit over the triangles inside B_L(v), divided by L^2 so it is scale-comparable across graphs *)
 
-Options[ InfraCurvature ] = { "Radius" -> Automatic };
+Options[ InfraCurvature ] = { "Radius" -> Automatic }
 
 InfraCurvature[ g_Graph, v_, OptionsPattern[] ] :=
   With[ {

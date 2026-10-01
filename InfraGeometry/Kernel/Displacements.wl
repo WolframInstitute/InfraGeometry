@@ -1,4 +1,4 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* A displacement is an association v -> { w1, w2, ... } (multivalued in
    general; values are always lists), thought of as v -> exp_v(r X) for a
@@ -29,7 +29,8 @@ DisplacementScale[ graph_Graph, displacement_Association, t_ ] :=
             Select[ AdjacencyList[ graph, vertex ], dist[ # ] == dist[ vertex ] - 1 & ] ] ],
           Association[ source -> 1 ],
           SortBy[ Select[ VertexList @ graph, 0 < dist[ # ] < Infinity & ], dist ] ] ] },
-    (* gamma(t), a = gamma(0), b = gamma(1): the points on the ray a -> b, or its opposite for t < 0, closest to |t| d(a, b) from a, and among them the maximal geodesic flux sigma(p, q) sigma(q, s) / sigma(p, s) through the middle of the aligned triple *)
+    (* gamma(t), a = gamma(0), b = gamma(1): the points on the ray a -> b, or its opposite for t < 0, closest to |t| d(a, b) from a, and among them
+       the maximal geodesic flux sigma(p, q) sigma(q, s) / sigma(p, s) through the middle of the aligned triple *)
     { gamma = { a, b } |-> With[
         { da = distancesFrom[ a ], db = distancesFrom[ b ], sigmaA = countsFrom[ a ], sigmaB = countsFrom[ b ] },
         { ray = Select[ VertexList @ graph,
@@ -68,7 +69,7 @@ DisplacementSum[ graph_Graph, displacement1_Association, displacement2_Associati
           { end1, order12 @ # }, { end2, order21 @ # } ], 1 ] ) &,
       Keys @ displacement1 ] ]
 
-Options[ DisplacementCommutator ] = { Method -> "Inverse" };
+Options[ DisplacementCommutator ] = { Method -> "Inverse" }
 
 DisplacementCommutator[
     graph_Graph, displacement1_Association, displacement2_Association,
@@ -123,7 +124,7 @@ DisplacementIsomorphismQ[ graph_Graph, displacement_Association ] :=
     AllTrue[ EdgeList @ graph,
       EdgeQ[ graph, UndirectedEdge @@ Catenate @ Lookup[ displacement, List @@ # ] ] & ]
 
-Options[ ContinuousDisplacementQ ] = { Method -> "Weak" };
+Options[ ContinuousDisplacementQ ] = { Method -> "Weak" }
 
 ContinuousDisplacementQ[ graph_Graph, displacement_Association, opts : OptionsPattern[] ] :=
   ContinuousDisplacementQ[ graph, displacement, 1, opts ]
@@ -143,7 +144,7 @@ ContinuousDisplacementQ[
     AllTrue[ EdgeList @ graph,
       { edge } |-> setDistance[ displacement @ First @ edge, displacement @ Last @ edge ] <= k ] ]
 
-Options[ PolarDisplacements ] = { "Direction" -> "Outward" };
+Options[ PolarDisplacements ] = { "Direction" -> "Outward" }
 
 PolarDisplacements[ graph_Graph, center_, OptionsPattern[] ] :=
   With[
@@ -235,7 +236,7 @@ KillingDisplacementMagnitude[ graph_Graph ] :=
     Map[ DisplacementMagnitude[ graph, # ] &, FindKillingDisplacement[ graph, All ] ],
     Infinity ]
 
-Options[ DisplacementPlot ] = { ImageSize -> 320 };
+Options[ DisplacementPlot ] = { ImageSize -> 320 }
 
 DisplacementPlot[ graph_Graph, displacement_Association, opts : OptionsPattern[] ] :=
   DisplacementPlot[ graph, { displacement }, opts ]

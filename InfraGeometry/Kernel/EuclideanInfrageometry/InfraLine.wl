@@ -1,8 +1,12 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraLine *)
 
-(* InfraLine[p, q] is inert: the line through p and q.  Its graph is the List of atoms K_{a, b} = I(a, p) union I(p, q) union I(q, b), one per pair of ends compatible with (p, q) -- d(a, b) == d(a, p) + d(p, q) + d(q, b) -- and maximal -- no neighbour of a or of b lengthens d(a, b).  The chains of K_{a, b} are exactly the inextensible geodesics from a to b through p and then q, and every such geodesic is a chain of exactly one atom, while the union of the atoms is not faithful (design Thm. line).  InfraLine[p, p] is every maximal geodesic through p, once per orientation *)
+(* InfraLine[p, q] is inert: the line through p and q.  Its graph is the List of atoms K_{a, b} = I(a, p) union I(p, q) union I(q, b), one per pair
+   of ends compatible with (p, q) -- d(a, b) == d(a, p) + d(p, q) + d(q, b) -- and maximal -- no neighbour of a or of b lengthens d(a, b).  The
+   chains of K_{a, b} are exactly the inextensible geodesics from a to b through p and then q, and every such geodesic is a chain of exactly one
+   atom, while the union of the atoms is not faithful (design Thm. line).  InfraLine[p, p] is every maximal geodesic through p, once per orientation
+   *)
 
 InfraMeasurement[ graph_Graph,
     InfraLine[ p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ] ], "Graph" ] :=
@@ -79,12 +83,16 @@ FindInfraLine[ graph_Graph, seq_List,
       _UpTo,     Take[ lines, count ],
       _,         If[ Length @ lines < count, { }, Take[ lines, count ] ] ] ]
 
-(* a parallel to line through p: an inextensible geodesic s ... p ... e of graph inside the level set L = { v : d(v, line) == r }, r = d(p, line) -- d(s, e) == d(s, p) + d(p, e), every vertex in L, and no neighbour of s or e in L prolonging it.  The pool is one geodesic DAG per admissible end pair (s, e): the s -> p and p -> e intervals cut down to L and glued at p, oriented so that s precedes e in canonical order.  One class under every Method -- "Exhaustive" with All returns the pool itself, as FindInfraLine does, and a bounded count streams geodesics off the atoms in candidate ("Greedy", "Exhaustive") or random ("RandomGreedy") order *)
+(* a parallel to line through p: an inextensible geodesic s ... p ... e of graph inside the level set L = { v : d(v, line) == r }, r = d(p, line) --
+   d(s, e) == d(s, p) + d(p, e), every vertex in L, and no neighbour of s or e in L prolonging it.  The pool is one geodesic DAG per admissible end
+   pair (s, e): the s -> p and p -> e intervals cut down to L and glued at p, oriented so that s precedes e in canonical order.  One class under
+   every Method -- "Exhaustive" with All returns the pool itself, as FindInfraLine does, and a bounded count streams geodesics off the atoms in
+   candidate ("Greedy", "Exhaustive") or random ("RandomGreedy") order *)
 
 Options[ FindInfraParallel ] = {
   Properties -> { },
   Method     -> Automatic
-};
+}
 
 FindInfraParallel[ graph_Graph, line_, p_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ]/;
@@ -216,7 +224,7 @@ FindInfraParallel[ graph_Graph, line_, p_,
 Options[ FindInfraPerpendicular ] = {
   Method   -> "Metric",
   "Radius" -> All
-};
+}
 
 FindInfraPerpendicular[ graph_Graph, line_, point_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[] ]/;
@@ -242,7 +250,8 @@ FindInfraPerpendicular[ graph_Graph, line_, point_,
           spec   = OptionValue[ FindInfraPerpendicular, { opts }, Method   ],
           radius = OptionValue[ FindInfraPerpendicular, { opts }, "Radius" ] },
         { workGraph = If[ radius === All, graph, NeighborhoodGraph[ graph, point0, radius ] ] },
-        (* the LONGEST lines through a segment: each side extended independently, joint geodesicity d(s, e) == d(s, p1) + d + d(p2, e), and only the maxima of d(s, p1) + d(p2, e) kept *)
+        (* the LONGEST lines through a segment: each side extended independently, joint geodesicity d(s, e) == d(s, p1) + d + d(p2, e), and only the
+           maxima of d(s, p1) + d(p2, e) kept *)
         { extensions = segment |-> If[ Length[ segment ] < 2, { segment },
             With[ { p1 = First[ segment ], p2 = Last[ segment ], verts = VertexList[ workGraph ] },
               (* one compiled all-pairs matrix: the pair enumeration is quadratic, and per-pair GraphDistance re-ran a BFS each time *)
@@ -324,9 +333,11 @@ FindInfraCommonLine[ graph_Graph, verts_List,
       _UpTo, Take[ lines, count ],
       _,     If[ Length @ lines < count, { }, Take[ lines, count ] ] ] ]
 
-InfraLineQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraLineQ[ graph, # ] & ]
+InfraLineQ[ graph_Graph, ws : { __Graph } ] :=
+  AllTrue[ ws, InfraLineQ[ graph, # ] & ]
 
-InfraLineQ[ graph_Graph, ws : { { ___ } .. } ] := AllTrue[ ws, InfraLineQ[ graph, # ] & ]
+InfraLineQ[ graph_Graph, ws : { { ___ } .. } ] :=
+  AllTrue[ ws, InfraLineQ[ graph, # ] & ]
 
 InfraLineQ[ graph_Graph, w_Graph ] :=
   With[ { vs = VertexList @ w },
@@ -350,7 +361,8 @@ InfraLineQ[ graph_Graph, segment_List ] /; Length[ segment ] >= 2 :=
   NoneTrue[ AdjacencyList[ graph, First @ segment ], GraphDistance[ graph, #, Last @ segment ] == Length[ segment ] & ] &&
   NoneTrue[ AdjacencyList[ graph, Last @ segment ], GraphDistance[ graph, First @ segment, # ] == Length[ segment ] & ]
 
-InfraLineQ[ _Graph, segment_List ] /; Length[ segment ] < 2 := False
+InfraLineQ[ _Graph, segment_List ] /; Length[ segment ] < 2 :=
+  False
 
 (* l1, l2 disjoint and d(v, l2) constant over v in l1, up to threshold *)
 
@@ -392,7 +404,7 @@ InfraParallelQ[ graph_Graph,
 Options[ InfraPerpendicularQ ] = {
   Method   -> "Projection",
   "Radius" -> All
-};
+}
 
 InfraPerpendicularQ[ graph_Graph, l1_, l2_, opts : OptionsPattern[] ] /;
     MatchQ[ OptionValue[ InfraPerpendicularQ, { opts }, Method ],
@@ -449,7 +461,8 @@ InfraPerpendicularQ[ graph_Graph, l1_, l2_, opts : OptionsPattern[] ] /;
                 { First[ h1L ], p, Last [ h2R ] },
                 { Last [ h1R ], p, First[ h2L ] },
                 { Last [ h1R ], p, Last [ h2R ] } } ) ] ],
-      (* signed coordinates of the projection feet along the receiving line: perpendicular iff the cloud is balanced around p, rather than contained in the intersection as in "Projection" *)
+      (* signed coordinates of the projection feet along the receiving line: perpendicular iff the cloud is balanced around p, rather than contained
+         in the intersection as in "Projection" *)
       coordinateQ = p |-> With[ { loc = localize @ p, zeroTest = Lookup[ mtdOpts, "ZeroTest", "Mean" ] },
         { s1 = loc[[ 2 ]], s2 = loc[[ 3 ]] },
         { i1 = FirstPosition[ s1, p, { 0 }, { 1 }, Heads -> False ][[ 1 ]],
@@ -484,7 +497,7 @@ LineCount[ graph_Graph ] :=
         FindInfraLine[ graph, pair[[ 1 ]], pair[[ 2 ]], All ] ) /@
       Subsets[ VertexList @ graph, { 2 } ] ]
 
-Options[ FindLineHull ] = { "LineStructure" -> None };
+Options[ FindLineHull ] = { "LineStructure" -> None }
 
 FindLineHull[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], OptionsPattern[] ] :=
   With[ { lines = Replace[ OptionValue[ "LineStructure" ], {
@@ -495,7 +508,8 @@ FindLineHull[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], OptionsPattern[] 
             ls_InfraLineStructure :> ls[ "Lines" ] } ],
           S = Which[
             AssociationQ @ s,                  Keys @ s,
-            MatchQ[ s, _Graph | { __Graph } ], Union @@ ( If[ AllTrue[ VertexList @ #, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ # ] === Range @ VertexCount @ #,
+            MatchQ[ s, _Graph | { __Graph } ],
+            Union @@ ( If[ AllTrue[ VertexList @ #, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ # ] === Range @ VertexCount @ #,
                 Last /@ VertexList @ #, VertexList @ # ] & /@ Flatten[ { s } ] ),
             MatchQ[ s, { __List } ],           Union @@ s,
             ListQ @ s,                         Union @ s,
@@ -506,12 +520,13 @@ FindLineHull[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], OptionsPattern[] 
     ]
   ]
 
-Options[ LineHullQ ] = { "LineStructure" -> None };
+Options[ LineHullQ ] = { "LineStructure" -> None }
 
 LineHullQ[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], opts : OptionsPattern[] ] :=
   With[ { vs = Which[
       AssociationQ @ s,                  Keys @ s,
-      MatchQ[ s, _Graph | { __Graph } ], Union @@ ( If[ AllTrue[ VertexList @ #, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ # ] === Range @ VertexCount @ #,
+      MatchQ[ s, _Graph | { __Graph } ],
+      Union @@ ( If[ AllTrue[ VertexList @ #, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ # ] === Range @ VertexCount @ #,
           Last /@ VertexList @ #, VertexList @ # ] & /@ Flatten[ { s } ] ),
       MatchQ[ s, { __List } ],           Union @@ s,
       ListQ @ s,                         Union @ s,

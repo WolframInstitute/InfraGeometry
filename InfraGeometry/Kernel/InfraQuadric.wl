@@ -1,4 +1,4 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* S(v) = Sum_i w_i d(p_i, v); a scalar c selects { v : S(v) <= c }, a pair the band cMin <= S(v) <= cMax; a sorted vertex list *)
 

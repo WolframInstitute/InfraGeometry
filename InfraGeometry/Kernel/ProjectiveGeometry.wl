@@ -1,4 +1,4 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 SameDirectionQ[ graph_Graph, O_, v_, w_ ] :=
   v === w || AnyTrue[ FindInfraRay[ graph, O, v, All ], MemberQ[ #, w ] & ]

@@ -1,6 +1,6 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
-Options[ FindInfraPoint ] = { "From" -> "Random", "Distance" -> None, "MaxCliques" -> All };
+Options[ FindInfraPoint ] = { "From" -> "Random", "Distance" -> None, "MaxCliques" -> All }
 
 FindInfraPoint[ graph_Graph, count : ( UpTo[ _Integer ] | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
     VertexQ[ graph, OptionValue[ FindInfraPoint, { opts }, "From" ] ] ||
@@ -73,14 +73,16 @@ FindInfraPoint[ graph_Graph, n_Integer, opts : OptionsPattern[] ] :=
   With[ { result = FindInfraPoint[ graph, UpTo[ n ], opts ] },
     If[ Length[ result ] < n, { }, result ] /; ListQ[ result ] ]
 
-RandomInfraPoint[ graph_Graph ] := RandomChoice @ VertexList @ graph
+RandomInfraPoint[ graph_Graph ] :=
+  RandomChoice @ VertexList @ graph
 
 RandomInfraPoint[ graph_Graph, p_, d_ ] :=
   RandomChoice @ Select[ VertexList @ graph, GraphDistance[ graph, p, # ] == d & ]
 
-InfraCenter[ graph_Graph ] := First @ GraphCenter @ graph
+InfraCenter[ graph_Graph ] :=
+  First @ GraphCenter @ graph
 
-Options[ FindInfraMidpoint ] = { Method -> "Metric", "Tolerance" -> 0 };
+Options[ FindInfraMidpoint ] = { Method -> "Metric", "Tolerance" -> 0 }
 
 FindInfraMidpoint[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPattern[] ] /; ! VertexQ[ graph, x ] :=
   With[ { method = Replace[ OptionValue[ Method ], { m_String, ___ } :> m ], tol = OptionValue[ "Tolerance" ],
@@ -98,10 +100,10 @@ FindInfraMidpoint[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPattern[] 
                     { a, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { b, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
                 True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ] },
     { band = c |-> If[ GraphQ @ c,
-        With[ { layers = If[ VertexCount[ c ] == 0, <||>,
+        With[ { layers = If[ VertexCount[ c ] == 0, <| |>,
                   AssociationThread[ VertexList[ c ],
                     GraphDistance[ c, First @ Select[ VertexList[ c ], VertexInDegree[ c, # ] == 0 & ] ] ] ] },
-          If[ Length @ layers === 0, <||>,
+          If[ Length @ layers === 0, <| |>,
             With[ { occ = GeodesicOccupation[ c ], len = Max[ 0, Values @ layers ] },
               { offs = Abs[ # - 1/2 * len ] & /@ layers },
               KeyTake[ occ, Keys @ Select[ offs, # <= Min[ Values @ offs ] + tol & ] ] ] ] ],
@@ -141,7 +143,7 @@ FindInfraMidpoint[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPattern[] 
 FindInfraMidpoint[ graph_Graph, p1_, p2 : Except[ _Rule | _RuleDelayed ], opts : OptionsPattern[] ] :=
   FindInfraMidpoint[ graph, FindInfraSegment[ graph, p1, p2, All ], opts ]
 
-Options[ FindInfraGoldenSection ] = { Method -> "Metric", "Tolerance" -> 0 };
+Options[ FindInfraGoldenSection ] = { Method -> "Metric", "Tolerance" -> 0 }
 
 FindInfraGoldenSection[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPattern[] ] /; ! VertexQ[ graph, x ] :=
   With[ { method = Replace[ OptionValue[ Method ], { m_String, ___ } :> m ], tol = OptionValue[ "Tolerance" ],
@@ -159,10 +161,10 @@ FindInfraGoldenSection[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPatte
                     { a, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { b, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
                 True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ] },
     { band = c |-> If[ GraphQ @ c,
-        With[ { layers = If[ VertexCount[ c ] == 0, <||>,
+        With[ { layers = If[ VertexCount[ c ] == 0, <| |>,
                   AssociationThread[ VertexList[ c ],
                     GraphDistance[ c, First @ Select[ VertexList[ c ], VertexInDegree[ c, # ] == 0 & ] ] ] ] },
-          If[ Length @ layers === 0, <||>,
+          If[ Length @ layers === 0, <| |>,
             With[ { occ = GeodesicOccupation[ c ], len = Max[ 0, Values @ layers ] },
               { offs = Abs[ # - N[ 1 / GoldenRatio ] * len ] & /@ layers },
               KeyTake[ occ, Keys @ Select[ offs, # <= Min[ Values @ offs ] + tol & ] ] ] ] ],
@@ -222,7 +224,7 @@ FindInfraReflection[ graph_Graph, x_, a_,
 
 (* Euclid I.1: c with d(p1, c) = d(p2, c) = d(p1, p2), the intersection of the two spheres *)
 
-Options[ CompleteInfraEquilateralTriangle ] = { Method -> "Metric" };
+Options[ CompleteInfraEquilateralTriangle ] = { Method -> "Metric" }
 
 CompleteInfraEquilateralTriangle[ graph_Graph, p1_, p2_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[] ] :=
@@ -245,7 +247,8 @@ FindInfraCommonPoint[ graph_Graph, lines_List,
       If[ AllTrue[ VertexList @ w, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ w ] === Range @ VertexCount @ w,
         Last /@ VertexList @ w, VertexList @ w ] },
     { reps = If[ Length[ lines ] == 0, {},
-        Apply[ Intersection, Replace[ lines, { g_Graph :> support @ g, gs : { __Graph } :> Union @@ ( support /@ gs ), ws : { __List } :> Union @@ ws }, { 1 } ] ] ] },
+        Apply[ Intersection, Replace[ lines, { g_Graph :> support @ g, gs : { __Graph } :> Union @@ ( support /@ gs ),
+              ws : { __List } :> Union @@ ws }, { 1 } ] ] ] },
     Switch[ count,
       All,   reps,
       _UpTo, Take[ reps, count ],
@@ -280,7 +283,7 @@ FindClosestInfraPoint[ graph_Graph, line_, point_,
       _UpTo, Take[ reps, count ],
       _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ]
 
-Options[ SelectInfraPoint ] = { "From" -> All, "Distance" -> None, "MaxCliques" -> All };
+Options[ SelectInfraPoint ] = { "From" -> All, "Distance" -> None, "MaxCliques" -> All }
 
 SelectInfraPoint[ graph_Graph, vertices_List, UpTo[ nMax_Integer ], opts : OptionsPattern[] ] /;
     VertexQ[ graph, OptionValue[ SelectInfraPoint, { opts }, "From" ] ] ||

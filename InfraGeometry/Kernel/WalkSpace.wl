@@ -1,4 +1,4 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 Options[ SelectInfraWalk ] = {
   "From"       -> All,
@@ -6,7 +6,7 @@ Options[ SelectInfraWalk ] = {
   "Metric"     -> "Hausdorff",
   "MaxCliques" -> All,
   "Cyclic"     -> False
-};
+}
 
 SelectInfraWalk[ graph_Graph, dags : { __Graph },
             countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] /;
@@ -199,7 +199,8 @@ SelectInfraWalk[ graph_Graph, walks_List, n_Integer : 1, opts : OptionsPattern[]
 SelectInfraWalk[ graph_Graph, countSpec : ( _Integer | UpTo[ _Integer ] | All ), opts : OptionsPattern[] ] :=
   SelectInfraWalk[ graph, #, countSpec, opts ] &
 
-EmbeddingClosest[ graph_Graph, w_Graph, ref_ ] := EmbeddingClosest[ graph, { w }, ref ]
+EmbeddingClosest[ graph_Graph, w_Graph, ref_ ] :=
+  EmbeddingClosest[ graph, { w }, ref ]
 
 EmbeddingClosest[ graph_Graph, paths : { __Graph }, ref_ ] :=
   With[ {
@@ -236,7 +237,8 @@ EmbeddingClosest[ graph_Graph, paths : { __Graph }, ref_ ] :=
                     Line[ Append[ pts, First @ pts ] ],
                     Line[ Append[ circlePoints, First @ circlePoints ] ] ] ] ] ] ] ] ] ]
 
-EmbeddingClosest[ graph_Graph, paths_List, { p1_, p2_ } ] /; Length[ paths ] <= 1 := paths
+EmbeddingClosest[ graph_Graph, paths_List, { p1_, p2_ } ] /; Length[ paths ] <= 1 :=
+  paths
 
 EmbeddingClosest[ graph_Graph, paths_List, { p1_, p2_ } ] :=
   With[ { coords = GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ],
@@ -258,7 +260,8 @@ EmbeddingClosest[ graph_Graph, sets_List, { center_, radius_?NumericQ } ] :=
 
 EmbeddingClosest[ graph_Graph, paths_List, crv_ ] /;
     ( MatchQ[ crv, _Line | _BSplineCurve | _BezierCurve ] ||
-      MatrixQ[ crv, NumericQ ] && Last[ Dimensions[ crv ] ] === 2 && Length[ crv ] >= 3 ) && Length[ paths ] <= 1 := paths
+      MatrixQ[ crv, NumericQ ] && Last[ Dimensions[ crv ] ] === 2 && Length[ crv ] >= 3 ) && Length[ paths ] <= 1 :=
+  paths
 
 EmbeddingClosest[ graph_Graph, paths_List, crv_ ] /;
     MatchQ[ crv, _Line | _BSplineCurve | _BezierCurve ] ||
@@ -275,7 +278,8 @@ EmbeddingClosest[ graph_Graph, paths_List, crv_ ] /;
         Line[ curvePts ] ] ]
   ]
 
-EmbeddingClosest[ graph_Graph, ref_List ] := EmbeddingClosest[ graph, #, ref ] &
+EmbeddingClosest[ graph_Graph, ref_List ] :=
+  EmbeddingClosest[ graph, #, ref ] &
 
 EmbeddingClosest[ graph_Graph, crv : ( _Line | _BSplineCurve | _BezierCurve ) ] :=
   EmbeddingClosest[ graph, #, crv ] &
@@ -294,13 +298,14 @@ FindEmbeddingClosestPath[ graph_Graph, curve_ ] :=
     PathGraph[ MapIndexed[ { First @ #2, #1 } &, walk ], DirectedEdges -> True ]
   ]
 
-(* [g, c]: the BFS DAG of all geodesics from c -- edge u -> v whenever d(c, v) = d(c, u) + 1 and u-v is a g-edge.  [g, <| v -> m |>]: the same with d_c replaced by min_i d(ci, v).  [g, pairs]: the union of geodesics between the listed pairs *)
+(* [g, c]: the BFS DAG of all geodesics from c -- edge u -> v whenever d(c, v) = d(c, u) + 1 and u-v is a g-edge.  [g, <| v -> m |>]: the same with
+   d_c replaced by min_i d(ci, v).  [g, pairs]: the union of geodesics between the listed pairs *)
 
 Options[ SprayGraph ] = {
   "AxisLength"    -> All,
   "PathThickness" -> 0,
   "Directed"      -> True
-};
+}
 
 SprayGraph[ g_Graph, c_, opts : OptionsPattern[] ] /; MemberQ[ VertexList[ g ], c ] :=
   SprayGraph[ g, <| c -> 1 |>, opts ]
@@ -354,7 +359,10 @@ SprayGraph[ g_Graph, pairs : { { _, _ } .. }, OptionsPattern[] ] :=
     GraphUnion @@ ( PathGraph[ #, DirectedEdges -> directed ] & /@ selectedPaths )
   ]
 
-(* [g, {p1, p2}]: the DAG of all geodesic extensions of the segment p1 -> p2 beyond p2 -- vertex set { e : d(p1, e) == d(p1, p2) + d(p2, e) }, edges u -> v the g-edges with d(p1, v) == d(p1, u) + 1 -- so its directed paths from the source p2 are exactly the geodesics from p2 that stay geodesic behind any p1 -> p2 geodesic.  The set is closed under such steps (d(p1, v) <= d(p1, p2) + d(p2, v) <= d(p1, u) + 1 forces equality), so the edges need no membership test.  Wrapper anchors spread to one DAG per anchor pair *)
+(* [g, {p1, p2}]: the DAG of all geodesic extensions of the segment p1 -> p2 beyond p2 -- vertex set { e : d(p1, e) == d(p1, p2) + d(p2, e) }, edges
+   u -> v the g-edges with d(p1, v) == d(p1, u) + 1 -- so its directed paths from the source p2 are exactly the geodesics from p2 that stay geodesic
+   behind any p1 -> p2 geodesic.  The set is closed under such steps (d(p1, v) <= d(p1, p2) + d(p2, v) <= d(p1, u) + 1 forces equality), so the edges
+   need no membership test.  Wrapper anchors spread to one DAG per anchor pair *)
 
 GeodesicExtensionGraph[ g_Graph, { p1_, p2_ } ] /; VertexQ[ g, p1 ] && VertexQ[ g, p2 ] :=
   With[ { d1 = AssociationThread[ VertexList @ g, GraphDistance[ g, p1 ] ],
@@ -392,7 +400,7 @@ GeodesicExtensionGraph[ g_Graph, { p1_, p2_ } ] :=
 
 (* the union of all simple u-v paths of length at most k; Automatic is the geodesic case k = d(u, v) *)
 
-Options[ PathSubgraph ] = { "Directed" -> True };
+Options[ PathSubgraph ] = { "Directed" -> True }
 
 PathSubgraph[ g_Graph, u_, v_, lengthSpec : ( _Integer | UpTo[ _Integer ] | All ) : Automatic, OptionsPattern[] ] :=
   With[ { k = Replace[ lengthSpec, {
@@ -410,7 +418,8 @@ PathSubgraph[ g_Graph, u_, v_, lengthSpec : ( _Integer | UpTo[ _Integer ] | All 
     ]
   ]
 
-InfraDeformationSize[ ref_, ws : { __Graph } ] := InfraDeformationSize[ ref, # ] & /@ ws
+InfraDeformationSize[ ref_, ws : { __Graph } ] :=
+  InfraDeformationSize[ ref, # ] & /@ ws
 
 InfraDeformationSize[ ref_, def_Graph ] :=
   InfraDeformationSize[ ref, With[ { vs = VertexList @ def },
@@ -430,9 +439,10 @@ InfraDeformationSize[ ref_Graph, def_List ] :=
         SelectFirst[ vs, If[ DirectedGraphQ @ ref, VertexInDegree[ ref, # ] == 0, VertexDegree[ ref, # ] == 1 ] &, First @ vs ],
         { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] ], def ]
 
-InfraDeformationSize[ ref_List, def_List ] := With[
-  { m = Min[ Length @ ref, Length @ def ] },
-  { p = LengthWhile[ Transpose @ { Take[ ref, m ], Take[ def, m ] }, Apply @ SameQ ],
-    s = LengthWhile[ Transpose @ { Take[ Reverse @ ref, m ], Take[ Reverse @ def, m ] }, Apply @ SameQ ] },
-  Max[ 0, ( Length[ ref ] - 1 ) - ( p - 1 ) - ( s - 1 ) ]
-]
+InfraDeformationSize[ ref_List, def_List ] :=
+  With[
+    { m = Min[ Length @ ref, Length @ def ] },
+    { p = LengthWhile[ Transpose @ { Take[ ref, m ], Take[ def, m ] }, Apply @ SameQ ],
+      s = LengthWhile[ Transpose @ { Take[ Reverse @ ref, m ], Take[ Reverse @ def, m ] }, Apply @ SameQ ] },
+    Max[ 0, ( Length[ ref ] - 1 ) - ( p - 1 ) - ( s - 1 ) ]
+  ]

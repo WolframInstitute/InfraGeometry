@@ -1,4 +1,4 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* I(u, v) = { w : d(u, w) + d(w, v) == d(u, v) }, the union of all geodesics from u to v *)
 
@@ -45,7 +45,8 @@ GeodesicMultiplicityMatrix[ graph_Graph ] :=
     }
   ]
 
-(* argmin over w of Sum_x d(w, x) for x in vs; a graph is median iff every triple has a unique median, and median graphs are the 1-skeletons of CAT(0) cube complexes (Chepoi 2000, https://doi.org/10.1006/aama.1999.0681) *)
+(* argmin over w of Sum_x d(w, x) for x in vs; a graph is median iff every triple has a unique median, and median graphs are the 1-skeletons of
+   CAT(0) cube complexes (Chepoi 2000, https://doi.org/10.1006/aama.1999.0681) *)
 
 MedianVertices[ graph_Graph, vs_List ] :=
   With[ { V = VertexList[ graph ] },
@@ -54,7 +55,7 @@ MedianVertices[ graph_Graph, vs_List ] :=
     ]
   ]
 
-Options[ FindSegmentHull ] = { "LineStructure" -> None };
+Options[ FindSegmentHull ] = { "LineStructure" -> None }
 
 FindSegmentHull[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], OptionsPattern[] ] :=
   With[ { spec = OptionValue[ "LineStructure" ], S = Keys @ InfraDensity[ graph, s ] },
@@ -76,7 +77,7 @@ FindSegmentHull[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], OptionsPattern
     ]
   ]
 
-Options[ SegmentHullQ ] = { "LineStructure" -> None };
+Options[ SegmentHullQ ] = { "LineStructure" -> None }
 
 SegmentHullQ[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], opts : OptionsPattern[] ] :=
   With[ { vs = Keys @ InfraDensity[ graph, s ] }, FindSegmentHull[ graph, vs, opts ] === vs ]

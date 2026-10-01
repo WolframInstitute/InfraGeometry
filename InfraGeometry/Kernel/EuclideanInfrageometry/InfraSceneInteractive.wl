@@ -1,14 +1,14 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraSceneInteractive *)
 
-PackageScope[geodesicGraph]
-PackageScope[geodesicCycleGraph]
+PackageScope[ geodesicGraph ]
+PackageScope[ geodesicCycleGraph ]
 
-$InfraSegmentSelectOptions = { None, "Central", "Peripheral", "EmbeddingClosest" };
+$InfraSegmentSelectOptions = { None, "Central", "Peripheral", "EmbeddingClosest" }
 
 $InfraCircleSelectOptions = { None, "Central", "Peripheral",
-  "MinLength", "MaxLength", "EmbeddingClosest" };
+  "MinLength", "MaxLength", "EmbeddingClosest" }
 
 SetAttributes[ PointViewer, HoldRest ]
 
@@ -149,9 +149,9 @@ Options[ InfraSceneViewer ] = {
   "ThicknessRange" :> $InfraEdgeThickness,
   "PointSizeRange" -> 18,
   ImageSize        -> 500
-};
+}
 
-InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <||>, opts : OptionsPattern[ ] ] :=
+InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <| |>, opts : OptionsPattern[ ] ] :=
   With[ {
       nSteps  = Length @ scene[ "Steps" ],
       labels  = scene[ "Labels" ],
@@ -246,40 +246,50 @@ makeIcon[ icon_, roundedSide_: "both", widthFactor_: 1, heightFactor_: 1,
     { Thick, RGBColor[ 0.161, 0.667, 0.887 ], icon } },
     ImageSize -> 20 { widthFactor, heightFactor }, AspectRatio -> Full, PlotRangePadding -> None ]
 
-leftArrowIcon  := makeIcon[ Line[ { { .25, .5 }, { -.25, 0 }, { .25, -.5 } } ], "left", 1, 1.45 ]
-rightArrowIcon := makeIcon[ Line[ { { -.25, .5 }, { .25, 0 }, { -.25, -.5 } } ], "right", 1, 1.45 ]
+leftArrowIcon  :=
+  makeIcon[ Line[ { { .25, .5 }, { -.25, 0 }, { .25, -.5 } } ], "left", 1, 1.45 ]
+rightArrowIcon :=
+  makeIcon[ Line[ { { -.25, .5 }, { .25, 0 }, { -.25, -.5 } } ], "right", 1, 1.45 ]
 
-downChevron := Graphics[ { RGBColor[ 0.161, 0.667, 0.887 ], Thick, CapForm[ "Round" ],
-  Line[ { { -1, .35 }, { 0, -.5 }, { 1, .35 } } ] },
-  ImageSize -> 11, AspectRatio -> 1, PlotRangePadding -> None ]
+downChevron :=
+  Graphics[ { RGBColor[ 0.161, 0.667, 0.887 ], Thick, CapForm[ "Round" ],
+    Line[ { { -1, .35 }, { 0, -.5 }, { 1, .35 } } ] },
+    ImageSize -> 11, AspectRatio -> 1, PlotRangePadding -> None ]
 
-eyeGlyph = { Circle[ { 0, 0 }, { .7, .45 } ], Disk[ { 0, 0 }, .18 ] };
+eyeGlyph = { Circle[ { 0, 0 }, { .7, .45 } ], Disk[ { 0, 0 }, .18 ] }
 
-eyeOpenIcon   := makeIcon[ eyeGlyph, "both", 1.2, 1 ]
-eyeClosedIcon := makeIcon[ { eyeGlyph, Line[ { { -.85, -.6 }, { .85, .6 } } ] }, "both", 1.2, 1,
-  LightDarkSwitched[ GrayLevel[ .75 ], GrayLevel[ .22 ] ] ]
+eyeOpenIcon   :=
+  makeIcon[ eyeGlyph, "both", 1.2, 1 ]
+eyeClosedIcon :=
+  makeIcon[ { eyeGlyph, Line[ { { -.85, -.6 }, { .85, .6 } } ] }, "both", 1.2, 1,
+    LightDarkSwitched[ GrayLevel[ .75 ], GrayLevel[ .22 ] ] ]
 
-textChip[ content_ ] := Framed[
-  Style[ content, 13, Bold, FontFamily -> "Helvetica", LightDarkSwitched[ GrayLevel[ .15 ], White ] ],
-  Background -> LightDarkSwitched[ GrayLevel[ .9 ], GrayLevel[ .3 ] ],
-  FrameStyle -> RGBColor[ 0.161, 0.667, 0.887 ], RoundingRadius -> 5,
-  FrameMargins -> { { 10, 10 }, { 5, 5 } }, ContentPadding -> False ]
+textChip[ content_ ] :=
+  Framed[
+    Style[ content, 13, Bold, FontFamily -> "Helvetica", LightDarkSwitched[ GrayLevel[ .15 ], White ] ],
+    Background -> LightDarkSwitched[ GrayLevel[ .9 ], GrayLevel[ .3 ] ],
+    FrameStyle -> RGBColor[ 0.161, 0.667, 0.887 ], RoundingRadius -> 5,
+    FrameMargins -> { { 10, 10 }, { 5, 5 } }, ContentPadding -> False ]
 
-alertChip[ content_ ] := Framed[
-  Style[ content, 13, Bold, FontFamily -> "Helvetica", RGBColor[ 0.75, 0.25, 0.2 ] ],
-  Background -> LightDarkSwitched[ RGBColor[ 0.99, 0.93, 0.92 ], GrayLevel[ .25 ] ],
-  FrameStyle -> RGBColor[ 0.86, 0.35, 0.3 ], RoundingRadius -> 5,
-  FrameMargins -> { { 10, 10 }, { 5, 5 } }, ContentPadding -> False ]
+alertChip[ content_ ] :=
+  Framed[
+    Style[ content, 13, Bold, FontFamily -> "Helvetica", RGBColor[ 0.75, 0.25, 0.2 ] ],
+    Background -> LightDarkSwitched[ RGBColor[ 0.99, 0.93, 0.92 ], GrayLevel[ .25 ] ],
+    FrameStyle -> RGBColor[ 0.86, 0.35, 0.3 ], RoundingRadius -> 5,
+    FrameMargins -> { { 10, 10 }, { 5, 5 } }, ContentPadding -> False ]
 
 SetAttributes[ iconButton, HoldRest ]
 
 iconButton[ icon_, action_ ] :=
   MouseAppearance[ EventHandler[ icon, { "MouseClicked" :> action }, PassEventsUp -> False ], "LinkHand" ]
 
-geodesicGraph[ seq_List ] := PathGraph[ seq, DirectedEdges -> True ]
-geodesicGraph[ w_Graph ]  := w
+geodesicGraph[ seq_List ] :=
+  PathGraph[ seq, DirectedEdges -> True ]
+geodesicGraph[ w_Graph ]  :=
+  w
 
 geodesicCycleGraph[ seq_List ] :=
   With[ { core = If[ Length[ seq ] >= 2 && First @ seq === Last @ seq, Most @ seq, seq ] },
     Graph[ core, DirectedEdge @@@ Partition[ core, 2, 1, 1 ] ] ]
-geodesicCycleGraph[ w_Graph ] := w
+geodesicCycleGraph[ w_Graph ] :=
+  w

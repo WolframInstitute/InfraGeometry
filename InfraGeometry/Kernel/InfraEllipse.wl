@@ -1,16 +1,21 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* an ellipse for foci {p1, p2} is a simple cycle in the induced subgraph on { v : cMin <= d(p1, v) + d(p2, v) <= cMax }, returned as a directed cycle graph on the substrate vertices; the count-less call is one ellipse, a bounded count and All a List of them -- closed walks have no acyclic union to carry them.  The family is carried by the FindCycle length sweep, which materialises every shorter cycle first; there is no elliptic pool, the circle's carrier having no two-focus analogue.  One class under every Method: branch orders the ties within a length grade, pruning caps the cycles kept per grade *)
+(* an ellipse for foci {p1, p2} is a simple cycle in the induced subgraph on { v : cMin <= d(p1, v) + d(p2, v) <= cMax }, returned as a directed
+   cycle graph on the substrate vertices; the count-less call is one ellipse, a bounded count and All a List of them -- closed walks have no acyclic
+   union to carry them.  The family is carried by the FindCycle length sweep, which materialises every shorter cycle first; there is no elliptic
+   pool, the circle's carrier having no two-focus analogue.  One class under every Method: branch orders the ties within a length grade, pruning caps
+   the cycles kept per grade *)
 
 Options[ FindInfraEllipse ] = {
   Properties -> { "Separating", "Shortest" },
   Method     -> Automatic
-};
+}
 
 FindInfraEllipse[ graph_Graph, foci : { _, _ }, c_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
     SubsetQ[ { "Separating", "Shortest" }, OptionValue[ FindInfraEllipse, { opts }, Properties ] ] &&
-      MatchQ[ OptionValue[ FindInfraEllipse, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
+      MatchQ[ OptionValue[ FindInfraEllipse, { opts }, Method ],
+        Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
   With[ {
       properties = OptionValue[ FindInfraEllipse, { opts }, Properties ],
       methodSpec = Replace[ OptionValue[ FindInfraEllipse, { opts }, Method ], Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ] },
@@ -60,7 +65,8 @@ FindInfraEllipse[ graph_Graph, foci : { _, _ }, c_,
 
 (* cycle is an ellipse iff it is a cyclic path whose vertex set is an elliptic shell. *)
 
-InfraEllipseQ[ graph_Graph, ws : { __Graph } ] := AllTrue[ ws, InfraEllipseQ[ graph, # ] & ]
+InfraEllipseQ[ graph_Graph, ws : { __Graph } ] :=
+  AllTrue[ ws, InfraEllipseQ[ graph, # ] & ]
 
 InfraEllipseQ[ graph_Graph, w_Graph ] :=
   With[ { vs = VertexList @ w },
@@ -89,4 +95,5 @@ InfraEllipseQ[ graph_Graph, cycle_List ] /; Length[ cycle ] >= 3 :=
     InfraEllipticShellQ[ graph, verts ]
   ]
 
-InfraEllipseQ[ _Graph, cycle_List ] /; Length[ cycle ] < 3 := False
+InfraEllipseQ[ _Graph, cycle_List ] /; Length[ cycle ] < 3 :=
+  False

@@ -1,8 +1,9 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraMeasurement *)
 
-InfraMeasurement[ graph_Graph, objs : { __ }, spec_ ] := InfraMeasurement[ graph, #, spec ] & /@ objs
+InfraMeasurement[ graph_Graph, objs : { __ }, spec_ ] :=
+  InfraMeasurement[ graph, #, spec ] & /@ objs
 
 InfraMeasurement[ graph_Graph, obj : Except[ _List ], props : { __String } ] :=
   AssociationMap[ InfraMeasurement[ graph, obj, # ] &, props ]
@@ -12,9 +13,11 @@ InfraMeasurement[ graph_Graph, obj : Except[ _List | InfraIntersection[ __ ] | I
     { "Graph", "Faithful", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph",
       "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume" } ]
 
-InfraMeasurement[ _Graph, ( InfraSegment | InfraRay | InfraLine )[ __ ], "Faithful" ] := True
+InfraMeasurement[ _Graph, ( InfraSegment | InfraRay | InfraLine )[ __ ], "Faithful" ] :=
+  True
 
-InfraMeasurement[ _Graph, ( InfraCircle | InfraArc )[ __ ], "Faithful" ] := Undetermined
+InfraMeasurement[ _Graph, ( InfraCircle | InfraArc )[ __ ], "Faithful" ] :=
+  Undetermined
 
 InfraMeasurement[ graph_Graph,
     obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ }, ___ ] ], "Cardinality" ] :=
@@ -140,7 +143,8 @@ InfraSubgraph[ graph_Graph, obj_ -> t_Integer ] :=
   Subgraph[ graph,
     VertexList @ NeighborhoodGraph[ graph, Keys @ InfraMeasurement[ graph, obj, "VertexDensity" ], t ] ]
 
-InfraSubgraph[ graph_Graph, obj : Except[ _Rule | _RuleDelayed ] ] := InfraMeasurement[ graph, obj, "Subgraph" ]
+InfraSubgraph[ graph_Graph, obj : Except[ _Rule | _RuleDelayed ] ] :=
+  InfraMeasurement[ graph, obj, "Subgraph" ]
 
 InfraMeasurement[ graph_Graph, InfraIntersection[ objs__ ], "VertexDensity" ] :=
   With[ { densities = InfraMeasurement[ graph, #, "VertexDensity" ] & /@ { objs } },

@@ -1,8 +1,9 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* kappa_i = Pi - InfraAngle[g, {v_{i-1}, v_i, v_{i+1}}]; a closed cycle includes the wrap-around triple *)
 
-TurningAngles[ _Graph, { } ] := { }
+TurningAngles[ _Graph, { } ] :=
+  { }
 
 TurningAngles[ graph_Graph, x : ( _Graph | { __Graph } ) ] :=
   With[ { walksOf = w |-> With[ { vs = VertexList @ w },

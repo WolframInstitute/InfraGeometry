@@ -1,11 +1,11 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* the distance vector (d(v, b1), ..., d(v, bk)).  An anchor is a vertex, a set, a density
    or a walk graph; "AnchorAggregation" reduces its support to one distance.  On a bare
    vertex InfraDensity gives <| v -> 1 |>, on which every aggregation is the distance itself,
    so the crisp case needs no separate rule. *)
 
-Options[ RadarCoordinates ] = { "AnchorAggregation" -> Min };
+Options[ RadarCoordinates ] = { "AnchorAggregation" -> Min }
 
 RadarCoordinates[ g_Graph, b_List, v : Except[ _Rule | _RuleDelayed | _Association ], opts : OptionsPattern[] ] /;
   MemberQ[ VertexList[ g ], v ] :=
@@ -60,32 +60,37 @@ FindResolvingSet[ g_Graph, n_Integer : 1, m_ : All ] :=
     ]
   ]
 
-MetricDimension[g_Graph] := Length @ First @ FindResolvingSet[g, 1, All]
+MetricDimension[ g_Graph ] :=
+  Length @ First @ FindResolvingSet[ g, 1, All ]
 
-Options[ResistanceCoordinates] = {"Rescaling" -> "ResistanceMatching", "Dimension" -> Automatic, "Origin" -> None};
+Options[ ResistanceCoordinates ] = { "Rescaling" -> "ResistanceMatching", "Dimension" -> Automatic, "Origin" -> None }
 
 (* spectral embedding Phi with ||Phi(u) - Phi(v)||^2 == EffectiveResistance(u, v)
    (Klein-Randic).  "Rescaling" -> "None" gives plain Laplacian eigenvectors,
    "Diffusion" -> t the diffusion-map embedding; "Origin" -> v recentres on v. *)
-ResistanceCoordinates[g_Graph, opts : OptionsPattern[]] :=
-    With[{es = Eigensystem[N @ Normal @ KirchhoffMatrix[g]], rescaling = OptionValue["Rescaling"], dimSpec = OptionValue["Dimension"], origin = OptionValue["Origin"]},
-        {ord = Ordering[es[[1]]]},
-        {vals = es[[1, ord]], vecs = es[[2, ord]]},
-        {keep = Select[Range @ Length @ vals, vals[[#]] > 10^-10 Max[Abs @ vals, 1] &]},
-        {idx = Take[keep, Replace[dimSpec, {Automatic | All :> Length[keep], UpTo[k_Integer] :> Min[k, Length[keep]], k_Integer :> Min[k, Length[keep]]}]]},
-        {weights = Replace[rescaling, {"ResistanceMatching" :> 1 / Sqrt[vals[[idx]]], "None" :> ConstantArray[1, Length[idx]], ("Diffusion" -> t_) :> Exp[-t vals[[idx]]]}]},
-        {mat = Transpose[weights vecs[[idx]]]},
-        {originVec = If[origin === None, ConstantArray[0., Length @ First @ mat], mat[[ First @ FirstPosition[VertexList[g], origin] ]]]},
-        AssociationThread[VertexList[g], # - originVec & /@ mat]
+ResistanceCoordinates[ g_Graph, opts : OptionsPattern[] ] :=
+    With[ { es = Eigensystem[ N @ Normal @ KirchhoffMatrix[ g ] ], rescaling = OptionValue[ "Rescaling" ], dimSpec = OptionValue[ "Dimension" ],
+        origin = OptionValue[ "Origin" ] },
+        { ord = Ordering[ es[[ 1 ]] ] },
+        { vals = es[[ 1, ord ]], vecs = es[[ 2, ord ]] },
+        { keep = Select[ Range @ Length @ vals, vals[[ # ]] > 10^-10 Max[ Abs @ vals, 1 ] & ] },
+        { idx = Take[ keep, Replace[ dimSpec, { Automatic | All :> Length[ keep ], UpTo[ k_Integer ] :> Min[ k, Length[ keep ] ], k_Integer :> Min[ k,
+                  Length[ keep ] ] } ] ] },
+        { weights = Replace[ rescaling,
+            { "ResistanceMatching" :> 1 / Sqrt[ vals[[ idx ]] ], "None" :> ConstantArray[ 1, Length[ idx ] ],
+              ("Diffusion" -> t_) :> Exp[ -t vals[[ idx ]] ] } ] },
+        { mat = Transpose[ weights vecs[[ idx ]] ] },
+        { originVec = If[ origin === None, ConstantArray[ 0., Length @ First @ mat ], mat[[ First @ FirstPosition[ VertexList[ g ], origin ] ]] ] },
+        AssociationThread[ VertexList[ g ], # - originVec & /@ mat ]
     ]
 
-ResistanceCoordinates[g_Graph, v_, opts : OptionsPattern[]] /; MemberQ[VertexList[g], v] :=
-    ResistanceCoordinates[g, opts][v]
+ResistanceCoordinates[ g_Graph, v_, opts : OptionsPattern[] ] /; MemberQ[ VertexList[ g ], v ] :=
+    ResistanceCoordinates[ g, opts ][ v ]
 
 ResistanceCoordinates[ g_Graph, fam_Association, opts : OptionsPattern[] ] /; SubsetQ[ VertexList[ g ], Keys @ fam ] :=
   With[ { all = ResistanceCoordinates[ g, opts ] }, all /@ Keys @ fam ]
 
-Options[FindBallCover] = {Method -> "Exhaustive"};
+Options[ FindBallCover ] = { Method -> "Exhaustive" }
 FindBallCover[ g_Graph, r_ : 1, targets : ( _List | All ) : All, count : ( _Integer | All | UpTo[ _Integer ] ) : 1, opts : OptionsPattern[] ] :=
   With[
     { vs = VertexList[ g ] },
@@ -176,16 +181,17 @@ FindBallCover[ g_Graph, r_ : 1, targets : ( _List | All ) : All, count : ( _Inte
     ]
   ]
 
-BallCoverQ[g_Graph, r_, s_List, targets : (_List | All) : All] :=
+BallCoverQ[ g_Graph, r_, s_List, targets : (_List | All) : All ] :=
     With[
-        {vs = VertexList[g], dm = GraphDistanceMatrix[g]},
-        {pos = Flatten[FirstPosition[vs, #] & /@ s], rows = If[targets === All, dm, dm[[Flatten[FirstPosition[vs, #] & /@ targets]]]]},
-        AllTrue[rows, row |-> AnyTrue[pos, j |-> row[[j]] <= r]]
+        { vs = VertexList[ g ], dm = GraphDistanceMatrix[ g ] },
+        { pos = Flatten[ FirstPosition[ vs, # ] & /@ s ], rows = If[ targets === All, dm, dm[[ Flatten[ FirstPosition[ vs, # ] & /@ targets ] ]] ] },
+        AllTrue[ rows, row |-> AnyTrue[ pos, j |-> row[[ j ]] <= r ] ]
     ]
 
-DominationNumber[g_Graph, r_ : 1, targets : (_List | All) : All] := Length @ FindBallCover[g, r, targets]
+DominationNumber[ g_Graph, r_ : 1, targets : (_List | All) : All ] :=
+  Length @ FindBallCover[ g, r, targets ]
 
-Options[ OrthogonalCoordinates ] = { "SelectCoordinate" -> "Centered" };
+Options[ OrthogonalCoordinates ] = { "SelectCoordinate" -> "Centered" }
 
 OrthogonalCoordinates[ g_Graph, c_, axes_List, v_, opts : OptionsPattern[] ] /;
     VertexQ[ g, v ] :=
@@ -221,7 +227,7 @@ Options[ FindInfraOrthogonalFrame ] = {
   "AxisCount"        -> Automatic,
   "BranchSampleSize" -> All,
   "SelectCoordinate" -> "Centered"
-};
+}
 
 FindInfraOrthogonalFrame[ g_Graph, c_, axisLength : ( All | _Integer | _UpTo | { _, _ } ),
     count : ( All | UpTo[ _Integer ] | _Integer ) : Automatic, opts : OptionsPattern[] ] /; VertexQ[ g, c ] :=
@@ -367,7 +373,7 @@ Options[ FindInfraSpanningAxes ] = {
   "MinSeparation" -> Automatic,
   "AxisThickness" -> 0,
   "RandomPick"    -> False
-};
+}
 
 FindInfraSpanningAxes[ g_Graph, All, opts : OptionsPattern[] ] :=
   With[

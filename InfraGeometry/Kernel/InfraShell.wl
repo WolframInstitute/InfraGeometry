@@ -1,11 +1,12 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* a vertex subset of the level surface { v : rmin <= d(c, v) <= rmax }, a sorted vertex list; the count-less call is one shell, a bounded count and All a List of them -- the level set itself without Properties, the minimal admissible subsets under them *)
+(* a vertex subset of the level surface { v : rmin <= d(c, v) <= rmax }, a sorted vertex list; the count-less call is one shell, a bounded count and
+   All a List of them -- the level set itself without Properties, the minimal admissible subsets under them *)
 
 Options[ FindInfraShell ] = {
   Properties -> { },
   Method     -> Automatic
-};
+}
 
 FindInfraShell[ graph_Graph, p_, r_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
@@ -59,7 +60,7 @@ FindInfraShell[ graph_Graph, p_, r_,
                     { { Sort @ levelSet }, { } },
                     First @ # =!= { } & ],
                 True,
-                  First @ descend[ descend, { { }, <||> }, levelSet ] ] ] ] ],
+                  First @ descend[ descend, { { }, <| |> }, levelSet ] ] ] ] ],
         Keys @ InfraDensity[ graph, p ] ] },
     { shells = DeleteDuplicates[ Union /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
     Switch[ count,
@@ -70,7 +71,7 @@ FindInfraShell[ graph_Graph, p_, r_,
 
 (* for every c equidistant from all k window vertices at common distance r, the level set { v : d(c, v) == r } *)
 
-Options[ FindInfraOsculatingShell ] = Options[ FindInfraShell ];
+Options[ FindInfraOsculatingShell ] = Options[ FindInfraShell ]
 
 FindInfraOsculatingShell[ graph_Graph, path_, i_Integer, k_Integer,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[ ] ] /;
@@ -119,7 +120,7 @@ FindInfraOsculatingShell[ graph_Graph, path_, i_Integer, k_Integer,
       _UpTo, Take[ sets, count ],
       _,     If[ Length @ sets < count, { }, Take[ sets, count ] ] ] ]
 
-Options[ FindInfraShellCenter ] = { Method -> "MaximalChordsBisectors" };
+Options[ FindInfraShellCenter ] = { Method -> "MaximalChordsBisectors" }
 
 FindInfraShellCenter[ graph_Graph, fam_Association, opts : OptionsPattern[] ] :=
   FindInfraShellCenter[ graph, Keys @ fam, opts ]
@@ -175,7 +176,8 @@ FindInfraShellCenter[ graph_Graph, vs_List, opts : OptionsPattern[] ] /;
 
 (* vs is a metric shell iff some c is equidistant from all of vs at a common finite radius r and vs is exactly { v : d(c, v) == r } *)
 
-InfraShellQ[ graph_Graph, fam_Association ] := InfraShellQ[ graph, Keys @ fam ]
+InfraShellQ[ graph_Graph, fam_Association ] :=
+  InfraShellQ[ graph, Keys @ fam ]
 
 InfraShellQ[ graph_Graph, sets : { __List } ] /; ! AllTrue[ sets, VertexQ[ graph, # ] & ] :=
   AllTrue[ sets, InfraShellQ[ graph, # ] & ]

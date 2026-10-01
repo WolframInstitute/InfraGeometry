@@ -1,11 +1,12 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* the level set { v : cMin <= d(p1, v) + d(p2, v) <= cMax }, a sorted vertex list; under Properties its minimal admissible subsets, one per instance *)
+(* the level set { v : cMin <= d(p1, v) + d(p2, v) <= cMax }, a sorted vertex list; under Properties its minimal admissible subsets, one per instance
+   *)
 
 Options[ FindInfraEllipticShell ] = {
   Properties -> { },
   Method     -> Automatic
-};
+}
 
 FindInfraEllipticShell[ graph_Graph, foci : { _, _ }, c_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
@@ -66,7 +67,7 @@ FindInfraEllipticShell[ graph_Graph, foci : { _, _ }, c_,
                     { { Sort @ levelSet }, { } },
                     First @ # =!= { } & ],
                 True,
-                  First @ descend[ descend, { { }, <||> }, levelSet ] ] ] ] ],
+                  First @ descend[ descend, { { }, <| |> }, levelSet ] ] ] ] ],
         Tuples[ { { foci }, Replace[ c, { fam_Association :> Keys @ fam, other_ :> { other } } ] } ], { 1 } ] },
     With[ { reps = DeleteDuplicates[ Union /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
         Switch[ count,
@@ -77,7 +78,8 @@ FindInfraEllipticShell[ graph_Graph, foci : { _, _ }, c_,
 
 (* vs is an elliptic shell iff there are foci p1, p2 and a constant c with vs == { v : d(p1, v) + d(p2, v) == c } *)
 
-InfraEllipticShellQ[ graph_Graph, fam_Association ] := InfraEllipticShellQ[ graph, Keys @ fam ]
+InfraEllipticShellQ[ graph_Graph, fam_Association ] :=
+  InfraEllipticShellQ[ graph, Keys @ fam ]
 
 InfraEllipticShellQ[ graph_Graph, sets : { __List } ] /; ! AllTrue[ sets, VertexQ[ graph, # ] & ] :=
   AllTrue[ sets, InfraEllipticShellQ[ graph, # ] & ]

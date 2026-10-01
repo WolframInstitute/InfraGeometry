@@ -1,4 +1,4 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* Tarski's two primitive relations restated on graphs.
    B(u, w, v): w lies on a u-v geodesic, i.e. d(u, w) + d(w, v) = d(u, v).
@@ -14,40 +14,44 @@ BetweennessQ[ graph_Graph, u_, w_, v_ ] :=
 EquidistanceQ[ graph_Graph, a_, b_, c_, d_ ] :=
   GraphDistance[ graph, a, b ] === GraphDistance[ graph, c, d ]
 
-TarskiStructure[ graph_Graph ] := TarskiStructure[ graph ] =
-  With[ { vs = VertexList[ graph ], dMat = GraphDistanceMatrix[ graph ] },
-    { n = Length[ vs ], finite = Cases[ Flatten @ dMat, _Integer ] },
-    <|
-        "Vertices"     -> vs,
-        "VertexIndex"  -> AssociationThread[ vs, Range[ n ] ],
-        "Distances"    -> dMat,
-        "Betweenness"  -> SparseArray[
-          Flatten[
-            Table[
-              If[ dMat[[ i, j ]] === Infinity ||
-                  dMat[[ j, k ]] === Infinity ||
-                  dMat[[ i, k ]] === Infinity, Nothing,
-                If[ dMat[[ i, j ]] + dMat[[ j, k ]] == dMat[[ i, k ]],
-                  { i, j, k } -> 1, Nothing ] ],
-              { i, n }, { j, n }, { k, n } ],
-            2 ],
-          { n, n, n }, 0 ],
-        "Equidistance" -> GatherBy[
-          Subsets[ vs, { 2 } ],
-          pair |-> GraphDistance[ graph, pair[[ 1 ]], pair[[ 2 ]] ] ],
-        "Diameter"     -> If[ finite === { }, 0, Max @ finite ]
-    |>
-  ]
+TarskiStructure[ graph_Graph ] :=
+  TarskiStructure[ graph ] =
+    With[ { vs = VertexList[ graph ], dMat = GraphDistanceMatrix[ graph ] },
+      { n = Length[ vs ], finite = Cases[ Flatten @ dMat, _Integer ] },
+      <|
+          "Vertices"     -> vs,
+          "VertexIndex"  -> AssociationThread[ vs, Range[ n ] ],
+          "Distances"    -> dMat,
+          "Betweenness"  -> SparseArray[
+            Flatten[
+              Table[
+                If[ dMat[[ i, j ]] === Infinity ||
+                    dMat[[ j, k ]] === Infinity ||
+                    dMat[[ i, k ]] === Infinity, Nothing,
+                  If[ dMat[[ i, j ]] + dMat[[ j, k ]] == dMat[[ i, k ]],
+                    { i, j, k } -> 1, Nothing ] ],
+                { i, n }, { j, n }, { k, n } ],
+              2 ],
+            { n, n, n }, 0 ],
+          "Equidistance" -> GatherBy[
+            Subsets[ vs, { 2 } ],
+            pair |-> GraphDistance[ graph, pair[[ 1 ]], pair[[ 2 ]] ] ],
+          "Diameter"     -> If[ finite === { }, 0, Max @ finite ]
+      |>
+    ]
 
-TarskiBetweennessTensor[ graph_Graph ] := TarskiStructure[ graph ][ "Betweenness" ]
+TarskiBetweennessTensor[ graph_Graph ] :=
+  TarskiStructure[ graph ][ "Betweenness" ]
 
-TarskiEquidistanceClasses[ graph_Graph ] := TarskiStructure[ graph ][ "Equidistance" ]
+TarskiEquidistanceClasses[ graph_Graph ] :=
+  TarskiStructure[ graph ][ "Equidistance" ]
 
 TarskiCongruenceReflexivityQ[ graph_Graph ] :=
   AllTrue[ Subsets[ VertexList[ graph ], { 2 } ],
     pair |-> EquidistanceQ[ graph, pair[[ 1 ]], pair[[ 2 ]], pair[[ 2 ]], pair[[ 1 ]] ] ]
 
-TarskiCongruenceTransitivityQ[ _Graph ] := True
+TarskiCongruenceTransitivityQ[ _Graph ] :=
+  True
 
 TarskiCongruenceIdentityQ[ graph_Graph ] :=
   AllTrue[ Subsets[ VertexList[ graph ], { 2 } ],
@@ -61,7 +65,7 @@ TarskiSegmentConstructionQ[ graph_Graph ] :=
 (* A5 (Five Segments).  Brute O(n^8); "MaxTuples" cap keeps small-graph tests
    responsive.  Indeterminate if the cap is hit before exhaustion. *)
 
-Options[ TarskiFiveSegmentsQ ] = { "MaxTuples" -> 200000 };
+Options[ TarskiFiveSegmentsQ ] = { "MaxTuples" -> 200000 }
 
 TarskiFiveSegmentsQ[ graph_Graph, OptionsPattern[] ] :=
   With[ { vs = VertexList[ graph ], cap = OptionValue[ "MaxTuples" ] },
@@ -110,9 +114,11 @@ TarskiUpperDimensionQ[ graph_Graph ] :=
       CollinearQ[ graph, { a, b, c } ]
     ] ]
 
-TarskiEuclidAxiomQ[ _Graph ] := Indeterminate
+TarskiEuclidAxiomQ[ _Graph ] :=
+  Indeterminate
 
-TarskiContinuityQ[ _Graph ] := False
+TarskiContinuityQ[ _Graph ] :=
+  False
 
 TarskiAxiomQ[ graph_Graph ] :=
   <|

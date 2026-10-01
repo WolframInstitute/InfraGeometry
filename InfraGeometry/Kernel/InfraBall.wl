@@ -1,6 +1,7 @@
-Package["WolframInstitute`InfraGeometry`"]
+Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* the closed ball { v : d(c, v) <= r }, a sorted vertex list.  The centre goes through the anchor rule, and an anchor of several vertices weights one carrier rather than multiplying objects: the ball of a set is its closed r-neighbourhood, the union of the balls around its members *)
+(* the closed ball { v : d(c, v) <= r }, a sorted vertex list.  The centre goes through the anchor rule, and an anchor of several vertices weights
+   one carrier rather than multiplying objects: the ball of a set is its closed r-neighbourhood, the union of the balls around its members *)
 
 FindInfraBall[ graph_Graph, c_, r_ ] :=
   With[ { centers = Keys @ InfraDensity[ graph, c ] },
@@ -9,7 +10,8 @@ FindInfraBall[ graph_Graph, c_, r_ ] :=
 
 (* vs is a closed ball iff some c in vs has { v : d(c, v) <= max_{w in vs} d(c, w) } == vs; a family of sets passes iff each does *)
 
-InfraBallQ[ graph_Graph, fam_Association ] := InfraBallQ[ graph, Keys @ fam ]
+InfraBallQ[ graph_Graph, fam_Association ] :=
+  InfraBallQ[ graph, Keys @ fam ]
 
 InfraBallQ[ graph_Graph, sets : { __List } ] /; ! AllTrue[ sets, VertexQ[ graph, # ] & ] :=
   AllTrue[ sets, InfraBallQ[ graph, # ] & ]
