@@ -167,60 +167,6 @@ FindInfraParallel[ graph_Graph, line_, p_,
         All,       Replace[ parallels, { one_Graph } :> one ],
         _UpTo,     Take[ parallels, count ],
         _,         If[ Length @ parallels < count, { }, Take[ parallels, count ] ] ] ]
-
-(* ===================== Sketch: Method dispatch (NOT WIRED) =====================
-   Two honest, computable parallelism criteria; see Wiki/Concepts/Parallelism.md
-   for the design rationale.
-
-     (E) Equidistant   -- the current implementation (level-set construction).
-                          phi_{L1}(v) := Min[d(v, u) : u in L1] is constant on L2.
-                          A Euclidean *theorem* used as a graph *definition*.
-
-     (T) Transversal   -- Euclid I.27 / I.29. Pick the shortest path t between
-                          L1 and L2; the angle t makes with L1 at its L1-end
-                          equals the angle t makes with L2 at its L2-end.
-
-   Planned signature:
-
-     Method -> "Equidistant" (default, current behaviour) |
-               "Transversal" (Euclid I.27)
-
-   InfraParallelQ would gain a _Graph overload because the transversal test
-   needs the graph itself, not just the distance matrix.
-
-   Sketch of the transversal branch (Euclid I.27, alternate-angle equality):
-
-     findTransversalParallel[ graph_Graph, line_List, p_ ] :=
-       Select[ #[[ 1, 1 ]] & /@ FindInfraLine[ graph, p, All ], candidate |->
-         DisjointQ[ candidate, line ] &&
-         transversalAngleEqualQ[ graph, line, candidate ] ]
-
-     transversalAngleEqualQ[ graph_Graph, l1_List, l2_List ] :=
-       With[ { dm = Outer[ GraphDistance[ graph, #1, #2 ] &, l1, l2 ] },
-         { minPair = First @ Position[ dm, Min @@ Flatten @ dm ] },
-         { a  = l1[[ minPair[[ 1 ]] ]],
-           b  = l2[[ minPair[[ 2 ]] ]],
-           ap = l1[[ If[ minPair[[ 1 ]] == Length[ l1 ], minPair[[ 1 ]] - 1, minPair[[ 1 ]] + 1 ] ]],
-           bp = l2[[ If[ minPair[[ 2 ]] == Length[ l2 ], minPair[[ 2 ]] - 1, minPair[[ 2 ]] + 1 ] ]] },
-         InfraAngle[ graph, { ap, a, b } ] == InfraAngle[ graph, { bp, b, a } ] ]
-
-   Edge cases to settle on implementation:
-     - Non-unique shortest transversal: require equality for all of them.
-     - Orientation of {ap, bp} ("same side of the transversal"): the discrete
-       analogue of Euclid's "alternate interior" is unresolved. Provisional
-       choice in the sketch: pick the unique next-along-line vertex.
-     - Lines of length 1 (no a' / b'): skip the anchor and try the next pair.
-     - alpha == beta is a number equality with InfraAngle's "Arclength" measure;
-       a tolerance form alpha - beta is below threshold may be wanted.
-
-   Worked numbers in Wiki/Concepts/Parallelism.md:
-     - GridGraph[{6,6}], L1 = {1..6}, L2 = {7..12}:
-         (E) True; alpha = beta = 2  --> (T) True. Both agree.
-     - PetersenGraph[], L1 = {1, 4, 2}, L2 = {3, 8, 7}:
-         (E) False; alpha = beta = 3  --> (T) True. The criteria diverge.
-
-   ============================================================================= *)
-
 Options[ FindInfraPerpendicular ] = {
   Method   -> "Metric",
   "Radius" -> All
