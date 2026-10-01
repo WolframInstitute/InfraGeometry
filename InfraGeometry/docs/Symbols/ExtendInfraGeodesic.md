@@ -39,44 +39,72 @@ An extension is a walk graph: `Last /@ VertexList[w]` is its vertex sequence. Th
 
 ## Basic Examples
 
-Every forward extension of the edge from 41 to 42 by three edges, at infra-scales 2, 3 and `Infinity`. The fan narrows as the observer sees further back.
+Every forward extension of an edge at the centre of the square tiling by three edges, at infra-scales 2, 3 and `Infinity`. The fan narrows as the observer sees further back.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  Row[Table[
-    With[{extList = ExtendInfraGeodesic[g, {41, 42}, sc, {3}, All, "Direction" -> "Forward"]},
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {seed = {1, 2}},
+  Row @ Table[
+    With[{extList = ExtendInfraGeodesic[g, seed, sc, {3}, All, "Direction" -> "Forward"]},
       Labeled[
-        InfraSubstrateHighlight[g, {extList, Directive[$InfraPointColor], InfraWalk[{41, 42}]}, ImageSize -> 180],
+        InfraSubstrateHighlight[g, {extList, Directive[$InfraPointColor], InfraWalk[seed]}],
         Row[{"scale ", sc, ": ", Length @ extList}]]],
-    {sc, {2, 3, Infinity}}]]]
+    {sc, {2, 3, Infinity}}]]
 ```
 
-One extension at both ends, two edges on the longer side.
-
-```wl
-Last /@ VertexList @ ExtendInfraGeodesic[GridGraph[{9, 9}], {41, 42}, Infinity, {2}]
-```
-
-A geodesic found by [FindInfraGeodesic](), continued forward.
+One extension at both ends, two edges on the longer side, beside its vertex sequence.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  Last /@ VertexList @ ExtendInfraGeodesic[g, FindInfraGeodesic[g, 41, 61, Infinity, Infinity], Infinity, {2},
-    "Direction" -> "Forward"]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {seed = {1, 2}},
+  {ext = ExtendInfraGeodesic[g, seed, Infinity, {2}]},
+  {InfraSubstrateHighlight[g, {ext, Directive[$InfraPointColor], InfraWalk[seed]}], Last /@ VertexList[ext]}]
+```
+
+A shortest path found by [FindInfraGeodesic](), continued forward by four edges.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {geo = FindInfraGeodesic[g, a, b, Infinity, Infinity]},
+  {ext = ExtendInfraGeodesic[g, geo, Infinity, {4}, "Direction" -> "Forward"]},
+  InfraSubstrateHighlight[g, {ext, geo, Directive[$InfraPointColor], a, b}]]
+```
+
+## Options
+
+### Direction
+
+The extensions of an edge by two edges forward, backward and at both ends, at infra-scale `Infinity`.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {seed = {1, 2}},
+  Row @ Table[
+    Labeled[
+      InfraSubstrateHighlight[g, {ExtendInfraGeodesic[g, seed, Infinity, {2}, All, "Direction" -> dir], Directive[$InfraPointColor], InfraWalk[seed]}],
+      dir],
+    {dir, {"Forward", "Backward", "BothSides"}}]]
 ```
 
 ## Properties and Relations
 
-At scale `Infinity` the forward extensions are the paths from the seed's end in [GeodesicExtensionGraph]().
+At scale `Infinity` the forward extensions are the paths from the seed's end in [GeodesicExtensionGraph](), drawn beneath them.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {extDag = GeodesicExtensionGraph[g, {41, 42}]},
-  Sort[Rest[Last /@ VertexList[#]] & /@ ExtendInfraGeodesic[g, {41, 42}, Infinity, {3}, All, "Direction" -> "Forward"]] ===
-    Sort @ Select[Catenate[FindPath[extDag, 42, #, {3}, All] & /@ VertexList[extDag]], Length[#] == 4 &]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {seed = {1, 2}},
+  {extDag = GeodesicExtensionGraph[g, seed]},
+  {extList = ExtendInfraGeodesic[g, seed, Infinity, {3}, All, "Direction" -> "Forward"]},
+  {InfraSubstrateHighlight[g, {extDag, extList}],
+   Sort[Rest[Last /@ VertexList[#]] & /@ extList] ===
+     Sort @ Select[Catenate[FindPath[extDag, 2, #, {3}, All] & /@ VertexList[extDag]], Length[#] == 4 &]}]
 ```
 
 ## Possible Issues
@@ -85,6 +113,8 @@ A seed that steps back is a geodesic at scale 1 and not at scale 2, so it has ex
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {Last /@ VertexList @ ExtendInfraGeodesic[g, {41, 42, 41}, 1, {2}], ExtendInfraGeodesic[g, {41, 42, 41}, 2, {2}]}]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {backStep = {1, 2, 1}},
+  {InfraSubstrateHighlight[g, {ExtendInfraGeodesic[g, backStep, 1, {2}], Directive[$InfraPointColor], InfraWalk[backStep]}],
+   ExtendInfraGeodesic[g, backStep, 2, {2}]}]
 ```

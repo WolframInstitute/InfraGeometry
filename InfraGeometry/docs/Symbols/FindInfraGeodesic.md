@@ -42,29 +42,54 @@ The search reads only the window, never the target. At a finite scale the two-po
 
 ## Basic Examples
 
-The geodesics from 41 to 61 on a grid of at most 8 edges, at infra-scales 2, 3 and `Infinity`. At scale `Infinity` they are the six shortest paths; at the smaller scales, locally shortest walks that go round.
+The geodesics of at most 8 edges from the centre of the square tiling to a vertex four steps away, at infra-scales 2, 3 and `Infinity`. At scale `Infinity` they are the six shortest paths; at the smaller scales they include locally shortest walks that go round.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  Row[Table[
-    With[{geos = FindInfraGeodesic[g, 41, 61, sc, UpTo[8], All]},
-      Labeled[
-        InfraSubstrateHighlight[g, {geos, Directive[$InfraPointColor], 41, 61}, ImageSize -> 180],
-        Row[{"scale ", sc, ": ", Length @ geos}]]],
-    {sc, {2, 3, Infinity}}]]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  Row @ Table[
+    With[{geos = FindInfraGeodesic[g, a, b, sc, UpTo[8], All]},
+      Labeled[InfraSubstrateHighlight[g, {geos, Directive[$InfraPointColor], a, b}], Row[{"scale ", sc, ": ", Length @ geos}]]],
+    {sc, {2, 3, Infinity}}]]
 ```
 
-One geodesic at infra-scale 3 of exactly 6 edges from the centre of the grid, as a vertex sequence.
+One geodesic at infra-scale 3 of exactly 6 edges from the centre, beside its vertex sequence.
 
 ```wl
-Last /@ VertexList @ FindInfraGeodesic[GridGraph[{9, 9}], 41, 3, {6}]
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {geo = FindInfraGeodesic[g, a, 3, {6}]},
+  {InfraSubstrateHighlight[g, {geo, Directive[$InfraPointColor], a}], Last /@ VertexList[geo]}]
 ```
 
-The number of geodesics of 4 edges from the centre, as the scale grows: every walk at scale 1, the walks that never step back at scale 2, the shortest paths at scale `Infinity`.
+All geodesics of 4 edges from the centre, as the scale grows: every walk at scale 1, the walks that never step back at scale 2, the shortest paths at scale `Infinity`.
 
 ```wl
-Table[Length @ FindInfraGeodesic[GridGraph[{9, 9}], 41, sc, {4}, All], {sc, {1, 2, 3, Infinity}}]
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  Row @ Table[
+    With[{geos = FindInfraGeodesic[g, a, sc, {4}, All]},
+      Labeled[InfraSubstrateHighlight[g, {geos, Directive[$InfraPointColor], a}], Row[{"scale ", sc, ": ", Length @ geos}]]],
+    {sc, {1, 2, Infinity}}]]
+```
+
+## Options
+
+### Method
+
+Under `"RandomGreedy"` the first geodesic found is a random one. Three geodesics at infra-scale 2 of 12 edges from the centre, one per seed.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  GraphicsRow @ Table[
+    InfraSubstrateHighlight[g, {(SeedRandom[seed]; FindInfraGeodesic[g, a, 2, {12}, Method -> "RandomGreedy"]), Directive[$InfraPointColor], a}],
+    {seed, 3}]]
 ```
 
 ## Properties and Relations
@@ -73,26 +98,35 @@ At scale `Infinity` the two-point geodesics are the members of the segment.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  Sort[Last /@ VertexList[#] & /@ FindInfraGeodesic[g, 41, 61, Infinity, Infinity, All]] ===
-    Sort @ FindInfraSegment[g, 41, 61, All]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {geos = FindInfraGeodesic[g, a, b, Infinity, Infinity, All]},
+  {InfraSubstrateHighlight[g, {geos, Directive[$InfraPointColor], a, b}],
+   Sort[Last /@ VertexList[#] & /@ geos] === Sort @ FindInfraSegment[g, a, b, All]}]
 ```
 
 Every walk found passes [InfraGeodesicQ]() at its scale.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  InfraGeodesicQ[g, FindInfraGeodesic[g, 41, 61, 3, UpTo[8], All], 3]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {geos = FindInfraGeodesic[g, a, b, 3, UpTo[8], All]},
+  {InfraSubstrateHighlight[g, {geos, Directive[$InfraPointColor], a, b}], InfraGeodesicQ[g, geos, 3]}]
 ```
 
 ## Possible Issues
 
-On a substrate labelled by integers, `FindInfraGeodesic[g, 1, 3, Infinity]` fits two readings: the geodesics from 1 at scale 3 with no budget, and the geodesics from 1 to 3 at scale `Infinity`. The first is an infinite class, so the call is the second. A rule in `Properties` that bounds the class, such as `"Simple"`, makes the first reading finite, and then it wins: on a hexagon the simple geodesics at scale 3 run round to the far side.
+On a substrate labelled by integers, `FindInfraGeodesic[g, 1, 3, Infinity]` fits two readings: the geodesics from 1 at scale 3 with no budget, and the geodesics from 1 to 3 at scale `Infinity`. The first is an infinite class, so the call is the second. A rule in `Properties` that bounds the class, such as `"Simple"`, makes the first reading finite, and then it wins: the simple geodesic at scale 3 runs on until it is stuck.
 
 ```wl
 With[
-  {g = CycleGraph[6]},
-  {Last /@ VertexList @ FindInfraGeodesic[g, 1, 3, Infinity],
-    Last /@ VertexList @ FindInfraGeodesic[g, 1, 3, Infinity, Properties -> {"Simple"}]}]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {twoPoint = FindInfraGeodesic[g, 1, 3, Infinity]},
+  {pointed = FindInfraGeodesic[g, 1, 3, Infinity, Properties -> {"Simple"}]},
+  GraphicsRow[{
+    InfraSubstrateHighlight[g, {twoPoint, Directive[$InfraPointColor], 1, 3}],
+    InfraSubstrateHighlight[g, {pointed, Directive[$InfraPointColor], 1}]}]]
 ```

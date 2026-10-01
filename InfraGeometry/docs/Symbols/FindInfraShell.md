@@ -36,28 +36,34 @@ Corresponding notions in the classical axiom systems:
 
 ## Basic Examples
 
-The successive shells around the centre of the square grid: nested rings, each of 4r vertices, and none of them carrying a cycle.
+The shells of radius 1 to 5 about the centre of the square, hexagonal and triangular tilings: nested rings, one colour each, the spheres of the polyhedral norm each tiling carries.
+
+```wl
+GraphicsRow @ Table[
+  With[
+    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    {c = InfraCenter[g]},
+    InfraSubstrateHighlight[g, Table[FindInfraShell[g, c, r], {r, 1, 5}]]],
+  {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
+```
+
+Shell size against radius. On the three lattices the growth is linear, the intrinsic statement that these substrates are two-dimensional; the slope belongs to the tiling: 4 on the square, 3 on the hexagonal, 6 on the triangular.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  InfraSubstrateHighlight[g,
-    Table[FindInfraShell[g, c, r] -> $InfraShellColor, {r, 1, 5}],
-    "PointSizeRange" -> 13,
-    VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
-    ImageSize -> 340]]
+  {names = {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}},
+  ListLinePlot[
+    Table[With[{g = InfraSubstrate[name, "Medium"]}, Table[Length @ FindInfraShell[g, InfraCenter[g], r], {r, 0, 6}]], {name, names}],
+    DataRange -> {0, 6}, PlotMarkers -> Automatic, PlotLegends -> names, AxesLabel -> {"r", "|S_r|"}]]
 ```
 
-Shell cardinality against radius. On both lattices the growth is exactly linear — 4r on the square grid, 3r on the hexagonal — which is the intrinsic statement that these substrates are two-dimensional.
+A band of radii 2 to 4 about the centre, as one vertex set.
 
 ```wl
-Association @ Table[
-   name -> With[
-     {g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]},
-     {c = First @ GraphCenter[g]},
-     Table[Length @ FindInfraShell[g, c, r], {r, 0, 5}]],
-   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  InfraSubstrateHighlight[g, {FindInfraShell[g, c, {2, 4}] -> $InfraShellColor, Directive[$InfraPointColor], c}]]
 ```
 
 ## Properties and Relations
@@ -66,18 +72,21 @@ The ball is the union of the shells up to its radius, so the volumes are the par
 
 ```wl
 With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
+  {g = InfraSubstrate["HexagonalTilingGraph", "Medium"]},
+  {c = InfraCenter[g]},
   {areas = Table[Length @ FindInfraShell[g, c, r], {r, 0, 5}]},
   {volumes = Table[Length @ FindInfraBall[g, c, r], {r, 0, 5}]},
-  Accumulate[areas] === volumes]
+  {ListLinePlot[{Accumulate @ areas, volumes}, DataRange -> {0, 5}, PlotMarkers -> {Automatic, Medium},
+     PlotLegends -> {"partial sums of |S_r|", "|B_r|"}, AxesLabel -> {"r", None}],
+   Accumulate[areas] === volumes}]
 ```
 
 The shell sizes are the shell-area profile of [ShellAreas]().
 
 ```wl
 With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Medium", "KeepCoordinates" -> True]},
+  {g = InfraSubstrate["HexagonalTilingGraph", "Medium"]},
   {c = InfraCenter[g]},
-  Table[Length @ FindInfraShell[g, c, r], {r, 0, 5}] === ShellAreas[g, c, {0, 5}]]
+  {areas = Table[Length @ FindInfraShell[g, c, r], {r, 0, 5}]},
+  {ListPlot[areas, DataRange -> {0, 5}, AxesLabel -> {"r", "A(r)"}], areas === ShellAreas[g, c, {0, 5}]}]
 ```

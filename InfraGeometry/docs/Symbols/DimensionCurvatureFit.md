@@ -41,56 +41,70 @@ Every point given is fitted: the window is the caller's, chosen by slicing the q
 
 ## Basic Examples
 
-Ball quotients against *r(r + 1)* over the fitted window, and the fitted line, at the centre of a sphere mesh, the square tiling and a hyperbolic tiling. The slope falls, stays level and rises: positive, zero and negative curvature.
+Ball quotients against *r(r + 1)* over the fitted window, and the fitted line, at the centre of a sphere mesh, the square tiling and a hyperbolic tiling. The slope falls, stays level and rises: positive, zero and negative curvature, the number above each plot.
 
 ```wl
-Row[Table[
-  With[{gr = InfraSubstrate[nm, "Large"]},
-    With[{obs = VolumeGrowthObservables[gr, InfraCenter[gr]]},
-      With[{win = obs["BallWindow"], quots = obs["BallLogDifferenceQuotients"]},
-        With[{fitData = Table[{rad, quots[[rad]]}, {rad, win[[1]], win[[2]]}]},
-          With[{fit = DimensionCurvatureFit[fitData]},
-            Show[
-              ListPlot[{#[[1]] (#[[1]] + 1), #[[2]]} & /@ fitData, PlotRange -> {All, {0, 3}},
-                AxesLabel -> {"r(r+1)", "q"}, PlotLabel -> Column[{nm, Round[fit["ScalarCurvature"], 0.001]}]],
-              Plot[fit["Dimension"] - fit["ScalarCurvature"] x/(3 (fit["Dimension"] + 2)), {x, 0, win[[2]] (win[[2]] + 1)},
-                PlotStyle -> Gray],
-              ImageSize -> 200]]]]]],
-  {nm, {"SphereMeshGraph", "SquareTilingGraph", "HyperbolicTilingGraph"}}]]
+GraphicsRow @ Table[
+  With[
+    {gr = InfraSubstrate[nm, "Large"]},
+    {obs = VolumeGrowthObservables[gr, InfraCenter[gr]]},
+    {win = obs["BallWindow"], quots = obs["BallLogDifferenceQuotients"]},
+    {fitData = Table[{rad, quots[[rad]]}, {rad, win[[1]], win[[2]]}]},
+    {fit = DimensionCurvatureFit[fitData]},
+    Show[
+      ListPlot[{#[[1]] (#[[1]] + 1), #[[2]]} & /@ fitData, PlotRange -> {All, {0, 3}},
+        AxesLabel -> {"r(r+1)", "q"}, PlotLabel -> Column[{nm, Round[fit["ScalarCurvature"], 0.001]}]],
+      Plot[fit["Dimension"] - fit["ScalarCurvature"] x/(3 (fit["Dimension"] + 2)), {x, 0, win[[2]] (win[[2]] + 1)},
+        PlotStyle -> Gray]]],
+  {nm, {"SphereMeshGraph", "SquareTilingGraph", "HyperbolicTilingGraph"}}]
 ```
 
-Quotients of an exact Bishop–Gromov form, dimension 2 and curvature 0.1, give those numbers back.
+Quotients of an exact Bishop–Gromov form, dimension 2 and curvature 0.1, against *r(r + 1)*, with the fitted line; the fit gives those numbers back.
 
 ```wl
-DimensionCurvatureFit[Table[{r, 2 - 0.1 r (r + 1)/(3 (2 + 2))}, {r, 3, 10}]]
+With[
+  {qdata = Table[{r, 2 - 0.1 r (r + 1)/(3 (2 + 2))}, {r, 3, 10}]},
+  {fit = DimensionCurvatureFit[qdata]},
+  {Show[ListPlot[{#[[1]] (#[[1]] + 1), #[[2]]} & /@ qdata, AxesLabel -> {"r(r+1)", "q"}],
+     Plot[fit["Dimension"] - fit["ScalarCurvature"] x/(3 (fit["Dimension"] + 2)), {x, 0, 110}, PlotStyle -> Gray]],
+   fit}]
 ```
 
-A bare list sits at the radii 0, 1, 2, ….
+A bare list sits at the radii 0, 1, 2, …: constant quotients 2 read as a flat plane.
 
 ```wl
-DimensionCurvatureFit[{2., 2., 2., 2.}]
+With[
+  {quots = {2., 2., 2., 2.}},
+  {ListPlot[quots, DataRange -> {0, 3}, PlotRange -> {0, 3}, AxesLabel -> {"r", "q"}], DimensionCurvatureFit[quots]}]
 ```
 
 ## Options
 
 ### Probe
 
-The same quotients read as a ball, a sphere and a tube.
+The same quotients read as a ball, a sphere, a tube and a tube mantle: the probe moves the intercept and the factor of the slope.
 
 ```wl
 With[
   {qdata = Table[{r, 2 - 0.1 r (r + 1)/12}, {r, 3, 10}]},
-  Table[pr -> DimensionCurvatureFit[qdata, "Probe" -> pr], {pr, {"Ball", "Sphere", "Tube", "TubeMantle"}}]]
+  {ListPlot[{#[[1]] (#[[1]] + 1), #[[2]]} & /@ qdata, AxesLabel -> {"r(r+1)", "q"}],
+   Table[pr -> DimensionCurvatureFit[qdata, "Probe" -> pr], {pr, {"Ball", "Sphere", "Tube", "TubeMantle"}}]}]
 ```
 
 ### Dimension
 
-With the dimension fixed, only the slope is fitted.
+With the dimension fixed, only the slope is fitted: the free line in gray, the line through the intercept 2 dashed.
 
 ```wl
 With[
   {qdata = {{3, 1.9}, {4, 1.8}, {5, 1.7}}},
-  {DimensionCurvatureFit[qdata], DimensionCurvatureFit[qdata, "Dimension" -> 2]}]
+  {free = DimensionCurvatureFit[qdata]},
+  {fixed = DimensionCurvatureFit[qdata, "Dimension" -> 2]},
+  {Show[
+     ListPlot[{#[[1]] (#[[1]] + 1), #[[2]]} & /@ qdata, PlotRange -> {{0, 32}, {1.5, 2.2}}, AxesLabel -> {"r(r+1)", "q"}],
+     Plot[{free["Dimension"] - free["ScalarCurvature"] x/(3 (free["Dimension"] + 2)), 2 - fixed["ScalarCurvature"] x/12}, {x, 0, 32},
+       PlotStyle -> {Gray, Dashed}]],
+   {free, fixed}}]
 ```
 
 ## Scope
@@ -101,19 +115,21 @@ With[
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Large"]},
   {sampleSet = Take[FindInfraBall[g, InfraCenter[g], 2], 5]},
-  DimensionCurvatureFit @ Transpose[
-    {Range[8], LogDifferenceQuotients[MeanAround /@ Transpose @ BallVolumes[g, sampleSet, {0, 8}]]}]]
+  {qdata = Transpose[{Range[8], LogDifferenceQuotients[MeanAround /@ Transpose @ BallVolumes[g, sampleSet, {0, 8}]]}]},
+  {ListPlot[{#[[1]] (#[[1]] + 1), #[[2]]} & /@ qdata, PlotRange -> {All, {0, 3.5}}, AxesLabel -> {"r(r+1)", "q"}],
+   DimensionCurvatureFit[qdata]}]
 ```
 
 ## Properties and Relations
 
-[VolumeGrowthObservables]() is this fit over the window it chooses.
+[VolumeGrowthObservables]() is this fit over the window it chooses, drawn here at the centre of the sphere mesh.
 
 ```wl
 With[
   {g = InfraSubstrate["SphereMeshGraph", "Large"]},
-  With[{obs = VolumeGrowthObservables[g, InfraCenter[g]]},
-    With[{win = obs["BallWindow"], quots = obs["BallLogDifferenceQuotients"]},
-      DimensionCurvatureFit[Table[{rad, quots[[rad]]}, {rad, win[[1]], win[[2]]}]] ==
-        <|"Dimension" -> obs["BallDimension"], "ScalarCurvature" -> obs["BallScalarCurvature"]|>]]]
+  {obs = VolumeGrowthObservables[g, InfraCenter[g]]},
+  {win = obs["BallWindow"], quots = obs["BallLogDifferenceQuotients"]},
+  {fitData = Table[{rad, quots[[rad]]}, {rad, win[[1]], win[[2]]}]},
+  {ListPlot[{#[[1]] (#[[1]] + 1), #[[2]]} & /@ fitData, PlotRange -> {All, {0, 3}}, AxesLabel -> {"r(r+1)", "q"}],
+   DimensionCurvatureFit[fitData] == <|"Dimension" -> obs["BallDimension"], "ScalarCurvature" -> obs["BallScalarCurvature"]|>}]
 ```

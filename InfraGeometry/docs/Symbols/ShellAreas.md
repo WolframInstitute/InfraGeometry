@@ -49,22 +49,22 @@ With[
     DataRange -> {0, 12}, PlotMarkers -> Automatic, PlotLegends -> names, AxesLabel -> {"r", "A(r)"}]]
 ```
 
-The shells of radius 1 to 4 about the centre of a grid, of 4, 8, 12 and 16 vertices.
+The shells of radius 1 to 4 about the centre of the square tiling, one colour each, beside their sizes.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  Labeled[
-    InfraSubstrateHighlight[g, Table[FindInfraShell[g, 41, r] -> $InfraShellColor, {r, 1, 4}], ImageSize -> 220],
-    ShellAreas[g, 41, {1, 4}]]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {InfraSubstrateHighlight[g, Table[FindInfraShell[g, c, r], {r, 1, 4}]], ShellAreas[g, c, {1, 4}]}]
 ```
 
-The first areas at the centre of the square tiling; the second entry is the degree.
+The first areas at the centre of the square tiling as a plot; the area at radius 1 is the degree.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Large"]},
-  ShellAreas[g, InfraCenter[g], {0, 6}]]
+  {areas = ShellAreas[g, InfraCenter[g], {0, 6}]},
+  {ListPlot[areas, DataRange -> {0, 6}, AxesLabel -> {"r", "A(r)"}], areas}]
 ```
 
 ## Options
@@ -76,8 +76,9 @@ The four measures at the centre of the square tiling.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Large"]},
-  Table[m -> ShellAreas[g, InfraCenter[g], {0, 6}, "Measure" -> m],
-    {m, {"FullCount", "WithoutBoundary", "HalfBoundary", "ExpandingFront"}}]]
+  {measures = {"FullCount", "WithoutBoundary", "HalfBoundary", "ExpandingFront"}},
+  ListLinePlot[Table[ShellAreas[g, InfraCenter[g], {0, 6}, "Measure" -> m], {m, measures}],
+    DataRange -> {0, 6}, PlotMarkers -> Automatic, PlotLegends -> measures, AxesLabel -> {"r", "A(r)"}]]
 ```
 
 ## Scope
@@ -87,13 +88,17 @@ On a closed surface the shell does not keep growing. On the square torus it grow
 ```wl
 With[
   {g = InfraSubstrate["SquareTorusGraph", "Large"]},
-  ListLinePlot[ShellAreas[g, First @ VertexList[g]], PlotMarkers -> Automatic, AxesLabel -> {"r", "A(r)"}]]
+  {areas = ShellAreas[g, First @ VertexList[g]]},
+  ListLinePlot[areas, DataRange -> {0, Length[areas] - 1}, PlotMarkers -> Automatic, AxesLabel -> {"r", "A(r)"}]]
 ```
 
-A window past the eccentricity pads with `0`.
+A window past the eccentricity pads with `0`, the empty shell: at the centre of the small square tiling the eccentricity is 7.
 
 ```wl
-ShellAreas[GridGraph[{5, 5}], 13, {0, 6}]
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small"]},
+  {areas = ShellAreas[g, InfraCenter[g], {0, 10}]},
+  {ListPlot[areas, DataRange -> {0, 10}, AxesLabel -> {"r", "A(r)"}], areas}]
 ```
 
 ## Properties and Relations
@@ -104,7 +109,8 @@ The areas count the shells that [FindInfraShell]() builds.
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Large"]},
   {c = InfraCenter[g]},
-  ShellAreas[g, c, {0, 6}] === Table[Length @ FindInfraShell[g, c, r], {r, 0, 6}]]
+  {areas = ShellAreas[g, c, {0, 6}]},
+  {ListPlot[areas, DataRange -> {0, 6}, AxesLabel -> {"r", "A(r)"}], areas === Table[Length @ FindInfraShell[g, c, r], {r, 0, 6}]}]
 ```
 
 `Accumulate` of the areas is the volume profile of [BallVolumes](), under every measure.
@@ -113,15 +119,18 @@ With[
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium"]},
   {c = InfraCenter[g]},
-  Table[Accumulate @ ShellAreas[g, c, "Measure" -> m] === BallVolumes[g, c, "Measure" -> m],
-    {m, {"FullCount", "WithoutBoundary", "HalfBoundary"}}]]
+  {measures = {"FullCount", "WithoutBoundary", "HalfBoundary"}},
+  {ListLinePlot[Table[ShellAreas[g, c, "Measure" -> m], {m, measures}], PlotMarkers -> Automatic,
+     PlotLegends -> measures, AxesLabel -> {"r + 1", "A(r)"}],
+   Table[Accumulate @ ShellAreas[g, c, "Measure" -> m] === BallVolumes[g, c, "Measure" -> m], {m, measures}]}]
 ```
 
-The second area is the degree.
+The area at radius 1 is the degree: the shell of radius 1 is the neighbourhood, drawn here on the discretized plane.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareMeshGraph", "Medium"]},
+  {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  ShellAreas[g, c, 1] === VertexDegree[g, c]]
+  {InfraSubstrateHighlight[g, {FindInfraShell[g, c, 1] -> $InfraShellColor, Directive[$InfraPointColor], c}],
+   ShellAreas[g, c, 1] === VertexDegree[g, c]}]
 ```

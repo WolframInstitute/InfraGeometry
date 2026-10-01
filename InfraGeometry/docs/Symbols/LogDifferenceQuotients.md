@@ -40,24 +40,30 @@ With[
 A pure power has constant quotients equal to its exponent.
 
 ```wl
-LogDifferenceQuotients[Table[r^3, {r, 1, 6}]]
+With[
+  {quots = LogDifferenceQuotients[Table[r^3, {r, 1, 6}]]},
+  {ListPlot[quots, DataRange -> {1, 5}, PlotRange -> {0, 4}, AxesLabel -> {"r", "q(r)"}], Round[quots, 0.001]}]
 ```
 
-The first quotients of the square tiling's ball volumes, 2r² + 2r + 1.
+The quotients of the square tiling's ball volumes, *2r² + 2r + 1*, stay above 2 and approach it slowly.
 
 ```wl
-LogDifferenceQuotients[Table[2 r^2 + 2 r + 1, {r, 0, 5}]]
+With[
+  {quots = LogDifferenceQuotients[Table[2 r^2 + 2 r + 1, {r, 0, 12}]]},
+  {ListPlot[quots, DataRange -> {1, 12}, PlotRange -> {0, 3.5}, GridLines -> {None, {{2, Gray}}}, AxesLabel -> {"r", "q(r)"}],
+   Round[Take[quots, 4], 0.001]}]
 ```
 
 ## Scope
 
-A sequence of `Around` values carries its spread into the quotients: here the mean ball-volume profile over five vertices near the centre of the discretized plane.
+A sequence of `Around` values carries its spread into the quotients, drawn as error bars: here the mean ball-volume profile over five vertices near the centre of the discretized plane.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Large"]},
   {sampleSet = Take[FindInfraBall[g, InfraCenter[g], 2], 5]},
-  LogDifferenceQuotients[MeanAround /@ Transpose @ BallVolumes[g, sampleSet, {0, 5}]]]
+  {quots = LogDifferenceQuotients[MeanAround /@ Transpose @ BallVolumes[g, sampleSet, {0, 8}]]},
+  {ListPlot[quots, DataRange -> {1, 8}, PlotRange -> {0, 3.5}, GridLines -> {None, {{2, Gray}}}, AxesLabel -> {"r", "q(r)"}], quots}]
 ```
 
 ## Properties and Relations
@@ -68,12 +74,17 @@ The quotients of the shell areas of a planar lattice tend to 1, one less than th
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Large"]},
   {ctr = InfraCenter[g]},
-  {Last @ LogDifferenceQuotients @ BallVolumes[g, ctr, {0, 12}],
-   Last @ LogDifferenceQuotients @ ShellAreas[g, ctr, {1, 12}]}]
+  {ballQuots = LogDifferenceQuotients @ BallVolumes[g, ctr, {0, 12}]},
+  {shellQuots = LogDifferenceQuotients @ ShellAreas[g, ctr, {1, 12}]},
+  {ListLinePlot[{ballQuots, shellQuots}, PlotMarkers -> Automatic, PlotLegends -> {"ball", "shell"}, PlotRange -> {0, 3.5},
+     GridLines -> {None, {{1, Gray}, {2, Gray}}}, AxesLabel -> {"r", "q(r)"}],
+   N @ {Last @ ballQuots, Last @ shellQuots}}]
 ```
 
 A sequence indexed from 0 is placed from 1: the profile *(r + 1)²* has every quotient equal to 2.
 
 ```wl
-LogDifferenceQuotients[Table[(r + 1)^2, {r, 0, 5}]]
+With[
+  {quots = LogDifferenceQuotients[Table[(r + 1)^2, {r, 0, 5}]]},
+  {ListPlot[quots, DataRange -> {1, 5}, PlotRange -> {0, 3}, AxesLabel -> {"r", "q(r)"}], Round[quots, 0.001]}]
 ```

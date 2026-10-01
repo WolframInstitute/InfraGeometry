@@ -51,24 +51,24 @@ With[
     DataRange -> {0, 12}, PlotMarkers -> Automatic, PlotLegends -> names, AxesLabel -> {"r", "V(r)"}]]
 ```
 
-The ball of radius 3 at the centre of a grid and its boundary, the vertices with a neighbour outside. The three measures count 25, 13 and 19.
+The ball of radius 3 at the centre of the square tiling, with its boundary, the vertices that have a neighbour outside, drawn as points. The three measures count all of it, its interior, and the interior plus half the boundary.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {ballSet = FindInfraBall[g, 41, 3]},
-  Labeled[
-    InfraSubstrateHighlight[g, {ballSet -> $InfraBallColor, Directive[$InfraPointColor], Sequence @@ FindInfraShell[g, 41, 3]},
-      ImageSize -> 220],
-    BallVolumes[g, 41, 3, "Measure" -> #] & /@ {"FullCount", "WithoutBoundary", "HalfBoundary"}]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {ball = FindInfraBall[g, c, 3]},
+  {InfraSubstrateHighlight[g, {ball -> $InfraBallColor, Directive[$InfraPointColor], Sequence @@ FindInfraShell[g, c, 3]}],
+   BallVolumes[g, c, 3, "Measure" -> #] & /@ {"FullCount", "WithoutBoundary", "HalfBoundary"}}]
 ```
 
-The profile at one vertex, and a single volume.
+The profile at one vertex as a plot, and the single volume at radius 6.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Large"]},
-  {BallVolumes[g, InfraCenter[g], {0, 6}], BallVolumes[g, InfraCenter[g], 6]}]
+  {c = InfraCenter[g]},
+  {ListPlot[BallVolumes[g, c, {0, 6}], DataRange -> {0, 6}, AxesLabel -> {"r", "V(r)"}], BallVolumes[g, c, 6]}]
 ```
 
 ## Options
@@ -80,51 +80,66 @@ The four measures at the centre of the square tiling. Without the boundary the p
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Large"]},
-  Table[m -> BallVolumes[g, InfraCenter[g], {0, 6}, "Measure" -> m],
-    {m, {"FullCount", "WithoutBoundary", "HalfBoundary", "ExpandingFront"}}]]
+  {measures = {"FullCount", "WithoutBoundary", "HalfBoundary", "ExpandingFront"}},
+  ListLinePlot[Table[BallVolumes[g, InfraCenter[g], {0, 6}, "Measure" -> m], {m, measures}],
+    DataRange -> {0, 6}, PlotMarkers -> Automatic, PlotLegends -> measures, AxesLabel -> {"r", "V(r)"}]]
 ```
 
-On a cycle the ball fills the graph at radius 5, and the expanding front keeps going round.
+On the square torus the ball fills the graph at its eccentricity, and the expanding front keeps going round.
 
 ```wl
-{BallVolumes[CycleGraph[10], 1], BallVolumes[CycleGraph[10], 1, "Measure" -> "ExpandingFront"]}
+With[
+  {g = InfraSubstrate["SquareTorusGraph", "Small"]},
+  {torusPoint = First @ VertexList[g]},
+  ListLinePlot[{BallVolumes[g, torusPoint], BallVolumes[g, torusPoint, "Measure" -> "ExpandingFront"]},
+    PlotMarkers -> Automatic, PlotLegends -> {"FullCount", "ExpandingFront"}, AxesLabel -> {"r", "V(r)"}]]
 ```
 
 ## Scope
 
-A window past the eccentricity saturates, so the profiles of a vertex list line up.
+A window past the eccentricity saturates, so the profiles of a vertex list line up: here at the centre and at a vertex near the rim of the square tiling.
 
 ```wl
-BallVolumes[GridGraph[{5, 5}], {1, 13}, {0, 6}]
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {rimPoint = (SeedRandom[1]; RandomInfraPoint[g, c, 6])},
+  {InfraSubstrateHighlight[g, {Directive[$InfraPointColor], c, rimPoint}],
+   ListLinePlot[BallVolumes[g, {c, rimPoint}, {0, 14}], DataRange -> {0, 14}, PlotMarkers -> Automatic,
+     PlotLegends -> {"centre", "near the rim"}, AxesLabel -> {"r", "V(r)"}]}]
 ```
 
-The mean profile over a set of vertices, carrying the spread as `Around` values.
+The mean profile over a set of vertices near the centre of the discretized plane, carrying the spread as `Around` values, drawn as error bars.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Large"]},
   {sampleSet = Take[FindInfraBall[g, InfraCenter[g], 2], 5]},
-  MeanAround /@ Transpose @ BallVolumes[g, sampleSet, {0, 5}]]
+  {meanProfile = MeanAround /@ Transpose @ BallVolumes[g, sampleSet, {0, 5}]},
+  {ListPlot[meanProfile, DataRange -> {0, 5}, AxesLabel -> {"r", "V(r)"}], meanProfile}]
 ```
 
 ## Properties and Relations
 
-The profile counts the balls that [FindInfraBall]() builds.
+The profile counts the balls that [FindInfraBall]() builds, drawn here at radii 2, 4 and 6.
 
 ```wl
 With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Large"]},
+  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  BallVolumes[g, c, {0, 6}] === Table[Length @ FindInfraBall[g, c, r], {r, 0, 6}]]
+  {GraphicsRow @ Table[InfraSubstrateHighlight[g, {FindInfraBall[g, c, r] -> $InfraBallColor, Directive[$InfraPointColor], c}], {r, {2, 4, 6}}],
+   BallVolumes[g, c, {0, 6}] === Table[Length @ FindInfraBall[g, c, r], {r, 0, 6}]}]
 ```
 
-The square tiling's profile is the ℓ¹ ball *2r² + 2r + 1*, up to its rim.
+The square tiling's profile is the ℓ¹ ball *2r² + 2r + 1*, the gray curve, up to its rim.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Large"]},
   {prof = BallVolumes[g, InfraCenter[g]]},
-  prof === Table[2 r^2 + 2 r + 1, {r, 0, Length[prof] - 1}]]
+  {Show[ListPlot[prof, DataRange -> {0, Length[prof] - 1}, AxesLabel -> {"r", "V(r)"}],
+     Plot[2 r^2 + 2 r + 1, {r, 0, Length[prof] - 1}, PlotStyle -> Gray]],
+   prof === Table[2 r^2 + 2 r + 1, {r, 0, Length[prof] - 1}]}]
 ```
 
 The shell areas are the differences of the volumes, under every measure.
@@ -133,6 +148,8 @@ The shell areas are the differences of the volumes, under every measure.
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium"]},
   {c = InfraCenter[g]},
-  Table[Accumulate @ ShellAreas[g, c, "Measure" -> m] === BallVolumes[g, c, "Measure" -> m],
-    {m, {"FullCount", "WithoutBoundary", "HalfBoundary"}}]]
+  {measures = {"FullCount", "WithoutBoundary", "HalfBoundary"}},
+  {ListLinePlot[Table[Accumulate @ ShellAreas[g, c, "Measure" -> m], {m, measures}], PlotMarkers -> Automatic,
+     PlotLegends -> measures, AxesLabel -> {"r + 1", "V(r)"}],
+   Table[Accumulate @ ShellAreas[g, c, "Measure" -> m] === BallVolumes[g, c, "Measure" -> m], {m, measures}]}]
 ```

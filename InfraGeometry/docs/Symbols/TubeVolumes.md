@@ -48,33 +48,39 @@ With[
     DataRange -> {0, 8}, PlotMarkers -> Automatic, PlotLegends -> names, AxesLabel -> {"s", "T(s)"}]]
 ```
 
-The tube of radius 2 about a straight geodesic of four edges on a grid.
+The tube of radius 2 about a shortest path of four edges from the centre of the square tiling, beside its profile.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {coreSeq = {39, 40, 41, 42, 43}},
-  Labeled[
-    InfraSubstrateHighlight[g, {FindInfraBall[g, coreSeq, 2] -> $InfraBallColor, InfraWalk[coreSeq] -> $InfraSegmentColor},
-      ImageSize -> 220],
-    TubeVolumes[g, coreSeq, {0, 2}]]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, c, 4])},
+  {core = FindInfraSegment[g, c, b]},
+  {InfraSubstrateHighlight[g, {FindInfraBall[g, core, 2] -> $InfraBallColor, InfraWalk[core] -> $InfraSegmentColor}],
+   TubeVolumes[g, core, {0, 2}]}]
 ```
 
-The tube profile of a whole row of the grid: five rows at radius 2.
+The tube of radius 1 about a whole line through the centre, beside its profile.
 
 ```wl
-TubeVolumes[GridGraph[{9, 9}], Range[37, 45]]
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {line = FindInfraLine[g, c, First @ AdjacencyList[g, c]]},
+  {InfraSubstrateHighlight[g, {FindInfraBall[g, line, 1] -> $InfraBallColor, InfraWalk[line] -> $InfraLineColor}],
+   TubeVolumes[g, line]}]
 ```
 
 ## Scope
 
-The volumes of the tubes of radius 2 about the intervals from the centre of the square tiling to each vertex of its shell of radius 6, as a histogram of counts.
+The volumes of the tubes of radius 2 about the intervals from the centre of the square tiling to each vertex of its shell of radius 6, as a histogram.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Large"]},
   {ctr = InfraCenter[g]},
-  KeySort @ Counts @ TubeVolumes[g, ctr, FindInfraShell[g, ctr, 6], 2]]
+  {tubes = TubeVolumes[g, ctr, FindInfraShell[g, ctr, 6], 2]},
+  {Histogram[tubes, {1}, AxesLabel -> {"T(2)", "targets"}], KeySort @ Counts @ tubes}]
 ```
 
 ## Properties and Relations
@@ -85,23 +91,31 @@ A tube about one vertex is a ball.
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Large"]},
   {ctr = InfraCenter[g]},
-  TubeVolumes[g, {ctr}, {0, 6}] === BallVolumes[g, ctr, {0, 6}]]
+  {ListPlot[{TubeVolumes[g, {ctr}, {0, 6}], BallVolumes[g, ctr, {0, 6}]}, DataRange -> {0, 6},
+     PlotMarkers -> {Automatic, Medium}, PlotLegends -> {"T(s)", "V(s)"}],
+   TubeVolumes[g, {ctr}, {0, 6}] === BallVolumes[g, ctr, {0, 6}]}]
 ```
 
-The pair form is the tube about the [MetricInterval]().
+The pair form is the tube about the [MetricInterval](), drawn with its tube of radius 1.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  TubeVolumes[g, 41, 61] === TubeVolumes[g, MetricInterval[g, 41, 61]]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, c, 4])},
+  {interval = MetricInterval[g, c, b]},
+  {InfraSubstrateHighlight[g, {FindInfraBall[g, interval, 1] -> $InfraBallColor, interval -> $InfraSegmentColor}],
+   TubeVolumes[g, c, b] === TubeVolumes[g, interval]}]
 ```
 
-On the square tiling the tube about an interval is the exact rectangle count: here *a* = 2, *b* = 4.
+On the square tiling the tube about an interval is the exact rectangle count, the gray curve: here *a* = 2, *b* = 4.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Large"]},
   {ctr = InfraCenter[g]},
-  TubeVolumes[g, ctr, First @ Sort @ FindInfraShell[g, ctr, 6], {0, 5}] ===
-    Table[3 * 5 + 2 s (2 + 4 + 2) + 2 s (s - 1), {s, 0, 5}]]
+  {tube = TubeVolumes[g, ctr, First @ Sort @ FindInfraShell[g, ctr, 6], {0, 5}]},
+  {Show[ListPlot[tube, DataRange -> {0, 5}, AxesLabel -> {"s", "T(s)"}],
+     Plot[3 * 5 + 2 s (2 + 4 + 2) + 2 s (s - 1), {s, 0, 5}, PlotStyle -> Gray]],
+   tube === Table[3 * 5 + 2 s (2 + 4 + 2) + 2 s (s - 1), {s, 0, 5}]}]
 ```

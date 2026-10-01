@@ -30,36 +30,47 @@ The shell is the sphere of the graph metric and the probe of the shell-area meas
 
 ## Basic Examples
 
-The shells of radius 2 about two points two steps apart on a grid, and the two vertices where they meet, one per branch.
+The shells of radius 2 about the centre and about a point two steps away, and the vertices where they meet, one per branch.
 
 ```wl
 ClearAll[pA, pB, shellA, shellB, meet];
 With[
-  {g = GridGraph[{9, 9}]},
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
   {constr = InfraScene[{pA, pB, shellA, shellB, meet},
-     {pA == InfraPoint[41], pB == InfraPoint[43],
+     {pA == InfraPoint[c], pB == InfraPoint[b],
       shellA == InfraShell[pA, 2], shellB == InfraShell[pB, 2],
       meet == InfraIntersection[shellA, shellB]}]},
-  With[{solved = FindInfraScene[constr, g]},
+  {solved = FindInfraScene[constr, g]},
+  {InfraSubstrateHighlight[g,
+     Join[{InfraSceneInstance[First @ solved, shellA] -> $InfraShellColor,
+           InfraSceneInstance[First @ solved, shellB] -> $InfraCircleColor,
+           Directive[$InfraPointColor]},
+       InfraSceneInstance[#, meet] & /@ solved]],
+   InfraSceneInstance[#, meet] & /@ solved}]
+```
+
+The same construction on the square, hexagonal and triangular tilings.
+
+```wl
+ClearAll[pA, pB, shellA, shellB, meet];
+GraphicsRow @ Table[
+  With[
+    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    {c = InfraCenter[g]},
+    {b = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
+    {constr = InfraScene[{pA, pB, shellA, shellB, meet},
+       {pA == InfraPoint[c], pB == InfraPoint[b],
+        shellA == InfraShell[pA, 2], shellB == InfraShell[pB, 2],
+        meet == InfraIntersection[shellA, shellB]}]},
+    {solved = FindInfraScene[constr, g]},
     InfraSubstrateHighlight[g,
       Join[{InfraSceneInstance[First @ solved, shellA] -> $InfraShellColor,
             InfraSceneInstance[First @ solved, shellB] -> $InfraCircleColor,
             Directive[$InfraPointColor]},
-        InfraSceneInstance[#, meet] & /@ solved],
-      ImageSize -> 250]]]
-```
-
-The meeting vertices.
-
-```wl
-ClearAll[pA, pB, shellA, shellB, meet];
-With[
-  {g = GridGraph[{9, 9}]},
-  {constr = InfraScene[{pA, pB, shellA, shellB, meet},
-     {pA == InfraPoint[41], pB == InfraPoint[43],
-      shellA == InfraShell[pA, 2], shellB == InfraShell[pB, 2],
-      meet == InfraIntersection[shellA, shellB]}]},
-  InfraSceneInstance[#, meet] & /@ FindInfraScene[constr, g]]
+        InfraSceneInstance[#, meet] & /@ solved]]],
+  {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
 ```
 
 ## Scope
@@ -69,9 +80,12 @@ A band of radii 2 to 3 about the centre: the two shells together.
 ```wl
 ClearAll[pA, shellA];
 With[
-  {g = GridGraph[{9, 9}]},
-  {constr = InfraScene[{pA, shellA}, {pA == InfraPoint[41], shellA == InfraShell[pA, {2, 3}]}]},
-  InfraSceneInstance[First @ FindInfraScene[constr, g], shellA] === Union[FindInfraShell[g, 41, 2], FindInfraShell[g, 41, 3]]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {constr = InfraScene[{pA, shellA}, {pA == InfraPoint[c], shellA == InfraShell[pA, {2, 3}]}]},
+  {band = InfraSceneInstance[First @ FindInfraScene[constr, g], shellA]},
+  {InfraSubstrateHighlight[g, {band -> $InfraShellColor, Directive[$InfraPointColor], c}],
+   band === Union[FindInfraShell[g, c, 2], FindInfraShell[g, c, 3]]}]
 ```
 
 ## Properties and Relations
@@ -81,7 +95,10 @@ The shell bound in the scene is the one [FindInfraShell]() computes.
 ```wl
 ClearAll[pA, shellA];
 With[
-  {g = GridGraph[{9, 9}]},
-  {constr = InfraScene[{pA, shellA}, {pA == InfraPoint[41], shellA == InfraShell[pA, 3]}]},
-  InfraSceneInstance[First @ FindInfraScene[constr, g], shellA] === FindInfraShell[g, 41, 3]]
+  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  {constr = InfraScene[{pA, shellA}, {pA == InfraPoint[c], shellA == InfraShell[pA, 3]}]},
+  {shell = InfraSceneInstance[First @ FindInfraScene[constr, g], shellA]},
+  {InfraSubstrateHighlight[g, {shell -> $InfraShellColor, Directive[$InfraPointColor], c}],
+   shell === FindInfraShell[g, c, 3]}]
 ```

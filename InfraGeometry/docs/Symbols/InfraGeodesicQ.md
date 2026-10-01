@@ -26,35 +26,41 @@ The condition gets stronger as *s* grows, so a walk that passes at *s* passes at
 
 ## Basic Examples
 
-Three walks from the centre of a grid and the scales, among 1 to 4 and `Infinity`, at which each is a geodesic. Round a square, the walk is locally shortest at scale 2 only; round a larger loop, up to scale 3; a staircase is shortest at every scale.
+Three walks from the centre of the square tiling and the scales, among 1 to 4 and `Infinity`, at which each is a geodesic. Round a square, the walk is locally shortest at scale 2 only; round three sides of a larger square, up to scale 3; a staircase is shortest at every scale.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  Row[Table[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {walks = {{1, 6, 5, 2, 1, 6}, {1, 6, 14, 29, 47, 30, 23, 11}, {1, 6, 5, 15, 25, 41}}},
+  Row @ Table[
     Labeled[
-      InfraSubstrateHighlight[g, InfraWalk[walk], ImageSize -> 180],
+      InfraSubstrateHighlight[g, {InfraWalk[walk], Directive[$InfraPointColor], First @ walk}],
       Select[{1, 2, 3, 4, Infinity}, InfraGeodesicQ[g, walk, #] &]],
-    {walk, {{41, 42, 51, 50, 41, 42}, {41, 42, 43, 52, 61, 60, 59, 50}, {41, 42, 51, 52, 61, 62}}}]]]
+    {walk, walks}]]
 ```
 
 Stepping back is a walk but not a geodesic at scale 2.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {InfraGeodesicQ[g, {41, 42, 41}, 1], InfraGeodesicQ[g, {41, 42, 41}, 2]}]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {backStep = {1, 2, 1}},
+  {InfraSubstrateHighlight[g, {InfraWalk[backStep], Directive[$InfraPointColor], 1}],
+   InfraGeodesicQ[g, backStep, 1], InfraGeodesicQ[g, backStep, 2]}]
 ```
 
 ## Properties and Relations
 
-At scale 1 the test is [InfraWalkQ]() and at scale `Infinity` it is [InfraSegmentQ](), on every walk of 4 edges from the centre.
+At scale 1 the test is [InfraWalkQ]() and at scale `Infinity` it is [InfraSegmentQ](), on every walk of 4 edges from the centre; those passing at scale `Infinity` are drawn.
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  {walkSeqs = Last /@ VertexList[#] & /@ FindInfraGeodesic[g, 41, 1, {4}, All]},
-  {AllTrue[walkSeqs, InfraGeodesicQ[g, #, 1] === InfraWalkQ[g, #] &],
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {walkGraphs = FindInfraGeodesic[g, a, 1, {4}, All]},
+  {walkSeqs = Last /@ VertexList[#] & /@ walkGraphs},
+  {InfraSubstrateHighlight[g, {Select[walkGraphs, InfraGeodesicQ[g, #, Infinity] &], Directive[$InfraPointColor], a}],
+   AllTrue[walkSeqs, InfraGeodesicQ[g, #, 1] === InfraWalkQ[g, #] &],
    AllTrue[walkSeqs, InfraGeodesicQ[g, #, Infinity] === InfraSegmentQ[g, #] &]}]
 ```
 
@@ -62,6 +68,9 @@ A geodesic interval graph passes as a whole, since all its paths from the source
 
 ```wl
 With[
-  {g = GridGraph[{9, 9}]},
-  InfraGeodesicQ[g, SegmentGraph[g, 41, 61]]]
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {dag = SegmentGraph[g, a, b]},
+  {InfraSubstrateHighlight[g, {dag, Directive[$InfraPointColor], a, b}], InfraGeodesicQ[g, dag]}]
 ```
