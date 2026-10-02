@@ -71,6 +71,10 @@ InfraBallQ::usage = "InfraBallQ[graph, vertexSet] tests whether vertexSet is a c
 FindBallHull::usage = "FindBallHull[graph, S] gives, as a sorted vertex list, the ball hull of S: the intersection of all closed balls containing S, the smallest ball-convex superset.";
 BallHullQ::usage = "BallHullQ[graph, S] tests whether S is ball-convex, i.e. an intersection of closed balls.";
 
+InfraTube::usage = "InfraTube[core, s] is the inert tube { v : d(v, core) <= s }, core a vertex, a vertex set, a density, a walk graph or a Euclidean head; InfraTube[core, {s, t}] is the band { v : s <= d(v, core) <= t }. Read by InfraMeasurement and FindInfraRepresentative.";
+InfraCylinder::usage = "InfraCylinder[axis, r] is the inert cylinder of radius r around axis, the tube InfraTube[axis, r]; r may be a band {r, s}.";
+InfraCone::usage = "InfraCone[axis, slope] is the inert cone { v : d(v, axis[[i]]) <= slope (i - 1) for some i } with apex First[axis]; reverse the axis for the other apex.";
+
 InfraCircle::usage = "InfraCircle[c, p] is the inert circle around c through p and InfraCircle[c, \"Radius\" -> r | {r, s}] the circles of a band; its graph is the List of necklaces of a radial seam. Option \"RadiusDelta\" widens the band: a scalar d means {0, d}, outward only.";
 FindInfraCircle::usage = "FindInfraCircle[graph, c, p] gives one circle around c through p as a cyclic vertex list; \"Radius\" -> r | {r, s} in place of p takes a band. A trailing n | UpTo[n] | All gives a List. Option \"RadiusDelta\".";
 FindInfraCycle::usage = "FindInfraCycle[graph, n] gives the n shortest simple cycles of graph; FindInfraCycle[graph, {kmin, kmax}, n] restricts their length.";
@@ -112,8 +116,6 @@ InfraPolylineQ::usage = "InfraPolylineQ[graph, poly] tests whether every leg is 
 
 InfraRevolution::usage = "InfraRevolution[axis, profile] is the InfraScene constructor for a solid of revolution.";
 FindInfraRevolution::usage = "FindInfraRevolution[graph, axis, profile] gives the rotational vertex set around axis with the given radius profile, a constant, list, association, or function. Options \"Form\", Method.";
-FindInfraCylinder::usage = "FindInfraCylinder[graph, axis, r] gives the constant-radius solid of revolution around axis, by default the r-neighbourhood of the axis.";
-FindInfraCone::usage = "FindInfraCone[graph, axis, slope] gives the cone of the given slope with apex at one end of axis. Option \"Apex\".";
 InfraRevolutionQ::usage = "InfraRevolutionQ[graph, vs, axis, profile] tests whether vs is the solid of revolution around axis with the given profile. Option \"Form\".";
 
 InfraScalarProduct::usage = "InfraScalarProduct[graph, o, u, v] gives the base-point-relative product d(o, u) d(o, v) cos(theta), at curvature 0 the polar form (d(o,u)^2 + d(o,v)^2 - d(u,v)^2)/2. Option Method.";

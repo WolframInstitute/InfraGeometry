@@ -74,6 +74,10 @@ PackageExport[InfraBallQ]
 PackageExport[FindBallHull]
 PackageExport[BallHullQ]
 
+PackageExport[InfraTube]
+PackageExport[InfraCylinder]
+PackageExport[InfraCone]
+
 PackageExport[InfraCircle]
 PackageExport[FindInfraCircle]
 PackageExport[FindInfraCycle]
@@ -111,8 +115,6 @@ PackageExport[InfraPolylineQ]
 
 PackageExport[InfraRevolution]
 PackageExport[FindInfraRevolution]
-PackageExport[FindInfraCylinder]
-PackageExport[FindInfraCone]
 PackageExport[InfraRevolutionQ]
 
 PackageExport[InfraScalarProduct]

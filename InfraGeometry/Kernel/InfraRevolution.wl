@@ -60,40 +60,6 @@ FindInfraRevolution[ graph_Graph, axis_, profile_, opts : OptionsPattern[ ] ] :=
                     If[ i == 1 || i == Length @ positions, dists[[ i ]] === Min @ dists, dists[[ i - 1 ]] === dists[[ i + 1 ]] ] ] ] ],
           { origPositions, radii, origRange } ] ] ] ]
 
-Options[ FindInfraCylinder ] = Join[ FilterRules[ Options[ FindInfraRevolution ], Except[ Method ] ], { Method -> "Balls" } ]
-
-FindInfraCylinder[ graph_Graph, axis_, radius_, opts : OptionsPattern[ ] ] :=
-  FindInfraRevolution[ graph, axis, radius, Method -> OptionValue[ Method ],
-    FilterRules[ { opts }, Except[ Method ] ] ]
-
-Options[ FindInfraCone ] = Join[ Options[ FindInfraRevolution ], { "Apex" -> First } ]
-
-FindInfraCone[ graph_Graph, axis_, slope_, opts : OptionsPattern[ ] ] :=
-  With[
-    { walksOf = w |-> With[ { vs = VertexList @ w },
-        { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
-          scan = v |-> Reap[ DepthFirstScan[ w, v, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
-        Which[
-          ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
-            { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
-                If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
-          EdgeCount @ w == 0, List /@ If[ spelled, Last /@ vs, vs ],
-          spelled,            { Last /@ SortBy[ vs, First ] },
-          DirectedGraphQ @ w,
-            Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
-              { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
-          True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ],
-      apex = OptionValue[ "Apex" ] },
-    { n = Length @ First @ Which[
-        GraphQ @ axis,                        walksOf @ axis,
-        MatchQ[ axis, { __Graph } ],          Catenate[ walksOf /@ axis ],
-        MatchQ[ axis, { _List, ___List } ],   axis,
-        True,                                 { axis } ] },
-    FindInfraRevolution[ graph, axis,
-      slope * If[ apex === Last, Range[ n - 1, 0, -1 ], Range[ 0, n - 1 ] ],
-      FilterRules[ { opts }, Options[ FindInfraRevolution ] ] ]
-  ]
-
 InfraRevolutionQ[ graph_Graph, vs_List, axis_, profile_, opts : OptionsPattern[ FindInfraRevolution ] ] :=
   Union @ vs === FindInfraRevolution[ graph, axis, profile, opts ]
 

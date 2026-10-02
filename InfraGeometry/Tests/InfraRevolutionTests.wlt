@@ -3,28 +3,6 @@
 geodesicGraph = WolframInstitute`InfraGeometry`PackageScope`geodesicGraph;
 
 
-(* PathGraph cylinder, r = 0, Solid (default): result is the axis itself. *)
-
-VerificationTest[
-  With[ { g = PathGraph @ Range @ 7, axis = { 2, 3, 4, 5, 6 } },
-    FindInfraCylinder[ g, axis, 0 ] ],
-  { 2, 3, 4, 5, 6 },
-  TestID -> "FindInfraCylinder-PathGraph-r0-default-Solid-is-axis"
-]
-
-
-(* PathGraph cylinder, r = 1, Solid (union-of-balls tube): the union of the
-   closed radius-1 balls around each axis vertex, which on the path picks up
-   the immediate neighbours 2 and 8 of the axis endpoints. *)
-
-VerificationTest[
-  With[ { g = PathGraph @ Range @ 9, axis = { 3, 4, 5, 6, 7 } },
-    FindInfraCylinder[ g, axis, 1, "Form" -> "Solid" ] ],
-  { 2, 3, 4, 5, 6, 7, 8 },
-  TestID -> "FindInfraCylinder-PathGraph-r1-tube"
-]
-
-
 (* Surface is a subset of Solid for the same axis and profile. *)
 
 VerificationTest[
@@ -50,28 +28,6 @@ VerificationTest[
       Sort @ sol === union ] ],
   True,
   TestID -> "FindInfraRevolution-Solid-equals-union-of-Surfaces"
-]
-
-
-(* FindInfraCone with slope = 1 matches an explicit linear profile on a grid. *)
-
-VerificationTest[
-  With[ { g = GridGraph[ { 5, 5 } ], axis = { 1, 2, 3, 4, 5 } },
-    FindInfraCone[ g, axis, 1, "Form" -> "Solid" ] ===
-    FindInfraRevolution[ g, axis, Range[ 0, 4 ], "Form" -> "Solid" ] ],
-  True,
-  TestID -> "FindInfraCone-slope1-matches-linear-profile"
-]
-
-
-(* FindInfraCone "Apex" -> Last reverses the profile. *)
-
-VerificationTest[
-  With[ { g = GridGraph[ { 5, 5 } ], axis = { 1, 2, 3, 4, 5 } },
-    FindInfraCone[ g, axis, 1, "Apex" -> Last, "Form" -> "Solid" ] ===
-    FindInfraRevolution[ g, axis, Range[ 4, 0, -1 ], "Form" -> "Solid" ] ],
-  True,
-  TestID -> "FindInfraCone-Apex-Last-reverses-profile"
 ]
 
 
@@ -114,27 +70,15 @@ VerificationTest[
 ]
 
 
-(* Default "Form" is "Solid" and default Method is "Balls": the cylinder is the
-   union of closed radius-1 balls around the axis (same tube as the explicit
-   Solid form above). *)
-
-VerificationTest[
-  With[ { g = PathGraph @ Range @ 9, axis = { 3, 4, 5, 6, 7 } },
-    FindInfraCylinder[ g, axis, 1 ] ],
-  { 2, 3, 4, 5, 6, 7, 8 },
-  TestID -> "FindInfraCylinder-default-is-Solid"
-]
-
-
 (* Method -> "PerpendicularBisector": on a path graph every position's
-   bisector slab is just that position itself, so the cylinder degenerates
+   bisector slab is just that position itself, so the solid degenerates
    to the axis. *)
 
 VerificationTest[
   With[ { g = PathGraph @ Range @ 9, axis = { 3, 4, 5, 6, 7 } },
-    FindInfraCylinder[ g, axis, 1, Method -> "PerpendicularBisector" ] ],
+    FindInfraRevolution[ g, axis, 1, Method -> "PerpendicularBisector" ] ],
   { 3, 4, 5, 6, 7 },
-  TestID -> "FindInfraCylinder-PerpendicularBisector-PathGraph"
+  TestID -> "FindInfraRevolution-PerpendicularBisector-PathGraph"
 ]
 
 

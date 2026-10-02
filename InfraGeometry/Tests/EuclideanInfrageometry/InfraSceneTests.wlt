@@ -677,10 +677,10 @@ VerificationTest[
   (* InflatedVertex is not a scene token: it is the inert label InflateGraph stamps on the
      copies it makes.  It arrived with ExampleGraphs.wl in the paclet split (T2a). *)
   { "InflatedVertex",
-    "InfraArc", "InfraBall", "InfraCircle", "InfraEllipse", "InfraEllipticShell", "InfraGeodesic",
+    "InfraArc", "InfraBall", "InfraCircle", "InfraCone", "InfraCylinder", "InfraEllipse", "InfraEllipticShell", "InfraGeodesic",
     "InfraIntersectQ", "InfraLine", "InfraPlane", "InfraPoint",
     "InfraPolygon", "InfraPolyline", "InfraRay", "InfraRevolution", "InfraSegment",
-    "InfraShell", "InfraStep", "InfraTriangle", "InfraWalk", "Undetermined" },
+    "InfraShell", "InfraStep", "InfraTriangle", "InfraTube", "InfraWalk", "Undetermined" },
   TestID -> "InfraScene-valueless-exports-are-scene-tokens"
 ]
 
