@@ -519,7 +519,7 @@ VerificationTest[
 ]
 
 (* FindInfraSegment carries no Method any more (EuclideanInertHeads, T2): its "RandomChoice"
-   modifier on InfraVertexList is the uniform witness now, tested in InfraMeasurementTests.wlt. *)
+   modifier on FindInfraRepresentative is the uniform witness now, tested in InfraMeasurementTests.wlt. *)
 
 
 VerificationTest[

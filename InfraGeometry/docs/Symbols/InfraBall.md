@@ -20,7 +20,7 @@ Definition: the closed ball of radius *r* about *c* is *B_r(c) = {v : d(c, v) â‰
 
 `InfraBall` is a scene token. It names the ball in a construction `x == InfraBall[y, r]`, where *y* is an object of the scene, and [FindInfraScene]() solves it: each branch binds *x* to the ball about the vertex *y* stands for, a sorted vertex list. The ball is unique, so the token adds no branches.
 
-A ball itself is a sorted vertex list, and [FindInfraBall]() computes it. Outside a scene the head is inert, and nothing reads it: [InfraMeasurement]() and [InfraVertexList]() take the Euclidean heads, not this one.
+A ball itself is a sorted vertex list, and [FindInfraBall]() computes it. Outside a scene the head is inert: [InfraMeasurement]() does not read it, and [FindInfraRepresentative]() gives its one member, the ball.
 
 Balls are the probe of the volume measurements. [BallVolumes]() counts them at every radius without building them.
 

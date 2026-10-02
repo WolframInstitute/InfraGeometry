@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraLine
 Keywords: [line, inextensible geodesic, Euclid Postulate 2, parallel postulate]
-SeeAlso: [InfraLine, InfraLineQ, InfraVertexList, ExtendInfraSegment, GeodesicExtensionGraph, FindInfraSegment, FindInfraRay, FindInfraParallel, LineCount]
+SeeAlso: [InfraLine, InfraLineQ, FindInfraRepresentative, ExtendInfraSegment, GeodesicExtensionGraph, FindInfraSegment, FindInfraRay, FindInfraParallel, LineCount]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -24,7 +24,7 @@ A line is an **inextensible geodesic**: a shortest path that no neighbour of eit
 
 That is the intrinsic reading of Euclid's second postulate — produce a finite straight line continuously — and it is where the analogy with the plane breaks hardest. In the plane two points determine one line. On a lattice they determine an enormous family: below, two vertices at distance 5 on a 313-vertex square-tiling patch lie on 5 242 880 lines, against 6144 on the hexagonal tiling and 1386 on the irregular mesh.
 
-The search runs on the substrate directly: a geodesic from *a* to *b*, prolonged one geodesic step at a time, every prolongation at the back and then every prolongation at the front, kept when neither end can be prolonged. It does not read the graph of <code>[InfraLine]()[*a*, *b*]</code>, so it is the check on that graph, and it returns exactly the shapes [InfraVertexList]() gives for that head.
+The search runs on the substrate directly: a geodesic from *a* to *b*, prolonged one geodesic step at a time, every prolongation at the back and then every prolongation at the front, kept when neither end can be prolonged. It does not read the graph of <code>[InfraLine]()[*a*, *b*]</code>, so it is the check on that graph, and it returns exactly the shapes [FindInfraRepresentative]() gives for that head.
 
 The search enumerates. To count lines, use <code>[InfraMeasurement]()[*g*, [InfraLine]()[*a*, *b*], "Cardinality"]</code>, which reads the count off the head's graph without enumerating a line.
 
@@ -105,7 +105,7 @@ The search agrees with the graph of the head.
 ```wl
 With[
   {g = GridGraph[{4, 4}]},
-  Sort @ FindInfraLine[g, 6, 7, All] === Sort @ InfraVertexList[g, InfraLine[6, 7], All]]
+  Sort @ FindInfraLine[g, 6, 7, All] === Sort @ FindInfraRepresentative[g, InfraLine[6, 7], All]]
 ```
 
 A line through an edge is that edge extended with no budget.

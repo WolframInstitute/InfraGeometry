@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraMemberQ
 Keywords: [segment, ray, line, circle, arc, inert head, membership]
-SeeAlso: [InfraVertexList, InfraMeasurement, InfraSegmentQ, InfraLineQ]
+SeeAlso: [FindInfraRepresentative, InfraMeasurement, InfraSegmentQ, InfraLineQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -16,7 +16,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Details & Options
 
-*path* is a member exactly when it is a source-to-sink chain of *obj*'s graph — <code>[InfraMeasurement]()[*graph*, *obj*, "Graph"]</code> — for a circle, up to rotation and direction. [InfraMemberQ]() agrees with [InfraVertexList]() by construction: every vertex list `InfraVertexList` returns passes `InfraMemberQ`, and conversely.
+*path* is a member exactly when it is a source-to-sink chain of *obj*'s graph — <code>[InfraMeasurement]()[*graph*, *obj*, "Graph"]</code> — for a circle, up to rotation and direction. [InfraMemberQ]() agrees with [FindInfraRepresentative]() on every head it reads off a graph: every vertex list it returns there passes `InfraMemberQ`, and conversely. A circle's representative is found by the sweep instead, which can find a circle the necklaces miss.
 
 Unlike [InfraSegmentQ]() or [InfraLineQ](), which test *path* against the general definition of the class on *graph*, `InfraMemberQ` tests it against one specific head — so it also distinguishes, say, one line through two points from another line through the same points on a graph where several exist.
 
@@ -31,8 +31,8 @@ With[
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
   {x = (SeedRandom[7]; RandomInfraPoint[g, a, 3])},
   {seg = InfraSegment[a, b]},
-  {member = InfraVertexList[g, seg]},
-  {detour = InfraVertexList[g, InfraSegment[a, x, b]]},
+  {member = FindInfraRepresentative[g, seg]},
+  {detour = FindInfraRepresentative[g, InfraSegment[a, x, b]]},
   {InfraSubstrateHighlight[g, {InfraWalk[member], InfraWalk[detour], Directive[$InfraPointColor], a, b}],
    InfraMemberQ[g, seg, member], InfraMemberQ[g, seg, detour]}]
 ```
@@ -55,7 +55,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {circle = InfraCircle[c, "Radius" -> {2, 4}]},
-  {turned = RotateLeft[Reverse @ InfraVertexList[g, circle], 3]},
+  {turned = RotateLeft[Reverse @ FindInfraRepresentative[g, circle], 3]},
   {InfraSubstrateHighlight[g, {InfraWalk[Append[turned, First @ turned]] -> $InfraCircleColor, Directive[$InfraPointColor], c}, "Arrowheads" -> True],
    InfraMemberQ[g, circle, turned]}]
 ```
@@ -69,7 +69,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = InfraCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
-  {other = InfraVertexList[g, InfraSegment[a, First @ AdjacencyList[g, a]]]},
+  {other = FindInfraRepresentative[g, InfraSegment[a, First @ AdjacencyList[g, a]]]},
   {InfraSubstrateHighlight[g, {InfraSegment[a, b], InfraWalk[other]}],
    InfraSegmentQ[g, other], InfraMemberQ[g, InfraSegment[a, b], other]}]
 ```

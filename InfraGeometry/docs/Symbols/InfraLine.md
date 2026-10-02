@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraLine
 Keywords: [line, inextensible shortest path, atoms, inert head]
-SeeAlso: [FindInfraLine, InfraLineQ, InfraMeasurement, InfraVertexList, InfraSegment, InfraRay]
+SeeAlso: [FindInfraLine, InfraLineQ, InfraMeasurement, FindInfraRepresentative, InfraSegment, InfraRay]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraLine]()[*p*, *q*]</code> is the line through *p* and *q*: every inextensible shortest path through *p* and then *q*. It is inert; [InfraMeasurement]() and [InfraVertexList]() evaluate it on a graph.
+<code>[InfraLine]()[*p*, *q*]</code> is the line through *p* and *q*: every inextensible shortest path through *p* and then *q*. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraLine]()[*p*, *q*]</code> inside an [InfraScene]() is the line construction token; [FindInfraLine]() is the search.
 
@@ -63,7 +63,7 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = InfraCenter[g]},
   {q = (SeedRandom[1]; RandomInfraPoint[g, p, 2])},
-  {members = InfraVertexList[g, InfraLine[p, q], 3]},
+  {members = FindInfraRepresentative[g, InfraLine[p, q], 3]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], Directive[$InfraPointColor], p, q}], {member, members}]]
 ```
 
@@ -101,7 +101,7 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = InfraCenter[g]},
   {q = (SeedRandom[1]; RandomInfraPoint[g, p, 2])},
-  {members = InfraVertexList[g, InfraLine[p, q], All]},
+  {members = FindInfraRepresentative[g, InfraLine[p, q], All]},
   {InfraSubstrateHighlight[g, {members -> $InfraLineColor, Directive[$InfraPointColor], p, q}],
    InfraLineQ[g, members]}]
 ```

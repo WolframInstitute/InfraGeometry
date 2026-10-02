@@ -31,7 +31,6 @@ BallHullQ[ graph_Graph, s_ ] :=
   With[ { vs = Keys @ InfraDensity[ graph, s ] },
     Sort @ BallHull[ graph, vs ] === vs ]
 
-dispatchConstruction[ graph_Graph, InfraBall[ center_, r_ ] ] :=
-  applySelectOption[ graph,
-    { FindInfraBall[ graph, center, r ] },
-    None, False, <| "Center" -> center, "Radius" -> r |> ]
+FindInfraRepresentative[ graph_Graph, InfraBall[ center_, r_ ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  takeRepresentatives[ { FindInfraBall[ graph, center, r ] }, count, mods ]

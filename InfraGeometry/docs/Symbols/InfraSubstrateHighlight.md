@@ -81,7 +81,7 @@ With[
   {c = InfraCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 5])},
   {q = (SeedRandom[2]; RandomInfraPoint[g, c, 5])},
-  {walk = InfraVertexList[g, InfraSegment[p, q]]},
+  {walk = FindInfraRepresentative[g, InfraSegment[p, q]]},
   InfraSubstrateHighlight[g, {InfraSegment[c, p], InfraSegment[c, q], InfraWalk[walk]}, "Arrowheads" -> True]]
 ```
 
@@ -105,7 +105,7 @@ With[
   {a = InfraCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
   GraphicsRow[{
-    InfraSubstrateHighlight[g, {InfraVertexList[g, InfraSegment[a, b], All]}],
+    InfraSubstrateHighlight[g, {FindInfraRepresentative[g, InfraSegment[a, b], All]}],
     InfraSubstrateHighlight[g, {InfraSegment[a, b]}]}]]
 ```
 

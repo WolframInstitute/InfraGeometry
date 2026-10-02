@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraCircle
 Keywords: [circle, band, separating cycle, necklace, seam, inert head]
-SeeAlso: [FindInfraCircle, InfraArc, InfraMeasurement, InfraVertexList, Undetermined, InfraShell]
+SeeAlso: [FindInfraCircle, InfraArc, InfraMeasurement, FindInfraRepresentative, Undetermined, InfraShell]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraCircle]()[*c*, *p*]</code> is the circle around *c* through *p*. It is inert; [InfraMeasurement]() and [InfraVertexList]() evaluate it on a graph.
+<code>[InfraCircle]()[*c*, *p*]</code> is the circle around *c* through *p*. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraCircle]()[*c*, "Radius" -> *r*]</code> is the family of circles around *c* at radius *r*, and <code>[InfraCircle]()[*c*, "Radius" -> {*r*, *s*}]</code> the family in the band *r* ≤ *d(c, v)* ≤ *s*.
 
@@ -76,7 +76,7 @@ A member is a cyclic vertex list. Drawn as a walk, it closes back on its first v
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  {closedWalk = InfraVertexList[g, InfraCircle[c, "Radius" -> {2, 4}]]},
+  {closedWalk = FindInfraRepresentative[g, InfraCircle[c, "Radius" -> {2, 4}]]},
   InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]] -> $InfraCircleColor, Directive[$InfraPointColor], c}]]
 ```
 
@@ -101,7 +101,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {band = FindInfraShell[g, c, {2, 4}]},
-  {closedWalk = InfraVertexList[g, InfraCircle[c, "Radius" -> {2, 4}]]},
+  {closedWalk = FindInfraRepresentative[g, InfraCircle[c, "Radius" -> {2, 4}]]},
   {InfraSubstrateHighlight[g, {band -> $InfraShellColor, InfraWalk[Append[closedWalk, First @ closedWalk]] -> $InfraCircleColor}],
    SubsetQ[band, closedWalk], AllTrue[Partition[closedWalk, 2, 1, 1], EdgeQ[g, UndirectedEdge @@ #] &]}]
 ```

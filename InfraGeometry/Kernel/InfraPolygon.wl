@@ -181,17 +181,16 @@ InfraRegularPolygonQ[ graph_Graph, w_Graph, As_List ] :=
           { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] ],
     As ]
 
-dispatchConstruction[ graph_Graph, InfraPolygon[ As_List, n_Integer, opts___Rule ] ] :=
-  capBranches[
-    applySelectOption[ graph,
-      Most @* polylineToVertexSeq /@ FindInfraRegularPolygon[ graph, As, n, All,
-        Sequence @@ FilterRules[ { opts }, Options[ FindInfraRegularPolygon ] ] ],
-      "Select" /. { opts } /. "Select" -> None,
-      True, <| |> ],
-    extractBranches[ { opts } ] ]
+FindInfraRepresentative[ graph_Graph, InfraPolygon[ As_List, n_Integer, opts___Rule ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  Replace[
+    FindInfraRegularPolygon[ graph, As, n, count,
+      Sequence @@ searchMethod[ mods ], Sequence @@ FilterRules[ { opts }, Options[ FindInfraRegularPolygon ] ] ],
+    { legs : { __Graph } :> Most @ polylineToVertexSeq @ legs, polygons_List :> Most @* polylineToVertexSeq /@ polygons } ]
 
-dispatchConstruction[ graph_Graph, InfraPolygon[ verts_List, opts___Rule ] ] :=
-  capBranches[
-    polylineToVertexSeq /@ FindInfraPolygon[ graph, verts, All,
-      Sequence @@ FilterRules[ { opts }, Options[ FindInfraPolygon ] ] ],
-    extractBranches[ { opts } ] ]
+FindInfraRepresentative[ graph_Graph, InfraPolygon[ verts_List, opts___Rule ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  Replace[
+    FindInfraPolygon[ graph, verts, count,
+      Sequence @@ searchMethod[ mods ], Sequence @@ FilterRules[ { opts }, Options[ FindInfraPolygon ] ] ],
+    { legs : { __Graph } :> polylineToVertexSeq @ legs, polygons_List :> polylineToVertexSeq /@ polygons } ]

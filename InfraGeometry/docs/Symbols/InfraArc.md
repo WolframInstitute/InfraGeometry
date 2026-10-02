@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraArc
 Keywords: [arc, circle, band, minor arc, inert head]
-SeeAlso: [FindInfraArc, InfraCircle, InfraSegment, InfraMeasurement, InfraVertexList, Undetermined]
+SeeAlso: [FindInfraArc, InfraCircle, InfraSegment, InfraMeasurement, FindInfraRepresentative, Undetermined]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraArc]()[*c*, {*p*, *q*}]</code> is the arc around *c* from *p* to *q*: the minor arcs of the circle through *p* and *q*. It is inert; [InfraMeasurement]() and [InfraVertexList]() evaluate it on a graph.
+<code>[InfraArc]()[*c*, {*p*, *q*}]</code> is the arc around *c* from *p* to *q*: the minor arcs of the circle through *p* and *q*. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraArc]()[*c*, {*p1*, …, *pk*}]</code> is the polyline of the minor arcs from each point to the next.
 
@@ -79,7 +79,7 @@ With[
   {c = InfraCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 3])},
   {q = (SeedRandom[2]; RandomInfraPoint[g, c, 3])},
-  {members = InfraVertexList[g, InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}], UpTo[3]]},
+  {members = FindInfraRepresentative[g, InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}], UpTo[3]]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], Directive[$InfraPointColor], c, p, q}], {member, members}]]
 ```
 
@@ -109,7 +109,7 @@ With[
   {q = (SeedRandom[2]; RandomInfraPoint[g, c, 3])},
   {found = FindInfraArc[g, c, {p, q}, All, "RadiusDelta" -> {1, 1}]},
   {InfraSubstrateHighlight[g, {found -> $InfraCircleColor, Directive[$InfraPointColor], c, p, q}],
-   Sort @ found === Sort @ InfraVertexList[g, InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}], All]}]
+   Sort @ found === Sort @ FindInfraRepresentative[g, InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}], All]}]
 ```
 
 The circle's and the arc's `"Faithful"` are both [Undetermined]().

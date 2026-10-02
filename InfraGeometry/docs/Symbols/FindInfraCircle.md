@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraCircle
 Keywords: [circle, band, separating cycle, girth, Euclid Postulate 3]
-SeeAlso: [InfraCircle, InfraVertexList, FindInfraShell, FindInfraBall, InfraCircleQ, FindInfraArc]
+SeeAlso: [InfraCircle, FindInfraRepresentative, FindInfraShell, FindInfraBall, InfraCircleQ, FindInfraArc]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -28,7 +28,7 @@ A circle is returned as a cyclic vertex list: the edge from the last vertex back
 
 Thickening the radius to a band fixes it, and **the band thickness that suffices tracks the girth of the tiling**. On the square grid, girth 4, a two-thick band `{r, r+1}` already carries a cycle. On the hexagonal tiling, girth 6, it does not: `{r, r+1}` is still empty and the band has to reach `{r, r+2}`. On an irregular mesh a single shell usually works, since its vertices are adjacent by accident of the triangulation.
 
-The search sweeps the band directly, length by length with `FindCycle`. It does not read the necklaces of <code>[InfraCircle]()[*c*, …]</code>, so it is the check on them, and it still answers where no seam cuts the band open, or where nothing lies beyond the band and separation is vacuous. It returns exactly the shapes [InfraVertexList]() gives for that head. To count circles without enumerating them, use [InfraMeasurement]().
+The search sweeps the band directly, length by length with `FindCycle`. It does not read the necklaces of <code>[InfraCircle]()[*c*, …]</code>, so it is the check on them, and it still answers where no seam cuts the band open, or where nothing lies beyond the band and separation is vacuous. It is the clause [FindInfraRepresentative]() uses for that head. To count circles without enumerating them, use [InfraMeasurement]().
 
 Option `"RadiusDelta" -> {deltaIn, deltaOut}` widens the band of the point form to *d(c, p)* − *deltaIn* ≤ *d(c, v)* ≤ *d(c, p)* + *deltaOut*. A scalar `"RadiusDelta" -> delta` means `{0, delta}`, outward only. The default is `0`. There is no `Method` and no `Properties`.
 

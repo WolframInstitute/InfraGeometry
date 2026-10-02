@@ -271,7 +271,7 @@ infraInk[ graph_Graph, x_ ] :=
       With[ {
           edges  = KeySort @ GroupBy[ Normal @ InfraMeasurement[ graph, x, "EdgeDensity" ],
             ( UndirectedEdge @@ Sort[ List @@ First @ # ] & ) -> Last, Total ],
-          member = If[ InfraMeasurement[ graph, x, "Cardinality" ] == 1, InfraVertexList[ graph, x ], None ] },
+          member = If[ InfraMeasurement[ graph, x, "Cardinality" ] == 1, FindInfraRepresentative[ graph, x ], None ] },
         <| "VertexDensity" -> InfraMeasurement[ graph, x, "VertexDensity" ],
            "EdgeDensity"   -> edges,
            "Walk"          -> If[ ListQ @ member && Length @ member > 2 &&

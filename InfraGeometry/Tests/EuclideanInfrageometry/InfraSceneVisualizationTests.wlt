@@ -590,7 +590,7 @@ VerificationTest[
       { ink[ "VertexDensity" ] === InfraMeasurement[ g, h, "VertexDensity" ],
         Total @ ink[ "EdgeDensity" ] === Total @ InfraMeasurement[ g, h, "EdgeDensity" ],
         Sort @ Keys @ ink[ "EdgeDensity" ] ===
-          Union[ UndirectedEdge @@ Sort @ # & /@ Catenate[ Partition[ #, 2, 1 ] & /@ InfraVertexList[ g, h, All ] ] ] } ] ) @@@
+          Union[ UndirectedEdge @@ Sort @ # & /@ Catenate[ Partition[ #, 2, 1 ] & /@ FindInfraRepresentative[ g, h, All ] ] ] } ] ) @@@
     { { CycleGraph[ 6 ], InfraSegment[ 1, 4 ] }, { GridGraph[ { 5, 5 } ], InfraSegment[ 1, 13 ] } },
   { { True, True, True }, { True, True, True } },
   TestID -> "InfraSubstrateHighlight-head-ink-is-its-measurement"
@@ -610,7 +610,7 @@ VerificationTest[
       infraInk[ g, InfraSegment[ 1, 7 ] ][ "Walk" ],
       infraInk[ g, InfraMeasurement[ g, InfraSegment[ 1, 25 ], "Graph" ] ][ "Walk" ],
       infraInk[ g, walkGraph @ { 1, 2, 7, 2, 3 } ][ "Walk" ] } ],
-  { { 1, 2, 3, 4, 5 }, { 12, 7, 8, 9, 14, 19, 18, 17, 12 }, None, None, { 1, 2, 7, 2, 3 } },
+  { { 1, 2, 3, 4, 5 }, { 8, 7, 12, 17, 18, 19, 14, 9, 8 }, None, None, { 1, 2, 7, 2, 3 } },
   TestID -> "infraInk-one-member-keeps-its-order"
 ]
 

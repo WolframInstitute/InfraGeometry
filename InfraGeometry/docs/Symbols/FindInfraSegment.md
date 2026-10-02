@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraSegment
 Keywords: [segment, geodesic, shortest path, Euclid Postulate 1]
-SeeAlso: [InfraSegment, InfraVertexList, FindInfraLine, FindInfraMidpoint, UniqueInfraSegmentQ, MetricInterval]
+SeeAlso: [InfraSegment, FindInfraRepresentative, FindInfraLine, FindInfraMidpoint, UniqueInfraSegmentQ, MetricInterval]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -22,7 +22,7 @@ A segment from *a* to *b* is a geodesic: a path whose length realizes $d(a,b)$.
 
 In the Euclidean plane the segment between two points is unique. On a graph it is a **set** of paths, and uniqueness fails generically — a square grid has many geodesics between two vertices, because any interleaving of the horizontal and vertical steps is one.
 
-The search runs on the substrate directly, with `FindPath` at the geodesic length. It does not read the graph of <code>[InfraSegment]()[*a*, *b*]</code>, so it is the check on that graph, and it returns exactly the shapes <code>[InfraVertexList]()[*g*, [InfraSegment]()[*a*, *b*], …]</code> gives. To count the geodesics without enumerating them, use [InfraMeasurement]().
+The search runs on the substrate directly, with `FindPath` at the geodesic length. It does not read the graph of <code>[InfraSegment]()[*a*, *b*]</code>, so it is the check on that graph, and it returns exactly the shapes <code>[FindInfraRepresentative]()[*g*, [InfraSegment]()[*a*, *b*], …]</code> gives. To count the geodesics without enumerating them, use [InfraMeasurement]().
 
 The count-less call is one geodesic, deterministic. There is no `Method` and no `Properties`.
 
@@ -89,5 +89,5 @@ The search agrees with the graph of the head.
 ```wl
 With[
   {g = GridGraph[{5, 5}]},
-  Sort @ FindInfraSegment[g, 1, 19, All] === Sort @ InfraVertexList[g, InfraSegment[1, 19], All]]
+  Sort @ FindInfraSegment[g, 1, 19, All] === Sort @ FindInfraRepresentative[g, InfraSegment[1, 19], All]]
 ```

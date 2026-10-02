@@ -189,11 +189,6 @@ InfraCircleQ[ graph_Graph, cycle_List ] /; Length[ cycle ] >= 3 :=
 InfraCircleQ[ _Graph, cycle_List ] /; Length[ cycle ] < 3 :=
   False
 
-dispatchConstruction[ graph_Graph, InfraCircle[ center_, r_, opts___Rule ] ] :=
-  capBranches[
-    applySelectOption[ graph,
-      FindInfraCircle[ graph, center, "Radius" -> r, All ],
-      "Select" /. { opts } /. "Select" -> None,
-      True, <| "Center" -> center,
-               "Radius" -> If[ NumericQ[ r ], r, Mean[ r ] ] |> ],
-    extractBranches[ { opts } ] ]
+FindInfraRepresentative[ graph_Graph, InfraCircle[ center_, spec_, opts___Rule ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  takeRepresentatives[ FindInfraCircle[ graph, center, spec, All, opts ], count, mods ]

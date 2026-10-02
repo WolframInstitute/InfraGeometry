@@ -15,7 +15,7 @@ PackageExport[InfraCenter]
 
 PackageExport[InfraMeasurement]
 PackageExport[Undetermined]
-PackageExport[InfraVertexList]
+PackageExport[FindInfraRepresentative]
 PackageExport[InfraMemberQ]
 PackageExport[InfraSubgraph]
 

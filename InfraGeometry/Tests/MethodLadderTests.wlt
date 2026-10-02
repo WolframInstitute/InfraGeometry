@@ -24,7 +24,7 @@ sortReps[ x_ ] := Sort @ Replace[ reps @ x, l_List :> Sort @ l, { 1 } ]
 
 (* FindInfraSegment, FindInfraLine, FindInfraRay and FindInfraCircle left the Method
    ladder on 2026-09-26 (EuclideanInertHeads): the count fixes the mode and the only
-   modifiers are "RandomChoice" / "Pruning" on InfraVertexList, so they carry no Method
+   modifiers are "RandomChoice" / "Pruning" on FindInfraRepresentative, so they carry no Method
    axis of their own to be invariant under any more. *)
 
 VerificationTest[

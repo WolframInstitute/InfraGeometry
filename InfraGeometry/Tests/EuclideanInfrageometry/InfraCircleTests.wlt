@@ -17,6 +17,13 @@ bruteCircles[g_Graph, c_, spec_, delta_] :=
 
 cycleSets[cycles_] := Sort[Sort /@ cycles]
 
+(* the chains of the necklace graph, source to sink, read without the representative finder (whose circle clause is the sweep) *)
+necklaceChains[g_Graph, cir_, k_ : Infinity] :=
+  Take[Catenate[Function[dag,
+      Catenate[FindPath[dag, #1, #2, Infinity, Replace[k, Infinity -> All]] & @@@
+        Tuples[{Pick[VertexList@dag, VertexInDegree@dag, 0], Pick[VertexList@dag, VertexOutDegree@dag, 0]}]]] /@
+    InfraMeasurement[g, cir, "Graph"]], UpTo[k]]
+
 (* ===== the triangular patch: the hexagonal ring of radius 2 is the one circle through p ===== *)
 
 VerificationTest[
@@ -25,8 +32,8 @@ VerificationTest[
     {cir = InfraCircle[c, p]},
     {InfraMeasurement[g, cir, "Cardinality"], InfraMeasurement[g, cir, "Length"],
      InfraMeasurement[g, cir, "Faithful"],
-     MemberQ[InfraVertexList[g, cir], p],
-     AllTrue[InfraVertexList[g, cir], GraphDistance[g, c, #] == 2 &]}],
+     MemberQ[FindInfraRepresentative[g, cir], p],
+     AllTrue[FindInfraRepresentative[g, cir], GraphDistance[g, c, #] == 2 &]}],
   {1, 12, Undetermined, True, True},
   TestID -> "InfraCircle-triangular-hexagonal-ring"
 ]
@@ -36,7 +43,7 @@ VerificationTest[
   With[{g = TessellationNeighborhoodGraph[{3, 6}, 5]}, {c = First @ GraphCenter[g]},
     {p = First @ Select[VertexList[g], GraphDistance[g, c, #] == 2 &]},
     {cir = InfraCircle[c, p]}, {swept = FindInfraCircle[g, c, p, All]},
-    cycleSets[InfraVertexList[g, cir, All]] === cycleSets[swept] &&
+    cycleSets[necklaceChains[g, cir]] === cycleSets[swept] &&
     AllTrue[swept, InfraMemberQ[g, cir, #] &]],
   True,
   TestID -> "InfraCircle-search-finds-the-same-circle"
@@ -59,8 +66,8 @@ VerificationTest[
     AllTrue[
       Tuples[{Select[VertexList[g], 2 <= GraphDistance[g, 25, #] <= 3 &][[{1, 4, 7, 10}]], {1, 2}}],
       Apply[{p, d} |-> With[{cir = InfraCircle[25, p, "RadiusDelta" -> d]},
-        cycleSets[InfraVertexList[g, cir, All]] === cycleSets[bruteCircles[g, 25, p, {0, d}]] &&
-        InfraMeasurement[g, cir, "Cardinality"] == Length @ InfraVertexList[g, cir, All]]]]],
+        cycleSets[necklaceChains[g, cir]] === cycleSets[bruteCircles[g, 25, p, {0, d}]] &&
+        InfraMeasurement[g, cir, "Cardinality"] == Length @ necklaceChains[g, cir]]]]],
   True,
   TestID -> "InfraCircle-equals-brute-force-on-the-grid"
 ]
@@ -69,7 +76,7 @@ VerificationTest[
 
 VerificationTest[
   With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, "Radius" -> {2, 4}]},
-    {members = InfraVertexList[g, cir, All]},
+    {members = necklaceChains[g, cir]},
     {InfraMeasurement[g, cir, "Cardinality"] == Length[members],
      InfraMeasurement[g, cir, "Length"] == 16 && Union[Length /@ members] === {16},
      InfraMeasurement[g, cir, "VertexDensity"] === KeySort @ Counts @ Catenate[members],
@@ -83,7 +90,7 @@ VerificationTest[
 (* every member is a simple cycle of the band that separates the centre from beyond it *)
 VerificationTest[
   With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, "Radius" -> {2, 4}]},
-    AllTrue[InfraVertexList[g, cir, All],
+    AllTrue[necklaceChains[g, cir],
       cyc |-> DuplicateFreeQ[cyc] &&
         AllTrue[Partition[Append[cyc, First @ cyc], 2, 1], EdgeQ[g, UndirectedEdge @@ #] &] &&
         AllTrue[cyc, 2 <= GraphDistance[g, 61, #] <= 4 &] &&
@@ -96,12 +103,12 @@ VerificationTest[
 (* the count fixes the mode, and a random draw is a member *)
 VerificationTest[
   With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, "Radius" -> {2, 4}]},
-    {members = InfraVertexList[g, cir, All]},
+    {members = FindInfraRepresentative[g, cir, All]},
     SeedRandom[7];
-    {Head @ InfraVertexList[g, cir], Length @ InfraVertexList[g, cir, 3],
-     Length @ InfraVertexList[g, cir, UpTo[1000]],
-     AllTrue[InfraVertexList[g, cir, 20, "RandomChoice"], MemberQ[members, #] &],
-     Length @ DeleteDuplicates @ InfraVertexList[g, cir, 20, "RandomChoice"] > 1}],
+    {Head @ FindInfraRepresentative[g, cir], Length @ FindInfraRepresentative[g, cir, 3],
+     Length @ FindInfraRepresentative[g, cir, UpTo[1000]],
+     AllTrue[FindInfraRepresentative[g, cir, 20, "RandomChoice"], MemberQ[members, #] &],
+     Length @ DeleteDuplicates @ FindInfraRepresentative[g, cir, 20, "RandomChoice"] > 1}],
   {List, 3, 16, True, True},
   TestID -> "InfraCircle-count-contract-and-random-draws"
 ]
@@ -114,10 +121,19 @@ VerificationTest[
 VerificationTest[
   With[{g = HypercubeGraph[4]}, {c = First @ VertexList[g]},
     {cir = InfraCircle[c, "Radius" -> {1, 2}]}, {swept = FindInfraCircle[g, c, "Radius" -> {1, 2}, All]},
-    {InfraVertexList[g, cir, All], Length[swept], Union[Length /@ swept],
+    {necklaceChains[g, cir], Length[swept], Union[Length /@ swept],
      AllTrue[swept, AllTrue[VertexComponent[VertexDelete[g, #], c], GraphDistance[g, c, #] <= 2 &] &]}],
   {{}, 3, {8}, True},
   TestID -> "InfraCircle-hypercube-has-no-winding-functional"
+]
+
+(* the representative finder reads the circle by the sweep, so it finds the three circles the seam misses *)
+VerificationTest[
+  With[{g = HypercubeGraph[4]}, {c = First @ VertexList[g]}, {cir = InfraCircle[c, "Radius" -> {1, 2}]},
+    {FindInfraRepresentative[g, cir, All] === FindInfraCircle[g, c, "Radius" -> {1, 2}, All],
+     Length @ FindInfraRepresentative[g, cir, All], necklaceChains[g, cir]}],
+  {True, 3, {}},
+  TestID -> "FindInfraRepresentative-circle-is-the-sweep"
 ]
 
 (* ===== the octagon: (W) holds and (T) fails, so the seam through a loses a circle ===== *)
@@ -146,7 +162,7 @@ VerificationTest[
   With[{g = octagonGraph[]},
     AllTrue[{InfraCircle["o", "a", "RadiusDelta" -> {0, 2}], InfraCircle["o", "e", "RadiusDelta" -> {0, 2}],
              InfraCircle["o", "Radius" -> {1, 3}]},
-      cir |-> AllTrue[InfraVertexList[g, cir, All],
+      cir |-> AllTrue[necklaceChains[g, cir],
         cyc |-> Length[cyc] == 8 &&
           AllTrue[VertexComponent[VertexDelete[g, cyc], "o"], GraphDistance[g, "o", #] <= 3 &]]]],
   True,
@@ -167,7 +183,7 @@ VerificationTest[
    -- which is what Euclid I.1 draws on the Petersen graph *)
 VerificationTest[
   With[{g = PetersenGraph[]},
-    {InfraVertexList[g, InfraCircle[1, "Radius" -> 2], All],
+    {necklaceChains[g, InfraCircle[1, "Radius" -> 2]],
      Length @ FindInfraCircle[g, 1, "Radius" -> 2, All],
      Union[Length /@ FindInfraCircle[g, 1, "Radius" -> 2, All]]}],
   {{}, 1, {6}},
@@ -196,7 +212,7 @@ VerificationTest[
   With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, "Radius" -> {2, 4}]},
     {brute = cycleSets[bruteCircles[g, 61, "Radius" -> {2, 4}, {0, 0}]]},
     {Length[brute], cycleSets[FindInfraCircle[g, 61, "Radius" -> {2, 4}, All]] === brute,
-     cycleSets[InfraVertexList[g, cir, All]] === brute}],
+     cycleSets[necklaceChains[g, cir]] === brute}],
   {16, True, True},
   TestID -> "InfraCircle-search-graph-and-brute-force-agree"
 ]
@@ -212,7 +228,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, "Radius" -> {2, 4}]},
     InfraMeasurement[g, cir, "EdgeDensity"] ===
-      KeySort @ Counts @ Catenate[Apply[DirectedEdge, Partition[#, 2, 1, 1], {1}] & /@ InfraVertexList[g, cir, All]]],
+      KeySort @ Counts @ Catenate[Apply[DirectedEdge, Partition[#, 2, 1, 1], {1}] & /@ necklaceChains[g, cir]]],
   True,
   TestID -> "InfraCircle-EdgeDensity-equals-the-enumeration"
 ]
@@ -227,7 +243,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[{g = GridGraph[{25, 25}]}, {cycles = InfraVertexList[g, InfraCircle[313, "Radius" -> {5, 9}], 5]},
+  With[{g = GridGraph[{25, 25}]}, {cycles = necklaceChains[g, InfraCircle[313, "Radius" -> {5, 9}], 5]},
     {Length[cycles], Union[Length /@ cycles],
      AllTrue[cycles, cyc |-> DuplicateFreeQ[cyc] &&
        AllTrue[Partition[Append[cyc, First @ cyc], 2, 1], EdgeQ[g, UndirectedEdge @@ #] &]]}],
@@ -238,7 +254,7 @@ VerificationTest[
 (* a cycle graph's band carries no separating cycle *)
 VerificationTest[
   {FindInfraCircle[CycleGraph[6], 1, "Radius" -> {1, 2}, All],
-   InfraVertexList[CycleGraph[6], InfraCircle[1, "Radius" -> {1, 2}], All]},
+   FindInfraRepresentative[CycleGraph[6], InfraCircle[1, "Radius" -> {1, 2}], All]},
   {{}, {}},
   TestID -> "FindInfraCircle-empty-family-is-quiet"
 ]

@@ -70,7 +70,7 @@ arc = InfraArc[c, {p, q}]                         (* the minor arcs from p to q 
 
 InfraMeasurement[g, seg, "Cardinality"]           (* how many, by dynamic programming *)
 InfraMeasurement[g, seg, "VertexDensity"]         (* <| v -> number of geodesics through v |> *)
-InfraVertexList[g, seg, 3]                        (* the first three, as vertex lists *)
+FindInfraRepresentative[g, seg, 3]                (* the first three, as vertex lists *)
 InfraSubstrateHighlight[g, {seg, circle}]         (* both families, summed, in palette order *)
 ```
 

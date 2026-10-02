@@ -666,7 +666,7 @@ VerificationTest[
    symbols below are exactly those.  The five Euclidean object heads -- InfraSegment,
    InfraRay, InfraLine, InfraCircle, InfraArc -- rejoined the list on 2026-09-26
    (EuclideanInertHeads): the heads themselves are always inert now, with no clause of
-   their own at any arity -- every behaviour lives on InfraMeasurement, InfraVertexList
+   their own at any arity -- every behaviour lives on InfraMeasurement, FindInfraRepresentative
    and dispatchConstruction instead.  One more means a symbol was exported with a usage
    message and no meaning, which is how InfraPlaneQ hid. *)
 VerificationTest[

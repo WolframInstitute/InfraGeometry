@@ -35,7 +35,7 @@ VerificationTest[
     {{GridGraph[{4, 4}], 1, 16}, {CycleGraph[6], 1, 4}, {HypercubeGraph[4], 1, 16},
      {PetersenGraph[], 1, 3}, {PathGraph[Range[7]], 2, 6}},
     Apply[{g, p, q} |->
-      Sort[InfraVertexList[g, InfraSegment[p, q], All]] === Sort[FindPath[g, p, q, {GraphDistance[g, p, q]}, All]]]],
+      Sort[FindInfraRepresentative[g, InfraSegment[p, q], All]] === Sort[FindPath[g, p, q, {GraphDistance[g, p, q]}, All]]]],
   True,
   TestID -> "InfraSegment-members-are-the-geodesics"
 ]
@@ -63,9 +63,9 @@ VerificationTest[
   With[{g = GridGraph[{3, 3}]}, {obj = InfraSegment[1, 5, 9]},
     {InfraMeasurement[g, obj, "Cardinality"] ===
        InfraMeasurement[g, InfraSegment[1, 5], "Cardinality"] InfraMeasurement[g, InfraSegment[5, 9], "Cardinality"],
-     Length[InfraVertexList[g, obj, All]] === InfraMeasurement[g, obj, "Cardinality"],
+     Length[FindInfraRepresentative[g, obj, All]] === InfraMeasurement[g, obj, "Cardinality"],
      InfraMeasurement[g, obj, "Length"] === GraphDistance[g, 1, 5] + GraphDistance[g, 5, 9],
-     AllTrue[InfraVertexList[g, obj, All], Length[#] === InfraMeasurement[g, obj, "Length"] + 1 &]}],
+     AllTrue[FindInfraRepresentative[g, obj, All], Length[#] === InfraMeasurement[g, obj, "Length"] + 1 &]}],
   {True, True, True, True},
   TestID -> "InfraSegment-polyline-members-concatenate-the-pieces"
 ]
@@ -74,7 +74,7 @@ VerificationTest[
    p, q, p retraces its one edge, and a union would carry both orientations of it *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}]},
-    {InfraVertexList[g, InfraSegment[1, 2, 1], All], InfraMeasurement[g, InfraSegment[1, 2, 1], "Cardinality"]}],
+    {FindInfraRepresentative[g, InfraSegment[1, 2, 1], All], InfraMeasurement[g, InfraSegment[1, 2, 1], "Cardinality"]}],
   {{{1, 2, 1}}, 1},
   TestID -> "InfraSegment-polyline-may-retrace-a-side"
 ]
@@ -82,7 +82,7 @@ VerificationTest[
 (* membership on a polyline cuts the path at the knots *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}]}, {obj = InfraSegment[1, 5, 9]},
-    {AllTrue[InfraVertexList[g, obj, All], InfraMemberQ[g, obj, #] &],
+    {AllTrue[FindInfraRepresentative[g, obj, All], InfraMemberQ[g, obj, #] &],
      InfraMemberQ[g, obj, {1, 2, 3, 6, 9}]}],
   {True, False},
   TestID -> "InfraSegment-polyline-membership"
@@ -92,7 +92,7 @@ VerificationTest[
    others, and a knot is visited once *)
 VerificationTest[
   With[{g = GridGraph[{6, 6}]}, {obj = InfraSegment[1, 16, 36]},
-    {members = InfraVertexList[g, obj, All]},
+    {members = FindInfraRepresentative[g, obj, All]},
     {InfraMeasurement[g, obj, "VertexDensity"] === KeySort @ Counts @ Catenate @ members,
      InfraMeasurement[g, obj, "EdgeDensity"] ===
        KeySort @ Counts @ Catenate[DirectedEdge @@@ Partition[#, 2, 1] & /@ members],
@@ -115,7 +115,7 @@ VerificationTest[
   AllTrue[
     {{GridGraph[{4, 4}], 1, 16}, {CycleGraph[6], 1, 4}, {HypercubeGraph[4], 1, 16}, {PetersenGraph[], 1, 3}},
     Apply[{g, p, q} |->
-      Sort[FindInfraSegment[g, p, q, All]] === Sort[InfraVertexList[g, InfraSegment[p, q], All]]]],
+      Sort[FindInfraSegment[g, p, q, All]] === Sort[FindInfraRepresentative[g, InfraSegment[p, q], All]]]],
   True,
   TestID -> "FindInfraSegment-agrees-with-the-graph"
 ]

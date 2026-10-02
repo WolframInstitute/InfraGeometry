@@ -9,6 +9,7 @@ PackageScope[ capBranches ]
 PackageScope[ applySelectOption ]
 PackageScope[ constructionPatternQ ]
 PackageScope[ dispatchConstruction ]
+PackageScope[ selectContext ]
 PackageScope[ evaluateConstruction ]
 PackageScope[ pointQ ]
 PackageScope[ closedWalkQ ]
@@ -87,6 +88,38 @@ selectFromName[ "Peripheral" ] :=
   "Periphery"
 selectFromName[ name_String  ] :=
   name
+
+dispatchConstruction[ graph_Graph, vs_List ] /;
+    vs =!= { } && ! pointQ[ graph, vs ] && SubsetQ[ VertexList @ graph, vs ] :=
+  vs
+
+dispatchConstruction[ graph_Graph, fam_Association ] /;
+    Length[ fam ] > 0 && SubsetQ[ VertexList @ graph, Keys @ fam ] :=
+  Keys @ fam
+
+dispatchConstruction[ graph_Graph, token : Except[ _List | _Association ] ] :=
+  With[ { opts = Cases[ token, _Rule ] },
+    { head = Replace[ DeleteCases[ token, ( "Select" | "Branches" ) -> _ ],
+        InfraCircle[ c_, r : Except[ _Rule ], rest___Rule ] :> InfraCircle[ c, "Radius" -> r, rest ] ] },
+    { members = FindInfraRepresentative[ graph, head, All ] },
+    If[ ListQ @ members,
+      capBranches[
+        applySelectOption[ graph, members, Lookup[ opts, "Select", None ],
+          MatchQ[ head, InfraCircle[ __ ] | InfraPolygon[ _List, _Integer, ___ ] ], selectContext @ head ],
+        Lookup[ opts, "Branches", All ] ],
+      members ] ]
+
+selectContext[ ( InfraCircle | InfraShell )[ c_, rs_, ___ ] ] :=
+  <| "Center" -> c, "Radius" -> Mean @ Flatten @ { Replace[ rs, ( "Radius" -> r_ ) :> r ] } |>
+
+selectContext[ InfraLine[ path_List, ___ ] ] :=
+  <| "Endpoints" -> { First @ path, Last @ path } |>
+
+selectContext[ ( InfraSegment | InfraRay | InfraLine | InfraPlane )[ p1_, p2_, ___ ] ] :=
+  <| "Endpoints" -> { p1, p2 } |>
+
+selectContext[ _ ] :=
+  <| |>
 
 Options[ InfraDistance ] = { "Aggregation" -> Min }
 

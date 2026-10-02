@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraMeasurement
 Keywords: [segment, ray, line, circle, arc, inert head, measurement, occupation, faithful]
-SeeAlso: [InfraVertexList, InfraMemberQ, InfraSubgraph, InfraSegment, InfraRay, InfraLine, InfraCircle, InfraArc, Undetermined]
+SeeAlso: [FindInfraRepresentative, InfraMemberQ, InfraSubgraph, InfraSegment, InfraRay, InfraLine, InfraCircle, InfraArc, Undetermined]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 

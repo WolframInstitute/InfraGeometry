@@ -17,8 +17,9 @@ InfraTriangleQ[ graph_Graph, sides : { _Graph, _Graph, _Graph } ] :=
 InfraTriangleQ[ _Graph, _ ] :=
   False
 
-dispatchConstruction[ graph_Graph, InfraTriangle[ verts_List, opts___Rule ] ] :=
-  capBranches[
-    polylineToVertexSeq /@ FindInfraTriangle[ graph, verts, All,
-      Sequence @@ FilterRules[ { opts }, Options[ FindInfraTriangle ] ] ],
-    extractBranches[ { opts } ] ]
+FindInfraRepresentative[ graph_Graph, InfraTriangle[ verts_List, opts___Rule ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  Replace[
+    FindInfraTriangle[ graph, verts, count,
+      Sequence @@ searchMethod[ mods ], Sequence @@ FilterRules[ { opts }, Options[ FindInfraTriangle ] ] ],
+    { legs : { __Graph } :> polylineToVertexSeq @ legs, triangles_List :> polylineToVertexSeq /@ triangles } ]

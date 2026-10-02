@@ -15,11 +15,11 @@ InfraCenter::usage = "InfraCenter[graph] gives a vertex of least eccentricity.";
 
 Undetermined::usage = "Undetermined is the value of the measurement \"Faithful\" on a head whose graph is faithful only under a hypothesis this paclet does not certify.";
 InfraMeasurement::usage = "InfraMeasurement[graph, obj, property] measures a Euclidean head on graph: \"Graph\", \"Cardinality\", \"Length\", \"VertexDensity\", \"EdgeDensity\", \"Subgraph\", \"Faithful\", \"Volume\", \"BoundaryVolume\", \"InteriorVolume\", \"HalfBoundaryVolume\". A List of properties gives an Association, All gives them all, a List of heads measures each.";
-InfraVertexList::usage = "InfraVertexList[graph, obj] gives one member of obj as a vertex list; a trailing n | UpTo[n] | All gives a List of them. Modifiers \"RandomChoice\" (a uniform member) and \"Pruning\" -> q.";
+FindInfraRepresentative::usage = "FindInfraRepresentative[graph, head] gives one member of the inert head as a vertex list; a trailing n | UpTo[n] | All gives a List of vertex lists. Modifiers \"RandomChoice\" (a random member) and, under All, \"Pruning\" -> q. A head with a graph is read off its chains, the circle and the scene tokens by their searches at the defaults.";
 InfraMemberQ::usage = "InfraMemberQ[graph, obj, path] tests whether the vertex list path is a member of obj.";
 InfraSubgraph::usage = "InfraSubgraph[graph, obj] gives the subgraph of graph induced on the support of obj; InfraSubgraph[graph, obj -> t] thickens the support by t steps.";
 
-InfraSegment::usage = "InfraSegment[p1, ..., pk] is the inert polyline of the segments [p1, p2], ..., [p(k-1), pk]; InfraSegment[p, q] is the segment itself, whose graph is the geodesic interval I(p, q). InfraMeasurement and InfraVertexList evaluate it on a graph; FindInfraSegment is the search.";
+InfraSegment::usage = "InfraSegment[p1, ..., pk] is the inert polyline of the segments [p1, p2], ..., [p(k-1), pk]; InfraSegment[p, q] is the segment itself, whose graph is the geodesic interval I(p, q). InfraMeasurement and FindInfraRepresentative evaluate it on a graph; FindInfraSegment is the search.";
 FindInfraSegment::usage = "FindInfraSegment[graph, p, q] gives one geodesic from p to q as a vertex list; a trailing n | UpTo[n] | All gives a List of them.";
 ExtendInfraSegment::usage = "ExtendInfraSegment[graph, seg, kspec] gives the geodesics containing seg extended by at most kspec edges per side, inextensible within that budget; kspec Infinity gives the lines through seg. ExtendInfraSegment[graph, a, b, c, d] gives the x with B(a, b, x) and d(b, x) == d(c, d) (Tarski A4). Options Method, \"Direction\".";
 InfraWalkQ::usage = "InfraWalkQ[graph, walk] tests whether walk is a walk: consecutive vertices adjacent (revisits allowed).";
@@ -38,7 +38,7 @@ ExtendInfraWalk::usage = "ExtendInfraWalk[graph, seed, kspec] continues a seed w
 ExtendInfraGeodesic::usage = "ExtendInfraGeodesic[graph, seed, scale, kspec] continues a seed geodesic at infra-scale scale, none when the seed is not one -- ExtendInfraWalk at \"InfraScale\" -> scale with \"Minimizing\" among the rules. Options Properties, \"StoppingCondition\", Method, \"Direction\".";
 ConcatenateInfraWalk::usage = "ConcatenateInfraWalk[path1, path2] joins every compatible walk pair, those with Last[walk1] === First[walk2].";
 
-InfraLine::usage = "InfraLine[p, q] is the inert line through p and q, whose graph is the List of atoms I(a, p) + I(p, q) + I(q, b) over the maximal compatible end pairs (a, b). InfraMeasurement and InfraVertexList evaluate it on a graph; FindInfraLine is the search.";
+InfraLine::usage = "InfraLine[p, q] is the inert line through p and q, whose graph is the List of atoms I(a, p) + I(p, q) + I(q, b) over the maximal compatible end pairs (a, b). InfraMeasurement and FindInfraRepresentative evaluate it on a graph; FindInfraLine is the search.";
 FindInfraLine::usage = "FindInfraLine[graph, p, q] gives one line through p and q as a vertex list -- an inextensible geodesic through both; a trailing n | UpTo[n] | All gives a List. FindInfraLine[graph, seq] prolongs a given geodesic.";
 FindInfraParallel::usage = "FindInfraParallel[graph, line, p] gives one parallel to line through p: a geodesic through p inextensible within the level set { v : d(v, line) == d(p, line) }; a trailing n | UpTo[n] | All sets the count, All giving the pool. Option Method.";
 FindInfraPerpendicular::usage = "FindInfraPerpendicular[graph, line, point] gives the lines through point perpendicular to line. Options Method, \"Radius\".";
@@ -102,7 +102,7 @@ InfraEllipseQ::usage = "InfraEllipseQ[graph, cycle] tests whether cycle is a cyc
 InfraPlane::usage = "InfraPlane[p1, p2] inside InfraScene is the bisecting hyperplane of p1 and p2; FindInfraBisectingHyperplane is the search. A plane itself is a sorted vertex list.";
 FindInfraBisectingHyperplane::usage = "FindInfraBisectingHyperplane[graph, p1, p2] gives the perpendicular bisector { v : d(p1, v) == d(p2, v) }; a positional {lo, hi} widens it to a slab. Options Properties, Method.";
 
-InfraRay::usage = "InfraRay[p, q] is the inert ray from p through q, whose graph is the ray DAG R(p, q); InfraRay[p, p] is the pencil at p. InfraMeasurement and InfraVertexList evaluate it on a graph; FindInfraRay is the search.";
+InfraRay::usage = "InfraRay[p, q] is the inert ray from p through q, whose graph is the ray DAG R(p, q); InfraRay[p, p] is the pencil at p. InfraMeasurement and FindInfraRepresentative evaluate it on a graph; FindInfraRay is the search.";
 FindInfraRay::usage = "FindInfraRay[graph, p, q] gives one ray from p through q as a vertex list -- a geodesic from p through q that no neighbour of its last vertex prolongs; a trailing n | UpTo[n] | All gives a List of them.";
 InfraRayQ::usage = "InfraRayQ[graph, ray] tests whether ray is a pointed half-line: a geodesic from its own first vertex that cannot be prolonged past its last.";
 

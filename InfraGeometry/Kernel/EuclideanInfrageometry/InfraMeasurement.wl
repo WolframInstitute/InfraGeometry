@@ -2,6 +2,9 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraMeasurement *)
 
+PackageScope[ takeRepresentatives ]
+PackageScope[ searchMethod ]
+
 InfraMeasurement[ graph_Graph, objs : { __ }, spec_ ] :=
   InfraMeasurement[ graph, #, spec ] & /@ objs
 
@@ -89,8 +92,9 @@ InfraMeasurement[ graph_Graph, obj : Except[ _List ], "InteriorVolume" ] :=
 InfraMeasurement[ graph_Graph, obj : Except[ _List ], "HalfBoundaryVolume" ] :=
   InfraMeasurement[ graph, obj, "Volume" ] - InfraMeasurement[ graph, obj, "BoundaryVolume" ] / 2
 
-InfraVertexList[ graph_Graph,
-    obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ }, ___ ] ],
+FindInfraRepresentative[ graph_Graph,
+    obj : ( InfraSegment | InfraRay | InfraLine )[ Except[ _Rule | _RuleDelayed ], Except[ _Rule | _RuleDelayed ] ] |
+      InfraArc[ _, { _, _ }, ___Rule ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
   With[ {
       cap     = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
@@ -138,6 +142,25 @@ InfraMemberQ[ graph_Graph,
     dag |-> VertexQ[ dag, First @ path ] && VertexInDegree[ dag, First @ path ] == 0 &&
       VertexQ[ dag, Last @ path ] && VertexOutDegree[ dag, Last @ path ] == 0 &&
       AllTrue[ Partition[ path, 2, 1 ], EdgeQ[ dag, DirectedEdge @@ # ] & ] ]
+
+takeRepresentatives[ members_List, count_, mods___ ] :=
+  If[ MemberQ[ { mods }, "RandomChoice" ] && count =!= All && members =!= { },
+    Replace[ count, { Automatic :> RandomChoice @ members, UpTo[ n_ ] | n_ :> RandomChoice[ members, n ] } ],
+    Switch[ count,
+      Automatic, First[ members, { } ],
+      All,       members,
+      _UpTo,     Take[ members, count ],
+      _,         If[ Length @ members < count, { }, Take[ members, count ] ] ] ]
+
+takeRepresentatives[ member : Except[ _List ], ___ ] :=
+  member
+
+searchMethod[ mods___ ] :=
+  Which[
+    MemberQ[ { mods }, "RandomChoice" ], { Method -> "RandomGreedy" },
+    Lookup[ Association @ Cases[ { mods }, _Rule ], "Pruning", 0 ] > 0,
+      { Method -> { "Exhaustive", "Pruning" -> Lookup[ Association @ Cases[ { mods }, _Rule ], "Pruning" ] } },
+    True, { } ]
 
 InfraSubgraph[ graph_Graph, obj_ -> t_Integer ] :=
   Subgraph[ graph,

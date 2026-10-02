@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSegment
 Keywords: [segment, shortest path, interval DAG, polyline, inert head]
-SeeAlso: [FindInfraSegment, InfraMeasurement, InfraVertexList, ExtendInfraSegment, InfraLine, MetricInterval]
+SeeAlso: [FindInfraSegment, InfraMeasurement, FindInfraRepresentative, ExtendInfraSegment, InfraLine, MetricInterval]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraSegment]()[*p*, *q*]</code> is the segment from *p* to *q*: every shortest path from *p* to *q* at once. It is inert; [InfraMeasurement]() and [InfraVertexList]() evaluate it on a graph.
+<code>[InfraSegment]()[*p*, *q*]</code> is the segment from *p* to *q*: every shortest path from *p* to *q* at once. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraSegment]()[*p1*, *p2*, …, *pk*]</code> is the polyline of the segments [*p1*, *p2*], …, [*p(k-1)*, *pk*].
 
@@ -30,7 +30,7 @@ Every count is read off that graph by dynamic programming, never by enumeration.
 
 A polyline is the one head whose `List` of graphs is not a family of alternatives. Its members are concatenations of one shortest path per piece, so its `"Cardinality"` is the product over the pieces and its `"Length"` the sum. Its `"VertexDensity"` stays the sum of the piece densities.
 
-A member is a vertex list; [InfraVertexList]() reads one, several or all of them, and [InfraMemberQ]() tests one.
+A member is a vertex list; [FindInfraRepresentative]() reads one, several or all of them, and [InfraMemberQ]() tests one.
 
 ## Basic Examples
 
@@ -76,7 +76,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = InfraCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 5])},
-  {members = InfraVertexList[g, InfraSegment[a, b], 3]},
+  {members = FindInfraRepresentative[g, InfraSegment[a, b], 3]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], Directive[$InfraPointColor], a, b}], {member, members}]]
 ```
 
@@ -115,7 +115,7 @@ With[
   {a = InfraCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 5])},
   {seg = InfraSegment[a, b]},
-  {members = InfraVertexList[g, seg, All]},
+  {members = FindInfraRepresentative[g, seg, All]},
   {InfraSubstrateHighlight[g, {members, Directive[$InfraPointColor], a, b}],
    Length @ members === InfraMeasurement[g, seg, "Cardinality"],
    Union[Length[#] - 1 & /@ members] === {GraphDistance[g, a, b]}}]

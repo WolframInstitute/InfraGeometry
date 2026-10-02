@@ -50,7 +50,7 @@ Euclidean infrageometry is synthetic geometry: constructions with natural object
 
 - `InfraMeasurement` a property of a head on a graph: "Graph", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph", "Faithful" and the volumes; a List of properties gives an Association, All gives every property
 - `InfraDensity` the marginal of any shape to the vertex set with respect to the counting measure: a vertex, a vertex list, a density, a walk graph; the one coercion in the API
-- `InfraVertexList` one member of a head as a vertex list; a trailing count gives a List of them, "RandomChoice" a uniformly random member
+- `FindInfraRepresentative` one member of a head as a vertex list, read off its graph or found by its search; a trailing count gives a List of them, "RandomChoice" a random member
 - `InfraMemberQ` whether a vertex list is a member of a head on a graph
 
 ### Substrates and Drawing

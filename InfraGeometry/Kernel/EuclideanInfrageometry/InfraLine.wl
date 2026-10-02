@@ -491,17 +491,7 @@ UniversalLineQ[ graph_Graph, { u_, v_ } ] :=
 UniversalLineQ[ graph_Graph ] :=
   AnyTrue[ Subsets[ VertexList @ graph, { 2 } ], UniversalLineQ[ graph, # ] & ]
 
-dispatchConstruction[ graph_Graph, InfraLine[ path_List, opts___Rule ] ] :=
-  capBranches[
-    applySelectOption[ graph, FindInfraLine[ graph, path, All ],
-      "Select" /. { opts } /. "Select" -> None,
-      False, <| "Endpoints" -> { First @ path, Last @ path } |> ],
-    extractBranches[ { opts } ] ]
+FindInfraRepresentative[ graph_Graph, InfraLine[ path_List ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  takeRepresentatives[ FindInfraLine[ graph, path, All ], count, mods ]
 
-dispatchConstruction[ graph_Graph, InfraLine[ p1_, p2_, opts___Rule ] ] /;
-  MemberQ[ VertexList @ graph, p1 ] :=
-  capBranches[
-    applySelectOption[ graph, FindInfraLine[ graph, p1, p2, All ],
-      "Select" /. { opts } /. "Select" -> None,
-      False, <| "Endpoints" -> { p1, p2 } |> ],
-    extractBranches[ { opts } ] ]

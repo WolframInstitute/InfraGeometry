@@ -37,10 +37,10 @@ InfraMeasurement[ graph_Graph, InfraArc[ center_, pts : { _, _, __ }, opts___Rul
 InfraMeasurement[ graph_Graph, InfraArc[ center_, pts : { _, _, __ }, opts___Rule ], "Length" ] :=
   Total @ ( InfraMeasurement[ graph, InfraArc[ center, #, opts ], "Length" ] & /@ Partition[ pts, 2, 1 ] )
 
-InfraVertexList[ graph_Graph, InfraArc[ center_, pts : { _, _, __ }, opts___Rule ],
+FindInfraRepresentative[ graph_Graph, InfraArc[ center_, pts : { _, _, __ }, opts___Rule ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
   With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
-    { pieces = InfraVertexList[ graph, InfraArc[ center, #, opts ],
+    { pieces = FindInfraRepresentative[ graph, InfraArc[ center, #, opts ],
         If[ cap === Infinity, All, UpTo[ cap ] ], mods ] & /@ Partition[ pts, 2, 1 ] },
     { members = Fold[ { as, bs } |-> Catenate @ Map[ a |-> ( Join[ a, Rest @ # ] & /@ bs ), as ],
         First @ pieces, Rest @ pieces ] },

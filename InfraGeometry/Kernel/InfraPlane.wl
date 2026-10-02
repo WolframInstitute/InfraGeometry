@@ -106,14 +106,10 @@ InfraPlaneQ[ graph_Graph, h_List, p1_, p2_, window_ : 0 ] :=
       bounds[[ 1 ]] <= GraphDistance[ graph, p1, # ] - GraphDistance[ graph, p2, # ] <= bounds[[ 2 ]] & ]
   ]
 
-dispatchConstruction[ graph_Graph, InfraPlane[ p1_, p2_, opts___Rule ] ] :=
-  dispatchConstruction[ graph, InfraPlane[ p1, p2, { 0, 0 }, opts ] ]
+FindInfraRepresentative[ graph_Graph, InfraPlane[ p1_, p2_, opts___Rule ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  FindInfraRepresentative[ graph, InfraPlane[ p1, p2, { 0, 0 }, opts ], count, mods ]
 
-dispatchConstruction[ graph_Graph, InfraPlane[ p1_, p2_,
-    window : { _Integer, _Integer }, opts___Rule ] ] :=
-  capBranches[
-    applySelectOption[ graph,
-      FindInfraBisectingHyperplane[ graph, p1, p2, window, All, Properties -> { "Separating" } ],
-      "Select" /. { opts } /. "Select" -> None,
-      False, <| "Endpoints" -> { p1, p2 } |> ],
-    extractBranches[ { opts } ] ]
+FindInfraRepresentative[ graph_Graph, InfraPlane[ p1_, p2_, window : { _Integer, _Integer }, opts___Rule ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  FindInfraBisectingHyperplane[ graph, p1, p2, window, count, Sequence @@ searchMethod[ mods ], Properties -> { "Separating" } ]

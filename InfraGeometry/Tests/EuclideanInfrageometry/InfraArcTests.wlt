@@ -19,7 +19,7 @@ VerificationTest[
     {arc = InfraArc[c, {p, q}]},
     {InfraMeasurement[g, arc, "Cardinality"],
      InfraMeasurement[g, arc, "Length"],
-     Sort @ InfraVertexList[g, arc, All] === Sort @ FindPath[shell, p, q, {6}, All],
+     Sort @ FindInfraRepresentative[g, arc, All] === Sort @ FindPath[shell, p, q, {6}, All],
      Sort @ Keys @ InfraMeasurement[g, arc, "VertexDensity"] === Sort @ ring}],
   {2, 6, True, True},
   TestID -> "InfraArc-antipodes-give-both-half-rings"
@@ -35,8 +35,8 @@ VerificationTest[
     {arc = InfraArc[c, {p, q}]},
     {InfraMeasurement[g, arc, "Cardinality"],
      InfraMeasurement[g, arc, "Length"],
-     InfraSegmentQ[shell, InfraVertexList[g, arc]],
-     InfraVertexList[g, arc] === First @ InfraVertexList[g, arc, All]}],
+     InfraSegmentQ[shell, FindInfraRepresentative[g, arc]],
+     FindInfraRepresentative[g, arc] === First @ FindInfraRepresentative[g, arc, All]}],
   {1, 2, True, True},
   TestID -> "InfraArc-short-arc"
 ]
@@ -50,7 +50,7 @@ VerificationTest[
     {p = 25, q = 57},
     {arc = InfraArc[c, {p, q}, "RadiusDelta" -> 2]},
     {band = bandGraph[g, c, p, delta]},
-    {members = InfraVertexList[g, arc, All]},
+    {members = FindInfraRepresentative[g, arc, All]},
     {Sort @ members === Sort @ FindPath[band, p, q, {GraphDistance[band, p, q]}, All],
      Sort @ members === Sort @ FindInfraArc[g, c, {p, q}, All, "RadiusDelta" -> 2],
      Union[Length /@ members] === {InfraMeasurement[g, arc, "Length"] + 1},
@@ -63,7 +63,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{9, 9}], c = 41},
     {arc = InfraArc[c, {25, 57}, "RadiusDelta" -> 2]},
-    {members = InfraVertexList[g, arc, All]},
+    {members = FindInfraRepresentative[g, arc, All]},
     InfraMeasurement[g, arc, "VertexDensity"] === KeySort @ Counts @ Catenate @ members],
   True,
   TestID -> "InfraArc-density-counts-the-members"
@@ -74,10 +74,10 @@ VerificationTest[
   With[{g = GridGraph[{9, 9}], c = 41},
     {arc = InfraArc[c, {25, 57}, "RadiusDelta" -> 2]},
     {n = InfraMeasurement[g, arc, "Cardinality"]},
-    {MatchQ[InfraVertexList[g, arc], {__Integer}],
-     Length @ InfraVertexList[g, arc, 2],
-     Length @ InfraVertexList[g, arc, UpTo[n + 5]] === n,
-     InfraVertexList[g, arc, n + 5]}],
+    {MatchQ[FindInfraRepresentative[g, arc], {__Integer}],
+     Length @ FindInfraRepresentative[g, arc, 2],
+     Length @ FindInfraRepresentative[g, arc, UpTo[n + 5]] === n,
+     FindInfraRepresentative[g, arc, n + 5]}],
   {True, 2, True, { }},
   TestID -> "InfraArc-count-contract"
 ]
@@ -86,7 +86,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{9, 9}], c = 41},
     {arc = InfraArc[c, {25, 57}, "RadiusDelta" -> 2]},
-    {AllTrue[InfraVertexList[g, arc, All], InfraMemberQ[g, arc, #] &],
+    {AllTrue[FindInfraRepresentative[g, arc, All], InfraMemberQ[g, arc, #] &],
      InfraMemberQ[g, arc, FindInfraSegment[g, 25, 57]]}],
   {True, False},
   TestID -> "InfraArc-membership"
@@ -109,7 +109,7 @@ VerificationTest[
 (* the arc stays inside the band: no member leaves it *)
 VerificationTest[
   With[{g = GridGraph[{9, 9}], c = 41},
-    {members = InfraVertexList[g, InfraArc[c, {25, 57}, "RadiusDelta" -> 2], All]},
+    {members = FindInfraRepresentative[g, InfraArc[c, {25, 57}, "RadiusDelta" -> 2], All]},
     Union[GraphDistance[g, c, #] & /@ Catenate @ members]],
   {4, 5, 6},
   TestID -> "InfraArc-stays-in-the-band"
@@ -129,7 +129,7 @@ VerificationTest[
        InfraMeasurement[g, a, "Cardinality"] InfraMeasurement[g, b, "Cardinality"],
      InfraMeasurement[g, poly, "Length"] ===
        InfraMeasurement[g, a, "Length"] + InfraMeasurement[g, b, "Length"],
-     Length @ InfraVertexList[g, poly, All] === InfraMeasurement[g, poly, "Cardinality"]}],
+     Length @ FindInfraRepresentative[g, poly, All] === InfraMeasurement[g, poly, "Cardinality"]}],
   {True, True, True, True},
   TestID -> "InfraArc-polyline-pieces-are-factors"
 ]
@@ -138,7 +138,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{9, 9}], c = 41},
     {poly = InfraArc[c, {25, 57, 21}, "RadiusDelta" -> 2]},
-    {members = InfraVertexList[g, poly, All]},
+    {members = FindInfraRepresentative[g, poly, All]},
     {InfraMeasurement[g, poly, "VertexDensity"] === KeySort @ Counts @ Catenate @ members,
      InfraMeasurement[g, poly, "EdgeDensity"] ===
        KeySort @ Counts @ Catenate[DirectedEdge @@@ Partition[#, 2, 1] & /@ members]}],
@@ -150,7 +150,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{9, 9}], c = 41},
     {poly = InfraArc[c, {25, 57, 21}, "RadiusDelta" -> 1]},
-    {members = InfraVertexList[g, poly, All]},
+    {members = FindInfraRepresentative[g, poly, All]},
     {AllTrue[members, MemberQ[#, 57] &],
      AllTrue[members, InfraMemberQ[g, poly, #] &],
      Sort @ members === Sort @ FindInfraArc[g, c, {25, 57, 21}, All, "RadiusDelta" -> 1],

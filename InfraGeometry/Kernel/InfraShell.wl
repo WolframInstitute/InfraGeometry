@@ -194,12 +194,7 @@ SeparatesQ[ graph_Graph, vs_List, u_, v_ ] :=
     GraphDistance[ VertexDelete[ graph, vs ], u, v ] === Infinity
   ]
 
-dispatchConstruction[ graph_Graph, InfraShell[ center_, r_, opts___Rule ] ] :=
-  capBranches[
-    applySelectOption[ graph,
-      FindInfraShell[ graph, center, r, All,
-        Sequence @@ FilterRules[ { opts }, Options[ FindInfraShell ] ] ],
-      "Select" /. { opts } /. "Select" -> None,
-      False, <| "Center" -> center,
-                "Radius" -> If[ NumericQ[ r ], r, Mean[ r ] ] |> ],
-    extractBranches[ { opts } ] ]
+FindInfraRepresentative[ graph_Graph, InfraShell[ center_, r_, opts___Rule ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  FindInfraShell[ graph, center, r, count,
+    Sequence @@ searchMethod[ mods ], Sequence @@ FilterRules[ { opts }, Options[ FindInfraShell ] ] ]

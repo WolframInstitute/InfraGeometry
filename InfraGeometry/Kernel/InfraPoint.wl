@@ -380,47 +380,48 @@ SelectInfraPoint[ graph_Graph, countSpec : ( _Integer | UpTo[ _Integer ] | All )
 InfraReachableQ[ graph_Graph, p1_, p2_ ] :=
   IntersectingQ[ VertexComponent[ graph, Keys @ InfraDensity[ graph, p1 ] ], Keys @ InfraDensity[ graph, p2 ] ]
 
-dispatchConstruction[ graph_Graph, InfraPoint[ ] ] :=
-  VertexList @ graph
+FindInfraRepresentative[ graph_Graph, InfraPoint[ ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  takeRepresentatives[ VertexList @ graph, count, mods ]
 
-dispatchConstruction[ graph_Graph, InfraPoint[ v_ ] ] /; pointQ[ graph, v ] :=
-  { v }
+FindInfraRepresentative[ graph_Graph, InfraPoint[ v_ ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] /; pointQ[ graph, v ] :=
+  takeRepresentatives[ { v }, count, mods ]
 
-dispatchConstruction[ graph_Graph, vs_List ] /;
-    vs =!= { } && ! pointQ[ graph, vs ] && SubsetQ[ VertexList @ graph, vs ] :=
-  vs
+FindInfraRepresentative[ graph_Graph, InfraPoint[ pool_String ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  takeRepresentatives[
+    Switch[ pool,
+      "Center",    GraphCenter[ graph ],
+      "Periphery", GraphPeriphery[ graph ],
+      _,           VertexList @ graph ],
+    count, mods ]
 
-dispatchConstruction[ graph_Graph, fam_Association ] /;
-    Length[ fam ] > 0 && SubsetQ[ VertexList @ graph, Keys @ fam ] :=
-  Keys @ fam
+FindInfraRepresentative[ graph_Graph, InfraPoint[ origin_, dist : Except[ _Rule ] ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  takeRepresentatives[
+    DeleteDuplicates @ Flatten[ Map[
+      o |-> Select[ VertexList @ graph, v |-> GraphDistance[ graph, o, v ] == dist ],
+      If[ StringQ @ origin,
+        Switch[ origin,
+          "Center",    GraphCenter[ graph ],
+          "Periphery", GraphPeriphery[ graph ],
+          _,           VertexList @ graph ],
+        If[ MemberQ[ VertexList @ graph, origin ], { origin }, origin ] ] ], 1 ],
+    count, mods ]
 
-dispatchConstruction[ graph_Graph, InfraPoint[ pool_String ] ] :=
-  Switch[ pool,
-    "Center",    GraphCenter[ graph ],
-    "Periphery", GraphPeriphery[ graph ],
-    _,           VertexList @ graph
-  ]
-
-dispatchConstruction[ graph_Graph, InfraPoint[ origin_, dist_ ] ] /; ! MatchQ[ dist, _Rule ] :=
-  DeleteDuplicates @ Flatten[ Map[
-    o |-> Select[ VertexList @ graph, v |-> GraphDistance[ graph, o, v ] == dist ],
-    If[ StringQ @ origin,
-      Switch[ origin,
-        "Center",    GraphCenter[ graph ],
-        "Periphery", GraphPeriphery[ graph ],
-        _,           VertexList @ graph ],
-      If[ MemberQ[ VertexList @ graph, origin ], { origin }, origin ] ] ], 1 ]
-
-dispatchConstruction[ graph_Graph, InfraPoint[ n_Integer, opts___Rule ] ] :=
-  With[ { dist = "Distance" /. { opts } /. "Distance" -> "Max",
-          finiteMax = Max @ Select[ Flatten @ GraphDistanceMatrix @ graph, # < Infinity & ] },
-    { bounds = Switch[ dist,
-        "Max", { finiteMax, finiteMax },
-        _List, dist /. Infinity -> finiteMax,
-        _,     { dist, finiteMax } ] },
-    { auxGraph = Graph[ VertexList @ graph,
-        UndirectedEdge @@@ Select[ Subsets[ VertexList @ graph, { 2 } ],
-          pair |-> With[ { d = GraphDistance[ graph, pair[[ 1 ]], pair[[ 2 ]] ] },
-            bounds[[ 1 ]] <= d <= bounds[[ 2 ]] ] ] ] },
-    { cliques = Select[ FindClique[ auxGraph, { n, VertexCount @ auxGraph }, All ], Length @ # >= n & ] },
-    If[ cliques === { }, { }, RandomSample[ #, n ] & /@ cliques ] ]
+FindInfraRepresentative[ graph_Graph, InfraPoint[ n_Integer, opts___Rule ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  takeRepresentatives[ With[ { dist = "Distance" /. { opts } /. "Distance" -> "Max",
+            finiteMax = Max @ Select[ Flatten @ GraphDistanceMatrix @ graph, # < Infinity & ] },
+      { bounds = Switch[ dist,
+          "Max", { finiteMax, finiteMax },
+          _List, dist /. Infinity -> finiteMax,
+          _,     { dist, finiteMax } ] },
+      { auxGraph = Graph[ VertexList @ graph,
+          UndirectedEdge @@@ Select[ Subsets[ VertexList @ graph, { 2 } ],
+            pair |-> With[ { d = GraphDistance[ graph, pair[[ 1 ]], pair[[ 2 ]] ] },
+              bounds[[ 1 ]] <= d <= bounds[[ 2 ]] ] ] ] },
+      { cliques = Select[ FindClique[ auxGraph, { n, VertexCount @ auxGraph }, All ], Length @ # >= n & ] },
+      If[ cliques === { }, { }, RandomSample[ #, n ] & /@ cliques ] ],
+    count, mods ]

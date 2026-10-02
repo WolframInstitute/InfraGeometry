@@ -86,9 +86,3 @@ PencilDirections[ graph_Graph, origin_ ] :=
 PencilCardinality[ graph_Graph, origin_ ] :=
   InfraMeasurement[ graph, InfraRay[ origin, origin ], "Cardinality" ]
 
-dispatchConstruction[ graph_Graph, InfraRay[ origin_, v_, opts___Rule ] ] :=
-  capBranches[
-    applySelectOption[ graph, FindInfraRay[ graph, origin, v, All ],
-      "Select" /. { opts } /. "Select" -> None,
-      False, <| "Endpoints" -> { origin, v } |> ],
-    extractBranches[ { opts } ] ]

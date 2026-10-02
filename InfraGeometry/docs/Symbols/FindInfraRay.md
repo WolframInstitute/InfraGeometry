@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraRay
 Keywords: [ray, half-line, direction, pencil, Euclid Postulate 2]
-SeeAlso: [InfraRay, InfraRayQ, InfraVertexList, PencilDirections, PencilCardinality, FindInfraLine, GeodesicExtensionGraph, FindInfraSegment, SameDirectionQ]
+SeeAlso: [InfraRay, InfraRayQ, FindInfraRepresentative, PencilDirections, PencilCardinality, FindInfraLine, GeodesicExtensionGraph, FindInfraSegment, SameDirectionQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -22,7 +22,7 @@ A ray from *O* through *v* is a geodesic *O … v … e* with *d(O, e) = d(O, v)
 
 Rays are how direction is expressed without a vector space. There is no tangent space on a graph, so "the direction from *O* towards *v*" is not a vector but the *family* of rays from *O* containing *v* — and like every other family here it is large. [PencilDirections]() and [PencilCardinality]() count the rays leaving a vertex, the graph's stand-in for the sphere of directions; [SameDirectionQ]() compares directions.
 
-The search runs on the substrate directly: a geodesic from *O* to *v*, prolonged one outward step at a time until no neighbour prolongs it. It does not read the graph of <code>[InfraRay]()[*O*, *v*]</code>, so it is the check on that graph, and it returns exactly the shapes [InfraVertexList]() gives for that head. To count the rays without enumerating them, use [InfraMeasurement]().
+The search runs on the substrate directly: a geodesic from *O* to *v*, prolonged one outward step at a time until no neighbour prolongs it. It does not read the graph of <code>[InfraRay]()[*O*, *v*]</code>, so it is the check on that graph, and it returns exactly the shapes [FindInfraRepresentative]() gives for that head. To count the rays without enumerating them, use [InfraMeasurement]().
 
 <code>[FindInfraRay]()[*g*, *O*, *O*, All]</code> is every ray from *O* — the pencil.
 
@@ -119,5 +119,5 @@ The search agrees with the graph of the head.
 ```wl
 With[
   {g = GridGraph[{4, 4}]},
-  Sort @ FindInfraRay[g, 6, 7, All] === Sort @ InfraVertexList[g, InfraRay[6, 7], All]]
+  Sort @ FindInfraRay[g, 6, 7, All] === Sort @ FindInfraRepresentative[g, InfraRay[6, 7], All]]
 ```

@@ -49,7 +49,7 @@ VerificationTest[
     {{CycleGraph[6], 1, 2}, {GridGraph[{3, 3}], 4, 5}, {GridGraph[{4, 4}], 6, 7},
      {PetersenGraph[], 1, 2}, {HypercubeGraph[3], 1, 2}, {PathGraph[Range[5]], 2, 3}},
     Apply[{g, p, q} |->
-      Sort[InfraVertexList[g, InfraLine[p, q], All]] === Sort[Select[
+      Sort[FindInfraRepresentative[g, InfraLine[p, q], All]] === Sort[Select[
         Catenate[Catenate[Table[FindPath[g, a, b, {GraphDistance[g, a, b]}, All],
             {a, VertexList[g]}, {b, DeleteCases[VertexList[g], a]}]]],
         path |-> MemberQ[path, p] && MemberQ[path, q] &&
@@ -65,7 +65,7 @@ VerificationTest[
   AllTrue[
     {PathGraph[Range[7]], CycleGraph[7], GridGraph[{3, 3}], PetersenGraph[], HypercubeGraph[3]},
     g |-> AllTrue[Join[List @@@ EdgeList[g], Reverse /@ List @@@ EdgeList[g]],
-      pair |-> AllTrue[InfraVertexList[g, InfraLine @@ pair, All], InfraLineQ[g, #] &]]],
+      pair |-> AllTrue[FindInfraRepresentative[g, InfraLine @@ pair, All], InfraLineQ[g, #] &]]],
   True,
   TestID -> "InfraLine-members-satisfy-InfraLineQ-on-the-spread-table"
 ]
@@ -73,7 +73,7 @@ VerificationTest[
 (* the C_6 through {1, 2} has three lines, not four (design Thm. line) *)
 VerificationTest[
   With[{g = CycleGraph[6]}, {atoms = InfraMeasurement[g, InfraLine[1, 2], "Graph"]},
-    {Length[atoms], Sort[InfraVertexList[g, InfraLine[1, 2], All]],
+    {Length[atoms], Sort[FindInfraRepresentative[g, InfraLine[1, 2], All]],
      InfraMeasurement[g, InfraLine[1, 2], "Cardinality"], InfraMeasurement[g, InfraLine[1, 2], "Length"]}],
   {3, {{1, 2, 3, 4}, {5, 6, 1, 2}, {6, 1, 2, 3}}, 3, 3},
   TestID -> "InfraLine-C6-three-lines"
@@ -97,7 +97,7 @@ VerificationTest[
     {{CycleGraph[6], 1, 2}, {GridGraph[{3, 3}], 4, 5}, {GridGraph[{4, 4}], 6, 7},
      {PetersenGraph[], 1, 2}, {HypercubeGraph[3], 1, 2}},
     Apply[{g, p, q} |->
-      InfraMeasurement[g, InfraLine[p, q], "Cardinality"] === Length[InfraVertexList[g, InfraLine[p, q], All]]]],
+      InfraMeasurement[g, InfraLine[p, q], "Cardinality"] === Length[FindInfraRepresentative[g, InfraLine[p, q], All]]]],
   True,
   TestID -> "InfraLine-Cardinality-adds-across-the-atoms"
 ]
@@ -107,7 +107,7 @@ VerificationTest[
     {{GridGraph[{3, 3}], 4, 5}, {GridGraph[{4, 4}], 6, 7}, {PetersenGraph[], 1, 2}, {HypercubeGraph[3], 1, 2}},
     Apply[{g, p, q} |->
       InfraMeasurement[g, InfraLine[p, q], "VertexDensity"] ===
-        KeySort[Counts[Catenate[InfraVertexList[g, InfraLine[p, q], All]]]]]],
+        KeySort[Counts[Catenate[FindInfraRepresentative[g, InfraLine[p, q], All]]]]]],
   True,
   TestID -> "InfraLine-VertexDensity-counts-the-members-through-each-vertex"
 ]
@@ -128,7 +128,7 @@ VerificationTest[
   AllTrue[
     {{CycleGraph[6], 1, 2}, {GridGraph[{3, 3}], 4, 5}, {GridGraph[{4, 4}], 6, 7},
      {PetersenGraph[], 1, 2}, {HypercubeGraph[3], 1, 2}, {PathGraph[Range[7]], 4, 5}},
-    Apply[{g, p, q} |-> Sort[FindInfraLine[g, p, q, All]] === Sort[InfraVertexList[g, InfraLine[p, q], All]]]],
+    Apply[{g, p, q} |-> Sort[FindInfraLine[g, p, q, All]] === Sort[FindInfraRepresentative[g, InfraLine[p, q], All]]]],
   True,
   TestID -> "FindInfraLine-agrees-with-the-graph"
 ]
@@ -167,20 +167,20 @@ VerificationTest[
 (* a line is inextensible, not longest: {1, 2, 3} is a line although the diameter is 3 *)
 VerificationTest[
   With[{g = Graph[{1 <-> 2, 2 <-> 3, 2 <-> 4, 4 <-> 5}]},
-    {FindInfraLine[g, 1, 3, All], InfraVertexList[g, InfraLine[1, 3], All]}],
+    {FindInfraLine[g, 1, 3, All], FindInfraRepresentative[g, InfraLine[1, 3], All]}],
   {{{1, 2, 3}}, {{1, 2, 3}}},
   TestID -> "FindInfraLine-keeps-short-inextensible-line"
 ]
 
 VerificationTest[
-  With[{g = PathGraph[Range[5]]}, {FindInfraLine[g, 1, 5], InfraVertexList[g, InfraLine[1, 5], All]}],
+  With[{g = PathGraph[Range[5]]}, {FindInfraLine[g, 1, 5], FindInfraRepresentative[g, InfraLine[1, 5], All]}],
   {Range[5], {Range[5]}},
   TestID -> "FindInfraLine-already-maximal"
 ]
 
 VerificationTest[
   With[{g = TorusGraph[{4, 5}]}, {lines = FindInfraLine[g, 1, 2, All]},
-    {Sort[lines] === Sort[InfraVertexList[g, InfraLine[1, 2], All]], Length[lines],
+    {Sort[lines] === Sort[FindInfraRepresentative[g, InfraLine[1, 2], All]], Length[lines],
      AllTrue[lines, InfraLineQ[g, #] &]}],
   {True, 24, True},
   TestID -> "FindInfraLine-agrees-with-the-graph-TorusGraph"

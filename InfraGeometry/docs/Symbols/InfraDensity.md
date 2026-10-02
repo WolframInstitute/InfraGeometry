@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraDensity
 Keywords: [density, occupation, marginal, counting measure, multiset, support]
-SeeAlso: [InfraMeasurement, InfraVertexList, InfraSubstrateHighlight, FindInfraSegment, FindInfraMidpoint, InfraIntersection]
+SeeAlso: [InfraMeasurement, FindInfraRepresentative, InfraSubstrateHighlight, FindInfraSegment, FindInfraMidpoint, InfraIntersection]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -81,8 +81,8 @@ With[
   {a = InfraCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
   {seg = InfraSegment[a, b]},
-  {InfraSubstrateHighlight[g, {InfraDensity[g, InfraVertexList[g, seg, All]]}, "PointSizeRange" -> {4, 16}],
-   InfraDensity[g, InfraVertexList[g, seg, All]] === InfraMeasurement[g, seg, "VertexDensity"],
+  {InfraSubstrateHighlight[g, {InfraDensity[g, FindInfraRepresentative[g, seg, All]]}, "PointSizeRange" -> {4, 16}],
+   InfraDensity[g, FindInfraRepresentative[g, seg, All]] === InfraMeasurement[g, seg, "VertexDensity"],
    InfraDensity[g, InfraMeasurement[g, seg, "Graph"]] === InfraMeasurement[g, seg, "VertexDensity"]}]
 ```
 

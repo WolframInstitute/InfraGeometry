@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraRay
 Keywords: [ray, half-line, direction, pencil, inert head]
-SeeAlso: [FindInfraRay, InfraRayQ, InfraMeasurement, InfraVertexList, PencilDirections, InfraLine, InfraSegment]
+SeeAlso: [FindInfraRay, InfraRayQ, InfraMeasurement, FindInfraRepresentative, PencilDirections, InfraLine, InfraSegment]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraRay]()[*p*, *q*]</code> is the ray from *p* through *q*: every shortest path from *p* through *q* that cannot be prolonged past its last vertex. It is inert; [InfraMeasurement]() and [InfraVertexList]() evaluate it on a graph.
+<code>[InfraRay]()[*p*, *q*]</code> is the ray from *p* through *q*: every shortest path from *p* through *q* that cannot be prolonged past its last vertex. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraRay]()[*p*, *p*]</code> is the pencil at *p*: every ray from *p*.
 
@@ -24,7 +24,7 @@ Its graph — <code>[InfraMeasurement]()[*g*, *ray*, "Graph"]</code> — is one 
 
 Rays to different sinks differ in length, so `"Length"` is a `List` of the lengths present.
 
-Every member begins at *p*. A member is a vertex list; [InfraVertexList]() reads one, several or all of them.
+Every member begins at *p*. A member is a vertex list; [FindInfraRepresentative]() reads one, several or all of them.
 
 ## Basic Examples
 
@@ -60,7 +60,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = InfraCenter[g]},
   {through = (SeedRandom[1]; RandomInfraPoint[g, o, 2])},
-  {members = InfraVertexList[g, InfraRay[o, through], 3]},
+  {members = FindInfraRepresentative[g, InfraRay[o, through], 3]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], Directive[$InfraPointColor], o, through}], {member, members}]]
 ```
 
@@ -96,7 +96,7 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = InfraCenter[g]},
   {through = (SeedRandom[1]; RandomInfraPoint[g, o, 2])},
-  {members = InfraVertexList[g, InfraRay[o, through], All]},
+  {members = FindInfraRepresentative[g, InfraRay[o, through], All]},
   {InfraSubstrateHighlight[g, {members -> $InfraRayColor, Directive[$InfraPointColor], o, through}],
    InfraRayQ[g, members]}]
 ```

@@ -775,10 +775,8 @@ ConcatenateInfraWalk[ path1_, path2_,
       _UpTo, Take[ reps, count ],
       _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ]
 
-dispatchConstruction[ graph_Graph, InfraWalk[ vs__ ] ] :=
-  With[ { walk = { vs } },
-    If[ Length[ walk ] >= 2 &&
-        AllTrue[ Partition[ walk, 2, 1 ], EdgeQ[ graph, UndirectedEdge @@ # ] & ],
-      { walk },
-      { } ]
-  ]
+FindInfraRepresentative[ graph_Graph, InfraWalk[ vs__ ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  takeRepresentatives[
+    If[ Length[ { vs } ] >= 2 && AllTrue[ Partition[ { vs }, 2, 1 ], EdgeQ[ graph, UndirectedEdge @@ # ] & ], { { vs } }, { } ],
+    count, mods ]

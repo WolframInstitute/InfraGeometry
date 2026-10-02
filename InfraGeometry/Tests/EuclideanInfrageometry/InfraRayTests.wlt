@@ -42,7 +42,7 @@ VerificationTest[
     {{GridGraph[{3, 3}], 1, 2}, {GridGraph[{4, 4}], 1, 6}, {PetersenGraph[], 1, 2},
      {HypercubeGraph[3], 1, 2}, {CycleGraph[7], 1, 2}},
     Apply[{g, p, q} |->
-      Sort[InfraVertexList[g, InfraRay[p, q], All]] === Sort[Catenate[Table[
+      Sort[FindInfraRepresentative[g, InfraRay[p, q], All]] === Sort[Catenate[Table[
         Select[FindPath[g, p, e, {GraphDistance[g, p, e]}, All],
           path |-> MemberQ[path, q] && NoneTrue[AdjacencyList[g, e],
             GraphDistance[g, p, #] == GraphDistance[g, p, e] + 1 &]],
@@ -57,14 +57,14 @@ VerificationTest[
     {PathGraph[Range[7]], CycleGraph[7], GridGraph[{3, 3}], GridGraph[{4, 4}],
      PetersenGraph[], HypercubeGraph[3]},
     g |-> AllTrue[Join[List @@@ EdgeList[g], Reverse /@ List @@@ EdgeList[g]],
-      pair |-> AllTrue[InfraVertexList[g, InfraRay @@ pair, All], InfraRayQ[g, #] &]]],
+      pair |-> AllTrue[FindInfraRepresentative[g, InfraRay @@ pair, All], InfraRayQ[g, #] &]]],
   True,
   TestID -> "InfraRay-members-satisfy-InfraRayQ-on-the-spread-table"
 ]
 
 VerificationTest[
-  {InfraVertexList[PathGraph[Range[7]], InfraRay[4, 7], All],
-   Sort[InfraVertexList[CycleGraph[6], InfraRay[1, 4], All]]},
+  {FindInfraRepresentative[PathGraph[Range[7]], InfraRay[4, 7], All],
+   Sort[FindInfraRepresentative[CycleGraph[6], InfraRay[1, 4], All]]},
   {{{4, 5, 6, 7}}, {{1, 2, 3, 4}, {1, 6, 5, 4}}},
   TestID -> "InfraRay-small-fixtures"
 ]
@@ -74,7 +74,7 @@ VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     AllTrue[{{1, 2}, {13, 14}, {13, 8}, {7, 12}},
       pair |-> InfraMeasurement[g, InfraRay @@ pair, "Cardinality"] ===
-        Length[InfraVertexList[g, InfraRay @@ pair, All]]]],
+        Length[FindInfraRepresentative[g, InfraRay @@ pair, All]]]],
   True,
   TestID -> "InfraRay-Cardinality-agrees-with-enumeration"
 ]
@@ -84,7 +84,7 @@ VerificationTest[
 VerificationTest[
   AllTrue[
     {{GridGraph[{4, 4}], 6, 7}, {CycleGraph[6], 1, 4}, {PetersenGraph[], 1, 2}, {HypercubeGraph[3], 1, 2}},
-    Apply[{g, p, q} |-> Sort[FindInfraRay[g, p, q, All]] === Sort[InfraVertexList[g, InfraRay[p, q], All]]]],
+    Apply[{g, p, q} |-> Sort[FindInfraRay[g, p, q, All]] === Sort[FindInfraRepresentative[g, InfraRay[p, q], All]]]],
   True,
   TestID -> "FindInfraRay-agrees-with-the-graph"
 ]
@@ -125,7 +125,7 @@ VerificationTest[
 
 VerificationTest[
   With[{g = TorusGraph[{4, 5}]}, {rays = FindInfraRay[g, 1, 2, All]},
-    {Sort[rays] === Sort[InfraVertexList[g, InfraRay[1, 2], All]], Length[rays],
+    {Sort[rays] === Sort[FindInfraRepresentative[g, InfraRay[1, 2], All]], Length[rays],
      AllTrue[rays, InfraRayQ[g, #] &]}],
   {True, 6, True},
   TestID -> "FindInfraRay-agrees-with-the-graph-TorusGraph"

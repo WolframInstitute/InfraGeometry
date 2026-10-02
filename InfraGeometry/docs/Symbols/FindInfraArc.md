@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraArc
 Keywords: [arc, circle, band, search]
-SeeAlso: [InfraArc, InfraVertexList, FindInfraCircle, FindInfraSegment]
+SeeAlso: [InfraArc, FindInfraRepresentative, FindInfraCircle, FindInfraSegment]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -18,7 +18,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Details & Options
 
-Searches the band graph directly — `FindPath` at the band distance between consecutive points, folded together at the knots — independently of [InfraArc]()'s own graph, so it is the check on that graph rather than a reader of it. Returns exactly the vertex-list shapes [InfraVertexList]() gives for `InfraArc[c, {p1, ..., pk}]`.
+Searches the band graph directly — `FindPath` at the band distance between consecutive points, folded together at the knots — independently of [InfraArc]()'s own graph, so it is the check on that graph rather than a reader of it. Returns exactly the vertex-list shapes [FindInfraRepresentative]() gives for `InfraArc[c, {p1, ..., pk}]`.
 
 Option `"RadiusDelta" -> delta | {deltaIn, deltaOut}` widens the band about *d*(*c*, *p1*), same as on [InfraArc]() and [InfraCircle](). A scalar *delta* means `{0, delta}`, outward only; the default is `0`. No `Method`, no `Properties`.
 

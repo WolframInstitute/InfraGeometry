@@ -39,8 +39,8 @@ InfraPolylineQ[ graph_Graph, legs : { __Graph } ] :=
 InfraPolylineQ[ _Graph, _ ] :=
   False
 
-dispatchConstruction[ graph_Graph, InfraPolyline[ path_, opts___Rule ] ] :=
-  capBranches[
-    { FindInfraPolylineSubdivision[ graph, path,
-        Sequence @@ FilterRules[ { opts }, Options[ FindInfraPolylineSubdivision ] ] ] },
-    extractBranches[ { opts } ] ]
+FindInfraRepresentative[ graph_Graph, InfraPolyline[ path_, opts___Rule ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  takeRepresentatives[
+    { FindInfraPolylineSubdivision[ graph, path, Sequence @@ FilterRules[ { opts }, Options[ FindInfraPolylineSubdivision ] ] ] },
+    count, mods ]

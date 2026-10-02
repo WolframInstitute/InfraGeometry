@@ -32,11 +32,11 @@ InfraMeasurement[ graph_Graph,
     InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ], "Length" ] :=
   Total[ GraphDistance[ graph, #1, #2 ] & @@@ Partition[ { pts }, 2, 1 ] ]
 
-InfraVertexList[ graph_Graph,
+FindInfraRepresentative[ graph_Graph,
     InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
   With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
-    { pieces = InfraVertexList[ graph, InfraSegment @@ #, If[ cap === Infinity, All, UpTo[ cap ] ], mods ] & /@
+    { pieces = FindInfraRepresentative[ graph, InfraSegment @@ #, If[ cap === Infinity, All, UpTo[ cap ] ], mods ] & /@
         Partition[ { pts }, 2, 1 ] },
     { members = Fold[ { as, bs } |-> Catenate @ Map[ a |-> ( Join[ a, Rest @ # ] & /@ bs ), as ],
         First @ pieces, Rest @ pieces ] },
@@ -197,13 +197,6 @@ ExtendInfraSegment[ graph_Graph, a_, b_, c_, d : Except[ _Rule | _RuleDelayed ],
         Select[ VertexList[ graph ],
           x |-> BetweennessQ[ graph, a, b, x ] && GraphDistance[ graph, b, x ] === target ] ] },
     Switch[ count, All, vs, _UpTo, Take[ vs, count ], _, If[ Length @ vs < count, { }, Take[ vs, count ] ] ] ]
-
-dispatchConstruction[ graph_Graph, InfraSegment[ p1_, p2_, opts___Rule ] ] :=
-  capBranches[
-    applySelectOption[ graph, FindInfraSegment[ graph, p1, p2, All ],
-      "Select" /. { opts } /. "Select" -> None,
-      False, <| "Endpoints" -> { p1, p2 } |> ],
-    extractBranches[ { opts } ] ]
 
 InfraWalkQ[ graph_Graph, ws : { __Graph } ] :=
   AllTrue[ ws, InfraWalkQ[ graph, # ] & ]

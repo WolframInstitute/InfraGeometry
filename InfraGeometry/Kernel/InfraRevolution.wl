@@ -101,11 +101,7 @@ InfraRevolutionQ[ graph_Graph, o_Association, axis_, profile_,
     opts : OptionsPattern[ FindInfraRevolution ] ] :=
   InfraRevolutionQ[ graph, Keys @ o, axis, profile, opts ]
 
-dispatchConstruction[ graph_Graph, InfraRevolution[ axis_, profile_, opts___Rule ] ] :=
-  capBranches[
-    applySelectOption[ graph,
-      { FindInfraRevolution[ graph, axis, profile,
-          Sequence @@ FilterRules[ { opts }, Options[ FindInfraRevolution ] ] ] },
-      "Select" /. { opts } /. "Select" -> None,
-      False, <| "Axis" -> axis, "Profile" -> profile |> ],
-    extractBranches[ { opts } ] ]
+FindInfraRepresentative[ graph_Graph, InfraRevolution[ axis_, profile_, opts___Rule ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  takeRepresentatives[ { FindInfraRevolution[ graph, axis, profile, Sequence @@ FilterRules[ { opts }, Options[ FindInfraRevolution ] ] ] },
+    count, mods ]
