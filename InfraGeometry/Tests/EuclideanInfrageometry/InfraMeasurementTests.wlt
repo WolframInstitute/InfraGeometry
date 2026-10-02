@@ -259,7 +259,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     {FindInfraRepresentative[g, InfraShell[13, 2]] === FindInfraShell[g, 13, 2],
-     FindInfraRepresentative[g, InfraBall[13, 1], All] === {FindInfraBall[g, 13, 1]},
+     FindInfraRepresentative[g, InfraBall[13, 1], All] === {FindInfraRepresentative[g, InfraBall[13, 1]]},
      FindInfraRepresentative[g, InfraPoint["Center"], All],
      FindInfraRepresentative[g, InfraWalk[1, 2, 3]], FindInfraRepresentative[g, InfraWalk[1, 3], All],
      Length @ FindInfraRepresentative[g, InfraShell[13, 2], 1, "RandomChoice"]}],

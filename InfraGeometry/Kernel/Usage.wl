@@ -58,7 +58,7 @@ InfraLineStructure::usage = "InfraLineStructure[{line1, ...}] is a consistent ge
 FindLineStructure::usage = "FindLineStructure[graph] gives a consistent geodesic path system: one shortest path per vertex pair, with every stretch of a chosen path again chosen. Option Method sets the tie-breaking edge ranking.";
 ConsistentPathSystemQ::usage = "ConsistentPathSystemQ[graph, obj] tests whether a geodesic path system is subpath-closed (Cizma-Linial consistent).";
 
-InfraShell::usage = "InfraShell[center, r] inside InfraScene is the metric shell of radius r about center -- a level set of the distance from center; FindInfraShell is the search. A shell itself is a sorted vertex list.";
+InfraShell::usage = "InfraShell[c, {r, s}] is the inert shell { v : r <= d(v, c) <= s }, c a vertex or a vertex set; InfraShell[c, r] is the band {r, r}. Read by InfraMeasurement and FindInfraRepresentative; FindInfraShell is the search.";
 FindInfraShell::usage = "FindInfraShell[graph, c, r] gives the metric shell { v : d(c, v) == r }; r may be a band {rmin, rmax}. Options Properties, Method.";
 FindInfraOsculatingShell::usage = "FindInfraOsculatingShell[graph, path, i, k] gives the shells whose level set contains the k-vertex window of path centred at position i, one per osculating centre.";
 FindAdvancingInfraFront::usage = "FindAdvancingInfraFront[graph, origin, steps] gives the foliation by a bouncing wavefront as a List of sorted vertex lists: each front steps one geodesic step outward and reflects inward where it cannot.";
@@ -66,8 +66,7 @@ FindInfraShellCenter::usage = "FindInfraShellCenter[graph, shell] recovers {cent
 InfraShellQ::usage = "InfraShellQ[graph, vertexSet] tests whether vertexSet is a metric shell { v : d(c, v) == r } for some centre c and radius r.";
 SeparatesQ::usage = "SeparatesQ[graph, vertexSet, u, v] tests whether deleting vertexSet disconnects u from v.";
 
-InfraBall::usage = "InfraBall[center, r] inside InfraScene is the closed metric ball of radius r about center; FindInfraBall is the search. A ball itself is a sorted vertex list.";
-FindInfraBall::usage = "FindInfraBall[graph, c, r] gives the closed ball { v : d(c, v) <= r }.";
+InfraBall::usage = "InfraBall[c, r] is the inert closed ball { v : d(v, c) <= r }, c a vertex or a vertex set; InfraBall[c, {r, s}] is the shell. Read by InfraMeasurement and FindInfraRepresentative.";
 InfraBallQ::usage = "InfraBallQ[graph, vertexSet] tests whether vertexSet is a closed metric ball.";
 FindBallHull::usage = "FindBallHull[graph, S] gives, as a sorted vertex list, the ball hull of S: the intersection of all closed balls containing S, the smallest ball-convex superset.";
 BallHullQ::usage = "BallHullQ[graph, S] tests whether S is ball-convex, i.e. an intersection of closed balls.";

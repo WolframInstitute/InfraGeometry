@@ -677,7 +677,7 @@ VerificationTest[
   (* InflatedVertex is not a scene token: it is the inert label InflateGraph stamps on the
      copies it makes.  It arrived with ExampleGraphs.wl in the paclet split (T2a). *)
   { "InflatedVertex",
-    "InfraArc", "InfraBall", "InfraCircle", "InfraEllipse", "InfraEllipticShell",
+    "InfraArc", "InfraBall", "InfraCircle", "InfraEllipse", "InfraEllipticShell", "InfraGeodesic",
     "InfraIntersectQ", "InfraLine", "InfraPlane", "InfraPoint",
     "InfraPolygon", "InfraPolyline", "InfraRay", "InfraRevolution", "InfraSegment",
     "InfraShell", "InfraStep", "InfraTriangle", "InfraWalk", "Undetermined" },
@@ -737,8 +737,8 @@ VerificationTest[
 VerificationTest[
   With[{g = TessellationGraph[{4, 4}, 2]},
     {c = First @ VertexList @ g},
-    Sort @ InfraIntersection[ g, FindInfraBall[g, c, 1], FindInfraBall[g, c, 2] ] ===
-      Sort @ FindInfraBall[g, c, 1]],
+    Sort @ InfraIntersection[ g, FindInfraRepresentative[g, InfraBall[c, 1]], FindInfraRepresentative[g, InfraBall[c, 2]] ] ===
+      Sort @ FindInfraRepresentative[g, InfraBall[c, 1]]],
   True,
   TestID -> "InfraIntersection-on-a-list-labelled-substrate"
 ]
@@ -751,7 +751,7 @@ VerificationTest[
     {scene = InfraScene[{p}, {p == InfraIntersection[InfraBall[c, 1], InfraBall[c, 2]]}]},
     {instances = FindInfraScene[scene, g]},
     AllTrue[instances, VertexQ[g, InfraSceneInstance[#, p]] &] &&
-      Sort[InfraSceneInstance[#, p] & /@ instances] === Sort @ FindInfraBall[g, c, 1]],
+      Sort[InfraSceneInstance[#, p] & /@ instances] === Sort @ FindInfraRepresentative[g, InfraBall[c, 1]]],
   True,
   TestID -> "InfraScene-intersection-binds-substrate-vertices"
 ]
@@ -763,7 +763,7 @@ VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     {scene = InfraScene[{ba, bb, m}, {ba == InfraBall[7, 1], bb == InfraBall[9, 1], m == InfraUnion[ba, bb]}]},
     Sort[InfraSceneInstance[#, m] & /@ FindInfraScene[scene, g]] ===
-      Union[FindInfraBall[g, 7, 1], FindInfraBall[g, 9, 1]]],
+      Union[FindInfraRepresentative[g, InfraBall[7, 1]], FindInfraRepresentative[g, InfraBall[9, 1]]]],
   True,
   TestID -> "InfraScene-union-token-binds-every-vertex-of-either"
 ]

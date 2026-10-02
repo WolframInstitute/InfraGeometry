@@ -1,12 +1,27 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* the closed ball { v : d(c, v) <= r }, a sorted vertex list.  The centre goes through the anchor rule, and an anchor of several vertices weights
-   one carrier rather than multiplying objects: the ball of a set is its closed r-neighbourhood, the union of the balls around its members *)
+(* the closed ball { v : d(v, C) <= r } with d(v, C) = min_{c in C} d(v, c) over the anchor's vertices C; a band {r, s} is the shell *)
 
-FindInfraBall[ graph_Graph, c_, r_ ] :=
-  With[ { centers = Keys @ InfraDensity[ graph, c ] },
-    Union @ Select[ VertexList[ graph ],
-      v |-> AnyTrue[ centers, GraphDistance[ graph, #, v ] <= r & ] ] ]
+InfraMeasurement[ graph_Graph, InfraBall[ center_, r : Except[ _List ] ], "VertexDensity" ] :=
+  AssociationThread[
+    Union @ VertexList @ NeighborhoodGraph[ graph, Keys @ InfraDensity[ graph, center ], Floor @ Min[ r, VertexCount @ graph ] ], 1 ]
+
+InfraMeasurement[ graph_Graph, InfraBall[ center_, { r_, s_ } ], "VertexDensity" ] :=
+  InfraMeasurement[ graph, InfraShell[ center, { r, s } ], "VertexDensity" ]
+
+InfraMeasurement[ graph_Graph, ball : InfraBall[ _, _ ], "EdgeDensity" ] :=
+  AssociationThread[ EdgeList @ Subgraph[ graph, Keys @ InfraMeasurement[ graph, ball, "VertexDensity" ] ], 1 ]
+
+InfraMeasurement[ _Graph, InfraBall[ _, _ ], "Cardinality" ] :=
+  1
+
+InfraMeasurement[ _Graph, InfraBall[ _, _ ], "Faithful" ] :=
+  True
+
+InfraMeasurement[ graph_Graph, ball : InfraBall[ _, _ ], All ] :=
+  InfraMeasurement[ graph, ball,
+    { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
+      "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume" } ]
 
 (* vs is a closed ball iff some c in vs has { v : d(c, v) <= max_{w in vs} d(c, w) } == vs; a family of sets passes iff each does *)
 
@@ -31,6 +46,6 @@ BallHullQ[ graph_Graph, s_ ] :=
   With[ { vs = Keys @ InfraDensity[ graph, s ] },
     Sort @ BallHull[ graph, vs ] === vs ]
 
-FindInfraRepresentative[ graph_Graph, InfraBall[ center_, r_ ],
+FindInfraRepresentative[ graph_Graph, ball : InfraBall[ _, _ ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  takeRepresentatives[ { FindInfraBall[ graph, center, r ] }, count, mods ]
+  takeRepresentatives[ { Keys @ InfraMeasurement[ graph, ball, "VertexDensity" ] }, count, mods ]

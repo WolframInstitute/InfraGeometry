@@ -111,7 +111,7 @@ VerificationTest[
 
 (* the volume of a set is its Length; of a family of sets, the Length of each *)
 VerificationTest[
-  { Length @ FindInfraBall[ PathGraph @ Range[ 5 ], 3, 2 ],
+  { Length @ FindInfraRepresentative[PathGraph @ Range[ 5 ], InfraBall[3, 2]],
     Length /@ { { 1, 2, 3 }, { 4, 5 } } },
   { 5, { 3, 2 } },
   TestID -> "set-volume-is-Length"
@@ -211,7 +211,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     AllTrue[
       { FindInfraPoint[ g, 2 ],
-        FindInfraBall[ g, 6, 1 ],
+        FindInfraRepresentative[g, InfraBall[6, 1]],
         FindInfraShell[ g, 6, { 1, 1 } ],
         FindInfraEquidistantSet[ g, { 1, 16 } ],
         FindInfraBisectingHyperplane[ g, 1, 16 ],

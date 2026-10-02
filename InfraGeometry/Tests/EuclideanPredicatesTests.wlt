@@ -566,7 +566,7 @@ VerificationTest[
      InfraSegmentQ[g, FindInfraSegment[g, 1, 13, All]],
      InfraLineQ[g, FindInfraLine[g, 1, 21, All]],
      InfraShellQ[g, FindInfraShell[g, 13, 2]],
-     InfraBallQ[g, FindInfraBall[g, 13, 2]],
+     InfraBallQ[g, FindInfraRepresentative[g, InfraBall[13, 2]]],
      InfraEllipticShellQ[g, FindInfraEllipticShell[g, {11, 15}, 6]],
      InfraWalkQ[g, FindInfraWalk[g, 1, 13, UpTo[ 6 ], All]],
      InfraPlaneQ[g, FindInfraBisectingHyperplane[g, 11, 15], 11, 15],
@@ -626,7 +626,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     {InfraShellQ[g, InfraDensity[g, FindInfraShell[g, 13, 2]]],
-     InfraBallQ[g, InfraDensity[g, FindInfraBall[g, 13, 2]]]}],
+     InfraBallQ[g, InfraDensity[g, FindInfraRepresentative[g, InfraBall[13, 2]]]]}],
   {True, True},
   TestID -> "set-predicates-accept-densities"
 ]

@@ -194,7 +194,36 @@ SeparatesQ[ graph_Graph, vs_List, u_, v_ ] :=
     GraphDistance[ VertexDelete[ graph, vs ], u, v ] === Infinity
   ]
 
-FindInfraRepresentative[ graph_Graph, InfraShell[ center_, r_, opts___Rule ],
+(* the shell { v : r <= d(v, C) <= s } with d(v, C) = min_{c in C} d(v, c), the complement of the ball of radius s by the open ball of radius r *)
+
+InfraMeasurement[ graph_Graph, InfraShell[ center_, { r_, s_ } ], "VertexDensity" ] :=
+  With[ { centers = Keys @ InfraDensity[ graph, center ], n = VertexCount @ graph },
+    { far = VertexList @ NeighborhoodGraph[ graph, centers, Floor @ Min[ s, n ] ],
+      near = If[ r > 0, VertexList @ NeighborhoodGraph[ graph, centers, Min[ Ceiling[ r ] - 1, n ] ], { } ] },
+    AssociationThread[ Complement[ far, near ], 1 ] ]
+
+InfraMeasurement[ graph_Graph, InfraShell[ center_, r : Except[ _List ] ], "VertexDensity" ] :=
+  InfraMeasurement[ graph, InfraShell[ center, { r, r } ], "VertexDensity" ]
+
+InfraMeasurement[ graph_Graph, shell : InfraShell[ _, _ ], "EdgeDensity" ] :=
+  AssociationThread[ EdgeList @ Subgraph[ graph, Keys @ InfraMeasurement[ graph, shell, "VertexDensity" ] ], 1 ]
+
+InfraMeasurement[ _Graph, InfraShell[ _, _ ], "Cardinality" ] :=
+  1
+
+InfraMeasurement[ _Graph, InfraShell[ _, _ ], "Faithful" ] :=
+  True
+
+InfraMeasurement[ graph_Graph, shell : InfraShell[ _, _ ], All ] :=
+  InfraMeasurement[ graph, shell,
+    { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
+      "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume" } ]
+
+FindInfraRepresentative[ graph_Graph, shell : InfraShell[ _, _ ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  takeRepresentatives[ { Keys @ InfraMeasurement[ graph, shell, "VertexDensity" ] }, count, mods ]
+
+FindInfraRepresentative[ graph_Graph, InfraShell[ center_, r_, opts__Rule ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
   FindInfraShell[ graph, center, r, count,
     Sequence @@ searchMethod[ mods ], Sequence @@ FilterRules[ { opts }, Options[ FindInfraShell ] ] ]

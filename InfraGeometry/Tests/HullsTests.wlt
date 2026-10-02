@@ -223,7 +223,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    BallHullQ[ g, FindInfraBall[ g, 13, 2 ] ] ],
+    BallHullQ[ g, FindInfraRepresentative[g, InfraBall[13, 2]] ] ],
   True,
   TestID -> "BallHullQ-ball-is-ball-convex"
 ]

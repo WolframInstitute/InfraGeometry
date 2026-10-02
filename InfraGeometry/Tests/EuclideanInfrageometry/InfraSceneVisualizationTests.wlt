@@ -320,7 +320,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 7, 7 } ] },
     { (* a UNIFORM effective point (here a ball) is uniformly bright: its diffuseness
          is its extent, not a per-vertex fade *)
-      Union @ Cases[ Options @ InfraSubstrateHighlight[ g, { InfraDensity[ g, FindInfraBall[ g, 25, 2 ] ] } ],
+      Union @ Cases[ Options @ InfraSubstrateHighlight[ g, { InfraDensity[ g, FindInfraRepresentative[g, InfraBall[25, 2]] ] } ],
         AbsolutePointSize[ s_ ] :> s, Infinity ],
       (* a NON-uniform effective point draws its heaviest vertex full and the rest smaller *)
       With[ { sizes = Cases[ Options @ InfraSubstrateHighlight[ g, { FindInfraMidpoint[ g, 1, 49 ] } ],
@@ -390,7 +390,7 @@ VerificationTest[
    { 2, 5, 6, 7, 10 }, whose induced subgraph is the four spokes. *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    With[ { opts = Options @ InfraSubstrateHighlight[ g, { FindInfraBall[ g, 6, 1 ] -> Red } ] },
+    With[ { opts = Options @ InfraSubstrateHighlight[ g, { FindInfraRepresentative[g, InfraBall[6, 1]] -> Red } ] },
       { Length @ Cases[ EdgeStyle /. opts, _UndirectedEdge -> _, Infinity ],
         Cases[ opts, AbsolutePointSize[ s_ ] :> s, Infinity ] } ] ],
   { 4, { } },
@@ -453,7 +453,7 @@ VerificationTest[
               FindInfraTriangle[ g, { 1, 5, 25 }, UpTo[ 4 ] ],
               FindInfraSegment[ g, 1, 25, All ],
               FindInfraShell[ g, 13, 2, All ],
-              FindInfraBall[ g, 13, 2 ] } },
+              FindInfraRepresentative[g, InfraBall[13, 2]] } },
       Union @ Cases[ Options @ InfraSubstrateHighlight[ g, objects ],
         Opacity[ x_ ] :> x <= 1, Infinity ] ] ],
   { True },
@@ -532,7 +532,7 @@ VerificationTest[
 (* StrikeOutPalette: colour follows ADDITION ORDER, not object type. *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    With[ { a = FindInfraSegment[ g, 1, 25 ], b = FindInfraBall[ g, 13, 1 ] },
+    With[ { a = FindInfraSegment[ g, 1, 25 ], b = FindInfraRepresentative[g, InfraBall[13, 1]] },
       Module[ { c1, c2 },
         c1 = Cases[ ToBoxes @ InfraSubstrateHighlight[ g, { a, b } ], _RGBColor, Infinity ];
         c2 = Cases[ ToBoxes @ InfraSubstrateHighlight[ g, { b, a } ], _RGBColor, Infinity ];
@@ -578,7 +578,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     AllTrue[
-      { 7, <| 1 -> 2, 7 -> 1 |>, FindInfraBall[ g, 13, 1 ], FindInfraShell[ g, 13, 2, All ],
+      { 7, <| 1 -> 2, 7 -> 1 |>, FindInfraRepresentative[g, InfraBall[13, 1]], FindInfraShell[ g, 13, 2, All ],
         walkGraph @ { 1, 2, 7 }, geodesicCycleGraph @ { 1, 2, 7, 6 }, walkGraph /@ { { 1, 2, 7 }, { 1, 6, 7 } } },
       x |-> infraInk[ g, x ][ "VertexDensity" ] === InfraDensity[ g, x ] ] ],
   True,

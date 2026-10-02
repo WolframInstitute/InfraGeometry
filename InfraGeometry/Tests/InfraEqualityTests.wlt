@@ -100,19 +100,19 @@ VerificationTest[
 (* ===== InfraBall ===== *)
 
 VerificationTest[
-  InfraEqualQ[ PathGraph[ Range[ 7 ] ], FindInfraBall[ PathGraph[ Range[ 7 ] ], 4, 1 ], FindInfraBall[ PathGraph[ Range[ 7 ] ], 4, 1 ] ],
+  InfraEqualQ[ PathGraph[ Range[ 7 ] ], FindInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 1]], FindInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 1]] ],
   True,
   TestID -> "InfraEqualQ-Ball-identical"
 ]
 
 VerificationTest[
-  InfraEqualQ[ PathGraph[ Range[ 7 ] ], FindInfraBall[ PathGraph[ Range[ 7 ] ], 4, 1 ], FindInfraBall[ PathGraph[ Range[ 7 ] ], 4, 2 ] ],
+  InfraEqualQ[ PathGraph[ Range[ 7 ] ], FindInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 1]], FindInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 2]] ],
   True,
   TestID -> "InfraEqualQ-Ball-nested-Diffuse-True"
 ]
 
 VerificationTest[
-  InfraEqualQ[ PathGraph[ Range[ 7 ] ], FindInfraBall[ PathGraph[ Range[ 7 ] ], 4, 1 ], FindInfraBall[ PathGraph[ Range[ 7 ] ], 4, 2 ], Method -> "Set" ],
+  InfraEqualQ[ PathGraph[ Range[ 7 ] ], FindInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 1]], FindInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 2]], Method -> "Set" ],
   False,
   TestID -> "InfraEqualQ-Ball-nested-Set-False"
 ]
