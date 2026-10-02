@@ -88,7 +88,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     With[ { styles = EdgeStyle /. Options @ InfraSubstrateHighlight[ g,
-          { FindInfraShell[ g, 1, { 1, 2 }, All ] -> Green } ] },
+          { { FindInfraShell[ g, 1, { 1, 2 } ] } -> Green } ] },
       Length @ Cases[ styles, _UndirectedEdge -> _, Infinity ] > 0
     ]
   ],
@@ -363,7 +363,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     Cases[
       Options @ InfraSubstrateHighlight[ g,
-        { FindInfraShell[ g, 1, { 1, 2 }, All ] } ],
+        { { FindInfraShell[ g, 1, { 1, 2 } ] } } ],
       HoldPattern[ VertexShapeFunction -> _ ], Infinity ] === { }
   ],
   True,
@@ -452,7 +452,7 @@ VerificationTest[
     With[ { objects = { FindInfraTriangle[ g, { 1, 5, 25 } ],
               FindInfraTriangle[ g, { 1, 5, 25 }, UpTo[ 4 ] ],
               FindInfraSegment[ g, 1, 25, All ],
-              FindInfraShell[ g, 13, 2, All ],
+              { FindInfraShell[ g, 13, 2 ] },
               FindInfraRepresentative[g, InfraBall[13, 2]] } },
       Union @ Cases[ Options @ InfraSubstrateHighlight[ g, objects ],
         Opacity[ x_ ] :> x <= 1, Infinity ] ] ],
@@ -578,7 +578,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     AllTrue[
-      { 7, <| 1 -> 2, 7 -> 1 |>, FindInfraRepresentative[g, InfraBall[13, 1]], FindInfraShell[ g, 13, 2, All ],
+      { 7, <| 1 -> 2, 7 -> 1 |>, FindInfraRepresentative[g, InfraBall[13, 1]], { FindInfraShell[ g, 13, 2 ] },
         walkGraph @ { 1, 2, 7 }, geodesicCycleGraph @ { 1, 2, 7, 6 }, walkGraph /@ { { 1, 2, 7 }, { 1, 6, 7 } } },
       x |-> infraInk[ g, x ][ "VertexDensity" ] === InfraDensity[ g, x ] ] ],
   True,

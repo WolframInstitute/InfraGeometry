@@ -57,10 +57,10 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[{5, 5}] },
-    FindInfraRepresentative[g, InfraShell[13, 2, Properties -> { "Separating" }], All] ===
-      FindInfraShell[g, 13, 2, All, Properties -> { "Separating" }] ],
+    { FindInfraShell[g, 13, 2], FindInfraShell[g, 13, {1, 2}] } ===
+      { FindInfraRepresentative[g, InfraShell[13, 2]], FindInfraRepresentative[g, InfraShell[13, {1, 2}]] } ],
   True,
-  TestID -> "InfraShell-with-Properties-is-still-the-search"
+  TestID -> "FindInfraShell-is-the-level-set"
 ]
 
 VerificationTest[

@@ -265,7 +265,7 @@ infraInk[ graph_Graph, x_ ] :=
            "EdgeDensity"   -> KeySort @ Counts[ UndirectedEdge @@ Sort @ # & /@ Partition[ walk, 2, 1 ] ],
            "Walk"          -> walk,
            "Knots"         -> { } |> ],
-    MatchQ[ x, ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone )[ _, _ ] ],
+    MatchQ[ x, ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] ],
       <| "VertexDensity" -> InfraMeasurement[ graph, x, "VertexDensity" ],
          "EdgeDensity"   -> KeySort @ Counts[ UndirectedEdge @@ Sort[ List @@ # ] & /@ Keys @ InfraMeasurement[ graph, x, "EdgeDensity" ] ],
          "Walk"          -> None,

@@ -81,7 +81,7 @@ ShellViewer[ g_Graph ] :=
       seed;
       With[ {
           shells = If[ r < 1, {},
-            Take[ FindInfraShell[ g, p, r, All, Properties -> properties ], UpTo[ n ] ] ] },
+            FindInfraSphere[ g, p, r, UpTo[ n ], Properties -> properties ] ] },
         EventHandler[
           HighlightGraph[
             InfraSubstrateHighlight[ g, { Directive[ $InfraShellColor ], shells } ],

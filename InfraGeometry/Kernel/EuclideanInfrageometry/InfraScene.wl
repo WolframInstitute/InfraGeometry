@@ -109,7 +109,7 @@ dispatchConstruction[ graph_Graph, token : Except[ _List | _Association ] ] :=
         Lookup[ opts, "Branches", All ] ],
       members ] ]
 
-selectContext[ ( InfraCircle | InfraShell )[ c_, rs_, ___ ] ] :=
+selectContext[ ( InfraCircle | InfraShell | InfraSphere )[ c_, rs_, ___ ] ] :=
   <| "Center" -> c, "Radius" -> Mean @ Flatten @ { Replace[ rs, ( "Radius" -> r_ ) :> r ] } |>
 
 selectContext[ InfraLine[ path_List, ___ ] ] :=

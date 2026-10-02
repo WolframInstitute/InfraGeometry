@@ -127,9 +127,9 @@ VerificationTest[
 (* ===================== Peel family ===================== *)
 
 VerificationTest[
-  classInvariantQ[ m |-> FindInfraShell[ GridGraph[ { 4, 4 } ], 6, { 1, 2 }, All, Properties -> { "Separating" }, Method -> m ], Sort ],
+  classInvariantQ[ m |-> FindInfraSphere[ GridGraph[ { 4, 4 } ], 6, { 1, 2 }, All, Properties -> { "Separating" }, Method -> m ], Sort ],
   True,
-  TestID -> "FindInfraShell-class-invariant-under-Method"
+  TestID -> "FindInfraSphere-class-invariant-under-Method"
 ]
 
 (* the band is columns 2 and 3; a minimal separator takes exactly one vertex per row, 2^4 of them *)
@@ -150,10 +150,10 @@ VerificationTest[
 
 (* the peel from the centre of the 5 x 5 grid: sixteen minimal separators, and the lazy peel reaches each subset once -- without its visited set this ran minutes *)
 VerificationTest[
-  With[ { call = m |-> FindInfraShell[ GridGraph[ { 5, 5 } ], 13, { 1, 2 }, All, Properties -> { "Separating" }, Method -> m ] },
+  With[ { call = m |-> FindInfraSphere[ GridGraph[ { 5, 5 } ], 13, { 1, 2 }, All, Properties -> { "Separating" }, Method -> m ] },
     { classInvariantQ[ call, Sort ], Length @ reps @ call[ "Exhaustive" ] } ],
   { True, 16 },
-  TestID -> "FindInfraShell-5x5-class-invariant-under-Method"
+  TestID -> "FindInfraSphere-5x5-class-invariant-under-Method"
 ]
 
 
@@ -198,7 +198,7 @@ VerificationTest[
         m |-> ExtendInfraWalk[ g, { 1, 2 }, UpTo[ 2 ], Method -> m ],
         m |-> FindInfraGeodesic[ g, 1, 2, UpTo[ 4 ], Method -> m ],
         m |-> ExtendInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], Method -> m ],
-        m |-> FindInfraShell[ g, 6, { 1, 2 }, Properties -> { "Separating" }, Method -> m ],
+        m |-> FindInfraSphere[ g, 6, { 1, 2 }, Properties -> { "Separating" }, Method -> m ],
         m |-> FindInfraBisectingHyperplane[ g, 1, 4, { -1, 1 }, Properties -> { "Separating" }, Method -> m ],
         m |-> FindInfraEllipticShell[ g, { 6, 11 }, { 3, 4 }, Properties -> { "Separating" }, Method -> m ],
         m |-> FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, Method -> m ],
@@ -223,7 +223,7 @@ VerificationTest[
         m |-> ExtendInfraWalk[ g, { 1, 2 }, UpTo[ 2 ], All, Method -> m ],
         m |-> FindInfraGeodesic[ g, 1, 2, UpTo[ 4 ], All, Method -> m ],
         m |-> ExtendInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], All, Method -> m ],
-        m |-> FindInfraShell[ g, 6, { 1, 2 }, All, Properties -> { "Separating" }, Method -> m ],
+        m |-> FindInfraSphere[ g, 6, { 1, 2 }, All, Properties -> { "Separating" }, Method -> m ],
         m |-> FindInfraBisectingHyperplane[ g, 1, 4, { -1, 1 }, All, Properties -> { "Separating" }, Method -> m ],
         m |-> FindInfraEllipticShell[ g, { 6, 11 }, { 3, 4 }, All, Properties -> { "Separating" }, Method -> m ],
         m |-> FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All, Method -> m ],

@@ -63,6 +63,9 @@ PackageExport[FindInfraShellCenter]
 PackageExport[InfraShellQ]
 PackageExport[SeparatesQ]
 
+PackageExport[InfraSphere]
+PackageExport[FindInfraSphere]
+
 PackageExport[InfraEllipticShell]
 PackageExport[FindInfraEllipticShell]
 PackageExport[InfraEllipticShellQ]

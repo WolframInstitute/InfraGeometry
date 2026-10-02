@@ -372,7 +372,7 @@ VerificationTest[
 
 (* ===== FindInfraShell ===== *)
 
-(* Properties -> {} (default): level surface { v : d(c, v) = r }. *)
+(* the level surface { v : d(c, v) = r }; the separating subsets are FindInfraSphere's, InfraSphereTests.wlt *)
 
 VerificationTest[
   With[{g = PathGraph[Range[5]]},
@@ -384,9 +384,9 @@ VerificationTest[
 
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    With[{result = FindInfraShell[g, 6, {1, 2}, All]},
-      Length @ result == 1 &&
-      AllTrue[First @ result, v |-> 1 <= GraphDistance[g, 6, v] <= 2]
+    With[{result = FindInfraShell[g, 6, {1, 2}]},
+      result =!= {} &&
+      AllTrue[result, v |-> 1 <= GraphDistance[g, 6, v] <= 2]
     ]
   ],
   True,
@@ -395,109 +395,10 @@ VerificationTest[
 
 VerificationTest[
   With[{g = PetersenGraph[]},
-    Length @ FindInfraShell[g, 1, 2, All]
+    MatchQ[FindInfraShell[g, 1, 2], {__Integer}]
   ],
-  1,
+  True,
   TestID -> "FindInfraShell-default-single-result"
-]
-
-(* Properties -> {"Separating", "Connected"}: minimal connected separators. *)
-
-VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    With[{shells = FindInfraShell[g, 6, {1, 2}, All, Properties -> {"Separating", "Connected"}]},
-      Length[shells] >= 1 &&
-      AllTrue[shells, vs |-> AllTrue[vs, v |-> 1 <= GraphDistance[g, 6, v] <= 2]] &&
-      AllTrue[shells, vs |-> ConnectedGraphQ[Subgraph[g, vs]]]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraShell-Sep-Connected-within-range"
-]
-
-VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    With[{shells = FindInfraShell[g, 6, {1, 2}, All, Properties -> {"Separating", "Connected"}]},
-      AllTrue[shells, vs |-> AllTrue[shells,
-        other |-> other === vs || ! (Length[other] < Length[vs] && SubsetQ[vs, other])
-      ]]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraShell-Sep-Connected-minimal"
-]
-
-(* Properties -> {"Separating"} alone (no connectedness requirement).
-   Every returned vs is inside the level-set range; we don't re-test
-   separation here because SeparatingSetQ is PackageScope and the
-   admissibility predicate is enforced inside findShellCore. *)
-
-VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    With[{shells = FindInfraShell[g, 6, {1, 2}, All, Properties -> {"Separating"}]},
-      Length[shells] >= 1 &&
-      AllTrue[shells, vs |-> AllTrue[vs, v |-> 1 <= GraphDistance[g, 6, v] <= 2]]
-    ]
-  ],
-  True,
-  TestID -> "FindInfraShell-Separating-only-no-connected-requirement"
-]
-
-(* The count-less call is one certified minimal shell -- the peel run to a leaf.
-   Count-less is ONE instance, so the instance is that shell's vertex list. *)
-
-VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    With[{shell = FindInfraShell[g, 6, {1, 2},
-            Properties -> {"Separating", "Connected"}, Method -> "Greedy"]},
-      MatchQ[shell, {__Integer}] && SeparatesQ[g, shell, 6, 16] ] ],
-  True,
-  TestID -> "FindInfraShell-Greedy-single-realisation"
-]
-
-(* "Greedy" is the LAZY peel, not a lossy one: it backtracks at each leaf, so a
-   finite count is exact and All recovers the whole minimal class that
-   "Exhaustive" enumerates. *)
-
-VerificationTest[
-  With[ { g = GridGraph[ { 4, 4 } ], props = Properties -> { "Separating", "Connected" } },
-    Sort[ Sort /@ FindInfraShell[ g, 6, { 1, 2 }, All, props, Method -> "Greedy" ] ] ===
-      Sort[ Sort /@ FindInfraShell[ g, 6, { 1, 2 }, All, props, Method -> "Exhaustive" ] ] ],
-  True,
-  TestID -> "FindInfraShell-Greedy-All-agrees-with-Exhaustive"
-]
-
-(* RandomGreedy: the same peel drawn at random instead of in candidate order --
-   deterministic Greedy unchanged, seeded reproducible, varies across seeds where
-   the peel actually branches. *)
-
-VerificationTest[
-  With[ { g = GridGraph[ { 4, 4 } ] },
-    FindInfraShell[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, Method -> "Greedy" ] ===
-      FindInfraShell[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, Method -> "Greedy" ]
-  ],
-  True,
-  TestID -> "FindInfraShell-Greedy-deterministic"
-]
-
-VerificationTest[
-  With[ { g = GridGraph[ { 4, 4 } ] },
-    BlockRandom[ FindInfraShell[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, Method -> "RandomGreedy" ], RandomSeeding -> 4 ] ===
-      BlockRandom[ FindInfraShell[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, Method -> "RandomGreedy" ], RandomSeeding -> 4 ]
-  ],
-  True,
-  TestID -> "FindInfraShell-RandomGreedy-seeded-reproducible"
-]
-
-VerificationTest[
-  With[ { g = GridGraph[ { 4, 4 } ] },
-    Length @ DeleteDuplicates @ Table[
-      BlockRandom[ First @ FindInfraShell[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, Method -> "RandomGreedy" ], RandomSeeding -> s ],
-      { s, 1, 10 } ]
-  ],
-  _Integer?( # > 1 & ),
-  SameTest -> MatchQ,
-  TestID -> "FindInfraShell-RandomGreedy-varies-across-seeds"
 ]
 
 VerificationTest[
@@ -520,14 +421,6 @@ VerificationTest[
 
 (* FindInfraSegment carries no Method any more (EuclideanInertHeads, T2): its "RandomChoice"
    modifier on FindInfraRepresentative is the uniform witness now, tested in InfraMeasurementTests.wlt. *)
-
-
-VerificationTest[
-  Length @ FindInfraShell[GridGraph[{4, 4}], 6, {1, 2}, All,
-    Properties -> {"Separating"}, Method -> {"Exhaustive", "Pruning" -> 1}] >= 1,
-  True,
-  TestID -> "FindInfraShell-Pruning-bounded-runs"
-]
 
 
 (* ===== FindInfraOsculatingShell ===== *)
@@ -986,8 +879,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 10, 10 } ], p = 45 },
-    Sort[ Sort /@ FindInfraShell[ g, p, 2, All ] ] ===
-      Sort[ Sort /@ FindInfraShell[ NeighborhoodGraph[ g, p, 3 ], p, 2, All ] ]
+    FindInfraShell[ g, p, 2 ] === FindInfraShell[ NeighborhoodGraph[ g, p, 3 ], p, 2 ]
   ],
   True,
   TestID -> "FindInfraShell-locality-Metric"
