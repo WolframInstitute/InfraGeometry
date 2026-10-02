@@ -3,7 +3,7 @@ PacletObject[
     "Name" -> "WolframInstitute/InfraGeometry",
     "Description" -> "Geometry as the effective description of graph limits, observed at a scale",
     "Creator" -> "Pavel Hajek",
-    "Version" -> "1.4.0",
+    "Version" -> "1.4.1",
     "WolframVersion" -> "14.3+",
     "PublisherID" -> "WolframInstitute",
     "License" -> "MIT",
