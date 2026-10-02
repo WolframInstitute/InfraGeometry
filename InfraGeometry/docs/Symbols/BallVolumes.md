@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/BallVolumes
 Keywords: [ball volume, volume growth, coordination sequence, growth function, dimension, Bishop-Gromov]
-SeeAlso: [ShellAreas, TubeVolumes, FindInfraBall, LogDifferenceQuotients, DimensionCurvatureFit, VolumeGrowthObservables]
+SeeAlso: [ShellAreas, TubeVolumes, InfraBall, LogDifferenceQuotients, DimensionCurvatureFit, VolumeGrowthObservables]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
@@ -57,7 +57,7 @@ The ball of radius 3 at the centre of the square tiling, with its boundary, the 
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  {ball = FindInfraBall[g, c, 3]},
+  {ball = FindInfraRepresentative[g, InfraBall[c, 3]]},
   {InfraSubstrateHighlight[g, {ball -> $InfraBallColor, Directive[$InfraPointColor], Sequence @@ FindInfraShell[g, c, 3]}],
    BallVolumes[g, c, 3, "Measure" -> #] & /@ {"FullCount", "WithoutBoundary", "HalfBoundary"}}]
 ```
@@ -114,21 +114,21 @@ The mean profile over a set of vertices near the centre of the discretized plane
 ```wl
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Large"]},
-  {sampleSet = Take[FindInfraBall[g, InfraCenter[g], 2], 5]},
+  {sampleSet = Take[FindInfraRepresentative[g, InfraBall[InfraCenter[g], 2]], 5]},
   {meanProfile = MeanAround /@ Transpose @ BallVolumes[g, sampleSet, {0, 5}]},
   {ListPlot[meanProfile, DataRange -> {0, 5}, AxesLabel -> {"r", "V(r)"}], meanProfile}]
 ```
 
 ## Properties and Relations
 
-The profile counts the balls that [FindInfraBall]() builds, drawn here at radii 2, 4 and 6.
+The profile counts the balls of [InfraBall](), drawn here at radii 2, 4 and 6.
 
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  {GraphicsRow @ Table[InfraSubstrateHighlight[g, {FindInfraBall[g, c, r] -> $InfraBallColor, Directive[$InfraPointColor], c}], {r, {2, 4, 6}}],
-   BallVolumes[g, c, {0, 6}] === Table[Length @ FindInfraBall[g, c, r], {r, 0, 6}]}]
+  {GraphicsRow @ Table[InfraSubstrateHighlight[g, {FindInfraRepresentative[g, InfraBall[c, r]] -> $InfraBallColor, Directive[$InfraPointColor], c}], {r, {2, 4, 6}}],
+   BallVolumes[g, c, {0, 6}] === Table[Length @ FindInfraRepresentative[g, InfraBall[c, r]], {r, 0, 6}]}]
 ```
 
 The square tiling's profile is the ℓ¹ ball *2r² + 2r + 1*, the gray curve, up to its rim.

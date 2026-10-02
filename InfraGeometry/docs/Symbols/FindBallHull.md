@@ -32,11 +32,11 @@ Row[Table[
      {hull = FindBallHull[g, s]},
      Labeled[
        InfraSubstrateHighlight[g,
-         {FindInfraBall[g, c, 5] -> $InfraBallColor, hull -> $InfraCircleColor, s -> $InfraPointColor},
+         {FindInfraRepresentative[g, InfraBall[c, 5]] -> $InfraBallColor, hull -> $InfraCircleColor, s -> $InfraPointColor},
          "PointSizeRange" -> 17,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
          ImageSize -> 250],
-       Text[name <> ": " <> ToString[Length @ hull] <> " of " <> ToString[Length @ FindInfraBall[g, c, 5]] <> " vertices"]]],
+       Text[name <> ": " <> ToString[Length @ hull] <> " of " <> ToString[Length @ FindInfraRepresentative[g, InfraBall[c, 5]]] <> " vertices"]]],
    {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```
 

@@ -137,8 +137,6 @@ Every exported symbol that no other guide of the site covers, one section per ke
 
 - `InfraRevolution` the InfraScene constructor for a solid of revolution
 - `FindInfraRevolution` the rotational vertex set around an axis with a given radius profile
-- `FindInfraCylinder` the constant-radius solid of revolution around an axis, by default the r-neighbourhood of the axis
-- `FindInfraCone` the cone of a given slope with apex at one end of an axis
 - `InfraRevolutionQ` whether a vertex set is the solid of revolution around an axis with a given profile
 
 ### Synthetic · EuclideanSpace.wl
@@ -193,7 +191,6 @@ Every exported symbol that no other guide of the site covers, one section per ke
 - `FindAdvancingInfraFront` the foliation by a bouncing wavefront, as a list of sorted vertex lists
 - `InfraBoundary` the boundary of a vertex set, density or shape, as a sorted vertex list
 - `InfraInterior` the interior of a vertex set, density or shape, as a sorted vertex list
-- `InfraVolume` the volume of a vertex set, density or shape
 
 ### Synthetic · TarskiGeometry.wl
 

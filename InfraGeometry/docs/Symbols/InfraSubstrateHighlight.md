@@ -70,7 +70,7 @@ With[
   {c = InfraCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 5])},
   InfraSubstrateHighlight[g,
-    {FindInfraBall[g, c, 3], Directive[$InfraCircleColor], InfraCircle[c, p, "RadiusDelta" -> 1]}]]
+    {FindInfraRepresentative[g, InfraBall[c, 3]], Directive[$InfraCircleColor], InfraCircle[c, p, "RadiusDelta" -> 1]}]]
 ```
 
 Overlaps add. The two segments share their start and blend there. The walk is one stroke.

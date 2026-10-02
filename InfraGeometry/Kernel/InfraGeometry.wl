@@ -162,7 +162,6 @@ PackageExport[FindInfraEquidistantSet]
 PackageExport[FindAdvancingInfraFront]
 PackageExport[InfraBoundary]
 PackageExport[InfraInterior]
-PackageExport[InfraVolume]
 
 PackageExport[BetweennessQ]
 PackageExport[EquidistanceQ]

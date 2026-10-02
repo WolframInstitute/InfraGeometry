@@ -86,51 +86,44 @@ VerificationTest[
   TestID -> "InfraBoundary-Alexandrov-dispatch"
 ]
 
-(* ===== InfraVolume ===== *)
+(* ===== the four volume properties ===== *)
 
-(* Set-like: Count - Boundary == Interior (a partition of the vertex set). *)
+(* Volume - BoundaryVolume == InteriorVolume (a partition of the vertex set). *)
 VerificationTest[
-  With[ { g = GridGraph[ {5, 5} ], ball = FindInfraRepresentative[GridGraph[ {5, 5} ], InfraBall[13, 2]] },
-    InfraVolume[ g, ball, "Measure" -> "FullCount" ] - InfraVolume[ g, ball, "Measure" -> "Boundary" ]
-      == InfraVolume[ g, ball, "Measure" -> "WithoutBoundary" ] ],
+  With[ { g = GridGraph[ {5, 5} ], ball = InfraBall[13, 2] },
+    InfraMeasurement[ g, ball, "Volume" ] - InfraMeasurement[ g, ball, "BoundaryVolume" ]
+      == InfraMeasurement[ g, ball, "InteriorVolume" ] ],
   True,
-  TestID -> "InfraVolume-count-minus-boundary-equals-interior"
+  TestID -> "volume-properties-count-minus-boundary-equals-interior"
 ]
 
-(* HalfBoundary weights the boundary by one half: on a radius-2 ball of the grid, 13 - 8/2 = 9 *)
+(* HalfBoundaryVolume weights the boundary by one half: on a radius-2 ball of the grid, 13 - 8/2 = 9 *)
 VerificationTest[
-  InfraVolume[ GridGraph[ {5, 5} ], FindInfraRepresentative[GridGraph[ {5, 5} ], InfraBall[13, 2]], "Measure" -> "HalfBoundary" ],
+  InfraMeasurement[ GridGraph[ {5, 5} ], InfraBall[13, 2], "HalfBoundaryVolume" ],
   9,
-  TestID -> "InfraVolume-half-boundary"
+  TestID -> "volume-properties-half-boundary"
 ]
 
 (* A thin geodesic line (top row of a grid) is 1-D in a 2-D graph: empty interior. *)
 VerificationTest[
-  InfraVolume[ GridGraph[ {4, 4} ], geodesicGraph @ {1, 2, 3, 4}, "Measure" -> "WithoutBoundary" ],
+  InfraMeasurement[ GridGraph[ {4, 4} ], InfraSegment[ 1, 4 ], "InteriorVolume" ],
   0,
-  TestID -> "InfraVolume-thin-line-empty-interior"
+  TestID -> "volume-properties-thin-line-empty-interior"
 ]
 
-(* Line vs set on the SAME (space-filling) vertex set: the curve has ~no interior
-   (only the two pass-through corners), the induced 2-D region has full interior. *)
+(* Thickening the line by a radius-1 tube gives the two top rows; the top row of them is interior. *)
 VerificationTest[
-  With[
-    { g = GridGraph[ {4, 4} ],
-      snake = Catenate @ Table[ With[ { row = Range[ 4 (i - 1) + 1, 4 i ] }, If[ OddQ[ i ], row, Reverse[ row ] ] ], { i, 4 } ] },
-    { InfraVolume[ g, geodesicGraph @ snake, "Measure" -> "WithoutBoundary" ],
-      InfraVolume[ g, InfraDensity[ g, snake ], "Measure" -> "WithoutBoundary" ],
-      InfraVolume[ g, geodesicGraph @ snake, "Measure" -> "FullCount" ]
-        === InfraVolume[ g, InfraDensity[ g, snake ], "Measure" -> "FullCount" ] } ],
-  { 2, 16, True },
-  TestID -> "InfraVolume-line-vs-set-spanning-curve"
+  With[ { g = GridGraph[ {4, 4} ], tube = InfraTube[ InfraSegment[ 1, 4 ], 1 ] },
+    InfraMeasurement[ g, tube, { "Volume", "InteriorVolume" } ] ],
+  <| "Volume" -> 8, "InteriorVolume" -> 4 |>,
+  TestID -> "volume-properties-thickened-line-has-interior"
 ]
 
-(* The line graph is the union of the walks, NOT the induced subgraph: two parallel
-   grid rows stay disconnected, so neither row gains interior from the other. *)
+(* Every vertex of a thin line borders the rest of the grid. *)
 VerificationTest[
-  InfraVolume[ GridGraph[ {4, 4} ], geodesicGraph /@ {{1, 2, 3, 4}, {5, 6, 7, 8}}, "Measure" -> "WithoutBoundary" ],
-  0,
-  TestID -> "InfraVolume-line-union-not-induced"
+  InfraMeasurement[ GridGraph[ {4, 4} ], InfraSegment[ 1, 4 ], "BoundaryVolume" ],
+  4,
+  TestID -> "volume-properties-segment-boundary"
 ]
 
 (* ===== FindInfraEquidistantSet ===== *)

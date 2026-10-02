@@ -163,7 +163,6 @@ InfraDensity::usage = "InfraDensity[graph, x] gives the marginal of any shape to
 FindInfraEquidistantSet::usage = "FindInfraEquidistantSet[graph, {p1, ..., pn}] gives { v : d(p1, v) == ... == d(pn, v) } as a sorted vertex list; a trailing {lo, hi} thickens each bisector to a slab.";
 InfraBoundary::usage = "InfraBoundary[graph, s] gives, as a sorted vertex list, the boundary of a vertex set, density or shape. Option Method (\"Combinatorial\", \"Alexandrov\").";
 InfraInterior::usage = "InfraInterior[graph, s] gives, as a sorted vertex list, the interior of a vertex set, density or shape. Option Method (\"Combinatorial\", \"Alexandrov\").";
-InfraVolume::usage = "InfraVolume[graph, s] gives the volume of a vertex set, density or shape. Options \"Measure\" (\"FullCount\", \"WithoutBoundary\", \"HalfBoundary\", \"Boundary\"), Method.";
 
 OrthogonalCoordinates::usage = "OrthogonalCoordinates[graph, c, axes, v] gives the integer displacement of v along each axis through the centre c; without v, the association over all vertices. Option \"SelectCoordinate\".";
 FindInfraOrthogonalFrame::usage = "FindInfraOrthogonalFrame[graph, c, axisLength] gives frames of mutually perpendicular geodesic axes through the centre c. Options Method, \"AxisCount\", \"BranchSampleSize\", \"SelectCoordinate\".";

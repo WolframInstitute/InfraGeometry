@@ -5,32 +5,71 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraShell
-Keywords: [shell, sphere, level set, scene token, construction]
-SeeAlso: [FindInfraShell, InfraBall, InfraScene, FindInfraScene, InfraShellQ, ShellAreas]
+Keywords: [shell, sphere, level set, region, inert head, area]
+SeeAlso: [FindInfraShell, InfraBall, InfraSphere, InfraMeasurement, FindInfraRepresentative, InfraShellQ, ShellAreas]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraShell]()[*x*, *r*]</code> inside an [InfraScene]() is the shell of radius *r* about the object *x*.
+<code>[InfraShell]()[*c*, {*r*, *s*}]</code> is the shell about *c*: the vertices at distance between *r* and *s*. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
-<code>[InfraShell]()[*x*, {*rmin*, *rmax*}]</code> is the band of radii from *rmin* to *rmax*.
+<code>[InfraShell]()[*c*, *r*]</code> is the band {*r*, *r*}: the vertices at distance exactly *r*.
 
-<code>[InfraShell]()[*x*, *r*, *opts*]</code> passes the options of [FindInfraShell]() on.
+<code>[InfraShell]()[*c*, *r*]</code> inside an [InfraScene]() is the shell construction token.
 
 ## Details & Options
 
-Definition: the shell of radius *r* about *c* is *S_r(c) = {v : d(c, v) = r}*, a level set of the distance from *c*; the band is *{v : rmin ≤ d(c, v) ≤ rmax}*.
+Definition: the shell of radius *r* about *c* is *S_r(c) = {v : d(c, v) = r}*, a level set of the distance from *c*; the band is *{v : r ≤ d(c, v) ≤ s}*. *c* is a vertex or a vertex list, and then *d(v, C) = min d(v, c)*.
 
-`InfraShell` is a scene token. It names the shell in a construction `x == InfraShell[y, r]`, where *y* is an object of the scene, and [FindInfraScene]() solves it: each branch binds *x* to one realisation, a sorted vertex list. Without `Properties` the realisation is the whole level set, so the token adds no branches. With `Properties -> {"Separating"}` the realisations are the minimal subsets of the shell that separate *y* from the outside, one branch each.
+The head holds the centre and the band and computes nothing. A shell has one member, the vertex set, so [FindInfraRepresentative]() gives it as a sorted vertex list. It owns the same nine properties as [InfraBall](), `"Volume"` among them; the shell area *A(r)* is the `"Volume"` of the shell.
 
-A shell itself is a sorted vertex list, and [FindInfraShell]() computes it. Outside a scene the head is inert.
+A shell is a set of points. The connected subsets of it that separate the centre from the outside are the family [InfraSphere]().
 
-The shell is the sphere of the graph metric and the probe of the shell-area measurement. [ShellAreas]() counts shells at every radius without building them.
+[FindInfraShell]() is the level set as a function; [ShellAreas]() counts the shells at every radius without building them.
 
 ## Basic Examples
 
-The shells of radius 2 about the centre and about a point two steps away, and the vertices where they meet, one per branch.
+The shells of radius 2 to 5 about the centre of the square, hexagonal and triangular tilings: nested rings, one colour each.
+
+```wl
+GraphicsRow @ Table[
+  With[
+    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    {c = InfraCenter[g]},
+    InfraSubstrateHighlight[g, Table[InfraShell[c, r], {r, 2, 5}]]],
+  {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
+```
+
+The shell about two vertices at once.
+
+```wl
+FindInfraRepresentative[PathGraph[Range[7]], InfraShell[{1, 7}, 1]]
+```
+
+## Scope
+
+A band of radii 2 to 4 is one vertex set.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = InfraCenter[g]},
+  InfraSubstrateHighlight[g, {InfraShell[c, {2, 4}] -> $InfraShellColor, Directive[$InfraPointColor], c}]]
+```
+
+## Properties and Relations
+
+The shell area is the `"Volume"` of the head. On the square grid it is *4 r*.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
+  {c = InfraCenter[g]},
+  Table[InfraMeasurement[g, InfraShell[c, r], "Volume"], {r, 1, 6}] === ShellAreas[g, c, {1, 6}]]
+```
+
+Inside a scene the token names the shell about a point, and [FindInfraScene]() binds it to the same vertex set. Two shells meet in a few vertices, one per branch.
 
 ```wl
 ClearAll[pA, pB, shellA, shellB, meet];
@@ -43,62 +82,9 @@ With[
       shellA == InfraShell[pA, 2], shellB == InfraShell[pB, 2],
       meet == InfraIntersection[shellA, shellB]}]},
   {solved = FindInfraScene[constr, g]},
-  {InfraSubstrateHighlight[g,
-     Join[{InfraSceneInstance[First @ solved, shellA] -> $InfraShellColor,
-           InfraSceneInstance[First @ solved, shellB] -> $InfraCircleColor,
-           Directive[$InfraPointColor]},
-       InfraSceneInstance[#, meet] & /@ solved]],
-   InfraSceneInstance[#, meet] & /@ solved}]
-```
-
-The same construction on the square, hexagonal and triangular tilings.
-
-```wl
-ClearAll[pA, pB, shellA, shellB, meet];
-GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = InfraCenter[g]},
-    {b = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
-    {constr = InfraScene[{pA, pB, shellA, shellB, meet},
-       {pA == InfraPoint[c], pB == InfraPoint[b],
-        shellA == InfraShell[pA, 2], shellB == InfraShell[pB, 2],
-        meet == InfraIntersection[shellA, shellB]}]},
-    {solved = FindInfraScene[constr, g]},
-    InfraSubstrateHighlight[g,
-      Join[{InfraSceneInstance[First @ solved, shellA] -> $InfraShellColor,
-            InfraSceneInstance[First @ solved, shellB] -> $InfraCircleColor,
-            Directive[$InfraPointColor]},
-        InfraSceneInstance[#, meet] & /@ solved]]],
-  {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
-```
-
-## Scope
-
-A band of radii 2 to 3 about the centre: the two shells together.
-
-```wl
-ClearAll[pA, shellA];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {constr = InfraScene[{pA, shellA}, {pA == InfraPoint[c], shellA == InfraShell[pA, {2, 3}]}]},
-  {band = InfraSceneInstance[First @ FindInfraScene[constr, g], shellA]},
-  {InfraSubstrateHighlight[g, {band -> $InfraShellColor, Directive[$InfraPointColor], c}],
-   band === Union[FindInfraShell[g, c, 2], FindInfraShell[g, c, 3]]}]
-```
-
-## Properties and Relations
-
-The shell bound in the scene is the one [FindInfraShell]() computes.
-
-```wl
-ClearAll[pA, shellA];
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {constr = InfraScene[{pA, shellA}, {pA == InfraPoint[c], shellA == InfraShell[pA, 3]}]},
-  {shell = InfraSceneInstance[First @ FindInfraScene[constr, g], shellA]},
-  {InfraSubstrateHighlight[g, {shell -> $InfraShellColor, Directive[$InfraPointColor], c}],
-   shell === FindInfraShell[g, c, 3]}]
+  InfraSubstrateHighlight[g,
+    Join[{InfraSceneInstance[First @ solved, shellA] -> $InfraShellColor,
+          InfraSceneInstance[First @ solved, shellB] -> $InfraCircleColor,
+          Directive[$InfraPointColor]},
+      InfraSceneInstance[#, meet] & /@ solved]]]
 ```

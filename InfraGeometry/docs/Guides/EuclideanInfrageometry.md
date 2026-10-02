@@ -5,7 +5,7 @@ Title: Euclidean Infrageometry
 Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/EuclideanInfrageometry
-Keywords: [Euclidean geometry, graph, inert head, synthetic object, segment, ray, line, arc, circle, ball, hull, angle, measurement, substrate, scene, multi-construction]
+Keywords: [Euclidean geometry, graph, inert head, synthetic object, segment, ray, line, arc, circle, ball, tube, cylinder, cone, sphere, hull, angle, measurement, substrate, scene, multi-construction]
 RelatedGuides: [RiemannianInfrageometry, Experimental]
 ---
 
@@ -29,17 +29,25 @@ Euclidean infrageometry is synthetic geometry: constructions with natural object
 - `InfraLine` the inert line through p and q: the shortest paths through both that no neighbour of either endpoint prolongs
 - `InfraArc` the inert arc around c from p1 to pk through the intermediate points: the shortest paths in the band graph of the circle through p1
 - `InfraCircle` the inert circle around c through p: the shortest cycles through p that separate c from the outside of its band; "Radius" -> r or {r, s} in place of p takes the whole band
-- `InfraBall` the scene token for the closed ball {v : d(c, v) <= r} of radius r about c; the ball itself is the sorted vertex list FindInfraBall gives
 - `InfraAngle` the angle at p between q1 and q2 in radians, Method "Arclength" or "Alexandrov", the comparison angle of the three distances
 - `InfraIntersection` the objects common to two inert heads, an inert head again, with the product of their vertex densities
 - `InfraUnion` the objects of either of two inert heads, an inert head again, with the sum of their vertex densities
+
+### Regions
+
+- `InfraBall` the inert closed ball {v : d(c, v) <= r} about a vertex or a vertex set; a band {r, s} in place of r is the shell
+- `InfraTube` the inert tube {v : d(v, core) <= s} about a vertex, a vertex set, a density, a walk graph or a Euclidean head; a band {s, t} is the mantle
+- `InfraCylinder` the inert cylinder of radius r about an axis, the tube of the axis
+- `InfraCone` the inert cone of a given slope along an axis, apex at its first vertex
+- `InfraSphere` the inert family of inclusion-minimal connected subsets of a shell that separate the centre from the outside; FindInfraSphere is its search
+- the volumes of a region are properties of InfraMeasurement: "Volume", "BoundaryVolume", "InteriorVolume" and "HalfBoundaryVolume"
 
 ### Find Functions
 
 - `FindInfraPoint` a vertex drawn from the candidate pool, narrowed by "From" and "Distance"; a trailing count gives a List of vertices
 - `FindInfraMidpoint` the middle vertices of the shortest paths from p1 to p2 as a density, one vertex at even distance, two at odd
 - `FindInfraEquidistantSet` the vertices equidistant from p1, ..., pn, as a sorted vertex list; a trailing {lo, hi} thickens each bisector to a slab
-- `FindInfraBall` the closed ball {v : d(c, v) <= r} as a sorted vertex list
+- `FindInfraSphere` n inclusion-minimal connected subsets of the shell of c that separate its inside from its outside; Properties and Method choose the class and the search
 - `FindInfraSegment` one shortest path from p to q as a vertex list; a trailing count gives a List of them
 - `FindInfraRay` one ray from p through q as a vertex list, a shortest path from p through q that no neighbour of its last vertex prolongs; a trailing count gives a List of them
 - `FindInfraLine` one line through p and q as a vertex list, an inextensible shortest path through both; a trailing count gives a List of them
@@ -75,7 +83,7 @@ Euclidean infrageometry is synthetic geometry: constructions with natural object
 ### Not here
 
 - `FindBallHull` the intersection of all balls containing a set of points; it lives on the Infra Topology guide
-- `TubeVolumes` the volumes of the tube about a core; they live on the Riemannian Infrageometry guide
-- not here: the cone, the sphere and the quadric as inert heads, and the layers of the convex hull; they are planned in the backlog item InfraRegions, and FindInfraQuadric stays on the Experimental guide
+- `TubeVolumes` the volume profile of the tube about a core; it lives on the Riemannian Infrageometry guide, the tube itself is InfraTube
+- not here: the quadric as an inert head and the layers of the convex hull; FindInfraQuadric stays on the Experimental guide
 - not here: an invariant of four points, the inverse of every head (the values of its unknowns for a given vertex set), and the graph of a line or of an arc as an exported name; none is in an item yet
 - not here: the interactive multi-construction stepper in the causal and branchial direction; it stays on the Experimental guide

@@ -5,48 +5,94 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraBall
-Keywords: [ball, disk, neighbourhood, scene token, construction]
-SeeAlso: [FindInfraBall, InfraShell, InfraScene, FindInfraScene, InfraBallQ, BallVolumes]
+Keywords: [ball, disk, neighbourhood, region, inert head, volume]
+SeeAlso: [InfraShell, InfraTube, InfraSphere, FindInfraRepresentative, InfraMeasurement, InfraBallQ, BallVolumes]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraBall]()[*x*, *r*]</code> inside an [InfraScene]() is the closed ball of radius *r* about the object *x*.
+<code>[InfraBall]()[*c*, *r*]</code> is the closed ball of radius *r* about *c*: the vertices at distance at most *r*. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+
+<code>[InfraBall]()[*c*, {*r*, *s*}]</code> is the shell: the vertices at distance between *r* and *s*.
+
+<code>[InfraBall]()[*c*, *r*]</code> inside an [InfraScene]() is the ball construction token.
 
 ## Details & Options
 
-Definition: the closed ball of radius *r* about *c* is *B_r(c) = {v : d(c, v) ≤ r}*.
+Definition: the closed ball of radius *r* about *c* is *B_r(c) = {v : d(c, v) ≤ r}*. *c* is a vertex or a vertex list, and then *d(v, C) = min d(v, c)* and the ball is the *r*-neighbourhood of *C*.
 
-`InfraBall` is a scene token. It names the ball in a construction `x == InfraBall[y, r]`, where *y* is an object of the scene, and [FindInfraScene]() solves it: each branch binds *x* to the ball about the vertex *y* stands for, a sorted vertex list. The ball is unique, so the token adds no branches.
+The head holds the centre and the radius and computes nothing. A ball has one member, the vertex set, so [FindInfraRepresentative]() gives it as a sorted vertex list and `"Faithful"` is `True`.
 
-A ball itself is a sorted vertex list, and [FindInfraBall]() computes it. Outside a scene the head is inert: [InfraMeasurement]() does not read it, and [FindInfraRepresentative]() gives its one member, the ball.
+[InfraMeasurement]() reads nine properties: `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"`, `"Faithful"`, `"Subgraph"` and the four volumes `"Volume"`, `"BoundaryVolume"`, `"InteriorVolume"`, `"HalfBoundaryVolume"`. A ball has no `"Graph"` and no `"Length"`; asking for them leaves the call unevaluated.
 
-Balls are the probe of the volume measurements. [BallVolumes]() counts them at every radius without building them.
+A radius past the eccentricity gives the whole graph; a band with *r > s* gives the empty set.
+
+[BallVolumes]() counts the balls at every radius without building them.
 
 ## Basic Examples
 
-A ball of radius 2 about the centre and the shell of radius 2 about a point two steps away. They meet in a few vertices, one per branch.
+The ball of radius 4 about the centre of the square, hexagonal and triangular tilings.
 
 ```wl
-ClearAll[pA, pB, ballA, shellB, meet];
+GraphicsRow @ Table[
+  With[
+    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    {c = InfraCenter[g]},
+    InfraSubstrateHighlight[g, {InfraBall[c, 4] -> $InfraBallColor, Directive[$InfraPointColor], c}]],
+  {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
+```
+
+The volume of the ball against its radius on the square grid. It is *2 r^2 + 2 r + 1*.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
+  {c = InfraCenter[g]},
+  ListLinePlot[Table[InfraMeasurement[g, InfraBall[c, r], "Volume"], {r, 0, 6}], DataRange -> {0, 6}, PlotMarkers -> Automatic]]
+```
+
+## Scope
+
+A ball about a vertex list is the neighbourhood of the list: here of a segment.
+
+```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
-  {constr = InfraScene[{pA, pB, ballA, shellB, meet},
-     {pA == InfraPoint[c], pB == InfraPoint[b],
-      ballA == InfraBall[pA, 2], shellB == InfraShell[pB, 2],
-      meet == InfraIntersection[ballA, shellB]}]},
-  {solved = FindInfraScene[constr, g]},
-  InfraSubstrateHighlight[g,
-    Join[{InfraSceneInstance[First @ solved, ballA] -> $InfraBallColor,
-          InfraSceneInstance[First @ solved, shellB] -> $InfraShellColor,
-          Directive[$InfraPointColor]},
-      InfraSceneInstance[#, meet] & /@ solved]]]
+  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 4])},
+  {core = FindInfraRepresentative[g, InfraSegment[c, p]]},
+  InfraSubstrateHighlight[g, {InfraBall[core, 1] -> $InfraBallColor, core -> $InfraSegmentColor}]]
 ```
 
-The ball bound in the scene is the one [FindInfraBall]() computes.
+All the properties of a ball at once.
+
+```wl
+InfraMeasurement[GridGraph[{5, 5}], InfraBall[13, 1], All]
+```
+
+## Properties and Relations
+
+The ball is the union of the shells up to its radius, so the volume profile is the partial sums of the shell areas of [ShellAreas]().
+
+```wl
+With[
+  {g = InfraSubstrate["HexagonalTilingGraph", "Medium"]},
+  {c = InfraCenter[g]},
+  {volumes = Table[InfraMeasurement[g, InfraBall[c, r], "Volume"], {r, 0, 5}]},
+  volumes === BallVolumes[g, c, {0, 5}]]
+```
+
+The half-boundary volume of the ball on the square grid is the Ehrhart value.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
+  {c = InfraCenter[g]},
+  Table[InfraMeasurement[g, InfraBall[c, r], "HalfBoundaryVolume"], {r, 1, 5}] === Table[2 r^2 + 1, {r, 1, 5}]]
+```
+
+Inside a scene the token names the ball about a point, and [FindInfraScene]() binds it to the same vertex set.
 
 ```wl
 ClearAll[pA, ballA];
@@ -56,20 +102,5 @@ With[
   {constr = InfraScene[{pA, ballA}, {pA == InfraPoint[c], ballA == InfraBall[pA, 2]}]},
   {ball = InfraSceneInstance[First @ FindInfraScene[constr, g], ballA]},
   {InfraSubstrateHighlight[g, {ball -> $InfraBallColor, Directive[$InfraPointColor], c}],
-   ball === FindInfraBall[g, c, 2]}]
-```
-
-## Properties and Relations
-
-A ball about a point that is itself a choice gives one ball per choice: here one for each vertex at distance 2 from the centre. The balls are drawn summed, with the size of each.
-
-```wl
-ClearAll[pA, pB, ballB];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {constr = InfraScene[{pA, pB, ballB}, {pA == InfraPoint[c], pB == InfraPoint[pA, 2], ballB == InfraBall[pB, 1]}]},
-  {balls = InfraSceneInstance[#, ballB] & /@ FindInfraScene[constr, g]},
-  {InfraSubstrateHighlight[g, {balls -> $InfraBallColor, Directive[$InfraPointColor], c}],
-   Length /@ balls}]
+   ball === FindInfraRepresentative[g, InfraBall[c, 2]]}]
 ```

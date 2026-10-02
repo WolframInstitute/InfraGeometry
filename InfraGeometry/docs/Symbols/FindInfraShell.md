@@ -6,15 +6,14 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraShell
 Keywords: [shell, sphere, level surface, volume growth, dimension]
-SeeAlso: [InfraShell, FindInfraBall, ShellAreas, FindInfraCircle, InfraShellQ, SeparatesQ]
+SeeAlso: [InfraShell, InfraBall, FindInfraSphere, ShellAreas, FindInfraCircle, InfraShellQ, SeparatesQ]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage
 
-<code>[FindInfraShell]()[*g*, *c*, *r*]</code> gives the metric shell $\{v : d(c,v) = r\}$ around *c* as a sorted vertex list. *r* may be a band `{rmin, rmax}`.
+<code>[FindInfraShell]()[*g*, *c*, *r*]</code> gives the metric shell $\{v : d(c,v) = r\}$ around *c* as a sorted vertex list. *r* may be a band `{rmin, rmax}`, and *c* a vertex list, with the set distance.
 
-<code>[FindInfraShell]()[*g*, *c*, *r*, *n*]</code> gives a `List` of exactly *n* vertex sets or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives all of them. Under the default `Properties -> {}` the level set is the one vertex set.
 
 ## Details & Options
 
@@ -24,7 +23,7 @@ It is the discrete analogue of a sphere, not of a circle: it is codimension-1 as
 
 The shell is the substrate of the volume-growth invariants. Its cardinality as a function of *r* is the surface-area profile, which [ShellAreas]() counts at every radius at once, and on a flat lattice it grows **linearly**, which is the statement that the dimension is 2. The slope is a property of the tiling: 4 per step on the square grid, 3 on the hexagonal.
 
-Option `Properties` takes `{}` (default; the whole level set as one vertex set), `{"Separating"}` (inclusion-minimal subsets separating the centre from beyond), or `{"Separating", "Connected"}`. Option `Method` takes `Automatic` (default), `"Exhaustive"`, `{"Exhaustive", "Pruning" -> spec}`, `"Greedy"` or `"RandomGreedy"`, and is read only when `Properties` names a class to search: `Automatic` resolves by the count — `All` to `"Exhaustive"`; a bounded or absent count to `"Greedy"`, the lazy peel, so the count-less call is one minimal subset, deterministic — and the class is the same under every value. `"RandomGreedy"` peels in random order, seeded by an ambient `SeedRandom`; `"Pruning"` caps the removable vertices tried per layer, and the result is then minimal among the survivors.
+It is the level set of the inert head [InfraShell](), as a function. The connected subsets of a shell that separate the centre from the outside are [FindInfraSphere]().
 
 Corresponding notions in the classical axiom systems:
 
@@ -75,7 +74,7 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Medium"]},
   {c = InfraCenter[g]},
   {areas = Table[Length @ FindInfraShell[g, c, r], {r, 0, 5}]},
-  {volumes = Table[Length @ FindInfraBall[g, c, r], {r, 0, 5}]},
+  {volumes = Table[Length @ FindInfraRepresentative[g, InfraBall[c, r]], {r, 0, 5}]},
   {ListLinePlot[{Accumulate @ areas, volumes}, DataRange -> {0, 5}, PlotMarkers -> {Automatic, Medium},
      PlotLegends -> {"partial sums of |S_r|", "|B_r|"}, AxesLabel -> {"r", None}],
    Accumulate[areas] === volumes}]

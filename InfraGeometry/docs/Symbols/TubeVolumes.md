@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/TubeVolumes
 Keywords: [tube volume, tubular neighbourhood, Gray tube formula, Ricci curvature, directional growth, metric interval]
-SeeAlso: [BallVolumes, ShellAreas, SegmentGraph, MetricInterval, FindInfraBall, DimensionCurvatureFit]
+SeeAlso: [BallVolumes, ShellAreas, SegmentGraph, MetricInterval, InfraBall, InfraTube, DimensionCurvatureFit]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
@@ -56,7 +56,7 @@ With[
   {c = InfraCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, c, 4])},
   {core = FindInfraSegment[g, c, b]},
-  {InfraSubstrateHighlight[g, {FindInfraBall[g, core, 2] -> $InfraBallColor, InfraWalk[core] -> $InfraSegmentColor}],
+  {InfraSubstrateHighlight[g, {FindInfraRepresentative[g, InfraBall[core, 2]] -> $InfraBallColor, InfraWalk[core] -> $InfraSegmentColor}],
    TubeVolumes[g, core, {0, 2}]}]
 ```
 
@@ -67,7 +67,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {line = FindInfraLine[g, c, First @ AdjacencyList[g, c]]},
-  {InfraSubstrateHighlight[g, {FindInfraBall[g, line, 1] -> $InfraBallColor, InfraWalk[line] -> $InfraLineColor}],
+  {InfraSubstrateHighlight[g, {FindInfraRepresentative[g, InfraBall[line, 1]] -> $InfraBallColor, InfraWalk[line] -> $InfraLineColor}],
    TubeVolumes[g, line]}]
 ```
 
@@ -104,7 +104,7 @@ With[
   {c = InfraCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, c, 4])},
   {interval = MetricInterval[g, c, b]},
-  {InfraSubstrateHighlight[g, {FindInfraBall[g, interval, 1] -> $InfraBallColor, interval -> $InfraSegmentColor}],
+  {InfraSubstrateHighlight[g, {FindInfraRepresentative[g, InfraBall[interval, 1]] -> $InfraBallColor, interval -> $InfraSegmentColor}],
    TubeVolumes[g, c, b] === TubeVolumes[g, interval]}]
 ```
 

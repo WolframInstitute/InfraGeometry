@@ -83,7 +83,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {obs = VolumeGrowthObservables[g, c]},
-  {InfraSubstrateHighlight[g, {FindInfraBall[g, c, Last @ obs["BallWindow"]], FindInfraBall[g, c, First @ obs["BallWindow"]], Directive[$InfraPointColor], c}],
+  {InfraSubstrateHighlight[g, {FindInfraRepresentative[g, InfraBall[c, Last @ obs["BallWindow"]]], FindInfraRepresentative[g, InfraBall[c, First @ obs["BallWindow"]]], Directive[$InfraPointColor], c}],
    obs["BallWindow"], Keys @ obs}]
 ```
 

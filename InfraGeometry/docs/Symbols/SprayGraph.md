@@ -100,7 +100,7 @@ With[
   {c = InfraCenter[g]},
   {sprayDag = SprayGraph[g, c, "AxisLength" -> 3]},
   {InfraSubstrateHighlight[g, {sprayDag, FindInfraShell[g, c, 3] -> $InfraShellColor}],
-   Sort @ Complement[VertexList[sprayDag], FindInfraBall[g, c, 2]] === FindInfraShell[g, c, 3],
+   Sort @ Complement[VertexList[sprayDag], FindInfraRepresentative[g, InfraBall[c, 2]]] === FindInfraShell[g, c, 3],
    VertexCount[sprayDag] === BallVolumes[g, c, 3]}]
 ```
 

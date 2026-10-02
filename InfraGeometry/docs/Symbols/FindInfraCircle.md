@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraCircle
 Keywords: [circle, band, separating cycle, girth, Euclid Postulate 3]
-SeeAlso: [InfraCircle, FindInfraRepresentative, FindInfraShell, FindInfraBall, InfraCircleQ, FindInfraArc]
+SeeAlso: [InfraCircle, FindInfraRepresentative, FindInfraShell, InfraBall, InfraCircleQ, FindInfraArc]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
