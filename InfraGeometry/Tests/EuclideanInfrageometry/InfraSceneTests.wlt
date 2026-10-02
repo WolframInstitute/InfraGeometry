@@ -675,9 +675,11 @@ VerificationTest[
       { DownValues, UpValues, SubValues, OwnValues, FormatValues, NValues },
       f |-> ReleaseHold @ Map[ f, ToExpression[ n, InputForm, Hold ] ] === { } ] ],
   (* InflatedVertex is not a scene token: it is the inert label InflateGraph stamps on the
-     copies it makes.  It arrived with ExampleGraphs.wl in the paclet split (T2a). *)
+     copies it makes.  It arrived with ExampleGraphs.wl in the paclet split (T2a).  Nor is
+     InfraFibration: the inert fibration head, read by InfraTotalGraph and InfraFibrationAssociation
+     (InfraFibrations T1). *)
   { "InflatedVertex",
-    "InfraArc", "InfraBall", "InfraCircle", "InfraCone", "InfraCylinder", "InfraEllipse", "InfraEllipticShell", "InfraGeodesic",
+    "InfraArc", "InfraBall", "InfraCircle", "InfraCone", "InfraCylinder", "InfraEllipse", "InfraEllipticShell", "InfraFibration", "InfraGeodesic",
     "InfraIntersectQ", "InfraLine", "InfraPlane", "InfraPoint",
     "InfraPolygon", "InfraPolyline", "InfraRay", "InfraRevolution", "InfraSegment",
     "InfraShell", "InfraSphere", "InfraStep", "InfraTriangle", "InfraTube", "InfraWalk", "Undetermined" },

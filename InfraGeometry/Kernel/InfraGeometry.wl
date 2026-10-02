@@ -335,4 +335,16 @@ PackageExport[InfraDensity]
 
 PackageExport[EnumerateGraphs]
 
+(* FiberBundles *)
+PackageExport[InfraFibration]
+PackageExport[InfraTotalGraph]
+PackageExport[InfraFibrationAssociation]
+PackageExport[InfraBaseGraph]
+PackageExport[InfraFiber]
+PackageExport[InfraFibers]
+PackageExport[InfraFibrationQ]
+PackageExport[InfraFiberBundleQ]
+PackageExport[RandomInfraFibration]
+PackageExport[InfraBundleMorphismQ]
+
 ClearAll["WolframInstitute`InfraGeometry`**`*", "WolframInstitute`InfraGeometry`*"]

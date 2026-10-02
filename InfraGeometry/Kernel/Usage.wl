@@ -424,3 +424,14 @@ OrderedCochainCup::usage = "OrderedCochainCup[g, a, b] is the bare Alexander-Whi
 CochainCupOne::usage = "CochainCupOne[g, a, b] is the Steenrod cup-1 product of ORDERED cochains. For closed a and b it is a primitive for the graded commutator: Coboundary[g, CochainCupOne[g, a, b]] equals OrderedCochainCup[g, a, b] - (-1)^(p q) OrderedCochainCup[g, b, a]. It vanishes when a has degree 0.";
 
 AntisymmetrizedCup::usage = "AntisymmetrizedCup[g, a, b] is an alias of CochainCup, the name the antisymmetrised product carried before it became the cup product.";
+
+InfraFibration::usage = "InfraFibration[total, proj] is a fibration of graphs: the total graph with its projection to the base, an association or a function on the vertices of total.";
+InfraTotalGraph::usage = "InfraTotalGraph[fib] gives the total graph of the fibration fib.";
+InfraFibrationAssociation::usage = "InfraFibrationAssociation[fib] gives the projection of fib as an association <|x -> p, ...|> from total vertices to base vertices.";
+InfraBaseGraph::usage = "InfraBaseGraph[fib] gives the base graph of fib: the projected vertices, p and q adjacent iff some total edge projects onto {p, q}.";
+InfraFiber::usage = "InfraFiber[fib, p] gives the fiber over the base vertex p, the subgraph of the total graph on the vertices projecting to p.";
+InfraFibers::usage = "InfraFibers[fib] gives the association <|p -> fiber, ...|> of the fibers of fib over every base vertex.";
+InfraFibrationQ::usage = "InfraFibrationQ[fib] tests the edge lifting property: every total vertex over p has a neighbour over every base neighbour of p.";
+InfraFiberBundleQ::usage = "InfraFiberBundleQ[fib] tests whether fib is a fiber bundle: isomorphic fibers, exactly one lift of each base edge at each vertex, trivial over every ball of radius 1.";
+RandomInfraFibration::usage = "RandomInfraFibration[base] gives a random InfraFibration over base, each fiber drawn around its base vertex. Options \"VerticalVertices\", \"VerticalEdges\", \"HorizontalEdgesRadius\", \"HorizontalEdgesDensity\", \"IsomorphicFibers\".";
+InfraBundleMorphismQ::usage = "InfraBundleMorphismQ[fib1, fib2, F, f] tests whether F maps total vertices of fib1 to total vertices of fib2 over f, and edges to edges or vertices; f defaults to Identity.";
