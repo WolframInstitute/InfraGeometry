@@ -255,4 +255,27 @@ VerificationTest[
   TestID -> "InfraIntersection-on-heads-stays-inert"
 ]
 
+(* a head without a graph is read by its search at the defaults *)
+VerificationTest[
+  With[{g = GridGraph[{5, 5}]},
+    {FindInfraRepresentative[g, InfraShell[13, 2]] === FindInfraShell[g, 13, 2],
+     FindInfraRepresentative[g, InfraBall[13, 1], All] === {FindInfraBall[g, 13, 1]},
+     FindInfraRepresentative[g, InfraPoint["Center"], All],
+     FindInfraRepresentative[g, InfraWalk[1, 2, 3]], FindInfraRepresentative[g, InfraWalk[1, 3], All],
+     Length @ FindInfraRepresentative[g, InfraShell[13, 2], 1, "RandomChoice"]}],
+  {True, True, {13}, {1, 2, 3}, {}, 1},
+  TestID -> "FindInfraRepresentative-token-heads-read-by-their-searches"
+]
+
+(* a scene circle reads its second argument as a radius, the head as a point *)
+VerificationTest[
+  With[{g = GridGraph[{7, 7}]},
+    {WolframInstitute`InfraGeometry`PackageScope`dispatchConstruction[g, InfraCircle[25, {2, 3}]] ===
+       FindInfraRepresentative[g, InfraCircle[25, "Radius" -> {2, 3}], All],
+     WolframInstitute`InfraGeometry`PackageScope`dispatchConstruction[g, InfraCircle[25, {2, 3}, "Branches" -> 1]] ===
+       FindInfraRepresentative[g, InfraCircle[25, "Radius" -> {2, 3}], UpTo[1]]}],
+  {True, True},
+  TestID -> "FindInfraRepresentative-scene-circle-is-by-radius"
+]
+
 EndTestSection[]
