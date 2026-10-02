@@ -28,6 +28,7 @@ PackageExport[UniqueInfraSegmentQ]
 
 PackageExport[InfraWalk]
 PackageExport[FindInfraWalk]
+PackageExport[InfraGeodesic]
 PackageExport[FindInfraGeodesic]
 PackageExport[InfraGeodesicQ]
 PackageExport[WalkSingularities]

@@ -742,6 +742,11 @@ ExtendInfraGeodesic[ graph_Graph, seed_,
       Sequence @@ FilterRules[ { opts }, Except[ Properties ] ] ] },
     result /; Head[ result ] =!= ExtendInfraWalk ]
 
+FindInfraRepresentative[ graph_Graph, InfraGeodesic[ germ_List, scale : ( _Integer | Infinity ) ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+  With[ { walks = ExtendInfraGeodesic[ graph, germ, scale, Infinity, count, Sequence @@ searchMethod[ mods ] ] },
+    Replace[ walks, { w_Graph :> Last /@ VertexList @ w, l_List :> ( Last /@ VertexList @ # & ) /@ l } ] /; ! MatchQ[ walks, _ExtendInfraGeodesic ] ]
+
 ConcatenateInfraWalk[ path1_, path2_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
   With[ { walksOf = w |-> With[ { vs = VertexList @ w },

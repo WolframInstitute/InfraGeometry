@@ -1474,6 +1474,33 @@ VerificationTest[
   TestID -> "InfraWalkCrossingQ-figure-eight-loop"
 ]
 
+(* InfraGeodesic head: the generic clause is ExtendInfraGeodesic at the defaults, returned as vertex lists *)
+VerificationTest[
+  With[ { g = GridGraph[ { 4, 4 } ] },
+    Sort @ FindInfraRepresentative[ g, InfraGeodesic[ { 6, 7 }, Infinity ], All ] ===
+      Sort @ walkSeqs @ ExtendInfraGeodesic[ g, { 6, 7 }, Infinity, Infinity, All ] ],
+  True,
+  TestID -> "InfraGeodesic-representatives-are-ExtendInfraGeodesic"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 4, 4 } ] },
+    { Length @ FindInfraRepresentative[ g, InfraGeodesic[ { 6, 7 }, Infinity ], 2 ],
+      MatchQ[ FindInfraRepresentative[ g, InfraGeodesic[ { 6, 7 }, Infinity ] ], { __Integer } ],
+      MemberQ[ FindInfraRepresentative[ g, InfraGeodesic[ { 6, 7 }, Infinity ], All ],
+        FindInfraRepresentative[ g, InfraGeodesic[ { 6, 7 }, Infinity ], 1, "RandomChoice" ][[ 1 ]] ] } ],
+  { 2, True, True },
+  TestID -> "InfraGeodesic-count-and-random-choice"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 4, 4 } ] },
+    { members = FindInfraRepresentative[ g, InfraGeodesic[ { 6, 7 }, Infinity ], All ] },
+    InfraDensity[ g, members ] === KeySort @ Counts @ Catenate @ members ],
+  True,
+  TestID -> "InfraGeodesic-members-InfraDensity"
+]
+
 EndTestSection[]
 
 (* ===== Refused calls stay unevaluated ===== *)
