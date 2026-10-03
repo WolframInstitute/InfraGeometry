@@ -20,13 +20,19 @@ Definition: *q(r) = (log w(r) − log w(r − 1)) / (log(r + 1) − log r)* for 
 
 It is the discrete *d log w / d log r*. Applied to a ball-volume profile, the quotient is the growth exponent at each radius, the volume-growth dimension: it tends to 2 on a planar lattice and to 3 on a cubic one. Applied to the shell areas it tends to one less.
 
+Which radius a quotient is read at is a convention, and it moves the curve. A ball profile *V(0), V(1), …* given from radius 0 has position *i* at radius *i − 1*, so the quotient placed at *r* is *(log V(r) − log V(r − 1)) / (log(r + 1) − log r)*: the quotient of the profile *ρ ↦ V(ρ − 1)* at its own radius. On a lattice *V(ρ − 1)* is the Riemannian measure of the ball of radius *ρ* ([InfraBall]()), so this is the quotient of the `"RiemannianMeasure"` profile from radius 1, and it is the curve the Wolfram Physics technical introduction plots in section 4.5. The profile given from radius 1, *V(1), V(2), …*, is the counting curve, each volume at its own radius.
+
+The two curves part at the rate *1/r*. For a polynomial profile of degree *d* with leading coefficient *c* and coefficient *b* of *r^(d−1)*, *q(r) = d − (b/c)/r + O(1/r²)*. For a ball count *L(r)* of a lattice of dimension *d*, the counting curve is *d − d/(2r) + O(1/r²)* and the Riemannian curve, of *L(r − 1)*, is *d + d/(2r) + O(1/r²)*: one from below, one from above, with mean *d + O(1/r²)*.
+
+On a Riemannian manifold the ball's expansion *ω_d r^d (1 − Scal r² / (6(d + 2)))* makes the quotient affine in *r(r + 1)*, with intercept *d* and slope *−Scal / (3(d + 2))*, to first order in the curvature; [DimensionCurvatureFit]() fits that line.
+
 The quotient is not constant on a finite graph. At small radius it carries the discretisation, and at large radius it falls as the ball meets the rim or wraps round. [DimensionCurvatureFit]() regresses it on *r(r + 1)* over a middle window to read the dimension and the curvature, and [VolumeGrowthObservables]() chooses that window.
 
 *w* may be any numeric sequence, or a sequence of `Around` values; then the spread is carried into the quotients. The positions are fixed by the list, so a window of a profile starting at radius *r0* is placed at 1, not at *r0* + 1. `LogDifferenceQuotients` equals `ResourceFunction["LogDifferences"]`.
 
 ## Basic Examples
 
-The quotients of the ball volumes at the centre of the discretized plane, the square tiling and the hexagonal tiling. All three approach 2, the dimension of the plane; the gray line.
+The quotients of the ball volumes from radius 0 at the centre of the discretized plane, the square tiling and the hexagonal tiling, the curves of the technical introduction. All three approach 2, the dimension of the plane; the gray line.
 
 ```wl
 With[
@@ -67,6 +73,22 @@ With[
 ```
 
 ## Properties and Relations
+
+The counting curve and the Riemannian curve of the balls about the centre of the large square tiling, as points, against *2 − 1/r* and *2 + 1/r*, as curves. The Riemannian curve is also the quotient of the counting profile given from radius 0.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Large"]},
+  {c = InfraCenter[g]},
+  {counting = LogDifferenceQuotients @ Table[InfraMeasurement[g, InfraBall[c, r], "CountingMeasure"], {r, 1, 13}]},
+  {riemannian = LogDifferenceQuotients @ Table[InfraMeasurement[g, InfraBall[c, r], "RiemannianMeasure"], {r, 1, 13}]},
+  {shifted = LogDifferenceQuotients @ Table[InfraMeasurement[g, InfraBall[c, r], "CountingMeasure"], {r, 0, 12}]},
+  {Show[
+     Plot[{2 - 1/r, 2 + 1/r}, {r, 1, 12}, PlotRange -> {1, 3}],
+     ListPlot[{counting, riemannian}, DataRange -> {1, 12}, PlotMarkers -> Automatic],
+     AxesLabel -> {"r", "q(r)"}, GridLines -> {None, {{2, Gray}}}],
+   riemannian == shifted}]
+```
 
 The quotients of the shell areas of a planar lattice tend to 1, one less than those of the volumes.
 

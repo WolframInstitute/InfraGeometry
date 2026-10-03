@@ -27,7 +27,26 @@ Definition: <code>[InfraMeasurement]()[*graph*, *obj*, *property*]</code> is the
 | `"CountingMeasure"` | *\|A\|*, the number of vertices of the support |
 | `"RiemannianMeasure"` | *\|A°\|*, where *A° = {v ∈ A : every neighbour of v lies in A}*: the count without the boundary |
 
-Their difference is the number of vertices of *A* with a neighbour outside *A*, the [InfraBoundary]() of *A*; *A°* is its [InfraInterior](). In the limit of a manifold the boundary of a region has measure zero and the two agree. On a graph they do not: the boundary of a ball of radius *r* holds a share of order *1/r* of its vertices. On the square, triangular and hexagonal lattices, away from the rim, the Riemannian measure of a ball of radius *r* is the counting measure of the ball of radius *r − 1*, the convention of the Wolfram Physics technical introduction. The rim of a finite graph is not a boundary: a region that fills the graph has both measures equal to the number of vertices.
+Their difference is the number of vertices of *A* with a neighbour outside *A*, the [InfraBoundary]() of *A*; *A°* is its [InfraInterior](). In the limit of a manifold the boundary of a region has measure zero and the two agree. On a graph they do not: the boundary of a ball of radius *r* holds a share of order *1/r* of its vertices. The rim of a finite graph is not a boundary: a region that fills the graph has both measures equal to the number of vertices.
+
+For a ball or a tube the interior is one layer thinner. With *T_s(X)* the vertices within *s* of a set *X* and *s ≥ 1*,
+
+*Int T_s(X) = T_(s−1)(X) ∪ {w : d(w, X) = s and no neighbour of w is at distance s + 1}*,
+
+so the Riemannian measure of a ball or a tube is the counting measure one step thinner, plus the dead ends of its outer layer. On the square and the triangular grids there are no dead ends away from the rim, and the Riemannian measure of a ball of radius *r ≥ 1* is the counting measure of the ball of radius *r − 1*, the convention of the Wolfram Physics technical introduction; on the hexagonal tiling this is measured. A set every vertex of which has a neighbour outside has Riemannian measure `0`: a shell, a sphere instance, a shortest path in a graph of minimum degree three.
+
+The volume profiles on the square grid, about a centre *c*, with a segment from *c* whose interval is a box of sides *a_1*, *a_2*, away from the rim:
+
+| Region | `"CountingMeasure"` | `"RiemannianMeasure"` |
+|---|---|---|
+| ball of radius *r* | *2r² + 2r + 1* | *2r² − 2r + 1* for *r ≥ 1*, `0` at *r = 0* |
+| shell of radius *r ≥ 1* | *4r* | `0` |
+| fat tube of radius *s*, about the interval | *(a_1 + 1)(a_2 + 1) + 2s(a_1 + a_2 + 2) + 2s(s − 1)* | the count at *s − 1*, for *s ≥ 1* |
+| thin tube of radius *s*, about one shortest path | no closed form for a staircase path | the count at *s − 1*, measured |
+| cone of slope *m ≥ 1* | the ball about the far end | the ball about the far end |
+| sphere instance | measured | `0` |
+
+The symbol page of each region carries its counts on the other lattices and its continuum expansion. A profile, the list of a measure over the size, is read by [LogDifferenceQuotients](). The quotients of the counting profile from *r = 0* and of the Riemannian profile from *r = 1* coincide on a lattice, and they are the curves of the technical introduction, section 4.5: on *Z^d* they approach the dimension as *d + d/(2r)*, from above, while the counting profile from *r = 1* approaches it as *d − d/(2r)*, from below.
 
 A Euclidean head is inert: it holds its points and options and computes nothing on its own. `InfraMeasurement` is what evaluates it, reading every property off the head's **graph** — an acyclic directed graph whose source-to-sink chains are exactly the head's members — by one forward and one backward sweep of a dynamic-programming count, never by enumeration. A circle's graph is a `List` of necklaces, each **opened** at its closing arrow *u* -> *s1*: an acyclic DAG with one source *s1* and one sink *u*. A circle's member is the open chain *s1* … *u* read cyclically, a cyclic vertex list whose first vertex is not repeated.
 
@@ -132,6 +151,24 @@ With[
 ```
 
 ## Properties and Relations
+
+The profiles of the regions about the centre of the square grid, under the counting measure on the left and the Riemannian measure on the right: the ball and the shell over the radius, the fat and the thin tube about a segment of length 5 over the thickness.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
+  {c = InfraCenter[g]},
+  {fat = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, c, 5])]},
+  {geodesic = FindInfraRepresentative[g, fat]},
+  GraphicsRow[Table[
+    ListLinePlot[{
+      InfraMeasurement[g, Table[InfraBall[c, r], {r, 0, 5}], measure],
+      InfraMeasurement[g, Table[InfraShell[c, r], {r, 0, 5}], measure],
+      InfraMeasurement[g, Table[InfraTube[fat, s], {s, 0, 5}], measure],
+      InfraMeasurement[g, Table[InfraTube[geodesic, s], {s, 0, 5}], measure]},
+      DataRange -> {0, 5}, PlotMarkers -> Automatic, PlotLegends -> {"ball", "shell", "fat tube", "thin tube"}],
+    {measure, {"CountingMeasure", "RiemannianMeasure"}}]]]
+```
 
 The support is the key set of the vertex density. The counting measure is its size, the Riemannian measure the size of its interior.
 

@@ -33,6 +33,12 @@ The family may have many members. The shell is a set of points; the sphere is th
 
 `"Faithful"` is `Undetermined`. A sphere has no `"Graph"`.
 
+The Riemannian measure of a sphere instance in a band *{r, r + 1}*, *r ≥ 1*, is `0` too, whenever every vertex at distance *r + 1* has a neighbour at distance *r + 2*: each vertex of the instance then has a neighbour outside the band.
+
+No count is known. The family has no closed formula for its number of members, and one instance none for its size: the size of one instance bounds the size of no other. The reference is the shell it lies in, whose count [InfraShell]() gives on a lattice. In the continuum a sphere instance stands for the geodesic sphere, of area *n ω_n r^(n−1) (1 − Scal(c) r² / (6n) + O(r⁴))*.
+
+How the number is measured: one instance <code>*T* = [FindInfraRepresentative]()[*g*, [InfraSphere]()[*c*, {*r*, *r* + 1}]]</code>, found greedily, is a vertex list, and <code>[InfraMeasurement]()[*g*, [InfraTube]()[*T*, 0], *measure*]</code> measures it as a region. The profile is the list of the instance sizes over *r*, a profile of instances, not of the family.
+
 [FindInfraRepresentative]() gives members: a count, `"RandomChoice"` and `"Pruning" -> q` are translated to the `Method` of [FindInfraSphere](). Without a count it gives one member, a sorted vertex list.
 
 ## Basic Examples
@@ -66,6 +72,18 @@ Measuring the family of the 5 by 5 grid: four members, eight vertices in their u
 
 ```wl
 InfraMeasurement[GridGraph[{5, 5}], InfraSphere[13, {1, 2}], {"Cardinality", "Faithful", "CountingMeasure", "RiemannianMeasure"}]
+```
+
+The size of one instance per band *{r, r + 1}* about the centre of the square grid, as points, against the count of the band, as a curve.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
+  {c = InfraCenter[g]},
+  ListPlot[{
+    Table[Length[FindInfraRepresentative[g, InfraSphere[c, {r, r + 1}]]], {r, 1, 6}],
+    Table[InfraMeasurement[g, InfraShell[c, {r, r + 1}], "CountingMeasure"], {r, 1, 6}]},
+    DataRange -> {1, 6}, Joined -> {False, True}, PlotMarkers -> Automatic, AxesLabel -> {"r", None}]]
 ```
 
 A member is connected and is contained in the shell.

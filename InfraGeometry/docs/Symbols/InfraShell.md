@@ -31,9 +31,23 @@ A shell is all boundary. [InfraMeasurement]() gives two measures, and they part 
 | `"CountingMeasure"` | *\|S_r(c)\|*, the shell area *A(r)* |
 | `"RiemannianMeasure"` | `0` for a single shell: every vertex of it has a neighbour at distance *r − 1*, and the neighbours of the centre lie at distance 1 |
 
-The shell area at *r = 1* is the degree of the centre; over *r* on a lattice it is the coordination sequence of crystallography, *4 r* on the square grid and *3 r* on the hexagonal tiling. Past the eccentricity the shell is empty.
+The shell area at *r = 1* is the degree of the centre. Over *r* on a lattice it is the coordination sequence of crystallography, the difference of consecutive ball counts, *A(r) = L(r) − L(r − 1)* for *r ≥ 1*, with *L* the lattice count of [InfraBall](), and *A(0) = 1*:
 
-The Riemannian measure of a band *{r, s}* drops its two rims. On the square, triangular and hexagonal lattices, away from the rim, it is the counting measure of the band *{r + 1, s − 1}*.
+| Lattice | Substrate | `"CountingMeasure"` *A(r)*, *r ≥ 1* |
+|---|---|---|
+| *Z*, the path | — | *2* |
+| *Z²* | `"SquareTilingGraph"` | *4r* |
+| *Z³* | `"CubicGridGraph"` | *4r² + 2* |
+| triangular | `"TriangularTilingGraph"` | *6r* |
+| hexagonal | `"HexagonalTilingGraph"` | *3r* |
+
+Past the eccentricity the shell is empty. The substrates are finite patches, and a shell follows the table while it stays inside the patch: on the medium cubic grid, to *r = 3*.
+
+In the continuum the reference is the area of the geodesic sphere. On a Riemannian manifold of dimension *n*, with *ω_n* the volume of the Euclidean unit ball and *Scal(c)* the scalar curvature at the centre, *Vol ∂B_r(c) = n ω_n r^(n−1) (1 − Scal(c) r² / (6n) + O(r⁴))*, the derivative in *r* of the ball's expansion. On a lattice the shell is the boundary of a polygon, not of a round ball, as on [InfraBall]().
+
+The Riemannian measure of a band *{r, s}* with *r ≥ 1* drops its two rims: it counts the band *{r + 1, s − 1}* and the vertices at distance *s* that have no neighbour at distance *s + 1*. On the square and the triangular grids, away from the rim, there are none, and it is the counting measure of the band *{r + 1, s − 1}*; on the hexagonal tiling this is measured.
+
+How the number is measured: <code>[InfraMeasurement]()[*g*, [InfraShell]()[*c*, *r*], "CountingMeasure"]</code> counts the vertices at distance exactly *r* from *c*, one row of the distance matrix at the value *r*. The profile over *r* is the derivative of the ball profile, and its [LogDifferenceQuotients]() tend to one less than the dimension.
 
 The head holds the centre and the band and computes nothing. A shell has one member, the vertex set, so [FindInfraRepresentative]() gives it as a sorted vertex list. [InfraMeasurement]() also reads `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"`, `"Faithful"` and `"Subgraph"`. [FindInfraShell]() is the level set as a function.
 
@@ -91,6 +105,18 @@ FindInfraRepresentative[PathGraph[Range[7]], InfraShell[{1, 7}, 1]]
 ```
 
 ## Properties and Relations
+
+The shell area of the triangular tiling and of the large cubic grid, as points, against *6r* and *4r² + 2*, as curves.
+
+```wl
+GraphicsRow[MapThread[
+  {substrate, maxRadius, shellArea} |-> Show[
+    Plot[shellArea, {r, 1, maxRadius}],
+    ListPlot[
+      Table[InfraMeasurement[substrate, InfraShell[InfraCenter[substrate], r], "CountingMeasure"], {r, 1, maxRadius}],
+      DataRange -> {1, maxRadius}, PlotMarkers -> Automatic]],
+  {{InfraSubstrate["TriangularTilingGraph", "Medium"], InfraSubstrate["CubicGridGraph", "Large"]}, {6, 4}, {6 r, 4 r^2 + 2}}]]
+```
 
 Inside a scene the token names the shell about a point, and [FindInfraScene]() binds it to the same vertex set. Two shells meet in a few vertices, one per branch.
 

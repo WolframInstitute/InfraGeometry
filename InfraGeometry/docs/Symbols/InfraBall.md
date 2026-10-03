@@ -31,7 +31,22 @@ Its boundary is not negligible. The vertices at distance exactly *r* are a share
 | `"CountingMeasure"` | *\|B_r(c)\|*, the number of vertices of the ball |
 | `"RiemannianMeasure"` | the number of vertices of the ball all of whose neighbours lie in the ball: the count without the boundary |
 
-The Riemannian measure of *B_r(c)* always counts *B_(r−1)(c)*. On the square, triangular and hexagonal lattices, away from the rim, it counts nothing more, so its profile over *r* is the counting profile one radius later, the convention of the Wolfram Physics technical introduction. On an irregular mesh it also counts the vertices at distance *r* that have no neighbour at distance *r + 1*.
+The Riemannian measure of *B_r(c)* for *r ≥ 1* counts *B_(r−1)(c)* and the vertices at distance *r* that have no neighbour at distance *r + 1*. At *r = 0* it is `0`: the centre has a neighbour outside. On the square and the triangular grids, away from the rim, no vertex at distance *r* lacks a neighbour farther out, so the Riemannian profile over *r* is the counting profile one radius later; on the hexagonal tiling this is measured, not proved. On an irregular mesh the extra vertices appear.
+
+On a lattice both measures are polynomials in *r*. The counting measure is the number of lattice points in the ball of the path metric, a polygon or a polyhedron; the Riemannian measure is the same polynomial at *r − 1*:
+
+| Lattice | Substrate | `"CountingMeasure"` *L(r)* | `"RiemannianMeasure"`, *r ≥ 1* |
+|---|---|---|---|
+| *Z²* | `"SquareTilingGraph"` | *2r² + 2r + 1* | *2r² − 2r + 1* |
+| *Z³* | `"CubicGridGraph"` | *4/3 r³ + 2r² + 8/3 r + 1* | *L(r − 1)* |
+| triangular | `"TriangularTilingGraph"` | *3r² + 3r + 1* | *3r² − 3r + 1* |
+| hexagonal | `"HexagonalTilingGraph"` | *1 + 3r(r + 1)/2* | *1 + 3r(r − 1)/2*, measured |
+
+On *Z^d* the count is *L_d(r) = Σ_k 2^k C(d, k) C(r, k)*, the sum over *k* from 0 to *d*, with *C* the binomial coefficient: a point of the ball has *k* nonzero coordinates, which take *C(d, k)* positions, *2^k* signs and *C(r, k)* absolute values of sum at most *r*. The substrates are finite patches of the lattices. A count follows the polynomial while the ball stays inside the patch, and the Riemannian count while one more layer does: on the medium cubic grid, to *r = 3* and *r = 2*.
+
+In the continuum the reference is the small-ball expansion of Gray and Vanhecke. On a Riemannian manifold of dimension *n*, with *ω_n* the volume of the Euclidean unit ball and *Scal(c)* the scalar curvature at the centre, *Vol B_r(c) = ω_n r^n (1 − Scal(c) r² / (6(n + 2)) + O(r⁴))*. A lattice ball is not a discrete round ball: the scaled path metric of a lattice converges to a norm whose unit ball is a square on the square grid and a hexagon on the triangular one, and the leading coefficient of *L* is the area of that unit ball. The expansion is the reference on a mesh of a curved surface.
+
+How the number is measured: <code>[InfraMeasurement]()[*g*, [InfraBall]()[*c*, *r*], *measure*]</code> takes the vertices at distance at most *r* from *c*, one row of the distance matrix cut at *r*, and counts them, or counts its [InfraInterior](). The profile is the list over *r = 0, 1, …*, and [LogDifferenceQuotients]() reads the dimension off it. On a lattice the quotients of the counting profile from *r = 0* and of the Riemannian profile from *r = 1* coincide: they are the curve of the Wolfram Physics technical introduction, section 4.5, which approaches the dimension from above.
 
 A radius past the eccentricity gives the whole graph, and then both measures are the number of vertices: the rim of the graph is not a boundary of the ball. A band with *r > s* gives the empty set.
 
@@ -93,6 +108,19 @@ With[
 ```
 
 ## Properties and Relations
+
+The two measures of the balls about the centres of the square, the triangular and the hexagonal tiling, left to right, as points, against the lattice counts *L(r)* and *L(r − 1)*, as curves. At *r = 0* the Riemannian measure is 0.
+
+```wl
+GraphicsRow[MapThread[
+  {substrate, ballCount} |-> Show[
+    Plot[Evaluate[{ballCount, ConditionalExpression[ballCount /. r -> r - 1, r >= 1]}], {r, 0, 6}],
+    ListPlot[
+      Table[InfraMeasurement[substrate, InfraBall[InfraCenter[substrate], r], measure], {measure, {"CountingMeasure", "RiemannianMeasure"}}, {r, 0, 6}],
+      DataRange -> {0, 6}, PlotMarkers -> Automatic]],
+  {InfraSubstrate[#, "Medium"] & /@ {"SquareTilingGraph", "TriangularTilingGraph", "HexagonalTilingGraph"},
+   {2 r^2 + 2 r + 1, 3 r^2 + 3 r + 1, 1 + 3 r (r + 1)/2}}]]
+```
 
 The ball is the union of the shells up to its radius, so its counting measure is the running total of the shell areas.
 
