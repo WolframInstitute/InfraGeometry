@@ -2,10 +2,13 @@ BeginTestSection["MethodLadder"]
 
 (* ===================== The class-invariance contract ===================== *)
 
-(* Method never changes the class: "Exhaustive", "Greedy" and "RandomGreedy" enumerate the same realisation set under All.  canon normalises a realisation whose order carries no information (a vertex set); a walk keeps its sequence *)
+(* Method never changes the class: "Exhaustive", "Greedy" and "RandomGreedy" enumerate the same realisation set under All.  canon normalises a realisation whose order carries no information (a vertex set); a walk keeps its sequence.  On the walk family, where Method is gone, the next-vertex function plays the same role: Identity and RandomSample enumerate the same set under All *)
 
 classInvariantQ[ call_, canon_ : Identity ] :=
   SameQ @@ ( Sort[ canon /@ reps @ call[ # ] ] & /@ { "Exhaustive", "Greedy", "RandomGreedy" } )
+
+stepInvariantQ[ call_ ] :=
+  SameQ @@ ( Sort[ reps @ call[ # ] ] & /@ { Identity, RandomSample } )
 
 (* the realisations of a returned class, read off its shape: a walk graph or a DAG
    spreads into vertex sequences, a List of walk graphs into all of theirs, and a
@@ -87,40 +90,54 @@ VerificationTest[
 (* ===================== Walk family ===================== *)
 
 VerificationTest[
-  classInvariantQ[ m |-> FindInfraWalk[ GridGraph[ { 3, 3 } ], 1, UpTo[ 6 ], All,
-    Properties -> { "Immersed" }, "StoppingCondition" -> 1, Method -> m ] ],
+  stepInvariantQ[ f |-> FindInfraWalk[ GridGraph[ { 3, 3 } ], 1, UpTo[ 6 ], All,
+    Properties -> { "Immersed" }, "StoppingCondition" -> 1, "NextVertexFunction" -> f ] ],
   True,
-  TestID -> "FindInfraWalk-pointed-class-invariant-under-Method"
+  TestID -> "FindInfraWalk-pointed-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
-  classInvariantQ[ m |-> FindInfraWalk[ GridGraph[ { 3, 3 } ], 1, 9, UpTo[ 6 ], All, Properties -> { "Generic" }, Method -> m ] ],
+  stepInvariantQ[ f |-> FindInfraWalk[ GridGraph[ { 3, 3 } ], 1, 9, UpTo[ 6 ], All, Properties -> { "Generic" }, "NextVertexFunction" -> f ] ],
   True,
-  TestID -> "FindInfraWalk-two-point-class-invariant-under-Method"
+  TestID -> "FindInfraWalk-two-point-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
-  classInvariantQ[ m |-> ExtendInfraWalk[ GridGraph[ { 3, 3 } ], { 1, 2 }, UpTo[ 3 ], All, Method -> m ] ],
+  stepInvariantQ[ f |-> ExtendInfraWalk[ GridGraph[ { 3, 3 } ], { 1, 2 }, UpTo[ 3 ], All, "NextVertexFunction" -> f ] ],
   True,
-  TestID -> "ExtendInfraWalk-class-invariant-under-Method"
+  TestID -> "ExtendInfraWalk-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
-  classInvariantQ[ m |-> FindInfraGeodesic[ GridGraph[ { 4, 4 } ], 1, 2, UpTo[ 4 ], All, Method -> m ] ],
+  stepInvariantQ[ f |-> FindInfraGeodesic[ GridGraph[ { 4, 4 } ], 1, 2, UpTo[ 4 ], All, "NextVertexFunction" -> f ] ],
   True,
-  TestID -> "FindInfraGeodesic-pointed-class-invariant-under-Method"
+  TestID -> "FindInfraGeodesic-pointed-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
-  classInvariantQ[ m |-> FindInfraGeodesic[ TorusGraph[ { 4, 5 } ], 1, 8, 2, UpTo[ 6 ], All, Method -> m ] ],
+  stepInvariantQ[ f |-> FindInfraGeodesic[ TorusGraph[ { 4, 5 } ], 1, 8, 2, UpTo[ 6 ], All, "NextVertexFunction" -> f ] ],
   True,
-  TestID -> "FindInfraGeodesic-two-point-class-invariant-under-Method"
+  TestID -> "FindInfraGeodesic-two-point-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
-  classInvariantQ[ m |-> ExtendInfraGeodesic[ TorusGraph[ { 4, 5 } ], { 1, 2 }, 2, UpTo[ 3 ], All, Method -> m ] ],
+  stepInvariantQ[ f |-> ExtendInfraGeodesic[ TorusGraph[ { 4, 5 } ], { 1, 2 }, 2, UpTo[ 3 ], All, "NextVertexFunction" -> f ] ],
   True,
-  TestID -> "ExtendInfraGeodesic-class-invariant-under-Method"
+  TestID -> "ExtendInfraGeodesic-class-invariant-under-NextVertexFunction"
+]
+
+(* on the walk family a count-less call is the first instance of the canonical descent: the same witness twice without a seed, the Identity one, and the First one where the first branch reaches the target; a two-sided extension re-checks the joined step, so its first joint move may fail where a later one passes, and First is pinned on the one-sided directions *)
+VerificationTest[
+  With[ { g = GridGraph[ { 4, 4 } ] },
+    AllTrue[
+      { f |-> FindInfraWalk[ g, 1, UpTo[ 4 ], "NextVertexFunction" -> f ],
+        f |-> FindInfraWalk[ g, 1, 2, UpTo[ 4 ], "NextVertexFunction" -> f ],
+        f |-> ExtendInfraWalk[ g, { 1, 2 }, UpTo[ 2 ], "Direction" -> "Forward", "NextVertexFunction" -> f ],
+        f |-> FindInfraGeodesic[ g, 1, 2, UpTo[ 4 ], "NextVertexFunction" -> f ],
+        f |-> ExtendInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], "Direction" -> "Forward", "NextVertexFunction" -> f ] },
+      call |-> call[ Identity ] === call[ Identity ] === call[ First ] ] ],
+  True,
+  TestID -> "WalkFamily-countless-is-the-canonical-witness"
 ]
 
 
@@ -187,17 +204,12 @@ VerificationTest[
 
 (* ===================== Automatic is the deterministic descent ===================== *)
 
-(* on every ladder symbol a count-less call resolves to "Greedy": the same witness twice without a seed, and the explicit "Greedy" witness *)
+(* on every ladder symbol still carrying Method a count-less call resolves to "Greedy": the same witness twice without a seed, and the explicit "Greedy" witness *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ], t = TorusGraph[ { 4, 5 } ] },
     AllTrue[
       { m |-> ExtendInfraSegment[ g, { 6, 7 }, 2, Method -> m ],
         m |-> FindInfraParallel[ g, Range[ 4 ], 10, Method -> m ],
-        m |-> FindInfraWalk[ g, 1, UpTo[ 4 ], Method -> m ],
-        m |-> FindInfraWalk[ g, 1, 16, { 6 }, Method -> m ],
-        m |-> ExtendInfraWalk[ g, { 1, 2 }, UpTo[ 2 ], Method -> m ],
-        m |-> FindInfraGeodesic[ g, 1, 2, UpTo[ 4 ], Method -> m ],
-        m |-> ExtendInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], Method -> m ],
         m |-> FindInfraSphere[ g, 6, { 1, 2 }, Properties -> { "Separating" }, Method -> m ],
         m |-> FindInfraBisectingHyperplane[ g, 1, 4, { -1, 1 }, Properties -> { "Separating" }, Method -> m ],
         m |-> FindInfraEllipticShell[ g, { 6, 11 }, { 3, 4 }, Properties -> { "Separating" }, Method -> m ],
@@ -213,16 +225,12 @@ VerificationTest[
 
 (* ===================== Pruning at Infinity is the whole class ===================== *)
 
-(* the pruned exhaustive spec is accepted on every ladder symbol, and a keep-all cap changes nothing *)
+(* the pruned exhaustive spec is accepted on every ladder symbol still carrying Method, and a keep-all cap changes nothing *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ], t = TorusGraph[ { 4, 5 } ] },
     AllTrue[
       { m |-> ExtendInfraSegment[ g, { 6, 7 }, 2, All, Method -> m ],
         m |-> FindInfraParallel[ g, Range[ 4 ], 10, All, Method -> m ],
-        m |-> FindInfraWalk[ g, 1, UpTo[ 4 ], All, Method -> m ],
-        m |-> ExtendInfraWalk[ g, { 1, 2 }, UpTo[ 2 ], All, Method -> m ],
-        m |-> FindInfraGeodesic[ g, 1, 2, UpTo[ 4 ], All, Method -> m ],
-        m |-> ExtendInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], All, Method -> m ],
         m |-> FindInfraSphere[ g, 6, { 1, 2 }, All, Properties -> { "Separating" }, Method -> m ],
         m |-> FindInfraBisectingHyperplane[ g, 1, 4, { -1, 1 }, All, Properties -> { "Separating" }, Method -> m ],
         m |-> FindInfraEllipticShell[ g, { 6, 11 }, { 3, 4 }, All, Properties -> { "Separating" }, Method -> m ],

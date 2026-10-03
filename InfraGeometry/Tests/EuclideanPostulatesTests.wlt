@@ -238,7 +238,7 @@ VerificationTest[
   With[{g = GridGraph[{3, 3}],
         degSum = w |-> VertexDegree[GridGraph[{3, 3}], w[[-2]]] + VertexDegree[GridGraph[{3, 3}], w[[-1]]]},
     With[{paths = walkSeqs @ FindInfraGeodesic[g, 1, 9, Infinity, Infinity, All,
-            Properties -> {"Minimizing", {"Minimal", degSum}}]},
+            Properties -> {"Minimizing"}, "NextVertexFunction" -> MinimalBy[degSum]]},
       Length[paths] >= 1 &&
         AllTrue[paths, Length[#] - 1 == GraphDistance[g, 1, 9] &]
     ]
@@ -252,8 +252,8 @@ VerificationTest[
         degSum = w |-> VertexDegree[GridGraph[{4, 4}], w[[-2]]] + VertexDegree[GridGraph[{4, 4}], w[[-1]]]},
     BlockRandom[
       Length @ walkSeqs @ FindInfraGeodesic[g, 1, 16, Infinity, Infinity, All,
-        Properties -> {"Minimizing", {"Minimal", degSum}},
-        Method -> {"Exhaustive", "Pruning" -> 1}] <= 1,
+        Properties -> {"Minimizing"},
+        "NextVertexFunction" -> MinimalBy[degSum] /* (RandomSample[#, UpTo[1]] &)] <= 1,
       RandomSeeding -> 42
     ]
   ],
@@ -265,7 +265,7 @@ VerificationTest[
   With[{g = GridGraph[{3, 3}],
         degSum = w |-> VertexDegree[GridGraph[{3, 3}], w[[-2]]] + VertexDegree[GridGraph[{3, 3}], w[[-1]]]},
     Length @ walkSeqs @ FindInfraGeodesic[g, 1, 9, Infinity, Infinity, UpTo[2],
-      Properties -> {"Minimizing", {"Minimal", degSum}}]
+      Properties -> {"Minimizing"}, "NextVertexFunction" -> MinimalBy[degSum]]
   ],
   _Integer?(# <= 2 &),
   SameTest -> MatchQ,
@@ -333,23 +333,24 @@ VerificationTest[
 VerificationTest[
   With[{g = CycleGraph[6]},
     Sort @ walkSeqs @ FindInfraGeodesic[g, 1, 4, 2, Infinity, All,
-        Properties -> {"Simple", "Straightest"}]
+        Properties -> {"Simple"},
+        "NextVertexFunction" -> MaximalBy[w |-> Map[GraphDistance[g, #, Last @ w] &, Reverse @ Most @ w]]]
   ],
   Sort[{{1, 2, 3, 4}, {1, 6, 5, 4}}],
-  TestID -> "FindInfraGeodesic-Straightest-scale-2-cycle-symmetric"
+  TestID -> "FindInfraGeodesic-farthest-from-window-scale-2-cycle-symmetric"
 ]
 
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
     BlockRandom[
       Length @ walkSeqs @ FindInfraGeodesic[g, 1, 16, 2, Infinity, All,
-        Properties -> {"Simple", "Straightest"},
-        Method -> {"Exhaustive", "Pruning" -> 1}] == 1,
+        Properties -> {"Simple"},
+        "NextVertexFunction" -> (windows |-> RandomSample[MaximalBy[windows, w |-> Map[GraphDistance[g, #, Last @ w] &, Reverse @ Most @ w]], UpTo[1]])] <= 1,
       RandomSeeding -> 42
     ]
   ],
   True,
-  TestID -> "FindInfraGeodesic-Straightest-pruning-beam-1"
+  TestID -> "FindInfraGeodesic-farthest-from-window-pruning-beam-1"
 ]
 
 (* A selector composed with "Simple" still gives simple walks. *)
@@ -358,7 +359,7 @@ VerificationTest[
   With[{g = GridGraph[{3, 3}],
         degSum = w |-> VertexDegree[GridGraph[{3, 3}], w[[-2]]] + VertexDegree[GridGraph[{3, 3}], w[[-1]]]},
     With[{walks = walkSeqs @ FindInfraGeodesic[g, 1, 9, 1, {4}, All,
-            Properties -> {"Simple", {"Minimal", degSum}}]},
+            Properties -> {"Simple"}, "NextVertexFunction" -> MinimalBy[degSum]]},
       AllTrue[walks, DuplicateFreeQ]
     ]
   ],

@@ -167,7 +167,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
     { w = BlockRandom[
         First @ walkSeqs @ FindInfraWalk[ g, 1, UpTo[ 20 ], Properties -> { "Generic" },
-          Method -> "RandomGreedy", "StoppingCondition" -> 1 ],
+          "NextVertexFunction" -> RandomSample, "StoppingCondition" -> 1 ],
         RandomSeeding -> 7 ] },
     { First[ w ] === 1, Count[ w, Last @ w ] === 2,
       Length[ w ] - Length[ DeleteDuplicates[ w ] ] === 1 } ],
@@ -175,12 +175,12 @@ VerificationTest[
   TestID -> "FindInfraWalk-random-walk-stops-at-first-crossing"
 ]
 
-(* Method -> Automatic on a bounded count is the certified lazy descent: the
+(* a bounded count is the certified lazy descent: the
    instances are genuine, distinct members of the exhaustive class, exactly as
    many as asked *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
-    { class = walkSeqs @ FindInfraWalk[ g, 1, 9, { 6 }, All, Method -> "Exhaustive" ] },
+    { class = walkSeqs @ FindInfraWalk[ g, 1, 9, { 6 }, All ] },
     { got = walkSeqs @ FindInfraWalk[ g, 1, 9, { 6 }, 3 ] },
     Length[ got ] === 3 && DuplicateFreeQ[ got ] && SubsetQ[ class, got ] ],
   True,
@@ -313,24 +313,24 @@ VerificationTest[
   TestID -> "FindInfraGeodesic-scale-2-cycle-geodesics"
 ]
 
-(* "Straightest" is a selector, so it can only refine: its output is a subset of
-   the class it selects from. *)
+(* a next-vertex function only chooses among admissible candidates, so it can only
+   refine: its output is a subset of the class it selects from. *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
     SubsetQ[
       Sort @ FindInfraSegment[ g, 1, 9, All ],
       Sort @ walkSeqs @ FindInfraGeodesic[ g, 1, 9, Infinity, Infinity, All,
-        Properties -> { "Minimizing", "Straightest" } ] ]
+        Properties -> { "Minimizing" }, "NextVertexFunction" -> MinimalBy[ w |-> -GraphDistance[ g, w[[ -2 ]], Last @ w ] ] ] ]
   ],
   True,
-  TestID -> "FindInfraGeodesic-selector-refines-the-class"
+  TestID -> "FindInfraGeodesic-NextVertexFunction-refines-the-class"
 ]
 
-(* A constant score discriminates nothing, so the selector is vacuous. *)
+(* A constant score discriminates nothing, so the function is vacuous. *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
     Sort @ walkSeqs @ FindInfraGeodesic[ g, 1, 9, Infinity, Infinity, All,
-      Properties -> { "Minimizing", { "Maximal", 1 & } } ] ===
+      Properties -> { "Minimizing" }, "NextVertexFunction" -> MinimalBy[ 1 & ] ] ===
       Sort @ FindInfraSegment[ g, 1, 9, All ]
   ],
   True,
@@ -342,11 +342,11 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
     Sort @ walkSeqs @ FindInfraGeodesic[ g, 1, 9, Infinity, Infinity, All,
-      Properties -> { "Minimizing",
-        { "Minimal", w |-> VertexDegree[ g, w[[ -2 ]] ] + VertexDegree[ g, w[[ -1 ]] ] } } ]
+      Properties -> { "Minimizing" },
+      "NextVertexFunction" -> MinimalBy[ w |-> VertexDegree[ g, w[[ -2 ]] ] + VertexDegree[ g, w[[ -1 ]] ] ] ]
   ],
   Sort[ { { 1, 2, 3, 6, 9 }, { 1, 4, 7, 8, 9 } } ],
-  TestID -> "FindInfraGeodesic-Minimal-degree-sum-hugs-the-boundary"
+  TestID -> "FindInfraGeodesic-MinimalBy-degree-sum-hugs-the-boundary"
 ]
 
 (* At scale 1 the window is an edge -- the last vertex and the candidate -- so an
@@ -372,13 +372,14 @@ VerificationTest[
   TestID -> "FindInfraGeodesic-bare-predicate-True-keeps-the-class"
 ]
 
-(* "Straightest" on the square with a chord: the pull-apart walks are the two
-   two-step walks, not the chord route. *)
+(* the least window defect on the square with a chord: the straightest walks are
+   the two two-step walks, not the chord route. *)
 VerificationTest[
-  Sort @ walkSeqs @ FindInfraGeodesic[ Graph[ { 1 <-> 2, 2 <-> 3, 3 <-> 4, 4 <-> 1, 2 <-> 4 } ], 1, 3, 2, Infinity, All,
-    Properties -> { "Simple", "Straightest" } ],
+  With[ { g = Graph[ { 1 <-> 2, 2 <-> 3, 3 <-> 4, 4 <-> 1, 2 <-> 4 } ] },
+    Sort @ walkSeqs @ FindInfraGeodesic[ g, 1, 3, 2, Infinity, All, Properties -> { "Simple" },
+      "NextVertexFunction" -> MinimalBy[ w |-> Length[ w ] - 1 - GraphDistance[ g, First @ w, Last @ w ] ] ] ],
   Sort[ { { 1, 2, 3 }, { 1, 4, 3 } } ],
-  TestID -> "FindInfraGeodesic-Straightest-pull-apart"
+  TestID -> "FindInfraGeodesic-least-defect-pull-apart"
 ]
 
 (* kspec bounds the sweep depth, and an exact-length spec is honoured. *)
@@ -426,18 +427,18 @@ VerificationTest[
   TestID -> "FindInfraGeodesic-two-point-non-terminal"
 ]
 
-(* Greedy is deterministic; RandomGreedy varies with the ambient seed. *)
+(* the canonical order is deterministic; a random tie-break varies with the ambient seed. *)
 VerificationTest[
   With[ { g = GridGraph[ { 6, 6 } ],
           f = w |-> VertexDegree[ GridGraph[ { 6, 6 } ], w[[ -2 ]] ] +
                     VertexDegree[ GridGraph[ { 6, 6 } ], w[[ -1 ]] ] },
     FindInfraGeodesic[ g, 1, 36, Infinity, Infinity, 1,
-      Properties -> { "Minimizing", { "Minimal", f } }, Method -> "Greedy" ] ===
+      Properties -> { "Minimizing" }, "NextVertexFunction" -> MinimalBy[ f ] ] ===
       FindInfraGeodesic[ g, 1, 36, Infinity, Infinity, 1,
-        Properties -> { "Minimizing", { "Minimal", f } }, Method -> "Greedy" ]
+        Properties -> { "Minimizing" }, "NextVertexFunction" -> MinimalBy[ f ] ]
   ],
   True,
-  TestID -> "FindInfraGeodesic-Greedy-deterministic"
+  TestID -> "FindInfraGeodesic-canonical-order-deterministic"
 ]
 
 VerificationTest[
@@ -447,25 +448,24 @@ VerificationTest[
     Length @ DeleteDuplicates @ Table[
       BlockRandom[
         First @ walkSeqs @ FindInfraGeodesic[ g, 1, 36, Infinity, Infinity, 1,
-          Properties -> { "Minimizing", { "Minimal", f } }, Method -> "RandomGreedy" ],
+          Properties -> { "Minimizing" }, "NextVertexFunction" -> MinimalBy[ f ] /* RandomSample ],
         RandomSeeding -> s ],
       { s, 1, 8 } ]
   ],
   _Integer?( # > 1 & ),
   SameTest -> MatchQ,
-  TestID -> "FindInfraGeodesic-RandomGreedy-varies-across-seeds"
+  TestID -> "FindInfraGeodesic-random-tie-break-varies-across-seeds"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     BlockRandom[
       Length @ walkSeqs @ FindInfraGeodesic[ g, 1, 16, Infinity, Infinity, All,
-        Properties -> { "Minimizing", "Straightest" },
-        Method -> { "Exhaustive", "Pruning" -> 1 } ],
+        Properties -> { "Minimizing" }, "NextVertexFunction" -> ( RandomSample[ #, UpTo[ 1 ] ] & ) ],
       RandomSeeding -> 42 ]
   ],
   1,
-  TestID -> "FindInfraGeodesic-Pruning-beam-1"
+  TestID -> "FindInfraGeodesic-pruning-one-branch-per-node"
 ]
 
 
@@ -627,9 +627,10 @@ VerificationTest[
 
 VerificationTest[
   Sort @ walkSeqs @ ExtendInfraGeodesic[ CycleGraph[ 6 ], { 1 }, Infinity, UpTo[ 2 ], All,
-      "Direction" -> "Forward", Properties -> { "Simple", "Straightest" } ],
+      "Direction" -> "Forward", Properties -> { "Simple" },
+      "NextVertexFunction" -> MinimalBy[ w |-> Length[ w ] - 1 - GraphDistance[ CycleGraph[ 6 ], First @ w, Last @ w ] ] ],
   Sort[ { { 1, 2, 3 }, { 1, 6, 5 } } ],
-  TestID -> "ExtendInfraGeodesic-CycleGraph-Straightest-forward"
+  TestID -> "ExtendInfraGeodesic-CycleGraph-least-defect-forward"
 ]
 
 VerificationTest[
@@ -831,22 +832,67 @@ VerificationTest[
   BlockRandom[
     With[ { r = ExtendInfraGeodesic[ GridGraph[ { 3, 3 } ], { 1 }, Infinity, UpTo[ 4 ], 1,
         "Direction" -> "Forward", Properties -> { "Simple" },
-        Method -> "RandomGreedy" ] },
+        "NextVertexFunction" -> RandomSample ] },
       MatchQ[ r, { _Graph } ] && VertexCount[ First @ r ] == 5 ],
     RandomSeeding -> 7 ],
   True,
-  TestID -> "ExtendInfraGeodesic-RandomGreedy-forward-trajectory"
+  TestID -> "ExtendInfraGeodesic-RandomSample-forward-trajectory"
 ]
 
 VerificationTest[
   BlockRandom[
     MatchQ[
       ExtendInfraGeodesic[ GridGraph[ { 3, 3 } ], { 5 }, Infinity, UpTo[ 4 ], 1,
-        Properties -> { "Simple" }, Method -> "RandomGreedy" ],
+        Properties -> { "Simple" }, "NextVertexFunction" -> RandomSample ],
       { _Graph } ],
     RandomSeeding -> 7 ],
   True,
-  TestID -> "ExtendInfraGeodesic-RandomGreedy-BothSides-trajectory"
+  TestID -> "ExtendInfraGeodesic-RandomSample-BothSides-trajectory"
+]
+
+
+(* ===================== The next-vertex function ===================== *)
+
+(* First keeps the first candidate of the canonical order and never backtracks:
+   on a pointed search it is the default witness, the first leaf of the descent;
+   on a two-point search it reaches the target only when the first branch does,
+   which the grid's first branch 1, 2, 3, 4, 8, 7, ... does not *)
+VerificationTest[
+  With[ { g = GridGraph[ { 4, 4 } ] },
+    { FindInfraWalk[ g, 1, UpTo[ 6 ], "NextVertexFunction" -> First ] === FindInfraWalk[ g, 1, UpTo[ 6 ] ],
+      FindInfraWalk[ g, 1, 16, { 6 }, "NextVertexFunction" -> First ] } ],
+  { True, { } },
+  TestID -> "FindInfraWalk-First-is-the-first-branch"
+]
+
+(* RandomChoice is the random walk: one admissible step at a time, no backtracking,
+   so one walk comes out and a strict count of more is unmet *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    { one = BlockRandom[ FindInfraWalk[ g, 13, UpTo[ 6 ], "NextVertexFunction" -> RandomChoice ], RandomSeeding -> 2 ] },
+    { GraphQ @ one && InfraWalkQ[ g, walkSeq @ one ] && DuplicateFreeQ[ walkSeq @ one ],
+      BlockRandom[ FindInfraWalk[ g, 13, UpTo[ 6 ], 3, "NextVertexFunction" -> RandomChoice ], RandomSeeding -> 2 ] } ],
+  { True, { } },
+  TestID -> "FindInfraWalk-RandomChoice-is-the-random-walk"
+]
+
+(* the random walk straightened: the window defect is the number of edges the
+   window wastes against a shortest path.  Forbidding a defect above 1 in the last
+   eight steps, or drawing the next vertex with weight Exp[ -2 defect ], carries the
+   walk farther from its start per edge than the uniform draw, in the mean over
+   forty seeds *)
+VerificationTest[
+  With[ { g = GridGraph[ { 24, 24 } ], k = 30, r = 8, start = 300 },
+    { defect = w |-> Length[ w ] - 1 - GraphDistance[ g, First @ w, Last @ w ],
+      stretch = w |-> N[ GraphDistance[ g, First @ w, Last @ w ] / ( Length[ w ] - 1 ) ] },
+    { draw = opts |-> Mean @ Table[
+        BlockRandom[ stretch @ walkSeq @ FindInfraWalk[ g, start, UpTo[ k ], "InfraScale" -> r, Sequence @@ opts ], RandomSeeding -> seed ],
+        { seed, 40 } ] },
+    { uniform = draw[ { "NextVertexFunction" -> RandomChoice } ] },
+    { draw[ { Properties -> { "Simple", w |-> defect[ w ] <= 1 }, "NextVertexFunction" -> RandomChoice } ] > uniform,
+      draw[ { "NextVertexFunction" -> ( windows |-> RandomChoice[ Exp[ -2 ( defect /@ windows ) ] -> windows ] ) } ] > uniform } ],
+  { True, True },
+  TestID -> "FindInfraWalk-random-walk-straightened-by-the-window-defect"
 ]
 
 
@@ -935,26 +981,26 @@ VerificationTest[
 (* a lower length bound must not be starved by the early-stop count *)
 VerificationTest[
   Length @ walkSeqs @ FindInfraWalk[ GridGraph[ { 3, 3 } ], 1, 9, { 8 }, 2,
-    Properties -> { }, Method -> "Exhaustive" ],
+    Properties -> { } ],
   2,
   TestID -> "FindInfraWalk-exact-length-strict-count"
 ]
 
-(* Method -> "Greedy": lazy DFS, one instance; the generic default bounds the
-   unconstrained descent by itself. *)
+(* lazy DFS, one instance; the generic default bounds the unconstrained descent
+   by itself. *)
 VerificationTest[
-  walkSeqs @ FindInfraWalk[ PathGraph[ Range[ 5 ] ], 1, 5, Infinity, 1, Method -> "Greedy" ],
+  walkSeqs @ FindInfraWalk[ PathGraph[ Range[ 5 ] ], 1, 5, Infinity, 1 ],
   { { 1, 2, 3, 4, 5 } },
-  TestID -> "FindInfraWalk-Greedy-unconstrained-canonical-witness"
+  TestID -> "FindInfraWalk-unconstrained-canonical-witness"
 ]
 
-(* Greedy on a bounded kspec, no backtracking: picking the first (lowest-index)
+(* a bounded kspec in canonical order: picking the first (lowest-index)
    candidate at each step happens to always point toward vertex 1 on a
    PathGraph, so descending from the high end succeeds. *)
 VerificationTest[
-  walkSeqs @ FindInfraWalk[ PathGraph[ Range[ 5 ] ], 5, 1, UpTo[ 4 ], 1, Method -> "Greedy" ],
+  walkSeqs @ FindInfraWalk[ PathGraph[ Range[ 5 ] ], 5, 1, UpTo[ 4 ], 1 ],
   { { 5, 4, 3, 2, 1 } },
-  TestID -> "FindInfraWalk-Greedy-bounded-succeeds"
+  TestID -> "FindInfraWalk-canonical-bounded-succeeds"
 ]
 
 
@@ -962,21 +1008,19 @@ VerificationTest[
 
 (* The lazy descent is COMPLETE, so every finite count is exact: from vertex 1
    on CycleGraph[4] there are exactly 2 immersed walks of length 6 (the two
-   rotations), and asking for k of them under the deterministic "Greedy"
+   rotations), and asking for k of them in the canonical order
    returns k distinct genuine ones for every k <= 2.  Asking for 3 is the
    honest $Failed. *)
 VerificationTest[
   With[ { g = CycleGraph[ 4 ] },
     { whole = walkSeqs @ FindInfraWalk[ g, 1, { 6 }, All, Properties -> { "Immersed" } ] },
     { AllTrue[ Range[ 1, Length @ whole ],
-        k |-> With[ { got = walkSeqs @ FindInfraWalk[ g, 1, { 6 }, k, Properties -> { "Immersed" },
-              Method -> "Greedy" ] },
+        k |-> With[ { got = walkSeqs @ FindInfraWalk[ g, 1, { 6 }, k, Properties -> { "Immersed" } ] },
           Length[ got ] === k && DuplicateFreeQ[ got ] && SubsetQ[ whole, got ] &&
           AllTrue[ got, w |-> InfraWalkQ[ g, w ] && Length[ w ] - 1 === 6 ] ] ],
-      FindInfraWalk[ g, 1, { 6 }, Length[ whole ] + 1, Properties -> { "Immersed" },
-        Method -> "Greedy" ] } ],
+      FindInfraWalk[ g, 1, { 6 }, Length[ whole ] + 1, Properties -> { "Immersed" } ] } ],
   { True, { } },
-  TestID -> "FindInfraWalk-Greedy-finite-count-is-exact"
+  TestID -> "FindInfraWalk-finite-count-is-exact"
 ]
 
 (* Count-coupling: the count-less call is one instance -- a genuine member of the
@@ -992,70 +1036,58 @@ VerificationTest[
   TestID -> "FindInfraWalk-countless-is-one-instance"
 ]
 
-(* All the same walks, whichever engine enumerates them. *)
-VerificationTest[
-  With[ { g = CycleGraph[ 4 ] },
-    Sort @ walkSeqs @ FindInfraWalk[ g, 1, { 6 }, All, Properties -> { "Immersed" },
-        Method -> "Greedy" ] ===
-      Sort @ walkSeqs @ FindInfraWalk[ g, 1, { 6 }, All, Properties -> { "Immersed" },
-        Method -> "Exhaustive" ] ],
-  True,
-  TestID -> "FindInfraWalk-Greedy-All-agrees-with-Exhaustive"
-]
-
-(* Randomising the branch order moves which walks come out first, never which
+(* RandomSample moves which walks come out first, never which
    exist: the random descent is as complete as the deterministic one, so a
    strict count is still exact and All still recovers the class. *)
 VerificationTest[
   With[ { g = CycleGraph[ 4 ] },
-    { class = Sort @ walkSeqs @ FindInfraWalk[ g, 1, { 6 }, All, Properties -> { "Immersed" },
-        Method -> "Greedy" ] },
+    { class = Sort @ walkSeqs @ FindInfraWalk[ g, 1, { 6 }, All, Properties -> { "Immersed" } ] },
     { Sort @ walkSeqs @ FindInfraWalk[ g, 1, { 6 }, All, Properties -> { "Immersed" },
-          Method -> "RandomGreedy" ] === class,
+          "NextVertexFunction" -> RandomSample ] === class,
       Union @ Table[
         Length @ walkSeqs @ FindInfraWalk[ g, 1, { 6 }, 2, Properties -> { "Immersed" } ],
         { 20 } ],
       SubsetQ[ class,
         walkSeqs @ FindInfraWalk[ g, 1, { 6 }, 2, Properties -> { "Immersed" } ] ] } ],
   { True, { 2 }, True },
-  TestID -> "FindInfraWalk-RandomGreedy-is-complete"
+  TestID -> "FindInfraWalk-RandomSample-is-complete"
 ]
 
-(* Method -> Automatic on a bounded count is the deterministic descent: the
-   default witness is reproducible without a seed and is the explicit "Greedy" one *)
+(* a bounded count is the deterministic descent: the default witness is
+   reproducible without a seed and is the explicit Identity one *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     { FindInfraWalk[ g, 1, 16, { 6 } ] === FindInfraWalk[ g, 1, 16, { 6 } ],
       FindInfraWalk[ g, 1, 16, { 6 } ] ===
-        FindInfraWalk[ g, 1, 16, { 6 }, Method -> "Greedy" ] } ],
+        FindInfraWalk[ g, 1, 16, { 6 } ] } ],
   { True, True },
-  TestID -> "FindInfraWalk-Automatic-is-deterministic-Greedy"
+  TestID -> "FindInfraWalk-default-is-deterministic"
 ]
 
-(* "RandomGreedy" draws the witness from the ambient random state -- SeedRandom
+(* RandomSample draws the witness from the ambient random state -- SeedRandom
    reproduces it, and the seeds disagree *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    { BlockRandom[ walkSeqs @ FindInfraWalk[ g, 1, 16, { 6 }, Method -> "RandomGreedy" ],
+    { BlockRandom[ walkSeqs @ FindInfraWalk[ g, 1, 16, { 6 }, "NextVertexFunction" -> RandomSample ],
         RandomSeeding -> 3 ] ===
-      BlockRandom[ walkSeqs @ FindInfraWalk[ g, 1, 16, { 6 }, Method -> "RandomGreedy" ],
+      BlockRandom[ walkSeqs @ FindInfraWalk[ g, 1, 16, { 6 }, "NextVertexFunction" -> RandomSample ],
         RandomSeeding -> 3 ],
       Length @ Union @ Table[
-        First @ walkSeqs @ FindInfraWalk[ g, 1, 16, { 6 }, Method -> "RandomGreedy" ],
+        First @ walkSeqs @ FindInfraWalk[ g, 1, 16, { 6 }, "NextVertexFunction" -> RandomSample ],
         { 30 } ] > 1 } ],
   { True, True },
-  TestID -> "FindInfraWalk-RandomGreedy-witness-is-ambient-seeded"
+  TestID -> "FindInfraWalk-RandomSample-witness-is-ambient-seeded"
 ]
 
-(* the count-less two-point default is the canonical witness, a geodesic, and is
-   what "Greedy" means on this signature *)
+(* the count-less two-point default is the canonical witness, a geodesic, the
+   Identity order on this signature *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     { w = First @ walkSeqs @ FindInfraWalk[ g, 1, <| 16 -> 1 |> ] },
     { Length[ w ] - 1 == GraphDistance[ g, 1, 16 ],
-      FindInfraWalk[ g, 1, <| 16 -> 1 |> ] === FindInfraWalk[ g, 1, <| 16 -> 1 |>, Method -> "Greedy" ] } ],
+      FindInfraWalk[ g, 1, <| 16 -> 1 |> ] === FindInfraWalk[ g, 1, <| 16 -> 1 |> ] } ],
   { True, True },
-  TestID -> "FindInfraWalk-two-point-countless-default-is-Greedy-geodesic"
+  TestID -> "FindInfraWalk-two-point-countless-default-is-geodesic"
 ]
 
 
@@ -1087,7 +1119,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 6, 6 } ] },
     { w = BlockRandom[
         First @ walkSeqs @ FindInfraWalk[ g, 1, UpTo[ 200 ], Properties -> { "Generic" },
-          Method -> "RandomGreedy", "StoppingCondition" -> 2 ],
+          "NextVertexFunction" -> RandomSample, "StoppingCondition" -> 2 ],
         RandomSeeding -> 1 ] },
     Length[ w ] - Length[ DeleteDuplicates @ w ] ],
   2,
