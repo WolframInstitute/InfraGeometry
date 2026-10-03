@@ -299,4 +299,16 @@ VerificationTest[
   TestID -> "FindInfraRepresentative-scene-circle-is-by-radius"
 ]
 
+(* the circle and the closed arc carry the two measures through the support of their vertex density, like every head;
+   the band {2, 3} is thin, so every vertex of its circle touches the complement *)
+VerificationTest[
+  With[{g = GridGraph[{9, 9}]},
+    {circle = InfraCircle[41, {2, 3}], closed = InfraArc[41, {23, 23}, "RadiusDelta" -> 1]},
+    {InfraMeasurement[g, circle, "CountingMeasure"] === Length @ InfraMeasurement[g, circle, "VertexDensity"],
+     KeyTake[InfraMeasurement[g, circle, All], {"CountingMeasure", "RiemannianMeasure"}],
+     InfraMeasurement[g, closed, {"CountingMeasure", "RiemannianMeasure"}]}],
+  {True, <|"CountingMeasure" -> 16, "RiemannianMeasure" -> 0|>, <|"CountingMeasure" -> 16, "RiemannianMeasure" -> 0|>},
+  TestID -> "InfraMeasurement-two-measures-on-circle-and-closed-arc"
+]
+
 EndTestSection[]
