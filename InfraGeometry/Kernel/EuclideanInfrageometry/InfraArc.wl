@@ -112,9 +112,25 @@ InfraMemberQ[ graph_Graph, obj : InfraArc[ _, { p_, ___, p_ } | { _ }, ___Rule ]
         VertexQ[ dag, Last @ rot ] && VertexOutDegree[ dag, Last @ rot ] == 0 &&
         AllTrue[ Partition[ rot, 2, 1 ], EdgeQ[ dag, DirectedEdge @@ # ] & ] ] ]
 
-FindInfraRepresentative[ graph_Graph, InfraArc[ center_, pts : ( { p_, ___, p_ } | { _ } ), opts___Rule ],
+(* the closed arc's search is the sweep: the shortest cycles of the band through p that separate c from beyond it, then those through every
+   point of the list *)
+
+FindInfraRepresentative[ graph_Graph, InfraArc[ center_, pts : ( { p_, ___, p_ } | { p_ } ), opts___Rule ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  takeRepresentatives[ FindInfraArc[ graph, center, pts, All, opts ], count, mods ]
+  With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ],
+          delta = Replace[ Lookup[ { opts }, "RadiusDelta", 0 ], d : Except[ _List ] :> { 0, d } ] },
+    { rmin = Max[ 1, Lookup[ dist, Key @ p ] - First @ delta ], rmax = Lookup[ dist, Key @ p ] + Last @ delta },
+    { local = Subgraph[ graph, Select[ VertexList @ graph, Lookup[ dist, Key @ # ] <= rmax + 1 & ] ] },
+    { bandGraph = Subgraph[ local, Select[ VertexList @ local, rmin <= Lookup[ dist, Key @ # ] <= rmax & ] ] },
+    { circles = Replace[
+        Catch @ Scan[
+          k |-> With[ { found = Select[ First /@ # & /@ FindCycle[ bandGraph, { k }, All ],
+                cycle |-> MemberQ[ cycle, p ] &&
+                  AllTrue[ VertexComponent[ VertexDelete[ local, cycle ], center ], Lookup[ dist, Key @ # ] <= rmax & ] ] },
+            If[ found =!= { }, Throw @ found ] ],
+          Range[ 3, VertexCount @ bandGraph ] ],
+        Null -> { } ] },
+    takeRepresentatives[ Select[ circles, SubsetQ[ #, pts ] & ], count, mods ] ]
 
 InfraMeasurement[ graph_Graph, InfraArc[ center_, { p_, q_ } /; p =!= q, opts___Rule ], "Graph" ] :=
   With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ],
@@ -179,60 +195,3 @@ InfraMemberQ[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ }, { _
     TrueQ[ Last @ cuts == Length @ path ] &&
       AllTrue[ Range @ Length @ pieces,
         i |-> InfraMemberQ[ graph, pieces[[ i ]], Take[ path, { cuts[[ i ]], cuts[[ i + 1 ]] } ] ] ] ]
-
-Options[ FindInfraArc ] = { "RadiusDelta" -> 0 }
-
-(* the closed arc's search is the sweep: the shortest cycles of the band through p that separate c from beyond it, then those through every
-   point of the list *)
-
-FindInfraArc[ graph_Graph, center_, { p_ },
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
-  FindInfraArc[ graph, center, { p, p }, count, opts ]
-
-FindInfraArc[ graph_Graph, center_, pts : { p_, ___, p_ },
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
-  With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ],
-          delta = Replace[ OptionValue[ FindInfraArc, { opts }, "RadiusDelta" ], d : Except[ _List ] :> { 0, d } ] },
-    { rmin = Max[ 1, Lookup[ dist, Key @ p ] - First @ delta ], rmax = Lookup[ dist, Key @ p ] + Last @ delta },
-    { local = Subgraph[ graph, Select[ VertexList @ graph, Lookup[ dist, Key @ # ] <= rmax + 1 & ] ] },
-    { bandGraph = Subgraph[ local, Select[ VertexList @ local, rmin <= Lookup[ dist, Key @ # ] <= rmax & ] ] },
-    { circles = Select[
-        Replace[
-          Catch @ Scan[
-            k |-> With[ { found = Select[ First /@ # & /@ FindCycle[ bandGraph, { k }, All ],
-                  cycle |-> MemberQ[ cycle, p ] &&
-                    AllTrue[ VertexComponent[ VertexDelete[ local, cycle ], center ], Lookup[ dist, Key @ # ] <= rmax & ] ] },
-              If[ found =!= { }, Throw @ found ] ],
-            Range[ 3, VertexCount @ bandGraph ] ],
-          Null -> { } ],
-        SubsetQ[ #, pts ] & ] },
-    Switch[ count,
-      Automatic, First[ circles, { } ],
-      All,       circles,
-      _UpTo,     Take[ circles, count ],
-      _,         If[ Length @ circles < count, { }, Take[ circles, count ] ] ] ]
-
-FindInfraArc[ graph_Graph, center_, pts : Except[ { p_, ___, p_ }, { _, _, ___ } ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
-  With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ],
-          delta = Replace[ OptionValue[ FindInfraArc, { opts }, "RadiusDelta" ],
-                    d : Except[ _List ] :> { 0, d } ],
-          cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
-    { r = Lookup[ dist, Key @ First @ pts ] },
-    { band = Subgraph[ graph, Select[ VertexList @ graph,
-        Max[ 1, r - First @ delta ] <= Lookup[ dist, Key @ # ] <= r + Last @ delta & ] ] },
-    { pieces = Map[
-        pair |-> With[ { d = If[ AllTrue[ pair, VertexQ[ band, # ] & ],
-                GraphDistance[ band, First @ pair, Last @ pair ], Infinity ] },
-          Which[
-            d === Infinity, { },
-            d === 0,        { { First @ pair } },
-            True,           FindPath[ band, First @ pair, Last @ pair, { d }, Replace[ cap, Infinity -> All ] ] ] ],
-        Partition[ pts, 2, 1 ] ] },
-    { arcs = Fold[ { as, bs } |-> Catenate @ Map[ a |-> ( Join[ a, Rest @ # ] & /@ bs ), as ],
-        First @ pieces, Rest @ pieces ] },
-    Switch[ count,
-      Automatic, First[ arcs, { } ],
-      All,       arcs,
-      _UpTo,     Take[ arcs, count ],
-      _,         If[ Length @ arcs < count, { }, Take[ arcs, count ] ] ] ]

@@ -51,8 +51,6 @@ Euclidean infrageometry is synthetic geometry: constructions with natural object
 - `FindInfraSegment` one shortest path from p to q as a vertex list; a trailing count gives a List of them
 - `FindInfraRay` one ray from p through q as a vertex list, a shortest path from p through q that no neighbour of its last vertex prolongs; a trailing count gives a List of them
 - `FindInfraLine` one line through p and q as a vertex list, an inextensible shortest path through both; a trailing count gives a List of them
-- `FindInfraArc` one arc around c through the points as a vertex list; {p, p} gives a circle through p; a trailing count gives a List of them
-- `FindInfraCircle` one circle around c at radius r or in the band {r, s} as a cyclic vertex list; a trailing count gives a List of them
 
 ### Measurements
 

@@ -56,7 +56,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     Head @ InfraSubstrateHighlight[ g,
       { FindInfraSegment[ g, 1, 16, All ] -> Blue,
-        FindInfraCircle[ g, 1, 2, All ] -> Green } ]
+        FindInfraRepresentative[ g, InfraCircle[ 1, 2 ], All ] -> Green } ]
   ],
   Graph,
   TestID -> "InfraSubstrateHighlight-mixed-segment-and-circle"
@@ -639,7 +639,7 @@ VerificationTest[
       FindInfraTriangle[ g, { 1, 4, 21 } ],
       FindInfraSegment[ g, 1, 25, UpTo[ 4 ] ],
       { FindInfraSegment[ g, 1, 25 ] },
-      FindInfraCircle[ g, 13, 2, UpTo[ 2 ] ] } ],
+      FindInfraRepresentative[ g, InfraCircle[ 13, 2 ], UpTo[ 2 ] ] } ],
   { { 1, 4, 21 }, { }, { }, { } },
   TestID -> "infraInk-chain-has-knots-bundle-has-none"
 ]

@@ -82,12 +82,10 @@ PackageExport[InfraCylinder]
 PackageExport[InfraCone]
 
 PackageExport[InfraCircle]
-PackageExport[FindInfraCircle]
 PackageExport[FindInfraCycle]
 PackageExport[InfraCircleQ]
 
 PackageExport[InfraArc]
-PackageExport[FindInfraArc]
 
 PackageExport[InfraPolygon]
 PackageExport[FindInfraPolygon]

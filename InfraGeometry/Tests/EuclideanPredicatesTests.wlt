@@ -581,13 +581,13 @@ VerificationTest[
 
 (* An empty class is the empty List, and no predicate accepts it: on the square
    grid no exact-radius metric circle or ellipse exists, so those two finders
-   return { } here rather than an instance.  (A banded FindInfraCircle does
+   return { } here rather than an instance.  (A banded circle's representative does
    return a separating cycle, but its vertex set spans the band and so is not a
-   metric shell -- InfraCircleQ and FindInfraCircle do not round-trip off an
+   metric shell -- InfraCircleQ and the circle's representatives do not round-trip off an
    exact radius.  Pre-existing; the wrappers hid it by answering vacuously.) *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
-    {FindInfraCircle[g, 13, 2], InfraCircleQ[g, FindInfraCircle[g, 13, 2]],
+    {FindInfraRepresentative[g, InfraCircle[13, 2]], InfraCircleQ[g, FindInfraRepresentative[g, InfraCircle[13, 2]]],
      FindInfraEllipse[g, {11, 15}, 6], InfraEllipseQ[g, FindInfraEllipse[g, {11, 15}, 6]]}],
   {{ }, False, { }, False},
   TestID -> "an-empty-class-is-the-empty-List"
