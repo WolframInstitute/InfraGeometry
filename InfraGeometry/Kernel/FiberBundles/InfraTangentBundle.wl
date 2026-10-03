@@ -53,14 +53,17 @@ InfraFibrationAssociation[ InfraDisplacementBundle[ g_Graph, r_Integer?Positive 
 InfraFibration[ fib : ( _InfraTangentBundle | _InfraCotangentBundle | _InfraDisplacementBundle ) ] :=
   InfraFibration[ InfraTotalGraph @ fib, InfraFibrationAssociation @ fib ]
 
-InfraBundleMorphism[ InfraTangentBundle[ g_Graph, r_Integer ], InfraDisplacementBundle[ g_Graph, r_Integer ] ] :=
+InfraBundleMorphism[ InfraTangentBundle[ g_Graph, r_Integer ], InfraDisplacementBundle[ h_Graph, r_Integer ] ] /; sameBaseQ[ g, h ] :=
   ray |-> { First @ ray, Last @ ray }
 
-InfraBundleMorphism[ InfraTangentBundle[ g_Graph, r_Integer ], InfraTangentBundle[ g_Graph, s_Integer ] ] /; 0 < s < r :=
+InfraBundleMorphism[ InfraTangentBundle[ g_Graph, r_Integer ], InfraTangentBundle[ h_Graph, s_Integer ] ] /; 0 < s < r && sameBaseQ[ g, h ] :=
   ray |-> Take[ ray, s + 1 ]
 
-InfraBundleMorphism[ InfraTangentBundle[ g_Graph, r_Integer ], InfraCotangentBundle[ g_Graph, r_Integer ] ] :=
+InfraBundleMorphism[ InfraTangentBundle[ g_Graph, r_Integer ], InfraCotangentBundle[ h_Graph, r_Integer ] ] /; sameBaseQ[ g, h ] :=
   Reverse
 
-InfraBundleMorphism[ InfraCotangentBundle[ g_Graph, r_Integer ], InfraTangentBundle[ g_Graph, r_Integer ] ] :=
+InfraBundleMorphism[ InfraCotangentBundle[ g_Graph, r_Integer ], InfraTangentBundle[ h_Graph, r_Integer ] ] /; sameBaseQ[ g, h ] :=
   Reverse
+
+sameBaseQ[ g_Graph, h_Graph ] :=
+  Sort @ VertexList @ g === Sort @ VertexList @ h && Sort[ Sort /@ EdgeList @ g ] === Sort[ Sort /@ EdgeList @ h ]
