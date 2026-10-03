@@ -35,7 +35,7 @@ VerificationTest[
 (* the search sweeps the substrate and finds the same cycle, in its own rotation and direction *)
 VerificationTest[
   With[{g = TessellationNeighborhoodGraph[{3, 6}, 5]}, {c = First @ GraphCenter[g]},
-    {cir = InfraCircle[c, 2]}, {swept = FindInfraCircle[g, c, 2, All]},
+    {cir = InfraCircle[c, 2]}, {swept = FindInfraRepresentative[g, cir, All]},
     cycleSets[necklaceChains[g, cir]] === cycleSets[swept] &&
     AllTrue[swept, InfraMemberQ[g, cir, #] &]],
   True,
@@ -112,7 +112,7 @@ VerificationTest[
    separate, so the seam family is empty while the sweep finds all three (design Ex. q4) *)
 VerificationTest[
   With[{g = HypercubeGraph[4]}, {c = First @ VertexList[g]},
-    {cir = InfraCircle[c, {1, 2}]}, {swept = FindInfraCircle[g, c, {1, 2}, All]},
+    {cir = InfraCircle[c, {1, 2}]}, {swept = FindInfraRepresentative[g, cir, All]},
     {necklaceChains[g, cir], Length[swept], Union[Length /@ swept],
      AllTrue[swept, AllTrue[VertexComponent[VertexDelete[g, #], c], GraphDistance[g, c, #] <= 2 &] &]}],
   {{}, 3, {8}, True},
@@ -122,7 +122,7 @@ VerificationTest[
 (* the representative finder reads the circle by the sweep, so it finds the three circles the seam misses *)
 VerificationTest[
   With[{g = HypercubeGraph[4]}, {c = First @ VertexList[g]}, {cir = InfraCircle[c, {1, 2}]},
-    {FindInfraRepresentative[g, cir, All] === FindInfraCircle[g, c, {1, 2}, All],
+    {FindInfraRepresentative[g, cir, All] === bruteCircles[g, c, {1, 2}],
      Length @ FindInfraRepresentative[g, cir, All], necklaceChains[g, cir]}],
   {True, 3, {}},
   TestID -> "FindInfraRepresentative-circle-is-the-sweep"
@@ -140,7 +140,7 @@ octagonGraph[] := Graph[{
    the seam through a is the closed arc's, pinned in InfraArcTests *)
 VerificationTest[
   With[{g = octagonGraph[]}, {cir = InfraCircle["o", {1, 3}]},
-    {Length @ FindInfraCircle[g, "o", {1, 3}, All],
+    {Length @ FindInfraRepresentative[g, cir, All],
      1 <= InfraMeasurement[g, cir, "Cardinality"] <= 2,
      AllTrue[necklaceChains[g, cir],
        cyc |-> Length[cyc] == 8 && AllTrue[VertexComponent[VertexDelete[g, cyc], "o"], GraphDistance[g, "o", #] <= 3 &]]}],
@@ -162,9 +162,9 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{11, 11}]},
     {InfraMeasurement[g, InfraCircle[61, 4], "Cardinality"], InfraMeasurement[g, InfraCircle[61, {4, 5}], "Length"],
-     Head @ FindInfraCircle[g, 61, "a", All],
+     Head @ FindInfraRepresentative[g, InfraCircle[61, "a"], All],
      MatchQ[InfraMeasurement[octagonGraph[], InfraCircle["o", "a"], "Graph"], _InfraMeasurement]}],
-  {0, 32, FindInfraCircle, True},
+  {0, 32, FindInfraRepresentative, True},
   TestID -> "InfraCircle-second-argument-is-a-radius"
 ]
 
@@ -174,8 +174,8 @@ VerificationTest[
 VerificationTest[
   With[{g = PetersenGraph[]},
     {necklaceChains[g, InfraCircle[1, 2]],
-     Length @ FindInfraCircle[g, 1, 2, All],
-     Union[Length /@ FindInfraCircle[g, 1, 2, All]]}],
+     Length @ FindInfraRepresentative[g, InfraCircle[1, 2], All],
+     Union[Length /@ FindInfraRepresentative[g, InfraCircle[1, 2], All]]}],
   {{}, 1, {6}},
   TestID -> "InfraCircle-a-band-with-nothing-beyond-it"
 ]
@@ -201,7 +201,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, {2, 4}]},
     {brute = cycleSets[bruteCircles[g, 61, {2, 4}]]},
-    {Length[brute], cycleSets[FindInfraCircle[g, 61, {2, 4}, All]] === brute,
+    {Length[brute], cycleSets[FindInfraRepresentative[g, cir, All]] === brute,
      cycleSets[necklaceChains[g, cir]] === brute}],
   {16, True, True},
   TestID -> "InfraCircle-search-graph-and-brute-force-agree"
@@ -243,10 +243,10 @@ VerificationTest[
 
 (* a cycle graph's band carries no separating cycle *)
 VerificationTest[
-  {FindInfraCircle[CycleGraph[6], 1, {1, 2}, All],
+  {bruteCircles[CycleGraph[6], 1, {1, 2}],
    FindInfraRepresentative[CycleGraph[6], InfraCircle[1, {1, 2}], All]},
   {{}, {}},
-  TestID -> "FindInfraCircle-empty-family-is-quiet"
+  TestID -> "FindInfraRepresentative-circle-empty-family-is-quiet"
 ]
 
 EndTestSection[]

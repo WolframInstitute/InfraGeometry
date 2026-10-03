@@ -162,11 +162,11 @@ VerificationTest[
   TestID -> "SelectInfraWalk-preserves-the-path-graph-form"
 ]
 
-(* a FindInfraCircle family is a plain List of cyclic vertex lists (EuclideanInertHeads),
+(* a circle's representative family is a plain List of cyclic vertex lists (EuclideanInertHeads),
    so SelectInfraWalk keeps that shape rather than a walk-graph form *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ],
-          cycles = FindInfraCircle[ GridGraph[ { 4, 4 } ], 6, { 1, 2 }, All ] },
+          cycles = FindInfraRepresentative[ GridGraph[ { 4, 4 } ], InfraCircle[ 6, { 1, 2 } ], All ] },
     MatchQ[ SelectInfraWalk[ g, cycles, All, "From" -> "Center" ], { { __Integer } .. } ]
   ],
   True,
@@ -255,7 +255,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { g = GridGraph[ { 4, 4 } ], cycles = FindInfraCircle[ GridGraph[ { 4, 4 } ], 6, { 1, 2 }, All ] },
+  With[ { g = GridGraph[ { 4, 4 } ], cycles = FindInfraRepresentative[ GridGraph[ { 4, 4 } ], InfraCircle[ 6, { 1, 2 } ], All ] },
     SubsetQ[ cycles, SelectInfraWalk[ g, cycles, All, "From" -> "MostVisited", "Cyclic" -> True ] ]
   ],
   True,

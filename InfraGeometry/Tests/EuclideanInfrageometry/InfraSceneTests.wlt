@@ -183,7 +183,7 @@ VerificationTest[
   TestID -> "FindInfraScene-InfraPlane-window"
 ]
 
-(* ===== InfraCircle with FindInfraCircle ===== *)
+(* ===== InfraCircle ===== *)
 
 VerificationTest[
   With[{
@@ -199,7 +199,7 @@ VerificationTest[
     ]
   ],
   True,
-  TestID -> "FindInfraScene-InfraCircle-FindInfraCircle"
+  TestID -> "FindInfraScene-InfraCircle"
 ]
 
 (* ===== InfraStep ===== *)
@@ -581,7 +581,7 @@ VerificationTest[
               InfraCircle[ ea, InfraDistance[ ea, eb ] ],
               InfraCircle[ eb, InfraDistance[ ea, eb ] ] ] } ] },
     Sort @ DeleteDuplicates[
-      #[[ 1 ]][ ec ] & /@ Quiet[ FindInfraScene[ scene, g, <| ea -> 1, eb -> 7 |> ], FindInfraCircle::uncertified ] ]
+      #[[ 1 ]][ ec ] & /@ FindInfraScene[ scene, g, <| ea -> 1, eb -> 7 |> ] ]
   ],
   { 5, 9, 10 },
   TestID -> "FindInfraScene-EuclidI1-apexes"
@@ -594,7 +594,7 @@ VerificationTest[
             ec == InfraIntersection[
               InfraCircle[ ea, InfraDistance[ ea, eb ] ],
               InfraCircle[ eb, InfraDistance[ ea, eb ] ] ] } ] },
-    With[ { apexes = #[[ 1 ]][ ec ] & /@ Quiet[ FindInfraScene[ scene, g, <| ea -> 1, eb -> 7 |> ], FindInfraCircle::uncertified ] },
+    With[ { apexes = #[[ 1 ]][ ec ] & /@ FindInfraScene[ scene, g, <| ea -> 1, eb -> 7 |> ] },
       apexes =!= { } &&
       AllTrue[ apexes,
         v |-> GraphDistance[ g, 1, v ] == GraphDistance[ g, 7, v ] == GraphDistance[ g, 1, 7 ] ]
@@ -604,7 +604,7 @@ VerificationTest[
   TestID -> "FindInfraScene-EuclidI1-equilateral"
 ]
 
-(* The scene agrees with the intersection taken by hand from FindInfraCircle. *)
+(* The scene agrees with the intersection of the two circles' representatives taken by hand. *)
 VerificationTest[
   With[ { g = PetersenGraph[ ],
           scene = InfraScene[ { ea, eb, ec }, {
@@ -612,13 +612,13 @@ VerificationTest[
               InfraCircle[ ea, InfraDistance[ ea, eb ] ],
               InfraCircle[ eb, InfraDistance[ ea, eb ] ] ] } ] },
     Sort @ DeleteDuplicates[
-      #[[ 1 ]][ ec ] & /@ Quiet[ FindInfraScene[ scene, g, <| ea -> 1, eb -> 7 |> ], FindInfraCircle::uncertified ] ] ===
+      #[[ 1 ]][ ec ] & /@ FindInfraScene[ scene, g, <| ea -> 1, eb -> 7 |> ] ] ===
     Sort @ Quiet @ Intersection[
-      Union @@ FindInfraCircle[ g, 1, GraphDistance[ g, 1, 7 ], All ],
-      Union @@ FindInfraCircle[ g, 7, GraphDistance[ g, 1, 7 ], All ] ]
+      Union @@ FindInfraRepresentative[ g, InfraCircle[ 1, GraphDistance[ g, 1, 7 ] ], All ],
+      Union @@ FindInfraRepresentative[ g, InfraCircle[ 7, GraphDistance[ g, 1, 7 ] ], All ] ]
   ],
   True,
-  TestID -> "FindInfraScene-EuclidI1-agrees-with-FindInfraCircle"
+  TestID -> "FindInfraScene-EuclidI1-agrees-with-the-circles"
 ]
 
 
@@ -786,12 +786,12 @@ VerificationTest[
     {scene = InfraScene[{ea, eb, ec}, {
        ec == InfraUnion[InfraCircle[ea, InfraDistance[ea, eb]], InfraCircle[eb, InfraDistance[ea, eb]]]}]},
     Sort @ DeleteDuplicates[InfraSceneInstance[#, ec] & /@
-        Quiet[FindInfraScene[scene, g, <|ea -> 1, eb -> 7|>], FindInfraCircle::uncertified]] ===
+        FindInfraScene[scene, g, <|ea -> 1, eb -> 7|>]] ===
       Sort @ Quiet @ Union[
-        Union @@ FindInfraCircle[g, 1, GraphDistance[g, 1, 7], All],
-        Union @@ FindInfraCircle[g, 7, GraphDistance[g, 1, 7], All]]],
+        Union @@ FindInfraRepresentative[g, InfraCircle[1, GraphDistance[g, 1, 7]], All],
+        Union @@ FindInfraRepresentative[g, InfraCircle[7, GraphDistance[g, 1, 7]], All]]],
   True,
-  TestID -> "InfraScene-union-of-two-circles-agrees-with-FindInfraCircle"
+  TestID -> "InfraScene-union-of-two-circles-agrees-with-the-circles"
 ]
 
 EndTestSection[]
