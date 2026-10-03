@@ -27,7 +27,7 @@ The circle's "Faithful" is always `Undetermined`, whatever the substrate.
 ```wl
 With[
   {g = GridGraph[{5, 5}]},
-  {cir = InfraCircle[13, "Radius" -> {2, 3}]},
+  {cir = InfraCircle[13, {2, 3}]},
   InfraMeasurement[g, cir, "Faithful"]
 ]
 ```

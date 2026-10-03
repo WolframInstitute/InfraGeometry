@@ -16,9 +16,13 @@ RelatedGuides: [EuclideanInfrageometry]
 
 <code>[FindInfraArc]()[*graph*, *c*, {*p1*, ..., *pk*}, *n* | UpTo[*n*] | All]</code> gives a `List` of *n*, at most *n*, or every such arc.
 
+<code>[FindInfraArc]()[*graph*, *c*, {*p*, *p*}]</code> gives one circle around *c* through *p*, as a cyclic vertex list: the cycle sweep, the closed arc <code>[InfraArc]()[*c*, {*p*, *p*}]</code> read as a search. A trailing count works as above.
+
 ## Details & Options
 
 Searches the band graph directly — `FindPath` at the band distance between consecutive points, folded together at the knots — independently of [InfraArc]()'s own graph, so it is the check on that graph rather than a reader of it. Returns exactly the vertex-list shapes [FindInfraRepresentative]() gives for `InfraArc[c, {p1, ..., pk}]`.
+
+The closed form `{p, p}` sweeps the band of *p* by `FindCycle`, length by length, and keeps the shortest cycles through *p* that separate *c* from beyond the band. It is the finder that [FindInfraRepresentative]() uses for a closed arc.
 
 Option `"RadiusDelta" -> delta | {deltaIn, deltaOut}` widens the band about *d*(*c*, *p1*), same as on [InfraArc]() and [InfraCircle](). A scalar *delta* means `{0, delta}`, outward only; the default is `0`. No `Method`, no `Properties`.
 
@@ -44,6 +48,12 @@ Through an intermediate point the arc is a polyline of minor arcs, one per piece
 
 ```wl
 FindInfraArc[GridGraph[{9, 9}], 41, {14, 44, 68}, "RadiusDelta" -> 1]
+```
+
+The circle through a vertex at distance 2 from the centre of a grid, the band widened one step outward.
+
+```wl
+FindInfraArc[GridGraph[{5, 5}], 13, {7, 7}, "RadiusDelta" -> 1]
 ```
 
 One minor arc between two points on the ring at distance 2 from the centre of a grid, then both of them.

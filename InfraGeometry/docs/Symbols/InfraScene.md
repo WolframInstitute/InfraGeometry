@@ -24,7 +24,7 @@ The right side of a construction is a token: an inert head with objects in place
 
 A token stands for its realisations, and each realisation is one branch. So a construction binds its object to a single vertex, or a single vertex list, per branch, and the branches multiply from one construction to the next.
 
-Inside a scene the token `InfraCircle[x, r]` reads *r* as a radius. As a head, a bare second argument of [InfraCircle]() is always a point. This is an open inconsistency.
+The token is the head itself: the second argument of [InfraCircle]() is always a radius or a band. The circle through a point is the closed arc [InfraArc]()`[x, {p, p}]`.
 
 An assertion is a predicate on objects: a comparison of [InfraDistance]() values, or one of the `Infra*Q` tests without its graph (`InfraSegmentQ[s]`, `InfraCircleQ[c]`, `InfraParallelQ[l1, l2]` and a few more). The graph is supplied when the scene is solved, and a branch survives only if every assertion holds on it. An `Infra*Q` test that cannot be given the graph is refused with `InfraScene::badassertion`.
 
@@ -105,7 +105,7 @@ With[
       circleA == InfraCircle[pA, 4], circleB == InfraCircle[pB, 4],
       meet == InfraIntersection[circleA, circleB]}]},
   {InfraSubstrateHighlight[g, {FindInfraShell[g, a, 4] -> $InfraShellColor, Directive[$InfraPointColor], a, b}],
-   Length @ FindInfraCircle[g, a, "Radius" -> 4, All], FindInfraScene[scene, g]}]
+   Length @ FindInfraCircle[g, a, 4, All], FindInfraScene[scene, g]}]
 ```
 
 On the discretized plane a single radius suffices: its shells are cycles by accident of the mesh.

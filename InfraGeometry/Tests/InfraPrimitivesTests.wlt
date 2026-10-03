@@ -221,7 +221,7 @@ VerificationTest[
         FindInfraLine[ g, 1, 3 ],
         FindInfraRay[ g, 1, 4 ],
         FindInfraCycle[ g, 1 ],
-        FindInfraCircle[ g, 6, "Radius" -> 1 ],
+        FindInfraCircle[ g, 6, 1 ],
         FindInfraTriangle[ g, { 1, 4, 13 } ],
         FindInfraPolygon[ g, { 1, 4, 13 } ],
         FindInfraEllipse[ g, { 1, 16 }, 6 ],

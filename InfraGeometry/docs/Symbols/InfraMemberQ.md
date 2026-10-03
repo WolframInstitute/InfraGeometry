@@ -54,7 +54,7 @@ A circle's member is recognised up to rotation and direction.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  {circle = InfraCircle[c, "Radius" -> {2, 4}]},
+  {circle = InfraCircle[c, {2, 4}]},
   {turned = RotateLeft[Reverse @ FindInfraRepresentative[g, circle], 3]},
   {InfraSubstrateHighlight[g, {InfraWalk[Append[turned, First @ turned]] -> $InfraCircleColor, Directive[$InfraPointColor], c}, "Arrowheads" -> True],
    InfraMemberQ[g, circle, turned]}]

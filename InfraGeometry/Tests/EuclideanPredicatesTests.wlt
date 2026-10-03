@@ -587,7 +587,7 @@ VerificationTest[
    exact radius.  Pre-existing; the wrappers hid it by answering vacuously.) *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
-    {FindInfraCircle[g, 13, "Radius" -> 2], InfraCircleQ[g, FindInfraCircle[g, 13, "Radius" -> 2]],
+    {FindInfraCircle[g, 13, 2], InfraCircleQ[g, FindInfraCircle[g, 13, 2]],
      FindInfraEllipse[g, {11, 15}, 6], InfraEllipseQ[g, FindInfraEllipse[g, {11, 15}, 6]]}],
   {{ }, False, { }, False},
   TestID -> "an-empty-class-is-the-empty-List"
