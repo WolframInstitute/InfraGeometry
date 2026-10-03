@@ -20,6 +20,5 @@ The total graph over a grid: each fiber is a small cluster of rays around its ba
 ```wl
 With[
   {g = GridGraph[{4, 4}]},
-  {total = InfraTotalGraph @ InfraTangentBundle[g, 2]},
-  {VertexCount @ total, EdgeCount @ total}]
+  InfraTotalGraph @ InfraTangentBundle[g, 2]]
 ```

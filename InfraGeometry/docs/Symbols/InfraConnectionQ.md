@@ -11,4 +11,4 @@ RelatedGuides: [InfraFiberBundles]
 
 ## Usage
 
-`InfraConnectionQ[fib, InfraConnection[edges]`] tests whether edges are horizontal total edges giving exactly one lift wherever the total graph has one.
+`InfraConnectionQ[fib, InfraConnection[edges]]` tests whether edges are horizontal total edges giving exactly one lift wherever the total graph has one.

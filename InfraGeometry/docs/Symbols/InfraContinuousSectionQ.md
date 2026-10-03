@@ -11,4 +11,4 @@ RelatedGuides: [InfraFiberBundles]
 
 ## Usage
 
-`InfraContinuousSectionQ[fib, InfraSection[s]`] tests whether s is a section of fib mapping every base edge between its keys to a total edge.
+`InfraContinuousSectionQ[fib, InfraSection[s]]` tests whether s is a section of fib mapping every base edge between its keys to a total edge.

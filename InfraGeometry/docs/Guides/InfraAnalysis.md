@@ -11,13 +11,15 @@ RelatedGuides: [EuclideanInfrageometry, RiemannianInfrageometry, InfraTopology, 
 
 ## Abstract
 
-Tangent spaces and differential forms: the first-order structure of a substrate, with the tangent space at a vertex, the displacements that move its vertices, the differential forms and cochains, and the tautological 1-form. A displacement of scale r sends each vertex to a set of vertices within distance r, a discrete flow for time r, and it is multivalued by design. Its operations are metric: scaling moves along the geodesics from each vertex to its images, the sum is the bisector of the two orders of composition, and the commutator is the loop of the two displacements and their inverses, or of their metric negatives. A form is a germ of values at a vertex on tuples of its neighbours, a cochain a value on the cliques of the graph; the restriction and integration maps pass between the two, and the coboundary, the differential, the wedge and the cup products act on them. The tangent space and the tautological 1-form still wait: both exist in the InfraGaugeTheory paclet and are to be copied here.
+Tangent spaces and differential forms: the first-order structure of a substrate, with the tangent space at a vertex, the displacements that move its vertices, the differential forms and cochains, and the tautological 1-form. A displacement of scale r sends each vertex to a set of vertices within distance r, a discrete flow for time r, and it is multivalued by design. Its operations are metric: scaling moves along the geodesics from each vertex to its images, the sum is the bisector of the two orders of composition, and the commutator is the loop of the two displacements and their inverses, or of their metric negatives. A form is a germ of values at a vertex on tuples of its neighbours, a cochain a value on the cliques of the graph; the restriction and integration maps pass between the two, and the coboundary, the differential, the wedge and the cup products act on them. The tangent space is the tangent bundle, a fibration whose sections are vector fields; the tautological 1-form pairs a vector with a covector.
 
 ## Functions
 
 ### Tangent spaces
 
-- waits: the tangent space at a vertex, copied from InfraGaugeTheory, where it is GraphTangentBundle and TangentFiberedGraph
+- **InfraTangentBundle** — the tangent spaces of a graph at scale r, the rays of length r over each vertex
+- **InfraDisplacementBundle** — the displacements of scale r, the pairs of vertices at distance r
+- **InfraRays** — the rays of a given length from a vertex
 
 ### Displacements
 
@@ -69,4 +71,5 @@ Tangent spaces and differential forms: the first-order structure of a substrate,
 
 ### The tautological 1-form
 
-- waits: the cotangent space and the tautological 1-form, copied from InfraGaugeTheory, where they are GraphCotangentBundle, CotangentFlip, InfraTautologicalSection and InfraTautologicalOneForm, the last evaluated by InfraCanonicalOneForm
+- **InfraCotangentBundle** — the tangent bundle on reversed rays
+- **InfraCanonicalOneForm** — the pairing of a vector with a covector at a scale, the tautological 1-form

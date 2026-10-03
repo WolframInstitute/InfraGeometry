@@ -11,4 +11,4 @@ RelatedGuides: [InfraFiberBundles]
 
 ## Usage
 
-`InfraSectionQ[fib, InfraSection[s]`] tests whether s[p] lies over p for every key p of s.
+`InfraSectionQ[fib, InfraSection[s]]` tests whether s[p] lies over p for every key p of s.
