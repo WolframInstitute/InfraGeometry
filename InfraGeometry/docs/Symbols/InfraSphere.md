@@ -5,7 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSphere
-Keywords: [sphere, separating set, minimal, region, inert head, family]
+Keywords: [sphere, separating set, minimal, region, inert head, family, counting measure, Riemannian measure]
 SeeAlso: [FindInfraSphere, InfraShell, InfraBall, InfraMeasurement, FindInfraRepresentative, SeparatesQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
@@ -20,39 +20,52 @@ RelatedGuides: [EuclideanInfrageometry]
 
 Definition: a sphere of the shell *S* is a subset *T ⊆ S* such that the induced subgraph on *T* is connected, deleting *T* leaves the component of *c* within the mean radius and every other vertex beyond it, and no proper subset of *T* does.
 
-The shell is a set of points. The sphere is the family of its connected separating subsets, and it is searched, not read off a graph: no polynomial-size faithful graph of the family is known. [FindInfraSphere]() is the search.
+The family may be empty. On a bipartite graph, such as the square grid and the hexagonal tiling, no two vertices at the same distance from *c* are adjacent, so a shell of one radius has no connected subset of more than one vertex and carries no sphere. A band of two radii carries spheres on the square grid. When the shell wraps around, as on a torus, and does not separate, the family is empty as well.
+
+The family may have many members. The shell is a set of points; the sphere is the family of its connected separating subsets, and it is searched, not read off a graph: no polynomial-size faithful graph of the family is known. [FindInfraSphere]() is the search.
+
+[InfraMeasurement]() reads the family through the exhaustive search, so it is expensive. `"VertexDensity"` is the sum of the indicators of the members, `"EdgeDensity"` the sum of their induced edge sets, `"Cardinality"` their number. The two measures are read on the support of the density, the union of the members:
+
+| Measure | Value |
+|---|---|
+| `"CountingMeasure"` | the number of vertices in some member |
+| `"RiemannianMeasure"` | the number of vertices of the support all of whose neighbours lie in it; `0` for a sphere of one radius *r ≥ 1*, since every vertex of it has a neighbour at distance *r − 1* |
+
+`"Faithful"` is `Undetermined`. A sphere has no `"Graph"`.
 
 [FindInfraRepresentative]() gives members: a count, `"RandomChoice"` and `"Pruning" -> q` are translated to the `Method` of [FindInfraSphere](). Without a count it gives one member, a sorted vertex list.
 
-[InfraMeasurement]() reads the family through the exhaustive search, so it is expensive: `"VertexDensity"` is the sum of the indicators of the members, `"EdgeDensity"` the sum of their induced edge sets, `"Cardinality"` their number, and the two measures the support of the density. `"Faithful"` is `Undetermined`. A sphere has no `"Graph"`.
-
-When the shell wraps around, as on a torus, and does not separate, the family is empty.
-
 ## Basic Examples
 
-The four minimal connected separators in the band 1 to 2 about the centre of a 5 by 5 grid.
+The shell of radius 3, and the sphere in it, on the discretized plane, the square grid and the hexagonal tiling, labelled with the number of members and the two measures. The shell of the mesh is a connected ring and is its own sphere; the two lattices are bipartite, and the family is empty.
 
 ```wl
-FindInfraRepresentative[GridGraph[{5, 5}], InfraSphere[13, {1, 2}], All]
-```
-
-One separating subset of the shell of radius 4 on the square, hexagonal and triangular tilings.
-
-```wl
-GraphicsRow @ Table[
+Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = InfraCenter[g]},
-    InfraSubstrateHighlight[g, {InfraShell[c, 4], FindInfraRepresentative[g, InfraSphere[c, 4]], Directive[$InfraPointColor], c}]],
-  {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
+    {family = InfraSphere[c, 3]},
+    Labeled[
+      InfraSubstrateHighlight[g, {InfraShell[c, 3] -> $InfraShellColor, FindInfraRepresentative[g, family] -> $InfraCircleColor, Directive[$InfraPointColor], c}],
+      InfraMeasurement[g, family, {"Cardinality", "CountingMeasure", "RiemannianMeasure"}]]],
+  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
+```
+
+The four minimal connected separators in the band 1 to 2 about the centre of a 5 by 5 grid, each drawn on its own.
+
+```wl
+With[
+  {g = GridGraph[{5, 5}]},
+  {members = FindInfraRepresentative[g, InfraSphere[13, {1, 2}], All]},
+  Row[InfraSubstrateHighlight[g, {#, Directive[$InfraPointColor], 13}] & /@ members]]
 ```
 
 ## Properties and Relations
 
-Measuring the family: the number of members, and the volume of their union.
+Measuring the family of the 5 by 5 grid: four members, eight vertices in their union, none of them inside.
 
 ```wl
-InfraMeasurement[GridGraph[{5, 5}], InfraSphere[13, {1, 2}], {"Cardinality", "Faithful", "CountingMeasure"}]
+InfraMeasurement[GridGraph[{5, 5}], InfraSphere[13, {1, 2}], {"Cardinality", "Faithful", "CountingMeasure", "RiemannianMeasure"}]
 ```
 
 A member is connected and is contained in the shell.

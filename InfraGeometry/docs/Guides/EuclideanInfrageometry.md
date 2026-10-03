@@ -40,7 +40,18 @@ Euclidean infrageometry is synthetic geometry: constructions with natural object
 - `InfraCylinder` the inert cylinder of radius r about an axis, the tube of the axis
 - `InfraCone` the inert cone of a given slope along an axis, apex at its first vertex
 - `InfraSphere` the inert family of inclusion-minimal connected subsets of a shell that separate the centre from the outside; FindInfraSphere is its search
-- the measures of a region are properties of InfraMeasurement: "CountingMeasure", the number of vertices, and "RiemannianMeasure", the number of vertices without the boundary
+
+### Measures
+
+- A region on a graph is measured by counting vertices, and its boundary is never negligible at a finite scale: the vertices at distance exactly $r$ are a share of order $1/r$ of the ball of radius $r$. So every region carries two measures, read by InfraMeasurement as properties of the region on a graph.
+- Counting measure, "CountingMeasure": $\mu(A) = |A|$, the number of vertices of the support $A$ of the region.
+- Riemannian measure, "RiemannianMeasure": $\mu^\circ(A) = |A^\circ|$, where $A^\circ = \{v \in A : N(v) \subseteq A\}$ is the set of vertices all of whose neighbours lie in $A$. It is the count without the boundary, the default of the volume growth estimators.
+- `InfraBall`, `InfraShell`, `InfraTube`, `InfraCylinder`, `InfraCone`, `InfraSphere` the region heads, each measured by both; so is every Euclidean head, through the support of its vertex density
+- Ball on the square grid: counting measure $2r^2 + 2r + 1$, Riemannian measure $2r^2 - 2r + 1$, the counting measure of the ball of radius $r - 1$. The same shift holds on the triangular and hexagonal lattices, before the rim, and is the convention of the Wolfram Physics technical introduction.
+- Shell on the square grid: counting measure $4r$, the coordination sequence; Riemannian measure $0$, since a shell is all boundary.
+- Segment on the square grid between vertices $a$ and $b$ steps apart along the two axes, $a, b \geq 1$: its interval is a rectangle, with counting measure $(a + 1)(b + 1)$ and Riemannian measure $(a - 1)(b - 1)$.
+- Ball on the discretized plane: the Riemannian measure can exceed the counting measure of the smaller ball, when a vertex at distance $r$ has no neighbour at distance $r + 1$.
+- `VolumeGrowthObservables` the dimension and the scalar curvature read from the growth of the balls under either measure; it lives on the Riemannian Infrageometry guide
 
 ### Find Functions
 

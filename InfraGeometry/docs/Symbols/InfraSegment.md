@@ -5,8 +5,8 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSegment
-Keywords: [segment, shortest path, interval DAG, polyline, inert head]
-SeeAlso: [FindInfraSegment, InfraMeasurement, FindInfraRepresentative, ExtendInfraSegment, InfraLine, MetricInterval]
+Keywords: [segment, shortest path, interval DAG, polyline, inert head, counting measure, Riemannian measure]
+SeeAlso: [FindInfraSegment, InfraMeasurement, FindInfraRepresentative, ExtendInfraSegment, InfraLine, MetricInterval, InfraTube]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -30,11 +30,29 @@ Every count is read off that graph by dynamic programming, never by enumeration.
 
 A polyline is the one head whose `List` of graphs is not a family of alternatives. Its members are concatenations of one shortest path per piece, so its `"Cardinality"` is the product over the pieces and its `"Length"` the sum. Its `"VertexDensity"` stays the sum of the piece densities.
 
+The support of the segment, the keys of its `"VertexDensity"`, is the interval itself. [InfraMeasurement]() gives two measures of it:
+
+| Measure | Value |
+|---|---|
+| `"CountingMeasure"` | the number of vertices of the interval |
+| `"RiemannianMeasure"` | the number of vertices of the interval all of whose neighbours lie in it |
+
+On the square grid two vertices *a* steps apart along one axis and *b* along the other span an (*a* + 1) × (*b* + 1) rectangle, so for *a*, *b* ≥ 1 the measures are (*a* + 1)(*b* + 1) and (*a* − 1)(*b* − 1). A segment with a single shortest path is all boundary, and its Riemannian measure is `0`. The rim of the graph is not boundary: a segment whose interval is the whole graph has both measures equal to the number of vertices.
+
 A member is a vertex list; [FindInfraRepresentative]() reads one, several or all of them, and [InfraMemberQ]() tests one.
+
+Corresponding notions in the classical axiom systems:
+
+| System | Name | Statement |
+|---|---|---|
+| Euclid | Postulate 1 | To draw a straight-line from any point to any point. |
+| Hilbert | I.1, I.2 | Two distinct points determine one and only one line. |
+| Tarski | Betweenness | The points *x* with *B(pxq)*, from the three-place betweenness relation. |
+| Birkhoff | Ruler postulate | The points of a line correspond to the reals, and the segment is a closed coordinate interval. |
 
 ## Basic Examples
 
-The segment from the centre to a vertex six steps away, on the square, hexagonal and triangular tilings. Every shortest path is drawn at once, an edge as strongly as the number of shortest paths through it.
+The segment from the centre to a vertex five steps away, on the discretized plane, the square grid and the hexagonal tiling. Every shortest path is drawn at once, an edge as strongly as the number of shortest paths through it.
 
 ```wl
 GraphicsRow @ Table[
@@ -44,7 +62,22 @@ GraphicsRow @ Table[
     {b = (SeedRandom[1]; RandomInfraPoint[g, a, 5])},
     {seg = InfraSegment[a, b]},
     InfraSubstrateHighlight[g, {seg, Directive[$InfraPointColor], a, b}]],
-  {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
+  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
+```
+
+The interval of the same segments, its inner vertices in green and its boundary in blue. The Riemannian measure counts the green ones, the counting measure both. On the square grid the interval is a 3 × 4 rectangle with 2 inner vertices. On the discretized plane the two shortest paths differ in a single vertex, and nothing is inside.
+
+```wl
+Row[Table[
+  With[
+    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    {c = InfraCenter[g]},
+    {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, c, 5])]},
+    {support = Keys @ InfraMeasurement[g, seg, "VertexDensity"]},
+    Labeled[
+      InfraSubstrateHighlight[g, {InfraInterior[g, support] -> $InfraBallColor, InfraBoundary[g, support] -> $InfraCircleColor}],
+      InfraMeasurement[g, seg, {"Cardinality", "CountingMeasure", "RiemannianMeasure"}]]],
+  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```
 
 The graph of a segment on the square tiling. Every shortest path is a directed path through it.

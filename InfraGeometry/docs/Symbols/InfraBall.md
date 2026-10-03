@@ -5,8 +5,8 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraBall
-Keywords: [ball, disk, neighbourhood, region, inert head, volume]
-SeeAlso: [InfraShell, InfraTube, InfraSphere, FindInfraRepresentative, InfraMeasurement, InfraBallQ]
+Keywords: [ball, disk, neighbourhood, region, inert head, volume, counting measure, Riemannian measure]
+SeeAlso: [InfraShell, InfraTube, InfraSphere, FindInfraRepresentative, InfraMeasurement, InfraInterior, InfraBoundary, InfraBallQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -22,39 +22,58 @@ RelatedGuides: [EuclideanInfrageometry]
 
 Definition: the closed ball of radius *r* about *c* is *B_r(c) = {v : d(c, v) ≤ r}*. *c* is a vertex or a vertex list, and then *d(v, C) = min d(v, c)* and the ball is the *r*-neighbourhood of *C*.
 
-The head holds the centre and the radius and computes nothing. A ball has one member, the vertex set, so [FindInfraRepresentative]() gives it as a sorted vertex list and `"Faithful"` is `True`.
+The ball is not round. On a lattice it is the unit ball of the path metric scaled by *r*: a square standing on a corner on the square grid, a hexagon on the hexagonal tiling.
 
-[InfraMeasurement]() reads seven properties: `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"`, `"Faithful"`, `"Subgraph"` and the two measures `"CountingMeasure"`, the number of vertices of the ball, and `"RiemannianMeasure"`, the number of vertices all of whose neighbours lie in the ball. A ball has no `"Graph"` and no `"Length"`; asking for them leaves the call unevaluated.
+Its boundary is not negligible. The vertices at distance exactly *r* are a share of order *1/r* of the ball, so the volume of a ball depends on whether they count. [InfraMeasurement]() gives both:
 
-A radius past the eccentricity gives the whole graph; a band with *r > s* gives the empty set.
+| Measure | Value |
+|---|---|
+| `"CountingMeasure"` | *\|B_r(c)\|*, the number of vertices of the ball |
+| `"RiemannianMeasure"` | the number of vertices of the ball all of whose neighbours lie in the ball: the count without the boundary |
 
-The profile of the ball against its radius is the `Table` of its measures over *r*; the Riemannian measure of the ball of radius *r* in the bulk of a lattice is the counting measure of radius *r − 1*.
+The Riemannian measure of *B_r(c)* always counts *B_(r−1)(c)*. On the square, triangular and hexagonal lattices, away from the rim, it counts nothing more, so its profile over *r* is the counting profile one radius later, the convention of the Wolfram Physics technical introduction. On an irregular mesh it also counts the vertices at distance *r* that have no neighbour at distance *r + 1*.
+
+A radius past the eccentricity gives the whole graph, and then both measures are the number of vertices: the rim of the graph is not a boundary of the ball. A band with *r > s* gives the empty set.
+
+The head holds the centre and the radius and computes nothing. A ball has one member, the vertex set, so [FindInfraRepresentative]() gives it as a sorted vertex list and `"Faithful"` is `True`. [InfraMeasurement]() also reads `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"` and `"Subgraph"`; a ball has no `"Graph"` and no `"Length"`.
+
+Corresponding notions in the classical axiom systems:
+
+| System | Name | Statement |
+|---|---|---|
+| Euclid | Postulate 3 | To draw a circle with any center and radius; the ball is the region the circle bounds. |
+| Tarski | Betweenness and equidistance | The points *x* with *cx ≡ cy* for some *y* between *c* and a point at distance *r*. |
 
 ## Basic Examples
 
-The ball of radius 4 about the centre of the square, hexagonal and triangular tilings.
+The ball of radius 3 about the centre of the discretized plane, the square grid and the hexagonal tiling. The Riemannian measure counts the inner vertices, in green; the counting measure adds the boundary, in blue.
 
 ```wl
-GraphicsRow @ Table[
+Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = InfraCenter[g]},
-    InfraSubstrateHighlight[g, {InfraBall[c, 4] -> $InfraBallColor, Directive[$InfraPointColor], c}]],
-  {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
+    {ball = InfraBall[InfraCenter[g], 3]},
+    {support = FindInfraRepresentative[g, ball]},
+    Labeled[
+      InfraSubstrateHighlight[g, {InfraInterior[g, support] -> $InfraBallColor, InfraBoundary[g, support] -> $InfraCircleColor}],
+      InfraMeasurement[g, ball, {"CountingMeasure", "RiemannianMeasure"}]]],
+  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```
 
-The volume of the ball against its radius on the square grid. It is *2 r^2 + 2 r + 1*.
+The two measures against the radius on the square grid. The counting measure is *2 r^2 + 2 r + 1*, the Riemannian measure *2 r^2 − 2 r + 1*: the same curve one radius later.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = InfraCenter[g]},
-  ListLinePlot[Table[InfraMeasurement[g, InfraBall[c, r], "CountingMeasure"], {r, 0, 6}], DataRange -> {0, 6}, PlotMarkers -> Automatic]]
+  ListLinePlot[
+    Table[InfraMeasurement[g, InfraBall[c, r], measure], {measure, {"CountingMeasure", "RiemannianMeasure"}}, {r, 0, 8}],
+    DataRange -> {0, 8}, PlotMarkers -> Automatic, PlotLegends -> {"CountingMeasure", "RiemannianMeasure"}, AxesLabel -> {"r", None}]]
 ```
 
 ## Scope
 
-A ball about a vertex list is the neighbourhood of the list: here of a segment.
+A ball about a vertex list is the neighbourhood of the list: here of a shortest path.
 
 ```wl
 With[
@@ -65,15 +84,17 @@ With[
   InfraSubstrateHighlight[g, {InfraBall[core, 1] -> $InfraBallColor, core -> $InfraSegmentColor}]]
 ```
 
-All the properties of a ball at once.
+Past the eccentricity the ball is the whole graph, and the Riemannian measure counts every vertex: the rim of the graph is not a boundary of the ball.
 
 ```wl
-InfraMeasurement[GridGraph[{5, 5}], InfraBall[13, 1], All]
+With[
+  {g = InfraSubstrate["HexagonalTilingGraph", "Small"]},
+  {InfraMeasurement[g, InfraBall[InfraCenter[g], 20], {"CountingMeasure", "RiemannianMeasure"}], VertexCount[g]}]
 ```
 
 ## Properties and Relations
 
-The ball is the union of the shells up to its radius, so the counting profile is the partial sums of the shell areas.
+The ball is the union of the shells up to its radius, so its counting measure is the running total of the shell areas.
 
 ```wl
 With[
@@ -81,16 +102,19 @@ With[
   {c = InfraCenter[g]},
   {volumes = Table[InfraMeasurement[g, InfraBall[c, r], "CountingMeasure"], {r, 0, 5}]},
   {areas = Table[InfraMeasurement[g, InfraShell[c, r], "CountingMeasure"], {r, 0, 5}]},
-  volumes === Accumulate[areas]]
+  {volumes, Accumulate[areas]}]
 ```
 
-The Riemannian measure of the ball on the square grid is *2 r^2 − 2 r + 1*, the counting measure of radius *r − 1*.
+The Riemannian measure of a ball is at least the counting measure of the ball one radius smaller. On the discretized plane it is more: the ball of radius 5 is drawn with the shell of radius 6 around it, and two vertices of the shell, drawn as points, have no neighbour at distance 7, so they lie inside the ball of radius 6.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
+  {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  Table[InfraMeasurement[g, InfraBall[c, r], "RiemannianMeasure"], {r, 1, 5}] === Table[2 r^2 - 2 r + 1, {r, 1, 5}]]
+  {inner = InfraInterior[g, FindInfraRepresentative[g, InfraBall[c, 6]]]},
+  {smaller = FindInfraRepresentative[g, InfraBall[c, 5]]},
+  {InfraSubstrateHighlight[g, {smaller, InfraShell[c, 6], Directive[$InfraPointColor], Complement[inner, smaller]}],
+   InfraMeasurement[g, InfraBall[c, 6], "RiemannianMeasure"], InfraMeasurement[g, InfraBall[c, 5], "CountingMeasure"]}]
 ```
 
 Inside a scene the token names the ball about a point, and [FindInfraScene]() binds it to the same vertex set.

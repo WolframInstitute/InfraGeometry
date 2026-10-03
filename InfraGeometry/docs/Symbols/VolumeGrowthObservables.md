@@ -5,7 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/VolumeGrowthObservables
-Keywords: [volume growth, dimension, scalar curvature, Bishop-Gromov, ball, sphere, fit window]
+Keywords: [volume growth, dimension, scalar curvature, Bishop-Gromov, ball, sphere, fit window, counting measure, Riemannian measure]
 SeeAlso: [DimensionCurvatureFit, InfraMeasurement, InfraBall, InfraShell, LogDifferenceQuotients, InfraTube]
 RelatedGuides: [RiemannianInfrageometry]
 ---
@@ -25,6 +25,8 @@ Definition: at *v* the ball probe regresses the log-difference quotient of the b
 The two probes measure the same pair independently, since *Vol B_r ∝ r^d (1 − R r² / (6(d + 2)))* while *Area S_r ∝ r^(d−1) (1 − R r² / (6d))*. Their agreement is the check that the substrate behaves like a manifold near *v*; where they disagree, trust the sphere, since the ball accumulates the small-radius artefacts.
 
 The quotient is affine in *r(r + 1)* only over a middle window: at small radius it carries the discretisation, and past the peak of the shell count the ball fills the graph instead of growing. The `Automatic` window is the longest run of radii up to that peak whose least-squares residual stays within twice the noise floor. The windows used are reported.
+
+The ball volume is a count of vertices, and at the radii fitted the boundary of the ball is not negligible. The ball probe reads it under the `"Measure"` option, through [InfraMeasurement]() on [InfraBall](): the `"RiemannianMeasure"`, the default, leaves out the vertices with a neighbour outside the ball, the `"CountingMeasure"` keeps them. On the square grid they are *2 r^2 − 2 r + 1* and *2 r^2 + 2 r + 1*. The term of order *r^(d − 1)* has opposite signs in the two, so on a flat lattice the ball probe reads the dimension from above under the Riemannian measure and from below under the counting measure. The sphere probe reads the shells under the counting measure in both cases, since the Riemannian measure of a shell is `0`.
 
 The keys of the result:
 
