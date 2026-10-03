@@ -24,7 +24,7 @@ Searches the band graph directly — `FindPath` at the band distance between con
 
 The closed form `{p, p}` sweeps the band of *p* by `FindCycle`, length by length, and keeps the shortest cycles through *p* that separate *c* from beyond the band. It is the finder that [FindInfraRepresentative]() uses for a closed arc.
 
-Option `"RadiusDelta" -> delta | {deltaIn, deltaOut}` widens the band about *d*(*c*, *p1*), same as on [InfraArc]() and [InfraCircle](). A scalar *delta* means `{0, delta}`, outward only; the default is `0`. No `Method`, no `Properties`.
+Option `"RadiusDelta" -> delta | {deltaIn, deltaOut}` widens the band about *d*(*c*, *p1*), same as on [InfraArc](). A scalar *delta* means `{0, delta}`, outward only; the default is `0`. No `Method`, no `Properties`.
 
 ## Basic Examples
 

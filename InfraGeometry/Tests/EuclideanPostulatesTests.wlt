@@ -514,7 +514,7 @@ VerificationTest[
   TestID -> "FindInfraOsculatingShell-sorted-by-radius"
 ]
 
-(* FindInfraCircle's seam necklaces, "RadiusDelta" and radius forms, cyclic instances,
+(* FindInfraCircle's seam necklaces, its radius and band forms, cyclic instances,
    and the Q_4 / octagon / Petersen fixtures are pinned against brute force in
    InfraCircleTests.wlt (EuclideanInertHeads, T4); this section and the circle-pool
    section that followed it tested the old Method / Properties / DAG-pool API and the
