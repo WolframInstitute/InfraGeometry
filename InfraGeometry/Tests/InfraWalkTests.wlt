@@ -1533,6 +1533,18 @@ VerificationTest[
   TestID -> "InfraGeodesic-members-InfraDensity"
 ]
 
+(* the representative of a germ at a finite scale is a simple geodesic at that scale: without the
+   simple class the budget Infinity would leave the class unbounded and the call unevaluated *)
+VerificationTest[
+  With[ { g = GridGraph[ { 6, 6 } ] },
+    { one = FindInfraRepresentative[ g, InfraGeodesic[ { 1 }, 2 ] ],
+      some = FindInfraRepresentative[ g, InfraGeodesic[ { 1, 2 }, 3 ], 3 ] },
+    { InfraGeodesicQ[ g, one, 2 ] && DuplicateFreeQ[ one ],
+      Length[ some ] === 3 && AllTrue[ some, InfraGeodesicQ[ g, #, 3 ] && DuplicateFreeQ[ # ] && SequenceCount[ #, { 1, 2 } ] === 1 & ] } ],
+  { True, True },
+  TestID -> "InfraGeodesic-representative-at-finite-scale-is-simple"
+]
+
 EndTestSection[]
 
 (* ===== Refused calls stay unevaluated ===== *)
