@@ -5,31 +5,22 @@ Package[ "WolframInstitute`InfraGeometry`" ]
    parity-stranded band. *)
 
 Options[ FindInfraBisectingHyperplane ] = {
-  Properties -> { },
-  Method     -> Automatic
+  Properties           -> { },
+  "NextVertexFunction" -> Identity
 }
 
 FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ]/;
-    SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraBisectingHyperplane, { opts }, Properties ] ] &&
-      MatchQ[ OptionValue[ FindInfraBisectingHyperplane, { opts }, Method ],
-        Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
+    SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraBisectingHyperplane, { opts }, Properties ] ] :=
   FindInfraBisectingHyperplane[ graph, p1, p2, { 0, 0 }, count, opts ]
 
 FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
     window : { _Integer, _Integer },
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraBisectingHyperplane, { opts }, Properties ] ] &&
-      MatchQ[ OptionValue[ FindInfraBisectingHyperplane, { opts }, Method ],
-        Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
+    SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraBisectingHyperplane, { opts }, Properties ] ] :=
   With[ {
       properties = OptionValue[ FindInfraBisectingHyperplane, { opts }, Properties ],
-      methodSpec = Replace[ OptionValue[ FindInfraBisectingHyperplane, { opts }, Method ],
-        Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ] },
-    { methodHead = Replace[ methodSpec, { m_String, ___ } :> m ],
-      pruning    = Replace[ methodSpec,
-                    { { "Exhaustive", subs___ } :> ( "Pruning" /. { subs } /. "Pruning" -> Infinity ),
-                      _ :> Infinity } ] },
+      nextFn     = OptionValue[ FindInfraBisectingHyperplane, { opts }, "NextVertexFunction" ] },
     { results = Apply[
         { q1, q2 } |-> With[ {
             bisector = Complement[
@@ -57,7 +48,7 @@ FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
                     "Connected",  T |-> T =!= { } && ConnectedGraphQ @ Subgraph[ graph, T ] ],
                   properties ] },
               { admissible = T |-> AllTrue[ tests, # @ T & ] },
-              { pick = If[ methodHead === "Greedy", Identity, RandomSample ],
+              { pick = cands |-> Replace[ nextFn @ cands, chosen_ /; MemberQ[ cands, Verbatim @ chosen ] :> { chosen } ],
                 cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
               { descend = { self, state, T } |-> If[ Length @ First @ state >= cap || KeyExistsQ[ Last @ state, T ],
                   state,
@@ -66,25 +57,7 @@ FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
                     If[ peelable === { },
                       { Append[ First @ marked, T ], Last @ marked },
                       Fold[ { s, w } |-> self[ self, s, DeleteCases[ T, w ] ], marked, pick @ peelable ] ] ] ] },
-              Which[
-                ! admissible[ bisector ], { },
-                methodHead === "Exhaustive",
-                  DeleteDuplicates @ Last @ NestWhile[
-                    state |-> With[ { rows = Map[
-                        T |-> With[ { removable = Select[ T, v |-> admissible[ DeleteCases[ T, v ] ] ] },
-                          If[ removable === { },
-                            { { T }, { } },
-                            { { }, Map[ v |-> Sort @ DeleteCases[ T, v ], Replace[ pruning, {
-                                Infinity     :> removable,
-                                n_Integer    :> If[ Length @ removable <= n, removable, RandomSample[ removable, n ] ],
-                                p_?NumericQ  :> With[ { kept = Select[ removable, RandomReal[ ] < p & ] },
-                                  If[ kept === { }, RandomSample[ removable, 1 ], kept ] ] } ] ] } ] ],
-                        First @ state ] },
-                      { DeleteDuplicates @ Catenate @ rows[[ All, 2 ]], Join[ Last @ state, Catenate @ rows[[ All, 1 ]] ] } ],
-                    { { Sort @ bisector }, { } },
-                    First @ # =!= { } & ],
-                True,
-                  First @ descend[ descend, { { }, <| |> }, bisector ] ] ] ] ],
+              If[ ! admissible[ bisector ], { }, First @ descend[ descend, { { }, <| |> }, bisector ] ] ] ] ],
         Tuples[ { Keys @ InfraDensity[ graph, p1 ], Keys @ InfraDensity[ graph, p2 ] } ], { 1 } ] },
     With[ { reps = DeleteDuplicates[ Union /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
         Switch[ count,

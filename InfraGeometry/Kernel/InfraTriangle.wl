@@ -1,12 +1,10 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-Options[ FindInfraTriangle ] = { Method -> Automatic }
+Options[ FindInfraTriangle ] = { "NextVertexFunction" -> Identity }
 
 FindInfraTriangle[ graph_Graph, vertices_List /; Length[ vertices ] === 3,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    MatchQ[ OptionValue[ FindInfraTriangle, { opts }, Method ], Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive", ___ } ] :=
-  FindInfraPolygon[ graph, vertices, count,
-    Method -> Replace[ OptionValue[ FindInfraTriangle, { opts }, Method ], Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ] ]
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
+  FindInfraPolygon[ graph, vertices, count, "NextVertexFunction" -> OptionValue[ FindInfraTriangle, { opts }, "NextVertexFunction" ] ]
 
 InfraTriangleQ[ graph_Graph, polys : { { __Graph } .. } ] :=
   AllTrue[ polys, InfraTriangleQ[ graph, # ] & ]

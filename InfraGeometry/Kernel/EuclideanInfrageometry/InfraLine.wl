@@ -85,20 +85,17 @@ FindInfraLine[ graph_Graph, seq_List,
 
 (* a parallel to line through p: an inextensible geodesic s ... p ... e of graph inside the level set L = { v : d(v, line) == r }, r = d(p, line) --
    d(s, e) == d(s, p) + d(p, e), every vertex in L, and no neighbour of s or e in L prolonging it.  The pool is one geodesic DAG per admissible end
-   pair (s, e): the s -> p and p -> e intervals cut down to L and glued at p, oriented so that s precedes e in canonical order.  One class under
-   every Method -- "Exhaustive" with All returns the pool itself, as FindInfraLine does, and a bounded count streams geodesics off the atoms in
-   candidate ("Greedy", "Exhaustive") or random ("RandomGreedy") order *)
+   pair (s, e): the s -> p and p -> e intervals cut down to L and glued at p, oriented so that s precedes e in canonical order.  All returns the
+   pool itself, as FindInfraLine does, and a bounded count streams geodesics off the atoms in the order the next-vertex function gives *)
 
 Options[ FindInfraParallel ] = {
-  Properties -> { },
-  Method     -> Automatic
+  Properties           -> { },
+  "NextVertexFunction" -> Identity
 }
 
 FindInfraParallel[ graph_Graph, line_, p_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ]/;
-    OptionValue[ FindInfraParallel, { opts }, Properties ] === { } &&
-      MatchQ[ OptionValue[ FindInfraParallel, { opts }, Method ],
-        Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
+    OptionValue[ FindInfraParallel, { opts }, Properties ] === { } :=
   With[ {
         walksOf = w |-> With[ { vs = VertexList @ w },
           { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
@@ -113,8 +110,7 @@ FindInfraParallel[ graph_Graph, line_, p_,
                 { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
             True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ] },
       { results = ( { line0, p0 } |-> With[ {
-            methodHead = Replace[ OptionValue[ FindInfraParallel, { opts }, Method ],
-                           { Automatic :> If[ count === All, "Exhaustive", "Greedy" ], { m_String, ___ } :> m } ],
+            nextFn = OptionValue[ FindInfraParallel, { opts }, "NextVertexFunction" ],
             verts = VertexList @ graph },
           With[ { dm = GraphDistanceMatrix[ graph ], vidx = AssociationThread[ verts, Range @ Length @ verts ] },
             { dist = dm[[ vidx @ #1, vidx @ #2 ]] &,
@@ -131,8 +127,8 @@ FindInfraParallel[ graph_Graph, line_, p_,
                         InfraMeasurement[ graph, { InfraSegment[ s, p0 ], InfraSegment[ p0, e ] }, "Graph" ] ] ] },
                       Subgraph[ dag, Intersection[ VertexOutComponent[ dag, s ], VertexInComponent[ dag, e ] ] ] ],
                   cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
-                  branch = If[ methodHead === "RandomGreedy", RandomSample, Identity ] },
-                If[ methodHead === "Exhaustive" && count === All,
+                  branch = cands |-> Replace[ nextFn @ cands, chosen_ /; MemberQ[ cands, Verbatim @ chosen ] :> { chosen } ] },
+                If[ count === All,
                   Select[ atom @@@ Select[ Tuples[ { level, level } ], admissibleQ @@ # & ],
                     VertexCount[ # ] > 0 & ],
                   Fold[ { acc, pair } |-> If[ Length @ acc >= cap || ! admissibleQ @@ pair, acc,

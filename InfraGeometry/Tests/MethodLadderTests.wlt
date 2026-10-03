@@ -2,13 +2,10 @@ BeginTestSection["MethodLadder"]
 
 (* ===================== The class-invariance contract ===================== *)
 
-(* Method never changes the class: "Exhaustive", "Greedy" and "RandomGreedy" enumerate the same realisation set under All.  canon normalises a realisation whose order carries no information (a vertex set); a walk keeps its sequence.  On the walk family, where Method is gone, the next-vertex function plays the same role: Identity and RandomSample enumerate the same set under All *)
+(* the next-vertex function never changes the class: Identity and RandomSample enumerate the same realisation set under All.  canon normalises a realisation whose order carries no information (a vertex set); a walk keeps its sequence *)
 
 classInvariantQ[ call_, canon_ : Identity ] :=
-  SameQ @@ ( Sort[ canon /@ reps @ call[ # ] ] & /@ { "Exhaustive", "Greedy", "RandomGreedy" } )
-
-stepInvariantQ[ call_ ] :=
-  SameQ @@ ( Sort[ reps @ call[ # ] ] & /@ { Identity, RandomSample } )
+  SameQ @@ ( Sort[ canon /@ reps @ call[ # ] ] & /@ { Identity, RandomSample } )
 
 (* the realisations of a returned class, read off its shape: a walk graph or a DAG
    spreads into vertex sequences, a List of walk graphs into all of theirs, and a
@@ -31,16 +28,16 @@ sortReps[ x_ ] := Sort @ Replace[ reps @ x, l_List :> Sort @ l, { 1 } ]
    axis of their own to be invariant under any more. *)
 
 VerificationTest[
-  classInvariantQ[ m |-> ExtendInfraSegment[ TorusGraph[ { 4, 5 } ], { 1, 2 }, Infinity, All, Method -> m ] ],
+  classInvariantQ[ m |-> ExtendInfraSegment[ TorusGraph[ { 4, 5 } ], { 1, 2 }, Infinity, All, "NextVertexFunction" -> m ] ],
   True,
-  TestID -> "ExtendInfraSegment-class-invariant-under-Method"
+  TestID -> "ExtendInfraSegment-class-invariant-under-NextVertexFunction"
 ]
 
 (* the parallels through the centre of the 5 x 5 grid in the level set of its first row: one chain, the middle row *)
 VerificationTest[
-  classInvariantQ[ m |-> FindInfraParallel[ GridGraph[ { 5, 5 } ], Range[ 5 ], 13, All, Method -> m ] ],
+  classInvariantQ[ m |-> FindInfraParallel[ GridGraph[ { 5, 5 } ], Range[ 5 ], 13, All, "NextVertexFunction" -> m ] ],
   True,
-  TestID -> "FindInfraParallel-class-invariant-under-Method"
+  TestID -> "FindInfraParallel-class-invariant-under-NextVertexFunction"
 ]
 
 (* two dead ends 11, 12 hang off 8 at distance 1 from the row 1..5: the chain 11-8-12 is inextensible in the level set but shorter than 6-7-8-11, so a longest-only sweep would drop it -- the class holds all six *)
@@ -50,39 +47,39 @@ VerificationTest[
         UndirectedEdge @@@ Partition[ Range[ 6, 10 ], 2, 1 ],
         UndirectedEdge @@@ Transpose[ { Range[ 5 ], Range[ 6, 10 ] } ],
         { 11 <-> 8, 11 <-> 3, 12 <-> 8, 12 <-> 3 } ] ] },
-    classInvariantQ[ m |-> FindInfraParallel[ g, Range[ 5 ], 8, All, Method -> m ] ] ],
+    classInvariantQ[ m |-> FindInfraParallel[ g, Range[ 5 ], 8, All, "NextVertexFunction" -> m ] ] ],
   True,
   TestID -> "FindInfraParallel-class-invariant-dead-ends"
 ]
 
 (* the corner polygon is the product of its sides' geodesic classes: the diagonal side 9 -> 1 of the 3 x 3 grid has six geodesics, the other two one each *)
 VerificationTest[
-  With[ { call = m |-> FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All, Method -> m ] },
-    { classInvariantQ[ call ], Length @ reps @ call[ "Exhaustive" ] } ],
+  With[ { call = m |-> FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All, "NextVertexFunction" -> m ] },
+    { classInvariantQ[ call ], Length @ reps @ call[ Identity ] } ],
   { True, 6 },
-  TestID -> "FindInfraPolygon-class-invariant-under-Method"
+  TestID -> "FindInfraPolygon-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
-  classInvariantQ[ m |-> FindInfraTriangle[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All, Method -> m ] ],
+  classInvariantQ[ m |-> FindInfraTriangle[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All, "NextVertexFunction" -> m ] ],
   True,
-  TestID -> "FindInfraTriangle-class-invariant-under-Method"
+  TestID -> "FindInfraTriangle-class-invariant-under-NextVertexFunction"
 ]
 
-(* a bounded count streams n geodesics per side and reads the first members of their product: prefixes of length n multiply to at least Min[n, |class|] polygons, so a strict count is exact under every Method and a soft count past the class returns the class *)
+(* a bounded count streams n geodesics per side and reads the first members of their product: prefixes of length n multiply to at least Min[n, |class|] polygons, so a strict count is exact under every next-vertex function and a soft count past the class returns the class *)
 VerificationTest[
-  Table[ Length @ FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, n, Method -> m ],
-    { m, { "Exhaustive", "Greedy", "RandomGreedy" } }, { n, { 1, 4, UpTo[ 10 ] } } ],
-  ConstantArray[ { 1, 4, 6 }, 3 ],
-  TestID -> "FindInfraPolygon-bounded-count-is-exact-under-Method"
+  Table[ Length @ FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, n, "NextVertexFunction" -> m ],
+    { m, { Identity, RandomSample } }, { n, { 1, 4, UpTo[ 10 ] } } ],
+  ConstantArray[ { 1, 4, 6 }, 2 ],
+  TestID -> "FindInfraPolygon-bounded-count-is-exact-under-NextVertexFunction"
 ]
 
 (* four diagonal sides of the 4 x 4 grid with twenty geodesics each, 160 000 polygons: a strict count streams that many distinct members without forming the product *)
 VerificationTest[
-  Table[ With[ { polys = FindInfraPolygon[ GridGraph[ { 4, 4 } ], { 1, 16, 4, 13 }, 50, Method -> m ] },
+  Table[ With[ { polys = FindInfraPolygon[ GridGraph[ { 4, 4 } ], { 1, 16, 4, 13 }, 50, "NextVertexFunction" -> m ] },
       { Length @ polys, DuplicateFreeQ @ polys, AllTrue[ polys, InfraPolygonQ[ GridGraph[ { 4, 4 } ], # ] & ] } ],
-    { m, { "Exhaustive", "Greedy", "RandomGreedy" } } ],
-  ConstantArray[ { 50, True, True }, 3 ],
+    { m, { Identity, RandomSample } } ],
+  ConstantArray[ { 50, True, True }, 2 ],
   TestID -> "FindInfraPolygon-strict-count-streams-off-the-product"
 ]
 
@@ -90,38 +87,38 @@ VerificationTest[
 (* ===================== Walk family ===================== *)
 
 VerificationTest[
-  stepInvariantQ[ f |-> FindInfraWalk[ GridGraph[ { 3, 3 } ], 1, UpTo[ 6 ], All,
+  classInvariantQ[ f |-> FindInfraWalk[ GridGraph[ { 3, 3 } ], 1, UpTo[ 6 ], All,
     Properties -> { "Immersed" }, "StoppingCondition" -> 1, "NextVertexFunction" -> f ] ],
   True,
   TestID -> "FindInfraWalk-pointed-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
-  stepInvariantQ[ f |-> FindInfraWalk[ GridGraph[ { 3, 3 } ], 1, 9, UpTo[ 6 ], All, Properties -> { "Generic" }, "NextVertexFunction" -> f ] ],
+  classInvariantQ[ f |-> FindInfraWalk[ GridGraph[ { 3, 3 } ], 1, 9, UpTo[ 6 ], All, Properties -> { "Generic" }, "NextVertexFunction" -> f ] ],
   True,
   TestID -> "FindInfraWalk-two-point-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
-  stepInvariantQ[ f |-> ExtendInfraWalk[ GridGraph[ { 3, 3 } ], { 1, 2 }, UpTo[ 3 ], All, "NextVertexFunction" -> f ] ],
+  classInvariantQ[ f |-> ExtendInfraWalk[ GridGraph[ { 3, 3 } ], { 1, 2 }, UpTo[ 3 ], All, "NextVertexFunction" -> f ] ],
   True,
   TestID -> "ExtendInfraWalk-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
-  stepInvariantQ[ f |-> FindInfraGeodesic[ GridGraph[ { 4, 4 } ], 1, 2, UpTo[ 4 ], All, "NextVertexFunction" -> f ] ],
+  classInvariantQ[ f |-> FindInfraGeodesic[ GridGraph[ { 4, 4 } ], 1, 2, UpTo[ 4 ], All, "NextVertexFunction" -> f ] ],
   True,
   TestID -> "FindInfraGeodesic-pointed-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
-  stepInvariantQ[ f |-> FindInfraGeodesic[ TorusGraph[ { 4, 5 } ], 1, 8, 2, UpTo[ 6 ], All, "NextVertexFunction" -> f ] ],
+  classInvariantQ[ f |-> FindInfraGeodesic[ TorusGraph[ { 4, 5 } ], 1, 8, 2, UpTo[ 6 ], All, "NextVertexFunction" -> f ] ],
   True,
   TestID -> "FindInfraGeodesic-two-point-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
-  stepInvariantQ[ f |-> ExtendInfraGeodesic[ TorusGraph[ { 4, 5 } ], { 1, 2 }, 2, UpTo[ 3 ], All, "NextVertexFunction" -> f ] ],
+  classInvariantQ[ f |-> ExtendInfraGeodesic[ TorusGraph[ { 4, 5 } ], { 1, 2 }, 2, UpTo[ 3 ], All, "NextVertexFunction" -> f ] ],
   True,
   TestID -> "ExtendInfraGeodesic-class-invariant-under-NextVertexFunction"
 ]
@@ -144,103 +141,103 @@ VerificationTest[
 (* ===================== Peel family ===================== *)
 
 VerificationTest[
-  classInvariantQ[ m |-> FindInfraSphere[ GridGraph[ { 4, 4 } ], 6, { 1, 2 }, All, Properties -> { "Separating" }, Method -> m ], Sort ],
+  classInvariantQ[ m |-> FindInfraSphere[ GridGraph[ { 4, 4 } ], 6, { 1, 2 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ], Sort ],
   True,
-  TestID -> "FindInfraSphere-class-invariant-under-Method"
+  TestID -> "FindInfraSphere-class-invariant-under-NextVertexFunction"
 ]
 
 (* the band is columns 2 and 3; a minimal separator takes exactly one vertex per row, 2^4 of them *)
 VerificationTest[
   With[ { call = m |-> FindInfraBisectingHyperplane[ GridGraph[ { 4, 4 } ], 1, 4, { -1, 1 }, All,
-      Properties -> { "Separating" }, Method -> m ] },
-    { classInvariantQ[ call, Sort ], Length @ reps @ call[ "Exhaustive" ] } ],
+      Properties -> { "Separating" }, "NextVertexFunction" -> m ] },
+    { classInvariantQ[ call, Sort ], Length @ reps @ call[ Identity ] } ],
   { True, 16 },
-  TestID -> "FindInfraBisectingHyperplane-class-invariant-under-Method"
+  TestID -> "FindInfraBisectingHyperplane-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
   classInvariantQ[ m |-> FindInfraEllipticShell[ GridGraph[ { 4, 4 } ], { 6, 11 }, { 3, 4 }, All,
-    Properties -> { "Separating" }, Method -> m ], Sort ],
+    Properties -> { "Separating" }, "NextVertexFunction" -> m ], Sort ],
   True,
-  TestID -> "FindInfraEllipticShell-class-invariant-under-Method"
+  TestID -> "FindInfraEllipticShell-class-invariant-under-NextVertexFunction"
 ]
 
 (* the peel from the centre of the 5 x 5 grid: sixteen minimal separators, and the lazy peel reaches each subset once -- without its visited set this ran minutes *)
 VerificationTest[
-  With[ { call = m |-> FindInfraSphere[ GridGraph[ { 5, 5 } ], 13, { 1, 2 }, All, Properties -> { "Separating" }, Method -> m ] },
-    { classInvariantQ[ call, Sort ], Length @ reps @ call[ "Exhaustive" ] } ],
+  With[ { call = m |-> FindInfraSphere[ GridGraph[ { 5, 5 } ], 13, { 1, 2 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ] },
+    { classInvariantQ[ call, Sort ], Length @ reps @ call[ Identity ] } ],
   { True, 16 },
-  TestID -> "FindInfraSphere-5x5-class-invariant-under-Method"
+  TestID -> "FindInfraSphere-5x5-class-invariant-under-NextVertexFunction"
 ]
 
 
 (* ===================== Ellipse family ===================== *)
 
-(* the elliptic level band {4, 8} of the foci 25, 12 on the 7 x 7 grid: the sweep's shortest separating grade, the same class under every Method *)
+(* the elliptic level band {4, 8} of the foci 25, 12 on the 7 x 7 grid: the sweep's shortest separating grade, the same class under every next-vertex function *)
 VerificationTest[
-  classInvariantQ[ m |-> FindInfraEllipse[ GridGraph[ { 7, 7 } ], { 25, 12 }, { 4, 8 }, All, Method -> m ] ],
+  classInvariantQ[ m |-> FindInfraEllipse[ GridGraph[ { 7, 7 } ], { 25, 12 }, { 4, 8 }, All, "NextVertexFunction" -> m ] ],
   True,
-  TestID -> "FindInfraEllipse-class-invariant-under-Method"
+  TestID -> "FindInfraEllipse-class-invariant-under-NextVertexFunction"
 ]
 
 (* off the "Shortest" tie the sweep runs every grade: six cycles in the level set of 2, 15 at c = 4 *)
 VerificationTest[
-  With[ { call = m |-> FindInfraEllipse[ GridGraph[ { 4, 4 } ], { 2, 15 }, 4, All, Properties -> { }, Method -> m ] },
-    { classInvariantQ[ call ], Length @ reps @ call[ "Exhaustive" ] } ],
+  With[ { call = m |-> FindInfraEllipse[ GridGraph[ { 4, 4 } ], { 2, 15 }, 4, All, Properties -> { }, "NextVertexFunction" -> m ] },
+    { classInvariantQ[ call ], Length @ reps @ call[ Identity ] } ],
   { True, 6 },
-  TestID -> "FindInfraEllipse-sweep-class-invariant-under-Method"
+  TestID -> "FindInfraEllipse-sweep-class-invariant-under-NextVertexFunction"
 ]
 
 
 (* ===================== Regular polygon ===================== *)
 
-(* the sixteen unit squares of the 5 x 5 grid: the candidate sweep is not lazy, so Method only orders what the count takes *)
+(* the sixteen unit squares of the 5 x 5 grid: the candidate sweep is not lazy, so the next-vertex function only orders what the count takes *)
 VerificationTest[
-  With[ { call = m |-> FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All, Method -> m ] },
-    { classInvariantQ[ call ], Length @ reps @ call[ "Exhaustive" ] } ],
+  With[ { call = m |-> FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All, "NextVertexFunction" -> m ] },
+    { classInvariantQ[ call ], Length @ reps @ call[ Identity ] } ],
   { True, 16 },
-  TestID -> "FindInfraRegularPolygon-class-invariant-under-Method"
+  TestID -> "FindInfraRegularPolygon-class-invariant-under-NextVertexFunction"
 ]
 
 (* ===================== Automatic is the deterministic descent ===================== *)
 
-(* on every ladder symbol still carrying Method a count-less call resolves to "Greedy": the same witness twice without a seed, and the explicit "Greedy" witness *)
+(* on every ladder symbol a count-less call is the first instance of the canonical descent: the same witness twice without a seed, and the explicit Identity one *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ], t = TorusGraph[ { 4, 5 } ] },
     AllTrue[
-      { m |-> ExtendInfraSegment[ g, { 6, 7 }, 2, Method -> m ],
-        m |-> FindInfraParallel[ g, Range[ 4 ], 10, Method -> m ],
-        m |-> FindInfraSphere[ g, 6, { 1, 2 }, Properties -> { "Separating" }, Method -> m ],
-        m |-> FindInfraBisectingHyperplane[ g, 1, 4, { -1, 1 }, Properties -> { "Separating" }, Method -> m ],
-        m |-> FindInfraEllipticShell[ g, { 6, 11 }, { 3, 4 }, Properties -> { "Separating" }, Method -> m ],
-        m |-> FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, Method -> m ],
-        m |-> FindInfraTriangle[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, Method -> m ],
-        m |-> FindInfraEllipse[ GridGraph[ { 7, 7 } ], { 25, 12 }, { 4, 8 }, Method -> m ],
-        m |-> FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, Method -> m ] },
-      call |-> call[ Automatic ] === call[ Automatic ] === call[ "Greedy" ] ] ],
+      { m |-> ExtendInfraSegment[ g, { 6, 7 }, 2, "NextVertexFunction" -> m ],
+        m |-> FindInfraParallel[ g, Range[ 4 ], 10, "NextVertexFunction" -> m ],
+        m |-> FindInfraSphere[ g, 6, { 1, 2 }, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
+        m |-> FindInfraBisectingHyperplane[ g, 1, 4, { -1, 1 }, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
+        m |-> FindInfraEllipticShell[ g, { 6, 11 }, { 3, 4 }, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
+        m |-> FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, "NextVertexFunction" -> m ],
+        m |-> FindInfraTriangle[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, "NextVertexFunction" -> m ],
+        m |-> FindInfraEllipse[ GridGraph[ { 7, 7 } ], { 25, 12 }, { 4, 8 }, "NextVertexFunction" -> m ],
+        m |-> FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, "NextVertexFunction" -> m ] },
+      call |-> call[ Identity ] === call[ Identity ] ] ],
   True,
-  TestID -> "MethodLadder-Automatic-is-Greedy-on-every-symbol"
+  TestID -> "MethodLadder-countless-is-the-canonical-witness-on-every-symbol"
 ]
 
 
-(* ===================== Pruning at Infinity is the whole class ===================== *)
+(* ===================== A random order is the whole class ===================== *)
 
-(* the pruned exhaustive spec is accepted on every ladder symbol still carrying Method, and a keep-all cap changes nothing *)
+(* RandomSample as the next-vertex function changes the order of the members, never the set All returns *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ], t = TorusGraph[ { 4, 5 } ] },
     AllTrue[
-      { m |-> ExtendInfraSegment[ g, { 6, 7 }, 2, All, Method -> m ],
-        m |-> FindInfraParallel[ g, Range[ 4 ], 10, All, Method -> m ],
-        m |-> FindInfraSphere[ g, 6, { 1, 2 }, All, Properties -> { "Separating" }, Method -> m ],
-        m |-> FindInfraBisectingHyperplane[ g, 1, 4, { -1, 1 }, All, Properties -> { "Separating" }, Method -> m ],
-        m |-> FindInfraEllipticShell[ g, { 6, 11 }, { 3, 4 }, All, Properties -> { "Separating" }, Method -> m ],
-        m |-> FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All, Method -> m ],
-        m |-> FindInfraTriangle[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All, Method -> m ],
-        m |-> FindInfraEllipse[ GridGraph[ { 7, 7 } ], { 25, 12 }, { 4, 8 }, All, Method -> m ],
-        m |-> FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All, Method -> m ] },
-      call |-> sortReps @ call[ { "Exhaustive", "Pruning" -> Infinity } ] === sortReps @ call[ "Exhaustive" ] ] ],
+      { m |-> ExtendInfraSegment[ g, { 6, 7 }, 2, All, "NextVertexFunction" -> m ],
+        m |-> FindInfraParallel[ g, Range[ 4 ], 10, All, "NextVertexFunction" -> m ],
+        m |-> FindInfraSphere[ g, 6, { 1, 2 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
+        m |-> FindInfraBisectingHyperplane[ g, 1, 4, { -1, 1 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
+        m |-> FindInfraEllipticShell[ g, { 6, 11 }, { 3, 4 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
+        m |-> FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All, "NextVertexFunction" -> m ],
+        m |-> FindInfraTriangle[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All, "NextVertexFunction" -> m ],
+        m |-> FindInfraEllipse[ GridGraph[ { 7, 7 } ], { 25, 12 }, { 4, 8 }, All, "NextVertexFunction" -> m ],
+        m |-> FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All, "NextVertexFunction" -> m ] },
+      call |-> sortReps @ call[ RandomSample ] === sortReps @ call[ Identity ] ] ],
   True,
-  TestID -> "MethodLadder-Pruning-Infinity-is-the-whole-class"
+  TestID -> "MethodLadder-RandomSample-is-the-whole-class"
 ]
 
 EndTestSection[]

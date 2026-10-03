@@ -404,20 +404,20 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 6, 6 } ] },
-    FindInfraBisectingHyperplane[ g, 1, 36, 1, Properties -> { "Separating" }, Method -> "Greedy" ] ===
-      FindInfraBisectingHyperplane[ g, 1, 36, 1, Properties -> { "Separating" }, Method -> "Greedy" ]
+    FindInfraBisectingHyperplane[ g, 1, 36, 1, Properties -> { "Separating" } ] ===
+      FindInfraBisectingHyperplane[ g, 1, 36, 1, Properties -> { "Separating" } ]
   ],
   True,
-  TestID -> "FindInfraBisectingHyperplane-Greedy-deterministic"
+  TestID -> "FindInfraBisectingHyperplane-default-deterministic"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[ { 6, 6 } ] },
-    BlockRandom[ FindInfraBisectingHyperplane[ g, 1, 36, 1, Properties -> { "Separating" }, Method -> "RandomGreedy" ], RandomSeeding -> 4 ] ===
-      BlockRandom[ FindInfraBisectingHyperplane[ g, 1, 36, 1, Properties -> { "Separating" }, Method -> "RandomGreedy" ], RandomSeeding -> 4 ]
+    BlockRandom[ FindInfraBisectingHyperplane[ g, 1, 36, 1, Properties -> { "Separating" }, "NextVertexFunction" -> RandomSample ], RandomSeeding -> 4 ] ===
+      BlockRandom[ FindInfraBisectingHyperplane[ g, 1, 36, 1, Properties -> { "Separating" }, "NextVertexFunction" -> RandomSample ], RandomSeeding -> 4 ]
   ],
   True,
-  TestID -> "FindInfraBisectingHyperplane-RandomGreedy-seeded-reproducible"
+  TestID -> "FindInfraBisectingHyperplane-RandomSample-seeded-reproducible"
 ]
 
 (* FindInfraSegment carries no Method any more (EuclideanInertHeads, T2): its "RandomChoice"
@@ -643,24 +643,24 @@ VerificationTest[
 
 (* FindInfraLine carries no Method axis any more (EuclideanInertHeads, T3): the count
    fixes the mode, and its class is pinned against brute force in InfraLineTests.wlt.
-   The Greedy / RandomGreedy determinism and BothSides regression guards above stay
+   The determinism and BothSides regression guards above stay
    meaningful only for FindInfraParallel, which the walk-family item left untouched. *)
 
 VerificationTest[
   With[ { g = GridGraph[ { 6, 6 } ], line = First @ FindInfraLine[ GridGraph[ { 6, 6 } ], 1, 2, 1 ] },
-    FindInfraParallel[ g, line, 20, 1, Method -> "Greedy" ] === FindInfraParallel[ g, line, 20, 1, Method -> "Greedy" ]
+    FindInfraParallel[ g, line, 20, 1 ] === FindInfraParallel[ g, line, 20, 1 ]
   ],
   True,
-  TestID -> "FindInfraParallel-Greedy-deterministic"
+  TestID -> "FindInfraParallel-default-deterministic"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[ { 6, 6 } ], line = First @ FindInfraLine[ GridGraph[ { 6, 6 } ], 1, 2, 1 ] },
-    BlockRandom[ FindInfraParallel[ g, line, 20, 1, Method -> "RandomGreedy" ], RandomSeeding -> 3 ] ===
-      BlockRandom[ FindInfraParallel[ g, line, 20, 1, Method -> "RandomGreedy" ], RandomSeeding -> 3 ]
+    BlockRandom[ FindInfraParallel[ g, line, 20, 1, "NextVertexFunction" -> RandomSample ], RandomSeeding -> 3 ] ===
+      BlockRandom[ FindInfraParallel[ g, line, 20, 1, "NextVertexFunction" -> RandomSample ], RandomSeeding -> 3 ]
   ],
   True,
-  TestID -> "FindInfraParallel-RandomGreedy-seeded-reproducible"
+  TestID -> "FindInfraParallel-RandomSample-seeded-reproducible"
 ]
 
 (* ===== FindInfraLine[g, segment] overload (the extension pool at kspec Infinity, ExtendInfraSegment[g, seg]) ===== *)
@@ -811,14 +811,14 @@ VerificationTest[
   TestID -> "ExtendInfraSegment-Direction"
 ]
 
-(* one class under every Method *)
+(* one class under every next-vertex function *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    SameQ @@ ( Sort @ infraSpread @ ExtendInfraSegment[ g, { 6, 7 }, 2, All, Method -> # ] & /@
-      { "Exhaustive", "Greedy", "RandomGreedy" } )
+    SameQ @@ ( Sort @ infraSpread @ ExtendInfraSegment[ g, { 6, 7 }, 2, All, "NextVertexFunction" -> # ] & /@
+      { Identity, RandomSample } )
   ],
   True,
-  TestID -> "ExtendInfraSegment-class-invariant-under-Method"
+  TestID -> "ExtendInfraSegment-class-invariant-under-NextVertexFunction"
 ]
 
 (* the pool carries the family by DP -- one atom per admissible end pair, count, occupation, lengths and ends without enumeration *)

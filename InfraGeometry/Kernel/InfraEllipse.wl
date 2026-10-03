@@ -3,26 +3,22 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 (* an ellipse for foci {p1, p2} is a simple cycle in the induced subgraph on { v : cMin <= d(p1, v) + d(p2, v) <= cMax }, returned as a directed
    cycle graph on the substrate vertices; the count-less call is one ellipse, a bounded count and All a List of them -- closed walks have no acyclic
    union to carry them.  The family is carried by the FindCycle length sweep, which materialises every shorter cycle first; there is no elliptic
-   pool, the circle's carrier having no two-focus analogue.  One class under every Method: branch orders the ties within a length grade, pruning caps
-   the cycles kept per grade *)
+   pool, the circle's carrier having no two-focus analogue.  One class under every next-vertex function, which orders or thins the cycles within a
+   length grade *)
 
 Options[ FindInfraEllipse ] = {
-  Properties -> { "Separating", "Shortest" },
-  Method     -> Automatic
+  Properties           -> { "Separating", "Shortest" },
+  "NextVertexFunction" -> Identity
 }
 
 FindInfraEllipse[ graph_Graph, foci : { _, _ }, c_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    SubsetQ[ { "Separating", "Shortest" }, OptionValue[ FindInfraEllipse, { opts }, Properties ] ] &&
-      MatchQ[ OptionValue[ FindInfraEllipse, { opts }, Method ],
-        Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
+    SubsetQ[ { "Separating", "Shortest" }, OptionValue[ FindInfraEllipse, { opts }, Properties ] ] :=
   With[ {
       properties = OptionValue[ FindInfraEllipse, { opts }, Properties ],
-      methodSpec = Replace[ OptionValue[ FindInfraEllipse, { opts }, Method ], Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ] },
-    { methodHead = Replace[ methodSpec, { m_String, ___ } :> m ] },
-    With[ { branch  = If[ methodHead === "RandomGreedy", RandomSample, Identity ],
-            pruning = "Pruning" /. Replace[ methodSpec, { { _String, o___ } :> { o }, _ -> { } } ] /. "Pruning" -> Infinity,
-            needed  = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
+      nextFn     = OptionValue[ FindInfraEllipse, { opts }, "NextVertexFunction" ] },
+    With[ { branch = cands |-> Replace[ nextFn @ cands, chosen_ /; MemberQ[ cands, Verbatim @ chosen ] :> { chosen } ],
+            needed = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
       { results = Apply[
           { foci0, c0 } |-> With[ {
                   range = Replace[ c0, d_?NumericQ :> { d, d } ],
@@ -41,15 +37,7 @@ FindInfraEllipse[ graph_Graph, foci : { _, _ }, c_,
                 Catch[
                   Fold[
                     { accumulated, k } |-> With[ {
-                        matching = Select[
-                          branch @ With[ { cycles = First /@ # & /@ FindCycle[ levelGraph, { k }, All ] },
-                            Replace[ pruning, {
-                              Infinity      :> cycles,
-                              n_Integer     :> If[ Length @ cycles <= n, cycles, RandomSample[ cycles, n ] ],
-                              keep_?NumericQ :> If[ cycles === { }, { },
-                                With[ { kept = Select[ cycles, RandomReal[ ] < keep & ] },
-                                  If[ kept === { }, RandomSample[ cycles, 1 ], kept ] ] ] } ] ],
-                          vertsTest ] },
+                        matching = Select[ branch[ First /@ # & /@ FindCycle[ levelGraph, { k }, All ] ], vertsTest ] },
                       If[ matching =!= { } && ( tied || Length[ accumulated ] + Length[ matching ] >= needed ),
                         Throw[ Join[ accumulated, matching ], FindInfraEllipse ],
                         Join[ accumulated, matching ] ] ],

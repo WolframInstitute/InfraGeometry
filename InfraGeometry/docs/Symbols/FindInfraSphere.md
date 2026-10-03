@@ -24,7 +24,7 @@ The count *n* may be `UpTo[n]`, which gives up to *n*, or `All`.
 
 Option `Properties` takes `{"Separating", "Connected"}` (default), `{"Separating"}` for the inclusion-minimal separating subsets that need not be connected, or `{}` for the level set as the one member.
 
-Option `Method` takes `Automatic` (default), `"Exhaustive"`, `{"Exhaustive", "Pruning" -> spec}`, `"Greedy"` or `"RandomGreedy"`. `Automatic` resolves by the count: `All` to `"Exhaustive"`, a bounded or absent count to `"Greedy"`, the lazy peel. `"RandomGreedy"` peels in random order, seeded by an ambient `SeedRandom`. `"Pruning"` caps the removable vertices tried per layer, and the result is then minimal among the survivors.
+Option `"NextVertexFunction"` sees the vertices that can be peeled next and gives the ones to try, in order. `Identity` (default) is the canonical peel, so the count-less call is one minimal subset, deterministic; `RandomSample` peels in random order, seeded by an ambient `SeedRandom`; `RandomSample[#, UpTo[n]] &` keeps at most *n* branches per node, and the result is then minimal among the survivors.
 
 The search peels the shell vertex by vertex while it keeps separating. It is the specialised search behind [InfraSphere](), whose [FindInfraRepresentative]() clause calls it. The family can be large: all members on a medium tiling take long.
 
@@ -58,10 +58,10 @@ With[
    Length /@ FindInfraSphere[g, 25, {2, 3}, UpTo[3]]}]
 ```
 
-`"Pruning"` caps the vertices tried per layer.
+A pruning function caps the branches tried per node.
 
 ```wl
-FindInfraSphere[GridGraph[{5, 5}], 13, {1, 2}, All, Method -> {"Exhaustive", "Pruning" -> 0.5}]
+FindInfraSphere[GridGraph[{5, 5}], 13, {1, 2}, All, "NextVertexFunction" -> (RandomSample[#, UpTo[1]] &)]
 ```
 
 ## Properties and Relations

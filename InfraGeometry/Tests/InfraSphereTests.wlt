@@ -50,62 +50,61 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
     With[{shell = FindInfraSphere[g, 6, {1, 2},
-            Properties -> {"Separating", "Connected"}, Method -> "Greedy"]},
+            Properties -> {"Separating", "Connected"}]},
       MatchQ[shell, {__Integer}] && SeparatesQ[g, shell, 6, 16] ] ],
   True,
-  TestID -> "FindInfraSphere-Greedy-single-realisation"
+  TestID -> "FindInfraSphere-countless-single-realisation"
 ]
 
-(* "Greedy" is the LAZY peel, not a lossy one: it backtracks at each leaf, so a
-   finite count is exact and All recovers the whole minimal class that
-   "Exhaustive" enumerates. *)
+(* the peel is LAZY, not lossy: it backtracks at each leaf, so a finite count is
+   exact and All recovers the whole minimal class in any order. *)
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ], props = Properties -> { "Separating", "Connected" } },
-    Sort[ Sort /@ FindInfraSphere[ g, 6, { 1, 2 }, All, props, Method -> "Greedy" ] ] ===
-      Sort[ Sort /@ FindInfraSphere[ g, 6, { 1, 2 }, All, props, Method -> "Exhaustive" ] ] ],
+    Sort[ Sort /@ FindInfraSphere[ g, 6, { 1, 2 }, All, props ] ] ===
+      Sort[ Sort /@ FindInfraSphere[ g, 6, { 1, 2 }, All, props, "NextVertexFunction" -> RandomSample ] ] ],
   True,
-  TestID -> "FindInfraSphere-Greedy-All-agrees-with-Exhaustive"
+  TestID -> "FindInfraSphere-All-is-the-class-in-any-order"
 ]
 
-(* RandomGreedy: the same peel drawn at random instead of in candidate order --
-   deterministic Greedy unchanged, seeded reproducible, varies across seeds where
-   the peel actually branches. *)
+(* RandomSample: the same peel drawn at random instead of in candidate order --
+   the default unchanged, seeded reproducible, varies across seeds where the peel
+   actually branches. *)
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    FindInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, Method -> "Greedy" ] ===
-      FindInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, Method -> "Greedy" ]
+    FindInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" } ] ===
+      FindInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" } ]
   ],
   True,
-  TestID -> "FindInfraSphere-Greedy-deterministic"
+  TestID -> "FindInfraSphere-default-deterministic"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    BlockRandom[ FindInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, Method -> "RandomGreedy" ], RandomSeeding -> 4 ] ===
-      BlockRandom[ FindInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, Method -> "RandomGreedy" ], RandomSeeding -> 4 ]
+    BlockRandom[ FindInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, "NextVertexFunction" -> RandomSample ], RandomSeeding -> 4 ] ===
+      BlockRandom[ FindInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, "NextVertexFunction" -> RandomSample ], RandomSeeding -> 4 ]
   ],
   True,
-  TestID -> "FindInfraSphere-RandomGreedy-seeded-reproducible"
+  TestID -> "FindInfraSphere-RandomSample-seeded-reproducible"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     Length @ DeleteDuplicates @ Table[
-      BlockRandom[ First @ FindInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, Method -> "RandomGreedy" ], RandomSeeding -> s ],
+      BlockRandom[ First @ FindInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, "NextVertexFunction" -> RandomSample ], RandomSeeding -> s ],
       { s, 1, 10 } ]
   ],
   _Integer?( # > 1 & ),
   SameTest -> MatchQ,
-  TestID -> "FindInfraSphere-RandomGreedy-varies-across-seeds"
+  TestID -> "FindInfraSphere-RandomSample-varies-across-seeds"
 ]
 
 VerificationTest[
   Length @ FindInfraSphere[GridGraph[{4, 4}], 6, {1, 2}, All,
-    Properties -> {"Separating"}, Method -> {"Exhaustive", "Pruning" -> 1}] >= 1,
+    Properties -> {"Separating"}, "NextVertexFunction" -> ( RandomSample[ #, UpTo[ 1 ] ] & )] >= 1,
   True,
-  TestID -> "FindInfraSphere-Pruning-bounded-runs"
+  TestID -> "FindInfraSphere-one-branch-per-node-runs"
 ]
 
 

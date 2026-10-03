@@ -38,7 +38,7 @@ With the budget `Infinity` the extensions are the lines through the seed, the fa
 
 | Option | Values | Meaning |
 |---|---|---|
-| `Method` | `Automatic` (default), `"Exhaustive"`, `{"Exhaustive", "Pruning" -> spec}`, `"Greedy"`, `"RandomGreedy"` | `Automatic` resolves by the count: `All` to `"Exhaustive"`, the pool; a bounded or absent count to `"Greedy"`, which takes the admissible pairs and the branches of each DAG in candidate order, so the count-less call is deterministic. `"RandomGreedy"` takes them in random order, seeded by an ambient `SeedRandom`. The class is the same under every value; `"Pruning"` is accepted and inert, the pool having no frontier to cap. |
+| `"NextVertexFunction"` | `Identity` (default), `RandomSample`, any function | `All` gives the pool. A bounded or absent count takes the admissible pairs and the branches of each DAG in the order the function gives: `Identity` the canonical order, so the count-less call is deterministic; `RandomSample` a random order, seeded by an ambient `SeedRandom`. The class is the same under every value. |
 | `"Direction"` | `"BothSides"` (default), `"Forward"`, `"Backward"` | which ends may move: `"Forward"` keeps *p1* and extends past *p2* only, `"Backward"` the reverse. |
 | `Properties` | `{}` | only the empty list; a rule on the extension is a local law and lives on [ExtendInfraGeodesic](). |
 

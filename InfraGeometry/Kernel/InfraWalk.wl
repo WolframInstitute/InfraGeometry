@@ -637,12 +637,7 @@ ExtendInfraGeodesic[ graph_Graph, seed_,
 
 FindInfraRepresentative[ graph_Graph, InfraGeodesic[ germ_List, scale : ( _Integer | Infinity ) ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  With[ { prune = Lookup[ Association @ Cases[ { mods }, _Rule ], "Pruning", 0 ] },
-    { walks = ExtendInfraGeodesic[ graph, germ, scale, Infinity, count, "NextVertexFunction" -> Which[
-        MemberQ[ { mods }, "RandomChoice" ], RandomSample,
-        IntegerQ[ prune ] && prune > 0, RandomSample[ #, UpTo[ prune ] ] &,
-        prune > 0, RandomSample[ #, UpTo[ Max[ 1, Round[ prune Length @ # ] ] ] ] &,
-        True, Identity ] ] },
+  With[ { walks = ExtendInfraGeodesic[ graph, germ, scale, Infinity, count, Sequence @@ searchMethod[ mods ] ] },
     Replace[ walks, { w_Graph :> Last /@ VertexList @ w, l_List :> ( Last /@ VertexList @ # & ) /@ l } ] /; ! MatchQ[ walks, _ExtendInfraGeodesic ] ]
 
 ConcatenateInfraWalk[ path1_, path2_,

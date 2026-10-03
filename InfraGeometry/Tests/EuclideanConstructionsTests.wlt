@@ -300,28 +300,28 @@ VerificationTest[
   TestID -> "FindInfraBisectingHyperplane-returns-a-set"
 ]
 
-(* Method -> "Greedy", no count: the DFS peel returns one certified minimal, and
+(* no count: the DFS peel returns one certified minimal, and
    count-less is ONE instance, so the instance is the set itself. *)
 VerificationTest[
   MemberQ[{{3}, {4}},
-    FindInfraBisectingHyperplane[PathGraph[Range[6]], 1, 6, {-1, 1}, Properties -> {"Separating"}, Method -> "Greedy"]],
+    FindInfraBisectingHyperplane[PathGraph[Range[6]], 1, 6, {-1, 1}, Properties -> {"Separating"}]],
   True,
-  TestID -> "FindInfraBisectingHyperplane-Greedy-returns-one-minimal"
+  TestID -> "FindInfraBisectingHyperplane-default-returns-one-minimal"
 ]
 
 (* The peel backtracks, so a finite count is exact: both minimals of the
    {3} / {4} bisector come back under count 2. *)
 VerificationTest[
-  Sort @ FindInfraBisectingHyperplane[PathGraph[Range[6]], 1, 6, {-1, 1}, 2, Properties -> {"Separating"}, Method -> "Greedy"],
+  Sort @ FindInfraBisectingHyperplane[PathGraph[Range[6]], 1, 6, {-1, 1}, 2, Properties -> {"Separating"}],
   {{3}, {4}},
-  TestID -> "FindInfraBisectingHyperplane-Greedy-count-is-exact"
+  TestID -> "FindInfraBisectingHyperplane-default-count-is-exact"
 ]
 
-(* Greedy on a slab that itself does not separate: the empty class. *)
+(* a slab that itself does not separate: the empty class. *)
 VerificationTest[
-  FindInfraBisectingHyperplane[PathGraph[Range[6]], 1, 6, Properties -> {"Separating"}, Method -> "Greedy"],
+  FindInfraBisectingHyperplane[PathGraph[Range[6]], 1, 6, Properties -> {"Separating"}],
   { },
-  TestID -> "FindInfraBisectingHyperplane-Greedy-empty-when-slab-does-not-separate"
+  TestID -> "FindInfraBisectingHyperplane-default-empty-when-slab-does-not-separate"
 ]
 
 (* GridGraph[{3, 3}]'s antidiagonal {3, 5, 7} is disconnected. *)
@@ -348,9 +348,9 @@ VerificationTest[
 
 VerificationTest[
   With[{g = Graph[{1, 2, 3, 4}, {1 <-> 2, 2 <-> 3, 3 <-> 4, 4 <-> 1, 1 <-> 3}]},
-    Sort @ FindInfraBisectingHyperplane[g, 2, 4, Properties -> {"Separating", "Connected"}, Method -> "Greedy"]],
+    Sort @ FindInfraBisectingHyperplane[g, 2, 4, Properties -> {"Separating", "Connected"}]],
   {1, 3},
-  TestID -> "FindInfraBisectingHyperplane-Greedy-Connected"
+  TestID -> "FindInfraBisectingHyperplane-default-Connected"
 ]
 
 (* Properties -> {"Connected"} alone: corner case -- inclusion-minimal connected
@@ -358,17 +358,16 @@ VerificationTest[
    one vertex at a time until one remains. *)
 VerificationTest[
   Length @ FindInfraBisectingHyperplane[PathGraph[Range[5]], 1, 5, {-1, 1},
-    Properties -> {"Connected"}, Method -> "Greedy"] == 1,
+    Properties -> {"Connected"}] == 1,
   True,
   TestID -> "FindInfraBisectingHyperplane-Connected-alone-singleton"
 ]
 
-(* Method -> {"Exhaustive", "Pruning" -> 1} nests the pruning sub-option;
-   result fits in [1, 4] (4 = unpruned count). *)
+(* one branch per node under All: the result fits in [1, 4] (4 = the unpruned count). *)
 VerificationTest[
   With[{n = BlockRandom[SeedRandom[7];
     Length @ FindInfraBisectingHyperplane[CycleGraph[6], 1, 4, {-1, 1}, All,
-      Properties -> {"Separating"}, Method -> {"Exhaustive", "Pruning" -> 1}]]},
+      Properties -> {"Separating"}, "NextVertexFunction" -> ( RandomSample[ #, UpTo[ 1 ] ] & )]]},
     1 <= n <= 4],
   True,
   TestID -> "FindInfraBisectingHyperplane-Pruning-bounded"
@@ -404,13 +403,12 @@ VerificationTest[
   TestID -> "CompleteInfraEquilateralTriangle-K4-strict-1"
 ]
 
-(* ===== FindInfraParallel: Method scaffolding ===== *)
+(* ===== FindInfraParallel: the pool under All ===== *)
 
 VerificationTest[
-  infraSpread @ FindInfraParallel[GridGraph[{4, 4}], {1, 2, 3, 4}, 5, All,
-    Method -> "Exhaustive"],
+  infraSpread @ FindInfraParallel[GridGraph[{4, 4}], {1, 2, 3, 4}, 5, All],
   {{5, 6, 7, 8}},
-  TestID -> "FindInfraParallel-explicit-exhaustive"
+  TestID -> "FindInfraParallel-All-is-the-pool"
 ]
 
 (* ===== FindInfraMidpoint Method -> "Embedding" ===== *)

@@ -26,11 +26,11 @@ On the square grid the classical picture survives: through a vertex of a paralle
 
 [InfraParallelQ]() asks a different question, and the two do not match. The predicate tests that two vertex sets are disjoint and at constant distance, and does not require either to be a geodesic. So it accepts pairs this function never returns — concentric shells, for instance, are parallel by that test — while every parallel returned here passes it.
 
-The class is carried by a **pool**: one geodesic DAG per admissible pair of ends (*s*, *e*), the *s → p* and *p → e* intervals cut down to *L* and glued at *p*. Under the default `Method`, `All` returns the pool itself — a `List` of DAGs, a single atom giving the one DAG. A bounded count streams parallels off the atoms as directed path graphs, and the count-less call is one parallel, deterministic.
+The class is carried by a **pool**: one geodesic DAG per admissible pair of ends (*s*, *e*), the *s → p* and *p → e* intervals cut down to *L* and glued at *p*. `All` returns the pool itself — a `List` of DAGs, a single atom giving the one DAG. A bounded count streams parallels off the atoms as directed path graphs, and the count-less call is one parallel, deterministic.
 
 | Option | Values | Meaning |
 |---|---|---|
-| `Method` | `Automatic` (default), `"Exhaustive"`, `{"Exhaustive", "Pruning" -> spec}`, `"Greedy"`, `"RandomGreedy"` | `Automatic` resolves by the count: `All` to `"Exhaustive"`, a bounded or absent count to `"Greedy"`. The class is the same under every value; `"Greedy"` and `"Exhaustive"` take the end pairs and the branches of each DAG in candidate order, `"RandomGreedy"` in random order, seeded by an ambient `SeedRandom`. `"Pruning"` is accepted and inert: the pool has no frontier to cap. |
+| `"NextVertexFunction"` | `Identity` (default), `RandomSample`, any function | a bounded or absent count takes the end pairs and the branches of each DAG in the order the function gives: `Identity` the canonical order, `RandomSample` a random order, seeded by an ambient `SeedRandom`. The class is the same under every value. |
 | `Properties` | `{}` | only the empty list; a rule on the parallel is a local law and lives on `ExtendInfraGeodesic`. |
 
 Corresponding notions in the classical axiom systems:
@@ -99,9 +99,9 @@ A strict count that cannot be met is `$Failed`; the line may be given as a walk 
 
 ## Options
 
-### Method
+### NextVertexFunction
 
-The class is the same under every `Method`; only the order in which parallels come off the pool differs.
+The class is the same under every next-vertex function; only the order in which parallels come off the pool differs.
 
 ```wl
 With[
@@ -110,8 +110,8 @@ With[
   {far = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
   {line = FindInfraLine[g, c, far]},
   {p = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line, #] &]},
-  SameQ @@ (Sort[VertexList /@ FindInfraParallel[g, line, p, UpTo[100], Method -> #]] & /@
-     {"Exhaustive", "Greedy", "RandomGreedy"})]
+  SameQ @@ (Sort[VertexList /@ FindInfraParallel[g, line, p, UpTo[100], "NextVertexFunction" -> #]] & /@
+     {Identity, RandomSample})]
 ```
 
 ## Properties and Relations

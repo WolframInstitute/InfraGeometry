@@ -8,15 +8,13 @@ FindInfraShell[ graph_Graph, center_, r_ ] :=
 (* for every c equidistant from all k window vertices at common distance r, the level set { v : d(c, v) == r } *)
 
 Options[ FindInfraOsculatingShell ] = {
-  Properties -> { },
-  Method     -> Automatic
+  Properties           -> { },
+  "NextVertexFunction" -> Identity
 }
 
 FindInfraOsculatingShell[ graph_Graph, path_, i_Integer, k_Integer,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[ ] ] /;
-    SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraOsculatingShell, { opts }, Properties ] ] &&
-      MatchQ[ OptionValue[ FindInfraOsculatingShell, { opts }, Method ],
-        Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
+    SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraOsculatingShell, { opts }, Properties ] ] :=
   With[ {
       walksOf = w |-> With[ { vs = VertexList @ w },
         { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
@@ -54,7 +52,7 @@ FindInfraOsculatingShell[ graph_Graph, path_, i_Integer, k_Integer,
           1 ],
         { Last, First } ] },
     { sets = DeleteDuplicates @ Catenate[ FindInfraSphere[ graph, #[[ 1 ]], #[[ 2 ]], All,
-        Properties -> OptionValue[ Properties ], Method -> OptionValue[ Method ] ] & /@ pairs ] },
+        Properties -> OptionValue[ Properties ], "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ] & /@ pairs ] },
     Switch[ count,
       All,   sets,
       _UpTo, Take[ sets, count ],

@@ -33,7 +33,7 @@ The family may have many members. The shell is a set of points; the sphere is th
 
 `"Faithful"` is `Undetermined`. A sphere has no `"Graph"`.
 
-[FindInfraRepresentative]() gives members: a count, `"RandomChoice"` and `"Pruning" -> q` are translated to the `Method` of [FindInfraSphere](). Without a count it gives one member, a sorted vertex list.
+[FindInfraRepresentative]() gives members: a count, `"RandomChoice"` and `"Pruning" -> q` are translated to the `"NextVertexFunction"` of [FindInfraSphere](). Without a count it gives one member, a sorted vertex list.
 
 ## Basic Examples
 

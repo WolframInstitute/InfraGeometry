@@ -18,5 +18,5 @@ Options:
 | Option | Values |
 |---|---|
 | `Properties` | {} |
-| `Method` | "Exhaustive" |
+| `"NextVertexFunction"` | Identity (default), RandomSample, any function on the candidate cycles |
 | `"From"` | All (default), v, v -> r |

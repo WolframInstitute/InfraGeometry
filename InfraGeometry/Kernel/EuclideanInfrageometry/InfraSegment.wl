@@ -92,27 +92,24 @@ FindInfraSegment[ graph_Graph, p_, q_,
       _,         If[ Length @ geodesics < count, { }, Take[ geodesics, count ] ] ] ]
 
 Options[ ExtendInfraSegment ] = {
-  Properties  -> { },
-  Method      -> Automatic,
-  "Direction" -> "BothSides"
+  Properties           -> { },
+  "NextVertexFunction" -> Identity,
+  "Direction"          -> "BothSides"
 }
 
 (* a bundle runs from p1 to p2.  Its candidate ends lie in the two extension graphs, and a pair (s, e) is admissible iff jointly geodesic -- d(s, e)
    == d(s, p1) + d(p1, p2) + d(p2, e), whichever geodesics are used -- with the larger layer passing kspec and each free side either at the budget or
-   inextensible; its atom is I(p1, s) reversed, the bundle, and I(p2, e).  "Exhaustive" with All is the pool of atoms, and every bounded count
-   streams geodesics off the admissible pairs in candidate ("Greedy", "Exhaustive") or random ("RandomGreedy") order, so the class is the same under
-   every Method.  A substrate DAG or path graph is one bundle, and anything else -- a vertex list, a position-spelled walk -- spreads to its walks *)
+   inextensible; its atom is I(p1, s) reversed, the bundle, and I(p2, e).  All is the pool of atoms, and a bounded count streams
+   geodesics off the admissible pairs, the next-vertex function ordering the pairs and the steps inside each atom.  A substrate DAG or
+   path graph is one bundle, and anything else -- a vertex list, a position-spelled walk -- spreads to its walks *)
 
 ExtendInfraSegment[ graph_Graph, seed_,
     kspec : ( _Integer | UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ) : Infinity,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
     OptionValue[ ExtendInfraSegment, { opts }, Properties ] === { } &&
-      MatchQ[ OptionValue[ ExtendInfraSegment, { opts }, "Direction" ], "Forward" | "Backward" | "BothSides" ] &&
-      MatchQ[ OptionValue[ ExtendInfraSegment, { opts }, Method ],
-        Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
+      MatchQ[ OptionValue[ ExtendInfraSegment, { opts }, "Direction" ], "Forward" | "Backward" | "BothSides" ] :=
   With[ {
-        method     = Replace[ OptionValue[ ExtendInfraSegment, { opts }, Method ],
-                       { Automatic :> If[ count === All, "Exhaustive", "Greedy" ], { m_String, ___ } :> m } ],
+        nextFn     = OptionValue[ ExtendInfraSegment, { opts }, "NextVertexFunction" ],
         direction  = OptionValue[ ExtendInfraSegment, { opts }, "Direction" ],
         kmax   = Replace[ kspec, { { _, hi_ } :> hi, { k_ } :> k, UpTo[ k_ ] :> k } ],
         stepsQ = Replace[ kspec, { Infinity :> ( True & ), { k_ } :> ( # == k & ),
@@ -120,7 +117,7 @@ ExtendInfraSegment[ graph_Graph, seed_,
                                    k_Integer :> ( # <= k & ) } ],
         cap    = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
         spelledQ = w |-> AllTrue[ VertexList @ w, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ w ] === Range @ VertexCount @ w },
-      { branch  = If[ method === "RandomGreedy", RandomSample, Identity ],
+      { branch  = cands |-> Replace[ nextFn @ cands, chosen_ /; MemberQ[ cands, Verbatim @ chosen ] :> { chosen } ],
         walksOf = w |-> Which[
           spelledQ @ w,       { Last /@ SortBy[ VertexList @ w, First ] },
           EdgeCount @ w == 0, List /@ VertexList @ w,
@@ -162,7 +159,7 @@ ExtendInfraSegment[ graph_Graph, seed_,
                       EdgeList @ bundle,
                       EdgeList @ Subgraph[ rightExt,
                         Select[ VertexList @ rightExt, dist[ p2, # ] + dist[ #, e ] == dist[ p2, e ] & ] ] ] },
-                  If[ method === "Exhaustive" && count === All,
+                  If[ count === All,
                     atom @@@ Select[ pairs, admissibleQ @@ # & ],
                     With[ { candidates = branch @ pairs },
                       Catenate @ Last @ Reap @ NestWhile[
