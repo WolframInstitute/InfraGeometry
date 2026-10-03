@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraShell
 Keywords: [shell, sphere, level surface, volume growth, dimension]
-SeeAlso: [InfraShell, InfraBall, FindInfraSphere, ShellAreas, FindInfraCircle, InfraShellQ, SeparatesQ]
+SeeAlso: [InfraShell, InfraBall, FindInfraSphere, ShellAreas, InfraCircle, InfraShellQ, SeparatesQ]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
@@ -19,7 +19,7 @@ RelatedGuides: [RiemannianInfrageometry]
 
 The shell of radius *r* about *c* is $\{v : d(c,v) = r\}$ — the sphere of the graph metric, as a vertex **set**.
 
-It is the discrete analogue of a sphere, not of a circle: it is codimension-1 as a set, but on a lattice its vertices are pairwise non-adjacent, so it carries no cycle. The cyclic object is [FindInfraCircle](), which needs a thickened band for exactly that reason.
+It is the discrete analogue of a sphere, not of a circle: it is codimension-1 as a set, but on a lattice its vertices are pairwise non-adjacent, so it carries no cycle. The cyclic object is [InfraCircle](), which needs a thickened band for exactly that reason.
 
 The shell is the substrate of the volume-growth invariants. Its cardinality as a function of *r* is the surface-area profile, which [ShellAreas]() counts at every radius at once, and on a flat lattice it grows **linearly**, which is the statement that the dimension is 2. The slope is a property of the tiling: 4 per step on the square grid, 3 on the hexagonal.
 

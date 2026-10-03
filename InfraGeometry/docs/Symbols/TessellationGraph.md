@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/TessellationGraph
 Keywords: [regular map, tessellation, Platonic solid, flat torus, hyperbolic surface, uniform tiling, Archimedean solid, Schläfli symbol]
-SeeAlso: [TorusTessellation, InfraSubstrate, InfraCircle, FindInfraCircle, InfraSubstrateHighlight]
+SeeAlso: [TorusTessellation, InfraSubstrate, InfraCircle, InfraSubstrateHighlight]
 RelatedGuides: [InfraSubstrates]
 ---
 

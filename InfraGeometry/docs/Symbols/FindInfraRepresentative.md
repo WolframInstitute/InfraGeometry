@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraRepresentative
 Keywords: [segment, ray, line, circle, arc, shell, plane, polygon, inert head, member, representative, enumeration, random]
-SeeAlso: [InfraMeasurement, InfraMemberQ, FindInfraSegment, FindInfraRay, FindInfraLine, FindInfraCircle, FindInfraArc]
+SeeAlso: [InfraMeasurement, InfraMemberQ, FindInfraSegment, FindInfraRay, FindInfraLine, InfraCircle, InfraArc]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -21,8 +21,8 @@ RelatedGuides: [EuclideanInfrageometry]
 The head names the notion; this function finds its members. Where the head has a faithful graph theorem, a member is read off it; otherwise the head's own search runs at its defaults.
 
 - `InfraSegment[p, q]`, `InfraRay[p, q]`, `InfraLine[p, q]` and `InfraArc[c, {p, q}]`: a member is a source-to-sink chain of <code>[InfraMeasurement]()[*graph*, *head*, "Graph"]</code>, read off in lexicographic order. A polyline `InfraSegment[p1, ..., pk]` and a multi-point arc concatenate the members of their pieces.
-- `InfraCircle[c, r | {r, s}]`: a member is a circle found by the sweep, <code>[FindInfraCircle]()</code> at its defaults, as a cyclic vertex list whose first vertex is not repeated. The necklace graph stays what `InfraMeasurement` measures.
-- `InfraArc[c, {p, p}]`, the closed arc: the same, by <code>[FindInfraArc]()</code>, a circle through *p*.
+- `InfraCircle[c, r | {r, s}]`: a member is a circle found by sweeping the band, length by length with `FindCycle` (see [InfraCircle]()), as a cyclic vertex list whose first vertex is not repeated. The necklace graph stays what `InfraMeasurement` measures.
+- `InfraArc[c, {p, p}]`, the closed arc: the same sweep, keeping the circles through *p*, and through every point of `InfraArc[c, {p, q, ..., p}]` (see [InfraArc]()).
 - The scene tokens `InfraShell`, `InfraBall`, `InfraPlane`, `InfraPolygon`, `InfraTriangle`, `InfraPolyline`, `InfraRevolution`, `InfraWalk`, `InfraPoint` and `InfraLine[path]`: a member is a result of the token's search at its defaults. A set head such as `InfraBall[c, r]` has one member, its sorted vertex list.
 
 A closed count under a non-negative integer *n* that exceeds the number of members gives `{ }`.
@@ -32,7 +32,7 @@ Two modifiers, given after the count:
 - `"RandomChoice"` gives random members. On a graph it walks the chains choosing the next arrow *v* -> *w* with probability proportional to the backward count at *w*, so every member is drawn with probability `1 / Cardinality`; on a search with a method ladder it is `Method -> "RandomGreedy"`; otherwise it draws from the search's members. `SeedRandom` in front reproduces the draw.
 - `"Pruning" -> q`, under `All`, discards a random fraction *q* of the candidates at each step of an otherwise exhaustive enumeration; on a search with a method ladder it is `Method -> {"Exhaustive", "Pruning" -> q}`.
 
-The specialised searches (`FindInfraSegment`, `FindInfraCircle`, `FindInfraShell`, `FindInfraWalk`, ...) keep their own parameters; this function takes none of them.
+The specialised searches (`FindInfraSegment`, `FindInfraSphere`, `FindInfraShell`, `FindInfraWalk`, ...) keep their own parameters; this function takes none of them.
 
 `FindInfraRepresentative[graph, head]` (no count) is the same as `FindInfraRepresentative[graph, head, Automatic]`, the first member in canonical order.
 
