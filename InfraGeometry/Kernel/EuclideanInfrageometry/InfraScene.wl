@@ -99,8 +99,7 @@ dispatchConstruction[ graph_Graph, fam_Association ] /;
 
 dispatchConstruction[ graph_Graph, token : Except[ _List | _Association ] ] :=
   With[ { opts = Cases[ token, _Rule ] },
-    { head = Replace[ DeleteCases[ token, ( "Select" | "Branches" ) -> _ ],
-        InfraCircle[ c_, r : Except[ _Rule ], rest___Rule ] :> InfraCircle[ c, "Radius" -> r, rest ] ] },
+    { head = DeleteCases[ token, ( "Select" | "Branches" ) -> _ ] },
     { members = FindInfraRepresentative[ graph, head, All ] },
     If[ ListQ @ members,
       capBranches[
@@ -110,7 +109,7 @@ dispatchConstruction[ graph_Graph, token : Except[ _List | _Association ] ] :=
       members ] ]
 
 selectContext[ ( InfraCircle | InfraShell | InfraSphere )[ c_, rs_, ___ ] ] :=
-  <| "Center" -> c, "Radius" -> Mean @ Flatten @ { Replace[ rs, ( "Radius" -> r_ ) :> r ] } |>
+  <| "Center" -> c, "Radius" -> Mean @ Flatten @ { rs } |>
 
 selectContext[ InfraLine[ path_List, ___ ] ] :=
   <| "Endpoints" -> { First @ path, Last @ path } |>

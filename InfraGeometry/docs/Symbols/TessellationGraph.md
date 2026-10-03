@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/TessellationGraph
 Keywords: [regular map, tessellation, Platonic solid, flat torus, hyperbolic surface, uniform tiling, Archimedean solid, Schläfli symbol]
-SeeAlso: [TorusTessellation, InfraSubstrate, InfraCircle, FindInfraCircle, InfraSubstrateHighlight]
+SeeAlso: [TorusTessellation, InfraSubstrate, InfraCircle, InfraSubstrateHighlight]
 RelatedGuides: [InfraSubstrates]
 ---
 
@@ -58,7 +58,7 @@ Row[Table[
      {map = TessellationGraph @@ spec},
      {hub = First @ VertexList[map]},
      Labeled[
-       InfraSubstrateHighlight[map, {InfraCircle[hub, "Radius" -> 1], Directive[$InfraPointColor], hub}, ImageSize -> 200],
+       InfraSubstrateHighlight[map, {InfraCircle[hub, 1], Directive[$InfraPointColor], hub}, ImageSize -> 200],
        First[spec]]],
    {spec, {{{3, 5}, 1}, {{3, 6}, 6}, {{3, 7}, 1}}}]]
 ```

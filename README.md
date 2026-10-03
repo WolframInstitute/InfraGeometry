@@ -65,7 +65,8 @@ Each object head is inert: it holds its points and computes nothing. Its one the
 seg = InfraSegment[p, q]                          (* every geodesic from p to q *)
 ray = InfraRay[o, v]                              (* every ray from o through v; InfraRay[o, o] the pencil *)
 line = InfraLine[p, q]                            (* every line through p and q *)
-circle = InfraCircle[c, p, "RadiusDelta" -> 1]    (* the circles around c through p in a band of width 1 *)
+circle = InfraCircle[c, {2, 4}]                   (* the circles around c in the band 2 <= d(c, v) <= 4 *)
+through = InfraArc[c, {p, p}, "RadiusDelta" -> 1] (* the closed arc: the circles through p in a band of width 1 *)
 arc = InfraArc[c, {p, q}]                         (* the minor arcs from p to q *)
 
 InfraMeasurement[g, seg, "Cardinality"]           (* how many, by dynamic programming *)

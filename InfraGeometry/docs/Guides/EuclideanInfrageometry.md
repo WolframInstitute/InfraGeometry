@@ -27,8 +27,8 @@ Euclidean infrageometry is synthetic geometry: constructions with natural object
 - `InfraSegment` the inert segment from p to q, every shortest path between them at once; with more points, the polyline of their consecutive segments
 - `InfraRay` the inert ray from p through q: the shortest paths from p through q that no neighbour of their last vertex prolongs; InfraRay[p, p] is the pencil at p
 - `InfraLine` the inert line through p and q: the shortest paths through both that no neighbour of either endpoint prolongs
-- `InfraArc` the inert arc around c from p1 to pk through the intermediate points: the shortest paths in the band graph of the circle through p1
-- `InfraCircle` the inert circle around c through p: the shortest cycles through p that separate c from the outside of its band; "Radius" -> r or {r, s} in place of p takes the whole band
+- `InfraArc` the inert arc around c from p1 to pk through the intermediate points: the shortest paths in the band graph of the circle through p1; InfraArc[c, {p, p}] is the closed arc, the circles through p
+- `InfraCircle` the inert circles around c at radius r or in the band {r, s}: the shortest cycles of the band that separate c from the outside
 - `InfraAngle` the angle at p between q1 and q2 in radians, Method "Arclength" or "Alexandrov", the comparison angle of the three distances
 - `InfraIntersection` the objects common to two inert heads, an inert head again, with the product of their vertex densities
 - `InfraUnion` the objects of either of two inert heads, an inert head again, with the sum of their vertex densities
@@ -62,8 +62,6 @@ Euclidean infrageometry is synthetic geometry: constructions with natural object
 - `FindInfraSegment` one shortest path from p to q as a vertex list; a trailing count gives a List of them
 - `FindInfraRay` one ray from p through q as a vertex list, a shortest path from p through q that no neighbour of its last vertex prolongs; a trailing count gives a List of them
 - `FindInfraLine` one line through p and q as a vertex list, an inextensible shortest path through both; a trailing count gives a List of them
-- `FindInfraArc` one arc around c through the points as a vertex list; a trailing count gives a List of them
-- `FindInfraCircle` one circle around c through p as a cyclic vertex list; a trailing count gives a List of them
 
 ### Measurements
 

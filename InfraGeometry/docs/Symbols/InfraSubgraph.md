@@ -57,6 +57,6 @@ The subgraph is the one [InfraMeasurement]() gives.
 ```wl
 With[
   {g = GridGraph[{9, 9}]},
-  {circle = InfraCircle[41, "Radius" -> {2, 4}]},
+  {circle = InfraCircle[41, {2, 4}]},
   InfraSubgraph[g, circle] === InfraMeasurement[g, circle, "Subgraph"]]
 ```

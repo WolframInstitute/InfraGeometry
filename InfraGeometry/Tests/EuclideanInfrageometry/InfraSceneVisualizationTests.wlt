@@ -56,7 +56,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     Head @ InfraSubstrateHighlight[ g,
       { FindInfraSegment[ g, 1, 16, All ] -> Blue,
-        FindInfraCircle[ g, 1, "Radius" -> 2, All ] -> Green } ]
+        FindInfraRepresentative[ g, InfraCircle[ 1, 2 ], All ] -> Green } ]
   ],
   Graph,
   TestID -> "InfraSubstrateHighlight-mixed-segment-and-circle"
@@ -606,7 +606,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     { infraInk[ g, InfraSegment[ 1, 5 ] ][ "Walk" ],
-      infraInk[ g, InfraCircle[ 13, 12, "RadiusDelta" -> 1 ] ][ "Walk" ],
+      infraInk[ g, InfraArc[ 13, { 12, 12 }, "RadiusDelta" -> 1 ] ][ "Walk" ],
       infraInk[ g, InfraSegment[ 1, 7 ] ][ "Walk" ],
       infraInk[ g, InfraMeasurement[ g, InfraSegment[ 1, 25 ], "Graph" ] ][ "Walk" ],
       infraInk[ g, walkGraph @ { 1, 2, 7, 2, 3 } ][ "Walk" ] } ],
@@ -639,7 +639,7 @@ VerificationTest[
       FindInfraTriangle[ g, { 1, 4, 21 } ],
       FindInfraSegment[ g, 1, 25, UpTo[ 4 ] ],
       { FindInfraSegment[ g, 1, 25 ] },
-      FindInfraCircle[ g, 13, "Radius" -> 2, UpTo[ 2 ] ] } ],
+      FindInfraRepresentative[ g, InfraCircle[ 13, 2 ], UpTo[ 2 ] ] } ],
   { { 1, 4, 21 }, { }, { }, { } },
   TestID -> "infraInk-chain-has-knots-bundle-has-none"
 ]

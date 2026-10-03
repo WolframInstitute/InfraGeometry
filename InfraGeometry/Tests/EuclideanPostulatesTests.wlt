@@ -514,7 +514,7 @@ VerificationTest[
   TestID -> "FindInfraOsculatingShell-sorted-by-radius"
 ]
 
-(* FindInfraCircle's seam necklaces, "RadiusDelta" / "Radius" forms, cyclic instances,
+(* The circle's seam necklaces, its radius and band forms, cyclic instances,
    and the Q_4 / octagon / Petersen fixtures are pinned against brute force in
    InfraCircleTests.wlt (EuclideanInertHeads, T4); this section and the circle-pool
    section that followed it tested the old Method / Properties / DAG-pool API and the
@@ -613,7 +613,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     Length @ EmbeddingClosest[ g,
-      FindInfraCircle[ g, 6, "Radius" -> { 1, 2 }, All ],
+      FindInfraRepresentative[ g, InfraCircle[ 6, { 1, 2 } ], All ],
       { 6, 1.5 } ] >= 1
   ],
   True,
@@ -871,7 +871,7 @@ VerificationTest[
 ]
 
 
-(* FindInfraShell / FindInfraCircle: a bounded radius makes the answer depend only on
+(* FindInfraShell / the circle's representatives: a bounded radius makes the answer depend only on
    the ball B(p, r + 1) / B(p, r + 2) around the centre.  The "Metric" and
    "Separating" recipes are graph-intrinsic; the "Embedding" recipe still
    uses the full graph for its spectral coordinates, so the local-vs-global
@@ -887,11 +887,11 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 10, 10 } ], p = 45 },
-    Sort[ Sort /@ FindInfraCircle[ g, p, "Radius" -> { 1, 2 }, All ] ] ===
-      Sort[ Sort /@ FindInfraCircle[ NeighborhoodGraph[ g, p, 4 ], p, "Radius" -> { 1, 2 }, All ] ]
+    Sort[ Sort /@ FindInfraRepresentative[ g, InfraCircle[ p, { 1, 2 } ], All ] ] ===
+      Sort[ Sort /@ FindInfraRepresentative[ NeighborhoodGraph[ g, p, 4 ], InfraCircle[ p, { 1, 2 } ], All ] ]
   ],
   True,
-  TestID -> "FindInfraCircle-locality-Metric"
+  TestID -> "FindInfraRepresentative-circle-locality-Metric"
 ]
 
 
