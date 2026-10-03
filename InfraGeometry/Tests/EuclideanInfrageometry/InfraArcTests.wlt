@@ -219,7 +219,7 @@ VerificationTest[
 
 (* on the band (2, 4) of the 11 x 11 grid the closed arc through p is the circle's members through p, by count and by density *)
 VerificationTest[
-  With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, "Radius" -> {2, 4}]},
+  With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, {2, 4}]},
     {members = closedArcChains[g, cir]},
     AllTrue[Select[VertexList[g], GraphDistance[g, 61, #] == 2 &],
       p |-> With[{arc = InfraArc[61, {p, p}, "RadiusDelta" -> 2]}, {through = Select[members, MemberQ[#, p] &]},
@@ -258,7 +258,7 @@ VerificationTest[
 
 (* the first point repeated last closes the list: the circles through all its points, in any order *)
 VerificationTest[
-  With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, "Radius" -> {2, 4}]},
+  With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, {2, 4}]},
     {members = closedArcChains[g, cir]},
     {pairs = Select[
        Tuples[{Select[VertexList[g], GraphDistance[g, 61, #] == 2 &], Select[VertexList[g], 2 <= GraphDistance[g, 61, #] <= 4 &]}],
@@ -273,7 +273,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, "Radius" -> {2, 4}]},
+  With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, {2, 4}]},
     {through = Select[closedArcChains[g, cir], SubsetQ[#, {39, 37, 81}] &]},
     {a = InfraArc[61, {39, 37, 81, 39}, "RadiusDelta" -> 2], b = InfraArc[61, {39, 81, 37, 39}, "RadiusDelta" -> 2]},
     {0 < Length[through] < 16, InfraMeasurement[g, a, "Cardinality"] == InfraMeasurement[g, b, "Cardinality"] == Length[through],

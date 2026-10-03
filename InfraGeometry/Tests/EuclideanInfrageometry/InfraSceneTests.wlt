@@ -614,8 +614,8 @@ VerificationTest[
     Sort @ DeleteDuplicates[
       #[[ 1 ]][ ec ] & /@ Quiet[ FindInfraScene[ scene, g, <| ea -> 1, eb -> 7 |> ], FindInfraCircle::uncertified ] ] ===
     Sort @ Quiet @ Intersection[
-      Union @@ FindInfraCircle[ g, 1, "Radius" -> GraphDistance[ g, 1, 7 ], All ],
-      Union @@ FindInfraCircle[ g, 7, "Radius" -> GraphDistance[ g, 1, 7 ], All ] ]
+      Union @@ FindInfraCircle[ g, 1, GraphDistance[ g, 1, 7 ], All ],
+      Union @@ FindInfraCircle[ g, 7, GraphDistance[ g, 1, 7 ], All ] ]
   ],
   True,
   TestID -> "FindInfraScene-EuclidI1-agrees-with-FindInfraCircle"
@@ -788,8 +788,8 @@ VerificationTest[
     Sort @ DeleteDuplicates[InfraSceneInstance[#, ec] & /@
         Quiet[FindInfraScene[scene, g, <|ea -> 1, eb -> 7|>], FindInfraCircle::uncertified]] ===
       Sort @ Quiet @ Union[
-        Union @@ FindInfraCircle[g, 1, "Radius" -> GraphDistance[g, 1, 7], All],
-        Union @@ FindInfraCircle[g, 7, "Radius" -> GraphDistance[g, 1, 7], All]]],
+        Union @@ FindInfraCircle[g, 1, GraphDistance[g, 1, 7], All],
+        Union @@ FindInfraCircle[g, 7, GraphDistance[g, 1, 7], All]]],
   True,
   TestID -> "InfraScene-union-of-two-circles-agrees-with-FindInfraCircle"
 ]
