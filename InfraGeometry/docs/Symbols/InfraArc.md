@@ -30,7 +30,7 @@ That they are exactly the minor arcs needs the winding functional on the substra
 
 The arc is empty when *q* leaves the band or the band disconnects *p* from *q*.
 
-**The closed arc.** A list that returns to its first point names a closed arc, not a polyline there and back. It is the circle through *p*, the compass opened to *p* (Euclid's third postulate): <code>[InfraArc]()[*c*, {*p*, *p*}, "RadiusDelta" -> *delta*]</code> has the members of the circle of the band of *p* that pass through *p*. It is not empty, though a geodesic from *p* to *p* is trivial: the arc leaves *p* to a neighbour on one side and returns from a neighbour on the other. <code>[InfraArc]()[*c*, {*p*, *q*, *p*}]</code> keeps those that pass through *q* too. Its members are cyclic vertex lists whose first vertex is not repeated, and its `"Length"` counts the closing edge. On a bipartite substrate the bare shell has no circle: use `"RadiusDelta" -> 1`.
+**The closed arc.** A list that returns to its first point names a closed arc, not a polyline there and back. It is the circle through *p*, the compass opened to *p* (Euclid's third postulate): <code>[InfraArc]()[*c*, {*p*, *p*}, "RadiusDelta" -> *delta*]</code> has the members of the circle of the band of *p* that pass through *p*. It is not empty, though a shortest path from *p* to *p* is trivial: its members are cycles that leave *p* and return to *p* around *c*, separating *c* from everything beyond the band. <code>[InfraArc]()[*c*, {*p*, *q*, *p*}]</code> keeps those that pass through *q* too. Its members are cyclic vertex lists whose first vertex is not repeated, and its `"Length"` counts the closing edge. On a bipartite substrate the bare shell has no circle: use `"RadiusDelta" -> 1`.
 
 A list that does not return to its first point is the open polyline, as before.
 
@@ -103,7 +103,19 @@ With[
    InfraMeasurement[g, arc, "Cardinality"], InfraMeasurement[g, arc, "Length"]}]
 ```
 
-The circles through a vertex of the band `{2, 4}` of the square tiling: the closed arc with the band of *p* widened two steps outward.
+The closed arc: the circles through a vertex at distance 2 from the centre, the band of *p* widened two steps outward, on the square, hexagonal and triangular tilings.
+
+```wl
+GraphicsRow @ Table[
+  With[
+    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    {c = InfraCenter[g]},
+    {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
+    InfraSubstrateHighlight[g, {InfraArc[c, {p}, "RadiusDelta" -> 2] -> $InfraCircleColor, Directive[$InfraPointColor], c, p}]],
+  {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
+```
+
+On the square tiling, the number of these circles and their length, beside the picture.
 
 ```wl
 With[

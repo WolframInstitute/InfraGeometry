@@ -34,6 +34,15 @@ A member is the open chain *s1* … *u*, read cyclically: a cyclic vertex list w
 
 Every member separates. That the necklaces carry every circle exactly once needs two hypotheses on the substrate — the winding functional and the one-run hypothesis — which nothing here certifies. So `"Faithful"` is [Undetermined]().
 
+Corresponding notions in the classical axiom systems:
+
+| System | Name | Statement |
+|---|---|---|
+| Euclid | Postulate 3 | To draw a circle with any center and radius. |
+| Hilbert | (not primitive) | Circles are defined from congruence, not postulated. |
+| Tarski | Equidistance | The locus of points equidistant from a centre, from the four-place congruence relation. |
+| Birkhoff | Ruler postulate | The locus at fixed ruler distance from a point. |
+
 ## Basic Examples
 
 The circles of the band `{2, 4}` about the centre, on the square, hexagonal and triangular tilings. An edge is drawn as strongly as the number of circles through it.
