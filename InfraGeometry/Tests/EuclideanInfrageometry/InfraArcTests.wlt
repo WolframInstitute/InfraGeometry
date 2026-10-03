@@ -159,11 +159,172 @@ VerificationTest[
   TestID -> "InfraArc-polyline-members"
 ]
 
+(* ===== the closed arc: the circles through p ===== *)
+
+(* the shortest cycles of the band of p, widened by delta, that pass through p and separate c from beyond the band, by brute force *)
+bruteClosedArcs[g_Graph, c_, p_, delta_] :=
+  Module[{dist, band, local, bandGraph, sepQ, found = {}},
+    dist = AssociationThread[VertexList@g, GraphDistance[g, c]];
+    band = dist[p] + {-First@delta, Last@delta};
+    local = Subgraph[g, Select[VertexList@g, dist[#] <= Last@band + 1 &]];
+    bandGraph = Subgraph[local, Select[VertexList@local, Max[1, First@band] <= dist[#] <= Last@band &]];
+    sepQ = Function[cyc, AllTrue[VertexComponent[VertexDelete[local, cyc], c], dist[#] <= Last@band &]];
+    Do[With[{cycles = Select[First /@ # & /@ FindCycle[bandGraph, {k}, All], MemberQ[#, p] && sepQ[#] &]},
+      If[cycles =!= {}, found = cycles; Break[]]], {k, 3, VertexCount@bandGraph}];
+    found]
+
+cycleSets[cycles_] := Sort[Sort /@ cycles]
+
+(* the chains of the necklace graphs, source to sink, read without the representative finder (whose closed-arc clause is the sweep) *)
+closedArcChains[g_Graph, arc_] :=
+  Catenate[Function[dag,
+      Catenate[FindPath[dag, #1, #2, Infinity, All] & @@@
+        Tuples[{Pick[VertexList@dag, VertexInDegree@dag, 0], Pick[VertexList@dag, VertexOutDegree@dag, 0]}]]] /@
+    InfraMeasurement[g, arc, "Graph"]]
+
+(* the hexagonal ring of radius 2 is the one circle through p, and the sweep finds the same cycle *)
+VerificationTest[
+  With[{g = TessellationNeighborhoodGraph[{3, 6}, 5]}, {c = First @ GraphCenter[g]},
+    {p = First @ Select[VertexList[g], GraphDistance[g, c, #] == 2 &]},
+    {arc = InfraArc[c, {p, p}]}, {swept = FindInfraArc[g, c, {p, p}, All]},
+    {InfraMeasurement[g, arc, "Cardinality"], InfraMeasurement[g, arc, "Length"],
+     InfraMeasurement[g, arc, "Faithful"],
+     MemberQ[FindInfraRepresentative[g, arc], p],
+     AllTrue[FindInfraRepresentative[g, arc], GraphDistance[g, c, #] == 2 &],
+     cycleSets[closedArcChains[g, arc]] === cycleSets[swept] && AllTrue[swept, InfraMemberQ[g, arc, #] &]}],
+  {1, 12, Undetermined, True, True, True},
+  TestID -> "InfraArc-closed-triangular-hexagonal-ring"
+]
+
+(* the level set of the square grid is edgeless, so the closed arc needs the band *)
+VerificationTest[
+  With[{g = GridGraph[{7, 7}]}, {p = First @ Select[VertexList[g], GraphDistance[g, 25, #] == 3 &]},
+    {InfraMeasurement[g, InfraArc[25, {p, p}], "Cardinality"],
+     InfraMeasurement[g, InfraArc[25, {p, p}, "RadiusDelta" -> 1], "Cardinality"],
+     InfraMeasurement[g, InfraArc[25, {p, p}, "RadiusDelta" -> 1], "Length"]}],
+  {0, 1, 24},
+  TestID -> "InfraArc-closed-grid-needs-the-band"
+]
+
+VerificationTest[
+  With[{g = GridGraph[{7, 7}]},
+    AllTrue[
+      Tuples[{Select[VertexList[g], 2 <= GraphDistance[g, 25, #] <= 3 &][[{1, 4, 7, 10}]], {1, 2}}],
+      Apply[{p, d} |-> With[{arc = InfraArc[25, {p, p}, "RadiusDelta" -> d]},
+        cycleSets[closedArcChains[g, arc]] === cycleSets[bruteClosedArcs[g, 25, p, {0, d}]] &&
+        InfraMeasurement[g, arc, "Cardinality"] == Length @ closedArcChains[g, arc]]]]],
+  True,
+  TestID -> "InfraArc-closed-equals-brute-force-on-the-grid"
+]
+
+(* on the band (2, 4) of the 11 x 11 grid the closed arc through p is the circle's members through p, by count and by density *)
+VerificationTest[
+  With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, {2, 4}]},
+    {members = closedArcChains[g, cir]},
+    AllTrue[Select[VertexList[g], GraphDistance[g, 61, #] == 2 &],
+      p |-> With[{arc = InfraArc[61, {p, p}, "RadiusDelta" -> 2]}, {through = Select[members, MemberQ[#, p] &]},
+        InfraMeasurement[g, arc, "Cardinality"] == Length[through] > 0 &&
+        InfraMeasurement[g, arc, "VertexDensity"] === KeySort @ Counts @ Catenate[through] &&
+        InfraMeasurement[g, arc, "Length"] == 16 &&
+        cycleSets[FindInfraArc[g, 61, {p, p}, All, "RadiusDelta" -> 2]] === cycleSets[through]]]],
+  True,
+  TestID -> "InfraArc-closed-is-the-circle-through-p"
+]
+
+(* the closing arrow is counted once per member, and every member is a member *)
+VerificationTest[
+  With[{g = GridGraph[{11, 11}]}, {arc = InfraArc[61, {39, 39}, "RadiusDelta" -> 2]},
+    {members = closedArcChains[g, arc]},
+    {InfraMeasurement[g, arc, "EdgeDensity"] ===
+       KeySort @ Counts @ Catenate[Apply[DirectedEdge, Partition[#, 2, 1, 1], {1}] & /@ members],
+     AllTrue[FindInfraRepresentative[g, arc, All], InfraMemberQ[g, arc, #] &],
+     InfraMemberQ[g, arc, Reverse @ RotateLeft[First @ members, 3]],
+     InfraMemberQ[g, arc, FindInfraSegment[g, 39, 83]]}],
+  {True, True, True, False},
+  TestID -> "InfraArc-closed-edge-density-and-membership"
+]
+
+(* {p} is shorthand for {p, p} *)
+VerificationTest[
+  With[{g = GridGraph[{11, 11}]},
+    {a = InfraArc[61, {39}, "RadiusDelta" -> 2], b = InfraArc[61, {39, 39}, "RadiusDelta" -> 2]},
+    {InfraMeasurement[g, a, {"Cardinality", "Length", "VertexDensity", "EdgeDensity"}] ===
+       InfraMeasurement[g, b, {"Cardinality", "Length", "VertexDensity", "EdgeDensity"}],
+     FindInfraRepresentative[g, a, All] === FindInfraRepresentative[g, b, All],
+     FindInfraArc[g, 61, {39}, All, "RadiusDelta" -> 2] === FindInfraArc[g, 61, {39, 39}, All, "RadiusDelta" -> 2]}],
+  {True, True, True},
+  TestID -> "InfraArc-closed-shorthand"
+]
+
+(* the first point repeated last closes the list: the circles through all its points, in any order *)
+VerificationTest[
+  With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, {2, 4}]},
+    {members = closedArcChains[g, cir]},
+    {pairs = Select[
+       Tuples[{Select[VertexList[g], GraphDistance[g, 61, #] == 2 &], Select[VertexList[g], 2 <= GraphDistance[g, 61, #] <= 4 &]}],
+       pair |-> First[pair] =!= Last[pair] && AnyTrue[members, SubsetQ[#, pair] &]][[;; ;; 9]]},
+    AllTrue[pairs,
+      Apply[{p, q} |-> With[{arc = InfraArc[61, {p, q, p}, "RadiusDelta" -> 2]}, {through = Select[members, SubsetQ[#, {p, q}] &]},
+        InfraMeasurement[g, arc, "Cardinality"] == Length[through] &&
+        InfraMeasurement[g, arc, "VertexDensity"] === KeySort @ Counts @ Catenate[through] &&
+        cycleSets[FindInfraRepresentative[g, arc, All]] === cycleSets[through]]]]],
+  True,
+  TestID -> "InfraArc-closed-through-two-points"
+]
+
+VerificationTest[
+  With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, {2, 4}]},
+    {through = Select[closedArcChains[g, cir], SubsetQ[#, {39, 37, 81}] &]},
+    {a = InfraArc[61, {39, 37, 81, 39}, "RadiusDelta" -> 2], b = InfraArc[61, {39, 81, 37, 39}, "RadiusDelta" -> 2]},
+    {0 < Length[through] < 16, InfraMeasurement[g, a, "Cardinality"] == InfraMeasurement[g, b, "Cardinality"] == Length[through],
+     InfraMeasurement[g, a, "EdgeDensity"] ===
+       KeySort @ Counts @ Catenate[Apply[DirectedEdge, Partition[#, 2, 1, 1], {1}] & /@ closedArcChains[g, a]],
+     InfraMeasurement[g, InfraArc[61, {39, 61, 39}, "RadiusDelta" -> 2], "Cardinality"]}],
+  {True, True, True, 0},
+  TestID -> "InfraArc-closed-through-three-points"
+]
+
+(* the octagon: (W) holds and (T) fails, so the seam through a loses a circle *)
+octagonGraph[] := Graph[{
+  "a" <-> "b", "b" <-> "c", "c" <-> "d", "d" <-> "e", "e" <-> "f", "f" <-> "g", "g" <-> "h", "h" <-> "a",
+  "a" <-> "u", "u" <-> "c", "o" <-> "a", "o" <-> "e", "c" <-> "y",
+  "e" <-> "j", "j" <-> "k", "k" <-> "z"}]
+
+(* the two circles of the band (1, 3) both pass through a and through e; the seam through a meets the octagon in the two runs {a} and {c}, so it
+   carries only the other circle, while the seam through e carries both (design Ex. octagon) *)
+VerificationTest[
+  With[{g = octagonGraph[]},
+    {aa = InfraArc["o", {"a", "a"}, "RadiusDelta" -> {0, 2}], ee = InfraArc["o", {"e", "e"}, "RadiusDelta" -> {0, 2}]},
+    {InfraMeasurement[g, aa, "Cardinality"], Length @ FindInfraArc[g, "o", {"a", "a"}, All, "RadiusDelta" -> {0, 2}],
+     InfraMeasurement[g, ee, "Cardinality"], Length @ FindInfraArc[g, "o", {"e", "e"}, All, "RadiusDelta" -> {0, 2}],
+     InfraMeasurement[g, aa, "Length"], InfraMeasurement[g, ee, "Length"]}],
+  {1, 2, 2, 2, 8, 8},
+  TestID -> "InfraArc-closed-octagon-loses-a-circle-off-one-seam"
+]
+
+VerificationTest[
+  With[{g = octagonGraph[]},
+    AllTrue[{InfraArc["o", {"a", "a"}, "RadiusDelta" -> {0, 2}], InfraArc["o", {"e", "e"}, "RadiusDelta" -> {0, 2}]},
+      arc |-> AllTrue[closedArcChains[g, arc],
+        cyc |-> Length[cyc] == 8 && AllTrue[VertexComponent[VertexDelete[g, cyc], "o"], GraphDistance[g, "o", #] <= 3 &]]]],
+  True,
+  TestID -> "InfraArc-closed-seam-carries-separating-cycles-only"
+]
+
+(* the centre is at radius 0, so the band is empty and there is nothing to separate *)
+VerificationTest[
+  {InfraMeasurement[GridGraph[{5, 5}], InfraArc[13, {13, 13}], "Cardinality"],
+   InfraMeasurement[GridGraph[{5, 5}], InfraArc[13, {13}], "Cardinality"],
+   FindInfraArc[GridGraph[{5, 5}], 13, {13}, All]},
+  {0, 0, {}},
+  TestID -> "InfraArc-closed-through-the-centre-is-empty"
+]
+
 (* ===== the inert head ===== *)
 
 VerificationTest[
-  {InfraArc[1, {2, 3}], InfraArc[1, {2, 3, 4}, "RadiusDelta" -> 1]},
-  {InfraArc[1, {2, 3}], InfraArc[1, {2, 3, 4}, "RadiusDelta" -> 1]},
+  {InfraArc[1, {2, 3}], InfraArc[1, {2, 3, 4}, "RadiusDelta" -> 1], InfraArc[1, {2, 2}], InfraArc[1, {2}], InfraArc[1, {2, 3, 2}]},
+  {InfraArc[1, {2, 3}], InfraArc[1, {2, 3, 4}, "RadiusDelta" -> 1], InfraArc[1, {2, 2}], InfraArc[1, {2}], InfraArc[1, {2, 3, 2}]},
   TestID -> "InfraArc-without-a-graph-stays-inert"
 ]
 

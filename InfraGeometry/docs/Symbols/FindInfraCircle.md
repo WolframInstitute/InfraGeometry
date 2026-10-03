@@ -12,15 +12,13 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Usage
 
-<code>[FindInfraCircle]()[*g*, *c*, *p*]</code> gives one circle around *c* through the point *p* in *g*, as a cyclic vertex list.
+<code>[FindInfraCircle]()[*g*, *c*, *r*]</code> gives one circle around *c* at radius *r* in *g*, as a cyclic vertex list; <code>[FindInfraCircle]()[*g*, *c*, {*r*, *s*}]</code> takes the band *r* ≤ *d(c, v)* ≤ *s*.
 
-<code>[FindInfraCircle]()[*g*, *c*, "Radius" -> *r*]</code> gives one circle around *c* at radius *r*; `"Radius" -> {r, s}` takes the band *r* ≤ *d(c, v)* ≤ *s*.
-
-<code>[FindInfraCircle]()[*g*, *c*, *spec*, *n*]</code> gives a `List` of exactly *n* circles or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives every circle.
+<code>[FindInfraCircle]()[*g*, *c*, *spec*, *n*]</code> gives a `List` of exactly *n* circles, or `{ }` when there are fewer; `UpTo[n]` gives up to *n*; `All` gives every circle.
 
 ## Details & Options
 
-The band around *c* is $\{v : r \le d(c,v) \le s\}$. A circle is a shortest cycle of the subgraph induced on the band whose removal leaves *c* in a component reaching no further than the band. The point form takes the band at *d(c, p)* and keeps the circles through *p*.
+The band around *c* is $\{v : r \le d(c,v) \le s\}$. A circle is a shortest cycle of the subgraph induced on the band whose removal leaves *c* in a component reaching no further than the band. The second argument is a radius or a band, never a point; the circles through a point *p* are found by <code>[FindInfraArc]()[*g*, *c*, {*p*, *p*}]</code>.
 
 A circle is returned as a cyclic vertex list: the edge from the last vertex back to the first is implicit, and the first vertex is not repeated.
 
@@ -30,7 +28,7 @@ Thickening the radius to a band fixes it, and **the band thickness that suffices
 
 The search sweeps the band directly, length by length with `FindCycle`. It does not read the necklaces of <code>[InfraCircle]()[*c*, …]</code>, so it is the check on them, and it still answers where no seam cuts the band open, or where nothing lies beyond the band and separation is vacuous. It is the clause [FindInfraRepresentative]() uses for that head. To count circles without enumerating them, use [InfraMeasurement]().
 
-Option `"RadiusDelta" -> {deltaIn, deltaOut}` widens the band of the point form to *d(c, p)* − *deltaIn* ≤ *d(c, v)* ≤ *d(c, p)* + *deltaOut*. A scalar `"RadiusDelta" -> delta` means `{0, delta}`, outward only. The default is `0`. There is no `Method` and no `Properties`.
+There are no options, no `Method` and no `Properties`.
 
 Corresponding notions in the classical axiom systems:
 
@@ -43,15 +41,14 @@ Corresponding notions in the classical axiom systems:
 
 ## Basic Examples
 
-A circle about the centre through a vertex two steps away, the band widened one step outward, drawn as a closed walk, beside its length.
+A circle about the centre in the band of radii 2 to 3, drawn as a closed walk, beside its length.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
-  {closedWalk = FindInfraCircle[g, c, p, "RadiusDelta" -> 1]},
-  {InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]] -> $InfraCircleColor, Directive[$InfraPointColor], c, p}],
+  {closedWalk = FindInfraCircle[g, c, {2, 3}]},
+  {InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]] -> $InfraCircleColor, Directive[$InfraPointColor], c}],
    Length @ closedWalk}]
 ```
 
@@ -62,7 +59,7 @@ Row @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = InfraCenter[g]},
-    {circles = FindInfraCircle[g, c, "Radius" -> 4, All]},
+    {circles = FindInfraCircle[g, c, 4, All]},
     Labeled[
       InfraSubstrateHighlight[g,
         {FindInfraShell[g, c, 4] -> $InfraShellColor,
@@ -78,7 +75,7 @@ Row @ Table[
   With[
     {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
     {c = InfraCenter[g]},
-    {circles = FindInfraCircle[g, c, "Radius" -> band, All]},
+    {circles = FindInfraCircle[g, c, band, All]},
     Labeled[
       InfraSubstrateHighlight[g,
         {FindInfraShell[g, c, band] -> $InfraShellColor,
@@ -94,7 +91,7 @@ GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[First @ spec, "Small", "KeepCoordinates" -> True]},
     {c = InfraCenter[g]},
-    {circle = FindInfraCircle[g, c, "Radius" -> Last @ spec]},
+    {circle = FindInfraCircle[g, c, Last @ spec]},
     InfraSubstrateHighlight[g, {Graph[DirectedEdge @@@ Partition[circle, 2, 1, 1]] -> $InfraCircleColor, Directive[$InfraPointColor], c},
       "Arrowheads" -> True]],
   {spec, {{"SquareTilingGraph", {4, 5}}, {"HexagonalTilingGraph", {4, 6}}, {"TriangularTilingGraph", 4}}}]
@@ -102,15 +99,15 @@ GraphicsRow @ Table[
 
 ## Scope
 
-The band `{2, 4}` around the centre of the square tiling, every circle in it drawn at once. A bounded count gives a list, and a strict count that cannot be met is `$Failed`.
+The band `{2, 4}` around the centre of the square tiling, every circle in it drawn at once. A bounded count gives a list, and a strict count that cannot be met gives `{ }`.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  {circles = FindInfraCircle[g, c, "Radius" -> {2, 4}, All]},
+  {circles = FindInfraCircle[g, c, {2, 4}, All]},
   {InfraSubstrateHighlight[g, {Table[Graph[DirectedEdge @@@ Partition[circle, 2, 1, 1]], {circle, circles}] -> $InfraCircleColor}],
-   Length @ circles, Length @ FindInfraCircle[g, c, "Radius" -> {2, 4}, 3], FindInfraCircle[g, c, "Radius" -> {2, 4}, 20]}]
+   Length @ circles, Length @ FindInfraCircle[g, c, {2, 4}, 3], FindInfraCircle[g, c, {2, 4}, 20]}]
 ```
 
 The count-less call is one circle, the same every time.
@@ -119,20 +116,19 @@ The count-less call is one circle, the same every time.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  {closedWalk = FindInfraCircle[g, c, "Radius" -> {2, 4}]},
+  {closedWalk = FindInfraCircle[g, c, {2, 4}]},
   {InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]] -> $InfraCircleColor, Directive[$InfraPointColor], c}],
    closedWalk}]
 ```
 
-The point form on the triangular tiling: a circle through a vertex at distance 2 from the centre.
+A circle on the triangular tiling at radius 2, a single shell.
 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
-  {closedWalk = FindInfraCircle[g, c, p]},
-  {InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]] -> $InfraCircleColor, Directive[$InfraPointColor], c, p}],
+  {closedWalk = FindInfraCircle[g, c, 2]},
+  {InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]] -> $InfraCircleColor, Directive[$InfraPointColor], c}],
    closedWalk}]
 ```
 
@@ -145,7 +141,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {band = FindInfraShell[g, c, {2, 4}]},
-  {closedWalk = FindInfraCircle[g, c, "Radius" -> {2, 4}]},
+  {closedWalk = FindInfraCircle[g, c, {2, 4}]},
   {InfraSubstrateHighlight[g, {band -> $InfraShellColor, InfraWalk[Append[closedWalk, First @ closedWalk]] -> $InfraCircleColor}],
    SubsetQ[band, closedWalk], EdgeQ[g, UndirectedEdge[Last @ closedWalk, First @ closedWalk]]}]
 ```
@@ -156,7 +152,7 @@ The search finds as many circles as the head counts.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  {circle = InfraCircle[c, "Radius" -> {2, 4}]},
+  {circle = InfraCircle[c, {2, 4}]},
   {InfraSubstrateHighlight[g, {circle -> $InfraCircleColor, Directive[$InfraPointColor], c}],
-   Length @ FindInfraCircle[g, c, "Radius" -> {2, 4}, All], InfraMeasurement[g, circle, "Cardinality"]}]
+   Length @ FindInfraCircle[g, c, {2, 4}, All], InfraMeasurement[g, circle, "Cardinality"]}]
 ```

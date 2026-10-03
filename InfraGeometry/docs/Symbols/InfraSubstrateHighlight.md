@@ -50,7 +50,7 @@ A scalar is the value at full strength. A pair is an envelope, interpolated by s
 
 ## Basic Examples
 
-Three heads, in palette order: a segment, a circle and an arc.
+Three heads, in palette order: a segment, a closed arc (the circles through a point) and an arc.
 
 ```wl
 With[
@@ -59,7 +59,7 @@ With[
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 5])},
   {q = (SeedRandom[2]; RandomInfraPoint[g, c, 5])},
   InfraSubstrateHighlight[g,
-    {InfraSegment[c, p], InfraCircle[c, p, "RadiusDelta" -> 1], InfraArc[c, {p, q}, "RadiusDelta" -> 1]}]]
+    {InfraSegment[c, p], InfraArc[c, {p, p}, "RadiusDelta" -> 1], InfraArc[c, {p, q}, "RadiusDelta" -> 1]}]]
 ```
 
 A `Directive` colors the objects after it.
@@ -70,7 +70,7 @@ With[
   {c = InfraCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 5])},
   InfraSubstrateHighlight[g,
-    {FindInfraRepresentative[g, InfraBall[c, 3]], Directive[$InfraCircleColor], InfraCircle[c, p, "RadiusDelta" -> 1]}]]
+    {FindInfraRepresentative[g, InfraBall[c, 3]], Directive[$InfraCircleColor], InfraArc[c, {p, p}, "RadiusDelta" -> 1]}]]
 ```
 
 Overlaps add. The two segments share their start and blend there. The walk is one stroke.

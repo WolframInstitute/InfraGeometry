@@ -514,7 +514,7 @@ VerificationTest[
   TestID -> "FindInfraOsculatingShell-sorted-by-radius"
 ]
 
-(* FindInfraCircle's seam necklaces, "RadiusDelta" / "Radius" forms, cyclic instances,
+(* FindInfraCircle's seam necklaces, its radius and band forms, cyclic instances,
    and the Q_4 / octagon / Petersen fixtures are pinned against brute force in
    InfraCircleTests.wlt (EuclideanInertHeads, T4); this section and the circle-pool
    section that followed it tested the old Method / Properties / DAG-pool API and the
@@ -613,7 +613,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     Length @ EmbeddingClosest[ g,
-      FindInfraCircle[ g, 6, "Radius" -> { 1, 2 }, All ],
+      FindInfraCircle[ g, 6, { 1, 2 }, All ],
       { 6, 1.5 } ] >= 1
   ],
   True,
@@ -887,8 +887,8 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 10, 10 } ], p = 45 },
-    Sort[ Sort /@ FindInfraCircle[ g, p, "Radius" -> { 1, 2 }, All ] ] ===
-      Sort[ Sort /@ FindInfraCircle[ NeighborhoodGraph[ g, p, 4 ], p, "Radius" -> { 1, 2 }, All ] ]
+    Sort[ Sort /@ FindInfraCircle[ g, p, { 1, 2 }, All ] ] ===
+      Sort[ Sort /@ FindInfraCircle[ NeighborhoodGraph[ g, p, 4 ], p, { 1, 2 }, All ] ]
   ],
   True,
   TestID -> "FindInfraCircle-locality-Metric"

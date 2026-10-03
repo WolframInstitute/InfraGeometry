@@ -195,7 +195,7 @@ VerificationTest[
    meeting at v, so it is the product of the two occupations on the common vertices *)
 VerificationTest[
   With[{g = GridGraph[{9, 9}], c = 41},
-    {seg = InfraSegment[41, 59], cir = InfraCircle[c, "Radius" -> {2, 3}]},
+    {seg = InfraSegment[41, 59], cir = InfraCircle[c, {2, 3}]},
     {ds = InfraMeasurement[g, seg, "VertexDensity"],
      dc = InfraMeasurement[g, cir, "VertexDensity"]},
     {meet = InfraMeasurement[g, InfraIntersection[seg, cir], "VertexDensity"]},
@@ -271,9 +271,9 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{7, 7}]},
     {WolframInstitute`InfraGeometry`PackageScope`dispatchConstruction[g, InfraCircle[25, {2, 3}]] ===
-       FindInfraRepresentative[g, InfraCircle[25, "Radius" -> {2, 3}], All],
+       FindInfraRepresentative[g, InfraCircle[25, {2, 3}], All],
      WolframInstitute`InfraGeometry`PackageScope`dispatchConstruction[g, InfraCircle[25, {2, 3}, "Branches" -> 1]] ===
-       FindInfraRepresentative[g, InfraCircle[25, "Radius" -> {2, 3}], UpTo[1]]}],
+       FindInfraRepresentative[g, InfraCircle[25, {2, 3}], UpTo[1]]}],
   {True, True},
   TestID -> "FindInfraRepresentative-scene-circle-is-by-radius"
 ]

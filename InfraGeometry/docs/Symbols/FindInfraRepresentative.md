@@ -21,7 +21,8 @@ RelatedGuides: [EuclideanInfrageometry]
 The head names the notion; this function finds its members. Where the head has a faithful graph theorem, a member is read off it; otherwise the head's own search runs at its defaults.
 
 - `InfraSegment[p, q]`, `InfraRay[p, q]`, `InfraLine[p, q]` and `InfraArc[c, {p, q}]`: a member is a source-to-sink chain of <code>[InfraMeasurement]()[*graph*, *head*, "Graph"]</code>, read off in lexicographic order. A polyline `InfraSegment[p1, ..., pk]` and a multi-point arc concatenate the members of their pieces.
-- `InfraCircle[c, p]` and `InfraCircle[c, "Radius" -> r]`: a member is a circle found by the sweep, <code>[FindInfraCircle]()</code> at its defaults, as a cyclic vertex list whose first vertex is not repeated. The necklace graph stays what `InfraMeasurement` measures.
+- `InfraCircle[c, r | {r, s}]`: a member is a circle found by the sweep, <code>[FindInfraCircle]()</code> at its defaults, as a cyclic vertex list whose first vertex is not repeated. The necklace graph stays what `InfraMeasurement` measures.
+- `InfraArc[c, {p, p}]`, the closed arc: the same, by <code>[FindInfraArc]()</code>, a circle through *p*.
 - The scene tokens `InfraShell`, `InfraBall`, `InfraPlane`, `InfraPolygon`, `InfraTriangle`, `InfraPolyline`, `InfraRevolution`, `InfraWalk`, `InfraPoint` and `InfraLine[path]`: a member is a result of the token's search at its defaults. A set head such as `InfraBall[c, r]` has one member, its sorted vertex list.
 
 A closed count under a non-negative integer *n* that exceeds the number of members gives `{ }`.
@@ -56,8 +57,8 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = InfraCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
-  {member = FindInfraRepresentative[g, InfraSegment[a, b]]},
-  {InfraSubstrateHighlight[g, {InfraWalk[member], Directive[$InfraPointColor], a, b}], member}]
+  {geodesic = FindInfraRepresentative[g, InfraSegment[a, b]]},
+  {InfraSubstrateHighlight[g, {InfraWalk[geodesic], Directive[$InfraPointColor], a, b}], geodesic}]
 ```
 
 Every member at once, and their number.
@@ -90,7 +91,7 @@ A member of a circle is a circle of the sweep, as a cyclic vertex list: the clos
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  {closedWalk = FindInfraRepresentative[g, InfraCircle[c, "Radius" -> {2, 4}]]},
+  {closedWalk = FindInfraRepresentative[g, InfraCircle[c, {2, 4}]]},
   {InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]] -> $InfraCircleColor, Directive[$InfraPointColor], c}], closedWalk}]
 ```
 

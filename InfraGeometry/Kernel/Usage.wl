@@ -77,13 +77,13 @@ InfraTube::usage = "InfraTube[core, s] is the inert tube { v : d(v, core) <= s }
 InfraCylinder::usage = "InfraCylinder[axis, r] is the inert cylinder of radius r around axis, the tube InfraTube[axis, r]; r may be a band {r, s}.";
 InfraCone::usage = "InfraCone[axis, slope] is the inert cone { v : d(v, axis[[i]]) <= slope (i - 1) for some i } with apex First[axis]; reverse the axis for the other apex.";
 
-InfraCircle::usage = "InfraCircle[c, p] is the inert circle around c through p and InfraCircle[c, \"Radius\" -> r | {r, s}] the circles of a band; its graph is the List of necklaces of a radial seam. Option \"RadiusDelta\" widens the band: a scalar d means {0, d}, outward only.";
-FindInfraCircle::usage = "FindInfraCircle[graph, c, p] gives one circle around c through p as a cyclic vertex list; \"Radius\" -> r | {r, s} in place of p takes a band. A trailing n | UpTo[n] | All gives a List. Option \"RadiusDelta\".";
+InfraCircle::usage = "InfraCircle[c, r | {r, s}] is the inert family of circles around c at radius r, or in the band r <= d(c, v) <= s; its graph is the List of necklaces of a radial seam. The circle through a point p is the closed arc InfraArc[c, {p, p}].";
+FindInfraCircle::usage = "FindInfraCircle[graph, c, r | {r, s}] gives one circle around c at radius r, or in the band r <= d(c, v) <= s, as a cyclic vertex list. A trailing n | UpTo[n] | All gives a List.";
 FindInfraCycle::usage = "FindInfraCycle[graph, n] gives the n shortest simple cycles of graph; FindInfraCycle[graph, {kmin, kmax}, n] restricts their length.";
 InfraCircleQ::usage = "InfraCircleQ[graph, cycle] tests whether cycle is a cyclic edge chain whose vertex set is a metric shell.";
 
-InfraArc::usage = "InfraArc[c, {p1, ..., pk}] is the inert arc around c from p1 to pk through the intermediate points: the geodesics of the band graph of the circle through p1. Option \"RadiusDelta\" widens the band: a scalar d means {0, d}, outward only.";
-FindInfraArc::usage = "FindInfraArc[graph, c, {p1, ..., pk}] gives one arc around c through the points as a vertex list; a trailing n | UpTo[n] | All gives a List. Option \"RadiusDelta\".";
+InfraArc::usage = "InfraArc[c, {p1, ..., pk}] is the inert arc around c from p1 to pk through the intermediate points: the geodesics of the band graph of the circle through p1. InfraArc[c, {p, p}], or InfraArc[c, {p}], is the closed arc: the circles through p; InfraArc[c, {p1, ..., pk, p1}] those through all the points. Option \"RadiusDelta\" widens the band: a scalar d means {0, d}, outward only.";
+FindInfraArc::usage = "FindInfraArc[graph, c, {p1, ..., pk}] gives one arc around c through the points as a vertex list; FindInfraArc[graph, c, {p, p}] gives a circle through p by the cycle sweep. A trailing n | UpTo[n] | All gives a List. Option \"RadiusDelta\".";
 
 InfraPolygon::usage = "InfraPolygon[{v1, ..., vn}] inside InfraScene is the closed geodesic chain through the given corners, InfraPolygon[pool, n] the n-gon search over a pool; FindInfraPolygon is the search. A polygon itself is the List of its sides, one directed path graph each, consecutive sides sharing a corner.";
 FindInfraPolygon::usage = "FindInfraPolygon[graph, {p1, ..., pn}] gives one polygon with corners p1, ..., pn: a geodesic between each pair of consecutive corners; a trailing n | UpTo[n] | All sets the count. Option Method.";

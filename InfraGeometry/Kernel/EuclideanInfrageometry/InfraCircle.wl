@@ -2,33 +2,22 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraCircle *)
 
-(* InfraCircle[c, p] and InfraCircle[c, "Radius" -> r | {r, s}] are inert: the circles of the band W = { v : rmin <= d(c, v) <= rmax } around c, a
-   circle being a shortest cycle of the band graph A = G[W] whose removal leaves c in a component that reaches no further than rmax.  The point form
-   takes the band d(c, p) widened by "RadiusDelta" -> dOut | {dIn, dOut}.  Its graph is the List of necklaces of a radial seam sigma -- the band part
-   of a geodesic from c to just outside the band, taken through p in the point form.  On a run S = (s1, ..., sm) of sigma the necklace N(S, u, v),
-   with u ~ s1 and v ~ sm in one component of the cut band A - V(sigma), is s1 -> ... -> sm -> v together with the interval DAG of the cut band from
-   v to u; its closing arrow u -> s1 is left out, so it is a DAG whose chains are exactly the cycles S v gamma u, all of the one length m + 1 + d(v,
-   u) (design Thm. seam).  Kept are the necklaces of least length among those whose cycles separate, and in the point form only those whose run meets
-   p.  Their cycles always separate, and they are every circle exactly once under the winding functional (W) and the one-run hypothesis (T), which
-   neither head certifies -- hence "Faithful" -> Undetermined.  Runs are read in seam order alone, which is what picks one of the two orientations of
-   each cycle *)
+(* InfraCircle[c, r] and InfraCircle[c, {r, s}] are inert: the circles of the band W = { v : r <= d(c, v) <= s } around c, scalar r meaning {r, r}, a
+   circle being a shortest cycle of the band graph A = G[W] whose removal leaves c in a component that reaches no further than s.  Its graph is the
+   List of necklaces of a radial seam sigma -- the band part of a geodesic from c to just outside the band.  On a run S = (s1, ..., sm) of sigma the
+   necklace N(S, u, v), with u ~ s1 and v ~ sm in one component of the cut band A - V(sigma), is s1 -> ... -> sm -> v together with the interval DAG
+   of the cut band from v to u; its closing arrow u -> s1 is left out, so it is a DAG whose chains are exactly the cycles S v gamma u, all of the one
+   length m + 1 + d(v, u) (design Thm. seam).  Kept are the necklaces of least length among those whose cycles separate.  Their cycles always
+   separate, and they are every circle exactly once under the winding functional (W) and the one-run hypothesis (T), which the head does not
+   certify -- hence "Faithful" -> Undetermined.  Runs are read in seam order alone, which is what picks one of the two orientations of each cycle.
+   The circle through a point is the closed arc InfraArc[c, {p, p}] *)
 
-InfraMeasurement[ graph_Graph, InfraCircle[ center_, spec_, opts___Rule ], "Graph" ] :=
-  With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ],
-          delta = Replace[ Lookup[ { opts }, "RadiusDelta", 0 ], d : Except[ _List ] :> { 0, d } ] },
-    { band = Replace[ spec, {
-        ( "Radius" -> rs_ ) :> Replace[ rs, k : Except[ _List ] :> { k, k } ],
-        p_ :> Lookup[ dist, Key @ p ] + { - First @ delta, Last @ delta } } ] },
-    { rmin = Max[ 1, First @ band ], rmax = Last @ band },
+InfraMeasurement[ graph_Graph, InfraCircle[ center_, rs : ( _?NumericQ | { _?NumericQ, _?NumericQ } ) ], "Graph" ] :=
+  With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ] },
+    { rmin = Max[ 1, First @ Flatten @ { rs } ], rmax = Last @ Flatten @ { rs } },
     { local = Subgraph[ graph, Select[ VertexList @ graph, Lookup[ dist, Key @ # ] <= rmax + 1 & ] ] },
     { ends = SortBy[ Select[ VertexList @ local, Lookup[ dist, Key @ # ] > rmax & ], Lookup[ dist, Key @ # ] & ] },
-    { radial = Which[
-        ends === { }, { },
-        MatchQ[ spec, _Rule ], FindShortestPath[ local, center, First @ ends ],
-        True, With[ { outward = SelectFirst[ ends,
-              Lookup[ dist, Key @ spec ] + GraphDistance[ local, spec, # ] == Lookup[ dist, Key @ # ] & ] },
-          If[ MissingQ @ outward, { },
-            Join[ FindShortestPath[ local, center, spec ], Rest @ FindShortestPath[ local, spec, outward ] ] ] ] ] },
+    { radial = If[ ends === { }, { }, FindShortestPath[ local, center, First @ ends ] ] },
     { seam = Select[ radial, rmin <= Lookup[ dist, Key @ # ] <= rmax & ],
       bandGraph = Subgraph[ local, Select[ VertexList @ local, rmin <= Lookup[ dist, Key @ # ] <= rmax & ] ] },
     { cut = VertexDelete[ bandGraph, seam ] },
@@ -54,9 +43,7 @@ InfraMeasurement[ graph_Graph, InfraCircle[ center_, spec_, opts___Rule ], "Grap
           If[ Length @ run == 1,
             Subsets[ Intersection[ AdjacencyList[ bandGraph, First @ run ], cutVs ], { 2 } ],
             Tuples[ Intersection[ AdjacencyList[ bandGraph, # ], cutVs ] & /@ { First @ run, Last @ run } ] ] ],
-        Select[
-          Catenate @ Table[ Take[ seam, { i, j } ], { i, Length @ seam }, { j, i, Length @ seam } ],
-          MatchQ[ spec, _Rule ] || MemberQ[ #, spec ] & ] ] },
+        Catenate @ Table[ Take[ seam, { i, j } ], { i, Length @ seam }, { j, i, Length @ seam } ] ] },
     Replace[
       Catch @ Scan[
         class |-> With[ { admissible = Select[ class,
@@ -66,7 +53,7 @@ InfraMeasurement[ graph_Graph, InfraCircle[ center_, spec_, opts___Rule ], "Grap
         Values @ KeySort @ GroupBy[ necklaces, #[ "Length" ] & ] ],
       Null -> { } ] ]
 
-InfraMeasurement[ graph_Graph, obj : InfraCircle[ _, _, ___Rule ], "Length" ] :=
+InfraMeasurement[ graph_Graph, obj : InfraCircle[ _, _ ], "Length" ] :=
   Replace[
     Union @@ Map[
       dag |-> DeleteCases[ Infinity ] @ Union @ Flatten @ Table[ 1 + GraphDistance[ dag, s, t ],
@@ -75,7 +62,7 @@ InfraMeasurement[ graph_Graph, obj : InfraCircle[ _, _, ___Rule ], "Length" ] :=
       InfraMeasurement[ graph, obj, "Graph" ] ],
     { one_ } :> one ]
 
-InfraMeasurement[ graph_Graph, obj : InfraCircle[ _, _, ___Rule ], "EdgeDensity" ] :=
+InfraMeasurement[ graph_Graph, obj : InfraCircle[ _, _ ], "EdgeDensity" ] :=
   KeySort @ Merge[
     Map[
       dag |-> With[ { inNbr = GroupBy[ EdgeList @ dag, Last -> First ],
@@ -93,7 +80,7 @@ InfraMeasurement[ graph_Graph, obj : InfraCircle[ _, _, ___Rule ], "EdgeDensity"
       InfraMeasurement[ graph, obj, "Graph" ] ],
     Total ]
 
-InfraMemberQ[ graph_Graph, obj : InfraCircle[ _, _, ___Rule ], path_List ] :=
+InfraMemberQ[ graph_Graph, obj : InfraCircle[ _, _ ], path_List ] :=
   path =!= { } &&
   AnyTrue[ InfraMeasurement[ graph, obj, "Graph" ],
     dag |-> AnyTrue[
@@ -103,24 +90,16 @@ InfraMemberQ[ graph_Graph, obj : InfraCircle[ _, _, ___Rule ], path_List ] :=
         VertexQ[ dag, Last @ rot ] && VertexOutDegree[ dag, Last @ rot ] == 0 &&
         AllTrue[ Partition[ rot, 2, 1 ], EdgeQ[ dag, DirectedEdge @@ # ] & ] ] ]
 
-Options[ FindInfraCircle ] = { "RadiusDelta" -> 0 }
-
-FindInfraCircle[ graph_Graph, center_, spec_,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
-  With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ],
-          delta = Replace[ OptionValue[ FindInfraCircle, { opts }, "RadiusDelta" ],
-                    d : Except[ _List ] :> { 0, d } ] },
-    { band = Replace[ spec, {
-        ( "Radius" -> rs_ ) :> Replace[ rs, k : Except[ _List ] :> { k, k } ],
-        p_ :> Lookup[ dist, Key @ p ] + { - First @ delta, Last @ delta } } ] },
-    { rmin = Max[ 1, First @ band ], rmax = Last @ band },
+FindInfraCircle[ graph_Graph, center_, rs : ( _?NumericQ | { _?NumericQ, _?NumericQ } ),
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic ] :=
+  With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ] },
+    { rmin = Max[ 1, First @ Flatten @ { rs } ], rmax = Last @ Flatten @ { rs } },
     { local = Subgraph[ graph, Select[ VertexList @ graph, Lookup[ dist, Key @ # ] <= rmax + 1 & ] ] },
     { bandGraph = Subgraph[ local, Select[ VertexList @ local, rmin <= Lookup[ dist, Key @ # ] <= rmax & ] ] },
     { circles = Replace[
         Catch @ Scan[
           k |-> With[ { found = Select[ First /@ # & /@ FindCycle[ bandGraph, { k }, All ],
-                cycle |-> ( MatchQ[ spec, _Rule ] || MemberQ[ cycle, spec ] ) &&
-                  AllTrue[ VertexComponent[ VertexDelete[ local, cycle ], center ],
+                cycle |-> AllTrue[ VertexComponent[ VertexDelete[ local, cycle ], center ],
                     Lookup[ dist, Key @ # ] <= rmax & ] ] },
             If[ found =!= { }, Throw @ found ] ],
           Range[ 3, VertexCount @ bandGraph ] ],
@@ -189,6 +168,6 @@ InfraCircleQ[ graph_Graph, cycle_List ] /; Length[ cycle ] >= 3 :=
 InfraCircleQ[ _Graph, cycle_List ] /; Length[ cycle ] < 3 :=
   False
 
-FindInfraRepresentative[ graph_Graph, InfraCircle[ center_, spec_, opts___Rule ],
+FindInfraRepresentative[ graph_Graph, InfraCircle[ center_, rs : ( _?NumericQ | { _?NumericQ, _?NumericQ } ) ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  takeRepresentatives[ FindInfraCircle[ graph, center, spec, All, opts ], count, mods ]
+  takeRepresentatives[ FindInfraCircle[ graph, center, rs, All ], count, mods ]

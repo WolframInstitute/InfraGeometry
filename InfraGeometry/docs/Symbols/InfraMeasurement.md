@@ -39,7 +39,7 @@ The support of every object — what `"Subgraph"` and the four volumes read — 
 
 [InfraIntersection]() and [InfraUnion]() are heads on heads: neither is a family of walks, so neither has a `"Graph"`, `"Cardinality"`, `"Length"`, `"EdgeDensity"` or `"Faithful"`, and their `All` lists only the density, the subgraph and the four volumes. The intersection's `"VertexDensity"` is the product of the two objects' densities on their common vertices, the union's the sum.
 
-A circle or a circle band takes `"Radius" -> r | {r, s}` in place of a point, or widens the circle through a point with `"RadiusDelta" -> delta | {deltaIn, deltaOut}` (default `0`). A scalar *delta* means `{0, delta}`, outward only.
+A circle takes a radius `r` or a band `{r, s}`, a scalar `r` meaning `{r, r}`. The circle through a point is the closed arc <code>[InfraArc]()[*c*, {*p*, *p*}]</code>, which widens the band of *p* with `"RadiusDelta" -> delta | {deltaIn, deltaOut}` (default `0`). A scalar *delta* means `{0, delta}`, outward only.
 
 On a polyline <code>[InfraSegment]()[*p1*, …, *pk*]</code> the densities are not member counts: they are the sums of the piece densities. On the 5 × 5 grid, <code>[InfraSegment]()[1, 13, 25]</code> has 36 members, while its density at the centre 13 is 12.
 
@@ -98,7 +98,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = InfraCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
-  {heads = {InfraSegment[a, b], InfraCircle[a, "Radius" -> {2, 4}]}},
+  {heads = {InfraSegment[a, b], InfraCircle[a, {2, 4}]}},
   {InfraSubstrateHighlight[g, heads], InfraMeasurement[g, heads, "Cardinality"]}]
 ```
 
@@ -124,7 +124,7 @@ With[
   {a = InfraCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
   {seg = InfraSegment[a, b]},
-  {circle = InfraCircle[a, "Radius" -> {2, 4}]},
+  {circle = InfraCircle[a, {2, 4}]},
   {density = InfraMeasurement[g, InfraIntersection[seg, circle], "VertexDensity"]},
   {GraphicsRow[{InfraSubstrateHighlight[g, {seg, circle}], InfraSubstrateHighlight[g, {density}]}], density}]
 ```
