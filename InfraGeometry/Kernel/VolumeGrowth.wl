@@ -62,10 +62,14 @@ VolumeGrowthObservables[ g_Graph, vertices : Except[ _Rule | _RuleDelayed ],
         Append[
           DimensionCurvatureFit[ Transpose[ { r[[ sel ]], q[[ sel ]] } ], "Probe" -> probe, "Dimension" -> dimOpt ],
           "Window" -> MinMax @ r[[ sel ]] ] ] },
-    { fits = Map[
-        v |-> With[ { radii = Range[ 0, VertexEccentricity[ g, v ] ] },
-          { w = InfraMeasurement[ g, InfraBall[ v, # ] & /@ radii, measure ],
-            a = InfraMeasurement[ g, InfraShell[ v, # ] & /@ radii, "CountingMeasure" ] },
+    { vs = If[ listed, Replace[ vertices, All :> VertexList @ g ], { vertices } ] },
+    { radii = Range[ 0, VertexEccentricity[ g, # ] ] & /@ vs },
+    { ws = TakeList[ InfraMeasurement[ g, Catenate @ MapThread[ { v, rs } |-> InfraBall[ v, # ] & /@ rs, { vs, radii } ], measure ],
+        Length /@ radii ],
+      as = TakeList[ InfraMeasurement[ g, Catenate @ MapThread[ { v, rs } |-> InfraShell[ v, # ] & /@ rs, { vs, radii } ], "CountingMeasure" ],
+        Length /@ radii ] },
+    { fits = MapThread[
+        { w, a } |-> With[
           { peak = If[ window === Automatic, First @ Ordering[ a, -1 ], Length @ a ] },
           { ballFit = windowedFit[ radialQuotients @ Take[ w, UpTo[ peak ] ], "Ball" ],
             sphFit = windowedFit[ radialQuotients @ Take[ a, peak ], "Sphere" ] },
@@ -86,7 +90,7 @@ VolumeGrowthObservables[ g_Graph, vertices : Except[ _Rule | _RuleDelayed ],
             "SphereMeanCurvatureByRadius"  -> Differences @ Log @ N @ a,
             "BallWindow"                   -> ballFit[ "Window" ],
             "SphereWindow"                 -> sphFit[ "Window" ] |> ],
-        If[ listed, Replace[ vertices, All :> VertexList @ g ], { vertices } ] ] },
+        { ws, as } ] },
     If[ listed, fits, First @ fits ] ]
 
 (* DimensionCurvatureFit[{{r, q(r)}, ...}]: fit dimension d and scalar curvature R to log-difference

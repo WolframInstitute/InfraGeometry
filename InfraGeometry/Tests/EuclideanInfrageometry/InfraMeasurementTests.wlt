@@ -68,6 +68,28 @@ VerificationTest[
   TestID -> "InfraMeasurement-measures-of-a-filling-interval"
 ]
 
+(* ===== a List of region heads reads off one distance matrix what the heads read one by one ===== *)
+
+(* balls, shells, bands, tubes about a vertex, a set and a segment, a cylinder and a cone, under the three readings *)
+VerificationTest[
+  With[{g = GridGraph[{7, 7}],
+        regions = {InfraBall[25, 2], InfraBall[25, 2.5], InfraBall[{1, 49}, 3], InfraShell[25, 3], InfraShell[25, {1, 2}],
+          InfraBall[25, {1.5, 3}], InfraTube[25, 1], InfraTube[{1, 49}, 2], InfraTube[InfraSegment[1, 49], 1],
+          InfraTube[InfraSegment[25, 3], {1, 2}], InfraCylinder[InfraSegment[8, 14], 1], InfraCone[{1, 9, 17, 25}, 1]}},
+    Table[InfraMeasurement[g, regions, prop] === (InfraMeasurement[g, #, prop] & /@ regions),
+      {prop, {"VertexDensity", "CountingMeasure", "RiemannianMeasure"}}]],
+  {True, True, True},
+  TestID -> "InfraMeasurement-region-list-agrees-with-the-heads"
+]
+
+(* a segment between components has no interval, so its tube is empty; the other component is out of every ball *)
+VerificationTest[
+  With[{g = Graph[{1 <-> 2, 2 <-> 3, 4 <-> 5}]},
+    InfraMeasurement[g, {InfraTube[InfraSegment[1, 4], 1], InfraBall[1, 5], InfraShell[4, 1]}, "CountingMeasure"]],
+  {0, 3, 1},
+  TestID -> "InfraMeasurement-region-list-on-a-disconnected-graph"
+]
+
 (* ===== faithfulness ===== *)
 
 (* segments, rays and lines carry a theorem; circles and arcs need (W) and (T) *)

@@ -8,6 +8,52 @@ PackageScope[ searchMethod ]
 InfraMeasurement[ graph_Graph, objs : { __ }, spec_ ] :=
   InfraMeasurement[ graph, #, spec ] & /@ objs
 
+(* a List of region heads reads every support off one GraphDistanceMatrix, the distance to a core the Min over its columns and the interval
+   of a segment the two rows summing to the distance: one single-source GraphDistance costs 34 ms on a 989-vertex mesh, the whole matrix 10 ms *)
+
+InfraMeasurement[ graph_Graph,
+    regions : { ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone )[ _, _ ] .. }, "VertexDensity" ] :=
+  With[ { vlist = VertexList @ graph, n = VertexCount @ graph, dm = GraphDistanceMatrix @ graph },
+    { index = AssociationThread[ vlist -> Range @ n ],
+      bands = Replace[ regions, {
+          ( InfraBall | InfraTube | InfraCylinder )[ c_, r : Except[ _List ] ] :> { { c, 0, r } },
+          ( InfraBall | InfraShell | InfraTube | InfraCylinder )[ c_, { r_, s_ } ] :> { { c, r, s } },
+          InfraShell[ c_, r : Except[ _List ] ] :> { { c, r, r } },
+          InfraCone[ axis_List, slope_ ] :> MapIndexed[ { a, i } |-> { a, 0, slope ( First @ i - 1 ) }, axis ] }, { 1 } ] },
+    { distances = AssociationMap[
+        core |-> Clip[
+          Min /@ dm[[ All, Lookup[ index, Which[
+            VertexQ[ graph, core ], { core },
+            MatchQ[ core, _List | _Association | _Graph ], Keys @ InfraDensity[ graph, core ],
+            MatchQ[ core, InfraSegment[ p_, q_ ] /; VertexQ[ graph, p ] && VertexQ[ graph, q ] ],
+              With[ { d = dm[[ Lookup[ index, Key @ First @ core ], Lookup[ index, Key @ Last @ core ] ]] },
+                If[ d === Infinity, { },
+                  Pick[ vlist, dm[[ Lookup[ index, Key @ First @ core ] ]] + dm[[ Lookup[ index, Key @ Last @ core ] ]], d ] ] ],
+            True, Keys @ InfraMeasurement[ graph, core, "VertexDensity" ] ] ] ]],
+          { 0, n + 1 } ],
+        DeleteDuplicates @ Catenate[ bands ][[ All, 1 ]] ] },
+    Map[
+      triples |-> AssociationThread[
+        Sort @ Pick[ vlist,
+          Sign @ Total[ ( { core, lo, hi } |-> UnitStep[ Lookup[ distances, Key @ core ] - Ceiling[ lo ] ] *
+              UnitStep[ Floor @ Min[ hi, n ] - Lookup[ distances, Key @ core ] ] ) @@@ triples ],
+          1 ],
+        1 ],
+      bands ] ]
+
+InfraMeasurement[ graph_Graph,
+    regions : { ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone )[ _, _ ] .. }, "CountingMeasure" ] :=
+  Length /@ InfraMeasurement[ graph, regions, "VertexDensity" ]
+
+InfraMeasurement[ graph_Graph,
+    regions : { ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone )[ _, _ ] .. }, "RiemannianMeasure" ] :=
+  With[ { n = VertexCount @ graph, index = AssociationThread[ VertexList @ graph -> Range @ VertexCount @ graph ],
+          adjacency = Sign[ AdjacencyMatrix @ graph + Transpose @ AdjacencyMatrix @ graph ] },
+    Map[
+      support |-> With[ { inside = Normal @ SparseArray[ Thread[ Lookup[ index, support ] -> 1 ], n ] },
+        Total[ inside ( 1 - Sign[ adjacency . ( 1 - inside ) ] ) ] ],
+      Keys /@ InfraMeasurement[ graph, regions, "VertexDensity" ] ] ]
+
 InfraMeasurement[ graph_Graph, obj : Except[ _List ], props : { __String } ] :=
   AssociationMap[ InfraMeasurement[ graph, obj, # ] &, props ]
 
