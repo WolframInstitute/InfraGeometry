@@ -367,5 +367,6 @@ PackageExport[FindInfraLeviCivitaConnection]
 PackageExport[InfraHolonomyAngle]
 PackageExport[InfraCovariantDerivative]
 PackageExport[InfraCanonicalOneForm]
+PackageExport[InfraFiberedSubstrate]
 
 ClearAll["WolframInstitute`InfraGeometry`**`*", "WolframInstitute`InfraGeometry`*"]
