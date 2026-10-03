@@ -11,7 +11,7 @@ FindInfraPolygon[ graph_Graph, vertices_List /; Length[ vertices ] >= 3,
     { method = Replace[ methodSpec, { m_String, ___ } :> m ],
       sideCap = If[ count === All, Infinity, Max[ 8, 2 cap ] ] },
     { sides = Apply[
-        { a, b } |-> With[ { dag = If[ method === "Exhaustive" || a === b, Null, SegmentGraph[ graph, a, b ] ] },
+        { a, b } |-> With[ { dag = If[ method === "Exhaustive" || a === b, Null, InfraMeasurement[ graph, InfraSegment[ a, b ], "Graph" ] ] },
           Which[
             a === b, { },
             method === "Exhaustive",

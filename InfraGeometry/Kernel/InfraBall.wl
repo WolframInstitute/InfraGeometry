@@ -21,7 +21,7 @@ InfraMeasurement[ _Graph, InfraBall[ _, _ ], "Faithful" ] :=
 InfraMeasurement[ graph_Graph, ball : InfraBall[ _, _ ], All ] :=
   InfraMeasurement[ graph, ball,
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
-      "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume" } ]
+      "CountingMeasure", "RiemannianMeasure" } ]
 
 (* vs is a closed ball iff some c in vs has { v : d(c, v) <= max_{w in vs} d(c, w) } == vs; a family of sets passes iff each does *)
 

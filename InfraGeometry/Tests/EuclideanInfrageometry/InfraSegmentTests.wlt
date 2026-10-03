@@ -48,6 +48,40 @@ VerificationTest[
   TestID -> "InfraSegment-every-vertex-and-arrow-lies-on-a-member"
 ]
 
+(* the family size is the occupation of the endpoints: the 3x3 grid centre lies on 4 of the 6 geodesics,
+   a path has one geodesic and antipodal points of the hexagon two *)
+VerificationTest[
+  {With[{d = InfraMeasurement[GridGraph[{3, 3}], InfraSegment[1, 9], "VertexDensity"]}, {Max[d], d[5]}],
+   Max @ InfraMeasurement[PathGraph[Range[5]], InfraSegment[1, 5], "VertexDensity"],
+   Max @ InfraMeasurement[CycleGraph[6], InfraSegment[1, 4], "VertexDensity"]},
+  {{6, 4}, 1, 2},
+  TestID -> "InfraSegment-vertex-density-counts"
+]
+
+(* every arrow of a unique geodesic carries 1, and the arrows out of the source carry the whole family *)
+VerificationTest[
+  {Values @ InfraMeasurement[PathGraph[Range[5]], InfraSegment[1, 5], "EdgeDensity"],
+   Total @ KeySelect[InfraMeasurement[GridGraph[{3, 3}], InfraSegment[1, 9], "EdgeDensity"], First[#] === 1 &]},
+  {{1, 1, 1, 1}, 6},
+  TestID -> "InfraSegment-edge-density-conserves-the-family"
+]
+
+(* list-valued vertex labels: the arrow occupation finds every arrow *)
+VerificationTest[
+  With[{g = Graph[Map[{Quotient[# - 1, 3] + 1, Mod[# - 1, 3] + 1} &, EdgeList[GridGraph[{3, 3}]], {2}]]},
+    {d = InfraMeasurement[g, InfraSegment[{1, 1}, {3, 3}], "EdgeDensity"]},
+    {FreeQ[d, _Missing], Length[d], Total @ KeySelect[d, First[#] === {1, 1} &]}],
+  {True, 12, 6},
+  TestID -> "InfraSegment-edge-density-list-valued-labels"
+]
+
+(* endpoints in different components: the graph is empty *)
+VerificationTest[
+  VertexCount @ InfraMeasurement[Graph[{1, 2, 3}, {1 <-> 2}], InfraSegment[1, 3], "Graph"],
+  0,
+  TestID -> "InfraSegment-disconnected-endpoints-empty-graph"
+]
+
 (* ===== the polyline ===== *)
 
 (* the graph of a polyline is the List of its pieces' DAGs *)

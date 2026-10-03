@@ -97,73 +97,72 @@ VerificationTest[
 ]
 
 
-(* ===== Synthetic invariants: BallVolumes / LogDifferenceQuotients ===== *)
+(* ===== Synthetic invariants: the two measures of the regions / LogDifferenceQuotients ===== *)
 
-(* the three set measures from vertex 1 of the Petersen graph: every vertex of the ball
-   touches the complement until the ball is the whole graph, so WithoutBoundary lags
-   FullCount by one shell and HalfBoundary sits halfway *)
+(* the two measures of the balls about vertex 1 of the Petersen graph: every vertex of the ball
+   touches the complement until the ball is the whole graph, so the Riemannian measure lags
+   the counting measure by one shell *)
 VerificationTest[
-    BallVolumes[PetersenGraph[], 1, All, "Measure" -> #] & /@ {"FullCount", "WithoutBoundary", "HalfBoundary"},
-    {{1, 4, 10}, {0, 1, 10}, {1/2, 5/2, 10}},
-    TestID -> "BallVolumes-three-measures-Petersen"
+    Table[InfraMeasurement[PetersenGraph[], InfraBall[1, r], #], {r, 0, 2}] & /@ {"CountingMeasure", "RiemannianMeasure"},
+    {{1, 4, 10}, {0, 1, 10}},
+    TestID -> "InfraBall-two-measures-Petersen"
 ]
 
-(* FullCount - WithoutBoundary is the inner vertex boundary of the ball at every radius *)
+(* the counting measure less the Riemannian measure is the inner vertex boundary of the ball at every radius *)
 VerificationTest[
     With[{g = GridGraph[{7, 7}]},
         {row = GraphDistance[g, 25]},
-        BallVolumes[g, 25, All] - BallVolumes[g, 25, All, "Measure" -> "WithoutBoundary"] ===
+        Table[InfraMeasurement[g, InfraBall[25, r], "CountingMeasure"] - InfraMeasurement[g, InfraBall[25, r], "RiemannianMeasure"],
+            {r, 0, Max[row]}] ===
             Table[Length @ GraphBoundary[g, Pick[VertexList[g], Thread[row <= r]]], {r, 0, Max[row]}]
     ],
     True,
-    TestID -> "BallVolumes-WithoutBoundary-is-GraphInterior"
+    TestID -> "InfraBall-counting-less-Riemannian-is-GraphBoundary"
 ]
 
-(* in the bulk of a lattice the boundary of B_r is the whole shell S_r, so WithoutBoundary
-   is FullCount one radius earlier *)
+(* in the bulk of a lattice the boundary of B_r is the whole shell S_r, so the Riemannian
+   measure of B_r is the counting measure of B_(r-1) *)
 VerificationTest[
     With[{g = GridGraph[{11, 11}]},
-        BallVolumes[g, 61, {1, 4}, "Measure" -> "WithoutBoundary"] === BallVolumes[g, 61, {0, 3}]
+        Table[InfraMeasurement[g, InfraBall[61, r], "RiemannianMeasure"], {r, 1, 4}] ===
+            Table[InfraMeasurement[g, InfraBall[61, r], "CountingMeasure"], {r, 0, 3}]
     ],
     True,
-    TestID -> "BallVolumes-WithoutBoundary-shifts-on-lattice"
+    TestID -> "InfraBall-Riemannian-shifts-on-lattice"
 ]
 
-(* HalfBoundary on Z^2 and Z^3 is the parity-d part of the Ehrhart polynomial of the
-   cross-polytope, 2 r^2 + 1 and 4/3 r^3 + 8/3 r: the norm-ball volume with no r^(d-1) term *)
+(* on Z^2 and Z^3 the counting measure of B_r is the Ehrhart polynomial L_d(r) of the cross-polytope,
+   2 r^2 + 2 r + 1 and 4/3 r^3 + 2 r^2 + 8/3 r + 1, and the Riemannian measure is L_d(r - 1) *)
 VerificationTest[
-    {BallVolumes[GridGraph[{11, 11}], 61, {1, 4}, "Measure" -> "HalfBoundary"],
-     BallVolumes[GridGraph[{9, 9, 9}], 365, {1, 3}, "Measure" -> "HalfBoundary"]},
-    {Table[2 r^2 + 1, {r, 1, 4}], Table[4/3 r^3 + 8/3 r, {r, 1, 3}]},
-    TestID -> "BallVolumes-HalfBoundary-Ehrhart-parity"
+    {Table[InfraMeasurement[GridGraph[{11, 11}], InfraBall[61, r], #], {r, 1, 4}] & /@ {"CountingMeasure", "RiemannianMeasure"},
+     Table[InfraMeasurement[GridGraph[{9, 9, 9}], InfraBall[365, r], #], {r, 1, 3}] & /@ {"CountingMeasure", "RiemannianMeasure"}},
+    {{Table[2 r^2 + 2 r + 1, {r, 1, 4}], Table[2 (r - 1)^2 + 2 (r - 1) + 1, {r, 1, 4}]},
+     {Table[4/3 r^3 + 2 r^2 + 8/3 r + 1, {r, 1, 3}], Table[4/3 (r - 1)^3 + 2 (r - 1)^2 + 8/3 (r - 1) + 1, {r, 1, 3}]}},
+    TestID -> "InfraBall-two-measures-Ehrhart-Z2-Z3"
 ]
 
-(* Ehrhart-Macdonald reciprocity read off the closed count: the polynomial through the
-   first three Z^2 volumes is 2 x^2 + 2 x + 1 and its values at -r are the open counts |B_{r-1}| *)
+(* Ehrhart-Macdonald reciprocity read off the counting measure: the polynomial through the
+   first three Z^2 volumes is 2 x^2 + 2 x + 1, and its values at -r are the open counts |B_(r-1)|,
+   which are the Riemannian measures of B_r *)
 VerificationTest[
-    With[{v = BallVolumes[GridGraph[{11, 11}], 61, {0, 4}]},
+    With[{v = Table[InfraMeasurement[GridGraph[{11, 11}], InfraBall[61, r], "CountingMeasure"], {r, 0, 4}]},
         {ell = InterpolatingPolynomial[Table[{r, v[[r + 1]]}, {r, 0, 2}], x]},
-        {Expand[ell], Table[ell /. x -> -r, {r, 1, 4}] === v[[1 ;; 4]]}
+        {Expand[ell], Table[ell /. x -> -r, {r, 1, 4}] === v[[1 ;; 4]],
+         Table[ell /. x -> -r, {r, 1, 4}] === Table[InfraMeasurement[GridGraph[{11, 11}], InfraBall[61, r], "RiemannianMeasure"], {r, 1, 4}]}
     ],
-    {1 + 2 x + 2 x^2, True},
-    TestID -> "BallVolumes-Ehrhart-reciprocity-Z2"
+    {1 + 2 x + 2 x^2, True, True},
+    TestID -> "InfraBall-Ehrhart-reciprocity-Z2"
 ]
 
-(* the triangular and honeycomb lattices: 3 r^2 + 1 and 1 + 3 r^2 / 2 *)
+(* the triangular and honeycomb lattices: the counting measures 3 r^2 + 3 r + 1 and 1 + 3 r (r + 1) / 2,
+   the Riemannian measures one radius earlier *)
 VerificationTest[
     With[{tri = IndexGraph @ TessellationGraph[{3, 6}, {16, 16}], hex = IndexGraph @ TessellationGraph[{6, 3}, {14, 14}]},
-        {BallVolumes[tri, 1, {1, 5}, "Measure" -> "HalfBoundary"], BallVolumes[hex, 1, {1, 5}, "Measure" -> "HalfBoundary"]}
+        Table[InfraMeasurement[#1, InfraBall[1, r], #2], {r, 1, 5}] & @@@ Tuples[{{tri, hex}, {"CountingMeasure", "RiemannianMeasure"}}]
     ],
-    {Table[3 r^2 + 1, {r, 1, 5}], Table[1 + 3 r^2 / 2, {r, 1, 5}]},
-    TestID -> "BallVolumes-HalfBoundary-triangular-honeycomb"
-]
-
-(* a fixed finite radius window over a vertex list is rectangular, rationals included:
-   every row has length rmax - rmin + 1 (the contract that makes subset statistics Transpose) *)
-VerificationTest[
-    Dimensions[BallVolumes[GridGraph[{5, 5}], All, {0, 6}, "Measure" -> "HalfBoundary"]],
-    {25, 7},
-    TestID -> "BallVolumes-fixed-window-rectangular"
+    {Table[3 r^2 + 3 r + 1, {r, 1, 5}], Table[3 r^2 - 3 r + 1, {r, 1, 5}],
+     Table[1 + 3 r (r + 1) / 2, {r, 1, 5}], Table[1 + 3 r (r - 1) / 2, {r, 1, 5}]},
+    TestID -> "InfraBall-two-measures-triangular-honeycomb"
 ]
 
 (* the log-difference quotient of a clean power law r^d recovers the exponent d *)
@@ -173,104 +172,61 @@ VerificationTest[
     TestID -> "LogDifferenceQuotients-power-law-exponent"
 ]
 
-(* "ExpandingFront" measure: V(t) = sum_{s<=t} |S_s(v)|.  On a path from an endpoint the front
-   is a single vertex marching out and reflecting, so |S_s| == 1 and V(t) == t + 1 *)
-VerificationTest[
-    BallVolumes[PathGraph[Range[7]], 1, {0, 12}, "Measure" -> "ExpandingFront"],
-    Range[1, 13],
-    TestID -> "BallVolumes-ExpandingFront-single-vertex-on-path"
-]
-
-(* the front starts as the origin alone, so V(0) == 1 for any graph *)
-VerificationTest[
-    BallVolumes[GridGraph[{4, 4}], 5, 0, "Measure" -> "ExpandingFront"],
-    1,
-    TestID -> "BallVolumes-ExpandingFront-V0-is-one"
-]
-
-(* unlike the metric ball (which saturates at the component size past eccentricity),
-   the momentum front keeps sweeping, so V(2 ecc) strictly exceeds |component| *)
-VerificationTest[
-    Last[BallVolumes[CycleGraph[8], 1, All, "Measure" -> "ExpandingFront"]] > VertexCount[CycleGraph[8]],
-    True,
-    TestID -> "BallVolumes-ExpandingFront-propagates-past-ecc"
-]
-
-(* V is the running total of the front sizes, which are >= 1 (the front never empties):
-   the step differences are exactly the foliation cardinalities, all positive *)
-VerificationTest[
-    With[{v = BallVolumes[CycleGraph[10], 1, {0, 15}, "Measure" -> "ExpandingFront"]},
-        Min[Differences[v]] >= 1 && OrderedQ[v]],
-    True,
-    TestID -> "BallVolumes-ExpandingFront-monotone-never-empties"
-]
-
-(* the defining identity, measure for measure: A(r) = V(r) - V(r-1), V(-1) = 0 *)
+(* the defining identity of the shell count: A(r) = V(r) - V(r-1), V(-1) = 0, under the counting measure *)
 VerificationTest[
     With[{g = GridGraph[{9, 9}]},
-        AllTrue[{"FullCount", "WithoutBoundary", "HalfBoundary", "ExpandingFront"},
-            Accumulate[ShellAreas[g, 41, All, "Measure" -> #]] ===
-                BallVolumes[g, 41, All, "Measure" -> #] &]],
+        Accumulate @ Table[InfraMeasurement[g, InfraShell[41, r], "CountingMeasure"], {r, 0, 8}] ===
+            Table[InfraMeasurement[g, InfraBall[41, r], "CountingMeasure"], {r, 0, 8}]],
     True,
-    TestID -> "ShellAreas-accumulates-to-BallVolumes-every-measure"
+    TestID -> "InfraShell-counting-accumulates-to-InfraBall"
 ]
 
-(* the default is the metric shell count: the OEIS coordination sequence, A(1) the degree *)
+(* the counting measure of the shells is the OEIS coordination sequence, A(1) the degree *)
 VerificationTest[
-    {ShellAreas[GridGraph[{11, 11}], 61, {0, 4}],
-     ShellAreas[HypercubeGraph[4], 1, All],
-     ShellAreas[CycleGraph[9], 1, All]},
+    {Table[InfraMeasurement[GridGraph[{11, 11}], InfraShell[61, r], "CountingMeasure"], {r, 0, 4}],
+     Table[InfraMeasurement[HypercubeGraph[4], InfraShell[1, r], "CountingMeasure"], {r, 0, 4}],
+     Table[InfraMeasurement[CycleGraph[9], InfraShell[1, r], "CountingMeasure"], {r, 0, 4}]},
     {{1, 4, 8, 12, 16}, {1, 4, 6, 4, 1}, {1, 2, 2, 2, 2}},
-    TestID -> "ShellAreas-FullCount-is-the-coordination-sequence"
+    TestID -> "InfraShell-counting-is-the-coordination-sequence"
 ]
 
-(* on a lattice the half-boundary shell is the centred count (A(r) + A(r-1))/2, and
-   A(0) = 1/2 because dB_0 = {v} whenever v has a neighbour *)
+(* past the eccentricity the shell is empty *)
 VerificationTest[
-    With[{a = ShellAreas[GridGraph[{11, 11}], 61, {0, 4}]},
-        ShellAreas[GridGraph[{11, 11}], 61, {0, 4}, "Measure" -> "HalfBoundary"] ===
-            (a + Prepend[Most[a], 0]) / 2],
-    True,
-    TestID -> "ShellAreas-HalfBoundary-is-the-centred-shell"
+    Table[InfraMeasurement[PathGraph[Range[4]], InfraShell[1, r], "CountingMeasure"], {r, 0, 6}],
+    {1, 1, 1, 1, 0, 0, 0},
+    TestID -> "InfraShell-counting-is-zero-past-the-eccentricity"
 ]
 
-(* a fixed window over the vertex slot is rectangular and pads with 0, the empty shell *)
-VerificationTest[
-    {Dimensions[ShellAreas[GridGraph[{5, 5}], All, {0, 6}]],
-     ShellAreas[PathGraph[Range[4]], 1, {0, 6}]},
-    {{25, 7}, {1, 1, 1, 1, 0, 0, 0}},
-    TestID -> "ShellAreas-fixed-window-rectangular-pads-zero"
-]
-
-(* the sphere probe of the growth fit reads exactly this profile *)
+(* the sphere probe of the growth fit reads exactly the counting measure of the shells *)
 VerificationTest[
     With[{g = GridGraph[{13, 13}]},
-        VolumeGrowthObservables[g, 85]["ShellAreas"] === ShellAreas[g, 85, All]],
+        VolumeGrowthObservables[g, 85]["ShellAreas"] ===
+            Table[InfraMeasurement[g, InfraShell[85, r], "CountingMeasure"], {r, 0, VertexEccentricity[g, 85]}]],
     True,
-    TestID -> "ShellAreas-is-the-observables-sphere-probe"
+    TestID -> "VolumeGrowthObservables-sphere-probe-is-the-shell-count"
 ]
 
-(* slope-of-mean: average the volume profiles over the vertex slot, then one slope.
+(* slope-of-mean: average the ball profiles over the vertices, then one slope.
    On a vertex-transitive graph every profile is identical, so it equals the
    single-vertex slope -- aggregation is caller-side composition, no option *)
 VerificationTest[
-    Max @ Abs[LogDifferenceQuotients[Mean /@ Transpose[BallVolumes[CycleGraph[40], All, {0, 18}]]]
-              - LogDifferenceQuotients[BallVolumes[CycleGraph[40], 1, {0, 18}]]] < 10.^-10,
+    With[{w = Table[InfraMeasurement[CycleGraph[40], InfraBall[v, r], "CountingMeasure"], {v, 40}, {r, 0, 18}]},
+        Max @ Abs[LogDifferenceQuotients[Mean /@ Transpose[w]] - LogDifferenceQuotients[First @ w]] < 10.^-10],
     True,
     TestID -> "LogDifferenceQuotients-slope-of-mean-vertex-transitive"
 ]
 
 (* averaging over a vertex SUBSET reproduces the single-vertex slope on a transitive graph *)
 VerificationTest[
-    Max @ Abs[LogDifferenceQuotients[Mean /@ Transpose[BallVolumes[CycleGraph[40], {1, 5, 9}, {0, 18}]]]
-              - LogDifferenceQuotients[BallVolumes[CycleGraph[40], 1, {0, 18}]]] < 10.^-10,
+    With[{w = Table[InfraMeasurement[CycleGraph[40], InfraBall[v, r], "CountingMeasure"], {v, {1, 5, 9}}, {r, 0, 18}]},
+        Max @ Abs[LogDifferenceQuotients[Mean /@ Transpose[w]] - LogDifferenceQuotients[First @ w]] < 10.^-10],
     True,
     TestID -> "LogDifferenceQuotients-subset-aggregation"
 ]
 
 (* MeanAround carries the per-vertex spread into Around; central values match Mean *)
 VerificationTest[
-    With[{w = Transpose[BallVolumes[GridGraph[{5, 5}], All, {0, 6}]]},
+    With[{w = Transpose @ Table[InfraMeasurement[GridGraph[{5, 5}], InfraBall[v, r], "CountingMeasure"], {v, 25}, {r, 0, 6}]},
         Max @ Abs[(#[[1]] & /@ LogDifferenceQuotients[MeanAround /@ w]) - LogDifferenceQuotients[Mean /@ w]] < 10.^-10
     ],
     True,
@@ -291,19 +247,45 @@ VerificationTest[
     TestID -> "VolumeGrowthObservables-P5-sphere-exact-line"
 ]
 
-(* cycle under the HalfBoundary measure: V(r) = 2 r exactly for r >= 1, so the ball probe
-   reads d = 1 and R = 0 on the Automatic window and on the full range alike *)
+(* the cycle: until the wrap the shell count is 2, so the sphere probe reads d = 1 and R = 0 exactly;
+   the Riemannian measure of B_r is 2 r - 1, so the ball probe reads d within 0.15 of 1 and R within 0.01
+   of 0, on the Automatic window and on the full range alike *)
 VerificationTest[
     With[{auto = VolumeGrowthObservables[CycleGraph[40], 1], full = VolumeGrowthObservables[CycleGraph[40], 1, All]},
-        Chop[{auto["BallDimension"] - 1, auto["BallScalarCurvature"], full["BallDimension"] - 1, full["BallScalarCurvature"]}, 10.^-8]
+        {Chop[{auto["SphereDimension"] - 1, auto["SphereScalarCurvature"]}, 10.^-8],
+         Max @ Abs[{auto["BallDimension"], full["BallDimension"]} - 1] < 0.15,
+         Max @ Abs[{auto["BallScalarCurvature"], full["BallScalarCurvature"]}] < 0.01}
     ],
-    {0, 0, 0, 0},
-    TestID -> "VolumeGrowthObservables-C40-HalfBoundary-exact"
+    {{0, 0}, True, True},
+    TestID -> "VolumeGrowthObservables-C40-cycle"
 ]
 
-(* flat 20x20 square torus under HalfBoundary: V(r) = 2 r^2 + 1 until the wrap at r = 10, so
+(* on a flat lattice the counting measure of B_r carries a positive r^(d-1) term and the Riemannian
+   measure a negative one, so the two ball probes read the dimension from below and from above *)
+VerificationTest[
+    Table[
+        With[{g = c[[1]], v = c[[2]], d = c[[3]]},
+            VolumeGrowthObservables[g, v, "Measure" -> "CountingMeasure"]["BallDimension"] < d <
+                VolumeGrowthObservables[g, v, "Measure" -> "RiemannianMeasure"]["BallDimension"]],
+        {c, {{CycleGraph[40], 1, 1}, {GridGraph[{15, 15}], 113, 2},
+             With[{t = TessellationGraph[{4, 4}, {20, 20}]}, {t, First @ VertexList @ t, 2}]}}],
+    {True, True, True},
+    TestID -> "VolumeGrowthObservables-two-measures-bracket-the-dimension"
+]
+
+(* the measure is one of the two; any other name leaves the call unevaluated *)
+VerificationTest[
+    With[{g = GridGraph[{7, 7}]},
+        {VolumeGrowthObservables[g, 25, "Measure" -> "CountingMeasure"]["BallVolumes"] ===
+             Table[InfraMeasurement[g, InfraBall[25, r], "CountingMeasure"], {r, 0, 6}],
+         MatchQ[VolumeGrowthObservables[g, 25, "Measure" -> "HalfBoundary"], _VolumeGrowthObservables]}],
+    {True, True},
+    TestID -> "VolumeGrowthObservables-two-measures-only"
+]
+
+(* flat 20x20 square torus: the Riemannian measure is V(r) = 2 r^2 - 2 r + 1 until the wrap at r = 10, so
    the Automatic window stays before the wrap and reads d ~ 2, R ~ 0 -- with the honest bias
-   of the constant term, which pulls the quotient below 2 on a coarse lattice (the sphere
+   of the r^(d-1) term, which pushes the quotient above 2 on a coarse lattice (the sphere
    probe is the exact one here) *)
 VerificationTest[
     With[{g = TessellationGraph[{4, 4}, {20, 20}]},
@@ -327,7 +309,7 @@ VerificationTest[
 
 (* the per-radius ball curvature profile has one entry per radius r = 1..ecc(v) *)
 VerificationTest[
-    Length[VolumeGrowthObservables[HypercubeGraph[8], 1]["BallCurvatureByRadius"]] === Length[BallVolumes[HypercubeGraph[8], 1]] - 1,
+    Length[VolumeGrowthObservables[HypercubeGraph[8], 1]["BallCurvatureByRadius"]] === VertexEccentricity[HypercubeGraph[8], 1],
     True,
     TestID -> "VolumeGrowthObservables-ball-CurvatureByRadius-length"
 ]
@@ -339,11 +321,11 @@ VerificationTest[
     TestID -> "VolumeGrowthObservables-Q8-sphere-positive-curvature"
 ]
 
-(* flat square grid under HalfBoundary: the ball probe reads R = 0 to within 0.02 on the
-   detected window (FullCount and WithoutBoundary carry the r^(d-1) term and miss by ~0.05) *)
+(* flat square grid: the ball probe on the Riemannian measure reads R = 0 to within 0.1 on the
+   detected window (the r^(d-1) term of the measure is the residual) *)
 VerificationTest[
     With[{g = GridGraph[{15, 15}]},
-        Abs[VolumeGrowthObservables[g, First @ GraphCenter @ g]["BallScalarCurvature"]] < 0.02
+        Abs[VolumeGrowthObservables[g, First @ GraphCenter @ g]["BallScalarCurvature"]] < 0.1
     ],
     True,
     TestID -> "VolumeGrowthObservables-grid2D-ball-flat"
@@ -413,30 +395,30 @@ VerificationTest[
 (* the sphere fit exposes the per-radius area-curvature and mean-curvature profiles *)
 VerificationTest[
     With[{r = VolumeGrowthObservables[HypercubeGraph[8], 1]},
-        {Length[r["SphereCurvatureByRadius"]] === Length[BallVolumes[HypercubeGraph[8], 1]] - 1,
-         Length[r["SphereMeanCurvatureByRadius"]] === Length[BallVolumes[HypercubeGraph[8], 1]] - 1}
+        {Length[r["SphereCurvatureByRadius"]] === VertexEccentricity[HypercubeGraph[8], 1],
+         Length[r["SphereMeanCurvatureByRadius"]] === VertexEccentricity[HypercubeGraph[8], 1]}
     ],
     {True, True},
     TestID -> "VolumeGrowthObservables-sphere-profiles-length"
 ]
 
-(* the bundle is self-consistent: the returned "BallVolumes" is the HalfBoundary profile that
-   the fit actually consumes (default), "ShellAreas" the shell counts of the FullCount profile,
-   and "...LogDifferenceQuotients" the radius-correct log-log slope of exactly those profiles *)
+(* the bundle is self-consistent: "BallVolumes" is the Riemannian measure of the balls that the fit
+   consumes (default), "ShellAreas" the counting measure of the shells, and "...LogDifferenceQuotients"
+   the radius-correct log-log slope of exactly those profiles *)
 VerificationTest[
     With[{g = GridGraph[{9, 9}]},
         {v = First @ GraphCenter @ g},
-        {r = VolumeGrowthObservables[g, v],
+        {r = VolumeGrowthObservables[g, v], radii = Range[0, VertexEccentricity[g, v]],
          rq = (f |-> Table[(Log[N @ f[[k + 2]]] - Log[N @ f[[k + 1]]]) / (Log[k + 1.] - Log[k]), {k, 1, Length[f] - 2}])},
         {
-            r["ShellAreas"] === Prepend[Differences @ BallVolumes[g, v], 1],
-            r["BallVolumes"] === BallVolumes[g, v, All, "Measure" -> "HalfBoundary"],
+            r["ShellAreas"] === Prepend[Differences[InfraMeasurement[g, InfraBall[v, #], "CountingMeasure"] & /@ radii], 1],
+            r["BallVolumes"] === (InfraMeasurement[g, InfraBall[v, #], "RiemannianMeasure"] & /@ radii),
             Max @ Abs[r["BallLogDifferenceQuotients"] - rq[r["BallVolumes"]]] < 10.^-10,
             Max @ Abs[r["SphereLogDifferenceQuotients"] - rq[r["ShellAreas"]]] < 10.^-10
         }
     ],
     {True, True, True, True},
-    TestID -> "VolumeGrowthObservables-raw-profiles-match-primitives"
+    TestID -> "VolumeGrowthObservables-raw-profiles-match-the-heads"
 ]
 
 
@@ -462,13 +444,13 @@ VerificationTest[
     TestID -> "DimensionCurvatureFit-bare-list-radii-default"
 ]
 
-(* the headline composition: the index-based LogDifferenceQuotients of the FullCount ball volume,
+(* the headline composition: the index-based LogDifferenceQuotients of the counting measure of the balls,
    sliced to an inner window and regressed, reads the lattice dimension d = 2 (the off-by-one of
-   the index quotient on FullCount is the one-radius boundary shift) *)
+   the index quotient on the counting measure is the one-radius boundary shift) *)
 VerificationTest[
     With[{g = GridGraph[{21, 21}]},
         {v = First @ GraphCenter @ g},
-        {q = LogDifferenceQuotients[BallVolumes[g, v, All, "Measure" -> "FullCount"]]},
+        {q = LogDifferenceQuotients[Table[InfraMeasurement[g, InfraBall[v, r], "CountingMeasure"], {r, 0, VertexEccentricity[g, v]}]]},
         {pairs = Select[Transpose[{Range[0, Length[q] - 1], q}], 1 <= #[[1]] <= 7 &]},
         Abs[DimensionCurvatureFit[pairs]["Dimension"] - 2] < 0.4
     ],
@@ -481,7 +463,7 @@ VerificationTest[
 VerificationTest[
     With[{g = GridGraph[{15, 15}]},
         {rq = (f |-> Table[(Log[f[[k + 2]]] - Log[f[[k + 1]]]) / (Log[k + 1.] - Log[k]), {k, 1, Length[f] - 2}])},
-        {avg = Exp /@ (MeanAround /@ Transpose[Log[N[BallVolumes[g, All, {0, 8}, "Measure" -> "WithoutBoundary"]]]])},
+        {avg = Exp /@ (MeanAround /@ Transpose[Log[N[Table[InfraMeasurement[g, InfraBall[v, r], "RiemannianMeasure"], {v, VertexList[g]}, {r, 0, 8}]]]])},
         {fit = DimensionCurvatureFit[rq[avg]]},
         {Head[fit["Dimension"]], Head[fit["ScalarCurvature"]]}
     ],
@@ -499,112 +481,54 @@ VerificationTest[
 ]
 
 
-(* ===== TubeVolumes: tube-volume profile T(s) = |{ w : d(w, core) <= s }| ===== *)
+(* ===== InfraTube: the tube measures T(s) = |{ w : d(w, core) <= s }| ===== *)
 
 (* tube around a meridian of the flat torus: T(s) = 20 (2s + 1) exactly until saturation *)
 VerificationTest[
     With[{torus = GraphProduct[CycleGraph[20], CycleGraph[20], "Cartesian"]},
-        TubeVolumes[torus, Select[VertexList[torus], First[#] === 1 &], {0, 8}]
+        Table[InfraMeasurement[torus, InfraTube[Select[VertexList[torus], First[#] === 1 &], s], "CountingMeasure"], {s, 0, 8}]
     ],
     Table[20 (2 s + 1), {s, 0, 8}],
-    TestID -> "TubeVolumes-torus-meridian-exact"
+    TestID -> "InfraTube-torus-meridian-exact"
 ]
 
 (* fiber tube in a Cartesian product decouples: T(s; {x0} x V(H)) = |V(H)| V_G(s; x0) *)
 VerificationTest[
     With[{prod = GraphProduct[GridGraph[{5, 5}], CycleGraph[6], "Cartesian"]},
-        TubeVolumes[prod, Thread[{13, Range[6]}], {0, 4}] === 6 BallVolumes[GridGraph[{5, 5}], 13, {0, 4}]
+        Table[InfraMeasurement[prod, InfraTube[Thread[{13, Range[6]}], s], "CountingMeasure"], {s, 0, 4}] ===
+            6 Table[InfraMeasurement[GridGraph[{5, 5}], InfraBall[13, s], "CountingMeasure"], {s, 0, 4}]
     ],
     True,
-    TestID -> "TubeVolumes-product-fiber-decouples"
-]
-
-(* the interval form agrees with CylinderVolumes at every thickening radius *)
-VerificationTest[
-    With[{g = GridGraph[{9, 9}]},
-        Table[TubeVolumes[g, 37, 41, s], {s, 0, 3}] === Table[First @ CylinderVolumes[g, 37, {41}, s], {s, 0, 3}]
-    ],
-    True,
-    TestID -> "TubeVolumes-interval-matches-CylinderVolumes"
+    TestID -> "InfraTube-product-fiber-decouples"
 ]
 
 (* T(0) = |core|; the profile is nondecreasing and saturates at the component size *)
 VerificationTest[
-    With[{prof = TubeVolumes[PetersenGraph[], {1, 2}]},
+    With[{prof = Table[InfraMeasurement[PetersenGraph[], InfraTube[{1, 2}, s], "CountingMeasure"], {s, 0, 2}]},
         {First[prof] == 2, prof === Sort[prof], Last[prof] == 10}
     ],
     {True, True, True},
-    TestID -> "TubeVolumes-profile-shape"
+    TestID -> "InfraTube-profile-shape"
 ]
 
-(* a one-vertex core is the ball: every measure agrees with BallVolumes *)
+(* a one-vertex core is the ball: both measures agree with the ball's *)
 VerificationTest[
     With[{g = GridGraph[{5, 5}]},
-        And @@ (TubeVolumes[g, {13}, All, "Measure" -> #] === BallVolumes[g, 13, All, "Measure" -> #] & /@
-            {"FullCount", "WithoutBoundary", "HalfBoundary", "ExpandingFront"})
+        And @@ Flatten @ Table[InfraMeasurement[g, InfraTube[{13}, s], m] === InfraMeasurement[g, InfraBall[13, s], m],
+            {m, {"CountingMeasure", "RiemannianMeasure"}}, {s, 0, 4}]
     ],
     True,
-    TestID -> "TubeVolumes-point-core-is-ball"
+    TestID -> "InfraTube-point-core-is-ball"
 ]
 
-(* the target-list form agrees with the pair form target by target, its fixed-radius vector
-   with CylinderVolumes, and a finite window over a shell is rectangular *)
-VerificationTest[
-    With[{g = GridGraph[{7, 7}]},
-        {shell = Pick[VertexList[g], GraphDistance[g, 25], 3]},
-        {TubeVolumes[g, 25, shell, {0, 3}] === (TubeVolumes[g, 25, #, {0, 3}] & /@ shell),
-         TubeVolumes[g, 25, shell, 2] === CylinderVolumes[g, 25, shell, 2],
-         Dimensions @ TubeVolumes[g, 25, shell, {0, 3}, "Measure" -> "HalfBoundary"]}
-    ],
-    {True, True, {12, 4}},
-    TestID -> "TubeVolumes-target-list-matches-pair-form"
-]
-
-(* the torus meridian under HalfBoundary: the two rows at distance s are the boundary, so
-   T(s) = 20 (2 s + 1) becomes 40 s -- the constant term is gone and the mantle reads 2 L s *)
+(* the torus meridian: the two outer rows of the tube are its boundary, so the Riemannian
+   measure is the counting measure one thickness earlier, 20 (2 s - 1) *)
 VerificationTest[
     With[{torus = GraphProduct[CycleGraph[20], CycleGraph[20], "Cartesian"]},
-        TubeVolumes[torus, Select[VertexList[torus], First[#] === 1 &], {1, 8}, "Measure" -> "HalfBoundary"]
+        Table[InfraMeasurement[torus, InfraTube[Select[VertexList[torus], First[#] === 1 &], s], "RiemannianMeasure"], {s, 1, 8}]
     ],
-    Table[40 s, {s, 1, 8}],
-    TestID -> "TubeVolumes-torus-meridian-HalfBoundary"
-]
-
-
-(* ===== IntervalVolumes: the interval at slack r against the tube at radius r ===== *)
-
-(* T(p, q; r) is a subset of I(p, q; 2r) on every graph: every pair of the Petersen graph *)
-VerificationTest[
-    With[{g = PetersenGraph[]},
-        And @@ Flatten @ Table[Thread[TubeVolumes[g, p, q, {0, 2}] <= IntervalVolumes[g, p, q, {0, 4}][[1 ;; ;; 2]]], {p, 10}, {q, 10}]
-    ],
-    True,
-    TestID -> "IntervalVolumes-contains-tube-Petersen"
-]
-
-(* strict on the hexagon (no median for 1, 3 and the antipode 5), equality on the modular grid *)
-VerificationTest[
-    {TubeVolumes[CycleGraph[6], 1, 3, 1], IntervalVolumes[CycleGraph[6], 1, 3, 2],
-     TubeVolumes[GridGraph[{5, 5}], 7, 9, {0, 2}] === IntervalVolumes[GridGraph[{5, 5}], 7, 9, {0, 4}][[1 ;; ;; 2]]},
-    {5, 6, True},
-    TestID -> "IntervalVolumes-tube-strict-on-C6-equal-on-grid"
-]
-
-(* on a bipartite graph every slack is even: the odd levels of the interval profile are empty *)
-VerificationTest[
-    With[{v = IntervalVolumes[GridGraph[{7, 7}], 25, 27, {0, 6}]}, Most[v[[1 ;; ;; 2]]] === v[[2 ;; ;; 2]]],
-    True,
-    TestID -> "IntervalVolumes-bipartite-parity"
-]
-
-(* the target-list form agrees with the pair form *)
-VerificationTest[
-    With[{g = GridGraph[{7, 7}]},
-        {shell = Pick[VertexList[g], GraphDistance[g, 25], 3]},
-        IntervalVolumes[g, 25, shell, {0, 4}] === (IntervalVolumes[g, 25, #, {0, 4}] & /@ shell)
-    ],
-    True,
-    TestID -> "IntervalVolumes-target-list-matches-pair-form"
+    Table[20 (2 s - 1), {s, 1, 8}],
+    TestID -> "InfraTube-torus-meridian-Riemannian"
 ]
 
 (* Tube probe: q(s) = (d - 1) - (tau + Ric(v,v))/(3(d+1)) s(s+1); d = 2 makes the
@@ -1581,108 +1505,6 @@ VerificationTest[
   Sign /@ { TessellationCurvature[ { 4, 8, 8 } ], TessellationCurvature[ { 3, 7, 3, 7 } ], TessellationCurvature[ { 3, 5 } ] },
   { 0, -1, 1 },
   TestID -> "TessellatedDisk-defect-signs"
-]
-
-
-(* ===== SegmentGraph / GeodesicOccupation ===== *)
-
-(* the interval graph is a directed acyclic graph whose vertices are the metric interval (= the CylinderVolumes support) *)
-VerificationTest[
-    With[{g = GridGraph[{3, 3}], ig = SegmentGraph[GridGraph[{3, 3}], 1, 9]},
-        {AcyclicGraphQ[ig], DirectedGraphQ[ig],
-         Sort[VertexList[ig]] === Sort @ Flatten @ Position[GraphDistance[g, 1] + GraphDistance[g, 9], GraphDistance[g, 1, 9]]}
-    ],
-    {True, True, True},
-    TestID -> "SegmentGraph-dag-interval"
-]
-
-(* per-vertex occupation equals brute-force enumeration of every geodesic *)
-VerificationTest[
-    With[{g = GridGraph[{3, 3}]},
-        KeySort @ GeodesicOccupation[g, 1, 9] === KeySort @ Counts @ Catenate @ FindPath[g, 1, 9, {GraphDistance[g, 1, 9]}, All]
-    ],
-    True,
-    TestID -> "GeodesicOccupation-matches-bruteforce"
-]
-
-(* family size = Max occupation = number of geodesics; the 3x3 grid center lies on 4 of the 6 *)
-VerificationTest[
-    With[{occ = GeodesicOccupation[GridGraph[{3, 3}], 1, 9]}, {Max[Values[occ]], occ[5]}],
-    {6, 4},
-    TestID -> "GeodesicOccupation-grid-counts"
-]
-
-(* list-valued vertex labels ({i, j} grids, tessellations) must give the same
-   occupation as the integer relabelling -- Lookup / assoc[...] read a list as a
-   LIST OF KEYS, so every vertex lookup in the DP is wrapped in Key[] *)
-VerificationTest[
-    With[{
-        gList = Graph[Flatten[Table[{i, j}, {i, 3}, {j, 3}], 1],
-            Flatten @ Join[
-                Table[UndirectedEdge[{i, j}, {i + 1, j}], {i, 2}, {j, 3}],
-                Table[UndirectedEdge[{i, j}, {i, j + 1}], {i, 3}, {j, 2}]]]},
-        With[{occ = GeodesicOccupation[gList, {1, 1}, {3, 3}]},
-            FreeQ[occ, _Missing] &&
-                Sort[Values[occ]] === Sort[Values[GeodesicOccupation[GridGraph[{3, 3}], 1, 9]]] &&
-                Lookup[occ, Key[{2, 2}]] === 4
-        ]
-    ],
-    True,
-    TestID -> "GeodesicOccupation-list-vertex-labels"
-]
-
-VerificationTest[
-    With[{
-        gList = Graph[Flatten[Table[{i, j}, {i, 3}, {j, 3}], 1],
-            Flatten @ Join[
-                Table[UndirectedEdge[{i, j}, {i + 1, j}], {i, 2}, {j, 3}],
-                Table[UndirectedEdge[{i, j}, {i, j + 1}], {i, 3}, {j, 2}]]]},
-        FreeQ[GeodesicEdgeOccupation[SegmentGraph[gList, {1, 1}, {3, 3}]], _Missing]
-    ],
-    True,
-    TestID -> "GeodesicEdgeOccupation-list-vertex-labels"
-]
-
-(* the DAG-form accessor agrees with the (g, u, v) form *)
-VerificationTest[
-    With[{g = GridGraph[{4, 4}]},
-        GeodesicOccupation[SegmentGraph[g, 1, 16]] === GeodesicOccupation[g, 1, 16]
-    ],
-    True,
-    TestID -> "GeodesicOccupation-dag-form-agrees"
-]
-
-(* path: unique geodesic; cycle: antipodal points have two geodesics *)
-VerificationTest[
-    {Max[Values @ GeodesicOccupation[PathGraph[Range[5]], 1, 5]], Max[Values @ GeodesicOccupation[CycleGraph[6], 1, 4]]},
-    {1, 2},
-    TestID -> "GeodesicOccupation-path-cycle"
-]
-
-(* edge occupation matches brute-force edge counts over all geodesics *)
-VerificationTest[
-    With[{g = GridGraph[{3, 3}]},
-        KeySort @ KeyMap[Sort @* Apply[List], GeodesicEdgeOccupation[g, 1, 9]] ===
-        KeySort @ KeyMap[Sort, Counts @ Catenate[Partition[#, 2, 1] & /@ FindPath[g, 1, 9, {GraphDistance[g, 1, 9]}, All]]]
-    ],
-    True,
-    TestID -> "GeodesicEdgeOccupation-matches-bruteforce"
-]
-
-(* every edge of a unique geodesic carries occupation 1; total flow through a
-   layer cut equals the family size *)
-VerificationTest[
-    {Values @ GeodesicEdgeOccupation[PathGraph[Range[5]], 1, 5],
-     Total @ Values @ KeySelect[GeodesicEdgeOccupation[GridGraph[{3, 3}], 1, 9], First[#] === 1 &]},
-    {{1, 1, 1, 1}, Max @ Values @ GeodesicOccupation[GridGraph[{3, 3}], 1, 9]},
-    TestID -> "GeodesicEdgeOccupation-flow-conservation"
-]
-
-(* disconnected endpoints: the interval graph is empty *)
-VerificationTest[
-    VertexCount @ SegmentGraph[Graph[{1, 2, 3}, {1 <-> 2}], 1, 3],
-    0,
-    TestID -> "SegmentGraph-disconnected-empty"
 ]
 
 

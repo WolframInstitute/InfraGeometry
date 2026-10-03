@@ -126,9 +126,9 @@ FindInfraParallel[ graph_Graph, line_, p_,
                     dist[ s, e ] == dist[ s, p0 ] + dist[ p0, e ] &&
                     NoneTrue[ AdjacencyList[ graph, s ], MemberQ[ level, # ] && dist[ #, e ] == dist[ s, e ] + 1 & ] &&
                     NoneTrue[ AdjacencyList[ graph, e ], MemberQ[ level, # ] && dist[ s, # ] == dist[ s, e ] + 1 & ],
-                  atom = { s, e } |-> With[ { dag = Graph[ { s, e }, Join[
-                        EdgeList @ Subgraph[ #, Intersection[ VertexList @ #, level ] ] & @ SegmentGraph[ graph, s, p0 ],
-                        EdgeList @ Subgraph[ #, Intersection[ VertexList @ #, level ] ] & @ SegmentGraph[ graph, p0, e ] ] ] },
+                  atom = { s, e } |-> With[ { dag = Graph[ { s, e }, Catenate @ Map[
+                        EdgeList @ Subgraph[ #, Intersection[ VertexList @ #, level ] ] &,
+                        InfraMeasurement[ graph, { InfraSegment[ s, p0 ], InfraSegment[ p0, e ] }, "Graph" ] ] ] },
                       Subgraph[ dag, Intersection[ VertexOutComponent[ dag, s ], VertexInComponent[ dag, e ] ] ] ],
                   cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
                   branch = If[ methodHead === "RandomGreedy", RandomSample, Identity ] },

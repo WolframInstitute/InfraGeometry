@@ -86,44 +86,30 @@ VerificationTest[
   TestID -> "InfraBoundary-Alexandrov-dispatch"
 ]
 
-(* ===== the four volume properties ===== *)
+(* ===== the two measures ===== *)
 
-(* Volume - BoundaryVolume == InteriorVolume (a partition of the vertex set). *)
+(* the counting measure less the Riemannian measure is the vertex boundary of the support *)
 VerificationTest[
   With[ { g = GridGraph[ {5, 5} ], ball = InfraBall[13, 2] },
-    InfraMeasurement[ g, ball, "Volume" ] - InfraMeasurement[ g, ball, "BoundaryVolume" ]
-      == InfraMeasurement[ g, ball, "InteriorVolume" ] ],
+    InfraMeasurement[ g, ball, "CountingMeasure" ] - InfraMeasurement[ g, ball, "RiemannianMeasure" ]
+      == Length @ GraphBoundary[ g, Keys @ InfraMeasurement[ g, ball, "VertexDensity" ] ] ],
   True,
-  TestID -> "volume-properties-count-minus-boundary-equals-interior"
+  TestID -> "measures-counting-less-Riemannian-is-the-boundary"
 ]
 
-(* HalfBoundaryVolume weights the boundary by one half: on a radius-2 ball of the grid, 13 - 8/2 = 9 *)
+(* A thin geodesic line (top row of a grid) is 1-D in a 2-D graph: every vertex borders the rest of the grid. *)
 VerificationTest[
-  InfraMeasurement[ GridGraph[ {5, 5} ], InfraBall[13, 2], "HalfBoundaryVolume" ],
-  9,
-  TestID -> "volume-properties-half-boundary"
-]
-
-(* A thin geodesic line (top row of a grid) is 1-D in a 2-D graph: empty interior. *)
-VerificationTest[
-  InfraMeasurement[ GridGraph[ {4, 4} ], InfraSegment[ 1, 4 ], "InteriorVolume" ],
-  0,
-  TestID -> "volume-properties-thin-line-empty-interior"
+  InfraMeasurement[ GridGraph[ {4, 4} ], InfraSegment[ 1, 4 ], { "CountingMeasure", "RiemannianMeasure" } ],
+  <| "CountingMeasure" -> 4, "RiemannianMeasure" -> 0 |>,
+  TestID -> "measures-thin-line-has-no-Riemannian-measure"
 ]
 
 (* Thickening the line by a radius-1 tube gives the two top rows; the top row of them is interior. *)
 VerificationTest[
   With[ { g = GridGraph[ {4, 4} ], tube = InfraTube[ InfraSegment[ 1, 4 ], 1 ] },
-    InfraMeasurement[ g, tube, { "Volume", "InteriorVolume" } ] ],
-  <| "Volume" -> 8, "InteriorVolume" -> 4 |>,
-  TestID -> "volume-properties-thickened-line-has-interior"
-]
-
-(* Every vertex of a thin line borders the rest of the grid. *)
-VerificationTest[
-  InfraMeasurement[ GridGraph[ {4, 4} ], InfraSegment[ 1, 4 ], "BoundaryVolume" ],
-  4,
-  TestID -> "volume-properties-segment-boundary"
+    InfraMeasurement[ g, tube, { "CountingMeasure", "RiemannianMeasure" } ] ],
+  <| "CountingMeasure" -> 8, "RiemannianMeasure" -> 4 |>,
+  TestID -> "measures-thickened-line-has-Riemannian-measure"
 ]
 
 (* ===== FindInfraEquidistantSet ===== *)

@@ -82,7 +82,7 @@ VerificationTest[
      InfraMeasurement[g, cir, "VertexDensity"] === KeySort @ Counts @ Catenate[members],
      Total @ InfraMeasurement[g, cir, "EdgeDensity"] ==
        InfraMeasurement[g, cir, "Length"] InfraMeasurement[g, cir, "Cardinality"],
-     InfraMeasurement[g, cir, "Volume"] == Length @ Union @ Catenate[members]}],
+     InfraMeasurement[g, cir, "CountingMeasure"] == Length @ Union @ Catenate[members]}],
   {True, True, True, True, True},
   TestID -> "InfraCircle-densities-by-DP-equal-the-enumeration"
 ]

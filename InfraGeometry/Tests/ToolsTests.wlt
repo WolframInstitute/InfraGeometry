@@ -50,6 +50,16 @@ VerificationTest[
   TestID -> "InfraDensity-total-mass-is-total-length"
 ]
 
+(* an interval DAG gives its occupation, the segment's vertex density, list-valued labels included *)
+VerificationTest[
+  With[ { gList = Graph[ Map[ { Quotient[ # - 1, 3 ] + 1, Mod[ # - 1, 3 ] + 1 } &, EdgeList @ g33, { 2 } ] ] },
+    { InfraDensity[ g33, InfraMeasurement[ g33, InfraSegment[ 1, 9 ], "Graph" ] ] ===
+        InfraMeasurement[ g33, InfraSegment[ 1, 9 ], "VertexDensity" ],
+      InfraDensity[ gList, InfraMeasurement[ gList, InfraSegment[ { 1, 1 }, { 3, 3 } ], "Graph" ] ][ { 2, 2 } ] } ],
+  { True, 4 },
+  TestID -> "InfraDensity-interval-DAG-is-the-occupation"
+]
+
 (* the empty class yields the empty density *)
 VerificationTest[
   InfraDensity[ g33, { } ],

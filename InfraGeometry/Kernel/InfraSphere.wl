@@ -86,7 +86,7 @@ InfraMeasurement[ _Graph, InfraSphere[ _, _ ], "Faithful" ] :=
 InfraMeasurement[ graph_Graph, sphere : InfraSphere[ _, _ ], All ] :=
   InfraMeasurement[ graph, sphere,
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
-      "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume" } ]
+      "CountingMeasure", "RiemannianMeasure" } ]
 
 FindInfraRepresentative[ graph_Graph, InfraSphere[ center_, r_ ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=

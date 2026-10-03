@@ -157,7 +157,7 @@ InfraMeasurement[ _Graph, InfraShell[ _, _ ], "Faithful" ] :=
 InfraMeasurement[ graph_Graph, shell : InfraShell[ _, _ ], All ] :=
   InfraMeasurement[ graph, shell,
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
-      "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume" } ]
+      "CountingMeasure", "RiemannianMeasure" } ]
 
 FindInfraRepresentative[ graph_Graph, shell : InfraShell[ _, _ ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=

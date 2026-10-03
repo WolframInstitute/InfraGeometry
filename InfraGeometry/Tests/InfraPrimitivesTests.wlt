@@ -59,27 +59,21 @@ VerificationTest[
 
 (* ----- synthetic invariants are read off the primitives, not off a wrapper ----- *)
 
-(* on a path B_r(end) = r + 1; a set gives one row per vertex *)
+(* on a path B_r(end) = r + 1, read through the ball head; a set of centres is one ball *)
 VerificationTest[
-  { BallVolumes[ PathGraph @ Range[ 7 ], 1, { 0, 3 } ],
-    BallVolumes[ PathGraph @ Range[ 7 ], { 1 }, { 0, 3 } ] },
-  { { 1, 2, 3, 4 }, { { 1, 2, 3, 4 } } },
-  TestID -> "point-layer-BallVolumes"
+  { Table[ InfraMeasurement[ PathGraph @ Range[ 7 ], InfraBall[ 1, r ], "CountingMeasure" ], { r, 0, 3 } ],
+    Table[ InfraMeasurement[ PathGraph @ Range[ 7 ], InfraBall[ { 1, 7 }, r ], "CountingMeasure" ], { r, 0, 3 } ] },
+  { { 1, 2, 3, 4 }, { 2, 4, 6, 7 } },
+  TestID -> "point-layer-InfraBall-counting-measure"
 ]
 
-(* the tube of a pair thickens the metric interval, so it is never smaller than it *)
+(* the tube of a segment thickens the metric interval, so it is never smaller than it *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    AllTrue[ TubeVolumes[ g, 13, 25, 1 ], # >= Length @ MetricInterval[ g, 13, 25 ] & ] ],
+    AllTrue[ Table[ InfraMeasurement[ g, InfraTube[ InfraSegment[ 13, 25 ], s ], "CountingMeasure" ], { s, 0, 3 } ],
+      # >= Length @ MetricInterval[ g, 13, 25 ] & ] ],
   True,
-  TestID -> "point-layer-TubeVolumes"
-]
-
-(* the interval count at slack 0 counts the metric interval *)
-VerificationTest[
-  IntervalVolumes[ PathGraph @ Range[ 7 ], 1, 4, 0 ],
-  4,
-  TestID -> "point-layer-IntervalVolumes"
+  TestID -> "point-layer-InfraTube-counting-measure"
 ]
 
 (* dimension readout projects VolumeGrowthObservables["BallDimension"] *)

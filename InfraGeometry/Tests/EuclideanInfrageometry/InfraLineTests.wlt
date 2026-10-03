@@ -117,9 +117,9 @@ VerificationTest[
     {InfraMeasurement[g, InfraLine[4, 5], "Length"],
      InfraMeasurement[g, InfraLine[1, 5], "Length"],
      InfraMeasurement[g, InfraLine[4, 5], "Faithful"],
-     InfraMeasurement[g, InfraLine[4, 5], "Volume"]}],
+     InfraMeasurement[g, InfraLine[4, 5], "CountingMeasure"]}],
   {4, 4, True, 9},
-  TestID -> "InfraLine-Length-Faithful-Volume"
+  TestID -> "InfraLine-Length-Faithful-CountingMeasure"
 ]
 
 (* ===== FindInfraLine: the independent search ===== *)

@@ -156,7 +156,7 @@ VerificationTest[
     { InfraMeasurement[ g, InfraSphere[ 13, { 1, 2 } ], "Cardinality" ] === Length @ members,
       InfraMeasurement[ g, InfraSphere[ 13, { 1, 2 } ], "VertexDensity" ] === KeySort @ Counts @ Catenate @ members,
       Total @ InfraMeasurement[ g, InfraSphere[ 13, { 1, 2 } ], "EdgeDensity" ] === Total[ EdgeCount @ Subgraph[ g, # ] & /@ members ],
-      InfraMeasurement[ g, InfraSphere[ 13, { 1, 2 } ], "Volume" ] === Length @ Union @ Catenate @ members } ],
+      InfraMeasurement[ g, InfraSphere[ 13, { 1, 2 } ], "CountingMeasure" ] === Length @ Union @ Catenate @ members } ],
   { True, True, True, True },
   TestID -> "InfraSphere-5x5-family-cardinality-and-densities"
 ]
@@ -165,9 +165,9 @@ VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     { Keys @ InfraMeasurement[ g, InfraSphere[ 13, { 1, 2 } ], All ],
       InfraMeasurement[ g, InfraSphere[ 13, { 1, 2 } ], "Faithful" ] } ],
-  { { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph", "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume" },
+  { { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph", "CountingMeasure", "RiemannianMeasure" },
     Undetermined },
-  TestID -> "InfraSphere-All-nine-properties-not-faithful"
+  TestID -> "InfraSphere-All-seven-properties-not-faithful"
 ]
 
 VerificationTest[

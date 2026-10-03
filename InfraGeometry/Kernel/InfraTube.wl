@@ -38,7 +38,7 @@ InfraMeasurement[ _Graph, ( InfraTube | InfraCylinder | InfraCone )[ _, _ ], "Fa
 InfraMeasurement[ graph_Graph, region : ( InfraTube | InfraCylinder | InfraCone )[ _, _ ], All ] :=
   InfraMeasurement[ graph, region,
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
-      "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume" } ]
+      "CountingMeasure", "RiemannianMeasure" } ]
 
 FindInfraRepresentative[ graph_Graph, region : ( InfraTube | InfraCylinder | InfraCone )[ _, _ ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=

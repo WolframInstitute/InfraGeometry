@@ -78,8 +78,8 @@ VerificationTest[
   <| "Faithful" -> True, "Cardinality" -> 1, "VertexDensity" -> <| 8 -> 1, 12 -> 1, 13 -> 1, 14 -> 1, 18 -> 1 |>,
      "EdgeDensity" -> <| UndirectedEdge[8, 13] -> 1, UndirectedEdge[12, 13] -> 1, UndirectedEdge[13, 14] -> 1, UndirectedEdge[13, 18] -> 1 |>,
      "Subgraph" -> Subgraph[GridGraph[{5, 5}], {8, 12, 13, 14, 18}],
-     "Volume" -> 5, "BoundaryVolume" -> 4, "InteriorVolume" -> 1, "HalfBoundaryVolume" -> 3 |>,
-  TestID -> "InfraBall-All-nine-properties"
+     "CountingMeasure" -> 5, "RiemannianMeasure" -> 1 |>,
+  TestID -> "InfraBall-All-seven-properties"
 ]
 
 VerificationTest[
@@ -114,28 +114,29 @@ VerificationTest[
 (* |B_r| = 2r^2 + 2r + 1 on the square grid away from the rim *)
 VerificationTest[
   With[ { g = GridGraph[{11, 11}] },
-    InfraMeasurement[g, InfraBall[61, #], "Volume"] & /@ Range[0, 5] ],
+    InfraMeasurement[g, InfraBall[61, #], "CountingMeasure"] & /@ Range[0, 5] ],
   2 Range[0, 5]^2 + 2 Range[0, 5] + 1,
-  TestID -> "InfraBall-square-grid-volume-2r2+2r+1"
+  TestID -> "InfraBall-square-grid-counting-measure-2r2+2r+1"
 ]
 
-(* the half-boundary count V - B/2 of the lattice diamond is its area 2r^2 plus one (Pick: A = I + B/2 - 1) *)
+(* the Riemannian measure drops the boundary shell, so on the square grid it is the counting measure one radius
+   earlier, 2 (r - 1)^2 + 2 (r - 1) + 1, and 0 at the centre *)
 VerificationTest[
   With[ { g = GridGraph[{11, 11}] },
-    InfraMeasurement[g, InfraBall[61, #], "HalfBoundaryVolume"] & /@ Range[1, 5] ],
-  2 Range[1, 5]^2 + 1,
-  TestID -> "InfraBall-square-grid-half-boundary-Ehrhart"
+    InfraMeasurement[g, InfraBall[61, #], "RiemannianMeasure"] & /@ Range[0, 5] ],
+  { 0, 1, 5, 13, 25, 41 },
+  TestID -> "InfraBall-square-grid-Riemannian-measure-one-radius-earlier"
 ]
 
 VerificationTest[
   Table[
     With[ { g = InfraSubstrate[name, "Small"] },
       { c = InfraCenter[g] },
-      { profile = BallVolumes[g, c] },
-      InfraMeasurement[g, InfraBall[c, #], "Volume"] & /@ Range[0, Length[profile] - 1] === profile ],
+      { profile = Accumulate @ Values @ KeySort @ Counts @ GraphDistance[g, c] },
+      InfraMeasurement[g, InfraBall[c, #], "CountingMeasure"] & /@ Range[0, Length[profile] - 1] === profile ],
     { name, { "SquareTilingGraph", "TriangularTilingGraph" } } ],
   { True, True },
-  TestID -> "InfraBall-volume-profile-is-BallVolumes"
+  TestID -> "InfraBall-counting-measure-is-the-cumulative-distance-histogram"
 ]
 
 VerificationTest[

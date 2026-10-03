@@ -22,8 +22,8 @@ VerificationTest[
 
 VerificationTest[
   Keys @ InfraMeasurement[GridGraph[{5, 5}], InfraShell[13, 2], All],
-  { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph", "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume" },
-  TestID -> "InfraShell-All-nine-properties"
+  { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph", "CountingMeasure", "RiemannianMeasure" },
+  TestID -> "InfraShell-All-seven-properties"
 ]
 
 VerificationTest[
@@ -39,20 +39,31 @@ VerificationTest[
 (* |S_r| = 4r on the square grid away from the rim *)
 VerificationTest[
   With[ { g = GridGraph[{11, 11}] },
-    InfraMeasurement[g, InfraShell[61, #], "Volume"] & /@ Range[1, 5] ],
+    InfraMeasurement[g, InfraShell[61, #], "CountingMeasure"] & /@ Range[1, 5] ],
   4 Range[1, 5],
-  TestID -> "InfraShell-square-grid-volume-4r"
+  TestID -> "InfraShell-square-grid-counting-measure-4r"
 ]
 
+(* the counting measure of the shells is the histogram of the distances from the centre *)
 VerificationTest[
   Table[
     With[ { g = InfraSubstrate[name, "Small"] },
       { c = InfraCenter[g] },
-      { profile = ShellAreas[g, c] },
-      InfraMeasurement[g, InfraShell[c, #], "Volume"] & /@ Range[0, Length[profile] - 1] === profile ],
+      { profile = Values @ KeySort @ Counts @ GraphDistance[g, c] },
+      InfraMeasurement[g, InfraShell[c, #], "CountingMeasure"] & /@ Range[0, Length[profile] - 1] === profile ],
     { name, { "SquareTilingGraph", "TriangularTilingGraph" } } ],
   { True, True },
-  TestID -> "InfraShell-volume-profile-is-ShellAreas"
+  TestID -> "InfraShell-counting-measure-is-the-distance-histogram"
+]
+
+(* every vertex of a shell S_r touches B_(r-1) or the far side, so its Riemannian measure is 0; a band {r - 1, r + 1}
+   keeps its middle shell *)
+VerificationTest[
+  With[ { g = GridGraph[{9, 9}] },
+    { Table[InfraMeasurement[g, InfraShell[41, r], "RiemannianMeasure"], { r, 0, 8 }],
+      InfraMeasurement[g, InfraShell[41, {1, 3}], "RiemannianMeasure"] } ],
+  { ConstantArray[0, 9], 8 },
+  TestID -> "InfraShell-Riemannian-measure-of-a-shell-is-zero"
 ]
 
 VerificationTest[

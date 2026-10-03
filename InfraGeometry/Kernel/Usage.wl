@@ -14,7 +14,7 @@ RandomInfraPoint::usage = "RandomInfraPoint[graph] gives a uniformly random vert
 InfraCenter::usage = "InfraCenter[graph] gives a vertex of least eccentricity.";
 
 Undetermined::usage = "Undetermined is the value of the measurement \"Faithful\" on a head whose graph is faithful only under a hypothesis this paclet does not certify.";
-InfraMeasurement::usage = "InfraMeasurement[graph, obj, property] measures a Euclidean head on graph: \"Graph\", \"Cardinality\", \"Length\", \"VertexDensity\", \"EdgeDensity\", \"Subgraph\", \"Faithful\", \"Volume\", \"BoundaryVolume\", \"InteriorVolume\", \"HalfBoundaryVolume\". A List of properties gives an Association, All gives them all, a List of heads measures each.";
+InfraMeasurement::usage = "InfraMeasurement[graph, obj, property] measures a Euclidean head on graph: \"Graph\", \"Cardinality\", \"Length\", \"VertexDensity\", \"EdgeDensity\", \"Subgraph\", \"Faithful\", \"CountingMeasure\" (the vertex count), \"RiemannianMeasure\" (the count without boundary). A List of properties gives an Association, All gives them all, a List of heads measures each.";
 FindInfraRepresentative::usage = "FindInfraRepresentative[graph, head] gives one member of the inert head as a vertex list; a trailing n | UpTo[n] | All gives a List of vertex lists. Modifiers \"RandomChoice\" (a random member) and, under All, \"Pruning\" -> q. A head with a graph is read off its chains, the circle and the scene tokens by their searches at the defaults.";
 InfraMemberQ::usage = "InfraMemberQ[graph, obj, path] tests whether the vertex list path is a member of obj.";
 InfraSubgraph::usage = "InfraSubgraph[graph, obj] gives the subgraph of graph induced on the support of obj; InfraSubgraph[graph, obj -> t] thickens the support by t steps.";
@@ -235,25 +235,9 @@ $InfraAccentPointSize::usage = "$InfraAccentPointSize is the absolute dot size (
 
 BallHull::usage = "BallHull[g, S] gives the ball hull of vertex subset S in g: the intersection of all closed metric balls containing S, equivalently { v : d(c, v) <= max_{s in S} d(c, s) for every vertex c }. This is the smallest ball-convex (Mazur) superset of S. S may be a vertex list or a subgraph.";
 
-BallVolumes::usage = "BallVolumes[g, v] gives the ball volume profile {V(0), ..., V(ecc(v))}, V(r) = |B_r(v)|; slot 2 a vertex, a list or All, slot 3 a radius, a window {rmin, rmax} or All. Option \"Measure\" (\"FullCount\", \"WithoutBoundary\", \"HalfBoundary\", \"ExpandingFront\").";
+LogDifferenceQuotients::usage = "LogDifferenceQuotients[w] gives the log-difference quotients q(r) = (Log w(r) - Log w(r-1)) / (Log(r+1) - Log r) of a sequence w = {w(0), w(1), ...}, the discrete d Log w / d Log r; equals ResourceFunction[\"LogDifferences\"][w]. Accepts any numeric or Around sequence, such as the measures of InfraBall[v, r] over r, or their MeanAround over a vertex subset.";
 
-ShellAreas::usage = "ShellAreas[g, v] gives the shell profile {A(0), ..., A(ecc(v))}, A(r) = V(r) - V(r-1) with V(-1) = 0, the radial derivative of BallVolumes under the same measure: A(1) is the coordination number and Accumulate recovers BallVolumes. Slots and option \"Measure\" as for BallVolumes; a window pads with 0 past eccentricity.";
-
-CylinderVolumes::usage = "CylinderVolumes[g, sources, targets, s] gives the matrix of cylinder volumes between every source-target pair; the cylinder from p to q is the metric interval I(p, q) = { w : d(p, w) + d(w, q) == d(p, q) } (all p-q geodesics) thickened to its closed s-neighborhood (s defaults to 0), and its volume is the vertex count. A scalar source gives a flat list ordered as targets.";
-
-TubeVolumes::usage = "TubeVolumes[g, core] gives the tube profile {T(0), ..., T(sMax)} of a vertex list, T(s) = |{w : d(w, core) <= s}|; TubeVolumes[g, p, q] takes the metric interval I(p, q) as core and TubeVolumes[g, p, targets] gives one profile per target. Radius slot and option \"Measure\" as in BallVolumes.";
-
-IntervalVolumes::usage = "IntervalVolumes[g, p, q] gives the profile {I(0), ..., I(rMax)} of the interval at slack r, I(r) = |{x : d(p, x) + d(x, q) <= d(p, q) + r}|; IntervalVolumes[g, p, targets] gives one profile per target. Slack slot as the radius slot of BallVolumes; option \"Measure\" (\"FullCount\", \"WithoutBoundary\", \"HalfBoundary\").";
-
-SegmentGraph::usage = "SegmentGraph[g, u, v] gives the metric interval I(u, v) = { w : d(u, w) + d(w, v) == d(u, v) } as a directed acyclic graph whose directed u -> v paths are exactly the u-v geodesics: the graph of InfraSegment[u, v].";
-
-GeodesicOccupation::usage = "GeodesicOccupation[dag] gives the association w -> c(w) of per-vertex geodesic occupation over a geodesic DAG, c(w) = (number of source -> w paths) * (number of w -> sink paths) by topological-order DP, with family size Max[c]; GeodesicOccupation[g, u, v] builds the u-v geodesic DAG first.";
-
-GeodesicEdgeOccupation::usage = "GeodesicEdgeOccupation[dag] gives the association DirectedEdge[u, v] -> c(u -> v) of per-edge geodesic occupation over a geodesic DAG, c(u -> v) = (number of source -> u paths) * (number of v -> sink paths) by topological-order DP; GeodesicEdgeOccupation[g, u, v] builds the u-v geodesic DAG first.";
-
-LogDifferenceQuotients::usage = "LogDifferenceQuotients[w] gives the log-difference quotients q(r) = (Log w(r) - Log w(r-1)) / (Log(r+1) - Log r) of a sequence w = {w(0), w(1), ...}, the discrete d Log w / d Log r; equals ResourceFunction[\"LogDifferences\"][w]. Accepts any numeric or Around sequence: feed BallVolumes[g, v] for the volume-growth dimension estimator, or LogDifferenceQuotients[MeanAround /@ Transpose[BallVolumes[g, subset, {0, R}]]] to average a vertex subset first and carry the spread into Around error bars.";
-
-VolumeGrowthObservables::usage = "VolumeGrowthObservables[g, v, window] fits dimension and scalar curvature to the ball and sphere growth at v by DimensionCurvatureFit and returns profiles, quotients, fits and windows as one Association; window {rmin, rmax}, All or Automatic. Options \"Measure\", \"Dimension\".";
+VolumeGrowthObservables::usage = "VolumeGrowthObservables[g, v, window] fits dimension and scalar curvature to the ball and sphere growth at v by DimensionCurvatureFit and returns profiles, quotients, fits and windows as one Association; window {rmin, rmax}, All or Automatic. Options \"Measure\" (\"RiemannianMeasure\", \"CountingMeasure\"), \"Dimension\".";
 
 DimensionCurvatureFit::usage = "DimensionCurvatureFit[{{r, q(r)}, ...}] fits <|\"Dimension\", \"ScalarCurvature\"|> to log-difference quotients by Bishop-Gromov regression on r (r + 1); a bare list {q(0), q(1), ...} sits at radii 0, 1, .... Options \"Probe\" (\"Ball\", \"Sphere\", \"Tube\", \"TubeMantle\"), \"Dimension\".";
 

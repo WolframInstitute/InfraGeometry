@@ -825,7 +825,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     With[ { pool = ExtendInfraSegment[ g, { 6, 7 }, 2, All ] },
       MatchQ[ pool, { _Graph, __Graph } ] &&
-      Total[ Max @ GeodesicOccupation @ # & /@ pool ] === Length @ infraSpread @ pool &&
+      Total[ Max @ InfraDensity[ g, # ] & /@ pool ] === Length @ infraSpread @ pool &&
       Total @ InfraDensity[ g, pool ] === Total[ Length /@ infraSpread @ pool ] &&
       Sort @ Union[ First /@ infraSpread @ pool ] === { 1, 9, 14 } &&
       Sort @ Union[ Last /@ infraSpread @ pool ] === { 4, 12, 15 }

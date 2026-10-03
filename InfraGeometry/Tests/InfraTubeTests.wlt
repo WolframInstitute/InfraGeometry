@@ -36,10 +36,12 @@ VerificationTest[
     With[ { g = InfraSubstrate[name, "Small"] },
       { p = InfraCenter[g] },
       { q = SelectFirst[ VertexList[g], v |-> GraphDistance[g, p, v] == 3 && Length @ FindInfraSegment[g, p, v, All] > 1 ] },
-      Table[ InfraMeasurement[g, InfraTube[InfraSegment[p, q], s], "Volume"], { s, 0, 3 } ] === Table[ TubeVolumes[g, p, q, s], { s, 0, 3 } ] ],
+      { near = Min /@ Transpose[ GraphDistance[g, #] & /@ MetricInterval[g, p, q] ] },
+      Table[ InfraMeasurement[g, InfraTube[InfraSegment[p, q], s], "CountingMeasure"], { s, 0, 3 } ] ===
+        Table[ Count[ near, d_ /; d <= s ], { s, 0, 3 } ] ],
     { name, { "SquareTilingGraph", "TriangularTilingGraph" } } ],
   { True, True },
-  TestID -> "InfraTube-of-a-segment-has-the-volume-TubeVolumes"
+  TestID -> "InfraTube-of-a-segment-counts-the-neighbourhood-of-the-interval"
 ]
 
 VerificationTest[
@@ -52,17 +54,17 @@ VerificationTest[
 
 VerificationTest[
   Keys @ InfraMeasurement[GridGraph[{5, 5}], InfraTube[{12, 13, 14}, 1], All],
-  { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph", "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume" },
-  TestID -> "InfraTube-All-nine-properties"
+  { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph", "CountingMeasure", "RiemannianMeasure" },
+  TestID -> "InfraTube-All-seven-properties"
 ]
 
 VerificationTest[
   With[ { g = PathGraph[Range[7]] },
-    { InfraMeasurement[g, InfraTube[{3, 4}, 1], { "VertexDensity", "EdgeDensity", "Cardinality", "Faithful", "Volume", "BoundaryVolume" }],
+    { InfraMeasurement[g, InfraTube[{3, 4}, 1], { "VertexDensity", "EdgeDensity", "Cardinality", "Faithful", "CountingMeasure", "RiemannianMeasure" }],
       InfraMeasurement[g, InfraTube[{3, 4}, 1], "Length"] } ],
   { <| "VertexDensity" -> <| 2 -> 1, 3 -> 1, 4 -> 1, 5 -> 1 |>,
        "EdgeDensity" -> <| UndirectedEdge[2, 3] -> 1, UndirectedEdge[3, 4] -> 1, UndirectedEdge[4, 5] -> 1 |>,
-       "Cardinality" -> 1, "Faithful" -> True, "Volume" -> 4, "BoundaryVolume" -> 2 |>,
+       "Cardinality" -> 1, "Faithful" -> True, "CountingMeasure" -> 4, "RiemannianMeasure" -> 2 |>,
     InfraMeasurement[PathGraph[Range[7]], InfraTube[{3, 4}, 1], "Length"] },
   TestID -> "InfraTube-small-clauses-and-no-Length"
 ]
@@ -120,9 +122,9 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[{5, 5}] },
-    { Keys @ InfraMeasurement[g, InfraCone[{1, 2, 3}, 1], All], InfraMeasurement[g, InfraCone[{}, 1], "Volume"] } ],
-  { { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph", "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume" }, 0 },
-  TestID -> "InfraCone-All-nine-properties-and-the-empty-axis"
+    { Keys @ InfraMeasurement[g, InfraCone[{1, 2, 3}, 1], All], InfraMeasurement[g, InfraCone[{}, 1], "CountingMeasure"] } ],
+  { { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph", "CountingMeasure", "RiemannianMeasure" }, 0 },
+  TestID -> "InfraCone-All-seven-properties-and-the-empty-axis"
 ]
 
 VerificationTest[
@@ -134,9 +136,10 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[{5, 5}] },
-    InfraMeasurement[g, { InfraTube[13, 1], InfraCylinder[{1, 2}, 1], InfraCone[{1, 2, 3}, 1] }, "Volume"] ],
-  { 5, 5, 9 },
-  TestID -> "InfraTube-InfraCylinder-InfraCone-volumes-in-one-call"
+    InfraMeasurement[g, { InfraTube[13, 1], InfraCylinder[{1, 2}, 1], InfraCone[{1, 2, 3}, 1] }, #] & /@
+      { "CountingMeasure", "RiemannianMeasure" } ],
+  { { 5, 5, 9 }, { 1, 2, 4 } },
+  TestID -> "InfraTube-InfraCylinder-InfraCone-measures-in-one-call"
 ]
 
 VerificationTest[

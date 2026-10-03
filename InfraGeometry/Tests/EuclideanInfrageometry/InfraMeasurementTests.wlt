@@ -50,23 +50,22 @@ VerificationTest[
   TestID -> "InfraMeasurement-Length-lists-differing-lengths"
 ]
 
-(* ===== the volumes of the support ===== *)
+(* ===== the two measures of the support ===== *)
 
 (* a row of the 3 x 3 grid: every vertex of it has a neighbour outside *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}]},
-    InfraMeasurement[g, InfraSegment[1, 3],
-      {"Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume"}]],
-  <|"Volume" -> 3, "BoundaryVolume" -> 3, "InteriorVolume" -> 0, "HalfBoundaryVolume" -> 3/2|>,
-  TestID -> "InfraMeasurement-volumes-of-a-boundary-row"
+    InfraMeasurement[g, InfraSegment[1, 3], {"CountingMeasure", "RiemannianMeasure"}]],
+  <|"CountingMeasure" -> 3, "RiemannianMeasure" -> 0|>,
+  TestID -> "InfraMeasurement-measures-of-a-boundary-row"
 ]
 
 (* the interval from corner to corner fills the grid, so nothing of it touches the outside *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}]},
-    InfraMeasurement[g, InfraSegment[1, 9], {"Volume", "BoundaryVolume", "InteriorVolume"}]],
-  <|"Volume" -> 9, "BoundaryVolume" -> 0, "InteriorVolume" -> 9|>,
-  TestID -> "InfraMeasurement-volumes-of-a-filling-interval"
+    InfraMeasurement[g, InfraSegment[1, 9], {"CountingMeasure", "RiemannianMeasure"}]],
+  <|"CountingMeasure" -> 9, "RiemannianMeasure" -> 9|>,
+  TestID -> "InfraMeasurement-measures-of-a-filling-interval"
 ]
 
 (* ===== faithfulness ===== *)
@@ -89,7 +88,7 @@ VerificationTest[
      Keys[InfraMeasurement[g, InfraSegment[1, 9], All]]}],
   {{"Length", "Cardinality"},
    {"Graph", "Faithful", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph",
-    "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume"}},
+    "CountingMeasure", "RiemannianMeasure"}},
   TestID -> "InfraMeasurement-property-list-and-All"
 ]
 
@@ -229,10 +228,10 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     {a = InfraSegment[1, 13], b = InfraSegment[13, 25]},
-    {InfraMeasurement[g, InfraUnion[a, b], "Volume"] ===
+    {InfraMeasurement[g, InfraUnion[a, b], "CountingMeasure"] ===
        Length @ Union[Keys @ InfraMeasurement[g, a, "VertexDensity"],
                       Keys @ InfraMeasurement[g, b, "VertexDensity"]],
-     InfraMeasurement[g, InfraIntersection[a, b], "Volume"],
+     InfraMeasurement[g, InfraIntersection[a, b], "CountingMeasure"],
      Sort @ VertexList @ InfraMeasurement[g, InfraIntersection[a, b], "Subgraph"]}],
   {True, 1, {13}},
   TestID -> "InfraIntersection-volumes-off-the-support"
@@ -242,7 +241,7 @@ VerificationTest[
 VerificationTest[
   Keys @ InfraMeasurement[GridGraph[{5, 5}],
     InfraIntersection[InfraSegment[1, 25], InfraSegment[5, 21]], All],
-  {"VertexDensity", "Subgraph", "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume"},
+  {"VertexDensity", "Subgraph", "CountingMeasure", "RiemannianMeasure"},
   TestID -> "InfraIntersection-All-lists-its-own-properties"
 ]
 

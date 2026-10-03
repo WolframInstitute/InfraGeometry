@@ -16,7 +16,7 @@ InfraMeasurement[ graph_Graph,
                   ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] ], All ] :=
   InfraMeasurement[ graph, obj,
     { "Graph", "Faithful", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph",
-      "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume" } ]
+      "CountingMeasure", "RiemannianMeasure" } ]
 
 InfraMeasurement[ _Graph, ( InfraSegment | InfraRay | InfraLine )[ __ ], "Faithful" ] :=
   True
@@ -82,19 +82,13 @@ InfraMeasurement[ graph_Graph,
 InfraMeasurement[ graph_Graph, obj : Except[ _List ], "Subgraph" ] :=
   Subgraph[ graph, Keys @ InfraMeasurement[ graph, obj, "VertexDensity" ] ]
 
-InfraMeasurement[ graph_Graph, obj : Except[ _List ], "Volume" ] :=
+InfraMeasurement[ graph_Graph, obj : Except[ _List ], "CountingMeasure" ] :=
   Length @ InfraMeasurement[ graph, obj, "VertexDensity" ]
 
-InfraMeasurement[ graph_Graph, obj : Except[ _List ], "BoundaryVolume" ] :=
+InfraMeasurement[ graph_Graph, obj : Except[ _List ], "RiemannianMeasure" ] :=
   With[ { support = Keys @ InfraMeasurement[ graph, obj, "VertexDensity" ] },
     { inside = AssociationThread[ support, True ] },
-    Count[ support, v_ /; AnyTrue[ AdjacencyList[ graph, v ], ! TrueQ @ Lookup[ inside, Key @ # ] & ] ] ]
-
-InfraMeasurement[ graph_Graph, obj : Except[ _List ], "InteriorVolume" ] :=
-  InfraMeasurement[ graph, obj, "Volume" ] - InfraMeasurement[ graph, obj, "BoundaryVolume" ]
-
-InfraMeasurement[ graph_Graph, obj : Except[ _List ], "HalfBoundaryVolume" ] :=
-  InfraMeasurement[ graph, obj, "Volume" ] - InfraMeasurement[ graph, obj, "BoundaryVolume" ] / 2
+    Count[ support, v_ /; AllTrue[ AdjacencyList[ graph, v ], TrueQ @ Lookup[ inside, Key @ # ] & ] ] ]
 
 FindInfraRepresentative[ graph_Graph,
     obj : ( InfraSegment | InfraRay | InfraLine )[ Except[ _Rule | _RuleDelayed ], Except[ _Rule | _RuleDelayed ] ] |
@@ -183,4 +177,4 @@ InfraMeasurement[ graph_Graph, InfraUnion[ objs__ ], "VertexDensity" ] :=
 
 InfraMeasurement[ graph_Graph, obj : ( InfraIntersection | InfraUnion )[ __ ], All ] :=
   InfraMeasurement[ graph, obj,
-    { "VertexDensity", "Subgraph", "Volume", "BoundaryVolume", "InteriorVolume", "HalfBoundaryVolume" } ]
+    { "VertexDensity", "Subgraph", "CountingMeasure", "RiemannianMeasure" } ]
