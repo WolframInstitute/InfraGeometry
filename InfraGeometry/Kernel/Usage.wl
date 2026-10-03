@@ -425,7 +425,7 @@ CochainCupOne::usage = "CochainCupOne[g, a, b] is the Steenrod cup-1 product of 
 
 AntisymmetrizedCup::usage = "AntisymmetrizedCup[g, a, b] is an alias of CochainCup, the name the antisymmetrised product carried before it became the cup product.";
 
-InfraFibration::usage = "InfraFibration[total, proj] is a fibration of graphs: the total graph with its projection to the base, an association or a function on the vertices of total.";
+InfraFibration::usage = "InfraFibration[total, proj] is a fibration of graphs: the total graph with its projection to the base, an association or a function on the vertices of total.\nInfraFibration[fib] gives the construction fib, such as InfraTangentBundle[g, r], as a literal InfraFibration, computing its total graph once.";
 InfraTotalGraph::usage = "InfraTotalGraph[fib] gives the total graph of the fibration fib.";
 InfraFibrationAssociation::usage = "InfraFibrationAssociation[fib] gives the projection of fib as an association <|x -> p, ...|> from total vertices to base vertices.";
 InfraBaseGraph::usage = "InfraBaseGraph[fib] gives the base graph of fib: the projected vertices, p and q adjacent iff some total edge projects onto {p, q}.";
@@ -447,3 +447,8 @@ RandomInfraConnection::usage = "RandomInfraConnection[fib] gives an InfraConnect
 FindInfraHorizontalLift::usage = "FindInfraHorizontalLift[fib, conn, x, walk, n] gives n lifts of the base walk along the edges of conn, each starting at the total vertex x.";
 InfraParallelTransport::usage = "InfraParallelTransport[fib, conn, walk] gives the transport <|x -> y, ...|> along walk of the fiber over its first vertex; blocked vertices are dropped.";
 InfraHolonomy::usage = "InfraHolonomy[fib, conn, loop] gives the transport around a closed walk as Cycles on the positions of the fiber over its first vertex.";
+InfraRays::usage = "InfraRays[g, p, r] gives the rays of length r from p: the walks {p, u1, ..., ur} with d(p, ui) = i.";
+InfraTangentBundle::usage = "InfraTangentBundle[g, r] is the tangent bundle of g at scale r: the total vertices are the rays of length r, projected to their first vertex, two rays adjacent iff at every position their vertices are equal or adjacent.";
+InfraCotangentBundle::usage = "InfraCotangentBundle[g, r] is the cotangent bundle of g at scale r: the total vertices are the reversed rays of length r, projected to their last vertex, with the adjacency of InfraTangentBundle.";
+InfraDisplacementBundle::usage = "InfraDisplacementBundle[g, r] is the displacement bundle of g at scale r: the total vertices are the pairs {p, v} with d(p, v) = r, projected to p, two pairs adjacent iff their base points and their endpoints are equal or adjacent.";
+InfraBundleMorphism::usage = "InfraBundleMorphism[fib1, fib2] gives the natural bundle morphism from fib1 to fib2 over the identity: the endpoint map from InfraTangentBundle to InfraDisplacementBundle, the truncation from scale r to s < r, the reversal between InfraTangentBundle and InfraCotangentBundle.";
