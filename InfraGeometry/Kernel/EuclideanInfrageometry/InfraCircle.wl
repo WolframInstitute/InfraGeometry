@@ -90,26 +90,6 @@ InfraMemberQ[ graph_Graph, obj : InfraCircle[ _, _ ], path_List ] :=
         VertexQ[ dag, Last @ rot ] && VertexOutDegree[ dag, Last @ rot ] == 0 &&
         AllTrue[ Partition[ rot, 2, 1 ], EdgeQ[ dag, DirectedEdge @@ # ] & ] ] ]
 
-FindInfraCircle[ graph_Graph, center_, rs : ( _?NumericQ | { _?NumericQ, _?NumericQ } ),
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic ] :=
-  With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ] },
-    { rmin = Max[ 1, First @ Flatten @ { rs } ], rmax = Last @ Flatten @ { rs } },
-    { local = Subgraph[ graph, Select[ VertexList @ graph, Lookup[ dist, Key @ # ] <= rmax + 1 & ] ] },
-    { bandGraph = Subgraph[ local, Select[ VertexList @ local, rmin <= Lookup[ dist, Key @ # ] <= rmax & ] ] },
-    { circles = Replace[
-        Catch @ Scan[
-          k |-> With[ { found = Select[ First /@ # & /@ FindCycle[ bandGraph, { k }, All ],
-                cycle |-> AllTrue[ VertexComponent[ VertexDelete[ local, cycle ], center ],
-                    Lookup[ dist, Key @ # ] <= rmax & ] ] },
-            If[ found =!= { }, Throw @ found ] ],
-          Range[ 3, VertexCount @ bandGraph ] ],
-        Null -> { } ] },
-    Switch[ count,
-      Automatic, First[ circles, { } ],
-      All,       circles,
-      _UpTo,     Take[ circles, count ],
-      _,         If[ Length @ circles < count, { }, Take[ circles, count ] ] ] ]
-
 FindInfraCycle[ graph_Graph, n : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
   FindInfraCycle[ graph, { 1, VertexCount[ graph ] }, n ]
 
@@ -170,4 +150,15 @@ InfraCircleQ[ _Graph, cycle_List ] /; Length[ cycle ] < 3 :=
 
 FindInfraRepresentative[ graph_Graph, InfraCircle[ center_, rs : ( _?NumericQ | { _?NumericQ, _?NumericQ } ) ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  takeRepresentatives[ FindInfraCircle[ graph, center, rs, All ], count, mods ]
+  With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ] },
+    { rmin = Max[ 1, First @ Flatten @ { rs } ], rmax = Last @ Flatten @ { rs } },
+    { local = Subgraph[ graph, Select[ VertexList @ graph, Lookup[ dist, Key @ # ] <= rmax + 1 & ] ] },
+    { bandGraph = Subgraph[ local, Select[ VertexList @ local, rmin <= Lookup[ dist, Key @ # ] <= rmax & ] ] },
+    { circles = Replace[
+        Catch @ Scan[
+          k |-> With[ { found = Select[ First /@ # & /@ FindCycle[ bandGraph, { k }, All ],
+                cycle |-> AllTrue[ VertexComponent[ VertexDelete[ local, cycle ], center ], Lookup[ dist, Key @ # ] <= rmax & ] ] },
+            If[ found =!= { }, Throw @ found ] ],
+          Range[ 3, VertexCount @ bandGraph ] ],
+        Null -> { } ] },
+    takeRepresentatives[ circles, count, mods ] ]
