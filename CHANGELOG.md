@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **1.8.3** (2026-10-03, BreathlessTriangleTutorial): the tutorial *The Breadthless Triangle* (`BreadthlessTriangleTutorial`), linked from the Euclidean guide: a triangle as three `InfraSegment` heads on the square tiling, the triangular tiling and the square mesh at three sizes, drawn and printed by vertex density, the union as one object, and the breadth of a side read on its level sets against the scale. No kernel change.
+
 - **1.8.2** (2026-10-03, NextVertexFunction): `FindInfraRepresentative[g, InfraGeodesic[germ, r], n]` at a finite scale `r` extends in the simple class, as `FindInfraWalk` does by default; before, the extension ran with `Properties -> {}` and an infinite budget, an unbounded class, and the call stayed unevaluated.
 
 - **1.8.1** (2026-10-03): `InfraBundleMorphism` matches the two bases by their vertices and edges, not by the identical `Graph`, so a base rebuilt by `InfraBaseGraph` gives the natural morphism.
