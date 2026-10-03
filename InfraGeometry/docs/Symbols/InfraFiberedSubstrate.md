@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraFiberedSubstrate
 Keywords: [fibration, fiber bundle, covering, tangent bundle, displacement bundle, example, roster]
-SeeAlso: [InfraSubstrate, InfraFibration, InfraTangentBundle, InfraDisplacementBundle, InfraTotalGraph, InfraFibrationQ, InfraFiberBundleQ]
+SeeAlso: [InfraSubstrate, InfraFibration, InfraTangentBundle, InfraDisplacementBundle, InfraTotalGraph, InfraFibrationQ, InfraFiberBundleQ, FindInfraLeviCivitaConnection]
 RelatedGuides: [InfraFiberBundles, InfraSubstrates]
 ---
 
@@ -54,7 +54,7 @@ GraphicsGrid @ Partition[
 The roster.
 
 ```wl
-InfraFiberedSubstrate[]
+Normal @ InfraFiberedSubstrate[]
 ```
 
 ## Scope
@@ -74,4 +74,14 @@ With[
   {prism = InfraTotalGraph @ InfraFiberedSubstrate["CycleProductBundle", "Small"]},
   {moebius = InfraTotalGraph @ InfraFiberedSubstrate["MoebiusLadderCover", "Small"]},
   GraphicsRow[{prism, moebius}]]
+```
+
+## Possible Issues
+
+The tangent and displacement entries are fibrations, but not fiber bundles in the sense of [InfraFiberBundleQ]().
+
+```wl
+Table[
+  name -> {InfraFibrationQ[#], InfraFiberBundleQ[#]} & @ InfraFiberedSubstrate[name, "Small"],
+  {name, {"GridTangentBundle", "GridDisplacementBundle", "OctahedronTangentBundle", "OctahedronDisplacementBundle"}}]
 ```
