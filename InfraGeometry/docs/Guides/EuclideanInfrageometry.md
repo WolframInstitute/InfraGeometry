@@ -7,6 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/EuclideanInfrageometry
 Keywords: [Euclidean geometry, graph, inert head, synthetic object, segment, ray, line, arc, circle, ball, tube, cylinder, cone, sphere, hull, angle, measurement, substrate, scene, multi-construction]
 RelatedGuides: [RiemannianInfrageometry, Experimental]
+RelatedTutorials: [BreadthlessTriangleTutorial]
 ---
 
 ## Abstract
