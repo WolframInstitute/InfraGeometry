@@ -122,7 +122,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
-  {q = (SeedRandom[2]; RandomInfraPoint[g, c, 3])},
+  {q = (SeedRandom[5]; RandomInfraPoint[g, c, 2])},
   {both = InfraArc[c, {p, q, p}, "RadiusDelta" -> 2]},
   {InfraSubstrateHighlight[g, {both -> $InfraCircleColor, Directive[$InfraPointColor], c, p, q}],
    InfraMeasurement[g, both, "Cardinality"],

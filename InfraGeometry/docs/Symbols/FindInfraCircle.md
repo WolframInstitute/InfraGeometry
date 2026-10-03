@@ -14,7 +14,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 <code>[FindInfraCircle]()[*g*, *c*, *r*]</code> gives one circle around *c* at radius *r* in *g*, as a cyclic vertex list; <code>[FindInfraCircle]()[*g*, *c*, {*r*, *s*}]</code> takes the band *r* ≤ *d(c, v)* ≤ *s*.
 
-<code>[FindInfraCircle]()[*g*, *c*, *spec*, *n*]</code> gives a `List` of exactly *n* circles or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives every circle.
+<code>[FindInfraCircle]()[*g*, *c*, *spec*, *n*]</code> gives a `List` of exactly *n* circles, or `{ }` when there are fewer; `UpTo[n]` gives up to *n*; `All` gives every circle.
 
 ## Details & Options
 
@@ -99,7 +99,7 @@ GraphicsRow @ Table[
 
 ## Scope
 
-The band `{2, 4}` around the centre of the square tiling, every circle in it drawn at once. A bounded count gives a list, and a strict count that cannot be met is `$Failed`.
+The band `{2, 4}` around the centre of the square tiling, every circle in it drawn at once. A bounded count gives a list, and a strict count that cannot be met gives `{ }`.
 
 ```wl
 With[
