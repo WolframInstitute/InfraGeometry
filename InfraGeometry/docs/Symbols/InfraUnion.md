@@ -16,7 +16,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Details & Options
 
-On heads, InfraMeasurement gives the union its "VertexDensity" — the sum of the two densities — its "Subgraph" and the four volumes. It is not a family of walks, so it has no "Graph", "Cardinality", "Length", "EdgeDensity" or "Faithful".
+On heads, InfraMeasurement gives the union its "VertexDensity" — the sum of the two densities — its "Subgraph" and the two measures. It is not a family of walks, so it has no "Graph", "Cardinality", "Length", "EdgeDensity" or "Faithful".
 
 Inside InfraScene hypotheses `InfraUnion[c1, c2]` is the union token: every vertex of either object is one branch. It stays inert until the bindings resolve, the engine supplying the graph.
 

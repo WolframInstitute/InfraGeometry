@@ -112,7 +112,7 @@ Ready-made example substrates and ambient styles for the analyses: **[LLM-genera
 |----------|-------------|----------|
 | Vectors and displacements | Algebra of discrete vector fields and their flows | [LLM](https://www.wolframcloud.com/obj/hajek_pavel/Infrageometry/Displacements.nb) |
 | Displacements on graphs | Metric inverse, negative, continuity, commutator, and bracket of graph displacements | [LLM](https://www.wolframcloud.com/obj/hajek_pavel/Infrageometry/Displacement1.nb) |
-| What volume growth determines | Ball and sphere growth give dimension and scalar curvature and nothing else at any order; the four ball measures and the Ehrhart reciprocity behind `HalfBoundary` |  |
+| What volume growth determines | Ball and sphere growth give dimension and scalar curvature and nothing else at any order; the two measures of a ball and the Ehrhart reciprocity between them |  |
 | The Riemann tensor from graph measurements | Ricci / Weyl decomposition and norms, tube-volume Ricci projections, two Weyl routes, distance distributions |  |
 | Exact volume growth on tessellation graphs | Growth series of the eight constructible uniform tilings, reciprocity failures, torus quotients below the systole |  |
 | Infrageometric convergence | The path metric homogenizes to a polyhedral norm and the Dirichlet energy to a quadratic form; they agree only in dimension 1 |  |

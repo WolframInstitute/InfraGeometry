@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraGeodesicQ
 Keywords: [geodesic, infra-scale, locally shortest, walk, test]
-SeeAlso: [FindInfraGeodesic, ExtendInfraGeodesic, InfraWalkQ, InfraSegmentQ, SegmentGraph]
+SeeAlso: [FindInfraGeodesic, ExtendInfraGeodesic, InfraWalkQ, InfraSegmentQ, InfraMeasurement]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
@@ -71,6 +71,6 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = InfraCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
-  {dag = SegmentGraph[g, a, b]},
+  {dag = InfraMeasurement[g, InfraSegment[a, b], "Graph"]},
   {InfraSubstrateHighlight[g, {dag, Directive[$InfraPointColor], a, b}], InfraGeodesicQ[g, dag]}]
 ```

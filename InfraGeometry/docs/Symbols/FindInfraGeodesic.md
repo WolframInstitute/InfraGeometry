@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraGeodesic
 Keywords: [geodesic, infra-scale, locally shortest, walk, Riemannian geodesic]
-SeeAlso: [InfraGeodesicQ, ExtendInfraGeodesic, FindInfraWalk, FindInfraSegment, SegmentGraph, SprayGraph]
+SeeAlso: [InfraGeodesicQ, ExtendInfraGeodesic, FindInfraWalk, FindInfraSegment, InfraMeasurement, SprayGraph]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 

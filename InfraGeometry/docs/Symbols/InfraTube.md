@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraTube
 Keywords: [tube, neighbourhood, region, inert head, volume]
-SeeAlso: [InfraCylinder, InfraCone, InfraBall, InfraMeasurement, FindInfraRepresentative, TubeVolumes, InfraSegment]
+SeeAlso: [InfraCylinder, InfraCone, InfraBall, InfraMeasurement, FindInfraRepresentative, InfraSegment]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -20,9 +20,9 @@ RelatedGuides: [EuclideanInfrageometry]
 
 Definition: the tube of radius *s* about *core* is *{v : d(v, core) ≤ s}*.
 
-*core* is a vertex, a vertex list, a density, a walk graph, or a Euclidean head such as [InfraSegment](), read through the keys of its `"VertexDensity"`. The tube of a vertex is the ball, and the tube of a segment is the tube of the interval that [TubeVolumes]() measures.
+*core* is a vertex, a vertex list, a density, a walk graph, or a Euclidean head such as [InfraSegment](), read through the keys of its `"VertexDensity"`. The tube of a vertex is the ball, and the tube of a segment is the tube of the interval.
 
-The head computes nothing. A tube has one member, the vertex set, and owns the same nine properties as [InfraBall]().
+The head computes nothing. A tube has one member, the vertex set, and owns the same seven properties as [InfraBall]().
 
 The tube is the primitive behind [InfraCylinder]() and [InfraCone]().
 
@@ -65,12 +65,12 @@ With[
   FindInfraRepresentative[g, InfraTube[c, 3]] === FindInfraRepresentative[g, InfraBall[c, 3]]]
 ```
 
-The volume of the tube about a segment is the tube profile of [TubeVolumes]().
+The tube about a segment holds the ball of every vertex of the interval, so its counting measure at slack 0 is the number of vertices of the interval.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = InfraCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 4])},
-  Table[InfraMeasurement[g, InfraTube[InfraSegment[c, p], s], "Volume"], {s, 0, 3}] === TubeVolumes[g, c, p, {0, 3}]]
+  InfraMeasurement[g, InfraTube[InfraSegment[c, p], 0], "CountingMeasure"] === InfraMeasurement[g, InfraSegment[c, p], "CountingMeasure"]]
 ```

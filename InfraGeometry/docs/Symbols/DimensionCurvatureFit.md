@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/DimensionCurvatureFit
 Keywords: [dimension, scalar curvature, Bishop-Gromov, volume growth, regression, Ricci curvature, tube]
-SeeAlso: [LogDifferenceQuotients, VolumeGrowthObservables, BallVolumes, ShellAreas, TubeVolumes]
+SeeAlso: [LogDifferenceQuotients, VolumeGrowthObservables, InfraMeasurement, InfraBall, InfraShell, InfraTube]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
@@ -109,13 +109,13 @@ With[
 
 ## Scope
 
-`Around` quotients carry their spread into the dimension and the curvature: here the mean profile over five vertices near the centre of the discretized plane. Fitted from radius 1 on the full count, the intercept is biased high by the small radii; the windowed fit of [VolumeGrowthObservables]() reads 1.95 at the centre.
+`Around` quotients carry their spread into the dimension and the curvature: here the mean profile over five vertices near the centre of the discretized plane. Fitted from radius 1 on the counting measure, the intercept is biased high by the small radii; the windowed fit of [VolumeGrowthObservables]() chooses its window by the residual.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Large"]},
   {sampleSet = Take[FindInfraRepresentative[g, InfraBall[InfraCenter[g], 2]], 5]},
-  {qdata = Transpose[{Range[8], LogDifferenceQuotients[MeanAround /@ Transpose @ BallVolumes[g, sampleSet, {0, 8}]]}]},
+  {qdata = Transpose[{Range[8], LogDifferenceQuotients[MeanAround /@ Transpose @ Table[InfraMeasurement[g, InfraBall[v, r], "CountingMeasure"], {v, sampleSet}, {r, 0, 8}]]}]},
   {ListPlot[{#[[1]] (#[[1]] + 1), #[[2]]} & /@ qdata, PlotRange -> {All, {0, 3.5}}, AxesLabel -> {"r(r+1)", "q"}],
    DimensionCurvatureFit[qdata]}]
 ```

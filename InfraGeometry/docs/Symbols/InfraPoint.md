@@ -36,7 +36,7 @@ A point is a vertex. The head is a token of the scene language, [FindInfraPoint]
 
 The vertex label is carried verbatim, including a list label such as `{i, j}` on a grid or tessellation.
 
-Invariants are functions of the graph and a vertex, not accessors: `BallVolumes[g, v, {rmin, rmax}]` gives the bare numbers for one vertex, and one row per vertex for a vertex list.
+Invariants are functions of the graph and a vertex, not accessors: `InfraMeasurement[g, InfraBall[v, r], "CountingMeasure"]` gives the bare number for one vertex, and the list of regions one number per vertex.
 
 ## Basic Examples
 
@@ -60,13 +60,13 @@ With[
   {FindInfraPoint[g, All, "From" -> "Center"], Length @ FindInfraPoint[g, 3]}]
 ```
 
-A vertex answers invariants with bare numbers; a list of vertices answers with one row each.
+A vertex answers invariants with bare numbers; a list of regions answers with one number each.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {BallVolumes[g, c, {0, 3}], BallVolumes[g, {c, First @ GraphPeriphery[g]}, {0, 3}]}]
+  {InfraMeasurement[g, InfraBall[c, 3], "CountingMeasure"], InfraMeasurement[g, {InfraBall[c, 3], InfraBall[First @ GraphPeriphery[g], 3]}, "CountingMeasure"]}]
 ```
 
 In a scene the token is solved on the graph. Here *a* is the centre of a 5 × 5 grid, *b* any of the 8 vertices at distance 3 from it, and *c* any of the 4 corners: 32 instances.

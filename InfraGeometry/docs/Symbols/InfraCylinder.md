@@ -22,7 +22,7 @@ Definition: the cylinder of radius *r* about *axis* is *{v : d(v, axis) ≤ r}*,
 
 It is the blog's word for [InfraTube]() with an axis for a core, and has its own definition. *axis* is a vertex list, or a Euclidean head.
 
-The head computes nothing. A cylinder has one member, the vertex set, and owns the same nine properties as [InfraBall]().
+The head computes nothing. A cylinder has one member, the vertex set, and owns the same seven properties as [InfraBall]().
 
 ## Basic Examples
 

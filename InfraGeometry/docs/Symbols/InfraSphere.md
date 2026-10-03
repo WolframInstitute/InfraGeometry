@@ -24,7 +24,7 @@ The shell is a set of points. The sphere is the family of its connected separati
 
 [FindInfraRepresentative]() gives members: a count, `"RandomChoice"` and `"Pruning" -> q` are translated to the `Method` of [FindInfraSphere](). Without a count it gives one member, a sorted vertex list.
 
-[InfraMeasurement]() reads the family through the exhaustive search, so it is expensive: `"VertexDensity"` is the sum of the indicators of the members, `"EdgeDensity"` the sum of their induced edge sets, `"Cardinality"` their number, and the volumes the support of the density. `"Faithful"` is `Undetermined`. A sphere has no `"Graph"`.
+[InfraMeasurement]() reads the family through the exhaustive search, so it is expensive: `"VertexDensity"` is the sum of the indicators of the members, `"EdgeDensity"` the sum of their induced edge sets, `"Cardinality"` their number, and the two measures the support of the density. `"Faithful"` is `Undetermined`. A sphere has no `"Graph"`.
 
 When the shell wraps around, as on a torus, and does not separate, the family is empty.
 
@@ -52,7 +52,7 @@ GraphicsRow @ Table[
 Measuring the family: the number of members, and the volume of their union.
 
 ```wl
-InfraMeasurement[GridGraph[{5, 5}], InfraSphere[13, {1, 2}], {"Cardinality", "Faithful", "Volume"}]
+InfraMeasurement[GridGraph[{5, 5}], InfraSphere[13, {1, 2}], {"Cardinality", "Faithful", "CountingMeasure"}]
 ```
 
 A member is connected and is contained in the shell.

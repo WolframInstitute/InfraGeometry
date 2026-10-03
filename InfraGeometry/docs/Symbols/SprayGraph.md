@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/SprayGraph
 Keywords: [spray of shortest paths, exponential map, breadth-first search, shortest-path DAG, shortest paths]
-SeeAlso: [SegmentGraph, GeodesicExtensionGraph, FindInfraGeodesic, FindInfraShell, BallVolumes]
+SeeAlso: [InfraMeasurement, GeodesicExtensionGraph, FindInfraGeodesic, FindInfraShell, InfraBall]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -101,16 +101,16 @@ With[
   {sprayDag = SprayGraph[g, c, "AxisLength" -> 3]},
   {InfraSubstrateHighlight[g, {sprayDag, FindInfraShell[g, c, 3] -> $InfraShellColor}],
    Sort @ Complement[VertexList[sprayDag], FindInfraRepresentative[g, InfraBall[c, 2]]] === FindInfraShell[g, c, 3],
-   VertexCount[sprayDag] === BallVolumes[g, c, 3]}]
+   VertexCount[sprayDag] === InfraMeasurement[g, InfraBall[c, 3], "CountingMeasure"]}]
 ```
 
-The shortest paths from *c* to *v* are the paths of the spray from *c* to *v*; the [SegmentGraph]() holds the same family.
+The shortest paths from *c* to *v* are the paths of the spray from *c* to *v*; the `"Graph"` of [InfraMeasurement]()`[g, InfraSegment[c, v], "Graph"]` holds the same family.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {through = (SeedRandom[1]; RandomInfraPoint[g, c, 4])},
-  {InfraSubstrateHighlight[g, {SegmentGraph[g, c, through], Directive[$InfraPointColor], c, through}],
-   Sort @ FindPath[SprayGraph[g, c], c, through, Infinity, All] === Sort @ FindPath[SegmentGraph[g, c, through], c, through, Infinity, All]}]
+  {InfraSubstrateHighlight[g, {InfraMeasurement[g, InfraSegment[c, through], "Graph"], Directive[$InfraPointColor], c, through}],
+   Sort @ FindPath[SprayGraph[g, c], c, through, Infinity, All] === Sort @ FindPath[InfraMeasurement[g, InfraSegment[c, through], "Graph"], c, through, Infinity, All]}]
 ```

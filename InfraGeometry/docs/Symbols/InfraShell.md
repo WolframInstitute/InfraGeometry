@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraShell
 Keywords: [shell, sphere, level set, region, inert head, area]
-SeeAlso: [FindInfraShell, InfraBall, InfraSphere, InfraMeasurement, FindInfraRepresentative, InfraShellQ, ShellAreas]
+SeeAlso: [FindInfraShell, InfraBall, InfraSphere, InfraMeasurement, FindInfraRepresentative, InfraShellQ]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
@@ -22,11 +22,11 @@ RelatedGuides: [RiemannianInfrageometry]
 
 Definition: the shell of radius *r* about *c* is *S_r(c) = {v : d(c, v) = r}*, a level set of the distance from *c*; the band is *{v : r ≤ d(c, v) ≤ s}*. *c* is a vertex or a vertex list, and then *d(v, C) = min d(v, c)*.
 
-The head holds the centre and the band and computes nothing. A shell has one member, the vertex set, so [FindInfraRepresentative]() gives it as a sorted vertex list. It owns the same nine properties as [InfraBall](), `"Volume"` among them; the shell area *A(r)* is the `"Volume"` of the shell.
+The head holds the centre and the band and computes nothing. A shell has one member, the vertex set, so [FindInfraRepresentative]() gives it as a sorted vertex list. It owns the same seven properties as [InfraBall](), the measures among them; the shell area *A(r)* is the `"CountingMeasure"` of the shell, and its `"RiemannianMeasure"` is `0`, since every vertex of a shell touches the complement.
 
 A shell is a set of points. The connected subsets of it that separate the centre from the outside are the family [InfraSphere]().
 
-[FindInfraShell]() is the level set as a function; [ShellAreas]() counts the shells at every radius without building them.
+[FindInfraShell]() is the level set as a function; [InfraMeasurement]() reads the area of the shell at every radius. At *r = 1* it is the degree of the centre, and over *r* on a lattice the coordination sequence of crystallography: *4 r* on the square grid, *3 r* on the hexagonal tiling.
 
 ## Basic Examples
 
@@ -60,13 +60,13 @@ With[
 
 ## Properties and Relations
 
-The shell area is the `"Volume"` of the head. On the square grid it is *4 r*.
+The shell area is the `"CountingMeasure"` of the head. On the square grid it is *4 r*.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = InfraCenter[g]},
-  Table[InfraMeasurement[g, InfraShell[c, r], "Volume"], {r, 1, 6}] === ShellAreas[g, c, {1, 6}]]
+  Table[InfraMeasurement[g, InfraShell[c, r], "CountingMeasure"], {r, 1, 6}] === Table[4 r, {r, 1, 6}]]
 ```
 
 Inside a scene the token names the shell about a point, and [FindInfraScene]() binds it to the same vertex set. Two shells meet in a few vertices, one per branch.

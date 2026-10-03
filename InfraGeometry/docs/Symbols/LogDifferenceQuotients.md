@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/LogDifferenceQuotients
 Keywords: [log-log slope, growth exponent, volume-growth dimension, difference quotient, Around]
-SeeAlso: [BallVolumes, ShellAreas, TubeVolumes, DimensionCurvatureFit, VolumeGrowthObservables]
+SeeAlso: [InfraMeasurement, InfraBall, InfraShell, InfraTube, DimensionCurvatureFit, VolumeGrowthObservables]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
@@ -32,7 +32,7 @@ The quotients of the ball volumes at the centre of the discretized plane, the sq
 With[
   {names = {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}},
   ListLinePlot[
-    Table[With[{gr = InfraSubstrate[nm, "Large"]}, LogDifferenceQuotients @ BallVolumes[gr, InfraCenter[gr], {0, 12}]], {nm, names}],
+    Table[With[{gr = InfraSubstrate[nm, "Large"]}, LogDifferenceQuotients @ Table[InfraMeasurement[gr, InfraBall[InfraCenter[gr], r], "CountingMeasure"], {r, 0, 12}]], {nm, names}],
     DataRange -> {1, 12}, PlotMarkers -> Automatic, PlotLegends -> names, AxesLabel -> {"r", "q(r)"},
     GridLines -> {None, {{2, Gray}}}, PlotRange -> {0, 3.5}]]
 ```
@@ -62,7 +62,7 @@ A sequence of `Around` values carries its spread into the quotients, drawn as er
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Large"]},
   {sampleSet = Take[FindInfraRepresentative[g, InfraBall[InfraCenter[g], 2]], 5]},
-  {quots = LogDifferenceQuotients[MeanAround /@ Transpose @ BallVolumes[g, sampleSet, {0, 8}]]},
+  {quots = LogDifferenceQuotients[MeanAround /@ Transpose @ Table[InfraMeasurement[g, InfraBall[v, r], "CountingMeasure"], {v, sampleSet}, {r, 0, 8}]]},
   {ListPlot[quots, DataRange -> {1, 8}, PlotRange -> {0, 3.5}, GridLines -> {None, {{2, Gray}}}, AxesLabel -> {"r", "q(r)"}], quots}]
 ```
 
@@ -74,8 +74,8 @@ The quotients of the shell areas of a planar lattice tend to 1, one less than th
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Large"]},
   {ctr = InfraCenter[g]},
-  {ballQuots = LogDifferenceQuotients @ BallVolumes[g, ctr, {0, 12}]},
-  {shellQuots = LogDifferenceQuotients @ ShellAreas[g, ctr, {1, 12}]},
+  {ballQuots = LogDifferenceQuotients @ Table[InfraMeasurement[g, InfraBall[ctr, r], "CountingMeasure"], {r, 0, 12}]},
+  {shellQuots = LogDifferenceQuotients @ Table[InfraMeasurement[g, InfraShell[ctr, r], "CountingMeasure"], {r, 1, 12}]},
   {ListLinePlot[{ballQuots, shellQuots}, PlotMarkers -> Automatic, PlotLegends -> {"ball", "shell"}, PlotRange -> {0, 3.5},
      GridLines -> {None, {{1, Gray}, {2, Gray}}}, AxesLabel -> {"r", "q(r)"}],
    N @ {Last @ ballQuots, Last @ shellQuots}}]

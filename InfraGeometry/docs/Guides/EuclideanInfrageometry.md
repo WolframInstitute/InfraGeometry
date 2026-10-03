@@ -40,7 +40,7 @@ Euclidean infrageometry is synthetic geometry: constructions with natural object
 - `InfraCylinder` the inert cylinder of radius r about an axis, the tube of the axis
 - `InfraCone` the inert cone of a given slope along an axis, apex at its first vertex
 - `InfraSphere` the inert family of inclusion-minimal connected subsets of a shell that separate the centre from the outside; FindInfraSphere is its search
-- the volumes of a region are properties of InfraMeasurement: "Volume", "BoundaryVolume", "InteriorVolume" and "HalfBoundaryVolume"
+- the measures of a region are properties of InfraMeasurement: "CountingMeasure", the number of vertices, and "RiemannianMeasure", the number of vertices without the boundary
 
 ### Find Functions
 
@@ -56,7 +56,7 @@ Euclidean infrageometry is synthetic geometry: constructions with natural object
 
 ### Measurements
 
-- `InfraMeasurement` a property of a head on a graph: "Graph", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph", "Faithful" and the volumes; a List of properties gives an Association, All gives every property
+- `InfraMeasurement` a property of a head on a graph: "Graph", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph", "Faithful", "CountingMeasure" and "RiemannianMeasure"; a List of properties gives an Association, All gives every property
 - `InfraDensity` the marginal of any shape to the vertex set with respect to the counting measure: a vertex, a vertex list, a density, a walk graph; the one coercion in the API
 - `FindInfraRepresentative` one member of a head as a vertex list, read off its graph or found by its search; a trailing count gives a List of them, "RandomChoice" a random member
 - `InfraMemberQ` whether a vertex list is a member of a head on a graph
@@ -77,13 +77,11 @@ Euclidean infrageometry is synthetic geometry: constructions with natural object
 
 ### Underlying graphs
 
-- `SegmentGraph` the interval I(p, q) as a directed acyclic graph whose directed p-q paths are exactly the shortest paths from p to q: the graph of InfraSegment[p, q]
 - `SprayGraph` the breadth-first DAG rooted at c, whose source-to-sink paths are exactly the maximal shortest paths from c
 
 ### Not here
 
 - `FindBallHull` the intersection of all balls containing a set of points; it lives on the Infra Topology guide
-- `TubeVolumes` the volume profile of the tube about a core; it lives on the Riemannian Infrageometry guide, the tube itself is InfraTube
 - not here: the quadric as an inert head and the layers of the convex hull; FindInfraQuadric stays on the Experimental guide
 - not here: an invariant of four points, the inverse of every head (the values of its unknowns for a given vertex set), and the graph of a line or of an arc as an exported name; none is in an item yet
 - not here: the interactive multi-construction stepper in the causal and branchial direction; it stays on the Experimental guide

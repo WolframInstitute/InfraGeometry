@@ -20,7 +20,7 @@ Definition: with the axis *a_1, …, a_n*, the cone of slope *m* is *{v : d(v, a
 
 *axis* is a vertex list, for example one representative of a segment or a ray. Reverse it for the other apex. The slope may be a rational number; slope 0 gives the axis.
 
-The head computes nothing. A cone has one member, the vertex set, and owns the same nine properties as [InfraBall]().
+The head computes nothing. A cone has one member, the vertex set, and owns the same seven properties as [InfraBall]().
 
 ## Basic Examples
 

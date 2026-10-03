@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraShell
 Keywords: [shell, sphere, level surface, volume growth, dimension]
-SeeAlso: [InfraShell, InfraBall, FindInfraSphere, ShellAreas, FindInfraCircle, InfraShellQ, SeparatesQ]
+SeeAlso: [InfraShell, InfraBall, FindInfraSphere, InfraMeasurement, FindInfraCircle, InfraShellQ, SeparatesQ]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
@@ -21,7 +21,7 @@ The shell of radius *r* about *c* is $\{v : d(c,v) = r\}$ — the sphere of the 
 
 It is the discrete analogue of a sphere, not of a circle: it is codimension-1 as a set, but on a lattice its vertices are pairwise non-adjacent, so it carries no cycle. The cyclic object is [FindInfraCircle](), which needs a thickened band for exactly that reason.
 
-The shell is the substrate of the volume-growth invariants. Its cardinality as a function of *r* is the surface-area profile, which [ShellAreas]() counts at every radius at once, and on a flat lattice it grows **linearly**, which is the statement that the dimension is 2. The slope is a property of the tiling: 4 per step on the square grid, 3 on the hexagonal.
+The shell is the substrate of the volume-growth invariants. Its cardinality as a function of *r* is the surface-area profile, which [InfraMeasurement]() reads as the `"CountingMeasure"` of [InfraShell]() at every radius, and on a flat lattice it grows **linearly**, which is the statement that the dimension is 2. The slope is a property of the tiling: 4 per step on the square grid, 3 on the hexagonal.
 
 It is the level set of the inert head [InfraShell](), as a function. The connected subsets of a shell that separate the centre from the outside are [FindInfraSphere]().
 
@@ -80,12 +80,12 @@ With[
    Accumulate[areas] === volumes}]
 ```
 
-The shell sizes are the shell-area profile of [ShellAreas]().
+The shell sizes are the `"CountingMeasure"` of [InfraShell]().
 
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Medium"]},
   {c = InfraCenter[g]},
   {areas = Table[Length @ FindInfraShell[g, c, r], {r, 0, 5}]},
-  {ListPlot[areas, DataRange -> {0, 5}, AxesLabel -> {"r", "A(r)"}], areas === ShellAreas[g, c, {0, 5}]}]
+  {ListPlot[areas, DataRange -> {0, 5}, AxesLabel -> {"r", "A(r)"}], areas === Table[InfraMeasurement[g, InfraShell[c, r], "CountingMeasure"], {r, 0, 5}]}]
 ```

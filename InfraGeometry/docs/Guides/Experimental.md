@@ -253,13 +253,6 @@ Every exported symbol that no other guide of the site covers, one section per ke
 - `ShellViewer` an interactive viewer for exploring metric shells
 - `CircleViewer` an interactive viewer for exploring separating cycles
 
-### Riemannian · VolumeGrowth.wl
-
-- **CylinderVolumes** — the matrix of cylinder volumes between every source-target pair
-- **IntervalVolumes** — the volume profile of the interval between p and q, over the slack r
-- **GeodesicOccupation** — the per-vertex geodesic occupation over a geodesic DAG
-- **GeodesicEdgeOccupation** — the per-edge geodesic occupation over a geodesic DAG
-
 ### Riemannian · Boundary.wl
 
 - **GraphBoundary** — the inner vertex boundary of S in g, the vertices where an edge of g escapes S

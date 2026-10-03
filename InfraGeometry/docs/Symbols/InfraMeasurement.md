@@ -33,11 +33,12 @@ The properties:
 | `"EdgeDensity"` | `<\|v \[DirectedEdge] w -> occ(v -> w)\|>`, the number of members through the arrow; on a polyline, the sum of the piece densities |
 | `"Subgraph"` | the induced subgraph of the support, same as [InfraSubgraph]() |
 | `"Faithful"` | `True` on a segment, ray or line; [Undetermined]() on a circle or an arc, whose graph is proved faithful only under a hypothesis this paclet does not certify |
-| `"Volume"`, `"BoundaryVolume"`, `"InteriorVolume"`, `"HalfBoundaryVolume"` | the size of the support and its boundary counts |
+| `"CountingMeasure"` | the number of vertices of the support |
+| `"RiemannianMeasure"` | the number of vertices of the support all of whose neighbours lie in the support: the count without the boundary, `0` on a shell |
 
-The support of every object — what `"Subgraph"` and the four volumes read — is `Keys @ InfraMeasurement[graph, obj, "VertexDensity"]`.
+The support of every object — what `"Subgraph"` and the two measures read — is `Keys @ InfraMeasurement[graph, obj, "VertexDensity"]`.
 
-[InfraIntersection]() and [InfraUnion]() are heads on heads: neither is a family of walks, so neither has a `"Graph"`, `"Cardinality"`, `"Length"`, `"EdgeDensity"` or `"Faithful"`, and their `All` lists only the density, the subgraph and the four volumes. The intersection's `"VertexDensity"` is the product of the two objects' densities on their common vertices, the union's the sum.
+[InfraIntersection]() and [InfraUnion]() are heads on heads: neither is a family of walks, so neither has a `"Graph"`, `"Cardinality"`, `"Length"`, `"EdgeDensity"` or `"Faithful"`, and their `All` lists only the density, the subgraph and the two measures. The intersection's `"VertexDensity"` is the product of the two objects' densities on their common vertices, the union's the sum.
 
 A circle or a circle band takes `"Radius" -> r | {r, s}` in place of a point, or widens the circle through a point with `"RadiusDelta" -> delta | {deltaIn, deltaOut}` (default `0`). A scalar *delta* means `{0, delta}`, outward only.
 
@@ -104,7 +105,7 @@ With[
 
 ## Properties and Relations
 
-The support is the key set of the vertex density, and its size is the `"Volume"`.
+The support is the key set of the vertex density, and its size is the `"CountingMeasure"`.
 
 ```wl
 With[
@@ -113,7 +114,7 @@ With[
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
   {seg = InfraSegment[a, b]},
   {support = Keys @ InfraMeasurement[g, seg, "VertexDensity"]},
-  {InfraSubstrateHighlight[g, {support}], Length @ support === InfraMeasurement[g, seg, "Volume"]}]
+  {InfraSubstrateHighlight[g, {support}], Length @ support === InfraMeasurement[g, seg, "CountingMeasure"]}]
 ```
 
 An intersection of two heads has no members, only a support and a density, the product of the two. The segment and the circles, then their intersection.

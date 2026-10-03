@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/VolumeGrowthObservables
 Keywords: [volume growth, dimension, scalar curvature, Bishop-Gromov, ball, sphere, fit window]
-SeeAlso: [DimensionCurvatureFit, BallVolumes, ShellAreas, LogDifferenceQuotients, TubeVolumes]
+SeeAlso: [DimensionCurvatureFit, InfraMeasurement, InfraBall, InfraShell, LogDifferenceQuotients, InfraTube]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
@@ -30,7 +30,7 @@ The keys of the result:
 
 | Key | Value |
 |---|---|
-| `"BallVolumes"`, `"ShellAreas"` | the profiles fitted: the ball under the chosen measure, the shell under `"FullCount"` |
+| `"BallVolumes"`, `"ShellAreas"` | the profiles fitted, read through [InfraMeasurement](): the ball under the chosen measure, the shell under `"CountingMeasure"` |
 | `"BallLogDifferenceQuotients"`, `"SphereLogDifferenceQuotients"` | the quotients *q(r)* at *r* = 1, 2, …, taken between the radii *r* and *r* + 1 |
 | `"BallDimension"`, `"SphereDimension"` | the dimension read by each probe |
 | `"BallScalarCurvature"`, `"SphereScalarCurvature"` | the scalar curvature read by each probe |
@@ -42,12 +42,12 @@ Options:
 
 | Option | Default | Values |
 |---|---|---|
-| `"Measure"` | `"HalfBoundary"` | the measure of the ball probe, as in [BallVolumes](); at half weight a flat lattice's volume has no *r^(d−1)* term |
+| `"Measure"` | `"RiemannianMeasure"` | `"RiemannianMeasure"` or `"CountingMeasure"`, the measure of the ball probe, as [InfraMeasurement]() reads it on [InfraBall](); any other name leaves the call unevaluated |
 | `"Dimension"` | `Automatic` | an integer fixes the dimension and fits the curvature alone |
 
 ## Basic Examples
 
-Ball quotients against *r(r + 1)* at the centre of the discretized plane, the square tiling and the hexagonal tiling, the fitted window in orange, and the fitted line. All three read dimension 2 and curvature close to 0.
+Ball quotients against *r(r + 1)* at the centre of the discretized plane, the square tiling and the hexagonal tiling, the fitted window in orange, and the fitted line. All three read a dimension a little above 2, as the Riemannian measure does, and curvature close to 0.
 
 ```wl
 GraphicsRow @ Table[
@@ -115,12 +115,12 @@ With[
 
 ### Measure
 
-The ball quotients on the square tiling under three measures; the sphere probe, on the full shell count, is the same in all three.
+The ball quotients on the square tiling under the two measures; the sphere probe, on the counting measure of the shells, is the same in both. On a flat lattice the Riemannian measure of a ball is the counting measure of the ball one radius smaller, so the two probes read the dimension from above and from below.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Large"]},
-  {measures = {"FullCount", "WithoutBoundary", "HalfBoundary"}},
+  {measures = {"CountingMeasure", "RiemannianMeasure"}},
   {obsList = VolumeGrowthObservables[g, InfraCenter[g], "Measure" -> #] & /@ measures},
   {ListLinePlot[#["BallLogDifferenceQuotients"] & /@ obsList, PlotMarkers -> Automatic, PlotLegends -> measures,
      PlotRange -> {All, {0, 4}}, AxesLabel -> {"r", "q"}],
@@ -147,7 +147,7 @@ With[
 
 ## Properties and Relations
 
-The profiles in the result are those of [BallVolumes]() under the half-boundary measure and of [ShellAreas]() under the full count.
+The profiles in the result are the `"RiemannianMeasure"` of the balls and the `"CountingMeasure"` of the shells, read at every radius.
 
 ```wl
 With[
@@ -155,5 +155,6 @@ With[
   {ctr = InfraCenter[g]},
   {obs = VolumeGrowthObservables[g, ctr]},
   {ListLinePlot[{obs["BallVolumes"], obs["ShellAreas"]}, PlotMarkers -> Automatic, PlotLegends -> {"ball", "shell"}, AxesLabel -> {"r + 1", None}],
-   {obs["BallVolumes"] === BallVolumes[g, ctr, "Measure" -> "HalfBoundary"], obs["ShellAreas"] === ShellAreas[g, ctr]}}]
+   {obs["BallVolumes"] === Table[InfraMeasurement[g, InfraBall[ctr, r], "RiemannianMeasure"], {r, 0, Length @ obs["BallVolumes"] - 1}],
+    obs["ShellAreas"] === Table[InfraMeasurement[g, InfraShell[ctr, r], "CountingMeasure"], {r, 0, Length @ obs["ShellAreas"] - 1}]}}]
 ```

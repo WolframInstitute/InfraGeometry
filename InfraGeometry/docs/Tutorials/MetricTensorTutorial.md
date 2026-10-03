@@ -197,7 +197,7 @@ GraphicsGrid @ Table[
     {minus = Select[shell, GraphDistance[g, u, #] == 2 r &]},
     InfraSubstrateHighlight[g, {
       shell -> StandardGray,
-      Merge[GeodesicOccupation[g, u, #] & /@ minus, Total] -> StandardOrange,
+      Merge[InfraMeasurement[g, InfraSegment[u, #], "VertexDensity"] & /@ minus, Total] -> StandardOrange,
       minus -> StandardRed,
       {u, c} -> StandardBlue}]],
   {size, {"Small", "Medium", "Large"}},

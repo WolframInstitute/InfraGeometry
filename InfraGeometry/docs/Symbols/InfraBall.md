@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraBall
 Keywords: [ball, disk, neighbourhood, region, inert head, volume]
-SeeAlso: [InfraShell, InfraTube, InfraSphere, FindInfraRepresentative, InfraMeasurement, InfraBallQ, BallVolumes]
+SeeAlso: [InfraShell, InfraTube, InfraSphere, FindInfraRepresentative, InfraMeasurement, InfraBallQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -24,11 +24,11 @@ Definition: the closed ball of radius *r* about *c* is *B_r(c) = {v : d(c, v) �
 
 The head holds the centre and the radius and computes nothing. A ball has one member, the vertex set, so [FindInfraRepresentative]() gives it as a sorted vertex list and `"Faithful"` is `True`.
 
-[InfraMeasurement]() reads nine properties: `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"`, `"Faithful"`, `"Subgraph"` and the four volumes `"Volume"`, `"BoundaryVolume"`, `"InteriorVolume"`, `"HalfBoundaryVolume"`. A ball has no `"Graph"` and no `"Length"`; asking for them leaves the call unevaluated.
+[InfraMeasurement]() reads seven properties: `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"`, `"Faithful"`, `"Subgraph"` and the two measures `"CountingMeasure"`, the number of vertices of the ball, and `"RiemannianMeasure"`, the number of vertices all of whose neighbours lie in the ball. A ball has no `"Graph"` and no `"Length"`; asking for them leaves the call unevaluated.
 
 A radius past the eccentricity gives the whole graph; a band with *r > s* gives the empty set.
 
-[BallVolumes]() counts the balls at every radius without building them.
+The profile of the ball against its radius is the `Table` of its measures over *r*; the Riemannian measure of the ball of radius *r* in the bulk of a lattice is the counting measure of radius *r − 1*.
 
 ## Basic Examples
 
@@ -49,7 +49,7 @@ The volume of the ball against its radius on the square grid. It is *2 r^2 + 2 r
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = InfraCenter[g]},
-  ListLinePlot[Table[InfraMeasurement[g, InfraBall[c, r], "Volume"], {r, 0, 6}], DataRange -> {0, 6}, PlotMarkers -> Automatic]]
+  ListLinePlot[Table[InfraMeasurement[g, InfraBall[c, r], "CountingMeasure"], {r, 0, 6}], DataRange -> {0, 6}, PlotMarkers -> Automatic]]
 ```
 
 ## Scope
@@ -73,23 +73,24 @@ InfraMeasurement[GridGraph[{5, 5}], InfraBall[13, 1], All]
 
 ## Properties and Relations
 
-The ball is the union of the shells up to its radius, so the volume profile is the partial sums of the shell areas of [ShellAreas]().
+The ball is the union of the shells up to its radius, so the counting profile is the partial sums of the shell areas.
 
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Medium"]},
   {c = InfraCenter[g]},
-  {volumes = Table[InfraMeasurement[g, InfraBall[c, r], "Volume"], {r, 0, 5}]},
-  volumes === BallVolumes[g, c, {0, 5}]]
+  {volumes = Table[InfraMeasurement[g, InfraBall[c, r], "CountingMeasure"], {r, 0, 5}]},
+  {areas = Table[InfraMeasurement[g, InfraShell[c, r], "CountingMeasure"], {r, 0, 5}]},
+  volumes === Accumulate[areas]]
 ```
 
-The half-boundary volume of the ball on the square grid is the Ehrhart value.
+The Riemannian measure of the ball on the square grid is *2 r^2 − 2 r + 1*, the counting measure of radius *r − 1*.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = InfraCenter[g]},
-  Table[InfraMeasurement[g, InfraBall[c, r], "HalfBoundaryVolume"], {r, 1, 5}] === Table[2 r^2 + 1, {r, 1, 5}]]
+  Table[InfraMeasurement[g, InfraBall[c, r], "RiemannianMeasure"], {r, 1, 5}] === Table[2 r^2 - 2 r + 1, {r, 1, 5}]]
 ```
 
 Inside a scene the token names the ball about a point, and [FindInfraScene]() binds it to the same vertex set.
