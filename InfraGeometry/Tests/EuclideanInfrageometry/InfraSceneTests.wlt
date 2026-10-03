@@ -675,12 +675,17 @@ VerificationTest[
       { DownValues, UpValues, SubValues, OwnValues, FormatValues, NValues },
       f |-> ReleaseHold @ Map[ f, ToExpression[ n, InputForm, Hold ] ] === { } ] ],
   (* InflatedVertex is not a scene token: it is the inert label InflateGraph stamps on the
-     copies it makes.  It arrived with ExampleGraphs.wl in the paclet split (T2a). *)
+     copies it makes.  It arrived with ExampleGraphs.wl in the paclet split (T2a).  Nor is
+     InfraSection and InfraConnection, the inert maps read by the section and connection functions
+     (InfraFibrations T2), nor InfraTangentBundle, InfraCotangentBundle and InfraDisplacementBundle,
+     the fibration constructions read by InfraTotalGraph and InfraFibrationAssociation (InfraFibrations T3).
+     InfraFibration left the list in T3: its one-argument form converts a construction. *)
   { "InflatedVertex",
-    "InfraArc", "InfraBall", "InfraCircle", "InfraCone", "InfraCylinder", "InfraEllipse", "InfraEllipticShell", "InfraGeodesic",
+    "InfraArc", "InfraBall", "InfraCircle", "InfraCone", "InfraConnection", "InfraCotangentBundle", "InfraCylinder",
+    "InfraDisplacementBundle", "InfraEllipse", "InfraEllipticShell", "InfraGeodesic",
     "InfraIntersectQ", "InfraLine", "InfraPlane", "InfraPoint",
-    "InfraPolygon", "InfraPolyline", "InfraRay", "InfraRevolution", "InfraSegment",
-    "InfraShell", "InfraSphere", "InfraStep", "InfraTriangle", "InfraTube", "InfraWalk", "Undetermined" },
+    "InfraPolygon", "InfraPolyline", "InfraRay", "InfraRevolution", "InfraSection", "InfraSegment",
+    "InfraShell", "InfraSphere", "InfraStep", "InfraTangentBundle", "InfraTriangle", "InfraTube", "InfraWalk", "Undetermined" },
   TestID -> "InfraScene-valueless-exports-are-scene-tokens"
 ]
 
