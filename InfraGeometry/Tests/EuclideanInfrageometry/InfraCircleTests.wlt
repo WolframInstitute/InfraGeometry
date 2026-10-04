@@ -14,12 +14,94 @@ bruteCircles[g_Graph, c_, rs_] :=
 
 cycleSets[cycles_] := Sort[Sort /@ cycles]
 
-(* the chains of the necklace graph, source to sink, read without the representative finder (whose circle clause is the sweep) *)
-necklaceChains[g_Graph, cir_, k_ : Infinity] :=
+(* the chains of the circle's graph, from the source x to its sink copy {x, 3/2}, read as cycles with the copy dropped, and without the
+   representative finder (whose circle clause is the sweep) *)
+circleChains[g_Graph, cir_, k_ : Infinity] :=
   Take[Catenate[Function[dag,
-      Catenate[FindPath[dag, #1, #2, Infinity, Replace[k, Infinity -> All]] & @@@
+      Most /@ Catenate[FindPath[dag, #1, #2, Infinity, Replace[k, Infinity -> All]] & @@@
         Tuples[{Pick[VertexList@dag, VertexInDegree@dag, 0], Pick[VertexList@dag, VertexOutDegree@dag, 0]}]]] /@
     InfraMeasurement[g, cir, "Graph"]], UpTo[k]]
+
+(* the oracle: the unrolled band built with the banks read off the plane drawing, which the kernel never reads, and the chain count of each of
+   its atoms of least length before projection, as {seam vertex, count} *)
+drawnAtomCounts[g_Graph, c_, rs_] :=
+  Module[{dist, coords, local, band, radial, seam, angle, bank, onSeam, lift, cover, atoms},
+    dist = AssociationThread[VertexList@g, GraphDistance[g, c]];
+    coords = AssociationThread[VertexList@g, GraphEmbedding@g];
+    local = Subgraph[g, Select[VertexList@g, dist[#] <= Last@rs + 1 &]];
+    band = Subgraph[local, Select[VertexList@local, First@rs <= dist[#] <= Last@rs &]];
+    radial = FindShortestPath[local, c, First@SortBy[Select[VertexList@local, dist[#] > Last@rs &], dist]];
+    seam = Select[radial, First@rs <= dist[#] <= Last@rs &];
+    angle = {x, w} |-> ArcTan @@ (coords[w] - coords[x]);
+    bank = Association@Flatten@Table[
+      With[{i = First@FirstPosition[radial, x]},
+        {x, w} -> If[Mod[angle[x, w] - angle[x, radial[[i + 1]]], 2 Pi] < Mod[angle[x, radial[[i - 1]]] - angle[x, radial[[i + 1]]], 2 Pi], 1, -1]],
+      {x, seam}, {w, Complement[AdjacencyList[band, x], seam]}];
+    onSeam = AssociationThread[seam, True];
+    lift = {a, b, n} |-> Switch[{TrueQ@onSeam[a], TrueQ@onSeam[b]},
+      {False, False}, {a, n} <-> {b, n},
+      {True, True}, {a, n + 1/2} <-> {b, n + 1/2},
+      {True, False}, {b, n + (1 + bank[{a, b}])/2} <-> {a, n + 1/2},
+      {False, True}, {a, n + (1 + bank[{b, a}])/2} <-> {b, n + 1/2}];
+    cover = Graph@Flatten@Table[lift[First@e, Last@e, n], {e, EdgeList@band}, {n, Range[-3, 4]}];
+    atoms = Table[
+      With[{cut = VertexDelete[cover, Select[VertexList@cover, MemberQ[Take[seam, i - 1], First@#] &]], s = {seam[[i]], 1/2}, t = {seam[[i]], 3/2}},
+        If[VertexQ[cut, s] && VertexQ[cut, t] && GraphDistance[cut, s, t] < Infinity,
+          {seam[[i]], GraphDistance[cut, s, t], Length@FindPath[cut, s, t, {GraphDistance[cut, s, t]}, All]}, Nothing]],
+      {i, Length@seam}];
+    {#[[1]], #[[3]]} & /@ Select[atoms, #[[2]] == Min[atoms[[All, 2]]] &]]
+
+(* every projected atom is a DAG from its seam vertex x to the copy {x, 3/2} with as many chains as the atom of the drawn cover (measured on
+   every fixture, not proved); its chains are the sweep's circles and its density the sweep's *)
+unrolledReport[g_Graph, c_, rs_] :=
+  With[{cir = InfraCircle[c, rs]}, {dags = InfraMeasurement[g, cir, "Graph"], swept = FindInfraRepresentative[g, cir, All]},
+    {AllTrue[dags, AcyclicGraphQ] &&
+       Sort[Function[dag, With[{s = First@Pick[VertexList@dag, VertexInDegree@dag, 0], t = First@Pick[VertexList@dag, VertexOutDegree@dag, 0]},
+         If[t === {s, 3/2}, {s, Length@FindPath[dag, s, t, Infinity, All]}, {}]]] /@ dags] === Sort[drawnAtomCounts[g, c, rs]],
+     swept =!= {} && cycleSets[circleChains[g, cir]] === cycleSets[swept],
+     InfraMeasurement[g, cir, "VertexDensity"] === KeySort@Counts@Catenate[swept]}]
+
+(* ===== the unrolled band against the drawn cover and the sweep, one fixture each ===== *)
+
+VerificationTest[
+  unrolledReport[GridGraph[{11, 11}], 61, {2, 4}],
+  {True, True, True},
+  TestID -> "InfraCircle-unrolled-grid-11"
+]
+
+VerificationTest[
+  unrolledReport[GridGraph[{13, 13}], 85, {2, 5}],
+  {True, True, True},
+  TestID -> "InfraCircle-unrolled-grid-13"
+]
+
+VerificationTest[
+  With[{g = TessellationNeighborhoodGraph[{3, 6}, 5]}, unrolledReport[g, First @ GraphCenter[g], {2, 2}]],
+  {True, True, True},
+  TestID -> "InfraCircle-unrolled-triangular"
+]
+
+(* a vertex of the hexagonal tiling has one neighbour off the seam, so each seam vertex sees one bank, and the seam as a whole both *)
+VerificationTest[
+  With[{g = TessellationNeighborhoodGraph[{6, 3}, 8]}, unrolledReport[g, First @ GraphCenter[g], #] & /@ {{2, 4}, {3, 5}, {4, 6}}],
+  {{True, True, True}, {True, True, True}, {True, True, True}},
+  TestID -> "InfraCircle-unrolled-hexagonal"
+]
+
+VerificationTest[
+  SeedRandom[3]; With[{g = IndexGraph @ MeshConnectivityGraph[DelaunayMesh[RandomReal[1, {150, 2}]], 0]},
+    unrolledReport[g, First @ GraphCenter[g], {2, 3}]],
+  {True, True, True},
+  TestID -> "InfraCircle-unrolled-delaunay"
+]
+
+(* off the centre of the same substrate the circles split over two atoms, 30 at the first seam vertex and 10 at the second *)
+VerificationTest[
+  SeedRandom[3]; With[{g = IndexGraph @ MeshConnectivityGraph[DelaunayMesh[RandomReal[1, {150, 2}]], 0]},
+    {unrolledReport[g, 91, {2, 3}], Sort[Last /@ drawnAtomCounts[g, 91, {2, 3}]]}],
+  {{True, True, True}, {10, 30}},
+  TestID -> "InfraCircle-unrolled-delaunay-two-atoms"
+]
 
 (* ===== the triangular patch: the hexagonal ring of radius 2 is the one circle ===== *)
 
@@ -36,7 +118,7 @@ VerificationTest[
 VerificationTest[
   With[{g = TessellationNeighborhoodGraph[{3, 6}, 5]}, {c = First @ GraphCenter[g]},
     {cir = InfraCircle[c, 2]}, {swept = FindInfraRepresentative[g, cir, All]},
-    cycleSets[necklaceChains[g, cir]] === cycleSets[swept] &&
+    cycleSets[circleChains[g, cir]] === cycleSets[swept] &&
     AllTrue[swept, InfraMemberQ[g, cir, #] &]],
   True,
   TestID -> "InfraCircle-search-finds-the-same-circle"
@@ -58,8 +140,8 @@ VerificationTest[
   With[{g = GridGraph[{7, 7}]},
     AllTrue[{{1, 2}, {2, 3}, {1, 3}, {2, 4}},
       rs |-> With[{cir = InfraCircle[25, rs]},
-        cycleSets[necklaceChains[g, cir]] === cycleSets[bruteCircles[g, 25, rs]] &&
-        InfraMeasurement[g, cir, "Cardinality"] == Length @ necklaceChains[g, cir]]]],
+        cycleSets[circleChains[g, cir]] === cycleSets[bruteCircles[g, 25, rs]] &&
+        InfraMeasurement[g, cir, "Cardinality"] == Length @ circleChains[g, cir]]]],
   True,
   TestID -> "InfraCircle-equals-brute-force-on-the-grid"
 ]
@@ -68,7 +150,7 @@ VerificationTest[
 
 VerificationTest[
   With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, {2, 4}]},
-    {members = necklaceChains[g, cir]},
+    {members = circleChains[g, cir]},
     {InfraMeasurement[g, cir, "Cardinality"] == Length[members],
      InfraMeasurement[g, cir, "Length"] == 16 && Union[Length /@ members] === {16},
      InfraMeasurement[g, cir, "VertexDensity"] === KeySort @ Counts @ Catenate[members],
@@ -82,7 +164,7 @@ VerificationTest[
 (* every member is a simple cycle of the band that separates the centre from beyond it *)
 VerificationTest[
   With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, {2, 4}]},
-    AllTrue[necklaceChains[g, cir],
+    AllTrue[circleChains[g, cir],
       cyc |-> DuplicateFreeQ[cyc] &&
         AllTrue[Partition[Append[cyc, First @ cyc], 2, 1], EdgeQ[g, UndirectedEdge @@ #] &] &&
         AllTrue[cyc, 2 <= GraphDistance[g, 61, #] <= 4 &] &&
@@ -105,55 +187,80 @@ VerificationTest[
   TestID -> "InfraCircle-count-contract-and-random-draws"
 ]
 
-(* ===== the hypercube: without a winding functional the seam carries nothing ===== *)
+(* ===== the hypercube: without a winding functional the banks are one-sided ===== *)
 
-(* Q4 with the band (1, 2) has three circles, the subdivided Hamiltonian cycles of K4, and no
-   winding functional; every necklace of the seam is a subdivided triangle, which does not
-   separate, so the seam family is empty while the sweep finds all three (design Ex. q4) *)
+(* Q4 with the band (1, 2) has three circles, the subdivided Hamiltonian cycles of K4, and no winding functional; the cut band is connected
+   but every neighbour of the seam lies on one bank, so the cover has no atom and every necklace of the seam is a subdivided triangle,
+   which does not separate: the graph is empty, "Faithful" is False, and the sweep finds all three (design Ex. q4) *)
 VerificationTest[
   With[{g = HypercubeGraph[4]}, {c = First @ VertexList[g]},
     {cir = InfraCircle[c, {1, 2}]}, {swept = FindInfraRepresentative[g, cir, All]},
-    {necklaceChains[g, cir], Length[swept], Union[Length /@ swept],
+    {InfraMeasurement[g, cir, "Graph"], InfraMeasurement[g, cir, "Faithful"], Length[swept], Union[Length /@ swept],
      AllTrue[swept, AllTrue[VertexComponent[VertexDelete[g, #], c], GraphDistance[g, c, #] <= 2 &] &]}],
-  {{}, 3, {8}, True},
+  {{}, False, 3, {8}, True},
   TestID -> "InfraCircle-hypercube-has-no-winding-functional"
 ]
 
-(* the representative finder reads the circle by the sweep, so it finds the three circles the seam misses *)
+(* the representative finder reads the circle by the sweep, so it finds the three circles the graph misses *)
 VerificationTest[
   With[{g = HypercubeGraph[4]}, {c = First @ VertexList[g]}, {cir = InfraCircle[c, {1, 2}]},
     {FindInfraRepresentative[g, cir, All] === bruteCircles[g, c, {1, 2}],
-     Length @ FindInfraRepresentative[g, cir, All], necklaceChains[g, cir]}],
+     Length @ FindInfraRepresentative[g, cir, All], circleChains[g, cir]}],
   {True, 3, {}},
   TestID -> "FindInfraRepresentative-circle-is-the-sweep"
 ]
 
-(* ===== the octagon: (W) holds and (T) fails, so the seam through a loses a circle ===== *)
+(* a band cut through on the rim of the grid is not an annulus: its banks are one-sided too, and "Faithful" is False although neither the
+   graph nor the sweep has a circle *)
+VerificationTest[
+  With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[6, {2, 4}]},
+    {InfraMeasurement[g, cir, "Graph"], InfraMeasurement[g, cir, "Faithful"], FindInfraRepresentative[g, cir, All]}],
+  {{}, False, {}},
+  TestID -> "InfraCircle-one-sided-banks-off-an-annulus"
+]
+
+(* ===== the octagon: (W) holds and (T) fails ===== *)
 
 octagonGraph[] := Graph[{
   "a" <-> "b", "b" <-> "c", "c" <-> "d", "d" <-> "e", "e" <-> "f", "f" <-> "g", "g" <-> "h", "h" <-> "a",
   "a" <-> "u", "u" <-> "c", "o" <-> "a", "o" <-> "e", "c" <-> "y",
   "e" <-> "j", "j" <-> "k", "k" <-> "z"}]
 
-(* the band (1, 3) has two circles, both through a and e; a radial seam meets one of them in two runs, so
-   the band's necklaces may carry only the other, but what they carry always separates (design Ex. octagon);
-   the seam through a is the closed arc's, pinned in InfraArcTests *)
+(* the same octagon drawn in the plane, its two outer vertices swapped, so that the automatic seam ends at the one beyond k and is (e, j, k) *)
+octagonDrawn[] := Graph[{
+  "a" <-> "b", "b" <-> "c", "c" <-> "d", "d" <-> "e", "e" <-> "f", "f" <-> "g", "g" <-> "h", "h" <-> "a",
+  "a" <-> "u", "u" <-> "c", "o" <-> "a", "o" <-> "e", "c" <-> "z",
+  "e" <-> "j", "j" <-> "k", "k" <-> "y"},
+  VertexCoordinates -> {"a" -> {1, 0}, "b" -> {0.71, 0.71}, "c" -> {0, 1}, "d" -> {-0.71, 0.71}, "e" -> {-1, 0}, "f" -> {-0.71, -0.71},
+    "g" -> {0, -1}, "h" -> {0.71, -0.71}, "u" -> {1.4, 1.4}, "o" -> {0, 0}, "z" -> {0, 1.8}, "j" -> {-1.6, 0}, "k" -> {-2.2, 0}, "y" -> {-2.8, 0}}]
+
+(* the band (1, 3) has two circles, both through a and e.  The automatic seam is (a, b, c), whose cut band is disconnected, u hanging at a and c;
+   the graph is then the necklaces, which carry one of the circles, and what they carry separates (design Ex. octagon) *)
 VerificationTest[
   With[{g = octagonGraph[]}, {cir = InfraCircle["o", {1, 3}]},
     {Length @ FindInfraRepresentative[g, cir, All],
-     1 <= InfraMeasurement[g, cir, "Cardinality"] <= 2,
-     AllTrue[necklaceChains[g, cir],
+     InfraMeasurement[g, cir, "Cardinality"],
+     InfraMeasurement[g, cir, "Faithful"],
+     AllTrue[circleChains[g, cir],
        cyc |-> Length[cyc] == 8 && AllTrue[VertexComponent[VertexDelete[g, cyc], "o"], GraphDistance[g, "o", #] <= 3 &]]}],
-  {2, True, True},
-  TestID -> "InfraCircle-seam-carries-separating-cycles-only"
+  {2, 1, Undetermined, True},
+  TestID -> "InfraCircle-octagon-disconnected-cut-band-gives-the-necklaces"
+]
+
+(* on the seam (e, j, k) the cut band is connected, and the one atom at e carries both circles, the one that meets the seam (a, b, c) twice
+   included *)
+VerificationTest[
+  {unrolledReport[octagonDrawn[], "o", {1, 3}], InfraMeasurement[octagonDrawn[], InfraCircle["o", {1, 3}], {"Cardinality", "Length", "Faithful"}]},
+  {{True, True, True}, <|"Cardinality" -> 2, "Length" -> 8, "Faithful" -> Undetermined|>},
+  TestID -> "InfraCircle-octagon-seam-through-e-agrees-with-the-sweep"
 ]
 
 (* ===== degenerate bands and the inert head ===== *)
 
 (* radius 0 is the centre alone, so the band is empty and there is nothing to separate *)
 VerificationTest[
-  InfraMeasurement[GridGraph[{5, 5}], InfraCircle[13, 0], "Cardinality"],
-  0,
+  InfraMeasurement[GridGraph[{5, 5}], InfraCircle[13, 0], {"Cardinality", "Faithful"}],
+  <|"Cardinality" -> 0, "Faithful" -> Undetermined|>,
   TestID -> "InfraCircle-radius-zero-is-empty"
 ]
 
@@ -173,10 +280,11 @@ VerificationTest[
    -- which is what Euclid I.1 draws on the Petersen graph *)
 VerificationTest[
   With[{g = PetersenGraph[]},
-    {necklaceChains[g, InfraCircle[1, 2]],
+    {circleChains[g, InfraCircle[1, 2]],
+     InfraMeasurement[g, InfraCircle[1, 2], "Faithful"],
      Length @ FindInfraRepresentative[g, InfraCircle[1, 2], All],
      Union[Length /@ FindInfraRepresentative[g, InfraCircle[1, 2], All]]}],
-  {{}, 1, {6}},
+  {{}, Undetermined, 1, {6}},
   TestID -> "InfraCircle-a-band-with-nothing-beyond-it"
 ]
 
@@ -186,14 +294,15 @@ VerificationTest[
   TestID -> "InfraCircle-without-a-graph-stays-inert"
 ]
 
-(* a necklace is opened at its closing arrow, so it is a DAG with one source and one sink *)
+(* an atom, and a necklace alike, is a DAG from a seam vertex x to its copy {x, 3/2}, its chains the circles as closed walks *)
 VerificationTest[
-  With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, {2, 4}]},
-    {dags = InfraMeasurement[g, cir, "Graph"]},
-    AllTrue[dags, dag |-> AcyclicGraphQ[dag] && DirectedGraphQ[dag] &&
-      Count[VertexInDegree[dag], 0] == 1 && Count[VertexOutDegree[dag], 0] == 1]],
+  AllTrue[Catenate @ {InfraMeasurement[GridGraph[{11, 11}], InfraCircle[61, {2, 4}], "Graph"],
+      InfraMeasurement[octagonGraph[], InfraCircle["o", {1, 3}], "Graph"]},
+    dag |-> AcyclicGraphQ[dag] && DirectedGraphQ[dag] &&
+      Count[VertexInDegree[dag], 0] == 1 && Count[VertexOutDegree[dag], 0] == 1 &&
+      First @ Pick[VertexList@dag, VertexOutDegree@dag, 0] === {First @ Pick[VertexList@dag, VertexInDegree@dag, 0], 3/2}],
   True,
-  TestID -> "InfraCircle-necklaces-are-opened-DAGs"
+  TestID -> "InfraCircle-graph-closes-on-a-copy-of-the-source"
 ]
 
 (* ===== the family against the search and the brute force ===== *)
@@ -202,7 +311,7 @@ VerificationTest[
   With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, {2, 4}]},
     {brute = cycleSets[bruteCircles[g, 61, {2, 4}]]},
     {Length[brute], cycleSets[FindInfraRepresentative[g, cir, All]] === brute,
-     cycleSets[necklaceChains[g, cir]] === brute}],
+     cycleSets[circleChains[g, cir]] === brute}],
   {16, True, True},
   TestID -> "InfraCircle-search-graph-and-brute-force-agree"
 ]
@@ -215,10 +324,11 @@ VerificationTest[
   TestID -> "InfraCircle-Length-is-the-least-circumference"
 ]
 
+(* the edge into the sink copy is read as the closing edge u -> x *)
 VerificationTest[
   With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, {2, 4}]},
     InfraMeasurement[g, cir, "EdgeDensity"] ===
-      KeySort @ Counts @ Catenate[Apply[DirectedEdge, Partition[#, 2, 1, 1], {1}] & /@ necklaceChains[g, cir]]],
+      KeySort @ Counts @ Catenate[Apply[DirectedEdge, Partition[#, 2, 1, 1], {1}] & /@ circleChains[g, cir]]],
   True,
   TestID -> "InfraCircle-EdgeDensity-equals-the-enumeration"
 ]
@@ -233,7 +343,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[{g = GridGraph[{25, 25}]}, {cycles = necklaceChains[g, InfraCircle[313, {5, 9}], 5]},
+  With[{g = GridGraph[{25, 25}]}, {cycles = circleChains[g, InfraCircle[313, {5, 9}], 5]},
     {Length[cycles], Union[Length /@ cycles],
      AllTrue[cycles, cyc |-> DuplicateFreeQ[cyc] &&
        AllTrue[Partition[Append[cyc, First @ cyc], 2, 1], EdgeQ[g, UndirectedEdge @@ #] &]]}],

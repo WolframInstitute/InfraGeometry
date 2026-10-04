@@ -175,10 +175,11 @@ bruteClosedArcs[g_Graph, c_, p_, delta_] :=
 
 cycleSets[cycles_] := Sort[Sort /@ cycles]
 
-(* the chains of the necklace graphs, source to sink, read without the representative finder (whose closed-arc clause is the sweep) *)
+(* the chains of the necklace graphs, source to sink, read without the representative finder (whose closed-arc clause is the sweep); on the
+   circle the sink is a copy {x, 3/2} of the source, which is not a vertex of g and is dropped *)
 closedArcChains[g_Graph, arc_] :=
   Catenate[Function[dag,
-      Catenate[FindPath[dag, #1, #2, Infinity, All] & @@@
+      Select[#, VertexQ[g, #] &] & /@ Catenate[FindPath[dag, #1, #2, Infinity, All] & @@@
         Tuples[{Pick[VertexList@dag, VertexInDegree@dag, 0], Pick[VertexList@dag, VertexOutDegree@dag, 0]}]]] /@
     InfraMeasurement[g, arc, "Graph"]]
 

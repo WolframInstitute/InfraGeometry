@@ -67,7 +67,7 @@ InfraMeasurement[ graph_Graph,
 InfraMeasurement[ _Graph, ( InfraSegment | InfraRay | InfraLine )[ __ ], "Faithful" ] :=
   True
 
-InfraMeasurement[ _Graph, ( InfraCircle | InfraArc )[ __ ], "Faithful" ] :=
+InfraMeasurement[ _Graph, InfraArc[ __ ], "Faithful" ] :=
   Undetermined
 
 InfraMeasurement[ graph_Graph,
@@ -82,7 +82,7 @@ InfraMeasurement[ graph_Graph,
     Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ] ]
 
 InfraMeasurement[ graph_Graph,
-    obj : Except[ _List | InfraIntersection[ __ ] | InfraUnion[ __ ] |
+    obj : Except[ _List | InfraIntersection[ __ ] | InfraUnion[ __ ] | InfraCircle[ _, _, ___ ] |
                   ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] |
                   InfraSegment[ _, _, __ ] | InfraArc[ _, Except[ { p_, ___, p_ }, { _, _, __ } ], ___ ] ], "VertexDensity" ] :=
   KeySort @ Merge[
@@ -116,7 +116,7 @@ InfraMeasurement[ graph_Graph,
 
 InfraMeasurement[ graph_Graph,
     obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] |
-                  InfraCircle[ _, _, ___ ] | ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] ], "Length" ] :=
+                  ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] ], "Length" ] :=
   Replace[
     Union @@ Map[
       dag |-> DeleteCases[ Infinity ] @ Union @ Flatten @ Table[ GraphDistance[ dag, s, t ],

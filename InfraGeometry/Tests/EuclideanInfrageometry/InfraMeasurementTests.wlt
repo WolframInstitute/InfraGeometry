@@ -92,7 +92,7 @@ VerificationTest[
 
 (* ===== faithfulness ===== *)
 
-(* segments, rays and lines carry a theorem; circles and arcs need (W) and (T) *)
+(* segments, rays and lines carry a theorem; circles and arcs need (W), and this band of the circle is cut by its seam into pieces *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     InfraMeasurement[g, #, "Faithful"] & /@
