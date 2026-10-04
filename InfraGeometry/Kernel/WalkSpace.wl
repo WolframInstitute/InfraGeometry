@@ -359,45 +359,6 @@ SprayGraph[ g_Graph, pairs : { { _, _ } .. }, OptionsPattern[] ] :=
     GraphUnion @@ ( PathGraph[ #, DirectedEdges -> directed ] & /@ selectedPaths )
   ]
 
-(* [g, {p1, p2}]: the DAG of all geodesic extensions of the segment p1 -> p2 beyond p2 -- vertex set { e : d(p1, e) == d(p1, p2) + d(p2, e) }, edges
-   u -> v the g-edges with d(p1, v) == d(p1, u) + 1 -- so its directed paths from the source p2 are exactly the geodesics from p2 that stay geodesic
-   behind any p1 -> p2 geodesic.  The set is closed under such steps (d(p1, v) <= d(p1, p2) + d(p2, v) <= d(p1, u) + 1 forces equality), so the edges
-   need no membership test.  Wrapper anchors spread to one DAG per anchor pair *)
-
-GeodesicExtensionGraph[ g_Graph, { p1_, p2_ } ] /; VertexQ[ g, p1 ] && VertexQ[ g, p2 ] :=
-  With[ { d1 = AssociationThread[ VertexList @ g, GraphDistance[ g, p1 ] ],
-          d2 = AssociationThread[ VertexList @ g, GraphDistance[ g, p2 ] ],
-          coords = AssociationThread[ VertexList @ g, GraphEmbedding @ g ] },
-    { pool = Select[ VertexList @ g, d1[ # ] < Infinity && d1[ # ] == d1[ p2 ] + d2[ # ] & ] },
-    Graph[ pool,
-      Catenate @ Map[ u |-> ( DirectedEdge[ u, # ] & /@ Select[ AdjacencyList[ g, u ], v |-> d1[ v ] == d1[ u ] + 1 ] ), pool ],
-      VertexCoordinates -> Lookup[ coords, pool ] ]
-  ]
-
-GeodesicExtensionGraph[ g_Graph, { p1_, p2_ } ] :=
-  With[ {
-      walksOf = w |-> With[ { vs = VertexList @ w },
-        { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
-          scan = v |-> Reap[ DepthFirstScan[ w, v, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
-        Which[
-          vs === { }, { },
-          ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
-            { If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
-                If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ] },
-          spelled,            { Last /@ SortBy[ vs, First ] },
-          EdgeCount @ w == 0, List /@ vs,
-          DirectedGraphQ @ w,
-            Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
-              { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
-          True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ] },
-    { pairs = Tuples[ Map[ x |-> Which[
-        AssociationQ @ x,             Keys @ x,
-        GraphQ @ x,                   walksOf @ x,
-        MatchQ[ x, { __Graph } ],     Catenate[ walksOf /@ x ],
-        x === { },                    { },
-        True,                         { x } ], { p1, p2 } ] ] },
-    Replace[ GeodesicExtensionGraph[ g, # ] & /@ pairs, { one_ } :> one ] /; pairs =!= { { p1, p2 } } ]
-
 (* the union of all simple u-v paths of length at most k; Automatic is the geodesic case k = d(u, v) *)
 
 Options[ PathSubgraph ] = { "Directed" -> True }

@@ -5,14 +5,16 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraLine
-Keywords: [line, inextensible shortest path, atoms, inert head]
-SeeAlso: [FindInfraLine, InfraLineQ, InfraMeasurement, FindInfraRepresentative, InfraSegment, InfraRay]
+Keywords: [line, inextensible shortest path, atoms, germ, inert head]
+SeeAlso: [FindInfraLine, InfraLineQ, InfraMeasurement, FindInfraRepresentative, FindInfraGeodesic, InfraSegment, InfraRay]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
 <code>[InfraLine]()[*p*, *q*]</code> is the line through *p* and *q*: every inextensible shortest path through *p* and then *q*. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+
+<code>[InfraLine]()[*germ*]</code> is the line through a geodesic germ: every inextensible shortest path that contains the germ as a contiguous stretch. The germ is a vertex, a vertex list, a walk graph or a geodesic DAG.
 
 <code>[InfraLine]()[*p*, *q*]</code> inside an [InfraScene]() is the line construction token; [FindInfraLine]() is the search.
 
@@ -27,6 +29,8 @@ The list is not optional. The union of the DAGs can carry chains that are not sh
 The DAGs are alternatives, so the counts add across them. The family can be astronomical while the list stays small.
 
 With *p* = *q*, <code>[InfraLine]()[*p*, *p*]</code> is every maximal shortest path through *p*, once per orientation.
+
+The germ form keeps the germ's own edges in the middle. Its DAG for the ends (*a*, *b*) is the union of the intervals *I(a, p)* and *I(q, b)* with the edges of the germ from *p* to *q* in place of *I(p, q)*. For a straight germ these are the DAGs of `InfraLine[p, q]`. For a bent germ there are fewer, since *I(p, q)* is a rectangle and the DAG keeps only the germ. A vertex germ is `InfraLine[p, p]`.
 
 ## Basic Examples
 
@@ -80,6 +84,20 @@ With[
     InfraSubstrateHighlight[g, {First @ InfraMeasurement[g, line, "Graph"] -> $InfraLineColor, Directive[$InfraPointColor], p, q}]}]]
 ```
 
+The line through a geodesic germ, beside the line through its two ends. The ends of a bent germ lie on the lines of the rectangle between them, the germ on those that run along it.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {p = InfraCenter[g]},
+  {q = (SeedRandom[1]; RandomInfraPoint[g, p, 2])},
+  {germ = First @ FindInfraSegment[g, p, q, All]},
+  {GraphicsRow @ {
+    Labeled[InfraSubstrateHighlight[g, {InfraLine[germ] -> $InfraLineColor, InfraWalk[germ], Directive[$InfraPointColor], p, q}], "germ"],
+    Labeled[InfraSubstrateHighlight[g, {InfraLine[p, q] -> $InfraLineColor, Directive[$InfraPointColor], p, q}], "ends"]},
+   InfraMeasurement[g, InfraLine[germ], "Cardinality"], InfraMeasurement[g, InfraLine[p, q], "Cardinality"]}]
+```
+
 ## Properties and Relations
 
 The anchors lie on every line, so their density is the cardinality. The vertex density, drawn alone, is heaviest at the two anchors.
@@ -104,4 +122,17 @@ With[
   {members = FindInfraRepresentative[g, InfraLine[p, q], All]},
   {InfraSubstrateHighlight[g, {members -> $InfraLineColor, Directive[$InfraPointColor], p, q}],
    InfraLineQ[g, members]}]
+```
+
+The lines through a germ are the lines of [FindInfraLine]() at that germ, and the geodesics that [FindInfraGeodesic]() grows from it on both sides without a budget.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {germ = {a, First @ AdjacencyList[g, a]}},
+  {members = FindInfraRepresentative[g, InfraLine[germ], All]},
+  {InfraSubstrateHighlight[g, {members -> $InfraLineColor, Directive[$InfraPointColor], germ}],
+   Sort @ members === Sort @ FindInfraLine[g, germ, All],
+   Length @ members === InfraMeasurement[g, InfraLine[germ], "Cardinality"]}]
 ```

@@ -266,42 +266,36 @@ VerificationTest[
   TestID -> "TarskiAxiomQ-PathGraph-Continuity-False"
 ]
 
-(* ===== ExtendInfraSegment (Tarski 5-vertex form, formerly FindTarskiSegmentExtension) ===== *)
+(* ===== Tarski A4 instances: x with B(a, b, x) and d(b, x) == d(c, d), read off the counterexamples ===== *)
 
 VerificationTest[
-  ExtendInfraSegment[PathGraph[Range[5]], 1, 2, 1, 2, All],
-  { 3 },
-  TestID -> "ExtendInfraSegment-Tarski-PathGraph-extends-by-one"
+  MemberQ[FindTarskiCounterexample[PathGraph[Range[5]], TarskiSegmentConstructionQ, All], {1, 2, 1, 2}],
+  False,
+  TestID -> "SegmentConstruction-PathGraph-extends-by-one"
 ]
 
 VerificationTest[
-  ExtendInfraSegment[PathGraph[Range[5]], 1, 2, 1, 3, All],
-  { 4 },
-  TestID -> "ExtendInfraSegment-Tarski-PathGraph-extends-by-two"
+  MemberQ[FindTarskiCounterexample[PathGraph[Range[5]], TarskiSegmentConstructionQ, All], {1, 2, 1, 3}],
+  False,
+  TestID -> "SegmentConstruction-PathGraph-extends-by-two"
 ]
 
 VerificationTest[
-  ExtendInfraSegment[PathGraph[Range[5]], 1, 2, 1, 5, All],
-  { },
-  TestID -> "ExtendInfraSegment-Tarski-PathGraph-no-room"
-]
-
-VerificationTest[
-  ExtendInfraSegment[PathGraph[Range[5]], 1, 2, 1, 5, 1],
-  { },
-  TestID -> "ExtendInfraSegment-Tarski-PathGraph-strict-fails"
-]
-
-VerificationTest[
-  ExtendInfraSegment[PathGraph[Range[5]], 1, 2, 1, 5, UpTo[1]],
-  { },
-  TestID -> "ExtendInfraSegment-Tarski-PathGraph-UpTo-empty-not-failed"
-]
-
-VerificationTest[
-  Length[ ExtendInfraSegment[CycleGraph[6], 1, 2, 1, 2, All] ] >= 1,
+  MemberQ[FindTarskiCounterexample[PathGraph[Range[5]], TarskiSegmentConstructionQ, All], {1, 2, 1, 5}],
   True,
-  TestID -> "ExtendInfraSegment-Tarski-CycleGraph-has-extension"
+  TestID -> "SegmentConstruction-PathGraph-no-room"
+]
+
+VerificationTest[
+  Length @ FindTarskiCounterexample[PathGraph[Range[4]], TarskiSegmentConstructionQ, All],
+  104,
+  TestID -> "SegmentConstruction-PathGraph-counterexample-count"
+]
+
+VerificationTest[
+  MemberQ[FindTarskiCounterexample[CycleGraph[6], TarskiSegmentConstructionQ, All], {1, 2, 1, 2}],
+  False,
+  TestID -> "SegmentConstruction-CycleGraph-has-extension"
 ]
 
 (* ===== FindInfraReflection ===== *)

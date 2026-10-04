@@ -35,7 +35,6 @@ Every exported symbol that no other guide of the site covers, one section per ke
 
 ### Synthetic · InfraSegment.wl
 
-- `ExtendInfraSegment` the geodesics containing a segment, extended by at most kspec edges per side
 - `InfraWalkQ` whether consecutive vertices of a walk are adjacent, revisits allowed
 - `InfraSegmentQ` whether a walk is a geodesic
 - `UniqueInfraSegmentQ` whether the u-v geodesic is unique
@@ -43,12 +42,11 @@ Every exported symbol that no other guide of the site covers, one section per ke
 ### Synthetic · InfraWalk.wl
 
 - `InfraWalk` the literal walk through p1, ..., pk, inside InfraScene and InfraSubstrateHighlight
-- `FindInfraWalk` grows the walks from p1 in the class cut by the Properties rules until a stopping condition or the budget stops them
+- `FindInfraWalk` grows a germ, a vertex or a walk, into the walks of the class cut by the Properties rules until a stopping condition or the budget stops them
 - `WalkSingularities` the self-intersections, self-tangencies and cusps of a walk
 - `InfraImmersedQ` whether a walk is immersed, a walk with no cusp
 - `InfraGenericQ` whether a walk is a generic immersed curve
 - `InfraWalkCrossingQ` whether the double visit of a walk at v is a transverse crossing at scale r
-- `ExtendInfraWalk` continues a seed walk in the class cut by the Properties rules
 - `ConcatenateInfraWalk` joins every compatible walk pair, the last vertex of one being the first of the other
 
 ### Synthetic · InfraLine.wl
@@ -163,7 +161,6 @@ Every exported symbol that no other guide of the site covers, one section per ke
 - `SelectInfraWalk` draws a walk from a bundle
 - `EmbeddingClosest` keeps the bundle elements drawn closest to a Euclidean reference under GraphEmbedding
 - `FindEmbeddingClosestPath` snaps an embedded curve to a walk graph, joining the nearest vertices by geodesics
-- `GeodesicExtensionGraph` the DAG of geodesic extensions of the segment from p1 to p2 beyond p2
 - `PathSubgraph` the union of all shortest u-v paths
 - `InfraDeformationSize` the number of edges of a reference walk that a walk replaces
 
