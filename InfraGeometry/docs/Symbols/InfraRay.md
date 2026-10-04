@@ -20,7 +20,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Details & Options
 
-Its graph — <code>[InfraMeasurement]()[*g*, *ray*, "Graph"]</code> — is one DAG with source *p*: the interval of shortest paths from *p* to *q* glued at *q* to <code>[GeodesicExtensionGraph]()[*g*, {*p*, *q*}]</code>. Its sinks are exactly the inextensible ends, so its source-to-sink chains are exactly the rays, and `"Faithful"` is `True`.
+Its graph — <code>[InfraMeasurement]()[*g*, *ray*, "Graph"]</code> — is one DAG with source *p*: the interval of shortest paths from *p* to *q* glued at *q* to the DAG of the extensions beyond *q*: the vertices *e* with *d(p, e) = d(p, q) + d(q, e)*, and the edges that lengthen the distance from *p* by one. Its sinks are exactly the inextensible ends, so its source-to-sink chains are exactly the rays, and `"Faithful"` is `True`.
 
 Rays to different sinks differ in length, so `"Length"` is a `List` of the lengths present.
 

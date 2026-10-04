@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraRepresentative
 Keywords: [segment, ray, line, circle, arc, shell, plane, polygon, inert head, member, representative, enumeration, random]
-SeeAlso: [InfraMeasurement, InfraMemberQ, FindInfraSegment, FindInfraRay, FindInfraLine, InfraCircle, InfraArc]
+SeeAlso: [InfraMeasurement, InfraMemberQ, FindInfraSegment, FindInfraRay, FindInfraLine, FindInfraGeodesic, FindInfraWalk, InfraCircle, InfraArc]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -20,10 +20,13 @@ RelatedGuides: [EuclideanInfrageometry]
 
 The head names the notion; this function finds its members. Where the head has a faithful graph theorem, a member is read off it; otherwise the head's own search runs at its defaults.
 
-- `InfraSegment[p, q]`, `InfraRay[p, q]`, `InfraLine[p, q]` and `InfraArc[c, {p, q}]`: a member is a source-to-sink chain of <code>[InfraMeasurement]()[*graph*, *head*, "Graph"]</code>, read off in lexicographic order. A polyline `InfraSegment[p1, ..., pk]` and a multi-point arc concatenate the members of their pieces.
+- `InfraSegment[p, q]`, `InfraRay[p, q]`, `InfraLine[p, q]`, `InfraLine[germ]` and `InfraArc[c, {p, q}]`: a member is a source-to-sink chain of <code>[InfraMeasurement]()[*graph*, *head*, "Graph"]</code>, read off in lexicographic order. A polyline `InfraSegment[p1, ..., pk]` and a multi-point arc concatenate the members of their pieces.
 - `InfraCircle[c, r | {r, s}]`: a member is a circle found by sweeping the band, length by length with `FindCycle` (see [InfraCircle]()), as a cyclic vertex list whose first vertex is not repeated. The necklace graph stays what `InfraMeasurement` measures.
 - `InfraArc[c, {p, p}]`, the closed arc: the same sweep, keeping the circles through *p*, and through every point of `InfraArc[c, {p, q, ..., p}]` (see [InfraArc]()).
-- The scene tokens `InfraShell`, `InfraBall`, `InfraPlane`, `InfraPolygon`, `InfraTriangle`, `InfraPolyline`, `InfraRevolution`, `InfraWalk`, `InfraPoint` and `InfraLine[path]`: a member is a result of the token's search at its defaults. A set head such as `InfraBall[c, r]` has one member, its sorted vertex list.
+- `InfraGeodesic[germ, s]`, the geodesics at infra-scale *s* through the germ: a member is an inextensible simple geodesic, the result of [FindInfraGeodesic]()`[g, germ, s, Infinity, n, Properties -> {"Simple"}, "Direction" -> "BothSides"]`. The germ is a vertex list; a one-vertex list is grown on both sides, so it gives every geodesic through the vertex.
+- The scene tokens `InfraShell`, `InfraBall`, `InfraPlane`, `InfraPolygon`, `InfraTriangle`, `InfraPolyline`, `InfraRevolution`, `InfraWalk` and `InfraPoint`: a member is a result of the token's search at its defaults. A set head such as `InfraBall[c, r]` has one member, its sorted vertex list.
+
+The walk searches ([FindInfraWalk]() and [FindInfraGeodesic]()) take a germ, a budget and options of their own; the head `InfraGeodesic` fixes them to the inextensible simple class.
 
 A closed count under a non-negative integer *n* that exceeds the number of members gives `{ }`.
 
@@ -32,7 +35,7 @@ Two modifiers, given after the count:
 - `"RandomChoice"` gives random members. On a graph it walks the chains choosing the next arrow *v* -> *w* with probability proportional to the backward count at *w*, so every member is drawn with probability `1 / Cardinality`; on a search it is `"NextVertexFunction" -> RandomSample`; otherwise it draws from the search's members. `SeedRandom` in front reproduces the draw.
 - `"Pruning" -> q`, under `All`, discards a random fraction *q* of the candidates at each step of an otherwise exhaustive enumeration; on a search it is the next-vertex function `RandomSample[#, UpTo[q]] &` for an integer *q*, keeping a fraction *q* of the candidates per node for *q* < 1.
 
-The specialised searches (`FindInfraSegment`, `FindInfraSphere`, `FindInfraShell`, `FindInfraWalk`, ...) keep their own parameters; this function takes none of them.
+The specialised searches (`FindInfraSegment`, `FindInfraSphere`, `FindInfraShell`, `FindInfraWalk`, `FindInfraGeodesic`, ...) keep their own parameters; this function takes none of them.
 
 `FindInfraRepresentative[graph, head]` (no count) is the same as `FindInfraRepresentative[graph, head, Automatic]`, the first member in canonical order.
 
@@ -103,6 +106,17 @@ With[
   {c = InfraCenter[g]},
   {shell = FindInfraRepresentative[g, InfraShell[c, 3]]},
   InfraSubstrateHighlight[g, {shell, Directive[$InfraPointColor], c}]]
+```
+
+Four inextensible shortest paths through an edge at the centre, the members of a geodesic head.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {germ = {a, First @ AdjacencyList[g, a]}},
+  {members = FindInfraRepresentative[g, InfraGeodesic[germ, Infinity], 4]},
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], Directive[$InfraPointColor], a}], {member, members}]]
 ```
 
 ## Properties and Relations

@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/SprayGraph
 Keywords: [spray of shortest paths, exponential map, breadth-first search, shortest-path DAG, shortest paths]
-SeeAlso: [InfraMeasurement, GeodesicExtensionGraph, FindInfraGeodesic, FindInfraShell, InfraBall]
+SeeAlso: [InfraMeasurement, FindInfraGeodesic, FindInfraShell, InfraBall]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 

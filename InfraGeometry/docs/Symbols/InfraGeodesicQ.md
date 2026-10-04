@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraGeodesicQ
 Keywords: [geodesic, infra-scale, locally shortest, walk, test]
-SeeAlso: [FindInfraGeodesic, ExtendInfraGeodesic, InfraWalkQ, InfraSegmentQ, InfraMeasurement]
+SeeAlso: [FindInfraGeodesic, InfraWalkQ, InfraSegmentQ, InfraMeasurement]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
