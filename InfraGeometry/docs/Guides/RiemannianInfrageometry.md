@@ -8,7 +8,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/RiemannianInfrageometry
 Keywords: [Riemannian geometry, graph, geodesic, infra-scale, ball, shell, tube, volume growth, dimension, scalar curvature, metric tensor]
 RelatedGuides: [EuclideanInfrageometry, InfraTopology, InfraAnalysis, InfraFiberBundles, Experimental]
-RelatedTutorials: [MetricTensorTutorial]
+RelatedTutorials: [MetricTensorTutorial, VolumeMeasurementTutorial]
 ---
 
 ## Abstract
