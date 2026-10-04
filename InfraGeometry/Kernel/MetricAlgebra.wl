@@ -55,29 +55,12 @@ MedianVertices[ graph_Graph, vs_List ] :=
     ]
   ]
 
-Options[ FindSegmentHull ] = { "LineStructure" -> None }
-
-FindSegmentHull[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], OptionsPattern[] ] :=
-  With[ { spec = OptionValue[ "LineStructure" ], S = Keys @ InfraDensity[ graph, s ] },
-    Union @ If[ spec === None,
-      FixedPoint[
-        T |-> Union[ T, Catenate @ Map[
-          pair |-> MetricInterval[ graph, pair[[ 1 ]], pair[[ 2 ]] ], Subsets[ T, { 2 } ] ] ],
-        Union @ S
-      ],
-      With[ { lines = Replace[ spec, ls_InfraLineStructure :> ls[ "Lines" ] ] },
-        FixedPoint[
-          T |-> Union[ T, Catenate @ Map[
-            ell |-> With[ { idx = Flatten @ Position[ ell, Alternatives @@ T ] },
-              If[ Length[ idx ] >= 2, ell[[ Min[ idx ] ;; Max[ idx ] ]], { } ] ],
-            lines ] ],
-          Union @ S
-        ]
-      ]
-    ]
+FindSegmentHull[ graph_Graph, s_ ] :=
+  Union @ FixedPoint[
+    T |-> Union[ T, Catenate @ Map[
+      pair |-> MetricInterval[ graph, pair[[ 1 ]], pair[[ 2 ]] ], Subsets[ T, { 2 } ] ] ],
+    Union @ Keys @ InfraDensity[ graph, s ]
   ]
 
-Options[ SegmentHullQ ] = { "LineStructure" -> None }
-
-SegmentHullQ[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], opts : OptionsPattern[] ] :=
-  With[ { vs = Keys @ InfraDensity[ graph, s ] }, FindSegmentHull[ graph, vs, opts ] === vs ]
+SegmentHullQ[ graph_Graph, s_ ] :=
+  With[ { vs = Keys @ InfraDensity[ graph, s ] }, FindSegmentHull[ graph, vs ] === vs ]

@@ -222,25 +222,6 @@ FindInfraReflection[ graph_Graph, x_, a_,
       _UpTo, Take[ reps, count ],
       _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ]
 
-(* Euclid I.1: c with d(p1, c) = d(p2, c) = d(p1, p2), the intersection of the two spheres *)
-
-Options[ CompleteInfraEquilateralTriangle ] = { Method -> "Metric" }
-
-CompleteInfraEquilateralTriangle[ graph_Graph, p1_, p2_,
-    count : ( _Integer | UpTo[ _Integer ] | All ) : All, opts : OptionsPattern[] ] :=
-  With[ { reps = DeleteDuplicates @ Flatten[
-      ( { q1, q2 } |-> With[ { r = GraphDistance[ graph, q1, q2 ] },
-          If[ r === Infinity, {},
-            Intersection[
-              Select[ VertexList[ graph ], GraphDistance[ graph, q1, # ] == r & ],
-              Select[ VertexList[ graph ], GraphDistance[ graph, q2, # ] == r & ] ]
-          ]
-        ] ) @@@ Tuples[ { Keys @ InfraDensity[ graph, p1 ], Keys @ InfraDensity[ graph, p2 ] } ], 1 ] },
-    Switch[ count,
-      All,   reps,
-      _UpTo, Take[ reps, count ],
-      _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ]
-
 FindInfraCommonPoint[ graph_Graph, lines_List,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
   With[ { support = w |-> Union @

@@ -5,7 +5,6 @@ FindInfraPoint::usage = "FindInfraPoint[graph] draws a vertex from the candidate
 FindInfraMidpoint::usage = "FindInfraMidpoint[graph, p1, p2] gives the density <|v -> m, ...|> of the middle vertices of every geodesic from p1 to p2 (one vertex at even distance, two at odd). Option Method.";
 FindInfraGoldenSection::usage = "FindInfraGoldenSection[graph, p1, p2] gives the density <|v -> m, ...|> at the golden-ratio index along every geodesic from p1 to p2. Option Method.";
 FindInfraReflection::usage = "FindInfraReflection[graph, x, a] gives the reflections x' of x through a: the vertices with B(x, a, x') and d(a, x) == d(a, x').";
-CompleteInfraEquilateralTriangle::usage = "CompleteInfraEquilateralTriangle[graph, p1, p2] gives the apexes equidistant from p1 and p2 at distance d(p1, p2) (Euclid I.1).";
 FindInfraCommonPoint::usage = "FindInfraCommonPoint[graph, lines] gives the points lying on every listed line.";
 FindClosestInfraPoint::usage = "FindClosestInfraPoint[graph, line, point] gives the vertices of line at minimum graph distance from point.";
 SelectInfraPoint::usage = "SelectInfraPoint[graph, vertices] draws a vertex from a supplied bundle under graph distance; a trailing n | UpTo[n] | All sets the count. Options \"From\", \"Distance\", \"MaxCliques\".";
@@ -47,13 +46,7 @@ InfraPerpendicularQ::usage = "InfraPerpendicularQ[graph, l1, l2] tests whether t
 PencilDirections::usage = "PencilDirections[graph, O] gives the pencil at O: every ray from O, as a list of vertex sequences.";
 PencilCardinality::usage = "PencilCardinality[graph, O] gives the number of rays from O, counted on the ray pools without enumeration.";
 LineCount::usage = "LineCount[graph] gives the number of distinct canonical maximal geodesics in graph.";
-FindLineHull::usage = "FindLineHull[graph, S] gives, as a sorted vertex list, the smallest superset of S closed under the line operator. Option \"LineStructure\".";
-LineHullQ::usage = "LineHullQ[graph, S] tests whether S is closed under the line operator.";
 UniversalLineQ::usage = "UniversalLineQ[graph] tests whether some pair spans a line filling a whole connected component (Chen-Chvatal); UniversalLineQ[graph, {u, v}] tests one line.";
-
-InfraLineStructure::usage = "InfraLineStructure[{line1, ...}] is a consistent geodesic path system, stored as its maximal lines. Accessors \"Lines\", \"Paths\", \"Incidence\", \"Coordinates\", [\"Path\", u, v].";
-FindLineStructure::usage = "FindLineStructure[graph] gives a consistent geodesic path system: one shortest path per vertex pair, with every stretch of a chosen path again chosen. Option Method sets the tie-breaking edge ranking.";
-ConsistentPathSystemQ::usage = "ConsistentPathSystemQ[graph, obj] tests whether a geodesic path system is subpath-closed (Cizma-Linial consistent).";
 
 InfraShell::usage = "InfraShell[c, {r, s}] is the inert shell { v : r <= d(v, c) <= s }, c a vertex or a vertex set; InfraShell[c, r] is the band {r, r}. Read by InfraMeasurement and FindInfraRepresentative; FindInfraShell is the search.";
 FindInfraShell::usage = "FindInfraShell[graph, c, r] gives the metric shell { v : d(v, c) == r } as a sorted vertex list; r may be a band {r, s}, c a vertex set.";
@@ -120,16 +113,6 @@ FindInfraLinearCombination::usage = "FindInfraLinearCombination[graph, o, {{lamb
 InfraAngle::usage = "InfraAngle[graph, {q1, p, q2}] gives the angle at p in radians. Option Method (\"Arclength\", \"Alexandrov\").";
 InfraMetricTensor::usage = "InfraMetricTensor[graph, p] gives the matrix of d(p, u)/d(p, v) over v, w with u the vertex of I(p, w) closest to v; with r, over the shell FindInfraShell[graph, p, r]. Option \"SelectCoordinate\".";
 
-TurningAngles::usage = "TurningAngles[graph, path] gives the exterior angles Pi - InfraAngle at each interior vertex of path; for an InfraPolyline, the angles at its knots.";
-TotalCurvature::usage = "TotalCurvature[graph, path] gives Total @ TurningAngles[graph, path], the discrete total curvature of path.";
-TotalAbsoluteCurvature::usage = "TotalAbsoluteCurvature[graph, path] gives Total @ Abs @ TurningAngles[graph, path], the discrete Fenchel integral of |kappa|.";
-TurningNumber::usage = "TurningNumber[graph, cycle] gives TotalCurvature[graph, cycle] / (2 Pi).";
-
-ComparisonTriangle::usage = "ComparisonTriangle[a, b, c] gives the Euclidean Triangle with side lengths a, b, c; ComparisonTriangle[graph, p, q, r] reads the sides from the graph. Option \"Curvature\" places it in M_k^2.";
-InfraComparisonTriangle::usage = "InfraComparisonTriangle[<|...|>] is the wrapper for comparison triangles of nonzero curvature. Accessors \"Sides\", \"Curvature\", \"Angles\".";
-CATInequalityQ::usage = "CATInequalityQ[graph, {p, q, r}, k] tests whether the geodesic triangle on p, q, r satisfies the CAT(k) thinness inequality. Option Method (\"ApexSide\", \"TwoRays\").";
-InfraCurvature::usage = "InfraCurvature[graph, v] gives the local Alexandrov upper curvature bound at v: the supremum of per-triangle CAT bounds inside a ball around v. Option \"Radius\".";
-
 SelectInfraWalk::usage = "SelectInfraWalk[graph, walks] draws a walk from a bundle -- vertex lists or walk graphs, cycle graphs selecting as closed walks -- treated as a metric space. Options \"From\", \"Distance\", \"Metric\", \"MaxCliques\", \"Cyclic\".";
 EmbeddingClosest::usage = "EmbeddingClosest[graph, bundle, ref] keeps the bundle elements drawn closest to a Euclidean reference under GraphEmbedding; ref is {p1, p2}, {center, radius}, or a curve.";
 FindEmbeddingClosestPath::usage = "FindEmbeddingClosestPath[graph, curve] snaps an embedded curve to a walk graph, mapping sampled points to nearest vertices and joining them by geodesics.";
@@ -149,7 +132,7 @@ MetricInterval::usage = "MetricInterval[graph, u, v] gives { w : d(u, w) + d(w, 
 GeodesicMultiplicity::usage = "GeodesicMultiplicity[graph, u, v] gives the number of distinct geodesics from u to v.";
 GeodesicMultiplicityMatrix::usage = "GeodesicMultiplicityMatrix[graph] gives {D, M} with D the distance matrix and M the matrix of geodesic counts.";
 MedianVertices::usage = "MedianVertices[graph, vs] gives the vertices minimising the sum of distances to vs.";
-FindSegmentHull::usage = "FindSegmentHull[graph, S] gives, as a sorted vertex list, the smallest superset of S closed under MetricInterval -- the geodesic convex hull. Option \"LineStructure\".";
+FindSegmentHull::usage = "FindSegmentHull[graph, S] gives, as a sorted vertex list, the smallest superset of S closed under MetricInterval -- the geodesic convex hull.";
 SegmentHullQ::usage = "SegmentHullQ[graph, S] tests whether S is geodesically convex.";
 
 InfraDensity::usage = "InfraDensity[graph, x] gives the marginal of any shape to the vertex set, <|v -> m|>, with respect to the counting measure: a vertex gives <|v -> 1|>, a vertex list its Counts, a density itself, a walk graph or a bundle its vertex occupation. It is the one coercion in the API -- Keys demotes it back to the set, Counts promotes a list to one.";
@@ -180,18 +163,6 @@ TarskiEuclidAxiomQ::usage = "TarskiEuclidAxiomQ[graph] tests Tarski axiom A10, t
 TarskiContinuityQ::usage = "TarskiContinuityQ[graph] tests Tarski axiom A11, Dedekind continuity. Always False on finite graphs.";
 TarskiAxiomQ::usage = "TarskiAxiomQ[graph] gives the per-axiom results of all eleven Tarski axiom predicates.";
 FindTarskiCounterexample::usage = "FindTarskiCounterexample[graph, predQ] gives vertex tuples witnessing the failure of a Tarski axiom predicate.";
-
-SameDirectionQ::usage = "SameDirectionQ[graph, O, v, w] tests whether v and w lie in the same direction at O, i.e. whether some ray from O through v contains w.";
-CollinearQ::usage = "CollinearQ[graph, vertices] tests whether all listed vertices lie on a common line.";
-ConcurrentQ::usage = "ConcurrentQ[graph, lines] tests whether all listed lines share a common vertex.";
-UniqueCollinearQ::usage = "UniqueCollinearQ[graph, vertices] tests whether the listed vertices lie on a unique common line.";
-UniqueConcurrentQ::usage = "UniqueConcurrentQ[graph, lines] tests whether the listed lines share exactly one common vertex.";
-WhiteheadW1Q::usage = "WhiteheadW1Q[graph] tests Whitehead axiom W1: every line has at least three vertices.";
-WhiteheadW2Q::usage = "WhiteheadW2Q[graph] tests Whitehead axiom W2: any two distinct vertices lie on exactly one line.";
-WhiteheadW3Q::usage = "WhiteheadW3Q[graph] tests Whitehead axiom W3, the intersection property. O(|V|^4); use on small graphs.";
-ProjectivePlaneGraphQ::usage = "ProjectivePlaneGraphQ[graph] tests whether graph is a synthetic projective plane: W1, W2, W3 and non-degeneracy.";
-
-EnumerateGraphs::usage = "EnumerateGraphs[n, predQ] gives the connected n-vertex graphs from GraphData satisfying predQ. Option \"From\" supplies a different generator.";
 
 InfraScene::usage = "InfraScene[objects, hypotheses] builds a scene descriptor from symbolic objects and construction or assertion hypotheses. Properties \"Steps\", \"Constructions\", \"Assertions\", \"DependencyGraph\".";
 FindInfraScene::usage = "FindInfraScene[scene, graph] solves a scene on a graph and gives the resulting InfraSceneInstance bindings. Option \"PruneProbability\".";

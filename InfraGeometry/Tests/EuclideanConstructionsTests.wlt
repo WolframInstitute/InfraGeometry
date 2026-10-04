@@ -383,26 +383,6 @@ VerificationTest[
   TestID -> "FindInfraBisectingHyperplane-Separating-results-actually-separate"
 ]
 
-(* ===== CompleteInfraEquilateralTriangle ===== *)
-
-VerificationTest[
-  Sort[ CompleteInfraEquilateralTriangle[CycleGraph[6], 1, 3, All] ],
-  {5},
-  TestID -> "CompleteInfraEquilateralTriangle-cycle6"
-]
-
-VerificationTest[
-  CompleteInfraEquilateralTriangle[PathGraph[Range[5]], 1, 5, All],
-  { },
-  TestID -> "CompleteInfraEquilateralTriangle-path-no-apex"
-]
-
-VerificationTest[
-  CompleteInfraEquilateralTriangle[CompleteGraph[4], 1, 2, 1],
-  { 3 },
-  TestID -> "CompleteInfraEquilateralTriangle-K4-strict-1"
-]
-
 (* ===== FindInfraParallel: the pool under All ===== *)
 
 VerificationTest[
@@ -433,11 +413,9 @@ VerificationTest[
   TestID -> "FindInfraMidpoint-Embedding-AllPaths-single-vertex"
 ]
 
-
 (* FindInfraPerpendicular "Embedding" Method has been removed (see plan
    okey-we-need-to-majestic-puppy: path-family Embedding dropped).  Users
    wanting embedding-ranked feet compose with EmbeddingClosest. *)
-
 
 (* ===== FindInfraGoldenSection ===== *)
 
@@ -464,6 +442,53 @@ VerificationTest[
   Length @ FindInfraGoldenSection[PathGraph[Range[11]], 1, 11, Method -> "Embedding"],
   1,
   TestID -> "FindInfraGoldenSection-Embedding-single-vertex"
+]
+
+(* ===== FindInfraCommonPoint ===== *)
+
+VerificationTest[
+  FindInfraCommonPoint[PathGraph[Range[5]], {{1, 2, 3}, {2, 3, 4}}, All],
+  { 2, 3 },
+  TestID -> "FindInfraCommonPoint-overlap-two"
+]
+
+VerificationTest[
+  FindInfraCommonPoint[PathGraph[Range[5]], {{1, 2}, {3, 4}}, All],
+  { },
+  TestID -> "FindInfraCommonPoint-disjoint-empty"
+]
+
+VerificationTest[
+  FindInfraCommonPoint[PathGraph[Range[5]], {{1, 2, 3}, {2, 3, 4}}, 1],
+  { 2 },
+  TestID -> "FindInfraCommonPoint-strict-1"
+]
+
+VerificationTest[
+  FindInfraCommonPoint[PathGraph[Range[5]], {{1, 2}, {3, 4}}, 1],
+  { },
+  TestID -> "FindInfraCommonPoint-strict-fails-when-empty"
+]
+
+VerificationTest[
+  FindInfraCommonPoint[PathGraph[Range[5]], {{1, 2, 3}, {2, 3, 4}}, UpTo[5]],
+  { 2, 3 },
+  TestID -> "FindInfraCommonPoint-UpTo-soft"
+]
+
+(* ===== FindInfraCommonPoint on walk graphs ===== *)
+
+VerificationTest[
+  FindInfraCommonPoint[PathGraph[Range[5]], geodesicGraph /@ {{1, 2, 3}, {2, 3, 4}}, All],
+  { 2, 3 },
+  TestID -> "FindInfraCommonPoint-walk-graphs"
+]
+
+VerificationTest[
+  Length[ FindInfraCommonPoint[CycleGraph[6],
+    infraSpread @ FindInfraCommonLine[CycleGraph[6], {1, 4}, All], All] ],
+  2,
+  TestID -> "FindInfraCommonPoint-from-FindInfraCommonLine"
 ]
 
 EndTestSection[]

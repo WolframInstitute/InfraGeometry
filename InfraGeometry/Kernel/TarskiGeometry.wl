@@ -101,7 +101,7 @@ TarskiInnerPaschQ[ graph_Graph ] :=
 
 TarskiLowerDimensionQ[ graph_Graph ] :=
   AnyTrue[ Subsets[ VertexList[ graph ], { 3 } ],
-    triple |-> ! CollinearQ[ graph, triple ] ]
+    triple |-> FindInfraCommonLine[ graph, triple, UpTo[ 1 ] ] === { } ]
 
 TarskiUpperDimensionQ[ graph_Graph ] :=
   AllTrue[ Tuples[ VertexList[ graph ], 5 ],
@@ -112,7 +112,7 @@ TarskiUpperDimensionQ[ graph_Graph ] :=
       ! ( EquidistanceQ[ graph, a, p, a, q ] &&
           EquidistanceQ[ graph, b, p, b, q ] &&
           EquidistanceQ[ graph, c, p, c, q ] ) ||
-      CollinearQ[ graph, { a, b, c } ]
+      Length @ DeleteDuplicates @ { a, b, c } <= 1 || FindInfraCommonLine[ graph, { a, b, c }, UpTo[ 1 ] ] =!= { }
     ] ]
 
 TarskiEuclidAxiomQ[ _Graph ] :=
@@ -178,7 +178,7 @@ FindTarskiCounterexample[ graph_Graph,
         ] ],
     TarskiLowerDimensionQ,
       If[ AnyTrue[ Subsets[ VertexList[ graph ], { 3 } ],
-            triple |-> ! CollinearQ[ graph, triple ] ],
+            triple |-> FindInfraCommonLine[ graph, triple, UpTo[ 1 ] ] === { } ],
         { },
         { { } } ],
     TarskiUpperDimensionQ,
@@ -190,7 +190,7 @@ FindTarskiCounterexample[ graph_Graph,
           EquidistanceQ[ graph, a, p, a, q ] &&
           EquidistanceQ[ graph, b, p, b, q ] &&
           EquidistanceQ[ graph, c, p, c, q ] &&
-          ! CollinearQ[ graph, { a, b, c } ]
+          ! ( Length @ DeleteDuplicates @ { a, b, c } <= 1 || FindInfraCommonLine[ graph, { a, b, c }, UpTo[ 1 ] ] =!= { } )
         ] ],
     TarskiEuclidAxiomQ,             { }
   ]

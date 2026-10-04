@@ -476,42 +476,6 @@ LineCount[ graph_Graph ] :=
         FindInfraLine[ graph, pair[[ 1 ]], pair[[ 2 ]], All ] ) /@
       Subsets[ VertexList @ graph, { 2 } ] ]
 
-Options[ FindLineHull ] = { "LineStructure" -> None }
-
-FindLineHull[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], OptionsPattern[] ] :=
-  With[ { lines = Replace[ OptionValue[ "LineStructure" ], {
-            None :> DeleteDuplicates @ Catenate[
-              ( pair |-> ( l |-> First @ Sort @ { l, Reverse[ l ] } ) /@
-                  FindInfraLine[ graph, pair[[ 1 ]], pair[[ 2 ]], All ] ) /@
-                Subsets[ VertexList @ graph, { 2 } ] ],
-            ls_InfraLineStructure :> ls[ "Lines" ] } ],
-          S = Which[
-            AssociationQ @ s,                  Keys @ s,
-            MatchQ[ s, _Graph | { __Graph } ],
-            Union @@ ( If[ AllTrue[ VertexList @ #, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ # ] === Range @ VertexCount @ #,
-                Last /@ VertexList @ #, VertexList @ # ] & /@ Flatten[ { s } ] ),
-            MatchQ[ s, { __List } ],           Union @@ s,
-            ListQ @ s,                         Union @ s,
-            True,                              { s } ] },
-    Union @ FixedPoint[
-      T |-> Union[ T, Catenate @ Select[ lines, Length @ Intersection[ #, T ] >= 2 & ] ],
-      Union @ S
-    ]
-  ]
-
-Options[ LineHullQ ] = { "LineStructure" -> None }
-
-LineHullQ[ graph_Graph, s : Except[ _Rule | _RuleDelayed ], opts : OptionsPattern[] ] :=
-  With[ { vs = Which[
-      AssociationQ @ s,                  Keys @ s,
-      MatchQ[ s, _Graph | { __Graph } ],
-      Union @@ ( If[ AllTrue[ VertexList @ #, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ # ] === Range @ VertexCount @ #,
-          Last /@ VertexList @ #, VertexList @ # ] & /@ Flatten[ { s } ] ),
-      MatchQ[ s, { __List } ],           Union @@ s,
-      ListQ @ s,                         Union @ s,
-      True,                              { s } ] },
-    FindLineHull[ graph, vs, opts ] === Union @ vs ]
-
 UniversalLineQ[ graph_Graph, { u_, v_ } ] :=
   AnyTrue[ ConnectedComponents @ graph,
     c |-> ContainsAll[ c, { u, v } ] &&
