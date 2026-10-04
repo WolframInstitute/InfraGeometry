@@ -59,8 +59,9 @@ TarskiCongruenceIdentityQ[ graph_Graph ] :=
 
 TarskiSegmentConstructionQ[ graph_Graph ] :=
   AllTrue[ Tuples[ VertexList[ graph ], 4 ],
-    tuple |-> Length @ ExtendInfraSegment[ graph,
-      tuple[[ 1 ]], tuple[[ 2 ]], tuple[[ 3 ]], tuple[[ 4 ]], UpTo[ 1 ] ] > 0 ]
+    tuple |-> AnyTrue[ VertexList[ graph ],
+      x |-> BetweennessQ[ graph, tuple[[ 1 ]], tuple[[ 2 ]], x ] &&
+        GraphDistance[ graph, tuple[[ 2 ]], x ] === GraphDistance[ graph, tuple[[ 3 ]], tuple[[ 4 ]] ] ] ]
 
 (* A5 (Five Segments).  Brute O(n^8); "MaxTuples" cap keeps small-graph tests
    responsive.  Indeterminate if the cap is hit before exhaustion. *)
@@ -147,8 +148,9 @@ FindTarskiCounterexample[ graph_Graph,
         pair_ /; GraphDistance[ graph, pair[[ 1 ]], pair[[ 2 ]] ] === 0 :> pair ],
     TarskiSegmentConstructionQ,
       Select[ Tuples[ VertexList[ graph ], 4 ],
-        tuple |-> Length @ ExtendInfraSegment[ graph,
-          tuple[[ 1 ]], tuple[[ 2 ]], tuple[[ 3 ]], tuple[[ 4 ]], UpTo[ 1 ] ] === 0 ],
+        tuple |-> NoneTrue[ VertexList[ graph ],
+          x |-> BetweennessQ[ graph, tuple[[ 1 ]], tuple[[ 2 ]], x ] &&
+            GraphDistance[ graph, tuple[[ 2 ]], x ] === GraphDistance[ graph, tuple[[ 3 ]], tuple[[ 4 ]] ] ] ],
     TarskiFiveSegmentsQ,
       Select[ Take[ Tuples[ VertexList[ graph ], 8 ], UpTo[ 200000 ] ],
         eight |-> With[ {

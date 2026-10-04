@@ -715,7 +715,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    { paths = walkSeqs @ FindInfraWalk[ g, 1, 13, UpTo[ 6 ], All ] },
+    { paths = walkSeqs @ Select[ FindInfraWalk[ g, 1, UpTo[ 6 ], All, "StoppingCondition" -> ( Last[ # ] === 13 & ) ], Last @ Last @ VertexList @ # === 13 & ] },
     FreeQ[
       SelectInfraWalk[ g, paths, All, "From" -> # ] & /@
         { All, "Center", "Periphery", "MostVisited", "Bottleneck", "MinLength", "MaxLength",
@@ -738,46 +738,47 @@ VerificationTest[
 ]
 
 
-(* ===== GeodesicExtensionGraph ===== *)
+(* ===== the ray graph past q: the geodesic extensions of p -> q beyond q ===== *)
 
 (* on C_6 the extensions of 1 -> 2 beyond 2 are 2 -> 3 -> 4: vertex 5 is excluded, d(1, 5) = 2 < 1 + d(2, 5) = 4 *)
 VerificationTest[
-  With[ { ext = GeodesicExtensionGraph[ CycleGraph[ 6 ], { 1, 2 } ] },
+  With[ { ray = InfraMeasurement[ CycleGraph[ 6 ], InfraRay[ 1, 2 ], "Graph" ] },
+    { ext = Subgraph[ ray, VertexOutComponent[ ray, 2 ] ] },
     { Sort @ VertexList @ ext, Sort @ EdgeList @ ext } ],
   { { 2, 3, 4 }, { DirectedEdge[ 2, 3 ], DirectedEdge[ 3, 4 ] } },
-  TestID -> "GeodesicExtensionGraph-C6"
+  TestID -> "InfraRay-past-q-C6"
 ]
 
-(* the vertex set is the distance condition, and every directed path from p2 is a geodesic that stays geodesic behind p1 *)
+(* the vertex set is the distance condition, and every directed path from q is a geodesic that stays geodesic behind p *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ], p1 = 6, p2 = 7 },
-    With[ { ext = GeodesicExtensionGraph[ g, { p1, p2 } ] },
-      Sort @ VertexList @ ext ===
-        Sort @ Select[ VertexList @ g,
-          GraphDistance[ g, p1, # ] == GraphDistance[ g, p1, p2 ] + GraphDistance[ g, p2, # ] & ] &&
-      AllTrue[ infraSpread @ ext,
-        w |-> First[ w ] === p2 && InfraSegmentQ[ g, w ] &&
-          GraphDistance[ g, p1, Last @ w ] == GraphDistance[ g, p1, p2 ] + Length[ w ] - 1 ]
-    ]
+    { ray = InfraMeasurement[ g, InfraRay[ p1, p2 ], "Graph" ] },
+    { ext = Subgraph[ ray, VertexOutComponent[ ray, p2 ] ] },
+    Sort @ VertexList @ ext ===
+      Sort @ Select[ VertexList @ g,
+        GraphDistance[ g, p1, # ] == GraphDistance[ g, p1, p2 ] + GraphDistance[ g, p2, # ] & ] &&
+    AllTrue[ infraSpread @ ext,
+      w |-> First[ w ] === p2 && InfraSegmentQ[ g, w ] &&
+        GraphDistance[ g, p1, Last @ w ] == GraphDistance[ g, p1, p2 ] + Length[ w ] - 1 ]
   ],
   True,
-  TestID -> "GeodesicExtensionGraph-GridGraph-geodesic-extensions"
+  TestID -> "InfraRay-past-q-GridGraph-geodesic-extensions"
 ]
 
-(* the ray pool from o through v is the extension graph of {o, v}: its sinks are the inextensible ray ends *)
+(* the sinks of the ray graph are the inextensible ray ends *)
 VerificationTest[
-  With[ { ext = GeodesicExtensionGraph[ GridGraph[ { 3, 3 } ], { 5, 6 } ] },
-    Sort @ Select[ VertexList @ ext, VertexOutDegree[ ext, # ] == 0 & ] ],
+  With[ { ray = InfraMeasurement[ GridGraph[ { 3, 3 } ], InfraRay[ 5, 6 ], "Graph" ] },
+    Sort @ Select[ VertexList @ ray, VertexOutDegree[ ray, # ] == 0 & ] ],
   { 3, 9 },
-  TestID -> "GeodesicExtensionGraph-sinks-are-ray-ends"
+  TestID -> "InfraRay-past-q-sinks-are-ray-ends"
 ]
 
-(* multiset anchors spread to one DAG per anchor pair *)
+(* two anchors through one point: one ray graph each, ending at the opposite corner *)
 VerificationTest[
-  GeodesicExtensionGraph[ GridGraph[ { 3, 3 } ], { <| 1 -> 1, 3 -> 1 |>, 5 } ],
-  { GeodesicExtensionGraph[ GridGraph[ { 3, 3 } ], { 1, 5 } ],
-    GeodesicExtensionGraph[ GridGraph[ { 3, 3 } ], { 3, 5 } ] },
-  TestID -> "GeodesicExtensionGraph-multiset-anchor-spreads"
+  Map[ ray |-> Select[ VertexList @ ray, VertexOutDegree[ ray, # ] == 0 & ],
+    InfraMeasurement[ GridGraph[ { 3, 3 } ], { InfraRay[ 1, 5 ], InfraRay[ 3, 5 ] }, "Graph" ] ],
+  { { 9 }, { 7 } },
+  TestID -> "InfraRay-past-q-two-anchors"
 ]
 
 EndTestSection[]

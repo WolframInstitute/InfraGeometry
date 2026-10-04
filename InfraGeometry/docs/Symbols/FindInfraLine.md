@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraLine
 Keywords: [line, inextensible geodesic, Euclid Postulate 2, parallel postulate]
-SeeAlso: [InfraLine, InfraLineQ, FindInfraRepresentative, ExtendInfraSegment, GeodesicExtensionGraph, FindInfraSegment, FindInfraRay, FindInfraParallel, LineCount]
+SeeAlso: [InfraLine, InfraLineQ, FindInfraRepresentative, FindInfraGeodesic, FindInfraSegment, FindInfraRay, FindInfraParallel, LineCount]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 

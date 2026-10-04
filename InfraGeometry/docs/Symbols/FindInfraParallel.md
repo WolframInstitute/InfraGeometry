@@ -31,7 +31,7 @@ The class is carried by a **pool**: one geodesic DAG per admissible pair of ends
 | Option | Values | Meaning |
 |---|---|---|
 | `"NextVertexFunction"` | `Identity` (default), `RandomSample`, any function | a bounded or absent count takes the end pairs and the branches of each DAG in the order the function gives: `Identity` the canonical order, `RandomSample` a random order, seeded by an ambient `SeedRandom`. The class is the same under every value. |
-| `Properties` | `{}` | only the empty list; a rule on the parallel is a local law and lives on `ExtendInfraGeodesic`. |
+| `Properties` | `{}` | only the empty list; a rule on the parallel is a local law and lives on `FindInfraGeodesic`. |
 
 Corresponding notions in the classical axiom systems:
 
