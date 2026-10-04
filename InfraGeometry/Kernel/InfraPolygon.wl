@@ -1,24 +1,18 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-Options[ FindInfraPolygon ] = { Method -> Automatic }
+Options[ FindInfraPolygon ] = { "NextVertexFunction" -> Identity }
 
 FindInfraPolygon[ graph_Graph, vertices_List /; Length[ vertices ] >= 3,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    MatchQ[ OptionValue[ FindInfraPolygon, { opts }, Method ],
-      Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
-  With[ { methodSpec = Replace[ OptionValue[ FindInfraPolygon, { opts }, Method ], Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
+  With[ { nextFn = OptionValue[ FindInfraPolygon, { opts }, "NextVertexFunction" ],
           cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
-    { method = Replace[ methodSpec, { m_String, ___ } :> m ],
-      sideCap = If[ count === All, Infinity, Max[ 8, 2 cap ] ] },
+    { sideCap = If[ count === All, Infinity, Max[ 8, 2 cap ] ] },
     { sides = Apply[
-        { a, b } |-> With[ { dag = If[ method === "Exhaustive" || a === b, Null, InfraMeasurement[ graph, InfraSegment[ a, b ], "Graph" ] ] },
+        { a, b } |-> With[ { dag = If[ a === b, Null, InfraMeasurement[ graph, InfraSegment[ a, b ], "Graph" ] ] },
           Which[
             a === b, { },
-            method === "Exhaustive",
-              With[ { d = GraphDistance[ graph, a, b ] },
-                If[ d === Infinity, { }, FindPath[ graph, a, b, { d }, Replace[ sideCap, Infinity -> All ] ] ] ],
             VertexCount @ dag == 0, { },
-            method === "Greedy" && count === All, FindPath[ dag, a, b, Infinity, All ],
+            count === All, FindPath[ dag, a, b, Infinity, All ],
             True,
               With[ { out = GroupBy[ List @@@ EdgeList @ dag, First -> Last ] },
                 { descend = { self, path, need } |-> If[ Last @ path === b,
@@ -28,8 +22,8 @@ FindInfraPolygon[ graph_Graph, vertices_List /; Length[ vertices ] >= 3,
                         found,
                         Join[ found, self[ self, Append[ path, next ], need - Length @ found ] ] ],
                       { },
-                      If[ method === "Greedy", Lookup[ out, Key @ Last @ path, { } ],
-                        RandomSample @ DeleteCases[ VertexOutComponent[ dag, { Last @ path }, 1 ], Last @ path ] ] ] ] },
+                      With[ { nexts = Lookup[ out, Key @ Last @ path, { } ] },
+                        Replace[ nextFn @ nexts, chosen_ /; MemberQ[ nexts, Verbatim @ chosen ] :> { chosen } ] ] ] ] },
                 descend[ descend, { a }, sideCap ] ] ] ],
         Partition[ Append[ vertices, First @ vertices ], 2, 1 ], { 1 } ] },
     { polygons = Map[ PathGraph[ #, DirectedEdges -> True ] &,
@@ -69,25 +63,20 @@ InfraPolygonQ[ _Graph, _ ] :=
    path each.
 
    The family is carried by the FindCycle candidate sweep, filtered by the slot predicates.  The sweep is not lazy -- every n-cycle of the candidate
-   graph is materialised before any is tested -- so "Greedy" and "RandomGreedy" here only order what the count takes, in candidate and random order
-   respectively; the class is the same under all three *)
+   graph is materialised before any is tested -- so the next-vertex function only orders or thins what the count takes *)
 
 Options[ FindInfraRegularPolygon ] = {
-  Properties -> { },
-  Method     -> Automatic,
-  "From"     -> All
+  Properties           -> { },
+  "NextVertexFunction" -> Identity,
+  "From"               -> All
 }
 
 FindInfraRegularPolygon[ graph_Graph, As_List, n_Integer /; n >= 3,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    1 <= Length[ As ] <= Floor[ n / 2 ] && OptionValue[ FindInfraRegularPolygon, { opts }, Properties ] === { } &&
-      MatchQ[ OptionValue[ FindInfraRegularPolygon, { opts }, Method ],
-        Automatic | "Exhaustive" | "Greedy" | "RandomGreedy" | { "Exhaustive" | "Greedy" | "RandomGreedy", ___ } ] :=
+    1 <= Length[ As ] <= Floor[ n / 2 ] && OptionValue[ FindInfraRegularPolygon, { opts }, Properties ] === { } :=
   With[ {
-      methodSpec = Replace[ OptionValue[ FindInfraRegularPolygon, { opts }, Method ],
-                     Automatic :> If[ count === All, "Exhaustive", "Greedy" ] ],
-      fromSpec   = OptionValue[ FindInfraRegularPolygon, { opts }, "From" ] },
-    { methodHead = Replace[ methodSpec, { m_String, ___ } :> m ] },
+      nextFn   = OptionValue[ FindInfraRegularPolygon, { opts }, "NextVertexFunction" ],
+      fromSpec = OptionValue[ FindInfraRegularPolygon, { opts }, "From" ] },
     With[ { normalize = a |-> Replace[ a, {
                   fam_Association :> Keys @ fam,
                   list_List /; AllTrue[ list, MatchQ[ _Association ] ] :> list[[ All, 1, 1 ]] } ] },
@@ -95,7 +84,6 @@ FindInfraRegularPolygon[ graph_Graph, As_List, n_Integer /; n >= 3,
               All -> { None, All },
               ( anchor_ -> r_Integer ) /; r >= 0 :> { normalize @ anchor, r },
               anchor : Except[ _Rule ] :> { normalize @ anchor, All } } ],
-            pruning = "Pruning" /. Replace[ methodSpec, { { _String, o___ } :> { o }, _ -> { } } ] /. "Pruning" -> Infinity,
             dm = GraphDistanceMatrix @ graph,
             vs = VertexList @ graph },
           { anchor = First @ from, radius = Last @ from,
@@ -116,14 +104,7 @@ FindInfraRegularPolygon[ graph_Graph, As_List, n_Integer /; n >= 3,
                 _Integer,               AllTrue[ ds, # === slot & ],
                 { _Integer, _Integer }, Length[ Union @ ds ] === 1 && slot[[ 1 ]] <= First @ ds <= slot[[ 2 ]],
                 Automatic,              Length[ Union @ ds ] === 1 ] ] },
-          { ordered = If[ methodHead === "RandomGreedy", RandomSample, Identity ] @ Which[
-              pruning === Infinity, candidates,
-              IntegerQ[ pruning ] && pruning >= 1,
-                If[ Length[ candidates ] <= pruning, candidates, RandomSample[ candidates, pruning ] ],
-              NumericQ[ pruning ] && 0 < pruning < 1,
-                If[ candidates === { }, { },
-                  With[ { kept = Select[ candidates, RandomReal[ ] < pruning & ] },
-                    If[ kept === { }, RandomSample[ candidates, 1 ], kept ] ] ] ] },
+          { ordered = Replace[ nextFn @ candidates, chosen_ /; MemberQ[ candidates, Verbatim @ chosen ] :> { chosen } ] },
           { core = DeleteDuplicates @ Select[
               If[ anchor =!= None && radius === All,
                 Select[ ordered, cyc |-> If[ ListQ @ anchor, IntersectingQ[ cyc, anchor ], MemberQ[ cyc, anchor ] ] ],

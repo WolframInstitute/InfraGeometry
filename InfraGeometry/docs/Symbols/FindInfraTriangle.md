@@ -28,7 +28,7 @@ Nothing in the definition keeps the sides apart. On the 3×3 grid with corners 1
 
 | Option | Values | Meaning |
 |---|---|---|
-| `Method` | `Automatic` (default), `"Exhaustive"`, `{"Exhaustive", "Pruning" -> spec}`, `"Greedy"`, `"RandomGreedy"` | forwarded to the side geodesics. `Automatic` resolves by the count: `All` to `"Exhaustive"`, a bounded or absent count to `"Greedy"`. The class is the same under every value; `"Greedy"` and `"Exhaustive"` take each side's geodesics in candidate order, `"RandomGreedy"` in random order, seeded by an ambient `SeedRandom`. `"Pruning"` is accepted and inert: the sides come off geodesic pools, which have no frontier to cap. |
+| `"NextVertexFunction"` | `Identity` (default), `RandomSample`, any function | forwarded to the side geodesics: a bounded or absent count takes each side's geodesics in the order the function gives, `Identity` the canonical order, `RandomSample` a random order, seeded by an ambient `SeedRandom`. The class is the same under every value. |
 
 Corresponding notions in the classical axiom systems:
 
@@ -87,16 +87,16 @@ With[
 
 ## Options
 
-### Method
+### NextVertexFunction
 
-The class is the same under every `Method`; only the order in which triangles come off it differs, and `"RandomGreedy"` draws the witness in random order, so the seed goes in front.
+The class is the same under every next-vertex function; only the order in which triangles come off it differs, and `RandomSample` draws the witness in random order, so the seed goes in front.
 
 ```wl
 SeedRandom[1]; With[
   {g = GridGraph[{3, 3}]},
-  {SameQ @@ (Sort @ FindInfraTriangle[g, {1, 3, 9}, All, Method -> #] & /@
-      {"Exhaustive", "Greedy", "RandomGreedy"}),
-   FindInfraTriangle[g, {1, 3, 9}, Method -> "RandomGreedy"]}]
+  {SameQ @@ (Sort @ FindInfraTriangle[g, {1, 3, 9}, All, "NextVertexFunction" -> #] & /@
+      {Identity, RandomSample}),
+   FindInfraTriangle[g, {1, 3, 9}, "NextVertexFunction" -> RandomSample]}]
 ```
 
 ## Properties and Relations

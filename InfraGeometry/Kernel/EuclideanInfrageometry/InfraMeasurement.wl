@@ -201,11 +201,12 @@ takeRepresentatives[ member : Except[ _List ], ___ ] :=
   member
 
 searchMethod[ mods___ ] :=
-  Which[
-    MemberQ[ { mods }, "RandomChoice" ], { Method -> "RandomGreedy" },
-    Lookup[ Association @ Cases[ { mods }, _Rule ], "Pruning", 0 ] > 0,
-      { Method -> { "Exhaustive", "Pruning" -> Lookup[ Association @ Cases[ { mods }, _Rule ], "Pruning" ] } },
-    True, { } ]
+  With[ { prune = Lookup[ Association @ Cases[ { mods }, _Rule ], "Pruning", 0 ] },
+    Which[
+      MemberQ[ { mods }, "RandomChoice" ], { "NextVertexFunction" -> RandomSample },
+      prune === 0 || prune === Infinity, { },
+      IntegerQ[ prune ], { "NextVertexFunction" -> ( RandomSample[ #, UpTo[ prune ] ] & ) },
+      True, { "NextVertexFunction" -> ( RandomSample[ #, UpTo[ Max[ 1, Round[ prune Length @ # ] ] ] ] & ) } ] ]
 
 InfraSubgraph[ graph_Graph, obj_ -> t_Integer ] :=
   Subgraph[ graph,

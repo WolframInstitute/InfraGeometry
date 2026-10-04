@@ -20,4 +20,4 @@ Options:
 | Option | Values |
 |---|---|
 | `Properties` | "Separating", "Connected" |
-| `Method` | Automatic (default), "Exhaustive", {"Exhaustive", "Pruning" -> spec}, "Greedy", "RandomGreedy" — Automatic resolves by the count, All to "Exhaustive" and a bounded or absent count to "Greedy"; the class is the same under every value, "RandomGreedy" peels in random order under an ambient SeedRandom, and "Pruning" caps the removable vertices tried per layer |
+| `"NextVertexFunction"` | `Identity` (default), `RandomSample`, `RandomSample[#, UpTo[n]] &`, any function | the function sees the vertices that can be peeled next and gives the ones to try, in order: `Identity` the canonical peel, so the count-less call is one minimal subset, deterministic; `RandomSample` a random peel under an ambient `SeedRandom`; `RandomSample[#, UpTo[n]] &` at most *n* branches per node. The class is the same under every value |

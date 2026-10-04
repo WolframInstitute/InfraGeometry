@@ -238,7 +238,7 @@ VerificationTest[
   With[{g = GridGraph[{3, 3}],
         degSum = w |-> VertexDegree[GridGraph[{3, 3}], w[[-2]]] + VertexDegree[GridGraph[{3, 3}], w[[-1]]]},
     With[{paths = walkSeqs @ FindInfraGeodesic[g, 1, 9, Infinity, Infinity, All,
-            Properties -> {"Minimizing", {"Minimal", degSum}}]},
+            Properties -> {"Minimizing"}, "NextVertexFunction" -> MinimalBy[degSum]]},
       Length[paths] >= 1 &&
         AllTrue[paths, Length[#] - 1 == GraphDistance[g, 1, 9] &]
     ]
@@ -252,8 +252,8 @@ VerificationTest[
         degSum = w |-> VertexDegree[GridGraph[{4, 4}], w[[-2]]] + VertexDegree[GridGraph[{4, 4}], w[[-1]]]},
     BlockRandom[
       Length @ walkSeqs @ FindInfraGeodesic[g, 1, 16, Infinity, Infinity, All,
-        Properties -> {"Minimizing", {"Minimal", degSum}},
-        Method -> {"Exhaustive", "Pruning" -> 1}] <= 1,
+        Properties -> {"Minimizing"},
+        "NextVertexFunction" -> MinimalBy[degSum] /* (RandomSample[#, UpTo[1]] &)] <= 1,
       RandomSeeding -> 42
     ]
   ],
@@ -265,7 +265,7 @@ VerificationTest[
   With[{g = GridGraph[{3, 3}],
         degSum = w |-> VertexDegree[GridGraph[{3, 3}], w[[-2]]] + VertexDegree[GridGraph[{3, 3}], w[[-1]]]},
     Length @ walkSeqs @ FindInfraGeodesic[g, 1, 9, Infinity, Infinity, UpTo[2],
-      Properties -> {"Minimizing", {"Minimal", degSum}}]
+      Properties -> {"Minimizing"}, "NextVertexFunction" -> MinimalBy[degSum]]
   ],
   _Integer?(# <= 2 &),
   SameTest -> MatchQ,
@@ -333,23 +333,24 @@ VerificationTest[
 VerificationTest[
   With[{g = CycleGraph[6]},
     Sort @ walkSeqs @ FindInfraGeodesic[g, 1, 4, 2, Infinity, All,
-        Properties -> {"Simple", "Straightest"}]
+        Properties -> {"Simple"},
+        "NextVertexFunction" -> MaximalBy[w |-> Map[GraphDistance[g, #, Last @ w] &, Reverse @ Most @ w]]]
   ],
   Sort[{{1, 2, 3, 4}, {1, 6, 5, 4}}],
-  TestID -> "FindInfraGeodesic-Straightest-scale-2-cycle-symmetric"
+  TestID -> "FindInfraGeodesic-farthest-from-window-scale-2-cycle-symmetric"
 ]
 
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
     BlockRandom[
       Length @ walkSeqs @ FindInfraGeodesic[g, 1, 16, 2, Infinity, All,
-        Properties -> {"Simple", "Straightest"},
-        Method -> {"Exhaustive", "Pruning" -> 1}] == 1,
+        Properties -> {"Simple"},
+        "NextVertexFunction" -> (windows |-> RandomSample[MaximalBy[windows, w |-> Map[GraphDistance[g, #, Last @ w] &, Reverse @ Most @ w]], UpTo[1]])] <= 1,
       RandomSeeding -> 42
     ]
   ],
   True,
-  TestID -> "FindInfraGeodesic-Straightest-pruning-beam-1"
+  TestID -> "FindInfraGeodesic-farthest-from-window-pruning-beam-1"
 ]
 
 (* A selector composed with "Simple" still gives simple walks. *)
@@ -358,7 +359,7 @@ VerificationTest[
   With[{g = GridGraph[{3, 3}],
         degSum = w |-> VertexDegree[GridGraph[{3, 3}], w[[-2]]] + VertexDegree[GridGraph[{3, 3}], w[[-1]]]},
     With[{walks = walkSeqs @ FindInfraGeodesic[g, 1, 9, 1, {4}, All,
-            Properties -> {"Simple", {"Minimal", degSum}}]},
+            Properties -> {"Simple"}, "NextVertexFunction" -> MinimalBy[degSum]]},
       AllTrue[walks, DuplicateFreeQ]
     ]
   ],
@@ -403,20 +404,20 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 6, 6 } ] },
-    FindInfraBisectingHyperplane[ g, 1, 36, 1, Properties -> { "Separating" }, Method -> "Greedy" ] ===
-      FindInfraBisectingHyperplane[ g, 1, 36, 1, Properties -> { "Separating" }, Method -> "Greedy" ]
+    FindInfraBisectingHyperplane[ g, 1, 36, 1, Properties -> { "Separating" } ] ===
+      FindInfraBisectingHyperplane[ g, 1, 36, 1, Properties -> { "Separating" } ]
   ],
   True,
-  TestID -> "FindInfraBisectingHyperplane-Greedy-deterministic"
+  TestID -> "FindInfraBisectingHyperplane-default-deterministic"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[ { 6, 6 } ] },
-    BlockRandom[ FindInfraBisectingHyperplane[ g, 1, 36, 1, Properties -> { "Separating" }, Method -> "RandomGreedy" ], RandomSeeding -> 4 ] ===
-      BlockRandom[ FindInfraBisectingHyperplane[ g, 1, 36, 1, Properties -> { "Separating" }, Method -> "RandomGreedy" ], RandomSeeding -> 4 ]
+    BlockRandom[ FindInfraBisectingHyperplane[ g, 1, 36, 1, Properties -> { "Separating" }, "NextVertexFunction" -> RandomSample ], RandomSeeding -> 4 ] ===
+      BlockRandom[ FindInfraBisectingHyperplane[ g, 1, 36, 1, Properties -> { "Separating" }, "NextVertexFunction" -> RandomSample ], RandomSeeding -> 4 ]
   ],
   True,
-  TestID -> "FindInfraBisectingHyperplane-RandomGreedy-seeded-reproducible"
+  TestID -> "FindInfraBisectingHyperplane-RandomSample-seeded-reproducible"
 ]
 
 (* FindInfraSegment carries no Method any more (EuclideanInertHeads, T2): its "RandomChoice"
@@ -642,24 +643,24 @@ VerificationTest[
 
 (* FindInfraLine carries no Method axis any more (EuclideanInertHeads, T3): the count
    fixes the mode, and its class is pinned against brute force in InfraLineTests.wlt.
-   The Greedy / RandomGreedy determinism and BothSides regression guards above stay
+   The determinism and BothSides regression guards above stay
    meaningful only for FindInfraParallel, which the walk-family item left untouched. *)
 
 VerificationTest[
   With[ { g = GridGraph[ { 6, 6 } ], line = First @ FindInfraLine[ GridGraph[ { 6, 6 } ], 1, 2, 1 ] },
-    FindInfraParallel[ g, line, 20, 1, Method -> "Greedy" ] === FindInfraParallel[ g, line, 20, 1, Method -> "Greedy" ]
+    FindInfraParallel[ g, line, 20, 1 ] === FindInfraParallel[ g, line, 20, 1 ]
   ],
   True,
-  TestID -> "FindInfraParallel-Greedy-deterministic"
+  TestID -> "FindInfraParallel-default-deterministic"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[ { 6, 6 } ], line = First @ FindInfraLine[ GridGraph[ { 6, 6 } ], 1, 2, 1 ] },
-    BlockRandom[ FindInfraParallel[ g, line, 20, 1, Method -> "RandomGreedy" ], RandomSeeding -> 3 ] ===
-      BlockRandom[ FindInfraParallel[ g, line, 20, 1, Method -> "RandomGreedy" ], RandomSeeding -> 3 ]
+    BlockRandom[ FindInfraParallel[ g, line, 20, 1, "NextVertexFunction" -> RandomSample ], RandomSeeding -> 3 ] ===
+      BlockRandom[ FindInfraParallel[ g, line, 20, 1, "NextVertexFunction" -> RandomSample ], RandomSeeding -> 3 ]
   ],
   True,
-  TestID -> "FindInfraParallel-RandomGreedy-seeded-reproducible"
+  TestID -> "FindInfraParallel-RandomSample-seeded-reproducible"
 ]
 
 (* ===== FindInfraLine[g, segment] overload (the extension pool at kspec Infinity, ExtendInfraSegment[g, seg]) ===== *)
@@ -810,14 +811,14 @@ VerificationTest[
   TestID -> "ExtendInfraSegment-Direction"
 ]
 
-(* one class under every Method *)
+(* one class under every next-vertex function *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    SameQ @@ ( Sort @ infraSpread @ ExtendInfraSegment[ g, { 6, 7 }, 2, All, Method -> # ] & /@
-      { "Exhaustive", "Greedy", "RandomGreedy" } )
+    SameQ @@ ( Sort @ infraSpread @ ExtendInfraSegment[ g, { 6, 7 }, 2, All, "NextVertexFunction" -> # ] & /@
+      { Identity, RandomSample } )
   ],
   True,
-  TestID -> "ExtendInfraSegment-class-invariant-under-Method"
+  TestID -> "ExtendInfraSegment-class-invariant-under-NextVertexFunction"
 ]
 
 (* the pool carries the family by DP -- one atom per admissible end pair, count, occupation, lengths and ends without enumeration *)

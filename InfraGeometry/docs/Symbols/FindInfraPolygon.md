@@ -28,7 +28,7 @@ Nothing in the definition keeps the sides apart. A side may run back over anothe
 
 | Option | Values | Meaning |
 |---|---|---|
-| `Method` | `Automatic` (default), `"Exhaustive"`, `{"Exhaustive", "Pruning" -> spec}`, `"Greedy"`, `"RandomGreedy"` | forwarded to the side geodesics. `Automatic` resolves by the count: `All` to `"Exhaustive"`, a bounded or absent count to `"Greedy"`. The class is the same under every value; `"Greedy"` and `"Exhaustive"` take each side's geodesics in candidate order, `"RandomGreedy"` in random order, seeded by an ambient `SeedRandom`. `"Pruning"` is accepted and inert: the sides come off geodesic pools, which have no frontier to cap. |
+| `"NextVertexFunction"` | `Identity` (default), `RandomSample`, any function | forwarded to the side geodesics: a bounded or absent count takes each side's geodesics in the order the function gives, `Identity` the canonical order, `RandomSample` a random order, seeded by an ambient `SeedRandom`. The class is the same under every value. |
 
 Sides chosen by a local rule — straightest, curvature-minimising — are not a polygon option: build them with [FindInfraGeodesic]() and assemble the `List` of sides.
 
@@ -56,7 +56,7 @@ Three of the diamonds, streamed off the class in random order.
 SeedRandom[1]; With[
   {g = GridGraph[{5, 5}]},
   InfraSubstrateHighlight[g,
-    {FindInfraPolygon[g, {3, 15, 23, 11}, UpTo[3], Method -> "RandomGreedy"] -> $InfraSegmentColor,
+    {FindInfraPolygon[g, {3, 15, 23, 11}, UpTo[3], "NextVertexFunction" -> RandomSample] -> $InfraSegmentColor,
      {3, 15, 23, 11} -> $InfraPointColor},
     ImageSize -> 300]]
 ```
@@ -81,15 +81,15 @@ FindInfraPolygon[GridGraph[{3, 3}], {1, 3, 9}]
 
 ## Options
 
-### Method
+### NextVertexFunction
 
-The class is the same under every `Method`; only the order in which polygons come off it differs.
+The class is the same under every next-vertex function; only the order in which polygons come off it differs.
 
 ```wl
 With[
   {g = GridGraph[{5, 5}]},
-  SameQ @@ (Sort @ FindInfraPolygon[g, {3, 15, 23, 11}, All, Method -> #] & /@
-     {"Exhaustive", "Greedy", "RandomGreedy"})]
+  SameQ @@ (Sort @ FindInfraPolygon[g, {3, 15, 23, 11}, All, "NextVertexFunction" -> #] & /@
+     {Identity, RandomSample})]
 ```
 
 ## Properties and Relations

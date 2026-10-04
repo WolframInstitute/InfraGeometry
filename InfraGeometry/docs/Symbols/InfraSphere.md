@@ -39,7 +39,7 @@ No count is known. The family has no closed formula for its number of members, a
 
 How the number is measured: one instance <code>*T* = [FindInfraRepresentative]()[*g*, [InfraSphere]()[*c*, {*r*, *r* + 1}]]</code>, found greedily, is a vertex list, and <code>[InfraMeasurement]()[*g*, [InfraTube]()[*T*, 0], *measure*]</code> measures it as a region. The profile is the list of the instance sizes over *r*, a profile of instances, not of the family.
 
-[FindInfraRepresentative]() gives members: a count, `"RandomChoice"` and `"Pruning" -> q` are translated to the `Method` of [FindInfraSphere](). Without a count it gives one member, a sorted vertex list.
+[FindInfraRepresentative]() gives members: a count, `"RandomChoice"` and `"Pruning" -> q` are translated to the `"NextVertexFunction"` of [FindInfraSphere](). Without a count it gives one member, a sorted vertex list.
 
 ## Basic Examples
 

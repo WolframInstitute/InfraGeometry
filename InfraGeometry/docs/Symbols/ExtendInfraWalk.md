@@ -13,4 +13,4 @@ URI: WolframInstitute/InfraGeometry/ref/ExtendInfraWalk
 
 ## Details & Options
 
-Options "InfraScale", Properties, "StoppingCondition", Method, "Direction".
+Options "InfraScale", Properties, "StoppingCondition", "NextVertexFunction", "Direction". The next-vertex function is that of FindInfraWalk.

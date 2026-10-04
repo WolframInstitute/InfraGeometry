@@ -58,35 +58,35 @@ VerificationTest[
   TestID -> "FindInfraEllipticShell-empty-properties-one-realisation"
 ]
 
-(* ===== Method -> "Greedy" / "RandomGreedy" (shared findGreedyMinimalAdmissible) ===== *)
+(* ===== the canonical and the random peel ===== *)
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    FindInfraEllipticShell[ g, { 1, 16 }, { 5, 8 }, 1, Properties -> { "Connected" }, Method -> "Greedy" ] ===
-      FindInfraEllipticShell[ g, { 1, 16 }, { 5, 8 }, 1, Properties -> { "Connected" }, Method -> "Greedy" ]
+    FindInfraEllipticShell[ g, { 1, 16 }, { 5, 8 }, 1, Properties -> { "Connected" } ] ===
+      FindInfraEllipticShell[ g, { 1, 16 }, { 5, 8 }, 1, Properties -> { "Connected" } ]
   ],
   True,
-  TestID -> "FindInfraEllipticShell-Greedy-deterministic"
+  TestID -> "FindInfraEllipticShell-default-deterministic"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    BlockRandom[ FindInfraEllipticShell[ g, { 1, 16 }, { 5, 8 }, 1, Properties -> { "Connected" }, Method -> "RandomGreedy" ], RandomSeeding -> 4 ] ===
-      BlockRandom[ FindInfraEllipticShell[ g, { 1, 16 }, { 5, 8 }, 1, Properties -> { "Connected" }, Method -> "RandomGreedy" ], RandomSeeding -> 4 ]
+    BlockRandom[ FindInfraEllipticShell[ g, { 1, 16 }, { 5, 8 }, 1, Properties -> { "Connected" }, "NextVertexFunction" -> RandomSample ], RandomSeeding -> 4 ] ===
+      BlockRandom[ FindInfraEllipticShell[ g, { 1, 16 }, { 5, 8 }, 1, Properties -> { "Connected" }, "NextVertexFunction" -> RandomSample ], RandomSeeding -> 4 ]
   ],
   True,
-  TestID -> "FindInfraEllipticShell-RandomGreedy-seeded-reproducible"
+  TestID -> "FindInfraEllipticShell-RandomSample-seeded-reproducible"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     Length @ DeleteDuplicates @ Table[
-      BlockRandom[ FindInfraEllipticShell[ g, { 1, 16 }, { 5, 8 }, Properties -> { "Connected" }, Method -> "RandomGreedy" ], RandomSeeding -> s ],
+      BlockRandom[ FindInfraEllipticShell[ g, { 1, 16 }, { 5, 8 }, Properties -> { "Connected" }, "NextVertexFunction" -> RandomSample ], RandomSeeding -> s ],
       { s, 1, 8 } ]
   ],
   _Integer?( # > 1 & ),
   SameTest -> MatchQ,
-  TestID -> "FindInfraEllipticShell-RandomGreedy-varies-across-seeds"
+  TestID -> "FindInfraEllipticShell-RandomSample-varies-across-seeds"
 ]
 
 (* ===== InfraEllipticShellQ ===== *)

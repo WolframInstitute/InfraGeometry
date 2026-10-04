@@ -15,4 +15,4 @@ URI: WolframInstitute/InfraGeometry/ref/FindInfraWalk
 
 Each walk is a path graph on position pairs.
 
-Options "InfraScale", Properties, "StoppingCondition", Method.
+Options "InfraScale", Properties, "StoppingCondition", "NextVertexFunction". The next-vertex function sees the candidate windows -- the window with one admissible candidate appended -- and gives the ones to pursue, in the order to try: Identity (default) the canonical order, RandomSample a random order, RandomChoice the random walk, MinimalBy[f] the candidates least by f[window], RandomSample[#, UpTo[n]] & a pruning to n branches per node.

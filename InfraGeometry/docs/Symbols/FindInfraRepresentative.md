@@ -29,8 +29,8 @@ A closed count under a non-negative integer *n* that exceeds the number of membe
 
 Two modifiers, given after the count:
 
-- `"RandomChoice"` gives random members. On a graph it walks the chains choosing the next arrow *v* -> *w* with probability proportional to the backward count at *w*, so every member is drawn with probability `1 / Cardinality`; on a search with a method ladder it is `Method -> "RandomGreedy"`; otherwise it draws from the search's members. `SeedRandom` in front reproduces the draw.
-- `"Pruning" -> q`, under `All`, discards a random fraction *q* of the candidates at each step of an otherwise exhaustive enumeration; on a search with a method ladder it is `Method -> {"Exhaustive", "Pruning" -> q}`.
+- `"RandomChoice"` gives random members. On a graph it walks the chains choosing the next arrow *v* -> *w* with probability proportional to the backward count at *w*, so every member is drawn with probability `1 / Cardinality`; on a search it is `"NextVertexFunction" -> RandomSample`; otherwise it draws from the search's members. `SeedRandom` in front reproduces the draw.
+- `"Pruning" -> q`, under `All`, discards a random fraction *q* of the candidates at each step of an otherwise exhaustive enumeration; on a search it is the next-vertex function `RandomSample[#, UpTo[q]] &` for an integer *q*, keeping a fraction *q* of the candidates per node for *q* < 1.
 
 The specialised searches (`FindInfraSegment`, `FindInfraSphere`, `FindInfraShell`, `FindInfraWalk`, ...) keep their own parameters; this function takes none of them.
 

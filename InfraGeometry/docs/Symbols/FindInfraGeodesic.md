@@ -36,9 +36,9 @@ The search reads only the window, never the target. At a finite scale the two-po
 
 | Option | Default | Values |
 |---|---|---|
-| `Properties` | `{}` | further walk rules, each read on the window: `"Simple"`, `"Immersed"`, `"Generic"`, `"Exclude" -> species`, `"Straightest"`, `{"Minimal", f}`, `{"Maximal", f}`, or a predicate |
+| `Properties` | `{}` | further walk rules, each read on the window: `"Simple"`, `"Immersed"`, `"Generic"`, `"Exclude" -> species`, or a predicate on the window |
 | `"StoppingCondition"` | `None` | *n* (stop at the *n*-th return to a visited vertex), a predicate on the walk so far, or `{spec, "Delay" -> k}` |
-| `Method` | `Automatic` | `"Exhaustive"`, `{"Exhaustive", "Pruning" -> spec}`, `"Greedy"`, `"RandomGreedy"`; `Automatic` is `"Exhaustive"` for `All` and `"Greedy"` otherwise |
+| `"NextVertexFunction"` | `Identity` | a function of the candidate windows -- the window with one admissible candidate appended -- giving the ones to pursue, in the order to try: `Identity` the canonical order, `RandomSample` a random order, `RandomChoice` the random walk, `MinimalBy[f]` the candidates least by `f[window]`, `RandomSample[#, UpTo[n]] &` a pruning to *n* branches per node |
 
 ## Basic Examples
 
@@ -79,16 +79,16 @@ With[
 
 ## Options
 
-### Method
+### NextVertexFunction
 
-Under `"RandomGreedy"` the first geodesic found is a random one. Three geodesics at infra-scale 2 of 12 edges from the centre, one per seed.
+Under `RandomChoice` the geodesic is a random one, one uniform admissible step at a time. Three geodesics at infra-scale 2 of 12 edges from the centre, one per seed.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = InfraCenter[g]},
   GraphicsRow @ Table[
-    InfraSubstrateHighlight[g, {(SeedRandom[seed]; FindInfraGeodesic[g, a, 2, {12}, Method -> "RandomGreedy"]), Directive[$InfraPointColor], a}],
+    InfraSubstrateHighlight[g, {(SeedRandom[seed]; FindInfraGeodesic[g, a, 2, {12}, "NextVertexFunction" -> RandomChoice]), Directive[$InfraPointColor], a}],
     {seed, 3}]]
 ```
 

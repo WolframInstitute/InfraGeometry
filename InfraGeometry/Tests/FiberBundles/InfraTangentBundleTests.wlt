@@ -124,6 +124,16 @@ VerificationTest[
   TestID -> "InfraBundleMorphism-no-natural-map-stays-unevaluated"
 ]
 
+VerificationTest[
+  With[{g = GridGraph[{4, 4}]},
+    {tangent = InfraTangentBundle[g, 2]},
+    {displacement = InfraDisplacementBundle[InfraBaseGraph[tangent], 2]},
+    {InfraBundleMorphismQ[tangent, displacement, InfraBundleMorphism[tangent, displacement]],
+      Head[InfraBundleMorphism[tangent, InfraDisplacementBundle[GridGraph[{4, 5}], 2]]]}],
+  {True, InfraBundleMorphism},
+  TestID -> "InfraBundleMorphism-base-equal-not-identical"
+]
+
 (* ===== the Prototype example (the item's Acceptance) ===== *)
 
 VerificationTest[

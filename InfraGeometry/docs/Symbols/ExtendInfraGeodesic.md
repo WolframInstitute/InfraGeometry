@@ -35,7 +35,7 @@ An extension is a walk graph: `Last /@ VertexList[w]` is its vertex sequence. Th
 | `"Direction"` | `"BothSides"` | `"Forward"` (past the last vertex), `"Backward"` (before the first), `"BothSides"` |
 | `Properties` | `{}` | further walk rules, as for [FindInfraWalk]() |
 | `"StoppingCondition"` | `None` | as for [FindInfraWalk](); needs `"Forward"` or `"Backward"`, since it reads a single growing tip |
-| `Method` | `Automatic` | `"Exhaustive"`, `{"Exhaustive", "Pruning" -> spec}`, `"Greedy"`, `"RandomGreedy"` |
+| `"NextVertexFunction"` | `Identity` | a function of the candidate windows -- the window with one admissible candidate appended -- giving the ones to pursue, in the order to try: `Identity` the canonical order, `RandomSample` a random order, `RandomChoice` the random walk, `MinimalBy[f]` the candidates least by `f[window]`, `RandomSample[#, UpTo[n]] &` a pruning to *n* branches per node |
 
 ## Basic Examples
 
