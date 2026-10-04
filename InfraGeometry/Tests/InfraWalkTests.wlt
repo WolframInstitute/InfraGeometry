@@ -1605,6 +1605,59 @@ VerificationTest[
   TestID -> "InfraGeodesic-representative-at-finite-scale-is-simple"
 ]
 
+(* ===================== The window graph of InfraGeodesic ===================== *)
+
+(* the vertex sequences of the walks of k edges from the germ's window: the germ, then the last vertex of each window *)
+windowWalks[ g_Graph, germ_List, scale_, k_Integer ] :=
+  With[ { wg = InfraMeasurement[ g, InfraGeodesic[ germ, scale ], "Graph" ] },
+    { out = GroupBy[ EdgeList @ wg, First -> Last ] },
+    Sort @ Map[
+      walk |-> Join[ germ, If[ scale === Infinity, Rest @ walk, Last /@ Rest @ walk ] ],
+      Nest[ walks |-> Catenate[ ( walk |-> ( Append[ walk, # ] & ) /@ Lookup[ out, Key @ Last @ walk, { } ] ) /@ walks ],
+        { { If[ scale === Infinity, Last @ germ, Take[ germ, -Min[ scale, Length @ germ ] ] ] } }, k ] ] ]
+
+(* the walks of the window graph from the germ's window are exactly the scale-r geodesics extending the germ forward, revisits included *)
+VerificationTest[
+  With[ { g = GridGraph[ { 9, 9 } ] },
+    Table[
+      windowWalks[ g, germ, scale, 5 ] ===
+        Sort[ Last /@ VertexList[ # ] & /@ FindInfraGeodesic[ g, germ, scale, { 5 }, All, Properties -> { }, "Direction" -> "Forward" ] ],
+      { germ, { { 41 }, { 41, 42, 51 } } }, { scale, { 2, 3, Infinity } } ] ],
+  { { True, True, True }, { True, True, True } },
+  TestID -> "InfraGeodesic-window-graph-walks-are-the-finder-geodesics"
+]
+
+(* the window graph has no budget, so its cycles are the closed geodesics: at scale 2 the squares of the grid, at scale 1 the grid itself
+   with both orientations of every edge *)
+VerificationTest[
+  With[ { g = GridGraph[ { 9, 9 } ] },
+    { AcyclicGraphQ @ InfraMeasurement[ g, InfraGeodesic[ { 41, 42 }, 2 ], "Graph" ],
+      { VertexCount @ #, EdgeCount @ # } & @ InfraMeasurement[ g, InfraGeodesic[ { 41, 42 }, 1 ], "Graph" ] } ],
+  { False, { 81, 288 } },
+  TestID -> "InfraGeodesic-window-graph-has-cycles"
+]
+
+(* at scale Infinity the window is the last vertex: from a vertex germ the graph is the pencil's ray DAG, from a longer germ the part of
+   the ray DAG of its ends reachable from its last vertex *)
+VerificationTest[
+  With[ { g = GridGraph[ { 9, 9 } ],
+          sameQ = { a, b } |-> Sort @ VertexList @ a === Sort @ VertexList @ b && Sort @ EdgeList @ a === Sort @ EdgeList @ b },
+    { ray = InfraMeasurement[ g, InfraRay[ 41, 51 ], "Graph" ] },
+    { sameQ[ InfraMeasurement[ g, InfraGeodesic[ { 41 }, Infinity ], "Graph" ], InfraMeasurement[ g, InfraRay[ 41, 41 ], "Graph" ] ],
+      sameQ[ InfraMeasurement[ g, InfraGeodesic[ { 41, 42, 51 }, Infinity ], "Graph" ], Subgraph[ ray, VertexOutComponent[ ray, 51 ] ] ] } ],
+  { True, True },
+  TestID -> "InfraGeodesic-window-graph-at-Infinity-is-the-ray-graph"
+]
+
+(* a germ that is no geodesic at the scale has no window graph *)
+VerificationTest[
+  With[ { g = GridGraph[ { 9, 9 } ] },
+    { MatchQ[ InfraMeasurement[ g, InfraGeodesic[ { 41, 42, 41 }, 2 ], "Graph" ], _InfraMeasurement ],
+      MatchQ[ InfraMeasurement[ g, InfraGeodesic[ { 41, 43 }, 2 ], "Graph" ], _InfraMeasurement ] } ],
+  { True, True },
+  TestID -> "InfraGeodesic-window-graph-non-geodesic-germ-unevaluated"
+]
+
 EndTestSection[]
 
 (* ===== Refused calls stay unevaluated ===== *)

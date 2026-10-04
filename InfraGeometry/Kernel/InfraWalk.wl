@@ -458,6 +458,28 @@ FindInfraRepresentative[ graph_Graph, InfraGeodesic[ germ_List, scale : ( _Integ
       Properties -> { "Simple" }, "Direction" -> "BothSides", Sequence @@ searchMethod[ mods ] ] },
     Replace[ walks, { w_Graph :> Last /@ VertexList @ w, l_List :> ( Last /@ VertexList @ # & ) /@ l } ] /; ! MatchQ[ walks, _FindInfraGeodesic ] ]
 
+(* the window graph of the scale-r geodesics through the germ, read forward: a vertex is a window, the last <= r vertices of a walk, and a
+   window w_1 ... w_m steps to v iff d(w_1, v) == m, so the walks of k edges from the germ's window are the k-step extensions of the germ.  It is
+   a subshift of finite type; its cycles are the closed scale-r geodesics.  At scale Infinity the walk is a geodesic from the germ's first
+   vertex p, the window collapses to its last vertex, and the graph is the part of the ray DAG of p reachable from the germ's last vertex.
+   NestGraph[f, x, Infinity] takes 1.8 s on a 9-vertex grid, so the closure is a frontier loop *)
+
+InfraMeasurement[ graph_Graph, InfraGeodesic[ germ : { __ }, scale : ( _Integer?Positive | Infinity ) ], "Graph" ] /;
+    AllTrue[ germ, VertexQ[ graph, # ] & ] && ( Length[ germ ] == 1 || InfraGeodesicQ[ graph, germ, scale ] ) :=
+  With[ { dm = GraphDistanceMatrix @ graph, index = AssociationThread[ VertexList @ graph, Range @ VertexCount @ graph ] },
+    { source = If[ scale === Infinity, Last @ germ, Take[ germ, -Min[ scale, Length @ germ ] ] ],
+      steps = If[ scale === Infinity,
+        v |-> Select[ AdjacencyList[ graph, v ], dm[[ index @ First @ germ, index @ # ]] == dm[[ index @ First @ germ, index @ v ]] + 1 & ],
+        window |-> ( Take[ Append[ window, # ], -Min[ scale, Length @ window + 1 ] ] & ) /@
+          Select[ AdjacencyList[ graph, Last @ window ], dm[[ index @ First @ window, index @ # ]] == Length @ window & ] ] },
+    { closure = NestWhile[
+        Apply[ { edges, seen, frontier } |-> With[ { out = Catenate @ Map[ w |-> ( DirectedEdge[ w, # ] & ) /@ steps @ w, frontier ] },
+          { fresh = Select[ DeleteDuplicates[ Last /@ out ], ! KeyExistsQ[ seen, # ] & ] },
+          { Join[ edges, out ], Join[ seen, AssociationThread[ fresh, True ] ], fresh } ] ],
+        { { }, <| source -> True |>, { source } },
+        Last @ # =!= { } & ] },
+    Graph[ Keys @ closure[[ 2 ]], First @ closure ] ]
+
 ConcatenateInfraWalk[ path1_, path2_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
   With[ { walksOf = w |-> With[ { vs = VertexList @ w },
