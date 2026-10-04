@@ -20,10 +20,10 @@ InfraSubstrate[ ] :=
 InfraSubstrate[ All ] :=
   Catenate @ Values @ InfraSubstrate[ ]
 
-InfraSubstrate[ name_String ] :=
+InfraSubstrate[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || StringMatchQ[ name, "wm" ~~ DigitCharacter .. ] ] :=
   InfraSubstrate[ name, "Medium" ]
 
-InfraSubstrate[ name_String, size_, style : ( _String | Automatic ) : Automatic,
+InfraSubstrate[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || StringMatchQ[ name, "wm" ~~ DigitCharacter .. ], size_, style : ( _String | Automatic ) : Automatic,
     opts : OptionsPattern[ { InfraSubstrate, Graph } ] ] :=
   With[
     { own = FilterRules[ { opts }, Options @ InfraSubstrate ] },
@@ -121,10 +121,10 @@ InfraSubstrate[ name_String, size_, style : ( _String | Automatic ) : Automatic,
 
 Options[ InfraSubstrateCode ] = Options[ InfraSubstrate ]
 
-InfraSubstrateCode[ name_String ] :=
+InfraSubstrateCode[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || StringMatchQ[ name, "wm" ~~ DigitCharacter .. ] ] :=
   InfraSubstrateCode[ name, "Medium" ]
 
-InfraSubstrateCode[ name_String, size_, opts : OptionsPattern[ { InfraSubstrate, Graph } ] ] :=
+InfraSubstrateCode[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || StringMatchQ[ name, "wm" ~~ DigitCharacter .. ], size_, opts : OptionsPattern[ { InfraSubstrate, Graph } ] ] :=
   With[
     { own = FilterRules[ { opts }, Options @ InfraSubstrate ] },
     { raw = Switch[ name,

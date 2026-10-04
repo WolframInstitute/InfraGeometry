@@ -1735,6 +1735,30 @@ VerificationTest[
 
 (* ===================== InfraSubstrate ===================== *)
 
+(* an unknown name is a non-match: the call stays as typed, silently *)
+VerificationTest[
+    Quiet[
+      {Head @ InfraSubstrate["Plane", "Medium"], Head @ InfraSubstrate["Plane"],
+       Head @ InfraSubstrateCode["Plane", "Medium"], Head @ InfraFiberedSubstrate["Plane", "Small"]},
+      All],
+    {InfraSubstrate, InfraSubstrate, InfraSubstrateCode, InfraFiberedSubstrate},
+    TestID -> "InfraSubstrate-unknown-name-unevaluated"
+]
+
+VerificationTest[
+    {InfraSubstrate["Plane", "Medium"], InfraSubstrate["Plane"],
+     InfraSubstrateCode["Plane", "Medium"], InfraFiberedSubstrate["Plane", "Small"]},
+    {InfraSubstrate["Plane", "Medium"], InfraSubstrate["Plane"],
+     InfraSubstrateCode["Plane", "Medium"], InfraFiberedSubstrate["Plane", "Small"]},
+    TestID -> "InfraSubstrate-unknown-name-no-message"
+]
+
+VerificationTest[
+    AllTrue[InfraSubstrate[All], GraphQ @ InfraSubstrate[#, "Small"] &],
+    True,
+    TestID -> "InfraSubstrate-roster-still-graphs"
+]
+
 (* the grid substrate is the grid with its rim contour removed: no edge joins two rim
    vertices, the whiskers stay, the corners fall off *)
 VerificationTest[

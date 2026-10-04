@@ -14,10 +14,10 @@ InfraFiberedSubstrate[ ] :=
 InfraFiberedSubstrate[ All ] :=
   Catenate @ Values @ InfraFiberedSubstrate[ ]
 
-InfraFiberedSubstrate[ name_String ] :=
+InfraFiberedSubstrate[ name_String /; MemberQ[ InfraFiberedSubstrate[ All ], name ] ] :=
   InfraFiberedSubstrate[ name, "Medium" ]
 
-InfraFiberedSubstrate[ name_String, size_ ] :=
+InfraFiberedSubstrate[ name_String /; MemberQ[ InfraFiberedSubstrate[ All ], name ], size_ ] :=
   With[
     { spec = Switch[ name,
         _?( StringEndsQ[ #, "TangentBundle" | "DisplacementBundle" ] & ), With[
