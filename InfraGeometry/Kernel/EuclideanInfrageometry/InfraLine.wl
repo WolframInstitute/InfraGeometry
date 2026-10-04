@@ -36,6 +36,43 @@ InfraMeasurement[ graph_Graph,
               support ] ] ] ],
       pairs ] ]
 
+(* InfraLine[germ] is the line through a geodesic germ from p to q: a vertex (p == q), a vertex list, a position-spelled walk or a geodesic DAG
+   from its source p to its sink q.  Its atoms are those of InfraLine[p, q] with the middle interval I(p, q) replaced by the germ's own edges *)
+
+InfraMeasurement[ graph_Graph, InfraLine[ germ : Except[ _Rule | _RuleDelayed ] ], "Graph" ] :=
+  With[ { vs = VertexList @ graph, dm = GraphDistanceMatrix @ graph,
+          middle = Which[
+            VertexQ[ graph, germ ], Graph[ { germ }, { } ],
+            ListQ @ germ,           PathGraph[ germ, DirectedEdges -> True ],
+            AllTrue[ VertexList @ germ, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ germ ] === Range @ VertexCount @ germ,
+              PathGraph[ Last /@ SortBy[ VertexList @ germ, First ], DirectedEdges -> True ],
+            True, germ ] },
+    { idx = AssociationThread[ vs, Range @ Length @ vs ],
+      p = SelectFirst[ VertexList @ middle, VertexInDegree[ middle, # ] == 0 & ],
+      q = SelectFirst[ VertexList @ middle, VertexOutDegree[ middle, # ] == 0 & ] },
+    { dist = dm[[ idx @ #1, idx @ #2 ]] & },
+    { d = dist[ p, q ],
+      chain = { a, interval } |-> With[ { inside = AssociationThread[ interval, True ] },
+        Catenate @ Map[
+          v |-> DirectedEdge[ v, # ] & /@ Select[ AdjacencyList[ graph, v ],
+            TrueQ @ Lookup[ inside, Key @ # ] && dist[ a, # ] == dist[ a, v ] + 1 & ],
+          interval ] ] },
+    { pairs = If[ d === Infinity, { },
+        Select[
+          Tuples @ { Select[ vs, dist[ #, q ] == dist[ #, p ] + d & ],
+                     Select[ vs, dist[ p, # ] == d + dist[ q, # ] & ] },
+          Apply[ { a, b } |->
+            dist[ a, b ] == dist[ a, p ] + d + dist[ q, b ] &&
+            NoneTrue[ AdjacencyList[ graph, a ], dist[ #, b ] > dist[ a, b ] & ] &&
+            NoneTrue[ AdjacencyList[ graph, b ], dist[ a, # ] > dist[ a, b ] & ] ] ] ] },
+    Map[
+      Apply[ { a, b } |-> With[ {
+            left  = Select[ vs, dist[ a, # ] + dist[ #, p ] == dist[ a, p ] & ],
+            right = Select[ vs, dist[ q, # ] + dist[ #, b ] == dist[ q, b ] & ] },
+          Graph[ Union[ left, VertexList @ middle, right ],
+            Union[ chain[ a, left ], EdgeList @ middle, chain[ a, right ] ] ] ] ],
+      pairs ] ]
+
 FindInfraLine[ graph_Graph, p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic ] /;
     ! ListQ[ p ] || VertexQ[ graph, p ] :=

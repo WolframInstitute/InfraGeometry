@@ -21,7 +21,6 @@ InfraSubgraph::usage = "InfraSubgraph[graph, obj] gives the subgraph of graph in
 
 InfraSegment::usage = "InfraSegment[p1, ..., pk] is the inert polyline of the segments [p1, p2], ..., [p(k-1), pk]; InfraSegment[p, q] is the segment itself, whose graph is the geodesic interval I(p, q). InfraMeasurement and FindInfraRepresentative evaluate it on a graph; FindInfraSegment is the search.";
 FindInfraSegment::usage = "FindInfraSegment[graph, p, q] gives one geodesic from p to q as a vertex list; a trailing n | UpTo[n] | All gives a List of them.";
-ExtendInfraSegment::usage = "ExtendInfraSegment[graph, seg, kspec] gives the geodesics containing seg extended by at most kspec edges per side, inextensible within that budget; kspec Infinity gives the lines through seg. ExtendInfraSegment[graph, a, b, c, d] gives the x with B(a, b, x) and d(b, x) == d(c, d) (Tarski A4). Options \"NextVertexFunction\", \"Direction\".";
 InfraWalkQ::usage = "InfraWalkQ[graph, walk] tests whether walk is a walk: consecutive vertices adjacent (revisits allowed).";
 InfraSegmentQ::usage = "InfraSegmentQ[graph, walk] tests whether walk is a geodesic.";
 UniqueInfraSegmentQ::usage = "UniqueInfraSegmentQ[graph, u, v] tests whether the u-v geodesic is unique; UniqueInfraSegmentQ[graph] tests the geodetic property.";
@@ -37,7 +36,7 @@ InfraGenericQ::usage = "InfraGenericQ[graph, walk] tests whether walk is a gener
 InfraWalkCrossingQ::usage = "InfraWalkCrossingQ[graph, walk, v, r] tests whether the double visit of walk at v is a transverse crossing at scale r: the two passes separate each other's exits on the shell {r, r+1}; {i, j} names two positions instead.";
 ConcatenateInfraWalk::usage = "ConcatenateInfraWalk[path1, path2] joins every compatible walk pair, those with Last[walk1] === First[walk2].";
 
-InfraLine::usage = "InfraLine[p, q] is the inert line through p and q, whose graph is the List of atoms I(a, p) + I(p, q) + I(q, b) over the maximal compatible end pairs (a, b). InfraMeasurement and FindInfraRepresentative evaluate it on a graph; FindInfraLine is the search.";
+InfraLine::usage = "InfraLine[p, q] is the inert line through p and q, whose graph is the List of atoms I(a, p) + I(p, q) + I(q, b) over the maximal compatible end pairs (a, b). InfraLine[germ] is the line through a geodesic germ -- a vertex, a vertex list, a walk graph or a geodesic DAG -- whose atoms keep the germ's own edges in the middle. InfraMeasurement and FindInfraRepresentative evaluate it on a graph; FindInfraLine is the search.";
 FindInfraLine::usage = "FindInfraLine[graph, p, q] gives one line through p and q as a vertex list -- an inextensible geodesic through both; a trailing n | UpTo[n] | All gives a List. FindInfraLine[graph, seq] prolongs a given geodesic.";
 FindInfraParallel::usage = "FindInfraParallel[graph, line, p] gives one parallel to line through p: a geodesic through p inextensible within the level set { v : d(v, line) == d(p, line) }; a trailing n | UpTo[n] | All sets the count, All giving the pool. Option \"NextVertexFunction\".";
 FindInfraPerpendicular::usage = "FindInfraPerpendicular[graph, line, point] gives the lines through point perpendicular to line. Options Method, \"Radius\".";
@@ -135,7 +134,6 @@ SelectInfraWalk::usage = "SelectInfraWalk[graph, walks] draws a walk from a bund
 EmbeddingClosest::usage = "EmbeddingClosest[graph, bundle, ref] keeps the bundle elements drawn closest to a Euclidean reference under GraphEmbedding; ref is {p1, p2}, {center, radius}, or a curve.";
 FindEmbeddingClosestPath::usage = "FindEmbeddingClosestPath[graph, curve] snaps an embedded curve to a walk graph, mapping sampled points to nearest vertices and joining them by geodesics.";
 SprayGraph::usage = "SprayGraph[graph, c] gives the BFS DAG rooted at c, whose directed source-to-sink paths are exactly the maximal geodesics from c; SprayGraph[graph, pairs] gives the union of geodesics between listed pairs.";
-GeodesicExtensionGraph::usage = "GeodesicExtensionGraph[graph, {p1, p2}] gives the DAG of geodesic extensions of the segment p1 -> p2 beyond p2: the vertices e with d(p1, e) == d(p1, p2) + d(p2, e), edges along increasing distance from p1; wrapper anchors give one DAG per pair.";
 PathSubgraph::usage = "PathSubgraph[graph, u, v] gives the union of all shortest u-v paths; a trailing length cap or All widens it to longer simple paths.";
 InfraDeformationSize::usage = "InfraDeformationSize[ref, walk] gives the number of ref edges that walk replaces -- Length[ref] - 1 less the shared prefix and suffix.";
 
