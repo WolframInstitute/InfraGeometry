@@ -35,8 +35,6 @@ PackageExport[WalkSingularities]
 PackageExport[InfraImmersedQ]
 PackageExport[InfraGenericQ]
 PackageExport[InfraWalkCrossingQ]
-PackageExport[ExtendInfraWalk]
-PackageExport[ExtendInfraGeodesic]
 PackageExport[ConcatenateInfraWalk]
 
 PackageExport[InfraLine]
