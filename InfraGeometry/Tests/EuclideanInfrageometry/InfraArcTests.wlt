@@ -175,8 +175,8 @@ bruteClosedArcs[g_Graph, c_, p_, delta_] :=
 
 cycleSets[cycles_] := Sort[Sort /@ cycles]
 
-(* the chains of the necklace graphs, source to sink, read without the representative finder (whose closed-arc clause is the sweep); on the
-   circle the sink is a copy {x, 3/2} of the source, which is not a vertex of g and is dropped *)
+(* the chains of the closed arc's graph, source to sink, read without the representative finder (whose closed-arc clause is the sweep); the
+   sink is a copy {x, 3/2} of the source, which is not a vertex of g and is dropped *)
 closedArcChains[g_Graph, arc_] :=
   Catenate[Function[dag,
       Select[#, VertexQ[g, #] &] & /@ Catenate[FindPath[dag, #1, #2, Infinity, All] & @@@
@@ -285,14 +285,68 @@ VerificationTest[
   TestID -> "InfraArc-closed-through-three-points"
 ]
 
+(* on a circle the graph is the one atom at p of the unrolled band, from p to its copy {p, 3/2}; the closed arc through a second point cuts it
+   down and keeps both ends *)
+VerificationTest[
+  With[{g = GridGraph[{11, 11}]},
+    {one = InfraMeasurement[g, InfraArc[61, {39, 39}, "RadiusDelta" -> 2], "Graph"],
+     two = InfraMeasurement[g, InfraArc[61, {39, 37, 39}, "RadiusDelta" -> 2], "Graph"]},
+    {Length @ one, Length @ two,
+     {Pick[VertexList @ #, VertexInDegree @ #, 0], Pick[VertexList @ #, VertexOutDegree @ #, 0]} & /@ Join[one, two],
+     MemberQ[VertexList @ First @ two, 37], VertexCount @ First @ two < VertexCount @ First @ one}],
+  {1, 1, {{{39}, {{39, 3/2}}}, {{39}, {{39, 3/2}}}}, True, True},
+  TestID -> "InfraArc-closed-on-a-circle-is-one-atom"
+]
+
+(* off a circle the shortest closed walks of winding one through p run out to a shorter circle and back, so the atom is not the closed arc: on
+   the band (2, 5) of the 13 x 13 grid the circles have length 16 and pass through 58, not through 46, whose closed arc has 84 cycles of length
+   18; the graph there is the necklaces, and they agree with the sweep *)
+VerificationTest[
+  With[{g = GridGraph[{13, 13}]},
+    {off = InfraArc[85, {46, 46}, "RadiusDelta" -> {1, 2}], on = InfraArc[85, {58, 58}, "RadiusDelta" -> {1, 2}]},
+    {Length @ InfraMeasurement[g, on, "Graph"], InfraMeasurement[g, on, {"Cardinality", "Length"}],
+     Length @ InfraMeasurement[g, off, "Graph"] > 1, InfraMeasurement[g, off, {"Cardinality", "Length"}],
+     AllTrue[InfraMeasurement[g, off, "Graph"], AcyclicGraphQ],
+     cycleSets[closedArcChains[g, off]] === cycleSets[FindInfraRepresentative[g, off, All]]}],
+  {1, <|"Cardinality" -> 16, "Length" -> 16|>, True, <|"Cardinality" -> 84, "Length" -> 18|>, True, True},
+  TestID -> "InfraArc-closed-off-a-circle-reads-the-necklaces"
+]
+
+(* on the triangular ring and on a Delaunay mesh the closed arc at a point of the circle is one atom from p, and its chains and its density
+   are the brute force's *)
+VerificationTest[
+  {With[{g = TessellationNeighborhoodGraph[{3, 6}, 5]}, {c = First @ GraphCenter[g]},
+     AllTrue[Select[VertexList[g], GraphDistance[g, c, #] == 2 &][[;; 4]],
+       p |-> With[{arc = InfraArc[c, {p, p}]}, {dags = InfraMeasurement[g, arc, "Graph"]},
+         Length @ dags == 1 && Pick[VertexList @ First @ dags, VertexInDegree @ First @ dags, 0] === {p} &&
+         cycleSets[closedArcChains[g, arc]] === cycleSets[bruteClosedArcs[g, c, p, {0, 0}]] &&
+         InfraMeasurement[g, arc, "VertexDensity"] === KeySort @ Counts @ Catenate @ bruteClosedArcs[g, c, p, {0, 0}]]]],
+   SeedRandom[3]; With[{g = IndexGraph @ MeshConnectivityGraph[DelaunayMesh[RandomReal[1, {150, 2}]], 0]}, {c = First @ GraphCenter[g]},
+     AllTrue[{15, 17, 36, 70},
+       p |-> With[{arc = InfraArc[c, {p, p}, "RadiusDelta" -> 1]}, {dags = InfraMeasurement[g, arc, "Graph"]},
+         Length @ dags == 1 && Pick[VertexList @ First @ dags, VertexInDegree @ First @ dags, 0] === {p} &&
+         InfraMeasurement[g, arc, "Cardinality"] == 4 &&
+         cycleSets[closedArcChains[g, arc]] === cycleSets[bruteClosedArcs[g, c, p, {0, 1}]] &&
+         InfraMeasurement[g, arc, "VertexDensity"] === KeySort @ Counts @ Catenate @ bruteClosedArcs[g, c, p, {0, 1}]]]]},
+  {True, True},
+  TestID -> "InfraArc-closed-atom-equals-brute-force"
+]
+
 (* the octagon: (W) holds and (T) fails, so the seam through a loses a circle *)
 octagonGraph[] := Graph[{
   "a" <-> "b", "b" <-> "c", "c" <-> "d", "d" <-> "e", "e" <-> "f", "f" <-> "g", "g" <-> "h", "h" <-> "a",
   "a" <-> "u", "u" <-> "c", "o" <-> "a", "o" <-> "e", "c" <-> "y",
   "e" <-> "j", "j" <-> "k", "k" <-> "z"}]
 
-(* the two circles of the band (1, 3) both pass through a and through e; the seam through a meets the octagon in the two runs {a} and {c}, so it
-   carries only the other circle, while the seam through e carries both (design Ex. octagon) *)
+(* the same octagon, its two outer vertices swapped, so that the seam through e ends at the one beyond k and is (e, j, k) *)
+octagonSwapped[] := Graph[{
+  "a" <-> "b", "b" <-> "c", "c" <-> "d", "d" <-> "e", "e" <-> "f", "f" <-> "g", "g" <-> "h", "h" <-> "a",
+  "a" <-> "u", "u" <-> "c", "o" <-> "a", "o" <-> "e", "c" <-> "z",
+  "e" <-> "j", "j" <-> "k", "k" <-> "y"}]
+
+(* the two circles of the band (1, 3) both pass through a and through e.  The seam through a is (a, b, c) and the seam through e is (e, d, c);
+   both cut bands are disconnected (u hangs at a and c, {j, k} at e), so both arcs read the necklaces.  The seam through a meets the octagon in
+   the two runs {a} and {c}, so its necklaces carry only the other circle, while those of the seam through e carry both (design Ex. octagon) *)
 VerificationTest[
   With[{g = octagonGraph[]},
     {aa = InfraArc["o", {"a", "a"}, "RadiusDelta" -> {0, 2}], ee = InfraArc["o", {"e", "e"}, "RadiusDelta" -> {0, 2}]},
@@ -301,6 +355,21 @@ VerificationTest[
      InfraMeasurement[g, aa, "Length"], InfraMeasurement[g, ee, "Length"]}],
   {1, 2, 2, 2, 8, 8},
   TestID -> "InfraArc-closed-octagon-loses-a-circle-off-one-seam"
+]
+
+(* on the swapped octagon the seam through e is (e, j, k), whose cut band is connected: the graph is the one atom at e, from e to its copy, and
+   carries both circles, the one that meets the seam (a, b, c) twice included; the seam through a is still (a, b, c) *)
+VerificationTest[
+  With[{g = octagonSwapped[]},
+    {aa = InfraArc["o", {"a", "a"}, "RadiusDelta" -> {0, 2}], ee = InfraArc["o", {"e", "e"}, "RadiusDelta" -> {0, 2}]},
+    {dags = InfraMeasurement[g, ee, "Graph"]},
+    {Length @ dags, Pick[VertexList @ First @ dags, VertexInDegree @ First @ dags, 0], Pick[VertexList @ First @ dags, VertexOutDegree @ First @ dags, 0],
+     InfraMeasurement[g, ee, {"Cardinality", "Length"}],
+     cycleSets[closedArcChains[g, ee]] === cycleSets[FindInfraRepresentative[g, ee, All]],
+     InfraMeasurement[g, ee, "VertexDensity"] === KeySort @ Counts @ Catenate @ FindInfraRepresentative[g, ee, All],
+     InfraMeasurement[g, aa, "Cardinality"]}],
+  {1, {"e"}, {{"e", 3/2}}, <|"Cardinality" -> 2, "Length" -> 8|>, True, True, 1},
+  TestID -> "InfraArc-closed-octagon-seam-through-e-is-one-atom"
 ]
 
 VerificationTest[

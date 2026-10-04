@@ -84,7 +84,7 @@ InfraMeasurement[ graph_Graph,
 InfraMeasurement[ graph_Graph,
     obj : Except[ _List | InfraIntersection[ __ ] | InfraUnion[ __ ] | InfraCircle[ _, _, ___ ] |
                   ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] |
-                  InfraSegment[ _, _, __ ] | InfraArc[ _, Except[ { p_, ___, p_ }, { _, _, __ } ], ___ ] ], "VertexDensity" ] :=
+                  InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] ], "VertexDensity" ] :=
   KeySort @ Merge[
     Map[
       dag |-> With[ { inNbr = GroupBy[ EdgeList @ dag, Last -> First ],
@@ -115,7 +115,7 @@ InfraMeasurement[ graph_Graph,
     Total ]
 
 InfraMeasurement[ graph_Graph,
-    obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] |
+    obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, Except[ { p_, ___, p_ }, { _, _, __ } ], ___ ] |
                   ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] ], "Length" ] :=
   Replace[
     Union @@ Map[
