@@ -5,7 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraCircle
-Keywords: [circle, radius, band, separating cycle, necklace, seam, inert head]
+Keywords: [circle, radius, band, separating cycle, unrolled band, atom, necklace, seam, inert head]
 SeeAlso: [InfraArc, InfraMeasurement, FindInfraRepresentative, Undetermined, InfraShell, FindInfraShell]
 RelatedGuides: [EuclideanInfrageometry]
 ---
@@ -30,13 +30,17 @@ Euclid's third postulate describes a circle with any centre and distance: the ci
 
 Widening the radius to a band fixes it, and **the band thickness that suffices tracks the girth of the tiling**. On the square tiling, girth 4, the band `{r, r + 1}` already carries a circle. On the hexagonal tiling, girth 6, it does not: the band has to reach `{r, r + 2}`. On the triangular tiling, girth 3, a single shell carries a circle; on an irregular mesh it usually does, its vertices being adjacent by accident of the mesh.
 
-Its graph — <code>[InfraMeasurement]()[*g*, *circle*, "Graph"]</code> — is a `List` of necklaces, cut from the band along a radial seam: a shortest path from *c* to just outside the band. A necklace is a DAG with one source *s1* and one sink *u*. It is the cycle family **opened** at its closing arrow *u* -> *s1*, which is left out, so the DAG is acyclic.
+Its graph — <code>[InfraMeasurement]()[*g*, *circle*, "Graph"]</code> — is a `List` of **atoms** of the unrolled band. The band is cut along a radial seam, the band part of a shortest path from *c* to the nearest vertex outside the band, and unrolled: the circles through a seam vertex *x* are the shortest paths of the cyclic cover of the band from *x* to a second copy of *x*. An atom is the DAG of those paths for one seam vertex, with the earlier seam vertices removed, so every circle lies in exactly one atom, at its first seam vertex. The atom is projected to the vertices of the graph, and its sink is kept as the separate vertex `{x, 3/2}`, a copy of its source *x*. So the atom is acyclic, its chains from *x* to `{x, 3/2}` are the circles read as closed walks, and its `"Cardinality"` and `"Length"` are the chain count and the length of the circle.
 
-A member is the open chain *s1* … *u*, read cyclically: a cyclic vertex list whose first vertex is not repeated. Its `"Length"` counts the closing edge too, so a circle of *k* vertices has length *k*.
+The two sides of the seam are told apart by separation alone: two neighbours of a seam vertex lie on the same side iff the cycle through them and the cut band does not separate. No coordinates enter, and a circle may meet the seam any number of times.
 
-**The search.** <code>[FindInfraRepresentative]()[*g*, *circle*, *n*]</code> sweeps the band directly: for *k* = 3, 4, … it takes every cycle of length *k* of the band (`FindCycle`) and keeps those whose removal leaves *c* in a component reaching no further than the band; the first *k* with a survivor gives the members. It does not read the necklaces, so it is the check on them, and it still answers where no seam cuts the band open, or where nothing lies beyond the band and separation is vacuous. Each length is enumerated in full before the filter, so the sweep is fast on a band one or two vertices thick and does not finish in reasonable time on a wide one, such as `{3, 6}` on the square tiling.
+The atoms need the cut band to be connected and the two sides to occur on the seam. Where the cut band is disconnected, or the seam has one side only, the graph is a `List` of **necklaces** instead, cut from the band along the same seam: a DAG with one source *s1* and one sink, a copy `{s1, 3/2}` of its source, again the cycle family opened at its closing arrow. A necklace needs the circle to meet the seam in one run, so it can miss a circle.
 
-Every member separates. That the necklaces carry every circle exactly once needs two hypotheses on the substrate — the winding functional and the one-run hypothesis — which nothing here certifies. So `"Faithful"` is [Undetermined]().
+A member is a chain of the graph read as a cyclic vertex list: the copy of the source is dropped and the first vertex is not repeated. The `"Length"` of a circle of *k* vertices is *k*.
+
+**The search.** <code>[FindInfraRepresentative]()[*g*, *circle*, *n*]</code> sweeps the band directly: for *k* = 3, 4, … it takes every cycle of length *k* of the band (`FindCycle`) and keeps those whose removal leaves *c* in a component reaching no further than the band; the first *k* with a survivor gives the members. It does not read the graph, so it is the check on it, and it still answers where nothing lies beyond the band and separation is vacuous. Each length is enumerated in full before the filter, so the sweep is fast on a band one or two vertices thick and does not finish in reasonable time on a wide one, such as `{3, 6}` on the square tiling.
+
+Every member separates. That the atoms carry every circle exactly once needs the winding functional, an invariant of the substrate that is nonzero exactly on the separating cycles, and a connected cut band; nothing here certifies the first. So `"Faithful"` is [Undetermined](), except that it is `False` where the cut band is connected and the seam has one side only: there the winding functional or the annulus is witnessed to fail.
 
 Corresponding notions in the classical axiom systems:
 
@@ -61,7 +65,7 @@ GraphicsRow @ Table[
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
 ```
 
-The band `{2, 4}` on the square tiling: the number of circles, their length and the number of necklaces carrying them, beside the picture.
+The band `{2, 4}` on the square tiling: the number of circles, their length and the number of atoms carrying them, beside the picture.
 
 ```wl
 With[
@@ -168,7 +172,7 @@ With[
    SubsetQ[band, closedWalk], AllTrue[Partition[closedWalk, 2, 1, 1], EdgeQ[g, UndirectedEdge @@ #] &]}]
 ```
 
-The search sweeps the band directly and finds as many circles as the necklaces carry.
+The search sweeps the band directly and finds as many circles as the atoms carry.
 
 ```wl
 With[
@@ -179,14 +183,14 @@ With[
    InfraMeasurement[g, circle, "Cardinality"], Length @ FindInfraRepresentative[g, circle, All]}]
 ```
 
-A necklace is acyclic: it is the circles opened at their closing arrow, from its one source to its one sink.
+An atom is acyclic: its chains run from the seam vertex *x* to the copy `{x, 3/2}` of it, the circles through *x* opened at *x*.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  {necklace = First @ InfraMeasurement[g, InfraCircle[c, {2, 4}], "Graph"]},
-  {InfraSubstrateHighlight[g, {necklace -> $InfraCircleColor, Directive[$InfraPointColor], c}, "Arrowheads" -> True],
-   AcyclicGraphQ[necklace], Select[VertexList[necklace], VertexInDegree[necklace, #] == 0 &],
-   Select[VertexList[necklace], VertexOutDegree[necklace, #] == 0 &]}]
+  {atom = First @ InfraMeasurement[g, InfraCircle[c, {2, 4}], "Graph"]},
+  {InfraSubstrateHighlight[g, {atom -> $InfraCircleColor, Directive[$InfraPointColor], c}, "Arrowheads" -> True],
+   AcyclicGraphQ[atom], Select[VertexList[atom], VertexInDegree[atom, #] == 0 &],
+   Select[VertexList[atom], VertexOutDegree[atom, #] == 0 &]}]
 ```

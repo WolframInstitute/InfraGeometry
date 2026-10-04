@@ -16,7 +16,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Details & Options
 
-*path* is a member exactly when it is a source-to-sink chain of *obj*'s graph — <code>[InfraMeasurement]()[*graph*, *obj*, "Graph"]</code> — for a circle, up to rotation and direction. [InfraMemberQ]() agrees with [FindInfraRepresentative]() on every head it reads off a graph: every vertex list it returns there passes `InfraMemberQ`, and conversely. A circle's representative is found by the sweep instead, which can find a circle the necklaces miss.
+*path* is a member exactly when it is a source-to-sink chain of *obj*'s graph — <code>[InfraMeasurement]()[*graph*, *obj*, "Graph"]</code> — for a circle, up to rotation and direction. [InfraMemberQ]() agrees with [FindInfraRepresentative]() on every head it reads off a graph: every vertex list it returns there passes `InfraMemberQ`, and conversely. A circle's, and a closed arc's, representative is found by the sweep instead, which can find a circle the graph misses: where the cut band is disconnected, the graph is the necklaces, and a necklace needs the circle to meet the seam in one run. For a circle or a closed arc a member is a chain with the copy of the source dropped, read up to rotation and direction.
 
 Unlike [InfraSegmentQ]() or [InfraLineQ](), which test *path* against the general definition of the class on *graph*, `InfraMemberQ` tests it against one specific head — so it also distinguishes, say, one line through two points from another line through the same points on a graph where several exist.
 

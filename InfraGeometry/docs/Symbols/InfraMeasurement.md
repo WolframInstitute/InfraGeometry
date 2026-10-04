@@ -48,19 +48,19 @@ The volume profiles on the square grid, about a centre *c*, with a segment from 
 
 The symbol page of each region carries its counts on the other lattices and its continuum expansion. A profile, the list of a measure over the size, is read by [LogDifferenceQuotients](). The quotients of the counting profile from *r = 0* and of the Riemannian profile from *r = 1* coincide on a lattice, and they are the curves of the technical introduction, section 4.5: on *Z^d* they approach the dimension as *d + d/(2r)*, from above, while the counting profile from *r = 1* approaches it as *d − d/(2r)*, from below.
 
-A Euclidean head is inert: it holds its points and options and computes nothing on its own. `InfraMeasurement` is what evaluates it, reading every property off the head's **graph** — an acyclic directed graph whose source-to-sink chains are exactly the head's members — by one forward and one backward sweep of a dynamic-programming count, never by enumeration. A circle's graph is a `List` of necklaces, each **opened** at its closing arrow *u* -> *s1*: an acyclic DAG with one source *s1* and one sink *u*. A circle's member is the open chain *s1* … *u* read cyclically, a cyclic vertex list whose first vertex is not repeated.
+A Euclidean head is inert: it holds its points and options and computes nothing on its own. `InfraMeasurement` is what evaluates it, reading every property off the head's **graph** — an acyclic directed graph whose source-to-sink chains are exactly the head's members — by one forward and one backward sweep of a dynamic-programming count, never by enumeration. A circle's graph is a `List` of atoms of the unrolled band along a radial seam (necklaces where the cut band is disconnected or the seam has one side only; see [InfraCircle]()). Each is an acyclic DAG from a seam vertex *x* to a copy `{x, 3/2}` of it, so a circle is a chain read as a closed walk, **opened** at *x*. A circle's member is the chain with the copy dropped, a cyclic vertex list whose first vertex is not repeated. The closed arc has the same shape on the atom at its point.
 
 The properties:
 
 | Property | Value |
 |---|---|
-| `"Graph"` | the object's own graph: one `Graph`, or a `List` of them for a family of alternatives (the DAGs of a line or a ray, the necklaces of a circle) or for the pieces of a polyline |
+| `"Graph"` | the object's own graph: one `Graph`, or a `List` of them for a family of alternatives (the DAGs of a line or a ray, the atoms of a circle) or for the pieces of a polyline |
 | `"Cardinality"` | the number of members |
 | `"Length"` | the common length of the members, or a `List` of lengths when they differ |
 | `"VertexDensity"` | `<\|v -> occ(v)\|>`, the number of members through *v*; on a polyline, the sum of the piece densities |
 | `"EdgeDensity"` | `<\|v \[DirectedEdge] w -> occ(v -> w)\|>`, the number of members through the arrow; on a polyline, the sum of the piece densities |
 | `"Subgraph"` | the induced subgraph of the support, same as [InfraSubgraph]() |
-| `"Faithful"` | `True` on a segment, ray or line; [Undetermined]() on a circle or an arc, whose graph is proved faithful only under a hypothesis this paclet does not certify |
+| `"Faithful"` | `True` on a segment, ray or line; [Undetermined]() on a circle or an arc, whose graph is proved faithful only under a hypothesis this paclet does not certify, except that a circle whose cut band is connected but whose seam has one side only gives `False` |
 | `"CountingMeasure"` | the number of vertices of the support |
 | `"RiemannianMeasure"` | the number of vertices of the support all of whose neighbours lie in the support |
 

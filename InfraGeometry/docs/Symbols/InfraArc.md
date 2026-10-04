@@ -32,13 +32,17 @@ The arc is empty when *q* leaves the band or the band disconnects *p* from *q*. 
 
 **An arc need not be unique.** Between two points of a band there are in general many shortest paths, and through a point many circles; a trailing count of [FindInfraRepresentative]() gives them all.
 
-**The closed arc.** A list that returns to its first point names a closed arc, not a polyline there and back. It is the circle through *p*, the compass opened to *p* (Euclid's third postulate): <code>[InfraArc]()[*c*, {*p*, *p*}, "RadiusDelta" -> *delta*]</code> has the members of the circle of the band of *p* that pass through *p*. It is not empty, though a shortest path from *p* to *p* is trivial: its members are cycles that leave *p* and return to *p* around *c*, separating *c* from everything beyond the band. <code>[InfraArc]()[*c*, {*p*, *q*, *p*}]</code> keeps those that pass through *q* too. Its members are cyclic vertex lists whose first vertex is not repeated, and its `"Length"` counts the closing edge. On a bipartite substrate the bare shell has no circle: use `"RadiusDelta" -> 1`.
+**The closed arc.** A list that returns to its first point names a closed arc, not a polyline there and back. It is the circle through *p*, the compass opened to *p* (Euclid's third postulate): <code>[InfraArc]()[*c*, {*p*, *p*}, "RadiusDelta" -> *delta*]</code> has the members of the circle of the band of *p* that pass through *p*. It is not empty, though a shortest path from *p* to *p* is trivial: its members are cycles that leave *p* and return to *p* around *c*, separating *c* from everything beyond the band. <code>[InfraArc]()[*c*, {*p*, *q*, *p*}]</code> keeps those that pass through *q* too. Its members are cyclic vertex lists whose first vertex is not repeated, and its `"Length"` counts the closing edge.
 
-A list that does not return to its first point is the open polyline, as before.
+Its graph is the circle's shape: the atom at *p* of the unrolled band of [InfraCircle](), a DAG from *p* to a copy `{p, 3/2}` of *p* whose chains are the circles through *p*. It is that atom only where the unrolled band applies (its cut band is connected and its seam has two sides) and *p* lies on a circle of its band. Off a circle the paths of the unrolled band from *p* to its copy include closed walks that run out to a circle and back, which are no circles, so the graph is the necklaces of [InfraCircle]() whose run meets *p*, again closed on a copy `{s1, 3/2}` of their source. Where the unrolled band does not apply the graph is those necklaces too. A necklace needs the circle to meet its seam in one run, so it can miss a circle.
+
+On a bipartite substrate the bare shell has no circle: use `"RadiusDelta" -> 1`.
+
+A list that does not return to its first point is the open polyline, as before; a point repeated in a row inside it counts once, so <code>[InfraArc]()[*c*, {*p*, *m*, *m*, *q*}]</code> is <code>[InfraArc]()[*c*, {*p*, *m*, *q*}]</code>.
 
 A polyline arc reads each piece on the band of the circle through its own first point. Its members concatenate one arc per piece, so its `"Cardinality"` is the product over the pieces. Through an intermediate point *m* at the radius of *p* that lies on a minor arc from *p* to *q*, the members of <code>[InfraArc]()[*c*, {*p*, *m*, *q*}]</code> are the minor arcs from *p* to *q* through *m*.
 
-**The search.** On an open arc, [FindInfraRepresentative]() reads the members off the graph. On a closed arc it sweeps the band directly: for *k* = 3, 4, … it takes every cycle of length *k* of the band (`FindCycle`) and keeps those through *p* whose removal leaves *c* in a component reaching no further than the band; the first *k* with a survivor gives the circles, and the members are those through every point of the list. It does not read the necklaces of [InfraCircle](), so it is the check on them. Each length is enumerated in full before the filter, so the sweep is fast on a band one or two vertices thick and slow on a wide one.
+**The search.** On an open arc, [FindInfraRepresentative]() reads the members off the graph. On a closed arc it sweeps the band directly: for *k* = 3, 4, … it takes every cycle of length *k* of the band (`FindCycle`) and keeps those through *p* whose removal leaves *c* in a component reaching no further than the band; the first *k* with a survivor gives the circles, and the members are those through every point of the list. It does not read the graph, so it is the check on it. Each length is enumerated in full before the filter, so the sweep is fast on a band one or two vertices thick and slow on a wide one.
 
 ## Basic Examples
 
@@ -185,7 +189,7 @@ With[
    Count[FindInfraRepresentative[g, circle, All], _?(MemberQ[#, p] &)], InfraMeasurement[g, circle, "Cardinality"]}]
 ```
 
-On the closed arc the search sweeps the band directly and finds as many circles as the necklaces carry.
+On the closed arc the search sweeps the band directly and finds as many circles as the graph carries.
 
 ```wl
 With[
@@ -197,7 +201,7 @@ With[
    InfraMeasurement[g, closedArc, "Cardinality"], Length @ FindInfraRepresentative[g, closedArc, All]}]
 ```
 
-The circle's and the arc's `"Faithful"` are both [Undetermined]().
+The arc's `"Faithful"` is [Undetermined](). The circle's is too, unless its seam has one side only.
 
 ```wl
 With[
