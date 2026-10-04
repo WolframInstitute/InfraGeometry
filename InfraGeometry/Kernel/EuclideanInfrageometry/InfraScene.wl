@@ -77,9 +77,7 @@ applySelectOption[ graph_Graph, paths_, "EmbeddingClosest", True,  ctx_ ] :=
   embeddingClosestCycles[ graph, paths, ctx[ "Center" ], ctx[ "Radius" ] ]
 applySelectOption[ graph_Graph, paths_, "EmbeddingClosest", False, KeyValuePattern[ "Endpoints" -> { p_, q_ } ] ] :=
   EmbeddingClosest[ graph, paths,
-    Line @ resolveEmbeddingCoords[ graph, Automatic ][[ Lookup[ AssociationThread[ VertexList @ graph, Range @ VertexCount @ graph ], { p, q } ] ]] ]
-applySelectOption[ graph_Graph, paths_, "EmbeddingClosest", False, ctx_ ] :=
-  EmbeddingClosest[ graph, paths, ctx[ "Endpoints" ] ]
+    Line @ resolveEmbeddingCoords[ graph, Automatic ][[ VertexIndex[ graph, # ] & /@ { p, q } ]] ]
 applySelectOption[ graph_Graph, paths_, name_String, True,  _ ] :=
   SelectInfraWalk[ graph, paths, All, "From" -> selectFromName[ name ], "Cyclic" -> True ]
 applySelectOption[ graph_Graph, paths_, name_String, False, _ ] :=
@@ -116,8 +114,9 @@ selectContext[ _Graph, ( InfraCircle | InfraShell | InfraSphere )[ c_, rs_, ___ 
   <| "Center" -> c, "Radius" -> Mean @ Flatten @ { rs } |>
 
 selectContext[ graph_Graph, InfraArc[ c_, { p_, ___, p_ } | { p_ }, opts___Rule ] ] :=
-  <| "Center" -> c,
-     "Radius" -> GraphDistance[ graph, c, p ] + Mean @ Replace[ Lookup[ { opts }, "RadiusDelta", 0 ], d : Except[ _List ] :> { 0, d } ] |>
+  With[ { r = GraphDistance[ graph, c, p ],
+          delta = Replace[ Lookup[ { opts }, "RadiusDelta", 0 ], d : Except[ _List ] :> { 0, d } ] },
+    <| "Center" -> c, "Radius" -> Mean @ { Max[ 1, r - First @ delta ], r + Last @ delta } |> ]
 
 selectContext[ _Graph, InfraArc[ _, pts_List, ___ ] ] :=
   <| "Endpoints" -> { First @ pts, Last @ pts } |>

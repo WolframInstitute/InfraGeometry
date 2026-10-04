@@ -34,7 +34,7 @@ The arc is empty when *q* leaves the band or the band disconnects *p* from *q*. 
 
 **The closed arc.** A list that returns to its first point names a closed arc, not a polyline there and back. It is the circle through *p*, the compass opened to *p* (Euclid's third postulate): <code>[InfraArc]()[*c*, {*p*, *p*}, "RadiusDelta" -> *delta*]</code> has the members of the circle of the band of *p* that pass through *p*. It is not empty, though a shortest path from *p* to *p* is trivial: its members are cycles that leave *p* and return to *p* around *c*, separating *c* from everything beyond the band. <code>[InfraArc]()[*c*, {*p*, *q*, *p*}]</code> keeps those that pass through *q* too. Its members are cyclic vertex lists whose first vertex is not repeated, and its `"Length"` counts the closing edge.
 
-Its graph is the circle's shape: the atom at *p* of the unrolled band of [InfraCircle](), a DAG from *p* to a copy `{p, 3/2}` of *p* whose chains are the circles through *p*. It is that atom only where the unrolled band applies (its cut band is connected and its seam has two sides) and *p* lies on a circle of its band. Off a circle the paths of the unrolled band from *p* to its copy include closed walks that run out to a circle and back, which are no circles, so the graph is the necklaces of [InfraCircle]() whose run meets *p*, again closed on a copy `{s1, 3/2}` of their source. Where the unrolled band does not apply the graph is those necklaces too. A necklace needs the circle to meet its seam in one run, so it can miss a circle.
+Its graph is the circle's shape: the atom at *p* of the band unrolled along a seam through *p*, a DAG from *p* to a copy `{p, 3/2}` of *p* whose chains are the circles through *p*. It is that atom only where the unrolled band applies (its cut band is connected and its seam has two sides) and *p* lies on a circle of its band. Off a circle the paths of the unrolled band from *p* to its copy include closed walks that run out to a circle and back, which are no circles, so the graph is the necklaces of that seam whose run meets *p*, again closed on a copy `{s1, 3/2}` of their source. Where the unrolled band does not apply the graph is those necklaces too. A necklace needs the circle to meet its seam in one run, so it can miss a circle.
 
 On a bipartite substrate the bare shell has no circle: use `"RadiusDelta" -> 1`.
 
@@ -201,7 +201,7 @@ With[
    InfraMeasurement[g, closedArc, "Cardinality"], Length @ FindInfraRepresentative[g, closedArc, All]}]
 ```
 
-The arc's `"Faithful"` is [Undetermined](). The circle's is too, unless its seam has one side only.
+The arc's `"Faithful"` is [Undetermined](). The circle's is too, unless its cut band is connected and its seam has one side only.
 
 ```wl
 With[

@@ -799,4 +799,12 @@ VerificationTest[
   TestID -> "InfraScene-union-of-two-circles-agrees-with-the-circles"
 ]
 
+(* "EmbeddingClosest" on a segment keeps the geodesic nearest the straight line through its endpoints *)
+VerificationTest[
+  With[{d = WolframInstitute`InfraGeometry`PackageScope`dispatchConstruction, g = GridGraph[{5, 5}]},
+    {Length @ d[g, InfraSegment[1, 25]], d[g, InfraSegment[1, 25, "Select" -> "EmbeddingClosest"]]}],
+  {70, {{1, 2, 7, 8, 13, 14, 19, 20, 25}}},
+  TestID -> "InfraScene-select-embedding-closest-segment"
+]
+
 EndTestSection[]

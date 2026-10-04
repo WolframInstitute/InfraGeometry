@@ -363,7 +363,8 @@ VerificationTest[
   With[{g = octagonSwapped[]},
     {aa = InfraArc["o", {"a", "a"}, "RadiusDelta" -> {0, 2}], ee = InfraArc["o", {"e", "e"}, "RadiusDelta" -> {0, 2}]},
     {dags = InfraMeasurement[g, ee, "Graph"]},
-    {Length @ dags, Pick[VertexList @ First @ dags, VertexInDegree @ First @ dags, 0], Pick[VertexList @ First @ dags, VertexOutDegree @ First @ dags, 0],
+    {Length @ dags, Pick[VertexList @ First @ dags, VertexInDegree @ First @ dags, 0],
+     Pick[VertexList @ First @ dags, VertexOutDegree @ First @ dags, 0],
      InfraMeasurement[g, ee, {"Cardinality", "Length"}],
      cycleSets[closedArcChains[g, ee]] === cycleSets[FindInfraRepresentative[g, ee, All]],
      InfraMeasurement[g, ee, "VertexDensity"] === KeySort @ Counts @ Catenate @ FindInfraRepresentative[g, ee, All],
@@ -414,7 +415,8 @@ VerificationTest[
      FindInfraRepresentative[g, a, All] === FindInfraRepresentative[g, b, All],
      InfraMeasurement[g, a, {"Cardinality", "Length"}],
      AllTrue[FindInfraRepresentative[g, b, All], InfraMemberQ[g, a, #] &],
-     InfraMeasurement[g, InfraArc[c, {25, 25, 57}, "RadiusDelta" -> 2], props] === InfraMeasurement[g, InfraArc[c, {25, 57}, "RadiusDelta" -> 2], props]}],
+     InfraMeasurement[g, InfraArc[c, {25, 25, 57}, "RadiusDelta" -> 2], props] ===
+       InfraMeasurement[g, InfraArc[c, {25, 57}, "RadiusDelta" -> 2], props]}],
   {True, True, <|"Cardinality" -> 256, "Length" -> 24|>, True, True},
   TestID -> "InfraArc-polyline-collapses-consecutive-repeats"
 ]
@@ -431,6 +433,17 @@ VerificationTest[
      Length @ d[h, InfraArc[61, {39, 39}, "RadiusDelta" -> 2, "Select" -> "Central"]]}],
   {True, True, 1, True, 16},
   TestID -> "InfraArc-scene-select-embedding-closest"
+]
+
+(* "RadiusDelta" -> {1, 2} at d(c, p) = 2 is the band {1, 4}: the closed arc is selected as a circle of radius 5/2 *)
+VerificationTest[
+  With[{d = WolframInstitute`InfraGeometry`PackageScope`dispatchConstruction},
+    {h = GridGraph[{11, 11}], arc = InfraArc[61, {39, 39}, "RadiusDelta" -> {1, 2}]},
+    {closed = d[h, Append[arc, "Select" -> "EmbeddingClosest"]]},
+    {WolframInstitute`InfraGeometry`PackageScope`selectContext[h, arc],
+     1 <= Length @ closed, SubsetQ[d[h, arc], closed]}],
+  {<|"Center" -> 61, "Radius" -> 5/2|>, True, True},
+  TestID -> "InfraArc-scene-select-asymmetric-radius-delta"
 ]
 
 EndTestSection[]
