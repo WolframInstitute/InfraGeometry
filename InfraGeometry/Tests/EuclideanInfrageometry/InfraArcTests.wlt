@@ -335,4 +335,32 @@ VerificationTest[
   TestID -> "InfraArc-faithfulness-is-undetermined"
 ]
 
+(* an inner repeated point is the trivial walk: {a, b, b, c} reads as {a, b, c} in every measure and in the search *)
+VerificationTest[
+  With[{g = GridGraph[{9, 9}], c = 41},
+    {a = InfraArc[c, {25, 57, 57, 21}, "RadiusDelta" -> 2], b = InfraArc[c, {25, 57, 21}, "RadiusDelta" -> 2]},
+    {props = {"Cardinality", "Length", "VertexDensity", "EdgeDensity"}},
+    {InfraMeasurement[g, a, props] === InfraMeasurement[g, b, props],
+     FindInfraRepresentative[g, a, All] === FindInfraRepresentative[g, b, All],
+     InfraMeasurement[g, a, {"Cardinality", "Length"}],
+     AllTrue[FindInfraRepresentative[g, b, All], InfraMemberQ[g, a, #] &],
+     InfraMeasurement[g, InfraArc[c, {25, 25, 57}, "RadiusDelta" -> 2], props] === InfraMeasurement[g, InfraArc[c, {25, 57}, "RadiusDelta" -> 2], props]}],
+  {True, True, <|"Cardinality" -> 256, "Length" -> 24|>, True, True},
+  TestID -> "InfraArc-polyline-collapses-consecutive-repeats"
+]
+
+(* the scene's "Select" reads the open arc by its endpoints and the closed arc as a circle of the mean radius of its band *)
+VerificationTest[
+  With[{d = WolframInstitute`InfraGeometry`PackageScope`dispatchConstruction},
+    {g = GridGraph[{9, 9}], h = GridGraph[{11, 11}]},
+    {open = d[g, InfraArc[41, {25, 57}, "RadiusDelta" -> 2, "Select" -> "EmbeddingClosest"]],
+     closed = d[h, InfraArc[61, {39, 39}, "RadiusDelta" -> 2, "Select" -> "EmbeddingClosest"]]},
+    {1 <= Length @ open < Length @ d[g, InfraArc[41, {25, 57}, "RadiusDelta" -> 2]],
+     SubsetQ[d[g, InfraArc[41, {25, 57}, "RadiusDelta" -> 2]], open],
+     Length @ closed, MemberQ[FindInfraRepresentative[h, InfraArc[61, {39, 39}, "RadiusDelta" -> 2], All], First @ closed],
+     Length @ d[h, InfraArc[61, {39, 39}, "RadiusDelta" -> 2, "Select" -> "Central"]]}],
+  {True, True, 1, True, 16},
+  TestID -> "InfraArc-scene-select-embedding-closest"
+]
+
 EndTestSection[]

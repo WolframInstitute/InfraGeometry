@@ -152,19 +152,19 @@ InfraMeasurement[ graph_Graph, InfraArc[ center_, { p_, q_ } /; p =!= q, opts___
         interval ] ] ]
 
 InfraMeasurement[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ }, { _, _, __ } ], opts___Rule ], "Graph" ] :=
-  InfraMeasurement[ graph, InfraArc[ center, #, opts ], "Graph" ] & /@ Partition[ pts, 2, 1 ]
+  InfraMeasurement[ graph, InfraArc[ center, #, opts ], "Graph" ] & /@ Partition[ First /@ Split @ pts, 2, 1 ]
 
 InfraMeasurement[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ }, { _, _, __ } ], opts___Rule ], "Cardinality" ] :=
-  Times @@ ( InfraMeasurement[ graph, InfraArc[ center, #, opts ], "Cardinality" ] & /@ Partition[ pts, 2, 1 ] )
+  Times @@ ( InfraMeasurement[ graph, InfraArc[ center, #, opts ], "Cardinality" ] & /@ Partition[ First /@ Split @ pts, 2, 1 ] )
 
 InfraMeasurement[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ }, { _, _, __ } ], opts___Rule ], "Length" ] :=
-  Total @ ( InfraMeasurement[ graph, InfraArc[ center, #, opts ], "Length" ] & /@ Partition[ pts, 2, 1 ] )
+  Total @ ( InfraMeasurement[ graph, InfraArc[ center, #, opts ], "Length" ] & /@ Partition[ First /@ Split @ pts, 2, 1 ] )
 
 FindInfraRepresentative[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ }, { _, _, __ } ], opts___Rule ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
   With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
     { pieces = FindInfraRepresentative[ graph, InfraArc[ center, #, opts ],
-        If[ cap === Infinity, All, UpTo[ cap ] ], mods ] & /@ Partition[ pts, 2, 1 ] },
+        If[ cap === Infinity, All, UpTo[ cap ] ], mods ] & /@ Partition[ First /@ Split @ pts, 2, 1 ] },
     { members = Fold[ { as, bs } |-> Catenate @ Map[ a |-> ( Join[ a, Rest @ # ] & /@ bs ), as ],
         First @ pieces, Rest @ pieces ] },
     Switch[ count,
@@ -174,23 +174,23 @@ FindInfraRepresentative[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___
       _,         If[ Length @ members < count, { }, Take[ members, count ] ] ] ]
 
 InfraMeasurement[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ }, { _, _, __ } ], opts___Rule ], "VertexDensity" ] :=
-  With[ { pieces = InfraArc[ center, #, opts ] & /@ Partition[ pts, 2, 1 ] },
+  With[ { pieces = InfraArc[ center, #, opts ] & /@ Partition[ First /@ Split @ pts, 2, 1 ] },
     { counts = InfraMeasurement[ graph, #, "Cardinality" ] & /@ pieces },
     KeySort @ DeleteCases[ 0 ] @ Merge[
       Append[
         MapIndexed[ { piece, i } |-> ( Times @@ Delete[ counts, i ] ) InfraMeasurement[ graph, piece, "VertexDensity" ], pieces ],
-        - ( Times @@ counts ) Counts @ Take[ pts, { 2, -2 } ] ],
+        - ( Times @@ counts ) Counts @ Take[ First /@ Split @ pts, { 2, -2 } ] ],
       Total ] ]
 
 InfraMeasurement[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ }, { _, _, __ } ], opts___Rule ], "EdgeDensity" ] :=
-  With[ { pieces = InfraArc[ center, #, opts ] & /@ Partition[ pts, 2, 1 ] },
+  With[ { pieces = InfraArc[ center, #, opts ] & /@ Partition[ First /@ Split @ pts, 2, 1 ] },
     { counts = InfraMeasurement[ graph, #, "Cardinality" ] & /@ pieces },
     KeySort @ DeleteCases[ 0 ] @ Merge[
       MapIndexed[ { piece, i } |-> ( Times @@ Delete[ counts, i ] ) InfraMeasurement[ graph, piece, "EdgeDensity" ], pieces ],
       Total ] ]
 
 InfraMemberQ[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ }, { _, _, __ } ], opts___Rule ], path_List ] :=
-  With[ { pieces = InfraArc[ center, #, opts ] & /@ Partition[ pts, 2, 1 ] },
+  With[ { pieces = InfraArc[ center, #, opts ] & /@ Partition[ First /@ Split @ pts, 2, 1 ] },
     { cuts = Accumulate @ Prepend[ InfraMeasurement[ graph, #, "Length" ] & /@ pieces, 1 ] },
     TrueQ[ Last @ cuts == Length @ path ] &&
       AllTrue[ Range @ Length @ pieces,

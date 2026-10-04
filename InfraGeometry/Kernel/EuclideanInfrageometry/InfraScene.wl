@@ -75,6 +75,9 @@ applySelectOption[ graph_Graph, paths_, list_List, cyclic_, ctx_ ] :=
   Fold[ applySelectOption[ graph, #1, #2, cyclic, ctx ] &, paths, list ]
 applySelectOption[ graph_Graph, paths_, "EmbeddingClosest", True,  ctx_ ] :=
   embeddingClosestCycles[ graph, paths, ctx[ "Center" ], ctx[ "Radius" ] ]
+applySelectOption[ graph_Graph, paths_, "EmbeddingClosest", False, KeyValuePattern[ "Endpoints" -> { p_, q_ } ] ] :=
+  EmbeddingClosest[ graph, paths,
+    Line @ resolveEmbeddingCoords[ graph, Automatic ][[ Lookup[ AssociationThread[ VertexList @ graph, Range @ VertexCount @ graph ], { p, q } ] ]] ]
 applySelectOption[ graph_Graph, paths_, "EmbeddingClosest", False, ctx_ ] :=
   EmbeddingClosest[ graph, paths, ctx[ "Endpoints" ] ]
 applySelectOption[ graph_Graph, paths_, name_String, True,  _ ] :=
@@ -104,20 +107,28 @@ dispatchConstruction[ graph_Graph, token : Except[ _List | _Association ] ] :=
     If[ ListQ @ members,
       capBranches[
         applySelectOption[ graph, members, Lookup[ opts, "Select", None ],
-          MatchQ[ head, InfraCircle[ __ ] | InfraPolygon[ _List, _Integer, ___ ] ], selectContext @ head ],
+          MatchQ[ head, InfraCircle[ __ ] | InfraPolygon[ _List, _Integer, ___ ] | InfraArc[ _, { p_, ___, p_ } | { _ }, ___ ] ],
+          selectContext[ graph, head ] ],
         Lookup[ opts, "Branches", All ] ],
       members ] ]
 
-selectContext[ ( InfraCircle | InfraShell | InfraSphere )[ c_, rs_, ___ ] ] :=
+selectContext[ _Graph, ( InfraCircle | InfraShell | InfraSphere )[ c_, rs_, ___ ] ] :=
   <| "Center" -> c, "Radius" -> Mean @ Flatten @ { rs } |>
 
-selectContext[ InfraLine[ path_List, ___ ] ] :=
+selectContext[ graph_Graph, InfraArc[ c_, { p_, ___, p_ } | { p_ }, opts___Rule ] ] :=
+  <| "Center" -> c,
+     "Radius" -> GraphDistance[ graph, c, p ] + Mean @ Replace[ Lookup[ { opts }, "RadiusDelta", 0 ], d : Except[ _List ] :> { 0, d } ] |>
+
+selectContext[ _Graph, InfraArc[ _, pts_List, ___ ] ] :=
+  <| "Endpoints" -> { First @ pts, Last @ pts } |>
+
+selectContext[ _Graph, InfraLine[ path_List, ___ ] ] :=
   <| "Endpoints" -> { First @ path, Last @ path } |>
 
-selectContext[ ( InfraSegment | InfraRay | InfraLine | InfraPlane )[ p1_, p2_, ___ ] ] :=
+selectContext[ _Graph, ( InfraSegment | InfraRay | InfraLine | InfraPlane )[ p1_, p2_, ___ ] ] :=
   <| "Endpoints" -> { p1, p2 } |>
 
-selectContext[ _ ] :=
+selectContext[ _, _ ] :=
   <| |>
 
 Options[ InfraDistance ] = { "Aggregation" -> Min }
