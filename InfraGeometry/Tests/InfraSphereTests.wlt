@@ -1,5 +1,7 @@
 BeginTestSection["InfraSphere"]
 
+SeparatesQ = WolframInstitute`InfraGeometry`PackageScope`SeparatesQ;
+
 (* ===== FindInfraSphere: the peel over the band, moved from FindInfraShell ===== *)
 
 (* Properties -> {"Separating", "Connected"}: minimal connected separators. *)

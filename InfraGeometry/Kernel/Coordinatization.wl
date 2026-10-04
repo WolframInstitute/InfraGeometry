@@ -249,7 +249,7 @@ FindInfraOrthogonalFrame[ g_Graph, c_, axisLength : ( All | _Integer | _UpTo | {
       layerIndex = { axis, u } |-> With[ { dists = GraphDistance[ localG, u, # ] & /@ axis }, Flatten @ Position[ dists, Min @ dists ] - 1 ],
       canonical = axes |-> Sort[ First @ Sort[ { #, Reverse @ # } ] & /@ axes ],
       axisMult = With[
-        { mMat = Last @ GeodesicMultiplicityMatrix[ localG ], posMap = AssociationThread[ VertexList[ localG ] -> Range @ VertexCount[ localG ] ] },
+        { mMat = ShortestPathMultiplicityMatrix[ localG ], posMap = AssociationThread[ VertexList[ localG ] -> Range @ VertexCount[ localG ] ] },
         axis |-> mMat[[ posMap[ First @ axis ], posMap[ Last @ axis ] ]]
       ]
     },
@@ -350,7 +350,7 @@ FindInfraOrthogonalFrame[ g_Graph, ip_Association, axisLength : ( All | _Integer
     { method = Replace[ Replace[ Method /. { opts } /. Method -> Automatic, Automatic -> "Exhaustive" ], { m_String, ___ } :> m ],
       limit = Replace[ count, { Automatic -> 1, UpTo[ k_ ] :> k } ],
       canonical = axes |-> Sort[ First @ Sort[ { #, Reverse @ # } ] & /@ axes ],
-      axisMult = With[ { mMat = Last @ GeodesicMultiplicityMatrix[ g ],
+      axisMult = With[ { mMat = ShortestPathMultiplicityMatrix[ g ],
                          posMap = AssociationThread[ VertexList[ g ] -> Range @ VertexCount[ g ] ] },
         axis |-> mMat[[ posMap[ First @ axis ], posMap[ Last @ axis ] ]] ] },
     { allFrames = DeleteDuplicatesBy[

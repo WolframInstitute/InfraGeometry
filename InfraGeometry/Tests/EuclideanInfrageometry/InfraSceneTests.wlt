@@ -202,6 +202,18 @@ VerificationTest[
   TestID -> "FindInfraScene-InfraCircle"
 ]
 
+(* ===== the closed polyline: the polygon token ===== *)
+
+(* the triangle on three bound corners is the closed polyline through them, one branch per
+   member: the diagonal side of the 3x3 grid gives six *)
+VerificationTest[
+  With[{scene = InfraScene[{a, b, c, t}, {t == InfraSegment[a, b, c, a]}], g = GridGraph[{3, 3}]},
+    {instances = FindInfraScene[scene, g, <|a -> 1, b -> 3, c -> 9|>]},
+    {Length[instances], AllTrue[instances, inst |-> InfraMemberQ[g, InfraSegment[1, 3, 9, 1], inst[[1]][t]]]}],
+  {6, True},
+  TestID -> "FindInfraScene-closed-polyline-is-the-polygon-token"
+]
+
 (* ===== InfraStep ===== *)
 
 VerificationTest[
@@ -684,8 +696,8 @@ VerificationTest[
     "InfraArc", "InfraBall", "InfraCircle", "InfraCone", "InfraConnection", "InfraCotangentBundle", "InfraCylinder",
     "InfraDisplacementBundle", "InfraEllipse", "InfraEllipticShell", "InfraGeodesic",
     "InfraIntersectQ", "InfraLine", "InfraPlane", "InfraPoint",
-    "InfraPolygon", "InfraPolyline", "InfraRay", "InfraRevolution", "InfraSection", "InfraSegment",
-    "InfraShell", "InfraSphere", "InfraStep", "InfraTangentBundle", "InfraTriangle", "InfraTube", "InfraWalk", "Undetermined" },
+    "InfraPolygon", "InfraRay", "InfraRevolution", "InfraSection", "InfraSegment",
+    "InfraShell", "InfraSphere", "InfraStep", "InfraTangentBundle", "InfraTube", "InfraWalk", "Undetermined" },
   TestID -> "InfraScene-valueless-exports-are-scene-tokens"
 ]
 

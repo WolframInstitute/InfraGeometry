@@ -172,28 +172,6 @@ InfraMemberQ[ graph_Graph, obj : InfraCircle[ _, _ ], path_List ] :=
               NestList[ RotateLeft, Reverse @ path, Length @ path - 1 ] ],
         rot |-> First @ rot === source && AllTrue[ Partition[ Append[ rot, sink ], 2, 1 ], EdgeQ[ dag, DirectedEdge @@ # ] & ] ] ] ]
 
-FindInfraCycle[ graph_Graph, n : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
-  FindInfraCycle[ graph, { 1, VertexCount[ graph ] }, n ]
-
-FindInfraCycle[ graph_Graph, { k_Integer },
-    n : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
-  With[ { reps = Graph[ #, DirectedEdge @@@ Partition[ #, 2, 1, 1 ] ] & /@ ( First /@ # & /@ FindCycle[ graph, { k }, All ] ) },
-    Switch[ n,
-      All,   reps,
-      _UpTo, Take[ reps, n ],
-      _,     If[ Length @ reps < n, { }, Take[ reps, n ] ] ] ]
-
-FindInfraCycle[ graph_Graph, { kMin_Integer, kMax_ },
-    n : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
-  With[ { cycles = SortBy[ Length ] @ Flatten[
-        ( First /@ # & ) /@ FindCycle[ graph, { # }, All ] & /@
-          Range[ kMin, Min[ kMax, VertexCount[ graph ] ] ], 1 ] },
-    { reps = Graph[ #, DirectedEdge @@@ Partition[ #, 2, 1, 1 ] ] & /@ cycles },
-    Switch[ n,
-      All,   reps,
-      _UpTo, Take[ reps, n ],
-      _,     If[ Length @ reps < n, { }, Take[ reps, n ] ] ] ]
-
 (* a metric circle iff consecutive vertices and the wrap-around are adjacent and the vertex set is a metric shell; a cycle graph is read as its
    closed walk *)
 

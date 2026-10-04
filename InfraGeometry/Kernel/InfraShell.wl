@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+PackageScope[ SeparatesQ ]
+
 (* the level set { v : r <= d(v, C) <= s } with d(v, C) = min_{c in C} d(v, c) *)
 
 FindInfraShell[ graph_Graph, center_, r_ ] :=
@@ -128,9 +130,7 @@ InfraShellQ[ graph_Graph, vs_List ] :=
     ] ]
 
 SeparatesQ[ graph_Graph, vs_List, u_, v_ ] :=
-  If[ MemberQ[ vs, u ] || MemberQ[ vs, v ], False,
-    GraphDistance[ VertexDelete[ graph, vs ], u, v ] === Infinity
-  ]
+  ! MemberQ[ vs, u ] && ! MemberQ[ vs, v ] && GraphDistance[ VertexDelete[ graph, vs ], u, v ] === Infinity
 
 (* the shell { v : r <= d(v, C) <= s } with d(v, C) = min_{c in C} d(v, c), the complement of the ball of radius s by the open ball of radius r *)
 

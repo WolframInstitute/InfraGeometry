@@ -1,63 +1,5 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-Options[ FindInfraPolygon ] = { "NextVertexFunction" -> Identity }
-
-FindInfraPolygon[ graph_Graph, vertices_List /; Length[ vertices ] >= 3,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
-  With[ { nextFn = OptionValue[ FindInfraPolygon, { opts }, "NextVertexFunction" ],
-          cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
-    { sideCap = If[ count === All, Infinity, Max[ 8, 2 cap ] ] },
-    { sides = Apply[
-        { a, b } |-> With[ { dag = If[ a === b, Null, InfraMeasurement[ graph, InfraSegment[ a, b ], "Graph" ] ] },
-          Which[
-            a === b, { },
-            VertexCount @ dag == 0, { },
-            count === All, FindPath[ dag, a, b, Infinity, All ],
-            True,
-              With[ { out = GroupBy[ List @@@ EdgeList @ dag, First -> Last ] },
-                { descend = { self, path, need } |-> If[ Last @ path === b,
-                    { path },
-                    Fold[
-                      { found, next } |-> If[ Length @ found >= need,
-                        found,
-                        Join[ found, self[ self, Append[ path, next ], need - Length @ found ] ] ],
-                      { },
-                      With[ { nexts = Lookup[ out, Key @ Last @ path, { } ] },
-                        Replace[ nextFn @ nexts, chosen_ /; MemberQ[ nexts, Verbatim @ chosen ] :> { chosen } ] ] ] ] },
-                descend[ descend, { a }, sideCap ] ] ] ],
-        Partition[ Append[ vertices, First @ vertices ], 2, 1 ], { 1 } ] },
-    { polygons = Map[ PathGraph[ #, DirectedEdges -> True ] &,
-        If[ count === All, Tuples @ sides,
-          With[ { sizes = Length /@ sides,
-                  retracesQ = tuple |-> ! DuplicateFreeQ[ Sort /@ Partition[ Join @@ Prepend[ Rest /@ Rest @ tuple, First @ tuple ], 2, 1 ] ] },
-            { total = Times @@ sizes },
-            { scanned = Table[
-                MapThread[ Part, { sides, 1 + IntegerDigits[ j, MixedRadix @ sizes, Length @ sides ] } ],
-                { j, 0, Min[ total, Max[ 200, 20 cap ] ] - 1 } ] },
-            Take[ Join[ Select[ scanned, ! retracesQ @ # & ], Select[ scanned, retracesQ ] ], UpTo[ Min[ cap, total ] ] ] ] ],
-        { 2 } ] },
-    Switch[ count,
-      Automatic, First[ polygons, { } ],
-      All,       polygons,
-      _UpTo,     Take[ polygons, count ],
-      _,         If[ Length @ polygons < count, { }, Take[ polygons, count ] ] ] ]
-
-InfraPolygonQ[ graph_Graph, polys : { { __Graph } .. } ] :=
-  AllTrue[ polys, InfraPolygonQ[ graph, # ] & ]
-
-InfraPolygonQ[ graph_Graph, sides : { __Graph } ] :=
-  With[ { seqs = ( w |-> With[ { vs = VertexList @ w },
-        If[ AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
-          Last /@ SortBy[ vs, First ],
-          Reap[ DepthFirstScan[ w,
-            SelectFirst[ vs, If[ DirectedGraphQ @ w, VertexInDegree[ w, # ] == 0, VertexDegree[ w, # ] == 1 ] &, First @ vs ],
-            { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] ] ) /@ sides },
-    AllTrue[ seqs, InfraSegmentQ[ graph, # ] & ] &&
-    AllTrue[ Partition[ Append[ seqs, First @ seqs ], 2, 1 ], pair |-> Last[ pair[[ 1 ]] ] === First[ pair[[ 2 ]] ] ] ]
-
-InfraPolygonQ[ _Graph, _ ] :=
-  False
-
 (* a regular n-gon w.r.t. the metric tuple As is a cyclic sequence v_1, ..., v_n with d(v_i, v_{i+k mod n}) satisfying As[[k]] for every i and k; a
    slot is an exact integer, a range {lo, hi} constant across i, or Automatic.  The instance is the polygon on those corners: its sides, one shortest
    path each.
@@ -168,10 +110,3 @@ FindInfraRepresentative[ graph_Graph, InfraPolygon[ As_List, n_Integer, opts___R
     FindInfraRegularPolygon[ graph, As, n, count,
       Sequence @@ searchMethod[ mods ], Sequence @@ FilterRules[ { opts }, Options[ FindInfraRegularPolygon ] ] ],
     { legs : { __Graph } :> Most @ polylineToVertexSeq @ legs, polygons_List :> Most @* polylineToVertexSeq /@ polygons } ]
-
-FindInfraRepresentative[ graph_Graph, InfraPolygon[ verts_List, opts___Rule ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  Replace[
-    FindInfraPolygon[ graph, verts, count,
-      Sequence @@ searchMethod[ mods ], Sequence @@ FilterRules[ { opts }, Options[ FindInfraPolygon ] ] ],
-    { legs : { __Graph } :> polylineToVertexSeq @ legs, polygons_List :> polylineToVertexSeq /@ polygons } ]

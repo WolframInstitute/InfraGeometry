@@ -38,85 +38,47 @@ VerificationTest[
   TestID -> "MetricInterval-disconnected-empty"
 ]
 
-(* ===== GeodesicMultiplicity ===== *)
+(* ===== ShortestPathMultiplicityMatrix ===== *)
 
 VerificationTest[
-  GeodesicMultiplicity[PathGraph[Range[5]], 1, 5],
-  1,
-  TestID -> "GeodesicMultiplicity-PathGraph-unique"
+  Dimensions @ ShortestPathMultiplicityMatrix[CycleGraph[4]],
+  {4, 4},
+  TestID -> "ShortestPathMultiplicityMatrix-shape"
+]
+
+(* entry (i, j) counts the shortest paths: one on a path, two between antipodes of the square,
+   six across the 3x3 grid, one along an edge, one from a vertex to itself, none across components *)
+VerificationTest[
+  {ShortestPathMultiplicityMatrix[PathGraph[Range[5]]][[1, 5]],
+   ShortestPathMultiplicityMatrix[CycleGraph[4]][[1, 3]],
+   ShortestPathMultiplicityMatrix[GridGraph[{3, 3}]][[1, 9]],
+   ShortestPathMultiplicityMatrix[CompleteGraph[5]][[1, 2]],
+   ShortestPathMultiplicityMatrix[PathGraph[Range[5]]][[3, 3]],
+   ShortestPathMultiplicityMatrix[Graph[{1, 2, 3, 4}, {1 <-> 2, 3 <-> 4}]][[1, 3]]},
+  {1, 2, 6, 1, 1, 0},
+  TestID -> "ShortestPathMultiplicityMatrix-small-fixtures"
 ]
 
 VerificationTest[
-  GeodesicMultiplicity[CycleGraph[4], 1, 3],
-  2,
-  TestID -> "GeodesicMultiplicity-CycleGraph4-antipodes-two"
-]
-
-VerificationTest[
-  GeodesicMultiplicity[GridGraph[{3, 3}], 1, 9],
-  6,
-  TestID -> "GeodesicMultiplicity-GridGraph3x3-six"
-]
-
-VerificationTest[
-  GeodesicMultiplicity[CompleteGraph[5], 1, 2],
-  1,
-  TestID -> "GeodesicMultiplicity-CompleteGraph-edge"
-]
-
-VerificationTest[
-  GeodesicMultiplicity[Graph[{1, 2, 3, 4}, {1 <-> 2, 3 <-> 4}], 1, 3],
-  0,
-  TestID -> "GeodesicMultiplicity-disconnected-zero"
-]
-
-VerificationTest[
-  GeodesicMultiplicity[PathGraph[Range[5]], 3, 3],
-  1,
-  TestID -> "GeodesicMultiplicity-self-one"
-]
-
-VerificationTest[
-  (* Sanity check: GeodesicMultiplicity agrees with explicit enumeration via FindPath *)
-  With[{g = GridGraph[{3, 3}], d = GraphDistance[GridGraph[{3, 3}], 1, 9]},
-    GeodesicMultiplicity[g, 1, 9] === Length[FindPath[g, 1, 9, {d}, All]]
-  ],
+  AllTrue[Flatten @ ShortestPathMultiplicityMatrix[PathGraph[Range[5]]], # == 1 &],
   True,
-  TestID -> "GeodesicMultiplicity-matches-enumeration"
+  TestID -> "ShortestPathMultiplicityMatrix-PathGraph-all-unique"
 ]
 
-(* ===== GeodesicMultiplicityMatrix ===== *)
-
+(* the entry is the cardinality of the segment, read off its interval DAG *)
 VerificationTest[
-  With[{dm = GeodesicMultiplicityMatrix[CycleGraph[4]]},
-    {Dimensions[dm[[1]]], Dimensions[dm[[2]]]}
-  ],
-  {{4, 4}, {4, 4}},
-  TestID -> "GeodesicMultiplicityMatrix-shape"
-]
-
-VerificationTest[
-  With[{dm = GeodesicMultiplicityMatrix[CycleGraph[4]]},
-    dm[[1]] === GraphDistanceMatrix[CycleGraph[4]]
-  ],
+  With[{g = GridGraph[{3, 4}]},
+    ShortestPathMultiplicityMatrix[g] ===
+      Outer[InfraMeasurement[g, InfraSegment[#1, #2], "Cardinality"] &, VertexList[g], VertexList[g]]],
   True,
-  TestID -> "GeodesicMultiplicityMatrix-D-matches-GraphDistanceMatrix"
+  TestID -> "ShortestPathMultiplicityMatrix-is-the-segment-cardinality"
 ]
 
 VerificationTest[
-  With[{dm = GeodesicMultiplicityMatrix[CycleGraph[4]]},
-    dm[[2, 1, 3]]
-  ],
-  2,
-  TestID -> "GeodesicMultiplicityMatrix-CycleGraph4-antipode-multiplicity-two"
-]
-
-VerificationTest[
-  With[{dm = GeodesicMultiplicityMatrix[PathGraph[Range[5]]]},
-    AllTrue[Flatten[dm[[2]]], # == 1 &]
-  ],
+  With[{g = GridGraph[{3, 3}]},
+    ShortestPathMultiplicityMatrix[g][[1, 9]] === Length[FindPath[g, 1, 9, {GraphDistance[g, 1, 9]}, All]]],
   True,
-  TestID -> "GeodesicMultiplicityMatrix-PathGraph-all-unique"
+  TestID -> "ShortestPathMultiplicityMatrix-matches-enumeration"
 ]
 
 (* ===== MedianVertices ===== *)

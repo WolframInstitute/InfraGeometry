@@ -557,7 +557,7 @@ VerificationTest[
         frame = FindInfraOrthogonalFrame[GridGraph[{5, 5}], 13, 2, "AxisCount" -> 2]},
     AllTrue[frame,
       axis |-> With[{path = walkSequence @ axis},
-        GeodesicMultiplicity[g, First @ path, Last @ path] === 1]]
+        UniqueInfraSegmentQ[g, First @ path, Last @ path]]]
   ],
   True,
   TestID -> "FindInfraOrthogonalFrame-5x5grid-centre-unique-geodesics"

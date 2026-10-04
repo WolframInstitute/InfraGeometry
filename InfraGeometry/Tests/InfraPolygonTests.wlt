@@ -3,6 +3,7 @@ BeginTestSection["InfraPolygon"]
 geodesicGraph   = WolframInstitute`InfraGeometry`PackageScope`geodesicGraph;
 walkSequence    = WolframInstitute`InfraGeometry`PackageScope`walkSequence;
 polylineToKnots = legs |-> If[ legs === { }, { }, Prepend[ Last @ walkSequence @ # & /@ legs, First @ walkSequence @ First @ legs ] ];
+polylineToVertexSeq = WolframInstitute`InfraGeometry`PackageScope`polylineToVertexSeq;
 
 (* ===================== a polygon is its List of geodesic legs ===================== *)
 
@@ -318,86 +319,15 @@ VerificationTest[
 ]
 
 
-(* ===================== FindInfraPolygon (through corners) ===================== *)
+(* ===================== the regular polygon is a closed polyline ===================== *)
 
+(* its legs are geodesics between consecutive corners, so the closed walk they spell is a
+   member of the closed polyline InfraSegment[c1, ..., cn, c1] on its corners *)
 VerificationTest[
-  With[ { res = FindInfraPolygon[ GridGraph[ { 4, 4 } ], { 1, 4, 16, 13 } ] },
-    { MatchQ[ res, { __Graph } ], Length @ res, Total[ EdgeCount /@ res ] }
-  ],
-  { True, 4, 12 },
-  TestID -> "FindInfraPolygon-grid4x4-square"
-]
-
-VerificationTest[
-  Length @ FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, 1 ],
-  1,
-  TestID -> "FindInfraPolygon-default-one"
-]
-
-(* All enumerates the Cartesian product of per-side geodesics; the diagonal
-   side 9 -> 1 of GridGraph[{3,3}] has 6 geodesics, the other two are unique. *)
-VerificationTest[
-  Length @ FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All ],
-  6,
-  TestID -> "FindInfraPolygon-grid3x3-cartesian"
-]
-
-VerificationTest[
-  AllTrue[ FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All ],
-    InfraPolygonQ[ GridGraph[ { 3, 3 } ], # ] & ],
+  With[ { g = CycleGraph[ 6 ], legs = FindInfraRegularPolygon[ CycleGraph[ 6 ], { 1 }, 6 ] },
+    InfraMemberQ[ g, InfraSegment @@ polylineToKnots @ legs, polylineToVertexSeq @ legs ] ],
   True,
-  TestID -> "FindInfraPolygon-all-valid"
-]
-
-(* InfraPolygonQ rejects an open (non-closed) leg chain. *)
-VerificationTest[
-  InfraPolygonQ[ PathGraph[ Range[ 4 ] ], geodesicGraph /@ { { 1, 2 }, { 2, 3 } } ],
-  False,
-  TestID -> "InfraPolygonQ-open-chain-False"
-]
-
-(* Migrated FindInfraRegularPolygon stores geodesic sides; the result is a
-   valid InfraPolygon. *)
-VerificationTest[
-  With[ { res = FindInfraRegularPolygon[ CycleGraph[ 6 ], { 1 }, 6 ] },
-    InfraPolygonQ[ CycleGraph[ 6 ], res ]
-  ],
-  True,
-  TestID -> "FindInfraRegularPolygon-segment-sides-valid"
-]
-
-
-(* ===== the count-less witness is a non-degenerate polygon ===== *)
-
-(* the mixed-radix first member of the 1-3-9 triangle of GridGraph[{3,3}] closes along
-   9-6-3-2-1, walking every edge of the other two sides a second time.  The witness skips
-   it: its closed vertex sequence repeats no edge. *)
-
-polygonClosed[ sides_ ] :=
-  With[ { paths = walkSequence /@ sides },
-    Join @@ Prepend[ Rest /@ Rest @ paths, First @ paths ] ]
-
-polygonRetraces[ sides_ ] :=
-  ! DuplicateFreeQ[ Sort /@ Partition[ polygonClosed @ sides, 2, 1 ] ]
-
-VerificationTest[
-  polygonRetraces @ FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 } ],
-  False,
-  TestID -> "FindInfraPolygon-witness-does-not-retrace-a-side"
-]
-
-VerificationTest[
-  polygonRetraces @ FindInfraTriangle[ GridGraph[ { 3, 3 } ], { 1, 3, 9 } ],
-  False,
-  TestID -> "FindInfraTriangle-witness-does-not-retrace-a-side"
-]
-
-(* the class is unchanged: All still holds the four degenerate members *)
-VerificationTest[
-  With[ { all = FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All ] },
-    { Length @ all, Count[ polygonRetraces /@ all, True ] } ],
-  { 6, 4 },
-  TestID -> "FindInfraPolygon-class-keeps-the-degenerate-members"
+  TestID -> "FindInfraRegularPolygon-is-a-member-of-the-closed-polyline-on-its-corners"
 ]
 
 

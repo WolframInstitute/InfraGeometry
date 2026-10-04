@@ -2,58 +2,15 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraSceneVisualization *)
 
-PackageExport[ $InfraPointColor ]
-PackageExport[ $InfraSegmentColor ]
-PackageExport[ $InfraLineColor ]
-PackageExport[ $InfraShellColor ]
-PackageExport[ $InfraBallColor ]
-PackageExport[ $InfraPlaneColor ]
-PackageExport[ $InfraCircleColor ]
-PackageExport[ $InfraRayColor ]
-PackageExport[ $InfraTopologyColor ]
-PackageExport[ $InfraPalette ]
-PackageExport[ $InfraStrikeOutPalette ]
-PackageExport[ $InfraPointSizes ]
-PackageExport[ $InfraAccentPointSize ]
-PackageScope[ $infraColors ]
+PackageScope[ $InfraStrikeOutPalette ]
+PackageScope[ $InfraPointSizes ]
+PackageScope[ $InfraAccentPointSize ]
 PackageScope[ $InfraOpacityRange ]
 PackageScope[ $InfraEdgeThickness ]
 PackageScope[ $InfraPointSize ]
 PackageScope[ infraInk ]
 PackageScope[ parseHighlightStyle ]
 PackageScope[ normalizeHighlightSpec ]
-
-$infraColors = <|
-  "Point"    -> RGBColor[ 0.95, 0.08, 0.08 ],
-  "Segment"  -> RGBColor[ 0.92, 0.45, 0.30 ],
-  "Line"     -> RGBColor[ 0.78, 0.35, 0.22 ],
-  "Shell"    -> RGBColor[ 0.30, 0.70, 0.50 ],
-  "Ball"     -> RGBColor[ 0.55, 0.80, 0.65 ],
-  "Plane"    -> RGBColor[ 0.55, 0.45, 0.80 ],
-  "Circle"   -> RGBColor[ 0.20, 0.55, 0.65 ],
-  "Ray"      -> RGBColor[ 0.95, 0.65, 0.45 ],
-  "Path"     -> RGBColor[ 0.85, 0.62, 0.32 ],
-  "Topology" -> RGBColor[ 0.85, 0.55, 0.75 ]
-|>
-
-$InfraPointColor    = $infraColors[ "Point" ]
-$InfraSegmentColor  = $infraColors[ "Segment" ]
-$InfraLineColor     = $infraColors[ "Line" ]
-$InfraShellColor    = $infraColors[ "Shell" ]
-$InfraBallColor     = $infraColors[ "Ball" ]
-$InfraPlaneColor    = $infraColors[ "Plane" ]
-$InfraCircleColor   = $infraColors[ "Circle" ]
-$InfraRayColor      = $infraColors[ "Ray" ]
-$InfraWalkColor     = $infraColors[ "Path" ]
-$InfraTopologyColor = $infraColors[ "Topology" ]
-
-$InfraPalette :=
-  Dataset @ KeyValueMap[
-    { name, color } |-> <|
-      "Primitive" -> name,
-      "Color" -> color,
-      "Symbol" -> "$Infra" <> name <> "Color" |>,
-    $infraColors ]
 
 $InfraOpacityRange  = { 0.40, 1.0 }
 $InfraEdgeThickness = 9.0
@@ -163,12 +120,13 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                Automatic :> If[ ink[ "EdgeDensity" ] === <| |>, $InfraPointSize, None ] ] ] |> ],
         objects ] },
     { entries = Join[ objectEntries,
-        Cases[ objectEntries, e_Association /; e[ "Knots" ] =!= { } :>
-          With[ { record = parseHighlightStyle[ Automatic, ranges ], knots = KeySort @ Counts @ e[ "Knots" ] },
+        MapIndexed[
+          { e, k } |-> With[ { record = parseHighlightStyle[ Automatic, ranges ], knots = KeySort @ Counts @ e[ "Knots" ] },
             <| "Verts" -> knots / Max @ knots, "Edges" -> <| |>, "Walk" -> None, "Knots" -> { },
-               "Color" -> $InfraPointColor,
+               "Color" -> palette[[ 1 + Mod[ Length @ objectEntries + First @ k - 1, Length @ palette ] ]],
                "Record" -> Append[ record,
-                 "PointSizeRange" -> Replace[ record[ "PointSizeRange" ], Automatic :> $InfraPointSize ] ] |> ] ] ] },
+                 "PointSizeRange" -> Replace[ record[ "PointSizeRange" ], Automatic :> $InfraPointSize ] ] |> ],
+          Select[ objectEntries, #[ "Knots" ] =!= { } & ] ] ] },
     { vMasses = Merge[ ( e |-> ( { e[ "Color" ], #, e[ "Record" ] } & /@ e[ "Verts" ] ) ) /@ entries, Identity ],
       eMasses = Merge[ ( e |-> ( { e[ "Color" ], #, e[ "Record" ] } & /@ e[ "Edges" ] ) ) /@ entries, Identity ] },
     { lerp  = { spec, w } |-> If[ ListQ @ spec, spec[[ 1 ]] + ( spec[[ 2 ]] - spec[[ 1 ]] ) w, spec w ],
@@ -255,6 +213,9 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
           FilterRules[ { opts }, Options @ HighlightGraph ] ]
     ]
 
+(* every member of a closed polyline InfraSegment[p, ..., p] starts and ends at p, which its "VertexDensity" counts twice; the ink counts the
+   return once, as it does for a closed walk, or p would be the heaviest vertex and the rest would draw at half strength *)
+
 infraInk[ graph_Graph, x_ ] :=
   Which[
     VertexQ[ graph, x ] || AssociationQ[ x ],
@@ -277,7 +238,11 @@ infraInk[ graph_Graph, x_ ] :=
           edges  = KeySort @ GroupBy[ Normal @ InfraMeasurement[ graph, x, "EdgeDensity" ],
             ( UndirectedEdge @@ Sort[ List @@ First @ # ] & ) -> Last, Total ],
           member = If[ InfraMeasurement[ graph, x, "Cardinality" ] == 1, FindInfraRepresentative[ graph, x ], None ] },
-        <| "VertexDensity" -> InfraMeasurement[ graph, x, "VertexDensity" ],
+        <| "VertexDensity" -> If[ MatchQ[ x, InfraSegment[ p_, q__, p_ ] /; AnyTrue[ { q }, # =!= p & ] ],
+               KeySort @ DeleteCases[ 0 ] @ Merge[
+                 { InfraMeasurement[ graph, x, "VertexDensity" ], <| First @ x -> - InfraMeasurement[ graph, x, "Cardinality" ] |> },
+                 Total ],
+               InfraMeasurement[ graph, x, "VertexDensity" ] ],
            "EdgeDensity"   -> edges,
            "Walk"          -> If[ ListQ @ member && Length @ member > 2 &&
                KeyExistsQ[ edges, UndirectedEdge @@ Sort @ { Last @ member, First @ member } ],

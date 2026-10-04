@@ -3,6 +3,7 @@ BeginTestSection["EuclideanConstructions"]
 walkGraph       = walk |-> PathGraph[ MapIndexed[ { First @ #2, #1 } &, walk ], DirectedEdges -> True ];
 geodesicGraph   = WolframInstitute`InfraGeometry`PackageScope`geodesicGraph;
 infraSpread     = WolframInstitute`InfraGeometry`PackageScope`infraSpread;
+SeparatesQ      = WolframInstitute`InfraGeometry`PackageScope`SeparatesQ;
 closedWalkGraph = walk |-> With[ { core = MapIndexed[ { First @ #2, #1 } &, If[ Length[ walk ] >= 2 && First @ walk === Last @ walk, Most @ walk, walk ] ] },
   Graph[ core, DirectedEdge @@@ Partition[ core, 2, 1, 1 ] ] ];
 walkSeq[ w_Graph ] := Last /@ VertexList[ w ]

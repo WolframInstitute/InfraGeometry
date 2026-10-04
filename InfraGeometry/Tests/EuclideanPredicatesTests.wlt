@@ -2,6 +2,7 @@ BeginTestSection["EuclideanPredicates"]
 
 geodesicGraph = WolframInstitute`InfraGeometry`PackageScope`geodesicGraph;
 infraSpread   = WolframInstitute`InfraGeometry`PackageScope`infraSpread;
+SeparatesQ    = WolframInstitute`InfraGeometry`PackageScope`SeparatesQ;
 
 (* ===== InfraWalkQ ===== *)
 
@@ -380,7 +381,7 @@ VerificationTest[
   TestID -> "InfraPerpendicularQ-empty-intersection-False"
 ]
 
-(* ===== SeparatesQ ===== *)
+(* ===== SeparatesQ, the internal test behind the "Separating" property ===== *)
 
 VerificationTest[
   SeparatesQ[PathGraph[Range[5]], {3}, 1, 5],

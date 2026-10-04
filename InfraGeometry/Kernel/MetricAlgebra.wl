@@ -11,39 +11,15 @@ MetricInterval[ graph_Graph, u_, v_ ] :=
     ]
   ]
 
-(* (A^d)[u, v] with d = d(u, v): a walk of length d(u, v) is automatically a simple geodesic, so the entry counts geodesics *)
+(* M[i, j] = (A^d)[i, j] with d = d(i, j): a walk of length d(i, j) is automatically a shortest path, so the entry counts the shortest paths *)
 
-GeodesicMultiplicity[ graph_Graph, u_, v_ ] :=
-  With[ { d = GraphDistance[ graph, u, v ], V = VertexList[ graph ] },
-    Which[
-      d === Infinity, 0,
-      d == 0, 1,
-      True,
-      With[ { ui = First @ FirstPosition[ V, u ],
-              vi = First @ FirstPosition[ V, v ] },
-        MatrixPower[ Normal @ AdjacencyMatrix[ graph ], d ][[ ui, vi ]]
-      ]
-    ]
-  ]
-
-(* D the distance matrix, M[i, j] = (A^{D[i,j]})[i, j] the number of geodesics from i to j *)
-
-GeodesicMultiplicityMatrix[ graph_Graph ] :=
-  With[
-    { n = VertexCount[ graph ], dMat = GraphDistanceMatrix[ graph ], A = Normal @ AdjacencyMatrix[ graph ] },
-    { finiteD = Cases[ Flatten @ dMat, _Integer ] },
-    { powers = NestList[ # . A &, IdentityMatrix[ n ], If[ finiteD === { }, 0, Max @ finiteD ] ] },
-    {
-      dMat,
-      Table[
-        With[ { d = dMat[[ i, j ]] },
-          If[ d === Infinity, 0, powers[[ d + 1, i, j ]] ]
-        ],
-        { i, n },
-        { j, n }
-      ]
-    }
-  ]
+ShortestPathMultiplicityMatrix[ graph_Graph ] :=
+  With[ { n = VertexCount @ graph, dMat = GraphDistanceMatrix @ graph, adjacency = Normal @ AdjacencyMatrix @ graph },
+    { finite = Cases[ Flatten @ dMat, _Integer ] },
+    { powers = NestList[ # . adjacency &, IdentityMatrix @ n, If[ finite === { }, 0, Max @ finite ] ] },
+    Table[
+      If[ dMat[[ i, j ]] === Infinity, 0, powers[[ dMat[[ i, j ]] + 1, i, j ]] ],
+      { i, n }, { j, n } ] ]
 
 (* argmin over w of Sum_x d(w, x) for x in vs; a graph is median iff every triple has a unique median, and median graphs are the 1-skeletons of
    CAT(0) cube complexes (Chepoi 2000, https://doi.org/10.1006/aama.1999.0681) *)

@@ -151,7 +151,7 @@ InfraSegmentQ[ _Graph, segment_List ] /; Length[ segment ] < 2 :=
   False
 
 UniqueInfraSegmentQ[ graph_Graph, u_, v_ ] :=
-  GeodesicMultiplicity[ graph, u, v ] == 1
+  InfraMeasurement[ graph, InfraSegment[ u, v ], "Cardinality" ] == 1
 
 UniqueInfraSegmentQ[ graph_Graph ] :=
   AllTrue[ Subsets[ VertexList[ graph ], { 2 } ],

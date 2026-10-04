@@ -97,7 +97,7 @@ VerificationTest[
 
 (* a cycle graph has as many edges as vertices, so its length is either count *)
 VerificationTest[
-  With[ { c = First @ FindInfraCycle[ CycleGraph[ 6 ], 1 ] },
+  With[ { c = Graph @ First @ FindCycle[ CycleGraph[ 6 ] ] },
     { EdgeCount @ c, VertexCount @ c } ],
   { 6, 6 },
   TestID -> "cycle-length-equals-vertex-count"
@@ -136,41 +136,6 @@ VerificationTest[
     FindInfraSegment[ g, ends[[ 1 ]], ends[[ 2 ]], All ] === FindInfraSegment[ g, 1, 25, All ] ],
   True,
   TestID -> "FindInfraSegment-vertex-endpoints-give-DAG"
-]
-
-
-(* ===================== FindInfraCycle ===================== *)
-
-VerificationTest[
-  MatchQ[ FindInfraCycle[ CycleGraph[ 4 ], 1 ], { _Graph } ],
-  True,
-  TestID -> "FindInfraCycle-returns-cycle-graphs"
-]
-
-VerificationTest[
-  Length @ FindInfraCycle[ CycleGraph[ 4 ], All ],
-  1,
-  TestID -> "FindInfraCycle-CycleGraph4-one-cycle"
-]
-
-VerificationTest[
-  FindInfraCycle[ TreeGraph[ { 1 -> 2, 2 -> 3 } ], 1 ],
-  { },
-  TestID -> "FindInfraCycle-tree-no-cycles"
-]
-
-VerificationTest[
-  VertexCount @ First @ FindInfraCycle[ GridGraph[ { 3, 3 } ], { 4 }, 1 ],
-  4,
-  TestID -> "FindInfraCycle-length4-on-grid"
-]
-
-VerificationTest[
-  NullHomotopicQ[ GridGraph[ { 3, 3 } ],
-    First @ FindInfraCycle[ GridGraph[ { 3, 3 } ], 1 ],
-    "NullHomotopicCycles" -> { 4 } ],
-  True,
-  TestID -> "FindInfraCycle-shortest-is-nullhomotopic-on-grid"
 ]
 
 
@@ -214,10 +179,8 @@ VerificationTest[
         FindInfraSegment[ g, 1, 16, UpTo[ 3 ] ],
         FindInfraLine[ g, 1, 3 ],
         FindInfraRay[ g, 1, 4 ],
-        FindInfraCycle[ g, 1 ],
         FindInfraRepresentative[ g, InfraCircle[ 6, 1 ] ],
-        FindInfraTriangle[ g, { 1, 4, 13 } ],
-        FindInfraPolygon[ g, { 1, 4, 13 } ],
+        FindInfraRepresentative[ g, InfraSegment[ 1, 4, 13, 1 ] ],
         FindInfraEllipse[ g, { 1, 16 }, 6 ],
         FindInfraPerpendicular[ g, FindInfraLine[ g, 1, 3 ], 6 ],
         FindInfraPolylineSubdivision[ g, { 1, 2, 3, 7, 11 }, "MaxLength" -> 2 ] },

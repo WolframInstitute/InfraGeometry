@@ -2,6 +2,7 @@ geodesicGraph      = WolframInstitute`InfraGeometry`PackageScope`geodesicGraph;
 geodesicCycleGraph = WolframInstitute`InfraGeometry`PackageScope`geodesicCycleGraph;
 walkGraph          = walk |-> PathGraph[ MapIndexed[ { First @ #2, #1 } &, walk ], DirectedEdges -> True ];
 infraInk           = WolframInstitute`InfraGeometry`PackageScope`infraInk;
+strikeOutPalette   = WolframInstitute`InfraGeometry`PackageScope`$InfraStrikeOutPalette;
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
@@ -427,11 +428,23 @@ VerificationTest[
    so a triangle draws three corner dots, not four *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    With[ { sides = FindInfraTriangle[ g, { 1, 4, 13 } ] },
+    With[ { sides = geodesicGraph /@ { FindInfraSegment[ g, 1, 4 ], FindInfraSegment[ g, 4, 13 ], FindInfraSegment[ g, 13, 1 ] } },
       Length @ Cases[ Options @ InfraSubstrateHighlight[ g, { sides } ],
         AbsolutePointSize[ s_ ] :> s, Infinity ] ] ],
   3,
   TestID -> "InfraSubstrateHighlight-polygon-corners-drop-the-closure"
+]
+
+(* the knots are appended after the listed objects and take the next palette colour by order,
+   so a knot dot is the midpoint of the chain's colour and its own: one chain, knot 4 *)
+VerificationTest[
+  With[ { g = PathGraph @ Range[ 11 ] },
+    With[ { opts = Options @ InfraSubstrateHighlight[ g, { FindInfraPolylineSubdivision[ g, Range[ 11 ], "MaxLength" -> 3 ] } ] },
+      ColorDistance[
+        First @ Cases[ VertexShapeFunction /. opts, ( 4 -> f_ ) :> First @ Cases[ f, _RGBColor, Infinity ] ],
+        Blend[ Take[ strikeOutPalette, 2 ], { 1, 1 } ] ] < 10^-6 ] ],
+  True,
+  TestID -> "InfraSubstrateHighlight-knots-take-the-next-palette-colour"
 ]
 
 (* a bundle of geodesics between the same two points does NOT chain -- every leg
@@ -449,8 +462,9 @@ VerificationTest[
    retraces its third side, so its vertices carry mass 2. *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    With[ { objects = { FindInfraTriangle[ g, { 1, 5, 25 } ],
-              FindInfraTriangle[ g, { 1, 5, 25 }, UpTo[ 4 ] ],
+    With[ { objects = { geodesicGraph /@ { FindInfraSegment[ g, 1, 5 ], FindInfraSegment[ g, 5, 25 ],
+                Reverse @ Join[ FindInfraSegment[ g, 1, 5 ], Rest @ FindInfraSegment[ g, 5, 25 ] ] },
+              InfraSegment[ 1, 5, 25, 1 ],
               FindInfraSegment[ g, 1, 25, All ],
               { FindInfraShell[ g, 13, 2 ] },
               FindInfraRepresentative[g, InfraBall[13, 2]] } },
@@ -478,7 +492,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  { $InfraPointSizes, $InfraAccentPointSize },
+  { WolframInstitute`InfraGeometry`PackageScope`$InfraPointSizes, WolframInstitute`InfraGeometry`PackageScope`$InfraAccentPointSize },
   { <| Small -> 4, Medium -> 7, Large -> 10 |>, 12 },
   TestID -> "InfraPointSizes-closed-table"
 ]
@@ -536,7 +550,7 @@ VerificationTest[
       Module[ { c1, c2 },
         c1 = Cases[ ToBoxes @ InfraSubstrateHighlight[ g, { a, b } ], _RGBColor, Infinity ];
         c2 = Cases[ ToBoxes @ InfraSubstrateHighlight[ g, { b, a } ], _RGBColor, Infinity ];
-        { MemberQ[ c1, First @ $InfraStrikeOutPalette ], c1 =!= c2 } ] ] ],
+        { MemberQ[ c1, First @ strikeOutPalette ], c1 =!= c2 } ] ] ],
   { True, True },
   TestID -> "InfraSubstrateHighlight-Palette-follows-addition-order"
 ]
@@ -551,7 +565,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  { Length @ $InfraStrikeOutPalette, First @ $InfraStrikeOutPalette === First @ ColorData[ 112, "ColorList" ] },
+  { Length @ strikeOutPalette, First @ strikeOutPalette === First @ ColorData[ 112, "ColorList" ] },
   { 15, True },
   TestID -> "InfraStrikeOutPalette-is-ColorData-112"
 ]
@@ -625,6 +639,18 @@ VerificationTest[
   TestID -> "InfraSubstrateHighlight-closed-InfraWalk-closes-the-stroke"
 ]
 
+(* a closed polyline InfraSegment[p, ..., p] is a polygon: its members return to p, which
+   the measurement counts twice and the ink once, so the hexagon draws at full strength *)
+VerificationTest[
+  With[ { g = CycleGraph[ 6 ], hexagon = InfraSegment[ 1, 3, 5, 1 ] },
+    { InfraMeasurement[ g, hexagon, "VertexDensity" ][ 1 ],
+      infraInk[ g, hexagon ][ "VertexDensity" ],
+      infraInk[ g, hexagon ][ "Walk" ],
+      Union @ Cases[ EdgeStyle /. Options @ InfraSubstrateHighlight[ g, { hexagon } ], AbsoluteThickness[ t_ ] :> t, Infinity ] } ],
+  { 2, AssociationThread[ Range[ 6 ] -> 1 ], { 1, 2, 3, 4, 5, 6, 1 }, { 9. } },
+  TestID -> "InfraSubstrateHighlight-closed-polyline-counts-its-return-once"
+]
+
 VerificationTest[
   With[ { listLabelled = MeshConnectivityGraph @ DiscretizeRegion[ Rectangle[], MaxCellMeasure -> 0.1 ] },
     { infraInk[ listLabelled, First @ VertexList @ listLabelled ][ "EdgeDensity" ],
@@ -636,7 +662,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     infraInk[ g, # ][ "Knots" ] & /@ {
-      FindInfraTriangle[ g, { 1, 4, 21 } ],
+      geodesicGraph /@ { FindInfraSegment[ g, 1, 4 ], FindInfraSegment[ g, 4, 21 ], FindInfraSegment[ g, 21, 1 ] },
       FindInfraSegment[ g, 1, 25, UpTo[ 4 ] ],
       { FindInfraSegment[ g, 1, 25 ] },
       FindInfraRepresentative[ g, InfraCircle[ 13, 2 ], UpTo[ 2 ] ] } ],
@@ -649,7 +675,7 @@ VerificationTest[
     With[ { styles = EdgeStyle /. Options @ InfraSubstrateHighlight[ g,
           { InfraWalk[ { 1, 2, 3 } ], Directive[ Red ], InfraWalk[ { 21, 22, 23 } ], InfraWalk[ { 11, 12, 13 } ] } ] },
       First @ Cases[ Lookup[ styles, # ], _RGBColor ] & /@ { UndirectedEdge[ 1, 2 ], UndirectedEdge[ 21, 22 ], UndirectedEdge[ 11, 12 ] } ] ],
-  { First @ $InfraStrikeOutPalette, Red, Red },
+  { First @ strikeOutPalette, Red, Red },
   TestID -> "InfraSubstrateHighlight-Directive-styles-the-objects-after-it"
 ]
 
@@ -659,7 +685,7 @@ VerificationTest[
         once  = Lookup[ EdgeStyle /. Options @ InfraSubstrateHighlight[ g, { InfraSegment[ 1, 7 ] }, "ThicknessRange" -> 8 ], UndirectedEdge[ 1, 2 ] ],
         twice = Lookup[ EdgeStyle /. Options @ InfraSubstrateHighlight[ g, { InfraSegment[ 1, 7 ], InfraSegment[ 1, 7 ] }, "ThicknessRange" -> 8 ], UndirectedEdge[ 1, 2 ] ] },
       { Cases[ once, _AbsoluteThickness ], Cases[ twice, _AbsoluteThickness ],
-        ColorDistance[ First @ Cases[ twice, _RGBColor ], Blend[ Take[ $InfraStrikeOutPalette, 2 ], { 1, 1 } ] ] < 10^-6 } ] ],
+        ColorDistance[ First @ Cases[ twice, _RGBColor ], Blend[ Take[ strikeOutPalette, 2 ], { 1, 1 } ] ] < 10^-6 } ] ],
   { { AbsoluteThickness[ 4 ] }, { AbsoluteThickness[ 8 ] }, True },
   TestID -> "InfraSubstrateHighlight-overlap-sums-strength-and-blends-colour"
 ]

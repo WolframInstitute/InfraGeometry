@@ -4,7 +4,7 @@ geodesicGraph = WolframInstitute`InfraGeometry`PackageScope`geodesicGraph;
 walkSequence  = WolframInstitute`InfraGeometry`PackageScope`walkSequence;
 polylineToKnots = legs |-> If[ legs === { }, { }, Prepend[ Last @ walkSequence @ # & /@ legs, First @ walkSequence @ First @ legs ] ];
 
-(* a polyline is its geodesic legs: a List of directed path graphs on the substrate, consecutive legs sharing their knot *)
+(* the subdivision of a walk is its geodesic legs: a List of directed path graphs on the substrate, consecutive legs sharing their knot *)
 
 
 (* ===================== FindInfraPolylineSubdivision: trivial cases ===================== *)
@@ -74,41 +74,22 @@ VerificationTest[
 ]
 
 
-(* ===================== InfraPolylineQ ===================== *)
+(* ===================== the walk is a member of the polyline on its knots ===================== *)
 
 VerificationTest[
-  InfraPolylineQ[ PathGraph @ Range[ 11 ],
-    FindInfraPolylineSubdivision[ PathGraph @ Range[ 11 ], Range[ 11 ], "MaxLength" -> 3 ] ],
+  With[ { g = GridGraph[ { 4, 4 } ], walk = { 1, 2, 6, 5, 9, 13, 14, 15, 16 } },
+    InfraMemberQ[ g, InfraSegment @@ polylineToKnots @ FindInfraPolylineSubdivision[ g, walk, "MaxLength" -> 2 ], walk ] ],
   True,
-  TestID -> "InfraPolylineQ-constructor-output-true"
+  TestID -> "FindInfraPolylineSubdivision-walk-is-a-member-of-the-polyline-on-its-knots"
 ]
 
+(* a closed walk subdivides into a closed polyline *)
 VerificationTest[
-  InfraPolylineQ[ PathGraph @ Range[ 5 ], geodesicGraph /@ { { 1, 2 }, { 2, 3, 4 }, { 4, 5 } } ],
-  True,
-  TestID -> "InfraPolylineQ-legs-true"
-]
-
-(* Inconsistent: shared-endpoint invariant violated. *)
-
-VerificationTest[
-  InfraPolylineQ[ PathGraph @ Range[ 5 ], geodesicGraph /@ { { 1, 2 }, { 3, 4 } } ],
-  False,
-  TestID -> "InfraPolylineQ-broken-share"
-]
-
-(* Inconsistent: a leg whose vertex sequence is not a path in graph. *)
-
-VerificationTest[
-  InfraPolylineQ[ PathGraph @ Range[ 5 ], { geodesicGraph @ { 1, 3 } } ],
-  False,
-  TestID -> "InfraPolylineQ-leg-not-in-graph"
-]
-
-VerificationTest[
-  InfraPolylineQ[ PathGraph @ Range[ 5 ], { } ],
-  True,
-  TestID -> "InfraPolylineQ-empty"
+  With[ { g = CycleGraph[ 8 ], walk = Append[ Range[ 8 ], 1 ] },
+    { knots = polylineToKnots @ FindInfraPolylineSubdivision[ g, walk ] },
+    { knots, InfraMemberQ[ g, InfraSegment @@ knots, walk ] } ],
+  { { 1, 5, 1 }, True },
+  TestID -> "FindInfraPolylineSubdivision-closed-walk-gives-a-closed-polyline"
 ]
 
 
