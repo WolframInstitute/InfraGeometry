@@ -17,28 +17,28 @@ The topological properties of a substrate are read off its metric balls. The clo
 
 ### The ball topology
 
-- **BallTopology** — the Hasse diagram of the r-ball specialization preorder: an edge q -> p when the closed r-ball at p lies inside the one at q
-- **TopologicalClosure** — the closure of a vertex list in the preorder digraph, the union of the down-sets of its vertices
-- **TopologicalInterior** — the interior of a vertex list in the preorder digraph, the complement of the closure of its complement
-- **TopologicalBoundary** — the two-sided boundary of a vertex list, its closure minus its interior
-- **TopologicalNeighborhood** — the smallest open set containing a vertex list, the union of the up-sets of its vertices
-- **ContinuousMapQ** — whether a vertex map is continuous from one preorder digraph to another
-- **TopologyGraph** — the graph drawn with the Hasse arrows of a preorder digraph on top
+- `BallTopology` the Hasse diagram of the r-ball specialization preorder: an edge q -> p when the closed r-ball at p lies inside the one at q
+- `TopologicalClosure` the closure of a vertex list in the preorder digraph, the union of the down-sets of its vertices
+- `TopologicalInterior` the interior of a vertex list in the preorder digraph, the complement of the closure of its complement
+- `TopologicalBoundary` the two-sided boundary of a vertex list, its closure minus its interior
+- `TopologicalNeighborhood` the smallest open set containing a vertex list, the union of the up-sets of its vertices
+- `ContinuousMapQ` whether a vertex map is continuous from one preorder digraph to another
+- `TopologyGraph` the graph drawn with the Hasse arrows of a preorder digraph on top
 
 ### The ball intersection complex
 
-- **BallIntersectionComplex** — the order-k complex of closed radius-r balls: a simplex is admitted when every k of its balls have a common point
-- **CechComplex** — the nerve of the closed radius-r balls, the order-Infinity ball intersection complex
-- **MiniballRadius** — the radius of the smallest ball enclosing a set of points
-- **BallIntersectionFiltrationValue** — the birth radius of a simplex in the order-k complex
-- **BallIntersectionFiltration** — the order-k complexes over a list of radii, ready for persistence
-- **CechFiltration** — the Cech complexes over a list of radii
-- **BallIntersectionBifiltration** — the complexes over the radius and the order together
+- `BallIntersectionComplex` the order-k complex of closed radius-r balls: a simplex is admitted when every k of its balls have a common point
+- `CechComplex` the nerve of the closed radius-r balls, the order-Infinity ball intersection complex
+- `MiniballRadius` the radius of the smallest ball enclosing a set of points
+- `BallIntersectionFiltrationValue` the birth radius of a simplex in the order-k complex
+- `BallIntersectionFiltration` the order-k complexes over a list of radii, ready for persistence
+- `CechFiltration` the Cech complexes over a list of radii
+- `BallIntersectionBifiltration` the complexes over the radius and the order together
 
 ### Ball covers and the covering dimension
 
-- **FindBallCover** — a smallest set of centres whose radius-r balls cover every vertex, or a given set of targets
-- **BallCoverQ** — whether the radius-r balls about a set of centres cover every vertex, or a given set of targets
-- **DominationNumber** — the size N(r) of a smallest radius-r ball cover
+- `FindBallCover` a smallest set of centres whose radius-r balls cover every vertex, or a given set of targets
+- `BallCoverQ` whether the radius-r balls about a set of centres cover every vertex, or a given set of targets
+- `DominationNumber` the size N(r) of a smallest radius-r ball cover
 - waits: the covering dimension, from how N(r) falls as r grows, or from how many balls of radius r cover a ball of radius 2r
 - waits, as a tutorial: the dimension read from where the intersection of the balls containing k given points becomes degenerate

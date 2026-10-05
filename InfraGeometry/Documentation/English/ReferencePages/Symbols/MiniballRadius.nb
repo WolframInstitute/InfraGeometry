@@ -1,0 +1,970 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Wolfram 15.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       154,          7]
+NotebookDataLength[     35507,        961]
+NotebookOptionsPosition[     27810,        808]
+NotebookOutlinePosition[     29004,        844]
+CellTagsIndexPosition[     28925,        839]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["MiniballRadius", "ObjectName",
+ CellID->1224892054,ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec"],
+
+Cell[TextData[{
+ Cell["   ", "ModInfo",ExpressionUUID->"f36a7b66-be9f-41a1-a9b3-77cf3bbfcd92"],
+ Cell[BoxData[
+  RowBox[{
+   TemplateBox[{
+     Cell[
+      TextData["MiniballRadius"]], 
+     "paclet:WolframInstitute/InfraGeometry/ref/MiniballRadius", 
+     "WolframInstitute/InfraGeometry Package Symbol"},
+    "PackageLink",
+    BaseStyle->"InlineFormula"], "[", 
+   StyleBox["points", "TI"], "]"}]], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "4ff3a58d-5926-40e1-98fb-75c75e0d09d6"],
+ "\[LineSeparator]",
+ "gives the radius of the smallest closed ball that contains the Euclidean ",
+ StyleBox["points", "TI"],
+ ".",
+ "\n"
+}], "Usage",ExpressionUUID->"daec29af-0de0-4b85-be81-85094fa23600"],
+
+Cell[TextData[{
+ "Definition: the radius is ",
+ StyleBox["min_x max_i |x \[Minus] p_i|", "TI"],
+ ", the least ",
+ StyleBox["r", "TI"],
+ " for which a ball of radius ",
+ StyleBox["r", "TI"],
+ " contains every ",
+ StyleBox["p_i", "TI"],
+ ". The centre of that ball is the point ",
+ StyleBox["x", "TI"],
+ " attaining it, given by ",
+ Cell[BoxData[
+  RowBox[{
+   ButtonBox["BoundingRegion",
+    BaseStyle->"Link"], "[", 
+   RowBox[{
+    StyleBox["points", "TI"], ",", " ", "\"\<MinBall\>\""}], "]"}]], 
+  "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "a28c38eb-4118-463f-a680-910979be973c"],
+ "."
+}], "Notes",ExpressionUUID->"ac09878f-76ef-45da-ab21-774dd5246041"],
+
+Cell[TextData[{
+ "The closed balls of radius ",
+ StyleBox["r", "TI"],
+ " about the points have a common point exactly when ",
+ StyleBox["r", "TI"],
+ " is at least this radius: a common point is the centre of a ball of radius ",
+ StyleBox["r", "TI"],
+ " containing them all. That is the test of ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["CechComplex"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/CechComplex", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "bd252b38-e549-43c8-8d87-5c462a41cc01"],
+ " and ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["BallIntersectionComplex"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/BallIntersectionComplex", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "e355da27-aad6-44e0-a035-c4930c62cb74"],
+ " for Euclidean points."
+}], "Notes",ExpressionUUID->"53641ed4-0ae3-4901-b839-965fafa4be79"],
+
+Cell["\<\
+For a triangle with no obtuse angle the radius is the circumradius; for an \
+obtuse triangle it is half the longest side. The points may be in any \
+dimension.\
+\>", "Notes",ExpressionUUID->"8010bab0-64a2-4530-8d2d-cdc5e7abf500"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "See Also",
+ Cell[BoxData[
+  TemplateBox[{"SeeAlso", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell[
+       "Insert links to any related reference (function) pages.", 
+        "MoreInfoText"], BaseStyle -> "IFrameBox"]], "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "b7caa910-e086-4d39-871e-e78bfb02a4b9"]
+}], "SeeAlsoSection",
+ CellID->1559318232,ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["CechComplex"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/CechComplex", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "1cb92237-7acb-492f-9c25-809716e55cc8"],
+ " \[FilledVerySmallSquare] ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["BallIntersectionComplex"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/BallIntersectionComplex", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "f9273cf7-3f5d-459f-b2b9-62a54b4f606a"],
+ " \[FilledVerySmallSquare] ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["BallIntersectionFiltrationValue"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/\
+BallIntersectionFiltrationValue", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "f7ca73c2-e447-4731-a327-0b7cda9799cc"]
+}], "SeeAlso",ExpressionUUID->"8136ebc6-0606-40b0-be2b-5e88784c73e2"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Tech Notes",
+ Cell[BoxData[
+  TemplateBox[{"TechNotes", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell["Insert links to related tech notes.", "MoreInfoText"], BaseStyle -> 
+       "IFrameBox"]], "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "a0027a76-2f69-4270-bf06-cff364aa09d7"]
+}], "TechNotesSection",
+ CellID->792424486,ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74"],
+
+Cell[CellGroupData[{
+
+Cell["Related Guides", "MoreAboutSection",
+ CellID->38303248,ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5"],
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox["InfraTopology",
+  BaseStyle->"Link",
+  ButtonData->
+   "paclet:WolframInstitute/InfraGeometry/guide/InfraTopology"]], \
+"InlineFormula",ExpressionUUID->"f61c06b1-89c4-45dd-a61e-d76771cac112"]], \
+"MoreAbout",ExpressionUUID->"5f5a0f21-df2f-4a2b-ab6b-59b8cec9d019"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Related Links",
+ Cell[BoxData[
+  TemplateBox[{"RelatedLinks", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell[
+       "Insert links to any related page, including web pages.", 
+        "MoreInfoText"], BaseStyle -> "IFrameBox"]], "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "88f916ad-99d1-4784-a15f-dfa2faf44f02"]
+}], "RelatedLinksSection",
+ CellID->47113304,ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Examples Initialization",
+ Cell[BoxData[
+  TemplateBox[{"ExamplesInitialization", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell[
+       "Input that is to be evaluated before any examples are run, e.g. \
+Needs[\[Ellipsis]].", "MoreInfoText"], BaseStyle -> "IFrameBox"]], 
+     "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "1ca4d14a-308f-4a68-bbf6-e6901ce2ab4c"]
+}], "ExamplesInitializationSection",
+ CellID->1718580883,ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5"],
+
+Cell[BoxData[{
+ RowBox[{"Needs", "[", "\"\<WolframInstitute`InfraGeometry`\>\"", "]"}], "\n", 
+ RowBox[{"Needs", "[", "\"\<WolframInstitute`DiscreteGeometry`\>\"", 
+  "]"}]}], "ExampleInitialization",
+ CellID->1969679695,ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[GridBox[{
+    {
+     StyleBox[
+      RowBox[{"Basic", " ", "Examples"}], "PrimaryExamplesSection"], 
+     ButtonBox[
+      RowBox[{
+       RowBox[{"More", " ", "Examples"}], " ", "\[RightTriangle]"}],
+      BaseStyle->"ExtendedExamplesLink",
+      ButtonData:>"ExtendedExamples"]}
+   }],
+  $Line = 0; Null]], "PrimaryExamplesSection",
+ CellID->880084151,ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42"],
+
+Cell["\<\
+Seven random points in the plane and their smallest enclosing circle.\
+\>", "ExampleText",ExpressionUUID->"6132b49c-aacb-41c1-8f39-dd40dce476d0"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"points", " ", "=", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"SeedRandom", "[", "5", "]"}], ";", " ", 
+       RowBox[{"RandomReal", "[", 
+        RowBox[{"1", ",", " ", 
+         RowBox[{"{", 
+          RowBox[{"7", ",", " ", "2"}], "}"}]}], "]"}]}], ")"}]}], "}"}], ",",
+    "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Graphics", "[", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"Point", "[", "points", "]"}], ",", " ", "StandardRed", ",", 
+        " ", 
+        RowBox[{"Circle", " ", "@@", " ", 
+         RowBox[{"BoundingRegion", "[", 
+          RowBox[{"points", ",", " ", "\"\<MinBall\>\""}], "]"}]}]}], "}"}], 
+      "]"}], ",", " ", 
+     RowBox[{"MiniballRadius", "[", "points", "]"}]}], "}"}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"6bec5880-8c86-4daa-95ae-d212a94af071"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   GraphicsBox[{
+     PointBox[{{0.0007905839646638047, 0.06501918667219497}, {
+      0.9895546046159005, 0.9687678727174325}, {0.20086585506152188`, 
+      0.8195213138554829}, {0.0897633873692747, 0.9707012957418106}, {
+      0.22990978967072273`, 0.6125029843579641}, {0.0968159756118887, 
+      0.548855107163392}, {0.13254785678519854`, 0.23233238756230468`}}], 
+     {RGBColor[0.93, 0.27, 0.27], 
+      CircleBox[{0.49517259429028226`, 0.5168935296948138}, 
+       0.6697790635841964]}}], ",", "0.6697790635841964`"}], "}"}]], "Output",\
+
+ CellLabel->"Out[1]= ",ExpressionUUID->"52b3552e-3beb-416d-bcdd-2a646677ab8e"]
+}, Open  ]],
+
+Cell["\<\
+An acute and an obtuse triangle with the same longest side, the circle on \
+that side in blue and the smallest enclosing circle in red. The obtuse \
+triangle fits in the circle on its longest side; the acute one needs its \
+circumcircle.\
+\>", "ExampleText",ExpressionUUID->"4a0d601d-2158-41da-915e-d6a01208a279"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"acute", " ", "=", " ", 
+     RowBox[{"N", " ", "@", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"0", ",", " ", "0"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"2", ",", " ", "0"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"1", ",", " ", "1.5"}], "}"}]}], "}"}]}]}], "}"}], ",", "\n",
+    "  ", 
+   RowBox[{"{", 
+    RowBox[{"obtuse", " ", "=", " ", 
+     RowBox[{"N", " ", "@", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"0", ",", " ", "0"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"2", ",", " ", "0"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"1", ",", " ", "0.4"}], "}"}]}], "}"}]}]}], "}"}], ",", "\n",
+    "  ", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"GraphicsRow", " ", "@", " ", 
+      RowBox[{"Table", "[", "\n", "     ", 
+       RowBox[{
+        RowBox[{"Graphics", "[", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"Line", "[", 
+            RowBox[{"Append", "[", 
+             RowBox[{"t", ",", " ", 
+              RowBox[{"First", "[", "t", "]"}]}], "]"}], "]"}], ",", " ", 
+           "StandardRed", ",", " ", 
+           RowBox[{"Circle", " ", "@@", " ", 
+            RowBox[{"BoundingRegion", "[", 
+             RowBox[{"t", ",", " ", "\"\<MinBall\>\""}], "]"}]}], ",", " ", 
+           "StandardBlue", ",", " ", 
+           RowBox[{"Circle", "[", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"1", ",", " ", "0"}], "}"}], ",", " ", "1"}], "]"}]}], 
+          "}"}], "]"}], ",", "\n", "     ", 
+        RowBox[{"{", 
+         RowBox[{"t", ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"acute", ",", " ", "obtuse"}], "}"}]}], "}"}]}], "]"}]}], ",",
+      "\n", "   ", 
+     RowBox[{"MiniballRadius", " ", "/@", " ", 
+      RowBox[{"{", 
+       RowBox[{"acute", ",", " ", "obtuse"}], "}"}]}]}], "}"}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[2]:= ",ExpressionUUID->"fcdca4d5-671f-4e78-a4dd-5d0e9fd654a1"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   GraphicsBox[{{}, {InsetBox[
+       GraphicsBox[{LineBox[{{0., 0.}, {2., 0.}, {1., 1.5}, {0., 0.}}], 
+         {RGBColor[0.93, 0.27, 0.27], 
+          CircleBox[{1., 0.41666666666666674`}, 1.0833333333333333]}, 
+         {RGBColor[0.4, 0.6, 1], CircleBox[{1, 0}, 1]}},
+        DefaultBaseStyle->{"PlotGraphics", "Graphics"},
+        DisplayFunction->Identity,
+        ImagePadding->{{1.4895587137910998`*^-15, 1.0000000000000568`}, {
+         1.000000000000011, 0.}},
+        PlotInteractivity:>True], {160., -181.84079999999997}, 
+       ImageScaled[{0.5, 0.5}], {300., 343.68159999999995},
+       BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}], 
+      InsetBox[
+       GraphicsBox[{LineBox[{{0., 0.}, {2., 0.}, {1., 0.4}, {0., 0.}}], 
+         {RGBColor[0.93, 0.27, 0.27], CircleBox[{1., 0.}, 1.]}, 
+         {RGBColor[0.4, 0.6, 1], CircleBox[{1, 0}, 1]}},
+        DefaultBaseStyle->{"PlotGraphics", "Graphics"},
+        DisplayFunction->Identity,
+        ImagePadding->{{-2.0502118521411234`*^-16, 1.}, {1.000000000000011, 
+         0.}},
+        PlotInteractivity:>True], {480., -181.84079999999997}, 
+       ImageScaled[{0.5, 0.5}], {300., 343.68159999999995},
+       BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}]}, {}},
+    
+    ImageSize->{640., 363.68159999999995`},
+    Method->{"IgnoreImageSizeAutomaticLimit" -> True},
+    PlotRange->{{0, 640.}, {-363.68159999999995`, 0}},
+    PlotRangePadding->Automatic], ",", 
+   RowBox[{"{", 
+    RowBox[{"1.0833333333333333`", ",", "1.`"}], "}"}]}], "}"}]], "Output",
+ CellLabel->"Out[2]= ",ExpressionUUID->"fc6f8036-35e9-4018-8935-6f97e8b73870"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "More Examples",
+ Cell[BoxData[
+  TemplateBox[{"MoreExamples", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell["Extended examples in standardized sections.", "MoreInfoText"], 
+       BaseStyle -> "IFrameBox"]], "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "352b6acf-a93b-4224-8779-658881cdabd0"]
+}], "ExtendedExamplesSection",
+ CellTags->"ExtendedExamples",
+ CellID->533848431,ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Scope", "ExampleSection",ExpressionUUID->
+   "32e79d70-f7af-47ff-bb41-513374ef55db"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1293636265,ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75"],
+
+Cell[TextData[{
+ "The corners of the unit cube have radius ",
+ StyleBox["\[Sqrt]3/2", "TI"],
+ "."
+}], "ExampleText",ExpressionUUID->"02ade2a0-7893-4b05-9acf-7fe8389718a9"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"corners", " ", "=", " ", 
+     RowBox[{"N", " ", "@", " ", 
+      RowBox[{"Tuples", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"0", ",", " ", "1"}], "}"}], ",", " ", "3"}], "]"}]}]}], 
+    "}"}], ",", "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Graphics3D", "[", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"Point", "[", "corners", "]"}], ",", " ", "StandardRed", ",", 
+        " ", 
+        RowBox[{"Opacity", "[", "0.2", "]"}], ",", " ", 
+        RowBox[{"BoundingRegion", "[", 
+         RowBox[{"corners", ",", " ", "\"\<MinBall\>\""}], "]"}]}], "}"}], 
+      "]"}], ",", " ", 
+     RowBox[{"MiniballRadius", "[", "corners", "]"}]}], "}"}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"e410ed5a-dbb7-4476-ae1d-c8ccbafc579e"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   Graphics3DBox[{
+     Point3DBox[{{0., 0., 0.}, {0., 0., 1.}, {0., 1., 0.}, {0., 1., 1.}, {1., 
+      0., 0.}, {1., 0., 1.}, {1., 1., 0.}, {1., 1., 1.}}], 
+     {RGBColor[0.93, 0.27, 0.27], Opacity[0.2], 
+      TagBox[SphereBox[{0.5, 0.5, 0.5}, 0.8660254037844386],
+       "Ball"]}}], ",", "0.8660254037844386`"}], "}"}]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"b82e281c-2dbc-497e-a424-dfb499723c6f"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Generalizations & Extensions", "ExampleSection",ExpressionUUID->
+   "a148ce84-caec-4483-aa99-5b7bd6d55bf1"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1020263627,ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Options", "ExampleSection",ExpressionUUID->
+   "b26b6366-7922-4236-a426-38c0f5de13f0"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->2061341341,ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Applications", "ExampleSection",ExpressionUUID->
+   "d5715ee2-1cae-4f33-89b2-0e99ea9caa6e"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->258228157,ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Properties & Relations", "ExampleSection",ExpressionUUID->
+   "d18b1e1f-4c4c-49a5-bb54-1e5e145ddf4e"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->2123667759,ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438"],
+
+Cell["\<\
+The three disks about the corners of the acute triangle have no common point \
+at nine tenths of the radius, and touch at one point at the radius. The \
+triangle is a simplex of the \[CapitalCHacek]ech complex only from that \
+radius on.\
+\>", "ExampleText",ExpressionUUID->"1b25071a-02ae-4ba5-8c31-6d5f20c8ffa4"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"points", " ", "=", " ", 
+     RowBox[{"N", " ", "@", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"0", ",", " ", "0"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"2", ",", " ", "0"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"1", ",", " ", "1.5"}], "}"}]}], "}"}]}]}], "}"}], ",", "\n",
+    "  ", 
+   RowBox[{"{", 
+    RowBox[{"rho", " ", "=", " ", 
+     RowBox[{"MiniballRadius", "[", "points", "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"GraphicsRow", " ", "@", " ", 
+      RowBox[{"Table", "[", 
+       RowBox[{
+        RowBox[{"Graphics", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"StandardBlue", ",", " ", 
+              RowBox[{"Opacity", "[", "0.15", "]"}], ",", " ", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"Disk", "[", 
+                 RowBox[{"#", ",", " ", "s"}], "]"}], " ", "&"}], " ", "/@", 
+               " ", "points"}]}], "}"}], ",", " ", 
+            RowBox[{"Point", "[", "points", "]"}]}], "}"}], ",", " ", 
+          RowBox[{"PlotLabel", " ", "->", " ", "s"}]}], "]"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"s", ",", " ", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"0.9", " ", "rho"}], ",", " ", "rho"}], "}"}]}], "}"}]}], 
+       "]"}]}], ",", "\n", "   ", 
+     RowBox[{"MemberQ", "[", 
+      RowBox[{
+       RowBox[{"CechComplex", "[", 
+        RowBox[{"points", ",", " ", 
+         RowBox[{"0.9", " ", "rho"}]}], "]"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"1", ",", " ", "2", ",", " ", "3"}], "}"}]}], "]"}], ",", " ", 
+     RowBox[{"MemberQ", "[", 
+      RowBox[{
+       RowBox[{"CechComplex", "[", 
+        RowBox[{"points", ",", " ", "rho"}], "]"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"1", ",", " ", "2", ",", " ", "3"}], "}"}]}], "]"}]}], 
+    "}"}]}], "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"85a7cf66-f460-4a3a-bb80-ffe525b893d6"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   GraphicsBox[{{}, {InsetBox[
+       GraphicsBox[{
+         {RGBColor[0.4, 0.6, 1], Opacity[0.15], DiskBox[{0., 0.}, 0.975], 
+          DiskBox[{2., 0.}, 0.975], DiskBox[{1., 1.5}, 0.975]}, 
+         PointBox[{{0., 0.}, {2., 0.}, {1., 1.5}}]},
+        DefaultBaseStyle->{"PlotGraphics", "Graphics"},
+        DisplayFunction->Identity,
+        ImagePadding->{{-1.1055385392891729`*^-16, 5.684341886080802*^-14}, {
+         5.4101983090432345`*^-15, 0.}},
+        PlotInteractivity:>True,
+        PlotLabel->FormBox["0.975`", TraditionalForm]], {160., -149.18312500000002},
+        ImageScaled[{0.5, 0.5}], {300., 278.36625000000004},
+       BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}], 
+      InsetBox[
+       GraphicsBox[{
+         {RGBColor[0.4, 0.6, 1], Opacity[0.15], 
+          DiskBox[{0., 0.}, 1.0833333333333333], 
+          DiskBox[{2., 0.}, 1.0833333333333333], 
+          DiskBox[{1., 1.5}, 1.0833333333333333]}, 
+         PointBox[{{0., 0.}, {2., 0.}, {1., 1.5}}]},
+        DefaultBaseStyle->{"PlotGraphics", "Graphics"},
+        DisplayFunction->Identity,
+        ImagePadding->{{-3.999566110400741*^-15, 0.}, {
+         5.4101983090432345`*^-15, 0.}},
+        PlotInteractivity:>True,
+        PlotLabel->FormBox["1.0833333333333333`", TraditionalForm]], {480., -149.18312500000002},
+        ImageScaled[{0.5, 0.5}], {300., 278.36625000000004},
+       BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}]}, {}},
+    
+    ImageSize->{640., 298.36625000000004`},
+    Method->{"IgnoreImageSizeAutomaticLimit" -> True},
+    PlotRange->{{0, 640.}, {-298.36625000000004`, 0}},
+    PlotRangePadding->Automatic], ",", "False", ",", "True"}], 
+  "}"}]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"7e37834c-cf1b-47d2-bc92-b14c2c92b7bb"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Possible Issues", "ExampleSection",ExpressionUUID->
+   "dda06a82-eb41-4b48-8510-6cb821647761"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1305812373,ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f"],
+
+Cell[TextData[{
+ "A single point gives a tiny positive radius rather than 0, the radius of \
+the ball that ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["BoundingRegion"]], "paclet:ref/BoundingRegion"},
+   "RefLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "579f3cb6-46c3-4b5a-b88c-5fdc980d1cc9"],
+ " returns. Two equal points give 0."
+}], "ExampleText",ExpressionUUID->"57a68c8f-98c9-45cc-a39e-5b04637c3363"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"MiniballRadius", "[", 
+    RowBox[{"{", 
+     RowBox[{"{", 
+      RowBox[{"0", ",", " ", "0"}], "}"}], "}"}], "]"}], ",", " ", 
+   RowBox[{"MiniballRadius", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"0", ",", " ", "0"}], "}"}], ",", " ", 
+      RowBox[{"{", 
+       RowBox[{"0", ",", " ", "0"}], "}"}]}], "}"}], "]"}]}], "}"}]], "Input",\
+
+ CellLabel->"In[1]:= ",ExpressionUUID->"be5f3a4c-2507-4fc5-8a4e-cd9c3f44e5d7"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"1.`*^-323", ",", "0.`"}], "}"}]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"5b4b6463-8bf1-4424-8803-bb2573dc35df"]
+}, Open  ]],
+
+Cell[TextData[{
+ "The points are converted to machine numbers first. On exact coordinates ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["BoundingRegion"]], "paclet:ref/BoundingRegion"},
+   "RefLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "d0ff7d39-f5c9-422c-879a-eee29569a73b"],
+ " can return a ball that misses some of the points: for the corners of the \
+cube it returns the ball about one face."
+}], "ExampleText",ExpressionUUID->"04822360-a57e-4f51-a11e-ed4ddf2c290a"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"corners", " ", "=", " ", 
+     RowBox[{"Tuples", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"0", ",", " ", "1"}], "}"}], ",", " ", "3"}], "]"}]}], "}"}], 
+   ",", "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"BoundingRegion", "[", 
+      RowBox[{"corners", ",", " ", "\"\<MinBall\>\""}], "]"}], ",", " ", 
+     RowBox[{"BoundingRegion", "[", 
+      RowBox[{
+       RowBox[{"N", " ", "@", " ", "corners"}], ",", " ", "\"\<MinBall\>\""}],
+       "]"}], ",", " ", 
+     RowBox[{"MiniballRadius", "[", "corners", "]"}]}], "}"}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[2]:= ",ExpressionUUID->"0d1634a1-3fe8-491b-a289-78874a4ecd6b"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"Ball", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"0", ",", 
+       FractionBox["1", "2"], ",", 
+       FractionBox["1", "2"]}], "}"}], ",", 
+     FractionBox["1", 
+      SqrtBox["2"]]}], "]"}], ",", 
+   RowBox[{"Ball", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"0.5`", ",", "0.5`", ",", "0.5`"}], "}"}], ",", 
+     "0.8660254037844386`"}], "]"}], ",", "0.8660254037844386`"}], 
+  "}"}]], "Output",
+ CellLabel->"Out[2]= ",ExpressionUUID->"40fe726b-120a-4c70-9f09-20a69daeb6dc"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Interactive Examples", "ExampleSection",ExpressionUUID->
+   "e1fe5ce4-66df-44f8-b96d-14ea9265eaf2"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1653164318,ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Neat Examples", "ExampleSection",ExpressionUUID->
+   "898193c6-0d9f-4097-90dd-7bc455972e43"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->589267740,ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Metadata", "MetadataSection",
+ CellID->311882160,ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd"],
+
+Cell[TextData[{
+ "New in: ",
+ Cell["XX", "HistoryData",
+  CellTags->"New",ExpressionUUID->"c83e5b59-d200-4539-afdc-500ed06d3c87"],
+ " | Modified in: ",
+ Cell[" ", "HistoryData",
+  CellTags->"Modified",ExpressionUUID->"d4e38c0c-d937-44f2-85a5-7c0e8fc755ab"],
+ " | Obsolete in: ",
+ Cell[" ", "HistoryData",
+  CellTags->"Obsolete",ExpressionUUID->
+  "4c68d818-8923-4121-80f8-cf0eabb4c0de"]
+}], "History",
+ CellID->341476719,ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Categorization",
+ Cell[BoxData[
+  TemplateBox[{"Metadata", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell[
+       "Metadata such as page URI, context, and type of documentation page.", 
+        "MoreInfoText"], BaseStyle -> "IFrameBox"]], "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "4b3d4122-3cd4-481f-a8ff-5aefbb03e00d"]
+}], "CategorizationSection",
+ CellID->1755438392,ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329"],
+
+Cell["Symbol", "Categorization",
+ CellLabel->"Entity Type",
+ CellID->686433507,ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a"],
+
+Cell["WolframInstitute/InfraGeometry", "Categorization",
+ CellLabel->"Paclet Name",
+ CellID->605800465,ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec"],
+
+Cell["WolframInstitute`InfraGeometry`", "Categorization",
+ CellLabel->"Context",
+ CellID->468444828,ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191"],
+
+Cell["WolframInstitute/InfraGeometry/ref/MiniballRadius", "Categorization",
+ CellLabel->"URI",ExpressionUUID->"cbee34df-aa48-42f4-9fb6-ed3273df5a1b"]
+}, Closed]],
+
+Cell["Keywords", "KeywordsSection",
+ CellID->477174294,ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6"],
+
+Cell[CellGroupData[{
+
+Cell["Syntax Templates", "TemplatesSection",
+ CellID->1872225408,ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c"],
+
+Cell[BoxData[""], "Template",
+ CellLabel->"Additional Function Template",
+ CellID->1562036412,ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72"],
+
+Cell[BoxData[""], "Template",
+ CellLabel->"Arguments Pattern",
+ CellID->158391909,ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec"],
+
+Cell[BoxData[""], "Template",
+ CellLabel->"Local Variables",
+ CellID->1360575930,ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9"],
+
+Cell[BoxData[""], "Template",
+ CellLabel->"Color Equal Signs",
+ CellID->793782254,ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648"]
+}, Closed]]
+}, Open  ]]
+},
+WindowSize->{700, 770},
+WindowMargins->{{5, Automatic}, {Automatic, 0}},
+TaggingRules->{
+ "Metadata" -> {
+   "title" -> "MiniballRadius", "context" -> 
+    "WolframInstitute`InfraGeometry`", 
+    "keywords" -> {
+     "miniball", "smallest enclosing ball", "minimum enclosing circle", 
+      "circumradius", "Cech complex"}, "summary" -> "", "paclet" -> 
+    "WolframInstitute/InfraGeometry", "uri" -> 
+    "WolframInstitute/InfraGeometry/ref/MiniballRadius", "type" -> "Symbol", 
+    "index" -> True, "language" -> "en"}},
+CreateCellID->True,
+CellContext->CellGroup,
+FrontEndVersion->"15.0 for Mac OS X ARM (64-bit) (July 2, 2026)",
+StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "FunctionPageStylesExt.nb", 
+  CharacterEncoding -> "UTF-8"],
+ExpressionUUID->"c207366e-060a-406b-a297-9e30e1628f43"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "ExtendedExamples"->{
+  Cell[13706, 400, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+   CellTags->"ExtendedExamples",
+   CellID->533848431]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"ExtendedExamples", 28731, 832}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[576, 22, 112, 1, 70, "ObjectName",ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec",
+ CellID->1224892054],
+Cell[691, 25, 710, 19, 70, "Usage",ExpressionUUID->"daec29af-0de0-4b85-be81-85094fa23600"],
+Cell[1404, 46, 676, 22, 70, "Notes",ExpressionUUID->"ac09878f-76ef-45da-ab21-774dd5246041"],
+Cell[2083, 70, 1056, 28, 70, "Notes",ExpressionUUID->"53641ed4-0ae3-4901-b839-965fafa4be79"],
+Cell[3142, 100, 239, 4, 70, "Notes",ExpressionUUID->"8010bab0-64a2-4530-8d2d-cdc5e7abf500"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3418, 109, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
+ CellID->1559318232],
+Cell[3880, 124, 1160, 31, 70, "SeeAlso",ExpressionUUID->"8136ebc6-0606-40b0-be2b-5e88784c73e2"]
+}, Open  ]],
+Cell[5055, 158, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
+ CellID->792424486],
+Cell[CellGroupData[{
+Cell[5515, 174, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
+ CellID->38303248],
+Cell[5634, 177, 303, 6, 70, "MoreAbout",ExpressionUUID->"5f5a0f21-df2f-4a2b-ab6b-59b8cec9d019"]
+}, Open  ]],
+Cell[5952, 186, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
+ CellID->47113304],
+Cell[CellGroupData[{
+Cell[6448, 203, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
+ CellID->1718580883],
+Cell[6982, 219, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
+ CellID->1969679695]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[7295, 228, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
+ CellID->880084151],
+Cell[7740, 242, 155, 2, 70, "ExampleText",ExpressionUUID->"6132b49c-aacb-41c1-8f39-dd40dce476d0"],
+Cell[CellGroupData[{
+Cell[7920, 248, 929, 26, 70, "Input",ExpressionUUID->"6bec5880-8c86-4daa-95ae-d212a94af071"],
+Cell[8852, 276, 663, 13, 70, "Output",ExpressionUUID->"52b3552e-3beb-416d-bcdd-2a646677ab8e"]
+}, Open  ]],
+Cell[9530, 292, 323, 5, 70, "ExampleText",ExpressionUUID->"4a0d601d-2158-41da-915e-d6a01208a279"],
+Cell[CellGroupData[{
+Cell[9878, 301, 2101, 58, 70, "Input",ExpressionUUID->"fcdca4d5-671f-4e78-a4dd-5d0e9fd654a1"],
+Cell[11982, 361, 1675, 33, 70, "Output",ExpressionUUID->"fc6f8036-35e9-4018-8935-6f97e8b73870"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[13706, 400, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+ CellTags->"ExtendedExamples",
+ CellID->533848431],
+Cell[CellGroupData[{
+Cell[14218, 417, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
+ CellID->1293636265],
+Cell[14463, 424, 171, 4, 70, "ExampleText",ExpressionUUID->"02ade2a0-7893-4b05-9acf-7fe8389718a9"],
+Cell[CellGroupData[{
+Cell[14659, 432, 874, 24, 70, "Input",ExpressionUUID->"e410ed5a-dbb7-4476-ae1d-c8ccbafc579e"],
+Cell[15536, 458, 453, 9, 70, "Output",ExpressionUUID->"b82e281c-2dbc-497e-a424-dfb499723c6f"]
+}, Open  ]]
+}, Open  ]],
+Cell[16016, 471, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
+ CellID->1020263627],
+Cell[16284, 478, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
+ CellID->2061341341],
+Cell[16531, 485, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
+ CellID->258228157],
+Cell[CellGroupData[{
+Cell[16804, 494, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
+ CellID->2123667759],
+Cell[17066, 501, 323, 5, 70, "ExampleText",ExpressionUUID->"1b25071a-02ae-4ba5-8c31-6d5f20c8ffa4"],
+Cell[CellGroupData[{
+Cell[17414, 510, 2135, 57, 70, "Input",ExpressionUUID->"85a7cf66-f460-4a3a-bb80-ffe525b893d6"],
+Cell[19552, 569, 1819, 37, 70, "Output",ExpressionUUID->"7e37834c-cf1b-47d2-bc92-b14c2c92b7bb"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[21420, 612, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
+ CellID->1305812373],
+Cell[21675, 619, 449, 11, 70, "ExampleText",ExpressionUUID->"57a68c8f-98c9-45cc-a39e-5b04637c3363"],
+Cell[CellGroupData[{
+Cell[22149, 634, 501, 15, 70, "Input",ExpressionUUID->"be5f3a4c-2507-4fc5-8a4e-cd9c3f44e5d7"],
+Cell[22653, 651, 162, 3, 70, "Output",ExpressionUUID->"5b4b6463-8bf1-4424-8803-bb2573dc35df"]
+}, Open  ]],
+Cell[22830, 657, 514, 11, 70, "ExampleText",ExpressionUUID->"04822360-a57e-4f51-a11e-ed4ddf2c290a"],
+Cell[CellGroupData[{
+Cell[23369, 672, 741, 20, 70, "Input",ExpressionUUID->"0d1634a1-3fe8-491b-a289-78874a4ecd6b"],
+Cell[24113, 694, 548, 17, 70, "Output",ExpressionUUID->"40fe726b-120a-4c70-9f09-20a69daeb6dc"]
+}, Open  ]]
+}, Open  ]],
+Cell[24688, 715, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
+ CellID->1653164318],
+Cell[24948, 722, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
+ CellID->589267740]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[25234, 732, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
+ CellID->311882160],
+Cell[25347, 735, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
+ CellID->341476719],
+Cell[CellGroupData[{
+Cell[25848, 751, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
+ CellID->1755438392],
+Cell[26336, 766, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
+ CellID->686433507],
+Cell[26473, 770, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
+ CellID->605800465],
+Cell[26634, 774, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
+ CellID->468444828],
+Cell[26792, 778, 149, 1, 70, "Categorization",ExpressionUUID->"cbee34df-aa48-42f4-9fb6-ed3273df5a1b"]
+}, Closed]],
+Cell[26956, 782, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
+ CellID->477174294],
+Cell[CellGroupData[{
+Cell[27091, 787, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
+ CellID->1872225408],
+Cell[27214, 790, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
+ CellID->1562036412],
+Cell[27366, 794, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
+ CellID->158391909],
+Cell[27506, 798, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
+ CellID->1360575930],
+Cell[27645, 802, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
+ CellID->793782254]
+}, Closed]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

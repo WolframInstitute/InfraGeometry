@@ -1,0 +1,1797 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Wolfram 15.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       154,          7]
+NotebookDataLength[     97897,       1788]
+NotebookOptionsPosition[     91316,       1656]
+NotebookOutlinePosition[     92495,       1691]
+CellTagsIndexPosition[     92415,       1686]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["TopologyGraph", "ObjectName",
+ CellID->1224892054,ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec"],
+
+Cell[TextData[{
+ Cell["   ", "ModInfo",ExpressionUUID->"4267054a-5597-4871-9201-b3f0918f9278"],
+ Cell[BoxData[
+  RowBox[{
+   TemplateBox[{
+     Cell[
+      TextData["TopologyGraph"]], 
+     "paclet:WolframInstitute/InfraGeometry/ref/TopologyGraph", 
+     "WolframInstitute/InfraGeometry Package Symbol"},
+    "PackageLink",
+    BaseStyle->"InlineFormula"], "[", 
+   RowBox[{
+    StyleBox["g", "TI"], ",", " ", 
+    StyleBox["topo", "TI"]}], "]"}]], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "1f727cd5-898c-4662-8ecb-62ab760f4442"],
+ "\[LineSeparator]",
+ "draws the graph ",
+ StyleBox["g", "TI"],
+ " with the edges of the digraph ",
+ StyleBox["topo", "TI"],
+ " as arrows on top.",
+ "\n"
+}], "Usage",ExpressionUUID->"d9dee157-aa5e-4e02-8f41-c0f380087c8c"],
+
+Cell[TextData[{
+ "The edges of ",
+ StyleBox["g", "TI"],
+ " are drawn faint and the arrows of ",
+ StyleBox["topo", "TI"],
+ " in full, at the vertex coordinates of ",
+ StyleBox["g", "TI"],
+ ". A substrate drawn with ",
+ Cell[BoxData["\"\<KeepCoordinates\>\""], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "d4ad8eb4-21e9-4af2-8597-579eab75c482"],
+ " -> ",
+ Cell[BoxData["True"], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "f9f0438d-1e7e-4e06-8cfd-7fd7fedc2e48"],
+ " keeps its own layout; a graph without coordinates is placed by its spring \
+layout."
+}], "Notes",ExpressionUUID->"13679d66-13a0-45f0-adbf-bf710689584f"],
+
+Cell[TextData[{
+ StyleBox["topo", "TI"],
+ " is any digraph on the vertices of ",
+ StyleBox["g", "TI"],
+ ": the Hasse diagram of ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["BallTopology"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/BallTopology", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "84d18485-9291-4197-9e66-d18eb1a6a5a6"],
+ ", its dual, or its transitive closure. The drawing is a picture only; the \
+topological operators read ",
+ StyleBox["topo", "TI"],
+ " itself."
+}], "Notes",ExpressionUUID->"05e41778-e593-4b9b-b41d-721825bcb57f"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "See Also",
+ Cell[BoxData[
+  TemplateBox[{"SeeAlso", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell[
+       "Insert links to any related reference (function) pages.", 
+        "MoreInfoText"], BaseStyle -> "IFrameBox"]], "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "b7caa910-e086-4d39-871e-e78bfb02a4b9"]
+}], "SeeAlsoSection",
+ CellID->1559318232,ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["BallTopology"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/BallTopology", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "511da400-c1e8-4594-8314-08f2dffdd6e8"],
+ " \[FilledVerySmallSquare] ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["TopologicalClosure"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/TopologicalClosure", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "5c7f0458-3eea-41ca-a25c-4e557c8b2450"],
+ " \[FilledVerySmallSquare] ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["InfraSubstrateHighlight"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/InfraSubstrateHighlight", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "87bd0ad3-6ee4-4f85-be9d-dc541de667bb"]
+}], "SeeAlso",ExpressionUUID->"3b0fe8c8-ddc7-44ce-ad35-103a95855742"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Tech Notes",
+ Cell[BoxData[
+  TemplateBox[{"TechNotes", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell["Insert links to related tech notes.", "MoreInfoText"], BaseStyle -> 
+       "IFrameBox"]], "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "a0027a76-2f69-4270-bf06-cff364aa09d7"]
+}], "TechNotesSection",
+ CellID->792424486,ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74"],
+
+Cell[CellGroupData[{
+
+Cell["Related Guides", "MoreAboutSection",
+ CellID->38303248,ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5"],
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox["InfraTopology",
+  BaseStyle->"Link",
+  ButtonData->
+   "paclet:WolframInstitute/InfraGeometry/guide/InfraTopology"]], \
+"InlineFormula",ExpressionUUID->"94184e94-fa89-4064-bfdc-43d253ffc916"]], \
+"MoreAbout",ExpressionUUID->"5878d618-cefa-449b-917a-ebb87239caa8"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Related Links",
+ Cell[BoxData[
+  TemplateBox[{"RelatedLinks", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell[
+       "Insert links to any related page, including web pages.", 
+        "MoreInfoText"], BaseStyle -> "IFrameBox"]], "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "88f916ad-99d1-4784-a15f-dfa2faf44f02"]
+}], "RelatedLinksSection",
+ CellID->47113304,ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Examples Initialization",
+ Cell[BoxData[
+  TemplateBox[{"ExamplesInitialization", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell[
+       "Input that is to be evaluated before any examples are run, e.g. \
+Needs[\[Ellipsis]].", "MoreInfoText"], BaseStyle -> "IFrameBox"]], 
+     "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "1ca4d14a-308f-4a68-bbf6-e6901ce2ab4c"]
+}], "ExamplesInitializationSection",
+ CellID->1718580883,ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5"],
+
+Cell[BoxData[{
+ RowBox[{"Needs", "[", "\"\<WolframInstitute`InfraGeometry`\>\"", "]"}], "\n", 
+ RowBox[{"Needs", "[", "\"\<WolframInstitute`DiscreteGeometry`\>\"", 
+  "]"}]}], "ExampleInitialization",
+ CellID->1969679695,ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[GridBox[{
+    {
+     StyleBox[
+      RowBox[{"Basic", " ", "Examples"}], "PrimaryExamplesSection"], 
+     ButtonBox[
+      RowBox[{
+       RowBox[{"More", " ", "Examples"}], " ", "\[RightTriangle]"}],
+      BaseStyle->"ExtendedExamplesLink",
+      ButtonData:>"ExtendedExamples"]}
+   }],
+  $Line = 0; Null]], "PrimaryExamplesSection",
+ CellID->880084151,ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42"],
+
+Cell["\<\
+The ball topology of the hexagonal tiling at radii 1, 2 and 3. Every arrow \
+ends near the rim.\
+\>", "ExampleText",ExpressionUUID->"e865878a-6ecb-43ed-af1b-5b806d963490"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"g", " ", "=", " ", 
+     RowBox[{"InfraSubstrate", "[", 
+      RowBox[{"\"\<HexagonalTilingGraph\>\"", ",", " ", "\"\<Small\>\"", ",", 
+       " ", 
+       RowBox[{"\"\<KeepCoordinates\>\"", " ", "->", " ", "True"}]}], "]"}]}],
+     "}"}], ",", "\n", "  ", 
+   RowBox[{"GraphicsRow", " ", "@", " ", 
+    RowBox[{"Table", "[", 
+     RowBox[{
+      RowBox[{"TopologyGraph", "[", 
+       RowBox[{"g", ",", " ", 
+        RowBox[{"BallTopology", "[", 
+         RowBox[{"g", ",", " ", "r"}], "]"}]}], "]"}], ",", " ", 
+      RowBox[{"{", 
+       RowBox[{"r", ",", " ", "1", ",", " ", "3"}], "}"}]}], "]"}]}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"b438d228-415c-4e29-a772-556af1264e12"],
+
+Cell[BoxData[
+ GraphicsBox[{{}, {InsetBox[
+     GraphicsBox[{GraphicsComplexBox[CompressedData["
+1:eJxtVL9rk1EU/ZLUOryAKXmWtuniP6CjCIHvoqsuBcFZcNSCo1RTEScXQZx0
+qNhSaxQtojgEvjs6uLg4CRYFiVaxDqWVJEaTe84H98MH+XG5P885970j5xcX
+LpSTJLn47zP6tbOT8l9p/L2Vtk+f6155tZ0OhqPzMaON+Ozs+NxsFvxZIT9j
+fbN7qfkToW3mhKy5+onYz+3OuPzwZ8b4XfRbPnHy6Ic3E1JBP9o2zzB76uon
+avOuNc1d0U2Hb8j6Gf2cf+D7F/Fkk+jfsv5amE+Jb8Pxkcij/9YLUkI88TCe
+fjNr8hD4DH9Vrrr4qjxwfFbRj/1riHvb6Tm+gvwB/huot+fwc76tdPvY8XfV
+hSkh3u+wrVzQ1+hv9iHw/6mJeXTF8Rvyfox/7vSr6Sr4Yjz5pl7kuw88xnfQ
+fT+/HgDf9JedHkHJP/jULvB9M3w65fEr+VzHfNRjqaA/8rGfQchfCfkbTt8d
+7HPM9W/BtvoR9yXAnpbLTv8o9xx/03LH7UOU9uPRed+h/6Xbj5jvZx96PEO/
+Hvj/gfn74J/674F/zr8L/q/D/gU+D586c6udzuT3l7al17Evn7EvUV+49yPq
+fbcPddznkOdTzwHmp839/gr9uE+0eR/At/7G/LSD10cr0LeL/EnodQ1+6gu9
+lPvB+Ojx5+9HhF2CPtwn6r/q8Qn5tfkrQj6pL/Dl+/VknN8A//Ny193vObnk
+3tNZWXT7My8t6GH+htVd3sd7PSsdt09z+X1i/ib0Owj+6sBbBl9L4G8G89r9
+bSj3/Qv44/wr4OMv1pr8Cg==
+        "], {
+         {RGBColor[0.4, 0.6, 1], Thickness[0.006], Opacity[0.4], CapForm[
+          "Round"], Arrowheads[0.], 
+          ArrowBox[{{1, 2}, {1, 6}, {1, 10}, {2, 3}, {2, 7}, {3, 4}, {3, 
+           11}, {4, 5}, {4, 15}, {5, 6}, {5, 19}, {6, 20}, {7, 8}, {7, 13}, {
+           8, 9}, {8, 26}, {9, 10}, {9, 30}, {10, 23}, {11, 12}, {11, 14}, {
+           12, 13}, {12, 35}, {13, 25}, {14, 16}, {14, 34}, {15, 16}, {15, 
+           18}, {16, 38}, {17, 18}, {17, 19}, {17, 45}, {18, 40}, {19, 22}, {
+           20, 21}, {20, 24}, {21, 22}, {21, 48}, {22, 47}, {23, 24}, {23, 
+           31}, {24, 50}, {25, 27}, {25, 36}, {26, 27}, {26, 29}, {27, 55}, {
+           28, 29}, {28, 30}, {28, 62}, {29, 57}, {30, 32}, {31, 32}, {31, 
+           53}, {32, 64}, {33, 34}, {33, 35}, {33, 69}, {34, 41}, {35, 37}, {
+           36, 37}, {36, 58}, {37, 71}, {38, 39}, {38, 42}, {39, 40}, {39, 
+           74}, {40, 43}, {41, 42}, {41, 67}, {42, 75}, {43, 44}, {43, 76}, {
+           44, 45}, {44, 79}, {45, 46}, {46, 47}, {46, 80}, {47, 51}, {48, 
+           49}, {48, 52}, {49, 50}, {49, 85}, {50, 54}, {51, 52}, {51, 83}, {
+           52, 84}, {53, 54}, {53, 66}, {54, 87}, {55, 56}, {55, 59}, {56, 
+           57}, {56, 93}, {57, 60}, {58, 59}, {58, 73}, {59, 94}, {60, 61}, {
+           60, 95}, {61, 62}, {61, 98}, {62, 63}, {63, 64}, {63, 99}, {64, 
+           65}, {65, 66}, {65, 102}, {66, 91}, {67, 68}, {67, 77}, {68, 69}, {
+           69, 70}, {70, 71}, {71, 72}, {72, 73}, {73, 96}, {78, 79}, {79, 
+           81}, {80, 81}, {80, 82}, {82, 83}, {83, 90}, {84, 86}, {84, 89}, {
+           85, 86}, {85, 88}, {86, 105}, {87, 88}, {87, 92}, {88, 106}, {89, 
+           90}, {89, 107}, {91, 92}, {91, 103}, {92, 108}, {97, 98}, {98, 
+           100}, {99, 100}, {99, 101}, {101, 102}, {102, 104}, {103, 104}, {
+           103, 109}}, 0.11914696806885187`]}, 
+         {GrayLevel[0.62], Opacity[0.5], EdgeForm[{GrayLevel[0], Opacity[
+          0.65]}], DiskBox[1, 0.11914696806885187], 
+          DiskBox[2, 0.11914696806885187], DiskBox[3, 0.11914696806885187], 
+          DiskBox[4, 0.11914696806885187], DiskBox[5, 0.11914696806885187], 
+          DiskBox[6, 0.11914696806885187], DiskBox[7, 0.11914696806885187], 
+          DiskBox[8, 0.11914696806885187], DiskBox[9, 0.11914696806885187], 
+          DiskBox[10, 0.11914696806885187], DiskBox[11, 0.11914696806885187], 
+          DiskBox[12, 0.11914696806885187], DiskBox[13, 0.11914696806885187], 
+          DiskBox[14, 0.11914696806885187], DiskBox[15, 0.11914696806885187], 
+          DiskBox[16, 0.11914696806885187], DiskBox[17, 0.11914696806885187], 
+          DiskBox[18, 0.11914696806885187], DiskBox[19, 0.11914696806885187], 
+          DiskBox[20, 0.11914696806885187], DiskBox[21, 0.11914696806885187], 
+          DiskBox[22, 0.11914696806885187], DiskBox[23, 0.11914696806885187], 
+          DiskBox[24, 0.11914696806885187], DiskBox[25, 0.11914696806885187], 
+          DiskBox[26, 0.11914696806885187], DiskBox[27, 0.11914696806885187], 
+          DiskBox[28, 0.11914696806885187], DiskBox[29, 0.11914696806885187], 
+          DiskBox[30, 0.11914696806885187], DiskBox[31, 0.11914696806885187], 
+          DiskBox[32, 0.11914696806885187], DiskBox[33, 0.11914696806885187], 
+          DiskBox[34, 0.11914696806885187], DiskBox[35, 0.11914696806885187], 
+          DiskBox[36, 0.11914696806885187], DiskBox[37, 0.11914696806885187], 
+          DiskBox[38, 0.11914696806885187], DiskBox[39, 0.11914696806885187], 
+          DiskBox[40, 0.11914696806885187], DiskBox[41, 0.11914696806885187], 
+          DiskBox[42, 0.11914696806885187], DiskBox[43, 0.11914696806885187], 
+          DiskBox[44, 0.11914696806885187], DiskBox[45, 0.11914696806885187], 
+          DiskBox[46, 0.11914696806885187], DiskBox[47, 0.11914696806885187], 
+          DiskBox[48, 0.11914696806885187], DiskBox[49, 0.11914696806885187], 
+          DiskBox[50, 0.11914696806885187], DiskBox[51, 0.11914696806885187], 
+          DiskBox[52, 0.11914696806885187], DiskBox[53, 0.11914696806885187], 
+          DiskBox[54, 0.11914696806885187], DiskBox[55, 0.11914696806885187], 
+          DiskBox[56, 0.11914696806885187], DiskBox[57, 0.11914696806885187], 
+          DiskBox[58, 0.11914696806885187], DiskBox[59, 0.11914696806885187], 
+          DiskBox[60, 0.11914696806885187], DiskBox[61, 0.11914696806885187], 
+          DiskBox[62, 0.11914696806885187], DiskBox[63, 0.11914696806885187], 
+          DiskBox[64, 0.11914696806885187], DiskBox[65, 0.11914696806885187], 
+          DiskBox[66, 0.11914696806885187], DiskBox[67, 0.11914696806885187], 
+          DiskBox[68, 0.11914696806885187], DiskBox[69, 0.11914696806885187], 
+          DiskBox[70, 0.11914696806885187], DiskBox[71, 0.11914696806885187], 
+          DiskBox[72, 0.11914696806885187], DiskBox[73, 0.11914696806885187], 
+          DiskBox[74, 0.11914696806885187], DiskBox[75, 0.11914696806885187], 
+          DiskBox[76, 0.11914696806885187], DiskBox[77, 0.11914696806885187], 
+          DiskBox[78, 0.11914696806885187], DiskBox[79, 0.11914696806885187], 
+          DiskBox[80, 0.11914696806885187], DiskBox[81, 0.11914696806885187], 
+          DiskBox[82, 0.11914696806885187], DiskBox[83, 0.11914696806885187], 
+          DiskBox[84, 0.11914696806885187], DiskBox[85, 0.11914696806885187], 
+          DiskBox[86, 0.11914696806885187], DiskBox[87, 0.11914696806885187], 
+          DiskBox[88, 0.11914696806885187], DiskBox[89, 0.11914696806885187], 
+          DiskBox[90, 0.11914696806885187], DiskBox[91, 0.11914696806885187], 
+          DiskBox[92, 0.11914696806885187], DiskBox[93, 0.11914696806885187], 
+          DiskBox[94, 0.11914696806885187], DiskBox[95, 0.11914696806885187], 
+          DiskBox[96, 0.11914696806885187], DiskBox[97, 0.11914696806885187], 
+          DiskBox[98, 0.11914696806885187], DiskBox[99, 0.11914696806885187], 
+          DiskBox[100, 0.11914696806885187], 
+          DiskBox[101, 0.11914696806885187], 
+          DiskBox[102, 0.11914696806885187], 
+          DiskBox[103, 0.11914696806885187], 
+          DiskBox[104, 0.11914696806885187], 
+          DiskBox[105, 0.11914696806885187], 
+          DiskBox[106, 0.11914696806885187], 
+          DiskBox[107, 0.11914696806885187], 
+          DiskBox[108, 0.11914696806885187], 
+          DiskBox[109, 0.11914696806885187]}}], 
+       GraphicsComplexBox[CompressedData["
+1:eJxtVL9rk1EU/ZLUOryAKXmWtuniP6CjCIHvoqsuBcFZcNSCo1RTEScXQZx0
+qNhSaxQtojgEvjs6uLg4CRYFiVaxDqWVJEaTe84H98MH+XG5P885970j5xcX
+LpSTJLn47zP6tbOT8l9p/L2Vtk+f6155tZ0OhqPzMaON+Ozs+NxsFvxZIT9j
+fbN7qfkToW3mhKy5+onYz+3OuPzwZ8b4XfRbPnHy6Ic3E1JBP9o2zzB76uon
+avOuNc1d0U2Hb8j6Gf2cf+D7F/Fkk+jfsv5amE+Jb8Pxkcij/9YLUkI88TCe
+fjNr8hD4DH9Vrrr4qjxwfFbRj/1riHvb6Tm+gvwB/huot+fwc76tdPvY8XfV
+hSkh3u+wrVzQ1+hv9iHw/6mJeXTF8Rvyfox/7vSr6Sr4Yjz5pl7kuw88xnfQ
+fT+/HgDf9JedHkHJP/jULvB9M3w65fEr+VzHfNRjqaA/8rGfQchfCfkbTt8d
+7HPM9W/BtvoR9yXAnpbLTv8o9xx/03LH7UOU9uPRed+h/6Xbj5jvZx96PEO/
+Hvj/gfn74J/674F/zr8L/q/D/gU+D586c6udzuT3l7al17Evn7EvUV+49yPq
+fbcPddznkOdTzwHmp839/gr9uE+0eR/At/7G/LSD10cr0LeL/EnodQ1+6gu9
+lPvB+Ojx5+9HhF2CPtwn6r/q8Qn5tfkrQj6pL/Dl+/VknN8A//Ny193vObnk
+3tNZWXT7My8t6GH+htVd3sd7PSsdt09z+X1i/ib0Owj+6sBbBl9L4G8G89r9
+bSj3/Qv44/wr4OMv1pr8Cg==
+        "], {
+         {RGBColor[0.4, 0.6, 1], Thickness[0.005], Opacity[0.7], CapForm[
+          "Round"], Arrowheads[Medium], 
+          ArrowBox[{{39, 74}, {42, 75}, {43, 76}, {56, 93}, {59, 94}, {60, 
+           95}, {67, 77}, {73, 96}, {79, 78}, {86, 105}, {88, 106}, {89, 
+           107}, {92, 108}, {98, 97}, {103, 109}}, 0.07742159603201004]}, 
+         {GrayLevel[0], Opacity[0], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+          DiskBox[1, 0.07742159603201004], DiskBox[2, 0.07742159603201004], 
+          DiskBox[3, 0.07742159603201004], DiskBox[4, 0.07742159603201004], 
+          DiskBox[5, 0.07742159603201004], DiskBox[6, 0.07742159603201004], 
+          DiskBox[7, 0.07742159603201004], DiskBox[8, 0.07742159603201004], 
+          DiskBox[9, 0.07742159603201004], DiskBox[10, 0.07742159603201004], 
+          DiskBox[11, 0.07742159603201004], DiskBox[12, 0.07742159603201004], 
+          DiskBox[13, 0.07742159603201004], DiskBox[14, 0.07742159603201004], 
+          DiskBox[15, 0.07742159603201004], DiskBox[16, 0.07742159603201004], 
+          DiskBox[17, 0.07742159603201004], DiskBox[18, 0.07742159603201004], 
+          DiskBox[19, 0.07742159603201004], DiskBox[20, 0.07742159603201004], 
+          DiskBox[21, 0.07742159603201004], DiskBox[22, 0.07742159603201004], 
+          DiskBox[23, 0.07742159603201004], DiskBox[24, 0.07742159603201004], 
+          DiskBox[25, 0.07742159603201004], DiskBox[26, 0.07742159603201004], 
+          DiskBox[27, 0.07742159603201004], DiskBox[28, 0.07742159603201004], 
+          DiskBox[29, 0.07742159603201004], DiskBox[30, 0.07742159603201004], 
+          DiskBox[31, 0.07742159603201004], DiskBox[32, 0.07742159603201004], 
+          DiskBox[33, 0.07742159603201004], DiskBox[34, 0.07742159603201004], 
+          DiskBox[35, 0.07742159603201004], DiskBox[36, 0.07742159603201004], 
+          DiskBox[37, 0.07742159603201004], DiskBox[38, 0.07742159603201004], 
+          DiskBox[39, 0.07742159603201004], DiskBox[40, 0.07742159603201004], 
+          DiskBox[41, 0.07742159603201004], DiskBox[42, 0.07742159603201004], 
+          DiskBox[43, 0.07742159603201004], DiskBox[44, 0.07742159603201004], 
+          DiskBox[45, 0.07742159603201004], DiskBox[46, 0.07742159603201004], 
+          DiskBox[47, 0.07742159603201004], DiskBox[48, 0.07742159603201004], 
+          DiskBox[49, 0.07742159603201004], DiskBox[50, 0.07742159603201004], 
+          DiskBox[51, 0.07742159603201004], DiskBox[52, 0.07742159603201004], 
+          DiskBox[53, 0.07742159603201004], DiskBox[54, 0.07742159603201004], 
+          DiskBox[55, 0.07742159603201004], DiskBox[56, 0.07742159603201004], 
+          DiskBox[57, 0.07742159603201004], DiskBox[58, 0.07742159603201004], 
+          DiskBox[59, 0.07742159603201004], DiskBox[60, 0.07742159603201004], 
+          DiskBox[61, 0.07742159603201004], DiskBox[62, 0.07742159603201004], 
+          DiskBox[63, 0.07742159603201004], DiskBox[64, 0.07742159603201004], 
+          DiskBox[65, 0.07742159603201004], DiskBox[66, 0.07742159603201004], 
+          DiskBox[67, 0.07742159603201004], DiskBox[68, 0.07742159603201004], 
+          DiskBox[69, 0.07742159603201004], DiskBox[70, 0.07742159603201004], 
+          DiskBox[71, 0.07742159603201004], DiskBox[72, 0.07742159603201004], 
+          DiskBox[73, 0.07742159603201004], DiskBox[74, 0.07742159603201004], 
+          DiskBox[75, 0.07742159603201004], DiskBox[76, 0.07742159603201004], 
+          DiskBox[77, 0.07742159603201004], DiskBox[78, 0.07742159603201004], 
+          DiskBox[79, 0.07742159603201004], DiskBox[80, 0.07742159603201004], 
+          DiskBox[81, 0.07742159603201004], DiskBox[82, 0.07742159603201004], 
+          DiskBox[83, 0.07742159603201004], DiskBox[84, 0.07742159603201004], 
+          DiskBox[85, 0.07742159603201004], DiskBox[86, 0.07742159603201004], 
+          DiskBox[87, 0.07742159603201004], DiskBox[88, 0.07742159603201004], 
+          DiskBox[89, 0.07742159603201004], DiskBox[90, 0.07742159603201004], 
+          DiskBox[91, 0.07742159603201004], DiskBox[92, 0.07742159603201004], 
+          DiskBox[93, 0.07742159603201004], DiskBox[94, 0.07742159603201004], 
+          DiskBox[95, 0.07742159603201004], DiskBox[96, 0.07742159603201004], 
+          DiskBox[97, 0.07742159603201004], DiskBox[98, 0.07742159603201004], 
+          DiskBox[99, 0.07742159603201004], DiskBox[100, 0.07742159603201004],
+           DiskBox[101, 0.07742159603201004], 
+          DiskBox[102, 0.07742159603201004], 
+          DiskBox[103, 0.07742159603201004], 
+          DiskBox[104, 0.07742159603201004], 
+          DiskBox[105, 0.07742159603201004], 
+          DiskBox[106, 0.07742159603201004], 
+          DiskBox[107, 0.07742159603201004], 
+          DiskBox[108, 0.07742159603201004], 
+          DiskBox[109, 0.07742159603201004]}}]},
+      DefaultBaseStyle->{"PlotGraphics", "Graphics"},
+      DisplayFunction->Identity,
+      FormatType->TraditionalForm,
+      FrameTicks->None,
+      ImagePadding->{{-3.1769635189069634`*^-15, 1.}, {1.0000000000000089`, 
+       5.684341886080802*^-14}},
+      PlotInteractivity:>True], {107.5, -121.83006999442502}, 
+     ImageScaled[{0.5, 0.5}], {200., 228.66013998885003},
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}], 
+    InsetBox[
+     GraphicsBox[{GraphicsComplexBox[CompressedData["
+1:eJxtVL9rk1EU/ZLUOryAKXmWtuniP6CjCIHvoqsuBcFZcNSCo1RTEScXQZx0
+qNhSaxQtojgEvjs6uLg4CRYFiVaxDqWVJEaTe84H98MH+XG5P885970j5xcX
+LpSTJLn47zP6tbOT8l9p/L2Vtk+f6155tZ0OhqPzMaON+Ozs+NxsFvxZIT9j
+fbN7qfkToW3mhKy5+onYz+3OuPzwZ8b4XfRbPnHy6Ic3E1JBP9o2zzB76uon
+avOuNc1d0U2Hb8j6Gf2cf+D7F/Fkk+jfsv5amE+Jb8Pxkcij/9YLUkI88TCe
+fjNr8hD4DH9Vrrr4qjxwfFbRj/1riHvb6Tm+gvwB/huot+fwc76tdPvY8XfV
+hSkh3u+wrVzQ1+hv9iHw/6mJeXTF8Rvyfox/7vSr6Sr4Yjz5pl7kuw88xnfQ
+fT+/HgDf9JedHkHJP/jULvB9M3w65fEr+VzHfNRjqaA/8rGfQchfCfkbTt8d
+7HPM9W/BtvoR9yXAnpbLTv8o9xx/03LH7UOU9uPRed+h/6Xbj5jvZx96PEO/
+Hvj/gfn74J/674F/zr8L/q/D/gU+D586c6udzuT3l7al17Evn7EvUV+49yPq
+fbcPddznkOdTzwHmp839/gr9uE+0eR/At/7G/LSD10cr0LeL/EnodQ1+6gu9
+lPvB+Ojx5+9HhF2CPtwn6r/q8Qn5tfkrQj6pL/Dl+/VknN8A//Ny193vObnk
+3tNZWXT7My8t6GH+htVd3sd7PSsdt09z+X1i/ib0Owj+6sBbBl9L4G8G89r9
+bSj3/Qv44/wr4OMv1pr8Cg==
+        "], {
+         {RGBColor[0.4, 0.6, 1], Thickness[0.006], Opacity[0.4], CapForm[
+          "Round"], Arrowheads[0.], 
+          ArrowBox[{{1, 2}, {1, 6}, {1, 10}, {2, 3}, {2, 7}, {3, 4}, {3, 
+           11}, {4, 5}, {4, 15}, {5, 6}, {5, 19}, {6, 20}, {7, 8}, {7, 13}, {
+           8, 9}, {8, 26}, {9, 10}, {9, 30}, {10, 23}, {11, 12}, {11, 14}, {
+           12, 13}, {12, 35}, {13, 25}, {14, 16}, {14, 34}, {15, 16}, {15, 
+           18}, {16, 38}, {17, 18}, {17, 19}, {17, 45}, {18, 40}, {19, 22}, {
+           20, 21}, {20, 24}, {21, 22}, {21, 48}, {22, 47}, {23, 24}, {23, 
+           31}, {24, 50}, {25, 27}, {25, 36}, {26, 27}, {26, 29}, {27, 55}, {
+           28, 29}, {28, 30}, {28, 62}, {29, 57}, {30, 32}, {31, 32}, {31, 
+           53}, {32, 64}, {33, 34}, {33, 35}, {33, 69}, {34, 41}, {35, 37}, {
+           36, 37}, {36, 58}, {37, 71}, {38, 39}, {38, 42}, {39, 40}, {39, 
+           74}, {40, 43}, {41, 42}, {41, 67}, {42, 75}, {43, 44}, {43, 76}, {
+           44, 45}, {44, 79}, {45, 46}, {46, 47}, {46, 80}, {47, 51}, {48, 
+           49}, {48, 52}, {49, 50}, {49, 85}, {50, 54}, {51, 52}, {51, 83}, {
+           52, 84}, {53, 54}, {53, 66}, {54, 87}, {55, 56}, {55, 59}, {56, 
+           57}, {56, 93}, {57, 60}, {58, 59}, {58, 73}, {59, 94}, {60, 61}, {
+           60, 95}, {61, 62}, {61, 98}, {62, 63}, {63, 64}, {63, 99}, {64, 
+           65}, {65, 66}, {65, 102}, {66, 91}, {67, 68}, {67, 77}, {68, 69}, {
+           69, 70}, {70, 71}, {71, 72}, {72, 73}, {73, 96}, {78, 79}, {79, 
+           81}, {80, 81}, {80, 82}, {82, 83}, {83, 90}, {84, 86}, {84, 89}, {
+           85, 86}, {85, 88}, {86, 105}, {87, 88}, {87, 92}, {88, 106}, {89, 
+           90}, {89, 107}, {91, 92}, {91, 103}, {92, 108}, {97, 98}, {98, 
+           100}, {99, 100}, {99, 101}, {101, 102}, {102, 104}, {103, 104}, {
+           103, 109}}, 0.11914696806885187`]}, 
+         {GrayLevel[0.62], Opacity[0.5], EdgeForm[{GrayLevel[0], Opacity[
+          0.65]}], DiskBox[1, 0.11914696806885187], 
+          DiskBox[2, 0.11914696806885187], DiskBox[3, 0.11914696806885187], 
+          DiskBox[4, 0.11914696806885187], DiskBox[5, 0.11914696806885187], 
+          DiskBox[6, 0.11914696806885187], DiskBox[7, 0.11914696806885187], 
+          DiskBox[8, 0.11914696806885187], DiskBox[9, 0.11914696806885187], 
+          DiskBox[10, 0.11914696806885187], DiskBox[11, 0.11914696806885187], 
+          DiskBox[12, 0.11914696806885187], DiskBox[13, 0.11914696806885187], 
+          DiskBox[14, 0.11914696806885187], DiskBox[15, 0.11914696806885187], 
+          DiskBox[16, 0.11914696806885187], DiskBox[17, 0.11914696806885187], 
+          DiskBox[18, 0.11914696806885187], DiskBox[19, 0.11914696806885187], 
+          DiskBox[20, 0.11914696806885187], DiskBox[21, 0.11914696806885187], 
+          DiskBox[22, 0.11914696806885187], DiskBox[23, 0.11914696806885187], 
+          DiskBox[24, 0.11914696806885187], DiskBox[25, 0.11914696806885187], 
+          DiskBox[26, 0.11914696806885187], DiskBox[27, 0.11914696806885187], 
+          DiskBox[28, 0.11914696806885187], DiskBox[29, 0.11914696806885187], 
+          DiskBox[30, 0.11914696806885187], DiskBox[31, 0.11914696806885187], 
+          DiskBox[32, 0.11914696806885187], DiskBox[33, 0.11914696806885187], 
+          DiskBox[34, 0.11914696806885187], DiskBox[35, 0.11914696806885187], 
+          DiskBox[36, 0.11914696806885187], DiskBox[37, 0.11914696806885187], 
+          DiskBox[38, 0.11914696806885187], DiskBox[39, 0.11914696806885187], 
+          DiskBox[40, 0.11914696806885187], DiskBox[41, 0.11914696806885187], 
+          DiskBox[42, 0.11914696806885187], DiskBox[43, 0.11914696806885187], 
+          DiskBox[44, 0.11914696806885187], DiskBox[45, 0.11914696806885187], 
+          DiskBox[46, 0.11914696806885187], DiskBox[47, 0.11914696806885187], 
+          DiskBox[48, 0.11914696806885187], DiskBox[49, 0.11914696806885187], 
+          DiskBox[50, 0.11914696806885187], DiskBox[51, 0.11914696806885187], 
+          DiskBox[52, 0.11914696806885187], DiskBox[53, 0.11914696806885187], 
+          DiskBox[54, 0.11914696806885187], DiskBox[55, 0.11914696806885187], 
+          DiskBox[56, 0.11914696806885187], DiskBox[57, 0.11914696806885187], 
+          DiskBox[58, 0.11914696806885187], DiskBox[59, 0.11914696806885187], 
+          DiskBox[60, 0.11914696806885187], DiskBox[61, 0.11914696806885187], 
+          DiskBox[62, 0.11914696806885187], DiskBox[63, 0.11914696806885187], 
+          DiskBox[64, 0.11914696806885187], DiskBox[65, 0.11914696806885187], 
+          DiskBox[66, 0.11914696806885187], DiskBox[67, 0.11914696806885187], 
+          DiskBox[68, 0.11914696806885187], DiskBox[69, 0.11914696806885187], 
+          DiskBox[70, 0.11914696806885187], DiskBox[71, 0.11914696806885187], 
+          DiskBox[72, 0.11914696806885187], DiskBox[73, 0.11914696806885187], 
+          DiskBox[74, 0.11914696806885187], DiskBox[75, 0.11914696806885187], 
+          DiskBox[76, 0.11914696806885187], DiskBox[77, 0.11914696806885187], 
+          DiskBox[78, 0.11914696806885187], DiskBox[79, 0.11914696806885187], 
+          DiskBox[80, 0.11914696806885187], DiskBox[81, 0.11914696806885187], 
+          DiskBox[82, 0.11914696806885187], DiskBox[83, 0.11914696806885187], 
+          DiskBox[84, 0.11914696806885187], DiskBox[85, 0.11914696806885187], 
+          DiskBox[86, 0.11914696806885187], DiskBox[87, 0.11914696806885187], 
+          DiskBox[88, 0.11914696806885187], DiskBox[89, 0.11914696806885187], 
+          DiskBox[90, 0.11914696806885187], DiskBox[91, 0.11914696806885187], 
+          DiskBox[92, 0.11914696806885187], DiskBox[93, 0.11914696806885187], 
+          DiskBox[94, 0.11914696806885187], DiskBox[95, 0.11914696806885187], 
+          DiskBox[96, 0.11914696806885187], DiskBox[97, 0.11914696806885187], 
+          DiskBox[98, 0.11914696806885187], DiskBox[99, 0.11914696806885187], 
+          DiskBox[100, 0.11914696806885187], 
+          DiskBox[101, 0.11914696806885187], 
+          DiskBox[102, 0.11914696806885187], 
+          DiskBox[103, 0.11914696806885187], 
+          DiskBox[104, 0.11914696806885187], 
+          DiskBox[105, 0.11914696806885187], 
+          DiskBox[106, 0.11914696806885187], 
+          DiskBox[107, 0.11914696806885187], 
+          DiskBox[108, 0.11914696806885187], 
+          DiskBox[109, 0.11914696806885187]}}], 
+       GraphicsComplexBox[CompressedData["
+1:eJxtVL9rk1EU/ZLUOryAKXmWtuniP6CjCIHvoqsuBcFZcNSCo1RTEScXQZx0
+qNhSaxQtojgEvjs6uLg4CRYFiVaxDqWVJEaTe84H98MH+XG5P885970j5xcX
+LpSTJLn47zP6tbOT8l9p/L2Vtk+f6155tZ0OhqPzMaON+Ozs+NxsFvxZIT9j
+fbN7qfkToW3mhKy5+onYz+3OuPzwZ8b4XfRbPnHy6Ic3E1JBP9o2zzB76uon
+avOuNc1d0U2Hb8j6Gf2cf+D7F/Fkk+jfsv5amE+Jb8Pxkcij/9YLUkI88TCe
+fjNr8hD4DH9Vrrr4qjxwfFbRj/1riHvb6Tm+gvwB/huot+fwc76tdPvY8XfV
+hSkh3u+wrVzQ1+hv9iHw/6mJeXTF8Rvyfox/7vSr6Sr4Yjz5pl7kuw88xnfQ
+fT+/HgDf9JedHkHJP/jULvB9M3w65fEr+VzHfNRjqaA/8rGfQchfCfkbTt8d
+7HPM9W/BtvoR9yXAnpbLTv8o9xx/03LH7UOU9uPRed+h/6Xbj5jvZx96PEO/
+Hvj/gfn74J/674F/zr8L/q/D/gU+D586c6udzuT3l7al17Evn7EvUV+49yPq
+fbcPddznkOdTzwHmp839/gr9uE+0eR/At/7G/LSD10cr0LeL/EnodQ1+6gu9
+lPvB+Ojx5+9HhF2CPtwn6r/q8Qn5tfkrQj6pL/Dl+/VknN8A//Ny193vObnk
+3tNZWXT7My8t6GH+htVd3sd7PSsdt09z+X1i/ib0Owj+6sBbBl9L4G8G89r9
+bSj3/Qv44/wr4OMv1pr8Cg==
+        "], {
+         {RGBColor[0.4, 0.6, 1], Thickness[0.005], Opacity[0.7], CapForm[
+          "Round"], Arrowheads[Medium], 
+          ArrowBox[{{38, 74}, {38, 75}, {39, 74}, {40, 74}, {40, 76}, {41, 
+           75}, {41, 77}, {42, 75}, {43, 76}, {44, 76}, {44, 78}, {55, 93}, {
+           55, 94}, {56, 93}, {57, 93}, {57, 95}, {58, 94}, {58, 96}, {59, 
+           94}, {60, 95}, {61, 95}, {61, 97}, {67, 77}, {68, 77}, {72, 96}, {
+           73, 96}, {79, 78}, {81, 78}, {84, 105}, {84, 107}, {85, 105}, {85, 
+           106}, {86, 105}, {87, 106}, {87, 108}, {88, 106}, {89, 107}, {90, 
+           107}, {91, 108}, {91, 109}, {92, 108}, {98, 97}, {100, 97}, {103, 
+           109}, {104, 109}}, 0.07742159603201004]}, 
+         {GrayLevel[0], Opacity[0], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+          DiskBox[1, 0.07742159603201004], DiskBox[2, 0.07742159603201004], 
+          DiskBox[3, 0.07742159603201004], DiskBox[4, 0.07742159603201004], 
+          DiskBox[5, 0.07742159603201004], DiskBox[6, 0.07742159603201004], 
+          DiskBox[7, 0.07742159603201004], DiskBox[8, 0.07742159603201004], 
+          DiskBox[9, 0.07742159603201004], DiskBox[10, 0.07742159603201004], 
+          DiskBox[11, 0.07742159603201004], DiskBox[12, 0.07742159603201004], 
+          DiskBox[13, 0.07742159603201004], DiskBox[14, 0.07742159603201004], 
+          DiskBox[15, 0.07742159603201004], DiskBox[16, 0.07742159603201004], 
+          DiskBox[17, 0.07742159603201004], DiskBox[18, 0.07742159603201004], 
+          DiskBox[19, 0.07742159603201004], DiskBox[20, 0.07742159603201004], 
+          DiskBox[21, 0.07742159603201004], DiskBox[22, 0.07742159603201004], 
+          DiskBox[23, 0.07742159603201004], DiskBox[24, 0.07742159603201004], 
+          DiskBox[25, 0.07742159603201004], DiskBox[26, 0.07742159603201004], 
+          DiskBox[27, 0.07742159603201004], DiskBox[28, 0.07742159603201004], 
+          DiskBox[29, 0.07742159603201004], DiskBox[30, 0.07742159603201004], 
+          DiskBox[31, 0.07742159603201004], DiskBox[32, 0.07742159603201004], 
+          DiskBox[33, 0.07742159603201004], DiskBox[34, 0.07742159603201004], 
+          DiskBox[35, 0.07742159603201004], DiskBox[36, 0.07742159603201004], 
+          DiskBox[37, 0.07742159603201004], DiskBox[38, 0.07742159603201004], 
+          DiskBox[39, 0.07742159603201004], DiskBox[40, 0.07742159603201004], 
+          DiskBox[41, 0.07742159603201004], DiskBox[42, 0.07742159603201004], 
+          DiskBox[43, 0.07742159603201004], DiskBox[44, 0.07742159603201004], 
+          DiskBox[45, 0.07742159603201004], DiskBox[46, 0.07742159603201004], 
+          DiskBox[47, 0.07742159603201004], DiskBox[48, 0.07742159603201004], 
+          DiskBox[49, 0.07742159603201004], DiskBox[50, 0.07742159603201004], 
+          DiskBox[51, 0.07742159603201004], DiskBox[52, 0.07742159603201004], 
+          DiskBox[53, 0.07742159603201004], DiskBox[54, 0.07742159603201004], 
+          DiskBox[55, 0.07742159603201004], DiskBox[56, 0.07742159603201004], 
+          DiskBox[57, 0.07742159603201004], DiskBox[58, 0.07742159603201004], 
+          DiskBox[59, 0.07742159603201004], DiskBox[60, 0.07742159603201004], 
+          DiskBox[61, 0.07742159603201004], DiskBox[62, 0.07742159603201004], 
+          DiskBox[63, 0.07742159603201004], DiskBox[64, 0.07742159603201004], 
+          DiskBox[65, 0.07742159603201004], DiskBox[66, 0.07742159603201004], 
+          DiskBox[67, 0.07742159603201004], DiskBox[68, 0.07742159603201004], 
+          DiskBox[69, 0.07742159603201004], DiskBox[70, 0.07742159603201004], 
+          DiskBox[71, 0.07742159603201004], DiskBox[72, 0.07742159603201004], 
+          DiskBox[73, 0.07742159603201004], DiskBox[74, 0.07742159603201004], 
+          DiskBox[75, 0.07742159603201004], DiskBox[76, 0.07742159603201004], 
+          DiskBox[77, 0.07742159603201004], DiskBox[78, 0.07742159603201004], 
+          DiskBox[79, 0.07742159603201004], DiskBox[80, 0.07742159603201004], 
+          DiskBox[81, 0.07742159603201004], DiskBox[82, 0.07742159603201004], 
+          DiskBox[83, 0.07742159603201004], DiskBox[84, 0.07742159603201004], 
+          DiskBox[85, 0.07742159603201004], DiskBox[86, 0.07742159603201004], 
+          DiskBox[87, 0.07742159603201004], DiskBox[88, 0.07742159603201004], 
+          DiskBox[89, 0.07742159603201004], DiskBox[90, 0.07742159603201004], 
+          DiskBox[91, 0.07742159603201004], DiskBox[92, 0.07742159603201004], 
+          DiskBox[93, 0.07742159603201004], DiskBox[94, 0.07742159603201004], 
+          DiskBox[95, 0.07742159603201004], DiskBox[96, 0.07742159603201004], 
+          DiskBox[97, 0.07742159603201004], DiskBox[98, 0.07742159603201004], 
+          DiskBox[99, 0.07742159603201004], DiskBox[100, 0.07742159603201004],
+           DiskBox[101, 0.07742159603201004], 
+          DiskBox[102, 0.07742159603201004], 
+          DiskBox[103, 0.07742159603201004], 
+          DiskBox[104, 0.07742159603201004], 
+          DiskBox[105, 0.07742159603201004], 
+          DiskBox[106, 0.07742159603201004], 
+          DiskBox[107, 0.07742159603201004], 
+          DiskBox[108, 0.07742159603201004], 
+          DiskBox[109, 0.07742159603201004]}}]},
+      DefaultBaseStyle->{"PlotGraphics", "Graphics"},
+      DisplayFunction->Identity,
+      FormatType->TraditionalForm,
+      FrameTicks->None,
+      ImagePadding->{{-3.1769635189069634`*^-15, 1.}, {1.0000000000000089`, 
+       5.684341886080802*^-14}},
+      PlotInteractivity:>True], {322.5, -121.83006999442502}, 
+     ImageScaled[{0.5, 0.5}], {200., 228.66013998885003},
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}], 
+    InsetBox[
+     GraphicsBox[{GraphicsComplexBox[CompressedData["
+1:eJxtVL9rk1EU/ZLUOryAKXmWtuniP6CjCIHvoqsuBcFZcNSCo1RTEScXQZx0
+qNhSaxQtojgEvjs6uLg4CRYFiVaxDqWVJEaTe84H98MH+XG5P885970j5xcX
+LpSTJLn47zP6tbOT8l9p/L2Vtk+f6155tZ0OhqPzMaON+Ozs+NxsFvxZIT9j
+fbN7qfkToW3mhKy5+onYz+3OuPzwZ8b4XfRbPnHy6Ic3E1JBP9o2zzB76uon
+avOuNc1d0U2Hb8j6Gf2cf+D7F/Fkk+jfsv5amE+Jb8Pxkcij/9YLUkI88TCe
+fjNr8hD4DH9Vrrr4qjxwfFbRj/1riHvb6Tm+gvwB/huot+fwc76tdPvY8XfV
+hSkh3u+wrVzQ1+hv9iHw/6mJeXTF8Rvyfox/7vSr6Sr4Yjz5pl7kuw88xnfQ
+fT+/HgDf9JedHkHJP/jULvB9M3w65fEr+VzHfNRjqaA/8rGfQchfCfkbTt8d
+7HPM9W/BtvoR9yXAnpbLTv8o9xx/03LH7UOU9uPRed+h/6Xbj5jvZx96PEO/
+Hvj/gfn74J/674F/zr8L/q/D/gU+D586c6udzuT3l7al17Evn7EvUV+49yPq
+fbcPddznkOdTzwHmp839/gr9uE+0eR/At/7G/LSD10cr0LeL/EnodQ1+6gu9
+lPvB+Ojx5+9HhF2CPtwn6r/q8Qn5tfkrQj6pL/Dl+/VknN8A//Ny193vObnk
+3tNZWXT7My8t6GH+htVd3sd7PSsdt09z+X1i/ib0Owj+6sBbBl9L4G8G89r9
+bSj3/Qv44/wr4OMv1pr8Cg==
+        "], {
+         {RGBColor[0.4, 0.6, 1], Thickness[0.006], Opacity[0.4], CapForm[
+          "Round"], Arrowheads[0.], 
+          ArrowBox[{{1, 2}, {1, 6}, {1, 10}, {2, 3}, {2, 7}, {3, 4}, {3, 
+           11}, {4, 5}, {4, 15}, {5, 6}, {5, 19}, {6, 20}, {7, 8}, {7, 13}, {
+           8, 9}, {8, 26}, {9, 10}, {9, 30}, {10, 23}, {11, 12}, {11, 14}, {
+           12, 13}, {12, 35}, {13, 25}, {14, 16}, {14, 34}, {15, 16}, {15, 
+           18}, {16, 38}, {17, 18}, {17, 19}, {17, 45}, {18, 40}, {19, 22}, {
+           20, 21}, {20, 24}, {21, 22}, {21, 48}, {22, 47}, {23, 24}, {23, 
+           31}, {24, 50}, {25, 27}, {25, 36}, {26, 27}, {26, 29}, {27, 55}, {
+           28, 29}, {28, 30}, {28, 62}, {29, 57}, {30, 32}, {31, 32}, {31, 
+           53}, {32, 64}, {33, 34}, {33, 35}, {33, 69}, {34, 41}, {35, 37}, {
+           36, 37}, {36, 58}, {37, 71}, {38, 39}, {38, 42}, {39, 40}, {39, 
+           74}, {40, 43}, {41, 42}, {41, 67}, {42, 75}, {43, 44}, {43, 76}, {
+           44, 45}, {44, 79}, {45, 46}, {46, 47}, {46, 80}, {47, 51}, {48, 
+           49}, {48, 52}, {49, 50}, {49, 85}, {50, 54}, {51, 52}, {51, 83}, {
+           52, 84}, {53, 54}, {53, 66}, {54, 87}, {55, 56}, {55, 59}, {56, 
+           57}, {56, 93}, {57, 60}, {58, 59}, {58, 73}, {59, 94}, {60, 61}, {
+           60, 95}, {61, 62}, {61, 98}, {62, 63}, {63, 64}, {63, 99}, {64, 
+           65}, {65, 66}, {65, 102}, {66, 91}, {67, 68}, {67, 77}, {68, 69}, {
+           69, 70}, {70, 71}, {71, 72}, {72, 73}, {73, 96}, {78, 79}, {79, 
+           81}, {80, 81}, {80, 82}, {82, 83}, {83, 90}, {84, 86}, {84, 89}, {
+           85, 86}, {85, 88}, {86, 105}, {87, 88}, {87, 92}, {88, 106}, {89, 
+           90}, {89, 107}, {91, 92}, {91, 103}, {92, 108}, {97, 98}, {98, 
+           100}, {99, 100}, {99, 101}, {101, 102}, {102, 104}, {103, 104}, {
+           103, 109}}, 0.11914696806885187`]}, 
+         {GrayLevel[0.62], Opacity[0.5], EdgeForm[{GrayLevel[0], Opacity[
+          0.65]}], DiskBox[1, 0.11914696806885187], 
+          DiskBox[2, 0.11914696806885187], DiskBox[3, 0.11914696806885187], 
+          DiskBox[4, 0.11914696806885187], DiskBox[5, 0.11914696806885187], 
+          DiskBox[6, 0.11914696806885187], DiskBox[7, 0.11914696806885187], 
+          DiskBox[8, 0.11914696806885187], DiskBox[9, 0.11914696806885187], 
+          DiskBox[10, 0.11914696806885187], DiskBox[11, 0.11914696806885187], 
+          DiskBox[12, 0.11914696806885187], DiskBox[13, 0.11914696806885187], 
+          DiskBox[14, 0.11914696806885187], DiskBox[15, 0.11914696806885187], 
+          DiskBox[16, 0.11914696806885187], DiskBox[17, 0.11914696806885187], 
+          DiskBox[18, 0.11914696806885187], DiskBox[19, 0.11914696806885187], 
+          DiskBox[20, 0.11914696806885187], DiskBox[21, 0.11914696806885187], 
+          DiskBox[22, 0.11914696806885187], DiskBox[23, 0.11914696806885187], 
+          DiskBox[24, 0.11914696806885187], DiskBox[25, 0.11914696806885187], 
+          DiskBox[26, 0.11914696806885187], DiskBox[27, 0.11914696806885187], 
+          DiskBox[28, 0.11914696806885187], DiskBox[29, 0.11914696806885187], 
+          DiskBox[30, 0.11914696806885187], DiskBox[31, 0.11914696806885187], 
+          DiskBox[32, 0.11914696806885187], DiskBox[33, 0.11914696806885187], 
+          DiskBox[34, 0.11914696806885187], DiskBox[35, 0.11914696806885187], 
+          DiskBox[36, 0.11914696806885187], DiskBox[37, 0.11914696806885187], 
+          DiskBox[38, 0.11914696806885187], DiskBox[39, 0.11914696806885187], 
+          DiskBox[40, 0.11914696806885187], DiskBox[41, 0.11914696806885187], 
+          DiskBox[42, 0.11914696806885187], DiskBox[43, 0.11914696806885187], 
+          DiskBox[44, 0.11914696806885187], DiskBox[45, 0.11914696806885187], 
+          DiskBox[46, 0.11914696806885187], DiskBox[47, 0.11914696806885187], 
+          DiskBox[48, 0.11914696806885187], DiskBox[49, 0.11914696806885187], 
+          DiskBox[50, 0.11914696806885187], DiskBox[51, 0.11914696806885187], 
+          DiskBox[52, 0.11914696806885187], DiskBox[53, 0.11914696806885187], 
+          DiskBox[54, 0.11914696806885187], DiskBox[55, 0.11914696806885187], 
+          DiskBox[56, 0.11914696806885187], DiskBox[57, 0.11914696806885187], 
+          DiskBox[58, 0.11914696806885187], DiskBox[59, 0.11914696806885187], 
+          DiskBox[60, 0.11914696806885187], DiskBox[61, 0.11914696806885187], 
+          DiskBox[62, 0.11914696806885187], DiskBox[63, 0.11914696806885187], 
+          DiskBox[64, 0.11914696806885187], DiskBox[65, 0.11914696806885187], 
+          DiskBox[66, 0.11914696806885187], DiskBox[67, 0.11914696806885187], 
+          DiskBox[68, 0.11914696806885187], DiskBox[69, 0.11914696806885187], 
+          DiskBox[70, 0.11914696806885187], DiskBox[71, 0.11914696806885187], 
+          DiskBox[72, 0.11914696806885187], DiskBox[73, 0.11914696806885187], 
+          DiskBox[74, 0.11914696806885187], DiskBox[75, 0.11914696806885187], 
+          DiskBox[76, 0.11914696806885187], DiskBox[77, 0.11914696806885187], 
+          DiskBox[78, 0.11914696806885187], DiskBox[79, 0.11914696806885187], 
+          DiskBox[80, 0.11914696806885187], DiskBox[81, 0.11914696806885187], 
+          DiskBox[82, 0.11914696806885187], DiskBox[83, 0.11914696806885187], 
+          DiskBox[84, 0.11914696806885187], DiskBox[85, 0.11914696806885187], 
+          DiskBox[86, 0.11914696806885187], DiskBox[87, 0.11914696806885187], 
+          DiskBox[88, 0.11914696806885187], DiskBox[89, 0.11914696806885187], 
+          DiskBox[90, 0.11914696806885187], DiskBox[91, 0.11914696806885187], 
+          DiskBox[92, 0.11914696806885187], DiskBox[93, 0.11914696806885187], 
+          DiskBox[94, 0.11914696806885187], DiskBox[95, 0.11914696806885187], 
+          DiskBox[96, 0.11914696806885187], DiskBox[97, 0.11914696806885187], 
+          DiskBox[98, 0.11914696806885187], DiskBox[99, 0.11914696806885187], 
+          DiskBox[100, 0.11914696806885187], 
+          DiskBox[101, 0.11914696806885187], 
+          DiskBox[102, 0.11914696806885187], 
+          DiskBox[103, 0.11914696806885187], 
+          DiskBox[104, 0.11914696806885187], 
+          DiskBox[105, 0.11914696806885187], 
+          DiskBox[106, 0.11914696806885187], 
+          DiskBox[107, 0.11914696806885187], 
+          DiskBox[108, 0.11914696806885187], 
+          DiskBox[109, 0.11914696806885187]}}], 
+       GraphicsComplexBox[CompressedData["
+1:eJxtVL9rk1EU/ZLUOryAKXmWtuniP6CjCIHvoqsuBcFZcNSCo1RTEScXQZx0
+qNhSaxQtojgEvjs6uLg4CRYFiVaxDqWVJEaTe84H98MH+XG5P885970j5xcX
+LpSTJLn47zP6tbOT8l9p/L2Vtk+f6155tZ0OhqPzMaON+Ozs+NxsFvxZIT9j
+fbN7qfkToW3mhKy5+onYz+3OuPzwZ8b4XfRbPnHy6Ic3E1JBP9o2zzB76uon
+avOuNc1d0U2Hb8j6Gf2cf+D7F/Fkk+jfsv5amE+Jb8Pxkcij/9YLUkI88TCe
+fjNr8hD4DH9Vrrr4qjxwfFbRj/1riHvb6Tm+gvwB/huot+fwc76tdPvY8XfV
+hSkh3u+wrVzQ1+hv9iHw/6mJeXTF8Rvyfox/7vSr6Sr4Yjz5pl7kuw88xnfQ
+fT+/HgDf9JedHkHJP/jULvB9M3w65fEr+VzHfNRjqaA/8rGfQchfCfkbTt8d
+7HPM9W/BtvoR9yXAnpbLTv8o9xx/03LH7UOU9uPRed+h/6Xbj5jvZx96PEO/
+Hvj/gfn74J/674F/zr8L/q/D/gU+D586c6udzuT3l7al17Evn7EvUV+49yPq
+fbcPddznkOdTzwHmp839/gr9uE+0eR/At/7G/LSD10cr0LeL/EnodQ1+6gu9
+lPvB+Ojx5+9HhF2CPtwn6r/q8Qn5tfkrQj6pL/Dl+/VknN8A//Ny193vObnk
+3tNZWXT7My8t6GH+htVd3sd7PSsdt09z+X1i/ib0Owj+6sBbBl9L4G8G89r9
+bSj3/Qv44/wr4OMv1pr8Cg==
+        "], {
+         {RGBColor[0.4, 0.6, 1], Thickness[0.005], Opacity[0.7], CapForm[
+          "Round"], Arrowheads[Medium], 
+          ArrowBox[{{34, 67}, {36, 73}, {38, 74}, {38, 75}, {39, 74}, {40, 
+           74}, {40, 76}, {41, 75}, {41, 77}, {42, 75}, {43, 76}, {44, 76}, {
+           44, 78}, {45, 79}, {52, 89}, {55, 93}, {55, 94}, {56, 93}, {57, 
+           93}, {57, 95}, {58, 94}, {58, 96}, {59, 94}, {60, 95}, {61, 95}, {
+           61, 97}, {62, 98}, {66, 103}, {67, 77}, {68, 77}, {72, 96}, {73, 
+           96}, {79, 78}, {81, 78}, {84, 105}, {84, 107}, {85, 105}, {85, 
+           106}, {86, 105}, {87, 106}, {87, 108}, {88, 106}, {89, 107}, {90, 
+           107}, {91, 108}, {91, 109}, {92, 108}, {98, 97}, {100, 97}, {103, 
+           109}, {104, 109}}, 0.07742159603201004]}, 
+         {GrayLevel[0], Opacity[0], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+          DiskBox[1, 0.07742159603201004], DiskBox[2, 0.07742159603201004], 
+          DiskBox[3, 0.07742159603201004], DiskBox[4, 0.07742159603201004], 
+          DiskBox[5, 0.07742159603201004], DiskBox[6, 0.07742159603201004], 
+          DiskBox[7, 0.07742159603201004], DiskBox[8, 0.07742159603201004], 
+          DiskBox[9, 0.07742159603201004], DiskBox[10, 0.07742159603201004], 
+          DiskBox[11, 0.07742159603201004], DiskBox[12, 0.07742159603201004], 
+          DiskBox[13, 0.07742159603201004], DiskBox[14, 0.07742159603201004], 
+          DiskBox[15, 0.07742159603201004], DiskBox[16, 0.07742159603201004], 
+          DiskBox[17, 0.07742159603201004], DiskBox[18, 0.07742159603201004], 
+          DiskBox[19, 0.07742159603201004], DiskBox[20, 0.07742159603201004], 
+          DiskBox[21, 0.07742159603201004], DiskBox[22, 0.07742159603201004], 
+          DiskBox[23, 0.07742159603201004], DiskBox[24, 0.07742159603201004], 
+          DiskBox[25, 0.07742159603201004], DiskBox[26, 0.07742159603201004], 
+          DiskBox[27, 0.07742159603201004], DiskBox[28, 0.07742159603201004], 
+          DiskBox[29, 0.07742159603201004], DiskBox[30, 0.07742159603201004], 
+          DiskBox[31, 0.07742159603201004], DiskBox[32, 0.07742159603201004], 
+          DiskBox[33, 0.07742159603201004], DiskBox[34, 0.07742159603201004], 
+          DiskBox[35, 0.07742159603201004], DiskBox[36, 0.07742159603201004], 
+          DiskBox[37, 0.07742159603201004], DiskBox[38, 0.07742159603201004], 
+          DiskBox[39, 0.07742159603201004], DiskBox[40, 0.07742159603201004], 
+          DiskBox[41, 0.07742159603201004], DiskBox[42, 0.07742159603201004], 
+          DiskBox[43, 0.07742159603201004], DiskBox[44, 0.07742159603201004], 
+          DiskBox[45, 0.07742159603201004], DiskBox[46, 0.07742159603201004], 
+          DiskBox[47, 0.07742159603201004], DiskBox[48, 0.07742159603201004], 
+          DiskBox[49, 0.07742159603201004], DiskBox[50, 0.07742159603201004], 
+          DiskBox[51, 0.07742159603201004], DiskBox[52, 0.07742159603201004], 
+          DiskBox[53, 0.07742159603201004], DiskBox[54, 0.07742159603201004], 
+          DiskBox[55, 0.07742159603201004], DiskBox[56, 0.07742159603201004], 
+          DiskBox[57, 0.07742159603201004], DiskBox[58, 0.07742159603201004], 
+          DiskBox[59, 0.07742159603201004], DiskBox[60, 0.07742159603201004], 
+          DiskBox[61, 0.07742159603201004], DiskBox[62, 0.07742159603201004], 
+          DiskBox[63, 0.07742159603201004], DiskBox[64, 0.07742159603201004], 
+          DiskBox[65, 0.07742159603201004], DiskBox[66, 0.07742159603201004], 
+          DiskBox[67, 0.07742159603201004], DiskBox[68, 0.07742159603201004], 
+          DiskBox[69, 0.07742159603201004], DiskBox[70, 0.07742159603201004], 
+          DiskBox[71, 0.07742159603201004], DiskBox[72, 0.07742159603201004], 
+          DiskBox[73, 0.07742159603201004], DiskBox[74, 0.07742159603201004], 
+          DiskBox[75, 0.07742159603201004], DiskBox[76, 0.07742159603201004], 
+          DiskBox[77, 0.07742159603201004], DiskBox[78, 0.07742159603201004], 
+          DiskBox[79, 0.07742159603201004], DiskBox[80, 0.07742159603201004], 
+          DiskBox[81, 0.07742159603201004], DiskBox[82, 0.07742159603201004], 
+          DiskBox[83, 0.07742159603201004], DiskBox[84, 0.07742159603201004], 
+          DiskBox[85, 0.07742159603201004], DiskBox[86, 0.07742159603201004], 
+          DiskBox[87, 0.07742159603201004], DiskBox[88, 0.07742159603201004], 
+          DiskBox[89, 0.07742159603201004], DiskBox[90, 0.07742159603201004], 
+          DiskBox[91, 0.07742159603201004], DiskBox[92, 0.07742159603201004], 
+          DiskBox[93, 0.07742159603201004], DiskBox[94, 0.07742159603201004], 
+          DiskBox[95, 0.07742159603201004], DiskBox[96, 0.07742159603201004], 
+          DiskBox[97, 0.07742159603201004], DiskBox[98, 0.07742159603201004], 
+          DiskBox[99, 0.07742159603201004], DiskBox[100, 0.07742159603201004],
+           DiskBox[101, 0.07742159603201004], 
+          DiskBox[102, 0.07742159603201004], 
+          DiskBox[103, 0.07742159603201004], 
+          DiskBox[104, 0.07742159603201004], 
+          DiskBox[105, 0.07742159603201004], 
+          DiskBox[106, 0.07742159603201004], 
+          DiskBox[107, 0.07742159603201004], 
+          DiskBox[108, 0.07742159603201004], 
+          DiskBox[109, 0.07742159603201004]}}]},
+      DefaultBaseStyle->{"PlotGraphics", "Graphics"},
+      DisplayFunction->Identity,
+      FormatType->TraditionalForm,
+      FrameTicks->None,
+      ImagePadding->{{-3.1769635189069634`*^-15, 1.}, {1.0000000000000089`, 
+       5.684341886080802*^-14}},
+      PlotInteractivity:>True], {537.5, -121.83006999442502}, 
+     ImageScaled[{0.5, 0.5}], {200., 228.66013998885003},
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}]}, {}},
+  ImageSize->{645., 243.66013998885003`},
+  Method->{"IgnoreImageSizeAutomaticLimit" -> True},
+  PlotRange->{{0, 645.}, {-243.66013998885003`, 0}},
+  PlotRangePadding->Automatic]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"4b195e3a-55c1-47e7-895d-b331f5f4dfb1"]
+}, Open  ]],
+
+Cell["\<\
+The Hasse diagram and every comparable pair, its transitive closure, on a \
+binary tree at radius 2.\
+\>", "ExampleText",ExpressionUUID->"fea2da40-3500-409f-b005-5d2aadcf55bc"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"g", " ", "=", " ", 
+     RowBox[{"KaryTree", "[", "31", "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{"topo", " ", "=", " ", 
+     RowBox[{"BallTopology", "[", 
+      RowBox[{"g", ",", " ", "2"}], "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"GraphicsRow", " ", "@", " ", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"TopologyGraph", "[", 
+       RowBox[{"g", ",", " ", "topo"}], "]"}], ",", " ", 
+      RowBox[{"TopologyGraph", "[", 
+       RowBox[{"g", ",", " ", 
+        RowBox[{"TransitiveClosureGraph", "[", "topo", "]"}]}], "]"}]}], 
+     "}"}]}]}], "]"}]], "Input",
+ CellLabel->"In[2]:= ",ExpressionUUID->"ca1ac697-375b-4e4a-928d-304a749774ec"],
+
+Cell[BoxData[
+ GraphicsBox[{{}, {InsetBox[
+     GraphicsBox[{GraphicsComplexBox[CompressedData["
+1:eJxTTMoPSmViYGCQB2IQ/Vrf/CJPkKCDrPEE1+WVTA47de7FFGkxOKzxiXhR
+te23faXn/+IHfVJw/mow/doeov6Tvbvbsv+u6ZwOMP4mm9mLyj6IwvkOYcmu
+XrrycD6EvmQvB6Yf2T+x/yImKPEdzm+wdNK7c4LFAcbnC+a6uJ6VD873M3u5
+03GhMJwv5uzbvdpeAs6/678xRvSeDJwftI5ruv0+BTifAQ3IoonD3Anjr4b6
+G1WeyQHGh7if3QFVPTecDwlPAQdU/UJwPsS/ImjmicP5kPCVRDNfGs6HhI8c
+mn0KcD4kfhXhfAC5qpWt
+        "], {
+         {RGBColor[0.4, 0.6, 1], Thickness[0.006], Opacity[0.4], CapForm[
+          "Round"], Arrowheads[0.], 
+          ArrowBox[{{1, 2}, {1, 3}, {2, 4}, {2, 5}, {3, 6}, {3, 7}, {4, 8}, {
+           4, 9}, {5, 10}, {5, 11}, {6, 12}, {6, 13}, {7, 14}, {7, 15}, {8, 
+           16}, {8, 17}, {9, 18}, {9, 19}, {10, 20}, {10, 21}, {11, 22}, {11, 
+           23}, {12, 24}, {12, 25}, {13, 26}, {13, 27}, {14, 28}, {14, 29}, {
+           15, 30}, {15, 31}}, 0.06055557791897037]}, 
+         {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+          DiskBox[1, 0.06055557791897037], DiskBox[2, 0.06055557791897037], 
+          DiskBox[3, 0.06055557791897037], DiskBox[4, 0.06055557791897037], 
+          DiskBox[5, 0.06055557791897037], DiskBox[6, 0.06055557791897037], 
+          DiskBox[7, 0.06055557791897037], DiskBox[8, 0.06055557791897037], 
+          DiskBox[9, 0.06055557791897037], DiskBox[10, 0.06055557791897037], 
+          DiskBox[11, 0.06055557791897037], DiskBox[12, 0.06055557791897037], 
+          DiskBox[13, 0.06055557791897037], DiskBox[14, 0.06055557791897037], 
+          DiskBox[15, 0.06055557791897037], DiskBox[16, 0.06055557791897037], 
+          DiskBox[17, 0.06055557791897037], DiskBox[18, 0.06055557791897037], 
+          DiskBox[19, 0.06055557791897037], DiskBox[20, 0.06055557791897037], 
+          DiskBox[21, 0.06055557791897037], DiskBox[22, 0.06055557791897037], 
+          DiskBox[23, 0.06055557791897037], DiskBox[24, 0.06055557791897037], 
+          DiskBox[25, 0.06055557791897037], DiskBox[26, 0.06055557791897037], 
+          DiskBox[27, 0.06055557791897037], DiskBox[28, 0.06055557791897037], 
+          DiskBox[29, 0.06055557791897037], DiskBox[30, 0.06055557791897037], 
+          DiskBox[31, 0.06055557791897037]}}], 
+       GraphicsComplexBox[CompressedData["
+1:eJxdlX9Yzvcax9Ojkp4p9dRTeZ48T23oh82lX5jL5+NYTYWdahIpRw7aGho7
+yO9kjWgcW4pm82PoFDmiKI5bK7Sza1otDSVJpbjkV/TLdK6z7s+96/vpn+d6
+1939uV/vV9eVMXZZ2EJTExOT4QNMTP7/+fAd/0p12FCu994VcCzRlBd51c9d
+7mHCj0+LbF1T2MsSg/pWNHzpTDn3j8+HrH/+GXs/8GhfwGJLLnL+xKxDK5/Y
+U+YRCwKCRw+n3P9ZxVz++GxkTazDYahjJ+VN4//ydl35QC7ykPDBlSfNhlCe
+4ddWNPmgHWWHKdO35zJHyrc/ODXXvl5HOSxvcAa7aKBsIn3ppe+LO0XORW7l
+z025yP33W3DlvBXl/j5tuPL3bSn382qkfVrK/f06SfuHUe7vx0V6z0C536+R
+8pyKrTNDxp1kpR6Brlm30tn4mkCfnj2nWYXzErfavn1sgRefuvLAWWbq+c+4
+o/O+YxW9ia99C8+zL+JyOvPXHmSbv6nyvHYdWKB9wlfrGg+xGyPiWxe9LmHD
+x4zcG3XvMGvsaL48T1PGWrL1z86u/555DD6Rku55hV2avnS836nvmfvdH68m
+375J+ef40dkubbdo/teqBw7DOmppnwt4mtT+XkfvhdxPsioxq2cb8J4RUTbd
+Y6zusCce/fdGRlr0XTVvYBeQx+Oo/y7XlAb2b+QdhRn5IQLnkR9ccR/yw/v4
+HvKDs/IeqFDeC/9V8sAIJS+4KfuAWmVfUKnsEz5T9g0l6AP5IQJ9IT94oU/k
+h0noG/khM3HigY9WPGcl2EfSgepWh9PP2c/YV5OvJifv+XNmgv5vVa06Mti3
+g6Vg3y1zp48auKqDvYc+ujL2u35W1MH06Kv46bRJ3q86WDP6XFC98KUTe8Eu
+ou+43M3+g552UR76Zdbjdu9umq+6H2yVt7Kb9jW7Zpm5FHXTe0+OJ2zV9naz
+9XjP/aDq5BUTe9gj9B98xy7Aan0PK0aesebH085d6GF5yCsy8kMQziM/tOA+
+5AfxHvJDk/IekO4FGyUPLFbyQqyyDyhS9gVSn9Cs7BuED+SHe+gL+WET+kR+
+8o38EBXRsnzrS1Mu/P/y0VjtPAcVF/6TfKo6c/xUXPh/ZbrlReQsFRf+Tcvb
+C2euVnHhY3uzw5m0vSoufH2yu33yo2IVFz4vqXr3/61OxYXvKcu2XZxVYEY5
+syHd+acaM5pfnbYk26PLjPaZ5qYfiXUyp/csEkwWz5tgzoX/5En5f38jypwL
+/z6WYQGz15pz4T9b923bO1nmXPgXWfj3xnnhfzPuE/7Fe8L/AOU9IN0LGUoe
+kHhB6gPilX2B1CcMUPYNwofwvwl9Cf8V6FP4F76F/7ZlefZzvdXkPya5p2hs
+uJr8W8/Yt2/DCjX5T9VNy/T6Wk3+d90tnO1eoCYfTn31EfNr1OSrJ7ew6VKn
+mnzO0JdyH6c3yHfl1tD5ns+GUB7RE/2fb+2sad78mG/Iax9r2rerLHqqX4Q1
+vZe+rdzSe5U1+R8aucbiboY1+f/B1bnV65w1+ffzW7RDdcOa/Iss/JfgvPBv
+g/uEf/Ge8L9TeQ9I98JbSh6QeEHqA7qVfYHUJ+xU9g3Ch/A/BH0J/9HoU/gX
+voX/C++9W6c9Z8uLsY+VM+a/rSq35WXYV4X3KRf3G7a8E/tUD0vVb2q15UnY
+9871bMPrLlvO0MeHO35dt8/Sjjuir7JYmBLsbMfvoM+lWZefqjzteBH6HlOp
+3rxRq6F8y9JuzPhRGpoPaXj9snWchvZZP979YkuQht7bHTo1QjVHw1fjPb+M
+M86c87GGN+G9o1w+Ddi0RsPzkefeyIyM+FQNP4a8jZiRH8Q88kMF7kN+EO8h
+P0j3QLDyXpB4QOIFqQ+Q+oJwZZ8g9Q3CB/LDNfSF/CB8Ij+cR9/ID1tCvzuR
+FKEl/5OiLvd9skhL/jO4/ZPdK7Xkv3pke3tbipb8z0o9/EFchpZ86Pb6zxiY
+rSVfO5a52Z85pyWfftnupUt+1JLvztsJ4W0FjpQPOqwacPiKI83bPootD/vN
+kfbV9L680n7fkd6bHXN85JIuR/KfEfD5iLJBTuT/scd1hweOTuQ/x6c37voo
+J/L/L8zCv5gX/vfgPuFfvCf8S/fAUOW9IPGAxAtSHyD1BcOUfYLUNwgfwv8e
+9CX8C5/CfzL6Fv5DYlQbH3YMI/9mce6VNQN15D9memLJK42O/Gf5hF0Kf0tH
+/l0yLIxVvjryce9I1vClgTryFb7uixb9LB35/P1M2te/LdaR74sPqt8M/1BP
+Oc6ttkq9UE/zN7uv7L3wDz3t2z8oKjMyRU/vGeJtumv26Ml/TFhb5+hjevJf
+6D++Nfysnvx/OnneBHZVT/4TMAv/Yl74j8Z9wr94T/iX7oEbyntB4gGJF6Q+
+QOoLGpV9gtQ3CB/CfzT6Ev6FT+E/GH0L/9sKvLNzggy8HPtYVBwYeiDUwK9j
+X7Ynlgadnm3glvj//5Shtrx+voFvx76fVfp26z828GD0MfPmxq745Qbuhr7S
+yl7Ulq4x8Ifos7GhK9+QbOBl6Lt0rW5tTPef2TFzeNj5AUaa/2tyuq/dYCPt
+O516x2e+rZHe63h3wsIDzka+Ge/56uTRpp9cjfT3yg5dq6v3MPIfkEd37O7n
+1WONvAB5RUZ+EPPID2If8oN4D/lBugeke0HiAYkXpD5A6gukPkHqG4QP5Afh
+S/y9Cp/IT76RH/4HtlQuUQ==
+        "], {
+         {RGBColor[0.4, 0.6, 1], Thickness[0.005], Opacity[0.7], CapForm[
+          "Round"], Arrowheads[Medium], ArrowBox[{4, 8}, 0.06055557791897037],
+           ArrowBox[{4, 9}, 0.06055557791897037], 
+          ArrowBox[{5, 10}, 0.06055557791897037], 
+          ArrowBox[{5, 11}, 0.06055557791897037], 
+          ArrowBox[{6, 12}, 0.06055557791897037], 
+          ArrowBox[{6, 13}, 0.06055557791897037], 
+          ArrowBox[{7, 14}, 0.06055557791897037], 
+          ArrowBox[{7, 15}, 0.06055557791897037], 
+          ArrowBox[{8, 16}, 0.06055557791897037], 
+          ArrowBox[{9, 18}, 0.06055557791897037], 
+          ArrowBox[{10, 20}, 0.06055557791897037], 
+          ArrowBox[{11, 22}, 0.06055557791897037], 
+          ArrowBox[{12, 24}, 0.06055557791897037], 
+          ArrowBox[{13, 26}, 0.06055557791897037], 
+          ArrowBox[{14, 28}, 0.06055557791897037], 
+          ArrowBox[{15, 30}, 0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{
+            16, {0.2886751345948126, 0.09493990965191533}, 17}], 
+           0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{
+            17, {0.2886751345948125, -0.09493990965191523}, 16}], 
+           0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{
+            18, {1.4433756729740668`, 0.09493990965191583}, 19}], 
+           0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{19, {1.443375672974063, -0.0949399096519157}, 18}],
+            0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{20, {2.598076211353319, 0.09493990965191498}, 21}],
+            0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{
+            21, {2.598076211353314, -0.09493990965191519}, 20}], 
+           0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{22, {3.752776749732571, 0.09493990965191515}, 23}],
+            0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{
+            23, {3.7527767497325653`, -0.09493990965191523}, 22}], 
+           0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{24, {4.907477288111815, 0.09493990965191416}, 25}],
+            0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{
+            25, {4.907477288111824, -0.09493990965191357}, 24}], 
+           0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{26, {6.062177826491065, 0.094939909651914}, 27}], 
+           0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{
+            27, {6.062177826491077, -0.09493990965191365}, 26}], 
+           0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{28, {7.216878364870318, 0.09493990965191382}, 29}],
+            0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{29, {7.21687836487033, -0.09493990965191382}, 28}],
+            0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{30, {8.371578903249576, 0.09493990965191586}, 31}],
+            0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{
+            31, {8.371578903249576, -0.09493990965191759}, 30}], 
+           0.06055557791897037]}, 
+         {GrayLevel[0], Opacity[0], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+          DiskBox[1, 0.06055557791897037], DiskBox[2, 0.06055557791897037], 
+          DiskBox[3, 0.06055557791897037], DiskBox[4, 0.06055557791897037], 
+          DiskBox[5, 0.06055557791897037], DiskBox[6, 0.06055557791897037], 
+          DiskBox[7, 0.06055557791897037], DiskBox[8, 0.06055557791897037], 
+          DiskBox[9, 0.06055557791897037], DiskBox[10, 0.06055557791897037], 
+          DiskBox[11, 0.06055557791897037], DiskBox[12, 0.06055557791897037], 
+          DiskBox[13, 0.06055557791897037], DiskBox[14, 0.06055557791897037], 
+          DiskBox[15, 0.06055557791897037], DiskBox[16, 0.06055557791897037], 
+          DiskBox[17, 0.06055557791897037], DiskBox[18, 0.06055557791897037], 
+          DiskBox[19, 0.06055557791897037], DiskBox[20, 0.06055557791897037], 
+          DiskBox[21, 0.06055557791897037], DiskBox[22, 0.06055557791897037], 
+          DiskBox[23, 0.06055557791897037], DiskBox[24, 0.06055557791897037], 
+          DiskBox[25, 0.06055557791897037], DiskBox[26, 0.06055557791897037], 
+          DiskBox[27, 0.06055557791897037], DiskBox[28, 0.06055557791897037], 
+          DiskBox[29, 0.06055557791897037], DiskBox[30, 0.06055557791897037], 
+          DiskBox[31, 0.06055557791897037]}}]},
+      DefaultBaseStyle->{"PlotGraphics", "Graphics"},
+      DisplayFunction->Identity,
+      FormatType->TraditionalForm,
+      FrameTicks->None,
+      ImagePadding->{{3.463079180798994*^-16, 0.9999999999999432}, {
+       1.0000000000000002`, 0.}},
+      PlotInteractivity:>True], {160., -55.9643632419891}, 
+     ImageScaled[{0.5, 0.5}], {300., 91.9287264839782},
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}], 
+    InsetBox[
+     GraphicsBox[{GraphicsComplexBox[CompressedData["
+1:eJxTTMoPSmViYGCQB2IQ/Vrf/CJPkKCDrPEE1+WVTA47de7FFGkxOKzxiXhR
+te23faXn/+IHfVJw/mow/doeov6Tvbvbsv+u6ZwOMP4mm9mLyj6IwvkOYcmu
+XrrycD6EvmQvB6Yf2T+x/yImKPEdzm+wdNK7c4LFAcbnC+a6uJ6VD873M3u5
+03GhMJwv5uzbvdpeAs6/678xRvSeDJwftI5ruv0+BTifAQ3IoonD3Anjr4b6
+G1WeyQHGh7if3QFVPTecDwlPAQdU/UJwPsS/ImjmicP5kPCVRDNfGs6HhI8c
+mn0KcD4kfhXhfAC5qpWt
+        "], {
+         {RGBColor[0.4, 0.6, 1], Thickness[0.006], Opacity[0.4], CapForm[
+          "Round"], Arrowheads[0.], 
+          ArrowBox[{{1, 2}, {1, 3}, {2, 4}, {2, 5}, {3, 6}, {3, 7}, {4, 8}, {
+           4, 9}, {5, 10}, {5, 11}, {6, 12}, {6, 13}, {7, 14}, {7, 15}, {8, 
+           16}, {8, 17}, {9, 18}, {9, 19}, {10, 20}, {10, 21}, {11, 22}, {11, 
+           23}, {12, 24}, {12, 25}, {13, 26}, {13, 27}, {14, 28}, {14, 29}, {
+           15, 30}, {15, 31}}, 0.06055557791897037]}, 
+         {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+          DiskBox[1, 0.06055557791897037], DiskBox[2, 0.06055557791897037], 
+          DiskBox[3, 0.06055557791897037], DiskBox[4, 0.06055557791897037], 
+          DiskBox[5, 0.06055557791897037], DiskBox[6, 0.06055557791897037], 
+          DiskBox[7, 0.06055557791897037], DiskBox[8, 0.06055557791897037], 
+          DiskBox[9, 0.06055557791897037], DiskBox[10, 0.06055557791897037], 
+          DiskBox[11, 0.06055557791897037], DiskBox[12, 0.06055557791897037], 
+          DiskBox[13, 0.06055557791897037], DiskBox[14, 0.06055557791897037], 
+          DiskBox[15, 0.06055557791897037], DiskBox[16, 0.06055557791897037], 
+          DiskBox[17, 0.06055557791897037], DiskBox[18, 0.06055557791897037], 
+          DiskBox[19, 0.06055557791897037], DiskBox[20, 0.06055557791897037], 
+          DiskBox[21, 0.06055557791897037], DiskBox[22, 0.06055557791897037], 
+          DiskBox[23, 0.06055557791897037], DiskBox[24, 0.06055557791897037], 
+          DiskBox[25, 0.06055557791897037], DiskBox[26, 0.06055557791897037], 
+          DiskBox[27, 0.06055557791897037], DiskBox[28, 0.06055557791897037], 
+          DiskBox[29, 0.06055557791897037], DiskBox[30, 0.06055557791897037], 
+          DiskBox[31, 0.06055557791897037]}}], 
+       GraphicsComplexBox[CompressedData["
+1:eJxdlX9Yzvcax9Ojkp4p9dRTeZ48T23oh82lX5jL5+NYTYWdahIpRw7aGho7
+yO9kjWgcW4pm82PoFDmiKI5bK7Sza1otDSVJpbjkV/TLdK6z7s+96/vpn+d6
+1939uV/vV9eVMXZZ2EJTExOT4QNMTP7/+fAd/0p12FCu994VcCzRlBd51c9d
+7mHCj0+LbF1T2MsSg/pWNHzpTDn3j8+HrH/+GXs/8GhfwGJLLnL+xKxDK5/Y
+U+YRCwKCRw+n3P9ZxVz++GxkTazDYahjJ+VN4//ydl35QC7ykPDBlSfNhlCe
+4ddWNPmgHWWHKdO35zJHyrc/ODXXvl5HOSxvcAa7aKBsIn3ppe+LO0XORW7l
+z025yP33W3DlvBXl/j5tuPL3bSn382qkfVrK/f06SfuHUe7vx0V6z0C536+R
+8pyKrTNDxp1kpR6Brlm30tn4mkCfnj2nWYXzErfavn1sgRefuvLAWWbq+c+4
+o/O+YxW9ia99C8+zL+JyOvPXHmSbv6nyvHYdWKB9wlfrGg+xGyPiWxe9LmHD
+x4zcG3XvMGvsaL48T1PGWrL1z86u/555DD6Rku55hV2avnS836nvmfvdH68m
+375J+ef40dkubbdo/teqBw7DOmppnwt4mtT+XkfvhdxPsioxq2cb8J4RUTbd
+Y6zusCce/fdGRlr0XTVvYBeQx+Oo/y7XlAb2b+QdhRn5IQLnkR9ccR/yw/v4
+HvKDs/IeqFDeC/9V8sAIJS+4KfuAWmVfUKnsEz5T9g0l6AP5IQJ9IT94oU/k
+h0noG/khM3HigY9WPGcl2EfSgepWh9PP2c/YV5OvJifv+XNmgv5vVa06Mti3
+g6Vg3y1zp48auKqDvYc+ujL2u35W1MH06Kv46bRJ3q86WDP6XFC98KUTe8Eu
+ou+43M3+g552UR76Zdbjdu9umq+6H2yVt7Kb9jW7Zpm5FHXTe0+OJ2zV9naz
+9XjP/aDq5BUTe9gj9B98xy7Aan0PK0aesebH085d6GF5yCsy8kMQziM/tOA+
+5AfxHvJDk/IekO4FGyUPLFbyQqyyDyhS9gVSn9Cs7BuED+SHe+gL+WET+kR+
+8o38EBXRsnzrS1Mu/P/y0VjtPAcVF/6TfKo6c/xUXPh/ZbrlReQsFRf+Tcvb
+C2euVnHhY3uzw5m0vSoufH2yu33yo2IVFz4vqXr3/61OxYXvKcu2XZxVYEY5
+syHd+acaM5pfnbYk26PLjPaZ5qYfiXUyp/csEkwWz5tgzoX/5En5f38jypwL
+/z6WYQGz15pz4T9b923bO1nmXPgXWfj3xnnhfzPuE/7Fe8L/AOU9IN0LGUoe
+kHhB6gPilX2B1CcMUPYNwofwvwl9Cf8V6FP4F76F/7ZlefZzvdXkPya5p2hs
+uJr8W8/Yt2/DCjX5T9VNy/T6Wk3+d90tnO1eoCYfTn31EfNr1OSrJ7ew6VKn
+mnzO0JdyH6c3yHfl1tD5ns+GUB7RE/2fb+2sad78mG/Iax9r2rerLHqqX4Q1
+vZe+rdzSe5U1+R8aucbiboY1+f/B1bnV65w1+ffzW7RDdcOa/Iss/JfgvPBv
+g/uEf/Ge8L9TeQ9I98JbSh6QeEHqA7qVfYHUJ+xU9g3Ch/A/BH0J/9HoU/gX
+voX/C++9W6c9Z8uLsY+VM+a/rSq35WXYV4X3KRf3G7a8E/tUD0vVb2q15UnY
+9871bMPrLlvO0MeHO35dt8/Sjjuir7JYmBLsbMfvoM+lWZefqjzteBH6HlOp
+3rxRq6F8y9JuzPhRGpoPaXj9snWchvZZP979YkuQht7bHTo1QjVHw1fjPb+M
+M86c87GGN+G9o1w+Ddi0RsPzkefeyIyM+FQNP4a8jZiRH8Q88kMF7kN+EO8h
+P0j3QLDyXpB4QOIFqQ+Q+oJwZZ8g9Q3CB/LDNfSF/CB8Ij+cR9/ID1tCvzuR
+FKEl/5OiLvd9skhL/jO4/ZPdK7Xkv3pke3tbipb8z0o9/EFchpZ86Pb6zxiY
+rSVfO5a52Z85pyWfftnupUt+1JLvztsJ4W0FjpQPOqwacPiKI83bPootD/vN
+kfbV9L680n7fkd6bHXN85JIuR/KfEfD5iLJBTuT/scd1hweOTuQ/x6c37voo
+J/L/L8zCv5gX/vfgPuFfvCf8S/fAUOW9IPGAxAtSHyD1BcOUfYLUNwgfwv8e
+9CX8C5/CfzL6Fv5DYlQbH3YMI/9mce6VNQN15D9memLJK42O/Gf5hF0Kf0tH
+/l0yLIxVvjryce9I1vClgTryFb7uixb9LB35/P1M2te/LdaR74sPqt8M/1BP
+Oc6ttkq9UE/zN7uv7L3wDz3t2z8oKjMyRU/vGeJtumv26Ml/TFhb5+hjevJf
+6D++Nfysnvx/OnneBHZVT/4TMAv/Yl74j8Z9wr94T/iX7oEbyntB4gGJF6Q+
+QOoLGpV9gtQ3CB/CfzT6Ev6FT+E/GH0L/9sKvLNzggy8HPtYVBwYeiDUwK9j
+X7Ynlgadnm3glvj//5Shtrx+voFvx76fVfp26z828GD0MfPmxq745Qbuhr7S
+yl7Ulq4x8Ifos7GhK9+QbOBl6Lt0rW5tTPef2TFzeNj5AUaa/2tyuq/dYCPt
+O516x2e+rZHe63h3wsIDzka+Ge/56uTRpp9cjfT3yg5dq6v3MPIfkEd37O7n
+1WONvAB5RUZ+EPPID2If8oN4D/lBugeke0HiAYkXpD5A6gukPkHqG4QP5Afh
+S/y9Cp/IT76RH/4HtlQuUQ==
+        "], {
+         {RGBColor[0.4, 0.6, 1], Thickness[0.005], Opacity[0.7], CapForm[
+          "Round"], Arrowheads[Medium], ArrowBox[{4, 8}, 0.06055557791897037],
+           ArrowBox[{4, 9}, 0.06055557791897037], 
+          ArrowBox[{4, 16}, 0.06055557791897037], 
+          ArrowBox[{4, 17}, 0.06055557791897037], 
+          ArrowBox[{4, 18}, 0.06055557791897037], 
+          ArrowBox[{4, 19}, 0.06055557791897037], 
+          ArrowBox[{5, 10}, 0.06055557791897037], 
+          ArrowBox[{5, 11}, 0.06055557791897037], 
+          ArrowBox[{5, 20}, 0.06055557791897037], 
+          ArrowBox[{5, 21}, 0.06055557791897037], 
+          ArrowBox[{5, 22}, 0.06055557791897037], 
+          ArrowBox[{5, 23}, 0.06055557791897037], 
+          ArrowBox[{6, 12}, 0.06055557791897037], 
+          ArrowBox[{6, 13}, 0.06055557791897037], 
+          ArrowBox[{6, 24}, 0.06055557791897037], 
+          ArrowBox[{6, 25}, 0.06055557791897037], 
+          ArrowBox[{6, 26}, 0.06055557791897037], 
+          ArrowBox[{6, 27}, 0.06055557791897037], 
+          ArrowBox[{7, 14}, 0.06055557791897037], 
+          ArrowBox[{7, 15}, 0.06055557791897037], 
+          ArrowBox[{7, 28}, 0.06055557791897037], 
+          ArrowBox[{7, 29}, 0.06055557791897037], 
+          ArrowBox[{7, 30}, 0.06055557791897037], 
+          ArrowBox[{7, 31}, 0.06055557791897037], 
+          ArrowBox[{8, 16}, 0.06055557791897037], 
+          ArrowBox[{8, 17}, 0.06055557791897037], 
+          ArrowBox[{9, 18}, 0.06055557791897037], 
+          ArrowBox[{9, 19}, 0.06055557791897037], 
+          ArrowBox[{10, 20}, 0.06055557791897037], 
+          ArrowBox[{10, 21}, 0.06055557791897037], 
+          ArrowBox[{11, 22}, 0.06055557791897037], 
+          ArrowBox[{11, 23}, 0.06055557791897037], 
+          ArrowBox[{12, 24}, 0.06055557791897037], 
+          ArrowBox[{12, 25}, 0.06055557791897037], 
+          ArrowBox[{13, 26}, 0.06055557791897037], 
+          ArrowBox[{13, 27}, 0.06055557791897037], 
+          ArrowBox[{14, 28}, 0.06055557791897037], 
+          ArrowBox[{14, 29}, 0.06055557791897037], 
+          ArrowBox[{15, 30}, 0.06055557791897037], 
+          ArrowBox[{15, 31}, 0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{
+            16, {0.2886751345948126, 0.09493990965191533}, 17}], 
+           0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{
+            17, {0.2886751345948125, -0.09493990965191523}, 16}], 
+           0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{
+            18, {1.4433756729740668`, 0.09493990965191583}, 19}], 
+           0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{19, {1.443375672974063, -0.0949399096519157}, 18}],
+            0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{20, {2.598076211353319, 0.09493990965191498}, 21}],
+            0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{
+            21, {2.598076211353314, -0.09493990965191519}, 20}], 
+           0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{22, {3.752776749732571, 0.09493990965191515}, 23}],
+            0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{
+            23, {3.7527767497325653`, -0.09493990965191523}, 22}], 
+           0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{24, {4.907477288111815, 0.09493990965191416}, 25}],
+            0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{
+            25, {4.907477288111824, -0.09493990965191357}, 24}], 
+           0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{26, {6.062177826491065, 0.094939909651914}, 27}], 
+           0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{
+            27, {6.062177826491077, -0.09493990965191365}, 26}], 
+           0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{28, {7.216878364870318, 0.09493990965191382}, 29}],
+            0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{29, {7.21687836487033, -0.09493990965191382}, 28}],
+            0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{30, {8.371578903249576, 0.09493990965191586}, 31}],
+            0.06055557791897037], 
+          ArrowBox[
+           BezierCurveBox[{
+            31, {8.371578903249576, -0.09493990965191759}, 30}], 
+           0.06055557791897037]}, 
+         {GrayLevel[0], Opacity[0], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+          DiskBox[1, 0.06055557791897037], DiskBox[2, 0.06055557791897037], 
+          DiskBox[3, 0.06055557791897037], DiskBox[4, 0.06055557791897037], 
+          DiskBox[5, 0.06055557791897037], DiskBox[6, 0.06055557791897037], 
+          DiskBox[7, 0.06055557791897037], DiskBox[8, 0.06055557791897037], 
+          DiskBox[9, 0.06055557791897037], DiskBox[10, 0.06055557791897037], 
+          DiskBox[11, 0.06055557791897037], DiskBox[12, 0.06055557791897037], 
+          DiskBox[13, 0.06055557791897037], DiskBox[14, 0.06055557791897037], 
+          DiskBox[15, 0.06055557791897037], DiskBox[16, 0.06055557791897037], 
+          DiskBox[17, 0.06055557791897037], DiskBox[18, 0.06055557791897037], 
+          DiskBox[19, 0.06055557791897037], DiskBox[20, 0.06055557791897037], 
+          DiskBox[21, 0.06055557791897037], DiskBox[22, 0.06055557791897037], 
+          DiskBox[23, 0.06055557791897037], DiskBox[24, 0.06055557791897037], 
+          DiskBox[25, 0.06055557791897037], DiskBox[26, 0.06055557791897037], 
+          DiskBox[27, 0.06055557791897037], DiskBox[28, 0.06055557791897037], 
+          DiskBox[29, 0.06055557791897037], DiskBox[30, 0.06055557791897037], 
+          DiskBox[31, 0.06055557791897037]}}]},
+      DefaultBaseStyle->{"PlotGraphics", "Graphics"},
+      DisplayFunction->Identity,
+      FormatType->TraditionalForm,
+      FrameTicks->None,
+      ImagePadding->{{3.463079180798994*^-16, 0.9999999999999432}, {
+       1.0000000000000002`, 0.}},
+      PlotInteractivity:>True], {480., -55.9643632419891}, 
+     ImageScaled[{0.5, 0.5}], {300., 91.9287264839782},
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}]}, {}},
+  ImageSize->{640., 111.9287264839782},
+  Method->{"IgnoreImageSizeAutomaticLimit" -> True},
+  PlotRange->{{0, 640.}, {-111.9287264839782, 0}},
+  PlotRangePadding->Automatic]], "Output",
+ CellLabel->"Out[2]= ",ExpressionUUID->"be82b17d-03e1-43c3-ad32-261dce57fb3f"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "More Examples",
+ Cell[BoxData[
+  TemplateBox[{"MoreExamples", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell["Extended examples in standardized sections.", "MoreInfoText"], 
+       BaseStyle -> "IFrameBox"]], "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "352b6acf-a93b-4224-8779-658881cdabd0"]
+}], "ExtendedExamplesSection",
+ CellTags->"ExtendedExamples",
+ CellID->533848431,ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Scope", "ExampleSection",ExpressionUUID->
+   "32e79d70-f7af-47ff-bb41-513374ef55db"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1293636265,ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75"],
+
+Cell["\<\
+A substrate without coordinates is drawn by its spring layout.\
+\>", "ExampleText",ExpressionUUID->"ccc1b44d-3b0a-4131-8031-24bf0a571b57"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"g", " ", "=", " ", 
+     RowBox[{"InfraSubstrate", "[", 
+      RowBox[{"\"\<SquareMeshGraph\>\"", ",", " ", "\"\<Small\>\""}], "]"}]}],
+     "}"}], ",", "\n", "  ", 
+   RowBox[{"TopologyGraph", "[", 
+    RowBox[{"g", ",", " ", 
+     RowBox[{"BallTopology", "[", 
+      RowBox[{"g", ",", " ", "1"}], "]"}]}], "]"}]}], "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"a3cea382-05c0-427c-a4b9-62cd12a186a0"],
+
+Cell[BoxData[
+ GraphicsBox[{GraphicsComplexBox[CompressedData["
+1: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
+    "], {
+     {RGBColor[0.4, 0.6, 1], Thickness[0.006], Opacity[0.4], CapForm["Round"],
+       Arrowheads[0.], ArrowBox[CompressedData["
+1:eJwVxVt7sQAAAGCJzDQqQjNSKIfMxLY2Mockh1rFEKFyuN3/v/oOF+/zUt6v
+6fl9Pt+ff/4PRAEGYAEJGAMTYO5v+PdgBMRAEsyDRbAUYAO1QDOgBKzALvgV
+HAaXwRUUgmAoBqEQBqWhfAgOISE0lLuL3NHh+zASRsPZeyTyFCEjdKQI43AK
+TsM5mHogHqhoLIpFmeg4hsUSsXRsjKDII5JDsyiJ5rE8VsKYuBF34+cEnkgn
+RgkpMcbTOIFncAofJYmkmOwll6lciiIyBEX0HnMZMdPL9DOjJzJLknm6QBfp
+Ov1BdwvFQqlQLlQK9WKpxJTKDMuU2TJbYxV2Xq6Ua5VqpVapV9rVWrVZ5aut
+arvW5J45nmtxb5zAderteveZbzQbfOO1sWvsX+yXY5Nv7vgW/9pqt4S20O6+
+dd6F967wKXSE7kf3syP2xL6oiktx9bXsD/qjvjoYDaTBbKAOtKE5XI0kaSxN
+pJk8kRV5Ks9kXV7LG9mbKJPZZK7MlbViTWdTbapPjZm2OC5OC2dxWVwXN1VT
+TXWlGZr5bXybuqG7uqefDdM4m6vl6sf5cdebtbW216fNaeNsvK213W33W3t7
+sHaWvdvvD/bBPtqn4+l4OTmO63jO1fXc8+V2vf0F1dRppA==
+       "], 0.10598247768167977`]}, 
+     {GrayLevel[0.62], Opacity[0.5], EdgeForm[{GrayLevel[0], Opacity[0.65]}], 
+      DiskBox[1, 0.10598247768167977], DiskBox[2, 0.10598247768167977], 
+      DiskBox[3, 0.10598247768167977], DiskBox[4, 0.10598247768167977], 
+      DiskBox[5, 0.10598247768167977], DiskBox[6, 0.10598247768167977], 
+      DiskBox[7, 0.10598247768167977], DiskBox[8, 0.10598247768167977], 
+      DiskBox[9, 0.10598247768167977], DiskBox[10, 0.10598247768167977], 
+      DiskBox[11, 0.10598247768167977], DiskBox[12, 0.10598247768167977], 
+      DiskBox[13, 0.10598247768167977], DiskBox[14, 0.10598247768167977], 
+      DiskBox[15, 0.10598247768167977], DiskBox[16, 0.10598247768167977], 
+      DiskBox[17, 0.10598247768167977], DiskBox[18, 0.10598247768167977], 
+      DiskBox[19, 0.10598247768167977], DiskBox[20, 0.10598247768167977], 
+      DiskBox[21, 0.10598247768167977], DiskBox[22, 0.10598247768167977], 
+      DiskBox[23, 0.10598247768167977], DiskBox[24, 0.10598247768167977], 
+      DiskBox[25, 0.10598247768167977], DiskBox[26, 0.10598247768167977], 
+      DiskBox[27, 0.10598247768167977], DiskBox[28, 0.10598247768167977], 
+      DiskBox[29, 0.10598247768167977], DiskBox[30, 0.10598247768167977], 
+      DiskBox[31, 0.10598247768167977], DiskBox[32, 0.10598247768167977], 
+      DiskBox[33, 0.10598247768167977], DiskBox[34, 0.10598247768167977], 
+      DiskBox[35, 0.10598247768167977], DiskBox[36, 0.10598247768167977], 
+      DiskBox[37, 0.10598247768167977], DiskBox[38, 0.10598247768167977], 
+      DiskBox[39, 0.10598247768167977], DiskBox[40, 0.10598247768167977], 
+      DiskBox[41, 0.10598247768167977], DiskBox[42, 0.10598247768167977], 
+      DiskBox[43, 0.10598247768167977], DiskBox[44, 0.10598247768167977], 
+      DiskBox[45, 0.10598247768167977], DiskBox[46, 0.10598247768167977], 
+      DiskBox[47, 0.10598247768167977], DiskBox[48, 0.10598247768167977], 
+      DiskBox[49, 0.10598247768167977], DiskBox[50, 0.10598247768167977], 
+      DiskBox[51, 0.10598247768167977], DiskBox[52, 0.10598247768167977], 
+      DiskBox[53, 0.10598247768167977], DiskBox[54, 0.10598247768167977], 
+      DiskBox[55, 0.10598247768167977], DiskBox[56, 0.10598247768167977], 
+      DiskBox[57, 0.10598247768167977], DiskBox[58, 0.10598247768167977], 
+      DiskBox[59, 0.10598247768167977], DiskBox[60, 0.10598247768167977], 
+      DiskBox[61, 0.10598247768167977], DiskBox[62, 0.10598247768167977], 
+      DiskBox[63, 0.10598247768167977], DiskBox[64, 0.10598247768167977], 
+      DiskBox[65, 0.10598247768167977], DiskBox[66, 0.10598247768167977], 
+      DiskBox[67, 0.10598247768167977], DiskBox[68, 0.10598247768167977], 
+      DiskBox[69, 0.10598247768167977], DiskBox[70, 0.10598247768167977], 
+      DiskBox[71, 0.10598247768167977], DiskBox[72, 0.10598247768167977], 
+      DiskBox[73, 0.10598247768167977], DiskBox[74, 0.10598247768167977], 
+      DiskBox[75, 0.10598247768167977], DiskBox[76, 0.10598247768167977], 
+      DiskBox[77, 0.10598247768167977], DiskBox[78, 0.10598247768167977], 
+      DiskBox[79, 0.10598247768167977], DiskBox[80, 0.10598247768167977], 
+      DiskBox[81, 0.10598247768167977], DiskBox[82, 0.10598247768167977], 
+      DiskBox[83, 0.10598247768167977], DiskBox[84, 0.10598247768167977], 
+      DiskBox[85, 0.10598247768167977], DiskBox[86, 0.10598247768167977], 
+      DiskBox[87, 0.10598247768167977], DiskBox[88, 0.10598247768167977], 
+      DiskBox[89, 0.10598247768167977], DiskBox[90, 0.10598247768167977], 
+      DiskBox[91, 0.10598247768167977], DiskBox[92, 0.10598247768167977], 
+      DiskBox[93, 0.10598247768167977], DiskBox[94, 0.10598247768167977], 
+      DiskBox[95, 0.10598247768167977], DiskBox[96, 0.10598247768167977], 
+      DiskBox[97, 0.10598247768167977], DiskBox[98, 0.10598247768167977], 
+      DiskBox[99, 0.10598247768167977], DiskBox[100, 0.10598247768167977], 
+      DiskBox[101, 0.10598247768167977], DiskBox[102, 0.10598247768167977]}}],
+    GraphicsComplexBox[CompressedData["
+1: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
+    "], {
+     {RGBColor[0.4, 0.6, 1], Thickness[0.005], Opacity[0.7], CapForm["Round"],
+       Arrowheads[Medium], 
+      ArrowBox[{{5, 63}, {9, 10}, {11, 8}, {11, 28}, {12, 23}, {16, 10}, {16, 
+       26}, {17, 29}, {25, 13}, {30, 26}, {31, 28}, {33, 13}, {34, 8}, {34, 
+       57}, {44, 46}, {44, 54}, {47, 2}, {47, 53}, {50, 46}, {50, 53}, {56, 
+       55}, {56, 58}, {59, 54}, {59, 58}, {60, 55}, {60, 57}, {76, 100}, {76, 
+       101}, {76, 102}, {81, 79}, {82, 79}, {83, 63}, {84, 66}, {88, 93}, {91,
+        2}, {92, 48}, {94, 48}, {96, 85}, {97, 85}, {99, 19}}, 
+       0.07227458481560328]}, 
+     {GrayLevel[0], Opacity[0], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+      DiskBox[1, 0.07227458481560328], DiskBox[2, 0.07227458481560328], 
+      DiskBox[3, 0.07227458481560328], DiskBox[4, 0.07227458481560328], 
+      DiskBox[5, 0.07227458481560328], DiskBox[6, 0.07227458481560328], 
+      DiskBox[7, 0.07227458481560328], DiskBox[8, 0.07227458481560328], 
+      DiskBox[9, 0.07227458481560328], DiskBox[10, 0.07227458481560328], 
+      DiskBox[11, 0.07227458481560328], DiskBox[12, 0.07227458481560328], 
+      DiskBox[13, 0.07227458481560328], DiskBox[14, 0.07227458481560328], 
+      DiskBox[15, 0.07227458481560328], DiskBox[16, 0.07227458481560328], 
+      DiskBox[17, 0.07227458481560328], DiskBox[18, 0.07227458481560328], 
+      DiskBox[19, 0.07227458481560328], DiskBox[20, 0.07227458481560328], 
+      DiskBox[21, 0.07227458481560328], DiskBox[22, 0.07227458481560328], 
+      DiskBox[23, 0.07227458481560328], DiskBox[24, 0.07227458481560328], 
+      DiskBox[25, 0.07227458481560328], DiskBox[26, 0.07227458481560328], 
+      DiskBox[27, 0.07227458481560328], DiskBox[28, 0.07227458481560328], 
+      DiskBox[29, 0.07227458481560328], DiskBox[30, 0.07227458481560328], 
+      DiskBox[31, 0.07227458481560328], DiskBox[32, 0.07227458481560328], 
+      DiskBox[33, 0.07227458481560328], DiskBox[34, 0.07227458481560328], 
+      DiskBox[35, 0.07227458481560328], DiskBox[36, 0.07227458481560328], 
+      DiskBox[37, 0.07227458481560328], DiskBox[38, 0.07227458481560328], 
+      DiskBox[39, 0.07227458481560328], DiskBox[40, 0.07227458481560328], 
+      DiskBox[41, 0.07227458481560328], DiskBox[42, 0.07227458481560328], 
+      DiskBox[43, 0.07227458481560328], DiskBox[44, 0.07227458481560328], 
+      DiskBox[45, 0.07227458481560328], DiskBox[46, 0.07227458481560328], 
+      DiskBox[47, 0.07227458481560328], DiskBox[48, 0.07227458481560328], 
+      DiskBox[49, 0.07227458481560328], DiskBox[50, 0.07227458481560328], 
+      DiskBox[51, 0.07227458481560328], DiskBox[52, 0.07227458481560328], 
+      DiskBox[53, 0.07227458481560328], DiskBox[54, 0.07227458481560328], 
+      DiskBox[55, 0.07227458481560328], DiskBox[56, 0.07227458481560328], 
+      DiskBox[57, 0.07227458481560328], DiskBox[58, 0.07227458481560328], 
+      DiskBox[59, 0.07227458481560328], DiskBox[60, 0.07227458481560328], 
+      DiskBox[61, 0.07227458481560328], DiskBox[62, 0.07227458481560328], 
+      DiskBox[63, 0.07227458481560328], DiskBox[64, 0.07227458481560328], 
+      DiskBox[65, 0.07227458481560328], DiskBox[66, 0.07227458481560328], 
+      DiskBox[67, 0.07227458481560328], DiskBox[68, 0.07227458481560328], 
+      DiskBox[69, 0.07227458481560328], DiskBox[70, 0.07227458481560328], 
+      DiskBox[71, 0.07227458481560328], DiskBox[72, 0.07227458481560328], 
+      DiskBox[73, 0.07227458481560328], DiskBox[74, 0.07227458481560328], 
+      DiskBox[75, 0.07227458481560328], DiskBox[76, 0.07227458481560328], 
+      DiskBox[77, 0.07227458481560328], DiskBox[78, 0.07227458481560328], 
+      DiskBox[79, 0.07227458481560328], DiskBox[80, 0.07227458481560328], 
+      DiskBox[81, 0.07227458481560328], DiskBox[82, 0.07227458481560328], 
+      DiskBox[83, 0.07227458481560328], DiskBox[84, 0.07227458481560328], 
+      DiskBox[85, 0.07227458481560328], DiskBox[86, 0.07227458481560328], 
+      DiskBox[87, 0.07227458481560328], DiskBox[88, 0.07227458481560328], 
+      DiskBox[89, 0.07227458481560328], DiskBox[90, 0.07227458481560328], 
+      DiskBox[91, 0.07227458481560328], DiskBox[92, 0.07227458481560328], 
+      DiskBox[93, 0.07227458481560328], DiskBox[94, 0.07227458481560328], 
+      DiskBox[95, 0.07227458481560328], DiskBox[96, 0.07227458481560328], 
+      DiskBox[97, 0.07227458481560328], DiskBox[98, 0.07227458481560328], 
+      DiskBox[99, 0.07227458481560328], DiskBox[100, 0.07227458481560328], 
+      DiskBox[101, 0.07227458481560328], DiskBox[102, 0.07227458481560328]}}]},
+  FormatType->TraditionalForm,
+  FrameTicks->None]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"f92d8bf4-b4f7-4ac4-9f57-af3c37523b87"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Generalizations & Extensions", "ExampleSection",ExpressionUUID->
+   "a148ce84-caec-4483-aa99-5b7bd6d55bf1"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1020263627,ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Options", "ExampleSection",ExpressionUUID->
+   "b26b6366-7922-4236-a426-38c0f5de13f0"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->2061341341,ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Applications", "ExampleSection",ExpressionUUID->
+   "d5715ee2-1cae-4f33-89b2-0e99ea9caa6e"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->258228157,ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Properties & Relations", "ExampleSection",ExpressionUUID->
+   "d18b1e1f-4c4c-49a5-bb54-1e5e145ddf4e"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->2123667759,ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Possible Issues", "ExampleSection",ExpressionUUID->
+   "dda06a82-eb41-4b48-8510-6cb821647761"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1305812373,ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Interactive Examples", "ExampleSection",ExpressionUUID->
+   "e1fe5ce4-66df-44f8-b96d-14ea9265eaf2"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1653164318,ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Neat Examples", "ExampleSection",ExpressionUUID->
+   "898193c6-0d9f-4097-90dd-7bc455972e43"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->589267740,ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Metadata", "MetadataSection",
+ CellID->311882160,ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd"],
+
+Cell[TextData[{
+ "New in: ",
+ Cell["XX", "HistoryData",
+  CellTags->"New",ExpressionUUID->"c83e5b59-d200-4539-afdc-500ed06d3c87"],
+ " | Modified in: ",
+ Cell[" ", "HistoryData",
+  CellTags->"Modified",ExpressionUUID->"d4e38c0c-d937-44f2-85a5-7c0e8fc755ab"],
+ " | Obsolete in: ",
+ Cell[" ", "HistoryData",
+  CellTags->"Obsolete",ExpressionUUID->
+  "4c68d818-8923-4121-80f8-cf0eabb4c0de"]
+}], "History",
+ CellID->341476719,ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Categorization",
+ Cell[BoxData[
+  TemplateBox[{"Metadata", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell[
+       "Metadata such as page URI, context, and type of documentation page.", 
+        "MoreInfoText"], BaseStyle -> "IFrameBox"]], "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "4b3d4122-3cd4-481f-a8ff-5aefbb03e00d"]
+}], "CategorizationSection",
+ CellID->1755438392,ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329"],
+
+Cell["Symbol", "Categorization",
+ CellLabel->"Entity Type",
+ CellID->686433507,ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a"],
+
+Cell["WolframInstitute/InfraGeometry", "Categorization",
+ CellLabel->"Paclet Name",
+ CellID->605800465,ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec"],
+
+Cell["WolframInstitute`InfraGeometry`", "Categorization",
+ CellLabel->"Context",
+ CellID->468444828,ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191"],
+
+Cell["WolframInstitute/InfraGeometry/ref/TopologyGraph", "Categorization",
+ CellLabel->"URI",ExpressionUUID->"2c0a10fb-c370-444e-aff0-e6ec5591486a"]
+}, Closed]],
+
+Cell["Keywords", "KeywordsSection",
+ CellID->477174294,ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6"],
+
+Cell[CellGroupData[{
+
+Cell["Syntax Templates", "TemplatesSection",
+ CellID->1872225408,ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c"],
+
+Cell[BoxData[""], "Template",
+ CellLabel->"Additional Function Template",
+ CellID->1562036412,ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72"],
+
+Cell[BoxData[""], "Template",
+ CellLabel->"Arguments Pattern",
+ CellID->158391909,ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec"],
+
+Cell[BoxData[""], "Template",
+ CellLabel->"Local Variables",
+ CellID->1360575930,ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9"],
+
+Cell[BoxData[""], "Template",
+ CellLabel->"Color Equal Signs",
+ CellID->793782254,ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648"]
+}, Closed]]
+}, Open  ]]
+},
+WindowSize->{700, 770},
+WindowMargins->{{5, Automatic}, {Automatic, 0}},
+TaggingRules->{
+ "Metadata" -> {
+   "title" -> "TopologyGraph", "context" -> "WolframInstitute`InfraGeometry`",
+     "keywords" -> {
+     "ball topology", "specialization preorder", "Hasse diagram", "drawing", 
+      "visualization"}, "summary" -> "", "paclet" -> 
+    "WolframInstitute/InfraGeometry", "uri" -> 
+    "WolframInstitute/InfraGeometry/ref/TopologyGraph", "type" -> "Symbol", 
+    "index" -> True, "language" -> "en"}},
+CreateCellID->True,
+CellContext->CellGroup,
+FrontEndVersion->"15.0 for Mac OS X ARM (64-bit) (July 2, 2026)",
+StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "FunctionPageStylesExt.nb", 
+  CharacterEncoding -> "UTF-8"],
+ExpressionUUID->"c207366e-060a-406b-a297-9e30e1628f43"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{
+ "ExtendedExamples"->{
+  Cell[71592, 1274, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+   CellTags->"ExtendedExamples",
+   CellID->533848431]}
+ }
+*)
+(*CellTagsIndex
+CellTagsIndex->{
+ {"ExtendedExamples", 92220, 1679}
+ }
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[576, 22, 111, 1, 70, "ObjectName",ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec",
+ CellID->1224892054],
+Cell[690, 25, 773, 23, 70, "Usage",ExpressionUUID->"d9dee157-aa5e-4e02-8f41-c0f380087c8c"],
+Cell[1466, 50, 652, 17, 70, "Notes",ExpressionUUID->"13679d66-13a0-45f0-adbf-bf710689584f"],
+Cell[2121, 69, 661, 18, 70, "Notes",ExpressionUUID->"05e41778-e593-4b9b-b41d-721825bcb57f"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2819, 92, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
+ CellID->1559318232],
+Cell[3281, 107, 1134, 30, 70, "SeeAlso",ExpressionUUID->"3b0fe8c8-ddc7-44ce-ad35-103a95855742"]
+}, Open  ]],
+Cell[4430, 140, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
+ CellID->792424486],
+Cell[CellGroupData[{
+Cell[4890, 156, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
+ CellID->38303248],
+Cell[5009, 159, 303, 6, 70, "MoreAbout",ExpressionUUID->"5878d618-cefa-449b-917a-ebb87239caa8"]
+}, Open  ]],
+Cell[5327, 168, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
+ CellID->47113304],
+Cell[CellGroupData[{
+Cell[5823, 185, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
+ CellID->1718580883],
+Cell[6357, 201, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
+ CellID->1969679695]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[6670, 210, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
+ CellID->880084151],
+Cell[7115, 224, 181, 3, 70, "ExampleText",ExpressionUUID->"e865878a-6ecb-43ed-af1b-5b806d963490"],
+Cell[CellGroupData[{
+Cell[7321, 231, 793, 20, 70, "Input",ExpressionUUID->"b438d228-415c-4e29-a772-556af1264e12"],
+Cell[8117, 253, 41044, 595, 70, "Output",ExpressionUUID->"4b195e3a-55c1-47e7-895d-b331f5f4dfb1"]
+}, Open  ]],
+Cell[49176, 851, 186, 3, 70, "ExampleText",ExpressionUUID->"fea2da40-3500-409f-b005-5d2aadcf55bc"],
+Cell[CellGroupData[{
+Cell[49387, 858, 760, 19, 70, "Input",ExpressionUUID->"ca1ac697-375b-4e4a-928d-304a749774ec"],
+Cell[50150, 879, 21393, 389, 70, "Output",ExpressionUUID->"be82b17d-03e1-43c3-ad32-261dce57fb3f"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[71592, 1274, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+ CellTags->"ExtendedExamples",
+ CellID->533848431],
+Cell[CellGroupData[{
+Cell[72104, 1291, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
+ CellID->1293636265],
+Cell[72349, 1298, 148, 2, 70, "ExampleText",ExpressionUUID->"ccc1b44d-3b0a-4131-8031-24bf0a571b57"],
+Cell[CellGroupData[{
+Cell[72522, 1304, 502, 12, 70, "Input",ExpressionUUID->"a3cea382-05c0-427c-a4b9-62cd12a186a0"],
+Cell[73027, 1318, 13858, 206, 70, "Output",ExpressionUUID->"f92d8bf4-b4f7-4ac4-9f57-af3c37523b87"]
+}, Open  ]]
+}, Open  ]],
+Cell[86912, 1528, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
+ CellID->1020263627],
+Cell[87180, 1535, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
+ CellID->2061341341],
+Cell[87427, 1542, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
+ CellID->258228157],
+Cell[87678, 1549, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
+ CellID->2123667759],
+Cell[87940, 1556, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
+ CellID->1305812373],
+Cell[88195, 1563, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
+ CellID->1653164318],
+Cell[88455, 1570, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
+ CellID->589267740]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[88741, 1580, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
+ CellID->311882160],
+Cell[88854, 1583, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
+ CellID->341476719],
+Cell[CellGroupData[{
+Cell[89355, 1599, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
+ CellID->1755438392],
+Cell[89843, 1614, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
+ CellID->686433507],
+Cell[89980, 1618, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
+ CellID->605800465],
+Cell[90141, 1622, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
+ CellID->468444828],
+Cell[90299, 1626, 148, 1, 70, "Categorization",ExpressionUUID->"2c0a10fb-c370-444e-aff0-e6ec5591486a"]
+}, Closed]],
+Cell[90462, 1630, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
+ CellID->477174294],
+Cell[CellGroupData[{
+Cell[90597, 1635, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
+ CellID->1872225408],
+Cell[90720, 1638, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
+ CellID->1562036412],
+Cell[90872, 1642, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
+ CellID->158391909],
+Cell[91012, 1646, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
+ CellID->1360575930],
+Cell[91151, 1650, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
+ CellID->793782254]
+}, Closed]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
