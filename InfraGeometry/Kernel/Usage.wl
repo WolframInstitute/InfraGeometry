@@ -124,25 +124,6 @@ OrthogonalCoordinates::usage = "OrthogonalCoordinates[graph, c, axes, v] gives t
 FindInfraOrthogonalFrame::usage = "FindInfraOrthogonalFrame[graph, c, axisLength] gives frames of mutually perpendicular geodesic axes through the centre c. Options Method, \"AxisCount\", \"BranchSampleSize\", \"SelectCoordinate\".";
 FindInfraSpanningAxes::usage = "FindInfraSpanningAxes[graph, n] gives n mutually well-separated longest geodesics across graph, with no fixed centre. Options \"AxisDistance\", \"MinLength\", \"MinSeparation\", \"AxisThickness\", \"RandomPick\".";
 
-BetweennessQ::usage = "BetweennessQ[graph, u, w, v] tests Tarski betweenness B(u, w, v): w lies on a geodesic from u to v.";
-EquidistanceQ::usage = "EquidistanceQ[graph, a, b, c, d] tests Tarski equidistance d(a, b) == d(c, d).";
-TarskiStructure::usage = "TarskiStructure[graph] gives a memoized association of the Tarski primitives: vertices, distances, betweenness, equidistance, diameter.";
-TarskiBetweennessTensor::usage = "TarskiBetweennessTensor[graph] gives the sparse rank-3 tensor whose nonzero entries are the triples with B(v_i, v_j, v_k).";
-TarskiEquidistanceClasses::usage = "TarskiEquidistanceClasses[graph] gives the partition of unordered vertex pairs by distance value.";
-TarskiCongruenceReflexivityQ::usage = "TarskiCongruenceReflexivityQ[graph] tests Tarski axiom A1, ab == ba. Always True on undirected simple graphs.";
-TarskiCongruenceTransitivityQ::usage = "TarskiCongruenceTransitivityQ[graph] tests Tarski axiom A2, transitivity of congruence. A tautology of equality.";
-TarskiCongruenceIdentityQ::usage = "TarskiCongruenceIdentityQ[graph] tests Tarski axiom A3, ab == cc implies a == b. Holds on connected simple graphs.";
-TarskiSegmentConstructionQ::usage = "TarskiSegmentConstructionQ[graph] tests Tarski axiom A4, segment construction. Generally False on finite graphs.";
-TarskiFiveSegmentsQ::usage = "TarskiFiveSegmentsQ[graph] tests Tarski axiom A5, five segments. Holds on median graphs. Option \"MaxTuples\" caps the O(n^8) search.";
-TarskiBetweennessIdentityQ::usage = "TarskiBetweennessIdentityQ[graph] tests Tarski axiom A6, B(a, b, a) implies a == b. Always True on connected simple graphs.";
-TarskiInnerPaschQ::usage = "TarskiInnerPaschQ[graph] tests Tarski axiom A7, inner Pasch. Holds on median graphs; fails on cycles of length >= 5 and on Petersen.";
-TarskiLowerDimensionQ::usage = "TarskiLowerDimensionQ[graph] tests Tarski axiom A8, the existence of three non-collinear points.";
-TarskiUpperDimensionQ::usage = "TarskiUpperDimensionQ[graph] tests Tarski axiom A9, three points equidistant from two distinct points are collinear. False in effective dimension >= 3.";
-TarskiEuclidAxiomQ::usage = "TarskiEuclidAxiomQ[graph] tests Tarski axiom A10, the parallel-axiom variant. Stub: returns Indeterminate.";
-TarskiContinuityQ::usage = "TarskiContinuityQ[graph] tests Tarski axiom A11, Dedekind continuity. Always False on finite graphs.";
-TarskiAxiomQ::usage = "TarskiAxiomQ[graph] gives the per-axiom results of all eleven Tarski axiom predicates.";
-FindTarskiCounterexample::usage = "FindTarskiCounterexample[graph, predQ] gives vertex tuples witnessing the failure of a Tarski axiom predicate.";
-
 InfraScene::usage = "InfraScene[objects, hypotheses] builds a scene descriptor from symbolic objects and construction or assertion hypotheses. Properties \"Steps\", \"Constructions\", \"Assertions\", \"DependencyGraph\".";
 FindInfraScene::usage = "FindInfraScene[scene, graph] solves a scene on a graph and gives the resulting InfraSceneInstance bindings. Option \"PruneProbability\".";
 InfraSceneInstance::usage = "InfraSceneInstance[bindings] wraps a solved binding association; InfraSceneInstance[bindings, sym] reads one object out of it.";

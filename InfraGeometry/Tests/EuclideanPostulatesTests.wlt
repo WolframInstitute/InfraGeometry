@@ -895,16 +895,6 @@ VerificationTest[
   TestID -> "FindInfraGeodesic-germ-count-contract"
 ]
 
-(* Tarski A4 on the path: the one x with B(1, 2, x) and d(2, x) == d(1, 2), as TarskiSegmentConstructionQ reads it *)
-VerificationTest[
-  With[ { g = PathGraph[ Range[ 5 ] ] },
-    { Select[ VertexList @ g, x |-> BetweennessQ[ g, 1, 2, x ] && GraphDistance[ g, 2, x ] === GraphDistance[ g, 1, 2 ] ],
-      MemberQ[ FindTarskiCounterexample[ g, TarskiSegmentConstructionQ, All ], { 1, 2, 1, 2 } ] } ],
-  { { 3 }, False },
-  TestID -> "TarskiSegmentConstruction-A4-PathGraph"
-]
-
-
 (* FindInfraShell / the circle's representatives: a bounded radius makes the answer depend only on
    the ball B(p, r + 1) / B(p, r + 2) around the centre.  The "Metric" and
    "Separating" recipes are graph-intrinsic; the "Embedding" recipe still

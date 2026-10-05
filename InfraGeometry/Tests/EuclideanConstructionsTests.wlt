@@ -492,4 +492,53 @@ VerificationTest[
   TestID -> "FindInfraCommonPoint-from-FindInfraCommonLine"
 ]
 
+(* ===== FindInfraReflection ===== *)
+
+VerificationTest[
+  FindInfraReflection[PathGraph[Range[5]], 1, 2, All],
+  { 3 },
+  TestID -> "FindInfraReflection-PathGraph-adjacent"
+]
+
+VerificationTest[
+  FindInfraReflection[PathGraph[Range[5]], 1, 3, All],
+  { 5 },
+  TestID -> "FindInfraReflection-PathGraph-distance-two"
+]
+
+VerificationTest[
+  FindInfraReflection[PathGraph[Range[5]], 1, 4, All],
+  { },
+  TestID -> "FindInfraReflection-PathGraph-no-room"
+]
+
+VerificationTest[
+  FindInfraReflection[PathGraph[Range[5]], 1, 4, 1],
+  { },
+  TestID -> "FindInfraReflection-PathGraph-no-room-strict-fails"
+]
+
+VerificationTest[
+  MemberQ[FindInfraReflection[CycleGraph[6], 1, 2, All], 3],
+  True,
+  TestID -> "FindInfraReflection-CycleGraph6-includes-3"
+]
+
+VerificationTest[
+  Length[ FindInfraReflection[HypercubeGraph[3], 1, 2, All] ] >= 2,
+  True,
+  TestID -> "FindInfraReflection-HypercubeGraph-multi-valued"
+]
+
+(* FindInfraReflection is local: depends only on B(a, 2 d(a, x)). *)
+
+VerificationTest[
+  With[ { g = GridGraph[ { 10, 10 } ], x = 23, a = 25 },
+    Sort[ FindInfraReflection[ g, x, a, All ] ] ===
+      Sort[ FindInfraReflection[ NeighborhoodGraph[ g, a, 2 GraphDistance[ g, a, x ] ], x, a, All ] ]
+  ],
+  True,
+  TestID -> "FindInfraReflection-locality"
+]
+
 EndTestSection[]

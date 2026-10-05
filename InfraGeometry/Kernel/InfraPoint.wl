@@ -205,7 +205,7 @@ FindInfraGoldenSection[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPatte
 FindInfraGoldenSection[ graph_Graph, p1_, p2 : Except[ _Rule | _RuleDelayed ], opts : OptionsPattern[] ] :=
   FindInfraGoldenSection[ graph, FindInfraSegment[ graph, p1, p2, All ], opts ]
 
-(* y with BetweennessQ[x, a, y] and d(a, y) = d(a, x): the geodesic continuation of x past a at the same distance *)
+(* y with d(x, a) + d(a, y) = d(x, y) and d(a, y) = d(a, x) = r, i.e. d(x, y) = 2 r: the geodesic continuation of x past a at the same distance *)
 
 FindInfraReflection[ graph_Graph, x_, a_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
@@ -214,7 +214,7 @@ FindInfraReflection[ graph_Graph, x_, a_,
           If[ r === Infinity, {},
             With[ { localG = NeighborhoodGraph[ graph, a0, 2 r ] },
               Select[ VertexList[ localG ],
-                y |-> BetweennessQ[ localG, x0, a0, y ] && GraphDistance[ localG, a0, y ] === r ] ]
+                y |-> GraphDistance[ localG, a0, y ] === r && GraphDistance[ localG, x0, y ] === 2 r ] ]
           ]
         ] ) @@@ Tuples[ { Keys @ InfraDensity[ graph, x ], Keys @ InfraDensity[ graph, a ] } ], 1 ] },
     Switch[ count,
