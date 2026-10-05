@@ -40,7 +40,7 @@ Two walks from the same start to the same end. The first is a geodesic; the seco
 With[{g = GridGraph[{5, 5}]},
   Row[Table[
     Labeled[
-      InfraSubstrateHighlight[g, {InfraWalk[w], Directive[$InfraPointColor], First[w], Last[w]},
+      InfraSubstrateHighlight[g, {InfraWalk[w], First[w], Last[w]},
         "Arrowheads" -> True, ImageSize -> 180],
       InfraSegmentQ[g, w]],
     {w, {{1, 2, 3, 8, 13}, {1, 6, 7, 2, 3, 8, 13}}}]]]

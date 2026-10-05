@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraShell
 Keywords: [shell, sphere, level surface, volume growth, dimension]
-SeeAlso: [InfraShell, InfraBall, FindInfraSphere, InfraMeasurement, InfraCircle, InfraShellQ, SeparatesQ]
+SeeAlso: [InfraShell, InfraBall, FindInfraSphere, InfraMeasurement, InfraCircle, InfraShellQ]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
@@ -62,7 +62,7 @@ A band of radii 2 to 4 about the centre, as one vertex set.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  InfraSubstrateHighlight[g, {FindInfraShell[g, c, {2, 4}] -> $InfraShellColor, Directive[$InfraPointColor], c}]]
+  InfraSubstrateHighlight[g, {FindInfraShell[g, c, {2, 4}], c}]]
 ```
 
 ## Properties and Relations

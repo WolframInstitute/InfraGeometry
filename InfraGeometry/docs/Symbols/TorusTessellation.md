@@ -40,7 +40,7 @@ Between two points half-way round the square torus there are two geodesics, one 
 With[
   {g = InfraSubstrate["SquareTorusGraph", "Small", "KeepCoordinates" -> True]},
   InfraSubstrateHighlight[g,
-    {InfraSegment[{1, 1}, {6, 1}], Directive[$InfraPointColor], {1, 1}, {6, 1}},
+    {InfraSegment[{1, 1}, {6, 1}], {1, 1}, {6, 1}},
     ImageSize -> 300]]
 ```
 

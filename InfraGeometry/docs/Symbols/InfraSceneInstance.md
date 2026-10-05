@@ -40,7 +40,7 @@ With[
     {InfraSubstrateHighlight[g,
        {InfraWalk[Append[#, First @ #]] & @ InfraSceneInstance[first, circleA],
         InfraWalk[Append[#, First @ #]] & @ InfraSceneInstance[first, circleB],
-        Directive[$InfraPointColor], InfraSceneInstance[first, pA], InfraSceneInstance[first, pB],
+        InfraSceneInstance[first, pA], InfraSceneInstance[first, pB],
         InfraSceneInstance[first, meet]},
        "ThicknessRange" -> 4, ImageSize -> 250],
      InfraSceneInstance[first, {pA, pB, meet}]}]]

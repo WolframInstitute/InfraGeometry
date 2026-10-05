@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/LineCount
 Keywords: [line, count, inextensible geodesic]
-SeeAlso: [FindInfraLine, InfraLineQ, PencilCardinality, UniversalLineQ, FindLineStructure]
+SeeAlso: [FindInfraLine, InfraLineQ, UniversalLineQ]
 RelatedGuides: [Experimental]
 ---
 

@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraRayQ
 Keywords: [ray, half-line, geodesic, inextensible, predicate]
-SeeAlso: [InfraRay, FindInfraRay, PencilDirections, InfraSegmentQ, InfraLineQ]
+SeeAlso: [InfraRay, FindInfraRay, InfraSegmentQ, InfraLineQ]
 RelatedGuides: [Experimental]
 ---
 
@@ -81,5 +81,5 @@ Every ray of a pencil satisfies the predicate.
 ```wl
 With[
   {g = GridGraph[{3, 3}]},
-  AllTrue[PencilDirections[g, 5], InfraRayQ[g, #] &]]
+  AllTrue[FindInfraRay[g, 5, 5, All], InfraRayQ[g, #] &]]
 ```

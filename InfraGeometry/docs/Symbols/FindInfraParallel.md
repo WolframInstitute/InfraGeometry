@@ -68,9 +68,9 @@ With[
   {line = FindInfraLine[g, c, far]},
   {p = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line, #] &]},
   InfraSubstrateHighlight[g,
-    {line -> $InfraLineColor,
-     FindInfraParallel[g, line, p] -> $InfraSegmentColor,
-     {c, p} -> $InfraPointColor},
+    {line,
+     FindInfraParallel[g, line, p],
+     {c, p}},
     "PointSizeRange" -> 15,
     VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
     ImageSize -> 340]]

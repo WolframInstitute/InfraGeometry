@@ -42,7 +42,7 @@ With[
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
   {solved = FindInfraScene[scene, g]},
-  {InfraSubstrateHighlight[g, {InfraSceneInstance[#, seg1] & /@ solved, Directive[$InfraPointColor], c}],
+  {InfraSubstrateHighlight[g, {InfraSceneInstance[#, seg1] & /@ solved, c}],
    Length @ solved}]
 ```
 
@@ -56,7 +56,7 @@ With[
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
   {instance = First @ FindInfraScene[scene, g]},
-  {InfraSubstrateHighlight[g, {InfraSceneInstance[instance, seg1], Directive[$InfraPointColor], c}], instance}]
+  {InfraSubstrateHighlight[g, {InfraSceneInstance[instance, seg1], c}], instance}]
 ```
 
 ## Scope
@@ -71,7 +71,7 @@ With[
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
   {points = InfraSceneInstance[#, pB] & /@ FindInfraScene[scene, g, 2]},
-  {InfraSubstrateHighlight[g, {points, Directive[$InfraPointColor], c}], scene["Steps"], Length @ points}]
+  {InfraSubstrateHighlight[g, {points, c}], scene["Steps"], Length @ points}]
 ```
 
 Fixing the second point in advance leaves only the segment to choose: one instance per shortest path.
@@ -85,7 +85,7 @@ With[
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
   {segments = InfraSceneInstance[#, seg1] & /@ FindInfraScene[scene, g, <|pB -> b|>]},
-  {InfraSubstrateHighlight[g, {segments, Directive[$InfraPointColor], c, b}], Length @ segments}]
+  {InfraSubstrateHighlight[g, {segments, c, b}], Length @ segments}]
 ```
 
 ## Options
@@ -102,7 +102,7 @@ With[
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
   {segments = (SeedRandom[1]; InfraSceneInstance[#, seg1] & /@ FindInfraScene[scene, g, "PruneProbability" -> 0.5])},
-  {InfraSubstrateHighlight[g, {segments, Directive[$InfraPointColor], c}], Length @ segments}]
+  {InfraSubstrateHighlight[g, {segments, c}], Length @ segments}]
 ```
 
 ## Properties and Relations
@@ -116,6 +116,6 @@ With[
   {c = InfraCenter[g]},
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
-  {InfraSubstrateHighlight[g, {FindInfraShell[g, c, 2] -> $InfraShellColor, Directive[$InfraPointColor], c}],
+  {InfraSubstrateHighlight[g, {FindInfraShell[g, c, 2], c}],
    Length @ FindInfraScene[scene, g] === Total @ Table[InfraMeasurement[g, InfraSegment[c, through], "Cardinality"], {through, FindInfraShell[g, c, 2]}]}]
 ```

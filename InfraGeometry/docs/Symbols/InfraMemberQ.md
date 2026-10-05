@@ -33,7 +33,7 @@ With[
   {seg = InfraSegment[a, b]},
   {member = FindInfraRepresentative[g, seg]},
   {detour = FindInfraRepresentative[g, InfraSegment[a, x, b]]},
-  {InfraSubstrateHighlight[g, {InfraWalk[member], InfraWalk[detour], Directive[$InfraPointColor], a, b}],
+  {InfraSubstrateHighlight[g, {InfraWalk[member], InfraWalk[detour], a, b}],
    InfraMemberQ[g, seg, member], InfraMemberQ[g, seg, detour]}]
 ```
 
@@ -56,7 +56,7 @@ With[
   {c = InfraCenter[g]},
   {circle = InfraCircle[c, {2, 4}]},
   {turned = RotateLeft[Reverse @ FindInfraRepresentative[g, circle], 3]},
-  {InfraSubstrateHighlight[g, {InfraWalk[Append[turned, First @ turned]] -> $InfraCircleColor, Directive[$InfraPointColor], c}, "Arrowheads" -> True],
+  {InfraSubstrateHighlight[g, {InfraWalk[Append[turned, First @ turned]], c}, "Arrowheads" -> True],
    InfraMemberQ[g, circle, turned]}]
 ```
 

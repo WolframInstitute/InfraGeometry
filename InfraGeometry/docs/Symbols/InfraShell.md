@@ -70,7 +70,7 @@ Row[Table[
     {band = InfraShell[InfraCenter[g], {2, 4}]},
     {support = FindInfraRepresentative[g, band]},
     Labeled[
-      InfraSubstrateHighlight[g, {InfraInterior[g, support] -> $InfraBallColor, InfraBoundary[g, support] -> $InfraCircleColor}],
+      InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
       InfraMeasurement[g, band, {"CountingMeasure", "RiemannianMeasure"}]]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```
@@ -132,8 +132,7 @@ With[
       meet == InfraIntersection[shellA, shellB]}]},
   {solved = FindInfraScene[constr, g]},
   InfraSubstrateHighlight[g,
-    Join[{InfraSceneInstance[First @ solved, shellA] -> $InfraShellColor,
-          InfraSceneInstance[First @ solved, shellB] -> $InfraCircleColor,
-          Directive[$InfraPointColor]},
+    Join[{InfraSceneInstance[First @ solved, shellA],
+          InfraSceneInstance[First @ solved, shellB]},
       InfraSceneInstance[#, meet] & /@ solved]]]
 ```

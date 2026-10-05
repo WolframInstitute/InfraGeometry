@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraTube
 Keywords: [tube, neighbourhood, region, inert head, volume, counting measure, Riemannian measure]
-SeeAlso: [InfraCylinder, InfraCone, InfraBall, InfraMeasurement, FindInfraRepresentative, InfraSegment, InfraInterior, InfraBoundary]
+SeeAlso: [InfraCylinder, InfraCone, InfraBall, InfraMeasurement, FindInfraRepresentative, InfraSolidOfRevolution, InfraSegment, InfraInterior, InfraBoundary]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -16,11 +16,19 @@ RelatedGuides: [EuclideanInfrageometry]
 
 <code>[InfraTube]()[*core*, {*s*, *t*}]</code> is the mantle: the vertices at distance between *s* and *t*.
 
+<code>[InfraTube]()[*core*, *profile*]</code> lets the radius vary along the core: *profile* is a list of radii or bands, one per core vertex, or a function of the position *i*.
+
+<code>[InfraTube]()[*axis*, *profile*, Method -> "Sliced"]</code> reads the profile at the axis vertex that each vertex projects to, and gives the solids with flat ends.
+
 ## Details & Options
 
 Definition: the tube of radius *s* about *core* is *{v : d(v, core) ≤ s}*.
 
 *core* is a vertex, a vertex list, a density, a walk graph, or a Euclidean head such as [InfraSegment](), read through the keys of its `"VertexDensity"`. The tube of a vertex is the ball.
+
+The profile is a radius *r*, which is the band *{0, r}*; a pair of numbers *{s, t}*, which is a band constant along the core; a list of radii or bands along the core; or a function of the position *i = 1, …, m*. The band profile *{r, r}* is the surface, the vertices at distance exactly *r*.
+
+Option <code>Method</code> takes `"Balls"` (default) or `"Sliced"`. `"Balls"` is the union of the balls *B(a_i, r_i)* about the core vertices, rounded where the profile jumps and at the ends. `"Sliced"` needs a walk for a core: slice *i* is the set of vertices whose nearest axis vertex is *a_i*, a tie lying in every nearest slice, and *v* is in the solid when *d(a_i, v)* lies in the band of its slice. The axis is prolonged straight on past both ends and the vertices nearer a prolongation than the axis are cut, so the ends are flat; a closed axis has no ends. A jump of the profile is then a sharp step.
 
 The tube of a segment is the tube of its whole interval, not of one shortest path: the *fat tube* <code>[InfraTube]()[[InfraSegment]()[*c*, *p*], *s*]</code>. Where the segment has many shortest paths it is fatter than the tube of any of them. The *thin tube* of one path takes as its core a member that [FindInfraRepresentative]() gives, <code>[InfraTube]()[[FindInfraRepresentative]()[*g*, [InfraSegment]()[*c*, *p*]], *s*]</code>.
 
@@ -43,7 +51,7 @@ In the continuum two tubes are the references. Gray's expansion is for the tube 
 
 How the number is measured: <code>[InfraMeasurement]()[*g*, [InfraTube]()[*core*, *s*], *measure*]</code> takes the vertices within *s* of the support of the core, the interval for a segment and one path for a representative, and counts them, or counts their [InfraInterior](). The profile is the list over *s = 0, 1, …*.
 
-The head computes nothing. A tube has one member, the vertex set. [InfraMeasurement]() also reads `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"`, `"Faithful"` and `"Subgraph"`. The tube is the primitive behind [InfraCylinder]() and [InfraCone](). A tube of an empty core is empty.
+The head computes nothing. A tube has one member, the vertex set. [InfraMeasurement]() also reads `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"`, `"Faithful"` and `"Subgraph"`. The tube is the primitive behind [InfraCylinder](), [InfraCone]() and [InfraSolidOfRevolution](), which are its sliced profiles. A tube of an empty core is empty.
 
 ## Basic Examples
 
@@ -57,7 +65,7 @@ Row[Table[
     {tube = InfraTube[InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, c, 4])], 2]},
     {support = FindInfraRepresentative[g, tube]},
     Labeled[
-      InfraSubstrateHighlight[g, {InfraInterior[g, support] -> $InfraBallColor, InfraBoundary[g, support] -> $InfraCircleColor}],
+      InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
       InfraMeasurement[g, tube, {"CountingMeasure", "RiemannianMeasure"}]]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```
@@ -81,7 +89,27 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, c, 4])]},
-  InfraSubstrateHighlight[g, {InfraTube[seg, {2, 3}] -> $InfraShellColor, seg -> $InfraSegmentColor}]]
+  InfraSubstrateHighlight[g, {InfraTube[seg, {2, 3}], seg}]]
+```
+
+A profile along the core: the radius grows to 2 and falls again, drawn rounded and sliced.
+
+```wl
+With[
+  {g = GridGraph[{9, 9}]},
+  {axis = {39, 40, 41, 42, 43}},
+  GraphicsRow[{
+    InfraSubstrateHighlight[g, {InfraTube[axis, {0, 1, 2, 1, 0}], axis}],
+    InfraSubstrateHighlight[g, {InfraTube[axis, {0, 1, 2, 1, 0}, Method -> "Sliced"], axis}]}]]
+```
+
+The surface of a tube is the band profile {2, 2}: the vertices at distance exactly 2 from the axis vertex they project to.
+
+```wl
+With[
+  {g = GridGraph[{9, 9}]},
+  {axis = {39, 40, 41, 42, 43}},
+  InfraSubstrateHighlight[g, {InfraTube[axis, {2, 2}, Method -> "Sliced"], axis}]]
 ```
 
 ## Properties and Relations

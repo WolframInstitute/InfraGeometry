@@ -70,7 +70,7 @@ Row[Table[
     {ball = InfraBall[InfraCenter[g], 3]},
     {support = FindInfraRepresentative[g, ball]},
     Labeled[
-      InfraSubstrateHighlight[g, {InfraInterior[g, support] -> $InfraBallColor, InfraBoundary[g, support] -> $InfraCircleColor}],
+      InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
       InfraMeasurement[g, ball, {"CountingMeasure", "RiemannianMeasure"}]]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```
@@ -96,7 +96,7 @@ With[
   {c = InfraCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 4])},
   {core = FindInfraRepresentative[g, InfraSegment[c, p]]},
-  InfraSubstrateHighlight[g, {InfraBall[core, 1] -> $InfraBallColor, core -> $InfraSegmentColor}]]
+  InfraSubstrateHighlight[g, {InfraBall[core, 1], core}]]
 ```
 
 Past the eccentricity the ball is the whole graph, and the Riemannian measure counts every vertex: the rim of the graph is not a boundary of the ball.
@@ -141,7 +141,7 @@ With[
   {c = InfraCenter[g]},
   {inner = InfraInterior[g, FindInfraRepresentative[g, InfraBall[c, 6]]]},
   {smaller = FindInfraRepresentative[g, InfraBall[c, 5]]},
-  {InfraSubstrateHighlight[g, {smaller, InfraShell[c, 6], Directive[$InfraPointColor], Complement[inner, smaller]}],
+  {InfraSubstrateHighlight[g, {smaller, InfraShell[c, 6], Complement[inner, smaller]}],
    InfraMeasurement[g, InfraBall[c, 6], "RiemannianMeasure"], InfraMeasurement[g, InfraBall[c, 5], "CountingMeasure"]}]
 ```
 
@@ -154,6 +154,6 @@ With[
   {c = InfraCenter[g]},
   {constr = InfraScene[{pA, ballA}, {pA == InfraPoint[c], ballA == InfraBall[pA, 2]}]},
   {ball = InfraSceneInstance[First @ FindInfraScene[constr, g], ballA]},
-  {InfraSubstrateHighlight[g, {ball -> $InfraBallColor, Directive[$InfraPointColor], c}],
+  {InfraSubstrateHighlight[g, {ball, c}],
    ball === FindInfraRepresentative[g, InfraBall[c, 2]]}]
 ```

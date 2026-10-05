@@ -47,7 +47,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   GraphicsRow[{
-    InfraSubstrateHighlight[g, {SprayGraph[g, c], Directive[$InfraPointColor], c}],
+    InfraSubstrateHighlight[g, {SprayGraph[g, c], c}],
     SprayGraph[g, c, "AxisLength" -> 3]}]]
 ```
 
@@ -59,7 +59,7 @@ With[
   {c = InfraCenter[g]},
   {sprayDag = SprayGraph[g, c]},
   {sinks = Select[VertexList[sprayDag], VertexOutDegree[sprayDag, #] == 0 &]},
-  {InfraSubstrateHighlight[g, {sprayDag, sinks -> $InfraPointColor}], VertexCount[sprayDag], EdgeCount[sprayDag], Length @ sinks}]
+  {InfraSubstrateHighlight[g, {sprayDag, sinks}], VertexCount[sprayDag], EdgeCount[sprayDag], Length @ sinks}]
 ```
 
 The maximal shortest paths from the centre to one sink, each a path of the spray.
@@ -71,7 +71,7 @@ With[
   {sprayDag = SprayGraph[g, c]},
   {sink = First @ Select[VertexList[sprayDag], VertexOutDegree[sprayDag, #] == 0 &]},
   {paths = FindPath[sprayDag, c, sink, Infinity, All]},
-  {InfraSubstrateHighlight[g, {paths, Directive[$InfraPointColor], c, sink}], Length @ paths}]
+  {InfraSubstrateHighlight[g, {paths, c, sink}], Length @ paths}]
 ```
 
 ## Options
@@ -86,7 +86,7 @@ With[
   {a = InfraCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
   {sprays = Table[SprayGraph[g, {{a, b}}, "PathThickness" -> t], {t, {0, 1, Infinity}}]},
-  {GraphicsRow @ Table[InfraSubstrateHighlight[g, {spray, Directive[$InfraPointColor], a, b}], {spray, sprays}],
+  {GraphicsRow @ Table[InfraSubstrateHighlight[g, {spray, a, b}], {spray, sprays}],
    EdgeCount /@ sprays}]
 ```
 
@@ -99,7 +99,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {sprayDag = SprayGraph[g, c, "AxisLength" -> 3]},
-  {InfraSubstrateHighlight[g, {sprayDag, FindInfraShell[g, c, 3] -> $InfraShellColor}],
+  {InfraSubstrateHighlight[g, {sprayDag, FindInfraShell[g, c, 3]}],
    Sort @ Complement[VertexList[sprayDag], FindInfraRepresentative[g, InfraBall[c, 2]]] === FindInfraShell[g, c, 3],
    VertexCount[sprayDag] === InfraMeasurement[g, InfraBall[c, 3], "CountingMeasure"]}]
 ```
@@ -111,6 +111,6 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {through = (SeedRandom[1]; RandomInfraPoint[g, c, 4])},
-  {InfraSubstrateHighlight[g, {InfraMeasurement[g, InfraSegment[c, through], "Graph"], Directive[$InfraPointColor], c, through}],
+  {InfraSubstrateHighlight[g, {InfraMeasurement[g, InfraSegment[c, through], "Graph"], c, through}],
    Sort @ FindPath[SprayGraph[g, c], c, through, Infinity, All] === Sort @ FindPath[InfraMeasurement[g, InfraSegment[c, through], "Graph"], c, through, Infinity, All]}]
 ```

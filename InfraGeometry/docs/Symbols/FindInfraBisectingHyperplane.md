@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraBisectingHyperplane
 Keywords: [perpendicular bisector, hyperplane, bisector, separating set, Euclid I.10]
-SeeAlso: [InfraPlane, FindInfraMidpoint, EquidistanceQ, SeparatesQ, FindInfraEquidistantSet]
+SeeAlso: [InfraPlane, FindInfraMidpoint, FindInfraEquidistantSet]
 RelatedGuides: [Experimental]
 ---
 
@@ -57,8 +57,8 @@ With[
   {a = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 6 &]},
   InfraSubstrateHighlight[g,
-    {FindInfraBisectingHyperplane[g, a, b] -> $InfraPlaneColor,
-     {a, b} -> $InfraPointColor},
+    {FindInfraBisectingHyperplane[g, a, b],
+     {a, b}},
     "PointSizeRange" -> 15,
     VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
     ImageSize -> 340]]
@@ -66,12 +66,12 @@ With[
 
 ## Properties and Relations
 
-Every vertex of the bisector is equidistant from the two points, which is what [EquidistanceQ]() tests.
+Every vertex of the bisector is equidistant from the two points, that is, *d(a, v) = d(b, v)*.
 
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 6 &]},
-  AllTrue[FindInfraBisectingHyperplane[g, a, b], EquidistanceQ[g, a, #, b, #] &]]
+  AllTrue[FindInfraBisectingHyperplane[g, a, b], GraphDistance[g, a, #] == GraphDistance[g, b, #] &]]
 ```

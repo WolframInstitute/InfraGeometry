@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraRay
 Keywords: [ray, half-line, direction, pencil, inert head]
-SeeAlso: [FindInfraRay, InfraRayQ, InfraMeasurement, FindInfraRepresentative, PencilDirections, InfraLine, InfraSegment]
+SeeAlso: [FindInfraRay, InfraRayQ, InfraMeasurement, FindInfraRepresentative, InfraLine, InfraSegment]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -37,7 +37,7 @@ GraphicsRow @ Table[
     {o = InfraCenter[g]},
     {through = (SeedRandom[1]; RandomInfraPoint[g, o, 2])},
     {ray = InfraRay[o, through]},
-    InfraSubstrateHighlight[g, {ray -> $InfraRayColor, Directive[$InfraPointColor], o, through}]],
+    InfraSubstrateHighlight[g, {ray, o, through}]],
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
 ```
 
@@ -49,7 +49,7 @@ With[
   {o = InfraCenter[g]},
   {through = (SeedRandom[1]; RandomInfraPoint[g, o, 2])},
   {ray = InfraRay[o, through]},
-  {InfraSubstrateHighlight[g, {ray -> $InfraRayColor, Directive[$InfraPointColor], o, through}],
+  {InfraSubstrateHighlight[g, {ray, o, through}],
    InfraMeasurement[g, ray, "Cardinality"], InfraMeasurement[g, ray, "Length"]}]
 ```
 
@@ -61,7 +61,7 @@ With[
   {o = InfraCenter[g]},
   {through = (SeedRandom[1]; RandomInfraPoint[g, o, 2])},
   {members = FindInfraRepresentative[g, InfraRay[o, through], 3]},
-  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], Directive[$InfraPointColor], o, through}], {member, members}]]
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], o, through}], {member, members}]]
 ```
 
 The pencil at the centre: every ray from it at once.
@@ -71,7 +71,7 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = InfraCenter[g]},
   {pencil = InfraRay[o, o]},
-  {InfraSubstrateHighlight[g, {pencil -> $InfraRayColor, Directive[$InfraPointColor], o}],
+  {InfraSubstrateHighlight[g, {pencil, o}],
    InfraMeasurement[g, pencil, "Cardinality"]}]
 ```
 
@@ -97,6 +97,6 @@ With[
   {o = InfraCenter[g]},
   {through = (SeedRandom[1]; RandomInfraPoint[g, o, 2])},
   {members = FindInfraRepresentative[g, InfraRay[o, through], All]},
-  {InfraSubstrateHighlight[g, {members -> $InfraRayColor, Directive[$InfraPointColor], o, through}],
+  {InfraSubstrateHighlight[g, {members, o, through}],
    InfraRayQ[g, members]}]
 ```

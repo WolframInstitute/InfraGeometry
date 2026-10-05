@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraMidpoint
 Keywords: [midpoint, geodesic, bisection, effective point, Euclid I.10]
-SeeAlso: [FindInfraSegment, InfraPoint, InfraDensity, FindInfraReflection, BetweennessQ]
+SeeAlso: [FindInfraSegment, InfraPoint, InfraDensity, FindInfraReflection]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -50,9 +50,9 @@ Row[Table[
      {m = FindInfraMidpoint[g, a, b]},
      Labeled[
        InfraSubstrateHighlight[g,
-         {FindInfraSegment[g, a, b, All] -> $InfraSegmentColor,
-          {a, b} -> $InfraPointColor,
-          Keys[m] -> $InfraCircleColor},
+         {FindInfraSegment[g, a, b, All],
+          {a, b},
+          Keys[m]},
          "PointSizeRange" -> 17,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
          ImageSize -> 250],
@@ -83,12 +83,12 @@ With[
 
 ## Properties and Relations
 
-The midpoint lies between its endpoints, so [BetweennessQ]() holds for every candidate.
+The midpoint lies between its endpoints, so *d(a, m) + d(m, b) = d(a, b)* for every candidate *m*.
 
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Large", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 6 &]},
-  AllTrue[Keys @ FindInfraMidpoint[g, a, b], BetweennessQ[g, a, #, b] &]]
+  AllTrue[Keys @ FindInfraMidpoint[g, a, b], GraphDistance[g, a, #] + GraphDistance[g, #, b] == GraphDistance[g, a, b] &]]
 ```

@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraSphere
 Keywords: [sphere, separating set, minimal, peel, search]
-SeeAlso: [InfraSphere, FindInfraShell, InfraShell, FindInfraRepresentative, SeparatesQ, FindInfraOsculatingShell]
+SeeAlso: [InfraSphere, FindInfraShell, InfraShell, FindInfraRepresentative, FindInfraOsculatingShell]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -72,5 +72,5 @@ Every subset separates the centre from a corner.
 With[
   {g = GridGraph[{7, 7}]},
   {members = FindInfraSphere[g, 25, 2, All]},
-  {AllTrue[members, SeparatesQ[g, #, 25, 1] &], Length @ members}]
+  {AllTrue[members, GraphDistance[VertexDelete[g, #], 25, 1] === Infinity &], Length @ members}]
 ```

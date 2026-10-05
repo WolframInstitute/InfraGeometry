@@ -76,7 +76,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {centre = FindInfraPoint[g, All, "From" -> "Center"]},
   {periphery = FindInfraPoint[g, All, "From" -> "Periphery"]},
-  {InfraSubstrateHighlight[g, {periphery -> $InfraShellColor, centre -> $InfraPointColor}],
+  {InfraSubstrateHighlight[g, {periphery, centre}],
    centre, Length @ periphery}]
 ```
 
@@ -86,8 +86,8 @@ Keeping a draw off the rim. The balls are a nested family, so `q` reads directly
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   InfraSubstrateHighlight[g,
-    {VertexList @ CenterGraph[g, 0.8] -> $InfraShellColor,
-     VertexList @ CenterGraph[g, 0.4] -> $InfraPointColor}]]
+    {VertexList @ CenterGraph[g, 0.8],
+     VertexList @ CenterGraph[g, 0.4]}]]
 ```
 
 A tuple of three mutually most-distant points.

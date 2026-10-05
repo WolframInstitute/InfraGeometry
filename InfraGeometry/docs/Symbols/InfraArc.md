@@ -56,7 +56,7 @@ GraphicsRow @ Table[
     {p = (SeedRandom[1]; RandomInfraPoint[g, c, 3])},
     {q = (SeedRandom[2]; RandomInfraPoint[g, c, 3])},
     {arc = InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}]},
-    InfraSubstrateHighlight[g, {arc -> $InfraCircleColor, Directive[$InfraPointColor], c, p, q}]],
+    InfraSubstrateHighlight[g, {arc, c, p, q}]],
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
 ```
 
@@ -69,7 +69,7 @@ With[
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 3])},
   {q = (SeedRandom[2]; RandomInfraPoint[g, c, 3])},
   {arc = InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}]},
-  {InfraSubstrateHighlight[g, {arc -> $InfraCircleColor, Directive[$InfraPointColor], c, p, q}],
+  {InfraSubstrateHighlight[g, {arc, c, p, q}],
    InfraMeasurement[g, arc, "Cardinality"], InfraMeasurement[g, arc, "Length"]}]
 ```
 
@@ -81,7 +81,7 @@ With[
   {c = InfraCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 3])},
   {q = (SeedRandom[2]; RandomInfraPoint[g, c, 3])},
-  {InfraSubstrateHighlight[g, {FindInfraShell[g, c, 3] -> $InfraShellColor, Directive[$InfraPointColor], c, p, q}],
+  {InfraSubstrateHighlight[g, {FindInfraShell[g, c, 3], c, p, q}],
    InfraMeasurement[g, InfraArc[c, {p, q}], "Cardinality"]}]
 ```
 
@@ -94,7 +94,7 @@ With[
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 3])},
   {q = (SeedRandom[2]; RandomInfraPoint[g, c, 3])},
   {members = FindInfraRepresentative[g, InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}], UpTo[3]]},
-  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], Directive[$InfraPointColor], c, p, q}], {member, members}]]
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], c, p, q}], {member, members}]]
 ```
 
 Through the intermediate vertex 12 the polyline keeps two of the four minor arcs, those that pass through it.
@@ -106,7 +106,7 @@ With[
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 3])},
   {q = (SeedRandom[2]; RandomInfraPoint[g, c, 3])},
   {polyline = InfraArc[c, {p, 12, q}, "RadiusDelta" -> {1, 1}]},
-  {InfraSubstrateHighlight[g, {polyline -> $InfraCircleColor, Directive[$InfraPointColor], c, p, 12, q}],
+  {InfraSubstrateHighlight[g, {polyline, c, p, 12, q}],
    InfraMeasurement[g, polyline, "Cardinality"], InfraMeasurement[g, InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}], "Cardinality"]}]
 ```
 
@@ -120,7 +120,7 @@ With[
   {p = First @ ring},
   {q = First @ Select[ring, GraphDistance[Subgraph[g, ring], p, #] == 6 &]},
   {arc = InfraArc[c, {p, q}]},
-  {InfraSubstrateHighlight[g, {arc -> $InfraCircleColor, Directive[$InfraPointColor], c, p, q}],
+  {InfraSubstrateHighlight[g, {arc, c, p, q}],
    InfraMeasurement[g, arc, "Cardinality"], InfraMeasurement[g, arc, "Length"]}]
 ```
 
@@ -132,7 +132,7 @@ GraphicsRow @ Table[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = InfraCenter[g]},
     {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
-    InfraSubstrateHighlight[g, {InfraArc[c, {p}, "RadiusDelta" -> 2] -> $InfraCircleColor, Directive[$InfraPointColor], c, p}]],
+    InfraSubstrateHighlight[g, {InfraArc[c, {p}, "RadiusDelta" -> 2], c, p}]],
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
 ```
 
@@ -144,7 +144,7 @@ With[
   {c = InfraCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
   {circle = InfraArc[c, {p, p}, "RadiusDelta" -> 2]},
-  {InfraSubstrateHighlight[g, {circle -> $InfraCircleColor, Directive[$InfraPointColor], c, p}],
+  {InfraSubstrateHighlight[g, {circle, c, p}],
    InfraMeasurement[g, circle, "Cardinality"], InfraMeasurement[g, circle, "Length"]}]
 ```
 
@@ -156,7 +156,7 @@ With[
   {c = InfraCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
   {allCircles = FindInfraRepresentative[g, InfraArc[c, {p, p}, "RadiusDelta" -> 2], All]},
-  {InfraSubstrateHighlight[g, {Table[Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], {oneCircle, allCircles}] -> $InfraCircleColor, Directive[$InfraPointColor], c, p}],
+  {InfraSubstrateHighlight[g, {Table[Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], {oneCircle, allCircles}], c, p}],
    Length @ allCircles}]
 ```
 
@@ -169,7 +169,7 @@ With[
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
   {q = (SeedRandom[5]; RandomInfraPoint[g, c, 2])},
   {both = InfraArc[c, {p, q, p}, "RadiusDelta" -> 2]},
-  {InfraSubstrateHighlight[g, {both -> $InfraCircleColor, Directive[$InfraPointColor], c, p, q}],
+  {InfraSubstrateHighlight[g, {both, c, p, q}],
    InfraMeasurement[g, both, "Cardinality"],
    InfraMeasurement[g, InfraArc[c, {p}, "RadiusDelta" -> 2], "Cardinality"] == InfraMeasurement[g, InfraArc[c, {p, p}, "RadiusDelta" -> 2], "Cardinality"]}]
 ```
@@ -184,7 +184,7 @@ With[
   {c = InfraCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
   {circle = InfraCircle[c, {2, 4}]},
-  {InfraSubstrateHighlight[g, {InfraArc[c, {p, p}, "RadiusDelta" -> 2] -> $InfraCircleColor, Directive[$InfraPointColor], c, p}],
+  {InfraSubstrateHighlight[g, {InfraArc[c, {p, p}, "RadiusDelta" -> 2], c, p}],
    InfraMeasurement[g, InfraArc[c, {p, p}, "RadiusDelta" -> 2], "Cardinality"],
    Count[FindInfraRepresentative[g, circle, All], _?(MemberQ[#, p] &)], InfraMeasurement[g, circle, "Cardinality"]}]
 ```
@@ -197,7 +197,7 @@ With[
   {c = InfraCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
   {closedArc = InfraArc[c, {p, p}, "RadiusDelta" -> 2]},
-  {InfraSubstrateHighlight[g, {closedArc -> $InfraCircleColor, Directive[$InfraPointColor], c, p}],
+  {InfraSubstrateHighlight[g, {closedArc, c, p}],
    InfraMeasurement[g, closedArc, "Cardinality"], Length @ FindInfraRepresentative[g, closedArc, All]}]
 ```
 
@@ -210,6 +210,6 @@ With[
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 3])},
   {q = (SeedRandom[2]; RandomInfraPoint[g, c, 3])},
   {arc = InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}]},
-  {InfraSubstrateHighlight[g, {arc -> $InfraCircleColor, Directive[$InfraPointColor], c, p, q}],
+  {InfraSubstrateHighlight[g, {arc, c, p, q}],
    InfraMeasurement[g, arc, "Faithful"]}]
 ```

@@ -68,10 +68,10 @@ With[
   {p2 = (SeedRandom[1]; RandomInfraPoint[g, p1, 4])},
   {circles = FindInfraRepresentative[g, InfraCircle[p1, 4], All]},
   Row[{
-    Labeled[InfraSubstrateHighlight[g, {{p1, p2} -> $InfraPointColor}], "points a and b"],
+    Labeled[InfraSubstrateHighlight[g, {{p1, p2}}], "points a and b"],
     Labeled[
       InfraSubstrateHighlight[g,
-        {Table[Graph[DirectedEdge @@@ Partition[circle, 2, 1, 1]], {circle, circles}] -> $InfraCircleColor,
-         {p1, p2} -> $InfraPointColor}],
+        {Table[Graph[DirectedEdge @@@ Partition[circle, 2, 1, 1]], {circle, circles}],
+         {p1, p2}}],
       "circle around a"]}]]
 ```

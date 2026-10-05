@@ -6,30 +6,34 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraCylinder
 Keywords: [cylinder, solid of revolution, region, inert head, volume, counting measure, Riemannian measure]
-SeeAlso: [InfraTube, InfraCone, InfraBall, InfraMeasurement, FindInfraRepresentative, FindInfraRevolution, InfraInterior, InfraBoundary]
+SeeAlso: [InfraTube, InfraCone, InfraBall, InfraMeasurement, FindInfraRepresentative, InfraSolidOfRevolution, InfraInterior, InfraBoundary]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraCylinder]()[*axis*, *r*]</code> is the cylinder of radius *r* about *axis*: the vertices at distance at most *r* from it. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraCylinder]()[*axis*, *r*]</code> is the cylinder of radius *r* about *axis*: the vertices within *r* of the axis vertex they project to, with flat ends. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
-<code>[InfraCylinder]()[*axis*, {*r*, *s*}]</code> is the mantle: the vertices at distance between *r* and *s*.
+<code>[InfraCylinder]()[*axis*, {*r*, *s*}]</code> is the mantle: the vertices at distance between *r* and *s* from their axis vertex.
+
+<code>[InfraCylinder]()[*axis*, *r*, Method -> "Balls"]</code> is the rounded cylinder, the union of the balls of radius *r* about the axis vertices.
 
 ## Details & Options
 
-Definition: the cylinder of radius *r* about *axis* is *{v : d(v, axis) ≤ r}*, the solid of revolution of the constant radius profile. *axis* is a vertex list, or a Euclidean head.
+Definition: the cylinder of radius *r* about *axis* is the sliced tube <code>[InfraTube]()[*axis*, *r*, Method -> "Sliced"]</code>. Slice *i* is the set of vertices whose nearest axis vertex is *a_i*, a tie lying in every nearest slice, and *v* is in the cylinder when *d(a_i, v) ≤ r* for its slice.
 
-It is the blog's word for [InfraTube]() with an axis for a core, and has its own definition.
+The axis is a walk: a vertex, a vertex list, or a path or cycle graph. A density or a Euclidean head such as [InfraSegment]() leaves the call unevaluated; <code>[FindInfraRepresentative]()[*g*, [InfraSegment]()[*p*, *q*]]</code> gives the axis of one shortest path.
 
-The cylinder has caps of half balls at both ends of the axis, since every vertex within *r* of an end vertex counts.
+The axis is prolonged straight on past both ends, through the neighbours of an end vertex that continue the line, and the vertices nearer a prolongation than the axis are cut. So the ends are flat, which is what makes a cylinder and not a tube. A closed axis has no ends.
+
+<code>Method -> "Balls"</code> reads the same profile as the union of the balls, <code>[InfraTube]()[*axis*, *r*]</code>, rounded at both ends.
 
 [InfraMeasurement]() gives two measures of a cylinder:
 
 | Measure | Value |
 |---|---|
 | `"CountingMeasure"` | the number of vertices of the cylinder |
-| `"RiemannianMeasure"` | the number of vertices of the cylinder all of whose neighbours lie in it: the count without the mantle and the caps |
+| `"RiemannianMeasure"` | the number of vertices of the cylinder all of whose neighbours lie in it: the count without the mantle and the ends |
 
 The cylinder of radius 0 is the axis, and its Riemannian measure is `0`: a path in a grid is all boundary.
 
@@ -48,29 +52,40 @@ Row[Table[
     {cylinder = InfraCylinder[axis, 1]},
     {support = FindInfraRepresentative[g, cylinder]},
     Labeled[
-      InfraSubstrateHighlight[g, {InfraInterior[g, support] -> $InfraBallColor, InfraBoundary[g, support] -> $InfraCircleColor}],
+      InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
       InfraMeasurement[g, cylinder, {"CountingMeasure", "RiemannianMeasure"}]]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```
 
 ## Properties and Relations
 
-The cylinder is the tube about the axis.
+On the square grid the sliced cylinder about a column is the rectangle with flat ends, and the rounded one adds the half disks.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small"]},
-  {c = InfraCenter[g]},
-  {axis = FindInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, c, 4])]]},
-  FindInfraRepresentative[g, InfraCylinder[axis, 2]] === FindInfraRepresentative[g, InfraTube[axis, 2]]]
+  {g = GridGraph[{9, 9}]},
+  {axis = {39, 40, 41, 42, 43}},
+  GraphicsRow[{
+    InfraSubstrateHighlight[g, {InfraCylinder[axis, 2], axis}],
+    InfraSubstrateHighlight[g, {InfraCylinder[axis, 2, Method -> "Balls"], axis}]}]]
 ```
 
-The cylinder is the solid of revolution of [FindInfraRevolution]() for the constant profile.
+The rounded cylinder is the tube about the axis, and the cylinder lies in it.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small"]},
-  {c = InfraCenter[g]},
-  {axis = FindInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, c, 4])]]},
-  FindInfraRepresentative[g, InfraCylinder[axis, 1]] === FindInfraRevolution[g, axis, ConstantArray[1, Length @ axis], Method -> "Balls"]]
+  {g = GridGraph[{9, 9}]},
+  {axis = {39, 40, 41, 42, 43}},
+  {tube = FindInfraRepresentative[g, InfraTube[axis, 2]]},
+  {FindInfraRepresentative[g, InfraCylinder[axis, 2, Method -> "Balls"]] === tube,
+   SubsetQ[tube, FindInfraRepresentative[g, InfraCylinder[axis, 2]]]}]
+```
+
+The cylinder is the solid of revolution of the constant profile.
+
+```wl
+With[
+  {g = GridGraph[{9, 9}]},
+  {axis = {39, 40, 41, 42, 43}},
+  FindInfraRepresentative[g, InfraCylinder[axis, 2]] === FindInfraRepresentative[g, InfraSolidOfRevolution[axis, ConstantArray[2, 5]]]]
 ```

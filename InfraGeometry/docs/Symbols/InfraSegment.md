@@ -61,7 +61,7 @@ GraphicsRow @ Table[
     {a = InfraCenter[g]},
     {b = (SeedRandom[1]; RandomInfraPoint[g, a, 5])},
     {seg = InfraSegment[a, b]},
-    InfraSubstrateHighlight[g, {seg, Directive[$InfraPointColor], a, b}]],
+    InfraSubstrateHighlight[g, {seg, a, b}]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```
 
@@ -75,7 +75,7 @@ Row[Table[
     {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, c, 5])]},
     {support = Keys @ InfraMeasurement[g, seg, "VertexDensity"]},
     Labeled[
-      InfraSubstrateHighlight[g, {InfraInterior[g, support] -> $InfraBallColor, InfraBoundary[g, support] -> $InfraCircleColor}],
+      InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
       InfraMeasurement[g, seg, {"Cardinality", "CountingMeasure", "RiemannianMeasure"}]]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```
@@ -98,7 +98,7 @@ With[
   {a = InfraCenter[g]},
   {b = (SeedRandom[2]; RandomInfraPoint[g, a, 10])},
   {seg = InfraSegment[a, b]},
-  {InfraSubstrateHighlight[g, {seg, Directive[$InfraPointColor], a, b}],
+  {InfraSubstrateHighlight[g, {seg, a, b}],
    InfraMeasurement[g, seg, "Cardinality"], VertexCount @ InfraMeasurement[g, seg, "Graph"]}]
 ```
 
@@ -110,7 +110,7 @@ With[
   {a = InfraCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 5])},
   {members = FindInfraRepresentative[g, InfraSegment[a, b], 3]},
-  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], Directive[$InfraPointColor], a, b}], {member, members}]]
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], a, b}], {member, members}]]
 ```
 
 A polyline through the centre: one shortest path in, one out. Its cardinality is the product of the two pieces' cardinalities.
@@ -122,7 +122,7 @@ With[
   {a = (SeedRandom[2]; RandomInfraPoint[g, c, 4])},
   {b = (SeedRandom[5]; RandomInfraPoint[g, c, 4])},
   {poly = InfraSegment[a, c, b]},
-  {InfraSubstrateHighlight[g, {poly, Directive[$InfraPointColor], a, c, b}],
+  {InfraSubstrateHighlight[g, {poly, a, c, b}],
    InfraMeasurement[g, poly, "Cardinality"] == InfraMeasurement[g, InfraSegment[a, c], "Cardinality"] InfraMeasurement[g, InfraSegment[c, b], "Cardinality"]}]
 ```
 
@@ -149,7 +149,7 @@ With[
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 5])},
   {seg = InfraSegment[a, b]},
   {members = FindInfraRepresentative[g, seg, All]},
-  {InfraSubstrateHighlight[g, {members, Directive[$InfraPointColor], a, b}],
+  {InfraSubstrateHighlight[g, {members, a, b}],
    Length @ members === InfraMeasurement[g, seg, "Cardinality"],
    Union[Length[#] - 1 & /@ members] === {GraphDistance[g, a, b]}}]
 ```

@@ -24,7 +24,7 @@ The head names the notion; this function finds its members. Where the head has a
 - `InfraCircle[c, r | {r, s}]`: a member is a circle found by sweeping the band, length by length with `FindCycle` (see [InfraCircle]()), as a cyclic vertex list whose first vertex is not repeated. The atoms stay what `InfraMeasurement` measures; the sweep is the check on them.
 - `InfraArc[c, {p, p}]`, the closed arc: the same sweep, not the atom of its graph, keeping the circles through *p*, and through every point of `InfraArc[c, {p, q, ..., p}]` (see [InfraArc]()).
 - `InfraGeodesic[germ, s]`, the geodesics at infra-scale *s* through the germ: a member is an inextensible simple geodesic, the result of [FindInfraGeodesic]()`[g, germ, s, Infinity, n, Properties -> {"Simple"}, "Direction" -> "BothSides"]`. The germ is a vertex list; a one-vertex list is grown on both sides, so it gives every geodesic through the vertex.
-- The scene tokens `InfraShell`, `InfraBall`, `InfraPlane`, `InfraPolygon`, `InfraTriangle`, `InfraPolyline`, `InfraRevolution`, `InfraWalk` and `InfraPoint`: a member is a result of the token's search at its defaults. A set head such as `InfraBall[c, r]` has one member, its sorted vertex list.
+- The scene tokens `InfraShell`, `InfraBall`, `InfraPlane`, `InfraPolygon`, `InfraWalk` and `InfraPoint`: a member is a result of the token's search at its defaults. A set head such as `InfraBall[c, r]` has one member, its sorted vertex list.
 
 The walk searches ([FindInfraWalk]() and [FindInfraGeodesic]()) take a germ, a budget and options of their own; the head `InfraGeodesic` fixes them to the inextensible simple class.
 
@@ -61,7 +61,7 @@ With[
   {a = InfraCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
   {geodesic = FindInfraRepresentative[g, InfraSegment[a, b]]},
-  {InfraSubstrateHighlight[g, {InfraWalk[geodesic], Directive[$InfraPointColor], a, b}], geodesic}]
+  {InfraSubstrateHighlight[g, {InfraWalk[geodesic], a, b}], geodesic}]
 ```
 
 Every member at once, and their number.
@@ -72,7 +72,7 @@ With[
   {a = InfraCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
   {members = FindInfraRepresentative[g, InfraSegment[a, b], All]},
-  {GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], Directive[$InfraPointColor], a, b}], {member, members}],
+  {GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], a, b}], {member, members}],
    Length @ members}]
 ```
 
@@ -95,7 +95,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {closedWalk = FindInfraRepresentative[g, InfraCircle[c, {2, 4}]]},
-  {InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]] -> $InfraCircleColor, Directive[$InfraPointColor], c}], closedWalk}]
+  {InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]], c}], closedWalk}]
 ```
 
 A scene token is read by its search: one shell around the centre.
@@ -105,7 +105,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {shell = FindInfraRepresentative[g, InfraShell[c, 3]]},
-  InfraSubstrateHighlight[g, {shell, Directive[$InfraPointColor], c}]]
+  InfraSubstrateHighlight[g, {shell, c}]]
 ```
 
 Four inextensible shortest paths through an edge at the centre, the members of a geodesic head.
@@ -116,7 +116,7 @@ With[
   {a = InfraCenter[g]},
   {germ = {a, First @ AdjacencyList[g, a]}},
   {members = FindInfraRepresentative[g, InfraGeodesic[germ, Infinity], 4]},
-  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], Directive[$InfraPointColor], a}], {member, members}]]
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], a}], {member, members}]]
 ```
 
 ## Properties and Relations

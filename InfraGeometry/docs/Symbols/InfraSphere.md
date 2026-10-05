@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSphere
 Keywords: [sphere, separating set, minimal, region, inert head, family, counting measure, Riemannian measure]
-SeeAlso: [FindInfraSphere, InfraShell, InfraBall, InfraMeasurement, FindInfraRepresentative, SeparatesQ]
+SeeAlso: [FindInfraSphere, InfraShell, InfraBall, InfraMeasurement, FindInfraRepresentative]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -52,7 +52,7 @@ Row[Table[
     {c = InfraCenter[g]},
     {family = InfraSphere[c, 3]},
     Labeled[
-      InfraSubstrateHighlight[g, {InfraShell[c, 3] -> $InfraShellColor, FindInfraRepresentative[g, family] -> $InfraCircleColor, Directive[$InfraPointColor], c}],
+      InfraSubstrateHighlight[g, {InfraShell[c, 3], FindInfraRepresentative[g, family], c}],
       InfraMeasurement[g, family, {"Cardinality", "CountingMeasure", "RiemannianMeasure"}]]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```
@@ -63,7 +63,7 @@ The four minimal connected separators in the band 1 to 2 about the centre of a 5
 With[
   {g = GridGraph[{5, 5}]},
   {members = FindInfraRepresentative[g, InfraSphere[13, {1, 2}], All]},
-  Row[InfraSubstrateHighlight[g, {#, Directive[$InfraPointColor], 13}] & /@ members]]
+  Row[InfraSubstrateHighlight[g, {#, 13}] & /@ members]]
 ```
 
 ## Properties and Relations

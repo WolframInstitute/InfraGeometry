@@ -77,9 +77,9 @@ With[
   {line = FindInfraLine[g, c, far]},
   {p = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line, #] &]},
   InfraSubstrateHighlight[g,
-    {line -> $InfraLineColor,
-     FindInfraPerpendicular[g, line, p, UpTo[3], "Radius" -> 3] -> $InfraCircleColor,
-     {p} -> $InfraPointColor},
+    {line,
+     FindInfraPerpendicular[g, line, p, UpTo[3], "Radius" -> 3],
+     {p}},
     "PointSizeRange" -> 16,
     VertexShapeFunction -> ({AbsolutePointSize[3], Point[#]} &),
     ImageSize -> 340]]

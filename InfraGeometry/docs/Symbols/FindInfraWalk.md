@@ -51,7 +51,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = InfraCenter[g]},
   {walks = FindInfraWalk[g, a, {3}, All]},
-  {InfraSubstrateHighlight[g, {walks, Directive[$InfraPointColor], a}], Length @ walks}]
+  {InfraSubstrateHighlight[g, {walks, a}], Length @ walks}]
 ```
 
 One walk of exactly 5 edges, beside its vertex sequence.
@@ -61,7 +61,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = InfraCenter[g]},
   {walk = FindInfraWalk[g, a, {5}]},
-  {InfraSubstrateHighlight[g, {walk, Directive[$InfraPointColor], a}], Last /@ VertexList[walk]}]
+  {InfraSubstrateHighlight[g, {walk, a}], Last /@ VertexList[walk]}]
 ```
 
 A germ of two vertices grows on both sides: the walks of at most 2 edges added at each end.
@@ -72,7 +72,7 @@ With[
   {a = InfraCenter[g]},
   {germ = {a, First @ AdjacencyList[g, a]}},
   {walks = FindInfraWalk[g, germ, UpTo[2], All]},
-  {InfraSubstrateHighlight[g, {walks, Directive[$InfraPointColor], germ}], Length @ walks}]
+  {InfraSubstrateHighlight[g, {walks, germ}], Length @ walks}]
 ```
 
 The same germ grown forward only.
@@ -83,7 +83,7 @@ With[
   {a = InfraCenter[g]},
   {germ = {a, First @ AdjacencyList[g, a]}},
   {walks = FindInfraWalk[g, germ, UpTo[2], All, "Direction" -> "Forward"]},
-  {InfraSubstrateHighlight[g, {walks, Directive[$InfraPointColor], germ}], Length @ walks}]
+  {InfraSubstrateHighlight[g, {walks, germ}], Length @ walks}]
 ```
 
 ## Options
@@ -98,7 +98,7 @@ With[
   {a = InfraCenter[g]},
   GraphicsRow @ Table[
     With[{walks = FindInfraWalk[g, a, UpTo[4], All, Properties -> rules]},
-      Labeled[InfraSubstrateHighlight[g, {walks, Directive[$InfraPointColor], a}], Row[{rules, ": ", Length @ walks}]]],
+      Labeled[InfraSubstrateHighlight[g, {walks, a}], Row[{rules, ": ", Length @ walks}]]],
     {rules, {{"Simple"}, {"Immersed"}, {}}}]]
 ```
 
@@ -113,7 +113,7 @@ With[
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 3])},
   {grown = FindInfraWalk[g, a, UpTo[5], All, "StoppingCondition" -> (Last[#] === b &)]},
   {arrived = Select[grown, Last @ Last @ VertexList @ # === b &]},
-  {InfraSubstrateHighlight[g, {arrived, Directive[$InfraPointColor], a, b}], Length /@ {grown, arrived}}]
+  {InfraSubstrateHighlight[g, {arrived, a, b}], Length /@ {grown, arrived}}]
 ```
 
 ### NextVertexFunction
@@ -125,7 +125,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = InfraCenter[g]},
   GraphicsRow @ Table[
-    InfraSubstrateHighlight[g, {(SeedRandom[seed]; FindInfraWalk[g, a, {12}, "NextVertexFunction" -> RandomChoice]), Directive[$InfraPointColor], a}],
+    InfraSubstrateHighlight[g, {(SeedRandom[seed]; FindInfraWalk[g, a, {12}, "NextVertexFunction" -> RandomChoice]), a}],
     {seed, 3}]]
 ```
 
@@ -150,7 +150,7 @@ With[
   {walks = Select[
     FindInfraWalk[g, a, Infinity, All, Properties -> {"Minimizing"}, "StoppingCondition" -> (Last[#] === b &)],
     Last @ Last @ VertexList @ # === b &]},
-  {InfraSubstrateHighlight[g, {walks, Directive[$InfraPointColor], a, b}],
+  {InfraSubstrateHighlight[g, {walks, a, b}],
    Sort[Last /@ VertexList[#] & /@ walks] === Sort @ FindInfraSegment[g, a, b, All]}]
 ```
 
