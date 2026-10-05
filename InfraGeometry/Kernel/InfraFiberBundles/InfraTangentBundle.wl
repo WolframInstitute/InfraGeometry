@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: FiberBundles :: InfraTangentBundle *)
+(* WolframInstitute`InfraGeometry` :: InfraFiberBundles :: InfraTangentBundle *)
 
 (* The ideas are InfraGaugeTheory's (Kernel/TangentBundle.wl, CotangentBundle.wl at e5dc83b, whose germ bundles InfraGaugeTheory keeps);
    the ray and displacement bundles are new here *)

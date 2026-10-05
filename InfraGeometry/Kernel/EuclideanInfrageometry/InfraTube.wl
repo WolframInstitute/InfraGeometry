@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraTube *)
+
 (* the tube { v : min_i ( d(a_i, v) - r_i ) <= 0 } along the core a_1, ..., a_m; a band profile { s_i, t_i } keeps the v with
    min_i ( d(a_i, v) - t_i ) <= 0 <= min_i ( d(a_i, v) - s_i ), the outer tube less the open inner one, and a constant band { s, t } is
    { v : s <= d(v, core) <= t } *)

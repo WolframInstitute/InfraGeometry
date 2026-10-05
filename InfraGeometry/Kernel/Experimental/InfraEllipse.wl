@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: Experimental :: InfraEllipse *)
+
 (* an ellipse for foci {p1, p2} is a simple cycle in the induced subgraph on { v : cMin <= d(p1, v) + d(p2, v) <= cMax }, returned as a directed
    cycle graph on the substrate vertices; the count-less call is one ellipse, a bounded count and All a List of them -- closed walks have no acyclic
    union to carry them.  The family is carried by the FindCycle length sweep, which materialises every shorter cycle first; there is no elliptic

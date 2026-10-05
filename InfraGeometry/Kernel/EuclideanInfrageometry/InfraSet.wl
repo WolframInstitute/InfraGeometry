@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraSet *)
+
 (* { v : d(p1, v) == ... == d(pn, v) }, the intersection of the n-1 consecutive bisectors Bis(p_i, p_{i+1}); the window thickens each to lo <= d(p_i,
    v) - d(p_{i+1}, v) <= hi *)
 

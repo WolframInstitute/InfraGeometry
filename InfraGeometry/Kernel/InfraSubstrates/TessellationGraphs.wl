@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: InfraSubstrates :: TessellationGraphs *)
+
 PackageScope[ CosetEnumeration ]
 PackageScope[ LowIndexMaps ]
 PackageScope[ RotationMapGraph ]
@@ -633,4 +635,3 @@ LowIndexMaps[ p_, q_, maxIndex_ ] :=
       Map[ rec |-> With[ { perms = rec[[ 1 ]], idx = rec[[ 2 ]] },
         <| "Index" -> idx, "Generators" -> (PermutationCycles /@ perms), "Skeleton" -> RotationMapGraph[ perms ],
           "Regular" -> GroupOrder[ PermutationGroup[ PermutationCycles /@ perms ] ] == idx, "Genus" -> 1 - (idx/q - idx/2 + idx/p)/2 |> ], recs ] ] ]
-

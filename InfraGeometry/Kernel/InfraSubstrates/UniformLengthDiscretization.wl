@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: InfraSubstrates :: UniformLengthDiscretization *)
+
 (* The contact graph of a relaxed hard-sphere packing has all edges at exactly 2r:
    two touching spheres of radius r have centers at distance 2r by geometry, not by
    force balance.  UniformLengthGraph packs a region as given -- filling a solid, meshing a

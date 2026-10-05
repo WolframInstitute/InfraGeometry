@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: Experimental :: MetricAlgebra *)
+
 (* I(u, v) = { w : d(u, w) + d(w, v) == d(u, v) }, the union of all geodesics from u to v *)
 
 MetricInterval[ graph_Graph, u_, v_ ] :=

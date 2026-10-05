@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: InfraSubstrates :: ExampleGraphs *)
+
 (* SierpinskiGraph[n] is the trivalent Sierpinski graph: start from the 3-simplex K_4
    (the tetrahedron) and iterate corner-cutting (truncation) n-1 times.  Each step
    replaces every vertex by a triangle, its three incident edges reattaching to the

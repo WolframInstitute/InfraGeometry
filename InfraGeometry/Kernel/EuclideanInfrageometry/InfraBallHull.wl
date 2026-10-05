@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraBallHull *)
+
 (* the intersection of the closed balls B_rho(c) containing S with rho in the band {r, t}: at a centre c the least ball containing S has the
    radius r_c = max_{s in S} d(c, s), so the least admissible one has the radius max(r_c, r) and exists iff r_c <= t; with no such c the family is
    empty and the hull is the whole graph.  A bare r is the band {0, r}, the balls of radius at most r, and {r} the band {r, r}, exactly r;

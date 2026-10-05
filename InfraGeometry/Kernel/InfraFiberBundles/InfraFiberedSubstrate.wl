@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: FiberBundles :: InfraFiberedSubstrate *)
+(* WolframInstitute`InfraGeometry` :: InfraFiberBundles :: InfraFiberedSubstrate *)
 
 InfraFiberedSubstrate[ ] :=
   <|

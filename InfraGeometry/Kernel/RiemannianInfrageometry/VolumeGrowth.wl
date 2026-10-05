@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: RiemannianInfrageometry :: VolumeGrowth *)
+
 LogDifferenceQuotients[ w_List ] :=
   Log[ Ratios[ Range[ Length[ w ] ] ], Ratios[ N[ w ] ] ]
 

@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraQuadric *)
+
 (* the band { v : lo <= Sum_i w_i d(a_i, v) <= hi } with d(a_i, v) the distance to the anchor's vertices, as InfraBall reads its centre; a bare
    c is the solid { v : Sum_i w_i d(a_i, v) <= c }, the weights all 1 when omitted.  One focus is the ball, two the ellipse, {c, c} the elliptic
    shell, the weights {1, -1} a hyperbola branch *)

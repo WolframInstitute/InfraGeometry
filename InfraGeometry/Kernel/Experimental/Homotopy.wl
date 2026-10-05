@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: Experimental :: Homotopy *)
+
 Options[ FindInfraHomotopy ] = {
   Method                -> "Exhaustive",
   "FreeHomotopy"        -> False,

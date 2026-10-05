@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: InfraTopology :: BallTopology *)
+
 (* BallTopology[g, r]: Hasse diagram of the specialization preorder of the
    Alexandrov topology on V(g) with closed-set subbasis the closed r-balls.
    Directed edge q -> p iff B_r(p) subset B_r(q), transitive edges removed.

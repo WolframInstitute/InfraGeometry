@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: RiemannianInfrageometry :: InfraShell *)
+
 PackageScope[ SeparatesQ ]
 
 (* the level set { v : r <= d(v, C) <= s } with d(v, C) = min_{c in C} d(v, c) *)

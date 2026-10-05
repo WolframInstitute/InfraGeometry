@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraPoint *)
+
 Options[ FindInfraPoint ] = { "From" -> "Random", "Distance" -> None, "MaxCliques" -> All }
 
 FindInfraPoint[ graph_Graph, count : ( UpTo[ _Integer ] | Automatic ) : Automatic, opts : OptionsPattern[] ] /;

@@ -337,7 +337,6 @@ VerificationTest[
   TestID -> "FindInfraOrthogonalFrame-AxisCount-UpTo"
 ]
 
-
 VerificationTest[
   Sort @ VertexList @ SprayGraph[GridGraph[{3, 3}], 5],
   Range[9],
@@ -596,7 +595,6 @@ VerificationTest[
   TestID -> "OrthogonalCoordinates-3x3grid-centre-self-zero"
 ]
 
-
 (* "SelectCoordinate" default is "Centered": omitting the option matches
    passing "Centered" explicitly. *)
 
@@ -606,7 +604,6 @@ VerificationTest[
   True,
   TestID -> "FindInfraOrthogonalFrame-SelectCoordinate-default-is-Centered"
 ]
-
 
 (* Unification: under "Centered", every vertex on axis i has coord 0 on
    every axis j != i.  This is by construction (perpendicularity test ==
@@ -629,7 +626,6 @@ VerificationTest[
   TestID -> "FindInfraOrthogonalFrame-Centered-unifies-perpendicularity-and-coords"
 ]
 
-
 (* "SelectCoordinate" -> All is the strict-list-equality interpretation:
    c's and w's full tied projection lists must coincide.  Since the test is
    symmetric in c and w, the perpendicularity decision must be symmetric
@@ -644,7 +640,6 @@ VerificationTest[
   TestID -> "FindInfraOrthogonalFrame-SelectCoordinate-All-deterministic"
 ]
 
-
 (* Different aggregation choices produce well-formed frames (no $Failed). *)
 
 VerificationTest[
@@ -658,7 +653,6 @@ VerificationTest[
   True,
   TestID -> "FindInfraOrthogonalFrame-SelectCoordinate-accepts-Min-Max-Median-Mean-All"
 ]
-
 
 (* ===== ResistanceCoordinates =====
    Central claim: ||Phi(u) - Phi(v)||^2 == R(u, v) (Klein-Randic isometry). *)
@@ -698,7 +692,6 @@ VerificationTest[
   TestID -> "ResistanceCoordinates-isometry-tree"
 ]
 
-
 (* Dimension = n - c for connected graphs. *)
 
 VerificationTest[
@@ -713,7 +706,6 @@ VerificationTest[
   TestID -> "ResistanceCoordinates-dimension-Grid4x4"
 ]
 
-
 (* Centeredness: rows sum to zero. *)
 
 VerificationTest[
@@ -723,7 +715,6 @@ VerificationTest[
   True,
   TestID -> "ResistanceCoordinates-centered"
 ]
-
 
 (* "Origin" -> v sets v's coordinate to 0. *)
 
@@ -739,7 +730,6 @@ VerificationTest[
   TestID -> "ResistanceCoordinates-Origin-single-call"
 ]
 
-
 VerificationTest[
   Length @ First @ Values @ ResistanceCoordinates[PetersenGraph[], "Dimension" -> 3],
   3,
@@ -751,7 +741,6 @@ VerificationTest[
   9,
   TestID -> "ResistanceCoordinates-Dimension-UpTo-clipped"
 ]
-
 
 VerificationTest[
   Dimensions @ ResistanceCoordinates[PetersenGraph[], <| 1 -> 1, 2 -> 1, 3 -> 1 |>],
@@ -773,7 +762,6 @@ VerificationTest[
   TestID -> "ResistanceCoordinates-density-singleton-degenerates"
 ]
 
-
 (* "Rescaling" -> "None" gives the smallest nonzero Laplacian eigenvectors. *)
 
 VerificationTest[
@@ -789,7 +777,6 @@ VerificationTest[
   TestID -> "ResistanceCoordinates-Rescaling-None"
 ]
 
-
 (* Bounded axisLength makes the answer depend only on B(c, 2 axisLength). *)
 
 VerificationTest[
@@ -800,7 +787,6 @@ VerificationTest[
   True,
   TestID -> "FindInfraOrthogonalFrame-locality"
 ]
-
 
 (* ===== Anchors on shapes: the anchor rule, not a per-head coercion ===== *)
 
@@ -836,5 +822,58 @@ VerificationTest[
   TestID -> "OrthogonalCoordinates-centre-is-an-anchor"
 ]
 
+(* Moved from RiemannianTests.wlt on 2026-10-05 (APISurfaceCleanup T9) *)
+
+(* ===== Coordinatization: resolving sets, radar / resistance coords, ball covers ===== *)
+
+VerificationTest[
+    ResolvingSetQ[PathGraph[Range[5]], {1}],
+    True,
+    TestID -> "ResolvingSetQ-path-endpoint-resolves"
+]
+
+VerificationTest[
+    ResolvingSetQ[CycleGraph[6], {1}],
+    False,
+    TestID -> "ResolvingSetQ-cycle-single-fails"
+]
+
+VerificationTest[
+    ResolvingSetQ[CycleGraph[6], {1, 2}],
+    True,
+    TestID -> "ResolvingSetQ-cycle-two-resolves"
+]
+
+VerificationTest[
+    MetricDimension[PathGraph[Range[5]]],
+    1,
+    TestID -> "MetricDimension-path"
+]
+
+VerificationTest[
+    MetricDimension[CycleGraph[6]],
+    2,
+    TestID -> "MetricDimension-cycle"
+]
+
+VerificationTest[
+    MetricDimension[PetersenGraph[]],
+    3,
+    TestID -> "MetricDimension-Petersen"
+]
+
+VerificationTest[
+    RadarCoordinates[PathGraph[Range[5]], {1, 5}, 3],
+    {2, 2},
+    TestID -> "RadarCoordinates-path-vertex"
+]
+
+VerificationTest[
+    With[{c = ResistanceCoordinates[PathGraph[Range[4]]]},
+        Chop[Total[(c[1] - c[4])^2] - EffectiveResistance[PathGraph[Range[4]], 1, 4]]
+    ],
+    0,
+    TestID -> "ResistanceCoordinates-matching-identity"
+]
 
 EndTestSection[]

@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: InfraSubstrates :: InfraSubstrate *)
+
 Options[ InfraSubstrate ] = { "KeepCoordinates" -> False, "Inflate" -> None }
 
 InfraSubstrate[ ] :=

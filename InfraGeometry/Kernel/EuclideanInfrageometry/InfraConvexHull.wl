@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraConvexHull *)
+
 (* the k-th round of the interval closure: round 0 is S, round i + 1 the union of the intervals I(u, v) = { w : d(u, w) + d(w, v) == d(u, v) }
    over the pairs u, v of round i, which contains round i as I(u, u) = { u }; the fixed point, k = Infinity, is the geodesic convex hull
    (Farber-Jamison).  A round reads I(u, v) for every v at once off the rows of one distance matrix; clipped at the vertex count, the distances

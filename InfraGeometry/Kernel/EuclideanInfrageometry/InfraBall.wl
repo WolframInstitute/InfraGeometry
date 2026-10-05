@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraBall *)
+
 (* the closed ball { v : d(v, C) <= r } with d(v, C) = min_{c in C} d(v, c) over the anchor's vertices C; a band {r, s} is the shell *)
 
 InfraMeasurement[ graph_Graph, InfraBall[ center_, r : Except[ _List ] ], "VertexDensity" ] :=

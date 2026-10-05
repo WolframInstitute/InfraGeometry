@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraSphere *)
+
 (* the inclusion-minimal admissible subsets of the level surface { v : rmin <= d(c, v) <= rmax }, sorted vertex lists; the count-less call is one,
    a bounded count and All a List of them -- the level set itself under Properties -> {} *)
 

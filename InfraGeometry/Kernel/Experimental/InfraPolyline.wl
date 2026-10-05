@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: Experimental :: InfraPolyline *)
+
 (* the fewest geodesic legs with knots on the walk, each leg a shortest path of length <= MaxLength: a List of directed path graphs on the
    substrate vertices, consecutive legs sharing their knot, so the walk is a member of the polyline InfraSegment[k1, ..., km] on its knots -- the
    knots are a fact about the subdivision, not about the walk, so they are kept as the leg ends rather than dissolved into one graph *)

@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: Tools *)
+
 (* the marginal of a shape to the vertex set, <| v -> m |>: the anchor rule every construction reads its anchors through.  The branches are ordered
    because a vertex label may itself be a List.  A bundle sums by GroupBy, not Merge[ ..., Total ], which is quadratic in the member count: 18 s
    against 0.2 s on 16000 walks *)

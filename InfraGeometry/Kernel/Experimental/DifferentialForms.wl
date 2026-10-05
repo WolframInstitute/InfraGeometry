@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: Experimental :: DifferentialForms *)
+
 FormValue[ omega_, v_, tuple_List ] :=
   Signature[ tuple ] * Lookup[ Lookup[ omega, Key[ v ], <| |> ], Key[ Sort[ tuple ] ], 0 ]
 

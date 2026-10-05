@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: Experimental :: OllivierCurvature *)
+
 (* kappa(u, v) = 1 - W_1(mu_u, mu_v) / d(u, v),
    mu_x = uniform on the open neighborhood N(x); idleness alpha = 0;
    W_1 is the Wasserstein-1 (Earth-Mover) distance under graph distance,

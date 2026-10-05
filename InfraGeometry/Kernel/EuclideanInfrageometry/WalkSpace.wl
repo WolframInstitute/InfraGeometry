@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: WalkSpace *)
+
 Options[ SelectInfraWalk ] = {
   "From"       -> All,
   "Distance"   -> None,

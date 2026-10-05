@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: InfraAnalysis :: Displacements *)
+
 (* A displacement is an association v -> { w1, w2, ... } (multivalued in
    general; values are always lists), thought of as v -> exp_v(r X) for a
    vector field X at scale r = DisplacementMagnitude -- a section of the
@@ -260,4 +262,3 @@ DisplacementPlot[ graph_Graph, displacements : { __Association }, opts : Options
       Sequence @@ FilterRules[ { opts }, Options[ Graphics ] ]
     ]
   ]
-

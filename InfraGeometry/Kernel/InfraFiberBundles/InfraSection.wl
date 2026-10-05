@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: FiberBundles :: InfraSection *)
+(* WolframInstitute`InfraGeometry` :: InfraFiberBundles :: InfraSection *)
 
 (* Ported from InfraGaugeTheory Kernel/Sections.wl at e5dc83b; InfraGaugeTheory keeps its own copy *)
 

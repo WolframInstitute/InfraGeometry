@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: Experimental :: InfraEquality *)
+
 Options[ InfraEqualQ ] = { Method -> "Diffuse" }
 
 InfraEqualQ[ graph_Graph, a_, b_, opts : OptionsPattern[] ] /;
