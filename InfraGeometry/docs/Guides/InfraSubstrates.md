@@ -47,7 +47,7 @@ The substrate is the graph the observer lives on. InfraSubstrate names the examp
 
 ### Preparing a substrate
 
-- **CenterGraph** — the substrate cut to a fraction q of the way out from its centre
+- `CenterGraph` the substrate cut to the ball of k hops about its centre; a negative k counts back from the radius, Scaled[q] takes a fraction of it
 - **BoundarylessGraph** — deletes every edge joining two rim vertices and then the vertices this isolates, an open window onto the geometry
 - **GraphExteriorBoundary** — the rim vertices of the whole graph, detected from vertex degrees
 

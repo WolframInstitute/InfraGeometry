@@ -211,7 +211,7 @@ BoundarylessGraph::usage = "BoundarylessGraph[g] deletes every edge joining two 
 
 GraphEccentricities::usage = "GraphEccentricities[g] gives the eccentricity max_w d(v, w) of every vertex, in VertexList order -- the list form of VertexEccentricity. Also takes a distance matrix. Values run from GraphRadius[g] to GraphDiameter[g].";
 
-CenterGraph::usage = "CenterGraph[g, q] gives the induced subgraph on { v : d(v, GraphCenter[g]) <= Floor[q GraphRadius[g]] }, the substrate cut to a fraction q of the way out from its centre; q = 0 is the centre, q = 1 (the default) the whole graph, and q is clipped to [0, 1]. Vertex labels and coordinates are g's, so a construction made on the ball draws on g. For a cut in hops use NeighborhoodGraph[g, GraphCenter[g], k]. Returns g unchanged when the graph is vertex-transitive or disconnected.";
+CenterGraph::usage = "CenterGraph[g, k] gives NeighborhoodGraph[g, GraphCenter[g], k]; a negative k gives the radius GraphRadius[g] + k. CenterGraph[g, Scaled[q]] gives the radius Floor[q GraphRadius[g]].";
 
 RelativeEccentricity::usage = "RelativeEccentricity[g] gives (e(v) - radius)/(diameter - radius) for each vertex in VertexList order -- 0 on GraphCenter, 1 on GraphPeriphery. Also takes a distance matrix. Identically 0 when diameter == radius or the graph is disconnected.";
 
