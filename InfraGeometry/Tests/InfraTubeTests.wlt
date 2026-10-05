@@ -117,14 +117,13 @@ VerificationTest[
 
 (* ===== InfraCylinder ===== *)
 
-(* Along a row of the square grid the sliced cylinder is the rectangle of half-width r over the inner axis vertices, with flat ends; the
-   balls method adds the rounded ends.  The two end slices hold their axis vertex only: the side neighbours of an end prolong the axis as a
-   geodesic on the square grid, so the vertices beside an end lie nearer a prolongation than the axis *)
+(* Along a row of the square grid the sliced cylinder is the rectangle of half-width r over the axis, with flat ends; the balls method adds
+   the rounded ends.  The axis is prolonged straight on, so the end slices are full rows *)
 VerificationTest[
   With[ { g = GridGraph[{9, 9}], at = { x, y } |-> 9 ( x - 1 ) + y },
     { axis = at[5, #] & /@ Range[3, 7] },
     { FindInfraRepresentative[g, InfraCylinder[axis, 2]], FindInfraRepresentative[g, InfraCylinder[axis, 2, Method -> "Balls"]] } ===
-      { Sort @ Join[ Flatten @ Table[ at[x, y], { x, 3, 7 }, { y, 4, 6 } ], { at[5, 3], at[5, 7] } ],
+      { Sort @ Flatten @ Table[ at[x, y], { x, 3, 7 }, { y, 3, 7 } ],
         Select[ VertexList @ g, v |-> Min[ GraphDistance[g, #, v] & /@ axis ] <= 2 ] } ],
   True,
   TestID -> "InfraCylinder-grid-row-flat-and-rounded-ends"
@@ -170,11 +169,11 @@ VerificationTest[
   TestID -> "InfraCone-slope-0-is-the-axis"
 ]
 
-(* the row of axis vertex i holds 2 (i - 1) + 1 vertices, the end slices their axis vertex only *)
+(* the row of axis vertex i holds 2 (i - 1) + 1 vertices, the base row included *)
 VerificationTest[
   With[ { g = GridGraph[{11, 11}] },
     KeySort @ Counts[ Mod[ FindInfraRepresentative[g, InfraCone[11 * 5 + Range[2, 7], 1]] - 1, 11 ] + 1 ] ],
-  <| 2 -> 1, 3 -> 3, 4 -> 5, 5 -> 7, 6 -> 9, 7 -> 1 |>,
+  <| 2 -> 1, 3 -> 3, 4 -> 5, 5 -> 7, 6 -> 9, 7 -> 11 |>,
   TestID -> "InfraCone-slices-grow-by-the-slope"
 ]
 
@@ -218,7 +217,7 @@ VerificationTest[
   With[ { g = GridGraph[{11, 11}], axis = 11 * 5 + Range[2, 8], profile = {1, 1, 1, 3, 1, 1, 1} },
     KeySort @ Counts[ Mod[ FindInfraRepresentative[g, #] - 1, 11 ] + 1 ] & /@
       { InfraSolidOfRevolution[axis, profile], InfraSolidOfRevolution[axis, profile, Method -> "Balls"] } ],
-  { <| 2 -> 1, 3 -> 3, 4 -> 3, 5 -> 7, 6 -> 3, 7 -> 3, 8 -> 1 |>, <| 1 -> 1, 2 -> 3, 3 -> 3, 4 -> 5, 5 -> 7, 6 -> 5, 7 -> 3, 8 -> 3, 9 -> 1 |> },
+  { <| 2 -> 3, 3 -> 3, 4 -> 3, 5 -> 7, 6 -> 3, 7 -> 3, 8 -> 3 |>, <| 1 -> 1, 2 -> 3, 3 -> 3, 4 -> 5, 5 -> 7, 6 -> 5, 7 -> 3, 8 -> 3, 9 -> 1 |> },
   TestID -> "InfraSolidOfRevolution-profile-read-at-the-foot"
 ]
 
@@ -262,7 +261,7 @@ VerificationTest[
   With[ { g = GridGraph[{5, 5}] },
     InfraMeasurement[g, { InfraTube[13, 1], InfraCylinder[{1, 2}, 1], InfraCone[{1, 2, 3}, 1] }, #] & /@
       { "CountingMeasure", "RiemannianMeasure" } ],
-  { { 5, 2, 4 }, { 1, 0, 1 } },
+  { { 5, 4, 6 }, { 1, 1, 1 } },
   TestID -> "InfraTube-InfraCylinder-InfraCone-measures-in-one-call"
 ]
 
@@ -271,7 +270,7 @@ VerificationTest[
     Map[ inst |-> inst[[ 1 ]][ t ],
       FindInfraScene[ InfraScene[ { t }, { t == # } ], g ] & /@
         { InfraTube[{1, 2}, 1], InfraCylinder[{1, 2}, 1], InfraCone[{1, 2}, 1], InfraSolidOfRevolution[{5, 6, 7, 8}, {0, 1, 1, 0}] }, { 2 } ] ],
-  { { {1, 2, 3, 5, 6} }, { {1, 2} }, { {1, 2} }, { {2, 3, 5, 6, 7, 8, 10, 11} } },
+  { { {1, 2, 3, 5, 6} }, { {1, 2, 5, 6} }, { {1, 2, 6} }, { {2, 3, 5, 6, 7, 8, 10, 11} } },
   TestID -> "InfraTube-InfraCylinder-InfraCone-InfraSolidOfRevolution-are-scene-constructors"
 ]
 

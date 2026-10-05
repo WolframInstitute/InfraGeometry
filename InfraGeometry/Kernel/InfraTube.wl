@@ -23,7 +23,8 @@ InfraMeasurement[ graph_Graph, InfraTube[ core_, profile_ ], "VertexDensity" ] :
 
 (* "Sliced" reads the profile at the nearest axis vertex, the discrete foot of the perpendicular, a tie lying in every nearest slice.  Past each
    end of an open axis the neighbours v of the end with d(v, a_k) == k along the axis prolong it as a geodesic, and a v nearer a prolongation
-   than the axis is cut off, which makes the ends flat.  Both methods are one pass over the distance rows of the axis *)
+   than the axis is cut off, which makes the ends flat.  The prolongation goes straight on: the end a_1 is the only common neighbour of v and
+   a_2, so no sideways turn of an l^1 geodesic counts.  Both methods are one pass over the distance rows of the axis *)
 
 InfraMeasurement[ graph_Graph, InfraTube[ core_, profile_, Method -> method : "Balls" | "Sliced" ], "VertexDensity" ] /;
     method === "Balls" || VertexQ[ graph, core ] || ListQ @ core || GraphQ @ core && PathGraphQ @ core :=
@@ -50,8 +51,12 @@ InfraMeasurement[ graph_Graph, InfraTube[ core_, profile_, Method -> method : "B
         r : Except[ _List ] :> { 0, r }, { 1 } ] },
     { ends = If[ method === "Balls" || cyclic || m < 2, { },
         Join[
-          Select[ AdjacencyList[ graph, First @ axis ], v |-> rows[[ All, VertexIndex[ graph, v ] ]] == Range @ m ],
-          Select[ AdjacencyList[ graph, Last @ axis ], v |-> Reverse @ rows[[ All, VertexIndex[ graph, v ] ]] == Range @ m ] ] ] },
+          Select[ AdjacencyList[ graph, First @ axis ], v |->
+            rows[[ All, VertexIndex[ graph, v ] ]] == Range @ m &&
+              Intersection[ AdjacencyList[ graph, v ], AdjacencyList[ graph, axis[[ 2 ]] ] ] === { First @ axis } ],
+          Select[ AdjacencyList[ graph, Last @ axis ], v |->
+            Reverse @ rows[[ All, VertexIndex[ graph, v ] ]] == Range @ m &&
+              Intersection[ AdjacencyList[ graph, v ], AdjacencyList[ graph, axis[[ -2 ]] ] ] === { Last @ axis } ] ] ] },
     { near = Min /@ Transpose @ Join[ rows, dm[[ VertexIndex[ graph, # ] & /@ ends ]] ] },
     If[ m == 0, <| |>,
       AssociationThread[
