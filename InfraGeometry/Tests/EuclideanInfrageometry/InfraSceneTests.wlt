@@ -691,9 +691,11 @@ VerificationTest[
      InfraSection and InfraConnection, the inert maps read by the section and connection functions
      (InfraFibrations T2), nor InfraTangentBundle, InfraCotangentBundle and InfraDisplacementBundle,
      the fibration constructions read by InfraTotalGraph and InfraFibrationAssociation (InfraFibrations T3).
-     InfraFibration left the list in T3: its one-argument form converts a construction. *)
+     InfraFibration left the list in T3: its one-argument form converts a construction.  The hull heads InfraBallHull and
+     InfraConvexHull joined it with APISurfaceCleanup T4, region heads read like InfraBall. *)
   { "InflatedVertex",
-    "InfraArc", "InfraBall", "InfraCircle", "InfraCone", "InfraConnection", "InfraCotangentBundle", "InfraCylinder",
+    "InfraArc", "InfraBall", "InfraBallHull", "InfraCircle", "InfraCone", "InfraConnection", "InfraConvexHull",
+    "InfraCotangentBundle", "InfraCylinder",
     "InfraDisplacementBundle", "InfraEllipse", "InfraEllipticShell", "InfraGeodesic",
     "InfraIntersectQ", "InfraLine", "InfraPlane", "InfraPoint",
     "InfraPolygon", "InfraRay", "InfraRevolution", "InfraSection", "InfraSegment",

@@ -57,8 +57,9 @@ InfraShellQ::usage = "InfraShellQ[graph, vertexSet] tests whether vertexSet is a
 
 InfraBall::usage = "InfraBall[c, r] is the inert closed ball { v : d(v, c) <= r }, c a vertex or a vertex set; InfraBall[c, {r, s}] is the shell. Read by InfraMeasurement and FindInfraRepresentative.";
 InfraBallQ::usage = "InfraBallQ[graph, vertexSet] tests whether vertexSet is a closed metric ball.";
-FindBallHull::usage = "FindBallHull[graph, S] gives, as a sorted vertex list, the ball hull of S: the intersection of all closed balls containing S, the smallest ball-convex superset.";
-BallHullQ::usage = "BallHullQ[graph, S] tests whether S is ball-convex, i.e. an intersection of closed balls.";
+
+InfraBallHull::usage = "InfraBallHull[S, r] is the inert intersection of the closed balls of radius at most r containing S, the whole graph if none does; InfraBallHull[S] is the Mazur hull. Read by InfraMeasurement and FindInfraRepresentative.";
+InfraConvexHull::usage = "InfraConvexHull[S, k] is the inert k-th round of the interval closure of S, a round adding all geodesics between its vertices; InfraConvexHull[S] is the convex hull. Read by InfraMeasurement and FindInfraRepresentative.";
 
 InfraTube::usage = "InfraTube[core, s] is the inert tube { v : d(v, core) <= s }, core a vertex, a vertex set, a density, a walk graph or a Euclidean head; InfraTube[core, {s, t}] is the band { v : s <= d(v, core) <= t }. Read by InfraMeasurement and FindInfraRepresentative.";
 InfraCylinder::usage = "InfraCylinder[axis, r] is the inert cylinder of radius r around axis, the tube InfraTube[axis, r]; r may be a band {r, s}.";
@@ -119,8 +120,6 @@ HomotopyMoveTypes::usage = "HomotopyMoveTypes[chain] applies HomotopyMoveType to
 MetricInterval::usage = "MetricInterval[graph, u, v] gives { w : d(u, w) + d(w, v) == d(u, v) }, the union of all geodesics from u to v.";
 ShortestPathMultiplicityMatrix::usage = "ShortestPathMultiplicityMatrix[graph] gives the matrix whose (i, j) entry is the number of shortest paths from the i-th to the j-th vertex, 0 when there is none.";
 MedianVertices::usage = "MedianVertices[graph, vs] gives the vertices minimising the sum of distances to vs.";
-FindSegmentHull::usage = "FindSegmentHull[graph, S] gives, as a sorted vertex list, the smallest superset of S closed under MetricInterval -- the geodesic convex hull.";
-SegmentHullQ::usage = "SegmentHullQ[graph, S] tests whether S is geodesically convex.";
 
 InfraDensity::usage = "InfraDensity[graph, x] gives the marginal of any shape to the vertex set, <|v -> m|>, with respect to the counting measure: a vertex gives <|v -> 1|>, a vertex list its Counts, a density itself, a walk graph or a bundle its vertex occupation. It is the one coercion in the API -- Keys demotes it back to the set, Counts promotes a list to one.";
 
@@ -169,8 +168,6 @@ ShellViewer::usage = "ShellViewer[graph] is an interactive viewer for exploring 
 CircleViewer::usage = "CircleViewer[graph] is an interactive viewer for exploring separating cycles.";
 
 InfraEqualQ::usage = "InfraEqualQ[graph, a, b] tests equality of two Infra* objects through their diffusion diagrams. Option Method (\"Diffuse\", \"Overlap\", \"Set\", \"Multiset\").";
-
-BallHull::usage = "BallHull[g, S] gives the ball hull of vertex subset S in g: the intersection of all closed metric balls containing S, equivalently { v : d(c, v) <= max_{s in S} d(c, s) for every vertex c }. This is the smallest ball-convex (Mazur) superset of S. S may be a vertex list or a subgraph.";
 
 LogDifferenceQuotients::usage = "LogDifferenceQuotients[w] gives the log-difference quotients q(r) = (Log w(r) - Log w(r-1)) / (Log(r+1) - Log r) of a sequence w = {w(0), w(1), ...}, the discrete d Log w / d Log r; equals ResourceFunction[\"LogDifferences\"][w]. Accepts any numeric or Around sequence, such as the measures of InfraBall[v, r] over r, or their MeanAround over a vertex subset.";
 

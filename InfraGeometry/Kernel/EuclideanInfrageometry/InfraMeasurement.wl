@@ -59,7 +59,8 @@ InfraMeasurement[ graph_Graph, obj : Except[ _List ], props : { __String } ] :=
 
 InfraMeasurement[ graph_Graph,
     obj : Except[ _List | InfraIntersection[ __ ] | InfraUnion[ __ ] |
-                  ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] ], All ] :=
+                  ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] |
+                  ( InfraBallHull | InfraConvexHull )[ _, ___ ] ], All ] :=
   InfraMeasurement[ graph, obj,
     { "Graph", "Faithful", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph",
       "CountingMeasure", "RiemannianMeasure" } ]
@@ -72,7 +73,8 @@ InfraMeasurement[ _Graph, InfraArc[ __ ], "Faithful" ] :=
 
 InfraMeasurement[ graph_Graph,
     obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, Except[ { p_, ___, p_ }, { _, _, __ } ], ___ ] |
-                  ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] ], "Cardinality" ] :=
+                  ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] |
+                  ( InfraBallHull | InfraConvexHull )[ _, ___ ] ], "Cardinality" ] :=
   Total @ Map[
     dag |-> With[ { inNbr = GroupBy[ EdgeList @ dag, Last -> First ] },
       { alpha = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ inNbr, Key @ w, { } ],
@@ -84,6 +86,7 @@ InfraMeasurement[ graph_Graph,
 InfraMeasurement[ graph_Graph,
     obj : Except[ _List | InfraIntersection[ __ ] | InfraUnion[ __ ] | InfraCircle[ _, _, ___ ] |
                   ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] |
+                  ( InfraBallHull | InfraConvexHull )[ _, ___ ] |
                   InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] ], "VertexDensity" ] :=
   KeySort @ Merge[
     Map[
@@ -100,6 +103,7 @@ InfraMeasurement[ graph_Graph,
 
 InfraMeasurement[ graph_Graph,
     obj : Except[ _List | InfraCircle[ _, _, ___ ] | ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] |
+                  ( InfraBallHull | InfraConvexHull )[ _, ___ ] |
                   InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] ], "EdgeDensity" ] :=
   KeySort @ Merge[
     Map[
@@ -116,7 +120,8 @@ InfraMeasurement[ graph_Graph,
 
 InfraMeasurement[ graph_Graph,
     obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, Except[ { p_, ___, p_ }, { _, _, __ } ], ___ ] |
-                  ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] ], "Length" ] :=
+                  ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] |
+                  ( InfraBallHull | InfraConvexHull )[ _, ___ ] ], "Length" ] :=
   Replace[
     Union @@ Map[
       dag |-> DeleteCases[ Infinity ] @ Union @ Flatten @ Table[ GraphDistance[ dag, s, t ],
@@ -181,7 +186,8 @@ FindInfraRepresentative[ graph_Graph,
 InfraMemberQ[ graph_Graph,
     obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] |
                   InfraCircle[ _, _, ___ ] |
-                  ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] ], path_List ] :=
+                  ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] |
+                  ( InfraBallHull | InfraConvexHull )[ _, ___ ] ], path_List ] :=
   path =!= { } &&
   AnyTrue[ Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ],
     dag |-> VertexQ[ dag, First @ path ] && VertexInDegree[ dag, First @ path ] == 0 &&

@@ -209,6 +209,35 @@ VerificationTest[
   TestID -> "LineCount-PathGraph-7"
 ]
 
+(* ===== UniversalLineQ ===== *)
+
+(* the path is a single universal line; C4 has one (antipodes 1, 3 span the whole cycle); C5 has none (every line covers at
+   most 4 of 5) *)
+
+VerificationTest[
+  UniversalLineQ[ PathGraph @ Range[ 5 ] ],
+  True,
+  TestID -> "UniversalLineQ-path"
+]
+
+VerificationTest[
+  UniversalLineQ[ CycleGraph[ 4 ], { 1, 3 } ],
+  True,
+  TestID -> "UniversalLineQ-C4-pair"
+]
+
+VerificationTest[
+  UniversalLineQ[ CycleGraph[ 4 ] ],
+  True,
+  TestID -> "UniversalLineQ-C4"
+]
+
+VerificationTest[
+  UniversalLineQ[ CycleGraph[ 5 ] ],
+  False,
+  TestID -> "UniversalLineQ-C5-none"
+]
+
 (* ===== FindInfraCommonLine ===== *)
 
 (* count-less is the one line as a path graph; All is the lone bundle, here the

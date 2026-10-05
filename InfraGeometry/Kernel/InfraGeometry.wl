@@ -63,8 +63,9 @@ PackageExport[FindInfraQuadric]
 
 PackageExport[InfraBall]
 PackageExport[InfraBallQ]
-PackageExport[FindBallHull]
-PackageExport[BallHullQ]
+
+PackageExport[InfraBallHull]
+PackageExport[InfraConvexHull]
 
 PackageExport[InfraTube]
 PackageExport[InfraCylinder]
@@ -119,8 +120,6 @@ PackageExport[HomotopyMoveTypes]
 PackageExport[MetricInterval]
 PackageExport[ShortestPathMultiplicityMatrix]
 PackageExport[MedianVertices]
-PackageExport[FindSegmentHull]
-PackageExport[SegmentHullQ]
 
 PackageExport[FindInfraEquidistantSet]
 PackageExport[FindAdvancingInfraFront]
@@ -166,7 +165,6 @@ PackageExport[ShellViewer]
 PackageExport[CircleViewer]
 PackageExport[InfraSceneViewer]
 
-PackageExport[BallHull]
 PackageExport[LogDifferenceQuotients]
 PackageExport[VolumeGrowthObservables]
 PackageExport[DimensionCurvatureFit]

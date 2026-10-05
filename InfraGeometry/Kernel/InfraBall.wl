@@ -39,13 +39,6 @@ InfraBallQ[ graph_Graph, vs_List ] :=
     ]
   ]
 
-FindBallHull[ graph_Graph, s_ ] :=
-  Union @ BallHull[ graph, Keys @ InfraDensity[ graph, s ] ]
-
-BallHullQ[ graph_Graph, s_ ] :=
-  With[ { vs = Keys @ InfraDensity[ graph, s ] },
-    Sort @ BallHull[ graph, vs ] === vs ]
-
 FindInfraRepresentative[ graph_Graph, ball : InfraBall[ _, _ ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
   takeRepresentatives[ { Keys @ InfraMeasurement[ graph, ball, "VertexDensity" ] }, count, mods ]

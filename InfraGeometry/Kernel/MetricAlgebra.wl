@@ -30,13 +30,3 @@ MedianVertices[ graph_Graph, vs_List ] :=
       w |-> Total @ ( GraphDistance[ graph, w, # ] & /@ vs )
     ]
   ]
-
-FindSegmentHull[ graph_Graph, s_ ] :=
-  Union @ FixedPoint[
-    T |-> Union[ T, Catenate @ Map[
-      pair |-> MetricInterval[ graph, pair[[ 1 ]], pair[[ 2 ]] ], Subsets[ T, { 2 } ] ] ],
-    Union @ Keys @ InfraDensity[ graph, s ]
-  ]
-
-SegmentHullQ[ graph_Graph, s_ ] :=
-  With[ { vs = Keys @ InfraDensity[ graph, s ] }, FindSegmentHull[ graph, vs ] === vs ]
