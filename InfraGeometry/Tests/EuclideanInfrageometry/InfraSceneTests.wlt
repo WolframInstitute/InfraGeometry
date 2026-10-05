@@ -692,14 +692,15 @@ VerificationTest[
      (InfraFibrations T2), nor InfraTangentBundle, InfraCotangentBundle and InfraDisplacementBundle,
      the fibration constructions read by InfraTotalGraph and InfraFibrationAssociation (InfraFibrations T3).
      InfraFibration left the list in T3: its one-argument form converts a construction.  The hull heads InfraBallHull and
-     InfraConvexHull joined it with APISurfaceCleanup T4, region heads read like InfraBall. *)
+     InfraConvexHull joined it with APISurfaceCleanup T4, region heads read like InfraBall, and InfraSolidOfRevolution replaced
+     InfraRevolution in T5. *)
   { "InflatedVertex",
     "InfraArc", "InfraBall", "InfraBallHull", "InfraCircle", "InfraCone", "InfraConnection", "InfraConvexHull",
     "InfraCotangentBundle", "InfraCylinder",
     "InfraDisplacementBundle", "InfraEllipse", "InfraEllipticShell", "InfraGeodesic",
     "InfraIntersectQ", "InfraLine", "InfraPlane", "InfraPoint",
-    "InfraPolygon", "InfraRay", "InfraRevolution", "InfraSection", "InfraSegment",
-    "InfraShell", "InfraSphere", "InfraStep", "InfraTangentBundle", "InfraTube", "InfraWalk", "Undetermined" },
+    "InfraPolygon", "InfraRay", "InfraSection", "InfraSegment",
+    "InfraShell", "InfraSolidOfRevolution", "InfraSphere", "InfraStep", "InfraTangentBundle", "InfraTube", "InfraWalk", "Undetermined" },
   TestID -> "InfraScene-valueless-exports-are-scene-tokens"
 ]
 
@@ -717,9 +718,18 @@ VerificationTest[
     And @@ ( inst |-> With[ { vs = inst[[ 1 ]][ tr ] },
         SubsetQ[ vs, { 1, 2, 3, 4 } ] && SubsetQ[ VertexList @ g, vs ] ] ) /@
       FindInfraScene[
-        InfraScene[ { tr }, { tr == InfraRevolution[ { 1, 2, 3, 4 }, 1 ] } ], g ] ],
+        InfraScene[ { tr }, { tr == InfraSolidOfRevolution[ { 1, 2, 3, 4 }, 1 ] } ], g ] ],
   True,
-  TestID -> "InfraScene-token-InfraRevolution-is-a-constructor"
+  TestID -> "InfraScene-token-InfraSolidOfRevolution-is-a-constructor"
+]
+
+(* InfraMemberQ is a decidable assertion: the solid's one member passes as itself and fails against another solid *)
+VerificationTest[
+  With[ { g = GridGraph[ { 7, 7 } ] },
+    Length @ FindInfraScene[ InfraScene[ { s }, { s == InfraCylinder[ { 1, 2, 3 }, 1 ], InfraMemberQ[ #, s ] } ], g ] & /@
+      { InfraCylinder[ { 1, 2, 3 }, 1 ], InfraTube[ { 1, 2, 3 }, 1 ] } ],
+  { 1, 0 },
+  TestID -> "InfraScene-InfraMemberQ-is-an-assertion"
 ]
 
 VerificationTest[

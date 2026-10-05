@@ -77,22 +77,88 @@ VerificationTest[
   TestID -> "InfraTube-one-member-under-every-count"
 ]
 
+VerificationTest[
+  With[ { g = GridGraph[{9, 9}] },
+    Table[ FindInfraRepresentative[g, InfraTube[c, p]] === FindInfraRepresentative[g, InfraTube[c, p, Method -> "Balls"]],
+      { c, { 41, {1, 2, 3}, <| 1 -> 2, 81 -> 1 |>, InfraSegment[1, 41], FindInfraSegment[g, 1, 41], {} } },
+      { p, { 0, 1, 3, {1, 2}, {2, 2}, {3, 1}, Infinity } } ] ],
+  ConstantArray[True, { 6, 7 }],
+  TestID -> "InfraTube-Balls-is-the-default-method"
+]
+
+(* a profile along the core is the union of the balls B(a_i, r_i); a list and a function of the position say the same *)
+VerificationTest[
+  With[ { g = GridGraph[{7, 7}], axis = {9, 10, 11, 12, 13} },
+    { FindInfraRepresentative[g, InfraTube[axis, {0, 1, 2, 1, 0}]] ===
+        Union @@ MapThread[ FindInfraRepresentative[g, InfraBall[#1, #2]] &, { axis, {0, 1, 2, 1, 0} } ],
+      FindInfraRepresentative[g, InfraTube[axis, Range[0, 4]]] === FindInfraRepresentative[g, InfraTube[axis, # - 1 &]],
+      FindInfraRepresentative[g, InfraSolidOfRevolution[axis, Range[0, 4]]] === FindInfraRepresentative[g, InfraSolidOfRevolution[axis, # - 1 &]] } ],
+  { True, True, True },
+  TestID -> "InfraTube-profile-is-the-union-of-balls"
+]
+
+(* a band profile {r_i, r_i} is the level set min_i ( d(a_i, v) - r_i ) == 0 *)
+VerificationTest[
+  With[ { g = GridGraph[{7, 7}], axis = {9, 10, 11, 12, 13}, radii = {0, 1, 2, 1, 0} },
+    FindInfraRepresentative[g, InfraTube[axis, { #, # } & /@ radii]] ===
+      Select[ VertexList @ g, v |-> Min[ MapThread[ GraphDistance[g, #1, v] - #2 &, { axis, radii } ] ] == 0 ] ],
+  True,
+  TestID -> "InfraTube-band-profile-is-the-level-set"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[{5, 5}] },
+    Head /@ { InfraMeasurement[g, InfraTube[<| 1 -> 1 |>, 1, Method -> "Sliced"], "VertexDensity"],
+      InfraMeasurement[g, InfraTube[InfraSegment[1, 5], 1, Method -> "Sliced"], "VertexDensity"],
+      InfraMeasurement[g, InfraTube[{1, 2}, 1, Method -> "Rounded"], "VertexDensity"] } ],
+  { InfraMeasurement, InfraMeasurement, InfraMeasurement },
+  TestID -> "InfraTube-Sliced-needs-a-walk-and-an-unknown-method-stays-unevaluated"
+]
+
 (* ===== InfraCylinder ===== *)
 
+(* Along a row of the square grid the sliced cylinder is the rectangle of half-width r over the inner axis vertices, with flat ends; the
+   balls method adds the rounded ends.  The two end slices hold their axis vertex only: the side neighbours of an end prolong the axis as a
+   geodesic on the square grid, so the vertices beside an end lie nearer a prolongation than the axis *)
+VerificationTest[
+  With[ { g = GridGraph[{9, 9}], at = { x, y } |-> 9 ( x - 1 ) + y },
+    { axis = at[5, #] & /@ Range[3, 7] },
+    { FindInfraRepresentative[g, InfraCylinder[axis, 2]], FindInfraRepresentative[g, InfraCylinder[axis, 2, Method -> "Balls"]] } ===
+      { Sort @ Join[ Flatten @ Table[ at[x, y], { x, 3, 7 }, { y, 4, 6 } ], { at[5, 3], at[5, 7] } ],
+        Select[ VertexList @ g, v |-> Min[ GraphDistance[g, #, v] & /@ axis ] <= 2 ] } ],
+  True,
+  TestID -> "InfraCylinder-grid-row-flat-and-rounded-ends"
+]
+
+(* on a path graph the perpendicular slab of an axis vertex is the vertex itself *)
 VerificationTest[
   With[ { g = PathGraph[Range[9]], axis = {3, 4, 5, 6, 7} },
     { FindInfraRepresentative[g, InfraCylinder[axis, 0]], FindInfraRepresentative[g, InfraCylinder[axis, 1]],
-      FindInfraRepresentative[g, InfraCylinder[axis, {1, 2}]] } ],
-  { {3, 4, 5, 6, 7}, {2, 3, 4, 5, 6, 7, 8}, {1, 2, 8, 9} },
-  TestID -> "InfraCylinder-PathGraph-axis-tube-band"
+      FindInfraRepresentative[g, InfraCylinder[axis, {1, 2}]], FindInfraRepresentative[g, InfraCylinder[axis, 1, Method -> "Balls"]] } ],
+  { {3, 4, 5, 6, 7}, {3, 4, 5, 6, 7}, {}, {2, 3, 4, 5, 6, 7, 8} },
+  TestID -> "InfraCylinder-PathGraph-is-the-axis"
+]
+
+(* a closed axis has no ends, so the slicing cuts nothing and a constant radius gives the tube *)
+VerificationTest[
+  With[ { g = GridGraph[{9, 9}], at = { x, y } |-> 9 ( x - 1 ) + y },
+    { loop = at @@@ Join[ Table[ {3, y}, { y, 3, 6 } ], Table[ {x, 7}, { x, 3, 6 } ], Table[ {7, y}, { y, 7, 4, -1 } ],
+        Table[ {x, 3}, { x, 7, 3, -1 } ] ] },
+    Table[ FindInfraRepresentative[g, InfraCylinder[loop, r]] === FindInfraRepresentative[g, InfraTube[loop, r]], { r, 0, 3 } ] ],
+  ConstantArray[True, 4],
+  TestID -> "InfraCylinder-closed-axis-has-no-ends"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[{6, 6}], axis = {1, 2, 3, 4, 5, 6} },
-    Table[ InfraMeasurement[g, InfraCylinder[axis, r], All] === InfraMeasurement[g, InfraTube[axis, r], All] &&
-      FindInfraRepresentative[g, InfraCylinder[axis, r]] === FindInfraRevolution[g, axis, r, Method -> "Balls"], { r, 0, 3 } ] ],
-  ConstantArray[True, 4],
-  TestID -> "InfraCylinder-is-the-tube-and-the-Balls-revolution"
+    Table[
+      { InfraMeasurement[g, InfraCylinder[axis, r, Method -> "Balls"], All] === InfraMeasurement[g, InfraTube[axis, r], All],
+        FindInfraRepresentative[g, InfraCylinder[{15}, r]] === FindInfraRepresentative[g, InfraBall[15, r]],
+        FindInfraRepresentative[g, InfraCylinder[axis, {1, r}]] ===
+          Complement[ FindInfraRepresentative[g, InfraCylinder[axis, r]], FindInfraRepresentative[g, InfraCylinder[axis, 0]] ] },
+      { r, 1, 3 } ] ],
+  ConstantArray[True, { 3, 3 }],
+  TestID -> "InfraCylinder-balls-method-one-vertex-axis-and-band"
 ]
 
 (* ===== InfraCone ===== *)
@@ -104,19 +170,29 @@ VerificationTest[
   TestID -> "InfraCone-slope-0-is-the-axis"
 ]
 
+(* the row of axis vertex i holds 2 (i - 1) + 1 vertices, the end slices their axis vertex only *)
 VerificationTest[
-  With[ { g = GridGraph[{5, 5}], axis = {1, 2, 3, 4, 5} },
-    { FindInfraRepresentative[g, InfraCone[axis, 1]] === FindInfraRevolution[g, axis, Range[0, 4], Method -> "Balls"],
-      FindInfraRepresentative[g, InfraCone[Reverse @ axis, 1]] === FindInfraRevolution[g, axis, Range[4, 0, -1], Method -> "Balls"] } ],
-  { True, True },
-  TestID -> "InfraCone-slope-1-is-the-linear-profile-either-apex"
+  With[ { g = GridGraph[{11, 11}] },
+    KeySort @ Counts[ Mod[ FindInfraRepresentative[g, InfraCone[11 * 5 + Range[2, 7], 1]] - 1, 11 ] + 1 ] ],
+  <| 2 -> 1, 3 -> 3, 4 -> 5, 5 -> 7, 6 -> 9, 7 -> 1 |>,
+  TestID -> "InfraCone-slices-grow-by-the-slope"
 ]
 
-(* d(v, a_i) <= slope (i - 1): radii 0, 0, 1, 1, 2 at slope 1/2 *)
+VerificationTest[
+  With[ { g = GridGraph[{5, 5}], axis = {6, 7, 8, 9, 10} },
+    { FindInfraRepresentative[g, InfraCone[axis, 1]] === FindInfraRepresentative[g, InfraSolidOfRevolution[axis, Range[0, 4]]],
+      FindInfraRepresentative[g, InfraCone[Reverse @ axis, 1]] === FindInfraRepresentative[g, InfraSolidOfRevolution[axis, Range[4, 0, -1]]],
+      FindInfraRepresentative[g, InfraCone[axis, 1, Method -> "Balls"]] === FindInfraRepresentative[g, InfraTube[axis, Range[0, 4]]] } ],
+  { True, True, True },
+  TestID -> "InfraCone-is-the-linear-profile-either-apex"
+]
+
+(* d(v, a_i) <= slope (i - 1): radii 0, 0, 1, 1, 2 at slope 1/2; sliced on a path, the axis *)
 VerificationTest[
   With[ { g = PathGraph[Range[9]] },
-    { FindInfraRepresentative[g, InfraCone[{1, 2, 3, 4, 5}, 1/2]], FindInfraRepresentative[g, InfraCone[{5, 6, 7, 8, 9}, 1/2]] } ],
-  { {1, 2, 3, 4, 5, 6, 7}, {5, 6, 7, 8, 9} },
+    { FindInfraRepresentative[g, InfraCone[{1, 2, 3, 4, 5}, 1/2]], FindInfraRepresentative[g, InfraCone[{1, 2, 3, 4, 5}, 1/2, Method -> "Balls"]],
+      FindInfraRepresentative[g, InfraCone[{5, 6, 7, 8, 9}, 1/2, Method -> "Balls"]] } ],
+  { {1, 2, 3, 4, 5}, {1, 2, 3, 4, 5, 6, 7}, {5, 6, 7, 8, 9} },
   TestID -> "InfraCone-half-slope-on-a-path"
 ]
 
@@ -127,27 +203,76 @@ VerificationTest[
   TestID -> "InfraCone-All-seven-properties-and-the-empty-axis"
 ]
 
+(* ===== InfraSolidOfRevolution ===== *)
+
+VerificationTest[
+  With[ { g = GridGraph[{7, 7}], axis = {9, 10, 11, 12, 13} },
+    Table[ FindInfraRepresentative[g, InfraSolidOfRevolution[axis, r]] === FindInfraRepresentative[g, InfraCylinder[axis, r]],
+      { r, { 0, 1, 2, {1, 2}, {2, 2} } } ] ],
+  ConstantArray[True, 5],
+  TestID -> "InfraSolidOfRevolution-constant-profile-is-the-cylinder"
+]
+
+(* the profile is read at the foot of the perpendicular, so a jump is a sharp step; the balls spread it to the neighbouring rows *)
+VerificationTest[
+  With[ { g = GridGraph[{11, 11}], axis = 11 * 5 + Range[2, 8], profile = {1, 1, 1, 3, 1, 1, 1} },
+    KeySort @ Counts[ Mod[ FindInfraRepresentative[g, #] - 1, 11 ] + 1 ] & /@
+      { InfraSolidOfRevolution[axis, profile], InfraSolidOfRevolution[axis, profile, Method -> "Balls"] } ],
+  { <| 2 -> 1, 3 -> 3, 4 -> 3, 5 -> 7, 6 -> 3, 7 -> 3, 8 -> 1 |>, <| 1 -> 1, 2 -> 3, 3 -> 3, 4 -> 5, 5 -> 7, 6 -> 5, 7 -> 3, 8 -> 3, 9 -> 1 |> },
+  TestID -> "InfraSolidOfRevolution-profile-read-at-the-foot"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[{5, 5}], axis = {1, 2, 3, 4, 5}, profile = {0, 1, 2, 1, 0} },
+    { solid = FindInfraRepresentative[g, InfraSolidOfRevolution[axis, profile]] },
+    { SubsetQ[ solid, FindInfraRepresentative[g, InfraSolidOfRevolution[axis, { #, # } & /@ profile]] ],
+      solid === Union @@ Table[
+        FindInfraRepresentative[g, InfraSolidOfRevolution[axis, { #, # } & /@ ( Min[ #, k ] & /@ profile )]], { k, 0, 2 } ] } ],
+  { True, True },
+  TestID -> "InfraSolidOfRevolution-solid-is-the-union-of-its-surfaces"
+]
+
+VerificationTest[
+  { FindInfraRepresentative[PetersenGraph[], InfraSolidOfRevolution[{1}, {2, 2}]] === FindInfraRepresentative[PetersenGraph[], InfraShell[1, 2]],
+    FindInfraRepresentative[PathGraph[Range[5]], InfraSolidOfRevolution[{3}, 100]],
+    FindInfraRepresentative[PathGraph[Range[5]], InfraSolidOfRevolution[{3}, {100, 100}]] },
+  { True, {1, 2, 3, 4, 5}, {} },
+  TestID -> "InfraSolidOfRevolution-one-vertex-axis-and-past-the-diameter"
+]
+
+(* ===== the solids together ===== *)
+
 VerificationTest[
   With[ { g = GridGraph[{5, 5}] },
-    Head @ InfraSubstrateHighlight[g, { InfraTube[InfraSegment[1, 13], 1], InfraCylinder[{1, 2, 3}, 1], InfraCone[{21, 22, 23, 24, 25}, 1] }] ],
+    Table[ { InfraMemberQ[g, s, FindInfraRepresentative[g, s]], InfraMemberQ[g, s, {1, 2}] },
+      { s, { InfraTube[{1, 2}, 1], InfraCylinder[{6, 7, 8}, 1], InfraCone[{6, 7, 8}, 1], InfraSolidOfRevolution[{6, 7, 8}, {1, 2, 1}] } } ] ],
+  ConstantArray[{ True, False }, 4],
+  TestID -> "InfraMemberQ-on-the-solids"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[{5, 5}] },
+    Head @ InfraSubstrateHighlight[g, { InfraTube[InfraSegment[1, 13], 1], InfraCylinder[{1, 2, 3}, 1], InfraCone[{21, 22, 23, 24, 25}, 1],
+      InfraSolidOfRevolution[{11, 12, 13}, {1, 2, 1}] }] ],
   Graph,
-  TestID -> "InfraTube-InfraCylinder-InfraCone-draw"
+  TestID -> "InfraTube-InfraCylinder-InfraCone-InfraSolidOfRevolution-draw"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[{5, 5}] },
     InfraMeasurement[g, { InfraTube[13, 1], InfraCylinder[{1, 2}, 1], InfraCone[{1, 2, 3}, 1] }, #] & /@
       { "CountingMeasure", "RiemannianMeasure" } ],
-  { { 5, 5, 9 }, { 1, 2, 4 } },
+  { { 5, 2, 4 }, { 1, 0, 1 } },
   TestID -> "InfraTube-InfraCylinder-InfraCone-measures-in-one-call"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[{4, 4}] },
     Map[ inst |-> inst[[ 1 ]][ t ],
-      FindInfraScene[ InfraScene[ { t }, { t == # } ], g ] & /@ { InfraTube[{1, 2}, 1], InfraCylinder[{1, 2}, 1], InfraCone[{1, 2}, 1] }, { 2 } ] ],
-  { { {1, 2, 3, 5, 6} }, { {1, 2, 3, 5, 6} }, { {1, 2, 3, 6} } },
-  TestID -> "InfraTube-InfraCylinder-InfraCone-are-scene-constructors"
+      FindInfraScene[ InfraScene[ { t }, { t == # } ], g ] & /@
+        { InfraTube[{1, 2}, 1], InfraCylinder[{1, 2}, 1], InfraCone[{1, 2}, 1], InfraSolidOfRevolution[{5, 6, 7, 8}, {0, 1, 1, 0}] }, { 2 } ] ],
+  { { {1, 2, 3, 5, 6} }, { {1, 2} }, { {1, 2} }, { {2, 3, 5, 6, 7, 8, 10, 11} } },
+  TestID -> "InfraTube-InfraCylinder-InfraCone-InfraSolidOfRevolution-are-scene-constructors"
 ]
 
 EndTestSection[]

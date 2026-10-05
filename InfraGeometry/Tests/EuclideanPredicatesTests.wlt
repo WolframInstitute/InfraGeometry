@@ -575,7 +575,7 @@ VerificationTest[
      InfraParallelQ[g, geodesicGraph @ {1, 2, 3, 4, 5},
        FindInfraParallel[g, {1, 2, 3, 4, 5}, 6, All]],
      InfraRegularPolygonQ[g, FindInfraRegularPolygon[g, {1}, 4, 1], {1}],
-     InfraRevolutionQ[g, FindInfraRevolution[g, {1, 2, 3}, 1], {1, 2, 3}, 1]}],
+     InfraMemberQ[g, InfraSolidOfRevolution[{1, 2, 3}, 1], FindInfraRepresentative[g, InfraSolidOfRevolution[{1, 2, 3}, 1]]]}],
   ConstantArray[True, 12],
   TestID -> "predicates-accept-their-own-constructor-output"
 ]
@@ -604,11 +604,8 @@ VerificationTest[
          AllTrue[infraSpread @ pa, InfraParallelQ[g, {1, 2, 3, 4, 5}, #] &]],
      With[{rp = FindInfraRegularPolygon[g, {1}, 4, 1]},
        InfraRegularPolygonQ[g, rp, {1}] ===
-         AllTrue[rp, InfraRegularPolygonQ[g, #, {1}] &]],
-     With[{rv = FindInfraRevolution[g, {1, 2, 3}, 1]},
-       InfraRevolutionQ[g, rv, {1, 2, 3}, 1] ===
-         InfraRevolutionQ[g, InfraDensity[g, rv], {1, 2, 3}, 1]]}],
-  {True, True, True},
+         AllTrue[rp, InfraRegularPolygonQ[g, #, {1}] &]]}],
+  {True, True},
   TestID -> "bundle-verdict-is-conjunction-over-realisations"
 ]
 
@@ -639,7 +636,7 @@ VerificationTest[
     {InfraShellQ[g, {1, 2, 3}], InfraLineQ[g, geodesicGraph @ {1, 2, 3}],
      InfraParallelQ[g, geodesicGraph @ {1, 2, 3}, geodesicGraph @ {1, 6, 11}],
      InfraRegularPolygonQ[g, { geodesicGraph @ {1, 2, 3} }, {1}],
-     InfraRevolutionQ[g, <| 1 -> 1, 2 -> 1 |>, {1, 2, 3}, 1]}],
+     InfraMemberQ[g, InfraSolidOfRevolution[{1, 2, 3}, 1], {1, 2}]}],
   ConstantArray[False, 5],
   TestID -> "non-instances-are-False"
 ]

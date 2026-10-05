@@ -8,18 +8,19 @@ PackageScope[ searchMethod ]
 InfraMeasurement[ graph_Graph, objs : { __ }, spec_ ] :=
   InfraMeasurement[ graph, #, spec ] & /@ objs
 
-(* a List of region heads reads every support off one GraphDistanceMatrix, the distance to a core the Min over its columns and the interval
-   of a segment the two rows summing to the distance: one single-source GraphDistance costs 34 ms on a 989-vertex mesh, the whole matrix 10 ms *)
+(* a List of balls, shells and constant tubes reads every support off one GraphDistanceMatrix, the distance to a core the Min over its columns
+   and the interval of a segment the two rows summing to the distance: one single-source GraphDistance costs 34 ms on a 989-vertex mesh, the
+   whole matrix 10 ms *)
 
 InfraMeasurement[ graph_Graph,
-    regions : { ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone )[ _, _ ] .. }, "VertexDensity" ] :=
+    regions : { ( InfraBall | InfraShell | InfraTube )[ _, _?NumericQ | Infinity | { _?NumericQ | Infinity, _?NumericQ | Infinity } ] .. },
+    "VertexDensity" ] :=
   With[ { vlist = VertexList @ graph, n = VertexCount @ graph, dm = GraphDistanceMatrix @ graph },
     { index = AssociationThread[ vlist -> Range @ n ],
       bands = Replace[ regions, {
-          ( InfraBall | InfraTube | InfraCylinder )[ c_, r : Except[ _List ] ] :> { { c, 0, r } },
-          ( InfraBall | InfraShell | InfraTube | InfraCylinder )[ c_, { r_, s_ } ] :> { { c, r, s } },
-          InfraShell[ c_, r : Except[ _List ] ] :> { { c, r, r } },
-          InfraCone[ axis_List, slope_ ] :> MapIndexed[ { a, i } |-> { a, 0, slope ( First @ i - 1 ) }, axis ] }, { 1 } ] },
+          ( InfraBall | InfraTube )[ c_, r : Except[ _List ] ] :> { { c, 0, r } },
+          ( InfraBall | InfraShell | InfraTube )[ c_, { r_, s_ } ] :> { { c, r, s } },
+          InfraShell[ c_, r : Except[ _List ] ] :> { { c, r, r } } }, { 1 } ] },
     { distances = AssociationMap[
         core |-> Clip[
           Min /@ dm[[ All, Lookup[ index, Which[
@@ -42,11 +43,13 @@ InfraMeasurement[ graph_Graph,
       bands ] ]
 
 InfraMeasurement[ graph_Graph,
-    regions : { ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone )[ _, _ ] .. }, "CountingMeasure" ] :=
+    regions : { ( InfraBall | InfraShell | InfraTube )[ _, _?NumericQ | Infinity | { _?NumericQ | Infinity, _?NumericQ | Infinity } ] .. },
+    "CountingMeasure" ] :=
   Length /@ InfraMeasurement[ graph, regions, "VertexDensity" ]
 
 InfraMeasurement[ graph_Graph,
-    regions : { ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone )[ _, _ ] .. }, "RiemannianMeasure" ] :=
+    regions : { ( InfraBall | InfraShell | InfraTube )[ _, _?NumericQ | Infinity | { _?NumericQ | Infinity, _?NumericQ | Infinity } ] .. },
+    "RiemannianMeasure" ] :=
   With[ { n = VertexCount @ graph, index = AssociationThread[ VertexList @ graph -> Range @ VertexCount @ graph ],
           adjacency = Sign[ AdjacencyMatrix @ graph + Transpose @ AdjacencyMatrix @ graph ] },
     Map[
@@ -59,7 +62,8 @@ InfraMeasurement[ graph_Graph, obj : Except[ _List ], props : { __String } ] :=
 
 InfraMeasurement[ graph_Graph,
     obj : Except[ _List | InfraIntersection[ __ ] | InfraUnion[ __ ] |
-                  ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] |
+                  ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
+                  ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull )[ _, ___ ] ], All ] :=
   InfraMeasurement[ graph, obj,
     { "Graph", "Faithful", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph",
@@ -73,7 +77,8 @@ InfraMeasurement[ _Graph, InfraArc[ __ ], "Faithful" ] :=
 
 InfraMeasurement[ graph_Graph,
     obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, Except[ { p_, ___, p_ }, { _, _, __ } ], ___ ] |
-                  ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] |
+                  ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
+                  ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull )[ _, ___ ] ], "Cardinality" ] :=
   Total @ Map[
     dag |-> With[ { inNbr = GroupBy[ EdgeList @ dag, Last -> First ] },
@@ -85,7 +90,8 @@ InfraMeasurement[ graph_Graph,
 
 InfraMeasurement[ graph_Graph,
     obj : Except[ _List | InfraIntersection[ __ ] | InfraUnion[ __ ] | InfraCircle[ _, _, ___ ] |
-                  ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] |
+                  ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
+                  ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull )[ _, ___ ] |
                   InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] ], "VertexDensity" ] :=
   KeySort @ Merge[
@@ -102,7 +108,8 @@ InfraMeasurement[ graph_Graph,
     Total ]
 
 InfraMeasurement[ graph_Graph,
-    obj : Except[ _List | InfraCircle[ _, _, ___ ] | ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] |
+    obj : Except[ _List | InfraCircle[ _, _, ___ ] | ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
+                  ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull )[ _, ___ ] |
                   InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] ], "EdgeDensity" ] :=
   KeySort @ Merge[
@@ -120,7 +127,8 @@ InfraMeasurement[ graph_Graph,
 
 InfraMeasurement[ graph_Graph,
     obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, Except[ { p_, ___, p_ }, { _, _, __ } ], ___ ] |
-                  ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] |
+                  ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
+                  ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull )[ _, ___ ] ], "Length" ] :=
   Replace[
     Union @@ Map[
@@ -186,7 +194,8 @@ FindInfraRepresentative[ graph_Graph,
 InfraMemberQ[ graph_Graph,
     obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] |
                   InfraCircle[ _, _, ___ ] |
-                  ( InfraBall | InfraShell | InfraTube | InfraCylinder | InfraCone | InfraSphere )[ _, _ ] |
+                  ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
+                  ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull )[ _, ___ ] ], path_List ] :=
   path =!= { } &&
   AnyTrue[ Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ],

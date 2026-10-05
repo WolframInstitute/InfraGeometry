@@ -70,6 +70,7 @@ PackageExport[InfraConvexHull]
 PackageExport[InfraTube]
 PackageExport[InfraCylinder]
 PackageExport[InfraCone]
+PackageExport[InfraSolidOfRevolution]
 
 PackageExport[InfraCircle]
 PackageExport[InfraCircleQ]
@@ -92,10 +93,6 @@ PackageExport[FindInfraRay]
 PackageExport[InfraRayQ]
 
 PackageExport[FindInfraPolylineSubdivision]
-
-PackageExport[InfraRevolution]
-PackageExport[FindInfraRevolution]
-PackageExport[InfraRevolutionQ]
 
 PackageExport[InfraScalarProduct]
 PackageExport[FindInfraLinearCombination]

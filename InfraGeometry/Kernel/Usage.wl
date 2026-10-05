@@ -61,9 +61,10 @@ InfraBallQ::usage = "InfraBallQ[graph, vertexSet] tests whether vertexSet is a c
 InfraBallHull::usage = "InfraBallHull[S, r] is the inert intersection of the closed balls of radius at most r containing S, the whole graph if none does; InfraBallHull[S, {r}] takes the balls of radius exactly r, InfraBallHull[S, {r, s}] those of radius between r and s, and InfraBallHull[S] every radius, the Mazur hull. Read by InfraMeasurement and FindInfraRepresentative.";
 InfraConvexHull::usage = "InfraConvexHull[S, k] is the inert k-th round of the interval closure of S, a round adding all geodesics between its vertices; InfraConvexHull[S] is the convex hull. Read by InfraMeasurement and FindInfraRepresentative.";
 
-InfraTube::usage = "InfraTube[core, s] is the inert tube { v : d(v, core) <= s }, core a vertex, a vertex set, a density, a walk graph or a Euclidean head; InfraTube[core, {s, t}] is the band { v : s <= d(v, core) <= t }. Read by InfraMeasurement and FindInfraRepresentative.";
-InfraCylinder::usage = "InfraCylinder[axis, r] is the inert cylinder of radius r around axis, the tube InfraTube[axis, r]; r may be a band {r, s}.";
-InfraCone::usage = "InfraCone[axis, slope] is the inert cone { v : d(v, axis[[i]]) <= slope (i - 1) for some i } with apex First[axis]; reverse the axis for the other apex.";
+InfraTube::usage = "InfraTube[core, profile] is the inert tube { v : d(a_i, v) <= r_i for some i } along the core a_1, ..., a_m, the profile a radius, a band {s, t}, a list of them or a function of i. Option Method (\"Balls\", \"Sliced\").";
+InfraCylinder::usage = "InfraCylinder[axis, r] is the inert cylinder InfraTube[axis, r, Method -> \"Sliced\"], the tube of radius r with flat ends; r may be a band {r, s}.";
+InfraCone::usage = "InfraCone[axis, slope] is the inert cone InfraTube[axis, i |-> slope (i - 1), Method -> \"Sliced\"], apex First[axis] and a flat base.";
+InfraSolidOfRevolution::usage = "InfraSolidOfRevolution[axis, profile] is the inert solid InfraTube[axis, profile, Method -> \"Sliced\"], the profile read at the nearest axis vertex; a band profile {r, r} is the surface.";
 
 InfraCircle::usage = "InfraCircle[c, r | {r, s}] is the inert family of circles around c in the band r <= d(c, v) <= s; its graph is the List of atoms of the unrolled band, the necklaces where that fails.";
 InfraCircleQ::usage = "InfraCircleQ[graph, cycle] tests whether cycle is a cyclic edge chain whose vertex set is a metric shell.";
@@ -92,10 +93,6 @@ FindInfraRay::usage = "FindInfraRay[graph, p, q] gives one ray from p through q 
 InfraRayQ::usage = "InfraRayQ[graph, ray] tests whether ray is a pointed half-line: a geodesic from its own first vertex that cannot be prolonged past its last.";
 
 FindInfraPolylineSubdivision::usage = "FindInfraPolylineSubdivision[graph, path] chunks a walk into the fewest geodesic legs whose knots are walk vertices. Option \"MaxLength\" caps each leg.";
-
-InfraRevolution::usage = "InfraRevolution[axis, profile] is the InfraScene constructor for a solid of revolution.";
-FindInfraRevolution::usage = "FindInfraRevolution[graph, axis, profile] gives the rotational vertex set around axis with the given radius profile, a constant, list, association, or function. Options \"Form\", Method.";
-InfraRevolutionQ::usage = "InfraRevolutionQ[graph, vs, axis, profile] tests whether vs is the solid of revolution around axis with the given profile. Option \"Form\".";
 
 InfraScalarProduct::usage = "InfraScalarProduct[graph, o, u, v] gives the base-point-relative product d(o, u) d(o, v) cos(theta), at curvature 0 the polar form (d(o,u)^2 + d(o,v)^2 - d(u,v)^2)/2. Option Method.";
 FindInfraLinearCombination::usage = "FindInfraLinearCombination[graph, o, {{lambda1, u1}, ...}] gives the vertex realisations of Sum_i lambda_i u_i based at o. Options \"ScaleMethod\", \"SumMethod\".";
