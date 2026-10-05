@@ -34,7 +34,7 @@ Options:
 
 `"Center"` and `"Periphery"` are meant in the graph-eccentricity sense. `"Distance"` imposes a mutual-distance condition on a tuple.
 
-To keep a whole construction interior, not just its anchors, cut the substrate with `CenterGraph[g, q]` (from the DiscreteGeometry paclet) and work on that graph: it is the ball of radius `Floor[q GraphRadius[g]]` about `GraphCenter[g]`, carrying the same vertex labels and coordinates, so the result draws on the original. Restricting `"From"` alone pins only the anchors; a construction with slack spends it outward.
+To keep a whole construction interior, not just its anchors, cut the substrate with `CenterGraph[g, k]` and work on that graph: it is the ball of `k` hops about `GraphCenter[g]`, a negative `k` counting back from the radius and `Scaled[q]` taking the fraction `q` of it, and it carries the same vertex labels and coordinates, so the result draws on the original. Restricting `"From"` alone pins only the anchors; a construction with slack spends it outward.
 
 To narrow a bundle you already hold, use [SelectInfraPoint](). It takes the same `"From"` and `"Distance"` vocabulary on a supplied vertex set.
 
@@ -80,14 +80,14 @@ With[
    centre, Length @ periphery}]
 ```
 
-Keeping a draw off the rim. The balls are a nested family, so `q` reads directly as the fraction of the way out a point is allowed to sit.
+Keeping a draw off the rim. The balls about the centre are nested: `-1` drops the outer layer, `Scaled[0.4]` keeps the inner 40% of the radius.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   InfraSubstrateHighlight[g,
-    {VertexList @ CenterGraph[g, 0.8],
-     VertexList @ CenterGraph[g, 0.4]}]]
+    {VertexList @ CenterGraph[g, -1],
+     VertexList @ CenterGraph[g, Scaled[0.4]]}]]
 ```
 
 A tuple of three mutually most-distant points.

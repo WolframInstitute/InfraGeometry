@@ -49,8 +49,14 @@ BoundarylessGraph[ mr_MeshRegion, opts : OptionsPattern[] ] :=
 				{ VertexCoordinates -> coords[[ VertexList[ h ] ]] }, {} ] ]
 	]
 
-CenterGraph[ g_Graph, q : _?NumericQ : 1 ] :=
-	If[ ! ConnectedGraphQ[ g ],
-		g,
-		NeighborhoodGraph[ g, GraphCenter[ g ], Floor[ Clip[ q, { 0, 1 } ] * GraphRadius[ g ] ] ]
+CenterGraph[ graph_Graph, hops_Integer : 0 ] :=
+	If[ ! ConnectedGraphQ[ graph ],
+		graph,
+		NeighborhoodGraph[ graph, GraphCenter[ graph ], If[ hops < 0, Max[ 0, GraphRadius[ graph ] + hops ], hops ] ]
+	]
+
+CenterGraph[ graph_Graph, Scaled[ fraction_?NumericQ ] ] :=
+	If[ ! ConnectedGraphQ[ graph ],
+		graph,
+		CenterGraph[ graph, Floor[ Clip[ fraction, { 0, 1 } ] * GraphRadius[ graph ] ] ]
 	]

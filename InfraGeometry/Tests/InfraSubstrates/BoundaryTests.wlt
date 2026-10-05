@@ -108,41 +108,65 @@ VerificationTest[
 VerificationTest[
 	With[
 		{g = GridGraph[{5, 7}]},
-		Sort @ VertexList @ CenterGraph[g, 0] === Sort @ GraphCenter[g]
+		Sort @ VertexList @ CenterGraph[g] === Sort @ VertexList @ CenterGraph[g, 0] === Sort @ GraphCenter[g]
 	],
 	True,
-	TestID -> "CenterGraph-at-zero-is-the-center"
-]
-
-VerificationTest[
-	With[
-		{g = GridGraph[{5, 7}]},
-		Sort @ VertexList @ CenterGraph[g, 1] === Sort @ VertexList[g] &&
-			Sort @ VertexList @ CenterGraph[g] === Sort @ VertexList[g] &&
-			Sort @ VertexList @ CenterGraph[g, 3] === Sort @ VertexList[g] &&
-			Sort @ VertexList @ CenterGraph[g, -1] === Sort @ GraphCenter[g]
-	],
-	True,
-	TestID -> "CenterGraph-endpoints-and-clipping"
+	TestID -> "CenterGraph-default-and-zero-are-the-center"
 ]
 
 VerificationTest[
 	With[
 		{g = GridGraph[{5, 7}]},
 		{r = GraphRadius[g]},
-		{pools = Sort @ VertexList @ CenterGraph[g, #/r] & /@ Range[0, r]},
-		AllTrue[Partition[pools, 2, 1], Apply[SubsetQ[#2, #1] &]] &&
-			AllTrue[Transpose[{pools, Range[0, r]}],
-				Apply[{pool, k} |-> AllTrue[pool, v |-> GraphDistance[g, v, First @ GraphCenter[g]] <= k + r]]]
+		AllTrue[Range[0, r + 2], k |-> Sort @ VertexList @ CenterGraph[g, k] === Sort @ VertexList @ NeighborhoodGraph[g, GraphCenter[g], k]] &&
+			Sort @ VertexList @ CenterGraph[g, r] === Sort @ VertexList[g]
 	],
 	True,
-	TestID -> "CenterGraph-monotone-in-q"
+	TestID -> "CenterGraph-hops-are-the-ball-about-the-center"
+]
+
+VerificationTest[
+	With[
+		{g = GridGraph[{5, 7}]},
+		{r = GraphRadius[g]},
+		AllTrue[Range[r], k |-> Sort @ VertexList @ CenterGraph[g, -k] === Sort @ VertexList @ CenterGraph[g, r - k]] &&
+			Sort @ VertexList @ CenterGraph[g, -r - 3] === Sort @ GraphCenter[g]
+	],
+	True,
+	TestID -> "CenterGraph-negative-counts-back-from-the-radius"
+]
+
+VerificationTest[
+	With[
+		{g = NeighborhoodGraph[GridGraph[{9, 9}], 41, 4]},
+		Sort @ VertexList @ CenterGraph[g, -1] === Sort @ Pick[VertexList[g], VertexDegree[g], 4]
+	],
+	True,
+	TestID -> "CenterGraph-minus-one-drops-the-rim-of-a-round-patch"
+]
+
+VerificationTest[
+	With[
+		{g = GridGraph[{5, 7}]},
+		{r = GraphRadius[g]},
+		AllTrue[{0, 1/4, 1/2, 0.9, 1}, q |-> Sort @ VertexList @ CenterGraph[g, Scaled[q]] === Sort @ VertexList @ CenterGraph[g, Floor[q r]]] &&
+			Sort @ VertexList @ CenterGraph[g, Scaled[3/2]] === Sort @ VertexList[g] &&
+			Sort @ VertexList @ CenterGraph[g, Scaled[-1]] === Sort @ GraphCenter[g]
+	],
+	True,
+	TestID -> "CenterGraph-scaled-is-a-fraction-of-the-radius"
+]
+
+VerificationTest[
+	Head @ CenterGraph[GridGraph[{5, 7}], 0.9],
+	CenterGraph,
+	TestID -> "CenterGraph-bare-fraction-stays-unevaluated"
 ]
 
 VerificationTest[
 	With[
 		{g = GridGraph[{5, 5}, VertexCoordinates -> Tuples[Range[5], 2]]},
-		{h = CenterGraph[g, 1/2]},
+		{h = CenterGraph[g, 2]},
 		{coords = AssociationThread[VertexList[g], GraphEmbedding[g]]},
 		SubsetQ[VertexList[g], VertexList[h]] &&
 			GraphEmbedding[h] === Lookup[coords, VertexList[h]] &&
@@ -155,7 +179,7 @@ VerificationTest[
 VerificationTest[
 	With[
 		{g = CycleGraph[9]},
-		AllTrue[{0, 1/2, 1}, q |-> Sort @ VertexList @ CenterGraph[g, q] === Sort @ VertexList[g]]
+		AllTrue[{0, 2, -1, -100, Scaled[1/2]}, k |-> Sort @ VertexList @ CenterGraph[g, k] === Sort @ VertexList[g]]
 	],
 	True,
 	TestID -> "CenterGraph-vertex-transitive-is-its-own-center"
@@ -164,7 +188,7 @@ VerificationTest[
 VerificationTest[
 	With[
 		{g = GraphDisjointUnion[PathGraph[Range[4]], PathGraph[Range[3]]]},
-		CenterGraph[g, 1/2] === g
+		CenterGraph[g, 2] === g && CenterGraph[g, -1] === g && CenterGraph[g, Scaled[1/2]] === g
 	],
 	True,
 	TestID -> "CenterGraph-disconnected-returns-the-graph"
