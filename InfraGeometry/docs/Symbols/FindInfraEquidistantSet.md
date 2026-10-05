@@ -37,7 +37,7 @@ Row[Table[
      {set = FindInfraEquidistantSet[g, {a, b}]},
      Labeled[
        InfraSubstrateHighlight[g,
-         {set -> $InfraCircleColor, {a, b} -> $InfraPointColor},
+         {set, {a, b}},
          "PointSizeRange" -> 17,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
          ImageSize -> 250],
@@ -56,7 +56,7 @@ With[
   {two = FindInfraEquidistantSet[g, {a, b}]},
   {three = FindInfraEquidistantSet[g, {a, b, c}]},
   InfraSubstrateHighlight[g,
-    {two -> $InfraCircleColor, three -> $InfraRayColor, {a, b, c} -> $InfraPointColor},
+    {two, three, {a, b, c}},
     "PointSizeRange" -> 17,
     VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
     ImageSize -> 300]]

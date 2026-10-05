@@ -100,27 +100,26 @@ VerificationTest[
 
 (* the pencil at O is the ray from O through O itself: every maximal geodesic out of O *)
 VerificationTest[
-  With[{g = GridGraph[{3, 3}]},
-    {PencilCardinality[g, 5], Length[PencilDirections[g, 5]],
-     AllTrue[PencilDirections[g, 5], First[#] === 5 && InfraRayQ[g, #] &],
-     Sort[PencilDirections[g, 5]] ===
-       Sort[Catenate[FindInfraRay[g, 5, #, All] & /@ AdjacencyList[g, 5]]]}],
+  With[{g = GridGraph[{3, 3}]}, {pencil = FindInfraRay[g, 5, 5, All]},
+    {InfraMeasurement[g, InfraRay[5, 5], "Cardinality"], Length[pencil],
+     AllTrue[pencil, First[#] === 5 && InfraRayQ[g, #] &],
+     Sort[pencil] === Sort[Catenate[FindInfraRay[g, 5, #, All] & /@ AdjacencyList[g, 5]]]}],
   {8, 8, True, True},
-  TestID -> "PencilDirections-is-every-ray-from-the-origin"
+  TestID -> "InfraRay-pencil-is-every-ray-from-the-origin"
 ]
 
 VerificationTest[
-  {Sort[PencilDirections[PathGraph[Range[7]], 4]], PencilCardinality[PathGraph[Range[7]], 4],
-   PencilCardinality[CycleGraph[6], 1], PencilCardinality[CycleGraph[7], 1],
-   PencilCardinality[HypercubeGraph[3], 1]},
-  {{{4, 3, 2, 1}, {4, 5, 6, 7}}, 2, 2, 2, 6},
-  TestID -> "PencilCardinality-small-fixtures"
+  {Sort[FindInfraRay[PathGraph[Range[7]], 4, 4, All]],
+   InfraMeasurement[#1, InfraRay[#2, #2], "Cardinality"] & @@@
+     {{PathGraph[Range[7]], 4}, {CycleGraph[6], 1}, {CycleGraph[7], 1}, {HypercubeGraph[3], 1}}},
+  {{{4, 3, 2, 1}, {4, 5, 6, 7}}, {2, 2, 2, 6}},
+  TestID -> "InfraRay-pencil-cardinality-small-fixtures"
 ]
 
 VerificationTest[
-  Length[PencilDirections[HypercubeGraph[3], 1]] === PencilCardinality[HypercubeGraph[3], 1],
+  Length[FindInfraRay[HypercubeGraph[3], 1, 1, All]] === InfraMeasurement[HypercubeGraph[3], InfraRay[1, 1], "Cardinality"],
   True,
-  TestID -> "PencilDirections-Cardinality-agree-hypercube"
+  TestID -> "InfraRay-pencil-cardinality-agrees-with-enumeration-hypercube"
 ]
 
 VerificationTest[

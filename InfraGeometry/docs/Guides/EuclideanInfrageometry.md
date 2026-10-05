@@ -37,17 +37,21 @@ Euclidean infrageometry is synthetic geometry: constructions with natural object
 ### Regions
 
 - `InfraBall` the inert closed ball {v : d(c, v) <= r} about a vertex or a vertex set; a band {r, s} in place of r is the shell
-- `InfraTube` the inert tube {v : d(v, core) <= s} about a vertex, a vertex set, a density, a walk graph or a Euclidean head; a band {s, t} is the mantle
-- `InfraCylinder` the inert cylinder of radius r about an axis, the tube of the axis
-- `InfraCone` the inert cone of a given slope along an axis, apex at its first vertex
+- `InfraTube` the inert tube {v : d(a_i, v) <= r_i for some i} along a core, the profile a radius, a band {s, t}, a list along the core or a function of the position; Method "Balls" is the union of the balls, "Sliced" reads the profile at the nearest axis vertex and gives flat ends
+- `InfraCylinder` the inert cylinder of radius r about a walk, the sliced tube with flat ends
+- `InfraCone` the inert cone of a given slope along a walk, apex at its first vertex and a flat base
+- `InfraSolidOfRevolution` the inert solid about a walk with a given radius profile, the sliced tube in general
+- `InfraQuadric` the inert solid {v : sum_i w_i d(p_i, v) <= c} about foci p_i; one focus is the ball, two the ellipse, a band {c, c} the elliptic shell, weights {1, -1} a hyperbola branch
 - `InfraSphere` the inert family of inclusion-minimal connected subsets of a shell that separate the centre from the outside; FindInfraSphere is its search
+- `InfraBallHull` the inert intersection of the closed balls containing a set, of radius at most r, {r} exactly r or {r, s} between; without a radius the Mazur hull
+- `InfraConvexHull` the inert k-th round of the interval closure of a set, each round adding all geodesics between its vertices; without k the geodesic convex hull
 
 ### Measures
 
 - A region on a graph is measured by counting vertices, and its boundary is never negligible at a finite scale: the vertices at distance exactly $r$ are a share of order $1/r$ of the ball of radius $r$. So every region carries two measures, read by InfraMeasurement as properties of the region on a graph.
 - Counting measure, "CountingMeasure": $\mu(A) = |A|$, the number of vertices of the support $A$ of the region.
 - Riemannian measure, "RiemannianMeasure": $\mu^\circ(A) = |A^\circ|$, where $A^\circ = \{v \in A : N(v) \subseteq A\}$ is the set of vertices all of whose neighbours lie in $A$. It is the count without the boundary, the default of the volume growth estimators.
-- `InfraBall`, `InfraShell`, `InfraTube`, `InfraCylinder`, `InfraCone`, `InfraSphere` the region heads, each measured by both; so is every Euclidean head, through the support of its vertex density
+- `InfraBall`, `InfraShell`, `InfraTube`, `InfraCylinder`, `InfraCone`, `InfraSolidOfRevolution`, `InfraQuadric`, `InfraSphere`, `InfraBallHull`, `InfraConvexHull` the region heads, each measured by both; so is every Euclidean head, through the support of its vertex density
 - Ball on the square grid: counting measure $2r^2 + 2r + 1$, Riemannian measure $2r^2 - 2r + 1$, the counting measure of the ball of radius $r - 1$. The same shift holds on the triangular lattice, before the rim, and is the convention of the Wolfram Physics technical introduction; on the hexagonal lattice it is measured, not proved.
 - Shell on the square grid: counting measure $4r$, the coordination sequence; Riemannian measure $0$, since a shell is all boundary.
 - Segment on the square grid between vertices $a$ and $b$ steps apart along the two axes, $a, b \geq 1$: its interval is a rectangle, with counting measure $(a + 1)(b + 1)$ and Riemannian measure $(a - 1)(b - 1)$.
@@ -91,7 +95,5 @@ Euclidean infrageometry is synthetic geometry: constructions with natural object
 
 ### Not here
 
-- `FindBallHull` the intersection of all balls containing a set of points; it lives on the Infra Topology guide
-- not here: the quadric as an inert head and the layers of the convex hull; FindInfraQuadric stays on the Experimental guide
 - not here: an invariant of four points, the inverse of every head (the values of its unknowns for a given vertex set), and the graph of a line or of an arc as an exported name; none is in an item yet
 - not here: the interactive multi-construction stepper in the causal and branchial direction; it stays on the Experimental guide

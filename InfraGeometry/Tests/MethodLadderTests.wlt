@@ -52,38 +52,6 @@ VerificationTest[
   TestID -> "FindInfraParallel-class-invariant-dead-ends"
 ]
 
-(* the corner polygon is the product of its sides' geodesic classes: the diagonal side 9 -> 1 of the 3 x 3 grid has six geodesics, the other two one each *)
-VerificationTest[
-  With[ { call = m |-> FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All, "NextVertexFunction" -> m ] },
-    { classInvariantQ[ call ], Length @ reps @ call[ Identity ] } ],
-  { True, 6 },
-  TestID -> "FindInfraPolygon-class-invariant-under-NextVertexFunction"
-]
-
-VerificationTest[
-  classInvariantQ[ m |-> FindInfraTriangle[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All, "NextVertexFunction" -> m ] ],
-  True,
-  TestID -> "FindInfraTriangle-class-invariant-under-NextVertexFunction"
-]
-
-(* a bounded count streams n geodesics per side and reads the first members of their product: prefixes of length n multiply to at least Min[n, |class|] polygons, so a strict count is exact under every next-vertex function and a soft count past the class returns the class *)
-VerificationTest[
-  Table[ Length @ FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, n, "NextVertexFunction" -> m ],
-    { m, { Identity, RandomSample } }, { n, { 1, 4, UpTo[ 10 ] } } ],
-  ConstantArray[ { 1, 4, 6 }, 2 ],
-  TestID -> "FindInfraPolygon-bounded-count-is-exact-under-NextVertexFunction"
-]
-
-(* four diagonal sides of the 4 x 4 grid with twenty geodesics each, 160 000 polygons: a strict count streams that many distinct members without forming the product *)
-VerificationTest[
-  Table[ With[ { polys = FindInfraPolygon[ GridGraph[ { 4, 4 } ], { 1, 16, 4, 13 }, 50, "NextVertexFunction" -> m ] },
-      { Length @ polys, DuplicateFreeQ @ polys, AllTrue[ polys, InfraPolygonQ[ GridGraph[ { 4, 4 } ], # ] & ] } ],
-    { m, { Identity, RandomSample } } ],
-  ConstantArray[ { 50, True, True }, 2 ],
-  TestID -> "FindInfraPolygon-strict-count-streams-off-the-product"
-]
-
-
 (* ===================== Walk family ===================== *)
 
 VerificationTest[
@@ -161,13 +129,6 @@ VerificationTest[
   TestID -> "FindInfraBisectingHyperplane-class-invariant-under-NextVertexFunction"
 ]
 
-VerificationTest[
-  classInvariantQ[ m |-> FindInfraEllipticShell[ GridGraph[ { 4, 4 } ], { 6, 11 }, { 3, 4 }, All,
-    Properties -> { "Separating" }, "NextVertexFunction" -> m ], Sort ],
-  True,
-  TestID -> "FindInfraEllipticShell-class-invariant-under-NextVertexFunction"
-]
-
 (* the peel from the centre of the 5 x 5 grid: sixteen minimal separators, and the lazy peel reaches each subset once -- without its visited set this ran minutes *)
 VerificationTest[
   With[ { call = m |-> FindInfraSphere[ GridGraph[ { 5, 5 } ], 13, { 1, 2 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ] },
@@ -215,9 +176,6 @@ VerificationTest[
         m |-> FindInfraParallel[ g, Range[ 4 ], 10, "NextVertexFunction" -> m ],
         m |-> FindInfraSphere[ g, 6, { 1, 2 }, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
         m |-> FindInfraBisectingHyperplane[ g, 1, 4, { -1, 1 }, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
-        m |-> FindInfraEllipticShell[ g, { 6, 11 }, { 3, 4 }, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
-        m |-> FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, "NextVertexFunction" -> m ],
-        m |-> FindInfraTriangle[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, "NextVertexFunction" -> m ],
         m |-> FindInfraEllipse[ GridGraph[ { 7, 7 } ], { 25, 12 }, { 4, 8 }, "NextVertexFunction" -> m ],
         m |-> FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, "NextVertexFunction" -> m ] },
       call |-> call[ Identity ] === call[ Identity ] ] ],
@@ -236,9 +194,6 @@ VerificationTest[
         m |-> FindInfraParallel[ g, Range[ 4 ], 10, All, "NextVertexFunction" -> m ],
         m |-> FindInfraSphere[ g, 6, { 1, 2 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
         m |-> FindInfraBisectingHyperplane[ g, 1, 4, { -1, 1 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
-        m |-> FindInfraEllipticShell[ g, { 6, 11 }, { 3, 4 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
-        m |-> FindInfraPolygon[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All, "NextVertexFunction" -> m ],
-        m |-> FindInfraTriangle[ GridGraph[ { 3, 3 } ], { 1, 3, 9 }, All, "NextVertexFunction" -> m ],
         m |-> FindInfraEllipse[ GridGraph[ { 7, 7 } ], { 25, 12 }, { 4, 8 }, All, "NextVertexFunction" -> m ],
         m |-> FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All, "NextVertexFunction" -> m ] },
       call |-> sortReps @ call[ RandomSample ] === sortReps @ call[ Identity ] ] ],

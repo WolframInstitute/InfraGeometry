@@ -19,7 +19,7 @@ PointViewer[ g_Graph, sym_: None ] :=
       With[ { pts = FindInfraPoint[ g, UpTo[ n ], "From" -> from, "MaxCliques" -> 100,
           "Distance" -> Switch[ separation, "None", None, "Max", "Max", "Range", distRange ] ] },
         If[ sym =!= None, sym = pts ];
-        InfraSubstrateHighlight[ g, { Directive[ $InfraPointColor ], InfraDensity[ g, pts ] } ] ],
+        InfraSubstrateHighlight[ g, { InfraDensity[ g, pts ] } ] ],
       Grid[ {
         { Control[ { { n, 1, "Points" }, ControlType -> InputField } ],
           Control[ { { from, "Random", "From" }, { "Random", "Center", "Periphery" } } ] },
@@ -49,10 +49,9 @@ SegmentViewer[ g_Graph ] :=
               UpTo[ n ] ] ] },
         EventHandler[
           HighlightGraph[
-            InfraSubstrateHighlight[ g, { Directive[ $InfraSegmentColor ],
-              If[ sel === None, InfraSegment[ p1, p2 ], geodesicGraph /@ segments ] } ],
-            { Style[ p1, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ],
-              Style[ p2, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] } ],
+            InfraSubstrateHighlight[ g, { If[ sel === None, InfraSegment[ p1, p2 ], geodesicGraph /@ segments ] } ],
+            { Style[ p1, Directive[ $InfraStrikeOutPalette[[ 2 ]], AbsolutePointSize[ 16 ] ] ],
+              Style[ p2, Directive[ $InfraStrikeOutPalette[[ 2 ]], AbsolutePointSize[ 16 ] ] ] } ],
           { "MouseClicked" :> With[ { mp = MousePosition[ "Graphics" ] },
             If[ mp =!= None,
               With[ { clicked = First @ nearestFunc[ mp ] },
@@ -84,8 +83,8 @@ ShellViewer[ g_Graph ] :=
             FindInfraSphere[ g, p, r, UpTo[ n ], Properties -> properties ] ] },
         EventHandler[
           HighlightGraph[
-            InfraSubstrateHighlight[ g, { Directive[ $InfraShellColor ], shells } ],
-            { Style[ p, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] } ],
+            InfraSubstrateHighlight[ g, { shells } ],
+            { Style[ p, Directive[ $InfraStrikeOutPalette[[ 2 ]], AbsolutePointSize[ 16 ] ] ] } ],
           { "MouseClicked" :> With[ { mp = MousePosition[ "Graphics" ] },
             If[ mp =!= None,
               With[ { clicked = First @ nearestFunc[ mp ] }, p = clicked; seed++ ] ] ] },
@@ -121,9 +120,8 @@ CircleViewer[ g_Graph ] :=
               UpTo[ n ] ] ] },
         EventHandler[
           HighlightGraph[
-            InfraSubstrateHighlight[ g, { Directive[ $InfraCircleColor ],
-              If[ sel === None, InfraCircle[ p, r ], geodesicCycleGraph /@ circles ] } ],
-            { Style[ p, Directive[ $InfraPointColor, AbsolutePointSize[ 16 ] ] ] } ],
+            InfraSubstrateHighlight[ g, { If[ sel === None, InfraCircle[ p, r ], geodesicCycleGraph /@ circles ] } ],
+            { Style[ p, Directive[ $InfraStrikeOutPalette[[ 2 ]], AbsolutePointSize[ 16 ] ] ] } ],
           { "MouseClicked" :> With[ { mp = MousePosition[ "Graphics" ] },
             If[ mp =!= None,
               With[ { clicked = First @ nearestFunc[ mp ] }, p = clicked; seed++ ] ] ] },

@@ -5,7 +5,6 @@ FindInfraPoint::usage = "FindInfraPoint[graph] draws a vertex from the candidate
 FindInfraMidpoint::usage = "FindInfraMidpoint[graph, p1, p2] gives the density <|v -> m, ...|> of the middle vertices of every geodesic from p1 to p2 (one vertex at even distance, two at odd). Option Method.";
 FindInfraGoldenSection::usage = "FindInfraGoldenSection[graph, p1, p2] gives the density <|v -> m, ...|> at the golden-ratio index along every geodesic from p1 to p2. Option Method.";
 FindInfraReflection::usage = "FindInfraReflection[graph, x, a] gives the reflections x' of x through a: the vertices with B(x, a, x') and d(a, x) == d(a, x').";
-CompleteInfraEquilateralTriangle::usage = "CompleteInfraEquilateralTriangle[graph, p1, p2] gives the apexes equidistant from p1 and p2 at distance d(p1, p2) (Euclid I.1).";
 FindInfraCommonPoint::usage = "FindInfraCommonPoint[graph, lines] gives the points lying on every listed line.";
 FindClosestInfraPoint::usage = "FindClosestInfraPoint[graph, line, point] gives the vertices of line at minimum graph distance from point.";
 SelectInfraPoint::usage = "SelectInfraPoint[graph, vertices] draws a vertex from a supplied bundle under graph distance; a trailing n | UpTo[n] | All sets the count. Options \"From\", \"Distance\", \"MaxCliques\".";
@@ -19,7 +18,7 @@ FindInfraRepresentative::usage = "FindInfraRepresentative[graph, head] gives one
 InfraMemberQ::usage = "InfraMemberQ[graph, obj, path] tests whether the vertex list path is a member of obj.";
 InfraSubgraph::usage = "InfraSubgraph[graph, obj] gives the subgraph of graph induced on the support of obj; InfraSubgraph[graph, obj -> t] thickens the support by t steps.";
 
-InfraSegment::usage = "InfraSegment[p1, ..., pk] is the inert polyline of the segments [p1, p2], ..., [p(k-1), pk]; InfraSegment[p, q] is the segment itself, whose graph is the geodesic interval I(p, q). InfraMeasurement and FindInfraRepresentative evaluate it on a graph; FindInfraSegment is the search.";
+InfraSegment::usage = "InfraSegment[p1, ..., pk] is the inert polyline of the segments [p1, p2], ..., [p(k-1), pk], closed when pk == p1, its one witness then retracing no edge when some member does not; InfraSegment[p, q] is the segment itself, whose graph is the geodesic interval I(p, q). InfraMeasurement and FindInfraRepresentative evaluate it on a graph; FindInfraSegment is the search.";
 FindInfraSegment::usage = "FindInfraSegment[graph, p, q] gives one geodesic from p to q as a vertex list; a trailing n | UpTo[n] | All gives a List of them.";
 InfraWalkQ::usage = "InfraWalkQ[graph, walk] tests whether walk is a walk: consecutive vertices adjacent (revisits allowed).";
 InfraSegmentQ::usage = "InfraSegmentQ[graph, walk] tests whether walk is a geodesic.";
@@ -44,16 +43,8 @@ FindInfraCommonLine::usage = "FindInfraCommonLine[graph, vertices] gives the can
 InfraLineQ::usage = "InfraLineQ[graph, walk] tests whether walk is a line: a geodesic that no neighbour of either endpoint prolongs.";
 InfraParallelQ::usage = "InfraParallelQ[graph, l1, l2] tests whether two lines stay at constant distance; a trailing threshold allows that distance to vary.";
 InfraPerpendicularQ::usage = "InfraPerpendicularQ[graph, l1, l2] tests whether two lines meet perpendicularly at every common vertex. Options Method, \"Radius\".";
-PencilDirections::usage = "PencilDirections[graph, O] gives the pencil at O: every ray from O, as a list of vertex sequences.";
-PencilCardinality::usage = "PencilCardinality[graph, O] gives the number of rays from O, counted on the ray pools without enumeration.";
 LineCount::usage = "LineCount[graph] gives the number of distinct canonical maximal geodesics in graph.";
-FindLineHull::usage = "FindLineHull[graph, S] gives, as a sorted vertex list, the smallest superset of S closed under the line operator. Option \"LineStructure\".";
-LineHullQ::usage = "LineHullQ[graph, S] tests whether S is closed under the line operator.";
 UniversalLineQ::usage = "UniversalLineQ[graph] tests whether some pair spans a line filling a whole connected component (Chen-Chvatal); UniversalLineQ[graph, {u, v}] tests one line.";
-
-InfraLineStructure::usage = "InfraLineStructure[{line1, ...}] is a consistent geodesic path system, stored as its maximal lines. Accessors \"Lines\", \"Paths\", \"Incidence\", \"Coordinates\", [\"Path\", u, v].";
-FindLineStructure::usage = "FindLineStructure[graph] gives a consistent geodesic path system: one shortest path per vertex pair, with every stretch of a chosen path again chosen. Option Method sets the tie-breaking edge ranking.";
-ConsistentPathSystemQ::usage = "ConsistentPathSystemQ[graph, obj] tests whether a geodesic path system is subpath-closed (Cizma-Linial consistent).";
 
 InfraShell::usage = "InfraShell[c, {r, s}] is the inert shell { v : r <= d(v, c) <= s }, c a vertex or a vertex set; InfraShell[c, r] is the band {r, r}. Read by InfraMeasurement and FindInfraRepresentative; FindInfraShell is the search.";
 FindInfraShell::usage = "FindInfraShell[graph, c, r] gives the metric shell { v : d(v, c) == r } as a sorted vertex list; r may be a band {r, s}, c a vertex set.";
@@ -63,42 +54,32 @@ FindInfraOsculatingShell::usage = "FindInfraOsculatingShell[graph, path, i, k] g
 FindAdvancingInfraFront::usage = "FindAdvancingInfraFront[graph, origin, steps] gives the foliation by a bouncing wavefront as a List of sorted vertex lists: each front steps one geodesic step outward and reflects inward where it cannot.";
 FindInfraShellCenter::usage = "FindInfraShellCenter[graph, shell] recovers {center, radii} from a shell. Option Method.";
 InfraShellQ::usage = "InfraShellQ[graph, vertexSet] tests whether vertexSet is a metric shell { v : d(c, v) == r } for some centre c and radius r.";
-SeparatesQ::usage = "SeparatesQ[graph, vertexSet, u, v] tests whether deleting vertexSet disconnects u from v.";
 
 InfraBall::usage = "InfraBall[c, r] is the inert closed ball { v : d(v, c) <= r }, c a vertex or a vertex set; InfraBall[c, {r, s}] is the shell. Read by InfraMeasurement and FindInfraRepresentative.";
 InfraBallQ::usage = "InfraBallQ[graph, vertexSet] tests whether vertexSet is a closed metric ball.";
-FindBallHull::usage = "FindBallHull[graph, S] gives, as a sorted vertex list, the ball hull of S: the intersection of all closed balls containing S, the smallest ball-convex superset.";
-BallHullQ::usage = "BallHullQ[graph, S] tests whether S is ball-convex, i.e. an intersection of closed balls.";
 
-InfraTube::usage = "InfraTube[core, s] is the inert tube { v : d(v, core) <= s }, core a vertex, a vertex set, a density, a walk graph or a Euclidean head; InfraTube[core, {s, t}] is the band { v : s <= d(v, core) <= t }. Read by InfraMeasurement and FindInfraRepresentative.";
-InfraCylinder::usage = "InfraCylinder[axis, r] is the inert cylinder of radius r around axis, the tube InfraTube[axis, r]; r may be a band {r, s}.";
-InfraCone::usage = "InfraCone[axis, slope] is the inert cone { v : d(v, axis[[i]]) <= slope (i - 1) for some i } with apex First[axis]; reverse the axis for the other apex.";
+InfraBallHull::usage = "InfraBallHull[S, r] is the inert intersection of the closed balls of radius at most r containing S, the whole graph if none does; InfraBallHull[S, {r}] takes the balls of radius exactly r, InfraBallHull[S, {r, s}] those of radius between r and s, and InfraBallHull[S] every radius, the Mazur hull. Read by InfraMeasurement and FindInfraRepresentative.";
+InfraConvexHull::usage = "InfraConvexHull[S, k] is the inert k-th round of the interval closure of S, a round adding all geodesics between its vertices; InfraConvexHull[S] is the convex hull. Read by InfraMeasurement and FindInfraRepresentative.";
+
+InfraTube::usage = "InfraTube[core, profile] is the inert tube { v : d(a_i, v) <= r_i for some i } along the core a_1, ..., a_m, the profile a radius, a band {s, t}, a list of them or a function of i. Option Method (\"Balls\", \"Sliced\").";
+InfraCylinder::usage = "InfraCylinder[axis, r] is the inert cylinder InfraTube[axis, r, Method -> \"Sliced\"], the tube of radius r with flat ends; r may be a band {r, s}.";
+InfraCone::usage = "InfraCone[axis, slope] is the inert cone InfraTube[axis, i |-> slope (i - 1), Method -> \"Sliced\"], apex First[axis] and a flat base.";
+InfraSolidOfRevolution::usage = "InfraSolidOfRevolution[axis, profile] is the inert solid InfraTube[axis, profile, Method -> \"Sliced\"], the profile read at the nearest axis vertex; a band profile {r, r} is the surface.";
 
 InfraCircle::usage = "InfraCircle[c, r | {r, s}] is the inert family of circles around c in the band r <= d(c, v) <= s; its graph is the List of atoms of the unrolled band, the necklaces where that fails.";
-FindInfraCycle::usage = "FindInfraCycle[graph, n] gives the n shortest simple cycles of graph; FindInfraCycle[graph, {kmin, kmax}, n] restricts their length.";
 InfraCircleQ::usage = "InfraCircleQ[graph, cycle] tests whether cycle is a cyclic edge chain whose vertex set is a metric shell.";
 
 InfraArc::usage = "InfraArc[c, {p1, ..., pk}] is the inert arc around c through the points, the geodesics of the band of the circle through p1; InfraArc[c, {p, p}] is the closed arc, the circles through p. Option \"RadiusDelta\".";
 
-InfraPolygon::usage = "InfraPolygon[{v1, ..., vn}] inside InfraScene is the closed geodesic chain through the given corners, InfraPolygon[pool, n] the n-gon search over a pool; FindInfraPolygon is the search. A polygon itself is the List of its sides, one directed path graph each, consecutive sides sharing a corner.";
-FindInfraPolygon::usage = "FindInfraPolygon[graph, {p1, ..., pn}] gives one polygon with corners p1, ..., pn: a geodesic between each pair of consecutive corners; a trailing n | UpTo[n] | All sets the count. Option \"NextVertexFunction\".";
+InfraPolygon::usage = "InfraPolygon[As, n] is the inert family of regular n-gons whose k-th diagonals satisfy As[[k]]; FindInfraRegularPolygon is the search. The polygon through given corners is the closed polyline InfraSegment[p1, ..., pn, p1].";
 FindInfraRegularPolygon::usage = "FindInfraRegularPolygon[graph, As, n] gives one closed n-vertex sequence whose k-th diagonal distances all match As[[k]] (each slot an Integer, {lo, hi}, or Automatic); a trailing n | UpTo[n] | All sets the count. Options \"NextVertexFunction\", \"From\".";
-InfraPolygonQ::usage = "InfraPolygonQ[graph, poly] tests whether poly is a closed cyclic chain of geodesic sides.";
 InfraRegularPolygonQ::usage = "InfraRegularPolygonQ[graph, cycle, As] tests whether cycle is regular with respect to the diagonal-distance tuple As.";
 
-InfraTriangle::usage = "InfraTriangle[{a, b, c}] inside InfraScene is the geodesic triangle on three corners, the n = 3 case of InfraPolygon; FindInfraTriangle is the search. A triangle itself is the List of its three sides, one directed path graph each.";
-FindInfraTriangle::usage = "FindInfraTriangle[graph, {a, b, c}] gives one triangle with corners a, b, c and a geodesic on each side; a trailing n | UpTo[n] | All sets the count. Option \"NextVertexFunction\".";
-InfraTriangleQ::usage = "InfraTriangleQ[graph, poly] tests whether poly is a closed chain of exactly three geodesic sides.";
-
-InfraEllipticShell::usage = "InfraEllipticShell names the elliptic-shell construction -- a level set of a sum of distances to two foci -- and carries no value of its own; FindInfraEllipticShell is the search and gives a sorted vertex list.";
-FindInfraEllipticShell::usage = "FindInfraEllipticShell[graph, {p1, p2}, c] gives the elliptic shell { v : d(p1, v) + d(p2, v) == c }; c may be a band {cmin, cmax}. Options Properties, \"NextVertexFunction\".";
-InfraEllipticShellQ::usage = "InfraEllipticShellQ[graph, vertexSet] tests whether vertexSet is an elliptic shell for some pair of foci and some constant.";
-
-FindInfraQuadric::usage = "FindInfraQuadric[graph, {p1, ..., pk}, c] gives the solid interior { v : Sum_i d(p_i, v) <= c }; a trailing weight list gives the signed sum, so weights {1, -1} give a hyperboloid branch.";
+InfraQuadric::usage = "InfraQuadric[{p1, ..., pk}, c] is the inert solid { v : Sum_i d(p_i, v) <= c }, c a number or a band {lo, hi}; a trailing weight list gives the signed sum. One focus is the ball, two the ellipse, InfraQuadric[{p1, p2}, {c, c}] the elliptic shell, weights {1, -1} a hyperbola branch. Read by InfraMeasurement and FindInfraRepresentative.";
 
 InfraEllipse::usage = "InfraEllipse names the metric-ellipse construction -- a cycle lying on an elliptic shell -- and carries no value of its own; FindInfraEllipse is the search and gives a directed cycle graph.";
 FindInfraEllipse::usage = "FindInfraEllipse[graph, {p1, p2}, c] gives one shortest separating cycle in the level surface { v : d(p1, v) + d(p2, v) == c }; a trailing n | UpTo[n] | All sets the count. Options Properties, \"NextVertexFunction\".";
-InfraEllipseQ::usage = "InfraEllipseQ[graph, cycle] tests whether cycle is a cyclic edge chain whose vertex set is an elliptic shell.";
+InfraEllipseQ::usage = "InfraEllipseQ[graph, cycle] tests whether cycle is a cyclic edge chain whose vertex set is an elliptic shell InfraQuadric[{p1, p2}, {c, c}] for some foci.";
 
 InfraPlane::usage = "InfraPlane[p1, p2] inside InfraScene is the bisecting hyperplane of p1 and p2; FindInfraBisectingHyperplane is the search. A plane itself is a sorted vertex list.";
 FindInfraBisectingHyperplane::usage = "FindInfraBisectingHyperplane[graph, p1, p2] gives the perpendicular bisector { v : d(p1, v) == d(p2, v) }; a positional {lo, hi} widens it to a slab. Options Properties, \"NextVertexFunction\".";
@@ -107,30 +88,14 @@ InfraRay::usage = "InfraRay[p, q] is the inert ray from p through q, whose graph
 FindInfraRay::usage = "FindInfraRay[graph, p, q] gives one ray from p through q as a vertex list -- a geodesic from p through q that no neighbour of its last vertex prolongs; a trailing n | UpTo[n] | All gives a List of them.";
 InfraRayQ::usage = "InfraRayQ[graph, ray] tests whether ray is a pointed half-line: a geodesic from its own first vertex that cannot be prolonged past its last.";
 
-InfraPolyline::usage = "InfraPolyline[{v1, ..., vk}] inside InfraScene is the open geodesic chain through the given knots; FindInfraPolylineSubdivision chunks a walk into such legs. A polyline itself is the List of its legs, one directed path graph each, consecutive legs sharing a knot.";
 FindInfraPolylineSubdivision::usage = "FindInfraPolylineSubdivision[graph, path] chunks a walk into the fewest geodesic legs whose knots are walk vertices. Option \"MaxLength\" caps each leg.";
-InfraPolylineQ::usage = "InfraPolylineQ[graph, poly] tests whether every leg is a geodesic and consecutive legs share an endpoint.";
-
-InfraRevolution::usage = "InfraRevolution[axis, profile] is the InfraScene constructor for a solid of revolution.";
-FindInfraRevolution::usage = "FindInfraRevolution[graph, axis, profile] gives the rotational vertex set around axis with the given radius profile, a constant, list, association, or function. Options \"Form\", Method.";
-InfraRevolutionQ::usage = "InfraRevolutionQ[graph, vs, axis, profile] tests whether vs is the solid of revolution around axis with the given profile. Option \"Form\".";
 
 InfraScalarProduct::usage = "InfraScalarProduct[graph, o, u, v] gives the base-point-relative product d(o, u) d(o, v) cos(theta), at curvature 0 the polar form (d(o,u)^2 + d(o,v)^2 - d(u,v)^2)/2. Option Method.";
 FindInfraLinearCombination::usage = "FindInfraLinearCombination[graph, o, {{lambda1, u1}, ...}] gives the vertex realisations of Sum_i lambda_i u_i based at o. Options \"ScaleMethod\", \"SumMethod\".";
 InfraAngle::usage = "InfraAngle[graph, {q1, p, q2}] gives the angle at p in radians. Option Method (\"Arclength\", \"Alexandrov\").";
 InfraMetricTensor::usage = "InfraMetricTensor[graph, p] gives the matrix of d(p, u)/d(p, v) over v, w with u the vertex of I(p, w) closest to v; with r, over the shell FindInfraShell[graph, p, r]. Option \"SelectCoordinate\".";
 
-TurningAngles::usage = "TurningAngles[graph, path] gives the exterior angles Pi - InfraAngle at each interior vertex of path; for an InfraPolyline, the angles at its knots.";
-TotalCurvature::usage = "TotalCurvature[graph, path] gives Total @ TurningAngles[graph, path], the discrete total curvature of path.";
-TotalAbsoluteCurvature::usage = "TotalAbsoluteCurvature[graph, path] gives Total @ Abs @ TurningAngles[graph, path], the discrete Fenchel integral of |kappa|.";
-TurningNumber::usage = "TurningNumber[graph, cycle] gives TotalCurvature[graph, cycle] / (2 Pi).";
-
-ComparisonTriangle::usage = "ComparisonTriangle[a, b, c] gives the Euclidean Triangle with side lengths a, b, c; ComparisonTriangle[graph, p, q, r] reads the sides from the graph. Option \"Curvature\" places it in M_k^2.";
-InfraComparisonTriangle::usage = "InfraComparisonTriangle[<|...|>] is the wrapper for comparison triangles of nonzero curvature. Accessors \"Sides\", \"Curvature\", \"Angles\".";
-CATInequalityQ::usage = "CATInequalityQ[graph, {p, q, r}, k] tests whether the geodesic triangle on p, q, r satisfies the CAT(k) thinness inequality. Option Method (\"ApexSide\", \"TwoRays\").";
-InfraCurvature::usage = "InfraCurvature[graph, v] gives the local Alexandrov upper curvature bound at v: the supremum of per-triangle CAT bounds inside a ball around v. Option \"Radius\".";
-
-SelectInfraWalk::usage = "SelectInfraWalk[graph, walks] draws a walk from a bundle -- vertex lists or walk graphs, cycle graphs selecting as closed walks -- treated as a metric space. Options \"From\", \"Distance\", \"Metric\", \"MaxCliques\", \"Cyclic\".";
+SelectInfraWalk::usage = "SelectInfraWalk[graph, walks, n] draws n walks (default 1) from a bundle -- vertex lists or walk graphs, cycle graphs selecting as closed walks -- treated as a metric space; n may be UpTo[n] or All, and SelectInfraWalk[graph, n] is the operator form. Options \"From\", \"Distance\", \"Metric\", \"MaxCliques\", \"Cyclic\".";
 EmbeddingClosest::usage = "EmbeddingClosest[graph, bundle, ref] keeps the bundle elements drawn closest to a Euclidean reference under GraphEmbedding; ref is {p1, p2}, {center, radius}, or a curve.";
 FindEmbeddingClosestPath::usage = "FindEmbeddingClosestPath[graph, curve] snaps an embedded curve to a walk graph, mapping sampled points to nearest vertices and joining them by geodesics.";
 SprayGraph::usage = "SprayGraph[graph, c] gives the BFS DAG rooted at c, whose directed source-to-sink paths are exactly the maximal geodesics from c; SprayGraph[graph, pairs] gives the union of geodesics between listed pairs.";
@@ -146,11 +111,8 @@ HomotopyMoveType::usage = "HomotopyMoveType[walk1, walk2] classifies an elementa
 HomotopyMoveTypes::usage = "HomotopyMoveTypes[chain] applies HomotopyMoveType to each consecutive pair of a homotopy chain.";
 
 MetricInterval::usage = "MetricInterval[graph, u, v] gives { w : d(u, w) + d(w, v) == d(u, v) }, the union of all geodesics from u to v.";
-GeodesicMultiplicity::usage = "GeodesicMultiplicity[graph, u, v] gives the number of distinct geodesics from u to v.";
-GeodesicMultiplicityMatrix::usage = "GeodesicMultiplicityMatrix[graph] gives {D, M} with D the distance matrix and M the matrix of geodesic counts.";
+ShortestPathMultiplicityMatrix::usage = "ShortestPathMultiplicityMatrix[graph] gives the matrix whose (i, j) entry is the number of shortest paths from the i-th to the j-th vertex, 0 when there is none.";
 MedianVertices::usage = "MedianVertices[graph, vs] gives the vertices minimising the sum of distances to vs.";
-FindSegmentHull::usage = "FindSegmentHull[graph, S] gives, as a sorted vertex list, the smallest superset of S closed under MetricInterval -- the geodesic convex hull. Option \"LineStructure\".";
-SegmentHullQ::usage = "SegmentHullQ[graph, S] tests whether S is geodesically convex.";
 
 InfraDensity::usage = "InfraDensity[graph, x] gives the marginal of any shape to the vertex set, <|v -> m|>, with respect to the counting measure: a vertex gives <|v -> 1|>, a vertex list its Counts, a density itself, a walk graph or a bundle its vertex occupation. It is the one coercion in the API -- Keys demotes it back to the set, Counts promotes a list to one.";
 
@@ -162,37 +124,6 @@ OrthogonalCoordinates::usage = "OrthogonalCoordinates[graph, c, axes, v] gives t
 FindInfraOrthogonalFrame::usage = "FindInfraOrthogonalFrame[graph, c, axisLength] gives frames of mutually perpendicular geodesic axes through the centre c. Options Method, \"AxisCount\", \"BranchSampleSize\", \"SelectCoordinate\".";
 FindInfraSpanningAxes::usage = "FindInfraSpanningAxes[graph, n] gives n mutually well-separated longest geodesics across graph, with no fixed centre. Options \"AxisDistance\", \"MinLength\", \"MinSeparation\", \"AxisThickness\", \"RandomPick\".";
 
-BetweennessQ::usage = "BetweennessQ[graph, u, w, v] tests Tarski betweenness B(u, w, v): w lies on a geodesic from u to v.";
-EquidistanceQ::usage = "EquidistanceQ[graph, a, b, c, d] tests Tarski equidistance d(a, b) == d(c, d).";
-TarskiStructure::usage = "TarskiStructure[graph] gives a memoized association of the Tarski primitives: vertices, distances, betweenness, equidistance, diameter.";
-TarskiBetweennessTensor::usage = "TarskiBetweennessTensor[graph] gives the sparse rank-3 tensor whose nonzero entries are the triples with B(v_i, v_j, v_k).";
-TarskiEquidistanceClasses::usage = "TarskiEquidistanceClasses[graph] gives the partition of unordered vertex pairs by distance value.";
-TarskiCongruenceReflexivityQ::usage = "TarskiCongruenceReflexivityQ[graph] tests Tarski axiom A1, ab == ba. Always True on undirected simple graphs.";
-TarskiCongruenceTransitivityQ::usage = "TarskiCongruenceTransitivityQ[graph] tests Tarski axiom A2, transitivity of congruence. A tautology of equality.";
-TarskiCongruenceIdentityQ::usage = "TarskiCongruenceIdentityQ[graph] tests Tarski axiom A3, ab == cc implies a == b. Holds on connected simple graphs.";
-TarskiSegmentConstructionQ::usage = "TarskiSegmentConstructionQ[graph] tests Tarski axiom A4, segment construction. Generally False on finite graphs.";
-TarskiFiveSegmentsQ::usage = "TarskiFiveSegmentsQ[graph] tests Tarski axiom A5, five segments. Holds on median graphs. Option \"MaxTuples\" caps the O(n^8) search.";
-TarskiBetweennessIdentityQ::usage = "TarskiBetweennessIdentityQ[graph] tests Tarski axiom A6, B(a, b, a) implies a == b. Always True on connected simple graphs.";
-TarskiInnerPaschQ::usage = "TarskiInnerPaschQ[graph] tests Tarski axiom A7, inner Pasch. Holds on median graphs; fails on cycles of length >= 5 and on Petersen.";
-TarskiLowerDimensionQ::usage = "TarskiLowerDimensionQ[graph] tests Tarski axiom A8, the existence of three non-collinear points.";
-TarskiUpperDimensionQ::usage = "TarskiUpperDimensionQ[graph] tests Tarski axiom A9, three points equidistant from two distinct points are collinear. False in effective dimension >= 3.";
-TarskiEuclidAxiomQ::usage = "TarskiEuclidAxiomQ[graph] tests Tarski axiom A10, the parallel-axiom variant. Stub: returns Indeterminate.";
-TarskiContinuityQ::usage = "TarskiContinuityQ[graph] tests Tarski axiom A11, Dedekind continuity. Always False on finite graphs.";
-TarskiAxiomQ::usage = "TarskiAxiomQ[graph] gives the per-axiom results of all eleven Tarski axiom predicates.";
-FindTarskiCounterexample::usage = "FindTarskiCounterexample[graph, predQ] gives vertex tuples witnessing the failure of a Tarski axiom predicate.";
-
-SameDirectionQ::usage = "SameDirectionQ[graph, O, v, w] tests whether v and w lie in the same direction at O, i.e. whether some ray from O through v contains w.";
-CollinearQ::usage = "CollinearQ[graph, vertices] tests whether all listed vertices lie on a common line.";
-ConcurrentQ::usage = "ConcurrentQ[graph, lines] tests whether all listed lines share a common vertex.";
-UniqueCollinearQ::usage = "UniqueCollinearQ[graph, vertices] tests whether the listed vertices lie on a unique common line.";
-UniqueConcurrentQ::usage = "UniqueConcurrentQ[graph, lines] tests whether the listed lines share exactly one common vertex.";
-WhiteheadW1Q::usage = "WhiteheadW1Q[graph] tests Whitehead axiom W1: every line has at least three vertices.";
-WhiteheadW2Q::usage = "WhiteheadW2Q[graph] tests Whitehead axiom W2: any two distinct vertices lie on exactly one line.";
-WhiteheadW3Q::usage = "WhiteheadW3Q[graph] tests Whitehead axiom W3, the intersection property. O(|V|^4); use on small graphs.";
-ProjectivePlaneGraphQ::usage = "ProjectivePlaneGraphQ[graph] tests whether graph is a synthetic projective plane: W1, W2, W3 and non-degeneracy.";
-
-EnumerateGraphs::usage = "EnumerateGraphs[n, predQ] gives the connected n-vertex graphs from GraphData satisfying predQ. Option \"From\" supplies a different generator.";
-
 InfraScene::usage = "InfraScene[objects, hypotheses] builds a scene descriptor from symbolic objects and construction or assertion hypotheses. Properties \"Steps\", \"Constructions\", \"Assertions\", \"DependencyGraph\".";
 FindInfraScene::usage = "FindInfraScene[scene, graph] solves a scene on a graph and gives the resulting InfraSceneInstance bindings. Option \"PruneProbability\".";
 InfraSceneInstance::usage = "InfraSceneInstance[bindings] wraps a solved binding association; InfraSceneInstance[bindings, sym] reads one object out of it.";
@@ -203,18 +134,6 @@ InfraDistance::usage = "InfraDistance[graph, p, q] gives the graph distance betw
 InfraPlaneQ::usage = "InfraPlaneQ[graph, h, p1, p2] tests whether h lies in the bisector slab of p1, p2 and separates them; a trailing window widens the slab. The graph-free InfraPlaneQ[h, p1, p2] is the inert InfraScene assertion.";
 InfraIntersectQ::usage = "InfraIntersectQ[s1, s2] asserts inside an InfraScene that two sets intersect; it stays inert until bindings resolve, which is why it exists rather than the built-in IntersectingQ.";
 
-$InfraPointColor::usage   = "Named color of points; the knots of a leg chain draw in it. A caller cites it in a Directive.";
-$InfraSegmentColor::usage = "Named color of segments, for a caller to cite in a Directive.";
-$InfraLineColor::usage    = "Named color of lines, for a caller to cite in a Directive.";
-$InfraShellColor::usage   = "Named color of shells, for a caller to cite in a Directive.";
-$InfraBallColor::usage    = "Named color of balls, for a caller to cite in a Directive.";
-$InfraPlaneColor::usage   = "Named color of planes, for a caller to cite in a Directive.";
-$InfraCircleColor::usage  = "Named color of circles and arcs, for a caller to cite in a Directive.";
-$InfraRayColor::usage     = "Named color of rays, for a caller to cite in a Directive.";
-$InfraWalkColor::usage    = "Named color of walks, for a caller to cite in a Directive.";
-$InfraTopologyColor::usage = "Named color of topology overlays, for a caller to cite in a Directive.";
-$InfraPalette::usage = "$InfraPalette is the Dataset of the named colors, one row per color, with columns \"Primitive\", \"Color\" and \"Symbol\".";
-
 InfraSubstrateHighlight::usage = "InfraSubstrateHighlight[graph, {obj1, obj2, ...}] draws the sum of the objects' densities on graph, the i-th object in the i-th palette color; a Directive styles the objects after it. Options \"OpacityRange\", \"ThicknessRange\", \"PointSizeRange\", \"Arrowheads\", \"Palette\".";
 InfraSceneViewer::usage = "InfraSceneViewer[scene, graph] is an interactive step-by-step visualisation of an InfraScene on a graph.";
 PointViewer::usage = "PointViewer[graph] is an interactive viewer for selecting points; PointViewer[graph, sym] stores the selection in sym.";
@@ -223,11 +142,6 @@ ShellViewer::usage = "ShellViewer[graph] is an interactive viewer for exploring 
 CircleViewer::usage = "CircleViewer[graph] is an interactive viewer for exploring separating cycles.";
 
 InfraEqualQ::usage = "InfraEqualQ[graph, a, b] tests equality of two Infra* objects through their diffusion diagrams. Option Method (\"Diffuse\", \"Overlap\", \"Set\", \"Multiset\").";
-
-$InfraPointSizes::usage = "$InfraPointSizes is the association Small -> 4, Medium -> 7, Large -> 10 of absolute vertex-dot sizes. One value per class, independent of the graph.";
-$InfraAccentPointSize::usage = "$InfraAccentPointSize is the absolute dot size (12) of the accent / centre role, which is not a size class and combines with Haloing[].";
-
-BallHull::usage = "BallHull[g, S] gives the ball hull of vertex subset S in g: the intersection of all closed metric balls containing S, equivalently { v : d(c, v) <= max_{s in S} d(c, s) for every vertex c }. This is the smallest ball-convex (Mazur) superset of S. S may be a vertex list or a subgraph.";
 
 LogDifferenceQuotients::usage = "LogDifferenceQuotients[w] gives the log-difference quotients q(r) = (Log w(r) - Log w(r-1)) / (Log(r+1) - Log r) of a sequence w = {w(0), w(1), ...}, the discrete d Log w / d Log r; equals ResourceFunction[\"LogDifferences\"][w]. Accepts any numeric or Around sequence, such as the measures of InfraBall[v, r] over r, or their MeanAround over a vertex subset.";
 
@@ -327,7 +241,7 @@ InflatedVertex::usage = "InflatedVertex[v, i] is the i-th fiber vertex over base
 
 InfraSubstrateStyle::usage = "InfraSubstrateStyle[size] is the Graph option list a substrate backdrop is drawn with at size \"Small\" | \"Medium\" | \"Large\" -- StandardGray edges on an opacity ladder and faintly filled outlined vertex disks at a scaled 0.013 | 0.009 | 0.006 of the coordinate diagonal, fading as the substrate grows, so one style draws one dot on every graph -- and \"Default\" is none. InfraSubstrateStyle[name, size] is the style of the named substrate at that size: every substrate falls back to the size default today, and a custom look for one substrate is one more definition. Splice a style into any graph construction: Graph[g, Sequence @@ InfraSubstrateStyle[\"Medium\"]] -- the way to draw a hand-built object (a Wolfram-model graph in particular) exactly like the roster substrates. InfraSubstrateStyle[] lists the available styles in an Association with \"Default\" and \"Custom\" keys; InfraSubstrateStyle[All] gives the flat list of all default and custom styles.";
 
-InfraSubstrate::usage = "InfraSubstrate[name, size] is the named example substrate at size \"Small\", \"Medium\" or \"Large\", or at a raw spec (a cell measure, a radius, grid dimensions, a generation count); a substrate drawn from a random construction is seeded from outside, with SeedRandom, so the same seed recovers the same graph; a call consumes the random stream like any other draw. Each substrate is one explicit definition in Kernel/InfraSubstrate.wl, with its size table and its exceptions (an interior strip, a kept embedding) written into the definition. A Wolfram-model universe is named by its Registry of Notable Universes number, as in InfraSubstrate[\"wm6655\", 11], and any of the 947 registry entries resolves through ResourceFunction[\"WolframModelData\"]. InfraSubstrate[name, size, style] overrides the ambient style, which defaults to the InfraSubstrateStyle of that size since a substrate is a backdrop; pass \"Default\" for none. A substrate is bare combinatorics by default -- a stored embedding is discarded and a spring layout of its own dimension places the vertices; option \"KeepCoordinates\" -> True draws the substrate where it lives instead. Any substrate inflates: option \"Inflate\" -> amount grows a fiber of that many extra vertices over every vertex through InflateGraph (a constant or a {min, max} range), and \"Inflate\" -> {opts} passes InflateGraph its full option list. InfraSubstrate[] lists the roster classified by what a substrate models (\"OpenManifold\" -- boundaryless patches, open subsets delivered with the rim contour removed; \"ClosedManifold\" -- compact tessellated surfaces; \"Fractal\" -- self-similar, Hausdorff dimension between the integers; \"Exotic\" -- graphs with no manifold model and no scaling law; \"WolframModel\"); InfraSubstrate[All] is the flat name list; InfraSubstrate[name] is the \"Medium\" size. Graph options are forwarded.";
+InfraSubstrate::usage = "InfraSubstrate[name, size] is the named example substrate at size \"Small\", \"Medium\" or \"Large\", or at a raw spec (a cell measure, a radius, grid dimensions, a generation count); a substrate drawn from a random construction is seeded from outside, with SeedRandom, so the same seed recovers the same graph; a call consumes the random stream like any other draw. Each substrate is one explicit definition in Kernel/InfraSubstrates/InfraSubstrate.wl, with its size table and its exceptions (an interior strip, a kept embedding) written into the definition. A Wolfram-model universe is named by its Registry of Notable Universes number, as in InfraSubstrate[\"wm6655\", 11], and any of the 947 registry entries resolves through ResourceFunction[\"WolframModelData\"]. InfraSubstrate[name, size, style] overrides the ambient style, which defaults to the InfraSubstrateStyle of that size since a substrate is a backdrop; pass \"Default\" for none. A substrate is bare combinatorics by default -- a stored embedding is discarded and a spring layout of its own dimension places the vertices; option \"KeepCoordinates\" -> True draws the substrate where it lives instead. Any substrate inflates: option \"Inflate\" -> amount grows a fiber of that many extra vertices over every vertex through InflateGraph (a constant or a {min, max} range), and \"Inflate\" -> {opts} passes InflateGraph its full option list. InfraSubstrate[] lists the roster classified by what a substrate models (\"OpenManifold\" -- boundaryless patches, open subsets delivered with the rim contour removed; \"ClosedManifold\" -- compact tessellated surfaces; \"Fractal\" -- self-similar, Hausdorff dimension between the integers; \"Exotic\" -- graphs with no manifold model and no scaling law; \"WolframModel\"); InfraSubstrate[All] is the flat name list; InfraSubstrate[name] is the \"Medium\" size. Graph options are forwarded.";
 
 InfraSubstrateCode::usage = "InfraSubstrateCode[name, size] is the code behind InfraSubstrate[name, size]: the held construction, without the backdrop style, wrapped in a Graph call only when a layout clause or a forwarded option has to attach to it, whose ReleaseHold evaluates to the graph InfraSubstrate draws at the same seed with the \"Default\" style (building the code realizes the graph once, so set the seed after the build). It is HoldForm, so an output cell shows it as typeset code. The roster definition is itself held code -- InfraSubstrate evaluates it, InfraSubstrateCode prints it -- so the printed code cannot drift from the code that runs, and it names no symbol the reader cannot see. Baked in: the size table collapsed to the value the size selects, the rule and initial condition of a Wolfram-model universe, the layout dimension and the inflation call; the style is presentation and is spliced back with Sequence @@ InfraSubstrateStyle[size]. Takes the options of InfraSubstrate, and Graph options are forwarded.";
 

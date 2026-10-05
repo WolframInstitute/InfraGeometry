@@ -54,7 +54,7 @@ With[
     With[
       {grown = FindInfraGeodesic[g, a, sc, UpTo[8], All, "StoppingCondition" -> (Last[#] === b &)]},
       {geos = Select[grown, Last @ Last @ VertexList @ # === b &]},
-      Labeled[InfraSubstrateHighlight[g, {geos, Directive[$InfraPointColor], a, b}], Row[{"scale ", sc, ": ", Length @ geos}]]],
+      Labeled[InfraSubstrateHighlight[g, {geos, a, b}], Row[{"scale ", sc, ": ", Length @ geos}]]],
     {sc, {2, 3, Infinity}}]]
 ```
 
@@ -65,7 +65,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = InfraCenter[g]},
   {geo = FindInfraGeodesic[g, a, 3, {6}]},
-  {InfraSubstrateHighlight[g, {geo, Directive[$InfraPointColor], a}], Last /@ VertexList[geo]}]
+  {InfraSubstrateHighlight[g, {geo, a}], Last /@ VertexList[geo]}]
 ```
 
 All geodesics of 4 edges from the centre, as the scale grows: every walk at scale 1, the walks that never step back at scale 2, the shortest paths at scale `Infinity`.
@@ -76,7 +76,7 @@ With[
   {a = InfraCenter[g]},
   Row @ Table[
     With[{geos = FindInfraGeodesic[g, a, sc, {4}, All]},
-      Labeled[InfraSubstrateHighlight[g, {geos, Directive[$InfraPointColor], a}], Row[{"scale ", sc, ": ", Length @ geos}]]],
+      Labeled[InfraSubstrateHighlight[g, {geos, a}], Row[{"scale ", sc, ": ", Length @ geos}]]],
     {sc, {1, 2, Infinity}}]]
 ```
 
@@ -88,7 +88,7 @@ With[
   {a = InfraCenter[g]},
   {germ = {a, First @ AdjacencyList[g, a]}},
   {geos = FindInfraGeodesic[g, germ, Infinity, UpTo[2], All]},
-  {InfraSubstrateHighlight[g, {geos, Directive[$InfraPointColor], germ}], Length @ geos}]
+  {InfraSubstrateHighlight[g, {geos, germ}], Length @ geos}]
 ```
 
 ## Options
@@ -102,7 +102,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = InfraCenter[g]},
   GraphicsRow @ Table[
-    InfraSubstrateHighlight[g, {(SeedRandom[seed]; FindInfraGeodesic[g, a, 2, {12}, "NextVertexFunction" -> RandomChoice]), Directive[$InfraPointColor], a}],
+    InfraSubstrateHighlight[g, {(SeedRandom[seed]; FindInfraGeodesic[g, a, 2, {12}, "NextVertexFunction" -> RandomChoice]), a}],
     {seed, 3}]]
 ```
 
@@ -117,7 +117,7 @@ With[
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
   {grown = FindInfraGeodesic[g, a, Infinity, Infinity, All, "StoppingCondition" -> (Last[#] === b &)]},
   {geos = Select[grown, Last @ Last @ VertexList @ # === b &]},
-  {InfraSubstrateHighlight[g, {geos, Directive[$InfraPointColor], a, b}],
+  {InfraSubstrateHighlight[g, {geos, a, b}],
    Sort[Last /@ VertexList[#] & /@ geos] === Sort @ FindInfraSegment[g, a, b, All]}]
 ```
 
@@ -128,7 +128,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = InfraCenter[g]},
   {geos = FindInfraGeodesic[g, a, 3, {5}, All]},
-  {InfraSubstrateHighlight[g, {geos, Directive[$InfraPointColor], a}], InfraGeodesicQ[g, geos, 3]}]
+  {InfraSubstrateHighlight[g, {geos, a}], InfraGeodesicQ[g, geos, 3]}]
 ```
 
 A geodesic germ of scale `Infinity` grown without a budget on both sides gives the lines through it: the vertex lists of [FindInfraLine]().
@@ -139,6 +139,6 @@ With[
   {a = InfraCenter[g]},
   {germ = {a, First @ AdjacencyList[g, a]}},
   {geos = FindInfraGeodesic[g, germ, Infinity, Infinity, All]},
-  {InfraSubstrateHighlight[g, {geos, Directive[$InfraPointColor], germ}],
+  {InfraSubstrateHighlight[g, {geos, germ}],
    Sort[Last /@ VertexList[#] & /@ geos] === Sort @ FindInfraLine[g, germ, All]}]
 ```

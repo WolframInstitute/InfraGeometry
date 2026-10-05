@@ -56,7 +56,7 @@ With[
   {cycleA = InfraSceneInstance[First @ solved, circleA]},
   {cycleB = InfraSceneInstance[First @ solved, circleB]},
   InfraSubstrateHighlight[g,
-    Join[{InfraWalk[Append[cycleA, First @ cycleA]], InfraWalk[Append[cycleB, First @ cycleB]], Directive[$InfraPointColor], a, b},
+    Join[{InfraWalk[Append[cycleA, First @ cycleA]], InfraWalk[Append[cycleB, First @ cycleB]], a, b},
       InfraSceneInstance[#, meet] & /@ solved]]]
 ```
 
@@ -87,7 +87,7 @@ With[
       meet == InfraIntersection[circleA, circleB],
       InfraDistance[meet, rim] < InfraDistance[pA, rim]}]},
   {kept = InfraSceneInstance[#, meet] & /@ FindInfraScene[scene, g]},
-  {InfraSubstrateHighlight[g, Join[{Directive[$InfraPointColor], a, b, rim}, kept]], scene["Assertions"], kept}]
+  {InfraSubstrateHighlight[g, Join[{a, b, rim}, kept]], scene["Assertions"], kept}]
 ```
 
 ## Properties and Relations
@@ -104,7 +104,7 @@ With[
      {pA == InfraPoint[a], pB == InfraPoint[b],
       circleA == InfraCircle[pA, 4], circleB == InfraCircle[pB, 4],
       meet == InfraIntersection[circleA, circleB]}]},
-  {InfraSubstrateHighlight[g, {FindInfraShell[g, a, 4] -> $InfraShellColor, Directive[$InfraPointColor], a, b}],
+  {InfraSubstrateHighlight[g, {FindInfraShell[g, a, 4], a, b}],
    FindInfraRepresentative[g, InfraCircle[a, 4], All], FindInfraScene[scene, g]}]
 ```
 
@@ -121,7 +121,7 @@ With[
       circleA == InfraCircle[pA, 4], circleB == InfraCircle[pB, 4],
       meet == InfraIntersection[circleA, circleB]}]},
   {solved = FindInfraScene[scene, g]},
-  {InfraSubstrateHighlight[g, Join[{Directive[$InfraPointColor], a, b}, InfraSceneInstance[#, meet] & /@ solved]],
+  {InfraSubstrateHighlight[g, Join[{a, b}, InfraSceneInstance[#, meet] & /@ solved]],
    Length @ solved}]
 ```
 
@@ -137,5 +137,5 @@ With[
      {pA == InfraPoint[a], pB == InfraPoint[b], circleA == InfraCircle[pA, {4, 5}],
       meet == InfraIntersection[circleA, InfraCircle[pB, {4, 5}]]}]},
   {meets = InfraSceneInstance[#, meet] & /@ FindInfraScene[scene, g]},
-  {InfraSubstrateHighlight[g, Join[{Directive[$InfraPointColor], a, b}, meets]], meets}]
+  {InfraSubstrateHighlight[g, Join[{a, b}, meets]], meets}]
 ```

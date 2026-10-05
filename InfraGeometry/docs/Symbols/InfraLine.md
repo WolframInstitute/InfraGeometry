@@ -43,7 +43,7 @@ GraphicsRow @ Table[
     {p = InfraCenter[g]},
     {q = (SeedRandom[1]; RandomInfraPoint[g, p, 2])},
     {line = InfraLine[p, q]},
-    InfraSubstrateHighlight[g, {line -> $InfraLineColor, Directive[$InfraPointColor], p, q}]],
+    InfraSubstrateHighlight[g, {line, p, q}]],
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
 ```
 
@@ -55,7 +55,7 @@ With[
   {p = InfraCenter[g]},
   {q = (SeedRandom[1]; RandomInfraPoint[g, p, 2])},
   {line = InfraLine[p, q]},
-  {InfraSubstrateHighlight[g, {line -> $InfraLineColor, Directive[$InfraPointColor], p, q}],
+  {InfraSubstrateHighlight[g, {line, p, q}],
    Length @ InfraMeasurement[g, line, "Graph"], InfraMeasurement[g, line, "Cardinality"],
    InfraMeasurement[g, line, "Length"]}]
 ```
@@ -68,7 +68,7 @@ With[
   {p = InfraCenter[g]},
   {q = (SeedRandom[1]; RandomInfraPoint[g, p, 2])},
   {members = FindInfraRepresentative[g, InfraLine[p, q], 3]},
-  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], Directive[$InfraPointColor], p, q}], {member, members}]]
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], p, q}], {member, members}]]
 ```
 
 The lines through an edge at the centre, and the first DAG of their list on its own. Each DAG carries the lines between one pair of ends.
@@ -80,8 +80,8 @@ With[
   {q = First @ AdjacencyList[g, p]},
   {line = InfraLine[p, q]},
   GraphicsRow[{
-    InfraSubstrateHighlight[g, {line -> $InfraLineColor, Directive[$InfraPointColor], p, q}],
-    InfraSubstrateHighlight[g, {First @ InfraMeasurement[g, line, "Graph"] -> $InfraLineColor, Directive[$InfraPointColor], p, q}]}]]
+    InfraSubstrateHighlight[g, {line, p, q}],
+    InfraSubstrateHighlight[g, {First @ InfraMeasurement[g, line, "Graph"], p, q}]}]]
 ```
 
 The line through a geodesic germ, beside the line through its two ends. The ends of a bent germ lie on the lines of the rectangle between them, the germ on those that run along it.
@@ -93,8 +93,8 @@ With[
   {q = (SeedRandom[1]; RandomInfraPoint[g, p, 2])},
   {germ = First @ FindInfraSegment[g, p, q, All]},
   {GraphicsRow @ {
-    Labeled[InfraSubstrateHighlight[g, {InfraLine[germ] -> $InfraLineColor, InfraWalk[germ], Directive[$InfraPointColor], p, q}], "germ"],
-    Labeled[InfraSubstrateHighlight[g, {InfraLine[p, q] -> $InfraLineColor, Directive[$InfraPointColor], p, q}], "ends"]},
+    Labeled[InfraSubstrateHighlight[g, {InfraLine[germ], InfraWalk[germ], p, q}], "germ"],
+    Labeled[InfraSubstrateHighlight[g, {InfraLine[p, q], p, q}], "ends"]},
    InfraMeasurement[g, InfraLine[germ], "Cardinality"], InfraMeasurement[g, InfraLine[p, q], "Cardinality"]}]
 ```
 
@@ -120,7 +120,7 @@ With[
   {p = InfraCenter[g]},
   {q = (SeedRandom[1]; RandomInfraPoint[g, p, 2])},
   {members = FindInfraRepresentative[g, InfraLine[p, q], All]},
-  {InfraSubstrateHighlight[g, {members -> $InfraLineColor, Directive[$InfraPointColor], p, q}],
+  {InfraSubstrateHighlight[g, {members, p, q}],
    InfraLineQ[g, members]}]
 ```
 
@@ -132,7 +132,7 @@ With[
   {a = InfraCenter[g]},
   {germ = {a, First @ AdjacencyList[g, a]}},
   {members = FindInfraRepresentative[g, InfraLine[germ], All]},
-  {InfraSubstrateHighlight[g, {members -> $InfraLineColor, Directive[$InfraPointColor], germ}],
+  {InfraSubstrateHighlight[g, {members, germ}],
    Sort @ members === Sort @ FindInfraLine[g, germ, All],
    Length @ members === InfraMeasurement[g, InfraLine[germ], "Cardinality"]}]
 ```

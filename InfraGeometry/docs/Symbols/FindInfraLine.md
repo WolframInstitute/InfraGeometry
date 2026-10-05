@@ -64,7 +64,7 @@ Row[Table[
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
      Labeled[
        InfraSubstrateHighlight[g,
-         {FindInfraLine[g, a, b, UpTo[3]] -> $InfraLineColor, {a, b} -> $InfraPointColor},
+         {FindInfraLine[g, a, b, UpTo[3]], {a, b}},
          "PointSizeRange" -> 15,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
          ImageSize -> 250],

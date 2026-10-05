@@ -34,7 +34,7 @@ With[
   {walks = {{1, 6, 5, 2, 1, 6}, {1, 6, 14, 29, 47, 30, 23, 11}, {1, 6, 5, 15, 25, 41}}},
   Row @ Table[
     Labeled[
-      InfraSubstrateHighlight[g, {InfraWalk[walk], Directive[$InfraPointColor], First @ walk}],
+      InfraSubstrateHighlight[g, {InfraWalk[walk], First @ walk}],
       Select[{1, 2, 3, 4, Infinity}, InfraGeodesicQ[g, walk, #] &]],
     {walk, walks}]]
 ```
@@ -45,7 +45,7 @@ Stepping back is a walk but not a geodesic at scale 2.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {backStep = {1, 2, 1}},
-  {InfraSubstrateHighlight[g, {InfraWalk[backStep], Directive[$InfraPointColor], 1}],
+  {InfraSubstrateHighlight[g, {InfraWalk[backStep], 1}],
    InfraGeodesicQ[g, backStep, 1], InfraGeodesicQ[g, backStep, 2]}]
 ```
 
@@ -59,7 +59,7 @@ With[
   {a = InfraCenter[g]},
   {walkGraphs = FindInfraGeodesic[g, a, 1, {4}, All]},
   {walkSeqs = Last /@ VertexList[#] & /@ walkGraphs},
-  {InfraSubstrateHighlight[g, {Select[walkGraphs, InfraGeodesicQ[g, #, Infinity] &], Directive[$InfraPointColor], a}],
+  {InfraSubstrateHighlight[g, {Select[walkGraphs, InfraGeodesicQ[g, #, Infinity] &], a}],
    AllTrue[walkSeqs, InfraGeodesicQ[g, #, 1] === InfraWalkQ[g, #] &],
    AllTrue[walkSeqs, InfraGeodesicQ[g, #, Infinity] === InfraSegmentQ[g, #] &]}]
 ```
@@ -72,5 +72,5 @@ With[
   {a = InfraCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
   {dag = InfraMeasurement[g, InfraSegment[a, b], "Graph"]},
-  {InfraSubstrateHighlight[g, {dag, Directive[$InfraPointColor], a, b}], InfraGeodesicQ[g, dag]}]
+  {InfraSubstrateHighlight[g, {dag, a, b}], InfraGeodesicQ[g, dag]}]
 ```

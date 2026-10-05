@@ -61,7 +61,7 @@ GraphicsRow @ Table[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = InfraCenter[g]},
     {circle = InfraCircle[c, {2, 4}]},
-    InfraSubstrateHighlight[g, {circle -> $InfraCircleColor, Directive[$InfraPointColor], c}]],
+    InfraSubstrateHighlight[g, {circle, c}]],
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
 ```
 
@@ -72,7 +72,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {circle = InfraCircle[c, {2, 4}]},
-  {InfraSubstrateHighlight[g, {circle -> $InfraCircleColor, Directive[$InfraPointColor], c}],
+  {InfraSubstrateHighlight[g, {circle, c}],
    InfraMeasurement[g, circle, "Cardinality"], InfraMeasurement[g, circle, "Length"],
    Length @ InfraMeasurement[g, circle, "Graph"]}]
 ```
@@ -87,8 +87,8 @@ Row @ Table[
     {circles = FindInfraRepresentative[g, InfraCircle[c, 4], All]},
     Labeled[
       InfraSubstrateHighlight[g,
-        {FindInfraShell[g, c, 4] -> $InfraShellColor,
-         Table[Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], {oneCircle, circles}] -> $InfraCircleColor}],
+        {FindInfraShell[g, c, 4],
+         Table[Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], {oneCircle, circles}]}],
       Length @ circles]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```
@@ -103,8 +103,8 @@ Row @ Table[
     {circles = FindInfraRepresentative[g, InfraCircle[c, band], All]},
     Labeled[
       InfraSubstrateHighlight[g,
-        {FindInfraShell[g, c, band] -> $InfraShellColor,
-         Table[Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], {oneCircle, circles}] -> $InfraCircleColor}],
+        {FindInfraShell[g, c, band],
+         Table[Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], {oneCircle, circles}]}],
       Length @ circles]],
   {band, {4, {4, 5}, {4, 6}}}]
 ```
@@ -117,7 +117,7 @@ GraphicsRow @ Table[
     {g = InfraSubstrate[First @ spec, "Small", "KeepCoordinates" -> True]},
     {c = InfraCenter[g]},
     {oneCircle = FindInfraRepresentative[g, InfraCircle[c, Last @ spec]]},
-    InfraSubstrateHighlight[g, {Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]] -> $InfraCircleColor, Directive[$InfraPointColor], c},
+    InfraSubstrateHighlight[g, {Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], c},
       "Arrowheads" -> True]],
   {spec, {{"SquareTilingGraph", {4, 5}}, {"HexagonalTilingGraph", {4, 6}}, {"TriangularTilingGraph", 4}}}]
 ```
@@ -129,7 +129,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {closedWalk = FindInfraRepresentative[g, InfraCircle[c, {2, 4}]]},
-  InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]] -> $InfraCircleColor, Directive[$InfraPointColor], c}]]
+  InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]], c}]]
 ```
 
 The circles of the band `{4, 5}` that pass through a vertex at distance 4 are the closed arc through it, [InfraArc]().
@@ -140,7 +140,7 @@ With[
   {c = InfraCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 4])},
   {circle = InfraArc[c, {p, p}, "RadiusDelta" -> 1]},
-  {InfraSubstrateHighlight[g, {circle -> $InfraCircleColor, Directive[$InfraPointColor], c, p}],
+  {InfraSubstrateHighlight[g, {circle, c, p}],
    InfraMeasurement[g, circle, "Cardinality"], InfraMeasurement[g, circle, "Length"]}]
 ```
 
@@ -154,7 +154,7 @@ With[
   {c = InfraCenter[g]},
   {circle = InfraCircle[c, {2, 4}]},
   {circles = FindInfraRepresentative[g, circle, All]},
-  {InfraSubstrateHighlight[g, {Table[Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], {oneCircle, circles}] -> $InfraCircleColor}],
+  {InfraSubstrateHighlight[g, {Table[Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], {oneCircle, circles}]}],
    Length @ circles, Length @ FindInfraRepresentative[g, circle, 3], FindInfraRepresentative[g, circle, 20]}]
 ```
 
@@ -168,7 +168,7 @@ With[
   {c = InfraCenter[g]},
   {band = FindInfraShell[g, c, {2, 4}]},
   {closedWalk = FindInfraRepresentative[g, InfraCircle[c, {2, 4}]]},
-  {InfraSubstrateHighlight[g, {band -> $InfraShellColor, InfraWalk[Append[closedWalk, First @ closedWalk]] -> $InfraCircleColor}],
+  {InfraSubstrateHighlight[g, {band, InfraWalk[Append[closedWalk, First @ closedWalk]]}],
    SubsetQ[band, closedWalk], AllTrue[Partition[closedWalk, 2, 1, 1], EdgeQ[g, UndirectedEdge @@ #] &]}]
 ```
 
@@ -179,7 +179,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {circle = InfraCircle[c, {2, 4}]},
-  {InfraSubstrateHighlight[g, {circle -> $InfraCircleColor, Directive[$InfraPointColor], c}],
+  {InfraSubstrateHighlight[g, {circle, c}],
    InfraMeasurement[g, circle, "Cardinality"], Length @ FindInfraRepresentative[g, circle, All]}]
 ```
 
@@ -190,7 +190,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {atom = First @ InfraMeasurement[g, InfraCircle[c, {2, 4}], "Graph"]},
-  {InfraSubstrateHighlight[g, {atom -> $InfraCircleColor, Directive[$InfraPointColor], c}, "Arrowheads" -> True],
+  {InfraSubstrateHighlight[g, {atom, c}, "Arrowheads" -> True],
    AcyclicGraphQ[atom], Select[VertexList[atom], VertexInDegree[atom, #] == 0 &],
    Select[VertexList[atom], VertexOutDegree[atom, #] == 0 &]}]
 ```

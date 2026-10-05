@@ -38,9 +38,8 @@ sceneAssertionRules[ graph_ ] :=
     InfraLineQ[ s_ ]             :> InfraLineQ[ graph, s ],
     InfraParallelQ[ l1_, l2_ ]   :> InfraParallelQ[ graph, l1, l2 ],
     InfraIntersectQ[ s1_, s2_ ]  :> IntersectingQ[ s1, s2 ],
-    InfraPolylineQ[ poly_ ]      :> InfraPolylineQ[ graph, poly ],
     InfraRegularPolygonQ[ c_, as_ ] :> InfraRegularPolygonQ[ graph, c, as ],
-    InfraRevolutionQ[ vs_, axis_, profile_ ] :> InfraRevolutionQ[ graph, vs, axis, profile ] }
+    InfraMemberQ[ obj_, vs_ ]    :> InfraMemberQ[ graph, obj, vs ] }
 
 resolveExpression[ expr_, bindings_Association, graph_Graph ] :=
   ( expr /. Normal[ bindings ] ) /. sceneAssertionRules[ graph ]

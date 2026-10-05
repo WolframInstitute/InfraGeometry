@@ -5,13 +5,13 @@ Title: Infra Topology
 Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/InfraTopology
-Keywords: [topology, ball topology, specialization preorder, ball intersection complex, Cech complex, Vietoris-Rips, ball cover, covering dimension, ball hull]
+Keywords: [topology, ball topology, specialization preorder, ball intersection complex, Cech complex, Vietoris-Rips, ball cover, covering dimension]
 RelatedGuides: [EuclideanInfrageometry, RiemannianInfrageometry, InfraAnalysis, InfraFiberBundles, InfraSubstrates, Experimental]
 ---
 
 ## Abstract
 
-The topological properties of a substrate are read off its metric balls. The closed balls of one radius r generate a topology: a vertex q lies in the closure of a vertex p when the r-ball at p is contained in the r-ball at q. BallTopology returns this specialization preorder as a digraph, and closure, interior, boundary, neighbourhood and continuity are computed on it. A family of balls forms a complex through its intersections: a simplex is admitted when every k of its balls have a common point, so k = 2 gives the Vietoris-Rips complex of twice the radius, k = Infinity the Cech complex, and the orders between interpolate. The least number N(r) of balls of radius r that cover the substrate falls as r grows, and the rate of that fall is a dimension. The intersection of all closed balls containing a set of points is its ball hull, the smallest ball-convex set containing it. Three things still wait: the covering dimension as a function, the intersection of the balls of one radius r containing a set, and, as a tutorial rather than a function, the dimension read from where the intersection of the balls containing k given points becomes degenerate.
+The topological properties of a substrate are read off its metric balls. The closed balls of one radius r generate a topology: a vertex q lies in the closure of a vertex p when the r-ball at p is contained in the r-ball at q. BallTopology returns this specialization preorder as a digraph, and closure, interior, boundary, neighbourhood and continuity are computed on it. A family of balls forms a complex through its intersections: a simplex is admitted when every k of its balls have a common point, so k = 2 gives the Vietoris-Rips complex of twice the radius, k = Infinity the Cech complex, and the orders between interpolate. The least number N(r) of balls of radius r that cover the substrate falls as r grows, and the rate of that fall is a dimension. The intersection of all closed balls containing a set of points is its ball hull, the smallest ball-convex set containing it; InfraBallHull, on the Euclidean guide, restricts the radii. Two things still wait: the covering dimension as a function, and, as a tutorial rather than a function, the dimension read from where the intersection of the balls containing k given points becomes degenerate.
 
 ## Functions
 
@@ -42,9 +42,3 @@ The topological properties of a substrate are read off its metric balls. The clo
 - **DominationNumber** — the size N(r) of a smallest radius-r ball cover
 - waits: the covering dimension, from how N(r) falls as r grows, or from how many balls of radius r cover a ball of radius 2r
 - waits, as a tutorial: the dimension read from where the intersection of the balls containing k given points becomes degenerate
-
-### Ball hulls
-
-- **BallHull** — the intersection of all closed balls containing a vertex set, the smallest ball-convex superset
-- `FindBallHull` the ball hull of any shape, a vertex, a vertex list, a density or a walk, as a sorted vertex list
-- `BallHullQ` whether a vertex set is ball-convex, equal to its own ball hull

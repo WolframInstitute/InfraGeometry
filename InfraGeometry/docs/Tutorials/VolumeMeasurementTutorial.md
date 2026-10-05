@@ -41,7 +41,7 @@ twoMeasures[g_, regions_] := InfraMeasurement[g, regions, #] & /@ {"CountingMeas
 A region drawn by its two measures: the interior green, the boundary blue. The counting measure counts both colours, the Riemannian measure the green vertices only.
 
 ```wl
-interiorAndBoundary[g_, region_] := With[{support = FindInfraRepresentative[g, region]}, {InfraInterior[g, support] -> $InfraBallColor, InfraBoundary[g, support] -> $InfraCircleColor}]
+interiorAndBoundary[g_, region_] := With[{support = FindInfraRepresentative[g, region]}, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}]
 ```
 
 ## Balls
@@ -132,7 +132,7 @@ GraphicsGrid @ Table[
     {c = InfraCenter[g], p = farEnd[g], thickness = Ceiling[profileRadius[g]/2]},
     {geodesic = FindInfraRepresentative[g, InfraSegment[c, p]]},
     {fat = FindInfraRepresentative[g, InfraTube[InfraSegment[c, p], thickness]], thin = FindInfraRepresentative[g, InfraTube[geodesic, thickness]]},
-    InfraSubstrateHighlight[g, {Complement[fat, thin] -> $InfraCircleColor, thin -> $InfraBallColor, InfraWalk[geodesic] -> $InfraSegmentColor}]],
+    InfraSubstrateHighlight[g, {Complement[fat, thin] -> StandardBlue, thin -> StandardGreen, InfraWalk[geodesic]}]],
   {size, {"Small", "Medium", "Large"}},
   {name, {"SquareTilingGraph", "TriangularTilingGraph", "SquareMeshGraph"}}]
 ```
@@ -159,22 +159,22 @@ GraphicsGrid @ Table[
 
 ## The ellipsoid
 
-- Two foci $c, p$ at distance $n$ bound the **solid ellipsoid** of slack $k$, $E_k = \{ v : d(c, v) + d(v, p) \le n + k \}$, which [FindInfraQuadric]() gives. At slack zero it is the interval $I(c, p)$, the core of the fat tube.
+- Two foci $c, p$ at distance $n$ bound the **solid ellipsoid** of slack $k$, $E_k = \{ v : d(c, v) + d(v, p) \le n + k \}$, which [InfraQuadric]() gives. At slack zero it is the interval $I(c, p)$, the core of the fat tube.
 - On every graph $T_s(I(c, p)) \subseteq E_{2s}$. For $x$ within $s$ of a vertex $y$ of the interval, two triangle inequalities through $y$ give $d(c, x) + d(x, p) \le d(c, y) + d(y, p) + 2 d(x, y) \le n + 2s$.
 - A **median** of three vertices lies on a geodesic between each two of them. If $m$ is a median of $c$, $p$ and $x$, then $d(c, m) + d(m, p) = n$, $d(c, m) + d(m, x) = d(c, x)$ and $d(p, m) + d(m, x) = d(p, x)$; adding the last two and subtracting the first gives $2 d(m, x) = d(c, x) + d(x, p) - n$. A median converts the slack of $x$ into its distance from the interval, at the rate two.
 - A graph is **modular** when every three vertices have a median. On a modular graph a vertex of slack at most $2s$ has its median within $s$, so $E_{2s} = T_s(I(c, p))$: the ellipsoid of slack $2s$ is the fat tube of thickness $s$, under both measures.
 - In the Euclidean plane the two differ: the ellipse of slack $k$ bulges to a half-width of order $\sqrt{nk}$ in the middle, the tube keeps the half-width $k/2$. Under the $\ell^1$ norm, $|x + a| + |x - a| = 2 \max(a, |x|)$, and the ellipse is the tube; the square lattice carries the $\ell^1$ norm.
 
-The ellipsoid of slack $2s$ and the fat tube of thickness $s$, for $s = \lceil R/2 \rceil$: the tube in the ball colour, the vertices of the ellipsoid outside the tube red, and the interval.
+The ellipsoid of slack $2s$ and the fat tube of thickness $s$, for $s = \lceil R/2 \rceil$: the tube green, the vertices of the ellipsoid outside the tube red, and the interval.
 
 ```wl
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
     {c = InfraCenter[g], p = farEnd[g], thickness = Ceiling[profileRadius[g]/2]},
-    {ellipsoid = FindInfraQuadric[g, {c, p}, GraphDistance[g, c, p] + 2 thickness]},
+    {ellipsoid = FindInfraRepresentative[g, InfraQuadric[{c, p}, GraphDistance[g, c, p] + 2 thickness]]},
     {tube = FindInfraRepresentative[g, InfraTube[InfraSegment[c, p], thickness]]},
-    InfraSubstrateHighlight[g, {Complement[ellipsoid, tube] -> StandardRed, tube -> $InfraBallColor, InfraSegment[c, p]}]],
+    InfraSubstrateHighlight[g, {Complement[ellipsoid, tube] -> StandardRed, tube -> StandardGreen, InfraSegment[c, p]}]],
   {size, {"Small", "Medium", "Large"}},
   {name, {"SquareTilingGraph", "TriangularTilingGraph", "SquareMeshGraph"}}]
 ```
@@ -189,7 +189,7 @@ GraphicsGrid @ Table[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
     {c = InfraCenter[g], p = farEnd[g], radius = profileRadius[g]},
     Show[
-      ListLinePlot[twoMeasures[g, Table[InfraTube[FindInfraQuadric[g, {c, p}, radius + 2 s], 0], {s, 0, radius}]], DataRange -> {0, radius}, PlotMarkers -> Automatic],
+      ListLinePlot[twoMeasures[g, Table[InfraTube[FindInfraRepresentative[g, InfraQuadric[{c, p}, radius + 2 s]], 0], {s, 0, radius}]], DataRange -> {0, radius}, PlotMarkers -> Automatic],
       ListPlot[twoMeasures[g, Table[InfraTube[InfraSegment[c, p], s], {s, 0, radius}]], DataRange -> {0, radius}],
       PlotRange -> All]],
   {size, {"Small", "Medium", "Large"}},
@@ -221,7 +221,7 @@ The smallest counterexample to the equality on the triangular tiling, with foci 
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = InfraCenter[g]},
-  {beyond = focus |-> Complement[FindInfraQuadric[g, {a, focus}, 4], FindInfraRepresentative[g, InfraTube[InfraSegment[a, focus], 1]]]},
+  {beyond = focus |-> Complement[FindInfraRepresentative[g, InfraQuadric[{a, focus}, 4]], FindInfraRepresentative[g, InfraTube[InfraSegment[a, focus], 1]]]},
   {b = SelectFirst[FindInfraShell[g, a, 2], beyond[#] =!= {} &]},
   {x = First @ beyond[b]},
   InfraSubstrateHighlight[g, {InfraSegment[a, b], InfraSegment[b, x], InfraSegment[x, a], {a, b, x}}]]
@@ -243,7 +243,7 @@ GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
     {geodesic = FindInfraRepresentative[g, InfraSegment[InfraCenter[g], farEnd[g]]]},
-    InfraSubstrateHighlight[g, Append[interiorAndBoundary[g, InfraCone[geodesic, 1/2]], InfraWalk[geodesic] -> $InfraSegmentColor]]],
+    InfraSubstrateHighlight[g, Append[interiorAndBoundary[g, InfraCone[geodesic, 1/2]], InfraWalk[geodesic]]]],
   {size, {"Small", "Medium", "Large"}},
   {name, {"SquareTilingGraph", "TriangularTilingGraph", "SquareMeshGraph"}}]
 ```
@@ -281,7 +281,7 @@ GraphicsGrid @ Table[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
     {c = InfraCenter[g], inner = Ceiling[profileRadius[g]/2]},
     {wall = (SeedRandom[1]; FindInfraRepresentative[g, InfraSphere[c, {inner, inner + 1}]])},
-    InfraSubstrateHighlight[g, {InfraShell[c, {inner, inner + 1}] -> $InfraShellColor, wall -> $InfraSegmentColor}]],
+    InfraSubstrateHighlight[g, {InfraShell[c, {inner, inner + 1}] -> StandardGreen, wall -> StandardOrange}]],
   {size, {"Small", "Medium", "Large"}},
   {name, {"SquareTilingGraph", "TriangularTilingGraph", "SquareMeshGraph"}}]
 ```
@@ -332,7 +332,7 @@ GraphicsRow @ Table[
     {inner = InfraInterior[rips, ball]},
     Graphics[{
       Map[cell |-> With[{owner = First @ Nearest[points, RegionCentroid[cell]]},
-        {EdgeForm[LightGray], Which[MemberQ[inner, owner], $InfraBallColor, MemberQ[ball, owner], $InfraCircleColor, True, FaceForm[]], cell}],
+        {EdgeForm[LightGray], Which[MemberQ[inner, owner], Lighter[StandardGreen, 0.5], MemberQ[ball, owner], Lighter[StandardBlue, 0.5], True, FaceForm[]], cell}],
         MeshPrimitives[VoronoiMesh[points, {{0, 1}, {0, 1}}], 2]],
       Point[points], StandardRed, Circle[c, hop radius]}]],
   {count, {100, 400, 1600}}]

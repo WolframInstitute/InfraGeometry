@@ -84,7 +84,7 @@ Row[Table[
     {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
     {seg = InfraSegment[a, b]},
     Labeled[
-      InfraSubstrateHighlight[g, {seg, Directive[$InfraPointColor], a, b}],
+      InfraSubstrateHighlight[g, {seg, a, b}],
       InfraMeasurement[g, seg, {"Cardinality", "Length", "CountingMeasure", "RiemannianMeasure"}]]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```
@@ -99,7 +99,7 @@ With[
   {axis = FindInfraRepresentative[g, seg]},
   {regions = {InfraBall[c, 3], InfraShell[c, {2, 3}], InfraTube[seg, 1], InfraCylinder[axis, 1], InfraCone[axis, 1]}},
   {supports = FindInfraRepresentative[g, #] & /@ regions},
-  {Row[InfraSubstrateHighlight[g, {InfraInterior[g, #] -> $InfraBallColor, InfraBoundary[g, #] -> $InfraCircleColor}] & /@ supports],
+  {Row[InfraSubstrateHighlight[g, {InfraInterior[g, #] -> StandardGreen, InfraBoundary[g, #] -> StandardBlue}] & /@ supports],
    InfraMeasurement[g, regions, "CountingMeasure"], InfraMeasurement[g, regions, "RiemannianMeasure"]}]
 ```
 

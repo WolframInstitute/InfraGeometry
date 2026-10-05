@@ -70,15 +70,18 @@ VerificationTest[
 
 (* ===== a List of region heads reads off one distance matrix what the heads read one by one ===== *)
 
-(* balls, shells, bands, tubes about a vertex, a set and a segment, a cylinder and a cone, under the three readings *)
+(* balls, shells, bands, tubes about a vertex, a set and a segment, under the three readings; a list holding a sliced solid or a profile is
+   read head by head *)
 VerificationTest[
   With[{g = GridGraph[{7, 7}],
         regions = {InfraBall[25, 2], InfraBall[25, 2.5], InfraBall[{1, 49}, 3], InfraShell[25, 3], InfraShell[25, {1, 2}],
           InfraBall[25, {1.5, 3}], InfraTube[25, 1], InfraTube[{1, 49}, 2], InfraTube[InfraSegment[1, 49], 1],
-          InfraTube[InfraSegment[25, 3], {1, 2}], InfraCylinder[InfraSegment[8, 14], 1], InfraCone[{1, 9, 17, 25}, 1]}},
-    Table[InfraMeasurement[g, regions, prop] === (InfraMeasurement[g, #, prop] & /@ regions),
+          InfraTube[InfraSegment[25, 3], {1, 2}]},
+        solids = {InfraCylinder[Range[8, 14], 1], InfraCone[{1, 9, 17, 25}, 1], InfraTube[{1, 9, 17}, {0, 1, 2}]}},
+    Table[{InfraMeasurement[g, regions, prop] === (InfraMeasurement[g, #, prop] & /@ regions),
+        InfraMeasurement[g, Join[regions, solids], prop] === (InfraMeasurement[g, #, prop] & /@ Join[regions, solids])},
       {prop, {"VertexDensity", "CountingMeasure", "RiemannianMeasure"}}]],
-  {True, True, True},
+  ConstantArray[True, {3, 2}],
   TestID -> "InfraMeasurement-region-list-agrees-with-the-heads"
 ]
 

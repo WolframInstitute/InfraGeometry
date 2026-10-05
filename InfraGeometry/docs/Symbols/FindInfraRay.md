@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraRay
 Keywords: [ray, half-line, direction, pencil, Euclid Postulate 2]
-SeeAlso: [InfraRay, InfraRayQ, FindInfraRepresentative, PencilDirections, PencilCardinality, FindInfraLine, FindInfraSegment, SameDirectionQ]
+SeeAlso: [InfraRay, InfraRayQ, FindInfraRepresentative, FindInfraLine, FindInfraSegment]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -20,7 +20,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 A ray from *O* through *v* is a geodesic *O … v … e* with *d(O, e) = d(O, v) + d(v, e)* such that no neighbour of *e* lies one step farther from *O*. The first vertex is the origin, which is what makes it a ray rather than a line: inextensibility is required at the far end only. [InfraRayQ]() is the predicate.
 
-Rays are how direction is expressed without a vector space. There is no tangent space on a graph, so "the direction from *O* towards *v*" is not a vector but the *family* of rays from *O* containing *v* — and like every other family here it is large. [PencilDirections]() and [PencilCardinality]() count the rays leaving a vertex, the graph's stand-in for the sphere of directions; [SameDirectionQ]() compares directions.
+Rays are how direction is expressed without a vector space. There is no tangent space on a graph, so "the direction from *O* towards *v*" is not a vector but the *family* of rays from *O* containing *v* — and like every other family here it is large. The rays leaving a vertex, the pencil, are the graph's stand-in for the sphere of directions: `FindInfraRay[g, o, o, All]` lists them and `InfraMeasurement[g, InfraRay[o, o], "Cardinality"]` counts them.
 
 The search runs on the substrate directly: a geodesic from *O* to *v*, prolonged one outward step at a time until no neighbour prolongs it. It does not read the graph of <code>[InfraRay]()[*O*, *v*]</code>, so it is the check on that graph, and it returns exactly the shapes [FindInfraRepresentative]() gives for that head. To count the rays without enumerating them, use [InfraMeasurement]().
 
@@ -61,7 +61,7 @@ Row[Table[
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
      Labeled[
        InfraSubstrateHighlight[g,
-         {FindInfraRay[g, a, b, UpTo[3]] -> $InfraRayColor, {a} -> $InfraPointColor},
+         {FindInfraRay[g, a, b, UpTo[3]], {a}},
          "PointSizeRange" -> 15,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
          ImageSize -> 250],
@@ -108,10 +108,10 @@ With[
   {First[ray] === a, GraphDistance[g, a, #] & /@ ray === Range[0, Length[ray] - 1]}]
 ```
 
-With the origin as its own direction the rays are the pencil.
+With the origin as its own direction the rays are the pencil, counted by the cardinality of the head.
 
 ```wl
-Sort @ FindInfraRay[CycleGraph[6], 1, 1, All] === Sort @ PencilDirections[CycleGraph[6], 1]
+Length @ FindInfraRay[CycleGraph[6], 1, 1, All] === InfraMeasurement[CycleGraph[6], InfraRay[1, 1], "Cardinality"]
 ```
 
 The search agrees with the graph of the head.

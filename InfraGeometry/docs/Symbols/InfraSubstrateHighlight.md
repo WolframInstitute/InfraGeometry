@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSubstrateHighlight
 Keywords: [visualization, diffuse rendering, density, highlight, palette]
-SeeAlso: [InfraSceneViewer, InfraScene, InfraMeasurement, $InfraPalette, InfraDensity, InfraWalk]
+SeeAlso: [InfraSceneViewer, InfraScene, InfraMeasurement, InfraDensity, InfraWalk]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -44,7 +44,7 @@ Options:
 | `"ThicknessRange"` | `None`, a scalar, or `{min, max}` | base `9.` |
 | `"PointSizeRange"` | `None`, a scalar, or `{min, max}` | base `6` for an object with no edges |
 | `"Arrowheads"` | `Automatic`, `True`, or an `Arrowheads` spec | off |
-| `"Palette"` | a list of colors | [$InfraStrikeOutPalette]() |
+| `"Palette"` | a list of colors | `ColorData[112]` |
 
 A scalar is the value at full strength. A pair is an envelope, interpolated by strength. An explicit `Opacity`, thickness or point size in an object's style turns that object's range off. `VertexSize` is in graph units.
 
@@ -70,7 +70,7 @@ With[
   {c = InfraCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, c, 5])},
   InfraSubstrateHighlight[g,
-    {FindInfraRepresentative[g, InfraBall[c, 3]], Directive[$InfraCircleColor], InfraArc[c, {p, p}, "RadiusDelta" -> 1]}]]
+    {FindInfraRepresentative[g, InfraBall[c, 3]], InfraArc[c, {p, p}, "RadiusDelta" -> 1]}]]
 ```
 
 Overlaps add. The two segments share their start and blend there. The walk is one stroke.
@@ -94,7 +94,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
   {ends = (SeedRandom[1]; FindInfraPoint[g, 3, "From" -> c -> 5])},
-  {InfraSubstrateHighlight[g, Table[InfraSegment[c, end], {end, ends}]], Take[$InfraStrikeOutPalette, 3]}]
+  {InfraSubstrateHighlight[g, Table[InfraSegment[c, end], {end, ends}]], Take[ColorData[112, "ColorList"], 3]}]
 ```
 
 A list of vertex lists is one object, the sum of its members: here the shortest paths of a segment, which draw as the head does.

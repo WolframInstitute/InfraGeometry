@@ -53,7 +53,7 @@ With[
   {germ = First @ FindInfraRepresentative[g, InfraSegment[o, through], 1]},
   {windows = InfraMeasurement[g, InfraGeodesic[germ, Infinity], "Graph"]},
   GraphicsRow[{InfraSubstrateHighlight[g, {windows, InfraWalk[germ]}],
-    InfraSubstrateHighlight[g, {InfraRay[o, through] -> $InfraRayColor, InfraWalk[germ]}]}]]
+    InfraSubstrateHighlight[g, {InfraRay[o, through], InfraWalk[germ]}]}]]
 ```
 
 ## Properties and Relations

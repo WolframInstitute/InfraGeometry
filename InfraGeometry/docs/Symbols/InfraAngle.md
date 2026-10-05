@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraAngle
 Keywords: [angle, comparison triangle, Alexandrov, arclength, radian]
-SeeAlso: [InfraScalarProduct, ComparisonTriangle, CATInequalityQ, InfraPerpendicularQ, InfraCurvature]
+SeeAlso: [InfraScalarProduct, InfraPerpendicularQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -56,8 +56,8 @@ With[
   {opposite = {line[[i - 4]], c, line[[i + 4]]}},
   {same = {line[[i + 4]], c, line[[i + 2]]}},
   {GraphicsRow[{
-     InfraSubstrateHighlight[g, {InfraWalk[line[[i ;; i - 4 ;; -1]]], InfraWalk[line[[i ;; i + 4]]], Directive[$InfraPointColor], Sequence @@ opposite}],
-     InfraSubstrateHighlight[g, {InfraWalk[line[[i ;; i + 4]]], InfraWalk[line[[i ;; i + 2]]], Directive[$InfraPointColor], Sequence @@ same}]}],
+     InfraSubstrateHighlight[g, {InfraWalk[line[[i ;; i - 4 ;; -1]]], InfraWalk[line[[i ;; i + 4]]], Sequence @@ opposite}],
+     InfraSubstrateHighlight[g, {InfraWalk[line[[i ;; i + 4]]], InfraWalk[line[[i ;; i + 2]]], Sequence @@ same}]}],
    N @ InfraAngle[g, opposite, Method -> "Alexandrov"], N @ InfraAngle[g, same, Method -> "Alexandrov"]}]
 ```
 
@@ -70,7 +70,7 @@ With[
   {x1 = (SeedRandom[1]; RandomInfraPoint[g, c, 4])},
   {x2 = (SeedRandom[4]; RandomInfraPoint[g, c, 4])},
   {d1 = GraphDistance[g, c, x1], d2 = GraphDistance[g, c, x2], chord = GraphDistance[g, x1, x2]},
-  {InfraSubstrateHighlight[g, {InfraSegment[c, x1], InfraSegment[c, x2], InfraSegment[x1, x2], Directive[$InfraPointColor], c, x1, x2}],
+  {InfraSubstrateHighlight[g, {InfraSegment[c, x1], InfraSegment[c, x2], InfraSegment[x1, x2], c, x1, x2}],
    N @ InfraAngle[g, {x1, c, x2}, Method -> "Alexandrov"], ArcCos[(d1^2 + d2^2 - chord^2)/(2. d1 d2)]}]
 ```
 
@@ -83,6 +83,6 @@ With[
   {line = FindInfraLine[g, c, (SeedRandom[1]; RandomInfraPoint[g, c, 5])]},
   {i = First @ FirstPosition[line, c]},
   {arms = {line[[i - 4]], c, line[[i + 4]]}},
-  {InfraSubstrateHighlight[g, {InfraWalk[line[[i - 4 ;; i + 4]]], Directive[$InfraPointColor], Sequence @@ arms}],
+  {InfraSubstrateHighlight[g, {InfraWalk[line[[i - 4 ;; i + 4]]], Sequence @@ arms}],
    N @ InfraAngle[g, arms], N @ InfraAngle[g, arms, Method -> "Alexandrov"]}]
 ```

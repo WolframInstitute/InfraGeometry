@@ -80,9 +80,3 @@ InfraRayQ[ graph_Graph, ray_List ] /; Length[ ray ] >= 2 :=
 InfraRayQ[ _Graph, ray_List ] /; Length[ ray ] < 2 :=
   False
 
-PencilDirections[ graph_Graph, origin_ ] :=
-  FindInfraRay[ graph, origin, origin, All ]
-
-PencilCardinality[ graph_Graph, origin_ ] :=
-  InfraMeasurement[ graph, InfraRay[ origin, origin ], "Cardinality" ]
-

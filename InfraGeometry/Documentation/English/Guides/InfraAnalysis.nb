@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[     27276,        667]
-NotebookOptionsPosition[     17695,        511]
-NotebookOutlinePosition[     18709,        540]
-CellTagsIndexPosition[     18666,        537]
+NotebookDataLength[     20924,        521]
+NotebookOptionsPosition[     13465,        391]
+NotebookOutlinePosition[     14425,        419]
+CellTagsIndexPosition[     14382,        416]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -24,20 +24,17 @@ Cell["Infra Analysis", "GuideTitle",
  CellID->942062912,ExpressionUUID->"a3a3c038-ca24-47b7-9945-83f1c1312fe3"],
 
 Cell["\<\
-Tangent spaces and differential forms: the first-order structure of a \
-substrate, with the tangent space at a vertex, the displacements that move \
-its vertices, the differential forms and cochains, and the tautological \
-1-form. A displacement of scale r sends each vertex to a set of vertices \
-within distance r, a discrete flow for time r, and it is multivalued by \
-design. Its operations are metric: scaling moves along the geodesics from \
+Tangent spaces: the first-order structure of a substrate, with the tangent \
+space at a vertex, the displacements that move its vertices, and the \
+tautological 1-form. A displacement of scale r sends each vertex to a set of \
+vertices within distance r, a discrete flow for time r, and it is multivalued \
+by design. Its operations are metric: scaling moves along the geodesics from \
 each vertex to its images, the sum is the bisector of the two orders of \
 composition, and the commutator is the loop of the two displacements and \
-their inverses, or of their metric negatives. A form is a germ of values at a \
-vertex on tuples of its neighbours, a cochain a value on the cliques of the \
-graph; the restriction and integration maps pass between the two, and the \
-coboundary, the differential, the wedge and the cup products act on them. The \
-tangent space is the tangent bundle, a fibration whose sections are vector \
-fields; the tautological 1-form pairs a vector with a covector.\
+their inverses, or of their metric negatives. The differential forms and \
+cochains are on the Experimental guide. The tangent space is the tangent \
+bundle, a fibration whose sections are vector fields; the tautological 1-form \
+pairs a vector with a covector.\
 \>", "GuideAbstract",
  CellID->2001916300,ExpressionUUID->"ef0ab37b-2e0d-4399-8f7e-82603ccbe925"]
 }, Open  ]],
@@ -49,301 +46,193 @@ Cell["", "GuideFunctionsSection",
 
 Cell[CellGroupData[{
 
-Cell["Tangent spaces", "GuideFunctionsSubsection",ExpressionUUID->"01a40fd9-a5c8-40ab-a498-a1a1e9344113"],
+Cell["Tangent spaces", "GuideFunctionsSubsection",ExpressionUUID->"5df94f42-cb76-4c92-b2c0-56770a4b841a"],
 
 Cell[TextData[{
  StyleBox["InfraTangentBundle",
   FontWeight->"Bold"],
  " \[LongDash] the tangent spaces of a graph at scale r, the rays of length r \
 over each vertex"
-}], "GuideText",ExpressionUUID->"a93d780c-a92a-4177-8dbb-d28e9375b3d5"],
+}], "GuideText",ExpressionUUID->"f95c82d4-bb7a-4ee6-a426-3d743a41fbc3"],
 
 Cell[TextData[{
  StyleBox["InfraDisplacementBundle",
   FontWeight->"Bold"],
  " \[LongDash] the displacements of scale r, the pairs of vertices at \
 distance r"
-}], "GuideText",ExpressionUUID->"0d21c9a9-f962-487e-b7fc-92f99985cb61"],
+}], "GuideText",ExpressionUUID->"6fecb64f-b7fe-4a77-95bf-f44d6ea147c9"],
 
 Cell[TextData[{
  StyleBox["InfraRays",
   FontWeight->"Bold"],
  " \[LongDash] the rays of a given length from a vertex"
-}], "GuideText",ExpressionUUID->"d1b7de9d-30ce-4346-9fb8-0885d873df5b"]
+}], "GuideText",ExpressionUUID->"6c9cb156-b48d-4d4d-adf4-959dd23cffcf"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Displacements", "GuideFunctionsSubsection",ExpressionUUID->"10e9d573-a3bc-4782-bae1-674ec33944d5"],
+Cell["Displacements", "GuideFunctionsSubsection",ExpressionUUID->"1cf1d6be-7a9e-40ee-abbd-b351dc82cb63"],
 
 Cell[TextData[{
  StyleBox["DisplacementCompose",
   FontWeight->"Bold"],
  " \[LongDash] composes displacements as flows, the leftmost acting first"
-}], "GuideText",ExpressionUUID->"b9647d75-b98c-453e-8af4-797630c1bc67"],
+}], "GuideText",ExpressionUUID->"913216c3-25bc-440a-a5e5-e59d7038c52d"],
 
 Cell[TextData[{
  StyleBox["DisplacementScale",
   FontWeight->"Bold"],
  " \[LongDash] scales a displacement by t along the geodesics from each \
 vertex to its images; t < 0 reflects through the base point"
-}], "GuideText",ExpressionUUID->"77dd7418-30d8-49b7-b94e-fcf9501bc32c"],
+}], "GuideText",ExpressionUUID->"638d526a-3f0f-417a-a9ab-d6da5d54df69"],
 
 Cell[TextData[{
  StyleBox["DisplacementNegative",
   FontWeight->"Bold"],
  " \[LongDash] the metric negative of a displacement, each step reflected \
 through its base point"
-}], "GuideText",ExpressionUUID->"b53ca339-ba85-430f-a3b1-ae537109112d"],
+}], "GuideText",ExpressionUUID->"658277b0-77be-42f7-8b85-cc5887a3b0de"],
 
 Cell[TextData[{
  StyleBox["DisplacementInverse",
   FontWeight->"Bold"],
  " \[LongDash] the reversed relation, the inverse when the displacement is \
 bijective"
-}], "GuideText",ExpressionUUID->"98b4a2c8-18cc-4fd6-ab37-978941aff8d2"],
+}], "GuideText",ExpressionUUID->"7ef50485-2a2f-4b11-b9ef-ed1e604a78e5"],
 
 Cell[TextData[{
  StyleBox["DisplacementSum",
   FontWeight->"Bold"],
  " \[LongDash] the bisector of the two orders of composition of two \
 displacements"
-}], "GuideText",ExpressionUUID->"73386671-0b5f-4d54-8e3e-61d48d03a183"],
+}], "GuideText",ExpressionUUID->"e14d1aeb-4ad8-4dbd-98ec-c5972a1cc984"],
 
 Cell[TextData[{
  StyleBox["DisplacementCommutator",
   FontWeight->"Bold"],
  " \[LongDash] the commutator loop of two displacements, by their inverses or \
 by their metric negatives"
-}], "GuideText",ExpressionUUID->"dfb97b1d-5a09-4988-9860-8ed3c46ac2ac"],
+}], "GuideText",ExpressionUUID->"e7e773d5-885e-42e3-b404-63d20cf53d5a"],
 
 Cell[TextData[{
  StyleBox["DisplacementBracket",
   FontWeight->"Bold"],
  " \[LongDash] the commutator by metric negatives, the scale-dependent bracket"
-}], "GuideText",ExpressionUUID->"8d67ffa3-29a4-4f0f-9615-a859e5d15c6f"],
+}], "GuideText",ExpressionUUID->"802d6dfc-430f-42a0-9629-3d20c1ab8381"],
 
 Cell[TextData[{
  StyleBox["DisplacementMagnitude",
   FontWeight->"Bold"],
  " \[LongDash] the largest step of a displacement, its scale"
-}], "GuideText",ExpressionUUID->"d922812a-e5ad-476d-a1d9-f0fb9e899874"],
+}], "GuideText",ExpressionUUID->"14c7730b-b5bd-4825-9e7a-18c7c920fe05"],
 
 Cell[TextData[{
  StyleBox["DisplacementReduce",
   FontWeight->"Bold"],
  " \[LongDash] contracts each value set of a displacement to its metric \
 centre, iterated to a fixed point"
-}], "GuideText",ExpressionUUID->"9a4ec5e7-ac3b-4cc9-8c11-f64d6b21d00a"]
+}], "GuideText",ExpressionUUID->"ce4a6764-90a0-4d15-b472-395ec06fa6c0"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Kinds of displacements", "GuideFunctionsSubsection",ExpressionUUID->"c97992ea-95dc-4ede-8f31-c164ecf03499"],
+Cell["Kinds of displacements", "GuideFunctionsSubsection",ExpressionUUID->"2eb51b7d-175d-4c87-8d26-6aec55b623ba"],
 
 Cell[TextData[{
  StyleBox["DisplacementSingleValuedQ",
   FontWeight->"Bold"],
  " \[LongDash] whether every value of a displacement is a single vertex"
-}], "GuideText",ExpressionUUID->"694131c1-bebc-4cce-b9b2-42f8b3fa63eb"],
+}], "GuideText",ExpressionUUID->"35fa008d-c2de-45ae-9d66-5f03707ce890"],
 
 Cell[TextData[{
  StyleBox["DisplacementBijectionQ",
   FontWeight->"Bold"],
  " \[LongDash] whether a displacement is a single-valued permutation of the \
 vertices"
-}], "GuideText",ExpressionUUID->"cef0e0b2-4412-4db1-ba6b-5ce4eb50808a"],
+}], "GuideText",ExpressionUUID->"bed603db-8d47-4940-8932-6afa4b0db114"],
 
 Cell[TextData[{
  StyleBox["DisplacementIsomorphismQ",
   FontWeight->"Bold"],
  " \[LongDash] whether a displacement is a graph automorphism, a discrete \
 Killing displacement"
-}], "GuideText",ExpressionUUID->"48487985-9750-4691-8bed-029a5cf23c4f"],
+}], "GuideText",ExpressionUUID->"657a6255-4d3b-4843-963a-f9d13e933ff3"],
 
 Cell[TextData[{
  StyleBox["ContinuousDisplacementQ",
   FontWeight->"Bold"],
  " \[LongDash] whether a displacement is k-continuous, in the weak, Hausdorff \
 or strong sense"
-}], "GuideText",ExpressionUUID->"9fbefa3d-905e-4815-9ef0-9407dc23996a"],
+}], "GuideText",ExpressionUUID->"2f23761c-d50d-4373-93d6-3d4db79cdc0c"],
 
 Cell[TextData[{
  StyleBox["FindKillingDisplacement",
   FontWeight->"Bold"],
  " \[LongDash] the nontrivial automorphism of least magnitude, as a \
 displacement"
-}], "GuideText",ExpressionUUID->"d06d0462-2678-4893-be3f-33b99d318957"],
+}], "GuideText",ExpressionUUID->"f73c01ea-410c-40ca-b0ec-6e36fa1b8246"],
 
 Cell[TextData[{
  StyleBox["KillingDisplacementMagnitude",
   FontWeight->"Bold"],
  " \[LongDash] the least magnitude of a nonidentity automorphism, Infinity on \
 an asymmetric graph"
-}], "GuideText",ExpressionUUID->"5d69c982-5399-481f-ab2c-7ea8be13b345"]
+}], "GuideText",ExpressionUUID->"5c92ab5b-8a36-41a8-838a-85af919790b6"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Canonical displacements", "GuideFunctionsSubsection",ExpressionUUID->"0c66b29d-04fa-44a3-b40d-958def8dce0f"],
+Cell["Canonical displacements", "GuideFunctionsSubsection",ExpressionUUID->"438497a8-b8f6-4764-a7bf-41f02c6fa4df"],
 
 Cell[TextData[{
  StyleBox["RandomDisplacement",
   FontWeight->"Bold"],
  " \[LongDash] a random continuous displacement of magnitude at most r"
-}], "GuideText",ExpressionUUID->"a6d63d8f-d7ea-4b01-8f07-e4c1172b89a5"],
+}], "GuideText",ExpressionUUID->"158eb568-fe47-4de6-8c14-e20be497fc65"],
 
 Cell[TextData[{
  StyleBox["PolarDisplacements",
   FontWeight->"Bold"],
  " \[LongDash] the radial and the angular displacement about a centre"
-}], "GuideText",ExpressionUUID->"3a5be049-de2c-45f5-9a27-e587aec72c68"],
+}], "GuideText",ExpressionUUID->"ec2d6a5e-dca6-4012-b8b3-2f4306ab30c8"],
 
 Cell[TextData[{
  StyleBox["GradientDisplacement",
   FontWeight->"Bold"],
  " \[LongDash] the steepest-ascent displacement of a vertex function"
-}], "GuideText",ExpressionUUID->"f30245b6-42b5-4542-8f0d-238f0ea86051"],
+}], "GuideText",ExpressionUUID->"77702ad1-1f29-4c0b-9ee9-e005a1f111a5"],
 
 Cell[TextData[{
  StyleBox["TranslationDisplacement",
   FontWeight->"Bold"],
  " \[LongDash] the translation by a vector of the graph embedding, each \
 vertex moved to the nearest vertices"
-}], "GuideText",ExpressionUUID->"827da545-2d1c-4da7-bea9-e3b2458c8437"],
+}], "GuideText",ExpressionUUID->"c3aea722-91f2-48fb-ab8f-b565ca9f80ca"],
 
 Cell[TextData[{
  StyleBox["DisplacementPlot",
   FontWeight->"Bold"],
  " \[LongDash] a displacement, or a sequence of them, drawn as bent arcs over \
 the graph"
-}], "GuideText",ExpressionUUID->"530fc87a-be55-492d-a588-ad49dfa7f5de"]
+}], "GuideText",ExpressionUUID->"37cc6c7c-e0ea-4d63-a198-af83dd241586"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Forms and cochains", "GuideFunctionsSubsection",ExpressionUUID->"d27fd4b2-7df7-4374-86bf-2e54d0993d44"],
-
-Cell[TextData[{
- StyleBox["FormValue",
-  FontWeight->"Bold"],
- " \[LongDash] the value of the germ of a form at a vertex on a tuple of its \
-neighbours, alternating in the tuple"
-}], "GuideText",ExpressionUUID->"0e547452-4654-40cf-89ad-6875619c84cd"],
-
-Cell[TextData[{
- StyleBox["CochainValue",
-  FontWeight->"Bold"],
- " \[LongDash] the value of an alternating cochain on a vertex tuple"
-}], "GuideText",ExpressionUUID->"e6a9e21d-81ce-49fd-aac8-348d44066664"],
-
-Cell[TextData[{
- StyleBox["OrderedCochainValue",
-  FontWeight->"Bold"],
- " \[LongDash] the value of an ordered cochain on an increasing vertex tuple"
-}], "GuideText",ExpressionUUID->"f37b7889-9e08-4e82-b582-100483647764"],
-
-Cell[TextData[{
- StyleBox["FormDegree",
-  FontWeight->"Bold"],
- " \[LongDash] the degree of a form"
-}], "GuideText",ExpressionUUID->"f1b1a42c-0cd9-49cd-93d8-c4e7f2196390"],
-
-Cell[TextData[{
- StyleBox["CochainDegree",
-  FontWeight->"Bold"],
- " \[LongDash] the degree of a cochain"
-}], "GuideText",ExpressionUUID->"6a00d5a2-cf5e-419f-9409-1b29c1c73a75"],
-
-Cell[TextData[{
- StyleBox["ZeroForm",
-  FontWeight->"Bold"],
- " \[LongDash] a vertex function as a 0-form"
-}], "GuideText",ExpressionUUID->"bb9f04e1-ea56-4b25-8000-fa3db6aae82d"],
-
-Cell[TextData[{
- StyleBox["RestrictionMap",
-  FontWeight->"Bold"],
- " \[LongDash] the form read from an alternating cochain with the base vertex \
-prepended"
-}], "GuideText",ExpressionUUID->"eef1cb64-99ba-4e91-b0f6-03784e66bf96"],
-
-Cell[TextData[{
- StyleBox["IntegrationMap",
-  FontWeight->"Bold"],
- " \[LongDash] the cochain averaged from the germs of a form over each \
-clique, a left inverse of RestrictionMap"
-}], "GuideText",ExpressionUUID->"300a18c9-08e8-4a67-babf-ad84fe8bc633"],
-
-Cell[TextData[{
- StyleBox["Coboundary",
-  FontWeight->"Bold"],
- " \[LongDash] the coboundary of a cochain, the alternating sum over the \
-faces of every clique one dimension up"
-}], "GuideText",ExpressionUUID->"475bb4a2-b331-4597-9d25-ec5241ea5c15"],
-
-Cell[TextData[{
- StyleBox["FormDifferential",
-  FontWeight->"Bold"],
- " \[LongDash] the differential of a form, the gradient on 0-forms and with a \
-transport term on 1-forms"
-}], "GuideText",ExpressionUUID->"f44077c2-88b4-43e5-8185-17513994a29a"],
-
-Cell[TextData[{
- StyleBox["NaiveDifferential",
-  FontWeight->"Bold"],
- " \[LongDash] the differential of a 1-form with the transport term dropped, \
-kept for comparison"
-}], "GuideText",ExpressionUUID->"e0b57db6-0c38-4c70-8676-948bf4ef6d94"],
-
-Cell[TextData[{
- StyleBox["FormWedge",
-  FontWeight->"Bold"],
- " \[LongDash] the wedge product of forms, fibre by fibre"
-}], "GuideText",ExpressionUUID->"6314116a-be8c-4533-8f81-dc90eefeed55"],
-
-Cell[TextData[{
- StyleBox["CochainCup",
-  FontWeight->"Bold"],
- " \[LongDash] the cup product of alternating cochains, antisymmetrised over \
-the orderings of each clique"
-}], "GuideText",ExpressionUUID->"d367940e-bf51-425f-b631-da40c8358644"],
-
-Cell[TextData[{
- StyleBox["OrderedCochainCup",
-  FontWeight->"Bold"],
- " \[LongDash] the Alexander-Whitney cup product of ordered cochains"
-}], "GuideText",ExpressionUUID->"0cc2952b-305c-4a2a-a371-9382c3bd2b5b"],
-
-Cell[TextData[{
- StyleBox["CochainCupOne",
-  FontWeight->"Bold"],
- " \[LongDash] the Steenrod cup-1 product of ordered cochains"
-}], "GuideText",ExpressionUUID->"0c38d9c9-8274-483d-a0b5-f97ffd2847ca"],
-
-Cell[TextData[{
- StyleBox["AntisymmetrizedCup",
-  FontWeight->"Bold"],
- " \[LongDash] an alias of CochainCup"
-}], "GuideText",ExpressionUUID->"757312e3-a9dd-4de7-bb15-0917d7c999b6"]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["The tautological 1-form", "GuideFunctionsSubsection",ExpressionUUID->"b6b9a5ca-b99d-46be-963a-437551c164ad"],
+Cell["The tautological 1-form", "GuideFunctionsSubsection",ExpressionUUID->"f7768b6c-2bfd-40a7-b2b4-b7363d2ab4ac"],
 
 Cell[TextData[{
  StyleBox["InfraCotangentBundle",
   FontWeight->"Bold"],
  " \[LongDash] the tangent bundle on reversed rays"
-}], "GuideText",ExpressionUUID->"2f2ba622-cc66-431d-b91b-e2426762bb3c"],
+}], "GuideText",ExpressionUUID->"0f38405c-0fd5-47ef-a176-cacf7fc2981c"],
 
 Cell[TextData[{
  StyleBox["InfraCanonicalOneForm",
   FontWeight->"Bold"],
  " \[LongDash] the pairing of a vector with a covector at a scale, the \
 tautological 1-form"
-}], "GuideText",ExpressionUUID->"efeb0cfe-6551-4da0-aa1a-2ff82b681163"]
+}], "GuideText",ExpressionUUID->"b54f9cda-ffde-4edf-bbf4-ea000ce2cd9a"]
 }, Open  ]]
 }, Open  ]],
 
@@ -364,7 +253,7 @@ Cell[TextData[Cell[BoxData[
   "RefLinkPlain",
   BaseStyle->{
    "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"0203e72a-83aa-40d1-b980-0e43d726112a"]], \
+"InlineFormula",ExpressionUUID->"4fc980c6-648a-45fe-8dc1-71a6c38ebce5"]], \
 "GuideMoreAbout",
  CellID->1567025153,ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69"],
 
@@ -376,7 +265,7 @@ Cell[TextData[Cell[BoxData[
   "RefLinkPlain",
   BaseStyle->{
    "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"6862513b-a821-4670-a2fe-17e522560bfb"]], \
+"InlineFormula",ExpressionUUID->"a79bd308-d75a-4460-8a92-351817976ee7"]], \
 "GuideMoreAbout",
  CellID->1567025153,ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69"],
 
@@ -388,7 +277,7 @@ Cell[TextData[Cell[BoxData[
   "RefLinkPlain",
   BaseStyle->{
    "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"57ea8e75-4e39-43d1-9b00-b4277a0b896c"]], \
+"InlineFormula",ExpressionUUID->"1dad7068-8c71-40ae-88a6-c20691c93184"]], \
 "GuideMoreAbout",
  CellID->1567025153,ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69"],
 
@@ -400,7 +289,7 @@ Cell[TextData[Cell[BoxData[
   "RefLinkPlain",
   BaseStyle->{
    "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"34ded5a7-8b30-4d5b-be0d-bdf25b202350"]], \
+"InlineFormula",ExpressionUUID->"99f15a86-fa57-41dc-956a-22c8bb737f86"]], \
 "GuideMoreAbout",
  CellID->1567025153,ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69"],
 
@@ -412,7 +301,7 @@ Cell[TextData[Cell[BoxData[
   "RefLinkPlain",
   BaseStyle->{
    "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"caa97b47-1ba3-4ba2-b87b-3ca340ef08dc"]], \
+"InlineFormula",ExpressionUUID->"466d93f8-5369-4240-9ece-e4abc4d9ed60"]], \
 "GuideMoreAbout",
  CellID->1567025153,ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69"],
 
@@ -424,7 +313,7 @@ Cell[TextData[Cell[BoxData[
   "RefLinkPlain",
   BaseStyle->{
    "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"c5ed467b-ba61-4dfc-875b-4fe2b21ce116"]], \
+"InlineFormula",ExpressionUUID->"3f6e8aa9-43ca-4f09-9e74-3ebccb4b566f"]], \
 "GuideMoreAbout",
  CellID->1567025153,ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69"]
 }, Open  ]],
@@ -469,7 +358,7 @@ Cell["WolframInstitute`InfraGeometry`", "Categorization",
  CellID->468444828,ExpressionUUID->"52afa833-5422-4969-8c91-b9af19a42a2e"],
 
 Cell["WolframInstitute/InfraGeometry/guide/InfraAnalysis", "Categorization",
- CellLabel->"URI",ExpressionUUID->"84d836c1-d777-4a03-9b56-02b28099e9f7"]
+ CellLabel->"URI",ExpressionUUID->"8cc59812-f01c-4136-8800-ac23b4925d74"]
 }, Closed]],
 
 Cell[CellGroupData[{
@@ -495,15 +384,6 @@ Cell["commutator", "Keywords",
 Cell["Killing", "Keywords",
  CellID->1251852827,ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9"],
 
-Cell["differential form", "Keywords",
- CellID->1251852827,ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9"],
-
-Cell["cochain", "Keywords",
- CellID->1251852827,ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9"],
-
-Cell["cup product", "Keywords",
- CellID->1251852827,ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9"],
-
 Cell["tautological 1-form", "Keywords",
  CellID->1251852827,ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9"]
 }, Closed]]
@@ -516,8 +396,7 @@ TaggingRules->{
    "title" -> "InfraAnalysis", "context" -> "WolframInstitute`InfraGeometry`",
      "keywords" -> {
      "tangent space", "displacement", "vector field", "flow", "commutator", 
-      "Killing", "differential form", "cochain", "cup product", 
-      "tautological 1-form"}, "summary" -> "", "paclet" -> 
+      "Killing", "tautological 1-form"}, "summary" -> "", "paclet" -> 
     "WolframInstitute/InfraGeometry", "uri" -> 
     "WolframInstitute/InfraGeometry/guide/InfraAnalysis", "type" -> "Guide", 
     "index" -> True, "language" -> "en"}},
@@ -542,130 +421,105 @@ Notebook[{
 Cell[CellGroupData[{
 Cell[576, 22, 111, 1, 70, "GuideTitle",ExpressionUUID->"a3a3c038-ca24-47b7-9945-83f1c1312fe3",
  CellID->942062912],
-Cell[690, 25, 1160, 16, 70, "GuideAbstract",ExpressionUUID->"ef0ab37b-2e0d-4399-8f7e-82603ccbe925",
+Cell[690, 25, 905, 13, 70, "GuideAbstract",ExpressionUUID->"ef0ab37b-2e0d-4399-8f7e-82603ccbe925",
  CellID->2001916300]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[1887, 46, 109, 1, 70, "GuideFunctionsSection",ExpressionUUID->"a0ea3657-4c83-4862-93c8-ecf80cebc774",
+Cell[1632, 43, 109, 1, 70, "GuideFunctionsSection",ExpressionUUID->"a0ea3657-4c83-4862-93c8-ecf80cebc774",
  CellID->1866139230],
 Cell[CellGroupData[{
-Cell[2021, 51, 105, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"01a40fd9-a5c8-40ab-a498-a1a1e9344113"],
-Cell[2129, 53, 240, 5, 70, "GuideText",ExpressionUUID->"a93d780c-a92a-4177-8dbb-d28e9375b3d5"],
-Cell[2372, 60, 231, 5, 70, "GuideText",ExpressionUUID->"0d21c9a9-f962-487e-b7fc-92f99985cb61"],
-Cell[2606, 67, 190, 4, 70, "GuideText",ExpressionUUID->"d1b7de9d-30ce-4346-9fb8-0885d873df5b"]
+Cell[1766, 48, 105, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"5df94f42-cb76-4c92-b2c0-56770a4b841a"],
+Cell[1874, 50, 240, 5, 70, "GuideText",ExpressionUUID->"f95c82d4-bb7a-4ee6-a426-3d743a41fbc3"],
+Cell[2117, 57, 231, 5, 70, "GuideText",ExpressionUUID->"6fecb64f-b7fe-4a77-95bf-f44d6ea147c9"],
+Cell[2351, 64, 190, 4, 70, "GuideText",ExpressionUUID->"6c9cb156-b48d-4d4d-adf4-959dd23cffcf"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[2833, 76, 104, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"10e9d573-a3bc-4782-bae1-674ec33944d5"],
-Cell[2940, 78, 218, 4, 70, "GuideText",ExpressionUUID->"b9647d75-b98c-453e-8af4-797630c1bc67"],
-Cell[3161, 84, 276, 5, 70, "GuideText",ExpressionUUID->"77dd7418-30d8-49b7-b94e-fcf9501bc32c"],
-Cell[3440, 91, 244, 5, 70, "GuideText",ExpressionUUID->"b53ca339-ba85-430f-a3b1-ae537109112d"],
-Cell[3687, 98, 231, 5, 70, "GuideText",ExpressionUUID->"98b4a2c8-18cc-4fd6-ab37-978941aff8d2"],
-Cell[3921, 105, 224, 5, 70, "GuideText",ExpressionUUID->"73386671-0b5f-4d54-8e3e-61d48d03a183"],
-Cell[4148, 112, 253, 5, 70, "GuideText",ExpressionUUID->"dfb97b1d-5a09-4988-9860-8ed3c46ac2ac"],
-Cell[4404, 119, 223, 4, 70, "GuideText",ExpressionUUID->"8d67ffa3-29a4-4f0f-9615-a859e5d15c6f"],
-Cell[4630, 125, 207, 4, 70, "GuideText",ExpressionUUID->"d922812a-e5ad-476d-a1d9-f0fb9e899874"],
-Cell[4840, 131, 251, 5, 70, "GuideText",ExpressionUUID->"9a4ec5e7-ac3b-4cc9-8c11-f64d6b21d00a"]
+Cell[2578, 73, 104, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"1cf1d6be-7a9e-40ee-abbd-b351dc82cb63"],
+Cell[2685, 75, 218, 4, 70, "GuideText",ExpressionUUID->"913216c3-25bc-440a-a5e5-e59d7038c52d"],
+Cell[2906, 81, 276, 5, 70, "GuideText",ExpressionUUID->"638d526a-3f0f-417a-a9ab-d6da5d54df69"],
+Cell[3185, 88, 244, 5, 70, "GuideText",ExpressionUUID->"658277b0-77be-42f7-8b85-cc5887a3b0de"],
+Cell[3432, 95, 231, 5, 70, "GuideText",ExpressionUUID->"7ef50485-2a2f-4b11-b9ef-ed1e604a78e5"],
+Cell[3666, 102, 224, 5, 70, "GuideText",ExpressionUUID->"e14d1aeb-4ad8-4dbd-98ec-c5972a1cc984"],
+Cell[3893, 109, 253, 5, 70, "GuideText",ExpressionUUID->"e7e773d5-885e-42e3-b404-63d20cf53d5a"],
+Cell[4149, 116, 223, 4, 70, "GuideText",ExpressionUUID->"802d6dfc-430f-42a0-9629-3d20c1ab8381"],
+Cell[4375, 122, 207, 4, 70, "GuideText",ExpressionUUID->"14c7730b-b5bd-4825-9e7a-18c7c920fe05"],
+Cell[4585, 128, 251, 5, 70, "GuideText",ExpressionUUID->"ce4a6764-90a0-4d15-b472-395ec06fa6c0"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[5128, 141, 113, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"c97992ea-95dc-4ede-8f31-c164ecf03499"],
-Cell[5244, 143, 222, 4, 70, "GuideText",ExpressionUUID->"694131c1-bebc-4cce-b9b2-42f8b3fa63eb"],
-Cell[5469, 149, 234, 5, 70, "GuideText",ExpressionUUID->"cef0e0b2-4412-4db1-ba6b-5ce4eb50808a"],
-Cell[5706, 156, 246, 5, 70, "GuideText",ExpressionUUID->"48487985-9750-4691-8bed-029a5cf23c4f"],
-Cell[5955, 163, 244, 5, 70, "GuideText",ExpressionUUID->"9fbefa3d-905e-4815-9ef0-9407dc23996a"],
-Cell[6202, 170, 231, 5, 70, "GuideText",ExpressionUUID->"d06d0462-2678-4893-be3f-33b99d318957"],
-Cell[6436, 177, 253, 5, 70, "GuideText",ExpressionUUID->"5d69c982-5399-481f-ab2c-7ea8be13b345"]
+Cell[4873, 138, 113, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"2eb51b7d-175d-4c87-8d26-6aec55b623ba"],
+Cell[4989, 140, 222, 4, 70, "GuideText",ExpressionUUID->"35fa008d-c2de-45ae-9d66-5f03707ce890"],
+Cell[5214, 146, 234, 5, 70, "GuideText",ExpressionUUID->"bed603db-8d47-4940-8932-6afa4b0db114"],
+Cell[5451, 153, 246, 5, 70, "GuideText",ExpressionUUID->"657a6255-4d3b-4843-963a-f9d13e933ff3"],
+Cell[5700, 160, 244, 5, 70, "GuideText",ExpressionUUID->"2f23761c-d50d-4373-93d6-3d4db79cdc0c"],
+Cell[5947, 167, 231, 5, 70, "GuideText",ExpressionUUID->"f73c01ea-410c-40ca-b0ec-6e36fa1b8246"],
+Cell[6181, 174, 253, 5, 70, "GuideText",ExpressionUUID->"5c92ab5b-8a36-41a8-838a-85af919790b6"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[6726, 187, 114, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"0c66b29d-04fa-44a3-b40d-958def8dce0f"],
-Cell[6843, 189, 214, 4, 70, "GuideText",ExpressionUUID->"a6d63d8f-d7ea-4b01-8f07-e4c1172b89a5"],
-Cell[7060, 195, 213, 4, 70, "GuideText",ExpressionUUID->"3a5be049-de2c-45f5-9a27-e587aec72c68"],
-Cell[7276, 201, 214, 4, 70, "GuideText",ExpressionUUID->"f30245b6-42b5-4542-8f0d-238f0ea86051"],
-Cell[7493, 207, 259, 5, 70, "GuideText",ExpressionUUID->"827da545-2d1c-4da7-bea9-e3b2458c8437"],
-Cell[7755, 214, 231, 5, 70, "GuideText",ExpressionUUID->"530fc87a-be55-492d-a588-ad49dfa7f5de"]
+Cell[6471, 184, 114, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"438497a8-b8f6-4764-a7bf-41f02c6fa4df"],
+Cell[6588, 186, 214, 4, 70, "GuideText",ExpressionUUID->"158eb568-fe47-4de6-8c14-e20be497fc65"],
+Cell[6805, 192, 213, 4, 70, "GuideText",ExpressionUUID->"ec2d6a5e-dca6-4012-b8b3-2f4306ab30c8"],
+Cell[7021, 198, 214, 4, 70, "GuideText",ExpressionUUID->"77702ad1-1f29-4c0b-9ee9-e005a1f111a5"],
+Cell[7238, 204, 259, 5, 70, "GuideText",ExpressionUUID->"c3aea722-91f2-48fb-ab8f-b565ca9f80ca"],
+Cell[7500, 211, 231, 5, 70, "GuideText",ExpressionUUID->"37cc6c7c-e0ea-4d63-a198-af83dd241586"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[8023, 224, 109, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"d27fd4b2-7df7-4374-86bf-2e54d0993d44"],
-Cell[8135, 226, 250, 5, 70, "GuideText",ExpressionUUID->"0e547452-4654-40cf-89ad-6875619c84cd"],
-Cell[8388, 233, 206, 4, 70, "GuideText",ExpressionUUID->"e6a9e21d-81ce-49fd-aac8-348d44066664"],
-Cell[8597, 239, 221, 4, 70, "GuideText",ExpressionUUID->"f37b7889-9e08-4e82-b582-100483647764"],
-Cell[8821, 245, 171, 4, 70, "GuideText",ExpressionUUID->"f1b1a42c-0cd9-49cd-93d8-c4e7f2196390"],
-Cell[8995, 251, 177, 4, 70, "GuideText",ExpressionUUID->"6a00d5a2-cf5e-419f-9409-1b29c1c73a75"],
-Cell[9175, 257, 178, 4, 70, "GuideText",ExpressionUUID->"bb9f04e1-ea56-4b25-8000-fa3db6aae82d"],
-Cell[9356, 263, 229, 5, 70, "GuideText",ExpressionUUID->"eef1cb64-99ba-4e91-b0f6-03784e66bf96"],
-Cell[9588, 270, 253, 5, 70, "GuideText",ExpressionUUID->"300a18c9-08e8-4a67-babf-ad84fe8bc633"],
-Cell[9844, 277, 249, 5, 70, "GuideText",ExpressionUUID->"475bb4a2-b331-4597-9d25-ec5241ea5c15"],
-Cell[10096, 284, 247, 5, 70, "GuideText",ExpressionUUID->"f44077c2-88b4-43e5-8185-17513994a29a"],
-Cell[10346, 291, 241, 5, 70, "GuideText",ExpressionUUID->"e0b57db6-0c38-4c70-8676-948bf4ef6d94"],
-Cell[10590, 298, 192, 4, 70, "GuideText",ExpressionUUID->"6314116a-be8c-4533-8f81-dc90eefeed55"],
-Cell[10785, 304, 243, 5, 70, "GuideText",ExpressionUUID->"d367940e-bf51-425f-b631-da40c8358644"],
-Cell[11031, 311, 211, 4, 70, "GuideText",ExpressionUUID->"0cc2952b-305c-4a2a-a371-9382c3bd2b5b"],
-Cell[11245, 317, 200, 4, 70, "GuideText",ExpressionUUID->"0c38d9c9-8274-483d-a0b5-f97ffd2847ca"],
-Cell[11448, 323, 181, 4, 70, "GuideText",ExpressionUUID->"757312e3-a9dd-4de7-bb15-0917d7c999b6"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[11666, 332, 114, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"b6b9a5ca-b99d-46be-963a-437551c164ad"],
-Cell[11783, 334, 196, 4, 70, "GuideText",ExpressionUUID->"2f2ba622-cc66-431d-b91b-e2426762bb3c"],
-Cell[11982, 340, 239, 5, 70, "GuideText",ExpressionUUID->"efeb0cfe-6551-4da0-aa1a-2ff82b681163"]
+Cell[7768, 221, 114, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"f7768b6c-2bfd-40a7-b2b4-b7363d2ab4ac"],
+Cell[7885, 223, 196, 4, 70, "GuideText",ExpressionUUID->"0f38405c-0fd5-47ef-a176-cacf7fc2981c"],
+Cell[8084, 229, 239, 5, 70, "GuideText",ExpressionUUID->"b54f9cda-ffde-4edf-bbf4-ea000ce2cd9a"]
 }, Open  ]]
 }, Open  ]],
-Cell[12248, 349, 118, 1, 70, "GuideTutorialsSection",ExpressionUUID->"90fbef20-ae74-4ea3-a50b-de22929861f8",
+Cell[8350, 238, 118, 1, 70, "GuideTutorialsSection",ExpressionUUID->"90fbef20-ae74-4ea3-a50b-de22929861f8",
  CellID->415694126],
 Cell[CellGroupData[{
-Cell[12391, 354, 189, 2, 70, "GuideMoreAboutSection",ExpressionUUID->"0c9c7cc7-143a-48e7-bf27-45dd9029bd50",
+Cell[8493, 243, 189, 2, 70, "GuideMoreAboutSection",ExpressionUUID->"0c9c7cc7-143a-48e7-bf27-45dd9029bd50",
  CellID->23220180],
-Cell[12583, 358, 395, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
+Cell[8685, 247, 395, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
  CellID->1567025153],
-Cell[12981, 370, 397, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
+Cell[9083, 259, 397, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
  CellID->1567025153],
-Cell[13381, 382, 377, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
+Cell[9483, 271, 377, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
  CellID->1567025153],
-Cell[13761, 394, 385, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
+Cell[9863, 283, 385, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
  CellID->1567025153],
-Cell[14149, 406, 381, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
+Cell[10251, 295, 381, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
  CellID->1567025153],
-Cell[14533, 418, 375, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
+Cell[10635, 307, 375, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
  CellID->1567025153]
 }, Open  ]],
-Cell[14923, 431, 124, 1, 70, "GuideRelatedLinksSection",ExpressionUUID->"f8d14542-737b-4330-8523-975dc2960049",
+Cell[11025, 320, 124, 1, 70, "GuideRelatedLinksSection",ExpressionUUID->"f8d14542-737b-4330-8523-975dc2960049",
  CellID->415694148],
 Cell[CellGroupData[{
-Cell[15072, 436, 110, 1, 70, "MetadataSection",ExpressionUUID->"1e562958-8f54-4854-b782-f4766015b2b2",
+Cell[11174, 325, 110, 1, 70, "MetadataSection",ExpressionUUID->"1e562958-8f54-4854-b782-f4766015b2b2",
  CellID->311882160],
-Cell[15185, 439, 476, 12, 70, "History",ExpressionUUID->"6e43ae3a-1f84-4ca3-8250-559a053a9513",
+Cell[11287, 328, 476, 12, 70, "History",ExpressionUUID->"6e43ae3a-1f84-4ca3-8250-559a053a9513",
  CellID->341476719],
 Cell[CellGroupData[{
-Cell[15686, 455, 123, 1, 70, "CategorizationSection",ExpressionUUID->"cbe57f1c-788c-4a86-8338-08191b5d7b7b",
+Cell[11788, 344, 123, 1, 70, "CategorizationSection",ExpressionUUID->"cbe57f1c-788c-4a86-8338-08191b5d7b7b",
  CellID->1122911449],
-Cell[15812, 458, 133, 2, 70, "Categorization",ExpressionUUID->"4bb65dd8-004f-4758-b626-8984c4a9f475",
+Cell[11914, 347, 133, 2, 70, "Categorization",ExpressionUUID->"4bb65dd8-004f-4758-b626-8984c4a9f475",
  CellID->686433507],
-Cell[15948, 462, 158, 2, 70, "Categorization",ExpressionUUID->"ea3b4732-cbcc-4f28-9e20-bfabae54c52c",
+Cell[12050, 351, 158, 2, 70, "Categorization",ExpressionUUID->"ea3b4732-cbcc-4f28-9e20-bfabae54c52c",
  CellID->605800465],
-Cell[16109, 466, 155, 2, 70, "Categorization",ExpressionUUID->"52afa833-5422-4969-8c91-b9af19a42a2e",
+Cell[12211, 355, 155, 2, 70, "Categorization",ExpressionUUID->"52afa833-5422-4969-8c91-b9af19a42a2e",
  CellID->468444828],
-Cell[16267, 470, 150, 1, 70, "Categorization",ExpressionUUID->"84d836c1-d777-4a03-9b56-02b28099e9f7"]
+Cell[12369, 359, 150, 1, 70, "Categorization",ExpressionUUID->"8cc59812-f01c-4136-8800-ac23b4925d74"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[16454, 476, 111, 1, 70, "KeywordsSection",ExpressionUUID->"99169e92-9e69-4982-8b71-ac9518fe5ead",
+Cell[12556, 365, 111, 1, 70, "KeywordsSection",ExpressionUUID->"99169e92-9e69-4982-8b71-ac9518fe5ead",
  CellID->1427428552],
-Cell[16568, 479, 109, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[12670, 368, 109, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[16680, 482, 108, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[12782, 371, 108, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[16791, 485, 108, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[12893, 374, 108, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[16902, 488, 100, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[13004, 377, 100, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[17005, 491, 106, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[13107, 380, 106, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[17114, 494, 103, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[13216, 383, 103, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[17220, 497, 113, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
- CellID->1251852827],
-Cell[17336, 500, 103, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
- CellID->1251852827],
-Cell[17442, 503, 107, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
- CellID->1251852827],
-Cell[17552, 506, 115, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[13322, 386, 115, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827]
 }, Closed]]
 }, Open  ]]

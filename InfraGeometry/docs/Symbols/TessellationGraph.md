@@ -58,7 +58,7 @@ Row[Table[
      {map = TessellationGraph @@ spec},
      {hub = First @ VertexList[map]},
      Labeled[
-       InfraSubstrateHighlight[map, {InfraCircle[hub, 1], Directive[$InfraPointColor], hub}, ImageSize -> 200],
+       InfraSubstrateHighlight[map, {InfraCircle[hub, 1], hub}, ImageSize -> 200],
        First[spec]]],
    {spec, {{{3, 5}, 1}, {{3, 6}, 6}, {{3, 7}, 1}}}]]
 ```

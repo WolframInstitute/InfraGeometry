@@ -142,6 +142,77 @@ VerificationTest[
   TestID -> "InfraSegment-polyline-density-on-a-retraced-side"
 ]
 
+(* ===== the closed polyline: a polygon ===== *)
+
+(* the first corner repeated at the end closes the polyline: the triangle 1, 3, 9 of the 3x3 grid
+   is the product of its sides, two unique and the diagonal one six-fold, and every member is a
+   closed walk through the corners *)
+VerificationTest[
+  With[{g = GridGraph[{3, 3}], obj = InfraSegment[1, 3, 9, 1]},
+    {members = FindInfraRepresentative[g, obj, All]},
+    {Length[InfraMeasurement[g, obj, "Graph"]], InfraMeasurement[g, obj, "Cardinality"], InfraMeasurement[g, obj, "Length"],
+     Length[members], AllTrue[members, First[#] === 1 && Last[#] === 1 && Length[#] === 9 &],
+     AllTrue[members, SubsetQ[#, {1, 3, 9}] &], AllTrue[members, InfraMemberQ[g, obj, #] &]}],
+  {3, 6, 8, 6, True, True, True},
+  TestID -> "InfraSegment-closed-polyline-is-the-polygon"
+]
+
+(* the density of a closed polyline counts its members as for an open one, so the corner it
+   returns to is visited twice by every member *)
+VerificationTest[
+  With[{g = GridGraph[{3, 3}], obj = InfraSegment[1, 3, 9, 1]},
+    {members = FindInfraRepresentative[g, obj, All]},
+    {InfraMeasurement[g, obj, "VertexDensity"] === KeySort @ Counts @ Catenate @ members,
+     InfraMeasurement[g, obj, "EdgeDensity"] === KeySort @ Counts @ Catenate[DirectedEdge @@@ Partition[#, 2, 1] & /@ members],
+     InfraMeasurement[g, obj, "VertexDensity"][1] === 2 InfraMeasurement[g, obj, "Cardinality"],
+     InfraMeasurement[g, obj, "CountingMeasure"]}],
+  {True, True, True, 9},
+  TestID -> "InfraSegment-closed-polyline-density-counts-the-return"
+]
+
+(* the one witness of a closed polyline retraces no edge when some member does not: on the 3x3 grid the triangle 1, 3, 9 closes along the far side
+   9, 8, 7, 4, 1 or through the centre 9, 8, 5, 4, 1, never back along 9, 6, 3, 2, 1; when every member retraces, as the closed side 1, 2, 1 must
+   and the two unique sides 1, 2 and 2, 1 of the 8x8 grid polygon 1, 64, 1, 2, 1 must, it is the first member *)
+VerificationTest[
+  With[{g = GridGraph[{3, 3}], obj = InfraSegment[1, 3, 9, 1]},
+    {w = FindInfraRepresentative[g, obj]},
+    {w === FindInfraRepresentative[g, obj, Automatic], InfraMemberQ[g, obj, w], DuplicateFreeQ[Sort /@ Partition[w, 2, 1]],
+     MemberQ[{{1, 2, 3, 6, 9, 8, 7, 4, 1}, {1, 2, 3, 6, 9, 8, 5, 4, 1}}, w], FindInfraRepresentative[g, obj, UpTo[1]]}],
+  {True, True, True, True, {{1, 2, 3, 6, 9, 6, 3, 2, 1}}},
+  TestID -> "InfraSegment-closed-polyline-witness-retraces-no-edge"
+]
+
+VerificationTest[
+  {FindInfraRepresentative[GridGraph[{3, 3}], InfraSegment[1, 2, 1]],
+   With[{g = GridGraph[{8, 8}], obj = InfraSegment[1, 64, 1, 2, 1]},
+     FindInfraRepresentative[g, obj] === First[FindInfraRepresentative[g, obj, UpTo[1]]]],
+   With[{g = GridGraph[{20, 20}], obj = InfraSegment[1, 210, 400, 191, 1]},
+     {w = FindInfraRepresentative[g, obj]},
+     InfraMemberQ[g, obj, w] && DuplicateFreeQ[Sort /@ Partition[w, 2, 1]]]},
+  {{1, 2, 1}, True, True},
+  TestID -> "InfraSegment-closed-polyline-witness-fallback-and-scale"
+]
+
+(* a bounded count reads the first members of the product of the sides: the 4x4 grid square
+   1, 16, 1, 16 has 20^4 members, and fifty of them come without forming the class *)
+VerificationTest[
+  With[{g = GridGraph[{4, 4}], obj = InfraSegment[1, 16, 1, 16, 1]},
+    {members = FindInfraRepresentative[g, obj, 50]},
+    {InfraMeasurement[g, obj, "Cardinality"], Length[members], DuplicateFreeQ[members],
+     AllTrue[members, InfraMemberQ[g, obj, #] &],
+     AllTrue[SeedRandom[1]; FindInfraRepresentative[g, obj, 5, "RandomChoice"], InfraMemberQ[g, obj, #] &]}],
+  {160000, 50, True, True, True},
+  TestID -> "InfraSegment-closed-polyline-bounded-count"
+]
+
+(* the segment from a point back to itself is no polygon: the one-vertex walk *)
+VerificationTest[
+  With[{g = GridGraph[{3, 3}]},
+    {FindInfraRepresentative[g, InfraSegment[5, 5], All], InfraMeasurement[g, InfraSegment[5, 5], "VertexDensity"]}],
+  {{{5}}, <|5 -> 1|>},
+  TestID -> "InfraSegment-point-to-itself-is-not-a-polygon"
+]
+
 (* ===== FindInfraSegment: the independent search ===== *)
 
 (* the search and the graph agree on the whole class *)

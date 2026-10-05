@@ -68,7 +68,7 @@ The tensor on the shell of radius 3 about the centre of the square tiling, besid
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  {InfraSubstrateHighlight[g, {FindInfraShell[g, c, 3] -> $InfraShellColor, Directive[$InfraPointColor], c}],
+  {InfraSubstrateHighlight[g, {FindInfraShell[g, c, 3], c}],
    MatrixPlot[InfraMetricTensor[g, c, 3]]}]
 ```
 
@@ -98,7 +98,7 @@ On the hexagon, the interval from 1 to 5 is 1, 6, 5, and its vertices 1 and 5 ar
 ```wl
 With[
   {g = CycleGraph[6]},
-  {InfraSubstrateHighlight[g, {MetricInterval[g, 1, 5] -> $InfraSegmentColor, Directive[$InfraPointColor], 3}],
+  {InfraSubstrateHighlight[g, {MetricInterval[g, 1, 5], 3}],
    Table[sel -> InfraMetricTensor[g, 1, "SelectCoordinate" -> sel][[3, 5]], {sel, {Min, Max, Mean, All}}]}]
 ```
 
@@ -124,7 +124,7 @@ With[
   {v = (SeedRandom[12]; RandomInfraPoint[g, p, 4])},
   {interval = MetricInterval[g, p, w]},
   {feet = FindClosestInfraPoint[g, interval, v, All]},
-  {InfraSubstrateHighlight[g, {interval -> $InfraSegmentColor, Directive[$InfraPointColor], p, v, w, Directive[$InfraCircleColor], feet}],
+  {InfraSubstrateHighlight[g, {interval, p, v, w, feet}],
    Min[GraphDistance[g, p, #] & /@ feet]/GraphDistance[g, p, v],
    InfraMetricTensor[g, p][[VertexIndex[g, v], VertexIndex[g, w]]]}]
 ```
@@ -148,7 +148,7 @@ The comparison cosine of [InfraScalarProduct]() reads −1 for two orthogonal ne
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = InfraCenter[g]},
-  {InfraSubstrateHighlight[g, {Directive[$InfraPointColor], c, Directive[$InfraCircleColor], 2, 6, 11}],
+  {InfraSubstrateHighlight[g, {c, 2, 6, 11}],
    {InfraScalarProduct[g, c, 2, 6], InfraScalarProduct[g, c, 2, 11]},
    MatrixForm @ InfraMetricTensor[g, c, 1]}]
 ```
