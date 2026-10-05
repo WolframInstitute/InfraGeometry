@@ -32,6 +32,14 @@ InfraMeasurement[ graph_Graph,
     InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ], "Length" ] :=
   Total[ GraphDistance[ graph, #1, #2 ] & @@@ Partition[ { pts }, 2, 1 ] ]
 
+(* the one witness of a closed polyline retraces none of its edges when some member does not, a polygon being a simple closed curve; otherwise it
+   is the first member *)
+
+FindInfraRepresentative[ graph_Graph,
+    segment : InfraSegment[ p : Except[ _Rule | _RuleDelayed ], mid : Repeated[ Except[ _Rule | _RuleDelayed ] ], p_ ],
+    Optional[ Automatic, Automatic ] ] :=
+  Replace[ edgeFreshChain[ graph, { p, mid, p } ], { } :> First[ FindInfraRepresentative[ graph, segment, UpTo[ 1 ] ], { } ] ]
+
 FindInfraRepresentative[ graph_Graph,
     InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
@@ -45,6 +53,32 @@ FindInfraRepresentative[ graph_Graph,
       All,       members,
       _UpTo,     Take[ members, count ],
       _,         If[ Length @ members < count, { }, Take[ members, count ] ] ] ]
+
+(* a member with no edge twice, or { } when there is none, as a 0-1 program: on side i a unit flow x through its interval DAG from p_i to p_(i+1),
+   which is one geodesic since the DAG is acyclic, and every edge of the graph carried by at most one side in either direction *)
+
+edgeFreshChain[ graph_Graph, corners_List ] :=
+  With[ { sides = Partition[ corners, 2, 1 ] },
+    { dags = InfraMeasurement[ graph, InfraSegment @@ #, "Graph" ] & /@ sides },
+    { arcs = Catenate @ MapIndexed[ { dag, i } |-> ( { First @ i, # } & /@ EdgeList @ dag ), dags ] },
+    { x = Array[ \[FormalX], Length @ arcs ] },
+    { outOf = GroupBy[ Transpose[ { arcs, x } ], ( { #[[ 1, 1 ]], #[[ 1, 2, 1 ]] } & ) -> Last, Total ],
+      into = GroupBy[ Transpose[ { arcs, x } ], ( { #[[ 1, 1 ]], #[[ 1, 2, 2 ]] } & ) -> Last, Total ],
+      load = GroupBy[ Transpose[ { arcs, x } ], ( Sort[ List @@ #[[ 1, 2 ]] ] & ) -> Last, Total ] },
+    { solution = Which[ AnyTrue[ dags, VertexCount[ # ] == 0 & ], $Failed, arcs === { }, { }, True,
+        Quiet @ LinearOptimization[ 0,
+          Join[
+            Catenate @ MapIndexed[ { dag, i } |-> Map[
+                v |-> Lookup[ outOf, Key @ { First @ i, v }, 0 ] - Lookup[ into, Key @ { First @ i, v }, 0 ] ==
+                  Which[ SameQ @@ sides[[ First @ i ]], 0, v === sides[[ First @ i, 1 ]], 1, v === sides[[ First @ i, 2 ]], -1, True, 0 ],
+                VertexList @ dag ], dags ],
+            Thread[ Values @ load <= 1 ], Thread[ 0 <= x <= 1 ] ],
+          x \[Element] Vectors[ Length @ arcs, Integers ] ] ] },
+    If[ ! MatchQ[ solution, { ___Rule } ] || ! FreeQ[ solution, Indeterminate ], { },
+      With[ { chosen = Pick[ arcs, Round[ x /. solution ], 1 ] },
+        Fold[ Join[ #1, Rest @ #2 ] &,
+          MapIndexed[ { side, i } |-> If[ SameQ @@ side, { First @ side }, TopologicalSort @ Graph[ Cases[ chosen, { First @ i, arc_ } :> arc ] ] ],
+            sides ] ] ] ] ]
 
 InfraMeasurement[ graph_Graph,
     InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ], "VertexDensity" ] :=

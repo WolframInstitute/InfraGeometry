@@ -170,6 +170,29 @@ VerificationTest[
   TestID -> "InfraSegment-closed-polyline-density-counts-the-return"
 ]
 
+(* the one witness of a closed polyline retraces no edge when some member does not: on the 3x3 grid the triangle 1, 3, 9 closes along the far side
+   9, 8, 7, 4, 1 or through the centre 9, 8, 5, 4, 1, never back along 9, 6, 3, 2, 1; when every member retraces, as the closed side 1, 2, 1 must
+   and the two unique sides 1, 2 and 2, 1 of the 8x8 grid polygon 1, 64, 1, 2, 1 must, it is the first member *)
+VerificationTest[
+  With[{g = GridGraph[{3, 3}], obj = InfraSegment[1, 3, 9, 1]},
+    {w = FindInfraRepresentative[g, obj]},
+    {w === FindInfraRepresentative[g, obj, Automatic], InfraMemberQ[g, obj, w], DuplicateFreeQ[Sort /@ Partition[w, 2, 1]],
+     MemberQ[{{1, 2, 3, 6, 9, 8, 7, 4, 1}, {1, 2, 3, 6, 9, 8, 5, 4, 1}}, w], FindInfraRepresentative[g, obj, UpTo[1]]}],
+  {True, True, True, True, {{1, 2, 3, 6, 9, 6, 3, 2, 1}}},
+  TestID -> "InfraSegment-closed-polyline-witness-retraces-no-edge"
+]
+
+VerificationTest[
+  {FindInfraRepresentative[GridGraph[{3, 3}], InfraSegment[1, 2, 1]],
+   With[{g = GridGraph[{8, 8}], obj = InfraSegment[1, 64, 1, 2, 1]},
+     FindInfraRepresentative[g, obj] === First[FindInfraRepresentative[g, obj, UpTo[1]]]],
+   With[{g = GridGraph[{20, 20}], obj = InfraSegment[1, 210, 400, 191, 1]},
+     {w = FindInfraRepresentative[g, obj]},
+     InfraMemberQ[g, obj, w] && DuplicateFreeQ[Sort /@ Partition[w, 2, 1]]]},
+  {{1, 2, 1}, True, True},
+  TestID -> "InfraSegment-closed-polyline-witness-fallback-and-scale"
+]
+
 (* a bounded count reads the first members of the product of the sides: the 4x4 grid square
    1, 16, 1, 16 has 20^4 members, and fifty of them come without forming the class *)
 VerificationTest[

@@ -1,7 +1,8 @@
 BeginTestSection["InfraBallHull"]
 
 (* InfraBallHull[S, r] is the intersection of the closed balls of radius at most r containing S, the whole graph when no such ball exists;
-   InfraBallHull[S] takes every radius, the Mazur hull.  The brute-force intersections below enumerate the balls B_rho(c) themselves *)
+   InfraBallHull[S, {r}] takes the balls of radius exactly r, InfraBallHull[S, {r, s}] those between r and s, and InfraBallHull[S] every radius,
+   the Mazur hull.  The brute-force intersections below enumerate the balls B_rho(c) themselves *)
 
 VerificationTest[
   With[ { g = GridGraph[ { 6, 4 } ], s = { 1, 6, 22 } },
@@ -32,6 +33,62 @@ VerificationTest[
       InfraMeasurement[ g, InfraBallHull[ { 1, 6, 22 }, Infinity ], "VertexDensity" ] ],
   True,
   TestID -> "InfraBallHull-omitted-radius-is-infinity"
+]
+
+(* the radius grammar of InfraBall: r the balls of radius at most r, {r} exactly r, {r, s} between r and s *)
+
+VerificationTest[
+  With[ { g = PetersenGraph[ ], s = { 1, 7 } },
+    { hull = band |-> Sort @ Fold[ Intersection, VertexList @ g,
+        Select[
+          Catenate @ Table[ Select[ VertexList @ g, GraphDistance[ g, c, # ] <= rho & ], { c, VertexList @ g }, { rho, First @ band, Last @ band } ],
+          SubsetQ[ #, s ] & ] ] },
+    { Table[ Keys @ InfraMeasurement[ g, InfraBallHull[ s, { r } ], "VertexDensity" ] === hull @ { r, r }, { r, 0, 3 } ],
+      Table[ Keys @ InfraMeasurement[ g, InfraBallHull[ s, { r, t } ], "VertexDensity" ] === hull @ { r, t }, { r, 0, 3 }, { t, r, 3 } ] } ],
+  { { True, True, True, True }, { { True, True, True, True }, { True, True, True }, { True, True }, { True } } },
+  TestID -> "InfraBallHull-exact-and-band-equal-intersection-of-balls"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 6, 4 } ], s = { 1, 6, 22 } },
+    And @@ Table[
+      SameQ[ InfraMeasurement[ g, InfraBallHull[ s, r ], "VertexDensity" ], InfraMeasurement[ g, InfraBallHull[ s, { 0, r } ], "VertexDensity" ] ] &&
+        SameQ[ InfraMeasurement[ g, InfraBallHull[ s, { r } ], "VertexDensity" ],
+          InfraMeasurement[ g, InfraBallHull[ s, { r, r } ], "VertexDensity" ] ],
+      { r, 0, 9 } ] ],
+  True,
+  TestID -> "InfraBallHull-radius-forms-are-bands"
+]
+
+(* where the readings differ: on the 7x7 grid the two points 2 and 6 of the bottom row at distance 4 have the half-diamond, the ball of radius 2
+   about their midpoint, as their hull at every radius bound from 2 on; the balls of radius exactly r give it up to r = 5, then grow, and at the
+   diameter 12 every ball is the whole grid.  On the cycle C8 every ball of radius 4 is the whole cycle, while B_0, or the three balls B_1 about
+   the point and its neighbours, cut the hull of a point to it *)
+
+VerificationTest[
+  With[ { g = GridGraph[ { 7, 7 } ] },
+    { halfDiamond = Keys @ InfraMeasurement[ g, InfraBall[ 4, 2 ], "VertexDensity" ] },
+    { Keys @ InfraMeasurement[ g, InfraBallHull[ { 2, 6 }, 5 ], "VertexDensity" ] === halfDiamond,
+      Keys @ InfraMeasurement[ g, InfraBallHull[ { 2, 6 }, { 5 } ], "VertexDensity" ] === halfDiamond,
+      Length @ InfraMeasurement[ g, InfraBallHull[ { 2, 6 }, # ], "VertexDensity" ] & /@ Range[ 0, 12 ],
+      Length @ InfraMeasurement[ g, InfraBallHull[ { 2, 6 }, { # } ], "VertexDensity" ] & /@ Range[ 0, 12 ] } ],
+  { True, True, { 49, 49, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 }, { 49, 49, 9, 9, 9, 9, 14, 21, 28, 35, 41, 45, 49 } },
+  TestID -> "InfraBallHull-square-grid-exact-radius-grows"
+]
+
+VerificationTest[
+  With[ { g = CycleGraph[ 8 ] },
+    Keys @ InfraMeasurement[ g, InfraBallHull[ { 1 }, # ], "VertexDensity" ] & /@ { 4, { 4 }, { 0, 4 }, { 1, 4 }, { 4, 6 } } ],
+  { { 1 }, Range[ 8 ], { 1 }, { 1 }, Range[ 8 ] },
+  TestID -> "InfraBallHull-cycle-exact-radius-is-everything"
+]
+
+(* a ball of radius past the diameter of its component is the component, not the graph *)
+
+VerificationTest[
+  Keys @ InfraMeasurement[ Graph[ { 1 <-> 2, 2 <-> 3, 4 <-> 5 } ], InfraBallHull[ { 1 }, # ], "VertexDensity" ] & /@ { { 1 }, { 5 }, { 2, 9 } },
+  { { 1, 2 }, { 1, 2, 3 }, { 1, 2, 3 } },
+  TestID -> "InfraBallHull-exact-radius-stays-in-the-component"
 ]
 
 (* a closure: the hull contains S and is its own hull; a set is ball-convex iff it is its own hull *)
