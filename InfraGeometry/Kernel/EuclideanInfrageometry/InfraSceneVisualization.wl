@@ -227,7 +227,8 @@ infraInk[ graph_Graph, x_ ] :=
            "Walk"          -> walk,
            "Knots"         -> { } |> ],
     MatchQ[ x, ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
-      ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] | ( InfraBallHull | InfraConvexHull )[ _, ___ ] ],
+      ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
+      ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] ],
       <| "VertexDensity" -> InfraMeasurement[ graph, x, "VertexDensity" ],
          "EdgeDensity"   -> KeySort @ Counts[ UndirectedEdge @@ Sort[ List @@ # ] & /@ Keys @ InfraMeasurement[ graph, x, "EdgeDensity" ] ],
          "Walk"          -> None,

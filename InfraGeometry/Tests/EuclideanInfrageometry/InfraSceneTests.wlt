@@ -693,13 +693,13 @@ VerificationTest[
      the fibration constructions read by InfraTotalGraph and InfraFibrationAssociation (InfraFibrations T3).
      InfraFibration left the list in T3: its one-argument form converts a construction.  The hull heads InfraBallHull and
      InfraConvexHull joined it with APISurfaceCleanup T4, region heads read like InfraBall, and InfraSolidOfRevolution replaced
-     InfraRevolution in T5. *)
+     InfraRevolution in T5; InfraQuadric replaced the elliptic-shell token in T6. *)
   { "InflatedVertex",
     "InfraArc", "InfraBall", "InfraBallHull", "InfraCircle", "InfraCone", "InfraConnection", "InfraConvexHull",
     "InfraCotangentBundle", "InfraCylinder",
-    "InfraDisplacementBundle", "InfraEllipse", "InfraEllipticShell", "InfraGeodesic",
+    "InfraDisplacementBundle", "InfraEllipse", "InfraGeodesic",
     "InfraIntersectQ", "InfraLine", "InfraPlane", "InfraPoint",
-    "InfraPolygon", "InfraRay", "InfraSection", "InfraSegment",
+    "InfraPolygon", "InfraQuadric", "InfraRay", "InfraSection", "InfraSegment",
     "InfraShell", "InfraSolidOfRevolution", "InfraSphere", "InfraStep", "InfraTangentBundle", "InfraTube", "InfraWalk", "Undetermined" },
   TestID -> "InfraScene-valueless-exports-are-scene-tokens"
 ]

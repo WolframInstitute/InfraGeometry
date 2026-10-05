@@ -51,7 +51,8 @@ FindInfraEllipse[ graph_Graph, foci : { _, _ }, c_,
             _UpTo,     Take[ reps, count ],
             _,         If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ] ] ]
 
-(* cycle is an ellipse iff it is a cyclic path whose vertex set is an elliptic shell. *)
+(* cycle is an ellipse iff it is a cyclic path whose vertex set is an elliptic shell, the band InfraQuadric[{p1, p2}, {c, c}] of some foci; a
+   pair whose sum is not constant on the cycle is passed over before the band is read *)
 
 InfraEllipseQ[ graph_Graph, ws : { __Graph } ] :=
   AllTrue[ ws, InfraEllipseQ[ graph, # ] & ]
@@ -80,7 +81,11 @@ InfraEllipseQ[ graph_Graph, cycle_List ] /; Length[ cycle ] >= 3 :=
       pairs = Partition[ closed, 2, 1 ] },
     DuplicateFreeQ[ verts ] &&
     AllTrue[ pairs, EdgeQ[ graph, UndirectedEdge @@ # ] & ] &&
-    InfraEllipticShellQ[ graph, verts ]
+    With[ { rows = GraphDistanceMatrix[ graph ][[ All, VertexIndex[ graph, # ] & /@ verts ]], vlist = VertexList @ graph },
+      AnyTrue[ Subsets[ Range @ Length @ vlist, { 2 } ],
+        Apply[ { i, j } |-> Equal @@ ( rows[[ i ]] + rows[[ j ]] ) &&
+          Union @ verts === Keys @ InfraMeasurement[ graph,
+            InfraQuadric[ vlist[[ { i, j } ]], { 1, 1 } ( rows[[ i, 1 ]] + rows[[ j, 1 ]] ) ], "VertexDensity" ] ] ] ]
   ]
 
 InfraEllipseQ[ _Graph, cycle_List ] /; Length[ cycle ] < 3 :=

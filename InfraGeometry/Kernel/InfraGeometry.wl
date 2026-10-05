@@ -55,11 +55,7 @@ PackageExport[InfraShellQ]
 PackageExport[InfraSphere]
 PackageExport[FindInfraSphere]
 
-PackageExport[InfraEllipticShell]
-PackageExport[FindInfraEllipticShell]
-PackageExport[InfraEllipticShellQ]
-
-PackageExport[FindInfraQuadric]
+PackageExport[InfraQuadric]
 
 PackageExport[InfraBall]
 PackageExport[InfraBallQ]

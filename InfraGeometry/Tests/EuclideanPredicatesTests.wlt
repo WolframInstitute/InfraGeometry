@@ -568,7 +568,7 @@ VerificationTest[
      InfraLineQ[g, FindInfraLine[g, 1, 21, All]],
      InfraShellQ[g, FindInfraShell[g, 13, 2]],
      InfraBallQ[g, FindInfraRepresentative[g, InfraBall[13, 2]]],
-     InfraEllipticShellQ[g, FindInfraEllipticShell[g, {11, 15}, 6]],
+     InfraMemberQ[g, InfraQuadric[{11, 15}, {6, 6}], FindInfraRepresentative[g, InfraQuadric[{11, 15}, {6, 6}]]],
      InfraWalkQ[g, Select[ FindInfraWalk[ g, 1, UpTo[ 6 ], All, "StoppingCondition" -> ( Last[ # ] === 13 & ) ], Last @ Last @ VertexList @ # === 13 & ]],
      InfraPlaneQ[g, FindInfraBisectingHyperplane[g, 11, 15], 11, 15],
      InfraRayQ[g, FindInfraRay[g, 1, 13, All]],

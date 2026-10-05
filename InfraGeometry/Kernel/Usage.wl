@@ -75,15 +75,11 @@ InfraPolygon::usage = "InfraPolygon[As, n] is the inert family of regular n-gons
 FindInfraRegularPolygon::usage = "FindInfraRegularPolygon[graph, As, n] gives one closed n-vertex sequence whose k-th diagonal distances all match As[[k]] (each slot an Integer, {lo, hi}, or Automatic); a trailing n | UpTo[n] | All sets the count. Options \"NextVertexFunction\", \"From\".";
 InfraRegularPolygonQ::usage = "InfraRegularPolygonQ[graph, cycle, As] tests whether cycle is regular with respect to the diagonal-distance tuple As.";
 
-InfraEllipticShell::usage = "InfraEllipticShell names the elliptic-shell construction -- a level set of a sum of distances to two foci -- and carries no value of its own; FindInfraEllipticShell is the search and gives a sorted vertex list.";
-FindInfraEllipticShell::usage = "FindInfraEllipticShell[graph, {p1, p2}, c] gives the elliptic shell { v : d(p1, v) + d(p2, v) == c }; c may be a band {cmin, cmax}. Options Properties, \"NextVertexFunction\".";
-InfraEllipticShellQ::usage = "InfraEllipticShellQ[graph, vertexSet] tests whether vertexSet is an elliptic shell for some pair of foci and some constant.";
-
-FindInfraQuadric::usage = "FindInfraQuadric[graph, {p1, ..., pk}, c] gives the solid interior { v : Sum_i d(p_i, v) <= c }; a trailing weight list gives the signed sum, so weights {1, -1} give a hyperboloid branch.";
+InfraQuadric::usage = "InfraQuadric[{p1, ..., pk}, c] is the inert solid { v : Sum_i d(p_i, v) <= c }, c a number or a band {lo, hi}; a trailing weight list gives the signed sum. One focus is the ball, two the ellipse, InfraQuadric[{p1, p2}, {c, c}] the elliptic shell, weights {1, -1} a hyperbola branch. Read by InfraMeasurement and FindInfraRepresentative.";
 
 InfraEllipse::usage = "InfraEllipse names the metric-ellipse construction -- a cycle lying on an elliptic shell -- and carries no value of its own; FindInfraEllipse is the search and gives a directed cycle graph.";
 FindInfraEllipse::usage = "FindInfraEllipse[graph, {p1, p2}, c] gives one shortest separating cycle in the level surface { v : d(p1, v) + d(p2, v) == c }; a trailing n | UpTo[n] | All sets the count. Options Properties, \"NextVertexFunction\".";
-InfraEllipseQ::usage = "InfraEllipseQ[graph, cycle] tests whether cycle is a cyclic edge chain whose vertex set is an elliptic shell.";
+InfraEllipseQ::usage = "InfraEllipseQ[graph, cycle] tests whether cycle is a cyclic edge chain whose vertex set is an elliptic shell InfraQuadric[{p1, p2}, {c, c}] for some foci.";
 
 InfraPlane::usage = "InfraPlane[p1, p2] inside InfraScene is the bisecting hyperplane of p1 and p2; FindInfraBisectingHyperplane is the search. A plane itself is a sorted vertex list.";
 FindInfraBisectingHyperplane::usage = "FindInfraBisectingHyperplane[graph, p1, p2] gives the perpendicular bisector { v : d(p1, v) == d(p2, v) }; a positional {lo, hi} widens it to a slab. Options Properties, \"NextVertexFunction\".";
