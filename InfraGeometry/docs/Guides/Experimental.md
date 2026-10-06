@@ -5,13 +5,13 @@ Title: Experimental Functions
 Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/Experimental
-Keywords: [experimental, index, kernel files, differential forms, cochains]
+Keywords: [experimental, index, kernel files, differential forms, cochains, resolving sets, effective resistance, Ollivier-Ricci curvature, eccentricity]
 RelatedGuides: [EuclideanInfrageometry, RiemannianInfrageometry, InfraTopology, InfraAnalysis, InfraFiberBundles, InfraSubstrates]
 ---
 
 ## Abstract
 
-Every exported symbol that no other guide of the site covers, one section per kernel file, titled by the kernel folder and the file. The folders are the category guides, and the Experimental folder holds the research files. The symplectic branch has no code yet. Each entry is the symbol's usage message cut to one line. A linked name opens its existing reference page, which has not been revised for this site; a name in bold has no reference page.
+Every exported symbol that no other guide of the site covers, one section per kernel file, titled by the kernel folder and the file. The folders are the category guides, and the Experimental folder holds the research files. The symplectic branch has no code yet. Each entry is the symbol's usage message cut to one line, and each name opens its reference page. Most of these pages predate this site and have not been revised for it.
 
 ## Functions
 
@@ -152,27 +152,27 @@ Every exported symbol that no other guide of the site covers, one section per ke
 
 ### Experimental · GraphBoundary.wl
 
-- **GraphBoundary** — the inner vertex boundary of S in g, the vertices where an edge of g escapes S
-- **GraphInterior** — the interior of S in g, S minus its GraphBoundary
-- **GraphEccentricities** — the eccentricity of every vertex, in VertexList order
-- **RelativeEccentricity** — the eccentricity of each vertex rescaled to run from 0 at the radius to 1 at the diameter
+- `GraphBoundary` the inner vertex boundary of S in g, the vertices where an edge of g escapes S
+- `GraphInterior` the interior of S in g, S minus its GraphBoundary
+- `GraphEccentricities` the eccentricity of every vertex, in VertexList order
+- `RelativeEccentricity` the eccentricity of each vertex rescaled to run from 0 at the radius to 1 at the diameter
 
 ### Experimental · Coordinatization.wl
 
-- **RadarCoordinates** — the distance vector from a vertex to each vertex of a basis
-- **ResolvingSetQ** — whether a basis is a resolving set
-- **FindResolvingSet** — up to n resolving sets, or metric bases, of g by ascending size
-- **MetricDimension** — the metric dimension of g
-- **ResistanceCoordinates** — the spectral embedding whose squared distances are the effective resistances
+- `RadarCoordinates` the distance vector from a vertex to each vertex of a basis
+- `ResolvingSetQ` whether a basis is a resolving set
+- `FindResolvingSet` up to n resolving sets of g, the smallest first; the first of them is a metric basis
+- `MetricDimension` the metric dimension of g
+- `ResistanceCoordinates` the spectral embedding whose squared distances are the effective resistances
 - `OrthogonalCoordinates` the integer displacement of v along each axis through the centre c
 - `FindInfraOrthogonalFrame` frames of mutually perpendicular geodesic axes through the centre c
 - `FindInfraSpanningAxes` n mutually well-separated longest geodesics across a graph, with no fixed centre
 
 ### Experimental · OllivierCurvature.wl
 
-- **OllivierRicciCurvature** — the Ollivier-Ricci curvature of every edge, with the uniform measure on each neighbourhood
-- **EffectiveResistance** — the Klein-Randic resistance distance R(u, v), from the pseudoinverse of the graph Laplacian
-- **ResistanceQ** — whether a symmetric matrix with zero diagonal is realisable as a resistance distance matrix
+- `OllivierRicciCurvature` the Ollivier-Ricci curvature of every edge, with the uniform measure on each neighbourhood
+- `EffectiveResistance` the Klein-Randic resistance distance R(u, v), from the pseudoinverse of the graph Laplacian
+- `ResistanceQ` whether a symmetric matrix with zero diagonal is of negative type, as every resistance distance matrix is
 
 ### Experimental · DifferentialForms.wl
 
