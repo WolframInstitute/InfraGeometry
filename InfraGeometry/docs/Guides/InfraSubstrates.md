@@ -18,43 +18,43 @@ The substrate is the graph the observer lives on. InfraSubstrate names the examp
 ### Named substrates
 
 - `InfraSubstrate` the named example substrate at size "Small", "Medium" or "Large", or at a raw size
-- **InfraSubstrateStyle** — the option list a substrate backdrop is drawn with at a given size
-- **InfraSubstrateCode** — the held code behind a named substrate, which evaluates to the same graph
+- `InfraSubstrateStyle` the option list a substrate backdrop is drawn with at a given size
+- `InfraSubstrateCode` the held code behind a named substrate, which evaluates to the same graph
 
 ### Tessellation graphs
 
 - `TessellationGraph` the smallest regular map of type {p, q}, or the uniform map of a vertex configuration, as a graph
 - `TorusTessellation` the flat-torus graph carrying the square, triangular or hexagonal tessellation
-- **TessellationNeighborhoodGraph** — the radius-r ball cut from the infinite regular {p, q} tessellation, with its embedding
+- `TessellationNeighborhoodGraph` the radius-r ball cut from the infinite regular {p, q} tessellation, with its embedding
 
 ### Uniform-length graphs
 
-- **UniformLengthGraph** — the contact graph of a hard-sphere packing relaxed in a region, filling a solid or meshing a surface
-- **UniformLengthEmbedding** — embeds a graph in R^d so that every edge is a unit segment
+- `UniformLengthGraph` the contact graph of a hard-sphere packing relaxed in a region, filling a solid or meshing a surface
+- `UniformLengthEmbedding` coordinates in R^d under which the edges of a graph have length close to 1
 
 ### Other example graphs
 
-- **SierpinskiGraph** — the trivalent Sierpinski graph
-- **BetheGraph** — the finite Bethe lattice, or Cayley tree, of n shells and coordination number z
-- **BranchingSequenceTree** — the spherically symmetric rooted tree whose offspring count depends only on depth
+- `SierpinskiGraph` the trivalent Sierpinski graph
+- `BetheGraph` the finite Bethe lattice, or Cayley tree, of n shells and coordination number z
+- `BranchingSequenceTree` the spherically symmetric rooted tree whose offspring count depends only on depth
 
 ### Surface-like graphs
 
-- **TessellationCurvature** — the combinatorial Gaussian curvature at a vertex of a regular or uniform map; its sign says spherical, flat or hyperbolic
-- **TessellationEulerCharacteristic** — the Euler characteristic V - E + F of a tessellation graph
-- **TessellationGenus** — the orientable genus of a tessellation graph, from its Euler characteristic
+- `TessellationCurvature` the combinatorial Gaussian curvature at a vertex of a regular or uniform map; its sign says spherical, flat or hyperbolic
+- `TessellationEulerCharacteristic` the Euler characteristic V - E + F of a tessellation graph
+- `TessellationGenus` the orientable genus of a tessellation graph, from its Euler characteristic
 - waits: a test whether a graph is surface-like at a scale, its metric balls discs and its metric shells cycles
 
 ### Preparing a substrate
 
 - `CenterGraph` the substrate cut to the ball of k hops about its centre; a negative k counts back from the radius, Scaled[q] takes a fraction of it
-- **BoundarylessGraph** — deletes every edge joining two rim vertices and then the vertices this isolates, an open window onto the geometry
-- **GraphExteriorBoundary** — the rim vertices of the whole graph, detected from vertex degrees
+- `BoundarylessGraph` deletes every edge joining two rim vertices and then the vertices this isolates, an open window onto the geometry
+- `GraphExteriorBoundary` the rim vertices of the whole graph, detected from vertex degrees
 
 ### Inflated substrates
 
-- **InflateGraph** — grows a fiber of extra vertices over every vertex, joined to its base vertex, with random edges between nearby fibers
-- **InflatedVertex** — the i-th fiber vertex over a base vertex in a graph produced by InflateGraph
+- `InflateGraph` grows a fiber of extra vertices over every vertex, joined to its base vertex, with random edges from every fiber to the vertices nearby
+- `InflatedVertex` the i-th fiber vertex over a base vertex in a graph produced by InflateGraph
 
 ### Fibered substrates
 
