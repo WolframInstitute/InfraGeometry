@@ -176,19 +176,19 @@ Every exported symbol that no other guide of the site covers, one section per ke
 
 ### Experimental · DifferentialForms.wl
 
-- **FormValue** — the value of the germ of a form at a vertex on a tuple of its neighbours, alternating in the tuple
-- **CochainValue** — the value of an alternating cochain on a vertex tuple
-- **OrderedCochainValue** — the value of an ordered cochain on an increasing vertex tuple
-- **FormDegree** — the degree of a form
-- **CochainDegree** — the degree of a cochain
-- **ZeroForm** — a vertex function as a 0-form
-- **RestrictionMap** — the form read from an alternating cochain with the base vertex prepended
-- **IntegrationMap** — the cochain averaged from the germs of a form over each clique, a left inverse of RestrictionMap
-- **Coboundary** — the coboundary of a cochain, the alternating sum over the faces of every clique one dimension up
-- **FormDifferential** — the differential of a form, the gradient on 0-forms and with a transport term on 1-forms
-- **NaiveDifferential** — the differential of a 1-form with the transport term dropped, kept for comparison
-- **FormWedge** — the wedge product of forms, fibre by fibre
-- **CochainCup** — the cup product of alternating cochains, antisymmetrised over the orderings of each clique
-- **OrderedCochainCup** — the Alexander-Whitney cup product of ordered cochains
-- **CochainCupOne** — the Steenrod cup-1 product of ordered cochains
-- **AntisymmetrizedCup** — an alias of CochainCup
+- `FormValue` the value of the germ of a form at a vertex on a tuple of its neighbours, alternating in the tuple
+- `CochainValue` the value of an alternating cochain on a vertex tuple
+- `OrderedCochainValue` the value of an ordered cochain on an increasing vertex tuple
+- `FormDegree` the degree of a form
+- `CochainDegree` the degree of a cochain
+- `ZeroForm` a vertex function as a 0-form
+- `RestrictionMap` the form read from an alternating cochain with the base vertex prepended
+- `IntegrationMap` the cochain averaged from the germs of a form over each clique, a left inverse of RestrictionMap
+- `Coboundary` the coboundary of a cochain, the alternating sum over the faces of every clique one dimension up
+- `FormDifferential` the differential of a form, the gradient on 0-forms and with a transport term on 1-forms
+- `NaiveDifferential` the differential of a 1-form with the transport term dropped, kept for comparison
+- `FormWedge` the wedge product of forms, fibre by fibre
+- `CochainCup` the cup product of alternating cochains, antisymmetrised over the orderings of each clique
+- `OrderedCochainCup` the Alexander-Whitney cup product of ordered cochains
+- `CochainCupOne` the Steenrod cup-1 product of ordered cochains
+- `AntisymmetrizedCup` an alias of CochainCup
