@@ -37,7 +37,7 @@ The Riemannian measure of a sphere instance in a band *{r, r + 1}*, *r ≥ 1*, i
 
 No count is known. The family has no closed formula for its number of members, and one instance none for its size: the size of one instance bounds the size of no other. The reference is the shell it lies in, whose count [InfraShell]() gives on a lattice. In the continuum a sphere instance stands for the geodesic sphere, of area *n ω_n r^(n−1) (1 − Scal(c) r² / (6n) + O(r⁴))*.
 
-How the number is measured: one instance <code>*T* = [FindInfraRepresentative]()[*g*, [InfraSphere]()[*c*, {*r*, *r* + 1}]]</code>, found greedily, is a vertex list, and <code>[InfraMeasurement]()[*g*, [InfraTube]()[*T*, 0], *measure*]</code> measures it as a region. The profile is the list of the instance sizes over *r*, a profile of instances, not of the family.
+How the number is measured: one instance *T*, <code>[FindInfraRepresentative]()[*g*, [InfraSphere]()[*c*, {*r*, *r* + 1}]]</code>, found greedily, is a vertex list, and <code>[InfraMeasurement]()[*g*, [InfraTube]()[*T*, 0], *measure*]</code> measures it as a region. The profile is the list of the instance sizes over *r*, a profile of instances, not of the family.
 
 [FindInfraRepresentative]() gives members: a count, `"RandomChoice"` and `"Pruning" -> q` are translated to the `"NextVertexFunction"` of [FindInfraSphere](). Without a count it gives one member, a sorted vertex list.
 

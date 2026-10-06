@@ -26,6 +26,7 @@ Riemannian infrageometry measures and describes a discrete substrate represented
 
 ### Infrageodesics
 
+- `InfraGeodesic` the inert geodesics at infra-scale s through a germ, a vertex list; InfraMeasurement reads its graph, the window graph of the forward extensions, FindInfraRepresentative the inextensible simple ones
 - `FindInfraGeodesic` the geodesics at infra-scale s grown from a germ, a vertex or a walk: every window of s consecutive vertices plus the next one is a shortest path; a trailing count gives a List of them
 - `InfraGeodesicQ` whether a walk is a geodesic at infra-scale s; scale 1 is InfraWalkQ and Infinity is InfraSegmentQ
 

@@ -18,7 +18,7 @@ RelatedGuides: [InfraFiberBundles]
 
 ## Details & Options
 
-- *F* covers *f* when the projection of <code>*F*[*x*]</code> is <code>*f*[*p*]</code> for every total vertex *x* over *p*.
+- *F* covers *f* when the projection of *F*(*x*) is *f*(*p*) for every total vertex *x* over *p*.
 - An edge may go to an edge or collapse to a vertex: *F* is a homomorphism of the total graphs with loops added.
 - *F* and *f* are functions applied to one vertex. A vertex of a literal catalogue entry is a pair {*p*, *k*}, so *F* takes one argument.
 
