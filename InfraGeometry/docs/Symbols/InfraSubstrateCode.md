@@ -62,11 +62,11 @@ With[
   {code, ReleaseHold[code]}]
 ```
 
-An inflated substrate: the code calls [InflateGraph]().
+An inflated substrate: the code calls [InflateGraph]() with the amount and the options.
 
 ```wl
 With[
-  {code = InfraSubstrateCode["HexagonalTilingGraph", "Small", "Inflate" -> 1, "KeepCoordinates" -> True]},
+  {code = InfraSubstrateCode["HexagonalTilingGraph", "Small", "Inflate" -> {2, "VerticalEdges" -> 1}, "KeepCoordinates" -> True]},
   {code, (SeedRandom[1]; ReleaseHold[code])}]
 ```
 
@@ -84,9 +84,9 @@ With the seed set after the build, the code gives the substrate drawn with no st
 
 ```wl
 With[
-  {code = InfraSubstrateCode["SquareTilingGraph", "Small", "Inflate" -> 1, "KeepCoordinates" -> True]},
+  {code = InfraSubstrateCode["SquareTilingGraph", "Small", "Inflate" -> 2, "KeepCoordinates" -> True]},
   {graph = (SeedRandom[1]; ReleaseHold[code])},
-  {substrate = (SeedRandom[1]; InfraSubstrate["SquareTilingGraph", "Small", "Default", "Inflate" -> 1, "KeepCoordinates" -> True])},
+  {substrate = (SeedRandom[1]; InfraSubstrate["SquareTilingGraph", "Small", "Default", "Inflate" -> 2, "KeepCoordinates" -> True])},
   {graph, graph === substrate}]
 ```
 
@@ -105,7 +105,7 @@ A seed set before the code is built is spent on the build. The graph then differ
 
 ```wl
 With[
-  {graph = (SeedRandom[1]; ReleaseHold[InfraSubstrateCode["SquareTilingGraph", "Small", "Inflate" -> 1, "KeepCoordinates" -> True]])},
-  {substrate = (SeedRandom[1]; InfraSubstrate["SquareTilingGraph", "Small", "Default", "Inflate" -> 1, "KeepCoordinates" -> True])},
+  {graph = (SeedRandom[1]; ReleaseHold[InfraSubstrateCode["SquareTilingGraph", "Small", "Inflate" -> 2, "KeepCoordinates" -> True]])},
+  {substrate = (SeedRandom[1]; InfraSubstrate["SquareTilingGraph", "Small", "Default", "Inflate" -> 2, "KeepCoordinates" -> True])},
   {GraphicsRow[{graph, substrate}], graph === substrate}]
 ```

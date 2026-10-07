@@ -51,7 +51,7 @@ Options:
 | Option | Default | Values |
 |---|---|---|
 | `"KeepCoordinates"` | `False` | `True` draws the substrate in its own embedding |
-| `"Inflate"` | `None` | a number of extra vertices over every vertex, a range `{min, max}`, or an option list for `InflateGraph` |
+| `"Inflate"` | `None` | *k*, a number of new vertices over every vertex or a range `{min, max}`, for `InflateGraph[g, k]`; or `{k, opts}`, adding the options `"VerticalEdges"` and `"HorizontalEdges"` of `InflateGraph` |
 
 `Graph` options are passed on to the graph. The backdrop style is the substrate style of the size: gray edges and small gray vertices, lighter as the substrate grows.
 
