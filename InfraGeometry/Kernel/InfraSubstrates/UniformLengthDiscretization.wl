@@ -2,149 +2,83 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: InfraSubstrates :: UniformLengthDiscretization *)
 
-(* The contact graph of a relaxed hard-sphere packing has all edges at exactly 2r:
-   two touching spheres of radius r have centers at distance 2r by geometry, not by
-   force balance.  UniformLengthGraph packs a region as given -- filling a solid, meshing a
-   surface -- and returns that contact graph; UniformLengthEmbedding is the inverse, realising
-   an abstract graph in R^d with every edge a unit segment (the iterative sibling of
-   the declarative ComplexEmbedding). *)
-
 Options[ UniformLengthGraph ] = {
-	Method -> "IterativeProjection",
-	"Radius" -> Automatic,
-	"MaxIterations" -> 200,
-	"Tolerance" -> 10.^-6,
-	"ProjectionStep" -> 1.,
-	"Overpack" -> 1.,
 	"ContactTolerance" -> 0.25,
-	"KeepCoordinates" -> False
+	"InitialPoints" -> Automatic,
+	"KeepCoordinates" -> False,
+	MaxIterations -> 200,
+	Tolerance -> 10.^-6
 }
 
-(* unit-length graph of region: contact graph of a relaxed hard-sphere packing of n spheres in
-   region, every edge length 2r.  "KeepCoordinates" -> True stores the packing in VertexCoordinates;
-   by default the coordinates are dropped.  The automatic radius
-   spaces the spheres to tile the region's content C in its own dimension d (2r = C/n on a curve,
-   Sqrt[2 C / (n Sqrt[3])] hexagonally on a surface, 1.12 (C/n)^(1/3) in a solid), so the packing
-   jams into contacts; "Overpack" > 1 tightens the contact shell *)
-UniformLengthGraph[ region_ ? RegionQ, n_Integer, opts : OptionsPattern[] ] :=
+UniformLengthGraph[ region_ ? RegionQ, h_ ? Positive, opts : OptionsPattern[] ] :=
   With[
-    { radiusOption = OptionValue[ "Radius" ], dim = RegionDimension[ region ] },
     {
-      radius = If[ radiusOption === Automatic,
+      points = If[ RegionDimension[ region ] === 1,
         With[
+          { mesh = DiscretizeRegion[ region, MaxCellMeasure -> { 1 -> h / 20 }, AccuracyGoal -> Log10[ 1000 / h ] ] },
+          { cells = MeshCells[ mesh, 1 ][[ All, 1 ]] },
+          { chainGraph = Graph[ UndirectedEdge @@@ cells ] },
+          { ends = Pick[ VertexList[ chainGraph ], VertexDegree[ chainGraph ], 1 ] },
           {
-            measure = Replace[ region, {
-              Sphere[ _ : { 0, 0, 0 }, r_ : 1 ] :> 4. Pi r ^ 2,
-              Ball[ _ : { 0, 0, 0 }, r_ : 1 ] :> 4. Pi r ^ 3 / 3,
-              Ellipsoid[ _, { a_, b_, c_ } ] :> 4. Pi a b c / 3,
-              RegionBoundary[ Ellipsoid[ _, { a_, b_, c_ } ] ] :>
-                4. Pi ( ( a ^ 1.6075 b ^ 1.6075 + a ^ 1.6075 c ^ 1.6075 + b ^ 1.6075 c ^ 1.6075 ) / 3 ) ^ ( 1 / 1.6075 ),
-              _ :> RegionMeasure[ region ]
-            } ]
+            chain = MeshCoordinates[ mesh ][[ If[ ends === { },
+              Append[ #, First[ # ] ] & @ FindShortestPath[ EdgeDelete[ chainGraph, UndirectedEdge @@ First[ cells ] ], Sequence @@ First[ cells ] ],
+              FindShortestPath[ chainGraph, First[ ends ], Last[ ends ] ]
+            ] ]]
           },
-          0.5 OptionValue[ "Overpack" ] Switch[ dim,
-            1, measure / n,
-            2, Sqrt[ 2 measure / ( n Sqrt[ 3. ] ) ],
-            _, 1.12 ( measure / n ) ^ ( 1 / 3 )
-          ]
+          { arclength = Prepend[ Accumulate[ EuclideanDistance @@@ Partition[ chain, 2, 1 ] ], 0. ] },
+          { count = Max[ 1, Round[ Last[ arclength ] / h ] ] },
+          Interpolation[ Transpose[ { arclength, chain } ], InterpolationOrder -> 1 ] /@
+            ( Last[ arclength ] If[ ends === { }, Range[ 0, count - 1 ], Range[ 0, count ] ] / count )
         ],
-        N[ radiusOption ]
-      ],
-      fibonacci = Table[
-        With[
-          { phi = N[ Pi ( 3 - Sqrt[ 5 ] ) ] i, z = 1. - 2. ( i + 0.5 ) / n },
-          { rho = Sqrt[ 1. - z ^ 2 ] },
-          { rho Cos[ phi ], rho Sin[ phi ], z }
-        ],
-        { i, 0, n - 1 }
-      ]
-    },
-    {
-      seed = Replace[ region, {
-        Sphere[ c : { _, _, _ } : { 0, 0, 0 }, r_ : 1 ] :> ( c + r # & ) /@ fibonacci,
-        RegionBoundary[ Ellipsoid[ c : { _, _, _ }, s : { _, _, _ } ] ] :> ( c + s # & ) /@ fibonacci,
-        _ :> RandomPoint[ region, n ]
-      } ]
-    },
-    {
-      points = Switch[ OptionValue[ Method ],
-        "ConstrainedPacking",
-        With[
-          { regionDistance = Unique[ "ulRegionDistance" ], vars = Table[ Unique[ "ulx" ], Length[ seed ], Length[ First[ seed ] ] ] },
-          regionDistance[ p : { __ ? NumericQ } ] := RegionDistance[ region, p ];
-          Partition[
-            Flatten[ vars ] /. Last @ NMinimize[
-              {
-                Total[ regionDistance[ # ] ^ 2 & /@ vars ],
-                And @@ Flatten @ Table[
-                  ( vars[[ i ]] - vars[[ j ]] ) . ( vars[[ i ]] - vars[[ j ]] ) >= ( 2 radius ) ^ 2,
-                  { i, Length[ vars ] },
-                  { j, i + 1, Length[ vars ] }
-                ]
-              },
-              Flatten[ vars ]
-            ],
-            Length[ First[ seed ] ]
-          ]
-        ],
-        _,
-        With[
-          {
-            retract = Replace[ region, {
-              Sphere[ c : { _, _, _ } : { 0, 0, 0 }, r_ : 1 ] :> ( pts |-> ( c + r Normalize[ # - c ] & ) /@ pts ),
-              Ball[ c : { _, _, _ } : { 0, 0, 0 }, r_ : 1 ] :>
-                ( pts |-> ( If[ EuclideanDistance[ c, # ] <= r, #, c + r Normalize[ # - c ] ] & ) /@ pts ),
-              Ellipsoid[ c : { _, _, _ }, s : { _, _, _ } ] :>
-                ( pts |-> ( With[ { q = ( # - c ) / s }, If[ q . q <= 1, #, c + ( # - c ) / Sqrt[ q . q ] ] ] & ) /@ pts ),
-              RegionBoundary[ Ellipsoid[ c : { _, _, _ }, s : { _, _, _ } ] ] :>
-                ( pts |-> ( c + ( # - c ) / Sqrt[ Total[ ( ( # - c ) / s ) ^ 2 ] ] & ) /@ pts ),
-              _ :> ( pts |-> RegionNearest[ region, pts ] )
-            } ]
-          },
-          NestWhile[
-            pts |-> With[
-              { neighbors = Nearest[ pts -> "Index" ][ pts, { Infinity, 2. radius } ] },
-              {
-                groups = GroupBy[
-                  Catenate @ Catenate @ Table[
-                    With[ { v = pts[[ i ]] - pts[[ j ]], dist = EuclideanDistance[ pts[[ i ]], pts[[ j ]] ] },
-                      If[ 10. ^ -12 < dist < 2 radius,
-                        With[ { delta = 0.5 ( 2 radius - dist ) v / dist }, { i -> delta, j -> -delta } ],
-                        { }
-                      ]
-                    ],
-                    { i, Length[ pts ] },
-                    { j, Select[ neighbors[[ i ]], # > i & ] }
+        NestWhile[
+          pts |-> With[
+            { neighbors = Nearest[ pts -> "Index" ][ pts, { Infinity, h } ] },
+            {
+              groups = GroupBy[
+                Catenate @ Catenate @ Table[
+                  With[ { v = pts[[ i ]] - pts[[ j ]], dist = EuclideanDistance[ pts[[ i ]], pts[[ j ]] ] },
+                    If[ 10. ^ -12 < dist < h,
+                      With[ { delta = 0.5 ( h - dist ) v / dist }, { i -> delta, j -> -delta } ],
+                      { }
+                    ]
                   ],
-                  First -> Last
-                ]
-              },
-              { moved = pts + Table[ Fold[ Plus, 0. pts[[ i ]], Lookup[ groups, i, { } ] ], { i, Length[ pts ] } ] },
-              moved + OptionValue[ "ProjectionStep" ] ( retract[ moved ] - moved )
-            ],
-            N[ seed ],
-            Max[ Norm /@ ( #2 - #1 ) ] >= OptionValue[ "Tolerance" ] &,
-            2,
-            OptionValue[ "MaxIterations" ]
-          ]
+                  { i, Length[ pts ] },
+                  { j, Select[ neighbors[[ i ]], # > i & ] }
+                ],
+                First -> Last
+              ]
+            },
+            RegionNearest[ region, pts + Table[ Fold[ Plus, 0. pts[[ i ]], Lookup[ groups, i, { } ] ], { i, Length[ pts ] } ] ]
+          ],
+          N @ Replace[
+            OptionValue[ "InitialPoints" ],
+            (* the hexagonal packing gives a sphere of diameter h the area Sqrt[3] h^2 / 2 on a surface; in a solid it takes (h / 1.12)^3 *)
+            Automatic :> RandomPoint[ region, Max[ 1, Round[ If[ RegionDimension[ region ] === 2,
+              2 RegionMeasure[ region ] / ( Sqrt[ 3. ] h ^ 2 ),
+              RegionMeasure[ region ] ( 1.12 / h ) ^ 3
+            ] ] ] ]
+          ],
+          Max[ Norm /@ ( #2 - #1 ) ] >= OptionValue[ Tolerance ] &,
+          2,
+          OptionValue[ MaxIterations ]
         ]
       ]
     },
-    With[ { nf = Nearest[ points -> "Index" ], band = 2 radius OptionValue[ "ContactTolerance" ] },
+    With[ { nf = Nearest[ points -> "Index" ], band = h OptionValue[ "ContactTolerance" ] },
       {
-        cg = Graph[
+        graph = Graph[
           Range[ Length[ points ] ],
-          Flatten @ Table[
+          Catenate @ Table[
             UndirectedEdge[ i, # ] & /@ Select[
-              nf[ points[[ i ]], { Infinity, 2 radius + band } ],
-              # > i && Abs[ EuclideanDistance[ points[[ i ]], points[[ # ]] ] - 2 radius ] <= band &
+              nf[ points[[ i ]], { Infinity, h + band } ],
+              # > i && Abs[ EuclideanDistance[ points[[ i ]], points[[ # ]] ] - h ] <= band &
             ],
             { i, Length[ points ] }
           ],
           VertexCoordinates -> points
         ]
       },
-      If[ OptionValue[ "KeepCoordinates" ], cg, Graph[ cg, VertexCoordinates -> Automatic ] ]
+      If[ OptionValue[ "KeepCoordinates" ], graph, Graph[ graph, VertexCoordinates -> Automatic ] ]
     ]
   ]
 
