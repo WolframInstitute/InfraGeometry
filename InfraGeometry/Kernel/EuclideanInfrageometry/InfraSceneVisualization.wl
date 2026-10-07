@@ -7,14 +7,14 @@ PackageScope[ $InfraPointSizes ]
 PackageScope[ $InfraAccentPointSize ]
 PackageScope[ $InfraOpacityRange ]
 PackageScope[ $InfraEdgeThickness ]
-PackageScope[ $InfraPointSize ]
+PackageScope[ $InfraRangeTop ]
 PackageScope[ infraInk ]
 PackageScope[ parseHighlightStyle ]
 PackageScope[ normalizeHighlightSpec ]
 
 $InfraOpacityRange  = { 0.40, 1.0 }
-$InfraEdgeThickness = 9.0
-$InfraPointSize     = 6
+$InfraEdgeThickness = 1.
+$InfraRangeTop      = <| "ThicknessRange" -> 4, "PointSizeRange" -> 3 |>
 
 $InfraPointSizes      = <| Small -> 4, Medium -> 7, Large -> 10 |>
 $InfraAccentPointSize = 12
@@ -25,7 +25,7 @@ $InfraStrikeOutPalette :=
 resolveArrowSpec[ spec_ ] :=
   Replace[ spec, {
     Automatic | None | False -> None,
-    True :> Arrowheads[ Medium ],
+    True -> True,
     a_Arrowheads :> a,
     other_ :> Arrowheads[ other ] } ]
 
@@ -52,16 +52,19 @@ parseHighlightStyle[ spec_, defaults_Association ] :=
         "EdgeShapeFunction" -> None, "VertexSize" -> None, "VertexShapeFunction" -> None |> ],
       normalizeHighlightSpec @ spec ],
     r_Association :> With[ {
-        edgeThick  = ! FreeQ[ { r[ "EdgeDir" ], r[ "EdgeStyle" ] },
-          Thickness | AbsoluteThickness | Thick | Thin ],
-        vertPtSize = ! FreeQ[ r[ "VertexDir" ], _PointSize | _AbsolutePointSize ] || r[ "VertexSize" ] =!= None,
+        absThick = Cases[ r[ "EdgeDir" ], AbsoluteThickness[ t_ ] :> t ],
+        absPoint = Cases[ r[ "VertexDir" ], AbsolutePointSize[ s_ ] :> s ],
+        edgeDir  = DeleteCases[ r[ "EdgeDir" ], _AbsoluteThickness ],
+        vertDir  = DeleteCases[ r[ "VertexDir" ], _AbsolutePointSize ] },
+      { edgeThick  = ! FreeQ[ { edgeDir, r[ "EdgeStyle" ] }, Thickness | AbsoluteThickness | Thick | Thin ],
+        vertPtSize = ! FreeQ[ vertDir, _PointSize | _AbsolutePointSize ] || r[ "VertexSize" ] =!= None,
         anyOpacity = ! FreeQ[ { r[ "VertexDir" ], r[ "EdgeDir" ], r[ "EdgeStyle" ] }, _Opacity ] },
       Join[ r, <|
-        "VertexDir" -> Directive @@ r[ "VertexDir" ],
-        "EdgeDir"   -> Directive @@ r[ "EdgeDir" ],
-        If[ edgeThick,  "ThicknessRange" -> None, Nothing ],
-        If[ vertPtSize, "PointSizeRange" -> None, Nothing ],
-        If[ anyOpacity, "OpacityRange"   -> None, Nothing ] |> ] ] ]
+        "VertexDir"      -> Directive @@ vertDir,
+        "EdgeDir"        -> Directive @@ edgeDir,
+        "ThicknessRange" -> Which[ edgeThick, None, absThick =!= { }, Last @ absThick, True, r[ "ThicknessRange" ] ],
+        "PointSizeRange" -> Which[ vertPtSize, None, absPoint =!= { }, Last @ absPoint, True, r[ "PointSizeRange" ] ],
+        If[ anyOpacity, "OpacityRange" -> None, Nothing ] |> ] ] ]
 
 normalizeHighlightSpec[ Automatic ]          :=
   { }
@@ -75,7 +78,7 @@ normalizeHighlightSpec[ x_ ]                 :=
 Options[ InfraSubstrateHighlight ] = Join[
   {
     "OpacityRange"   :> $InfraOpacityRange,
-    "ThicknessRange" :> $InfraEdgeThickness,
+    "ThicknessRange" -> Automatic,
     "PointSizeRange" -> Automatic,
     "Arrowheads"     -> Automatic,
     "Palette"        -> Automatic
@@ -105,47 +108,63 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
             obj_                 :> { First @ state, Append[ Last @ state, obj -> First @ state ] } } ],
           { { }, { } },
           items ],
-        { } -> _ ] },
+        { } -> _ ],
+      substrateThickness = First[ Cases[ Options[ graph, EdgeStyle ], AbsoluteThickness[ t_ ] :> t, Infinity ], $InfraEdgeThickness ],
+      spread = masses |-> With[ { lo = Min @ Values @ masses, hi = Max @ Values @ masses },
+        ( m |-> { m / hi, If[ hi == lo, 0, ( m - lo ) / ( hi - lo ) ] } ) /@ masses ] },
+    { span = { spec, base, key } |-> Replace[
+        Replace[ spec, {
+          Automatic -> { base, Automatic },
+          { b_, t_ } :> { Replace[ b, Automatic -> base ], t },
+          b : Except[ None ] :> { b, Automatic } } ],
+        { b_?NumericQ, Automatic } :> { b, $InfraRangeTop[ key ] b } ] },
     { objectEntries = MapIndexed[
         { item, idx } |-> With[ {
             ink    = infraInk[ graph, First @ item ],
             record = parseHighlightStyle[ Last @ item, ranges ] },
-          { mass = Max[ Values @ ink[ "VertexDensity" ], Values @ ink[ "EdgeDensity" ] ] },
-          <| "Verts"  -> ink[ "VertexDensity" ] / mass,
-             "Edges"  -> ink[ "EdgeDensity" ] / mass,
+          <| "Verts"  -> spread @ ink[ "VertexDensity" ],
+             "Edges"  -> spread @ ink[ "EdgeDensity" ],
              "Faint"  -> If[ ink[ "EdgeDensity" ] === <| |>,
                UndirectedEdge @@ Sort[ List @@ # ] & /@ EdgeList @ Subgraph[ graph, Keys @ ink[ "VertexDensity" ] ], { } ],
              "Walk"   -> ink[ "Walk" ],
              "Knots"  -> ink[ "Knots" ],
              "Color"  -> Lookup[ record, "Color", palette[[ 1 + Mod[ First @ idx - 1, Length @ palette ] ]] ],
-             "Record" -> Append[ record, "PointSizeRange" -> Replace[ record[ "PointSizeRange" ],
-               Automatic :> If[ ink[ "EdgeDensity" ] === <| |>, $InfraPointSize, None ] ] ] |> ],
+             "Record" -> Join[ record, <|
+               "ThicknessRange" -> span[ record[ "ThicknessRange" ], substrateThickness, "ThicknessRange" ],
+               "PointSizeRange" -> If[ ink[ "EdgeDensity" ] =!= <| |> && FreeQ[ Last @ item, "PointSizeRange" | _AbsolutePointSize ], None,
+                 span[ record[ "PointSizeRange" ], Automatic, "PointSizeRange" ] ],
+               If[ ListQ @ ink[ "Walk" ] && record[ "OpacityRange" ] =!= None && FreeQ[ Last @ item, "OpacityRange" ],
+                 "OpacityRange" -> { 1, 1 }, Nothing ] |> ] |> ],
         objects ] },
     { entries = Join[ objectEntries,
         MapIndexed[
-          { e, k } |-> With[ { record = parseHighlightStyle[ Automatic, ranges ], knots = KeySort @ Counts @ e[ "Knots" ] },
-            <| "Verts" -> knots / Max @ knots, "Edges" -> <| |>, "Faint" -> { }, "Walk" -> None, "Knots" -> { },
+          { e, k } |-> With[ { record = parseHighlightStyle[ Automatic, ranges ] },
+            <| "Verts" -> spread @ KeySort @ Counts @ e[ "Knots" ], "Edges" -> <| |>, "Faint" -> { }, "Walk" -> None, "Knots" -> { },
                "Color" -> palette[[ 1 + Mod[ Length @ objectEntries + First @ k - 1, Length @ palette ] ]],
-               "Record" -> Append[ record,
-                 "PointSizeRange" -> Replace[ record[ "PointSizeRange" ], Automatic :> $InfraPointSize ] ] |> ],
+               "Record" -> Join[ record, <|
+                 "ThicknessRange" -> span[ record[ "ThicknessRange" ], substrateThickness, "ThicknessRange" ],
+                 "PointSizeRange" -> span[ record[ "PointSizeRange" ], Automatic, "PointSizeRange" ] |> ] |> ],
           Select[ objectEntries, #[ "Knots" ] =!= { } & ] ] ] },
-    { vMasses = Merge[ ( e |-> ( { e[ "Color" ], #, e[ "Record" ] } & /@ e[ "Verts" ] ) ) /@ entries, Identity ],
-      eMasses = Merge[ ( e |-> ( { e[ "Color" ], #, e[ "Record" ] } & /@ e[ "Edges" ] ) ) /@ entries, Identity ],
+    { vMasses = Merge[ ( e |-> ( { e[ "Color" ], #[[ 1 ]], If[ e[ "Record" ][ "PointSizeRange" ] === None, 0, #[[ 2 ]] ], e[ "Record" ] } & /@
+        e[ "Verts" ] ) ) /@ entries, Identity ],
+      eMasses = Merge[ ( e |-> ( { e[ "Color" ], #[[ 1 ]], #[[ 2 ]], e[ "Record" ] } & /@ e[ "Edges" ] ) ) /@ entries, Identity ],
       fMasses = Merge[ ( e |-> AssociationMap[ { e[ "Color" ], e[ "Record" ] } &, e[ "Faint" ] ] ) /@ entries, Identity ] },
     { lerp  = { spec, w } |-> If[ ListQ @ spec, spec[[ 1 ]] + ( spec[[ 2 ]] - spec[[ 1 ]] ) w, spec w ],
+      grow  = { range, r } |-> First @ range + ( Last @ range - First @ range ) r,
       blend = cs |-> {
         Replace[ DeleteDuplicates @ cs[[ All, 1 ]], { { c_ } :> c, _ :> Blend[ cs[[ All, 1 ]], cs[[ All, 2 ]] ] } ],
         Min[ 1, Total @ cs[[ All, 2 ]] ],
-        cs[[ -1, 3 ]] } },
+        Min[ 1, Total @ cs[[ All, 3 ]] ],
+        cs[[ -1, 4 ]] } },
       {
           edgeData = Join[
             KeyValueMap[
               { ue, cs } |-> With[ { el = blend @ cs },
-                { color = el[[ 1 ]], w = el[[ 2 ]], rec = el[[ 3 ]] },
+                { color = el[[ 1 ]], w = el[[ 2 ]], r = el[[ 3 ]], rec = el[[ 4 ]] },
                 { oList = If[ rec[ "OpacityRange" ] === None, { },
                     { Opacity[ lerp[ rec[ "OpacityRange" ], w ] ] } ],
                   tList = If[ rec[ "ThicknessRange" ] === None, { },
-                    { AbsoluteThickness[ lerp[ rec[ "ThicknessRange" ], w ] ] } ],
+                    { AbsoluteThickness[ grow[ rec[ "ThicknessRange" ], r ] ] } ],
                   eDirs = List @@ rec[ "EdgeDir" ] },
                 <|
                   "EdgeStyle" -> ( ue -> Directive[ color, Sequence @@ oList, Sequence @@ tList, Sequence @@ eDirs,
@@ -160,6 +179,7 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                   "EdgeStyle" -> ( ue -> Directive[
                       Replace[ DeleteDuplicates @ cs[[ All, 1 ]], { { c_ } :> c, colors_ :> Blend @ colors } ],
                       Sequence @@ If[ rec[ "OpacityRange" ] === None, { }, { Opacity[ First @ Flatten @ { rec[ "OpacityRange" ] } ] } ],
+                      Sequence @@ If[ rec[ "ThicknessRange" ] === None, { }, { AbsoluteThickness[ First @ rec[ "ThicknessRange" ] ] } ],
                       Sequence @@ List @@ rec[ "EdgeDir" ],
                       Sequence @@ If[ rec[ "EdgeStyle" ] === None, { }, { rec[ "EdgeStyle" ] } ] ] ),
                   "EdgeShapeFunction" -> If[ rec[ "EdgeShapeFunction" ] === None, Nothing,
@@ -168,17 +188,22 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
               KeyDrop[ fMasses, Keys @ eMasses ] ] ],
           vertexData = KeyValueMap[
             { v, cs } |-> With[ { el = blend @ cs },
-              { color = el[[ 1 ]], w = el[[ 2 ]], rec = el[[ 3 ]] },
+              { color = el[[ 1 ]], w = el[[ 2 ]], r = el[[ 3 ]], rec = el[[ 4 ]] },
               { oList = If[ rec[ "OpacityRange" ] === None, { },
                   { Opacity[ lerp[ rec[ "OpacityRange" ], w ] ] } ],
-                vDirs = List @@ rec[ "VertexDir" ] },
+                vDirs = List @@ rec[ "VertexDir" ],
+                dot   = rec[ "PointSizeRange" ] },
               Which[
                 rec[ "VertexShapeFunction" ] =!= None,
                   <| "VSF" -> ( v -> rec[ "VertexShapeFunction" ] ) |>,
-                rec[ "PointSizeRange" ] =!= None || ! FreeQ[ vDirs, _AbsolutePointSize | _PointSize ],
+                ListQ @ dot && First @ dot === Automatic,
+                  With[ {
+                      body  = Flatten @ { color, oList, vDirs },
+                      scale = 1 + ( Replace[ Last @ dot, Automatic -> $InfraRangeTop[ "PointSizeRange" ] ] - 1 ) r },
+                    <| "VSF" -> ( v -> ( Append[ body, Disk[ #1, scale #3 ] ] & ) ) |> ],
+                dot =!= None || ! FreeQ[ vDirs, _AbsolutePointSize | _PointSize ],
                   With[ { body = Flatten[ { color, oList,
-                      If[ rec[ "PointSizeRange" ] === None, { },
-                        { AbsolutePointSize[ lerp[ rec[ "PointSizeRange" ], w ] ] } ], vDirs } ] },
+                      If[ dot === None, { }, { AbsolutePointSize[ grow[ dot, r ] ] } ], vDirs } ] },
                     <| "VSF" -> ( v -> ( Append[ body, Point[ #1 ] ] & ) ) |> ],
                 True,
                   <| "Style" -> Style[ v, Directive[ color, Sequence @@ oList, Sequence @@ vDirs ] ],
@@ -192,15 +217,27 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
         {
           strokes = Catenate @ Cases[ entries,
             e_Association /; e[ "Record" ][ "EdgeShapeFunction" ] === None && ListQ[ e[ "Walk" ] ] && Length[ e[ "Walk" ] ] >= 2 :>
-              With[ {
-                  runs = Select[ SplitBy[ Partition[ e[ "Walk" ], 2, 1 ], edgeStyle[ UndirectedEdge @@ Sort @ # ] & ],
-                    Length[ # ] >= 2 & ] },
+              With[ { runs = SplitBy[ Partition[ e[ "Walk" ], 2, 1 ], edgeStyle[ UndirectedEdge @@ Sort @ # ] & ] },
                 MapIndexed[
                   { steps, position } |-> { UndirectedEdge @@ Sort @ # & /@ steps,
                               coords /@ Prepend[ Last /@ steps, First @ First @ steps ],
                               First[ position ] === Length[ runs ],
                               e[ "Record" ][ "Arrowheads" ] },
-                  runs ] ] ]
+                  runs ] ] ],
+          heads = Merge[ Cases[ entries,
+            e_Association /; e[ "Record" ][ "Arrowheads" ] === True && e[ "Record" ][ "EdgeShapeFunction" ] === None &&
+              ListQ[ e[ "Walk" ] ] && Length[ e[ "Walk" ] ] >= 2 :>
+              Last @ e[ "Walk" ] -> With[ {
+                  tip   = coords @ Last @ e[ "Walk" ],
+                  style = Lookup[ edgeStyle, UndirectedEdge @@ Sort @ Take[ e[ "Walk" ], -2 ], Directive[ e[ "Color" ] ] ] },
+                { u    = Normalize[ tip - coords @ e[ "Walk" ][[ -2 ]] ],
+                  size = 5 + 2 First[ Cases[ style, AbsoluteThickness[ t_ ] :> t ], substrateThickness ],
+                  ink  = First[ Cases[ style, _?ColorQ ], e[ "Color" ] ] },
+                { If[ First @ ColorConvert[ ink, "LAB" ] > 0.6, GrayLevel[ 0.1 ], StandardYellow ], u, { - Last @ u, First @ u }, size } ] ],
+            Identity ]
+        },
+        {
+          vertexShapes = Association @ Cases[ vertexData, kv_Association /; KeyExistsQ[ kv, "VSF" ] :> kv[ "VSF" ] ]
         },
         {
           joinRules = Last @ Fold[
@@ -209,8 +246,8 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                 fresh_ :> {
                   Join[ First @ state, AssociationThread[ fresh -> True ] ],
                   Join[ Last @ state,
-                    { First @ fresh -> ( { JoinForm[ "Round" ],
-                        If[ stroke[[ 4 ]] =!= None && stroke[[ 3 ]],
+                    { First @ fresh -> ( { JoinForm[ "Round" ], CapForm[ "Round" ],
+                        If[ MatchQ[ stroke[[ 4 ]], _Arrowheads ] && stroke[[ 3 ]],
                           Sequence @@ { stroke[[ 4 ]], Arrow @ stroke[[ 2 ]] },
                           Line @ stroke[[ 2 ]] ] } & ) },
                     ( # -> ( { } & ) ) & /@ Rest @ fresh ] } } ],
@@ -223,7 +260,12 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
           Sequence @@ DeleteCases[ {
             EdgeStyle           -> DeleteCases[ Cases[ edgeData,   kv_Association :> kv[ "EdgeStyle" ] ], Nothing ],
             EdgeShapeFunction   -> Join[ DeleteCases[ Cases[ edgeData, kv_Association :> kv[ "EdgeShapeFunction" ] ], Nothing ], joinRules ],
-            VertexShapeFunction -> Cases[ vertexData, kv_Association /; KeyExistsQ[ kv, "VSF" ] :> kv[ "VSF" ] ],
+            VertexShapeFunction -> Normal @ Join[ vertexShapes, Association @ KeyValueMap[
+              { v, hs } |-> v -> With[ { shape = Lookup[ vertexShapes, Key @ v, Disk[ #1, #3 ] & ], hs = hs },
+                { shape[ ## ],
+                  ( { fill, u, side, size } |-> With[ { tip = #1 - First[ #3 ] u },
+                    { fill, EdgeForm[ ], Polygon[ { tip, Offset[ size ( 0.75 side - u ), tip ], Offset[ size ( - 0.75 side - u ), tip ] } ] } ] ) @@@ hs } & ],
+              heads ] ],
             VertexSize          -> DeleteCases[ Cases[ vertexData, kv_Association /; KeyExistsQ[ kv, "VSize" ] :> kv[ "VSize" ] ], Nothing ]
           }, _ -> { } ],
           FilterRules[ { opts }, Options @ HighlightGraph ] ]

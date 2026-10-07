@@ -32,11 +32,17 @@ Every object becomes a vertex density and an edge density:
 - any other vertex list: a set, `1` on its vertices, no edges;
 - an [InfraUnion]() or any other list — of vertex lists, graphs, heads or walks, such as the members of a head or a bundle: the sum of its members, drawn in one color, with no edges when a member has none.
 
-An object with edges is a line, drawn by its edge counts. Any other object is drawn as dots, sized by its masses, with the edges between its vertices in its color, at the bottom of `"OpacityRange"` and at the substrate's own thickness. Where a line uses such an edge, the line's stroke wins.
+An object with edges is a line, drawn by its edge counts. Any other object is drawn as dots, sized by its masses, with the edges between its vertices in its color, at the bottom of `"OpacityRange"` and at the base thickness. Where a line uses such an edge, the line's stroke wins.
 
-Each object is divided by its own heaviest mass, so every object reaches full strength somewhere. The objects are then summed. At each vertex and edge the strength is the sum, capped at `1`, and the color is the blend of the objects' colors weighted by their masses. Where objects overlap, the figure shows both.
+Density `1` draws at the base: the substrate's own vertex size and edge thickness, in the object's color. Within one object the lightest mass draws at the base and the heaviest at the top, by default four times the base for a stroke and three times for a dot. An object whose masses are all equal, such as a set, a region or a walk that never repeats an edge, looks like the substrate itself, colored.
+
+The opacity follows each mass divided by the object's heaviest, along `"OpacityRange"`. A single walk is opaque, so a walk that reuses edges stays one path, its repeated edges thicker.
+
+The objects are then summed. At each vertex and edge the strength is the sum, capped at `1`, and the color is the blend of the objects' colors weighted by their masses. Where objects overlap, the figure shows both.
 
 A head draws the edges its members use, never the chords of its support. An object with one member is drawn as one joined stroke; a family is drawn edge by edge.
+
+`"Arrowheads" -> True` puts a head on the last vertex of each walk, broader than long, its length growing with the stroke under it, black on a light stroke and gold on a dark one. An `Arrowheads` spec draws that spec instead.
 
 The list is read like a `Graphics` list. A `Directive` styles every object after it, until the next `Directive`. An entry `obj -> style` styles one object. A color in either replaces the palette color.
 
@@ -45,12 +51,14 @@ Options:
 | Option | Values | Default |
 |---|---|---|
 | `"OpacityRange"` | `None`, a scalar, or `{min, max}` | `{0.4, 1.}` |
-| `"ThicknessRange"` | `None`, a scalar, or `{min, max}` | base `9.` |
-| `"PointSizeRange"` | `None`, a scalar, or `{min, max}` | base `6` for an object with no edges |
+| `"ThicknessRange"` | `Automatic`, `None`, a base, or `{base, top}` | the substrate's own thickness, top four times it |
+| `"PointSizeRange"` | `Automatic`, `None`, a base, or `{base, top}` | the substrate's own vertex size, top three times it |
 | `"Arrowheads"` | `Automatic`, `True`, or an `Arrowheads` spec | off |
 | `"Palette"` | a list of colors | `ColorData[112]` |
 
-A scalar is the value at full strength. A pair is an envelope, interpolated by strength. An explicit `Opacity`, thickness or point size in an object's style turns that object's range off. `VertexSize` is in graph units.
+A size is in printer points, and `Automatic` is the substrate's own. For `"OpacityRange"` a scalar is the value at full strength and a pair is an envelope, interpolated by strength.
+
+An object's own style beats the option, given in the call or by `SetOptions`, which beats the default. `AbsoluteThickness[t]` or `AbsolutePointSize[s]` in an object's style fixes that object's base. The option sizes the dots of the objects without edges; a line gets dots only from its own style. An explicit `Opacity`, any other thickness or a `PointSize` turns that object's range off. `VertexSize` is in graph units.
 
 ## Basic Examples
 

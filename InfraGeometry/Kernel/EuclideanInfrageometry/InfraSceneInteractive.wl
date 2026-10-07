@@ -142,8 +142,8 @@ CircleViewer[ g_Graph ] :=
 
 Options[ InfraSceneViewer ] = {
   "OpacityRange"   :> $InfraOpacityRange,
-  "ThicknessRange" :> $InfraEdgeThickness,
-  "PointSizeRange" -> 18,
+  "ThicknessRange" -> Automatic,
+  "PointSizeRange" -> Automatic,
   ImageSize        -> 500
 }
 
