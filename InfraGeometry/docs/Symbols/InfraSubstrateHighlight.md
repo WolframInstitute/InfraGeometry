@@ -38,6 +38,8 @@ Density `1` draws at the base: the substrate's own vertex size and edge thicknes
 
 The opacity follows each mass divided by the object's heaviest, along `"OpacityRange"`. A single walk is opaque, so a walk that reuses edges stays one path, its repeated edges thicker.
 
+A density may carry negative masses. A positive mass is a filled dot and a negative mass an empty ring of the same size, both in the object's color; size and opacity follow the absolute mass, as above. A zero mass is not drawn: the vertex keeps the substrate's own style. Edges are not signed.
+
 The objects are then summed. At each vertex and edge the strength is the sum, capped at `1`, and the color is the blend of the objects' colors weighted by their masses. Where objects overlap, the figure shows both.
 
 A head draws the edges its members use, never the chords of its support. An object with one member is drawn as one joined stroke; a family is drawn edge by edge.
@@ -95,6 +97,28 @@ With[
   {q = (SeedRandom[2]; FindInfraPoint[g, InfraShell[c, 5]])},
   {walk = FindInfraRepresentative[g, InfraSegment[p, q]]},
   InfraSubstrateHighlight[g, {InfraSegment[c, p], InfraSegment[c, q], InfraWalk[walk]}, "Arrowheads" -> True]]
+```
+
+A negative mass is an empty ring. The boundary of a walk from *p* to *q* is *q* minus *p*: a dot at the end, a ring at the start, drawn with the walk.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {c = First @ GraphCenter[g]},
+  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])},
+  {q = (SeedRandom[2]; FindInfraPoint[g, InfraShell[c, 4]])},
+  {walk = FindInfraRepresentative[g, InfraSegment[p, q]]},
+  InfraSubstrateHighlight[g, {InfraWalk[walk], <|q -> 1, p -> -1|>}]]
+```
+
+The difference of two balls is a density too: dots on the first ball, rings on the second. Where they overlap the masses cancel to `0`, and a zero mass is not drawn.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 3]])},
+  InfraSubstrateHighlight[g, {InfraUnion[InfraBall[a, 3], -InfraMeasurement[g, InfraBall[b, 3], "VertexDensity"]]}]]
 ```
 
 ## Properties and Relations
