@@ -5,6 +5,10 @@ infraInk           = WolframInstitute`InfraGeometry`PackageScope`infraInk;
 strikeOutPalette   = WolframInstitute`InfraGeometry`PackageScope`$InfraStrikeOutPalette;
 dotScales          = opts |-> Catenate @ Cases[ VertexShapeFunction /. opts,
   ( _ -> f_Function ) :> Cases[ f[ { 0, 0 }, None, { 1, 1 } ], Disk[ _, { r_, _ } ] :> r, Infinity ], Infinity ];
+shapesAt           = opts |-> Association @ Cases[ VertexShapeFunction /. opts,
+  ( v_ -> f_Function ) :> v -> Sort @ Cases[ f[ { 0, 0 }, None, { 1, 1 } ], ( h : Disk | Circle | Point )[ ___ ] :> h, Infinity ], { 1 } ];
+ringScales         = opts |-> Catenate @ Cases[ VertexShapeFunction /. opts,
+  ( _ -> f_Function ) :> Cases[ f[ { 0, 0 }, None, { 1, 1 } ], Circle[ _, { r_, _ } ] :> r, Infinity ], Infinity ];
 headOf             = { opts, v } |-> Cases[ ( v /. ( VertexShapeFunction /. opts ) )[ { 0, 0 }, v, { 0.1, 0.1 } ], { c_, EdgeForm[ ], p_Polygon } :>
   { c, Round[ Norm @ Mean @ Cases[ p, Offset[ d_, _ ] :> d, Infinity ], 0.01 ], Round[ Norm[ Subtract @@ Cases[ p, Offset[ d_, _ ] :> d, Infinity ] ], 0.01 ] }, Infinity ];
 
@@ -837,4 +841,98 @@ VerificationTest[
       AbsolutePointSize[ s_ ] :> s, Infinity ] ],
   { 10 },
   TestID -> "InfraSubstrateHighlight-line-masses-size-no-dot"
+]
+
+
+(* ===== signed densities: a filled dot for a positive mass, an empty ring for a negative one ===== *)
+
+(* on a signed density every opacity lies in [0, 1] and every size is positive, in both dot branches *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ], d = <| 7 -> 3, 8 -> -1, 12 -> -3, 13 -> 2, 19 -> -2 |> },
+    ( opts |-> With[ { sizes = Catenate @ Cases[ VertexShapeFunction /. opts,
+          ( _ -> f_Function ) :> Cases[ f[ { 0, 0 }, None, { 1, 1 } ],
+            ( Disk | Circle )[ _, { r_, _ } | Offset[ { r_, _ } ] ] | AbsolutePointSize[ r_ ] :> r, Infinity ], { 1 } ] },
+        { AllTrue[ Cases[ opts, Opacity[ x_ ] :> x, Infinity ], 0 <= # <= 1 & ], Length @ sizes, AllTrue[ sizes, # > 0 & ] } ] ) /@
+      { Options @ InfraSubstrateHighlight[ g, { d } ], Options @ InfraSubstrateHighlight[ g, { d }, "PointSizeRange" -> 10 ] } ],
+  { { True, 5, True }, { True, 5, True } },
+  TestID -> "InfraSubstrateHighlight-signed-opacities-and-sizes-in-range"
+]
+
+(* the rings sit exactly at the negative masses: in the default dot branch, at a point size, and at a VertexSize *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ], d = <| 7 -> 3, 8 -> -1, 12 -> -3, 13 -> 2, 19 -> -2 |> },
+    KeySort @ shapesAt @ Options @ InfraSubstrateHighlight[ g, { d -> # } ] & /@ { { }, { "PointSizeRange" -> 10 }, { VertexSize -> 0.4 } } ],
+  { <| 7 -> { Disk }, 8 -> { Circle }, 12 -> { Circle }, 13 -> { Disk }, 19 -> { Circle } |>,
+    <| 7 -> { Point }, 8 -> { Circle }, 12 -> { Circle }, 13 -> { Point }, 19 -> { Circle } |>,
+    <| 8 -> { Circle }, 12 -> { Circle }, 19 -> { Circle } |> },
+  TestID -> "InfraSubstrateHighlight-rings-exactly-at-the-negative-masses"
+]
+
+(* size and opacity read the absolute mass: the rings of -d are the dots of d, and a unit boundary draws both at the base, opaque *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ], d = <| 7 -> 3, 8 -> 1, 12 -> 2 |> },
+    { pos = Options @ InfraSubstrateHighlight[ g, { d } ],
+      neg = Options @ InfraSubstrateHighlight[ g, { - d } ],
+      unit = Options @ InfraSubstrateHighlight[ g, { <| 12 -> 1, 14 -> -1 |> } ],
+      peak = Options @ InfraSubstrateHighlight[ g, { <| 12 -> 1, 14 -> -3 |> } ] },
+    { ringScales @ neg === dotScales @ pos,
+      Cases[ neg, _Opacity, Infinity ] === Cases[ pos, _Opacity, Infinity ],
+      { dotScales @ unit, ringScales @ unit, Union @ Cases[ VertexShapeFunction /. unit, Opacity[ x_ ] :> x, Infinity ] },
+      { dotScales @ peak, ringScales @ peak } } ],
+  { True, True, { { 1 }, { 1 }, { 1. } }, { { 1 }, { 3 } } },
+  TestID -> "InfraSubstrateHighlight-ring-sized-by-the-absolute-mass"
+]
+
+(* two objects on one vertex: the positive one draws its dot, the negative one its ring, each in its own colour *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    With[ { opts = Options @ InfraSubstrateHighlight[ g, { <| 12 -> 2, 13 -> 1 |>, <| 13 -> -1, 14 -> -3 |> } ] },
+      { KeySort @ shapesAt @ opts,
+        Cases[ ( 13 /. ( VertexShapeFunction /. opts ) )[ { 0, 0 }, 13, { 1, 1 } ],
+          { c_?ColorQ, ___, ( h : Disk | Circle )[ ___ ] } :> h -> c, Infinity ] } ] ],
+  { <| 12 -> { Disk }, 13 -> { Circle, Disk }, 14 -> { Circle } |>, { Disk -> strikeOutPalette[[ 1 ]], Circle -> strikeOutPalette[[ 2 ]] } },
+  TestID -> "InfraSubstrateHighlight-dot-and-ring-on-one-vertex"
+]
+
+(* a zero mass is not drawn, and neither are the faint edges at it: an explicit zero, a cancelled mass, a density of zeros *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    { opts = Options @ InfraSubstrateHighlight[ g, { <| 12 -> 0, 13 -> 1, 14 -> 2 |> } ],
+      cancel = Options @ InfraSubstrateHighlight[ g, { InfraUnion[ <| 12 -> 1, 13 -> 1 |>, <| 13 -> -1 |> ] } ] },
+    { Keys @ KeySort @ shapesAt @ opts,
+      FreeQ[ { VertexStyle, VertexSize } /. opts, 12 ],
+      Cases[ EdgeStyle /. opts, ( e_UndirectedEdge -> _ ) :> e, { 1 } ],
+      Sort @ dotScales @ opts,
+      Keys @ shapesAt @ cancel,
+      Options @ InfraSubstrateHighlight[ g, { <| 12 -> 0, 13 -> 0 |> } ] === Options @ HighlightGraph[ g, { } ] } ],
+  { { 13, 14 }, True, { UndirectedEdge[ 13, 14 ] }, { 1, 3 }, { 12 }, True },
+  TestID -> "InfraSubstrateHighlight-zero-mass-not-drawn"
+]
+
+(* edges stay unsigned: a signed density draws the edges of its absolute value *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ], d = <| 7 -> 2, 8 -> -1, 12 -> -3, 13 -> 1 |> },
+    { styles = EdgeStyle /. Options @ InfraSubstrateHighlight[ g, { d } ] },
+    { styles === ( EdgeStyle /. Options @ InfraSubstrateHighlight[ g, { Abs /@ d } ] ), Length @ styles } ],
+  { True, 4 },
+  TestID -> "InfraSubstrateHighlight-signed-density-edges-are-unsigned"
+]
+
+(* the union of signed densities draws their sum and the intersection their product *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ], d1 = <| 7 -> 1, 12 -> 1, 13 -> 2 |>, d2 = <| 7 -> -1, 13 -> -3, 14 -> -1 |> },
+    { Options @ InfraSubstrateHighlight[ g, { InfraUnion[ d1, d2 ] } ] ===
+        Options @ InfraSubstrateHighlight[ g, { <| 12 -> 1, 13 -> -1, 14 -> -1 |> } ],
+      Options @ InfraSubstrateHighlight[ g, { InfraIntersection[ d1, d2 ] } ] ===
+        Options @ InfraSubstrateHighlight[ g, { <| 7 -> -1, 13 -> -6 |> } ] } ],
+  { True, True },
+  TestID -> "InfraSubstrateHighlight-signed-union-sum-intersection-product"
+]
+
+(* an explicit VertexShapeFunction wins on a negative mass too *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    Sort[ VertexShapeFunction /. Options @ InfraSubstrateHighlight[ g, { <| 12 -> -1, 13 -> 2 |> -> { VertexShapeFunction -> "Square" } } ] ] ],
+  { 12 -> "Square", 13 -> "Square" },
+  TestID -> "InfraSubstrateHighlight-explicit-shape-wins-on-a-negative-mass"
 ]

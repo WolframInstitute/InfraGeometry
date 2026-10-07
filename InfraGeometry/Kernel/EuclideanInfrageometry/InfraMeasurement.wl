@@ -88,6 +88,9 @@ InfraMeasurement[ graph_Graph,
       Total @ Lookup[ alpha, Key /@ Pick[ VertexList @ dag, VertexOutDegree @ dag, 0 ] ] ],
     Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ] ]
 
+InfraMeasurement[ graph_Graph, density_Association, "VertexDensity" ] :=
+  KeySort @ density
+
 InfraMeasurement[ graph_Graph,
     obj : Except[ _List | InfraIntersection[ __ ] | InfraUnion[ __ ] | InfraCircle[ _, _, ___ ] |
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |

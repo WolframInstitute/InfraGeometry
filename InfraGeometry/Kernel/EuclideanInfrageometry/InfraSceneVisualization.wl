@@ -110,8 +110,8 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
           items ],
         { } -> _ ],
       substrateThickness = First[ Cases[ Options[ graph, EdgeStyle ], AbsoluteThickness[ t_ ] :> t, Infinity ], $InfraEdgeThickness ],
-      spread = masses |-> With[ { lo = Min @ Values @ masses, hi = Max @ Values @ masses },
-        ( m |-> { m / hi, If[ hi == lo, 0, ( m - lo ) / ( hi - lo ) ] } ) /@ masses ] },
+      spread = masses |-> With[ { lo = Min @ Abs @ Values @ masses, hi = Max @ Abs @ Values @ masses },
+        ( m |-> { m / hi, If[ hi == lo, 0, ( Abs[ m ] - lo ) / ( hi - lo ) ] } ) /@ masses ] },
     { span = { spec, base, key } |-> Replace[
         Replace[ spec, {
           Automatic -> { base, Automatic },
@@ -122,10 +122,11 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
         { item, idx } |-> With[ {
             ink    = infraInk[ graph, First @ item ],
             record = parseHighlightStyle[ Last @ item, ranges ] },
-          <| "Verts"  -> spread @ ink[ "VertexDensity" ],
+          { verts = Select[ ink[ "VertexDensity" ], # != 0 & ] },
+          <| "Verts"  -> spread @ verts,
              "Edges"  -> spread @ ink[ "EdgeDensity" ],
              "Faint"  -> If[ ink[ "EdgeDensity" ] === <| |>,
-               UndirectedEdge @@ Sort[ List @@ # ] & /@ EdgeList @ Subgraph[ graph, Keys @ ink[ "VertexDensity" ] ], { } ],
+               UndirectedEdge @@ Sort[ List @@ # ] & /@ EdgeList @ Subgraph[ graph, Keys @ verts ], { } ],
              "Walk"   -> ink[ "Walk" ],
              "Knots"  -> ink[ "Knots" ],
              "Color"  -> Lookup[ record, "Color", palette[[ 1 + Mod[ First @ idx - 1, Length @ palette ] ]] ],
@@ -187,28 +188,45 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                 |> ],
               KeyDrop[ fMasses, Keys @ eMasses ] ] ],
           vertexData = KeyValueMap[
-            { v, cs } |-> With[ { el = blend @ cs },
-              { color = el[[ 1 ]], w = el[[ 2 ]], r = el[[ 3 ]], rec = el[[ 4 ]] },
-              { oList = If[ rec[ "OpacityRange" ] === None, { },
-                  { Opacity[ lerp[ rec[ "OpacityRange" ], w ] ] } ],
-                vDirs = List @@ rec[ "VertexDir" ],
-                dot   = rec[ "PointSizeRange" ] },
-              Which[
-                rec[ "VertexShapeFunction" ] =!= None,
-                  <| "VSF" -> ( v -> rec[ "VertexShapeFunction" ] ) |>,
-                ListQ @ dot && First @ dot === Automatic,
-                  With[ {
-                      body  = Flatten @ { color, oList, vDirs },
-                      scale = 1 + ( Replace[ Last @ dot, Automatic -> $InfraRangeTop[ "PointSizeRange" ] ] - 1 ) r },
-                    <| "VSF" -> ( v -> ( Append[ body, Disk[ #1, scale #3 ] ] & ) ) |> ],
-                dot =!= None || ! FreeQ[ vDirs, _AbsolutePointSize | _PointSize ],
-                  With[ { body = Flatten[ { color, oList,
-                      If[ dot === None, { }, { AbsolutePointSize[ grow[ dot, r ] ] } ], vDirs } ] },
-                    <| "VSF" -> ( v -> ( Append[ body, Point[ #1 ] ] & ) ) |> ],
-                True,
-                  <| "Style" -> Style[ v, Directive[ color, Sequence @@ oList, Sequence @@ vDirs ] ],
-                     "VSize" -> If[ rec[ "VertexSize" ] === None, Nothing, v -> rec[ "VertexSize" ] ] |>
-              ] ],
+            { v, cs } |-> With[ {
+                shapes = KeyValueMap[
+                  { sign, part } |-> With[ { el = blend @ part },
+                    { color = el[[ 1 ]], w = el[[ 2 ]], r = el[[ 3 ]], rec = el[[ 4 ]] },
+                    { oList = If[ rec[ "OpacityRange" ] === None, { },
+                        { Opacity[ lerp[ rec[ "OpacityRange" ], w ] ] } ],
+                      vDirs = List @@ rec[ "VertexDir" ],
+                      dot   = rec[ "PointSizeRange" ] },
+                    { ring = Flatten @ { color, oList,
+                        AbsoluteThickness[ First @ Replace[ rec[ "ThicknessRange" ], None -> { substrateThickness } ] ], vDirs } },
+                    Which[
+                      rec[ "VertexShapeFunction" ] =!= None,
+                        <| "VSF" -> ( v -> rec[ "VertexShapeFunction" ] ) |>,
+                      ListQ @ dot && First @ dot === Automatic,
+                        With[ {
+                            body  = Flatten @ { color, oList, vDirs },
+                            scale = 1 + ( Replace[ Last @ dot, Automatic -> $InfraRangeTop[ "PointSizeRange" ] ] - 1 ) r },
+                          <| "VSF" -> ( v -> If[ sign > 0, Append[ body, Disk[ #1, scale #3 ] ] &, Append[ ring, Circle[ #1, scale #3 ] ] & ] ) |> ],
+                      dot =!= None || ! FreeQ[ vDirs, _AbsolutePointSize | _PointSize ],
+                        With[ {
+                            body   = Flatten[ { color, oList, If[ dot === None, { }, { AbsolutePointSize[ grow[ dot, r ] ] } ], vDirs } ],
+                            radius = If[ dot === None, None, Offset[ { 1, 1 } grow[ dot, r ] / 2 ] ] },
+                          <| "VSF" -> ( v -> Which[
+                              sign > 0,        Append[ body, Point[ #1 ] ] &,
+                              radius === None, Append[ ring, Circle[ #1, #3 ] ] &,
+                              True,            Append[ ring, Circle[ #1, radius ] ] & ] ) |> ],
+                      sign < 0,
+                        <| "VSF" -> ( v -> ( Append[ ring, Circle[ #1, #3 ] ] & ) ),
+                           "VSize" -> If[ rec[ "VertexSize" ] === None, Nothing, v -> rec[ "VertexSize" ] ] |>,
+                      True,
+                        <| "Style" -> Style[ v, Directive[ color, Sequence @@ oList, Sequence @@ vDirs ] ],
+                           "VSize" -> If[ rec[ "VertexSize" ] === None, Nothing, v -> rec[ "VertexSize" ] ] |>
+                    ] ],
+                  Reverse @ KeySort @ GroupBy[ cs, Sign @ #[[ 2 ]] & -> ( MapAt[ Abs, #, 2 ] & ) ] ] },
+              If[ Length @ shapes == 1, First @ shapes,
+                Join[ Join @@ shapes,
+                  Replace[ Cases[ shapes, kv_ /; KeyExistsQ[ kv, "VSF" ] :> Last @ kv[ "VSF" ] ], {
+                    { dotShape_Function, ringShape_Function } :> <| "VSF" -> ( v -> ( Through[ { dotShape, ringShape }[ ## ] ] & ) ) |>,
+                    _ -> <| |> } ] ] ] ],
             vMasses ] },
         {
           coords    = AssociationThread[ VertexList @ graph -> GraphEmbedding @ graph ],
