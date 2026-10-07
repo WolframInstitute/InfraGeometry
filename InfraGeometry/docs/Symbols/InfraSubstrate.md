@@ -29,7 +29,7 @@ The roster has five classes:
 | Class | What it models | Names |
 |---|---|---|
 | `"OpenManifold"` | a patch of the plane or of space, with the rim removed | `"SquareMeshGraph"`, `"CubeMeshGraph"`, `"TriangularTilingGraph"`, `"SquareTilingGraph"`, `"HexagonalTilingGraph"`, `"HyperbolicTilingGraph"`, `"SquareGridGraph"`, `"CubicGridGraph"` |
-| `"ClosedManifold"` | a compact surface | `"SphereMeshGraph"`, the three tori `"SquareTorusGraph"`, `"TriangularTorusGraph"`, `"HexagonalTorusGraph"`, three uniform-length ellipsoids, `"BuckyballGraph"` |
+| `"ClosedManifold"` | a compact surface | `"SphereMeshGraph"`, the three tori `"SquareTorusGraph"`, `"TriangularTorusGraph"`, `"HexagonalTorusGraph"`, the uniform-length surfaces `"UniformLengthSphereGraph"`, `"UniformLengthProlateEllipsoidGraph"`, `"UniformLengthTriaxialEllipsoidGraph"`, `"BuckyballGraph"` |
 | `"Fractal"` | a self-similar set | `"SierpinskiTriangleGraph"`, `"MengerCarpetGraph"`, `"MengerSpongeGraph"` |
 | `"Exotic"` | no manifold and no scaling law | `"BinaryTreeGraph"`, `"DilutedTreeGraph"`, `"CompleteGraph"` |
 | `"WolframModel"` | a Wolfram-model universe | `"wm6655"`, `"wm8619"`, `"wm1811"` |
@@ -44,7 +44,9 @@ A substrate is **bare combinatorics** by default. A stored embedding is discarde
 
 A patch has a rim, and the rim is not geometry. Anchor a construction at the centre, `First @ GraphCenter[g]`, and keep it well inside the patch, or the figure shows boundary effects.
 
-A substrate built by a random construction — a uniform-length ellipsoid, or any substrate with `"Inflate"` — is seeded from outside. `SeedRandom` in front of the call gives the same graph again.
+The three uniform-length substrates are packings of the surface of an ellipsoid by spheres of one diameter, the surface of axes 1, 1, 1, 5, 1, 1 and 4, 2, 1; each size has its own edge length, chosen for about 100, 300 and 1000 vertices.
+
+A substrate built by a random construction — a uniform-length surface, or any substrate with `"Inflate"` — is seeded from outside. `SeedRandom` in front of the call gives the same graph again.
 
 Options:
 

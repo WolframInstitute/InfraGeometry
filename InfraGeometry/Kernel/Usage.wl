@@ -244,7 +244,7 @@ InfraSubstrateCode::usage = "InfraSubstrateCode[name, size] is the code behind I
 
 UniformLengthGraph::usage = "UniformLengthGraph[region, h] gives the contact graph of a hard-sphere packing of region by spheres of diameter h, taking region as given (a curve, a surface, a solid); two centres are joined when their distance is within the contact tolerance of h. Options \"ContactTolerance\", \"InitialPoints\", \"KeepCoordinates\", MaxIterations, Tolerance.";
 
-UniformLengthEmbedding::usage = "UniformLengthEmbedding[graph] embeds graph in R^d (option \"Dimension\") so every edge is a unit segment, returning coordinates in VertexList order (cf. GraphEmbedding); the iterative counterpart of ComplexEmbedding.";
+UniformLengthEmbedding::usage = "UniformLengthEmbedding[graph] relaxes the edges of graph towards unit length by edge springs from a spring-electrical start in R^d (option \"Dimension\"), returning coordinates in VertexList order (cf. GraphEmbedding); from a unit-distance start it keeps the unit edges; the iterative counterpart of ComplexEmbedding.";
 
 RadarCoordinates::usage = "RadarCoordinates[g, basis, v] gives the distance vector (d(v, b))_{b in basis} of vertex v; RadarCoordinates[g, basis] gives the association of all vertices' radar coordinates.";
 
