@@ -25,10 +25,14 @@ Every object becomes a vertex density and an edge density:
 - a vertex, or a density `<|v -> m|>`: its own mass, no edges;
 - `InfraWalk[{p1, ..., pk}]`: visit counts and the traversal counts of its steps;
 - a Euclidean head — [InfraSegment](), [InfraCircle]() and the rest: its `"VertexDensity"` and `"EdgeDensity"` from [InfraMeasurement]();
+- a region head — [InfraBall](), [InfraShell]() and the rest — or an [InfraIntersection](): its `"VertexDensity"`, no edges;
 - a walk graph, a cycle graph or a DAG: its occupation;
 - a leg chain: the walk through its legs, with its knots drawn on top;
-- a vertex list: a region, `1` on its vertices and on the edges of its induced subgraph;
-- any other list — of vertex lists, graphs, heads or walks, such as the members of a head or a bundle: the sum of its members, drawn in one color.
+- a vertex list that is an induced path or an induced cycle in its own order, as every geodesic is: the walk through it;
+- any other vertex list: a set, `1` on its vertices, no edges;
+- an [InfraUnion]() or any other list — of vertex lists, graphs, heads or walks, such as the members of a head or a bundle: the sum of its members, drawn in one color, with no edges when a member has none.
+
+An object with edges is a line, drawn by its edge counts. Any other object is drawn as dots, sized by its masses, with the edges between its vertices in its color, at the bottom of `"OpacityRange"` and at the substrate's own thickness. Where a line uses such an edge, the line's stroke wins.
 
 Each object is divided by its own heaviest mass, so every object reaches full strength somewhere. The objects are then summed. At each vertex and edge the strength is the sum, capped at `1`, and the color is the blend of the objects' colors weighted by their masses. Where objects overlap, the figure shows both.
 

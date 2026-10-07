@@ -113,6 +113,8 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
           { mass = Max[ Values @ ink[ "VertexDensity" ], Values @ ink[ "EdgeDensity" ] ] },
           <| "Verts"  -> ink[ "VertexDensity" ] / mass,
              "Edges"  -> ink[ "EdgeDensity" ] / mass,
+             "Faint"  -> If[ ink[ "EdgeDensity" ] === <| |>,
+               UndirectedEdge @@ Sort[ List @@ # ] & /@ EdgeList @ Subgraph[ graph, Keys @ ink[ "VertexDensity" ] ], { } ],
              "Walk"   -> ink[ "Walk" ],
              "Knots"  -> ink[ "Knots" ],
              "Color"  -> Lookup[ record, "Color", palette[[ 1 + Mod[ First @ idx - 1, Length @ palette ] ]] ],
@@ -122,34 +124,48 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
     { entries = Join[ objectEntries,
         MapIndexed[
           { e, k } |-> With[ { record = parseHighlightStyle[ Automatic, ranges ], knots = KeySort @ Counts @ e[ "Knots" ] },
-            <| "Verts" -> knots / Max @ knots, "Edges" -> <| |>, "Walk" -> None, "Knots" -> { },
+            <| "Verts" -> knots / Max @ knots, "Edges" -> <| |>, "Faint" -> { }, "Walk" -> None, "Knots" -> { },
                "Color" -> palette[[ 1 + Mod[ Length @ objectEntries + First @ k - 1, Length @ palette ] ]],
                "Record" -> Append[ record,
                  "PointSizeRange" -> Replace[ record[ "PointSizeRange" ], Automatic :> $InfraPointSize ] ] |> ],
           Select[ objectEntries, #[ "Knots" ] =!= { } & ] ] ] },
     { vMasses = Merge[ ( e |-> ( { e[ "Color" ], #, e[ "Record" ] } & /@ e[ "Verts" ] ) ) /@ entries, Identity ],
-      eMasses = Merge[ ( e |-> ( { e[ "Color" ], #, e[ "Record" ] } & /@ e[ "Edges" ] ) ) /@ entries, Identity ] },
+      eMasses = Merge[ ( e |-> ( { e[ "Color" ], #, e[ "Record" ] } & /@ e[ "Edges" ] ) ) /@ entries, Identity ],
+      fMasses = Merge[ ( e |-> AssociationMap[ { e[ "Color" ], e[ "Record" ] } &, e[ "Faint" ] ] ) /@ entries, Identity ] },
     { lerp  = { spec, w } |-> If[ ListQ @ spec, spec[[ 1 ]] + ( spec[[ 2 ]] - spec[[ 1 ]] ) w, spec w ],
       blend = cs |-> {
         Replace[ DeleteDuplicates @ cs[[ All, 1 ]], { { c_ } :> c, _ :> Blend[ cs[[ All, 1 ]], cs[[ All, 2 ]] ] } ],
         Min[ 1, Total @ cs[[ All, 2 ]] ],
         cs[[ -1, 3 ]] } },
       {
-          edgeData = KeyValueMap[
-            { ue, cs } |-> With[ { el = blend @ cs },
-              { color = el[[ 1 ]], w = el[[ 2 ]], rec = el[[ 3 ]] },
-              { oList = If[ rec[ "OpacityRange" ] === None, { },
-                  { Opacity[ lerp[ rec[ "OpacityRange" ], w ] ] } ],
-                tList = If[ rec[ "ThicknessRange" ] === None, { },
-                  { AbsoluteThickness[ lerp[ rec[ "ThicknessRange" ], w ] ] } ],
-                eDirs = List @@ rec[ "EdgeDir" ] },
-              <|
-                "EdgeStyle" -> ( ue -> Directive[ color, Sequence @@ oList, Sequence @@ tList, Sequence @@ eDirs,
-                    Sequence @@ If[ rec[ "EdgeStyle" ] === None, { }, { rec[ "EdgeStyle" ] } ] ] ),
-                "EdgeShapeFunction" -> If[ rec[ "EdgeShapeFunction" ] === None, Nothing,
-                  ue -> rec[ "EdgeShapeFunction" ] ]
-              |> ],
-            eMasses ],
+          edgeData = Join[
+            KeyValueMap[
+              { ue, cs } |-> With[ { el = blend @ cs },
+                { color = el[[ 1 ]], w = el[[ 2 ]], rec = el[[ 3 ]] },
+                { oList = If[ rec[ "OpacityRange" ] === None, { },
+                    { Opacity[ lerp[ rec[ "OpacityRange" ], w ] ] } ],
+                  tList = If[ rec[ "ThicknessRange" ] === None, { },
+                    { AbsoluteThickness[ lerp[ rec[ "ThicknessRange" ], w ] ] } ],
+                  eDirs = List @@ rec[ "EdgeDir" ] },
+                <|
+                  "EdgeStyle" -> ( ue -> Directive[ color, Sequence @@ oList, Sequence @@ tList, Sequence @@ eDirs,
+                      Sequence @@ If[ rec[ "EdgeStyle" ] === None, { }, { rec[ "EdgeStyle" ] } ] ] ),
+                  "EdgeShapeFunction" -> If[ rec[ "EdgeShapeFunction" ] === None, Nothing,
+                    ue -> rec[ "EdgeShapeFunction" ] ]
+                |> ],
+              eMasses ],
+            KeyValueMap[
+              { ue, cs } |-> With[ { rec = cs[[ -1, 2 ]] },
+                <|
+                  "EdgeStyle" -> ( ue -> Directive[
+                      Replace[ DeleteDuplicates @ cs[[ All, 1 ]], { { c_ } :> c, colors_ :> Blend @ colors } ],
+                      Sequence @@ If[ rec[ "OpacityRange" ] === None, { }, { Opacity[ First @ Flatten @ { rec[ "OpacityRange" ] } ] } ],
+                      Sequence @@ List @@ rec[ "EdgeDir" ],
+                      Sequence @@ If[ rec[ "EdgeStyle" ] === None, { }, { rec[ "EdgeStyle" ] } ] ] ),
+                  "EdgeShapeFunction" -> If[ rec[ "EdgeShapeFunction" ] === None, Nothing,
+                    ue -> rec[ "EdgeShapeFunction" ] ]
+                |> ],
+              KeyDrop[ fMasses, Keys @ eMasses ] ] ],
           vertexData = KeyValueMap[
             { v, cs } |-> With[ { el = blend @ cs },
               { color = el[[ 1 ]], w = el[[ 2 ]], rec = el[[ 3 ]] },
@@ -228,12 +244,7 @@ infraInk[ graph_Graph, x_ ] :=
            "Knots"         -> { } |> ],
     MatchQ[ x, ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
       ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
-      ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] ],
-      <| "VertexDensity" -> InfraMeasurement[ graph, x, "VertexDensity" ],
-         "EdgeDensity"   -> KeySort @ Counts[ UndirectedEdge @@ Sort[ List @@ # ] & /@ Keys @ InfraMeasurement[ graph, x, "EdgeDensity" ] ],
-         "Walk"          -> None,
-         "Knots"         -> { } |>,
-    MatchQ[ x, ( InfraIntersection | InfraUnion )[ __ ] ],
+      ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] | InfraIntersection[ __ ] ],
       <| "VertexDensity" -> InfraMeasurement[ graph, x, "VertexDensity" ], "EdgeDensity" -> <| |>, "Walk" -> None, "Knots" -> { } |>,
     MatchQ[ x, ( InfraSegment | InfraRay | InfraLine | InfraCircle | InfraArc )[ __ ] ],
       With[ {
@@ -274,13 +285,17 @@ infraInk[ graph_Graph, x_ ] :=
         Append[ infraInk[ graph, InfraWalk @ polylineToVertexSeq @ x ],
           "Knots" -> If[ First @ knots === Last @ knots, Most @ knots, knots ] ] ],
     ListQ[ x ] && AllTrue[ x, VertexQ[ graph, # ] & ],
-      <| "VertexDensity" -> InfraDensity[ graph, x ],
-         "EdgeDensity"   -> KeySort @ Counts[ UndirectedEdge @@ Sort[ List @@ # ] & /@ EdgeList @ Subgraph[ graph, x ] ],
-         "Walk"          -> None,
-         "Knots"         -> { } |>,
-    MatchQ[ x, { __ } ],
-      With[ { members = infraInk[ graph, # ] & /@ x },
+      With[ { open = If[ Length @ x > 3 && First @ x === Last @ x, Most @ x, x ] },
+        { closes = Length @ open >= 3 && EdgeQ[ graph, UndirectedEdge[ Last @ open, First @ open ] ] },
+        If[ Length @ open >= 2 && DuplicateFreeQ @ open && ( open === x || closes ) &&
+            AllTrue[ Partition[ open, 2, 1 ], EdgeQ[ graph, UndirectedEdge @@ # ] & ] &&
+            EdgeCount @ Subgraph[ graph, open ] == Length @ open - Boole[ ! closes ],
+          infraInk[ graph, InfraWalk @ If[ closes, Append[ open, First @ open ], open ] ],
+          <| "VertexDensity" -> InfraDensity[ graph, x ], "EdgeDensity" -> <| |>, "Walk" -> None, "Knots" -> { } |> ] ],
+    MatchQ[ x, { __ } | InfraUnion[ __ ] ],
+      With[ { members = infraInk[ graph, # ] & /@ List @@ x },
         <| "VertexDensity" -> KeySort @ GroupBy[ Catenate[ Normal @ #[ "VertexDensity" ] & /@ members ], First -> Last, Total ],
-           "EdgeDensity"   -> KeySort @ GroupBy[ Catenate[ Normal @ #[ "EdgeDensity" ] & /@ members ], First -> Last, Total ],
+           "EdgeDensity"   -> If[ MemberQ[ members, m_ /; m[ "EdgeDensity" ] === <| |> ], <| |>,
+             KeySort @ GroupBy[ Catenate[ Normal @ #[ "EdgeDensity" ] & /@ members ], First -> Last, Total ] ],
            "Walk"          -> If[ Length @ members == 1, First[ members ][ "Walk" ], None ],
            "Knots"         -> Catenate[ #[ "Knots" ] & /@ members ] |> ] ]

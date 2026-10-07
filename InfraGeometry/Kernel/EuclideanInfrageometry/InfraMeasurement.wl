@@ -108,7 +108,8 @@ InfraMeasurement[ graph_Graph,
     Total ]
 
 InfraMeasurement[ graph_Graph,
-    obj : Except[ _List | InfraCircle[ _, _, ___ ] | ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
+    obj : Except[ _List | InfraIntersection[ __ ] | InfraUnion[ __ ] | InfraCircle[ _, _, ___ ] |
+                  ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] |
                   InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] ], "EdgeDensity" ] :=
@@ -237,6 +238,13 @@ InfraMeasurement[ graph_Graph, InfraIntersection[ objs__ ], "VertexDensity" ] :=
 InfraMeasurement[ graph_Graph, InfraUnion[ objs__ ], "VertexDensity" ] :=
   KeySort @ Merge[ InfraMeasurement[ graph, #, "VertexDensity" ] & /@ { objs }, Total ]
 
-InfraMeasurement[ graph_Graph, obj : ( InfraIntersection | InfraUnion )[ __ ], All ] :=
+InfraMeasurement[ graph_Graph, InfraUnion[ objs__ ], "EdgeDensity" ] :=
+  KeySort @ Merge[ InfraMeasurement[ graph, #, "EdgeDensity" ] & /@ { objs }, Total ]
+
+InfraMeasurement[ graph_Graph, obj : InfraIntersection[ __ ], All ] :=
   InfraMeasurement[ graph, obj,
     { "VertexDensity", "Subgraph", "CountingMeasure", "RiemannianMeasure" } ]
+
+InfraMeasurement[ graph_Graph, obj : InfraUnion[ __ ], All ] :=
+  InfraMeasurement[ graph, obj,
+    { "VertexDensity", "EdgeDensity", "Subgraph", "CountingMeasure", "RiemannianMeasure" } ]

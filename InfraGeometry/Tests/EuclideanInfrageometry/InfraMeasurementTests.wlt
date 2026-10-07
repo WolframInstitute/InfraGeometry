@@ -249,6 +249,20 @@ VerificationTest[
   TestID -> "InfraUnion-density-is-the-sum"
 ]
 
+(* so is its edge density, the sum of its parts', for two crossing segments; an intersection has no edge density *)
+VerificationTest[
+  With[{g = GridGraph[{5, 5}]},
+    {a = InfraSegment[1, 25], b = InfraSegment[5, 21]},
+    {both = InfraMeasurement[g, InfraUnion[a, b], "EdgeDensity"]},
+    {both === KeySort @ Merge[{InfraMeasurement[g, a, "EdgeDensity"],
+                               InfraMeasurement[g, b, "EdgeDensity"]}, Total],
+     FreeQ[both, _Missing],
+     Head @ InfraMeasurement[g, InfraIntersection[a, b], "EdgeDensity"],
+     Keys @ InfraMeasurement[g, InfraUnion[a, b], All]}],
+  {True, True, InfraMeasurement, {"VertexDensity", "EdgeDensity", "Subgraph", "CountingMeasure", "RiemannianMeasure"}},
+  TestID -> "InfraUnion-edge-density-is-the-sum"
+]
+
 (* the volumes of an intersection and a union read the same support the density does *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
