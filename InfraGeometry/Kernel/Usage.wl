@@ -1,16 +1,13 @@
 Package["WolframInstitute`InfraGeometry`"]
 
-InfraPoint::usage = "InfraPoint is the scene-language token for the point search -- FindInfraPoint minus the graph. InfraPoint[] draws from the whole vertex list, InfraPoint[v] names one vertex, InfraPoint[\"Center\"] / InfraPoint[\"Periphery\"] a pool, InfraPoint[origin, d] the vertices at distance d, InfraPoint[n, \"Distance\" -> spec] an n-tuple. It is not a wrapper: a point IS a vertex of the substrate, carrying its label verbatim.";
+InfraPoint::usage = "InfraPoint is the scene-language token for a point. InfraPoint[] draws from the whole vertex list, InfraPoint[v] names one vertex. It is not a wrapper: a point IS a vertex of the substrate, carrying its label verbatim.";
 FindInfraPoint::usage = "FindInfraPoint[graph, reg, n] draws n distinct vertices of the region reg, a vertex List, a density or an inert region such as InfraBall; with no reg, of graph; with no n, one vertex. Options \"PairwiseDistance\", \"MaxCliques\".";
 FindInfraMidpoint::usage = "FindInfraMidpoint[graph, p1, p2] gives the density <|v -> m, ...|> of the middle vertices of every geodesic from p1 to p2 (one vertex at even distance, two at odd). Option Method.";
 FindInfraGoldenSection::usage = "FindInfraGoldenSection[graph, p1, p2] gives the density <|v -> m, ...|> at the golden-ratio index along every geodesic from p1 to p2. Option Method.";
 FindInfraReflection::usage = "FindInfraReflection[graph, x, a] gives the reflections x' of x through a: the vertices with B(x, a, x') and d(a, x) == d(a, x').";
 FindInfraCommonPoint::usage = "FindInfraCommonPoint[graph, lines] gives the points lying on every listed line.";
 FindClosestInfraPoint::usage = "FindClosestInfraPoint[graph, line, point] gives the vertices of line at minimum graph distance from point.";
-SelectInfraPoint::usage = "SelectInfraPoint[graph, vertices] draws a vertex from a supplied bundle under graph distance; a trailing n | UpTo[n] | All sets the count. Options \"From\", \"Distance\", \"MaxCliques\".";
 InfraReachableQ::usage = "InfraReachableQ[graph, p1, p2] tests whether p1 and p2 have realisations in the same connected component.";
-RandomInfraPoint::usage = "RandomInfraPoint[graph] gives a uniformly random vertex. RandomInfraPoint[graph, p, d] gives a uniformly random vertex at distance d from p.";
-InfraCenter::usage = "InfraCenter[graph] gives a vertex of least eccentricity.";
 
 Undetermined::usage = "Undetermined is the value of the measurement \"Faithful\" on a head whose graph is faithful only under a hypothesis this paclet does not certify.";
 InfraMeasurement::usage = "InfraMeasurement[graph, obj, property] measures a Euclidean head on graph: \"Graph\", \"Cardinality\", \"Length\", \"VertexDensity\", \"EdgeDensity\", \"Subgraph\", \"Faithful\", \"CountingMeasure\" (the vertex count), \"RiemannianMeasure\" (the count without boundary). A List of properties gives an Association, All gives them all, a List of heads measures each.";

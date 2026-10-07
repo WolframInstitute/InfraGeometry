@@ -538,89 +538,6 @@ VerificationTest[
 ]
 
 
-EndTestSection[]
-
-
-BeginTestSection["SelectInfraPoint"]
-VerificationTest[
-  SubsetQ[ Range[ 5 ], #& /@ SelectInfraPoint[ PathGraph[ Range[ 5 ] ], Range[ 5 ], All, "From" -> "Center" ] ],
-  True,
-  TestID -> "SelectInfraPoint-Center-pool-is-sublist"
-]
-
-VerificationTest[
-  #& /@ SelectInfraPoint[ PathGraph[ Range[ 5 ] ], Range[ 5 ], All, "From" -> "Center" ],
-  { 3 },
-  TestID -> "SelectInfraPoint-Center-on-PathGraph-picks-middle"
-]
-
-VerificationTest[
-  Sort[ #& /@ SelectInfraPoint[ PathGraph[ Range[ 5 ] ], Range[ 5 ], All, "From" -> "Periphery" ] ],
-  { 1, 5 },
-  TestID -> "SelectInfraPoint-Periphery-on-PathGraph-picks-endpoints"
-]
-
-VerificationTest[
-  Length @ SelectInfraPoint[ PathGraph[ Range[ 5 ] ], Range[ 5 ], 1, "From" -> "Center" ],
-  1,
-  TestID -> "SelectInfraPoint-strict-n-1"
-]
-
-VerificationTest[
-  Length @ SelectInfraPoint[ PathGraph[ Range[ 5 ] ], Range[ 5 ], UpTo[ 3 ] ] <= 3,
-  True,
-  TestID -> "SelectInfraPoint-UpTo-soft"
-]
-
-VerificationTest[
-  SelectInfraPoint[ PathGraph[ Range[ 5 ] ], Range[ 5 ], 99 ],
-  { },
-  TestID -> "SelectInfraPoint-strict-overcount-fails"
-]
-
-VerificationTest[
-  SelectInfraPoint[ PathGraph[ Range[ 5 ] ], { }, 1 ],
-  { },
-  TestID -> "SelectInfraPoint-empty-strict-fails"
-]
-
-VerificationTest[
-  SelectInfraPoint[ PathGraph[ Range[ 5 ] ], { }, All ],
-  { },
-  TestID -> "SelectInfraPoint-empty-All-empty"
-]
-
-VerificationTest[
-  Length @ SelectInfraPoint[ PathGraph[ Range[ 5 ] ], Range[ 5 ] ],
-  1,
-  TestID -> "SelectInfraPoint-default-n-is-1"
-]
-
-VerificationTest[
-  Sort @ SelectInfraPoint[ PathGraph[ Range[ 5 ] ], <| 1 -> 1, 2 -> 1, 3 -> 1, 4 -> 1, 5 -> 1 |>, All ],
-  Range[ 5 ],
-  TestID -> "SelectInfraPoint-returns-vertex-list"
-]
-
-VerificationTest[
-  Sort[ #& /@ SelectInfraPoint[ PathGraph[ Range[ 5 ] ], All, "From" -> "Periphery" ][ Range[ 5 ] ] ],
-  { 1, 5 },
-  TestID -> "SelectInfraPoint-operator-form"
-]
-
-VerificationTest[
-  Length @ SelectInfraPoint[ PathGraph[ Range[ 5 ] ], Range[ 5 ], 2, "Distance" -> "Max" ],
-  2,
-  TestID -> "SelectInfraPoint-Distance-Max-strict-2"
-]
-
-VerificationTest[
-  SubsetQ[ Range[ 5 ],
-    #& /@ SelectInfraPoint[ PathGraph[ Range[ 5 ] ], Range[ 5 ], All, "From" -> ( 3 -> 2 ) ] ],
-  True,
-  TestID -> "SelectInfraPoint-anchor-distance-pool-is-sublist"
-]
-
 
 (* ===== InfraDeformationSize ===== *)
 
@@ -724,17 +641,6 @@ VerificationTest[
   ],
   True,
   TestID -> "SelectInfraWalk-From-vocabulary-not-refused"
-]
-
-VerificationTest[
-  With[ { g = GridGraph[ { 5, 5 } ] },
-    FreeQ[
-      SelectInfraPoint[ g, Range[ 25 ], All, "From" -> # ] & /@
-        { All, "Random", "Center", "Periphery", 7, 3 -> 2, { 2, 3, 4 }, <| 2 -> 1, 5 -> 1, 7 -> 1 |> },
-      _SelectInfraPoint ]
-  ],
-  True,
-  TestID -> "SelectInfraPoint-From-vocabulary-not-refused"
 ]
 
 

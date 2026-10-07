@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraPoint
 Keywords: [point, vertex, scene token, density]
-SeeAlso: [FindInfraPoint, RandomInfraPoint, InfraCenter, InfraDensity, InfraScene]
+SeeAlso: [FindInfraPoint, InfraDensity, InfraScene, InfraDistance]
 RelatedGuides: [Experimental]
 ---
 
@@ -16,17 +16,11 @@ RelatedGuides: [Experimental]
 
 <code>[InfraPoint]()[]</code> inside an [InfraScene]() names a point to be solved for, drawn from every vertex.
 
-<code>[InfraPoint]()["Center"]</code> and <code>[InfraPoint]()["Periphery"]</code> draw it from the centre or the periphery of the graph.
-
-<code>[InfraPoint]()[*origin*, *d*]</code> draws it from the vertices at distance *d* from *origin*.
-
-<code>[InfraPoint]()[*n*, "Distance" -> *spec*]</code> is an *n*-tuple of points under a mutual-distance condition, as in [FindInfraPoint]().
-
 ## Details & Options
 
 Definition: an infra-point is one vertex of the substrate, carried by its label verbatim.
 
-A point is a vertex. The head is a token of the scene language, [FindInfraPoint]() without the graph, and holds no value of its own. A construction on a graph rarely has one answer, but the multiplicity does not live in this head: a family of candidate points is a vertex `List`, and a measure on vertices is a density `<|v -> m|>`.
+A point is a vertex. The head is a token of the scene language and holds no value of its own. A condition on a point, such as its distance to another point, is an assertion of the scene. A construction on a graph rarely has one answer, but the multiplicity does not live in this head: a family of candidate points is a vertex `List`, and a measure on vertices is a density `<|v -> m|>`.
 
 | you have | use |
 |---|---|
@@ -46,8 +40,8 @@ A point is a vertex, and several candidate points are a vertex list. The centre 
 SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
-  {centre = InfraCenter[g]},
-  {picks = FindInfraPoint[g, 3, "From" -> centre -> 4]},
+  {centre = First @ GraphCenter[g]},
+  {picks = FindInfraPoint[g, InfraShell[centre, 4], 3]},
   InfraSubstrateHighlight[g, {centre, picks}, ImageSize -> 250]]
 ```
 
@@ -57,7 +51,7 @@ A point finder returns vertices — one, or a list.
 SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {FindInfraPoint[g, All, "From" -> "Center"], Length @ FindInfraPoint[g, 3]}]
+  {FindInfraPoint[g, GraphCenter[g], All], Length @ FindInfraPoint[g, 3]}]
 ```
 
 A vertex answers invariants with bare numbers; a list of regions answers with one number each.
@@ -69,15 +63,15 @@ With[
   {InfraMeasurement[g, InfraBall[c, 3], "CountingMeasure"], InfraMeasurement[g, {InfraBall[c, 3], InfraBall[First @ GraphPeriphery[g], 3]}, "CountingMeasure"]}]
 ```
 
-In a scene the token is solved on the graph. Here *a* is the centre of a 5 × 5 grid, *b* any of the 8 vertices at distance 3 from it, and *c* any of the 4 corners: 32 instances.
+In a scene the token is solved on the graph. Here *a* is the centre of a 5 × 5 grid, *b* any of the 8 vertices at distance 3 from it, and *c* any of the 4 vertices at distance 4 from it, the corners: 32 instances.
 
 ```wl
 Module[{a, b, c},
   With[
     {scene = InfraScene[{a, b, c},
-       {InfraStep[{a == InfraPoint["Center"]}, "a"],
-        InfraStep[{b == InfraPoint[a, 3]}, "b"],
-        InfraStep[{c == InfraPoint["Periphery"]}, "c"]}]},
+       {InfraStep[{a == InfraPoint[13]}, "a"],
+        InfraStep[{b == InfraPoint[], InfraDistance[a, b] == 3}, "b"],
+        InfraStep[{c == InfraPoint[], InfraDistance[a, c] == 4}, "c"]}]},
     {instances = FindInfraScene[scene, GridGraph[{5, 5}]]},
     {Length[instances], InfraSceneInstance[First[instances], a], InfraSceneInstance[First[instances], b]}]]
 ```
