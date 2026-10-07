@@ -56,6 +56,6 @@ InflateGraph[ g_Graph, amount : _?NumericQ | { _?NumericQ, _?NumericQ }, opts : 
       VertexCoordinates -> Normal @ Join[
         coordinates,
         Association @ KeyValueMap[
-          { v, fiber } |-> Thread[ fiber -> ( coordinates @ v + radius PadRight[ #, Length @ coordinates @ v ] & /@ CirclePoints @ Length @ fiber ) ],
+          { v, fiber } |-> Thread[ fiber -> ( coordinates @ v + PadRight[ #, Length @ coordinates @ v ] & /@ CirclePoints[ { radius, Pi / 8. }, Length @ fiber ] ) ],
           fibers ] ] ]
   ]
