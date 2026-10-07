@@ -109,7 +109,7 @@ InfraSubstrate[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || StringM
             UndirectedGraph @ ResourceFunction[ "HypergraphToGraph" ][ state ] ] ] ] },
     { g = Replace[ OptionValue[ InfraSubstrate, own, "Inflate" ], {
         None -> raw,
-        inflate_ :> InflateGraph[ raw, Sequence @@ Replace[ inflate, amount : Except[ { ___Rule } ] :> { "ExtraVertices" -> amount } ] ] } ],
+        inflate_ :> InflateGraph[ raw, Sequence @@ Replace[ inflate, amount : _?NumericQ | { _?NumericQ, _?NumericQ } :> { amount } ] ] } ],
       keep = TrueQ @ OptionValue[ InfraSubstrate, own, "KeepCoordinates" ] },
     Graph[ g, FilterRules[ { opts }, Options @ Graph ],
       Sequence @@ Which[
@@ -221,7 +221,7 @@ InfraSubstrateCode[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || Str
     { code = Replace[ OptionValue[ InfraSubstrate, own, "Inflate" ], {
         None -> raw,
         inflate_ :> ( Join[ HoldComplete @ InflateGraph, raw,
-          HoldComplete @@ Replace[ inflate, amount : Except[ { ___Rule } ] :> { "ExtraVertices" -> amount } ] ] /.
+          HoldComplete @@ Replace[ inflate, amount : _?NumericQ | { _?NumericQ, _?NumericQ } :> { amount } ] ] /.
           HoldComplete[ head_, rest__ ] :> HoldComplete @ head[ rest ] ) } ] },
     { g = ReleaseHold @ code },
     { arguments = DeleteCases[

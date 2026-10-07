@@ -31,46 +31,31 @@ BranchingSequenceTree[ b_List, opts : OptionsPattern[ Graph ] ] :=
       { l + 1, ( p - 1 ) c + # } & /@ Range @ c ] &,
     { { 0, 1 } }, Length @ b, opts, DirectedEdges -> False ]
 
-Options[ InflateGraph ] = {
-  "ExtraVertices" -> { 0, 2 },
-  "ExtraEdges"    -> 0,
-  "Radius"        -> 1,
-  "Density"       -> 1
-}
+Options[ InflateGraph ] = { "VerticalEdges" -> 0, "HorizontalEdges" -> 1 }
 
 InflateGraph[ g_Graph, opts : OptionsPattern[ { InflateGraph, Graph } ] ] :=
+  InflateGraph[ g, 1, opts ]
+
+InflateGraph[ g_Graph, amount : _?NumericQ | { _?NumericQ, _?NumericQ }, opts : OptionsPattern[ { InflateGraph, Graph } ] ] :=
   With[
-    { sample = spec |-> Replace[ spec, { k_ ? NumericQ :> Round @ k, { a_, b_ } :> RandomInteger[ { Round @ a, Round @ b } ] } ] },
-    { radius = sample @ OptionValue[ InflateGraph, { opts }, "Radius" ],
-      density = OptionValue[ InflateGraph, { opts }, "Density" ],
-      innerSpec = OptionValue[ InflateGraph, { opts }, "ExtraEdges" ],
-      extraSpec = OptionValue[ InflateGraph, { opts }, "ExtraVertices" ] },
-    { fibers = AssociationMap[
-        v |-> Array[ InflatedVertex[ v, # ] &, sample @ extraSpec ],
-        VertexList @ g ] },
-    { edges = Join[
-        Catenate @ KeyValueMap[ { v, fiber } |-> ( UndirectedEdge[ v, # ] & /@ fiber ), fibers ],
-        Catenate @ Map[
-          fiber |-> With[ { m = sample @ innerSpec, pairs = Subsets[ fiber, { 2 } ] },
-            UndirectedEdge @@@ RandomSample[ pairs, Min[ m, Length @ pairs ] ] ],
-          Values @ fibers ],
-        Catenate @ Map[
-          v |-> With[ { near = VertexList @ NeighborhoodGraph[ g, v, radius ] },
-            { reach = Catenate @ Lookup[ fibers, near ] },
-            { candidates = DeleteCases[ Tuples[ { fibers @ v, Join[ reach, near ] } ], { x_, x_ } ] },
-            UndirectedEdge @@@ RandomSample[
-              candidates,
-              Min[ RandomInteger @ Round[ density Length[ reach ] / Max[ Length @ near, 1 ] ], Length @ candidates ] ] ],
-          VertexList @ g ] ] },
-    { coords = AssociationThread[ VertexList @ g, GraphEmbedding @ g ] },
-    { jitter = Ball[ ConstantArray[ 0, Length @ First @ coords ],
-        0.3 Mean[ EuclideanDistance @@ Lookup[ coords, List @@ # ] & /@ EdgeList @ g ] ] },
+    { draw = spec |-> Replace[ spec, { k_?NumericQ :> Round @ k, { a_, b_ } :> RandomInteger[ Round @ { a, b } ] } ] },
+    { taken = Counts @ Cases[ VertexList @ g, InflatedVertex[ v_, _ ] :> v ] },
+    { fibers = AssociationMap[ v |-> Array[ InflatedVertex[ v, # ] &, draw @ amount, 1 + Lookup[ taken, Key @ v, 0 ] ], VertexList @ g ] },
+    { spokes = Catenate @ KeyValueMap[ { v, fiber } |-> ( { v, # } & /@ fiber ), fibers ] },
+    { vertical = Union @@ Map[
+        fiber |-> RandomSample[ Subsets[ fiber, { 2 } ], UpTo @ draw @ OptionValue[ "VerticalEdges" ] ],
+        Values @ fibers ] },
+    { horizontal = Union @@ Map[
+        edge |-> RandomSample[ Tuples @ Lookup[ fibers, List @@ edge ], UpTo @ draw @ OptionValue[ "HorizontalEdges" ] ],
+        EdgeList @ g ] },
+    { coordinates = AssociationThread[ VertexList @ g, GraphEmbedding @ g ] },
+    { radius = Min[ EuclideanDistance @@ Lookup[ coordinates, List @@ # ] & /@ EdgeList @ g ] / 3 },
     Graph[
-      EdgeAdd[ g, edges ],
-      Sequence @@ FilterRules[ { opts }, Options @ Graph ],
+      EdgeAdd[ g, UndirectedEdge @@@ Join[ spokes, vertical, horizontal ] ],
+      FilterRules[ { opts }, Options @ Graph ],
       VertexCoordinates -> Normal @ Join[
-        coords,
-        Association @ Catenate @ KeyValueMap[
-          { v, fiber } |-> ( # -> coords[ v ] + RandomPoint @ jitter & /@ fiber ),
+        coordinates,
+        Association @ KeyValueMap[
+          { v, fiber } |-> Thread[ fiber -> ( coordinates @ v + radius PadRight[ #, Length @ coordinates @ v ] & /@ CirclePoints @ Length @ fiber ) ],
           fibers ] ] ]
   ]
