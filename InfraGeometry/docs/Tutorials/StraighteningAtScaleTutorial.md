@@ -32,7 +32,7 @@ GraphicsGrid @ Table[
     {g = (SeedRandom[2]; InfraSubstrate[name, "Large", "KeepCoordinates" -> True])},
     {c = InfraCenter[g]},
     {germ = First @ FindInfraRepresentative[g, InfraSegment[First @ FindInfraShell[g, c, 8], c], 1]},
-    {walks = FindInfraGeodesic[g, germ, r, {10}, All, "Direction" -> "Forward"]},
+    {walks = FindInfraGeodesic[g, germ, r, {10}, All]},
     InfraSubstrateHighlight[g, {
       walks -> StandardOrange,
       SelectInfraWalk[g, walks, All, "From" -> "MostVisited"] -> StandardRed,
@@ -63,7 +63,7 @@ With[
        unit = EuclideanDistance @@ Lookup[xy, List @@ First @ EdgeList @ g]},
       Table[
         With[
-          {walks = FindInfraGeodesic[g, germ, r, {10}, All, "Direction" -> "Forward"]},
+          {walks = FindInfraGeodesic[g, germ, r, {10}, All]},
           {ext = Drop[Last /@ Sort @ VertexList @ #, Length[germ] - 1] & /@ SelectInfraWalk[g, walks, All, "From" -> "MostVisited"]},
           {{r, Max[Length[#] - 1 - d[[VertexIndex[g, First @ #], VertexIndex[g, Last @ #]]] & /@ ext]},
            {r, Max[Max[RegionDistance[Line[Lookup[xy, {First @ #, Last @ #}]], Lookup[xy, #]]] & /@ ext] / unit}}],

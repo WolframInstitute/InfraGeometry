@@ -58,7 +58,7 @@ With[
 
 ## Properties and Relations
 
-The walks of *k* edges from the germ's window are the forward extensions [FindInfraGeodesic]() lists with `Properties -> {}`. The number of windows, whether the graph has cycles, the number of six-step extensions read off the adjacency matrix, and the number listed.
+The walks of *k* edges from the germ's window are the extensions [FindInfraGeodesic]() lists. The number of windows, whether the graph has cycles, the number of six-step extensions read off the adjacency matrix, and the number listed.
 
 ```wl
 With[
@@ -70,7 +70,7 @@ With[
       {windows = InfraMeasurement[g, InfraGeodesic[germ, scale], "Graph"]},
       {from = UnitVector[VertexCount[windows], VertexIndex[windows, Take[germ, -Min[scale, Length[germ]]]]]},
       {scale, VertexCount[windows], AcyclicGraphQ[windows], Total[from . MatrixPower[AdjacencyMatrix[windows], 6]],
-       Length @ FindInfraGeodesic[g, germ, scale, {6}, All, Properties -> {}, "Direction" -> "Forward"]}],
+       Length @ FindInfraGeodesic[g, germ, scale, {6}, All]}],
     {scale, {1, 2, 4, 8}}]]
 ```
 

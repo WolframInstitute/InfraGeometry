@@ -26,20 +26,20 @@ This is the Riemannian geodesic read by an observer with a horizon. On a manifol
 
 The germ is a vertex, a vertex list, a walk graph, or a list of germs; a vertex is the one-vertex germ, and the germ must itself be a geodesic at scale *s* for anything to grow. *kspec* is the budget in edges added on each growing side: `UpTo[k]` (at most *k*), `{k}` (exactly *k*), `{lo, hi}`, or `Infinity`. A bare integer is no *kspec*. At a finite scale the class is infinite, so a finite budget is required; only scale `Infinity` accepts `Infinity`.
 
-The default `"Direction"` is `"Forward"` on a one-vertex germ and `"BothSides"` on a longer one, as for [FindInfraWalk](). At scale `Infinity` a walk germ grown on both sides gives the geodesics that contain it.
+The default `"Direction"` is `"Forward"`, as for [FindInfraWalk](): the geodesics that continue the germ past its last vertex. `"Backward"` grows before the first vertex and `"BothSides"` at both ends; at scale `Infinity` a walk germ grown on both sides gives the geodesics that contain it.
 
 A geodesic is a walk graph: a directed path graph on the pairs `{i, v}`, the position and the vertex. `Last /@ VertexList[w]` is its vertex sequence, and `EdgeCount[w]` its length. The count-less call returns one walk graph, or `{}` when there is none.
 
 The search reads only the window, never a target. A target is a stopping condition: `"StoppingCondition" -> (Last[#] === q &)` stops each geodesic at its first arrival at *q*, and the geodesics that end at *q* are the ones left by `Select`. At scale `Infinity` the target-aware search is [FindInfraSegment]().
 
-`FindInfraGeodesic` is [FindInfraWalk]() at `"InfraScale" -> s` with `"Minimizing"` added to the rules. The options are those of [FindInfraWalk]():
+`FindInfraGeodesic` is [FindInfraWalk]() with `{"Shortest", s}` first among the rules. The options are those of [FindInfraWalk]():
 
 | Option | Default | Values |
 |---|---|---|
-| `Properties` | `{}` | further walk rules, each read on the window: `"Simple"`, `"Immersed"`, `"Generic"`, `"Exclude" -> species`, or a predicate on the window |
-| `"StoppingCondition"` | `None` | *n* (stop at the *n*-th return to a visited vertex), a predicate on the walk so far, or `{spec, "Delay" -> k}` |
-| `"Direction"` | `Automatic` | `"Forward"`, `"Backward"` or `"BothSides"` |
-| `"NextVertexFunction"` | `Identity` | a function of the candidate windows -- the window with one admissible candidate appended -- giving the ones to pursue, in the order to try: `Identity` the canonical order, `RandomSample` a random order, `RandomChoice` the random walk, `MinimalBy[f]` the candidates least by `f[window]`, `RandomSample[#, UpTo[n]] &` a pruning to *n* branches per node |
+| `Properties` | `{}` | further rules, each `rule`, `{rule, r}` or `{rule, r, p}` with the window *r* and the weight *p*: `"Simple"`, `"Shortest"`, `"Stretched"`, or an energy function of the window |
+| `"NextVertexFunction"` | `Automatic` | `Automatic` (canonical, random by the weights once a rule is soft), `Identity`, `RandomSample`, `RandomChoice` (the random walk; the count is independent runs), or a function of the candidate windows giving the ones to pursue in order |
+| `"Direction"` | `"Forward"` | `"Forward"`, `"Backward"` or `"BothSides"` |
+| `"StoppingCondition"` | `None` | a predicate on the walk so far |
 
 ## Basic Examples
 
@@ -87,7 +87,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = InfraCenter[g]},
   {germ = {a, First @ AdjacencyList[g, a]}},
-  {geos = FindInfraGeodesic[g, germ, Infinity, UpTo[2], All]},
+  {geos = FindInfraGeodesic[g, germ, Infinity, UpTo[2], All, "Direction" -> "BothSides"]},
   {InfraSubstrateHighlight[g, {geos, germ}], Length @ geos}]
 ```
 
@@ -138,7 +138,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = InfraCenter[g]},
   {germ = {a, First @ AdjacencyList[g, a]}},
-  {geos = FindInfraGeodesic[g, germ, Infinity, Infinity, All]},
+  {geos = FindInfraGeodesic[g, germ, Infinity, Infinity, All, "Direction" -> "BothSides"]},
   {InfraSubstrateHighlight[g, {geos, germ}],
    Sort[Last /@ VertexList[#] & /@ geos] === Sort @ FindInfraLine[g, germ, All]}]
 ```
