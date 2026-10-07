@@ -84,7 +84,7 @@ The inverse of the inverse is the displacement.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {radial = First @ PolarDisplacements[g, InfraCenter[g]]},
+  {radial = First @ PolarDisplacements[g, First @ GraphCenter[g]]},
   {DisplacementPlot[g, DisplacementInverse[radial]], DisplacementInverse[DisplacementInverse[radial]] === radial}]
 ```
 
@@ -93,7 +93,7 @@ The inverse is not the negative. The inverse of the outward radial field of the 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {radial = First @ PolarDisplacements[g, c]},
   {GraphicsRow[{DisplacementPlot[g, DisplacementInverse[radial]], DisplacementPlot[g, DisplacementNegative[g, radial]]}],
    DisplacementInverse[radial][c], DisplacementNegative[g, radial][c]}]

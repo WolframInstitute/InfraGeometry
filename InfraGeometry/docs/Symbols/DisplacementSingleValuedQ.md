@@ -29,7 +29,7 @@ On the square tiling a random displacement is single-valued; the outward radial 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {field = (SeedRandom[1]; RandomDisplacement[g, 2]), radial = First @ PolarDisplacements[g, InfraCenter[g]]},
+  {field = (SeedRandom[1]; RandomDisplacement[g, 2]), radial = First @ PolarDisplacements[g, First @ GraphCenter[g]]},
   {GraphicsRow[{DisplacementPlot[g, field], DisplacementPlot[g, radial]}], DisplacementSingleValuedQ[field], DisplacementSingleValuedQ[radial]}]
 ```
 

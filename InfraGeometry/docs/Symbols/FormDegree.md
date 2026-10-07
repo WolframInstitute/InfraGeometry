@@ -29,8 +29,8 @@ A 0-form, its gradient and the wedge of two gradients on the triangular tiling, 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g]},
-  {apex = (SeedRandom[1]; RandomInfraPoint[g, center, 3]), form = ZeroForm[g, GraphDistance[g, center, #] &]},
+  {center = First @ GraphCenter[g]},
+  {apex = (SeedRandom[1]; FindInfraPoint[g, InfraShell[center, 3]]), form = ZeroForm[g, GraphDistance[g, center, #] &]},
   {gradient = FormDifferential[g, form]},
   {twoForm = FormWedge[gradient, FormDifferential[g, ZeroForm[g, GraphDistance[g, apex, #] &]]]},
   {GraphicsRow[{

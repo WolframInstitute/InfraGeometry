@@ -34,7 +34,7 @@ The rays of length 2 from the centre of the triangular tiling.
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   InfraSubstrateHighlight[g, InfraWalk /@ InfraRays[g, c, 2]]]
 ```
 

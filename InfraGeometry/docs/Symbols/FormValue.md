@@ -31,7 +31,7 @@ The gradient of the distance from the centre of the triangular tiling, at the ce
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g]},
+  {center = First @ GraphCenter[g]},
   {gradient = FormDifferential[g, ZeroForm[g, GraphDistance[g, center, #] &]]},
   {DisplacementPlot[g, <|center -> AdjacencyList[g, center]|>], FormValue[gradient, center, {#}] & /@ AdjacencyList[g, center]}]
 ```
@@ -41,7 +41,7 @@ At a neighbour of the centre the gradient is −1 on the step back to the centre
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g]},
+  {center = First @ GraphCenter[g]},
   {gradient = FormDifferential[g, ZeroForm[g, GraphDistance[g, center, #] &]]},
   {node = First @ AdjacencyList[g, center]},
   {DisplacementPlot[g, {
@@ -57,8 +57,8 @@ A tuple is read in any order, with the sign of its sorting permutation. The germ
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g]},
-  {apex = (SeedRandom[1]; RandomInfraPoint[g, center, 3])},
+  {center = First @ GraphCenter[g]},
+  {apex = (SeedRandom[1]; FindInfraPoint[g, InfraShell[center, 3]])},
   {twoForm = FormWedge[
      FormDifferential[g, ZeroForm[g, GraphDistance[g, center, #] &]],
      FormDifferential[g, ZeroForm[g, GraphDistance[g, apex, #] &]]]},
@@ -73,7 +73,7 @@ The length of the tuple is not checked. The gradient of the distance, a 1-form, 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g]},
+  {center = First @ GraphCenter[g]},
   {gradient = FormDifferential[g, ZeroForm[g, GraphDistance[g, center, #] &]]},
   {DisplacementPlot[g, <|center -> Take[AdjacencyList[g, center], 2]|>],
    {FormValue[gradient, center, Take[AdjacencyList[g, center], 1]], FormValue[gradient, center, Take[AdjacencyList[g, center], 2]]}}]

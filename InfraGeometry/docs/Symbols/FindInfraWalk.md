@@ -49,7 +49,7 @@ All simple walks of 3 edges from the centre of the square tiling, from a vertex 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
+  {a = First @ GraphCenter[g]},
   {walks = FindInfraWalk[g, a, {3}, All]},
   {InfraSubstrateHighlight[g, {walks, a}], Length @ walks}]
 ```
@@ -59,7 +59,7 @@ One walk of exactly 5 edges, beside its vertex sequence.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
+  {a = First @ GraphCenter[g]},
   {walk = FindInfraWalk[g, a, {5}]},
   {InfraSubstrateHighlight[g, {walk, a}], Last /@ VertexList[walk]}]
 ```
@@ -69,7 +69,7 @@ A germ of two vertices grows on both sides: the walks of at most 2 edges added a
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
+  {a = First @ GraphCenter[g]},
   {germ = {a, First @ AdjacencyList[g, a]}},
   {walks = FindInfraWalk[g, germ, UpTo[2], All]},
   {InfraSubstrateHighlight[g, {walks, germ}], Length @ walks}]
@@ -80,7 +80,7 @@ The same germ grown forward only.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
+  {a = First @ GraphCenter[g]},
   {germ = {a, First @ AdjacencyList[g, a]}},
   {walks = FindInfraWalk[g, germ, UpTo[2], All, "Direction" -> "Forward"]},
   {InfraSubstrateHighlight[g, {walks, germ}], Length @ walks}]
@@ -95,7 +95,7 @@ The class widens from the simple walks to every walk of at most 4 edges.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
+  {a = First @ GraphCenter[g]},
   GraphicsRow @ Table[
     With[{walks = FindInfraWalk[g, a, UpTo[4], All, Properties -> rules]},
       Labeled[InfraSubstrateHighlight[g, {walks, a}], Row[{rules, ": ", Length @ walks}]]],
@@ -109,8 +109,8 @@ A predicate on the walk so far stops each walk at its first arrival at *b*; the 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 3])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 3]])},
   {grown = FindInfraWalk[g, a, UpTo[5], All, "StoppingCondition" -> (Last[#] === b &)]},
   {arrived = Select[grown, Last @ Last @ VertexList @ # === b &]},
   {InfraSubstrateHighlight[g, {arrived, a, b}], Length /@ {grown, arrived}}]
@@ -123,7 +123,7 @@ Under `RandomChoice` the walk is a random one, one uniform admissible step at a 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
+  {a = First @ GraphCenter[g]},
   GraphicsRow @ Table[
     InfraSubstrateHighlight[g, {(SeedRandom[seed]; FindInfraWalk[g, a, {12}, "NextVertexFunction" -> RandomChoice]), a}],
     {seed, 3}]]
@@ -136,7 +136,7 @@ A vertex and the one-vertex list are the same germ.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
+  {a = First @ GraphCenter[g]},
   {FindInfraWalk[g, a, UpTo[3], All] === FindInfraWalk[g, {a}, UpTo[3], All]}]
 ```
 
@@ -145,8 +145,8 @@ With the geodesic rule `"Minimizing"` at scale `Infinity` the walks are shortest
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 3])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 3]])},
   {walks = Select[
     FindInfraWalk[g, a, Infinity, All, Properties -> {"Minimizing"}, "StoppingCondition" -> (Last[#] === b &)],
     Last @ Last @ VertexList @ # === b &]},
@@ -161,6 +161,6 @@ A call with `Infinity` and no rule that bounds the class is refused, since a sto
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
+  {a = First @ GraphCenter[g]},
   {MatchQ[FindInfraWalk[g, a, Infinity, Properties -> {}], _FindInfraWalk], MatchQ[FindInfraWalk[g, a, 3, All], _FindInfraWalk]}]
 ```

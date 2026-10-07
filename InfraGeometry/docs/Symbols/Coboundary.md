@@ -34,7 +34,7 @@ The coboundary of the distance from the centre on the square, the hexagonal and 
 With[
   {graphs = InfraSubstrate[#, "Small", "KeepCoordinates" -> True] & /@ {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}},
   {cochains = Table[
-     Coboundary[substrate, AssociationMap[GraphDistance[substrate, InfraCenter[substrate], First[#]] &, List /@ VertexList[substrate]]],
+     Coboundary[substrate, AssociationMap[GraphDistance[substrate, First @ GraphCenter[substrate], First[#]] &, List /@ VertexList[substrate]]],
      {substrate, graphs}]},
   {GraphicsRow[MapThread[
      DisplacementPlot[#1, GroupBy[Join[Keys @ Select[#2, Positive], Reverse /@ Keys @ Select[#2, Negative]], First -> Last]] &,
@@ -59,7 +59,7 @@ In degree 1 the coboundary lives on the triangles. The 1-cochain that is 1 on on
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+  {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
   {cochain = Coboundary[g, <|Sort[{center, First @ AdjacencyList[g, center]}] -> 1|>]},
   {Show[Graphics[KeyValueMap[
      {triangle, value} |-> {
@@ -76,6 +76,6 @@ A vertex function keyed by the vertices themselves is read as a cochain of degre
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {values = AssociationMap[GraphDistance[g, InfraCenter[g], #] &, VertexList[g]]},
+  {values = AssociationMap[GraphDistance[g, First @ GraphCenter[g], #] &, VertexList[g]]},
   {InfraSubstrateHighlight[g, values], Normal @ Coboundary[g, values], Length @ Coboundary[g, KeyMap[List, values]]}]
 ```

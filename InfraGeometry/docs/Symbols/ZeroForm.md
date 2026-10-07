@@ -31,7 +31,7 @@ The distance from the centre as a 0-form on the square, the hexagonal and the tr
 ```wl
 With[
   {graphs = InfraSubstrate[#, "Small", "KeepCoordinates" -> True] & /@ {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}},
-  {forms = Table[ZeroForm[substrate, GraphDistance[substrate, InfraCenter[substrate], #] &], {substrate, graphs}]},
+  {forms = Table[ZeroForm[substrate, GraphDistance[substrate, First @ GraphCenter[substrate], #] &], {substrate, graphs}]},
   GraphicsRow[MapThread[InfraSubstrateHighlight[#1, First /@ #2] &, {graphs, forms}]]]
 ```
 
@@ -40,7 +40,7 @@ The germ at a vertex is its value on the empty tuple: 0 at the centre, 1 at a ne
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g]},
+  {center = First @ GraphCenter[g]},
   {form = ZeroForm[g, GraphDistance[g, center, #] &]},
   {corners = {center, First @ AdjacencyList[g, center], First @ MaximalBy[VertexList[g], GraphDistance[g, center, #] &]}},
   {InfraSubstrateHighlight[g, corners], FormValue[form, #, {}] & /@ corners}]
@@ -65,7 +65,7 @@ The differential of a 0-form is its gradient. The distance from the centre rises
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {gradient = FormDifferential[g, ZeroForm[g, GraphDistance[g, InfraCenter[g], #] &]]},
+  {gradient = FormDifferential[g, ZeroForm[g, GraphDistance[g, First @ GraphCenter[g], #] &]]},
   DisplacementPlot[g, {Map[Catenate @* Keys @* Select[Positive], gradient], Map[Catenate @* Keys @* Select[Negative], gradient]}]]
 ```
 
@@ -74,7 +74,7 @@ A 0-form and a 0-cochain carry the same values. [IntegrationMap]() gives the 0-c
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {form = ZeroForm[g, GraphDistance[g, InfraCenter[g], #] &]},
+  {form = ZeroForm[g, GraphDistance[g, First @ GraphCenter[g], #] &]},
   {cochain = IntegrationMap[g, form]},
   {InfraSubstrateHighlight[g, KeyMap[First, cochain]], Take[Normal[cochain], 4],
    AllTrue[VertexList[g], FormValue[RestrictionMap[g, cochain], #, {}] == FormValue[form, #, {}] &]}]
@@ -85,7 +85,7 @@ The wedge of two 0-forms is their product, here the square of the distance from 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g]},
+  {center = First @ GraphCenter[g]},
   {squared = FormWedge[ZeroForm[g, GraphDistance[g, center, #] &], ZeroForm[g, GraphDistance[g, center, #] &]]},
   {InfraSubstrateHighlight[g, AssociationMap[FormValue[squared, #, {}] &, VertexList[g]]],
    AllTrue[VertexList[g], FormValue[squared, #, {}] == GraphDistance[g, center, #]^2 &]}]

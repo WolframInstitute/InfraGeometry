@@ -37,7 +37,7 @@ The outward radial displacement about the centre is 1-continuous on the square a
 ```wl
 With[
   {graphs = InfraSubstrate[#, "Small", "KeepCoordinates" -> True] & /@ {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}},
-  {radials = First @ PolarDisplacements[#, InfraCenter[#]] & /@ graphs},
+  {radials = First @ PolarDisplacements[#, First @ GraphCenter[#]] & /@ graphs},
   {GraphicsRow[MapThread[DisplacementPlot, {graphs, radials}]], MapThread[ContinuousDisplacementQ, {graphs, radials}]}]
 ```
 
@@ -57,7 +57,7 @@ Twice the outward radial displacement of the square tiling is weakly 1-continuou
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {doubled = DisplacementScale[g, First @ PolarDisplacements[g, InfraCenter[g]], 2]},
+  {doubled = DisplacementScale[g, First @ PolarDisplacements[g, First @ GraphCenter[g]], 2]},
   {DisplacementPlot[g, doubled], Table[ContinuousDisplacementQ[g, doubled, k, Method -> method], {method, {"Weak", "Hausdorff", "Strong"}}, {k, 3}]}]
 ```
 
@@ -81,7 +81,7 @@ The angular displacement about the centre of the triangular tiling is not 1-cont
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {angular = Last @ PolarDisplacements[g, InfraCenter[g]]},
+  {angular = Last @ PolarDisplacements[g, First @ GraphCenter[g]]},
   {DisplacementPlot[g, angular], ContinuousDisplacementQ[g, angular], ContinuousDisplacementQ[g, angular, 2]}]
 ```
 

@@ -44,8 +44,8 @@ Euclid I.1 on the square tiling: two points four steps apart, a circle in the ba
 ClearAll[pA, pB, circleA, circleB, meet];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
   {scene = InfraScene[{pA, pB, circleA, circleB, meet},
      {InfraStep[{pA == InfraPoint[a]}, "point A"],
       InfraStep[{pB == InfraPoint[b]}, "point B"],
@@ -78,9 +78,9 @@ An assertion keeps the branches it holds on: here the meeting vertices nearer th
 ClearAll[pA, pB, circleA, circleB, meet];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
-  {rim = (SeedRandom[1]; First @ FindInfraPoint[g, 1, "From" -> "Periphery"])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {rim = (SeedRandom[1]; FindInfraPoint[g, GraphPeriphery[g]])},
   {scene = InfraScene[{pA, pB, circleA, circleB, meet},
      {pA == InfraPoint[a], pB == InfraPoint[b],
       circleA == InfraCircle[pA, {4, 5}], circleB == InfraCircle[pB, {4, 5}],
@@ -98,8 +98,8 @@ At a single radius the square tiling has no circle, so the construction finds no
 ClearAll[pA, pB, circleA, circleB, meet];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
   {scene = InfraScene[{pA, pB, circleA, circleB, meet},
      {pA == InfraPoint[a], pB == InfraPoint[b],
       circleA == InfraCircle[pA, 4], circleB == InfraCircle[pB, 4],
@@ -131,8 +131,8 @@ An operand of [InfraIntersection]() may be a token, bound to no name.
 ClearAll[pA, pB, circleA, meet];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
   {scene = InfraScene[{pA, pB, circleA, meet},
      {pA == InfraPoint[a], pB == InfraPoint[b], circleA == InfraCircle[pA, {4, 5}],
       meet == InfraIntersection[circleA, InfraCircle[pB, {4, 5}]]}]},

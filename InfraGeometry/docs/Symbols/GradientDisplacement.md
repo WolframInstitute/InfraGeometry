@@ -49,7 +49,7 @@ The gradient of the distance from the centre is the outward radial displacement.
 ```wl
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {gradient = GradientDisplacement[g, AssociationThread[VertexList[g], GraphDistance[g, c]]]},
   {DisplacementPlot[g, gradient], gradient === First @ PolarDisplacements[g, c]}]
 ```

@@ -67,7 +67,7 @@ The ball of radius 3 about the centre of the discretized plane, the square grid 
 Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {ball = InfraBall[InfraCenter[g], 3]},
+    {ball = InfraBall[First @ GraphCenter[g], 3]},
     {support = FindInfraRepresentative[g, ball]},
     Labeled[
       InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
@@ -80,7 +80,7 @@ The two measures against the radius on the square grid. The counting measure is 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   ListLinePlot[
     Table[InfraMeasurement[g, InfraBall[c, r], measure], {measure, {"CountingMeasure", "RiemannianMeasure"}}, {r, 0, 8}],
     DataRange -> {0, 8}, PlotMarkers -> Automatic, PlotLegends -> {"CountingMeasure", "RiemannianMeasure"}, AxesLabel -> {"r", None}]]
@@ -93,8 +93,8 @@ A ball about a vertex list is the neighbourhood of the list: here of a shortest 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 4])},
+  {c = First @ GraphCenter[g]},
+  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])},
   {core = FindInfraRepresentative[g, InfraSegment[c, p]]},
   InfraSubstrateHighlight[g, {InfraBall[core, 1], core}]]
 ```
@@ -104,7 +104,7 @@ Past the eccentricity the ball is the whole graph, and the Riemannian measure co
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small"]},
-  {InfraMeasurement[g, InfraBall[InfraCenter[g], 20], {"CountingMeasure", "RiemannianMeasure"}], VertexCount[g]}]
+  {InfraMeasurement[g, InfraBall[First @ GraphCenter[g], 20], {"CountingMeasure", "RiemannianMeasure"}], VertexCount[g]}]
 ```
 
 ## Properties and Relations
@@ -116,7 +116,7 @@ GraphicsRow[MapThread[
   {substrate, ballCount} |-> Show[
     Plot[Evaluate[{ballCount, ConditionalExpression[ballCount /. r -> r - 1, r >= 1]}], {r, 0, 6}],
     ListPlot[
-      Table[InfraMeasurement[substrate, InfraBall[InfraCenter[substrate], r], measure], {measure, {"CountingMeasure", "RiemannianMeasure"}}, {r, 0, 6}],
+      Table[InfraMeasurement[substrate, InfraBall[First @ GraphCenter[substrate], r], measure], {measure, {"CountingMeasure", "RiemannianMeasure"}}, {r, 0, 6}],
       DataRange -> {0, 6}, PlotMarkers -> Automatic]],
   {InfraSubstrate[#, "Medium"] & /@ {"SquareTilingGraph", "TriangularTilingGraph", "HexagonalTilingGraph"},
    {2 r^2 + 2 r + 1, 3 r^2 + 3 r + 1, 1 + 3 r (r + 1)/2}}]]
@@ -127,7 +127,7 @@ The ball is the union of the shells up to its radius, so its counting measure is
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Medium"]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {volumes = Table[InfraMeasurement[g, InfraBall[c, r], "CountingMeasure"], {r, 0, 5}]},
   {areas = Table[InfraMeasurement[g, InfraShell[c, r], "CountingMeasure"], {r, 0, 5}]},
   {volumes, Accumulate[areas]}]
@@ -138,7 +138,7 @@ The Riemannian measure of a ball is at least the counting measure of the ball on
 ```wl
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {inner = InfraInterior[g, FindInfraRepresentative[g, InfraBall[c, 6]]]},
   {smaller = FindInfraRepresentative[g, InfraBall[c, 5]]},
   {InfraSubstrateHighlight[g, {smaller, InfraShell[c, 6], Complement[inner, smaller]}],
@@ -151,7 +151,7 @@ Inside a scene the token names the ball about a point, and [FindInfraScene]() bi
 ClearAll[pA, ballA];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {constr = InfraScene[{pA, ballA}, {pA == InfraPoint[c], ballA == InfraBall[pA, 2]}]},
   {ball = InfraSceneInstance[First @ FindInfraScene[constr, g], ballA]},
   {InfraSubstrateHighlight[g, {ball, c}],

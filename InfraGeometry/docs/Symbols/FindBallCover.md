@@ -50,7 +50,7 @@ The ball of radius 4 about the centre, gray, and the centres of a smallest cover
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {target = FindInfraRepresentative[g, InfraBall[InfraCenter[g], 4]]},
+    {target = FindInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]]},
     InfraSubstrateHighlight[g, {target -> StandardGray, FindBallCover[g, 2, target] -> StandardRed}]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```

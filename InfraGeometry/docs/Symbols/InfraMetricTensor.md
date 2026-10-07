@@ -67,7 +67,7 @@ The tensor on the shell of radius 3 about the centre of the square tiling, besid
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {InfraSubstrateHighlight[g, {FindInfraShell[g, c, 3], c}],
    MatrixPlot[InfraMetricTensor[g, c, 3]]}]
 ```
@@ -85,7 +85,7 @@ The shell form is the submatrix of the full one on the shell.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {shellIndices = VertexIndex[g, #] & /@ FindInfraShell[g, c, 2]},
   {MatrixPlot[InfraMetricTensor[g, c, 2]],
    InfraMetricTensor[g, c, 2] == InfraMetricTensor[g, c][[shellIndices, shellIndices]]}]
@@ -119,9 +119,9 @@ The entry is the foot of *v* on the interval to *w*, read off the explicit const
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {p = InfraCenter[g]},
-  {w = (SeedRandom[1]; RandomInfraPoint[g, p, 5])},
-  {v = (SeedRandom[12]; RandomInfraPoint[g, p, 4])},
+  {p = First @ GraphCenter[g]},
+  {w = (SeedRandom[1]; FindInfraPoint[g, InfraShell[p, 5]])},
+  {v = (SeedRandom[12]; FindInfraPoint[g, InfraShell[p, 4]])},
   {interval = MetricInterval[g, p, w]},
   {feet = FindClosestInfraPoint[g, interval, v, All]},
   {InfraSubstrateHighlight[g, {interval, p, v, w, feet}],
@@ -134,7 +134,7 @@ On a shell of the square tiling the tensor is one minus the distance over twice 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {GraphicsRow @ Table[MatrixPlot[InfraMetricTensor[g, c, r]], {r, {2, 4, 6}}],
    Table[
      With[{shell = FindInfraShell[g, c, r]},
@@ -147,7 +147,7 @@ The comparison cosine of [InfraScalarProduct]() reads −1 for two orthogonal ne
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {InfraSubstrateHighlight[g, {c, 2, 6, 11}],
    {InfraScalarProduct[g, c, 2, 6], InfraScalarProduct[g, c, 2, 11]},
    MatrixForm @ InfraMetricTensor[g, c, 1]}]

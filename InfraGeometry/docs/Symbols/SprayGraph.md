@@ -45,7 +45,7 @@ The spray at the centre, drawn on the substrate by the maximal shortest paths th
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   GraphicsRow[{
     InfraSubstrateHighlight[g, {SprayGraph[g, c], c}],
     SprayGraph[g, c, "AxisLength" -> 3]}]]
@@ -56,7 +56,7 @@ The spray from the centre covers the patch, and its sinks are the vertices of th
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {sprayDag = SprayGraph[g, c]},
   {sinks = Select[VertexList[sprayDag], VertexOutDegree[sprayDag, #] == 0 &]},
   {InfraSubstrateHighlight[g, {sprayDag, sinks}], VertexCount[sprayDag], EdgeCount[sprayDag], Length @ sinks}]
@@ -67,7 +67,7 @@ The maximal shortest paths from the centre to one sink, each a path of the spray
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {sprayDag = SprayGraph[g, c]},
   {sink = First @ Select[VertexList[sprayDag], VertexOutDegree[sprayDag, #] == 0 &]},
   {paths = FindPath[sprayDag, c, sink, Infinity, All]},
@@ -83,8 +83,8 @@ One shortest path between the pair, every shortest path, or those within distanc
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
   {sprays = Table[SprayGraph[g, {{a, b}}, "PathThickness" -> t], {t, {0, 1, Infinity}}]},
   {GraphicsRow @ Table[InfraSubstrateHighlight[g, {spray, a, b}], {spray, sprays}],
    EdgeCount /@ sprays}]
@@ -97,7 +97,7 @@ A layer of the spray is a shell: the vertices at depth *r* are [FindInfraShell](
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {sprayDag = SprayGraph[g, c, "AxisLength" -> 3]},
   {InfraSubstrateHighlight[g, {sprayDag, FindInfraShell[g, c, 3]}],
    Sort @ Complement[VertexList[sprayDag], FindInfraRepresentative[g, InfraBall[c, 2]]] === FindInfraShell[g, c, 3],
@@ -109,8 +109,8 @@ The shortest paths from *c* to *v* are the paths of the spray from *c* to *v*; t
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {through = (SeedRandom[1]; RandomInfraPoint[g, c, 4])},
+  {c = First @ GraphCenter[g]},
+  {through = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])},
   {InfraSubstrateHighlight[g, {InfraMeasurement[g, InfraSegment[c, through], "Graph"], c, through}],
    Sort @ FindPath[SprayGraph[g, c], c, through, Infinity, All] === Sort @ FindPath[InfraMeasurement[g, InfraSegment[c, through], "Graph"], c, through, Infinity, All]}]
 ```

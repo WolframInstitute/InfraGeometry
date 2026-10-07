@@ -22,10 +22,7 @@ Every exported symbol that no other guide of the site covers, one section per ke
 - `FindInfraReflection` the reflections x' of x through a
 - `FindInfraCommonPoint` the points lying on every listed line
 - `FindClosestInfraPoint` the vertices of a line at minimum graph distance from a point
-- `SelectInfraPoint` draws a vertex from a supplied bundle under graph distance
 - `InfraReachableQ` whether p1 and p2 have realisations in the same connected component
-- `RandomInfraPoint` a uniformly random vertex, or one at distance d from p
-- `InfraCenter` a vertex of least eccentricity
 
 ### EuclideanInfrageometry · InfraMeasurement.wl
 

@@ -55,7 +55,7 @@ Ball quotients against *r(r + 1)* at the centre of the discretized plane, the sq
 GraphicsRow @ Table[
   With[
     {gr = InfraSubstrate[nm, "Large"]},
-    {obs = VolumeGrowthObservables[gr, InfraCenter[gr]]},
+    {obs = VolumeGrowthObservables[gr, First @ GraphCenter[gr]]},
     {quots = obs["BallLogDifferenceQuotients"], win = obs["BallWindow"]},
     {scatter = Table[{rad (rad + 1), quots[[rad]]}, {rad, Length @ quots}]},
     Show[
@@ -70,7 +70,7 @@ The two probes on the same substrates: the ball quotients and the sphere quotien
 ```wl
 With[
   {names = {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}},
-  {obsList = With[{gr = InfraSubstrate[#, "Large"]}, VolumeGrowthObservables[gr, InfraCenter[gr]]] & /@ names},
+  {obsList = With[{gr = InfraSubstrate[#, "Large"]}, VolumeGrowthObservables[gr, First @ GraphCenter[gr]]] & /@ names},
   {GraphicsRow @ MapThread[
      ListLinePlot[{#1["BallLogDifferenceQuotients"], #1["SphereLogDifferenceQuotients"] + 1}, PlotRange -> {All, {1, 3.5}},
        PlotMarkers -> Automatic, PlotLabel -> #2, AxesLabel -> {"r", "q"}] &, {obsList, names}],
@@ -83,7 +83,7 @@ The balls at the two ends of the fitted ball window on the square tiling, beside
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {obs = VolumeGrowthObservables[g, c]},
   {InfraSubstrateHighlight[g, {FindInfraRepresentative[g, InfraBall[c, Last @ obs["BallWindow"]]], FindInfraRepresentative[g, InfraBall[c, First @ obs["BallWindow"]]], c}],
    obs["BallWindow"], Keys @ obs}]
@@ -96,7 +96,7 @@ The comparison with flat space at each radius, and the fitted numbers. On curved
 ```wl
 With[
   {names = {"SphereMeshGraph", "SquareTilingGraph", "HyperbolicTilingGraph"}},
-  {obsList = With[{gr = InfraSubstrate[#, "Large"]}, VolumeGrowthObservables[gr, InfraCenter[gr]]] & /@ names},
+  {obsList = With[{gr = InfraSubstrate[#, "Large"]}, VolumeGrowthObservables[gr, First @ GraphCenter[gr]]] & /@ names},
   {ListLinePlot[#["BallCurvatureByRadius"] & /@ obsList, PlotMarkers -> Automatic, PlotLegends -> names, PlotRange -> {All, {-3, 1}}, AxesLabel -> {"r", "R(r)"}],
    Dataset @ AssociationThread[names, KeyTake[#, {"BallDimension", "BallScalarCurvature"}] & /@ obsList]}]
 ```
@@ -106,7 +106,7 @@ A window given explicitly is fitted as it stands, here radii 3 to 10 on the disc
 ```wl
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Large"]},
-  {obs = VolumeGrowthObservables[g, InfraCenter[g], {3, 10}]},
+  {obs = VolumeGrowthObservables[g, First @ GraphCenter[g], {3, 10}]},
   {quots = obs["BallLogDifferenceQuotients"]},
   {scatter = Table[{rad (rad + 1), quots[[rad]]}, {rad, Length @ quots}]},
   {ListPlot[{scatter, scatter[[3 ;; 10]]}, PlotRange -> {All, {1, 3}}, AxesLabel -> {"r(r+1)", "q"}],
@@ -123,7 +123,7 @@ The ball quotients on the square tiling under the two measures; the sphere probe
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Large"]},
   {measures = {"CountingMeasure", "RiemannianMeasure"}},
-  {obsList = VolumeGrowthObservables[g, InfraCenter[g], "Measure" -> #] & /@ measures},
+  {obsList = VolumeGrowthObservables[g, First @ GraphCenter[g], "Measure" -> #] & /@ measures},
   {ListLinePlot[#["BallLogDifferenceQuotients"] & /@ obsList, PlotMarkers -> Automatic, PlotLegends -> measures,
      PlotRange -> {All, {0, 4}}, AxesLabel -> {"r", "q"}],
    AssociationThread[measures, KeyTake[#, {"BallDimension", "SphereDimension"}] & /@ obsList]}]
@@ -136,8 +136,8 @@ With the dimension fixed at 2, only the curvature is fitted: the free line in gr
 ```wl
 With[
   {g = InfraSubstrate["SphereMeshGraph", "Large"]},
-  {free = VolumeGrowthObservables[g, InfraCenter[g]]},
-  {fixed = VolumeGrowthObservables[g, InfraCenter[g], "Dimension" -> 2]},
+  {free = VolumeGrowthObservables[g, First @ GraphCenter[g]]},
+  {fixed = VolumeGrowthObservables[g, First @ GraphCenter[g], "Dimension" -> 2]},
   {quots = free["BallLogDifferenceQuotients"], win = free["BallWindow"]},
   {scatter = Table[{rad (rad + 1), quots[[rad]]}, {rad, win[[1]], win[[2]]}]},
   {Show[
@@ -154,7 +154,7 @@ The profiles in the result are the `"RiemannianMeasure"` of the balls and the `"
 ```wl
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Large"]},
-  {ctr = InfraCenter[g]},
+  {ctr = First @ GraphCenter[g]},
   {obs = VolumeGrowthObservables[g, ctr]},
   {ListLinePlot[{obs["BallVolumes"], obs["ShellAreas"]}, PlotMarkers -> Automatic, PlotLegends -> {"ball", "shell"}, AxesLabel -> {"r + 1", None}],
    {obs["BallVolumes"] === Table[InfraMeasurement[g, InfraBall[ctr, r], "RiemannianMeasure"], {r, 0, Length @ obs["BallVolumes"] - 1}],

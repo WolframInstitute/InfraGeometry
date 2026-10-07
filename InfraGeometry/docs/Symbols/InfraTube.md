@@ -61,8 +61,8 @@ The tube of radius 2 about a segment on the discretized plane, the square grid a
 Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = InfraCenter[g]},
-    {tube = InfraTube[InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, c, 4])], 2]},
+    {c = First @ GraphCenter[g]},
+    {tube = InfraTube[InfraSegment[c, (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])], 2]},
     {support = FindInfraRepresentative[g, tube]},
     Labeled[
       InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
@@ -75,8 +75,8 @@ The two measures against the radius, about a segment of length 6 on the square g
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
-  {c = InfraCenter[g]},
-  {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, c, 6])]},
+  {c = First @ GraphCenter[g]},
+  {seg = InfraSegment[c, (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 6]])]},
   ListLinePlot[
     Table[InfraMeasurement[g, InfraTube[seg, s], measure], {measure, {"CountingMeasure", "RiemannianMeasure"}}, {s, 0, 5}],
     DataRange -> {0, 5}, PlotMarkers -> Automatic, PlotLegends -> {"CountingMeasure", "RiemannianMeasure"}, AxesLabel -> {"s", None}]]
@@ -87,8 +87,8 @@ The mantle of radii 2 and 3 about a segment.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, c, 4])]},
+  {c = First @ GraphCenter[g]},
+  {seg = InfraSegment[c, (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])]},
   InfraSubstrateHighlight[g, {InfraTube[seg, {2, 3}], seg}]]
 ```
 
@@ -119,8 +119,8 @@ The fat tube about a segment of length 5 on the square grid against the box coun
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
-  {c = InfraCenter[g]},
-  {fat = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, c, 5])]},
+  {c = First @ GraphCenter[g]},
+  {fat = InfraSegment[c, (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 5]])]},
   {intervalSize = InfraMeasurement[g, fat, "CountingMeasure"]},
   {geodesic = FindInfraRepresentative[g, fat]},
   Show[
@@ -135,8 +135,8 @@ The tube of a segment against the tube of one of its shortest paths, both of rad
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, c, 4])]},
+  {c = First @ GraphCenter[g]},
+  {seg = InfraSegment[c, (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])]},
   {tubes = {InfraTube[seg, 1], InfraTube[FindInfraRepresentative[g, seg], 1]}},
   {Row[InfraSubstrateHighlight[g, {#}] & /@ tubes], InfraMeasurement[g, tubes, "CountingMeasure"]}]
 ```
@@ -146,6 +146,6 @@ The tube of a vertex is the ball.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small"]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   FindInfraRepresentative[g, InfraTube[c, 3]] === FindInfraRepresentative[g, InfraBall[c, 3]]]
 ```

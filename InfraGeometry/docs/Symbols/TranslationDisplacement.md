@@ -49,7 +49,7 @@ Half a step of the square tiling lands halfway between a vertex and its neighbou
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {half = TranslationDisplacement[g, {1/2, 1/2}]},
-  {DisplacementPlot[g, half], half[InfraCenter[g]]}]
+  {DisplacementPlot[g, half], half[First @ GraphCenter[g]]}]
 ```
 
 ## Properties and Relations

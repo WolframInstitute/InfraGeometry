@@ -41,7 +41,7 @@ Two displacements in two colours: the radial and the angular displacement about 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  DisplacementPlot[g, PolarDisplacements[g, InfraCenter[g]]]]
+  DisplacementPlot[g, PolarDisplacements[g, First @ GraphCenter[g]]]]
 ```
 
 ## Scope
@@ -51,7 +51,7 @@ A displacement given at a few vertices draws only there. Each step from the cent
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {steps = <|InfraCenter[g] -> AdjacencyList[g, InfraCenter[g]]|>},
+  {steps = <|First @ GraphCenter[g] -> AdjacencyList[g, First @ GraphCenter[g]]|>},
   DisplacementPlot[g, Table[DisplacementScale[g, steps, t], {t, 3}]]]
 ```
 
@@ -72,7 +72,7 @@ A vertex that stays is not drawn. The angular displacement of the square tiling 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {polar = PolarDisplacements[g, InfraCenter[g]]},
+  {polar = PolarDisplacements[g, First @ GraphCenter[g]]},
   {DisplacementPlot[g, polar], AllTrue[Keys[Last[polar]], Last[polar][#] === {#} &]}]
 ```
 

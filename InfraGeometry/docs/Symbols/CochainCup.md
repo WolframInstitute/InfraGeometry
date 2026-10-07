@@ -33,8 +33,8 @@ The cup of the coboundaries of the distances from the centre of the triangular t
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {apex = (SeedRandom[1]; RandomInfraPoint[g, center, 3])},
+  {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+  {apex = (SeedRandom[1]; FindInfraPoint[g, InfraShell[center, 3]])},
   {cup = CochainCup[g,
      Coboundary[g, AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]],
      Coboundary[g, AssociationMap[GraphDistance[g, apex, First[#]] &, List /@ VertexList[g]]]]},
@@ -63,7 +63,7 @@ The cup with a 0-cochain multiplies by its mean over each edge. For the distance
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {values = AssociationMap[GraphDistance[g, InfraCenter[g], First[#]] &, List /@ VertexList[g]]},
+  {values = AssociationMap[GraphDistance[g, First @ GraphCenter[g], First[#]] &, List /@ VertexList[g]]},
   {product = CochainCup[g, values, Coboundary[g, values]]},
   {DisplacementPlot[g, GroupBy[Join[Keys @ Select[product, Positive], Reverse /@ Keys @ Select[product, Negative]], First -> Last]],
    KeySort[product] === KeySort[Coboundary[g, values^2 / 2]]}]
@@ -74,7 +74,7 @@ The cup is not associative. For the distance *f* from the centre, *(f ∪ f) ∪
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {values = AssociationMap[GraphDistance[g, InfraCenter[g], First[#]] &, List /@ VertexList[g]]},
+  {values = AssociationMap[GraphDistance[g, First @ GraphCenter[g], First[#]] &, List /@ VertexList[g]]},
   {associator = DeleteCases[Merge[{
       CochainCup[g, CochainCup[g, values, values], Coboundary[g, values]],
       -CochainCup[g, values, CochainCup[g, values, Coboundary[g, values]]]}, Total], 0]},
@@ -87,8 +87,8 @@ The cup is graded-commutative and unital: the cup of the two coboundaries above 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {apex = (SeedRandom[1]; RandomInfraPoint[g, center, 3])},
+  {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+  {apex = (SeedRandom[1]; FindInfraPoint[g, InfraShell[center, 3]])},
   {fromCenter = Coboundary[g, AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]],
    fromApex = Coboundary[g, AssociationMap[GraphDistance[g, apex, First[#]] &, List /@ VertexList[g]]]},
   {Show[Graphics[KeyValueMap[

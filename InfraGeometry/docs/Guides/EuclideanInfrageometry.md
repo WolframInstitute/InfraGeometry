@@ -60,7 +60,7 @@ Euclidean infrageometry is synthetic geometry: constructions with natural object
 
 ### Find Functions
 
-- `FindInfraPoint` a vertex drawn from the candidate pool, narrowed by "From" and "Distance"; a trailing count gives a List of vertices
+- `FindInfraPoint` a vertex drawn from a region (a vertex List, a ball, a shell or any other region); a count gives a List of vertices; "PairwiseDistance" constrains the tuple
 - `FindInfraMidpoint` the middle vertices of the shortest paths from p1 to p2 as a density, one vertex at even distance, two at odd
 - `FindInfraEquidistantSet` the vertices equidistant from p1, ..., pn, as a sorted vertex list; a trailing {lo, hi} thickens each bisector to a slab
 - `FindInfraSphere` n inclusion-minimal connected subsets of the shell of c that separate its inside from its outside; Properties chooses the class, "NextVertexFunction" the order of the peel

@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/DisplacementReduce
 Keywords: [displacement, metric centre, eccentricity, tie, multivalued, contraction]
-SeeAlso: [DisplacementSingleValuedQ, DisplacementSum, DisplacementScale, DisplacementCompose, InfraCenter]
+SeeAlso: [DisplacementSingleValuedQ, DisplacementSum, DisplacementScale, DisplacementCompose, GraphCenter]
 RelatedGuides: [InfraAnalysis]
 ---
 
@@ -30,8 +30,8 @@ A step from the centre to a ball of radius 1, blue, contracts to the centre of t
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = InfraCenter[g]},
-    {target = (SeedRandom[1]; RandomInfraPoint[g, c, 3])},
+    {c = First @ GraphCenter[g]},
+    {target = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 3]])},
     {blurred = <|c -> FindInfraRepresentative[g, InfraBall[target, 1]]|>},
     DisplacementPlot[g, {blurred, DisplacementReduce[g, blurred]}]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
@@ -54,7 +54,7 @@ Three vertices in a row reduce to the middle one; two vertices stay. Two outward
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {radial = First @ PolarDisplacements[g, InfraCenter[g]]},
+  {radial = First @ PolarDisplacements[g, First @ GraphCenter[g]]},
   {twoSteps = KeyTake[DisplacementCompose[radial, radial], {12}], oneStep = KeyTake[radial, {12}]},
   {DisplacementPlot[g, {twoSteps, DisplacementReduce[g, twoSteps]}], twoSteps[12], DisplacementReduce[g, twoSteps][12], DisplacementReduce[g, oneStep][12]}]
 ```
@@ -66,7 +66,7 @@ A tie survives. The two outward neighbours of a vertex off the axes of the squar
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {radial = First @ PolarDisplacements[g, InfraCenter[g]]},
+  {radial = First @ PolarDisplacements[g, First @ GraphCenter[g]]},
   {DisplacementPlot[g, radial], DisplacementReduce[g, radial] === radial, DisplacementSingleValuedQ[radial]}]
 ```
 

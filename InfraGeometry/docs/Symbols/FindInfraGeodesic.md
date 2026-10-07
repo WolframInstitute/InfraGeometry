@@ -48,8 +48,8 @@ The geodesics of at most 8 edges from the centre of the square tiling to a verte
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
   Row @ Table[
     With[
       {grown = FindInfraGeodesic[g, a, sc, UpTo[8], All, "StoppingCondition" -> (Last[#] === b &)]},
@@ -63,7 +63,7 @@ One geodesic at infra-scale 3 of exactly 6 edges from the centre, beside its ver
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
+  {a = First @ GraphCenter[g]},
   {geo = FindInfraGeodesic[g, a, 3, {6}]},
   {InfraSubstrateHighlight[g, {geo, a}], Last /@ VertexList[geo]}]
 ```
@@ -73,7 +73,7 @@ All geodesics of 4 edges from the centre, as the scale grows: every walk at scal
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
+  {a = First @ GraphCenter[g]},
   Row @ Table[
     With[{geos = FindInfraGeodesic[g, a, sc, {4}, All]},
       Labeled[InfraSubstrateHighlight[g, {geos, a}], Row[{"scale ", sc, ": ", Length @ geos}]]],
@@ -85,7 +85,7 @@ A geodesic germ of two vertices grown on both sides: the shortest paths that con
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
+  {a = First @ GraphCenter[g]},
   {germ = {a, First @ AdjacencyList[g, a]}},
   {geos = FindInfraGeodesic[g, germ, Infinity, UpTo[2], All]},
   {InfraSubstrateHighlight[g, {geos, germ}], Length @ geos}]
@@ -100,7 +100,7 @@ Under `RandomChoice` the geodesic is a random one, one uniform admissible step a
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
+  {a = First @ GraphCenter[g]},
   GraphicsRow @ Table[
     InfraSubstrateHighlight[g, {(SeedRandom[seed]; FindInfraGeodesic[g, a, 2, {12}, "NextVertexFunction" -> RandomChoice]), a}],
     {seed, 3}]]
@@ -113,8 +113,8 @@ At scale `Infinity` the geodesics from the centre that end at *b* are the member
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
   {grown = FindInfraGeodesic[g, a, Infinity, Infinity, All, "StoppingCondition" -> (Last[#] === b &)]},
   {geos = Select[grown, Last @ Last @ VertexList @ # === b &]},
   {InfraSubstrateHighlight[g, {geos, a, b}],
@@ -126,7 +126,7 @@ Every walk found passes [InfraGeodesicQ]() at its scale.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
+  {a = First @ GraphCenter[g]},
   {geos = FindInfraGeodesic[g, a, 3, {5}, All]},
   {InfraSubstrateHighlight[g, {geos, a}], InfraGeodesicQ[g, geos, 3]}]
 ```
@@ -136,7 +136,7 @@ A geodesic germ of scale `Infinity` grown without a budget on both sides gives t
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
+  {a = First @ GraphCenter[g]},
   {germ = {a, First @ AdjacencyList[g, a]}},
   {geos = FindInfraGeodesic[g, germ, Infinity, Infinity, All]},
   {InfraSubstrateHighlight[g, {geos, germ}],

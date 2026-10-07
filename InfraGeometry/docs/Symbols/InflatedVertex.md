@@ -30,7 +30,7 @@ The fiber over the centre of the discretized plane, the square tiling and the he
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = InfraCenter[g]},
+    {c = First @ GraphCenter[g]},
     {inflated = (SeedRandom[1]; InflateGraph[g, "ExtraVertices" -> 2])},
     InfraSubstrateHighlight[inflated, {Cases[VertexList[inflated], InflatedVertex[c, _]], c}]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]

@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RelativeEccentricity
 Keywords: [relative eccentricity, eccentricity, radius, diameter, graph center, periphery, depth]
-SeeAlso: [GraphEccentricities, CenterGraph, InfraCenter]
+SeeAlso: [GraphEccentricities, CenterGraph, GraphCenter]
 RelatedGuides: [Experimental]
 ---
 

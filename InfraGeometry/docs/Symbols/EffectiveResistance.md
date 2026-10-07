@@ -33,7 +33,7 @@ On the square tiling the ball of radius 5 about the centre, blue, is a square. T
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {fromCentre = EffectiveResistance[g][[VertexIndex[g, c]]]},
   {disk = Pick[VertexList[g], Thread[fromCentre <= 1.15]], graphBall = FindInfraRepresentative[g, InfraBall[c, 5]]},
   {GraphicsRow[{InfraSubstrateHighlight[g, {AssociationThread[graphBall, 1] -> StandardBlue}], InfraSubstrateHighlight[g, {AssociationThread[disk, 1] -> StandardGreen}]}],
@@ -46,7 +46,7 @@ The resistance from the centre against the distance on the square, hexagonal and
 ListPlot[
   Table[
     With[
-      {c = InfraCenter[g]},
+      {c = First @ GraphCenter[g]},
       Table[{GraphDistance[g, c, v], EffectiveResistance[g, c, v]}, {v, VertexList[g]}]],
     {g, Append[InfraSubstrate[#, "Small"] & /@ {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}, KaryTree[31]]}],
   PlotLegends -> {"square", "hexagonal", "triangular", "binary tree"}, AxesLabel -> {"d", "R"}]

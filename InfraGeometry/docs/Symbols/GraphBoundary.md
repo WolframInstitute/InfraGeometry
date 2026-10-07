@@ -33,7 +33,7 @@ With[
   {panels = Table[
      With[
        {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-       {region = FindInfraRepresentative[g, InfraBall[InfraCenter[g], 3]]},
+       {region = FindInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 3]]},
        {InfraSubstrateHighlight[g, {GraphInterior[g, region] -> StandardGreen, GraphBoundary[g, region] -> StandardBlue}],
         Length[GraphBoundary[g, region]]}],
      {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]},
@@ -47,7 +47,7 @@ With[
   {panels = Table[
      With[
        {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-       {region = Complement[FindInfraRepresentative[g, InfraBall[InfraCenter[g], 4]], FindInfraRepresentative[g, InfraBall[InfraCenter[g], 1]]]},
+       {region = Complement[FindInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]], FindInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 1]]]},
        {InfraSubstrateHighlight[g, {GraphInterior[g, region] -> StandardGreen, GraphBoundary[g, region] -> StandardBlue}],
         Length[GraphBoundary[g, region]]}],
      {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]},
@@ -61,7 +61,7 @@ A subgraph counts only its own edges. The spray of radius 2 about the centre of 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {spray = SprayGraph[g, InfraCenter[g], "AxisLength" -> 2]},
+  {spray = SprayGraph[g, First @ GraphCenter[g], "AxisLength" -> 2]},
   {GraphicsRow[InfraSubstrateHighlight[g, {AssociationThread[GraphInterior[g, #], 1] -> StandardGreen, AssociationThread[GraphBoundary[g, #], 1] -> StandardBlue}] & /@ {spray, VertexList[spray]}],
    Length[GraphBoundary[g, #]] & /@ {spray, VertexList[spray]}}]
 ```
@@ -74,7 +74,7 @@ The outer boundary of a set is the boundary of its complement. For the ball of r
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {region = FindInfraRepresentative[g, InfraBall[InfraCenter[g], 3]]},
+    {region = FindInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 3]]},
     InfraSubstrateHighlight[g, {GraphBoundary[g, region] -> StandardBlue, GraphBoundary[g, Complement[VertexList[g], region]] -> StandardRed}]],
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
 ```
@@ -84,7 +84,7 @@ GraphicsRow @ Table[
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {region = FindInfraRepresentative[g, InfraBall[InfraCenter[g], 4]]},
+  {region = FindInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]]},
   {InfraSubstrateHighlight[g, {GraphInterior[g, region] -> StandardGreen, InfraBoundary[g, region] -> StandardBlue}],
    InfraBoundary[g, region] === Sort[GraphBoundary[g, region]]}]
 ```

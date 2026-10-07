@@ -35,7 +35,7 @@ The gradient of the distance from the centre on the square, the hexagonal and th
 ```wl
 With[
   {graphs = InfraSubstrate[#, "Small", "KeepCoordinates" -> True] & /@ {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}},
-  {forms = Table[FormDifferential[substrate, ZeroForm[substrate, GraphDistance[substrate, InfraCenter[substrate], #] &]], {substrate, graphs}]},
+  {forms = Table[FormDifferential[substrate, ZeroForm[substrate, GraphDistance[substrate, First @ GraphCenter[substrate], #] &]], {substrate, graphs}]},
   GraphicsRow[MapThread[
     DisplacementPlot[#1, {Map[Catenate @* Keys @* Select[Positive], #2], Map[Catenate @* Keys @* Select[Negative], #2]}] &,
     {graphs, forms}]]]
@@ -46,7 +46,7 @@ The differential of the gradient is not zero. At a vertex two steps from the cen
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g]},
+  {center = First @ GraphCenter[g]},
   {twoForm = FormDifferential[g, FormDifferential[g, ZeroForm[g, GraphDistance[g, center, #] &]]],
    node = First @ Select[VertexList[g], GraphDistance[g, center, #] == 2 &]},
   {GraphicsRow[{
@@ -72,7 +72,7 @@ In degree 0 Stokes says that the gradient integrates to the coboundary.
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {values = AssociationMap[GraphDistance[g, InfraCenter[g], #] &, VertexList[g]]},
+  {values = AssociationMap[GraphDistance[g, First @ GraphCenter[g], #] &, VertexList[g]]},
   {cochain = IntegrationMap[g, FormDifferential[g, ZeroForm[g, values]]]},
   {DisplacementPlot[g, GroupBy[Join[Keys @ Select[cochain, Positive], Reverse /@ Keys @ Select[cochain, Negative]], First -> Last]],
    KeySort[cochain] === KeySort[Coboundary[g, KeyMap[List, values]]]}]
@@ -83,7 +83,7 @@ On the square tiling no two neighbours of a vertex are adjacent, so the differen
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {twoForm = FormDifferential[g, FormDifferential[g, ZeroForm[g, GraphDistance[g, InfraCenter[g], #] &]]]},
+  {twoForm = FormDifferential[g, FormDifferential[g, ZeroForm[g, GraphDistance[g, First @ GraphCenter[g], #] &]]]},
   {InfraSubstrateHighlight[g, AssociationThread[Keys @ Select[twoForm, # =!= <||> &], 1]], Count[Values[twoForm], <||>]}]
 ```
 
@@ -94,7 +94,7 @@ On a form of degree 2 or more the germs come out empty, with no message. The dif
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {twoForm = FormDifferential[g, FormDifferential[g, ZeroForm[g, GraphDistance[g, InfraCenter[g], #] &]]]},
+  {twoForm = FormDifferential[g, FormDifferential[g, ZeroForm[g, GraphDistance[g, First @ GraphCenter[g], #] &]]]},
   {InfraSubstrateHighlight[g, AssociationThread[Keys @ Select[twoForm, # =!= <||> &], 1]],
    FormDegree[twoForm], Union[Length /@ Values[FormDifferential[g, twoForm]]]}]
 ```

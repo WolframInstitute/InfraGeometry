@@ -40,7 +40,7 @@ The four corners of a square of the square tiling, with the graph metric. Three 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {corners = First /@ First @ FindCycle[{g, InfraCenter[g]}, {4}]},
+  {corners = First /@ First @ FindCycle[{g, First @ GraphCenter[g]}, {4}]},
   {InfraSubstrateHighlight[g, {InfraWalk[Append[corners, First[corners]]]}],
    Table[BallIntersectionFiltrationValue[corners, Range[4], k, "Metric" -> g], {k, 2, 4}]}]
 ```

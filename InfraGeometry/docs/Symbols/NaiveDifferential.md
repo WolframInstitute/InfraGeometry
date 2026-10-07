@@ -70,6 +70,6 @@ On a 0-form the germs come out empty, with no message: [NaiveDifferential]() com
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {form = ZeroForm[g, GraphDistance[g, InfraCenter[g], #] &]},
+  {form = ZeroForm[g, GraphDistance[g, First @ GraphCenter[g], #] &]},
   {InfraSubstrateHighlight[g, First /@ form], Union[Length /@ Values[NaiveDifferential[g, form]]]}]
 ```

@@ -30,7 +30,7 @@ Needs["WolframInstitute`InfraGeometry`"]
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, "Large", "KeepCoordinates" -> True])},
-    {c = InfraCenter[g]},
+    {c = First @ GraphCenter[g]},
     {germ = First @ FindInfraRepresentative[g, InfraSegment[First @ FindInfraShell[g, c, 8], c], 1]},
     {walks = FindInfraGeodesic[g, germ, r, {10}, All, "Direction" -> "Forward"]},
     InfraSubstrateHighlight[g, {
@@ -58,7 +58,7 @@ With[
   {readouts = Table[
     With[
       {g = (SeedRandom[2]; InfraSubstrate[name, "Large", "KeepCoordinates" -> True])},
-      {c = InfraCenter[g], d = GraphDistanceMatrix[g], xy = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+      {c = First @ GraphCenter[g], d = GraphDistanceMatrix[g], xy = AssociationThread[VertexList[g], GraphEmbedding[g]]},
       {germ = First @ FindInfraRepresentative[g, InfraSegment[First @ FindInfraShell[g, c, 8], c], 1],
        unit = EuclideanDistance @@ Lookup[xy, List @@ First @ EdgeList @ g]},
       Table[

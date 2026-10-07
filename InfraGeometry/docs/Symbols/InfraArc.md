@@ -52,9 +52,9 @@ An arc of the circle of radius 3 about the centre, on the band widened one step 
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = InfraCenter[g]},
-    {p = (SeedRandom[1]; RandomInfraPoint[g, c, 3])},
-    {q = (SeedRandom[2]; RandomInfraPoint[g, c, 3])},
+    {c = First @ GraphCenter[g]},
+    {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 3]])},
+    {q = (SeedRandom[2]; FindInfraPoint[g, InfraShell[c, 3]])},
     {arc = InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}]},
     InfraSubstrateHighlight[g, {arc, c, p, q}]],
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
@@ -65,9 +65,9 @@ The number of minor arcs and their length, beside the picture.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 3])},
-  {q = (SeedRandom[2]; RandomInfraPoint[g, c, 3])},
+  {c = First @ GraphCenter[g]},
+  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 3]])},
+  {q = (SeedRandom[2]; FindInfraPoint[g, InfraShell[c, 3]])},
   {arc = InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}]},
   {InfraSubstrateHighlight[g, {arc, c, p, q}],
    InfraMeasurement[g, arc, "Cardinality"], InfraMeasurement[g, arc, "Length"]}]
@@ -78,9 +78,9 @@ On the bare distance shell the two points are joined by no arc: a shell of the s
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 3])},
-  {q = (SeedRandom[2]; RandomInfraPoint[g, c, 3])},
+  {c = First @ GraphCenter[g]},
+  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 3]])},
+  {q = (SeedRandom[2]; FindInfraPoint[g, InfraShell[c, 3]])},
   {InfraSubstrateHighlight[g, {FindInfraShell[g, c, 3], c, p, q}],
    InfraMeasurement[g, InfraArc[c, {p, q}], "Cardinality"]}]
 ```
@@ -90,9 +90,9 @@ The members are vertex lists. Three minor arcs, each drawn as a walk.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 3])},
-  {q = (SeedRandom[2]; RandomInfraPoint[g, c, 3])},
+  {c = First @ GraphCenter[g]},
+  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 3]])},
+  {q = (SeedRandom[2]; FindInfraPoint[g, InfraShell[c, 3]])},
   {members = FindInfraRepresentative[g, InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}], UpTo[3]]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], c, p, q}], {member, members}]]
 ```
@@ -102,9 +102,9 @@ Through the intermediate vertex 12 the polyline keeps two of the four minor arcs
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 3])},
-  {q = (SeedRandom[2]; RandomInfraPoint[g, c, 3])},
+  {c = First @ GraphCenter[g]},
+  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 3]])},
+  {q = (SeedRandom[2]; FindInfraPoint[g, InfraShell[c, 3]])},
   {polyline = InfraArc[c, {p, 12, q}, "RadiusDelta" -> {1, 1}]},
   {InfraSubstrateHighlight[g, {polyline, c, p, 12, q}],
    InfraMeasurement[g, polyline, "Cardinality"], InfraMeasurement[g, InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}], "Cardinality"]}]
@@ -115,7 +115,7 @@ The two half-rings between antipodes of the radius-2 hexagon of the triangular t
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {ring = FindInfraShell[g, c, 2]},
   {p = First @ ring},
   {q = First @ Select[ring, GraphDistance[Subgraph[g, ring], p, #] == 6 &]},
@@ -130,8 +130,8 @@ The closed arc: the circles through a vertex at distance 2 from the centre, the 
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = InfraCenter[g]},
-    {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
+    {c = First @ GraphCenter[g]},
+    {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 2]])},
     InfraSubstrateHighlight[g, {InfraArc[c, {p}, "RadiusDelta" -> 2], c, p}]],
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
 ```
@@ -141,8 +141,8 @@ On the square tiling, the number of these circles and their length, beside the p
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
+  {c = First @ GraphCenter[g]},
+  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 2]])},
   {circle = InfraArc[c, {p, p}, "RadiusDelta" -> 2]},
   {InfraSubstrateHighlight[g, {circle, c, p}],
    InfraMeasurement[g, circle, "Cardinality"], InfraMeasurement[g, circle, "Length"]}]
@@ -153,8 +153,8 @@ Every circle through *p*, found by the search, each drawn as its directed cycle.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
+  {c = First @ GraphCenter[g]},
+  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 2]])},
   {allCircles = FindInfraRepresentative[g, InfraArc[c, {p, p}, "RadiusDelta" -> 2], All]},
   {InfraSubstrateHighlight[g, {Table[Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], {oneCircle, allCircles}], c, p}],
    Length @ allCircles}]
@@ -165,9 +165,9 @@ Through a second point the circles are fewer; <code>[InfraArc]()[*c*, {*p*}]</co
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
-  {q = (SeedRandom[5]; RandomInfraPoint[g, c, 2])},
+  {c = First @ GraphCenter[g]},
+  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 2]])},
+  {q = (SeedRandom[5]; FindInfraPoint[g, InfraShell[c, 2]])},
   {both = InfraArc[c, {p, q, p}, "RadiusDelta" -> 2]},
   {InfraSubstrateHighlight[g, {both, c, p, q}],
    InfraMeasurement[g, both, "Cardinality"],
@@ -181,8 +181,8 @@ The closed arc through *p* has the members of the circle of the same band that p
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
+  {c = First @ GraphCenter[g]},
+  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 2]])},
   {circle = InfraCircle[c, {2, 4}]},
   {InfraSubstrateHighlight[g, {InfraArc[c, {p, p}, "RadiusDelta" -> 2], c, p}],
    InfraMeasurement[g, InfraArc[c, {p, p}, "RadiusDelta" -> 2], "Cardinality"],
@@ -194,8 +194,8 @@ On the closed arc the search sweeps the band directly and finds as many circles 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
+  {c = First @ GraphCenter[g]},
+  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 2]])},
   {closedArc = InfraArc[c, {p, p}, "RadiusDelta" -> 2]},
   {InfraSubstrateHighlight[g, {closedArc, c, p}],
    InfraMeasurement[g, closedArc, "Cardinality"], Length @ FindInfraRepresentative[g, closedArc, All]}]
@@ -206,9 +206,9 @@ The arc's `"Faithful"` is [Undetermined](). The circle's is too, unless its cut 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 3])},
-  {q = (SeedRandom[2]; RandomInfraPoint[g, c, 3])},
+  {c = First @ GraphCenter[g]},
+  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 3]])},
+  {q = (SeedRandom[2]; FindInfraPoint[g, InfraShell[c, 3]])},
   {arc = InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}]},
   {InfraSubstrateHighlight[g, {arc, c, p, q}],
    InfraMeasurement[g, arc, "Faithful"]}]

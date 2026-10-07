@@ -41,7 +41,7 @@ The shells of radius 1 to 5 about the centre of the square, hexagonal and triang
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = InfraCenter[g]},
+    {c = First @ GraphCenter[g]},
     InfraSubstrateHighlight[g, Table[FindInfraShell[g, c, r], {r, 1, 5}]]],
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
 ```
@@ -52,7 +52,7 @@ Shell size against radius. On the three lattices the growth is linear, the intri
 With[
   {names = {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}},
   ListLinePlot[
-    Table[With[{g = InfraSubstrate[name, "Medium"]}, Table[Length @ FindInfraShell[g, InfraCenter[g], r], {r, 0, 6}]], {name, names}],
+    Table[With[{g = InfraSubstrate[name, "Medium"]}, Table[Length @ FindInfraShell[g, First @ GraphCenter[g], r], {r, 0, 6}]], {name, names}],
     DataRange -> {0, 6}, PlotMarkers -> Automatic, PlotLegends -> names, AxesLabel -> {"r", "|S_r|"}]]
 ```
 
@@ -61,7 +61,7 @@ A band of radii 2 to 4 about the centre, as one vertex set.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   InfraSubstrateHighlight[g, {FindInfraShell[g, c, {2, 4}], c}]]
 ```
 
@@ -72,7 +72,7 @@ The ball is the union of the shells up to its radius, so the volumes are the par
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Medium"]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {areas = Table[Length @ FindInfraShell[g, c, r], {r, 0, 5}]},
   {volumes = Table[Length @ FindInfraRepresentative[g, InfraBall[c, r]], {r, 0, 5}]},
   {ListLinePlot[{Accumulate @ areas, volumes}, DataRange -> {0, 5}, PlotMarkers -> {Automatic, Medium},
@@ -85,7 +85,7 @@ The shell sizes are the `"CountingMeasure"` of [InfraShell]().
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Medium"]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {areas = Table[Length @ FindInfraShell[g, c, r], {r, 0, 5}]},
   {ListPlot[areas, DataRange -> {0, 5}, AxesLabel -> {"r", "A(r)"}], areas === Table[InfraMeasurement[g, InfraShell[c, r], "CountingMeasure"], {r, 0, 5}]}]
 ```

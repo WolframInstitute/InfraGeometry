@@ -23,13 +23,13 @@ Needs["WolframInstitute`InfraGeometry`"]
 The centre $c$ is a vertex of least eccentricity. The profiles run up to $R = \lfloor (\mathrm{ecc}(c) - 1)/2 \rfloor$, so that a tube of thickness $R$ about a segment of length $R$ from $c$ stays inside the graph.
 
 ```wl
-profileRadius[g_] := Floor[(VertexEccentricity[g, InfraCenter[g]] - 1)/2]
+profileRadius[g_] := Floor[(VertexEccentricity[g, First @ GraphCenter[g]] - 1)/2]
 ```
 
 The far end $p$ of the segments: a vertex at distance $R$ from the centre, drawn after a seed.
 
 ```wl
-farEnd[g_] := (SeedRandom[1]; RandomInfraPoint[g, InfraCenter[g], profileRadius[g]])
+farEnd[g_] := (SeedRandom[1]; FindInfraPoint[g, InfraShell[First @ GraphCenter[g], profileRadius[g]]])
 ```
 
 The two measures of a list of regions: the counting measure first, the Riemannian measure second.
@@ -52,7 +52,7 @@ interiorAndBoundary[g_, region_] := With[{support = FindInfraRepresentative[g, r
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
-    InfraSubstrateHighlight[g, interiorAndBoundary[g, InfraBall[InfraCenter[g], profileRadius[g]]]]],
+    InfraSubstrateHighlight[g, interiorAndBoundary[g, InfraBall[First @ GraphCenter[g], profileRadius[g]]]]],
   {size, {"Small", "Medium", "Large"}},
   {name, {"SquareTilingGraph", "TriangularTilingGraph", "SquareMeshGraph"}}]
 ```
@@ -72,7 +72,7 @@ GraphicsGrid @ Table[
     {lattice = Switch[name, "SquareTilingGraph", 2 r^2 + 2 r + 1, "TriangularTilingGraph", 3 r^2 + 3 r + 1, _, Nothing]},
     Show[
       Plot[Evaluate[{lattice, lattice /. r -> r - 1}], {r, 0, radius}],
-      ListPlot[twoMeasures[g, Table[InfraBall[InfraCenter[g], r], {r, 0, radius}]], DataRange -> {0, radius}],
+      ListPlot[twoMeasures[g, Table[InfraBall[First @ GraphCenter[g], r], {r, 0, radius}]], DataRange -> {0, radius}],
       PlotRange -> All]],
   {size, {"Small", "Medium", "Large"}},
   {name, {"SquareTilingGraph", "TriangularTilingGraph", "SquareMeshGraph"}}]
@@ -92,7 +92,7 @@ GraphicsGrid @ Table[
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
-    InfraSubstrateHighlight[g, interiorAndBoundary[g, InfraShell[InfraCenter[g], profileRadius[g]]]]],
+    InfraSubstrateHighlight[g, interiorAndBoundary[g, InfraShell[First @ GraphCenter[g], profileRadius[g]]]]],
   {size, {"Small", "Medium", "Large"}},
   {name, {"SquareTilingGraph", "TriangularTilingGraph", "SquareMeshGraph"}}]
 ```
@@ -107,7 +107,7 @@ GraphicsGrid @ Table[
     {lattice = Switch[name, "SquareTilingGraph", 4 r, "TriangularTilingGraph", 6 r, _, Nothing]},
     Show[
       Plot[lattice, {r, 0, radius}],
-      ListPlot[twoMeasures[g, Table[InfraShell[InfraCenter[g], r], {r, 0, radius}]], DataRange -> {0, radius}],
+      ListPlot[twoMeasures[g, Table[InfraShell[First @ GraphCenter[g], r], {r, 0, radius}]], DataRange -> {0, radius}],
       PlotRange -> All]],
   {size, {"Small", "Medium", "Large"}},
   {name, {"SquareTilingGraph", "TriangularTilingGraph", "SquareMeshGraph"}}]
@@ -129,7 +129,7 @@ The tubes of thickness $\lceil R/2 \rceil$: the thin tube green, the rest of the
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
-    {c = InfraCenter[g], p = farEnd[g], thickness = Ceiling[profileRadius[g]/2]},
+    {c = First @ GraphCenter[g], p = farEnd[g], thickness = Ceiling[profileRadius[g]/2]},
     {geodesic = FindInfraRepresentative[g, InfraSegment[c, p]]},
     {fat = FindInfraRepresentative[g, InfraTube[InfraSegment[c, p], thickness]], thin = FindInfraRepresentative[g, InfraTube[geodesic, thickness]]},
     InfraSubstrateHighlight[g, {Complement[fat, thin] -> StandardBlue, thin -> StandardGreen, InfraWalk[geodesic]}]],
@@ -143,7 +143,7 @@ The profiles over $s = 0, \ldots, R$: the fat tube as joined points, the thin tu
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
-    {c = InfraCenter[g], p = farEnd[g], radius = profileRadius[g]},
+    {c = First @ GraphCenter[g], p = farEnd[g], radius = profileRadius[g]},
     {geodesic = FindInfraRepresentative[g, InfraSegment[c, p]]},
     {box = If[name == "SquareTilingGraph", InfraMeasurement[g, InfraSegment[c, p], "CountingMeasure"] + 2 s (radius + 2) + 2 s (s - 1), Nothing]},
     Show[
@@ -171,7 +171,7 @@ The ellipsoid of slack $2s$ and the fat tube of thickness $s$, for $s = \lceil R
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
-    {c = InfraCenter[g], p = farEnd[g], thickness = Ceiling[profileRadius[g]/2]},
+    {c = First @ GraphCenter[g], p = farEnd[g], thickness = Ceiling[profileRadius[g]/2]},
     {ellipsoid = FindInfraRepresentative[g, InfraQuadric[{c, p}, GraphDistance[g, c, p] + 2 thickness]]},
     {tube = FindInfraRepresentative[g, InfraTube[InfraSegment[c, p], thickness]]},
     InfraSubstrateHighlight[g, {Complement[ellipsoid, tube] -> StandardRed, tube -> StandardGreen, InfraSegment[c, p]}]],
@@ -187,7 +187,7 @@ The profiles over $s = 0, \ldots, R$: the ellipsoid of slack $2s$ as joined poin
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
-    {c = InfraCenter[g], p = farEnd[g], radius = profileRadius[g]},
+    {c = First @ GraphCenter[g], p = farEnd[g], radius = profileRadius[g]},
     Show[
       ListLinePlot[twoMeasures[g, Table[InfraTube[FindInfraRepresentative[g, InfraQuadric[{c, p}, radius + 2 s]], 0], {s, 0, radius}]], DataRange -> {0, radius}, PlotMarkers -> Automatic],
       ListPlot[twoMeasures[g, Table[InfraTube[InfraSegment[c, p], s], {s, 0, radius}]], DataRange -> {0, radius}],
@@ -220,7 +220,7 @@ The smallest counterexample to the equality on the triangular tiling, with foci 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
+  {a = First @ GraphCenter[g]},
   {beyond = focus |-> Complement[FindInfraRepresentative[g, InfraQuadric[{a, focus}, 4]], FindInfraRepresentative[g, InfraTube[InfraSegment[a, focus], 1]]]},
   {b = SelectFirst[FindInfraShell[g, a, 2], beyond[#] =!= {} &]},
   {x = First @ beyond[b]},
@@ -242,7 +242,7 @@ The cone of slope one half about one geodesic from the centre to the far end, by
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
-    {geodesic = FindInfraRepresentative[g, InfraSegment[InfraCenter[g], farEnd[g]]]},
+    {geodesic = FindInfraRepresentative[g, InfraSegment[First @ GraphCenter[g], farEnd[g]]]},
     InfraSubstrateHighlight[g, Append[interiorAndBoundary[g, InfraCone[geodesic, 1/2]], InfraWalk[geodesic]]]],
   {size, {"Small", "Medium", "Large"}},
   {name, {"SquareTilingGraph", "TriangularTilingGraph", "SquareMeshGraph"}}]
@@ -255,7 +255,7 @@ GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
     {p = farEnd[g], radius = profileRadius[g], slopes = Range[0, 3/2, 1/8]},
-    {geodesic = FindInfraRepresentative[g, InfraSegment[InfraCenter[g], p]]},
+    {geodesic = FindInfraRepresentative[g, InfraSegment[First @ GraphCenter[g], p]]},
     Show[
       ListLinePlot[twoMeasures[g, Table[InfraBall[p, Floor[m radius]], {m, slopes}]], DataRange -> {0, 3/2}],
       ListPlot[twoMeasures[g, Table[InfraCone[geodesic, m], {m, slopes}]], DataRange -> {0, 3/2}],
@@ -279,7 +279,7 @@ One instance in the band between the radii $\lceil R/2 \rceil$ and $\lceil R/2 \
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
-    {c = InfraCenter[g], inner = Ceiling[profileRadius[g]/2]},
+    {c = First @ GraphCenter[g], inner = Ceiling[profileRadius[g]/2]},
     {wall = (SeedRandom[1]; FindInfraRepresentative[g, InfraSphere[c, {inner, inner + 1}]])},
     InfraSubstrateHighlight[g, {InfraShell[c, {inner, inner + 1}] -> StandardGreen, wall -> StandardOrange}]],
   {size, {"Small", "Medium", "Large"}},
@@ -292,7 +292,7 @@ The profiles of one instance in each band $S_{r, r+1}$ over $r = 1, \ldots, \min
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
-    {c = InfraCenter[g], bandRadii = Range[1, Min[profileRadius[g], 6]]},
+    {c = First @ GraphCenter[g], bandRadii = Range[1, Min[profileRadius[g], 6]]},
     {walls = Table[InfraTube[(SeedRandom[1]; FindInfraRepresentative[g, InfraSphere[c, {r, r + 1}]]), 0], {r, bandRadii}]},
     {shells = InfraMeasurement[g, Table[InfraShell[c, r], {r, First[bandRadii], Last[bandRadii] + 1}], "CountingMeasure"]},
     Show[
@@ -361,7 +361,7 @@ The two measures of the balls about the centre over $r = 0, \ldots, R$ as points
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[First[spec], size, "KeepCoordinates" -> True])},
-    {c = InfraCenter[g], radius = profileRadius[g], where = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+    {c = First @ GraphCenter[g], radius = profileRadius[g], where = AssociationThread[VertexList[g], GraphEmbedding[g]]},
     {hop = Mean @ Map[pt |-> spec[[2]][where[pt], where[c]]/GraphDistance[g, c, pt], DeleteCases[VertexList[g], c]]},
     Show[
       Plot[spec[[3]][hop r, VertexCount[g]], {r, 0, radius}],
@@ -406,7 +406,7 @@ The two curves on the substrates: the counting curve $\Delta$ of $r \mapsto |B_r
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
-    {c = InfraCenter[g]},
+    {c = First @ GraphCenter[g]},
     {top = VertexEccentricity[g, c]},
     Show[
       Plot[{2 - 1/r, 2 + 1/r}, {r, 1, top - 2}],
