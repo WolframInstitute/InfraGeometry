@@ -58,8 +58,8 @@ The segment from the centre to a vertex five steps away, on the discretized plan
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {a = InfraCenter[g]},
-    {b = (SeedRandom[1]; RandomInfraPoint[g, a, 5])},
+    {a = First @ GraphCenter[g]},
+    {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 5]])},
     {seg = InfraSegment[a, b]},
     InfraSubstrateHighlight[g, {seg, a, b}]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
@@ -71,8 +71,8 @@ The interval of the same segments, its inner vertices in green and its boundary 
 Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = InfraCenter[g]},
-    {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, c, 5])]},
+    {c = First @ GraphCenter[g]},
+    {seg = InfraSegment[c, (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 5]])]},
     {support = Keys @ InfraMeasurement[g, seg, "VertexDensity"]},
     Labeled[
       InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
@@ -85,8 +85,8 @@ The graph of a segment on the square tiling. Every shortest path is a directed p
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 5])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 5]])},
   InfraMeasurement[g, InfraSegment[a, b], "Graph"]]
 ```
 
@@ -95,8 +95,8 @@ The graph is small where the family is large. Ten steps out on the medium square
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[2]; RandomInfraPoint[g, a, 10])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[2]; FindInfraPoint[g, InfraShell[a, 10]])},
   {seg = InfraSegment[a, b]},
   {InfraSubstrateHighlight[g, {seg, a, b}],
    InfraMeasurement[g, seg, "Cardinality"], VertexCount @ InfraMeasurement[g, seg, "Graph"]}]
@@ -107,8 +107,8 @@ The members are vertex lists. Three of them, each drawn as a walk.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 5])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 5]])},
   {members = FindInfraRepresentative[g, InfraSegment[a, b], 3]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], a, b}], {member, members}]]
 ```
@@ -118,9 +118,9 @@ A polyline through the centre: one shortest path in, one out. Its cardinality is
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {a = (SeedRandom[2]; RandomInfraPoint[g, c, 4])},
-  {b = (SeedRandom[5]; RandomInfraPoint[g, c, 4])},
+  {c = First @ GraphCenter[g]},
+  {a = (SeedRandom[2]; FindInfraPoint[g, InfraShell[c, 4]])},
+  {b = (SeedRandom[5]; FindInfraPoint[g, InfraShell[c, 4]])},
   {poly = InfraSegment[a, c, b]},
   {InfraSubstrateHighlight[g, {poly, a, c, b}],
    InfraMeasurement[g, poly, "Cardinality"] == InfraMeasurement[g, InfraSegment[a, c], "Cardinality"] InfraMeasurement[g, InfraSegment[c, b], "Cardinality"]}]
@@ -133,8 +133,8 @@ The support of the segment is the metric interval between its endpoints, drawn h
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 5])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 5]])},
   {seg = InfraSegment[a, b]},
   {InfraSubstrateHighlight[g, {MetricInterval[g, a, b], seg}],
    Sort @ Keys @ InfraMeasurement[g, seg, "VertexDensity"] === Sort @ MetricInterval[g, a, b]}]
@@ -145,8 +145,8 @@ The cardinality is the number of members, and every member has the graph distanc
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 5])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 5]])},
   {seg = InfraSegment[a, b]},
   {members = FindInfraRepresentative[g, seg, All]},
   {InfraSubstrateHighlight[g, {members, a, b}],

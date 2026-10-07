@@ -135,7 +135,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = InfraSubstrate[ "HexagonalTilingGraph", "Small" ] },
-    { c = InfraCenter[ g ] },
+    { c = First @ GraphCenter[ g ] },
     { members = FindInfraRepresentative[ g, InfraSphere[ c, { 2, 4 } ], UpTo[ 3 ] ] },
     { Length @ members, AllTrue[ members, t |-> sphereMinimalQ[ g, c, { 2, 4 }, t ] ] } ],
   { 3, True },

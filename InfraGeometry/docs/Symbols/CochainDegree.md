@@ -29,8 +29,8 @@ A 0-cochain, its coboundary and a cup on the triangular tiling, of degrees 0, 1 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {apex = (SeedRandom[1]; RandomInfraPoint[g, center, 3]), cochain = AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]},
+  {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+  {apex = (SeedRandom[1]; FindInfraPoint[g, InfraShell[center, 3]]), cochain = AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]},
   {edgeCochain = Coboundary[g, cochain]},
   {triangleCochain = CochainCup[g, edgeCochain, Coboundary[g, AssociationMap[GraphDistance[g, apex, First[#]] &, List /@ VertexList[g]]]]},
   {GraphicsRow[{
@@ -51,7 +51,7 @@ The empty cochain has no key to read. The coboundary of a coboundary is empty, a
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {edgeCochain = Coboundary[g, AssociationMap[GraphDistance[g, InfraCenter[g], First[#]] &, List /@ VertexList[g]]]},
+  {edgeCochain = Coboundary[g, AssociationMap[GraphDistance[g, First @ GraphCenter[g], First[#]] &, List /@ VertexList[g]]]},
   {DisplacementPlot[g, GroupBy[Join[Keys @ Select[edgeCochain, Positive], Reverse /@ Keys @ Select[edgeCochain, Negative]], First -> Last]],
    Normal @ Coboundary[g, edgeCochain], Quiet @ CochainDegree[Coboundary[g, edgeCochain]]}]
 ```

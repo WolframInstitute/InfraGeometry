@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[   4612377,      89158]
-NotebookOptionsPosition[   4606091,      89051]
-NotebookOutlinePosition[   4607099,      89080]
-CellTagsIndexPosition[   4607056,      89077]
+NotebookDataLength[   4612469,      89160]
+NotebookOptionsPosition[   4606183,      89053]
+NotebookOutlinePosition[   4607191,      89082]
+CellTagsIndexPosition[   4607148,      89079]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -29,7 +29,7 @@ Cell[TextData[{
   FontWeight->"Bold"],
  " is a shortest path, here of eight edges ending at the centre of the graph. \
 We extend it forward by ten steps."
-}], "Item",ExpressionUUID->"e2aea80c-667f-4a96-8f47-0cf467a541a6"],
+}], "Item",ExpressionUUID->"c77074e7-959b-4229-ab0e-8a8b46add90a"],
 
 Cell[TextData[{
  "A walk is a ",
@@ -39,25 +39,25 @@ Cell[TextData[{
  Cell[BoxData[
   StyleBox["r", "TI"]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "190ff1cd-e278-4774-ba5c-a906d6b37dd4"],
+  "76f5ce7c-e9b6-4601-8472-a8b9e943cd0c"],
  " when every ",
  Cell[BoxData[
   RowBox[{
    StyleBox["r", "TI"], "+", "1"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "89a16f2f-b6c8-4adf-b832-a0d85aaae233"],
+  "cc6a2eab-05b6-470c-bf15-5c7f72c2ff97"],
  " consecutive vertices of it form a shortest path. The observer checks \
 straightness only within a horizon of ",
  Cell[BoxData[
   StyleBox["r", "TI"]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "698db585-a39f-4c44-a75c-f214f457d2d2"],
+  "4f7bf5d9-3256-40ab-9279-ba194f52328c"],
  " steps; at scale ",
  Cell[BoxData["\[Infinity]"], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "809d7d84-291a-406c-a03c-e31130247a80"],
+  "9e359741-f060-490f-b824-7b3471906850"],
  " the whole walk is a shortest path."
-}], "Item",ExpressionUUID->"8ec04ee1-5d0a-4863-8991-882b53403933"],
+}], "Item",ExpressionUUID->"45e7951d-0bb3-4301-b1f7-fc2776004796"],
 
 Cell[TextData[{
  "The ",
@@ -67,18 +67,18 @@ Cell[TextData[{
  Cell[BoxData[
   StyleBox["r", "TI"]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "e0810c08-151d-44ae-a186-7bb30a80d9c4"],
+  "7a091250-bc47-4acf-9fa8-2c440b4d8598"],
  " is the set of all geodesics at scale ",
  Cell[BoxData[
   StyleBox["r", "TI"]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "469038ec-07ab-4a82-ad19-5c2d95552d87"],
+  "39aebaca-1480-4eb8-9083-e699286a87f5"],
  " that extend the germ. A ",
  StyleBox["most visited",
   FontWeight->"Bold"],
  " member is one that maximizes the sum of the vertex and edge densities of \
 the beam along it."
-}], "Item",ExpressionUUID->"e15ae839-9f91-4ac0-8d32-3f05bf922b7a"],
+}], "Item",ExpressionUUID->"b884b8a7-deca-40a5-bb74-e1600beba0af"],
 
 Cell[TextData[{
  "The question: from which scale ",
@@ -86,26 +86,26 @@ Cell[TextData[{
   SuperscriptBox[
    StyleBox["r", "TI"], "*"]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "82395bba-ff2c-4399-b281-c3053b260196"],
+  "04fbbe6d-5d6a-4ef5-a6f4-94fb44326337"],
  " on is the most visited member of the beam a ",
  StyleBox["segment",
   FontWeight->"Bold"],
  ", a shortest path between its ends? We answer it on three lattices."
-}], "Item",ExpressionUUID->"d8ee7b29-0129-48e4-b660-45e06c3bca4b"],
+}], "Item",ExpressionUUID->"d883f868-2083-4275-90ff-b69fc05f4fd4"],
 
 Cell["\<\
 The pictures keep the embedding of the substrate so that the reader sees the \
 plane; only the chord deviation below uses it.\
-\>", "Item",ExpressionUUID->"5cead728-9dc9-446d-a16f-5e2889584725"],
+\>", "Item",ExpressionUUID->"62e22b97-3a35-44c3-a200-7b3d7543508b"],
 
-Cell["Setup", "Section",ExpressionUUID->"7592c632-849f-4254-a643-b6cb0c7e0d38"],
+Cell["Setup", "Section",ExpressionUUID->"82f565d0-53a6-454a-bcf0-f81da54c86a9"],
 
 Cell[BoxData[
  RowBox[{"Needs", "[", "\"\<WolframInstitute`InfraGeometry`\>\"", 
   "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"2cfb534a-4592-4fba-9347-240383c33281"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"b77614bc-a8fc-4a25-8d5f-21f6213fc71b"],
 
-Cell["The beam at a scale", "Section",ExpressionUUID->"dc04640a-e4bc-40ca-912e-bbfc2758174c"],
+Cell["The beam at a scale", "Section",ExpressionUUID->"cb9c7f58-c93d-4228-ad7c-96eaee1aea56"],
 
 Cell[TextData[{
  "Each picture is one lattice at one scale: the rows are the square, the \
@@ -116,15 +116,15 @@ triangular and the hexagonal tiling, the columns the scales ",
     StyleBox["r", "TI"], "=", "2"}], ",", 
    RowBox[{"4", ",", "8"}]}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "ff7b402e-7de8-4133-9ab8-b112778626e0"],
+  "275672e4-f0b3-4c6a-8388-5e4e2bdf0d83"],
  "."
-}], "Item",ExpressionUUID->"10cef8f9-001b-488d-86be-4d22058cf072"],
+}], "Item",ExpressionUUID->"3536884e-025e-4092-977b-5d5804f0d309"],
 
 Cell["\<\
 The beam is orange, its endpoints green, each sized by the number of members \
 ending there. The most visited members are red, all of them; the germ is \
 drawn last.\
-\>", "Item",ExpressionUUID->"6a972b22-72ce-48a4-a480-91c196eec116"],
+\>", "Item",ExpressionUUID->"36b2daff-7f51-4810-b8e4-eb3aa90f4fb5"],
 
 Cell[CellGroupData[{
 
@@ -145,7 +145,8 @@ Cell[BoxData[
            "]"}]}], ")"}]}], "}"}], ",", "\n", "    ", 
       RowBox[{"{", 
        RowBox[{"c", " ", "=", " ", 
-        RowBox[{"InfraCenter", "[", "g", "]"}]}], "}"}], ",", "\n", "    ", 
+        RowBox[{"First", " ", "@", " ", 
+         RowBox[{"GraphCenter", "[", "g", "]"}]}]}], "}"}], ",", "\n", "    ", 
       RowBox[{"{", 
        RowBox[{"germ", " ", "=", " ", 
         RowBox[{"First", " ", "@", " ", 
@@ -206,7 +207,7 @@ Cell[BoxData[
       RowBox[{"{", 
        RowBox[{"2", ",", " ", "4", ",", " ", "8"}], "}"}]}], "}"}]}], 
    "]"}]}]], "Input",
- CellLabel->"In[2]:= ",ExpressionUUID->"6dc652d0-dbd6-44f5-99f5-18f6cb2684dc"],
+ CellLabel->"In[2]:= ",ExpressionUUID->"f21a82c3-8a1b-4ec8-bb4c-dc10e991c282"],
 
 Cell[BoxData[
  GraphicsBox[{{}, {{InsetBox[
@@ -87590,7 +87591,7 @@ Sf0/sDf82A==
   Method->{"IgnoreImageSizeAutomaticLimit" -> True},
   PlotRange->{{0, 1161.}, {-1264.940364528745, 0}},
   PlotRangePadding->Automatic]], "Output",
- CellLabel->"Out[2]= ",ExpressionUUID->"b2462896-fc40-421e-b8f2-96a69ac85764"]
+ CellLabel->"Out[2]= ",ExpressionUUID->"4ec6dedd-21d6-40be-ac5a-a5a867a719b8"]
 }, Open  ]],
 
 Cell["\<\
@@ -87599,21 +87600,21 @@ fill it. Every member starts at the germ, so the density is highest there, \
 and the most visited member is the one that stays near the germ: it circles \
 around the end of the germ. A geodesic at a small scale may revisit a vertex, \
 and these members do.\
-\>", "Item",ExpressionUUID->"256d1ed3-f7f4-462c-8f31-f7932682757d"],
+\>", "Item",ExpressionUUID->"11785c97-007b-48bc-aa7d-c3a02bdb5c7f"],
 
 Cell["\<\
 From a scale on the endpoints gather on a short arc and the most visited \
 members run straight away from the germ. At the middle scale this has \
 happened on the triangular tiling only; the square and the hexagonal tilings \
 still bend.\
-\>", "Item",ExpressionUUID->"7713035d-5e31-42f4-ae4d-0af65146fa8f"],
+\>", "Item",ExpressionUUID->"29be1e43-f84b-4e85-b41f-c5c1b70c69f0"],
 
 Cell["\<\
 The straight members need not continue the germ's direction: a lattice keeps \
 a direction only up to the cone of its lattice directions.\
-\>", "Item",ExpressionUUID->"1aa218af-b67f-47c6-8ff6-f596d1d921a2"],
+\>", "Item",ExpressionUUID->"0f28351f-9449-4a35-b9a0-7b88206e71a6"],
 
-Cell["The scale of straightness", "Section",ExpressionUUID->"b09879be-1457-4731-9cfd-d63f3116659b"],
+Cell["The scale of straightness", "Section",ExpressionUUID->"c4c4fe11-a0af-41e3-8bc6-6969228a41d1"],
 
 Cell[TextData[{
  "Two readouts of the most visited members, for every scale ",
@@ -87623,10 +87624,10 @@ Cell[TextData[{
     StyleBox["r", "TI"], "=", "2"}], ",", "\[Ellipsis]", ",", "10"}]], 
   "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "7ab0cfdb-b814-445d-a246-064fa5a80bc5"],
+  "cc7670ad-38ad-4451-a746-dd4481a7c20b"],
  ", each the worst over the ties. The extension is a member without the \
 germ."
-}], "Item",ExpressionUUID->"9f86380c-179d-4f80-a8e5-6623e557d5cf"],
+}], "Item",ExpressionUUID->"6a23e851-7280-43e7-970d-be78c2165911"],
 
 Cell[TextData[{
  "The ",
@@ -87638,9 +87639,9 @@ zero exactly when the extension is a segment, so the threshold ",
   SuperscriptBox[
    StyleBox["r", "TI"], "*"]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "40be072a-8ac0-4fca-961b-e0492f3884d7"],
+  "0b4a8d29-1384-4a78-bd7c-813e18170910"],
  " is the scale where the excess first vanishes."
-}], "Item",ExpressionUUID->"980c0474-b3bc-4db2-bda3-a6e6c17c0710"],
+}], "Item",ExpressionUUID->"dfbad5e2-fc9f-45e9-8b36-87c69588b2ae"],
 
 Cell[TextData[{
  "The ",
@@ -87648,7 +87649,7 @@ Cell[TextData[{
   FontWeight->"Bold"],
  " is the largest distance of the extension's vertices from the chord joining \
 its ends, in units of the edge length, read in the plane."
-}], "Item",ExpressionUUID->"c180156d-5494-40ed-aaf5-70514f166636"],
+}], "Item",ExpressionUUID->"0d56ad68-5f96-4f54-a3c9-0aee50eb1d2e"],
 
 Cell[CellGroupData[{
 
@@ -87673,7 +87674,8 @@ Cell[BoxData[
          RowBox[{"{", 
           RowBox[{
            RowBox[{"c", " ", "=", " ", 
-            RowBox[{"InfraCenter", "[", "g", "]"}]}], ",", " ", 
+            RowBox[{"First", " ", "@", " ", 
+             RowBox[{"GraphCenter", "[", "g", "]"}]}]}], ",", " ", 
            RowBox[{"d", " ", "=", " ", 
             RowBox[{"GraphDistanceMatrix", "[", "g", "]"}]}], ",", " ", 
            RowBox[{"xy", " ", "=", " ", 
@@ -87829,7 +87831,7 @@ Cell[BoxData[
            RowBox[{"\"\<square\>\"", ",", " ", "\"\<triangular\>\"", ",", 
             " ", "\"\<hexagonal\>\""}], "}"}]}]}]}], "]"}]}], "}"}], "]"}]}], 
   "]"}]], "Input",
- CellLabel->"In[3]:= ",ExpressionUUID->"cf792d06-7f50-41b6-ad3b-b6d029855ce5"],
+ CellLabel->"In[3]:= ",ExpressionUUID->"6892ff7f-4436-4f38-8886-2864cee8ba22"],
 
 Cell[BoxData[
  GraphicsBox[{{}, {InsetBox[
@@ -88900,56 +88902,56 @@ Cell[BoxData[
   Method->{"IgnoreImageSizeAutomaticLimit" -> True},
   PlotRange->{{0, 565.3333333333334}, {-144.66666666666666`, 0}},
   PlotRangePadding->Automatic]], "Output",
- CellLabel->"Out[3]= ",ExpressionUUID->"5945828d-d837-4287-8a37-176054d8baed"]
+ CellLabel->"Out[3]= ",ExpressionUUID->"e3d7f0d8-6d20-4859-a4df-671be7985aaf"]
 }, Open  ]],
 
 Cell["\<\
 Below the threshold the most visited extension is far from a segment; at the \
 threshold the excess drops to zero and stays there. The most visited member \
 jumps from a walk near the germ to a segment.\
-\>", "Item",ExpressionUUID->"2a0c5702-8292-4aa5-9863-fd8071cfe457"],
+\>", "Item",ExpressionUUID->"5ac5bfc8-41e1-4fc5-92f6-00b1cf3a0ab4"],
 
 Cell["\<\
 The triangular tiling straightens first, then the square tiling, then the \
 hexagonal tiling.\
-\>", "Item",ExpressionUUID->"d574f5ab-71fe-48a6-9dbf-690bae12bcb0"],
+\>", "Item",ExpressionUUID->"b82f5611-87a2-4921-aa54-ee464f5e1ca6"],
 
 Cell["\<\
 On the square and the triangular tilings the deviation falls at the same \
 threshold to a floor, the staircase of a segment off the lattice directions. \
 On the hexagonal tiling it falls only a little and grows again: a straight \
 extension zigzags almost as far from its chord as a bent one.\
-\>", "Item",ExpressionUUID->"efba64ac-31d9-41bc-9532-c471a7e9491a"],
+\>", "Item",ExpressionUUID->"254ac5bc-e9d5-4d66-96fe-5cd8e9dacc4e"],
 
-Cell["Open questions", "Section",ExpressionUUID->"2700239e-4819-40d2-b13b-e9e588d905e0"],
+Cell["Open questions", "Section",ExpressionUUID->"2f1706a6-895c-404f-a3d3-f8a6215a7b62"],
 
 Cell[TextData[{
  "[[ The inextensible geodesic at scale ",
  Cell[BoxData[
   StyleBox["r", "TI"]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "1597f0b4-d080-4754-9b32-bd5e788f0f25"],
+  "47f02232-efe0-4084-b9db-9a8dd67c70bb"],
  " as an object: the infinite walks of the window graph from the germ's \
 window. Is its most visited member eventually a ray at every scale above ",
  Cell[BoxData[
   SuperscriptBox[
    StyleBox["r", "TI"], "*"]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "110e2e86-54ea-4fc0-ae5f-b7d5c2a676ac"],
+  "d8fc3deb-97ca-41b7-9cd5-a953450128b3"],
  ", and how does ",
  Cell[BoxData[
   SuperscriptBox[
    StyleBox["r", "TI"], "*"]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "44a2a2e9-211c-4aaf-a602-bf007d54a1f7"],
+  "9eaf1cf9-e9a0-4085-968f-7d61f7f2e1b5"],
  " depend on the length of the germ? ]]"
-}], "Item",ExpressionUUID->"e45fbd70-5d99-47a6-96c2-2a4b137dd1cc"],
+}], "Item",ExpressionUUID->"cee8996f-47c6-4f3b-9f24-3061e5644f25"],
 
 Cell["\<\
 [[ The loss of direction on a lattice: the straight members follow the cone, \
 not the germ. Does a mesh or a sprinkling, with no preferred directions, \
 restore the germ's direction at large scales? ]]\
-\>", "Item",ExpressionUUID->"dfcba4f1-17a9-45f8-9c5a-ffc9c5907738"],
+\>", "Item",ExpressionUUID->"82fad7d4-5259-4dd1-bfa6-b698e9ea05e7"],
 
 Cell[CellGroupData[{
 
@@ -88965,8 +88967,8 @@ Cell[TextData[Cell[BoxData[
   "RefLinkPlain",
   BaseStyle->{
    "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"bc8978b4-7e32-488f-81b4-a628f9e1185d"]], \
-"TutorialMoreAbout",ExpressionUUID->"f46464f6-d3f3-4e61-a1e4-b43eea46614f"]
+"InlineFormula",ExpressionUUID->"1e5cf114-b449-4e5a-9b5f-a44cb97c3116"]], \
+"TutorialMoreAbout",ExpressionUUID->"67495b32-8e03-40b9-b8df-80bed8c9cae7"]
 }, Open  ]],
 
 Cell["Related Tech Notes", "RelatedTutorialsSection",
@@ -89012,7 +89014,7 @@ Cell["WolframInstitute`InfraGeometry`", "Categorization",
 Cell["\<\
 WolframInstitute/InfraGeometry/tutorial/StraighteningAtScaleTutorial\
 \>", "Categorization",
- CellLabel->"URI",ExpressionUUID->"d9f37809-93e4-4821-8b82-334eba7794b4"]
+ CellLabel->"URI",ExpressionUUID->"6f63d669-ea5d-4beb-b212-be8b7101a0fc"]
 }, Closed]],
 
 Cell[CellGroupData[{
@@ -89082,81 +89084,81 @@ Notebook[{
 Cell[CellGroupData[{
 Cell[576, 22, 116, 1, 70, "Title",ExpressionUUID->"4ddb5767-1f00-4973-a411-49eacd07850d",
  CellID->509267359],
-Cell[695, 25, 246, 6, 70, "Item",ExpressionUUID->"e2aea80c-667f-4a96-8f47-0cf467a541a6"],
-Cell[944, 33, 941, 26, 70, "Item",ExpressionUUID->"8ec04ee1-5d0a-4863-8991-882b53403933"],
-Cell[1888, 61, 663, 19, 70, "Item",ExpressionUUID->"e15ae839-9f91-4ac0-8d32-3f05bf922b7a"],
-Cell[2554, 82, 450, 11, 70, "Item",ExpressionUUID->"d8ee7b29-0129-48e4-b660-45e06c3bca4b"],
-Cell[3007, 95, 204, 3, 70, "Item",ExpressionUUID->"5cead728-9dc9-446d-a16f-5e2889584725"],
-Cell[3214, 100, 79, 0, 70, "Section",ExpressionUUID->"7592c632-849f-4254-a643-b6cb0c7e0d38"],
-Cell[3296, 102, 178, 3, 70, "Input",ExpressionUUID->"2cfb534a-4592-4fba-9347-240383c33281"],
-Cell[3477, 107, 93, 0, 70, "Section",ExpressionUUID->"dc04640a-e4bc-40ca-912e-bbfc2758174c"],
-Cell[3573, 109, 440, 11, 70, "Item",ExpressionUUID->"10cef8f9-001b-488d-86be-4d22058cf072"],
-Cell[4016, 122, 244, 4, 70, "Item",ExpressionUUID->"6a972b22-72ce-48a4-a480-91c196eec116"],
+Cell[695, 25, 246, 6, 70, "Item",ExpressionUUID->"c77074e7-959b-4229-ab0e-8a8b46add90a"],
+Cell[944, 33, 941, 26, 70, "Item",ExpressionUUID->"45e7951d-0bb3-4301-b1f7-fc2776004796"],
+Cell[1888, 61, 663, 19, 70, "Item",ExpressionUUID->"b884b8a7-deca-40a5-bb74-e1600beba0af"],
+Cell[2554, 82, 450, 11, 70, "Item",ExpressionUUID->"d883f868-2083-4275-90ff-b69fc05f4fd4"],
+Cell[3007, 95, 204, 3, 70, "Item",ExpressionUUID->"62e22b97-3a35-44c3-a200-7b3d7543508b"],
+Cell[3214, 100, 79, 0, 70, "Section",ExpressionUUID->"82f565d0-53a6-454a-bcf0-f81da54c86a9"],
+Cell[3296, 102, 178, 3, 70, "Input",ExpressionUUID->"b77614bc-a8fc-4a25-8d5f-21f6213fc71b"],
+Cell[3477, 107, 93, 0, 70, "Section",ExpressionUUID->"cb9c7f58-c93d-4228-ad7c-96eaee1aea56"],
+Cell[3573, 109, 440, 11, 70, "Item",ExpressionUUID->"3536884e-025e-4092-977b-5d5804f0d309"],
+Cell[4016, 122, 244, 4, 70, "Item",ExpressionUUID->"36b2daff-7f51-4810-b8e4-eb3aa90f4fb5"],
 Cell[CellGroupData[{
-Cell[4285, 130, 3260, 78, 70, "Input",ExpressionUUID->"6dc652d0-dbd6-44f5-99f5-18f6cb2684dc"],
-Cell[7548, 210, 4535269, 87382, 70, "Output",ExpressionUUID->"b2462896-fc40-421e-b8f2-96a69ac85764"]
+Cell[4285, 130, 3304, 79, 70, "Input",ExpressionUUID->"f21a82c3-8a1b-4ec8-bb4c-dc10e991c282"],
+Cell[7592, 211, 4535269, 87382, 70, "Output",ExpressionUUID->"4ec6dedd-21d6-40be-ac5a-a5a867a719b8"]
 }, Open  ]],
-Cell[4542832, 87595, 414, 6, 70, "Item",ExpressionUUID->"256d1ed3-f7f4-462c-8f31-f7932682757d"],
-Cell[4543249, 87603, 316, 5, 70, "Item",ExpressionUUID->"7713035d-5e31-42f4-ae4d-0af65146fa8f"],
-Cell[4543568, 87610, 216, 3, 70, "Item",ExpressionUUID->"1aa218af-b67f-47c6-8ff6-f596d1d921a2"],
-Cell[4543787, 87615, 99, 0, 70, "Section",ExpressionUUID->"b09879be-1457-4731-9cfd-d63f3116659b"],
-Cell[4543889, 87617, 441, 11, 70, "Item",ExpressionUUID->"9f86380c-179d-4f80-a8e5-6623e557d5cf"],
-Cell[4544333, 87630, 495, 12, 70, "Item",ExpressionUUID->"980c0474-b3bc-4db2-bda3-a6e6c17c0710"],
-Cell[4544831, 87644, 282, 6, 70, "Item",ExpressionUUID->"c180156d-5494-40ed-aaf5-70514f166636"],
+Cell[4542876, 87596, 414, 6, 70, "Item",ExpressionUUID->"11785c97-007b-48bc-aa7d-c3a02bdb5c7f"],
+Cell[4543293, 87604, 316, 5, 70, "Item",ExpressionUUID->"29be1e43-f84b-4e85-b41f-c5c1b70c69f0"],
+Cell[4543612, 87611, 216, 3, 70, "Item",ExpressionUUID->"0f28351f-9449-4a35-b9a0-7b88206e71a6"],
+Cell[4543831, 87616, 99, 0, 70, "Section",ExpressionUUID->"c4c4fe11-a0af-41e3-8bc6-6969228a41d1"],
+Cell[4543933, 87618, 441, 11, 70, "Item",ExpressionUUID->"6a23e851-7280-43e7-970d-be78c2165911"],
+Cell[4544377, 87631, 495, 12, 70, "Item",ExpressionUUID->"dfbad5e2-fc9f-45e9-8b36-87c69588b2ae"],
+Cell[4544875, 87645, 282, 6, 70, "Item",ExpressionUUID->"0d56ad68-5f96-4f54-a3c9-0aee50eb1d2e"],
 Cell[CellGroupData[{
-Cell[4545138, 87654, 7629, 177, 70, "Input",ExpressionUUID->"cf792d06-7f50-41b6-ad3b-b6d029855ce5"],
-Cell[4552770, 87833, 47997, 1069, 70, "Output",ExpressionUUID->"5945828d-d837-4287-8a37-176054d8baed"]
+Cell[4545182, 87655, 7677, 178, 70, "Input",ExpressionUUID->"6892ff7f-4436-4f38-8886-2864cee8ba22"],
+Cell[4552862, 87835, 47997, 1069, 70, "Output",ExpressionUUID->"e3d7f0d8-6d20-4859-a4df-671be7985aaf"]
 }, Open  ]],
-Cell[4600782, 88905, 281, 4, 70, "Item",ExpressionUUID->"2a0c5702-8292-4aa5-9863-fd8071cfe457"],
-Cell[4601066, 88911, 172, 3, 70, "Item",ExpressionUUID->"d574f5ab-71fe-48a6-9dbf-690bae12bcb0"],
-Cell[4601241, 88916, 371, 5, 70, "Item",ExpressionUUID->"efba64ac-31d9-41bc-9532-c471a7e9491a"],
-Cell[4601615, 88923, 88, 0, 70, "Section",ExpressionUUID->"2700239e-4819-40d2-b13b-e9e588d905e0"],
-Cell[4601706, 88925, 812, 20, 70, "Item",ExpressionUUID->"e45fbd70-5d99-47a6-96c2-2a4b137dd1cc"],
-Cell[4602521, 88947, 281, 4, 70, "Item",ExpressionUUID->"dfcba4f1-17a9-45f8-9c5a-ffc9c5907738"],
+Cell[4600874, 88907, 281, 4, 70, "Item",ExpressionUUID->"5ac5bfc8-41e1-4fc5-92f6-00b1cf3a0ab4"],
+Cell[4601158, 88913, 172, 3, 70, "Item",ExpressionUUID->"b82f5611-87a2-4921-aa54-ee464f5e1ca6"],
+Cell[4601333, 88918, 371, 5, 70, "Item",ExpressionUUID->"254ac5bc-e9d5-4d66-96fe-5cd8e9dacc4e"],
+Cell[4601707, 88925, 88, 0, 70, "Section",ExpressionUUID->"2f1706a6-895c-404f-a3d3-f8a6215a7b62"],
+Cell[4601798, 88927, 812, 20, 70, "Item",ExpressionUUID->"cee8996f-47c6-4f3b-9f24-3061e5644f25"],
+Cell[4602613, 88949, 281, 4, 70, "Item",ExpressionUUID->"82fad7d4-5259-4dd1-bfa6-b698e9ea05e7"],
 Cell[CellGroupData[{
-Cell[4602827, 88955, 190, 2, 70, "TutorialMoreAboutSection",ExpressionUUID->"5257eb3e-c622-464d-9014-cc39ccdeadf5",
+Cell[4602919, 88957, 190, 2, 70, "TutorialMoreAboutSection",ExpressionUUID->"5257eb3e-c622-464d-9014-cc39ccdeadf5",
  CellID->23220180],
-Cell[4603020, 88959, 377, 9, 70, "TutorialMoreAbout",ExpressionUUID->"f46464f6-d3f3-4e61-a1e4-b43eea46614f"]
+Cell[4603112, 88961, 377, 9, 70, "TutorialMoreAbout",ExpressionUUID->"67495b32-8e03-40b9-b8df-80bed8c9cae7"]
 }, Open  ]],
-Cell[4603412, 88971, 128, 1, 70, "RelatedTutorialsSection",ExpressionUUID->"b2e45423-8573-455e-a176-5d94c88daeca",
+Cell[4603504, 88973, 128, 1, 70, "RelatedTutorialsSection",ExpressionUUID->"b2e45423-8573-455e-a176-5d94c88daeca",
  CellID->415694126]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[4603577, 88977, 110, 1, 70, "MetadataSection",ExpressionUUID->"38acdcf9-123b-4203-93d8-59fc1f9c4ab9",
+Cell[4603669, 88979, 110, 1, 70, "MetadataSection",ExpressionUUID->"38acdcf9-123b-4203-93d8-59fc1f9c4ab9",
  CellID->311882160],
-Cell[4603690, 88980, 476, 12, 70, "History",ExpressionUUID->"72ab9502-89c9-4b16-9ce4-9a5270f3244a",
+Cell[4603782, 88982, 476, 12, 70, "History",ExpressionUUID->"72ab9502-89c9-4b16-9ce4-9a5270f3244a",
  CellID->341476719],
 Cell[CellGroupData[{
-Cell[4604191, 88996, 123, 1, 70, "CategorizationSection",ExpressionUUID->"92ac9f0b-ee9b-473e-a1b0-116a912bcdd0",
+Cell[4604283, 88998, 123, 1, 70, "CategorizationSection",ExpressionUUID->"92ac9f0b-ee9b-473e-a1b0-116a912bcdd0",
  CellID->1122911449],
-Cell[4604317, 88999, 136, 2, 70, "Categorization",ExpressionUUID->"42f179a2-5985-429e-8a53-eaef0eb8edd1",
+Cell[4604409, 89001, 136, 2, 70, "Categorization",ExpressionUUID->"42f179a2-5985-429e-8a53-eaef0eb8edd1",
  CellID->686433507],
-Cell[4604456, 89003, 158, 2, 70, "Categorization",ExpressionUUID->"5ee37782-a9f3-410a-9c77-31ee5fde0f9c",
+Cell[4604548, 89005, 158, 2, 70, "Categorization",ExpressionUUID->"5ee37782-a9f3-410a-9c77-31ee5fde0f9c",
  CellID->605800465],
-Cell[4604617, 89007, 155, 2, 70, "Categorization",ExpressionUUID->"ede4e8bf-a791-499c-bac0-9252a967c621",
+Cell[4604709, 89009, 155, 2, 70, "Categorization",ExpressionUUID->"ede4e8bf-a791-499c-bac0-9252a967c621",
  CellID->468444828],
-Cell[4604775, 89011, 176, 3, 70, "Categorization",ExpressionUUID->"d9f37809-93e4-4821-8b82-334eba7794b4"]
+Cell[4604867, 89013, 176, 3, 70, "Categorization",ExpressionUUID->"6f63d669-ea5d-4beb-b212-be8b7101a0fc"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[4604988, 89019, 111, 1, 70, "KeywordsSection",ExpressionUUID->"cad3e2f5-97ed-4ec0-b746-8f0b1d4c7db5",
+Cell[4605080, 89021, 111, 1, 70, "KeywordsSection",ExpressionUUID->"cad3e2f5-97ed-4ec0-b746-8f0b1d4c7db5",
  CellID->1427428552],
-Cell[4605102, 89022, 104, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
+Cell[4605194, 89024, 104, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
  CellID->1251852827],
-Cell[4605209, 89025, 107, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
+Cell[4605301, 89027, 107, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
  CellID->1251852827],
-Cell[4605319, 89028, 100, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
+Cell[4605411, 89030, 100, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
  CellID->1251852827],
-Cell[4605422, 89031, 105, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
+Cell[4605514, 89033, 105, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
  CellID->1251852827],
-Cell[4605530, 89034, 100, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
+Cell[4605622, 89036, 100, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
  CellID->1251852827],
-Cell[4605633, 89037, 108, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
+Cell[4605725, 89039, 108, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
  CellID->1251852827],
-Cell[4605744, 89040, 108, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
+Cell[4605836, 89042, 108, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
  CellID->1251852827],
-Cell[4605855, 89043, 103, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
+Cell[4605947, 89045, 103, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
  CellID->1251852827],
-Cell[4605961, 89046, 102, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
+Cell[4606053, 89048, 102, 1, 70, "Keywords",ExpressionUUID->"7d839546-a25f-4ff1-84c3-c40cc0be71bd",
  CellID->1251852827]
 }, Closed]]
 }, Open  ]]

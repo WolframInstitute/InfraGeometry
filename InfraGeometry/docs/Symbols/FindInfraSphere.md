@@ -43,7 +43,7 @@ Three separating subsets of the shell of radius 3, each drawn in its own colour 
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   InfraSubstrateHighlight[g, FindInfraSphere[g, c, 3, UpTo[3]]]]
 ```
 

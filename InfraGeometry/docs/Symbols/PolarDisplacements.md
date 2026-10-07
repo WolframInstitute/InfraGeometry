@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/PolarDisplacements
 Keywords: [displacement, polar coordinates, radial field, angular field, distance sphere]
-SeeAlso: [GradientDisplacement, TranslationDisplacement, RandomDisplacement, DisplacementPlot, InfraCenter]
+SeeAlso: [GradientDisplacement, TranslationDisplacement, RandomDisplacement, DisplacementPlot, GraphCenter]
 RelatedGuides: [InfraAnalysis]
 ---
 
@@ -35,7 +35,7 @@ The polar pair about the centre of the discretized plane, the square tiling and 
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    DisplacementPlot[g, PolarDisplacements[g, InfraCenter[g]]]],
+    DisplacementPlot[g, PolarDisplacements[g, First @ GraphCenter[g]]]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```
 
@@ -44,7 +44,7 @@ On the triangular tiling the angular displacement runs both ways round the hexag
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {polar = PolarDisplacements[g, InfraCenter[g]]},
+  {polar = PolarDisplacements[g, First @ GraphCenter[g]]},
   GraphicsRow[DisplacementPlot[g, #] & /@ polar]]
 ```
 
@@ -67,7 +67,7 @@ The inward radial displacement points towards the centre, where it stays.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {inward = First @ PolarDisplacements[g, c, "Direction" -> "Inward"]},
   {DisplacementPlot[g, inward], inward[c]}]
 ```
@@ -79,7 +79,7 @@ The outward radial displacement is the gradient of the distance from the centre.
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {radial = First @ PolarDisplacements[g, c]},
   {DisplacementPlot[g, radial], radial === GradientDisplacement[g, AssociationThread[VertexList[g], GraphDistance[g, c]]]}]
 ```
@@ -89,7 +89,7 @@ The radial displacement is 1-continuous on the three tilings; the angular one on
 ```wl
 With[
   {graphs = InfraSubstrate[#, "Small", "KeepCoordinates" -> True] & /@ {"SquareTilingGraph", "TriangularTilingGraph", "HexagonalTilingGraph"}},
-  {polars = PolarDisplacements[#, InfraCenter[#]] & /@ graphs},
+  {polars = PolarDisplacements[#, First @ GraphCenter[#]] & /@ graphs},
   {GraphicsRow[MapThread[DisplacementPlot, {graphs, polars}]], MapThread[{ContinuousDisplacementQ[#1, First[#2]], ContinuousDisplacementQ[#1, Last[#2]]} &, {graphs, polars}]}]
 ```
 
@@ -98,6 +98,6 @@ Both displacements are multivalued: on the triangular tiling an inner vertex has
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {polar = PolarDisplacements[g, InfraCenter[g]]},
+  {polar = PolarDisplacements[g, First @ GraphCenter[g]]},
   {DisplacementPlot[g, polar], DisplacementSingleValuedQ /@ polar}]
 ```

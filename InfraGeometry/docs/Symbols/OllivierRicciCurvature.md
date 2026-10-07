@@ -45,7 +45,7 @@ With[
   {curvatures = Table[
      With[
        {g = TessellationNeighborhoodGraph[{3, q}, 3]},
-       {c = InfraCenter[g]},
+       {c = First @ GraphCenter[g]},
        {q, First @ Union @ Rationalize[Values @ KeySelect[OllivierRicciCurvature[g], MemberQ[#, c] &], 10^-9]}],
      {q, 3, 9}]},
   {ListLinePlot[{curvatures, Table[{q, TessellationCurvature[{3, q}]}, {q, 3, 9}]},

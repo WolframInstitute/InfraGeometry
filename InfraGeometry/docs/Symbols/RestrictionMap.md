@@ -31,7 +31,7 @@ The coboundary of the distance from the centre of the triangular tiling, left, d
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {cochain = Coboundary[g, AssociationMap[GraphDistance[g, InfraCenter[g], First[#]] &, List /@ VertexList[g]]]},
+  {cochain = Coboundary[g, AssociationMap[GraphDistance[g, First @ GraphCenter[g], First[#]] &, List /@ VertexList[g]]]},
   {form = RestrictionMap[g, cochain]},
   GraphicsRow[{
     DisplacementPlot[g, GroupBy[Join[Keys @ Select[cochain, Positive], Reverse /@ Keys @ Select[cochain, Negative]], First -> Last]],
@@ -43,7 +43,7 @@ The restriction of the 2-cochain that is 1 on one triangle at the centre has a g
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+  {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
   {triangle = Sort @ First @ Select[FindClique[g, {3}, All], MemberQ[center]]},
   {Show[Graphics[{StandardBlue, Polygon[Lookup[positions, triangle]]}], g], triangle, Normal[Normal /@ RestrictionMap[g, <|triangle -> 1|>]]}]
 ```
@@ -55,7 +55,7 @@ The restriction of the coboundary of a 0-cochain is the gradient of its 0-form, 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g]},
+  {center = First @ GraphCenter[g]},
   {form = RestrictionMap[g, Coboundary[g, AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]]]},
   {gradient = FormDifferential[g, ZeroForm[g, GraphDistance[g, center, #] &]]},
   {DisplacementPlot[g, {Map[Catenate @* Keys @* Select[Positive], gradient], Map[Catenate @* Keys @* Select[Negative], gradient]}],

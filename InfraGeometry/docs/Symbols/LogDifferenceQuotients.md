@@ -38,7 +38,7 @@ The quotients of the ball volumes from radius 0 at the centre of the discretized
 With[
   {names = {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}},
   ListLinePlot[
-    Table[With[{gr = InfraSubstrate[nm, "Large"]}, LogDifferenceQuotients @ Table[InfraMeasurement[gr, InfraBall[InfraCenter[gr], r], "CountingMeasure"], {r, 0, 12}]], {nm, names}],
+    Table[With[{gr = InfraSubstrate[nm, "Large"]}, LogDifferenceQuotients @ Table[InfraMeasurement[gr, InfraBall[First @ GraphCenter[gr], r], "CountingMeasure"], {r, 0, 12}]], {nm, names}],
     DataRange -> {1, 12}, PlotMarkers -> Automatic, PlotLegends -> names, AxesLabel -> {"r", "q(r)"},
     GridLines -> {None, {{2, Gray}}}, PlotRange -> {0, 3.5}]]
 ```
@@ -67,7 +67,7 @@ A sequence of `Around` values carries its spread into the quotients, drawn as er
 ```wl
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Large"]},
-  {sampleSet = Take[FindInfraRepresentative[g, InfraBall[InfraCenter[g], 2]], 5]},
+  {sampleSet = Take[FindInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 2]], 5]},
   {quots = LogDifferenceQuotients[MeanAround /@ Transpose @ Table[InfraMeasurement[g, InfraBall[v, r], "CountingMeasure"], {v, sampleSet}, {r, 0, 8}]]},
   {ListPlot[quots, DataRange -> {1, 8}, PlotRange -> {0, 3.5}, GridLines -> {None, {{2, Gray}}}, AxesLabel -> {"r", "q(r)"}], quots}]
 ```
@@ -79,7 +79,7 @@ The counting curve and the Riemannian curve of the balls about the centre of the
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Large"]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {counting = LogDifferenceQuotients @ Table[InfraMeasurement[g, InfraBall[c, r], "CountingMeasure"], {r, 1, 13}]},
   {riemannian = LogDifferenceQuotients @ Table[InfraMeasurement[g, InfraBall[c, r], "RiemannianMeasure"], {r, 1, 13}]},
   {shifted = LogDifferenceQuotients @ Table[InfraMeasurement[g, InfraBall[c, r], "CountingMeasure"], {r, 0, 12}]},
@@ -95,7 +95,7 @@ The quotients of the shell areas of a planar lattice tend to 1, one less than th
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Large"]},
-  {ctr = InfraCenter[g]},
+  {ctr = First @ GraphCenter[g]},
   {ballQuots = LogDifferenceQuotients @ Table[InfraMeasurement[g, InfraBall[ctr, r], "CountingMeasure"], {r, 0, 12}]},
   {shellQuots = LogDifferenceQuotients @ Table[InfraMeasurement[g, InfraShell[ctr, r], "CountingMeasure"], {r, 1, 12}]},
   {ListLinePlot[{ballQuots, shellQuots}, PlotMarkers -> Automatic, PlotLegends -> {"ball", "shell"}, PlotRange -> {0, 3.5},

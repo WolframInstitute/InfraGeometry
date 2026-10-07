@@ -33,8 +33,8 @@ The cup-1 of the coboundaries of the distances from the centre of the triangular
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g]},
-  {apex = (SeedRandom[1]; RandomInfraPoint[g, center, 3])},
+  {center = First @ GraphCenter[g]},
+  {apex = (SeedRandom[1]; FindInfraPoint[g, InfraShell[center, 3]])},
   {fromCenter = Coboundary[g, AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]],
    fromApex = Coboundary[g, AssociationMap[GraphDistance[g, apex, First[#]] &, List /@ VertexList[g]]]},
   {cupOne = CochainCupOne[g, fromCenter, fromApex]},
@@ -47,8 +47,8 @@ The two coboundaries are cocycles, and the coboundary of their cup-1 is the sum 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {apex = (SeedRandom[1]; RandomInfraPoint[g, center, 3])},
+  {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+  {apex = (SeedRandom[1]; FindInfraPoint[g, InfraShell[center, 3]])},
   {fromCenter = Coboundary[g, AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]],
    fromApex = Coboundary[g, AssociationMap[GraphDistance[g, apex, First[#]] &, List /@ VertexList[g]]]},
   {commutator = DeleteCases[Merge[{OrderedCochainCup[g, fromCenter, fromApex], OrderedCochainCup[g, fromApex, fromCenter]}, Total], 0]},
@@ -82,8 +82,8 @@ The cup-1 vanishes when the first factor has degree 0: the distance from the cen
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g]},
-  {apex = (SeedRandom[1]; RandomInfraPoint[g, center, 3])},
+  {center = First @ GraphCenter[g]},
+  {apex = (SeedRandom[1]; FindInfraPoint[g, InfraShell[center, 3]])},
   {values = AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]},
   {InfraSubstrateHighlight[g, KeyMap[First, values]],
    Normal @ CochainCupOne[g, values, Coboundary[g, AssociationMap[GraphDistance[g, apex, First[#]] &, List /@ VertexList[g]]]]}]
@@ -98,7 +98,7 @@ With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
   {cochain = (SeedRandom[1]; AssociationMap[RandomInteger[{-4, 4}] &, Sort /@ List @@@ EdgeList[g]]),
-   fromCenter = Coboundary[g, AssociationMap[GraphDistance[g, InfraCenter[g], First[#]] &, List /@ VertexList[g]]]},
+   fromCenter = Coboundary[g, AssociationMap[GraphDistance[g, First @ GraphCenter[g], First[#]] &, List /@ VertexList[g]]]},
   {Show[Graphics[KeyValueMap[
      {triangle, value} |-> {If[value > 0, StandardBlue, StandardRed], Polygon[Lookup[positions, triangle]]},
      Coboundary[g, cochain]]], g],

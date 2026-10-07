@@ -63,7 +63,7 @@ With `"Metric"` -> *g* the data are vertices of a graph. The number of edges and
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small"]},
-  {data = FindInfraRepresentative[g, InfraBall[InfraCenter[g], 3]]},
+  {data = FindInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 3]]},
   {filtration = BallIntersectionFiltration[data, Range[0, 3], Infinity, "Metric" -> g, "MaxDimension" -> 2]},
   ListLinePlot[
     Table[KeyValueMap[{#1, Count[#2, simplex_ /; Length[simplex] == m]} &, filtration], {m, 2, 3}],

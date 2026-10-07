@@ -50,7 +50,7 @@ The squared distance between the points of the centre and of each vertex of the 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small"]},
-  {embedding = ResistanceCoordinates[g], c = InfraCenter[g]},
+  {embedding = ResistanceCoordinates[g], c = First @ GraphCenter[g]},
   {pairs = Table[{EffectiveResistance[g, c, u], Total[(embedding[c] - embedding[u])^2]}, {u, VertexList[g]}]},
   {ListPlot[pairs, AspectRatio -> 1, AxesLabel -> {"R", "‖Φ(c) − Φ(u)‖²"}], Chop[Max[Abs[Subtract @@@ pairs]]]}]
 ```
@@ -88,7 +88,7 @@ With fewer modes the squared distances fall below the resistances, and they appr
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small"]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   ListPlot[
     Table[
       With[

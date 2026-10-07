@@ -48,7 +48,7 @@ VerificationTest[
 VerificationTest[
   Table[
     With[ { g = InfraSubstrate[name, "Small"] },
-      { c = InfraCenter[g] },
+      { c = First @ GraphCenter[g] },
       { profile = Values @ KeySort @ Counts @ GraphDistance[g, c] },
       InfraMeasurement[g, InfraShell[c, #], "CountingMeasure"] & /@ Range[0, Length[profile] - 1] === profile ],
     { name, { "SquareTilingGraph", "TriangularTilingGraph" } } ],

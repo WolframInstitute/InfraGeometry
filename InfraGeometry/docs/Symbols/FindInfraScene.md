@@ -32,15 +32,15 @@ Option `"PruneProbability" -> q` drops each branch with probability *q* after ev
 
 ## Basic Examples
 
-A point, a second point two steps from it, and the segment between them, solved on the square tiling: one instance per choice of the second point and of the shortest path to it. Their segments, summed, cover the ball of radius 2.
+A point, a second point at distance 2 from it, and the segment between them, solved on the square tiling: one instance per choice of the second point and of the shortest path to it. Their segments, summed, cover the ball of radius 2.
 
 ```wl
 ClearAll[pA, pB, seg1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {scene = InfraScene[{pA, pB, seg1},
-     {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
+     {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
   {solved = FindInfraScene[scene, g]},
   {InfraSubstrateHighlight[g, {InfraSceneInstance[#, seg1] & /@ solved, c}],
    Length @ solved}]
@@ -52,25 +52,25 @@ One instance, and its segment drawn.
 ClearAll[pA, pB, seg1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {scene = InfraScene[{pA, pB, seg1},
-     {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
+     {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
   {instance = First @ FindInfraScene[scene, g]},
   {InfraSubstrateHighlight[g, {InfraSceneInstance[instance, seg1], c}], instance}]
 ```
 
 ## Scope
 
-The steps are read off the dependencies, one object each here. Solving the first two gives the choices of the second point, with no segment yet: the shell of radius 2.
+The steps are read off the dependencies: the two points first, then the segment. Solving the first step gives the choices of the second point, with no segment yet: the shell of radius 2.
 
 ```wl
 ClearAll[pA, pB, seg1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {scene = InfraScene[{pA, pB, seg1},
-     {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
-  {points = InfraSceneInstance[#, pB] & /@ FindInfraScene[scene, g, 2]},
+     {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
+  {points = InfraSceneInstance[#, pB] & /@ FindInfraScene[scene, g, 1]},
   {InfraSubstrateHighlight[g, {points, c}], scene["Steps"], Length @ points}]
 ```
 
@@ -80,10 +80,10 @@ Fixing the second point in advance leaves only the segment to choose: one instan
 ClearAll[pA, pB, seg1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
+  {c = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 2]])},
   {scene = InfraScene[{pA, pB, seg1},
-     {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
+     {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
   {segments = InfraSceneInstance[#, seg1] & /@ FindInfraScene[scene, g, <|pB -> b|>]},
   {InfraSubstrateHighlight[g, {segments, c, b}], Length @ segments}]
 ```
@@ -98,9 +98,9 @@ Half of the branches dropped at every step, reproducibly.
 ClearAll[pA, pB, seg1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {scene = InfraScene[{pA, pB, seg1},
-     {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
+     {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
   {segments = (SeedRandom[1]; InfraSceneInstance[#, seg1] & /@ FindInfraScene[scene, g, "PruneProbability" -> 0.5])},
   {InfraSubstrateHighlight[g, {segments, c}], Length @ segments}]
 ```
@@ -113,9 +113,9 @@ The instances are the choices made: as many as the points at distance 2, weighte
 ClearAll[pA, pB, seg1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {scene = InfraScene[{pA, pB, seg1},
-     {pA == InfraPoint[c], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
+     {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
   {InfraSubstrateHighlight[g, {FindInfraShell[g, c, 2], c}],
    Length @ FindInfraScene[scene, g] === Total @ Table[InfraMeasurement[g, InfraSegment[c, through], "Cardinality"], {through, FindInfraShell[g, c, 2]}]}]
 ```

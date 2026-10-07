@@ -59,7 +59,7 @@ The circles of the band `{2, 4}` about the centre, on the square, hexagonal and 
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = InfraCenter[g]},
+    {c = First @ GraphCenter[g]},
     {circle = InfraCircle[c, {2, 4}]},
     InfraSubstrateHighlight[g, {circle, c}]],
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
@@ -70,7 +70,7 @@ The band `{2, 4}` on the square tiling: the number of circles, their length and 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {circle = InfraCircle[c, {2, 4}]},
   {InfraSubstrateHighlight[g, {circle, c}],
    InfraMeasurement[g, circle, "Cardinality"], InfraMeasurement[g, circle, "Length"],
@@ -83,7 +83,7 @@ At a single radius the circle exists on the irregular mesh and not on the two la
 Row @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = InfraCenter[g]},
+    {c = First @ GraphCenter[g]},
     {circles = FindInfraRepresentative[g, InfraCircle[c, 4], All]},
     Labeled[
       InfraSubstrateHighlight[g,
@@ -99,7 +99,7 @@ The thickness needed follows the girth: on the hexagonal tiling the band `{4, 5}
 Row @ Table[
   With[
     {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-    {c = InfraCenter[g]},
+    {c = First @ GraphCenter[g]},
     {circles = FindInfraRepresentative[g, InfraCircle[c, band], All]},
     Labeled[
       InfraSubstrateHighlight[g,
@@ -115,7 +115,7 @@ One circle about the centre of each lattice, at the band each one needs, drawn a
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[First @ spec, "Small", "KeepCoordinates" -> True]},
-    {c = InfraCenter[g]},
+    {c = First @ GraphCenter[g]},
     {oneCircle = FindInfraRepresentative[g, InfraCircle[c, Last @ spec]]},
     InfraSubstrateHighlight[g, {Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], c},
       "Arrowheads" -> True]],
@@ -127,7 +127,7 @@ A member is a cyclic vertex list. Drawn as a walk, it closes back on its first v
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {closedWalk = FindInfraRepresentative[g, InfraCircle[c, {2, 4}]]},
   InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]], c}]]
 ```
@@ -137,8 +137,8 @@ The circles of the band `{4, 5}` that pass through a vertex at distance 4 are th
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, c, 4])},
+  {c = First @ GraphCenter[g]},
+  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])},
   {circle = InfraArc[c, {p, p}, "RadiusDelta" -> 1]},
   {InfraSubstrateHighlight[g, {circle, c, p}],
    InfraMeasurement[g, circle, "Cardinality"], InfraMeasurement[g, circle, "Length"]}]
@@ -151,7 +151,7 @@ Every circle of the band `{2, 4}` on the square tiling, drawn at once. A bounded
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {circle = InfraCircle[c, {2, 4}]},
   {circles = FindInfraRepresentative[g, circle, All]},
   {InfraSubstrateHighlight[g, {Table[Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], {oneCircle, circles}]}],
@@ -165,7 +165,7 @@ A circle lies in its band, and consecutive vertices are adjacent, the last and t
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {band = FindInfraShell[g, c, {2, 4}]},
   {closedWalk = FindInfraRepresentative[g, InfraCircle[c, {2, 4}]]},
   {InfraSubstrateHighlight[g, {band, InfraWalk[Append[closedWalk, First @ closedWalk]]}],
@@ -177,7 +177,7 @@ The search sweeps the band directly and finds as many circles as the atoms carry
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {circle = InfraCircle[c, {2, 4}]},
   {InfraSubstrateHighlight[g, {circle, c}],
    InfraMeasurement[g, circle, "Cardinality"], Length @ FindInfraRepresentative[g, circle, All]}]
@@ -188,7 +188,7 @@ An atom is acyclic: its chains run from the seam vertex *x* to the copy `{x, 3/2
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {atom = First @ InfraMeasurement[g, InfraCircle[c, {2, 4}], "Graph"]},
   {InfraSubstrateHighlight[g, {atom, c}, "Arrowheads" -> True],
    AcyclicGraphQ[atom], Select[VertexList[atom], VertexInDegree[atom, #] == 0 &],

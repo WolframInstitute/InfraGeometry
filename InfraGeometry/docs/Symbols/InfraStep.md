@@ -22,9 +22,9 @@ Two labelled steps: two points three steps apart, then the segment between them.
 ClearAll[pA, pB, seg1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {scene = InfraScene[{pA, pB, seg1},
-     {InfraStep[{pA == InfraPoint[c], pB == InfraPoint[pA, 3]}, "two points"],
+     {InfraStep[{pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 3}, "two points"],
       InfraStep[{seg1 == InfraSegment[pA, pB]}, "the segment"]}]},
   {solved = FindInfraScene[scene, g]},
   {InfraSubstrateHighlight[g, {InfraSceneInstance[#, seg1] & /@ solved, c}],

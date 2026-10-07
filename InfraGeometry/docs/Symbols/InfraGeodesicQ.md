@@ -56,7 +56,7 @@ At scale 1 the test is [InfraWalkQ]() and at scale `Infinity` it is [InfraSegmen
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
+  {a = First @ GraphCenter[g]},
   {walkGraphs = FindInfraGeodesic[g, a, 1, {4}, All]},
   {walkSeqs = Last /@ VertexList[#] & /@ walkGraphs},
   {InfraSubstrateHighlight[g, {Select[walkGraphs, InfraGeodesicQ[g, #, Infinity] &], a}],
@@ -69,8 +69,8 @@ A geodesic interval graph passes as a whole, since all its paths from the source
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
   {dag = InfraMeasurement[g, InfraSegment[a, b], "Graph"]},
   {InfraSubstrateHighlight[g, {dag, a, b}], InfraGeodesicQ[g, dag]}]
 ```

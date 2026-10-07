@@ -54,9 +54,9 @@ Values collect over every intermediate vertex. Two outward steps reach every ver
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {radial = First @ PolarDisplacements[g, InfraCenter[g]]},
+  {radial = First @ PolarDisplacements[g, First @ GraphCenter[g]]},
   {twoSteps = DisplacementCompose[radial, radial]},
-  {DisplacementPlot[g, KeyTake[twoSteps, {InfraCenter[g], 12}]], twoSteps[12]}]
+  {DisplacementPlot[g, KeyTake[twoSteps, {First @ GraphCenter[g], 12}]], twoSteps[12]}]
 ```
 
 ## Properties and Relations

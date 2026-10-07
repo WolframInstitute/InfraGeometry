@@ -34,7 +34,7 @@ VerificationTest[
 VerificationTest[
   Table[
     With[ { g = InfraSubstrate[name, "Small"] },
-      { p = InfraCenter[g] },
+      { p = First @ GraphCenter[g] },
       { q = SelectFirst[ VertexList[g], v |-> GraphDistance[g, p, v] == 3 && Length @ FindInfraSegment[g, p, v, All] > 1 ] },
       { near = Min /@ Transpose[ GraphDistance[g, #] & /@ MetricInterval[g, p, q] ] },
       Table[ InfraMeasurement[g, InfraTube[InfraSegment[p, q], s], "CountingMeasure"], { s, 0, 3 } ] ===

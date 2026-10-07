@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSubstrate
 Keywords: [substrate, example graph, surface graph, tiling, mesh, roster]
-SeeAlso: [TessellationGraph, TorusTessellation, InfraCenter, FindInfraShell, InfraSubstrateHighlight, FindInfraPoint]
+SeeAlso: [TessellationGraph, TorusTessellation, GraphCenter, FindInfraShell, InfraSubstrateHighlight, FindInfraPoint]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -42,7 +42,7 @@ A Wolfram-model universe is named `"wm"` followed by its number in the Registry 
 
 A substrate is **bare combinatorics** by default. A stored embedding is discarded, and a spring layout of the substrate's own dimension places the vertices. `"KeepCoordinates" -> True` draws the substrate where it lives. Every figure on a patch of the plane sets it.
 
-A patch has a rim, and the rim is not geometry. Anchor a construction at the centre, [InfraCenter](), and keep it well inside the patch, or the figure shows boundary effects.
+A patch has a rim, and the rim is not geometry. Anchor a construction at the centre, `First @ GraphCenter[g]`, and keep it well inside the patch, or the figure shows boundary effects.
 
 A substrate built by a random construction — a uniform-length ellipsoid, or any substrate with `"Inflate"` — is seeded from outside. `SeedRandom` in front of the call gives the same graph again.
 
@@ -63,7 +63,7 @@ The shell of radius 4 about the centre, on the discretized plane, the square til
 Row @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = InfraCenter[g]},
+    {c = First @ GraphCenter[g]},
     Labeled[InfraSubstrateHighlight[g, {FindInfraShell[g, c, 4], c}], name]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```

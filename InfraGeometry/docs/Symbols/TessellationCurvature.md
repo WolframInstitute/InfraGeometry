@@ -34,7 +34,7 @@ Five, six and seven triangles about a vertex: on the sphere, in the plane and in
 
 ```wl
 With[
-  {stars = Table[With[{g = TessellationNeighborhoodGraph[{3, q}, 2]}, {c = InfraCenter[g]}, InfraSubstrateHighlight[g, {InfraBall[c, 1], c}]], {q, 5, 7}]},
+  {stars = Table[With[{g = TessellationNeighborhoodGraph[{3, q}, 2]}, {c = First @ GraphCenter[g]}, InfraSubstrateHighlight[g, {InfraBall[c, 1], c}]], {q, 5, 7}]},
   {GraphicsRow[stars], Table[TessellationCurvature[{3, q}], {q, 5, 7}]}]
 ```
 

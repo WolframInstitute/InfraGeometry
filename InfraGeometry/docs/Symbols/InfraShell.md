@@ -67,7 +67,7 @@ The band of radii 2 to 4 about the centre of the discretized plane, the square g
 Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {band = InfraShell[InfraCenter[g], {2, 4}]},
+    {band = InfraShell[First @ GraphCenter[g], {2, 4}]},
     {support = FindInfraRepresentative[g, band]},
     Labeled[
       InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
@@ -82,7 +82,7 @@ With[
   {names = {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}},
   ListLinePlot[
     Table[
-      With[{g = InfraSubstrate[name, "Medium"]}, Table[InfraMeasurement[g, InfraShell[InfraCenter[g], r], "CountingMeasure"], {r, 1, 7}]],
+      With[{g = InfraSubstrate[name, "Medium"]}, Table[InfraMeasurement[g, InfraShell[First @ GraphCenter[g], r], "CountingMeasure"], {r, 1, 7}]],
       {name, names}],
     DataRange -> {1, 7}, PlotMarkers -> Automatic, PlotLegends -> names, AxesLabel -> {"r", "A(r)"}]]
 ```
@@ -94,7 +94,7 @@ Single shells of radius 2 to 5, one colour each. Each is all boundary, so its Ri
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {shells = Table[InfraShell[InfraCenter[g], r], {r, 2, 5}]},
+  {shells = Table[InfraShell[First @ GraphCenter[g], r], {r, 2, 5}]},
   {InfraSubstrateHighlight[g, shells], InfraMeasurement[g, shells, "CountingMeasure"], InfraMeasurement[g, shells, "RiemannianMeasure"]}]
 ```
 
@@ -113,7 +113,7 @@ GraphicsRow[MapThread[
   {substrate, maxRadius, shellArea} |-> Show[
     Plot[shellArea, {r, 1, maxRadius}],
     ListPlot[
-      Table[InfraMeasurement[substrate, InfraShell[InfraCenter[substrate], r], "CountingMeasure"], {r, 1, maxRadius}],
+      Table[InfraMeasurement[substrate, InfraShell[First @ GraphCenter[substrate], r], "CountingMeasure"], {r, 1, maxRadius}],
       DataRange -> {1, maxRadius}, PlotMarkers -> Automatic]],
   {{InfraSubstrate["TriangularTilingGraph", "Medium"], InfraSubstrate["CubicGridGraph", "Large"]}, {6, 4}, {6 r, 4 r^2 + 2}}]]
 ```
@@ -124,8 +124,8 @@ Inside a scene the token names the shell about a point, and [FindInfraScene]() b
 ClearAll[pA, pB, shellA, shellB, meet];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, c, 2])},
+  {c = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 2]])},
   {constr = InfraScene[{pA, pB, shellA, shellB, meet},
      {pA == InfraPoint[c], pB == InfraPoint[b],
       shellA == InfraShell[pA, 2], shellB == InfraShell[pB, 2],

@@ -48,8 +48,8 @@ Build a scene and open the viewer on it. The slider steps through the constructi
 ClearAll[a, b, cA, cB, u];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
-  {p1 = InfraCenter[g]},
-  {p2 = (SeedRandom[1]; RandomInfraPoint[g, p1, 4])},
+  {p1 = First @ GraphCenter[g]},
+  {p2 = (SeedRandom[1]; FindInfraPoint[g, InfraShell[p1, 4]])},
   {scene = InfraScene[{a, b, cA, cB, u},
      {InfraStep[{a == InfraPoint[p1]}, "point a"],
       InfraStep[{b == InfraPoint[p2]}, "point b"],
@@ -64,8 +64,8 @@ The first steps as stills: the two points, then the circle about the first. This
 ```wl
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
-  {p1 = InfraCenter[g]},
-  {p2 = (SeedRandom[1]; RandomInfraPoint[g, p1, 4])},
+  {p1 = First @ GraphCenter[g]},
+  {p2 = (SeedRandom[1]; FindInfraPoint[g, InfraShell[p1, 4]])},
   {circles = FindInfraRepresentative[g, InfraCircle[p1, 4], All]},
   Row[{
     Labeled[InfraSubstrateHighlight[g, {{p1, p2}}], "points a and b"],

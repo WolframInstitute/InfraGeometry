@@ -47,8 +47,8 @@ The cylinder of radius 1 about a shortest path on the discretized plane, the squ
 Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = InfraCenter[g]},
-    {axis = FindInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, c, 4])]]},
+    {c = First @ GraphCenter[g]},
+    {axis = FindInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])]]},
     {cylinder = InfraCylinder[axis, 1]},
     {support = FindInfraRepresentative[g, cylinder]},
     Labeled[

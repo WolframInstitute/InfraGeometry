@@ -32,7 +32,7 @@ A single step from the centre, scaled by 1, 2, 3 and 4, on the square, triangula
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {step = <|InfraCenter[g] -> {First @ AdjacencyList[g, InfraCenter[g]]}|>},
+    {step = <|First @ GraphCenter[g] -> {First @ AdjacencyList[g, First @ GraphCenter[g]]}|>},
     DisplacementPlot[g, Table[DisplacementScale[g, step, t], {t, 4}]]],
   {name, {"SquareTilingGraph", "TriangularTilingGraph", "HexagonalTilingGraph"}}]
 ```

@@ -29,8 +29,8 @@ The ordered cup of the coboundaries of the distances from the centre of the tria
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {apex = (SeedRandom[1]; RandomInfraPoint[g, center, 3])},
+  {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+  {apex = (SeedRandom[1]; FindInfraPoint[g, InfraShell[center, 3]])},
   {cup = OrderedCochainCup[g,
      Coboundary[g, AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]],
      Coboundary[g, AssociationMap[GraphDistance[g, apex, First[#]] &, List /@ VertexList[g]]]]},
@@ -46,8 +46,8 @@ On an increasing tuple the two readings agree, whatever the convention of the co
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {apex = (SeedRandom[1]; RandomInfraPoint[g, center, 3])},
+  {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+  {apex = (SeedRandom[1]; FindInfraPoint[g, InfraShell[center, 3]])},
   {cup = OrderedCochainCup[g,
      Coboundary[g, AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]],
      Coboundary[g, AssociationMap[GraphDistance[g, apex, First[#]] &, List /@ VertexList[g]]]]},
@@ -60,8 +60,8 @@ An increasing tuple that is not stored gives 0, not [Missing](): a triangle on w
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {apex = (SeedRandom[1]; RandomInfraPoint[g, center, 3])},
+  {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+  {apex = (SeedRandom[1]; FindInfraPoint[g, InfraShell[center, 3]])},
   {cup = OrderedCochainCup[g,
      Coboundary[g, AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]],
      Coboundary[g, AssociationMap[GraphDistance[g, apex, First[#]] &, List /@ VertexList[g]]]]},

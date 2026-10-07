@@ -44,7 +44,7 @@ The ordered cup is not graded-commutative. On a triangle at the centre of the tr
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+  {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
   {triangle = Sort @ First @ Select[FindClique[g, {3}, All], MemberQ[center]]},
   {front = <|triangle[[{1, 2}]] -> 1|>, back = <|triangle[[{2, 3}]] -> 1|>},
   {Show[Graphics[{StandardBlue, Polygon[Lookup[positions, triangle]]}], g],
@@ -72,7 +72,7 @@ The constant 0-cochain 1 is a unit on either side.
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {cochain = Coboundary[g, AssociationMap[GraphDistance[g, InfraCenter[g], First[#]] &, List /@ VertexList[g]]],
+  {cochain = Coboundary[g, AssociationMap[GraphDistance[g, First @ GraphCenter[g], First[#]] &, List /@ VertexList[g]]],
    unit = AssociationMap[1 &, List /@ VertexList[g]]},
   {DisplacementPlot[g, GroupBy[Join[Keys @ Select[cochain, Positive], Reverse /@ Keys @ Select[cochain, Negative]], First -> Last]],
    {KeySort[OrderedCochainCup[g, unit, cochain]] === KeySort[cochain], KeySort[OrderedCochainCup[g, cochain, unit]] === KeySort[cochain]}}]

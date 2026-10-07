@@ -52,7 +52,7 @@ An instance holds an `Association`.
 ClearAll[pA, pB, seg1];
 With[
   {scene = InfraScene[{pA, pB, seg1},
-     {pA == InfraPoint[41], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
+     {pA == InfraPoint[41], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
   First @ FindInfraScene[scene, GridGraph[{9, 9}]]]
 ```
 
@@ -64,7 +64,7 @@ The values of one object across all the instances. Here the second point takes e
 ClearAll[pA, pB, seg1];
 With[
   {scene = InfraScene[{pA, pB, seg1},
-     {pA == InfraPoint[41], pB == InfraPoint[pA, 2], seg1 == InfraSegment[pA, pB]}]},
+     {pA == InfraPoint[41], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
   Counts[InfraSceneInstance[#, pB] & /@ FindInfraScene[scene, GridGraph[{9, 9}]]]]
 ```
 

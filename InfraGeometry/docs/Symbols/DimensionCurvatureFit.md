@@ -47,7 +47,7 @@ Ball quotients against *r(r + 1)* over the fitted window, and the fitted line, a
 GraphicsRow @ Table[
   With[
     {gr = InfraSubstrate[nm, "Large"]},
-    {obs = VolumeGrowthObservables[gr, InfraCenter[gr]]},
+    {obs = VolumeGrowthObservables[gr, First @ GraphCenter[gr]]},
     {win = obs["BallWindow"], quots = obs["BallLogDifferenceQuotients"]},
     {fitData = Table[{rad, quots[[rad]]}, {rad, win[[1]], win[[2]]}]},
     {fit = DimensionCurvatureFit[fitData]},
@@ -114,7 +114,7 @@ With[
 ```wl
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Large"]},
-  {sampleSet = Take[FindInfraRepresentative[g, InfraBall[InfraCenter[g], 2]], 5]},
+  {sampleSet = Take[FindInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 2]], 5]},
   {qdata = Transpose[{Range[8], LogDifferenceQuotients[MeanAround /@ Transpose @ Table[InfraMeasurement[g, InfraBall[v, r], "CountingMeasure"], {v, sampleSet}, {r, 0, 8}]]}]},
   {ListPlot[{#[[1]] (#[[1]] + 1), #[[2]]} & /@ qdata, PlotRange -> {All, {0, 3.5}}, AxesLabel -> {"r(r+1)", "q"}],
    DimensionCurvatureFit[qdata]}]
@@ -127,7 +127,7 @@ With[
 ```wl
 With[
   {g = InfraSubstrate["SphereMeshGraph", "Large"]},
-  {obs = VolumeGrowthObservables[g, InfraCenter[g]]},
+  {obs = VolumeGrowthObservables[g, First @ GraphCenter[g]]},
   {win = obs["BallWindow"], quots = obs["BallLogDifferenceQuotients"]},
   {fitData = Table[{rad, quots[[rad]]}, {rad, win[[1]], win[[2]]}]},
   {ListPlot[{#[[1]] (#[[1]] + 1), #[[2]]} & /@ fitData, PlotRange -> {All, {0, 3}}, AxesLabel -> {"r(r+1)", "q"}],

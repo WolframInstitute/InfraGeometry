@@ -1718,7 +1718,7 @@ VerificationTest[
    not the canonical one, which goes back and forth on one edge *)
 VerificationTest[
   With[ { g = InfraSubstrate[ "SquareMeshGraph", "Medium", "KeepCoordinates" -> True ] },
-    { c = ( SeedRandom[ 1 ]; FindInfraPoint[ g, "From" -> "Center" ] ) },
+    { c = ( SeedRandom[ 1 ]; FindInfraPoint[ g, GraphCenter[ g ] ] ) },
     { ws = Table[ BlockRandom[ FindInfraWalk[ g, c, UpTo[ 9 ], Properties -> { { "Shortest", 5, p } } ], RandomSeeding -> 3 ],
         { p, { 1, 0.3, 0.01 } } ] },
     { AllTrue[ ws, GraphQ ], EdgeCount /@ ws, AllTrue[ walkSeq /@ ws, First[ # ] === c && InfraWalkQ[ g, # ] & ],
@@ -1731,7 +1731,7 @@ VerificationTest[
    return is rare, at p = 1 every walk weighs alike *)
 VerificationTest[
   With[ { g = InfraSubstrate[ "SquareMeshGraph", "Medium", "KeepCoordinates" -> True ] },
-    { c = ( SeedRandom[ 1 ]; FindInfraPoint[ g, "From" -> "Center" ] ) },
+    { c = ( SeedRandom[ 1 ]; FindInfraPoint[ g, GraphCenter[ g ] ] ) },
     { ws = Table[ BlockRandom[ walkSeq @ FindInfraWalk[ g, c, UpTo[ 12 ], Properties -> { { "Simple", Infinity, p } },
         "NextVertexFunction" -> RandomChoice ], RandomSeeding -> 3 ], { p, { 0.01, 0.1, 1 } } ] },
     { Length[ # ] - Length[ DeleteDuplicates @ # ] & /@ ws, AllTrue[ ws, InfraWalkQ[ g, # ] & ] } ],
@@ -1891,7 +1891,7 @@ VerificationTest[
    of the sorted vertex sequences) *)
 VerificationTest[
   With[ { g = ( SeedRandom[ 2 ]; InfraSubstrate[ "SquareTilingGraph", "Large", "KeepCoordinates" -> True ] ) },
-    { c = InfraCenter @ g },
+    { c = First @ GraphCenter @ g },
     { germ = First @ FindInfraRepresentative[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1 ] },
     { walks = Sort @ walkSeqs @ FindInfraGeodesic[ g, germ, 2, { 10 }, All ] },
     { Length @ walks, Hash @ walks } ],
@@ -1901,7 +1901,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = ( SeedRandom[ 2 ]; InfraSubstrate[ "SquareTilingGraph", "Large", "KeepCoordinates" -> True ] ) },
-    { c = InfraCenter @ g },
+    { c = First @ GraphCenter @ g },
     { germ = First @ FindInfraRepresentative[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1 ] },
     { walks = Sort @ walkSeqs @ FindInfraGeodesic[ g, germ, 3, { 10 }, All ] },
     { Length @ walks, Hash @ walks } ],
@@ -1911,7 +1911,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = ( SeedRandom[ 2 ]; InfraSubstrate[ "SquareTilingGraph", "Large", "KeepCoordinates" -> True ] ) },
-    { c = InfraCenter @ g },
+    { c = First @ GraphCenter @ g },
     { germ = First @ FindInfraRepresentative[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1 ] },
     { walks = Sort @ walkSeqs @ FindInfraGeodesic[ g, germ, 4, { 10 }, All ] },
     { Length @ walks, Hash @ walks } ],
@@ -1921,7 +1921,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = ( SeedRandom[ 2 ]; InfraSubstrate[ "SquareTilingGraph", "Large", "KeepCoordinates" -> True ] ) },
-    { c = InfraCenter @ g },
+    { c = First @ GraphCenter @ g },
     { germ = First @ FindInfraRepresentative[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1 ] },
     { walks = Sort @ walkSeqs @ FindInfraGeodesic[ g, germ, 5, { 10 }, All ] },
     { Length @ walks, Hash @ walks } ],
@@ -1931,7 +1931,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = ( SeedRandom[ 2 ]; InfraSubstrate[ "SquareTilingGraph", "Large", "KeepCoordinates" -> True ] ) },
-    { c = InfraCenter @ g },
+    { c = First @ GraphCenter @ g },
     { germ = First @ FindInfraRepresentative[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1 ] },
     { walks = Sort @ walkSeqs @ FindInfraGeodesic[ g, germ, Infinity, { 10 }, All ] },
     { Length @ walks, Hash @ walks } ],

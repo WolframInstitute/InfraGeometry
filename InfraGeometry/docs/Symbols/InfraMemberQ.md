@@ -27,9 +27,9 @@ Two walks from the centre to a vertex four steps away: a shortest path, which is
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
-  {x = (SeedRandom[7]; RandomInfraPoint[g, a, 3])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {x = (SeedRandom[7]; FindInfraPoint[g, InfraShell[a, 3]])},
   {seg = InfraSegment[a, b]},
   {member = FindInfraRepresentative[g, seg]},
   {detour = FindInfraRepresentative[g, InfraSegment[a, x, b]]},
@@ -42,8 +42,8 @@ A shortest path found independently by [FindInfraSegment]() is a member of the m
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 5])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 5]])},
   {onePath = FindInfraSegment[g, a, b]},
   {InfraSubstrateHighlight[g, {InfraSegment[a, b], InfraWalk[onePath]}], InfraMemberQ[g, InfraSegment[a, b], onePath]}]
 ```
@@ -53,7 +53,7 @@ A circle's member is recognised up to rotation and direction.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {circle = InfraCircle[c, {2, 4}]},
   {turned = RotateLeft[Reverse @ FindInfraRepresentative[g, circle], 3]},
   {InfraSubstrateHighlight[g, {InfraWalk[Append[turned, First @ turned]], c}, "Arrowheads" -> True],
@@ -67,8 +67,8 @@ A shortest path between other points is a segment, but not a member of this one.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
   {other = FindInfraRepresentative[g, InfraSegment[a, First @ AdjacencyList[g, a]]]},
   {InfraSubstrateHighlight[g, {InfraSegment[a, b], InfraWalk[other]}],
    InfraSegmentQ[g, other], InfraMemberQ[g, InfraSegment[a, b], other]}]

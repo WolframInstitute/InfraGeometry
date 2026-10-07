@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/GraphEccentricities
 Keywords: [eccentricity, radius, diameter, graph center, periphery, distance matrix]
-SeeAlso: [RelativeEccentricity, InfraCenter, CenterGraph, EffectiveResistance]
+SeeAlso: [RelativeEccentricity, GraphCenter, CenterGraph, EffectiveResistance]
 RelatedGuides: [Experimental]
 ---
 
@@ -46,7 +46,7 @@ ListPlot[
   Table[
     With[
       {g = InfraSubstrate[name, "Small"]},
-      Transpose[{GraphDistance[g, InfraCenter[g], #] & /@ VertexList[g], GraphEccentricities[g]}]],
+      Transpose[{GraphDistance[g, First @ GraphCenter[g], #] & /@ VertexList[g], GraphEccentricities[g]}]],
     {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}],
   PlotLegends -> {"square", "hexagonal", "triangular"}, AxesLabel -> {"d(c, v)", "e(v)"}]
 ```

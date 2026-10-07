@@ -33,7 +33,7 @@ The gradient of the distance from the centre of the triangular tiling integrates
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g]},
+  {center = First @ GraphCenter[g]},
   {cochain = IntegrationMap[g, FormDifferential[g, ZeroForm[g, GraphDistance[g, center, #] &]]]},
   {DisplacementPlot[g, GroupBy[Join[Keys @ Select[cochain, Positive], Reverse /@ Keys @ Select[cochain, Negative]], First -> Last]],
    KeySort[cochain] === KeySort[Coboundary[g, AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]]]}]

@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/CenterGraph
 Keywords: [centre, center, ball, interior, rim, cut, substrate preparation]
-SeeAlso: [InfraSubstrate, InfraCenter, FindInfraPoint, InfraSubstrateHighlight, GraphCenter, NeighborhoodGraph]
+SeeAlso: [InfraSubstrate, FindInfraPoint, InfraSubstrateHighlight, GraphCenter, NeighborhoodGraph]
 RelatedGuides: [InfraSubstrates]
 ---
 

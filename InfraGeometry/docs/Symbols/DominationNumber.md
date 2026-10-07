@@ -47,7 +47,7 @@ With targets: the number of balls of radius 2 that cover the ball of radius 4 ab
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {target = FindInfraRepresentative[g, InfraBall[InfraCenter[g], 4]]},
+  {target = FindInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]]},
   {InfraSubstrateHighlight[g, {target -> StandardGray, FindBallCover[g, 2, target] -> StandardRed}], DominationNumber[g, 2, target]}]
 ```
 

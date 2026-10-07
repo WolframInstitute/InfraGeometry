@@ -61,7 +61,7 @@ The balls of radius 1 about the four corners of a square of the square tiling me
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {corners = First /@ First @ FindCycle[{g, InfraCenter[g]}, {4}]},
+  {corners = First /@ First @ FindCycle[{g, First @ GraphCenter[g]}, {4}]},
   {InfraSubstrateHighlight[g, InfraBall[#, 1] & /@ corners],
    MemberQ[BallIntersectionComplex[corners, 1, 3, "Metric" -> g], {1, 2, 3, 4}],
    MemberQ[BallIntersectionComplex[corners, 1, 4, "Metric" -> g], {1, 2, 3, 4}]}]

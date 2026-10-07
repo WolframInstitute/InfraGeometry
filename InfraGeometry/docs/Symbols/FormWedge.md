@@ -35,7 +35,7 @@ The wedge of the gradients of the two coordinates of the square tiling. At a ver
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {positions = AssociationThread[VertexList[g], GraphEmbedding[g]], center = InfraCenter[g]},
+  {positions = AssociationThread[VertexList[g], GraphEmbedding[g]], center = First @ GraphCenter[g]},
   {wedge = FormWedge[FormDifferential[g, ZeroForm[g, positions[[All, 1]]]], FormDifferential[g, ZeroForm[g, positions[[All, 2]]]]]},
   {MatrixPlot[Table[FormValue[wedge, center, {nbr, neighbour}], {nbr, AdjacencyList[g, center]}, {neighbour, AdjacencyList[g, center]}]],
    Normal @ IntegrationMap[g, wedge]}]
@@ -61,8 +61,8 @@ The wedge is graded-commutative. For the gradients of the distances from the cen
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g]},
-  {apex = (SeedRandom[1]; RandomInfraPoint[g, center, 3])},
+  {center = First @ GraphCenter[g]},
+  {apex = (SeedRandom[1]; FindInfraPoint[g, InfraShell[center, 3]])},
   {gradient = FormDifferential[g, ZeroForm[g, GraphDistance[g, center, #] &]],
    otherGradient = FormDifferential[g, ZeroForm[g, GraphDistance[g, apex, #] &]]},
   {MatrixPlot[Table[
@@ -77,7 +77,7 @@ The differential fails the Leibniz rule. For the distance *f* from the centre, *
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {form = ZeroForm[g, GraphDistance[g, InfraCenter[g], #] &]},
+  {form = ZeroForm[g, GraphDistance[g, First @ GraphCenter[g], #] &]},
   {gradient = FormDifferential[g, form]},
   {leibniz = DeleteCases[Merge[{FormDifferential[g, FormWedge[form, form]], -2 FormWedge[form, gradient]}, Merge[#, Total] &], 0, {2}]},
   {DisplacementPlot[g, Map[Catenate @* Keys @* Select[Positive], leibniz]], KeySort[KeySort /@ leibniz] === KeySort[KeySort /@ gradient^2]}]

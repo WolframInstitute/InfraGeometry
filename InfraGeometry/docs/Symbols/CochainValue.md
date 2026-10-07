@@ -29,7 +29,7 @@ The coboundary of the distance from the centre of the triangular tiling, drawn b
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g]},
+  {center = First @ GraphCenter[g]},
   {cochain = Coboundary[g, AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]]},
   {DisplacementPlot[g, GroupBy[Join[Keys @ Select[cochain, Positive], Reverse /@ Keys @ Select[cochain, Negative]], First -> Last]],
    {CochainValue[cochain, {center, First @ AdjacencyList[g, center]}], CochainValue[cochain, {First @ AdjacencyList[g, center], center}]}}]
@@ -42,7 +42,7 @@ On a triangle the six orderings give the stored value with the signs of the six 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+  {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
   {triangle = Sort @ First @ Select[FindClique[g, {3}, All], MemberQ[center]]},
   {Show[Graphics[{StandardBlue, Polygon[Lookup[positions, triangle]]}], g],
    Normal @ AssociationMap[CochainValue[<|triangle -> 1|>, #] &, Permutations[triangle]]}]
@@ -53,7 +53,7 @@ A pair that is not an edge gives 0. The coboundary of the distance from the cent
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = InfraCenter[g]},
+  {center = First @ GraphCenter[g]},
   {cochain = Coboundary[g, AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]]},
   {corner = First @ MaximalBy[VertexList[g], GraphDistance[g, center, #] &]},
   {InfraSubstrateHighlight[g, {center, corner}], GraphDistance[g, center, corner], CochainValue[cochain, {center, corner}]}]

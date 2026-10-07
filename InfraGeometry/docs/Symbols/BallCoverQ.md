@@ -42,7 +42,7 @@ With targets, only the targets need covering. The centre covers its own ball of 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {InfraSubstrateHighlight[g, {InfraBall[c, 2], c}],
    BallCoverQ[g, 2, {c}, FindInfraRepresentative[g, InfraBall[c, 2]]], BallCoverQ[g, 2, {c}]}]
 ```
@@ -54,7 +54,7 @@ A single vertex covers the whole graph exactly when its eccentricity is at most 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {InfraSubstrateHighlight[g, {InfraBall[c, VertexEccentricity[g, c] - 1], c}],
    VertexEccentricity[g, c], Table[BallCoverQ[g, r, {c}], {r, 5, 8}]}]
 ```

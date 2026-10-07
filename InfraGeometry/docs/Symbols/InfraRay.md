@@ -34,8 +34,8 @@ The ray from the centre through a vertex two steps away, on the square, hexagona
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {o = InfraCenter[g]},
-    {through = (SeedRandom[1]; RandomInfraPoint[g, o, 2])},
+    {o = First @ GraphCenter[g]},
+    {through = (SeedRandom[1]; FindInfraPoint[g, InfraShell[o, 2]])},
     {ray = InfraRay[o, through]},
     InfraSubstrateHighlight[g, {ray, o, through}]],
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
@@ -46,8 +46,8 @@ The number of rays and their length, beside the picture.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {o = InfraCenter[g]},
-  {through = (SeedRandom[1]; RandomInfraPoint[g, o, 2])},
+  {o = First @ GraphCenter[g]},
+  {through = (SeedRandom[1]; FindInfraPoint[g, InfraShell[o, 2]])},
   {ray = InfraRay[o, through]},
   {InfraSubstrateHighlight[g, {ray, o, through}],
    InfraMeasurement[g, ray, "Cardinality"], InfraMeasurement[g, ray, "Length"]}]
@@ -58,8 +58,8 @@ The members are vertex lists. Three rays, each drawn as a walk.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {o = InfraCenter[g]},
-  {through = (SeedRandom[1]; RandomInfraPoint[g, o, 2])},
+  {o = First @ GraphCenter[g]},
+  {through = (SeedRandom[1]; FindInfraPoint[g, InfraShell[o, 2]])},
   {members = FindInfraRepresentative[g, InfraRay[o, through], 3]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], o, through}], {member, members}]]
 ```
@@ -69,7 +69,7 @@ The pencil at the centre: every ray from it at once.
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {o = InfraCenter[g]},
+  {o = First @ GraphCenter[g]},
   {pencil = InfraRay[o, o]},
   {InfraSubstrateHighlight[g, {pencil, o}],
    InfraMeasurement[g, pencil, "Cardinality"]}]
@@ -82,8 +82,8 @@ The origin lies on every ray, so its density is the cardinality. The vertex dens
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {o = InfraCenter[g]},
-  {through = (SeedRandom[1]; RandomInfraPoint[g, o, 2])},
+  {o = First @ GraphCenter[g]},
+  {through = (SeedRandom[1]; FindInfraPoint[g, InfraShell[o, 2]])},
   {density = InfraMeasurement[g, InfraRay[o, through], "VertexDensity"]},
   {InfraSubstrateHighlight[g, {density}],
    density[o] === InfraMeasurement[g, InfraRay[o, through], "Cardinality"]}]
@@ -94,8 +94,8 @@ Every member satisfies [InfraRayQ]().
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {o = InfraCenter[g]},
-  {through = (SeedRandom[1]; RandomInfraPoint[g, o, 2])},
+  {o = First @ GraphCenter[g]},
+  {through = (SeedRandom[1]; FindInfraPoint[g, InfraShell[o, 2]])},
   {members = FindInfraRepresentative[g, InfraRay[o, through], All]},
   {InfraSubstrateHighlight[g, {members, o, through}],
    InfraRayQ[g, members]}]

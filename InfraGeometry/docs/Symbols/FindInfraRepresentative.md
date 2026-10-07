@@ -46,8 +46,8 @@ A uniformly random shortest path of a segment, drawn over the whole family. `See
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
   {seg = InfraSegment[a, b]},
   {pick = (SeedRandom[3]; First @ FindInfraRepresentative[g, seg, 1, "RandomChoice"])},
   {InfraSubstrateHighlight[g, {seg, InfraWalk[pick]}], pick}]
@@ -58,8 +58,8 @@ One member of a segment is one shortest path.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
   {geodesic = FindInfraRepresentative[g, InfraSegment[a, b]]},
   {InfraSubstrateHighlight[g, {InfraWalk[geodesic], a, b}], geodesic}]
 ```
@@ -69,8 +69,8 @@ Every member at once, and their number.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
   {members = FindInfraRepresentative[g, InfraSegment[a, b], All]},
   {GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], a, b}], {member, members}],
    Length @ members}]
@@ -81,8 +81,8 @@ A closed count that cannot be met is `{ }`; `UpTo` takes what there is.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
   {seg = InfraSegment[a, b]},
   {InfraSubstrateHighlight[g, {FindInfraRepresentative[g, seg, UpTo[20]]}],
    FindInfraRepresentative[g, seg, 20], Length @ FindInfraRepresentative[g, seg, UpTo[20]]}]
@@ -93,7 +93,7 @@ A member of a circle is a circle of the sweep, as a cyclic vertex list: the clos
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {closedWalk = FindInfraRepresentative[g, InfraCircle[c, {2, 4}]]},
   {InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]], c}], closedWalk}]
 ```
@@ -103,7 +103,7 @@ A scene token is read by its search: one shell around the centre.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   {shell = FindInfraRepresentative[g, InfraShell[c, 3]]},
   InfraSubstrateHighlight[g, {shell, c}]]
 ```
@@ -113,7 +113,7 @@ Four inextensible shortest paths through an edge at the centre, the members of a
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
+  {a = First @ GraphCenter[g]},
   {germ = {a, First @ AdjacencyList[g, a]}},
   {members = FindInfraRepresentative[g, InfraGeodesic[germ, Infinity], 4]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], a}], {member, members}]]
@@ -126,8 +126,8 @@ Every member is a member, and there are as many as the head counts.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, a, 4])},
+  {a = First @ GraphCenter[g]},
+  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
   {seg = InfraSegment[a, b]},
   {members = FindInfraRepresentative[g, seg, All]},
   {InfraSubstrateHighlight[g, {members}],

@@ -49,7 +49,7 @@ The shell of radius 3, and the sphere in it, on the discretized plane, the squar
 Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = InfraCenter[g]},
+    {c = First @ GraphCenter[g]},
     {family = InfraSphere[c, 3]},
     Labeled[
       InfraSubstrateHighlight[g, {InfraShell[c, 3], FindInfraRepresentative[g, family], c}],
@@ -79,7 +79,7 @@ The size of one instance per band *{r, r + 1}* about the centre of the square gr
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
-  {c = InfraCenter[g]},
+  {c = First @ GraphCenter[g]},
   ListPlot[{
     Table[Length[FindInfraRepresentative[g, InfraSphere[c, {r, r + 1}]]], {r, 1, 6}],
     Table[InfraMeasurement[g, InfraShell[c, {r, r + 1}], "CountingMeasure"], {r, 1, 6}]},

@@ -34,8 +34,8 @@ The endpoints of the six-step extensions of a three-edge germ ending at the cent
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-    {o = InfraCenter[g]},
-    {germ = First @ FindInfraRepresentative[g, InfraSegment[(SeedRandom[2]; RandomInfraPoint[g, o, 3]), o], 1]},
+    {o = First @ GraphCenter[g]},
+    {germ = First @ FindInfraRepresentative[g, InfraSegment[(SeedRandom[2]; FindInfraPoint[g, InfraShell[o, 3]]), o], 1]},
     {windows = InfraMeasurement[g, InfraGeodesic[germ, scale], "Graph"]},
     {from = UnitVector[VertexCount[windows], VertexIndex[windows, Take[germ, -Min[scale, Length[germ]]]]]},
     {ends = Select[Merge[Thread[Last /@ VertexList[windows] -> from . MatrixPower[AdjacencyMatrix[windows], 6]], Total], Positive]},
@@ -48,8 +48,8 @@ At scale `Infinity` the graph is drawn on the substrate beside the ray through t
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {o = InfraCenter[g]},
-  {through = (SeedRandom[1]; RandomInfraPoint[g, o, 2])},
+  {o = First @ GraphCenter[g]},
+  {through = (SeedRandom[1]; FindInfraPoint[g, InfraShell[o, 2]])},
   {germ = First @ FindInfraRepresentative[g, InfraSegment[o, through], 1]},
   {windows = InfraMeasurement[g, InfraGeodesic[germ, Infinity], "Graph"]},
   GraphicsRow[{InfraSubstrateHighlight[g, {windows, InfraWalk[germ]}],
@@ -63,8 +63,8 @@ The walks of *k* edges from the germ's window are the extensions [FindInfraGeode
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {o = InfraCenter[g]},
-  {germ = First @ FindInfraRepresentative[g, InfraSegment[(SeedRandom[2]; RandomInfraPoint[g, o, 3]), o], 1]},
+  {o = First @ GraphCenter[g]},
+  {germ = First @ FindInfraRepresentative[g, InfraSegment[(SeedRandom[2]; FindInfraPoint[g, InfraShell[o, 3]]), o], 1]},
   Table[
     With[
       {windows = InfraMeasurement[g, InfraGeodesic[germ, scale], "Graph"]},
@@ -79,8 +79,8 @@ At scale `Infinity` the graph is the part of the [InfraRay]() graph past the ger
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {o = InfraCenter[g]},
-  {through = (SeedRandom[1]; RandomInfraPoint[g, o, 2])},
+  {o = First @ GraphCenter[g]},
+  {through = (SeedRandom[1]; FindInfraPoint[g, InfraShell[o, 2]])},
   {germ = First @ FindInfraRepresentative[g, InfraSegment[o, through], 1]},
   {ray = InfraMeasurement[g, InfraRay[o, through], "Graph"]},
   Sort @ EdgeList @ InfraMeasurement[g, InfraGeodesic[germ, Infinity], "Graph"] ===
