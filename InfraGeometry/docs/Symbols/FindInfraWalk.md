@@ -38,10 +38,9 @@ A step reads a **window**: the last *r* vertices of the growing side with the ca
 | *p* | Reading |
 |---|---|
 | `0` | hard: a candidate of positive energy is dropped |
-| `0 < p < 1` | soft: a candidate keeps the weight *p*^energy; *p* = `Exp[-beta]` is the Boltzmann weight at inverse temperature *beta* |
-| `1` | off |
+| `0 < p <= 1` | soft: a candidate keeps the weight *p*^energy; *p* = `Exp[-beta]` is the Boltzmann weight at inverse temperature *beta*; at *p* = `1` every candidate weighs alike |
 
-The hard rules cut the class; the soft rules put a distribution on it, the weight of a candidate being the product over the soft rules. The rules act in the order written, so `"Stretched"` compares the candidates the hard rules before it left. `"Stretched"` is hard only: as a soft rule it would be the soft `"Shortest"`, whose energy differs from it by a constant on each step.
+The hard rules cut the class; the soft rules put a distribution on it, the weight of a candidate being the product over the soft rules. The rules act in the order written, so `"Stretched"` compares the candidates the hard rules before it left. As soft rules `"Stretched"` and `"Shortest"` weigh alike: their energies differ by a constant on each step.
 
 | Option | Default | Values |
 |---|---|---|
@@ -55,12 +54,12 @@ The hard rules cut the class; the soft rules put a distribution on it, the weigh
 | Value | Order |
 |---|---|
 | `Automatic` | canonical with hard rules only; `RandomSample` by the weights once a rule is soft |
-| `Identity` | canonical |
+| `Identity` | canonical, the weights ignored |
 | `RandomSample` | random by the weights, uniform without a soft rule |
 | `RandomChoice` | one candidate drawn by the weights: the random walk, which never backtracks |
-| *f*, `{f, r}` | `f` of the candidate windows, whole or of scale *r*, giving the ones to pursue in order |
+| *f*, `{f, r}` | `f` of the candidate windows, whole or of scale *r*, giving the ones to pursue in order; the weights ignored |
 
-`Identity` and a function do not see the weights, so with a soft rule they leave the call unevaluated. `RandomSample` is a permutation, so `All` is the whole class whatever the weights. Under `RandomChoice` the count *n* is *n* independent runs from the germ, and the runs that met *kspec* are returned; a pruning to *m* branches per step is `RandomSample[#, UpTo[m]] &`.
+Every order works with every rule. `Identity` and a function do not see the weights, so under them a soft rule changes nothing. `RandomSample` is a permutation, so `All` is the whole class whatever the weights. Under `RandomChoice` the count *n* is *n* independent runs from the germ, and the runs that met *kspec* are returned; a pruning to *m* branches per step is `RandomSample[#, UpTo[m]] &`.
 
 `"Direction"` says where the walk grows: `"Forward"` after the last vertex of the germ, `"Backward"` before the first, `"BothSides"` at both ends. Under `"BothSides"` each outer step grows both ends, the front only or the back only, the hard `"Simple"` and `"Shortest"` are checked again on the window holding both new ends, and the budget is the edges added on the longer side.
 
@@ -79,9 +78,7 @@ With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {c = (SeedRandom[2]; FindInfraPoint[g, "From" -> "Center"])},
   GraphicsRow @ Table[
-    InfraSubstrateHighlight[g,
-      {(SeedRandom[3]; FindInfraWalk[g, c, UpTo[9], Properties -> {{"Shortest", 5, p}}, "NextVertexFunction" -> RandomSample]), c},
-      "Arrowheads" -> True],
+    InfraSubstrateHighlight[g, {(SeedRandom[5]; FindInfraWalk[g, c, UpTo[9], Properties -> {{"Shortest", 5, p}}]), c}, "Arrowheads" -> True],
     {p, {1, 0.3, 0.01}}]]
 ```
 
@@ -132,7 +129,7 @@ With[
     {rules, {{"Simple"}, {{"Simple", 2}}, {}}}]]
 ```
 
-A soft `"Simple"`: the walk of 30 edges that rarely returns to a vertex it has visited, at weights 0, 0.1 and 1, with the number of returns.
+A soft `"Simple"`: the walk of 30 edges that rarely returns to a vertex it has visited, at weights 0.01, 0.1 and 1, with the number of returns.
 
 ```wl
 With[
@@ -141,10 +138,10 @@ With[
   GraphicsRow @ Table[
     With[
       {walk = (SeedRandom[4];
-        FindInfraWalk[g, a, {30}, Properties -> {{"Simple", Infinity, p}}, "NextVertexFunction" -> RandomSample])},
+        FindInfraWalk[g, a, {30}, Properties -> {{"Simple", Infinity, p}}])},
       Labeled[InfraSubstrateHighlight[g, {walk, a}, "Arrowheads" -> True],
         Row[{p, ": ", 31 - Length @ DeleteDuplicates[Last /@ VertexList @ walk]}]]],
-    {p, {0, 0.1, 1}}]]
+    {p, {0.01, 0.1, 1}}]]
 ```
 
 A window: `{"Simple", 3}` forbids a return within 3 steps only, so the walk may close round a hexagon; `"Simple"` may not.
@@ -271,6 +268,15 @@ With[
     Sort @ FindInfraWalk[g, a, {4}, All, Properties -> {"Simple"}]}]
 ```
 
+The soft `"Stretched"` weighs as the soft `"Shortest"`: under one seed the two draw the same walk.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {a = InfraCenter[g]},
+  {SameQ @@ Table[Last /@ VertexList @ (SeedRandom[1]; FindInfraWalk[g, a, {6}, Properties -> {{rule, 3, 0.3}}]), {rule, {"Stretched", "Shortest"}}]}]
+```
+
 The cusps, self-tangencies and triple points of a walk are read by [WalkSingularities](); a class free of one of them is a predicate on it.
 
 ```wl
@@ -293,22 +299,12 @@ With[
   {MatchQ[FindInfraWalk[g, a, Infinity, Properties -> {}], _FindInfraWalk], MatchQ[FindInfraWalk[g, a, 3, All], _FindInfraWalk]}]
 ```
 
-A soft rule under `Identity` stays unevaluated, since the order would drop the weights; so does a weighted `"Stretched"`.
+Under `Identity` the weights are ignored, so a soft rule changes nothing: the walk is the canonical walk of the hard rules.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = InfraCenter[g]},
-  {MatchQ[FindInfraWalk[g, a, {4}, Properties -> {{"Shortest", 3, 0.3}}, "NextVertexFunction" -> Identity], _FindInfraWalk],
-   MatchQ[FindInfraWalk[g, a, {4}, Properties -> {{"Stretched", 3, 0.3}}], _FindInfraWalk]}]
-```
-
-At weight 1 a rule is off, and with no other soft rule the default order is canonical, not random: the walk of every-walk class goes back and forth on one edge. Write `RandomSample` for a random walk.
-
-```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = InfraCenter[g]},
-  {Last /@ VertexList @ FindInfraWalk[g, a, {4}, Properties -> {{"Shortest", 3, 1}}],
-   Last /@ VertexList @ (SeedRandom[1]; FindInfraWalk[g, a, {4}, Properties -> {{"Shortest", 3, 1}}, "NextVertexFunction" -> RandomSample])}]
+  {FindInfraWalk[g, a, {4}, Properties -> {"Simple", {"Shortest", 3, 0.01}}, "NextVertexFunction" -> Identity] ===
+    FindInfraWalk[g, a, {4}, Properties -> {"Simple"}]}]
 ```

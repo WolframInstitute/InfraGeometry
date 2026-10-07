@@ -103,6 +103,16 @@ VerificationTest[
   TestID -> "FindInfraGeodesic-germ-class-invariant-under-NextVertexFunction"
 ]
 
+(* a soft rule weighs the candidates and never filters them: the class is the
+   same under Identity, RandomSample and Automatic, which draws by the weights *)
+VerificationTest[
+  With[ { call = f |-> FindInfraWalk[ GridGraph[ { 4, 4 } ], 6, { 4 }, All, Properties -> { "Simple", { "Shortest", 3, 0.3 } },
+      "NextVertexFunction" -> f ] },
+    { classInvariantQ[ call ], classInvariantQ[ f |-> call[ f /. RandomSample -> Automatic ] ] } ],
+  { True, True },
+  TestID -> "FindInfraWalk-soft-rule-class-invariant-under-NextVertexFunction"
+]
+
 (* on the walk family a count-less call is the first instance of the canonical descent: the same witness twice without a seed, the Identity one, and the First one where the first branch ends the walk, here the stopping condition firing at its first arrival at 2 or the budget spent; a two-sided extension re-checks the joined step, so its first joint move may fail where a later one passes, and First is pinned on the one-sided directions *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },

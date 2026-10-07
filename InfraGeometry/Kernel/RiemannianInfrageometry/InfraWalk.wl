@@ -4,10 +4,10 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* growth of a germ under the Properties rules until the stopping condition fires, the length budget kspec is spent, or no admissible step remains.
    A rule is rule, {rule, r} or {rule, r, p}.  It reads the window of scale r, the last r vertices of the growing side with the candidate appended,
-   through an energy, a non-negative number that is 0 exactly when the rule holds: p == 0 drops a candidate of positive energy, 0 < p < 1 weighs
-   it p^energy, p == 1 is off.  The rules act in their order, so "Stretched" compares the candidates the hard rules before it left.
-   The next-vertex function turns the surviving, weighted candidates into the order they are tried; RandomChoice never backtracks, so its count is
-   that many independent runs.  The germ is a vertex first, then a vertex list, a walk graph, or a bundle of germs; kspec counts the edges added per
+   through an energy, a non-negative number that is 0 exactly when the rule holds: p == 0 drops a candidate of positive energy, 0 < p <= 1 weighs
+   it p^energy.  The rules act in their order, so "Stretched" compares the candidates the hard rules before it left.
+   The next-vertex function turns the surviving, weighted candidates into the order they are tried: Automatic, RandomSample and RandomChoice read
+   the weights, Identity and a function ignore them; RandomChoice never backtracks, so its count is that many independent runs.  The germ is a vertex first, then a vertex list, a walk graph, or a bundle of germs; kspec counts the edges added per
    growing side, and kspec Infinity needs a hard rule that bounds the class, bare "Simple" or bare "Shortest".
    "BothSides" offers three moves per outer step -- both sides, front only, back only, joint first so a greedy witness keeps the synchronous
    trajectory -- each side ordered by its own weights, so a joint move weighs the product of its sides.  The one window neither side sees alone
@@ -37,11 +37,9 @@ FindInfraWalk[ graph_Graph, germ_,
           Replace[ rules, { { rule_, r_, p_ } :> { rule, r, p }, { rule_, r_ } :> { rule, r, 0 }, rule_ :> { rule, Infinity, 0 } }, { 1 } ],
           { { } } ] },
       AllTrue[ triples, MatchQ[ {
-          "Simple" | "Shortest" | Except[ _String | _List | _Rule ], _Integer?Positive | Infinity, _?( NumericQ[ # ] && 0 <= # <= 1 & ) } |
-        { "Stretched", _Integer?Positive | Infinity, p_ /; p == 0 } ] ] &&
+          "Simple" | "Shortest" | "Stretched" | Except[ _String | _List | _Rule ], _Integer?Positive | Infinity, _?( NumericQ[ # ] && 0 <= # <= 1 & ) } ] ] &&
       MatchQ[ OptionValue[ FindInfraWalk, { opts }, "Direction" ], "Forward" | "Backward" | "BothSides" ] &&
       ( condition === None || ! MatchQ[ condition, _Integer | _List | _String | _Rule ] ) &&
-      ( MatchQ[ nextFn, Automatic | RandomSample | RandomChoice ] || NoneTrue[ triples, 0 < Last[ # ] < 1 & ] ) &&
       ( nextFn =!= RandomChoice || count =!= All ) &&
       ( kspec =!= Infinity || MemberQ[ triples, { "Simple" | "Shortest", Infinity, p_ /; p == 0 } ] ) ] :=
   With[ {
@@ -59,10 +57,8 @@ FindInfraWalk[ graph_Graph, germ_,
             Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
               { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
           True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ],
-      rules = DeleteCases[
-        Replace[ OptionValue[ FindInfraWalk, { opts }, Properties ],
-          { { rule_, r_, p_ } :> { rule, r, If[ p == 0, 0, p ] }, { rule_, r_ } :> { rule, r, 0 }, rule_ :> { rule, Infinity, 0 } }, { 1 } ],
-        { _, _, p_ } /; p == 1 ],
+      rules = Replace[ OptionValue[ FindInfraWalk, { opts }, Properties ],
+        { { rule_, r_, p_ } :> { rule, r, If[ p == 0, 0, p ] }, { rule_, r_ } :> { rule, r, 0 }, rule_ :> { rule, Infinity, 0 } }, { 1 } ],
       condition = OptionValue[ FindInfraWalk, { opts }, "StoppingCondition" ],
       nextFn    = OptionValue[ FindInfraWalk, { opts }, "NextVertexFunction" ],
       direction = OptionValue[ FindInfraWalk, { opts }, "Direction" ] },
@@ -74,7 +70,7 @@ FindInfraWalk[ graph_Graph, germ_,
         GraphQ @ #,                                                          walksOf @ #,
         ListQ @ #,                                                           Catenate[ #0 /@ # ],
         True,                                                                { } ] &,
-      soft    = AnyTrue[ rules, 0 < Last[ # ] < 1 & ],
+      soft    = AnyTrue[ rules, Last[ # ] =!= 0 & ],
       sampler = nextFn === RandomChoice,
       (* the energy of a rule on each candidate's window; all windows of a step have one length, so the least defect is the farthest candidate *)
       energies = { rule, walk, cs } |-> With[ { window = Take[ walk, -Min[ rule[[ 2 ]], Length @ walk ] ] },
@@ -86,8 +82,8 @@ FindInfraWalk[ graph_Graph, germ_,
       stopQ = If[ condition === None, False &, Length[ # ] >= 2 && TrueQ[ condition @ # ] & ] },
     { order = Which[
         nextFn === Identity || ( nextFn === Automatic && ! soft ), { walk, cs, ws } |-> cs,
-        sampler,                                                  { walk, cs, ws } |-> { If[ soft, RandomChoice[ ws -> cs ], RandomChoice @ cs ] },
-        MatchQ[ nextFn, Automatic | RandomSample ],               { walk, cs, ws } |-> If[ soft, RandomSample[ ws -> cs ], RandomSample @ cs ],
+        sampler,                                                  { walk, cs, ws } |-> { If[ Equal @@ ws, RandomChoice @ cs, RandomChoice[ ws -> cs ] ] },
+        MatchQ[ nextFn, Automatic | RandomSample ],               { walk, cs, ws } |-> If[ Equal @@ ws, RandomSample @ cs, RandomSample[ ws -> cs ] ],
         (* the next-vertex function sees the candidate windows and gives the ones to pursue in order, one window read as the list of it *)
         True, With[ { f = Replace[ nextFn, { fn_, _Integer?Positive | Infinity } :> fn ],
                       r = Replace[ nextFn, { { _, s : ( _Integer?Positive | Infinity ) } :> s, _ -> Infinity } ] },
@@ -102,7 +98,8 @@ FindInfraWalk[ graph_Graph, germ_,
             { state, rule } |-> With[ { e = energies[ rule, walk, First @ state ] },
               If[ Last @ rule === 0,
                 With[ { keep = ( # == 0 & ) /@ e }, { Pick[ First @ state, keep ], Pick[ Last @ state, keep ] } ],
-                { First @ state, Last[ state ] Last[ rule ] ^ e } ] ],
+                (* the weight is read from the step's least energy, a factor common to the candidates, so the soft "Shortest" and "Stretched" weigh alike *)
+                { First @ state, Last[ state ] Last[ rule ] ^ ( e - Min[ e ] ) } ] ],
             { #, ConstantArray[ 1, Length @ # ] } & @ AdjacencyList[ graph, Last @ walk ],
             rules ] },
         If[ First @ scored === { }, { }, order[ walk, First @ scored, Last @ scored ] ] ] },

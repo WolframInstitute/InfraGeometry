@@ -1713,25 +1713,29 @@ VerificationTest[
 (* ===================== Rules: a window and a weight ===================== *)
 
 (* the blog's controlled randomness, one line per walk: nine steps from the
-   centre of the square mesh, the straightness at window 5 weighted by p *)
+   centre of the square mesh, the straightness at window 5 weighted by p; at
+   p = 1 the rule is soft and indifferent, so Automatic draws the uniform walk,
+   not the canonical one, which goes back and forth on one edge *)
 VerificationTest[
   With[ { g = InfraSubstrate[ "SquareMeshGraph", "Medium", "KeepCoordinates" -> True ] },
     { c = ( SeedRandom[ 1 ]; FindInfraPoint[ g, "From" -> "Center" ] ) },
     { ws = Table[ BlockRandom[ FindInfraWalk[ g, c, UpTo[ 9 ], Properties -> { { "Shortest", 5, p } } ], RandomSeeding -> 3 ],
         { p, { 1, 0.3, 0.01 } } ] },
-    { AllTrue[ ws, GraphQ ], EdgeCount /@ ws, AllTrue[ walkSeq /@ ws, First[ # ] === c && InfraWalkQ[ g, # ] & ] } ],
-  { True, { 9, 9, 9 }, True },
+    { AllTrue[ ws, GraphQ ], EdgeCount /@ ws, AllTrue[ walkSeq /@ ws, First[ # ] === c && InfraWalkQ[ g, # ] & ],
+      Length @ DeleteDuplicates @ walkSeq @ First @ ws > 2 } ],
+  { True, { 9, 9, 9 }, True, True },
   TestID -> "FindInfraWalk-soft-shortest-one-line-per-walk"
 ]
 
-(* the walk that rarely crosses itself: p = 0 is the simple walk, p = 1 every walk *)
+(* the walk that rarely crosses itself, every weight soft: at p = 0.01 a
+   return is rare, at p = 1 every walk weighs alike *)
 VerificationTest[
   With[ { g = InfraSubstrate[ "SquareMeshGraph", "Medium", "KeepCoordinates" -> True ] },
     { c = ( SeedRandom[ 1 ]; FindInfraPoint[ g, "From" -> "Center" ] ) },
     { ws = Table[ BlockRandom[ walkSeq @ FindInfraWalk[ g, c, UpTo[ 12 ], Properties -> { { "Simple", Infinity, p } },
-        "NextVertexFunction" -> RandomChoice ], RandomSeeding -> 3 ], { p, { 0, 0.1, 1 } } ] },
-    { DuplicateFreeQ @ First @ ws, AllTrue[ ws, InfraWalkQ[ g, # ] & ] } ],
-  { True, True },
+        "NextVertexFunction" -> RandomChoice ], RandomSeeding -> 3 ], { p, { 0.01, 0.1, 1 } } ] },
+    { Length[ # ] - Length[ DeleteDuplicates @ # ] & /@ ws, AllTrue[ ws, InfraWalkQ[ g, # ] & ] } ],
+  { { 0, 0, 3 }, True },
   TestID -> "FindInfraWalk-soft-simple-rarely-crosses"
 ]
 
@@ -1765,18 +1769,20 @@ VerificationTest[
   TestID -> "FindInfraWalk-windowed-predicate-is-the-2.0.2-class"
 ]
 
-(* the weights need a weighted order: a soft rule with Identity or a function
-   order stays unevaluated, and "Stretched" takes no weight, its soft form being
-   the soft "Shortest" *)
+(* no combination of rule and order is refused: Identity and a function order
+   ignore the weights, so a soft rule under them gives the walks of the hard
+   rules alone; and the soft "Stretched" weighs as the soft "Shortest", the two
+   energies differing by a constant on each step *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    { MatchQ[ FindInfraWalk[ g, 1, { 3 }, Properties -> { { "Shortest", 3, 0.3 } }, "NextVertexFunction" -> Identity ], _FindInfraWalk ],
-      MatchQ[ FindInfraWalk[ g, 1, { 3 }, Properties -> { { "Shortest", 3, 0.3 } }, "NextVertexFunction" -> ( Reverse ) ], _FindInfraWalk ],
-      MatchQ[ FindInfraWalk[ g, 1, { 3 }, Properties -> { { "Stretched", 3, 0.3 } } ], _FindInfraWalk ],
-      GraphQ @ FindInfraWalk[ g, 1, { 3 }, Properties -> { { "Shortest", 3, 0.3 } }, "NextVertexFunction" -> RandomSample ],
-      GraphQ @ FindInfraWalk[ g, 1, { 3 }, Properties -> { { "Stretched", 3 } }, "NextVertexFunction" -> Identity ] } ],
-  { True, True, True, True, True },
-  TestID -> "FindInfraWalk-soft-rule-needs-a-weighted-order"
+    { soft = { order, rules } |-> FindInfraWalk[ g, 6, { 4 }, 5, Properties -> rules, "NextVertexFunction" -> order ] },
+    { soft[ Identity, { "Simple", { "Shortest", 3, 0.3 } } ] === soft[ Identity, { "Simple" } ],
+      soft[ Reverse, { "Simple", { "Shortest", 3, 0.3 } } ] === soft[ Reverse, { "Simple" } ],
+      Table[ BlockRandom[ soft[ order, { "Simple", { "Stretched", 3, 0.3 } } ], RandomSeeding -> seed ] ===
+          BlockRandom[ soft[ order, { "Simple", { "Shortest", 3, 0.3 } } ], RandomSeeding -> seed ],
+        { order, { Automatic, RandomSample, RandomChoice } }, { seed, 3 } ] } ],
+  { True, True, ConstantArray[ True, { 3, 3 } ] },
+  TestID -> "FindInfraWalk-no-rule-and-order-is-refused"
 ]
 
 (* the removed spellings are non-matches: the global window, the old rule
@@ -1824,31 +1830,32 @@ VerificationTest[
   TestID -> "FindInfraWalk-windowed-Simple-admits-the-hexagon"
 ]
 
-(* a soft rule never changes the class, only its order: under All the
-   weighted orders give the class of the hard rules alone *)
+(* a soft rule never changes the class, only its order: under All every
+   order gives the class of the hard rules alone *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     { class = Sort @ walkSeqs @ FindInfraWalk[ g, 6, { 4 }, All, Properties -> { "Simple" }, "NextVertexFunction" -> Identity ] },
     BlockRandom[
       Sort @ walkSeqs @ FindInfraWalk[ g, 6, { 4 }, All, Properties -> { "Simple", { "Shortest", 3, 0.3 } }, "NextVertexFunction" -> # ] === class,
-      RandomSeeding -> 5 ] & /@ { Automatic, RandomSample } ],
-  { True, True },
+      RandomSeeding -> 5 ] & /@ { Identity, Automatic, RandomSample } ],
+  { True, True, True },
   TestID -> "FindInfraWalk-soft-rule-keeps-the-class"
 ]
 
-(* p = 1 is the rule off: under a seed it is the plain RandomSample; and the
-   weighted permutation still backtracks, so an exact budget finds a walk
-   wherever the canonical order does *)
+(* p = 1 is soft and weighs every candidate alike: under a seed it is the plain
+   RandomSample, written or as Automatic; and the weighted permutation still
+   backtracks, so an exact budget finds a walk wherever the canonical order does *)
 VerificationTest[
   With[ { g = GridGraph[ { 12, 12 } ] },
     { BlockRandom[ FindInfraWalk[ g, 66, UpTo[ 8 ], 3, Properties -> { "Simple", { "Shortest", 3, 1 } }, "NextVertexFunction" -> RandomSample ],
         RandomSeeding -> 4 ] ===
+        BlockRandom[ FindInfraWalk[ g, 66, UpTo[ 8 ], 3, Properties -> { "Simple", { "Shortest", 3, 1 } } ], RandomSeeding -> 4 ] ===
         BlockRandom[ FindInfraWalk[ g, 66, UpTo[ 8 ], 3, Properties -> { "Simple" }, "NextVertexFunction" -> RandomSample ], RandomSeeding -> 4 ],
       AllTrue[ Tuples[ { { 1, 66, 144 }, { 10, 40 } } ], Apply[ { v, k } |->
         GraphQ @ FindInfraWalk[ g, v, { k }, Properties -> { "Simple" } ] ===
           GraphQ @ BlockRandom[ FindInfraWalk[ g, v, { k }, Properties -> { "Simple", { "Shortest", 4, 0.3 } } ], RandomSeeding -> 6 ] ] ] } ],
   { True, True },
-  TestID -> "FindInfraWalk-weight-one-is-off-and-exact-budgets-are-met"
+  TestID -> "FindInfraWalk-weight-one-is-uniform-and-exact-budgets-are-met"
 ]
 
 (* the physicist's walk on the 30-by-30 grid, forty seeds, thirty steps: the
