@@ -68,7 +68,7 @@ VerificationTest[
       {IsomorphicGraphQ[Subgraph[int, Complement[VertexList @ int, rim]], GridGraph[{7, 7}]],
        Select[EdgeList @ int, SubsetQ[rim, List @@ #] &] === {},
        VertexCount @ int,
-       IsomorphicGraphQ[int, BoundarylessGraph[GridGraph[{9, 9}], Method -> "MaxDegree"]]}],
+       IsomorphicGraphQ[int, BoundarylessGraph[GridGraph[{9, 9}]]]}],
     {True, True, 77, True},
     TestID -> "InfraSubstrate-grid-exact"
 ]
@@ -77,7 +77,7 @@ VerificationTest[
    vertices of the full patch, then the vertices this isolates *)
 VerificationTest[
     With[{full = TessellationNeighborhoodGraph[{3, 6}, 6], int = InfraSubstrate["TriangularTilingGraph", "Small"]},
-      {rim = GraphExteriorBoundary[full, Method -> "MaxDegree"]},
+      {rim = GraphExteriorBoundary[full]},
       {SubsetQ[VertexList @ full, VertexList @ int],
        Select[EdgeList @ int, SubsetQ[rim, List @@ #] &] === {},
        ConnectedGraphQ @ int}],
@@ -282,15 +282,15 @@ VerificationTest[
     TestID -> "InfraSubstrate-seeded-generation"
 ]
 
-(* MaxDegree rim trim: the boundary is the degree-deficient rim; its contour edges go,
+(* lattice rim trim: the boundary is the degree-deficient rim; its contour edges go,
    rim vertices with an inward edge stay as whiskers, the rest are dropped as isolated.
    11x11 grid: 9x9 interior + 36 whiskers; 7^3 cube: 5^3 interior + 150 face whiskers
    (the edge and corner vertices have no interior neighbour and fall off) *)
 VerificationTest[
-  {VertexCount[BoundarylessGraph[GridGraph[{11, 11}], Method -> "MaxDegree"]],
-   VertexCount[BoundarylessGraph[GridGraph[{7, 7, 7}], Method -> "MaxDegree"]]},
+  {VertexCount[BoundarylessGraph[GridGraph[{11, 11}]]],
+   VertexCount[BoundarylessGraph[GridGraph[{7, 7, 7}]]]},
   {117, 275},
-  TestID -> "BoundarylessGraph-MaxDegree-lattice-interior"
+  TestID -> "BoundarylessGraph-lattice-interior"
 ]
 
 EndTestSection[]
