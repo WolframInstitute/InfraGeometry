@@ -234,14 +234,13 @@ VerificationTest[
    geodesic DAG, and there is no Properties or Method axis to reject any more. *)
 
 (* The narrowed bundles now come from FindInfraGeodesic at scale Infinity, where
-   "Minimizing" is the segment class and a selector refines it; the endpoint is a
+   "Shortest" is the segment class and a selector refines it; the endpoint is a
    stopping condition, and the walks that end there a Select. *)
 
 VerificationTest[
   With[{g = GridGraph[{3, 3}],
         degSum = w |-> VertexDegree[GridGraph[{3, 3}], w[[-2]]] + VertexDegree[GridGraph[{3, 3}], w[[-1]]]},
-    With[{paths = walkSeqs @ endingAt[FindInfraGeodesic[g, 1, Infinity, Infinity, All, stopAt[9],
-            Properties -> {"Minimizing"}, "NextVertexFunction" -> MinimalBy[degSum]], 9]},
+    With[{paths = walkSeqs @ endingAt[FindInfraGeodesic[g, 1, Infinity, Infinity, All, stopAt[9], "NextVertexFunction" -> MinimalBy[degSum]], 9]},
       Length[paths] >= 1 &&
         AllTrue[paths, Length[#] - 1 == GraphDistance[g, 1, 9] &]
     ]
@@ -255,7 +254,6 @@ VerificationTest[
         degSum = w |-> VertexDegree[GridGraph[{4, 4}], w[[-2]]] + VertexDegree[GridGraph[{4, 4}], w[[-1]]]},
     BlockRandom[
       Length @ walkSeqs @ endingAt[FindInfraGeodesic[g, 1, Infinity, Infinity, All, stopAt[16],
-        Properties -> {"Minimizing"},
         "NextVertexFunction" -> MinimalBy[degSum] /* (RandomSample[#, UpTo[1]] &)], 16] <= 1,
       RandomSeeding -> 42
     ]
@@ -267,8 +265,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{3, 3}],
         degSum = w |-> VertexDegree[GridGraph[{3, 3}], w[[-2]]] + VertexDegree[GridGraph[{3, 3}], w[[-1]]]},
-    Length @ walkSeqs @ endingAt[FindInfraGeodesic[g, 1, Infinity, Infinity, UpTo[2], stopAt[9],
-      Properties -> {"Minimizing"}, "NextVertexFunction" -> MinimalBy[degSum]], 9]
+    Length @ walkSeqs @ endingAt[FindInfraGeodesic[g, 1, Infinity, Infinity, UpTo[2], stopAt[9], "NextVertexFunction" -> MinimalBy[degSum]], 9]
   ],
   _Integer?(# <= 2 &),
   SameTest -> MatchQ,
@@ -280,12 +277,11 @@ VerificationTest[
 
 (* ===== FindInfraWalk (walk family) ===== *)
 
-(* Properties is the class axis: the default is the simple paths, and
-   "Generic" widens to the generic immersed walks. *)
+(* Properties is the class axis: "Simple" gives the simple paths. *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}]},
     {w = First @ walkSeqs @ endingAt[FindInfraWalk[g, 1, Infinity, All, stopAt[9],
-       Properties -> {"Simple"}], 9]},
+       Properties -> { "Simple" }], 9]},
     InfraWalkQ[g, w] && DuplicateFreeQ[w]],
   True,
   TestID -> "FindInfraWalk-simple-properties-class"
@@ -293,16 +289,16 @@ VerificationTest[
 
 VerificationTest[
   With[{g = GridGraph[{3, 3}]},
-    AllTrue[walkSeqs @ endingAt[FindInfraWalk[g, 1, UpTo[ 8 ], All, stopAt[9]], 9], DuplicateFreeQ]],
+    AllTrue[walkSeqs @ endingAt[FindInfraWalk[g, 1, UpTo[ 8 ], All, stopAt[9], Properties -> { "Simple" }], 9], DuplicateFreeQ]],
   True,
-  TestID -> "FindInfraWalk-default-simple"
+  TestID -> "FindInfraWalk-Simple-paths"
 ]
 
-(* the default class has no repeats at any length. *)
+(* "Simple" has no repeats at any length. *)
 
 VerificationTest[
   With[{g = GridGraph[{3, 3}]},
-    With[{walks = walkSeqs @ endingAt[FindInfraWalk[g, 1, {4}, All, stopAt[9]], 9]},
+    With[{walks = walkSeqs @ endingAt[FindInfraWalk[g, 1, {4}, All, stopAt[9], Properties -> { "Simple" }], 9]},
       Length[walks] >= 1 && AllTrue[walks, DuplicateFreeQ]
     ]
   ],
@@ -310,50 +306,48 @@ VerificationTest[
   TestID -> "FindInfraWalk-Simple-no-repeats"
 ]
 
-(* The local geodesic rules live on FindInfraGeodesic: "Minimizing" at scale
+(* The local geodesic rules live on FindInfraGeodesic: "Shortest" at scale
    Infinity is the global geodesic from the first vertex. *)
 
 VerificationTest[
   With[{g = GridGraph[{3, 3}]},
     Sort @ walkSeqs @ endingAt[FindInfraGeodesic[g, 1, Infinity, Infinity, All, stopAt[9],
-        Properties -> {"Simple", "Minimizing"}], 9] ===
+        Properties -> { "Simple" }], 9] ===
       Sort @ FindInfraSegment[g, 1, 9, All]
   ],
   True,
-  TestID -> "FindInfraGeodesic-Minimizing-scale-Infinity-equals-geodesics"
+  TestID -> "FindInfraGeodesic-Shortest-scale-Infinity-equals-geodesics"
 ]
 
 VerificationTest[
   With[{g = CycleGraph[6]},
     Sort @ walkSeqs @ endingAt[FindInfraGeodesic[g, 1, 2, Infinity, All, stopAt[4],
-        Properties -> {"Simple", "Minimizing"}], 4]
+        Properties -> { "Simple" }], 4]
   ],
   Sort[{{1, 2, 3, 4}, {1, 6, 5, 4}}],
-  TestID -> "FindInfraGeodesic-Minimizing-scale-2-cycle-geodesics"
+  TestID -> "FindInfraGeodesic-Shortest-scale-2-cycle-geodesics"
 ]
 
 
 VerificationTest[
   With[{g = CycleGraph[6]},
     Sort @ walkSeqs @ endingAt[FindInfraGeodesic[g, 1, 2, Infinity, All, stopAt[4],
-        Properties -> {"Simple"},
-        "NextVertexFunction" -> MaximalBy[w |-> Map[GraphDistance[g, #, Last @ w] &, Reverse @ Most @ w]]], 4]
+        Properties -> { "Simple", { "Stretched", 2 } }], 4]
   ],
   Sort[{{1, 2, 3, 4}, {1, 6, 5, 4}}],
-  TestID -> "FindInfraGeodesic-farthest-from-window-scale-2-cycle-symmetric"
+  TestID -> "FindInfraGeodesic-Stretched-scale-2-cycle-symmetric"
 ]
 
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
     BlockRandom[
       Length @ walkSeqs @ endingAt[FindInfraGeodesic[g, 1, 2, Infinity, All, stopAt[16],
-        Properties -> {"Simple"},
-        "NextVertexFunction" -> (windows |-> RandomSample[MaximalBy[windows, w |-> Map[GraphDistance[g, #, Last @ w] &, Reverse @ Most @ w]], UpTo[1]])], 16] <= 1,
+        Properties -> { "Simple", { "Stretched", 2 } }, "NextVertexFunction" -> (RandomSample[#, UpTo[1]] &)], 16] <= 1,
       RandomSeeding -> 42
     ]
   ],
   True,
-  TestID -> "FindInfraGeodesic-farthest-from-window-pruning-beam-1"
+  TestID -> "FindInfraGeodesic-Stretched-pruning-beam-1"
 ]
 
 (* A selector composed with "Simple" still gives simple walks. *)
@@ -362,7 +356,7 @@ VerificationTest[
   With[{g = GridGraph[{3, 3}],
         degSum = w |-> VertexDegree[GridGraph[{3, 3}], w[[-2]]] + VertexDegree[GridGraph[{3, 3}], w[[-1]]]},
     With[{walks = walkSeqs @ endingAt[FindInfraGeodesic[g, 1, 1, {4}, All, stopAt[9],
-            Properties -> {"Simple"}, "NextVertexFunction" -> MinimalBy[degSum]], 9]},
+            Properties -> { "Simple" }, "NextVertexFunction" -> { MinimalBy[degSum], 1 }], 9]},
       AllTrue[walks, DuplicateFreeQ]
     ]
   ],
@@ -745,7 +739,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     With[ { seg = InfraMeasurement[ g, InfraSegment[ 1, 11 ], "Graph" ] },
-      Sort @ walkSeqs @ FindInfraGeodesic[ g, seg, Infinity, UpTo[ 0 ], All ] === Sort @ infraSpread @ seg
+      Sort @ walkSeqs @ FindInfraGeodesic[ g, seg, Infinity, UpTo[ 0 ], All, "Direction" -> "BothSides" ] === Sort @ infraSpread @ seg
     ]
   ],
   True,
@@ -755,7 +749,7 @@ VerificationTest[
 (* every extension is a geodesic containing the seed, with at most k edges added on each side *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ], seed = { 6, 7 }, k = 2 },
-    AllTrue[ walkSeqs @ FindInfraGeodesic[ g, seed, Infinity, UpTo[ k ], All ],
+    AllTrue[ walkSeqs @ FindInfraGeodesic[ g, seed, Infinity, UpTo[ k ], All, "Direction" -> "BothSides" ],
       w |-> InfraSegmentQ[ g, w ] &&
         With[ { pos = SequencePosition[ w, seed ] },
           pos =!= { } && pos[[ 1, 1 ]] - 1 <= k && Length[ w ] - pos[[ 1, 2 ]] <= k ] ]
@@ -767,7 +761,7 @@ VerificationTest[
 (* inextensible within the budget: a side still under budget has no neighbour prolonging the geodesic *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ], seed = { 6, 7 }, k = 2 },
-    AllTrue[ walkSeqs @ FindInfraGeodesic[ g, seed, Infinity, UpTo[ k ], All ],
+    AllTrue[ walkSeqs @ FindInfraGeodesic[ g, seed, Infinity, UpTo[ k ], All, "Direction" -> "BothSides" ],
       w |-> With[ { pos = First @ SequencePosition[ w, seed ] },
         ( pos[[ 1 ]] - 1 == k ||
           NoneTrue[ AdjacencyList[ g, First @ w ], GraphDistance[ g, #, Last @ w ] == Length[ w ] & ] ) &&
@@ -789,7 +783,7 @@ VerificationTest[
         w |-> With[ { pos = First @ SequencePosition[ w, seed ] }, Max[ pos[[ 1 ]] - 1, Length[ w ] - pos[[ 2 ]] ] >= lo ] ] },
     AllTrue[ { { UpTo[ 1 ], { 0, 1 } }, { UpTo[ 2 ], { 0, 2 } }, { UpTo[ 3 ], { 0, 3 } }, { { 2 }, { 2, 2 } }, { { 1, 2 }, { 1, 2 } },
         { Infinity, { 0, Infinity } } },
-      Apply[ { k, range } |-> Sort @ walkSeqs @ FindInfraGeodesic[ g, seed, Infinity, k, All ] === cut @@ range ] ]
+      Apply[ { k, range } |-> Sort @ walkSeqs @ FindInfraGeodesic[ g, seed, Infinity, k, All, "Direction" -> "BothSides" ] === cut @@ range ] ]
   ],
   True,
   TestID -> "FindInfraGeodesic-germ-is-the-cut-lines-GridGraph"
@@ -804,7 +798,7 @@ VerificationTest[
         w |-> With[ { pos = First @ SequencePosition[ w, seed ] }, Max[ pos[[ 1 ]] - 1, Length[ w ] - pos[[ 2 ]] ] >= lo ] ] },
     AllTrue[ { { UpTo[ 1 ], { 0, 1 } }, { UpTo[ 2 ], { 0, 2 } }, { UpTo[ 5 ], { 0, 5 } }, { { 2 }, { 2, 2 } }, { { 2, 5 }, { 2, 5 } },
         { Infinity, { 0, Infinity } } },
-      Apply[ { k, range } |-> Sort @ walkSeqs @ FindInfraGeodesic[ g, seed, Infinity, k, All ] === cut @@ range ] ]
+      Apply[ { k, range } |-> Sort @ walkSeqs @ FindInfraGeodesic[ g, seed, Infinity, k, All, "Direction" -> "BothSides" ] === cut @@ range ] ]
   ],
   True,
   TestID -> "FindInfraGeodesic-germ-is-the-cut-lines-PathGraph-asymmetric"
@@ -814,8 +808,9 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     With[ { seg = InfraMeasurement[ g, InfraSegment[ 1, 11 ], "Graph" ] },
-      Sort @ walkSeqs @ FindInfraGeodesic[ g, seg, Infinity, UpTo[ 1 ], All ] ===
-        Sort @ Union @ Catenate[ walkSeqs @ FindInfraGeodesic[ g, #, Infinity, UpTo[ 1 ], All ] & /@ infraSpread @ seg ] &&
+      Sort @ walkSeqs @ FindInfraGeodesic[ g, seg, Infinity, UpTo[ 1 ], All, "Direction" -> "BothSides" ] ===
+        Sort @ Union @ Catenate[ walkSeqs @ FindInfraGeodesic[ g, #, Infinity, UpTo[ 1 ], All,
+            "Direction" -> "BothSides" ] & /@ infraSpread @ seg ] &&
       Sort @ infraSpread @ InfraMeasurement[ g, InfraLine[ seg ], "Graph" ] ===
         Sort @ Union @ Catenate[ FindInfraLine[ g, #, All ] & /@ infraSpread @ seg ]
     ]
@@ -827,7 +822,7 @@ VerificationTest[
 (* on C_6 through the edge 1-2 the ends interact: a budget of 2 already buys all three lines, the atoms of InfraLine[{1, 2}] *)
 VerificationTest[
   { Sort @ infraSpread @ InfraMeasurement[ CycleGraph[ 6 ], InfraLine[ { 1, 2 } ], "Graph" ],
-    Sort @ walkSeqs @ FindInfraGeodesic[ CycleGraph[ 6 ], { 1, 2 }, Infinity, UpTo[ 2 ], All ] },
+    Sort @ walkSeqs @ FindInfraGeodesic[ CycleGraph[ 6 ], { 1, 2 }, Infinity, UpTo[ 2 ], All, "Direction" -> "BothSides" ] },
   { Sort @ { { 6, 1, 2, 3 }, { 1, 2, 3, 4 }, { 5, 6, 1, 2 } }, Sort @ { { 6, 1, 2, 3 }, { 1, 2, 3, 4 }, { 5, 6, 1, 2 } } },
   TestID -> "InfraLine-germ-C6-compatibility"
 ]
@@ -844,7 +839,8 @@ VerificationTest[
 (* one class under every next-vertex function *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    SameQ @@ ( Sort @ walkSeqs @ FindInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], All, "NextVertexFunction" -> # ] & /@
+    SameQ @@ ( Sort @ walkSeqs @ FindInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], All, "NextVertexFunction" -> #,
+        "Direction" -> "BothSides" ] & /@
       { Identity, RandomSample } )
   ],
   True,
@@ -884,11 +880,11 @@ VerificationTest[
 (* the count contract: count-less is one witness of the class, UpTo is soft, a strict n fails on under-supply *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    With[ { one = FindInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ] ],
-            all = walkSeqs @ FindInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], All ] },
+    With[ { one = FindInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], "Direction" -> "BothSides" ],
+            all = walkSeqs @ FindInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], All, "Direction" -> "BothSides" ] },
       MatchQ[ one, _Graph ] && MemberQ[ all, walkSeq @ one ] &&
-      Length @ FindInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], UpTo[ 3 ] ] == 3 &&
-      FindInfraGeodesic[ PathGraph[ Range[ 5 ] ], { 2, 3 }, Infinity, Infinity, 99 ] === { }
+      Length @ FindInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], UpTo[ 3 ], "Direction" -> "BothSides" ] == 3 &&
+      FindInfraGeodesic[ PathGraph[ Range[ 5 ] ], { 2, 3 }, Infinity, Infinity, 99, "Direction" -> "BothSides" ] === { }
     ]
   ],
   True,

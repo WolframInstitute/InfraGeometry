@@ -1,5 +1,8 @@
 BeginTestSection["MethodLadder"]
 
+(* the generic class: no cusp, no third visit, no self-tangency *)
+genericRules = { { "Simple", 2 }, w |-> Count[ w, Last @ w ] <= 2 && WalkSingularities[ w ][ "SelfTangencies" ] === { } };
+
 (* ===================== The class-invariance contract ===================== *)
 
 (* the next-vertex function never changes the class: Identity and RandomSample enumerate the same realisation set under All.  canon normalises a realisation whose order carries no information (a vertex set); a walk keeps its sequence *)
@@ -28,7 +31,8 @@ sortReps[ x_ ] := Sort @ Replace[ reps @ x, l_List :> Sort @ l, { 1 } ]
    axis of their own to be invariant under any more. *)
 
 VerificationTest[
-  classInvariantQ[ m |-> FindInfraGeodesic[ TorusGraph[ { 4, 5 } ], { 1, 2 }, Infinity, Infinity, All, "NextVertexFunction" -> m ] ],
+  classInvariantQ[ m |-> FindInfraGeodesic[ TorusGraph[ { 4, 5 } ], { 1, 2 }, Infinity, Infinity, All, "NextVertexFunction" -> m,
+      "Direction" -> "BothSides" ] ],
   True,
   TestID -> "FindInfraGeodesic-walk-germ-lines-class-invariant-under-NextVertexFunction"
 ]
@@ -56,14 +60,14 @@ VerificationTest[
 
 VerificationTest[
   classInvariantQ[ f |-> FindInfraWalk[ GridGraph[ { 3, 3 } ], 1, UpTo[ 6 ], All,
-    Properties -> { "Immersed" }, "StoppingCondition" -> 1, "NextVertexFunction" -> f ] ],
+    Properties -> { { "Simple", 2 } }, "StoppingCondition" -> ( Length[ # ] - Length[ DeleteDuplicates @ # ] >= 1 & ), "NextVertexFunction" -> f ] ],
   True,
   TestID -> "FindInfraWalk-pointed-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
   classInvariantQ[ f |-> Select[
-    FindInfraWalk[ GridGraph[ { 3, 3 } ], 1, UpTo[ 6 ], All, Properties -> { "Generic" },
+    FindInfraWalk[ GridGraph[ { 3, 3 } ], 1, UpTo[ 6 ], All, Properties -> genericRules,
       "StoppingCondition" -> ( Last[ # ] === 9 & ), "NextVertexFunction" -> f ],
     Last @ Last @ VertexList @ # === 9 & ] ],
   True,
@@ -71,7 +75,8 @@ VerificationTest[
 ]
 
 VerificationTest[
-  classInvariantQ[ f |-> FindInfraWalk[ GridGraph[ { 3, 3 } ], { 1, 2 }, UpTo[ 3 ], All, "NextVertexFunction" -> f ] ],
+  classInvariantQ[ f |-> FindInfraWalk[ GridGraph[ { 3, 3 } ], { 1, 2 }, UpTo[ 3 ], All, Properties -> { "Simple" }, "NextVertexFunction" -> f,
+      "Direction" -> "BothSides" ] ],
   True,
   TestID -> "FindInfraWalk-germ-class-invariant-under-NextVertexFunction"
 ]
@@ -92,7 +97,8 @@ VerificationTest[
 ]
 
 VerificationTest[
-  classInvariantQ[ f |-> FindInfraGeodesic[ TorusGraph[ { 4, 5 } ], { 1, 2 }, 2, UpTo[ 3 ], All, "NextVertexFunction" -> f ] ],
+  classInvariantQ[ f |-> FindInfraGeodesic[ TorusGraph[ { 4, 5 } ], { 1, 2 }, 2, UpTo[ 3 ], All, "NextVertexFunction" -> f,
+      "Direction" -> "BothSides" ] ],
   True,
   TestID -> "FindInfraGeodesic-germ-class-invariant-under-NextVertexFunction"
 ]
@@ -101,11 +107,11 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     AllTrue[
-      { f |-> FindInfraWalk[ g, 1, UpTo[ 4 ], "NextVertexFunction" -> f ],
-        f |-> FindInfraWalk[ g, 1, UpTo[ 4 ], "StoppingCondition" -> ( Last[ # ] === 2 & ), "NextVertexFunction" -> f ],
-        f |-> FindInfraWalk[ g, { 1, 2 }, UpTo[ 2 ], "Direction" -> "Forward", "NextVertexFunction" -> f ],
+      { f |-> FindInfraWalk[ g, 1, UpTo[ 4 ], Properties -> { "Simple" }, "NextVertexFunction" -> f ],
+        f |-> FindInfraWalk[ g, 1, UpTo[ 4 ], Properties -> { "Simple" }, "StoppingCondition" -> ( Last[ # ] === 2 & ), "NextVertexFunction" -> f ],
+        f |-> FindInfraWalk[ g, { 1, 2 }, UpTo[ 2 ], Properties -> { "Simple" }, "NextVertexFunction" -> f, "Direction" -> "Forward" ],
         f |-> FindInfraGeodesic[ g, 1, 2, UpTo[ 4 ], "NextVertexFunction" -> f ],
-        f |-> FindInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], "Direction" -> "Forward", "NextVertexFunction" -> f ] },
+        f |-> FindInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], "NextVertexFunction" -> f, "Direction" -> "Forward" ] },
       call |-> call[ Identity ] === call[ Identity ] === call[ First ] ] ],
   True,
   TestID -> "WalkFamily-countless-is-the-canonical-witness"
@@ -172,7 +178,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ], t = TorusGraph[ { 4, 5 } ] },
     AllTrue[
-      { m |-> FindInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], "NextVertexFunction" -> m ],
+      { m |-> FindInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], "NextVertexFunction" -> m, "Direction" -> "BothSides" ],
         m |-> FindInfraParallel[ g, Range[ 4 ], 10, "NextVertexFunction" -> m ],
         m |-> FindInfraSphere[ g, 6, { 1, 2 }, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
         m |-> FindInfraBisectingHyperplane[ g, 1, 4, { -1, 1 }, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
@@ -190,7 +196,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ], t = TorusGraph[ { 4, 5 } ] },
     AllTrue[
-      { m |-> FindInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], All, "NextVertexFunction" -> m ],
+      { m |-> FindInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], All, "NextVertexFunction" -> m, "Direction" -> "BothSides" ],
         m |-> FindInfraParallel[ g, Range[ 4 ], 10, All, "NextVertexFunction" -> m ],
         m |-> FindInfraSphere[ g, 6, { 1, 2 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
         m |-> FindInfraBisectingHyperplane[ g, 1, 4, { -1, 1 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ],

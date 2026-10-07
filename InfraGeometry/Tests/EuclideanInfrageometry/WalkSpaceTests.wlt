@@ -715,7 +715,8 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    { paths = walkSeqs @ Select[ FindInfraWalk[ g, 1, UpTo[ 6 ], All, "StoppingCondition" -> ( Last[ # ] === 13 & ) ], Last @ Last @ VertexList @ # === 13 & ] },
+    { paths = walkSeqs @ Select[ FindInfraWalk[ g, 1, UpTo[ 6 ], All, Properties -> { "Simple" },
+        "StoppingCondition" -> ( Last[ # ] === 13 & ) ], Last @ Last @ VertexList @ # === 13 & ] },
     FreeQ[
       SelectInfraWalk[ g, paths, All, "From" -> # ] & /@
         { All, "Center", "Periphery", "MostVisited", "Bottleneck", "MinLength", "MaxLength",
