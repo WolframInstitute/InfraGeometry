@@ -287,7 +287,7 @@ VerificationTest[
 
 VerificationTest[
   FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All,
-    "From" -> FindInfraPoint[ GridGraph[ { 5, 5 } ], "From" -> "Center" ] -> 2 ] ===
+    "From" -> FindInfraPoint[ GridGraph[ { 5, 5 } ], GraphCenter @ GridGraph[ { 5, 5 } ] ] -> 2 ] ===
   FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All,
     "From" -> 13 -> 2 ],
   True,

@@ -13,23 +13,24 @@ $InfraCircleSelectOptions = { None, "Central", "Peripheral",
 SetAttributes[ PointViewer, HoldRest ]
 
 PointViewer[ g_Graph, sym_: None ] :=
-  With[ { diam = GraphDiameter[ g ] },
+  With[ { diam = GraphDiameter[ g ],
+          regions = <| "Random" -> VertexList[ g ], "Center" -> GraphCenter[ g ], "Periphery" -> GraphPeriphery[ g ] |> },
     Manipulate[
       seed;
-      With[ { pts = FindInfraPoint[ g, UpTo[ n ], "From" -> from, "MaxCliques" -> 100,
-          "Distance" -> Switch[ separation, "None", None, "Max", "Max", "Range", distRange ] ] },
+      With[ { pts = FindInfraPoint[ g, regions[ region ], UpTo[ n ], "MaxCliques" -> 100,
+          "PairwiseDistance" -> Switch[ separation, "None", None, "Max", "Max", "Range", distRange ] ] },
         If[ sym =!= None, sym = pts ];
         InfraSubstrateHighlight[ g, { InfraDensity[ g, pts ] } ] ],
       Grid[ {
         { Control[ { { n, 1, "Points" }, ControlType -> InputField } ],
-          Control[ { { from, "Random", "From" }, { "Random", "Center", "Periphery" } } ] },
+          Control[ { { region, "Random", "Region" }, { "Random", "Center", "Periphery" } } ] },
         { Control[ { { separation, "None", "Separation" }, { "None", "Max", "Range" } } ],
           Control[ { { distRange, { 0, diam }, "Distance" }, 0, diam, 1,
             ControlType -> IntervalSlider, Enabled -> Dynamic[ separation === "Range" ] } ] }
       }, Alignment -> Center, ItemSize -> { { Scaled[ 0.5 ], Scaled[ 0.5 ] } } ],
       { { seed, 0 }, None },
       Button[ "Resample", seed++ ],
-      TrackedSymbols :> { seed, n, from, separation, distRange },
+      TrackedSymbols :> { seed, n, region, separation, distRange },
       SaveDefinitions -> True
     ]
   ]
