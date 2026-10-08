@@ -124,149 +124,187 @@ OrthogonalCoordinates[ g_Graph, c_, axes_List, v_, opts : OptionsPattern[] ] /;
 OrthogonalCoordinates[ g_Graph, c_, axes_List, opts : OptionsPattern[] ] :=
   Association[ # -> OrthogonalCoordinates[ g, c, axes, #, opts ] & /@ VertexList[ g ] ]
 
-Options[ FindInfraOrthogonalFrame ] = {
-  Method             -> Automatic,
-  "AxisCount"        -> Automatic,
-  "BranchSampleSize" -> All,
-  "SelectCoordinate" -> "Centered"
+(* an axis at c is a geodesic through c whose halves have lengths in the range, maximal there: neither end extends by one step to a longer
+   geodesic through c; the axes depend on the endpoint pair only, so maximality is read on the pair.  Two walks are perpendicular when every
+   vertex of each has c as its only nearest vertex on the other, which on the distance matrix is d(v, w) > max(d(c, v), d(c, w)) for every v
+   of one and w of the other off c.  The sets are the cliques of that relation, grown by Bron-Kerbosch over the axes ranked straight-first
+   (longer, then fewer vertices in the geodesic interval of the ends, then by name), so under Identity the sets surface in lexicographic order
+   of their ranks: the count-less call is the greedy set and All that order *)
+
+Options[ FindInfraOrthogonalAxes ] = {
+  Properties           -> Automatic,
+  "NextVertexFunction" -> Identity,
+  "AxisCount"          -> Automatic
 }
 
-FindInfraOrthogonalFrame[ g_Graph, c_, axisLength : ( All | _Integer | _UpTo | { _, _ } ),
-    count : ( All | UpTo[ _Integer ] | _Integer ) : Automatic, opts : OptionsPattern[] ] /; VertexQ[ g, c ] :=
+FindInfraOrthogonalAxes[ g_Graph, centre_, axisLength : ( All | _Integer | UpTo[ _Integer ] | { _Integer, _Integer | Infinity } ),
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    VertexQ[ g, centre ] || AssociationQ[ centre ] && SubsetQ[ VertexList @ g, Keys @ centre ] :=
   With[
-    { lengths = Replace[ axisLength, { All -> { 1, Infinity }, k_Integer :> { k, k }, UpTo[ k_ ] :> { 1, k } } ] },
-    { minLength = First @ lengths, maxDepth = Last @ lengths },
-    { localG = If[ maxDepth === Infinity, g, NeighborhoodGraph[ g, c, 2 maxDepth ] ] },
     {
-      spray = SprayGraph[ localG, c, "AxisLength" -> Replace[ maxDepth, Infinity -> All ] ],
-      axisCountSpec = "AxisCount" /. { opts } /. "AxisCount" -> Automatic,
-      methodSpec = Replace[ Method /. { opts } /. Method -> Automatic, Automatic -> "Exhaustive" ],
-      sel = "SelectCoordinate" /. { opts } /. "SelectCoordinate" -> "Centered",
-      limit = Replace[ count, { Automatic -> 1, UpTo[ k_ ] :> k } ]
+      centres    = If[ AssociationQ @ centre, Keys @ centre, { centre } ],
+      range      = Replace[ axisLength, { All -> { 1, Infinity }, k_Integer :> { k, k }, UpTo[ k_ ] :> { 1, k } } ],
+      properties = OptionValue[ FindInfraOrthogonalAxes, { opts }, Properties ],
+      nextFn     = OptionValue[ FindInfraOrthogonalAxes, { opts }, "NextVertexFunction" ],
+      axisCount  = OptionValue[ FindInfraOrthogonalAxes, { opts }, "AxisCount" ],
+      needed     = Replace[ count, { Automatic -> 1, All -> Infinity, UpTo[ n_ ] :> n } ]
     },
-    { method = Replace[ methodSpec, { m_String, ___ } :> m ] },
-    {
-      sampleSize = If[ method === "Greedy", All, "BranchSampleSize" /. { opts } /. "BranchSampleSize" -> All ],
-      maxFrames = If[ method === "Greedy" && IntegerQ @ limit, limit, Infinity ],
-      layerIndex = { axis, u } |-> With[ { dists = GraphDistance[ localG, u, # ] & /@ axis }, Flatten @ Position[ dists, Min @ dists ] - 1 ],
-      canonical = axes |-> Sort[ First @ Sort[ { #, Reverse @ # } ] & /@ axes ],
-      axisMult = With[
-        { mMat = ShortestPathMultiplicityMatrix[ localG ], posMap = AssociationThread[ VertexList[ localG ] -> Range @ VertexCount[ localG ] ] },
-        axis |-> mMat[[ posMap[ First @ axis ], posMap[ Last @ axis ] ]]
-      ]
-    },
-    {
-      centredQ = { axis, w } |-> With[ { ix = layerIndex[ axis, w ] - First @ layerIndex[ axis, c ] },
-        Switch[ sel, "Centered", If[ MemberQ[ ix, 0 ], 0, Round @ Median[ ix ] ], All, ix, _, sel @ ix ] === 0
-      ],
-      axisKey = axis |-> { -Length[ axis ], axisMult[ axis ], Min[ axis, Reverse @ axis ] },
-      frameKey = frame |-> { -Length[ frame ], -Total[ Length /@ frame ], Total[ axisMult /@ frame ], canonical[ frame ] },
-      (* every candidate line through c with both half-axes of depth >= minLength, paired by antipodal endpoints, *)
-      (* deduped on the orientation-canonical sequence *)
-      enumerate = dag |-> With[
-        {
-          dist = AssociationThread[ VertexList[ dag ], GraphDistance[ dag, c, # ] & /@ VertexList[ dag ] ],
-          halvesByEnd = GroupBy[ Catenate[ FindPath[ dag, c, #, Infinity, All ] & /@ VertexList[ dag ] ], Last ]
-        },
-        { vertsAtDepth = Select[ VertexList[ dag ], dist[ # ] >= minLength & ] },
-        DeleteDuplicatesBy[
-          Catenate @ Map[
-            pair |-> Flatten[
-              Outer[ { hPos, hNeg } |-> Join[ Reverse @ hNeg, Rest @ hPos ], halvesByEnd[ pair[[ 1 ]] ], halvesByEnd[ pair[[ 2 ]] ], 1 ],
-              1
-            ],
-            Select[
-              Subsets[ vertsAtDepth, { 2 } ],
-              pair |-> GraphDistance[ localG, pair[[ 1 ]], pair[[ 2 ]] ] === dist[ pair[[ 1 ]] ] + dist[ pair[[ 2 ]] ]
-            ]
-          ],
-          First @ Sort[ { #, Reverse @ # } ] &
-        ]
-      ],
-      recordQ = { len, vAxes } |-> Switch[ axisCountSpec,
-        Automatic, vAxes === { } && len > 0,
-        All, len > 0,
-        _Integer, len === axisCountSpec,
-        _UpTo, len === First @ axisCountSpec || ( vAxes === { } && len > 0 )
-      ],
-      recurseQ = { len, vAxes } |-> Switch[ axisCountSpec,
-        Automatic | All, vAxes =!= { },
-        _Integer, len < axisCountSpec && vAxes =!= { },
-        _UpTo, len < First @ axisCountSpec && vAxes =!= { }
-      ]
-    },
-    {
-      perpQ = If[ method === "Predicate",
-        With[
-          { subOpts = Replace[ methodSpec, { { _String, o___ } :> { o }, _ -> { } } ] },
-          { testVal = "Test" /. subOpts /. { "Test" -> Automatic } },
-          {
-            predOpts = Join[
-              If[ testVal === Automatic, { }, { Method -> testVal } ],
-              Cases[ subOpts, ( "Radius" | "Tolerance" | "Equality" ) -> _ ]
-            ]
-          },
-          { chosen, cand } |-> AllTrue[ chosen, prev |-> InfraPerpendicularQ[ localG, prev, cand, Sequence @@ predOpts ] ]
-        ],
-        { chosen, cand } |-> AllTrue[ chosen, prev |-> AllTrue[ prev, w |-> centredQ[ cand, w ] ] ]
-      ]
-    },
-    {
-      dfs = { self, state, sub, currentAxes } |-> With[
-        { len = Length[ currentAxes ], validAxes = Select[ enumerate[ sub ], perpQ[ currentAxes, # ] & ] },
-        {
-          recorded = If[ recordQ[ len, validAxes ] && ! MemberQ[ Last @ state, canonical[ currentAxes ] ],
-            { Append[ First @ state, currentAxes ], Append[ Last @ state, canonical[ currentAxes ] ] },
-            state
-          ]
-        },
-        If[ Length[ First @ recorded ] >= maxFrames || ! recurseQ[ len, validAxes ],
-          recorded,
-          Fold[
-            { acc, axis } |-> If[ Length[ First @ acc ] >= maxFrames,
-              acc,
-              self[ self, acc, Subgraph[ sub, Select[ VertexList[ sub ], centredQ[ axis, # ] & ] ], Append[ currentAxes, axis ] ]
-            ],
-            recorded,
-            If[ sampleSize === All || Length[ validAxes ] <= sampleSize,
-              SortBy[ validAxes, axisKey ],
-              RandomSample[ SortBy[ validAxes, axisKey ], sampleSize ]
-            ]
-          ]
-        ]
-      ]
-    },
-    { found = First @ dfs[ dfs, { { }, { } }, spray, { } ] },
-    { frames = If[ method === "Greedy", found, SortBy[ found, frameKey ] ] },
+    { local = If[ Last @ range === Infinity, Subgraph[ g, VertexComponent[ g, centres ] ], NeighborhoodGraph[ g, centres, 2 Last @ range ] ] },
+    { verts = VertexList @ local, dm = GraphDistanceMatrix @ local, nbrs = AdjacencyList @ IndexGraph @ local },
+    { index = AssociationThread[ verts, Range @ Length @ verts ] },
+    { found = Fold[
+        { acc, k } |-> If[ Length @ acc >= needed,
+          acc,
+          With[
+            { ci = index @ centres[[ k ]] },
+            { depth = dm[[ ci ]] },
+            { up = Table[ If[ depth[[ v ]] < Last @ range, Select[ nbrs[[ v ]], depth[[ # ]] == depth[[ v ]] + 1 & ], { } ],
+                { v, Length @ verts } ] },
+            { halves = GroupBy[
+                Select[
+                  Catenate @ NestWhileList[ Catenate[ ( path |-> Append[ path, # ] & /@ up[[ Last @ path ]] ) /@ # ] &, { { ci } }, # =!= { } & ],
+                  Length[ # ] > First @ range & ],
+                Last ] },
+            { pairs = Select[ Subsets[ Keys @ halves, { 2 } ], Apply[ { p, q } |->
+                dm[[ p, q ]] == depth[[ p ]] + depth[[ q ]] && ! MemberQ[ dm[[ up[[ p ]], q ]], dm[[ p, q ]] + 1 ] &&
+                  ! MemberQ[ dm[[ p, up[[ q ]] ]], dm[[ p, q ]] + 1 ] ] ] },
+            { axes = SortBy[
+                If[ OrderedQ[ { verts[[ # ]], verts[[ Reverse @ # ]] } ], #, Reverse @ # ] & /@
+                  Catenate[ Apply[ { p, q } |-> Catenate @ Outer[ Join[ Reverse @ #1, Rest @ #2 ] &, halves @ p, halves @ q, 1 ] ] /@ pairs ],
+                { -Length @ #, Count[ dm[[ First @ # ]] + dm[[ Last @ # ]], dm[[ First @ #, Last @ # ]] ], verts[[ # ]] } & ] },
+            { support = DeleteCases[ Union @@ axes, ci ] },
+            { slot = AssociationThread[ support, Range @ Length @ support ] },
+            { incidence = SparseArray[ Catenate @ MapIndexed[ { axis, i } |-> ( { First @ i, slot @ # } -> 1 & ) /@ DeleteCases[ axis, ci ], axes ],
+                { Length @ axes, Length @ support } ] },
+            (* a pair of vertices off c clashes when one of them has a nearest vertex of the other's walk besides c *)
+            { blocked = If[ axes === { }, { }, Unitize[ incidence . ( 1 - UnitStep[ dm[[ support, support ]] -
+                Outer[ Max, depth[[ support ]], depth[[ support ]] ] - 1 ] ) ] ] },
+            { admissible = Which[
+                properties === Automatic,
+                  { chosen, pool } |-> If[ chosen === { } || pool === { }, pool,
+                    Pick[ pool, Normal[ incidence[[ pool ]] . Unitize[ Total @ blocked[[ chosen ]] ] ], 0 ] ],
+                MatchQ[ properties, _String | { _String, ___ } ],
+                  { chosen, pool } |-> Select[ pool, i |-> AllTrue[ chosen,
+                    j |-> InfraPerpendicularQ[ local, verts[[ axes[[ j ]] ]], verts[[ axes[[ i ]] ]], Method -> properties ] ] ],
+                True,
+                  { chosen, pool } |-> Select[ pool, i |-> TrueQ @ properties[ verts[[ # ]] & /@ axes[[ Append[ chosen, i ] ]] ] ] ],
+              branch = If[ nextFn === Identity, Identity,
+                pool |-> With[ { named = verts[[ axes[[ # ]] ]] & /@ pool },
+                  Lookup[ AssociationThread[ named, pool ], Replace[ nextFn @ named, one_ /; MemberQ[ named, Verbatim @ one ] :> { one } ] ] ] ],
+              limit = Replace[ axisCount, { UpTo[ n_ ] :> n, Automatic | All -> Infinity } ] },
+            { search = { self, sets, chosen, pool, excluded } |-> With[
+                { open = admissible[ chosen, pool ], closed = admissible[ chosen, excluded ] },
+                { record = chosen =!= { } && Switch[ axisCount,
+                    Automatic, open === { } && closed === { },
+                    All,       True,
+                    _Integer,  Length @ chosen == axisCount,
+                    _UpTo,     Length @ chosen == limit || open === { } && closed === { } ] },
+                { next = If[ record, Append[ sets, Sort @ chosen ], sets ] },
+                If[ Length @ next >= needed - Length @ acc || Length @ chosen >= limit || open === { },
+                  next,
+                  First @ Fold[
+                    { state, i } |-> If[ Length @ First @ state >= needed - Length @ acc,
+                      state,
+                      { self[ self, First @ state, Append[ chosen, i ], DeleteCases[ state[[ 2 ]], i ], state[[ 3 ]] ],
+                        DeleteCases[ state[[ 2 ]], i ], Append[ state[[ 3 ]], i ] } ],
+                    { next, open, closed },
+                    branch @ open ] ] ] },
+            DeleteDuplicatesBy[
+              Join[ acc, { k, # , verts[[ axes[[ # ]] ]] & /@ # } & /@ search[ search, { }, { }, Range @ Length @ axes, { } ] ],
+              Sort @ Last @ # & ] ] ],
+        { },
+        Range @ Length @ centres ] },
+    { sets = Last /@ If[ count === All, SortBy[ found, { First @ #, PadRight[ #[[ 2 ]], Max[ Length /@ found[[ All, 2 ]] ] ] } & ], found ] },
     Switch[ count,
-      Automatic, If[ frames =!= { }, PathGraph[ #, DirectedEdges -> True ] & /@ First @ frames, { } ],
-      All, Map[ PathGraph[ #, DirectedEdges -> True ] &, frames, { 2 } ],
-      _UpTo, Map[ PathGraph[ #, DirectedEdges -> True ] &, Take[ frames, count ], { 2 } ],
-      _, If[ Length[ frames ] >= count, Map[ PathGraph[ #, DirectedEdges -> True ] &, Take[ frames, count ], { 2 } ], { } ]
-    ]
+      Automatic, First[ sets, { } ],
+      _Integer,  If[ Length @ sets < count, { }, Take[ sets, count ] ],
+      _,         sets ]
   ]
 
-FindInfraOrthogonalFrame[ g_Graph, ip_Association, axisLength : ( All | _Integer | _UpTo | { _, _ } ),
-    count : ( All | UpTo[ _Integer ] | _Integer ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ VertexList[ g ], Keys @ ip ] :=
+(* a ray at c is a geodesic from c with length in the range, maximal there; rays are perpendicular by the test of the axes, so opposite rays
+   pass it as well as perpendicular ones, and the straight frame of the grid Z^d has 2 d rays *)
+
+Options[ FindInfraOrthogonalRays ] = {
+  Properties           -> Automatic,
+  "NextVertexFunction" -> Identity,
+  "RayCount"           -> Automatic
+}
+
+FindInfraOrthogonalRays[ g_Graph, centre_, rayLength : ( All | _Integer | UpTo[ _Integer ] | { _Integer, _Integer | Infinity } ),
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    VertexQ[ g, centre ] || AssociationQ[ centre ] && SubsetQ[ VertexList @ g, Keys @ centre ] :=
   With[
-    { method = Replace[ Replace[ Method /. { opts } /. Method -> Automatic, Automatic -> "Exhaustive" ], { m_String, ___ } :> m ],
-      limit = Replace[ count, { Automatic -> 1, UpTo[ k_ ] :> k } ],
-      canonical = axes |-> Sort[ First @ Sort[ { #, Reverse @ # } ] & /@ axes ],
-      axisMult = With[ { mMat = ShortestPathMultiplicityMatrix[ g ],
-                         posMap = AssociationThread[ VertexList[ g ] -> Range @ VertexCount[ g ] ] },
-        axis |-> mMat[[ posMap[ First @ axis ], posMap[ Last @ axis ] ]] ] },
-    { allFrames = DeleteDuplicatesBy[
-        Catenate @ Map[ Map[ VertexList, FindInfraOrthogonalFrame[ g, #, axisLength, All, opts ], { 2 } ] &, Keys @ ip ],
-        canonical ] },
-    { frames = Take[
-        If[ method === "Greedy", allFrames,
-          SortBy[ allFrames, frame |-> { -Length[ frame ], -Total[ Length /@ frame ], Total[ axisMult /@ frame ], canonical[ frame ] } ] ],
-        UpTo[ If[ limit === All, Infinity, limit ] ] ] },
+    {
+      centres    = If[ AssociationQ @ centre, Keys @ centre, { centre } ],
+      range      = Replace[ rayLength, { All -> { 1, Infinity }, k_Integer :> { k, k }, UpTo[ k_ ] :> { 1, k } } ],
+      properties = OptionValue[ FindInfraOrthogonalRays, { opts }, Properties ],
+      nextFn     = OptionValue[ FindInfraOrthogonalRays, { opts }, "NextVertexFunction" ],
+      rayCount   = OptionValue[ FindInfraOrthogonalRays, { opts }, "RayCount" ],
+      needed     = Replace[ count, { Automatic -> 1, All -> Infinity, UpTo[ n_ ] :> n } ]
+    },
+    { local = If[ Last @ range === Infinity, Subgraph[ g, VertexComponent[ g, centres ] ], NeighborhoodGraph[ g, centres, 2 Last @ range ] ] },
+    { verts = VertexList @ local, dm = GraphDistanceMatrix @ local, nbrs = AdjacencyList @ IndexGraph @ local },
+    { index = AssociationThread[ verts, Range @ Length @ verts ] },
+    { found = Fold[
+        { acc, k } |-> If[ Length @ acc >= needed,
+          acc,
+          With[
+            { ci = index @ centres[[ k ]] },
+            { depth = dm[[ ci ]] },
+            { up = Table[ If[ depth[[ v ]] < Last @ range, Select[ nbrs[[ v ]], depth[[ # ]] == depth[[ v ]] + 1 & ], { } ],
+                { v, Length @ verts } ] },
+            { rays = SortBy[
+                Select[
+                  Catenate @ NestWhileList[ Catenate[ ( path |-> Append[ path, # ] & /@ up[[ Last @ path ]] ) /@ # ] &, { { ci } }, # =!= { } & ],
+                  Length[ # ] > First @ range && up[[ Last @ # ]] === { } & ],
+                { -Length @ #, Count[ depth + dm[[ Last @ # ]], depth[[ Last @ # ]] ], verts[[ # ]] } & ] },
+            { support = DeleteCases[ Union @@ rays, ci ] },
+            { slot = AssociationThread[ support, Range @ Length @ support ] },
+            { incidence = SparseArray[ Catenate @ MapIndexed[ { ray, i } |-> ( { First @ i, slot @ # } -> 1 & ) /@ Rest @ ray, rays ],
+                { Length @ rays, Length @ support } ] },
+            (* a pair of vertices off c clashes when one of them has a nearest vertex of the other's walk besides c *)
+            { blocked = If[ rays === { }, { }, Unitize[ incidence . ( 1 - UnitStep[ dm[[ support, support ]] -
+                Outer[ Max, depth[[ support ]], depth[[ support ]] ] - 1 ] ) ] ] },
+            { admissible = Which[
+                properties === Automatic,
+                  { chosen, pool } |-> If[ chosen === { } || pool === { }, pool,
+                    Pick[ pool, Normal[ incidence[[ pool ]] . Unitize[ Total @ blocked[[ chosen ]] ] ], 0 ] ],
+                MatchQ[ properties, _String | { _String, ___ } ],
+                  { chosen, pool } |-> Select[ pool, i |-> AllTrue[ chosen,
+                    j |-> InfraPerpendicularQ[ local, verts[[ rays[[ j ]] ]], verts[[ rays[[ i ]] ]], Method -> properties ] ] ],
+                True,
+                  { chosen, pool } |-> Select[ pool, i |-> TrueQ @ properties[ verts[[ # ]] & /@ rays[[ Append[ chosen, i ] ]] ] ] ],
+              branch = If[ nextFn === Identity, Identity,
+                pool |-> With[ { named = verts[[ rays[[ # ]] ]] & /@ pool },
+                  Lookup[ AssociationThread[ named, pool ], Replace[ nextFn @ named, one_ /; MemberQ[ named, Verbatim @ one ] :> { one } ] ] ] ],
+              limit = Replace[ rayCount, { UpTo[ n_ ] :> n, Automatic | All -> Infinity } ] },
+            { search = { self, sets, chosen, pool, excluded } |-> With[
+                { open = admissible[ chosen, pool ], closed = admissible[ chosen, excluded ] },
+                { record = chosen =!= { } && Switch[ rayCount,
+                    Automatic, open === { } && closed === { },
+                    All,       True,
+                    _Integer,  Length @ chosen == rayCount,
+                    _UpTo,     Length @ chosen == limit || open === { } && closed === { } ] },
+                { next = If[ record, Append[ sets, Sort @ chosen ], sets ] },
+                If[ Length @ next >= needed - Length @ acc || Length @ chosen >= limit || open === { },
+                  next,
+                  First @ Fold[
+                    { state, i } |-> If[ Length @ First @ state >= needed - Length @ acc,
+                      state,
+                      { self[ self, First @ state, Append[ chosen, i ], DeleteCases[ state[[ 2 ]], i ], state[[ 3 ]] ],
+                        DeleteCases[ state[[ 2 ]], i ], Append[ state[[ 3 ]], i ] } ],
+                    { next, open, closed },
+                    branch @ open ] ] ] },
+            DeleteDuplicatesBy[
+              Join[ acc, { k, #, verts[[ rays[[ # ]] ]] & /@ # } & /@ search[ search, { }, { }, Range @ Length @ rays, { } ] ],
+              Sort @ Last @ # & ] ] ],
+        { },
+        Range @ Length @ centres ] },
+    { sets = Last /@ If[ count === All, SortBy[ found, { First @ #, PadRight[ #[[ 2 ]], Max[ Length /@ found[[ All, 2 ]] ] ] } & ], found ] },
     Switch[ count,
-      Automatic, If[ frames =!= { }, PathGraph[ #, DirectedEdges -> True ] & /@ First @ frames, { } ],
-      All,       Map[ PathGraph[ #, DirectedEdges -> True ] &, frames, { 2 } ],
-      _UpTo,     Map[ PathGraph[ #, DirectedEdges -> True ] &, Take[ frames, count ], { 2 } ],
-      _,         If[ Length[ frames ] >= count, Map[ PathGraph[ #, DirectedEdges -> True ] &, Take[ frames, count ], { 2 } ], { } ] ]
+      Automatic, First[ sets, { } ],
+      _Integer,  If[ Length @ sets < count, { }, Take[ sets, count ] ],
+      _,         sets ]
   ]
 
 Options[ FindInfraSpanningAxes ] = {

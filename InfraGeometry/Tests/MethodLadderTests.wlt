@@ -217,4 +217,14 @@ VerificationTest[
   TestID -> "MethodLadder-RandomSample-is-the-whole-class"
 ]
 
+
+(* the orthogonal axes and rays: All is a list of sets, a set of walks whose order carries no information *)
+VerificationTest[
+  With[ { g = GridGraph[ { 7, 7 } ] },
+    { classInvariantQ[ m |-> FindInfraOrthogonalAxes[ g, 25, 2, All, "NextVertexFunction" -> m ], Sort ],
+      classInvariantQ[ m |-> FindInfraOrthogonalRays[ g, 25, 2, All, "NextVertexFunction" -> m ], Sort ] } ],
+  { True, True },
+  TestID -> "FindInfraOrthogonalAxes-Rays-class-invariant-under-NextVertexFunction"
+]
+
 EndTestSection[]
