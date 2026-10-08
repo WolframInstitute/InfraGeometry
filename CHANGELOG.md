@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-- **2.6.2** (2026-10-08, RendererStrokeFixes; on paclet `work/RendererStrokeFixes`, not yet deployed): **two renderer defects fixed, no call changes.** `InfraSubstrateHighlight` keys every `EdgeStyle` and `EdgeShapeFunction` rule it emits by the edge as `EdgeList[graph]` spells it, since `HighlightGraph` matches an `EdgeShapeFunction` rule only in the orientation the graph stores: a walk whose first edge is stored reversed (387 of the 791 edges of the Medium square mesh are) drew its reversed edges as plain styled edges and the rest not at all, so a geodesic came out as loose dots and the first example of the `FindInfraWalk` page as a few edges; now every run is one stroke. The `"Arrowheads" -> True` head carries its own `Opacity[1]`: on a substrate whose vertices are translucent (the roster styles, opacity 0.45) it was drawn at that opacity, a pale triangle, and is now solid gold or black. Two tests, `InfraSubstrateHighlight-stroke-rules-keyed-as-the-graph-stores-its-edges` and `InfraSubstrateHighlight-Arrowheads-opaque-on-a-styled-substrate`, red on 2.6.1.
+## 2.6.2 (2026-10-09)
+
+- **2.6.2** (2026-10-09, RendererStrokeFixes): **two renderer defects fixed, no call changes.** `InfraSubstrateHighlight` keys every `EdgeStyle` and `EdgeShapeFunction` rule it emits by the edge as `EdgeList[graph]` spells it, since `HighlightGraph` matches an `EdgeShapeFunction` rule only in the orientation the graph stores: a walk whose first edge is stored reversed (387 of the 791 edges of the Medium square mesh are) drew its reversed edges as plain styled edges and the rest not at all, so a geodesic came out as loose dots and the first example of the `FindInfraWalk` page as a few edges; now every run is one stroke. The `"Arrowheads" -> True` head carries its own `Opacity[1]`: on a substrate whose vertices are translucent (the roster styles, opacity 0.45) it was drawn at that opacity, a pale triangle, and is now solid gold or black. Two tests, `InfraSubstrateHighlight-stroke-rules-keyed-as-the-graph-stores-its-edges` and `InfraSubstrateHighlight-Arrowheads-opaque-on-a-styled-substrate`, red on 2.6.1.
 
 ## 2.6.0 (2026-10-08)
 
