@@ -20,7 +20,7 @@ RelatedGuides: [InfraAnalysis]
 
 Construction: the vertices are visited in breadth-first order from the first vertex of *g*. Each takes a random vertex of its ball of radius *r* that lies within one step of the targets already given to its neighbours, or, when there is none, a vertex of the ball that brings it closest to them. Then the vertices of every edge whose targets are more than one step apart are given new targets, closest to their neighbours' targets and to themselves, up to 50 times; the whole construction is tried up to 5 times.
 
-The result is single-valued and has magnitude at most *r*. It is 1-continuous ([ContinuousDisplacementQ]()) when the repair succeeds, which it does at small *r*; it is not guaranteed.
+The result is single-valued and has magnitude at most *r*. It is 1-continuous ([ContinuousDisplacementQ]()). When the repair leaves a discontinuity after the 5 attempts, which happens at larger *r*, the call stays unevaluated.
 
 The construction draws with [RandomChoice](), so [SeedRandom]() fixes the result.
 
@@ -70,11 +70,12 @@ With[
 
 ## Possible Issues
 
-The construction can fail. At magnitude 3 on the hexagonal tiling the repair does not always remove every discontinuity, and the result is not 1-continuous.
+The construction can fail, and then the call stays unevaluated. At magnitude 3 on the hexagonal tiling the repair does not always remove every discontinuity: of the seeds 1 to 10, four give a displacement and six leave the call unevaluated.
 
 ```wl
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {field = (SeedRandom[2]; RandomDisplacement[g, 3])},
-  {DisplacementPlot[g, field], ContinuousDisplacementQ[g, field], DisplacementMagnitude[g, field]}]
+Table[
+  With[
+    {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
+    SeedRandom[seed]; Head @ RandomDisplacement[g, 3]],
+  {seed, 10}]
 ```

@@ -77,10 +77,10 @@ With[
   {DisplacementPlot[g, killing], Select[Keys[killing], killing[#] =!= {#} &], DisplacementMagnitude[g, killing]}]
 ```
 
-On a graph without symmetry, such as the discretized plane, there is no Killing displacement. The form with [All]() gives the empty list, and the one-argument form returns <code>[First]()[{}]</code> unevaluated, with a message, suppressed here.
+On a graph without symmetry, such as the discretized plane, there is no Killing displacement. The form with [All]() gives the empty list, and the one-argument form stays unevaluated, with no message.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
-  {g, FindKillingDisplacement[g, All], Quiet @ FindKillingDisplacement[g]}]
+  {g, FindKillingDisplacement[g, All], FindKillingDisplacement[g]}]
 ```
