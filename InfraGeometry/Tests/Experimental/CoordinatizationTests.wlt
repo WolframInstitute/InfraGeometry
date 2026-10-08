@@ -80,6 +80,23 @@ VerificationTest[
   TestID -> "RadarCoordinates-density-anchor-aggregation-Min"
 ]
 
+(* A vertex-list station reads as a set in the two-argument form too *)
+VerificationTest[
+  With[{g = PathGraph[Range[5]], b = {{1, 5}, 3}},
+    RadarCoordinates[g, b]
+  ],
+  <| 1 -> {0, 2}, 2 -> {1, 1}, 3 -> {2, 0}, 4 -> {1, 1}, 5 -> {0, 2} |>,
+  TestID -> "RadarCoordinates-bulk-vertex-list-station"
+]
+
+VerificationTest[
+  With[{g = GridGraph[{3, 3}], b = {{1, 9}}},
+    RadarCoordinates[g, b] === AssociationMap[RadarCoordinates[g, b, #] &, VertexList[g]]
+  ],
+  True,
+  TestID -> "RadarCoordinates-bulk-vertex-list-station-matches-vertex-form"
+]
+
 (* ===== OrthogonalCoordinates ===== *)
 
 (* Each test below picks the centre c so it sits at position 0 on every
@@ -874,6 +891,49 @@ VerificationTest[
     ],
     0,
     TestID -> "ResistanceCoordinates-matching-identity"
+]
+
+(* ===== Resolving sets and the metric dimension ===== *)
+
+VerificationTest[
+  ResolvingSetQ[PathGraph[Range[5]], {1}],
+  True,
+  TestID -> "ResolvingSetQ-path-endpoint-resolves"
+]
+
+(* The empty set resolves a single vertex, so its metric dimension is 0 *)
+VerificationTest[
+  {MetricDimension[Graph[{1}, {}]], FindResolvingSet[Graph[{1}, {}]], ResolvingSetQ[Graph[{1}, {}], {}]},
+  {0, {{}}, True},
+  TestID -> "MetricDimension-single-vertex-zero"
+]
+
+VerificationTest[
+  MetricDimension /@ {PathGraph[Range[5]], CycleGraph[6], PetersenGraph[]},
+  {1, 2, 3},
+  TestID -> "MetricDimension-path-cycle-Petersen"
+]
+
+(* Past the smallest size the sets need not be minimal: {4, 5} contains {5} *)
+VerificationTest[
+  FindResolvingSet[PathGraph[Range[5]], 3],
+  {{5}, {1}, {4, 5}},
+  TestID -> "FindResolvingSet-path-three-by-size"
+]
+
+VerificationTest[
+  {FindResolvingSet[Graph[{1}, {}], 1, {0, 2}], FindResolvingSet[CycleGraph[6], 1, 1], FindResolvingSet[CycleGraph[6], 1, {2}]},
+  {{{}}, {}, {{5, 6}}},
+  TestID -> "FindResolvingSet-size-specifications"
+]
+
+(* No point set has an infinite distance: a disconnected graph has no resistance coordinates *)
+VerificationTest[
+  With[{g = GraphUnion[PathGraph[{1, 2, 3}], PathGraph[{4, 5}]]},
+    Head /@ {ResistanceCoordinates[g], ResistanceCoordinates[g, 1], ResistanceCoordinates[g, <| 1 -> 1 |>]}
+  ],
+  {ResistanceCoordinates, ResistanceCoordinates, ResistanceCoordinates},
+  TestID -> "ResistanceCoordinates-disconnected-unevaluated"
 ]
 
 EndTestSection[]
