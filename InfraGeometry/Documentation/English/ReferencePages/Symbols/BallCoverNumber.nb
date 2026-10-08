@@ -10,27 +10,27 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[    106138,       2398]
-NotebookOptionsPosition[     99407,       2262]
-NotebookOutlinePosition[    100607,       2298]
-CellTagsIndexPosition[    100526,       2293]
+NotebookDataLength[    122975,       2810]
+NotebookOptionsPosition[    115170,       2657]
+NotebookOutlinePosition[    116389,       2693]
+CellTagsIndexPosition[    116308,       2688]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
 Notebook[{
 
 Cell[CellGroupData[{
-Cell["DominationNumber", "ObjectName",
+Cell["BallCoverNumber", "ObjectName",
  CellID->1224892054,ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec"],
 
 Cell[TextData[{
- Cell["   ", "ModInfo",ExpressionUUID->"147e9ac2-4973-45d4-bdbb-e7486e1e5c3e"],
+ Cell["   ", "ModInfo",ExpressionUUID->"dfa9bfed-d582-49ac-8e41-f1c96a4beaff"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
      Cell[
-      TextData["DominationNumber"]], 
-     "paclet:WolframInstitute/InfraGeometry/ref/DominationNumber", 
+      TextData["BallCoverNumber"]], 
+     "paclet:WolframInstitute/InfraGeometry/ref/BallCoverNumber", 
      "WolframInstitute/InfraGeometry Package Symbol"},
     "PackageLink",
     BaseStyle->"InlineFormula"], "[", 
@@ -38,23 +38,33 @@ Cell[TextData[{
     StyleBox["g", "TI"], ",", " ", 
     StyleBox["r", "TI"]}], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "ffc8e581-ac31-4a7c-bc28-73ac8c13df1e"],
+  "a156cd37-299b-415c-9af9-ff613a9ed046"],
  "\[LineSeparator]",
- "gives the least number ",
+ "gives the number ",
  StyleBox["N(r)", "TI"],
  " of closed balls of radius ",
  StyleBox["r", "TI"],
- " that cover every vertex of ",
+ " in the cover of ",
  StyleBox["g", "TI"],
- ".",
+ " that ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["FindBallCover"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/FindBallCover", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "aacd2bdd-274d-478b-98f4-927a6a3ea353"],
+ " finds.",
  "\n",
- Cell["   ", "ModInfo",ExpressionUUID->"c3c4299b-fe14-43c5-aac4-35cdc7cbcc13"],
+ Cell["   ", "ModInfo",ExpressionUUID->"b9a369f2-eab1-4353-863b-22a9de90afea"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
      Cell[
-      TextData["DominationNumber"]], 
-     "paclet:WolframInstitute/InfraGeometry/ref/DominationNumber", 
+      TextData["BallCoverNumber"]], 
+     "paclet:WolframInstitute/InfraGeometry/ref/BallCoverNumber", 
      "WolframInstitute/InfraGeometry Package Symbol"},
     "PackageLink",
     BaseStyle->"InlineFormula"], "[", 
@@ -63,19 +73,17 @@ Cell[TextData[{
     StyleBox["r", "TI"], ",", " ", 
     StyleBox["targets", "TI"]}], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "ed185ea8-c576-4a78-9a2b-7612952dd359"],
+  "cbfa356b-9b79-4c9c-bded-67d388de889f"],
  "\[LineSeparator]",
- "gives the least number of such balls that cover the vertices of ",
+ "gives the number of such balls in the cover of the vertices of ",
  StyleBox["targets", "TI"],
  "."
-}], "Usage",ExpressionUUID->"604cce28-8791-4cc0-bd6a-1c15ea0608a2"],
+}], "Usage",ExpressionUUID->"9c1f61eb-a5b7-405c-8298-f6ddc1f643be"],
 
 Cell[TextData[{
  "Definition: ",
  StyleBox["N(r)", "TI"],
- " is the size of a smallest ",
- StyleBox["r", "TI"],
- "-dominating set, the length of ",
+ " is the length of ",
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -87,23 +95,110 @@ Cell[TextData[{
     BaseStyle->"InlineFormula"], "[", 
    RowBox[{
     StyleBox["g", "TI"], ",", " ", 
-    StyleBox["r", "TI"]}], "]"}]], "InlineFormula",
+    StyleBox["r", "TI"], ",", " ", 
+    StyleBox["targets", "TI"]}], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "15e35079-3124-499f-9152-ed811b847549"],
- ", computed by its exact integer program. At ",
+  "d8e38e7a-6260-44f6-adca-9fb32109133d"],
+ " under the same ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["Method"]], "paclet:ref/Method"},
+   "RefLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "827c88a1-c712-44b7-b62a-5fe3bd76fff3"],
+ ". With the default ",
+ Cell[BoxData["\"\<Exhaustive\>\""], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "2a51ae2d-d5c8-4256-97e2-1a7e205322d8"],
+ " it is the least number of balls of radius ",
  StyleBox["r", "TI"],
- " = 1 it is the domination number of graph theory. The radius defaults to \
-1."
-}], "Notes",ExpressionUUID->"74089943-b5fa-4334-82d7-2ce9bf67a885"],
+ " that cover: the size of a smallest ",
+ StyleBox["r", "TI"],
+ "-dominating set, which graph theory calls the ",
+ StyleBox["r", "TI"],
+ "-domination number of ",
+ StyleBox["g", "TI"],
+ ", the domination number at ",
+ StyleBox["r", "TI"],
+ " = 1. The radius defaults to 1 and the targets to ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["All"]], "paclet:ref/All"},
+   "RefLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "92b326be-87d9-4a93-aabd-38f61f3329d9"],
+ "."
+}], "Notes",ExpressionUUID->"47acf83f-44c6-4aa2-820a-350c5027b7a4"],
+
+Cell[TextData[{
+ "Option ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["Method"]], "paclet:ref/Method"},
+   "RefLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "80183cef-e5ce-4fe0-bca5-adc3d9408b3b"],
+ " chooses the cover that is counted, as in ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["FindBallCover"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/FindBallCover", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "f386afae-6cc7-42d8-9434-8ffa3f97a2d2"],
+ ":"
+}], "Notes",ExpressionUUID->"ea073184-558e-49c6-ad92-1e927375acaf"],
+
+Cell[BoxData[GridBox[{
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "335832b7-9939-4483-9a4f-0aab4b0c6623"], Cell["Value", "TableText",
+     FontWeight->Bold,ExpressionUUID->"71f6991b-8854-46b7-acd9-c5ec53a4b432"],
+     Cell["Count", "TableText",
+     FontWeight->Bold,ExpressionUUID->"9dd03070-08fa-4b15-ad6d-2e2e359a8fa0"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "8ec711bb-a17c-4011-a434-45bd77dbc13a"], Cell[TextData[{
+     Cell[BoxData["\"\<Exhaustive\>\""], "InlineFormula",
+      FontSize->0.9 Inherited,ExpressionUUID->
+      "3d4c6bd3-48c3-41ff-8aa2-0999a4ca59b7"],
+     " (default)"
+    }], "TableText",ExpressionUUID->"9fd9e6e0-2192-4186-a2e7-5c603df3a9f7"], 
+    Cell["the least number, by an integer linear program", "TableText",
+     ExpressionUUID->"9c70e117-2e2b-4674-bb56-55522764d79f"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "1794c113-cdd6-462d-89e9-b617815ee11a"], Cell[TextData[Cell[
+    BoxData["\"\<Greedy\>\""], "InlineFormula",
+     FontSize->0.9 Inherited,ExpressionUUID->
+     "19a77305-61c0-49df-af35-f4faecede299"]], "TableText",ExpressionUUID->
+     "131d3c0b-2b80-4ef7-983d-8183f558a1b7"], Cell["\<\
+the size of the greedy cover: an upper bound, fast on graphs where the \
+program is slow\
+\>", "TableText",ExpressionUUID->"7864f6b0-aaf7-481f-9a94-84b0b96064af"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "e7249469-705b-4109-90ab-b82724a98f6a"], Cell[TextData[Cell[
+    BoxData["\"\<Symmetric\>\""], "InlineFormula",
+     FontSize->0.9 Inherited,ExpressionUUID->
+     "0ec75dc2-7105-446f-b75b-7e6aa93e666f"]], "TableText",ExpressionUUID->
+     "4ad81bf6-a2c3-4489-8654-c99a8642d6fd"], Cell["\<\
+the size of the smallest cover that is a union of orbits of single \
+automorphisms: the least number when a smallest cover has that shape, an \
+upper bound otherwise\
+\>", "TableText",ExpressionUUID->"875a9bb9-d304-47a2-85c1-fcc34de410d5"]}
+  }]], "2ColumnTableMod",ExpressionUUID->"562b06d7-2f28-4c6b-8418-\
+a9d8d62aff21"],
 
 Cell[TextData[{
  StyleBox["N(0)", "TI"],
- " is the number of vertices. ",
+ " is the number of vertices. The least ",
  StyleBox["N(r)", "TI"],
  " does not increase with ",
  StyleBox["r", "TI"],
  ", and it is 1 from the radius of the graph, the least eccentricity, on."
-}], "Notes",ExpressionUUID->"d8d585d1-b67d-4417-8a7d-3a75e4ffa61b"],
+}], "Notes",ExpressionUUID->"05d2b3d2-9616-4ab1-961f-6ca4398dd267"],
 
 Cell[TextData[{
  "How fast ",
@@ -111,7 +206,7 @@ Cell[TextData[{
  " falls as ",
  StyleBox["r", "TI"],
  " grows is a measure of dimension."
-}], "Notes",ExpressionUUID->"0ba2eba8-a867-4e67-ad92-8c83be2985fb"]
+}], "Notes",ExpressionUUID->"f19d4a8e-4ed7-4f45-9b1e-a78a3c80d495"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -140,7 +235,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "c97396e4-f3b1-43e0-89ae-eec33e2f5b99"],
+  "278b7524-fc26-4fac-b510-dc736265e70b"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -150,7 +245,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "9545c877-05c8-44a1-89d7-d1c11e1b7ea4"],
+  "a161870d-d51c-44cf-b1ef-069b2348848f"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -160,8 +255,8 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "8685a8a0-6cdd-4d1a-8ab6-a68922f67923"]
-}], "SeeAlso",ExpressionUUID->"4bfa6011-01d7-4cce-acf5-d84b599e960c"]
+  "de4a1503-80f0-4134-bfff-a9c6b8a67115"]
+}], "SeeAlso",ExpressionUUID->"d892bd1d-fb5f-4971-ba7d-1e444cbad2b8"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -188,8 +283,8 @@ Cell[TextData[Cell[BoxData[
   BaseStyle->"Link",
   ButtonData->
    "paclet:WolframInstitute/InfraGeometry/guide/InfraTopology"]], \
-"InlineFormula",ExpressionUUID->"3985f826-4765-49e5-b846-1b15c2770908"]], \
-"MoreAbout",ExpressionUUID->"7e8a7f95-550c-4e43-b7a2-44b8db40ba69"]
+"InlineFormula",ExpressionUUID->"5dfdf2d1-1425-4fd0-91ae-3407c38ac760"]], \
+"MoreAbout",ExpressionUUID->"73871abb-6527-4c56-8f96-a38f30d1638e"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -252,7 +347,7 @@ Cell[TextData[{
  StyleBox["N(r)", "TI"],
  " against the radius on the discretized plane, the square tiling and the \
 hexagonal tiling, from the number of vertices down to 1."
-}], "ExampleText",ExpressionUUID->"34b8c1e2-f9c2-4a15-b39c-d5b7842b2b46"],
+}], "ExampleText",ExpressionUUID->"ea476756-9fb0-4bb5-adb8-3a3b4b89da87"],
 
 Cell[CellGroupData[{
 
@@ -272,7 +367,7 @@ Cell[BoxData[
         RowBox[{
          RowBox[{"{", 
           RowBox[{"r", ",", " ", 
-           RowBox[{"DominationNumber", "[", 
+           RowBox[{"BallCoverNumber", "[", 
             RowBox[{"g", ",", " ", "r"}], "]"}]}], "}"}], ",", " ", 
          RowBox[{"{", 
           RowBox[{"r", ",", " ", "0", ",", " ", 
@@ -294,7 +389,7 @@ Cell[BoxData[
     RowBox[{"{", 
      RowBox[{"\"\<r\>\"", ",", " ", "\"\<N(r)\>\""}], "}"}]}]}], 
   "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"ea866160-7373-4727-af87-e070bb871a27"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"e4e5ba00-5262-4b3b-96fe-5c227df711ea"],
 
 Cell[BoxData[
  TemplateBox[{
@@ -781,7 +876,7 @@ Cell[BoxData[
      RowBox[{#, ",", 
        RowBox[{"Placed", "[", 
          RowBox[{#2, ",", "After"}], "]"}]}], "]"}]& )]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"56bf4e6e-a39d-4566-9c94-1b7896299527"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"c7f1026a-2808-4a3d-9373-9f3b81c034cb"]
 }, Open  ]]
 }, Open  ]],
 
@@ -814,7 +909,7 @@ Cell[BoxData[
 Cell["\<\
 With targets: the number of balls of radius 2 that cover the ball of radius 4 \
 about the centre.\
-\>", "ExampleText",ExpressionUUID->"b039e5b8-d6f1-49af-b59f-2bee0f5cf54e"],
+\>", "ExampleText",ExpressionUUID->"22e0708c-48e8-4d43-842b-52a365909258"],
 
 Cell[CellGroupData[{
 
@@ -848,10 +943,10 @@ Cell[BoxData[
           RowBox[{"FindBallCover", "[", 
            RowBox[{"g", ",", " ", "2", ",", " ", "target"}], "]"}], " ", "->",
            " ", "StandardRed"}]}], "}"}]}], "]"}], ",", " ", 
-     RowBox[{"DominationNumber", "[", 
+     RowBox[{"BallCoverNumber", "[", 
       RowBox[{"g", ",", " ", "2", ",", " ", "target"}], "]"}]}], "}"}]}], 
   "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"7609215a-1cbe-474b-9756-11644458e8c9"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"9dd4cc71-31c4-456b-bd86-67c3bcd1f073"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -1855,7 +1950,7 @@ bSj3/Qv44/wr4OMv1pr8Cg==
     DefaultBaseStyle->"NetworkGraphics",
     FormatType->TraditionalForm,
     FrameTicks->None], ",", "5"}], "}"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"bac45278-44f6-41a6-b7c8-08ef5d913f7f"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"0ef6b067-b46f-4d34-a26f-252f47b081f8"]
 }, Open  ]]
 }, Open  ]],
 
@@ -1866,12 +1961,312 @@ Cell[BoxData[
   $Line = 0; Null]], "ExampleSection",
  CellID->1020263627,ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7"],
 
+Cell[CellGroupData[{
+
 Cell[BoxData[
  InterpretationBox[Cell[
   "Options", "ExampleSection",ExpressionUUID->
    "b26b6366-7922-4236-a426-38c0f5de13f0"],
   $Line = 0; Null]], "ExampleSection",
  CellID->2061341341,ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0"],
+
+Cell[CellGroupData[{
+
+Cell["Method", "ExampleSubsection",ExpressionUUID->"07c7caef-0e5f-474f-9e1c-5e483ae626af"],
+
+Cell["\<\
+The three counts on the hexagonal tiling at radius 2. Only the exhaustive \
+count is the least number.\
+\>", "ExampleText",ExpressionUUID->"a29614fa-8fa6-4b22-b771-a5a7dd9ac0fe"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"g", " ", "=", " ", 
+     RowBox[{"InfraSubstrate", "[", 
+      RowBox[{"\"\<HexagonalTilingGraph\>\"", ",", " ", "\"\<Small\>\""}], 
+      "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{"BallCoverNumber", "[", 
+      RowBox[{"g", ",", " ", "2", ",", " ", 
+       RowBox[{"Method", " ", "->", " ", "method"}]}], "]"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"method", ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"\"\<Exhaustive\>\"", ",", " ", "\"\<Greedy\>\"", ",", 
+         " ", "\"\<Symmetric\>\""}], "}"}]}], "}"}]}], "]"}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"f889cbfc-d897-4e03-b7a5-c081f16c0e8a"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"15", ",", "18", ",", "16"}], "}"}]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"1febe277-4269-4d42-a807-0ef08a9f6fab"]
+}, Open  ]],
+
+Cell[TextData[{
+ "The greedy count is at hand where the exact program is slow. The greedy ",
+ StyleBox["N(r)", "TI"],
+ " against the radius on the discretized plane of medium size."
+}], "ExampleText",ExpressionUUID->"04bccb88-273c-4f67-9e7e-35a2f39772ab"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"g", " ", "=", " ", 
+     RowBox[{"InfraSubstrate", "[", 
+      RowBox[{"\"\<SquareMeshGraph\>\"", ",", " ", "\"\<Medium\>\""}], 
+      "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"ListLogPlot", "[", 
+    RowBox[{
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"r", ",", " ", 
+         RowBox[{"BallCoverNumber", "[", 
+          RowBox[{"g", ",", " ", "r", ",", " ", 
+           RowBox[{"Method", " ", "->", " ", "\"\<Greedy\>\""}]}], "]"}]}], 
+        "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"r", ",", " ", "1", ",", " ", 
+         RowBox[{"GraphRadius", "[", "g", "]"}]}], "}"}]}], "]"}], ",", " ", 
+     RowBox[{"Joined", " ", "->", " ", "True"}], ",", " ", 
+     RowBox[{"AxesLabel", " ", "->", " ", 
+      RowBox[{"{", 
+       RowBox[{"\"\<r\>\"", ",", " ", "\"\<N(r)\>\""}], "}"}]}]}], "]"}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[2]:= ",ExpressionUUID->"87be49b1-7ae7-4b2b-bc35-2642b1f62e84"],
+
+Cell[BoxData[
+ GraphicsBox[{{}, 
+   InterpretationBox[{
+     TagBox[{{}, {}, 
+       TagBox[
+        {RGBColor[0.24, 0.6, 0.8], PointSize[0.012833333333333334`], 
+         AbsoluteThickness[2], 
+         LineBox[{{1., 4.060443010546419}, {2., 3.2188758248682006`}, {3., 
+          2.6390573296152584`}, {4., 2.1972245773362196`}, {5., 
+          1.791759469228055}, {6., 1.6094379124341003`}, {7., 
+          1.791759469228055}, {8., 1.3862943611198906`}, {9., 
+          1.0986122886681098`}, {10., 0.}}]},
+        Annotation[#, "Charting`Private`Tag#1"]& ]},
+      {"WolframDynamicHighlight", <|
+       "Label" -> {"XYLabel"}, "Ball" -> {"IndicatedBall"}|>}], 
+     StyleBox[
+      DynamicBox[(Charting`HighlightActionBox["DynamicHighlight", {}, 
+        Slot["HighlightElements"], 
+        Slot["LayoutOptions"], 
+        Slot["Meta"], 
+        Charting`HighlightActionFunction["DynamicHighlight", {{{}, {}, 
+           Annotation[{
+             Hue[0.67, 0.6, 0.6], 
+             Directive[
+              PointSize[0.012833333333333334`], 
+              RGBColor[0.24, 0.6, 0.8], 
+              AbsoluteThickness[2]], 
+             
+             Line[{{1., 4.060443010546419}, {2., 3.2188758248682006`}, {3., 
+              2.6390573296152584`}, {4., 2.1972245773362196`}, {5., 
+              1.791759469228055}, {6., 1.6094379124341003`}, {7., 
+              1.791759469228055}, {8., 1.3862943611198906`}, {9., 
+              1.0986122886681098`}, {10., 0.}}]}, 
+            "Charting`Private`Tag#1"]}}, <|
+         "HighlightElements" -> <|
+           "Label" -> {"XYLabel"}, "Ball" -> {"IndicatedBall"}|>, 
+          "LayoutOptions" -> <|
+           "PanelPlotLayout" -> <||>, 
+            "PlotRange" -> {{0, 10.}, {-0.3177527087106211, 
+              4.060443010546419}}, 
+            "Frame" -> {{False, False}, {False, False}}, 
+            "AxesOrigin" -> {0, -0.3177527087106211}, 
+            "ImageSize" -> {360, 360/GoldenRatio}, "Axes" -> {True, True}, 
+            "LabelStyle" -> {}, "AspectRatio" -> GoldenRatio^(-1), 
+            "DefaultStyle" -> {
+              Directive[
+               PointSize[0.012833333333333334`], 
+               RGBColor[0.24, 0.6, 0.8], 
+               AbsoluteThickness[2]]}, 
+            "HighlightLabelingFunctions" -> <|"CoordinatesToolOptions" -> ({
+                (Identity[#]& )[
+                 Part[#, 1]], 
+                (Exp[#]& )[
+                 Part[#, 2]]}& ), 
+              "ScalingFunctions" -> {{Identity, Identity}, {Log, Exp}}|>, 
+            "Primitives" -> {}, "GCFlag" -> False|>, 
+          "Meta" -> <|
+           "DefaultHighlight" -> {"Dynamic", None}, "Index" -> {}, "Function" -> 
+            ListLogPlot, "GroupHighlight" -> False|>|>]]& )[<|
+        "HighlightElements" -> <|
+          "Label" -> {"XYLabel"}, "Ball" -> {"IndicatedBall"}|>, 
+         "LayoutOptions" -> <|
+          "PanelPlotLayout" -> <||>, 
+           "PlotRange" -> {{0, 10.}, {-0.3177527087106211, 
+             4.060443010546419}}, "Frame" -> {{False, False}, {False, False}},
+            "AxesOrigin" -> {0, -0.3177527087106211}, 
+           "ImageSize" -> {360, 360/GoldenRatio}, "Axes" -> {True, True}, 
+           "LabelStyle" -> {}, "AspectRatio" -> GoldenRatio^(-1), 
+           "DefaultStyle" -> {
+             Directive[
+              PointSize[0.012833333333333334`], 
+              RGBColor[0.24, 0.6, 0.8], 
+              AbsoluteThickness[2]]}, 
+           "HighlightLabelingFunctions" -> <|"CoordinatesToolOptions" -> ({
+               (Identity[#]& )[
+                Part[#, 1]], 
+               (Exp[#]& )[
+                Part[#, 2]]}& ), 
+             "ScalingFunctions" -> {{Identity, Identity}, {Log, Exp}}|>, 
+           "Primitives" -> {}, "GCFlag" -> False|>, 
+         "Meta" -> <|
+          "DefaultHighlight" -> {"Dynamic", None}, "Index" -> {}, "Function" -> 
+           ListLogPlot, "GroupHighlight" -> False|>|>]],
+      Selectable->False]},
+    Annotation[{{{}, {}, 
+       Annotation[{
+         Hue[0.67, 0.6, 0.6], 
+         Directive[
+          PointSize[0.012833333333333334`], 
+          RGBColor[0.24, 0.6, 0.8], 
+          AbsoluteThickness[2]], 
+         Line[{{1., 4.060443010546419}, {2., 3.2188758248682006`}, {3., 
+          2.6390573296152584`}, {4., 2.1972245773362196`}, {5., 
+          1.791759469228055}, {6., 1.6094379124341003`}, {7., 
+          1.791759469228055}, {8., 1.3862943611198906`}, {9., 
+          1.0986122886681098`}, {10., 0.}}]}, "Charting`Private`Tag#1"]}}, <|
+     "HighlightElements" -> <|
+       "Label" -> {"XYLabel"}, "Ball" -> {"IndicatedBall"}|>, 
+      "LayoutOptions" -> <|
+       "PanelPlotLayout" -> <||>, 
+        "PlotRange" -> {{0, 10.}, {-0.3177527087106211, 4.060443010546419}}, 
+        "Frame" -> {{False, False}, {False, False}}, 
+        "AxesOrigin" -> {0, -0.3177527087106211}, 
+        "ImageSize" -> {360, 360/GoldenRatio}, "Axes" -> {True, True}, 
+        "LabelStyle" -> {}, "AspectRatio" -> GoldenRatio^(-1), "DefaultStyle" -> {
+          Directive[
+           PointSize[0.012833333333333334`], 
+           RGBColor[0.24, 0.6, 0.8], 
+           AbsoluteThickness[2]]}, 
+        "HighlightLabelingFunctions" -> <|"CoordinatesToolOptions" -> ({
+            (Identity[#]& )[
+             Part[#, 1]], 
+            (Exp[#]& )[
+             Part[#, 2]]}& ), 
+          "ScalingFunctions" -> {{Identity, Identity}, {Log, Exp}}|>, 
+        "Primitives" -> {}, "GCFlag" -> False|>, 
+      "Meta" -> <|
+       "DefaultHighlight" -> {"Dynamic", None}, "Index" -> {}, "Function" -> 
+        ListLogPlot, "GroupHighlight" -> False|>|>, 
+     "DynamicHighlight"]], {{}, {}}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->{True, True},
+  AxesLabel->{
+    FormBox[
+     TagBox["\"r\"", HoldForm], TraditionalForm], 
+    FormBox[
+     TagBox["\"N(r)\"", HoldForm], TraditionalForm]},
+  AxesOrigin->{0, -0.3177527087106211},
+  DefaultBaseStyle->{"PlotGraphics", "Graphics"},
+  DisplayFunction->Identity,
+  Frame->{{False, False}, {False, False}},
+  FrameLabel->{{None, None}, {None, None}},
+  FrameTicks->{{
+     Charting`ScaledTicks[{Log, Exp}, {Log, Exp}, "Nice", WorkingPrecision -> 
+      15.954589770191003`, RotateLabel -> 0], 
+     Charting`ScaledFrameTicks[{Log, Exp}]}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  Method->{
+   "AxisPadding" -> Scaled[0.02], "DefaultBoundaryStyle" -> Automatic, 
+    "DefaultGraphicsInteraction" -> {
+     "Version" -> 1.2, "TrackMousePosition" -> {True, False}, 
+      "Effects" -> {
+       "Highlight" -> {"ratio" -> 2}, "HighlightPoint" -> {"ratio" -> 2}, 
+        "Droplines" -> {
+         "freeformCursorMode" -> True, 
+          "placement" -> {"x" -> "All", "y" -> "None"}}}}, "DefaultMeshStyle" -> 
+    AbsolutePointSize[6], "DefaultPlotStyle" -> {
+      Directive[
+       RGBColor[0.24, 0.6, 0.8], 
+       AbsoluteThickness[2]], 
+      Directive[
+       RGBColor[0.95, 0.627, 0.1425], 
+       AbsoluteThickness[2]], 
+      Directive[
+       RGBColor[0.455, 0.7, 0.21], 
+       AbsoluteThickness[2]], 
+      Directive[
+       RGBColor[0.922526, 0.385626, 0.209179], 
+       AbsoluteThickness[2]], 
+      Directive[
+       RGBColor[0.578, 0.51, 0.85], 
+       AbsoluteThickness[2]], 
+      Directive[
+       RGBColor[0.772079, 0.431554, 0.102387], 
+       AbsoluteThickness[2]], 
+      Directive[
+       RGBColor[0., 0.6, 0.6], 
+       AbsoluteThickness[2]], 
+      Directive[
+       RGBColor[0.9, 0.36, 0.684], 
+       AbsoluteThickness[2]], 
+      Directive[
+       RGBColor[0.56, 0.7, 0.], 
+       AbsoluteThickness[2]], 
+      Directive[
+       RGBColor[0.9, 0.54, 0.], 
+       AbsoluteThickness[2]], 
+      Directive[
+       RGBColor[0.585, 0.5976, 0.9], 
+       AbsoluteThickness[2]], 
+      Directive[
+       RGBColor[0.9, 0.45, 0.45], 
+       AbsoluteThickness[2]], 
+      Directive[
+       RGBColor[0.7632186717367254, 0.8174402144034898, 0.], 
+       AbsoluteThickness[2]], 
+      Directive[
+       RGBColor[0.8554632469481959, 0.24885384718327969`, 0.8334053873948551], 
+       AbsoluteThickness[2]], 
+      Directive[
+       RGBColor[0.032972823413648836`, 0.7396719749139476, 0.534700104525218], 
+       AbsoluteThickness[2]]}, "DomainPadding" -> Scaled[0.02], 
+    "PointSizeFunction" -> "SmallPointSize", "RangePadding" -> Scaled[0.05], 
+    "OptimizePlotMarkers" -> True, "IncludeHighlighting" -> Automatic, 
+    "HighlightStyle" -> Automatic, "OptimizePlotMarkers" -> True, 
+    "IncludeHighlighting" -> "CurrentSet", "HighlightStyle" -> Automatic, 
+    "OptimizePlotMarkers" -> True, 
+    "CoordinatesToolOptions" -> {"DisplayFunction" -> ({
+        (Identity[#]& )[
+         Part[#, 1]], 
+        (Exp[#]& )[
+         Part[#, 2]]}& ), "CopiedValueFunction" -> ({
+        (Identity[#]& )[
+         Part[#, 1]], 
+        (Exp[#]& )[
+         Part[#, 2]]}& )}},
+  PlotInteractivity:>True,
+  PlotRange->{{0, 10.}, {-0.3177527087106211, 4.060443010546419}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.02], 
+     Scaled[0.05]}},
+  Ticks->{Automatic, 
+    Charting`ScaledTicks[{Log, Exp}, {Log, Exp}, "Nice", WorkingPrecision -> 
+     15.954589770191003`, RotateLabel -> 0]}]], "Output",
+ CellLabel->"Out[2]= ",ExpressionUUID->"a2ff59e4-fc9f-4de5-93d3-f2fc35930cf1"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
 
 Cell[BoxData[
  InterpretationBox[Cell[
@@ -1899,7 +2294,7 @@ Cell[TextData[{
  ": each ball holds at most ",
  StyleBox["2r + 1", "TI"],
  " vertices."
-}], "ExampleText",ExpressionUUID->"a7c07967-6fed-45de-aeb8-6cc2b9fad099"],
+}], "ExampleText",ExpressionUUID->"9eddfbf3-0a38-438f-b340-e7952062dfbf"],
 
 Cell[CellGroupData[{
 
@@ -1922,7 +2317,7 @@ Cell[BoxData[
      RowBox[{"Table", "[", 
       RowBox[{
        RowBox[{
-        RowBox[{"DominationNumber", "[", 
+        RowBox[{"BallCoverNumber", "[", 
          RowBox[{
           RowBox[{"CycleGraph", "[", "n", "]"}], ",", " ", "r"}], "]"}], " ", 
         "==", " ", 
@@ -1942,7 +2337,7 @@ Cell[BoxData[
      RowBox[{"Table", "[", 
       RowBox[{
        RowBox[{
-        RowBox[{"DominationNumber", "[", 
+        RowBox[{"BallCoverNumber", "[", 
          RowBox[{
           RowBox[{"PathGraph", "[", 
            RowBox[{"Range", "[", "n", "]"}], "]"}], ",", " ", "r"}], "]"}], 
@@ -1958,7 +2353,7 @@ Cell[BoxData[
        RowBox[{"{", 
         RowBox[{"r", ",", " ", "1", ",", " ", "3"}], "}"}]}], "]"}]}]}]}], 
   "}"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"ce0477d1-b984-46ab-9a65-9376c2678bd3"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"806a0b18-a3fe-489a-a3d2-204656d3107b"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -2156,7 +2551,7 @@ Cell[BoxData[
     DefaultBaseStyle->"NetworkGraphics",
     FormatType->TraditionalForm,
     FrameTicks->None], ",", "True", ",", "True"}], "}"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"cf0235d4-f1b7-40f6-a1fd-5719f14f2085"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"6abcaefa-275d-41bc-9dc9-f104af387beb"]
 }, Open  ]]
 }, Open  ]],
 
@@ -2230,8 +2625,8 @@ Cell["WolframInstitute`InfraGeometry`", "Categorization",
  CellLabel->"Context",
  CellID->468444828,ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191"],
 
-Cell["WolframInstitute/InfraGeometry/ref/DominationNumber", "Categorization",
- CellLabel->"URI",ExpressionUUID->"c93b5efc-c1bb-44ad-bd68-ba2d03607558"]
+Cell["WolframInstitute/InfraGeometry/ref/BallCoverNumber", "Categorization",
+ CellLabel->"URI",ExpressionUUID->"333d952e-104e-4103-b73c-670822a9f3f6"]
 }, Closed]],
 
 Cell["Keywords", "KeywordsSection",
@@ -2264,14 +2659,14 @@ WindowSize->{700, 770},
 WindowMargins->{{5, Automatic}, {Automatic, 0}},
 TaggingRules->{
  "Metadata" -> {
-   "title" -> "DominationNumber", "context" -> 
+   "title" -> "BallCoverNumber", "context" -> 
     "WolframInstitute`InfraGeometry`", 
     "keywords" -> {
-     "domination number", "r-domination number", "covering number", 
-      "ball cover", "covering dimension"}, "summary" -> "", "paclet" -> 
-    "WolframInstitute/InfraGeometry", "uri" -> 
-    "WolframInstitute/InfraGeometry/ref/DominationNumber", "type" -> "Symbol",
-     "index" -> True, "language" -> "en"}},
+     "ball cover number", "covering number", "domination number", 
+      "r-domination number", "ball cover", "covering dimension"}, "summary" -> 
+    "", "paclet" -> "WolframInstitute/InfraGeometry", "uri" -> 
+    "WolframInstitute/InfraGeometry/ref/BallCoverNumber", "type" -> "Symbol", 
+    "index" -> True, "language" -> "en"}},
 CreateCellID->True,
 CellContext->CellGroup,
 FrontEndVersion->"15.0 for Mac OS X ARM (64-bit) (July 2, 2026)",
@@ -2285,118 +2680,135 @@ ExpressionUUID->"c207366e-060a-406b-a297-9e30e1628f43"
 (*CellTagsOutline
 CellTagsIndex->{
  "ExtendedExamples"->{
-  Cell[31458, 789, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+  Cell[35252, 884, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
    CellTags->"ExtendedExamples",
    CellID->533848431]}
  }
 *)
 (*CellTagsIndex
 CellTagsIndex->{
- {"ExtendedExamples", 100332, 2286}
+ {"ExtendedExamples", 116114, 2681}
  }
 *)
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[576, 22, 114, 1, 70, "ObjectName",ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec",
+Cell[576, 22, 113, 1, 70, "ObjectName",ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec",
  CellID->1224892054],
-Cell[693, 25, 1522, 45, 70, "Usage",ExpressionUUID->"604cce28-8791-4cc0-bd6a-1c15ea0608a2"],
-Cell[2218, 72, 820, 24, 70, "Notes",ExpressionUUID->"74089943-b5fa-4334-82d7-2ce9bf67a885"],
-Cell[3041, 98, 292, 7, 70, "Notes",ExpressionUUID->"d8d585d1-b67d-4417-8a7d-3a75e4ffa61b"],
-Cell[3336, 107, 196, 6, 70, "Notes",ExpressionUUID->"0ba2eba8-a867-4e67-ad92-8c83be2985fb"]
+Cell[692, 25, 1837, 55, 70, "Usage",ExpressionUUID->"9c1f61eb-a5b7-405c-8298-f6ddc1f643be"],
+Cell[2532, 82, 1615, 50, 70, "Notes",ExpressionUUID->"47acf83f-44c6-4aa2-820a-350c5027b7a4"],
+Cell[4150, 134, 679, 20, 70, "Notes",ExpressionUUID->"ea073184-558e-49c6-ad92-1e927375acaf"],
+Cell[4832, 156, 1991, 35, 70, "2ColumnTableMod",ExpressionUUID->"562b06d7-2f28-4c6b-8418-a9d8d62aff21"],
+Cell[6826, 193, 302, 7, 70, "Notes",ExpressionUUID->"05d2b3d2-9616-4ab1-961f-6ca4398dd267"],
+Cell[7131, 202, 196, 6, 70, "Notes",ExpressionUUID->"f19d4a8e-4ed7-4f45-9b1e-a78a3c80d495"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3569, 118, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
+Cell[7364, 213, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
  CellID->1559318232],
-Cell[4031, 133, 1092, 30, 70, "SeeAlso",ExpressionUUID->"4bfa6011-01d7-4cce-acf5-d84b599e960c"]
+Cell[7826, 228, 1092, 30, 70, "SeeAlso",ExpressionUUID->"d892bd1d-fb5f-4971-ba7d-1e444cbad2b8"]
 }, Open  ]],
-Cell[5138, 166, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
+Cell[8933, 261, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
  CellID->792424486],
 Cell[CellGroupData[{
-Cell[5598, 182, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
+Cell[9393, 277, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
  CellID->38303248],
-Cell[5717, 185, 303, 6, 70, "MoreAbout",ExpressionUUID->"7e8a7f95-550c-4e43-b7a2-44b8db40ba69"]
+Cell[9512, 280, 303, 6, 70, "MoreAbout",ExpressionUUID->"73871abb-6527-4c56-8f96-a38f30d1638e"]
 }, Open  ]],
-Cell[6035, 194, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
+Cell[9830, 289, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
  CellID->47113304],
 Cell[CellGroupData[{
-Cell[6531, 211, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
+Cell[10326, 306, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
  CellID->1718580883],
-Cell[7065, 227, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
+Cell[10860, 322, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
  CellID->1969679695]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[7378, 236, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
+Cell[11173, 331, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
  CellID->880084151],
-Cell[7823, 250, 248, 4, 70, "ExampleText",ExpressionUUID->"34b8c1e2-f9c2-4a15-b39c-d5b7842b2b46"],
+Cell[11618, 345, 248, 4, 70, "ExampleText",ExpressionUUID->"ea476756-9fb0-4bb5-adb8-3a3b4b89da87"],
 Cell[CellGroupData[{
-Cell[8096, 258, 1543, 38, 70, "Input",ExpressionUUID->"ea866160-7373-4727-af87-e070bb871a27"],
-Cell[9642, 298, 21767, 485, 70, "Output",ExpressionUUID->"56bf4e6e-a39d-4566-9c94-1b7896299527"]
+Cell[11891, 353, 1542, 38, 70, "Input",ExpressionUUID->"e4e5ba00-5262-4b3b-96fe-5c227df711ea"],
+Cell[13436, 393, 21767, 485, 70, "Output",ExpressionUUID->"c7f1026a-2808-4a3d-9373-9f3b81c034cb"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[31458, 789, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+Cell[35252, 884, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
  CellTags->"ExtendedExamples",
  CellID->533848431],
 Cell[CellGroupData[{
-Cell[31970, 806, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
+Cell[35764, 901, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
  CellID->1293636265],
-Cell[32215, 813, 183, 3, 70, "ExampleText",ExpressionUUID->"b039e5b8-d6f1-49af-b59f-2bee0f5cf54e"],
+Cell[36009, 908, 183, 3, 70, "ExampleText",ExpressionUUID->"22e0708c-48e8-4d43-842b-52a365909258"],
 Cell[CellGroupData[{
-Cell[32423, 820, 1318, 33, 70, "Input",ExpressionUUID->"7609215a-1cbe-474b-9756-11644458e8c9"],
-Cell[33744, 855, 49820, 1002, 70, "Output",ExpressionUUID->"bac45278-44f6-41a6-b7c8-08ef5d913f7f"]
+Cell[36217, 915, 1317, 33, 70, "Input",ExpressionUUID->"9dd4cc71-31c4-456b-bd86-67c3bcd1f073"],
+Cell[37537, 950, 49820, 1002, 70, "Output",ExpressionUUID->"0ef6b067-b46f-4d34-a26f-252f47b081f8"]
 }, Open  ]]
 }, Open  ]],
-Cell[83591, 1861, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
+Cell[87384, 1956, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
  CellID->1020263627],
-Cell[83859, 1868, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
+Cell[CellGroupData[{
+Cell[87674, 1965, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
  CellID->2061341341],
-Cell[84106, 1875, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
+Cell[CellGroupData[{
+Cell[87943, 1974, 90, 0, 70, "ExampleSubsection",ExpressionUUID->"07c7caef-0e5f-474f-9e1c-5e483ae626af"],
+Cell[88036, 1976, 188, 3, 70, "ExampleText",ExpressionUUID->"a29614fa-8fa6-4b22-b771-a5a7dd9ac0fe"],
+Cell[CellGroupData[{
+Cell[88249, 1983, 767, 19, 70, "Input",ExpressionUUID->"f889cbfc-d897-4e03-b7a5-c081f16c0e8a"],
+Cell[89019, 2004, 165, 3, 70, "Output",ExpressionUUID->"1febe277-4269-4d42-a807-0ef08a9f6fab"]
+}, Open  ]],
+Cell[89199, 2010, 255, 4, 70, "ExampleText",ExpressionUUID->"04bccb88-273c-4f67-9e7e-35a2f39772ab"],
+Cell[CellGroupData[{
+Cell[89479, 2018, 1037, 26, 70, "Input",ExpressionUUID->"87be49b1-7ae7-4b2b-bc35-2642b1f62e84"],
+Cell[90519, 2046, 9314, 219, 70, "Output",ExpressionUUID->"a2ff59e4-fc9f-4de5-93d3-f2fc35930cf1"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[99872, 2270, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
  CellID->258228157],
 Cell[CellGroupData[{
-Cell[84379, 1884, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
+Cell[100145, 2279, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
  CellID->2123667759],
-Cell[84641, 1891, 328, 10, 70, "ExampleText",ExpressionUUID->"a7c07967-6fed-45de-aeb8-6cc2b9fad099"],
+Cell[100407, 2286, 328, 10, 70, "ExampleText",ExpressionUUID->"9eddfbf3-0a38-438f-b340-e7952062dfbf"],
 Cell[CellGroupData[{
-Cell[84994, 1905, 1969, 55, 70, "Input",ExpressionUUID->"ce0477d1-b984-46ab-9a65-9376c2678bd3"],
-Cell[86966, 1962, 9035, 196, 70, "Output",ExpressionUUID->"cf0235d4-f1b7-40f6-a1fd-5719f14f2085"]
+Cell[100760, 2300, 1967, 55, 70, "Input",ExpressionUUID->"806a0b18-a3fe-489a-a3d2-204656d3107b"],
+Cell[102730, 2357, 9035, 196, 70, "Output",ExpressionUUID->"6abcaefa-275d-41bc-9dc9-f104af387beb"]
 }, Open  ]]
 }, Open  ]],
-Cell[96028, 2162, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
+Cell[111792, 2557, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
  CellID->1305812373],
-Cell[96283, 2169, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
+Cell[112047, 2564, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
  CellID->1653164318],
-Cell[96543, 2176, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
+Cell[112307, 2571, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
  CellID->589267740]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[96829, 2186, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
+Cell[112593, 2581, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
  CellID->311882160],
-Cell[96942, 2189, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
+Cell[112706, 2584, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
  CellID->341476719],
 Cell[CellGroupData[{
-Cell[97443, 2205, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
+Cell[113207, 2600, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
  CellID->1755438392],
-Cell[97931, 2220, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
+Cell[113695, 2615, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
  CellID->686433507],
-Cell[98068, 2224, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
+Cell[113832, 2619, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
  CellID->605800465],
-Cell[98229, 2228, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
+Cell[113993, 2623, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
  CellID->468444828],
-Cell[98387, 2232, 151, 1, 70, "Categorization",ExpressionUUID->"c93b5efc-c1bb-44ad-bd68-ba2d03607558"]
+Cell[114151, 2627, 150, 1, 70, "Categorization",ExpressionUUID->"333d952e-104e-4103-b73c-670822a9f3f6"]
 }, Closed]],
-Cell[98553, 2236, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
+Cell[114316, 2631, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
  CellID->477174294],
 Cell[CellGroupData[{
-Cell[98688, 2241, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
+Cell[114451, 2636, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
  CellID->1872225408],
-Cell[98811, 2244, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
+Cell[114574, 2639, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
  CellID->1562036412],
-Cell[98963, 2248, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
+Cell[114726, 2643, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
  CellID->158391909],
-Cell[99103, 2252, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
+Cell[114866, 2647, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
  CellID->1360575930],
-Cell[99242, 2256, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
+Cell[115005, 2651, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
  CellID->793782254]
 }, Closed]]
 }, Open  ]]

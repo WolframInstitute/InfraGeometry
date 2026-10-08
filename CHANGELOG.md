@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Unreleased** (2026-10-09, CoveringDimension T2): **breaking -- `DominationNumber` is `BallCoverNumber`, with `Method`.** `BallCoverNumber[g, r, targets, Method -> m]` is the number of balls in the cover `FindBallCover` finds under the same `Method`: with the default `"Exhaustive"` the least number, which graph theory calls the `r`-domination number of `g` (the domination number at `r = 1`), with `"Greedy"` and `"Symmetric"` an upper bound, so a greedy count is one call on a substrate where the exact program is slow. The old name said what graph theory calls the count, not what is computed; the new one stands beside `FindBallCover` and `BallCoverQ`. How to rewrite old code: `DominationNumber[g, r, targets]` is `BallCoverNumber[g, r, targets]`. The page is renamed and carries a `Method` section; `FindBallCover`, `BallCoverQ` and the Infra Topology guide point to it. Tests `BallCoverNumber-Method-cuboctahedron` (3, 4, 3 for the three methods) and `BallCoverNumber-defaults`.
+
 ## 2.6.0 (2026-10-08)
 
 - **2.6.0** (2026-10-08, Release260): **breaking -- orthogonal axes and rays, and the forms fixes.** Two items merged into `main`, released together the same day as 2.5.0. OrthogonalFrameRework is breaking, with how to rewrite old code.

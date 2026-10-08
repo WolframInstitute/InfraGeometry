@@ -108,5 +108,6 @@ BallCoverQ[ g_Graph, r_, s_List, targets : (_List | All) : All ] :=
         AllTrue[ rows, row |-> AnyTrue[ pos, j |-> row[[ j ]] <= r ] ]
     ]
 
-DominationNumber[ g_Graph, r_ : 1, targets : (_List | All) : All ] :=
-  Length @ FindBallCover[ g, r, targets ]
+Options[ BallCoverNumber ] = { Method -> "Exhaustive" }
+BallCoverNumber[ g_Graph, r_ : 1, targets : ( _List | All ) : All, opts : OptionsPattern[] ] :=
+  Length @ FindBallCover[ g, r, targets, Method -> OptionValue[ Method ] ]

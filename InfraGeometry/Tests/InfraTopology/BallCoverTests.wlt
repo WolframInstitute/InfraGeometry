@@ -2,18 +2,18 @@ BeginTestSection["BallCover"]
 
 (* Moved from RiemannianTests.wlt on 2026-10-05, when the tests were split by kernel file (APISurfaceCleanup T9) *)
 
-(* ===== Ball covers: FindBallCover, BallCoverQ, DominationNumber ===== *)
+(* ===== Ball covers: FindBallCover, BallCoverQ, BallCoverNumber ===== *)
 
 VerificationTest[
-    DominationNumber[CycleGraph[7], 2],
+    BallCoverNumber[CycleGraph[7], 2],
     2,
-    TestID -> "DominationNumber-C7-r2"
+    TestID -> "BallCoverNumber-C7-r2"
 ]
 
 VerificationTest[
-    DominationNumber[PetersenGraph[], 1],
+    BallCoverNumber[PetersenGraph[], 1],
     3,
-    TestID -> "DominationNumber-Petersen-r1"
+    TestID -> "BallCoverNumber-Petersen-r1"
 ]
 
 VerificationTest[
@@ -31,7 +31,7 @@ VerificationTest[
 (* a cover of a vertex subset covers its targets and can be smaller than a full cover *)
 VerificationTest[
     With[{g = PathGraph[Range[7]]},
-        {BallCoverQ[g, 1, FindBallCover[g, 1, {1, 7}], {1, 7}], DominationNumber[g, 1, {1, 7}] < DominationNumber[g, 1]}
+        {BallCoverQ[g, 1, FindBallCover[g, 1, {1, 7}], {1, 7}], BallCoverNumber[g, 1, {1, 7}] < BallCoverNumber[g, 1]}
     ],
     {True, True},
     TestID -> "FindBallCover-subset-covers-targets"
@@ -70,7 +70,7 @@ VerificationTest[
    symmetric program is the exhaustive one and returns a minimum cover, no message *)
 VerificationTest[
     With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {s = FindBallCover[g, 2, All, 1, Method -> "Symmetric"]},
-        {Length[s], BallCoverQ[g, 2, s], DominationNumber[g, 2]}
+        {Length[s], BallCoverQ[g, 2, s], BallCoverNumber[g, 2]}
     ],
     {8, True, 8},
     TestID -> "FindBallCover-symmetric-asymmetric-graph"
@@ -95,6 +95,23 @@ VerificationTest[
     {FindBallCover[CycleGraph[6], 1, All, All, Method -> "Greedy"], FindBallCover[CycleGraph[6], 1, All, UpTo[0], Method -> "Greedy"]},
     {{{6, 3}}, {}},
     TestID -> "FindBallCover-greedy-count-wraps-one-cover"
+]
+
+(* BallCoverNumber counts the cover FindBallCover finds under the same Method: on the cuboctahedron
+   the exhaustive and the symmetric count are the domination number 3, the greedy count 4 *)
+VerificationTest[
+    With[{g = GraphData["CuboctahedralGraph"]},
+        Table[BallCoverNumber[g, 1, Method -> m], {m, {"Exhaustive", "Greedy", "Symmetric"}}]
+    ],
+    {3, 4, 3},
+    TestID -> "BallCoverNumber-Method-cuboctahedron"
+]
+
+(* the radius defaults to 1 and the targets to All *)
+VerificationTest[
+    {BallCoverNumber[PetersenGraph[]], BallCoverNumber[PetersenGraph[], 1, All]},
+    {3, 3},
+    TestID -> "BallCoverNumber-defaults"
 ]
 
 EndTestSection[]

@@ -261,7 +261,7 @@ FindBallCover::usage = "FindBallCover[g, r] returns a minimum r-ball cover of g:
 
 BallCoverQ::usage = "BallCoverQ[g, r, S] tests whether the radius-r balls around the centres S cover every vertex of g. BallCoverQ[g, r, S, targets] tests coverage of the given vertex subset.";
 
-DominationNumber::usage = "DominationNumber[g, r] gives the r-domination number of g: the size of a minimum r-ball cover. DominationNumber[g, r, targets] gives the size of a minimum r-ball cover of the given vertex subset.";
+BallCoverNumber::usage = "BallCoverNumber[g, r] gives the number of balls in the radius-r ball cover FindBallCover finds: the least number, the r-domination number of g, under the default Method \"Exhaustive\". BallCoverNumber[g, r, targets] counts the balls covering the given vertex subset. Option Method.";
 
 OllivierRicciCurvature::usage = "OllivierRicciCurvature[g] returns Association[edge -> kappa] with the Ollivier-Ricci curvature kappa(u, v) = 1 - W_1(mu_u, mu_v) / d(u, v), where mu_x is uniform on N(x) and W_1 is the Wasserstein-1 distance under graph distance (alpha = 0). The values are machine numbers.";
 

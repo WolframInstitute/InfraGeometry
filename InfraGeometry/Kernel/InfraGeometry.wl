@@ -141,7 +141,7 @@ PackageExport[BallIntersectionBifiltration]
 
 PackageExport[FindBallCover]
 PackageExport[BallCoverQ]
-PackageExport[DominationNumber]
+PackageExport[BallCoverNumber]
 
 (* InfraAnalysis *)
 

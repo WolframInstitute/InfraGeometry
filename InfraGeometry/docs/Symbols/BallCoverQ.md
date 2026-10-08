@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/BallCoverQ
 Keywords: [ball cover, dominating set, r-domination, covering]
-SeeAlso: [FindBallCover, DominationNumber, InfraBall]
+SeeAlso: [FindBallCover, BallCoverNumber, InfraBall]
 RelatedGuides: [InfraTopology]
 ---
 
@@ -20,7 +20,7 @@ RelatedGuides: [InfraTopology]
 
 Definition: *s* covers a set *T* at radius *r* when every *t ∈ T* has some *c ∈ s* with *d(t, c) ≤ r*; for *T* the whole vertex set, *s* is an *r*-dominating set.
 
-A cover of every vertex at radius *r* is one at every larger radius, and a superset of a cover is a cover. The smallest covers are found by [FindBallCover](), and their size is [DominationNumber]().
+A cover of every vertex at radius *r* is one at every larger radius, and a superset of a cover is a cover. The smallest covers are found by [FindBallCover](), and their size is [BallCoverNumber]().
 
 ## Basic Examples
 

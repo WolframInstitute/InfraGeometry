@@ -39,6 +39,6 @@ The topological properties of a substrate are read off its metric balls. The clo
 
 - `FindBallCover` a smallest set of centres whose radius-r balls cover every vertex, or a given set of targets
 - `BallCoverQ` whether the radius-r balls about a set of centres cover every vertex, or a given set of targets
-- `DominationNumber` the size N(r) of a smallest radius-r ball cover
+- `BallCoverNumber` the number N(r) of radius-r balls in the cover found, the smallest cover's by default: the r-domination number
 - waits: the covering dimension, from how N(r) falls as r grows, or from how many balls of radius r cover a ball of radius 2r
 - waits, as a tutorial: the dimension read from where the intersection of the balls containing k given points becomes degenerate
