@@ -18,7 +18,7 @@ RelatedGuides: [InfraTopology]
 
 Definition: a map between finite topologies is continuous exactly when it is monotone for the specialization preorders, *q ≤ p* implies *f(q) ≤ f(p)*. Equivalently, *f(cl(p)) ⊆ cl(f(p))* for every vertex *p*.
 
-The test runs over the edges of *topo1*: each edge *q* → *p* must go to a pair *f(q)*, *f(p)* joined by a directed path of *topo2*. The two topologies may come from different graphs or different radii.
+The test runs over the edges of *topo1*: each edge *q* → *p* must go to a pair *f(q)*, *f(p)* that are equal or joined by a directed path of *topo2*. The two topologies may come from different graphs or different radii.
 
 *f* is an [Association](), a list of rules, or a function.
 
@@ -62,9 +62,7 @@ With[
    ContinuousMapQ[v |-> Mod[v + 2, 7, 1], topo, topo]}]
 ```
 
-## Possible Issues
-
-A constant map is continuous, but the test reports `False` whenever *f* sends both ends of an edge of *topo1* to one vertex. For a constant map it gives `True` only when *topo1* has no edges, as at radius 0.
+A constant map is continuous, though it sends both ends of every edge to one vertex.
 
 ```wl
 With[

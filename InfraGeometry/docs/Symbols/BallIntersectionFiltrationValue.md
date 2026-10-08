@@ -22,7 +22,7 @@ Definition: let *ρ(τ)* be the least radius at which the balls about the points
 
 The set *σ* is a simplex of <code>[BallIntersectionComplex]()[*data*, *r*, *k*]</code> exactly when *f_k(σ) ≤ r*. Since *ρ* grows with the set, *f_k* is monotone under faces, and it grows with *k* up to *ρ(σ)*.
 
-For Euclidean points *ρ* is [MiniballRadius](). Option `"Metric"` -> *g* reads *data* as vertices of the graph *g*, and *ρ(τ)* is the least *r* such that some vertex of *g* lies within *r* of every point of *τ*. A distance matrix or a function looks for that vertex among the points of *data*.
+For Euclidean points *ρ* is [MiniballRadius](). Option `"Metric"` -> *g* reads *data* as vertices of the graph *g*, and *ρ(τ)* is the least *r* such that some vertex of *g* lies within *r* of every point of *τ*. A distance matrix or a function looks for that point among the points of *data*. For *k* = 2 the value of a pair is therefore half its distance for Euclidean points, the ceiling of that half for a graph, and in general neither for a matrix or a function.
 
 ## Basic Examples
 
@@ -43,6 +43,21 @@ With[
   {corners = First /@ First @ FindCycle[{g, First @ GraphCenter[g]}, {4}]},
   {InfraSubstrateHighlight[g, {InfraWalk[Append[corners, First[corners]]]}],
    Table[BallIntersectionFiltrationValue[corners, Range[4], k, "Metric" -> g], {k, 2, 4}]}]
+```
+
+## Options
+
+### Metric
+
+Two vertices of a path at distance 2. Their balls first meet at radius 1 in the graph, at the vertex between them, and in the plane; with the distance matrix of the two alone the common point must be one of them, and the radius is 2.
+
+```wl
+With[
+  {g = PathGraph[Range[5]]},
+  {InfraSubstrateHighlight[g, {InfraBall[1, 1], InfraBall[3, 1]}],
+   BallIntersectionFiltrationValue[{1, 3}, {1, 2}, 2, "Metric" -> g],
+   BallIntersectionFiltrationValue[{{0, 0}, {2, 0}}, {1, 2}, 2],
+   BallIntersectionFiltrationValue[{1, 3}, {1, 2}, 2, "Metric" -> {{0, 2}, {2, 0}}]}]
 ```
 
 ## Properties and Relations

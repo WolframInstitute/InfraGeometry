@@ -20,7 +20,7 @@ RelatedGuides: [InfraTopology]
 
 Definition: let *B_i* be the closed ball of radius *r* about the *i*-th point. A set *σ* of positions is a simplex of *C^(k)_r* when every subset of *σ* with *min(k, |σ|)* elements has balls with a common point.
 
-At *k = 2* every pair of balls meets: the Vietoris–Rips complex at scale *2r*, the pairs at distance at most *2r* and every set all of whose pairs are such. At *k* = [Infinity]() all the balls of *σ* meet: the Čech complex, the nerve of the balls. In between the complexes are nested, *C^(2) ⊇ C^(3) ⊇ … ⊇* Čech.
+At *k = 2* every pair of balls meets. For Euclidean points that is the Vietoris–Rips complex at scale *2r*, the pairs at distance at most *2r* and every set all of whose pairs are such. At *k* = [Infinity]() all the balls of *σ* meet: the Čech complex, the nerve of the balls. In between the complexes are nested, *C^(2) ⊇ C^(3) ⊇ … ⊇* Čech.
 
 Balls in *ℝ^d* are convex, and by Helly's theorem the ladder stops at *k = d + 1*: in the plane order 3 is already Čech. On a graph it may go further.
 
@@ -36,7 +36,13 @@ Options:
 | `"IntersectionTest"` | a function of the common region of Euclidean balls that must give `True` | [Automatic](), the region is not empty |
 | `"MaxDimension"` | the largest dimension of a simplex | [Infinity]() |
 
-With a graph *g* the balls meet when some vertex of *g* lies within *r* of every centre, so order 2 is again the Vietoris–Rips complex at *2r*. With a matrix or a function the common point must be a point of *data*.
+The common point of the balls depends on the metric:
+
+| `"Metric"` | the balls meet when | order 2 |
+|---|---|---|
+| [Automatic]() | some point of space lies within *r* of every centre | the Vietoris–Rips complex at *2r* |
+| a [Graph]() *g* | some vertex of *g*, in *data* or not, lies within *r* of every centre | the Vietoris–Rips complex at *2r* for integer *r*; two vertices at distance *d* have meeting balls from *r* = ⌈*d*/2⌉, so *r* = 1/2 gives no edge |
+| a matrix or a function | some point of *data* lies within *r* of every centre | in general neither: a pair is an edge only when a third point or one of the two lies within *r* of both |
 
 ## Basic Examples
 
