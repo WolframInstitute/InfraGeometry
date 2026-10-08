@@ -14,8 +14,6 @@ RelatedGuides: [InfraSubstrates]
 
 <code>[TessellationEulerCharacteristic]()[*g*, *spec*]</code> gives the Euler characteristic *V* − *E* + *F* of the closed map with graph *g* and type *spec*: a symbol {*p*, *q*} or a vertex configuration.
 
-<code>[TessellationEulerCharacteristic]()[*g*]</code> reads the type off *g* as for a regular map.
-
 ## Details & Options
 
 Definition: *χ = V − E + F*, with *V* and *E* the vertices and edges of *g*. The faces are counted through their corners: when every vertex has faces of *f*₁, …, *f*ₖ sides, each vertex has one corner in each, and a face with *f* sides has *f* corners, so *F = V Σᵢ 1/fᵢ*. A symbol {*p*, *q*} is *q* faces of *p* sides.
@@ -24,7 +22,7 @@ The surface of a closed orientable map of genus *g* has *χ* = 2 − 2*g*: 2 on 
 
 The count of faces through corners holds on a closed map, where every vertex has the whole configuration.
 
-The graph form takes the type {*p*, *q*} with *p* the girth of *g* and *q* its least degree, as [TessellationCurvature]() does.
+The type is part of the map: a graph does not determine it. For the *k*-th map of a type, 2 − 2 [TessellationGenus]()[*spec*, *k*] gives the same value from the type and the size alone.
 
 ## Basic Examples
 
@@ -32,8 +30,9 @@ The cube, a square torus and the smallest map of heptagons, three at every verte
 
 ```wl
 With[
+  {specs = {{4, 3}, {4, 4}, {7, 3}}},
   {maps = {TessellationGraph[{4, 3}], TessellationGraph[{4, 4}, 6], TessellationGraph[{7, 3}]}},
-  {GraphicsRow[maps], TessellationEulerCharacteristic /@ maps}]
+  {GraphicsRow[maps], MapThread[TessellationEulerCharacteristic, {maps, specs}]}]
 ```
 
 ## Scope
@@ -46,11 +45,11 @@ With[
   {g, TessellationEulerCharacteristic[g, {5, 6, 6}]}]
 ```
 
-The first three maps {3, 7} of [TessellationGraph](), with 24, 156 and 1740 vertices: the Euler characteristic is −*V*/6.
+The first three maps {3, 7} of [TessellationGraph](), with 24, 72 and 156 vertices: the Euler characteristic is −*V*/6.
 
 ```wl
 With[
-  {sizes = Table[With[{m = TessellationGraph[{3, 7}, n]}, {VertexCount[m], TessellationEulerCharacteristic[m]}], {n, 3}]},
+  {sizes = Table[With[{m = TessellationGraph[{3, 7}, n]}, {VertexCount[m], TessellationEulerCharacteristic[m, {3, 7}]}], {n, 3}]},
   {ListPlot[sizes, AxesLabel -> {"vertices", "Euler characteristic"}], sizes}]
 ```
 
@@ -60,26 +59,27 @@ The Euler characteristic is the number of vertices times the curvature at a vert
 
 ```wl
 With[
+  {specs = {{3, 4}, {3, 6}, {3, 7}}},
   {maps = {TessellationGraph[{3, 4}], TessellationGraph[{3, 6}, 6], TessellationGraph[{3, 7}]}},
-  {GraphicsRow[maps], Table[{TessellationEulerCharacteristic[m], VertexCount[m] TessellationCurvature[m]}, {m, maps}]}]
+  {GraphicsRow[maps], MapThread[{TessellationEulerCharacteristic[#1, #2], VertexCount[#1] TessellationCurvature[#2]} &, {maps, specs}]}]
 ```
 
-It is 2 − 2*g*, *g* the [TessellationGenus]().
+It is 2 − 2*g*, *g* the [TessellationGenus]() of the type and the size: −12 for the second map {3, 7}, of genus 7.
 
 ```wl
 With[
-  {g = TessellationGraph[{3, 7}]},
-  {g, TessellationEulerCharacteristic[g] == 2 - 2 TessellationGenus[g]}]
+  {g = TessellationGraph[{3, 7}, 2]},
+  {g, TessellationEulerCharacteristic[g, {3, 7}], 2 - 2 TessellationGenus[{3, 7}, 2]}]
 ```
 
 ## Possible Issues
 
-A map with faces of several sizes needs its configuration. The girth of the truncated icosahedron is 5, and the graph form counts pentagons only.
+The type must be the map's. The first map {5, 5}, of twelve pentagons on a surface of genus 4, has the graph of the icosahedron; read as {3, 5}, the same graph gives the sphere.
 
 ```wl
 With[
-  {g = TessellationGraph[{5, 6, 6}]},
-  {g, TessellationEulerCharacteristic[g], TessellationEulerCharacteristic[g, {5, 6, 6}]}]
+  {g = TessellationGraph[{5, 5}]},
+  {g, TessellationEulerCharacteristic[g, {5, 5}], TessellationEulerCharacteristic[g, {3, 5}]}]
 ```
 
 A ball cut from a tiling is not closed: its rim vertices have fewer faces than the configuration says, and the value is not the Euler characteristic 1 of the disk.

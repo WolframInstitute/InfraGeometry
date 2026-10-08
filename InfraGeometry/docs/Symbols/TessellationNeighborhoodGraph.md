@@ -38,7 +38,7 @@ The ball has a rim: a vertex at distance *r* has fewer than *q* neighbours. Unli
 
 A vertex configuration lists the faces around a vertex in cyclic order: {3, 4, 6, 4} is the rhombitrihexagonal tiling. The Euclidean configurations {3, 6, 3, 6}, {3, 4, 6, 4}, {4, 6, 12}, {4, 8, 8}, {3, 12, 12} and the hyperbolic ones are built face by face around each vertex; a spherical one gives a ball of the Archimedean solid. The snub and elongated tilings are not built.
 
-The rectangular form exists for the three Euclidean tilings. [Graph]() options are passed on to the graph.
+The rectangular form exists for the three Euclidean tilings and has *m* × *n* cells in each, squares, rhombi of two triangles, hexagons, as <code>[TessellationGraph]()[{*p*, *q*}, {*m*, *n*}]</code> has. [Graph]() options are passed on to the graph.
 
 ## Basic Examples
 
@@ -64,6 +64,14 @@ On the sphere the ball closes up: radius 1, 2 and 3 in the icosahedral tiling.
 With[
   {caps = Table[TessellationNeighborhoodGraph[{3, 5}, radius], {radius, 3}]},
   {GraphicsRow[caps], VertexCount /@ caps}]
+```
+
+The rectangular patches of 4 × 3 cells in the square, triangular and hexagonal tilings.
+
+```wl
+With[
+  {patches = Table[TessellationNeighborhoodGraph[type, {4, 3}], {type, {{4, 4}, {3, 6}, {6, 3}}}]},
+  {GraphicsRow[patches], VertexCount /@ patches}]
 ```
 
 ## Properties and Relations
@@ -113,12 +121,4 @@ The snub and elongated tilings are not built, and the call stays unevaluated.
 
 ```wl
 TessellationNeighborhoodGraph[{3, 3, 3, 4, 4}, 3]
-```
-
-The rectangular patches count differently: the square patch has *m* × *n* vertices, the triangular and hexagonal patches *m* × *n* cells. The patches for {4, 3}:
-
-```wl
-With[
-  {patches = Table[TessellationNeighborhoodGraph[type, {4, 3}], {type, {{4, 4}, {3, 6}, {6, 3}}}]},
-  {GraphicsRow[patches], VertexCount /@ patches}]
 ```

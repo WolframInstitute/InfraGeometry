@@ -16,8 +16,6 @@ RelatedGuides: [InfraSubstrates]
 
 <code>[TessellationCurvature]()[*config*]</code> gives the curvature at a vertex with the vertex configuration *config*.
 
-<code>[TessellationCurvature]()[*g*]</code> reads a regular configuration off the graph *g* of a closed map.
-
 ## Details & Options
 
 Definition: at a vertex surrounded by *k* faces with *f*₁, …, *f*ₖ sides, the combinatorial curvature is *κ = Σᵢ 1/fᵢ − (k − 2)/2*. For {*p*, *q*} it is *κ = q/p − (q − 2)/2 = (4 − (p − 2)(q − 2))/(2p)*.
@@ -26,7 +24,7 @@ When the faces are regular polygons, 2π*κ* is the angle defect at the vertex: 
 
 On a closed map the curvatures of the vertices add up to the Euler characteristic, a discrete Gauss–Bonnet theorem. Each face has *f* corners, each counted 1/*f*, so the first terms add up to *F*; the degrees add up to 2*E*, so the second terms add up to *E − V*. Hence the curvatures of all the vertices add up to *V − E + F*. When every vertex has the same configuration, *V κ* is the [TessellationEulerCharacteristic]().
 
-The graph form reads the configuration as {*p*, *q*} with *p* the girth of *g*, the length of its shortest cycle, and *q* its least degree. That is right for a regular map whose faces are its shortest cycles.
+The curvature is a function of the configuration. It is not read off a graph, since one graph can carry maps of different types.
 
 ## Basic Examples
 
@@ -38,12 +36,12 @@ With[
   {GraphicsRow[stars], Table[TessellationCurvature[{3, q}], {q, 5, 7}]}]
 ```
 
-The graph form on three closed maps: the icosahedron, a triangulated torus and the Klein quartic.
+A vertex configuration with two face sizes: two triangles and two squares at every vertex of the cuboctahedron, curvature 1/6.
 
 ```wl
 With[
-  {maps = {TessellationGraph[{3, 5}], TessellationGraph[{3, 6}, 6], TessellationGraph[{3, 7}]}},
-  {GraphicsRow[maps], TessellationCurvature /@ maps}]
+  {g = TessellationGraph[{3, 4, 3, 4}]},
+  {g, TessellationCurvature[{3, 4, 3, 4}]}]
 ```
 
 ## Scope
@@ -70,24 +68,25 @@ On a closed map in which every vertex looks alike, the number of vertices times 
 
 ```wl
 With[
+  {specs = {{4, 3}, {3, 5}, {4, 4}, {3, 7}}},
   {maps = {TessellationGraph[{4, 3}], TessellationGraph[{3, 5}], TessellationGraph[{4, 4}, 6], TessellationGraph[{3, 7}]}},
-  {GraphicsRow[maps], Table[{VertexCount[m] TessellationCurvature[m], TessellationEulerCharacteristic[m]}, {m, maps}]}]
+  {GraphicsRow[maps], MapThread[{VertexCount[#1] TessellationCurvature[#2], TessellationEulerCharacteristic[#1, #2]} &, {maps, specs}]}]
+```
+
+So the genus of a map is 1 − *V κ*/2, the [TessellationGenus]() of its type and size: 3 for the Klein quartic, 24 vertices of curvature −1/6.
+
+```wl
+With[
+  {g = TessellationGraph[{3, 7}]},
+  {g, 1 - VertexCount[g] TessellationCurvature[{3, 7}]/2, TessellationGenus[{3, 7}, 1]}]
 ```
 
 ## Possible Issues
 
-A map with faces of several sizes needs its configuration: the cuboctahedron has two triangles and two squares at every vertex, curvature 1/6, but its girth 3 and degree 4 read as four triangles, 1/3.
+A list of two numbers is a symbol {*p*, *q*}, never a configuration of two faces. The dihedron {5, 2} has two pentagons at every vertex, while {5, 5} is the type with five pentagons at every vertex.
 
 ```wl
 With[
-  {g = TessellationGraph[{3, 4, 3, 4}]},
-  {g, TessellationCurvature[g], TessellationCurvature[{3, 4, 3, 4}]}]
-```
-
-On a small torus a cycle round the torus can be shorter than a face. The 3 × 3 square torus has girth 3, and the graph form reads it as curved.
-
-```wl
-With[
-  {g = TessellationGraph[{4, 4}, 3]},
-  {g, TessellationCurvature[g], TessellationCurvature[{4, 4}]}]
+  {g = TessellationGraph[{5, 2}]},
+  {g, TessellationCurvature[{5, 2}], TessellationCurvature[{5, 5}]}]
 ```
