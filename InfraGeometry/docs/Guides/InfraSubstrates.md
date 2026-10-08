@@ -41,8 +41,8 @@ The substrate is the graph the observer lives on. InfraSubstrate names the examp
 ### Surface-like graphs
 
 - `TessellationCurvature` the combinatorial Gaussian curvature at a vertex of a regular or uniform map; its sign says spherical, flat or hyperbolic
-- `TessellationEulerCharacteristic` the Euler characteristic V - E + F of a tessellation graph
-- `TessellationGenus` the orientable genus of a tessellation graph, from its Euler characteristic
+- `TessellationEulerCharacteristic` the Euler characteristic V - E + F of a tessellation graph with its type
+- `TessellationGenus` the genus of the surface of the k-th map of a type, from its size alone, or of a tessellation graph with its type
 - waits: a test whether a graph is surface-like at a scale, its metric balls discs and its metric shells cycles
 
 ### Preparing a substrate

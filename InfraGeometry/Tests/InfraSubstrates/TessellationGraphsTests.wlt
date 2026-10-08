@@ -270,13 +270,57 @@ VerificationTest[
   TestID -> "TessellationGenus-hyperbolic-gauss-bonnet"
 ]
 
-(* spec-free forms detect a regular configuration (uniform degree, girth face) from the graph *)
+(* a graph does not determine its map: the icosahedron's graph carries the {3, 5} sphere and the first {5, 5} map, of genus 4 *)
 VerificationTest[
-  { TessellationGenus[ TessellationGraph[ { 3, 5 } ] ],
-    TessellationGenus[ TessellationGraph[ { 4, 4 }, { 12, 12 } ] ],
-    TessellationGenus[ TessellationGraph[ { 3, 7 }, 2 ] ] },
-  { 0, 1, 7 },
-  TestID -> "TessellationGenus-spec-free-regular-detection"
+  With[ { g = TessellationGraph[ { 5, 5 } ] },
+    { IsomorphicGraphQ[ g, TessellationGraph[ { 3, 5 } ] ], TessellationGenus[ g, { 3, 5 } ], TessellationGenus[ g, { 5, 5 } ] } ],
+  { True, 0, 4 },
+  TestID -> "TessellationGenus-the-type-is-part-of-the-map"
+]
+
+VerificationTest[
+  With[ { g = TessellationGraph[ { 5, 5 } ] },
+    MatchQ[ #, _TessellationCurvature | _TessellationEulerCharacteristic | _TessellationGenus ] & /@
+      { TessellationCurvature[ g ], TessellationEulerCharacteristic[ g ], TessellationGenus[ g ] } ],
+  { True, True, True },
+  TestID -> "TessellationInvariants-graph-without-type-stays-unevaluated"
+]
+
+(* the genus of the k-th map from its type and group order alone: g = 1 + |G| (p q - 2 p - 2 q) / (4 p q), |G| = 168, 504, 1092 *)
+VerificationTest[
+  Table[ { TessellationGenus[ { 3, 7 }, k ], TessellationGenus[ TessellationGraph[ { 3, 7 }, k ], { 3, 7 } ] }, { k, 3 } ],
+  { { 3, 3 }, { 7, 7 }, { 14, 14 } },
+  TestID -> "TessellationGenus-sized-37-from-the-order"
+]
+
+(* a uniform map lies on the surface of its parent: {5, 10, 10} truncates the {5, 5} map of genus 4 *)
+VerificationTest[
+  ( { spec, k } |-> TessellationGenus[ spec, k ] == TessellationGenus[ TessellationGraph[ spec, k ], spec ] ) @@@ {
+    { { 4, 5 }, 1 }, { { 3, 8 }, 1 }, { { 5, 5 }, 1 }, { { 5, 4 }, 2 }, { { 3, 5 }, 1 }, { { 5, 2 }, 1 }, { { 6, 3 }, 1 }, { { 4, 4 }, 2 },
+    { { 3, 7, 3, 7 }, 1 }, { { 4, 6, 14 }, 1 }, { { 5, 10, 10 }, 1 }, { { 3, 4, 3, 4 }, 1 }, { { 4, 4, 5 }, 1 }, { { 3, 3, 3, 5 }, 1 },
+    { { 4, 8, 8 }, 4 }, { { 3, 12, 12 }, 3 } },
+  ConstantArray[ True, 16 ],
+  TestID -> "TessellationGenus-sized-agrees-with-the-built-map"
+]
+
+VerificationTest[
+  { TessellationGenus[ { 4, 8, 8 }, 6 ], TessellationGenus[ { 3, 4, 3, 4 }, 1 ], TessellationGenus[ { 5, 10, 10 }, 1 ] },
+  { 1, 0, 4 },
+  TestID -> "TessellationGenus-sized-torus-sphere-parent"
+]
+
+VerificationTest[
+  { TessellationGenus[ { 3, 7 } ], TessellationGenus[ { 4, 6, 14 } ] },
+  { 3, 3 },
+  TestID -> "TessellationGenus-sized-default-is-the-first-map"
+]
+
+(* past the maximal order, a second map of the sphere, a snub, a configuration without a map *)
+VerificationTest[
+  MatchQ[ #, _TessellationGenus ] & /@
+    { TessellationGenus[ { 3, 7 }, 6 ], TessellationGenus[ { 3, 5 }, 2 ], TessellationGenus[ { 3, 3, 3, 3, 4 }, 1 ], TessellationGenus[ { 5, 6, 7 }, 1 ] },
+  { True, True, True, True },
+  TestID -> "TessellationGenus-sized-without-a-map-stays-unevaluated"
 ]
 
 (* ===== TessellationNeighborhoodGraph: unwrapped {p,q} patches ===== *)

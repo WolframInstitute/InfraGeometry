@@ -532,32 +532,53 @@ TessellationNeighborhoodGraph[ config_List /; Length[ config ] >= 3, r_Integer :
     Graph[ g, Sequence @@ FilterRules[ { opts }, Options[ Graph ] ] ] /; GraphQ[ g ]
   ]
 
-(* combinatorial (angle-defect) Gaussian curvature at a vertex of the map:
-   kappa = Sum 1/f_i - (k - 2)/2; sign is spherical / flat / hyperbolic and the geometric
-   angle defect is 2 Pi kappa. Depends only on the local configuration, not the realisation.
-   A Schlafli {p, q} has q p-gons around each vertex; a longer list is the vertex configuration.
-   With a graph and no spec, the map is read as regular: q copies of the girth p. *)
+(* kappa = Sum 1/f_i - (k - 2)/2 at a vertex with faces of f_1, ..., f_k sides, 2 Pi kappa its angle defect; {p, q} is q p-gons *)
 TessellationCurvature[ spec_List ] :=
-  With[ { sizes = Replace[ spec, { p_Integer, q_Integer } :> ConstantArray[ p, q ] ] }, Total[ 1/sizes ] - (Length[ sizes ] - 2)/2 ]
-TessellationCurvature[ g_Graph ] :=
-  TessellationCurvature[ ConstantArray[ First @ Select[ Range[ 3, EdgeCount[ g ] + 1 ], FindCycle[ g, { # }, 1 ] =!= {} &, 1 ],
-      First @ Union @ VertexDegree @ g ] ]
+  With[
+    { sizes = Replace[ spec, { p_Integer, q_Integer } :> ConstantArray[ p, q ] ] },
+    Total[ 1 / sizes ] - ( Length[ sizes ] - 2 ) / 2
+  ]
 
-(* Euler characteristic of the closed map, V - E + F read off the realised graph: each
-   f-gon owns f of the V*k vertex-face corners, so F = V Sum 1/f_i (works for the mixed
-   faces of an Archimedean map). Discrete Gauss-Bonnet gives the same value as V kappa.
-   The spec defaults to the regular configuration detected from the graph. *)
+(* each f-gon owns f of the k V corners of a closed map, so F = V Sum 1/f_i *)
 TessellationEulerCharacteristic[ graph_Graph, spec_List ] :=
   VertexCount[ graph ] - EdgeCount[ graph ] + VertexCount[ graph ] Total[ 1 / Replace[ spec, { p_Integer, q_Integer } :> ConstantArray[ p, q ] ] ]
-TessellationEulerCharacteristic[ graph_Graph ] :=
-  TessellationEulerCharacteristic[ graph,
-    ConstantArray[ First @ Select[ Range[ 3, EdgeCount[ graph ] + 1 ], FindCycle[ graph, { # }, 1 ] =!= {} &, 1 ],
-      First @ Union @ VertexDegree @ graph ] ]
 
 TessellationGenus[ graph_Graph, spec_List ] :=
-  (2 - TessellationEulerCharacteristic[ graph, spec ]) / 2
-TessellationGenus[ graph_Graph ] :=
-  (2 - TessellationEulerCharacteristic[ graph ]) / 2
+  ( 2 - TessellationEulerCharacteristic[ graph, spec ] ) / 2
+
+TessellationGenus[ { 4, 4 } | { 3, 6 } | { 6, 3 }, Optional[ _Integer?Positive, 1 ] ] :=
+  1
+
+(* the map of the quotient G has V = |G|/q, E = |G|/2, F = |G|/p, so chi = |G| (2 p + 2 q - p q)/(2 p q) *)
+TessellationGenus[ { p_Integer, q_Integer }, k : _Integer?Positive : 1 ] /; ( p - 2 ) ( q - 2 ) != 4 :=
+  With[
+    { map = regularMap[ { p, q }, k ] },
+    1 + q VertexCount[ First @ map ] ( p q - 2 p - 2 q ) / ( 4 p q ) /; ListQ[ map ]
+  ]
+
+(* rectify and truncate keep the surface, so a uniform map has the genus of the parent map it is built on *)
+TessellationGenus[ config_List /; Length[ config ] >= 3, k : _Integer?Positive : 1 ] :=
+  With[
+    {
+      key = First @ Sort @ Join[
+        Table[ RotateLeft[ config, i ], { i, 0, Length[ config ] - 1 } ],
+        Table[ RotateLeft[ Reverse @ config, i ], { i, 0, Length[ config ] - 1 } ]
+      ]
+    },
+    {
+      genus = Which[
+        Equal @@ config, TessellationGenus[ { First @ config, Length @ config }, k ],
+        k == 1 && ( Length[ config ] == 3 && Count[ config, 4 ] == 2 || Length[ config ] == 4 && Count[ config, 3 ] == 3 ), 0,
+        Length[ key ] == 4 && key[[ 1 ]] == key[[ 3 ]] && key[[ 2 ]] == key[[ 4 ]], TessellationGenus[ { key[[ 1 ]], key[[ 2 ]] }, k ],
+        Length[ key ] == 4 && key[[ 2 ]] == 4 && key[[ 4 ]] == 4, TessellationGenus[ { key[[ 1 ]], key[[ 3 ]] }, k ],
+        Length[ key ] == 3 && MemberQ[ key, 4 ], TessellationGenus[ DeleteCases[ key, 4 ] / 2, k ],
+        Length[ key ] == 3 && Length[ Union @ key ] == 2,
+        TessellationGenus[ { First[ Select[ key, Count[ key, # ] == 2 & ] ] / 2, First[ Select[ key, Count[ key, # ] == 1 & ] ] }, k ],
+        True, None
+      ]
+    },
+    genus /; IntegerQ[ genus ]
+  ]
 
 (* The regular maps of type {p, q} are the smooth quotients G = D/N of the triangle group D = <x, y | x^p, y^q, (x y)^2>
    by its normal subgroups N of finite index: x the face rotation, y the vertex rotation, x y the edge involution.
