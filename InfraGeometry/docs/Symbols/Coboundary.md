@@ -24,7 +24,7 @@ On a 0-cochain *f*, *(δf)(u, v) = f(v) − f(u)* on every edge.
 
 The coboundary is the same in the alternating and in the ordered convention: it reads only the stored values on the faces of an increasing tuple, which are increasing.
 
-A 0-cochain is keyed by one-vertex lists, `<|{v} -> value|>`. A value 0 is not stored.
+A *k*-cochain is keyed by increasing (*k* + 1)-vertex lists, a 0-cochain by one-vertex lists, `<|{v} -> value|>`; an association keyed by anything else stays unevaluated. A value equal to 0, a machine 0. too, is not stored.
 
 ## Basic Examples
 
@@ -71,11 +71,11 @@ With[
 
 ## Possible Issues
 
-A vertex function keyed by the vertices themselves is read as a cochain of degree −1, and its coboundary is empty. Keyed by one-vertex lists it has 150 values.
+A vertex function keyed by the vertices themselves is no cochain, since a vertex name may be a list: the call stays unevaluated, with no message. Keyed by one-vertex lists it has 150 values.
 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {values = AssociationMap[GraphDistance[g, First @ GraphCenter[g], #] &, VertexList[g]]},
-  {InfraSubstrateHighlight[g, values], Normal @ Coboundary[g, values], Length @ Coboundary[g, KeyMap[List, values]]}]
+  {InfraSubstrateHighlight[g, values], Head @ Coboundary[g, values], Length @ Coboundary[g, KeyMap[List, values]]}]
 ```

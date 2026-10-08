@@ -26,7 +26,7 @@ Stokes: *I(dω) = δ(Iω)* in every degree, *δ* being [Coboundary](). The trans
 
 *d(dω) ≠ 0*. On the gradient of a 0-form *f*, *(d(df))(v; w₁, w₂)* is 0 when *w₁* and *w₂* are adjacent and *f(w₁) − f(w₂)* when they are not: the square of the differential sees the missing edges.
 
-[FormDifferential]() computes degrees 0 and 1.
+[FormDifferential]() computes degrees 0 and 1: on a form of degree 2 or more it stays unevaluated, with no message.
 
 ## Basic Examples
 
@@ -89,12 +89,12 @@ With[
 
 ## Possible Issues
 
-On a form of degree 2 or more the germs come out empty, with no message. The differential of the gradient of the distance on the triangular tiling is a 2-form with a germ at the vertices drawn, and its differential is the zero form.
+On a form of degree 2 or more the call stays unevaluated. The differential of the gradient of the distance on the triangular tiling is a 2-form with a germ at the vertices drawn, and its differential is not computed, so no one reads *d(d(df)) = 0* off it.
 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {twoForm = FormDifferential[g, FormDifferential[g, ZeroForm[g, GraphDistance[g, First @ GraphCenter[g], #] &]]]},
   {InfraSubstrateHighlight[g, AssociationThread[Keys @ Select[twoForm, # =!= <||> &], 1]],
-   FormDegree[twoForm], Union[Length /@ Values[FormDifferential[g, twoForm]]]}]
+   FormDegree[twoForm], Head @ FormDifferential[g, twoForm]}]
 ```

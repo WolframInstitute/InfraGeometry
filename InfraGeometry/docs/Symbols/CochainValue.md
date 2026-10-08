@@ -18,7 +18,7 @@ RelatedGuides: [Experimental]
 
 Definition: an alternating *k*-cochain *α* on a graph is a function on the orderings of its (*k* + 1)-cliques with *α(vσ(0), …, vσ(k)) = sgn(σ) α(v₀, …, vₖ)* for every permutation *σ*, extended by 0 to the tuples that span no clique.
 
-An alternating cochain is determined by its values on the increasing tuples, one value per *k*-simplex of the clique complex, and it is stored so: `<|{v0, ..., vk} -> value|>` on the sorted cliques. [CochainValue]() sorts the tuple, as [Sort]() orders the vertex names, and multiplies the stored value by the sign of the sorting permutation. A tuple with a repeated vertex gives 0, and so does a tuple that is not stored: a value 0 is not stored, and a tuple that spans no clique carries no value.
+An alternating cochain is determined by its values on the increasing tuples, one value per *k*-simplex of the clique complex, and it is stored so: `<|{v0, ..., vk} -> value|>` on the sorted cliques. [CochainValue]() sorts the tuple, as [Sort]() orders the vertex names, and multiplies the stored value by the sign of the sorting permutation. A tuple with a repeated vertex gives 0, and so does a tuple that is not stored: a value equal to 0, a machine 0. too, is not stored, and a tuple that spans no clique carries no value.
 
 The same storage carries the ordered cochains, functions on the increasing tuples alone, and nothing in the data says which convention a cochain follows. [OrderedCochainCup]() and [CochainCupOne]() give ordered cochains; read them with [OrderedCochainValue]().
 
