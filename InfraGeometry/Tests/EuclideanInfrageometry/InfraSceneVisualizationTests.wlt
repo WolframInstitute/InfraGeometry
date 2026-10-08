@@ -9,7 +9,7 @@ shapesAt           = opts |-> Association @ Cases[ VertexShapeFunction /. opts,
   ( v_ -> f_Function ) :> v -> Sort @ Cases[ f[ { 0, 0 }, None, { 1, 1 } ], ( h : Disk | Circle | Point )[ ___ ] :> h, Infinity ], { 1 } ];
 ringScales         = opts |-> Catenate @ Cases[ VertexShapeFunction /. opts,
   ( _ -> f_Function ) :> Cases[ f[ { 0, 0 }, None, { 1, 1 } ], Circle[ _, { r_, _ } ] :> r, Infinity ], Infinity ];
-headOf             = { opts, v } |-> Cases[ ( v /. ( VertexShapeFunction /. opts ) )[ { 0, 0 }, v, { 0.1, 0.1 } ], { c_, EdgeForm[ ], p_Polygon } :>
+headOf             = { opts, v } |-> Cases[ ( v /. ( VertexShapeFunction /. opts ) )[ { 0, 0 }, v, { 0.1, 0.1 } ], { c_, Opacity[ 1 ], EdgeForm[ ], p_Polygon } :>
   { c, Round[ Norm @ Mean @ Cases[ p, Offset[ d_, _ ] :> d, Infinity ], 0.01 ], Round[ Norm[ Subtract @@ Cases[ p, Offset[ d_, _ ] :> d, Infinity ] ], 0.01 ] }, Infinity ];
 
 VerificationTest[
@@ -556,6 +556,25 @@ VerificationTest[
           EdgeShapeFunction ], _Arrowheads, Infinity ] ] ],
   { Arrowheads[ 0.09 ] },
   TestID -> "InfraSubstrateHighlight-Arrowheads-object-overrides-option"
+]
+
+(* the head is opaque on a substrate whose vertices are drawn translucent: it carries its own Opacity[1] *)
+VerificationTest[
+  With[ { g = Graph[ GridGraph[ { 5, 5 } ], VertexStyle -> Directive[ GrayLevel[ 0.62 ], Opacity[ 0.45 ] ] ] },
+    Length @ headOf[ Options @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] }, "Arrowheads" -> True ], 3 ] ],
+  1,
+  TestID -> "InfraSubstrateHighlight-Arrowheads-opaque-on-a-styled-substrate"
+]
+
+(* the stroke rules are keyed as the graph stores its edges, so a run whose first edge is stored reversed keeps its stroke *)
+VerificationTest[
+  With[ { g = Graph[ { UndirectedEdge[ 2, 1 ], UndirectedEdge[ 3, 2 ], UndirectedEdge[ 3, 4 ], UndirectedEdge[ 1, 4 ] } ] },
+    { opts = Options @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3, 4 } ] } ] },
+    { SubsetQ[ EdgeList @ g, Keys[ EdgeShapeFunction /. opts ] ],
+      SubsetQ[ EdgeList @ g, Cases[ EdgeStyle /. opts, ( e_ -> _ ) :> e ] ],
+      FreeQ[ UndirectedEdge[ 2, 1 ] /. ( EdgeShapeFunction /. opts ), Line ] } ],
+  { True, True, False },
+  TestID -> "InfraSubstrateHighlight-stroke-rules-keyed-as-the-graph-stores-its-edges"
 ]
 
 (* StrikeOutPalette: colour follows ADDITION ORDER, not object type. *)

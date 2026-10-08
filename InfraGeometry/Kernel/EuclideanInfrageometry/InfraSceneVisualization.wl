@@ -110,6 +110,7 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
           items ],
         { } -> _ ],
       substrateThickness = First[ Cases[ Options[ graph, EdgeStyle ], AbsoluteThickness[ t_ ] :> t, Infinity ], $InfraEdgeThickness ],
+      stored = AssociationThread[ ( UndirectedEdge @@ Sort[ List @@ # ] & /@ EdgeList @ graph ) -> EdgeList @ graph ],
       spread = masses |-> With[ { lo = Min @ Abs @ Values @ masses, hi = Max @ Abs @ Values @ masses },
         ( m |-> { m / hi, If[ hi == lo, 0, ( Abs[ m ] - lo ) / ( hi - lo ) ] } ) /@ masses ] },
     { span = { spec, base, key } |-> Replace[
@@ -117,7 +118,9 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
           Automatic -> { base, Automatic },
           { b_, t_ } :> { Replace[ b, Automatic -> base ], t },
           b : Except[ None ] :> { b, Automatic } } ],
-        { b_?NumericQ, Automatic } :> { b, $InfraRangeTop[ key ] b } ] },
+        { b_?NumericQ, Automatic } :> { b, $InfraRangeTop[ key ] b } ],
+      (* HighlightGraph matches an EdgeShapeFunction rule only in the orientation the graph stores the edge *)
+      spell = ue |-> Lookup[ stored, Key @ ue, ue ] },
     { objectEntries = MapIndexed[
         { item, idx } |-> With[ {
             ink    = infraInk[ graph, First @ item ],
@@ -276,13 +279,13 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
         HighlightGraph[ graph,
           Cases[ vertexData, kv_Association /; KeyExistsQ[ kv, "Style" ] :> kv[ "Style" ] ],
           Sequence @@ DeleteCases[ {
-            EdgeStyle           -> DeleteCases[ Cases[ edgeData,   kv_Association :> kv[ "EdgeStyle" ] ], Nothing ],
-            EdgeShapeFunction   -> Join[ DeleteCases[ Cases[ edgeData, kv_Association :> kv[ "EdgeShapeFunction" ] ], Nothing ], joinRules ],
+            EdgeStyle           -> MapAt[ spell, DeleteCases[ Cases[ edgeData,   kv_Association :> kv[ "EdgeStyle" ] ], Nothing ], { All, 1 } ],
+            EdgeShapeFunction   -> MapAt[ spell, Join[ DeleteCases[ Cases[ edgeData, kv_Association :> kv[ "EdgeShapeFunction" ] ], Nothing ], joinRules ], { All, 1 } ],
             VertexShapeFunction -> Normal @ Join[ vertexShapes, Association @ KeyValueMap[
               { v, hs } |-> v -> With[ { shape = Lookup[ vertexShapes, Key @ v, Disk[ #1, #3 ] & ], hs = hs },
                 { shape[ ## ],
                   ( { fill, u, side, size } |-> With[ { tip = #1 - First[ #3 ] u },
-                    { fill, EdgeForm[ ], Polygon[ { tip, Offset[ size ( 0.75 side - u ), tip ], Offset[ size ( - 0.75 side - u ), tip ] } ] } ] ) @@@ hs } & ],
+                    { fill, Opacity[ 1 ], EdgeForm[ ], Polygon[ { tip, Offset[ size ( 0.75 side - u ), tip ], Offset[ size ( - 0.75 side - u ), tip ] } ] } ] ) @@@ hs } & ],
               heads ] ],
             VertexSize          -> DeleteCases[ Cases[ vertexData, kv_Association /; KeyExistsQ[ kv, "VSize" ] :> kv[ "VSize" ] ], Nothing ]
           }, _ -> { } ],
