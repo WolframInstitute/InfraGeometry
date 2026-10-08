@@ -59,43 +59,76 @@ VerificationTest[
   TestID -> "Schlafli-37-genus-3"
 ]
 
-VerificationTest[ MatchQ[ TessellationGraph[ { 3, 7 }, 99 ], _TessellationGraph ], True, TestID -> "Schlafli-hyperbolic-unreachable-stays-unevaluated" ]
 VerificationTest[ IsomorphicGraphQ[ TessellationGraph[ { 4, 3 }, SymmetricGroup[ 4 ] ], GraphData[ "CubicalGraph" ] ], True, TestID -> "RegularMap-explicit-group-cube" ]
 
-(* --- General coset enumeration (Todd-Coxeter / low-index) via Method --- *)
-
-(* the low-index method on D(4,3,2): V = [D:<y>] = 8, E = [D:<xy>] = 12, the cube *)
+(* a group without a (2, p, q)-generation: no message, no loop *)
 VerificationTest[
-  { VertexCount @ #, EdgeCount @ #, IsomorphicGraphQ[ #, GraphData[ "CubicalGraph" ] ] } & @ TessellationGraph[ { 4, 3 }, Method -> "CosetEnumeration" ],
-  { 8, 12, True },
-  TestID -> "CosetEnumeration-cube-VE"
+  TimeConstrained[ TessellationGraph[ { 3, 8 }, SymmetricGroup[ 4 ] ], 1 ],
+  HoldPattern @ TessellationGraph[ { 3, 8 }, SymmetricGroup[ 4 ] ],
+  SameTest -> MatchQ,
+  TestID -> "RegularMap-group-without-generation-stays-unevaluated"
 ]
 
-(* the general low-index method recovers the Platonic solids (Method -> "CosetEnumeration") *)
-VerificationTest[ IsomorphicGraphQ[ TessellationGraph[ { 3, 3 }, Method -> "CosetEnumeration" ], GraphData[ "TetrahedralGraph" ] ], True, TestID -> "CosetEnumeration-recovers-tetrahedron" ]
-VerificationTest[ IsomorphicGraphQ[ TessellationGraph[ { 3, 5 }, Method -> "CosetEnumeration" ], GraphData[ "IcosahedralGraph" ] ], True, TestID -> "CosetEnumeration-recovers-icosahedron" ]
+(* --- Regular maps in increasing order of size: the normal subgroups of the triangle group <x, y | x^p, y^q, (x y)^2> --- *)
 
-(* the explicit realiser Methods agree with the Automatic default *)
-VerificationTest[ IsomorphicGraphQ[ TessellationGraph[ { 4, 3 }, Method -> "Platonic" ], TessellationGraph[ { 4, 3 } ] ], True, TestID -> "Method-Platonic-matches-default" ]
-VerificationTest[ IsomorphicGraphQ[ TessellationGraph[ { 3, 7 }, Method -> "PSL2" ], TessellationGraph[ { 3, 7 } ] ], True, TestID -> "Method-PSL2-matches-default" ]
-
-(* low-index enumeration: the only regular {3,3} map up to index 12 is the tetrahedron *)
+(* the Hurwitz groups of order 168, 504, 1092: V = |G| / 7 *)
 VerificationTest[
-  {
-    IsomorphicGraphQ[ TessellationGraph[ { 3, 3 }, Method -> { "CosetEnumeration", "MaxIndex" -> 12 } ], GraphData[ "TetrahedralGraph" ] ],
-    MatchQ[ TessellationGraph[ { 3, 3 }, 2, Method -> { "CosetEnumeration", "MaxIndex" -> 12 } ], _TessellationGraph ]
-  },
+  VertexCount /@ Table[ TessellationGraph[ { 3, 7 }, k ], { k, 3 } ],
+  { 24, 72, 156 },
+  TestID -> "Schlafli-37-maps-in-increasing-order"
+]
+
+VerificationTest[
+  VertexCount /@ { TessellationGraph[ { 4, 5 } ], TessellationGraph[ { 3, 8 } ], TessellationGraph[ { 5, 5 } ] },
+  { 24, 12, 12 },
+  TestID -> "Schlafli-first-maps-of-45-38-55"
+]
+
+(* the {3, 8} map of order 48, the Bolza surface, has 6 vertices and 24 edges: a multigraph, skipped *)
+VerificationTest[
+  With[ { g = TessellationGraph[ { 3, 8 } ] }, { VertexCount @ g, EdgeCount @ g, Union @ VertexDegree @ g } ],
+  { 12, 48, { 8 } },
+  TestID -> "Schlafli-38-multigraph-map-skipped"
+]
+
+(* k counts normal subgroups: the three of index 1092 are k = 3, 4, 5; the sixth map is past the order 1100 *)
+VerificationTest[
+  { VertexCount @ TessellationGraph[ { 3, 7 }, 5 ], TessellationGraph[ { 3, 7 }, 6 ] },
+  { 156, HoldPattern @ TessellationGraph[ { 3, 7 }, 6 ] },
+  SameTest -> MatchQ,
+  TestID -> "Schlafli-past-the-maximal-order-stays-unevaluated"
+]
+
+VerificationTest[
+  TessellationGraph[ { 3, 5 }, 2 ],
+  HoldPattern @ TessellationGraph[ { 3, 5 }, 2 ],
+  SameTest -> MatchQ,
+  TestID -> "Schlafli-sphere-has-one-map"
+]
+
+(* Method -> "PSL2": the quotient PSL(2, ell) of the k-th prime ell that admits a generation *)
+VerificationTest[
+  With[ { g = TessellationGraph[ { 3, 7 }, 1, Method -> "PSL2" ] }, { VertexCount @ g, EdgeCount @ g, IsomorphicGraphQ[ g, TessellationGraph[ { 3, 7 } ] ] } ],
+  { 24, 84, True },
+  TestID -> "Method-PSL2-Klein-map"
+]
+
+VerificationTest[
+  VertexCount @ TessellationGraph[ { 3, 7 }, 2, Method -> "PSL2" ],
+  156,
+  TestID -> "Method-PSL2-is-the-prime-family"
+]
+
+VerificationTest[
+  MatchQ[ #, _TessellationGraph ] & /@ { TessellationGraph[ { 3, 3 }, Method -> "Nonsense" ], TessellationGraph[ { 4, 3 }, Method -> "CosetEnumeration" ] },
   { True, True },
-  TestID -> "LowIndexMaps-33-tetrahedron-unique"
+  TestID -> "Method-unknown-stays-unevaluated"
 ]
-
-VerificationTest[ MatchQ[ TessellationGraph[ { 3, 3 }, Method -> "Nonsense" ], _TessellationGraph ], True, TestID -> "Method-unknown-stays-unevaluated" ]
 
 (* --- Uniform / Archimedean maps --- *)
 
 VerificationTest[ IsomorphicGraphQ[ TessellationGraph[ { 3, 4, 3, 4 } ], PolyhedronData[ "Cuboctahedron", "SkeletonGraph" ] ], True, TestID -> "Archimedean-3434-is-cuboctahedron" ]
 VerificationTest[ IsomorphicGraphQ[ TessellationGraph[ { 4, 6, 8 } ], PolyhedronData[ "GreatRhombicuboctahedron", "SkeletonGraph" ] ], True, TestID -> "Archimedean-468-is-great-rhombicuboctahedron" ]
-VerificationTest[ IsomorphicGraphQ[ TessellationGraph[ { 3, 3, 3, 3, 4 } ], PolyhedronData[ "SnubCube", "SkeletonGraph" ] ], True, TestID -> "Archimedean-snub-cube" ]
 
 VerificationTest[
   { VertexCount @ #, Union @ VertexDegree @ #, VertexTransitiveGraphQ @ # } &@ TessellationGraph[ { 4, 4, 5 } ],
@@ -105,6 +138,60 @@ VerificationTest[
 
 VerificationTest[ IsomorphicGraphQ[ TessellationGraph[ { 3, 3, 3, 5 } ], PolyhedronData[ { "Antiprism", 5 }, "SkeletonGraph" ] ], True, TestID -> "Archimedean-pentagonal-antiprism" ]
 VerificationTest[ IsomorphicGraphQ[ TessellationGraph[ { 4, 4, 4 } ], GraphData[ "CubicalGraph" ] ], True, TestID -> "Archimedean-444-forwards-to-cube" ]
+
+(* the 11 Archimedean solids that rectify and truncate reach, computed on the Platonic maps *)
+VerificationTest[
+  ( { config, name } |-> IsomorphicGraphQ[ TessellationGraph[ config ], PolyhedronData[ name, "SkeletonGraph" ] ] ) @@@ {
+    { { 3, 4, 3, 4 }, "Cuboctahedron" }, { { 3, 5, 3, 5 }, "Icosidodecahedron" }, { { 3, 6, 6 }, "TruncatedTetrahedron" },
+    { { 3, 8, 8 }, "TruncatedCube" }, { { 4, 6, 6 }, "TruncatedOctahedron" }, { { 3, 10, 10 }, "TruncatedDodecahedron" },
+    { { 5, 6, 6 }, "TruncatedIcosahedron" }, { { 3, 4, 4, 4 }, "SmallRhombicuboctahedron" }, { { 4, 6, 8 }, "GreatRhombicuboctahedron" },
+    { { 3, 4, 5, 4 }, "SmallRhombicosidodecahedron" }, { { 4, 6, 10 }, "GreatRhombicosidodecahedron" } },
+  ConstantArray[ True, 11 ],
+  TestID -> "Archimedean-eleven-solids-computed"
+]
+
+VerificationTest[
+  MatchQ[ #, _TessellationGraph ] & /@ { TessellationGraph[ { 3, 3, 3, 3, 4 } ], TessellationGraph[ { 3, 3, 3, 3, 5 } ], TessellationGraph[ { 3, 4, 3, 4 }, 2 ] },
+  { True, True, True },
+  TestID -> "Archimedean-snubs-and-second-solid-stay-unevaluated"
+]
+
+(* the truncation of the {5, 5} map of genus 4 on its own faces, not the truncated icosahedron *)
+VerificationTest[
+  With[ { g = TessellationGraph[ { 5, 10, 10 } ] },
+    { VertexCount @ g, FindCycle[ g, { 10 }, 1 ] =!= { }, FindCycle[ g, { 6 }, 1 ], TessellationGenus[ g, { 5, 10, 10 } ] } ],
+  { 60, True, { }, 4 },
+  TestID -> "Uniform-5-10-10-truncates-the-55-map"
+]
+
+VerificationTest[
+  Table[ With[ { g = TessellationGraph[ { 3, 7, 3, 7 }, k ] }, { VertexCount @ g, Union @ VertexDegree @ g } ], { k, 2 } ],
+  { { 84, { 4 } }, { 252, { 4 } } },
+  TestID -> "Uniform-hyperbolic-on-the-kth-parent"
+]
+
+(* every uniform map is regular of the length of its configuration and carries a cycle of every face size *)
+VerificationTest[
+  ( config |-> With[ { g = TessellationGraph[ config ] },
+      Union @ VertexDegree @ g == { Length @ config } && AllTrue[ Union @ config, f |-> FindCycle[ g, { f }, 1 ] =!= { } ] ] ) /@
+    { { 3, 7, 3, 7 }, { 3, 4, 7, 4 }, { 4, 6, 14 }, { 3, 14, 14 }, { 7, 6, 6 }, { 4, 8, 10 }, { 4, 10, 10 }, { 3, 10, 10 }, { 4, 6, 10 } },
+  ConstantArray[ True, 9 ],
+  TestID -> "Uniform-maps-have-their-configuration"
+]
+
+(* the Euclidean uniform maps on the k x k torus from its lattice faces, small k included; a torus whose graph is not simple has none *)
+VerificationTest[
+  ( g |-> { VertexCount @ g, VertexTransitiveGraphQ @ g } ) /@
+    { TessellationGraph[ { 4, 8, 8 }, 3 ], TessellationGraph[ { 3, 6, 3, 6 }, 3 ], TessellationGraph[ { 3, 12, 12 }, 2 ] },
+  { { 36, True }, { 27, True }, { 24, True } },
+  TestID -> "Uniform-euclidean-small-tori"
+]
+
+VerificationTest[
+  MatchQ[ #, _TessellationGraph ] & /@ { TessellationGraph[ { 4, 8, 8 }, 2 ], TessellationGraph[ { 3, 6, 3, 6 }, 2 ], TessellationGraph[ { 3, 12, 12 }, 1 ] },
+  { True, True, True },
+  TestID -> "Uniform-degenerate-torus-stays-unevaluated"
+]
 
 VerificationTest[
   With[ { g = TessellationGraph[ { 3, 6, 3, 6 }, 4 ] }, { Union @ VertexDegree @ g, VertexTransitiveGraphQ @ g } ],
@@ -183,13 +270,57 @@ VerificationTest[
   TestID -> "TessellationGenus-hyperbolic-gauss-bonnet"
 ]
 
-(* spec-free forms detect a regular configuration (uniform degree, girth face) from the graph *)
+(* a graph does not determine its map: the icosahedron's graph carries the {3, 5} sphere and the first {5, 5} map, of genus 4 *)
 VerificationTest[
-  { TessellationGenus[ TessellationGraph[ { 3, 5 } ] ],
-    TessellationGenus[ TessellationGraph[ { 4, 4 }, { 12, 12 } ] ],
-    TessellationGenus[ TessellationGraph[ { 3, 7 }, 2 ] ] },
-  { 0, 1, 14 },
-  TestID -> "TessellationGenus-spec-free-regular-detection"
+  With[ { g = TessellationGraph[ { 5, 5 } ] },
+    { IsomorphicGraphQ[ g, TessellationGraph[ { 3, 5 } ] ], TessellationGenus[ g, { 3, 5 } ], TessellationGenus[ g, { 5, 5 } ] } ],
+  { True, 0, 4 },
+  TestID -> "TessellationGenus-the-type-is-part-of-the-map"
+]
+
+VerificationTest[
+  With[ { g = TessellationGraph[ { 5, 5 } ] },
+    MatchQ[ #, _TessellationCurvature | _TessellationEulerCharacteristic | _TessellationGenus ] & /@
+      { TessellationCurvature[ g ], TessellationEulerCharacteristic[ g ], TessellationGenus[ g ] } ],
+  { True, True, True },
+  TestID -> "TessellationInvariants-graph-without-type-stays-unevaluated"
+]
+
+(* the genus of the k-th map from its type and group order alone: g = 1 + |G| (p q - 2 p - 2 q) / (4 p q), |G| = 168, 504, 1092 *)
+VerificationTest[
+  Table[ { TessellationGenus[ { 3, 7 }, k ], TessellationGenus[ TessellationGraph[ { 3, 7 }, k ], { 3, 7 } ] }, { k, 3 } ],
+  { { 3, 3 }, { 7, 7 }, { 14, 14 } },
+  TestID -> "TessellationGenus-sized-37-from-the-order"
+]
+
+(* a uniform map lies on the surface of its parent: {5, 10, 10} truncates the {5, 5} map of genus 4 *)
+VerificationTest[
+  ( { spec, k } |-> TessellationGenus[ spec, k ] == TessellationGenus[ TessellationGraph[ spec, k ], spec ] ) @@@ {
+    { { 4, 5 }, 1 }, { { 3, 8 }, 1 }, { { 5, 5 }, 1 }, { { 5, 4 }, 2 }, { { 3, 5 }, 1 }, { { 5, 2 }, 1 }, { { 6, 3 }, 1 }, { { 4, 4 }, 2 },
+    { { 3, 7, 3, 7 }, 1 }, { { 4, 6, 14 }, 1 }, { { 5, 10, 10 }, 1 }, { { 3, 4, 3, 4 }, 1 }, { { 4, 4, 5 }, 1 }, { { 3, 3, 3, 5 }, 1 },
+    { { 4, 8, 8 }, 4 }, { { 3, 12, 12 }, 3 } },
+  ConstantArray[ True, 16 ],
+  TestID -> "TessellationGenus-sized-agrees-with-the-built-map"
+]
+
+VerificationTest[
+  { TessellationGenus[ { 4, 8, 8 }, 6 ], TessellationGenus[ { 3, 4, 3, 4 }, 1 ], TessellationGenus[ { 5, 10, 10 }, 1 ] },
+  { 1, 0, 4 },
+  TestID -> "TessellationGenus-sized-torus-sphere-parent"
+]
+
+VerificationTest[
+  { TessellationGenus[ { 3, 7 } ], TessellationGenus[ { 4, 6, 14 } ] },
+  { 3, 3 },
+  TestID -> "TessellationGenus-sized-default-is-the-first-map"
+]
+
+(* past the maximal order, a second map of the sphere, a snub, a configuration without a map *)
+VerificationTest[
+  MatchQ[ #, _TessellationGenus ] & /@
+    { TessellationGenus[ { 3, 7 }, 6 ], TessellationGenus[ { 3, 5 }, 2 ], TessellationGenus[ { 3, 3, 3, 3, 4 }, 1 ], TessellationGenus[ { 5, 6, 7 }, 1 ] },
+  { True, True, True, True },
+  TestID -> "TessellationGenus-sized-without-a-map-stays-unevaluated"
 ]
 
 (* ===== TessellationNeighborhoodGraph: unwrapped {p,q} patches ===== *)
@@ -354,6 +485,16 @@ VerificationTest[
   Sign /@ { TessellationCurvature[ { 4, 8, 8 } ], TessellationCurvature[ { 3, 7, 3, 7 } ], TessellationCurvature[ { 3, 5 } ] },
   { 0, -1, 1 },
   TestID -> "TessellatedDisk-defect-signs"
+]
+
+(* the m x n rectangle has m x n cells in all three tilings: m n squares, m n rhombi (2 m n triangles), m n hexagons;
+   the bounded faces of a connected planar graph number E - V + 1 *)
+VerificationTest[
+  With[ { m = 4, n = 3 },
+    ( g |-> { VertexCount @ g, EdgeCount[ g ] - VertexCount[ g ] + 1 } ) /@
+      ( TessellationNeighborhoodGraph[ #, { m, n } ] & /@ { { 4, 4 }, { 3, 6 }, { 6, 3 } } ) ],
+  { { 20, 12 }, { 20, 24 }, { 38, 12 } },
+  TestID -> "TessellationNeighborhoodGraph-rectangle-cells"
 ]
 
 EndTestSection[]
