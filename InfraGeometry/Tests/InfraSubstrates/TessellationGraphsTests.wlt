@@ -487,4 +487,14 @@ VerificationTest[
   TestID -> "TessellatedDisk-defect-signs"
 ]
 
+(* the m x n rectangle has m x n cells in all three tilings: m n squares, m n rhombi (2 m n triangles), m n hexagons;
+   the bounded faces of a connected planar graph number E - V + 1 *)
+VerificationTest[
+  With[ { m = 4, n = 3 },
+    ( g |-> { VertexCount @ g, EdgeCount[ g ] - VertexCount[ g ] + 1 } ) /@
+      ( TessellationNeighborhoodGraph[ #, { m, n } ] & /@ { { 4, 4 }, { 3, 6 }, { 6, 3 } } ) ],
+  { { 20, 12 }, { 20, 24 }, { 38, 12 } },
+  TestID -> "TessellationNeighborhoodGraph-rectangle-cells"
+]
+
 EndTestSection[]

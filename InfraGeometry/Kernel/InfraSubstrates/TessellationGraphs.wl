@@ -369,7 +369,7 @@ TessellationNeighborhoodGraph[ { p_Integer, q_Integer }, r_Integer : 3, opts : O
 TessellationNeighborhoodGraph[ { p_Integer, q_Integer }, { m_Integer, n_Integer }, opts : OptionsPattern[ Graph ] ] /; (p - 2) (q - 2) == 4 :=
     Graph[
       Switch[ { p, q },
-        { 4, 4 }, GridGraph[ { m, n } ],
+        { 4, 4 }, GridGraph[ { m + 1, n + 1 } ],
         { 3, 6 },
           Graph[
             Flatten @ Table[
