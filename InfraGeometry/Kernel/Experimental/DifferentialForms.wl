@@ -14,9 +14,9 @@ OrderedCochainValue[ alpha_, tuple_List ] :=
         Missing[ "NonIncreasingTuple", tuple ]
     ]
 
-FormDegree[ omega_ ] :=
+FormDegree[ omega_ ] /; AnyTrue[ Values[ omega ], # =!= <| |> & ] :=
   Length @ First @ Keys @ First @ Select[ Values[ omega ], # =!= <| |> & ]
-CochainDegree[ alpha_ ] :=
+CochainDegree[ alpha_ ] /; alpha =!= <| |> && AllTrue[ Keys[ alpha ], ListQ ] :=
   Length[ First[ Keys[ alpha ] ] ] - 1
 
 ZeroForm[ g_, f_ ] :=
@@ -29,36 +29,39 @@ RestrictionMap[ g_, alpha_ ] :=
           { clique, Keys[ alpha ] }, { v, clique }
       ],
       First -> Last,
-      DeleteCases[ 0 ] @* Association
+      DeleteCases[ x_ /; x == 0 ] @* Association
   ]
 
 (* I : form -> cochain, (I omega)(v0..vk) = 1/(k+1) sum_i (-1)^i omega_{v_i}(v0..^vi..vk) *)
 IntegrationMap[ g_, omega_ ] :=
   If[ AllTrue[ Values[ omega ], # === <| |> & ], <| |>, With[ { k = FormDegree[ omega ] },
-      DeleteCases[ 0 ] @ Association @ Map[
+      DeleteCases[ x_ /; x == 0 ] @ Association @ Map[
           clique |-> clique -> Sum[ (-1)^(i - 1) FormValue[ omega, clique[[ i ]], Delete[ clique, i ] ], { i, k + 1 } ] / (k + 1),
           Union[ Sort /@ (Union @@ (Subsets[ #, { k + 1, k + 1 } ] & /@ FindClique[ g, { k + 1, Infinity }, All ])) ]
       ]
   ] ]
 
 (* coboundary delta on cochains, (delta alpha)(v0..v_{k+1}) = sum_i (-1)^i alpha(v0..^vi..v_{k+1}) *)
-Coboundary[ g_, alpha_ ] :=
+Coboundary[ g_, alpha_ ] /; alpha === <| |> || AllTrue[ Keys[ alpha ], ListQ ] :=
   If[ alpha === <| |>, <| |>, With[ { k = CochainDegree[ alpha ] },
-      DeleteCases[ 0 ] @ Association @ Map[
+      DeleteCases[ x_ /; x == 0 ] @ Association @ Map[
           clique |-> clique -> Sum[ (-1)^(i - 1) Lookup[ alpha, Key[ Delete[ clique, i ] ], 0 ], { i, k + 2 } ],
           Union[ Sort /@ (Union @@ (Subsets[ #, { k + 2, k + 2 } ] & /@ FindClique[ g, { k + 2, Infinity }, All ])) ]
       ]
   ] ]
 
-FormDifferential[ g_, omega_ ] :=
+FormDifferential[ g_, omega_ ] /; AllTrue[ Values[ omega ], # === <| |> & ] || FormDegree[ omega ] <= 1 :=
   Which[
       AllTrue[ Values[ omega ], # === <| |> & ], <| |>,
       FormDegree[ omega ] == 0, AssociationMap[
-          v |-> DeleteCases[ 0 ] @ Association @ Map[ w |-> { w } -> FormValue[ omega, w, {} ] - FormValue[ omega, v, {} ], AdjacencyList[ g, v ] ],
+          v |-> DeleteCases[ x_ /; x == 0 ] @ Association @ Map[
+              w |-> { w } -> FormValue[ omega, w, {} ] - FormValue[ omega, v, {} ],
+              AdjacencyList[ g, v ]
+          ],
           VertexList[ g ]
       ],
       True, AssociationMap[
-          v |-> DeleteCases[ 0 ] @ Association @ Map[
+          v |-> DeleteCases[ x_ /; x == 0 ] @ Association @ Map[
               pair |-> pair -> FormValue[ omega, v, { pair[[ 1 ]] } ] - FormValue[ omega, v, { pair[[ 2 ]] } ] +
                   (FormValue[ omega, pair[[ 1 ]], { pair[[ 2 ]] } ] - FormValue[ omega, pair[[ 2 ]], { pair[[ 1 ]] } ]) / 2,
               Subsets[ Sort @ AdjacencyList[ g, v ], { 2 } ]
@@ -67,9 +70,9 @@ FormDifferential[ g_, omega_ ] :=
       ]
   ]
 
-NaiveDifferential[ g_, omega_ ] :=
+NaiveDifferential[ g_, omega_ ] /; AllTrue[ Values[ omega ], # === <| |> & ] || FormDegree[ omega ] == 1 :=
   If[ AllTrue[ Values[ omega ], # === <| |> & ], <| |>, AssociationMap[
-      v |-> DeleteCases[ 0 ] @ Association @ Map[
+      v |-> DeleteCases[ x_ /; x == 0 ] @ Association @ Map[
           pair |-> pair -> FormValue[ omega, v, { pair[[ 1 ]] } ] - FormValue[ omega, v, { pair[[ 2 ]] } ],
           Subsets[ Sort @ AdjacencyList[ g, v ], { 2 } ]
       ],
@@ -81,7 +84,7 @@ FormWedge[ omega_, eta_ ] :=
   If[ AllTrue[ Values[ omega ], # === <| |> & ] || AllTrue[ Values[ eta ], # === <| |> & ], <| |>,
       AssociationMap[
           v |-> With[ { a = Lookup[ omega, Key[ v ], <| |> ], b = Lookup[ eta, Key[ v ], <| |> ] },
-              DeleteCases[ 0 ] @ Merge[
+              DeleteCases[ x_ /; x == 0 ] @ Merge[
                   Flatten @ Table[
                       If[ DisjointQ[ s1, s2 ], Union[ s1, s2 ] -> Signature[ Join[ s1, s2 ] ] Lookup[ a, Key[ s1 ], 0 ] Lookup[ b, Key[ s2 ], 0 ],
                         Nothing ],
@@ -96,7 +99,7 @@ FormWedge[ omega_, eta_ ] :=
 
 OrderedCochainCup[ g_, alpha_, beta_ ] :=
   If[ alpha === <| |> || beta === <| |>, <| |>, With[ { p = CochainDegree[ alpha ], q = CochainDegree[ beta ] },
-      DeleteCases[ 0 ] @ Association @ Map[
+      DeleteCases[ x_ /; x == 0 ] @ Association @ Map[
           clique |-> clique -> Lookup[ alpha, Key[ Take[ clique, p + 1 ] ], 0 ] Lookup[ beta, Key[ Take[ clique, -(q + 1) ] ], 0 ],
           Union[ Sort /@ (Union @@ (Subsets[ #, { p + q + 1, p + q + 1 } ] & /@ FindClique[ g, { p + q + 1, Infinity }, All ])) ]
       ]
@@ -109,7 +112,7 @@ OrderedCochainCup[ g_, alpha_, beta_ ] :=
    p = 0. Verified for 1 <= p, q <= 3 on K6. *)
 CochainCupOne[ g_, alpha_, beta_ ] :=
   If[ alpha === <| |> || beta === <| |>, <| |>, With[ { p = CochainDegree[ alpha ], q = CochainDegree[ beta ] },
-      DeleteCases[ 0 ] @ Association @ Map[
+      DeleteCases[ x_ /; x == 0 ] @ Association @ Map[
           clique |-> clique -> Sum[
               (-1)^((p - i) (q + 1) + p + q + 1) *
                   Lookup[ alpha, Key[ Join[ Take[ clique, i + 1 ], Take[ clique, { i + q + 1, p + q } ] ] ], 0 ] *
@@ -127,7 +130,7 @@ CochainCupOne[ g_, alpha_, beta_ ] :=
    cohomology (checked on the 4x4 torus, where doubling it changes the H^2 class). *)
 CochainCup[ g_, alpha_, beta_ ] :=
   If[ alpha === <| |> || beta === <| |>, <| |>, With[ { p = CochainDegree[ alpha ], q = CochainDegree[ beta ] },
-      DeleteCases[ 0 ] @ Association @ Map[
+      DeleteCases[ x_ /; x == 0 ] @ Association @ Map[
           clique |-> clique -> Sum[
               Signature[ perm ] CochainValue[ alpha, Take[ perm, p + 1 ] ] CochainValue[ beta, Take[ perm, -(q + 1) ] ],
               { perm, Permutations[ clique ] }

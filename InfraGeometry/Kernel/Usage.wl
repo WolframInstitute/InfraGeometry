@@ -282,7 +282,7 @@ CechFiltration::usage = "CechFiltration[data, radii] = BallIntersectionFiltratio
 
 BallIntersectionBifiltration::usage = "BallIntersectionBifiltration[data, radii, orders] returns the (r, k) object as association k -> (association r -> complex); for fixed r the nesting C^(k) contains C^(k+1) as k grows, saturating to Cech at k = d + 1 for convex balls (Helly).";
 
-FormValue::usage = "FormValue[w, v, tuple] gives the value of the germ of form w at vertex v on a tuple of neighbours of v, alternating in the tuple.";
+FormValue::usage = "FormValue[w, v, tuple] gives the value of the germ of form w at vertex v on a tuple of neighbours of v, alternating in the tuple; 0 on a tuple that is not stored, of any length.";
 
 CochainValue::usage = "CochainValue[a, tuple] gives the value of the ALTERNATING cochain a on an arbitrary vertex tuple, by the sign of the permutation taking it to increasing order; 0 off the complex. Do not apply it to the output of OrderedCochainCup or CochainCupOne, which are ordered cochains.";
 
@@ -298,9 +298,9 @@ RestrictionMap::usage = "RestrictionMap[g, a] is the form R a obtained from the 
 
 IntegrationMap::usage = "IntegrationMap[g, w] is the alternating cochain I w obtained by averaging the germs of w over the vertices of each clique with the orientation sign. I is a left inverse of RestrictionMap and a chain map.";
 
-Coboundary::usage = "Coboundary[g, a] is the coboundary of cochain a: the alternating sum over the faces of every clique one dimension up. It agrees on the alternating and the ordered convention.";
+Coboundary::usage = "Coboundary[g, a] is the coboundary of cochain a: the alternating sum over the faces of every clique one dimension up. It agrees on the alternating and the ordered convention. A k-cochain is keyed by increasing (k+1)-vertex lists, a 0-cochain by {v}.";
 
-FormDifferential::usage = "FormDifferential[g, w] is the differential of form w: the graph gradient on 0-forms, and on 1-forms the difference of germ values corrected by the transport term from the neighbouring germs.";
+FormDifferential::usage = "FormDifferential[g, w] is the differential of the 0- or 1-form w: the graph gradient on 0-forms, and on 1-forms the difference of germ values corrected by the transport term from the neighbouring germs.";
 
 NaiveDifferential::usage = "NaiveDifferential[g, w] is the differential of the 1-form w with the transport term dropped; integrating it loses the factor (k+1)/(k+2).";
 
