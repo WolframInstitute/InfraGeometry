@@ -36,13 +36,14 @@ TopologicalNeighborhood[ topo_Graph, verts_List ] :=
 
 (* ContinuousMapQ[f, topo1, topo2]: the vertex map f is continuous iff it is
    monotone for the specialization preorders -- every Hasse edge q -> p of topo1
-   maps to a pair reachable in the transitive closure of topo2. f: Association,
+   maps to one vertex or to a pair reachable in the transitive closure of topo2;
+   the preorders are reflexive, the closure has no loops. f: Association,
    list of Rule, or callable. *)
 ContinuousMapQ[ f_, topo1_Graph, topo2_Graph ] :=
 	With[
 		{ tgtClosure = TransitiveClosureGraph[ topo2 ] },
 		{ map = If[ MatchQ[ f, { __Rule } ], Association @ f, f ] },
-		AllTrue[ EdgeList[ topo1 ], e |-> EdgeQ[ tgtClosure, map @ e[[ 1 ]] -> map @ e[[ 2 ]] ] ]
+		AllTrue[ EdgeList[ topo1 ], e |-> map @ e[[ 1 ]] === map @ e[[ 2 ]] || EdgeQ[ tgtClosure, map @ e[[ 1 ]] -> map @ e[[ 2 ]] ] ]
 	]
 
 TopologyGraph[ graph_Graph, topo_Graph ] :=

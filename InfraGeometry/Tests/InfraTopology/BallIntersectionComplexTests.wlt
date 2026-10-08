@@ -90,4 +90,11 @@ VerificationTest[
     TestID -> "BallIntersectionComplex-graph-chosen-centres"
 ]
 
+(* one point: the smallest enclosing ball has radius exactly 0 *)
+VerificationTest[
+    {MiniballRadius[{{0, 0}}], MiniballRadius[{{1., 2., 3.}}]},
+    {0, 0},
+    TestID -> "MiniballRadius-one-point-exact-zero"
+]
+
 EndTestSection[]

@@ -20,6 +20,8 @@ Definition: the radius is *min_x max_i |x − p_i|*, the least *r* for which a b
 
 The closed balls of radius *r* about the points have a common point exactly when *r* is at least this radius: a common point is the centre of a ball of radius *r* containing them all. That is the test of [CechComplex]() and [BallIntersectionComplex]() for Euclidean points.
 
+The radius of one point is 0.
+
 For a triangle with no obtuse angle the radius is the circumradius; for an obtuse triangle it is half the longest side. The points may be in any dimension.
 
 ## Basic Examples
@@ -54,6 +56,12 @@ With[
   {Graphics3D[{Point[corners], StandardRed, Opacity[0.2], BoundingRegion[corners, "MinBall"]}], MiniballRadius[corners]}]
 ```
 
+A single point has radius 0, exactly, in any dimension; so do equal points.
+
+```wl
+{MiniballRadius[{{0, 0}}], MiniballRadius[{{1, 2, 3}}], MiniballRadius[{{0, 0}, {0, 0}}]}
+```
+
 ## Properties and Relations
 
 The three disks about the corners of the acute triangle have no common point at nine tenths of the radius, and touch at one point at the radius. The triangle is a simplex of the Čech complex only from that radius on.
@@ -67,12 +75,6 @@ With[
 ```
 
 ## Possible Issues
-
-A single point gives a tiny positive radius rather than 0, the radius of the ball that [BoundingRegion]() returns. Two equal points give 0.
-
-```wl
-{MiniballRadius[{{0, 0}}], MiniballRadius[{{0, 0}, {0, 0}}]}
-```
 
 The points are converted to machine numbers first. On exact coordinates [BoundingRegion]() can return a ball that misses some of the points: for the corners of the cube it returns the ball about one face.
 

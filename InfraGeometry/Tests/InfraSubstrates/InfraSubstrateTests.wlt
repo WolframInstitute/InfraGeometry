@@ -68,7 +68,7 @@ VerificationTest[
       {IsomorphicGraphQ[Subgraph[int, Complement[VertexList @ int, rim]], GridGraph[{7, 7}]],
        Select[EdgeList @ int, SubsetQ[rim, List @@ #] &] === {},
        VertexCount @ int,
-       IsomorphicGraphQ[int, BoundarylessGraph[GridGraph[{9, 9}], Method -> "MaxDegree"]]}],
+       IsomorphicGraphQ[int, BoundarylessGraph[GridGraph[{9, 9}]]]}],
     {True, True, 77, True},
     TestID -> "InfraSubstrate-grid-exact"
 ]
@@ -77,7 +77,7 @@ VerificationTest[
    vertices of the full patch, then the vertices this isolates *)
 VerificationTest[
     With[{full = TessellationNeighborhoodGraph[{3, 6}, 6], int = InfraSubstrate["TriangularTilingGraph", "Small"]},
-      {rim = GraphExteriorBoundary[full, Method -> "MaxDegree"]},
+      {rim = GraphExteriorBoundary[full]},
       {SubsetQ[VertexList @ full, VertexList @ int],
        Select[EdgeList @ int, SubsetQ[rim, List @@ #] &] === {},
        ConnectedGraphQ @ int}],
@@ -171,14 +171,15 @@ VerificationTest[
     TestID -> "InfraSubstrate-sphere-mesh-sizes"
 ]
 
-(* "Inflate" inflates any substrate: the base survives as the induced subgraph, the fibers carry
-   coordinates of the substrate's own dimension, and the fiber draw is governed by the seed, so
-   the same seed re-draws the same inflation *)
+(* "Inflate" inflates any substrate: the base survives as the induced subgraph, two new vertices
+   over every vertex and one horizontal edge over every edge give 3 |V| vertices and 2 |E| + 2 |V|
+   edges, the fibers carry coordinates of the substrate's own dimension, and the draw is governed by
+   the seed, so the same seed re-draws the same inflation *)
 VerificationTest[
     With[{bare = InfraSubstrate["CubicGridGraph", "Small"]},
       {inf = (SeedRandom[2]; InfraSubstrate["CubicGridGraph", "Small", "Inflate" -> 2, "KeepCoordinates" -> True])},
       {IsomorphicGraphQ[Subgraph[inf, VertexList @ bare], bare],
-       VertexCount @ inf === 3 VertexCount @ bare,
+       {VertexCount @ inf, EdgeCount @ inf} === {3 VertexCount @ bare, 2 EdgeCount @ bare + 2 VertexCount @ bare},
        VertexCount @ InfraSubstrate["CubicGridGraph", "Small", "Inflate" -> 4] === 5 VertexCount @ bare,
        Union[Length /@ GraphEmbedding @ inf],
        AllTrue[GraphEmbedding @ inf, VectorQ[#, NumericQ] &],
@@ -187,17 +188,20 @@ VerificationTest[
     TestID -> "InfraSubstrate-inflate-any-substrate"
 ]
 
-(* the bare amount is shorthand for "ExtraVertices" -- a constant or a {min, max} range -- and the
-   rule-list form reaches InflateGraph's remaining knobs, "Density" -> 0 leaving the fibers apart *)
+(* "Inflate" -> k is InflateGraph[g, k], k a number or a {min, max} range, and "Inflate" -> {k, opts}
+   passes the two controls: two vertices and one vertical edge in every fiber and no horizontal edge
+   add 3 |V| edges and keep the fibers apart; {opts} alone keeps one vertex over every vertex *)
 VerificationTest[
-    With[{base = InfraSubstrate["SquareTilingGraph", "Small"]},
+    SeedRandom[1]; With[{base = InfraSubstrate["SquareTilingGraph", "Small"]},
       {fibers = g |-> Length /@ GroupBy[Cases[VertexList @ g, InflatedVertex[v_, _] :> v], Identity]},
-      {apart = InfraSubstrate["SquareTilingGraph", "Small", "Inflate" -> {"ExtraVertices" -> 2, "Density" -> 0}]},
+      {apart = InfraSubstrate["SquareTilingGraph", "Small", "Inflate" -> {2, "VerticalEdges" -> 1, "HorizontalEdges" -> 0}]},
       {Union @ Values @ fibers @ InfraSubstrate["SquareTilingGraph", "Small", "Inflate" -> 2],
        MinMax @ Values @ fibers @ InfraSubstrate["SquareTilingGraph", "Small", "Inflate" -> {1, 3}],
-       Length @ fibers @ apart === VertexCount @ base,
+       MinMax @ Values @ fibers @ InfraSubstrate["SquareTilingGraph", "Small", "Inflate" -> {{1, 3}, "HorizontalEdges" -> 0}],
+       Union @ Values @ fibers @ InfraSubstrate["SquareTilingGraph", "Small", "Inflate" -> {"HorizontalEdges" -> 0}],
+       EdgeCount @ apart - EdgeCount @ base === 3 VertexCount @ base,
        Cases[EdgeList @ apart, UndirectedEdge[InflatedVertex[a_, _], InflatedVertex[b_, _]] /; a =!= b] === {}}],
-    {{2}, {1, 3}, True, True},
+    {{2}, {1, 3}, {1, 3}, {1}, True, True},
     TestID -> "InfraSubstrate-inflate-option-forms"
 ]
 
@@ -229,13 +233,14 @@ VerificationTest[
    and then ReleaseHold gives the graph InfraSubstrate draws at that seed with the "Default"
    style (building the code itself realizes the graph once, so the seed goes after the build),
    and it is readable -- no size table left uncollapsed, no symbol carrying
-   a private context, none carrying the $ that ReplaceAll leaves on a rewritten local.  The five
+   a private context, none carrying the $ that ReplaceAll leaves on a rewritten local.  The six
    round-trip cases cover the shapes: a bare tiling line, a mesh line whose table hangs off a
-   rule, a line with an embedded helper, one with no coordinate clause, and an inflated line with
-   kept coordinates *)
+   rule, a line with an embedded helper, one with no coordinate clause, an inflated line with
+   kept coordinates, and one inflated with its controls *)
 VerificationTest[
     With[{cases = {{"SquareTilingGraph", "Small"}, {"SquareMeshGraph", "Small"}, {"SquareTorusGraph", "Small"},
-                   {"wm6655", "Small"}, {"CubicGridGraph", "Small", "Inflate" -> 2, "KeepCoordinates" -> True}}},
+                   {"wm6655", "Small"}, {"CubicGridGraph", "Small", "Inflate" -> 2, "KeepCoordinates" -> True},
+                   {"SquareTilingGraph", "Small", "Inflate" -> {{1, 2}, "VerticalEdges" -> 1, "HorizontalEdges" -> {0, 2}}}}},
       {roster = Map[name |-> InfraSubstrateCode[name, "Small"], InfraSubstrate[All]]},
       {Map[spec |-> (SeedRandom[3]; InfraSubstrate @@ Insert[spec, "Default", 3]), cases] ===
          Map[spec |-> With[{code = InfraSubstrateCode @@ spec}, SeedRandom[3]; ReleaseHold[code]], cases],
@@ -282,15 +287,15 @@ VerificationTest[
     TestID -> "InfraSubstrate-seeded-generation"
 ]
 
-(* MaxDegree rim trim: the boundary is the degree-deficient rim; its contour edges go,
+(* lattice rim trim: the boundary is the degree-deficient rim; its contour edges go,
    rim vertices with an inward edge stay as whiskers, the rest are dropped as isolated.
    11x11 grid: 9x9 interior + 36 whiskers; 7^3 cube: 5^3 interior + 150 face whiskers
    (the edge and corner vertices have no interior neighbour and fall off) *)
 VerificationTest[
-  {VertexCount[BoundarylessGraph[GridGraph[{11, 11}], Method -> "MaxDegree"]],
-   VertexCount[BoundarylessGraph[GridGraph[{7, 7, 7}], Method -> "MaxDegree"]]},
+  {VertexCount[BoundarylessGraph[GridGraph[{11, 11}]]],
+   VertexCount[BoundarylessGraph[GridGraph[{7, 7, 7}]]]},
   {117, 275},
-  TestID -> "BoundarylessGraph-MaxDegree-lattice-interior"
+  TestID -> "BoundarylessGraph-lattice-interior"
 ]
 
 EndTestSection[]

@@ -16,9 +16,9 @@ RelatedGuides: [InfraAnalysis]
 
 ## Details & Options
 
-Definition: with *x(v)* the coordinates of *v* given by [GraphEmbedding](), *T_u(v) = { w : |x(w) − (x(v) + u)| is least }*. Ties are kept.
+Definition: with *x(v)* the coordinates of *v* given by [GraphEmbedding](), *T_u(v) = { w : |x(w) − (x(v) + u)| is least }*. Ties are kept, up to rounding: every vertex whose distance is within *10^-6* of the least one is a value.
 
-The translation reads coordinates, not the graph metric: a substrate is translated in its lattice with `"KeepCoordinates"` -> `True`, and in a computed layout without it. A vector of the lattice of a tiling moves every inner vertex onto a vertex; at the rim the translated position falls outside the patch, and the vertex moves to the nearest vertices of the rim, so the translation of a patch is not a bijection. A vector that is not in the lattice lands between vertices, where several can be nearest.
+The translation reads coordinates, not the graph metric: a substrate is translated in its lattice with `"KeepCoordinates"` -> `True`, and in a computed layout without it. A vector of the lattice of a tiling moves every inner vertex onto a vertex; at the rim the translated position falls outside the patch, and the vertex moves to the nearest vertices of the rim, so the translation of a patch is not a bijection. A vector that is not in the lattice lands between vertices, where several can be nearest. The tolerance *10^-6* is absolute, which suits coordinates at unit edge length.
 
 ## Basic Examples
 
@@ -52,6 +52,15 @@ With[
   {DisplacementPlot[g, half], half[First @ GraphCenter[g]]}]
 ```
 
+The translation of the hexagonal tiling by one edge, {1, 0}, sends each inner vertex onto a vertex or to the centre of a hexagon, at distance 1 from its six corners. The six corners tie, up to rounding, and the translation keeps all of them. The counts of the numbers of values:
+
+```wl
+With[
+  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
+  {translation = TranslationDisplacement[g, {1, 0}]},
+  {DisplacementPlot[g, translation], Normal @ KeySort @ Counts[Length /@ Values[translation]]}]
+```
+
 ## Properties and Relations
 
 Translations of the 6 × 6 grid compose to the translation by the sum of the vectors.
@@ -74,11 +83,12 @@ With[
 
 ## Possible Issues
 
-Ties are decided in machine arithmetic. The translation of the hexagonal tiling by one edge, {1, 0}, sends each inner vertex onto a vertex or to the centre of a hexagon, at distance 1 from its six corners. The coordinates are rounded numbers, so the six corners are not exactly tied, and the translation keeps one or two of them: it is single-valued at 105 of the 109 vertices.
+The tolerance for a tie is the absolute *10^-6*. On coordinates of that size every vertex is within it, and the translation by zero, which should leave every vertex fixed, keeps many. The number of values at the centre of the hexagonal tiling, at unit edge length and scaled by *10^-7*:
 
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {translation = TranslationDisplacement[g, {1, 0}]},
-  {DisplacementPlot[g, translation], Normal @ KeySort @ Counts[Length /@ Values[translation]]}]
+  {small = Graph[g, VertexCoordinates -> 10^-7 GraphEmbedding[g]]},
+  {center = First @ GraphCenter[g]},
+  Length /@ {TranslationDisplacement[g, {0, 0}][center], TranslationDisplacement[small, {0, 0}][center]}]
 ```

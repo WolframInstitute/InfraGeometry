@@ -44,20 +44,19 @@ InfraSubstrate[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || StringM
           Graph[ IndexGraph @ MeshConnectivityGraph @ mesh,
             VertexCoordinates -> Normalize /@ MeshCoordinates @ mesh ] ],
         "TriangularTilingGraph", BoundarylessGraph[
-          TessellationNeighborhoodGraph[ { 3, 6 }, size /. { "Small" -> 5, "Medium" -> 9, "Large" -> 16 } ], Method -> "MaxDegree" ],
+          TessellationNeighborhoodGraph[ { 3, 6 }, size /. { "Small" -> 5, "Medium" -> 9, "Large" -> 16 } ] ],
         "SquareTilingGraph", BoundarylessGraph[
-          TessellationNeighborhoodGraph[ { 4, 4 }, size /. { "Small" -> 7, "Medium" -> 12, "Large" -> 22 } ], Method -> "MaxDegree" ],
+          TessellationNeighborhoodGraph[ { 4, 4 }, size /. { "Small" -> 7, "Medium" -> 12, "Large" -> 22 } ] ],
         "HexagonalTilingGraph", BoundarylessGraph[
-          TessellationNeighborhoodGraph[ { 6, 3 }, size /. { "Small" -> 8, "Medium" -> 14, "Large" -> 25 } ], Method -> "MaxDegree" ],
+          TessellationNeighborhoodGraph[ { 6, 3 }, size /. { "Small" -> 8, "Medium" -> 14, "Large" -> 25 } ] ],
         "HyperbolicTilingGraph", BoundarylessGraph[
-          TessellationNeighborhoodGraph[ { 3, 7 }, size /. { "Small" -> 3, "Medium" -> 4, "Large" -> 5 } ], Method -> "MaxDegree" ],
+          TessellationNeighborhoodGraph[ { 3, 7 }, size /. { "Small" -> 3, "Medium" -> 4, "Large" -> 5 } ] ],
         "SquareGridGraph", BoundarylessGraph[
-          GridGraph[ size /. { "Small" -> { 10, 10 }, "Medium" -> { 17, 17 }, "Large" -> { 32, 32 } } ], Method -> "MaxDegree" ],
+          GridGraph[ size /. { "Small" -> { 10, 10 }, "Medium" -> { 17, 17 }, "Large" -> { 32, 32 } } ] ],
         "CubicGridGraph", With[
           { dims = size /. { "Small" -> { 5, 5, 5 }, "Medium" -> { 7, 7, 7 }, "Large" -> { 10, 10, 10 } } },
           BoundarylessGraph[
-            Graph[ GridGraph @ dims, VertexCoordinates -> Reverse /@ Tuples[ Range /@ Reverse @ dims ] ],
-            Method -> "MaxDegree" ] ],
+            Graph[ GridGraph @ dims, VertexCoordinates -> Reverse /@ Tuples[ Range /@ Reverse @ dims ] ] ] ],
         "SquareTorusGraph" | "TriangularTorusGraph" | "HexagonalTorusGraph", With[
           { dims = size /. If[ name === "HexagonalTorusGraph",
               { "Small" -> { 7, 7 }, "Medium" -> { 15, 10 }, "Large" -> { 25, 20 } },
@@ -68,12 +67,12 @@ InfraSubstrate[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || StringM
               { u = 2 Pi ( v[[ 1 ]] + s / 2 ) / m, w = 2 Pi ( v[[ 2 ]] + s / 2 ) / n },
               { ( 1 + 0.4 Cos[ w ] ) Cos[ u ], ( 1 + 0.4 Cos[ w ] ) Sin[ u ], 0.4 Sin[ w ] } ],
             VertexList @ torus ] ] ],
-        "UniformLengthSphereGraph", UniformLengthGraph[ BoundaryDiscretizeRegion @ Ellipsoid[ { 0, 0, 0 }, { 1, 1, 1 } ],
-          size /. { "Small" -> 100, "Medium" -> 300, "Large" -> 1000 }, "KeepCoordinates" -> True ],
-        "UniformLengthProlateEllipsoidGraph", UniformLengthGraph[ BoundaryDiscretizeRegion @ Ellipsoid[ { 0, 0, 0 }, { 5, 1, 1 } ],
-          size /. { "Small" -> 100, "Medium" -> 300, "Large" -> 1000 }, "KeepCoordinates" -> True ],
-        "UniformLengthTriaxialEllipsoidGraph", UniformLengthGraph[ BoundaryDiscretizeRegion @ Ellipsoid[ { 0, 0, 0 }, { 4, 2, 1 } ],
-          size /. { "Small" -> 100, "Medium" -> 300, "Large" -> 1000 }, "KeepCoordinates" -> True ],
+        "UniformLengthSphereGraph", UniformLengthGraph[ RegionBoundary @ BoundaryDiscretizeRegion @ Ellipsoid[ { 0, 0, 0 }, { 1, 1, 1 } ],
+          size /. { "Small" -> 0.38, "Medium" -> 0.22, "Large" -> 0.12 }, "KeepCoordinates" -> True ],
+        "UniformLengthProlateEllipsoidGraph", UniformLengthGraph[ RegionBoundary @ BoundaryDiscretizeRegion @ Ellipsoid[ { 0, 0, 0 }, { 5, 1, 1 } ],
+          size /. { "Small" -> 0.76, "Medium" -> 0.44, "Large" -> 0.24 }, "KeepCoordinates" -> True ],
+        "UniformLengthTriaxialEllipsoidGraph", UniformLengthGraph[ RegionBoundary @ BoundaryDiscretizeRegion @ Ellipsoid[ { 0, 0, 0 }, { 4, 2, 1 } ],
+          size /. { "Small" -> 0.85, "Medium" -> 0.49, "Large" -> 0.27 }, "KeepCoordinates" -> True ],
         "BuckyballGraph", With[
           { ball = ResourceFunction[ "BuckyballGraph" ][ size /. { "Small" -> 1, "Medium" -> 2, "Large" -> 4 } ] },
           Graph[ ball, VertexCoordinates -> GraphEmbedding @ ball ] ],
@@ -109,7 +108,7 @@ InfraSubstrate[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || StringM
             UndirectedGraph @ ResourceFunction[ "HypergraphToGraph" ][ state ] ] ] ] },
     { g = Replace[ OptionValue[ InfraSubstrate, own, "Inflate" ], {
         None -> raw,
-        inflate_ :> InflateGraph[ raw, Sequence @@ Replace[ inflate, amount : Except[ { ___Rule } ] :> { "ExtraVertices" -> amount } ] ] } ],
+        inflate_ :> InflateGraph[ raw, Sequence @@ Replace[ inflate, amount : _?NumericQ | { _?NumericQ, _?NumericQ } :> { amount } ] ] } ],
       keep = TrueQ @ OptionValue[ InfraSubstrate, own, "KeepCoordinates" ] },
     Graph[ g, FilterRules[ { opts }, Options @ Graph ],
       Sequence @@ Which[
@@ -145,19 +144,18 @@ InfraSubstrateCode[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || Str
             Graph[ IndexGraph @ MeshConnectivityGraph @ mesh,
               VertexCoordinates -> Normalize /@ MeshCoordinates @ mesh ] ] ],
         "TriangularTilingGraph", With[ { radius = size /. { "Small" -> 5, "Medium" -> 9, "Large" -> 16 } },
-          HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 3, 6 }, radius ], Method -> "MaxDegree" ] ],
+          HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 3, 6 }, radius ] ] ],
         "SquareTilingGraph", With[ { radius = size /. { "Small" -> 7, "Medium" -> 12, "Large" -> 22 } },
-          HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 4, 4 }, radius ], Method -> "MaxDegree" ] ],
+          HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 4, 4 }, radius ] ] ],
         "HexagonalTilingGraph", With[ { radius = size /. { "Small" -> 8, "Medium" -> 14, "Large" -> 25 } },
-          HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 6, 3 }, radius ], Method -> "MaxDegree" ] ],
+          HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 6, 3 }, radius ] ] ],
         "HyperbolicTilingGraph", With[ { radius = size /. { "Small" -> 3, "Medium" -> 4, "Large" -> 5 } },
-          HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 3, 7 }, radius ], Method -> "MaxDegree" ] ],
+          HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 3, 7 }, radius ] ] ],
         "SquareGridGraph", With[ { dims = size /. { "Small" -> { 10, 10 }, "Medium" -> { 17, 17 }, "Large" -> { 32, 32 } } },
-          HoldComplete @ BoundarylessGraph[ GridGraph @ dims, Method -> "MaxDegree" ] ],
+          HoldComplete @ BoundarylessGraph[ GridGraph @ dims ] ],
         "CubicGridGraph", With[ { dims = size /. { "Small" -> { 5, 5, 5 }, "Medium" -> { 7, 7, 7 }, "Large" -> { 10, 10, 10 } } },
           HoldComplete @ BoundarylessGraph[
-            Graph[ GridGraph @ dims, VertexCoordinates -> Reverse /@ Tuples[ Range /@ Reverse @ dims ] ],
-            Method -> "MaxDegree" ] ],
+            Graph[ GridGraph @ dims, VertexCoordinates -> Reverse /@ Tuples[ Range /@ Reverse @ dims ] ] ] ],
         "SquareTorusGraph" | "TriangularTorusGraph" | "HexagonalTorusGraph", With[
           { shape = StringDelete[ name, "TorusGraph" ],
             dims = size /. If[ name === "HexagonalTorusGraph",
@@ -171,15 +169,15 @@ InfraSubstrateCode[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || Str
                 { u = 2 Pi ( v[[ 1 ]] + s / 2 ) / m, w = 2 Pi ( v[[ 2 ]] + s / 2 ) / n },
                 { ( 1 + 0.4 Cos[ w ] ) Cos[ u ], ( 1 + 0.4 Cos[ w ] ) Sin[ u ], 0.4 Sin[ w ] } ],
               VertexList @ torus ] ] ] ],
-        "UniformLengthSphereGraph", With[ { count = size /. { "Small" -> 100, "Medium" -> 300, "Large" -> 1000 } },
-          HoldComplete @ UniformLengthGraph[ BoundaryDiscretizeRegion @ Ellipsoid[ { 0, 0, 0 }, { 1, 1, 1 } ],
-            count, "KeepCoordinates" -> True ] ],
-        "UniformLengthProlateEllipsoidGraph", With[ { count = size /. { "Small" -> 100, "Medium" -> 300, "Large" -> 1000 } },
-          HoldComplete @ UniformLengthGraph[ BoundaryDiscretizeRegion @ Ellipsoid[ { 0, 0, 0 }, { 5, 1, 1 } ],
-            count, "KeepCoordinates" -> True ] ],
-        "UniformLengthTriaxialEllipsoidGraph", With[ { count = size /. { "Small" -> 100, "Medium" -> 300, "Large" -> 1000 } },
-          HoldComplete @ UniformLengthGraph[ BoundaryDiscretizeRegion @ Ellipsoid[ { 0, 0, 0 }, { 4, 2, 1 } ],
-            count, "KeepCoordinates" -> True ] ],
+        "UniformLengthSphereGraph", With[ { length = size /. { "Small" -> 0.38, "Medium" -> 0.22, "Large" -> 0.12 } },
+          HoldComplete @ UniformLengthGraph[ RegionBoundary @ BoundaryDiscretizeRegion @ Ellipsoid[ { 0, 0, 0 }, { 1, 1, 1 } ],
+            length, "KeepCoordinates" -> True ] ],
+        "UniformLengthProlateEllipsoidGraph", With[ { length = size /. { "Small" -> 0.76, "Medium" -> 0.44, "Large" -> 0.24 } },
+          HoldComplete @ UniformLengthGraph[ RegionBoundary @ BoundaryDiscretizeRegion @ Ellipsoid[ { 0, 0, 0 }, { 5, 1, 1 } ],
+            length, "KeepCoordinates" -> True ] ],
+        "UniformLengthTriaxialEllipsoidGraph", With[ { length = size /. { "Small" -> 0.85, "Medium" -> 0.49, "Large" -> 0.27 } },
+          HoldComplete @ UniformLengthGraph[ RegionBoundary @ BoundaryDiscretizeRegion @ Ellipsoid[ { 0, 0, 0 }, { 4, 2, 1 } ],
+            length, "KeepCoordinates" -> True ] ],
         "BuckyballGraph", With[ { steps = size /. { "Small" -> 1, "Medium" -> 2, "Large" -> 4 } },
           HoldComplete @ With[
             { ball = ResourceFunction[ "BuckyballGraph" ][ steps ] },
@@ -221,7 +219,7 @@ InfraSubstrateCode[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || Str
     { code = Replace[ OptionValue[ InfraSubstrate, own, "Inflate" ], {
         None -> raw,
         inflate_ :> ( Join[ HoldComplete @ InflateGraph, raw,
-          HoldComplete @@ Replace[ inflate, amount : Except[ { ___Rule } ] :> { "ExtraVertices" -> amount } ] ] /.
+          HoldComplete @@ Replace[ inflate, amount : _?NumericQ | { _?NumericQ, _?NumericQ } :> { amount } ] ] /.
           HoldComplete[ head_, rest__ ] :> HoldComplete @ head[ rest ] ) } ] },
     { g = ReleaseHold @ code },
     { arguments = DeleteCases[

@@ -2,10 +2,13 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: InfraTopology :: BallIntersectionComplex *)
 
-(* Convention: closed balls B(x, r), equal radii. Two meet iff d(x_i, x_j) <= 2 r,
-   so BallIntersectionComplex[data, r, 2] = VietorisRipsComplex[data, 2 r]. For equal
+(* Convention: closed balls B(x, r), equal radii. In the Euclidean metric two meet iff
+   d(x_i, x_j) <= 2 r, so BallIntersectionComplex[data, r, 2] = VietorisRipsComplex[data, 2 r]. For equal
    radii a common intersection point exists iff the smallest enclosing ball of the
    centres has radius <= r, so the Cech filtration value is the miniball radius. *)
+
+MiniballRadius[ { _ } ] :=
+  0
 
 MiniballRadius[ pts_List ] :=
   BoundingRegion[ N @ pts, "MinBall" ][[ 2 ]]

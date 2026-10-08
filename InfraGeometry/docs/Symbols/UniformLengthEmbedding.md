@@ -12,13 +12,13 @@ RelatedGuides: [InfraSubstrates]
 
 ## Usage
 
-<code>[UniformLengthEmbedding]()[*g*]</code> gives coordinates in space for the vertices of *g*, in the order of [VertexList](), under which the edges of *g* have length close to 1.
+<code>[UniformLengthEmbedding]()[*g*]</code> gives coordinates in space for the vertices of *g*, in the order of [VertexList](), under which the edges of *g* are relaxed towards length 1: from the spring-electrical layout, by edge springs.
 
 ## Details & Options
 
 Construction: start from the spring-electrical layout of *g* in dimension *d*, scaled so that the mean edge length is 1. At each step, every edge {*u*, *v*} moves *u* and *v* by half of what brings it to length 1, a vertex moving at most `"MaxStepPerVertex"`; stop when no vertex moves more than `"Tolerance"`, or after `"MaxIterations"` steps.
 
-An embedding with every edge of length 1 is a unit-distance embedding. The relaxation finds one for small graphs that have one, such as the Platonic solids in space. A graph without one, such as the complete graph on four vertices in the plane, ends with edges spread about 1, and so can a larger graph that has one: the relaxation stops short of it.
+An embedding with every edge of length 1 is a unit-distance embedding. The relaxation finds one for small graphs that have one, such as the Platonic solids in space, and it keeps one it is started from. A graph without one, such as the complete graph on four vertices in the plane, ends with edges spread about 1.
 
 The result has the shape of <code>[GraphEmbedding]()[*g*]</code>: draw it with <code>[Graph]()[*g*, [VertexCoordinates]() -> [UniformLengthEmbedding]()[*g*]]</code>.
 
@@ -85,7 +85,7 @@ With[
 
 ### InitialEmbedding
 
-A ball of the triangular tiling has unit edges in the plane, but the relaxation from the spring-electrical layout stops with its edges between 0.86 and 1.15. Started from the coordinates of the tiling, it keeps them.
+A ball of the triangular tiling has unit edges in the plane in the coordinates of the tiling. Started from them, the relaxation keeps the unit edges; the default start does not reach them (see Possible Issues).
 
 ```wl
 With[
@@ -96,6 +96,15 @@ With[
 ```
 
 ## Possible Issues
+
+A graph that has a unit-distance embedding need not end in it: the relaxation from the spring-electrical layout stops short. The ball of radius 3 of the triangular tiling has unit edges in the plane, yet its edges end between 0.86 and 1.15.
+
+```wl
+With[
+  {g = IndexGraph @ TessellationNeighborhoodGraph[{3, 6}, 3]},
+  {coordinates = UniformLengthEmbedding[g, "Dimension" -> 2]},
+  {Graph[g, VertexCoordinates -> coordinates], MinMax[EuclideanDistance @@ coordinates[[List @@ #]] & /@ EdgeList[g]]}]
+```
 
 Four points in the plane cannot be pairwise at distance 1, so the complete graph on four vertices gets no unit edges there.
 

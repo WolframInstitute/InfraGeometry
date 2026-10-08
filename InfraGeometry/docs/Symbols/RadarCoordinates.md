@@ -22,7 +22,7 @@ Definition: the radar coordinates of a vertex *v* from a basis (*b*₁, …, *b*
 
 The coordinates tell every two vertices apart exactly when the basis is a resolving set, [ResolvingSetQ](). A smallest resolving set is found by [FindResolvingSet](), and its size is the [MetricDimension]().
 
-A station may also be a set of vertices, given as a density or as a walk graph. Its coordinate is the list of distances to its vertices, reduced to one number by the option `"AnchorAggregation"`: [Min]() (the default) gives the distance to the nearest vertex of the set, and any function of a list may be given.
+A station may also be a set of vertices, given as a vertex list, a density or a walk graph. Its coordinate is the list of distances to its vertices, reduced to one number by the option `"AnchorAggregation"`: [Min]() (the default) gives the distance to the nearest vertex of the set, and any function of a list may be given.
 
 The point *v* may also be a density; the result is then the list of the coordinates of its vertices.
 
@@ -67,10 +67,26 @@ With[
   {panels = Table[
      With[
        {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-       {depth = RadarCoordinates[g, {AssociationThread[GraphExteriorBoundary[g, Method -> "MaxDegree"], 1]}]},
+       {depth = RadarCoordinates[g, {AssociationThread[GraphExteriorBoundary[g], 1]}]},
        {InfraSubstrateHighlight[g, Values @ KeySort @ GroupBy[Keys[depth], depth]], depth[First @ GraphCenter[g]]}],
      {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]},
   {GraphicsRow[First /@ panels], Last /@ panels}]
+```
+
+A station given as a vertex list is read as a set, in the two-argument form as in the three-argument one: on a path, the nearer of the two ends 1 and 5, and the same station as a density.
+
+```wl
+With[
+  {g = PathGraph[Range[5]]},
+  {g, RadarCoordinates[g, {{1, 5}}], RadarCoordinates[g, {{1, 5}}, 3], RadarCoordinates[g, {AssociationThread[{1, 5}, 1]}] === RadarCoordinates[g, {{1, 5}}]}]
+```
+
+A station that is a vertex list beside a station that is a vertex: the nearer end of the path and the middle. The two ends are not told apart, and the coordinates fold the path onto half of itself.
+
+```wl
+With[
+  {g = PathGraph[Range[5]]},
+  {g, RadarCoordinates[g, {{1, 5}, 3}]}]
 ```
 
 ## Options
@@ -98,15 +114,4 @@ With[
   {radar = RadarCoordinates[g, stations]},
   {Graph[VertexList[g], EdgeList[g], VertexCoordinates -> Normal[radar]],
    CountDistinct[Values[radar]], VertexCount[g], ResolvingSetQ[g, stations]}]
-```
-
-## Possible Issues
-
-A vertex list as a station is read as a set only by the three-argument form. The two-argument form hands the list to [GraphDistance](), which leaves it unevaluated with a message. A density works in both forms.
-
-```wl
-With[
-  {g = PathGraph[Range[5]]},
-  {g, RadarCoordinates[g, {{1, 5}}, 3], RadarCoordinates[g, {AssociationThread[{1, 5}, 1]}],
-   Quiet @ RadarCoordinates[g, {{1, 5}}][3]}]
 ```

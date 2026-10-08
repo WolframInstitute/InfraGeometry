@@ -96,5 +96,5 @@ The whole vertex set has no boundary, since no vertex has a neighbour outside th
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {InfraSubstrateHighlight[g, {GraphExteriorBoundary[g, Method -> "MaxDegree"] -> StandardBlue}], GraphBoundary[g, VertexList[g]]}]
+  {InfraSubstrateHighlight[g, {GraphExteriorBoundary[g] -> StandardBlue}], GraphBoundary[g, VertexList[g]]}]
 ```

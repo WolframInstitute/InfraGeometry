@@ -136,4 +136,45 @@ VerificationTest[
     TestID -> "Displacement-random-continuous"
 ]
 
+(* DisplacementKernelFindings: a graph without symmetry has no Killing displacement, and the call stays unevaluated with no message *)
+VerificationTest[
+    With[{graph = InfraSubstrate["SquareMeshGraph", "Small"]},
+        Head @ FindKillingDisplacement[graph]],
+    FindKillingDisplacement,
+    TestID -> "Displacement-killing-asymmetric-unevaluated"
+]
+
+(* the bent arc is a planar construction: a three-dimensional embedding leaves the plot unevaluated *)
+VerificationTest[
+    With[{graph = InfraSubstrate["SquareTorusGraph", "Small", "KeepCoordinates" -> True]},
+        With[{step = AssociationMap[{#} &, VertexList @ graph]},
+            {Head @ DisplacementPlot[graph, step], Head @ DisplacementPlot[graph, {step}]}]],
+    {DisplacementPlot, DisplacementPlot},
+    TestID -> "Displacement-plot-planar-only"
+]
+
+(* the k-th displacement is drawn in the k-th Standard colour *)
+VerificationTest[
+    Cases[DisplacementPlot[dispGrid, {dispX, dispY}], {color_, _Arrowheads, ___} :> color, Infinity],
+    {StandardBlue, StandardRed},
+    TestID -> "Displacement-plot-standard-colours"
+]
+
+(* a random displacement is continuous, or the call stays unevaluated when the repair leaves a discontinuity *)
+VerificationTest[
+    With[{graph = InfraSubstrate["HexagonalTilingGraph", "Small"]},
+        {SeedRandom[1]; ContinuousDisplacementQ[graph, RandomDisplacement[graph, 3]],
+         SeedRandom[2]; Head @ RandomDisplacement[graph, 3]}],
+    {True, RandomDisplacement},
+    TestID -> "Displacement-random-unevaluated-on-failure"
+]
+
+(* a translation keeps the ties up to rounding: the hexagon centres reached by a unit edge go to all six corners *)
+VerificationTest[
+    With[{graph = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
+        Lookup[Counts[Length /@ Values @ TranslationDisplacement[graph, {1, 0}]], {1, 6}, 0]],
+    {53, 36},
+    TestID -> "Displacement-translation-keeps-ties"
+]
+
 EndTestSection[]

@@ -66,4 +66,35 @@ VerificationTest[
     TestID -> "FindBallCover-symmetric-cuboctahedron"
 ]
 
+(* Method -> "Symmetric" on a graph without symmetry: every vertex is its own orbit, so the
+   symmetric program is the exhaustive one and returns a minimum cover, no message *)
+VerificationTest[
+    With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {s = FindBallCover[g, 2, All, 1, Method -> "Symmetric"]},
+        {Length[s], BallCoverQ[g, 2, s], DominationNumber[g, 2]}
+    ],
+    {8, True, 8},
+    TestID -> "FindBallCover-symmetric-asymmetric-graph"
+]
+
+(* A count other than 1 gives a list of covers for every method; "Greedy" and "Symmetric"
+   a list of their one cover *)
+VerificationTest[
+    With[{g = CycleGraph[6]},
+        Table[
+            With[{covers = FindBallCover[g, 1, All, All, Method -> m]},
+                MatchQ[covers, {{__Integer} ..}] && AllTrue[covers, BallCoverQ[g, 1, #] &]
+            ],
+            {m, {"Exhaustive", "Greedy", "Symmetric"}}
+        ]
+    ],
+    {True, True, True},
+    TestID -> "FindBallCover-count-list-every-method"
+]
+
+VerificationTest[
+    {FindBallCover[CycleGraph[6], 1, All, All, Method -> "Greedy"], FindBallCover[CycleGraph[6], 1, All, UpTo[0], Method -> "Greedy"]},
+    {{{6, 3}}, {}},
+    TestID -> "FindBallCover-greedy-count-wraps-one-cover"
+]
+
 EndTestSection[]

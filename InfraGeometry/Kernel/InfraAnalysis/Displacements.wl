@@ -168,9 +168,12 @@ GradientDisplacement[ graph_Graph, f_Association ] :=
 
 TranslationDisplacement[ graph_Graph, vector_List ] :=
   With[
-    { position = AssociationThread[ VertexList @ graph, GraphEmbedding @ graph ],
-      nearest = Nearest[ GraphEmbedding @ graph -> VertexList @ graph ] },
-    AssociationMap[ nearest[ position @ # + vector ] &, VertexList @ graph ] ]
+    { nearest = Nearest[ GraphEmbedding @ graph -> VertexList @ graph ],
+      distance = Nearest[ GraphEmbedding @ graph -> "Distance" ] },
+    (* ties up to rounding: every vertex within 10^-6 of the nearest distance, the substrates having unit edges *)
+    AssociationThread[
+      VertexList @ graph,
+      Map[ point |-> nearest[ point, { All, First @ distance @ point + 10^-6 } ], ( # + vector & ) /@ GraphEmbedding @ graph ] ] ]
 
 RandomDisplacement[ graph_Graph, radius_ : 1 ] :=
   With[
@@ -202,7 +205,7 @@ RandomDisplacement[ graph_Graph, radius_ : 1 ] :=
       violatingOf = targets |-> Union @ Catenate @ Select[ List @@@ EdgeList[ graph ],
         { edge } |-> GraphDistance[ graph, First @ targets @ First @ edge, First @ targets @ Last @ edge ] > 1 ]
     },
-    First @ NestWhile[
+    { result = NestWhile[
       attempt |-> NestWhile[
         Apply[ { targets, previous } |-> With[
           { violating = violatingOf[ targets ] },
@@ -217,11 +220,12 @@ RandomDisplacement[ graph_Graph, radius_ : 1 ] :=
       Last[ # ] =!= { } &,
       1,
       5
-    ]
+    ] },
+    First @ result /; Last @ result === { }
   ]
 
 FindKillingDisplacement[ graph_Graph ] :=
-  First @ FindKillingDisplacement[ graph, All ]
+  With[ { all = FindKillingDisplacement[ graph, All ] }, First @ all /; all =!= { } ]
 
 FindKillingDisplacement[ graph_Graph, All ] :=
   With[
@@ -240,10 +244,10 @@ KillingDisplacementMagnitude[ graph_Graph ] :=
 
 Options[ DisplacementPlot ] = Options[ Graphics ]
 
-DisplacementPlot[ graph_Graph, displacement_Association, opts : OptionsPattern[] ] :=
+DisplacementPlot[ graph_Graph, displacement_Association, opts : OptionsPattern[] ] /; Length @ First @ GraphEmbedding @ graph == 2 :=
   DisplacementPlot[ graph, { displacement }, opts ]
 
-DisplacementPlot[ graph_Graph, displacements : { __Association }, opts : OptionsPattern[] ] :=
+DisplacementPlot[ graph_Graph, displacements : { __Association }, opts : OptionsPattern[] ] /; Length @ First @ GraphEmbedding @ graph == 2 :=
   With[
     { position = AssociationThread[ VertexList @ graph, GraphEmbedding @ graph ] },
     Show[
@@ -256,7 +260,8 @@ DisplacementPlot[ graph_Graph, displacements : { __Association }, opts : Options
                 { vertex, targets } |-> Table[ { position @ vertex, position @ target }, { target, targets } ],
                 displacements[[ index ]] ],
               { p_, p_ } ] },
-          { ColorData[ 97 ][ index ], Arrowheads[ 0.02 ],
+          { { StandardBlue, StandardRed, StandardGreen, StandardOrange, StandardPurple, StandardCyan, StandardBrown, StandardPink }[[ Mod[ index, 8, 1 ] ]],
+            Arrowheads[ 0.02 ],
             Arrow @ BezierCurve @ { #[[ 1 ]], ( #[[ 1 ]] + #[[ 2 ]] )/2 + 0.2 { 1, -1 } Reverse[ #[[ 2 ]] - #[[ 1 ]] ], #[[ 2 ]] } & /@ pairs } ],
         { index, Length @ displacements } ],
       Sequence @@ FilterRules[ { opts }, Options[ Graphics ] ]

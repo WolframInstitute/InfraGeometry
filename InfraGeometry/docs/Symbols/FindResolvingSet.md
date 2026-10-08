@@ -12,9 +12,9 @@ RelatedGuides: [Experimental]
 
 ## Usage
 
-<code>[FindResolvingSet]()[*g*]</code> gives a list holding one smallest resolving set of *g*, a metric basis.
+<code>[FindResolvingSet]()[*g*]</code> gives a list holding one smallest resolving set of *g*, a metric basis, empty for the graph of one vertex.
 
-<code>[FindResolvingSet]()[*g*, *n*]</code> gives up to *n* resolving sets, the smallest first.
+<code>[FindResolvingSet]()[*g*, *n*]</code> gives up to *n* resolving sets in order of size, the smallest first; those of the smallest size are metric bases, the later ones need not be minimal.
 
 <code>[FindResolvingSet]()[*g*, *n*, *m*]</code> takes the sizes of the sets from *m*: [All](), a largest size *k*, {*min*, *max*}, or {*k*} for the size *k* only.
 
@@ -22,9 +22,9 @@ RelatedGuides: [Experimental]
 
 Definition: a set *B* of vertices resolves *g* when every vertex is determined by its distances to the vertices of *B*, [ResolvingSetQ](). A smallest resolving set is a metric basis, and its size is the [MetricDimension]().
 
-The search is exhaustive. It tries every set of each size in turn, from the smallest size on, and stops once it holds *n* sets. A metric basis of *k* vertices out of *N* is found after at most (*N* choose *k*) tests at the size *k*, so the search is fast when the metric dimension is small, and slow otherwise.
+The search is exhaustive. It tries every set of each size in turn, from the empty set on, and stops once it holds *n* sets. A metric basis of *k* vertices out of *N* is found after at most (*N* choose *k*) tests at the size *k*, so the search is fast when the metric dimension is small, and slow otherwise.
 
-After the sets of the smallest size come larger ones, and those may contain smaller resolving sets. When no set of the sizes *m* resolves *g*, the result is {}.
+The empty set resolves the graph of one vertex and no graph with more. After the sets of the smallest size come larger ones, and those may contain smaller resolving sets. When no set of the sizes *m* resolves *g*, the result is {}.
 
 ## Basic Examples
 
@@ -64,6 +64,14 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {pairs = FindResolvingSet[g, 1000, {2}], triples = FindResolvingSet[g, 1000, {3}]},
   {GraphicsRow[InfraSubstrateHighlight[g, {#}] & /@ (SeedRandom[1]; RandomSample[triples, 3])], Length[pairs], Length[triples]}]
+```
+
+The empty set resolves the one-vertex graph and comes first, followed by its vertex; on the graph of two vertices a single vertex resolves, and the empty set does not.
+
+```wl
+With[
+  {graphs = {Graph[{1}, {}], PathGraph[{1, 2}]}},
+  {GraphicsRow[graphs], FindResolvingSet[#, 3] & /@ graphs}]
 ```
 
 ## Properties and Relations

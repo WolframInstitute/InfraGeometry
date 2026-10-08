@@ -28,9 +28,9 @@ Finding a smallest cover is NP-hard in general. Option [Method]() chooses how:
 |---|---|
 | `"Exhaustive"` (default) | an integer linear program: a smallest cover |
 | `"Greedy"` | the centre covering the most uncovered targets, again and again: fast, often larger |
-| `"Symmetric"` | a union of orbits of single automorphisms of *g*, each of at least two vertices: smallest when a smallest cover has that shape, larger otherwise |
+| `"Symmetric"` | a union of orbits of single automorphisms of *g*, a vertex fixed by all of them its own orbit: smallest when a smallest cover has that shape, larger otherwise; on a graph without symmetry every vertex is an orbit and the cover is the exhaustive one |
 
-With a count *n* the smallest covers are found by testing every list of centres of the smallest size, which is feasible only on small graphs. Only `"Exhaustive"` reads the count.
+With a count *n* the result is a list of up to *n* covers, and [All]() gives every one. `"Exhaustive"` finds the smallest covers by testing every list of centres of the smallest size, which is feasible only on small graphs. `"Greedy"` and `"Symmetric"` have one cover each, so their list holds that one.
 
 ## Basic Examples
 
@@ -66,6 +66,15 @@ With[
   {GraphicsRow[InfraSubstrateHighlight[g, InfraBall[#, 1] & /@ #] & /@ covers], covers}]
 ```
 
+With a count the methods that have one cover give a list of it. The greedy cover of the hexagon, as a list.
+
+```wl
+With[
+  {g = CycleGraph[6]},
+  {covers = FindBallCover[g, 1, All, All, Method -> "Greedy"]},
+  {GraphicsRow[InfraSubstrateHighlight[g, InfraBall[#, 1] & /@ #] & /@ covers], covers}]
+```
+
 ## Options
 
 ### Method
@@ -79,6 +88,15 @@ With[
   {GraphicsRow[InfraSubstrateHighlight[g, InfraBall[#, 2] & /@ #] & /@ covers], Length /@ covers}]
 ```
 
+The discretized plane has no symmetry, so every vertex is an orbit and the symmetric cover is the exhaustive one.
+
+```wl
+With[
+  {g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {covers = Table[FindBallCover[g, 2, Method -> method], {method, {"Exhaustive", "Symmetric"}}]},
+  {GraphicsRow[InfraSubstrateHighlight[g, InfraBall[#, 2] & /@ #] & /@ covers], Length /@ covers}]
+```
+
 ## Properties and Relations
 
 A cover passes [BallCoverQ](), and its length is the [DominationNumber]().
@@ -89,23 +107,4 @@ With[
   {cover = FindBallCover[g, 3]},
   {InfraSubstrateHighlight[g, InfraBall[#, 3] & /@ cover],
    BallCoverQ[g, 3, cover], Length[cover] == DominationNumber[g, 3]}]
-```
-
-## Possible Issues
-
-`"Symmetric"` never places a centre at a vertex that every automorphism fixes. On a graph with no symmetry it finds no cover: it prints a [LinearOptimization]() message and returns an empty list. The exhaustive cover of the discretized plane is drawn beside.
-
-```wl
-With[
-  {g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
-  {InfraSubstrateHighlight[g, InfraBall[#, 2] & /@ FindBallCover[g, 2]], Quiet @ FindBallCover[g, 2, Method -> "Symmetric"]}]
-```
-
-`"Greedy"` and `"Symmetric"` ignore the count and return a single cover, not a list of covers.
-
-```wl
-With[
-  {g = CycleGraph[6]},
-  {cover = FindBallCover[g, 1, All, All, Method -> "Greedy"]},
-  {InfraSubstrateHighlight[g, InfraBall[#, 1] & /@ cover], cover}]
 ```
