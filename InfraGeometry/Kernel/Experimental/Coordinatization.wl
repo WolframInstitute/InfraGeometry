@@ -93,36 +93,29 @@ ResistanceCoordinates[ g_Graph, v_, opts : OptionsPattern[] ] /; ConnectedGraphQ
 ResistanceCoordinates[ g_Graph, fam_Association, opts : OptionsPattern[] ] /; ConnectedGraphQ[ g ] && SubsetQ[ VertexList[ g ], Keys @ fam ] :=
   With[ { all = ResistanceCoordinates[ g, opts ] }, all /@ Keys @ fam ]
 
-Options[ OrthogonalCoordinates ] = { "SelectCoordinate" -> "Centered" }
+(* the coordinate of v on a walk is the position of its shortest-path projection, the walk vertices nearest to v, counted from the projection
+   of the centre's support; a tie is broken by "SelectCoordinate", the centre's own tie by the same function, so the centre reads 0 *)
 
-OrthogonalCoordinates[ g_Graph, c_, axes_List, v_, opts : OptionsPattern[] ] /;
-    VertexQ[ g, v ] :=
-  With[ {
-      centerVs  = Keys @ InfraDensity[ g, c ],
-      axisPaths = Replace[ #, w_Graph :> With[ { vs = VertexList @ w },
-        { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
-          scan = u |-> Reap[ DepthFirstScan[ w, u, { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] },
-        Which[
-          ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w,
-            If[ First @ # === Last @ #, #, Append[ #, First @ # ] ] & @
-              If[ spelled, Last /@ SortBy[ vs, First ], scan @ First @ vs ],
-          spelled,            Last /@ SortBy[ vs, First ],
-          EdgeCount @ w == 0, If[ DirectedGraphQ @ w, Take[ vs, 1 ], vs ],
-          DirectedGraphQ @ w,
-            First @ Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
-              { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
-          True, scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] ] ] ] & /@ axes,
-      sel       = OptionValue[ "SelectCoordinate" ],
-      layerIndex = { axis, u } |-> With[ { dists = GraphDistance[ g, u, # ] & /@ axis }, Flatten @ Position[ dists, Min @ dists ] - 1 ]
+Options[ OrthogonalCoordinates ] = { "SelectCoordinate" -> Median }
+
+OrthogonalCoordinates[ g_Graph, centre_, walks : { __ }, opts : OptionsPattern[] ] :=
+  With[
+    {
+      paths   = Replace[ walks, w_Graph :> walkSequence @ w, { 1 } ],
+      select  = Replace[ OptionValue[ "SelectCoordinate" ], All -> Identity ],
+      origin  = Replace[ OptionValue[ "SelectCoordinate" ], All -> Median ],
+      index   = AssociationThread[ VertexList @ g, Range @ VertexCount @ g ],
+      nearest = d |-> Flatten @ Position[ d, Min @ d ]
     },
-    Map[
-      axis |-> With[ { ix = layerIndex[ axis, v ] - First @ layerIndex[ axis, SelectFirst[ centerVs, MemberQ[ axis, # ] &, First @ centerVs ] ] },
-        Switch[ sel, "Centered", If[ MemberQ[ ix, 0 ], 0, Round @ Median[ ix ] ], All, ix, _, sel @ ix ] ],
-      axisPaths ]
+    { walkVertices = Union @@ paths, support = Lookup[ index, Keys @ InfraDensity[ g, centre ] ] },
+    { rows = AssociationThread[ walkVertices, GraphDistance[ g, # ] & /@ walkVertices ] },
+    { tables = Transpose[ Lookup[ rows, # ] ] & /@ paths },
+    { shifts = ( table |-> origin @ nearest[ Min /@ Transpose @ table[[ support ]] ] ) /@ tables },
+    AssociationThread[ VertexList @ g, Transpose @ MapThread[ { table, shift } |-> ( select[ nearest[ # ] - shift ] & /@ table ), { tables, shifts } ] ]
   ]
 
-OrthogonalCoordinates[ g_Graph, c_, axes_List, opts : OptionsPattern[] ] :=
-  Association[ # -> OrthogonalCoordinates[ g, c, axes, #, opts ] & /@ VertexList[ g ] ]
+OrthogonalCoordinates[ g_Graph, centre_, walks : { __ }, v_, opts : OptionsPattern[] ] /; VertexQ[ g, v ] :=
+  OrthogonalCoordinates[ g, centre, walks, opts ][ v ]
 
 (* an axis at c is a geodesic through c whose halves have lengths in the range, maximal there: neither end extends by one step to a longer
    geodesic through c; the axes depend on the endpoint pair only, so maximality is read on the pair.  Two walks are perpendicular when every

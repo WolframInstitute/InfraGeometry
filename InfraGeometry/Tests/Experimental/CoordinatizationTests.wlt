@@ -237,54 +237,46 @@ VerificationTest[
   TestID -> "OrthogonalCoordinates-SelectCoordinate-userFunction"
 ]
 
-(* "Centered" rule: shifted ix_v contains 0 (vertex 4 ties at positions 0
-   and 2 on axis {1, 2, 3} anchored at 1, so shifted = {0, 2}) -> coord 0. *)
+(* the default tie-breaker is Median: vertex 4 ties at positions 0 and 2 *)
 VerificationTest[
   With[{g = CycleGraph[4], axes = {{1, 2, 3}}},
-    OrthogonalCoordinates[g, 1, axes, 4, "SelectCoordinate" -> "Centered"]
-  ],
-  {0},
-  TestID -> "OrthogonalCoordinates-SelectCoordinate-Centered-contains-0"
+    OrthogonalCoordinates[g, 1, axes, 4] === OrthogonalCoordinates[g, 1, axes, 4, "SelectCoordinate" -> Median]],
+  True,
+  TestID -> "OrthogonalCoordinates-default-tie-breaker-Median"
 ]
 
-(* "Centered" rule: shifted ix_v doesn't contain 0 -> Median fallback.
-   On PathGraph[5] anchored at vertex 2 (position 1 of axis {1, 2, 3, 4, 5}),
-   vertex 4 has unique closest position 3, so ix_v = {3} and shifted = {2}.
-   Doesn't contain 0; Median[{2}] = 2. *)
+(* the tie rule on CycleGraph[4]: the antipode 3 ties at -1 and 1, so Median puts it at 0 with the centre; All shows the tie *)
 VerificationTest[
-  With[{g = PathGraph @ Range[5], axes = {{1, 2, 3, 4, 5}}},
-    OrthogonalCoordinates[g, 2, axes, 4, "SelectCoordinate" -> "Centered"]
-  ],
-  {2},
-  TestID -> "OrthogonalCoordinates-SelectCoordinate-Centered-fallback-Median"
+  With[{g = CycleGraph[4], c = 1},
+    With[{axes = FindInfraOrthogonalAxes[g, c, 1]},
+      {axes, OrthogonalCoordinates[g, c, axes], OrthogonalCoordinates[g, c, axes, "SelectCoordinate" -> All]}]],
+  {{{2, 1, 4}}, <|1 -> {0}, 2 -> {-1}, 3 -> {0}, 4 -> {1}|>, <|1 -> {{0}}, 2 -> {{-1}}, 3 -> {{-1, 1}}, 4 -> {{1}}|>},
+  TestID -> "OrthogonalCoordinates-CycleGraph4-antipode"
 ]
 
-(* "Centered" with anchor not at position 0: axis {3, 1, 2} on CycleGraph[4]
-   anchored at vertex 1 (position 1).  For v = 4: distances are
-   d(4, 3) = 1, d(4, 1) = 1, d(4, 2) = 2 -> ix_v = {0, 1}, shifted = {-1, 0}.
-   Contains 0 -> coord 0. *)
+(* a tie straddling the centre gives a half-integer: vertex 4 is nearest to 3 and to the centre 1 on the walk {3, 1, 2} *)
 VerificationTest[
   With[{g = CycleGraph[4], axes = {{3, 1, 2}}},
-    OrthogonalCoordinates[g, 1, axes, 4, "SelectCoordinate" -> "Centered"]
-  ],
-  {0},
-  TestID -> "OrthogonalCoordinates-SelectCoordinate-Centered-anchor-interior"
+    OrthogonalCoordinates[g, 1, axes, 4]],
+  {-1/2},
+  TestID -> "OrthogonalCoordinates-Median-half-integer"
 ]
 
-(* "Centered" coords are integers (Round[Median[...]] fallback).  Run on a
-   reasonably diverse mesh and assert every per-vertex per-axis coord is an
-   integer. *)
+(* on the straight cross of the grid the coordinates are integers, the grid's own *)
+VerificationTest[
+  With[{g = GridGraph[{5, 5}], c = 13},
+    With[{coords = OrthogonalCoordinates[g, c, FindInfraOrthogonalAxes[g, c, 2]]},
+      {AllTrue[Catenate @ Values @ coords, IntegerQ], Sort @ Values @ coords}]],
+  {True, Tuples[Range[-2, 2], 2]},
+  TestID -> "OrthogonalCoordinates-straight-cross-integer-grid"
+]
+
+(* the walks are vertex lists; a walk graph is read as its vertex sequence *)
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    With[{axes = FindInfraOrthogonalAxes[g, 6, All]},
-      AllTrue[
-        Catenate[OrthogonalCoordinates[g, 6, axes, #] & /@ VertexList[g]],
-        IntegerQ
-      ]
-    ]
-  ],
+    OrthogonalCoordinates[g, 6, {geodesicGraph @ {1, 2, 3, 4}, {1, 5, 9, 13}}] === OrthogonalCoordinates[g, 6, {{1, 2, 3, 4}, {1, 5, 9, 13}}]],
   True,
-  TestID -> "OrthogonalCoordinates-Centered-integer-coords"
+  TestID -> "OrthogonalCoordinates-walk-graph-reads-as-list"
 ]
 
 (* ===== FindInfraOrthogonalAxes and FindInfraOrthogonalRays ===== *)
@@ -531,6 +523,60 @@ VerificationTest[
   TestID -> "SprayGraph-AxisLength-truncation"
 ]
 
+(* ===== the fibration over the coordinate grid ===== *)
+
+(* the 9 x 9 grid over its full straight cross: the projection is a bijection onto {-4, ..., 4}^2 and the base is the grid itself *)
+VerificationTest[
+  With[{g = GridGraph[{9, 9}], c = 41},
+    With[{fib = InfraFibration[g, OrthogonalCoordinates[g, c, FindInfraOrthogonalAxes[g, c, 4]]]},
+      {Sort @ VertexList @ InfraBaseGraph @ fib, IsomorphicGraphQ[InfraBaseGraph @ fib, g], Union[VertexCount /@ Values @ InfraFibers @ fib],
+        InfraFibrationQ @ fib}]],
+  {Tuples[Range[-4, 4], 2], True, {1}, True},
+  TestID -> "OrthogonalCoordinates-fibration-9x9-full-cross"
+]
+
+(* over the cross of half-length 2 a vertex beyond the window projects to the nearest end: the base is the 5 x 5 grid, the fibres are 3 x 3
+   blocks over the corners, strips of 3 over the rest of the boundary and single vertices inside; edges do not lift at the corner blocks *)
+VerificationTest[
+  With[{g = GridGraph[{9, 9}], c = 41},
+    With[{fib = InfraFibration[g, OrthogonalCoordinates[g, c, FindInfraOrthogonalAxes[g, c, 2]]]},
+      {Sort @ VertexList @ InfraBaseGraph @ fib, IsomorphicGraphQ[InfraBaseGraph @ fib, GridGraph[{5, 5}]],
+        KeySort @ Counts[VertexCount /@ Values @ InfraFibers @ fib], IsomorphicGraphQ[InfraFiber[fib, {2, 2}], GridGraph[{3, 3}]],
+        InfraFibrationQ @ fib}]],
+  {Tuples[Range[-2, 2], 2], True, <|1 -> 9, 3 -> 12, 9 -> 4|>, True, False},
+  TestID -> "OrthogonalCoordinates-fibration-9x9-short-cross"
+]
+
+VerificationTest[
+  With[{g = GridGraph[{5, 5, 5}], c = 63},
+    With[{fib = InfraFibration[g, OrthogonalCoordinates[g, c, FindInfraOrthogonalAxes[g, c, 2]]]},
+      {Sort @ VertexList @ InfraBaseGraph @ fib, IsomorphicGraphQ[InfraBaseGraph @ fib, g], InfraFibrationQ @ fib}]],
+  {Tuples[Range[-2, 2], 3], True, True},
+  TestID -> "OrthogonalCoordinates-fibration-5x5x5-cross"
+]
+
+(* the straight frame of 4 rays reads each axis twice, as its positive and its negative part: c at 0, every vertex its own point *)
+VerificationTest[
+  With[{g = GridGraph[{5, 5}], c = 13},
+    With[{coords = OrthogonalCoordinates[g, c, FindInfraOrthogonalRays[g, c, 2]]},
+      {coords[c], DuplicateFreeQ @ Values @ coords, AllTrue[Catenate @ Values @ coords, NonNegative],
+        IsomorphicGraphQ[InfraBaseGraph @ InfraFibration[g, coords], g]}]],
+  {{0, 0, 0, 0}, True, True, True},
+  TestID -> "OrthogonalCoordinates-fibration-rays"
+]
+
+(* the strict perpendicularity keeps every found set well-conditioned: a vertex of one walk reads 0 on every other walk, with no tie *)
+VerificationTest[
+  With[{g = GridGraph[{9, 9}], c = 41},
+    AllTrue[FindInfraOrthogonalAxes[g, c, 2, All],
+      axes |-> With[{coords = OrthogonalCoordinates[g, c, axes, "SelectCoordinate" -> All]},
+        AllTrue[Range @ Length @ axes, i |-> AllTrue[axes[[i]],
+          v |-> coords[v] === ReplacePart[ConstantArray[{0}, Length @ axes],
+            i -> {First @ FirstPosition[axes[[i]], v] - First @ FirstPosition[axes[[i]], c]}]]]]]],
+  True,
+  TestID -> "OrthogonalCoordinates-found-sets-well-conditioned"
+]
+
 (* ===== FindInfraSpanningAxes (no-center form) ===== *)
 
 VerificationTest[
@@ -769,13 +815,13 @@ VerificationTest[
 ]
 
 (* the centre of OrthogonalCoordinates is an anchor too: a set centre reads as its
-   support, where the wrapper-era coercion took only an Association *)
+   support, projected onto the walk like any vertex; {1, 2} ties at positions 0 and 1, so its Median is 1/2 *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}], axis = geodesicGraph @ {1, 2, 3}},
     { OrthogonalCoordinates[g, 2, {axis}, 3],
       OrthogonalCoordinates[g, {1, 2}, {axis}, 3],
       OrthogonalCoordinates[g, <| 2 -> 1 |>, {axis}, 3] }],
-  { {1}, {2}, {1} },
+  { {1}, {3/2}, {1} },
   TestID -> "OrthogonalCoordinates-centre-is-an-anchor"
 ]
 
