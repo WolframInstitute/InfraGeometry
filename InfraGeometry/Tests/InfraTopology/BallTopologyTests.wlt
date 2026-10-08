@@ -79,4 +79,14 @@ VerificationTest[
     TestID -> "ContinuousMapQ-identity-vs-dual"
 ]
 
+(* ContinuousMapQ: a constant map is continuous -- the preorders are reflexive, so an edge
+   whose ends have one image passes *)
+VerificationTest[
+    With[{topo = BallTopology[PathGraph[Range[7]], 2]},
+        ContinuousMapQ[v |-> 4, topo, topo]
+    ],
+    True,
+    TestID -> "ContinuousMapQ-constant-map"
+]
+
 EndTestSection[]
