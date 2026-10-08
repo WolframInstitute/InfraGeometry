@@ -38,6 +38,8 @@ Riemannian infrageometry measures and describes a discrete substrate represented
 ### Volume measurements
 
 - `InfraMeasurement` the "CountingMeasure" and the "RiemannianMeasure" of a ball, shell or tube; the profiles are its Table over the radius
+- A region on a graph is measured by counting vertices, and its boundary is not negligible at a finite scale: the vertices at distance exactly $r$ are a share of order $1/r$ of the ball of radius $r$. So every region carries two measures. The counting measure is $\mu(A) = |A|$. The Riemannian measure is $\mu^\circ(A) = |A^\circ|$, where $A^\circ = \{v \in A : N(v) \subseteq A\}$ is the set of vertices all of whose neighbours lie in $A$; it is the count without the boundary and the default of the growth estimators.
+- On the square grid the ball of radius $r$ has counting measure $2r^2 + 2r + 1$ and Riemannian measure $2r^2 - 2r + 1$, the counting measure of the ball of radius $r - 1$; the shell has counting measure $4r$ and Riemannian measure $0$. The same shift holds on the triangular lattice before the rim, the convention of the Wolfram Physics technical introduction.
 - `InfraSubstrate` the example graph of a given name at size Small, Medium or Large, the substrates the volumes are measured on
 - `LogDifferenceQuotients` the discrete d log w / d log r of a sequence, q(r) = (log w(r) - log w(r - 1)) / (log(r + 1) - log r); a sequence of Around values carries its spread into error bars
 - `DimensionCurvatureFit` dimension and scalar curvature from log-difference quotients by regression on r(r + 1), the intercept and the slope, for the ball, sphere, tube or tube-mantle probe

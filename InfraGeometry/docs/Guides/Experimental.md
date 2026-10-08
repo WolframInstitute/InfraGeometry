@@ -5,7 +5,7 @@ Title: Experimental Functions
 Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/Experimental
-Keywords: [experimental, index, kernel files, differential forms, cochains, resolving sets, effective resistance, Ollivier-Ricci curvature, eccentricity]
+Keywords: [experimental, index, kernel files, walks, walk space, homotopy, differential forms, cochains, resolving sets, effective resistance, Ollivier-Ricci curvature, eccentricity]
 RelatedGuides: [EuclideanInfrageometry, RiemannianInfrageometry, InfraTopology, InfraAnalysis, InfraFiberBundles, InfraSubstrates]
 ---
 
@@ -14,26 +14,6 @@ RelatedGuides: [EuclideanInfrageometry, RiemannianInfrageometry, InfraTopology, 
 Every exported symbol that no other guide of the site covers, one section per kernel file, titled by the kernel folder and the file. The folders are the category guides, and the Experimental folder holds the research files. The symplectic branch has no code yet. Each entry is the symbol's usage message cut to one line, and each name opens its reference page. Most of these pages predate this site and have not been revised for it.
 
 ## Functions
-
-### EuclideanInfrageometry · InfraPoint.wl
-
-- `InfraPoint` the scene-language token for the point search, FindInfraPoint minus the graph
-- `FindInfraGoldenSection` the density at the golden-ratio index along every geodesic from p1 to p2
-- `FindInfraReflection` the reflections x' of x through a
-- `FindInfraCommonPoint` the points lying on every listed line
-- `FindClosestInfraPoint` the vertices of a line at minimum graph distance from a point
-- `InfraReachableQ` whether p1 and p2 have realisations in the same connected component
-
-### EuclideanInfrageometry · InfraMeasurement.wl
-
-- `Undetermined` the value of the measurement "Faithful" on a head whose graph is faithful only under a hypothesis this paclet does not certify
-- `InfraSubgraph` the subgraph induced on the support of an object; obj -> t thickens the support by t steps
-
-### EuclideanInfrageometry · InfraSegment.wl
-
-- `InfraWalkQ` whether consecutive vertices of a walk are adjacent, revisits allowed
-- `InfraSegmentQ` whether a walk is a geodesic
-- `UniqueInfraSegmentQ` whether the u-v geodesic is unique
 
 ### RiemannianInfrageometry · InfraWalk.wl
 
@@ -45,67 +25,17 @@ Every exported symbol that no other guide of the site covers, one section per ke
 - `InfraWalkCrossingQ` whether the double visit of a walk at v is a transverse crossing at scale r
 - `ConcatenateInfraWalk` joins every compatible walk pair, the last vertex of one being the first of the other
 
-### EuclideanInfrageometry · InfraLine.wl
-
-- `FindInfraParallel` one parallel to a line through p
-- `FindInfraPerpendicular` the lines through a point perpendicular to a line
-- `FindInfraCommonLine` the canonical lines containing every listed vertex
-- `InfraLineQ` whether a walk is a line, a geodesic that no neighbour of either endpoint prolongs
-- `InfraParallelQ` whether two lines stay at constant distance
-- `InfraPerpendicularQ` whether two lines meet perpendicularly at every common vertex
-- `LineCount` the number of distinct canonical maximal geodesics in a graph
-- `UniversalLineQ` whether some pair spans a line filling a whole connected component (Chen-Chvatal)
-
 ### RiemannianInfrageometry · InfraShell.wl
 
 - `FindInfraOsculatingShell` the shells whose level set contains a k-vertex window of a path, one per osculating centre
 - `FindInfraShellCenter` recovers the centre and radii of a shell
 - `InfraShellQ` whether a vertex set is a metric shell { v : d(c, v) == r } for some centre c and radius r
 
-### EuclideanInfrageometry · InfraBall.wl
-
-- `InfraBallQ` whether a vertex set is a closed metric ball
-
-### EuclideanInfrageometry · InfraCircle.wl
-
-- `InfraCircleQ` whether a cycle is a cyclic edge chain whose vertex set is a metric shell
-
-### Experimental · InfraPolygon.wl
-
-- `InfraPolygon` the inert family of regular n-gons whose k-th diagonals satisfy prescribed distances
-- `FindInfraRegularPolygon` one closed n-vertex sequence whose k-th diagonal distances all match prescribed values; the polygon through given corners is the closed polyline InfraSegment[p1, ..., pn, p1]
-- `InfraRegularPolygonQ` whether a cycle is regular with respect to a diagonal-distance tuple
-
-### Experimental · InfraEllipse.wl
-
-- `InfraEllipse` names the metric-ellipse construction
-- `FindInfraEllipse` one shortest separating cycle in the level surface { v : d(p1, v) + d(p2, v) == c }
-- `InfraEllipseQ` whether a cycle is a cyclic edge chain whose vertex set is an elliptic shell InfraQuadric[{p1, p2}, {c, c}]
-
-### Experimental · InfraPlane.wl
-
-- `InfraPlane` the bisecting hyperplane of p1 and p2, inside InfraScene
-- `FindInfraBisectingHyperplane` the perpendicular bisector { v : d(p1, v) == d(p2, v) }
-
-### EuclideanInfrageometry · InfraRay.wl
-
-- `InfraRayQ` whether a ray is a pointed half-line
-
-### Experimental · InfraPolyline.wl
-
-- `FindInfraPolylineSubdivision` chunks a walk into the fewest geodesic legs whose knots are walk vertices; the knots are the corners of the polyline InfraSegment[p1, ..., pk]
-
-### EuclideanInfrageometry · EuclideanSpace.wl
-
-- `InfraScalarProduct` the base-point-relative product d(o, u) d(o, v) cos(theta), at curvature 0 the polar form of the metric
-- `FindInfraLinearCombination` the vertex realisations of a linear combination of vertices, based at o
-
 ### EuclideanInfrageometry · WalkSpace.wl
 
 - `SelectInfraWalk` draws a walk from a bundle
 - `EmbeddingClosest` keeps the bundle elements drawn closest to a Euclidean reference under GraphEmbedding
 - `FindEmbeddingClosestPath` snaps an embedded curve to a walk graph, joining the nearest vertices by geodesics
-- `PathSubgraph` the union of all shortest u-v paths
 - `InfraDeformationSize` the number of edges of a reference walk that a walk replaces
 
 ### Experimental · Homotopy.wl
@@ -120,32 +50,8 @@ Every exported symbol that no other guide of the site covers, one section per ke
 
 ### Experimental · MetricAlgebra.wl
 
-- `MetricInterval` the vertices on some geodesic from u to v, { w : d(u, w) + d(w, v) == d(u, v) }
 - `ShortestPathMultiplicityMatrix` the matrix of the numbers of shortest paths between every two vertices
 - `MedianVertices` the vertices minimising the sum of distances to a vertex list
-
-### EuclideanInfrageometry · InfraSet.wl
-
-- `FindAdvancingInfraFront` the foliation by a bouncing wavefront, as a list of sorted vertex lists
-- `InfraBoundary` the boundary of a vertex set, density or shape, as a sorted vertex list
-- `InfraInterior` the interior of a vertex set, density or shape, as a sorted vertex list
-
-### Experimental · InfraEquality.wl
-
-- `InfraEqualQ` tests equality of two infra-objects through their diffusion diagrams
-
-### EuclideanInfrageometry · InfraScene.wl
-
-- `InfraDistance` the graph distance between two infra-objects, aggregated over their vertex sets
-- `InfraPlaneQ` whether h lies in the bisector slab of p1 and p2 and separates them
-- `InfraIntersectQ` asserts inside an InfraScene that two sets intersect
-
-### EuclideanInfrageometry · InfraSceneInteractive.wl
-
-- `PointViewer` an interactive viewer for selecting points
-- `SegmentViewer` an interactive viewer for exploring geodesic segments
-- `ShellViewer` an interactive viewer for exploring metric shells
-- `CircleViewer` an interactive viewer for exploring separating cycles
 
 ### Experimental · GraphBoundary.wl
 
@@ -161,10 +67,6 @@ Every exported symbol that no other guide of the site covers, one section per ke
 - `FindResolvingSet` up to n resolving sets of g, the smallest first; the first of them is a metric basis
 - `MetricDimension` the metric dimension of g
 - `ResistanceCoordinates` the spectral embedding whose squared distances are the effective resistances
-- `OrthogonalCoordinates` the signed position of the shortest-path projection of each vertex on each of a list of walks, counted from the centre c
-- `FindInfraOrthogonalAxes` a maximal set of mutually perpendicular geodesic lines through the centre c, each a vertex list
-- `FindInfraOrthogonalRays` a maximal set of mutually perpendicular geodesic rays from the centre c, each a vertex list
-- `FindInfraSpanningAxes` n mutually well-separated longest geodesics across a graph, with no fixed centre
 
 ### Experimental · OllivierCurvature.wl
 
