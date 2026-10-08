@@ -97,7 +97,7 @@ The square tiling substrate is the ball of radius 7 with the rim contour removed
 
 ```wl
 With[
-  {window = BoundarylessGraph[TessellationNeighborhoodGraph[{4, 4}, 7], Method -> "MaxDegree"]},
+  {window = BoundarylessGraph[TessellationNeighborhoodGraph[{4, 4}, 7]]},
   {window, Sort[EdgeList[window]] === Sort[EdgeList @ InfraSubstrate["SquareTilingGraph", "Small"]]}]
 ```
 
