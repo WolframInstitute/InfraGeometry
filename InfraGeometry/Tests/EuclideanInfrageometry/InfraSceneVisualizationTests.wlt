@@ -3,6 +3,14 @@ geodesicCycleGraph = WolframInstitute`InfraGeometry`PackageScope`geodesicCycleGr
 walkGraph          = walk |-> PathGraph[ MapIndexed[ { First @ #2, #1 } &, walk ], DirectedEdges -> True ];
 infraInk           = WolframInstitute`InfraGeometry`PackageScope`infraInk;
 strikeOutPalette   = WolframInstitute`InfraGeometry`PackageScope`$InfraStrikeOutPalette;
+dotScales          = opts |-> Catenate @ Cases[ VertexShapeFunction /. opts,
+  ( _ -> f_Function ) :> Cases[ f[ { 0, 0 }, None, { 1, 1 } ], Disk[ _, { r_, _ } ] :> r, Infinity ], Infinity ];
+shapesAt           = opts |-> Association @ Cases[ VertexShapeFunction /. opts,
+  ( v_ -> f_Function ) :> v -> Sort @ Cases[ f[ { 0, 0 }, None, { 1, 1 } ], ( h : Disk | Circle | Point )[ ___ ] :> h, Infinity ], { 1 } ];
+ringScales         = opts |-> Catenate @ Cases[ VertexShapeFunction /. opts,
+  ( _ -> f_Function ) :> Cases[ f[ { 0, 0 }, None, { 1, 1 } ], Circle[ _, { r_, _ } ] :> r, Infinity ], Infinity ];
+headOf             = { opts, v } |-> Cases[ ( v /. ( VertexShapeFunction /. opts ) )[ { 0, 0 }, v, { 0.1, 0.1 } ], { c_, EdgeForm[ ], p_Polygon } :>
+  { c, Round[ Norm @ Mean @ Cases[ p, Offset[ d_, _ ] :> d, Infinity ], 0.01 ], Round[ Norm[ Subtract @@ Cases[ p, Offset[ d_, _ ] :> d, Infinity ] ], 0.01 ] }, Infinity ];
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
@@ -288,18 +296,14 @@ VerificationTest[
   TestID -> "InfraSubstrateHighlight-abspointsize-overrides-pointsizerange"
 ]
 
-(* Scalar "ThicknessRange": the base measure is distributed across
-   realisations.  On CycleGraph[4] the two geodesics 1-2-3 and 1-4-3 split
-   the measure, so every edge renders at exactly half the base thickness. *)
+(* Scalar "ThicknessRange" is the base, the thickness at the lightest mass.  On CycleGraph[4] the two geodesics
+   1-2-3 and 1-4-3 use every edge once, so every edge is at the base. *)
 VerificationTest[
   With[ { g = CycleGraph[ 4 ] },
-    With[ { opts = Options @ InfraSubstrateHighlight[ g,
-          { FindInfraSegment[ g, 1, 3, All ] }, "ThicknessRange" -> 8 ] },
-      ! FreeQ[ opts, AbsoluteThickness[ 4 ] ] && FreeQ[ opts, AbsoluteThickness[ 8 ] ]
-    ]
-  ],
-  True,
-  TestID -> "InfraSubstrateHighlight-scalar-thickness-distributes-measure"
+    Union @ Cases[ EdgeStyle /. Options @ InfraSubstrateHighlight[ g,
+      { FindInfraSegment[ g, 1, 3, All ] }, "ThicknessRange" -> 8 ], AbsoluteThickness[ t_ ] :> t, Infinity ] ],
+  { 8 },
+  TestID -> "InfraSubstrateHighlight-scalar-thickness-is-the-base"
 ]
 
 (* A crisp single-realisation object carries the full base measure. *)
@@ -321,13 +325,10 @@ VerificationTest[
   With[ { g = GridGraph[ { 7, 7 } ] },
     { (* a UNIFORM effective point (here a ball) is uniformly bright: its diffuseness
          is its extent, not a per-vertex fade *)
-      Union @ Cases[ Options @ InfraSubstrateHighlight[ g, { InfraDensity[ g, FindInfraRepresentative[g, InfraBall[25, 2]] ] } ],
-        AbsolutePointSize[ s_ ] :> s, Infinity ],
-      (* a NON-uniform effective point draws its heaviest vertex full and the rest smaller *)
-      With[ { sizes = Cases[ Options @ InfraSubstrateHighlight[ g, { FindInfraMidpoint[ g, 1, 49 ] } ],
-                AbsolutePointSize[ s_ ] :> s, Infinity ] },
-        { Max @ sizes, Max @ sizes > Min @ sizes } ] } ],
-  { { 6 }, { 6, True } },
+      Union @ dotScales @ Options @ InfraSubstrateHighlight[ g, { InfraDensity[ g, FindInfraRepresentative[g, InfraBall[25, 2]] ] } ],
+      (* a NON-uniform effective point draws its lightest vertex at the substrate's size and its heaviest at the top *)
+      MinMax @ dotScales @ Options @ InfraSubstrateHighlight[ g, { FindInfraMidpoint[ g, 1, 49 ] } ] } ],
+  { { 1 }, { 1, 3 } },
   TestID -> "InfraSubstrateHighlight-density-relative-mass"
 ]
 
@@ -357,18 +358,17 @@ VerificationTest[
   TestID -> "InfraSubstrateHighlight-repeated-edge-walk-keeps-every-step"
 ]
 
-(* The Automatic point-size default stays off for non-point objects: a set
-   highlight emits no VertexShapeFunction, its vertices inherit the graph's
-   point size. *)
+(* The Automatic point-size default is on for everything that is not a line: a set
+   highlight emits a VertexShapeFunction, one dot per vertex. *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     Cases[
       Options @ InfraSubstrateHighlight[ g,
         { { FindInfraShell[ g, 1, { 1, 2 } ] } } ],
-      HoldPattern[ VertexShapeFunction -> _ ], Infinity ] === { }
+      HoldPattern[ VertexShapeFunction -> _ ], Infinity ] =!= { }
   ],
   True,
-  TestID -> "InfraSubstrateHighlight-automatic-pointsize-off-for-sets"
+  TestID -> "InfraSubstrateHighlight-automatic-pointsize-on-for-sets"
 ]
 
 (* A symbolic per-entry VertexSize (Large / Tiny / Scaled[..]) stays on the
@@ -387,15 +387,17 @@ VerificationTest[
 
 (* ===== point-layer highlight objects ===== *)
 
-(* a vertex List is a region: its induced edges, no dots.  On the 4x4 grid the ball of radius 1 about 6 is
+(* a vertex List that is no induced path is a set: dots at the substrate's own size, and its induced edges faint, at
+   the bottom of the opacity range and at the base thickness.  On the 4x4 grid the ball of radius 1 about 6 is
    { 2, 5, 6, 7, 10 }, whose induced subgraph is the four spokes. *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     With[ { opts = Options @ InfraSubstrateHighlight[ g, { FindInfraRepresentative[g, InfraBall[6, 1]] -> Red } ] },
       { Length @ Cases[ EdgeStyle /. opts, _UndirectedEdge -> _, Infinity ],
-        Cases[ opts, AbsolutePointSize[ s_ ] :> s, Infinity ] } ] ],
-  { 4, { } },
-  TestID -> "InfraSubstrateHighlight-vertex-list-is-a-region"
+        Union @ Cases[ EdgeStyle /. opts, ( _UndirectedEdge -> d_ ) :> Cases[ d, _AbsoluteThickness | _Opacity ], Infinity ],
+        dotScales @ opts } ] ],
+  { 4, { { Opacity[ 0.4 ], AbsoluteThickness[ 1. ] } }, { 1, 1, 1, 1, 1 } },
+  TestID -> "InfraSubstrateHighlight-vertex-list-is-dots-with-faint-edges"
 ]
 
 (* and its DENSITY is the point family: dots, no edges.  InfraDensity is the one
@@ -404,8 +406,8 @@ VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     With[ { opts = Options @ InfraSubstrateHighlight[ g, { InfraDensity[ g, { 3, 9 } ] -> Red } ] },
       { Length @ Cases[ EdgeStyle /. opts, _UndirectedEdge -> _, Infinity ],
-        Cases[ opts, AbsolutePointSize[ s_ ] :> s, Infinity ] } ] ],
-  { 0, { 6, 6 } },
+        dotScales @ opts } ] ],
+  { 0, { 1, 1 } },
   TestID -> "InfraSubstrateHighlight-density-is-a-point-family"
 ]
 
@@ -419,8 +421,8 @@ VerificationTest[
       { Length @ legs,
         Cases[ Options @ InfraSubstrateHighlight[ g, { legs } ], Line[ q_ ] :> q, Infinity ] ===
           { GraphEmbedding[ g ] },
-        Cases[ Options @ InfraSubstrateHighlight[ g, { legs } ], AbsolutePointSize[ s_ ] :> s, Infinity ] } ] ],
-  { 4, True, { 6, 6, 6, 6, 6 } },
+        dotScales @ Options @ InfraSubstrateHighlight[ g, { legs } ] } ] ],
+  { 4, True, { 1, 1, 1, 1, 1 } },
   TestID -> "InfraSubstrateHighlight-polyline-is-one-stroke-with-knots"
 ]
 
@@ -429,8 +431,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     With[ { sides = geodesicGraph /@ { FindInfraSegment[ g, 1, 4 ], FindInfraSegment[ g, 4, 13 ], FindInfraSegment[ g, 13, 1 ] } },
-      Length @ Cases[ Options @ InfraSubstrateHighlight[ g, { sides } ],
-        AbsolutePointSize[ s_ ] :> s, Infinity ] ] ],
+      Length @ dotScales @ Options @ InfraSubstrateHighlight[ g, { sides } ] ] ],
   3,
   TestID -> "InfraSubstrateHighlight-polygon-corners-drop-the-closure"
 ]
@@ -477,18 +478,17 @@ VerificationTest[
 (* a bare vertex is a legal highlight object *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    Cases[ Options @ InfraSubstrateHighlight[ g, { 7 -> Red } ], AbsolutePointSize[ s_ ] :> s, Infinity ] ],
-  { 6 },
+    dotScales @ Options @ InfraSubstrateHighlight[ g, { 7 -> Red } ] ],
+  { 1 },
   TestID -> "InfraSubstrateHighlight-bare-vertex"
 ]
 
-(* AbsoluteVertexSizes: a size class is one absolute value and never consults the graph.
-   The three graphs are the ones the work item named as its acceptance test. *)
+(* a dot at density 1 is the substrate's own vertex, coloured, on every graph *)
 VerificationTest[
-  DeleteDuplicates[ ( graph |-> Cases[ Options @ InfraSubstrateHighlight[ graph, { First @ VertexList @ graph } ],
-    _AbsolutePointSize, Infinity ] ) /@ { PathGraph @ Range @ 5, GridGraph[ { 6, 6 } ], PetersenGraph[] } ],
-  { { AbsolutePointSize[ 6 ] } },
-  TestID -> "InfraSubstrateHighlight-vertex-size-is-graph-independent"
+  DeleteDuplicates[ ( graph |-> dotScales @ Options @ InfraSubstrateHighlight[ graph, { First @ VertexList @ graph } ] ) /@
+    { PathGraph @ Range @ 5, GridGraph[ { 6, 6 } ], PetersenGraph[ ] } ],
+  { { 1 } },
+  TestID -> "InfraSubstrateHighlight-dot-at-density-one-is-the-substrate-vertex"
 ]
 
 VerificationTest[
@@ -497,32 +497,39 @@ VerificationTest[
   TestID -> "InfraPointSizes-closed-table"
 ]
 
-(* DirectedPathDisplay: one arrowhead per path object, at its end, sized from the plot and
-   NOT from the terminal edge's weight -- a heavy edge must not get a giant head.  The head
-   is counted in the BOXES: arrowSpec is a Module local inside the EdgeShapeFunction body, so
-   it only resolves when that function is called to draw. *)
+(* the default head sits on the walk's last vertex, drawn on top of it *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] }, With[ { seg = geodesicGraph @ FindInfraSegment[ g, 1, 25 ] },
-    { Count[ ToBoxes @ InfraSubstrateHighlight[ g, { seg } ], ArrowBox, Infinity, Heads -> True ] > 0,
-      Count[ ToBoxes @ InfraSubstrateHighlight[ g, { seg }, "Arrowheads" -> True ], ArrowBox, Infinity, Heads -> True ] > 0 } ] ],
-  { False, True },
+    { FreeQ[ Options @ InfraSubstrateHighlight[ g, { seg } ], _Polygon ],
+      Length @ headOf[ Options @ InfraSubstrateHighlight[ g, { seg }, "Arrowheads" -> True ], 25 ] } ] ],
+  { True, 1 },
   TestID -> "InfraSubstrateHighlight-Arrowheads-off-by-default-drawn-when-on"
 ]
 
+(* the head is in printer points, 5 + 2 t long for a stroke of t points, and broader than long *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] }, With[ { seg = InfraWalk @ FindInfraSegment[ g, 1, 25 ] },
-    SameQ @@ ( ( t |-> Cases[ ToBoxes @ InfraSubstrateHighlight[ g, { seg }, "Arrowheads" -> True,
-        "ThicknessRange" -> t ], ArrowheadsBox[ a___ ] :> { a }, Infinity ] ) /@ { 2, 9 } ) ] ],
-  True,
-  TestID -> "InfraSubstrateHighlight-Arrowheads-independent-of-stroke-weight"
+    ( t |-> Rest @ First @ headOf[ Options @ InfraSubstrateHighlight[ g, { seg }, "Arrowheads" -> True, "ThicknessRange" -> t ], 25 ] ) /@
+      { Automatic, 2, 9 } ] ],
+  { { 7., 10.5 }, { 9., 13.5 }, { 23., 34.5 } },
+  TestID -> "InfraSubstrateHighlight-Arrowheads-scaled-to-the-stroke"
+]
+
+(* the head contrasts with the stroke under it: black on a light stroke, gold on a dark one *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    ( c |-> First @ First @ headOf[ Options @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] -> c }, "Arrowheads" -> True ], 3 ] ) /@
+      { StandardYellow, strikeOutPalette[[ 2 ]] } ],
+  { GrayLevel[ 0.1 ], StandardYellow },
+  TestID -> "InfraSubstrateHighlight-Arrowheads-contrast-the-stroke"
 ]
 
 (* an object carries its own head: obj -> True arms that object alone, obj -> False disarms it
-   against an armed option.  One ArrowBox per armed path object. *)
+   against an armed option.  One head per armed path object: an ArrowBox for an explicit spec, a polygon for True. *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     With[ { a = geodesicGraph @ FindInfraSegment[ g, 1, 5 ], b = geodesicGraph @ FindInfraSegment[ g, 21, 25 ] },
-      ( heads = ( e |-> Count[ ToBoxes @ e, ArrowBox, Infinity, Heads -> True ] ) );
+      ( heads = ( e |-> Count[ ToBoxes @ e, ArrowBox, Infinity, Heads -> True ] + Count[ VertexShapeFunction /. Options @ e, _Polygon, Infinity ] ) );
       { heads @ InfraSubstrateHighlight[ g, { a -> True, b } ],
         heads @ InfraSubstrateHighlight[ g, { Style[ a, Arrowheads[ 0.09 ] ], b } ],
         heads @ InfraSubstrateHighlight[ g, { a, b -> False }, "Arrowheads" -> True ] } ] ],
@@ -580,11 +587,13 @@ VerificationTest[
       <| 1 -> 2, 7 -> 1 |>,
       InfraWalk[ { 1, 2, 7 } ],
       { 7, 8 },
+      { 7, 9 },
       walkGraph @ { 1, 2, 7 } } ],
   { { <| |>, None },
     { <| |>, None },
     { <| UndirectedEdge[ 1, 2 ] -> 1, UndirectedEdge[ 2, 7 ] -> 1 |>, { 1, 2, 7 } },
-    { <| UndirectedEdge[ 7, 8 ] -> 1 |>, None },
+    { <| UndirectedEdge[ 7, 8 ] -> 1 |>, { 7, 8 } },
+    { <| |>, None },
     { <| UndirectedEdge[ 1, 2 ] -> 1, UndirectedEdge[ 2, 7 ] -> 1 |>, { 1, 2, 7 } } },
   TestID -> "infraInk-one-row-per-object"
 ]
@@ -610,10 +619,12 @@ VerificationTest[
   TestID -> "InfraSubstrateHighlight-head-ink-is-its-measurement"
 ]
 
+(* the segment draws no chord; the list 1, 2, 3, 4 has the chords 1-3 and 2-4, so it is no line and draws no
+   counted edge either, only its dots and its faint induced edges *)
 VerificationTest[
   With[ { g = Graph[ { 1 <-> 2, 1 <-> 3, 2 <-> 3, 2 <-> 4, 3 <-> 4 } ] },
     KeyExistsQ[ infraInk[ g, # ][ "EdgeDensity" ], UndirectedEdge[ 2, 3 ] ] & /@ { InfraSegment[ 1, 4 ], { 1, 2, 3, 4 } } ],
-  { False, True },
+  { False, False },
   TestID -> "InfraSubstrateHighlight-head-draws-no-chords"
 ]
 
@@ -647,7 +658,7 @@ VerificationTest[
       infraInk[ g, hexagon ][ "VertexDensity" ],
       infraInk[ g, hexagon ][ "Walk" ],
       Union @ Cases[ EdgeStyle /. Options @ InfraSubstrateHighlight[ g, { hexagon } ], AbsoluteThickness[ t_ ] :> t, Infinity ] } ],
-  { 2, AssociationThread[ Range[ 6 ] -> 1 ], { 1, 2, 3, 4, 5, 6, 1 }, { 9. } },
+  { 2, AssociationThread[ Range[ 6 ] -> 1 ], { 1, 2, 3, 4, 5, 6, 1 }, { 1. } },
   TestID -> "InfraSubstrateHighlight-closed-polyline-counts-its-return-once"
 ]
 
@@ -686,8 +697,8 @@ VerificationTest[
         twice = Lookup[ EdgeStyle /. Options @ InfraSubstrateHighlight[ g, { InfraSegment[ 1, 7 ], InfraSegment[ 1, 7 ] }, "ThicknessRange" -> 8 ], UndirectedEdge[ 1, 2 ] ] },
       { Cases[ once, _AbsoluteThickness ], Cases[ twice, _AbsoluteThickness ],
         ColorDistance[ First @ Cases[ twice, _RGBColor ], Blend[ Take[ strikeOutPalette, 2 ], { 1, 1 } ] ] < 10^-6 } ] ],
-  { { AbsoluteThickness[ 4 ] }, { AbsoluteThickness[ 8 ] }, True },
-  TestID -> "InfraSubstrateHighlight-overlap-sums-strength-and-blends-colour"
+  { { AbsoluteThickness[ 8 ] }, { AbsoluteThickness[ 8 ] }, True },
+  TestID -> "InfraSubstrateHighlight-overlap-blends-colour"
 ]
 
 (* a list of heads, or of walks, as one entry is a family: its ink is the sum of its members' inks *)
@@ -706,4 +717,222 @@ VerificationTest[
      Head @ InfraSubstrateHighlight[g, {{InfraWalk[{1, 2, 3}], InfraWalk[{3, 8, 13}]}}]}],
   {Graph, Graph},
   TestID -> "InfraSubstrateHighlight-list-of-heads-or-walks-is-one-object"
+]
+
+
+(* ===== ink by kind: lines by edge counts, everything else as dots with faint edges ===== *)
+
+(* a vertex list is a line iff it is an induced path, or an induced cycle, in its own order: a geodesic, a row,
+   the square 1, 2, 7, 6 given open and closed; the walk 1, 2, 7, 6, 11 has the chord 1-6 and the sorted ball is no
+   walk, so both are sets *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    infraInk[ g, # ][ "Walk" ] & /@ {
+      { 1, 2, 3, 8, 13 }, { 1, 2, 3, 4, 5 }, { 1, 2, 7, 6 }, { 1, 2, 7, 6, 1 }, { 1, 2, 7, 6, 11 },
+      FindInfraRepresentative[ g, InfraBall[ 13, 1 ] ] } ],
+  { { 1, 2, 3, 8, 13 }, { 1, 2, 3, 4, 5 }, { 1, 2, 7, 6, 1 }, { 1, 2, 7, 6, 1 }, None, None },
+  TestID -> "infraInk-line-test-induced-path-or-cycle"
+]
+
+(* the regions, an intersection and a union with a set among its parts carry no counted edges: they are dots *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    infraInk[ g, # ][ "EdgeDensity" ] & /@ {
+      InfraBall[ 13, 1 ], InfraShell[ 13, 1 ], InfraTube[ InfraSegment[ 11, 15 ], 1 ],
+      InfraIntersection[ InfraSegment[ 1, 25 ], InfraSegment[ 5, 21 ] ],
+      InfraUnion[ InfraBall[ 13, 1 ], InfraSegment[ 1, 5 ] ] } ],
+  { <| |>, <| |>, <| |>, <| |>, <| |> },
+  TestID -> "infraInk-regions-intersections-mixed-unions-are-dots"
+]
+
+(* a union of lines is a line, the sum of its parts, and its counted edges are its measured edge density *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ], a = InfraSegment[ 1, 25 ], b = InfraSegment[ 5, 21 ] },
+    { infraInk[ g, InfraUnion[ a, b ] ] === infraInk[ g, { a, b } ],
+      Total @ infraInk[ g, InfraUnion[ a, b ] ][ "EdgeDensity" ] === Total @ InfraMeasurement[ g, InfraUnion[ a, b ], "EdgeDensity" ],
+      ! FreeQ[ Options @ InfraSubstrateHighlight[ g, { InfraUnion[ a, b ] } ], AbsoluteThickness ] } ],
+  { True, True, True },
+  TestID -> "InfraSubstrateHighlight-union-of-lines-is-a-line"
+]
+
+(* a density draws dots sized by its masses and the edge between them faint *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    With[ { opts = Options @ InfraSubstrateHighlight[ g, { <| 12 -> 2, 13 -> 1 |> } ] },
+      { Cases[ EdgeStyle /. opts, ( e_UndirectedEdge -> _ ) :> e, Infinity ],
+        Sort @ dotScales @ opts } ] ],
+  { { UndirectedEdge[ 12, 13 ] }, { 1, 3 } },
+  TestID -> "InfraSubstrateHighlight-density-dots-and-faint-edges"
+]
+
+(* where a line and a set share an edge the line's stroke wins; the set's other edges stay faint *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    With[ { styles = EdgeStyle /. Options @ InfraSubstrateHighlight[ g, { InfraSegment[ 11, 15 ], InfraBall[ 13, 1 ] } ] },
+      Cases[ Lookup[ styles, # ], _Opacity ] & /@ { UndirectedEdge[ 12, 13 ], UndirectedEdge[ 8, 13 ] } ] ],
+  { { Opacity[ 1 ] }, { Opacity[ 0.4 ] } },
+  TestID -> "InfraSubstrateHighlight-line-stroke-beats-faint-edge"
+]
+
+(* an explicit style still wins on the faint edges of a set *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    Union @ Cases[
+      EdgeStyle /. Options @ InfraSubstrateHighlight[ g, { InfraBall[ 13, 1 ] -> Directive[ Red, AbsoluteThickness[ 3 ], Opacity[ 0.7 ] ] } ],
+      ( _UndirectedEdge -> d_ ) :> Cases[ d, _AbsoluteThickness | _Opacity ], Infinity ] ],
+  { { AbsoluteThickness[ 3 ], Opacity[ 0.7 ] } },
+  TestID -> "InfraSubstrateHighlight-explicit-style-wins-on-faint-edges"
+]
+
+
+(* ===== sizes: the base, the range, the precedence ===== *)
+
+(* density 1 draws at the substrate's own thickness; the lightest count of a bundle at the base, the heaviest at the top *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    { Union @ Cases[ EdgeStyle /. Options @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3, 8 } ] } ], AbsoluteThickness[ t_ ] :> t, Infinity ],
+      MinMax @ Cases[ EdgeStyle /. Options @ InfraSubstrateHighlight[ g, { InfraSegment[ 1, 13 ] } ], AbsoluteThickness[ t_ ] :> t, Infinity ] } ],
+  { { 1. }, { 1., 4. } },
+  TestID -> "InfraSubstrateHighlight-base-and-range"
+]
+
+(* a directive on one object beats the option, which beats the default *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    With[ { styles = EdgeStyle /. Options @ InfraSubstrateHighlight[ g,
+          { InfraWalk[ { 1, 2, 3 } ] -> AbsoluteThickness[ 2 ], InfraWalk[ { 11, 12, 13 } ] }, "ThicknessRange" -> 5 ] },
+      Cases[ Lookup[ styles, # ], _AbsoluteThickness ] & /@ { UndirectedEdge[ 1, 2 ], UndirectedEdge[ 11, 12 ] } ] ],
+  { { AbsoluteThickness[ 2 ] }, { AbsoluteThickness[ 5 ] } },
+  TestID -> "InfraSubstrateHighlight-object-beats-option-beats-default"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    Internal`InheritedBlock[ { InfraSubstrateHighlight },
+      SetOptions[ InfraSubstrateHighlight, "ThicknessRange" -> 3 ];
+      Union @ Cases[ EdgeStyle /. Options @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] } ], AbsoluteThickness[ t_ ] :> t, Infinity ] ] ],
+  { 3 },
+  TestID -> "InfraSubstrateHighlight-SetOptions-sets-the-global-base"
+]
+
+(* a walk that reuses an edge is one opaque path: its doubled edge is thicker, never fainter *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    With[ { styles = EdgeStyle /. Options @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 7, 2, 3 } ] } ] },
+      { Union @ Cases[ styles, _Opacity, Infinity ],
+        Cases[ Lookup[ styles, # ], _AbsoluteThickness ] & /@ { UndirectedEdge[ 1, 2 ], UndirectedEdge[ 2, 7 ] } } ] ],
+  { { Opacity[ 1 ] }, { { AbsoluteThickness[ 1. ] }, { AbsoluteThickness[ 4. ] } } },
+  TestID -> "InfraSubstrateHighlight-walk-reusing-edges-is-one-opaque-path"
+]
+
+(* the option sizes the dots of the objects without edges; a line gets dots only from its own style *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    { Cases[ Options @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ], 13 }, "PointSizeRange" -> 10 ], AbsolutePointSize[ s_ ] :> s, Infinity ],
+      Cases[ Options @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] -> { "PointSizeRange" -> 10 } } ], AbsolutePointSize[ s_ ] :> s, Infinity ] } ],
+  { { 10 }, { 10, 10, 10 } },
+  TestID -> "InfraSubstrateHighlight-option-sizes-dots-not-lines"
+]
+
+(* a line's vertex masses size no dot: a set on the ends of a bundle stays at its base *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    Union @ Cases[ Options @ InfraSubstrateHighlight[ g, { InfraSegment[ 1, 13 ], { 1, 13 } }, "PointSizeRange" -> 10 ],
+      AbsolutePointSize[ s_ ] :> s, Infinity ] ],
+  { 10 },
+  TestID -> "InfraSubstrateHighlight-line-masses-size-no-dot"
+]
+
+
+(* ===== signed densities: a filled dot for a positive mass, an empty ring for a negative one ===== *)
+
+(* on a signed density every opacity lies in [0, 1] and every size is positive, in both dot branches *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ], d = <| 7 -> 3, 8 -> -1, 12 -> -3, 13 -> 2, 19 -> -2 |> },
+    ( opts |-> With[ { sizes = Catenate @ Cases[ VertexShapeFunction /. opts,
+          ( _ -> f_Function ) :> Cases[ f[ { 0, 0 }, None, { 1, 1 } ],
+            ( Disk | Circle )[ _, { r_, _ } | Offset[ { r_, _ } ] ] | AbsolutePointSize[ r_ ] :> r, Infinity ], { 1 } ] },
+        { AllTrue[ Cases[ opts, Opacity[ x_ ] :> x, Infinity ], 0 <= # <= 1 & ], Length @ sizes, AllTrue[ sizes, # > 0 & ] } ] ) /@
+      { Options @ InfraSubstrateHighlight[ g, { d } ], Options @ InfraSubstrateHighlight[ g, { d }, "PointSizeRange" -> 10 ] } ],
+  { { True, 5, True }, { True, 5, True } },
+  TestID -> "InfraSubstrateHighlight-signed-opacities-and-sizes-in-range"
+]
+
+(* the rings sit exactly at the negative masses: in the default dot branch, at a point size, and at a VertexSize *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ], d = <| 7 -> 3, 8 -> -1, 12 -> -3, 13 -> 2, 19 -> -2 |> },
+    KeySort @ shapesAt @ Options @ InfraSubstrateHighlight[ g, { d -> # } ] & /@ { { }, { "PointSizeRange" -> 10 }, { VertexSize -> 0.4 } } ],
+  { <| 7 -> { Disk }, 8 -> { Circle }, 12 -> { Circle }, 13 -> { Disk }, 19 -> { Circle } |>,
+    <| 7 -> { Point }, 8 -> { Circle }, 12 -> { Circle }, 13 -> { Point }, 19 -> { Circle } |>,
+    <| 8 -> { Circle }, 12 -> { Circle }, 19 -> { Circle } |> },
+  TestID -> "InfraSubstrateHighlight-rings-exactly-at-the-negative-masses"
+]
+
+(* size and opacity read the absolute mass: the rings of -d are the dots of d, and a unit boundary draws both at the base, opaque *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ], d = <| 7 -> 3, 8 -> 1, 12 -> 2 |> },
+    { pos = Options @ InfraSubstrateHighlight[ g, { d } ],
+      neg = Options @ InfraSubstrateHighlight[ g, { - d } ],
+      unit = Options @ InfraSubstrateHighlight[ g, { <| 12 -> 1, 14 -> -1 |> } ],
+      peak = Options @ InfraSubstrateHighlight[ g, { <| 12 -> 1, 14 -> -3 |> } ] },
+    { ringScales @ neg === dotScales @ pos,
+      Cases[ neg, _Opacity, Infinity ] === Cases[ pos, _Opacity, Infinity ],
+      { dotScales @ unit, ringScales @ unit, Union @ Cases[ VertexShapeFunction /. unit, Opacity[ x_ ] :> x, Infinity ] },
+      { dotScales @ peak, ringScales @ peak } } ],
+  { True, True, { { 1 }, { 1 }, { 1. } }, { { 1 }, { 3 } } },
+  TestID -> "InfraSubstrateHighlight-ring-sized-by-the-absolute-mass"
+]
+
+(* two objects on one vertex: the positive one draws its dot, the negative one its ring, each in its own colour *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    With[ { opts = Options @ InfraSubstrateHighlight[ g, { <| 12 -> 2, 13 -> 1 |>, <| 13 -> -1, 14 -> -3 |> } ] },
+      { KeySort @ shapesAt @ opts,
+        Cases[ ( 13 /. ( VertexShapeFunction /. opts ) )[ { 0, 0 }, 13, { 1, 1 } ],
+          { c_?ColorQ, ___, ( h : Disk | Circle )[ ___ ] } :> h -> c, Infinity ] } ] ],
+  { <| 12 -> { Disk }, 13 -> { Circle, Disk }, 14 -> { Circle } |>, { Disk -> strikeOutPalette[[ 1 ]], Circle -> strikeOutPalette[[ 2 ]] } },
+  TestID -> "InfraSubstrateHighlight-dot-and-ring-on-one-vertex"
+]
+
+(* a zero mass is not drawn, and neither are the faint edges at it: an explicit zero, a cancelled mass, a density of zeros *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    { opts = Options @ InfraSubstrateHighlight[ g, { <| 12 -> 0, 13 -> 1, 14 -> 2 |> } ],
+      cancel = Options @ InfraSubstrateHighlight[ g, { InfraUnion[ <| 12 -> 1, 13 -> 1 |>, <| 13 -> -1 |> ] } ] },
+    { Keys @ KeySort @ shapesAt @ opts,
+      FreeQ[ { VertexStyle, VertexSize } /. opts, 12 ],
+      Cases[ EdgeStyle /. opts, ( e_UndirectedEdge -> _ ) :> e, { 1 } ],
+      Sort @ dotScales @ opts,
+      Keys @ shapesAt @ cancel,
+      Options @ InfraSubstrateHighlight[ g, { <| 12 -> 0, 13 -> 0 |> } ] === Options @ HighlightGraph[ g, { } ] } ],
+  { { 13, 14 }, True, { UndirectedEdge[ 13, 14 ] }, { 1, 3 }, { 12 }, True },
+  TestID -> "InfraSubstrateHighlight-zero-mass-not-drawn"
+]
+
+(* edges stay unsigned: a signed density draws the edges of its absolute value *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ], d = <| 7 -> 2, 8 -> -1, 12 -> -3, 13 -> 1 |> },
+    { styles = EdgeStyle /. Options @ InfraSubstrateHighlight[ g, { d } ] },
+    { styles === ( EdgeStyle /. Options @ InfraSubstrateHighlight[ g, { Abs /@ d } ] ), Length @ styles } ],
+  { True, 4 },
+  TestID -> "InfraSubstrateHighlight-signed-density-edges-are-unsigned"
+]
+
+(* the union of signed densities draws their sum and the intersection their product *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ], d1 = <| 7 -> 1, 12 -> 1, 13 -> 2 |>, d2 = <| 7 -> -1, 13 -> -3, 14 -> -1 |> },
+    { Options @ InfraSubstrateHighlight[ g, { InfraUnion[ d1, d2 ] } ] ===
+        Options @ InfraSubstrateHighlight[ g, { <| 12 -> 1, 13 -> -1, 14 -> -1 |> } ],
+      Options @ InfraSubstrateHighlight[ g, { InfraIntersection[ d1, d2 ] } ] ===
+        Options @ InfraSubstrateHighlight[ g, { <| 7 -> -1, 13 -> -6 |> } ] } ],
+  { True, True },
+  TestID -> "InfraSubstrateHighlight-signed-union-sum-intersection-product"
+]
+
+(* an explicit VertexShapeFunction wins on a negative mass too *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    Sort[ VertexShapeFunction /. Options @ InfraSubstrateHighlight[ g, { <| 12 -> -1, 13 -> 2 |> -> { VertexShapeFunction -> "Square" } } ] ] ],
+  { 12 -> "Square", 13 -> "Square" },
+  TestID -> "InfraSubstrateHighlight-explicit-shape-wins-on-a-negative-mass"
 ]

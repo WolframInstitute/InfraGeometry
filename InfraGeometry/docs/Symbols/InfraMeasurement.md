@@ -68,6 +68,8 @@ A region — a ball, shell, tube, cylinder or cone — has one member, its verte
 
 [InfraIntersection]() and [InfraUnion]() are heads on heads: neither is a family of walks, so neither has a `"Graph"`, `"Cardinality"`, `"Length"`, `"EdgeDensity"` or `"Faithful"`, and their `All` lists only the density, the subgraph and the two measures. The intersection's `"VertexDensity"` is the product of the two objects' densities on their common vertices, the union's the sum.
 
+A density, an association of vertex masses, is an object too: its `"VertexDensity"` is itself. So a union or an intersection may take densities as parts, and their masses may be negative: the union of a density *d* and its negative `-`*d* is zero at every vertex of *d*.
+
 A circle takes a radius `r` or a band `{r, s}`, a scalar `r` meaning `{r, r}`. The circle through a point is the closed arc <code>[InfraArc]()[*c*, {*p*, *p*}]</code>, which widens the band of *p* with `"RadiusDelta" -> delta | {deltaIn, deltaOut}` (default `0`). A scalar *delta* means `{0, delta}`, outward only.
 
 On a polyline <code>[InfraSegment]()[*p1*, …, *pk*]</code> the densities are not member counts: they are the sums of the piece densities. On the 5 × 5 grid, <code>[InfraSegment]()[1, 13, 25]</code> has 36 members, while its density at the centre 13 is 12.
