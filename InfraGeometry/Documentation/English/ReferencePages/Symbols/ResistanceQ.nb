@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[    315259,       5710]
-NotebookOptionsPosition[    307828,       5565]
-NotebookOutlinePosition[    309031,       5600]
-CellTagsIndexPosition[    308950,       5595]
+NotebookDataLength[    321664,       5865]
+NotebookOptionsPosition[    313867,       5713]
+NotebookOutlinePosition[    315070,       5748]
+CellTagsIndexPosition[    314989,       5743]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -24,7 +24,7 @@ Cell["ResistanceQ", "ObjectName",
  CellID->1224892054,ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec"],
 
 Cell[TextData[{
- Cell["   ", "ModInfo",ExpressionUUID->"3de8a2dc-b70c-4806-aa87-3479225e849a"],
+ Cell["   ", "ModInfo",ExpressionUUID->"0d7e75c9-1581-449b-b50e-8d6e133d4cfa"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -36,14 +36,14 @@ Cell[TextData[{
     BaseStyle->"InlineFormula"], "[", 
    StyleBox["r", "TI"], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "bb436f55-3cfb-4e40-8fe4-a763f4a4dc31"],
+  "df9578f6-cc3f-42bc-a876-b1a175d1e588"],
  "\[LineSeparator]",
- "tests whether the symmetric matrix ",
+ "tests whether the numeric matrix ",
  StyleBox["r", "TI"],
- " with zero diagonal is of negative type, a condition every resistance \
-distance matrix meets.",
+ " is the resistance distance matrix of a connected graph with nonnegative \
+conductances.",
  "\n"
-}], "Usage",ExpressionUUID->"8a1aef18-fa02-4493-9319-bae4f51b1b34"],
+}], "Usage",ExpressionUUID->"2b2458b0-3d35-444a-ba2c-258857f495ea"],
 
 Cell[TextData[{
  "Definition: ",
@@ -55,7 +55,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "98d4c8a4-5048-405d-8be5-16bd6dee87f0"],
+  "7e51e4e1-d752-4f0e-b233-c75f3a1d89f3"],
  " gives ",
  Cell[BoxData[
   TemplateBox[{
@@ -63,73 +63,19 @@ Cell[TextData[{
      TextData["True"]], "paclet:ref/True"},
    "RefLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "02081095-d5cd-42d5-8210-a2693a2f7c1c"],
+  "0f191627-b05f-4058-a0f1-7f35f2a93f34"],
  " when ",
  StyleBox["r", "TI"],
- " is a square symmetric matrix with zero diagonal and the matrix ",
+ " is a square numeric matrix, symmetric with zero diagonal, and the matrix \
+",
  StyleBox["B", "TI"],
- "\:1d62\:2c7c = (",
- StyleBox["r", "TI"],
- "\:2081\:2c7c + ",
- StyleBox["r", "TI"],
- "\:1d62\:2081 \[Minus] ",
- StyleBox["r", "TI"],
- "\:1d62\:2c7c)/2, ",
- StyleBox["i", "TI"],
- ", ",
- StyleBox["j", "TI"],
- " \[GreaterEqual] 2, is positive semidefinite, its eigenvalues at least \
-\[Minus]10\:207b\:2079. Anything else gives ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["False"]], "paclet:ref/False"},
-   "RefLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "ec95914c-7e42-457a-b0f2-39af45a3dc4b"],
- "."
-}], "Notes",ExpressionUUID->"e35276d9-784c-4ac2-8d41-cc9c49ad8a08"],
-
-Cell[TextData[{
- "By a theorem of Schoenberg, ",
- StyleBox["B", "TI"],
- " is positive semidefinite exactly when ",
- StyleBox["r", "TI"],
- " is of negative type: ",
- StyleBox["r", "TI"],
- "\:1d62\:2c7c = \:2016",
- StyleBox["x", "TI"],
- "\:1d62 \[Minus] ",
- StyleBox["x", "TI"],
- "\:2c7c\:2016\.b2 for some points ",
- StyleBox["x", "TI"],
- "\:1d62 of a Euclidean space. Every resistance matrix is of negative type, \
-the points being its ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["ResistanceCoordinates"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/ResistanceCoordinates", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "c3b8f167-4162-47af-bbee-3f301129a570"],
- ", so a matrix that fails is no resistance matrix."
-}], "Notes",ExpressionUUID->"d036283d-9670-4bf1-9a27-3b0453096ca6"],
-
-Cell[TextData[{
- "The converse fails. A matrix ",
- StyleBox["r", "TI"],
- " is the resistance matrix of a connected graph with nonnegative \
-conductances exactly when, in addition, the matrix ",
- StyleBox["L", "TI"],
- " = (\[Minus]",
+ " = \[Minus]",
  StyleBox["P", "TI"],
  " ",
  StyleBox["r", "TI"],
  " ",
  StyleBox["P", "TI"],
- "/2)\:207a, with ",
+ "/2, with ",
  StyleBox["P", "TI"],
  " = ",
  StyleBox["I", "TI"],
@@ -139,28 +85,76 @@ conductances exactly when, in addition, the matrix ",
  StyleBox["n", "TI"],
  " and ",
  StyleBox["J", "TI"],
- " the matrix of ones, has rank ",
+ " the matrix of ones, has ",
  StyleBox["n", "TI"],
- " \[Minus] 1 and no positive entry off the diagonal. ",
+ " \[Minus] 1 eigenvalues above 10\:207b\:2079, the rest being zero, and its \
+pseudoinverse ",
  StyleBox["L", "TI"],
- " is then the Laplacian of that graph, and \[Minus]",
+ " = ",
+ StyleBox["B", "TI"],
+ "\:207a has no entry above 10\:207b\:2079 off the diagonal. Anything else \
+gives ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["False"]], "paclet:ref/False"},
+   "RefLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "47a58337-7bab-42ce-b280-e9b1a28415fa"],
+ ", an ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["Infinity"]], "paclet:ref/Infinity"},
+   "RefLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "6ff27ef0-5cd9-41e6-93e0-83bef0c385a5"],
+ " entry included."
+}], "Notes",ExpressionUUID->"e529f43f-3d32-4c9c-90c3-e86efe894e80"],
+
+Cell[TextData[{
+ StyleBox["L", "TI"],
+ " is then the Laplacian of the graph, and \[Minus]",
  StyleBox["L", "TI"],
  "\:1d62\:2c7c the conductance between ",
  StyleBox["i", "TI"],
  " and ",
  StyleBox["j", "TI"],
- ". ",
+ ". The graph is connected because ",
+ StyleBox["B", "TI"],
+ " has rank ",
+ StyleBox["n", "TI"],
+ " \[Minus] 1, and its conductances are nonnegative because ",
+ StyleBox["L", "TI"],
+ " has no positive entry off the diagonal."
+}], "Notes",ExpressionUUID->"ff2a0d66-54fb-4c16-91a6-9c963103e4f0"],
+
+Cell[TextData[{
+ "The eigenvalue condition implies that ",
+ StyleBox["r", "TI"],
+ " is of negative type: ",
+ StyleBox["r", "TI"],
+ "\:1d62\:2c7c = \:2016",
+ StyleBox["x", "TI"],
+ "\:1d62 \[Minus] ",
+ StyleBox["x", "TI"],
+ "\:2c7c\:2016\.b2 for some points ",
+ StyleBox["x", "TI"],
+ "\:1d62 of a Euclidean space, by a theorem of Schoenberg. Every resistance \
+matrix is of negative type, the points being its ",
  Cell[BoxData[
   TemplateBox[{
     Cell[
-     TextData["ResistanceQ"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/ResistanceQ", 
+     TextData["ResistanceCoordinates"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/ResistanceCoordinates", 
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "84b419f2-f7a1-448b-8733-151bd8a969fc"],
- " does not test this."
-}], "Notes",ExpressionUUID->"35c5c4d0-cd44-40c3-bb72-46b8656a589d"]
+  "2223d570-19b1-4e94-91e6-0152b201153e"],
+ ". That is necessary and not sufficient: the second condition rejects the \
+distance matrices of the cycles and of the square tiling, which are of \
+negative type."
+}], "Notes",ExpressionUUID->"23c9b054-c3fc-41e1-b6aa-5e957412b1c7"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -189,7 +183,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "7b68d275-1fc8-42fe-a2a9-b179b8dd9d41"],
+  "5e6686b2-2da6-4f0d-9796-e618255f7cc6"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -199,8 +193,8 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "dd28bc32-b820-437f-acbc-cbd7a4367e84"]
-}], "SeeAlso",ExpressionUUID->"206025d1-eebb-4ade-8815-5deac4e9da6e"]
+  "21271f95-45bc-4a45-bd7b-548284ff1fcc"]
+}], "SeeAlso",ExpressionUUID->"b8a49f3b-7f80-4c5a-b939-94ad30c37171"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -227,8 +221,8 @@ Cell[TextData[Cell[BoxData[
   BaseStyle->"Link",
   ButtonData->
    "paclet:WolframInstitute/InfraGeometry/guide/Experimental"]], \
-"InlineFormula",ExpressionUUID->"16833f03-41ad-46e1-9058-62003164e738"]], \
-"MoreAbout",ExpressionUUID->"59b733e5-90d7-4eaa-bfdc-e39cf20b5b3b"]
+"InlineFormula",ExpressionUUID->"88b01ec6-1881-4a22-98de-14bccd6e3e5c"]], \
+"MoreAbout",ExpressionUUID->"75a2ea00-79a7-4378-889b-993a8f2b9a77"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -290,7 +284,7 @@ Cell[BoxData[
 Cell["\<\
 The resistance matrices of the square, hexagonal and triangular tilings pass.\
 \
-\>", "ExampleText",ExpressionUUID->"7124b5a2-98c3-4ad7-969e-21a20fa34dac"],
+\>", "ExampleText",ExpressionUUID->"cf8bd5de-6083-4fcc-82fb-a06cefaf2716"],
 
 Cell[CellGroupData[{
 
@@ -318,7 +312,7 @@ Cell[BoxData[
        RowBox[{"ResistanceQ", "[", 
         RowBox[{"EffectiveResistance", "[", "#", "]"}], "]"}], " ", "&"}], 
       " ", "/@", " ", "graphs"}]}], "}"}]}], "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"f4146272-0d54-443b-816c-ba82493b81b7"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"e1feb745-c80b-4272-a80c-840e3fdf54c0"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -1625,16 +1619,15 @@ wfeMfN7Ax+9LG7WC7wB+T0/zKwv1nUb0lsH7Cx8GRVk=
     PlotRangePadding->Automatic], ",", 
    RowBox[{"{", 
     RowBox[{"True", ",", "True", ",", "True"}], "}"}]}], "}"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"c97b9ba9-9cfb-435b-af89-0f95b825767d"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"cab720f9-e86e-4741-837d-461c5130841d"]
 }, Open  ]],
 
 Cell[TextData[{
  "On a tree the distances are the resistances, and the distance matrix \
 passes. The distance matrices of the complete bipartite graph ",
  StyleBox["K", "TI"],
- "\:2082,\:2083 and of the discretized plane are not of negative type, so \
-they are no resistance matrices."
-}], "ExampleText",ExpressionUUID->"0ce8d05d-0a18-4f46-b4e5-b9aa18a5e040"],
+ "\:2082,\:2083 and of the discretized plane fail."
+}], "ExampleText",ExpressionUUID->"b6803022-673c-4e19-b2c4-cb3d1db78b10"],
 
 Cell[CellGroupData[{
 
@@ -1662,7 +1655,7 @@ Cell[BoxData[
        RowBox[{"ResistanceQ", "[", 
         RowBox[{"GraphDistanceMatrix", "[", "#", "]"}], "]"}], " ", "&"}], 
       " ", "/@", " ", "graphs"}]}], "}"}]}], "]"}]], "Input",
- CellLabel->"In[2]:= ",ExpressionUUID->"4ee8f652-218c-414d-8180-a721473b153d"],
+ CellLabel->"In[2]:= ",ExpressionUUID->"3ad9adf2-86cc-46bb-bad7-3014bcf95caf"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -1980,7 +1973,7 @@ sHaWvdvvD/bBPtqn4+l4OTmO63jO1fXc8+V2vf0F1dRppA==
     PlotRangePadding->Automatic], ",", 
    RowBox[{"{", 
     RowBox[{"True", ",", "False", ",", "False"}], "}"}]}], "}"}]], "Output",
- CellLabel->"Out[2]= ",ExpressionUUID->"81d2da06-b3ae-49e6-9a06-103dba12662d"]
+ CellLabel->"Out[2]= ",ExpressionUUID->"3d585d11-8eb4-47d6-b7ef-88709641f02f"]
 }, Open  ]]
 }, Open  ]],
 
@@ -2001,6 +1994,8 @@ Cell[TextData[{
  CellTags->"ExtendedExamples",
  CellID->533848431,ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d"],
 
+Cell[CellGroupData[{
+
 Cell[BoxData[
  InterpretationBox[Cell[
   "Scope", "ExampleSection",ExpressionUUID->
@@ -2008,150 +2003,13 @@ Cell[BoxData[
   $Line = 0; Null]], "ExampleSection",
  CellID->1293636265,ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75"],
 
-Cell[BoxData[
- InterpretationBox[Cell[
-  "Generalizations & Extensions", "ExampleSection",ExpressionUUID->
-   "a148ce84-caec-4483-aa99-5b7bd6d55bf1"],
-  $Line = 0; Null]], "ExampleSection",
- CellID->1020263627,ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7"],
-
-Cell[BoxData[
- InterpretationBox[Cell[
-  "Options", "ExampleSection",ExpressionUUID->
-   "b26b6366-7922-4236-a426-38c0f5de13f0"],
-  $Line = 0; Null]], "ExampleSection",
- CellID->2061341341,ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0"],
-
-Cell[BoxData[
- InterpretationBox[Cell[
-  "Applications", "ExampleSection",ExpressionUUID->
-   "d5715ee2-1cae-4f33-89b2-0e99ea9caa6e"],
-  $Line = 0; Null]], "ExampleSection",
- CellID->258228157,ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- InterpretationBox[Cell[
-  "Properties & Relations", "ExampleSection",ExpressionUUID->
-   "d18b1e1f-4c4c-49a5-bb54-1e5e145ddf4e"],
-  $Line = 0; Null]], "ExampleSection",
- CellID->2123667759,ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438"],
-
-Cell[TextData[{
- "A resistance matrix determines its graph: the Laplacian recovered from it \
-is ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["KirchhoffMatrix"]], "paclet:ref/KirchhoffMatrix"},
-   "RefLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "3ac9aa3c-ac4e-4738-b79d-42ff523d88b5"],
- ", and the conductances it gives are the edges of the graph."
-}], "ExampleText",ExpressionUUID->"e31335c2-983d-4678-ae8e-baf3d8e862ad"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"With", "[", "\n", "  ", 
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{"g", " ", "=", " ", 
-     RowBox[{"PetersenGraph", "[", "]"}]}], "}"}], ",", "\n", "  ", 
-   RowBox[{"{", 
-    RowBox[{"resistances", " ", "=", " ", 
-     RowBox[{"EffectiveResistance", "[", "g", "]"}]}], "}"}], ",", "\n", "  ", 
-   RowBox[{"{", 
-    RowBox[{"laplacian", " ", "=", " ", 
-     RowBox[{"PseudoInverse", "[", 
-      RowBox[{
-       RowBox[{"-", 
-        RowBox[{
-         RowBox[{"(", 
-          RowBox[{
-           RowBox[{"IdentityMatrix", "[", "10", "]"}], " ", "-", " ", 
-           RowBox[{"1", "/", "10"}]}], ")"}], " ", ".", " ", "resistances", 
-         " ", ".", " ", 
-         RowBox[{"(", 
-          RowBox[{
-           RowBox[{"IdentityMatrix", "[", "10", "]"}], " ", "-", " ", 
-           RowBox[{"1", "/", "10"}]}], ")"}]}]}], "/", "2"}], "]"}]}], "}"}], 
-   ",", "\n", "  ", 
-   RowBox[{"{", 
-    RowBox[{
-     RowBox[{"AdjacencyGraph", "[", 
-      RowBox[{"Round", "[", 
-       RowBox[{
-        RowBox[{"DiagonalMatrix", "[", 
-         RowBox[{"Diagonal", "[", "laplacian", "]"}], "]"}], " ", "-", " ", 
-        "laplacian"}], "]"}], "]"}], ",", " ", 
-     RowBox[{"ResistanceQ", "[", "resistances", "]"}], ",", " ", 
-     RowBox[{
-      RowBox[{"Round", "[", "laplacian", "]"}], " ", "===", " ", 
-      RowBox[{"Normal", "[", 
-       RowBox[{"KirchhoffMatrix", "[", "g", "]"}], "]"}]}]}], "}"}]}], 
-  "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"c1bda578-37d5-498d-ac64-d952aa0a4364"],
-
-Cell[BoxData[
- RowBox[{"{", 
-  RowBox[{
-   GraphicsBox[
-    NamespaceBox["NetworkGraphics",
-     DynamicModuleBox[{Typeset`graph = HoldComplete[
-       Graph[{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, {Null, 
-         SparseArray[
-         Automatic, {10, 10}, 0, {
-          1, {{0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30}, {{3}, {4}, {6}, {4}, {
-            5}, {7}, {1}, {5}, {8}, {1}, {2}, {9}, {2}, {3}, {10}, {1}, {7}, {
-            10}, {2}, {6}, {8}, {3}, {7}, {9}, {4}, {8}, {10}, {5}, {6}, {
-            9}}}, Pattern}]}]]}, 
-      TagBox[
-       GraphicsGroupBox[
-        GraphicsComplexBox[{{1.552745145710548, 0.5958807156967979}, {
-         0.3799497073376866, 1.7264412366983493`}, {0.6033133761947822, 
-         0.009424052745707345}, {1.6156242179956628`, 1.7098601627639733`}, {
-         0., 1.089600356691847}, {0.9883643346036478, 0.9326876070222194}, {
-         0.41437872349215354`, 0.6118999662392164}, {1.3461835742317683`, 
-         0.}, {1.978670625396253, 1.0622863156814681`}, {0.9962347928120242, 
-         1.590363201649939}}, {
-          {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[0.],
-            ArrowBox[{{1, 3}, {1, 4}, {1, 6}, {2, 4}, {2, 5}, {2, 7}, {3, 
-            5}, {3, 8}, {4, 9}, {5, 10}, {6, 7}, {6, 10}, {7, 8}, {8, 9}, {9, 
-            10}}, 0.022438164702534957`]}, 
-          {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-           DiskBox[1, 0.022438164702534957], DiskBox[2, 0.022438164702534957],
-            DiskBox[3, 0.022438164702534957], 
-           DiskBox[4, 0.022438164702534957], DiskBox[5, 0.022438164702534957],
-            DiskBox[6, 0.022438164702534957], 
-           DiskBox[7, 0.022438164702534957], DiskBox[8, 0.022438164702534957],
-            DiskBox[9, 0.022438164702534957], 
-           DiskBox[10, 0.022438164702534957]}}]],
-       MouseAppearanceTag["NetworkGraphics"]],
-      AllowKernelInitialization->False]],
-    DefaultBaseStyle->"NetworkGraphics",
-    FormatType->TraditionalForm,
-    FrameTicks->None], ",", "True", ",", "True"}], "}"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"5f8b833a-9640-48e9-a85e-a37bf033a166"]
-}, Open  ]]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- InterpretationBox[Cell[
-  "Possible Issues", "ExampleSection",ExpressionUUID->
-   "dda06a82-eb41-4b48-8510-6cb821647761"],
-  $Line = 0; Null]], "ExampleSection",
- CellID->1305812373,ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f"],
-
 Cell["\<\
-Negative type is not enough. The distance matrix of the 5-cycle passes, but \
-no graph with nonnegative conductances has it as its resistance matrix: the \
-Laplacian it determines gives each of the five chords of the pentagon the \
-conductance \[Minus]2/5.\
-\>", "ExampleText",ExpressionUUID->"adc092fe-0bdc-452e-9229-ba384bfcefc1"],
+The distance matrices of the cycles are not resistance matrices, though they \
+are of negative type. The Laplacian that the distance matrix of the 5-cycle \
+determines gives each of the five chords of the pentagon the conductance \
+\[Minus]2/5, a negative one, and that of the 4-cycle has rank 2 instead of 3. \
+The resistance matrix of the 5-cycle passes.\
+\>", "ExampleText",ExpressionUUID->"581cf912-f16f-429b-adb2-32d027ad161c"],
 
 Cell[CellGroupData[{
 
@@ -2186,14 +2044,20 @@ Cell[BoxData[
        RowBox[{"DiagonalMatrix", "[", 
         RowBox[{"Diagonal", "[", "laplacian", "]"}], "]"}], " ", "-", " ", 
        "laplacian"}], "]"}], ",", " ", 
-     RowBox[{"ResistanceQ", "[", "hops", "]"}], ",", " ", 
+     RowBox[{"ResistanceQ", " ", "/@", " ", 
+      RowBox[{"{", 
+       RowBox[{"hops", ",", " ", 
+        RowBox[{"GraphDistanceMatrix", "[", 
+         RowBox[{"CycleGraph", "[", "4", "]"}], "]"}], ",", " ", 
+        RowBox[{"EffectiveResistance", "[", 
+         RowBox[{"CycleGraph", "[", "5", "]"}], "]"}]}], "}"}]}], ",", " ", 
      RowBox[{"Union", "[", 
       RowBox[{"Flatten", "[", 
        RowBox[{
         RowBox[{"DiagonalMatrix", "[", 
          RowBox[{"Diagonal", "[", "laplacian", "]"}], "]"}], " ", "-", " ", 
         "laplacian"}], "]"}], "]"}]}], "}"}]}], "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"2855bafd-56a0-4efb-b6fa-c3ce9ce0da7a"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"1f3af706-e43b-4d82-850f-31e594e7f3dc"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -2238,19 +2102,23 @@ D+3nmVmbvWt5ZY9LHJc5MHF0mtbmk+qvoW4+IXtpbT66OQAX59zZ
            "freeformCursorMode" -> True, 
             "placement" -> {"x" -> "All", "y" -> "None"}}}}, 
       "DefaultPlotStyle" -> Automatic, "DomainPadding" -> Scaled[0.02], 
-      "RangePadding" -> Scaled[0.05]}], ",", "True", ",", 
+      "RangePadding" -> Scaled[0.05]}], ",", 
+   RowBox[{"{", 
+    RowBox[{"False", ",", "False", ",", "True"}], "}"}], ",", 
    RowBox[{"{", 
     RowBox[{
      RowBox[{"-", 
       FractionBox["2", "5"]}], ",", "0", ",", 
      FractionBox["8", "5"]}], "}"}]}], "}"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"6ba9bd57-2f05-4e69-a180-00566d0f8ebe"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"9edcc0ab-de38-485c-a274-4f5d3241b344"]
 }, Open  ]],
 
 Cell["\<\
-The distance matrix of the square tiling passes too, though the Laplacian it \
-determines has 4276 positive entries off the diagonal.\
-\>", "ExampleText",ExpressionUUID->"40708948-2a3d-445b-b82d-eacbfd78ded0"],
+The distance matrix of the square tiling fails too: the Laplacian it \
+determines has 4276 positive entries off the diagonal. The squared distances \
+of three collinear points break the triangle inequality, which every \
+resistance distance obeys.\
+\>", "ExampleText",ExpressionUUID->"5f6edc69-93bc-4bb6-8f93-7a1554285ed3"],
 
 Cell[CellGroupData[{
 
@@ -2305,9 +2173,19 @@ Cell[BoxData[
          RowBox[{
           RowBox[{"#", " ", ">", " ", 
            RowBox[{"10", "^", 
-            RowBox[{"-", "9"}]}]}], " ", "&"}], ")"}]}]}], "]"}]}], "}"}]}], 
-  "]"}]], "Input",
- CellLabel->"In[2]:= ",ExpressionUUID->"381d9cea-e561-415c-966c-cda54f69784d"],
+            RowBox[{"-", "9"}]}]}], " ", "&"}], ")"}]}]}], "]"}], ",", "\n", 
+     "   ", 
+     RowBox[{"ResistanceQ", "[", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"0", ",", " ", "1", ",", " ", "4"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"1", ",", " ", "0", ",", " ", "1"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"4", ",", " ", "1", ",", " ", "0"}], "}"}]}], "}"}], "]"}]}],
+     "}"}]}], "]"}]], "Input",
+ CellLabel->"In[2]:= ",ExpressionUUID->"46f04f5f-fc81-4bc4-a8ee-ac82db72b1dd"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -5464,9 +5342,279 @@ Kw3vx8f2G3ad9fEJWkxvEZyRlefO+MCBoR8v9U5wG+B/nsukXw==
            "freeformCursorMode" -> True, 
             "placement" -> {"x" -> "All", "y" -> "None"}}}}, 
       "DefaultPlotStyle" -> Automatic, "DomainPadding" -> Scaled[0.02], 
-      "RangePadding" -> Scaled[0.05]}], ",", "True", ",", "4276"}], 
-  "}"}]], "Output",
- CellLabel->"Out[2]= ",ExpressionUUID->"12acaaf8-8b2f-4d19-a814-77895d0c280e"]
+      "RangePadding" -> Scaled[0.05]}], ",", "False", ",", "4276", ",", 
+   "False"}], "}"}]], "Output",
+ CellLabel->"Out[2]= ",ExpressionUUID->"41d426ff-beaf-41b7-a498-354e90bee152"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Generalizations & Extensions", "ExampleSection",ExpressionUUID->
+   "a148ce84-caec-4483-aa99-5b7bd6d55bf1"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1020263627,ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Options", "ExampleSection",ExpressionUUID->
+   "b26b6366-7922-4236-a426-38c0f5de13f0"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->2061341341,ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0"],
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Applications", "ExampleSection",ExpressionUUID->
+   "d5715ee2-1cae-4f33-89b2-0e99ea9caa6e"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->258228157,ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Properties & Relations", "ExampleSection",ExpressionUUID->
+   "d18b1e1f-4c4c-49a5-bb54-1e5e145ddf4e"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->2123667759,ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438"],
+
+Cell[TextData[{
+ "A resistance matrix determines its graph: the Laplacian recovered from it \
+is ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["KirchhoffMatrix"]], "paclet:ref/KirchhoffMatrix"},
+   "RefLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "8b3c65ff-4f01-45ec-8f6a-9aa6d125b4e0"],
+ ", and the conductances it gives are the edges of the graph."
+}], "ExampleText",ExpressionUUID->"63c6e9b1-a64c-4cc0-912b-3db268ef5c78"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"g", " ", "=", " ", 
+     RowBox[{"PetersenGraph", "[", "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{"resistances", " ", "=", " ", 
+     RowBox[{"EffectiveResistance", "[", "g", "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{"laplacian", " ", "=", " ", 
+     RowBox[{"PseudoInverse", "[", 
+      RowBox[{
+       RowBox[{"-", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"IdentityMatrix", "[", "10", "]"}], " ", "-", " ", 
+           RowBox[{"1", "/", "10"}]}], ")"}], " ", ".", " ", "resistances", 
+         " ", ".", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"IdentityMatrix", "[", "10", "]"}], " ", "-", " ", 
+           RowBox[{"1", "/", "10"}]}], ")"}]}]}], "/", "2"}], "]"}]}], "}"}], 
+   ",", "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"AdjacencyGraph", "[", 
+      RowBox[{"Round", "[", 
+       RowBox[{
+        RowBox[{"DiagonalMatrix", "[", 
+         RowBox[{"Diagonal", "[", "laplacian", "]"}], "]"}], " ", "-", " ", 
+        "laplacian"}], "]"}], "]"}], ",", " ", 
+     RowBox[{"ResistanceQ", "[", "resistances", "]"}], ",", " ", 
+     RowBox[{
+      RowBox[{"Round", "[", "laplacian", "]"}], " ", "===", " ", 
+      RowBox[{"Normal", "[", 
+       RowBox[{"KirchhoffMatrix", "[", "g", "]"}], "]"}]}]}], "}"}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"ee476f28-a1a6-47cd-8909-33909aba3c65"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   GraphicsBox[
+    NamespaceBox["NetworkGraphics",
+     DynamicModuleBox[{Typeset`graph = HoldComplete[
+       Graph[{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, {Null, 
+         SparseArray[
+         Automatic, {10, 10}, 0, {
+          1, {{0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30}, {{3}, {4}, {6}, {4}, {
+            5}, {7}, {1}, {5}, {8}, {1}, {2}, {9}, {2}, {3}, {10}, {1}, {7}, {
+            10}, {2}, {6}, {8}, {3}, {7}, {9}, {4}, {8}, {10}, {5}, {6}, {
+            9}}}, Pattern}]}]]}, 
+      TagBox[
+       GraphicsGroupBox[
+        GraphicsComplexBox[{{1.552745145710548, 0.5958807156967979}, {
+         0.3799497073376866, 1.7264412366983493`}, {0.6033133761947822, 
+         0.009424052745707345}, {1.6156242179956628`, 1.7098601627639733`}, {
+         0., 1.089600356691847}, {0.9883643346036478, 0.9326876070222194}, {
+         0.41437872349215354`, 0.6118999662392164}, {1.3461835742317683`, 
+         0.}, {1.978670625396253, 1.0622863156814681`}, {0.9962347928120242, 
+         1.590363201649939}}, {
+          {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[0.],
+            ArrowBox[{{1, 3}, {1, 4}, {1, 6}, {2, 4}, {2, 5}, {2, 7}, {3, 
+            5}, {3, 8}, {4, 9}, {5, 10}, {6, 7}, {6, 10}, {7, 8}, {8, 9}, {9, 
+            10}}, 0.022438164702534957`]}, 
+          {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+           DiskBox[1, 0.022438164702534957], DiskBox[2, 0.022438164702534957],
+            DiskBox[3, 0.022438164702534957], 
+           DiskBox[4, 0.022438164702534957], DiskBox[5, 0.022438164702534957],
+            DiskBox[6, 0.022438164702534957], 
+           DiskBox[7, 0.022438164702534957], DiskBox[8, 0.022438164702534957],
+            DiskBox[9, 0.022438164702534957], 
+           DiskBox[10, 0.022438164702534957]}}]],
+       MouseAppearanceTag["NetworkGraphics"]],
+      AllowKernelInitialization->False]],
+    DefaultBaseStyle->"NetworkGraphics",
+    FormatType->TraditionalForm,
+    FrameTicks->None], ",", "True", ",", "True"}], "}"}]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"cf80f71c-0e42-47a6-bd5c-9d8a123ef608"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Possible Issues", "ExampleSection",ExpressionUUID->
+   "dda06a82-eb41-4b48-8510-6cb821647761"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1305812373,ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f"],
+
+Cell[TextData[{
+ "A matrix with an infinite entry is no resistance matrix of a connected \
+graph. The resistances of a graph with two components are ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["Infinity"]], "paclet:ref/Infinity"},
+   "RefLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "60b67447-bc34-4b1f-bb0f-84c3bd12b6bb"],
+ " between them, and ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["ResistanceQ"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/ResistanceQ", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "b283da8b-21f2-49d4-a503-60d2aeadd8e5"],
+ " gives ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["False"]], "paclet:ref/False"},
+   "RefLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "614043ec-5956-4745-abc0-c406e803ceda"],
+ " on the matrix."
+}], "ExampleText",ExpressionUUID->"f85ddba9-2554-4cbb-8703-e1a21db4225a"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"g", " ", "=", " ", 
+     RowBox[{"GraphUnion", "[", 
+      RowBox[{
+       RowBox[{"PathGraph", "[", 
+        RowBox[{"{", 
+         RowBox[{"1", ",", " ", "2", ",", " ", "3"}], "}"}], "]"}], ",", " ", 
+       
+       RowBox[{"PathGraph", "[", 
+        RowBox[{"{", 
+         RowBox[{"4", ",", " ", "5"}], "}"}], "]"}]}], "]"}]}], "}"}], ",", 
+   "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{"g", ",", " ", 
+     RowBox[{"MatrixPlot", "[", 
+      RowBox[{
+       RowBox[{"EffectiveResistance", "[", "g", "]"}], " ", "/.", " ", 
+       RowBox[{"Infinity", " ", "->", " ", "3"}]}], "]"}], ",", " ", 
+     RowBox[{"ResistanceQ", "[", 
+      RowBox[{"EffectiveResistance", "[", "g", "]"}], "]"}]}], "}"}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"3ca63bfe-59a2-4684-b209-19fe5525fc65"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   GraphicsBox[
+    NamespaceBox["NetworkGraphics",
+     DynamicModuleBox[{Typeset`graph = HoldComplete[
+       Graph[{1, 2, 3, 4, 5}, {Null, {{1, 2}, {2, 3}, {4, 5}}}]]}, 
+      TagBox[
+       GraphicsGroupBox[
+        GraphicsComplexBox[{{0.18750999416471048`, -0.562529982494131}, {
+         1.1878155037506848`, -0.562529982494131}, {
+         2.1875099008000753`, -0.562529982494131}, {
+         1.1875099941647103`, -0.18750999416471031`}, {
+         0.18750999416471026`, -0.18750999416471031`}}, {
+          {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[0.],
+            ArrowBox[{{1, 2}, {2, 3}, {4, 5}}, 0.02261146421059973]}, 
+          {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+           DiskBox[1, 0.02261146421059973], DiskBox[2, 0.02261146421059973], 
+           DiskBox[3, 0.02261146421059973], DiskBox[4, 0.02261146421059973], 
+           DiskBox[5, 0.02261146421059973]}}]],
+       MouseAppearanceTag["NetworkGraphics"]],
+      AllowKernelInitialization->False]],
+    DefaultBaseStyle->"NetworkGraphics",
+    FormatType->TraditionalForm,
+    FrameTicks->None], ",", 
+   GraphicsBox[RasterBox[CompressedData["
+1:eJxTTMoPSmVmYGBghWIQGwI+2D+sElnn/vCWPQMKIF58emFwreu8N/axD/RW
+7F/2zF51wi3LqcaX7WHqcdGU2ovL3KV7D3oE/35jH+W1JnK97Qv7rZlP82RL
+btozBxVYWp57Y/9CuLfh/5wH9qGG6xfXRZfgVE8t9yussi2fvOCtvY5gQsT/
+S6/sn3HbveA59ginuYTCk9LwYTj5ykgr+K29bfWsv1XrXtrH2K6sTZh13575
+4r2/j2+8tr/59uzMLRMe2qsdSM77WFZFsr0A5WO6AA==
+     "], {{0, 0}, {5, 5}}, {0, 1}],
+    Frame->True,
+    FrameLabel->{None, None},
+    FrameTicks->{{{{4.5, 
+         FormBox["1", TraditionalForm]}, {3.5, 
+         FormBox["2", TraditionalForm]}, {2.5, 
+         FormBox["3", TraditionalForm]}, {1.5, 
+         FormBox["4", TraditionalForm]}, {0.5, 
+         FormBox["5", TraditionalForm]}}, {{4.5, 
+         FormBox["1", TraditionalForm]}, {3.5, 
+         FormBox["2", TraditionalForm]}, {2.5, 
+         FormBox["3", TraditionalForm]}, {1.5, 
+         FormBox["4", TraditionalForm]}, {0.5, 
+         FormBox["5", TraditionalForm]}}}, {{{0.5, 
+         FormBox["1", TraditionalForm]}, {1.5, 
+         FormBox["2", TraditionalForm]}, {2.5, 
+         FormBox["3", TraditionalForm]}, {3.5, 
+         FormBox["4", TraditionalForm]}, {4.5, 
+         FormBox["5", TraditionalForm]}}, {{0.5, 
+         FormBox["1", TraditionalForm]}, {1.5, 
+         FormBox["2", TraditionalForm]}, {2.5, 
+         FormBox["3", TraditionalForm]}, {3.5, 
+         FormBox["4", TraditionalForm]}, {4.5, 
+         FormBox["5", TraditionalForm]}}}},
+    GridLinesStyle->Directive[
+      GrayLevel[0.5, 0.4]],
+    Method->{
+     "GridLinesInFront" -> True, "AxisPadding" -> Scaled[0.02], 
+      "DefaultBoundaryStyle" -> Automatic, 
+      "DefaultGraphicsInteraction" -> {
+       "Version" -> 1.2, "TrackMousePosition" -> {True, False}, 
+        "Effects" -> {
+         "Highlight" -> {"ratio" -> 2}, "HighlightPoint" -> {"ratio" -> 2}, 
+          "Droplines" -> {
+           "freeformCursorMode" -> True, 
+            "placement" -> {"x" -> "All", "y" -> "None"}}}}, 
+      "DefaultPlotStyle" -> Automatic, "DomainPadding" -> Scaled[0.02], 
+      "RangePadding" -> Scaled[0.05]}], ",", "False"}], "}"}]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"29940375-7f17-49a4-a602-3a22ef439f3e"]
 }, Open  ]]
 }, Open  ]],
 
@@ -5534,7 +5682,7 @@ Cell["WolframInstitute`InfraGeometry`", "Categorization",
  CellID->468444828,ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191"],
 
 Cell["WolframInstitute/InfraGeometry/ref/ResistanceQ", "Categorization",
- CellLabel->"URI",ExpressionUUID->"102a6142-957b-4ad0-a6cc-071cca97e098"]
+ CellLabel->"URI",ExpressionUUID->"12f1fa2a-b29d-4de8-95f8-1ade0ef4fcb6"]
 }, Closed]],
 
 Cell["Keywords", "KeywordsSection",
@@ -5587,14 +5735,14 @@ ExpressionUUID->"c207366e-060a-406b-a297-9e30e1628f43"
 (*CellTagsOutline
 CellTagsIndex->{
  "ExtendedExamples"->{
-  Cell[100305, 1988, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+  Cell[100090, 1981, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
    CellTags->"ExtendedExamples",
    CellID->533848431]}
  }
 *)
 (*CellTagsIndex
 CellTagsIndex->{
- {"ExtendedExamples", 308754, 5588}
+ {"ExtendedExamples", 314793, 5736}
  }
 *)
 (*NotebookFileOutline
@@ -5602,113 +5750,120 @@ Notebook[{
 Cell[CellGroupData[{
 Cell[576, 22, 109, 1, 70, "ObjectName",ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec",
  CellID->1224892054],
-Cell[688, 25, 749, 20, 70, "Usage",ExpressionUUID->"8a1aef18-fa02-4493-9319-bae4f51b1b34"],
-Cell[1440, 47, 1304, 43, 70, "Notes",ExpressionUUID->"e35276d9-784c-4ac2-8d41-cc9c49ad8a08"],
-Cell[2747, 92, 895, 25, 70, "Notes",ExpressionUUID->"d036283d-9670-4bf1-9a27-3b0453096ca6"],
-Cell[3645, 119, 1204, 43, 70, "Notes",ExpressionUUID->"35c5c4d0-cd44-40c3-bb72-46b8656a589d"]
+Cell[688, 25, 741, 20, 70, "Usage",ExpressionUUID->"2b2458b0-3d35-444a-ba2c-258857f495ea"],
+Cell[1432, 47, 1771, 65, 70, "Notes",ExpressionUUID->"e529f43f-3d32-4c9c-90c3-e86efe894e80"],
+Cell[3206, 114, 503, 15, 70, "Notes",ExpressionUUID->"ff2a0d66-54fb-4c16-91a6-9c963103e4f0"],
+Cell[3712, 131, 980, 25, 70, "Notes",ExpressionUUID->"23c9b054-c3fc-41e1-b6aa-5e957412b1c7"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[4886, 167, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
+Cell[4729, 161, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
  CellID->1559318232],
-Cell[5348, 182, 783, 20, 70, "SeeAlso",ExpressionUUID->"206025d1-eebb-4ade-8815-5deac4e9da6e"]
+Cell[5191, 176, 783, 20, 70, "SeeAlso",ExpressionUUID->"b8a49f3b-7f80-4c5a-b939-94ad30c37171"]
 }, Open  ]],
-Cell[6146, 205, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
+Cell[5989, 199, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
  CellID->792424486],
 Cell[CellGroupData[{
-Cell[6606, 221, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
+Cell[6449, 215, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
  CellID->38303248],
-Cell[6725, 224, 301, 6, 70, "MoreAbout",ExpressionUUID->"59b733e5-90d7-4eaa-bfdc-e39cf20b5b3b"]
+Cell[6568, 218, 301, 6, 70, "MoreAbout",ExpressionUUID->"75a2ea00-79a7-4378-889b-993a8f2b9a77"]
 }, Open  ]],
-Cell[7041, 233, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
+Cell[6884, 227, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
  CellID->47113304],
 Cell[CellGroupData[{
-Cell[7537, 250, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
+Cell[7380, 244, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
  CellID->1718580883],
-Cell[8071, 266, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
+Cell[7914, 260, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
  CellID->1969679695]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[8384, 275, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
+Cell[8227, 269, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
  CellID->880084151],
-Cell[8829, 289, 165, 3, 70, "ExampleText",ExpressionUUID->"7124b5a2-98c3-4ad7-969e-21a20fa34dac"],
+Cell[8672, 283, 165, 3, 70, "ExampleText",ExpressionUUID->"cf8bd5de-6083-4fcc-82fb-a06cefaf2716"],
 Cell[CellGroupData[{
-Cell[9019, 296, 939, 24, 70, "Input",ExpressionUUID->"f4146272-0d54-443b-816c-ba82493b81b7"],
-Cell[9961, 322, 72257, 1305, 70, "Output",ExpressionUUID->"c97b9ba9-9cfb-435b-af89-0f95b825767d"]
+Cell[8862, 290, 939, 24, 70, "Input",ExpressionUUID->"e1feb745-c80b-4272-a80c-840e3fdf54c0"],
+Cell[9804, 316, 72257, 1305, 70, "Output",ExpressionUUID->"cab720f9-e86e-4741-837d-461c5130841d"]
 }, Open  ]],
-Cell[82233, 1630, 359, 6, 70, "ExampleText",ExpressionUUID->"0ce8d05d-0a18-4f46-b4e5-b9aa18a5e040"],
+Cell[82076, 1624, 301, 5, 70, "ExampleText",ExpressionUUID->"b6803022-673c-4e19-b2c4-cb3d1db78b10"],
 Cell[CellGroupData[{
-Cell[82617, 1640, 955, 24, 70, "Input",ExpressionUUID->"4ee8f652-218c-414d-8180-a721473b153d"],
-Cell[83575, 1666, 16681, 316, 70, "Output",ExpressionUUID->"81d2da06-b3ae-49e6-9a06-103dba12662d"]
+Cell[82402, 1633, 955, 24, 70, "Input",ExpressionUUID->"3ad9adf2-86cc-46bb-bad7-3014bcf95caf"],
+Cell[83360, 1659, 16681, 316, 70, "Output",ExpressionUUID->"3d585d11-8eb4-47d6-b7ef-88709641f02f"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[100305, 1988, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+Cell[100090, 1981, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
  CellTags->"ExtendedExamples",
  CellID->533848431],
-Cell[100795, 2003, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
+Cell[CellGroupData[{
+Cell[100602, 1998, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
  CellID->1293636265],
-Cell[101040, 2010, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
+Cell[100847, 2005, 442, 6, 70, "ExampleText",ExpressionUUID->"581cf912-f16f-429b-adb2-32d027ad161c"],
+Cell[CellGroupData[{
+Cell[101314, 2015, 1702, 44, 70, "Input",ExpressionUUID->"1f3af706-e43b-4d82-850f-31e594e7f3dc"],
+Cell[103019, 2061, 2219, 51, 70, "Output",ExpressionUUID->"9edcc0ab-de38-485c-a274-4f5d3241b344"]
+}, Open  ]],
+Cell[105253, 2115, 333, 5, 70, "ExampleText",ExpressionUUID->"5f6edc69-93bc-4bb6-8f93-7a1554285ed3"],
+Cell[CellGroupData[{
+Cell[105611, 2124, 2324, 63, 70, "Input",ExpressionUUID->"46f04f5f-fc81-4bc4-a8ee-ac82db72b1dd"],
+Cell[107938, 2189, 192009, 3157, 70, "Output",ExpressionUUID->"41d426ff-beaf-41b7-a498-354e90bee152"]
+}, Open  ]]
+}, Open  ]],
+Cell[299974, 5350, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
  CellID->1020263627],
-Cell[101308, 2017, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
+Cell[300242, 5357, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
  CellID->2061341341],
-Cell[101555, 2024, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
+Cell[300489, 5364, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
  CellID->258228157],
 Cell[CellGroupData[{
-Cell[101828, 2033, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
+Cell[300762, 5373, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
  CellID->2123667759],
-Cell[102090, 2040, 466, 11, 70, "ExampleText",ExpressionUUID->"e31335c2-983d-4678-ae8e-baf3d8e862ad"],
+Cell[301024, 5380, 466, 11, 70, "ExampleText",ExpressionUUID->"63c6e9b1-a64c-4cc0-912b-3db268ef5c78"],
 Cell[CellGroupData[{
-Cell[102581, 2055, 1516, 39, 70, "Input",ExpressionUUID->"c1bda578-37d5-498d-ac64-d952aa0a4364"],
-Cell[104100, 2096, 2132, 39, 70, "Output",ExpressionUUID->"5f8b833a-9640-48e9-a85e-a37bf033a166"]
+Cell[301515, 5395, 1516, 39, 70, "Input",ExpressionUUID->"ee476f28-a1a6-47cd-8909-33909aba3c65"],
+Cell[303034, 5436, 2132, 39, 70, "Output",ExpressionUUID->"cf80f71c-0e42-47a6-bd5c-9d8a123ef608"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[106281, 2141, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
+Cell[305215, 5481, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
  CellID->1305812373],
-Cell[106536, 2148, 342, 5, 70, "ExampleText",ExpressionUUID->"adc092fe-0bdc-452e-9229-ba384bfcefc1"],
+Cell[305470, 5488, 1022, 29, 70, "ExampleText",ExpressionUUID->"f85ddba9-2554-4cbb-8703-e1a21db4225a"],
 Cell[CellGroupData[{
-Cell[106903, 2157, 1429, 38, 70, "Input",ExpressionUUID->"2855bafd-56a0-4efb-b6fa-c3ce9ce0da7a"],
-Cell[108335, 2197, 2152, 49, 70, "Output",ExpressionUUID->"6ba9bd57-2f05-4e69-a180-00566d0f8ebe"]
-}, Open  ]],
-Cell[110502, 2249, 219, 3, 70, "ExampleText",ExpressionUUID->"40708948-2a3d-445b-b82d-eacbfd78ded0"],
-Cell[CellGroupData[{
-Cell[110746, 2256, 1940, 53, 70, "Input",ExpressionUUID->"381d9cea-e561-415c-966c-cda54f69784d"],
-Cell[112689, 2311, 191993, 3157, 70, "Output",ExpressionUUID->"12acaaf8-8b2f-4d19-a814-77895d0c280e"]
+Cell[306517, 5521, 889, 24, 70, "Input",ExpressionUUID->"3ca63bfe-59a2-4684-b209-19fe5525fc65"],
+Cell[307409, 5547, 3312, 69, 70, "Output",ExpressionUUID->"29940375-7f17-49a4-a602-3a22ef439f3e"]
 }, Open  ]]
 }, Open  ]],
-Cell[304709, 5472, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
+Cell[310748, 5620, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
  CellID->1653164318],
-Cell[304969, 5479, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
+Cell[311008, 5627, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
  CellID->589267740]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[305255, 5489, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
+Cell[311294, 5637, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
  CellID->311882160],
-Cell[305368, 5492, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
+Cell[311407, 5640, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
  CellID->341476719],
 Cell[CellGroupData[{
-Cell[305869, 5508, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
+Cell[311908, 5656, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
  CellID->1755438392],
-Cell[306357, 5523, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
+Cell[312396, 5671, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
  CellID->686433507],
-Cell[306494, 5527, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
+Cell[312533, 5675, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
  CellID->605800465],
-Cell[306655, 5531, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
+Cell[312694, 5679, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
  CellID->468444828],
-Cell[306813, 5535, 146, 1, 70, "Categorization",ExpressionUUID->"102a6142-957b-4ad0-a6cc-071cca97e098"]
+Cell[312852, 5683, 146, 1, 70, "Categorization",ExpressionUUID->"12f1fa2a-b29d-4de8-95f8-1ade0ef4fcb6"]
 }, Closed]],
-Cell[306974, 5539, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
+Cell[313013, 5687, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
  CellID->477174294],
 Cell[CellGroupData[{
-Cell[307109, 5544, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
+Cell[313148, 5692, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
  CellID->1872225408],
-Cell[307232, 5547, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
+Cell[313271, 5695, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
  CellID->1562036412],
-Cell[307384, 5551, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
+Cell[313423, 5699, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
  CellID->158391909],
-Cell[307524, 5555, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
+Cell[313563, 5703, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
  CellID->1360575930],
-Cell[307663, 5559, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
+Cell[313702, 5707, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
  CellID->793782254]
 }, Closed]]
 }, Open  ]]

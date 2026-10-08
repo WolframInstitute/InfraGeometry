@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[    268305,       5437]
-NotebookOptionsPosition[    260494,       5284]
-NotebookOutlinePosition[    261705,       5320]
-CellTagsIndexPosition[    261624,       5315]
+NotebookDataLength[    272359,       5538]
+NotebookOptionsPosition[    264217,       5380]
+NotebookOutlinePosition[    265428,       5416]
+CellTagsIndexPosition[    265347,       5411]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -24,7 +24,7 @@ Cell["FindResolvingSet", "ObjectName",
  CellID->1224892054,ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec"],
 
 Cell[TextData[{
- Cell["   ", "ModInfo",ExpressionUUID->"9e5a80e1-49a5-4765-8ea0-dd99068be034"],
+ Cell["   ", "ModInfo",ExpressionUUID->"6b907d26-c702-4c66-98ac-ad1cbbf7943d"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -36,13 +36,13 @@ Cell[TextData[{
     BaseStyle->"InlineFormula"], "[", 
    StyleBox["g", "TI"], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "efc5e04d-5ffe-4bef-9277-da3c29ac59b8"],
+  "d98d2863-bdfe-4565-84ba-c723800b2a3a"],
  "\[LineSeparator]",
  "gives a list holding one smallest resolving set of ",
  StyleBox["g", "TI"],
- ", a metric basis.",
+ ", a metric basis, empty for the graph of one vertex.",
  "\n",
- Cell["   ", "ModInfo",ExpressionUUID->"1b80b5ab-0c22-4989-aad2-f19eabfc0f16"],
+ Cell["   ", "ModInfo",ExpressionUUID->"83234a7a-73dd-4887-a065-fa2dda05c718"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -56,13 +56,14 @@ Cell[TextData[{
     StyleBox["g", "TI"], ",", " ", 
     StyleBox["n", "TI"]}], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "3e793f17-3544-46e2-aef2-8cddad13b513"],
+  "2a191f94-ff53-4db3-bcf6-98b107916dab"],
  "\[LineSeparator]",
  "gives up to ",
  StyleBox["n", "TI"],
- " resolving sets, the smallest first.",
+ " resolving sets in order of size, the smallest first; those of the smallest \
+size are metric bases, the later ones need not be minimal.",
  "\n",
- Cell["   ", "ModInfo",ExpressionUUID->"89f28903-349d-4917-8b10-eec62c1d673a"],
+ Cell["   ", "ModInfo",ExpressionUUID->"516760d9-db93-4496-bb60-41d36e34d051"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -77,7 +78,7 @@ Cell[TextData[{
     StyleBox["n", "TI"], ",", " ", 
     StyleBox["m", "TI"]}], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "981c5e60-50c9-4e85-af5b-6c81a3e47fa1"],
+  "451b48c5-b16c-4918-9b1a-c1cb69035d93"],
  "\[LineSeparator]",
  "takes the sizes of the sets from ",
  StyleBox["m", "TI"],
@@ -88,7 +89,7 @@ Cell[TextData[{
      TextData["All"]], "paclet:ref/All"},
    "RefLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "048184d7-bd33-4875-a1de-7e89e3941333"],
+  "5177e8a7-5735-4971-bfd0-cf6ae2fb2391"],
  ", a largest size ",
  StyleBox["k", "TI"],
  ", {",
@@ -100,7 +101,7 @@ Cell[TextData[{
  "} for the size ",
  StyleBox["k", "TI"],
  " only."
-}], "Usage",ExpressionUUID->"8ed46a93-e609-42cd-8e61-157bddac294e"],
+}], "Usage",ExpressionUUID->"f59590e8-0701-4fbe-a8b4-a8f239ca0ac0"],
 
 Cell[TextData[{
  "Definition: a set ",
@@ -118,7 +119,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "c8bd8262-1efa-4262-8358-54503a2e2fff"],
+  "a0a72a63-22ec-4537-865a-e27f345ef369"],
  ". A smallest resolving set is a metric basis, and its size is the ",
  Cell[BoxData[
   TemplateBox[{
@@ -128,13 +129,13 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "979c2724-02ed-4ec0-9f8d-f4a6c395d4f3"],
+  "2068a682-f9f4-41d4-b44c-2db93b960878"],
  "."
-}], "Notes",ExpressionUUID->"a2c2be3f-d9fa-4fb2-ac34-8705e5c17bff"],
+}], "Notes",ExpressionUUID->"6a65ba02-ccd4-4d21-a486-158fd254a26a"],
 
 Cell[TextData[{
  "The search is exhaustive. It tries every set of each size in turn, from the \
-smallest size on, and stops once it holds ",
+empty set on, and stops once it holds ",
  StyleBox["n", "TI"],
  " sets. A metric basis of ",
  StyleBox["k", "TI"],
@@ -148,16 +149,17 @@ smallest size on, and stops once it holds ",
  StyleBox["k", "TI"],
  ", so the search is fast when the metric dimension is small, and slow \
 otherwise."
-}], "Notes",ExpressionUUID->"0231d948-c79f-4f13-ae67-85b0adf0e15a"],
+}], "Notes",ExpressionUUID->"f19d8ea3-06e9-4a7b-a1de-d11212d4926c"],
 
 Cell[TextData[{
- "After the sets of the smallest size come larger ones, and those may contain \
+ "The empty set resolves the graph of one vertex and no graph with more. \
+After the sets of the smallest size come larger ones, and those may contain \
 smaller resolving sets. When no set of the sizes ",
  StyleBox["m", "TI"],
  " resolves ",
  StyleBox["g", "TI"],
  ", the result is {}."
-}], "Notes",ExpressionUUID->"f3115947-3f29-439f-a749-ed1f43d88163"]
+}], "Notes",ExpressionUUID->"bde83388-4dae-43d0-8404-c51fdbabd633"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -186,7 +188,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "79ad77a4-903f-4a15-b34b-dfda6748ee8f"],
+  "750c7819-1165-4b28-90c3-f8f19f8f3f2c"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -196,7 +198,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "0ba5eba2-dabe-4498-913f-57942f4f469e"],
+  "78fb6dfd-24fd-4022-b84c-d2b7d35cef0e"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -206,8 +208,8 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "115ca79f-9b2e-45cd-aec6-28b42374273b"]
-}], "SeeAlso",ExpressionUUID->"1250fa6a-2287-4041-80da-fa2dc8cf8dd5"]
+  "fec3638a-f033-4836-a239-6aa2431ed47f"]
+}], "SeeAlso",ExpressionUUID->"20dd941e-f4cb-49e4-8421-ccc86242c03a"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -234,8 +236,8 @@ Cell[TextData[Cell[BoxData[
   BaseStyle->"Link",
   ButtonData->
    "paclet:WolframInstitute/InfraGeometry/guide/Experimental"]], \
-"InlineFormula",ExpressionUUID->"8983e883-407e-44bd-bc09-8bdf960417dd"]], \
-"MoreAbout",ExpressionUUID->"d9ff98d2-4ce2-458a-9c84-8598f6bee730"]
+"InlineFormula",ExpressionUUID->"30b03945-5150-44ac-b60a-1650cab860ca"]], \
+"MoreAbout",ExpressionUUID->"fc552f72-8b27-41ae-81b6-5457aa95a3c3"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -296,7 +298,7 @@ Cell[BoxData[
 
 Cell["\<\
 A metric basis of the square, hexagonal and triangular tilings: three corners.\
-\>", "ExampleText",ExpressionUUID->"bf463502-fe16-440f-88f6-3580b9806b21"],
+\>", "ExampleText",ExpressionUUID->"b17bdcd5-3557-451f-baf4-75adafd62ca9"],
 
 Cell[CellGroupData[{
 
@@ -335,7 +337,7 @@ Cell[BoxData[
         RowBox[{"{", 
          RowBox[{"graphs", ",", " ", "bases"}], "}"}]}], "]"}], "]"}], ",", 
      " ", "bases"}], "}"}]}], "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"b16e01ae-8959-4b8f-87ff-81eee8cf9cdd"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"d54453d5-026c-4842-811c-c74d9f2d4a7f"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -1748,13 +1750,13 @@ wfeMfN7Ax+9LG7WC7wB+T0/zKwv1nUb0lsH7Cx8GRVk=
      RowBox[{"{", 
       RowBox[{"80", ",", "85", ",", "101"}], "}"}]}], "}"}]}], 
   "}"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"5cc8e778-c6d3-4214-8f65-450310fc4ea5"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"edd0779d-8865-420b-80d9-f13b456c706c"]
 }, Open  ]],
 
 Cell["\<\
 A metric basis of a path, a cycle, a grid and the Petersen graph: one end, \
 two neighbours, two corners of one side and three vertices.\
-\>", "ExampleText",ExpressionUUID->"97a787c3-c450-4054-a90f-a55c6d0d8642"],
+\>", "ExampleText",ExpressionUUID->"de05b590-fab7-4749-9895-f5f4b6d4dbc2"],
 
 Cell[CellGroupData[{
 
@@ -1792,7 +1794,7 @@ Cell[BoxData[
          RowBox[{"graphs", ",", " ", "bases"}], "}"}]}], "]"}], "]"}], ",", 
      " ", 
      RowBox[{"Length", " ", "/@", " ", "bases"}]}], "}"}]}], "]"}]], "Input",
- CellLabel->"In[2]:= ",ExpressionUUID->"50801fb2-09ed-4c8d-99fe-e8767ff17342"],
+ CellLabel->"In[2]:= ",ExpressionUUID->"e283538a-a70b-4bce-8d1d-957edb2c576a"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -2257,7 +2259,7 @@ Cell[BoxData[
     PlotRangePadding->Automatic], ",", 
    RowBox[{"{", 
     RowBox[{"1", ",", "2", ",", "2", ",", "3"}], "}"}]}], "}"}]], "Output",
- CellLabel->"Out[2]= ",ExpressionUUID->"a9a03777-7af6-41a4-864f-0e9ff60520e6"]
+ CellLabel->"Out[2]= ",ExpressionUUID->"776e3f44-84e2-46db-aa1c-8b88fc9ce0e2"]
 }, Open  ]]
 }, Open  ]],
 
@@ -2292,7 +2294,7 @@ Cell[TextData[{
  StyleBox["n", "TI"],
  " sets: the 6-cycle has twelve metric bases, every pair of vertices except \
 the three opposite pairs."
-}], "ExampleText",ExpressionUUID->"0f64396b-a53d-455b-89c4-cddf9a699801"],
+}], "ExampleText",ExpressionUUID->"f83fd543-f92d-40dd-9ef3-6f0841d31644"],
 
 Cell[CellGroupData[{
 
@@ -2319,7 +2321,7 @@ Cell[BoxData[
             RowBox[{"{", "#", "}"}]}], "]"}], " ", "&"}], " ", "/@", " ", 
          "bases"}], ",", " ", "4"}], "]"}], "]"}], ",", " ", 
      RowBox[{"Length", "[", "bases", "]"}]}], "}"}]}], "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"36c1c346-66df-4604-8e2e-73ff07ef9440"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"45e9832c-0296-4b96-a4eb-4810a39d7b60"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -3461,13 +3463,13 @@ Cell[BoxData[
     Method->{"IgnoreImageSizeAutomaticLimit" -> True},
     PlotRange->{{0, 1555.2}, {-1320.554886302717, 0}},
     PlotRangePadding->Automatic], ",", "12"}], "}"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"846b688b-965a-4d2d-b79f-9a8637246efd"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"ccc33da4-7ec7-4a58-ac6c-5f98430b1412"]
 }, Open  ]],
 
 Cell["\<\
 The sizes: no two vertices resolve the square tiling, and 728 sets of three \
 do. Three of them, chosen at random, are drawn.\
-\>", "ExampleText",ExpressionUUID->"a44d0a29-cbd2-49b8-b7cd-335b890c09a2"],
+\>", "ExampleText",ExpressionUUID->"a9ce85c4-1925-4946-bbad-0daede46f7e8"],
 
 Cell[CellGroupData[{
 
@@ -3507,7 +3509,7 @@ Cell[BoxData[
      " ", 
      RowBox[{"Length", "[", "pairs", "]"}], ",", " ", 
      RowBox[{"Length", "[", "triples", "]"}]}], "}"}]}], "]"}]], "Input",
- CellLabel->"In[2]:= ",ExpressionUUID->"37af3255-1418-4375-9089-3ee594ce3daf"],
+ CellLabel->"In[2]:= ",ExpressionUUID->"532e9984-b942-4074-ab06-daf971e5086d"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -4099,7 +4101,101 @@ nnWr51m3ep52qedZt3qedTtvPb/J+fX88hdLMO1k
     Method->{"IgnoreImageSizeAutomaticLimit" -> True},
     PlotRange->{{0, 645.}, {-214.68159999999997`, 0}},
     PlotRangePadding->Automatic], ",", "0", ",", "728"}], "}"}]], "Output",
- CellLabel->"Out[2]= ",ExpressionUUID->"011e2738-66e2-4dd7-ba04-b5fb3913e815"]
+ CellLabel->"Out[2]= ",ExpressionUUID->"771f368d-d8c3-420a-bcb4-e117c162237a"]
+}, Open  ]],
+
+Cell["\<\
+The empty set resolves the one-vertex graph and comes first, followed by its \
+vertex; on the graph of two vertices a single vertex resolves, and the empty \
+set does not.\
+\>", "ExampleText",ExpressionUUID->"c1fb21aa-ada8-4960-b664-a87091fb93fb"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"graphs", " ", "=", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"Graph", "[", 
+        RowBox[{
+         RowBox[{"{", "1", "}"}], ",", " ", 
+         RowBox[{"{", "}"}]}], "]"}], ",", " ", 
+       RowBox[{"PathGraph", "[", 
+        RowBox[{"{", 
+         RowBox[{"1", ",", " ", "2"}], "}"}], "]"}]}], "}"}]}], "}"}], ",", 
+   "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"GraphicsRow", "[", "graphs", "]"}], ",", " ", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"FindResolvingSet", "[", 
+        RowBox[{"#", ",", " ", "3"}], "]"}], " ", "&"}], " ", "/@", " ", 
+      "graphs"}]}], "}"}]}], "]"}]], "Input",
+ CellLabel->"In[3]:= ",ExpressionUUID->"96fc88a3-bf48-4735-81eb-4e2085f339b8"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   GraphicsBox[{{}, {InsetBox[
+       FormBox[
+        GraphicsBox[
+         NamespaceBox["NetworkGraphics",
+          DynamicModuleBox[{Typeset`graph = HoldComplete[
+            Graph[{1}, {}]]}, 
+           TagBox[GraphicsGroupBox[GraphicsComplexBox[{{0., 0.}}, {{}, 
+               {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+                DiskBox[1, 0.004014598540145964]}}]],
+            MouseAppearanceTag["NetworkGraphics"]],
+           AllowKernelInitialization->False]],
+         DefaultBaseStyle->"NetworkGraphics",
+         FormatType->TraditionalForm,
+         FrameTicks->None,
+         PlotRangePadding->0.1],
+        TraditionalForm], {160., -160.}, {Center, Center}, {300., 300.},
+       BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}], 
+      InsetBox[
+       FormBox[
+        GraphicsBox[
+         NamespaceBox["NetworkGraphics",
+          DynamicModuleBox[{Typeset`graph = HoldComplete[
+            Graph[{1, 2}, {Null, {{1, 2}}}]]}, 
+           
+           TagBox[GraphicsGroupBox[
+             GraphicsComplexBox[{{1., 0.}, {-1., 0.}}, {
+               {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], 
+                {Arrowheads[0.], ArrowBox[{1, 2}, 0.02261146496815286]}}, 
+               {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+                DiskBox[1, 0.02261146496815286], 
+                DiskBox[2, 0.02261146496815286]}}]],
+            MouseAppearanceTag["NetworkGraphics"]],
+           AllowKernelInitialization->False]],
+         DefaultBaseStyle->"NetworkGraphics",
+         FormatType->TraditionalForm,
+         FrameTicks->None],
+        TraditionalForm], {480., -160.}, {Center, Center}, {300., 300.},
+       BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}]}, {}},
+    
+    ImageSize->{640., 320.},
+    Method->{"IgnoreImageSizeAutomaticLimit" -> True},
+    PlotRange->{{0, 640.}, {-320., 0}},
+    PlotRangePadding->Automatic], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", "}"}], ",", 
+       RowBox[{"{", "1", "}"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", "2", "}"}], ",", 
+       RowBox[{"{", "1", "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"1", ",", "2"}], "}"}]}], "}"}]}], "}"}]}], "}"}]], "Output",
+ CellLabel->"Out[3]= ",ExpressionUUID->"800b5f14-cfb7-462f-964d-2163909863de"]
 }, Open  ]]
 }, Open  ]],
 
@@ -4143,9 +4239,9 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "9bb2285c-ab6e-4b6f-aa73-c6ae3abe90ca"],
+  "38c5b009-a643-4a21-951e-77cb200375ec"],
  " vertices."
-}], "ExampleText",ExpressionUUID->"7dde32e4-0047-4d23-b80d-c7694098e229"],
+}], "ExampleText",ExpressionUUID->"fa343597-851f-4246-8ee6-47d3d3a70262"],
 
 Cell[CellGroupData[{
 
@@ -4178,7 +4274,7 @@ Cell[BoxData[
        RowBox[{"First", "[", "bases", "]"}], "]"}], " ", "==", " ", 
       RowBox[{"MetricDimension", "[", "g", "]"}]}]}], "}"}]}], "]"}]], "Input",\
 
- CellLabel->"In[1]:= ",ExpressionUUID->"ec12d601-696a-46fe-b24d-f9bc3a65a804"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"53305bb0-97b0-4da6-bbcd-f829c67b530f"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -4927,7 +5023,7 @@ Cell[BoxData[
     PlotRange->{{0, 651.4285714285714}, {-103.8472339784761, 0}},
     PlotRangePadding->Automatic], ",", "True", ",", "True"}], "}"}]], "Output",\
 
- CellLabel->"Out[1]= ",ExpressionUUID->"7ff0a810-335d-4e09-8a38-ad521af7d080"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"e350c0a7-fc70-4732-9d8f-300e2ffcf179"]
 }, Open  ]]
 }, Open  ]],
 
@@ -4943,7 +5039,7 @@ Cell[BoxData[
 Cell["\<\
 Past the smallest size the sets need not be minimal. On a path the third set \
 found, {4, 5}, contains the resolving set {5}.\
-\>", "ExampleText",ExpressionUUID->"ceb61741-2a04-45ed-a718-d04bd6cd120a"],
+\>", "ExampleText",ExpressionUUID->"7335b4df-23b1-4c3f-9bb9-8b3f6425c52f"],
 
 Cell[CellGroupData[{
 
@@ -4967,7 +5063,7 @@ Cell[BoxData[
          RowBox[{"g", ",", " ", 
           RowBox[{"{", "#", "}"}]}], "]"}], " ", "&"}], " ", "/@", " ", 
        "sets"}], "]"}], ",", " ", "sets"}], "}"}]}], "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"f086aa02-0753-440a-ac52-ff03259998b2"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"7e0618da-9f47-43bd-86e7-5fbb8006e6c6"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -5185,7 +5281,7 @@ Cell[BoxData[
      RowBox[{"{", "1", "}"}], ",", 
      RowBox[{"{", 
       RowBox[{"4", ",", "5"}], "}"}]}], "}"}]}], "}"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"a502aae6-85f7-40cd-b895-cfcc3dcb6015"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"d4fffe0e-7061-43c2-a238-9e4c5b8e8036"]
 }, Open  ]]
 }, Open  ]],
 
@@ -5253,7 +5349,7 @@ Cell["WolframInstitute`InfraGeometry`", "Categorization",
  CellID->468444828,ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191"],
 
 Cell["WolframInstitute/InfraGeometry/ref/FindResolvingSet", "Categorization",
- CellLabel->"URI",ExpressionUUID->"5339fa15-f6ab-4c8f-9a59-d40be16496c0"]
+ CellLabel->"URI",ExpressionUUID->"30120ed8-229b-4b15-b946-a49610fa3c4b"]
 }, Closed]],
 
 Cell["Keywords", "KeywordsSection",
@@ -5307,14 +5403,14 @@ ExpressionUUID->"c207366e-060a-406b-a297-9e30e1628f43"
 (*CellTagsOutline
 CellTagsIndex->{
  "ExtendedExamples"->{
-  Cell[114099, 2265, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+  Cell[114303, 2267, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
    CellTags->"ExtendedExamples",
    CellID->533848431]}
  }
 *)
 (*CellTagsIndex
 CellTagsIndex->{
- {"ExtendedExamples", 261428, 5308}
+ {"ExtendedExamples", 265151, 5404}
  }
 *)
 (*NotebookFileOutline
@@ -5322,120 +5418,125 @@ Notebook[{
 Cell[CellGroupData[{
 Cell[576, 22, 114, 1, 70, "ObjectName",ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec",
  CellID->1224892054],
-Cell[693, 25, 2408, 77, 70, "Usage",ExpressionUUID->"8ed46a93-e609-42cd-8e61-157bddac294e"],
-Cell[3104, 104, 1000, 28, 70, "Notes",ExpressionUUID->"a2c2be3f-d9fa-4fb2-ac34-8705e5c17bff"],
-Cell[4107, 134, 545, 16, 70, "Notes",ExpressionUUID->"0231d948-c79f-4f13-ae67-85b0adf0e15a"],
-Cell[4655, 152, 297, 7, 70, "Notes",ExpressionUUID->"f3115947-3f29-439f-a749-ed1f43d88163"]
+Cell[693, 25, 2543, 78, 70, "Usage",ExpressionUUID->"f59590e8-0701-4fbe-a8b4-a8f239ca0ac0"],
+Cell[3239, 105, 1000, 28, 70, "Notes",ExpressionUUID->"6a65ba02-ccd4-4d21-a486-158fd254a26a"],
+Cell[4242, 135, 541, 16, 70, "Notes",ExpressionUUID->"f19d8ea3-06e9-4a7b-a1de-d11212d4926c"],
+Cell[4786, 153, 370, 8, 70, "Notes",ExpressionUUID->"bde83388-4dae-43d0-8404-c51fdbabd633"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[4989, 164, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
+Cell[5193, 166, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
  CellID->1559318232],
-Cell[5451, 179, 1116, 30, 70, "SeeAlso",ExpressionUUID->"1250fa6a-2287-4041-80da-fa2dc8cf8dd5"]
+Cell[5655, 181, 1116, 30, 70, "SeeAlso",ExpressionUUID->"20dd941e-f4cb-49e4-8421-ccc86242c03a"]
 }, Open  ]],
-Cell[6582, 212, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
+Cell[6786, 214, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
  CellID->792424486],
 Cell[CellGroupData[{
-Cell[7042, 228, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
+Cell[7246, 230, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
  CellID->38303248],
-Cell[7161, 231, 301, 6, 70, "MoreAbout",ExpressionUUID->"d9ff98d2-4ce2-458a-9c84-8598f6bee730"]
+Cell[7365, 233, 301, 6, 70, "MoreAbout",ExpressionUUID->"fc552f72-8b27-41ae-81b6-5457aa95a3c3"]
 }, Open  ]],
-Cell[7477, 240, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
+Cell[7681, 242, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
  CellID->47113304],
 Cell[CellGroupData[{
-Cell[7973, 257, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
+Cell[8177, 259, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
  CellID->1718580883],
-Cell[8507, 273, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
+Cell[8711, 275, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
  CellID->1969679695]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[8820, 282, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
+Cell[9024, 284, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
  CellID->880084151],
-Cell[9265, 296, 164, 2, 70, "ExampleText",ExpressionUUID->"bf463502-fe16-440f-88f6-3580b9806b21"],
+Cell[9469, 298, 164, 2, 70, "ExampleText",ExpressionUUID->"b17bdcd5-3557-451f-baf4-75adafd62ca9"],
 Cell[CellGroupData[{
-Cell[9454, 302, 1327, 35, 70, "Input",ExpressionUUID->"b16e01ae-8959-4b8f-87ff-81eee8cf9cdd"],
-Cell[10784, 339, 78489, 1411, 70, "Output",ExpressionUUID->"5cc8e778-c6d3-4214-8f65-450310fc4ea5"]
+Cell[9658, 304, 1327, 35, 70, "Input",ExpressionUUID->"d54453d5-026c-4842-811c-c74d9f2d4a7f"],
+Cell[10988, 341, 78489, 1411, 70, "Output",ExpressionUUID->"edd0779d-8865-420b-80d9-f13b456c706c"]
 }, Open  ]],
-Cell[89288, 1753, 222, 3, 70, "ExampleText",ExpressionUUID->"97a787c3-c450-4054-a90f-a55c6d0d8642"],
+Cell[89492, 1755, 222, 3, 70, "ExampleText",ExpressionUUID->"de05b590-fab7-4749-9895-f5f4b6d4dbc2"],
 Cell[CellGroupData[{
-Cell[89535, 1760, 1302, 34, 70, "Input",ExpressionUUID->"50801fb2-09ed-4c8d-99fe-e8767ff17342"],
-Cell[90840, 1796, 23210, 463, 70, "Output",ExpressionUUID->"a9a03777-7af6-41a4-864f-0e9ff60520e6"]
+Cell[89739, 1762, 1302, 34, 70, "Input",ExpressionUUID->"e283538a-a70b-4bce-8d1d-957edb2c576a"],
+Cell[91044, 1798, 23210, 463, 70, "Output",ExpressionUUID->"776e3f44-84e2-46db-aa1c-8b88fc9ce0e2"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[114099, 2265, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+Cell[114303, 2267, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
  CellTags->"ExtendedExamples",
  CellID->533848431],
 Cell[CellGroupData[{
-Cell[114611, 2282, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
+Cell[114815, 2284, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
  CellID->1293636265],
-Cell[114856, 2289, 227, 5, 70, "ExampleText",ExpressionUUID->"0f64396b-a53d-455b-89c4-cddf9a699801"],
+Cell[115060, 2291, 227, 5, 70, "ExampleText",ExpressionUUID->"f83fd543-f92d-40dd-9ef3-6f0841d31644"],
 Cell[CellGroupData[{
-Cell[115108, 2298, 910, 23, 70, "Input",ExpressionUUID->"36c1c346-66df-4604-8e2e-73ff07ef9440"],
-Cell[116021, 2323, 54899, 1140, 70, "Output",ExpressionUUID->"846b688b-965a-4d2d-b79f-9a8637246efd"]
+Cell[115312, 2300, 910, 23, 70, "Input",ExpressionUUID->"45e9832c-0296-4b96-a4eb-4810a39d7b60"],
+Cell[116225, 2325, 54899, 1140, 70, "Output",ExpressionUUID->"ccc33da4-7ec7-4a58-ac6c-5f98430b1412"]
 }, Open  ]],
-Cell[170935, 3466, 211, 3, 70, "ExampleText",ExpressionUUID->"a44d0a29-cbd2-49b8-b7cd-335b890c09a2"],
+Cell[171139, 3468, 211, 3, 70, "ExampleText",ExpressionUUID->"a9ce85c4-1925-4946-bbad-0daede46f7e8"],
 Cell[CellGroupData[{
-Cell[171171, 3473, 1438, 36, 70, "Input",ExpressionUUID->"37af3255-1418-4375-9089-3ee594ce3daf"],
-Cell[172612, 3511, 32673, 590, 70, "Output",ExpressionUUID->"011e2738-66e2-4dd7-ba04-b5fb3913e815"]
+Cell[171375, 3475, 1438, 36, 70, "Input",ExpressionUUID->"532e9984-b942-4074-ab06-daf971e5086d"],
+Cell[172816, 3513, 32673, 590, 70, "Output",ExpressionUUID->"771f368d-d8c3-420a-bcb4-e117c162237a"]
+}, Open  ]],
+Cell[205504, 4106, 257, 4, 70, "ExampleText",ExpressionUUID->"c1fb21aa-ada8-4960-b664-a87091fb93fb"],
+Cell[CellGroupData[{
+Cell[205786, 4114, 798, 23, 70, "Input",ExpressionUUID->"96fc88a3-bf48-4735-81eb-4e2085f339b8"],
+Cell[206587, 4139, 2421, 58, 70, "Output",ExpressionUUID->"800b5f14-cfb7-462f-964d-2163909863de"]
 }, Open  ]]
 }, Open  ]],
-Cell[205312, 4105, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
+Cell[209035, 4201, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
  CellID->1020263627],
-Cell[205580, 4112, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
+Cell[209303, 4208, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
  CellID->2061341341],
-Cell[205827, 4119, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
+Cell[209550, 4215, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
  CellID->258228157],
 Cell[CellGroupData[{
-Cell[206100, 4128, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
+Cell[209823, 4224, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
  CellID->2123667759],
-Cell[206362, 4135, 486, 12, 70, "ExampleText",ExpressionUUID->"7dde32e4-0047-4d23-b80d-c7694098e229"],
+Cell[210085, 4231, 486, 12, 70, "ExampleText",ExpressionUUID->"fa343597-851f-4246-8ee6-47d3d3a70262"],
 Cell[CellGroupData[{
-Cell[206873, 4151, 1106, 29, 70, "Input",ExpressionUUID->"ec12d601-696a-46fe-b24d-f9bc3a65a804"],
-Cell[207982, 4182, 38201, 747, 70, "Output",ExpressionUUID->"7ff0a810-335d-4e09-8a38-ad521af7d080"]
+Cell[210596, 4247, 1106, 29, 70, "Input",ExpressionUUID->"53305bb0-97b0-4da6-bbcd-f829c67b530f"],
+Cell[211705, 4278, 38201, 747, 70, "Output",ExpressionUUID->"e350c0a7-fc70-4732-9d8f-300e2ffcf179"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[246232, 4935, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
+Cell[249955, 5031, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
  CellID->1305812373],
-Cell[246487, 4942, 211, 3, 70, "ExampleText",ExpressionUUID->"ceb61741-2a04-45ed-a718-d04bd6cd120a"],
+Cell[250210, 5038, 211, 3, 70, "ExampleText",ExpressionUUID->"7335b4df-23b1-4c3f-9bb9-8b3f6425c52f"],
 Cell[CellGroupData[{
-Cell[246723, 4949, 776, 20, 70, "Input",ExpressionUUID->"f086aa02-0753-440a-ac52-ff03259998b2"],
-Cell[247502, 4971, 9841, 216, 70, "Output",ExpressionUUID->"a502aae6-85f7-40cd-b895-cfcc3dcb6015"]
+Cell[250446, 5045, 776, 20, 70, "Input",ExpressionUUID->"7e0618da-9f47-43bd-86e7-5fbb8006e6c6"],
+Cell[251225, 5067, 9841, 216, 70, "Output",ExpressionUUID->"d4fffe0e-7061-43c2-a238-9e4c5b8e8036"]
 }, Open  ]]
 }, Open  ]],
-Cell[257370, 5191, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
+Cell[261093, 5287, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
  CellID->1653164318],
-Cell[257630, 5198, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
+Cell[261353, 5294, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
  CellID->589267740]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[257916, 5208, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
+Cell[261639, 5304, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
  CellID->311882160],
-Cell[258029, 5211, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
+Cell[261752, 5307, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
  CellID->341476719],
 Cell[CellGroupData[{
-Cell[258530, 5227, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
+Cell[262253, 5323, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
  CellID->1755438392],
-Cell[259018, 5242, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
+Cell[262741, 5338, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
  CellID->686433507],
-Cell[259155, 5246, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
+Cell[262878, 5342, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
  CellID->605800465],
-Cell[259316, 5250, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
+Cell[263039, 5346, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
  CellID->468444828],
-Cell[259474, 5254, 151, 1, 70, "Categorization",ExpressionUUID->"5339fa15-f6ab-4c8f-9a59-d40be16496c0"]
+Cell[263197, 5350, 151, 1, 70, "Categorization",ExpressionUUID->"30120ed8-229b-4b15-b946-a49610fa3c4b"]
 }, Closed]],
-Cell[259640, 5258, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
+Cell[263363, 5354, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
  CellID->477174294],
 Cell[CellGroupData[{
-Cell[259775, 5263, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
+Cell[263498, 5359, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
  CellID->1872225408],
-Cell[259898, 5266, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
+Cell[263621, 5362, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
  CellID->1562036412],
-Cell[260050, 5270, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
+Cell[263773, 5366, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
  CellID->158391909],
-Cell[260190, 5274, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
+Cell[263913, 5370, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
  CellID->1360575930],
-Cell[260329, 5278, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
+Cell[264052, 5374, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
  CellID->793782254]
 }, Closed]]
 }, Open  ]]

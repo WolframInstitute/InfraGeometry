@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[   1346192,      29080]
-NotebookOptionsPosition[   1338280,      28926]
-NotebookOutlinePosition[   1339546,      28963]
-CellTagsIndexPosition[   1339463,      28958]
+NotebookDataLength[   1347845,      29122]
+NotebookOptionsPosition[   1339968,      28970]
+NotebookOutlinePosition[   1341234,      29007]
+CellTagsIndexPosition[   1341151,      29002]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -24,7 +24,7 @@ Cell["EffectiveResistance", "ObjectName",
  CellID->1224892054,ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec"],
 
 Cell[TextData[{
- Cell["   ", "ModInfo",ExpressionUUID->"a0b875d4-6913-4ee8-bff9-ae6f8100f3be"],
+ Cell["   ", "ModInfo",ExpressionUUID->"5840c198-4462-40c2-a91b-889c5d8800a3"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -39,7 +39,7 @@ Cell[TextData[{
     StyleBox["u", "TI"], ",", " ", 
     StyleBox["v", "TI"]}], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "6d427ffd-4fcf-4830-8b98-0000a2dac975"],
+  "76342abc-cf65-4cda-97f1-a49abf13b5e9"],
  "\[LineSeparator]",
  "gives the effective resistance ",
  StyleBox["R", "TI"],
@@ -53,9 +53,17 @@ Cell[TextData[{
  StyleBox["v", "TI"],
  " of ",
  StyleBox["g", "TI"],
- ", every edge a unit resistor.",
+ ", every edge a unit resistor, and ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["Infinity"]], "paclet:ref/Infinity"},
+   "RefLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "3f99c396-b0d4-4370-a3ef-d28357b7b768"],
+ " when they lie in different components.",
  "\n",
- Cell["   ", "ModInfo",ExpressionUUID->"e8524df1-4c13-4042-96a4-b4af2d2b9a69"],
+ Cell["   ", "ModInfo",ExpressionUUID->"51f2a2f9-2d33-4888-87b2-4a608a3114a4"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -67,7 +75,7 @@ Cell[TextData[{
     BaseStyle->"InlineFormula"], "[", 
    StyleBox["g", "TI"], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "decd26f2-bc50-4f81-96fd-35b1a4228e2e"],
+  "38055791-8b77-4a09-94c2-6fd19644263a"],
  "\[LineSeparator]",
  "gives the matrix of all the effective resistances, in the order of ",
  Cell[BoxData[
@@ -76,10 +84,10 @@ Cell[TextData[{
      TextData["VertexList"]], "paclet:ref/VertexList"},
    "RefLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "e7cb0916-a430-4d01-a42d-ce9f95749e9e"],
+  "255de3ca-ab24-43ae-94f8-e6e13c3b846b"],
  ".",
  "\n",
- Cell["   ", "ModInfo",ExpressionUUID->"d426f697-3074-4cb5-b196-8e5f1646f2cd"],
+ Cell["   ", "ModInfo",ExpressionUUID->"6aa1e741-0579-403a-8be1-c3d428c92c0c"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -93,12 +101,12 @@ Cell[TextData[{
     StyleBox["g", "TI"], ",", " ", 
     StyleBox["vs", "TI"]}], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "998a0a5c-f7bc-47ae-9de1-05a9714420d8"],
+  "e8524eb9-e230-49cc-8f6e-6f9e3deb8e9e"],
  "\[LineSeparator]",
  "gives the matrix on the vertex list ",
  StyleBox["vs", "TI"],
  "."
-}], "Usage",ExpressionUUID->"fca4acdd-fc75-4163-9c55-66e2cef654c7"],
+}], "Usage",ExpressionUUID->"0e434131-5e0e-47e0-9008-efa9a64f9180"],
 
 Cell[TextData[{
  "Definition: with ",
@@ -112,7 +120,7 @@ Cell[TextData[{
      TextData["KirchhoffMatrix"]], "paclet:ref/KirchhoffMatrix"},
    "RefLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "b4bd4641-1665-4df4-8316-25a5c97b6eee"],
+  "772c6530-a6cd-4d00-a76d-8689c1348eb8"],
  ", and ",
  StyleBox["L", "TI"],
  "\:207a its pseudoinverse, ",
@@ -147,7 +155,7 @@ is the voltage between ",
  " and leaves at ",
  StyleBox["v", "TI"],
  "."
-}], "Notes",ExpressionUUID->"38c1a083-6c6f-4c87-8ac1-df4758a4e30c"],
+}], "Notes",ExpressionUUID->"b5e24088-ee77-4387-84d1-a76cc5f056fe"],
 
 Cell[TextData[{
  StyleBox["R", "TI"],
@@ -175,10 +183,21 @@ between ",
  ", ",
  StyleBox["v", "TI"],
  ")."
-}], "Notes",ExpressionUUID->"93deb4c5-300e-442a-9c8f-c2b2cb913c5d"],
+}], "Notes",ExpressionUUID->"6bf19a29-e103-4f46-909c-5c4dcdf5cfd8"],
 
 Cell[TextData[{
- "The resistances are the squared distances of the points of ",
+ "Between two components no current flows, and ",
+ StyleBox["R", "TI"],
+ " is ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["Infinity"]], "paclet:ref/Infinity"},
+   "RefLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "b112ab2c-a757-4e0c-a292-0aa16d7d6647"],
+ ". The resistances of a connected graph are the squared distances of the \
+points of ",
  Cell[BoxData[
   TemplateBox[{
     Cell[
@@ -187,9 +206,9 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "db229381-b2f7-4845-b7f3-297de4d241f6"],
+  "964620bd-d663-44a3-a57e-88403a4211f6"],
  ". The values are machine numbers."
-}], "Notes",ExpressionUUID->"619ec548-ccff-4be3-a5a5-5e43e209e397"]
+}], "Notes",ExpressionUUID->"009df192-bf27-4f55-a18c-b03ba72349c4"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -218,7 +237,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "f295518b-0c4c-458f-90cc-53ce708ce9e3"],
+  "b314aa91-6fd5-4050-8780-d87c2ca3029e"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -228,7 +247,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "3f3ca624-398d-4dbb-aa95-753c80e72aa9"],
+  "757e64e7-097b-4ebc-add3-5615419ccac2"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -238,7 +257,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "6e746e17-ec0e-42a6-a694-ebd8865c7116"],
+  "bb20ff2e-6435-4447-99c4-b66bd23a17be"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -248,8 +267,8 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "f0b3ef04-03c3-49e0-adf6-b842294b0f29"]
-}], "SeeAlso",ExpressionUUID->"6abe90c3-2464-4e5c-ade0-5aefebcd01f1"]
+  "5232d91c-b3e8-4150-a374-fc96e70c9871"]
+}], "SeeAlso",ExpressionUUID->"553b294d-9f4c-40b8-a939-05c081807536"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -276,8 +295,8 @@ Cell[TextData[Cell[BoxData[
   BaseStyle->"Link",
   ButtonData->
    "paclet:WolframInstitute/InfraGeometry/guide/Experimental"]], \
-"InlineFormula",ExpressionUUID->"c24e1e97-7002-4084-99b5-03941cf71ad7"]], \
-"MoreAbout",ExpressionUUID->"b49c3687-dddb-49d6-9e9a-bc09d01c8f93"]
+"InlineFormula",ExpressionUUID->"fd107c2f-b875-4586-87bd-ef44e34e8748"]], \
+"MoreAbout",ExpressionUUID->"fe1ec8c0-e918-4485-8670-e2f85b586316"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -340,7 +359,7 @@ Cell["\<\
 On the square tiling the ball of radius 5 about the centre, blue, is a \
 square. The vertices within resistance 1.15 of the centre, green, are as \
 many, 61, and they form a round disk.\
-\>", "ExampleText",ExpressionUUID->"69ca43cb-4961-43ff-b794-ae9337717c5a"],
+\>", "ExampleText",ExpressionUUID->"8943c6ff-d2bf-4e9b-8f16-dede2c40e6be"],
 
 Cell[CellGroupData[{
 
@@ -405,7 +424,7 @@ Cell[BoxData[
       RowBox[{"{", 
        RowBox[{"graphBall", ",", " ", "disk"}], "}"}]}]}], "}"}]}], 
   "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"f197b2d6-d245-49d8-a065-88d3e9297776"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"c519d4fc-d0ba-4528-bbbd-896894732d24"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -3095,7 +3114,7 @@ EMs/l/37n/vYNnu+eEK+5sC80rn/jOj7+bGv+6HPAF3vMdaYyAlskXuwIt+D
     PlotRangePadding->Automatic], ",", 
    RowBox[{"{", 
     RowBox[{"61", ",", "61"}], "}"}]}], "}"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"3f881551-029e-4f9e-97fd-94ad48f9bfe2"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"6da9b83b-a10b-4c51-aacf-08b2561f9f09"]
 }, Open  ]],
 
 Cell["\<\
@@ -3103,7 +3122,7 @@ The resistance from the centre against the distance on the square, hexagonal \
 and triangular tilings and on a binary tree. On the tree they are equal; on \
 the tilings the resistance grows far more slowly, as in the plane, where it \
 grows like the logarithm of the distance.\
-\>", "ExampleText",ExpressionUUID->"1fc32708-efb1-46ab-ba02-5d0bc216884d"],
+\>", "ExampleText",ExpressionUUID->"371b4f05-656f-4b38-9b07-55fb4e888c98"],
 
 Cell[CellGroupData[{
 
@@ -3157,7 +3176,7 @@ Cell[BoxData[
     RowBox[{"{", 
      RowBox[{"\"\<d\>\"", ",", " ", "\"\<R\>\""}], "}"}]}]}], "]"}]], "Input",\
 
- CellLabel->"In[2]:= ",ExpressionUUID->"7d729936-ce54-4fe9-bd94-31194732ee80"],
+ CellLabel->"In[2]:= ",ExpressionUUID->"c5583edf-793b-4f17-aaa2-a34eea2b6d3a"],
 
 Cell[BoxData[
  TemplateBox[{
@@ -3787,7 +3806,7 @@ o/EnoPEXENC/CI2/EI2vC6VhfH00vhIaXxGNr4nG10Dja6PxtaA0AF/Kb2Y=
      RowBox[{#, ",", 
        RowBox[{"Placed", "[", 
          RowBox[{#2, ",", "After"}], "]"}]}], "]"}]& )]], "Output",
- CellLabel->"Out[2]= ",ExpressionUUID->"0eee8897-4182-49aa-893b-1399be7c86bf"]
+ CellLabel->"Out[2]= ",ExpressionUUID->"a73b1e09-adb3-4a2a-b123-38dc39dcc892"]
 }, Open  ]]
 }, Open  ]],
 
@@ -3831,7 +3850,7 @@ Cell[TextData[{
  ")/12 for vertices ",
  StyleBox["k", "TI"],
  " steps apart, the two arcs carrying the current in parallel."
-}], "ExampleText",ExpressionUUID->"7ec75662-dc63-4c17-aa67-ee47b1ea3a88"],
+}], "ExampleText",ExpressionUUID->"9c77f9fb-dbc5-4899-8f16-7e4a84ae4f0c"],
 
 Cell[CellGroupData[{
 
@@ -3871,7 +3890,7 @@ Cell[BoxData[
       " ", "<", " ", 
       RowBox[{"10", "^", 
        RowBox[{"-", "9"}]}]}]}], "}"}]}], "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"58f9e37a-2021-45a7-932f-cec4bdadc4a4"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"03fa39e3-7fe5-4137-84b6-8bcbbcd0eb96"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -3940,13 +3959,13 @@ GqC8ZBmF39yyLvy9UYAd8vtRxP2Q9k/iQNKPorlJmjNJeUGaK0h9lVSfpE9F
             "placement" -> {"x" -> "All", "y" -> "None"}}}}, 
       "DefaultPlotStyle" -> Automatic, "DomainPadding" -> Scaled[0.02], 
       "RangePadding" -> Scaled[0.05]}], ",", "True"}], "}"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"1d92cee1-d379-4aab-af6e-a65a63d8678a"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"7b9a1f22-b598-42f3-abb6-f7896a9bb100"]
 }, Open  ]],
 
 Cell["\<\
 The matrix on a vertex list: the four corners of the square tiling, red, each \
 held by one edge.\
-\>", "ExampleText",ExpressionUUID->"5c01ed42-2185-4ddc-bdbf-007994be6d3a"],
+\>", "ExampleText",ExpressionUUID->"156edfef-e1cc-4fc5-9c3f-57d209e25189"],
 
 Cell[CellGroupData[{
 
@@ -3981,7 +4000,7 @@ Cell[BoxData[
       RowBox[{"EffectiveResistance", "[", 
        RowBox[{"g", ",", " ", "corners"}], "]"}], "]"}]}], "}"}]}], 
   "]"}]], "Input",
- CellLabel->"In[2]:= ",ExpressionUUID->"7951738b-f68a-4336-9255-a63ba0f475bc"],
+ CellLabel->"In[2]:= ",ExpressionUUID->"ed8e6d89-88c3-4243-8f92-f5d3e05581b0"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -4198,7 +4217,96 @@ nnWr51m3ep52qedZt3qedTtvPb/J+fX88hdLMO1k
           Offset[0.2]}}], "\[NoBreak]", ")"}],
     Function[BoxForm`e$, 
      MatrixForm[BoxForm`e$]]]}], "}"}]], "Output",
- CellLabel->"Out[2]= ",ExpressionUUID->"faac6a67-b688-4f6b-86e0-690910a24036"]
+ CellLabel->"Out[2]= ",ExpressionUUID->"63acfd68-e037-4344-887d-532f3b5df93f"]
+}, Open  ]],
+
+Cell[TextData[{
+ "Two components: the resistance within a component is finite, and between \
+the components it is ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["Infinity"]], "paclet:ref/Infinity"},
+   "RefLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "649bf82a-b991-4820-b5dc-3509c1a3c77f"],
+ ", in the three forms."
+}], "ExampleText",ExpressionUUID->"755c1868-3a0b-4e26-a3ef-2e2823070c6d"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"g", " ", "=", " ", 
+     RowBox[{"GraphUnion", "[", 
+      RowBox[{
+       RowBox[{"PathGraph", "[", 
+        RowBox[{"{", 
+         RowBox[{"1", ",", " ", "2", ",", " ", "3"}], "}"}], "]"}], ",", " ", 
+       
+       RowBox[{"PathGraph", "[", 
+        RowBox[{"{", 
+         RowBox[{"4", ",", " ", "5"}], "}"}], "]"}]}], "]"}]}], "}"}], ",", 
+   "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{"g", ",", " ", 
+     RowBox[{"EffectiveResistance", "[", 
+      RowBox[{"g", ",", " ", "1", ",", " ", "3"}], "]"}], ",", " ", 
+     RowBox[{"EffectiveResistance", "[", 
+      RowBox[{"g", ",", " ", "1", ",", " ", "4"}], "]"}], ",", " ", 
+     RowBox[{"MatrixForm", "[", 
+      RowBox[{"EffectiveResistance", "[", 
+       RowBox[{"g", ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"1", ",", " ", "3", ",", " ", "4", ",", " ", "5"}], "}"}]}], 
+       "]"}], "]"}]}], "}"}]}], "]"}]], "Input",
+ CellLabel->"In[3]:= ",ExpressionUUID->"fcb9e39d-9f5b-4f47-8507-238709e5b37c"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   GraphicsBox[
+    NamespaceBox["NetworkGraphics",
+     DynamicModuleBox[{Typeset`graph = HoldComplete[
+       Graph[{1, 2, 3, 4, 5}, {Null, {{1, 2}, {2, 3}, {4, 5}}}]]}, 
+      TagBox[
+       GraphicsGroupBox[
+        GraphicsComplexBox[{{0.18750999416471048`, -0.562529982494131}, {
+         1.1878155037506848`, -0.562529982494131}, {
+         2.1875099008000753`, -0.562529982494131}, {
+         1.1875099941647103`, -0.18750999416471031`}, {
+         0.18750999416471026`, -0.18750999416471031`}}, {
+          {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[0.],
+            ArrowBox[{{1, 2}, {2, 3}, {4, 5}}, 0.02261146421059973]}, 
+          {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+           DiskBox[1, 0.02261146421059973], DiskBox[2, 0.02261146421059973], 
+           DiskBox[3, 0.02261146421059973], DiskBox[4, 0.02261146421059973], 
+           DiskBox[5, 0.02261146421059973]}}]],
+       MouseAppearanceTag["NetworkGraphics"]],
+      AllowKernelInitialization->False]],
+    DefaultBaseStyle->"NetworkGraphics",
+    FormatType->TraditionalForm,
+    FrameTicks->None], ",", "1.9999999999999993`", ",", "\[Infinity]", ",", 
+   TagBox[
+    RowBox[{"(", "\[NoBreak]", GridBox[{
+       {"0.`", "1.9999999999999993`", "\[Infinity]", "\[Infinity]"},
+       {"1.9999999999999996`", "0.`", "\[Infinity]", "\[Infinity]"},
+       {"\[Infinity]", "\[Infinity]", "0.`", "0.9999999999999997`"},
+       {"\[Infinity]", "\[Infinity]", "0.9999999999999999`", "0.`"}
+      },
+      GridBoxAlignment->{"Columns" -> {{Center}}, "Rows" -> {{Baseline}}},
+      GridBoxSpacings->{"Columns" -> {
+          Offset[0.27999999999999997`], {
+           Offset[0.7]}, 
+          Offset[0.27999999999999997`]}, "Rows" -> {
+          Offset[0.2], {
+           Offset[0.4]}, 
+          Offset[0.2]}}], "\[NoBreak]", ")"}],
+    Function[BoxForm`e$, 
+     MatrixForm[BoxForm`e$]]]}], "}"}]], "Output",
+ CellLabel->"Out[3]= ",ExpressionUUID->"291cbe8e-386e-4217-b75d-a6ba8557ffce"]
 }, Open  ]]
 }, Open  ]],
 
@@ -4237,7 +4345,7 @@ The resistance of every edge of the square, hexagonal and triangular tilings, \
 blue near 0 and red at 1, where an edge is a bridge. The resistances of the \
 edges add up to one less than the number of vertices (Foster). Away from the \
 rim an edge has resistance near 1/2, 2/3 and 1/3, two over the degree.\
-\>", "ExampleText",ExpressionUUID->"d86bfa08-b613-4171-8fa0-ecfbf9e7c4ea"],
+\>", "ExampleText",ExpressionUUID->"d0ef386a-c970-46ee-a55f-db764bb32cc3"],
 
 Cell[CellGroupData[{
 
@@ -4326,7 +4434,7 @@ Cell[BoxData[
        RowBox[{"{", 
         RowBox[{"edgeResistances", ",", " ", "graphs"}], "}"}]}], "]"}]}], 
     "}"}]}], "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"ef322b03-de05-4113-a3ba-be7fc6fbcc07"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"60eb2a96-90f2-4408-be93-57b2855b58b8"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -28755,11 +28863,9 @@ wfeMfN7Ax+9LG7WC7wB+T0/zKwv1nUb0lsH7Cx8GRVk=
       RowBox[{"108.00000000000003`", ",", "108"}], "}"}], ",", 
      RowBox[{"{", 
       RowBox[{"90.`", ",", "90"}], "}"}]}], "}"}]}], "}"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"1a738aaf-1efc-40b2-a8ca-12ff29d71905"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"3a0f56a1-fee7-4494-808e-b74c0b98e44b"]
 }, Open  ]]
 }, Open  ]],
-
-Cell[CellGroupData[{
 
 Cell[BoxData[
  InterpretationBox[Cell[
@@ -28767,68 +28873,6 @@ Cell[BoxData[
    "dda06a82-eb41-4b48-8510-6cb821647761"],
   $Line = 0; Null]], "ExampleSection",
  CellID->1305812373,ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f"],
-
-Cell["\<\
-On a graph with several components the pseudoinverse still gives a finite \
-number between two components, though no current can flow and the resistance \
-is infinite.\
-\>", "ExampleText",ExpressionUUID->"40b3dc27-941f-4a1c-b475-c53f34a1d652"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"With", "[", "\n", "  ", 
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{"g", " ", "=", " ", 
-     RowBox[{"GraphUnion", "[", 
-      RowBox[{
-       RowBox[{"PathGraph", "[", 
-        RowBox[{"{", 
-         RowBox[{"1", ",", " ", "2", ",", " ", "3"}], "}"}], "]"}], ",", " ", 
-       
-       RowBox[{"PathGraph", "[", 
-        RowBox[{"{", 
-         RowBox[{"4", ",", " ", "5"}], "}"}], "]"}]}], "]"}]}], "}"}], ",", 
-   "\n", "  ", 
-   RowBox[{"{", 
-    RowBox[{"g", ",", " ", 
-     RowBox[{"EffectiveResistance", "[", 
-      RowBox[{"g", ",", " ", "1", ",", " ", "3"}], "]"}], ",", " ", 
-     RowBox[{"EffectiveResistance", "[", 
-      RowBox[{"g", ",", " ", "1", ",", " ", "4"}], "]"}]}], "}"}]}], 
-  "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"46912bf0-67d9-4f0a-a085-b6cdf439edd5"],
-
-Cell[BoxData[
- RowBox[{"{", 
-  RowBox[{
-   GraphicsBox[
-    NamespaceBox["NetworkGraphics",
-     DynamicModuleBox[{Typeset`graph = HoldComplete[
-       Graph[{1, 2, 3, 4, 5}, {Null, {{1, 2}, {2, 3}, {4, 5}}}]]}, 
-      TagBox[
-       GraphicsGroupBox[
-        GraphicsComplexBox[{{0.18750999416471048`, -0.562529982494131}, {
-         1.1878155037506848`, -0.562529982494131}, {
-         2.1875099008000753`, -0.562529982494131}, {
-         1.1875099941647103`, -0.18750999416471031`}, {
-         0.18750999416471026`, -0.18750999416471031`}}, {
-          {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[0.],
-            ArrowBox[{{1, 2}, {2, 3}, {4, 5}}, 0.02261146421059973]}, 
-          {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-           DiskBox[1, 0.02261146421059973], DiskBox[2, 0.02261146421059973], 
-           DiskBox[3, 0.02261146421059973], DiskBox[4, 0.02261146421059973], 
-           DiskBox[5, 0.02261146421059973]}}]],
-       MouseAppearanceTag["NetworkGraphics"]],
-      AllowKernelInitialization->False]],
-    DefaultBaseStyle->"NetworkGraphics",
-    FormatType->TraditionalForm,
-    FrameTicks->None], ",", "1.9999999999999993`", ",", 
-   "0.8055555555555551`"}], "}"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"a4bf5f7b-ced1-4c75-8e33-48282b8a88ea"]
-}, Open  ]]
-}, Open  ]],
 
 Cell[BoxData[
  InterpretationBox[Cell[
@@ -28895,7 +28939,7 @@ Cell["WolframInstitute`InfraGeometry`", "Categorization",
 
 Cell["WolframInstitute/InfraGeometry/ref/EffectiveResistance", \
 "Categorization",
- CellLabel->"URI",ExpressionUUID->"771c5b6f-fdf0-4388-9998-ffe58e7364b2"]
+ CellLabel->"URI",ExpressionUUID->"a5becdf8-f47a-496e-a421-776a51c014d6"]
 }, Closed]],
 
 Cell["Keywords", "KeywordsSection",
@@ -28950,14 +28994,14 @@ ExpressionUUID->"c207366e-060a-406b-a297-9e30e1628f43"
 (*CellTagsOutline
 CellTagsIndex->{
  "ExtendedExamples"->{
-  Cell[180241, 3795, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+  Cell[180828, 3814, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
    CellTags->"ExtendedExamples",
    CellID->533848431]}
  }
 *)
 (*CellTagsIndex
 CellTagsIndex->{
- {"ExtendedExamples", 1339267, 28951}
+ {"ExtendedExamples", 1340955, 28995}
  }
 *)
 (*NotebookFileOutline
@@ -28965,120 +29009,118 @@ Notebook[{
 Cell[CellGroupData[{
 Cell[576, 22, 117, 1, 70, "ObjectName",ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec",
  CellID->1224892054],
-Cell[696, 25, 2410, 75, 70, "Usage",ExpressionUUID->"fca4acdd-fc75-4163-9c55-66e2cef654c7"],
-Cell[3109, 102, 1186, 47, 70, "Notes",ExpressionUUID->"38c1a083-6c6f-4c87-8ac1-df4758a4e30c"],
-Cell[4298, 151, 697, 26, 70, "Notes",ExpressionUUID->"93deb4c5-300e-442a-9c8f-c2b2cb913c5d"],
-Cell[4998, 179, 520, 12, 70, "Notes",ExpressionUUID->"619ec548-ccff-4be3-a5a5-5e43e209e397"]
+Cell[696, 25, 2675, 83, 70, "Usage",ExpressionUUID->"0e434131-5e0e-47e0-9008-efa9a64f9180"],
+Cell[3374, 110, 1186, 47, 70, "Notes",ExpressionUUID->"b5e24088-ee77-4387-84d1-a76cc5f056fe"],
+Cell[4563, 159, 697, 26, 70, "Notes",ExpressionUUID->"6bf19a29-e103-4f46-909c-5c4dcdf5cfd8"],
+Cell[5263, 187, 842, 23, 70, "Notes",ExpressionUUID->"009df192-bf27-4f55-a18c-b03ba72349c4"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[5555, 196, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
+Cell[6142, 215, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
  CellID->1559318232],
-Cell[6017, 211, 1499, 40, 70, "SeeAlso",ExpressionUUID->"6abe90c3-2464-4e5c-ade0-5aefebcd01f1"]
+Cell[6604, 230, 1499, 40, 70, "SeeAlso",ExpressionUUID->"553b294d-9f4c-40b8-a939-05c081807536"]
 }, Open  ]],
-Cell[7531, 254, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
+Cell[8118, 273, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
  CellID->792424486],
 Cell[CellGroupData[{
-Cell[7991, 270, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
+Cell[8578, 289, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
  CellID->38303248],
-Cell[8110, 273, 301, 6, 70, "MoreAbout",ExpressionUUID->"b49c3687-dddb-49d6-9e9a-bc09d01c8f93"]
+Cell[8697, 292, 301, 6, 70, "MoreAbout",ExpressionUUID->"fe1ec8c0-e918-4485-8670-e2f85b586316"]
 }, Open  ]],
-Cell[8426, 282, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
+Cell[9013, 301, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
  CellID->47113304],
 Cell[CellGroupData[{
-Cell[8922, 299, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
+Cell[9509, 318, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
  CellID->1718580883],
-Cell[9456, 315, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
+Cell[10043, 334, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
  CellID->1969679695]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[9769, 324, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
+Cell[10356, 343, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
  CellID->880084151],
-Cell[10214, 338, 271, 4, 70, "ExampleText",ExpressionUUID->"69ca43cb-4961-43ff-b794-ae9337717c5a"],
+Cell[10801, 357, 271, 4, 70, "ExampleText",ExpressionUUID->"8943c6ff-d2bf-4e9b-8f16-dede2c40e6be"],
 Cell[CellGroupData[{
-Cell[10510, 346, 2285, 61, 70, "Input",ExpressionUUID->"f197b2d6-d245-49d8-a065-88d3e9297776"],
-Cell[12798, 409, 136568, 2688, 70, "Output",ExpressionUUID->"3f881551-029e-4f9e-97fd-94ad48f9bfe2"]
+Cell[11097, 365, 2285, 61, 70, "Input",ExpressionUUID->"c519d4fc-d0ba-4528-bbbd-896894732d24"],
+Cell[13385, 428, 136568, 2688, 70, "Output",ExpressionUUID->"6da9b83b-a10b-4c51-aacf-08b2561f9f09"]
 }, Open  ]],
-Cell[149381, 3100, 362, 5, 70, "ExampleText",ExpressionUUID->"1fc32708-efb1-46ab-ba02-5d0bc216884d"],
+Cell[149968, 3119, 362, 5, 70, "ExampleText",ExpressionUUID->"371b4f05-656f-4b38-9b07-55fb4e888c98"],
 Cell[CellGroupData[{
-Cell[149768, 3109, 1904, 50, 70, "Input",ExpressionUUID->"7d729936-ce54-4fe9-bd94-31194732ee80"],
-Cell[151675, 3161, 28517, 628, 70, "Output",ExpressionUUID->"0eee8897-4182-49aa-893b-1399be7c86bf"]
+Cell[150355, 3128, 1904, 50, 70, "Input",ExpressionUUID->"c5583edf-793b-4f17-aaa2-a34eea2b6d3a"],
+Cell[152262, 3180, 28517, 628, 70, "Output",ExpressionUUID->"a73b1e09-adb3-4a2a-b123-38dc39dcc892"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[180241, 3795, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+Cell[180828, 3814, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
  CellTags->"ExtendedExamples",
  CellID->533848431],
 Cell[CellGroupData[{
-Cell[180753, 3812, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
+Cell[181340, 3831, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
  CellID->1293636265],
-Cell[180998, 3819, 387, 14, 70, "ExampleText",ExpressionUUID->"7ec75662-dc63-4c17-aa67-ee47b1ea3a88"],
+Cell[181585, 3838, 387, 14, 70, "ExampleText",ExpressionUUID->"9c77f9fb-dbc5-4899-8f16-7e4a84ae4f0c"],
 Cell[CellGroupData[{
-Cell[181410, 3837, 1385, 36, 70, "Input",ExpressionUUID->"58f9e37a-2021-45a7-932f-cec4bdadc4a4"],
-Cell[182798, 3875, 3490, 67, 70, "Output",ExpressionUUID->"1d92cee1-d379-4aab-af6e-a65a63d8678a"]
+Cell[181997, 3856, 1385, 36, 70, "Input",ExpressionUUID->"03fa39e3-7fe5-4137-84b6-8bcbbcd0eb96"],
+Cell[183385, 3894, 3490, 67, 70, "Output",ExpressionUUID->"7b9a1f22-b598-42f3-abb6-f7896a9bb100"]
 }, Open  ]],
-Cell[186303, 3945, 183, 3, 70, "ExampleText",ExpressionUUID->"5c01ed42-2185-4ddc-bdbf-007994be6d3a"],
+Cell[186890, 3964, 183, 3, 70, "ExampleText",ExpressionUUID->"156edfef-e1cc-4fc5-9c3f-57d209e25189"],
 Cell[CellGroupData[{
-Cell[186511, 3952, 1163, 31, 70, "Input",ExpressionUUID->"7951738b-f68a-4336-9255-a63ba0f475bc"],
-Cell[187677, 3985, 10832, 215, 70, "Output",ExpressionUUID->"faac6a67-b688-4f6b-86e0-690910a24036"]
+Cell[187098, 3971, 1163, 31, 70, "Input",ExpressionUUID->"ed8e6d89-88c3-4243-8f92-f5d3e05581b0"],
+Cell[188264, 4004, 10832, 215, 70, "Output",ExpressionUUID->"63acfd68-e037-4344-887d-532f3b5df93f"]
+}, Open  ]],
+Cell[199111, 4222, 431, 11, 70, "ExampleText",ExpressionUUID->"755c1868-3a0b-4e26-a3ef-2e2823070c6d"],
+Cell[CellGroupData[{
+Cell[199567, 4237, 1052, 27, 70, "Input",ExpressionUUID->"fcb9e39d-9f5b-4f47-8507-238709e5b37c"],
+Cell[200622, 4266, 2035, 42, 70, "Output",ExpressionUUID->"291cbe8e-386e-4217-b75d-a6ba8557ffce"]
 }, Open  ]]
 }, Open  ]],
-Cell[198536, 4204, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
+Cell[202684, 4312, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
  CellID->1020263627],
-Cell[198804, 4211, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
+Cell[202952, 4319, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
  CellID->2061341341],
-Cell[199051, 4218, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
+Cell[203199, 4326, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
  CellID->258228157],
 Cell[CellGroupData[{
-Cell[199324, 4227, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
+Cell[203472, 4335, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
  CellID->2123667759],
-Cell[199586, 4234, 393, 5, 70, "ExampleText",ExpressionUUID->"d86bfa08-b613-4171-8fa0-ecfbf9e7c4ea"],
+Cell[203734, 4342, 393, 5, 70, "ExampleText",ExpressionUUID->"d0ef386a-c970-46ee-a55f-db764bb32cc3"],
 Cell[CellGroupData[{
-Cell[200004, 4243, 3287, 85, 70, "Input",ExpressionUUID->"ef322b03-de05-4113-a3ba-be7fc6fbcc07"],
-Cell[203294, 4330, 1129115, 24427, 70, "Output",ExpressionUUID->"1a738aaf-1efc-40b2-a8ca-12ff29d71905"]
+Cell[204152, 4351, 3287, 85, 70, "Input",ExpressionUUID->"60eb2a96-90f2-4408-be93-57b2855b58b8"],
+Cell[207442, 4438, 1129115, 24427, 70, "Output",ExpressionUUID->"3a0f56a1-fee7-4494-808e-b74c0b98e44b"]
 }, Open  ]]
 }, Open  ]],
-Cell[CellGroupData[{
-Cell[1332458, 28763, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
+Cell[1336584, 28869, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
  CellID->1305812373],
-Cell[1332713, 28770, 253, 4, 70, "ExampleText",ExpressionUUID->"40b3dc27-941f-4a1c-b475-c53f34a1d652"],
-Cell[CellGroupData[{
-Cell[1332991, 28778, 815, 22, 70, "Input",ExpressionUUID->"46912bf0-67d9-4f0a-a085-b6cdf439edd5"],
-Cell[1333809, 28802, 1315, 26, 70, "Output",ExpressionUUID->"a4bf5f7b-ced1-4c75-8e33-48282b8a88ea"]
-}, Open  ]]
-}, Open  ]],
-Cell[1335151, 28832, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
+Cell[1336839, 28876, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
  CellID->1653164318],
-Cell[1335411, 28839, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
+Cell[1337099, 28883, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
  CellID->589267740]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[1335697, 28849, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
+Cell[1337385, 28893, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
  CellID->311882160],
-Cell[1335810, 28852, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
+Cell[1337498, 28896, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
  CellID->341476719],
 Cell[CellGroupData[{
-Cell[1336311, 28868, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
+Cell[1337999, 28912, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
  CellID->1755438392],
-Cell[1336799, 28883, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
+Cell[1338487, 28927, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
  CellID->686433507],
-Cell[1336936, 28887, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
+Cell[1338624, 28931, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
  CellID->605800465],
-Cell[1337097, 28891, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
+Cell[1338785, 28935, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
  CellID->468444828],
-Cell[1337255, 28895, 156, 2, 70, "Categorization",ExpressionUUID->"771c5b6f-fdf0-4388-9998-ffe58e7364b2"]
+Cell[1338943, 28939, 156, 2, 70, "Categorization",ExpressionUUID->"a5becdf8-f47a-496e-a421-776a51c014d6"]
 }, Closed]],
-Cell[1337426, 28900, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
+Cell[1339114, 28944, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
  CellID->477174294],
 Cell[CellGroupData[{
-Cell[1337561, 28905, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
+Cell[1339249, 28949, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
  CellID->1872225408],
-Cell[1337684, 28908, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
+Cell[1339372, 28952, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
  CellID->1562036412],
-Cell[1337836, 28912, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
+Cell[1339524, 28956, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
  CellID->158391909],
-Cell[1337976, 28916, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
+Cell[1339664, 28960, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
  CellID->1360575930],
-Cell[1338115, 28920, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
+Cell[1339803, 28964, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
  CellID->793782254]
 }, Closed]]
 }, Open  ]]
