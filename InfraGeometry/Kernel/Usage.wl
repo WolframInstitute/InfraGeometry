@@ -196,7 +196,7 @@ GradientDisplacement::usage = "GradientDisplacement[g, f] is the steepest-ascent
 
 TranslationDisplacement::usage = "TranslationDisplacement[g, v] translates along the graph embedding: each vertex moves to the vertices whose coordinates are nearest to its own position plus the vector v.";
 
-DisplacementPlot::usage = "DisplacementPlot[g, d] draws displacement d as bent arcs over the graph's own embedding. DisplacementPlot[g, {d1, d2, ...}] draws a sequence, the k-th in the k-th Standard colour.";
+DisplacementPlot::usage = "DisplacementPlot[g, d] draws displacement d as bent arcs over the graph's own planar embedding. DisplacementPlot[g, {d1, d2, ...}] draws a sequence in StandardBlue, StandardRed, StandardGreen and the further Standard colours in turn.";
 
 GraphBoundary::usage = "GraphBoundary[g, S] gives the inner vertex boundary of S in g (vertices where a g-edge escapes S). If S is a vertex list it is treated as the induced subgraph, so the boundary is the vertices of S adjacent to some vertex outside S; if S is a subgraph h, the boundary is the vertices of h having a g-neighbor they are not joined to in h (so a path/curve, lacking its induced chords, is all boundary).";
 

@@ -14,13 +14,15 @@ RelatedGuides: [InfraAnalysis]
 
 <code>[DisplacementPlot]()[*g*, *d*]</code> draws the displacement *d* as bent arrows over the embedding of *g*.
 
-<code>[DisplacementPlot]()[*g*, {*d1*, *d2*, ...}]</code> draws several displacements, the *k*-th in the *k*-th colour of the default plot palette.
+<code>[DisplacementPlot]()[*g*, {*d1*, *d2*, ...}]</code> draws several displacements, the *k*-th in the *k*-th of [StandardBlue](), [StandardRed](), [StandardGreen]() and the further Standard colours in turn.
 
 ## Details & Options
 
 Each step from *v* to a vertex *w ≠ v* of *d*(*v*) is an arrow from the coordinates of *v* to those of *w*, bent to its right, so that the two arrows of an exchanged pair do not overlap. A vertex whose value is {*v*} draws nothing, and the identity draws the bare graph.
 
-The graph is drawn in light gray at the coordinates [GraphEmbedding]() gives: its own [VertexCoordinates]() when it has them, a computed layout otherwise. The colours are those of <code>[ColorData]()[97]</code>.
+The graph is drawn in light gray at the coordinates [GraphEmbedding]() gives: its own [VertexCoordinates]() when it has them, a computed layout otherwise. The colours are, in this order, `StandardBlue`, `StandardRed`, `StandardGreen`, `StandardOrange`, `StandardPurple`, `StandardCyan`, `StandardBrown` and `StandardPink`, repeated when there are more displacements.
+
+The embedding must be planar: with three-dimensional coordinates the call stays unevaluated.
 
 [DisplacementPlot]() takes the options of [Graphics]().
 
@@ -76,10 +78,10 @@ With[
   {DisplacementPlot[g, polar], AllTrue[Keys[Last[polar]], Last[polar][#] === {#} &]}]
 ```
 
-The arrows are planar. A substrate with three-dimensional coordinates, such as the tori and the sphere mesh with `"KeepCoordinates"` -> `True`, cannot be drawn; without the option it is drawn at a planar layout. The translation of the square torus by one step:
+The arrows are planar. A substrate with three-dimensional coordinates, such as the tori and the sphere mesh with `"KeepCoordinates"` -> `True`, cannot be drawn, and the call stays unevaluated; without the option it is drawn at a planar layout. The translation of the square torus by one step, with and without the coordinates:
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTorusGraph", "Small"]},
-  DisplacementPlot[g, FindKillingDisplacement[g]]]
+  {planar = InfraSubstrate["SquareTorusGraph", "Small"], solid = InfraSubstrate["SquareTorusGraph", "Small", "KeepCoordinates" -> True]},
+  {Head @ DisplacementPlot[solid, FindKillingDisplacement[solid]], DisplacementPlot[planar, FindKillingDisplacement[planar]]}]
 ```
