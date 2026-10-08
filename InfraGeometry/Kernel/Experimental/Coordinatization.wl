@@ -15,10 +15,11 @@ RadarCoordinates[ g_Graph, b_List, v : Except[ _Rule | _RuleDelayed | _Associati
     ( anchor |-> agg[ GraphDistance[ g, v, # ] & /@ Keys @ InfraDensity[ g, anchor ] ] ) /@ b
   ]
 
-(* Outer over a crisp basis stays the fast path: one GraphDistance call per (vertex, anchor) *)
+(* Outer over a basis of vertices stays the fast path: one GraphDistance call per (vertex, anchor).
+   VertexQ, not a head test, since a vertex name may itself be a list. *)
 RadarCoordinates[ g_Graph, b_List, opts : OptionsPattern[] ] :=
   AssociationThread[ VertexList[ g ],
-    If[ FreeQ[ b, _Association | _Graph ],
+    If[ AllTrue[ b, VertexQ[ g, # ] & ],
       Outer[ GraphDistance[ g, #1, #2 ] &, VertexList[ g ], b, 1 ],
       RadarCoordinates[ g, b, #, opts ] & /@ VertexList[ g ]
     ]
@@ -47,7 +48,7 @@ FindResolvingSet[ g_Graph, n_Integer : 1, m_ : All ] :=
               { s = Pick[ Range[ vc ], IntegerDigits[ mask, 2, vc ], 1 ] },
               { next = If[ DuplicateFreeQ[ dm[[ All, s ]] ], Append[ found, s ], found ] },
               {
-                With[ { c = BitAnd[ mask, -mask ] }, { r = mask + c }, BitOr[ r, Quotient[ BitXor[ r, mask ], 4 c ] ] ],
+                If[ mask == 0, 1, With[ { c = BitAnd[ mask, -mask ] }, { r = mask + c }, BitOr[ r, Quotient[ BitXor[ r, mask ], 4 c ] ] ] ],
                 next,
                 Length[ next ] > Length[ found ] && Length[ next ] >= n
               }
@@ -57,7 +58,7 @@ FindResolvingSet[ g_Graph, n_Integer : 1, m_ : All ] :=
           ]
         ],
         { { }, False },
-        Replace[ m, { All :> Range[ vc ], _Integer :> Range[ m ], { min_, max_ } :> Range[ min, max ], { num_ } :> { num } } ]
+        Replace[ m, { All :> Range[ 0, vc ], _Integer :> Range[ 0, m ], { min_, max_ } :> Range[ min, max ], { num_ } :> { num } } ]
       ]
     ]
   ]
@@ -70,7 +71,7 @@ Options[ ResistanceCoordinates ] = { "Rescaling" -> "ResistanceMatching", "Dimen
 (* spectral embedding Phi with ||Phi(u) - Phi(v)||^2 == EffectiveResistance(u, v)
    (Klein-Randic).  "Rescaling" -> "None" gives plain Laplacian eigenvectors,
    "Diffusion" -> t the diffusion-map embedding; "Origin" -> v recentres on v. *)
-ResistanceCoordinates[ g_Graph, opts : OptionsPattern[] ] :=
+ResistanceCoordinates[ g_Graph, opts : OptionsPattern[] ] /; ConnectedGraphQ[ g ] :=
     With[ { es = Eigensystem[ N @ Normal @ KirchhoffMatrix[ g ] ], rescaling = OptionValue[ "Rescaling" ], dimSpec = OptionValue[ "Dimension" ],
         origin = OptionValue[ "Origin" ] },
         { ord = Ordering[ es[[ 1 ]] ] },
@@ -86,10 +87,10 @@ ResistanceCoordinates[ g_Graph, opts : OptionsPattern[] ] :=
         AssociationThread[ VertexList[ g ], # - originVec & /@ mat ]
     ]
 
-ResistanceCoordinates[ g_Graph, v_, opts : OptionsPattern[] ] /; MemberQ[ VertexList[ g ], v ] :=
+ResistanceCoordinates[ g_Graph, v_, opts : OptionsPattern[] ] /; ConnectedGraphQ[ g ] && MemberQ[ VertexList[ g ], v ] :=
     ResistanceCoordinates[ g, opts ][ v ]
 
-ResistanceCoordinates[ g_Graph, fam_Association, opts : OptionsPattern[] ] /; SubsetQ[ VertexList[ g ], Keys @ fam ] :=
+ResistanceCoordinates[ g_Graph, fam_Association, opts : OptionsPattern[] ] /; ConnectedGraphQ[ g ] && SubsetQ[ VertexList[ g ], Keys @ fam ] :=
   With[ { all = ResistanceCoordinates[ g, opts ] }, all /@ Keys @ fam ]
 
 Options[ OrthogonalCoordinates ] = { "SelectCoordinate" -> "Centered" }

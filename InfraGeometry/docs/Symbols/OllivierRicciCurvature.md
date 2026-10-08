@@ -22,7 +22,7 @@ Every neighbour of *u* lies within distance 3 of every neighbour of *v*, so −2
 
 On the complete graph with *n* vertices κ = (*n* − 2)/(*n* − 1). On a tree, κ(*u*, *v*) = −2(1 − 1/deg *u* − 1/deg *v*) where this is negative, and 0 elsewhere.
 
-The values are machine numbers from a linear program.
+The values are machine numbers from a linear program, with the rounding noise of one: an exact 0 may come out as 10⁻¹⁶. The marginals are machine numbers on purpose, the program being twenty times as fast as with exact ones.
 
 ## Basic Examples
 

@@ -32,23 +32,27 @@ OllivierRicciCurvature[ g_Graph ] :=
 
 (* Klein-Randic resistance distance R(u, v) = (e_u - e_v)^T L^+ (e_u - e_v),
    where L^+ is the Moore-Penrose pseudoinverse of the graph Laplacian
-   (= the 0-block of GreenOperatorMatrix[GraphComplex[g]]).  Three forms:
-   pair, full V x V matrix, submatrix on a vertex list. *)
+   (= the 0-block of GreenOperatorMatrix[GraphComplex[g]]).  Between two components
+   no current flows and R is Infinity; within one, the block-diagonal L^+ is exact.
+   Three forms: pair, full V x V matrix, submatrix on a vertex list. *)
 
 EffectiveResistance[ g_Graph ] :=
   With[
-    { lp = PseudoInverse[ N @ Normal @ KirchhoffMatrix[ g ] ], n = VertexCount[ g ] },
+    { lp = PseudoInverse[ N @ Normal @ KirchhoffMatrix[ g ] ], n = VertexCount[ g ], dist = GraphDistanceMatrix[ g ] },
     { d = Diagonal[ lp ] },
-    Table[ d[[ i ]] + d[[ j ]] - 2 lp[[ i, j ]], { i, n }, { j, n } ]
+    Table[ If[ dist[[ i, j ]] === Infinity, Infinity, d[[ i ]] + d[[ j ]] - 2 lp[[ i, j ]] ], { i, n }, { j, n } ]
   ]
 
 EffectiveResistance[ g_Graph, u_, v_ ] /; MemberQ[ VertexList[ g ], u ] && MemberQ[ VertexList[ g ], v ] :=
+  If[ GraphDistance[ g, u, v ] === Infinity,
+    Infinity,
     With[ { lp = PseudoInverse[ N @ Normal @ KirchhoffMatrix[ g ] ],
           idx = AssociationThread[ VertexList[ g ], Range @ VertexCount[ g ] ] },
         With[ { i = idx[ u ], j = idx[ v ] },
             lp[[ i, i ]] + lp[[ j, j ]] - 2 lp[[ i, j ]]
         ]
     ]
+  ]
 
 EffectiveResistance[ g_Graph, vs_List ] /; SubsetQ[ VertexList[ g ], vs ] :=
     With[ { full = EffectiveResistance[ g ],
@@ -56,21 +60,21 @@ EffectiveResistance[ g_Graph, vs_List ] /; SubsetQ[ VertexList[ g ], vs ] :=
         full[[ ix, ix ]]
     ]
 
-(* Klein-Randic / Schoenberg negative-type predicate: a real symmetric
-   n x n matrix R with zero diagonal is realisable as a resistance
-   distance matrix iff the centred Gram matrix
-       B[i, j] = (R[1, j] + R[i, 1] - R[i, j]) / 2,  i, j >= 2
-   is positive semidefinite. *)
+(* r is the resistance matrix of a connected graph with nonnegative conductances iff the
+   doubly centred B = -P r P / 2, P = I - J / n, is positive semidefinite of rank n - 1
+   (then B = L^+) and L = B^+ has no positive entry off the diagonal (L is the Laplacian,
+   its negated off-diagonal entries the conductances).  B . 1 = 0, so n - 1 positive
+   eigenvalues say both.  Negative type (Schoenberg) alone is necessary only. *)
 
-ResistanceQ[ r_ ? MatrixQ ] :=
+ResistanceQ[ r_ ? ( MatrixQ[ #, NumericQ ] & ) ] :=
     SquareMatrixQ[ r ] &&
     (Transpose[ r ] === r || N @ Transpose[ r ] == N @ r) &&
     AllTrue[ Diagonal[ r ], # == 0 & ] &&
     With[ { n = Length[ r ] },
-        n <= 1 || AllTrue[
-            Eigenvalues[ N @ Table[ (r[[ 1, j ]] + r[[ i, 1 ]] - r[[ i, j ]]) / 2, { i, 2, n }, { j, 2, n } ] ],
-            # >= -10^-9 &
-        ]
+        { p = IdentityMatrix[ n ] - 1 / n },
+        { b = N[ -p . r . p / 2 ] },
+        { l = PseudoInverse[ b ] },
+        Count[ Re @ Eigenvalues[ b ], x_ /; x > 10^-9 ] == n - 1 && Max[ l - DiagonalMatrix[ Diagonal[ l ] ] ] <= 10^-9
     ]
 
 ResistanceQ[ _ ] :=

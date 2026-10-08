@@ -246,15 +246,15 @@ UniformLengthGraph::usage = "UniformLengthGraph[region, h] gives the contact gra
 
 UniformLengthEmbedding::usage = "UniformLengthEmbedding[graph] relaxes the edges of graph towards unit length by edge springs from a spring-electrical start in R^d (option \"Dimension\"), returning coordinates in VertexList order (cf. GraphEmbedding); from a unit-distance start it keeps the unit edges; the iterative counterpart of ComplexEmbedding.";
 
-RadarCoordinates::usage = "RadarCoordinates[g, basis, v] gives the distance vector (d(v, b))_{b in basis} of vertex v; RadarCoordinates[g, basis] gives the association of all vertices' radar coordinates.";
+RadarCoordinates::usage = "RadarCoordinates[g, basis, v] gives the distance vector (d(v, b))_{b in basis} of vertex v, where an anchor b is a vertex, a vertex list or a density and the option \"AnchorAggregation\" (default Min) reduces the distances to the vertices of a list or density to one; RadarCoordinates[g, basis] gives the association of all vertices' radar coordinates.";
 
 ResolvingSetQ::usage = "ResolvingSetQ[g, basis] tests whether basis is a resolving set: the radar map v |-> (d(v, b))_{b in basis} is injective over the vertices.";
 
-FindResolvingSet::usage = "FindResolvingSet[g, n, m] returns up to n resolving sets (metric bases) of g by ascending size; m restricts the sizes (All, an integer max, {min, max}, or {exact}).";
+FindResolvingSet::usage = "FindResolvingSet[g, n, m] returns up to n resolving sets of g in order of size, starting from the empty set; those of the smallest size are metric bases, later ones need not be minimal; m restricts the sizes (All, an integer max, {min, max}, or {exact}).";
 
 MetricDimension::usage = "MetricDimension[g] gives the metric dimension of g: the size of a smallest resolving set.";
 
-ResistanceCoordinates::usage = "ResistanceCoordinates[g] gives the association vertex -> spectral embedding Phi with ||Phi(u)-Phi(v)||^2 == EffectiveResistance[g,u,v]; options \"Rescaling\" (\"ResistanceMatching\" | \"None\" | \"Diffusion\"->t), \"Dimension\", \"Origin\". ResistanceCoordinates[g, v] gives the coordinates of v.";
+ResistanceCoordinates::usage = "ResistanceCoordinates[g] gives the association vertex -> spectral embedding Phi with ||Phi(u)-Phi(v)||^2 == EffectiveResistance[g,u,v]; options \"Rescaling\" (\"ResistanceMatching\" | \"None\" | \"Diffusion\"->t), \"Dimension\", \"Origin\". ResistanceCoordinates[g, v] gives the coordinates of v. The graph must be connected.";
 
 FindBallCover::usage = "FindBallCover[g, r] returns a minimum r-ball cover of g: a smallest set of centres whose radius-r balls cover every vertex (a minimum r-dominating set). FindBallCover[g, r, targets] covers only the given vertex subset (centres still chosen from all of g). FindBallCover[g, r, targets, count] returns a list of up to count covers for an integer count or UpTo[count], or of every one for All; count defaults to 1 (a single cover, not in a list). With \"Exhaustive\" the list holds distinct minimum covers, with \"Greedy\" and \"Symmetric\" the method's one cover. Option Method (\"Exhaustive\" (default) exact integer program, \"Greedy\" repeatedly takes the centre covering the most uncovered targets -- fast but not minimum in general, even on vertex-transitive graphs, \"Symmetric\" smallest cover that is a union of orbits of single automorphisms, a vertex fixed by all of them its own orbit -- exact when a minimum cover is orbit-shaped and on a graph without symmetry, an upper bound otherwise).";
 
@@ -262,11 +262,11 @@ BallCoverQ::usage = "BallCoverQ[g, r, S] tests whether the radius-r balls around
 
 DominationNumber::usage = "DominationNumber[g, r] gives the r-domination number of g: the size of a minimum r-ball cover. DominationNumber[g, r, targets] gives the size of a minimum r-ball cover of the given vertex subset.";
 
-OllivierRicciCurvature::usage = "OllivierRicciCurvature[g] returns Association[edge -> kappa] with the Ollivier-Ricci curvature kappa(u, v) = 1 - W_1(mu_u, mu_v) / d(u, v), where mu_x is uniform on N(x) and W_1 is the Wasserstein-1 distance under graph distance (alpha = 0).";
+OllivierRicciCurvature::usage = "OllivierRicciCurvature[g] returns Association[edge -> kappa] with the Ollivier-Ricci curvature kappa(u, v) = 1 - W_1(mu_u, mu_v) / d(u, v), where mu_x is uniform on N(x) and W_1 is the Wasserstein-1 distance under graph distance (alpha = 0). The values are machine numbers.";
 
-EffectiveResistance::usage = "EffectiveResistance[g, u, v] returns the Klein-Randic resistance distance R(u, v) = (e_u - e_v)^T L^+ (e_u - e_v) for the graph Laplacian pseudoinverse L^+. EffectiveResistance[g] returns the full V x V matrix; EffectiveResistance[g, vs] the submatrix on a vertex list.";
+EffectiveResistance::usage = "EffectiveResistance[g, u, v] returns the Klein-Randic resistance distance R(u, v) = (e_u - e_v)^T L^+ (e_u - e_v) for the graph Laplacian pseudoinverse L^+, and Infinity when u and v lie in different components. EffectiveResistance[g] returns the full V x V matrix; EffectiveResistance[g, vs] the submatrix on a vertex list.";
 
-ResistanceQ::usage = "ResistanceQ[r] tests whether a real symmetric n x n matrix r with zero diagonal is realisable as a resistance distance matrix (Klein-Randic / Schoenberg negative-type criterion: the centred Gram matrix is positive semidefinite).";
+ResistanceQ::usage = "ResistanceQ[r] tests whether the numeric matrix r is the resistance distance matrix of a connected graph with nonnegative conductances: r is symmetric with zero diagonal, the doubly centred matrix B = -P r P / 2, P = I - J / n, is positive semidefinite of rank n - 1, and its pseudoinverse, the Laplacian, has no positive entry off the diagonal (tolerance 10^-9).";
 
 MiniballRadius::usage = "MiniballRadius[pts] returns the radius of the smallest enclosing ball of the points (BoundingRegion[pts, 'MinBall']).";
 

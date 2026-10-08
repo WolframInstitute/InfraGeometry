@@ -18,7 +18,7 @@ RelatedGuides: [Experimental]
 
 Definition: the metric dimension of *g* is the least size of a resolving set, [ResolvingSetQ](): the length of a metric basis, <code>[Length]()[[First]()[[FindResolvingSet]()[*g*]]]</code>. A metric basis of *k* vertices gives every vertex its own point of ℤᵏ, its [RadarCoordinates]().
 
-The metric dimension is 1 exactly on paths, 2 on cycles and on grids, and *n* − 1 on the complete graph with *n* vertices. On a tree that is not a path, a branch vertex, of degree 3 or more, with *k* legs ending in leaves needs a station on *k* − 1 of them, and these suffice (Slater; Harary and Melter).
+The metric dimension is 0 on the graph of one vertex, whose empty set resolves it, 1 exactly on paths, 2 on cycles and on grids, and *n* − 1 on the complete graph with *n* vertices. On a tree that is not a path, a branch vertex, of degree 3 or more, with *k* legs ending in leaves needs a station on *k* − 1 of them, and these suffice (Slater; Harary and Melter).
 
 The value comes from the exhaustive search of [FindResolvingSet](), which is slow when the metric dimension is large.
 
@@ -53,6 +53,14 @@ With[
   {GraphicsRow[InfraSubstrateHighlight[#, {First @ FindResolvingSet[#]}] & /@ graphs], MetricDimension /@ graphs}]
 ```
 
+The one-vertex graph has metric dimension 0: the empty set resolves it, as [ResolvingSetQ]() says, and the first set [FindResolvingSet]() returns is empty. The graph of two vertices has 1.
+
+```wl
+With[
+  {graphs = {Graph[{1}, {}], PathGraph[{1, 2}]}},
+  {GraphicsRow[graphs], MetricDimension /@ graphs, ResolvingSetQ[First[graphs], {}], FindResolvingSet[First[graphs]]}]
+```
+
 ## Properties and Relations
 
 The metric dimension is the size of the first set [FindResolvingSet]() returns, and no smaller set resolves: the Petersen graph has metric dimension 3, and no two of its vertices resolve it.
@@ -61,14 +69,4 @@ The metric dimension is the size of the first set [FindResolvingSet]() returns, 
 With[
   {g = PetersenGraph[]},
   {InfraSubstrateHighlight[g, {First @ FindResolvingSet[g]}], MetricDimension[g], FindResolvingSet[g, 1, {MetricDimension[g] - 1}]}]
-```
-
-## Possible Issues
-
-The one-vertex graph gets 1, though the empty set already resolves it and [ResolvingSetQ]() says so: the search starts at size 1.
-
-```wl
-With[
-  {g = Graph[{1}, {}]},
-  {g, MetricDimension[g], ResolvingSetQ[g, {}]}]
 ```

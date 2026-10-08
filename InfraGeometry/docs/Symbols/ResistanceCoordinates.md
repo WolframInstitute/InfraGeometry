@@ -22,7 +22,7 @@ Definition: let 0 = λ₁ < λ₂ ≤ … ≤ λₙ be the eigenvalues of the La
 
 Since the pseudoinverse of *L* is *L*⁺ = Σᵢ φᵢ φᵢᵀ/λᵢ over *i* ≥ 2, the inner products ⟨Φ(*u*), Φ(*v*)⟩ are the entries of *L*⁺, and ‖Φ(*u*) − Φ(*v*)‖² = *L*⁺ᵤᵤ + *L*⁺ᵥᵥ − 2*L*⁺ᵤᵥ is the [EffectiveResistance]() *R*(*u*, *v*). The points are centred, Σᵥ Φ(*v*) = 0, and unique up to an orthogonal map: the eigenvectors of a repeated eigenvalue may be rotated.
 
-On a graph with *c* components the *c* zero eigenvalues are dropped and the points lie in ℝⁿ⁻ᶜ; points of different components then lie at a finite distance.
+The graph must be connected. On a graph with several components the resistance between two of them is infinite, no point set has infinite distances, and [ResistanceCoordinates]() stays unevaluated.
 
 With `"Dimension"` -> *k* only the *k* slowest modes are kept. The points then give a spectral drawing of *g*, and their squared distances are at most the resistances.
 
@@ -108,6 +108,14 @@ With[
 ```
 
 ## Possible Issues
+
+On a graph with two components the resistances between them are infinite, so there are no coordinates: the call stays unevaluated.
+
+```wl
+With[
+  {g = GraphUnion[PathGraph[{1, 2, 3}], PathGraph[{4, 5}]]},
+  {g, EffectiveResistance[g, 1, 4], ResistanceCoordinates[g]}]
+```
 
 A repeated eigenvalue leaves the points unique only up to a rotation of its eigenvectors. The four slowest modes of the square torus share one eigenvalue, and three of them draw an arbitrary projection of the torus.
 
