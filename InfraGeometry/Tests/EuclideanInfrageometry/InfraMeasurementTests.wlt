@@ -249,6 +249,20 @@ VerificationTest[
   TestID -> "InfraUnion-density-is-the-sum"
 ]
 
+(* so is its edge density, the sum of its parts', for two crossing segments; an intersection has no edge density *)
+VerificationTest[
+  With[{g = GridGraph[{5, 5}]},
+    {a = InfraSegment[1, 25], b = InfraSegment[5, 21]},
+    {both = InfraMeasurement[g, InfraUnion[a, b], "EdgeDensity"]},
+    {both === KeySort @ Merge[{InfraMeasurement[g, a, "EdgeDensity"],
+                               InfraMeasurement[g, b, "EdgeDensity"]}, Total],
+     FreeQ[both, _Missing],
+     Head @ InfraMeasurement[g, InfraIntersection[a, b], "EdgeDensity"],
+     Keys @ InfraMeasurement[g, InfraUnion[a, b], All]}],
+  {True, True, InfraMeasurement, {"VertexDensity", "EdgeDensity", "Subgraph", "CountingMeasure", "RiemannianMeasure"}},
+  TestID -> "InfraUnion-edge-density-is-the-sum"
+]
+
 (* the volumes of an intersection and a union read the same support the density does *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
@@ -268,6 +282,32 @@ VerificationTest[
     InfraIntersection[InfraSegment[1, 25], InfraSegment[5, 21]], All],
   {"VertexDensity", "Subgraph", "CountingMeasure", "RiemannianMeasure"},
   TestID -> "InfraIntersection-All-lists-its-own-properties"
+]
+
+(* a density is its own vertex density, signed or not *)
+VerificationTest[
+  With[{g = GridGraph[{5, 5}]},
+    InfraMeasurement[g, #, "VertexDensity"] & /@ {<|14 -> 1, 12 -> -1|>, <|13 -> 2, 7 -> 1|>}],
+  {<|12 -> -1, 14 -> 1|>, <|7 -> 1, 13 -> 2|>},
+  TestID -> "InfraMeasurement-density-is-its-own-vertex-density"
+]
+
+(* the union of signed densities is the sum, a cancelled mass kept as 0; the difference of two balls is the union with a negative *)
+VerificationTest[
+  With[{g = GridGraph[{5, 5}]},
+    {InfraMeasurement[g, InfraUnion[<|12 -> 1, 13 -> 2|>, <|13 -> -2, 14 -> -1|>], "VertexDensity"],
+     InfraMeasurement[g, InfraUnion[InfraBall[12, 1], - InfraMeasurement[g, InfraBall[14, 1], "VertexDensity"]], "VertexDensity"]}],
+  {<|12 -> 1, 13 -> 0, 14 -> -1|>, <|7 -> 1, 9 -> -1, 11 -> 1, 12 -> 1, 13 -> 0, 14 -> -1, 15 -> -1, 17 -> 1, 19 -> -1|>},
+  TestID -> "InfraUnion-signed-density-is-the-sum"
+]
+
+(* the intersection of signed densities is the product on the common support, also beside a region *)
+VerificationTest[
+  With[{g = GridGraph[{5, 5}]},
+    {InfraMeasurement[g, InfraIntersection[<|12 -> 1, 13 -> 2|>, <|13 -> -2, 14 -> -1|>], "VertexDensity"],
+     InfraMeasurement[g, InfraIntersection[InfraBall[13, 1], <|13 -> -2, 14 -> -1, 1 -> 5|>], "VertexDensity"]}],
+  {<|13 -> -4|>, <|13 -> -2, 14 -> -1|>},
+  TestID -> "InfraIntersection-signed-density-is-the-product"
 ]
 
 (* heads on heads are inert without a graph *)

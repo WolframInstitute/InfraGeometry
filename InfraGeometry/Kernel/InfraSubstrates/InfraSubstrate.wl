@@ -44,20 +44,19 @@ InfraSubstrate[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || StringM
           Graph[ IndexGraph @ MeshConnectivityGraph @ mesh,
             VertexCoordinates -> Normalize /@ MeshCoordinates @ mesh ] ],
         "TriangularTilingGraph", BoundarylessGraph[
-          TessellationNeighborhoodGraph[ { 3, 6 }, size /. { "Small" -> 5, "Medium" -> 9, "Large" -> 16 } ], Method -> "MaxDegree" ],
+          TessellationNeighborhoodGraph[ { 3, 6 }, size /. { "Small" -> 5, "Medium" -> 9, "Large" -> 16 } ] ],
         "SquareTilingGraph", BoundarylessGraph[
-          TessellationNeighborhoodGraph[ { 4, 4 }, size /. { "Small" -> 7, "Medium" -> 12, "Large" -> 22 } ], Method -> "MaxDegree" ],
+          TessellationNeighborhoodGraph[ { 4, 4 }, size /. { "Small" -> 7, "Medium" -> 12, "Large" -> 22 } ] ],
         "HexagonalTilingGraph", BoundarylessGraph[
-          TessellationNeighborhoodGraph[ { 6, 3 }, size /. { "Small" -> 8, "Medium" -> 14, "Large" -> 25 } ], Method -> "MaxDegree" ],
+          TessellationNeighborhoodGraph[ { 6, 3 }, size /. { "Small" -> 8, "Medium" -> 14, "Large" -> 25 } ] ],
         "HyperbolicTilingGraph", BoundarylessGraph[
-          TessellationNeighborhoodGraph[ { 3, 7 }, size /. { "Small" -> 3, "Medium" -> 4, "Large" -> 5 } ], Method -> "MaxDegree" ],
+          TessellationNeighborhoodGraph[ { 3, 7 }, size /. { "Small" -> 3, "Medium" -> 4, "Large" -> 5 } ] ],
         "SquareGridGraph", BoundarylessGraph[
-          GridGraph[ size /. { "Small" -> { 10, 10 }, "Medium" -> { 17, 17 }, "Large" -> { 32, 32 } } ], Method -> "MaxDegree" ],
+          GridGraph[ size /. { "Small" -> { 10, 10 }, "Medium" -> { 17, 17 }, "Large" -> { 32, 32 } } ] ],
         "CubicGridGraph", With[
           { dims = size /. { "Small" -> { 5, 5, 5 }, "Medium" -> { 7, 7, 7 }, "Large" -> { 10, 10, 10 } } },
           BoundarylessGraph[
-            Graph[ GridGraph @ dims, VertexCoordinates -> Reverse /@ Tuples[ Range /@ Reverse @ dims ] ],
-            Method -> "MaxDegree" ] ],
+            Graph[ GridGraph @ dims, VertexCoordinates -> Reverse /@ Tuples[ Range /@ Reverse @ dims ] ] ] ],
         "SquareTorusGraph" | "TriangularTorusGraph" | "HexagonalTorusGraph", With[
           { dims = size /. If[ name === "HexagonalTorusGraph",
               { "Small" -> { 7, 7 }, "Medium" -> { 15, 10 }, "Large" -> { 25, 20 } },
@@ -145,19 +144,18 @@ InfraSubstrateCode[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || Str
             Graph[ IndexGraph @ MeshConnectivityGraph @ mesh,
               VertexCoordinates -> Normalize /@ MeshCoordinates @ mesh ] ] ],
         "TriangularTilingGraph", With[ { radius = size /. { "Small" -> 5, "Medium" -> 9, "Large" -> 16 } },
-          HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 3, 6 }, radius ], Method -> "MaxDegree" ] ],
+          HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 3, 6 }, radius ] ] ],
         "SquareTilingGraph", With[ { radius = size /. { "Small" -> 7, "Medium" -> 12, "Large" -> 22 } },
-          HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 4, 4 }, radius ], Method -> "MaxDegree" ] ],
+          HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 4, 4 }, radius ] ] ],
         "HexagonalTilingGraph", With[ { radius = size /. { "Small" -> 8, "Medium" -> 14, "Large" -> 25 } },
-          HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 6, 3 }, radius ], Method -> "MaxDegree" ] ],
+          HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 6, 3 }, radius ] ] ],
         "HyperbolicTilingGraph", With[ { radius = size /. { "Small" -> 3, "Medium" -> 4, "Large" -> 5 } },
-          HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 3, 7 }, radius ], Method -> "MaxDegree" ] ],
+          HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 3, 7 }, radius ] ] ],
         "SquareGridGraph", With[ { dims = size /. { "Small" -> { 10, 10 }, "Medium" -> { 17, 17 }, "Large" -> { 32, 32 } } },
-          HoldComplete @ BoundarylessGraph[ GridGraph @ dims, Method -> "MaxDegree" ] ],
+          HoldComplete @ BoundarylessGraph[ GridGraph @ dims ] ],
         "CubicGridGraph", With[ { dims = size /. { "Small" -> { 5, 5, 5 }, "Medium" -> { 7, 7, 7 }, "Large" -> { 10, 10, 10 } } },
           HoldComplete @ BoundarylessGraph[
-            Graph[ GridGraph @ dims, VertexCoordinates -> Reverse /@ Tuples[ Range /@ Reverse @ dims ] ],
-            Method -> "MaxDegree" ] ],
+            Graph[ GridGraph @ dims, VertexCoordinates -> Reverse /@ Tuples[ Range /@ Reverse @ dims ] ] ] ],
         "SquareTorusGraph" | "TriangularTorusGraph" | "HexagonalTorusGraph", With[
           { shape = StringDelete[ name, "TorusGraph" ],
             dims = size /. If[ name === "HexagonalTorusGraph",

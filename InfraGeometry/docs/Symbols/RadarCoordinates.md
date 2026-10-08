@@ -67,7 +67,7 @@ With[
   {panels = Table[
      With[
        {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-       {depth = RadarCoordinates[g, {AssociationThread[GraphExteriorBoundary[g, Method -> "MaxDegree"], 1]}]},
+       {depth = RadarCoordinates[g, {AssociationThread[GraphExteriorBoundary[g], 1]}]},
        {InfraSubstrateHighlight[g, Values @ KeySort @ GroupBy[Keys[depth], depth]], depth[First @ GraphCenter[g]]}],
      {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]},
   {GraphicsRow[First /@ panels], Last /@ panels}]

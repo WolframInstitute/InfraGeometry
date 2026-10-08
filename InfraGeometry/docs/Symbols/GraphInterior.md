@@ -81,7 +81,7 @@ The whole vertex set is its own interior: the rim of a substrate is no boundary 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {InfraSubstrateHighlight[g, {GraphExteriorBoundary[g, Method -> "MaxDegree"] -> StandardBlue}], Sort[GraphInterior[g, VertexList[g]]] === Sort[VertexList[g]]}]
+  {InfraSubstrateHighlight[g, {GraphExteriorBoundary[g] -> StandardBlue}], Sort[GraphInterior[g, VertexList[g]]] === Sort[VertexList[g]]}]
 ```
 
 ## Possible Issues
