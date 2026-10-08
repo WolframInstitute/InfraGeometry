@@ -96,4 +96,4 @@ Euclidean infrageometry is synthetic geometry: constructions with natural object
 ### Not here
 
 - not here: an invariant of four points, the inverse of every head (the values of its unknowns for a given vertex set), and the graph of a line or of an arc as an exported name; none is in an item yet
-- not here: the interactive multi-construction stepper in the causal and branchial direction; it stays on the Experimental guide
+- not here: the interactive multi-construction stepper in the causal and branchial direction; not in an item yet
