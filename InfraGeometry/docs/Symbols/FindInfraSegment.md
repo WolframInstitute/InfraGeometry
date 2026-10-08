@@ -14,7 +14,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 <code>[FindInfraSegment]()[*g*, *a*, *b*]</code> gives one geodesic — a shortest path — from *a* to *b* in *g*, as a vertex list.
 
-<code>[FindInfraSegment]()[*g*, *a*, *b*, *n*]</code> gives a `List` of exactly *n* geodesics or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives every geodesic.
+<code>[FindInfraSegment]()[*g*, *a*, *b*, *n*]</code> gives a `List` of exactly *n* geodesics, or `{}` when there are fewer; `UpTo[n]` gives up to *n*; `All` gives every geodesic.
 
 ## Details & Options
 
@@ -66,7 +66,7 @@ The count-less call is one geodesic; a count gives a list.
 {FindInfraSegment[GridGraph[{4, 4}], 1, 11], FindInfraSegment[GridGraph[{4, 4}], 1, 11, 2]}
 ```
 
-A strict count that cannot be met is `$Failed`.
+A strict count that cannot be met gives the empty list.
 
 ```wl
 FindInfraSegment[GridGraph[{4, 4}], 1, 11, 7]
