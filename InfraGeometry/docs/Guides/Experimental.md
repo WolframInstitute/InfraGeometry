@@ -161,8 +161,9 @@ Every exported symbol that no other guide of the site covers, one section per ke
 - `FindResolvingSet` up to n resolving sets of g, the smallest first; the first of them is a metric basis
 - `MetricDimension` the metric dimension of g
 - `ResistanceCoordinates` the spectral embedding whose squared distances are the effective resistances
-- `OrthogonalCoordinates` the integer displacement of v along each axis through the centre c
-- `FindInfraOrthogonalFrame` frames of mutually perpendicular geodesic axes through the centre c
+- `OrthogonalCoordinates` the signed position of the shortest-path projection of each vertex on each of a list of walks, counted from the centre c
+- `FindInfraOrthogonalAxes` a maximal set of mutually perpendicular geodesic lines through the centre c, each a vertex list
+- `FindInfraOrthogonalRays` a maximal set of mutually perpendicular geodesic rays from the centre c, each a vertex list
 - `FindInfraSpanningAxes` n mutually well-separated longest geodesics across a graph, with no fixed centre
 
 ### Experimental · OllivierCurvature.wl

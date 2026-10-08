@@ -13,6 +13,6 @@ URI: WolframInstitute/InfraGeometry/ref/FindInfraSpanningAxes
 
 ## Details & Options
 
-For axes through a fixed center vertex use FindInfraOrthogonalFrame.
+For perpendicular axes through a fixed center vertex use [FindInfraOrthogonalAxes](), and [FindInfraOrthogonalRays]() for the rays.
 
 Options: "AxisDistance" ("MinEndpoint" | "Hausdorff" | "Separation"), "MinLength", "MinSeparation", "AxisThickness", "RandomPick".
