@@ -18,7 +18,7 @@ RelatedGuides: [Experimental]
 
 Definition: a *k*-cochain takes its values on the (*k* + 1)-cliques of a graph, the *k*-simplices of its clique complex, and *k* is its degree.
 
-A *k*-cochain is stored as `<|{v0, ..., vk} -> value|>` on the sorted cliques, and the degree is read off the first key.
+A *k*-cochain is stored as `<|{v0, ..., vk} -> value|>` on the sorted cliques, and the degree is read off the first key. The empty cochain has no key, and an association keyed by anything but vertex lists is no cochain: [CochainDegree]() stays unevaluated on both.
 
 [Coboundary]() raises the degree by one, [CochainCup]() and [OrderedCochainCup]() add the degrees, [CochainCupOne]() gives one less than their sum, and [IntegrationMap]() and [RestrictionMap]() keep the degree ([FormDegree]()).
 
@@ -46,12 +46,13 @@ With[
 
 ## Possible Issues
 
-The empty cochain has no key to read. The coboundary of a coboundary is empty, and [CochainDegree]() of it issues a message and returns 0; the call is wrapped in [Quiet]() here.
+The empty cochain has no key to read. The coboundary of a coboundary is empty, and [CochainDegree]() of it stays unevaluated, with no message. So does a vertex function keyed by the vertices themselves, which is no cochain.
 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {edgeCochain = Coboundary[g, AssociationMap[GraphDistance[g, First @ GraphCenter[g], First[#]] &, List /@ VertexList[g]]]},
+  {values = AssociationMap[GraphDistance[g, First @ GraphCenter[g], #] &, VertexList[g]]},
+  {edgeCochain = Coboundary[g, KeyMap[List, values]]},
   {DisplacementPlot[g, GroupBy[Join[Keys @ Select[edgeCochain, Positive], Reverse /@ Keys @ Select[edgeCochain, Negative]], First -> Last]],
-   Normal @ Coboundary[g, edgeCochain], Quiet @ CochainDegree[Coboundary[g, edgeCochain]]}]
+   Normal @ Coboundary[g, edgeCochain], Head @ CochainDegree[Coboundary[g, edgeCochain]], Head @ CochainDegree[values]}]
 ```

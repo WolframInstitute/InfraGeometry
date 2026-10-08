@@ -18,7 +18,7 @@ RelatedGuides: [Experimental]
 
 Definition: a *k*-form takes its germs on the *k*-tuples of neighbours of each vertex, and *k* is its degree.
 
-The degree is read off the first germ that holds a value. A form whose germs hold tuples of different lengths is not a form of one degree.
+The degree is read off the first germ that holds a value. A form whose germs hold tuples of different lengths is not a form of one degree, and the zero form, with every germ empty, has no degree: [FormDegree]() stays unevaluated.
 
 [ZeroForm]() gives degree 0, [FormDifferential]() raises the degree by one, [FormWedge]() adds the degrees, and [RestrictionMap]() and [IntegrationMap]() keep the degree ([CochainDegree]()).
 
@@ -42,11 +42,11 @@ With[
 
 ## Possible Issues
 
-The zero form has no degree to read: every germ of the gradient of a constant is empty. [FormDegree]() then issues messages and returns 1; the call is wrapped in [Quiet]() here.
+The zero form has no degree to read: every germ of the gradient of a constant is empty. [FormDegree]() stays unevaluated, with no message.
 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {gradient = FormDifferential[g, ZeroForm[g, 1 &]]},
-  {InfraSubstrateHighlight[g, AssociationMap[1 &, VertexList[g]]], Union[Length /@ Values[gradient]], Quiet @ FormDegree[gradient]}]
+  {InfraSubstrateHighlight[g, AssociationMap[1 &, VertexList[g]]], Union[Length /@ Values[gradient]], Head @ FormDegree[gradient]}]
 ```

@@ -22,7 +22,7 @@ Integrating it loses a fixed fraction: *I(d₀ω) = ((k + 1)/(k + 2)) δ(Iω)*, 
 
 The transport term is not a multiple of the naive difference: the germ values of *dω* and *d₀ω* are not proportional, and only their integrals differ by a factor.
 
-It is kept for the comparison with [FormDifferential]().
+It is kept for the comparison with [FormDifferential](). On a form that is not a 1-form it stays unevaluated, with no message.
 
 ## Basic Examples
 
@@ -65,11 +65,11 @@ With[
 
 ## Possible Issues
 
-On a 0-form the germs come out empty, with no message: [NaiveDifferential]() computes degree 1 only. The naive differential of a 0-form *f* would be *−f(v)* on each step from *v*.
+On a 0-form the call stays unevaluated: [NaiveDifferential]() computes degree 1 only. The naive differential of a 0-form *f* would be *−f(v)* on each step from *v*.
 
 ```wl
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {form = ZeroForm[g, GraphDistance[g, First @ GraphCenter[g], #] &]},
-  {InfraSubstrateHighlight[g, First /@ form], Union[Length /@ Values[NaiveDifferential[g, form]]]}]
+  {InfraSubstrateHighlight[g, First /@ form], Head @ NaiveDifferential[g, form]}]
 ```

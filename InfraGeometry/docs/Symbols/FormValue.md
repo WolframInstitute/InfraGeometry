@@ -18,7 +18,7 @@ RelatedGuides: [Experimental]
 
 Definition: a *k*-form *ω* assigns to every vertex *v* an alternating function on the *k*-tuples of distinct neighbours of *v*, *ω(v; wσ(1), …, wσ(k)) = sgn(σ) ω(v; w₁, …, wₖ)* for every permutation *σ*.
 
-A germ is stored on the sorted tuples, `<|v -> <|{w1, ..., wk} -> value|>|>`. [FormValue]() sorts the tuple, as [Sort]() orders the vertex names, and multiplies the stored value by the sign of the sorting permutation. A tuple with a repeated vertex gives 0, and so does a tuple that is not stored: a value 0 is not stored, and a vertex that is not a neighbour of *v* carries no value.
+A germ is stored on the sorted tuples, `<|v -> <|{w1, ..., wk} -> value|>|>`. [FormValue]() sorts the tuple, as [Sort]() orders the vertex names, and multiplies the stored value by the sign of the sorting permutation. A tuple with a repeated vertex gives 0, and so does a tuple that is not stored, of any length: a value 0 is not stored, and a vertex that is not a neighbour of *v* carries no value. A form is read as an element of the whole exterior algebra, whose components of every other degree are 0.
 
 The tuple need not span a clique. From degree 2 on, a germ also takes values on tuples of neighbours that span no clique, where every cochain vanishes; that is what separates the forms from the cochains read by [CochainValue]().
 
@@ -66,9 +66,7 @@ With[
   {MatrixPlot[matrix], matrix == -Transpose[matrix]}]
 ```
 
-## Possible Issues
-
-The length of the tuple is not checked. The gradient of the distance, a 1-form, read on a pair of neighbours gives 0, as on a pair that is not stored.
+The length of the tuple is not checked, and a tuple of another length than the degree gives 0, the value of the component of that degree. The gradient of the distance, a 1-form, read on one neighbour and on a pair of neighbours.
 
 ```wl
 With[

@@ -144,4 +144,33 @@ VerificationTest[h2ExactQ[torus, DeleteCases[Merge[{OrderedCochainCup[torus, z1,
 
 VerificationTest[cEqual[OrderedCochainCup[k4, Coboundary[k4, fC], Coboundary[k4, aC]], Coboundary[k4, OrderedCochainCup[k4, fC, Coboundary[k4, aC]]]], True, TestID -> "exact-cup-closed-is-exact-K4"]
 
+(* ===== A call that cannot answer stays unevaluated, with no message (FormsKernelFindings) ===== *)
+
+tri = InfraSubstrate["TriangularTilingGraph", "Small"];
+triDistance = GraphDistance[tri, First @ GraphCenter[tri], #] &;
+triTwoForm = FormDifferential[tri, FormDifferential[tri, ZeroForm[tri, triDistance]]];
+
+VerificationTest[MatchQ[FormDegree[FormDifferential[tri, ZeroForm[tri, 1 &]]], _FormDegree], True, {}, TestID -> "form-degree-zero-form-unevaluated"]
+VerificationTest[MatchQ[CochainDegree[<||>], _CochainDegree], True, {}, TestID -> "cochain-degree-empty-unevaluated"]
+VerificationTest[MatchQ[CochainDegree[<|First @ VertexList[tri] -> 1|>], _CochainDegree], True, {}, TestID -> "cochain-degree-vertex-keys-unevaluated"]
+VerificationTest[FormDegree[triTwoForm], 2, {}, TestID -> "form-differential-two-form-fixture"]
+VerificationTest[MatchQ[FormDifferential[tri, triTwoForm], _FormDifferential], True, {}, TestID -> "form-differential-degree-2-unevaluated"]
+VerificationTest[MatchQ[NaiveDifferential[tri, ZeroForm[tri, triDistance]], _NaiveDifferential], True, {}, TestID -> "naive-differential-zero-form-unevaluated"]
+VerificationTest[MatchQ[NaiveDifferential[tri, triTwoForm], _NaiveDifferential], True, {}, TestID -> "naive-differential-two-form-unevaluated"]
+VerificationTest[MatchQ[Coboundary[tri, <|First @ VertexList[tri] -> 1|>], _Coboundary], True, {}, TestID -> "coboundary-vertex-keys-unevaluated"]
+VerificationTest[Coboundary[tri, <|{First @ VertexList[tri]} -> 1|>] =!= <||>, True, {}, TestID -> "coboundary-vertex-list-keys"]
+VerificationTest[FormValue[FormDifferential[tri, ZeroForm[tri, triDistance]], First @ VertexList[tri], Take[AdjacencyList[tri, First @ VertexList[tri]], 2]], 0, {}, TestID -> "form-value-other-length-zero"]
+
+(* ===== No form or cochain stores a value equal to 0, machine zeros included ===== *)
+
+square = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True];
+squareGradients = Table[FormDifferential[square, ZeroForm[square, AssociationThread[VertexList[square], GraphEmbedding[square][[All, i]]]]], {i, 2}];
+storedValues[omega_] := Catenate[Values /@ Values[omega]]
+
+VerificationTest[Count[storedValues[FormWedge @@ squareGradients], x_ /; x == 0], 0, {}, TestID -> "wedge-machine-zeros-dropped"]
+VerificationTest[Count[storedValues[First @ squareGradients], x_ /; x == 0], 0, {}, TestID -> "gradient-machine-zeros-dropped"]
+VerificationTest[Count[Values[IntegrationMap[square, First @ squareGradients]], x_ /; x == 0], 0, {}, TestID -> "integration-machine-zeros-dropped"]
+VerificationTest[Coboundary[k3, <|{1, 2} -> 1., {1, 3} -> 1., {2, 3} -> 0.|>], <||>, {}, TestID -> "coboundary-machine-zero-dropped"]
+VerificationTest[Coboundary[k3, <|{1, 2} -> a|>], <|{1, 2, 3} -> a|>, {}, TestID -> "coboundary-symbolic-value-kept"]
+
 EndTestSection[]

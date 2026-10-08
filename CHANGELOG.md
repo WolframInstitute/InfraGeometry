@@ -19,6 +19,8 @@
 
   Pages: `FindInfraOrthogonalFrame` is replaced by `FindInfraOrthogonalAxes` and `FindInfraOrthogonalRays`; each states that its maximum is well defined, as the clique number of a finite perpendicularity graph, and the rays page says that a ray carries no right angle by itself, so a frame is read through the negatives. `OrthogonalCoordinates` is rewritten for walks, ties and the fibration; `FindInfraSpanningAxes` and the Experimental guide point to the new names.
 
+- **next** (FormsKernelFindings) (2026-10-08, version not yet bumped): **six forms and cochains defects fixed, three usages corrected.** A call that cannot answer stays unevaluated, with no message: `FormDegree` on the zero form, `CochainDegree` on the empty cochain or on keys that are not lists, `FormDifferential` on a form of degree 2 or more, `NaiveDifferential` on anything but a 1-form, and `Coboundary` on a cochain keyed by bare vertices. No form or cochain the forms layer computes stores a value equal to 0: machine zeros `0.` are dropped as the exact 0 is, symbolic values kept. The usages say that a 0-cochain is keyed by `{v}`, that `FormValue` gives 0 on a tuple that is not stored, of any length, and that `FormDifferential` takes 0- and 1-forms.
+
 ## 2.5.0 (2026-10-08)
 
 - **2.5.0** (2026-10-08, SubstrateRelease): **breaking -- the substrate release.** Seven items merged into `main` one after another, released together; the cloud served 2.3.0 before, so 2.4.0 ships with it. GraphRim, UniformLengthGraphs, GraphInflation and TessellationGraphs are breaking, each with how to rewrite old code.

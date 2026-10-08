@@ -524,6 +524,14 @@ VerificationTest[
   TestID -> "InfraSubstrateHighlight-Arrowheads-contrast-the-stroke"
 ]
 
+(* a one-step walk is drawn with its head, so a 1-cochain edge shows its orientation: one head at v, none at u *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    Length @ headOf[ Options @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2 } ] }, "Arrowheads" -> True ], # ] & /@ { 2, 1 } ],
+  { 1, 0 },
+  TestID -> "InfraSubstrateHighlight-Arrowheads-one-step-walk"
+]
+
 (* an object carries its own head: obj -> True arms that object alone, obj -> False disarms it
    against an armed option.  One head per armed path object: an ArrowBox for an explicit spec, a polygon for True. *)
 VerificationTest[
