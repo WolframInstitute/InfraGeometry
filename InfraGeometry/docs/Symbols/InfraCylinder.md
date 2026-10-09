@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraCylinder
 Keywords: [cylinder, solid of revolution, region, symbolic object, volume, counting measure, Riemannian measure]
-SeeAlso: [InfraTube, InfraCone, InfraBall, InfraMeasurement, FindInfraRepresentative, InfraSolidOfRevolution, InfraInterior, InfraBoundary]
+SeeAlso: [InfraTube, InfraCone, InfraBall, InfraMeasurement, RandomInfraRepresentative, InfraSolidOfRevolution, InfraInterior, InfraBoundary]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraCylinder]()[*axis*, *r*]</code> is the cylinder of radius *r* about *axis*: the vertices within *r* of the axis vertex they project to, with flat ends. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraCylinder]()[*axis*, *r*]</code> is the cylinder of radius *r* about *axis*: the vertices within *r* of the axis vertex they project to, with flat ends. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraCylinder]()[*axis*, {*r*, *s*}]</code> is the mantle: the vertices at distance between *r* and *s* from their axis vertex.
 
@@ -22,7 +22,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 Definition: the cylinder of radius *r* about *axis* is the sliced tube <code>[InfraTube]()[*axis*, *r*, Method -> "Sliced"]</code>. Slice *i* is the set of vertices whose nearest axis vertex is *a_i*, a tie lying in every nearest slice, and *v* is in the cylinder when *d(a_i, v) ≤ r* for its slice.
 
-The axis is a walk: a vertex, a vertex list, or a path or cycle graph. A density or a Euclidean head such as [InfraSegment]() leaves the call unevaluated; <code>[FindInfraRepresentative]()[*g*, [InfraSegment]()[*p*, *q*]]</code> gives the axis of one shortest path.
+The axis is a walk: a vertex, a vertex list, or a path or cycle graph. A density or a Euclidean head such as [InfraSegment]() leaves the call unevaluated; <code>[RandomInfraRepresentative]()[*g*, [InfraSegment]()[*p*, *q*]]</code> gives the axis of one shortest path.
 
 The axis is prolonged straight on past both ends, through the neighbours of an end vertex that continue the line, and the vertices nearer a prolongation than the axis are cut. So the ends are flat, which is what makes a cylinder and not a tube. A closed axis has no ends.
 
@@ -48,9 +48,9 @@ Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {axis = FindInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])]]},
+    {axis = RandomInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])]]},
     {cylinder = InfraCylinder[axis, 1]},
-    {support = FindInfraRepresentative[g, cylinder]},
+    {support = RandomInfraRepresentative[g, cylinder]},
     Labeled[
       InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
       InfraMeasurement[g, cylinder, {"CountingMeasure", "RiemannianMeasure"}]]],
@@ -76,9 +76,9 @@ The rounded cylinder is the tube about the axis, and the cylinder lies in it.
 With[
   {g = GridGraph[{9, 9}]},
   {axis = {39, 40, 41, 42, 43}},
-  {tube = FindInfraRepresentative[g, InfraTube[axis, 2]]},
-  {FindInfraRepresentative[g, InfraCylinder[axis, 2, Method -> "Balls"]] === tube,
-   SubsetQ[tube, FindInfraRepresentative[g, InfraCylinder[axis, 2]]]}]
+  {tube = RandomInfraRepresentative[g, InfraTube[axis, 2]]},
+  {RandomInfraRepresentative[g, InfraCylinder[axis, 2, Method -> "Balls"]] === tube,
+   SubsetQ[tube, RandomInfraRepresentative[g, InfraCylinder[axis, 2]]]}]
 ```
 
 The cylinder is the solid of revolution of the constant profile.
@@ -87,5 +87,5 @@ The cylinder is the solid of revolution of the constant profile.
 With[
   {g = GridGraph[{9, 9}]},
   {axis = {39, 40, 41, 42, 43}},
-  FindInfraRepresentative[g, InfraCylinder[axis, 2]] === FindInfraRepresentative[g, InfraSolidOfRevolution[axis, ConstantArray[2, 5]]]]
+  RandomInfraRepresentative[g, InfraCylinder[axis, 2]] === RandomInfraRepresentative[g, InfraSolidOfRevolution[axis, ConstantArray[2, 5]]]]
 ```

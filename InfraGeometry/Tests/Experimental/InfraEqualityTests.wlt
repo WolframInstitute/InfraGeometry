@@ -91,28 +91,28 @@ VerificationTest[
 
 VerificationTest[
   InfraEqualQ[ GridGraph[ { 3, 3 } ],
-    FindInfraSegment[ GridGraph[ { 3, 3 } ], 1, 9 , All],
-    FindInfraSegment[ GridGraph[ { 3, 3 } ], 1, 9 , All] ],
+    RandomInfraSegment[ GridGraph[ { 3, 3 } ], 1, 9 , All],
+    RandomInfraSegment[ GridGraph[ { 3, 3 } ], 1, 9 , All] ],
   True,
-  TestID -> "InfraEqualQ-Segment-FindInfraSegment-self"
+  TestID -> "InfraEqualQ-Segment-RandomInfraSegment-self"
 ]
 
 (* ===== InfraBall ===== *)
 
 VerificationTest[
-  InfraEqualQ[ PathGraph[ Range[ 7 ] ], FindInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 1]], FindInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 1]] ],
+  InfraEqualQ[ PathGraph[ Range[ 7 ] ], RandomInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 1]], RandomInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 1]] ],
   True,
   TestID -> "InfraEqualQ-Ball-identical"
 ]
 
 VerificationTest[
-  InfraEqualQ[ PathGraph[ Range[ 7 ] ], FindInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 1]], FindInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 2]] ],
+  InfraEqualQ[ PathGraph[ Range[ 7 ] ], RandomInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 1]], RandomInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 2]] ],
   True,
   TestID -> "InfraEqualQ-Ball-nested-Diffuse-True"
 ]
 
 VerificationTest[
-  InfraEqualQ[ PathGraph[ Range[ 7 ] ], FindInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 1]], FindInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 2]], Method -> "Set" ],
+  InfraEqualQ[ PathGraph[ Range[ 7 ] ], RandomInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 1]], RandomInfraRepresentative[PathGraph[ Range[ 7 ] ], InfraBall[4, 2]], Method -> "Set" ],
   False,
   TestID -> "InfraEqualQ-Ball-nested-Set-False"
 ]

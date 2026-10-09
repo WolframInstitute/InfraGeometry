@@ -51,7 +51,7 @@ Two configurations at the centre of the square tiling, each arm drawn along the 
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {line = FindInfraLine[g, c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
+  {line = RandomInfraLine[g, c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
   {i = First @ FirstPosition[line, c]},
   {opposite = {line[[i - 4]], c, line[[i + 4]]}},
   {same = {line[[i + 4]], c, line[[i + 2]]}},
@@ -80,7 +80,7 @@ The two methods answer different questions. On the straight-line case, arclength
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {line = FindInfraLine[g, c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
+  {line = RandomInfraLine[g, c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
   {i = First @ FirstPosition[line, c]},
   {arms = {line[[i - 4]], c, line[[i + 4]]}},
   {InfraSubstrateHighlight[g, {InfraWalk[line[[i - 4 ;; i + 4]]], Sequence @@ arms}],

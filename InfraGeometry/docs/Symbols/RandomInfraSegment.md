@@ -1,20 +1,20 @@
 ---
 Template: Symbol
-Name: FindInfraSegment
+Name: RandomInfraSegment
 Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
-URI: WolframInstitute/InfraGeometry/ref/FindInfraSegment
+URI: WolframInstitute/InfraGeometry/ref/RandomInfraSegment
 Keywords: [segment, geodesic, shortest path, Euclid Postulate 1]
-SeeAlso: [InfraSegment, FindInfraRepresentative, FindInfraLine, FindInfraMidpoint, UniqueInfraSegmentQ, MetricInterval]
+SeeAlso: [InfraSegment, RandomInfraRepresentative, RandomInfraLine, InfraMeasurement, UniqueInfraSegmentQ, MetricInterval]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[FindInfraSegment]()[*g*, *a*, *b*]</code> gives one geodesic — a shortest path — from *a* to *b* in *g*, as a vertex list.
+<code>[RandomInfraSegment]()[*g*, *a*, *b*]</code> gives one geodesic — a shortest path — from *a* to *b* in *g*, as a vertex list.
 
-<code>[FindInfraSegment]()[*g*, *a*, *b*, *n*]</code> gives a `List` of exactly *n* geodesics, or `{}` when there are fewer; `UpTo[n]` gives up to *n*; `All` gives every geodesic.
+<code>[RandomInfraSegment]()[*g*, *a*, *b*, *n*]</code> gives a `List` of exactly *n* geodesics, or `{}` when there are fewer; `UpTo[n]` gives up to *n*; `All` gives every geodesic.
 
 ## Details & Options
 
@@ -22,7 +22,7 @@ A segment from *a* to *b* is a geodesic: a path whose length realizes $d(a,b)$.
 
 In the Euclidean plane the segment between two points is unique. On a graph it is a **set** of paths, and uniqueness fails generically — a square grid has many geodesics between two vertices, because any interleaving of the horizontal and vertical steps is one.
 
-The search runs on the substrate directly, with `FindPath` at the geodesic length. It does not read the graph of <code>[InfraSegment]()[*a*, *b*]</code>, so it is the check on that graph, and it returns exactly the shapes <code>[FindInfraRepresentative]()[*g*, [InfraSegment]()[*a*, *b*], …]</code> gives. To count the geodesics without enumerating them, use [InfraMeasurement]().
+The search runs on the substrate directly, with `FindPath` at the geodesic length. It does not read the graph of <code>[InfraSegment]()[*a*, *b*]</code>, so it is the check on that graph, and it returns exactly the shapes <code>[RandomInfraRepresentative]()[*g*, [InfraSegment]()[*a*, *b*], …]</code> gives. To count the geodesics without enumerating them, use [InfraMeasurement]().
 
 The count-less call is one geodesic, deterministic. There is no `Method` and no `Properties`.
 
@@ -47,7 +47,7 @@ Row[Table[
      {g = InfraSubstrate[name, "Large", "KeepCoordinates" -> True]},
      {a = First @ GraphCenter[g]},
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 6 &]},
-     {segs = FindInfraSegment[g, a, b, All]},
+     {segs = RandomInfraSegment[g, a, b, All]},
      Labeled[
        InfraSubstrateHighlight[g,
          {segs, {a, b}},
@@ -63,13 +63,13 @@ The intensity in that picture is the multiplicity: an edge lying on many geodesi
 The count-less call is one geodesic; a count gives a list.
 
 ```wl
-{FindInfraSegment[GridGraph[{4, 4}], 1, 11], FindInfraSegment[GridGraph[{4, 4}], 1, 11, 2]}
+{RandomInfraSegment[GridGraph[{4, 4}], 1, 11], RandomInfraSegment[GridGraph[{4, 4}], 1, 11, 2]}
 ```
 
 A strict count that cannot be met gives the empty list.
 
 ```wl
-FindInfraSegment[GridGraph[{4, 4}], 1, 11, 7]
+RandomInfraSegment[GridGraph[{4, 4}], 1, 11, 7]
 ```
 
 ## Properties and Relations
@@ -81,7 +81,7 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
-  Sort[Union @@ FindInfraSegment[g, a, b, All]] === Sort @ MetricInterval[g, a, b]]
+  Sort[Union @@ RandomInfraSegment[g, a, b, All]] === Sort @ MetricInterval[g, a, b]]
 ```
 
 The search agrees with the graph of the head.
@@ -89,5 +89,5 @@ The search agrees with the graph of the head.
 ```wl
 With[
   {g = GridGraph[{5, 5}]},
-  Sort @ FindInfraSegment[g, 1, 19, All] === Sort @ FindInfraRepresentative[g, InfraSegment[1, 19], All]]
+  Sort @ RandomInfraSegment[g, 1, 19, All] === Sort @ RandomInfraRepresentative[g, InfraSegment[1, 19], All]]
 ```

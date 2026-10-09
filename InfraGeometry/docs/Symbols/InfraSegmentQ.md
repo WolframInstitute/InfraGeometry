@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSegmentQ
 Keywords: [segment, geodesic, shortest path, predicate]
-SeeAlso: [InfraSegment, FindInfraSegment, InfraWalkQ, InfraGeodesicQ, InfraLineQ, InfraRayQ, InfraMemberQ]
+SeeAlso: [InfraSegment, RandomInfraSegment, InfraWalkQ, InfraGeodesicQ, InfraLineQ, InfraRayQ, InfraMemberQ]
 RelatedGuides: [Experimental]
 ---
 
@@ -26,7 +26,7 @@ The predicate takes a walk, never an object. <code>[InfraSegmentQ]()[*g*, [Infra
 
 A single vertex is not a segment, so a walk of one vertex gives `False`.
 
-A list of walks is the shape [FindInfraSegment]() returns with a count, and the graph of a segment, <code>[InfraMeasurement]()[*g*, *seg*, "Graph"]</code>, is a DAG. So the output of either can be passed straight in.
+A list of walks is the shape [RandomInfraSegment]() returns with a count, and the graph of a segment, <code>[InfraMeasurement]()[*g*, *seg*, "Graph"]</code>, is a DAG. So the output of either can be passed straight in.
 
 Inside an [InfraScene](), `InfraSegmentQ[s]` with one argument is the assertion that the binding *s* is a geodesic. The scene supplies the graph.
 
@@ -51,7 +51,7 @@ A list of walks, and the graph of a segment.
 ```wl
 With[
   {g = GridGraph[{5, 5}]},
-  {InfraSegmentQ[g, FindInfraSegment[g, 1, 13, All]],
+  {InfraSegmentQ[g, RandomInfraSegment[g, 1, 13, All]],
    InfraSegmentQ[g, InfraMeasurement[g, InfraSegment[1, 13], "Graph"]]}]
 ```
 
@@ -70,7 +70,7 @@ Every line is a geodesic.
 ```wl
 With[
   {g = GridGraph[{4, 4}]},
-  InfraSegmentQ[g, FindInfraLine[g, 6, 7, All]]]
+  InfraSegmentQ[g, RandomInfraLine[g, 6, 7, All]]]
 ```
 
 On the 6-cycle the walk halfway round is a geodesic; one step more is not.

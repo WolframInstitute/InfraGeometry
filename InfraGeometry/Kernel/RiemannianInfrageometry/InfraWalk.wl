@@ -15,30 +15,30 @@ Package[ "WolframInstitute`InfraGeometry`" ]
    edges added on the longer side.  The stopping condition reads the whole walk after every step under every direction, and the germ once
    it has an edge *)
 
-Options[ FindInfraWalk ] = {
+Options[ RandomInfraWalk ] = {
   Properties           -> { },
   "StoppingCondition"  -> None,
   "NextVertexFunction" -> Automatic,
   "Direction"          -> "Forward"
 }
 
-FindInfraWalk[ graph_Graph, germ_, opts : OptionsPattern[] ] :=
-  With[ { result = FindInfraWalk[ graph, germ, Infinity, Automatic, opts ] },
-    result /; Head[ result ] =!= FindInfraWalk ]
+RandomInfraWalk[ graph_Graph, germ_, opts : OptionsPattern[] ] :=
+  With[ { result = RandomInfraWalk[ graph, germ, Infinity, Automatic, opts ] },
+    result /; Head[ result ] =!= RandomInfraWalk ]
 
-FindInfraWalk[ graph_Graph, germ_,
+RandomInfraWalk[ graph_Graph, germ_,
     kspec : ( UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ),
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    SubsetQ[ Keys @ Options @ FindInfraWalk, Keys @ Flatten @ { opts } ] &&
-    With[ { rules     = OptionValue[ FindInfraWalk, { opts }, Properties ],
-            condition = OptionValue[ FindInfraWalk, { opts }, "StoppingCondition" ],
-            nextFn    = OptionValue[ FindInfraWalk, { opts }, "NextVertexFunction" ] },
+    SubsetQ[ Keys @ Options @ RandomInfraWalk, Keys @ Flatten @ { opts } ] &&
+    With[ { rules     = OptionValue[ RandomInfraWalk, { opts }, Properties ],
+            condition = OptionValue[ RandomInfraWalk, { opts }, "StoppingCondition" ],
+            nextFn    = OptionValue[ RandomInfraWalk, { opts }, "NextVertexFunction" ] },
       { triples = If[ ListQ @ rules,
           Replace[ rules, { { rule_, r_, p_ } :> { rule, r, p }, { rule_, r_ } :> { rule, r, 0 }, rule_ :> { rule, Infinity, 0 } }, { 1 } ],
           { { } } ] },
       AllTrue[ triples, MatchQ[ {
           "Simple" | "Shortest" | "Stretched" | Except[ _String | _List | _Rule ], _Integer?Positive | Infinity, _?( NumericQ[ # ] && 0 <= # <= 1 & ) } ] ] &&
-      MatchQ[ OptionValue[ FindInfraWalk, { opts }, "Direction" ], "Forward" | "Backward" | "BothSides" ] &&
+      MatchQ[ OptionValue[ RandomInfraWalk, { opts }, "Direction" ], "Forward" | "Backward" | "BothSides" ] &&
       ( condition === None || ! MatchQ[ condition, _Integer | _List | _String | _Rule ] ) &&
       ( nextFn =!= RandomChoice || count =!= All ) &&
       ( kspec =!= Infinity || MemberQ[ triples, { "Simple" | "Shortest", Infinity, p_ /; p == 0 } ] ) ] :=
@@ -57,11 +57,13 @@ FindInfraWalk[ graph_Graph, germ_,
             Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
               { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
           True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ],
-      rules = Replace[ OptionValue[ FindInfraWalk, { opts }, Properties ],
+      rules = Replace[ OptionValue[ RandomInfraWalk, { opts }, Properties ],
         { { rule_, r_, p_ } :> { rule, r, If[ p == 0, 0, p ] }, { rule_, r_ } :> { rule, r, 0 }, rule_ :> { rule, Infinity, 0 } }, { 1 } ],
-      condition = OptionValue[ FindInfraWalk, { opts }, "StoppingCondition" ],
-      nextFn    = OptionValue[ FindInfraWalk, { opts }, "NextVertexFunction" ],
-      direction = OptionValue[ FindInfraWalk, { opts }, "Direction" ] },
+      condition = OptionValue[ RandomInfraWalk, { opts }, "StoppingCondition" ],
+      nextFn    = If[ count === All &&
+          OptionValue[ RandomInfraWalk, { opts }, "NextVertexFunction" ] === Automatic,
+        Identity, OptionValue[ RandomInfraWalk, { opts }, "NextVertexFunction" ] ],
+      direction = OptionValue[ RandomInfraWalk, { opts }, "Direction" ] },
     (* a germ is read as a vertex before a vertex list, so a list-valued vertex label is one point, never the walk of its entries *)
     { germWalks = Which[
         VertexQ[ graph, # ],                                                 { { # } },
@@ -81,7 +83,7 @@ FindInfraWalk[ graph_Graph, germ_,
           _,           Replace[ First[ rule ][ Append[ window, # ] ], { True -> 0, False -> 1 } ] & /@ cs ] ],
       stopQ = If[ condition === None, False &, Length[ # ] >= 2 && TrueQ[ condition @ # ] & ] },
     { order = Which[
-        nextFn === Identity || ( nextFn === Automatic && ! soft ), { walk, cs, ws } |-> cs,
+      nextFn === Identity,                                       { walk, cs, ws } |-> cs,
         sampler,                                                  { walk, cs, ws } |-> { If[ Equal @@ ws, RandomChoice @ cs, RandomChoice[ ws -> cs ] ] },
         MatchQ[ nextFn, Automatic | RandomSample ],               { walk, cs, ws } |-> If[ Equal @@ ws, RandomSample @ cs, RandomSample[ ws -> cs ] ],
         (* the next-vertex function sees the candidate windows and gives the ones to pursue in order, one window read as the list of it *)
@@ -166,25 +168,25 @@ FindInfraWalk[ graph_Graph, germ_,
           _UpTo,     Take[ walks, count ],
           _,         If[ Length @ walks < count, { }, Take[ walks, count ] ] ] ] ]
 
-Options[ FindInfraGeodesic ] = {
+Options[ RandomInfraGeodesic ] = {
   Properties           -> { },
   "StoppingCondition"  -> None,
   "NextVertexFunction" -> Automatic,
   "Direction"          -> "Forward"
 }
 
-FindInfraGeodesic[ graph_Graph, germ_, scale : ( _Integer | Infinity ), opts : OptionsPattern[] ] :=
-  With[ { result = FindInfraGeodesic[ graph, germ, scale, Infinity, Automatic, opts ] },
-    result /; Head[ result ] =!= FindInfraGeodesic ]
+RandomInfraGeodesic[ graph_Graph, germ_, scale : ( _Integer | Infinity ), opts : OptionsPattern[] ] :=
+  With[ { result = RandomInfraGeodesic[ graph, germ, scale, Infinity, Automatic, opts ] },
+    result /; Head[ result ] =!= RandomInfraGeodesic ]
 
-FindInfraGeodesic[ graph_Graph, germ_,
+RandomInfraGeodesic[ graph_Graph, germ_,
     scale : ( _Integer | Infinity ),
     kspec : ( UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ),
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] :=
-  With[ { result = FindInfraWalk[ graph, germ, kspec, count,
-      Properties -> Prepend[ OptionValue[ FindInfraGeodesic, { opts }, Properties ], { "Shortest", scale } ],
+  With[ { result = RandomInfraWalk[ graph, germ, kspec, count,
+      Properties -> Prepend[ OptionValue[ RandomInfraGeodesic, { opts }, Properties ], { "Shortest", scale } ],
       Sequence @@ FilterRules[ { opts }, Except[ Properties ] ] ] },
-    result /; Head[ result ] =!= FindInfraWalk ]
+    result /; Head[ result ] =!= RandomInfraWalk ]
 
 InfraGeodesicQ[ graph_Graph, ws : { __Graph }, scale : ( _Integer | Infinity ) : Infinity ] :=
   AllTrue[ ws, InfraGeodesicQ[ graph, #, scale ] & ]
@@ -426,11 +428,13 @@ InfraWalkCrossingQ[ graph_Graph, x : ( _Graph | _List ), at_, r_Integer ] /;
         SeparatesQ[ band, DeleteDuplicates[ Join @@ cutI ], vertexAt @ First @ exitsJ, vertexAt @ Last @ exitsJ ] ] },
     Length[ ps ] == 2 && crossQ @@ ps ]
 
-FindInfraRepresentative[ graph_Graph, InfraGeodesic[ germ_List, scale : ( _Integer | Infinity ) ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  With[ { walks = FindInfraGeodesic[ graph, germ, scale, Infinity, count,
-      Properties -> { "Simple" }, "Direction" -> "BothSides", Sequence @@ searchMethod[ mods ] ] },
-    Replace[ walks, { w_Graph :> Last /@ VertexList @ w, l_List :> ( Last /@ VertexList @ # & ) /@ l } ] /; ! MatchQ[ walks, _FindInfraGeodesic ] ]
+RandomInfraRepresentative[ graph_Graph, InfraGeodesic[ germ_List, scale : ( _Integer | Infinity ) ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+  With[ { walks = RandomInfraGeodesic[ graph, germ, scale, Infinity, count,
+      Properties -> { "Simple" }, "Direction" -> "BothSides",
+      "NextVertexFunction" -> OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] ] },
+    Replace[ walks, { w_Graph :> Last /@ VertexList @ w, l_List :> ( Last /@ VertexList @ # & ) /@ l } ] /; ! MatchQ[ walks, _RandomInfraGeodesic ] ]
 
 (* the window graph of the scale-r geodesics through the germ, read forward: a vertex is a window, the last <= r vertices of a walk, and a
    window w_1 ... w_m steps to v iff d(w_1, v) == m, so the walks of k edges from the germ's window are the k-step extensions of the germ.  It is
@@ -487,8 +491,16 @@ ConcatenateInfraWalk[ path1_, path2_,
       _UpTo, Take[ reps, count ],
       _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ]
 
-FindInfraRepresentative[ graph_Graph, InfraWalk[ vs__ ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  takeRepresentatives[
-    If[ Length[ { vs } ] >= 2 && AllTrue[ Partition[ { vs }, 2, 1 ], EdgeQ[ graph, UndirectedEdge @@ # ] & ], { { vs } }, { } ],
-    count, mods ]
+RandomInfraRepresentative[ graph_Graph, InfraWalk[ vs__ ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+  With[ { members = If[ Length[ { vs } ] >= 2 &&
+          AllTrue[ Partition[ { vs }, 2, 1 ], EdgeQ[ graph, UndirectedEdge @@ # ] & ], { { vs } }, { } ],
+          nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+    { ordered = Sort @ members },
+    Which[
+      count === Automatic, If[ ordered === { }, { }, If[ nextFn === Identity, First @ ordered, RandomChoice @ ordered ] ],
+      count === All,       members,
+      nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
+      IntegerQ @ count && Length @ ordered < count, { },
+      True, RandomSample[ ordered, count ] ] ]

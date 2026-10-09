@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraGeodesic
 Keywords: [geodesic, infra-scale, window graph, extension, germ, inert head]
-SeeAlso: [FindInfraGeodesic, InfraGeodesicQ, InfraMeasurement, FindInfraRepresentative, InfraRay, InfraLine]
+SeeAlso: [RandomInfraGeodesic, InfraGeodesicQ, InfraMeasurement, RandomInfraRepresentative, InfraRay, InfraLine]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraGeodesic]()[*germ*, *s*]</code> is the geodesics at infra-scale *s* through *germ*, a vertex list: the walks extending *germ* in which every *s* consecutive vertices together with the next one form a shortest path. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraGeodesic]()[*germ*, *s*]</code> is the geodesics at infra-scale *s* through *germ*, a vertex list: the walks extending *germ* in which every *s* consecutive vertices together with the next one form a shortest path. It is inert; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
 
 ## Details & Options
 
@@ -24,7 +24,7 @@ At scale `Infinity` the walk is a shortest path from the germ's first vertex *p*
 
 The germ must itself be a geodesic at scale *s*; otherwise the call stays unevaluated.
 
-A member read by [FindInfraRepresentative]() is an inextensible simple geodesic through the germ, grown on both sides.
+A member read by [RandomInfraRepresentative]() is an inextensible simple geodesic through the germ, grown on both sides.
 
 ## Basic Examples
 
@@ -35,7 +35,7 @@ GraphicsRow @ Table[
   With[
     {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
     {o = First @ GraphCenter[g]},
-    {germ = First @ FindInfraRepresentative[g, InfraSegment[(SeedRandom[2]; RandomInfraPoint[g, InfraShell[o, 3]]), o], 1]},
+    {germ = First @ RandomInfraRepresentative[g, InfraSegment[(SeedRandom[2]; RandomInfraPoint[g, InfraShell[o, 3]]), o], 1]},
     {windows = InfraMeasurement[g, InfraGeodesic[germ, scale], "Graph"]},
     {from = UnitVector[VertexCount[windows], VertexIndex[windows, Take[germ, -Min[scale, Length[germ]]]]]},
     {ends = Select[Merge[Thread[Last /@ VertexList[windows] -> from . MatrixPower[AdjacencyMatrix[windows], 6]], Total], Positive]},
@@ -50,7 +50,7 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
   {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
-  {germ = First @ FindInfraRepresentative[g, InfraSegment[o, through], 1]},
+  {germ = First @ RandomInfraRepresentative[g, InfraSegment[o, through], 1]},
   {windows = InfraMeasurement[g, InfraGeodesic[germ, Infinity], "Graph"]},
   GraphicsRow[{InfraSubstrateHighlight[g, {windows, InfraWalk[germ]}],
     InfraSubstrateHighlight[g, {InfraRay[o, through], InfraWalk[germ]}]}]]
@@ -58,19 +58,19 @@ With[
 
 ## Properties and Relations
 
-The walks of *k* edges from the germ's window are the extensions [FindInfraGeodesic]() lists. The number of windows, whether the graph has cycles, the number of six-step extensions read off the adjacency matrix, and the number listed.
+The walks of *k* edges from the germ's window are the extensions [RandomInfraGeodesic]() lists. The number of windows, whether the graph has cycles, the number of six-step extensions read off the adjacency matrix, and the number listed.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
-  {germ = First @ FindInfraRepresentative[g, InfraSegment[(SeedRandom[2]; RandomInfraPoint[g, InfraShell[o, 3]]), o], 1]},
+  {germ = First @ RandomInfraRepresentative[g, InfraSegment[(SeedRandom[2]; RandomInfraPoint[g, InfraShell[o, 3]]), o], 1]},
   Table[
     With[
       {windows = InfraMeasurement[g, InfraGeodesic[germ, scale], "Graph"]},
       {from = UnitVector[VertexCount[windows], VertexIndex[windows, Take[germ, -Min[scale, Length[germ]]]]]},
       {scale, VertexCount[windows], AcyclicGraphQ[windows], Total[from . MatrixPower[AdjacencyMatrix[windows], 6]],
-       Length @ FindInfraGeodesic[g, germ, scale, {6}, All]}],
+       Length @ RandomInfraGeodesic[g, germ, scale, {6}, All]}],
     {scale, {1, 2, 4, 8}}]]
 ```
 
@@ -81,7 +81,7 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
   {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
-  {germ = First @ FindInfraRepresentative[g, InfraSegment[o, through], 1]},
+  {germ = First @ RandomInfraRepresentative[g, InfraSegment[o, through], 1]},
   {ray = InfraMeasurement[g, InfraRay[o, through], "Graph"]},
   Sort @ EdgeList @ InfraMeasurement[g, InfraGeodesic[germ, Infinity], "Graph"] ===
     Sort @ EdgeList @ Subgraph[ray, VertexOutComponent[ray, through]]]

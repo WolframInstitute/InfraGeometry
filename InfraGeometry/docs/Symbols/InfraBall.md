@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraBall
 Keywords: [ball, disk, neighbourhood, region, symbolic object, volume, counting measure, Riemannian measure]
-SeeAlso: [InfraShell, InfraTube, InfraSphere, FindInfraRepresentative, InfraMeasurement, InfraInterior, InfraBoundary, InfraBallQ]
+SeeAlso: [InfraShell, InfraTube, InfraSphere, RandomInfraRepresentative, InfraMeasurement, InfraInterior, InfraBoundary, InfraBallQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraBall]()[*c*, *r*]</code> is the closed ball of radius *r* about *c*: the vertices at distance at most *r*. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraBall]()[*c*, *r*]</code> is the closed ball of radius *r* about *c*: the vertices at distance at most *r*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraBall]()[*c*, {*r*, *s*}]</code> is the shell: the vertices at distance between *r* and *s*.
 
@@ -50,7 +50,7 @@ How the number is measured: <code>[InfraMeasurement]()[*g*, [InfraBall]()[*c*, *
 
 A radius past the eccentricity gives the whole graph, and then both measures are the number of vertices: the rim of the graph is not a boundary of the ball. A band with *r > s* gives the empty set.
 
-The head holds the centre and the radius and computes nothing. A ball has one member, the vertex set, so [FindInfraRepresentative]() gives it as a sorted vertex list and `"Faithful"` is `True`. [InfraMeasurement]() also reads `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"` and `"Subgraph"`; a ball has no `"Graph"` and no `"Length"`.
+The head holds the centre and the radius and computes nothing. A ball has one member, the vertex set, so [RandomInfraRepresentative]() gives it as a sorted vertex list and `"Faithful"` is `True`. [InfraMeasurement]() also reads `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"` and `"Subgraph"`; a ball has no `"Graph"` and no `"Length"`.
 
 Corresponding notions in the classical axiom systems:
 
@@ -68,7 +68,7 @@ Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {ball = InfraBall[First @ GraphCenter[g], 3]},
-    {support = FindInfraRepresentative[g, ball]},
+    {support = RandomInfraRepresentative[g, ball]},
     Labeled[
       InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
       InfraMeasurement[g, ball, {"CountingMeasure", "RiemannianMeasure"}]]],
@@ -95,7 +95,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])},
-  {core = FindInfraRepresentative[g, InfraSegment[c, p]]},
+  {core = RandomInfraRepresentative[g, InfraSegment[c, p]]},
   InfraSubstrateHighlight[g, {InfraBall[core, 1], core}]]
 ```
 
@@ -139,8 +139,8 @@ The Riemannian measure of a ball is at least the counting measure of the ball on
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {inner = InfraInterior[g, FindInfraRepresentative[g, InfraBall[c, 6]]]},
-  {smaller = FindInfraRepresentative[g, InfraBall[c, 5]]},
+  {inner = InfraInterior[g, RandomInfraRepresentative[g, InfraBall[c, 6]]]},
+  {smaller = RandomInfraRepresentative[g, InfraBall[c, 5]]},
   {InfraSubstrateHighlight[g, {smaller, InfraShell[c, 6], Complement[inner, smaller]}],
    InfraMeasurement[g, InfraBall[c, 6], "RiemannianMeasure"], InfraMeasurement[g, InfraBall[c, 5], "CountingMeasure"]}]
 ```
@@ -155,5 +155,5 @@ With[
   {constr = InfraScene[{pA, ballA}, {pA == InfraPoint[c], ballA == InfraBall[pA, 2]}]},
   {ball = InfraSceneInstance[First @ FindInfraScene[constr, g], ballA]},
   {InfraSubstrateHighlight[g, {ball, c}],
-   ball === FindInfraRepresentative[g, InfraBall[c, 2]]}]
+   ball === RandomInfraRepresentative[g, InfraBall[c, 2]]}]
 ```

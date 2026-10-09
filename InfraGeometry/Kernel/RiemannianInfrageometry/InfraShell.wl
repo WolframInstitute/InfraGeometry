@@ -55,7 +55,7 @@ FindInfraOsculatingShell[ graph_Graph, path_, i_Integer, k_Integer,
             walks ],
           1 ],
         { Last, First } ] },
-    { sets = DeleteDuplicates @ Catenate[ FindInfraSphere[ graph, #[[ 1 ]], #[[ 2 ]], All,
+    { sets = DeleteDuplicates @ Catenate[ RandomInfraSphere[ graph, #[[ 1 ]], #[[ 2 ]], All,
         Properties -> OptionValue[ Properties ], "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ] & /@ pairs ] },
     Switch[ count,
       All,   sets,
@@ -159,6 +159,15 @@ InfraMeasurement[ graph_Graph, shell : InfraShell[ _, _ ], All ] :=
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
       "CountingMeasure", "RiemannianMeasure" } ]
 
-FindInfraRepresentative[ graph_Graph, shell : InfraShell[ _, _ ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  takeRepresentatives[ { Keys @ InfraMeasurement[ graph, shell, "VertexDensity" ] }, count, mods ]
+RandomInfraRepresentative[ graph_Graph, shell : InfraShell[ _, _ ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+  With[ { members = Keys @ InfraMeasurement[ graph, shell, "VertexDensity" ],
+          nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+    { ordered = { members } },
+    Which[
+      count === Automatic, members,
+      count === All,       ordered,
+      nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
+      IntegerQ @ count && Length @ ordered < count, { },
+      True, RandomSample[ ordered, count ] ] ]

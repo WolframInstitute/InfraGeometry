@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraParallelQ
 Keywords: [parallel, constant distance, level set, Euclid Definition 23]
-SeeAlso: [FindInfraParallel, InfraPerpendicularQ, InfraLineQ, FindInfraShell, FindInfraLine]
+SeeAlso: [RandomInfraParallel, InfraPerpendicularQ, InfraLineQ, FindInfraShell, RandomInfraLine]
 RelatedGuides: [Experimental]
 ---
 
@@ -28,7 +28,7 @@ Two consequences that catch people out.
 
 The predicate does not require its arguments to be lines. It tests two vertex sets, so it accepts things that are not paths at all. Concentric shells are the clearest case: the shell at radius 3 is parallel to the shell at radius 2, at constant distance 1. If you need the arguments to be maximal geodesics, test that separately with [InfraLineQ]().
 
-That is the difference from [FindInfraParallel](), and it is a real one. The finder returns only *maximal geodesics* at constant distance, and on a lattice it typically finds none. This predicate can still return `True` for sets at constant distance. A parallel can exist as a set while no parallel exists as a line.
+That is the difference from [RandomInfraParallel](), and it is a real one. The finder returns only *maximal geodesics* at constant distance, and on a lattice it typically finds none. This predicate can still return `True` for sets at constant distance. A parallel can exist as a set while no parallel exists as a line.
 
 Corresponding notions in the classical axiom systems:
 
@@ -48,7 +48,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line = FindInfraLine[g, c, far]},
+  {line = RandomInfraLine[g, c, far]},
   InfraParallelQ[g, line, line]]
 ```
 
@@ -83,9 +83,9 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line1 = FindInfraLine[g, c, far]},
+  {line1 = RandomInfraLine[g, c, far]},
   {p = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line1, #] &]},
-  {line2 = FindInfraLine[g, p, SelectFirst[VertexList[g], GraphDistance[g, p, #] == 4 &]]},
+  {line2 = RandomInfraLine[g, p, SelectFirst[VertexList[g], GraphDistance[g, p, #] == 4 &]]},
   <|"parallel" -> InfraParallelQ[g, line1, line2],
     "distances from line2 to line1" -> Union @ Table[Min[GraphDistance[g, v, #] & /@ line1], {v, line2}]|>]
 ```

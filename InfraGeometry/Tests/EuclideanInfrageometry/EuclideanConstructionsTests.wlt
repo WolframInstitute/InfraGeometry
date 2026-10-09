@@ -9,72 +9,6 @@ closedWalkGraph = walk |-> With[ { core = MapIndexed[ { First @ #2, #1 } &, If[ 
 walkSeq[ w_Graph ] := Last /@ VertexList[ w ]
 walkSeqs[ ws_List ] := walkSeq /@ ws
 
-(* ===== FindInfraMidpoint ===== *)
-
-(* Even distance -> single centre vertex. *)
-VerificationTest[
-  FindInfraMidpoint[PathGraph[Range[5]], {1, 2, 3, 4, 5}],
-  <| 3 -> 1 |>,
-  TestID -> "FindInfraMidpoint-segment-even-distance-single"
-]
-
-(* Odd distance -> the two closest indices, a effective point (always non-empty). *)
-VerificationTest[
-  Keys @ FindInfraMidpoint[PathGraph[Range[4]], {1, 2, 3, 4}],
-  {2, 3},
-  TestID -> "FindInfraMidpoint-segment-odd-distance-effective point"
-]
-
-(* Tolerance widens the band beyond the closest offset (0.5 + 1 = 1.5). *)
-VerificationTest[
-  Keys @ FindInfraMidpoint[PathGraph[Range[4]], {1, 2, 3, 4}, "Tolerance" -> 1],
-  {1, 2, 3, 4},
-  TestID -> "FindInfraMidpoint-segment-tolerance-widens-band"
-]
-
-VerificationTest[
-  FindInfraMidpoint[PathGraph[Range[5]], 1, 5],
-  <| 3 -> 1 |>,
-  TestID -> "FindInfraMidpoint-endpoints-single"
-]
-
-(* Union over all geodesics matches the per-geodesic centre vertices. *)
-VerificationTest[
-  With[{g = GridGraph[{3, 3}], d = GraphDistance[GridGraph[{3, 3}], 1, 9]},
-    Keys @ FindInfraMidpoint[g, 1, 9] ===
-      Sort @ DeleteDuplicates[
-        #[[ Ceiling[ Length[#] / 2 ] ]] & /@ FindPath[g, 1, 9, {d}, All]
-      ]
-  ],
-  True,
-  TestID -> "FindInfraMidpoint-union-matches-geodesic-midpoints"
-]
-
-(* ===== FindInfraMidpoint on walk graphs ===== *)
-
-VerificationTest[
-  FindInfraMidpoint[PathGraph[Range[5]], geodesicGraph @ {1, 2, 3, 4, 5}],
-  <| 3 -> 1 |>,
-  TestID -> "FindInfraMidpoint-walk-graph-single"
-]
-
-(* Walks with different centres union into one effective point. *)
-VerificationTest[
-  Keys @ FindInfraMidpoint[ PathGraph[ Range[ 7 ] ],
-    geodesicGraph /@ { { 1, 2, 3, 4, 5, 6, 7 }, { 1, 2, 3, 4, 5 } } ],
-  { 3, 4 },
-  TestID -> "FindInfraMidpoint-walk-graphs-multi-union"
-]
-
-(* both reversed walks pass through 3, so the midpoint projection gives it
-   mass 2 -- a measure whose occupation normalises to 1 *)
-VerificationTest[
-  FindInfraMidpoint[ PathGraph[ Range[ 5 ] ],
-    geodesicGraph /@ { { 1, 2, 3, 4, 5 }, { 5, 4, 3, 2, 1 } } ],
-  <| 3 -> 2 |>,
-  TestID -> "FindInfraMidpoint-walk-graphs-mass-of-shared-middle"
-]
-
 (* ===== FindInfraPerpendicular ===== *)
 
 (* C5, line {1,2,3,4}, point 5: foot is 2, perpendicular line is the maximal
@@ -384,66 +318,17 @@ VerificationTest[
   TestID -> "FindInfraBisectingHyperplane-Separating-results-actually-separate"
 ]
 
-(* ===== FindInfraParallel: the pool under All ===== *)
+(* ===== RandomInfraParallel: the pool under All ===== *)
 
 VerificationTest[
-  infraSpread @ FindInfraParallel[GridGraph[{4, 4}], {1, 2, 3, 4}, 5, All],
+  infraSpread @ RandomInfraParallel[GridGraph[{4, 4}], {1, 2, 3, 4}, 5, All],
   {{5, 6, 7, 8}},
-  TestID -> "FindInfraParallel-All-is-the-pool"
-]
-
-(* ===== FindInfraMidpoint Method -> "Embedding" ===== *)
-
-(* Embedding returns the single nearest-coordinate vertex, which lies in the metric union. *)
-VerificationTest[
-  MemberQ[ Keys @ FindInfraMidpoint[ GridGraph[ { 5, 5 } ], 1, 25, Method -> "Metric" ],
-           First @ Keys @ FindInfraMidpoint[ GridGraph[ { 5, 5 } ], 1, 25, Method -> "Embedding" ] ],
-  True,
-  TestID -> "FindInfraMidpoint-Embedding-in-metric-union"
-]
-
-VerificationTest[
-  Length @ FindInfraMidpoint[ GridGraph[ { 5, 5 } ], 1, 25, Method -> "Embedding" ],
-  1,
-  TestID -> "FindInfraMidpoint-Embedding-single-vertex"
-]
-
-VerificationTest[
-  Length @ FindInfraMidpoint[ GridGraph[ { 5, 5 } ], 1, 25, Method -> { "Embedding", "Pool" -> "AllPaths" } ],
-  1,
-  TestID -> "FindInfraMidpoint-Embedding-AllPaths-single-vertex"
+  TestID -> "RandomInfraParallel-All-is-the-pool"
 ]
 
 (* FindInfraPerpendicular "Embedding" Method has been removed (see plan
    okey-we-need-to-majestic-puppy: path-family Embedding dropped).  Users
    wanting embedding-ranked feet compose with EmbeddingClosest. *)
-
-(* ===== FindInfraGoldenSection ===== *)
-
-(* Closest index to the golden index 1 + 10/phi = 7.18 -> vertex 7, always a single point. *)
-VerificationTest[
-  FindInfraGoldenSection[PathGraph[Range[11]], 1, 11],
-  <| 7 -> 1 |>,
-  TestID -> "FindInfraGoldenSection-single-point-vertex-7"
-]
-
-VerificationTest[
-  FindInfraGoldenSection[PathGraph[Range[11]], 1, 11, "Tolerance" -> 0.5],
-  <| 7 -> 1 |>,
-  TestID -> "FindInfraGoldenSection-tolerance"
-]
-
-VerificationTest[
-  FindInfraGoldenSection[PathGraph[Range[11]], geodesicGraph @ Range[11]],
-  <| 7 -> 1 |>,
-  TestID -> "FindInfraGoldenSection-InfraSegment"
-]
-
-VerificationTest[
-  Length @ FindInfraGoldenSection[PathGraph[Range[11]], 1, 11, Method -> "Embedding"],
-  1,
-  TestID -> "FindInfraGoldenSection-Embedding-single-vertex"
-]
 
 (* ===== FindInfraCommonPoint ===== *)
 

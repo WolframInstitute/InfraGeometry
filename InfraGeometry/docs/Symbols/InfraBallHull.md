@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraBallHull
 Keywords: [ball hull, Mazur hull, ball-convex, convex hull, region, symbolic object, covering]
-SeeAlso: [InfraConvexHull, InfraBall, InfraTube, InfraMeasurement, FindInfraRepresentative, InfraMemberQ]
+SeeAlso: [InfraConvexHull, InfraBall, InfraTube, InfraMeasurement, RandomInfraRepresentative, InfraMemberQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraBallHull]()[*S*, *r*]</code> is the intersection of the closed balls of radius at most *r* that contain *S*, and the whole graph if there is none. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraBallHull]()[*S*, *r*]</code> is the intersection of the closed balls of radius at most *r* that contain *S*, and the whole graph if there is none. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraBallHull]()[*S*, {*r*}]</code> takes the balls of radius exactly *r*, and <code>[InfraBallHull]()[*S*, {*r*, *s*}]</code> those of radius between *r* and *s*.
 
@@ -39,10 +39,10 @@ Row[Table[
     {c = First @ GraphCenter[g]},
     {shell = FindInfraShell[g, c, 5]},
     {seeds = shell[[ {1, Round[Length[shell] / 3], Round[2 Length[shell] / 3]} ]]},
-    {hull = FindInfraRepresentative[g, InfraBallHull[seeds]]},
+    {hull = RandomInfraRepresentative[g, InfraBallHull[seeds]]},
     Labeled[
       InfraSubstrateHighlight[g, {InfraBall[c, 5], hull, seeds}, "PointSizeRange" -> 17],
-      Text[name <> ": " <> ToString[Length @ hull] <> " of " <> ToString[Length @ FindInfraRepresentative[g, InfraBall[c, 5]]] <> " vertices"]]],
+      Text[name <> ": " <> ToString[Length @ hull] <> " of " <> ToString[Length @ RandomInfraRepresentative[g, InfraBall[c, 5]]] <> " vertices"]]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```
 
@@ -64,8 +64,8 @@ With[
   {c = First @ GraphCenter[g]},
   {shell = FindInfraShell[g, c, 5]},
   {seeds = shell[[ {1, Round[Length[shell] / 3], Round[2 Length[shell] / 3]} ]]},
-  {hull = FindInfraRepresentative[g, InfraBallHull[seeds]]},
-  {SubsetQ[hull, seeds], FindInfraRepresentative[g, InfraBallHull[hull]] === hull}]
+  {hull = RandomInfraRepresentative[g, InfraBallHull[seeds]]},
+  {SubsetQ[hull, seeds], RandomInfraRepresentative[g, InfraBallHull[hull]] === hull}]
 ```
 
 The hull of at most *r* shrinks as *r* grows. On a path graph no ball of radius 1 contains 3 and 7, so the hull is the whole path; from radius 2 it is the interval.

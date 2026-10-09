@@ -100,5 +100,5 @@ With[
   {corner = First @ Select[VertexList[g], VertexDegree[g, #] == 1 &]},
   {closure = TopologicalClosure[BallTopology[g, 3], {corner}]},
   {InfraSubstrateHighlight[g, {Complement[closure, {corner}] -> StandardRed, corner -> StandardBlue}],
-   closure == Intersection @@ (FindInfraRepresentative[g, InfraBall[#, 3]] & /@ FindInfraRepresentative[g, InfraBall[corner, 3]])}]
+   closure == Intersection @@ (RandomInfraRepresentative[g, InfraBall[#, 3]] & /@ RandomInfraRepresentative[g, InfraBall[corner, 3]])}]
 ```

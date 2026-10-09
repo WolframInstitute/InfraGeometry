@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraGeodesicQ
 Keywords: [geodesic, infra-scale, locally shortest, walk, test]
-SeeAlso: [FindInfraGeodesic, InfraWalkQ, InfraSegmentQ, InfraMeasurement]
+SeeAlso: [RandomInfraGeodesic, InfraWalkQ, InfraSegmentQ, InfraMeasurement]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
@@ -22,7 +22,7 @@ Definition: a walk *v0*, …, *vk* is a geodesic at infra-scale *s* when every w
 
 The condition gets stronger as *s* grows, so a walk that passes at *s* passes at every smaller scale. The ladder is exact at both ends: at scale `1` the test is [InfraWalkQ](), at scale `Infinity` it is [InfraSegmentQ]().
 
-*walk* may be a vertex list, a walk graph such as [FindInfraGeodesic]() returns, a list of walk graphs, or a directed acyclic graph. A DAG passes when every path from a source to a sink passes, so the interval and spray graphs can be tested without listing their paths one by one. A walk of fewer than two vertices is not a geodesic.
+*walk* may be a vertex list, a walk graph such as [RandomInfraGeodesic]() returns, a list of walk graphs, or a directed acyclic graph. A DAG passes when every path from a source to a sink passes, so the interval and spray graphs can be tested without listing their paths one by one. A walk of fewer than two vertices is not a geodesic.
 
 ## Basic Examples
 
@@ -57,7 +57,7 @@ At scale 1 the test is [InfraWalkQ]() and at scale `Infinity` it is [InfraSegmen
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {walkGraphs = FindInfraGeodesic[g, a, 1, {4}, All]},
+  {walkGraphs = RandomInfraGeodesic[g, a, 1, {4}, All]},
   {walkSeqs = Last /@ VertexList[#] & /@ walkGraphs},
   {InfraSubstrateHighlight[g, {Select[walkGraphs, InfraGeodesicQ[g, #, Infinity] &], a}],
    AllTrue[walkSeqs, InfraGeodesicQ[g, #, 1] === InfraWalkQ[g, #] &],

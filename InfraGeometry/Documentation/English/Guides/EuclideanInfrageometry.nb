@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[     84168,       2123]
-NotebookOptionsPosition[     65780,       1847]
-NotebookOutlinePosition[     66945,       1878]
-CellTagsIndexPosition[     66902,       1875]
+NotebookDataLength[     79924,       1981]
+NotebookOptionsPosition[     62236,       1712]
+NotebookOutlinePosition[     63406,       1743]
+CellTagsIndexPosition[     63363,       1740]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -24,32 +24,55 @@ Cell["Euclidean Infrageometry", "GuideTitle",
  CellID->942062912,ExpressionUUID->"a3a3c038-ca24-47b7-9945-83f1c1312fe3"],
 
 Cell[TextData[{
- "Euclidean infrageometry is synthetic geometry on a graph ",
- Cell[BoxData[
-  RowBox[{
-   StyleBox["G", "TI"], "=", 
-   StyleBox["(",
-    SpanMaxSize->1], 
-   RowBox[{
-    StyleBox["V", "TI"], ",", 
-    StyleBox["E", "TI"]}], 
-   StyleBox[")",
-    SpanMaxSize->1]}]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "e443002f-889d-4176-a5a6-6101e6d3f0cc"],
- " with its path metric ",
- Cell[BoxData[
-  StyleBox["d", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "566eed27-3f73-4fea-8782-dab537536116"],
- ". The points are the vertices, and the segments, rays, lines, circles, \
-balls and polygons are defined from ",
- Cell[BoxData[
-  StyleBox["d", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "6fd17370-0790-4679-9d76-165cd93c3674"],
- " alone, as in Euclid. Riemannian infrageometry, in contrast, measures the \
-substrate itself."
+ StyleBox["Euclidean Infrageometry",
+  FontWeight->"Bold"],
+ " studies natural geometric objects on arbitrary graph substrates using the \
+synthetic methods; it enumerates them, studies mutual relations, and performs \
+iterative constructions. Geometry as developed by humans as observed webbing \
+of a large graph as seens at large scale leading to the idealization of a \
+continueous webbing and idealized geometric objects such as \"breathless line\
+\" and \"\[Ellipsis] point\" (<< how euclid defined point>>). A consequence \
+of infinitesimality is uniqueness in the idealized costruction, which cannot \
+be satisfies in Infrageoemtrye. In fact, we have to deal with ",
+ StyleBox["multi-valued constructions",
+  FontWeight->"Bold"],
+ ", where a fixed sequence of construction steps generates a branching \
+multiway system. Although concrete representatives may differ across \
+branches, the system is \"causally invariant\" in the sense that the \
+dependency graph of construction steps remains unchanged. To each \
+multi-object we associate a ",
+ StyleBox["vertex density",
+  FontWeight->"Bold"],
+ " given by normalized counts of representtivees the vertex is contained in, \
+and for path-like objects, we similarly associate an ",
+ StyleBox["edge density",
+  FontWeight->"Bold"],
+ ". We imagine that under a suitable notion of Gromov-Hausdorff limit these \
+measures converge weakly to measures supported on classical \"thin\" \
+geometric objects provided that the limiting space is an instance of \
+Euclidean exioms. Euclidean Infrageometry studies natural geometric objects \
+on arbitrary graph substrates using synthetic methods. It enumerates these \
+objects, studies their mutual relations, applies operations to them, and \
+performs iterative constructions. If space is represented by a large graph \
+viewed as a web of paths, human geometry can be viewed as an idealized theory \
+based on the perception of infinitesimal structure at large scales. This \
+leads to the idealization of a continuous \"web\" and of geometric objects \
+such as the \"dimensionless point\" and the \"breadthless line.\" \
+Infrageometry works directly with the discrete substrate and does not assume \
+infinitesimality. Consequently, some constructions need not be unique: a \
+fixed sequence of steps yields ",
+ StyleBox["multi-objects", "TI"],
+ " and generates a branching multiway system. Although concrete \
+representatives may differ across branches, the system is causally invariant \
+in the sense that the dependency graph of construction steps remains \
+unchanged. We associate each multi-object with a ",
+ StyleBox["vertex density", "TI"],
+ ", given by the fraction of its representatives that contain each vertex; \
+for path-like objects, we similarly associate an ",
+ StyleBox["edge density", "TI"],
+ ". We expect that, under a suitable notion of Gromov-Hausdorff convergence, \
+these measures converge weakly to measures supported on classical \"thin\" \
+geometric objects, provided the limiting space satisfies the Euclidean axioms."
 }], "GuideAbstract",
  CellID->2001916300,ExpressionUUID->"ef0ab37b-2e0d-4399-8f7e-82603ccbe925"]
 }, Open  ]],
@@ -59,136 +82,11 @@ Cell[CellGroupData[{
 Cell["", "GuideFunctionsSection",
  CellID->1866139230,ExpressionUUID->"a0ea3657-4c83-4862-93c8-ecf80cebc774"],
 
-Cell[TextData[{
- "Classical geometry has infinitesimality: a segment can be subdivided \
-infinitely many times, whatever the scale of the observer. A graph has no \
-infinitely small part. Infrageometry aggregates instead: an observer scale ",
- Cell[BoxData[
-  StyleBox["r", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "57c3699b-14e2-4ec3-bd46-2d2383753a55"],
- ", the number of steps the observer inspects at once, must be given before \
-an object makes sense."
-}], "GuideText",ExpressionUUID->"5c3bc016-134e-4731-accf-d8848773e85a"],
-
-Cell[TextData[{
- "A construction on a graph is multi-valued: two vertices are joined by many \
-geodesics, and so they have many midpoints. A construction therefore gives a \
-family of objects, points in dimension 0 and paths in dimension 1, together \
-with its vertex density ",
- Cell[BoxData[
-  RowBox[{
-   RowBox[{
-    StyleBox["\[Rho]", "TI"], ":", 
-    StyleBox["V", "TI"], "\[Rule]", "{", "0"}], ",", 
-   RowBox[{"1", ",", "2"}], ",", 
-   RowBox[{"\[Ellipsis]", "}"}]}]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "327ea3a8-888d-4e93-888d-b42911e5e772"],
- ", where ",
- Cell[BoxData[
-  RowBox[{
-   StyleBox["\[Rho]", "TI"], 
-   StyleBox["(",
-    SpanMaxSize->1], 
-   StyleBox["v", "TI"], 
-   StyleBox[")",
-    SpanMaxSize->1]}]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "84f6770f-943a-4aaa-b99e-7d4f25639416"],
- " is the number of its objects through the vertex ",
- Cell[BoxData[
-  StyleBox["v", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "a60efea0-0a28-4754-a1d9-87b6047ba75a"],
- "."
-}], "GuideText",ExpressionUUID->"be38cde7-6467-477a-858d-93c0e8786805"],
-
-Cell[TextData[{
- "Let graphs converge to a space, ",
- Cell[BoxData[
-  RowBox[{
-   StyleBox["(",
-    SpanMaxSize->1], 
-   RowBox[{
-    SubscriptBox[
-     StyleBox["V", "TI"], 
-     StyleBox["n", "TI"]], ",", 
-    SubscriptBox[
-     StyleBox["d", "TI"], 
-     StyleBox["n", "TI"]], ",", 
-    SubscriptBox[
-     StyleBox["\[Mu]", "TI"], 
-     StyleBox["n", "TI"]]}], 
-   StyleBox[")",
-    SpanMaxSize->1], "\[Rule]", 
-   StyleBox["(",
-    SpanMaxSize->1], 
-   RowBox[{
-    StyleBox["M", "TI"], ",", 
-    StyleBox["d", "TI"], ",", 
-    StyleBox["\[Mu]", "TI"]}], 
-   StyleBox[")",
-    SpanMaxSize->1]}]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "b887c290-ff3e-480f-b989-6d1e664d6bb4"],
- ", in the Gromov-Hausdorff sense for metric measure spaces, with ",
- Cell[BoxData[
-  SubscriptBox[
-   StyleBox["d", "TI"], 
-   StyleBox["n", "TI"]]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "5663520c-c6f6-423f-8d18-174846d825a3"],
- " the rescaled path metric and ",
- Cell[BoxData[
-  SubscriptBox[
-   StyleBox["\[Mu]", "TI"], 
-   StyleBox["n", "TI"]]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "66e9738d-6790-4af8-aaee-f52672d241a5"],
- " the rescaled counting measure. We expect the normalized densities ",
- Cell[BoxData[
-  RowBox[{
-   SubscriptBox[
-    StyleBox["\[Rho]", "TI"], 
-    StyleBox["n", "TI"]], "/", 
-   UnderscriptBox["\[Sum]", 
-    StyleBox["v", "TI"],
-    LimitsPositioning->False], 
-   SubscriptBox[
-    StyleBox["\[Rho]", "TI"], 
-    StyleBox["n", "TI"]], 
-   StyleBox["(",
-    SpanMaxSize->1], 
-   StyleBox["v", "TI"], 
-   StyleBox[")",
-    SpanMaxSize->1]}]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "295923b2-44c8-460f-95dc-016bcf5c4eff"],
- " to converge weakly to the Dirac density of the corresponding classical \
-object, concentrated on a point or along a curve. The classical objects are \
-breadthless and the classical intersections unique; the constructions here \
-are their finite-scale versions."
-}], "GuideText",ExpressionUUID->"71f5e333-0f7b-4b6e-a9ff-366ee5973869"],
-
-Cell["\<\
-Each notion has three symbols. The inert head, InfraSegment[p, q], is the \
-construction stated before any graph; InfraMeasurement reads it on a graph. \
-The finder, FindInfraSegment[g, p, q], gives one object as a vertex list, and \
-with a trailing count a List of them. The predicate, InfraSegmentQ[g, walk], \
-tests a vertex list.\
-\>", "GuideText",ExpressionUUID->"846031a5-76b0-431e-a6b0-c108e6723bea"],
-
-Cell["\<\
-The inert heads combine: InfraIntersection and InfraUnion of heads are heads \
-again, and a head is an object of an InfraScene.\
-\>", "GuideText",ExpressionUUID->"04efd697-b92b-4338-a7ad-29c15a004be7"],
-
-Cell["\t", "GuideDelimiter",ExpressionUUID->"b131d8c7-6f81-4da0-a4e6-7d3a1140c865"],
+Cell["\t", "GuideDelimiter",ExpressionUUID->"db8eedf8-b2e6-4ecd-ab13-2d7942933ea0"],
 
 Cell[CellGroupData[{
 
-Cell["Points", "GuideFunctionsSubsection",ExpressionUUID->"3c1a9663-2620-486a-9154-feac3a614a3d"],
+Cell["Points", "GuideFunctionsSubsection",ExpressionUUID->"6e6de10b-ffd9-4486-88f3-fa43d6969623"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -200,10 +98,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "78941c74-608a-4dee-8a54-a32da643e7e9"],
+  "ed14b1c0-22f3-4fb7-b280-0cc849ffa119"],
  " \[LongDash] ",
- "the inert point, a vertex drawn from a region inside a scene"
-}], "GuideText",ExpressionUUID->"3fe3a52e-fde9-4825-873d-23ed6d358156"],
+ "the point, a vertex drawn from a region inside a scene"
+}], "GuideText",ExpressionUUID->"fcc80cb4-91e7-4d34-b424-6f38af5d790d"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -215,32 +113,16 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "a6ce9fae-7141-4489-8209-d604f4292899"],
+  "97d53eba-44e2-48b6-b2fb-531e3b550df4"],
  " \[LongDash] ",
  "a vertex drawn from a region, a vertex List, a ball or any other region; a \
 count gives a List of vertices, \"PairwiseDistance\" constrains the tuple"
-}], "GuideText",ExpressionUUID->"c9912ea5-a9ca-44bd-bc90-553df5d0f73a"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["FindInfraMidpoint"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraMidpoint", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "3d48c06e-e937-4427-8667-f8b65177e7e7"],
- " \[LongDash] ",
- "the middle vertices of the geodesics from p1 to p2 as a density, one vertex \
-at even distance and two at odd"
-}], "GuideText",ExpressionUUID->"88dfdd53-979e-4efd-9973-41df9f97021f"]
+}], "GuideText",ExpressionUUID->"b57186ef-aa16-44cb-9ae1-49ce3fc792c3"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Segments", "GuideFunctionsSubsection",ExpressionUUID->"7322a26c-17c2-473a-a5b5-1054e0e388be"],
+Cell["Segments", "GuideFunctionsSubsection",ExpressionUUID->"ff158af0-a23e-458e-959d-01492dda020c"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -252,27 +134,27 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "bf609785-a7fc-461c-aeff-6d8aec325395"],
+  "076eb70b-bfd8-4980-8f60-60951ec100f5"],
  " \[LongDash] ",
- "the inert segment from p to q, every geodesic between them at once; with \
-more points, the polyline of their consecutive segments"
-}], "GuideText",ExpressionUUID->"4de1fb0b-2b03-4142-b400-27a415c5f947"],
+ "the segment from p to q, every geodesic between them at once; with more \
+points, the polyline of their consecutive segments"
+}], "GuideText",ExpressionUUID->"299241df-397f-4ed5-8649-286d260f6b2e"],
 
 Cell[TextData[{
  Cell[BoxData[
   TemplateBox[{
     Cell[
-     TextData["FindInfraSegment"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraSegment", 
+     TextData["RandomInfraSegment"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/RandomInfraSegment", 
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "ab960de9-ab5f-4e5a-83c7-b05d1e5253e7"],
+  "b350b9f8-2681-46ec-92e8-9518001137c5"],
  " \[LongDash] ",
  "one geodesic from p to q as a vertex list; a trailing count gives a List of \
 them"
-}], "GuideText",ExpressionUUID->"fbd6612d-848e-47f4-be1e-a723827fed3f"],
+}], "GuideText",ExpressionUUID->"5183660b-7090-42ac-b397-bcc3dc8c101e"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -284,15 +166,15 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "8e1b1fcd-dff5-4aff-9c22-8a617445d106"],
+  "cca37d8d-5b65-4e09-880e-45a969d8e364"],
  " \[LongDash] ",
  "whether a walk is a geodesic"
-}], "GuideText",ExpressionUUID->"78bc39dd-febc-4d5a-9beb-158f8096cf26"]
+}], "GuideText",ExpressionUUID->"191bbbe2-53eb-455a-93af-145adecf7942"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Rays and lines", "GuideFunctionsSubsection",ExpressionUUID->"c602c978-aa89-45f3-a192-e9d34d3ea288"],
+Cell["Rays and lines", "GuideFunctionsSubsection",ExpressionUUID->"b56153c3-76f3-4c6b-8d0c-e32afa78631d"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -304,27 +186,27 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "979cfba2-7c08-47b1-ab75-b4369b16ae4a"],
+  "c6af75db-b518-4a39-b5eb-f9de2e2014f0"],
  " \[LongDash] ",
- "the inert ray from p through q, the geodesics from p through q that no \
-neighbour of their last vertex prolongs; InfraRay[p, p] is the pencil at p"
-}], "GuideText",ExpressionUUID->"df0d0c8c-3de1-4baa-9999-c3e3d7228797"],
+ "the ray from p through q, the geodesics from p through q that no neighbour \
+of their last vertex prolongs; InfraRay[p, p] is the pencil at p"
+}], "GuideText",ExpressionUUID->"32580eb6-0dff-4e8a-9923-db3be626877a"],
 
 Cell[TextData[{
  Cell[BoxData[
   TemplateBox[{
     Cell[
-     TextData["FindInfraRay"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraRay", 
+     TextData["RandomInfraRay"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/RandomInfraRay", 
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "796a28a1-2f24-4036-b486-c1ae9d756dc9"],
+  "7691b216-c465-4442-b6c9-d4d69187f407"],
  " \[LongDash] ",
  "one ray from p through q as a vertex list; a trailing count gives a List of \
 them"
-}], "GuideText",ExpressionUUID->"73cebccf-521c-4dc0-8090-094986659f18"],
+}], "GuideText",ExpressionUUID->"869e2823-f3cd-44ca-bbdd-bf67d8d9d874"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -336,32 +218,32 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "0ade149c-9a7c-40f0-a3ff-e78d8fbe9621"],
+  "d15f83e7-7c3e-4dfe-b462-e138e810348e"],
  " \[LongDash] ",
- "the inert line through p and q, the geodesics through both that no \
-neighbour of either endpoint prolongs"
-}], "GuideText",ExpressionUUID->"bae8ec88-d7af-4f03-9cbf-7dc16a8a3cdf"],
+ "the line through p and q, the geodesics through both that no neighbour of \
+either endpoint prolongs"
+}], "GuideText",ExpressionUUID->"c9e9201b-b00f-4a4c-bf5b-89e11da64e8b"],
 
 Cell[TextData[{
  Cell[BoxData[
   TemplateBox[{
     Cell[
-     TextData["FindInfraLine"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraLine", 
+     TextData["RandomInfraLine"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/RandomInfraLine", 
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "e6a5724a-bdbe-47b8-8097-ee03e1aa3a42"],
+  "f60e8e48-f742-40ec-b74f-65fe2ee549b4"],
  " \[LongDash] ",
  "one line through p and q as a vertex list; a trailing count gives a List of \
 them"
-}], "GuideText",ExpressionUUID->"184b5a94-a1a2-42ab-95ab-20897d4c1201"]
+}], "GuideText",ExpressionUUID->"655484d3-4621-4b34-8245-eea5b2c8a364"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Circles and arcs", "GuideFunctionsSubsection",ExpressionUUID->"c6f74fad-ea76-4d74-83f3-d478030e6a25"],
+Cell["Circles and arcs", "GuideFunctionsSubsection",ExpressionUUID->"fb7620d9-31a7-43ee-bf87-4f39787adf57"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -373,11 +255,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "172af342-77e3-4a98-b5cd-cb3e04256216"],
+  "10b31bb5-9a8b-4788-954a-415982b69614"],
  " \[LongDash] ",
- "the inert circles around c at radius r, or in the band {r, s}: the shortest \
+ "the circles around c at radius r, or in the band {r, s}: the shortest \
 cycles of the band that separate c from the outside"
-}], "GuideText",ExpressionUUID->"c2ff3974-1903-4d84-96ac-8a8511dcf4aa"],
+}], "GuideText",ExpressionUUID->"5c5fef4d-7a00-470a-9a5a-411109043496"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -389,17 +271,17 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "dc85356d-25b1-46b2-be2d-66a99f9fa695"],
+  "692d2ad0-7c44-4612-af55-fbc7107e7ab3"],
  " \[LongDash] ",
- "the inert arc around c from p1 to pk through the intermediate points, the \
+ "the arc around c from p1 to pk through the intermediate points, the \
 geodesics of the band graph of the circle through p1; InfraArc[c, {p, p}] is \
 the closed arc"
-}], "GuideText",ExpressionUUID->"4b9eeaae-ec42-44a7-a5d8-5fce0058e9f8"]
+}], "GuideText",ExpressionUUID->"04676ae0-1094-4af6-87e2-cb5c468151d1"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Balls and shells", "GuideFunctionsSubsection",ExpressionUUID->"3245647c-d50c-4cc7-a2ba-bd684c9389ee"],
+Cell["Balls and shells", "GuideFunctionsSubsection",ExpressionUUID->"bd20d0e2-5921-4b3f-9a18-1eff464b7502"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -411,10 +293,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "51f06781-9b86-42f3-8e32-2b843c77b63f"],
+  "d0a7e07b-d59a-46c6-b2ad-dc87ae05560b"],
  " \[LongDash] ",
- "the inert closed ball {v : d(c, v) <= r} about a vertex or a vertex set"
-}], "GuideText",ExpressionUUID->"3e053f4b-e299-40e9-a417-efb25507e92a"],
+ "the closed ball {v : d(c, v) <= r} about a vertex or a vertex set"
+}], "GuideText",ExpressionUUID->"840e71db-d184-4b01-a83d-f2d9fb130470"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -426,11 +308,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "c5258e7d-b8b5-4f32-8658-b50d2c3d1cf6"],
+  "cb57de46-4c89-4c9d-83c4-107c745f2776"],
  " \[LongDash] ",
- "the inert shell {v : rmin <= d(c, v) <= rmax} about a vertex or a vertex \
-set, a level set of the distance"
-}], "GuideText",ExpressionUUID->"e179177c-c5eb-4732-86b1-2d565a6473f0"],
+ "the shell {v : rmin <= d(c, v) <= rmax} about a vertex or a vertex set, a \
+level set of the distance"
+}], "GuideText",ExpressionUUID->"9f13ea43-e84c-4714-8abe-dfcd97e0e3c9"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -442,16 +324,16 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "b2a353dc-990c-46ff-bfbc-5d0f75351fe4"],
+  "7df42169-9ec7-460c-af24-194d7a4864c3"],
  " \[LongDash] ",
  "the shell {v : d(c, v) == r}, or the band {rmin, rmax}, as a sorted vertex \
 list"
-}], "GuideText",ExpressionUUID->"074ec2f4-7184-4302-a493-0a6ab57b34f5"]
+}], "GuideText",ExpressionUUID->"bdbf0843-cbd7-4353-828e-5dc8c04bd063"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Reading a construction on a graph", "GuideFunctionsSubsection",ExpressionUUID->"6e7f1dc4-bb24-48f2-9994-8ed7d4c5eb5b"],
+Cell["Reading a construction on a graph", "GuideFunctionsSubsection",ExpressionUUID->"f86d04b0-1f19-469c-a701-3c6991aeac98"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -463,30 +345,30 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "20165773-f050-461b-8621-0f3ce28b88b5"],
+  "79001818-46c0-44bd-9e1f-7b356bef2af2"],
  " \[LongDash] ",
- "a property of an inert head on a graph: \"Graph\", \"Cardinality\", \
+ "a property of a symbolic object on a graph: \"Graph\", \"Cardinality\", \
 \"Length\", \"VertexDensity\", \"EdgeDensity\", \"Subgraph\", \"Faithful\", \
 \"CountingMeasure\", \"RiemannianMeasure\"; the \"Graph\" of a segment, ray, \
 line or arc is the directed acyclic graph whose directed paths are exactly \
 its objects"
-}], "GuideText",ExpressionUUID->"c359bee7-f775-449d-9973-a933c9814fa6"],
+}], "GuideText",ExpressionUUID->"f10aeeb1-0f5c-4054-8636-8ba2c01a0023"],
 
 Cell[TextData[{
  Cell[BoxData[
   TemplateBox[{
     Cell[
-     TextData["FindInfraRepresentative"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraRepresentative", 
+     TextData["RandomInfraRepresentative"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/RandomInfraRepresentative", 
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "cc3cfb4a-445a-41bb-ad66-92646170ebeb"],
+  "95dc4221-8fbb-443e-a5e6-29ad2561624c"],
  " \[LongDash] ",
  "one member of a head as a vertex list; a trailing count gives a List of \
 them, \"RandomChoice\" a random member"
-}], "GuideText",ExpressionUUID->"076722d0-f9a6-431e-a392-8b47b7f2a817"],
+}], "GuideText",ExpressionUUID->"726654d5-ae48-41fe-a7be-0c039a3c2ca4"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -498,10 +380,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "a1cc64b6-c0fb-41e4-9d1f-e755656bc526"],
+  "48d486fb-9d2c-4558-a8ed-42670e87aa36"],
  " \[LongDash] ",
  "whether a vertex list is a member of a head on a graph"
-}], "GuideText",ExpressionUUID->"0eebc2c7-386d-4e79-b33c-ecfbf0da494f"],
+}], "GuideText",ExpressionUUID->"3c7d2382-29cc-4375-92cd-35078872ae95"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -513,11 +395,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "ccfbeb9e-968a-4c0b-8837-8649825fc7ea"],
+  "923cd0fc-a028-4f0c-9005-b13630b3539b"],
  " \[LongDash] ",
  "the vertex density of any object: a vertex, a vertex list, a density, a \
 walk graph"
-}], "GuideText",ExpressionUUID->"7d1d807c-0f7c-496c-ab43-62ff3f8533aa"],
+}], "GuideText",ExpressionUUID->"286c42b5-691c-4551-bd26-19a274073150"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -529,11 +411,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "687cd338-aeb6-4ed7-a3d9-47fd815835b7"],
+  "d1daef88-9990-4a8e-ab41-2c6b5dba2251"],
  " \[LongDash] ",
- "the objects common to two inert heads, an inert head again, with the \
-product of their vertex densities"
-}], "GuideText",ExpressionUUID->"6d6a4593-08fb-47e7-aa69-6bcbf8e7f758"],
+ "the symbolic intersection of two objects, with the product of their vertex \
+densities"
+}], "GuideText",ExpressionUUID->"7bd17184-10e7-44f6-bc30-cc4648f899fe"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -545,16 +427,15 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "9b860940-bf4a-4f79-acde-1ef647feed6a"],
+  "5d583252-619e-404b-934e-50e4be15e299"],
  " \[LongDash] ",
- "the objects of either of two inert heads, an inert head again, with the sum \
-of their vertex densities"
-}], "GuideText",ExpressionUUID->"40855e0c-b161-4518-ba71-bffdf2b5c489"]
+ "the symbolic union of two objects, with the sum of their vertex densities"
+}], "GuideText",ExpressionUUID->"72532af1-8eef-4d16-8ffc-916870eeac31"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Substrates and drawing", "GuideFunctionsSubsection",ExpressionUUID->"05806bb1-ad1d-40c5-8c91-28873cd7eb6e"],
+Cell["Substrates and drawing", "GuideFunctionsSubsection",ExpressionUUID->"852b69cd-3659-4fdc-88d6-6ac16a1dc718"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -566,11 +447,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "a2277739-b1d8-459b-bc37-2632e3d1c02f"],
+  "d149ce59-6bb5-4a56-8577-a11c6c537adf"],
  " \[LongDash] ",
  "the named example graphs at size \"Small\", \"Medium\" or \"Large\", listed \
 on the Infra Substrates guide"
-}], "GuideText",ExpressionUUID->"54f99fb0-c58d-4b70-bd27-7b34d1547589"],
+}], "GuideText",ExpressionUUID->"55f67835-5fd0-4de3-95e7-fce37fb29e50"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -582,16 +463,16 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "e8e3e1fd-b901-4f0c-8396-910c6a5c84b9"],
+  "3a2313fa-018d-4dfb-b578-c53ae4ce166c"],
  " \[LongDash] ",
  "the densities of a list of objects drawn on a graph, the i-th object in the \
 i-th palette color; a Directive styles the objects after it"
-}], "GuideText",ExpressionUUID->"9060e2f0-1668-455e-8d5b-b430fa2eb458"]
+}], "GuideText",ExpressionUUID->"5574d4d5-d5dc-4a25-8ddf-27f1081f64ba"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Scenes", "GuideFunctionsSubsection",ExpressionUUID->"0598c6dd-f176-41f0-a26f-4a43f29c2435"],
+Cell["Scenes", "GuideFunctionsSubsection",ExpressionUUID->"56bae202-f9a4-4c41-ac32-e53031f09a71"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -603,11 +484,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "c4b05f4c-cc0e-4425-b838-911dbfb891e4"],
+  "c4515fe3-e74f-40dd-9cce-a32358ee8d1d"],
  " \[LongDash] ",
- "a construction stated before any graph: the objects, and hypotheses that \
-construct them with inert heads or assert relations between them"
-}], "GuideText",ExpressionUUID->"c9636f59-e2f7-40e6-94f4-c59d9e6ba11e"],
+ "a symbolic multi-construction stated before any graph: the objects, and \
+hypotheses that construct them or assert relations between them"
+}], "GuideText",ExpressionUUID->"6a51b526-585c-45d6-8d6e-789698b784ac"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -619,11 +500,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "fde399b7-e117-4f85-9ac3-a4c76d3b1a3b"],
+  "4d1c750c-0514-4fcf-996a-16cdb3549631"],
  " \[LongDash] ",
  "one construction encapsulated as a step of a scene; a second argument \
 labels it"
-}], "GuideText",ExpressionUUID->"672993c0-5ff9-4a2f-b919-a233c1c3d4cc"],
+}], "GuideText",ExpressionUUID->"f608019f-b6d8-4c18-9580-0e280c1345d2"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -635,11 +516,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "a546009e-72b5-4f32-b668-39bbffcae352"],
+  "7aad2ff8-47b4-4ea4-992c-8b0dba96b058"],
  " \[LongDash] ",
  "a scene solved on a graph, step by step; a List of bindings, one per \
 admissible combination"
-}], "GuideText",ExpressionUUID->"ac0c7105-aaf4-4c11-96c6-4fff4e838514"],
+}], "GuideText",ExpressionUUID->"202033ae-6fa6-4d09-b084-151a7ee3e00c"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -651,11 +532,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "83f3fdbf-81d1-4b40-bea4-d59b25597024"],
+  "10f0ba99-286f-4896-8bc3-b1d6174a70e2"],
  " \[LongDash] ",
  "one solved binding of a scene; with an object name, that object read out of \
 it"
-}], "GuideText",ExpressionUUID->"a30563af-b82a-4201-afb9-0466e4391e63"],
+}], "GuideText",ExpressionUUID->"ce96d270-6aa0-4537-a0e2-4e1935764c1f"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -667,30 +548,15 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "46be39de-73ae-4ff2-b3cc-50484bd2e5c1"],
+  "e87b802c-a103-4daa-874e-424d3cc20115"],
  " \[LongDash] ",
  "a step-by-step view of a scene on a graph"
-}], "GuideText",ExpressionUUID->"15723728-a3d7-48f5-8ed1-bc96bc25ee51"]
+}], "GuideText",ExpressionUUID->"59eb144b-8722-4c37-a068-d1568db57758"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Experimental: Points", "GuideFunctionsSubsection",ExpressionUUID->"90aba879-b996-433e-8d26-420ce1f0c9fc"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["FindInfraGoldenSection"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraGoldenSection", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "cc640de8-a508-4c2f-8874-2a55b40ec80f"],
- " \[LongDash] ",
- "the density at the golden-ratio index along every geodesic from p1 to p2"
-}], "GuideText",ExpressionUUID->"4970131a-f826-4f9a-8800-184d92dcd89e"],
+Cell["Experimental: Points", "GuideFunctionsSubsection",ExpressionUUID->"c57f8a5e-1c3e-429b-b681-7b3f8a9981fe"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -702,11 +568,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "0157bc27-911e-4bce-8d81-15d4fef9982c"],
+  "04002b58-88f9-4d86-a0bd-06172ab15ff1"],
  " \[LongDash] ",
  "the reflections x' of x through a, the vertices with d(x, a) == d(a, x') on \
 a geodesic through a"
-}], "GuideText",ExpressionUUID->"3759c960-76d4-4a40-aea5-2ba5300f63ea"],
+}], "GuideText",ExpressionUUID->"a8d19d53-a9be-4e44-b014-bef9b1e264ef"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -718,10 +584,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "1f65bc89-55ce-4e88-9cff-be14526e7c83"],
+  "aa2c05c4-ad7d-470a-9e58-6ac197721ecf"],
  " \[LongDash] ",
  "the points lying on every listed line"
-}], "GuideText",ExpressionUUID->"9d422ded-18c7-41de-ab19-f01f41ce3f86"],
+}], "GuideText",ExpressionUUID->"94ab3b38-557d-4f8a-a065-3235a940cabc"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -733,11 +599,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "04a50d0f-a2e0-495f-bd3c-073c1e24d6ca"],
+  "ed2f94d8-0ac5-413f-8a63-8a190ca7d6ee"],
  " \[LongDash] ",
  "the vertices of a line at minimum distance from a point, the feet of the \
 point on the line"
-}], "GuideText",ExpressionUUID->"7f9b6ce7-4f2c-404c-93d3-5e9b3727fcf7"],
+}], "GuideText",ExpressionUUID->"f6a5a9c9-edab-4890-b4b3-19dea9647259"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -749,11 +615,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "36b499e0-d59a-495d-8d0b-83d0c4d18724"],
+  "f8da3f30-88fc-48c3-b9fc-cc0b1d3558d8"],
  " \[LongDash] ",
  "the vertices equidistant from p1, \[Ellipsis], pn as a sorted vertex list; \
 a trailing {lo, hi} thickens each bisector to a slab"
-}], "GuideText",ExpressionUUID->"d4c7b57e-1b65-4b11-b867-569188977be8"],
+}], "GuideText",ExpressionUUID->"0f030514-fddb-40e8-844d-abddd109616f"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -765,15 +631,15 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "06c6696a-7153-46b0-b708-0b06d1f17071"],
+  "0d27aa2d-a114-4ac3-8e12-e587c25689cf"],
  " \[LongDash] ",
  "whether p1 and p2 lie in the same connected component"
-}], "GuideText",ExpressionUUID->"84595fe7-efcb-42c1-8382-095ffeec6b71"]
+}], "GuideText",ExpressionUUID->"d840c05b-5c38-4243-ae25-a3a77d2d97e1"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Experimental: Segments and lines", "GuideFunctionsSubsection",ExpressionUUID->"3f96989d-31ab-4bbb-a4af-6a2956f46afc"],
+Cell["Experimental: Segments and lines", "GuideFunctionsSubsection",ExpressionUUID->"d44bba7c-8e54-4604-a920-4d80b2133387"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -785,10 +651,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "763bbe5d-7c8b-440a-8bf3-65f365ed8a5f"],
+  "4152edd6-453d-4f38-b993-26b6f71189d4"],
  " \[LongDash] ",
  "whether the geodesic from u to v is unique"
-}], "GuideText",ExpressionUUID->"09435581-cd5b-47eb-ab18-f4dfdabb9217"],
+}], "GuideText",ExpressionUUID->"7ee54ee1-ac26-4dfd-9357-a6cec01e2ad5"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -800,11 +666,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "0accba2f-2e1d-4bfd-931e-b800defd3ab7"],
+  "4777d80d-a6c1-424a-8a39-a1aa663029e4"],
  " \[LongDash] ",
  "the interval {w : d(u, w) + d(w, v) == d(u, v)}, the union of the geodesics \
 from u to v"
-}], "GuideText",ExpressionUUID->"105a02e1-4844-4e6d-a48f-22ff7f93c9d2"],
+}], "GuideText",ExpressionUUID->"045c7416-2247-4890-a74f-a631f1fb45c9"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -816,11 +682,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "65b402e3-9c1e-4752-8c0c-171c811b1ddf"],
+  "25b731ff-778d-4986-ac91-c0f9ad805c82"],
  " \[LongDash] ",
  "the fewest geodesic legs a walk splits into, the corners of the polyline \
 InfraSegment[p1, \[Ellipsis], pk]"
-}], "GuideText",ExpressionUUID->"acf3a05a-912f-4bb1-b32c-c5c14d490667"],
+}], "GuideText",ExpressionUUID->"2279bf4a-3d94-4db2-8917-82ec9d7dc106"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -832,11 +698,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "da5e18f3-c42c-485e-a81a-c47c2b357741"],
+  "308e7e9e-de9d-4a7f-b38d-564bf4ba245d"],
  " \[LongDash] ",
  "whether a walk is a ray, a geodesic from its first vertex that cannot be \
 prolonged past its last"
-}], "GuideText",ExpressionUUID->"3a5fa47a-ac5f-4fff-baf0-4a697f935fcb"],
+}], "GuideText",ExpressionUUID->"48de5a77-9367-4cfc-8b06-3bd98af374a4"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -848,27 +714,27 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "e34169c3-c648-49fd-8229-7f083a742a59"],
+  "b454a5ed-fa6a-40fe-bf53-7efce8fcbc8c"],
  " \[LongDash] ",
  "whether a walk is a line, a geodesic that no neighbour of either endpoint \
 prolongs"
-}], "GuideText",ExpressionUUID->"3525f847-9dce-4836-b163-ad2198b4f271"],
+}], "GuideText",ExpressionUUID->"4681bf03-32bf-4b12-958f-0e8b7d6790ee"],
 
 Cell[TextData[{
  Cell[BoxData[
   TemplateBox[{
     Cell[
-     TextData["FindInfraParallel"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraParallel", 
+     TextData["RandomInfraParallel"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/RandomInfraParallel", 
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "1a21cea9-a786-49f6-ab9c-f22966c526dc"],
+  "02e8fa77-fb7a-48d7-b893-cb51e9d908ea"],
  " \[LongDash] ",
  "the parallels to a line through p, the lines through p at constant distance \
 from it"
-}], "GuideText",ExpressionUUID->"346d75c8-0008-49a7-9dbb-f4040f16c943"],
+}], "GuideText",ExpressionUUID->"be1faed2-f469-414c-877d-614431661bec"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -880,10 +746,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "0286f990-9438-4a13-9839-b7a4334f617d"],
+  "ad819c87-b64a-4d21-abcd-524603028987"],
  " \[LongDash] ",
  "whether two lines stay at constant distance"
-}], "GuideText",ExpressionUUID->"50422f01-3a6c-4bd8-a0a6-e70e2ac07c85"],
+}], "GuideText",ExpressionUUID->"8b167d95-862b-432a-8701-4ea58fd5372c"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -895,10 +761,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "729510b0-4b86-476d-94dd-0fa9cb45b3a1"],
+  "5932a998-c1f0-4085-9db9-a7b92570947f"],
  " \[LongDash] ",
  "the lines through a point perpendicular to a line"
-}], "GuideText",ExpressionUUID->"3ea127d2-d14d-4238-95c9-3b15487fdd44"],
+}], "GuideText",ExpressionUUID->"16bb3f50-8d39-4c5e-837e-ab0a7c12a71f"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -910,10 +776,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "994fd18c-a0ce-4d3f-b367-8a56c20cd5e3"],
+  "3fdc67f0-0491-484d-9289-c75f8edf2362"],
  " \[LongDash] ",
  "whether two lines meet perpendicularly at every common vertex"
-}], "GuideText",ExpressionUUID->"f98b7926-d8e8-47b2-bbee-3cd0ccfc7a67"],
+}], "GuideText",ExpressionUUID->"243a77cc-baca-470a-a033-99c32130d855"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -925,10 +791,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "73c725b3-8c59-40e9-b15f-c02a9a0531c4"],
+  "cbfbfd34-342d-42eb-8f5f-585d25213fd2"],
  " \[LongDash] ",
  "the lines containing every listed vertex"
-}], "GuideText",ExpressionUUID->"42e687fe-42b6-42ff-b70c-0f500210d602"],
+}], "GuideText",ExpressionUUID->"a5cb77e1-0db0-40ef-98e1-79062f7af4b5"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -940,10 +806,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "b968a98f-be06-429d-b082-74aed1bfecfb"],
+  "c712764f-ff5d-441e-8383-b67ed7cc71fc"],
  " \[LongDash] ",
  "the number of distinct lines in a graph"
-}], "GuideText",ExpressionUUID->"e5e446bd-19ed-49f9-a2f4-b57f335f7823"],
+}], "GuideText",ExpressionUUID->"cb4eacb6-bbff-4668-92e5-d31787220a34"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -955,16 +821,16 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "c4c5b2d5-85c9-44df-b39e-580a1a9683cd"],
+  "6a931578-794c-4153-87a8-aa48596fa10d"],
  " \[LongDash] ",
  "whether some pair of vertices spans a line filling a whole connected \
 component, the Chen-Chvatal property"
-}], "GuideText",ExpressionUUID->"58af5e7f-a4c5-4d82-8301-cd40a2dd85a1"]
+}], "GuideText",ExpressionUUID->"99e92357-4d92-4071-9e4d-5b8fca9053a6"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Experimental: Circles, spheres and conics", "GuideFunctionsSubsection",ExpressionUUID->"9d4cf939-86dd-4ad5-b3ad-3b9743f15328"],
+Cell["Experimental: Circles, spheres and conics", "GuideFunctionsSubsection",ExpressionUUID->"1c161047-7585-444d-98d1-dfc2e4ac38e2"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -976,11 +842,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "e27553ac-163b-4e74-a619-ae0c8ed7c439"],
+  "f907f0be-c31c-4e90-814f-1a382d2126d3"],
  " \[LongDash] ",
  "whether a cycle is a circle, a cyclic edge chain whose vertex set is a \
 metric shell"
-}], "GuideText",ExpressionUUID->"94566e7b-1987-494a-bdda-71b5e9e34419"],
+}], "GuideText",ExpressionUUID->"4411e038-5818-4d23-b5b3-89d9b40a4479"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -992,26 +858,26 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "22f35082-01a1-420d-849a-784005627fc4"],
+  "d9e52fb3-8ced-43d2-9965-75f5bdd48a98"],
  " \[LongDash] ",
- "the inert family of inclusion-minimal connected subsets of the shell {v : \
-d(c, v) == r} that separate c from the outside"
-}], "GuideText",ExpressionUUID->"b7733b65-9044-4fab-8826-422754320110"],
+ "the family of inclusion-minimal connected subsets of the shell {v : d(c, v) \
+== r} that separate c from the outside"
+}], "GuideText",ExpressionUUID->"6a60de40-503c-4969-9ca4-7801394baa4c"],
 
 Cell[TextData[{
  Cell[BoxData[
   TemplateBox[{
     Cell[
-     TextData["FindInfraSphere"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraSphere", 
+     TextData["RandomInfraSphere"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/RandomInfraSphere", 
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "75654b82-9d1a-435d-95b2-f47f8b42de2c"],
+  "1798b1c9-c02f-4c13-bf13-f2b32e09b4da"],
  " \[LongDash] ",
  "n of these separating subsets as vertex lists"
-}], "GuideText",ExpressionUUID->"fb39b2bf-850c-4362-8b47-6bf569c28a19"],
+}], "GuideText",ExpressionUUID->"fff45128-38a2-40b9-8c9c-ba78c296bd8f"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1023,10 +889,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "c246807b-1939-4619-8f9d-3a9ff86c5870"],
+  "fb174754-5d2f-48f7-b88d-92b16091726a"],
  " \[LongDash] ",
- "the inert bisecting hyperplane of p1 and p2"
-}], "GuideText",ExpressionUUID->"435c82e2-0a78-4e77-9d7b-bd25198f18f4"],
+ "the bisecting hyperplane of p1 and p2"
+}], "GuideText",ExpressionUUID->"2f058b4c-dcce-41b2-a31f-81a02d4c11ad"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1038,10 +904,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "5c58561b-9096-4485-a41e-432b30f2a1d2"],
+  "dff33f5a-6e93-4a33-9166-734fdec31055"],
  " \[LongDash] ",
  "the perpendicular bisector {v : d(p1, v) == d(p2, v)}, or the slab around it"
-}], "GuideText",ExpressionUUID->"8e4da188-615d-4498-8d61-cc816a8fab95"],
+}], "GuideText",ExpressionUUID->"6f0dc37c-6f45-42a6-9149-68cb182890dd"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1053,26 +919,26 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "72b18b90-a5c9-4e75-80e0-c2a1d0954843"],
+  "d4e0bdc5-4fde-4092-a33a-4f0cdbcfaca4"],
  " \[LongDash] ",
- "the inert ellipse with foci p1 and p2, the shortest separating cycle in the \
-level set {v : d(p1, v) + d(p2, v) == c}"
-}], "GuideText",ExpressionUUID->"e702d578-a573-4a73-bbbb-a7c70d7024ec"],
+ "the ellipse with foci p1 and p2, the shortest separating cycle in the level \
+set {v : d(p1, v) + d(p2, v) == c}"
+}], "GuideText",ExpressionUUID->"24efd0fe-d7e8-485f-bc62-34210061ac91"],
 
 Cell[TextData[{
  Cell[BoxData[
   TemplateBox[{
     Cell[
-     TextData["FindInfraEllipse"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraEllipse", 
+     TextData["RandomInfraEllipse"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/RandomInfraEllipse", 
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "c49dd181-8f13-43fb-8725-07219b84f31b"],
+  "28beb4b6-b25a-4300-b4bb-eabba55d487f"],
  " \[LongDash] ",
  "one such cycle as a cyclic vertex list"
-}], "GuideText",ExpressionUUID->"31e92fe7-5be7-44c0-b9dd-8637534d084c"],
+}], "GuideText",ExpressionUUID->"9c73ef3f-498c-421f-963c-7644f4f80fd9"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1084,10 +950,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "d3e1dfc7-dd54-471c-996a-b419d1074dab"],
+  "33f1493b-c625-45fd-bc44-f7cd523fe8b3"],
  " \[LongDash] ",
  "whether a cycle is an ellipse"
-}], "GuideText",ExpressionUUID->"275ce473-2789-40f6-8291-aef516f03c82"],
+}], "GuideText",ExpressionUUID->"d5cc292d-4033-4461-bd30-fce3df440376"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1099,17 +965,17 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "10135c57-84fe-4afe-95ae-d800e7174d77"],
+  "e90e0e0d-ab19-4b17-8980-bfa25950f494"],
  " \[LongDash] ",
- "the inert solid {v : sum_i w_i d(p_i, v) <= c} about the foci p_i; one \
-focus is the ball, two the ellipse, a band {c, c} the elliptic shell, weights \
-{1, -1} a hyperbola branch"
-}], "GuideText",ExpressionUUID->"ea4f549a-8097-4894-bbb0-a6539d951f51"]
+ "the solid {v : sum_i w_i d(p_i, v) <= c} about the foci p_i; one focus is \
+the ball, two the ellipse, a band {c, c} the elliptic shell, weights {1, -1} \
+a hyperbola branch"
+}], "GuideText",ExpressionUUID->"1e4b00de-bca5-42df-9b24-c32a803c8d49"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Experimental: Solids", "GuideFunctionsSubsection",ExpressionUUID->"5a66bc1e-b6d9-48d8-877a-6e1bd6cbf94f"],
+Cell["Experimental: Solids", "GuideFunctionsSubsection",ExpressionUUID->"b777dbd0-828c-4bb9-ac08-151439f19219"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1121,10 +987,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "0b6aea30-41a7-4e60-8774-66e652b312f4"],
+  "e5376085-0415-443d-a034-8579c4ca96d0"],
  " \[LongDash] ",
  "whether a vertex set is a closed ball"
-}], "GuideText",ExpressionUUID->"ccd3ff08-70e7-4597-8b30-09e9fcc6b1d6"],
+}], "GuideText",ExpressionUUID->"b069b2aa-8686-4b97-91d5-d124cfaa8acf"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1136,11 +1002,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "fc97a09b-7a99-4b9d-ae0c-6b5777b4ba95"],
+  "1f7be099-de74-4a87-8b3e-30383d563663"],
  " \[LongDash] ",
  "whether a vertex set is a shell {v : d(c, v) == r} for some centre c and \
 radius r"
-}], "GuideText",ExpressionUUID->"0e20a919-e249-4394-af74-01623f57e522"],
+}], "GuideText",ExpressionUUID->"251c8788-1fbe-4a36-82a1-498702ead05a"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1152,12 +1018,12 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "fa40eedf-ee84-42ad-9e67-518fb3a70d49"],
+  "da9950ac-6c60-4cec-9666-d08311b335c4"],
  " \[LongDash] ",
- "the inert tube {v : d(a_i, v) <= r_i for some i} along a core, the profile \
-a radius, a band, a list along the core or a function of the position; Method \
+ "the tube {v : d(a_i, v) <= r_i for some i} along a core, the profile a \
+radius, a band, a list along the core or a function of the position; Method \
 \"Balls\" or \"Sliced\""
-}], "GuideText",ExpressionUUID->"66c66a41-97aa-4854-acb7-673ca2fba928"],
+}], "GuideText",ExpressionUUID->"3d5ff53d-00e4-441b-9050-77426769b3ee"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1169,11 +1035,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "f982b343-0581-4806-86e6-83b5ab247a1b"],
+  "8e467b66-cb75-4ff6-9dbd-c2b8997f1be1"],
  " \[LongDash] ",
- "the inert cylinder of radius r about a walk, the sliced tube with flat \
-ends"
-}], "GuideText",ExpressionUUID->"dc9ba559-2c6e-4787-95a1-556ac0d96f92"],
+ "the cylinder of radius r about a walk, the sliced tube with flat ends"
+}], "GuideText",ExpressionUUID->"1c708fd1-bc6f-402c-ab21-b8df583890e0"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1185,11 +1050,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "48e13468-60be-4109-b8d2-6a0061202d3f"],
+  "5a15baa9-bc37-4950-8365-88270052d331"],
  " \[LongDash] ",
- "the inert cone of a given slope along a walk, apex at its first vertex and \
-a flat base"
-}], "GuideText",ExpressionUUID->"9194c70e-0785-499e-af10-6a5b1c427cd3"],
+ "the cone of a given slope along a walk, apex at its first vertex and a flat \
+base"
+}], "GuideText",ExpressionUUID->"d15dcd75-480a-4d35-a071-d6c7d431a3e5"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1201,15 +1066,15 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "3e7affdf-7336-489a-8939-0a3f4ab27008"],
+  "295f6e90-5ed9-4027-8563-5dd849a8982e"],
  " \[LongDash] ",
- "the inert solid about a walk with a given radius profile"
-}], "GuideText",ExpressionUUID->"40bb41c4-02f9-4161-b727-6b7b034fd46c"]
+ "the solid about a walk with a given radius profile"
+}], "GuideText",ExpressionUUID->"07c55854-c448-4022-a99c-4e35e21dac87"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Experimental: Polygons and hulls", "GuideFunctionsSubsection",ExpressionUUID->"7519854c-9952-4ca9-8108-321571391583"],
+Cell["Experimental: Polygons and hulls", "GuideFunctionsSubsection",ExpressionUUID->"70bc81fc-74ea-468b-bffa-6fa0b09054f7"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1221,28 +1086,28 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "6b2adc92-99c2-4b18-8279-76476ee6b29d"],
+  "3de319e0-dcfb-4890-9719-34af40ff7ce3"],
  " \[LongDash] ",
- "the inert regular n-gon whose k-th diagonals have prescribed lengths; the \
-polygon through given corners is the closed polyline InfraSegment[p1, \
-\[Ellipsis], pn, p1]"
-}], "GuideText",ExpressionUUID->"5b0ab90d-8c35-4653-8898-872cbaec0b79"],
+ "the regular n-gon whose k-th diagonals have prescribed lengths; the polygon \
+through given corners is the closed polyline InfraSegment[p1, \[Ellipsis], \
+pn, p1]"
+}], "GuideText",ExpressionUUID->"6c5c6260-9caf-434c-a5de-bd6c4e58da8a"],
 
 Cell[TextData[{
  Cell[BoxData[
   TemplateBox[{
     Cell[
-     TextData["FindInfraRegularPolygon"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraRegularPolygon", 
+     TextData["RandomInfraRegularPolygon"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/RandomInfraRegularPolygon", 
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "263daaf4-4138-4e96-9da8-e8c3680c0a4f"],
+  "3a0df881-9011-434a-9b2e-7d9d9024ec64"],
  " \[LongDash] ",
  "one closed n-vertex sequence whose k-th diagonal lengths match the \
 prescribed ones"
-}], "GuideText",ExpressionUUID->"f4488cff-e1e0-4090-8ec5-a0b0054a82eb"],
+}], "GuideText",ExpressionUUID->"a507611f-4f54-43c9-a264-d26a4e624a32"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1254,10 +1119,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "ead09028-9a3b-4c31-a336-13063b5bb78a"],
+  "ed428528-3e15-44c6-85b7-f12477beaace"],
  " \[LongDash] ",
  "whether a cycle is regular with respect to a tuple of diagonal lengths"
-}], "GuideText",ExpressionUUID->"a80f9a1a-05c0-4e82-a84c-cc08c9acd393"],
+}], "GuideText",ExpressionUUID->"4a58bad5-b432-4f4d-876c-086ccfc79fd0"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1269,11 +1134,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "580cbf73-d778-4991-ab95-ffdd9fd0493b"],
+  "b7e52262-e37b-4c2a-8aeb-abbf3bda31e3"],
  " \[LongDash] ",
- "the inert geodesic convex hull of a set, the closure under MetricInterval; \
-with k, the k-th round of the closure"
-}], "GuideText",ExpressionUUID->"61766dc7-e0ef-4683-a6b9-75d11dacb8b1"],
+ "the geodesic convex hull of a set, the closure under MetricInterval; with \
+k, the k-th round of the closure"
+}], "GuideText",ExpressionUUID->"2130691e-fb38-4275-8dc1-e90e4a0b4a95"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1285,16 +1150,16 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "88138946-07d8-44b2-88c1-d3c7a4447dd8"],
+  "fadc3115-8d01-4450-b8a6-80959d777258"],
  " \[LongDash] ",
- "the inert intersection of the closed balls containing a set, of radius at \
-most r, {r} exactly r or {r, s} between; without a radius the Mazur hull"
-}], "GuideText",ExpressionUUID->"c0773b7c-ebb5-4cad-b1f3-862fa22e1ab6"]
+ "the intersection of the closed balls containing a set, of radius at most r, \
+{r} exactly r or {r, s} between; without a radius the Mazur hull"
+}], "GuideText",ExpressionUUID->"a8c51edb-2388-447b-81b2-a725164eb1f9"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Experimental: Angles", "GuideFunctionsSubsection",ExpressionUUID->"9ad3d534-bede-4437-8f6f-eece79b68bb0"],
+Cell["Experimental: Angles", "GuideFunctionsSubsection",ExpressionUUID->"48f72736-9078-4f18-aa3f-171b04d4d4a9"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1306,11 +1171,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "08a40e51-2b8a-42fd-8010-914d238992a4"],
+  "b7ed8bc3-a55e-4478-ae1e-6e70619ca45c"],
  " \[LongDash] ",
  "the angle at p between q1 and q2 in radians, Method \"Arclength\" or \
 \"Alexandrov\", the comparison angle of the three distances"
-}], "GuideText",ExpressionUUID->"fb4ea3ef-d6d6-4e0a-84c3-e421463075a5"],
+}], "GuideText",ExpressionUUID->"b6f6b28d-c518-4855-976f-b1f4f35988c3"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1322,11 +1187,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "85fe0889-6729-4ad1-b6e4-037d5798068c"],
+  "a2cb38a7-b654-4e11-b002-0e392f7ac025"],
  " \[LongDash] ",
  "the product d(o, u) d(o, v) cos(theta) based at o, the polar form of the \
 metric at curvature 0"
-}], "GuideText",ExpressionUUID->"01bd2dbb-dc39-4235-904c-90c5846c3f49"],
+}], "GuideText",ExpressionUUID->"f0381d0e-9e01-4112-a3e6-8c4786a2e230"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1338,15 +1203,15 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "95b3146c-4c4d-47a5-bb1d-10088af377dd"],
+  "59915e86-5be2-4c34-a650-ebded5a36a8c"],
  " \[LongDash] ",
  "the vertices realising a linear combination of vertices based at o"
-}], "GuideText",ExpressionUUID->"ea554116-0b4a-4c46-9f6f-7fd4db76c5cb"]
+}], "GuideText",ExpressionUUID->"99bbff8d-8e52-48f3-aff6-e40ee37b0762"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Experimental: Perpendicular axes", "GuideFunctionsSubsection",ExpressionUUID->"4876281a-0e2e-45da-b97f-a6b533c70fff"],
+Cell["Experimental: Perpendicular axes", "GuideFunctionsSubsection",ExpressionUUID->"6f207658-2be1-48dd-a8ff-1636ffa73d60"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1358,11 +1223,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "4300d2e5-fde2-4782-ba0d-d2ca1537bd0c"],
+  "4c7e5434-6c99-4f9b-b3a6-3f96106f8e9b"],
  " \[LongDash] ",
  "a maximal set of mutually perpendicular lines through a centre c, each a \
 vertex list"
-}], "GuideText",ExpressionUUID->"4620f655-a965-4365-aa50-fb249e57400c"],
+}], "GuideText",ExpressionUUID->"a7b6bb58-387e-485f-a970-da4a53b26c83"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1374,11 +1239,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "3fb4b1ec-5e4d-4312-814f-44250cb99bb2"],
+  "b5fc6277-ee02-4f53-ae08-fafdace59cf2"],
  " \[LongDash] ",
  "a maximal set of mutually perpendicular rays from a centre c, each a vertex \
 list"
-}], "GuideText",ExpressionUUID->"ce4f8558-46a1-4977-b954-ba0716d4669e"],
+}], "GuideText",ExpressionUUID->"256434df-a2a3-438e-b25c-523c1c31025c"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1390,11 +1255,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "ea9f01a5-4097-4367-9f95-7b2d4e5ddc91"],
+  "60ba466f-a013-4b10-8f34-989c085c1d65"],
  " \[LongDash] ",
  "n mutually well-separated longest geodesics across a graph, with no fixed \
 centre"
-}], "GuideText",ExpressionUUID->"cb3455c5-a601-4c65-92ab-89187742a3eb"],
+}], "GuideText",ExpressionUUID->"72ecd843-ae2c-485e-9c1e-3760225f7771"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1406,16 +1271,16 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "e50bbea9-8889-4c8e-9344-0f5512baba2b"],
+  "4a13699a-d18f-4064-aeb6-15a8a4387834"],
  " \[LongDash] ",
  "the signed position of the foot of each vertex on each of a list of axes, \
 counted from the centre c"
-}], "GuideText",ExpressionUUID->"12080b74-0a4c-4a68-92ac-a6473f7711a1"]
+}], "GuideText",ExpressionUUID->"70fa4888-66b1-4d6b-af4b-439f50eb93b2"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Experimental: Sets", "GuideFunctionsSubsection",ExpressionUUID->"d3294c9d-a91e-4cb4-a8e3-f99260bd3c94"],
+Cell["Experimental: Sets", "GuideFunctionsSubsection",ExpressionUUID->"77435494-1bd6-4913-8232-4a24c0abeb3c"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1427,10 +1292,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "500331d0-5e69-4b6c-87df-535b5a2cf703"],
+  "7b68513d-665d-4e76-b5ef-87e765abbdd2"],
  " \[LongDash] ",
  "the distance between two objects, aggregated over their vertex sets"
-}], "GuideText",ExpressionUUID->"f5939b34-dbb8-4703-b4c2-656d518176ac"],
+}], "GuideText",ExpressionUUID->"9cd840db-ff04-478c-a967-ea6a09b5d808"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1442,10 +1307,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "d64be868-2752-4f99-954c-7540d1920315"],
+  "4012d4e6-0035-4d38-bcb0-31bfd302f14d"],
  " \[LongDash] ",
  "the boundary of a vertex set, density or object, as a sorted vertex list"
-}], "GuideText",ExpressionUUID->"d0e6b72c-d04c-473b-b16f-1194452dc53e"],
+}], "GuideText",ExpressionUUID->"39fad76c-2f14-4e01-8cd9-c0a6676c1eb3"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1457,10 +1322,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "af2cdcc0-f0de-4822-ab66-a5091905675b"],
+  "8b15f172-1419-4ddc-8dbb-5a97d3bd41cd"],
  " \[LongDash] ",
  "the interior of a vertex set, density or object, as a sorted vertex list"
-}], "GuideText",ExpressionUUID->"54b9ea67-2552-4ef0-8e87-20bed7a0ee73"],
+}], "GuideText",ExpressionUUID->"e944cc06-cddc-4139-961e-556f998c9c91"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1472,16 +1337,16 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "ce45bf09-0fd7-4199-b221-5335abd4bbbd"],
+  "16f8f0df-6113-419c-a398-f6ef0571c99e"],
  " \[LongDash] ",
  "whether two objects are equal; Method chooses set, multiset, overlap or \
 diffuse equality"
-}], "GuideText",ExpressionUUID->"e3ec9005-6953-418e-b4cf-9bb1f6f7822b"]
+}], "GuideText",ExpressionUUID->"19307b4a-5b97-48a5-8544-f51187001751"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Experimental: Graphs of a construction", "GuideFunctionsSubsection",ExpressionUUID->"62bc10bd-e649-418a-a859-4e2cc874039b"],
+Cell["Experimental: Graphs of a construction", "GuideFunctionsSubsection",ExpressionUUID->"632fc775-2ea9-4855-89f8-25834f2502c4"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1493,11 +1358,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "e3d395ee-9fc0-4f68-b740-5b5375a6deae"],
+  "929535c1-2a48-450a-86d2-02a38e584f5e"],
  " \[LongDash] ",
  "the directed acyclic graph rooted at c whose source-to-sink paths are \
 exactly the maximal geodesics from c"
-}], "GuideText",ExpressionUUID->"5589af0d-b8c8-4f59-9b91-729111513556"],
+}], "GuideText",ExpressionUUID->"564bcd7d-b5d0-4877-9d7c-f610122efd30"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1509,10 +1374,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "8692c567-e257-4d5f-83b3-585465be8f49"],
+  "16518d7e-09c9-492f-844c-5645c9f5ebdb"],
  " \[LongDash] ",
  "the union of all geodesics from u to v, as a subgraph"
-}], "GuideText",ExpressionUUID->"a18619cf-575c-4590-b11d-1cdc6d48ae9c"],
+}], "GuideText",ExpressionUUID->"f9458b89-4d5e-4cbe-bbaf-5f27d1f6ffa4"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1524,11 +1389,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "9971346b-521a-43f4-a98b-49af4ee24445"],
+  "6abc45a4-fb14-49f3-9c2d-8b0759b6abb7"],
  " \[LongDash] ",
  "the subgraph induced on the support of an object; obj -> t thickens the \
 support by t steps"
-}], "GuideText",ExpressionUUID->"2fb675ba-dd14-4892-a693-cf64a6e912bc"],
+}], "GuideText",ExpressionUUID->"946e7040-158f-4dd7-8024-bdb336406237"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1540,16 +1405,16 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "933ff34f-363a-4d95-b58e-f86d1d034992"],
+  "8847f262-1989-4ed3-87a4-33a4fd44c705"],
  " \[LongDash] ",
  "the value of \"Faithful\" on a head whose graph is faithful only under a \
 hypothesis the paclet does not certify"
-}], "GuideText",ExpressionUUID->"b3c48cdf-adb3-4c0e-8dc9-cda5de3304d7"]
+}], "GuideText",ExpressionUUID->"6ffdf999-17b3-4324-89ec-2ba18eaabeba"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Experimental: Scenes", "GuideFunctionsSubsection",ExpressionUUID->"33cb38d1-0c2d-43b2-980e-dc3861101f4b"],
+Cell["Experimental: Scenes", "GuideFunctionsSubsection",ExpressionUUID->"0ef7f0a6-0ac7-4851-9013-ed3d1a7e7378"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1561,10 +1426,10 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "9f877c0c-9975-493a-8f3e-51c832b6c750"],
+  "54eab8de-f739-47d8-9f3a-81e89ef3a3b9"],
  " \[LongDash] ",
  "the hypothesis that two objects of a scene meet"
-}], "GuideText",ExpressionUUID->"98aabbdd-31ac-42ac-afc5-8dcb6d53c57b"],
+}], "GuideText",ExpressionUUID->"8d2be535-4a8c-4670-a37b-c2fe41bf46bb"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1576,11 +1441,11 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "0e45990a-992c-4044-87e9-910414025299"],
+  "77bfb891-525e-41b9-92c8-5e20e62bf9b8"],
  " \[LongDash] ",
  "the hypothesis that a set of a scene lies in the bisector slab of p1 and p2 \
 and separates them"
-}], "GuideText",ExpressionUUID->"f4cc5468-e07d-446e-8c9d-15c865a45d97"],
+}], "GuideText",ExpressionUUID->"b5b7fffb-53fb-40b9-acc6-4d8bf7435fcf"],
 
 Cell[TextData[{
  Cell[BoxData[
@@ -1592,7 +1457,7 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "bf516b13-9b12-413d-873f-2df896f6297e"],
+  "26c10809-ede2-4613-954d-ef6cfa15a29b"],
  ", ",
  Cell[BoxData[
   TemplateBox[{
@@ -1603,7 +1468,7 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "a77e8312-b470-4626-87d1-630c9e27299c"],
+  "de577aaf-70ae-4de5-8a7e-b64915d0091c"],
  ", ",
  Cell[BoxData[
   TemplateBox[{
@@ -1614,7 +1479,7 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "46eaaeb1-7357-4392-b718-af4e3a0cd797"],
+  "e49c6dff-0af3-482a-a694-26d0f0b1b2ab"],
  ", ",
  Cell[BoxData[
   TemplateBox[{
@@ -1625,25 +1490,25 @@ Cell[TextData[{
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineGuideFunction",
   TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "e5620a8a-3b6d-46d8-981c-21e42e3a8737"],
+  "e508e0b6-f7ac-4080-9541-05ed5bdf6b49"],
  " \[LongDash] ",
  "interactive viewers for points, geodesic segments, shells and circles"
-}], "GuideText",ExpressionUUID->"992db3c0-9e6b-46ce-a102-75ece491119c"]
+}], "GuideText",ExpressionUUID->"d254e900-ff4a-46b9-aa9a-caedb8a4ba23"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["Not here", "GuideFunctionsSubsection",ExpressionUUID->"7439487c-0c6d-4533-9c96-2aeffedbbafc"],
+Cell["Not here", "GuideFunctionsSubsection",ExpressionUUID->"ab2b39d7-17bb-4e0f-9f7d-1c535c4341e4"],
 
 Cell["\<\
 not here: an invariant of four points, and the inverse of every head, the \
 values of its unknowns for a given vertex set\
-\>", "GuideText",ExpressionUUID->"ca1c6627-117c-4ea6-a0fc-3071f66190ad"],
+\>", "GuideText",ExpressionUUID->"f2d434cc-c81a-4eb7-acc2-da333fb76069"],
 
 Cell["\<\
 not here: the geodesics at a scale and the volume measurements, which are on \
 the Riemannian Infrageometry guide\
-\>", "GuideText",ExpressionUUID->"5358a5a0-c286-4214-b843-d4d0501e1a4e"]
+\>", "GuideText",ExpressionUUID->"041b0458-b2e9-46df-800e-0667fab48b15"]
 }, Open  ]]
 }, Open  ]],
 
@@ -1661,7 +1526,7 @@ BreadthlessTriangleTutorial"},
   "RefLinkPlain",
   BaseStyle->{
    "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"e9b7e74c-e672-4c0c-afc4-f95613a17e4b"]], \
+"InlineFormula",ExpressionUUID->"18532a63-a313-440c-a82d-ae98b72e8941"]], \
 "GuideTutorial",
  CellID->806871991,ExpressionUUID->"c8d52b1f-06c5-4db0-bd0a-f386b59efcef"],
 
@@ -1674,7 +1539,7 @@ StraighteningAtScaleTutorial"},
   "RefLinkPlain",
   BaseStyle->{
    "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"71b3b164-79ee-4abb-bbf4-d873a11c3bae"]], \
+"InlineFormula",ExpressionUUID->"fa248fce-2cad-4d1c-a6cf-db13cb3d8a19"]], \
 "GuideTutorial",
  CellID->806871991,ExpressionUUID->"c8d52b1f-06c5-4db0-bd0a-f386b59efcef"]
 }, Open  ]],
@@ -1693,7 +1558,7 @@ Cell[TextData[Cell[BoxData[
   "RefLinkPlain",
   BaseStyle->{
    "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"f8eadc44-c754-4578-9334-f056ff246026"]], \
+"InlineFormula",ExpressionUUID->"3b58066e-b933-44d0-9279-0b0c2254af75"]], \
 "GuideMoreAbout",
  CellID->1567025153,ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69"],
 
@@ -1705,7 +1570,7 @@ Cell[TextData[Cell[BoxData[
   "RefLinkPlain",
   BaseStyle->{
    "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"1681655c-d586-4f97-9b5a-140dfa4785a5"]], \
+"InlineFormula",ExpressionUUID->"79ff16bc-94ba-4adf-ae52-78966bd2bdce"]], \
 "GuideMoreAbout",
  CellID->1567025153,ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69"],
 
@@ -1717,7 +1582,7 @@ Cell[TextData[Cell[BoxData[
   "RefLinkPlain",
   BaseStyle->{
    "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"a087c6a2-12a4-4bba-a85d-683b51fad2c2"]], \
+"InlineFormula",ExpressionUUID->"03e8128d-1724-4a52-8746-eba3eb606e64"]], \
 "GuideMoreAbout",
  CellID->1567025153,ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69"]
 }, Open  ]],
@@ -1763,7 +1628,7 @@ Cell["WolframInstitute`InfraGeometry`", "Categorization",
 
 Cell["WolframInstitute/InfraGeometry/guide/EuclideanInfrageometry", \
 "Categorization",
- CellLabel->"URI",ExpressionUUID->"e298af88-0d64-443a-98be-a3f4495c73bc"]
+ CellLabel->"URI",ExpressionUUID->"2e626fd9-4796-4115-aff8-0481b104afea"]
 }, Closed]],
 
 Cell[CellGroupData[{
@@ -1783,7 +1648,7 @@ Cell["synthetic geometry", "Keywords",
 Cell["graph", "Keywords",
  CellID->1251852827,ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9"],
 
-Cell["inert head", "Keywords",
+Cell["symbolic object", "Keywords",
  CellID->1251852827,ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9"],
 
 Cell["point", "Keywords",
@@ -1853,7 +1718,7 @@ TaggingRules->{
     "WolframInstitute`InfraGeometry`", 
     "keywords" -> {
      "Euclidean geometry", "shell", "synthetic geometry", "graph", 
-      "inert head", "point", "segment", "ray", "line", "parallel", 
+      "symbolic object", "point", "segment", "ray", "line", "parallel", 
       "perpendicular", "circle", "arc", "bisector", "ellipse", "ball", "tube",
        "cylinder", "cone", "polygon", "hull", "angle", "scalar product", 
       "scene"}, "summary" -> "", "paclet" -> "WolframInstitute/InfraGeometry",
@@ -1880,248 +1745,241 @@ Notebook[{
 Cell[CellGroupData[{
 Cell[576, 22, 120, 1, 70, "GuideTitle",ExpressionUUID->"a3a3c038-ca24-47b7-9945-83f1c1312fe3",
  CellID->942062912],
-Cell[699, 25, 1006, 28, 70, "GuideAbstract",ExpressionUUID->"ef0ab37b-2e0d-4399-8f7e-82603ccbe925",
+Cell[699, 25, 3149, 51, 70, "GuideAbstract",ExpressionUUID->"ef0ab37b-2e0d-4399-8f7e-82603ccbe925",
  CellID->2001916300]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[1742, 58, 109, 1, 70, "GuideFunctionsSection",ExpressionUUID->"a0ea3657-4c83-4862-93c8-ecf80cebc774",
+Cell[3885, 81, 109, 1, 70, "GuideFunctionsSection",ExpressionUUID->"a0ea3657-4c83-4862-93c8-ecf80cebc774",
  CellID->1866139230],
-Cell[1854, 61, 558, 10, 70, "GuideText",ExpressionUUID->"5c3bc016-134e-4731-accf-d8848773e85a"],
-Cell[2415, 73, 1129, 31, 70, "GuideText",ExpressionUUID->"be38cde7-6467-477a-858d-93c0e8786805"],
-Cell[3547, 106, 2065, 65, 70, "GuideText",ExpressionUUID->"71f5e333-0f7b-4b6e-a9ff-366ee5973869"],
-Cell[5615, 173, 417, 6, 70, "GuideText",ExpressionUUID->"846031a5-76b0-431e-a6b0-c108e6723bea"],
-Cell[6035, 181, 211, 3, 70, "GuideText",ExpressionUUID->"04efd697-b92b-4338-a7ad-29c15a004be7"],
-Cell[6249, 186, 83, 0, 70, "GuideDelimiter",ExpressionUUID->"b131d8c7-6f81-4da0-a4e6-7d3a1140c865"],
+Cell[3997, 84, 83, 0, 70, "GuideDelimiter",ExpressionUUID->"db8eedf8-b2e6-4ecd-ab13-2d7942933ea0"],
 Cell[CellGroupData[{
-Cell[6357, 190, 97, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"3c1a9663-2620-486a-9154-feac3a614a3d"],
-Cell[6457, 192, 533, 13, 70, "GuideText",ExpressionUUID->"3fe3a52e-fde9-4825-873d-23ed6d358156"],
-Cell[6993, 207, 631, 14, 70, "GuideText",ExpressionUUID->"c9912ea5-a9ca-44bd-bc90-553df5d0f73a"],
-Cell[7627, 223, 596, 14, 70, "GuideText",ExpressionUUID->"88dfdd53-979e-4efd-9973-41df9f97021f"]
+Cell[4105, 88, 97, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"6e6de10b-ffd9-4486-88f3-fa43d6969623"],
+Cell[4205, 90, 527, 13, 70, "GuideText",ExpressionUUID->"fcc80cb4-91e7-4d34-b424-6f38af5d790d"],
+Cell[4735, 105, 635, 14, 70, "GuideText",ExpressionUUID->"b57186ef-aa16-44cb-9ae1-49ce3fc792c3"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[8260, 242, 99, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"7322a26c-17c2-473a-a5b5-1054e0e388be"],
-Cell[8362, 244, 607, 14, 70, "GuideText",ExpressionUUID->"4de1fb0b-2b03-4142-b400-27a415c5f947"],
-Cell[8972, 260, 567, 14, 70, "GuideText",ExpressionUUID->"fbd6612d-848e-47f4-be1e-a723827fed3f"],
-Cell[9542, 276, 507, 13, 70, "GuideText",ExpressionUUID->"78bc39dd-febc-4d5a-9beb-158f8096cf26"]
+Cell[5407, 124, 99, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"ff158af0-a23e-458e-959d-01492dda020c"],
+Cell[5509, 126, 601, 14, 70, "GuideText",ExpressionUUID->"299241df-397f-4ed5-8649-286d260f6b2e"],
+Cell[6113, 142, 571, 14, 70, "GuideText",ExpressionUUID->"5183660b-7090-42ac-b397-bcc3dc8c101e"],
+Cell[6687, 158, 507, 13, 70, "GuideText",ExpressionUUID->"191bbbe2-53eb-455a-93af-145adecf7942"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[10086, 294, 105, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"c602c978-aa89-45f3-a192-e9d34d3ea288"],
-Cell[10194, 296, 616, 14, 70, "GuideText",ExpressionUUID->"df0d0c8c-3de1-4baa-9999-c3e3d7228797"],
-Cell[10813, 312, 559, 14, 70, "GuideText",ExpressionUUID->"73cebccf-521c-4dc0-8090-094986659f18"],
-Cell[11375, 328, 577, 14, 70, "GuideText",ExpressionUUID->"bae8ec88-d7af-4f03-9cbf-7dc16a8a3cdf"],
-Cell[11955, 344, 561, 14, 70, "GuideText",ExpressionUUID->"184b5a94-a1a2-42ab-95ab-20897d4c1201"]
+Cell[7231, 176, 105, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"b56153c3-76f3-4c6b-8d0c-e32afa78631d"],
+Cell[7339, 178, 610, 14, 70, "GuideText",ExpressionUUID->"32580eb6-0dff-4e8a-9923-db3be626877a"],
+Cell[7952, 194, 563, 14, 70, "GuideText",ExpressionUUID->"869e2823-f3cd-44ca-bbdd-bf67d8d9d874"],
+Cell[8518, 210, 571, 14, 70, "GuideText",ExpressionUUID->"c9e9201b-b00f-4a4c-bf5b-89e11da64e8b"],
+Cell[9092, 226, 565, 14, 70, "GuideText",ExpressionUUID->"655484d3-4621-4b34-8245-eea5b2c8a364"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[12553, 363, 107, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"c6f74fad-ea76-4d74-83f3-d478030e6a25"],
-Cell[12663, 365, 604, 14, 70, "GuideText",ExpressionUUID->"c2ff3974-1903-4d84-96ac-8a8511dcf4aa"],
-Cell[13270, 381, 638, 15, 70, "GuideText",ExpressionUUID->"4b9eeaae-ec42-44a7-a5d8-5fce0058e9f8"]
+Cell[9694, 245, 107, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"fb7620d9-31a7-43ee-bf87-4f39787adf57"],
+Cell[9804, 247, 598, 14, 70, "GuideText",ExpressionUUID->"5c5fef4d-7a00-470a-9a5a-411109043496"],
+Cell[10405, 263, 632, 15, 70, "GuideText",ExpressionUUID->"04676ae0-1094-4af6-87e2-cb5c468151d1"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[13945, 401, 107, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"3245647c-d50c-4cc7-a2ba-bd684c9389ee"],
-Cell[14055, 403, 542, 13, 70, "GuideText",ExpressionUUID->"3e053f4b-e299-40e9-a417-efb25507e92a"],
-Cell[14600, 418, 580, 14, 70, "GuideText",ExpressionUUID->"e179177c-c5eb-4732-86b1-2d565a6473f0"],
-Cell[15183, 434, 562, 14, 70, "GuideText",ExpressionUUID->"074ec2f4-7184-4302-a493-0a6ab57b34f5"]
+Cell[11074, 283, 107, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"bd20d0e2-5921-4b3f-9a18-1eff464b7502"],
+Cell[11184, 285, 536, 13, 70, "GuideText",ExpressionUUID->"840e71db-d184-4b01-a83d-f2d9fb130470"],
+Cell[11723, 300, 574, 14, 70, "GuideText",ExpressionUUID->"9f13ea43-e84c-4714-8abe-dfcd97e0e3c9"],
+Cell[12300, 316, 562, 14, 70, "GuideText",ExpressionUUID->"bdbf0843-cbd7-4353-828e-5dc8c04bd063"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[15782, 453, 124, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"6e7f1dc4-bb24-48f2-9994-8ed7d4c5eb5b"],
-Cell[15909, 455, 800, 17, 70, "GuideText",ExpressionUUID->"c359bee7-f775-449d-9973-a933c9814fa6"],
-Cell[16712, 474, 611, 14, 70, "GuideText",ExpressionUUID->"076722d0-f9a6-431e-a392-8b47b7f2a817"],
-Cell[17326, 490, 531, 13, 70, "GuideText",ExpressionUUID->"0eebc2c7-386d-4e79-b33c-ecfbf0da494f"],
-Cell[17860, 505, 561, 14, 70, "GuideText",ExpressionUUID->"7d1d807c-0f7c-496c-ab43-62ff3f8533aa"],
-Cell[18424, 521, 591, 14, 70, "GuideText",ExpressionUUID->"6d6a4593-08fb-47e7-aa69-6bcbf8e7f758"],
-Cell[19018, 537, 576, 14, 70, "GuideText",ExpressionUUID->"40855e0c-b161-4518-ba71-bffdf2b5c489"]
+Cell[12899, 335, 124, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"f86d04b0-1f19-469c-a701-3c6991aeac98"],
+Cell[13026, 337, 804, 17, 70, "GuideText",ExpressionUUID->"f10aeeb1-0f5c-4054-8636-8ba2c01a0023"],
+Cell[13833, 356, 615, 14, 70, "GuideText",ExpressionUUID->"726654d5-ae48-41fe-a7be-0c039a3c2ca4"],
+Cell[14451, 372, 531, 13, 70, "GuideText",ExpressionUUID->"3c7d2382-29cc-4375-92cd-35078872ae95"],
+Cell[14985, 387, 561, 14, 70, "GuideText",ExpressionUUID->"286c42b5-691c-4551-bd26-19a274073150"],
+Cell[15549, 403, 573, 14, 70, "GuideText",ExpressionUUID->"7bd17184-10e7-44f6-bc30-cc4648f899fe"],
+Cell[16125, 419, 546, 13, 70, "GuideText",ExpressionUUID->"72532af1-8eef-4d16-8ffc-916870eeac31"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[19631, 556, 113, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"05806bb1-ad1d-40c5-8c91-28873cd7eb6e"],
-Cell[19747, 558, 588, 14, 70, "GuideText",ExpressionUUID->"54f99fb0-c58d-4b70-bd27-7b34d1547589"],
-Cell[20338, 574, 636, 14, 70, "GuideText",ExpressionUUID->"9060e2f0-1668-455e-8d5b-b430fa2eb458"]
+Cell[16708, 437, 113, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"852b69cd-3659-4fdc-88d6-6ac16a1dc718"],
+Cell[16824, 439, 588, 14, 70, "GuideText",ExpressionUUID->"55f67835-5fd0-4de3-95e7-fce37fb29e50"],
+Cell[17415, 455, 636, 14, 70, "GuideText",ExpressionUUID->"5574d4d5-d5dc-4a25-8ddf-27f1081f64ba"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[21011, 593, 97, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"0598c6dd-f176-41f0-a26f-4a43f29c2435"],
-Cell[21111, 595, 612, 14, 70, "GuideText",ExpressionUUID->"c9636f59-e2f7-40e6-94f4-c59d9e6ba11e"],
-Cell[21726, 611, 552, 14, 70, "GuideText",ExpressionUUID->"672993c0-5ff9-4a2f-b919-a233c1c3d4cc"],
-Cell[22281, 627, 574, 14, 70, "GuideText",ExpressionUUID->"ac0c7105-aaf4-4c11-96c6-4fff4e838514"],
-Cell[22858, 643, 569, 14, 70, "GuideText",ExpressionUUID->"a30563af-b82a-4201-afb9-0466e4391e63"],
-Cell[23430, 659, 526, 13, 70, "GuideText",ExpressionUUID->"15723728-a3d7-48f5-8ed1-bc96bc25ee51"]
+Cell[18088, 474, 97, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"56bae202-f9a4-4c41-ac32-e53031f09a71"],
+Cell[18188, 476, 610, 14, 70, "GuideText",ExpressionUUID->"6a51b526-585c-45d6-8d6e-789698b784ac"],
+Cell[18801, 492, 552, 14, 70, "GuideText",ExpressionUUID->"f608019f-b6d8-4c18-9580-0e280c1345d2"],
+Cell[19356, 508, 574, 14, 70, "GuideText",ExpressionUUID->"202033ae-6fa6-4d09-b084-151a7ee3e00c"],
+Cell[19933, 524, 569, 14, 70, "GuideText",ExpressionUUID->"ce96d270-6aa0-4537-a0e2-4e1935764c1f"],
+Cell[20505, 540, 526, 13, 70, "GuideText",ExpressionUUID->"59eb144b-8722-4c37-a068-d1568db57758"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[23993, 677, 111, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"90aba879-b996-433e-8d26-420ce1f0c9fc"],
-Cell[24107, 679, 569, 13, 70, "GuideText",ExpressionUUID->"4970131a-f826-4f9a-8800-184d92dcd89e"],
-Cell[24679, 694, 589, 14, 70, "GuideText",ExpressionUUID->"3759c960-76d4-4a40-aea5-2ba5300f63ea"],
-Cell[25271, 710, 530, 13, 70, "GuideText",ExpressionUUID->"9d422ded-18c7-41de-ab19-f01f41ce3f86"],
-Cell[25804, 725, 587, 14, 70, "GuideText",ExpressionUUID->"7f9b6ce7-4f2c-404c-93d3-5e9b3727fcf7"],
-Cell[26394, 741, 628, 14, 70, "GuideText",ExpressionUUID->"d4c7b57e-1b65-4b11-b867-569188977be8"],
-Cell[27025, 757, 536, 13, 70, "GuideText",ExpressionUUID->"84595fe7-efcb-42c1-8382-095ffeec6b71"]
+Cell[21068, 558, 111, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"c57f8a5e-1c3e-429b-b681-7b3f8a9981fe"],
+Cell[21182, 560, 589, 14, 70, "GuideText",ExpressionUUID->"a8d19d53-a9be-4e44-b014-bef9b1e264ef"],
+Cell[21774, 576, 530, 13, 70, "GuideText",ExpressionUUID->"94ab3b38-557d-4f8a-a065-3235a940cabc"],
+Cell[22307, 591, 587, 14, 70, "GuideText",ExpressionUUID->"f6a5a9c9-edab-4890-b4b3-19dea9647259"],
+Cell[22897, 607, 628, 14, 70, "GuideText",ExpressionUUID->"0f030514-fddb-40e8-844d-abddd109616f"],
+Cell[23528, 623, 536, 13, 70, "GuideText",ExpressionUUID->"d840c05b-5c38-4243-ae25-a3a77d2d97e1"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[27598, 775, 123, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"3f96989d-31ab-4bbb-a4af-6a2956f46afc"],
-Cell[27724, 777, 533, 13, 70, "GuideText",ExpressionUUID->"09435581-cd5b-47eb-ab18-f4dfdabb9217"],
-Cell[28260, 792, 570, 14, 70, "GuideText",ExpressionUUID->"105a02e1-4844-4e6d-a48f-22ff7f93c9d2"],
-Cell[28833, 808, 617, 14, 70, "GuideText",ExpressionUUID->"acf3a05a-912f-4bb1-b32c-c5c14d490667"],
-Cell[29453, 824, 569, 14, 70, "GuideText",ExpressionUUID->"3a5fa47a-ac5f-4fff-baf0-4a697f935fcb"],
-Cell[30025, 840, 557, 14, 70, "GuideText",ExpressionUUID->"3525f847-9dce-4836-b163-ad2198b4f271"],
-Cell[30585, 856, 572, 14, 70, "GuideText",ExpressionUUID->"346d75c8-0008-49a7-9dbb-f4040f16c943"],
-Cell[31160, 872, 524, 13, 70, "GuideText",ExpressionUUID->"50422f01-3a6c-4bd8-a0a6-e70e2ac07c85"],
-Cell[31687, 887, 546, 13, 70, "GuideText",ExpressionUUID->"3ea127d2-d14d-4238-95c9-3b15487fdd44"],
-Cell[32236, 902, 552, 13, 70, "GuideText",ExpressionUUID->"f98b7926-d8e8-47b2-bbee-3cd0ccfc7a67"],
-Cell[32791, 917, 531, 13, 70, "GuideText",ExpressionUUID->"42e687fe-42b6-42ff-b70c-0f500210d602"],
-Cell[33325, 932, 510, 13, 70, "GuideText",ExpressionUUID->"e5e446bd-19ed-49f9-a2f4-b57f335f7823"],
-Cell[33838, 947, 588, 14, 70, "GuideText",ExpressionUUID->"58af5e7f-a4c5-4d82-8301-cd40a2dd85a1"]
+Cell[24101, 641, 123, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"d44bba7c-8e54-4604-a920-4d80b2133387"],
+Cell[24227, 643, 533, 13, 70, "GuideText",ExpressionUUID->"7ee54ee1-ac26-4dfd-9357-a6cec01e2ad5"],
+Cell[24763, 658, 570, 14, 70, "GuideText",ExpressionUUID->"045c7416-2247-4890-a74f-a631f1fb45c9"],
+Cell[25336, 674, 617, 14, 70, "GuideText",ExpressionUUID->"2279bf4a-3d94-4db2-8917-82ec9d7dc106"],
+Cell[25956, 690, 569, 14, 70, "GuideText",ExpressionUUID->"48de5a77-9367-4cfc-8b06-3bd98af374a4"],
+Cell[26528, 706, 557, 14, 70, "GuideText",ExpressionUUID->"4681bf03-32bf-4b12-958f-0e8b7d6790ee"],
+Cell[27088, 722, 576, 14, 70, "GuideText",ExpressionUUID->"be1faed2-f469-414c-877d-614431661bec"],
+Cell[27667, 738, 524, 13, 70, "GuideText",ExpressionUUID->"8b167d95-862b-432a-8701-4ea58fd5372c"],
+Cell[28194, 753, 546, 13, 70, "GuideText",ExpressionUUID->"16bb3f50-8d39-4c5e-837e-ab0a7c12a71f"],
+Cell[28743, 768, 552, 13, 70, "GuideText",ExpressionUUID->"243a77cc-baca-470a-a033-99c32130d855"],
+Cell[29298, 783, 531, 13, 70, "GuideText",ExpressionUUID->"a5cb77e1-0db0-40ef-98e1-79062f7af4b5"],
+Cell[29832, 798, 510, 13, 70, "GuideText",ExpressionUUID->"cb4eacb6-bbff-4668-92e5-d31787220a34"],
+Cell[30345, 813, 588, 14, 70, "GuideText",ExpressionUUID->"99e92357-4d92-4071-9e4d-5b8fca9053a6"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[34463, 966, 132, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"9d4cf939-86dd-4ad5-b3ad-3b9743f15328"],
-Cell[34598, 968, 562, 14, 70, "GuideText",ExpressionUUID->"94566e7b-1987-494a-bdda-71b5e9e34419"],
-Cell[35163, 984, 597, 14, 70, "GuideText",ExpressionUUID->"b7733b65-9044-4fab-8826-422754320110"],
-Cell[35763, 1000, 528, 13, 70, "GuideText",ExpressionUUID->"fb39b2bf-850c-4362-8b47-6bf569c28a19"],
-Cell[36294, 1015, 516, 13, 70, "GuideText",ExpressionUUID->"435c82e2-0a78-4e77-9d7b-bd25198f18f4"],
-Cell[36813, 1030, 585, 13, 70, "GuideText",ExpressionUUID->"8e4da188-615d-4498-8d61-cc816a8fab95"],
-Cell[37401, 1045, 595, 14, 70, "GuideText",ExpressionUUID->"e702d578-a573-4a73-bbbb-a7c70d7024ec"],
-Cell[37999, 1061, 523, 13, 70, "GuideText",ExpressionUUID->"31e92fe7-5be7-44c0-b9dd-8637534d084c"],
-Cell[38525, 1076, 508, 13, 70, "GuideText",ExpressionUUID->"275ce473-2789-40f6-8291-aef516f03c82"],
-Cell[39036, 1091, 656, 15, 70, "GuideText",ExpressionUUID->"ea4f549a-8097-4894-bbb0-a6539d951f51"]
+Cell[30970, 832, 132, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"1c161047-7585-444d-98d1-dfc2e4ac38e2"],
+Cell[31105, 834, 562, 14, 70, "GuideText",ExpressionUUID->"4411e038-5818-4d23-b5b3-89d9b40a4479"],
+Cell[31670, 850, 591, 14, 70, "GuideText",ExpressionUUID->"6a60de40-503c-4969-9ca4-7801394baa4c"],
+Cell[32264, 866, 532, 13, 70, "GuideText",ExpressionUUID->"fff45128-38a2-40b9-8c9c-ba78c296bd8f"],
+Cell[32799, 881, 510, 13, 70, "GuideText",ExpressionUUID->"2f058b4c-dcce-41b2-a31f-81a02d4c11ad"],
+Cell[33312, 896, 585, 13, 70, "GuideText",ExpressionUUID->"6f0dc37c-6f45-42a6-9149-68cb182890dd"],
+Cell[33900, 911, 589, 14, 70, "GuideText",ExpressionUUID->"24efd0fe-d7e8-485f-bc62-34210061ac91"],
+Cell[34492, 927, 527, 13, 70, "GuideText",ExpressionUUID->"9c73ef3f-498c-421f-963c-7644f4f80fd9"],
+Cell[35022, 942, 508, 13, 70, "GuideText",ExpressionUUID->"d5cc292d-4033-4461-bd30-fce3df440376"],
+Cell[35533, 957, 650, 15, 70, "GuideText",ExpressionUUID->"1e4b00de-bca5-42df-9b24-c32a803c8d49"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[39729, 1111, 111, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"5a66bc1e-b6d9-48d8-877a-6e1bd6cbf94f"],
-Cell[39843, 1113, 510, 13, 70, "GuideText",ExpressionUUID->"ccd3ff08-70e7-4597-8b30-09e9fcc6b1d6"],
-Cell[40356, 1128, 558, 14, 70, "GuideText",ExpressionUUID->"0e20a919-e249-4394-af74-01623f57e522"],
-Cell[40917, 1144, 651, 15, 70, "GuideText",ExpressionUUID->"66c66a41-97aa-4854-acb7-673ca2fba928"],
-Cell[41571, 1161, 556, 14, 70, "GuideText",ExpressionUUID->"dc9ba559-2c6e-4787-95a1-556ac0d96f92"],
-Cell[42130, 1177, 559, 14, 70, "GuideText",ExpressionUUID->"9194c70e-0785-499e-af10-6a5b1c427cd3"],
-Cell[42692, 1193, 553, 13, 70, "GuideText",ExpressionUUID->"40bb41c4-02f9-4161-b727-6b7b034fd46c"]
+Cell[36220, 977, 111, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"b777dbd0-828c-4bb9-ac08-151439f19219"],
+Cell[36334, 979, 510, 13, 70, "GuideText",ExpressionUUID->"b069b2aa-8686-4b97-91d5-d124cfaa8acf"],
+Cell[36847, 994, 558, 14, 70, "GuideText",ExpressionUUID->"251c8788-1fbe-4a36-82a1-498702ead05a"],
+Cell[37408, 1010, 645, 15, 70, "GuideText",ExpressionUUID->"3d5ff53d-00e4-441b-9050-77426769b3ee"],
+Cell[38056, 1027, 548, 13, 70, "GuideText",ExpressionUUID->"1c708fd1-bc6f-402c-ab21-b8df583890e0"],
+Cell[38607, 1042, 553, 14, 70, "GuideText",ExpressionUUID->"d15dcd75-480a-4d35-a071-d6c7d431a3e5"],
+Cell[39163, 1058, 547, 13, 70, "GuideText",ExpressionUUID->"07c55854-c448-4022-a99c-4e35e21dac87"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[43282, 1211, 123, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"7519854c-9952-4ca9-8108-321571391583"],
-Cell[43408, 1213, 645, 15, 70, "GuideText",ExpressionUUID->"5b0ab90d-8c35-4653-8898-872cbaec0b79"],
-Cell[44056, 1230, 583, 14, 70, "GuideText",ExpressionUUID->"f4488cff-e1e0-4090-8ec5-a0b0054a82eb"],
-Cell[44642, 1246, 563, 13, 70, "GuideText",ExpressionUUID->"a80f9a1a-05c0-4e82-a84c-cc08c9acd393"],
-Cell[45208, 1261, 597, 14, 70, "GuideText",ExpressionUUID->"61766dc7-e0ef-4683-a6b9-75d11dacb8b1"],
-Cell[45808, 1277, 627, 14, 70, "GuideText",ExpressionUUID->"c0773b7c-ebb5-4cad-b1f3-862fa22e1ab6"]
+Cell[39747, 1076, 123, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"70bc81fc-74ea-468b-bffa-6fa0b09054f7"],
+Cell[39873, 1078, 639, 15, 70, "GuideText",ExpressionUUID->"6c5c6260-9caf-434c-a5de-bd6c4e58da8a"],
+Cell[40515, 1095, 587, 14, 70, "GuideText",ExpressionUUID->"a507611f-4f54-43c9-a264-d26a4e624a32"],
+Cell[41105, 1111, 563, 13, 70, "GuideText",ExpressionUUID->"4a58bad5-b432-4f4d-876c-086ccfc79fd0"],
+Cell[41671, 1126, 591, 14, 70, "GuideText",ExpressionUUID->"2130691e-fb38-4275-8dc1-e90e4a0b4a95"],
+Cell[42265, 1142, 621, 14, 70, "GuideText",ExpressionUUID->"a8c51edb-2388-447b-81b2-a725164eb1f9"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[46472, 1296, 111, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"9ad3d534-bede-4437-8f6f-eece79b68bb0"],
-Cell[46586, 1298, 603, 14, 70, "GuideText",ExpressionUUID->"fb4ea3ef-d6d6-4e0a-84c3-e421463075a5"],
-Cell[47192, 1314, 585, 14, 70, "GuideText",ExpressionUUID->"01bd2dbb-dc39-4235-904c-90c5846c3f49"],
-Cell[47780, 1330, 571, 13, 70, "GuideText",ExpressionUUID->"ea554116-0b4a-4c46-9f6f-7fd4db76c5cb"]
+Cell[42923, 1161, 111, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"48f72736-9078-4f18-aa3f-171b04d4d4a9"],
+Cell[43037, 1163, 603, 14, 70, "GuideText",ExpressionUUID->"b6f6b28d-c518-4855-976f-b1f4f35988c3"],
+Cell[43643, 1179, 585, 14, 70, "GuideText",ExpressionUUID->"f0381d0e-9e01-4112-a3e6-8c4786a2e230"],
+Cell[44231, 1195, 571, 13, 70, "GuideText",ExpressionUUID->"99bbff8d-8e52-48f3-aff6-e40ee37b0762"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[48388, 1348, 123, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"4876281a-0e2e-45da-b97f-a6b533c70fff"],
-Cell[48514, 1350, 585, 14, 70, "GuideText",ExpressionUUID->"4620f655-a965-4365-aa50-fb249e57400c"],
-Cell[49102, 1366, 581, 14, 70, "GuideText",ExpressionUUID->"ce4f8558-46a1-4977-b954-ba0716d4669e"],
-Cell[49686, 1382, 577, 14, 70, "GuideText",ExpressionUUID->"cb3455c5-a601-4c65-92ab-89187742a3eb"],
-Cell[50266, 1398, 596, 14, 70, "GuideText",ExpressionUUID->"12080b74-0a4c-4a68-92ac-a6473f7711a1"]
+Cell[44839, 1213, 123, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"6f207658-2be1-48dd-a8ff-1636ffa73d60"],
+Cell[44965, 1215, 585, 14, 70, "GuideText",ExpressionUUID->"a7b6bb58-387e-485f-a970-da4a53b26c83"],
+Cell[45553, 1231, 581, 14, 70, "GuideText",ExpressionUUID->"256434df-a2a3-438e-b25c-523c1c31025c"],
+Cell[46137, 1247, 577, 14, 70, "GuideText",ExpressionUUID->"72ecd843-ae2c-485e-9c1e-3760225f7771"],
+Cell[46717, 1263, 596, 14, 70, "GuideText",ExpressionUUID->"70fa4888-66b1-4d6b-af4b-439f50eb93b2"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[50899, 1417, 109, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"d3294c9d-a91e-4cb4-a8e3-f99260bd3c94"],
-Cell[51011, 1419, 546, 13, 70, "GuideText",ExpressionUUID->"f5939b34-dbb8-4703-b4c2-656d518176ac"],
-Cell[51560, 1434, 551, 13, 70, "GuideText",ExpressionUUID->"d0e6b72c-d04c-473b-b16f-1194452dc53e"],
-Cell[52114, 1449, 551, 13, 70, "GuideText",ExpressionUUID->"54b9ea67-2552-4ef0-8e87-20bed7a0ee73"],
-Cell[52668, 1464, 565, 14, 70, "GuideText",ExpressionUUID->"e3ec9005-6953-418e-b4cf-9bb1f6f7822b"]
+Cell[47350, 1282, 109, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"77435494-1bd6-4913-8232-4a24c0abeb3c"],
+Cell[47462, 1284, 546, 13, 70, "GuideText",ExpressionUUID->"9cd840db-ff04-478c-a967-ea6a09b5d808"],
+Cell[48011, 1299, 551, 13, 70, "GuideText",ExpressionUUID->"39fad76c-2f14-4e01-8cd9-c0a6676c1eb3"],
+Cell[48565, 1314, 551, 13, 70, "GuideText",ExpressionUUID->"e944cc06-cddc-4139-961e-556f998c9c91"],
+Cell[49119, 1329, 565, 14, 70, "GuideText",ExpressionUUID->"19307b4a-5b97-48a5-8544-f51187001751"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[53270, 1483, 129, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"62bc10bd-e649-418a-a859-4e2cc874039b"],
-Cell[53402, 1485, 581, 14, 70, "GuideText",ExpressionUUID->"5589af0d-b8c8-4f59-9b91-729111513556"],
-Cell[53986, 1501, 530, 13, 70, "GuideText",ExpressionUUID->"a18619cf-575c-4590-b11d-1cdc6d48ae9c"],
-Cell[54519, 1516, 571, 14, 70, "GuideText",ExpressionUUID->"2fb675ba-dd14-4892-a693-cf64a6e912bc"],
-Cell[55093, 1532, 590, 14, 70, "GuideText",ExpressionUUID->"b3c48cdf-adb3-4c0e-8dc9-cda5de3304d7"]
+Cell[49721, 1348, 129, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"632fc775-2ea9-4855-89f8-25834f2502c4"],
+Cell[49853, 1350, 581, 14, 70, "GuideText",ExpressionUUID->"564bcd7d-b5d0-4877-9d7c-f610122efd30"],
+Cell[50437, 1366, 530, 13, 70, "GuideText",ExpressionUUID->"f9458b89-4d5e-4cbe-bbaf-5f27d1f6ffa4"],
+Cell[50970, 1381, 571, 14, 70, "GuideText",ExpressionUUID->"946e7040-158f-4dd7-8024-bdb336406237"],
+Cell[51544, 1397, 590, 14, 70, "GuideText",ExpressionUUID->"6ffdf999-17b3-4324-89ec-2ba18eaabeba"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[55720, 1551, 111, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"33cb38d1-0c2d-43b2-980e-dc3861101f4b"],
-Cell[55834, 1553, 530, 13, 70, "GuideText",ExpressionUUID->"98aabbdd-31ac-42ac-afc5-8dcb6d53c57b"],
-Cell[56367, 1568, 571, 14, 70, "GuideText",ExpressionUUID->"f4cc5468-e07d-446e-8c9d-15c865a45d97"],
-Cell[56941, 1584, 1669, 46, 70, "GuideText",ExpressionUUID->"992db3c0-9e6b-46ce-a102-75ece491119c"]
+Cell[52171, 1416, 111, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"0ef7f0a6-0ac7-4851-9013-ed3d1a7e7378"],
+Cell[52285, 1418, 530, 13, 70, "GuideText",ExpressionUUID->"8d2be535-4a8c-4670-a37b-c2fe41bf46bb"],
+Cell[52818, 1433, 571, 14, 70, "GuideText",ExpressionUUID->"b5b7fffb-53fb-40b9-acc6-4d8bf7435fcf"],
+Cell[53392, 1449, 1669, 46, 70, "GuideText",ExpressionUUID->"d254e900-ff4a-46b9-aa9a-caedb8a4ba23"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[58647, 1635, 99, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"7439487c-0c6d-4533-9c96-2aeffedbbafc"],
-Cell[58749, 1637, 205, 3, 70, "GuideText",ExpressionUUID->"ca1c6627-117c-4ea6-a0fc-3071f66190ad"],
-Cell[58957, 1642, 197, 3, 70, "GuideText",ExpressionUUID->"5358a5a0-c286-4214-b843-d4d0501e1a4e"]
+Cell[55098, 1500, 99, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"ab2b39d7-17bb-4e0f-9f7d-1c535c4341e4"],
+Cell[55200, 1502, 205, 3, 70, "GuideText",ExpressionUUID->"f2d434cc-c81a-4eb7-acc2-da333fb76069"],
+Cell[55408, 1507, 197, 3, 70, "GuideText",ExpressionUUID->"041b0458-b2e9-46df-800e-0667fab48b15"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[59203, 1651, 118, 1, 70, "GuideTutorialsSection",ExpressionUUID->"90fbef20-ae74-4ea3-a50b-de22929861f8",
+Cell[55654, 1516, 118, 1, 70, "GuideTutorialsSection",ExpressionUUID->"90fbef20-ae74-4ea3-a50b-de22929861f8",
  CellID->415694126],
-Cell[59324, 1654, 408, 11, 70, "GuideTutorial",ExpressionUUID->"c8d52b1f-06c5-4db0-bd0a-f386b59efcef",
+Cell[55775, 1519, 408, 11, 70, "GuideTutorial",ExpressionUUID->"c8d52b1f-06c5-4db0-bd0a-f386b59efcef",
  CellID->806871991],
-Cell[59735, 1667, 410, 11, 70, "GuideTutorial",ExpressionUUID->"c8d52b1f-06c5-4db0-bd0a-f386b59efcef",
+Cell[56186, 1532, 410, 11, 70, "GuideTutorial",ExpressionUUID->"c8d52b1f-06c5-4db0-bd0a-f386b59efcef",
  CellID->806871991]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[60182, 1683, 189, 2, 70, "GuideMoreAboutSection",ExpressionUUID->"0c9c7cc7-143a-48e7-bf27-45dd9029bd50",
+Cell[56633, 1548, 189, 2, 70, "GuideMoreAboutSection",ExpressionUUID->"0c9c7cc7-143a-48e7-bf27-45dd9029bd50",
  CellID->23220180],
-Cell[60374, 1687, 397, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
+Cell[56825, 1552, 397, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
  CellID->1567025153],
-Cell[60774, 1699, 381, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
+Cell[57225, 1564, 381, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
  CellID->1567025153],
-Cell[61158, 1711, 375, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
+Cell[57609, 1576, 375, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
  CellID->1567025153]
 }, Open  ]],
-Cell[61548, 1724, 124, 1, 70, "GuideRelatedLinksSection",ExpressionUUID->"f8d14542-737b-4330-8523-975dc2960049",
+Cell[57999, 1589, 124, 1, 70, "GuideRelatedLinksSection",ExpressionUUID->"f8d14542-737b-4330-8523-975dc2960049",
  CellID->415694148],
 Cell[CellGroupData[{
-Cell[61697, 1729, 110, 1, 70, "MetadataSection",ExpressionUUID->"1e562958-8f54-4854-b782-f4766015b2b2",
+Cell[58148, 1594, 110, 1, 70, "MetadataSection",ExpressionUUID->"1e562958-8f54-4854-b782-f4766015b2b2",
  CellID->311882160],
-Cell[61810, 1732, 476, 12, 70, "History",ExpressionUUID->"6e43ae3a-1f84-4ca3-8250-559a053a9513",
+Cell[58261, 1597, 476, 12, 70, "History",ExpressionUUID->"6e43ae3a-1f84-4ca3-8250-559a053a9513",
  CellID->341476719],
 Cell[CellGroupData[{
-Cell[62311, 1748, 123, 1, 70, "CategorizationSection",ExpressionUUID->"cbe57f1c-788c-4a86-8338-08191b5d7b7b",
+Cell[58762, 1613, 123, 1, 70, "CategorizationSection",ExpressionUUID->"cbe57f1c-788c-4a86-8338-08191b5d7b7b",
  CellID->1122911449],
-Cell[62437, 1751, 133, 2, 70, "Categorization",ExpressionUUID->"4bb65dd8-004f-4758-b626-8984c4a9f475",
+Cell[58888, 1616, 133, 2, 70, "Categorization",ExpressionUUID->"4bb65dd8-004f-4758-b626-8984c4a9f475",
  CellID->686433507],
-Cell[62573, 1755, 158, 2, 70, "Categorization",ExpressionUUID->"ea3b4732-cbcc-4f28-9e20-bfabae54c52c",
+Cell[59024, 1620, 158, 2, 70, "Categorization",ExpressionUUID->"ea3b4732-cbcc-4f28-9e20-bfabae54c52c",
  CellID->605800465],
-Cell[62734, 1759, 155, 2, 70, "Categorization",ExpressionUUID->"52afa833-5422-4969-8c91-b9af19a42a2e",
+Cell[59185, 1624, 155, 2, 70, "Categorization",ExpressionUUID->"52afa833-5422-4969-8c91-b9af19a42a2e",
  CellID->468444828],
-Cell[62892, 1763, 161, 2, 70, "Categorization",ExpressionUUID->"e298af88-0d64-443a-98be-a3f4495c73bc"]
+Cell[59343, 1628, 161, 2, 70, "Categorization",ExpressionUUID->"2e626fd9-4796-4115-aff8-0481b104afea"]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[63090, 1770, 111, 1, 70, "KeywordsSection",ExpressionUUID->"99169e92-9e69-4982-8b71-ac9518fe5ead",
+Cell[59541, 1635, 111, 1, 70, "KeywordsSection",ExpressionUUID->"99169e92-9e69-4982-8b71-ac9518fe5ead",
  CellID->1427428552],
-Cell[63204, 1773, 114, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[59655, 1638, 114, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[63321, 1776, 101, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[59772, 1641, 101, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[63425, 1779, 114, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[59876, 1644, 114, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[63542, 1782, 101, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[59993, 1647, 101, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[63646, 1785, 106, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[60097, 1650, 111, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[63755, 1788, 101, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[60211, 1653, 101, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[63859, 1791, 103, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[60315, 1656, 103, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[63965, 1794, 99, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[60421, 1659, 99, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[64067, 1797, 100, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[60523, 1662, 100, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[64170, 1800, 104, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[60626, 1665, 104, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[64277, 1803, 109, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[60733, 1668, 109, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[64389, 1806, 102, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[60845, 1671, 102, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[64494, 1809, 99, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[60950, 1674, 99, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[64596, 1812, 104, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[61052, 1677, 104, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[64703, 1815, 103, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[61159, 1680, 103, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[64809, 1818, 100, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[61265, 1683, 100, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[64912, 1821, 100, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[61368, 1686, 100, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[65015, 1824, 104, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[61471, 1689, 104, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[65122, 1827, 100, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[61578, 1692, 100, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[65225, 1830, 103, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[61681, 1695, 103, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[65331, 1833, 100, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[61787, 1698, 100, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[65434, 1836, 101, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[61890, 1701, 101, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[65538, 1839, 110, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[61994, 1704, 110, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827],
-Cell[65651, 1842, 101, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
+Cell[62107, 1707, 101, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
  CellID->1251852827]
 }, Closed]]
 }, Open  ]]

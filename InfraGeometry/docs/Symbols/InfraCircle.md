@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraCircle
 Keywords: [circle, radius, band, separating cycle, unrolled band, atom, necklace, seam, symbolic object]
-SeeAlso: [InfraArc, InfraMeasurement, FindInfraRepresentative, Undetermined, InfraShell, FindInfraShell]
+SeeAlso: [InfraArc, InfraMeasurement, RandomInfraRepresentative, Undetermined, InfraShell, FindInfraShell]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraCircle]()[*c*, *r*]</code> is the family of circles around *c* at radius *r*. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraCircle]()[*c*, *r*]</code> is the family of circles around *c* at radius *r*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraCircle]()[*c*, {*r*, *s*}]</code> is the family in the band *r* ≤ *d(c, v)* ≤ *s*; a scalar *r* means `{r, r}`.
 
@@ -38,7 +38,7 @@ The atoms need the cut band to be connected and the two sides to occur on the se
 
 A member is a chain of the graph read as a cyclic vertex list: the copy of the source is dropped and the first vertex is not repeated. The `"Length"` of a circle of *k* vertices is *k*.
 
-**The search.** <code>[FindInfraRepresentative]()[*g*, *circle*, *n*]</code> sweeps the band directly: for *k* = 3, 4, … it takes every cycle of length *k* of the band (`FindCycle`) and keeps those whose removal leaves *c* in a component reaching no further than the band; the first *k* with a survivor gives the members. It does not read the graph, so it is the check on it, and it still answers where nothing lies beyond the band and separation is vacuous. Each length is enumerated in full before the filter, so the sweep is fast on a band one or two vertices thick and does not finish in reasonable time on a wide one, such as `{3, 6}` on the square tiling.
+**The search.** <code>[RandomInfraRepresentative]()[*g*, *circle*, *n*]</code> sweeps the band directly: for *k* = 3, 4, … it takes every cycle of length *k* of the band (`FindCycle`) and keeps those whose removal leaves *c* in a component reaching no further than the band; the first *k* with a survivor gives the members. It does not read the graph, so it is the check on it, and it still answers where nothing lies beyond the band and separation is vacuous. Each length is enumerated in full before the filter, so the sweep is fast on a band one or two vertices thick and does not finish in reasonable time on a wide one, such as `{3, 6}` on the square tiling.
 
 Every member separates. That the atoms carry every circle exactly once needs the winding functional, an invariant of the substrate that is nonzero exactly on the separating cycles, and a connected cut band; nothing here certifies the first. So `"Faithful"` is [Undetermined](), except that it is `False` where the cut band is connected and the seam has one side only: there the winding functional or the annulus is witnessed to fail.
 
@@ -84,7 +84,7 @@ Row @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {circles = FindInfraRepresentative[g, InfraCircle[c, 4], All]},
+    {circles = RandomInfraRepresentative[g, InfraCircle[c, 4], All]},
     Labeled[
       InfraSubstrateHighlight[g,
         {FindInfraShell[g, c, 4],
@@ -100,7 +100,7 @@ Row @ Table[
   With[
     {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {circles = FindInfraRepresentative[g, InfraCircle[c, band], All]},
+    {circles = RandomInfraRepresentative[g, InfraCircle[c, band], All]},
     Labeled[
       InfraSubstrateHighlight[g,
         {FindInfraShell[g, c, band],
@@ -116,7 +116,7 @@ GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[First @ spec, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {oneCircle = FindInfraRepresentative[g, InfraCircle[c, Last @ spec]]},
+    {oneCircle = RandomInfraRepresentative[g, InfraCircle[c, Last @ spec]]},
     InfraSubstrateHighlight[g, {Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], c},
       "Arrowheads" -> True]],
   {spec, {{"SquareTilingGraph", {4, 5}}, {"HexagonalTilingGraph", {4, 6}}, {"TriangularTilingGraph", 4}}}]
@@ -128,7 +128,7 @@ A member is a cyclic vertex list. Drawn as a walk, it closes back on its first v
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {closedWalk = FindInfraRepresentative[g, InfraCircle[c, {2, 4}]]},
+  {closedWalk = RandomInfraRepresentative[g, InfraCircle[c, {2, 4}]]},
   InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]], c}]]
 ```
 
@@ -153,9 +153,9 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {circle = InfraCircle[c, {2, 4}]},
-  {circles = FindInfraRepresentative[g, circle, All]},
+  {circles = RandomInfraRepresentative[g, circle, All]},
   {InfraSubstrateHighlight[g, {Table[Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], {oneCircle, circles}]}],
-   Length @ circles, Length @ FindInfraRepresentative[g, circle, 3], FindInfraRepresentative[g, circle, 20]}]
+   Length @ circles, Length @ RandomInfraRepresentative[g, circle, 3], RandomInfraRepresentative[g, circle, 20]}]
 ```
 
 ## Properties and Relations
@@ -167,7 +167,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {band = FindInfraShell[g, c, {2, 4}]},
-  {closedWalk = FindInfraRepresentative[g, InfraCircle[c, {2, 4}]]},
+  {closedWalk = RandomInfraRepresentative[g, InfraCircle[c, {2, 4}]]},
   {InfraSubstrateHighlight[g, {band, InfraWalk[Append[closedWalk, First @ closedWalk]]}],
    SubsetQ[band, closedWalk], AllTrue[Partition[closedWalk, 2, 1, 1], EdgeQ[g, UndirectedEdge @@ #] &]}]
 ```
@@ -180,7 +180,7 @@ With[
   {c = First @ GraphCenter[g]},
   {circle = InfraCircle[c, {2, 4}]},
   {InfraSubstrateHighlight[g, {circle, c}],
-   InfraMeasurement[g, circle, "Cardinality"], Length @ FindInfraRepresentative[g, circle, All]}]
+   InfraMeasurement[g, circle, "Cardinality"], Length @ RandomInfraRepresentative[g, circle, All]}]
 ```
 
 An atom is acyclic: its chains run from the seam vertex *x* to the copy `{x, 3/2}` of it, the circles through *x* opened at *x*.

@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraTube
 Keywords: [tube, neighbourhood, region, symbolic object, volume, counting measure, Riemannian measure]
-SeeAlso: [InfraCylinder, InfraCone, InfraBall, InfraMeasurement, FindInfraRepresentative, InfraSolidOfRevolution, InfraSegment, InfraInterior, InfraBoundary]
+SeeAlso: [InfraCylinder, InfraCone, InfraBall, InfraMeasurement, RandomInfraRepresentative, InfraSolidOfRevolution, InfraSegment, InfraInterior, InfraBoundary]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraTube]()[*core*, *s*]</code> is the tube of radius *s* about *core*: the vertices at distance at most *s* from it. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraTube]()[*core*, *s*]</code> is the tube of radius *s* about *core*: the vertices at distance at most *s* from it. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraTube]()[*core*, {*s*, *t*}]</code> is the mantle: the vertices at distance between *s* and *t*.
 
@@ -30,7 +30,7 @@ The profile is a radius *r*, which is the band *{0, r}*; a pair of numbers *{s, 
 
 Option <code>Method</code> takes `"Balls"` (default) or `"Sliced"`. `"Balls"` is the union of the balls *B(a_i, r_i)* about the core vertices, rounded where the profile jumps and at the ends. `"Sliced"` needs a walk for a core: slice *i* is the set of vertices whose nearest axis vertex is *a_i*, a tie lying in every nearest slice, and *v* is in the solid when *d(a_i, v)* lies in the band of its slice. The axis is prolonged straight on past both ends and the vertices nearer a prolongation than the axis are cut, so the ends are flat; a closed axis has no ends. A jump of the profile is then a sharp step.
 
-The tube of a segment is the tube of its whole interval, not of one shortest path: the *fat tube* <code>[InfraTube]()[[InfraSegment]()[*c*, *p*], *s*]</code>. Where the segment has many shortest paths it is fatter than the tube of any of them. The *thin tube* of one path takes as its core a member that [FindInfraRepresentative]() gives, <code>[InfraTube]()[[FindInfraRepresentative]()[*g*, [InfraSegment]()[*c*, *p*]], *s*]</code>.
+The tube of a segment is the tube of its whole interval, not of one shortest path: the *fat tube* <code>[InfraTube]()[[InfraSegment]()[*c*, *p*], *s*]</code>. Where the segment has many shortest paths it is fatter than the tube of any of them. The *thin tube* of one path takes as its core a member that [RandomInfraRepresentative]() gives, <code>[InfraTube]()[[RandomInfraRepresentative]()[*g*, [InfraSegment]()[*c*, *p*]], *s*]</code>.
 
 [InfraMeasurement]() gives two measures of a tube:
 
@@ -63,7 +63,7 @@ Row[Table[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
     {tube = InfraTube[InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])], 2]},
-    {support = FindInfraRepresentative[g, tube]},
+    {support = RandomInfraRepresentative[g, tube]},
     Labeled[
       InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
       InfraMeasurement[g, tube, {"CountingMeasure", "RiemannianMeasure"}]]],
@@ -122,7 +122,7 @@ With[
   {c = First @ GraphCenter[g]},
   {fat = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
   {intervalSize = InfraMeasurement[g, fat, "CountingMeasure"]},
-  {geodesic = FindInfraRepresentative[g, fat]},
+  {geodesic = RandomInfraRepresentative[g, fat]},
   Show[
     Plot[intervalSize + 2 s (5 + 2) + 2 s (s - 1), {s, 0, 5}],
     ListPlot[{
@@ -137,7 +137,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])]},
-  {tubes = {InfraTube[seg, 1], InfraTube[FindInfraRepresentative[g, seg], 1]}},
+  {tubes = {InfraTube[seg, 1], InfraTube[RandomInfraRepresentative[g, seg], 1]}},
   {Row[InfraSubstrateHighlight[g, {#}] & /@ tubes], InfraMeasurement[g, tubes, "CountingMeasure"]}]
 ```
 
@@ -147,5 +147,5 @@ The tube of a vertex is the ball.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small"]},
   {c = First @ GraphCenter[g]},
-  FindInfraRepresentative[g, InfraTube[c, 3]] === FindInfraRepresentative[g, InfraBall[c, 3]]]
+  RandomInfraRepresentative[g, InfraTube[c, 3]] === RandomInfraRepresentative[g, InfraBall[c, 3]]]
 ```

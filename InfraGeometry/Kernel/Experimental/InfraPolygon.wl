@@ -9,18 +9,21 @@ Package[ "WolframInstitute`InfraGeometry`" ]
    The family is carried by the FindCycle candidate sweep, filtered by the slot predicates.  The sweep is not lazy -- every n-cycle of the candidate
    graph is materialised before any is tested -- so the next-vertex function only orders or thins what the count takes *)
 
-Options[ FindInfraRegularPolygon ] = {
+Options[ RandomInfraRegularPolygon ] = {
   Properties           -> { },
-  "NextVertexFunction" -> Identity,
+  "NextVertexFunction" -> Automatic,
   "From"               -> All
 }
 
-FindInfraRegularPolygon[ graph_Graph, As_List, n_Integer /; n >= 3,
+RandomInfraRegularPolygon[ graph_Graph, As_List, n_Integer /; n >= 3,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    1 <= Length[ As ] <= Floor[ n / 2 ] && OptionValue[ FindInfraRegularPolygon, { opts }, Properties ] === { } :=
+    1 <= Length[ As ] <= Floor[ n / 2 ] && OptionValue[ RandomInfraRegularPolygon, { opts }, Properties ] === { } &&
+    ( count =!= All || OptionValue[ RandomInfraRegularPolygon, { opts }, "NextVertexFunction" ] =!= RandomChoice ) :=
   With[ {
-      nextFn   = OptionValue[ FindInfraRegularPolygon, { opts }, "NextVertexFunction" ],
-      fromSpec = OptionValue[ FindInfraRegularPolygon, { opts }, "From" ] },
+      nextFn   = If[ count === All &&
+          OptionValue[ RandomInfraRegularPolygon, { opts }, "NextVertexFunction" ] === Automatic,
+        Identity, OptionValue[ RandomInfraRegularPolygon, { opts }, "NextVertexFunction" ] ],
+      fromSpec = OptionValue[ RandomInfraRegularPolygon, { opts }, "From" ] },
     With[ { normalize = a |-> Replace[ a, {
                   fam_Association :> Keys @ fam,
                   list_List /; AllTrue[ list, MatchQ[ _Association ] ] :> list[[ All, 1, 1 ]] } ] },
@@ -48,7 +51,11 @@ FindInfraRegularPolygon[ graph_Graph, As_List, n_Integer /; n >= 3,
                 _Integer,               AllTrue[ ds, # === slot & ],
                 { _Integer, _Integer }, Length[ Union @ ds ] === 1 && slot[[ 1 ]] <= First @ ds <= slot[[ 2 ]],
                 Automatic,              Length[ Union @ ds ] === 1 ] ] },
-          { ordered = Replace[ nextFn @ candidates, chosen_ /; MemberQ[ candidates, Verbatim @ chosen ] :> { chosen } ] },
+          { ordered = Which[
+              candidates === { } || nextFn === Identity, candidates,
+              nextFn === Automatic, RandomSample @ candidates,
+              True, Replace[ nextFn @ candidates,
+                chosen_ /; MemberQ[ candidates, Verbatim @ chosen ] :> { chosen } ] ] },
           { core = DeleteDuplicates @ Select[
               If[ anchor =!= None && radius === All,
                 Select[ ordered, cyc |-> If[ ListQ @ anchor, IntersectingQ[ cyc, anchor ], MemberQ[ cyc, anchor ] ] ],
@@ -106,9 +113,11 @@ InfraRegularPolygonQ[ graph_Graph, w_Graph, As_List ] :=
           { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] ],
     As ]
 
-FindInfraRepresentative[ graph_Graph, InfraPolygon[ As_List, n_Integer, opts___Rule ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+RandomInfraRepresentative[ graph_Graph, InfraPolygon[ As_List, n_Integer, opts___Rule ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   Replace[
-    FindInfraRegularPolygon[ graph, As, n, count,
-      Sequence @@ searchMethod[ mods ], Sequence @@ FilterRules[ { opts }, Options[ FindInfraRegularPolygon ] ] ],
+    RandomInfraRegularPolygon[ graph, As, n, count,
+      "NextVertexFunction" -> OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ],
+      Sequence @@ FilterRules[ { opts }, Options[ RandomInfraRegularPolygon ] ] ],
     { legs : { __Graph } :> Most @ polylineToVertexSeq @ legs, polygons_List :> Most @* polylineToVertexSeq /@ polygons } ]

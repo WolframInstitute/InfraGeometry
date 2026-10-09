@@ -73,36 +73,53 @@ InfraMeasurement[ graph_Graph, InfraLine[ germ : Except[ _Rule | _RuleDelayed ] 
             Union[ chain[ a, left ], EdgeList @ middle, chain[ a, right ] ] ] ] ],
       pairs ] ]
 
-FindInfraLine[ graph_Graph, p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic ] /;
-    ! ListQ[ p ] || VertexQ[ graph, p ] :=
-  With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
+Options[ RandomInfraLine ] = { "NextVertexFunction" -> Automatic }
+
+RandomInfraLine[ graph_Graph, p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    ( ! ListQ[ p ] || VertexQ[ graph, p ] ) &&
+    ( count =!= All || OptionValue[ RandomInfraLine, { opts }, "NextVertexFunction" ] =!= RandomChoice ) :=
+  With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
+          nextFn = If[ count === All &&
+              OptionValue[ RandomInfraLine, { opts }, "NextVertexFunction" ] === Automatic,
+            Identity, OptionValue[ RandomInfraLine, { opts }, "NextVertexFunction" ] ] },
     { lines = Fold[
         { found, seed } |-> If[ Length @ found >= cap, found,
           Join[ found,
-            FindInfraLine[ graph, seed, If[ cap === Infinity, All, UpTo[ cap - Length @ found ] ] ] ] ],
-        { }, FindInfraSegment[ graph, p, q, If[ cap === Infinity, All, UpTo[ cap ] ] ] ] },
+            RandomInfraLine[ graph, seed, If[ cap === Infinity, All, UpTo[ cap - Length @ found ] ],
+              "NextVertexFunction" -> nextFn ] ] ],
+        { }, RandomInfraSegment[ graph, p, q, If[ cap === Infinity, All, UpTo[ cap ] ],
+          "NextVertexFunction" -> nextFn ] ] },
     Switch[ count,
       Automatic, First[ lines, { } ],
       All,       lines,
       _UpTo,     Take[ lines, count ],
       _,         If[ Length @ lines < count, { }, Take[ lines, count ] ] ] ]
 
-FindInfraLine[ graph_Graph, seq_List,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic ] /;
-    seq =!= { } && ! VertexQ[ graph, seq ] :=
+RandomInfraLine[ graph_Graph, seq_List,
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    seq =!= { } && ! VertexQ[ graph, seq ] &&
+    ( count =!= All || OptionValue[ RandomInfraLine, { opts }, "NextVertexFunction" ] =!= RandomChoice ) :=
   With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
-          vs = VertexList @ graph, dm = GraphDistanceMatrix @ graph },
+          vs = VertexList @ graph, dm = GraphDistanceMatrix @ graph,
+          nextFn = If[ count === All &&
+              OptionValue[ RandomInfraLine, { opts }, "NextVertexFunction" ] === Automatic,
+            Identity, OptionValue[ RandomInfraLine, { opts }, "NextVertexFunction" ] ] },
     { idx = AssociationThread[ vs, Range @ Length @ vs ] },
     { dist = dm[[ idx @ #1, idx @ #2 ]] & },
+    { order = candidates |-> Which[
+        candidates === { } || nextFn === Identity, candidates,
+        nextFn === Automatic, RandomSample @ candidates,
+        True, Replace[ nextFn @ candidates,
+          selected_ /; MemberQ[ candidates, Verbatim @ selected ] :> { selected } ] ] },
     { lines = Catenate @ Last @ Reap @ NestWhile[
         Apply[ { backs, found } |-> With[ { seed = First @ backs },
           { Join[
-              Prepend[ seed, # ] & /@ Sort @ Select[ AdjacencyList[ graph, First @ seed ], dist[ #, Last @ seed ] == Length @ seed & ],
+              Prepend[ seed, # ] & /@ order @ Sort @ Select[ AdjacencyList[ graph, First @ seed ], dist[ #, Last @ seed ] == Length @ seed & ],
               Rest @ backs ],
             Last @ NestWhile[
               Apply[ { fronts, got } |-> With[ { path = First @ fronts },
-                { nexts = Sort @ Select[ AdjacencyList[ graph, Last @ path ], dist[ First @ path, # ] == Length @ path & ] },
+                { nexts = order @ Sort @ Select[ AdjacencyList[ graph, Last @ path ], dist[ First @ path, # ] == Length @ path & ] },
                 Which[
                   nexts =!= { },
                     { Join[ Append[ path, # ] & /@ nexts, Rest @ fronts ], got },
@@ -123,16 +140,17 @@ FindInfraLine[ graph_Graph, seq_List,
 (* a parallel to line through p: an inextensible geodesic s ... p ... e of graph inside the level set L = { v : d(v, line) == r }, r = d(p, line) --
    d(s, e) == d(s, p) + d(p, e), every vertex in L, and no neighbour of s or e in L prolonging it.  The pool is one geodesic DAG per admissible end
    pair (s, e): the s -> p and p -> e intervals cut down to L and glued at p, oriented so that s precedes e in canonical order.  All returns the
-   pool itself, as FindInfraLine does, and a bounded count streams geodesics off the atoms in the order the next-vertex function gives *)
+   pool itself, as RandomInfraLine does, and a bounded count streams geodesics off the atoms in the order the next-vertex function gives *)
 
-Options[ FindInfraParallel ] = {
+Options[ RandomInfraParallel ] = {
   Properties           -> { },
-  "NextVertexFunction" -> Identity
+  "NextVertexFunction" -> Automatic
 }
 
-FindInfraParallel[ graph_Graph, line_, p_,
+RandomInfraParallel[ graph_Graph, line_, p_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ]/;
-    OptionValue[ FindInfraParallel, { opts }, Properties ] === { } :=
+    OptionValue[ RandomInfraParallel, { opts }, Properties ] === { } &&
+    ( count =!= All || OptionValue[ RandomInfraParallel, { opts }, "NextVertexFunction" ] =!= RandomChoice ) :=
   With[ {
         walksOf = w |-> With[ { vs = VertexList @ w },
           { spelled = AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs,
@@ -147,7 +165,9 @@ FindInfraParallel[ graph_Graph, line_, p_,
                 { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
             True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ] },
       { results = ( { line0, p0 } |-> With[ {
-            nextFn = OptionValue[ FindInfraParallel, { opts }, "NextVertexFunction" ],
+            nextFn = If[ count === All &&
+                OptionValue[ RandomInfraParallel, { opts }, "NextVertexFunction" ] === Automatic,
+              Identity, OptionValue[ RandomInfraParallel, { opts }, "NextVertexFunction" ] ],
             verts = VertexList @ graph },
           With[ { dm = GraphDistanceMatrix[ graph ], vidx = AssociationThread[ verts, Range @ Length @ verts ] },
             { dist = dm[[ vidx @ #1, vidx @ #2 ]] &,
@@ -164,17 +184,15 @@ FindInfraParallel[ graph_Graph, line_, p_,
                         InfraMeasurement[ graph, { InfraSegment[ s, p0 ], InfraSegment[ p0, e ] }, "Graph" ] ] ] },
                       Subgraph[ dag, Intersection[ VertexOutComponent[ dag, s ], VertexInComponent[ dag, e ] ] ] ],
                   cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
-                  branch = cands |-> Replace[ nextFn @ cands, chosen_ /; MemberQ[ cands, Verbatim @ chosen ] :> { chosen } ] },
-                If[ count === All,
-                  Select[ atom @@@ Select[ Tuples[ { level, level } ], admissibleQ @@ # & ],
-                    VertexCount[ # ] > 0 & ],
-                  Fold[ { acc, pair } |-> If[ Length @ acc >= cap || ! admissibleQ @@ pair, acc,
+                  branch = cands |-> Which[
+                    cands === { }, { },
+                    nextFn === Identity, Sort @ cands,
+                    nextFn === Automatic, RandomSample @ cands,
+                    True, Replace[ nextFn @ cands,
+                      chosen_ /; MemberQ[ cands, Verbatim @ chosen ] :> { chosen } ] ] },
+                Fold[ { acc, pair } |-> If[ Length @ acc >= cap || ! admissibleQ @@ pair, acc,
                       Join[ acc, With[ { dag = atom @@ pair }, Which[
                         VertexCount @ dag == 0, { },
-                        cap === Infinity,
-                          Catenate @ Catenate @ Table[ FindPath[ dag, s, t, Infinity, All ],
-                            { s, Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ] },
-                            { t, Select[ VertexList @ dag, VertexOutDegree[ dag, # ] == 0 & ] } ],
                         True,
                           With[ { out = GroupBy[ List @@@ EdgeList @ dag, First -> Last ], need = cap - Length @ acc },
                             Catenate @ Last @ Reap @ NestWhile[
@@ -184,7 +202,7 @@ FindInfraParallel[ graph_Graph, line_, p_,
                                   { Join[ Append[ First @ stack, # ] & /@ branch @ nexts, Rest @ stack ], found } ] ] ],
                               { List /@ branch @ Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ], 0 },
                               state |-> First @ state =!= { } && Last @ state < need ] ] ] ] ] ],
-                    { }, branch @ Tuples[ { level, level } ] ] ] ] ] ] ] ) @@@
+                    { }, branch @ Tuples[ { level, level } ] ] ] ] ] ] ) @@@
           Tuples[ {
             Which[
               AssociationQ @ line, Keys @ line,
@@ -304,7 +322,7 @@ FindInfraCommonLine[ graph_Graph, verts_List,
     { common = If[ Length[ uverts ] < 2, { },
         DeleteDuplicates @ Select[
           ( l |-> First @ Sort @ { l, Reverse[ l ] } ) /@
-            FindInfraLine[ graph, First @ uverts, uverts[[ 2 ]], All ],
+            RandomInfraLine[ graph, First @ uverts, uverts[[ 2 ]], All ],
           line |-> SubsetQ[ line, uverts ] ] ] },
     { lines = DeleteDuplicates[ PathGraph[ #, DirectedEdges -> True ] & /@ common ] },
     Switch[ count,
@@ -473,7 +491,7 @@ InfraPerpendicularQ[ graph_Graph, l1_, l2_, opts : OptionsPattern[] ] /;
 LineCount[ graph_Graph ] :=
   Length @ DeleteDuplicates @ Catenate[
     ( pair |-> ( l |-> First @ Sort @ { l, Reverse[ l ] } ) /@
-        FindInfraLine[ graph, pair[[ 1 ]], pair[[ 2 ]], All ] ) /@
+        RandomInfraLine[ graph, pair[[ 1 ]], pair[[ 2 ]], All ] ) /@
       Subsets[ VertexList @ graph, { 2 } ] ]
 
 UniversalLineQ[ graph_Graph, { u_, v_ } ] :=
@@ -481,14 +499,22 @@ UniversalLineQ[ graph_Graph, { u_, v_ } ] :=
     c |-> ContainsAll[ c, { u, v } ] &&
       Union @ Catenate @ Select[ DeleteDuplicates @ Catenate[
           ( pair |-> ( l |-> First @ Sort @ { l, Reverse[ l ] } ) /@
-              FindInfraLine[ graph, pair[[ 1 ]], pair[[ 2 ]], All ] ) /@
+              RandomInfraLine[ graph, pair[[ 1 ]], pair[[ 2 ]], All ] ) /@
             Subsets[ VertexList @ graph, { 2 } ] ],
         ContainsAll[ #, { u, v } ] & ] === Sort @ c ]
 
 UniversalLineQ[ graph_Graph ] :=
   AnyTrue[ Subsets[ VertexList @ graph, { 2 } ], UniversalLineQ[ graph, # ] & ]
 
-FindInfraRepresentative[ graph_Graph, InfraLine[ path_List ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  takeRepresentatives[ FindInfraLine[ graph, path, All ], count, mods ]
-
+RandomInfraRepresentative[ graph_Graph, InfraLine[ path_List ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+  With[ { members = RandomInfraLine[ graph, path, All ],
+          nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+    { ordered = Sort @ members },
+    Which[
+      count === Automatic, If[ ordered === { }, { }, If[ nextFn === Identity, First @ ordered, RandomChoice @ ordered ] ],
+      count === All,       members,
+      nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
+      IntegerQ @ count && Length @ ordered < count, { },
+      True, RandomSample[ ordered, count ] ] ]

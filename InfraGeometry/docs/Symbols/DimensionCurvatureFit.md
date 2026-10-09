@@ -114,7 +114,7 @@ With[
 ```wl
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Large"]},
-  {sampleSet = Take[FindInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 2]], 5]},
+  {sampleSet = Take[RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 2]], 5]},
   {qdata = Transpose[{Range[8], LogDifferenceQuotients[MeanAround /@ Transpose @ Table[InfraMeasurement[g, InfraBall[v, r], "CountingMeasure"], {v, sampleSet}, {r, 0, 8}]]}]},
   {ListPlot[{#[[1]] (#[[1]] + 1), #[[2]]} & /@ qdata, PlotRange -> {All, {0, 3.5}}, AxesLabel -> {"r(r+1)", "q"}],
    DimensionCurvatureFit[qdata]}]

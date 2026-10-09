@@ -81,10 +81,14 @@ InfraPlaneQ[ graph_Graph, h_List, p1_, p2_, window_ : 0 ] :=
       bounds[[ 1 ]] <= GraphDistance[ graph, p1, # ] - GraphDistance[ graph, p2, # ] <= bounds[[ 2 ]] & ]
   ]
 
-FindInfraRepresentative[ graph_Graph, InfraPlane[ p1_, p2_, opts___Rule ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  FindInfraRepresentative[ graph, InfraPlane[ p1, p2, { 0, 0 }, opts ], count, mods ]
+RandomInfraRepresentative[ graph_Graph, InfraPlane[ p1_, p2_, opts___Rule ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] :=
+  RandomInfraRepresentative[ graph, InfraPlane[ p1, p2, { 0, 0 }, opts ], count, samplerOpts ]
 
-FindInfraRepresentative[ graph_Graph, InfraPlane[ p1_, p2_, window : { _Integer, _Integer }, opts___Rule ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  FindInfraBisectingHyperplane[ graph, p1, p2, window, count, Sequence @@ searchMethod[ mods ], Properties -> { "Separating" } ]
+RandomInfraRepresentative[ graph_Graph, InfraPlane[ p1_, p2_, window : { _Integer, _Integer }, opts___Rule ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+  With[ { nextFn = OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ] },
+    FindInfraBisectingHyperplane[ graph, p1, p2, window, count,
+      "NextVertexFunction" -> If[ nextFn === Automatic, If[ count === All, Identity, RandomSample ], nextFn ],
+      Properties -> { "Separating" } ] ]

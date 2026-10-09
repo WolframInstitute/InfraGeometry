@@ -626,8 +626,8 @@ VerificationTest[
     Sort @ DeleteDuplicates[
       #[[ 1 ]][ ec ] & /@ FindInfraScene[ scene, g, <| ea -> 1, eb -> 7 |> ] ] ===
     Sort @ Quiet @ Intersection[
-      Union @@ FindInfraRepresentative[ g, InfraCircle[ 1, GraphDistance[ g, 1, 7 ] ], All ],
-      Union @@ FindInfraRepresentative[ g, InfraCircle[ 7, GraphDistance[ g, 1, 7 ] ], All ] ]
+      Union @@ RandomInfraRepresentative[ g, InfraCircle[ 1, GraphDistance[ g, 1, 7 ] ], All ],
+      Union @@ RandomInfraRepresentative[ g, InfraCircle[ 7, GraphDistance[ g, 1, 7 ] ], All ] ]
   ],
   True,
   TestID -> "FindInfraScene-EuclidI1-agrees-with-the-circles"
@@ -678,7 +678,7 @@ VerificationTest[
    symbols below are exactly those.  The five Euclidean object heads -- InfraSegment,
    InfraRay, InfraLine, InfraCircle, InfraArc -- rejoined the list on 2026-09-26
    (EuclideanInertHeads): the heads themselves are always inert now, with no clause of
-   their own at any arity -- every behaviour lives on InfraMeasurement, FindInfraRepresentative
+   their own at any arity -- every behaviour lives on InfraMeasurement, RandomInfraRepresentative
    and dispatchConstruction instead.  One more means a symbol was exported with a usage
    message and no meaning, which is how InfraPlaneQ hid. *)
 VerificationTest[
@@ -766,8 +766,8 @@ VerificationTest[
 VerificationTest[
   With[{g = TessellationGraph[{4, 4}, 2]},
     {c = First @ VertexList @ g},
-    Sort @ InfraIntersection[ g, FindInfraRepresentative[g, InfraBall[c, 1]], FindInfraRepresentative[g, InfraBall[c, 2]] ] ===
-      Sort @ FindInfraRepresentative[g, InfraBall[c, 1]]],
+    Sort @ InfraIntersection[ g, RandomInfraRepresentative[g, InfraBall[c, 1]], RandomInfraRepresentative[g, InfraBall[c, 2]] ] ===
+      Sort @ RandomInfraRepresentative[g, InfraBall[c, 1]]],
   True,
   TestID -> "InfraIntersection-on-a-list-labelled-substrate"
 ]
@@ -780,7 +780,7 @@ VerificationTest[
     {scene = InfraScene[{p}, {p == InfraIntersection[InfraBall[c, 1], InfraBall[c, 2]]}]},
     {instances = FindInfraScene[scene, g]},
     AllTrue[instances, VertexQ[g, InfraSceneInstance[#, p]] &] &&
-      Sort[InfraSceneInstance[#, p] & /@ instances] === Sort @ FindInfraRepresentative[g, InfraBall[c, 1]]],
+      Sort[InfraSceneInstance[#, p] & /@ instances] === Sort @ RandomInfraRepresentative[g, InfraBall[c, 1]]],
   True,
   TestID -> "InfraScene-intersection-binds-substrate-vertices"
 ]
@@ -792,7 +792,7 @@ VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     {scene = InfraScene[{ba, bb, m}, {ba == InfraBall[7, 1], bb == InfraBall[9, 1], m == InfraUnion[ba, bb]}]},
     Sort[InfraSceneInstance[#, m] & /@ FindInfraScene[scene, g]] ===
-      Union[FindInfraRepresentative[g, InfraBall[7, 1]], FindInfraRepresentative[g, InfraBall[9, 1]]]],
+      Union[RandomInfraRepresentative[g, InfraBall[7, 1]], RandomInfraRepresentative[g, InfraBall[9, 1]]]],
   True,
   TestID -> "InfraScene-union-token-binds-every-vertex-of-either"
 ]
@@ -817,8 +817,8 @@ VerificationTest[
     Sort @ DeleteDuplicates[InfraSceneInstance[#, ec] & /@
         FindInfraScene[scene, g, <|ea -> 1, eb -> 7|>]] ===
       Sort @ Quiet @ Union[
-        Union @@ FindInfraRepresentative[g, InfraCircle[1, GraphDistance[g, 1, 7]], All],
-        Union @@ FindInfraRepresentative[g, InfraCircle[7, GraphDistance[g, 1, 7]], All]]],
+        Union @@ RandomInfraRepresentative[g, InfraCircle[1, GraphDistance[g, 1, 7]], All],
+        Union @@ RandomInfraRepresentative[g, InfraCircle[7, GraphDistance[g, 1, 7]], All]]],
   True,
   TestID -> "InfraScene-union-of-two-circles-agrees-with-the-circles"
 ]

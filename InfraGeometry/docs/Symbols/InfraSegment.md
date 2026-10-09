@@ -6,17 +6,17 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSegment
 Keywords: [segment, shortest path, interval DAG, polyline, symbolic object, counting measure, Riemannian measure]
-SeeAlso: [FindInfraSegment, InfraMeasurement, FindInfraRepresentative, FindInfraGeodesic, InfraLine, MetricInterval, InfraTube]
+SeeAlso: [RandomInfraSegment, InfraMeasurement, RandomInfraRepresentative, RandomInfraGeodesic, InfraLine, MetricInterval, InfraTube]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraSegment]()[*p*, *q*]</code> is the segment from *p* to *q*: every shortest path from *p* to *q* at once. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraSegment]()[*p*, *q*]</code> is the segment from *p* to *q*: every shortest path from *p* to *q* at once. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraSegment]()[*p1*, *p2*, …, *pk*]</code> is the polyline of the segments [*p1*, *p2*], …, [*p(k-1)*, *pk*].
 
-<code>[InfraSegment]()[*p*, *q*]</code> inside an [InfraScene]() is the segment construction token; [FindInfraSegment]() is the search.
+<code>[InfraSegment]()[*p*, *q*]</code> inside an [InfraScene]() is the segment construction token; [RandomInfraSegment]() is the search.
 
 ## Details & Options
 
@@ -39,7 +39,7 @@ The support of the segment, the keys of its `"VertexDensity"`, is the interval i
 
 On the square grid two vertices *a* steps apart along one axis and *b* along the other span an (*a* + 1) × (*b* + 1) rectangle, so for *a*, *b* ≥ 1 the measures are (*a* + 1)(*b* + 1) and (*a* − 1)(*b* − 1). A segment with a single shortest path is all boundary, and its Riemannian measure is `0`. The rim of the graph is not boundary: a segment whose interval is the whole graph has both measures equal to the number of vertices.
 
-A member is a vertex list; [FindInfraRepresentative]() reads one, several or all of them, and [InfraMemberQ]() tests one.
+A member is a vertex list; [RandomInfraRepresentative]() reads one, several or all of them, and [InfraMemberQ]() tests one.
 
 Corresponding notions in the classical axiom systems:
 
@@ -109,7 +109,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 5]])},
-  {members = FindInfraRepresentative[g, InfraSegment[a, b], 3]},
+  {members = RandomInfraRepresentative[g, InfraSegment[a, b], 3]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], a, b}], {member, members}]]
 ```
 
@@ -148,7 +148,7 @@ With[
   {a = First @ GraphCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 5]])},
   {seg = InfraSegment[a, b]},
-  {members = FindInfraRepresentative[g, seg, All]},
+  {members = RandomInfraRepresentative[g, seg, All]},
   {InfraSubstrateHighlight[g, {members, a, b}],
    Length @ members === InfraMeasurement[g, seg, "Cardinality"],
    Union[Length[#] - 1 & /@ members] === {GraphDistance[g, a, b]}}]

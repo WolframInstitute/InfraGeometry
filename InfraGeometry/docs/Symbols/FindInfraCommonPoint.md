@@ -13,6 +13,6 @@ URI: WolframInstitute/InfraGeometry/ref/FindInfraCommonPoint
 
 ## Details & Options
 
-Entries may be vertex sequences, walk graphs, or lists of them, such as the List a FindInfraSegment count returns.
+Entries may be vertex sequences, walk graphs, or lists of them, such as the List a RandomInfraSegment count returns.
 
 The count argument n / UpTo[n] / All (default) picks realisations, exact n failing with $Failed.

@@ -122,7 +122,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = PathGraph[ Range[ 5 ] ], q = InfraQuadric[ { 1, 3 }, 2 ] },
-    { FindInfraRepresentative[ g, q ], FindInfraRepresentative[ g, q, All ],
+    { RandomInfraRepresentative[ g, q ], RandomInfraRepresentative[ g, q, All ],
       InfraMemberQ[ g, q, { 3, 2, 1 } ], InfraMemberQ[ g, q, { 1, 2 } ] } ],
   { { 1, 2, 3 }, { { 1, 2, 3 } }, True, False },
   TestID -> "InfraQuadric-representative-and-member"

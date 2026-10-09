@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/LineCount
 Keywords: [line, count, inextensible geodesic]
-SeeAlso: [FindInfraLine, InfraLineQ, UniversalLineQ]
+SeeAlso: [RandomInfraLine, InfraLineQ, UniversalLineQ]
 RelatedGuides: [Experimental]
 ---
 
@@ -16,7 +16,7 @@ RelatedGuides: [Experimental]
 
 ## Details & Options
 
-A line and its reverse are one line. The count enumerates <code>[FindInfraLine]()[*g*, *u*, *v*, All]</code> over every pair of vertices and deduplicates, so it is exponential on lattices; it is meant for small graphs, where it is the coarsest invariant of the incidence structure.
+A line and its reverse are one line. The count enumerates <code>[RandomInfraLine]()[*g*, *u*, *v*, All]</code> over every pair of vertices and deduplicates, so it is exponential on lattices; it is meant for small graphs, where it is the coarsest invariant of the incidence structure.
 
 ## Basic Examples
 

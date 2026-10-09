@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraPoint
 Keywords: [point, random point, region, ball, shell, pairwise distance, centre, periphery]
-SeeAlso: [InfraPoint, InfraBall, InfraShell, InfraDensity, FindInfraMidpoint, FindClosestInfraPoint, GraphCenter]
+SeeAlso: [InfraPoint, InfraBall, InfraShell, InfraDensity, InfraMeasurement, FindClosestInfraPoint, GraphCenter]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -173,7 +173,7 @@ Points outside a region: take the complement as a vertex list.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {outside = Complement[VertexList[g], FindInfraRepresentative[g, InfraBall[c, 6]]]},
+  {outside = Complement[VertexList[g], RandomInfraRepresentative[g, InfraBall[c, 6]]]},
   {points = (SeedRandom[1]; RandomInfraPoint[g, outside, 3])},
   {InfraSubstrateHighlight[g, {outside, points}], points}]
 ```
@@ -234,7 +234,7 @@ With[
 With[
   {g = GridGraph[{9, 9}]},
   {c = First @ GraphCenter[g]},
-  {Sort @ RandomInfraPoint[g, InfraShell[c, 3], All] === FindInfraRepresentative[g, InfraShell[c, 3]]}]
+  {Sort @ RandomInfraPoint[g, InfraShell[c, 3], All] === RandomInfraRepresentative[g, InfraShell[c, 3]]}]
 ```
 
 The distance to a set is the least distance to one of its points: the shell about two vertices is the outer layer of the union of the two balls, and does not contain the vertices.
@@ -242,7 +242,7 @@ The distance to a set is the least distance to one of its points: the shell abou
 ```wl
 With[
   {g = GridGraph[{10, 10}]},
-  {shell = FindInfraRepresentative[g, InfraShell[{45, 47}, 2]]},
+  {shell = RandomInfraRepresentative[g, InfraShell[{45, 47}, 2]]},
   {Length @ shell, MemberQ[shell, 45]}]
 ```
 

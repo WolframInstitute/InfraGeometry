@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraRayQ
 Keywords: [ray, half-line, geodesic, inextensible, predicate]
-SeeAlso: [InfraRay, FindInfraRay, InfraSegmentQ, InfraLineQ]
+SeeAlso: [InfraRay, RandomInfraRay, InfraSegmentQ, InfraLineQ]
 RelatedGuides: [Experimental]
 ---
 
@@ -14,7 +14,7 @@ RelatedGuides: [Experimental]
 
 <code>[InfraRayQ]()[*g*, *ray*]</code> tests whether *ray* is a ray in *g*: a geodesic from its own first vertex that cannot be prolonged past its last.
 
-<code>[InfraRayQ]()[*g*, {*ray1*, …}]</code> tests every ray of a list, such as the one <code>[FindInfraRay]()[*g*, *O*, *v*, All]</code> returns.
+<code>[InfraRayQ]()[*g*, {*ray1*, …}]</code> tests every ray of a list, such as the one <code>[RandomInfraRay]()[*g*, *O*, *v*, All]</code> returns.
 
 ## Details & Options
 
@@ -29,7 +29,7 @@ Inextensibility is required **only at the far end**. The origin is an endpoint b
 
 Sequences shorter than two vertices are `False`: a single vertex has no direction.
 
-The predicate is the companion of [FindInfraRay](), which prolongs a geodesic outward until no neighbour prolongs it, so every ray that finder returns satisfies it.
+The predicate is the companion of [RandomInfraRay](), which prolongs a geodesic outward until no neighbour prolongs it, so every ray that finder returns satisfies it.
 
 ## Basic Examples
 
@@ -53,12 +53,12 @@ InfraRayQ[PathGraph[Range[5]], {3, 4, 5}]
 
 ## Properties and Relations
 
-Every ray [FindInfraRay]() produces satisfies the predicate; the list is accepted as a whole.
+Every ray [RandomInfraRay]() produces satisfies the predicate; the list is accepted as a whole.
 
 ```wl
 With[
   {g = GridGraph[{5, 5}]},
-  InfraRayQ[g, FindInfraRay[g, 1, 13, All]]]
+  InfraRayQ[g, RandomInfraRay[g, 1, 13, All]]]
 ```
 
 Dropping the far vertex breaks inextensibility, so the truncation is no longer a ray.
@@ -66,7 +66,7 @@ Dropping the far vertex breaks inextensibility, so the truncation is no longer a
 ```wl
 With[
   {g = GridGraph[{5, 5}]},
-  {ray = FindInfraRay[g, 1, 13]},
+  {ray = RandomInfraRay[g, 1, 13]},
   {InfraRayQ[g, ray], InfraRayQ[g, Most @ ray]}]
 ```
 
@@ -81,5 +81,5 @@ Every ray of a pencil satisfies the predicate.
 ```wl
 With[
   {g = GridGraph[{3, 3}]},
-  AllTrue[FindInfraRay[g, 5, 5, All], InfraRayQ[g, #] &]]
+  AllTrue[RandomInfraRay[g, 5, 5, All], InfraRayQ[g, #] &]]
 ```

@@ -54,7 +54,7 @@ drawnAtomCounts[g_Graph, c_, rs_] :=
 (* every projected atom is a DAG from its seam vertex x to the copy {x, 3/2} with as many chains as the atom of the drawn cover (measured on
    every fixture, not proved); its chains are the sweep's circles and its density the sweep's *)
 unrolledReport[g_Graph, c_, rs_] :=
-  With[{cir = InfraCircle[c, rs]}, {dags = InfraMeasurement[g, cir, "Graph"], swept = FindInfraRepresentative[g, cir, All]},
+  With[{cir = InfraCircle[c, rs]}, {dags = InfraMeasurement[g, cir, "Graph"], swept = RandomInfraRepresentative[g, cir, All]},
     {AllTrue[dags, AcyclicGraphQ] &&
        Sort[Function[dag, With[{s = First@Pick[VertexList@dag, VertexInDegree@dag, 0], t = First@Pick[VertexList@dag, VertexOutDegree@dag, 0]},
          If[t === {s, 3/2}, {s, Length@FindPath[dag, s, t, Infinity, All]}, {}]]] /@ dags] === Sort[drawnAtomCounts[g, c, rs]],
@@ -109,7 +109,7 @@ VerificationTest[
   With[{g = TessellationNeighborhoodGraph[{3, 6}, 5]}, {c = First @ GraphCenter[g]}, {cir = InfraCircle[c, 2]},
     {InfraMeasurement[g, cir, "Cardinality"], InfraMeasurement[g, cir, "Length"],
      InfraMeasurement[g, cir, "Faithful"],
-     AllTrue[FindInfraRepresentative[g, cir], GraphDistance[g, c, #] == 2 &]}],
+     AllTrue[RandomInfraRepresentative[g, cir], GraphDistance[g, c, #] == 2 &]}],
   {1, 12, Undetermined, True},
   TestID -> "InfraCircle-triangular-hexagonal-ring"
 ]
@@ -117,7 +117,7 @@ VerificationTest[
 (* the search sweeps the substrate and finds the same cycle, in its own rotation and direction *)
 VerificationTest[
   With[{g = TessellationNeighborhoodGraph[{3, 6}, 5]}, {c = First @ GraphCenter[g]},
-    {cir = InfraCircle[c, 2]}, {swept = FindInfraRepresentative[g, cir, All]},
+    {cir = InfraCircle[c, 2]}, {swept = RandomInfraRepresentative[g, cir, All]},
     cycleSets[circleChains[g, cir]] === cycleSets[swept] &&
     AllTrue[swept, InfraMemberQ[g, cir, #] &]],
   True,
@@ -177,12 +177,12 @@ VerificationTest[
 (* the count fixes the mode, and a random draw is a member *)
 VerificationTest[
   With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, {2, 4}]},
-    {members = FindInfraRepresentative[g, cir, All]},
+    {members = RandomInfraRepresentative[g, cir, All]},
     SeedRandom[7];
-    {Head @ FindInfraRepresentative[g, cir], Length @ FindInfraRepresentative[g, cir, 3],
-     Length @ FindInfraRepresentative[g, cir, UpTo[1000]],
-     AllTrue[FindInfraRepresentative[g, cir, 20, "RandomChoice"], MemberQ[members, #] &],
-     Length @ DeleteDuplicates @ FindInfraRepresentative[g, cir, 20, "RandomChoice"] > 1}],
+    {Head @ RandomInfraRepresentative[g, cir], Length @ RandomInfraRepresentative[g, cir, 3],
+     Length @ RandomInfraRepresentative[g, cir, UpTo[1000]],
+     AllTrue[RandomInfraRepresentative[g, cir, 20, "RandomChoice"], MemberQ[members, #] &],
+     Length @ DeleteDuplicates @ RandomInfraRepresentative[g, cir, 20, "RandomChoice"] > 1}],
   {List, 3, 16, True, True},
   TestID -> "InfraCircle-count-contract-and-random-draws"
 ]
@@ -194,7 +194,7 @@ VerificationTest[
    which does not separate: the graph is empty, "Faithful" is False, and the sweep finds all three (design Ex. q4) *)
 VerificationTest[
   With[{g = HypercubeGraph[4]}, {c = First @ VertexList[g]},
-    {cir = InfraCircle[c, {1, 2}]}, {swept = FindInfraRepresentative[g, cir, All]},
+    {cir = InfraCircle[c, {1, 2}]}, {swept = RandomInfraRepresentative[g, cir, All]},
     {InfraMeasurement[g, cir, "Graph"], InfraMeasurement[g, cir, "Faithful"], Length[swept], Union[Length /@ swept],
      AllTrue[swept, AllTrue[VertexComponent[VertexDelete[g, #], c], GraphDistance[g, c, #] <= 2 &] &]}],
   {{}, False, 3, {8}, True},
@@ -204,17 +204,17 @@ VerificationTest[
 (* the representative finder reads the circle by the sweep, so it finds the three circles the graph misses *)
 VerificationTest[
   With[{g = HypercubeGraph[4]}, {c = First @ VertexList[g]}, {cir = InfraCircle[c, {1, 2}]},
-    {FindInfraRepresentative[g, cir, All] === bruteCircles[g, c, {1, 2}],
-     Length @ FindInfraRepresentative[g, cir, All], circleChains[g, cir]}],
+    {RandomInfraRepresentative[g, cir, All] === bruteCircles[g, c, {1, 2}],
+     Length @ RandomInfraRepresentative[g, cir, All], circleChains[g, cir]}],
   {True, 3, {}},
-  TestID -> "FindInfraRepresentative-circle-is-the-sweep"
+  TestID -> "RandomInfraRepresentative-circle-is-the-sweep"
 ]
 
 (* a band cut through on the rim of the grid is not an annulus: its banks are one-sided too, and "Faithful" is False although neither the
    graph nor the sweep has a circle *)
 VerificationTest[
   With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[6, {2, 4}]},
-    {InfraMeasurement[g, cir, "Graph"], InfraMeasurement[g, cir, "Faithful"], FindInfraRepresentative[g, cir, All]}],
+    {InfraMeasurement[g, cir, "Graph"], InfraMeasurement[g, cir, "Faithful"], RandomInfraRepresentative[g, cir, All]}],
   {{}, False, {}},
   TestID -> "InfraCircle-one-sided-banks-off-an-annulus"
 ]
@@ -238,7 +238,7 @@ octagonDrawn[] := Graph[{
    the graph is then the necklaces, which carry one of the circles, and what they carry separates (design Ex. octagon) *)
 VerificationTest[
   With[{g = octagonGraph[]}, {cir = InfraCircle["o", {1, 3}]},
-    {Length @ FindInfraRepresentative[g, cir, All],
+    {Length @ RandomInfraRepresentative[g, cir, All],
      InfraMeasurement[g, cir, "Cardinality"],
      InfraMeasurement[g, cir, "Faithful"],
      AllTrue[circleChains[g, cir],
@@ -269,9 +269,9 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{11, 11}]},
     {InfraMeasurement[g, InfraCircle[61, 4], "Cardinality"], InfraMeasurement[g, InfraCircle[61, {4, 5}], "Length"],
-     Head @ FindInfraRepresentative[g, InfraCircle[61, "a"], All],
+     Head @ RandomInfraRepresentative[g, InfraCircle[61, "a"], All],
      MatchQ[InfraMeasurement[octagonGraph[], InfraCircle["o", "a"], "Graph"], _InfraMeasurement]}],
-  {0, 32, FindInfraRepresentative, True},
+  {0, 32, RandomInfraRepresentative, True},
   TestID -> "InfraCircle-second-argument-is-a-radius"
 ]
 
@@ -282,8 +282,8 @@ VerificationTest[
   With[{g = PetersenGraph[]},
     {circleChains[g, InfraCircle[1, 2]],
      InfraMeasurement[g, InfraCircle[1, 2], "Faithful"],
-     Length @ FindInfraRepresentative[g, InfraCircle[1, 2], All],
-     Union[Length /@ FindInfraRepresentative[g, InfraCircle[1, 2], All]]}],
+     Length @ RandomInfraRepresentative[g, InfraCircle[1, 2], All],
+     Union[Length /@ RandomInfraRepresentative[g, InfraCircle[1, 2], All]]}],
   {{}, Undetermined, 1, {6}},
   TestID -> "InfraCircle-a-band-with-nothing-beyond-it"
 ]
@@ -310,7 +310,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{11, 11}]}, {cir = InfraCircle[61, {2, 4}]},
     {brute = cycleSets[bruteCircles[g, 61, {2, 4}]]},
-    {Length[brute], cycleSets[FindInfraRepresentative[g, cir, All]] === brute,
+    {Length[brute], cycleSets[RandomInfraRepresentative[g, cir, All]] === brute,
      cycleSets[circleChains[g, cir]] === brute}],
   {16, True, True},
   TestID -> "InfraCircle-search-graph-and-brute-force-agree"
@@ -354,9 +354,9 @@ VerificationTest[
 (* a cycle graph's band carries no separating cycle *)
 VerificationTest[
   {bruteCircles[CycleGraph[6], 1, {1, 2}],
-   FindInfraRepresentative[CycleGraph[6], InfraCircle[1, {1, 2}], All]},
+   RandomInfraRepresentative[CycleGraph[6], InfraCircle[1, {1, 2}], All]},
   {{}, {}},
-  TestID -> "FindInfraRepresentative-circle-empty-family-is-quiet"
+  TestID -> "RandomInfraRepresentative-circle-empty-family-is-quiet"
 ]
 
 EndTestSection[]

@@ -33,7 +33,7 @@ GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {region = FindInfraRepresentative[g, InfraBall[c, VertexEccentricity[g, c] - 2]]},
+    {region = RandomInfraRepresentative[g, InfraBall[c, VertexEccentricity[g, c] - 2]]},
     {open = TopologicalNeighborhood[BallTopology[g, 2], region]},
     InfraSubstrateHighlight[g, {region -> StandardGreen, Complement[open, region] -> StandardRed}]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
@@ -57,7 +57,7 @@ The neighbourhood is open, its own interior. It is the closure in the dual topol
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
   {topo = BallTopology[g, 2]},
-  {ball = FindInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]]},
+  {ball = RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]]},
   {open = TopologicalNeighborhood[topo, ball]},
   {InfraSubstrateHighlight[g, {ball -> StandardGreen, Complement[open, ball] -> StandardRed}],
    TopologicalInterior[topo, open] == open,

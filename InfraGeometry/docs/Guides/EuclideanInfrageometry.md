@@ -32,20 +32,19 @@ An **InfraScene** describes a construction step by step through named objects, m
 
 - `InfraPoint` the point, a vertex drawn from a region inside a scene
 - `RandomInfraPoint` a vertex drawn from a region, a vertex List, a ball or any other region; a count gives a List of vertices, "PairwiseDistance" constrains the tuple
-- `FindInfraMidpoint` the middle vertices of the geodesics from p1 to p2 as a density, one vertex at even distance and two at odd
 
 ### Segments
 
 - `InfraSegment` the segment from p to q, every geodesic between them at once; with more points, the polyline of their consecutive segments
-- `FindInfraSegment` one geodesic from p to q as a vertex list; a trailing count gives a List of them
+- `RandomInfraSegment` one geodesic from p to q as a vertex list; a trailing count gives a List of them
 - `InfraSegmentQ` whether a walk is a geodesic
 
 ### Rays and lines
 
 - `InfraRay` the ray from p through q, the geodesics from p through q that no neighbour of their last vertex prolongs; InfraRay[p, p] is the pencil at p
-- `FindInfraRay` one ray from p through q as a vertex list; a trailing count gives a List of them
+- `RandomInfraRay` one ray from p through q as a vertex list; a trailing count gives a List of them
 - `InfraLine` the line through p and q, the geodesics through both that no neighbour of either endpoint prolongs
-- `FindInfraLine` one line through p and q as a vertex list; a trailing count gives a List of them
+- `RandomInfraLine` one line through p and q as a vertex list; a trailing count gives a List of them
 
 ### Circles and arcs
 
@@ -61,7 +60,7 @@ An **InfraScene** describes a construction step by step through named objects, m
 ### Reading a construction on a graph
 
 - `InfraMeasurement` a property of a symbolic object on a graph: "Graph", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph", "Faithful", "CountingMeasure", "RiemannianMeasure"; the "Graph" of a segment, ray, line or arc is the directed acyclic graph whose directed paths are exactly its objects
-- `FindInfraRepresentative` one member of a head as a vertex list; a trailing count gives a List of them, "RandomChoice" a random member
+- `RandomInfraRepresentative` one member of a head as a vertex list; a trailing count gives a List of them, "RandomChoice" a random member
 - `InfraMemberQ` whether a vertex list is a member of a head on a graph
 - `InfraDensity` the vertex density of any object: a vertex, a vertex list, a density, a walk graph
 - `InfraIntersection` the symbolic intersection of two objects, with the product of their vertex densities
@@ -82,7 +81,6 @@ An **InfraScene** describes a construction step by step through named objects, m
 
 ### Experimental: Points
 
-- `FindInfraGoldenSection` the density at the golden-ratio index along every geodesic from p1 to p2
 - `FindInfraReflection` the reflections x' of x through a, the vertices with d(x, a) == d(a, x') on a geodesic through a
 - `FindInfraCommonPoint` the points lying on every listed line
 - `FindClosestInfraPoint` the vertices of a line at minimum distance from a point, the feet of the point on the line
@@ -96,7 +94,7 @@ An **InfraScene** describes a construction step by step through named objects, m
 - `FindInfraPolylineSubdivision` the fewest geodesic legs a walk splits into, the corners of the polyline InfraSegment[p1, ..., pk]
 - `InfraRayQ` whether a walk is a ray, a geodesic from its first vertex that cannot be prolonged past its last
 - `InfraLineQ` whether a walk is a line, a geodesic that no neighbour of either endpoint prolongs
-- `FindInfraParallel` the parallels to a line through p, the lines through p at constant distance from it
+- `RandomInfraParallel` the parallels to a line through p, the lines through p at constant distance from it
 - `InfraParallelQ` whether two lines stay at constant distance
 - `FindInfraPerpendicular` the lines through a point perpendicular to a line
 - `InfraPerpendicularQ` whether two lines meet perpendicularly at every common vertex
@@ -108,11 +106,11 @@ An **InfraScene** describes a construction step by step through named objects, m
 
 - `InfraCircleQ` whether a cycle is a circle, a cyclic edge chain whose vertex set is a metric shell
 - `InfraSphere` the family of inclusion-minimal connected subsets of the shell {v : d(c, v) == r} that separate c from the outside
-- `FindInfraSphere` n of these separating subsets as vertex lists
+- `RandomInfraSphere` n of these separating subsets as vertex lists
 - `InfraPlane` the bisecting hyperplane of p1 and p2
 - `FindInfraBisectingHyperplane` the perpendicular bisector {v : d(p1, v) == d(p2, v)}, or the slab around it
 - `InfraEllipse` the ellipse with foci p1 and p2, the shortest separating cycle in the level set {v : d(p1, v) + d(p2, v) == c}
-- `FindInfraEllipse` one such cycle as a cyclic vertex list
+- `RandomInfraEllipse` one such cycle as a cyclic vertex list
 - `InfraEllipseQ` whether a cycle is an ellipse
 - `InfraQuadric` the solid {v : sum_i w_i d(p_i, v) <= c} about the foci p_i; one focus is the ball, two the ellipse, a band {c, c} the elliptic shell, weights {1, -1} a hyperbola branch
 
@@ -128,7 +126,7 @@ An **InfraScene** describes a construction step by step through named objects, m
 ### Experimental: Polygons and hulls
 
 - `InfraPolygon` the regular n-gon whose k-th diagonals have prescribed lengths; the polygon through given corners is the closed polyline InfraSegment[p1, ..., pn, p1]
-- `FindInfraRegularPolygon` one closed n-vertex sequence whose k-th diagonal lengths match the prescribed ones
+- `RandomInfraRegularPolygon` one closed n-vertex sequence whose k-th diagonal lengths match the prescribed ones
 - `InfraRegularPolygonQ` whether a cycle is regular with respect to a tuple of diagonal lengths
 - `InfraConvexHull` the geodesic convex hull of a set, the closure under MetricInterval; with k, the k-th round of the closure
 - `InfraBallHull` the intersection of the closed balls containing a set, of radius at most r, {r} exactly r or {r, s} between; without a radius the Mazur hull

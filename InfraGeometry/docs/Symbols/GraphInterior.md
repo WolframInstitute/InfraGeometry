@@ -35,7 +35,7 @@ With[
   {panels = Table[
      With[
        {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-       {interiors = NestList[GraphInterior[g, #] &, FindInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]], 4]},
+       {interiors = NestList[GraphInterior[g, #] &, RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]], 4]},
        {InfraSubstrateHighlight[g, AssociationThread[GraphBoundary[g, #], 1] & /@ interiors], Length /@ interiors}],
      {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]},
   {GraphicsRow[First /@ panels], Last /@ panels}]
@@ -47,7 +47,7 @@ The interior of a ring, green, is a thinner ring: the ball of radius 4 less the 
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {region = Complement[FindInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]], FindInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 1]]]},
+    {region = Complement[RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]], RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 1]]]},
     InfraSubstrateHighlight[g, {GraphInterior[g, region] -> StandardGreen, GraphBoundary[g, region] -> StandardBlue}]],
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
 ```
@@ -71,7 +71,7 @@ The interior and the boundary split the set: they are disjoint, and together the
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {region = FindInfraRepresentative[g, InfraBall[(SeedRandom[1]; RandomInfraPoint[g, InfraShell[First @ GraphCenter[g], 3]]), 4]]},
+  {region = RandomInfraRepresentative[g, InfraBall[(SeedRandom[1]; RandomInfraPoint[g, InfraShell[First @ GraphCenter[g], 3]]), 4]]},
   {InfraSubstrateHighlight[g, {GraphInterior[g, region] -> StandardGreen, GraphBoundary[g, region] -> StandardBlue}],
    Intersection[GraphInterior[g, region], GraphBoundary[g, region]], Sort[Join[GraphInterior[g, region], GraphBoundary[g, region]]] === Sort[region]}]
 ```
@@ -92,8 +92,8 @@ Where the graph ends, the interior of a ball is more than the smaller ball. The 
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {offCentre = First @ AdjacencyList[g, First @ GraphCenter[g]]},
-  {region = FindInfraRepresentative[g, InfraBall[offCentre, 6]]},
-  {extra = Complement[GraphInterior[g, region], FindInfraRepresentative[g, InfraBall[offCentre, 5]]]},
-  {InfraSubstrateHighlight[g, {AssociationThread[FindInfraRepresentative[g, InfraBall[offCentre, 5]], 1] -> StandardGreen, AssociationThread[extra, 1] -> StandardOrange, AssociationThread[GraphBoundary[g, region], 1] -> StandardBlue}],
+  {region = RandomInfraRepresentative[g, InfraBall[offCentre, 6]]},
+  {extra = Complement[GraphInterior[g, region], RandomInfraRepresentative[g, InfraBall[offCentre, 5]]]},
+  {InfraSubstrateHighlight[g, {AssociationThread[RandomInfraRepresentative[g, InfraBall[offCentre, 5]], 1] -> StandardGreen, AssociationThread[extra, 1] -> StandardOrange, AssociationThread[GraphBoundary[g, region], 1] -> StandardBlue}],
    Length[extra]}]
 ```

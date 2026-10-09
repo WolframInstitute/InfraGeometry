@@ -19,7 +19,7 @@ VerificationTest[
     {arc = InfraArc[c, {p, q}]},
     {InfraMeasurement[g, arc, "Cardinality"],
      InfraMeasurement[g, arc, "Length"],
-     Sort @ FindInfraRepresentative[g, arc, All] === Sort @ FindPath[shell, p, q, {6}, All],
+     Sort @ RandomInfraRepresentative[g, arc, All] === Sort @ FindPath[shell, p, q, {6}, All],
      Sort @ Keys @ InfraMeasurement[g, arc, "VertexDensity"] === Sort @ ring}],
   {2, 6, True, True},
   TestID -> "InfraArc-antipodes-give-both-half-rings"
@@ -35,8 +35,8 @@ VerificationTest[
     {arc = InfraArc[c, {p, q}]},
     {InfraMeasurement[g, arc, "Cardinality"],
      InfraMeasurement[g, arc, "Length"],
-     InfraSegmentQ[shell, FindInfraRepresentative[g, arc]],
-     FindInfraRepresentative[g, arc] === First @ FindInfraRepresentative[g, arc, All]}],
+     InfraSegmentQ[shell, RandomInfraRepresentative[g, arc]],
+     RandomInfraRepresentative[g, arc] === First @ RandomInfraRepresentative[g, arc, All]}],
   {1, 2, True, True},
   TestID -> "InfraArc-short-arc"
 ]
@@ -50,7 +50,7 @@ VerificationTest[
     {p = 25, q = 57},
     {arc = InfraArc[c, {p, q}, "RadiusDelta" -> 2]},
     {band = bandGraph[g, c, p, delta]},
-    {members = FindInfraRepresentative[g, arc, All]},
+    {members = RandomInfraRepresentative[g, arc, All]},
     {Sort @ members === Sort @ FindPath[band, p, q, {GraphDistance[band, p, q]}, All],
      Union[Length /@ members] === {InfraMeasurement[g, arc, "Length"] + 1},
      Length @ members === InfraMeasurement[g, arc, "Cardinality"]}],
@@ -62,7 +62,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{9, 9}], c = 41},
     {arc = InfraArc[c, {25, 57}, "RadiusDelta" -> 2]},
-    {members = FindInfraRepresentative[g, arc, All]},
+    {members = RandomInfraRepresentative[g, arc, All]},
     InfraMeasurement[g, arc, "VertexDensity"] === KeySort @ Counts @ Catenate @ members],
   True,
   TestID -> "InfraArc-density-counts-the-members"
@@ -73,10 +73,10 @@ VerificationTest[
   With[{g = GridGraph[{9, 9}], c = 41},
     {arc = InfraArc[c, {25, 57}, "RadiusDelta" -> 2]},
     {n = InfraMeasurement[g, arc, "Cardinality"]},
-    {MatchQ[FindInfraRepresentative[g, arc], {__Integer}],
-     Length @ FindInfraRepresentative[g, arc, 2],
-     Length @ FindInfraRepresentative[g, arc, UpTo[n + 5]] === n,
-     FindInfraRepresentative[g, arc, n + 5]}],
+    {MatchQ[RandomInfraRepresentative[g, arc], {__Integer}],
+     Length @ RandomInfraRepresentative[g, arc, 2],
+     Length @ RandomInfraRepresentative[g, arc, UpTo[n + 5]] === n,
+     RandomInfraRepresentative[g, arc, n + 5]}],
   {True, 2, True, { }},
   TestID -> "InfraArc-count-contract"
 ]
@@ -85,8 +85,8 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{9, 9}], c = 41},
     {arc = InfraArc[c, {25, 57}, "RadiusDelta" -> 2]},
-    {AllTrue[FindInfraRepresentative[g, arc, All], InfraMemberQ[g, arc, #] &],
-     InfraMemberQ[g, arc, FindInfraSegment[g, 25, 57]]}],
+    {AllTrue[RandomInfraRepresentative[g, arc, All], InfraMemberQ[g, arc, #] &],
+     InfraMemberQ[g, arc, RandomInfraSegment[g, 25, 57]]}],
   {True, False},
   TestID -> "InfraArc-membership"
 ]
@@ -100,7 +100,7 @@ VerificationTest[
      q = First @ Select[VertexList[g], GraphDistance[g, c, #] == 3 &]},
     {InfraMeasurement[g, InfraArc[c, {p, q}], "Cardinality"],
      InfraMeasurement[g, InfraArc[c, {p, q}, "RadiusDelta" -> 1], "Cardinality"] > 0,
-     FindInfraRepresentative[g, InfraArc[c, {p, q}], All]}],
+     RandomInfraRepresentative[g, InfraArc[c, {p, q}], All]}],
   {0, True, {}},
   TestID -> "InfraArc-a-point-off-the-band"
 ]
@@ -108,7 +108,7 @@ VerificationTest[
 (* the arc stays inside the band: no member leaves it *)
 VerificationTest[
   With[{g = GridGraph[{9, 9}], c = 41},
-    {members = FindInfraRepresentative[g, InfraArc[c, {25, 57}, "RadiusDelta" -> 2], All]},
+    {members = RandomInfraRepresentative[g, InfraArc[c, {25, 57}, "RadiusDelta" -> 2], All]},
     Union[GraphDistance[g, c, #] & /@ Catenate @ members]],
   {4, 5, 6},
   TestID -> "InfraArc-stays-in-the-band"
@@ -128,7 +128,7 @@ VerificationTest[
        InfraMeasurement[g, a, "Cardinality"] InfraMeasurement[g, b, "Cardinality"],
      InfraMeasurement[g, poly, "Length"] ===
        InfraMeasurement[g, a, "Length"] + InfraMeasurement[g, b, "Length"],
-     Length @ FindInfraRepresentative[g, poly, All] === InfraMeasurement[g, poly, "Cardinality"]}],
+     Length @ RandomInfraRepresentative[g, poly, All] === InfraMeasurement[g, poly, "Cardinality"]}],
   {True, True, True, True},
   TestID -> "InfraArc-polyline-pieces-are-factors"
 ]
@@ -137,7 +137,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{9, 9}], c = 41},
     {poly = InfraArc[c, {25, 57, 21}, "RadiusDelta" -> 2]},
-    {members = FindInfraRepresentative[g, poly, All]},
+    {members = RandomInfraRepresentative[g, poly, All]},
     {InfraMeasurement[g, poly, "VertexDensity"] === KeySort @ Counts @ Catenate @ members,
      InfraMeasurement[g, poly, "EdgeDensity"] ===
        KeySort @ Counts @ Catenate[DirectedEdge @@@ Partition[#, 2, 1] & /@ members]}],
@@ -149,7 +149,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{9, 9}], c = 41},
     {poly = InfraArc[c, {25, 57, 21}, "RadiusDelta" -> 1]},
-    {members = FindInfraRepresentative[g, poly, All], band = bandGraph[g, c, 25, {0, 1}]},
+    {members = RandomInfraRepresentative[g, poly, All], band = bandGraph[g, c, 25, {0, 1}]},
     {AllTrue[members, MemberQ[#, 57] &],
      AllTrue[members, InfraMemberQ[g, poly, #] &],
      Sort @ members === Sort @ Catenate @ Outer[Join[#1, Rest @ #2] &,
@@ -187,11 +187,11 @@ closedArcChains[g_Graph, arc_] :=
 VerificationTest[
   With[{g = TessellationNeighborhoodGraph[{3, 6}, 5]}, {c = First @ GraphCenter[g]},
     {p = First @ Select[VertexList[g], GraphDistance[g, c, #] == 2 &]},
-    {arc = InfraArc[c, {p, p}]}, {swept = FindInfraRepresentative[g, arc, All]},
+    {arc = InfraArc[c, {p, p}]}, {swept = RandomInfraRepresentative[g, arc, All]},
     {InfraMeasurement[g, arc, "Cardinality"], InfraMeasurement[g, arc, "Length"],
      InfraMeasurement[g, arc, "Faithful"],
-     MemberQ[FindInfraRepresentative[g, arc], p],
-     AllTrue[FindInfraRepresentative[g, arc], GraphDistance[g, c, #] == 2 &],
+     MemberQ[RandomInfraRepresentative[g, arc], p],
+     AllTrue[RandomInfraRepresentative[g, arc], GraphDistance[g, c, #] == 2 &],
      cycleSets[closedArcChains[g, arc]] === cycleSets[swept] && AllTrue[swept, InfraMemberQ[g, arc, #] &]}],
   {1, 12, Undetermined, True, True, True},
   TestID -> "InfraArc-closed-triangular-hexagonal-ring"
@@ -227,7 +227,7 @@ VerificationTest[
         InfraMeasurement[g, arc, "Cardinality"] == Length[through] > 0 &&
         InfraMeasurement[g, arc, "VertexDensity"] === KeySort @ Counts @ Catenate[through] &&
         InfraMeasurement[g, arc, "Length"] == 16 &&
-        cycleSets[FindInfraRepresentative[g, arc, All]] === cycleSets[through]]]],
+        cycleSets[RandomInfraRepresentative[g, arc, All]] === cycleSets[through]]]],
   True,
   TestID -> "InfraArc-closed-is-the-circle-through-p"
 ]
@@ -238,9 +238,9 @@ VerificationTest[
     {members = closedArcChains[g, arc]},
     {InfraMeasurement[g, arc, "EdgeDensity"] ===
        KeySort @ Counts @ Catenate[Apply[DirectedEdge, Partition[#, 2, 1, 1], {1}] & /@ members],
-     AllTrue[FindInfraRepresentative[g, arc, All], InfraMemberQ[g, arc, #] &],
+     AllTrue[RandomInfraRepresentative[g, arc, All], InfraMemberQ[g, arc, #] &],
      InfraMemberQ[g, arc, Reverse @ RotateLeft[First @ members, 3]],
-     InfraMemberQ[g, arc, FindInfraSegment[g, 39, 83]]}],
+     InfraMemberQ[g, arc, RandomInfraSegment[g, 39, 83]]}],
   {True, True, True, False},
   TestID -> "InfraArc-closed-edge-density-and-membership"
 ]
@@ -251,8 +251,8 @@ VerificationTest[
     {a = InfraArc[61, {39}, "RadiusDelta" -> 2], b = InfraArc[61, {39, 39}, "RadiusDelta" -> 2]},
     {InfraMeasurement[g, a, {"Cardinality", "Length", "VertexDensity", "EdgeDensity"}] ===
        InfraMeasurement[g, b, {"Cardinality", "Length", "VertexDensity", "EdgeDensity"}],
-     FindInfraRepresentative[g, a, All] === FindInfraRepresentative[g, b, All],
-     cycleSets[FindInfraRepresentative[g, a, All]] === cycleSets[bruteClosedArcs[g, 61, 39, {0, 2}]]}],
+     RandomInfraRepresentative[g, a, All] === RandomInfraRepresentative[g, b, All],
+     cycleSets[RandomInfraRepresentative[g, a, All]] === cycleSets[bruteClosedArcs[g, 61, 39, {0, 2}]]}],
   {True, True, True},
   TestID -> "InfraArc-closed-shorthand"
 ]
@@ -268,7 +268,7 @@ VerificationTest[
       Apply[{p, q} |-> With[{arc = InfraArc[61, {p, q, p}, "RadiusDelta" -> 2]}, {through = Select[members, SubsetQ[#, {p, q}] &]},
         InfraMeasurement[g, arc, "Cardinality"] == Length[through] &&
         InfraMeasurement[g, arc, "VertexDensity"] === KeySort @ Counts @ Catenate[through] &&
-        cycleSets[FindInfraRepresentative[g, arc, All]] === cycleSets[through]]]]],
+        cycleSets[RandomInfraRepresentative[g, arc, All]] === cycleSets[through]]]]],
   True,
   TestID -> "InfraArc-closed-through-two-points"
 ]
@@ -307,7 +307,7 @@ VerificationTest[
     {Length @ InfraMeasurement[g, on, "Graph"], InfraMeasurement[g, on, {"Cardinality", "Length"}],
      Length @ InfraMeasurement[g, off, "Graph"] > 1, InfraMeasurement[g, off, {"Cardinality", "Length"}],
      AllTrue[InfraMeasurement[g, off, "Graph"], AcyclicGraphQ],
-     cycleSets[closedArcChains[g, off]] === cycleSets[FindInfraRepresentative[g, off, All]]}],
+     cycleSets[closedArcChains[g, off]] === cycleSets[RandomInfraRepresentative[g, off, All]]}],
   {1, <|"Cardinality" -> 16, "Length" -> 16|>, True, <|"Cardinality" -> 84, "Length" -> 18|>, True, True},
   TestID -> "InfraArc-closed-off-a-circle-reads-the-necklaces"
 ]
@@ -350,8 +350,8 @@ octagonSwapped[] := Graph[{
 VerificationTest[
   With[{g = octagonGraph[]},
     {aa = InfraArc["o", {"a", "a"}, "RadiusDelta" -> {0, 2}], ee = InfraArc["o", {"e", "e"}, "RadiusDelta" -> {0, 2}]},
-    {InfraMeasurement[g, aa, "Cardinality"], Length @ FindInfraRepresentative[g, aa, All],
-     InfraMeasurement[g, ee, "Cardinality"], Length @ FindInfraRepresentative[g, ee, All],
+    {InfraMeasurement[g, aa, "Cardinality"], Length @ RandomInfraRepresentative[g, aa, All],
+     InfraMeasurement[g, ee, "Cardinality"], Length @ RandomInfraRepresentative[g, ee, All],
      InfraMeasurement[g, aa, "Length"], InfraMeasurement[g, ee, "Length"]}],
   {1, 2, 2, 2, 8, 8},
   TestID -> "InfraArc-closed-octagon-loses-a-circle-off-one-seam"
@@ -366,8 +366,8 @@ VerificationTest[
     {Length @ dags, Pick[VertexList @ First @ dags, VertexInDegree @ First @ dags, 0],
      Pick[VertexList @ First @ dags, VertexOutDegree @ First @ dags, 0],
      InfraMeasurement[g, ee, {"Cardinality", "Length"}],
-     cycleSets[closedArcChains[g, ee]] === cycleSets[FindInfraRepresentative[g, ee, All]],
-     InfraMeasurement[g, ee, "VertexDensity"] === KeySort @ Counts @ Catenate @ FindInfraRepresentative[g, ee, All],
+     cycleSets[closedArcChains[g, ee]] === cycleSets[RandomInfraRepresentative[g, ee, All]],
+     InfraMeasurement[g, ee, "VertexDensity"] === KeySort @ Counts @ Catenate @ RandomInfraRepresentative[g, ee, All],
      InfraMeasurement[g, aa, "Cardinality"]}],
   {1, {"e"}, {{"e", 3/2}}, <|"Cardinality" -> 2, "Length" -> 8|>, True, True, 1},
   TestID -> "InfraArc-closed-octagon-seam-through-e-is-one-atom"
@@ -386,7 +386,7 @@ VerificationTest[
 VerificationTest[
   {InfraMeasurement[GridGraph[{5, 5}], InfraArc[13, {13, 13}], "Cardinality"],
    InfraMeasurement[GridGraph[{5, 5}], InfraArc[13, {13}], "Cardinality"],
-   FindInfraRepresentative[GridGraph[{5, 5}], InfraArc[13, {13}], All]},
+   RandomInfraRepresentative[GridGraph[{5, 5}], InfraArc[13, {13}], All]},
   {0, 0, {}},
   TestID -> "InfraArc-closed-through-the-centre-is-empty"
 ]
@@ -412,9 +412,9 @@ VerificationTest[
     {a = InfraArc[c, {25, 57, 57, 21}, "RadiusDelta" -> 2], b = InfraArc[c, {25, 57, 21}, "RadiusDelta" -> 2]},
     {props = {"Cardinality", "Length", "VertexDensity", "EdgeDensity"}},
     {InfraMeasurement[g, a, props] === InfraMeasurement[g, b, props],
-     FindInfraRepresentative[g, a, All] === FindInfraRepresentative[g, b, All],
+     RandomInfraRepresentative[g, a, All] === RandomInfraRepresentative[g, b, All],
      InfraMeasurement[g, a, {"Cardinality", "Length"}],
-     AllTrue[FindInfraRepresentative[g, b, All], InfraMemberQ[g, a, #] &],
+     AllTrue[RandomInfraRepresentative[g, b, All], InfraMemberQ[g, a, #] &],
      InfraMeasurement[g, InfraArc[c, {25, 25, 57}, "RadiusDelta" -> 2], props] ===
        InfraMeasurement[g, InfraArc[c, {25, 57}, "RadiusDelta" -> 2], props]}],
   {True, True, <|"Cardinality" -> 256, "Length" -> 24|>, True, True},
@@ -429,7 +429,7 @@ VerificationTest[
      closed = d[h, InfraArc[61, {39, 39}, "RadiusDelta" -> 2, "Select" -> "EmbeddingClosest"]]},
     {1 <= Length @ open < Length @ d[g, InfraArc[41, {25, 57}, "RadiusDelta" -> 2]],
      SubsetQ[d[g, InfraArc[41, {25, 57}, "RadiusDelta" -> 2]], open],
-     Length @ closed, MemberQ[FindInfraRepresentative[h, InfraArc[61, {39, 39}, "RadiusDelta" -> 2], All], First @ closed],
+     Length @ closed, MemberQ[RandomInfraRepresentative[h, InfraArc[61, {39, 39}, "RadiusDelta" -> 2], All], First @ closed],
      Length @ d[h, InfraArc[61, {39, 39}, "RadiusDelta" -> 2, "Select" -> "Central"]]}],
   {True, True, 1, True, 16},
   TestID -> "InfraArc-scene-select-embedding-closest"

@@ -33,29 +33,29 @@ VerificationTest[
 ]
 
 
-(* ===================== FindInfraRegularPolygon: equilateral case ===================== *)
+(* ===================== RandomInfraRegularPolygon: equilateral case ===================== *)
 
 (* The cycle graph itself: with A_1 = 1, the distance-1 graph IS CycleGraph[6],
    so the unique 6-cycle is found. *)
 
 VerificationTest[
-  With[ { res = FindInfraRegularPolygon[ CycleGraph[ 6 ], { 1 }, 6 ] },
+  With[ { res = RandomInfraRegularPolygon[ CycleGraph[ 6 ], { 1 }, 6 ] },
     MatchQ[ res, { __Graph } ] && Length[ res ] == 6
   ],
   True,
-  TestID -> "FindInfraRegularPolygon-cycle6-equilateral"
+  TestID -> "RandomInfraRegularPolygon-cycle6-equilateral"
 ]
 
 VerificationTest[
-  Length @ FindInfraRegularPolygon[ CycleGraph[ 6 ], { 1 }, 6, All ],
+  Length @ RandomInfraRegularPolygon[ CycleGraph[ 6 ], { 1 }, 6, All ],
   1,
-  TestID -> "FindInfraRegularPolygon-cycle6-count-All"
+  TestID -> "RandomInfraRegularPolygon-cycle6-count-All"
 ]
 
 VerificationTest[
-  Length @ FindInfraRegularPolygon[ CycleGraph[ 6 ], { 1 }, 6, UpTo[ 5 ] ],
+  Length @ RandomInfraRegularPolygon[ CycleGraph[ 6 ], { 1 }, 6, UpTo[ 5 ] ],
   1,
-  TestID -> "FindInfraRegularPolygon-cycle6-count-UpTo"
+  TestID -> "RandomInfraRegularPolygon-cycle6-count-UpTo"
 ]
 
 
@@ -65,18 +65,18 @@ VerificationTest[
    2-diagonals at distance 2, 3-diagonals (antipodes) at distance 3. *)
 
 VerificationTest[
-  Length @ FindInfraRegularPolygon[ CycleGraph[ 6 ], { 1, 2, 3 }, 6, All ],
+  Length @ RandomInfraRegularPolygon[ CycleGraph[ 6 ], { 1, 2, 3 }, 6, All ],
   1,
-  TestID -> "FindInfraRegularPolygon-cycle6-full-profile"
+  TestID -> "RandomInfraRegularPolygon-cycle6-full-profile"
 ]
 
 (* Asking for a 2-diagonal at distance 5 in CycleGraph[6] cannot be satisfied
    (max distance is 3); strict count returns $Failed. *)
 
 VerificationTest[
-  FindInfraRegularPolygon[ CycleGraph[ 6 ], { 1, 5 }, 6, 1 ],
+  RandomInfraRegularPolygon[ CycleGraph[ 6 ], { 1, 5 }, 6, 1 ],
   { },
-  TestID -> "FindInfraRegularPolygon-cycle6-impossible-diagonal"
+  TestID -> "RandomInfraRegularPolygon-cycle6-impossible-diagonal"
 ]
 
 
@@ -85,33 +85,33 @@ VerificationTest[
 (* Unit squares in a 3x3 grid: 4 of them. *)
 
 VerificationTest[
-  Length @ FindInfraRegularPolygon[ GridGraph[ { 3, 3 } ], { 1 }, 4, All ],
+  Length @ RandomInfraRegularPolygon[ GridGraph[ { 3, 3 } ], { 1 }, 4, All ],
   4,
-  TestID -> "FindInfraRegularPolygon-grid3x3-unit-squares"
+  TestID -> "RandomInfraRegularPolygon-grid3x3-unit-squares"
 ]
 
 
 (* ===================== PetersenGraph: 12 pentagons ===================== *)
 
 VerificationTest[
-  Length @ FindInfraRegularPolygon[ PetersenGraph[ ], { 1 }, 5, All ],
+  Length @ RandomInfraRegularPolygon[ PetersenGraph[ ], { 1 }, 5, All ],
   12,
-  TestID -> "FindInfraRegularPolygon-petersen-12-pentagons"
+  TestID -> "RandomInfraRegularPolygon-petersen-12-pentagons"
 ]
 
 
 (* ===================== No 4-cycles in a path graph ===================== *)
 
 VerificationTest[
-  FindInfraRegularPolygon[ PathGraph[ Range[ 5 ] ], { 1 }, 4, 1 ],
+  RandomInfraRegularPolygon[ PathGraph[ Range[ 5 ] ], { 1 }, 4, 1 ],
   { },
-  TestID -> "FindInfraRegularPolygon-pathgraph-no-4-cycle"
+  TestID -> "RandomInfraRegularPolygon-pathgraph-no-4-cycle"
 ]
 
 VerificationTest[
-  FindInfraRegularPolygon[ PathGraph[ Range[ 5 ] ], { 1 }, 4, All ],
+  RandomInfraRegularPolygon[ PathGraph[ Range[ 5 ] ], { 1 }, 4, All ],
   { },
-  TestID -> "FindInfraRegularPolygon-pathgraph-no-4-cycle-All"
+  TestID -> "RandomInfraRegularPolygon-pathgraph-no-4-cycle-All"
 ]
 
 
@@ -121,18 +121,18 @@ VerificationTest[
    No 3-cycles or longer cycles, so {2}, n = 3 returns $Failed. *)
 
 VerificationTest[
-  FindInfraRegularPolygon[ PathGraph[ Range[ 5 ] ], { 2 }, 3, 1 ],
+  RandomInfraRegularPolygon[ PathGraph[ Range[ 5 ] ], { 2 }, 3, 1 ],
   { },
-  TestID -> "FindInfraRegularPolygon-pathgraph-distance2-no-triangle"
+  TestID -> "RandomInfraRegularPolygon-pathgraph-distance2-no-triangle"
 ]
 
 (* On CycleGraph[8] with A_1 = 2: distance-2 graph is two disjoint CycleGraph[4]s
    ({1,3,5,7} and {2,4,6,8}), so 2 square cycles. *)
 
 VerificationTest[
-  Length @ FindInfraRegularPolygon[ CycleGraph[ 8 ], { 2 }, 4, All ],
+  Length @ RandomInfraRegularPolygon[ CycleGraph[ 8 ], { 2 }, 4, All ],
   2,
-  TestID -> "FindInfraRegularPolygon-cycle8-distance2-squares"
+  TestID -> "RandomInfraRegularPolygon-cycle8-distance2-squares"
 ]
 
 
@@ -178,39 +178,39 @@ VerificationTest[
    both find them; {1, {3, 3}} finds none. *)
 
 VerificationTest[
-  Length @ FindInfraRegularPolygon[ GridGraph[ { 3, 3 } ], { 1, Automatic }, 4, All ],
+  Length @ RandomInfraRegularPolygon[ GridGraph[ { 3, 3 } ], { 1, Automatic }, 4, All ],
   4,
-  TestID -> "FindInfraRegularPolygon-grid-Automatic-2diagonal"
+  TestID -> "RandomInfraRegularPolygon-grid-Automatic-2diagonal"
 ]
 
 VerificationTest[
-  Length @ FindInfraRegularPolygon[ GridGraph[ { 3, 3 } ], { 1, { 2, 2 } }, 4, All ],
+  Length @ RandomInfraRegularPolygon[ GridGraph[ { 3, 3 } ], { 1, { 2, 2 } }, 4, All ],
   4,
-  TestID -> "FindInfraRegularPolygon-grid-range-2diagonal"
+  TestID -> "RandomInfraRegularPolygon-grid-range-2diagonal"
 ]
 
 VerificationTest[
-  FindInfraRegularPolygon[ GridGraph[ { 3, 3 } ], { 1, { 3, 3 } }, 4, 1 ],
+  RandomInfraRegularPolygon[ GridGraph[ { 3, 3 } ], { 1, { 3, 3 } }, 4, 1 ],
   { },
-  TestID -> "FindInfraRegularPolygon-grid-range-2diagonal-impossible"
+  TestID -> "RandomInfraRegularPolygon-grid-range-2diagonal-impossible"
 ]
 
 (* PetersenGraph is 3-regular with girth 5; its 12 pentagons are all
    distance-1 5-cycles, so {Automatic} finds the same 12 as {1}. *)
 
 VerificationTest[
-  Length @ FindInfraRegularPolygon[ PetersenGraph[ ], { Automatic }, 5, All ],
+  Length @ RandomInfraRegularPolygon[ PetersenGraph[ ], { Automatic }, 5, All ],
   12,
-  TestID -> "FindInfraRegularPolygon-petersen-Automatic-equilateral"
+  TestID -> "RandomInfraRegularPolygon-petersen-Automatic-equilateral"
 ]
 
 (* {Automatic, Automatic}: 2-diagonal must also be constant.  In Petersen
    every 2-diagonal in a 5-cycle is at distance 2, so all 12 pass. *)
 
 VerificationTest[
-  Length @ FindInfraRegularPolygon[ PetersenGraph[ ], { Automatic, Automatic }, 5, All ],
+  Length @ RandomInfraRegularPolygon[ PetersenGraph[ ], { Automatic, Automatic }, 5, All ],
   12,
-  TestID -> "FindInfraRegularPolygon-petersen-Automatic-pair"
+  TestID -> "RandomInfraRegularPolygon-petersen-Automatic-pair"
 ]
 
 
@@ -245,65 +245,65 @@ VerificationTest[
    {12, 13, 18, 17}, {13, 14, 19, 18}. *)
 
 VerificationTest[
-  Length @ FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All ],
+  Length @ RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All ],
   16,
-  TestID -> "FindInfraRegularPolygon-grid5-default-From-All"
+  TestID -> "RandomInfraRegularPolygon-grid5-default-From-All"
 ]
 
 VerificationTest[
-  Length @ FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All, "From" -> 13 ],
+  Length @ RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All, "From" -> 13 ],
   4,
-  TestID -> "FindInfraRegularPolygon-grid5-From-center-membership"
+  TestID -> "RandomInfraRegularPolygon-grid5-From-center-membership"
 ]
 
 (* "From" -> v -> 1: squares whose vertices all lie in N_1(13) = {8, 12, 13, 14, 18}.
    No 4-cycle fits in this 5-vertex star, so the result is empty. *)
 
 VerificationTest[
-  FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All, "From" -> 13 -> 1 ],
+  RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All, "From" -> 13 -> 1 ],
   { },
-  TestID -> "FindInfraRegularPolygon-grid5-From-radius1-empty"
+  TestID -> "RandomInfraRegularPolygon-grid5-From-radius1-empty"
 ]
 
 (* "From" -> v -> 2: N_2(13) is large enough for unit squares around 13 to fit. *)
 
 VerificationTest[
-  Length @ FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All, "From" -> 13 -> 2 ] >= 4,
+  Length @ RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All, "From" -> 13 -> 2 ] >= 4,
   True,
-  TestID -> "FindInfraRegularPolygon-grid5-From-radius2-localized"
+  TestID -> "RandomInfraRegularPolygon-grid5-From-radius2-localized"
 ]
 
 (* "From" accepts a bare vertex. *)
 
 VerificationTest[
-  FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All,
+  RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All,
     "From" -> 13 ] ===
-  FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All, "From" -> 13 ],
+  RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All, "From" -> 13 ],
   True,
-  TestID -> "FindInfraRegularPolygon-From-bare-vertex"
+  TestID -> "RandomInfraRegularPolygon-From-bare-vertex"
 ]
 
 (* "From" accepts the vertex list returned by RandomInfraPoint. *)
 
 VerificationTest[
-  FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All,
+  RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All,
     "From" -> RandomInfraPoint[ GridGraph[ { 5, 5 } ], GraphCenter @ GridGraph[ { 5, 5 } ] ] -> 2 ] ===
-  FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All,
+  RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All,
     "From" -> 13 -> 2 ],
   True,
-  TestID -> "FindInfraRegularPolygon-From-RandomInfraPoint-pipe"
+  TestID -> "RandomInfraRegularPolygon-From-RandomInfraPoint-pipe"
 ]
 
 (* Multi-anchor density in localization: NeighborhoodGraph
    accepts a list, giving N_r(v1) union N_r(v2). *)
 
 VerificationTest[
-  Sort @ FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All,
+  Sort @ RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All,
     "From" -> <| 1 -> 1, 25 -> 1 |> -> 1 ] ===
-  Sort @ FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All,
+  Sort @ RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All,
     "From" -> { 1, 25 } -> 1 ],
   True,
-  TestID -> "FindInfraRegularPolygon-From-density-multi-radius"
+  TestID -> "RandomInfraRegularPolygon-From-density-multi-radius"
 ]
 
 (* Multi-anchor membership: cycles containing at least one of the listed
@@ -312,10 +312,10 @@ VerificationTest[
    (one per corner). *)
 
 VerificationTest[
-  Length @ FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All,
+  Length @ RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All,
     "From" -> <| 1 -> 1, 25 -> 1 |> ],
   2,
-  TestID -> "FindInfraRegularPolygon-From-density-multi-membership"
+  TestID -> "RandomInfraRegularPolygon-From-density-multi-membership"
 ]
 
 
@@ -324,27 +324,52 @@ VerificationTest[
 (* its legs are geodesics between consecutive corners, so the closed walk they spell is a
    member of the closed polyline InfraSegment[c1, ..., cn, c1] on its corners *)
 VerificationTest[
-  With[ { g = CycleGraph[ 6 ], legs = FindInfraRegularPolygon[ CycleGraph[ 6 ], { 1 }, 6 ] },
+  With[ { g = CycleGraph[ 6 ], legs = RandomInfraRegularPolygon[ CycleGraph[ 6 ], { 1 }, 6 ] },
     InfraMemberQ[ g, InfraSegment @@ polylineToKnots @ legs, polylineToVertexSeq @ legs ] ],
   True,
-  TestID -> "FindInfraRegularPolygon-is-a-member-of-the-closed-polyline-on-its-corners"
+  TestID -> "RandomInfraRegularPolygon-is-a-member-of-the-closed-polyline-on-its-corners"
 ]
 
 
-(* ===== FindInfraRegularPolygon on the Method ladder ===== *)
+(* ===== RandomInfraRegularPolygon on the Method ladder ===== *)
 
 (* a count-less call is one witness -- one List of legs, not a List of them *)
 VerificationTest[
-  With[ { res = FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4 ] },
+  With[ { res = RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4 ] },
     { MatchQ[ res, { __Graph } ], Length @ res } ],
   { True, 4 },
-  TestID -> "FindInfraRegularPolygon-countless-is-one-witness"
+  TestID -> "RandomInfraRegularPolygon-countless-is-one-witness"
 ]
 
 VerificationTest[
-  Length @ FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All ],
+  Length @ RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All ],
   16,
-  TestID -> "FindInfraRegularPolygon-All-is-the-whole-class"
+  TestID -> "RandomInfraRegularPolygon-All-is-the-whole-class"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ],
+          all = RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All ] },
+    RandomInfraRegularPolygon[ g, { 1 }, 4, "NextVertexFunction" -> Identity ] === First @ all ],
+  True,
+  TestID -> "RandomInfraRegularPolygon-Identity-preserves-first-member"
+]
+
+VerificationTest[
+  Length @ DeleteDuplicates @ Table[
+    BlockRandom[ RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4 ],
+      RandomSeeding -> s ],
+    { s, 1, 8 } ] > 1,
+  True,
+  TestID -> "RandomInfraRegularPolygon-default-varies-across-seeds"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    BlockRandom[ RandomInfraRegularPolygon[ g, { 1 }, 4 ], RandomSeeding -> 23 ] ===
+      BlockRandom[ RandomInfraRegularPolygon[ g, { 1 }, 4 ], RandomSeeding -> 23 ] ],
+  True,
+  TestID -> "RandomInfraRegularPolygon-default-is-seeded"
 ]
 
 EndTestSection[]

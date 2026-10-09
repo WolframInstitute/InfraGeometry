@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraPerpendicular
 Keywords: [perpendicular, Euclid I.12, foot, right angle, radius]
-SeeAlso: [InfraPerpendicularQ, FindInfraParallel, FindInfraLine, FindClosestInfraPoint, InfraAngle]
+SeeAlso: [InfraPerpendicularQ, RandomInfraParallel, RandomInfraLine, FindClosestInfraPoint, InfraAngle]
 RelatedGuides: [Experimental]
 ---
 
@@ -24,7 +24,7 @@ Two consequences follow from that construction.
 
 It returns nothing when *point* lies **on** *line*. The construction needs a foot distinct from the point, and there is none. Erecting a perpendicular at a point of the line is Euclid I.11, a different proposition.
 
-The count is very large. On an 81-vertex square patch, a point off a line admits 6381 perpendiculars. This is the same combinatorial explosion as [FindInfraLine](), and it has the same cause: a maximal geodesic on a lattice has many admissible continuations.
+The count is very large. On an 81-vertex square patch, a point off a line admits 6381 perpendiculars. This is the same combinatorial explosion as [RandomInfraLine](), and it has the same cause: a maximal geodesic on a lattice has many admissible continuations.
 
 Option `"Radius"` is the lever that makes it usable. `"Radius" -> r` localises both the candidate enumeration and the test to the *r*-neighbourhood of the point. On that same patch the count falls to 110 at radius 3 and 26 at radius 2. Perpendicularity is a local notion, so localising it is not a compromise.
 
@@ -50,7 +50,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line = FindInfraLine[g, c, far]},
+  {line = RandomInfraLine[g, c, far]},
   Length @ FindInfraPerpendicular[g, line, c, All]]
 ```
 
@@ -61,7 +61,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line = FindInfraLine[g, c, far]},
+  {line = RandomInfraLine[g, c, far]},
   {p = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line, #] &]},
   Association @ Table[
     r -> Length @ FindInfraPerpendicular[g, line, p, All, "Radius" -> r], {r, {2, 3}}]]
@@ -74,7 +74,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line = FindInfraLine[g, c, far]},
+  {line = RandomInfraLine[g, c, far]},
   {p = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line, #] &]},
   InfraSubstrateHighlight[g,
     {line,
