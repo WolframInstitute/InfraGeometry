@@ -10,15 +10,21 @@ RelatedGuides: [RiemannianInfrageometry, InfraSubstrates, Experimental]
 RelatedTutorials: [BreadthlessTriangleTutorial, StraighteningAtScaleTutorial]
 ---
 
+<!-- LLM-PROTECTED: Do not rewrite the Abstract or Functions sections unless explicitly asked. -->
+
 ## Abstract
 
-**Synthetic Infrageometry** studies synthetic objects on arbitrary graph substrates, their moduli spaces, mutual relations, and iterative constructions. Its goal is to explain the emergence of idealized geometric objects and configurations, including those of Euclidean geometry, from purely combinatorial substrates when the graph and observers scale are large. Since constructions are generally non-unique, we work with **multi-constructions**, where a fixed sequence of construction steps generates a branching multiway system. Although choices may differ across branches, the system is causally invariant in the sense that the dependency graph of construction steps remains unchanged. To each multi-object we associate a vertex density given by normalized occupation frequencies across its realizations; for path-like objects, we similarly associate an edge density. Under suitable refinement and rescaling, these densities, viewed as measures, are expected to converge weakly to measures supported on classical thin geometric objects.
+**Euclidean Infrageometry** studies natural geometric objects on arbitrary graph substrates using **synthetic methods**. It enumerates these objects, studies their mutual relations, applies operations to them, and performs iterative constructions. If space is represented by a large graph, which we may view as a web of paths, human geometry can be viewed as an idealized theory based on our large-scale perception of **infinitesimality**. This leads to the idealization of space as a continuous "web" containing idealized objects such as the "breadthless line." Infrageometry works directly with the discrete substrate at an observer's scale and does not benefit from infinitesimality. Consequently, objects may not be unique, leading to **multi-objects**, and constructions generate branching **multiway systems**. Although concrete representatives may differ across branches, the system is "causally invariant" in the sense that the dependency graph of construction steps is the same in every branch. We associate each multi-object with a **vertex density**, the fraction of its representatives that contain each vertex; for path-like objects, we similarly associate an **edge density**. We expect that, under a suitable notion of **Gromov-Hausdorff convergence**, these measures converge weakly to Dirac measures supported on classical "thin" geometric objects, provided the limiting space supports the classical Euclidean axioms.
 
 ## Functions
 
-We use **symbolic abstract representations** such as `InfraSegment[p, q]`, independent of a graph substrate, and **postpone evaluation**. `InfraMeasurement[g, obj, property]` measures an object on a graph; `FindInfraRepresentative[g, obj, n]` finds concrete representatives.
+We use **symbolic abstract representations** such as `InfraSegment[p, q]`, independent of a graph substrate, and **postpone evaluation** until a later stage, for example with `InfraMeasurement[g, obj, property]`. A concrete representative can be obtained as a vertex list, for example with `RandomSegment[graph, k]`.
 
-For segments, rays, lines and arcs, directed acyclic graphs encode the representatives as chains. This lets us compute **vertex and edge occupation counts** without enumerating all paths.
+Multi-objects of segments, rays, lines, and arcs can be stored efficiently as **directed acyclic graphs** whose chains correspond to individual representatives. This allows fast computation of vertex and edge densities without enumerating all paths.
+
+An **InfraScene** describes a construction step by step through named objects, much like [`GeometricScene`](https://reference.wolfram.com/language/ref/GeometricScene.html). `RandomInfraInstance[scene, graph]` selects a realization satisfying the stated hypotheses, and `InfraSceneViewer` steps through the multiway system both causally and branchially.
+
+<!-- /LLM-PROTECTED -->
 
 ---
 
