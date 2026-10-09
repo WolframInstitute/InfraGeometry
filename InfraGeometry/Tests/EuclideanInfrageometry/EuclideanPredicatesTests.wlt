@@ -511,18 +511,18 @@ VerificationTest[
 
 (* ===== InfraRayQ ===== *)
 
-(* Every ray FindInfraRay produces satisfies its own predicate. *)
+(* Every ray RandomInfraRay produces satisfies its own predicate. *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
-    AllTrue[FindInfraRay[g, 1, 13, All], InfraRayQ[g, #] &]],
+    AllTrue[RandomInfraRay[g, 1, 13, All], InfraRayQ[g, #] &]],
   True,
-  TestID -> "InfraRayQ-FindInfraRay-roundtrip-grid"
+  TestID -> "InfraRayQ-RandomInfraRay-roundtrip-grid"
 ]
 
 (* Truncating a ray leaves its far end extensible, so it is no longer a ray. *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
-    InfraRayQ[g, Most @ First @ FindInfraRay[g, 1, 13, All]]],
+    InfraRayQ[g, Most @ First @ RandomInfraRay[g, 1, 13, All]]],
   False,
   TestID -> "InfraRayQ-truncated-far-end-false"
 ]
@@ -563,20 +563,20 @@ VerificationTest[
    must answer, not return unevaluated. *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
-    {InfraSegmentQ[g, FindInfraSegment[g, 1, 13, All]],
-     InfraSegmentQ[g, FindInfraSegment[g, 1, 13, All]],
-     InfraLineQ[g, FindInfraLine[g, 1, 21, All]],
+    {InfraSegmentQ[g, RandomInfraSegment[g, 1, 13, All]],
+     InfraSegmentQ[g, RandomInfraSegment[g, 1, 13, All]],
+     InfraLineQ[g, RandomInfraLine[g, 1, 21, All]],
      InfraShellQ[g, FindInfraShell[g, 13, 2]],
-     InfraBallQ[g, FindInfraRepresentative[g, InfraBall[13, 2]]],
-     InfraMemberQ[g, InfraQuadric[{11, 15}, {6, 6}], FindInfraRepresentative[g, InfraQuadric[{11, 15}, {6, 6}]]],
-     InfraWalkQ[g, Select[ FindInfraWalk[ g, 1, UpTo[ 6 ], All, Properties -> { "Simple" },
+     InfraBallQ[g, RandomInfraRepresentative[g, InfraBall[13, 2]]],
+     InfraMemberQ[g, InfraQuadric[{11, 15}, {6, 6}], RandomInfraRepresentative[g, InfraQuadric[{11, 15}, {6, 6}]]],
+     InfraWalkQ[g, Select[ RandomInfraWalk[ g, 1, UpTo[ 6 ], All, Properties -> { "Simple" },
          "StoppingCondition" -> ( Last[ # ] === 13 & ) ], Last @ Last @ VertexList @ # === 13 & ]],
      InfraPlaneQ[g, FindInfraBisectingHyperplane[g, 11, 15], 11, 15],
-     InfraRayQ[g, FindInfraRay[g, 1, 13, All]],
+     InfraRayQ[g, RandomInfraRay[g, 1, 13, All]],
      InfraParallelQ[g, geodesicGraph @ {1, 2, 3, 4, 5},
-       FindInfraParallel[g, {1, 2, 3, 4, 5}, 6, All]],
-     InfraRegularPolygonQ[g, FindInfraRegularPolygon[g, {1}, 4, 1], {1}],
-     InfraMemberQ[g, InfraSolidOfRevolution[{1, 2, 3}, 1], FindInfraRepresentative[g, InfraSolidOfRevolution[{1, 2, 3}, 1]]]}],
+       RandomInfraParallel[g, {1, 2, 3, 4, 5}, 6, All]],
+     InfraRegularPolygonQ[g, RandomInfraRegularPolygon[g, {1}, 4, 1], {1}],
+     InfraMemberQ[g, InfraSolidOfRevolution[{1, 2, 3}, 1], RandomInfraRepresentative[g, InfraSolidOfRevolution[{1, 2, 3}, 1]]]}],
   ConstantArray[True, 12],
   TestID -> "predicates-accept-their-own-constructor-output"
 ]
@@ -589,8 +589,8 @@ VerificationTest[
    exact radius.  Pre-existing; the wrappers hid it by answering vacuously.) *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
-    {FindInfraRepresentative[g, InfraCircle[13, 2]], InfraCircleQ[g, FindInfraRepresentative[g, InfraCircle[13, 2]]],
-     FindInfraEllipse[g, {11, 15}, 6], InfraEllipseQ[g, FindInfraEllipse[g, {11, 15}, 6]]}],
+    {RandomInfraRepresentative[g, InfraCircle[13, 2]], InfraCircleQ[g, RandomInfraRepresentative[g, InfraCircle[13, 2]]],
+     RandomInfraEllipse[g, {11, 15}, 6], InfraEllipseQ[g, RandomInfraEllipse[g, {11, 15}, 6]]}],
   {{ }, False, { }, False},
   TestID -> "an-empty-class-is-the-empty-List"
 ]
@@ -600,10 +600,10 @@ VerificationTest[
    the density over it agree. *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
-    {With[{pa = FindInfraParallel[g, {1, 2, 3, 4, 5}, 6, All]},
+    {With[{pa = RandomInfraParallel[g, {1, 2, 3, 4, 5}, 6, All]},
        InfraParallelQ[g, geodesicGraph @ {1, 2, 3, 4, 5}, pa] ===
          AllTrue[infraSpread @ pa, InfraParallelQ[g, {1, 2, 3, 4, 5}, #] &]],
-     With[{rp = FindInfraRegularPolygon[g, {1}, 4, 1]},
+     With[{rp = RandomInfraRegularPolygon[g, {1}, 4, 1]},
        InfraRegularPolygonQ[g, rp, {1}] ===
          AllTrue[rp, InfraRegularPolygonQ[g, #, {1}] &]]}],
   {True, True},
@@ -625,7 +625,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     {InfraShellQ[g, InfraDensity[g, FindInfraShell[g, 13, 2]]],
-     InfraBallQ[g, InfraDensity[g, FindInfraRepresentative[g, InfraBall[13, 2]]]]}],
+     InfraBallQ[g, InfraDensity[g, RandomInfraRepresentative[g, InfraBall[13, 2]]]]}],
   {True, True},
   TestID -> "set-predicates-accept-densities"
 ]

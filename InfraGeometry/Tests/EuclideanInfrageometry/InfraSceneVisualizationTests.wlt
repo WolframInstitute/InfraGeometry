@@ -14,7 +14,7 @@ headOf             = { opts, v } |-> Cases[ ( v /. ( VertexShapeFunction /. opts
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    Head @ InfraSubstrateHighlight[ g, { FindInfraSegment[ g, 1, 16, All ] } ]
+    Head @ InfraSubstrateHighlight[ g, { RandomInfraSegment[ g, 1, 16, All ] } ]
   ],
   Graph,
   TestID -> "InfraSubstrateHighlight-single-multiobject"
@@ -23,7 +23,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
     Head @ InfraSubstrateHighlight[ g,
-      { FindInfraLine[ g, 1, 9, All ] -> RGBColor[ 0.8, 0.2, 0.2 ] } ]
+      { RandomInfraLine[ g, 1, 9, All ] -> RGBColor[ 0.8, 0.2, 0.2 ] } ]
   ],
   Graph,
   TestID -> "InfraSubstrateHighlight-explicit-color-rule"
@@ -54,7 +54,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     Head @ InfraSubstrateHighlight[ g,
-      { FindInfraSegment[ g, 1, 16, All ] -> Blue,
+      { RandomInfraSegment[ g, 1, 16, All ] -> Blue,
         { 1, 16 }                                   -> Red } ]
   ],
   Graph,
@@ -64,8 +64,8 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     Head @ InfraSubstrateHighlight[ g,
-      { FindInfraSegment[ g, 1, 16, All ] -> Blue,
-        FindInfraRepresentative[ g, InfraCircle[ 1, 2 ], All ] -> Green } ]
+      { RandomInfraSegment[ g, 1, 16, All ] -> Blue,
+        RandomInfraRepresentative[ g, InfraCircle[ 1, 2 ], All ] -> Green } ]
   ],
   Graph,
   TestID -> "InfraSubstrateHighlight-mixed-segment-and-circle"
@@ -217,7 +217,7 @@ VerificationTest[
         Rectangle[], MaxCellMeasure -> 0.1 ] },
     With[ {
         vs  = VertexList @ g,
-        seg = FindInfraSegment[ g,
+        seg = RandomInfraSegment[ g,
           First @ VertexList @ g, Last @ VertexList @ g, All ] },
       MatchQ[ First @ vs, { _, _ } ] &&
       Length @ Cases[
@@ -301,7 +301,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = CycleGraph[ 4 ] },
     Union @ Cases[ EdgeStyle /. Options @ InfraSubstrateHighlight[ g,
-      { FindInfraSegment[ g, 1, 3, All ] }, "ThicknessRange" -> 8 ], AbsoluteThickness[ t_ ] :> t, Infinity ] ],
+      { RandomInfraSegment[ g, 1, 3, All ] }, "ThicknessRange" -> 8 ], AbsoluteThickness[ t_ ] :> t, Infinity ] ],
   { 8 },
   TestID -> "InfraSubstrateHighlight-scalar-thickness-is-the-base"
 ]
@@ -325,7 +325,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 7, 7 } ] },
     { (* a UNIFORM effective point (here a ball) is uniformly bright: its diffuseness
          is its extent, not a per-vertex fade *)
-      Union @ dotScales @ Options @ InfraSubstrateHighlight[ g, { InfraDensity[ g, FindInfraRepresentative[g, InfraBall[25, 2]] ] } ],
+      Union @ dotScales @ Options @ InfraSubstrateHighlight[ g, { InfraDensity[ g, RandomInfraRepresentative[g, InfraBall[25, 2]] ] } ],
       (* a NON-uniform effective point draws its lightest vertex at the substrate's size and its heaviest at the top *)
       MinMax @ dotScales @ Options @ InfraSubstrateHighlight[ g, { InfraMeasurement[ g, InfraSegment[ 1, 49 ], "Midpoint" ] } ] } ],
   { { 1 }, { 1, 3 } },
@@ -392,7 +392,7 @@ VerificationTest[
    { 2, 5, 6, 7, 10 }, whose induced subgraph is the four spokes. *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    With[ { opts = Options @ InfraSubstrateHighlight[ g, { FindInfraRepresentative[g, InfraBall[6, 1]] -> Red } ] },
+    With[ { opts = Options @ InfraSubstrateHighlight[ g, { RandomInfraRepresentative[g, InfraBall[6, 1], All] -> Red } ] },
       { Length @ Cases[ EdgeStyle /. opts, _UndirectedEdge -> _, Infinity ],
         Union @ Cases[ EdgeStyle /. opts, ( _UndirectedEdge -> d_ ) :> Cases[ d, _AbsoluteThickness | _Opacity ], Infinity ],
         dotScales @ opts } ] ],
@@ -430,7 +430,7 @@ VerificationTest[
    so a triangle draws three corner dots, not four *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    With[ { sides = geodesicGraph /@ { FindInfraSegment[ g, 1, 4 ], FindInfraSegment[ g, 4, 13 ], FindInfraSegment[ g, 13, 1 ] } },
+    With[ { sides = geodesicGraph /@ { RandomInfraSegment[ g, 1, 4 ], RandomInfraSegment[ g, 4, 13 ], RandomInfraSegment[ g, 13, 1 ] } },
       Length @ dotScales @ Options @ InfraSubstrateHighlight[ g, { sides } ] ] ],
   3,
   TestID -> "InfraSubstrateHighlight-polygon-corners-drop-the-closure"
@@ -452,7 +452,7 @@ VerificationTest[
    runs p -> q -- so it inks as a walk bundle and gets no knots *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    Cases[ Options @ InfraSubstrateHighlight[ g, { FindInfraSegment[ g, 1, 16, UpTo[ 3 ] ] } ],
+    Cases[ Options @ InfraSubstrateHighlight[ g, { RandomInfraSegment[ g, 1, 16, UpTo[ 3 ] ] } ],
       AbsolutePointSize[ s_ ] :> s, Infinity ] ],
   { },
   TestID -> "InfraSubstrateHighlight-same-endpoint-bundle-is-not-a-polyline"
@@ -463,12 +463,12 @@ VerificationTest[
    retraces its third side, so its vertices carry mass 2. *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    With[ { objects = { geodesicGraph /@ { FindInfraSegment[ g, 1, 5 ], FindInfraSegment[ g, 5, 25 ],
-                Reverse @ Join[ FindInfraSegment[ g, 1, 5 ], Rest @ FindInfraSegment[ g, 5, 25 ] ] },
+    With[ { objects = { geodesicGraph /@ { RandomInfraSegment[ g, 1, 5 ], RandomInfraSegment[ g, 5, 25 ],
+                Reverse @ Join[ RandomInfraSegment[ g, 1, 5 ], Rest @ RandomInfraSegment[ g, 5, 25 ] ] },
               InfraSegment[ 1, 5, 25, 1 ],
-              FindInfraSegment[ g, 1, 25, All ],
+              RandomInfraSegment[ g, 1, 25, All ],
               { FindInfraShell[ g, 13, 2 ] },
-              FindInfraRepresentative[g, InfraBall[13, 2]] } },
+              RandomInfraRepresentative[g, InfraBall[13, 2]] } },
       Union @ Cases[ Options @ InfraSubstrateHighlight[ g, objects ],
         Opacity[ x_ ] :> x <= 1, Infinity ] ] ],
   { True },
@@ -499,7 +499,7 @@ VerificationTest[
 
 (* the default head sits on the walk's last vertex, drawn on top of it *)
 VerificationTest[
-  With[ { g = GridGraph[ { 5, 5 } ] }, With[ { seg = geodesicGraph @ FindInfraSegment[ g, 1, 25 ] },
+  With[ { g = GridGraph[ { 5, 5 } ] }, With[ { seg = geodesicGraph @ RandomInfraSegment[ g, 1, 25 ] },
     { FreeQ[ Options @ InfraSubstrateHighlight[ g, { seg } ], _Polygon ],
       Length @ headOf[ Options @ InfraSubstrateHighlight[ g, { seg }, "Arrowheads" -> True ], 25 ] } ] ],
   { True, 1 },
@@ -508,7 +508,7 @@ VerificationTest[
 
 (* the head is in printer points, 5 + 2 t long for a stroke of t points, and broader than long *)
 VerificationTest[
-  With[ { g = GridGraph[ { 5, 5 } ] }, With[ { seg = InfraWalk @ FindInfraSegment[ g, 1, 25 ] },
+  With[ { g = GridGraph[ { 5, 5 } ] }, With[ { seg = InfraWalk @ RandomInfraSegment[ g, 1, 25 ] },
     ( t |-> Rest @ First @ headOf[ Options @ InfraSubstrateHighlight[ g, { seg }, "Arrowheads" -> True, "ThicknessRange" -> t ], 25 ] ) /@
       { Automatic, 2, 9 } ] ],
   { { 7., 10.5 }, { 9., 13.5 }, { 23., 34.5 } },
@@ -536,7 +536,7 @@ VerificationTest[
    against an armed option.  One head per armed path object: an ArrowBox for an explicit spec, a polygon for True. *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    With[ { a = geodesicGraph @ FindInfraSegment[ g, 1, 5 ], b = geodesicGraph @ FindInfraSegment[ g, 21, 25 ] },
+    With[ { a = geodesicGraph @ RandomInfraSegment[ g, 1, 5 ], b = geodesicGraph @ RandomInfraSegment[ g, 21, 25 ] },
       ( heads = ( e |-> Count[ ToBoxes @ e, ArrowBox, Infinity, Heads -> True ] + Count[ VertexShapeFunction /. Options @ e, _Polygon, Infinity ] ) );
       { heads @ InfraSubstrateHighlight[ g, { a -> True, b } ],
         heads @ InfraSubstrateHighlight[ g, { Style[ a, Arrowheads[ 0.09 ] ], b } ],
@@ -550,7 +550,7 @@ VerificationTest[
    never surfaces as an ArrowheadsBox. *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    With[ { seg = geodesicGraph @ FindInfraSegment[ g, 1, 5 ] },
+    With[ { seg = geodesicGraph @ RandomInfraSegment[ g, 1, 5 ] },
       DeleteDuplicates @ Cases[
         Options[ InfraSubstrateHighlight[ g, { seg -> Arrowheads[ 0.09 ] }, "Arrowheads" -> True ],
           EdgeShapeFunction ], _Arrowheads, Infinity ] ] ],
@@ -580,7 +580,7 @@ VerificationTest[
 (* StrikeOutPalette: colour follows ADDITION ORDER, not object type. *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    With[ { a = FindInfraSegment[ g, 1, 25 ], b = FindInfraRepresentative[g, InfraBall[13, 1]] },
+    With[ { a = RandomInfraSegment[ g, 1, 25 ], b = RandomInfraRepresentative[g, InfraBall[13, 1]] },
       Module[ { c1, c2 },
         c1 = Cases[ ToBoxes @ InfraSubstrateHighlight[ g, { a, b } ], _RGBColor, Infinity ];
         c2 = Cases[ ToBoxes @ InfraSubstrateHighlight[ g, { b, a } ], _RGBColor, Infinity ];
@@ -591,7 +591,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    With[ { seg = FindInfraSegment[ g, 1, 25 ] },
+    With[ { seg = RandomInfraSegment[ g, 1, 25 ] },
       MemberQ[ Cases[ ToBoxes @ InfraSubstrateHighlight[ g, { seg -> RGBColor[ 0, 1, 0 ] } ], _RGBColor, Infinity ],
         RGBColor[ 0, 1, 0 ] ] ] ],
   True,
@@ -628,7 +628,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     AllTrue[
-      { 7, <| 1 -> 2, 7 -> 1 |>, FindInfraRepresentative[g, InfraBall[13, 1]], { FindInfraShell[ g, 13, 2 ] },
+      { 7, <| 1 -> 2, 7 -> 1 |>, RandomInfraRepresentative[g, InfraBall[13, 1]], { FindInfraShell[ g, 13, 2 ] },
         walkGraph @ { 1, 2, 7 }, geodesicCycleGraph @ { 1, 2, 7, 6 }, walkGraph /@ { { 1, 2, 7 }, { 1, 6, 7 } } },
       x |-> infraInk[ g, x ][ "VertexDensity" ] === InfraDensity[ g, x ] ] ],
   True,
@@ -640,7 +640,7 @@ VerificationTest[
       { ink[ "VertexDensity" ] === InfraMeasurement[ g, h, "VertexDensity" ],
         Total @ ink[ "EdgeDensity" ] === Total @ InfraMeasurement[ g, h, "EdgeDensity" ],
         Sort @ Keys @ ink[ "EdgeDensity" ] ===
-          Union[ UndirectedEdge @@ Sort @ # & /@ Catenate[ Partition[ #, 2, 1 ] & /@ FindInfraRepresentative[ g, h, All ] ] ] } ] ) @@@
+          Union[ UndirectedEdge @@ Sort @ # & /@ Catenate[ Partition[ #, 2, 1 ] & /@ RandomInfraRepresentative[ g, h, All ] ] ] } ] ) @@@
     { { CycleGraph[ 6 ], InfraSegment[ 1, 4 ] }, { GridGraph[ { 5, 5 } ], InfraSegment[ 1, 13 ] } },
   { { True, True, True }, { True, True, True } },
   TestID -> "InfraSubstrateHighlight-head-ink-is-its-measurement"
@@ -700,10 +700,10 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     infraInk[ g, # ][ "Knots" ] & /@ {
-      geodesicGraph /@ { FindInfraSegment[ g, 1, 4 ], FindInfraSegment[ g, 4, 21 ], FindInfraSegment[ g, 21, 1 ] },
-      FindInfraSegment[ g, 1, 25, UpTo[ 4 ] ],
-      { FindInfraSegment[ g, 1, 25 ] },
-      FindInfraRepresentative[ g, InfraCircle[ 13, 2 ], UpTo[ 2 ] ] } ],
+      geodesicGraph /@ { RandomInfraSegment[ g, 1, 4 ], RandomInfraSegment[ g, 4, 21 ], RandomInfraSegment[ g, 21, 1 ] },
+      RandomInfraSegment[ g, 1, 25, UpTo[ 4 ] ],
+      { RandomInfraSegment[ g, 1, 25 ] },
+      RandomInfraRepresentative[ g, InfraCircle[ 13, 2 ], UpTo[ 2 ] ] } ],
   { { 1, 4, 21 }, { }, { }, { } },
   TestID -> "infraInk-chain-has-knots-bundle-has-none"
 ]
@@ -756,7 +756,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     infraInk[ g, # ][ "Walk" ] & /@ {
       { 1, 2, 3, 8, 13 }, { 1, 2, 3, 4, 5 }, { 1, 2, 7, 6 }, { 1, 2, 7, 6, 1 }, { 1, 2, 7, 6, 11 },
-      FindInfraRepresentative[ g, InfraBall[ 13, 1 ] ] } ],
+      RandomInfraRepresentative[ g, InfraBall[ 13, 1 ] ] } ],
   { { 1, 2, 3, 8, 13 }, { 1, 2, 3, 4, 5 }, { 1, 2, 7, 6, 1 }, { 1, 2, 7, 6, 1 }, None, None },
   TestID -> "infraInk-line-test-induced-path-or-cycle"
 ]

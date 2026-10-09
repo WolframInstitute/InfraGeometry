@@ -100,7 +100,7 @@ VerificationTest[
     { support = Keys @ InfraMeasurement[ g, hull, "VertexDensity" ] },
     { InfraMeasurement[ g, hull, "Cardinality" ],
       InfraMeasurement[ g, hull, "Faithful" ],
-      FindInfraRepresentative[ g, hull ] === support,
+      RandomInfraRepresentative[ g, hull ] === support,
       Sort @ Keys @ InfraMeasurement[ g, hull, "EdgeDensity" ] === Sort @ EdgeList @ Subgraph[ g, support ],
       InfraMeasurement[ g, hull, "CountingMeasure" ] === Length @ support,
       Keys @ InfraMeasurement[ g, hull, All ],

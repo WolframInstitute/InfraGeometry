@@ -78,8 +78,8 @@ VerificationTest[
 (* Counts promotes a list, Keys demotes a density: the two steps InfraDensity sits
    between, and the reason there is no second coercion in the API *)
 VerificationTest[
-  With[ { ball = FindInfraRepresentative[g33, InfraBall[5, 1]] },
-    Keys @ InfraDensity[ g33, ball ] === ball &&
+  With[ { ball = RandomInfraRepresentative[g33, InfraBall[5, 1], All] },
+    Keys @ InfraDensity[ g33, ball ] === Union[ ball ] &&
       InfraDensity[ g33, ball ] === KeySort @ Counts @ ball ],
   True,
   TestID -> "InfraDensity-Counts-promotes-Keys-demotes"
@@ -133,11 +133,11 @@ VerificationTest[
 ]
 
 (* a family of realisations reads as its vertex occupation, the sum of the per-member
-   Counts, rather than a unit mass -- FindInfraSegment[g, p, q] no longer wraps its
+   Counts, rather than a unit mass -- RandomInfraSegment[g, p, q] no longer wraps its
    family in a DAG (EuclideanInertHeads), so the occupation is just Merge/Total *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
-    With[ { paths = FindInfraSegment[ g, 1, 9, All ] },
+    With[ { paths = RandomInfraSegment[ g, 1, 9, All ] },
       InfraDensity[ g, paths ] === KeySort @ Merge[ Counts /@ paths, Total ] ] ],
   True,
   TestID -> "walk-anchor-reads-as-occupation"
@@ -195,26 +195,26 @@ VerificationTest[
    under-supply rather than returning fewer *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    { Length @ FindInfraSegment[ g, 1, 16, UpTo[ 2 ] ],
-      SubsetQ[ FindInfraSegment[ g, 1, 16, All ],
-               FindInfraSegment[ g, 1, 16, UpTo[ 2 ] ] ],
-      FindInfraSegment[ g, 1, 16, 1000 ] } ],
+    { Length @ RandomInfraSegment[ g, 1, 16, UpTo[ 2 ] ],
+      SubsetQ[ RandomInfraSegment[ g, 1, 16, All ],
+               RandomInfraSegment[ g, 1, 16, UpTo[ 2 ] ] ],
+      RandomInfraSegment[ g, 1, 16, 1000 ] } ],
   { 2, True, { } },
   TestID -> "bounded-count-is-a-prefix"
 ]
 
-(* the count contract on FindInfraSegment: count-less is ONE vertex list, a bounded
+(* the count contract on RandomInfraSegment: count-less is ONE vertex list, a bounded
    count a List of them, All the whole class -- no DAG any more (EuclideanInertHeads) *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
-    { MatchQ[ FindInfraSegment[ g, 1, 9 ], { __Integer } ],
-      MatchQ[ FindInfraSegment[ g, 1, 9, 1 ], { { __Integer } } ],
-      MatchQ[ FindInfraSegment[ g, 1, 9, UpTo[ 100 ] ], { { __Integer } .. } ],
-      MatchQ[ FindInfraSegment[ g, 1, 9, All ], { { __Integer } .. } ],
-      Length @ FindInfraSegment[ g, 1, 9, All ] === 6,
-      FindInfraSegment[ g, 1, 9, 7 ] === { } } ],
+    { MatchQ[ RandomInfraSegment[ g, 1, 9 ], { __Integer } ],
+      MatchQ[ RandomInfraSegment[ g, 1, 9, 1 ], { { __Integer } } ],
+      MatchQ[ RandomInfraSegment[ g, 1, 9, UpTo[ 100 ] ], { { __Integer } .. } ],
+      MatchQ[ RandomInfraSegment[ g, 1, 9, All ], { { __Integer } .. } ],
+      Length @ RandomInfraSegment[ g, 1, 9, All ] === 6,
+      RandomInfraSegment[ g, 1, 9, 7 ] === { } } ],
   { True, True, True, True, True, True },
-  TestID -> "FindInfraSegment-count-contract"
+  TestID -> "RandomInfraSegment-count-contract"
 ]
 
 (* ===================== the interval DAG carries the family it stands for ===================== *)

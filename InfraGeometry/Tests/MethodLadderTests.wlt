@@ -25,23 +25,23 @@ sortReps[ x_ ] := Sort @ Replace[ reps @ x, l_List :> Sort @ l, { 1 } ]
 
 (* ===================== Distance-matrix family ===================== *)
 
-(* FindInfraSegment, FindInfraLine, FindInfraRay and the circle finder left the Method
+(* RandomInfraSegment, RandomInfraLine, RandomInfraRay and the circle finder left the Method
    ladder on 2026-09-26 (EuclideanInertHeads): the count fixes the mode and the only
-   modifiers are "RandomChoice" / "Pruning" on FindInfraRepresentative, so they carry no Method
+   modifiers are "RandomChoice" / "Pruning" on RandomInfraRepresentative, so they carry no Method
    axis of their own to be invariant under any more. *)
 
 VerificationTest[
-  classInvariantQ[ m |-> FindInfraGeodesic[ TorusGraph[ { 4, 5 } ], { 1, 2 }, Infinity, Infinity, All, "NextVertexFunction" -> m,
+  classInvariantQ[ m |-> RandomInfraGeodesic[ TorusGraph[ { 4, 5 } ], { 1, 2 }, Infinity, Infinity, All, "NextVertexFunction" -> m,
       "Direction" -> "BothSides" ] ],
   True,
-  TestID -> "FindInfraGeodesic-walk-germ-lines-class-invariant-under-NextVertexFunction"
+  TestID -> "RandomInfraGeodesic-walk-germ-lines-class-invariant-under-NextVertexFunction"
 ]
 
 (* the parallels through the centre of the 5 x 5 grid in the level set of its first row: one chain, the middle row *)
 VerificationTest[
-  classInvariantQ[ m |-> FindInfraParallel[ GridGraph[ { 5, 5 } ], Range[ 5 ], 13, All, "NextVertexFunction" -> m ] ],
+  classInvariantQ[ m |-> RandomInfraParallel[ GridGraph[ { 5, 5 } ], Range[ 5 ], 13, All, "NextVertexFunction" -> m ] ],
   True,
-  TestID -> "FindInfraParallel-class-invariant-under-NextVertexFunction"
+  TestID -> "RandomInfraParallel-class-invariant-under-NextVertexFunction"
 ]
 
 (* two dead ends 11, 12 hang off 8 at distance 1 from the row 1..5: the chain 11-8-12 is inextensible in the level set but shorter than 6-7-8-11, so a longest-only sweep would drop it -- the class holds all six *)
@@ -51,77 +51,77 @@ VerificationTest[
         UndirectedEdge @@@ Partition[ Range[ 6, 10 ], 2, 1 ],
         UndirectedEdge @@@ Transpose[ { Range[ 5 ], Range[ 6, 10 ] } ],
         { 11 <-> 8, 11 <-> 3, 12 <-> 8, 12 <-> 3 } ] ] },
-    classInvariantQ[ m |-> FindInfraParallel[ g, Range[ 5 ], 8, All, "NextVertexFunction" -> m ] ] ],
+    classInvariantQ[ m |-> RandomInfraParallel[ g, Range[ 5 ], 8, All, "NextVertexFunction" -> m ] ] ],
   True,
-  TestID -> "FindInfraParallel-class-invariant-dead-ends"
+  TestID -> "RandomInfraParallel-class-invariant-dead-ends"
 ]
 
 (* ===================== Walk family ===================== *)
 
 VerificationTest[
-  classInvariantQ[ f |-> FindInfraWalk[ GridGraph[ { 3, 3 } ], 1, UpTo[ 6 ], All,
+  classInvariantQ[ f |-> RandomInfraWalk[ GridGraph[ { 3, 3 } ], 1, UpTo[ 6 ], All,
     Properties -> { { "Simple", 2 } }, "StoppingCondition" -> ( Length[ # ] - Length[ DeleteDuplicates @ # ] >= 1 & ), "NextVertexFunction" -> f ] ],
   True,
-  TestID -> "FindInfraWalk-pointed-class-invariant-under-NextVertexFunction"
+  TestID -> "RandomInfraWalk-pointed-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
   classInvariantQ[ f |-> Select[
-    FindInfraWalk[ GridGraph[ { 3, 3 } ], 1, UpTo[ 6 ], All, Properties -> genericRules,
+    RandomInfraWalk[ GridGraph[ { 3, 3 } ], 1, UpTo[ 6 ], All, Properties -> genericRules,
       "StoppingCondition" -> ( Last[ # ] === 9 & ), "NextVertexFunction" -> f ],
     Last @ Last @ VertexList @ # === 9 & ] ],
   True,
-  TestID -> "FindInfraWalk-endpoint-stopping-condition-class-invariant-under-NextVertexFunction"
+  TestID -> "RandomInfraWalk-endpoint-stopping-condition-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
-  classInvariantQ[ f |-> FindInfraWalk[ GridGraph[ { 3, 3 } ], { 1, 2 }, UpTo[ 3 ], All, Properties -> { "Simple" }, "NextVertexFunction" -> f,
+  classInvariantQ[ f |-> RandomInfraWalk[ GridGraph[ { 3, 3 } ], { 1, 2 }, UpTo[ 3 ], All, Properties -> { "Simple" }, "NextVertexFunction" -> f,
       "Direction" -> "BothSides" ] ],
   True,
-  TestID -> "FindInfraWalk-germ-class-invariant-under-NextVertexFunction"
+  TestID -> "RandomInfraWalk-germ-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
-  classInvariantQ[ f |-> FindInfraGeodesic[ GridGraph[ { 4, 4 } ], 1, 2, UpTo[ 4 ], All, "NextVertexFunction" -> f ] ],
+  classInvariantQ[ f |-> RandomInfraGeodesic[ GridGraph[ { 4, 4 } ], 1, 2, UpTo[ 4 ], All, "NextVertexFunction" -> f ] ],
   True,
-  TestID -> "FindInfraGeodesic-pointed-class-invariant-under-NextVertexFunction"
+  TestID -> "RandomInfraGeodesic-pointed-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
   classInvariantQ[ f |-> Select[
-    FindInfraGeodesic[ TorusGraph[ { 4, 5 } ], 1, 2, UpTo[ 6 ], All,
+    RandomInfraGeodesic[ TorusGraph[ { 4, 5 } ], 1, 2, UpTo[ 6 ], All,
       "StoppingCondition" -> ( Last[ # ] === 8 & ), "NextVertexFunction" -> f ],
     Last @ Last @ VertexList @ # === 8 & ] ],
   True,
-  TestID -> "FindInfraGeodesic-endpoint-stopping-condition-class-invariant-under-NextVertexFunction"
+  TestID -> "RandomInfraGeodesic-endpoint-stopping-condition-class-invariant-under-NextVertexFunction"
 ]
 
 VerificationTest[
-  classInvariantQ[ f |-> FindInfraGeodesic[ TorusGraph[ { 4, 5 } ], { 1, 2 }, 2, UpTo[ 3 ], All, "NextVertexFunction" -> f,
+  classInvariantQ[ f |-> RandomInfraGeodesic[ TorusGraph[ { 4, 5 } ], { 1, 2 }, 2, UpTo[ 3 ], All, "NextVertexFunction" -> f,
       "Direction" -> "BothSides" ] ],
   True,
-  TestID -> "FindInfraGeodesic-germ-class-invariant-under-NextVertexFunction"
+  TestID -> "RandomInfraGeodesic-germ-class-invariant-under-NextVertexFunction"
 ]
 
 (* a soft rule weighs the candidates and never filters them: the class is the
    same under Identity, RandomSample and Automatic, which draws by the weights *)
 VerificationTest[
-  With[ { call = f |-> FindInfraWalk[ GridGraph[ { 4, 4 } ], 6, { 4 }, All, Properties -> { "Simple", { "Shortest", 3, 0.3 } },
+  With[ { call = f |-> RandomInfraWalk[ GridGraph[ { 4, 4 } ], 6, { 4 }, All, Properties -> { "Simple", { "Shortest", 3, 0.3 } },
       "NextVertexFunction" -> f ] },
     { classInvariantQ[ call ], classInvariantQ[ f |-> call[ f /. RandomSample -> Automatic ] ] } ],
   { True, True },
-  TestID -> "FindInfraWalk-soft-rule-class-invariant-under-NextVertexFunction"
+  TestID -> "RandomInfraWalk-soft-rule-class-invariant-under-NextVertexFunction"
 ]
 
 (* on the walk family a count-less call is the first instance of the canonical descent: the same witness twice without a seed, the Identity one, and the First one where the first branch ends the walk, here the stopping condition firing at its first arrival at 2 or the budget spent; a two-sided extension re-checks the joined step, so its first joint move may fail where a later one passes, and First is pinned on the one-sided directions *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     AllTrue[
-      { f |-> FindInfraWalk[ g, 1, UpTo[ 4 ], Properties -> { "Simple" }, "NextVertexFunction" -> f ],
-        f |-> FindInfraWalk[ g, 1, UpTo[ 4 ], Properties -> { "Simple" }, "StoppingCondition" -> ( Last[ # ] === 2 & ), "NextVertexFunction" -> f ],
-        f |-> FindInfraWalk[ g, { 1, 2 }, UpTo[ 2 ], Properties -> { "Simple" }, "NextVertexFunction" -> f, "Direction" -> "Forward" ],
-        f |-> FindInfraGeodesic[ g, 1, 2, UpTo[ 4 ], "NextVertexFunction" -> f ],
-        f |-> FindInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], "NextVertexFunction" -> f, "Direction" -> "Forward" ] },
+      { f |-> RandomInfraWalk[ g, 1, UpTo[ 4 ], Properties -> { "Simple" }, "NextVertexFunction" -> f ],
+        f |-> RandomInfraWalk[ g, 1, UpTo[ 4 ], Properties -> { "Simple" }, "StoppingCondition" -> ( Last[ # ] === 2 & ), "NextVertexFunction" -> f ],
+        f |-> RandomInfraWalk[ g, { 1, 2 }, UpTo[ 2 ], Properties -> { "Simple" }, "NextVertexFunction" -> f, "Direction" -> "Forward" ],
+        f |-> RandomInfraGeodesic[ g, 1, 2, UpTo[ 4 ], "NextVertexFunction" -> f ],
+        f |-> RandomInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], "NextVertexFunction" -> f, "Direction" -> "Forward" ] },
       call |-> call[ Identity ] === call[ Identity ] === call[ First ] ] ],
   True,
   TestID -> "WalkFamily-countless-is-the-canonical-witness"
@@ -131,9 +131,9 @@ VerificationTest[
 (* ===================== Peel family ===================== *)
 
 VerificationTest[
-  classInvariantQ[ m |-> FindInfraSphere[ GridGraph[ { 4, 4 } ], 6, { 1, 2 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ], Sort ],
+  classInvariantQ[ m |-> RandomInfraSphere[ GridGraph[ { 4, 4 } ], 6, { 1, 2 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ], Sort ],
   True,
-  TestID -> "FindInfraSphere-class-invariant-under-NextVertexFunction"
+  TestID -> "RandomInfraSphere-class-invariant-under-NextVertexFunction"
 ]
 
 (* the band is columns 2 and 3; a minimal separator takes exactly one vertex per row, 2^4 of them *)
@@ -147,10 +147,10 @@ VerificationTest[
 
 (* the peel from the centre of the 5 x 5 grid: sixteen minimal separators, and the lazy peel reaches each subset once -- without its visited set this ran minutes *)
 VerificationTest[
-  With[ { call = m |-> FindInfraSphere[ GridGraph[ { 5, 5 } ], 13, { 1, 2 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ] },
+  With[ { call = m |-> RandomInfraSphere[ GridGraph[ { 5, 5 } ], 13, { 1, 2 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ] },
     { classInvariantQ[ call, Sort ], Length @ reps @ call[ Identity ] } ],
   { True, 16 },
-  TestID -> "FindInfraSphere-5x5-class-invariant-under-NextVertexFunction"
+  TestID -> "RandomInfraSphere-5x5-class-invariant-under-NextVertexFunction"
 ]
 
 
@@ -158,17 +158,17 @@ VerificationTest[
 
 (* the elliptic level band {4, 8} of the foci 25, 12 on the 7 x 7 grid: the sweep's shortest separating grade, the same class under every next-vertex function *)
 VerificationTest[
-  classInvariantQ[ m |-> FindInfraEllipse[ GridGraph[ { 7, 7 } ], { 25, 12 }, { 4, 8 }, All, "NextVertexFunction" -> m ] ],
+  classInvariantQ[ m |-> RandomInfraEllipse[ GridGraph[ { 7, 7 } ], { 25, 12 }, { 4, 8 }, All, "NextVertexFunction" -> m ] ],
   True,
-  TestID -> "FindInfraEllipse-class-invariant-under-NextVertexFunction"
+  TestID -> "RandomInfraEllipse-class-invariant-under-NextVertexFunction"
 ]
 
 (* off the "Shortest" tie the sweep runs every grade: six cycles in the level set of 2, 15 at c = 4 *)
 VerificationTest[
-  With[ { call = m |-> FindInfraEllipse[ GridGraph[ { 4, 4 } ], { 2, 15 }, 4, All, Properties -> { }, "NextVertexFunction" -> m ] },
+  With[ { call = m |-> RandomInfraEllipse[ GridGraph[ { 4, 4 } ], { 2, 15 }, 4, All, Properties -> { }, "NextVertexFunction" -> m ] },
     { classInvariantQ[ call ], Length @ reps @ call[ Identity ] } ],
   { True, 6 },
-  TestID -> "FindInfraEllipse-sweep-class-invariant-under-NextVertexFunction"
+  TestID -> "RandomInfraEllipse-sweep-class-invariant-under-NextVertexFunction"
 ]
 
 
@@ -176,10 +176,10 @@ VerificationTest[
 
 (* the sixteen unit squares of the 5 x 5 grid: the candidate sweep is not lazy, so the next-vertex function only orders what the count takes *)
 VerificationTest[
-  With[ { call = m |-> FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All, "NextVertexFunction" -> m ] },
+  With[ { call = m |-> RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All, "NextVertexFunction" -> m ] },
     { classInvariantQ[ call ], Length @ reps @ call[ Identity ] } ],
   { True, 16 },
-  TestID -> "FindInfraRegularPolygon-class-invariant-under-NextVertexFunction"
+  TestID -> "RandomInfraRegularPolygon-class-invariant-under-NextVertexFunction"
 ]
 
 (* ===================== Automatic is the deterministic descent ===================== *)
@@ -188,12 +188,12 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ], t = TorusGraph[ { 4, 5 } ] },
     AllTrue[
-      { m |-> FindInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], "NextVertexFunction" -> m, "Direction" -> "BothSides" ],
-        m |-> FindInfraParallel[ g, Range[ 4 ], 10, "NextVertexFunction" -> m ],
-        m |-> FindInfraSphere[ g, 6, { 1, 2 }, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
+      { m |-> RandomInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], "NextVertexFunction" -> m, "Direction" -> "BothSides" ],
+        m |-> RandomInfraParallel[ g, Range[ 4 ], 10, "NextVertexFunction" -> m ],
+        m |-> RandomInfraSphere[ g, 6, { 1, 2 }, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
         m |-> FindInfraBisectingHyperplane[ g, 1, 4, { -1, 1 }, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
-        m |-> FindInfraEllipse[ GridGraph[ { 7, 7 } ], { 25, 12 }, { 4, 8 }, "NextVertexFunction" -> m ],
-        m |-> FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, "NextVertexFunction" -> m ] },
+        m |-> RandomInfraEllipse[ GridGraph[ { 7, 7 } ], { 25, 12 }, { 4, 8 }, "NextVertexFunction" -> m ],
+        m |-> RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, "NextVertexFunction" -> m ] },
       call |-> call[ Identity ] === call[ Identity ] ] ],
   True,
   TestID -> "MethodLadder-countless-is-the-canonical-witness-on-every-symbol"
@@ -206,12 +206,12 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ], t = TorusGraph[ { 4, 5 } ] },
     AllTrue[
-      { m |-> FindInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], All, "NextVertexFunction" -> m, "Direction" -> "BothSides" ],
-        m |-> FindInfraParallel[ g, Range[ 4 ], 10, All, "NextVertexFunction" -> m ],
-        m |-> FindInfraSphere[ g, 6, { 1, 2 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
+      { m |-> RandomInfraGeodesic[ g, { 6, 7 }, Infinity, UpTo[ 2 ], All, "NextVertexFunction" -> m, "Direction" -> "BothSides" ],
+        m |-> RandomInfraParallel[ g, Range[ 4 ], 10, All, "NextVertexFunction" -> m ],
+        m |-> RandomInfraSphere[ g, 6, { 1, 2 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
         m |-> FindInfraBisectingHyperplane[ g, 1, 4, { -1, 1 }, All, Properties -> { "Separating" }, "NextVertexFunction" -> m ],
-        m |-> FindInfraEllipse[ GridGraph[ { 7, 7 } ], { 25, 12 }, { 4, 8 }, All, "NextVertexFunction" -> m ],
-        m |-> FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All, "NextVertexFunction" -> m ] },
+        m |-> RandomInfraEllipse[ GridGraph[ { 7, 7 } ], { 25, 12 }, { 4, 8 }, All, "NextVertexFunction" -> m ],
+        m |-> RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All, "NextVertexFunction" -> m ] },
       call |-> sortReps @ call[ RandomSample ] === sortReps @ call[ Identity ] ] ],
   True,
   TestID -> "MethodLadder-RandomSample-is-the-whole-class"

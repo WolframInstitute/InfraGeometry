@@ -105,7 +105,7 @@ VerificationTest[
 
 (* the volume of a set is its Length; of a family of sets, the Length of each *)
 VerificationTest[
-  { Length @ FindInfraRepresentative[PathGraph @ Range[ 5 ], InfraBall[3, 2]],
+  { Length @ RandomInfraRepresentative[PathGraph @ Range[ 5 ], InfraBall[3, 2], All],
     Length /@ { { 1, 2, 3 }, { 4, 5 } } },
   { 5, { 3, 2 } },
   TestID -> "set-volume-is-Length"
@@ -130,12 +130,12 @@ VerificationTest[
   TestID -> "bundle-source-and-sink-by-degree"
 ]
 
-(* a bare-vertex endpoint composes into FindInfraSegment with no unwrapping step *)
+(* a bare-vertex endpoint composes into RandomInfraSegment with no unwrapping step *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ], ends = { 1, 25 } },
-    FindInfraSegment[ g, ends[[ 1 ]], ends[[ 2 ]], All ] === FindInfraSegment[ g, 1, 25, All ] ],
+    RandomInfraSegment[ g, ends[[ 1 ]], ends[[ 2 ]], All ] === RandomInfraSegment[ g, 1, 25, All ] ],
   True,
-  TestID -> "FindInfraSegment-vertex-endpoints-give-DAG"
+  TestID -> "RandomInfraSegment-vertex-endpoints-give-DAG"
 ]
 
 
@@ -170,19 +170,19 @@ VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     AllTrue[
       { RandomInfraPoint[ g, 2 ],
-        FindInfraRepresentative[g, InfraBall[6, 1]],
+        RandomInfraRepresentative[g, InfraBall[6, 1]],
         FindInfraShell[ g, 6, { 1, 1 } ],
         FindInfraEquidistantSet[ g, { 1, 16 } ],
         FindInfraBisectingHyperplane[ g, 1, 16 ],
-        FindInfraSegment[ g, 1, 16 ],
-        FindInfraSegment[ g, 1, 16, All ],
-        FindInfraSegment[ g, 1, 16, UpTo[ 3 ] ],
-        FindInfraLine[ g, 1, 3 ],
-        FindInfraRay[ g, 1, 4 ],
-        FindInfraRepresentative[ g, InfraCircle[ 6, 1 ] ],
-        FindInfraRepresentative[ g, InfraSegment[ 1, 4, 13, 1 ] ],
-        FindInfraEllipse[ g, { 1, 16 }, 6 ],
-        FindInfraPerpendicular[ g, FindInfraLine[ g, 1, 3 ], 6 ],
+        RandomInfraSegment[ g, 1, 16 ],
+        RandomInfraSegment[ g, 1, 16, All ],
+        RandomInfraSegment[ g, 1, 16, UpTo[ 3 ] ],
+        RandomInfraLine[ g, 1, 3 ],
+        RandomInfraRay[ g, 1, 4 ],
+        RandomInfraRepresentative[ g, InfraCircle[ 6, 1 ] ],
+        RandomInfraRepresentative[ g, InfraSegment[ 1, 4, 13, 1 ] ],
+        RandomInfraEllipse[ g, { 1, 16 }, 6 ],
+        FindInfraPerpendicular[ g, RandomInfraLine[ g, 1, 3 ], 6 ],
         FindInfraPolylineSubdivision[ g, { 1, 2, 3, 7, 11 }, "MaxLength" -> 2 ] },
       GraphQ @ HighlightGraph[ g, # ] & ] ],
   True,

@@ -318,12 +318,12 @@ VerificationTest[
   TestID -> "FindInfraBisectingHyperplane-Separating-results-actually-separate"
 ]
 
-(* ===== FindInfraParallel: the pool under All ===== *)
+(* ===== RandomInfraParallel: the pool under All ===== *)
 
 VerificationTest[
-  infraSpread @ FindInfraParallel[GridGraph[{4, 4}], {1, 2, 3, 4}, 5, All],
+  infraSpread @ RandomInfraParallel[GridGraph[{4, 4}], {1, 2, 3, 4}, 5, All],
   {{5, 6, 7, 8}},
-  TestID -> "FindInfraParallel-All-is-the-pool"
+  TestID -> "RandomInfraParallel-All-is-the-pool"
 ]
 
 (* FindInfraPerpendicular "Embedding" Method has been removed (see plan

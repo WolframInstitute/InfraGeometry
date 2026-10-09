@@ -94,7 +94,7 @@ RandomInfraRepresentative[ graph_Graph, tube : InfraTube[ _, _, ___Rule ],
     { ordered = Sort @ members },
     Which[
       count === Automatic, If[ ordered === { }, { }, If[ nextFn === Identity, First @ ordered, RandomChoice @ ordered ] ],
-      count === All,       members,
+      count === All,       { members },
       nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
       IntegerQ @ count && Length @ ordered < count, { },
       True, RandomSample[ ordered, count ] ] ]

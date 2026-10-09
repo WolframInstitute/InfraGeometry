@@ -8,14 +8,14 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[{5, 5}] },
-    { FindInfraRepresentative[g, InfraShell[13, {1, 2}]], FindInfraRepresentative[g, InfraShell[13, {0, 0}]],
-      FindInfraRepresentative[g, InfraShell[13, {3, 2}]], FindInfraRepresentative[g, InfraShell[13, 9]] } ],
+    { RandomInfraRepresentative[g, InfraShell[13, {1, 2}]], RandomInfraRepresentative[g, InfraShell[13, {0, 0}]],
+      RandomInfraRepresentative[g, InfraShell[13, {3, 2}]], RandomInfraRepresentative[g, InfraShell[13, 9]] } ],
   { {3, 7, 8, 9, 11, 12, 14, 15, 17, 18, 19, 23}, {13}, {}, {} },
   TestID -> "InfraShell-band-point-reversed-past-eccentricity"
 ]
 
 VerificationTest[
-  FindInfraRepresentative[PathGraph[Range[7]], InfraShell[{1, 7}, 1]],
+  RandomInfraRepresentative[PathGraph[Range[7]], InfraShell[{1, 7}, 1]],
   {2, 6},
   TestID -> "InfraShell-of-a-vertex-set-is-a-level-set-of-the-set-distance"
 ]
@@ -69,7 +69,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[{5, 5}] },
     { FindInfraShell[g, 13, 2], FindInfraShell[g, 13, {1, 2}] } ===
-      { FindInfraRepresentative[g, InfraShell[13, 2]], FindInfraRepresentative[g, InfraShell[13, {1, 2}]] } ],
+      { RandomInfraRepresentative[g, InfraShell[13, 2]], RandomInfraRepresentative[g, InfraShell[13, {1, 2}]] } ],
   True,
   TestID -> "FindInfraShell-is-the-level-set"
 ]
