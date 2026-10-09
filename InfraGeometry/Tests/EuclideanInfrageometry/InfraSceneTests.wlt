@@ -138,7 +138,7 @@ VerificationTest[
   },
     With[{instances = FindInfraScene[scene, g]},
       Length[instances] >= 1 &&
-      AllTrue[instances, inst |-> IntegerQ[inst[[1]][c]]] && Length[instances] >= 3
+      AllTrue[instances, inst |-> ListQ[inst[[1]][c]] && Length[inst[[1]][c]] >= 3]
     ]
   ],
   True,
@@ -766,8 +766,8 @@ VerificationTest[
 VerificationTest[
   With[{g = TessellationGraph[{4, 4}, 2]},
     {c = First @ VertexList @ g},
-    Sort @ InfraIntersection[ g, RandomInfraRepresentative[g, InfraBall[c, 1], All], RandomInfraRepresentative[g, InfraBall[c, 2], All] ] ===
-      Sort @ RandomInfraRepresentative[g, InfraBall[c, 1], All]],
+    Sort @ InfraIntersection[ g, RandomInfraRepresentative[g, InfraBall[c, 1]], RandomInfraRepresentative[g, InfraBall[c, 2]] ] ===
+      Sort @ RandomInfraRepresentative[g, InfraBall[c, 1]]],
   True,
   TestID -> "InfraIntersection-on-a-list-labelled-substrate"
 ]
@@ -780,7 +780,7 @@ VerificationTest[
     {scene = InfraScene[{p}, {p == InfraIntersection[InfraBall[c, 1], InfraBall[c, 2]]}]},
     {instances = FindInfraScene[scene, g]},
     AllTrue[instances, VertexQ[g, InfraSceneInstance[#, p]] &] &&
-      Sort[InfraSceneInstance[#, p] & /@ instances] === Sort @ RandomInfraRepresentative[g, InfraBall[c, 1], All]],
+      Sort[InfraSceneInstance[#, p] & /@ instances] === Sort @ RandomInfraRepresentative[g, InfraBall[c, 1]]],
   True,
   TestID -> "InfraScene-intersection-binds-substrate-vertices"
 ]
@@ -791,8 +791,8 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     {scene = InfraScene[{ba, bb, m}, {ba == InfraBall[7, 1], bb == InfraBall[9, 1], m == InfraUnion[ba, bb]}]},
-    Union[InfraSceneInstance[#, m] & /@ FindInfraScene[scene, g]] ===
-      Union[RandomInfraRepresentative[g, InfraBall[7, 1], All], RandomInfraRepresentative[g, InfraBall[9, 1], All]]],
+    Sort[InfraSceneInstance[#, m] & /@ FindInfraScene[scene, g]] ===
+      Union[RandomInfraRepresentative[g, InfraBall[7, 1]], RandomInfraRepresentative[g, InfraBall[9, 1]]]],
   True,
   TestID -> "InfraScene-union-token-binds-every-vertex-of-either"
 ]

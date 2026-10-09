@@ -92,7 +92,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[{5, 5}] },
     { RandomInfraRepresentative[g, InfraBall[13, 1], All], RandomInfraRepresentative[g, InfraBall[13, 1], UpTo[3]],
-      RandomInfraRepresentative[g, InfraBall[13, 1], 2], RandomInfraRepresentative[g, InfraBall[13, 1], "RandomChoice"] } ],
+      RandomInfraRepresentative[g, InfraBall[13, 1], 2], RandomInfraRepresentative[g, InfraBall[13, 1]] } ],
   { {{8, 12, 13, 14, 18}}, {{8, 12, 13, 14, 18}}, {}, {8, 12, 13, 14, 18} },
   TestID -> "InfraBall-one-member-under-every-count"
 ]

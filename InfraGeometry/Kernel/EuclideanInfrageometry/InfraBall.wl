@@ -46,10 +46,10 @@ RandomInfraRepresentative[ graph_Graph, ball : InfraBall[ _, _ ],
     ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   With[ { members = Keys @ InfraMeasurement[ graph, ball, "VertexDensity" ],
           nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
-    { ordered = Sort @ members },
+    { ordered = { members } },
     Which[
-      count === Automatic, If[ ordered === { }, { }, If[ nextFn === Identity, First @ ordered, RandomChoice @ ordered ] ],
-      count === All,       members,
+      count === Automatic, members,
+      count === All,       ordered,
       nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
       IntegerQ @ count && Length @ ordered < count, { },
       True, RandomSample[ ordered, count ] ] ]
