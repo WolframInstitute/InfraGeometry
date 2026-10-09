@@ -192,7 +192,7 @@ VerificationTest[
 (* the one exception: a density carries mass, so it is an Association and not a
    HighlightGraph argument -- Keys is the step down to the set that is *)
 VerificationTest[
-  With[ { m = FindInfraMidpoint[ GridGraph[ { 4, 4 } ], 1, 16 ] },
+  With[ { m = InfraMeasurement[ GridGraph[ { 4, 4 } ], InfraSegment[ 1, 16 ], "Midpoint" ] },
     { AssociationQ @ m, GraphQ @ HighlightGraph[ GridGraph[ { 4, 4 } ], Keys @ m ] } ],
   { True, True },
   TestID -> "guard-rail-density-is-the-exception"

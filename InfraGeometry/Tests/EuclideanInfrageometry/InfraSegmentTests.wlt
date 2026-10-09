@@ -271,4 +271,28 @@ VerificationTest[
   TestID -> "RandomInfraSegment-same-point"
 ]
 
+VerificationTest[
+  InfraMeasurement[ PathGraph[ Range[ 7 ] ], InfraSegment[ 1, 7 ], "Midpoint" ],
+  <| 4 -> 1 |>,
+  TestID -> "Midpoint-path"
+]
+
+VerificationTest[
+  InfraMeasurement[ GridGraph[ { 5, 5 } ], InfraSegment[ 1, 25 ], "Midpoint" ],
+  <| 5 -> 1, 9 -> 16, 13 -> 36, 17 -> 16, 21 -> 1 |>,
+  TestID -> "Midpoint-grid"
+]
+
+VerificationTest[
+  InfraMeasurement[ CycleGraph[ 8 ], InfraSegment[ 1, 5 ], "Midpoint" ],
+  <| 3 -> 1, 7 -> 1 |>,
+  TestID -> "Midpoint-cycle"
+]
+
+VerificationTest[
+  InfraMeasurement[ PathGraph[ Range[ 5 ] ], InfraSegment[ 2, 2 ], "Midpoint" ],
+  <| 2 -> 1 |>,
+  TestID -> "Midpoint-degenerate"
+]
+
 EndTestSection[]

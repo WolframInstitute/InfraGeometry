@@ -21,6 +21,16 @@ InfraMeasurement[ graph_Graph,
         interval ] ] ]
 
 InfraMeasurement[ graph_Graph,
+    segment : InfraSegment[ Except[ _Rule | _RuleDelayed ], Except[ _Rule | _RuleDelayed ] ], "Midpoint" ] :=
+  With[ { dag = InfraMeasurement[ graph, segment, "Graph" ] },
+    { density = InfraMeasurement[ graph, segment, "VertexDensity" ] },
+    { sources = Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ] },
+    { layers = AssociationMap[ v |-> Min[ GraphDistance[ dag, #, v ] & /@ sources ], VertexList @ dag ] },
+    { offsets = Abs[ 2 layers - Max[ 0, Values @ layers ] ] },
+    If[ VertexCount @ dag == 0, <| |>,
+      KeySort @ KeyTake[ density, Keys @ Select[ offsets, # == Min @ offsets & ] ] ] ]
+
+InfraMeasurement[ graph_Graph,
     InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ], "Graph" ] :=
   InfraMeasurement[ graph, InfraSegment @@ #, "Graph" ] & /@ Partition[ { pts }, 2, 1 ]
 

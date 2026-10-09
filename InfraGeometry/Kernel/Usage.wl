@@ -2,8 +2,6 @@ Package["WolframInstitute`InfraGeometry`"]
 
 InfraPoint::usage = "InfraPoint is the scene-language token for a point. InfraPoint[] draws from the whole vertex list, InfraPoint[v] names one vertex. It is not a wrapper: a point IS a vertex of the substrate, carrying its label verbatim.";
 RandomInfraPoint::usage = "RandomInfraPoint[graph, reg, n] draws n distinct vertices of the region reg, a vertex List, a density or a symbolic region such as InfraBall; with no reg, of graph; with no n, one vertex. Options \"PairwiseDistance\", \"MaxCliques\".";
-FindInfraMidpoint::usage = "FindInfraMidpoint[graph, p1, p2] gives the density <|v -> m, ...|> of the middle vertices of every geodesic from p1 to p2 (one vertex at even distance, two at odd). Option Method.";
-FindInfraGoldenSection::usage = "FindInfraGoldenSection[graph, p1, p2] gives the density <|v -> m, ...|> at the golden-ratio index along every geodesic from p1 to p2. Option Method.";
 FindInfraReflection::usage = "FindInfraReflection[graph, x, a] gives the reflections x' of x through a: the vertices with B(x, a, x') and d(a, x) == d(a, x').";
 FindInfraCommonPoint::usage = "FindInfraCommonPoint[graph, lines] gives the points lying on every listed line.";
 FindClosestInfraPoint::usage = "FindClosestInfraPoint[graph, line, point] gives the vertices of line at minimum graph distance from point.";

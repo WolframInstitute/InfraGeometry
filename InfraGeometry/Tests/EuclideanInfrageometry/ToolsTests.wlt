@@ -185,8 +185,8 @@ VerificationTest[
    the endpoints are a set-level fact (every geodesic of the family shares them),
    the midpoint a genuine density *)
 VerificationTest[
-  With[ { g = GridGraph[ { 3, 3 } ], s = FindInfraSegment[ GridGraph[ { 3, 3 } ], 1, 9, All ] },
-    { Union[ First /@ s ], Union[ Last /@ s ], FindInfraMidpoint[ g, s ] } ],
+  With[ { g = GridGraph[ { 3, 3 } ], s = RandomInfraSegment[ GridGraph[ { 3, 3 } ], 1, 9, All ] },
+    { Union[ First /@ s ], Union[ Last /@ s ], InfraMeasurement[ g, InfraSegment[ 1, 9 ], "Midpoint" ] } ],
   { { 1 }, { 9 }, <| 3 -> 1, 5 -> 4, 7 -> 1 |> },
   TestID -> "Measure-constructed-at-projection"
 ]
@@ -230,10 +230,9 @@ VerificationTest[
 (* both parities of d(1, t) *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    FindInfraMidpoint[ g, InfraMeasurement[ g, InfraSegment[ 1, # ], "Graph" ] ] === FindInfraMidpoint[ g, 1, # ] & /@
-      { 16, 12 } ],
-  { True, True },
-  TestID -> "DAG-midpoint-equals-enumeration"
+    Keys @ InfraMeasurement[ g, InfraSegment[ 1, # ], "Midpoint" ] & /@ { 16, 12 } ],
+  { { 4, 7, 10, 13 }, { 3, 4, 6, 7, 9, 10 } },
+  TestID -> "Midpoint-both-parities"
 ]
 
 EndTestSection[]

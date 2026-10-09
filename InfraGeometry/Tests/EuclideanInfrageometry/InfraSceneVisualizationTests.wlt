@@ -327,7 +327,7 @@ VerificationTest[
          is its extent, not a per-vertex fade *)
       Union @ dotScales @ Options @ InfraSubstrateHighlight[ g, { InfraDensity[ g, FindInfraRepresentative[g, InfraBall[25, 2]] ] } ],
       (* a NON-uniform effective point draws its lightest vertex at the substrate's size and its heaviest at the top *)
-      MinMax @ dotScales @ Options @ InfraSubstrateHighlight[ g, { FindInfraMidpoint[ g, 1, 49 ] } ] } ],
+      MinMax @ dotScales @ Options @ InfraSubstrateHighlight[ g, { InfraMeasurement[ g, InfraSegment[ 1, 49 ], "Midpoint" ] } ] } ],
   { { 1 }, { 1, 3 } },
   TestID -> "InfraSubstrateHighlight-density-relative-mass"
 ]

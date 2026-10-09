@@ -84,7 +84,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    Sort @ RandomInfraPoint[ g, FindInfraMidpoint[ g, 1, 25 ], All ] ===
+    Sort @ RandomInfraPoint[ g, InfraMeasurement[ g, InfraSegment[ 1, 25 ], "Midpoint" ], All ] ===
       Select[ VertexList @ g, v |-> GraphDistance[ g, 1, v ] == 4 && GraphDistance[ g, v, 25 ] == 4 ] ],
   True,
   TestID -> "RandomInfraPoint-pool-density-support"

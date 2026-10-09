@@ -4,8 +4,6 @@ Package["WolframInstitute`InfraGeometry`"]
 
 PackageExport[InfraPoint]
 PackageExport[RandomInfraPoint]
-PackageExport[FindInfraMidpoint]
-PackageExport[FindInfraGoldenSection]
 PackageExport[FindInfraReflection]
 PackageExport[FindInfraCommonPoint]
 PackageExport[FindClosestInfraPoint]
