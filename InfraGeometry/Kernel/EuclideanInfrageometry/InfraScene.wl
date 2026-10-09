@@ -100,7 +100,7 @@ dispatchConstruction[ graph_Graph, fam_Association ] /;
 dispatchConstruction[ graph_Graph, token : Except[ _List | _Association ] ] :=
   With[ { opts = Cases[ token, _Rule ] },
     { head = DeleteCases[ token, ( "Select" | "Branches" ) -> _ ] },
-    { members = FindInfraRepresentative[ graph, head, All ] },
+    { members = RandomInfraRepresentative[ graph, head, All ] },
     If[ ListQ @ members,
       capBranches[
         applySelectOption[ graph, members, Lookup[ opts, "Select", None ],

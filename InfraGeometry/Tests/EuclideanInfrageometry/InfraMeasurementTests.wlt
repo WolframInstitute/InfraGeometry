@@ -6,7 +6,7 @@ BeginTestSection["InfraMeasurement"]
 VerificationTest[
   With[{g = GridGraph[{3, 3}]},
     {InfraMeasurement[g, InfraSegment[1, 9], "Cardinality"],
-     Length[FindInfraRepresentative[g, InfraSegment[1, 9], All]],
+     Length[RandomInfraRepresentative[g, InfraSegment[1, 9], All]],
      Length[FindPath[g, 1, 9, {4}, All]]}],
   {6, 6, 6},
   TestID -> "InfraMeasurement-Cardinality-counts-the-members"
@@ -16,7 +16,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
     InfraMeasurement[g, InfraSegment[1, 16], "VertexDensity"] ===
-      KeySort[Counts[Catenate[FindInfraRepresentative[g, InfraSegment[1, 16], All]]]]],
+      KeySort[Counts[Catenate[RandomInfraRepresentative[g, InfraSegment[1, 16], All]]]]],
   True,
   TestID -> "InfraMeasurement-VertexDensity-is-the-occupation"
 ]
@@ -24,7 +24,7 @@ VerificationTest[
 (* the edge density counts the members through each arrow *)
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    {members = FindInfraRepresentative[g, InfraSegment[1, 16], All]},
+    {members = RandomInfraRepresentative[g, InfraSegment[1, 16], All]},
     InfraMeasurement[g, InfraSegment[1, 16], "EdgeDensity"] ===
       KeySort[Counts[Catenate[Apply[DirectedEdge, Partition[#, 2, 1], {1}] & /@ members]]]],
   True,
@@ -125,66 +125,68 @@ VerificationTest[
   TestID -> "InfraMeasurement-list-of-heads"
 ]
 
-(* ===== FindInfraRepresentative: the count contract ===== *)
+(* ===== RandomInfraRepresentative: the count contract ===== *)
 
-(* count-less is one member, a bounded count a List of them, All the whole family in lexicographic order *)
+(* the default draw changes with the random state, and a seed makes it reproducible *)
 VerificationTest[
-  With[{g = GridGraph[{3, 3}]}, {obj = InfraSegment[1, 9]},
-    {FindInfraRepresentative[g, obj] === First[Sort[FindPath[g, 1, 9, {4}, All]]],
-     Length[FindInfraRepresentative[g, obj, 3]] === 3,
-     Length[FindInfraRepresentative[g, obj, UpTo[100]]] === 6,
-     FindInfraRepresentative[g, obj, All] === Sort[FindPath[g, 1, 9, {4}, All]]}],
-  {True, True, True, True},
-  TestID -> "FindInfraRepresentative-count-contract"
+  With[{g = GridGraph[{3, 3}], obj = InfraSegment[1, 9]},
+    With[{draws = BlockRandom[Table[RandomInfraRepresentative[g, obj], {10}], RandomSeeding -> 1]},
+      {draws === BlockRandom[Table[RandomInfraRepresentative[g, obj], {10}], RandomSeeding -> 1],
+       Length[DeleteDuplicates[draws]] > 1}]],
+  {True, True},
+  TestID -> "RandomInfraRepresentative-default-draw-is-random-and-seeded"
 ]
 
-(* a strict count larger than the family has no answer *)
+(* a finite draw contains distinct members, and UpTo exhausts a smaller class *)
 VerificationTest[
-  FindInfraRepresentative[CycleGraph[6], InfraSegment[1, 4], 5],
+  With[{g = GridGraph[{3, 3}], obj = InfraSegment[1, 9]},
+    {members = BlockRandom[RandomInfraRepresentative[g, obj, 3], RandomSeeding -> 9],
+     upTo = BlockRandom[RandomInfraRepresentative[g, obj, UpTo[100]], RandomSeeding -> 9]},
+    {Length[members], DuplicateFreeQ[members], AllTrue[members, InfraMemberQ[g, obj, #] &],
+     Length[upTo], DuplicateFreeQ[upTo], Sort[upTo] === Sort[FindPath[g, 1, 9, {4}, All]]}],
+  {3, True, True, 6, True, True},
+  TestID -> "RandomInfraRepresentative-counts-are-distinct-and-UpTo-exhausts"
+]
+
+(* All keeps the enumeration order; Identity keeps the old first member *)
+VerificationTest[
+  With[{g = GridGraph[{3, 3}], obj = InfraSegment[1, 9]},
+    {paths = RandomInfraRepresentative[g, obj, All]},
+    {paths === Sort[FindPath[g, 1, 9, {4}, All]],
+     RandomInfraRepresentative[g, obj, All, "NextVertexFunction" -> Identity] === paths,
+     RandomInfraRepresentative[g, obj, "NextVertexFunction" -> Identity] === First[paths]}],
+  {True, True, True},
+  TestID -> "RandomInfraRepresentative-All-and-Identity-are-deterministic"
+]
+
+(* strict counts return no result when there are too few members *)
+VerificationTest[
+  RandomInfraRepresentative[CycleGraph[6], InfraSegment[1, 4], 3],
   { },
-  TestID -> "FindInfraRepresentative-strict-shortfall"
+  TestID -> "RandomInfraRepresentative-strict-shortfall"
 ]
 
 (* an empty family gives the empty shape *)
 VerificationTest[
   With[{g = Graph[{1, 2}, {}]},
-    {FindInfraRepresentative[g, InfraSegment[1, 2]], FindInfraRepresentative[g, InfraSegment[1, 2], All],
+    {RandomInfraRepresentative[g, InfraSegment[1, 2]], RandomInfraRepresentative[g, InfraSegment[1, 2], All],
      InfraMeasurement[g, InfraSegment[1, 2], "Cardinality"]}],
   {{}, {}, 0},
-  TestID -> "FindInfraRepresentative-empty-family"
+  TestID -> "RandomInfraRepresentative-empty-family"
 ]
 
 (* a vertex is its own segment *)
 VerificationTest[
-  FindInfraRepresentative[GridGraph[{3, 3}], InfraSegment[5, 5], All],
+  RandomInfraRepresentative[GridGraph[{3, 3}], InfraSegment[5, 5], All],
   {{5}},
-  TestID -> "FindInfraRepresentative-degenerate-segment"
-]
-
-(* "RandomChoice" draws every member with probability 1 / N: 3000 draws of a family of 6 *)
-VerificationTest[
-  With[{g = GridGraph[{3, 3}]},
-    {counts = (SeedRandom[42]; Values[Counts[FindInfraRepresentative[g, InfraSegment[1, 9], 3000, "RandomChoice"]]])},
-    Length[counts] === 6 && Min[counts] > 400 && Max[counts] < 600],
-  True,
-  TestID -> "FindInfraRepresentative-RandomChoice-is-uniform-on-members"
-]
-
-(* "Pruning" thins the enumeration: what comes back is still a set of members *)
-VerificationTest[
-  With[{g = GridGraph[{4, 4}]},
-    {all = FindInfraRepresentative[g, InfraSegment[1, 16], All],
-     pruned = (SeedRandom[7]; FindInfraRepresentative[g, InfraSegment[1, 16], All, "Pruning" -> 0.3])},
-    SubsetQ[all, pruned] && Length[pruned] < Length[all]],
-  True,
-  TestID -> "FindInfraRepresentative-Pruning-thins-the-enumeration"
+  TestID -> "RandomInfraRepresentative-degenerate-segment"
 ]
 
 (* ===== InfraMemberQ ===== *)
 
 VerificationTest[
   With[{g = GridGraph[{3, 3}]}, {obj = InfraSegment[1, 9]},
-    {AllTrue[FindInfraRepresentative[g, obj, All], InfraMemberQ[g, obj, #] &],
+    {AllTrue[RandomInfraRepresentative[g, obj, All], InfraMemberQ[g, obj, #] &],
      InfraMemberQ[g, obj, {1, 2, 5}],
      InfraMemberQ[g, obj, {1, 2, 3, 6, 5, 8, 9}]}],
   {True, False, False},
@@ -207,7 +209,7 @@ VerificationTest[
 VerificationTest[
   With[{g = Graph[Map[{Quotient[# - 1, 3] + 1, Mod[# - 1, 3] + 1} &, EdgeList[GridGraph[{3, 3}]], {2}]]},
     {obj = InfraSegment[{1, 1}, {3, 3}]},
-    {InfraMeasurement[g, obj, "Cardinality"], Length[FindInfraRepresentative[g, obj, All]],
+    {InfraMeasurement[g, obj, "Cardinality"], Length[RandomInfraRepresentative[g, obj, All]],
      Lookup[InfraMeasurement[g, obj, "VertexDensity"], Key[{2, 2}]]}],
   {6, 6, 4},
   TestID -> "InfraMeasurement-list-valued-vertex-labels"
@@ -322,24 +324,24 @@ VerificationTest[
 (* a head without a graph is read by its search at the defaults *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
-    {FindInfraRepresentative[g, InfraShell[13, 2]] === FindInfraShell[g, 13, 2],
-     FindInfraRepresentative[g, InfraBall[13, 1], All] === {FindInfraRepresentative[g, InfraBall[13, 1]]},
-     FindInfraRepresentative[g, InfraPoint[13], All],
-     FindInfraRepresentative[g, InfraWalk[1, 2, 3]], FindInfraRepresentative[g, InfraWalk[1, 3], All],
-     Length @ FindInfraRepresentative[g, InfraShell[13, 2], 1, "RandomChoice"]}],
+    {RandomInfraRepresentative[g, InfraShell[13, 2], "NextVertexFunction" -> Identity] === First @ FindInfraShell[g, 13, 2],
+     MemberQ[RandomInfraRepresentative[g, InfraBall[13, 1], All], RandomInfraRepresentative[g, InfraBall[13, 1]]],
+     RandomInfraRepresentative[g, InfraPoint[13], All],
+     RandomInfraRepresentative[g, InfraWalk[1, 2, 3]], RandomInfraRepresentative[g, InfraWalk[1, 3], All],
+     Length @ RandomInfraRepresentative[g, InfraShell[13, 2], 1, "NextVertexFunction" -> RandomChoice]}],
   {True, True, {13}, {1, 2, 3}, {}, 1},
-  TestID -> "FindInfraRepresentative-token-heads-read-by-their-searches"
+  TestID -> "RandomInfraRepresentative-token-heads-read-by-their-searches"
 ]
 
 (* a scene circle reads its second argument as a radius, the head as a point *)
 VerificationTest[
   With[{g = GridGraph[{7, 7}]},
     {WolframInstitute`InfraGeometry`PackageScope`dispatchConstruction[g, InfraCircle[25, {2, 3}]] ===
-       FindInfraRepresentative[g, InfraCircle[25, {2, 3}], All],
+       RandomInfraRepresentative[g, InfraCircle[25, {2, 3}], All],
      WolframInstitute`InfraGeometry`PackageScope`dispatchConstruction[g, InfraCircle[25, {2, 3}, "Branches" -> 1]] ===
-       FindInfraRepresentative[g, InfraCircle[25, {2, 3}], UpTo[1]]}],
+       RandomInfraRepresentative[g, InfraCircle[25, {2, 3}], UpTo[1]]}],
   {True, True},
-  TestID -> "FindInfraRepresentative-scene-circle-is-by-radius"
+  TestID -> "RandomInfraRepresentative-scene-circle-is-by-radius"
 ]
 
 (* the circle and the closed arc carry the two measures through the support of their vertex density, like every head;

@@ -45,7 +45,7 @@ SegmentViewer[ g_Graph ] :=
       With[ {
           segments = If[ sel === None || p1 === p2 || GraphDistance[ g, p1, p2 ] === Infinity, {},
             Take[
-              applySelectOption[ g, FindInfraSegment[ g, p1, p2, All ],
+              applySelectOption[ g, RandomInfraSegment[ g, p1, p2, All ],
                 sel, False, <| "Endpoints" -> { p1, p2 } |> ],
               UpTo[ n ] ] ] },
         EventHandler[
@@ -81,7 +81,8 @@ ShellViewer[ g_Graph ] :=
       seed;
       With[ {
           shells = If[ r < 1, {},
-            FindInfraSphere[ g, p, r, UpTo[ n ], Properties -> properties ] ] },
+            FindInfraSphere[ g, p, r, UpTo[ n ], "NextVertexFunction" -> Identity,
+              Properties -> properties ] ] },
         EventHandler[
           HighlightGraph[
             InfraSubstrateHighlight[ g, { shells } ],
@@ -116,7 +117,7 @@ CircleViewer[ g_Graph ] :=
       With[ {
           circles = If[ sel === None || r < 1, {},
             Take[
-              applySelectOption[ g, FindInfraRepresentative[ g, InfraCircle[ p, r ], All ],
+              applySelectOption[ g, RandomInfraRepresentative[ g, InfraCircle[ p, r ], All ],
                 sel, True, <| "Center" -> p, "Radius" -> r |> ],
               UpTo[ n ] ] ] },
         EventHandler[

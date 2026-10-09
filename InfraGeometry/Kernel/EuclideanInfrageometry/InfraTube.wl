@@ -86,9 +86,18 @@ InfraMeasurement[ graph_Graph, tube : InfraTube[ _, _, ___Rule ], All ] :=
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
       "CountingMeasure", "RiemannianMeasure" } ]
 
-FindInfraRepresentative[ graph_Graph, tube : InfraTube[ _, _, ___Rule ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  takeRepresentatives[ { Keys @ InfraMeasurement[ graph, tube, "VertexDensity" ] }, count, mods ]
+RandomInfraRepresentative[ graph_Graph, tube : InfraTube[ _, _, ___Rule ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+  With[ { members = Keys @ InfraMeasurement[ graph, tube, "VertexDensity" ],
+          nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+    { ordered = Sort @ members },
+    Which[
+      count === Automatic, If[ ordered === { }, { }, If[ nextFn === Identity, First @ ordered, RandomChoice @ ordered ] ],
+      count === All,       members,
+      nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
+      IntegerQ @ count && Length @ ordered < count, { },
+      True, RandomSample[ ordered, count ] ] ]
 
 InfraMemberQ[ graph_Graph, tube : InfraTube[ _, _, ___Rule ], vs_List ] :=
   Union @ vs === Keys @ InfraMeasurement[ graph, tube, "VertexDensity" ]
@@ -101,9 +110,9 @@ InfraMeasurement[ graph_Graph, ( head : InfraCylinder | InfraCone | InfraSolidOf
     InfraTube[ axis, If[ head === InfraCone, i |-> profile ( i - 1 ), profile ], Method -> Lookup[ { opts }, Method, "Sliced" ] ],
     prop ]
 
-FindInfraRepresentative[ graph_Graph, ( head : InfraCylinder | InfraCone | InfraSolidOfRevolution )[ axis_, profile_, opts___Rule ],
+RandomInfraRepresentative[ graph_Graph, ( head : InfraCylinder | InfraCone | InfraSolidOfRevolution )[ axis_, profile_, opts___Rule ],
     args___ ] :=
-  FindInfraRepresentative[ graph,
+  RandomInfraRepresentative[ graph,
     InfraTube[ axis, If[ head === InfraCone, i |-> profile ( i - 1 ), profile ], Method -> Lookup[ { opts }, Method, "Sliced" ] ],
     args ]
 

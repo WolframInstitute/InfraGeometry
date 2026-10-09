@@ -426,10 +426,12 @@ InfraWalkCrossingQ[ graph_Graph, x : ( _Graph | _List ), at_, r_Integer ] /;
         SeparatesQ[ band, DeleteDuplicates[ Join @@ cutI ], vertexAt @ First @ exitsJ, vertexAt @ Last @ exitsJ ] ] },
     Length[ ps ] == 2 && crossQ @@ ps ]
 
-FindInfraRepresentative[ graph_Graph, InfraGeodesic[ germ_List, scale : ( _Integer | Infinity ) ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+RandomInfraRepresentative[ graph_Graph, InfraGeodesic[ germ_List, scale : ( _Integer | Infinity ) ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   With[ { walks = FindInfraGeodesic[ graph, germ, scale, Infinity, count,
-      Properties -> { "Simple" }, "Direction" -> "BothSides", Sequence @@ searchMethod[ mods ] ] },
+      Properties -> { "Simple" }, "Direction" -> "BothSides",
+      "NextVertexFunction" -> OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] ] },
     Replace[ walks, { w_Graph :> Last /@ VertexList @ w, l_List :> ( Last /@ VertexList @ # & ) /@ l } ] /; ! MatchQ[ walks, _FindInfraGeodesic ] ]
 
 (* the window graph of the scale-r geodesics through the germ, read forward: a vertex is a window, the last <= r vertices of a walk, and a
@@ -487,8 +489,16 @@ ConcatenateInfraWalk[ path1_, path2_,
       _UpTo, Take[ reps, count ],
       _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ]
 
-FindInfraRepresentative[ graph_Graph, InfraWalk[ vs__ ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  takeRepresentatives[
-    If[ Length[ { vs } ] >= 2 && AllTrue[ Partition[ { vs }, 2, 1 ], EdgeQ[ graph, UndirectedEdge @@ # ] & ], { { vs } }, { } ],
-    count, mods ]
+RandomInfraRepresentative[ graph_Graph, InfraWalk[ vs__ ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+  With[ { members = If[ Length[ { vs } ] >= 2 &&
+          AllTrue[ Partition[ { vs }, 2, 1 ], EdgeQ[ graph, UndirectedEdge @@ # ] & ], { { vs } }, { } ],
+          nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+    { ordered = Sort @ members },
+    Which[
+      count === Automatic, If[ ordered === { }, { }, If[ nextFn === Identity, First @ ordered, RandomChoice @ ordered ] ],
+      count === All,       members,
+      nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
+      IntegerQ @ count && Length @ ordered < count, { },
+      True, RandomSample[ ordered, count ] ] ]

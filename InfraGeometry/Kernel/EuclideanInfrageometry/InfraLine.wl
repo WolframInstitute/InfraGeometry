@@ -81,7 +81,7 @@ FindInfraLine[ graph_Graph, p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rul
         { found, seed } |-> If[ Length @ found >= cap, found,
           Join[ found,
             FindInfraLine[ graph, seed, If[ cap === Infinity, All, UpTo[ cap - Length @ found ] ] ] ] ],
-        { }, FindInfraSegment[ graph, p, q, If[ cap === Infinity, All, UpTo[ cap ] ] ] ] },
+        { }, RandomInfraSegment[ graph, p, q, If[ cap === Infinity, All, UpTo[ cap ] ] ] ] },
     Switch[ count,
       Automatic, First[ lines, { } ],
       All,       lines,
@@ -488,7 +488,15 @@ UniversalLineQ[ graph_Graph, { u_, v_ } ] :=
 UniversalLineQ[ graph_Graph ] :=
   AnyTrue[ Subsets[ VertexList @ graph, { 2 } ], UniversalLineQ[ graph, # ] & ]
 
-FindInfraRepresentative[ graph_Graph, InfraLine[ path_List ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  takeRepresentatives[ FindInfraLine[ graph, path, All ], count, mods ]
-
+RandomInfraRepresentative[ graph_Graph, InfraLine[ path_List ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+  With[ { members = FindInfraLine[ graph, path, All ],
+          nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+    { ordered = Sort @ members },
+    Which[
+      count === Automatic, If[ ordered === { }, { }, If[ nextFn === Identity, First @ ordered, RandomChoice @ ordered ] ],
+      count === All,       members,
+      nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
+      IntegerQ @ count && Length @ ordered < count, { },
+      True, RandomSample[ ordered, count ] ] ]

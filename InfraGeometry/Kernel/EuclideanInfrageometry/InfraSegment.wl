@@ -32,30 +32,74 @@ InfraMeasurement[ graph_Graph,
     InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ], "Length" ] :=
   Total[ GraphDistance[ graph, #1, #2 ] & @@@ Partition[ { pts }, 2, 1 ] ]
 
-(* the one witness of a closed polyline retraces none of its edges when some member does not, a polygon being a simple closed curve; otherwise it
-   is the first member *)
+RandomInfraRepresentative[ graph_Graph,
+    segment : InfraSegment[ p : Except[ _Rule | _RuleDelayed ], mid : Repeated[ Except[ _Rule | _RuleDelayed ], { 1, Infinity } ], p_ ],
+    Automatic, opts : OptionsPattern[ RandomInfraRepresentative ] ] /;
+    OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] === Identity :=
+  Replace[ edgeFreshChain[ graph, { p, mid, p } ],
+    { } :> First[ RandomInfraRepresentative[ graph, segment, UpTo[ 1 ], "NextVertexFunction" -> Identity ], { } ] ]
 
-FindInfraRepresentative[ graph_Graph,
-    segment : InfraSegment[ p : Except[ _Rule | _RuleDelayed ], mid : Repeated[ Except[ _Rule | _RuleDelayed ] ], p_ ],
-    Optional[ Automatic, Automatic ] ] :=
-  Replace[ edgeFreshChain[ graph, { p, mid, p } ], { } :> First[ FindInfraRepresentative[ graph, segment, UpTo[ 1 ] ], { } ] ]
-
-FindInfraRepresentative[ graph_Graph,
+RandomInfraRepresentative[ graph_Graph,
     InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
-    { pieces = FindInfraRepresentative[ graph, InfraSegment @@ #, If[ cap === Infinity, All, UpTo[ cap ] ], mods ] & /@
-        Partition[ { pts }, 2, 1 ] },
-    { members = Fold[ { as, bs } |-> Catenate @ Map[ a |-> ( Join[ a, Rest @ # ] & /@ bs ), as ],
-        First @ pieces, Rest @ pieces ] },
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+  With[ { sides = Partition[ { pts }, 2, 1 ],
+          nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+    { cardinality = Times @@ ( InfraMeasurement[ graph, InfraSegment @@ #, "Cardinality" ] & /@ sides ) },
+    { cap = Replace[ count, { Automatic -> 1, UpTo[ n_ ] :> n } ] },
+    { sampleOne = ignored |-> With[
+        { members = RandomInfraRepresentative[ graph, InfraSegment @@ #, Automatic,
+            "NextVertexFunction" -> nextFn ] & /@ sides },
+        If[ MemberQ[ members, { } ], { },
+          Fold[ Join[ #1, Rest @ #2 ] &, First @ members, Rest @ members ] ] ] },
+    { enumerate = ignored |-> With[
+        { pieces = RandomInfraRepresentative[ graph, InfraSegment @@ #, All,
+            "NextVertexFunction" -> nextFn ] & /@ sides },
+        Fold[ { as, bs } |-> Catenate @ Map[ a |-> ( Join[ a, Rest @ # ] & /@ bs ), as ],
+          First @ pieces, Rest @ pieces ] ] },
+    { members = Which[
+        count === Automatic, { sampleOne[ Null ] },
+        count === All, enumerate[ Null ],
+        nextFn === RandomChoice,
+          If[ cap > cardinality && ! MatchQ[ count, _UpTo ], { },
+            First @ NestWhile[
+              state |-> With[ { member = sampleOne[ Null ] },
+                If[ MemberQ[ First @ state, member ], state, { Append[ First @ state, member ], Last @ state + 1 } ] ],
+              { { }, 0 },
+              Last @ # < If[ MatchQ[ count, _UpTo ], Min[ cap, cardinality ], cap ] & ] ],
+        nextFn === Automatic,
+          Which[
+            cap > cardinality && ! MatchQ[ count, _UpTo ], { },
+            2 cap >= cardinality, RandomSample[ enumerate[ Null ], count ],
+            True,
+              First @ NestWhile[
+                state |-> With[ { member = sampleOne[ Null ] },
+                  If[ MemberQ[ First @ state, member ], state, { Append[ First @ state, member ], Last @ state + 1 } ] ],
+                { { }, 0 }, Last @ # < cap & ] ],
+        True, enumerate[ Null ] ] },
     Switch[ count,
       Automatic, First[ members, { } ],
       All,       members,
-      _UpTo,     Take[ members, count ],
+      _UpTo,     If[ nextFn === Automatic, members, Take[ members, count ] ],
       _,         If[ Length @ members < count, { }, Take[ members, count ] ] ] ]
 
-(* a member with no edge twice, or { } when there is none, as a 0-1 program: on side i a unit flow x through its interval DAG from p_i to p_(i+1),
-   which is one geodesic since the DAG is acyclic, and every edge of the graph carried by at most one side in either direction *)
+InfraMeasurement[ graph_Graph,
+    InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ], "VertexDensity" ] :=
+  With[ { pieces = InfraSegment @@@ Partition[ { pts }, 2, 1 ] },
+    { counts = InfraMeasurement[ graph, #, "Cardinality" ] & /@ pieces },
+    KeySort @ DeleteCases[ 0 ] @ Merge[
+      Append[
+        MapIndexed[ { piece, i } |-> ( Times @@ Delete[ counts, i ] ) InfraMeasurement[ graph, piece, "VertexDensity" ], pieces ],
+        - ( Times @@ counts ) Counts @ Take[ { pts }, { 2, -2 } ] ],
+      Total ] ]
+
+InfraMeasurement[ graph_Graph,
+    InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ], "EdgeDensity" ] :=
+  With[ { pieces = InfraSegment @@@ Partition[ { pts }, 2, 1 ] },
+    { counts = InfraMeasurement[ graph, #, "Cardinality" ] & /@ pieces },
+    KeySort @ DeleteCases[ 0 ] @ Merge[
+      MapIndexed[ { piece, i } |-> ( Times @@ Delete[ counts, i ] ) InfraMeasurement[ graph, piece, "EdgeDensity" ], pieces ],
+      Total ] ]
 
 edgeFreshChain[ graph_Graph, corners_List ] :=
   With[ { sides = Partition[ corners, 2, 1 ] },
@@ -80,24 +124,6 @@ edgeFreshChain[ graph_Graph, corners_List ] :=
           MapIndexed[ { side, i } |-> If[ SameQ @@ side, { First @ side }, TopologicalSort @ Graph[ Cases[ chosen, { First @ i, arc_ } :> arc ] ] ],
             sides ] ] ] ] ]
 
-InfraMeasurement[ graph_Graph,
-    InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ], "VertexDensity" ] :=
-  With[ { pieces = InfraSegment @@@ Partition[ { pts }, 2, 1 ] },
-    { counts = InfraMeasurement[ graph, #, "Cardinality" ] & /@ pieces },
-    KeySort @ DeleteCases[ 0 ] @ Merge[
-      Append[
-        MapIndexed[ { piece, i } |-> ( Times @@ Delete[ counts, i ] ) InfraMeasurement[ graph, piece, "VertexDensity" ], pieces ],
-        - ( Times @@ counts ) Counts @ Take[ { pts }, { 2, -2 } ] ],
-      Total ] ]
-
-InfraMeasurement[ graph_Graph,
-    InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ], "EdgeDensity" ] :=
-  With[ { pieces = InfraSegment @@@ Partition[ { pts }, 2, 1 ] },
-    { counts = InfraMeasurement[ graph, #, "Cardinality" ] & /@ pieces },
-    KeySort @ DeleteCases[ 0 ] @ Merge[
-      MapIndexed[ { piece, i } |-> ( Times @@ Delete[ counts, i ] ) InfraMeasurement[ graph, piece, "EdgeDensity" ], pieces ],
-      Total ] ]
-
 (* the knots cut the path at prescribed positions: every chain of the piece p_i -> p_(i+1) has length d(p_i, p_(i+1)) *)
 
 InfraMemberQ[ graph_Graph,
@@ -111,19 +137,9 @@ InfraMemberQ[ graph_Graph,
 (* a geodesic (p = v0, v1, ..., vk = q) with k = d(p, q), as a vertex list -- the substrate searched directly by FindPath, independently of the
    interval DAG.  The count-less call is one geodesic, a bounded count a List of them, All the whole class *)
 
-FindInfraSegment[ graph_Graph, p_, q_,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic ] :=
-  With[ { d = GraphDistance[ graph, p, q ],
-          cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
-    { geodesics = Which[
-        d === Infinity, { },
-        d === 0,        { { p } },
-        True,           FindPath[ graph, p, q, { d }, Replace[ cap, Infinity -> All ] ] ] },
-    Switch[ count,
-      Automatic, First[ geodesics, { } ],
-      All,       geodesics,
-      _UpTo,     Take[ geodesics, count ],
-      _,         If[ Length @ geodesics < count, { }, Take[ geodesics, count ] ] ] ]
+RandomInfraSegment[ graph_Graph, p_, q_,
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[ RandomInfraRepresentative ] ] :=
+  RandomInfraRepresentative[ graph, InfraSegment[ p, q ], count, opts ]
 
 InfraWalkQ[ graph_Graph, ws : { __Graph } ] :=
   AllTrue[ ws, InfraWalkQ[ graph, # ] & ]

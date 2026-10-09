@@ -2,9 +2,6 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraMeasurement *)
 
-PackageScope[ takeRepresentatives ]
-PackageScope[ searchMethod ]
-
 InfraMeasurement[ graph_Graph, objs : { __ }, spec_ ] :=
   InfraMeasurement[ graph, #, spec ] & /@ objs
 
@@ -153,15 +150,17 @@ InfraMeasurement[ graph_Graph, obj : Except[ _List ], "RiemannianMeasure" ] :=
     { inside = AssociationThread[ support, True ] },
     Count[ support, v_ /; AllTrue[ AdjacencyList[ graph, v ], TrueQ @ Lookup[ inside, Key @ # ] & ] ] ]
 
-FindInfraRepresentative[ graph_Graph,
+Options[ RandomInfraRepresentative ] = { "NextVertexFunction" -> Automatic }
+
+RandomInfraRepresentative[ graph_Graph,
     obj : ( InfraSegment | InfraRay | InfraLine )[ Except[ _Rule | _RuleDelayed ], Except[ _Rule | _RuleDelayed ] ] |
       InfraArc[ _, Except[ { p_, p_ }, { _, _ } ], ___Rule ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   With[ {
-      cap     = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
-      prune   = Lookup[ Association @ Cases[ { mods }, _Rule ], "Pruning", 0 ],
-      randomQ = MemberQ[ { mods }, "RandomChoice" ],
-      dags    = Select[ Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ], VertexCount[ # ] > 0 & ] },
+      cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
+      nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ],
+      dags = Select[ Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ], VertexCount[ # ] > 0 & ] },
     { engines = Map[
         dag |-> With[ { out = GroupBy[ List @@@ EdgeList @ dag, First -> Last ] },
           { beta = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ out, Key @ w, { } ],
@@ -175,25 +174,55 @@ FindInfraRepresentative[ graph_Graph,
             Append[ path, RandomChoice[ Lookup[ beta, Key /@ nexts ] -> nexts ] ] ],
           { RandomChoice[ Lookup[ beta, Key /@ sources ] -> sources ] },
           path |-> Lookup[ out, Key @ Last @ path, { } ] =!= { } ] },
-    { members = If[ randomQ && cap < Infinity && engines =!= { },
-        Table[ draw @@ RandomChoice[ ( Total @ Lookup[ #[[ 2 ]], Key /@ #[[ 3 ]] ] & /@ engines ) -> engines ], cap ],
-        Catenate @ Last @ Reap @ Fold[
+    { randomDraw = If[ engines === { }, { },
+        With[ { weights = Total @ Lookup[ #[[ 2 ]], Key /@ #[[ 3 ]] ] & /@ engines },
+          draw @@ RandomChoice[ weights -> engines ] ] ] },
+    { enumerate = limit |-> Catenate @ Last @ Reap @ Fold[
           { found, engine } |-> With[ { out = First @ engine },
             Last @ NestWhile[
               Apply[ { stack, got } |-> With[ { path = First @ stack },
                 { nexts = Sort @ Lookup[ out, Key @ Last @ path, { } ] },
+                { selected = If[ nexts === { } || nextFn === Automatic, nexts,
+                    Replace[ nextFn @ nexts,
+                      candidate_ /; MemberQ[ nexts, Verbatim @ candidate ] :> { candidate } ] ] },
                 If[ nexts === { },
                   ( Sow[ path ]; { Rest @ stack, got + 1 } ),
-                  { Join[ Append[ path, # ] & /@ If[ prune > 0, Select[ nexts, RandomReal[ ] >= prune & ], nexts ], Rest @ stack ],
+                  { Join[ Append[ path, # ] & /@ selected, Rest @ stack ],
                     got } ] ] ],
               { List /@ Last @ engine, found },
-              state |-> First @ state =!= { } && Last @ state < cap ] ],
-          0, engines ] ] },
+              state |-> First @ state =!= { } && Last @ state < limit ] ],
+          0, engines ] },
+    { randomWalk = ignored |-> First[ enumerate @ 1, { } ] },
+    { cardinality = Total @ ( Total @ Lookup[ #[[ 2 ]], Key /@ #[[ 3 ]] ] & /@ engines ) },
+    { members = Which[
+        count === Automatic && nextFn === Automatic,
+          { randomDraw },
+        nextFn === RandomChoice,
+          If[ cap > cardinality && ! MatchQ[ count, _UpTo ], { },
+            First @ NestWhile[
+              state |-> With[ { member = randomWalk[ Null ] },
+                If[ MemberQ[ First @ state, member ], state, { Append[ First @ state, member ], Last @ state + 1 } ] ],
+              { { }, 0 },
+              Last @ # < If[ MatchQ[ count, _UpTo ], Min[ cap, cardinality ], cap ] & ] ],
+        nextFn =!= Automatic,
+          enumerate @ cap,
+        count === All,
+          enumerate @ Infinity,
+        cap > cardinality && ! MatchQ[ count, _UpTo ],
+          { },
+        2 cap >= cardinality,
+          RandomSample[ enumerate @ Infinity, Replace[ count, UpTo[ n_ ] :> UpTo[ n ] ] ],
+        True,
+          First @ NestWhile[
+            state |-> With[ { member = randomDraw },
+              If[ MemberQ[ First @ state, member ], state, { Append[ First @ state, member ], Last @ state + 1 } ] ],
+            { { }, 0 },
+            Last @ # < cap & ] ] },
     Switch[ count,
       Automatic, First[ members, { } ],
       All,       members,
-      _UpTo,     Take[ members, count ],
-      _,         If[ Length @ members < count, { }, Take[ members, count ] ] ] ]
+      _UpTo,     If[ nextFn === Automatic, members, Take[ members, count ] ],
+      _,         If[ Length[ members ] < count, { }, Take[ members, count ] ] ] ]
 
 InfraMemberQ[ graph_Graph,
     obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] |
@@ -206,26 +235,6 @@ InfraMemberQ[ graph_Graph,
     dag |-> VertexQ[ dag, First @ path ] && VertexInDegree[ dag, First @ path ] == 0 &&
       VertexQ[ dag, Last @ path ] && VertexOutDegree[ dag, Last @ path ] == 0 &&
       AllTrue[ Partition[ path, 2, 1 ], EdgeQ[ dag, DirectedEdge @@ # ] & ] ]
-
-takeRepresentatives[ members_List, count_, mods___ ] :=
-  If[ MemberQ[ { mods }, "RandomChoice" ] && count =!= All && members =!= { },
-    Replace[ count, { Automatic :> RandomChoice @ members, UpTo[ n_ ] | n_ :> RandomChoice[ members, n ] } ],
-    Switch[ count,
-      Automatic, First[ members, { } ],
-      All,       members,
-      _UpTo,     Take[ members, count ],
-      _,         If[ Length @ members < count, { }, Take[ members, count ] ] ] ]
-
-takeRepresentatives[ member : Except[ _List ], ___ ] :=
-  member
-
-searchMethod[ mods___ ] :=
-  With[ { prune = Lookup[ Association @ Cases[ { mods }, _Rule ], "Pruning", 0 ] },
-    Which[
-      MemberQ[ { mods }, "RandomChoice" ], { "NextVertexFunction" -> RandomSample },
-      prune === 0 || prune === Infinity, { },
-      IntegerQ[ prune ], { "NextVertexFunction" -> ( RandomSample[ #, UpTo[ prune ] ] & ) },
-      True, { "NextVertexFunction" -> ( RandomSample[ #, UpTo[ Max[ 1, Round[ prune Length @ # ] ] ] ] & ) } ] ]
 
 InfraSubgraph[ graph_Graph, obj_ -> t_Integer ] :=
   Subgraph[ graph,

@@ -35,9 +35,19 @@ VerificationTest[
     {{GridGraph[{4, 4}], 1, 16}, {CycleGraph[6], 1, 4}, {HypercubeGraph[4], 1, 16},
      {PetersenGraph[], 1, 3}, {PathGraph[Range[7]], 2, 6}},
     Apply[{g, p, q} |->
-      Sort[FindInfraRepresentative[g, InfraSegment[p, q], All]] === Sort[FindPath[g, p, q, {GraphDistance[g, p, q]}, All]]]],
+      Sort[RandomInfraRepresentative[g, InfraSegment[p, q], All]] === Sort[FindPath[g, p, q, {GraphDistance[g, p, q]}, All]]]],
   True,
   TestID -> "InfraSegment-members-are-the-geodesics"
+]
+
+(* a segment draw is random by default and reproducible after resetting the random state *)
+VerificationTest[
+  With[{g = GridGraph[{3, 3}]},
+    With[{draws = BlockRandom[Table[RandomInfraSegment[g, 1, 9], {10}], RandomSeeding -> 1]},
+      {draws === BlockRandom[Table[RandomInfraSegment[g, 1, 9], {10}], RandomSeeding -> 1],
+       Length[DeleteDuplicates[draws]] > 1, InfraSegmentQ[g, First[draws]]}]],
+  {True, True, True},
+  TestID -> "RandomInfraSegment-default-draw-is-random-and-seeded"
 ]
 
 (* every vertex and every arrow of the DAG lies on a member *)
@@ -97,9 +107,9 @@ VerificationTest[
   With[{g = GridGraph[{3, 3}]}, {obj = InfraSegment[1, 5, 9]},
     {InfraMeasurement[g, obj, "Cardinality"] ===
        InfraMeasurement[g, InfraSegment[1, 5], "Cardinality"] InfraMeasurement[g, InfraSegment[5, 9], "Cardinality"],
-     Length[FindInfraRepresentative[g, obj, All]] === InfraMeasurement[g, obj, "Cardinality"],
+     Length[RandomInfraRepresentative[g, obj, All]] === InfraMeasurement[g, obj, "Cardinality"],
      InfraMeasurement[g, obj, "Length"] === GraphDistance[g, 1, 5] + GraphDistance[g, 5, 9],
-     AllTrue[FindInfraRepresentative[g, obj, All], Length[#] === InfraMeasurement[g, obj, "Length"] + 1 &]}],
+     AllTrue[RandomInfraRepresentative[g, obj, All], Length[#] === InfraMeasurement[g, obj, "Length"] + 1 &]}],
   {True, True, True, True},
   TestID -> "InfraSegment-polyline-members-concatenate-the-pieces"
 ]
@@ -108,7 +118,7 @@ VerificationTest[
    p, q, p retraces its one edge, and a union would carry both orientations of it *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}]},
-    {FindInfraRepresentative[g, InfraSegment[1, 2, 1], All], InfraMeasurement[g, InfraSegment[1, 2, 1], "Cardinality"]}],
+    {RandomInfraRepresentative[g, InfraSegment[1, 2, 1], All], InfraMeasurement[g, InfraSegment[1, 2, 1], "Cardinality"]}],
   {{{1, 2, 1}}, 1},
   TestID -> "InfraSegment-polyline-may-retrace-a-side"
 ]
@@ -116,7 +126,7 @@ VerificationTest[
 (* membership on a polyline cuts the path at the knots *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}]}, {obj = InfraSegment[1, 5, 9]},
-    {AllTrue[FindInfraRepresentative[g, obj, All], InfraMemberQ[g, obj, #] &],
+    {AllTrue[RandomInfraRepresentative[g, obj, All], InfraMemberQ[g, obj, #] &],
      InfraMemberQ[g, obj, {1, 2, 3, 6, 9}]}],
   {True, False},
   TestID -> "InfraSegment-polyline-membership"
@@ -126,7 +136,7 @@ VerificationTest[
    others, and a knot is visited once *)
 VerificationTest[
   With[{g = GridGraph[{6, 6}]}, {obj = InfraSegment[1, 16, 36]},
-    {members = FindInfraRepresentative[g, obj, All]},
+    {members = RandomInfraRepresentative[g, obj, All]},
     {InfraMeasurement[g, obj, "VertexDensity"] === KeySort @ Counts @ Catenate @ members,
      InfraMeasurement[g, obj, "EdgeDensity"] ===
        KeySort @ Counts @ Catenate[DirectedEdge @@@ Partition[#, 2, 1] & /@ members],
@@ -149,7 +159,7 @@ VerificationTest[
    closed walk through the corners *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}], obj = InfraSegment[1, 3, 9, 1]},
-    {members = FindInfraRepresentative[g, obj, All]},
+    {members = RandomInfraRepresentative[g, obj, All]},
     {Length[InfraMeasurement[g, obj, "Graph"]], InfraMeasurement[g, obj, "Cardinality"], InfraMeasurement[g, obj, "Length"],
      Length[members], AllTrue[members, First[#] === 1 && Last[#] === 1 && Length[#] === 9 &],
      AllTrue[members, SubsetQ[#, {1, 3, 9}] &], AllTrue[members, InfraMemberQ[g, obj, #] &]}],
@@ -161,7 +171,7 @@ VerificationTest[
    returns to is visited twice by every member *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}], obj = InfraSegment[1, 3, 9, 1]},
-    {members = FindInfraRepresentative[g, obj, All]},
+    {members = RandomInfraRepresentative[g, obj, All]},
     {InfraMeasurement[g, obj, "VertexDensity"] === KeySort @ Counts @ Catenate @ members,
      InfraMeasurement[g, obj, "EdgeDensity"] === KeySort @ Counts @ Catenate[DirectedEdge @@@ Partition[#, 2, 1] & /@ members],
      InfraMeasurement[g, obj, "VertexDensity"][1] === 2 InfraMeasurement[g, obj, "Cardinality"],
@@ -170,26 +180,26 @@ VerificationTest[
   TestID -> "InfraSegment-closed-polyline-density-counts-the-return"
 ]
 
-(* the one witness of a closed polyline retraces no edge when some member does not: on the 3x3 grid the triangle 1, 3, 9 closes along the far side
-   9, 8, 7, 4, 1 or through the centre 9, 8, 5, 4, 1, never back along 9, 6, 3, 2, 1; when every member retraces, as the closed side 1, 2, 1 must
-   and the two unique sides 1, 2 and 2, 1 of the 8x8 grid polygon 1, 64, 1, 2, 1 must, it is the first member *)
+(* a count-less closed-polyline draw is random, reproducible by seed, and remains a member *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}], obj = InfraSegment[1, 3, 9, 1]},
-    {w = FindInfraRepresentative[g, obj]},
-    {w === FindInfraRepresentative[g, obj, Automatic], InfraMemberQ[g, obj, w], DuplicateFreeQ[Sort /@ Partition[w, 2, 1]],
-     MemberQ[{{1, 2, 3, 6, 9, 8, 7, 4, 1}, {1, 2, 3, 6, 9, 8, 5, 4, 1}}, w], FindInfraRepresentative[g, obj, UpTo[1]]}],
-  {True, True, True, True, {{1, 2, 3, 6, 9, 6, 3, 2, 1}}},
-  TestID -> "InfraSegment-closed-polyline-witness-retraces-no-edge"
+    With[{draws = BlockRandom[Table[RandomInfraRepresentative[g, obj], {10}], RandomSeeding -> 1]},
+      {draws === BlockRandom[Table[RandomInfraRepresentative[g, obj], {10}], RandomSeeding -> 1],
+       Length[DeleteDuplicates[draws]] > 1, AllTrue[draws, InfraMemberQ[g, obj, #] &],
+       Length[RandomInfraRepresentative[g, obj, UpTo[1]]] === 1}]],
+  {True, True, True, True},
+  TestID -> "InfraSegment-closed-polyline-random-draw"
 ]
 
 VerificationTest[
-  {FindInfraRepresentative[GridGraph[{3, 3}], InfraSegment[1, 2, 1]],
-   With[{g = GridGraph[{8, 8}], obj = InfraSegment[1, 64, 1, 2, 1]},
-     FindInfraRepresentative[g, obj] === First[FindInfraRepresentative[g, obj, UpTo[1]]]],
-   With[{g = GridGraph[{20, 20}], obj = InfraSegment[1, 210, 400, 191, 1]},
-     {w = FindInfraRepresentative[g, obj]},
-     InfraMemberQ[g, obj, w] && DuplicateFreeQ[Sort /@ Partition[w, 2, 1]]]},
-  {{1, 2, 1}, True, True},
+  With[{g3 = GridGraph[{3, 3}]}, {g8 = GridGraph[{8, 8}]}, {obj8 = InfraSegment[1, 64, 1, 2, 1]},
+    {g20 = GridGraph[{20, 20}]}, {obj20 = InfraSegment[1, 210, 400, 191, 1]},
+    {w8 = BlockRandom[RandomInfraRepresentative[g8, obj8], RandomSeeding -> 12],
+     upTo = BlockRandom[RandomInfraRepresentative[g8, obj8, UpTo[1]], RandomSeeding -> 12],
+     w20 = RandomInfraRepresentative[g20, obj20]},
+    {RandomInfraRepresentative[g3, InfraSegment[1, 2, 1], "NextVertexFunction" -> Identity],
+     w8 === First[upTo], InfraMemberQ[g8, obj8, w8], InfraMemberQ[g20, obj20, w20]}],
+  {{1, 2, 1}, True, True, True},
   TestID -> "InfraSegment-closed-polyline-witness-fallback-and-scale"
 ]
 
@@ -197,10 +207,11 @@ VerificationTest[
    1, 16, 1, 16 has 20^4 members, and fifty of them come without forming the class *)
 VerificationTest[
   With[{g = GridGraph[{4, 4}], obj = InfraSegment[1, 16, 1, 16, 1]},
-    {members = FindInfraRepresentative[g, obj, 50]},
+    {members = RandomInfraRepresentative[g, obj, 50]},
     {InfraMeasurement[g, obj, "Cardinality"], Length[members], DuplicateFreeQ[members],
      AllTrue[members, InfraMemberQ[g, obj, #] &],
-     AllTrue[SeedRandom[1]; FindInfraRepresentative[g, obj, 5, "RandomChoice"], InfraMemberQ[g, obj, #] &]}],
+     AllTrue[BlockRandom[RandomInfraRepresentative[g, obj, 5, "NextVertexFunction" -> RandomChoice],
+       RandomSeeding -> 1], InfraMemberQ[g, obj, #] &]}],
   {160000, 50, True, True, True},
   TestID -> "InfraSegment-closed-polyline-bounded-count"
 ]
@@ -208,38 +219,38 @@ VerificationTest[
 (* the segment from a point back to itself is no polygon: the one-vertex walk *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}]},
-    {FindInfraRepresentative[g, InfraSegment[5, 5], All], InfraMeasurement[g, InfraSegment[5, 5], "VertexDensity"]}],
+    {RandomInfraRepresentative[g, InfraSegment[5, 5], All], InfraMeasurement[g, InfraSegment[5, 5], "VertexDensity"]}],
   {{{5}}, <|5 -> 1|>},
   TestID -> "InfraSegment-point-to-itself-is-not-a-polygon"
 ]
 
-(* ===== FindInfraSegment: the independent search ===== *)
+(* ===== RandomInfraSegment: the independent search ===== *)
 
 (* the search and the graph agree on the whole class *)
 VerificationTest[
   AllTrue[
     {{GridGraph[{4, 4}], 1, 16}, {CycleGraph[6], 1, 4}, {HypercubeGraph[4], 1, 16}, {PetersenGraph[], 1, 3}},
     Apply[{g, p, q} |->
-      Sort[FindInfraSegment[g, p, q, All]] === Sort[FindInfraRepresentative[g, InfraSegment[p, q], All]]]],
+      Sort[RandomInfraSegment[g, p, q, All]] === Sort[RandomInfraRepresentative[g, InfraSegment[p, q], All]]]],
   True,
-  TestID -> "FindInfraSegment-agrees-with-the-graph"
+  TestID -> "RandomInfraSegment-agrees-with-the-graph"
 ]
 
 (* the count contract: one geodesic, a List under a count, the class under All *)
 VerificationTest[
   With[{g = CycleGraph[6]},
-    {InfraSegmentQ[g, FindInfraSegment[g, 1, 4]],
-     Length[FindInfraSegment[g, 1, 4, 2]], Length[FindInfraSegment[g, 1, 4, UpTo[9]]],
-     FindInfraSegment[g, 1, 4, 5]}],
+    {InfraSegmentQ[g, RandomInfraSegment[g, 1, 4]],
+     Length[RandomInfraSegment[g, 1, 4, 2]], Length[RandomInfraSegment[g, 1, 4, UpTo[9]]],
+     RandomInfraSegment[g, 1, 4, 5]}],
   {True, 2, 2, { }},
-  TestID -> "FindInfraSegment-count-contract"
+  TestID -> "RandomInfraSegment-count-contract"
 ]
 
 (* unreachable endpoints have no geodesic *)
 VerificationTest[
-  With[{g = Graph[{1, 2}, {}]}, {FindInfraSegment[g, 1, 2], FindInfraSegment[g, 1, 2, All]}],
+  With[{g = Graph[{1, 2}, {}]}, {RandomInfraSegment[g, 1, 2], RandomInfraSegment[g, 1, 2, All]}],
   {{}, {}},
-  TestID -> "FindInfraSegment-disconnected-endpoints"
+  TestID -> "RandomInfraSegment-disconnected-endpoints"
 ]
 
 (* ===== the predicates ===== *)
@@ -255,9 +266,9 @@ VerificationTest[
 
 (* the segment from a point to itself is the one-vertex walk *)
 VerificationTest[
-  FindInfraSegment[GridGraph[{3, 3}], 5, 5, All],
+  RandomInfraSegment[GridGraph[{3, 3}], 5, 5, All],
   {{5}},
-  TestID -> "FindInfraSegment-same-point"
+  TestID -> "RandomInfraSegment-same-point"
 ]
 
 EndTestSection[]

@@ -106,9 +106,11 @@ InfraRegularPolygonQ[ graph_Graph, w_Graph, As_List ] :=
           { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] ],
     As ]
 
-FindInfraRepresentative[ graph_Graph, InfraPolygon[ As_List, n_Integer, opts___Rule ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+RandomInfraRepresentative[ graph_Graph, InfraPolygon[ As_List, n_Integer, opts___Rule ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   Replace[
     FindInfraRegularPolygon[ graph, As, n, count,
-      Sequence @@ searchMethod[ mods ], Sequence @@ FilterRules[ { opts }, Options[ FindInfraRegularPolygon ] ] ],
+      "NextVertexFunction" -> OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ],
+      Sequence @@ FilterRules[ { opts }, Options[ FindInfraRegularPolygon ] ] ],
     { legs : { __Graph } :> Most @ polylineToVertexSeq @ legs, polygons_List :> Most @* polylineToVertexSeq /@ polygons } ]

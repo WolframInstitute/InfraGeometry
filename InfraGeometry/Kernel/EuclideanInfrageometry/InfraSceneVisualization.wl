@@ -313,7 +313,7 @@ infraInk[ graph_Graph, x_ ] :=
       With[ {
           edges  = KeySort @ GroupBy[ Normal @ InfraMeasurement[ graph, x, "EdgeDensity" ],
             ( UndirectedEdge @@ Sort[ List @@ First @ # ] & ) -> Last, Total ],
-          member = If[ InfraMeasurement[ graph, x, "Cardinality" ] == 1, FindInfraRepresentative[ graph, x ], None ] },
+          member = If[ InfraMeasurement[ graph, x, "Cardinality" ] == 1, RandomInfraRepresentative[ graph, x ], None ] },
         <| "VertexDensity" -> If[ MatchQ[ x, InfraSegment[ p_, q__, p_ ] /; AnyTrue[ { q }, # =!= p & ] ],
                KeySort @ DeleteCases[ 0 ] @ Merge[
                  { InfraMeasurement[ graph, x, "VertexDensity" ], <| First @ x -> - InfraMeasurement[ graph, x, "Cardinality" ] |> },

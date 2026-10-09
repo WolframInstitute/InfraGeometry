@@ -41,6 +41,15 @@ InfraBallQ[ graph_Graph, vs_List ] :=
     ]
   ]
 
-FindInfraRepresentative[ graph_Graph, ball : InfraBall[ _, _ ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  takeRepresentatives[ { Keys @ InfraMeasurement[ graph, ball, "VertexDensity" ] }, count, mods ]
+RandomInfraRepresentative[ graph_Graph, ball : InfraBall[ _, _ ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+  With[ { members = Keys @ InfraMeasurement[ graph, ball, "VertexDensity" ],
+          nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+    { ordered = Sort @ members },
+    Which[
+      count === Automatic, If[ ordered === { }, { }, If[ nextFn === Identity, First @ ordered, RandomChoice @ ordered ] ],
+      count === All,       members,
+      nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
+      IntegerQ @ count && Length @ ordered < count, { },
+      True, RandomSample[ ordered, count ] ] ]

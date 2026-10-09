@@ -13,14 +13,14 @@ PackageExport[InfraReachableQ]
 
 PackageExport[InfraMeasurement]
 PackageExport[Undetermined]
-PackageExport[FindInfraRepresentative]
+PackageExport[RandomInfraRepresentative]
 PackageExport[InfraMemberQ]
 PackageExport[InfraSubgraph]
 
 PackageExport[InfraDensity]
 
 PackageExport[InfraSegment]
-PackageExport[FindInfraSegment]
+PackageExport[RandomInfraSegment]
 PackageExport[InfraWalkQ]
 PackageExport[InfraSegmentQ]
 PackageExport[UniqueInfraSegmentQ]

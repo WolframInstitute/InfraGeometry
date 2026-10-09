@@ -208,8 +208,9 @@ InfraCircleQ[ graph_Graph, cycle_List ] /; Length[ cycle ] >= 3 :=
 InfraCircleQ[ _Graph, cycle_List ] /; Length[ cycle ] < 3 :=
   False
 
-FindInfraRepresentative[ graph_Graph, InfraCircle[ center_, rs : ( _?NumericQ | { _?NumericQ, _?NumericQ } ) ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+RandomInfraRepresentative[ graph_Graph, InfraCircle[ center_, rs : ( _?NumericQ | { _?NumericQ, _?NumericQ } ) ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ] },
     { rmin = Max[ 1, First @ Flatten @ { rs } ], rmax = Last @ Flatten @ { rs } },
     { local = Subgraph[ graph, Select[ VertexList @ graph, Lookup[ dist, Key @ # ] <= rmax + 1 & ] ] },
@@ -221,4 +222,12 @@ FindInfraRepresentative[ graph_Graph, InfraCircle[ center_, rs : ( _?NumericQ | 
             If[ found =!= { }, Throw @ found ] ],
           Range[ 3, VertexCount @ bandGraph ] ],
         Null -> { } ] },
-    takeRepresentatives[ circles, count, mods ] ]
+    With[ { members = circles,
+            nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+      { ordered = Sort @ members },
+      Which[
+        count === Automatic, If[ ordered === { }, { }, If[ nextFn === Identity, First @ ordered, RandomChoice @ ordered ] ],
+        count === All,       members,
+        nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
+        IntegerQ @ count && Length @ ordered < count, { },
+        True, RandomSample[ ordered, count ] ] ] ]

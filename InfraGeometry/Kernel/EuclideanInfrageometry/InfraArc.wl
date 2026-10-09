@@ -168,8 +168,9 @@ InfraMemberQ[ graph_Graph, obj : InfraArc[ _, { p_, ___, p_ } | { _ }, ___Rule ]
 (* the closed arc's search is the sweep: the shortest cycles of the band through p that separate c from beyond it, then those through every
    point of the list *)
 
-FindInfraRepresentative[ graph_Graph, InfraArc[ center_, pts : ( { p_, ___, p_ } | { p_ } ), opts___Rule ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+RandomInfraRepresentative[ graph_Graph, InfraArc[ center_, pts : ( { p_, ___, p_ } | { p_ } ), opts___Rule ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ],
           delta = Replace[ Lookup[ { opts }, "RadiusDelta", 0 ], d : Except[ _List ] :> { 0, d } ] },
     { rmin = Max[ 1, Lookup[ dist, Key @ p ] - First @ delta ], rmax = Lookup[ dist, Key @ p ] + Last @ delta },
@@ -183,7 +184,15 @@ FindInfraRepresentative[ graph_Graph, InfraArc[ center_, pts : ( { p_, ___, p_ }
             If[ found =!= { }, Throw @ found ] ],
           Range[ 3, VertexCount @ bandGraph ] ],
         Null -> { } ] },
-    takeRepresentatives[ Select[ circles, SubsetQ[ #, pts ] & ], count, mods ] ]
+    With[ { members = Select[ circles, SubsetQ[ #, pts ] & ],
+            nextFn = OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ] },
+      { ordered = Sort @ members },
+      Which[
+        count === Automatic, If[ ordered === { }, { }, If[ nextFn === Identity, First @ ordered, RandomChoice @ ordered ] ],
+        count === All,       members,
+        nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
+        IntegerQ @ count && Length @ ordered < count, { },
+        True, RandomSample[ ordered, count ] ] ] ]
 
 InfraMeasurement[ graph_Graph, InfraArc[ center_, { p_, q_ } /; p =!= q, opts___Rule ], "Graph" ] :=
   With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ],
@@ -213,11 +222,12 @@ InfraMeasurement[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ },
 InfraMeasurement[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ }, { _, _, __ } ], opts___Rule ], "Length" ] :=
   Total @ ( InfraMeasurement[ graph, InfraArc[ center, #, opts ], "Length" ] & /@ Partition[ First /@ Split @ pts, 2, 1 ] )
 
-FindInfraRepresentative[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ }, { _, _, __ } ], opts___Rule ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
+RandomInfraRepresentative[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ }, { _, _, __ } ], opts___Rule ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
-    { pieces = FindInfraRepresentative[ graph, InfraArc[ center, #, opts ],
-        If[ cap === Infinity, All, UpTo[ cap ] ], mods ] & /@ Partition[ First /@ Split @ pts, 2, 1 ] },
+    { pieces = RandomInfraRepresentative[ graph, InfraArc[ center, #, opts ],
+        If[ cap === Infinity, All, UpTo[ cap ] ], samplerOpts ] & /@ Partition[ First /@ Split @ pts, 2, 1 ] },
     { members = Fold[ { as, bs } |-> Catenate @ Map[ a |-> ( Join[ a, Rest @ # ] & /@ bs ), as ],
         First @ pieces, Rest @ pieces ] },
     Switch[ count,

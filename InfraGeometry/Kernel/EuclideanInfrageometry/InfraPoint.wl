@@ -109,7 +109,7 @@ FindInfraMidpoint[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPattern[] 
   ]
 
 FindInfraMidpoint[ graph_Graph, p1_, p2 : Except[ _Rule | _RuleDelayed ], opts : OptionsPattern[] ] :=
-  FindInfraMidpoint[ graph, FindInfraSegment[ graph, p1, p2, All ], opts ]
+  FindInfraMidpoint[ graph, RandomInfraSegment[ graph, p1, p2, All ], opts ]
 
 Options[ FindInfraGoldenSection ] = { Method -> "Metric", "Tolerance" -> 0 }
 
@@ -171,7 +171,7 @@ FindInfraGoldenSection[ graph_Graph, x : ( _Graph | _List ), opts : OptionsPatte
   ]
 
 FindInfraGoldenSection[ graph_Graph, p1_, p2 : Except[ _Rule | _RuleDelayed ], opts : OptionsPattern[] ] :=
-  FindInfraGoldenSection[ graph, FindInfraSegment[ graph, p1, p2, All ], opts ]
+  FindInfraGoldenSection[ graph, RandomInfraSegment[ graph, p1, p2, All ], opts ]
 
 (* y with d(x, a) + d(a, y) = d(x, y) and d(a, y) = d(a, x) = r, i.e. d(x, y) = 2 r: the geodesic continuation of x past a at the same distance *)
 
@@ -235,10 +235,29 @@ FindClosestInfraPoint[ graph_Graph, line_, point_,
 InfraReachableQ[ graph_Graph, p1_, p2_ ] :=
   IntersectingQ[ VertexComponent[ graph, Keys @ InfraDensity[ graph, p1 ] ], Keys @ InfraDensity[ graph, p2 ] ]
 
-FindInfraRepresentative[ graph_Graph, InfraPoint[ ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  takeRepresentatives[ VertexList @ graph, count, mods ]
+RandomInfraRepresentative[ graph_Graph, InfraPoint[ ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+  With[ { members = VertexList @ graph,
+          nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+    { ordered = Sort @ members },
+    Which[
+      count === Automatic, If[ ordered === { }, { }, If[ nextFn === Identity, First @ ordered, RandomChoice @ ordered ] ],
+      count === All,       members,
+      nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
+      IntegerQ @ count && Length @ ordered < count, { },
+      True, RandomSample[ ordered, count ] ] ]
 
-FindInfraRepresentative[ graph_Graph, InfraPoint[ v_ ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] /; pointQ[ graph, v ] :=
-  takeRepresentatives[ { v }, count, mods ]
+RandomInfraRepresentative[ graph_Graph, InfraPoint[ v_ ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    pointQ[ graph, v ] &&
+      ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+  With[ { members = { v },
+          nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+    { ordered = Sort @ members },
+    Which[
+      count === Automatic, If[ ordered === { }, { }, If[ nextFn === Identity, First @ ordered, RandomChoice @ ordered ] ],
+      count === All,       members,
+      nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
+      IntegerQ @ count && Length @ ordered < count, { },
+      True, RandomSample[ ordered, count ] ] ]

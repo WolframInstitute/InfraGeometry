@@ -68,6 +68,8 @@ InfraMeasurement[ graph_Graph, sphere : InfraSphere[ _, _ ], All ] :=
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
       "CountingMeasure", "RiemannianMeasure" } ]
 
-FindInfraRepresentative[ graph_Graph, InfraSphere[ center_, r_ ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, mods___ ] :=
-  FindInfraSphere[ graph, center, r, count, Sequence @@ searchMethod[ mods ] ]
+RandomInfraRepresentative[ graph_Graph, InfraSphere[ center_, r_ ],
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+  FindInfraSphere[ graph, center, r, count,
+    "NextVertexFunction" -> OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] ]
