@@ -5,17 +5,20 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 (* the inclusion-minimal admissible subsets of the level surface { v : rmin <= d(c, v) <= rmax }, sorted vertex lists; the count-less call is one,
    a bounded count and All a List of them -- the level set itself under Properties -> {} *)
 
-Options[ FindInfraSphere ] = {
+Options[ RandomInfraSphere ] = {
   Properties           -> { "Separating", "Connected" },
-  "NextVertexFunction" -> Identity
+  "NextVertexFunction" -> Automatic
 }
 
-FindInfraSphere[ graph_Graph, p_, r_,
+RandomInfraSphere[ graph_Graph, p_, r_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraSphere, { opts }, Properties ] ] :=
+    SubsetQ[ { "Separating", "Connected" }, OptionValue[ RandomInfraSphere, { opts }, Properties ] ] &&
+    ( count =!= All || OptionValue[ RandomInfraSphere, { opts }, "NextVertexFunction" ] =!= RandomChoice ) :=
   With[ {
-      properties = OptionValue[ FindInfraSphere, { opts }, Properties ],
-      nextFn = OptionValue[ FindInfraSphere, { opts }, "NextVertexFunction" ],
+      properties = OptionValue[ RandomInfraSphere, { opts }, Properties ],
+      nextFn = If[ count === All &&
+          OptionValue[ RandomInfraSphere, { opts }, "NextVertexFunction" ] === Automatic,
+        Identity, OptionValue[ RandomInfraSphere, { opts }, "NextVertexFunction" ] ],
       range = Replace[ r, d_?NumericQ :> { d, d } ],
       radius = If[ NumericQ[ r ], r, Mean[ r ] ] },
     { cap = Replace[ count, { All | Infinity -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
@@ -32,7 +35,11 @@ FindInfraSphere[ graph_Graph, p_, r_,
                       AllTrue[ Complement[ VertexList[ rem ], centerComp ], GraphDistance[ localG, p0, # ] > radius & ] ] ),
                     "Connected"  -> ( t |-> t =!= { } && ConnectedGraphQ @ Subgraph[ localG, t ] ) }, { 1 } ] },
               { admissible = t |-> AllTrue[ tests, # @ t & ],
-                pick = cands |-> Replace[ nextFn @ cands, chosen_ /; MemberQ[ cands, Verbatim @ chosen ] :> { chosen } ] },
+                pick = cands |-> Which[
+                  cands === { } || nextFn === Identity, cands,
+                  nextFn === Automatic, RandomSample @ cands,
+                  True, Replace[ nextFn @ cands,
+                    chosen_ /; MemberQ[ cands, Verbatim @ chosen ] :> { chosen } ] ] },
               { descend = { self, state, T } |-> If[ Length @ First @ state >= cap || KeyExistsQ[ Last @ state, T ],
                   state,
                   With[ { marked = { First @ state, Append[ Last @ state, T -> True ] },
@@ -52,13 +59,13 @@ FindInfraSphere[ graph_Graph, p_, r_,
 (* the sphere family's densities are the sums of its members' indicators, read off the exhaustive search *)
 
 InfraMeasurement[ graph_Graph, InfraSphere[ center_, r_ ], "VertexDensity" ] :=
-  KeySort @ Merge[ AssociationThread[ #, 1 ] & /@ FindInfraSphere[ graph, center, r, All ], Total ]
+  KeySort @ Merge[ AssociationThread[ #, 1 ] & /@ RandomInfraSphere[ graph, center, r, All ], Total ]
 
 InfraMeasurement[ graph_Graph, InfraSphere[ center_, r_ ], "EdgeDensity" ] :=
-  KeySort @ Merge[ AssociationThread[ EdgeList @ Subgraph[ graph, # ], 1 ] & /@ FindInfraSphere[ graph, center, r, All ], Total ]
+  KeySort @ Merge[ AssociationThread[ EdgeList @ Subgraph[ graph, # ], 1 ] & /@ RandomInfraSphere[ graph, center, r, All ], Total ]
 
 InfraMeasurement[ graph_Graph, InfraSphere[ center_, r_ ], "Cardinality" ] :=
-  Length @ FindInfraSphere[ graph, center, r, All ]
+  Length @ RandomInfraSphere[ graph, center, r, All ]
 
 InfraMeasurement[ _Graph, InfraSphere[ _, _ ], "Faithful" ] :=
   Undetermined
@@ -71,5 +78,5 @@ InfraMeasurement[ graph_Graph, sphere : InfraSphere[ _, _ ], All ] :=
 RandomInfraRepresentative[ graph_Graph, InfraSphere[ center_, r_ ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
     ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
-  FindInfraSphere[ graph, center, r, count,
+  RandomInfraSphere[ graph, center, r, count,
     "NextVertexFunction" -> OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] ]

@@ -25,22 +25,34 @@ InfraMeasurement[ graph_Graph,
 (* a ray from p through q: a geodesic p ... q ... e with d(p, e) == d(p, q) + d(q, e) that no neighbour of e prolongs.  Found on the substrate
    directly, by prolonging a geodesic from p to q one outward step at a time, independently of the ray DAG *)
 
-FindInfraRay[ graph_Graph, p_, q_,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic ] :=
+Options[ RandomInfraRay ] = { "NextVertexFunction" -> Automatic }
+
+RandomInfraRay[ graph_Graph, p_, q_,
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    count =!= All || OptionValue[ RandomInfraRay, { opts }, "NextVertexFunction" ] =!= RandomChoice :=
   With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
-          dp  = AssociationThread[ VertexList @ graph, GraphDistance[ graph, p ] ] },
+          dp  = AssociationThread[ VertexList @ graph, GraphDistance[ graph, p ] ],
+          nextFn = If[ count === All &&
+              OptionValue[ RandomInfraRay, { opts }, "NextVertexFunction" ] === Automatic,
+            Identity, OptionValue[ RandomInfraRay, { opts }, "NextVertexFunction" ] ] },
     { k = Lookup[ dp, Key @ q ] },
     { rays = Catenate @ Last @ Reap @ NestWhile[
         Apply[ { stack, found } |-> With[ { path = First @ stack },
-          { nexts = Sort @ Select[ AdjacencyList[ graph, Last @ path ],
+          { candidates = Sort @ Select[ AdjacencyList[ graph, Last @ path ],
               Lookup[ dp, Key @ # ] == Lookup[ dp, Key @ Last @ path ] + 1 & ] },
+          { nexts = Which[
+              candidates === { } || nextFn === Identity, candidates,
+              nextFn === Automatic, RandomSample @ candidates,
+              True, Replace[ nextFn @ candidates,
+                selected_ /; MemberQ[ candidates, Verbatim @ selected ] :> { selected } ] ] },
           If[ nexts === { },
             ( Sow[ path ]; { Rest @ stack, found + 1 } ),
             { Join[ Append[ path, # ] & /@ nexts, Rest @ stack ], found } ] ] ],
         { Which[
             k === Infinity, { },
             k === 0,        { { p } },
-            True,           FindPath[ graph, p, q, { k }, Replace[ cap, Infinity -> All ] ] ],
+          True,           RandomInfraSegment[ graph, p, q,
+            If[ cap === Infinity, All, UpTo[ cap ] ], "NextVertexFunction" -> nextFn ] ],
           0 },
         state |-> First @ state =!= { } && Last @ state < cap ] },
     Switch[ count,
@@ -79,4 +91,3 @@ InfraRayQ[ graph_Graph, ray_List ] /; Length[ ray ] >= 2 :=
 
 InfraRayQ[ _Graph, ray_List ] /; Length[ ray ] < 2 :=
   False
-

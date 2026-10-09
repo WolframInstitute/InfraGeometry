@@ -49,7 +49,7 @@ VerificationTest[
     {{CycleGraph[6], 1, 2}, {GridGraph[{3, 3}], 4, 5}, {GridGraph[{4, 4}], 6, 7},
      {PetersenGraph[], 1, 2}, {HypercubeGraph[3], 1, 2}, {PathGraph[Range[5]], 2, 3}},
     Apply[{g, p, q} |->
-      Sort[FindInfraRepresentative[g, InfraLine[p, q], All]] === Sort[Select[
+      Sort[RandomInfraRepresentative[g, InfraLine[p, q], All]] === Sort[Select[
         Catenate[Catenate[Table[FindPath[g, a, b, {GraphDistance[g, a, b]}, All],
             {a, VertexList[g]}, {b, DeleteCases[VertexList[g], a]}]]],
         path |-> MemberQ[path, p] && MemberQ[path, q] &&
@@ -65,7 +65,7 @@ VerificationTest[
   AllTrue[
     {PathGraph[Range[7]], CycleGraph[7], GridGraph[{3, 3}], PetersenGraph[], HypercubeGraph[3]},
     g |-> AllTrue[Join[List @@@ EdgeList[g], Reverse /@ List @@@ EdgeList[g]],
-      pair |-> AllTrue[FindInfraRepresentative[g, InfraLine @@ pair, All], InfraLineQ[g, #] &]]],
+      pair |-> AllTrue[RandomInfraRepresentative[g, InfraLine @@ pair, All], InfraLineQ[g, #] &]]],
   True,
   TestID -> "InfraLine-members-satisfy-InfraLineQ-on-the-spread-table"
 ]
@@ -73,7 +73,7 @@ VerificationTest[
 (* the C_6 through {1, 2} has three lines, not four (design Thm. line) *)
 VerificationTest[
   With[{g = CycleGraph[6]}, {atoms = InfraMeasurement[g, InfraLine[1, 2], "Graph"]},
-    {Length[atoms], Sort[FindInfraRepresentative[g, InfraLine[1, 2], All]],
+    {Length[atoms], Sort[RandomInfraRepresentative[g, InfraLine[1, 2], All]],
      InfraMeasurement[g, InfraLine[1, 2], "Cardinality"], InfraMeasurement[g, InfraLine[1, 2], "Length"]}],
   {3, {{1, 2, 3, 4}, {5, 6, 1, 2}, {6, 1, 2, 3}}, 3, 3},
   TestID -> "InfraLine-C6-three-lines"
@@ -97,7 +97,7 @@ VerificationTest[
     {{CycleGraph[6], 1, 2}, {GridGraph[{3, 3}], 4, 5}, {GridGraph[{4, 4}], 6, 7},
      {PetersenGraph[], 1, 2}, {HypercubeGraph[3], 1, 2}},
     Apply[{g, p, q} |->
-      InfraMeasurement[g, InfraLine[p, q], "Cardinality"] === Length[FindInfraRepresentative[g, InfraLine[p, q], All]]]],
+      InfraMeasurement[g, InfraLine[p, q], "Cardinality"] === Length[RandomInfraRepresentative[g, InfraLine[p, q], All]]]],
   True,
   TestID -> "InfraLine-Cardinality-adds-across-the-atoms"
 ]
@@ -107,7 +107,7 @@ VerificationTest[
     {{GridGraph[{3, 3}], 4, 5}, {GridGraph[{4, 4}], 6, 7}, {PetersenGraph[], 1, 2}, {HypercubeGraph[3], 1, 2}},
     Apply[{g, p, q} |->
       InfraMeasurement[g, InfraLine[p, q], "VertexDensity"] ===
-        KeySort[Counts[Catenate[FindInfraRepresentative[g, InfraLine[p, q], All]]]]]],
+        KeySort[Counts[Catenate[RandomInfraRepresentative[g, InfraLine[p, q], All]]]]]],
   True,
   TestID -> "InfraLine-VertexDensity-counts-the-members-through-each-vertex"
 ]
@@ -122,42 +122,42 @@ VerificationTest[
   TestID -> "InfraLine-Length-Faithful-CountingMeasure"
 ]
 
-(* ===== FindInfraLine: the independent search ===== *)
+(* ===== RandomInfraLine: the independent search ===== *)
 
 VerificationTest[
   AllTrue[
     {{CycleGraph[6], 1, 2}, {GridGraph[{3, 3}], 4, 5}, {GridGraph[{4, 4}], 6, 7},
      {PetersenGraph[], 1, 2}, {HypercubeGraph[3], 1, 2}, {PathGraph[Range[7]], 4, 5}},
-    Apply[{g, p, q} |-> Sort[FindInfraLine[g, p, q, All]] === Sort[FindInfraRepresentative[g, InfraLine[p, q], All]]]],
+    Apply[{g, p, q} |-> Sort[RandomInfraLine[g, p, q, All]] === Sort[RandomInfraRepresentative[g, InfraLine[p, q], All]]]],
   True,
-  TestID -> "FindInfraLine-agrees-with-the-graph"
+  TestID -> "RandomInfraLine-agrees-with-the-graph"
 ]
 
 VerificationTest[
   With[{g = CycleGraph[6]},
-    {InfraLineQ[g, FindInfraLine[g, 1, 2]], Length[FindInfraLine[g, 1, 2, 2]],
-     Length[FindInfraLine[g, 1, 2, UpTo[9]]], FindInfraLine[g, 1, 2, 5]}],
+    {InfraLineQ[g, RandomInfraLine[g, 1, 2]], Length[RandomInfraLine[g, 1, 2, 2]],
+     Length[RandomInfraLine[g, 1, 2, UpTo[9]]], RandomInfraLine[g, 1, 2, 5]}],
   {True, 2, 3, { }},
-  TestID -> "FindInfraLine-count-contract"
+  TestID -> "RandomInfraLine-count-contract"
 ]
 
 (* the lines through a given geodesic *)
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    {Sort[FindInfraLine[g, {6, 7}, All]] === Sort[FindInfraLine[g, 6, 7, All]],
-     AllTrue[FindInfraLine[g, {2, 6, 10}, All], path |-> InfraLineQ[g, path] && SubsetQ[path, {2, 6, 10}]],
-     Sort[FindInfraLine[PathGraph[Range[7]], {3, 4}, All]]}],
+    {Sort[RandomInfraLine[g, {6, 7}, All]] === Sort[RandomInfraLine[g, 6, 7, All]],
+     AllTrue[RandomInfraLine[g, {2, 6, 10}, All], path |-> InfraLineQ[g, path] && SubsetQ[path, {2, 6, 10}]],
+     Sort[RandomInfraLine[PathGraph[Range[7]], {3, 4}, All]]}],
   {True, True, {{1, 2, 3, 4, 5, 6, 7}}},
-  TestID -> "FindInfraLine-through-a-given-geodesic"
+  TestID -> "RandomInfraLine-through-a-given-geodesic"
 ]
 
 (* ===== membership ===== *)
 
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    {AllTrue[FindInfraLine[g, 6, 7, All], InfraMemberQ[g, InfraLine[6, 7], #] &],
+    {AllTrue[RandomInfraLine[g, 6, 7, All], InfraMemberQ[g, InfraLine[6, 7], #] &],
      InfraMemberQ[g, InfraLine[6, 7], {6, 7}],
-     InfraMemberQ[g, InfraLine[6, 7], Reverse[First[FindInfraLine[g, 6, 7, All]]]]}],
+     InfraMemberQ[g, InfraLine[6, 7], Reverse[First[RandomInfraLine[g, 6, 7, All]]]]}],
   {True, False, False},
   TestID -> "InfraLine-InfraMemberQ-accepts-exactly-the-members"
 ]
@@ -167,23 +167,102 @@ VerificationTest[
 (* a line is inextensible, not longest: {1, 2, 3} is a line although the diameter is 3 *)
 VerificationTest[
   With[{g = Graph[{1 <-> 2, 2 <-> 3, 2 <-> 4, 4 <-> 5}]},
-    {FindInfraLine[g, 1, 3, All], FindInfraRepresentative[g, InfraLine[1, 3], All]}],
+    {RandomInfraLine[g, 1, 3, All], RandomInfraRepresentative[g, InfraLine[1, 3], All]}],
   {{{1, 2, 3}}, {{1, 2, 3}}},
-  TestID -> "FindInfraLine-keeps-short-inextensible-line"
+  TestID -> "RandomInfraLine-keeps-short-inextensible-line"
 ]
 
 VerificationTest[
-  With[{g = PathGraph[Range[5]]}, {FindInfraLine[g, 1, 5], FindInfraRepresentative[g, InfraLine[1, 5], All]}],
+  With[{g = PathGraph[Range[5]]}, {RandomInfraLine[g, 1, 5], RandomInfraRepresentative[g, InfraLine[1, 5], All]}],
   {Range[5], {Range[5]}},
-  TestID -> "FindInfraLine-already-maximal"
+  TestID -> "RandomInfraLine-already-maximal"
 ]
 
 VerificationTest[
-  With[{g = TorusGraph[{4, 5}]}, {lines = FindInfraLine[g, 1, 2, All]},
-    {Sort[lines] === Sort[FindInfraRepresentative[g, InfraLine[1, 2], All]], Length[lines],
+  With[{g = TorusGraph[{4, 5}]}, {lines = RandomInfraLine[g, 1, 2, All]},
+    {Sort[lines] === Sort[RandomInfraRepresentative[g, InfraLine[1, 2], All]], Length[lines],
      AllTrue[lines, InfraLineQ[g, #] &]}],
   {True, 24, True},
-  TestID -> "FindInfraLine-agrees-with-the-graph-TorusGraph"
+  TestID -> "RandomInfraLine-agrees-with-the-graph-TorusGraph"
+]
+
+(* Identity preserves the first member in the old enumeration order. *)
+VerificationTest[
+  With[{g = CycleGraph[6], lines = RandomInfraLine[CycleGraph[6], 1, 2, All]},
+    RandomInfraLine[g, 1, 2, "NextVertexFunction" -> Identity] === First[lines]],
+  True,
+  TestID -> "RandomInfraLine-Identity-preserves-first-member"
+]
+
+VerificationTest[
+  With[{g = GridGraph[{4, 4}]},
+    BlockRandom[RandomInfraLine[g, 6, 7], RandomSeeding -> 17] ===
+      BlockRandom[RandomInfraLine[g, 6, 7], RandomSeeding -> 17] &&
+    InfraLineQ[g, BlockRandom[RandomInfraLine[g, 6, 7], RandomSeeding -> 17]]],
+  True,
+  TestID -> "RandomInfraLine-default-is-seeded-and-valid"
+]
+
+VerificationTest[
+  Length @ DeleteDuplicates @ Table[
+    BlockRandom[RandomInfraLine[GridGraph[{4, 4}], 6, 7], RandomSeeding -> s],
+    {s, 1, 8}] > 1,
+  True,
+  TestID -> "RandomInfraLine-default-varies-across-seeds"
+]
+
+VerificationTest[
+  With[{g = Graph[
+      {"a", "b", "s", "u", "v", "p", "t"},
+      Join[
+        {UndirectedEdge["a", "b"]},
+        Flatten[Table[UndirectedEdge[x, y], {x, {"a", "b"}}, {y, {"s", "u", "v", "p", "t"}}]],
+        {UndirectedEdge["s", "u"], UndirectedEdge["s", "v"], UndirectedEdge["u", "p"],
+         UndirectedEdge["v", "p"], UndirectedEdge["p", "t"]}]],
+      line = {"a", "b"}, p = "p"},
+    {all = Replace[RandomInfraParallel[g, line, p, All], w_Graph :> {w}]},
+    {RandomInfraParallel[g, line, p, Automatic, "NextVertexFunction" -> Identity] === First[all],
+     AllTrue[all, InfraParallelQ[g, line, #] &],
+     Length[all] > 1}],
+  {True, True, True},
+  TestID -> "RandomInfraParallel-Identity-preserves-first-member"
+]
+
+VerificationTest[
+  With[{g = Graph[
+      {"a", "b", "s", "u", "v", "p", "t"},
+      Join[
+        {UndirectedEdge["a", "b"]},
+        Flatten[Table[UndirectedEdge[x, y], {x, {"a", "b"}}, {y, {"s", "u", "v", "p", "t"}}]],
+        {UndirectedEdge["s", "u"], UndirectedEdge["s", "v"], UndirectedEdge["u", "p"],
+         UndirectedEdge["v", "p"], UndirectedEdge["p", "t"]}]],
+      line = {"a", "b"}, p = "p"},
+    {draw = BlockRandom[RandomInfraParallel[g, line, p], RandomSeeding -> 17]},
+    {draw === BlockRandom[RandomInfraParallel[g, line, p], RandomSeeding -> 17],
+     InfraParallelQ[g, line, draw],
+     Length @ DeleteDuplicates @ Table[
+       BlockRandom[RandomInfraParallel[g, line, p], RandomSeeding -> s], {s, 1, 8}] > 1}],
+  {True, True, True},
+  TestID -> "RandomInfraParallel-default-is-seeded-and-valid"
+]
+
+VerificationTest[
+  With[{g = Graph[
+      {"a", "b", "s", "u", "v", "p", "t"},
+      Join[
+        {UndirectedEdge["a", "b"]},
+        Flatten[Table[UndirectedEdge[x, y], {x, {"a", "b"}}, {y, {"s", "u", "v", "p", "t"}}]],
+        {UndirectedEdge["s", "u"], UndirectedEdge["s", "v"], UndirectedEdge["u", "p"],
+         UndirectedEdge["v", "p"], UndirectedEdge["p", "t"]}]],
+      line = {"a", "b"}, p = "p"},
+    {all = Replace[RandomInfraParallel[g, line, p, All], w_Graph :> {w}]},
+    {pruned = Replace[
+       RandomInfraParallel[g, line, p, All,
+         "NextVertexFunction" -> (cands |-> If[MatchQ[First[cands], {_String, _String}], cands, Take[cands, 1]])],
+       w_Graph :> {w}]},
+    Length[pruned] < Length[all] && AllTrue[pruned, MemberQ[all, #] &]],
+  True,
+  TestID -> "RandomInfraParallel-All-honors-pruning-function"
 ]
 
 walkSequence = WolframInstitute`InfraGeometry`PackageScope`walkSequence;

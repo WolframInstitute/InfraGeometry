@@ -42,7 +42,7 @@ VerificationTest[
     {{GridGraph[{3, 3}], 1, 2}, {GridGraph[{4, 4}], 1, 6}, {PetersenGraph[], 1, 2},
      {HypercubeGraph[3], 1, 2}, {CycleGraph[7], 1, 2}},
     Apply[{g, p, q} |->
-      Sort[FindInfraRepresentative[g, InfraRay[p, q], All]] === Sort[Catenate[Table[
+      Sort[RandomInfraRepresentative[g, InfraRay[p, q], All]] === Sort[Catenate[Table[
         Select[FindPath[g, p, e, {GraphDistance[g, p, e]}, All],
           path |-> MemberQ[path, q] && NoneTrue[AdjacencyList[g, e],
             GraphDistance[g, p, #] == GraphDistance[g, p, e] + 1 &]],
@@ -57,14 +57,14 @@ VerificationTest[
     {PathGraph[Range[7]], CycleGraph[7], GridGraph[{3, 3}], GridGraph[{4, 4}],
      PetersenGraph[], HypercubeGraph[3]},
     g |-> AllTrue[Join[List @@@ EdgeList[g], Reverse /@ List @@@ EdgeList[g]],
-      pair |-> AllTrue[FindInfraRepresentative[g, InfraRay @@ pair, All], InfraRayQ[g, #] &]]],
+      pair |-> AllTrue[RandomInfraRepresentative[g, InfraRay @@ pair, All], InfraRayQ[g, #] &]]],
   True,
   TestID -> "InfraRay-members-satisfy-InfraRayQ-on-the-spread-table"
 ]
 
 VerificationTest[
-  {FindInfraRepresentative[PathGraph[Range[7]], InfraRay[4, 7], All],
-   Sort[FindInfraRepresentative[CycleGraph[6], InfraRay[1, 4], All]]},
+  {RandomInfraRepresentative[PathGraph[Range[7]], InfraRay[4, 7], All],
+   Sort[RandomInfraRepresentative[CycleGraph[6], InfraRay[1, 4], All]]},
   {{{4, 5, 6, 7}}, {{1, 2, 3, 4}, {1, 6, 5, 4}}},
   TestID -> "InfraRay-small-fixtures"
 ]
@@ -74,42 +74,42 @@ VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     AllTrue[{{1, 2}, {13, 14}, {13, 8}, {7, 12}},
       pair |-> InfraMeasurement[g, InfraRay @@ pair, "Cardinality"] ===
-        Length[FindInfraRepresentative[g, InfraRay @@ pair, All]]]],
+        Length[RandomInfraRepresentative[g, InfraRay @@ pair, All]]]],
   True,
   TestID -> "InfraRay-Cardinality-agrees-with-enumeration"
 ]
 
-(* ===== FindInfraRay: the independent search ===== *)
+(* ===== RandomInfraRay: the independent search ===== *)
 
 VerificationTest[
   AllTrue[
     {{GridGraph[{4, 4}], 6, 7}, {CycleGraph[6], 1, 4}, {PetersenGraph[], 1, 2}, {HypercubeGraph[3], 1, 2}},
-    Apply[{g, p, q} |-> Sort[FindInfraRay[g, p, q, All]] === Sort[FindInfraRepresentative[g, InfraRay[p, q], All]]]],
+    Apply[{g, p, q} |-> Sort[RandomInfraRay[g, p, q, All]] === Sort[RandomInfraRepresentative[g, InfraRay[p, q], All]]]],
   True,
-  TestID -> "FindInfraRay-agrees-with-the-graph"
+  TestID -> "RandomInfraRay-agrees-with-the-graph"
 ]
 
 VerificationTest[
   With[{g = CycleGraph[6]},
-    {InfraRayQ[g, FindInfraRay[g, 1, 4]], Length[FindInfraRay[g, 1, 4, UpTo[9]]], FindInfraRay[g, 1, 4, 5]}],
+    {InfraRayQ[g, RandomInfraRay[g, 1, 4]], Length[RandomInfraRay[g, 1, 4, UpTo[9]]], RandomInfraRay[g, 1, 4, 5]}],
   {True, 2, { }},
-  TestID -> "FindInfraRay-count-contract"
+  TestID -> "RandomInfraRay-count-contract"
 ]
 
 (* ===== the pencil ===== *)
 
 (* the pencil at O is the ray from O through O itself: every maximal geodesic out of O *)
 VerificationTest[
-  With[{g = GridGraph[{3, 3}]}, {pencil = FindInfraRay[g, 5, 5, All]},
+  With[{g = GridGraph[{3, 3}]}, {pencil = RandomInfraRay[g, 5, 5, All]},
     {InfraMeasurement[g, InfraRay[5, 5], "Cardinality"], Length[pencil],
      AllTrue[pencil, First[#] === 5 && InfraRayQ[g, #] &],
-     Sort[pencil] === Sort[Catenate[FindInfraRay[g, 5, #, All] & /@ AdjacencyList[g, 5]]]}],
+     Sort[pencil] === Sort[Catenate[RandomInfraRay[g, 5, #, All] & /@ AdjacencyList[g, 5]]]}],
   {8, 8, True, True},
   TestID -> "InfraRay-pencil-is-every-ray-from-the-origin"
 ]
 
 VerificationTest[
-  {Sort[FindInfraRay[PathGraph[Range[7]], 4, 4, All]],
+  {Sort[RandomInfraRay[PathGraph[Range[7]], 4, 4, All]],
    InfraMeasurement[#1, InfraRay[#2, #2], "Cardinality"] & @@@
      {{PathGraph[Range[7]], 4}, {CycleGraph[6], 1}, {CycleGraph[7], 1}, {HypercubeGraph[3], 1}}},
   {{{4, 3, 2, 1}, {4, 5, 6, 7}}, {2, 2, 2, 6}},
@@ -117,17 +117,42 @@ VerificationTest[
 ]
 
 VerificationTest[
-  Length[FindInfraRay[HypercubeGraph[3], 1, 1, All]] === InfraMeasurement[HypercubeGraph[3], InfraRay[1, 1], "Cardinality"],
+  Length[RandomInfraRay[HypercubeGraph[3], 1, 1, All]] === InfraMeasurement[HypercubeGraph[3], InfraRay[1, 1], "Cardinality"],
   True,
   TestID -> "InfraRay-pencil-cardinality-agrees-with-enumeration-hypercube"
 ]
 
 VerificationTest[
-  With[{g = TorusGraph[{4, 5}]}, {rays = FindInfraRay[g, 1, 2, All]},
-    {Sort[rays] === Sort[FindInfraRepresentative[g, InfraRay[1, 2], All]], Length[rays],
+  With[{g = TorusGraph[{4, 5}]}, {rays = RandomInfraRay[g, 1, 2, All]},
+    {Sort[rays] === Sort[RandomInfraRepresentative[g, InfraRay[1, 2], All]], Length[rays],
      AllTrue[rays, InfraRayQ[g, #] &]}],
   {True, 6, True},
-  TestID -> "FindInfraRay-agrees-with-the-graph-TorusGraph"
+  TestID -> "RandomInfraRay-agrees-with-the-graph-TorusGraph"
+]
+
+(* Identity preserves the first member in the old enumeration order. *)
+VerificationTest[
+  With[{g = CycleGraph[6], rays = RandomInfraRay[CycleGraph[6], 1, 4, All]},
+    RandomInfraRay[g, 1, 4, "NextVertexFunction" -> Identity] === First[rays]],
+  True,
+  TestID -> "RandomInfraRay-Identity-preserves-first-member"
+]
+
+VerificationTest[
+  With[{g = GridGraph[{4, 4}]},
+    BlockRandom[RandomInfraRay[g, 6, 7], RandomSeeding -> 17] ===
+      BlockRandom[RandomInfraRay[g, 6, 7], RandomSeeding -> 17] &&
+    InfraRayQ[g, BlockRandom[RandomInfraRay[g, 6, 7], RandomSeeding -> 17]]],
+  True,
+  TestID -> "RandomInfraRay-default-is-seeded-and-valid"
+]
+
+VerificationTest[
+  Length @ DeleteDuplicates @ Table[
+    BlockRandom[RandomInfraRay[GridGraph[{4, 4}], 6, 7], RandomSeeding -> s],
+    {s, 1, 8}] > 1,
+  True,
+  TestID -> "RandomInfraRay-default-varies-across-seeds"
 ]
 
 EndTestSection[]

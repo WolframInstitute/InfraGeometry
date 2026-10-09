@@ -88,6 +88,7 @@ RandomInfraRepresentative[ graph_Graph, InfraPlane[ p1_, p2_, opts___Rule ],
 RandomInfraRepresentative[ graph_Graph, InfraPlane[ p1_, p2_, window : { _Integer, _Integer }, opts___Rule ],
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /;
     ( OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
-  FindInfraBisectingHyperplane[ graph, p1, p2, window, count,
-    "NextVertexFunction" -> OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ],
-    Properties -> { "Separating" } ]
+  With[ { nextFn = OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ] },
+    FindInfraBisectingHyperplane[ graph, p1, p2, window, count,
+      "NextVertexFunction" -> If[ nextFn === Automatic, If[ count === All, Identity, RandomSample ], nextFn ],
+      Properties -> { "Separating" } ] ]

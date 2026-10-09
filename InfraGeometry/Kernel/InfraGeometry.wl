@@ -26,12 +26,12 @@ PackageExport[InfraSegmentQ]
 PackageExport[UniqueInfraSegmentQ]
 
 PackageExport[InfraRay]
-PackageExport[FindInfraRay]
+PackageExport[RandomInfraRay]
 PackageExport[InfraRayQ]
 
 PackageExport[InfraLine]
-PackageExport[FindInfraLine]
-PackageExport[FindInfraParallel]
+PackageExport[RandomInfraLine]
+PackageExport[RandomInfraParallel]
 PackageExport[FindInfraPerpendicular]
 PackageExport[FindInfraCommonLine]
 PackageExport[InfraLineQ]
@@ -60,7 +60,7 @@ PackageExport[InfraCone]
 PackageExport[InfraSolidOfRevolution]
 
 PackageExport[InfraSphere]
-PackageExport[FindInfraSphere]
+PackageExport[RandomInfraSphere]
 
 PackageExport[FindInfraEquidistantSet]
 PackageExport[FindAdvancingInfraFront]
@@ -99,9 +99,9 @@ PackageExport[InfraSceneViewer]
 (* RiemannianInfrageometry *)
 
 PackageExport[InfraWalk]
-PackageExport[FindInfraWalk]
+PackageExport[RandomInfraWalk]
 PackageExport[InfraGeodesic]
-PackageExport[FindInfraGeodesic]
+PackageExport[RandomInfraGeodesic]
 PackageExport[InfraGeodesicQ]
 PackageExport[WalkSingularities]
 PackageExport[InfraImmersedQ]
@@ -268,14 +268,14 @@ PackageExport[HomotopyMoveTypes]
 PackageExport[InfraEqualQ]
 
 PackageExport[InfraEllipse]
-PackageExport[FindInfraEllipse]
+PackageExport[RandomInfraEllipse]
 PackageExport[InfraEllipseQ]
 
 PackageExport[InfraPlane]
 PackageExport[FindInfraBisectingHyperplane]
 
 PackageExport[InfraPolygon]
-PackageExport[FindInfraRegularPolygon]
+PackageExport[RandomInfraRegularPolygon]
 PackageExport[InfraRegularPolygonQ]
 
 PackageExport[FindInfraPolylineSubdivision]

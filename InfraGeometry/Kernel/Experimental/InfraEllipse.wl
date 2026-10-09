@@ -8,18 +8,25 @@ Package[ "WolframInstitute`InfraGeometry`" ]
    pool, the circle's carrier having no two-focus analogue.  One class under every next-vertex function, which orders or thins the cycles within a
    length grade *)
 
-Options[ FindInfraEllipse ] = {
+Options[ RandomInfraEllipse ] = {
   Properties           -> { "Separating", "Shortest" },
-  "NextVertexFunction" -> Identity
+  "NextVertexFunction" -> Automatic
 }
 
-FindInfraEllipse[ graph_Graph, foci : { _, _ }, c_,
+RandomInfraEllipse[ graph_Graph, foci : { _, _ }, c_,
     count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    SubsetQ[ { "Separating", "Shortest" }, OptionValue[ FindInfraEllipse, { opts }, Properties ] ] :=
+    SubsetQ[ { "Separating", "Shortest" }, OptionValue[ RandomInfraEllipse, { opts }, Properties ] ] &&
+    ( count =!= All || OptionValue[ RandomInfraEllipse, { opts }, "NextVertexFunction" ] =!= RandomChoice ) :=
   With[ {
-      properties = OptionValue[ FindInfraEllipse, { opts }, Properties ],
-      nextFn     = OptionValue[ FindInfraEllipse, { opts }, "NextVertexFunction" ] },
-    With[ { branch = cands |-> Replace[ nextFn @ cands, chosen_ /; MemberQ[ cands, Verbatim @ chosen ] :> { chosen } ],
+      properties = OptionValue[ RandomInfraEllipse, { opts }, Properties ],
+      nextFn     = If[ count === All &&
+          OptionValue[ RandomInfraEllipse, { opts }, "NextVertexFunction" ] === Automatic,
+        Identity, OptionValue[ RandomInfraEllipse, { opts }, "NextVertexFunction" ] ] },
+    With[ { branch = cands |-> Which[
+              cands === { } || nextFn === Identity, cands,
+              nextFn === Automatic, RandomSample @ cands,
+              True, Replace[ nextFn @ cands,
+                chosen_ /; MemberQ[ cands, Verbatim @ chosen ] :> { chosen } ] ],
             needed = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
       { results = Apply[
           { foci0, c0 } |-> With[ {
@@ -41,10 +48,10 @@ FindInfraEllipse[ graph_Graph, foci : { _, _ }, c_,
                     { accumulated, k } |-> With[ {
                         matching = Select[ branch[ First /@ # & /@ FindCycle[ levelGraph, { k }, All ] ], vertsTest ] },
                       If[ matching =!= { } && ( tied || Length[ accumulated ] + Length[ matching ] >= needed ),
-                        Throw[ Join[ accumulated, matching ], FindInfraEllipse ],
+                        Throw[ Join[ accumulated, matching ], RandomInfraEllipse ],
                         Join[ accumulated, matching ] ] ],
                     { }, Range[ 3, VertexCount @ levelGraph ] ],
-                  FindInfraEllipse ] ],
+                  RandomInfraEllipse ] ],
           Tuples[ { { foci }, Replace[ c, { fam_Association :> Keys @ fam, other_ :> { other } } ] } ], { 1 } ] },
       With[ { reps = DeleteDuplicates[ Graph[ #, DirectedEdge @@@ Partition[ #, 2, 1, 1 ] ] & /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
           Switch[ count,

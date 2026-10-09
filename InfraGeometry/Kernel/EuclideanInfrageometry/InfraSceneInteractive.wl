@@ -81,7 +81,7 @@ ShellViewer[ g_Graph ] :=
       seed;
       With[ {
           shells = If[ r < 1, {},
-            FindInfraSphere[ g, p, r, UpTo[ n ], "NextVertexFunction" -> Identity,
+            RandomInfraSphere[ g, p, r, UpTo[ n ], "NextVertexFunction" -> Identity,
               Properties -> properties ] ] },
         EventHandler[
           HighlightGraph[
