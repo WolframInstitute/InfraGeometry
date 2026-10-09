@@ -1,7 +1,7 @@
 Package["WolframInstitute`InfraGeometry`"]
 
 InfraPoint::usage = "InfraPoint is the scene-language token for a point. InfraPoint[] draws from the whole vertex list, InfraPoint[v] names one vertex. It is not a wrapper: a point IS a vertex of the substrate, carrying its label verbatim.";
-RandomInfraPoint::usage = "RandomInfraPoint[graph, reg, n] draws n distinct vertices of the region reg, a vertex List, a density or an inert region such as InfraBall; with no reg, of graph; with no n, one vertex. Options \"PairwiseDistance\", \"MaxCliques\".";
+RandomInfraPoint::usage = "RandomInfraPoint[graph, reg, n] draws n distinct vertices of the region reg, a vertex List, a density or a symbolic region such as InfraBall; with no reg, of graph; with no n, one vertex. Options \"PairwiseDistance\", \"MaxCliques\".";
 FindInfraMidpoint::usage = "FindInfraMidpoint[graph, p1, p2] gives the density <|v -> m, ...|> of the middle vertices of every geodesic from p1 to p2 (one vertex at even distance, two at odd). Option Method.";
 FindInfraGoldenSection::usage = "FindInfraGoldenSection[graph, p1, p2] gives the density <|v -> m, ...|> at the golden-ratio index along every geodesic from p1 to p2. Option Method.";
 FindInfraReflection::usage = "FindInfraReflection[graph, x, a] gives the reflections x' of x through a: the vertices with B(x, a, x') and d(a, x) == d(a, x').";
@@ -11,11 +11,11 @@ InfraReachableQ::usage = "InfraReachableQ[graph, p1, p2] tests whether p1 and p2
 
 Undetermined::usage = "Undetermined is the value of the measurement \"Faithful\" on a head whose graph is faithful only under a hypothesis this paclet does not certify.";
 InfraMeasurement::usage = "InfraMeasurement[graph, obj, property] measures a Euclidean head on graph: \"Graph\", \"Cardinality\", \"Length\", \"VertexDensity\", \"EdgeDensity\", \"Subgraph\", \"Faithful\", \"CountingMeasure\" (the vertex count), \"RiemannianMeasure\" (the count without boundary). A List of properties gives an Association, All gives them all, a List of heads measures each.";
-FindInfraRepresentative::usage = "FindInfraRepresentative[graph, head] gives one member of the inert head as a vertex list; a trailing n | UpTo[n] | All gives a List of vertex lists. Modifiers \"RandomChoice\" (a random member) and, under All, \"Pruning\" -> q. A head with a graph is read off its chains, the circle and the scene tokens by their searches at the defaults.";
+FindInfraRepresentative::usage = "FindInfraRepresentative[graph, head] gives one member of the symbolic object as a vertex list; a trailing n | UpTo[n] | All gives a List of vertex lists. Modifiers \"RandomChoice\" (a random member) and, under All, \"Pruning\" -> q. A head with a graph is read off its chains, the circle and the scene tokens by their searches at the defaults.";
 InfraMemberQ::usage = "InfraMemberQ[graph, obj, path] tests whether the vertex list path is a member of obj.";
 InfraSubgraph::usage = "InfraSubgraph[graph, obj] gives the subgraph of graph induced on the support of obj; InfraSubgraph[graph, obj -> t] thickens the support by t steps.";
 
-InfraSegment::usage = "InfraSegment[p1, ..., pk] is the inert polyline of the segments [p1, p2], ..., [p(k-1), pk], closed when pk == p1, its one witness then retracing no edge when some member does not; InfraSegment[p, q] is the segment itself, whose graph is the geodesic interval I(p, q). InfraMeasurement and FindInfraRepresentative evaluate it on a graph; FindInfraSegment is the search.";
+InfraSegment::usage = "InfraSegment[p1, ..., pk] is the polyline of the segments [p1, p2], ..., [p(k-1), pk], closed when pk == p1, its one witness then retracing no edge when some member does not; InfraSegment[p, q] is the segment itself, whose graph is the geodesic interval I(p, q). InfraMeasurement and FindInfraRepresentative evaluate it on a graph; FindInfraSegment is the search.";
 FindInfraSegment::usage = "FindInfraSegment[graph, p, q] gives one geodesic from p to q as a vertex list; a trailing n | UpTo[n] | All gives a List of them.";
 InfraWalkQ::usage = "InfraWalkQ[graph, walk] tests whether walk is a walk: consecutive vertices adjacent (revisits allowed).";
 InfraSegmentQ::usage = "InfraSegmentQ[graph, walk] tests whether walk is a geodesic.";
@@ -32,7 +32,7 @@ InfraGenericQ::usage = "InfraGenericQ[graph, walk] tests whether walk is a gener
 InfraWalkCrossingQ::usage = "InfraWalkCrossingQ[graph, walk, v, r] tests whether the double visit of walk at v is a transverse crossing at scale r: the two passes separate each other's exits on the shell {r, r+1}; {i, j} names two positions instead.";
 ConcatenateInfraWalk::usage = "ConcatenateInfraWalk[path1, path2] joins every compatible walk pair, those with Last[walk1] === First[walk2].";
 
-InfraLine::usage = "InfraLine[p, q] is the inert line through p and q, whose graph is the List of atoms I(a, p) + I(p, q) + I(q, b) over the maximal compatible end pairs (a, b). InfraLine[germ] is the line through a geodesic germ -- a vertex, a vertex list, a walk graph or a geodesic DAG -- whose atoms keep the germ's own edges in the middle. InfraMeasurement and FindInfraRepresentative evaluate it on a graph; FindInfraLine is the search.";
+InfraLine::usage = "InfraLine[p, q] is the line through p and q, whose graph is the List of atoms I(a, p) + I(p, q) + I(q, b) over the maximal compatible end pairs (a, b). InfraLine[germ] is the line through a geodesic germ -- a vertex, a vertex list, a walk graph or a geodesic DAG -- whose atoms keep the germ's own edges in the middle. InfraMeasurement and FindInfraRepresentative evaluate it on a graph; FindInfraLine is the search.";
 FindInfraLine::usage = "FindInfraLine[graph, p, q] gives one line through p and q as a vertex list -- an inextensible geodesic through both; a trailing n | UpTo[n] | All gives a List. FindInfraLine[graph, seq] prolongs a given geodesic.";
 FindInfraParallel::usage = "FindInfraParallel[graph, line, p] gives one parallel to line through p: a geodesic through p inextensible within the level set { v : d(v, line) == d(p, line) }; a trailing n | UpTo[n] | All sets the count, All giving the pool. Option \"NextVertexFunction\".";
 FindInfraPerpendicular::usage = "FindInfraPerpendicular[graph, line, point] gives the lines through point perpendicular to line. Options Method, \"Radius\".";
@@ -43,36 +43,36 @@ InfraPerpendicularQ::usage = "InfraPerpendicularQ[graph, l1, l2] tests whether t
 LineCount::usage = "LineCount[graph] gives the number of distinct canonical maximal geodesics in graph.";
 UniversalLineQ::usage = "UniversalLineQ[graph] tests whether some pair spans a line filling a whole connected component (Chen-Chvatal); UniversalLineQ[graph, {u, v}] tests one line.";
 
-InfraShell::usage = "InfraShell[c, {r, s}] is the inert shell { v : r <= d(v, c) <= s }, c a vertex or a vertex set; InfraShell[c, r] is the band {r, r}. Read by InfraMeasurement and FindInfraRepresentative; FindInfraShell is the search.";
+InfraShell::usage = "InfraShell[c, {r, s}] is the shell { v : r <= d(v, c) <= s }, c a vertex or a vertex set; InfraShell[c, r] is the band {r, r}. Read by InfraMeasurement and FindInfraRepresentative; FindInfraShell is the search.";
 FindInfraShell::usage = "FindInfraShell[graph, c, r] gives the metric shell { v : d(v, c) == r } as a sorted vertex list; r may be a band {r, s}, c a vertex set.";
-InfraSphere::usage = "InfraSphere[c, {r, s}] is the inert family of inclusion-minimal connected subsets of the shell InfraShell[c, {r, s}] separating the centre's side from the far side; InfraSphere[c, r] is the band {r, r}. Read by InfraMeasurement and FindInfraRepresentative.";
+InfraSphere::usage = "InfraSphere[c, {r, s}] is the family of inclusion-minimal connected subsets of the shell InfraShell[c, {r, s}] separating the centre's side from the far side; InfraSphere[c, r] is the band {r, r}. Read by InfraMeasurement and FindInfraRepresentative.";
 FindInfraSphere::usage = "FindInfraSphere[graph, c, r, n] gives n minimal separating subsets of the shell of c with radius r or band {r, s}; n may be UpTo[n] or All. Options Properties, \"NextVertexFunction\".";
 FindInfraOsculatingShell::usage = "FindInfraOsculatingShell[graph, path, i, k] gives the shells whose level set contains the k-vertex window of path centred at position i, one per osculating centre.";
 FindAdvancingInfraFront::usage = "FindAdvancingInfraFront[graph, origin, steps] gives the foliation by a bouncing wavefront as a List of sorted vertex lists: each front steps one geodesic step outward and reflects inward where it cannot.";
 FindInfraShellCenter::usage = "FindInfraShellCenter[graph, shell] recovers {center, radii} from a shell. Option Method.";
 InfraShellQ::usage = "InfraShellQ[graph, vertexSet] tests whether vertexSet is a metric shell { v : d(c, v) == r } for some centre c and radius r.";
 
-InfraBall::usage = "InfraBall[c, r] is the inert closed ball { v : d(v, c) <= r }, c a vertex or a vertex set; InfraBall[c, {r, s}] is the shell. Read by InfraMeasurement and FindInfraRepresentative.";
+InfraBall::usage = "InfraBall[c, r] is the closed ball { v : d(v, c) <= r }, c a vertex or a vertex set; InfraBall[c, {r, s}] is the shell. Read by InfraMeasurement and FindInfraRepresentative.";
 InfraBallQ::usage = "InfraBallQ[graph, vertexSet] tests whether vertexSet is a closed metric ball.";
 
-InfraBallHull::usage = "InfraBallHull[S, r] is the inert intersection of the closed balls of radius at most r containing S, the whole graph if none does; InfraBallHull[S, {r}] takes the balls of radius exactly r, InfraBallHull[S, {r, s}] those of radius between r and s, and InfraBallHull[S] every radius, the Mazur hull. Read by InfraMeasurement and FindInfraRepresentative.";
-InfraConvexHull::usage = "InfraConvexHull[S, k] is the inert k-th round of the interval closure of S, a round adding all geodesics between its vertices; InfraConvexHull[S] is the convex hull. Read by InfraMeasurement and FindInfraRepresentative.";
+InfraBallHull::usage = "InfraBallHull[S, r] is the intersection of the closed balls of radius at most r containing S, the whole graph if none does; InfraBallHull[S, {r}] takes the balls of radius exactly r, InfraBallHull[S, {r, s}] those of radius between r and s, and InfraBallHull[S] every radius, the Mazur hull. Read by InfraMeasurement and FindInfraRepresentative.";
+InfraConvexHull::usage = "InfraConvexHull[S, k] is the k-th round of the interval closure of S, a round adding all geodesics between its vertices; InfraConvexHull[S] is the convex hull. Read by InfraMeasurement and FindInfraRepresentative.";
 
-InfraTube::usage = "InfraTube[core, profile] is the inert tube { v : d(a_i, v) <= r_i for some i } along the core a_1, ..., a_m, the profile a radius, a band {s, t}, a list of them or a function of i. Option Method (\"Balls\", \"Sliced\").";
-InfraCylinder::usage = "InfraCylinder[axis, r] is the inert cylinder InfraTube[axis, r, Method -> \"Sliced\"], the tube of radius r with flat ends; r may be a band {r, s}.";
-InfraCone::usage = "InfraCone[axis, slope] is the inert cone InfraTube[axis, i |-> slope (i - 1), Method -> \"Sliced\"], apex First[axis] and a flat base.";
-InfraSolidOfRevolution::usage = "InfraSolidOfRevolution[axis, profile] is the inert solid InfraTube[axis, profile, Method -> \"Sliced\"], the profile read at the nearest axis vertex; a band profile {r, r} is the surface.";
+InfraTube::usage = "InfraTube[core, profile] is the tube { v : d(a_i, v) <= r_i for some i } along the core a_1, ..., a_m, the profile a radius, a band {s, t}, a list of them or a function of i. Option Method (\"Balls\", \"Sliced\").";
+InfraCylinder::usage = "InfraCylinder[axis, r] is the cylinder InfraTube[axis, r, Method -> \"Sliced\"], the tube of radius r with flat ends; r may be a band {r, s}.";
+InfraCone::usage = "InfraCone[axis, slope] is the cone InfraTube[axis, i |-> slope (i - 1), Method -> \"Sliced\"], apex First[axis] and a flat base.";
+InfraSolidOfRevolution::usage = "InfraSolidOfRevolution[axis, profile] is the solid InfraTube[axis, profile, Method -> \"Sliced\"], the profile read at the nearest axis vertex; a band profile {r, r} is the surface.";
 
-InfraCircle::usage = "InfraCircle[c, r | {r, s}] is the inert family of circles around c in the band r <= d(c, v) <= s; its graph is the List of atoms of the unrolled band, the necklaces where that fails.";
+InfraCircle::usage = "InfraCircle[c, r | {r, s}] is the family of circles around c in the band r <= d(c, v) <= s; its graph is the List of atoms of the unrolled band, the necklaces where that fails.";
 InfraCircleQ::usage = "InfraCircleQ[graph, cycle] tests whether cycle is a cyclic edge chain whose vertex set is a metric shell.";
 
-InfraArc::usage = "InfraArc[c, {p1, ..., pk}] is the inert arc around c through the points, the geodesics of the band of the circle through p1; InfraArc[c, {p, p}] is the closed arc, the circles through p. Option \"RadiusDelta\".";
+InfraArc::usage = "InfraArc[c, {p1, ..., pk}] is the arc around c through the points, the geodesics of the band of the circle through p1; InfraArc[c, {p, p}] is the closed arc, the circles through p. Option \"RadiusDelta\".";
 
-InfraPolygon::usage = "InfraPolygon[As, n] is the inert family of regular n-gons whose k-th diagonals satisfy As[[k]]; FindInfraRegularPolygon is the search. The polygon through given corners is the closed polyline InfraSegment[p1, ..., pn, p1].";
+InfraPolygon::usage = "InfraPolygon[As, n] is the family of regular n-gons whose k-th diagonals satisfy As[[k]]; FindInfraRegularPolygon is the search. The polygon through given corners is the closed polyline InfraSegment[p1, ..., pn, p1].";
 FindInfraRegularPolygon::usage = "FindInfraRegularPolygon[graph, As, n] gives one closed n-vertex sequence whose k-th diagonal distances all match As[[k]] (each slot an Integer, {lo, hi}, or Automatic); a trailing n | UpTo[n] | All sets the count. Options \"NextVertexFunction\", \"From\".";
 InfraRegularPolygonQ::usage = "InfraRegularPolygonQ[graph, cycle, As] tests whether cycle is regular with respect to the diagonal-distance tuple As.";
 
-InfraQuadric::usage = "InfraQuadric[{p1, ..., pk}, c] is the inert solid { v : Sum_i d(p_i, v) <= c }, c a number or a band {lo, hi}; a trailing weight list gives the signed sum. One focus is the ball, two the ellipse, InfraQuadric[{p1, p2}, {c, c}] the elliptic shell, weights {1, -1} a hyperbola branch. Read by InfraMeasurement and FindInfraRepresentative.";
+InfraQuadric::usage = "InfraQuadric[{p1, ..., pk}, c] is the solid { v : Sum_i d(p_i, v) <= c }, c a number or a band {lo, hi}; a trailing weight list gives the signed sum. One focus is the ball, two the ellipse, InfraQuadric[{p1, p2}, {c, c}] the elliptic shell, weights {1, -1} a hyperbola branch. Read by InfraMeasurement and FindInfraRepresentative.";
 
 InfraEllipse::usage = "InfraEllipse names the metric-ellipse construction -- a cycle lying on an elliptic shell -- and carries no value of its own; FindInfraEllipse is the search and gives a directed cycle graph.";
 FindInfraEllipse::usage = "FindInfraEllipse[graph, {p1, p2}, c] gives one shortest separating cycle in the level surface { v : d(p1, v) + d(p2, v) == c }; a trailing n | UpTo[n] | All sets the count. Options Properties, \"NextVertexFunction\".";
@@ -81,7 +81,7 @@ InfraEllipseQ::usage = "InfraEllipseQ[graph, cycle] tests whether cycle is a cyc
 InfraPlane::usage = "InfraPlane[p1, p2] inside InfraScene is the bisecting hyperplane of p1 and p2; FindInfraBisectingHyperplane is the search. A plane itself is a sorted vertex list.";
 FindInfraBisectingHyperplane::usage = "FindInfraBisectingHyperplane[graph, p1, p2] gives the perpendicular bisector { v : d(p1, v) == d(p2, v) }; a positional {lo, hi} widens it to a slab. Options Properties, \"NextVertexFunction\".";
 
-InfraRay::usage = "InfraRay[p, q] is the inert ray from p through q, whose graph is the ray DAG R(p, q); InfraRay[p, p] is the pencil at p. InfraMeasurement and FindInfraRepresentative evaluate it on a graph; FindInfraRay is the search.";
+InfraRay::usage = "InfraRay[p, q] is the ray from p through q, whose graph is the ray DAG R(p, q); InfraRay[p, p] is the pencil at p. InfraMeasurement and FindInfraRepresentative evaluate it on a graph; FindInfraRay is the search.";
 FindInfraRay::usage = "FindInfraRay[graph, p, q] gives one ray from p through q as a vertex list -- a geodesic from p through q that no neighbour of its last vertex prolongs; a trailing n | UpTo[n] | All gives a List of them.";
 InfraRayQ::usage = "InfraRayQ[graph, ray] tests whether ray is a pointed half-line: a geodesic from its own first vertex that cannot be prolonged past its last.";
 
@@ -126,11 +126,11 @@ InfraScene::usage = "InfraScene[objects, hypotheses] builds a scene descriptor f
 FindInfraScene::usage = "FindInfraScene[scene, graph] solves a scene on a graph and gives the resulting InfraSceneInstance bindings. Option \"PruneProbability\".";
 InfraSceneInstance::usage = "InfraSceneInstance[bindings] wraps a solved binding association; InfraSceneInstance[bindings, sym] reads one object out of it.";
 InfraStep::usage = "InfraStep[{hyp1, ...}] groups hypotheses into one construction step of a scene; a second argument labels it.";
-InfraIntersection::usage = "InfraIntersection[graph, obj1, obj2, ...] gives the vertex-set intersection of shapes on graph -- vertex lists, densities, walk graphs, bundles -- as a sorted List. On Euclidean heads it is inert and InfraMeasurement gives it the common support and the product density. Inside InfraScene it is the token InfraIntersection[c1, c2], one branch per common vertex, the engine supplying the graph.";
-InfraUnion::usage = "InfraUnion[graph, obj1, obj2, ...] gives the vertex-set union of shapes on graph as a sorted List. On Euclidean heads it is inert and InfraMeasurement gives it the joint support and the sum density. Inside InfraScene it is the token InfraUnion[c1, c2], one branch per vertex of either, the engine supplying the graph.";
+InfraIntersection::usage = "InfraIntersection[graph, obj1, obj2, ...] gives the vertex-set intersection of shapes on graph -- vertex lists, densities, walk graphs, bundles -- as a sorted List. On Euclidean heads it is symbolic and InfraMeasurement gives it the common support and the product density. Inside InfraScene it is the token InfraIntersection[c1, c2], one branch per common vertex, the engine supplying the graph.";
+InfraUnion::usage = "InfraUnion[graph, obj1, obj2, ...] gives the vertex-set union of shapes on graph as a sorted List. On Euclidean heads it is symbolic and InfraMeasurement gives it the joint support and the sum density. Inside InfraScene it is the token InfraUnion[c1, c2], one branch per vertex of either, the engine supplying the graph.";
 InfraDistance::usage = "InfraDistance[graph, p, q] gives the graph distance between two Infra* objects, aggregated over their vertex sets. Option \"Aggregation\".";
-InfraPlaneQ::usage = "InfraPlaneQ[graph, h, p1, p2] tests whether h lies in the bisector slab of p1, p2 and separates them; a trailing window widens the slab. The graph-free InfraPlaneQ[h, p1, p2] is the inert InfraScene assertion.";
-InfraIntersectQ::usage = "InfraIntersectQ[s1, s2] asserts inside an InfraScene that two sets intersect; it stays inert until bindings resolve, which is why it exists rather than the built-in IntersectingQ.";
+InfraPlaneQ::usage = "InfraPlaneQ[graph, h, p1, p2] tests whether h lies in the bisector slab of p1, p2 and separates them; a trailing window widens the slab. The graph-free InfraPlaneQ[h, p1, p2] is the InfraScene assertion.";
+InfraIntersectQ::usage = "InfraIntersectQ[s1, s2] asserts inside an InfraScene that two sets intersect; evaluation is postponed until bindings resolve, which is why it exists rather than the built-in IntersectingQ.";
 
 InfraSubstrateHighlight::usage = "InfraSubstrateHighlight[graph, {obj1, obj2, ...}] draws the sum of the objects' densities on graph, the i-th object in the i-th palette color; a Directive styles the objects after it. Options \"OpacityRange\", \"ThicknessRange\", \"PointSizeRange\", \"Arrowheads\", \"Palette\".";
 InfraSceneViewer::usage = "InfraSceneViewer[scene, graph] is an interactive step-by-step visualisation of an InfraScene on a graph.";

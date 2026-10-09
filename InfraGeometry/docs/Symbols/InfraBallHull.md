@@ -5,14 +5,14 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraBallHull
-Keywords: [ball hull, Mazur hull, ball-convex, convex hull, region, inert head, covering]
+Keywords: [ball hull, Mazur hull, ball-convex, convex hull, region, symbolic object, covering]
 SeeAlso: [InfraConvexHull, InfraBall, InfraTube, InfraMeasurement, FindInfraRepresentative, InfraMemberQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraBallHull]()[*S*, *r*]</code> is the intersection of the closed balls of radius at most *r* that contain *S*, and the whole graph if there is none. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraBallHull]()[*S*, *r*]</code> is the intersection of the closed balls of radius at most *r* that contain *S*, and the whole graph if there is none. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraBallHull]()[*S*, {*r*}]</code> takes the balls of radius exactly *r*, and <code>[InfraBallHull]()[*S*, {*r*, *s*}]</code> those of radius between *r* and *s*.
 

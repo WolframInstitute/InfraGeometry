@@ -5,14 +5,14 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSegment
-Keywords: [segment, shortest path, interval DAG, polyline, inert head, counting measure, Riemannian measure]
+Keywords: [segment, shortest path, interval DAG, polyline, symbolic object, counting measure, Riemannian measure]
 SeeAlso: [FindInfraSegment, InfraMeasurement, FindInfraRepresentative, FindInfraGeodesic, InfraLine, MetricInterval, InfraTube]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraSegment]()[*p*, *q*]</code> is the segment from *p* to *q*: every shortest path from *p* to *q* at once. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraSegment]()[*p*, *q*]</code> is the segment from *p* to *q*: every shortest path from *p* to *q* at once. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraSegment]()[*p1*, *p2*, …, *pk*]</code> is the polyline of the segments [*p1*, *p2*], …, [*p(k-1)*, *pk*].
 

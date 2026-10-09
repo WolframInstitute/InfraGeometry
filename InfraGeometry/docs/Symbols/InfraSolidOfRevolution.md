@@ -5,14 +5,14 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSolidOfRevolution
-Keywords: [solid of revolution, profile, sliced tube, region, inert head, volume]
+Keywords: [solid of revolution, profile, sliced tube, region, symbolic object, volume]
 SeeAlso: [InfraTube, InfraCylinder, InfraCone, InfraBall, InfraMeasurement, FindInfraRepresentative, InfraMemberQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraSolidOfRevolution]()[*axis*, *profile*]</code> is the solid about *axis* whose radius along the axis is *profile*: the vertices within the radius of the axis vertex they project to, with flat ends. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraSolidOfRevolution]()[*axis*, *profile*]</code> is the solid about *axis* whose radius along the axis is *profile*: the vertices within the radius of the axis vertex they project to, with flat ends. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraSolidOfRevolution]()[*axis*, *profile*, Method -> "Balls"]</code> is the rounded solid, the union of the balls of radius *r_i* about the axis vertices.
 

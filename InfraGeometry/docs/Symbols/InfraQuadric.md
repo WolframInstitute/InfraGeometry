@@ -5,14 +5,14 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraQuadric
-Keywords: [quadric, ellipse, ellipsoid, hyperbola, elliptic shell, foci, region, inert head]
+Keywords: [quadric, ellipse, ellipsoid, hyperbola, elliptic shell, foci, region, symbolic object]
 SeeAlso: [InfraBall, InfraShell, InfraSegment, InfraEllipse, InfraMeasurement, FindInfraRepresentative, InfraMemberQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraQuadric]()[{*p_1*, …, *p_k*}, *c*]</code> is the solid of the vertices whose distances to the foci *p_i* sum to at most *c*. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraQuadric]()[{*p_1*, …, *p_k*}, *c*]</code> is the solid of the vertices whose distances to the foci *p_i* sum to at most *c*. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraQuadric]()[*foci*, {*lo*, *hi*}]</code> is the band *lo ≤ Σ d(p_i, v) ≤ hi*.
 

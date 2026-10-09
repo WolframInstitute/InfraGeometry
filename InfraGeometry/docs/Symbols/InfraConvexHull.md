@@ -5,14 +5,14 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraConvexHull
-Keywords: [convex hull, geodesic convexity, interval closure, region, inert head]
+Keywords: [convex hull, geodesic convexity, interval closure, region, symbolic object]
 SeeAlso: [InfraBallHull, InfraSegment, InfraTube, InfraMeasurement, FindInfraRepresentative, InfraMemberQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraConvexHull]()[*S*, *k*]</code> is the *k*-th round of the interval closure of *S*: round 0 is *S*, and each round adds every shortest path between two of its vertices. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraConvexHull]()[*S*, *k*]</code> is the *k*-th round of the interval closure of *S*: round 0 is *S*, and each round adds every shortest path between two of its vertices. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraConvexHull]()[*S*]</code> is the convex hull: the fixed point of the rounds, the smallest set containing *S* and every shortest path between two of its vertices.
 

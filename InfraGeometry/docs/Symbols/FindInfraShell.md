@@ -23,7 +23,7 @@ It is the discrete analogue of a sphere, not of a circle: it is codimension-1 as
 
 The shell is the substrate of the volume-growth invariants. Its cardinality as a function of *r* is the surface-area profile, which [InfraMeasurement]() reads as the `"CountingMeasure"` of [InfraShell]() at every radius, and on a flat lattice it grows **linearly**, which is the statement that the dimension is 2. The slope is a property of the tiling: 4 per step on the square grid, 3 on the hexagonal.
 
-It is the level set of the inert head [InfraShell](), as a function. The connected subsets of a shell that separate the centre from the outside are [FindInfraSphere]().
+It is the level set of the symbolic object [InfraShell](), as a function. The connected subsets of a shell that separate the centre from the outside are [FindInfraSphere]().
 
 Corresponding notions in the classical axiom systems:
 

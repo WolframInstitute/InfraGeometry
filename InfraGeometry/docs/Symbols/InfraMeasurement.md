@@ -5,14 +5,14 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraMeasurement
-Keywords: [segment, ray, line, circle, arc, ball, shell, tube, inert head, measurement, occupation, faithful, counting measure, Riemannian measure, volume]
+Keywords: [segment, ray, line, circle, arc, ball, shell, tube, symbolic object, measurement, occupation, faithful, counting measure, Riemannian measure, volume]
 SeeAlso: [FindInfraRepresentative, InfraMemberQ, InfraSubgraph, InfraSegment, InfraBall, InfraShell, InfraTube, InfraInterior, InfraBoundary, Undetermined]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraMeasurement]()[*graph*, *obj*, *property*]</code> measures an inert head on *graph*: a Euclidean head — [InfraSegment](), [InfraRay](), [InfraLine](), [InfraCircle](), [InfraArc]() — or a region — [InfraBall](), [InfraShell](), [InfraTube](), [InfraCylinder](), [InfraCone](), [InfraSphere]().
+<code>[InfraMeasurement]()[*graph*, *obj*, *property*]</code> measures a symbolic object on *graph*: a Euclidean head — [InfraSegment](), [InfraRay](), [InfraLine](), [InfraCircle](), [InfraArc]() — or a region — [InfraBall](), [InfraShell](), [InfraTube](), [InfraCylinder](), [InfraCone](), [InfraSphere]().
 
 <code>[InfraMeasurement]()[*graph*, *obj*, {*property1*, ...}]</code> gives an `Association` of several properties; `All` in place of the list gives every property the object has.
 
@@ -48,7 +48,7 @@ The volume profiles on the square grid, about a centre *c*, with a segment from 
 
 The symbol page of each region carries its counts on the other lattices and its continuum expansion. A profile, the list of a measure over the size, is read by [LogDifferenceQuotients](). The quotients of the counting profile from *r = 0* and of the Riemannian profile from *r = 1* coincide on a lattice, and they are the curves of the technical introduction, section 4.5: on *Z^d* they approach the dimension as *d + d/(2r)*, from above, while the counting profile from *r = 1* approaches it as *d − d/(2r)*, from below.
 
-A Euclidean head is inert: it holds its points and options and computes nothing on its own. `InfraMeasurement` is what evaluates it, reading every property off the head's **graph** — an acyclic directed graph whose source-to-sink chains are exactly the head's members — by one forward and one backward sweep of a dynamic-programming count, never by enumeration. A circle's graph is a `List` of atoms of the unrolled band along a radial seam (necklaces where the cut band is disconnected or the seam has one side only; see [InfraCircle]()). Each is an acyclic DAG from a seam vertex *x* to a copy `{x, 3/2}` of it, so a circle is a chain read as a closed walk, **opened** at *x*. A circle's member is the chain with the copy dropped, a cyclic vertex list whose first vertex is not repeated. The closed arc has the same shape on the atom at its point.
+A Euclidean head is a **symbolic abstract representation** of an object: it holds its points and options, with **evaluation postponed** until a graph is supplied. `InfraMeasurement` evaluates its properties on that graph, reading every property off the head's **graph** — an acyclic directed graph whose source-to-sink chains are exactly the head's members — by one forward and one backward sweep of a dynamic-programming count, never by enumeration. A circle's graph is a `List` of atoms of the unrolled band along a radial seam (necklaces where the cut band is disconnected or the seam has one side only; see [InfraCircle]()). Each is an acyclic DAG from a seam vertex *x* to a copy `{x, 3/2}` of it, so a circle is a chain read as a closed walk, **opened** at *x*. A circle's member is the chain with the copy dropped, a cyclic vertex list whose first vertex is not repeated. The closed arc has the same shape on the atom at its point.
 
 The properties:
 

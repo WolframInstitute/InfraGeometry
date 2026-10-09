@@ -35,7 +35,7 @@ The region *reg* is the place where the points may lie:
 | [InfraSegment]()`[a, b]`, [InfraLine]()`[a, b]`, … | the vertices of the object |
 | [InfraUnion]()`[reg1, reg2]`, [InfraIntersection]()`[reg1, reg2]` | the union, the common part |
 
-Any inert head that <code>[InfraMeasurement]()[*g*, *reg*, "VertexDensity"]</code> reads is a region. A single vertex is `{v}`, never bare: a bare integer is a count.
+Any symbolic object that <code>[InfraMeasurement]()[*g*, *reg*, "VertexDensity"]</code> reads is a region. A single vertex is `{v}`, never bare: a bare integer is a count.
 
 The count *n* is `n`, `UpTo[n]` or `All`. The *n* points are distinct. `UpTo[n]` gives at most *n*, `All` gives every vertex of the region. Without *n* the result is one vertex, not a list.
 

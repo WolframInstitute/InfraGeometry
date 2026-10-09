@@ -5,14 +5,14 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraCone
-Keywords: [cone, solid of revolution, region, inert head, volume, counting measure, Riemannian measure]
+Keywords: [cone, solid of revolution, region, symbolic object, volume, counting measure, Riemannian measure]
 SeeAlso: [InfraTube, InfraCylinder, InfraBall, InfraMeasurement, FindInfraRepresentative, InfraSolidOfRevolution, InfraInterior, InfraBoundary]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraCone]()[*axis*, *slope*]</code> is the cone along *axis* with apex *axis*[[1]]: the vertices within *slope* (*i* − 1) of the *i*-th vertex of the axis they project to, with a flat base. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraCone]()[*axis*, *slope*]</code> is the cone along *axis* with apex *axis*[[1]]: the vertices within *slope* (*i* − 1) of the *i*-th vertex of the axis they project to, with a flat base. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraCone]()[*axis*, *slope*, Method -> "Balls"]</code> is the rounded cone, the union of the balls of radius *slope* (*i* − 1) about the vertices of the axis.
 

@@ -18,7 +18,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Details & Options
 
-[FindInfraScene]() returns a `List` of instances, one per branch. An instance is inert: it holds its bindings and computes nothing.
+[FindInfraScene]() returns a `List` of instances, one per branch. An instance is a symbolic representation of a solved branch: it stores the bindings for later retrieval.
 
 A value is what the construction of the object realised on the graph: a vertex for a point or an intersection, a vertex list for a segment, a ray or a line, a cyclic vertex list for a circle. So an instance's objects are drawn by [InfraSubstrateHighlight]() directly, a circle once it is closed into a walk.
 

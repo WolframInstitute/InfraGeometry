@@ -18,11 +18,7 @@ The language must therefore change. We want to develop it from basic constructio
 
 ## 📏 Synthetic (Euclidean) Infrageometry
 
-Synthetic Infrageometry studies the moduli spaces of synthetic objects on arbitrary graph substrates, their mutual relations, and iterative constructions with them. Its goal is to demonstrate the emergence of configurations of idealized objects, including those of Euclidean geometry.
-
-Without infinitesimality, a construction need not have a unique result. We therefore work with multi-constructions: a fixed sequence of construction steps generates a multiway system that branches at each non-unique choice but is causally invariant in the sense that the dependence graph of construction steps is the same across branches.
-
-To each multi-object we associate a vertex density, given by normalized occupation counts over its possible realizations. Under suitable refinement and rescaling, we aim for these densities, interpreted as measures, to converge weakly to measures supported on classical thin objects.
+**Synthetic Infrageometry** studies synthetic objects on arbitrary graph substrates, their moduli spaces, mutual relations, and iterative constructions. Its goal is to explain the emergence of idealized geometric configurations, including those of Euclidean geometry, from purely combinatorial substrates. Since constructions are generally non-unique, we work with **multi-constructions**, where a fixed sequence of construction steps generates a branching multiway system. Although choices may differ across branches, the system is causally invariant in the sense that the dependency graph of construction steps remains unchanged. To each multi-object we associate a vertex density given by normalized occupation frequencies across its realizations; for path-like objects, we similarly associate an edge density. Under suitable refinement and rescaling, these densities, viewed as measures, are expected to converge weakly to measures supported on classical thin geometric objects.
 
 ## 🌐 Riemannian Infrageometry
 

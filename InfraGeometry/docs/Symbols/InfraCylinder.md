@@ -5,14 +5,14 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraCylinder
-Keywords: [cylinder, solid of revolution, region, inert head, volume, counting measure, Riemannian measure]
+Keywords: [cylinder, solid of revolution, region, symbolic object, volume, counting measure, Riemannian measure]
 SeeAlso: [InfraTube, InfraCone, InfraBall, InfraMeasurement, FindInfraRepresentative, InfraSolidOfRevolution, InfraInterior, InfraBoundary]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraCylinder]()[*axis*, *r*]</code> is the cylinder of radius *r* about *axis*: the vertices within *r* of the axis vertex they project to, with flat ends. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraCylinder]()[*axis*, *r*]</code> is the cylinder of radius *r* about *axis*: the vertices within *r* of the axis vertex they project to, with flat ends. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraCylinder]()[*axis*, {*r*, *s*}]</code> is the mantle: the vertices at distance between *r* and *s* from their axis vertex.
 

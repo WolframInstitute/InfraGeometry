@@ -5,14 +5,14 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraRepresentative
-Keywords: [segment, ray, line, circle, arc, shell, plane, polygon, inert head, member, representative, enumeration, random]
+Keywords: [segment, ray, line, circle, arc, shell, plane, polygon, symbolic object, member, representative, enumeration, random]
 SeeAlso: [InfraMeasurement, InfraMemberQ, FindInfraSegment, FindInfraRay, FindInfraLine, FindInfraGeodesic, FindInfraWalk, InfraCircle, InfraArc]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[FindInfraRepresentative]()[*graph*, *head*]</code> gives one member of the inert *head* as a vertex list.
+<code>[FindInfraRepresentative]()[*graph*, *head*]</code> gives one member of the symbolic object *head* as a vertex list.
 
 <code>[FindInfraRepresentative]()[*graph*, *head*, *n* | UpTo[*n*] | All]</code> gives a `List` of *n*, at most *n*, or every member.
 

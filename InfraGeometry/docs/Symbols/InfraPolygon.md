@@ -9,7 +9,7 @@ URI: WolframInstitute/InfraGeometry/ref/InfraPolygon
 
 ## Usage
 
-`InfraPolygon[As, n]` is the inert family of regular n-gons whose k-th diagonals satisfy As[[k]]; FindInfraRegularPolygon is the search and InfraRegularPolygonQ the test. The polygon through given corners is the closed polyline InfraSegment[p1, ..., pn, p1].
+`InfraPolygon[As, n]` is the family of regular n-gons whose k-th diagonals satisfy As[[k]]; FindInfraRegularPolygon is the search and InfraRegularPolygonQ the test. The polygon through given corners is the closed polyline InfraSegment[p1, ..., pn, p1].
 
 ## Details & Options
 

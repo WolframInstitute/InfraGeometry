@@ -5,14 +5,14 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraBall
-Keywords: [ball, disk, neighbourhood, region, inert head, volume, counting measure, Riemannian measure]
+Keywords: [ball, disk, neighbourhood, region, symbolic object, volume, counting measure, Riemannian measure]
 SeeAlso: [InfraShell, InfraTube, InfraSphere, FindInfraRepresentative, InfraMeasurement, InfraInterior, InfraBoundary, InfraBallQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraBall]()[*c*, *r*]</code> is the closed ball of radius *r* about *c*: the vertices at distance at most *r*. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraBall]()[*c*, *r*]</code> is the closed ball of radius *r* about *c*: the vertices at distance at most *r*. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraBall]()[*c*, {*r*, *s*}]</code> is the shell: the vertices at distance between *r* and *s*.
 

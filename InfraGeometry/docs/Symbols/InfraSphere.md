@@ -5,14 +5,14 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSphere
-Keywords: [sphere, separating set, minimal, region, inert head, family, counting measure, Riemannian measure]
+Keywords: [sphere, separating set, minimal, region, symbolic object, family, counting measure, Riemannian measure]
 SeeAlso: [FindInfraSphere, InfraShell, InfraBall, InfraMeasurement, FindInfraRepresentative]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraSphere]()[*c*, {*r*, *s*}]</code> is the sphere about *c*: the family of inclusion-minimal connected subsets of the shell [InfraShell]()[*c*, {*r*, *s*}] that separate the side of *c* from the far side. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraSphere]()[*c*, {*r*, *s*}]</code> is the sphere about *c*: the family of inclusion-minimal connected subsets of the shell [InfraShell]()[*c*, {*r*, *s*}] that separate the side of *c* from the far side. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraSphere]()[*c*, *r*]</code> is the band {*r*, *r*}.
 

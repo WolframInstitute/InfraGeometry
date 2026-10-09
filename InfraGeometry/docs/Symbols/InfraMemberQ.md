@@ -5,7 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraMemberQ
-Keywords: [segment, ray, line, circle, arc, inert head, membership]
+Keywords: [segment, ray, line, circle, arc, symbolic object, membership]
 SeeAlso: [FindInfraRepresentative, InfraMeasurement, InfraSegmentQ, InfraLineQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---

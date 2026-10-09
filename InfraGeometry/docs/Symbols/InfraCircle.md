@@ -5,14 +5,14 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraCircle
-Keywords: [circle, radius, band, separating cycle, unrolled band, atom, necklace, seam, inert head]
+Keywords: [circle, radius, band, separating cycle, unrolled band, atom, necklace, seam, symbolic object]
 SeeAlso: [InfraArc, InfraMeasurement, FindInfraRepresentative, Undetermined, InfraShell, FindInfraShell]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraCircle]()[*c*, *r*]</code> is the family of circles around *c* at radius *r*. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraCircle]()[*c*, *r*]</code> is the family of circles around *c* at radius *r*. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraCircle]()[*c*, {*r*, *s*}]</code> is the family in the band *r* ≤ *d(c, v)* ≤ *s*; a scalar *r* means `{r, r}`.
 

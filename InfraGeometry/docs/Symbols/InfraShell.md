@@ -5,14 +5,14 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraShell
-Keywords: [shell, sphere, level set, region, inert head, area, counting measure, Riemannian measure]
+Keywords: [shell, sphere, level set, region, symbolic object, area, counting measure, Riemannian measure]
 SeeAlso: [FindInfraShell, InfraBall, InfraSphere, InfraMeasurement, FindInfraRepresentative, InfraInterior, InfraBoundary, InfraShellQ]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraShell]()[*c*, {*r*, *s*}]</code> is the shell about *c*: the vertices at distance between *r* and *s*. It is inert; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraShell]()[*c*, {*r*, *s*}]</code> is the shell about *c*: the vertices at distance between *r* and *s*. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraShell]()[*c*, *r*]</code> is the band {*r*, *r*}: the vertices at distance exactly *r*.
 
