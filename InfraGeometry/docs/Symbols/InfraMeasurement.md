@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraMeasurement
 Keywords: [segment, ray, line, circle, arc, ball, shell, tube, symbolic object, measurement, occupation, faithful, counting measure, Riemannian measure, volume]
-SeeAlso: [FindInfraRepresentative, InfraMemberQ, InfraSubgraph, InfraSegment, InfraBall, InfraShell, InfraTube, InfraInterior, InfraBoundary, Undetermined]
+SeeAlso: [RandomInfraRepresentative, InfraMemberQ, InfraSubgraph, InfraSegment, InfraBall, InfraShell, InfraTube, InfraInterior, InfraBoundary, Undetermined]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -98,9 +98,9 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])]},
-  {axis = FindInfraRepresentative[g, seg]},
+  {axis = RandomInfraRepresentative[g, seg]},
   {regions = {InfraBall[c, 3], InfraShell[c, {2, 3}], InfraTube[seg, 1], InfraCylinder[axis, 1], InfraCone[axis, 1]}},
-  {supports = FindInfraRepresentative[g, #] & /@ regions},
+  {supports = RandomInfraRepresentative[g, #] & /@ regions},
   {Row[InfraSubstrateHighlight[g, {InfraInterior[g, #] -> StandardGreen, InfraBoundary[g, #] -> StandardBlue}] & /@ supports],
    InfraMeasurement[g, regions, "CountingMeasure"], InfraMeasurement[g, regions, "RiemannianMeasure"]}]
 ```
@@ -161,7 +161,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},
   {fat = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
-  {geodesic = FindInfraRepresentative[g, fat]},
+  {geodesic = RandomInfraRepresentative[g, fat]},
   GraphicsRow[Table[
     ListLinePlot[{
       InfraMeasurement[g, Table[InfraBall[c, r], {r, 0, 5}], measure],

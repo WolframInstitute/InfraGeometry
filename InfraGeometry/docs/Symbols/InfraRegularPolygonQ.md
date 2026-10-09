@@ -9,7 +9,7 @@ URI: WolframInstitute/InfraGeometry/ref/InfraRegularPolygonQ
 
 ## Usage
 
-`InfraRegularPolygonQ[graph, cycle, As]` tests whether the cycle is a regular n-gon w.r.t. the metric tuple As, with the same slot grammar as FindInfraRegularPolygon (Integer | {lo, hi} | Automatic per slot).
+`InfraRegularPolygonQ[graph, cycle, As]` tests whether the cycle is a regular n-gon w.r.t. the metric tuple As, with the same slot grammar as RandomInfraRegularPolygon (Integer | {lo, hi} | Automatic per slot).
 
 ## Details & Options
 

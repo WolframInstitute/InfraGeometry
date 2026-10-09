@@ -6,17 +6,17 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraLine
 Keywords: [line, inextensible shortest path, atoms, germ, symbolic object]
-SeeAlso: [FindInfraLine, InfraLineQ, InfraMeasurement, FindInfraRepresentative, FindInfraGeodesic, InfraSegment, InfraRay]
+SeeAlso: [RandomInfraLine, InfraLineQ, InfraMeasurement, RandomInfraRepresentative, RandomInfraGeodesic, InfraSegment, InfraRay]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraLine]()[*p*, *q*]</code> is the line through *p* and *q*: every inextensible shortest path through *p* and then *q*. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraLine]()[*p*, *q*]</code> is the line through *p* and *q*: every inextensible shortest path through *p* and then *q*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraLine]()[*germ*]</code> is the line through a geodesic germ: every inextensible shortest path that contains the germ as a contiguous stretch. The germ is a vertex, a vertex list, a walk graph or a geodesic DAG.
 
-<code>[InfraLine]()[*p*, *q*]</code> inside an [InfraScene]() is the line construction token; [FindInfraLine]() is the search.
+<code>[InfraLine]()[*p*, *q*]</code> inside an [InfraScene]() is the line construction token; [RandomInfraLine]() is the search.
 
 ## Details & Options
 
@@ -67,7 +67,7 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = First @ GraphCenter[g]},
   {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 2]])},
-  {members = FindInfraRepresentative[g, InfraLine[p, q], 3]},
+  {members = RandomInfraRepresentative[g, InfraLine[p, q], 3]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], p, q}], {member, members}]]
 ```
 
@@ -91,7 +91,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = First @ GraphCenter[g]},
   {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 2]])},
-  {germ = First @ FindInfraSegment[g, p, q, All]},
+  {germ = First @ RandomInfraSegment[g, p, q, All]},
   {GraphicsRow @ {
     Labeled[InfraSubstrateHighlight[g, {InfraLine[germ], InfraWalk[germ], p, q}], "germ"],
     Labeled[InfraSubstrateHighlight[g, {InfraLine[p, q], p, q}], "ends"]},
@@ -119,20 +119,20 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = First @ GraphCenter[g]},
   {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 2]])},
-  {members = FindInfraRepresentative[g, InfraLine[p, q], All]},
+  {members = RandomInfraRepresentative[g, InfraLine[p, q], All]},
   {InfraSubstrateHighlight[g, {members, p, q}],
    InfraLineQ[g, members]}]
 ```
 
-The lines through a germ are the lines of [FindInfraLine]() at that germ, and the geodesics that [FindInfraGeodesic]() grows from it on both sides without a budget.
+The lines through a germ are the lines of [RandomInfraLine]() at that germ, and the geodesics that [RandomInfraGeodesic]() grows from it on both sides without a budget.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {germ = {a, First @ AdjacencyList[g, a]}},
-  {members = FindInfraRepresentative[g, InfraLine[germ], All]},
+  {members = RandomInfraRepresentative[g, InfraLine[germ], All]},
   {InfraSubstrateHighlight[g, {members, germ}],
-   Sort @ members === Sort @ FindInfraLine[g, germ, All],
+   Sort @ members === Sort @ RandomInfraLine[g, germ, All],
    Length @ members === InfraMeasurement[g, InfraLine[germ], "Cardinality"]}]
 ```

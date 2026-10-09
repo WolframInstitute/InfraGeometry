@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraBisectingHyperplane
 Keywords: [perpendicular bisector, hyperplane, bisector, separating set, Euclid I.10]
-SeeAlso: [InfraPlane, FindInfraMidpoint, FindInfraEquidistantSet]
+SeeAlso: [InfraPlane, InfraMeasurement, FindInfraEquidistantSet]
 RelatedGuides: [Experimental]
 ---
 
@@ -20,7 +20,7 @@ RelatedGuides: [Experimental]
 
 The bisector of *p1* and *p2* is the set of vertices equidistant from both. It is the codimension-1 object of the metric: in the plane a line, here a vertex set.
 
-**It is empty at odd distance.** If $d(p_1,p_2)$ is odd then no vertex can be equidistant from both, since the two distances would have to be equal halves of an odd number. Below, two vertices at distance 6 on a square grid have a 21-vertex bisector, while at distance 5 the bisector is empty. This is the same parity obstruction that makes [FindInfraMidpoint]() return the two central vertices of each geodesic at odd distance, seen one dimension up.
+**It is empty at odd distance.** If $d(p_1,p_2)$ is odd then no vertex can be equidistant from both, since the two distances would have to be equal halves of an odd number. Below, two vertices at distance 6 on a square grid have a 21-vertex bisector, while at distance 5 the bisector is empty. This is the same parity obstruction that makes [InfraMeasurement]() with `"Midpoint"` return the two central vertices of each geodesic at odd distance, seen one dimension up.
 
 The `{lo, hi}` slab is the repair: widening to $-1 \le d(p_1,v) - d(p_2,v) \le 1$ catches the vertices that straddle the bisector and is non-empty at either parity.
 

@@ -67,7 +67,7 @@ A sequence of `Around` values carries its spread into the quotients, drawn as er
 ```wl
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Large"]},
-  {sampleSet = Take[FindInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 2]], 5]},
+  {sampleSet = Take[RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 2]], 5]},
   {quots = LogDifferenceQuotients[MeanAround /@ Transpose @ Table[InfraMeasurement[g, InfraBall[v, r], "CountingMeasure"], {v, sampleSet}, {r, 0, 8}]]},
   {ListPlot[quots, DataRange -> {1, 8}, PlotRange -> {0, 3.5}, GridLines -> {None, {{2, Gray}}}, AxesLabel -> {"r", "q(r)"}], quots}]
 ```

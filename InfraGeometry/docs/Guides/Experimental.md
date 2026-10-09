@@ -18,7 +18,7 @@ Every exported symbol that no other guide of the site covers, one section per ke
 ### RiemannianInfrageometry · InfraWalk.wl
 
 - `InfraWalk` the literal walk through p1, ..., pk, inside InfraScene and InfraSubstrateHighlight
-- `FindInfraWalk` grows a germ, a vertex or a walk, into the walks of the class cut by the Properties rules until a stopping condition or the budget stops them
+- `RandomInfraWalk` grows a germ, a vertex or a walk, into the walks of the class cut by the Properties rules until a stopping condition or the budget stops them
 - `WalkSingularities` the self-intersections, self-tangencies and cusps of a walk
 - `InfraImmersedQ` whether a walk is immersed, a walk with no cusp
 - `InfraGenericQ` whether a walk is a generic immersed curve

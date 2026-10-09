@@ -1,22 +1,22 @@
 ---
 Template: Symbol
-Name: FindInfraLine
+Name: RandomInfraLine
 Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
-URI: WolframInstitute/InfraGeometry/ref/FindInfraLine
+URI: WolframInstitute/InfraGeometry/ref/RandomInfraLine
 Keywords: [line, inextensible geodesic, Euclid Postulate 2, parallel postulate]
-SeeAlso: [InfraLine, InfraLineQ, FindInfraRepresentative, FindInfraGeodesic, FindInfraSegment, FindInfraRay, FindInfraParallel, LineCount]
+SeeAlso: [InfraLine, InfraLineQ, RandomInfraRepresentative, RandomInfraGeodesic, RandomInfraSegment, RandomInfraRay, RandomInfraParallel, LineCount]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[FindInfraLine]()[*g*, *a*, *b*]</code> gives one line through *a* and *b* in *g* — an inextensible geodesic containing both — as a vertex list.
+<code>[RandomInfraLine]()[*g*, *a*, *b*]</code> gives one line through *a* and *b* in *g* — an inextensible geodesic containing both — as a vertex list.
 
-<code>[FindInfraLine]()[*g*, *seq*]</code> gives one line containing the geodesic vertex list *seq* as a contiguous subsequence.
+<code>[RandomInfraLine]()[*g*, *seq*]</code> gives one line containing the geodesic vertex list *seq* as a contiguous subsequence.
 
-<code>[FindInfraLine]()[*g*, *a*, *b*, *n*]</code> gives a `List` of exactly *n* lines or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives every line.
+<code>[RandomInfraLine]()[*g*, *a*, *b*, *n*]</code> gives a `List` of exactly *n* lines or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives every line.
 
 ## Details & Options
 
@@ -24,7 +24,7 @@ A line is an **inextensible geodesic**: a shortest path that no neighbour of eit
 
 That is the intrinsic reading of Euclid's second postulate — produce a finite straight line continuously — and it is where the analogy with the plane breaks hardest. In the plane two points determine one line. On a lattice they determine an enormous family: below, two vertices at distance 5 on a 313-vertex square-tiling patch lie on 5 242 880 lines, against 6144 on the hexagonal tiling and 1386 on the irregular mesh.
 
-The search runs on the substrate directly: a geodesic from *a* to *b*, prolonged one geodesic step at a time, every prolongation at the back and then every prolongation at the front, kept when neither end can be prolonged. It does not read the graph of <code>[InfraLine]()[*a*, *b*]</code>, so it is the check on that graph, and it returns exactly the shapes [FindInfraRepresentative]() gives for that head.
+The search runs on the substrate directly: a geodesic from *a* to *b*, prolonged one geodesic step at a time, every prolongation at the back and then every prolongation at the front, kept when neither end can be prolonged. It does not read the graph of <code>[InfraLine]()[*a*, *b*]</code>, so it is the check on that graph, and it returns exactly the shapes [RandomInfraRepresentative]() gives for that head.
 
 The search enumerates. To count lines, use <code>[InfraMeasurement]()[*g*, [InfraLine]()[*a*, *b*], "Cardinality"]</code>, which reads the count off the head's graph without enumerating a line.
 
@@ -64,7 +64,7 @@ Row[Table[
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
      Labeled[
        InfraSubstrateHighlight[g,
-         {FindInfraLine[g, a, b, UpTo[3]], {a, b}},
+         {RandomInfraLine[g, a, b, UpTo[3]], {a, b}},
          "PointSizeRange" -> 15,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
          ImageSize -> 250],
@@ -77,19 +77,19 @@ Row[Table[
 Through an edge of the 6-cycle there are three lines, not four: the ends 5 and 4 are each admissible on their own side, but the pair is not.
 
 ```wl
-FindInfraLine[CycleGraph[6], 1, 2, All]
+RandomInfraLine[CycleGraph[6], 1, 2, All]
 ```
 
 The count-less call is one line; a bounded count gives a list, and a strict count that cannot be met is `$Failed`.
 
 ```wl
-{FindInfraLine[CycleGraph[6], 1, 2], FindInfraLine[CycleGraph[6], 1, 2, 2], FindInfraLine[CycleGraph[6], 1, 2, 5]}
+{RandomInfraLine[CycleGraph[6], 1, 2], RandomInfraLine[CycleGraph[6], 1, 2, 2], RandomInfraLine[CycleGraph[6], 1, 2, 5]}
 ```
 
 A given geodesic prolongs to the lines containing it.
 
 ```wl
-FindInfraLine[GridGraph[{4, 4}], {1, 2, 6}, All]
+RandomInfraLine[GridGraph[{4, 4}], {1, 2, 6}, All]
 ```
 
 ## Properties and Relations
@@ -97,7 +97,7 @@ FindInfraLine[GridGraph[{4, 4}], {1, 2, 6}, All]
 Every line satisfies [InfraLineQ]().
 
 ```wl
-InfraLineQ[GridGraph[{4, 4}], FindInfraLine[GridGraph[{4, 4}], 6, 7, All]]
+InfraLineQ[GridGraph[{4, 4}], RandomInfraLine[GridGraph[{4, 4}], 6, 7, All]]
 ```
 
 The search agrees with the graph of the head.
@@ -105,7 +105,7 @@ The search agrees with the graph of the head.
 ```wl
 With[
   {g = GridGraph[{4, 4}]},
-  Sort @ FindInfraLine[g, 6, 7, All] === Sort @ FindInfraRepresentative[g, InfraLine[6, 7], All]]
+  Sort @ RandomInfraLine[g, 6, 7, All] === Sort @ RandomInfraRepresentative[g, InfraLine[6, 7], All]]
 ```
 
 A line through an edge is that edge extended with no budget.
@@ -113,5 +113,5 @@ A line through an edge is that edge extended with no budget.
 ```wl
 With[
   {g = GridGraph[{4, 4}]},
-  {Length @ FindInfraLine[g, {6, 7}, All], InfraMeasurement[g, InfraLine[6, 7], "Cardinality"]}]
+  {Length @ RandomInfraLine[g, {6, 7}, All], InfraMeasurement[g, InfraLine[6, 7], "Cardinality"]}]
 ```

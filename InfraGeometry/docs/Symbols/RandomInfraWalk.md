@@ -1,24 +1,24 @@
 ---
 Template: Symbol
-Name: FindInfraWalk
+Name: RandomInfraWalk
 Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
-URI: WolframInstitute/InfraGeometry/ref/FindInfraWalk
+URI: WolframInstitute/InfraGeometry/ref/RandomInfraWalk
 Keywords: [walk, germ, simple path, window, energy, weight, random walk, stopping condition, next vertex, class of walks]
-SeeAlso: [FindInfraGeodesic, FindInfraSegment, FindInfraLine, FindInfraRepresentative, InfraWalk, InfraWalkQ, WalkSingularities]
+SeeAlso: [RandomInfraGeodesic, RandomInfraSegment, RandomInfraLine, RandomInfraRepresentative, InfraWalk, InfraWalkQ, WalkSingularities]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[FindInfraWalk]()[*g*, *germ*, *kspec*]</code> gives one walk grown from *germ* one step at a time under the rules of `Properties`, until a stopping condition fires or the budget *kspec* is spent.
+<code>[RandomInfraWalk]()[*g*, *germ*, *kspec*]</code> gives one walk grown from *germ* one step at a time under the rules of `Properties`, until a stopping condition fires or the budget *kspec* is spent.
 
-<code>[FindInfraWalk]()[*g*, *germ*, *kspec*, *n*]</code> gives a `List` of exactly *n* walks or `{}`; `UpTo[n]` gives up to *n*; `All` gives every one.
+<code>[RandomInfraWalk]()[*g*, *germ*, *kspec*, *n*]</code> gives a `List` of exactly *n* walks or `{}`; `UpTo[n]` gives up to *n*; `All` gives every one.
 
 ## Details & Options
 
-The germ is the seed of the walk: a vertex, a vertex list, a walk graph, or a list of germs. A vertex is the one-vertex germ, so `FindInfraWalk[g, p, ...]` and `FindInfraWalk[g, {p}, ...]` are the same call. A germ is read as a vertex first, so on a substrate labelled by lists the vertex `{1, 1}` is one point, not the walk of its entries. A walk graph is read as its vertex sequence; a list of germs gives the walks grown from each.
+The germ is the seed of the walk: a vertex, a vertex list, a walk graph, or a list of germs. A vertex is the one-vertex germ, so `RandomInfraWalk[g, p, ...]` and `RandomInfraWalk[g, {p}, ...]` are the same call. A germ is read as a vertex first, so on a substrate labelled by lists the vertex `{1, 1}` is one point, not the walk of its entries. A walk graph is read as its vertex sequence; a list of germs gives the walks grown from each.
 
 *kspec* is the budget in edges added on each growing side: `UpTo[k]` (at most *k*), `{k}` (exactly *k*), `{lo, hi}`, or `Infinity`. A bare integer is no *kspec*. `Infinity` is legal only under a hard rule that bounds the class: a bare `"Simple"` or a bare `"Shortest"`.
 
@@ -65,9 +65,9 @@ Every order works with every rule. `Identity` and a function do not see the weig
 
 `"StoppingCondition"` is a predicate on the whole walk so far, its vertex sequence, read after every step and on the germ once it has an edge. It can test both tips, and when it fires the walk stops on both sides. A walk also stops when the budget is spent or no admissible step remains.
 
-An endpoint is a stopping condition. `"StoppingCondition" -> (Last[#] === q &)` stops each walk at its first arrival at *q*; the walks that end at *q* are the walks from the germ to *q*. A shortest path between two points is [FindInfraSegment](); the walk family has no two-point form.
+An endpoint is a stopping condition. `"StoppingCondition" -> (Last[#] === q &)` stops each walk at its first arrival at *q*; the walks that end at *q* are the walks from the germ to *q*. A shortest path between two points is [RandomInfraSegment](); the walk family has no two-point form.
 
-[FindInfraGeodesic]() is this call with `{"Shortest", s}` first among the rules.
+[RandomInfraGeodesic]() is this call with `{"Shortest", s}` first among the rules.
 
 ## Basic Examples
 
@@ -78,7 +78,7 @@ With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {c = (SeedRandom[2]; RandomInfraPoint[g, GraphCenter[g]])},
   GraphicsRow @ Table[
-    InfraSubstrateHighlight[g, {(SeedRandom[5]; FindInfraWalk[g, c, UpTo[9], Properties -> {{"Shortest", 5, p}}]), c}, "Arrowheads" -> True],
+    InfraSubstrateHighlight[g, {(SeedRandom[5]; RandomInfraWalk[g, c, UpTo[9], Properties -> {{"Shortest", 5, p}}]), c}, "Arrowheads" -> True],
     {p, {1, 0.3, 0.01}}]]
 ```
 
@@ -88,7 +88,7 @@ All simple walks of 3 edges from the centre of the square tiling.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {walks = FindInfraWalk[g, a, {3}, All, Properties -> {"Simple"}]},
+  {walks = RandomInfraWalk[g, a, {3}, All, Properties -> {"Simple"}]},
   {InfraSubstrateHighlight[g, {walks, a}], Length @ walks}]
 ```
 
@@ -98,7 +98,7 @@ One simple walk of exactly 5 edges, beside its vertex sequence.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {walk = FindInfraWalk[g, a, {5}, Properties -> {"Simple"}]},
+  {walk = RandomInfraWalk[g, a, {5}, Properties -> {"Simple"}]},
   {InfraSubstrateHighlight[g, {walk, a}, "Arrowheads" -> True], Last /@ VertexList[walk]}]
 ```
 
@@ -109,7 +109,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {germ = {a, First @ AdjacencyList[g, a]}},
-  {walks = FindInfraWalk[g, germ, UpTo[2], All, Properties -> {"Simple"}]},
+  {walks = RandomInfraWalk[g, germ, UpTo[2], All, Properties -> {"Simple"}]},
   {InfraSubstrateHighlight[g, {walks, germ}], Length @ walks}]
 ```
 
@@ -124,7 +124,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   GraphicsRow @ Table[
-    With[{walks = FindInfraWalk[g, a, UpTo[4], All, Properties -> rules]},
+    With[{walks = RandomInfraWalk[g, a, UpTo[4], All, Properties -> rules]},
       Labeled[InfraSubstrateHighlight[g, {walks, a}], Row[{rules, ": ", Length @ walks}]]],
     {rules, {{"Simple"}, {{"Simple", 2}}, {}}}]]
 ```
@@ -138,7 +138,7 @@ With[
   GraphicsRow @ Table[
     With[
       {walk = (SeedRandom[4];
-        FindInfraWalk[g, a, {30}, Properties -> {{"Simple", Infinity, p}}])},
+        RandomInfraWalk[g, a, {30}, Properties -> {{"Simple", Infinity, p}}])},
       Labeled[InfraSubstrateHighlight[g, {walk, a}, "Arrowheads" -> True],
         Row[{p, ": ", 31 - Length @ DeleteDuplicates[Last /@ VertexList @ walk]}]]],
     {p, {0.01, 0.1, 1}}]]
@@ -152,7 +152,7 @@ With[
   {a = First @ GraphCenter[g]},
   GraphicsRow @ Table[
     With[
-      {loops = Select[FindInfraWalk[g, a, {6}, All, Properties -> {rule}], Last @ Last @ VertexList @ # === a &]},
+      {loops = Select[RandomInfraWalk[g, a, {6}, All, Properties -> {rule}], Last @ Last @ VertexList @ # === a &]},
       Labeled[InfraSubstrateHighlight[g, {loops, a}], Row[{rule, ": ", Length @ loops}]]],
     {rule, {"Simple", {"Simple", 3}}}]]
 ```
@@ -166,7 +166,7 @@ With[
   {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 6]])},
   GraphicsRow @ Table[
     InfraSubstrateHighlight[g,
-      {(SeedRandom[seed]; FindInfraWalk[g, a, {12}, Properties -> {{w |-> GraphDistance[g, Last @ w, q], 1, 0.3}}]), a, q},
+      {(SeedRandom[seed]; RandomInfraWalk[g, a, {12}, Properties -> {{w |-> GraphDistance[g, Last @ w, q], 1, 0.3}}]), a, q},
       "Arrowheads" -> True],
     {seed, 3}]]
 ```
@@ -177,7 +177,7 @@ With[
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {walks = FindInfraWalk[g, a, {4}, All, Properties -> {{"Stretched", 2}}]},
+  {walks = RandomInfraWalk[g, a, {4}, All, Properties -> {{"Stretched", 2}}]},
   {InfraSubstrateHighlight[g, {walks, a}], Length @ walks}]
 ```
 
@@ -189,7 +189,7 @@ Under `RandomChoice` the walk is a random one, one admissible step at a time, an
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {walks = (SeedRandom[1]; FindInfraWalk[g, a, {12}, 3, Properties -> {"Simple"}, "NextVertexFunction" -> RandomChoice])},
+  {walks = (SeedRandom[1]; RandomInfraWalk[g, a, {12}, 3, Properties -> {"Simple"}, "NextVertexFunction" -> RandomChoice])},
   GraphicsRow[InfraSubstrateHighlight[g, {#, a}, "Arrowheads" -> True] & /@ walks]]
 ```
 
@@ -203,7 +203,7 @@ With[
   {a = First @ GraphCenter[g]},
   {germ = {a, First @ AdjacencyList[g, a]}},
   GraphicsRow @ Table[
-    With[{walks = FindInfraWalk[g, germ, UpTo[2], All, Properties -> {"Simple"}, "Direction" -> dir]},
+    With[{walks = RandomInfraWalk[g, germ, UpTo[2], All, Properties -> {"Simple"}, "Direction" -> dir]},
       Labeled[InfraSubstrateHighlight[g, {walks, germ}], Row[{dir, ": ", Length @ walks}]]],
     {dir, {"Forward", "Backward", "BothSides"}}]]
 ```
@@ -217,7 +217,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 3]])},
-  {grown = FindInfraWalk[g, a, UpTo[5], All, Properties -> {"Simple"}, "StoppingCondition" -> (Last[#] === b &)]},
+  {grown = RandomInfraWalk[g, a, UpTo[5], All, Properties -> {"Simple"}, "StoppingCondition" -> (Last[#] === b &)]},
   {arrived = Select[grown, Last @ Last @ VertexList @ # === b &]},
   {InfraSubstrateHighlight[g, {arrived, a, b}], Length /@ {grown, arrived}}]
 ```
@@ -227,7 +227,7 @@ Under `"BothSides"` the predicate reads both tips: the shortest paths through an
 ```wl
 With[
   {g = GridGraph[{7, 7}]},
-  {walks = FindInfraWalk[g, {24, 25}, Infinity, All, Properties -> {"Shortest"}, "Direction" -> "BothSides",
+  {walks = RandomInfraWalk[g, {24, 25}, Infinity, All, Properties -> {"Shortest"}, "Direction" -> "BothSides",
     "StoppingCondition" -> (First[#] === 22 || Last[#] === 28 &)]},
   {stopped = Select[walks, MatchQ[Last /@ VertexList @ #, {22, __} | {__, 28}] &]},
   {InfraSubstrateHighlight[g, {stopped, {24, 25}, 22, 28}], Length /@ {walks, stopped}}]
@@ -241,7 +241,7 @@ A vertex and the one-vertex list are the same germ.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {FindInfraWalk[g, a, UpTo[3], All] === FindInfraWalk[g, {a}, UpTo[3], All]}]
+  {RandomInfraWalk[g, a, UpTo[3], All] === RandomInfraWalk[g, {a}, UpTo[3], All]}]
 ```
 
 With the hard `"Shortest"` at scale `Infinity` the walks are shortest paths, so the walks to *b* are the members of the segment.
@@ -252,10 +252,10 @@ With[
   {a = First @ GraphCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 3]])},
   {walks = Select[
-    FindInfraWalk[g, a, Infinity, All, Properties -> {"Shortest"}, "StoppingCondition" -> (Last[#] === b &)],
+    RandomInfraWalk[g, a, Infinity, All, Properties -> {"Shortest"}, "StoppingCondition" -> (Last[#] === b &)],
     Last @ Last @ VertexList @ # === b &]},
   {InfraSubstrateHighlight[g, {walks, a, b}],
-   Sort[Last /@ VertexList[#] & /@ walks] === Sort @ FindInfraSegment[g, a, b, All]}]
+   Sort[Last /@ VertexList[#] & /@ walks] === Sort @ RandomInfraSegment[g, a, b, All]}]
 ```
 
 A soft rule changes the order, not the class: under `All` the weighted walks are the walks of the hard rules.
@@ -264,8 +264,8 @@ A soft rule changes the order, not the class: under `All` the weighted walks are
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {Sort @ FindInfraWalk[g, a, {4}, All, Properties -> {"Simple", {"Shortest", 3, 0.3}}] ===
-    Sort @ FindInfraWalk[g, a, {4}, All, Properties -> {"Simple"}]}]
+  {Sort @ RandomInfraWalk[g, a, {4}, All, Properties -> {"Simple", {"Shortest", 3, 0.3}}] ===
+    Sort @ RandomInfraWalk[g, a, {4}, All, Properties -> {"Simple"}]}]
 ```
 
 The soft `"Stretched"` weighs as the soft `"Shortest"`: under one seed the two draw the same walk.
@@ -274,7 +274,7 @@ The soft `"Stretched"` weighs as the soft `"Shortest"`: under one seed the two d
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {SameQ @@ Table[Last /@ VertexList @ (SeedRandom[1]; FindInfraWalk[g, a, {6}, Properties -> {{rule, 3, 0.3}}]), {rule, {"Stretched", "Shortest"}}]}]
+  {SameQ @@ Table[Last /@ VertexList @ (SeedRandom[1]; RandomInfraWalk[g, a, {6}, Properties -> {{rule, 3, 0.3}}]), {rule, {"Stretched", "Shortest"}}]}]
 ```
 
 The cusps, self-tangencies and triple points of a walk are read by [WalkSingularities](); a class free of one of them is a predicate on it.
@@ -283,7 +283,7 @@ The cusps, self-tangencies and triple points of a walk are read by [WalkSingular
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {walks = Select[FindInfraWalk[g, a, {6}, All, Properties -> {{"Simple", 2}}],
+  {walks = Select[RandomInfraWalk[g, a, {6}, All, Properties -> {{"Simple", 2}}],
     WalkSingularities[Last /@ VertexList @ #]["SelfTangencies"] =!= {} &]},
   {InfraSubstrateHighlight[g, {Take[walks, UpTo[3]], a}], Length @ walks}]
 ```
@@ -296,7 +296,7 @@ A call with `Infinity` and no hard rule that bounds the class is refused, since 
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {MatchQ[FindInfraWalk[g, a, Infinity, Properties -> {}], _FindInfraWalk], MatchQ[FindInfraWalk[g, a, 3, All], _FindInfraWalk]}]
+  {MatchQ[RandomInfraWalk[g, a, Infinity, Properties -> {}], _FindInfraWalk], MatchQ[RandomInfraWalk[g, a, 3, All], _FindInfraWalk]}]
 ```
 
 Under `Identity` the weights are ignored, so a soft rule changes nothing: the walk is the canonical walk of the hard rules.
@@ -305,6 +305,6 @@ Under `Identity` the weights are ignored, so a soft rule changes nothing: the wa
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {FindInfraWalk[g, a, {4}, Properties -> {"Simple", {"Shortest", 3, 0.01}}, "NextVertexFunction" -> Identity] ===
-    FindInfraWalk[g, a, {4}, Properties -> {"Simple"}]}]
+  {RandomInfraWalk[g, a, {4}, Properties -> {"Simple", {"Shortest", 3, 0.01}}, "NextVertexFunction" -> Identity] ===
+    RandomInfraWalk[g, a, {4}, Properties -> {"Simple"}]}]
 ```

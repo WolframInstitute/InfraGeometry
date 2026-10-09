@@ -46,7 +46,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {l1 = FindInfraLine[g, c, far]},
+  {l1 = RandomInfraLine[g, c, far]},
   {p = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[l1, #] &]},
   {l2 = VertexList @ First @ FindInfraPerpendicular[g, l1, p, 1, "Radius" -> 3]},
   <|"default (Subset)" -> InfraPerpendicularQ[g, l1, l2],
@@ -61,7 +61,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {l1 = FindInfraLine[g, c, far]},
+  {l1 = RandomInfraLine[g, c, far]},
   {p = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[l1, #] &]},
   {l2 = VertexList @ First @ FindInfraPerpendicular[g, l1, p, 1, "Radius" -> 3]},
   Association @ Table[
@@ -78,6 +78,6 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {l1 = FindInfraLine[g, c, far]},
+  {l1 = RandomInfraLine[g, c, far]},
   InfraPerpendicularQ[g, l1, Complement[VertexList[g], l1][[1 ;; 3]]]]
 ```

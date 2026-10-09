@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraDensity
 Keywords: [density, occupation, marginal, counting measure, multiset, support]
-SeeAlso: [InfraMeasurement, FindInfraRepresentative, InfraSubstrateHighlight, FindInfraSegment, FindInfraMidpoint, InfraIntersection]
+SeeAlso: [InfraMeasurement, RandomInfraRepresentative, InfraSubstrateHighlight, RandomInfraSegment, InfraIntersection]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -44,7 +44,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
-  {density = InfraDensity[g, FindInfraSegment[g, a, b, All]]},
+  {density = InfraDensity[g, RandomInfraSegment[g, a, b, All]]},
   {InfraSubstrateHighlight[g, {density}, "PointSizeRange" -> {4, 16}], density}]
 ```
 
@@ -66,7 +66,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
-  {density = InfraDensity[g, FindInfraSegment[g, a, b, All]]},
+  {density = InfraDensity[g, RandomInfraSegment[g, a, b, All]]},
   {InfraSubstrateHighlight[g, {density / Max[density]}, "PointSizeRange" -> {4, 16}],
    Max[density / Max[density]], Total[density / Total[density]]}]
 ```
@@ -81,8 +81,8 @@ With[
   {a = First @ GraphCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {seg = InfraSegment[a, b]},
-  {InfraSubstrateHighlight[g, {InfraDensity[g, FindInfraRepresentative[g, seg, All]]}, "PointSizeRange" -> {4, 16}],
-   InfraDensity[g, FindInfraRepresentative[g, seg, All]] === InfraMeasurement[g, seg, "VertexDensity"],
+  {InfraSubstrateHighlight[g, {InfraDensity[g, RandomInfraRepresentative[g, seg, All]]}, "PointSizeRange" -> {4, 16}],
+   InfraDensity[g, RandomInfraRepresentative[g, seg, All]] === InfraMeasurement[g, seg, "VertexDensity"],
    InfraDensity[g, InfraMeasurement[g, seg, "Graph"]] === InfraMeasurement[g, seg, "VertexDensity"]}]
 ```
 
@@ -97,13 +97,13 @@ With[
   {InfraSubstrateHighlight[g, {seg}], InfraDensity[g, seg]}]
 ```
 
-[FindInfraMidpoint]() returns a density: the number of shortest paths centred at each vertex.
+[InfraMeasurement]() with `"Midpoint"` returns a density: the number of shortest paths centred at each vertex.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
-  {midpoint = FindInfraMidpoint[g, a, b]},
+  {midpoint = InfraMeasurement[g, InfraSegment[a, b], "Midpoint"]},
   {InfraSubstrateHighlight[g, {InfraSegment[a, b], midpoint}], midpoint}]
 ```

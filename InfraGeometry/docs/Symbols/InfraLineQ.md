@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraLineQ
 Keywords: [line, inextensible geodesic, predicate]
-SeeAlso: [FindInfraLine, InfraLine, InfraSegmentQ, InfraRayQ]
+SeeAlso: [RandomInfraLine, InfraLine, InfraSegmentQ, InfraRayQ]
 RelatedGuides: [Experimental]
 ---
 
@@ -22,7 +22,7 @@ Two conditions: the sequence is a geodesic ([InfraSegmentQ]()), and stepping off
 
 Sequences shorter than two vertices are `False`.
 
-The predicate is the companion of [FindInfraLine](), and every line that finder returns satisfies it under every `Method`.
+The predicate is the companion of [RandomInfraLine](), and every line that finder returns satisfies it under every `Method`.
 
 ## Basic Examples
 
@@ -40,10 +40,10 @@ On the 6-cycle a geodesic of length 3 reaches the antipode and is a line; one of
 
 ## Properties and Relations
 
-Every line [FindInfraLine]() produces satisfies the predicate; the pool is accepted as a whole.
+Every line [RandomInfraLine]() produces satisfies the predicate; the pool is accepted as a whole.
 
 ```wl
-InfraLineQ[GridGraph[{4, 4}], FindInfraLine[GridGraph[{4, 4}], 6, 7, All]]
+InfraLineQ[GridGraph[{4, 4}], RandomInfraLine[GridGraph[{4, 4}], 6, 7, All]]
 ```
 
 A line on a grid runs from boundary to boundary; the grid row {1, 2, 3, 4} is a line, the stretch {2, 3} is not.

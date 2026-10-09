@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/SprayGraph
 Keywords: [spray of shortest paths, exponential map, breadth-first search, shortest-path DAG, shortest paths]
-SeeAlso: [InfraMeasurement, FindInfraGeodesic, FindInfraShell, InfraBall]
+SeeAlso: [InfraMeasurement, RandomInfraGeodesic, FindInfraShell, InfraBall]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -100,7 +100,7 @@ With[
   {c = First @ GraphCenter[g]},
   {sprayDag = SprayGraph[g, c, "AxisLength" -> 3]},
   {InfraSubstrateHighlight[g, {sprayDag, FindInfraShell[g, c, 3]}],
-   Sort @ Complement[VertexList[sprayDag], FindInfraRepresentative[g, InfraBall[c, 2]]] === FindInfraShell[g, c, 3],
+   Sort @ Complement[VertexList[sprayDag], RandomInfraRepresentative[g, InfraBall[c, 2]]] === FindInfraShell[g, c, 3],
    VertexCount[sprayDag] === InfraMeasurement[g, InfraBall[c, 3], "CountingMeasure"]}]
 ```
 

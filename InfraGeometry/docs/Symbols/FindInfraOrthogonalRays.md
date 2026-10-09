@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraOrthogonalRays
 Keywords: [orthogonal frame, perpendicular rays, negative, reflection, projection test, clique, vertex list]
-SeeAlso: [FindInfraOrthogonalAxes, OrthogonalCoordinates, FindInfraRay, FindInfraLine, InfraPerpendicularQ, FindInfraSpanningAxes, InfraSubstrateHighlight]
+SeeAlso: [FindInfraOrthogonalAxes, OrthogonalCoordinates, RandomInfraRay, RandomInfraLine, InfraPerpendicularQ, FindInfraSpanningAxes, InfraSubstrateHighlight]
 RelatedGuides: [Experimental]
 ---
 
@@ -24,7 +24,7 @@ The problem is well posed. Fix a graph *g*, a vertex *c* and a length *len*.
 - Two rays are **perpendicular** by the test of [FindInfraOrthogonalAxes](): the shortest-path projection of every vertex of each onto the other is *c*, that is `d(v, w) > Max[d(c, v), d(c, w)]` for every vertex *v* of one and *w* of the other, both different from *c*. The relation is symmetric, so the sets of mutually perpendicular rays are the cliques of a finite graph, and the largest number of mutually perpendicular rays at *c* is its clique number.
 - A single ray carries no right angle. On the grid `d((2, 0), (0, 2)) = 4 = d((2, 0), (-2, 0))`: the distances do not tell a quarter turn from a half turn. The test therefore passes the **opposite** of a ray as well, the reflection of the ray through *c*, and a frame of the grid `Z^d` is `2 d` rays, the `d` directions each with its negative. A direction is read after identifying each ray with its negative.
 - Where the negative of a ray does not exist or is not unique, the two maxima differ: the number of mutually perpendicular lines through *c*, [FindInfraOrthogonalAxes](), and the number of mutually perpendicular rays at *c*. At a path endpoint there is a ray and no line. In Euclidean space both are the dimension, the rays counted up to their negatives.
-- An axis splits at *c* into two rays, and a ray extends through *c* to a line with [FindInfraLine]().
+- An axis splits at *c* into two rays, and a ray extends through *c* to a line with [RandomInfraLine]().
 - *len* is `All`, an integer *k*, `UpTo[k]` or `{min, max}` (*max* may be `Infinity`); each ray is maximal inside the range, so `All` never returns a sub-ray of a ray. The count-less call gives the first set, `n` the first *n* sets, `All` every maximal set. The rank is a longer ray first, then fewer vertices in the geodesic interval of its ends, so the straight frame comes first.
 - *c* is a vertex or an association `<| v1 -> w1, ... |>` of vertices, as in [FindInfraOrthogonalAxes]().
 

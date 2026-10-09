@@ -6,17 +6,17 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraRay
 Keywords: [ray, half-line, direction, pencil, symbolic object]
-SeeAlso: [FindInfraRay, InfraRayQ, InfraMeasurement, FindInfraRepresentative, InfraLine, InfraSegment]
+SeeAlso: [RandomInfraRay, InfraRayQ, InfraMeasurement, RandomInfraRepresentative, InfraLine, InfraSegment]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraRay]()[*p*, *q*]</code> is the ray from *p* through *q*: every shortest path from *p* through *q* that cannot be prolonged past its last vertex. It is a symbolic object; [InfraMeasurement]() and [FindInfraRepresentative]() evaluate it on a graph.
+<code>[InfraRay]()[*p*, *q*]</code> is the ray from *p* through *q*: every shortest path from *p* through *q* that cannot be prolonged past its last vertex. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
 
 <code>[InfraRay]()[*p*, *p*]</code> is the pencil at *p*: every ray from *p*.
 
-<code>[InfraRay]()[*p*, *q*]</code> inside an [InfraScene]() is the ray construction token; [FindInfraRay]() is the search.
+<code>[InfraRay]()[*p*, *q*]</code> inside an [InfraScene]() is the ray construction token; [RandomInfraRay]() is the search.
 
 ## Details & Options
 
@@ -24,7 +24,7 @@ Its graph — <code>[InfraMeasurement]()[*g*, *ray*, "Graph"]</code> — is one 
 
 Rays to different sinks differ in length, so `"Length"` is a `List` of the lengths present.
 
-Every member begins at *p*. A member is a vertex list; [FindInfraRepresentative]() reads one, several or all of them.
+Every member begins at *p*. A member is a vertex list; [RandomInfraRepresentative]() reads one, several or all of them.
 
 ## Basic Examples
 
@@ -60,7 +60,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
   {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
-  {members = FindInfraRepresentative[g, InfraRay[o, through], 3]},
+  {members = RandomInfraRepresentative[g, InfraRay[o, through], 3]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], o, through}], {member, members}]]
 ```
 
@@ -96,7 +96,7 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
   {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
-  {members = FindInfraRepresentative[g, InfraRay[o, through], All]},
+  {members = RandomInfraRepresentative[g, InfraRay[o, through], All]},
   {InfraSubstrateHighlight[g, {members, o, through}],
    InfraRayQ[g, members]}]
 ```

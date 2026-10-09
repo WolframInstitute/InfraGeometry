@@ -13,4 +13,4 @@ URI: WolframInstitute/InfraGeometry/ref/FindInfraOsculatingShell
 
 ## Details & Options
 
-Forwards Properties and "NextVertexFunction" to FindInfraSphere.
+Forwards Properties and "NextVertexFunction" to RandomInfraSphere.

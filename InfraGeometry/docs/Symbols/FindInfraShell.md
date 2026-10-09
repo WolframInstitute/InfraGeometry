@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraShell
 Keywords: [shell, sphere, level surface, volume growth, dimension]
-SeeAlso: [InfraShell, InfraBall, FindInfraSphere, InfraMeasurement, InfraCircle, InfraShellQ]
+SeeAlso: [InfraShell, InfraBall, RandomInfraSphere, InfraMeasurement, InfraCircle, InfraShellQ]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
@@ -23,7 +23,7 @@ It is the discrete analogue of a sphere, not of a circle: it is codimension-1 as
 
 The shell is the substrate of the volume-growth invariants. Its cardinality as a function of *r* is the surface-area profile, which [InfraMeasurement]() reads as the `"CountingMeasure"` of [InfraShell]() at every radius, and on a flat lattice it grows **linearly**, which is the statement that the dimension is 2. The slope is a property of the tiling: 4 per step on the square grid, 3 on the hexagonal.
 
-It is the level set of the symbolic object [InfraShell](), as a function. The connected subsets of a shell that separate the centre from the outside are [FindInfraSphere]().
+It is the level set of the symbolic object [InfraShell](), as a function. The connected subsets of a shell that separate the centre from the outside are [RandomInfraSphere]().
 
 Corresponding notions in the classical axiom systems:
 
@@ -74,7 +74,7 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},
   {areas = Table[Length @ FindInfraShell[g, c, r], {r, 0, 5}]},
-  {volumes = Table[Length @ FindInfraRepresentative[g, InfraBall[c, r]], {r, 0, 5}]},
+  {volumes = Table[Length @ RandomInfraRepresentative[g, InfraBall[c, r]], {r, 0, 5}]},
   {ListLinePlot[{Accumulate @ areas, volumes}, DataRange -> {0, 5}, PlotMarkers -> {Automatic, Medium},
      PlotLegends -> {"partial sums of |S_r|", "|B_r|"}, AxesLabel -> {"r", None}],
    Accumulate[areas] === volumes}]

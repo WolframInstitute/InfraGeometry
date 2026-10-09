@@ -64,7 +64,7 @@ With[
 
 ## Properties and Relations
 
-Every midpoint of two vertices is equidistant from them, so [FindInfraMidpoint]() lands inside the bisector.
+Every midpoint of two vertices is equidistant from them, so [InfraMeasurement]() with `"Midpoint"` lands inside the bisector.
 
 ```wl
 With[
@@ -72,5 +72,5 @@ With[
   {c = First @ GraphCenter[g]},
   {a = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 && GraphDistance[g, a, #] == 8 &]},
-  SubsetQ[FindInfraEquidistantSet[g, {a, b}], Keys @ FindInfraMidpoint[g, a, b]]]
+  SubsetQ[FindInfraEquidistantSet[g, {a, b}], Keys @ InfraMeasurement[g, InfraSegment[a, b], "Midpoint"]]]
 ```

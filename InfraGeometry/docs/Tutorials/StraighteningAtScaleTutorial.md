@@ -31,8 +31,8 @@ GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, "Large", "KeepCoordinates" -> True])},
     {c = First @ GraphCenter[g]},
-    {germ = First @ FindInfraRepresentative[g, InfraSegment[First @ FindInfraShell[g, c, 8], c], 1]},
-    {walks = FindInfraGeodesic[g, germ, r, {10}, All]},
+    {germ = First @ RandomInfraRepresentative[g, InfraSegment[First @ FindInfraShell[g, c, 8], c], 1]},
+    {walks = RandomInfraGeodesic[g, germ, r, {10}, All]},
     InfraSubstrateHighlight[g, {
       walks -> StandardOrange,
       SelectInfraWalk[g, walks, All, "From" -> "MostVisited"] -> StandardRed,
@@ -59,11 +59,11 @@ With[
     With[
       {g = (SeedRandom[2]; InfraSubstrate[name, "Large", "KeepCoordinates" -> True])},
       {c = First @ GraphCenter[g], d = GraphDistanceMatrix[g], xy = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-      {germ = First @ FindInfraRepresentative[g, InfraSegment[First @ FindInfraShell[g, c, 8], c], 1],
+      {germ = First @ RandomInfraRepresentative[g, InfraSegment[First @ FindInfraShell[g, c, 8], c], 1],
        unit = EuclideanDistance @@ Lookup[xy, List @@ First @ EdgeList @ g]},
       Table[
         With[
-          {walks = FindInfraGeodesic[g, germ, r, {10}, All]},
+          {walks = RandomInfraGeodesic[g, germ, r, {10}, All]},
           {ext = Drop[Last /@ Sort @ VertexList @ #, Length[germ] - 1] & /@ SelectInfraWalk[g, walks, All, "From" -> "MostVisited"]},
           {{r, Max[Length[#] - 1 - d[[VertexIndex[g, First @ #], VertexIndex[g, Last @ #]]] & /@ ext]},
            {r, Max[Max[RegionDistance[Line[Lookup[xy, {First @ #, Last @ #}]], Lookup[xy, #]]] & /@ ext] / unit}}],

@@ -105,7 +105,7 @@ With[
       circleA == InfraCircle[pA, 4], circleB == InfraCircle[pB, 4],
       meet == InfraIntersection[circleA, circleB]}]},
   {InfraSubstrateHighlight[g, {FindInfraShell[g, a, 4], a, b}],
-   FindInfraRepresentative[g, InfraCircle[a, 4], All], FindInfraScene[scene, g]}]
+   RandomInfraRepresentative[g, InfraCircle[a, 4], All], FindInfraScene[scene, g]}]
 ```
 
 On the discretized plane a single radius suffices: its shells are cycles by accident of the mesh.
