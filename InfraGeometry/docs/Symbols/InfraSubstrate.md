@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSubstrate
 Keywords: [substrate, example graph, surface graph, tiling, mesh, roster]
-SeeAlso: [TessellationGraph, TorusTessellation, GraphCenter, FindInfraShell, InfraSubstrateHighlight, FindInfraPoint]
+SeeAlso: [TessellationGraph, TorusTessellation, GraphCenter, FindInfraShell, InfraSubstrateHighlight, RandomInfraPoint]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 

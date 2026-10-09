@@ -83,7 +83,7 @@ Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {a = First @ GraphCenter[g]},
-    {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+    {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
     {seg = InfraSegment[a, b]},
     Labeled[
       InfraSubstrateHighlight[g, {seg, a, b}],
@@ -97,7 +97,7 @@ The two measures of five regions about one centre and one shortest path on the s
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {seg = InfraSegment[c, (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])]},
+  {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])]},
   {axis = FindInfraRepresentative[g, seg]},
   {regions = {InfraBall[c, 3], InfraShell[c, {2, 3}], InfraTube[seg, 1], InfraCylinder[axis, 1], InfraCone[axis, 1]}},
   {supports = FindInfraRepresentative[g, #] & /@ regions},
@@ -111,7 +111,7 @@ The graph of the segment: its source-to-sink chains are the shortest paths.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   InfraMeasurement[g, InfraSegment[a, b], "Graph"]]
 ```
 
@@ -121,7 +121,7 @@ The vertex density drawn alone, and the graph of the segment drawn on the substr
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {seg = InfraSegment[a, b]},
   GraphicsRow[{
     InfraSubstrateHighlight[g, {InfraMeasurement[g, seg, "VertexDensity"]}],
@@ -136,7 +136,7 @@ Every property at once, here named beside the subgraph the segment occupies.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {all = InfraMeasurement[g, InfraSegment[a, b], All]},
   {InfraSubstrateHighlight[g, {all["Subgraph"]}], Keys @ all}]
 ```
@@ -147,7 +147,7 @@ A list of heads is measured head by head.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {heads = {InfraSegment[a, b], InfraCircle[a, {2, 4}]}},
   {InfraSubstrateHighlight[g, heads], InfraMeasurement[g, heads, "Cardinality"]}]
 ```
@@ -160,7 +160,7 @@ The profiles of the regions about the centre of the square grid, under the count
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},
-  {fat = InfraSegment[c, (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 5]])]},
+  {fat = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
   {geodesic = FindInfraRepresentative[g, fat]},
   GraphicsRow[Table[
     ListLinePlot[{
@@ -209,7 +209,7 @@ An intersection of two heads has no members, only a support and a density, the p
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {seg = InfraSegment[a, b]},
   {circle = InfraCircle[a, {2, 4}]},
   {density = InfraMeasurement[g, InfraIntersection[seg, circle], "VertexDensity"]},

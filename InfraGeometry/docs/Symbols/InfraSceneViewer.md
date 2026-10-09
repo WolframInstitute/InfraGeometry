@@ -49,7 +49,7 @@ ClearAll[a, b, cA, cB, u];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {p1 = First @ GraphCenter[g]},
-  {p2 = (SeedRandom[1]; FindInfraPoint[g, InfraShell[p1, 3]])},
+  {p2 = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p1, 3]])},
   {scene = InfraScene[{a, b, cA, cB, u},
      {InfraStep[{a == InfraPoint[p1]}, "point a"],
       InfraStep[{b == InfraPoint[p2]}, "point b"],
@@ -65,7 +65,7 @@ The first steps as stills: the two points, then the circle about the first. This
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {p1 = First @ GraphCenter[g]},
-  {p2 = (SeedRandom[1]; FindInfraPoint[g, InfraShell[p1, 3]])},
+  {p2 = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p1, 3]])},
   {circles = FindInfraRepresentative[g, InfraCircle[p1, 3], All]},
   Row[{
     Labeled[InfraSubstrateHighlight[g, {{p1, p2}}], "points a and b"],

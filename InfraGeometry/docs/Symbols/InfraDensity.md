@@ -43,7 +43,7 @@ The shortest paths from the centre to a vertex four steps away, as a density: bo
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {density = InfraDensity[g, FindInfraSegment[g, a, b, All]]},
   {InfraSubstrateHighlight[g, {density}, "PointSizeRange" -> {4, 16}], density}]
 ```
@@ -65,7 +65,7 @@ The two normalisations: by the heaviest mass, which the drawing uses, and by the
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {density = InfraDensity[g, FindInfraSegment[g, a, b, All]]},
   {InfraSubstrateHighlight[g, {density / Max[density]}, "PointSizeRange" -> {4, 16}],
    Max[density / Max[density]], Total[density / Total[density]]}]
@@ -79,7 +79,7 @@ The density of a head's members is the head's `"VertexDensity"`, and so is the d
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {seg = InfraSegment[a, b]},
   {InfraSubstrateHighlight[g, {InfraDensity[g, FindInfraRepresentative[g, seg, All]]}, "PointSizeRange" -> {4, 16}],
    InfraDensity[g, FindInfraRepresentative[g, seg, All]] === InfraMeasurement[g, seg, "VertexDensity"],
@@ -92,7 +92,7 @@ A head itself is not read: the call stays unevaluated, while the drawing reads t
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {seg = InfraSegment[a, b]},
   {InfraSubstrateHighlight[g, {seg}], InfraDensity[g, seg]}]
 ```
@@ -103,7 +103,7 @@ With[
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {midpoint = FindInfraMidpoint[g, a, b]},
   {InfraSubstrateHighlight[g, {InfraSegment[a, b], midpoint}], midpoint}]
 ```

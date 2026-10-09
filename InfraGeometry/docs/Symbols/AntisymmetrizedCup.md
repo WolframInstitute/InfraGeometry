@@ -28,7 +28,7 @@ The two names give one product: the cup of the coboundaries of the distances fro
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {apex = (SeedRandom[1]; FindInfraPoint[g, InfraShell[center, 3]])},
+  {apex = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[center, 3]])},
   {fromCenter = Coboundary[g, AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]],
    fromApex = Coboundary[g, AssociationMap[GraphDistance[g, apex, First[#]] &, List /@ VertexList[g]]]},
   {cup = AntisymmetrizedCup[g, fromCenter, fromApex]},

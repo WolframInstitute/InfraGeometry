@@ -84,7 +84,7 @@ One shortest path between the pair, every shortest path, or those within distanc
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {sprays = Table[SprayGraph[g, {{a, b}}, "PathThickness" -> t], {t, {0, 1, Infinity}}]},
   {GraphicsRow @ Table[InfraSubstrateHighlight[g, {spray, a, b}], {spray, sprays}],
    EdgeCount /@ sprays}]
@@ -110,7 +110,7 @@ The shortest paths from *c* to *v* are the paths of the spray from *c* to *v*; t
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {through = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])},
+  {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])},
   {InfraSubstrateHighlight[g, {InfraMeasurement[g, InfraSegment[c, through], "Graph"], c, through}],
    Sort @ FindPath[SprayGraph[g, c], c, through, Infinity, All] === Sort @ FindPath[InfraMeasurement[g, InfraSegment[c, through], "Graph"], c, through, Infinity, All]}]
 ```

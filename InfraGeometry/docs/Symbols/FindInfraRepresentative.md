@@ -47,7 +47,7 @@ A uniformly random shortest path of a segment, drawn over the whole family. `See
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {seg = InfraSegment[a, b]},
   {pick = (SeedRandom[3]; First @ FindInfraRepresentative[g, seg, 1, "RandomChoice"])},
   {InfraSubstrateHighlight[g, {seg, InfraWalk[pick]}], pick}]
@@ -59,7 +59,7 @@ One member of a segment is one shortest path.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {geodesic = FindInfraRepresentative[g, InfraSegment[a, b]]},
   {InfraSubstrateHighlight[g, {InfraWalk[geodesic], a, b}], geodesic}]
 ```
@@ -70,7 +70,7 @@ Every member at once, and their number.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {members = FindInfraRepresentative[g, InfraSegment[a, b], All]},
   {GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], a, b}], {member, members}],
    Length @ members}]
@@ -82,7 +82,7 @@ A closed count that cannot be met is `{ }`; `UpTo` takes what there is.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {seg = InfraSegment[a, b]},
   {InfraSubstrateHighlight[g, {FindInfraRepresentative[g, seg, UpTo[20]]}],
    FindInfraRepresentative[g, seg, 20], Length @ FindInfraRepresentative[g, seg, UpTo[20]]}]
@@ -127,7 +127,7 @@ Every member is a member, and there are as many as the head counts.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {seg = InfraSegment[a, b]},
   {members = FindInfraRepresentative[g, seg, All]},
   {InfraSubstrateHighlight[g, {members}],

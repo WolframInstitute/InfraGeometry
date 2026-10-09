@@ -17,7 +17,7 @@ PointViewer[ g_Graph, sym_: None ] :=
           regions = <| "Random" -> VertexList[ g ], "Center" -> GraphCenter[ g ], "Periphery" -> GraphPeriphery[ g ] |> },
     Manipulate[
       seed;
-      With[ { pts = FindInfraPoint[ g, regions[ region ], UpTo[ n ], "MaxCliques" -> 100,
+      With[ { pts = RandomInfraPoint[ g, regions[ region ], UpTo[ n ], "MaxCliques" -> 100,
           "PairwiseDistance" -> Switch[ separation, "None", None, "Max", "Max", "Range", distRange ] ] },
         If[ sym =!= None, sym = pts ];
         InfraSubstrateHighlight[ g, { InfraDensity[ g, pts ] } ] ],

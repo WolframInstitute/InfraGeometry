@@ -466,14 +466,14 @@ VerificationTest[
   TestID -> "InfraDistance-set"
 ]
 
-(* FindInfraPoint returns bare vertices; InfraDistance accepts one directly,
+(* RandomInfraPoint returns bare vertices; InfraDistance accepts one directly,
    so callers never index into a wrapper. *)
 VerificationTest[
-  With[{g = GridGraph[{3, 3}], fp = First @ FindInfraPoint[GridGraph[{3, 3}], 1]},
+  With[{g = GridGraph[{3, 3}], fp = First @ RandomInfraPoint[GridGraph[{3, 3}], 1]},
     InfraDistance[g, fp, 9] === GraphDistance[g, fp, 9]
   ],
   True,
-  TestID -> "InfraDistance-FindInfraPoint-no-extraction"
+  TestID -> "InfraDistance-RandomInfraPoint-no-extraction"
 ]
 
 (* a polyline is its List of legs.  On PathGraph[Range[7]] the polyline

@@ -70,8 +70,8 @@ Three heads, in palette order: a segment, a closed arc (the circles through a po
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 5]])},
-  {q = (SeedRandom[2]; FindInfraPoint[g, InfraShell[c, 5]])},
+  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])},
+  {q = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[c, 5]])},
   InfraSubstrateHighlight[g,
     {InfraSegment[c, p], InfraArc[c, {p, p}, "RadiusDelta" -> 1], InfraArc[c, {p, q}, "RadiusDelta" -> 1]}]]
 ```
@@ -82,7 +82,7 @@ A `Directive` colors the objects after it.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 5]])},
+  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])},
   InfraSubstrateHighlight[g,
     {FindInfraRepresentative[g, InfraBall[c, 3]], InfraArc[c, {p, p}, "RadiusDelta" -> 1]}]]
 ```
@@ -93,8 +93,8 @@ Overlaps add. The two segments share their start and blend there. The walk is on
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 5]])},
-  {q = (SeedRandom[2]; FindInfraPoint[g, InfraShell[c, 5]])},
+  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])},
+  {q = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[c, 5]])},
   {walk = FindInfraRepresentative[g, InfraSegment[p, q]]},
   InfraSubstrateHighlight[g, {InfraSegment[c, p], InfraSegment[c, q], InfraWalk[walk]}, "Arrowheads" -> True]]
 ```
@@ -105,8 +105,8 @@ A negative mass is an empty ring. The boundary of a walk from *p* to *q* is *q* 
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])},
-  {q = (SeedRandom[2]; FindInfraPoint[g, InfraShell[c, 4]])},
+  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])},
+  {q = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[c, 4]])},
   {walk = FindInfraRepresentative[g, InfraSegment[p, q]]},
   InfraSubstrateHighlight[g, {InfraWalk[walk], <|q -> 1, p -> -1|>}]]
 ```
@@ -117,7 +117,7 @@ The difference of two balls is a density too: dots on the first ball, rings on t
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 3]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 3]])},
   InfraSubstrateHighlight[g, {InfraUnion[InfraBall[a, 3], -InfraMeasurement[g, InfraBall[b, 3], "VertexDensity"]]}]]
 ```
 
@@ -129,7 +129,7 @@ The palette is Jeremy's strike-out sequence: three segments drawn in its first t
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {ends = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 5], 3])},
+  {ends = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5], 3])},
   {InfraSubstrateHighlight[g, Table[InfraSegment[c, end], {end, ends}]], Take[ColorData[112, "ColorList"], 3]}]
 ```
 
@@ -139,7 +139,7 @@ A list of vertex lists is one object, the sum of its members: here the shortest 
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   GraphicsRow[{
     InfraSubstrateHighlight[g, {FindInfraRepresentative[g, InfraSegment[a, b], All]}],
     InfraSubstrateHighlight[g, {InfraSegment[a, b]}]}]]

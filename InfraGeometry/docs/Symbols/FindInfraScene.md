@@ -81,7 +81,7 @@ ClearAll[pA, pB, seg1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 2]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 2]])},
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
   {segments = InfraSceneInstance[#, seg1] & /@ FindInfraScene[scene, g, <|pB -> b|>]},

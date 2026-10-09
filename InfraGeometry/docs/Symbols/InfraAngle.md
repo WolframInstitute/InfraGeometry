@@ -51,7 +51,7 @@ Two configurations at the centre of the square tiling, each arm drawn along the 
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {line = FindInfraLine[g, c, (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 5]])]},
+  {line = FindInfraLine[g, c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
   {i = First @ FirstPosition[line, c]},
   {opposite = {line[[i - 4]], c, line[[i + 4]]}},
   {same = {line[[i + 4]], c, line[[i + 2]]}},
@@ -67,8 +67,8 @@ The Alexandrov method is the closed form in three distances, and agrees with it 
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {x1 = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])},
-  {x2 = (SeedRandom[4]; FindInfraPoint[g, InfraShell[c, 4]])},
+  {x1 = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])},
+  {x2 = (SeedRandom[4]; RandomInfraPoint[g, InfraShell[c, 4]])},
   {d1 = GraphDistance[g, c, x1], d2 = GraphDistance[g, c, x2], chord = GraphDistance[g, x1, x2]},
   {InfraSubstrateHighlight[g, {InfraSegment[c, x1], InfraSegment[c, x2], InfraSegment[x1, x2], c, x1, x2}],
    N @ InfraAngle[g, {x1, c, x2}, Method -> "Alexandrov"], ArcCos[(d1^2 + d2^2 - chord^2)/(2. d1 d2)]}]
@@ -80,7 +80,7 @@ The two methods answer different questions. On the straight-line case, arclength
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {line = FindInfraLine[g, c, (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 5]])]},
+  {line = FindInfraLine[g, c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
   {i = First @ FirstPosition[line, c]},
   {arms = {line[[i - 4]], c, line[[i + 4]]}},
   {InfraSubstrateHighlight[g, {InfraWalk[line[[i - 4 ;; i + 4]]], Sequence @@ arms}],

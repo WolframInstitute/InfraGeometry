@@ -45,7 +45,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    Head @ InfraSubstrateHighlight[ g, { FindInfraPoint[ g, 5 ] } ]
+    Head @ InfraSubstrateHighlight[ g, { RandomInfraPoint[ g, 5 ] } ]
   ],
   Graph,
   TestID -> "InfraSubstrateHighlight-vertex-singletons"

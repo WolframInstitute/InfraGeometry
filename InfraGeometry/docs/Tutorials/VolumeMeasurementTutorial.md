@@ -29,7 +29,7 @@ profileRadius[g_] := Floor[(VertexEccentricity[g, First @ GraphCenter[g]] - 1)/2
 The far end $p$ of the segments: a vertex at distance $R$ from the centre, drawn after a seed.
 
 ```wl
-farEnd[g_] := (SeedRandom[1]; FindInfraPoint[g, InfraShell[First @ GraphCenter[g], profileRadius[g]]])
+farEnd[g_] := (SeedRandom[1]; RandomInfraPoint[g, InfraShell[First @ GraphCenter[g], profileRadius[g]]])
 ```
 
 The two measures of a list of regions: the counting measure first, the Riemannian measure second.

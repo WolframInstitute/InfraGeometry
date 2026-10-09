@@ -125,7 +125,7 @@ ClearAll[pA, pB, shellA, shellB, meet];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 2]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 2]])},
   {constr = InfraScene[{pA, pB, shellA, shellB, meet},
      {pA == InfraPoint[c], pB == InfraPoint[b],
       shellA == InfraShell[pA, 2], shellB == InfraShell[pB, 2],

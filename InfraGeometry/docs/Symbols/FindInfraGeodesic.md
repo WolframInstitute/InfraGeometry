@@ -49,7 +49,7 @@ The geodesics of at most 8 edges from the centre of the square tiling to a verte
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   Row @ Table[
     With[
       {grown = FindInfraGeodesic[g, a, sc, UpTo[8], All, "StoppingCondition" -> (Last[#] === b &)]},
@@ -114,7 +114,7 @@ At scale `Infinity` the geodesics from the centre that end at *b* are the member
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {grown = FindInfraGeodesic[g, a, Infinity, Infinity, All, "StoppingCondition" -> (Last[#] === b &)]},
   {geos = Select[grown, Last @ Last @ VertexList @ # === b &]},
   {InfraSubstrateHighlight[g, {geos, a, b}],

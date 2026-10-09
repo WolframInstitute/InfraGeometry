@@ -283,15 +283,15 @@ VerificationTest[
   TestID -> "FindInfraRegularPolygon-From-bare-vertex"
 ]
 
-(* "From" accepts the vertex list returned by FindInfraPoint. *)
+(* "From" accepts the vertex list returned by RandomInfraPoint. *)
 
 VerificationTest[
   FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All,
-    "From" -> FindInfraPoint[ GridGraph[ { 5, 5 } ], GraphCenter @ GridGraph[ { 5, 5 } ] ] -> 2 ] ===
+    "From" -> RandomInfraPoint[ GridGraph[ { 5, 5 } ], GraphCenter @ GridGraph[ { 5, 5 } ] ] -> 2 ] ===
   FindInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, All,
     "From" -> 13 -> 2 ],
   True,
-  TestID -> "FindInfraRegularPolygon-From-FindInfraPoint-pipe"
+  TestID -> "FindInfraRegularPolygon-From-RandomInfraPoint-pipe"
 ]
 
 (* Multi-anchor density in localization: NeighborhoodGraph

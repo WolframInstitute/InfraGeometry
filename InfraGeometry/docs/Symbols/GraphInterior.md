@@ -71,7 +71,7 @@ The interior and the boundary split the set: they are disjoint, and together the
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {region = FindInfraRepresentative[g, InfraBall[(SeedRandom[1]; FindInfraPoint[g, InfraShell[First @ GraphCenter[g], 3]]), 4]]},
+  {region = FindInfraRepresentative[g, InfraBall[(SeedRandom[1]; RandomInfraPoint[g, InfraShell[First @ GraphCenter[g], 3]]), 4]]},
   {InfraSubstrateHighlight[g, {GraphInterior[g, region] -> StandardGreen, GraphBoundary[g, region] -> StandardBlue}],
    Intersection[GraphInterior[g, region], GraphBoundary[g, region]], Sort[Join[GraphInterior[g, region], GraphBoundary[g, region]]] === Sort[region]}]
 ```

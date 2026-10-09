@@ -1,10 +1,10 @@
 ---
 Template: Symbol
-Name: FindInfraPoint
+Name: RandomInfraPoint
 Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
-URI: WolframInstitute/InfraGeometry/ref/FindInfraPoint
+URI: WolframInstitute/InfraGeometry/ref/RandomInfraPoint
 Keywords: [point, random point, region, ball, shell, pairwise distance, centre, periphery]
 SeeAlso: [InfraPoint, InfraBall, InfraShell, InfraDensity, FindInfraMidpoint, FindClosestInfraPoint, GraphCenter]
 RelatedGuides: [EuclideanInfrageometry]
@@ -12,13 +12,13 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Usage
 
-<code>[FindInfraPoint]()[*g*]</code> gives one random vertex of *g*.
+<code>[RandomInfraPoint]()[*g*]</code> gives one random vertex of *g*.
 
-<code>[FindInfraPoint]()[*g*, *n*]</code> gives a list of *n* distinct vertices of *g*.
+<code>[RandomInfraPoint]()[*g*, *n*]</code> gives a list of *n* distinct vertices of *g*.
 
-<code>[FindInfraPoint]()[*g*, *reg*]</code> gives one random vertex of the region *reg*.
+<code>[RandomInfraPoint]()[*g*, *reg*]</code> gives one random vertex of the region *reg*.
 
-<code>[FindInfraPoint]()[*g*, *reg*, *n*]</code> gives a list of *n* distinct vertices of the region *reg*.
+<code>[RandomInfraPoint]()[*g*, *reg*, *n*]</code> gives a list of *n* distinct vertices of the region *reg*.
 
 ## Details & Options
 
@@ -72,7 +72,7 @@ One point is a vertex. `SeedRandom` in front fixes the draw.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {p = (SeedRandom[1]; FindInfraPoint[g])},
+  {p = (SeedRandom[1]; RandomInfraPoint[g])},
   {InfraSubstrateHighlight[g, {p}], p}]
 ```
 
@@ -81,7 +81,7 @@ A count gives a list of vertices: here five of them.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {points = (SeedRandom[1]; FindInfraPoint[g, 5])},
+  {points = (SeedRandom[1]; RandomInfraPoint[g, 5])},
   {InfraSubstrateHighlight[g, {points}], points}]
 ```
 
@@ -91,7 +91,7 @@ A region says where the points may lie. Three points at distance 4 from the cent
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {points = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4], 3])},
+  {points = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4], 3])},
   {InfraSubstrateHighlight[g, {InfraShell[c, 4], points, c}], points}]
 ```
 
@@ -101,7 +101,7 @@ Four points within distance 3 of the centre, drawn from a ball.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {points = (SeedRandom[1]; FindInfraPoint[g, InfraBall[c, 3], 4])},
+  {points = (SeedRandom[1]; RandomInfraPoint[g, InfraBall[c, 3], 4])},
   {InfraSubstrateHighlight[g, {InfraBall[c, 3], points}], points}]
 ```
 
@@ -111,7 +111,7 @@ Three points pairwise as far apart as the region allows: spread on the circle ab
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {corners = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4], 3, "PairwiseDistance" -> "Max"])},
+  {corners = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4], 3, "PairwiseDistance" -> "Max"])},
   {InfraSubstrateHighlight[g, {InfraShell[c, 4], corners}], corners}]
 ```
 
@@ -122,8 +122,8 @@ The centre is one vertex and the periphery of a patch is its rim; both are verte
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {centre = FindInfraPoint[g, GraphCenter[g]]},
-  {rim = (SeedRandom[1]; FindInfraPoint[g, GraphPeriphery[g], 4])},
+  {centre = RandomInfraPoint[g, GraphCenter[g]]},
+  {rim = (SeedRandom[1]; RandomInfraPoint[g, GraphPeriphery[g], 4])},
   {InfraSubstrateHighlight[g, {GraphPeriphery[g], rim, centre}], centre, rim}]
 ```
 
@@ -133,7 +133,7 @@ A band of distances about a vertex.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {points = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, {2, 4}], 5])},
+  {points = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, {2, 4}], 5])},
   {InfraSubstrateHighlight[g, {InfraShell[c, {2, 4}], points}], points}]
 ```
 
@@ -142,7 +142,7 @@ A ball about several vertices is the union of their balls.
 ```wl
 With[
   {g = GridGraph[{10, 10}]},
-  {points = (SeedRandom[1]; FindInfraPoint[g, InfraBall[{12, 89}, 3], 5])},
+  {points = (SeedRandom[1]; RandomInfraPoint[g, InfraBall[{12, 89}, 3], 5])},
   {HighlightGraph[g, {InfraBall[{12, 89}, 3], points}], points}]
 ```
 
@@ -152,7 +152,7 @@ A point on a segment, a point on a line.
 With[
   {g = GridGraph[{10, 10}]},
   {segment = InfraSegment[1, 100]},
-  {points = (SeedRandom[1]; FindInfraPoint[g, segment, 3])},
+  {points = (SeedRandom[1]; RandomInfraPoint[g, segment, 3])},
   {HighlightGraph[g, {segment, points}], points}]
 ```
 
@@ -163,7 +163,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {region = InfraUnion[InfraShell[c, 2], InfraShell[c, 5]]},
-  {points = (SeedRandom[1]; FindInfraPoint[g, region, 4])},
+  {points = (SeedRandom[1]; RandomInfraPoint[g, region, 4])},
   {InfraSubstrateHighlight[g, {region, points}], points}]
 ```
 
@@ -174,7 +174,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {outside = Complement[VertexList[g], FindInfraRepresentative[g, InfraBall[c, 6]]]},
-  {points = (SeedRandom[1]; FindInfraPoint[g, outside, 3])},
+  {points = (SeedRandom[1]; RandomInfraPoint[g, outside, 3])},
   {InfraSubstrateHighlight[g, {outside, points}], points}]
 ```
 
@@ -184,7 +184,7 @@ Points at the same distance from two anchors: the intersection of two shells, he
 With[
   {g = GridGraph[{9, 9}]},
   {region = InfraIntersection[InfraShell[1, 8], InfraShell[81, 8]]},
-  {points = FindInfraPoint[g, region, All]},
+  {points = RandomInfraPoint[g, region, All]},
   {HighlightGraph[g, {region, points}], points}]
 ```
 
@@ -193,7 +193,7 @@ An empty region, or a region with fewer vertices than the count, gives an empty 
 ```wl
 With[
   {g = GridGraph[{5, 5}]},
-  {FindInfraPoint[g, {}], FindInfraPoint[g, InfraShell[13, 100], 2], FindInfraPoint[g, {1, 2}, 3]}]
+  {RandomInfraPoint[g, {}], RandomInfraPoint[g, InfraShell[13, 100], 2], RandomInfraPoint[g, {1, 2}, 3]}]
 ```
 
 ## Options
@@ -203,7 +203,7 @@ With[
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {pair = (SeedRandom[1]; FindInfraPoint[g, 2, "PairwiseDistance" -> 4])},
+  {pair = (SeedRandom[1]; RandomInfraPoint[g, 2, "PairwiseDistance" -> 4])},
   {InfraSubstrateHighlight[g, {pair}], GraphDistance[g, First @ pair, Last @ pair]}]
 ```
 
@@ -212,7 +212,7 @@ A range of distances.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {triple = (SeedRandom[1]; FindInfraPoint[g, 3, "PairwiseDistance" -> {3, 5}])},
+  {triple = (SeedRandom[1]; RandomInfraPoint[g, 3, "PairwiseDistance" -> {3, 5}])},
   {InfraSubstrateHighlight[g, {triple}], triple}]
 ```
 
@@ -222,19 +222,19 @@ With[
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {triple = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 3], 3, "PairwiseDistance" -> "Spread"])},
+  {triple = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 3], 3, "PairwiseDistance" -> "Spread"])},
   {InfraSubstrateHighlight[g, {InfraShell[c, 3], triple}], triple}]
 ```
 
 ## Properties and Relations
 
-`FindInfraPoint[g, reg, All]` is the vertex set of the region.
+`RandomInfraPoint[g, reg, All]` is the vertex set of the region.
 
 ```wl
 With[
   {g = GridGraph[{9, 9}]},
   {c = First @ GraphCenter[g]},
-  {Sort @ FindInfraPoint[g, InfraShell[c, 3], All] === FindInfraRepresentative[g, InfraShell[c, 3]]}]
+  {Sort @ RandomInfraPoint[g, InfraShell[c, 3], All] === FindInfraRepresentative[g, InfraShell[c, 3]]}]
 ```
 
 The distance to a set is the least distance to one of its points: the shell about two vertices is the outer layer of the union of the two balls, and does not contain the vertices.
@@ -251,14 +251,14 @@ The spellings of the earlier releases translate to a region.
 | Earlier | Now |
 |---|---|
 | `"Distance" -> d` | `"PairwiseDistance" -> d` |
-| `"From" -> "Center"` | `FindInfraPoint[g, GraphCenter[g]]` |
-| `"From" -> "Periphery"` | `FindInfraPoint[g, GraphPeriphery[g]]` |
-| `"From" -> {v1, …}`, `SelectInfraPoint[g, vs, n]` | `FindInfraPoint[g, vs, n]` |
-| `"From" ->` a density | `FindInfraPoint[g, density]` |
-| `"From" -> a -> r`, `RandomInfraPoint[g, a, r]` | `FindInfraPoint[g, InfraShell[a, r]]` |
-| `"From" -> a -> {r, s}` | `FindInfraPoint[g, InfraShell[a, {r, s}]]` |
-| `"From" -> a -> {0, r}` | `FindInfraPoint[g, InfraBall[a, r]]` |
-| `"From" -> a -> "Max"` | `FindInfraPoint[g, InfraShell[a, VertexEccentricity[g, a]]]` |
-| `"From" -> {a, b} -> r` | `FindInfraPoint[g, InfraIntersection[InfraShell[a, r], InfraShell[b, r]]]` |
+| `"From" -> "Center"` | `RandomInfraPoint[g, GraphCenter[g]]` |
+| `"From" -> "Periphery"` | `RandomInfraPoint[g, GraphPeriphery[g]]` |
+| `"From" -> {v1, …}`, `SelectInfraPoint[g, vs, n]` | `RandomInfraPoint[g, vs, n]` |
+| `"From" ->` a density | `RandomInfraPoint[g, density]` |
+| `"From" -> a -> r`, `RandomInfraPoint[g, a, r]` | `RandomInfraPoint[g, InfraShell[a, r]]` |
+| `"From" -> a -> {r, s}` | `RandomInfraPoint[g, InfraShell[a, {r, s}]]` |
+| `"From" -> a -> {0, r}` | `RandomInfraPoint[g, InfraBall[a, r]]` |
+| `"From" -> a -> "Max"` | `RandomInfraPoint[g, InfraShell[a, VertexEccentricity[g, a]]]` |
+| `"From" -> {a, b} -> r` | `RandomInfraPoint[g, InfraIntersection[InfraShell[a, r], InfraShell[b, r]]]` |
 | `InfraCenter[g]` | `First @ GraphCenter[g]` |
 | `"From" -> {"Center", k}` | removed; cut the substrate with `CenterGraph[g, k]` |

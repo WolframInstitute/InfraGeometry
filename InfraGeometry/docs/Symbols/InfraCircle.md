@@ -138,7 +138,7 @@ The circles of the band `{4, 5}` that pass through a vertex at distance 4 are th
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])},
+  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])},
   {circle = InfraArc[c, {p, p}, "RadiusDelta" -> 1]},
   {InfraSubstrateHighlight[g, {circle, c, p}],
    InfraMeasurement[g, circle, "Cardinality"], InfraMeasurement[g, circle, "Length"]}]

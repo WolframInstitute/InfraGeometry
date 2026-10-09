@@ -1718,7 +1718,7 @@ VerificationTest[
    not the canonical one, which goes back and forth on one edge *)
 VerificationTest[
   With[ { g = InfraSubstrate[ "SquareMeshGraph", "Medium", "KeepCoordinates" -> True ] },
-    { c = ( SeedRandom[ 1 ]; FindInfraPoint[ g, GraphCenter[ g ] ] ) },
+    { c = ( SeedRandom[ 1 ]; RandomInfraPoint[ g, GraphCenter[ g ] ] ) },
     { ws = Table[ BlockRandom[ FindInfraWalk[ g, c, UpTo[ 9 ], Properties -> { { "Shortest", 5, p } } ], RandomSeeding -> 3 ],
         { p, { 1, 0.3, 0.01 } } ] },
     { AllTrue[ ws, GraphQ ], EdgeCount /@ ws, AllTrue[ walkSeq /@ ws, First[ # ] === c && InfraWalkQ[ g, # ] & ],
@@ -1731,7 +1731,7 @@ VerificationTest[
    return is rare, at p = 1 every walk weighs alike *)
 VerificationTest[
   With[ { g = InfraSubstrate[ "SquareMeshGraph", "Medium", "KeepCoordinates" -> True ] },
-    { c = ( SeedRandom[ 1 ]; FindInfraPoint[ g, GraphCenter[ g ] ] ) },
+    { c = ( SeedRandom[ 1 ]; RandomInfraPoint[ g, GraphCenter[ g ] ] ) },
     { ws = Table[ BlockRandom[ walkSeq @ FindInfraWalk[ g, c, UpTo[ 12 ], Properties -> { { "Simple", Infinity, p } },
         "NextVertexFunction" -> RandomChoice ], RandomSeeding -> 3 ], { p, { 0.01, 0.1, 1 } } ] },
     { Length[ # ] - Length[ DeleteDuplicates @ # ] & /@ ws, AllTrue[ ws, InfraWalkQ[ g, # ] & ] } ],

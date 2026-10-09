@@ -76,7 +76,7 @@ Three walks of 9 edges from the centre of a mesh, the soft straightness at windo
 ```wl
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
-  {c = (SeedRandom[2]; FindInfraPoint[g, GraphCenter[g]])},
+  {c = (SeedRandom[2]; RandomInfraPoint[g, GraphCenter[g]])},
   GraphicsRow @ Table[
     InfraSubstrateHighlight[g, {(SeedRandom[5]; FindInfraWalk[g, c, UpTo[9], Properties -> {{"Shortest", 5, p}}]), c}, "Arrowheads" -> True],
     {p, {1, 0.3, 0.01}}]]
@@ -163,7 +163,7 @@ A function is a rule: the energy `GraphDistance[g, Last @ w, q]` at window 1 and
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {q = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 6]])},
+  {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 6]])},
   GraphicsRow @ Table[
     InfraSubstrateHighlight[g,
       {(SeedRandom[seed]; FindInfraWalk[g, a, {12}, Properties -> {{w |-> GraphDistance[g, Last @ w, q], 1, 0.3}}]), a, q},
@@ -216,7 +216,7 @@ A predicate on the walk so far stops each walk at its first arrival at *b*; the 
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 3]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 3]])},
   {grown = FindInfraWalk[g, a, UpTo[5], All, Properties -> {"Simple"}, "StoppingCondition" -> (Last[#] === b &)]},
   {arrived = Select[grown, Last @ Last @ VertexList @ # === b &]},
   {InfraSubstrateHighlight[g, {arrived, a, b}], Length /@ {grown, arrived}}]
@@ -250,7 +250,7 @@ With the hard `"Shortest"` at scale `Infinity` the walks are shortest paths, so 
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 3]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 3]])},
   {walks = Select[
     FindInfraWalk[g, a, Infinity, All, Properties -> {"Shortest"}, "StoppingCondition" -> (Last[#] === b &)],
     Last @ Last @ VertexList @ # === b &]},

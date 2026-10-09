@@ -31,7 +31,7 @@ GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {target = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 3]])},
+    {target = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 3]])},
     {blurred = <|c -> FindInfraRepresentative[g, InfraBall[target, 1]]|>},
     DisplacementPlot[g, {blurred, DisplacementReduce[g, blurred]}]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]

@@ -40,7 +40,7 @@ With[
      With[
        {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
        {stations = First @ FindResolvingSet[g]},
-       {site = (SeedRandom[1]; FindInfraPoint[g, InfraShell[First @ GraphCenter[g], 2]])},
+       {site = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[First @ GraphCenter[g], 2]])},
        {InfraSubstrateHighlight[g, Join[InfraWalk[FindShortestPath[g, site, #]] & /@ stations, {stations, site}]],
         RadarCoordinates[g, stations, site]}],
      {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]},
@@ -98,7 +98,7 @@ A station of two vertices six steps apart, read three ways on the square tiling.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {foci = {(SeedRandom[1]; FindInfraPoint[g, InfraShell[First @ GraphCenter[g], 3]]), (SeedRandom[2]; FindInfraPoint[g, InfraShell[First @ GraphCenter[g], 3]])}},
+  {foci = {(SeedRandom[1]; RandomInfraPoint[g, InfraShell[First @ GraphCenter[g], 3]]), (SeedRandom[2]; RandomInfraPoint[g, InfraShell[First @ GraphCenter[g], 3]])}},
   {readings = Table[RadarCoordinates[g, {AssociationThread[foci, 1]}, "AnchorAggregation" -> aggregation], {aggregation, {Min, Max, Total}}]},
   {GraphicsRow[InfraSubstrateHighlight[g, Values @ KeySort @ GroupBy[Keys[#], #]] & /@ readings], GraphDistance[g, Sequence @@ foci]}]
 ```

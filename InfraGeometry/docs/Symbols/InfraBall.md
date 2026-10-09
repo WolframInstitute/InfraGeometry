@@ -94,7 +94,7 @@ A ball about a vertex list is the neighbourhood of the list: here of a shortest 
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])},
+  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])},
   {core = FindInfraRepresentative[g, InfraSegment[c, p]]},
   InfraSubstrateHighlight[g, {InfraBall[core, 1], core}]]
 ```

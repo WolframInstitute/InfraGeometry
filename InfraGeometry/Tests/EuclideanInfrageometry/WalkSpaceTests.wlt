@@ -122,7 +122,7 @@ VerificationTest[
   TestID -> "SelectInfraWalk-empty-All-empty"
 ]
 
-(* ===== Default count = 1, matches FindInfraPoint ===== *)
+(* ===== Default count = 1, matches RandomInfraPoint ===== *)
 
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ], paths = (FindInfraSegment[ GridGraph[ { 3, 3 } ], 1, 9, All ]) },

@@ -48,7 +48,7 @@ Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {axis = FindInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])]]},
+    {axis = FindInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])]]},
     {cylinder = InfraCylinder[axis, 1]},
     {support = FindInfraRepresentative[g, cylinder]},
     Labeled[

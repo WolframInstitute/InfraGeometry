@@ -62,7 +62,7 @@ The wedge is graded-commutative. For the gradients of the distances from the cen
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {center = First @ GraphCenter[g]},
-  {apex = (SeedRandom[1]; FindInfraPoint[g, InfraShell[center, 3]])},
+  {apex = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[center, 3]])},
   {gradient = FormDifferential[g, ZeroForm[g, GraphDistance[g, center, #] &]],
    otherGradient = FormDifferential[g, ZeroForm[g, GraphDistance[g, apex, #] &]]},
   {MatrixPlot[Table[

@@ -169,7 +169,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     AllTrue[
-      { FindInfraPoint[ g, 2 ],
+      { RandomInfraPoint[ g, 2 ],
         FindInfraRepresentative[g, InfraBall[6, 1]],
         FindInfraShell[ g, 6, { 1, 1 } ],
         FindInfraEquidistantSet[ g, { 1, 16 } ],

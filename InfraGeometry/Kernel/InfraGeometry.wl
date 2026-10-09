@@ -3,7 +3,7 @@ Package["WolframInstitute`InfraGeometry`"]
 (* EuclideanInfrageometry *)
 
 PackageExport[InfraPoint]
-PackageExport[FindInfraPoint]
+PackageExport[RandomInfraPoint]
 PackageExport[FindInfraMidpoint]
 PackageExport[FindInfraGoldenSection]
 PackageExport[FindInfraReflection]

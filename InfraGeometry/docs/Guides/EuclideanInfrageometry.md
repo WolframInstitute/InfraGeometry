@@ -27,7 +27,7 @@ Euclidean infrageometry is synthetic geometry on a graph $G = (V, E)$ with its p
 ### Points
 
 - `InfraPoint` the inert point, a vertex drawn from a region inside a scene
-- `FindInfraPoint` a vertex drawn from a region, a vertex List, a ball or any other region; a count gives a List of vertices, "PairwiseDistance" constrains the tuple
+- `RandomInfraPoint` a vertex drawn from a region, a vertex List, a ball or any other region; a count gives a List of vertices, "PairwiseDistance" constrains the tuple
 - `FindInfraMidpoint` the middle vertices of the geodesics from p1 to p2 as a density, one vertex at even distance and two at odd
 
 ### Segments

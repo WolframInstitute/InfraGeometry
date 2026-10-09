@@ -35,7 +35,7 @@ GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {o = First @ GraphCenter[g]},
-    {through = (SeedRandom[1]; FindInfraPoint[g, InfraShell[o, 2]])},
+    {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
     {ray = InfraRay[o, through]},
     InfraSubstrateHighlight[g, {ray, o, through}]],
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
@@ -47,7 +47,7 @@ The number of rays and their length, beside the picture.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
-  {through = (SeedRandom[1]; FindInfraPoint[g, InfraShell[o, 2]])},
+  {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
   {ray = InfraRay[o, through]},
   {InfraSubstrateHighlight[g, {ray, o, through}],
    InfraMeasurement[g, ray, "Cardinality"], InfraMeasurement[g, ray, "Length"]}]
@@ -59,7 +59,7 @@ The members are vertex lists. Three rays, each drawn as a walk.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
-  {through = (SeedRandom[1]; FindInfraPoint[g, InfraShell[o, 2]])},
+  {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
   {members = FindInfraRepresentative[g, InfraRay[o, through], 3]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], o, through}], {member, members}]]
 ```
@@ -83,7 +83,7 @@ The origin lies on every ray, so its density is the cardinality. The vertex dens
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
-  {through = (SeedRandom[1]; FindInfraPoint[g, InfraShell[o, 2]])},
+  {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
   {density = InfraMeasurement[g, InfraRay[o, through], "VertexDensity"]},
   {InfraSubstrateHighlight[g, {density}],
    density[o] === InfraMeasurement[g, InfraRay[o, through], "Cardinality"]}]
@@ -95,7 +95,7 @@ Every member satisfies [InfraRayQ]().
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
-  {through = (SeedRandom[1]; FindInfraPoint[g, InfraShell[o, 2]])},
+  {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
   {members = FindInfraRepresentative[g, InfraRay[o, through], All]},
   {InfraSubstrateHighlight[g, {members, o, through}],
    InfraRayQ[g, members]}]

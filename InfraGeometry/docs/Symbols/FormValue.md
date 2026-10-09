@@ -58,7 +58,7 @@ A tuple is read in any order, with the sign of its sorting permutation. The germ
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {center = First @ GraphCenter[g]},
-  {apex = (SeedRandom[1]; FindInfraPoint[g, InfraShell[center, 3]])},
+  {apex = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[center, 3]])},
   {twoForm = FormWedge[
      FormDifferential[g, ZeroForm[g, GraphDistance[g, center, #] &]],
      FormDifferential[g, ZeroForm[g, GraphDistance[g, apex, #] &]]]},

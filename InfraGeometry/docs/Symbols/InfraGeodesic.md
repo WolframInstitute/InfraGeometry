@@ -35,7 +35,7 @@ GraphicsRow @ Table[
   With[
     {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
     {o = First @ GraphCenter[g]},
-    {germ = First @ FindInfraRepresentative[g, InfraSegment[(SeedRandom[2]; FindInfraPoint[g, InfraShell[o, 3]]), o], 1]},
+    {germ = First @ FindInfraRepresentative[g, InfraSegment[(SeedRandom[2]; RandomInfraPoint[g, InfraShell[o, 3]]), o], 1]},
     {windows = InfraMeasurement[g, InfraGeodesic[germ, scale], "Graph"]},
     {from = UnitVector[VertexCount[windows], VertexIndex[windows, Take[germ, -Min[scale, Length[germ]]]]]},
     {ends = Select[Merge[Thread[Last /@ VertexList[windows] -> from . MatrixPower[AdjacencyMatrix[windows], 6]], Total], Positive]},
@@ -49,7 +49,7 @@ At scale `Infinity` the graph is drawn on the substrate beside the ray through t
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
-  {through = (SeedRandom[1]; FindInfraPoint[g, InfraShell[o, 2]])},
+  {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
   {germ = First @ FindInfraRepresentative[g, InfraSegment[o, through], 1]},
   {windows = InfraMeasurement[g, InfraGeodesic[germ, Infinity], "Graph"]},
   GraphicsRow[{InfraSubstrateHighlight[g, {windows, InfraWalk[germ]}],
@@ -64,7 +64,7 @@ The walks of *k* edges from the germ's window are the extensions [FindInfraGeode
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
-  {germ = First @ FindInfraRepresentative[g, InfraSegment[(SeedRandom[2]; FindInfraPoint[g, InfraShell[o, 3]]), o], 1]},
+  {germ = First @ FindInfraRepresentative[g, InfraSegment[(SeedRandom[2]; RandomInfraPoint[g, InfraShell[o, 3]]), o], 1]},
   Table[
     With[
       {windows = InfraMeasurement[g, InfraGeodesic[germ, scale], "Graph"]},
@@ -80,7 +80,7 @@ At scale `Infinity` the graph is the part of the [InfraRay]() graph past the ger
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
-  {through = (SeedRandom[1]; FindInfraPoint[g, InfraShell[o, 2]])},
+  {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
   {germ = First @ FindInfraRepresentative[g, InfraSegment[o, through], 1]},
   {ray = InfraMeasurement[g, InfraRay[o, through], "Graph"]},
   Sort @ EdgeList @ InfraMeasurement[g, InfraGeodesic[germ, Infinity], "Graph"] ===

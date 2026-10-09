@@ -2,12 +2,12 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraPoint *)
 
-Options[ FindInfraPoint ] = { "PairwiseDistance" -> None, "MaxCliques" -> All }
+Options[ RandomInfraPoint ] = { "PairwiseDistance" -> None, "MaxCliques" -> All }
 
 (* n points pairwise at a distance in [lo, hi] are an n-clique of the graph on the pool joining two vertices at such a distance;
    "Max" takes the largest lo that still admits one, which maximises the least pairwise distance *)
 
-FindInfraPoint[ graph_Graph, region : Except[ _Integer | UpTo[ _Integer ] | All | _Rule | _RuleDelayed ] : Automatic,
+RandomInfraPoint[ graph_Graph, region : Except[ _Integer | UpTo[ _Integer ] | All | _Rule | _RuleDelayed ] : Automatic,
     count : ( _Integer | UpTo[ _Integer ] | All ) : Automatic, opts : OptionsPattern[] ] :=
   With[ { pool = Which[
             region === Automatic,                    VertexList @ graph,

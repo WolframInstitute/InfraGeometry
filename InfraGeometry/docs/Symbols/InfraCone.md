@@ -60,7 +60,7 @@ Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {axis = FindInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])]]},
+    {axis = FindInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])]]},
     {cone = InfraCone[axis, 1/2]},
     {support = FindInfraRepresentative[g, cone]},
     Labeled[
@@ -75,7 +75,7 @@ The same axis read from the other end gives the other apex; the base is a full r
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {axis = FindInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])]]},
+  {axis = FindInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])]]},
   GraphicsRow[{
     InfraSubstrateHighlight[g, {InfraCone[axis, 1], axis}],
     InfraSubstrateHighlight[g, {InfraCone[Reverse @ axis, 1], axis}]}]]
@@ -89,7 +89,7 @@ The two measures against the slope, along a shortest path of length 6 on the squ
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},
-  {axis = FindInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 6]])]]},
+  {axis = FindInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 6]])]]},
   {slopes = Range[0, 2, 1/4]},
   ListLinePlot[
     Table[{m, InfraMeasurement[g, InfraCone[axis, m], measure]}, {measure, {"CountingMeasure", "RiemannianMeasure"}}, {m, slopes}],
@@ -102,7 +102,7 @@ The cone of slope 1 along a shortest path, sliced, rounded, and the ball of radi
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {axis = FindInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])]]},
+  {axis = FindInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])]]},
   {cone = InfraCone[axis, 1, Method -> "Balls"]},
   {farBall = InfraBall[Last[axis], 4]},
   {GraphicsRow[{InfraSubstrateHighlight[g, {InfraCone[axis, 1], axis}], InfraSubstrateHighlight[g, {cone, axis}], InfraSubstrateHighlight[g, {farBall, Last[axis]}]}],
@@ -115,6 +115,6 @@ The cone is contained in the cylinder of radius *slope* (*n* − 1).
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small"]},
   {c = First @ GraphCenter[g]},
-  {axis = FindInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; FindInfraPoint[g, InfraShell[c, 4]])]]},
+  {axis = FindInfraRepresentative[g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])]]},
   SubsetQ[FindInfraRepresentative[g, InfraCylinder[axis, Length[axis] - 1]], FindInfraRepresentative[g, InfraCone[axis, 1]]]]
 ```

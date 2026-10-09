@@ -70,7 +70,7 @@ A geodesic interval graph passes as a whole, since all its paths from the source
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; FindInfraPoint[g, InfraShell[a, 4]])},
+  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {dag = InfraMeasurement[g, InfraSegment[a, b], "Graph"]},
   {InfraSubstrateHighlight[g, {dag, a, b}], InfraGeodesicQ[g, dag]}]
 ```

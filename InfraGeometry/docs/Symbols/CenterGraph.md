@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/CenterGraph
 Keywords: [centre, center, ball, interior, rim, cut, substrate preparation]
-SeeAlso: [InfraSubstrate, FindInfraPoint, InfraSubstrateHighlight, GraphCenter, NeighborhoodGraph]
+SeeAlso: [InfraSubstrate, RandomInfraPoint, InfraSubstrateHighlight, GraphCenter, NeighborhoodGraph]
 RelatedGuides: [InfraSubstrates]
 ---
 
@@ -72,7 +72,7 @@ A construction made on the cut stays off the rim and draws on the whole substrat
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {core = CenterGraph[g, -2]},
-  {points = (SeedRandom[1]; FindInfraPoint[core, 3])},
+  {points = (SeedRandom[1]; RandomInfraPoint[core, 3])},
   InfraSubstrateHighlight[g, {VertexList @ core, points}]]
 ```
 

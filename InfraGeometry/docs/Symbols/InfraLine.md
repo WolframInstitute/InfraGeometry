@@ -41,7 +41,7 @@ GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {p = First @ GraphCenter[g]},
-    {q = (SeedRandom[1]; FindInfraPoint[g, InfraShell[p, 2]])},
+    {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 2]])},
     {line = InfraLine[p, q]},
     InfraSubstrateHighlight[g, {line, p, q}]],
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
@@ -53,7 +53,7 @@ The number of DAGs carrying the lines, the number of lines and their length, bes
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = First @ GraphCenter[g]},
-  {q = (SeedRandom[1]; FindInfraPoint[g, InfraShell[p, 2]])},
+  {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 2]])},
   {line = InfraLine[p, q]},
   {InfraSubstrateHighlight[g, {line, p, q}],
    Length @ InfraMeasurement[g, line, "Graph"], InfraMeasurement[g, line, "Cardinality"],
@@ -66,7 +66,7 @@ Three of the lines, each drawn as a walk.
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = First @ GraphCenter[g]},
-  {q = (SeedRandom[1]; FindInfraPoint[g, InfraShell[p, 2]])},
+  {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 2]])},
   {members = FindInfraRepresentative[g, InfraLine[p, q], 3]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], p, q}], {member, members}]]
 ```
@@ -90,7 +90,7 @@ The line through a geodesic germ, beside the line through its two ends. The ends
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = First @ GraphCenter[g]},
-  {q = (SeedRandom[1]; FindInfraPoint[g, InfraShell[p, 2]])},
+  {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 2]])},
   {germ = First @ FindInfraSegment[g, p, q, All]},
   {GraphicsRow @ {
     Labeled[InfraSubstrateHighlight[g, {InfraLine[germ], InfraWalk[germ], p, q}], "germ"],
@@ -106,7 +106,7 @@ The anchors lie on every line, so their density is the cardinality. The vertex d
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = First @ GraphCenter[g]},
-  {q = (SeedRandom[1]; FindInfraPoint[g, InfraShell[p, 2]])},
+  {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 2]])},
   {density = InfraMeasurement[g, InfraLine[p, q], "VertexDensity"]},
   {InfraSubstrateHighlight[g, {density}],
    {density[p], density[q]} === ConstantArray[InfraMeasurement[g, InfraLine[p, q], "Cardinality"], 2]}]
@@ -118,7 +118,7 @@ Every member satisfies [InfraLineQ]().
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = First @ GraphCenter[g]},
-  {q = (SeedRandom[1]; FindInfraPoint[g, InfraShell[p, 2]])},
+  {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 2]])},
   {members = FindInfraRepresentative[g, InfraLine[p, q], All]},
   {InfraSubstrateHighlight[g, {members, p, q}],
    InfraLineQ[g, members]}]

@@ -30,7 +30,7 @@ A 0-cochain, its coboundary and a cup on the triangular tiling, of degrees 0, 1 
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {apex = (SeedRandom[1]; FindInfraPoint[g, InfraShell[center, 3]]), cochain = AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]},
+  {apex = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[center, 3]]), cochain = AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]},
   {edgeCochain = Coboundary[g, cochain]},
   {triangleCochain = CochainCup[g, edgeCochain, Coboundary[g, AssociationMap[GraphDistance[g, apex, First[#]] &, List /@ VertexList[g]]]]},
   {GraphicsRow[{
