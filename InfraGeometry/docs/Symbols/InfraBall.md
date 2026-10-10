@@ -145,7 +145,7 @@ With[
    InfraMeasurement[g, InfraBall[c, 6], "RiemannianMeasure"], InfraMeasurement[g, InfraBall[c, 5], "CountingMeasure"]}]
 ```
 
-Inside a scene the token names the ball about a point, and [FindInfraScene]() binds it to the same vertex set.
+Inside a scene the token names the ball about a point, and [RandomInfraInstance]() binds it to the same vertex set.
 
 ```wl
 ClearAll[pA, ballA];
@@ -153,7 +153,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {constr = InfraScene[{pA, ballA}, {pA == InfraPoint[c], ballA == InfraBall[pA, 2]}]},
-  {ball = InfraSceneInstance[First @ FindInfraScene[constr, g], ballA]},
+  {ball = InfraSceneInstance[First @ RandomInfraInstance[ constr, g, All ], ballA]},
   {InfraSubstrateHighlight[g, {ball, c}],
    ball === RandomInfraRepresentative[g, InfraBall[c, 2]]}]
 ```

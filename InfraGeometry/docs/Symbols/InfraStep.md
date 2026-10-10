@@ -26,7 +26,7 @@ With[
   {scene = InfraScene[{pA, pB, seg1},
      {InfraStep[{pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 3}, "two points"],
       InfraStep[{seg1 == InfraSegment[pA, pB]}, "the segment"]}]},
-  {solved = FindInfraScene[scene, g]},
+  {solved = RandomInfraInstance[ scene, g, All ]},
   {InfraSubstrateHighlight[g, {InfraSceneInstance[#, seg1] & /@ solved, c}],
    scene["Labels"]}]
 ```

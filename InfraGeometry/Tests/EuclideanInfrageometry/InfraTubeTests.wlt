@@ -268,7 +268,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[{4, 4}] },
     Map[ inst |-> inst[[ 1 ]][ t ],
-      FindInfraScene[ InfraScene[ { t }, { t == # } ], g ] & /@
+      RandomInfraInstance[ InfraScene[ { t }, { t == # } ], g, All ] & /@
         { InfraTube[{1, 2}, 1], InfraCylinder[{1, 2}, 1], InfraCone[{1, 2}, 1], InfraSolidOfRevolution[{5, 6, 7, 8}, {0, 1, 1, 0}] }, { 2 } ] ],
   { { {1, 2, 3, 5, 6} }, { {1, 2, 5, 6} }, { {1, 2, 6} }, { {2, 3, 5, 6, 7, 8, 10, 11} } },
   TestID -> "InfraTube-InfraCylinder-InfraCone-InfraSolidOfRevolution-are-scene-constructors"

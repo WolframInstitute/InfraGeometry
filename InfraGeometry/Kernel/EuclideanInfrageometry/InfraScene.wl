@@ -238,41 +238,52 @@ evaluateConstruction[ graph_Graph, syms_List, rhs_, bindings_Association ] :=
     If[ ! ListQ[ tuples ] || tuples === {}, {},
       Join[ bindings, AssociationThread[ syms, # ] ] & /@ tuples ] ]
 
-Options[ FindInfraScene ] = { "PruneProbability" -> 0 }
+Options[ RandomInfraInstance ] = { "NextVertexFunction" -> Automatic, "Steps" -> All }
 
-FindInfraScene[ scene_InfraScene, graph_Graph, opts : OptionsPattern[] ] :=
-  FindInfraScene[ scene, graph, Length @ scene[ "Steps" ], <| |>, opts ]
-
-FindInfraScene[ scene_InfraScene, graph_Graph, nSteps_Integer, opts : OptionsPattern[] ] :=
-  FindInfraScene[ scene, graph, nSteps, <| |>, opts ]
-
-FindInfraScene[ scene_InfraScene, graph_Graph, init_Association, opts : OptionsPattern[] ] :=
-  FindInfraScene[ scene, graph, Length @ scene[ "Steps" ], init, opts ]
-
-FindInfraScene[ scene_InfraScene, graph_Graph, nSteps_Integer, init_Association,
-    opts : OptionsPattern[] ] :=
-  With[ { prob = OptionValue[ "PruneProbability" ], objects = scene[ "Objects" ], constructions = scene[ "Constructions" ] },
-    { branches = Fold[
-        { current, step } |-> With[ { effective = Select[ step, ! KeyExistsQ[ First[ current, <| |> ], # ] & ] },
-          If[ effective === { }, current,
-            With[ { tuplesInStep = Select[ Select[ Keys @ constructions, ListQ ], ContainsAny[ #, effective ] & ] },
-              { grown = Fold[
-                  { currentBranches, key } |->
-                    Flatten[ evaluateConstruction[ graph, key, constructions[ key ], # ] & /@ currentBranches, 1 ],
-                  current,
-                  Join[
-                    Select[ Complement[ effective, Flatten @ tuplesInStep ], KeyExistsQ[ constructions, # ] & ],
-                    tuplesInStep ] ] },
-              If[ prob > 0,
-                With[ { kept = Pick[ grown, UnitStep[ RandomReal[ { 0, 1 }, Length @ grown ] - prob ], 1 ] },
-                  If[ kept === { }, { RandomChoice @ grown }, kept ] ],
-                grown ] ] ] ],
-        { init },
-        Take[ scene[ "Steps" ], UpTo[ nSteps ] ] ] },
-    InfraSceneInstance /@ If[ scene[ "Assertions" ] === { }, branches,
-      Select[ branches, b |-> And @@ (
-        With[ { vars = Intersection[ Cases[ #, Alternatives @@ objects, { 0, Infinity } ], objects ] },
-          ! SubsetQ[ Keys @ b, vars ] || TrueQ[ resolveExpression[ #, b, graph ] ] ] & /@ scene[ "Assertions" ] ) ] ] ]
+RandomInfraInstance[ scene_InfraScene, graph_Graph,
+    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic,
+    init : _Association : <| |>, opts : OptionsPattern[] ] /;
+    count =!= All || OptionValue[ RandomInfraInstance, { opts }, "NextVertexFunction" ] =!= RandomChoice :=
+  With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
+          objects = scene[ "Objects" ], constructions = scene[ "Constructions" ],
+          steps = Replace[ OptionValue[ "Steps" ], n_Integer :> UpTo[ n ] ],
+          nextFunction = Replace[ OptionValue[ "NextVertexFunction" ],
+            Automatic -> If[ count === All, Identity, RandomSample ] ] },
+    { keys = Catenate @ Map[
+        step |-> With[ { effective = Select[ step, ! KeyExistsQ[ init, # ] & ] },
+          { tuples = Select[ Select[ Keys @ constructions, ListQ ], ContainsAny[ #, effective ] & ] },
+          Join[ Select[ Complement[ effective, Flatten @ tuples ], KeyExistsQ[ constructions, # ] & ], tuples ] ],
+        Take[ scene[ "Steps" ], steps ] ],
+      assertions = { #, Intersection[ Cases[ #, Alternatives @@ objects, { 0, Infinity } ], objects ] } & /@
+        scene[ "Assertions" ] },
+    { instances = Keys @ Last @ NestWhile[
+        Apply[ { stack, found } |-> With[ { bindings = stack[[ 1, 1 ]], index = stack[[ 1, 2 ]] },
+          Which[
+            cap === 0,
+              { { }, found },
+            ! AllTrue[ assertions,
+                assertion |-> ! SubsetQ[ Keys @ bindings, Last @ assertion ] ||
+                  TrueQ[ resolveExpression[ First @ assertion, bindings, graph ] ] ],
+              { Rest @ stack, found },
+            index > Length @ keys,
+              { Rest @ stack, Append[ found, InfraSceneInstance[ bindings ] -> Null ] },
+            True,
+              With[ { key = keys[[ index ]] },
+                { targets = If[ ListQ @ key, key, { key } ] },
+                { candidates = If[ AllTrue[ targets, KeyExistsQ[ bindings, # ] & ],
+                    { bindings },
+                    Select[ evaluateConstruction[ graph, key, constructions[ key ], bindings ],
+                      candidate |-> AllTrue[ Intersection[ targets, Keys @ bindings ],
+                        target |-> candidate[ target ] === bindings[ target ] ] ] ] },
+                { next = If[ candidates === { }, { },
+                    Replace[ nextFunction @ candidates, binding_Association :> { binding } ] ] },
+                { Join[ { #, index + 1 } & /@ next, Rest @ stack ], found } ] ] ] ],
+        { { { init, 1 } }, <| |> },
+        state |-> First @ state =!= { } && Length[ Last @ state ] < cap ] },
+    Switch[ count,
+      Automatic, First[ instances, { } ],
+      _Integer, If[ Length @ instances < count, { }, instances ],
+      _, instances ] ]
 
 pointQ[ graph_Graph, x_ ] :=
   VertexQ[ graph, x ]
