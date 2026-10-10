@@ -305,7 +305,8 @@ infraInk[ graph_Graph, x_ ] :=
            "EdgeDensity"   -> KeySort @ Counts[ UndirectedEdge @@ Sort @ # & /@ Partition[ walk, 2, 1 ] ],
            "Walk"          -> walk,
            "Knots"         -> { } |> ],
-    MatchQ[ x, ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
+    MatchQ[ x, ( InfraMidpoint | InfraPerpendicularBisector | InfraRegionNearest )[ _, _ ] |
+      ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
       ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
       ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] | InfraIntersection[ __ ] ],
       <| "VertexDensity" -> InfraMeasurement[ graph, x, "VertexDensity" ], "EdgeDensity" -> <| |>, "Walk" -> None, "Knots" -> { } |>,

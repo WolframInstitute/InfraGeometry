@@ -130,7 +130,7 @@ InfraPlaneQ::usage = "InfraPlaneQ[graph, h, p1, p2] tests whether h lies in the 
 InfraIntersectQ::usage = "InfraIntersectQ[s1, s2] asserts inside an InfraScene that two sets intersect; evaluation is postponed until bindings resolve, which is why it exists rather than the built-in IntersectingQ.";
 
 InfraSubstrateHighlight::usage = "InfraSubstrateHighlight[graph, {obj1, obj2, ...}] draws the sum of the objects' densities on graph, the i-th object in the i-th palette color; a Directive styles the objects after it. Options \"OpacityRange\", \"ThicknessRange\", \"PointSizeRange\", \"Arrowheads\", \"Palette\".";
-InfraSceneViewer::usage = "InfraSceneViewer[scene, graph] is an interactive step-by-step visualisation of an InfraScene on a graph.";
+InfraSceneViewer::usage = "InfraSceneViewer[scene, graph] displays scene steps. InfraSceneViewer[data] inspects saved exploration states, event histories and branchial witnesses without sampling.";
 PointViewer::usage = "PointViewer[graph] is an interactive viewer for selecting points; PointViewer[graph, sym] stores the selection in sym.";
 SegmentViewer::usage = "SegmentViewer[graph] is an interactive viewer for exploring geodesic segments.";
 ShellViewer::usage = "ShellViewer[graph] is an interactive viewer for exploring metric shells.";

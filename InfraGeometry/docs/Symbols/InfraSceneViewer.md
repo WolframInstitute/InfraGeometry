@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSceneViewer
 Keywords: [viewer, interactive, construction, step, branch]
-SeeAlso: [InfraScene, RandomInfraInstance, InfraSubstrateHighlight, InfraSceneInstance, InfraStep]
+SeeAlso: [InfraSceneMultiway, InfraBranchialGraph, InfraScene, RandomInfraInstance, InfraSubstrateHighlight, InfraSceneInstance, InfraStep]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -15,6 +15,8 @@ RelatedGuides: [EuclideanInfrageometry]
 <code>[InfraSceneViewer]()[*scene*, *graph*]</code> is an interactive view of an [InfraScene]() on a graph, stepped one construction step at a time.
 
 <code>[InfraSceneViewer]()[*scene*, *graph*, *bindings*]</code> starts from an association of pre-fixed bindings.
+
+<code>[InfraSceneViewer]()[*data*]</code> inspects a saved [InfraSceneMultiway]() exploration without sampling.
 
 ## Details & Options
 
@@ -39,6 +41,23 @@ Fixed matters on long constructions. Without it, each step re-solves against eve
 The rendering options `"OpacityRange"`, `"ThicknessRange"`, `"PointSizeRange"` and `ImageSize` are passed through to [InfraSubstrateHighlight]().
 
 For a static figure, solve the steps yourself with [RandomInfraInstance]() and lay them out as a grid. That is what the last example does.
+
+For saved exploration data, event navigation uses individual construction depths; group navigation uses the saved group boundaries.
+The selected state's bindings and assertion statuses appear with its geometry, immediate branchial neighbors and common-parent witnesses.
+Choose an incoming event, or an earlier event in the history table, to inspect a different saved history and its exact candidate values.
+Merged states retain all incoming choices.
+
+A binding restriction filters saved states by literal equality and marks the view as filtered.
+It never changes the saved initial bindings.
+List-valued points, ordered walks, vertex sets and Graph representatives retain their declared kinds.
+
+Layer and whole-scene completeness are displayed separately, with the saved stopping reasons and unfinished candidates.
+Pending or unsupported assertions are undecided.
+In an incomplete layer, displayed branchial edges have witnesses; missing edges do not prove nonadjacency.
+A complete empty layer differs from a partial layer containing no observed states.
+
+Navigation reads the saved record only.
+To explore further, make a separate explicit [InfraSceneMultiway]() call and open its new record; resuming a saved run is deferred.
 
 ## Basic Examples
 
@@ -75,4 +94,16 @@ With[
         {Table[Graph[DirectedEdge @@@ Partition[circle, 2, 1, 1]], {circle, circles}],
          {p1, p2}}],
       "circle around a"]}]]
+```
+
+Inspect the two histories of a merged construction state.
+Event depth 1 has two branchial neighbors; group boundary 1 is at event depth 2.
+At the merged state, incoming event 3 follows history {1,3}, and incoming event 4 follows history {2,4}.
+
+```wl
+With[
+  {graph = PathGraph[Range[3]]},
+  {scene = InfraScene[{p, q}, {InfraStep[{p == InfraMidpoint[1, 3], q == InfraMidpoint[1, 1]}]}]},
+  {data = InfraSceneMultiway[scene, graph]},
+  InfraSceneViewer[data]]
 ```

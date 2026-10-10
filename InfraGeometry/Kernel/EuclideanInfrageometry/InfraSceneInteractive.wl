@@ -148,6 +148,105 @@ Options[ InfraSceneViewer ] = {
   ImageSize        -> 500
 }
 
+InfraSceneViewer[ data_Association, opts : OptionsPattern[] ] /;
+    ContainsAll[ Keys[ data ], { "Scene", "Substrate", "InitialBindings", "Schedule", "States", "Events",
+      "Layers", "StepLayers", "Completeness", "Frontier" } ] && GraphQ[ data[ "Substrate" ] ] &&
+    AllTrue[ { "InitialBindings", "Schedule", "States", "Events", "Layers", "StepLayers" },
+      key |-> AssociationQ[ data[ key ] ] ] && data[ "Layers" ] =!= <| |> &&
+    SubsetQ[ First /@ Options[ InfraSceneViewer ], First /@ { opts } ] :=
+  With[ { graph = data[ "Substrate" ], states = data[ "States" ], events = data[ "Events" ],
+      kinds = Association @ Catenate[ Map[ entry |-> Normal @ AssociationThread[ entry[ "Targets" ], entry[ "Kinds" ] ],
+        Values[ data[ "Schedule" ] ] ] ],
+      highlightOptions = FilterRules[ { opts }, Options[ InfraSubstrateHighlight ] ] },
+    DynamicModule[ { navigation = "Event depth", boundary = First @ Keys[ data[ "Layers" ] ],
+        selectedState = None, restriction = <| |>, incomingChoices = <| |> },
+      Column[ {
+        Row[ { SetterBar[ Dynamic[ navigation, value |-> ( navigation = value; boundary = 0; selectedState = None ) ],
+            { "Event depth", "Group boundary" } ], "  ",
+          Dynamic[ PopupMenu[ Dynamic[ boundary, value |-> ( boundary = value; selectedState = None ) ],
+            Keys @ If[ navigation === "Event depth", data[ "Layers" ], data[ "StepLayers" ] ] ] ] } ],
+        Row[ { "Binding restriction: ", InputField[ Dynamic[ restriction ], Expression ], "  ",
+          Button[ "Clear restriction", restriction = <| |> ] } ],
+        Dynamic[ With[ { collection = If[ navigation === "Event depth", data[ "Layers" ], data[ "StepLayers" ] ] },
+          { layer = Lookup[ collection, Key[ boundary ], First @ Values[ collection ] ] },
+          { depth = If[ navigation === "Event depth", boundary, layer[ "Depth" ] ],
+            matching = If[ AssociationQ[ restriction ], Select[ layer[ "States" ], id |-> AllTrue[ Keys[ restriction ],
+              name |-> KeyExistsQ[ states[ id ][ "Bindings" ], name ] &&
+                Lookup[ states[ id ][ "Bindings" ], Key[ name ] ] === Lookup[ restriction, Key[ name ] ] ] ], { } ] },
+          { projection = InfraBranchialGraph[ data, depth ] },
+          { branchial = Subgraph[ projection[ "Graph" ], matching ],
+            witnesses = KeySelect[ projection[ "Witnesses" ], edge |-> ContainsAll[ matching, List @@ edge ] ] },
+          selectedState = If[ MemberQ[ matching, selectedState ], selectedState, First[ matching, None ] ];
+          Column[ {
+            Row[ { If[ TrueQ[ layer[ "Complete" ] ], "Complete", "Partial exploration" ],
+              " at ", ToLowerCase[ navigation ], " ", boundary, "; event depth ", depth } ],
+            Row[ { "Whole scene: ", Which[ TrueQ[ data[ "Completeness" ][ "Scene" ] ], "Complete",
+              ContainsAny[ data[ "Completeness" ][ "Reasons" ], { "Unsupported", "UnboundInput" } ], "Undecided",
+              True, "Partial exploration" ] } ],
+            If[ data[ "Completeness" ][ "Reasons" ] === { }, Nothing,
+              Row[ { "Exploration boundary: ", Row[ data[ "Completeness" ][ "Reasons" ], ", " ] } ] ],
+            If[ restriction === <| |>, Nothing, Row[ { "Filtered view: ", restriction } ] ],
+            Row[ { "Saved initial bindings: ", data[ "InitialBindings" ] } ],
+            If[ data[ "Frontier" ] === { }, Nothing,
+              Grid[ Prepend[ Map[ obligation |-> Lookup[ obligation,
+                  { "Source", "Construction", "NextCandidate", "Reason" } ], data[ "Frontier" ] ],
+                { "Unfinished state", "Construction", "Next candidate", "Reason" } ], Alignment -> Left ] ],
+            If[ matching === { },
+              Column[ { "No matching saved states at this boundary.",
+                If[ TrueQ[ layer[ "Complete" ] ] && restriction === <| |>,
+                  "This layer is exhaustively empty.", "This view makes no negative existence claim." ],
+                InfraSubstrateHighlight[ graph, { }, Sequence @@ highlightOptions ] } ],
+              With[ { state = states[ selectedState ] },
+                { historyStates = Reverse @ DeleteCases[ NestWhileList[
+                    id |-> With[ { eventID = Lookup[ incomingChoices, Key[ id ],
+                        First[ states[ id ][ "IncomingEvents" ], None ] ] },
+                      If[ eventID === None, None, events[ eventID ][ "Source" ] ] ],
+                    selectedState, id |-> id =!= None, 1, state[ "Depth" ] + 1 ], None ] },
+                { history = Map[ id |-> Lookup[ incomingChoices, Key[ id ], First[ states[ id ][ "IncomingEvents" ] ] ],
+                    Rest[ historyStates ] ],
+                  neighbors = AdjacencyList[ branchial, selectedState ] },
+                Column[ {
+                  Row[ { "State: ", PopupMenu[ Dynamic[ selectedState ], matching ],
+                    "; event depth ", state[ "Depth" ], "; next group ", state[ "Group" ] } ],
+                  Row[ { "Bindings: ", state[ "Bindings" ] } ],
+                  If[ MemberQ[ Values[ state[ "Assertions" ] ], "Unsupported" ],
+                    "Undecided: an unsupported assertion blocks this state.",
+                    If[ MemberQ[ Values[ state[ "Assertions" ] ], "Pending" ],
+                      "Undecided: assertions are pending at this state.", "Assertions decided." ] ],
+                  Row[ { "Assertions: ", state[ "Assertions" ] } ],
+                  Row[ {
+                    InfraSubstrateHighlight[ graph, KeyValueMap[ { name, representative } |->
+                      If[ VertexQ[ graph, representative ], Association[ representative -> 1 ],
+                        Switch[ Lookup[ kinds, Key[ name ], "Exact" ],
+                        "Point", Association[ representative -> 1 ],
+                        "VertexSet", If[ VertexQ[ graph, representative ], Association[ representative -> 1 ],
+                          AssociationThread[ representative, ConstantArray[ 1, Length[ representative ] ] ] ],
+                        "Walk", If[ ListQ[ representative ] && ! VertexQ[ graph, representative ],
+                          InfraWalk[ representative ], representative ],
+                        _, representative ] ], state[ "Bindings" ] ], Sequence @@ highlightOptions ],
+                    Graph[ branchial, VertexLabels -> "Name", VertexStyle -> { selectedState -> StandardRed } ] } ],
+                  Row[ { "Branchial neighbors: ", neighbors } ],
+                  If[ TrueQ[ projection[ "Complete" ] ],
+                    If[ restriction === <| |>, "Branchial layer complete.", "Saved branchial layer complete; this view is filtered." ],
+                    "Branchial edges have saved witnesses; missing edges are undecided." ],
+                  Row[ { "Common-parent witnesses: ", witnesses } ],
+                  If[ state[ "IncomingEvents" ] === { }, "Initial state: no incoming event.",
+                    Row[ { "Incoming event: ", PopupMenu[
+                      Dynamic[ Lookup[ incomingChoices, Key[ selectedState ], First[ state[ "IncomingEvents" ] ] ],
+                        value |-> ( incomingChoices = Append[ incomingChoices, selectedState -> value ] ) ],
+                      state[ "IncomingEvents" ] ] } ] ],
+                  Row[ { "History event IDs: ", history } ],
+                  Grid[ Prepend[ Map[ id |-> With[ { event = events[ Lookup[ incomingChoices, Key[ id ],
+                        First[ states[ id ][ "IncomingEvents" ] ] ] ] },
+                      { PopupMenu[ Dynamic[ Lookup[ incomingChoices, Key[ id ], First[ states[ id ][ "IncomingEvents" ] ] ],
+                          value |-> ( incomingChoices = Append[ incomingChoices, id -> value ] ) ],
+                          states[ id ][ "IncomingEvents" ] ],
+                        event[ "Source" ], id, event[ "Construction" ], event[ "CandidateIndex" ],
+                        event[ "Candidate" ], event[ "Outcome" ] } ], Rest[ historyStates ] ],
+                    { "Event", "From", "To", "Construction", "Candidate index", "Saved candidate", "Outcome" } ],
+                    Alignment -> Left ] } ] ] ] }, Alignment -> Left ] ],
+          TrackedSymbols :> { navigation, boundary, selectedState, restriction, incomingChoices } ] }, Alignment -> Left ] ] ]
+
 InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <| |>, opts : OptionsPattern[ ] ] :=
   With[ {
       nSteps  = Length @ scene[ "Steps" ],
