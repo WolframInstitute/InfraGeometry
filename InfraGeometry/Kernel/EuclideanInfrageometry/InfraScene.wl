@@ -26,7 +26,9 @@ PackageScope[ EmbeddingCircleDistance ]
 PackageScope[ resolveEmbeddingCoords ]
 
 sceneAssertionRules[ graph_ ] :=
-  { InfraDistance[ x_, y_ ]      :> GraphDistance[ graph, x, y ],
+  { InfraDistance[ x_, y_, opts___Rule ] :> InfraDistance[ graph, x, y, opts ],
+    InfraMeasurement[ object_, property_ ] :> InfraMeasurement[ graph, object, property ],
+    assertion_InfraGeometricAssertion :> InfraGeometricTest[ graph, assertion ],
     InfraWalkQ[ w_ ]             :> InfraWalkQ[ graph, w ],
     InfraSegmentQ[ s_ ]          :> InfraSegmentQ[ graph, s ],
     InfraShellQ[ vs_ ]           :> InfraShellQ[ graph, vs ],
@@ -43,7 +45,10 @@ sceneAssertionRules[ graph_ ] :=
     InfraMemberQ[ obj_, vs_ ]    :> InfraMemberQ[ graph, obj, vs ] }
 
 resolveExpression[ expr_, bindings_Association, graph_Graph ] :=
-  ( expr /. Normal[ bindings ] ) /. sceneAssertionRules[ graph ]
+  Which[
+    KeyExistsQ[ bindings, expr ], Lookup[ bindings, Key[ expr ] ],
+    VertexQ[ graph, expr ] || AtomQ[ expr ] || GraphQ[ expr ] || MatchQ[ expr, _Function ], expr,
+    True, Replace[ Map[ part |-> resolveExpression[ part, bindings, graph ], expr ], sceneAssertionRules[ graph ] ] ]
 
 undecidableAssertions[ assertions_List ] :=
   With[ { decidable = Alternatives @@ Keys @ sceneAssertionRules[ Null ] },
@@ -57,8 +62,15 @@ extractBranches[ opts_List ] :=
   Lookup[ Association @ opts, "Branches", All ]
 
 constructionPatternQ[ objects_List, h_ ] :=
-  MatchQ[ h, ( key_ == _ ) /;
-    ( MemberQ[ objects, key ] || ( ListQ[ key ] && SubsetQ[ objects, key ] ) ) ]
+  MatchQ[ h, ( key_ == rhs_ ) /;
+    ( AnyTrue[ objects, object |-> object === key ] ||
+      ( ListQ[ key ] && key =!= { } && AllTrue[ key, target |-> AnyTrue[ objects, object |-> object === target ] ] &&
+        ! MatchQ[ rhs, _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest ] ) ) &&
+    MatchQ[ rhs, ( InfraPoint | InfraSegment | InfraHalfLine | InfraRay | InfraInfiniteLine | InfraLine |
+      InfraCircle | InfraArc | InfraRegularPolygon | InfraPolygon | InfraPlane | InfraBall | InfraShell | InfraSphere |
+      InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution | InfraBallHull | InfraConvexHull | InfraQuadric |
+      InfraWalk | InfraGeodesic | InfraEllipse | InfraIntersection | InfraUnion |
+      InfraMidpoint | InfraPerpendicularBisector | InfraRegionNearest )[ ___ ] ] ]
 
 capBranches[ paths_List, All ]              :=
   paths
@@ -184,7 +196,8 @@ InfraScene[ objects_List, hypotheses_List ] /;
     { steps = First @ NestWhile[
         Apply[ { done, remaining } |->
           With[ { current = Select[ remaining, v |-> VertexInDegree[ Subgraph[ dag, remaining ], v ] == 0 ] },
-            { Append[ done, current ], Complement[ remaining, current ] } ] ],
+            { Append[ done, If[ current === { }, remaining, current ] ],
+              If[ current === { }, { }, Complement[ remaining, current ] ] } ] ],
         { { }, VertexList @ dag },
         state |-> Last @ state =!= { } ] },
     InfraScene[ <|
@@ -219,6 +232,13 @@ RandomInfraInstance[ scene_InfraScene, graph_Graph,
     init : _Association : <| |>, opts : OptionsPattern[] ] /;
     count =!= All || OptionValue[ RandomInfraInstance, { opts }, "NextVertexFunction" ] =!= RandomChoice :=
   With[ { result = Catch[
+    If[ AnyTrue[ scene[ "Assertions" ], assertion |-> MatchQ[ assertion,
+        ( target_ == rhs_ ) /; ( AnyTrue[ scene[ "Objects" ], object |-> object === target ] ||
+          ( ListQ[ target ] && target =!= { } && AllTrue[ target,
+            slot |-> AnyTrue[ scene[ "Objects" ], object |-> object === slot ] ] ) ) &&
+          ! AtomQ[ rhs ] && ! VertexQ[ graph, rhs ] && ( Context @@ { Head[ rhs ] } ) =!= "System`" &&
+          ! MatchQ[ rhs, _InfraDistance | _InfraMeasurement ] ] ],
+      Throw[ "UnsupportedConstruction", "UnsupportedConstruction" ] ];
     With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
           objects = scene[ "Objects" ], constructions = scene[ "Constructions" ],
           steps = Replace[ OptionValue[ "Steps" ], n_Integer :> UpTo[ n ] ],
@@ -232,6 +252,9 @@ RandomInfraInstance[ scene_InfraScene, graph_Graph,
           AssociationQ[ token ] && SubsetQ[ VertexList @ graph, Keys @ token ], Keys @ token,
           True, Replace[ token, {
         token_InfraPoint :> RandomInfraPoint[ graph, token, All ],
+        token_InfraMidpoint :> RandomInfraMidpoint[ graph, token, All ],
+        token_InfraPerpendicularBisector :> RandomInfraPerpendicularBisector[ graph, token, All ],
+        token_InfraRegionNearest :> RandomInfraRegionNearest[ graph, token, All ],
         token_InfraSegment :> RandomInfraSegment[ graph, token, All ],
         token_InfraHalfLine :> RandomInfraHalfLine[ graph, token, All ],
         token_InfraInfiniteLine :> RandomInfraInfiniteLine[ graph, token, All ],
@@ -266,16 +289,22 @@ RandomInfraInstance[ scene_InfraScene, graph_Graph,
           { tuples = Select[ Select[ Keys @ constructions, ListQ ], ContainsAny[ #, effective ] & ] },
           Join[ Select[ Complement[ effective, Flatten @ tuples ], KeyExistsQ[ constructions, # ] & ], tuples ] ],
         Take[ scene[ "Steps" ], steps ] ],
-      assertions = { #, Intersection[ Cases[ #, Alternatives @@ objects, { 0, Infinity } ], objects ] } & /@
-        scene[ "Assertions" ] },
+      assertions = Map[ assertion |-> { assertion, Select[ objects, object |->
+          AnyTrue[ Position[ assertion, part_ /; part === object, { 0, Infinity }, Heads -> False ],
+            position |-> AllTrue[ Range[ 0, Length[ position ] - 1 ],
+              depth |-> ! VertexQ[ graph, Extract[ assertion, Take[ position, depth ] ] ] ] ] ] },
+        scene[ "Assertions" ] ] },
     { instances = Keys @ Last @ NestWhile[
         Apply[ { stack, found } |-> With[ { bindings = stack[[ 1, 1 ]], index = stack[[ 1, 2 ]] },
           Which[
             cap === 0,
               { { }, found },
-            ! AllTrue[ assertions,
-                assertion |-> ! SubsetQ[ Keys @ bindings, Last @ assertion ] ||
-                  TrueQ[ resolveExpression[ First @ assertion, bindings, graph ] ] ],
+            With[ { evaluated = Map[ assertion |-> If[ SubsetQ[ Keys @ bindings, Last @ assertion ],
+                resolveExpression[ First @ assertion, bindings, graph ], True ], assertions ] },
+              Which[
+                MemberQ[ evaluated, False ], True,
+                AllTrue[ evaluated, TrueQ ], False,
+                True, Throw[ "UnsupportedConstruction", "UnsupportedConstruction" ] ] ],
               { Rest @ stack, found },
             index > Length @ keys,
               { Rest @ stack, Append[ found, InfraSceneInstance[ bindings ] -> Null ] },
@@ -444,7 +473,7 @@ RandomInfraIntersection[ graph_Graph, objects : { __ },
         token_InfraUnion :> RandomInfraUnion[ graph, token, All ],
         token : ( InfraPoint | InfraSegment | InfraHalfLine | InfraRay | InfraInfiniteLine | InfraLine | InfraArc |
           InfraBall | InfraShell | InfraSphere | InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution |
-          InfraBallHull | InfraConvexHull | InfraQuadric )[ ___ ] :>
+          InfraBallHull | InfraConvexHull | InfraQuadric | InfraMidpoint | InfraPerpendicularBisector | InfraRegionNearest )[ ___ ] :>
             Keys @ Select[ InfraMeasurement[ graph, token, "VertexDensity" ], # != 0 & ] } ] ], objects ] },
     { members = Intersection @@ supports },
     Which[
@@ -481,7 +510,7 @@ RandomInfraUnion[ graph_Graph, objects : { __ },
         token_InfraUnion :> RandomInfraUnion[ graph, token, All ],
         token : ( InfraPoint | InfraSegment | InfraHalfLine | InfraRay | InfraInfiniteLine | InfraLine | InfraArc |
           InfraBall | InfraShell | InfraSphere | InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution |
-          InfraBallHull | InfraConvexHull | InfraQuadric )[ ___ ] :>
+          InfraBallHull | InfraConvexHull | InfraQuadric | InfraMidpoint | InfraPerpendicularBisector | InfraRegionNearest )[ ___ ] :>
             Keys @ Select[ InfraMeasurement[ graph, token, "VertexDensity" ], # != 0 & ] } ] ], objects ] },
     { members = Union @@ supports },
     Which[

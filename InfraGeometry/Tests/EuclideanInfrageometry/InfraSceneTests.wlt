@@ -697,9 +697,9 @@ VerificationTest[
   { "InflatedVertex",
     "InfraArc", "InfraBall", "InfraBallHull", "InfraCircle", "InfraCone", "InfraConnection", "InfraConvexHull",
     "InfraCotangentBundle", "InfraCylinder",
-    "InfraDisplacementBundle", "InfraEllipse", "InfraGeodesic", "InfraHalfLine", "InfraInfiniteLine",
-    "InfraIntersectQ", "InfraLine", "InfraPlane", "InfraPoint",
-    "InfraPolygon", "InfraQuadric", "InfraRay", "InfraRegularPolygon", "InfraSection", "InfraSegment",
+    "InfraDisplacementBundle", "InfraEllipse", "InfraGeodesic", "InfraGeometricAssertion", "InfraHalfLine", "InfraInfiniteLine",
+    "InfraIntersectQ", "InfraLine", "InfraMidpoint", "InfraPerpendicularBisector", "InfraPlane", "InfraPoint",
+    "InfraPolygon", "InfraQuadric", "InfraRay", "InfraRegionNearest", "InfraRegularPolygon", "InfraSection", "InfraSegment",
     "InfraShell", "InfraSolidOfRevolution", "InfraSphere", "InfraStep", "InfraTangentBundle", "InfraTube", "InfraWalk", "Undetermined" },
   TestID -> "InfraScene-valueless-exports-are-scene-tokens"
 ]

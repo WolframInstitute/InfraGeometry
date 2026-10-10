@@ -377,3 +377,6 @@ InfraRegionNearest::usage = "InfraRegionNearest[obj,p] is the inert point family
 RandomInfraMidpoint::usage = "RandomInfraMidpoint[graph,p,q] samples a raw exact midpoint vertex. It also accepts InfraMidpoint[p,q]. Option NextVertexFunction."
 RandomInfraPerpendicularBisector::usage = "RandomInfraPerpendicularBisector[graph,p,q] samples a raw finite equidistant vertex. It also accepts InfraPerpendicularBisector[p,q]. Option NextVertexFunction."
 RandomInfraRegionNearest::usage = "RandomInfraRegionNearest[graph,obj,p] samples a raw nearest support vertex. It also accepts InfraRegionNearest[obj,p]. Option NextVertexFunction."
+
+InfraGeometricAssertion::usage = "InfraGeometricAssertion[objects, property] is an inert assertion of Distinct, Member or EqualDistance on a graph."
+InfraGeometricTest::usage = "InfraGeometricTest[graph, assertion] decides supported synthetic assertions; unsupported assertions stay unevaluated."

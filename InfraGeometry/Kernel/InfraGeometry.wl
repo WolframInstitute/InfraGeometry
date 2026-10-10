@@ -2,6 +2,9 @@ Package["WolframInstitute`InfraGeometry`"]
 
 (* EuclideanInfrageometry *)
 
+PackageExport[InfraGeometricAssertion]
+PackageExport[InfraGeometricTest]
+
 PackageExport[InfraMidpoint]
 PackageExport[InfraPerpendicularBisector]
 PackageExport[InfraRegionNearest]
