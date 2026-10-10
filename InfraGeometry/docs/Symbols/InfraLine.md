@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraLine
 Keywords: [line, inextensible shortest path, atoms, germ, symbolic object]
-SeeAlso: [RandomInfraLine, InfraLineQ, InfraMeasurement, RandomInfraRepresentative, RandomInfraGeodesic, InfraSegment, InfraRay]
+SeeAlso: [BeamGraph, RandomInfraLine, InfraLineQ, InfraMeasurement, RandomInfraRepresentative, RandomInfraGeodesic, InfraSegment, InfraRay]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -14,7 +14,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 <code>[InfraLine]()[*p*, *q*]</code> is the line through *p* and *q*: every inextensible shortest path through *p* and then *q*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
 
-<code>[InfraLine]()[*germ*]</code> is the line through a geodesic germ: every inextensible shortest path that contains the germ as a contiguous stretch. The germ is a vertex, a vertex list, a walk graph or a geodesic DAG.
+<code>[InfraLine]()[*germ*]</code> is the line through a shortest-path germ: every inextensible shortest path that contains the germ as a contiguous stretch. The germ is a vertex, a vertex list, a walk graph or a shortest-path DAG.
 
 <code>[InfraLine]()[*p*, *q*]</code> inside an [InfraScene]() is the line construction token; [RandomInfraLine]() is the search.
 
@@ -84,7 +84,7 @@ With[
     InfraSubstrateHighlight[g, {First @ InfraMeasurement[g, line, "Graph"], p, q}]}]]
 ```
 
-The line through a geodesic germ, beside the line through its two ends. The ends of a bent germ lie on the lines of the rectangle between them, the germ on those that run along it.
+The line through a shortest-path germ, beside the line through its two ends. The ends of a bent germ lie on the lines of the rectangle between them, the germ on those that run along it.
 
 ```wl
 With[

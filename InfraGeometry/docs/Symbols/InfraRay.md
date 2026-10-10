@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraRay
 Keywords: [ray, half-line, direction, pencil, symbolic object]
-SeeAlso: [RandomInfraRay, InfraRayQ, InfraMeasurement, RandomInfraRepresentative, InfraLine, InfraSegment]
+SeeAlso: [RayGraph, RandomInfraRay, InfraRayQ, InfraMeasurement, RandomInfraRepresentative, InfraLine, InfraSegment]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 

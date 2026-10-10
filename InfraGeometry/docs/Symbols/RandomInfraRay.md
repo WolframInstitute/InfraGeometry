@@ -12,17 +12,17 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Usage
 
-<code>[RandomInfraRay]()[*g*, *O*, *v*]</code> gives one ray from *O* through *v* in *g* — a geodesic from *O* containing *v* that cannot be prolonged past its last vertex — as a vertex list.
+<code>[RandomInfraRay]()[*g*, *O*, *v*]</code> gives one ray from *O* through *v* in *g* — a shortest path from *O* containing *v* that cannot be prolonged past its last vertex — as a vertex list.
 
 <code>[RandomInfraRay]()[*g*, *O*, *v*, *n*]</code> gives a `List` of exactly *n* rays or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives every ray.
 
 ## Details & Options
 
-A ray from *O* through *v* is a geodesic *O … v … e* with *d(O, e) = d(O, v) + d(v, e)* such that no neighbour of *e* lies one step farther from *O*. The first vertex is the origin, which is what makes it a ray rather than a line: inextensibility is required at the far end only. [InfraRayQ]() is the predicate.
+A ray from *O* through *v* is a shortest path *O … v … e* with *d(O, e) = d(O, v) + d(v, e)* such that no neighbour of *e* lies one step farther from *O*. The first vertex is the origin, which is what makes it a ray rather than a line: inextensibility is required at the far end only. [InfraRayQ]() is the predicate.
 
 Rays are how direction is expressed without a vector space. There is no tangent space on a graph, so "the direction from *O* towards *v*" is not a vector but the *family* of rays from *O* containing *v* — and like every other family here it is large. The rays leaving a vertex, the pencil, are the graph's stand-in for the sphere of directions: `RandomInfraRay[g, o, o, All]` lists them and `InfraMeasurement[g, InfraRay[o, o], "Cardinality"]` counts them.
 
-The search runs on the substrate directly: a geodesic from *O* to *v*, prolonged one outward step at a time until no neighbour prolongs it. It does not read the graph of <code>[InfraRay]()[*O*, *v*]</code>, so it is the check on that graph, and it returns exactly the shapes [RandomInfraRepresentative]() gives for that head. To count the rays without enumerating them, use [InfraMeasurement]().
+The search runs on the substrate directly: a shortest path from *O* to *v*, prolonged one outward step at a time until no neighbour prolongs it. It does not read the graph of <code>[InfraRay]()[*O*, *v*]</code>, so it is the check on that graph, and it returns exactly the shapes [RandomInfraRepresentative]() gives for that head. To count the rays without enumerating them, use [InfraMeasurement]().
 
 <code>[RandomInfraRay]()[*g*, *O*, *O*, All]</code> is every ray from *O* — the pencil.
 
@@ -83,7 +83,7 @@ The count-less call is one ray, the same one every time.
 RandomInfraRay[GridGraph[{4, 4}], 6, 7]
 ```
 
-Both geodesics from 1 to its antipode on the 6-cycle are rays: nothing lies farther from 1 than 4.
+Both shortest paths from 1 to its antipode on the 6-cycle are rays: nothing lies farther from 1 than 4.
 
 ```wl
 RandomInfraRay[CycleGraph[6], 1, 4, All]

@@ -13,11 +13,11 @@ RandomInfraRepresentative::usage = "RandomInfraRepresentative[graph, head] draws
 InfraMemberQ::usage = "InfraMemberQ[graph, obj, path] tests whether the vertex list path is a member of obj.";
 InfraSubgraph::usage = "InfraSubgraph[graph, obj] gives the subgraph of graph induced on the support of obj; InfraSubgraph[graph, obj -> t] thickens the support by t steps.";
 
-InfraSegment::usage = "InfraSegment[p1, ..., pk] is the polyline of the segments [p1, p2], ..., [p(k-1), pk], closed when pk == p1; InfraSegment[p, q] is the segment itself, whose graph is the geodesic interval I(p, q). InfraMeasurement and RandomInfraRepresentative evaluate it on a graph.";
-RandomInfraSegment::usage = "RandomInfraSegment[graph, p, q] draws a random geodesic from p to q as a vertex list; a trailing n | UpTo[n] | All gives a List of vertex lists. Option \"NextVertexFunction\".";
+InfraSegment::usage = "InfraSegment[p1, ..., pk] is the polyline of the segments [p1, p2], ..., [p(k-1), pk], closed when pk == p1; InfraSegment[p, q] is the segment itself, whose graph is the shortest path interval I(p, q). InfraMeasurement and RandomInfraRepresentative evaluate it on a graph.";
+RandomInfraSegment::usage = "RandomInfraSegment[graph, p, q] draws a random shortest path from p to q as a vertex list; a trailing n | UpTo[n] | All gives a List of vertex lists. Option \"NextVertexFunction\".";
 InfraWalkQ::usage = "InfraWalkQ[graph, walk] tests whether walk is a walk: consecutive vertices adjacent (revisits allowed).";
-InfraSegmentQ::usage = "InfraSegmentQ[graph, walk] tests whether walk is a geodesic.";
-UniqueInfraSegmentQ::usage = "UniqueInfraSegmentQ[graph, u, v] tests whether the u-v geodesic is unique; UniqueInfraSegmentQ[graph] tests the geodetic property.";
+InfraSegmentQ::usage = "InfraSegmentQ[graph, walk] tests whether walk is a shortest path.";
+UniqueInfraSegmentQ::usage = "UniqueInfraSegmentQ[graph, u, v] tests whether the u-v shortest path is unique; UniqueInfraSegmentQ[graph] tests the geodetic property.";
 
 InfraWalk::usage = "InfraWalk[p1, ..., pk] inside InfraScene is the literal walk through p1, ..., pk, and InfraWalk[{p1, ..., pk}] in InfraSubstrateHighlight one oriented walk. A walk itself is a Graph: a directed path on the position pairs {i, v}, a closed walk a directed cycle on them; Last /@ VertexList gives the vertex sequence.";
 RandomInfraWalk::usage = "RandomInfraWalk[graph, germ, kspec] grows the germ into walk graphs, each step under the rules of Properties: rule, {rule, r} or {rule, r, p}, an energy on the last r vertices, a filter at p = 0 and a weight p^energy above. Automatic randomizes candidate order; Identity preserves deterministic order. Options Properties, \"StoppingCondition\", \"NextVertexFunction\", \"Direction\".";
@@ -30,12 +30,12 @@ InfraGenericQ::usage = "InfraGenericQ[graph, walk] tests whether walk is a gener
 InfraWalkCrossingQ::usage = "InfraWalkCrossingQ[graph, walk, v, r] tests whether the double visit of walk at v is a transverse crossing at scale r: the two passes separate each other's exits on the shell {r, r+1}; {i, j} names two positions instead.";
 ConcatenateInfraWalk::usage = "ConcatenateInfraWalk[path1, path2] joins every compatible walk pair, those with Last[walk1] === First[walk2].";
 
-InfraLine::usage = "InfraLine[p, q] is the line through p and q, whose graph is the List of atoms I(a, p) + I(p, q) + I(q, b) over the maximal compatible end pairs (a, b). InfraLine[germ] is the line through a geodesic germ -- a vertex, a vertex list, a walk graph or a geodesic DAG -- whose atoms keep the germ's own edges in the middle. InfraMeasurement and RandomInfraRepresentative evaluate it on a graph; RandomInfraLine is the search.";
-RandomInfraLine::usage = "RandomInfraLine[graph, p, q] gives one line through p and q as a vertex list -- an inextensible geodesic through both; a trailing n | UpTo[n] | All gives a List. RandomInfraLine[graph, seq] prolongs a given geodesic. Automatic randomizes candidate order; Identity preserves deterministic order.";
+InfraLine::usage = "InfraLine[p, q] is the line through p and q, whose graph is the List of atoms I(a, p) + I(p, q) + I(q, b) over the maximal compatible end pairs (a, b). InfraLine[germ] is the line through a shortest path germ -- a vertex, a vertex list, a walk graph or a shortest path DAG -- whose atoms keep the germ's own edges in the middle. InfraMeasurement and RandomInfraRepresentative evaluate it on a graph; RandomInfraLine is the search.";
+RandomInfraLine::usage = "RandomInfraLine[graph, p, q] gives one line through p and q as a vertex list -- an inextensible shortest path through both; a trailing n | UpTo[n] | All gives a List. RandomInfraLine[graph, seq] prolongs a given shortest path. Automatic randomizes candidate order; Identity preserves deterministic order.";
 RandomInfraParallel::usage = "RandomInfraParallel[graph, line, p] gives one parallel to line through p: a geodesic through p inextensible within the level set { v : d(v, line) == d(p, line) }; a trailing n | UpTo[n] | All sets the count, All giving the pool. Automatic randomizes candidate order; Identity preserves deterministic order.";
 FindInfraPerpendicular::usage = "FindInfraPerpendicular[graph, line, point] gives the lines through point perpendicular to line. Options Method, \"Radius\".";
 FindInfraCommonLine::usage = "FindInfraCommonLine[graph, vertices] gives the canonical lines containing every listed vertex.";
-InfraLineQ::usage = "InfraLineQ[graph, walk] tests whether walk is a line: a geodesic that no neighbour of either endpoint prolongs.";
+InfraLineQ::usage = "InfraLineQ[graph, walk] tests whether walk is a line: a shortest path that no neighbour of either endpoint prolongs.";
 InfraParallelQ::usage = "InfraParallelQ[graph, l1, l2] tests whether two lines stay at constant distance; a trailing threshold allows that distance to vary.";
 InfraPerpendicularQ::usage = "InfraPerpendicularQ[graph, l1, l2] tests whether two lines meet perpendicularly at every common vertex. Options Method, \"Radius\".";
 LineCount::usage = "LineCount[graph] gives the number of distinct canonical maximal geodesics in graph.";
@@ -80,8 +80,8 @@ InfraPlane::usage = "InfraPlane[p1, p2] inside InfraScene is the bisecting hyper
 FindInfraBisectingHyperplane::usage = "FindInfraBisectingHyperplane[graph, p1, p2] gives the perpendicular bisector { v : d(p1, v) == d(p2, v) }; a positional {lo, hi} widens it to a slab. Options Properties, \"NextVertexFunction\".";
 
 InfraRay::usage = "InfraRay[p, q] is the ray from p through q, whose graph is the ray DAG R(p, q); InfraRay[p, p] is the pencil at p. InfraMeasurement and RandomInfraRepresentative evaluate it on a graph; RandomInfraRay is the search.";
-RandomInfraRay::usage = "RandomInfraRay[graph, p, q] gives one ray from p through q as a vertex list -- a geodesic from p through q that no neighbour of its last vertex prolongs; a trailing n | UpTo[n] | All gives a List of them. Automatic randomizes candidate order; Identity preserves deterministic order.";
-InfraRayQ::usage = "InfraRayQ[graph, ray] tests whether ray is a pointed half-line: a geodesic from its own first vertex that cannot be prolonged past its last.";
+RandomInfraRay::usage = "RandomInfraRay[graph, p, q] gives one ray from p through q as a vertex list -- a shortest path from p through q that no neighbour of its last vertex prolongs; a trailing n | UpTo[n] | All gives a List of them. Automatic randomizes candidate order; Identity preserves deterministic order.";
+InfraRayQ::usage = "InfraRayQ[graph, ray] tests whether ray is a pointed half-line: a shortest path from its own first vertex that cannot be prolonged past its last.";
 
 FindInfraPolylineSubdivision::usage = "FindInfraPolylineSubdivision[graph, path] chunks a walk into the fewest geodesic legs whose knots are walk vertices. Option \"MaxLength\" caps each leg.";
 
@@ -93,7 +93,7 @@ InfraMetricTensor::usage = "InfraMetricTensor[graph, p] gives the matrix of d(p,
 SelectInfraWalk::usage = "SelectInfraWalk[graph, walks, n] draws n walks (default 1) from a bundle -- vertex lists or walk graphs, cycle graphs selecting as closed walks -- treated as a metric space; n may be UpTo[n] or All, and SelectInfraWalk[graph, n] is the operator form. Options \"From\", \"Distance\", \"Metric\", \"MaxCliques\", \"Cyclic\".";
 EmbeddingClosest::usage = "EmbeddingClosest[graph, bundle, ref] keeps the bundle elements drawn closest to a Euclidean reference under GraphEmbedding; ref is {p1, p2}, {center, radius}, or a curve.";
 FindEmbeddingClosestPath::usage = "FindEmbeddingClosestPath[graph, curve] snaps an embedded curve to a walk graph, mapping sampled points to nearest vertices and joining them by geodesics.";
-SprayGraph::usage = "SprayGraph[graph, c] gives the BFS DAG rooted at c, whose directed source-to-sink paths are exactly the maximal geodesics from c; SprayGraph[graph, pairs] gives the union of geodesics between listed pairs.";
+SprayGraph::usage = "SprayGraph[graph, c] gives the BFS DAG rooted at c, whose directed source-to-sink paths are exactly the maximal shortest paths from c; SprayGraph[graph, pairs] gives the union of shortest paths between listed pairs.";
 PathSubgraph::usage = "PathSubgraph[graph, u, v] gives the union of all shortest u-v paths; a trailing length cap or All widens it to longer simple paths.";
 InfraDeformationSize::usage = "InfraDeformationSize[ref, walk] gives the number of ref edges that walk replaces -- Length[ref] - 1 less the shared prefix and suffix.";
 
@@ -345,3 +345,8 @@ InfraHolonomyAngle::usage = "InfraHolonomyAngle[InfraDisplacementBundle[g, r], c
 InfraCovariantDerivative::usage = "InfraCovariantDerivative[InfraDisplacementBundle[g, r], conn, InfraSection[s], walk] gives <|p -> x, ...|>: for each step p -> q of walk, conn carries s[q] back to p, the arrow from s[p] to that image is carried to p by the Levi-Civita transports at its own length, and x is the endpoint nearest to p, x == p for zero. The arrow is carried by the Levi-Civita transports whatever conn is. Option Method.";
 InfraCanonicalOneForm::usage = "InfraCanonicalOneForm[g, {x, ..., v}, {y, ...}] gives the canonical 1-form at the vector x -> v on the step to y: the pairing (d(x,v)^2 + d(x,y)^2 - d(v,y)^2)/2.";
 InfraFiberedSubstrate::usage = "InfraFiberedSubstrate[name, size] is the named example fibration at size \"Small\", \"Medium\" or \"Large\", or at a raw spec of its base (a cycle length, grid or torus dimensions, a mesh size): a construction head InfraTangentBundle[g, 2] or InfraDisplacementBundle[g, 1] over a base taken from InfraSubstrate where one exists, or a literal InfraFibration whose total vertices {p, k} sit on a small circle around their base vertex p. InfraFiberedSubstrate[] lists the roster by group (\"Trivial\" -- products; \"Covering\" -- twisted double covers and the Moebius ladder; \"Tangent\" and \"Displacement\" -- the two bundles over a grid, a triangular torus, the octahedron and a sphere mesh; \"NonBundle\" -- fibrations with non-isomorphic fibers); InfraFiberedSubstrate[All] is the flat name list; InfraFiberedSubstrate[name] is the \"Medium\" size. The octahedron has one size.";
+
+IntervalGraph::usage = "IntervalGraph[graph, p, q] gives the DAG of all shortest paths from p to q. More points give the list of consecutive interval DAGs.";
+RayGraph::usage = "RayGraph[graph, p, q] gives the DAG of maximal shortest paths from p through q; RayGraph[graph, p, p] gives the spray at p.";
+BeamGraph::usage = "BeamGraph[graph, p, q] gives the list of DAGs of lines through p and q, one per compatible pair of maximal endpoints. BeamGraph[graph, germ] keeps the specified shortest-path germ.";
+ArcGraph::usage = "ArcGraph[graph, c, points] gives the arc carrier around c through the ordered point list. Option \"RadiusDelta\" widens the radial band.";

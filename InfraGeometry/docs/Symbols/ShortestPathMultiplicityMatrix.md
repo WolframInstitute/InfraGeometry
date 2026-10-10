@@ -5,7 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/ShortestPathMultiplicityMatrix
-Keywords: [shortest paths, geodesics, multiplicity, count matrix, path counting]
+Keywords: [shortest paths, shortest paths, multiplicity, count matrix, path counting]
 SeeAlso: [InfraSegment, InfraMeasurement, RandomInfraSegment, SprayGraph, InfraDensity]
 RelatedGuides: [Experimental]
 ---

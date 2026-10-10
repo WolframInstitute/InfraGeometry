@@ -26,9 +26,9 @@ Two consequences that catch people out.
 
 **Sharing a single vertex is enough to fail.** Two sets at otherwise constant distance return `False` as soon as they touch.
 
-The predicate does not require its arguments to be lines. It tests two vertex sets, so it accepts things that are not paths at all. Concentric shells are the clearest case: the shell at radius 3 is parallel to the shell at radius 2, at constant distance 1. If you need the arguments to be maximal geodesics, test that separately with [InfraLineQ]().
+The predicate does not require its arguments to be lines. It tests two vertex sets, so it accepts things that are not paths at all. Concentric shells are the clearest case: the shell at radius 3 is parallel to the shell at radius 2, at constant distance 1. If you need the arguments to be maximal shortest paths, test that separately with [InfraLineQ]().
 
-That is the difference from [RandomInfraParallel](), and it is a real one. The finder returns only *maximal geodesics* at constant distance, and on a lattice it typically finds none. This predicate can still return `True` for sets at constant distance. A parallel can exist as a set while no parallel exists as a line.
+That is the difference from [RandomInfraParallel](), and it is a real one. The finder returns only *maximal shortest paths* at constant distance, and on a lattice it typically finds none. This predicate can still return `True` for sets at constant distance. A parallel can exist as a set while no parallel exists as a line.
 
 Corresponding notions in the classical axiom systems:
 
@@ -76,7 +76,7 @@ With[
   InfraLineQ[g, FindInfraShell[g, c, 3]]]
 ```
 
-Two maximal geodesics chosen independently are generally not parallel, because the distance between them varies along their length.
+Two maximal shortest paths chosen independently are generally not parallel, because the distance between them varies along their length.
 
 ```wl
 With[

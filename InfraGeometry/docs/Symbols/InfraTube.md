@@ -122,12 +122,12 @@ With[
   {c = First @ GraphCenter[g]},
   {fat = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
   {intervalSize = InfraMeasurement[g, fat, "CountingMeasure"]},
-  {geodesic = RandomInfraRepresentative[g, fat]},
+  {path = RandomInfraRepresentative[g, fat]},
   Show[
     Plot[intervalSize + 2 s (5 + 2) + 2 s (s - 1), {s, 0, 5}],
     ListPlot[{
       Table[InfraMeasurement[g, InfraTube[fat, s], "CountingMeasure"], {s, 0, 5}],
-      Table[InfraMeasurement[g, InfraTube[geodesic, s], "CountingMeasure"], {s, 0, 5}]}, DataRange -> {0, 5}, PlotMarkers -> Automatic]]]
+      Table[InfraMeasurement[g, InfraTube[path, s], "CountingMeasure"], {s, 0, 5}]}, DataRange -> {0, 5}, PlotMarkers -> Automatic]]]
 ```
 
 The tube of a segment against the tube of one of its shortest paths, both of radius 1: the first holds every shortest path, so it is fatter.

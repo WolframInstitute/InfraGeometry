@@ -5,26 +5,26 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraSegment
-Keywords: [segment, geodesic, shortest path, Euclid Postulate 1]
+Keywords: [segment, shortest path, Euclid Postulate 1]
 SeeAlso: [InfraSegment, RandomInfraRepresentative, RandomInfraLine, InfraMeasurement, UniqueInfraSegmentQ, MetricInterval]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[RandomInfraSegment]()[*g*, *a*, *b*]</code> gives one geodesic — a shortest path — from *a* to *b* in *g*, as a vertex list.
+<code>[RandomInfraSegment]()[*g*, *a*, *b*]</code> gives one random shortest path from *a* to *b* in *g*, as a vertex list.
 
-<code>[RandomInfraSegment]()[*g*, *a*, *b*, *n*]</code> gives a `List` of exactly *n* geodesics, or `{}` when there are fewer; `UpTo[n]` gives up to *n*; `All` gives every geodesic.
+<code>[RandomInfraSegment]()[*g*, *a*, *b*, *n*]</code> gives a `List` of exactly *n* shortest paths, or `{}` when there are fewer; `UpTo[n]` gives up to *n*; `All` gives every shortest path.
 
 ## Details & Options
 
-A segment from *a* to *b* is a geodesic: a path whose length realizes $d(a,b)$.
+A segment from *a* to *b* is a shortest path: a path whose length realizes $d(a,b)$.
 
-In the Euclidean plane the segment between two points is unique. On a graph it is a **set** of paths, and uniqueness fails generically — a square grid has many geodesics between two vertices, because any interleaving of the horizontal and vertical steps is one.
+In the Euclidean plane the segment between two points is unique. On a graph it is a **set** of paths, and uniqueness fails generically — a square grid has many shortest paths between two vertices, because any interleaving of the horizontal and vertical steps is one.
 
-The search runs on the substrate directly, with `FindPath` at the geodesic length. It does not read the graph of <code>[InfraSegment]()[*a*, *b*]</code>, so it is the check on that graph, and it returns exactly the shapes <code>[RandomInfraRepresentative]()[*g*, [InfraSegment]()[*a*, *b*], …]</code> gives. To count the geodesics without enumerating them, use [InfraMeasurement]().
+The sampler draws from the interval DAG through <code>[RandomInfraRepresentative]()[*g*, [InfraSegment]()[*a*, *b*], …]</code>. To count the shortest paths without enumerating them, use [InfraMeasurement]().
 
-The count-less call is one geodesic, deterministic. There is no `Method` and no `Properties`.
+The count-less call is one random shortest path. There is no `Method` and no `Properties`.
 
 [UniqueInfraSegmentQ]() tests whether the segment is unique, which is the graph-intrinsic shadow of Euclid's first postulate holding sharply.
 
@@ -39,7 +39,7 @@ Corresponding notions in the classical axiom systems:
 
 ## Basic Examples
 
-Every geodesic between two vertices at distance 6, on the discretized plane, the square grid and the hexagonal tiling. The count is the sharpest difference between the substrates: the irregular mesh has four, the square grid fifteen, the hexagonal tiling three.
+Every shortest path between two vertices at distance 6, on the discretized plane, the square grid and the hexagonal tiling. The count is the sharpest difference between the substrates: the irregular mesh has four, the square grid fifteen, the hexagonal tiling three.
 
 ```wl
 Row[Table[
@@ -54,13 +54,13 @@ Row[Table[
          "PointSizeRange" -> 15,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
          ImageSize -> 250],
-       Text[name <> ": " <> ToString[Length @ segs] <> " geodesics"]]],
+       Text[name <> ": " <> ToString[Length @ segs] <> " shortest paths"]]],
    {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```
 
-The intensity in that picture is the multiplicity: an edge lying on many geodesics is drawn more strongly than one lying on few, so the bundle shows where the segment is concentrated.
+The intensity in that picture is the multiplicity: an edge lying on many shortest paths is drawn more strongly than one lying on few, so the bundle shows where the segment is concentrated.
 
-The count-less call is one geodesic; a count gives a list.
+The count-less call is one shortest path; a count gives a list.
 
 ```wl
 {RandomInfraSegment[GridGraph[{4, 4}], 1, 11], RandomInfraSegment[GridGraph[{4, 4}], 1, 11, 2]}
@@ -74,7 +74,7 @@ RandomInfraSegment[GridGraph[{4, 4}], 1, 11, 7]
 
 ## Properties and Relations
 
-The vertices covered by the geodesics are exactly the metric interval between the endpoints, which is what [MetricInterval]() computes directly.
+The vertices covered by the shortest paths are exactly the metric interval between the endpoints, which is what [MetricInterval]() computes directly.
 
 ```wl
 With[

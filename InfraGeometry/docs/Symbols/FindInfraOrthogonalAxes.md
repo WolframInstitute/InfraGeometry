@@ -12,7 +12,7 @@ RelatedGuides: [Experimental]
 
 ## Usage
 
-<code>[FindInfraOrthogonalAxes]()[*g*, *c*, *len*]</code> gives one maximal set of mutually perpendicular geodesic lines through the vertex *c*, each a vertex list, the straightest set first.
+<code>[FindInfraOrthogonalAxes]()[*g*, *c*, *len*]</code> gives one maximal set of mutually perpendicular shortest path lines through the vertex *c*, each a vertex list, the straightest set first.
 
 <code>[FindInfraOrthogonalAxes]()[*g*, *c*, *len*, *n*]</code> gives a `List` of exactly *n* such sets or `{}`; `UpTo[n]` gives up to *n*; `All` gives every one.
 
@@ -20,10 +20,10 @@ RelatedGuides: [Experimental]
 
 The problem is well posed. Fix a graph *g*, a vertex *c* and a length *len*.
 
-- An **axis** at *c* is a geodesic through *c*, a vertex list whose two halves from *c* have lengths in *len*, maximal there: neither end extends by one step to a longer geodesic through *c* inside *len*. The axes form a finite set, since a geodesic of the range lies in the ball of radius *r* about *c*, *r* the largest half-length; for `All` it is the whole component of *c*.
+- An **axis** at *c* is a shortest path through *c*, a vertex list whose two halves from *c* have lengths in *len*, maximal there: neither end extends by one step to a longer shortest path through *c* inside *len*. The axes form a finite set, since a shortest path of the range lies in the ball of radius *r* about *c*, *r* the largest half-length; for `All` it is the whole component of *c*.
 - Two axes are **perpendicular** when the shortest-path projection of every vertex of each onto the other is *c*: every vertex of one has *c* as its only nearest vertex on the other. On the distance matrix this is `d(v, w) > Max[d(c, v), d(c, w)]` for every vertex *v* of one and *w* of the other, both different from *c*. The test is exact, symmetric and does not depend on the order of the axes.
 - Perpendicularity is a symmetric relation on a finite set, so the sets of mutually perpendicular axes are the cliques of a finite graph. The largest number of mutually perpendicular lines through *c* is its clique number, and a maximal set cannot be extended by one more axis. The call returns maximal sets; the largest of them is the largest of `All`. On `GridGraph[{5, ..., 5}]` at its centre the largest set has *d* axes, the dimension.
-- A bent geodesic through *c* is an axis too, so the sets of `All` include crosses that turn at *c*. They are ranked after the straight one: a longer axis first, then fewer vertices in the geodesic interval of its ends, which is the axis itself exactly when the geodesic is unique, as the straight lines of a grid are. The count-less call and `n = 1` give the first set in that order.
+- A bent shortest path through *c* is an axis too, so the sets of `All` include crosses that turn at *c*. They are ranked after the straight one: a longer axis first, then fewer vertices in the shortest path interval of its ends, which is the axis itself exactly when the shortest path is unique, as the straight lines of a grid are. The count-less call and `n = 1` give the first set in that order.
 - *len* is `All`, an integer *k* (both halves of length *k*), `UpTo[k]` (each half between 1 and *k*) or `{min, max}` (each half between *min* and *max*, `max` may be `Infinity`). The halves of an axis need not be equal. Each axis is maximal inside the range, so `All` never returns a sub-line of a line.
 - *c* is a vertex, or an association `<| v1 -> w1, ... |>` for a point realised by several vertices: the search is run from each *v* on one ball, a set belongs to one anchor, and the duplicates are dropped.
 - The count-less call gives one set, a list of vertex lists; a count gives a list of sets. A vertex without a through-line, a path endpoint or a leaf, has no axis: the call gives `{}`. The rays from such a vertex are [FindInfraOrthogonalRays]().
@@ -69,7 +69,7 @@ With[
 
 ## Scope
 
-A length is an integer, `UpTo[k]`, `{min, max}` or `All`. On a bounded grid `All` reaches the walls, and a straight line through the centre extends by a turn, so only corner-to-corner geodesics are maximal.
+A length is an integer, `UpTo[k]`, `{min, max}` or `All`. On a bounded grid `All` reaches the walls, and a straight line through the centre extends by a turn, so only corner-to-corner shortest paths are maximal.
 
 ```wl
 With[
@@ -193,7 +193,7 @@ With[
 
 ## Possible Issues
 
-The number of candidates grows like the geodesics from *c*, not like the vertices. `FindInfraOrthogonalAxes[GridGraph[{30, 30}], 465, 10]` takes about two minutes, where the coordinates of the same grid take a fraction of a second: take a short length, or `UpTo[1]` sets, and fix the scale by the question.
+The number of candidates grows like the shortest paths from *c*, not like the vertices. `FindInfraOrthogonalAxes[GridGraph[{30, 30}], 465, 10]` takes about two minutes, where the coordinates of the same grid take a fraction of a second: take a short length, or `UpTo[1]` sets, and fix the scale by the question.
 
 A bent axis is maximal on its own. The strict test requires that *c* be the only nearest vertex, so a bent axis has no perpendicular partner, and `All` lists it as a set of one axis, ranked after the straight cross.
 

@@ -28,7 +28,7 @@ Every object becomes a vertex density and an edge density:
 - a region head — [InfraBall](), [InfraShell]() and the rest — or an [InfraIntersection](): its `"VertexDensity"`, no edges;
 - a walk graph, a cycle graph or a DAG: its occupation;
 - a leg chain: the walk through its legs, with its knots drawn on top;
-- a vertex list that is an induced path or an induced cycle in its own order, as every geodesic is: the walk through it;
+- a vertex list that is an induced path or an induced cycle in its own order, as every shortest path is: the walk through it;
 - any other vertex list: a set, `1` on its vertices, no edges;
 - an [InfraUnion]() or any other list — of vertex lists, graphs, heads or walks, such as the members of a head or a bundle: the sum of its members, drawn in one color, with no edges when a member has none.
 

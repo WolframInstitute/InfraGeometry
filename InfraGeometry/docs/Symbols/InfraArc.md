@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraArc
 Keywords: [arc, circle, band, minor arc, symbolic object]
-SeeAlso: [InfraCircle, InfraSegment, InfraMeasurement, RandomInfraRepresentative, Undetermined, FindInfraShell]
+SeeAlso: [ArcGraph, InfraCircle, InfraSegment, InfraMeasurement, RandomInfraRepresentative, Undetermined, FindInfraShell]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 

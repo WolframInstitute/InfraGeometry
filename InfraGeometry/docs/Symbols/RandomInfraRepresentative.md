@@ -62,8 +62,8 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
-  {geodesic = RandomInfraRepresentative[g, InfraSegment[a, b]]},
-  {InfraSubstrateHighlight[g, {InfraWalk[geodesic], a, b}], geodesic}]
+  {path = RandomInfraRepresentative[g, InfraSegment[a, b]]},
+  {InfraSubstrateHighlight[g, {InfraWalk[path], a, b}], path}]
 ```
 
 Every member at once, and their number.

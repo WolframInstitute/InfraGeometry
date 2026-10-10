@@ -9,4 +9,4 @@ URI: WolframInstitute/InfraGeometry/ref/SegmentViewer
 
 ## Usage
 
-`SegmentViewer[g]` is an interactive viewer for exploring geodesic segments in graph g.
+`SegmentViewer[g]` is an interactive viewer for exploring shortest-path segments in graph g.

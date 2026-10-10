@@ -5,26 +5,26 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraLine
-Keywords: [line, inextensible geodesic, Euclid Postulate 2, parallel postulate]
+Keywords: [line, inextensible shortest path, Euclid Postulate 2, parallel postulate]
 SeeAlso: [InfraLine, InfraLineQ, RandomInfraRepresentative, RandomInfraGeodesic, RandomInfraSegment, RandomInfraRay, RandomInfraParallel, LineCount]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[RandomInfraLine]()[*g*, *a*, *b*]</code> gives one line through *a* and *b* in *g* — an inextensible geodesic containing both — as a vertex list.
+<code>[RandomInfraLine]()[*g*, *a*, *b*]</code> gives one line through *a* and *b* in *g* — an inextensible shortest path containing both — as a vertex list.
 
-<code>[RandomInfraLine]()[*g*, *seq*]</code> gives one line containing the geodesic vertex list *seq* as a contiguous subsequence.
+<code>[RandomInfraLine]()[*g*, *seq*]</code> gives one line containing the shortest-path vertex list *seq* as a contiguous subsequence.
 
 <code>[RandomInfraLine]()[*g*, *a*, *b*, *n*]</code> gives a `List` of exactly *n* lines or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives every line.
 
 ## Details & Options
 
-A line is an **inextensible geodesic**: a shortest path that no neighbour of either endpoint prolongs. [InfraLineQ]() is the predicate, and every line returned satisfies it.
+A line is an **inextensible shortest path**: a shortest path that no neighbour of either endpoint prolongs. [InfraLineQ]() is the predicate, and every line returned satisfies it.
 
 That is the intrinsic reading of Euclid's second postulate — produce a finite straight line continuously — and it is where the analogy with the plane breaks hardest. In the plane two points determine one line. On a lattice they determine an enormous family: below, two vertices at distance 5 on a 313-vertex square-tiling patch lie on 5 242 880 lines, against 6144 on the hexagonal tiling and 1386 on the irregular mesh.
 
-The search runs on the substrate directly: a geodesic from *a* to *b*, prolonged one geodesic step at a time, every prolongation at the back and then every prolongation at the front, kept when neither end can be prolonged. It does not read the graph of <code>[InfraLine]()[*a*, *b*]</code>, so it is the check on that graph, and it returns exactly the shapes [RandomInfraRepresentative]() gives for that head.
+The search runs on the substrate directly: a shortest path from *a* to *b*, prolonged one shortest-path step at a time, every prolongation at the back and then every prolongation at the front, kept when neither end can be prolonged. It does not read the graph of <code>[InfraLine]()[*a*, *b*]</code>, so it is the check on that graph, and it returns exactly the shapes [RandomInfraRepresentative]() gives for that head.
 
 The search enumerates. To count lines, use <code>[InfraMeasurement]()[*g*, [InfraLine]()[*a*, *b*], "Cardinality"]</code>, which reads the count off the head's graph without enumerating a line.
 
@@ -86,7 +86,7 @@ The count-less call is one line; a bounded count gives a list, and a strict coun
 {RandomInfraLine[CycleGraph[6], 1, 2], RandomInfraLine[CycleGraph[6], 1, 2, 2], RandomInfraLine[CycleGraph[6], 1, 2, 5]}
 ```
 
-A given geodesic prolongs to the lines containing it.
+A given shortest path prolongs to the lines containing it.
 
 ```wl
 RandomInfraLine[GridGraph[{4, 4}], {1, 2, 6}, All]

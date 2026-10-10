@@ -161,13 +161,13 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},
   {fat = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
-  {geodesic = RandomInfraRepresentative[g, fat]},
+  {path = RandomInfraRepresentative[g, fat]},
   GraphicsRow[Table[
     ListLinePlot[{
       InfraMeasurement[g, Table[InfraBall[c, r], {r, 0, 5}], measure],
       InfraMeasurement[g, Table[InfraShell[c, r], {r, 0, 5}], measure],
       InfraMeasurement[g, Table[InfraTube[fat, s], {s, 0, 5}], measure],
-      InfraMeasurement[g, Table[InfraTube[geodesic, s], {s, 0, 5}], measure]},
+      InfraMeasurement[g, Table[InfraTube[path, s], {s, 0, 5}], measure]},
       DataRange -> {0, 5}, PlotMarkers -> Automatic, PlotLegends -> {"ball", "shell", "fat tube", "thin tube"}],
     {measure, {"CountingMeasure", "RiemannianMeasure"}}]]]
 ```

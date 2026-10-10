@@ -9,7 +9,7 @@ URI: WolframInstitute/InfraGeometry/ref/FindInfraSpanningAxes
 
 ## Usage
 
-`FindInfraSpanningAxes[graph, n]` returns n mutually well-separated longest geodesics across graph (greedy, no fixed center) or $Failed; UpTo[n] returns up to n; All returns every axis above the separation threshold.
+`FindInfraSpanningAxes[graph, n]` returns n mutually well-separated longest shortest paths across graph (greedy, no fixed center) or $Failed; UpTo[n] returns up to n; All returns every axis above the separation threshold.
 
 ## Details & Options
 

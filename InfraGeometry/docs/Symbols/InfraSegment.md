@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSegment
 Keywords: [segment, shortest path, interval DAG, polyline, symbolic object, counting measure, Riemannian measure]
-SeeAlso: [RandomInfraSegment, InfraMeasurement, RandomInfraRepresentative, RandomInfraGeodesic, InfraLine, MetricInterval, InfraTube]
+SeeAlso: [IntervalGraph, RandomInfraSegment, InfraMeasurement, RandomInfraRepresentative, RandomInfraGeodesic, InfraLine, MetricInterval, InfraTube]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 

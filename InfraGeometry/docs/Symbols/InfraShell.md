@@ -43,7 +43,7 @@ The shell area at *r = 1* is the degree of the centre. Over *r* on a lattice it 
 
 Past the eccentricity the shell is empty. The substrates are finite patches, and a shell follows the table while it stays inside the patch: on the medium cubic grid, to *r = 3*.
 
-In the continuum the reference is the area of the geodesic sphere. On a Riemannian manifold of dimension *n*, with *ω_n* the volume of the Euclidean unit ball and *Scal(c)* the scalar curvature at the centre, *Vol ∂B_r(c) = n ω_n r^(n−1) (1 − Scal(c) r² / (6n) + O(r⁴))*, the derivative in *r* of the ball's expansion. On a lattice the shell is the boundary of a polygon, not of a round ball, as on [InfraBall]().
+In the continuum the reference is the area of the shortest path sphere. On a Riemannian manifold of dimension *n*, with *ω_n* the volume of the Euclidean unit ball and *Scal(c)* the scalar curvature at the centre, *Vol ∂B_r(c) = n ω_n r^(n−1) (1 − Scal(c) r² / (6n) + O(r⁴))*, the derivative in *r* of the ball's expansion. On a lattice the shell is the boundary of a polygon, not of a round ball, as on [InfraBall]().
 
 The Riemannian measure of a band *{r, s}* with *r ≥ 1* drops its two rims: it counts the band *{r + 1, s − 1}* and the vertices at distance *s* that have no neighbour at distance *s + 1*. On the square and the triangular grids, away from the rim, there are none, and it is the counting measure of the band *{r + 1, s − 1}*; on the hexagonal tiling this is measured.
 

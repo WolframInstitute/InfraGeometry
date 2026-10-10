@@ -12,21 +12,21 @@ RelatedGuides: [Experimental]
 
 ## Usage
 
-<code>[RandomInfraParallel]()[*g*, *line*, *p*]</code> gives one parallel to *line* through *p* in *g* — a geodesic through *p* that stays at the distance *d(p, line)* from *line* and cannot be prolonged at that distance — as a directed path graph.
+<code>[RandomInfraParallel]()[*g*, *line*, *p*]</code> gives one parallel to *line* through *p* in *g* — a shortest path through *p* that stays at the distance *d(p, line)* from *line* and cannot be prolonged at that distance — as a directed path graph.
 
 <code>[RandomInfraParallel]()[*g*, *line*, *p*, *n*]</code> gives a `List` of exactly *n* parallels or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives the whole class as a pool of DAGs.
 
 ## Details & Options
 
-Write *L* for the level set $\{v : d(v, line) = d(p, line)\}$. A parallel to *line* through *p* is a geodesic *s … p … e* of *g* — so *d(s, e) = d(s, p) + d(p, e)* — with every vertex in *L*, such that no neighbour of *s* or *e* in *L* prolongs it. This reads Euclid's fifth postulate intrinsically: constant distance is what a metric can say about parallelism without a notion of direction. Inextensibility is measured inside *L*, not in *g*, so a parallel need not be a line of *g*.
+Write *L* for the level set $\{v : d(v, line) = d(p, line)\}$. A parallel to *line* through *p* is a shortest path *s … p … e* of *g* — so *d(s, e) = d(s, p) + d(p, e)* — with every vertex in *L*, such that no neighbour of *s* or *e* in *L* prolongs it. This reads Euclid's fifth postulate intrinsically: constant distance is what a metric can say about parallelism without a notion of direction. Inextensibility is measured inside *L*, not in *g*, so a parallel need not be a line of *g*.
 
 *line* is a vertex sequence, a walk graph, or a list of walk graphs, which spreads over its walks. Each parallel appears once, oriented so that *s* precedes *e* in canonical order.
 
-On the square grid the classical picture survives: through a vertex of a parallel row there is exactly one parallel to a row, and it is the row. Off a line that bends, the level set bends with it, and a geodesic inside it soon has to leave — the parallels are then few and short. Below, through a vertex at distance 2 from a line through the centre, the square tiling has one parallel of 10 edges beside a line of 24, the irregular mesh two, of 4 and 5 edges, the hexagonal tiling a single edge. A vertex with no neighbour in its level set has no parallel at all: the class is empty, not the one-vertex walk.
+On the square grid the classical picture survives: through a vertex of a parallel row there is exactly one parallel to a row, and it is the row. Off a line that bends, the level set bends with it, and a shortest path inside it soon has to leave — the parallels are then few and short. Below, through a vertex at distance 2 from a line through the centre, the square tiling has one parallel of 10 edges beside a line of 24, the irregular mesh two, of 4 and 5 edges, the hexagonal tiling a single edge. A vertex with no neighbour in its level set has no parallel at all: the class is empty, not the one-vertex walk.
 
-[InfraParallelQ]() asks a different question, and the two do not match. The predicate tests that two vertex sets are disjoint and at constant distance, and does not require either to be a geodesic. So it accepts pairs this function never returns — concentric shells, for instance, are parallel by that test — while every parallel returned here passes it.
+[InfraParallelQ]() asks a different question, and the two do not match. The predicate tests that two vertex sets are disjoint and at constant distance, and does not require either to be a shortest path. So it accepts pairs this function never returns — concentric shells, for instance, are parallel by that test — while every parallel returned here passes it.
 
-The class is carried by a **pool**: one geodesic DAG per admissible pair of ends (*s*, *e*), the *s → p* and *p → e* intervals cut down to *L* and glued at *p*. `All` returns the pool itself — a `List` of DAGs, a single atom giving the one DAG. A bounded count streams parallels off the atoms as directed path graphs, and the count-less call is one parallel, deterministic.
+The class is carried by a **pool**: one shortest path DAG per admissible pair of ends (*s*, *e*), the *s → p* and *p → e* intervals cut down to *L* and glued at *p*. `All` returns the pool itself — a `List` of DAGs, a single atom giving the one DAG. A bounded count streams parallels off the atoms as directed path graphs, and the count-less call is one parallel, deterministic.
 
 | Option | Values | Meaning |
 |---|---|---|
@@ -116,7 +116,7 @@ With[
 
 ## Properties and Relations
 
-Every parallel is a geodesic, and [InfraParallelQ]() accepts it — as it accepts two concentric shells, which no geodesic could be.
+Every parallel is a shortest path, and [InfraParallelQ]() accepts it — as it accepts two concentric shells, which no shortest path could be.
 
 ```wl
 With[

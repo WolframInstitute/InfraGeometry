@@ -5,20 +5,20 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraLineQ
-Keywords: [line, inextensible geodesic, predicate]
+Keywords: [line, inextensible shortest path, predicate]
 SeeAlso: [RandomInfraLine, InfraLine, InfraSegmentQ, InfraRayQ]
 RelatedGuides: [Experimental]
 ---
 
 ## Usage
 
-<code>[InfraLineQ]()[*g*, *walk*]</code> tests whether *walk* is a line in *g*: a geodesic that no neighbour of either endpoint prolongs.
+<code>[InfraLineQ]()[*g*, *walk*]</code> tests whether *walk* is a line in *g*: a shortest path that no neighbour of either endpoint prolongs.
 
 <code>[InfraLineQ]()[*g*, *lines*]</code> tests every line of an [InfraLine]() bundle or pool.
 
 ## Details & Options
 
-Two conditions: the sequence is a geodesic ([InfraSegmentQ]()), and stepping off either end to a neighbour gives a walk that is no longer a shortest path — no neighbour of the first vertex lies one step farther from the last, and no neighbour of the last lies one step farther from the first. Both tests are single distance lookups.
+Two conditions: the sequence is a shortest path ([InfraSegmentQ]()), and stepping off either end to a neighbour gives a walk that is no longer a shortest path — no neighbour of the first vertex lies one step farther from the last, and no neighbour of the last lies one step farther from the first. Both tests are single distance lookups.
 
 Sequences shorter than two vertices are `False`.
 
@@ -32,7 +32,7 @@ On a path the whole graph is a line; any proper stretch is not, since it can sti
 {InfraLineQ[PathGraph[Range[5]], {1, 2, 3, 4, 5}], InfraLineQ[PathGraph[Range[5]], {2, 3, 4}]}
 ```
 
-On the 6-cycle a geodesic of length 3 reaches the antipode and is a line; one of length 2 is not.
+On the 6-cycle a shortest path of length 3 reaches the antipode and is a line; one of length 2 is not.
 
 ```wl
 {InfraLineQ[CycleGraph[6], {1, 2, 3, 4}], InfraLineQ[CycleGraph[6], {1, 2, 3}]}

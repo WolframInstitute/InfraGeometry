@@ -5,14 +5,14 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/LineCount
-Keywords: [line, count, inextensible geodesic]
+Keywords: [line, count, inextensible shortest path]
 SeeAlso: [RandomInfraLine, InfraLineQ, UniversalLineQ]
 RelatedGuides: [Experimental]
 ---
 
 ## Usage
 
-<code>[LineCount]()[*g*]</code> gives the number of distinct lines in *g* — inextensible geodesics, counted up to reversal.
+<code>[LineCount]()[*g*]</code> gives the number of distinct lines in *g* — inextensible shortest paths, counted up to reversal.
 
 ## Details & Options
 

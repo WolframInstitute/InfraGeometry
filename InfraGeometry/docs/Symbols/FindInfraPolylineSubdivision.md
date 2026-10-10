@@ -9,7 +9,7 @@ URI: WolframInstitute/InfraGeometry/ref/FindInfraPolylineSubdivision
 
 ## Usage
 
-`FindInfraPolylineSubdivision[graph, path]` returns the legs, one directed path graph each: the fewest geodesic legs whose knots are path-vertices, each leg a shortest path since the previous knot. Their knots are the corners of the polyline InfraSegment[p1, ..., pk].
+`FindInfraPolylineSubdivision[graph, path]` returns the legs, one directed path graph each: the fewest shortest-path legs whose knots are path-vertices, each leg a shortest path since the previous knot. Their knots are the corners of the polyline InfraSegment[p1, ..., pk].
 
 ## Details & Options
 

@@ -24,11 +24,11 @@ Two consequences follow from that construction.
 
 It returns nothing when *point* lies **on** *line*. The construction needs a foot distinct from the point, and there is none. Erecting a perpendicular at a point of the line is Euclid I.11, a different proposition.
 
-The count is very large. On an 81-vertex square patch, a point off a line admits 6381 perpendiculars. This is the same combinatorial explosion as [RandomInfraLine](), and it has the same cause: a maximal geodesic on a lattice has many admissible continuations.
+The count is very large. On an 81-vertex square patch, a point off a line admits 6381 perpendiculars. This is the same combinatorial explosion as [RandomInfraLine](), and it has the same cause: a maximal shortest path on a lattice has many admissible continuations.
 
 Option `"Radius"` is the lever that makes it usable. `"Radius" -> r` localises both the candidate enumeration and the test to the *r*-neighbourhood of the point. On that same patch the count falls to 110 at radius 3 and 26 at radius 2. Perpendicularity is a local notion, so localising it is not a compromise.
 
-Option `Method` also takes the `Q`-side families — `"Projection"`, `"Coordinate"`, `"Arclength"`, `"Alexandrov"` — which enumerate maximal geodesics through the point and filter them with [InfraPerpendicularQ](). Sub-options belong inside the method spec and are passed through.
+Option `Method` also takes the `Q`-side families — `"Projection"`, `"Coordinate"`, `"Arclength"`, `"Alexandrov"` — which enumerate maximal shortest paths through the point and filter them with [InfraPerpendicularQ](). Sub-options belong inside the method spec and are passed through.
 
 The result need not satisfy [InfraPerpendicularQ]() under its default settings. The default `"Metric"` construction is Euclid's, while the predicate tests a projection condition, and on a lattice the two do not coincide. See that page for which equality setting reconciles them.
 

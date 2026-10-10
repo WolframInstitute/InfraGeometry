@@ -58,7 +58,7 @@ With[
 
 ## Properties and Relations
 
-The values of one object across all the instances. Here the second point takes each of its eight positions, the diagonal ones twice, once per geodesic.
+The values of one object across all the instances. Here the second point takes each of its eight positions, the diagonal ones twice, once per shortest path.
 
 ```wl
 ClearAll[pA, pB, seg1];

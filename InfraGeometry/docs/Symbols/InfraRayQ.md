@@ -5,14 +5,14 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraRayQ
-Keywords: [ray, half-line, geodesic, inextensible, predicate]
+Keywords: [ray, half-line, shortest path, inextensible, predicate]
 SeeAlso: [InfraRay, RandomInfraRay, InfraSegmentQ, InfraLineQ]
 RelatedGuides: [Experimental]
 ---
 
 ## Usage
 
-<code>[InfraRayQ]()[*g*, *ray*]</code> tests whether *ray* is a ray in *g*: a geodesic from its own first vertex that cannot be prolonged past its last.
+<code>[InfraRayQ]()[*g*, *ray*]</code> tests whether *ray* is a ray in *g*: a shortest path from its own first vertex that cannot be prolonged past its last.
 
 <code>[InfraRayQ]()[*g*, {*ray1*, …}]</code> tests every ray of a list, such as the one <code>[RandomInfraRay]()[*g*, *O*, *v*, All]</code> returns.
 
@@ -22,14 +22,14 @@ Two conditions, and the asymmetry between them is the whole definition:
 
 | Condition | Why |
 |---|---|
-| the sequence is a geodesic | a ray is straight, so [InfraSegmentQ]() must hold |
+| the sequence is a shortest path | a ray is straight, so [InfraSegmentQ]() must hold |
 | no neighbour of the last vertex sits one step farther from the first | the far end is inextensible |
 
 Inextensibility is required **only at the far end**. The origin is an endpoint by fiat — that is exactly what distinguishes a ray from a line ([InfraLineQ]() asks for inextensibility at both ends), and it means a ray may start anywhere, not only at a peripheral vertex.
 
 Sequences shorter than two vertices are `False`: a single vertex has no direction.
 
-The predicate is the companion of [RandomInfraRay](), which prolongs a geodesic outward until no neighbour prolongs it, so every ray that finder returns satisfies it.
+The predicate is the companion of [RandomInfraRay](), which prolongs a shortest path outward until no neighbour prolongs it, so every ray that finder returns satisfies it.
 
 ## Basic Examples
 
@@ -70,7 +70,7 @@ With[
   {InfraRayQ[g, ray], InfraRayQ[g, Most @ ray]}]
 ```
 
-A ray is a geodesic that stops only because it must; a walk right round a cycle is not a geodesic at all.
+A ray is a shortest path that stops only because it must; a walk right round a cycle is not a shortest path at all.
 
 ```wl
 InfraRayQ[CycleGraph[6], {1, 2, 3, 4, 5, 6}]
