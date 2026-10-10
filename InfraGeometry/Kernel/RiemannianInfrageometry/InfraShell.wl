@@ -164,9 +164,9 @@ RandomInfraRepresentative[ graph_Graph, shell : InfraShell[ _, _ ],
     ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   With[ { members = Keys @ InfraMeasurement[ graph, shell, "VertexDensity" ],
           nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
-    { ordered = { members } },
+    { ordered = { Sort @ members } },
     Which[
-      count === Automatic, members,
+      count === Automatic, If[ ordered === { { } }, { }, If[ nextFn === Identity, First @ First @ ordered, First @ ordered ] ],
       count === All,       ordered,
       nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
       IntegerQ @ count && Length @ ordered < count, { },

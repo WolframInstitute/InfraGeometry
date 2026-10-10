@@ -12,8 +12,6 @@ RelatedTutorials: [BreadthlessTriangleTutorial, StraighteningAtScaleTutorial]
 
 ## Abstract
 
-**Euclidean Infrageometry** studies natural geometric objects on arbitrary graph substrates using the synthetic methods; it enumerates them, studies mutual relations, and performs iterative constructions. Geometry as developed by humans as observed webbing of a large graph as seens at large scale leading to the idealization of a continueous webbing and idealized geometric objects such as "breathless line" and "... point" (<< how euclid defined point>>). A consequence of infinitesimality is uniqueness in the idealized costruction, which cannot be satisfies in Infrageoemtrye. In fact, we have to deal with **multi-valued constructions**, where a fixed sequence of construction steps generates a branching multiway system. Although concrete representatives may differ across branches, the system is "causally invariant" in the sense that the dependency graph of construction steps remains unchanged. To each multi-object we associate a **vertex density** given by normalized counts of representtivees the vertex is contained in, and for path-like objects, we similarly associate an **edge density**. We imagine that under a suitable notion of Gromov-Hausdorff limit these measures converge weakly to measures supported on classical "thin" geometric objects provided that the limiting space is an instance of Euclidean exioms.
-
 Euclidean Infrageometry studies natural geometric objects on arbitrary graph substrates using synthetic methods. It enumerates these objects, studies their mutual relations, applies operations to them, and performs iterative constructions. If space is represented by a large graph viewed as a web of paths, human geometry can be viewed as an idealized theory based on the perception of infinitesimal structure at large scales. This leads to the idealization of a continuous "web" and of geometric objects such as the "dimensionless point" and the "breadthless line." Infrageometry works directly with the discrete substrate and does not assume infinitesimality. Consequently, some constructions need not be unique: a fixed sequence of steps yields *multi-objects* and generates a branching multiway system. Although concrete representatives may differ across branches, the system is causally invariant in the sense that the dependency graph of construction steps remains unchanged. We associate each multi-object with a *vertex density*, given by the fraction of its representatives that contain each vertex; for path-like objects, we similarly associate an *edge density*. We expect that, under a suitable notion of Gromov-Hausdorff convergence, these measures converge weakly to measures supported on classical "thin" geometric objects, provided the limiting space satisfies the Euclidean axioms.
 
 ## Functions
@@ -55,8 +53,8 @@ For segments, rays, lines and arcs, directed acyclic graphs encode the represent
 
 ### Reading a construction on a graph
 
-- `InfraMeasurement` a property of a symbolic object on a graph: "Graph", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph", "Faithful", "CountingMeasure", "RiemannianMeasure"; the "Graph" of a segment, ray, line or arc is the directed acyclic graph whose directed paths are exactly its objects
-- `RandomInfraRepresentative` one member of a head as a vertex list; a trailing count gives a List of them, "RandomChoice" a random member
+- `InfraMeasurement` a property of a symbolic object on a graph: "Graph", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph", "Faithful", "CountingMeasure", "RiemannianMeasure" or "Midpoint"; the "Graph" of a segment, ray, line or arc is the directed acyclic graph whose directed paths are exactly its objects
+- `RandomInfraRepresentative` one random member of a head as a vertex list; a trailing count gives a List of them, and `All` gives every member
 - `InfraMemberQ` whether a vertex list is a member of a head on a graph
 - `InfraDensity` the vertex density of any object: a vertex, a vertex list, a density, a walk graph
 - `InfraIntersection` the symbolic intersection of two objects, with the product of their vertex densities
@@ -71,7 +69,7 @@ For segments, rays, lines and arcs, directed acyclic graphs encode the represent
 
 - `InfraScene` a symbolic multi-construction stated before any graph: the objects, and hypotheses that construct them or assert relations between them
 - `InfraStep` one construction encapsulated as a step of a scene; a second argument labels it
-- `FindInfraScene` a scene solved on a graph, step by step; a List of bindings, one per admissible combination
+- `RandomInfraInstance` every scene binding on a graph, step by step; a List of instances, one per admissible branch
 - `InfraSceneInstance` one solved binding of a scene; with an object name, that object read out of it
 - `InfraSceneViewer` a step-by-step view of a scene on a graph
 

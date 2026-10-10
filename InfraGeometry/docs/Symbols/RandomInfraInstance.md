@@ -1,10 +1,10 @@
 ---
 Template: Symbol
-Name: FindInfraScene
+Name: RandomInfraInstance
 Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
-URI: WolframInstitute/InfraGeometry/ref/FindInfraScene
+URI: WolframInstitute/InfraGeometry/ref/RandomInfraInstance
 Keywords: [scene, construction, solve, branch, binding, instance]
 SeeAlso: [InfraScene, InfraSceneInstance, InfraStep, InfraSubstrateHighlight, InfraSceneViewer]
 RelatedGuides: [EuclideanInfrageometry]
@@ -12,11 +12,11 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Usage
 
-<code>[FindInfraScene]()[*scene*, *graph*]</code> solves the [InfraScene]() *scene* on *graph* and gives a `List` of [InfraSceneInstance]() objects, one per admissible branch.
+<code>[RandomInfraInstance]()[*scene*, *graph*]</code> solves the [InfraScene]() *scene* on *graph* and gives a `List` of [InfraSceneInstance]() objects, one per admissible branch.
 
-<code>[FindInfraScene]()[*scene*, *graph*, *k*]</code> solves the first *k* steps only.
+<code>[RandomInfraInstance]()[*scene*, *graph*, *k*]</code> solves the first *k* steps only.
 
-<code>[FindInfraScene]()[*scene*, *graph*, *bindings*]</code> starts from the `Association` *bindings* of objects to values fixed in advance, and <code>[FindInfraScene]()[*scene*, *graph*, *k*, *bindings*]</code> does both.
+<code>[RandomInfraInstance]()[*scene*, *graph*, *bindings*]</code> starts from the `Association` *bindings* of objects to values fixed in advance, and <code>[RandomInfraInstance]()[*scene*, *graph*, *k*, *bindings*]</code> does both.
 
 ## Details & Options
 
@@ -41,7 +41,7 @@ With[
   {c = First @ GraphCenter[g]},
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
-  {solved = FindInfraScene[scene, g]},
+  {solved = RandomInfraInstance[scene, g]},
   {InfraSubstrateHighlight[g, {InfraSceneInstance[#, seg1] & /@ solved, c}],
    Length @ solved}]
 ```
@@ -55,7 +55,7 @@ With[
   {c = First @ GraphCenter[g]},
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
-  {instance = First @ FindInfraScene[scene, g]},
+  {instance = First @ RandomInfraInstance[scene, g]},
   {InfraSubstrateHighlight[g, {InfraSceneInstance[instance, seg1], c}], instance}]
 ```
 
@@ -70,7 +70,7 @@ With[
   {c = First @ GraphCenter[g]},
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
-  {points = InfraSceneInstance[#, pB] & /@ FindInfraScene[scene, g, 1]},
+  {points = InfraSceneInstance[#, pB] & /@ RandomInfraInstance[scene, g, 1]},
   {InfraSubstrateHighlight[g, {points, c}], scene["Steps"], Length @ points}]
 ```
 
@@ -84,7 +84,7 @@ With[
   {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 2]])},
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
-  {segments = InfraSceneInstance[#, seg1] & /@ FindInfraScene[scene, g, <|pB -> b|>]},
+  {segments = InfraSceneInstance[#, seg1] & /@ RandomInfraInstance[scene, g, <|pB -> b|>]},
   {InfraSubstrateHighlight[g, {segments, c, b}], Length @ segments}]
 ```
 
@@ -101,7 +101,7 @@ With[
   {c = First @ GraphCenter[g]},
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
-  {segments = (SeedRandom[1]; InfraSceneInstance[#, seg1] & /@ FindInfraScene[scene, g, "PruneProbability" -> 0.5])},
+  {segments = (SeedRandom[1]; InfraSceneInstance[#, seg1] & /@ RandomInfraInstance[scene, g, "PruneProbability" -> 0.5])},
   {InfraSubstrateHighlight[g, {segments, c}], Length @ segments}]
 ```
 
@@ -117,5 +117,5 @@ With[
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
   {InfraSubstrateHighlight[g, {FindInfraShell[g, c, 2], c}],
-   Length @ FindInfraScene[scene, g] === Total @ Table[InfraMeasurement[g, InfraSegment[c, through], "Cardinality"], {through, FindInfraShell[g, c, 2]}]}]
+   Length @ RandomInfraInstance[scene, g] === Total @ Table[InfraMeasurement[g, InfraSegment[c, through], "Cardinality"], {through, FindInfraShell[g, c, 2]}]}]
 ```

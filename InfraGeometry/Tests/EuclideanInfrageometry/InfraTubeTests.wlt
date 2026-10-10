@@ -72,7 +72,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[{5, 5}] },
     { RandomInfraRepresentative[g, InfraTube[13, 1], All], RandomInfraRepresentative[g, InfraTube[13, 1], 2],
-      RandomInfraRepresentative[g, InfraTube[13, 1], "RandomChoice"] } ],
+      RandomInfraRepresentative[g, InfraTube[13, 1], "NextVertexFunction" -> RandomChoice] } ],
   { {{8, 12, 13, 14, 18}}, {}, {8, 12, 13, 14, 18} },
   TestID -> "InfraTube-one-member-under-every-count"
 ]
@@ -268,7 +268,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[{4, 4}] },
     Map[ inst |-> inst[[ 1 ]][ t ],
-      FindInfraScene[ InfraScene[ { t }, { t == # } ], g ] & /@
+      RandomInfraInstance[ InfraScene[ { t }, { t == # } ], g ] & /@
         { InfraTube[{1, 2}, 1], InfraCylinder[{1, 2}, 1], InfraCone[{1, 2}, 1], InfraSolidOfRevolution[{5, 6, 7, 8}, {0, 1, 1, 0}] }, { 2 } ] ],
   { { {1, 2, 3, 5, 6} }, { {1, 2, 5, 6} }, { {1, 2, 6} }, { {2, 3, 5, 6, 7, 8, 10, 11} } },
   TestID -> "InfraTube-InfraCylinder-InfraCone-InfraSolidOfRevolution-are-scene-constructors"

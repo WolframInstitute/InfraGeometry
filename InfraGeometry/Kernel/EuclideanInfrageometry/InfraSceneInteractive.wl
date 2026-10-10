@@ -166,7 +166,7 @@ InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <| |>, op
           shownQ  = obj |-> ! MemberQ[ hiddenSteps, objStep[ obj ] ] },
         {
           refresh = (
-            With[ { new = FindInfraScene[ scene, graph, step, effInit[ ] ] },
+            With[ { new = RandomInfraInstance[ scene, graph, step, effInit[ ] ] },
               If[ new === { },
                 deadQ = True,
                 deadQ = False;

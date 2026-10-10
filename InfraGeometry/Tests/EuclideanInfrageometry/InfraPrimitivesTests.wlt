@@ -105,7 +105,7 @@ VerificationTest[
 
 (* the volume of a set is its Length; of a family of sets, the Length of each *)
 VerificationTest[
-  { Length @ RandomInfraRepresentative[PathGraph @ Range[ 5 ], InfraBall[3, 2], All],
+  { Length @ RandomInfraRepresentative[PathGraph @ Range[ 5 ], InfraBall[3, 2]],
     Length /@ { { 1, 2, 3 }, { 4, 5 } } },
   { 5, { 3, 2 } },
   TestID -> "set-volume-is-Length"

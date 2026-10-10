@@ -61,8 +61,11 @@ The properties:
 | `"EdgeDensity"` | `<\|v \[DirectedEdge] w -> occ(v -> w)\|>`, the number of members through the arrow; on a polyline, the sum of the piece densities |
 | `"Subgraph"` | the induced subgraph of the support, same as [InfraSubgraph]() |
 | `"Faithful"` | `True` on a segment, ray or line; [Undetermined]() on a circle or an arc, whose graph is proved faithful only under a hypothesis this paclet does not certify, except that a circle whose cut band is connected but whose seam has one side only gives `False` |
+| `"Midpoint"` | the density of the central vertex or vertices on the geodesics of a segment |
 | `"CountingMeasure"` | the number of vertices of the support |
 | `"RiemannianMeasure"` | the number of vertices of the support all of whose neighbours lie in the support |
+
+For a segment of even length, `"Midpoint"` counts the geodesics through each vertex in the middle layer. For odd length, it counts the geodesics through each of the two central layers. Thus it is a density of midpoints, not a single vertex when the substrate branches.
 
 A region — a ball, shell, tube, cylinder or cone — has one member, its vertex set, and every vertex of the support has density 1. It has no `"Graph"` and no `"Length"`. A sphere is a family, searched rather than read off a graph; its `"Faithful"` is [Undetermined]().
 
@@ -75,6 +78,22 @@ A circle takes a radius `r` or a band `{r, s}`, a scalar `r` meaning `{r, r}`. T
 On a polyline <code>[InfraSegment]()[*p1*, …, *pk*]</code> the densities are not member counts: they are the sums of the piece densities. On the 5 × 5 grid, <code>[InfraSegment]()[1, 13, 25]</code> has 36 members, while its density at the centre 13 is 12.
 
 ## Basic Examples
+
+The midpoint density of two vertices at distance 6 on the discretized plane, the square grid and the hexagonal tiling. The numbers of distinct midpoint vertices are 2, 3 and 2.
+
+```wl
+Row[Table[
+  With[
+    {g = InfraSubstrate[name, "Large", "KeepCoordinates" -> True]},
+    {a = First @ GraphCenter[g]},
+    {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 6 &]},
+    {segment = InfraSegment[a, b]},
+    {midpoint = InfraMeasurement[g, segment, "Midpoint"]},
+    Labeled[
+      InfraSubstrateHighlight[g, {RandomInfraSegment[g, a, b, All], {a, b}, midpoint}],
+      name <> ": " <> ToString[Length @ midpoint] <> " midpoints"]],
+  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
+```
 
 A segment from the centre to a vertex four steps away on the discretized plane, the square grid and the hexagonal tiling, drawn by its densities, beside its number of shortest paths, their length and its two measures.
 

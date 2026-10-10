@@ -18,11 +18,11 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Details & Options
 
-The draw is random: seed with `SeedRandom`. For a deterministic draw give `"NextVertexFunction" -> Identity`. Formerly `FindInfra...` (default deterministic); `FindInfraMidpoint` is now the `"Midpoint"` reader of `InfraMeasurement`.
+The default draw is random; seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for the deterministic lexicographic descent.
 
-The head names the notion; this function finds its members. Where the head has a faithful graph theorem, a member is read off it; otherwise the head's own search runs at its defaults.
+The head names the notion; this function draws its members. Where the head has a faithful graph theorem, a member is read off its graph; otherwise the head's own search runs at its defaults.
 
-- `InfraSegment[p, q]`, `InfraRay[p, q]`, `InfraLine[p, q]`, `InfraLine[germ]` and `InfraArc[c, {p, q}]`: a member is a source-to-sink chain of <code>[InfraMeasurement]()[*graph*, *head*, "Graph"]</code>, read off in lexicographic order. A polyline `InfraSegment[p1, ..., pk]` and a multi-point arc concatenate the members of their pieces.
+- `InfraSegment[p, q]`, `InfraRay[p, q]`, `InfraLine[p, q]`, `InfraLine[germ]` and `InfraArc[c, {p, q}]`: a member is a source-to-sink chain of <code>[InfraMeasurement]()[*graph*, *head*, "Graph"]</code>. `Identity` gives the lexicographic descent. A polyline `InfraSegment[p1, ..., pk]` and a multi-point arc concatenate the members of their pieces.
 - `InfraCircle[c, r | {r, s}]`: a member is a circle found by sweeping the band, length by length with `FindCycle` (see [InfraCircle]()), as a cyclic vertex list whose first vertex is not repeated. The atoms stay what `InfraMeasurement` measures; the sweep is the check on them.
 - `InfraArc[c, {p, p}]`, the closed arc: the same sweep, not the atom of its graph, keeping the circles through *p*, and through every point of `InfraArc[c, {p, q, ..., p}]` (see [InfraArc]()).
 - `InfraGeodesic[germ, s]`, the geodesics at infra-scale *s* through the germ: a member is an inextensible simple geodesic, the result of [RandomInfraGeodesic]()`[g, germ, s, Infinity, n, Properties -> {"Simple"}, "Direction" -> "BothSides"]`. The germ is a vertex list; a one-vertex list is grown on both sides, so it gives every geodesic through the vertex.
@@ -32,14 +32,28 @@ The walk searches ([RandomInfraWalk]() and [RandomInfraGeodesic]()) take a germ,
 
 A closed count under a non-negative integer *n* that exceeds the number of members gives `{ }`.
 
-Two modifiers, given after the count:
+The `"NextVertexFunction"` option controls the descent. `Automatic` draws a uniformly random member from a graph; `Identity` follows the first candidate at each step. A custom function receives the candidate list at each step. `RandomSample[#, UpTo[q]] &` limits the candidates tried at each step to at most *q*. `RandomChoice` draws one candidate at each step and cannot be used with `All`.
 
-- `"RandomChoice"` gives random members. On a graph it walks the chains choosing the next arrow *v* -> *w* with probability proportional to the backward count at *w*, so every member is drawn with probability `1 / Cardinality`; on a search it is `"NextVertexFunction" -> RandomSample`; otherwise it draws from the search's members. `SeedRandom` in front reproduces the draw.
-- `"Pruning" -> q`, under `All`, discards a random fraction *q* of the candidates at each step of an otherwise exhaustive enumeration; on a search it is the next-vertex function `RandomSample[#, UpTo[q]] &` for an integer *q*, keeping a fraction *q* of the candidates per node for *q* < 1.
+The former sampler names are:
+
+| Earlier | Now |
+|---|---|
+| `FindInfraRepresentative` | `RandomInfraRepresentative` |
+| `FindInfraSegment` | `RandomInfraSegment` |
+| `FindInfraRay` | `RandomInfraRay` |
+| `FindInfraLine` | `RandomInfraLine` |
+| `FindInfraParallel` | `RandomInfraParallel` |
+| `FindInfraSphere` | `RandomInfraSphere` |
+| `FindInfraEllipse` | `RandomInfraEllipse` |
+| `FindInfraRegularPolygon` | `RandomInfraRegularPolygon` |
+| `FindInfraWalk` | `RandomInfraWalk` |
+| `FindInfraGeodesic` | `RandomInfraGeodesic` |
+
+`FindInfraMidpoint` is replaced by <code>[InfraMeasurement]()[*graph*, [InfraSegment]()[*p*, *q*], "Midpoint"]</code>. `FindInfraGoldenSection` is no longer part of the paclet.
 
 The specialised searches (`RandomInfraSegment`, `RandomInfraSphere`, `FindInfraShell`, `RandomInfraWalk`, `RandomInfraGeodesic`, ...) keep their own parameters; this function takes none of them.
 
-`RandomInfraRepresentative[graph, head]` (no count) is the same as `RandomInfraRepresentative[graph, head, Automatic]`, the first member in canonical order.
+`RandomInfraRepresentative[graph, head]` (no count) draws one random member. Use `RandomInfraRepresentative[graph, head, All]` for the full enumeration.
 
 ## Basic Examples
 
@@ -51,7 +65,7 @@ With[
   {a = First @ GraphCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {seg = InfraSegment[a, b]},
-  {pick = (SeedRandom[3]; First @ RandomInfraRepresentative[g, seg, 1, "RandomChoice"])},
+  {pick = (SeedRandom[3]; First @ RandomInfraRepresentative[g, seg, 1])},
   {InfraSubstrateHighlight[g, {seg, InfraWalk[pick]}], pick}]
 ```
 

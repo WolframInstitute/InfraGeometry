@@ -975,7 +975,7 @@ VerificationTest[
     scene = InfraScene[ { path }, { path == InfraWalk[ 1, 2, 3 ] } ],
     g = PathGraph[ Range[ 5 ] ]
   },
-    With[{ instances = FindInfraScene[ scene, g ] },
+    With[{ instances = RandomInfraInstance[ scene, g ] },
       Length[ instances ] == 1 && instances[[ 1 ]][[ 1 ]][ path ] === { 1, 2, 3 }
     ]
   ],
@@ -989,7 +989,7 @@ VerificationTest[
     scene = InfraScene[ { path }, { path == InfraWalk[ 1, 3 ] } ],
     g = PathGraph[ Range[ 5 ] ]
   },
-    FindInfraScene[ scene, g ]
+    RandomInfraInstance[ scene, g ]
   ],
   { },
   TestID -> "InfraWalk-scene-DSL-no-edge-empty"
@@ -1001,7 +1001,7 @@ VerificationTest[
     scene = InfraScene[ { path }, { path == InfraWalk[ 1, 2, 1 ] } ],
     g = PathGraph[ Range[ 3 ] ]
   },
-    With[{ instances = FindInfraScene[ scene, g ] },
+    With[{ instances = RandomInfraInstance[ scene, g ] },
       Length[ instances ] == 1 && instances[[ 1 ]][[ 1 ]][ path ] === { 1, 2, 1 }
     ]
   ],

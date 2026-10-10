@@ -138,7 +138,7 @@ VerificationTest[
 (* ===== Scene ===== *)
 
 VerificationTest[
-  FindInfraScene[ InfraScene[ { e }, { e == InfraQuadric[ { 2, 15 }, { 4, 4 } ] } ], GridGraph[ { 4, 4 } ] ][[ 1, 1 ]],
+  RandomInfraInstance[ InfraScene[ { e }, { e == InfraQuadric[ { 2, 15 }, { 4, 4 } ] } ], GridGraph[ { 4, 4 } ] ][[ 1, 1 ]],
   <| e -> { 2, 3, 6, 7, 10, 11, 14, 15 } |>,
   TestID -> "InfraQuadric-scene-constructor"
 ]

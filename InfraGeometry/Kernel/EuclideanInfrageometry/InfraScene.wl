@@ -238,18 +238,18 @@ evaluateConstruction[ graph_Graph, syms_List, rhs_, bindings_Association ] :=
     If[ ! ListQ[ tuples ] || tuples === {}, {},
       Join[ bindings, AssociationThread[ syms, # ] ] & /@ tuples ] ]
 
-Options[ FindInfraScene ] = { "PruneProbability" -> 0 }
+Options[ RandomInfraInstance ] = { "PruneProbability" -> 0 }
 
-FindInfraScene[ scene_InfraScene, graph_Graph, opts : OptionsPattern[] ] :=
-  FindInfraScene[ scene, graph, Length @ scene[ "Steps" ], <| |>, opts ]
+RandomInfraInstance[ scene_InfraScene, graph_Graph, opts : OptionsPattern[] ] :=
+  RandomInfraInstance[ scene, graph, Length @ scene[ "Steps" ], <| |>, opts ]
 
-FindInfraScene[ scene_InfraScene, graph_Graph, nSteps_Integer, opts : OptionsPattern[] ] :=
-  FindInfraScene[ scene, graph, nSteps, <| |>, opts ]
+RandomInfraInstance[ scene_InfraScene, graph_Graph, nSteps_Integer, opts : OptionsPattern[] ] :=
+  RandomInfraInstance[ scene, graph, nSteps, <| |>, opts ]
 
-FindInfraScene[ scene_InfraScene, graph_Graph, init_Association, opts : OptionsPattern[] ] :=
-  FindInfraScene[ scene, graph, Length @ scene[ "Steps" ], init, opts ]
+RandomInfraInstance[ scene_InfraScene, graph_Graph, init_Association, opts : OptionsPattern[] ] :=
+  RandomInfraInstance[ scene, graph, Length @ scene[ "Steps" ], init, opts ]
 
-FindInfraScene[ scene_InfraScene, graph_Graph, nSteps_Integer, init_Association,
+RandomInfraInstance[ scene_InfraScene, graph_Graph, nSteps_Integer, init_Association,
     opts : OptionsPattern[] ] :=
   With[ { prob = OptionValue[ "PruneProbability" ], objects = scene[ "Objects" ], constructions = scene[ "Constructions" ] },
     { branches = Fold[

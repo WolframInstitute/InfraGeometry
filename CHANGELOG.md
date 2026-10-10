@@ -1,8 +1,22 @@
 # Changelog
 
-## Unreleased
+## 2.7.0
 
 - **Breaking -- the `Find...` samplers are `Random...`, random by default.** `FindInfraRepresentative`, `FindInfraLine`, `FindInfraSegment`, `FindInfraRay`, `FindInfraParallel`, `FindInfraGeodesic`, `FindInfraWalk`, `FindInfraSphere`, `FindInfraEllipse` and `FindInfraRegularPolygon` are renamed `RandomInfra...` and draw at random: seed with `SeedRandom`. A deterministic draw is `"NextVertexFunction" -> Identity`, and `All` lists every member. `FindInfraMidpoint` and `FindInfraGoldenSection` are removed; use `InfraMeasurement[graph, InfraSegment[a, b], "Midpoint"]`. Under `All`, a tube yields `{ members }` and ball-like and point-like heads stay flat.
+
+  | Earlier | Now |
+  |---|---|
+  | `FindInfraRepresentative` | `RandomInfraRepresentative` |
+  | `FindInfraSegment` | `RandomInfraSegment` |
+  | `FindInfraRay` | `RandomInfraRay` |
+  | `FindInfraLine` | `RandomInfraLine` |
+  | `FindInfraParallel` | `RandomInfraParallel` |
+  | `FindInfraSphere` | `RandomInfraSphere` |
+  | `FindInfraEllipse` | `RandomInfraEllipse` |
+  | `FindInfraRegularPolygon` | `RandomInfraRegularPolygon` |
+  | `FindInfraWalk` | `RandomInfraWalk` |
+  | `FindInfraGeodesic` | `RandomInfraGeodesic` |
+- **Breaking -- `FindInfraScene` is `RandomInfraInstance`.** Name only: the solver is unchanged and still returns every admissible instance.
 - **Breaking -- random point finder renamed.** `FindInfraPoint` is renamed `RandomInfraPoint`, matching Wolfram's `RandomPoint` naming for random draws. Arguments and options are unchanged; replace the head in existing calls.
 
 ## 2.6.2 (2026-10-09)

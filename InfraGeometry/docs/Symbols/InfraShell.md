@@ -118,7 +118,7 @@ GraphicsRow[MapThread[
   {{InfraSubstrate["TriangularTilingGraph", "Medium"], InfraSubstrate["CubicGridGraph", "Large"]}, {6, 4}, {6 r, 4 r^2 + 2}}]]
 ```
 
-Inside a scene the token names the shell about a point, and [FindInfraScene]() binds it to the same vertex set. Two shells meet in a few vertices, one per branch.
+Inside a scene the token names the shell about a point, and [RandomInfraInstance]() binds it to the same vertex set. Two shells meet in a few vertices, one per branch.
 
 ```wl
 ClearAll[pA, pB, shellA, shellB, meet];
@@ -130,7 +130,7 @@ With[
      {pA == InfraPoint[c], pB == InfraPoint[b],
       shellA == InfraShell[pA, 2], shellB == InfraShell[pB, 2],
       meet == InfraIntersection[shellA, shellB]}]},
-  {solved = FindInfraScene[constr, g]},
+  {solved = RandomInfraInstance[constr, g]},
   InfraSubstrateHighlight[g,
     Join[{InfraSceneInstance[First @ solved, shellA],
           InfraSceneInstance[First @ solved, shellB]},
