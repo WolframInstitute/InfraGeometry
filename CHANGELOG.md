@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.7.1
+
+- Restrict exact explorer callbacks to explicit deterministic profile and query domains.
+- Match duplicate option precedence to validation and certify conclusively rejected roots.
+- Integrate named construction samplers, exact point families, deterministic readers, scenes, saved exploration and maintained documentation.
+
 ## 2.7.0 (2026-10-10)
 
 - **Breaking -- construction-specific samplers.** The public `RandomInfraRepresentative` is removed without an alias. Use the named sampler for each of the 26 supported construction and scene-operation families. `InfraHalfLine`, `InfraInfiniteLine` and `InfraRegularPolygon` preserve the old finite meanings; inert legacy heads and old named ray/line samplers and predicates remain accepted for at least this release. See the Synthetic Geometry Migration tutorial.

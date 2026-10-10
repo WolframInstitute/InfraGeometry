@@ -20,11 +20,11 @@ RelatedGuides: [EuclideanInfrageometry]
 This is an eager finite explorer for small simple undirected unweighted graphs.
 Each pool comes from its construction's named token sampler with All.
 The scene must carry valid ScheduleValidity provenance. Rebuild an older descriptor from its original object and hypothesis syntax.
-Unsupported schedules, selectors and domains stay unevaluated.
+Unsupported schedules and selectors stay unevaluated. Unsupported construction pools and assertions retain diagnostics and do not certify completion.
 
 States merge only when completed-construction IDs and exact labeled bindings agree.
 Declared sets normalize, while point labels, walk order, repeated traversals and Graph carriers retain their kinds.
-All incoming accepted or fixed events survive merging. Pending assertions remain undecided; unsupported assertions cannot certify an empty solution set.
+All incoming accepted or fixed events survive merging. Pending assertions remain undecided; unsupported assertions alone cannot certify an empty solution set.
 
 The result is an Association containing States, Events, StateGraph, Layers, StepLayers, Instances, Expansions, Frontier, Completeness, Diagnostics and saved scene/substrate/settings.
 Event layers count individual constructions. StepLayers are completed group boundaries.
@@ -35,7 +35,9 @@ Candidate limits bound examinations, not eager All-pool acquisition or temporary
 State, event and candidate frontiers retain their exact unfinished obligations.
 Requested-prefix and whole-scene completeness are separate; known state vertices alone do not certify missing incoming events.
 There is no resumability or hard memory ceiling.
-User-supplied geometry profiles must be pure and deterministic. This assumption is not enforced: an effectful callback can consume random state during pool acquisition.
+Tube, cylinder and solid-of-revolution profiles must be explicit numeric radii, bands or per-axis lists; cone slopes must be numeric. Function profiles are unsupported in the explorer and are not invoked. Ordinary named samplers retain function-profile support.
+Deferred InfraDistance aggregation accepts Min, Max, Mean, Median and Total. Assertions use registered Infra queries and predicates with arithmetic, comparison and Boolean forms. Custom executable heads remain Unsupported without invocation. Literal graph vertices are recognized first, including function-headed labels.
+Repeated option rules use their first supplied value. Delayed option rules are unsupported and rejected before evaluation. A False assertion conclusively rejects a root or candidate even when another assertion is Unsupported; rejection diagnostics retain both results.
 
 ## Basic Examples
 

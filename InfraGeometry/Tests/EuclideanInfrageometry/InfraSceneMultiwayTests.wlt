@@ -479,7 +479,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  ( instance |-> instance[[ 1 ]][ sceneTarget ] ) /@ InfraSceneMultiway[ InfraScene[ { sceneTarget }, { sceneTarget == InfraSolidOfRevolution[ { 1, 2 }, i |-> 0, Method -> "Balls" ] } ], PathGraph[ { 1, 2, 3 } ] ][ "Instances" ],
+  ( instance |-> instance[[ 1 ]][ sceneTarget ] ) /@ InfraSceneMultiway[ InfraScene[ { sceneTarget }, { sceneTarget == InfraSolidOfRevolution[ { 1, 2 }, { 0, 0 }, Method -> "Balls" ] } ], PathGraph[ { 1, 2, 3 } ] ][ "Instances" ],
   { { 1, 2 } },
   TestID -> "synthetic-t8-dispatch-SolidOfRevolution"
 ]
@@ -555,4 +555,123 @@ VerificationTest[
   With[ { scene = InfraScene[ { p }, { p == InfraPoint[] } ] },
     Head[ InfraSceneMultiway[ InfraScene[ KeyDrop[ First[ scene ], "ScheduleValidity" ] ], PathGraph[ { 1, 2 } ] ] ] ],
   InfraSceneMultiway, TestID -> "multiway-lossy-descriptor-without-syntax-provenance-stays-unevaluated"
+]
+
+VerificationTest[
+  Module[ { calls = 0, data },
+    With[ { profile = i |-> ( calls++; RandomInteger[ { 0, 1 } ] ) },
+      data = InfraSceneMultiway[ InfraScene[ { region },
+        { region == InfraSolidOfRevolution[ { 1, 2 }, profile, Method -> "Balls" ] } ], PathGraph[ Range[ 3 ] ] ] ];
+    { calls, data[ "Completeness" ][ "Scene" ], data[ "Completeness" ][ "Reasons" ], Length[ data[ "Events" ] ] } ],
+  { 0, False, { "Unsupported" }, 0 }, TestID -> "multiway-stochastic-profile-is-not-executed"
+]
+
+VerificationTest[
+  Module[ { calls = 0, profile, data },
+    profile[ index_Integer ] := ( calls++; Mod[ calls, 2 ] );
+    data = InfraSceneMultiway[ InfraScene[ { region },
+      { region == InfraTube[ { 1, 2 }, profile, Method -> "Balls" ] } ], PathGraph[ Range[ 3 ] ] ];
+    { calls, data[ "Completeness" ][ "Scene" ], data[ "Completeness" ][ "Reasons" ] } ],
+  { 0, False, { "Unsupported" } }, TestID -> "multiway-named-stateful-profile-is-not-executed"
+]
+
+VerificationTest[
+  Module[ { calls = 0, profile, control, data },
+    UpValues[ profile ] = { HoldPattern[ NumericQ[ profile ] ] :> ( calls++; True ) };
+    control = NumericQ[ profile ] && calls === 1;
+    calls = 0;
+    data = InfraSceneMultiway[ InfraScene[ { region },
+      { region == InfraTube[ { 1, 2 }, profile, Method -> "Balls" ] } ], PathGraph[ Range[ 3 ] ] ];
+    { control, calls, data[ "Completeness" ][ "Scene" ], data[ "Completeness" ][ "Reasons" ] } ],
+  { True, 0, False, { "Unsupported" } }, TestID -> "multiway-profile-validation-does-not-invoke-numeric-upvalue"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { region },
+      { region == InfraSolidOfRevolution[ { 1, 2, 3 }, { 0, 0, 1 }, Method -> "Balls" ] } ],
+      graph = PathGraph[ Range[ 4 ] ] },
+    { data = InfraSceneMultiway[ scene, graph ] },
+    { ( instance |-> instance[[ 1 ]][ region ] ) /@ data[ "Instances" ], data[ "Completeness" ][ "Scene" ],
+      BlockRandom[ InfraSceneMultiway[ scene, graph ]; RandomInteger[ 1000000 ], RandomSeeding -> 43 ] ===
+        BlockRandom[ RandomInteger[ 1000000 ], RandomSeeding -> 43 ] } ],
+  { { { 1, 2, 3, 4 } }, True, True }, TestID -> "multiway-explicit-axis-profile-is-complete-and-rng-neutral"
+]
+
+VerificationTest[
+  Module[ { calls = 0, data },
+    With[ { profile = i |-> ( calls++; 0 ) },
+      data = InfraSceneMultiway[ InfraScene[ { p }, { p == InfraPoint[],
+        InfraMeasurement[ InfraTube[ { 1, 2 }, profile ], "CountingMeasure" ] > 0 } ], PathGraph[ Range[ 3 ] ] ] ];
+    { calls, data[ "Completeness" ][ "Scene" ], data[ "Completeness" ][ "Reasons" ], Length[ data[ "Events" ] ] } ],
+  { 0, False, { "Unsupported" }, 0 }, TestID -> "multiway-deferred-measurement-does-not-execute-profile"
+]
+
+VerificationTest[
+  Module[ { calls = 0, data },
+    With[ { aggregator = distances |-> ( calls++; Mean[ distances ] ) },
+      data = InfraSceneMultiway[ InfraScene[ { p }, { p == InfraPoint[],
+        InfraDistance[ p, 3, "Aggregation" -> aggregator ] >= 0 } ], PathGraph[ Range[ 3 ] ], <| p -> 1 |> ] ];
+    { calls, data[ "Completeness" ][ "Scene" ], data[ "Completeness" ][ "Reasons" ], Length[ data[ "Events" ] ] } ],
+  { 0, False, { "Unsupported" }, 0 }, TestID -> "multiway-deferred-distance-does-not-execute-aggregation-callback"
+]
+
+VerificationTest[
+  Map[ aggregator |-> InfraSceneMultiway[ InfraScene[ { p }, { p == InfraPoint[],
+      InfraDistance[ p, 3, "Aggregation" -> aggregator ] >= 0 } ], PathGraph[ Range[ 3 ] ] ][ "Completeness" ][ "Scene" ],
+    { Min, Max, Mean, Median, Total } ],
+  ConstantArray[ True, 5 ], TestID -> "multiway-deterministic-built-in-distance-aggregators-remain-supported"
+]
+
+VerificationTest[
+  Module[ { calls = 0, predicate, data },
+    predicate[ vertex_Integer ] := ( calls++; True );
+    data = InfraSceneMultiway[ InfraScene[ { p }, { p == InfraPoint[], predicate[ p ] } ], PathGraph[ Range[ 3 ] ] ];
+    { calls, Length[ data[ "Instances" ] ], data[ "Completeness" ][ "Scene" ], data[ "Completeness" ][ "Reasons" ] } ],
+  { 0, 0, False, { "Unsupported" } }, TestID -> "multiway-custom-assertion-is-unsupported-without-execution"
+]
+
+VerificationTest[
+  Module[ { calls = 0 },
+    With[ { callback = input |-> ( calls++; RandomInteger[ input ] ) },
+      { labels = { callback, InfraDistance[ 1, 2, "Aggregation" -> callback ] } },
+      { graph = Graph[ labels, { } ], scene = InfraScene[ { p }, { p == InfraPoint[] } ] },
+      { data = InfraSceneMultiway[ scene, graph ] },
+      { calls, Sort[ ( instance |-> instance[[ 1 ]][ p ] ) /@ data[ "Instances" ] ] === Sort[ labels ],
+        data[ "Completeness" ][ "Scene" ],
+        BlockRandom[ InfraSceneMultiway[ scene, graph ]; RandomInteger[ 1000000 ], RandomSeeding -> 47 ] ===
+          BlockRandom[ RandomInteger[ 1000000 ], RandomSeeding -> 47 ] } ] ],
+  { 0, True, True, True }, TestID -> "multiway-literal-function-and-callback-query-headed-labels-remain-supported"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { p }, { p == InfraPoint[] } ], graph = PathGraph[ { 1, 2 } ] },
+    { data = InfraSceneMultiway[ scene, graph, "MaxDepth" -> 0, "MaxDepth" -> -1 ] },
+    { data[ "Options" ][ "MaxDepth" ], Length[ data[ "States" ] ], data[ "Completeness" ][ "Reasons" ],
+      Head[ InfraSceneMultiway[ scene, graph, "MaxDepth" -> -1, "MaxDepth" -> 0 ] ] } ],
+  { 0, 1, { "DepthLimit" }, InfraSceneMultiway }, TestID -> "multiway-duplicate-depth-limit-uses-validated-first-rule"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { p }, { p == InfraPoint[] } ], graph = PathGraph[ { 1, 2 } ] },
+    { data = InfraSceneMultiway[ scene, graph, "MaxEvents" -> 0, "MaxEvents" -> -1 ] },
+    { data[ "Options" ][ "MaxEvents" ], Length[ data[ "Events" ] ], data[ "Completeness" ][ "Reasons" ],
+      Head[ InfraSceneMultiway[ scene, graph, "MaxEvents" -> -1, "MaxEvents" -> 0 ] ] } ],
+  { 0, 0, { "EventLimit" }, InfraSceneMultiway }, TestID -> "multiway-duplicate-event-limit-uses-validated-first-rule"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { p }, { p == InfraPoint[], p < 0, InfraGeometricAssertion[ { p }, "Unknown" ] } ] },
+    { data = InfraSceneMultiway[ scene, PathGraph[ { 1, 2 } ], <| p -> 1 |> ] },
+    { data[ "Root" ], data[ "States" ], data[ "Events" ], data[ "Instances" ], data[ "Completeness" ],
+      First[ data[ "Diagnostics" ] ][ "Reason" ], Values[ First[ data[ "Diagnostics" ] ][ "Assertions" ] ] } ],
+  { None, <| |>, <| |>, { }, <| "Requested" -> True, "Scene" -> True, "Reasons" -> { } |>,
+    "RootRejected", { False, "Unsupported" } }, TestID -> "multiway-rejected-root-is-conclusive-despite-unsupported-assertion"
+]
+
+VerificationTest[
+  Module[ { calls = 0, result },
+    result = InfraSceneMultiway[ InfraScene[ { p }, { p == InfraPoint[] } ], PathGraph[ { 1, 2 } ],
+      "MaxDepth" :> ( calls++; If[ calls == 1, 0, -1 ] ) ];
+    { calls, Head[ result ] === InfraSceneMultiway } ],
+  { 0, True }, TestID -> "multiway-delayed-limit-is-rejected-before-execution"
 ]

@@ -6,6 +6,7 @@ Options[ InfraSceneMultiway ] = {
 
 InfraSceneMultiway[ scene_InfraScene, graph_Graph, init : _Association : <| |>, opts : OptionsPattern[] ] /;
     AssociationQ[ First[ scene ] ] && UndirectedGraphQ[ graph ] && SimpleGraphQ[ graph ] && ! WeightedGraphQ[ graph ] &&
+    MatchQ[ HoldComplete[ opts ], HoldComplete[ ___Rule ] ] &&
     SubsetQ[ First /@ Options[ InfraSceneMultiway ], First /@ { opts } ] &&
     MatchQ[ OptionValue[ InfraSceneMultiway, { opts }, "Steps" ], All | _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] ] &&
     AllTrue[ ( name |-> OptionValue[ InfraSceneMultiway, { opts }, name ] ) /@ { "MaxDepth", "MaxEvents", "MaxCandidates" },
@@ -21,15 +22,52 @@ InfraSceneMultiway[ scene_InfraScene, graph_Graph, init : _Association : <| |>, 
       stop, addObligation, remainingTime, bounded, assertionDependencies, keys, targets, expression, kind,
       group, order, available, producers, dependencyEdges, requestedGroups, requestedDepth, maximumDepth,
       root = 1, rootAssertions, rootBindings, cursor = 1, halted = False, source, record, ready, unfinished,
-      acquisition, selectedPoolSize, invalidSelector,
+      acquisition, selectedPoolSize, invalidSelector, supported, profileQ, numericProfileQ, heldParts, literalQ,
+      safeHeads, heldHeads, heldVertices,
       construction, fixed, members, poolSize, examined, expansionReason, candidateIndex, candidate,
       trialBindings, trialAssertions, outcome, completed, key, target, newState, reason, eventID,
       rejected, unsupported, certified, boundaryStates, instances, reasons, requestedComplete, sceneComplete,
       examinedTotal = 0, resultOptions, rawOptions, unknownConstructions, value },
-    settings = Join[ settings, Association[ { opts } ] ];
+    settings = Join[ settings, Association[ Reverse[ { opts } ] ] ];
     rawOptions = Values[ constructions ];
     If[ ! KeyExistsQ[ First[ scene ], "ScheduleValidity" ] || ! TrueQ[ scene[ "ScheduleValidity" ][ "Valid" ] ],
       Throw[ "UnsupportedSchedule", "InfraSceneMultiway" ] ];
+    safeHeads = { List, Association, Rule, DirectedInfinity, Plus, Times, Power, Abs, Min, Max, Mean, Median, Total, Length,
+      Mod, Floor, Ceiling, Round, Sign, UnitStep, Unitize, Equal, Unequal, SameQ, UnsameQ, Less, LessEqual,
+      Greater, GreaterEqual, Inequality, And, Or, Not, Xor, Implies, Equivalent, TrueQ, NumericQ, NumberQ,
+      IntegerQ, EvenQ, OddQ, Positive, Negative, NonNegative, NonPositive,
+      InfraPoint, InfraMidpoint, InfraPerpendicularBisector, InfraRegionNearest, InfraIntersection, InfraUnion,
+      InfraSegment, InfraHalfLine, InfraRay, InfraInfiniteLine, InfraLine, InfraCircle, InfraArc,
+      InfraRegularPolygon, InfraPolygon, InfraPlane, InfraBall, InfraShell, InfraSphere, InfraTube,
+      InfraCylinder, InfraCone, InfraSolidOfRevolution, InfraBallHull, InfraConvexHull, InfraQuadric,
+      InfraWalk, InfraGeodesic, InfraEllipse, InfraDistance, InfraMeasurement, InfraGeometricAssertion,
+      InfraWalkQ, InfraSegmentQ, InfraShellQ, InfraBallQ, InfraPlaneQ, InfraCircleQ, InfraInfiniteLineQ,
+      InfraLineQ, InfraHalfLineQ, InfraRayQ, InfraParallelQ, InfraIntersectQ, InfraRegularPolygonQ, InfraMemberQ };
+    heldHeads = HoldComplete /@ safeHeads;
+    heldVertices = HoldComplete /@ VertexList[ graph ];
+    heldParts[ held_HoldComplete ] := Cases[ Map[ HoldComplete, held, { 2 } ], part_HoldComplete :> part, { 2 } ];
+    literalQ[ held_HoldComplete ] := AnyTrue[ heldVertices, vertex |-> vertex === held ];
+    numericProfileQ[ held_HoldComplete ] :=
+      MatchQ[ held, HoldComplete[ _Integer | _Real | _Rational | _Complex | Infinity | DirectedInfinity[ 1 ] |
+        Pi | E | EulerGamma | Catalan | GoldenRatio ] ] ||
+      ( MemberQ[ HoldComplete /@ { Plus, Times, Power, Abs, Min, Max, Floor, Ceiling, Round },
+          Extract[ held, { 1, 0 }, HoldComplete ] ] && AllTrue[ heldParts[ held ], numericProfileQ ] );
+    profileQ[ held_HoldComplete ] := numericProfileQ[ held ] ||
+      ( MatchQ[ held, HoldComplete[ _List ] ] && AllTrue[ heldParts[ held ], band |-> numericProfileQ[ band ] ||
+        ( MatchQ[ band, HoldComplete[ { _, _ } ] ] && AllTrue[ heldParts[ band ], numericProfileQ ] ) ] );
+    supported[ held_HoldComplete ] := Which[
+      literalQ[ held ], True,
+      MatchQ[ held, HoldComplete[ _Symbol | _String | _Integer | _Real | _Rational | _Complex | _Graph ] ], True,
+      MatchQ[ held, HoldComplete[ "Aggregation" -> _ ] ],
+        MemberQ[ HoldComplete /@ { Min, Max, Mean, Median, Total }, Extract[ held, { 1, 2 }, HoldComplete ] ],
+      MatchQ[ held, HoldComplete[ "NextVertexFunction" -> _ ] ],
+        MemberQ[ HoldComplete /@ { Automatic, Identity }, Extract[ held, { 1, 2 }, HoldComplete ] ],
+      MatchQ[ held, HoldComplete[ ( InfraTube | InfraCylinder | InfraSolidOfRevolution )[ _, _, ___Rule ] ] ] &&
+        ! profileQ[ Extract[ held, { 1, 2 }, HoldComplete ] ], False,
+      MatchQ[ held, HoldComplete[ InfraCone[ _, _, ___Rule ] ] ] &&
+        ! numericProfileQ[ Extract[ held, { 1, 2 }, HoldComplete ] ], False,
+      ! MemberQ[ heldHeads, Extract[ held, { 1, 0 }, HoldComplete ] ], False,
+      True, AllTrue[ heldParts[ held ], supported ] ];
     dependencies[ item_ ] := Which[
       VertexQ[ graph, item ], { },
       AnyTrue[ objects, object |-> object === item ], { item },
@@ -38,7 +76,9 @@ InfraSceneMultiway[ scene_InfraScene, graph_Graph, init : _Association : <| |>, 
     resolve[ item_, bindings_ ] := Which[
       KeyExistsQ[ bindings, item ], Lookup[ bindings, Key[ item ] ],
       VertexQ[ graph, item ] || AtomQ[ item ] || GraphQ[ item ] || MatchQ[ item, _Function ], item,
-      True, Replace[ Map[ part |-> resolve[ part, bindings ], item ], {
+      ! MemberQ[ heldHeads, Extract[ HoldComplete[ item ], { 1, 0 }, HoldComplete ] ], item,
+      True, With[ { resolved = Map[ part |-> resolve[ part, bindings ], item ] },
+        If[ supported[ HoldComplete[ resolved ] ], Replace[ resolved, {
         InfraDistance[ x_, y_, rules___Rule ] :> InfraDistance[ graph, x, y, rules ],
         InfraMeasurement[ object_, property_ ] :> InfraMeasurement[ graph, object, property ],
         assertion_InfraGeometricAssertion :> InfraGeometricTest[ graph, assertion ],
@@ -55,7 +95,7 @@ InfraSceneMultiway[ scene_InfraScene, graph_Graph, init : _Association : <| |>, 
         InfraParallelQ[ first_, second_ ] :> InfraParallelQ[ graph, first, second ],
         InfraIntersectQ[ first_, second_ ] :> IntersectingQ[ first, second ],
         InfraRegularPolygonQ[ walk_, anchors_ ] :> InfraRegularPolygonQ[ graph, walk, anchors ],
-        InfraMemberQ[ object_, vertices_ ] :> InfraMemberQ[ graph, object, vertices ] } ] ];
+        InfraMemberQ[ object_, vertices_ ] :> InfraMemberQ[ graph, object, vertices ] } ], resolved ] ] ];
     canonical[ bindings_ ] := KeySort @ Association @ KeyValueMap[
       { name, representative } |-> name -> If[
         Lookup[ kinds, Key[ name ], "Exact" ] === "VertexSet" && ! VertexQ[ graph, representative ] && ListQ[ representative ],
@@ -164,7 +204,7 @@ InfraSceneMultiway[ scene_InfraScene, graph_Graph, init : _Association : <| |>, 
           EmbeddingClosest[ graph, paths, Line[ coordinates[[ Map[ vertex |-> Lookup[ indices, Key[ vertex ] ],
             information[ "Endpoints" ] ] ]] ] ],
         True, token ] ];
-    pool[ item_ ] := With[ { rules = If[ VertexQ[ graph, item ], { }, Cases[ item, _Rule ] ],
+    pool[ item_ ] := If[ ! supported[ HoldComplete[ item ] ], item, With[ { rules = If[ VertexQ[ graph, item ], { }, Cases[ item, _Rule ] ],
         token = If[ VertexQ[ graph, item ], item, DeleteCases[ item, ( "Select" | "Branches" ) -> _ ] ] },
       { raw = Which[
         VertexQ[ graph, token ], { token },
@@ -207,7 +247,7 @@ InfraSceneMultiway[ scene_InfraScene, graph_Graph, init : _Association : <| |>, 
       { kept = Which[ ! ListQ[ indexed ], indexed, branches === All, indexed,
           MatchQ[ branches, _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] ],
             Take[ indexed, Replace[ branches, n_Integer :> UpTo[ n ] ] ], True, token ] },
-      If[ ListQ[ kept ], <| "Candidates" -> kept, "PoolSize" -> Length[ raw ], "SelectedPoolSize" -> Length[ kept ] |>, kept ] ];
+      If[ ListQ[ kept ], <| "Candidates" -> kept, "PoolSize" -> Length[ raw ], "SelectedPoolSize" -> Length[ kept ] |>, kept ] ] ];
     addObligation[ sourceID_, constructionID_, next_, why_ ] :=
       ( frontier = Append[ frontier, <| "Source" -> sourceID, "Construction" -> constructionID,
         "NextCandidate" -> next, "Reason" -> why |> ] );
@@ -313,7 +353,7 @@ InfraSceneMultiway[ scene_InfraScene, graph_Graph, init : _Association : <| |>, 
       Do[ If[ ! AnyTrue[ frontier, obligation |-> obligation[ "Source" ] === stateID ],
           addObligation[ stateID, None, None, FirstCase[ Reverse[ frontier ], obligation_ :> obligation[ "Reason" ], "Unsupported" ] ] ],
         { stateID, cursor, Length[ states ] } ] ];
-    certified = ! MemberQ[ Values[ rootAssertions ], "Unsupported" ];
+    certified = root === None || ! MemberQ[ Values[ rootAssertions ], "Unsupported" ];
     layers = <| 0 -> <| "States" -> Select[ Keys[ states ], stateID |-> states[ stateID ][ "Depth" ] === 0 ],
       "Complete" -> certified |> |>;
     Do[

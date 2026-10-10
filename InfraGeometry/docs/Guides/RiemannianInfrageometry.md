@@ -37,13 +37,13 @@ In infrageometry the discrete **webbing of paths** is the substrate itself. The 
 
 ### Infrageodesics
 
-- `InfraGeodesic` the inert geodesics at infra-scale s through a germ, a vertex list; InfraMeasurement reads its graph, the window graph of the forward extensions, named construction samplers the inextensible simple ones
+- `InfraGeodesic` the inert geodesics at infra-scale s through a germ, a vertex list; InfraMeasurement reads its graph, the window graph of the forward extensions, RandomInfraGeodesic the inextensible simple ones
 - `RandomInfraGeodesic` the geodesics at infra-scale s grown from a germ, a vertex or a walk: every window of s consecutive vertices plus the next one is a shortest path; a trailing count gives a List of them
 - `InfraGeodesicQ` whether a walk is a geodesic at infra-scale s; scale 1 is InfraWalkQ and Infinity is InfraSegmentQ
 
 ### Shells
 
-- `InfraShell` the inert shell {v : rmin <= d(c, v) <= rmax} about a vertex or a vertex set, a level set of the distance; InfraMeasurement reads its volumes, named construction samplers its vertices
+- `InfraShell` the inert shell {v : rmin <= d(c, v) <= rmax} about a vertex or a vertex set, a level set of the distance; InfraMeasurement reads its volumes, RandomInfraShell its vertices
 - `FindInfraShell` the shell {v : d(c, v) = r}, or the band {rmin, rmax}, as a sorted vertex list; the separating subsets of a shell are RandomInfraSphere on the Euclidean Infrageometry guide
 
 ### Volume measurements
