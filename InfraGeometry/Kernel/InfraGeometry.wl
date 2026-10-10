@@ -2,6 +2,13 @@ Package["WolframInstitute`InfraGeometry`"]
 
 (* EuclideanInfrageometry *)
 
+PackageExport[InfraMidpoint]
+PackageExport[InfraPerpendicularBisector]
+PackageExport[InfraRegionNearest]
+PackageExport[RandomInfraMidpoint]
+PackageExport[RandomInfraPerpendicularBisector]
+PackageExport[RandomInfraRegionNearest]
+
 PackageExport[InfraPoint]
 PackageExport[RandomInfraPoint]
 PackageExport[FindInfraReflection]

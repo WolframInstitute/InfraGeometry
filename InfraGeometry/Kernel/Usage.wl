@@ -370,3 +370,10 @@ RandomInfraConvexHull::usage = "RandomInfraConvexHull[graph, token] samples the 
 RandomInfraQuadric::usage = "RandomInfraQuadric[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
 RandomInfraIntersection::usage = "RandomInfraIntersection[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
 RandomInfraUnion::usage = "RandomInfraUnion[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+
+InfraMidpoint::usage = "InfraMidpoint[p,q] is the inert family of exact graph midpoint vertices; distinct from the central-layer segment Midpoint density."
+InfraPerpendicularBisector::usage = "InfraPerpendicularBisector[p,q] is the inert family of finite equidistant vertices, without a separation condition."
+InfraRegionNearest::usage = "InfraRegionNearest[obj,p] is the inert point family of all finite-distance minimizers in the nonzero support of obj."
+RandomInfraMidpoint::usage = "RandomInfraMidpoint[graph,p,q] samples a raw exact midpoint vertex. It also accepts InfraMidpoint[p,q]. Option NextVertexFunction."
+RandomInfraPerpendicularBisector::usage = "RandomInfraPerpendicularBisector[graph,p,q] samples a raw finite equidistant vertex. It also accepts InfraPerpendicularBisector[p,q]. Option NextVertexFunction."
+RandomInfraRegionNearest::usage = "RandomInfraRegionNearest[graph,obj,p] samples a raw nearest support vertex. It also accepts InfraRegionNearest[obj,p]. Option NextVertexFunction."
