@@ -95,6 +95,7 @@ ListLinePlot[
 The closure of a vertex is the intersection of the balls of radius *r* that contain it, the balls about the vertices of its own ball.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {corner = First @ Select[VertexList[g], VertexDegree[g, #] == 1 &]},

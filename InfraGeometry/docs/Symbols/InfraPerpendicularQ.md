@@ -42,6 +42,7 @@ Two lines on a lattice can also meet in more than one vertex, which has no analo
 A line and a perpendicular to it, produced by the construction. The default test rejects it; the `"Overlap"` equality accepts it.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -57,6 +58,7 @@ With[
 The four methods on the same pair of lines. They are not equivalent, though on this pair all four reject.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -74,6 +76,7 @@ With[
 Lines that do not meet are never perpendicular, whatever the method.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},

@@ -55,6 +55,7 @@ The properties:
 | Property | Value |
 |---|---|
 | `"Graph"` | the object's own graph: one `Graph`, or a `List` of them for a family of alternatives (the DAGs of a line or a ray, the atoms of a circle) or for the pieces of a polyline |
+| `"Midpoint"` | the density of the central vertex or vertices on the shortest paths of a segment |
 | `"Cardinality"` | the number of members |
 | `"Length"` | the common length of the members, or a `List` of lengths when they differ |
 | `"VertexDensity"` | `<\|v -> occ(v)\|>`, the number of members through *v*; on a polyline, the sum of the piece densities |
@@ -63,6 +64,8 @@ The properties:
 | `"Faithful"` | `True` on a segment, ray or line; [Undetermined]() on a circle or an arc, whose graph is proved faithful only under a hypothesis this paclet does not certify, except that a circle whose cut band is connected but whose seam has one side only gives `False` |
 | `"CountingMeasure"` | the number of vertices of the support |
 | `"RiemannianMeasure"` | the number of vertices of the support all of whose neighbours lie in the support |
+
+For a segment of even length, `"Midpoint"` counts the shortest paths through each vertex in the middle layer. For odd length, it counts the shortest paths through each of the two central layers. Thus it is a density of midpoints, not a single vertex when the substrate branches.
 
 A region — a ball, shell, tube, cylinder or cone — has one member, its vertex set, and every vertex of the support has density 1. It has no `"Graph"` and no `"Length"`. A sphere is a family, searched rather than read off a graph; its `"Faithful"` is [Undetermined]().
 
@@ -75,6 +78,23 @@ A circle takes a radius `r` or a band `{r, s}`, a scalar `r` meaning `{r, r}`. T
 On a polyline <code>[InfraSegment]()[*p1*, …, *pk*]</code> the densities are not member counts: they are the sums of the piece densities. On the 5 × 5 grid, <code>[InfraSegment]()[1, 13, 25]</code> has 36 members, while its density at the centre 13 is 12.
 
 ## Basic Examples
+
+The midpoint density of two vertices at distance 6 on the discretized plane, the square grid and the hexagonal tiling. The numbers of distinct midpoint vertices are 2, 3 and 2.
+
+```wl
+SeedRandom[1];
+Row[Table[
+  With[
+    {g = InfraSubstrate[name, "Large", "KeepCoordinates" -> True]},
+    {a = First @ GraphCenter[g]},
+    {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 6 &]},
+    {segment = InfraSegment[a, b]},
+    {midpoint = InfraMeasurement[g, segment, "Midpoint"]},
+    Labeled[
+      InfraSubstrateHighlight[g, {RandomInfraSegment[g, a, b, All], {a, b}, midpoint}],
+      name <> ": " <> ToString[Length @ midpoint] <> " midpoints"]],
+  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}], Spacer[20]]
+```
 
 A segment from the centre to a vertex four steps away on the discretized plane, the square grid and the hexagonal tiling, drawn by its densities, beside its number of shortest paths, their length and its two measures.
 
@@ -94,6 +114,7 @@ Row[Table[
 The two measures of five regions about one centre and one shortest path on the square grid: a ball, a band of two radii, a tube, a cylinder and a cone. Each is drawn with its inner vertices in green and its boundary in blue; the counting measure counts both, the Riemannian measure the green ones.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -157,6 +178,7 @@ With[
 The profiles of the regions about the centre of the square grid, under the counting measure on the left and the Riemannian measure on the right: the ball and the shell over the radius, the fat and the thin tube about a segment of length 5 over the thickness.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},

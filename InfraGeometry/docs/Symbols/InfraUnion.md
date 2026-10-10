@@ -37,10 +37,11 @@ InfraMeasurement[GridGraph[{5, 5}], InfraUnion[InfraSegment[1, 13], InfraSegment
 Inside a scene the union is a token: every vertex of either ball is one instance.
 
 ```wl
+SeedRandom[1];
 ClearAll[ballA, ballB, either];
 With[
   {g = GridGraph[{5, 5}]},
   {scene = InfraScene[{ballA, ballB, either},
      {ballA == InfraBall[7, 1], ballB == InfraBall[9, 1], either == InfraUnion[ballA, ballB]}]},
-  Sort[InfraSceneInstance[#, either] & /@ FindInfraScene[scene, g]]]
+  Sort[InfraSceneInstance[#, either] & /@ RandomInfraInstance[ scene, g, All ]]]
 ```

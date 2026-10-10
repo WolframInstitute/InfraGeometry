@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSceneViewer
 Keywords: [viewer, interactive, construction, step, branch]
-SeeAlso: [InfraScene, FindInfraScene, InfraSubstrateHighlight, InfraSceneInstance, InfraStep]
+SeeAlso: [InfraScene, RandomInfraInstance, InfraSubstrateHighlight, InfraSceneInstance, InfraStep]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -38,7 +38,7 @@ Fixed matters on long constructions. Without it, each step re-solves against eve
 
 The rendering options `"OpacityRange"`, `"ThicknessRange"`, `"PointSizeRange"` and `ImageSize` are passed through to [InfraSubstrateHighlight]().
 
-For a static figure, solve the steps yourself with [FindInfraScene]() and lay them out as a grid. That is what the last example does.
+For a static figure, solve the steps yourself with [RandomInfraInstance]() and lay them out as a grid. That is what the last example does.
 
 ## Basic Examples
 
@@ -62,6 +62,7 @@ With[
 The first steps as stills: the two points, then the circle about the first. This is what the viewer shows as you step, drawn without the interface.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {p1 = First @ GraphCenter[g]},

@@ -27,6 +27,7 @@ Needs["WolframInstitute`InfraGeometry`"]
 - The beam is orange, its endpoints green, each sized by the number of members ending there. The most visited members are red, all of them; the germ is drawn last.
 
 ```wl
+SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, "Large", "KeepCoordinates" -> True])},
@@ -54,6 +55,7 @@ GraphicsGrid @ Table[
 - The **chord deviation** is the largest distance of the extension's vertices from the chord joining its ends, in units of the edge length, read in the plane.
 
 ```wl
+SeedRandom[1];
 With[
   {readouts = Table[
     With[

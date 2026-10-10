@@ -40,6 +40,7 @@ It is the raw marginal and takes no options. The two normalisations are one divi
 The shortest paths from the centre to a vertex four steps away, as a density: both end points are covered by every path, the middle vertices by fewer. Each vertex is drawn as large as its mass.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -62,6 +63,7 @@ With[
 The two normalisations: by the heaviest mass, which the drawing uses, and by the total mass, a probability.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -76,6 +78,7 @@ With[
 The density of a head's members is the head's `"VertexDensity"`, and so is the density of the head's graph.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},

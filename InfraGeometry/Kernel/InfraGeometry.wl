@@ -81,7 +81,7 @@ PackageExport[PathSubgraph]
 PackageExport[InfraDeformationSize]
 
 PackageExport[InfraScene]
-PackageExport[FindInfraScene]
+PackageExport[RandomInfraInstance]
 PackageExport[InfraSceneInstance]
 PackageExport[InfraStep]
 PackageExport[InfraIntersection]

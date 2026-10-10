@@ -2,8 +2,28 @@
 
 ## 2.7.0 (2026-10-10)
 
-- **Breaking -- the `Find...` samplers are `Random...`, random by default.** `FindInfraRepresentative`, `FindInfraLine`, `FindInfraSegment`, `FindInfraRay`, `FindInfraParallel`, `FindInfraGeodesic`, `FindInfraWalk`, `FindInfraSphere`, `FindInfraEllipse` and `FindInfraRegularPolygon` are renamed `RandomInfra...` and draw at random: seed with `SeedRandom`. A deterministic draw is `"NextVertexFunction" -> Identity`, and `All` lists every member. `FindInfraMidpoint` and `FindInfraGoldenSection` are removed; use `InfraMeasurement[graph, InfraSegment[a, b], "Midpoint"]`. Under `All`, a tube yields `{ members }` and ball-like and point-like heads stay flat.
+- **Breaking -- the `Find...` samplers are `Random...`, random by default.** `FindInfraRepresentative`, `FindInfraLine`, `FindInfraSegment`, `FindInfraRay`, `FindInfraParallel`, `FindInfraGeodesic`, `FindInfraWalk`, `FindInfraSphere`, `FindInfraEllipse` and `FindInfraRegularPolygon` are renamed `RandomInfra...` and draw at random: seed with `SeedRandom`. A deterministic draw is `"NextVertexFunction" -> Identity`, and `All` lists every member. `FindInfraMidpoint` and `FindInfraGoldenSection` are removed; use `InfraMeasurement[graph, InfraSegment[a, b], "Midpoint"]`. A set head returns its complete support by default and `{support}` under `All` or a count of one. A point head returns one vertex by default and a list under a count.
 - **Breaking -- random point finder renamed.** `FindInfraPoint` is renamed `RandomInfraPoint`, matching Wolfram's `RandomPoint` naming for random draws. Arguments and options are unchanged; replace the head in existing calls.
+
+| Earlier | Now |
+|---|---|
+| `FindInfraRepresentative` | `RandomInfraRepresentative` |
+| `FindInfraSegment` | `RandomInfraSegment` |
+| `FindInfraRay` | `RandomInfraRay` |
+| `FindInfraLine` | `RandomInfraLine` |
+| `FindInfraParallel` | `RandomInfraParallel` |
+| `FindInfraSphere` | `RandomInfraSphere` |
+| `FindInfraEllipse` | `RandomInfraEllipse` |
+| `FindInfraRegularPolygon` | `RandomInfraRegularPolygon` |
+| `FindInfraWalk` | `RandomInfraWalk` |
+| `FindInfraGeodesic` | `RandomInfraGeodesic` |
+| `FindInfraScene` | `RandomInfraInstance` |
+| `FindInfraMidpoint` | `InfraMeasurement[graph, InfraSegment[p, q], "Midpoint"]` |
+| `FindInfraGoldenSection` | `experimental Code/GoldenSection.wl in the dev repository` |
+
+`RandomInfraInstance[scene, graph]` draws one admissible instance; use explicit `All` for the former exhaustive scene result. A former partial-step integer is `"Steps" -> k`, while the third integer now counts distinct instances.
+
+The representative's trailing `"RandomChoice"` modifier is removed: omit it for the default draw. Replace `"Pruning" -> q` by a candidate-selection function supplied through `"NextVertexFunction"`.
 
 ## 2.6.2 (2026-10-09)
 

@@ -39,6 +39,7 @@ With[
 On the square tiling, with the graph metric, the ladder does not stop at order 3. The vertices within distance 3 of the centre at radius 1: the four corners of each of the twelve squares drawn are a simplex of order 3 and not of order 4.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {data = RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 3]]},

@@ -64,6 +64,7 @@ With[
 The ring outside a ball about the centre is not closed: its closure adds the vertices of the ball whose ball contains the ball of a ring vertex. The closure of the closure is the closure.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {topo = BallTopology[g, 2]},
@@ -76,6 +77,7 @@ With[
 The closure of a vertex in the ball topology is its ball hull at the same radius.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
   {corner = First @ MinimalBy[VertexList[g], VertexDegree[g, #] &]},

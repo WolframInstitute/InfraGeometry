@@ -72,7 +72,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[{5, 5}] },
     { RandomInfraRepresentative[g, InfraTube[13, 1], All], RandomInfraRepresentative[g, InfraTube[13, 1], 2],
-      RandomInfraRepresentative[g, InfraTube[13, 1], "RandomChoice"] } ],
+      RandomInfraRepresentative[g, InfraTube[13, 1], "NextVertexFunction" -> RandomChoice] } ],
   { {{8, 12, 13, 14, 18}}, {}, {8, 12, 13, 14, 18} },
   TestID -> "InfraTube-one-member-under-every-count"
 ]
@@ -268,10 +268,42 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[{4, 4}] },
     Map[ inst |-> inst[[ 1 ]][ t ],
-      FindInfraScene[ InfraScene[ { t }, { t == # } ], g ] & /@
+      RandomInfraInstance[ InfraScene[ { t }, { t == # } ], g, All ] & /@
         { InfraTube[{1, 2}, 1], InfraCylinder[{1, 2}, 1], InfraCone[{1, 2}, 1], InfraSolidOfRevolution[{5, 6, 7, 8}, {0, 1, 1, 0}] }, { 2 } ] ],
   { { {1, 2, 3, 5, 6} }, { {1, 2, 5, 6} }, { {1, 2, 6} }, { {2, 3, 5, 6, 7, 8, 10, 11} } },
   TestID -> "InfraTube-InfraCylinder-InfraCone-InfraSolidOfRevolution-are-scene-constructors"
+]
+
+VerificationTest[
+  With[ { graph = PathGraph[ Range[ 5 ] ],
+      objects = { InfraBall[ 3, 1 ], InfraShell[ 3, 1 ], InfraTube[ { 2, 3, 4 }, 0 ],
+        InfraCylinder[ { 2, 3, 4 }, 0 ], InfraCone[ { 2, 3, 4 }, 0 ], InfraSolidOfRevolution[ { 2, 3, 4 }, 0 ] } },
+    AllTrue[ objects, object |-> With[ { support = Keys @ InfraMeasurement[ graph, object, "VertexDensity" ] },
+      RandomInfraRepresentative[ graph, object ] === support &&
+      RandomInfraRepresentative[ graph, object, "NextVertexFunction" -> Identity ] === support &&
+      RandomInfraRepresentative[ graph, object, All ] === { support } &&
+      RandomInfraRepresentative[ graph, object, 1 ] === { support } &&
+      RandomInfraRepresentative[ graph, object, 2 ] === { } &&
+      RandomInfraRepresentative[ graph, object, UpTo[ 2 ] ] === { support } &&
+      RandomInfraRepresentative[ graph, object, 0 ] === { } ] ] ],
+  True,
+  TestID -> "set-heads-count-representatives-rather-than-support-vertices"
+]
+
+VerificationTest[
+  With[ { graph = PathGraph[ { { 1, 0 }, { 2, 0 }, { 3, 0 } } ] },
+    With[ { object = InfraTube[ { 2, 0 }, 1 ] },
+      { RandomInfraRepresentative[ graph, object ], RandomInfraRepresentative[ graph, object, 1 ] } ] ],
+  { { { 1, 0 }, { 2, 0 }, { 3, 0 } }, { { { 1, 0 }, { 2, 0 }, { 3, 0 } } } },
+  TestID -> "tube-support-preserves-list-valued-vertex-labels"
+]
+
+VerificationTest[
+  With[ { graph = PathGraph[ Range[ 3 ] ], object = InfraTube[ 2, { 10, 10 } ] },
+    { RandomInfraRepresentative[ graph, object ], RandomInfraRepresentative[ graph, object, All ],
+      RandomInfraRepresentative[ graph, object, 1 ], RandomInfraRepresentative[ graph, object, 2 ] } ],
+  { { }, { { } }, { { } }, { } },
+  TestID -> "empty-tube-support-remains-one-set-representative"
 ]
 
 EndTestSection[]

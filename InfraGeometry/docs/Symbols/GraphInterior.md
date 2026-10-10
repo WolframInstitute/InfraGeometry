@@ -31,6 +31,7 @@ A subgraph *h* is read with its own edges: a vertex of *h* is interior when ever
 The ball of radius 4 about the centre of the square, hexagonal and triangular tilings, and its interior taken again and again: the balls of radius 3, 2, 1 and 0. Each is drawn by its boundary, in its own colour.
 
 ```wl
+SeedRandom[1];
 With[
   {panels = Table[
      With[
@@ -44,6 +45,7 @@ With[
 The interior of a ring, green, is a thinner ring: the ball of radius 4 less the ball of radius 1, its boundary blue.
 
 ```wl
+SeedRandom[1];
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
@@ -69,6 +71,7 @@ With[
 The interior and the boundary split the set: they are disjoint, and together they are the set.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {region = RandomInfraRepresentative[g, InfraBall[(SeedRandom[1]; RandomInfraPoint[g, InfraShell[First @ GraphCenter[g], 3]]), 4]]},
@@ -89,6 +92,7 @@ With[
 Where the graph ends, the interior of a ball is more than the smaller ball. The interior of the ball of radius 6 about a neighbour of the centre of the square tiling is the ball of radius 5, green, and the 11 vertices at distance 6 that lie on the rim, orange: they have no neighbour outside the ball. The boundary, blue, lies on the far side only.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {offCentre = First @ AdjacencyList[g, First @ GraphCenter[g]]},

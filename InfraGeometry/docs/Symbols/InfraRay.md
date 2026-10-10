@@ -56,6 +56,7 @@ With[
 The members are vertex lists. Three rays, each drawn as a walk.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
@@ -92,6 +93,7 @@ With[
 Every member satisfies [InfraRayQ]().
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},

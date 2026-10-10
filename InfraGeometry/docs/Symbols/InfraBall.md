@@ -64,6 +64,7 @@ Corresponding notions in the classical axiom systems:
 The ball of radius 3 about the centre of the discretized plane, the square grid and the hexagonal tiling. The Riemannian measure counts the inner vertices, in green; the counting measure adds the boundary, in blue.
 
 ```wl
+SeedRandom[1];
 Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
@@ -91,6 +92,7 @@ With[
 A ball about a vertex list is the neighbourhood of the list: here of a shortest path.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -136,6 +138,7 @@ With[
 The Riemannian measure of a ball is at least the counting measure of the ball one radius smaller. On the discretized plane it is more: the ball of radius 5 is drawn with the shell of radius 6 around it, and two vertices of the shell, drawn as points, have no neighbour at distance 7, so they lie inside the ball of radius 6.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -145,15 +148,16 @@ With[
    InfraMeasurement[g, InfraBall[c, 6], "RiemannianMeasure"], InfraMeasurement[g, InfraBall[c, 5], "CountingMeasure"]}]
 ```
 
-Inside a scene the token names the ball about a point, and [FindInfraScene]() binds it to the same vertex set.
+Inside a scene the token names the ball about a point, and [RandomInfraInstance]() binds it to the same vertex set.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, ballA];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {constr = InfraScene[{pA, ballA}, {pA == InfraPoint[c], ballA == InfraBall[pA, 2]}]},
-  {ball = InfraSceneInstance[First @ FindInfraScene[constr, g], ballA]},
+  {ball = InfraSceneInstance[First @ RandomInfraInstance[ constr, g, All ], ballA]},
   {InfraSubstrateHighlight[g, {ball, c}],
    ball === RandomInfraRepresentative[g, InfraBall[c, 2]]}]
 ```

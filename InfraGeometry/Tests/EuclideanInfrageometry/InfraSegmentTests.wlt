@@ -295,4 +295,61 @@ VerificationTest[
   TestID -> "Midpoint-degenerate"
 ]
 
+VerificationTest[
+  InfraMeasurement[ PathGraph[ Range[ 6 ] ], InfraSegment[ 1, 6 ], "Midpoint" ],
+  <| 3 -> 1, 4 -> 1 |>,
+  TestID -> "Midpoint-odd-distance-central-pair"
+]
+
+VerificationTest[
+  InfraMeasurement[ Graph[ { 1 <-> 2, 3 <-> 4 } ], InfraSegment[ 1, 4 ], "Midpoint" ],
+  <| |>,
+  TestID -> "Midpoint-disconnected-anchors"
+]
+
+VerificationTest[
+  InfraMeasurement[ PathGraph[ Range[ 7 ] ], InfraSegment[ { 1, 2 }, { 6, 7 } ], "Midpoint" ],
+  <| 4 -> 1 |>,
+  TestID -> "Midpoint-list-anchors-set-distance"
+]
+
+VerificationTest[
+  With[ { graph = GridGraph[ { 5, 5 } ] },
+    { interval = Select[ VertexList @ graph,
+        v |-> GraphDistance[ graph, 1, v ] + GraphDistance[ graph, v, 25 ] == GraphDistance[ graph, 1, 25 ] ] },
+    Sort @ Keys @ InfraMeasurement[ graph, InfraSegment[ 1, 25 ], "Midpoint" ] ===
+      Sort @ MinimalBy[ interval, v |-> Max[ GraphDistance[ graph, 1, v ], GraphDistance[ graph, v, 25 ] ] ] ],
+  True,
+  TestID -> "Midpoint-is-centre-of-interval"
+]
+
+VerificationTest[
+  Table[
+    With[ { graph = InfraSubstrate[ name, "Large", "KeepCoordinates" -> True ] },
+      { a = First @ GraphCenter[ graph ] },
+      { b = First @ Sort @ Select[ VertexList @ graph, v |-> GraphDistance[ graph, a, v ] == 6 ] },
+      { GraphDistance[ graph, a, b ], Length @ InfraMeasurement[ graph, InfraSegment[ a, b ], "Midpoint" ] } ],
+    { name, { "SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph" } } ],
+  { { 6, 2 }, { 6, 3 }, { 6, 2 } },
+  TestID -> "Midpoint-historical-distance-six-support-counts"
+]
+
+VerificationTest[
+  InfraMeasurement[ PathGraph[ { { 1, 2 }, { 3, 4 }, { 5, 6 } } ],
+    InfraSegment[ { 1, 2 }, { 5, 6 } ], "Midpoint" ],
+  <| { 3, 4 } -> 1 |>,
+  TestID -> "Midpoint-list-valued-vertices-are-single-anchors"
+]
+
+VerificationTest[
+  Table[
+    With[ { graph = InfraSubstrate[ name, "Large", "KeepCoordinates" -> True ] },
+      { a = First @ GraphCenter[ graph ] },
+      { b = First @ Sort @ Select[ VertexList @ graph, v |-> GraphDistance[ graph, a, v ] == 6 ] },
+      InfraMeasurement[ graph, InfraSegment[ a, b ], "Midpoint" ] ],
+    { name, { "SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph" } } ],
+  { <| 23 -> 2, 199 -> 2 |>, <| 8 -> 3, 10 -> 9, 21 -> 3 |>, <| 11 -> 2, 13 -> 1 |> },
+  TestID -> "Midpoint-historical-default-densities"
+]
+
 EndTestSection[]

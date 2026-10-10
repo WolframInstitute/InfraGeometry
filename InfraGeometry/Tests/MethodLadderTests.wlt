@@ -25,11 +25,6 @@ sortReps[ x_ ] := Sort @ Replace[ reps @ x, l_List :> Sort @ l, { 1 } ]
 
 (* ===================== Distance-matrix family ===================== *)
 
-(* RandomInfraSegment, RandomInfraLine, RandomInfraRay and the circle finder left the Method
-   ladder on 2026-09-26 (EuclideanInertHeads): the count fixes the mode and the only
-   modifiers are "RandomChoice" / "Pruning" on RandomInfraRepresentative, so they carry no Method
-   axis of their own to be invariant under any more. *)
-
 VerificationTest[
   classInvariantQ[ m |-> RandomInfraGeodesic[ TorusGraph[ { 4, 5 } ], { 1, 2 }, Infinity, Infinity, All, "NextVertexFunction" -> m,
       "Direction" -> "BothSides" ] ],

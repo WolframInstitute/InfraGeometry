@@ -33,6 +33,7 @@ The head computes nothing. A hull has one member, the vertex set. [InfraMeasurem
 The ball hull of three vertices of the shell of radius 5, on the irregular mesh, the square grid and the hexagonal tiling, inside the ball they lie on.
 
 ```wl
+SeedRandom[1];
 Row[Table[
   With[
     {g = InfraSubstrate[name, "Large", "KeepCoordinates" -> True]},
@@ -59,6 +60,7 @@ With[
 The hull contains the set, and it is ball-convex: it is its own hull.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Large", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},

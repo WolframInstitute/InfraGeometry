@@ -31,6 +31,7 @@ The result is a sorted vertex list.
 The ring outside a ball about the centre, in the ball topology of radius 2, on the discretized plane, the square tiling and the hexagonal tiling. The ring is green; its boundary, blue, lies outside it.
 
 ```wl
+SeedRandom[1];
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
@@ -43,6 +44,7 @@ GraphicsRow @ Table[
 The balls of radius 4, 5 and 6 about the centre of the square tiling, at radius 2. The boundary is empty while the ball stays more than two steps from the rim. Closer, it is the set of vertices of the ball whose ball contains the ball of a vertex outside.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {topo = BallTopology[g, 2]},
@@ -57,6 +59,7 @@ With[
 A set and its complement have one boundary, the intersection of their closures. [InfraBoundary]() with the method `"Alexandrov"` gives the same set.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {topo = BallTopology[g, 2]},
@@ -72,6 +75,7 @@ With[
 The combinatorial boundary of a ball is its outer shell at every radius. The ball of radius 4 about the centre of the square tiling has that shell, drawn blue on the right, and no topological boundary at radius 2.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {ball = RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]]},

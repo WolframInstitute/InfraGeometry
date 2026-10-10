@@ -112,6 +112,7 @@ With[
 `Around` quotients carry their spread into the dimension and the curvature: here the mean profile over five vertices near the centre of the discretized plane. Fitted from radius 1 on the counting measure, the intercept is biased high by the small radii; the windowed fit of [VolumeGrowthObservables]() chooses its window by the residual.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Large"]},
   {sampleSet = Take[RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 2]], 5]},

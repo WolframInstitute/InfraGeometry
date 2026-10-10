@@ -12,17 +12,17 @@ VerificationTest[
   TestID -> "InfraScene-construction"
 ]
 
-(* ===== FindInfraScene ===== *)
+(* ===== RandomInfraInstance ===== *)
 
 VerificationTest[
   With[{
     scene = InfraScene[{p}, {p == InfraPoint[]}],
     g = PathGraph[Range[5]]
   },
-    MatchQ[FindInfraScene[scene, g], {__InfraSceneInstance}]
+    MatchQ[RandomInfraInstance[ scene, g, All ], {__InfraSceneInstance}]
   ],
   True,
-  TestID -> "FindInfraScene-returns-list-of-instances"
+  TestID -> "RandomInfraInstance-returns-list-of-instances"
 ]
 
 VerificationTest[
@@ -30,10 +30,10 @@ VerificationTest[
     scene = InfraScene[{p}, {p == InfraPoint[]}],
     g = PathGraph[Range[5]]
   },
-    Length[FindInfraScene[scene, g]] >= 1
+    Length[RandomInfraInstance[ scene, g, All ]] >= 1
   ],
   True,
-  TestID -> "FindInfraScene-nonempty"
+  TestID -> "RandomInfraInstance-nonempty"
 ]
 
 VerificationTest[
@@ -45,10 +45,10 @@ VerificationTest[
     }],
     g = PathGraph[Range[5]]
   },
-    AllTrue[FindInfraScene[scene, g], MatchQ[InfraSceneInstance[_Association]]]
+    AllTrue[RandomInfraInstance[ scene, g, All ], MatchQ[InfraSceneInstance[_Association]]]
   ],
   True,
-  TestID -> "FindInfraScene-instances-wrap-associations"
+  TestID -> "RandomInfraInstance-instances-wrap-associations"
 ]
 
 VerificationTest[
@@ -56,10 +56,10 @@ VerificationTest[
     scene = InfraScene[{p}, {p == InfraPoint[]}],
     g = PathGraph[Range[5]]
   },
-    Length[FindInfraScene[scene, g]] == 5
+    Length[RandomInfraInstance[ scene, g, All ]] == 5
   ],
   True,
-  TestID -> "FindInfraScene-no-pruning-all-branches"
+  TestID -> "RandomInfraInstance-no-pruning-all-branches"
 ]
 
 VerificationTest[
@@ -67,10 +67,10 @@ VerificationTest[
     scene = InfraScene[{p}, {p == InfraPoint[]}],
     g = PathGraph[Range[5]]
   },
-    Length[FindInfraScene[scene, g, "PruneProbability" -> 0.9]] >= 1
+    Length[RandomInfraInstance[ scene, g, All, "NextVertexFunction" -> (Take[#, UpTo[1]] &) ]] >= 1
   ],
   True,
-  TestID -> "FindInfraScene-pruning-at-least-one-survives"
+  TestID -> "RandomInfraInstance-pruning-at-least-one-survives"
 ]
 
 (* ===== Fixed Vertex ===== *)
@@ -80,12 +80,12 @@ VerificationTest[
     scene = InfraScene[{p}, {p == InfraPoint[3]}],
     g = PathGraph[Range[5]]
   },
-    With[{instances = FindInfraScene[scene, g]},
+    With[{instances = RandomInfraInstance[ scene, g, All ]},
       Length[instances] == 1 && instances[[1]][[1]][p] == 3
     ]
   ],
   True,
-  TestID -> "FindInfraScene-fixed-vertex"
+  TestID -> "RandomInfraInstance-fixed-vertex"
 ]
 
 (* ===== InfraDistance Assertion ===== *)
@@ -100,11 +100,11 @@ VerificationTest[
     }],
     g = PathGraph[Range[5]]
   },
-    AllTrue[FindInfraScene[scene, g],
+    AllTrue[RandomInfraInstance[ scene, g, All ],
       inst |-> GraphDistance[g, inst[[1]][p], inst[[1]][q]] >= 3]
   ],
   True,
-  TestID -> "FindInfraScene-InfraDistance-assertion"
+  TestID -> "RandomInfraInstance-InfraDistance-assertion"
 ]
 
 (* ===== InfraSegmentQ Assertion ===== *)
@@ -119,11 +119,11 @@ VerificationTest[
     }],
     g = PathGraph[Range[5]]
   },
-    AllTrue[FindInfraScene[scene, g],
+    AllTrue[RandomInfraInstance[ scene, g, All ],
       inst |-> InfraSegmentQ[g, inst[[1]][s]]]
   ],
   True,
-  TestID -> "FindInfraScene-InfraSegmentQ-assertion"
+  TestID -> "RandomInfraInstance-InfraSegmentQ-assertion"
 ]
 
 (* ===== InfraShell with FindInfraShell ===== *)
@@ -136,13 +136,13 @@ VerificationTest[
     }],
     g = PetersenGraph[]
   },
-    With[{instances = FindInfraScene[scene, g]},
+    With[{instances = RandomInfraInstance[ scene, g, All ]},
       Length[instances] >= 1 &&
       AllTrue[instances, inst |-> ListQ[inst[[1]][c]] && Length[inst[[1]][c]] >= 3]
     ]
   ],
   True,
-  TestID -> "FindInfraScene-InfraShell-FindInfraShell"
+  TestID -> "RandomInfraInstance-InfraShell-FindInfraShell"
 ]
 
 (* ===== InfraPlane with FindInfraBisectingHyperplane ===== *)
@@ -156,13 +156,13 @@ VerificationTest[
     }],
     g = PathGraph[Range[5]]
   },
-    With[{instances = FindInfraScene[scene, g]},
+    With[{instances = RandomInfraInstance[ scene, g, All ]},
       Length[instances] >= 1 &&
       AllTrue[instances, inst |-> ListQ[inst[[1]][h]] && MemberQ[inst[[1]][h], 3]]
     ]
   ],
   True,
-  TestID -> "FindInfraScene-InfraPlane-FindInfraBisectingHyperplane"
+  TestID -> "RandomInfraInstance-InfraPlane-FindInfraBisectingHyperplane"
 ]
 
 (* InfraPlane[p1, p2, {lo, hi}] threads the window through to FindInfraBisectingHyperplane.
@@ -177,10 +177,10 @@ VerificationTest[
     }],
     g = PathGraph[Range[6]]
   },
-    Sort @ DeleteDuplicates[#[[1]][h] & /@ FindInfraScene[scene, g]]
+    Sort @ DeleteDuplicates[#[[1]][h] & /@ RandomInfraInstance[ scene, g, All ]]
   ],
   {{3}, {4}},
-  TestID -> "FindInfraScene-InfraPlane-window"
+  TestID -> "RandomInfraInstance-InfraPlane-window"
 ]
 
 (* ===== InfraCircle ===== *)
@@ -193,13 +193,13 @@ VerificationTest[
     }],
     g = GridGraph[{4, 4}]
   },
-    With[{instances = FindInfraScene[scene, g]},
+    With[{instances = RandomInfraInstance[ scene, g, All ]},
       Length[instances] >= 1 &&
       AllTrue[instances, inst |-> ListQ[inst[[1]][c]] && Length[inst[[1]][c]] >= 3]
     ]
   ],
   True,
-  TestID -> "FindInfraScene-InfraCircle"
+  TestID -> "RandomInfraInstance-InfraCircle"
 ]
 
 (* ===== the closed polyline: the polygon token ===== *)
@@ -208,10 +208,10 @@ VerificationTest[
    member: the diagonal side of the 3x3 grid gives six *)
 VerificationTest[
   With[{scene = InfraScene[{a, b, c, t}, {t == InfraSegment[a, b, c, a]}], g = GridGraph[{3, 3}]},
-    {instances = FindInfraScene[scene, g, <|a -> 1, b -> 3, c -> 9|>]},
+    {instances = RandomInfraInstance[ scene, g, All, <|a -> 1, b -> 3, c -> 9|> ]},
     {Length[instances], AllTrue[instances, inst |-> InfraMemberQ[g, InfraSegment[1, 3, 9, 1], inst[[1]][t]]]}],
   {6, True},
-  TestID -> "FindInfraScene-closed-polyline-is-the-polygon-token"
+  TestID -> "RandomInfraInstance-closed-polyline-is-the-polygon-token"
 ]
 
 (* ===== InfraStep ===== *)
@@ -240,10 +240,10 @@ VerificationTest[
     }],
     g = PathGraph[Range[5]]
   },
-    AllTrue[FindInfraScene[scene, g], MatchQ[InfraSceneInstance[_Association]]]
+    AllTrue[RandomInfraInstance[ scene, g, All ], MatchQ[InfraSceneInstance[_Association]]]
   ],
   True,
-  TestID -> "InfraStep-FindInfraScene"
+  TestID -> "InfraStep-RandomInfraInstance"
 ]
 
 VerificationTest[
@@ -257,7 +257,7 @@ VerificationTest[
     }],
     g = PathGraph[Range[5]]
   },
-    Length[FindInfraScene[sceneManual, g]] == Length[FindInfraScene[sceneAuto, g]]
+    Length[RandomInfraInstance[ sceneManual, g, All ]] == Length[RandomInfraInstance[ sceneAuto, g, All ]]
   ],
   True,
   TestID -> "InfraStep-same-results-as-auto"
@@ -272,7 +272,7 @@ VerificationTest[
     }],
     g = PathGraph[Range[5]]
   },
-    AllTrue[FindInfraScene[scene, g],
+    AllTrue[RandomInfraInstance[ scene, g, All ],
       inst |-> GraphDistance[g, inst[[1]][a], inst[[1]][b]] >= 3]
   ],
   True,
@@ -288,11 +288,11 @@ VerificationTest[
     }],
     g = PathGraph[Range[5]]
   },
-    AllTrue[FindInfraScene[scene, g, <|p -> 1|>],
+    AllTrue[RandomInfraInstance[ scene, g, All, <|p -> 1|> ],
       inst |-> inst[[1]][p] == 1]
   ],
   True,
-  TestID -> "FindInfraScene-initial-bindings-fix-point"
+  TestID -> "RandomInfraInstance-initial-bindings-fix-point"
 ]
 
 VerificationTest[
@@ -302,11 +302,11 @@ VerificationTest[
     }],
     g = PathGraph[Range[5]]
   },
-    Length[FindInfraScene[scene, g, <|p -> 1, q -> 5|>]] <
-    Length[FindInfraScene[scene, g]]
+    Length[RandomInfraInstance[ scene, g, All, <|p -> 1, q -> 5|> ]] <
+    Length[RandomInfraInstance[ scene, g, All ]]
   ],
   True,
-  TestID -> "FindInfraScene-initial-bindings-reduce-branches"
+  TestID -> "RandomInfraInstance-initial-bindings-reduce-branches"
 ]
 
 VerificationTest[
@@ -316,13 +316,13 @@ VerificationTest[
     }],
     g = PathGraph[Range[5]]
   },
-    With[{instances = FindInfraScene[scene, g, <|p -> 1, q -> 5|>]},
+    With[{instances = RandomInfraInstance[ scene, g, All, <|p -> 1, q -> 5|> ]},
       Length[instances] >= 1 &&
       AllTrue[instances, inst |-> inst[[1]][p] == 1 && inst[[1]][q] == 5]
     ]
   ],
   True,
-  TestID -> "FindInfraScene-initial-bindings-both-fixed"
+  TestID -> "RandomInfraInstance-initial-bindings-both-fixed"
 ]
 
 VerificationTest[
@@ -333,17 +333,17 @@ VerificationTest[
     g = PathGraph[Range[5]]
   },
     With[{
-      step1 = FindInfraScene[scene, g, 1],
-      fixed = FindInfraScene[scene, g, 1][[1, 1]]
+      step1 = RandomInfraInstance[ scene, g, All, "Steps" -> 1 ],
+      fixed = RandomInfraInstance[ scene, g, All, "Steps" -> 1 ][[1, 1]]
     },
-      With[{step2 = FindInfraScene[scene, g, 2, fixed]},
+      With[{step2 = RandomInfraInstance[ scene, g, All, fixed, "Steps" -> 2 ]},
         AllTrue[step2,
           inst |-> inst[[1]][p] == fixed[p] && inst[[1]][q] == fixed[q]]
       ]
     ]
   ],
   True,
-  TestID -> "FindInfraScene-fix-and-advance"
+  TestID -> "RandomInfraInstance-fix-and-advance"
 ]
 
 
@@ -356,7 +356,7 @@ VerificationTest[
     }],
     g = PathGraph[Range[5]]
   },
-    With[{inst = First @ FindInfraScene[scene, g]},
+    With[{inst = First @ RandomInfraInstance[ scene, g, All ]},
       InfraSceneInstance[inst, p] === inst[[1]][p]
     ]
   ],
@@ -371,7 +371,7 @@ VerificationTest[
     }],
     g = PathGraph[Range[5]]
   },
-    With[{inst = First @ FindInfraScene[scene, g]},
+    With[{inst = First @ RandomInfraInstance[ scene, g, All ]},
       InfraSceneInstance[inst, {p, q, s}] === {inst[[1]][p], inst[[1]][q], inst[[1]][s]}
     ]
   ],
@@ -386,7 +386,7 @@ VerificationTest[
     }],
     g = PathGraph[Range[5]]
   },
-    With[{inst = First @ FindInfraScene[scene, g]},
+    With[{inst = First @ RandomInfraInstance[ scene, g, All ]},
       InfraSceneInstance[inst[[1]], p] === inst[[1]][p]
     ]
   ],
@@ -401,7 +401,7 @@ VerificationTest[
     }],
     g = PathGraph[Range[5]]
   },
-    With[{inst = First @ FindInfraScene[scene, g]},
+    With[{inst = First @ RandomInfraInstance[ scene, g, All ]},
       InfraSceneInstance[inst[[1]], {p, q, s}] === {inst[[1]][p], inst[[1]][q], inst[[1]][s]}
     ]
   ],
@@ -593,10 +593,10 @@ VerificationTest[
               InfraCircle[ ea, InfraDistance[ ea, eb ] ],
               InfraCircle[ eb, InfraDistance[ ea, eb ] ] ] } ] },
     Sort @ DeleteDuplicates[
-      #[[ 1 ]][ ec ] & /@ FindInfraScene[ scene, g, <| ea -> 1, eb -> 7 |> ] ]
+      #[[ 1 ]][ ec ] & /@ RandomInfraInstance[ scene, g, All, <| ea -> 1, eb -> 7 |> ] ]
   ],
   { 5, 9, 10 },
-  TestID -> "FindInfraScene-EuclidI1-apexes"
+  TestID -> "RandomInfraInstance-EuclidI1-apexes"
 ]
 
 (* Each apex is equidistant from both foci, at exactly the base length. *)
@@ -606,14 +606,14 @@ VerificationTest[
             ec == InfraIntersection[
               InfraCircle[ ea, InfraDistance[ ea, eb ] ],
               InfraCircle[ eb, InfraDistance[ ea, eb ] ] ] } ] },
-    With[ { apexes = #[[ 1 ]][ ec ] & /@ FindInfraScene[ scene, g, <| ea -> 1, eb -> 7 |> ] },
+    With[ { apexes = #[[ 1 ]][ ec ] & /@ RandomInfraInstance[ scene, g, All, <| ea -> 1, eb -> 7 |> ] },
       apexes =!= { } &&
       AllTrue[ apexes,
         v |-> GraphDistance[ g, 1, v ] == GraphDistance[ g, 7, v ] == GraphDistance[ g, 1, 7 ] ]
     ]
   ],
   True,
-  TestID -> "FindInfraScene-EuclidI1-equilateral"
+  TestID -> "RandomInfraInstance-EuclidI1-equilateral"
 ]
 
 (* The scene agrees with the intersection of the two circles' representatives taken by hand. *)
@@ -624,13 +624,13 @@ VerificationTest[
               InfraCircle[ ea, InfraDistance[ ea, eb ] ],
               InfraCircle[ eb, InfraDistance[ ea, eb ] ] ] } ] },
     Sort @ DeleteDuplicates[
-      #[[ 1 ]][ ec ] & /@ FindInfraScene[ scene, g, <| ea -> 1, eb -> 7 |> ] ] ===
+      #[[ 1 ]][ ec ] & /@ RandomInfraInstance[ scene, g, All, <| ea -> 1, eb -> 7 |> ] ] ===
     Sort @ Quiet @ Intersection[
       Union @@ RandomInfraRepresentative[ g, InfraCircle[ 1, GraphDistance[ g, 1, 7 ] ], All ],
       Union @@ RandomInfraRepresentative[ g, InfraCircle[ 7, GraphDistance[ g, 1, 7 ] ], All ] ]
   ],
   True,
-  TestID -> "FindInfraScene-EuclidI1-agrees-with-the-circles"
+  TestID -> "RandomInfraInstance-EuclidI1-agrees-with-the-circles"
 ]
 
 
@@ -717,8 +717,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     And @@ ( inst |-> With[ { vs = inst[[ 1 ]][ tr ] },
         SubsetQ[ vs, { 1, 2, 3, 4 } ] && SubsetQ[ VertexList @ g, vs ] ] ) /@
-      FindInfraScene[
-        InfraScene[ { tr }, { tr == InfraSolidOfRevolution[ { 1, 2, 3, 4 }, 1 ] } ], g ] ],
+      RandomInfraInstance[ InfraScene[ { tr }, { tr == InfraSolidOfRevolution[ { 1, 2, 3, 4 }, 1 ] } ], g, All ] ],
   True,
   TestID -> "InfraScene-token-InfraSolidOfRevolution-is-a-constructor"
 ]
@@ -726,7 +725,7 @@ VerificationTest[
 (* InfraMemberQ is a decidable assertion: the solid's one member passes as itself and fails against another solid *)
 VerificationTest[
   With[ { g = GridGraph[ { 7, 7 } ] },
-    Length @ FindInfraScene[ InfraScene[ { s }, { s == InfraCylinder[ { 1, 2, 3 }, 1 ], InfraMemberQ[ #, s ] } ], g ] & /@
+    Length @ RandomInfraInstance[ InfraScene[ { s }, { s == InfraCylinder[ { 1, 2, 3 }, 1 ], InfraMemberQ[ #, s ] } ], g, All ] & /@
       { InfraCylinder[ { 1, 2, 3 }, 1 ], InfraTube[ { 1, 2, 3 }, 1 ] } ],
   { 1, 0 },
   TestID -> "InfraScene-InfraMemberQ-is-an-assertion"
@@ -778,7 +777,7 @@ VerificationTest[
   With[{g = TessellationGraph[{4, 4}, 2]},
     {c = First @ VertexList @ g},
     {scene = InfraScene[{p}, {p == InfraIntersection[InfraBall[c, 1], InfraBall[c, 2]]}]},
-    {instances = FindInfraScene[scene, g]},
+    {instances = RandomInfraInstance[ scene, g, All ]},
     AllTrue[instances, VertexQ[g, InfraSceneInstance[#, p]] &] &&
       Sort[InfraSceneInstance[#, p] & /@ instances] === Sort @ RandomInfraRepresentative[g, InfraBall[c, 1]]],
   True,
@@ -791,7 +790,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     {scene = InfraScene[{ba, bb, m}, {ba == InfraBall[7, 1], bb == InfraBall[9, 1], m == InfraUnion[ba, bb]}]},
-    Sort[InfraSceneInstance[#, m] & /@ FindInfraScene[scene, g]] ===
+    Sort[InfraSceneInstance[#, m] & /@ RandomInfraInstance[ scene, g, All ]] ===
       Union[RandomInfraRepresentative[g, InfraBall[7, 1]], RandomInfraRepresentative[g, InfraBall[9, 1]]]],
   True,
   TestID -> "InfraScene-union-token-binds-every-vertex-of-either"
@@ -802,7 +801,7 @@ VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     {meet = InfraScene[{ba, bb, m}, {ba == InfraBall[7, 1], bb == InfraBall[9, 1], m == InfraIntersection[ba, bb]}],
      join = InfraScene[{ba, bb, m}, {ba == InfraBall[7, 1], bb == InfraBall[9, 1], m == InfraUnion[ba, bb]}]},
-    {ps = InfraSceneInstance[#, m] & /@ FindInfraScene[meet, g], qs = InfraSceneInstance[#, m] & /@ FindInfraScene[join, g]},
+    {ps = InfraSceneInstance[#, m] & /@ RandomInfraInstance[ meet, g, All ], qs = InfraSceneInstance[#, m] & /@ RandomInfraInstance[ join, g, All ]},
     ps =!= {} && SubsetQ[qs, ps] && Length[qs] > Length[ps]],
   True,
   TestID -> "InfraScene-meet-inside-union"
@@ -815,7 +814,7 @@ VerificationTest[
     {scene = InfraScene[{ea, eb, ec}, {
        ec == InfraUnion[InfraCircle[ea, InfraDistance[ea, eb]], InfraCircle[eb, InfraDistance[ea, eb]]]}]},
     Sort @ DeleteDuplicates[InfraSceneInstance[#, ec] & /@
-        FindInfraScene[scene, g, <|ea -> 1, eb -> 7|>]] ===
+        RandomInfraInstance[ scene, g, All, <|ea -> 1, eb -> 7|> ]] ===
       Sort @ Quiet @ Union[
         Union @@ RandomInfraRepresentative[g, InfraCircle[1, GraphDistance[g, 1, 7]], All],
         Union @@ RandomInfraRepresentative[g, InfraCircle[7, GraphDistance[g, 1, 7]], All]]],
@@ -829,6 +828,164 @@ VerificationTest[
     {Length @ d[g, InfraSegment[1, 25]], d[g, InfraSegment[1, 25, "Select" -> "EmbeddingClosest"]]}],
   {70, {{1, 2, 7, 8, 13, 14, 19, 20, 25}}},
   TestID -> "InfraScene-select-embedding-closest-segment"
+]
+
+VerificationTest[
+  BlockRandom[
+    With[ { scene = InfraScene[ { p }, { p == InfraPoint[] } ], graph = PathGraph[ Range[ 5 ] ] },
+      { MatchQ[ RandomInfraInstance[ scene, graph ], InfraSceneInstance[ _Association ] ],
+        Length @ RandomInfraInstance[ scene, graph, 1 ],
+        InfraSceneInstance[ RandomInfraInstance[ scene, graph, <| p -> 3 |> ], p ] } ],
+    RandomSeeding -> 41 ],
+  { True, 1, 3 },
+  TestID -> "RandomInfraInstance-default-one-count-list-initial-association"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { p }, { p == InfraPoint[] } ], graph = PathGraph[ Range[ 8 ] ] },
+    With[ { samples = Table[ BlockRandom[ RandomInfraInstance[ scene, graph ], RandomSeeding -> seed ], { seed, 12 } ] },
+      { samples === Table[ BlockRandom[ RandomInfraInstance[ scene, graph ], RandomSeeding -> seed ], { seed, 12 } ],
+        Length @ DeleteDuplicates[ samples ] > 1,
+        AllTrue[ samples, instance |-> VertexQ[ graph, InfraSceneInstance[ instance, p ] ] ] } ] ],
+  { True, True, True },
+  TestID -> "RandomInfraInstance-reproducible-varied-admissible"
+]
+
+VerificationTest[
+  BlockRandom[
+    With[ { scene = InfraScene[ { p }, { p == InfraPoint[] } ], graph = PathGraph[ Range[ 5 ] ] },
+      With[ { three = RandomInfraInstance[ scene, graph, 3 ], upto = RandomInfraInstance[ scene, graph, UpTo[ 8 ] ] },
+        { Length @ three, DuplicateFreeQ @ three, Length @ upto, DuplicateFreeQ @ upto,
+          RandomInfraInstance[ scene, graph, 6 ], RandomInfraInstance[ scene, graph, 0 ],
+          RandomInfraInstance[ scene, graph, 0, "Steps" -> 0 ], RandomInfraInstance[ scene, graph, UpTo[ 0 ] ] } ] ],
+    RandomSeeding -> 41 ],
+  { 3, True, 5, True, { }, { }, { }, { } },
+  TestID -> "RandomInfraInstance-distinct-counts-shortage-zero"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { p }, { p == InfraPoint[ 1 ], p > 2 } ], graph = PathGraph[ Range[ 5 ] ] },
+    BlockRandom[ { RandomInfraInstance[ scene, graph ], RandomInfraInstance[ scene, graph, UpTo[ 3 ] ],
+      RandomInfraInstance[ scene, graph, All ] }, RandomSeeding -> 41 ] ],
+  { { }, { }, { } },
+  TestID -> "RandomInfraInstance-impossible-scene"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { p, q }, { p == InfraPoint[], q == InfraIntersection[ InfraShell[ p, 3 ], InfraShell[ p, 3 ] ] } ],
+          graph = PathGraph[ Range[ 4 ] ] },
+    AllTrue[ Range[ 20 ], seed |->
+      With[ { instance = BlockRandom[ RandomInfraInstance[ scene, graph ], RandomSeeding -> seed ] },
+        MatchQ[ instance, InfraSceneInstance[ _Association ] ] &&
+          GraphDistance[ graph, Sequence @@ InfraSceneInstance[ instance, { p, q } ] ] == 3 ] ] ],
+  True,
+  TestID -> "RandomInfraInstance-backtracks-from-empty-construction"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { p, q }, { p == InfraPoint[], q == InfraIntersection[ InfraShell[ p, 1 ], InfraShell[ p, 1 ] ], p >= 3 } ],
+          graph = PathGraph[ Range[ 4 ] ] },
+    InfraSceneInstance[ RandomInfraInstance[ scene, graph, "NextVertexFunction" -> Identity ], { p, q } ] ],
+  { 3, 2 },
+  TestID -> "RandomInfraInstance-backtracks-after-bound-assertion"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { p, q }, { p == InfraPoint[], q == InfraIntersection[ InfraShell[ p, 2 ], InfraShell[ p, 2 ] ], p < q } ],
+          graph = PathGraph[ Range[ 3 ] ] },
+    { InfraSceneInstance[ #, p ] & /@ RandomInfraInstance[ scene, graph, All, "Steps" -> 1 ],
+      InfraSceneInstance[ #, { p, q } ] & /@ RandomInfraInstance[ scene, graph, All ] } ],
+  { { 1, 2, 3 }, { { 1, 3 } } },
+  TestID -> "RandomInfraInstance-partial-steps-defer-unbound-assertions"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { p, q }, { { p, q } == InfraSegment[ { 1, 2 }, { 3, 4 } ] } ],
+          graph = CompleteGraph[ 4 ] },
+    { InfraSceneInstance[ #, { p, q } ] & /@ RandomInfraInstance[ scene, graph, All, <| p -> 1 |> ],
+      RandomInfraInstance[ scene, graph, All, <| p -> 4 |> ] } ],
+  { { { 1, 3 }, { 1, 4 } }, { } },
+  TestID -> "RandomInfraInstance-partly-fixed-tuple-preserved"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { p, q }, { { p, q } == InfraSegment[ { 1, 2 }, { 3, 4 } ] } ],
+          graph = CompleteGraph[ 4 ] },
+    InfraSceneInstance[ RandomInfraInstance[ scene, graph, <| p -> 1, q -> 3 |> ], { p, q } ] ],
+  { 1, 3 },
+  TestID -> "RandomInfraInstance-fully-fixed-tuple"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { p }, { p == InfraPoint[] } ], graph = PathGraph[ Range[ 5 ] ] },
+    { InfraSceneInstance[ #, p ] & /@ RandomInfraInstance[ scene, graph, All ],
+      RandomInfraInstance[ scene, graph, "NextVertexFunction" -> Identity ] ===
+        First @ RandomInfraInstance[ scene, graph, All ],
+      BlockRandom[ RandomInfraInstance[ scene, graph, All ]; RandomInteger[ 1000000 ], RandomSeeding -> 41 ] ===
+        BlockRandom[ RandomInteger[ 1000000 ], RandomSeeding -> 41 ],
+      BlockRandom[ RandomInfraInstance[ scene, graph, 3, "NextVertexFunction" -> Identity ];
+        RandomInteger[ 1000000 ], RandomSeeding -> 41 ] ===
+        BlockRandom[ RandomInteger[ 1000000 ], RandomSeeding -> 41 ] } ],
+  { { 1, 2, 3, 4, 5 }, True, True, True },
+  TestID -> "RandomInfraInstance-All-Identity-deterministic-no-random-draw"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { p, q }, { p == InfraPoint[], q == InfraIntersection[ InfraShell[ p, 3 ], InfraShell[ p, 3 ] ] } ],
+          graph = PathGraph[ Range[ 4 ] ] },
+    { Head @ RandomInfraInstance[ scene, graph, All, "NextVertexFunction" -> RandomChoice ],
+      MemberQ[ Table[ BlockRandom[ RandomInfraInstance[ scene, graph, "NextVertexFunction" -> RandomChoice ],
+        RandomSeeding -> seed ], { seed, 20 } ], { } ] } ],
+  { RandomInfraInstance, True },
+  TestID -> "RandomInfraInstance-RandomChoice-one-route-refuses-All"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { p }, { p == InfraPoint[], p > 2 } ], graph = PathGraph[ Range[ 4 ] ] },
+    { RandomInfraInstance[ scene, graph, "NextVertexFunction" -> (Take[ #, UpTo[ 1 ] ] &) ],
+      InfraSceneInstance[ RandomInfraInstance[ scene, graph, "NextVertexFunction" -> Identity ], p ] } ],
+  { { }, 3 },
+  TestID -> "RandomInfraInstance-pruned-failure-is-local-to-retained-tree"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { p, q }, { p == InfraPoint[], q == InfraIntersection[ InfraShell[ p, 1 ], InfraShell[ p, 1 ] ] } ],
+          graph = PathGraph[ Range[ 4 ] ] },
+    With[ { partial = RandomInfraInstance[ scene, graph, All, "Steps" -> 1 ] },
+      With[ { fixed = First[ partial ][[ 1 ]] },
+        { Length @ partial,
+          InfraSceneInstance[ #, { p, q } ] & /@ RandomInfraInstance[ scene, graph, All, fixed, "Steps" -> 2 ],
+          RandomInfraInstance[ scene, graph, All, "Steps" -> 1 ] === partial } ] ] ],
+  { 4, { { 1, 2 } }, True },
+  TestID -> "RandomInfraInstance-viewer-partial-fix-advance-stable"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { p }, { p == InfraPoint[] } ], graph = PathGraph[ Range[ 2 ] ] },
+    { Length @ RandomInfraInstance[ scene, graph, All, "NextVertexFunction" -> (Join[ #, # ] &) ],
+      RandomInfraInstance[ scene, graph, 3, "NextVertexFunction" -> (Join[ #, # ] &) ] } ],
+  { 2, { } },
+  TestID -> "RandomInfraInstance-repeated-extensions-do-not-count-as-distinct"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { p, q, a, b, c, d },
+            { p == InfraPoint[], q == InfraPoint[], a == InfraPoint[], b == InfraPoint[], c == InfraPoint[], d == InfraPoint[] } ],
+          graph = PathGraph[ Range[ 20 ] ] },
+    MatchQ[ TimeConstrained[ BlockRandom[ RandomInfraInstance[ scene, graph ], RandomSeeding -> 41 ], 10 ],
+      InfraSceneInstance[ bindings_Association /; Length[ bindings ] == 6 ] ] ],
+  True,
+  TestID -> "RandomInfraInstance-bounded-search-avoids-full-branch-product"
+]
+
+VerificationTest[
+  With[ { scene = InfraScene[ { p, q }, { p == InfraPoint[], q == InfraPoint[], p > 3 } ],
+          graph = PathGraph[ Range[ 3 ] ] },
+    BlockRandom[
+      RandomInfraInstance[ scene, graph, <| p -> 1 |> ]; RandomInteger[ 1000000 ], RandomSeeding -> 41 ] ===
+      BlockRandom[ RandomInteger[ 1000000 ], RandomSeeding -> 41 ] ],
+  True,
+  TestID -> "RandomInfraInstance-bound-assertions-reject-before-further-draws"
 ]
 
 EndTestSection[]

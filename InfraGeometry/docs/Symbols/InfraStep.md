@@ -19,6 +19,7 @@ RelatedGuides: [EuclideanInfrageometry]
 Two labelled steps: two points three steps apart, then the segment between them. The segments of every branch are drawn summed.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, pB, seg1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
@@ -26,7 +27,7 @@ With[
   {scene = InfraScene[{pA, pB, seg1},
      {InfraStep[{pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 3}, "two points"],
       InfraStep[{seg1 == InfraSegment[pA, pB]}, "the segment"]}]},
-  {solved = FindInfraScene[scene, g]},
+  {solved = RandomInfraInstance[ scene, g, All ]},
   {InfraSubstrateHighlight[g, {InfraSceneInstance[#, seg1] & /@ solved, c}],
    scene["Labels"]}]
 ```

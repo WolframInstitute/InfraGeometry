@@ -105,6 +105,7 @@ With[
 The members are vertex lists. Three of them, each drawn as a walk.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -143,6 +144,7 @@ With[
 The cardinality is the number of members, and every member has the graph distance as its length.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},

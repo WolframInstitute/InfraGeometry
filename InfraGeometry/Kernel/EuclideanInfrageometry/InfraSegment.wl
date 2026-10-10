@@ -8,9 +8,10 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 InfraMeasurement[ graph_Graph,
     InfraSegment[ p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ] ], "Graph" ] :=
-  With[ { dp = AssociationThread[ VertexList @ graph, GraphDistance[ graph, p ] ],
-          dq = AssociationThread[ VertexList @ graph, GraphDistance[ graph, q ] ] },
-    { d = Lookup[ dp, Key @ q ] },
+  With[ { sources = Keys @ InfraDensity[ graph, p ], targets = Keys @ InfraDensity[ graph, q ] },
+    { dp = AssociationThread[ VertexList @ graph, Min /@ Transpose[ GraphDistance[ graph, # ] & /@ sources ] ],
+      dq = AssociationThread[ VertexList @ graph, Min /@ Transpose[ GraphDistance[ graph, # ] & /@ targets ] ] },
+    { d = Min @ Lookup[ dp, Key /@ targets ] },
     { interval = If[ d === Infinity, { },
         Select[ VertexList @ graph, Lookup[ dp, Key @ # ] + Lookup[ dq, Key @ # ] == d & ] ] },
     { inside = AssociationThread[ interval, True ] },

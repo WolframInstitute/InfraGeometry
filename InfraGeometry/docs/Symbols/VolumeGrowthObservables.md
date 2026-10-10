@@ -81,6 +81,7 @@ With[
 The balls at the two ends of the fitted ball window on the square tiling, beside the keys of the result.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},

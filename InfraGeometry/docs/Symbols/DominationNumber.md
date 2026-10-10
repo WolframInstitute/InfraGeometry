@@ -45,6 +45,7 @@ ListLogPlot[
 With targets: the number of balls of radius 2 that cover the ball of radius 4 about the centre.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {target = RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]]},

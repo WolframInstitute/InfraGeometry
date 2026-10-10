@@ -44,6 +44,7 @@ The head computes nothing. A cylinder has one member, the vertex set. [InfraMeas
 The cylinder of radius 1 about a shortest path on the discretized plane, the square grid and the hexagonal tiling. The Riemannian measure counts the inner vertices, in green; the counting measure adds the boundary, in blue.
 
 ```wl
+SeedRandom[1];
 Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
@@ -73,6 +74,7 @@ With[
 The rounded cylinder is the tube about the axis, and the cylinder lies in it.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{9, 9}]},
   {axis = {39, 40, 41, 42, 43}},
@@ -84,6 +86,7 @@ With[
 The cylinder is the solid of revolution of the constant profile.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{9, 9}]},
   {axis = {39, 40, 41, 42, 43}},

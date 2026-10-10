@@ -65,6 +65,7 @@ With[
 A sequence of `Around` values carries its spread into the quotients, drawn as error bars: here the mean ball-volume profile over five vertices near the centre of the discretized plane.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Large"]},
   {sampleSet = Take[RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 2]], 5]},

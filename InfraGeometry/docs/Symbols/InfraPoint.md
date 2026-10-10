@@ -66,13 +66,14 @@ With[
 In a scene the token is solved on the graph. Here *a* is the centre of a 5 × 5 grid, *b* any of the 8 vertices at distance 3 from it, and *c* any of the 4 vertices at distance 4 from it, the corners: 32 instances.
 
 ```wl
+SeedRandom[1];
 Module[{a, b, c},
   With[
     {scene = InfraScene[{a, b, c},
        {InfraStep[{a == InfraPoint[13]}, "a"],
         InfraStep[{b == InfraPoint[], InfraDistance[a, b] == 3}, "b"],
         InfraStep[{c == InfraPoint[], InfraDistance[a, c] == 4}, "c"]}]},
-    {instances = FindInfraScene[scene, GridGraph[{5, 5}]]},
+    {instances = RandomInfraInstance[ scene, GridGraph[{5, 5}], All ]},
     {Length[instances], InfraSceneInstance[First[instances], a], InfraSceneInstance[First[instances], b]}]]
 ```
 

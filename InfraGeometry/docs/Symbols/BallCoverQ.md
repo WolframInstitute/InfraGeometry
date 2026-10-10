@@ -27,6 +27,7 @@ A cover of every vertex at radius *r* is one at every larger radius, and a super
 A smallest cover of the hexagonal tiling by balls of radius 3 covers; without its first centre it does not. The remaining balls are blue and the vertices they leave uncovered are red.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {cover = FindBallCover[g, 3]},
@@ -40,6 +41,7 @@ With[
 With targets, only the targets need covering. The centre covers its own ball of radius 2, not the whole tiling.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},

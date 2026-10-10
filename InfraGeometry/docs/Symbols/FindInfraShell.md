@@ -70,6 +70,7 @@ With[
 The ball is the union of the shells up to its radius, so the volumes are the partial sums of the areas.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},

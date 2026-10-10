@@ -64,6 +64,7 @@ Corresponding notions in the classical axiom systems:
 The band of radii 2 to 4 about the centre of the discretized plane, the square grid and the hexagonal tiling. The Riemannian measure keeps the middle shell, in green; the two rims, in blue, are boundary.
 
 ```wl
+SeedRandom[1];
 Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
@@ -101,6 +102,7 @@ With[
 The shell about two vertices at once.
 
 ```wl
+SeedRandom[1];
 RandomInfraRepresentative[PathGraph[Range[7]], InfraShell[{1, 7}, 1]]
 ```
 
@@ -118,9 +120,10 @@ GraphicsRow[MapThread[
   {{InfraSubstrate["TriangularTilingGraph", "Medium"], InfraSubstrate["CubicGridGraph", "Large"]}, {6, 4}, {6 r, 4 r^2 + 2}}]]
 ```
 
-Inside a scene the token names the shell about a point, and [FindInfraScene]() binds it to the same vertex set. Two shells meet in a few vertices, one per branch.
+Inside a scene the token names the shell about a point, and [RandomInfraInstance]() binds it to the same vertex set. Two shells meet in a few vertices, one per branch.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, pB, shellA, shellB, meet];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
@@ -130,7 +133,7 @@ With[
      {pA == InfraPoint[c], pB == InfraPoint[b],
       shellA == InfraShell[pA, 2], shellB == InfraShell[pB, 2],
       meet == InfraIntersection[shellA, shellB]}]},
-  {solved = FindInfraScene[constr, g]},
+  {solved = RandomInfraInstance[ constr, g, All ]},
   InfraSubstrateHighlight[g,
     Join[{InfraSceneInstance[First @ solved, shellA],
           InfraSceneInstance[First @ solved, shellB]},

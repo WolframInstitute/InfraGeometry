@@ -16,9 +16,11 @@ RelatedGuides: [EuclideanInfrageometry]
 
 <code>[RandomInfraLine]()[*g*, *seq*]</code> gives one line containing the shortest-path vertex list *seq* as a contiguous subsequence.
 
-<code>[RandomInfraLine]()[*g*, *a*, *b*, *n*]</code> gives a `List` of exactly *n* lines or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives every line.
+<code>[RandomInfraLine]()[*g*, *a*, *b*, *n*]</code> gives a `List` of exactly *n* lines or `{}`; `UpTo[n]` gives up to *n*; `All` gives every line.
 
 ## Details & Options
+
+The default draw is random. Seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing.
 
 A line is an **inextensible shortest path**: a shortest path that no neighbour of either endpoint prolongs. [InfraLineQ]() is the predicate, and every line returned satisfies it.
 
@@ -28,7 +30,7 @@ The search runs on the substrate directly: a shortest path from *a* to *b*, prol
 
 The search enumerates. To count lines, use <code>[InfraMeasurement]()[*g*, [InfraLine]()[*a*, *b*], "Cardinality"]</code>, which reads the count off the head's graph without enumerating a line.
 
-The count-less call is one line, deterministic. There is no `Method` and no `Properties`.
+The count-less call is one random line. There is no `Method` and no `Properties`.
 
 Corresponding notions in the classical axiom systems:
 
@@ -57,6 +59,7 @@ Association @ Table[
 Three of them on each substrate.
 
 ```wl
+SeedRandom[1];
 Row[Table[
    With[
      {g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]},
@@ -77,18 +80,21 @@ Row[Table[
 Through an edge of the 6-cycle there are three lines, not four: the ends 5 and 4 are each admissible on their own side, but the pair is not.
 
 ```wl
+SeedRandom[1];
 RandomInfraLine[CycleGraph[6], 1, 2, All]
 ```
 
-The count-less call is one line; a bounded count gives a list, and a strict count that cannot be met is `$Failed`.
+The count-less call is one line; a bounded count gives a list, and a strict count that cannot be met is `{}`.
 
 ```wl
+SeedRandom[1];
 {RandomInfraLine[CycleGraph[6], 1, 2], RandomInfraLine[CycleGraph[6], 1, 2, 2], RandomInfraLine[CycleGraph[6], 1, 2, 5]}
 ```
 
 A given shortest path prolongs to the lines containing it.
 
 ```wl
+SeedRandom[1];
 RandomInfraLine[GridGraph[{4, 4}], {1, 2, 6}, All]
 ```
 
@@ -97,12 +103,14 @@ RandomInfraLine[GridGraph[{4, 4}], {1, 2, 6}, All]
 Every line satisfies [InfraLineQ]().
 
 ```wl
+SeedRandom[1];
 InfraLineQ[GridGraph[{4, 4}], RandomInfraLine[GridGraph[{4, 4}], 6, 7, All]]
 ```
 
 The search agrees with the graph of the head.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{4, 4}]},
   Sort @ RandomInfraLine[g, 6, 7, All] === Sort @ RandomInfraRepresentative[g, InfraLine[6, 7], All]]
@@ -111,6 +119,7 @@ With[
 A line through an edge is that edge extended with no budget.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{4, 4}]},
   {Length @ RandomInfraLine[g, {6, 7}, All], InfraMeasurement[g, InfraLine[6, 7], "Cardinality"]}]

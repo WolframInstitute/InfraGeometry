@@ -170,6 +170,7 @@ With[
 Points outside a region: take the complement as a vertex list.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -231,6 +232,7 @@ With[
 `RandomInfraPoint[g, reg, All]` is the vertex set of the region.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{9, 9}]},
   {c = First @ GraphCenter[g]},
@@ -240,6 +242,7 @@ With[
 The distance to a set is the least distance to one of its points: the shell about two vertices is the outer layer of the union of the two balls, and does not contain the vertices.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{10, 10}]},
   {shell = RandomInfraRepresentative[g, InfraShell[{45, 47}, 2]]},

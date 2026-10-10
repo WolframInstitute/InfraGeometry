@@ -31,6 +31,7 @@ A member read by [RandomInfraRepresentative]() is an inextensible simple geodesi
 The endpoints of the six-step extensions of a three-edge germ ending at the centre, sized by how many extensions end there, at scales 2, 4 and 8. At scale 2 they spread over a wide arc; from scale 4 on they gather.
 
 ```wl
+SeedRandom[1];
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
@@ -46,6 +47,7 @@ GraphicsRow @ Table[
 At scale `Infinity` the graph is drawn on the substrate beside the ray through the germ's ends: the same arrows past the germ.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
@@ -61,6 +63,7 @@ With[
 The walks of *k* edges from the germ's window are the extensions [RandomInfraGeodesic]() lists. The number of windows, whether the graph has cycles, the number of six-step extensions read off the adjacency matrix, and the number listed.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
@@ -77,6 +80,7 @@ With[
 At scale `Infinity` the graph is the part of the [InfraRay]() graph past the germ.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},

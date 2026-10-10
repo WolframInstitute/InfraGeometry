@@ -18,6 +18,8 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Details & Options
 
+The default draw is random. Seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing.
+
 The germ is the seed of the walk: a vertex, a vertex list, a walk graph, or a list of germs. A vertex is the one-vertex germ, so `RandomInfraWalk[g, p, ...]` and `RandomInfraWalk[g, {p}, ...]` are the same call. A germ is read as a vertex first, so on a substrate labelled by lists the vertex `{1, 1}` is one point, not the walk of its entries. A walk graph is read as its vertex sequence; a list of germs gives the walks grown from each.
 
 *kspec* is the budget in edges added on each growing side: `UpTo[k]` (at most *k*), `{k}` (exactly *k*), `{lo, hi}`, or `Infinity`. A bare integer is no *kspec*. `Infinity` is legal only under a hard rule that bounds the class: a bare `"Simple"` or a bare `"Shortest"`.
@@ -53,7 +55,7 @@ The hard rules cut the class; the soft rules put a distribution on it, the weigh
 
 | Value | Order |
 |---|---|
-| `Automatic` | canonical with hard rules only; `RandomSample` by the weights once a rule is soft |
+| `Automatic` | random by the weights for bounded counts; canonical for `All` |
 | `Identity` | canonical, the weights ignored |
 | `RandomSample` | random by the weights, uniform without a soft rule |
 | `RandomChoice` | one candidate drawn by the weights: the random walk, which never backtracks |
@@ -74,6 +76,7 @@ An endpoint is a stopping condition. `"StoppingCondition" -> (Last[#] === q &)` 
 Three walks of 9 edges from the centre of a mesh, the soft straightness at window 5 with weights 1, 0.3 and 0.01: from the random walk to a nearly straight one.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {c = (SeedRandom[2]; RandomInfraPoint[g, GraphCenter[g]])},
@@ -85,6 +88,7 @@ With[
 All simple walks of 3 edges from the centre of the square tiling.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -95,6 +99,7 @@ With[
 One simple walk of exactly 5 edges, beside its vertex sequence.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -105,6 +110,7 @@ With[
 A germ of two vertices grows forward: the simple walks that add at most 2 edges after its last vertex.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -120,6 +126,7 @@ With[
 The class widens from the simple walks to the walks without a cusp, `{"Simple", 2}`, and to every walk of at most 4 edges.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -132,6 +139,7 @@ With[
 A soft `"Simple"`: the walk of 30 edges that rarely returns to a vertex it has visited, at weights 0.01, 0.1 and 1, with the number of returns.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -147,6 +155,7 @@ With[
 A window: `{"Simple", 3}` forbids a return within 3 steps only, so the walk may close round a hexagon; `"Simple"` may not.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -160,6 +169,7 @@ With[
 A function is a rule: the energy `GraphDistance[g, Last @ w, q]` at window 1 and weight 0.3 pulls the walk toward *q*.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -174,6 +184,7 @@ With[
 `{"Stretched", 2}` keeps at each step the candidates farthest from the vertex two steps back: on the triangular tiling the three of the six neighbours that neither step back nor cut a triangle.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -186,6 +197,7 @@ With[
 Under `RandomChoice` the walk is a random one, one admissible step at a time, and the count is the number of independent runs. Three simple walks of 12 edges from the centre in one call.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -198,6 +210,7 @@ With[
 The simple walks of at most 2 edges grown from a two-vertex germ forward, backward and on both sides.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -213,6 +226,7 @@ With[
 A predicate on the walk so far stops each walk at its first arrival at *b*; the walks that end there are the simple walks from the centre to *b*.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -225,6 +239,7 @@ With[
 Under `"BothSides"` the predicate reads both tips: the shortest paths through an edge of the grid stop when the back reaches 22 or the front reaches 28, whichever comes first.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{7, 7}]},
   {walks = RandomInfraWalk[g, {24, 25}, Infinity, All, Properties -> {"Shortest"}, "Direction" -> "BothSides",
@@ -238,6 +253,7 @@ With[
 A vertex and the one-vertex list are the same germ.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -247,6 +263,7 @@ With[
 With the hard `"Shortest"` at scale `Infinity` the walks are shortest paths, so the walks to *b* are the members of the segment.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -261,6 +278,7 @@ With[
 A soft rule changes the order, not the class: under `All` the weighted walks are the walks of the hard rules.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -271,6 +289,7 @@ With[
 The soft `"Stretched"` weighs as the soft `"Shortest"`: under one seed the two draw the same walk.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -280,6 +299,7 @@ With[
 The cusps, self-tangencies and triple points of a walk are read by [WalkSingularities](); a class free of one of them is a predicate on it.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -293,15 +313,17 @@ With[
 A call with `Infinity` and no hard rule that bounds the class is refused, since a stopping condition may never fire; so is a bare integer as *kspec*. Both calls stay unevaluated, which `MatchQ` tests.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {MatchQ[RandomInfraWalk[g, a, Infinity, Properties -> {}], _FindInfraWalk], MatchQ[RandomInfraWalk[g, a, 3, All], _FindInfraWalk]}]
+  {MatchQ[RandomInfraWalk[g, a, Infinity, Properties -> {}], _RandomInfraWalk], MatchQ[RandomInfraWalk[g, a, 3, All], _RandomInfraWalk]}]
 ```
 
 Under `Identity` the weights are ignored, so a soft rule changes nothing: the walk is the canonical walk of the hard rules.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},

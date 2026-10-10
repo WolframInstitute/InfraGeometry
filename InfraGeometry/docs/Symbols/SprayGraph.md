@@ -95,6 +95,7 @@ With[
 A layer of the spray is a shell: the vertices at depth *r* are [FindInfraShell]()`[g, c, r]`, and their number is the shell area.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},

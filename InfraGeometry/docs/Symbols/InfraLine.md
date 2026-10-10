@@ -63,6 +63,7 @@ With[
 Three of the lines, each drawn as a walk.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = First @ GraphCenter[g]},
@@ -87,6 +88,7 @@ With[
 The line through a shortest-path germ, beside the line through its two ends. The ends of a bent germ lie on the lines of the rectangle between them, the germ on those that run along it.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = First @ GraphCenter[g]},
@@ -115,6 +117,7 @@ With[
 Every member satisfies [InfraLineQ]().
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = First @ GraphCenter[g]},
@@ -127,6 +130,7 @@ With[
 The lines through a germ are the lines of [RandomInfraLine]() at that germ, and the geodesics that [RandomInfraGeodesic]() grows from it on both sides without a budget.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
