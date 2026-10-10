@@ -99,3 +99,35 @@ RandomInfraRegionNearest[ graph_Graph, InfraRegionNearest[ object_, p_ ],
     SubsetQ[ { "NextVertexFunction" }, First /@ { opts } ] &&
     MemberQ[ { Automatic, Identity }, OptionValue[ RandomInfraRegionNearest, { opts }, "NextVertexFunction" ] ] :=
   With[ { result = RandomInfraRegionNearest[ graph, object, p, count, opts ] }, result /; HoldComplete[ result ] =!= HoldComplete[ RandomInfraRegionNearest[ graph, object, p, count, opts ] ] ]
+
+InfraMeasurement[ graph_Graph, object : _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest,
+    "VertexDensity" ] :=
+  With[ { members = If[ VertexQ[ graph, object ], { object },
+      Switch[ Head[ object ],
+        InfraMidpoint, RandomInfraMidpoint[ graph, object, All ],
+        InfraPerpendicularBisector, RandomInfraPerpendicularBisector[ graph, object, All ],
+        InfraRegionNearest, RandomInfraRegionNearest[ graph, object, All ] ] ] },
+    AssociationThread[ members, 1 ] /; ListQ[ members ] ]
+
+InfraMeasurement[ graph_Graph, object : _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest,
+    property : ( "Cardinality" | "CountingMeasure" | "Subgraph" | "RiemannianMeasure" ) ] :=
+  With[ { density = InfraMeasurement[ graph, object, "VertexDensity" ] },
+    Switch[ property,
+      "Cardinality" | "CountingMeasure", Length[ density ],
+      "Subgraph", Subgraph[ graph, Keys[ density ] ],
+      "RiemannianMeasure", With[ { support = Keys[ density ] },
+        Count[ support, vertex_ /; AllTrue[ AdjacencyList[ graph, vertex ],
+          neighbor |-> KeyExistsQ[ density, neighbor ] ] ] ] ] /; AssociationQ[ density ] ]
+
+InfraMeasurement[ graph_Graph, object : _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest, All ] :=
+  With[ { density = InfraMeasurement[ graph, object, "VertexDensity" ] },
+    AssociationMap[ property |-> InfraMeasurement[ graph, object, property ],
+      { "VertexDensity", "Cardinality", "CountingMeasure", "Subgraph", "RiemannianMeasure" } ] /; AssociationQ[ density ] ]
+
+InfraMemberQ[ graph_Graph, object : _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest, vertex_ ] /;
+    VertexQ[ graph, vertex ] :=
+  With[ { density = InfraMeasurement[ graph, object, "VertexDensity" ] },
+    KeyExistsQ[ density, vertex ] /; AssociationQ[ density ] ]
+
+InfraDensity[ graph_Graph, object : _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest ] :=
+  With[ { density = InfraMeasurement[ graph, object, "VertexDensity" ] }, density /; AssociationQ[ density ] ]

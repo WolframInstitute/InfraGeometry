@@ -112,10 +112,23 @@ selectContext[ _, _ ] :=
 
 Options[ InfraDistance ] = { "Aggregation" -> Min }
 
-InfraDistance[ g_Graph, p_, q_, OptionsPattern[] ] :=
-  OptionValue[ "Aggregation" ] @
-    Flatten @ Outer[ GraphDistance[ g, #1, #2 ] &,
-      Keys @ InfraDensity[ g, p ], Keys @ InfraDensity[ g, q ], 1 ]
+InfraDistance[ graph_Graph, p_, q_, opts : OptionsPattern[] ] /;
+    SubsetQ[ { "Aggregation" }, First /@ { opts } ] :=
+  With[ { densities = Map[ object |-> Which[
+      VertexQ[ graph, object ], <| object -> 1 |>,
+      GraphQ[ object ] && AllTrue[ VertexList[ object ], vertex |-> VertexQ[ graph, vertex ] ], Counts[ VertexList[ object ] ],
+      MatchQ[ object, _List | _Association | _Graph | _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest ],
+        InfraDensity[ graph, object ],
+      True, Quiet[ InfraMeasurement[ graph, object, "VertexDensity" ] ] ], { p, q } ] },
+    With[ { vertices = VertexList[ graph ] },
+      { indices = AssociationThread[ vertices, Range[ Length[ vertices ] ] ],
+        indexedGraph = VertexReplace[ graph, Thread[ vertices -> Range[ Length[ vertices ] ] ] ],
+        supports = Keys /@ Map[ density |-> Select[ density, value |-> value != 0 ], densities ] },
+      OptionValue[ "Aggregation" ] @ Flatten @ Outer[
+        { source, target } |-> GraphDistance[ indexedGraph, Lookup[ indices, Key[ source ] ], Lookup[ indices, Key[ target ] ] ],
+        supports[[ 1 ]], supports[[ 2 ]], 1 ] ] /;
+      AllTrue[ densities, density |-> AssociationQ[ density ] && AllTrue[ Values[ density ], NumericQ ] &&
+        AllTrue[ Keys[ density ], vertex |-> VertexQ[ graph, vertex ] ] ] ]
 
 $infraRealisationPattern = _List | _Association | _Graph
 

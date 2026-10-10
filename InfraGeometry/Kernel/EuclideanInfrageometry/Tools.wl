@@ -6,7 +6,8 @@ Package[ "WolframInstitute`InfraGeometry`" ]
    because a vertex label may itself be a List.  A bundle sums by GroupBy, not Merge[ ..., Total ], which is quadratic in the member count: 18 s
    against 0.2 s on 16000 walks *)
 
-InfraDensity[ graph_Graph, x_ ] :=
+InfraDensity[ graph_Graph, x_ ] /;
+    VertexQ[ graph, x ] || ! MatchQ[ x, _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest ] :=
   Which[
     VertexQ[ graph, x ],                                  <| x -> 1 |>,
     AssociationQ[ x ],                                    KeySort @ x,

@@ -9,7 +9,7 @@ InfraReachableQ::usage = "InfraReachableQ[graph, p1, p2] tests whether p1 and p2
 
 Undetermined::usage = "Undetermined is the value of the measurement \"Faithful\" on a head whose graph is faithful only under a hypothesis this paclet does not certify.";
 InfraMeasurement::usage = "InfraMeasurement[graph, obj, property] measures a Euclidean head on graph: \"Graph\", \"Cardinality\", \"Length\", \"VertexDensity\", \"EdgeDensity\", \"Subgraph\", \"Faithful\", \"CountingMeasure\" (the vertex count), \"RiemannianMeasure\" (the count without boundary). A List of properties gives an Association, All gives them all, a List of heads measures each.";
-InfraMemberQ::usage = "InfraMemberQ[graph, obj, path] tests whether the vertex list path is a member of obj.";
+InfraMemberQ::usage = "InfraMemberQ[graph, obj, representative] tests family membership; an exact point family accepts one raw vertex.";
 InfraSubgraph::usage = "InfraSubgraph[graph, obj] gives the subgraph of graph induced on the support of obj; InfraSubgraph[graph, obj -> t] thickens the support by t steps.";
 
 InfraSegment::usage = "InfraSegment[p1, ..., pk] is an inert ordered chain of shortest-path legs. InfraMeasurement reads its family; RandomInfraSegment samples it."
@@ -125,7 +125,7 @@ InfraSceneInstance::usage = "InfraSceneInstance[bindings] wraps a solved binding
 InfraStep::usage = "InfraStep[{hyp1, ...}] groups hypotheses into one construction step of a scene; a second argument labels it.";
 InfraIntersection::usage = "InfraIntersection[graph, obj1, obj2, ...] gives the vertex-set intersection of shapes on graph -- vertex lists, densities, walk graphs, bundles -- as a sorted List. On Euclidean heads it is symbolic and InfraMeasurement gives it the common support and the product density. Inside InfraScene it is the token InfraIntersection[c1, c2], one branch per common vertex, the engine supplying the graph.";
 InfraUnion::usage = "InfraUnion[graph, obj1, obj2, ...] gives the vertex-set union of shapes on graph as a sorted List. On Euclidean heads it is symbolic and InfraMeasurement gives it the joint support and the sum density. Inside InfraScene it is the token InfraUnion[c1, c2], one branch per vertex of either, the engine supplying the graph.";
-InfraDistance::usage = "InfraDistance[graph, p, q] gives the graph distance between two Infra* objects, aggregated over their vertex sets. Option \"Aggregation\".";
+InfraDistance::usage = "InfraDistance[graph, p, q] gives minimum ambient distance between supported nonzero vertex sets; empty or disconnected supports give Infinity. Option \"Aggregation\".";
 InfraPlaneQ::usage = "InfraPlaneQ[graph, h, p1, p2] tests whether h lies in the bisector slab of p1, p2 and separates them; a trailing window widens the slab. The graph-free InfraPlaneQ[h, p1, p2] is the InfraScene assertion.";
 InfraIntersectQ::usage = "InfraIntersectQ[s1, s2] asserts inside an InfraScene that two sets intersect; evaluation is postponed until bindings resolve, which is why it exists rather than the built-in IntersectingQ.";
 

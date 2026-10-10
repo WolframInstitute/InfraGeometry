@@ -15,9 +15,9 @@ InfraMeasurement[ graph_Graph,
   With[ { vlist = VertexList @ graph, n = VertexCount @ graph, dm = GraphDistanceMatrix @ graph },
     { index = AssociationThread[ vlist -> Range @ n ],
       bands = Replace[ regions, {
-          ( InfraBall | InfraTube )[ c_, r : Except[ _List ] ] :> { { c, 0, r } },
+          ( InfraBall | InfraTube )[ c_, r : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List ] ] :> { { c, 0, r } },
           ( InfraBall | InfraShell | InfraTube )[ c_, { r_, s_ } ] :> { { c, r, s } },
-          InfraShell[ c_, r : Except[ _List ] ] :> { { c, r, r } } }, { 1 } ] },
+          InfraShell[ c_, r : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List ] ] :> { { c, r, r } } }, { 1 } ] },
     { distances = AssociationMap[
         core |-> Clip[
           Min /@ dm[[ All, Lookup[ index, Which[
@@ -54,11 +54,11 @@ InfraMeasurement[ graph_Graph,
         Total[ inside ( 1 - Sign[ adjacency . ( 1 - inside ) ] ) ] ],
       Keys /@ InfraMeasurement[ graph, regions, "VertexDensity" ] ] ]
 
-InfraMeasurement[ graph_Graph, obj : Except[ _List ], props : { __String } ] :=
+InfraMeasurement[ graph_Graph, obj : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List ], props : { __String } ] :=
   AssociationMap[ InfraMeasurement[ graph, obj, # ] &, props ]
 
 InfraMeasurement[ graph_Graph,
-    obj : Except[ _List | InfraIntersection[ __ ] | InfraUnion[ __ ] |
+    obj : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List | InfraIntersection[ __ ] | InfraUnion[ __ ] |
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] ], All ] :=
@@ -73,7 +73,7 @@ InfraMeasurement[ _Graph, InfraArc[ __ ], "Faithful" ] :=
   Undetermined
 
 InfraMeasurement[ graph_Graph,
-    obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, Except[ { p_, ___, p_ }, { _, _, __ } ], ___ ] |
+    obj : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List | InfraSegment[ _, _, __ ] | InfraArc[ _, Except[ { p_, ___, p_ }, { _, _, __ } ], ___ ] |
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] ], "Cardinality" ] :=
@@ -89,7 +89,7 @@ InfraMeasurement[ graph_Graph, density_Association, "VertexDensity" ] :=
   KeySort @ density
 
 InfraMeasurement[ graph_Graph,
-    obj : Except[ _List | InfraIntersection[ __ ] | InfraUnion[ __ ] | InfraCircle[ _, _, ___ ] |
+    obj : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List | InfraIntersection[ __ ] | InfraUnion[ __ ] | InfraCircle[ _, _, ___ ] |
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] |
@@ -108,7 +108,7 @@ InfraMeasurement[ graph_Graph,
     Total ]
 
 InfraMeasurement[ graph_Graph,
-    obj : Except[ _List | InfraIntersection[ __ ] | InfraUnion[ __ ] | InfraCircle[ _, _, ___ ] |
+    obj : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List | InfraIntersection[ __ ] | InfraUnion[ __ ] | InfraCircle[ _, _, ___ ] |
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] |
@@ -127,7 +127,7 @@ InfraMeasurement[ graph_Graph,
     Total ]
 
 InfraMeasurement[ graph_Graph,
-    obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, Except[ { p_, ___, p_ }, { _, _, __ } ], ___ ] |
+    obj : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List | InfraSegment[ _, _, __ ] | InfraArc[ _, Except[ { p_, ___, p_ }, { _, _, __ } ], ___ ] |
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] ], "Length" ] :=
@@ -139,19 +139,19 @@ InfraMeasurement[ graph_Graph,
       Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ] ],
     { one_ } :> one ]
 
-InfraMeasurement[ graph_Graph, obj : Except[ _List ], "Subgraph" ] :=
+InfraMeasurement[ graph_Graph, obj : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List ], "Subgraph" ] :=
   Subgraph[ graph, Keys @ InfraMeasurement[ graph, obj, "VertexDensity" ] ]
 
-InfraMeasurement[ graph_Graph, obj : Except[ _List ], "CountingMeasure" ] :=
+InfraMeasurement[ graph_Graph, obj : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List ], "CountingMeasure" ] :=
   Length @ InfraMeasurement[ graph, obj, "VertexDensity" ]
 
-InfraMeasurement[ graph_Graph, obj : Except[ _List ], "RiemannianMeasure" ] :=
+InfraMeasurement[ graph_Graph, obj : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List ], "RiemannianMeasure" ] :=
   With[ { support = Keys @ InfraMeasurement[ graph, obj, "VertexDensity" ] },
     { inside = AssociationThread[ support, True ] },
     Count[ support, v_ /; AllTrue[ AdjacencyList[ graph, v ], TrueQ @ Lookup[ inside, Key @ # ] & ] ] ]
 
 InfraMemberQ[ graph_Graph,
-    obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] |
+    obj : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] |
                   InfraCircle[ _, _, ___ ] |
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
