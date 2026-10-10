@@ -79,6 +79,7 @@ With[
 A `Directive` colors the objects after it.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -90,6 +91,7 @@ With[
 Overlaps add. The two segments share their start and blend there. The walk is one stroke.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -102,6 +104,7 @@ With[
 A negative mass is an empty ring. The boundary of a walk from *p* to *q* is *q* minus *p*: a dot at the end, a ring at the start, drawn with the walk.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -136,6 +139,7 @@ With[
 A list of vertex lists is one object, the sum of its members: here the shortest paths of a segment, which draw as the head does.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},

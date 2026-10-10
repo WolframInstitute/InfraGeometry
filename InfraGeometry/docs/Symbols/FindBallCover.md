@@ -47,6 +47,7 @@ GraphicsRow @ Table[
 The ball of radius 4 about the centre, gray, and the centres of a smallest cover of it by balls of radius 2, red. A centre may lie outside the target.
 
 ```wl
+SeedRandom[1];
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},

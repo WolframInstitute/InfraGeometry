@@ -51,6 +51,7 @@ germMultiplicity[g_, p_, r_] := Lookup[Counts[Last /@ pencil[g, p, r]], FindInfr
 The spray graph of the ball $B(p, r)$: its directed edges drawn bent, in red, on the edges of the substrate.
 
 ```wl
+SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
@@ -79,6 +80,7 @@ $$ g_r(\gamma, \gamma') = \frac{1}{r} \, \operatorname{mean} \big\{\, k : d(x_k,
 One entry. The germ is red, the base and $v$ blue, the feet and a shortest path from $v$ to a foot orange; $v$ is the shell vertex whose entry lies nearest the middle of the range.
 
 ```wl
+SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},

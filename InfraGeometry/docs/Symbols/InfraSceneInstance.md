@@ -29,6 +29,7 @@ An object the instance does not bind reads as `Missing["KeyAbsent", x]`. The sec
 One instance of Euclid I.1 on a grid: the two circles and the vertex where they meet, read out of the instance and drawn.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, pB, circleA, circleB, meet];
 With[
   {g = GridGraph[{13, 13}]},
@@ -49,6 +50,7 @@ With[
 An instance holds an `Association`.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, pB, seg1];
 With[
   {scene = InfraScene[{pA, pB, seg1},
@@ -61,6 +63,7 @@ With[
 The values of one object across all the instances. Here the second point takes each of its eight positions, the diagonal ones twice, once per shortest path.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, pB, seg1];
 With[
   {scene = InfraScene[{pA, pB, seg1},

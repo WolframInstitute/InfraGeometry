@@ -31,6 +31,7 @@ The result is a sorted vertex list.
 The interior of a ball about the centre that reaches within two steps of the rim, in the ball topology of radius 2, on the discretized plane, the square tiling and the hexagonal tiling. The interior is green. The rest of the ball is blue: the vertices whose ball contains the ball of a vertex outside.
 
 ```wl
+SeedRandom[1];
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
@@ -44,6 +45,7 @@ GraphicsRow @ Table[
 Away from the rim a ball is open. The ball of radius 4 about the centre of the square tiling is its own interior at radius 2, while its combinatorial interior, drawn beside it, drops the outer shell.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {ball = RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]]},
@@ -57,6 +59,7 @@ With[
 The interior is open: it is its own interior and its own smallest open neighbourhood. [InfraInterior]() with the method `"Alexandrov"` gives the same set.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
   {topo = BallTopology[g, 2]},

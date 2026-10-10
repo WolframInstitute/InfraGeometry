@@ -25,6 +25,7 @@ Unlike [InfraSegmentQ]() or [InfraLineQ](), which test *path* against the genera
 Two walks from the centre to a vertex four steps away: a shortest path, which is a member of the segment, and a detour through a third vertex, which is not.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -40,6 +41,7 @@ With[
 A shortest path found independently by [RandomInfraSegment]() is a member of the matching segment head.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -51,6 +53,7 @@ With[
 A circle's member is recognised up to rotation and direction.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -65,6 +68,7 @@ With[
 A shortest path between other points is a segment, but not a member of this one.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},

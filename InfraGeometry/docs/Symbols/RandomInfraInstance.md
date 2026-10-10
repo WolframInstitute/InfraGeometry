@@ -42,6 +42,7 @@ A function such as `(RandomSample[#, UpTo[2]] &)` keeps at most two candidate ex
 A point, a second point at distance 2 from it, and the segment between them, solved on the square tiling: one instance per choice of the second point and of the shortest path to it. Their segments, summed, cover the ball of radius 2.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, pB, seg1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
@@ -56,6 +57,7 @@ With[
 One instance, and its segment drawn.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, pB, seg1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
@@ -71,6 +73,7 @@ With[
 The steps are read off the dependencies: the two points first, then the segment. Solving the first step gives the choices of the second point, with no segment yet: the shell of radius 2.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, pB, seg1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
@@ -84,6 +87,7 @@ With[
 Fixing the second point in advance leaves only the segment to choose: one instance per shortest path.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, pB, seg1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
@@ -102,6 +106,7 @@ With[
 Keep at most two extensions at each construction, reproducibly.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, pB, seg1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
@@ -117,6 +122,7 @@ With[
 The instances are the choices made: as many as the points at distance 2, weighted by their shortest paths.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, pB, seg1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},

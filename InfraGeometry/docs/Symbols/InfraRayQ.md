@@ -56,6 +56,7 @@ InfraRayQ[PathGraph[Range[5]], {3, 4, 5}]
 Every ray [RandomInfraRay]() produces satisfies the predicate; the list is accepted as a whole.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{5, 5}]},
   InfraRayQ[g, RandomInfraRay[g, 1, 13, All]]]
@@ -64,6 +65,7 @@ With[
 Dropping the far vertex breaks inextensibility, so the truncation is no longer a ray.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{5, 5}]},
   {ray = RandomInfraRay[g, 1, 13]},
@@ -79,6 +81,7 @@ InfraRayQ[CycleGraph[6], {1, 2, 3, 4, 5, 6}]
 Every ray of a pencil satisfies the predicate.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{3, 3}]},
   AllTrue[RandomInfraRay[g, 5, 5, All], InfraRayQ[g, #] &]]

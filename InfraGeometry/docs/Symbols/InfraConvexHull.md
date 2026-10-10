@@ -45,6 +45,7 @@ GraphicsGrid @ Table[
 The sizes of the rounds of three vertices of the Petersen graph.
 
 ```wl
+SeedRandom[1];
 With[
   {g = PetersenGraph[]},
   Length @ RandomInfraRepresentative[g, InfraConvexHull[{1, 2, 8}, #]] & /@ Range[0, 4]]
@@ -63,6 +64,7 @@ With[
 The hull is geodesically convex: it is its own hull, and it contains every round.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{7, 7}]},
   {hull = RandomInfraRepresentative[g, InfraConvexHull[{2, 6, 40}]]},

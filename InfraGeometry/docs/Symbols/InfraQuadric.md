@@ -44,6 +44,7 @@ The head computes nothing. A quadric has one member, the vertex set. [InfraMeasu
 The elliptic shell of two points at distance 6, on the irregular mesh, the square grid and the hexagonal tiling, with the band of slack 2.
 
 ```wl
+SeedRandom[1];
 Row[Table[
   With[
     {g = InfraSubstrate[name, "Large", "KeepCoordinates" -> True]},
@@ -70,6 +71,7 @@ GraphicsRow[{
 One focus is the ball, and with the band *{r, r}* the shell.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{7, 7}]},
   {RandomInfraRepresentative[g, InfraQuadric[{20}, 3]] === RandomInfraRepresentative[g, InfraBall[20, 3]],
@@ -85,6 +87,7 @@ Keys @ InfraMeasurement[PathGraph[Range[9]], InfraQuadric[{3, 7}, {4, 4}], "Vert
 The quadric about two foci contains the tube about the interval between them: a vertex within *s* of the interval has slack at most *2 s*.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{7, 7}]},
   {tube = RandomInfraRepresentative[g, InfraTube[InfraSegment[8, 42], 1]]},

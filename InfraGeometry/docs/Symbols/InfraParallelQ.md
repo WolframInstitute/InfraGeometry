@@ -44,6 +44,7 @@ Corresponding notions in the classical axiom systems:
 A line is not parallel to itself, because parallels must not meet.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -79,6 +80,7 @@ With[
 Two maximal shortest paths chosen independently are generally not parallel, because the distance between them varies along their length.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},

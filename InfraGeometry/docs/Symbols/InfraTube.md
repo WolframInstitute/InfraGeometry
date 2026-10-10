@@ -58,6 +58,7 @@ The head computes nothing. A tube has one member, the vertex set. [InfraMeasurem
 The tube of radius 2 about a segment on the discretized plane, the square grid and the hexagonal tiling. The Riemannian measure counts the inner vertices, in green; the counting measure adds the boundary, in blue.
 
 ```wl
+SeedRandom[1];
 Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
@@ -117,6 +118,7 @@ With[
 The fat tube about a segment of length 5 on the square grid against the box count, with *(a_1 + 1)(a_2 + 1)* the size of the interval and *a_1 + a_2 = 5*, and the thin tube about one of its shortest paths below it.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},
@@ -133,6 +135,7 @@ With[
 The tube of a segment against the tube of one of its shortest paths, both of radius 1: the first holds every shortest path, so it is fatter.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -144,6 +147,7 @@ With[
 The tube of a vertex is the ball.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small"]},
   {c = First @ GraphCenter[g]},

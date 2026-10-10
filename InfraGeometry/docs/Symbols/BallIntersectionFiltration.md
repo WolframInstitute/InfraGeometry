@@ -61,6 +61,7 @@ With[
 With `"Metric"` -> *g* the data are vertices of a graph. The number of edges and triangles of the Čech filtration of the vertices within distance 3 of the centre of the hexagonal tiling, at integer radii.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small"]},
   {data = RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 3]]},

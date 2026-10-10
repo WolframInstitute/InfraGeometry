@@ -46,6 +46,7 @@ Corresponding notions in the classical axiom systems:
 A point on the line yields nothing. That is Euclid I.11, not I.12.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -57,6 +58,7 @@ With[
 Off the line, the family is large, and `"Radius"` controls it.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -70,6 +72,7 @@ With[
 Three perpendiculars through a point, drawn with the line they cross.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},

@@ -39,13 +39,14 @@ No count is known. The family has no closed formula for its number of members, a
 
 How the number is measured: one instance *T*, <code>[RandomInfraRepresentative]()[*g*, [InfraSphere]()[*c*, {*r*, *r* + 1}]]</code>, found greedily, is a vertex list, and <code>[InfraMeasurement]()[*g*, [InfraTube]()[*T*, 0], *measure*]</code> measures it as a region. The profile is the list of the instance sizes over *r*, a profile of instances, not of the family.
 
-[RandomInfraRepresentative]() gives members: a count, `"RandomChoice"` and `"Pruning" -> q` are translated to the `"NextVertexFunction"` of [RandomInfraSphere](). Without a count it gives one member, a sorted vertex list.
+[RandomInfraRepresentative]() gives members: the count and `"NextVertexFunction"` are passed to [RandomInfraSphere](). Without a count it gives one member, a sorted vertex list.
 
 ## Basic Examples
 
 The shell of radius 3, and the sphere in it, on the discretized plane, the square grid and the hexagonal tiling, labelled with the number of members and the two measures. The shell of the mesh is a connected ring and is its own sphere; the two lattices are bipartite, and the family is empty.
 
 ```wl
+SeedRandom[1];
 Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
@@ -60,6 +61,7 @@ Row[Table[
 The four minimal connected separators in the band 1 to 2 about the centre of a 5 by 5 grid, each drawn on its own.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{5, 5}]},
   {members = RandomInfraRepresentative[g, InfraSphere[13, {1, 2}], All]},
@@ -77,6 +79,7 @@ InfraMeasurement[GridGraph[{5, 5}], InfraSphere[13, {1, 2}], {"Cardinality", "Fa
 The size of one instance per band *{r, r + 1}* about the centre of the square grid, as points, against the count of the band, as a curve.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},
@@ -89,6 +92,7 @@ With[
 A member is connected and is contained in the shell.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{7, 7}]},
   {members = RandomInfraRepresentative[g, InfraSphere[25, {2, 3}], All]},

@@ -14,9 +14,11 @@ RelatedGuides: [RiemannianInfrageometry]
 
 <code>[RandomInfraGeodesic]()[*g*, *germ*, *s*, *kspec*]</code> gives one geodesic at infra-scale *s* grown from *germ*, with a length inside the budget *kspec*.
 
-<code>[RandomInfraGeodesic]()[*g*, *germ*, *s*, *kspec*, *n*]</code> gives a `List` of exactly *n* geodesics or `$Failed`; `UpTo[n]` gives up to *n*; `All` gives every one.
+<code>[RandomInfraGeodesic]()[*g*, *germ*, *s*, *kspec*, *n*]</code> gives a `List` of exactly *n* geodesics or `{}`; `UpTo[n]` gives up to *n*; `All` gives every one.
 
 ## Details & Options
+
+The default draw is random. Seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing.
 
 Definition: a walk *v0*, *v1*, …, *vk* is a geodesic at infra-scale *s* when every window of *s* consecutive vertices together with the next one is a shortest path: *d(v(i−s), vi) = s* for every *i ≥ s*, and *d(v0, vi) = i* for *i < s*.
 
@@ -37,7 +39,7 @@ The search reads only the window, never a target. A target is a stopping conditi
 | Option | Default | Values |
 |---|---|---|
 | `Properties` | `{}` | further rules, each `rule`, `{rule, r}` or `{rule, r, p}` with the window *r* and the weight *p*: `"Simple"`, `"Shortest"`, `"Stretched"`, or an energy function of the window |
-| `"NextVertexFunction"` | `Automatic` | `Automatic` (canonical, random by the weights once a rule is soft), `Identity`, `RandomSample`, `RandomChoice` (the random walk; the count is independent runs), or a function of the candidate windows giving the ones to pursue in order |
+| `"NextVertexFunction"` | `Automatic` | `Automatic` (random candidate order by the weights for bounded counts; canonical for `All`), `Identity`, `RandomSample`, `RandomChoice` (the random walk; the count is independent runs), or a function of the candidate windows giving the ones to pursue in order |
 | `"Direction"` | `"Forward"` | `"Forward"`, `"Backward"` or `"BothSides"` |
 | `"StoppingCondition"` | `None` | a predicate on the walk so far |
 
@@ -46,6 +48,7 @@ The search reads only the window, never a target. A target is a stopping conditi
 The geodesics of at most 8 edges from the centre of the square tiling to a vertex four steps away, at infra-scales 2, 3 and `Infinity`. At scale `Infinity` they are the six shortest paths; at the smaller scales they include locally shortest walks that go round.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -61,6 +64,7 @@ With[
 One geodesic at infra-scale 3 of exactly 6 edges from the centre, beside its vertex sequence.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -71,6 +75,7 @@ With[
 All geodesics of 4 edges from the centre, as the scale grows: every walk at scale 1, the walks that never step back at scale 2, the shortest paths at scale `Infinity`.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -83,6 +88,7 @@ With[
 A geodesic germ of two vertices grown on both sides: the shortest paths that contain the edge and prolong it by at most 2 edges at each end.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -98,6 +104,7 @@ With[
 Under `RandomChoice` the geodesic is a random one, one uniform admissible step at a time. Three geodesics at infra-scale 2 of 12 edges from the centre, one per seed.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -111,6 +118,7 @@ With[
 At scale `Infinity` the geodesics from the centre that end at *b* are the members of the segment.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -124,6 +132,7 @@ With[
 Every walk found passes [InfraGeodesicQ]() at its scale.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -134,6 +143,7 @@ With[
 A geodesic germ of scale `Infinity` grown without a budget on both sides gives the lines through it: the vertex lists of [RandomInfraLine]().
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},

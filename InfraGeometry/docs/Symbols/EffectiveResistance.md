@@ -31,6 +31,7 @@ Between two components no current flows, and *R* is [Infinity](). The resistance
 On the square tiling the ball of radius 5 about the centre, blue, is a square. The vertices within resistance 1.15 of the centre, green, are as many, 61, and they form a round disk.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},

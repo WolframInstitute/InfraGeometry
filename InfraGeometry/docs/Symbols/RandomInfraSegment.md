@@ -18,6 +18,8 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Details & Options
 
+The default draw is random. Seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing.
+
 A segment from *a* to *b* is a shortest path: a path whose length realizes $d(a,b)$.
 
 In the Euclidean plane the segment between two points is unique. On a graph it is a **set** of paths, and uniqueness fails generically — a square grid has many shortest paths between two vertices, because any interleaving of the horizontal and vertical steps is one.
@@ -42,6 +44,7 @@ Corresponding notions in the classical axiom systems:
 Every shortest path between two vertices at distance 6, on the discretized plane, the square grid and the hexagonal tiling. The count is the sharpest difference between the substrates: the irregular mesh has four, the square grid fifteen, the hexagonal tiling three.
 
 ```wl
+SeedRandom[1];
 Row[Table[
    With[
      {g = InfraSubstrate[name, "Large", "KeepCoordinates" -> True]},
@@ -63,12 +66,14 @@ The intensity in that picture is the multiplicity: an edge lying on many shortes
 The count-less call is one shortest path; a count gives a list.
 
 ```wl
+SeedRandom[1];
 {RandomInfraSegment[GridGraph[{4, 4}], 1, 11], RandomInfraSegment[GridGraph[{4, 4}], 1, 11, 2]}
 ```
 
 A strict count that cannot be met gives the empty list.
 
 ```wl
+SeedRandom[1];
 RandomInfraSegment[GridGraph[{4, 4}], 1, 11, 7]
 ```
 
@@ -77,6 +82,7 @@ RandomInfraSegment[GridGraph[{4, 4}], 1, 11, 7]
 The vertices covered by the shortest paths are exactly the metric interval between the endpoints, which is what [MetricInterval]() computes directly.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -87,6 +93,7 @@ With[
 The search agrees with the graph of the head.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{5, 5}]},
   Sort @ RandomInfraSegment[g, 1, 19, All] === Sort @ RandomInfraRepresentative[g, InfraSegment[1, 19], All]]

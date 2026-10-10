@@ -54,6 +54,7 @@ With[
 At scale 1 the test is [InfraWalkQ]() and at scale `Infinity` it is [InfraSegmentQ](), on every walk of 4 edges from the centre; those passing at scale `Infinity` are drawn.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},

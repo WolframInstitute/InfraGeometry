@@ -41,6 +41,7 @@ twoMeasures[g_, regions_] := InfraMeasurement[g, regions, #] & /@ {"CountingMeas
 A region drawn by its two measures: the interior green, the boundary blue. The counting measure counts both colours, the Riemannian measure the green vertices only.
 
 ```wl
+SeedRandom[1];
 interiorAndBoundary[g_, region_] := With[{support = RandomInfraRepresentative[g, region]}, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}]
 ```
 
@@ -126,6 +127,7 @@ GraphicsGrid @ Table[
 The tubes of thickness $\lceil R/2 \rceil$: the thin tube green, the rest of the fat tube blue, and the geodesic.
 
 ```wl
+SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
@@ -140,6 +142,7 @@ GraphicsGrid @ Table[
 The profiles over $s = 0, \ldots, R$: the fat tube as joined points, the thin tube as points, the counting measure in the first colour and the Riemannian measure in the second. On the square tiling the curves are the box count and its value one step thinner.
 
 ```wl
+SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
@@ -168,6 +171,7 @@ GraphicsGrid @ Table[
 The ellipsoid of slack $2s$ and the fat tube of thickness $s$, for $s = \lceil R/2 \rceil$: the tube green, the vertices of the ellipsoid outside the tube red, and the interval.
 
 ```wl
+SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
@@ -184,6 +188,7 @@ GraphicsGrid @ Table[
 The profiles over $s = 0, \ldots, R$: the ellipsoid of slack $2s$ as joined points, the fat tube of thickness $s$ as points, the counting measure in the first colour and the Riemannian measure in the second.
 
 ```wl
+SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
@@ -218,6 +223,7 @@ GraphicsRow @ Table[
 The smallest counterexample to the equality on the triangular tiling, with foci at distance two and thickness one: the corners $a, b, x$ of a triangle of side two, with the three intervals between them.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -239,6 +245,7 @@ With[
 The cone of slope one half about one geodesic from the centre to the far end, by its two measures, with its axis.
 
 ```wl
+SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
@@ -251,6 +258,7 @@ GraphicsGrid @ Table[
 The profiles over the slope $m = 0, \frac{1}{8}, \ldots, \frac{3}{2}$: the cone as points, the ball of radius $\lfloor mR \rfloor$ about the far end as joined points, the counting measure in the first colour and the Riemannian measure in the second.
 
 ```wl
+SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
@@ -276,6 +284,7 @@ GraphicsGrid @ Table[
 One instance in the band between the radii $\lceil R/2 \rceil$ and $\lceil R/2 \rceil + 1$, orange, drawn over the band, green.
 
 ```wl
+SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
@@ -289,6 +298,7 @@ GraphicsGrid @ Table[
 The profiles of one instance in each band $S_{r, r+1}$ over $r = 1, \ldots, \min(R, 6)$ as points, the counting measure in the first colour and the Riemannian measure in the second, with the counting measures of the two shells $S_r$ and $S_{r+1}$ as joined points.
 
 ```wl
+SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
@@ -321,6 +331,7 @@ The two measures differ by a layer, and that layer holds a share of order $1/r$ 
 A Rips graph of points sprinkled in the unit square at the scale $\varepsilon = N^{-1/3}$, for a growing number $N$ of points, and the ball about the point nearest the middle at the hop radius closest to a quarter. Each point is drawn with its nearest-point cell: the cells of the interior green, of the boundary blue. The red circle has the radius $r$ times the mean length of one hop from the centre.
 
 ```wl
+SeedRandom[1];
 GraphicsRow @ Table[
   With[
     {points = (SeedRandom[2]; RandomPoint[Rectangle[], count])},

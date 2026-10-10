@@ -56,6 +56,7 @@ The head computes nothing. A cone has one member, the vertex set. [InfraMeasurem
 The cone of slope 1/2 along a shortest path on the discretized plane, the square grid and the hexagonal tiling. The Riemannian measure counts the inner vertices, in green; the counting measure adds the boundary, in blue.
 
 ```wl
+SeedRandom[1];
 Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
@@ -72,6 +73,7 @@ Row[Table[
 The same axis read from the other end gives the other apex; the base is a full row.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -86,6 +88,7 @@ With[
 The two measures against the slope, along a shortest path of length 6 on the square grid. Slope 0 is the axis, all boundary.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},
@@ -99,6 +102,7 @@ With[
 The cone of slope 1 along a shortest path, sliced, rounded, and the ball of radius the length of the axis about the far end. The rounded cone is that ball; the sliced one keeps the base flat.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -112,6 +116,7 @@ With[
 The cone is contained in the cylinder of radius *slope* (*n* − 1).
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small"]},
   {c = First @ GraphCenter[g]},

@@ -29,6 +29,7 @@ The outer boundary of *S*, the vertices outside *S* next to it, is the boundary 
 The ball of radius 3 about the centre of the square, hexagonal and triangular tilings, its interior green and its boundary blue. The boundary of a ball is its outermost shell.
 
 ```wl
+SeedRandom[1];
 With[
   {panels = Table[
      With[
@@ -43,6 +44,7 @@ With[
 A set with a hole has a boundary on both of its sides: the ball of radius 4 less the ball of radius 1.
 
 ```wl
+SeedRandom[1];
 With[
   {panels = Table[
      With[
@@ -71,6 +73,7 @@ With[
 The outer boundary of a set is the boundary of its complement. For the ball of radius 3 it is the shell of radius 4, red, outside the inner boundary, blue.
 
 ```wl
+SeedRandom[1];
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
@@ -82,6 +85,7 @@ GraphicsRow @ Table[
 [InfraBoundary]() with its default method gives the same vertices, sorted: here for the ball of radius 4 of the triangular tiling, its interior green.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {region = RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]]},

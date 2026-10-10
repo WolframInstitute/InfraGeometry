@@ -80,6 +80,7 @@ With[
 At a single radius the circle exists on the irregular mesh and not on the two lattices: their shell has no two adjacent vertices. Each picture shows the shell and the circles found in it, labelled by their number.
 
 ```wl
+SeedRandom[1];
 Row @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
@@ -96,6 +97,7 @@ Row @ Table[
 The thickness needed follows the girth: on the hexagonal tiling the band `{4, 5}` is still empty, and `{4, 6}` carries the circles.
 
 ```wl
+SeedRandom[1];
 Row @ Table[
   With[
     {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
@@ -112,6 +114,7 @@ Row @ Table[
 One circle about the centre of each lattice, at the band each one needs, drawn as its directed cycle.
 
 ```wl
+SeedRandom[1];
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[First @ spec, "Small", "KeepCoordinates" -> True]},
@@ -125,6 +128,7 @@ GraphicsRow @ Table[
 A member is a cyclic vertex list. Drawn as a walk, it closes back on its first vertex.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -149,6 +153,7 @@ With[
 Every circle of the band `{2, 4}` on the square tiling, drawn at once. A bounded count gives a list, and a strict count that cannot be met gives `{ }`.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -163,6 +168,7 @@ With[
 A circle lies in its band, and consecutive vertices are adjacent, the last and the first too.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -175,6 +181,7 @@ With[
 The search sweeps the band directly and finds as many circles as the atoms carry.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},

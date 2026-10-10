@@ -88,6 +88,7 @@ With[
 The members are vertex lists. Three minor arcs, each drawn as a walk.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -151,6 +152,7 @@ With[
 Every circle through *p*, found by the search, each drawn as its directed cycle.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -179,6 +181,7 @@ With[
 The closed arc through *p* has the members of the circle of the same band that pass through *p*.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -192,6 +195,7 @@ With[
 On the closed arc the search sweeps the band directly and finds as many circles as the graph carries.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},

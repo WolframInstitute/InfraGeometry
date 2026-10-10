@@ -49,6 +49,7 @@ With[{g = GridGraph[{5, 5}]},
 A list of walks, and the graph of a segment.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{5, 5}]},
   {InfraSegmentQ[g, RandomInfraSegment[g, 1, 13, All]],
@@ -68,6 +69,7 @@ With[
 Every line is a shortest path.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{4, 4}]},
   InfraSegmentQ[g, RandomInfraLine[g, 6, 7, All]]]

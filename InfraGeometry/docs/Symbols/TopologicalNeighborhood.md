@@ -29,6 +29,7 @@ The result is a sorted vertex list.
 The smallest open set containing a ball about the centre that reaches within two steps of the rim, at radius 2, on the discretized plane, the square tiling and the hexagonal tiling. The ball is green. The neighbourhood adds the red vertices near the rim, whose balls lie inside the balls of the ball's vertices.
 
 ```wl
+SeedRandom[1];
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
@@ -54,6 +55,7 @@ With[
 The neighbourhood is open, its own interior. It is the closure in the dual topology, the reversed digraph.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
   {topo = BallTopology[g, 2]},

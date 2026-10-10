@@ -27,6 +27,7 @@ The values of a displacement are sets because the metric does not always decide:
 A step from the centre to a ball of radius 1, blue, contracts to the centre of the ball, orange, on the discretized plane, the square tiling and the hexagonal tiling.
 
 ```wl
+SeedRandom[1];
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},

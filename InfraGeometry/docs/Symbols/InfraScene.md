@@ -41,6 +41,7 @@ A scene answers `"Objects"`, `"Constructions"`, `"Assertions"`, `"Steps"`, `"Lab
 Euclid I.1 on the square tiling: two points four steps apart, a circle in the band `{4, 5}` about each, and the vertices where the circles meet. On a lattice two circles meet along an edge rather than at a vertex, so there are several meeting vertices.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, pB, circleA, circleB, meet];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
@@ -75,6 +76,7 @@ With[
 An assertion keeps the branches it holds on: here the meeting vertices nearer than *A* to a vertex of the rim.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, pB, circleA, circleB, meet];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
@@ -95,6 +97,7 @@ With[
 At a single radius the square tiling has no circle, so the construction finds nothing. The shell about *A* is drawn: it has no two adjacent vertices.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, pB, circleA, circleB, meet];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
@@ -111,6 +114,7 @@ With[
 On the discretized plane a single radius suffices: its shells are cycles by accident of the mesh.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, pB, circleA, circleB, meet];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
@@ -128,6 +132,7 @@ With[
 An operand of [InfraIntersection]() may be a token, bound to no name.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, pB, circleA, meet];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},

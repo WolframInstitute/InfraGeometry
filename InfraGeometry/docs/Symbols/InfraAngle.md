@@ -48,6 +48,7 @@ Corresponding notions in the classical axiom systems:
 Two configurations at the centre of the square tiling, each arm drawn along the line. Opposite arms of a line give exactly π. The same direction gives exactly 0.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -77,6 +78,7 @@ With[
 The two methods answer different questions. On the straight-line case, arclength gives 3 where the comparison angle gives π.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},

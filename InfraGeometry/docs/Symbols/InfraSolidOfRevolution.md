@@ -47,6 +47,7 @@ With[
 The constant profile is the cylinder, and the linear profile the cone.
 
 ```wl
+SeedRandom[1];
 With[
   {g = GridGraph[{11, 11}]},
   {axis = 55 + Range[2, 8]},

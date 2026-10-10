@@ -19,6 +19,7 @@ RelatedGuides: [EuclideanInfrageometry]
 Two labelled steps: two points three steps apart, then the segment between them. The segments of every branch are drawn summed.
 
 ```wl
+SeedRandom[1];
 ClearAll[pA, pB, seg1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},

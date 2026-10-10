@@ -43,6 +43,7 @@ On the 6-cycle a shortest path of length 3 reaches the antipode and is a line; o
 Every line [RandomInfraLine]() produces satisfies the predicate; the pool is accepted as a whole.
 
 ```wl
+SeedRandom[1];
 InfraLineQ[GridGraph[{4, 4}], RandomInfraLine[GridGraph[{4, 4}], 6, 7, All]]
 ```
 

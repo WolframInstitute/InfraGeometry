@@ -62,6 +62,7 @@ With[
 The first steps as stills: the two points, then the circle about the first. This is what the viewer shows as you step, drawn without the interface.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {p1 = First @ GraphCenter[g]},
