@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSegment
 Keywords: [segment, shortest path, interval DAG, polyline, symbolic object, counting measure, Riemannian measure]
-SeeAlso: [IntervalGraph, RandomInfraSegment, InfraMeasurement, RandomInfraRepresentative, RandomInfraGeodesic, InfraLine, MetricInterval, InfraTube]
+SeeAlso: [IntervalGraph, RandomInfraSegment, InfraMeasurement, RandomInfraSegment, RandomInfraGeodesic, InfraInfiniteLine, MetricInterval, InfraTube]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraSegment]()[*p*, *q*]</code> is the segment from *p* to *q*: every shortest path from *p* to *q* at once. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
+<code>[InfraSegment]()[*p*, *q*]</code> is the segment from *p* to *q*: every shortest path from *p* to *q* at once. It is a symbolic object; [InfraMeasurement]() and [RandomInfraSegment]() evaluate it on a graph.
 
 <code>[InfraSegment]()[*p1*, *p2*, …, *pk*]</code> is the polyline of the segments [*p1*, *p2*], …, [*p(k-1)*, *pk*].
 
@@ -39,7 +39,7 @@ The support of the segment, the keys of its `"VertexDensity"`, is the interval i
 
 On the square grid two vertices *a* steps apart along one axis and *b* along the other span an (*a* + 1) × (*b* + 1) rectangle, so for *a*, *b* ≥ 1 the measures are (*a* + 1)(*b* + 1) and (*a* − 1)(*b* − 1). A segment with a single shortest path is all boundary, and its Riemannian measure is `0`. The rim of the graph is not boundary: a segment whose interval is the whole graph has both measures equal to the number of vertices.
 
-A member is a vertex list; [RandomInfraRepresentative]() reads one, several or all of them, and [InfraMemberQ]() tests one.
+A member is a vertex list; [RandomInfraSegment]() reads one, several or all of them, and [InfraMemberQ]() tests one.
 
 Corresponding notions in the classical axiom systems:
 
@@ -110,7 +110,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 5]])},
-  {members = RandomInfraRepresentative[g, InfraSegment[a, b], 3]},
+  {members = RandomInfraSegment[ g, InfraSegment[a, b], 3 ]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], a, b}], {member, members}]]
 ```
 
@@ -150,7 +150,7 @@ With[
   {a = First @ GraphCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 5]])},
   {seg = InfraSegment[a, b]},
-  {members = RandomInfraRepresentative[g, seg, All]},
+  {members = Replace[ seg, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> RandomInfraBall[ g, token, All ], token_InfraShell :> RandomInfraShell[ g, token, All ], token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> RandomInfraTube[ g, token, All ], token_InfraCylinder :> RandomInfraCylinder[ g, token, All ], token_InfraCone :> RandomInfraCone[ g, token, All ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, All ], token_InfraBallHull :> RandomInfraBallHull[ g, token, All ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, All ], token_InfraQuadric :> RandomInfraQuadric[ g, token, All ], token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> RandomInfraIntersection[ g, token, All ], token_InfraUnion :> RandomInfraUnion[ g, token, All ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ]},
   {InfraSubstrateHighlight[g, {members, a, b}],
    Length @ members === InfraMeasurement[g, seg, "Cardinality"],
    Union[Length[#] - 1 & /@ members] === {GraphDistance[g, a, b]}}]

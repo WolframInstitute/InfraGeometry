@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSolidOfRevolution
 Keywords: [solid of revolution, profile, sliced tube, region, symbolic object, volume]
-SeeAlso: [InfraTube, InfraCylinder, InfraCone, InfraBall, InfraMeasurement, RandomInfraRepresentative, InfraMemberQ]
+SeeAlso: [InfraTube, InfraCylinder, InfraCone, InfraBall, InfraMeasurement, RandomInfraSolidOfRevolution, InfraMemberQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraSolidOfRevolution]()[*axis*, *profile*]</code> is the solid about *axis* whose radius along the axis is *profile*: the vertices within the radius of the axis vertex they project to, with flat ends. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
+<code>[InfraSolidOfRevolution]()[*axis*, *profile*]</code> is the solid about *axis* whose radius along the axis is *profile*: the vertices within the radius of the axis vertex they project to, with flat ends. It is a symbolic object; [InfraMeasurement]() and [RandomInfraSolidOfRevolution]() evaluate it on a graph.
 
 <code>[InfraSolidOfRevolution]()[*axis*, *profile*, Method -> "Balls"]</code> is the rounded solid, the union of the balls of radius *r_i* about the axis vertices.
 
@@ -51,8 +51,8 @@ SeedRandom[1];
 With[
   {g = GridGraph[{11, 11}]},
   {axis = 55 + Range[2, 8]},
-  {RandomInfraRepresentative[g, InfraSolidOfRevolution[axis, ConstantArray[1, 7]]] === RandomInfraRepresentative[g, InfraCylinder[axis, 1]],
-   RandomInfraRepresentative[g, InfraSolidOfRevolution[axis, i |-> i - 1]] === RandomInfraRepresentative[g, InfraCone[axis, 1]]}]
+  {RandomInfraSolidOfRevolution[ g, InfraSolidOfRevolution[axis, ConstantArray[1, 7]] ] === RandomInfraCylinder[ g, InfraCylinder[axis, 1] ],
+   RandomInfraSolidOfRevolution[ g, InfraSolidOfRevolution[axis, i |-> i - 1] ] === RandomInfraCone[ g, InfraCone[axis, 1] ]}]
 ```
 
 The two measures of the solid.

@@ -11,7 +11,8 @@ Options[ RandomInfraSphere ] = {
 }
 
 RandomInfraSphere[ graph_Graph, p_, r_,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; ( VertexQ[ graph, p ] || ! MatchQ[ p, _InfraSphere ] ) &&
+    SubsetQ[ First /@ Options[ RandomInfraSphere ], First /@ { opts } ] &&
     SubsetQ[ { "Separating", "Connected" }, OptionValue[ RandomInfraSphere, { opts }, Properties ] ] &&
     ( count =!= All || OptionValue[ RandomInfraSphere, { opts }, "NextVertexFunction" ] =!= RandomChoice ) :=
   With[ {
@@ -75,8 +76,7 @@ InfraMeasurement[ graph_Graph, sphere : InfraSphere[ _, _ ], All ] :=
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
       "CountingMeasure", "RiemannianMeasure" } ]
 
-RandomInfraRepresentative[ graph_Graph, InfraSphere[ center_, r_ ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
-  RandomInfraSphere[ graph, center, r, count,
-    "NextVertexFunction" -> OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] ]
+RandomInfraSphere[ graph_Graph, InfraSphere[ center_, radius_ ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraSphere ], First /@ { opts } ] :=
+  RandomInfraSphere[ graph, center, radius, count, opts ]

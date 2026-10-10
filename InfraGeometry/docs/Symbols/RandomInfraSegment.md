@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraSegment
 Keywords: [segment, shortest path, Euclid Postulate 1]
-SeeAlso: [InfraSegment, RandomInfraRepresentative, RandomInfraLine, InfraMeasurement, UniqueInfraSegmentQ, MetricInterval]
+SeeAlso: [InfraSegment, RandomInfraSegment, RandomInfraInfiniteLine, InfraMeasurement, UniqueInfraSegmentQ, MetricInterval]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -24,7 +24,7 @@ A segment from *a* to *b* is a shortest path: a path whose length realizes $d(a,
 
 In the Euclidean plane the segment between two points is unique. On a graph it is a **set** of paths, and uniqueness fails generically — a square grid has many shortest paths between two vertices, because any interleaving of the horizontal and vertical steps is one.
 
-The sampler draws from the interval DAG through <code>[RandomInfraRepresentative]()[*g*, [InfraSegment]()[*a*, *b*], …]</code>. To count the shortest paths without enumerating them, use [InfraMeasurement]().
+The sampler draws from the interval DAG through <code>[RandomInfraSegment]()[*g*, [InfraSegment]()[*a*, *b*], …]</code>. To count the shortest paths without enumerating them, use [InfraMeasurement]().
 
 The count-less call is one random shortest path. There is no `Method` and no `Properties`.
 
@@ -96,5 +96,5 @@ The search agrees with the graph of the head.
 SeedRandom[1];
 With[
   {g = GridGraph[{5, 5}]},
-  Sort @ RandomInfraSegment[g, 1, 19, All] === Sort @ RandomInfraRepresentative[g, InfraSegment[1, 19], All]]
+  Sort @ RandomInfraSegment[g, 1, 19, All] === Sort @ RandomInfraSegment[ g, InfraSegment[1, 19], All ]]
 ```

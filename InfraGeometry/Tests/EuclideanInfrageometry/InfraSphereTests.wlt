@@ -145,7 +145,7 @@ sphereMinimalQ[ g_, c_, band_, t_ ] :=
 
 VerificationTest[
   With[ { g = GridGraph[ { 7, 7 } ] },
-    { members = RandomInfraRepresentative[ g, InfraSphere[ 25, { 2, 3 } ], All ] },
+    { members = RandomInfraSphere[ g, InfraSphere[ 25, { 2, 3 } ], All ] },
     { Length @ members, AllTrue[ members, t |-> sphereMinimalQ[ g, 25, { 2, 3 }, t ] ],
       AllTrue[ members, t |-> SubsetQ[ FindInfraShell[ g, 25, { 2, 3 } ], t ] ] } ],
   { 12, True, True },
@@ -155,7 +155,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = InfraSubstrate[ "HexagonalTilingGraph", "Small" ] },
     { c = First @ GraphCenter[ g ] },
-    { members = RandomInfraRepresentative[ g, InfraSphere[ c, { 2, 4 } ], UpTo[ 3 ] ] },
+    { members = RandomInfraSphere[ g, InfraSphere[ c, { 2, 4 } ], UpTo[ 3 ] ] },
     { Length @ members, AllTrue[ members, t |-> sphereMinimalQ[ g, c, { 2, 4 }, t ] ] } ],
   { 3, True },
   TestID -> "InfraSphere-hexagonal-members-connected-separating-minimal"
@@ -164,7 +164,7 @@ VerificationTest[
 (* on the thin torus C3 x C12 the band {2, 3} has one piece on each side of the centre, so no connected subset of it separates *)
 VerificationTest[
   With[ { g = IndexGraph @ GraphProduct[ CycleGraph[ 3 ], CycleGraph[ 12 ], "Cartesian" ] },
-    { RandomInfraSphere[ g, 1, { 2, 3 }, All ], RandomInfraRepresentative[ g, InfraSphere[ 1, { 2, 3 } ] ],
+    { RandomInfraSphere[ g, 1, { 2, 3 }, All ], RandomInfraSphere[ g, InfraSphere[ 1, { 2, 3 } ] ],
       InfraMeasurement[ g, InfraSphere[ 1, { 2, 3 } ], { "Cardinality", "VertexDensity" } ] } ],
   { { }, { }, <| "Cardinality" -> 0, "VertexDensity" -> <| |> |> },
   TestID -> "InfraSphere-wrapped-torus-band-is-empty"
@@ -200,11 +200,11 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    { BlockRandom[ RandomInfraRepresentative[ g, InfraSphere[ 13, { 1, 2 } ] ], RandomSeeding -> 1 ] ===
+    { BlockRandom[ RandomInfraSphere[ g, InfraSphere[ 13, { 1, 2 } ] ], RandomSeeding -> 1 ] ===
         BlockRandom[ RandomInfraSphere[ g, 13, { 1, 2 } ], RandomSeeding -> 1 ],
-      RandomInfraRepresentative[ g, InfraSphere[ 13, { 1, 2 } ], All ] === RandomInfraSphere[ g, 13, { 1, 2 }, All ],
-      SubsetQ[ RandomInfraSphere[ g, 13, { 1, 2 }, All ], BlockRandom[ RandomInfraRepresentative[ g, InfraSphere[ 13, { 1, 2 } ], 3 ], RandomSeeding -> 1 ] ],
-      Sort @ RandomInfraRepresentative[ g, InfraSphere[ 13, { 1, 2 } ], All, "NextVertexFunction" -> Identity ] ===
+      RandomInfraSphere[ g, InfraSphere[ 13, { 1, 2 } ], All ] === RandomInfraSphere[ g, 13, { 1, 2 }, All ],
+      SubsetQ[ RandomInfraSphere[ g, 13, { 1, 2 }, All ], BlockRandom[ RandomInfraSphere[ g, InfraSphere[ 13, { 1, 2 } ], 3 ], RandomSeeding -> 1 ] ],
+      Sort @ RandomInfraSphere[ g, InfraSphere[ 13, { 1, 2 } ], All, "NextVertexFunction" -> Identity ] ===
         Sort @ RandomInfraSphere[ g, 13, { 1, 2 }, All ] } ],
   { True, True, True, True },
   TestID -> "InfraSphere-representative-translates-the-sampler-options"
@@ -218,7 +218,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  Head @ InfraSubstrateHighlight[ GridGraph[ { 5, 5 } ], { InfraSphere[ 13, { 1, 2 } ], RandomInfraRepresentative[ GridGraph[ { 5, 5 } ], InfraSphere[ 13, { 1, 2 } ] ] } ],
+  Head @ InfraSubstrateHighlight[ GridGraph[ { 5, 5 } ], { InfraSphere[ 13, { 1, 2 } ], RandomInfraSphere[ GridGraph[ { 5, 5 } ], InfraSphere[ 13, { 1, 2 } ] ] } ],
   Graph,
   TestID -> "InfraSphere-draws"
 ]

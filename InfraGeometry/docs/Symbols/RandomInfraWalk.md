@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraWalk
 Keywords: [walk, germ, simple path, window, energy, weight, random walk, stopping condition, next vertex, class of walks]
-SeeAlso: [RandomInfraGeodesic, RandomInfraSegment, RandomInfraLine, RandomInfraRepresentative, InfraWalk, InfraWalkQ, WalkSingularities]
+SeeAlso: [RandomInfraGeodesic, RandomInfraSegment, RandomInfraInfiniteLine, RandomInfraWalk, InfraWalk, InfraWalkQ, WalkSingularities]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 

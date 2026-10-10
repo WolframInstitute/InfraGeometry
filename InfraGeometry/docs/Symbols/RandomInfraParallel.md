@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraParallel
 Keywords: [parallel, parallel postulate, Playfair, Euclid Postulate 5, level set, pool]
-SeeAlso: [InfraParallelQ, RandomInfraLine, InfraLine, FindInfraPerpendicular, InfraLineQ, FindInfraBisectingHyperplane]
+SeeAlso: [InfraParallelQ, RandomInfraInfiniteLine, InfraInfiniteLine, FindInfraPerpendicular, InfraInfiniteLineQ, FindInfraBisectingHyperplane]
 RelatedGuides: [Experimental]
 ---
 
@@ -55,7 +55,7 @@ Association @ Table[
      {g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]},
      {c = First @ GraphCenter[g]},
      {far = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-     {line = RandomInfraLine[g, c, far]},
+     {line = RandomInfraInfiniteLine[g, c, far]},
      {p = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line, #] &]},
      EdgeCount /@ RandomInfraParallel[g, line, p, UpTo[10]]],
    {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
@@ -69,7 +69,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line = RandomInfraLine[g, c, far]},
+  {line = RandomInfraInfiniteLine[g, c, far]},
   {p = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line, #] &]},
   InfraSubstrateHighlight[g,
     {line,
@@ -116,7 +116,7 @@ With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line = RandomInfraLine[g, c, far]},
+  {line = RandomInfraInfiniteLine[g, c, far]},
   {p = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line, #] &]},
   SameQ @@ (Sort[VertexList /@ RandomInfraParallel[g, line, p, UpTo[100], "NextVertexFunction" -> #]] & /@
      {Identity, RandomSample})]

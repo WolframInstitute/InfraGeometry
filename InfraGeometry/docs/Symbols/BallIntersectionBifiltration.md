@@ -42,7 +42,7 @@ On the square tiling, with the graph metric, the ladder does not stop at order 3
 SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {data = RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 3]]},
+  {data = RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 3] ]},
   {bifiltration = BallIntersectionBifiltration[data, {1}, {3, 4}, "Metric" -> g, "MaxDimension" -> 3]},
   {gap = Complement[bifiltration[3][1], bifiltration[4][1]]},
   {InfraSubstrateHighlight[g, {data[[#]] & /@ gap}], Length[gap]}]

@@ -6,7 +6,7 @@ BeginTestSection["InfraMeasurement"]
 VerificationTest[
   With[{g = GridGraph[{3, 3}]},
     {InfraMeasurement[g, InfraSegment[1, 9], "Cardinality"],
-     Length[RandomInfraRepresentative[g, InfraSegment[1, 9], All]],
+     Length[RandomInfraSegment[ g, InfraSegment[1, 9], All ]],
      Length[FindPath[g, 1, 9, {4}, All]]}],
   {6, 6, 6},
   TestID -> "InfraMeasurement-Cardinality-counts-the-members"
@@ -16,7 +16,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
     InfraMeasurement[g, InfraSegment[1, 16], "VertexDensity"] ===
-      KeySort[Counts[Catenate[RandomInfraRepresentative[g, InfraSegment[1, 16], All]]]]],
+      KeySort[Counts[Catenate[RandomInfraSegment[ g, InfraSegment[1, 16], All ]]]]],
   True,
   TestID -> "InfraMeasurement-VertexDensity-is-the-occupation"
 ]
@@ -24,7 +24,7 @@ VerificationTest[
 (* the edge density counts the members through each arrow *)
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    {members = RandomInfraRepresentative[g, InfraSegment[1, 16], All]},
+    {members = RandomInfraSegment[ g, InfraSegment[1, 16], All ]},
     InfraMeasurement[g, InfraSegment[1, 16], "EdgeDensity"] ===
       KeySort[Counts[Catenate[Apply[DirectedEdge, Partition[#, 2, 1], {1}] & /@ members]]]],
   True,
@@ -125,68 +125,68 @@ VerificationTest[
   TestID -> "InfraMeasurement-list-of-heads"
 ]
 
-(* ===== RandomInfraRepresentative: the count contract ===== *)
+(* ===== NamedConstructionSampler: the count contract ===== *)
 
 (* the default draw changes with the random state, and a seed makes it reproducible *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}], obj = InfraSegment[1, 9]},
-    With[{draws = BlockRandom[Table[RandomInfraRepresentative[g, obj], {10}], RandomSeeding -> 1]},
-      {draws === BlockRandom[Table[RandomInfraRepresentative[g, obj], {10}], RandomSeeding -> 1],
+    With[{draws = BlockRandom[Table[Replace[ obj, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> RandomInfraBall[ g, token ], token_InfraShell :> RandomInfraShell[ g, token ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> RandomInfraTube[ g, token ], token_InfraCylinder :> RandomInfraCylinder[ g, token ], token_InfraCone :> RandomInfraCone[ g, token ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token ], token_InfraBallHull :> RandomInfraBallHull[ g, token ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token ], token_InfraQuadric :> RandomInfraQuadric[ g, token ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> RandomInfraIntersection[ g, token ], token_InfraUnion :> RandomInfraUnion[ g, token ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ], {10}], RandomSeeding -> 1]},
+      {draws === BlockRandom[Table[Replace[ obj, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> RandomInfraBall[ g, token ], token_InfraShell :> RandomInfraShell[ g, token ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> RandomInfraTube[ g, token ], token_InfraCylinder :> RandomInfraCylinder[ g, token ], token_InfraCone :> RandomInfraCone[ g, token ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token ], token_InfraBallHull :> RandomInfraBallHull[ g, token ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token ], token_InfraQuadric :> RandomInfraQuadric[ g, token ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> RandomInfraIntersection[ g, token ], token_InfraUnion :> RandomInfraUnion[ g, token ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ], {10}], RandomSeeding -> 1],
        Length[DeleteDuplicates[draws]] > 1}]],
   {True, True},
-  TestID -> "RandomInfraRepresentative-default-draw-is-random-and-seeded"
+  TestID -> "NamedConstructionSampler-default-draw-is-random-and-seeded"
 ]
 
 (* a finite draw contains distinct members, and UpTo exhausts a smaller class *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}], obj = InfraSegment[1, 9]},
-    {members = BlockRandom[RandomInfraRepresentative[g, obj, 3], RandomSeeding -> 9],
-     upTo = BlockRandom[RandomInfraRepresentative[g, obj, UpTo[100]], RandomSeeding -> 9]},
+    {members = BlockRandom[Replace[ obj, { token_InfraPoint :> RandomInfraPoint[ g, token, 3 ], token_InfraSegment :> RandomInfraSegment[ g, token, 3 ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, 3 ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, 3 ], token_InfraCircle :> RandomInfraCircle[ g, token, 3 ], token_InfraArc :> RandomInfraArc[ g, token, 3 ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, 3 ], token_InfraPlane :> RandomInfraPlane[ g, token, 3 ], token_InfraBall :> RandomInfraBall[ g, token, 3 ], token_InfraShell :> RandomInfraShell[ g, token, 3 ], token_InfraSphere :> RandomInfraSphere[ g, token, 3 ], token_InfraTube :> RandomInfraTube[ g, token, 3 ], token_InfraCylinder :> RandomInfraCylinder[ g, token, 3 ], token_InfraCone :> RandomInfraCone[ g, token, 3 ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, 3 ], token_InfraBallHull :> RandomInfraBallHull[ g, token, 3 ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, 3 ], token_InfraQuadric :> RandomInfraQuadric[ g, token, 3 ], token_InfraWalk :> RandomInfraWalk[ g, token, 3 ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, 3 ], token_InfraEllipse :> RandomInfraEllipse[ g, token, 3 ], token_InfraIntersection :> RandomInfraIntersection[ g, token, 3 ], token_InfraUnion :> RandomInfraUnion[ g, token, 3 ], token_InfraRay :> RandomInfraHalfLine[ g, token, 3 ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, 3 ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, 3 ] } ], RandomSeeding -> 9],
+     upTo = BlockRandom[Replace[ obj, { token_InfraPoint :> RandomInfraPoint[ g, token, UpTo[100] ], token_InfraSegment :> RandomInfraSegment[ g, token, UpTo[100] ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, UpTo[100] ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, UpTo[100] ], token_InfraCircle :> RandomInfraCircle[ g, token, UpTo[100] ], token_InfraArc :> RandomInfraArc[ g, token, UpTo[100] ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, UpTo[100] ], token_InfraPlane :> RandomInfraPlane[ g, token, UpTo[100] ], token_InfraBall :> RandomInfraBall[ g, token, UpTo[100] ], token_InfraShell :> RandomInfraShell[ g, token, UpTo[100] ], token_InfraSphere :> RandomInfraSphere[ g, token, UpTo[100] ], token_InfraTube :> RandomInfraTube[ g, token, UpTo[100] ], token_InfraCylinder :> RandomInfraCylinder[ g, token, UpTo[100] ], token_InfraCone :> RandomInfraCone[ g, token, UpTo[100] ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, UpTo[100] ], token_InfraBallHull :> RandomInfraBallHull[ g, token, UpTo[100] ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, UpTo[100] ], token_InfraQuadric :> RandomInfraQuadric[ g, token, UpTo[100] ], token_InfraWalk :> RandomInfraWalk[ g, token, UpTo[100] ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, UpTo[100] ], token_InfraEllipse :> RandomInfraEllipse[ g, token, UpTo[100] ], token_InfraIntersection :> RandomInfraIntersection[ g, token, UpTo[100] ], token_InfraUnion :> RandomInfraUnion[ g, token, UpTo[100] ], token_InfraRay :> RandomInfraHalfLine[ g, token, UpTo[100] ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, UpTo[100] ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, UpTo[100] ] } ], RandomSeeding -> 9]},
     {Length[members], DuplicateFreeQ[members], AllTrue[members, InfraMemberQ[g, obj, #] &],
      Length[upTo], DuplicateFreeQ[upTo], Sort[upTo] === Sort[FindPath[g, 1, 9, {4}, All]]}],
   {3, True, True, 6, True, True},
-  TestID -> "RandomInfraRepresentative-counts-are-distinct-and-UpTo-exhausts"
+  TestID -> "NamedConstructionSampler-counts-are-distinct-and-UpTo-exhausts"
 ]
 
 (* All keeps the enumeration order; Identity keeps the old first member *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}], obj = InfraSegment[1, 9]},
-    {paths = RandomInfraRepresentative[g, obj, All]},
+    {paths = Replace[ obj, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> RandomInfraBall[ g, token, All ], token_InfraShell :> RandomInfraShell[ g, token, All ], token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> RandomInfraTube[ g, token, All ], token_InfraCylinder :> RandomInfraCylinder[ g, token, All ], token_InfraCone :> RandomInfraCone[ g, token, All ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, All ], token_InfraBallHull :> RandomInfraBallHull[ g, token, All ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, All ], token_InfraQuadric :> RandomInfraQuadric[ g, token, All ], token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> RandomInfraIntersection[ g, token, All ], token_InfraUnion :> RandomInfraUnion[ g, token, All ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ]},
     {paths === Sort[FindPath[g, 1, 9, {4}, All]],
-     RandomInfraRepresentative[g, obj, All, "NextVertexFunction" -> Identity] === paths,
-     RandomInfraRepresentative[g, obj, "NextVertexFunction" -> Identity] === First[paths]}],
+     Replace[ obj, { token_InfraPoint :> RandomInfraPoint[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraSegment :> RandomInfraSegment[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraCircle :> RandomInfraCircle[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraArc :> RandomInfraArc[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraPlane :> RandomInfraPlane[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraBall :> RandomInfraBall[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraShell :> RandomInfraShell[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraSphere :> RandomInfraSphere[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraTube :> RandomInfraTube[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraCylinder :> RandomInfraCylinder[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraCone :> RandomInfraCone[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraBallHull :> RandomInfraBallHull[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraQuadric :> RandomInfraQuadric[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraWalk :> RandomInfraWalk[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraIntersection :> RandomInfraIntersection[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraUnion :> RandomInfraUnion[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraRay :> RandomInfraHalfLine[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All, "NextVertexFunction" -> Identity ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All, "NextVertexFunction" -> Identity ] } ] === paths,
+     Replace[ obj, { token_InfraPoint :> RandomInfraPoint[ g, token, "NextVertexFunction" -> Identity ], token_InfraSegment :> RandomInfraSegment[ g, token, "NextVertexFunction" -> Identity ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, "NextVertexFunction" -> Identity ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, "NextVertexFunction" -> Identity ], token_InfraCircle :> RandomInfraCircle[ g, token, "NextVertexFunction" -> Identity ], token_InfraArc :> RandomInfraArc[ g, token, "NextVertexFunction" -> Identity ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, "NextVertexFunction" -> Identity ], token_InfraPlane :> RandomInfraPlane[ g, token, "NextVertexFunction" -> Identity ], token_InfraBall :> RandomInfraBall[ g, token, "NextVertexFunction" -> Identity ], token_InfraShell :> RandomInfraShell[ g, token, "NextVertexFunction" -> Identity ], token_InfraSphere :> RandomInfraSphere[ g, token, "NextVertexFunction" -> Identity ], token_InfraTube :> RandomInfraTube[ g, token, "NextVertexFunction" -> Identity ], token_InfraCylinder :> RandomInfraCylinder[ g, token, "NextVertexFunction" -> Identity ], token_InfraCone :> RandomInfraCone[ g, token, "NextVertexFunction" -> Identity ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, "NextVertexFunction" -> Identity ], token_InfraBallHull :> RandomInfraBallHull[ g, token, "NextVertexFunction" -> Identity ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, "NextVertexFunction" -> Identity ], token_InfraQuadric :> RandomInfraQuadric[ g, token, "NextVertexFunction" -> Identity ], token_InfraWalk :> RandomInfraWalk[ g, token, "NextVertexFunction" -> Identity ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, "NextVertexFunction" -> Identity ], token_InfraEllipse :> RandomInfraEllipse[ g, token, "NextVertexFunction" -> Identity ], token_InfraIntersection :> RandomInfraIntersection[ g, token, "NextVertexFunction" -> Identity ], token_InfraUnion :> RandomInfraUnion[ g, token, "NextVertexFunction" -> Identity ], token_InfraRay :> RandomInfraHalfLine[ g, token, "NextVertexFunction" -> Identity ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, "NextVertexFunction" -> Identity ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, "NextVertexFunction" -> Identity ] } ] === First[paths]}],
   {True, True, True},
-  TestID -> "RandomInfraRepresentative-All-and-Identity-are-deterministic"
+  TestID -> "NamedConstructionSampler-All-and-Identity-are-deterministic"
 ]
 
 (* strict counts return no result when there are too few members *)
 VerificationTest[
-  RandomInfraRepresentative[CycleGraph[6], InfraSegment[1, 4], 3],
+  RandomInfraSegment[ CycleGraph[6], InfraSegment[1, 4], 3 ],
   { },
-  TestID -> "RandomInfraRepresentative-strict-shortfall"
+  TestID -> "NamedConstructionSampler-strict-shortfall"
 ]
 
 (* an empty family gives the empty shape *)
 VerificationTest[
   With[{g = Graph[{1, 2}, {}]},
-    {RandomInfraRepresentative[g, InfraSegment[1, 2]], RandomInfraRepresentative[g, InfraSegment[1, 2], All],
+    {RandomInfraSegment[ g, InfraSegment[1, 2] ], RandomInfraSegment[ g, InfraSegment[1, 2], All ],
      InfraMeasurement[g, InfraSegment[1, 2], "Cardinality"]}],
   {{}, {}, 0},
-  TestID -> "RandomInfraRepresentative-empty-family"
+  TestID -> "NamedConstructionSampler-empty-family"
 ]
 
 (* a vertex is its own segment *)
 VerificationTest[
-  RandomInfraRepresentative[GridGraph[{3, 3}], InfraSegment[5, 5], All],
+  RandomInfraSegment[ GridGraph[{3, 3}], InfraSegment[5, 5], All ],
   {{5}},
-  TestID -> "RandomInfraRepresentative-degenerate-segment"
+  TestID -> "NamedConstructionSampler-degenerate-segment"
 ]
 
 (* ===== InfraMemberQ ===== *)
 
 VerificationTest[
   With[{g = GridGraph[{3, 3}]}, {obj = InfraSegment[1, 9]},
-    {AllTrue[RandomInfraRepresentative[g, obj, All], InfraMemberQ[g, obj, #] &],
+    {AllTrue[Replace[ obj, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> RandomInfraBall[ g, token, All ], token_InfraShell :> RandomInfraShell[ g, token, All ], token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> RandomInfraTube[ g, token, All ], token_InfraCylinder :> RandomInfraCylinder[ g, token, All ], token_InfraCone :> RandomInfraCone[ g, token, All ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, All ], token_InfraBallHull :> RandomInfraBallHull[ g, token, All ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, All ], token_InfraQuadric :> RandomInfraQuadric[ g, token, All ], token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> RandomInfraIntersection[ g, token, All ], token_InfraUnion :> RandomInfraUnion[ g, token, All ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ], InfraMemberQ[g, obj, #] &],
      InfraMemberQ[g, obj, {1, 2, 5}],
      InfraMemberQ[g, obj, {1, 2, 3, 6, 5, 8, 9}]}],
   {True, False, False},
@@ -209,7 +209,7 @@ VerificationTest[
 VerificationTest[
   With[{g = Graph[Map[{Quotient[# - 1, 3] + 1, Mod[# - 1, 3] + 1} &, EdgeList[GridGraph[{3, 3}]], {2}]]},
     {obj = InfraSegment[{1, 1}, {3, 3}]},
-    {InfraMeasurement[g, obj, "Cardinality"], Length[RandomInfraRepresentative[g, obj, All]],
+    {InfraMeasurement[g, obj, "Cardinality"], Length[Replace[ obj, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> RandomInfraBall[ g, token, All ], token_InfraShell :> RandomInfraShell[ g, token, All ], token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> RandomInfraTube[ g, token, All ], token_InfraCylinder :> RandomInfraCylinder[ g, token, All ], token_InfraCone :> RandomInfraCone[ g, token, All ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, All ], token_InfraBallHull :> RandomInfraBallHull[ g, token, All ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, All ], token_InfraQuadric :> RandomInfraQuadric[ g, token, All ], token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> RandomInfraIntersection[ g, token, All ], token_InfraUnion :> RandomInfraUnion[ g, token, All ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ]],
      Lookup[InfraMeasurement[g, obj, "VertexDensity"], Key[{2, 2}]]}],
   {6, 6, 4},
   TestID -> "InfraMeasurement-list-valued-vertex-labels"
@@ -324,24 +324,24 @@ VerificationTest[
 (* a head without a graph is read by its search at the defaults *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
-    {RandomInfraRepresentative[g, InfraShell[13, 2], "NextVertexFunction" -> Identity] === FindInfraShell[g, 13, 2],
-     MemberQ[RandomInfraRepresentative[g, InfraBall[13, 1], All], RandomInfraRepresentative[g, InfraBall[13, 1]]],
-     RandomInfraRepresentative[g, InfraPoint[13], All],
-     RandomInfraRepresentative[g, InfraWalk[1, 2, 3]], RandomInfraRepresentative[g, InfraWalk[1, 3], All],
-     Length @ RandomInfraRepresentative[g, InfraShell[13, 2], 1, "NextVertexFunction" -> RandomChoice]}],
+    {RandomInfraShell[ g, InfraShell[13, 2], "NextVertexFunction" -> Identity ] === FindInfraShell[g, 13, 2],
+     MemberQ[RandomInfraBall[ g, InfraBall[13, 1], All ], RandomInfraBall[ g, InfraBall[13, 1] ]],
+     RandomInfraPoint[ g, InfraPoint[13], All ],
+     RandomInfraWalk[ g, InfraWalk[1, 2, 3] ], RandomInfraWalk[ g, InfraWalk[1, 3], All ],
+     Length @ RandomInfraShell[ g, InfraShell[13, 2], 1, "NextVertexFunction" -> RandomChoice ]}],
   {True, True, {13}, {1, 2, 3}, {}, 1},
-  TestID -> "RandomInfraRepresentative-token-heads-read-by-their-searches"
+  TestID -> "NamedConstructionSampler-token-heads-read-by-their-searches"
 ]
 
 (* a scene circle reads its second argument as a radius, the head as a point *)
 VerificationTest[
   With[{g = GridGraph[{7, 7}]},
-    {WolframInstitute`InfraGeometry`PackageScope`dispatchConstruction[g, InfraCircle[25, {2, 3}]] ===
-       RandomInfraRepresentative[g, InfraCircle[25, {2, 3}], All],
-     WolframInstitute`InfraGeometry`PackageScope`dispatchConstruction[g, InfraCircle[25, {2, 3}, "Branches" -> 1]] ===
-       RandomInfraRepresentative[g, InfraCircle[25, {2, 3}], UpTo[1]]}],
+    {({ graph, token } |-> ( instance |-> instance[[ 1 ]][ syntheticTarget ] ) /@ RandomInfraInstance[ InfraScene[ { syntheticTarget }, { syntheticTarget == token } ], graph, All ])[g, InfraCircle[25, {2, 3}]] ===
+       RandomInfraCircle[ g, InfraCircle[25, {2, 3}], All ],
+     ({ graph, token } |-> ( instance |-> instance[[ 1 ]][ syntheticTarget ] ) /@ RandomInfraInstance[ InfraScene[ { syntheticTarget }, { syntheticTarget == token } ], graph, All ])[g, InfraCircle[25, {2, 3}, "Branches" -> 1]] ===
+       RandomInfraCircle[ g, InfraCircle[25, {2, 3}], UpTo[1] ]}],
   {True, True},
-  TestID -> "RandomInfraRepresentative-scene-circle-is-by-radius"
+  TestID -> "NamedConstructionSampler-scene-circle-is-by-radius"
 ]
 
 (* the circle and the closed arc carry the two measures through the support of their vertex density, like every head;

@@ -166,7 +166,7 @@ VerificationTest[
    so SelectInfraWalk keeps that shape rather than a walk-graph form *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ],
-          cycles = RandomInfraRepresentative[ GridGraph[ { 4, 4 } ], InfraCircle[ 6, { 1, 2 } ], All ] },
+          cycles = RandomInfraCircle[ GridGraph[ { 4, 4 } ], InfraCircle[ 6, { 1, 2 } ], All ] },
     MatchQ[ SelectInfraWalk[ g, cycles, All, "From" -> "Center" ], { { __Integer } .. } ]
   ],
   True,
@@ -255,7 +255,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { g = GridGraph[ { 4, 4 } ], cycles = RandomInfraRepresentative[ GridGraph[ { 4, 4 } ], InfraCircle[ 6, { 1, 2 } ], All ] },
+  With[ { g = GridGraph[ { 4, 4 } ], cycles = RandomInfraCircle[ GridGraph[ { 4, 4 } ], InfraCircle[ 6, { 1, 2 } ], All ] },
     SubsetQ[ cycles, SelectInfraWalk[ g, cycles, All, "From" -> "MostVisited", "Cyclic" -> True ] ]
   ],
   True,

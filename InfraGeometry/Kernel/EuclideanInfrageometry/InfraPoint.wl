@@ -2,22 +2,25 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraPoint *)
 
-Options[ RandomInfraPoint ] = { "PairwiseDistance" -> None, "MaxCliques" -> All }
+Options[ RandomInfraPoint ] = { "PairwiseDistance" -> None, "MaxCliques" -> All, "NextVertexFunction" -> Automatic }
 
 (* n points pairwise at a distance in [lo, hi] are an n-clique of the graph on the pool joining two vertices at such a distance;
    "Max" takes the largest lo that still admits one, which maximises the least pairwise distance *)
 
 RandomInfraPoint[ graph_Graph, region : Except[ _Integer | UpTo[ _Integer ] | All | _Rule | _RuleDelayed ] : Automatic,
-    count : ( _Integer | UpTo[ _Integer ] | All ) : Automatic, opts : OptionsPattern[] ] :=
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; ! MatchQ[ region, _InfraPoint ] &&
+    MemberQ[ { Automatic, Identity }, OptionValue[ RandomInfraPoint, { opts }, "NextVertexFunction" ] ] &&
+    SubsetQ[ First /@ Options[ RandomInfraPoint ], First /@ { opts } ] :=
   With[ { pool = Which[
             region === Automatic,                    VertexList @ graph,
             MatchQ[ region, _List | _Association ], Keys @ InfraDensity[ graph, region ],
             True,                                    Keys @ InfraMeasurement[ graph, region, "VertexDensity" ] ],
-          dist = OptionValue[ "PairwiseDistance" ], maxCliques = OptionValue[ "MaxCliques" ] },
+          dist = OptionValue[ "PairwiseDistance" ], maxCliques = OptionValue[ "MaxCliques" ],
+          deterministic = count === All || OptionValue[ "NextVertexFunction" ] === Identity },
     { n = Min[ Length @ pool, Replace[ count, { UpTo[ k_ ] :> k, All -> Infinity, Automatic -> 1 } ] ] },
     { points = Which[
-        count === Automatic,     If[ pool === { }, { }, RandomChoice @ pool ],
-        n <= 1 || dist === None, RandomSample[ pool, n ],
+        count === Automatic,     If[ pool === { }, { }, If[ deterministic, First @ pool, RandomChoice @ pool ] ],
+        n <= 1 || dist === None, If[ deterministic, Take[ pool, n ], RandomSample[ pool, n ] ],
         True,
           With[ { vertexIndex = Lookup[ AssociationThread[ VertexList @ graph, Range @ VertexCount @ graph ], pool ] },
             { poolMatrix = GraphDistanceMatrix[ graph ][[ vertexIndex, vertexIndex ]] },
@@ -40,14 +43,14 @@ RandomInfraPoint[ graph_Graph, region : Except[ _Integer | UpTo[ _Integer ] | Al
                       If[ n < 3, First @ subsets,
                         First @ MinimalBy[ subsets,
                           s |-> Variance[ distMatrix[[ index @ #[[ 1 ]], index @ #[[ 2 ]] ]] & /@ Subsets[ s, { 2 } ] ] ] ] ],
-                  True, RandomSample[ RandomChoice @ cliques, n ] ] ],
+                  True, If[ deterministic, Take[ First @ cliques, n ], RandomSample[ RandomChoice @ cliques, n ] ] ] ],
               With[ { range = Replace[ dist,
                       { d_?NumericQ :> { d, d },
                         { dMin_, dMax_ } :> { dMin, dMax /. Infinity -> finiteMax } } ] },
                 { cliques = FindClique[
                     AdjacencyGraph[ pool, UnitStep[ distMatrix - range[[ 1 ]] ] * UnitStep[ range[[ 2 ]] - distMatrix ] * mask ],
                     { n, Length @ pool }, maxCliques ] },
-                If[ cliques === { }, { }, RandomSample[ RandomChoice @ cliques, n ] ] ] ] ] ] },
+                If[ cliques === { }, { }, If[ deterministic, Take[ First @ cliques, n ], RandomSample[ RandomChoice @ cliques, n ] ] ] ] ] ] ] },
     If[ IntegerQ @ count && Length @ points < count, { }, points ] ]
 
 (* y with d(x, a) + d(a, y) = d(x, y) and d(a, y) = d(a, x) = r, i.e. d(x, y) = 2 r: the geodesic continuation of x past a at the same distance *)
@@ -111,11 +114,11 @@ FindClosestInfraPoint[ graph_Graph, line_, point_,
 InfraReachableQ[ graph_Graph, p1_, p2_ ] :=
   IntersectingQ[ VertexComponent[ graph, Keys @ InfraDensity[ graph, p1 ] ], Keys @ InfraDensity[ graph, p2 ] ]
 
-RandomInfraRepresentative[ graph_Graph, InfraPoint[ ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+RandomInfraPoint[ graph_Graph, InfraPoint[ ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ { "NextVertexFunction" }, First /@ { opts } ] &&
+    ( OptionValue[ RandomInfraPoint, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   With[ { members = VertexList @ graph,
-          nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+          nextFn = OptionValue[ RandomInfraPoint, { opts }, "NextVertexFunction" ] },
     { ordered = Sort @ members },
     Which[
       count === Automatic, If[ ordered === { }, { }, If[ nextFn === Identity, First @ ordered, RandomChoice @ ordered ] ],
@@ -124,12 +127,12 @@ RandomInfraRepresentative[ graph_Graph, InfraPoint[ ],
       IntegerQ @ count && Length @ ordered < count, { },
       True, RandomSample[ ordered, count ] ] ]
 
-RandomInfraRepresentative[ graph_Graph, InfraPoint[ v_ ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+RandomInfraPoint[ graph_Graph, InfraPoint[ v_ ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ { "NextVertexFunction" }, First /@ { opts } ] &&
     pointQ[ graph, v ] &&
-      ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+      ( OptionValue[ RandomInfraPoint, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   With[ { members = { v },
-          nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+          nextFn = OptionValue[ RandomInfraPoint, { opts }, "NextVertexFunction" ] },
     { ordered = Sort @ members },
     Which[
       count === Automatic, If[ ordered === { }, { }, If[ nextFn === Identity, First @ ordered, RandomChoice @ ordered ] ],

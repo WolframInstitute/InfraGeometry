@@ -15,6 +15,8 @@ URI: WolframInstitute/InfraGeometry/ref/RandomInfraEllipse
 
 ## Details & Options
 
+`RandomInfraEllipse[g, {p, q}, c, count]` uses the direct form.
+
 The default draw is random. Seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing.
 
 Options:

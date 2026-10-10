@@ -20,6 +20,10 @@ RelatedGuides: [EuclideanInfrageometry]
 
 <code>[RandomInfraPoint]()[*g*, *reg*, *n*]</code> gives a list of *n* distinct vertices of the region *reg*.
 
+<code>[RandomInfraPoint]()[*g*, [InfraPoint]()[*p*], *count*]</code> samples the fixed point family. The token keeps an integer or List-valued point distinct from a bare count or region argument.
+
+<code>[RandomInfraPoint]()[*g*, [InfraPoint]()[], *count*]</code> samples all graph vertices.
+
 ## Details & Options
 
 Definition: a point of *g* drawn from a region of *g*, after `RandomPoint[reg]` and `RandomPoint[reg, n]`.
@@ -32,12 +36,14 @@ The region *reg* is the place where the points may lie:
 | a density `<\|v -> m, …\|>` | its keys, the support |
 | [InfraBall]()`[c, r]` | within distance *r* of *c* |
 | [InfraShell]()`[c, r]`, [InfraShell]()`[c, {r, s}]` | at distance *r* from *c*; between *r* and *s* |
-| [InfraSegment]()`[a, b]`, [InfraLine]()`[a, b]`, … | the vertices of the object |
+| [InfraSegment]()`[a, b]`, [InfraInfiniteLine]()`[a, b]`, … | the vertices of the object |
 | [InfraUnion]()`[reg1, reg2]`, [InfraIntersection]()`[reg1, reg2]` | the union, the common part |
 
 Any symbolic object that <code>[InfraMeasurement]()[*g*, *reg*, "VertexDensity"]</code> reads is a region. A single vertex is `{v}`, never bare: a bare integer is a count.
 
 The count *n* is `n`, `UpTo[n]` or `All`. The *n* points are distinct. `UpTo[n]` gives at most *n*, `All` gives every vertex of the region. Without *n* the result is one vertex, not a list.
+
+Default `All` and `"NextVertexFunction" -> Identity` preserve the random state. The token form accepts only `"NextVertexFunction"`; pairwise constraints belong to the bare point sampler.
 
 An empty region gives `{}`. So does a region with fewer than *n* vertices.
 
@@ -49,6 +55,7 @@ Options:
 |---|---|
 | `"PairwiseDistance"` | `None` (default), *d*, `{dMin, dMax}`, `"Max"`, `"Spread"` |
 | `"MaxCliques"` | bound on the clique search behind `"PairwiseDistance"` |
+| `"NextVertexFunction"` | `Automatic` (default), `Identity` |
 
 `"PairwiseDistance"` is a condition on the drawn tuple, not on a single point: the *n* points are pairwise at distance *d*, or in `[dMin, dMax]`. `"Max"` takes the largest *dMin* that still admits a tuple. `"Spread"` takes the tuple whose pairwise distances vary least. The condition makes the result one jointly constrained tuple, and `{}` when none exists. `UpTo[n]` and `All` under it ask for a tuple of `Min[n, Length of the region]` points.
 
@@ -174,7 +181,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {outside = Complement[VertexList[g], RandomInfraRepresentative[g, InfraBall[c, 6]]]},
+  {outside = Complement[VertexList[g], RandomInfraBall[ g, InfraBall[c, 6] ]]},
   {points = (SeedRandom[1]; RandomInfraPoint[g, outside, 3])},
   {InfraSubstrateHighlight[g, {outside, points}], points}]
 ```
@@ -236,7 +243,7 @@ SeedRandom[1];
 With[
   {g = GridGraph[{9, 9}]},
   {c = First @ GraphCenter[g]},
-  {Sort @ RandomInfraPoint[g, InfraShell[c, 3], All] === RandomInfraRepresentative[g, InfraShell[c, 3]]}]
+  {Sort @ RandomInfraPoint[g, InfraShell[c, 3], All] === RandomInfraShell[ g, InfraShell[c, 3] ]}]
 ```
 
 The distance to a set is the least distance to one of its points: the shell about two vertices is the outer layer of the union of the two balls, and does not contain the vertices.
@@ -245,7 +252,7 @@ The distance to a set is the least distance to one of its points: the shell abou
 SeedRandom[1];
 With[
   {g = GridGraph[{10, 10}]},
-  {shell = RandomInfraRepresentative[g, InfraShell[{45, 47}, 2]]},
+  {shell = RandomInfraShell[ g, InfraShell[{45, 47}, 2] ]},
   {Length @ shell, MemberQ[shell, 45]}]
 ```
 

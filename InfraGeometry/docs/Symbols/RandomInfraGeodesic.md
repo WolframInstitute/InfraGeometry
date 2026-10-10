@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraGeodesic
 Keywords: [geodesic, infra-scale, locally shortest, walk, Riemannian geodesic]
-SeeAlso: [InfraGeodesicQ, RandomInfraWalk, RandomInfraSegment, RandomInfraLine, RandomInfraRepresentative, InfraMeasurement, SprayGraph]
+SeeAlso: [InfraGeodesicQ, RandomInfraWalk, RandomInfraSegment, RandomInfraInfiniteLine, RandomInfraGeodesic, InfraMeasurement, SprayGraph]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
@@ -140,7 +140,7 @@ With[
   {InfraSubstrateHighlight[g, {geos, a}], InfraGeodesicQ[g, geos, 3]}]
 ```
 
-A geodesic germ of scale `Infinity` grown without a budget on both sides gives the lines through it: the vertex lists of [RandomInfraLine]().
+A geodesic germ of scale `Infinity` grown without a budget on both sides gives the lines through it: the vertex lists of [RandomInfraInfiniteLine]().
 
 ```wl
 SeedRandom[1];
@@ -150,5 +150,5 @@ With[
   {germ = {a, First @ AdjacencyList[g, a]}},
   {geos = RandomInfraGeodesic[g, germ, Infinity, Infinity, All, "Direction" -> "BothSides"]},
   {InfraSubstrateHighlight[g, {geos, germ}],
-   Sort[Last /@ VertexList[#] & /@ geos] === Sort @ RandomInfraLine[g, germ, All]}]
+   Sort[Last /@ VertexList[#] & /@ geos] === Sort @ RandomInfraInfiniteLine[g, germ, All]}]
 ```

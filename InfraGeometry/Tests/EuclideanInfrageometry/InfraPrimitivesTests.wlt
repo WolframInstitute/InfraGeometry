@@ -105,7 +105,7 @@ VerificationTest[
 
 (* the volume of a set is its Length; of a family of sets, the Length of each *)
 VerificationTest[
-  { Length @ RandomInfraRepresentative[PathGraph @ Range[ 5 ], InfraBall[3, 2]],
+  { Length @ RandomInfraBall[ PathGraph @ Range[ 5 ], InfraBall[3, 2] ],
     Length /@ { { 1, 2, 3 }, { 4, 5 } } },
   { 5, { 3, 2 } },
   TestID -> "set-volume-is-Length"
@@ -170,7 +170,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     AllTrue[
       { RandomInfraPoint[ g, 2 ],
-        RandomInfraRepresentative[g, InfraBall[6, 1]],
+        RandomInfraBall[ g, InfraBall[6, 1] ],
         FindInfraShell[ g, 6, { 1, 1 } ],
         FindInfraEquidistantSet[ g, { 1, 16 } ],
         FindInfraBisectingHyperplane[ g, 1, 16 ],
@@ -179,8 +179,8 @@ VerificationTest[
         RandomInfraSegment[ g, 1, 16, UpTo[ 3 ] ],
         RandomInfraLine[ g, 1, 3 ],
         RandomInfraRay[ g, 1, 4 ],
-        RandomInfraRepresentative[ g, InfraCircle[ 6, 1 ] ],
-        RandomInfraRepresentative[ g, InfraSegment[ 1, 4, 13, 1 ] ],
+        RandomInfraCircle[ g, InfraCircle[ 6, 1 ] ],
+        RandomInfraSegment[ g, InfraSegment[ 1, 4, 13, 1 ] ],
         RandomInfraEllipse[ g, { 1, 16 }, 6 ],
         FindInfraPerpendicular[ g, RandomInfraLine[ g, 1, 3 ], 6 ],
         FindInfraPolylineSubdivision[ g, { 1, 2, 3, 7, 11 }, "MaxLength" -> 2 ] },

@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSegmentQ
 Keywords: [segment, shortest path, predicate]
-SeeAlso: [InfraSegment, RandomInfraSegment, InfraWalkQ, InfraGeodesicQ, InfraLineQ, InfraRayQ, InfraMemberQ]
+SeeAlso: [InfraSegment, RandomInfraSegment, InfraWalkQ, InfraGeodesicQ, InfraInfiniteLineQ, InfraHalfLineQ, InfraMemberQ]
 RelatedGuides: [Experimental]
 ---
 
@@ -72,7 +72,7 @@ Every line is a shortest path.
 SeedRandom[1];
 With[
   {g = GridGraph[{4, 4}]},
-  InfraSegmentQ[g, RandomInfraLine[g, 6, 7, All]]]
+  InfraSegmentQ[g, RandomInfraInfiniteLine[g, 6, 7, All]]]
 ```
 
 On the 6-cycle the walk halfway round is a shortest path; one step more is not.

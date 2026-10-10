@@ -16,7 +16,10 @@ RelatedGuides: [Experimental]
 
 <code>[InfraRayQ]()[*g*, {*ray1*, …}]</code> tests every ray of a list, such as the one <code>[RandomInfraRay]()[*g*, *O*, *v*, All]</code> returns.
 
-## Details & Options
+## Details
+
+This is the legacy compatibility spelling. New code uses `InfraHalfLineQ`.
+ & Options
 
 Two conditions, and the asymmetry between them is the whole definition:
 

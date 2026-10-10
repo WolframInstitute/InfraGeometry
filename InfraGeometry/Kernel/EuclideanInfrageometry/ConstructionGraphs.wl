@@ -4,13 +4,13 @@ IntervalGraph[ graph_Graph, points : Repeated[ Except[ _Rule | _RuleDelayed ], {
   InfraMeasurement[ graph, InfraSegment[ points ], "Graph" ]
 
 RayGraph[ graph_Graph, p_, q_ ] :=
-  InfraMeasurement[ graph, InfraRay[ p, q ], "Graph" ]
+  InfraMeasurement[ graph, InfraHalfLine[ p, q ], "Graph" ]
 
 BeamGraph[ graph_Graph, p_, q_ ] :=
-  InfraMeasurement[ graph, InfraLine[ p, q ], "Graph" ]
+  InfraMeasurement[ graph, InfraInfiniteLine[ p, q ], "Graph" ]
 
 BeamGraph[ graph_Graph, germ_ ] :=
-  InfraMeasurement[ graph, InfraLine[ germ ], "Graph" ]
+  InfraMeasurement[ graph, InfraInfiniteLine[ germ ], "Graph" ]
 
 ArcGraph[ graph_Graph, center_, points_List, opts___Rule ] :=
   InfraMeasurement[ graph, InfraArc[ center, points, opts ], "Graph" ]

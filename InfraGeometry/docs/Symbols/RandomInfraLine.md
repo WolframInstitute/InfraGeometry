@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraLine
 Keywords: [line, inextensible shortest path, Euclid Postulate 2, parallel postulate]
-SeeAlso: [InfraLine, InfraLineQ, RandomInfraRepresentative, RandomInfraGeodesic, RandomInfraSegment, RandomInfraRay, RandomInfraParallel, LineCount]
+SeeAlso: [InfraLine, InfraLineQ, RandomInfraInfiniteLine, RandomInfraGeodesic, RandomInfraSegment, RandomInfraRay, RandomInfraParallel, LineCount]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -18,7 +18,10 @@ RelatedGuides: [EuclideanInfrageometry]
 
 <code>[RandomInfraLine]()[*g*, *a*, *b*, *n*]</code> gives a `List` of exactly *n* lines or `{}`; `UpTo[n]` gives up to *n*; `All` gives every line.
 
-## Details & Options
+## Details
+
+This is the legacy compatibility spelling. New code uses `RandomInfraInfiniteLine`.
+ & Options
 
 The default draw is random. Seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing.
 
@@ -26,7 +29,7 @@ A line is an **inextensible shortest path**: a shortest path that no neighbour o
 
 That is the intrinsic reading of Euclid's second postulate — produce a finite straight line continuously — and it is where the analogy with the plane breaks hardest. In the plane two points determine one line. On a lattice they determine an enormous family: below, two vertices at distance 5 on a 313-vertex square-tiling patch lie on 5 242 880 lines, against 6144 on the hexagonal tiling and 1386 on the irregular mesh.
 
-The search runs on the substrate directly: a shortest path from *a* to *b*, prolonged one shortest-path step at a time, every prolongation at the back and then every prolongation at the front, kept when neither end can be prolonged. It does not read the graph of <code>[InfraLine]()[*a*, *b*]</code>, so it is the check on that graph, and it returns exactly the shapes [RandomInfraRepresentative]() gives for that head.
+The search runs on the substrate directly: a shortest path from *a* to *b*, prolonged one shortest-path step at a time, every prolongation at the back and then every prolongation at the front, kept when neither end can be prolonged. It does not read the graph of <code>[InfraLine]()[*a*, *b*]</code>, so it is the check on that graph, and it returns exactly the shapes [RandomInfraInfiniteLine]() gives for that head.
 
 The search enumerates. To count lines, use <code>[InfraMeasurement]()[*g*, [InfraLine]()[*a*, *b*], "Cardinality"]</code>, which reads the count off the head's graph without enumerating a line.
 
@@ -113,7 +116,7 @@ The search agrees with the graph of the head.
 SeedRandom[1];
 With[
   {g = GridGraph[{4, 4}]},
-  Sort @ RandomInfraLine[g, 6, 7, All] === Sort @ RandomInfraRepresentative[g, InfraLine[6, 7], All]]
+  Sort @ RandomInfraLine[g, 6, 7, All] === Sort @ RandomInfraInfiniteLine[ g, InfraLine[6, 7], All ]]
 ```
 
 A line through an edge is that edge extended with no budget.

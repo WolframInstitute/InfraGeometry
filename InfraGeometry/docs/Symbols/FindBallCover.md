@@ -51,7 +51,7 @@ SeedRandom[1];
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {target = RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]]},
+    {target = RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 4] ]},
     InfraSubstrateHighlight[g, {target -> StandardGray, FindBallCover[g, 2, target] -> StandardRed}]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```

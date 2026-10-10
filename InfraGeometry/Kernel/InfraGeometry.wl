@@ -11,7 +11,6 @@ PackageExport[InfraReachableQ]
 
 PackageExport[InfraMeasurement]
 PackageExport[Undetermined]
-PackageExport[RandomInfraRepresentative]
 PackageExport[InfraMemberQ]
 PackageExport[InfraSubgraph]
 
@@ -23,16 +22,16 @@ PackageExport[InfraWalkQ]
 PackageExport[InfraSegmentQ]
 PackageExport[UniqueInfraSegmentQ]
 
-PackageExport[InfraRay]
-PackageExport[RandomInfraRay]
-PackageExport[InfraRayQ]
+PackageExport[InfraHalfLine]
+PackageExport[RandomInfraHalfLine]
+PackageExport[InfraHalfLineQ]
 
-PackageExport[InfraLine]
-PackageExport[RandomInfraLine]
+PackageExport[InfraInfiniteLine]
+PackageExport[RandomInfraInfiniteLine]
 PackageExport[RandomInfraParallel]
 PackageExport[FindInfraPerpendicular]
 PackageExport[FindInfraCommonLine]
-PackageExport[InfraLineQ]
+PackageExport[InfraInfiniteLineQ]
 PackageExport[InfraParallelQ]
 PackageExport[InfraPerpendicularQ]
 PackageExport[LineCount]
@@ -276,7 +275,7 @@ PackageExport[InfraEllipseQ]
 PackageExport[InfraPlane]
 PackageExport[FindInfraBisectingHyperplane]
 
-PackageExport[InfraPolygon]
+PackageExport[InfraRegularPolygon]
 PackageExport[RandomInfraRegularPolygon]
 PackageExport[InfraRegularPolygonQ]
 
@@ -298,5 +297,47 @@ PackageExport[CochainCup]
 PackageExport[OrderedCochainCup]
 PackageExport[CochainCupOne]
 PackageExport[AntisymmetrizedCup]
+
+PackageExport[InfraRay]
+
+PackageExport[RandomInfraRay]
+
+PackageExport[InfraRayQ]
+
+PackageExport[InfraLine]
+
+PackageExport[RandomInfraLine]
+
+PackageExport[InfraLineQ]
+
+PackageExport[InfraPolygon]
+
+PackageExport[RandomInfraBall]
+
+PackageExport[RandomInfraShell]
+
+PackageExport[RandomInfraTube]
+
+PackageExport[RandomInfraCylinder]
+
+PackageExport[RandomInfraCone]
+
+PackageExport[RandomInfraSolidOfRevolution]
+
+PackageExport[RandomInfraCircle]
+
+PackageExport[RandomInfraArc]
+
+PackageExport[RandomInfraPlane]
+
+PackageExport[RandomInfraBallHull]
+
+PackageExport[RandomInfraConvexHull]
+
+PackageExport[RandomInfraQuadric]
+
+PackageExport[RandomInfraIntersection]
+
+PackageExport[RandomInfraUnion]
 
 ClearAll["WolframInstitute`InfraGeometry`**`*", "WolframInstitute`InfraGeometry`*"]

@@ -36,7 +36,7 @@ With[
   {panels = Table[
      With[
        {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-       {interiors = NestList[GraphInterior[g, #] &, RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]], 4]},
+       {interiors = NestList[GraphInterior[g, #] &, RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 4] ], 4]},
        {InfraSubstrateHighlight[g, AssociationThread[GraphBoundary[g, #], 1] & /@ interiors], Length /@ interiors}],
      {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]},
   {GraphicsRow[First /@ panels], Last /@ panels}]
@@ -49,7 +49,7 @@ SeedRandom[1];
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {region = Complement[RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]], RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 1]]]},
+    {region = Complement[RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 4] ], RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 1] ]]},
     InfraSubstrateHighlight[g, {GraphInterior[g, region] -> StandardGreen, GraphBoundary[g, region] -> StandardBlue}]],
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
 ```
@@ -74,7 +74,7 @@ The interior and the boundary split the set: they are disjoint, and together the
 SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {region = RandomInfraRepresentative[g, InfraBall[(SeedRandom[1]; RandomInfraPoint[g, InfraShell[First @ GraphCenter[g], 3]]), 4]]},
+  {region = RandomInfraBall[ g, InfraBall[(SeedRandom[1]; RandomInfraPoint[g, InfraShell[First @ GraphCenter[g], 3]]), 4] ]},
   {InfraSubstrateHighlight[g, {GraphInterior[g, region] -> StandardGreen, GraphBoundary[g, region] -> StandardBlue}],
    Intersection[GraphInterior[g, region], GraphBoundary[g, region]], Sort[Join[GraphInterior[g, region], GraphBoundary[g, region]]] === Sort[region]}]
 ```
@@ -96,8 +96,8 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {offCentre = First @ AdjacencyList[g, First @ GraphCenter[g]]},
-  {region = RandomInfraRepresentative[g, InfraBall[offCentre, 6]]},
-  {extra = Complement[GraphInterior[g, region], RandomInfraRepresentative[g, InfraBall[offCentre, 5]]]},
-  {InfraSubstrateHighlight[g, {AssociationThread[RandomInfraRepresentative[g, InfraBall[offCentre, 5]], 1] -> StandardGreen, AssociationThread[extra, 1] -> StandardOrange, AssociationThread[GraphBoundary[g, region], 1] -> StandardBlue}],
+  {region = RandomInfraBall[ g, InfraBall[offCentre, 6] ]},
+  {extra = Complement[GraphInterior[g, region], RandomInfraBall[ g, InfraBall[offCentre, 5] ]]},
+  {InfraSubstrateHighlight[g, {AssociationThread[RandomInfraBall[ g, InfraBall[offCentre, 5] ], 1] -> StandardGreen, AssociationThread[extra, 1] -> StandardOrange, AssociationThread[GraphBoundary[g, region], 1] -> StandardBlue}],
    Length[extra]}]
 ```

@@ -75,7 +75,7 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},
   {areas = Table[Length @ FindInfraShell[g, c, r], {r, 0, 5}]},
-  {volumes = Table[Length @ RandomInfraRepresentative[g, InfraBall[c, r]], {r, 0, 5}]},
+  {volumes = Table[Length @ RandomInfraBall[ g, InfraBall[c, r] ], {r, 0, 5}]},
   {ListLinePlot[{Accumulate @ areas, volumes}, DataRange -> {0, 5}, PlotMarkers -> {Automatic, Medium},
      PlotLegends -> {"partial sums of |S_r|", "|B_r|"}, AxesLabel -> {"r", None}],
    Accumulate[areas] === volumes}]

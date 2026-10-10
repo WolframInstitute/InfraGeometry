@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+Options[ RandomInfraBall ] = { "NextVertexFunction" -> Automatic }
+
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraBall *)
 
 (* the closed ball { v : d(v, C) <= r } with d(v, C) = min_{c in C} d(v, c) over the anchor's vertices C; a band {r, s} is the shell *)
@@ -41,11 +43,11 @@ InfraBallQ[ graph_Graph, vs_List ] :=
     ]
   ]
 
-RandomInfraRepresentative[ graph_Graph, ball : InfraBall[ _, _ ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+RandomInfraBall[ graph_Graph, ball : InfraBall[ _, _ ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraBall ], First /@ { opts } ] &&
+    ( OptionValue[ RandomInfraBall, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   With[ { members = Keys @ InfraMeasurement[ graph, ball, "VertexDensity" ],
-          nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+          nextFn = OptionValue[ RandomInfraBall, { opts }, "NextVertexFunction" ] },
     { ordered = { members } },
     Which[
       count === Automatic, members,
@@ -53,3 +55,10 @@ RandomInfraRepresentative[ graph_Graph, ball : InfraBall[ _, _ ],
       nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
       IntegerQ @ count && Length @ ordered < count, { },
       True, RandomSample[ ordered, count ] ] ]
+
+RandomInfraBall[ graph_Graph, center_, radius_,
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { center, radius }, _InfraBall ] &&
+    SubsetQ[ First /@ Options[ RandomInfraBall ], First /@ { opts } ] :=
+  RandomInfraBall[ graph, InfraBall[ center, radius ], count,
+    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]

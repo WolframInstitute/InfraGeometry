@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+Options[ RandomInfraBallHull ] = { "NextVertexFunction" -> Automatic }
+
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraBallHull *)
 
 (* the intersection of the closed balls B_rho(c) containing S with rho in the band {r, t}: at a centre c the least ball containing S has the
@@ -40,11 +42,11 @@ InfraMeasurement[ graph_Graph, hull : InfraBallHull[ _, ___ ], All ] :=
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
       "CountingMeasure", "RiemannianMeasure" } ]
 
-RandomInfraRepresentative[ graph_Graph, hull : InfraBallHull[ _, ___ ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+RandomInfraBallHull[ graph_Graph, hull : InfraBallHull[ _ ] | InfraBallHull[ _, _?NumericQ | Infinity | { _?NumericQ | Infinity } | { _?NumericQ | Infinity, _?NumericQ | Infinity } ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraBallHull ], First /@ { opts } ] &&
+    ( OptionValue[ RandomInfraBallHull, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   With[ { members = Keys @ InfraMeasurement[ graph, hull, "VertexDensity" ],
-          nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+          nextFn = OptionValue[ RandomInfraBallHull, { opts }, "NextVertexFunction" ] },
     { ordered = { members } },
     Which[
       count === Automatic, members,
@@ -52,3 +54,14 @@ RandomInfraRepresentative[ graph_Graph, hull : InfraBallHull[ _, ___ ],
       nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
       IntegerQ @ count && Length @ ordered < count, { },
       True, RandomSample[ ordered, count ] ] ]
+
+RandomInfraBallHull[ graph_Graph, seeds_, band : _?NumericQ | Infinity | { _?NumericQ | Infinity } | { _?NumericQ | Infinity, _?NumericQ | Infinity },
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { seeds, band }, _InfraBallHull ] &&
+    SubsetQ[ First /@ Options[ RandomInfraBallHull ], First /@ { opts } ] :=
+  RandomInfraBallHull[ graph, InfraBallHull[ seeds, band ], count,
+    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]
+
+RandomInfraBallHull[ graph_Graph, seeds_, opts : OptionsPattern[] ] /;
+    ! MatchQ[ seeds, _InfraBallHull ] && SubsetQ[ First /@ Options[ RandomInfraBallHull ], First /@ { opts } ] :=
+  RandomInfraBallHull[ graph, InfraBallHull[ seeds ], Automatic, opts ]

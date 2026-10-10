@@ -42,7 +42,7 @@ VerificationTest[
     {{GridGraph[{3, 3}], 1, 2}, {GridGraph[{4, 4}], 1, 6}, {PetersenGraph[], 1, 2},
      {HypercubeGraph[3], 1, 2}, {CycleGraph[7], 1, 2}},
     Apply[{g, p, q} |->
-      Sort[RandomInfraRepresentative[g, InfraRay[p, q], All]] === Sort[Catenate[Table[
+      Sort[RandomInfraHalfLine[ g, InfraRay[p, q], All ]] === Sort[Catenate[Table[
         Select[FindPath[g, p, e, {GraphDistance[g, p, e]}, All],
           path |-> MemberQ[path, q] && NoneTrue[AdjacencyList[g, e],
             GraphDistance[g, p, #] == GraphDistance[g, p, e] + 1 &]],
@@ -57,14 +57,14 @@ VerificationTest[
     {PathGraph[Range[7]], CycleGraph[7], GridGraph[{3, 3}], GridGraph[{4, 4}],
      PetersenGraph[], HypercubeGraph[3]},
     g |-> AllTrue[Join[List @@@ EdgeList[g], Reverse /@ List @@@ EdgeList[g]],
-      pair |-> AllTrue[RandomInfraRepresentative[g, InfraRay @@ pair, All], InfraRayQ[g, #] &]]],
+      pair |-> AllTrue[Replace[ InfraRay @@ pair, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> RandomInfraBall[ g, token, All ], token_InfraShell :> RandomInfraShell[ g, token, All ], token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> RandomInfraTube[ g, token, All ], token_InfraCylinder :> RandomInfraCylinder[ g, token, All ], token_InfraCone :> RandomInfraCone[ g, token, All ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, All ], token_InfraBallHull :> RandomInfraBallHull[ g, token, All ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, All ], token_InfraQuadric :> RandomInfraQuadric[ g, token, All ], token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> RandomInfraIntersection[ g, token, All ], token_InfraUnion :> RandomInfraUnion[ g, token, All ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ], InfraRayQ[g, #] &]]],
   True,
   TestID -> "InfraRay-members-satisfy-InfraRayQ-on-the-spread-table"
 ]
 
 VerificationTest[
-  {RandomInfraRepresentative[PathGraph[Range[7]], InfraRay[4, 7], All],
-   Sort[RandomInfraRepresentative[CycleGraph[6], InfraRay[1, 4], All]]},
+  {RandomInfraHalfLine[ PathGraph[Range[7]], InfraRay[4, 7], All ],
+   Sort[RandomInfraHalfLine[ CycleGraph[6], InfraRay[1, 4], All ]]},
   {{{4, 5, 6, 7}}, {{1, 2, 3, 4}, {1, 6, 5, 4}}},
   TestID -> "InfraRay-small-fixtures"
 ]
@@ -74,7 +74,7 @@ VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     AllTrue[{{1, 2}, {13, 14}, {13, 8}, {7, 12}},
       pair |-> InfraMeasurement[g, InfraRay @@ pair, "Cardinality"] ===
-        Length[RandomInfraRepresentative[g, InfraRay @@ pair, All]]]],
+        Length[Replace[ InfraRay @@ pair, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> RandomInfraBall[ g, token, All ], token_InfraShell :> RandomInfraShell[ g, token, All ], token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> RandomInfraTube[ g, token, All ], token_InfraCylinder :> RandomInfraCylinder[ g, token, All ], token_InfraCone :> RandomInfraCone[ g, token, All ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, All ], token_InfraBallHull :> RandomInfraBallHull[ g, token, All ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, All ], token_InfraQuadric :> RandomInfraQuadric[ g, token, All ], token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> RandomInfraIntersection[ g, token, All ], token_InfraUnion :> RandomInfraUnion[ g, token, All ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ]]]],
   True,
   TestID -> "InfraRay-Cardinality-agrees-with-enumeration"
 ]
@@ -84,7 +84,7 @@ VerificationTest[
 VerificationTest[
   AllTrue[
     {{GridGraph[{4, 4}], 6, 7}, {CycleGraph[6], 1, 4}, {PetersenGraph[], 1, 2}, {HypercubeGraph[3], 1, 2}},
-    Apply[{g, p, q} |-> Sort[RandomInfraRay[g, p, q, All]] === Sort[RandomInfraRepresentative[g, InfraRay[p, q], All]]]],
+    Apply[{g, p, q} |-> Sort[RandomInfraRay[g, p, q, All]] === Sort[RandomInfraHalfLine[ g, InfraRay[p, q], All ]]]],
   True,
   TestID -> "RandomInfraRay-agrees-with-the-graph"
 ]
@@ -124,7 +124,7 @@ VerificationTest[
 
 VerificationTest[
   With[{g = TorusGraph[{4, 5}]}, {rays = RandomInfraRay[g, 1, 2, All]},
-    {Sort[rays] === Sort[RandomInfraRepresentative[g, InfraRay[1, 2], All]], Length[rays],
+    {Sort[rays] === Sort[RandomInfraHalfLine[ g, InfraRay[1, 2], All ]], Length[rays],
      AllTrue[rays, InfraRayQ[g, #] &]}],
   {True, 6, True},
   TestID -> "RandomInfraRay-agrees-with-the-graph-TorusGraph"

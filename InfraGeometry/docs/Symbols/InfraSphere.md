@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSphere
 Keywords: [sphere, separating set, minimal, region, symbolic object, family, counting measure, Riemannian measure]
-SeeAlso: [RandomInfraSphere, InfraShell, InfraBall, InfraMeasurement, RandomInfraRepresentative]
+SeeAlso: [RandomInfraSphere, InfraShell, InfraBall, InfraMeasurement, named construction samplers]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraSphere]()[*c*, {*r*, *s*}]</code> is the sphere about *c*: the family of inclusion-minimal connected subsets of the shell [InfraShell]()[*c*, {*r*, *s*}] that separate the side of *c* from the far side. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
+<code>[InfraSphere]()[*c*, {*r*, *s*}]</code> is the sphere about *c*: the family of inclusion-minimal connected subsets of the shell [InfraShell]()[*c*, {*r*, *s*}] that separate the side of *c* from the far side. It is a symbolic object; [InfraMeasurement]() and [RandomInfraSphere]() evaluate it on a graph.
 
 <code>[InfraSphere]()[*c*, *r*]</code> is the band {*r*, *r*}.
 
@@ -37,9 +37,9 @@ The Riemannian measure of a sphere instance in a band *{r, r + 1}*, *r ≥ 1*, i
 
 No count is known. The family has no closed formula for its number of members, and one instance none for its size: the size of one instance bounds the size of no other. The reference is the shell it lies in, whose count [InfraShell]() gives on a lattice. In the continuum a sphere instance stands for the geodesic sphere, of area *n ω_n r^(n−1) (1 − Scal(c) r² / (6n) + O(r⁴))*.
 
-How the number is measured: one instance *T*, <code>[RandomInfraRepresentative]()[*g*, [InfraSphere]()[*c*, {*r*, *r* + 1}]]</code>, found greedily, is a vertex list, and <code>[InfraMeasurement]()[*g*, [InfraTube]()[*T*, 0], *measure*]</code> measures it as a region. The profile is the list of the instance sizes over *r*, a profile of instances, not of the family.
+How the number is measured: one instance *T*, <code>[RandomInfraSphere]()[*g*, [InfraSphere]()[*c*, {*r*, *r* + 1}]]</code>, found greedily, is a vertex list, and <code>[InfraMeasurement]()[*g*, [InfraTube]()[*T*, 0], *measure*]</code> measures it as a region. The profile is the list of the instance sizes over *r*, a profile of instances, not of the family.
 
-[RandomInfraRepresentative]() gives members: the count and `"NextVertexFunction"` are passed to [RandomInfraSphere](). Without a count it gives one member, a sorted vertex list.
+[RandomInfraSphere]() gives members: the count and `"NextVertexFunction"` are passed to [RandomInfraSphere](). Without a count it gives one member, a sorted vertex list.
 
 ## Basic Examples
 
@@ -53,7 +53,7 @@ Row[Table[
     {c = First @ GraphCenter[g]},
     {family = InfraSphere[c, 3]},
     Labeled[
-      InfraSubstrateHighlight[g, {InfraShell[c, 3], RandomInfraRepresentative[g, family], c}],
+      InfraSubstrateHighlight[g, {InfraShell[c, 3], Replace[ family, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> RandomInfraBall[ g, token ], token_InfraShell :> RandomInfraShell[ g, token ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> RandomInfraTube[ g, token ], token_InfraCylinder :> RandomInfraCylinder[ g, token ], token_InfraCone :> RandomInfraCone[ g, token ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token ], token_InfraBallHull :> RandomInfraBallHull[ g, token ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token ], token_InfraQuadric :> RandomInfraQuadric[ g, token ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> RandomInfraIntersection[ g, token ], token_InfraUnion :> RandomInfraUnion[ g, token ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ], c}],
       InfraMeasurement[g, family, {"Cardinality", "CountingMeasure", "RiemannianMeasure"}]]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```
@@ -64,7 +64,7 @@ The four minimal connected separators in the band 1 to 2 about the centre of a 5
 SeedRandom[1];
 With[
   {g = GridGraph[{5, 5}]},
-  {members = RandomInfraRepresentative[g, InfraSphere[13, {1, 2}], All]},
+  {members = RandomInfraSphere[ g, InfraSphere[13, {1, 2}], All ]},
   Row[InfraSubstrateHighlight[g, {#, 13}] & /@ members]]
 ```
 
@@ -84,7 +84,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},
   ListPlot[{
-    Table[Length[RandomInfraRepresentative[g, InfraSphere[c, {r, r + 1}]]], {r, 1, 6}],
+    Table[Length[RandomInfraSphere[ g, InfraSphere[c, {r, r + 1}] ]], {r, 1, 6}],
     Table[InfraMeasurement[g, InfraShell[c, {r, r + 1}], "CountingMeasure"], {r, 1, 6}]},
     DataRange -> {1, 6}, Joined -> {False, True}, PlotMarkers -> Automatic, AxesLabel -> {"r", None}]]
 ```
@@ -95,6 +95,6 @@ A member is connected and is contained in the shell.
 SeedRandom[1];
 With[
   {g = GridGraph[{7, 7}]},
-  {members = RandomInfraRepresentative[g, InfraSphere[25, {2, 3}], All]},
+  {members = RandomInfraSphere[ g, InfraSphere[25, {2, 3}], All ]},
   {ConnectedGraphQ @ Subgraph[g, #] & /@ members, AllTrue[members, SubsetQ[FindInfraShell[g, 25, {2, 3}], #] &]}]
 ```

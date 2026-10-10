@@ -52,7 +52,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {line = RandomInfraLine[g, c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
+  {line = RandomInfraInfiniteLine[g, c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
   {i = First @ FirstPosition[line, c]},
   {opposite = {line[[i - 4]], c, line[[i + 4]]}},
   {same = {line[[i + 4]], c, line[[i + 2]]}},
@@ -82,7 +82,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {line = RandomInfraLine[g, c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
+  {line = RandomInfraInfiniteLine[g, c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
   {i = First @ FirstPosition[line, c]},
   {arms = {line[[i - 4]], c, line[[i + 4]]}},
   {InfraSubstrateHighlight[g, {InfraWalk[line[[i - 4 ;; i + 4]]], Sequence @@ arms}],

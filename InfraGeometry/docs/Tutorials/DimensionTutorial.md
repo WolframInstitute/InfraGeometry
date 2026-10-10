@@ -71,7 +71,7 @@ With[
 SeedRandom[ 2 ];
 With[
   { graph = InfraSubstrate[ "SquareTilingGraph", "Small", "KeepCoordinates" -> True ] },
-  { target = RandomInfraRepresentative[ graph, InfraBall[ First @ GraphCenter[ graph ], 4 ] , "NextVertexFunction" -> Identity ], radius = 2 },
+  { target = RandomInfraBall[ graph, InfraBall[ First @ GraphCenter[ graph ], 4 ], "NextVertexFunction" -> Identity ], radius = 2 },
   { centres = FindBallCover[ graph, radius, target ] },
   Column[ {
     InfraSubstrateHighlight[ graph, Join[ { target -> StandardGray },
@@ -88,7 +88,7 @@ SeedRandom[ 2 ];
 GraphicsGrid[ Partition[ Map[
   data |-> With[
     { graph = data[ "Graph" ], centre = data[ "Centre" ], targetRadius = data[ "Radius" ] },
-    { radius = Max[ 1, Floor[ targetRadius / 3 ] ], target = RandomInfraRepresentative[ graph, InfraBall[ centre, targetRadius ] , "NextVertexFunction" -> Identity ] },
+    { radius = Max[ 1, Floor[ targetRadius / 3 ] ], target = RandomInfraBall[ graph, InfraBall[ centre, targetRadius ], "NextVertexFunction" -> Identity ] },
     { centres = FindBallCover[ graph, radius, target, Method -> "Greedy" ] },
     Labeled[
       InfraSubstrateHighlight[ graph, Join[ { target -> StandardGray },
@@ -118,11 +118,11 @@ dimensionProfiles = Map[
   data |-> With[
     { graph = data[ "Graph" ], centre = data[ "Centre" ], radius = data[ "Radius" ] },
     { boxRadii = Range[ Floor[ radius / 2 ] ], growthRadii = Range[ 3, radius ],
-      target = RandomInfraRepresentative[ graph, InfraBall[ centre, radius ] , "NextVertexFunction" -> Identity ] },
+      target = RandomInfraBall[ graph, InfraBall[ centre, radius ], "NextVertexFunction" -> Identity ] },
     { boxCounts = Map[ r |-> BallCoverNumber[ graph, r, target, Method -> "Greedy" ], boxRadii ],
       growthCounts = Map[ s |-> BallCoverNumber[ graph, 1,
-        RandomInfraRepresentative[ graph, InfraBall[ centre, s ] , "NextVertexFunction" -> Identity ], Method -> "Greedy" ], growthRadii ],
-      volumes = Map[ s |-> Length @ RandomInfraRepresentative[ graph, InfraBall[ centre, s ] , "NextVertexFunction" -> Identity ], growthRadii ] },
+        RandomInfraBall[ graph, InfraBall[ centre, s ], "NextVertexFunction" -> Identity ], Method -> "Greedy" ], growthRadii ],
+      volumes = Map[ s |-> Length @ RandomInfraBall[ graph, InfraBall[ centre, s ], "NextVertexFunction" -> Identity ], growthRadii ] },
     Join[ data, <| "BoxRadii" -> boxRadii, "BoxCounts" -> boxCounts,
       "GrowthRadii" -> growthRadii, "GrowthCounts" -> growthCounts, "Volumes" -> volumes,
       "Box" -> -logSlope[ boxRadii + 1/2, boxCounts ], "UnshiftedBox" -> -logSlope[ boxRadii, boxCounts ],
@@ -190,14 +190,14 @@ With[
     Grid[ Prepend[ Join @@ Apply[
       { graph, name, method, radii } |-> Map[
         r |-> With[
-          { target = RandomInfraRepresentative[ graph, InfraBall[ First @ GraphCenter[ graph ], 2 r ] , "NextVertexFunction" -> Identity ] },
+          { target = RandomInfraBall[ graph, InfraBall[ First @ GraphCenter[ graph ], 2 r ], "NextVertexFunction" -> Identity ] },
           { count = BallCoverNumber[ graph, r, target, Method -> method ] },
           { name, method, r, count, NumberForm[ N[ Log[ 2, count ] ], { 4, 2 } ] } ], radii ], cases, { 1 } ],
       { "Substrate", "Method", "r", "Cover count", "log2 count" } ], Frame -> All ],
     GraphicsRow[ Apply[
       { graph, name, method, radii } |-> With[
         { r = radii[[ 2 ]], centre = First @ GraphCenter[ graph ] },
-        { target = RandomInfraRepresentative[ graph, InfraBall[ centre, 2 r ] , "NextVertexFunction" -> Identity ] },
+        { target = RandomInfraBall[ graph, InfraBall[ centre, 2 r ], "NextVertexFunction" -> Identity ] },
         { centres = FindBallCover[ graph, r, target, Method -> method ] },
         Labeled[ InfraSubstrateHighlight[ graph, Join[ { target -> StandardGray },
           MapIndexed[ { point, index } |-> InfraBall[ point, r ] -> ColorData[ 97 ][ First[ index ] ], centres ],
@@ -226,7 +226,7 @@ planeSpans = With[
         First @ Ordering[ Total[ Abs[ distances[[ chosen ]] - spread ] ], 1 ] ], pair, 2 ] },
     { seeds = vertices[[ indices ]] },
     <| "Graph" -> graph, "Spread" -> spread, "Seeds" -> seeds,
-      "Hulls" -> Table[ RandomInfraRepresentative[ graph, InfraBallHull[ Take[ seeds, k ] ] , "NextVertexFunction" -> Identity ], { k, 2, 4 } ] |> ],
+      "Hulls" -> Table[ RandomInfraBallHull[ graph, InfraBallHull[ Take[ seeds, k ] ], "NextVertexFunction" -> Identity ], { k, 2, 4 } ] |> ],
     { 2, 4, 6, 8 } ] ];
 GraphicsRow[ Table[ With[
   { data = Last[ planeSpans ] },
@@ -268,7 +268,7 @@ With[
   { enclosingRadius = Min[ Max /@ Transpose[ GraphDistance[ graph, # ] & /@ pair ] ] },
   { bounds = DeleteDuplicates[ { enclosingRadius, enclosingRadius + 1, enclosingRadius + 2,
       data[ "Spread" ], Infinity } ] },
-  { hulls = Map[ bound |-> RandomInfraRepresentative[ graph, InfraBallHull[ pair, bound ] , "NextVertexFunction" -> Identity ], bounds ] },
+  { hulls = Map[ bound |-> RandomInfraBallHull[ graph, InfraBallHull[ pair, bound ], "NextVertexFunction" -> Identity ], bounds ] },
   Column[ {
     GraphicsRow[ MapThread[ { bound, hull } |-> Labeled[
       InfraSubstrateHighlight[ graph,
@@ -276,7 +276,7 @@ With[
       Row[ { "radius bound ", bound } ] ], { bounds, hulls } ] ],
     Grid[ Prepend[ Transpose[ { bounds, Length /@ hulls } ], { "Radius bound", "Hull vertices" } ], Frame -> All ],
     <| "Nested" -> And @@ MapThread[ SubsetQ, { Most[ hulls ], Rest[ hulls ] } ],
-      "Final hull is unrestricted" -> ( Last[ hulls ] === RandomInfraRepresentative[ graph, InfraBallHull[ pair ] , "NextVertexFunction" -> Identity ] ) |> } ] ]
+      "Final hull is unrestricted" -> ( Last[ hulls ] === RandomInfraBallHull[ graph, InfraBallHull[ pair ], "NextVertexFunction" -> Identity ] ) |> } ] ]
 ```
 
 ## The square-tiling trap
@@ -294,7 +294,7 @@ With[
   { seeds = Map[ offset |-> vertices[[ First @ Ordering[
       Norm /@ ( coordinates - ConstantArray[ origin + offset, Length[ coordinates ] ] ), 1 ] ]],
       { -4 direction, 4 direction, 4 Reverse[ direction ] { -1, 1 } } ] },
-  { hulls = Table[ RandomInfraRepresentative[ graph, InfraBallHull[ Take[ seeds, k ] ] , "NextVertexFunction" -> Identity ], { k, 2, 3 } ] },
+  { hulls = Table[ RandomInfraBallHull[ graph, InfraBallHull[ Take[ seeds, k ] ], "NextVertexFunction" -> Identity ], { k, 2, 3 } ] },
   Column[ {
     GraphicsRow[ Table[ Labeled[ InfraSubstrateHighlight[ graph,
       { Complement[ hulls[[ k - 1 ]], Take[ seeds, k ] ] -> StandardBlue,
@@ -319,7 +319,7 @@ With[
   { indices = Nest[ chosen |-> Append[ chosen,
       First @ Ordering[ Total[ Abs[ distances[[ chosen ]] - spread ] ], 1 ] ], pair, 3 ] },
   { seeds = vertices[[ indices ]] },
-  { hulls = Table[ RandomInfraRepresentative[ graph, InfraBallHull[ Take[ seeds, k ] ] , "NextVertexFunction" -> Identity ], { k, 2, 5 } ] },
+  { hulls = Table[ RandomInfraBallHull[ graph, InfraBallHull[ Take[ seeds, k ] ], "NextVertexFunction" -> Identity ], { k, 2, 5 } ] },
   Column[ {
     GraphicsGrid[ Partition[ Table[ Labeled[ InfraSubstrateHighlight[ graph,
       { Complement[ hulls[[ k - 1 ]], Take[ seeds, k ] ] -> StandardBlue,

@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+Options[ RandomInfraTube ] = { Method -> "Balls", "NextVertexFunction" -> Automatic }
+
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraTube *)
 
 (* the tube { v : min_i ( d(a_i, v) - r_i ) <= 0 } along the core a_1, ..., a_m; a band profile { s_i, t_i } keeps the v with
@@ -72,7 +74,7 @@ InfraMeasurement[ graph_Graph, InfraTube[ core_, profile_, Method -> method : "B
           1 ],
         1 ] ] ]
 
-InfraMeasurement[ graph_Graph, tube : InfraTube[ _, _, ___Rule ], "EdgeDensity" ] :=
+InfraMeasurement[ graph_Graph, tube : InfraTube[ _, _ ] | InfraTube[ _, _, Method -> ( "Balls" | "Sliced" ) ], "EdgeDensity" ] :=
   AssociationThread[ EdgeList @ Subgraph[ graph, Keys @ InfraMeasurement[ graph, tube, "VertexDensity" ] ], 1 ]
 
 InfraMeasurement[ _Graph, InfraTube[ _, _, ___Rule ], "Cardinality" ] :=
@@ -81,16 +83,16 @@ InfraMeasurement[ _Graph, InfraTube[ _, _, ___Rule ], "Cardinality" ] :=
 InfraMeasurement[ _Graph, InfraTube[ _, _, ___Rule ], "Faithful" ] :=
   True
 
-InfraMeasurement[ graph_Graph, tube : InfraTube[ _, _, ___Rule ], All ] :=
+InfraMeasurement[ graph_Graph, tube : InfraTube[ _, _ ] | InfraTube[ _, _, Method -> ( "Balls" | "Sliced" ) ], All ] :=
   InfraMeasurement[ graph, tube,
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
       "CountingMeasure", "RiemannianMeasure" } ]
 
-RandomInfraRepresentative[ graph_Graph, tube : InfraTube[ _, _, ___Rule ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+RandomInfraTube[ graph_Graph, tube : InfraTube[ _, _ ] | InfraTube[ _, _, Method -> ( "Balls" | "Sliced" ) ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ { "NextVertexFunction" }, First /@ { opts } ] &&
+    ( OptionValue[ RandomInfraTube, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   With[ { members = Keys @ InfraMeasurement[ graph, tube, "VertexDensity" ],
-          nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+          nextFn = OptionValue[ RandomInfraTube, { opts }, "NextVertexFunction" ] },
     { ordered = { members } },
     Which[
       count === Automatic, members,
@@ -99,7 +101,7 @@ RandomInfraRepresentative[ graph_Graph, tube : InfraTube[ _, _, ___Rule ],
       IntegerQ @ count && Length @ ordered < count, { },
       True, RandomSample[ ordered, count ] ] ]
 
-InfraMemberQ[ graph_Graph, tube : InfraTube[ _, _, ___Rule ], vs_List ] :=
+InfraMemberQ[ graph_Graph, tube : InfraTube[ _, _ ] | InfraTube[ _, _, Method -> ( "Balls" | "Sliced" ) ], vs_List ] :=
   Union @ vs === Keys @ InfraMeasurement[ graph, tube, "VertexDensity" ]
 
 (* the named solids are sliced profiles of the tube, flat at the ends: the cylinder a constant radius or band, the cone the radius
@@ -110,13 +112,69 @@ InfraMeasurement[ graph_Graph, ( head : InfraCylinder | InfraCone | InfraSolidOf
     InfraTube[ axis, If[ head === InfraCone, i |-> profile ( i - 1 ), profile ], Method -> Lookup[ { opts }, Method, "Sliced" ] ],
     prop ]
 
-RandomInfraRepresentative[ graph_Graph, ( head : InfraCylinder | InfraCone | InfraSolidOfRevolution )[ axis_, profile_, opts___Rule ],
-    args___ ] :=
-  RandomInfraRepresentative[ graph,
-    InfraTube[ axis, If[ head === InfraCone, i |-> profile ( i - 1 ), profile ], Method -> Lookup[ { opts }, Method, "Sliced" ] ],
-    args ]
 
 InfraMemberQ[ graph_Graph, ( head : InfraCylinder | InfraCone | InfraSolidOfRevolution )[ axis_, profile_, opts___Rule ], vs_List ] :=
   InfraMemberQ[ graph,
     InfraTube[ axis, If[ head === InfraCone, i |-> profile ( i - 1 ), profile ], Method -> Lookup[ { opts }, Method, "Sliced" ] ],
     vs ]
+
+Options[ RandomInfraCylinder ] = { Method -> "Sliced", "NextVertexFunction" -> Automatic }
+
+RandomInfraCylinder[ graph_Graph, InfraCylinder[ axis_, profile_, geometryOpts___Rule ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /;
+    SubsetQ[ { Method }, First /@ { geometryOpts } ] &&
+    SubsetQ[ First /@ Options[ RandomInfraCylinder ], First /@ { opts } ] :=
+  RandomInfraTube[ graph,
+    InfraTube[ axis, profile, Method -> Lookup[ { opts, geometryOpts }, Method, "Sliced" ] ], count,
+    "NextVertexFunction" -> OptionValue[ RandomInfraCylinder, { opts }, "NextVertexFunction" ] ]
+
+RandomInfraCylinder[ graph_Graph, axis_, profile_,
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /; ! MatchQ[ axis, _InfraCylinder ] &&
+    SubsetQ[ First /@ Options[ RandomInfraCylinder ], First /@ { opts } ] :=
+  RandomInfraCylinder[ graph, InfraCylinder[ axis, profile, Method -> OptionValue[ Method ] ], count,
+    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]
+
+Options[ RandomInfraCone ] = { Method -> "Sliced", "NextVertexFunction" -> Automatic }
+
+RandomInfraCone[ graph_Graph, InfraCone[ axis_, profile_, geometryOpts___Rule ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /;
+    SubsetQ[ { Method }, First /@ { geometryOpts } ] &&
+    SubsetQ[ First /@ Options[ RandomInfraCone ], First /@ { opts } ] :=
+  RandomInfraTube[ graph,
+    InfraTube[ axis, i |-> profile ( i - 1 ), Method -> Lookup[ { opts, geometryOpts }, Method, "Sliced" ] ], count,
+    "NextVertexFunction" -> OptionValue[ RandomInfraCone, { opts }, "NextVertexFunction" ] ]
+
+RandomInfraCone[ graph_Graph, axis_, profile_,
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /; ! MatchQ[ axis, _InfraCone ] &&
+    SubsetQ[ First /@ Options[ RandomInfraCone ], First /@ { opts } ] :=
+  RandomInfraCone[ graph, InfraCone[ axis, profile, Method -> OptionValue[ Method ] ], count,
+    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]
+
+Options[ RandomInfraSolidOfRevolution ] = { Method -> "Sliced", "NextVertexFunction" -> Automatic }
+
+RandomInfraSolidOfRevolution[ graph_Graph, InfraSolidOfRevolution[ axis_, profile_, geometryOpts___Rule ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /;
+    SubsetQ[ { Method }, First /@ { geometryOpts } ] &&
+    SubsetQ[ First /@ Options[ RandomInfraSolidOfRevolution ], First /@ { opts } ] :=
+  RandomInfraTube[ graph,
+    InfraTube[ axis, profile, Method -> Lookup[ { opts, geometryOpts }, Method, "Sliced" ] ], count,
+    "NextVertexFunction" -> OptionValue[ RandomInfraSolidOfRevolution, { opts }, "NextVertexFunction" ] ]
+
+RandomInfraSolidOfRevolution[ graph_Graph, axis_, profile_,
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /; ! MatchQ[ axis, _InfraSolidOfRevolution ] &&
+    SubsetQ[ First /@ Options[ RandomInfraSolidOfRevolution ], First /@ { opts } ] :=
+  RandomInfraSolidOfRevolution[ graph, InfraSolidOfRevolution[ axis, profile, Method -> OptionValue[ Method ] ], count,
+    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]
+
+RandomInfraTube[ graph_Graph, core_, profile_,
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { core, profile }, _InfraTube ] &&
+    SubsetQ[ First /@ Options[ RandomInfraTube ], First /@ { opts } ] :=
+  RandomInfraTube[ graph, InfraTube[ core, profile, Method -> OptionValue[ Method ] ], count,
+    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]

@@ -34,7 +34,7 @@ With[
   {panels = Table[
      With[
        {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-       {region = RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 3]]},
+       {region = RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 3] ]},
        {InfraSubstrateHighlight[g, {GraphInterior[g, region] -> StandardGreen, GraphBoundary[g, region] -> StandardBlue}],
         Length[GraphBoundary[g, region]]}],
      {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]},
@@ -49,7 +49,7 @@ With[
   {panels = Table[
      With[
        {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-       {region = Complement[RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]], RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 1]]]},
+       {region = Complement[RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 4] ], RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 1] ]]},
        {InfraSubstrateHighlight[g, {GraphInterior[g, region] -> StandardGreen, GraphBoundary[g, region] -> StandardBlue}],
         Length[GraphBoundary[g, region]]}],
      {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]},
@@ -77,7 +77,7 @@ SeedRandom[1];
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {region = RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 3]]},
+    {region = RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 3] ]},
     InfraSubstrateHighlight[g, {GraphBoundary[g, region] -> StandardBlue, GraphBoundary[g, Complement[VertexList[g], region]] -> StandardRed}]],
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
 ```
@@ -88,7 +88,7 @@ GraphicsRow @ Table[
 SeedRandom[1];
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {region = RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]]},
+  {region = RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 4] ]},
   {InfraSubstrateHighlight[g, {GraphInterior[g, region] -> StandardGreen, InfraBoundary[g, region] -> StandardBlue}],
    InfraBoundary[g, region] === Sort[GraphBoundary[g, region]]}]
 ```

@@ -85,7 +85,7 @@ With[
   {c = First @ GraphCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])},
   InfraSubstrateHighlight[g,
-    {RandomInfraRepresentative[g, InfraBall[c, 3]], InfraArc[c, {p, p}, "RadiusDelta" -> 1]}]]
+    {RandomInfraBall[ g, InfraBall[c, 3] ], InfraArc[c, {p, p}, "RadiusDelta" -> 1]}]]
 ```
 
 Overlaps add. The two segments share their start and blend there. The walk is one stroke.
@@ -97,7 +97,7 @@ With[
   {c = First @ GraphCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])},
   {q = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[c, 5]])},
-  {walk = RandomInfraRepresentative[g, InfraSegment[p, q]]},
+  {walk = RandomInfraSegment[ g, InfraSegment[p, q] ]},
   InfraSubstrateHighlight[g, {InfraSegment[c, p], InfraSegment[c, q], InfraWalk[walk]}, "Arrowheads" -> True]]
 ```
 
@@ -110,7 +110,7 @@ With[
   {c = First @ GraphCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])},
   {q = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[c, 4]])},
-  {walk = RandomInfraRepresentative[g, InfraSegment[p, q]]},
+  {walk = RandomInfraSegment[ g, InfraSegment[p, q] ]},
   InfraSubstrateHighlight[g, {InfraWalk[walk], <|q -> 1, p -> -1|>}]]
 ```
 
@@ -145,7 +145,7 @@ With[
   {a = First @ GraphCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   GraphicsRow[{
-    InfraSubstrateHighlight[g, {RandomInfraRepresentative[g, InfraSegment[a, b], All]}],
+    InfraSubstrateHighlight[g, {RandomInfraSegment[ g, InfraSegment[a, b], All ]}],
     InfraSubstrateHighlight[g, {InfraSegment[a, b]}]}]]
 ```
 

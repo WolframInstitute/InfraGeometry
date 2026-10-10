@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+Options[ RandomInfraPlane ] = { "NextVertexFunction" -> Automatic }
+
 (* WolframInstitute`InfraGeometry` :: Experimental :: InfraPlane *)
 
 (* the bisector slab B = { v : lo <= d(p1, v) - d(p2, v) <= hi }, a sorted vertex list; under Properties the minimal admissible subsets of the slab,
@@ -12,13 +14,13 @@ Options[ FindInfraBisectingHyperplane ] = {
 }
 
 FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ]/;
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ]/;
     SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraBisectingHyperplane, { opts }, Properties ] ] :=
   FindInfraBisectingHyperplane[ graph, p1, p2, { 0, 0 }, count, opts ]
 
 FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
     window : { _Integer, _Integer },
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
     SubsetQ[ { "Separating", "Connected" }, OptionValue[ FindInfraBisectingHyperplane, { opts }, Properties ] ] :=
   With[ {
       properties = OptionValue[ FindInfraBisectingHyperplane, { opts }, Properties ],
@@ -81,14 +83,28 @@ InfraPlaneQ[ graph_Graph, h_List, p1_, p2_, window_ : 0 ] :=
       bounds[[ 1 ]] <= GraphDistance[ graph, p1, # ] - GraphDistance[ graph, p2, # ] <= bounds[[ 2 ]] & ]
   ]
 
-RandomInfraRepresentative[ graph_Graph, InfraPlane[ p1_, p2_, opts___Rule ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] :=
-  RandomInfraRepresentative[ graph, InfraPlane[ p1, p2, { 0, 0 }, opts ], count, samplerOpts ]
+RandomInfraPlane[ graph_Graph, InfraPlane[ p1_, p2_, opts___Rule ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { samplerOpts } ] :=
+  RandomInfraPlane[ graph, InfraPlane[ p1, p2, { 0, 0 }, opts ], count, samplerOpts ]
 
-RandomInfraRepresentative[ graph_Graph, InfraPlane[ p1_, p2_, window : { _Integer, _Integer }, opts___Rule ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /;
-    ( OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
-  With[ { nextFn = OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ] },
+RandomInfraPlane[ graph_Graph, InfraPlane[ p1_, p2_, window : { _Integer, _Integer }, opts___Rule ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { samplerOpts } ] &&
+    ( OptionValue[ RandomInfraPlane, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+  With[ { nextFn = OptionValue[ RandomInfraPlane, { samplerOpts }, "NextVertexFunction" ] },
     FindInfraBisectingHyperplane[ graph, p1, p2, window, count,
       "NextVertexFunction" -> If[ nextFn === Automatic, If[ count === All, Identity, RandomSample ], nextFn ],
       Properties -> { "Separating" } ] ]
+
+RandomInfraPlane[ graph_Graph, p_, q_,
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { p, q }, _InfraPlane ] &&
+    SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { opts } ] :=
+  RandomInfraPlane[ graph, InfraPlane[ p, q ], count,
+    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]
+
+RandomInfraPlane[ graph_Graph, p_, q_, window : { _Integer, _Integer },
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { p, q, window }, _InfraPlane ] &&
+    SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { opts } ] :=
+  RandomInfraPlane[ graph, InfraPlane[ p, q, window ], count,
+    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]

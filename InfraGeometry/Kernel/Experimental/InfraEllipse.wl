@@ -14,7 +14,7 @@ Options[ RandomInfraEllipse ] = {
 }
 
 RandomInfraEllipse[ graph_Graph, foci : { _, _ }, c_,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraEllipse ], First /@ { opts } ] &&
     SubsetQ[ { "Separating", "Shortest" }, OptionValue[ RandomInfraEllipse, { opts }, Properties ] ] &&
     ( count =!= All || OptionValue[ RandomInfraEllipse, { opts }, "NextVertexFunction" ] =!= RandomChoice ) :=
   With[ {
@@ -99,3 +99,9 @@ InfraEllipseQ[ graph_Graph, cycle_List ] /; Length[ cycle ] >= 3 :=
 
 InfraEllipseQ[ _Graph, cycle_List ] /; Length[ cycle ] < 3 :=
   False
+
+RandomInfraEllipse[ graph_Graph, InfraEllipse[ foci : { _, _ }, level_, geometryOpts___Rule ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraEllipse ], First /@ { opts } ] &&
+    SubsetQ[ First /@ Options[ RandomInfraEllipse ], First /@ { opts, geometryOpts } ] :=
+  RandomInfraEllipse[ graph, foci, level, count, opts, geometryOpts ]

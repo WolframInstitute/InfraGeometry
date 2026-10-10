@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraSphere
 Keywords: [sphere, separating set, minimal, peel, search]
-SeeAlso: [InfraSphere, FindInfraShell, InfraShell, RandomInfraRepresentative, FindInfraOsculatingShell]
+SeeAlso: [InfraSphere, FindInfraShell, InfraShell, RandomInfraSphere, FindInfraOsculatingShell]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -28,7 +28,7 @@ Option `Properties` takes `{"Separating", "Connected"}` (default), `{"Separating
 
 Option `"NextVertexFunction"` sees the vertices that can be peeled next and gives the ones to try, in order. `Automatic` (default) peels in random order. `Identity` gives the canonical peel; ambient `SeedRandom` reproduces a draw; `RandomSample[#, UpTo[n]] &` keeps at most *n* branches per node, and the result is then minimal among the survivors.
 
-The search peels the shell vertex by vertex while it keeps separating. It is the specialised search behind [InfraSphere](), whose [RandomInfraRepresentative]() clause calls it. The family can be large: all members on a medium tiling take long.
+The search peels the shell vertex by vertex while it keeps separating. It is the specialised search behind [InfraSphere](), whose [RandomInfraSphere]() clause calls it. The family can be large: all members on a medium tiling take long.
 
 When the shell does not separate, as on a torus band that wraps, the result is `{}`.
 

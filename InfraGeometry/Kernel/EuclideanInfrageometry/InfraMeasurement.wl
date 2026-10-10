@@ -66,7 +66,7 @@ InfraMeasurement[ graph_Graph,
     { "Graph", "Faithful", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph",
       "CountingMeasure", "RiemannianMeasure" } ]
 
-InfraMeasurement[ _Graph, ( InfraSegment | InfraRay | InfraLine )[ __ ], "Faithful" ] :=
+InfraMeasurement[ _Graph, ( InfraSegment | InfraHalfLine | InfraInfiniteLine )[ __ ], "Faithful" ] :=
   True
 
 InfraMeasurement[ _Graph, InfraArc[ __ ], "Faithful" ] :=
@@ -150,80 +150,6 @@ InfraMeasurement[ graph_Graph, obj : Except[ _List ], "RiemannianMeasure" ] :=
     { inside = AssociationThread[ support, True ] },
     Count[ support, v_ /; AllTrue[ AdjacencyList[ graph, v ], TrueQ @ Lookup[ inside, Key @ # ] & ] ] ]
 
-Options[ RandomInfraRepresentative ] = { "NextVertexFunction" -> Automatic }
-
-RandomInfraRepresentative[ graph_Graph,
-    obj : ( InfraSegment | InfraRay | InfraLine )[ Except[ _Rule | _RuleDelayed ], Except[ _Rule | _RuleDelayed ] ] |
-      InfraArc[ _, Except[ { p_, p_ }, { _, _ } ], ___Rule ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
-  With[ {
-      cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
-      nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ],
-      dags = Select[ Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ], VertexCount[ # ] > 0 & ] },
-    { engines = Map[
-        dag |-> With[ { out = GroupBy[ List @@@ EdgeList @ dag, First -> Last ] },
-          { beta = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ out, Key @ w, { } ],
-                  { { } -> 1, qs_ :> Total @ Lookup[ a, Key /@ qs ] } ] ],
-              <| |>, Reverse @ TopologicalSort @ dag ] },
-          { out, beta, Sort @ Pick[ VertexList @ dag, VertexInDegree @ dag, 0 ] } ],
-        dags ] },
-    { draw = { out, beta, sources } |->
-        NestWhile[
-          path |-> With[ { nexts = Lookup[ out, Key @ Last @ path, { } ] },
-            Append[ path, RandomChoice[ Lookup[ beta, Key /@ nexts ] -> nexts ] ] ],
-          { RandomChoice[ Lookup[ beta, Key /@ sources ] -> sources ] },
-          path |-> Lookup[ out, Key @ Last @ path, { } ] =!= { } ] },
-    { randomDraw = ignored |-> If[ engines === { }, { },
-        With[ { weights = Total @ Lookup[ #[[ 2 ]], Key /@ #[[ 3 ]] ] & /@ engines },
-          draw @@ RandomChoice[ weights -> engines ] ] ] },
-    { enumerate = limit |-> Catenate @ Last @ Reap @ Fold[
-          { found, engine } |-> With[ { out = First @ engine },
-            Last @ NestWhile[
-              Apply[ { stack, got } |-> With[ { path = First @ stack },
-                { nexts = Sort @ Lookup[ out, Key @ Last @ path, { } ] },
-                { selected = If[ nexts === { } || nextFn === Automatic, nexts,
-                    Replace[ nextFn @ nexts,
-                      candidate_ /; MemberQ[ nexts, Verbatim @ candidate ] :> { candidate } ] ] },
-                If[ nexts === { },
-                  ( Sow[ path ]; { Rest @ stack, got + 1 } ),
-                  { Join[ Append[ path, # ] & /@ selected, Rest @ stack ],
-                    got } ] ] ],
-              { List /@ Last @ engine, found },
-              state |-> First @ state =!= { } && Last @ state < limit ] ],
-          0, engines ] },
-    { randomWalk = ignored |-> First[ enumerate @ 1, { } ] },
-    { cardinality = Total @ ( Total @ Lookup[ #[[ 2 ]], Key /@ #[[ 3 ]] ] & /@ engines ) },
-    { members = Which[
-        count === Automatic && nextFn === Automatic,
-          { randomDraw[ Null ] },
-        nextFn === RandomChoice,
-          If[ cap > cardinality && ! MatchQ[ count, _UpTo ], { },
-            First @ NestWhile[
-              state |-> With[ { member = randomWalk[ Null ] },
-                If[ MemberQ[ First @ state, member ], state, { Append[ First @ state, member ], Last @ state + 1 } ] ],
-              { { }, 0 },
-              Last @ # < If[ MatchQ[ count, _UpTo ], Min[ cap, cardinality ], cap ] & ] ],
-        nextFn =!= Automatic,
-          enumerate @ cap,
-        count === All,
-          enumerate @ Infinity,
-        cap > cardinality && ! MatchQ[ count, _UpTo ],
-          { },
-        2 cap >= cardinality,
-          RandomSample[ enumerate @ Infinity, Replace[ count, UpTo[ n_ ] :> UpTo[ n ] ] ],
-        True,
-          First @ NestWhile[
-            state |-> With[ { member = randomDraw[ Null ] },
-              If[ MemberQ[ First @ state, member ], state, { Append[ First @ state, member ], Last @ state + 1 } ] ],
-            { { }, 0 },
-            Last @ # < cap & ] ] },
-    Switch[ count,
-      Automatic, First[ members, { } ],
-      All,       members,
-      _UpTo,     If[ nextFn === Automatic, members, Take[ members, count ] ],
-      _,         If[ Length[ members ] < count, { }, Take[ members, count ] ] ] ]
-
 InfraMemberQ[ graph_Graph,
     obj : Except[ _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] |
                   InfraCircle[ _, _, ___ ] |
@@ -260,3 +186,11 @@ InfraMeasurement[ graph_Graph, obj : InfraIntersection[ __ ], All ] :=
 InfraMeasurement[ graph_Graph, obj : InfraUnion[ __ ], All ] :=
   InfraMeasurement[ graph, obj,
     { "VertexDensity", "EdgeDensity", "Subgraph", "CountingMeasure", "RiemannianMeasure" } ]
+
+InfraMeasurement[ graph_Graph, token : _InfraRay | _InfraLine | _InfraPolygon, property_ ] :=
+  InfraMeasurement[ graph, Replace[ token, { InfraRay[ args___ ] :> InfraHalfLine[ args ],
+    InfraLine[ args___ ] :> InfraInfiniteLine[ args ], InfraPolygon[ args___ ] :> InfraRegularPolygon[ args ] } ], property ]
+
+InfraMemberQ[ graph_Graph, token : _InfraRay | _InfraLine | _InfraPolygon, representative_ ] :=
+  InfraMemberQ[ graph, Replace[ token, { InfraRay[ args___ ] :> InfraHalfLine[ args ],
+    InfraLine[ args___ ] :> InfraInfiniteLine[ args ], InfraPolygon[ args___ ] :> InfraRegularPolygon[ args ] } ], representative ]

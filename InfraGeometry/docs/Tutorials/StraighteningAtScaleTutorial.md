@@ -32,7 +32,7 @@ GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, "Large", "KeepCoordinates" -> True])},
     {c = First @ GraphCenter[g]},
-    {germ = First @ RandomInfraRepresentative[g, InfraSegment[First @ FindInfraShell[g, c, 8], c], 1]},
+    {germ = First @ RandomInfraSegment[ g, InfraSegment[First @ FindInfraShell[g, c, 8], c], 1 ]},
     {walks = RandomInfraGeodesic[g, germ, r, {10}, All]},
     InfraSubstrateHighlight[g, {
       walks -> StandardOrange,
@@ -61,7 +61,7 @@ With[
     With[
       {g = (SeedRandom[2]; InfraSubstrate[name, "Large", "KeepCoordinates" -> True])},
       {c = First @ GraphCenter[g], d = GraphDistanceMatrix[g], xy = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-      {germ = First @ RandomInfraRepresentative[g, InfraSegment[First @ FindInfraShell[g, c, 8], c], 1],
+      {germ = First @ RandomInfraSegment[ g, InfraSegment[First @ FindInfraShell[g, c, 8], c], 1 ],
        unit = EuclideanDistance @@ Lookup[xy, List @@ First @ EdgeList @ g]},
       Table[
         With[

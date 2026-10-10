@@ -32,7 +32,7 @@ VerificationTest[
 
 (* a set is already its support, and InfraUnion sorts it *)
 VerificationTest[
-  With[ { g = PathGraph @ Range[ 7 ] }, Sort @ InfraUnion[ g, RandomInfraRepresentative[g, InfraBall[4, 2]] ] ],
+  With[ { g = PathGraph @ Range[ 7 ] }, Sort @ InfraUnion[ g, RandomInfraBall[ g, InfraBall[4, 2] ] ] ],
   {2, 3, 4, 5, 6},
   TestID -> "set-from-InfraBall-support"
 ]
@@ -71,7 +71,7 @@ VerificationTest[
 
 (* Output is the sorted List, and the density over the same support agrees with it. *)
 VerificationTest[
-  With[ { g = GridGraph[ {3, 3} ], ball = RandomInfraRepresentative[GridGraph[ {3, 3} ], InfraBall[5, 1]] },
+  With[ { g = GridGraph[ {3, 3} ], ball = RandomInfraBall[ GridGraph[ {3, 3} ], InfraBall[5, 1] ] },
     { InfraBoundary[ g, ball ],
       InfraBoundary[ g, ball ] === InfraBoundary[ g, <| 2 -> 1, 4 -> 1, 5 -> 1, 6 -> 1, 8 -> 1 |> ] } ],
   { { 2, 4, 6, 8 }, True },
@@ -232,7 +232,7 @@ VerificationTest[
    measure on that same support, which agrees with the occupation reader *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    With[ { ball = RandomInfraRepresentative[g, InfraBall[13, 2]] },
+    With[ { ball = RandomInfraBall[ g, InfraBall[13, 2] ] },
       { d = InfraDensity[ g, ball ] },
       { Keys @ d === Sort @ ball,
         Values @ d === ConstantArray[ 1, Length @ d ],

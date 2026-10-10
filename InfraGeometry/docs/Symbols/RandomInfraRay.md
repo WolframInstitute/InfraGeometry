@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraRay
 Keywords: [ray, half-line, direction, pencil, Euclid Postulate 2]
-SeeAlso: [InfraRay, InfraRayQ, RandomInfraRepresentative, RandomInfraLine, RandomInfraSegment]
+SeeAlso: [InfraRay, InfraRayQ, RandomInfraHalfLine, RandomInfraLine, RandomInfraSegment]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -16,7 +16,10 @@ RelatedGuides: [EuclideanInfrageometry]
 
 <code>[RandomInfraRay]()[*g*, *O*, *v*, *n*]</code> gives a `List` of exactly *n* rays or `{}`; `UpTo[n]` gives up to *n*; `All` gives every ray.
 
-## Details & Options
+## Details
+
+This is the legacy compatibility spelling. New code uses `RandomInfraHalfLine`.
+ & Options
 
 The default draw is random. Seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing.
 
@@ -24,7 +27,7 @@ A ray from *O* through *v* is a shortest path *O … v … e* with *d(O, e) = d(
 
 Rays are how direction is expressed without a vector space. There is no tangent space on a graph, so "the direction from *O* towards *v*" is not a vector but the *family* of rays from *O* containing *v* — and like every other family here it is large. The rays leaving a vertex, the pencil, are the graph's stand-in for the sphere of directions: `RandomInfraRay[g, o, o, All]` lists them and `InfraMeasurement[g, InfraRay[o, o], "Cardinality"]` counts them.
 
-The search runs on the substrate directly: a shortest path from *O* to *v*, prolonged one outward step at a time until no neighbour prolongs it. It does not read the graph of <code>[InfraRay]()[*O*, *v*]</code>, so it is the check on that graph, and it returns exactly the shapes [RandomInfraRepresentative]() gives for that head. To count the rays without enumerating them, use [InfraMeasurement]().
+The search runs on the substrate directly: a shortest path from *O* to *v*, prolonged one outward step at a time until no neighbour prolongs it. It does not read the graph of <code>[InfraRay]()[*O*, *v*]</code>, so it is the check on that graph, and it returns exactly the shapes [RandomInfraHalfLine]() gives for that head. To count the rays without enumerating them, use [InfraMeasurement]().
 
 <code>[RandomInfraRay]()[*g*, *O*, *O*, All]</code> is every ray from *O* — the pencil.
 
@@ -129,5 +132,5 @@ The search agrees with the graph of the head.
 SeedRandom[1];
 With[
   {g = GridGraph[{4, 4}]},
-  Sort @ RandomInfraRay[g, 6, 7, All] === Sort @ RandomInfraRepresentative[g, InfraRay[6, 7], All]]
+  Sort @ RandomInfraRay[g, 6, 7, All] === Sort @ RandomInfraHalfLine[ g, InfraRay[6, 7], All ]]
 ```

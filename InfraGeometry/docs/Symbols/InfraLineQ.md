@@ -16,7 +16,10 @@ RelatedGuides: [Experimental]
 
 <code>[InfraLineQ]()[*g*, *lines*]</code> tests every line of an [InfraLine]() bundle or pool.
 
-## Details & Options
+## Details
+
+This is the legacy compatibility spelling. New code uses `InfraInfiniteLineQ`.
+ & Options
 
 Two conditions: the sequence is a shortest path ([InfraSegmentQ]()), and stepping off either end to a neighbour gives a walk that is no longer a shortest path — no neighbour of the first vertex lies one step farther from the last, and no neighbour of the last lies one step farther from the first. Both tests are single distance lookups.
 

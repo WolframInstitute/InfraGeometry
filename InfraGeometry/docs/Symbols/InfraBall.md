@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraBall
 Keywords: [ball, disk, neighbourhood, region, symbolic object, volume, counting measure, Riemannian measure]
-SeeAlso: [InfraShell, InfraTube, InfraSphere, RandomInfraRepresentative, InfraMeasurement, InfraInterior, InfraBoundary, InfraBallQ]
+SeeAlso: [InfraShell, InfraTube, InfraSphere, RandomInfraBall, InfraMeasurement, InfraInterior, InfraBoundary, InfraBallQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraBall]()[*c*, *r*]</code> is the closed ball of radius *r* about *c*: the vertices at distance at most *r*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
+<code>[InfraBall]()[*c*, *r*]</code> is the closed ball of radius *r* about *c*: the vertices at distance at most *r*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraBall]() evaluate it on a graph.
 
 <code>[InfraBall]()[*c*, {*r*, *s*}]</code> is the shell: the vertices at distance between *r* and *s*.
 
@@ -50,7 +50,7 @@ How the number is measured: <code>[InfraMeasurement]()[*g*, [InfraBall]()[*c*, *
 
 A radius past the eccentricity gives the whole graph, and then both measures are the number of vertices: the rim of the graph is not a boundary of the ball. A band with *r > s* gives the empty set.
 
-The head holds the centre and the radius and computes nothing. A ball has one member, the vertex set, so [RandomInfraRepresentative]() gives it as a sorted vertex list and `"Faithful"` is `True`. [InfraMeasurement]() also reads `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"` and `"Subgraph"`; a ball has no `"Graph"` and no `"Length"`.
+The head holds the centre and the radius and computes nothing. A ball has one member, the vertex set, so [RandomInfraBall]() gives it as a sorted vertex list and `"Faithful"` is `True`. [InfraMeasurement]() also reads `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"` and `"Subgraph"`; a ball has no `"Graph"` and no `"Length"`.
 
 Corresponding notions in the classical axiom systems:
 
@@ -69,7 +69,7 @@ Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {ball = InfraBall[First @ GraphCenter[g], 3]},
-    {support = RandomInfraRepresentative[g, ball]},
+    {support = Replace[ ball, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> RandomInfraBall[ g, token ], token_InfraShell :> RandomInfraShell[ g, token ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> RandomInfraTube[ g, token ], token_InfraCylinder :> RandomInfraCylinder[ g, token ], token_InfraCone :> RandomInfraCone[ g, token ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token ], token_InfraBallHull :> RandomInfraBallHull[ g, token ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token ], token_InfraQuadric :> RandomInfraQuadric[ g, token ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> RandomInfraIntersection[ g, token ], token_InfraUnion :> RandomInfraUnion[ g, token ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ]},
     Labeled[
       InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
       InfraMeasurement[g, ball, {"CountingMeasure", "RiemannianMeasure"}]]],
@@ -97,7 +97,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])},
-  {core = RandomInfraRepresentative[g, InfraSegment[c, p]]},
+  {core = RandomInfraSegment[ g, InfraSegment[c, p] ]},
   InfraSubstrateHighlight[g, {InfraBall[core, 1], core}]]
 ```
 
@@ -142,8 +142,8 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {inner = InfraInterior[g, RandomInfraRepresentative[g, InfraBall[c, 6]]]},
-  {smaller = RandomInfraRepresentative[g, InfraBall[c, 5]]},
+  {inner = InfraInterior[g, RandomInfraBall[ g, InfraBall[c, 6] ]]},
+  {smaller = RandomInfraBall[ g, InfraBall[c, 5] ]},
   {InfraSubstrateHighlight[g, {smaller, InfraShell[c, 6], Complement[inner, smaller]}],
    InfraMeasurement[g, InfraBall[c, 6], "RiemannianMeasure"], InfraMeasurement[g, InfraBall[c, 5], "CountingMeasure"]}]
 ```
@@ -159,5 +159,5 @@ With[
   {constr = InfraScene[{pA, ballA}, {pA == InfraPoint[c], ballA == InfraBall[pA, 2]}]},
   {ball = InfraSceneInstance[First @ RandomInfraInstance[ constr, g, All ], ballA]},
   {InfraSubstrateHighlight[g, {ball, c}],
-   ball === RandomInfraRepresentative[g, InfraBall[c, 2]]}]
+   ball === RandomInfraBall[ g, InfraBall[c, 2] ]}]
 ```

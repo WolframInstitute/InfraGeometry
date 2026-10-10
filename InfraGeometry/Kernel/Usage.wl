@@ -9,11 +9,10 @@ InfraReachableQ::usage = "InfraReachableQ[graph, p1, p2] tests whether p1 and p2
 
 Undetermined::usage = "Undetermined is the value of the measurement \"Faithful\" on a head whose graph is faithful only under a hypothesis this paclet does not certify.";
 InfraMeasurement::usage = "InfraMeasurement[graph, obj, property] measures a Euclidean head on graph: \"Graph\", \"Cardinality\", \"Length\", \"VertexDensity\", \"EdgeDensity\", \"Subgraph\", \"Faithful\", \"CountingMeasure\" (the vertex count), \"RiemannianMeasure\" (the count without boundary). A List of properties gives an Association, All gives them all, a List of heads measures each.";
-RandomInfraRepresentative::usage = "RandomInfraRepresentative[graph, head] draws one random member of the symbolic object as a vertex list; a trailing n gives n distinct members, UpTo[n] gives at most n, and All gives every member in enumeration order. Option \"NextVertexFunction\" -> Identity restores lexicographic descent.";
 InfraMemberQ::usage = "InfraMemberQ[graph, obj, path] tests whether the vertex list path is a member of obj.";
 InfraSubgraph::usage = "InfraSubgraph[graph, obj] gives the subgraph of graph induced on the support of obj; InfraSubgraph[graph, obj -> t] thickens the support by t steps.";
 
-InfraSegment::usage = "InfraSegment[p1, ..., pk] is the polyline of the segments [p1, p2], ..., [p(k-1), pk], closed when pk == p1; InfraSegment[p, q] is the segment itself, whose graph is the shortest path interval I(p, q). InfraMeasurement and RandomInfraRepresentative evaluate it on a graph.";
+InfraSegment::usage = "InfraSegment[p1, ..., pk] is an inert ordered chain of shortest-path legs. InfraMeasurement reads its family; RandomInfraSegment samples it."
 RandomInfraSegment::usage = "RandomInfraSegment[graph, p, q] draws a random shortest path from p to q as a vertex list; a trailing n | UpTo[n] | All gives a List of vertex lists. Option \"NextVertexFunction\".";
 InfraWalkQ::usage = "InfraWalkQ[graph, walk] tests whether walk is a walk: consecutive vertices adjacent (revisits allowed).";
 InfraSegmentQ::usage = "InfraSegmentQ[graph, walk] tests whether walk is a shortest path.";
@@ -21,7 +20,7 @@ UniqueInfraSegmentQ::usage = "UniqueInfraSegmentQ[graph, u, v] tests whether the
 
 InfraWalk::usage = "InfraWalk[p1, ..., pk] inside InfraScene is the literal walk through p1, ..., pk, and InfraWalk[{p1, ..., pk}] in InfraSubstrateHighlight one oriented walk. A walk itself is a Graph: a directed path on the position pairs {i, v}, a closed walk a directed cycle on them; Last /@ VertexList gives the vertex sequence.";
 RandomInfraWalk::usage = "RandomInfraWalk[graph, germ, kspec] grows the germ into walk graphs, each step under the rules of Properties: rule, {rule, r} or {rule, r, p}, an energy on the last r vertices, a filter at p = 0 and a weight p^energy above. Automatic randomizes candidate order; Identity preserves deterministic order. Options Properties, \"StoppingCondition\", \"NextVertexFunction\", \"Direction\".";
-InfraGeodesic::usage = "InfraGeodesic[germ, scale] is the inert geodesics at infra-scale scale through the germ, a vertex list, whose graph is the window graph of its forward extensions. RandomInfraRepresentative gives the inextensible simple ones.";
+InfraGeodesic::usage = "InfraGeodesic[germ, scale] is the inert family of simple maximal scale-geodesics through a nonempty vertex-list germ."
 RandomInfraGeodesic::usage = "RandomInfraGeodesic[graph, germ, scale, kspec] grows the geodesics at infra-scale scale -- RandomInfraWalk with {\"Shortest\", scale} first among the rules. Automatic randomizes candidate order; Identity preserves deterministic order. Options Properties, \"StoppingCondition\", \"NextVertexFunction\", \"Direction\".";
 InfraGeodesicQ::usage = "InfraGeodesicQ[graph, walk, scale] tests whether every window of scale consecutive vertices of walk plus the next one is a shortest path; scale 1 gives InfraWalkQ and Infinity gives InfraSegmentQ.";
 WalkSingularities::usage = "WalkSingularities[walk] gives the singularities of a walk (a vertex list or a walk graph; a cycle graph is read on its cyclic core) as parameter data: \"SelfIntersections\" (position groups sharing a vertex), \"SelfTangencies\" (oriented interval groups sharing an arc), \"Cusps\" (mirrored blocks).";
@@ -30,31 +29,31 @@ InfraGenericQ::usage = "InfraGenericQ[graph, walk] tests whether walk is a gener
 InfraWalkCrossingQ::usage = "InfraWalkCrossingQ[graph, walk, v, r] tests whether the double visit of walk at v is a transverse crossing at scale r: the two passes separate each other's exits on the shell {r, r+1}; {i, j} names two positions instead.";
 ConcatenateInfraWalk::usage = "ConcatenateInfraWalk[path1, path2] joins every compatible walk pair, those with Last[walk1] === First[walk2].";
 
-InfraLine::usage = "InfraLine[p, q] is the line through p and q, whose graph is the List of atoms I(a, p) + I(p, q) + I(q, b) over the maximal compatible end pairs (a, b). InfraLine[germ] is the line through a shortest path germ -- a vertex, a vertex list, a walk graph or a shortest path DAG -- whose atoms keep the germ's own edges in the middle. InfraMeasurement and RandomInfraRepresentative evaluate it on a graph; RandomInfraLine is the search.";
-RandomInfraLine::usage = "RandomInfraLine[graph, p, q] gives one line through p and q as a vertex list -- an inextensible shortest path through both; a trailing n | UpTo[n] | All gives a List. RandomInfraLine[graph, seq] prolongs a given shortest path. Automatic randomizes candidate order; Identity preserves deterministic order.";
+InfraInfiniteLine::usage = "InfraInfiniteLine[p, q] is the inert family of maximal shortest walks through p then q; a single germ retains its middle edges."
+RandomInfraInfiniteLine::usage = "RandomInfraInfiniteLine[graph, p, q] gives one line through p and q as a vertex list -- an inextensible shortest path through both; a trailing n | UpTo[n] | All gives a List. RandomInfraInfiniteLine[graph, seq] prolongs a given shortest path. Automatic randomizes candidate order; Identity preserves deterministic order.";
 RandomInfraParallel::usage = "RandomInfraParallel[graph, line, p] gives one parallel to line through p: a geodesic through p inextensible within the level set { v : d(v, line) == d(p, line) }; a trailing n | UpTo[n] | All sets the count, All giving the pool. Automatic randomizes candidate order; Identity preserves deterministic order.";
 FindInfraPerpendicular::usage = "FindInfraPerpendicular[graph, line, point] gives the lines through point perpendicular to line. Options Method, \"Radius\".";
 FindInfraCommonLine::usage = "FindInfraCommonLine[graph, vertices] gives the canonical lines containing every listed vertex.";
-InfraLineQ::usage = "InfraLineQ[graph, walk] tests whether walk is a line: a shortest path that no neighbour of either endpoint prolongs.";
+InfraInfiniteLineQ::usage = "InfraInfiniteLineQ[graph, walk] tests whether walk is a line: a shortest path that no neighbour of either endpoint prolongs.";
 InfraParallelQ::usage = "InfraParallelQ[graph, l1, l2] tests whether two lines stay at constant distance; a trailing threshold allows that distance to vary.";
 InfraPerpendicularQ::usage = "InfraPerpendicularQ[graph, l1, l2] tests whether two lines meet perpendicularly at every common vertex. Options Method, \"Radius\".";
 LineCount::usage = "LineCount[graph] gives the number of distinct canonical maximal geodesics in graph.";
 UniversalLineQ::usage = "UniversalLineQ[graph] tests whether some pair spans a line filling a whole connected component (Chen-Chvatal); UniversalLineQ[graph, {u, v}] tests one line.";
 
-InfraShell::usage = "InfraShell[c, {r, s}] is the shell { v : r <= d(v, c) <= s }, c a vertex or a vertex set; InfraShell[c, r] is the band {r, r}. Read by InfraMeasurement and RandomInfraRepresentative; FindInfraShell is the search.";
+InfraShell::usage = "InfraShell[c, r] is the inert distance-r shell; {r, s} gives a distance band."
 FindInfraShell::usage = "FindInfraShell[graph, c, r] gives the metric shell { v : d(v, c) == r } as a sorted vertex list; r may be a band {r, s}, c a vertex set.";
-InfraSphere::usage = "InfraSphere[c, {r, s}] is the family of inclusion-minimal connected subsets of the shell InfraShell[c, {r, s}] separating the centre's side from the far side; InfraSphere[c, r] is the band {r, r}. Read by InfraMeasurement and RandomInfraRepresentative.";
+InfraSphere::usage = "InfraSphere[c, r] is the inert family of minimal connected separating subsets of the distance-r shell."
 RandomInfraSphere::usage = "RandomInfraSphere[graph, c, r, n] gives n minimal separating subsets of the shell of c with radius r or band {r, s}; n may be UpTo[n] or All. Automatic randomizes candidate order; Identity preserves deterministic order. Options Properties, \"NextVertexFunction\".";
 FindInfraOsculatingShell::usage = "FindInfraOsculatingShell[graph, path, i, k] gives the shells whose level set contains the k-vertex window of path centred at position i, one per osculating centre.";
 FindAdvancingInfraFront::usage = "FindAdvancingInfraFront[graph, origin, steps] gives the foliation by a bouncing wavefront as a List of sorted vertex lists: each front steps one geodesic step outward and reflects inward where it cannot.";
 FindInfraShellCenter::usage = "FindInfraShellCenter[graph, shell] recovers {center, radii} from a shell. Option Method.";
 InfraShellQ::usage = "InfraShellQ[graph, vertexSet] tests whether vertexSet is a metric shell { v : d(c, v) == r } for some centre c and radius r.";
 
-InfraBall::usage = "InfraBall[c, r] is the closed ball { v : d(v, c) <= r }, c a vertex or a vertex set; InfraBall[c, {r, s}] is the shell. Read by InfraMeasurement and RandomInfraRepresentative.";
+InfraBall::usage = "InfraBall[c, r] is the inert closed ball of radius r; a radius band gives a shell."
 InfraBallQ::usage = "InfraBallQ[graph, vertexSet] tests whether vertexSet is a closed metric ball.";
 
-InfraBallHull::usage = "InfraBallHull[S, r] is the intersection of the closed balls of radius at most r containing S, the whole graph if none does; InfraBallHull[S, {r}] takes the balls of radius exactly r, InfraBallHull[S, {r, s}] those of radius between r and s, and InfraBallHull[S] every radius, the Mazur hull. Read by InfraMeasurement and RandomInfraRepresentative.";
-InfraConvexHull::usage = "InfraConvexHull[S, k] is the k-th round of the interval closure of S, a round adding all geodesics between its vertices; InfraConvexHull[S] is the convex hull. Read by InfraMeasurement and RandomInfraRepresentative.";
+InfraBallHull::usage = "InfraBallHull[seeds, band] is the inert intersection of all balls containing seeds with radius in band; omitted band includes every radius."
+InfraConvexHull::usage = "InfraConvexHull[seeds, k] is the inert k-round interval closure; omitted k gives the fixed-point convex hull."
 
 InfraTube::usage = "InfraTube[core, profile] is the tube { v : d(a_i, v) <= r_i for some i } along the core a_1, ..., a_m, the profile a radius, a band {s, t}, a list of them or a function of i. Option Method (\"Balls\", \"Sliced\").";
 InfraCylinder::usage = "InfraCylinder[axis, r] is the cylinder InfraTube[axis, r, Method -> \"Sliced\"], the tube of radius r with flat ends; r may be a band {r, s}.";
@@ -66,11 +65,11 @@ InfraCircleQ::usage = "InfraCircleQ[graph, cycle] tests whether cycle is a cycli
 
 InfraArc::usage = "InfraArc[c, {p1, ..., pk}] is the arc around c through the points, the geodesics of the band of the circle through p1; InfraArc[c, {p, p}] is the closed arc, the circles through p. Option \"RadiusDelta\".";
 
-InfraPolygon::usage = "InfraPolygon[As, n] is the family of regular n-gons whose k-th diagonals satisfy As[[k]]; RandomInfraRegularPolygon is the search. The polygon through given corners is the closed polyline InfraSegment[p1, ..., pn, p1].";
+InfraRegularPolygon::usage = "InfraRegularPolygon[As, n] is the family of regular n-gons whose k-th diagonals satisfy As[[k]]; RandomInfraRegularPolygon is the search. The polygon through given corners is the closed polyline InfraSegment[p1, ..., pn, p1].";
 RandomInfraRegularPolygon::usage = "RandomInfraRegularPolygon[graph, As, n] gives one closed n-vertex sequence whose k-th diagonal distances all match As[[k]] (each slot an Integer, {lo, hi}, or Automatic); a trailing n | UpTo[n] | All sets the count. Automatic randomizes candidate order; Identity preserves deterministic order. Options \"NextVertexFunction\", \"From\".";
 InfraRegularPolygonQ::usage = "InfraRegularPolygonQ[graph, cycle, As] tests whether cycle is regular with respect to the diagonal-distance tuple As.";
 
-InfraQuadric::usage = "InfraQuadric[{p1, ..., pk}, c] is the solid { v : Sum_i d(p_i, v) <= c }, c a number or a band {lo, hi}; a trailing weight list gives the signed sum. One focus is the ball, two the ellipse, InfraQuadric[{p1, p2}, {c, c}] the elliptic shell, weights {1, -1} a hyperbola branch. Read by InfraMeasurement and RandomInfraRepresentative.";
+InfraQuadric::usage = "InfraQuadric[foci, c, weights] is the inert signed weighted distance sublevel; a band c selects both bounds and omitted weights are 1."
 
 InfraEllipse::usage = "InfraEllipse names the metric-ellipse construction -- a cycle lying on an elliptic shell -- and carries no value of its own; RandomInfraEllipse is the search and gives a directed cycle graph.";
 RandomInfraEllipse::usage = "RandomInfraEllipse[graph, {p1, p2}, c] gives one shortest separating cycle in the level surface { v : d(p1, v) + d(p2, v) == c }; a trailing n | UpTo[n] | All sets the count. Automatic randomizes candidate order; Identity preserves deterministic order. Options Properties, \"NextVertexFunction\".";
@@ -79,9 +78,9 @@ InfraEllipseQ::usage = "InfraEllipseQ[graph, cycle] tests whether cycle is a cyc
 InfraPlane::usage = "InfraPlane[p1, p2] inside InfraScene is the bisecting hyperplane of p1 and p2; FindInfraBisectingHyperplane is the search. A plane itself is a sorted vertex list.";
 FindInfraBisectingHyperplane::usage = "FindInfraBisectingHyperplane[graph, p1, p2] gives the perpendicular bisector { v : d(p1, v) == d(p2, v) }; a positional {lo, hi} widens it to a slab. Options Properties, \"NextVertexFunction\".";
 
-InfraRay::usage = "InfraRay[p, q] is the ray from p through q, whose graph is the ray DAG R(p, q); InfraRay[p, p] is the pencil at p. InfraMeasurement and RandomInfraRepresentative evaluate it on a graph; RandomInfraRay is the search.";
-RandomInfraRay::usage = "RandomInfraRay[graph, p, q] gives one ray from p through q as a vertex list -- a shortest path from p through q that no neighbour of its last vertex prolongs; a trailing n | UpTo[n] | All gives a List of them. Automatic randomizes candidate order; Identity preserves deterministic order.";
-InfraRayQ::usage = "InfraRayQ[graph, ray] tests whether ray is a pointed half-line: a shortest path from its own first vertex that cannot be prolonged past its last.";
+InfraHalfLine::usage = "InfraHalfLine[p, q] is the inert family of maximal shortest walks from p through q; equal anchors give a pencil."
+RandomInfraHalfLine::usage = "RandomInfraHalfLine[graph, p, q] gives one ray from p through q as a vertex list -- a shortest path from p through q that no neighbour of its last vertex prolongs; a trailing n | UpTo[n] | All gives a List of them. Automatic randomizes candidate order; Identity preserves deterministic order.";
+InfraHalfLineQ::usage = "InfraHalfLineQ[graph, ray] tests whether ray is a pointed half-line: a shortest path from its own first vertex that cannot be prolonged past its last.";
 
 FindInfraPolylineSubdivision::usage = "FindInfraPolylineSubdivision[graph, path] chunks a walk into the fewest geodesic legs whose knots are walk vertices. Option \"MaxLength\" caps each leg.";
 
@@ -350,3 +349,24 @@ IntervalGraph::usage = "IntervalGraph[graph, p, q] gives the DAG of all shortest
 RayGraph::usage = "RayGraph[graph, p, q] gives the DAG of maximal shortest paths from p through q; RayGraph[graph, p, p] gives the spray at p.";
 BeamGraph::usage = "BeamGraph[graph, p, q] gives the list of DAGs of lines through p and q, one per compatible pair of maximal endpoints. BeamGraph[graph, germ] keeps the specified shortest-path germ.";
 ArcGraph::usage = "ArcGraph[graph, c, points] gives the arc carrier around c through the ordered point list. Option \"RadiusDelta\" widens the radial band.";
+InfraRay::usage = "InfraRay is the inert legacy compatibility spelling; use InfraHalfLine."
+RandomInfraRay::usage = "RandomInfraRay[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+InfraRayQ::usage = "InfraRayQ is the legacy compatibility spelling; use InfraHalfLineQ."
+InfraLine::usage = "InfraLine is the inert legacy compatibility spelling; use InfraInfiniteLine."
+RandomInfraLine::usage = "RandomInfraLine[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+InfraLineQ::usage = "InfraLineQ is the legacy compatibility spelling; use InfraInfiniteLineQ."
+InfraPolygon::usage = "InfraPolygon is the inert legacy compatibility spelling; use InfraRegularPolygon."
+RandomInfraBall::usage = "RandomInfraBall[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+RandomInfraShell::usage = "RandomInfraShell[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+RandomInfraTube::usage = "RandomInfraTube[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+RandomInfraCylinder::usage = "RandomInfraCylinder[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+RandomInfraCone::usage = "RandomInfraCone[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+RandomInfraSolidOfRevolution::usage = "RandomInfraSolidOfRevolution[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+RandomInfraCircle::usage = "RandomInfraCircle[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+RandomInfraArc::usage = "RandomInfraArc[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+RandomInfraPlane::usage = "RandomInfraPlane[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+RandomInfraBallHull::usage = "RandomInfraBallHull[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+RandomInfraConvexHull::usage = "RandomInfraConvexHull[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+RandomInfraQuadric::usage = "RandomInfraQuadric[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+RandomInfraIntersection::usage = "RandomInfraIntersection[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+RandomInfraUnion::usage = "RandomInfraUnion[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."

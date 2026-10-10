@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraGeodesic
 Keywords: [geodesic, infra-scale, window graph, extension, germ, inert head]
-SeeAlso: [RandomInfraGeodesic, InfraGeodesicQ, InfraMeasurement, RandomInfraRepresentative, InfraRay, InfraLine]
+SeeAlso: [RandomInfraGeodesic, InfraGeodesicQ, InfraMeasurement, RandomInfraGeodesic, InfraHalfLine, InfraInfiniteLine]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraGeodesic]()[*germ*, *s*]</code> is the geodesics at infra-scale *s* through *germ*, a vertex list: the walks extending *germ* in which every *s* consecutive vertices together with the next one form a shortest path. It is inert; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
+<code>[InfraGeodesic]()[*germ*, *s*]</code> is the geodesics at infra-scale *s* through *germ*, a vertex list: the walks extending *germ* in which every *s* consecutive vertices together with the next one form a shortest path. It is inert; [InfraMeasurement]() and [RandomInfraGeodesic]() evaluate it on a graph.
 
 ## Details & Options
 
@@ -20,11 +20,11 @@ Its graph — <code>[InfraMeasurement]()[*g*, InfraGeodesic[*germ*, *s*], "Graph
 
 The graph carries no length budget. It is finite, and its cycles are the closed geodesics at scale *s*; at scale 1 it is the graph with both orientations of every edge. The extensions of *k* steps are read off the powers of its adjacency matrix rather than listed.
 
-At scale `Infinity` the walk is a shortest path from the germ's first vertex *p*, so the window collapses to its last vertex. The graph is then the part of the ray DAG of <code>[InfraRay]()[*p*, *q*]</code> reachable from the germ's last vertex *q*; for a one-vertex germ it is the pencil at *p*.
+At scale `Infinity` the walk is a shortest path from the germ's first vertex *p*, so the window collapses to its last vertex. The graph is then the part of the ray DAG of <code>[InfraHalfLine]()[*p*, *q*]</code> reachable from the germ's last vertex *q*; for a one-vertex germ it is the pencil at *p*.
 
 The germ must itself be a geodesic at scale *s*; otherwise the call stays unevaluated.
 
-A member read by [RandomInfraRepresentative]() is an inextensible simple geodesic through the germ, grown on both sides.
+A member read by [RandomInfraGeodesic]() is an inextensible simple geodesic through the germ, grown on both sides.
 
 ## Basic Examples
 
@@ -36,7 +36,7 @@ GraphicsRow @ Table[
   With[
     {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
     {o = First @ GraphCenter[g]},
-    {germ = First @ RandomInfraRepresentative[g, InfraSegment[(SeedRandom[2]; RandomInfraPoint[g, InfraShell[o, 3]]), o], 1]},
+    {germ = First @ RandomInfraSegment[ g, InfraSegment[(SeedRandom[2]; RandomInfraPoint[g, InfraShell[o, 3]]), o], 1 ]},
     {windows = InfraMeasurement[g, InfraGeodesic[germ, scale], "Graph"]},
     {from = UnitVector[VertexCount[windows], VertexIndex[windows, Take[germ, -Min[scale, Length[germ]]]]]},
     {ends = Select[Merge[Thread[Last /@ VertexList[windows] -> from . MatrixPower[AdjacencyMatrix[windows], 6]], Total], Positive]},
@@ -52,10 +52,10 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
   {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
-  {germ = First @ RandomInfraRepresentative[g, InfraSegment[o, through], 1]},
+  {germ = First @ RandomInfraSegment[ g, InfraSegment[o, through], 1 ]},
   {windows = InfraMeasurement[g, InfraGeodesic[germ, Infinity], "Graph"]},
   GraphicsRow[{InfraSubstrateHighlight[g, {windows, InfraWalk[germ]}],
-    InfraSubstrateHighlight[g, {InfraRay[o, through], InfraWalk[germ]}]}]]
+    InfraSubstrateHighlight[g, {InfraHalfLine[o, through], InfraWalk[germ]}]}]]
 ```
 
 ## Properties and Relations
@@ -67,7 +67,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
-  {germ = First @ RandomInfraRepresentative[g, InfraSegment[(SeedRandom[2]; RandomInfraPoint[g, InfraShell[o, 3]]), o], 1]},
+  {germ = First @ RandomInfraSegment[ g, InfraSegment[(SeedRandom[2]; RandomInfraPoint[g, InfraShell[o, 3]]), o], 1 ]},
   Table[
     With[
       {windows = InfraMeasurement[g, InfraGeodesic[germ, scale], "Graph"]},
@@ -77,7 +77,7 @@ With[
     {scale, {1, 2, 4, 8}}]]
 ```
 
-At scale `Infinity` the graph is the part of the [InfraRay]() graph past the germ.
+At scale `Infinity` the graph is the part of the [InfraHalfLine]() graph past the germ.
 
 ```wl
 SeedRandom[1];
@@ -85,8 +85,8 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
   {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
-  {germ = First @ RandomInfraRepresentative[g, InfraSegment[o, through], 1]},
-  {ray = InfraMeasurement[g, InfraRay[o, through], "Graph"]},
+  {germ = First @ RandomInfraSegment[ g, InfraSegment[o, through], 1 ]},
+  {ray = InfraMeasurement[g, InfraHalfLine[o, through], "Graph"]},
   Sort @ EdgeList @ InfraMeasurement[g, InfraGeodesic[germ, Infinity], "Graph"] ===
     Sort @ EdgeList @ Subgraph[ray, VertexOutComponent[ray, through]]]
 ```

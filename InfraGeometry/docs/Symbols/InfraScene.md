@@ -20,7 +20,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 Definition: a scene is a list of objects and a list of hypotheses. A **construction** is a hypothesis `x == token`, whose left side is an object. Every other hypothesis is an **assertion**. A scene computes nothing; [RandomInfraInstance]() solves it on a graph.
 
-The right side of a construction is a **symbolic construction token** with object names in place of points. Evaluation is postponed until [RandomInfraInstance]() supplies a graph and resolves those names. [InfraPoint]()`[v]` is the vertex *v*, and <code>[InfraPoint]()[*v*, *d*]</code> every vertex at distance *d* from *v*. [InfraSegment]()`[x, y]` is a shortest path from *x* to *y*, and [InfraRay]()`[x, y]` and [InfraLine]()`[x, y]` a ray and a line. [InfraCircle]()`[x, r]` is a circle about *x* at radius *r*, or in the band `{r, s}`. [InfraIntersection]()`[x, y]` is a vertex the two objects share; an operand may be a token itself.
+The right side of a construction is a **symbolic construction token** with object names in place of points. Evaluation is postponed until [RandomInfraInstance]() supplies a graph and resolves those names. [InfraPoint]()`[v]` is the vertex *v*, and <code>[InfraPoint]()[*v*, *d*]</code> every vertex at distance *d* from *v*. [InfraSegment]()`[x, y]` is a shortest path from *x* to *y*, and [InfraHalfLine]()`[x, y]` and [InfraInfiniteLine]()`[x, y]` a ray and a line. [InfraCircle]()`[x, r]` is a circle about *x* at radius *r*, or in the band `{r, s}`. [InfraIntersection]()`[x, y]` is a vertex the two objects share; an operand may be a token itself.
 
 A token stands for its realisations, and each realisation is one branch. So a construction binds its object to a single vertex, or a single vertex list, per branch, and the branches multiply from one construction to the next.
 
@@ -108,7 +108,7 @@ With[
       circleA == InfraCircle[pA, 4], circleB == InfraCircle[pB, 4],
       meet == InfraIntersection[circleA, circleB]}]},
   {InfraSubstrateHighlight[g, {FindInfraShell[g, a, 4], a, b}],
-   RandomInfraRepresentative[g, InfraCircle[a, 4], All], RandomInfraInstance[ scene, g, All ]}]
+   RandomInfraCircle[ g, InfraCircle[a, 4], All ], RandomInfraInstance[ scene, g, All ]}]
 ```
 
 On the discretized plane a single radius suffices: its shells are cycles by accident of the mesh.

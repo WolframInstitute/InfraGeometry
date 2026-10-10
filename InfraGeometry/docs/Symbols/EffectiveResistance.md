@@ -36,7 +36,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {fromCentre = EffectiveResistance[g][[VertexIndex[g, c]]]},
-  {disk = Pick[VertexList[g], Thread[fromCentre <= 1.15]], graphBall = RandomInfraRepresentative[g, InfraBall[c, 5]]},
+  {disk = Pick[VertexList[g], Thread[fromCentre <= 1.15]], graphBall = RandomInfraBall[ g, InfraBall[c, 5] ]},
   {GraphicsRow[{InfraSubstrateHighlight[g, {AssociationThread[graphBall, 1] -> StandardBlue}], InfraSubstrateHighlight[g, {AssociationThread[disk, 1] -> StandardGreen}]}],
    Length /@ {graphBall, disk}}]
 ```

@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraConvexHull
 Keywords: [convex hull, geodesic convexity, interval closure, region, symbolic object]
-SeeAlso: [InfraBallHull, InfraSegment, InfraTube, InfraMeasurement, RandomInfraRepresentative, InfraMemberQ]
+SeeAlso: [InfraBallHull, InfraSegment, InfraTube, InfraMeasurement, RandomInfraConvexHull, InfraMemberQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraConvexHull]()[*S*, *k*]</code> is the *k*-th round of the interval closure of *S*: round 0 is *S*, and each round adds every shortest path between two of its vertices. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
+<code>[InfraConvexHull]()[*S*, *k*]</code> is the *k*-th round of the interval closure of *S*: round 0 is *S*, and each round adds every shortest path between two of its vertices. It is a symbolic object; [InfraMeasurement]() and [RandomInfraConvexHull]() evaluate it on a graph.
 
 <code>[InfraConvexHull]()[*S*]</code> is the convex hull: the fixed point of the rounds, the smallest set containing *S* and every shortest path between two of its vertices.
 
@@ -48,7 +48,7 @@ The sizes of the rounds of three vertices of the Petersen graph.
 SeedRandom[1];
 With[
   {g = PetersenGraph[]},
-  Length @ RandomInfraRepresentative[g, InfraConvexHull[{1, 2, 8}, #]] & /@ Range[0, 4]]
+  Length @ RandomInfraConvexHull[ g, InfraConvexHull[{1, 2, 8}, #] ] & /@ Range[0, 4]]
 ```
 
 ## Properties and Relations
@@ -67,8 +67,8 @@ The hull is geodesically convex: it is its own hull, and it contains every round
 SeedRandom[1];
 With[
   {g = GridGraph[{7, 7}]},
-  {hull = RandomInfraRepresentative[g, InfraConvexHull[{2, 6, 40}]]},
-  {RandomInfraRepresentative[g, InfraConvexHull[hull]] === hull, SubsetQ[hull, RandomInfraRepresentative[g, InfraConvexHull[{2, 6, 40}, 1]]]}]
+  {hull = RandomInfraConvexHull[ g, InfraConvexHull[{2, 6, 40}] ]},
+  {RandomInfraConvexHull[ g, InfraConvexHull[hull] ] === hull, SubsetQ[hull, RandomInfraConvexHull[ g, InfraConvexHull[{2, 6, 40}, 1] ]]}]
 ```
 
 The convex hull and the ball hull of the same pair on the 7 × 7 grid.

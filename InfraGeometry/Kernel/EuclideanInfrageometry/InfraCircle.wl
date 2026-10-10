@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+Options[ RandomInfraCircle ] = { "NextVertexFunction" -> Automatic }
+
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraCircle *)
 
 (* InfraCircle[c, r] and InfraCircle[c, {r, s}] are inert: the circles of the band W = { v : r <= d(c, v) <= s } around c, scalar r meaning {r, r}, a
@@ -208,9 +210,9 @@ InfraCircleQ[ graph_Graph, cycle_List ] /; Length[ cycle ] >= 3 :=
 InfraCircleQ[ _Graph, cycle_List ] /; Length[ cycle ] < 3 :=
   False
 
-RandomInfraRepresentative[ graph_Graph, InfraCircle[ center_, rs : ( _?NumericQ | { _?NumericQ, _?NumericQ } ) ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+RandomInfraCircle[ graph_Graph, InfraCircle[ center_, rs : ( _?NumericQ | { _?NumericQ, _?NumericQ } ) ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraCircle ], First /@ { opts } ] &&
+    ( OptionValue[ RandomInfraCircle, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ] },
     { rmin = Max[ 1, First @ Flatten @ { rs } ], rmax = Last @ Flatten @ { rs } },
     { local = Subgraph[ graph, Select[ VertexList @ graph, Lookup[ dist, Key @ # ] <= rmax + 1 & ] ] },
@@ -223,7 +225,7 @@ RandomInfraRepresentative[ graph_Graph, InfraCircle[ center_, rs : ( _?NumericQ 
           Range[ 3, VertexCount @ bandGraph ] ],
         Null -> { } ] },
     With[ { members = circles,
-            nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+            nextFn = OptionValue[ RandomInfraCircle, { opts }, "NextVertexFunction" ] },
       { ordered = Sort @ members },
       Which[
         count === Automatic, If[ ordered === { }, { }, If[ nextFn === Identity, First @ ordered, RandomChoice @ ordered ] ],
@@ -231,3 +233,10 @@ RandomInfraRepresentative[ graph_Graph, InfraCircle[ center_, rs : ( _?NumericQ 
         nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
         IntegerQ @ count && Length @ ordered < count, { },
         True, RandomSample[ ordered, count ] ] ] ]
+
+RandomInfraCircle[ graph_Graph, center_, radius_,
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { center, radius }, _InfraCircle ] &&
+    SubsetQ[ First /@ Options[ RandomInfraCircle ], First /@ { opts } ] :=
+  RandomInfraCircle[ graph, InfraCircle[ center, radius ], count,
+    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]

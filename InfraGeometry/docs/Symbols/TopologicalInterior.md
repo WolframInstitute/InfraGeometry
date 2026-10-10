@@ -36,7 +36,7 @@ GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {region = RandomInfraRepresentative[g, InfraBall[c, VertexEccentricity[g, c] - 2]]},
+    {region = RandomInfraBall[ g, InfraBall[c, VertexEccentricity[g, c] - 2] ]},
     {interior = TopologicalInterior[BallTopology[g, 2], region]},
     InfraSubstrateHighlight[g, {interior -> StandardGreen, Complement[region, interior] -> StandardBlue}]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
@@ -48,7 +48,7 @@ Away from the rim a ball is open. The ball of radius 4 about the centre of the s
 SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {ball = RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]]},
+  {ball = RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 4] ]},
   GraphicsRow @ {
     InfraSubstrateHighlight[g, {TopologicalInterior[BallTopology[g, 2], ball] -> StandardGreen}],
     InfraSubstrateHighlight[g, {InfraInterior[g, ball] -> StandardGreen}]}]
@@ -63,7 +63,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
   {topo = BallTopology[g, 2]},
-  {ball = RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]]},
+  {ball = RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 4] ]},
   {interior = TopologicalInterior[topo, ball]},
   {InfraSubstrateHighlight[g, {interior -> StandardGreen, Complement[ball, interior] -> StandardBlue}],
    TopologicalInterior[topo, interior] == interior,

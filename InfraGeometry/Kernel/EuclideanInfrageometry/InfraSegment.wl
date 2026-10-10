@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+Options[ RandomInfraSegment ] = { "NextVertexFunction" -> Automatic }
+
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraSegment *)
 
 (* InfraSegment[p1, ..., pk] is inert: the polyline of the segments [p_i, p_(i+1)], k >= 2, and for k == 2 the segment itself.  Its graph is the
@@ -43,28 +45,48 @@ InfraMeasurement[ graph_Graph,
     InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ], "Length" ] :=
   Total[ GraphDistance[ graph, #1, #2 ] & @@@ Partition[ { pts }, 2, 1 ] ]
 
-RandomInfraRepresentative[ graph_Graph,
+RandomInfraSegment[ graph_Graph,
     segment : InfraSegment[ p : Except[ _Rule | _RuleDelayed ], mid : Repeated[ Except[ _Rule | _RuleDelayed ], { 1, Infinity } ], p_ ],
-    Automatic, opts : OptionsPattern[ RandomInfraRepresentative ] ] /;
-    OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] === Identity :=
-  Replace[ edgeFreshChain[ graph, { p, mid, p } ],
-    { } :> First[ RandomInfraRepresentative[ graph, segment, UpTo[ 1 ], "NextVertexFunction" -> Identity ], { } ] ]
+    Automatic, opts : OptionsPattern[ RandomInfraSegment ] ] /; SubsetQ[ First /@ Options[ RandomInfraSegment ], First /@ { opts } ] &&
+    OptionValue[ RandomInfraSegment, { opts }, "NextVertexFunction" ] === Identity :=
+  Replace[ With[ { sides = Partition[ { p, mid, p }, 2, 1 ] },
+    { dags = InfraMeasurement[ graph, InfraSegment @@ #, "Graph" ] & /@ sides },
+    { arcs = Catenate @ MapIndexed[ { dag, i } |-> ( { First @ i, # } & /@ EdgeList @ dag ), dags ] },
+    { x = Array[ \[FormalX], Length @ arcs ] },
+    { outOf = GroupBy[ Transpose[ { arcs, x } ], ( { #[[ 1, 1 ]], #[[ 1, 2, 1 ]] } & ) -> Last, Total ],
+      into = GroupBy[ Transpose[ { arcs, x } ], ( { #[[ 1, 1 ]], #[[ 1, 2, 2 ]] } & ) -> Last, Total ],
+      load = GroupBy[ Transpose[ { arcs, x } ], ( Sort[ List @@ #[[ 1, 2 ]] ] & ) -> Last, Total ] },
+    { solution = Which[ AnyTrue[ dags, VertexCount[ # ] == 0 & ], $Failed, arcs === { }, { }, True,
+        Quiet @ LinearOptimization[ 0,
+          Join[
+            Catenate @ MapIndexed[ { dag, i } |-> Map[
+                v |-> Lookup[ outOf, Key @ { First @ i, v }, 0 ] - Lookup[ into, Key @ { First @ i, v }, 0 ] ==
+                  Which[ SameQ @@ sides[[ First @ i ]], 0, v === sides[[ First @ i, 1 ]], 1, v === sides[[ First @ i, 2 ]], -1, True, 0 ],
+                VertexList @ dag ], dags ],
+            Thread[ Values @ load <= 1 ], Thread[ 0 <= x <= 1 ] ],
+          x \[Element] Vectors[ Length @ arcs, Integers ] ] ] },
+    If[ ! MatchQ[ solution, { ___Rule } ] || ! FreeQ[ solution, Indeterminate ], { },
+      With[ { chosen = Pick[ arcs, Round[ x /. solution ], 1 ] },
+        Fold[ Join[ #1, Rest @ #2 ] &,
+          MapIndexed[ { side, i } |-> If[ SameQ @@ side, { First @ side }, TopologicalSort @ Graph[ Cases[ chosen, { First @ i, arc_ } :> arc ] ] ],
+            sides ] ] ] ] ],
+    { } :> First[ RandomInfraSegment[ graph, segment, UpTo[ 1 ], "NextVertexFunction" -> Identity ], { } ] ]
 
-RandomInfraRepresentative[ graph_Graph,
+RandomInfraSegment[ graph_Graph,
     InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraSegment ], First /@ { opts } ] &&
+    ( OptionValue[ RandomInfraSegment, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   With[ { sides = Partition[ { pts }, 2, 1 ],
-          nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+          nextFn = OptionValue[ RandomInfraSegment, { opts }, "NextVertexFunction" ] },
     { cardinality = Times @@ ( InfraMeasurement[ graph, InfraSegment @@ #, "Cardinality" ] & /@ sides ) },
     { cap = Replace[ count, { Automatic -> 1, UpTo[ n_ ] :> n } ] },
     { sampleOne = ignored |-> With[
-        { members = RandomInfraRepresentative[ graph, InfraSegment @@ #, Automatic,
+        { members = RandomInfraSegment[ graph, InfraSegment @@ #, Automatic,
             "NextVertexFunction" -> nextFn ] & /@ sides },
         If[ MemberQ[ members, { } ], { },
           Fold[ Join[ #1, Rest @ #2 ] &, First @ members, Rest @ members ] ] ] },
     { enumerate = ignored |-> With[
-        { pieces = RandomInfraRepresentative[ graph, InfraSegment @@ #, All,
+        { pieces = RandomInfraSegment[ graph, InfraSegment @@ #, All,
             "NextVertexFunction" -> nextFn ] & /@ sides },
         Fold[ { as, bs } |-> Catenate @ Map[ a |-> ( Join[ a, Rest @ # ] & /@ bs ), as ],
           First @ pieces, Rest @ pieces ] ] },
@@ -112,28 +134,6 @@ InfraMeasurement[ graph_Graph,
       MapIndexed[ { piece, i } |-> ( Times @@ Delete[ counts, i ] ) InfraMeasurement[ graph, piece, "EdgeDensity" ], pieces ],
       Total ] ]
 
-edgeFreshChain[ graph_Graph, corners_List ] :=
-  With[ { sides = Partition[ corners, 2, 1 ] },
-    { dags = InfraMeasurement[ graph, InfraSegment @@ #, "Graph" ] & /@ sides },
-    { arcs = Catenate @ MapIndexed[ { dag, i } |-> ( { First @ i, # } & /@ EdgeList @ dag ), dags ] },
-    { x = Array[ \[FormalX], Length @ arcs ] },
-    { outOf = GroupBy[ Transpose[ { arcs, x } ], ( { #[[ 1, 1 ]], #[[ 1, 2, 1 ]] } & ) -> Last, Total ],
-      into = GroupBy[ Transpose[ { arcs, x } ], ( { #[[ 1, 1 ]], #[[ 1, 2, 2 ]] } & ) -> Last, Total ],
-      load = GroupBy[ Transpose[ { arcs, x } ], ( Sort[ List @@ #[[ 1, 2 ]] ] & ) -> Last, Total ] },
-    { solution = Which[ AnyTrue[ dags, VertexCount[ # ] == 0 & ], $Failed, arcs === { }, { }, True,
-        Quiet @ LinearOptimization[ 0,
-          Join[
-            Catenate @ MapIndexed[ { dag, i } |-> Map[
-                v |-> Lookup[ outOf, Key @ { First @ i, v }, 0 ] - Lookup[ into, Key @ { First @ i, v }, 0 ] ==
-                  Which[ SameQ @@ sides[[ First @ i ]], 0, v === sides[[ First @ i, 1 ]], 1, v === sides[[ First @ i, 2 ]], -1, True, 0 ],
-                VertexList @ dag ], dags ],
-            Thread[ Values @ load <= 1 ], Thread[ 0 <= x <= 1 ] ],
-          x \[Element] Vectors[ Length @ arcs, Integers ] ] ] },
-    If[ ! MatchQ[ solution, { ___Rule } ] || ! FreeQ[ solution, Indeterminate ], { },
-      With[ { chosen = Pick[ arcs, Round[ x /. solution ], 1 ] },
-        Fold[ Join[ #1, Rest @ #2 ] &,
-          MapIndexed[ { side, i } |-> If[ SameQ @@ side, { First @ side }, TopologicalSort @ Graph[ Cases[ chosen, { First @ i, arc_ } :> arc ] ] ],
-            sides ] ] ] ] ]
 
 (* the knots cut the path at prescribed positions: every chain of the piece p_i -> p_(i+1) has length d(p_i, p_(i+1)) *)
 
@@ -149,8 +149,9 @@ InfraMemberQ[ graph_Graph,
    interval DAG.  The count-less call is one geodesic, a bounded count a List of them, All the whole class *)
 
 RandomInfraSegment[ graph_Graph, p_, q_,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[ RandomInfraRepresentative ] ] :=
-  RandomInfraRepresentative[ graph, InfraSegment[ p, q ], count, opts ]
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[ RandomInfraSegment ] ] /; ( VertexQ[ graph, p ] || ! MatchQ[ p, _InfraSegment ] ) &&
+    SubsetQ[ First /@ Options[ RandomInfraSegment ], First /@ { opts } ] :=
+  RandomInfraSegment[ graph, InfraSegment[ p, q ], count, opts ]
 
 InfraWalkQ[ graph_Graph, ws : { __Graph } ] :=
   AllTrue[ ws, InfraWalkQ[ graph, # ] & ]
@@ -217,3 +218,74 @@ UniqueInfraSegmentQ[ graph_Graph, u_, v_ ] :=
 UniqueInfraSegmentQ[ graph_Graph ] :=
   AllTrue[ Subsets[ VertexList[ graph ], { 2 } ],
     pair |-> UniqueInfraSegmentQ[ graph, pair[[ 1 ]], pair[[ 2 ]] ] ]
+
+RandomInfraSegment[ graph_Graph,
+    obj : InfraSegment[ Except[ _Rule | _RuleDelayed ], Except[ _Rule | _RuleDelayed ] ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraSegment ], First /@ { opts } ] &&
+    ( OptionValue[ RandomInfraSegment, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+  With[ {
+      cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
+      nextFn = OptionValue[ RandomInfraSegment, { opts }, "NextVertexFunction" ],
+      dags = Select[ Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ], VertexCount[ # ] > 0 & ] },
+    { engines = Map[
+        dag |-> With[ { out = GroupBy[ List @@@ EdgeList @ dag, First -> Last ] },
+          { beta = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ out, Key @ w, { } ],
+                  { { } -> 1, qs_ :> Total @ Lookup[ a, Key /@ qs ] } ] ],
+              <| |>, Reverse @ TopologicalSort @ dag ] },
+          { out, beta, Sort @ Pick[ VertexList @ dag, VertexInDegree @ dag, 0 ] } ],
+        dags ] },
+    { draw = { out, beta, sources } |->
+        NestWhile[
+          path |-> With[ { nexts = Lookup[ out, Key @ Last @ path, { } ] },
+            Append[ path, RandomChoice[ Lookup[ beta, Key /@ nexts ] -> nexts ] ] ],
+          { RandomChoice[ Lookup[ beta, Key /@ sources ] -> sources ] },
+          path |-> Lookup[ out, Key @ Last @ path, { } ] =!= { } ] },
+    { randomDraw = ignored |-> If[ engines === { }, { },
+        With[ { weights = Total @ Lookup[ #[[ 2 ]], Key /@ #[[ 3 ]] ] & /@ engines },
+          draw @@ RandomChoice[ weights -> engines ] ] ] },
+    { enumerate = limit |-> Catenate @ Last @ Reap @ Fold[
+          { found, engine } |-> With[ { out = First @ engine },
+            Last @ NestWhile[
+              Apply[ { stack, got } |-> With[ { path = First @ stack },
+                { nexts = Sort @ Lookup[ out, Key @ Last @ path, { } ] },
+                { selected = If[ nexts === { } || nextFn === Automatic, nexts,
+                    Replace[ nextFn @ nexts,
+                      candidate_ /; MemberQ[ nexts, Verbatim @ candidate ] :> { candidate } ] ] },
+                If[ nexts === { },
+                  ( Sow[ path ]; { Rest @ stack, got + 1 } ),
+                  { Join[ Append[ path, # ] & /@ selected, Rest @ stack ],
+                    got } ] ] ],
+              { List /@ Last @ engine, found },
+              state |-> First @ state =!= { } && Last @ state < limit ] ],
+          0, engines ] },
+    { randomWalk = ignored |-> First[ enumerate @ 1, { } ] },
+    { cardinality = Total @ ( Total @ Lookup[ #[[ 2 ]], Key /@ #[[ 3 ]] ] & /@ engines ) },
+    { members = Which[
+        count === Automatic && nextFn === Automatic,
+          { randomDraw[ Null ] },
+        nextFn === RandomChoice,
+          If[ cap > cardinality && ! MatchQ[ count, _UpTo ], { },
+            First @ NestWhile[
+              state |-> With[ { member = randomWalk[ Null ] },
+                If[ MemberQ[ First @ state, member ], state, { Append[ First @ state, member ], Last @ state + 1 } ] ],
+              { { }, 0 },
+              Last @ # < If[ MatchQ[ count, _UpTo ], Min[ cap, cardinality ], cap ] & ] ],
+        nextFn =!= Automatic,
+          enumerate @ cap,
+        count === All,
+          enumerate @ Infinity,
+        cap > cardinality && ! MatchQ[ count, _UpTo ],
+          { },
+        2 cap >= cardinality,
+          RandomSample[ enumerate @ Infinity, Replace[ count, UpTo[ n_ ] :> UpTo[ n ] ] ],
+        True,
+          First @ NestWhile[
+            state |-> With[ { member = randomDraw[ Null ] },
+              If[ MemberQ[ First @ state, member ], state, { Append[ First @ state, member ], Last @ state + 1 } ] ],
+            { { }, 0 },
+            Last @ # < cap & ] ] },
+    Switch[ count,
+      Automatic, First[ members, { } ],
+      All,       members,
+      _UpTo,     If[ nextFn === Automatic, members, Take[ members, count ] ],
+      _,         If[ Length[ members ] < count, { }, Take[ members, count ] ] ] ]

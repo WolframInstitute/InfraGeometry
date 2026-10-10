@@ -8,9 +8,7 @@ PackageScope[ extractBranches ]
 PackageScope[ capBranches ]
 PackageScope[ applySelectOption ]
 PackageScope[ constructionPatternQ ]
-PackageScope[ dispatchConstruction ]
 PackageScope[ selectContext ]
-PackageScope[ evaluateConstruction ]
 PackageScope[ pointQ ]
 PackageScope[ closedWalkQ ]
 PackageScope[ positionSpelledQ ]
@@ -35,7 +33,10 @@ sceneAssertionRules[ graph_ ] :=
     InfraBallQ[ vs_ ]            :> InfraBallQ[ graph, vs ],
     InfraPlaneQ[ h_, p1_, p2_ ]  :> InfraPlaneQ[ graph, h, p1, p2 ],
     InfraCircleQ[ c_ ]           :> InfraCircleQ[ graph, c ],
-    InfraLineQ[ s_ ]             :> InfraLineQ[ graph, s ],
+    InfraInfiniteLineQ[ s_ ]             :> InfraInfiniteLineQ[ graph, s ],
+    InfraLineQ[ s_ ] :> InfraInfiniteLineQ[ graph, s ],
+    InfraHalfLineQ[ s_ ] :> InfraHalfLineQ[ graph, s ],
+    InfraRayQ[ s_ ] :> InfraHalfLineQ[ graph, s ],
     InfraParallelQ[ l1_, l2_ ]   :> InfraParallelQ[ graph, l1, l2 ],
     InfraIntersectQ[ s1_, s2_ ]  :> IntersectingQ[ s1, s2 ],
     InfraRegularPolygonQ[ c_, as_ ] :> InfraRegularPolygonQ[ graph, c, as ],
@@ -89,26 +90,6 @@ selectFromName[ "Peripheral" ] :=
 selectFromName[ name_String  ] :=
   name
 
-dispatchConstruction[ graph_Graph, vs_List ] /;
-    vs =!= { } && ! pointQ[ graph, vs ] && SubsetQ[ VertexList @ graph, vs ] :=
-  vs
-
-dispatchConstruction[ graph_Graph, fam_Association ] /;
-    Length[ fam ] > 0 && SubsetQ[ VertexList @ graph, Keys @ fam ] :=
-  Keys @ fam
-
-dispatchConstruction[ graph_Graph, token : Except[ _List | _Association ] ] :=
-  With[ { opts = Cases[ token, _Rule ] },
-    { head = DeleteCases[ token, ( "Select" | "Branches" ) -> _ ] },
-    { members = RandomInfraRepresentative[ graph, head, All ] },
-    If[ ListQ @ members,
-      capBranches[
-        applySelectOption[ graph, members, Lookup[ opts, "Select", None ],
-          MatchQ[ head, InfraCircle[ __ ] | InfraPolygon[ _List, _Integer, ___ ] | InfraArc[ _, { p_, ___, p_ } | { _ }, ___ ] ],
-          selectContext[ graph, head ] ],
-        Lookup[ opts, "Branches", All ] ],
-      members ] ]
-
 selectContext[ _Graph, ( InfraCircle | InfraShell | InfraSphere )[ c_, rs_, ___ ] ] :=
   <| "Center" -> c, "Radius" -> Mean @ Flatten @ { rs } |>
 
@@ -120,10 +101,10 @@ selectContext[ graph_Graph, InfraArc[ c_, { p_, ___, p_ } | { p_ }, opts___Rule 
 selectContext[ _Graph, InfraArc[ _, pts_List, ___ ] ] :=
   <| "Endpoints" -> { First @ pts, Last @ pts } |>
 
-selectContext[ _Graph, InfraLine[ path_List, ___ ] ] :=
+selectContext[ _Graph, ( InfraInfiniteLine | InfraLine )[ path_List, ___ ] ] :=
   <| "Endpoints" -> { First @ path, Last @ path } |>
 
-selectContext[ _Graph, ( InfraSegment | InfraRay | InfraLine | InfraPlane )[ p1_, p2_, ___ ] ] :=
+selectContext[ _Graph, ( InfraSegment | InfraHalfLine | InfraRay | InfraInfiniteLine | InfraLine | InfraPlane )[ p1_, p2_, ___ ] ] :=
   <| "Endpoints" -> { p1, p2 } |>
 
 selectContext[ _, _ ] :=
@@ -218,37 +199,55 @@ InfraSceneInstance[ bindings_Association, sym_ ] /; ! ListQ[ sym ] :=
 InfraSceneInstance[ bindings_Association, syms_List ] :=
   bindings /@ syms
 
-evaluateConstruction[ graph_Graph, sym_, ( head : InfraIntersection | InfraUnion )[ objs__ ], bindings_Association ] :=
-  Append[ bindings, sym -> # ] & /@
-    Replace[ head, { InfraIntersection -> Intersection, InfraUnion -> Union } ] @@ Map[
-      obj |-> With[ { resolved = resolveExpression[ obj, bindings, graph ] },
-        { realisations = dispatchConstruction[ graph, resolved ] },
-        If[ ListQ[ realisations ],
-          Union @@ ( infraVertexSet[ graph, # ] & /@ realisations ),
-          infraVertexSet[ graph, resolved ] ] ],
-      { objs } ]
-
-evaluateConstruction[ graph_Graph, sym_, rhs_, bindings_Association ] :=
-  With[ { results = dispatchConstruction[ graph, resolveExpression[ rhs, bindings, graph ] ] },
-    If[ ! ListQ[ results ] || results === {} || results === { {} }, {},
-      Append[ bindings, sym -> # ] & /@ results ] ]
-
-evaluateConstruction[ graph_Graph, syms_List, rhs_, bindings_Association ] :=
-  With[ { tuples = dispatchConstruction[ graph, resolveExpression[ rhs, bindings, graph ] ] },
-    If[ ! ListQ[ tuples ] || tuples === {}, {},
-      Join[ bindings, AssociationThread[ syms, # ] ] & /@ tuples ] ]
-
 Options[ RandomInfraInstance ] = { "NextVertexFunction" -> Automatic, "Steps" -> All }
 
 RandomInfraInstance[ scene_InfraScene, graph_Graph,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic,
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
     init : _Association : <| |>, opts : OptionsPattern[] ] /;
     count =!= All || OptionValue[ RandomInfraInstance, { opts }, "NextVertexFunction" ] =!= RandomChoice :=
-  With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
+  With[ { result = Catch[
+    With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
           objects = scene[ "Objects" ], constructions = scene[ "Constructions" ],
           steps = Replace[ OptionValue[ "Steps" ], n_Integer :> UpTo[ n ] ],
           nextFunction = Replace[ OptionValue[ "NextVertexFunction" ],
             Automatic -> If[ count === All, Identity, RandomSample ] ] },
+    { pool = expression |-> With[ { settings = Cases[ expression, _Rule ],
+        token = DeleteCases[ expression, ( "Select" | "Branches" ) -> _ ] },
+      { members = Which[
+          VertexQ[ graph, token ], { token },
+          ListQ[ token ] && SubsetQ[ VertexList @ graph, token ], token,
+          AssociationQ[ token ] && SubsetQ[ VertexList @ graph, Keys @ token ], Keys @ token,
+          True, Replace[ token, {
+        token_InfraPoint :> RandomInfraPoint[ graph, token, All ],
+        token_InfraSegment :> RandomInfraSegment[ graph, token, All ],
+        token_InfraHalfLine :> RandomInfraHalfLine[ graph, token, All ],
+        token_InfraInfiniteLine :> RandomInfraInfiniteLine[ graph, token, All ],
+        token_InfraCircle :> RandomInfraCircle[ graph, token, All ],
+        token_InfraArc :> RandomInfraArc[ graph, token, All ],
+        token_InfraRegularPolygon :> RandomInfraRegularPolygon[ graph, token, All ],
+        token_InfraPlane :> RandomInfraPlane[ graph, token, All ],
+        token_InfraBall :> RandomInfraBall[ graph, token, All ],
+        token_InfraShell :> RandomInfraShell[ graph, token, All ],
+        token_InfraSphere :> RandomInfraSphere[ graph, token, All ],
+        token_InfraTube :> RandomInfraTube[ graph, token, All ],
+        token_InfraCylinder :> RandomInfraCylinder[ graph, token, All ],
+        token_InfraCone :> RandomInfraCone[ graph, token, All ],
+        token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ graph, token, All ],
+        token_InfraBallHull :> RandomInfraBallHull[ graph, token, All ],
+        token_InfraConvexHull :> RandomInfraConvexHull[ graph, token, All ],
+        token_InfraQuadric :> RandomInfraQuadric[ graph, token, All ],
+        token_InfraWalk :> RandomInfraWalk[ graph, token, All ],
+        token_InfraGeodesic :> RandomInfraGeodesic[ graph, token, All ],
+        token_InfraEllipse :> RandomInfraEllipse[ graph, token, All ],
+        token_InfraIntersection :> RandomInfraIntersection[ graph, token, All ],
+        token_InfraUnion :> RandomInfraUnion[ graph, token, All ],
+        token_InfraRay :> RandomInfraHalfLine[ graph, token, All ],
+        token_InfraLine :> RandomInfraInfiniteLine[ graph, token, All ],
+        token_InfraPolygon :> RandomInfraRegularPolygon[ graph, token, All ] } ] ] },
+      If[ ListQ[ members ],
+        capBranches[ applySelectOption[ graph, members, Lookup[ settings, "Select", None ],
+          MatchQ[ token, ( InfraCircle | InfraRegularPolygon | InfraPolygon )[ __ ] | InfraArc[ _, { p_, ___, p_ } | { _ }, ___ ] ],
+          selectContext[ graph, token ] ], Lookup[ settings, "Branches", All ] ], members ] ] },
     { keys = Catenate @ Map[
         step |-> With[ { effective = Select[ step, ! KeyExistsQ[ init, # ] & ] },
           { tuples = Select[ Select[ Keys @ constructions, ListQ ], ContainsAny[ #, effective ] & ] },
@@ -272,7 +271,11 @@ RandomInfraInstance[ scene_InfraScene, graph_Graph,
                 { targets = If[ ListQ @ key, key, { key } ] },
                 { candidates = If[ AllTrue[ targets, KeyExistsQ[ bindings, # ] & ],
                     { bindings },
-                    Select[ evaluateConstruction[ graph, key, constructions[ key ], bindings ],
+                    Select[ With[ { members = pool[ resolveExpression[ constructions[ key ], bindings, graph ] ] },
+                      If[ ListQ[ members ],
+                        If[ ListQ[ key ], Join[ bindings, AssociationThread[ key, # ] ] & /@ members,
+                          Append[ bindings, key -> # ] & /@ members ],
+                        Throw[ "UnsupportedConstruction", "UnsupportedConstruction" ] ] ],
                       candidate |-> AllTrue[ Intersection[ targets, Keys @ bindings ],
                         target |-> candidate[ target ] === bindings[ target ] ] ] ] },
                 { next = If[ candidates === { }, { },
@@ -283,7 +286,8 @@ RandomInfraInstance[ scene_InfraScene, graph_Graph,
     Switch[ count,
       Automatic, First[ instances, { } ],
       _Integer, If[ Length @ instances < count, { }, instances ],
-      _, instances ] ]
+      _, instances ] ], "UnsupportedConstruction" ] },
+    result /; result =!= "UnsupportedConstruction" ]
 
 pointQ[ graph_Graph, x_ ] :=
   VertexQ[ graph, x ]
@@ -400,3 +404,77 @@ resolveEmbeddingCoords[ graph_Graph, Automatic ] :=
   GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ]
 resolveEmbeddingCoords[ _, coords_List ] :=
   coords
+
+Options[ RandomInfraIntersection ] = { "NextVertexFunction" -> Automatic }
+
+RandomInfraIntersection[ graph_Graph, InfraIntersection[ objects__ ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] :=
+  RandomInfraIntersection[ graph, { objects }, count, opts ]
+
+RandomInfraIntersection[ graph_Graph, objects : { __ },
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /;
+    MemberQ[ { Automatic, Identity }, OptionValue[ RandomInfraIntersection, { opts }, "NextVertexFunction" ] ] &&
+    SubsetQ[ First /@ Options[ RandomInfraIntersection ], First /@ { opts } ] :=
+  With[ { supports = Map[ object |-> Which[
+      VertexQ[ graph, object ], { object },
+      MatchQ[ object, _List | _Association | _Graph ], Keys @ Select[ InfraDensity[ graph, object ], # != 0 & ],
+      True, Replace[ object, {
+        token_InfraCircle :> Union @@ RandomInfraCircle[ graph, token, All ],
+        token_InfraPlane :> Union @@ RandomInfraPlane[ graph, token, All ],
+        token : _InfraRegularPolygon | _InfraPolygon :> Union @@ RandomInfraRegularPolygon[ graph, token, All ],
+        token_InfraEllipse :> Union @@ ( VertexList /@ RandomInfraEllipse[ graph, token, All ] ),
+        token_InfraWalk :> Union @@ RandomInfraWalk[ graph, token, All ],
+        token_InfraGeodesic :> Union @@ RandomInfraGeodesic[ graph, token, All ],
+        token_InfraIntersection :> RandomInfraIntersection[ graph, token, All ],
+        token_InfraUnion :> RandomInfraUnion[ graph, token, All ],
+        token : ( InfraPoint | InfraSegment | InfraHalfLine | InfraRay | InfraInfiniteLine | InfraLine | InfraArc |
+          InfraBall | InfraShell | InfraSphere | InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution |
+          InfraBallHull | InfraConvexHull | InfraQuadric )[ ___ ] :>
+            Keys @ Select[ InfraMeasurement[ graph, token, "VertexDensity" ], # != 0 & ] } ] ], objects ] },
+    { members = Intersection @@ supports },
+    Which[
+      count === Automatic, If[ members === { }, { },
+        If[ OptionValue[ "NextVertexFunction" ] === Identity, First @ members, RandomChoice @ members ] ],
+      count === All, members,
+      IntegerQ[ count ] && Length[ members ] < count, { },
+      OptionValue[ "NextVertexFunction" ] === Identity, Take[ members, count ],
+      True, RandomSample[ members, count ] ] /; AllTrue[ supports, ListQ ] ]
+
+Options[ RandomInfraUnion ] = { "NextVertexFunction" -> Automatic }
+
+RandomInfraUnion[ graph_Graph, InfraUnion[ objects__ ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] :=
+  RandomInfraUnion[ graph, { objects }, count, opts ]
+
+RandomInfraUnion[ graph_Graph, objects : { __ },
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /;
+    MemberQ[ { Automatic, Identity }, OptionValue[ RandomInfraUnion, { opts }, "NextVertexFunction" ] ] &&
+    SubsetQ[ First /@ Options[ RandomInfraUnion ], First /@ { opts } ] :=
+  With[ { supports = Map[ object |-> Which[
+      VertexQ[ graph, object ], { object },
+      MatchQ[ object, _List | _Association | _Graph ], Keys @ Select[ InfraDensity[ graph, object ], # != 0 & ],
+      True, Replace[ object, {
+        token_InfraCircle :> Union @@ RandomInfraCircle[ graph, token, All ],
+        token_InfraPlane :> Union @@ RandomInfraPlane[ graph, token, All ],
+        token : _InfraRegularPolygon | _InfraPolygon :> Union @@ RandomInfraRegularPolygon[ graph, token, All ],
+        token_InfraEllipse :> Union @@ ( VertexList /@ RandomInfraEllipse[ graph, token, All ] ),
+        token_InfraWalk :> Union @@ RandomInfraWalk[ graph, token, All ],
+        token_InfraGeodesic :> Union @@ RandomInfraGeodesic[ graph, token, All ],
+        token_InfraIntersection :> RandomInfraIntersection[ graph, token, All ],
+        token_InfraUnion :> RandomInfraUnion[ graph, token, All ],
+        token : ( InfraPoint | InfraSegment | InfraHalfLine | InfraRay | InfraInfiniteLine | InfraLine | InfraArc |
+          InfraBall | InfraShell | InfraSphere | InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution |
+          InfraBallHull | InfraConvexHull | InfraQuadric )[ ___ ] :>
+            Keys @ Select[ InfraMeasurement[ graph, token, "VertexDensity" ], # != 0 & ] } ] ], objects ] },
+    { members = Union @@ supports },
+    Which[
+      count === Automatic, If[ members === { }, { },
+        If[ OptionValue[ "NextVertexFunction" ] === Identity, First @ members, RandomChoice @ members ] ],
+      count === All, members,
+      IntegerQ[ count ] && Length[ members ] < count, { },
+      OptionValue[ "NextVertexFunction" ] === Identity, Take[ members, count ],
+      True, RandomSample[ members, count ] ] /; AllTrue[ supports, ListQ ] ]

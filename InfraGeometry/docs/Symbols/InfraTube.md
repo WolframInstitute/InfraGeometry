@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraTube
 Keywords: [tube, neighbourhood, region, symbolic object, volume, counting measure, Riemannian measure]
-SeeAlso: [InfraCylinder, InfraCone, InfraBall, InfraMeasurement, RandomInfraRepresentative, InfraSolidOfRevolution, InfraSegment, InfraInterior, InfraBoundary]
+SeeAlso: [InfraCylinder, InfraCone, InfraBall, InfraMeasurement, RandomInfraTube, InfraSolidOfRevolution, InfraSegment, InfraInterior, InfraBoundary]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraTube]()[*core*, *s*]</code> is the tube of radius *s* about *core*: the vertices at distance at most *s* from it. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
+<code>[InfraTube]()[*core*, *s*]</code> is the tube of radius *s* about *core*: the vertices at distance at most *s* from it. It is a symbolic object; [InfraMeasurement]() and [RandomInfraTube]() evaluate it on a graph.
 
 <code>[InfraTube]()[*core*, {*s*, *t*}]</code> is the mantle: the vertices at distance between *s* and *t*.
 
@@ -30,7 +30,7 @@ The profile is a radius *r*, which is the band *{0, r}*; a pair of numbers *{s, 
 
 Option <code>Method</code> takes `"Balls"` (default) or `"Sliced"`. `"Balls"` is the union of the balls *B(a_i, r_i)* about the core vertices, rounded where the profile jumps and at the ends. `"Sliced"` needs a walk for a core: slice *i* is the set of vertices whose nearest axis vertex is *a_i*, a tie lying in every nearest slice, and *v* is in the solid when *d(a_i, v)* lies in the band of its slice. The axis is prolonged straight on past both ends and the vertices nearer a prolongation than the axis are cut, so the ends are flat; a closed axis has no ends. A jump of the profile is then a sharp step.
 
-The tube of a segment is the tube of its whole interval, not of one shortest path: the *fat tube* <code>[InfraTube]()[[InfraSegment]()[*c*, *p*], *s*]</code>. Where the segment has many shortest paths it is fatter than the tube of any of them. The *thin tube* of one path takes as its core a member that [RandomInfraRepresentative]() gives, <code>[InfraTube]()[[RandomInfraRepresentative]()[*g*, [InfraSegment]()[*c*, *p*]], *s*]</code>.
+The tube of a segment is the tube of its whole interval, not of one shortest path: the *fat tube* <code>[InfraTube]()[[InfraSegment]()[*c*, *p*], *s*]</code>. Where the segment has many shortest paths it is fatter than the tube of any of them. The *thin tube* of one path takes as its core a member that [RandomInfraTube]() gives, <code>[InfraTube]()[[RandomInfraTube]()[*g*, [InfraSegment]()[*c*, *p*]], *s*]</code>.
 
 [InfraMeasurement]() gives two measures of a tube:
 
@@ -64,7 +64,7 @@ Row[Table[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
     {tube = InfraTube[InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])], 2]},
-    {support = RandomInfraRepresentative[g, tube]},
+    {support = Replace[ tube, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> RandomInfraBall[ g, token ], token_InfraShell :> RandomInfraShell[ g, token ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> RandomInfraTube[ g, token ], token_InfraCylinder :> RandomInfraCylinder[ g, token ], token_InfraCone :> RandomInfraCone[ g, token ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token ], token_InfraBallHull :> RandomInfraBallHull[ g, token ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token ], token_InfraQuadric :> RandomInfraQuadric[ g, token ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> RandomInfraIntersection[ g, token ], token_InfraUnion :> RandomInfraUnion[ g, token ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ]},
     Labeled[
       InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
       InfraMeasurement[g, tube, {"CountingMeasure", "RiemannianMeasure"}]]],
@@ -124,7 +124,7 @@ With[
   {c = First @ GraphCenter[g]},
   {fat = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
   {intervalSize = InfraMeasurement[g, fat, "CountingMeasure"]},
-  {path = RandomInfraRepresentative[g, fat]},
+  {path = Replace[ fat, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> RandomInfraBall[ g, token ], token_InfraShell :> RandomInfraShell[ g, token ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> RandomInfraTube[ g, token ], token_InfraCylinder :> RandomInfraCylinder[ g, token ], token_InfraCone :> RandomInfraCone[ g, token ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token ], token_InfraBallHull :> RandomInfraBallHull[ g, token ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token ], token_InfraQuadric :> RandomInfraQuadric[ g, token ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> RandomInfraIntersection[ g, token ], token_InfraUnion :> RandomInfraUnion[ g, token ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ]},
   Show[
     Plot[intervalSize + 2 s (5 + 2) + 2 s (s - 1), {s, 0, 5}],
     ListPlot[{
@@ -140,7 +140,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])]},
-  {tubes = {InfraTube[seg, 1], InfraTube[RandomInfraRepresentative[g, seg], 1]}},
+  {tubes = {InfraTube[seg, 1], InfraTube[Replace[ seg, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> RandomInfraBall[ g, token ], token_InfraShell :> RandomInfraShell[ g, token ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> RandomInfraTube[ g, token ], token_InfraCylinder :> RandomInfraCylinder[ g, token ], token_InfraCone :> RandomInfraCone[ g, token ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token ], token_InfraBallHull :> RandomInfraBallHull[ g, token ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token ], token_InfraQuadric :> RandomInfraQuadric[ g, token ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> RandomInfraIntersection[ g, token ], token_InfraUnion :> RandomInfraUnion[ g, token ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ], 1]}},
   {Row[InfraSubstrateHighlight[g, {#}] & /@ tubes], InfraMeasurement[g, tubes, "CountingMeasure"]}]
 ```
 
@@ -151,5 +151,5 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small"]},
   {c = First @ GraphCenter[g]},
-  RandomInfraRepresentative[g, InfraTube[c, 3]] === RandomInfraRepresentative[g, InfraBall[c, 3]]]
+  RandomInfraTube[ g, InfraTube[c, 3] ] === RandomInfraBall[ g, InfraBall[c, 3] ]]
 ```

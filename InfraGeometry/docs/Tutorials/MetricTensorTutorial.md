@@ -57,7 +57,7 @@ GraphicsGrid @ Table[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
     {p = First @ GraphCenter @ g},
     {r = Floor[GraphRadius[g]/2]},
-    {spray = Subgraph[SprayGraph[g, p], RandomInfraRepresentative[g, InfraBall[p, r]]]},
+    {spray = Subgraph[SprayGraph[g, p], RandomInfraBall[ g, InfraBall[p, r] ]]},
     Graph[g, EdgeShapeFunction -> Map[e |-> (UndirectedEdge @@ e) -> With[{u = First @ e},
         Function[{points, edge}, With[{q = If[First @ edge === u, points, Reverse @ points]},
           {Line[points], StandardRed, Opacity[1], Arrowheads[Small], Arrow @ BezierCurve[{q[[1]], Mean[q] + 0.2 Cross[q[[2]] - q[[1]]], q[[2]]}]}]]],

@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+Options[ RandomInfraArc ] = { "NextVertexFunction" -> Automatic, "RadiusDelta" -> 0 }
+
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraArc *)
 
 (* InfraArc[c, {p, q}] is inert: the minor arcs of the circles around c through p and q, a minor arc being a geodesic of the band graph A = G[W] on
@@ -168,9 +170,9 @@ InfraMemberQ[ graph_Graph, obj : InfraArc[ _, { p_, ___, p_ } | { _ }, ___Rule ]
 (* the closed arc's search is the sweep: the shortest cycles of the band through p that separate c from beyond it, then those through every
    point of the list *)
 
-RandomInfraRepresentative[ graph_Graph, InfraArc[ center_, pts : ( { p_, ___, p_ } | { p_ } ), opts___Rule ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /;
-    ( OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+RandomInfraArc[ graph_Graph, InfraArc[ center_, pts : ( { p_, ___, p_ } | { p_ } ), opts : RepeatedNull[ "RadiusDelta" -> _, { 0, 1 } ] ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; SubsetQ[ { "NextVertexFunction" }, First /@ { samplerOpts } ] &&
+    ( OptionValue[ RandomInfraArc, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ],
           delta = Replace[ Lookup[ { opts }, "RadiusDelta", 0 ], d : Except[ _List ] :> { 0, d } ] },
     { rmin = Max[ 1, Lookup[ dist, Key @ p ] - First @ delta ], rmax = Lookup[ dist, Key @ p ] + Last @ delta },
@@ -185,7 +187,7 @@ RandomInfraRepresentative[ graph_Graph, InfraArc[ center_, pts : ( { p_, ___, p_
           Range[ 3, VertexCount @ bandGraph ] ],
         Null -> { } ] },
     With[ { members = Select[ circles, SubsetQ[ #, pts ] & ],
-            nextFn = OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ] },
+            nextFn = OptionValue[ RandomInfraArc, { samplerOpts }, "NextVertexFunction" ] },
       { ordered = Sort @ members },
       Which[
         count === Automatic, If[ ordered === { }, { }, If[ nextFn === Identity, First @ ordered, RandomChoice @ ordered ] ],
@@ -222,11 +224,11 @@ InfraMeasurement[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ },
 InfraMeasurement[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ }, { _, _, __ } ], opts___Rule ], "Length" ] :=
   Total @ ( InfraMeasurement[ graph, InfraArc[ center, #, opts ], "Length" ] & /@ Partition[ First /@ Split @ pts, 2, 1 ] )
 
-RandomInfraRepresentative[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ }, { _, _, __ } ], opts___Rule ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /;
-    ( OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+RandomInfraArc[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ }, { _, _, __ } ], opts : RepeatedNull[ "RadiusDelta" -> _, { 0, 1 } ] ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; SubsetQ[ { "NextVertexFunction" }, First /@ { samplerOpts } ] &&
+    ( OptionValue[ RandomInfraArc, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
-    { pieces = RandomInfraRepresentative[ graph, InfraArc[ center, #, opts ],
+    { pieces = RandomInfraArc[ graph, InfraArc[ center, #, opts ],
         If[ cap === Infinity, All, UpTo[ cap ] ], samplerOpts ] & /@ Partition[ First /@ Split @ pts, 2, 1 ] },
     { members = Fold[ { as, bs } |-> Catenate @ Map[ a |-> ( Join[ a, Rest @ # ] & /@ bs ), as ],
         First @ pieces, Rest @ pieces ] },
@@ -258,3 +260,82 @@ InfraMemberQ[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ }, { _
     TrueQ[ Last @ cuts == Length @ path ] &&
       AllTrue[ Range @ Length @ pieces,
         i |-> InfraMemberQ[ graph, pieces[[ i ]], Take[ path, { cuts[[ i ]], cuts[[ i + 1 ]] } ] ] ] ]
+
+RandomInfraArc[ graph_Graph,
+    obj : InfraArc[ _, Except[ { p_, p_ }, { _, _ } ], RepeatedNull[ "RadiusDelta" -> _, { 0, 1 } ] ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ { "NextVertexFunction" }, First /@ { opts } ] &&
+    ( OptionValue[ RandomInfraArc, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+  With[ {
+      cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
+      nextFn = OptionValue[ RandomInfraArc, { opts }, "NextVertexFunction" ],
+      dags = Select[ Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ], VertexCount[ # ] > 0 & ] },
+    { engines = Map[
+        dag |-> With[ { out = GroupBy[ List @@@ EdgeList @ dag, First -> Last ] },
+          { beta = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ out, Key @ w, { } ],
+                  { { } -> 1, qs_ :> Total @ Lookup[ a, Key /@ qs ] } ] ],
+              <| |>, Reverse @ TopologicalSort @ dag ] },
+          { out, beta, Sort @ Pick[ VertexList @ dag, VertexInDegree @ dag, 0 ] } ],
+        dags ] },
+    { draw = { out, beta, sources } |->
+        NestWhile[
+          path |-> With[ { nexts = Lookup[ out, Key @ Last @ path, { } ] },
+            Append[ path, RandomChoice[ Lookup[ beta, Key /@ nexts ] -> nexts ] ] ],
+          { RandomChoice[ Lookup[ beta, Key /@ sources ] -> sources ] },
+          path |-> Lookup[ out, Key @ Last @ path, { } ] =!= { } ] },
+    { randomDraw = ignored |-> If[ engines === { }, { },
+        With[ { weights = Total @ Lookup[ #[[ 2 ]], Key /@ #[[ 3 ]] ] & /@ engines },
+          draw @@ RandomChoice[ weights -> engines ] ] ] },
+    { enumerate = limit |-> Catenate @ Last @ Reap @ Fold[
+          { found, engine } |-> With[ { out = First @ engine },
+            Last @ NestWhile[
+              Apply[ { stack, got } |-> With[ { path = First @ stack },
+                { nexts = Sort @ Lookup[ out, Key @ Last @ path, { } ] },
+                { selected = If[ nexts === { } || nextFn === Automatic, nexts,
+                    Replace[ nextFn @ nexts,
+                      candidate_ /; MemberQ[ nexts, Verbatim @ candidate ] :> { candidate } ] ] },
+                If[ nexts === { },
+                  ( Sow[ path ]; { Rest @ stack, got + 1 } ),
+                  { Join[ Append[ path, # ] & /@ selected, Rest @ stack ],
+                    got } ] ] ],
+              { List /@ Last @ engine, found },
+              state |-> First @ state =!= { } && Last @ state < limit ] ],
+          0, engines ] },
+    { randomWalk = ignored |-> First[ enumerate @ 1, { } ] },
+    { cardinality = Total @ ( Total @ Lookup[ #[[ 2 ]], Key /@ #[[ 3 ]] ] & /@ engines ) },
+    { members = Which[
+        count === Automatic && nextFn === Automatic,
+          { randomDraw[ Null ] },
+        nextFn === RandomChoice,
+          If[ cap > cardinality && ! MatchQ[ count, _UpTo ], { },
+            First @ NestWhile[
+              state |-> With[ { member = randomWalk[ Null ] },
+                If[ MemberQ[ First @ state, member ], state, { Append[ First @ state, member ], Last @ state + 1 } ] ],
+              { { }, 0 },
+              Last @ # < If[ MatchQ[ count, _UpTo ], Min[ cap, cardinality ], cap ] & ] ],
+        nextFn =!= Automatic,
+          enumerate @ cap,
+        count === All,
+          enumerate @ Infinity,
+        cap > cardinality && ! MatchQ[ count, _UpTo ],
+          { },
+        2 cap >= cardinality,
+          RandomSample[ enumerate @ Infinity, Replace[ count, UpTo[ n_ ] :> UpTo[ n ] ] ],
+        True,
+          First @ NestWhile[
+            state |-> With[ { member = randomDraw[ Null ] },
+              If[ MemberQ[ First @ state, member ], state, { Append[ First @ state, member ], Last @ state + 1 } ] ],
+            { { }, 0 },
+            Last @ # < cap & ] ] },
+    Switch[ count,
+      Automatic, First[ members, { } ],
+      All,       members,
+      _UpTo,     If[ nextFn === Automatic, members, Take[ members, count ] ],
+      _,         If[ Length[ members ] < count, { }, Take[ members, count ] ] ] ]
+
+
+RandomInfraArc[ graph_Graph, center_, points : { __ },
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { center, points }, _InfraArc ] &&
+    SubsetQ[ First /@ Options[ RandomInfraArc ], First /@ { opts } ] :=
+  RandomInfraArc[ graph, InfraArc[ center, points, "RadiusDelta" -> OptionValue[ "RadiusDelta" ] ], count,
+    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]

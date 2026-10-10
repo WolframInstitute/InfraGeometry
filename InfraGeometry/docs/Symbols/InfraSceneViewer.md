@@ -67,7 +67,7 @@ With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {p1 = First @ GraphCenter[g]},
   {p2 = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p1, 3]])},
-  {circles = RandomInfraRepresentative[g, InfraCircle[p1, 3], All]},
+  {circles = RandomInfraCircle[ g, InfraCircle[p1, 3], All ]},
   Row[{
     Labeled[InfraSubstrateHighlight[g, {{p1, p2}}], "points a and b"],
     Labeled[

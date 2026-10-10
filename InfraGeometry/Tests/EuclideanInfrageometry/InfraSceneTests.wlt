@@ -626,8 +626,8 @@ VerificationTest[
     Sort @ DeleteDuplicates[
       #[[ 1 ]][ ec ] & /@ RandomInfraInstance[ scene, g, All, <| ea -> 1, eb -> 7 |> ] ] ===
     Sort @ Quiet @ Intersection[
-      Union @@ RandomInfraRepresentative[ g, InfraCircle[ 1, GraphDistance[ g, 1, 7 ] ], All ],
-      Union @@ RandomInfraRepresentative[ g, InfraCircle[ 7, GraphDistance[ g, 1, 7 ] ], All ] ]
+      Union @@ RandomInfraCircle[ g, InfraCircle[ 1, GraphDistance[ g, 1, 7 ] ], All ],
+      Union @@ RandomInfraCircle[ g, InfraCircle[ 7, GraphDistance[ g, 1, 7 ] ], All ] ]
   ],
   True,
   TestID -> "RandomInfraInstance-EuclidI1-agrees-with-the-circles"
@@ -678,7 +678,7 @@ VerificationTest[
    symbols below are exactly those.  The five Euclidean object heads -- InfraSegment,
    InfraRay, InfraLine, InfraCircle, InfraArc -- rejoined the list on 2026-09-26
    (EuclideanInertHeads): the heads themselves are always inert now, with no clause of
-   their own at any arity -- every behaviour lives on InfraMeasurement, RandomInfraRepresentative
+   their own at any arity -- every behaviour lives on InfraMeasurement, NamedConstructionSampler
    and dispatchConstruction instead.  One more means a symbol was exported with a usage
    message and no meaning, which is how InfraPlaneQ hid. *)
 VerificationTest[
@@ -697,9 +697,9 @@ VerificationTest[
   { "InflatedVertex",
     "InfraArc", "InfraBall", "InfraBallHull", "InfraCircle", "InfraCone", "InfraConnection", "InfraConvexHull",
     "InfraCotangentBundle", "InfraCylinder",
-    "InfraDisplacementBundle", "InfraEllipse", "InfraGeodesic",
+    "InfraDisplacementBundle", "InfraEllipse", "InfraGeodesic", "InfraHalfLine", "InfraInfiniteLine",
     "InfraIntersectQ", "InfraLine", "InfraPlane", "InfraPoint",
-    "InfraPolygon", "InfraQuadric", "InfraRay", "InfraSection", "InfraSegment",
+    "InfraPolygon", "InfraQuadric", "InfraRay", "InfraRegularPolygon", "InfraSection", "InfraSegment",
     "InfraShell", "InfraSolidOfRevolution", "InfraSphere", "InfraStep", "InfraTangentBundle", "InfraTube", "InfraWalk", "Undetermined" },
   TestID -> "InfraScene-valueless-exports-are-scene-tokens"
 ]
@@ -765,8 +765,8 @@ VerificationTest[
 VerificationTest[
   With[{g = TessellationGraph[{4, 4}, 2]},
     {c = First @ VertexList @ g},
-    Sort @ InfraIntersection[ g, RandomInfraRepresentative[g, InfraBall[c, 1]], RandomInfraRepresentative[g, InfraBall[c, 2]] ] ===
-      Sort @ RandomInfraRepresentative[g, InfraBall[c, 1]]],
+    Sort @ InfraIntersection[ g, RandomInfraBall[ g, InfraBall[c, 1] ], RandomInfraBall[ g, InfraBall[c, 2] ] ] ===
+      Sort @ RandomInfraBall[ g, InfraBall[c, 1] ]],
   True,
   TestID -> "InfraIntersection-on-a-list-labelled-substrate"
 ]
@@ -779,7 +779,7 @@ VerificationTest[
     {scene = InfraScene[{p}, {p == InfraIntersection[InfraBall[c, 1], InfraBall[c, 2]]}]},
     {instances = RandomInfraInstance[ scene, g, All ]},
     AllTrue[instances, VertexQ[g, InfraSceneInstance[#, p]] &] &&
-      Sort[InfraSceneInstance[#, p] & /@ instances] === Sort @ RandomInfraRepresentative[g, InfraBall[c, 1]]],
+      Sort[InfraSceneInstance[#, p] & /@ instances] === Sort @ RandomInfraBall[ g, InfraBall[c, 1] ]],
   True,
   TestID -> "InfraScene-intersection-binds-substrate-vertices"
 ]
@@ -791,7 +791,7 @@ VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     {scene = InfraScene[{ba, bb, m}, {ba == InfraBall[7, 1], bb == InfraBall[9, 1], m == InfraUnion[ba, bb]}]},
     Sort[InfraSceneInstance[#, m] & /@ RandomInfraInstance[ scene, g, All ]] ===
-      Union[RandomInfraRepresentative[g, InfraBall[7, 1]], RandomInfraRepresentative[g, InfraBall[9, 1]]]],
+      Union[RandomInfraBall[ g, InfraBall[7, 1] ], RandomInfraBall[ g, InfraBall[9, 1] ]]],
   True,
   TestID -> "InfraScene-union-token-binds-every-vertex-of-either"
 ]
@@ -816,15 +816,15 @@ VerificationTest[
     Sort @ DeleteDuplicates[InfraSceneInstance[#, ec] & /@
         RandomInfraInstance[ scene, g, All, <|ea -> 1, eb -> 7|> ]] ===
       Sort @ Quiet @ Union[
-        Union @@ RandomInfraRepresentative[g, InfraCircle[1, GraphDistance[g, 1, 7]], All],
-        Union @@ RandomInfraRepresentative[g, InfraCircle[7, GraphDistance[g, 1, 7]], All]]],
+        Union @@ RandomInfraCircle[ g, InfraCircle[1, GraphDistance[g, 1, 7]], All ],
+        Union @@ RandomInfraCircle[ g, InfraCircle[7, GraphDistance[g, 1, 7]], All ]]],
   True,
   TestID -> "InfraScene-union-of-two-circles-agrees-with-the-circles"
 ]
 
 (* "EmbeddingClosest" on a segment keeps the geodesic nearest the straight line through its endpoints *)
 VerificationTest[
-  With[{d = WolframInstitute`InfraGeometry`PackageScope`dispatchConstruction, g = GridGraph[{5, 5}]},
+  With[{d = ({ graph, token } |-> ( instance |-> instance[[ 1 ]][ syntheticTarget ] ) /@ RandomInfraInstance[ InfraScene[ { syntheticTarget }, { syntheticTarget == token } ], graph, All ]), g = GridGraph[{5, 5}]},
     {Length @ d[g, InfraSegment[1, 25]], d[g, InfraSegment[1, 25, "Select" -> "EmbeddingClosest"]]}],
   {70, {{1, 2, 7, 8, 13, 14, 19, 20, 25}}},
   TestID -> "InfraScene-select-embedding-closest-segment"

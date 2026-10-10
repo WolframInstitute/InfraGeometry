@@ -6,19 +6,22 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraLine
 Keywords: [line, inextensible shortest path, atoms, germ, symbolic object]
-SeeAlso: [BeamGraph, RandomInfraLine, InfraLineQ, InfraMeasurement, RandomInfraRepresentative, RandomInfraGeodesic, InfraSegment, InfraRay]
+SeeAlso: [BeamGraph, RandomInfraLine, InfraLineQ, InfraMeasurement, RandomInfraInfiniteLine, RandomInfraGeodesic, InfraSegment, InfraRay]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraLine]()[*p*, *q*]</code> is the line through *p* and *q*: every inextensible shortest path through *p* and then *q*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
+<code>[InfraLine]()[*p*, *q*]</code> is the line through *p* and *q*: every inextensible shortest path through *p* and then *q*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraInfiniteLine]() evaluate it on a graph.
 
 <code>[InfraLine]()[*germ*]</code> is the line through a shortest-path germ: every inextensible shortest path that contains the germ as a contiguous stretch. The germ is a vertex, a vertex list, a walk graph or a shortest-path DAG.
 
 <code>[InfraLine]()[*p*, *q*]</code> inside an [InfraScene]() is the line construction token; [RandomInfraLine]() is the search.
 
-## Details & Options
+## Details
+
+This is the legacy compatibility spelling. New code uses `InfraInfiniteLine`.
+ & Options
 
 Definition: a line is an inextensible shortest path, one that no neighbour of either end prolongs.
 
@@ -68,7 +71,7 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = First @ GraphCenter[g]},
   {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 2]])},
-  {members = RandomInfraRepresentative[g, InfraLine[p, q], 3]},
+  {members = RandomInfraInfiniteLine[ g, InfraLine[p, q], 3 ]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], p, q}], {member, members}]]
 ```
 
@@ -122,7 +125,7 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = First @ GraphCenter[g]},
   {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 2]])},
-  {members = RandomInfraRepresentative[g, InfraLine[p, q], All]},
+  {members = RandomInfraInfiniteLine[ g, InfraLine[p, q], All ]},
   {InfraSubstrateHighlight[g, {members, p, q}],
    InfraLineQ[g, members]}]
 ```
@@ -135,7 +138,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {germ = {a, First @ AdjacencyList[g, a]}},
-  {members = RandomInfraRepresentative[g, InfraLine[germ], All]},
+  {members = RandomInfraInfiniteLine[ g, InfraLine[germ], All ]},
   {InfraSubstrateHighlight[g, {members, germ}],
    Sort @ members === Sort @ RandomInfraLine[g, germ, All],
    Length @ members === InfraMeasurement[g, InfraLine[germ], "Cardinality"]}]

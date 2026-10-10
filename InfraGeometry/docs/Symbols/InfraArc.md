@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraArc
 Keywords: [arc, circle, band, minor arc, symbolic object]
-SeeAlso: [ArcGraph, InfraCircle, InfraSegment, InfraMeasurement, RandomInfraRepresentative, Undetermined, FindInfraShell]
+SeeAlso: [ArcGraph, InfraCircle, InfraSegment, InfraMeasurement, RandomInfraArc, Undetermined, FindInfraShell]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraArc]()[*c*, {*p*, *q*}]</code> is the arc around *c* from *p* to *q*: the minor arcs of the circle through *p* and *q*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
+<code>[InfraArc]()[*c*, {*p*, *q*}]</code> is the arc around *c* from *p* to *q*: the minor arcs of the circle through *p* and *q*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraArc]() evaluate it on a graph.
 
 <code>[InfraArc]()[*c*, {*p1*, …, *pk*}]</code> is the polyline of the minor arcs from each point to the next.
 
@@ -30,7 +30,7 @@ That they are exactly the minor arcs needs the winding functional on the substra
 
 The arc is empty when *q* leaves the band or the band disconnects *p* from *q*. On a lattice the bare shell has no two adjacent vertices, so it joins no two of its points: widen the band.
 
-**An arc need not be unique.** Between two points of a band there are in general many shortest paths, and through a point many circles; a trailing count of [RandomInfraRepresentative]() gives them all.
+**An arc need not be unique.** Between two points of a band there are in general many shortest paths, and through a point many circles; a trailing count of [RandomInfraArc]() gives them all.
 
 **The closed arc.** A list that returns to its first point names a closed arc, not a polyline there and back. It is the circle through *p*, the compass opened to *p* (Euclid's third postulate): <code>[InfraArc]()[*c*, {*p*, *p*}, "RadiusDelta" -> *delta*]</code> has the members of the circle of the band of *p* that pass through *p*. It is not empty, though a shortest path from *p* to *p* is trivial: its members are cycles that leave *p* and return to *p* around *c*, separating *c* from everything beyond the band. <code>[InfraArc]()[*c*, {*p*, *q*, *p*}]</code> keeps those that pass through *q* too. Its members are cyclic vertex lists whose first vertex is not repeated, and its `"Length"` counts the closing edge.
 
@@ -42,7 +42,7 @@ A list that does not return to its first point is the open polyline, as before; 
 
 A polyline arc reads each piece on the band of the circle through its own first point. Its members concatenate one arc per piece, so its `"Cardinality"` is the product over the pieces. Through an intermediate point *m* at the radius of *p* that lies on a minor arc from *p* to *q*, the members of <code>[InfraArc]()[*c*, {*p*, *m*, *q*}]</code> are the minor arcs from *p* to *q* through *m*.
 
-**The search.** On an open arc, [RandomInfraRepresentative]() reads the members off the graph. On a closed arc it sweeps the band directly: for *k* = 3, 4, … it takes every cycle of length *k* of the band (`FindCycle`) and keeps those through *p* whose removal leaves *c* in a component reaching no further than the band; the first *k* with a survivor gives the circles, and the members are those through every point of the list. It does not read the graph, so it is the check on it. Each length is enumerated in full before the filter, so the sweep is fast on a band one or two vertices thick and slow on a wide one.
+**The search.** On an open arc, [RandomInfraArc]() reads the members off the graph. On a closed arc it sweeps the band directly: for *k* = 3, 4, … it takes every cycle of length *k* of the band (`FindCycle`) and keeps those through *p* whose removal leaves *c* in a component reaching no further than the band; the first *k* with a survivor gives the circles, and the members are those through every point of the list. It does not read the graph, so it is the check on it. Each length is enumerated in full before the filter, so the sweep is fast on a band one or two vertices thick and slow on a wide one.
 
 ## Basic Examples
 
@@ -94,7 +94,7 @@ With[
   {c = First @ GraphCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 3]])},
   {q = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[c, 3]])},
-  {members = RandomInfraRepresentative[g, InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}], UpTo[3]]},
+  {members = RandomInfraArc[ g, InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}], UpTo[3] ]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], c, p, q}], {member, members}]]
 ```
 
@@ -157,7 +157,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 2]])},
-  {allCircles = RandomInfraRepresentative[g, InfraArc[c, {p, p}, "RadiusDelta" -> 2], All]},
+  {allCircles = RandomInfraArc[ g, InfraArc[c, {p, p}, "RadiusDelta" -> 2], All ]},
   {InfraSubstrateHighlight[g, {Table[Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], {oneCircle, allCircles}], c, p}],
    Length @ allCircles}]
 ```
@@ -189,7 +189,7 @@ With[
   {circle = InfraCircle[c, {2, 4}]},
   {InfraSubstrateHighlight[g, {InfraArc[c, {p, p}, "RadiusDelta" -> 2], c, p}],
    InfraMeasurement[g, InfraArc[c, {p, p}, "RadiusDelta" -> 2], "Cardinality"],
-   Count[RandomInfraRepresentative[g, circle, All], _?(MemberQ[#, p] &)], InfraMeasurement[g, circle, "Cardinality"]}]
+   Count[Replace[ circle, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> RandomInfraBall[ g, token, All ], token_InfraShell :> RandomInfraShell[ g, token, All ], token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> RandomInfraTube[ g, token, All ], token_InfraCylinder :> RandomInfraCylinder[ g, token, All ], token_InfraCone :> RandomInfraCone[ g, token, All ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, All ], token_InfraBallHull :> RandomInfraBallHull[ g, token, All ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, All ], token_InfraQuadric :> RandomInfraQuadric[ g, token, All ], token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> RandomInfraIntersection[ g, token, All ], token_InfraUnion :> RandomInfraUnion[ g, token, All ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ], _?(MemberQ[#, p] &)], InfraMeasurement[g, circle, "Cardinality"]}]
 ```
 
 On the closed arc the search sweeps the band directly and finds as many circles as the graph carries.
@@ -202,7 +202,7 @@ With[
   {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 2]])},
   {closedArc = InfraArc[c, {p, p}, "RadiusDelta" -> 2]},
   {InfraSubstrateHighlight[g, {closedArc, c, p}],
-   InfraMeasurement[g, closedArc, "Cardinality"], Length @ RandomInfraRepresentative[g, closedArc, All]}]
+   InfraMeasurement[g, closedArc, "Cardinality"], Length @ Replace[ closedArc, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> RandomInfraBall[ g, token, All ], token_InfraShell :> RandomInfraShell[ g, token, All ], token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> RandomInfraTube[ g, token, All ], token_InfraCylinder :> RandomInfraCylinder[ g, token, All ], token_InfraCone :> RandomInfraCone[ g, token, All ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, All ], token_InfraBallHull :> RandomInfraBallHull[ g, token, All ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, All ], token_InfraQuadric :> RandomInfraQuadric[ g, token, All ], token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> RandomInfraIntersection[ g, token, All ], token_InfraUnion :> RandomInfraUnion[ g, token, All ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ]}]
 ```
 
 The arc's `"Faithful"` is [Undetermined](). The circle's is too, unless its cut band is connected and its seam has one side only.

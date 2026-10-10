@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraCircle
 Keywords: [circle, radius, band, separating cycle, unrolled band, atom, necklace, seam, symbolic object]
-SeeAlso: [InfraArc, InfraMeasurement, RandomInfraRepresentative, Undetermined, InfraShell, FindInfraShell]
+SeeAlso: [InfraArc, InfraMeasurement, RandomInfraCircle, Undetermined, InfraShell, FindInfraShell]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraCircle]()[*c*, *r*]</code> is the family of circles around *c* at radius *r*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
+<code>[InfraCircle]()[*c*, *r*]</code> is the family of circles around *c* at radius *r*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraCircle]() evaluate it on a graph.
 
 <code>[InfraCircle]()[*c*, {*r*, *s*}]</code> is the family in the band *r* ≤ *d(c, v)* ≤ *s*; a scalar *r* means `{r, r}`.
 
@@ -38,7 +38,7 @@ The atoms need the cut band to be connected and the two sides to occur on the se
 
 A member is a chain of the graph read as a cyclic vertex list: the copy of the source is dropped and the first vertex is not repeated. The `"Length"` of a circle of *k* vertices is *k*.
 
-**The search.** <code>[RandomInfraRepresentative]()[*g*, *circle*, *n*]</code> sweeps the band directly: for *k* = 3, 4, … it takes every cycle of length *k* of the band (`FindCycle`) and keeps those whose removal leaves *c* in a component reaching no further than the band; the first *k* with a survivor gives the members. It does not read the graph, so it is the check on it, and it still answers where nothing lies beyond the band and separation is vacuous. Each length is enumerated in full before the filter, so the sweep is fast on a band one or two vertices thick and does not finish in reasonable time on a wide one, such as `{3, 6}` on the square tiling.
+**The search.** <code>[RandomInfraCircle]()[*g*, *circle*, *n*]</code> sweeps the band directly: for *k* = 3, 4, … it takes every cycle of length *k* of the band (`FindCycle`) and keeps those whose removal leaves *c* in a component reaching no further than the band; the first *k* with a survivor gives the members. It does not read the graph, so it is the check on it, and it still answers where nothing lies beyond the band and separation is vacuous. Each length is enumerated in full before the filter, so the sweep is fast on a band one or two vertices thick and does not finish in reasonable time on a wide one, such as `{3, 6}` on the square tiling.
 
 Every member separates. That the atoms carry every circle exactly once needs the winding functional, an invariant of the substrate that is nonzero exactly on the separating cycles, and a connected cut band; nothing here certifies the first. So `"Faithful"` is [Undetermined](), except that it is `False` where the cut band is connected and the seam has one side only: there the winding functional or the annulus is witnessed to fail.
 
@@ -85,7 +85,7 @@ Row @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {circles = RandomInfraRepresentative[g, InfraCircle[c, 4], All]},
+    {circles = RandomInfraCircle[ g, InfraCircle[c, 4], All ]},
     Labeled[
       InfraSubstrateHighlight[g,
         {FindInfraShell[g, c, 4],
@@ -102,7 +102,7 @@ Row @ Table[
   With[
     {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {circles = RandomInfraRepresentative[g, InfraCircle[c, band], All]},
+    {circles = RandomInfraCircle[ g, InfraCircle[c, band], All ]},
     Labeled[
       InfraSubstrateHighlight[g,
         {FindInfraShell[g, c, band],
@@ -119,7 +119,7 @@ GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[First @ spec, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {oneCircle = RandomInfraRepresentative[g, InfraCircle[c, Last @ spec]]},
+    {oneCircle = RandomInfraCircle[ g, InfraCircle[c, Last @ spec] ]},
     InfraSubstrateHighlight[g, {Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], c},
       "Arrowheads" -> True]],
   {spec, {{"SquareTilingGraph", {4, 5}}, {"HexagonalTilingGraph", {4, 6}}, {"TriangularTilingGraph", 4}}}]
@@ -132,7 +132,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {closedWalk = RandomInfraRepresentative[g, InfraCircle[c, {2, 4}]]},
+  {closedWalk = RandomInfraCircle[ g, InfraCircle[c, {2, 4}] ]},
   InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]], c}]]
 ```
 
@@ -158,9 +158,9 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {circle = InfraCircle[c, {2, 4}]},
-  {circles = RandomInfraRepresentative[g, circle, All]},
+  {circles = Replace[ circle, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> RandomInfraBall[ g, token, All ], token_InfraShell :> RandomInfraShell[ g, token, All ], token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> RandomInfraTube[ g, token, All ], token_InfraCylinder :> RandomInfraCylinder[ g, token, All ], token_InfraCone :> RandomInfraCone[ g, token, All ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, All ], token_InfraBallHull :> RandomInfraBallHull[ g, token, All ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, All ], token_InfraQuadric :> RandomInfraQuadric[ g, token, All ], token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> RandomInfraIntersection[ g, token, All ], token_InfraUnion :> RandomInfraUnion[ g, token, All ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ]},
   {InfraSubstrateHighlight[g, {Table[Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], {oneCircle, circles}]}],
-   Length @ circles, Length @ RandomInfraRepresentative[g, circle, 3], RandomInfraRepresentative[g, circle, 20]}]
+   Length @ circles, Length @ Replace[ circle, { token_InfraPoint :> RandomInfraPoint[ g, token, 3 ], token_InfraSegment :> RandomInfraSegment[ g, token, 3 ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, 3 ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, 3 ], token_InfraCircle :> RandomInfraCircle[ g, token, 3 ], token_InfraArc :> RandomInfraArc[ g, token, 3 ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, 3 ], token_InfraPlane :> RandomInfraPlane[ g, token, 3 ], token_InfraBall :> RandomInfraBall[ g, token, 3 ], token_InfraShell :> RandomInfraShell[ g, token, 3 ], token_InfraSphere :> RandomInfraSphere[ g, token, 3 ], token_InfraTube :> RandomInfraTube[ g, token, 3 ], token_InfraCylinder :> RandomInfraCylinder[ g, token, 3 ], token_InfraCone :> RandomInfraCone[ g, token, 3 ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, 3 ], token_InfraBallHull :> RandomInfraBallHull[ g, token, 3 ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, 3 ], token_InfraQuadric :> RandomInfraQuadric[ g, token, 3 ], token_InfraWalk :> RandomInfraWalk[ g, token, 3 ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, 3 ], token_InfraEllipse :> RandomInfraEllipse[ g, token, 3 ], token_InfraIntersection :> RandomInfraIntersection[ g, token, 3 ], token_InfraUnion :> RandomInfraUnion[ g, token, 3 ], token_InfraRay :> RandomInfraHalfLine[ g, token, 3 ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, 3 ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, 3 ] } ], Replace[ circle, { token_InfraPoint :> RandomInfraPoint[ g, token, 20 ], token_InfraSegment :> RandomInfraSegment[ g, token, 20 ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, 20 ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, 20 ], token_InfraCircle :> RandomInfraCircle[ g, token, 20 ], token_InfraArc :> RandomInfraArc[ g, token, 20 ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, 20 ], token_InfraPlane :> RandomInfraPlane[ g, token, 20 ], token_InfraBall :> RandomInfraBall[ g, token, 20 ], token_InfraShell :> RandomInfraShell[ g, token, 20 ], token_InfraSphere :> RandomInfraSphere[ g, token, 20 ], token_InfraTube :> RandomInfraTube[ g, token, 20 ], token_InfraCylinder :> RandomInfraCylinder[ g, token, 20 ], token_InfraCone :> RandomInfraCone[ g, token, 20 ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, 20 ], token_InfraBallHull :> RandomInfraBallHull[ g, token, 20 ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, 20 ], token_InfraQuadric :> RandomInfraQuadric[ g, token, 20 ], token_InfraWalk :> RandomInfraWalk[ g, token, 20 ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, 20 ], token_InfraEllipse :> RandomInfraEllipse[ g, token, 20 ], token_InfraIntersection :> RandomInfraIntersection[ g, token, 20 ], token_InfraUnion :> RandomInfraUnion[ g, token, 20 ], token_InfraRay :> RandomInfraHalfLine[ g, token, 20 ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, 20 ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, 20 ] } ]}]
 ```
 
 ## Properties and Relations
@@ -173,7 +173,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {band = FindInfraShell[g, c, {2, 4}]},
-  {closedWalk = RandomInfraRepresentative[g, InfraCircle[c, {2, 4}]]},
+  {closedWalk = RandomInfraCircle[ g, InfraCircle[c, {2, 4}] ]},
   {InfraSubstrateHighlight[g, {band, InfraWalk[Append[closedWalk, First @ closedWalk]]}],
    SubsetQ[band, closedWalk], AllTrue[Partition[closedWalk, 2, 1, 1], EdgeQ[g, UndirectedEdge @@ #] &]}]
 ```
@@ -187,7 +187,7 @@ With[
   {c = First @ GraphCenter[g]},
   {circle = InfraCircle[c, {2, 4}]},
   {InfraSubstrateHighlight[g, {circle, c}],
-   InfraMeasurement[g, circle, "Cardinality"], Length @ RandomInfraRepresentative[g, circle, All]}]
+   InfraMeasurement[g, circle, "Cardinality"], Length @ Replace[ circle, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> RandomInfraBall[ g, token, All ], token_InfraShell :> RandomInfraShell[ g, token, All ], token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> RandomInfraTube[ g, token, All ], token_InfraCylinder :> RandomInfraCylinder[ g, token, All ], token_InfraCone :> RandomInfraCone[ g, token, All ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, All ], token_InfraBallHull :> RandomInfraBallHull[ g, token, All ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, All ], token_InfraQuadric :> RandomInfraQuadric[ g, token, All ], token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> RandomInfraIntersection[ g, token, All ], token_InfraUnion :> RandomInfraUnion[ g, token, All ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ]}]
 ```
 
 An atom is acyclic: its chains run from the seam vertex *x* to the copy `{x, 3/2}` of it, the circles through *x* opened at *x*.

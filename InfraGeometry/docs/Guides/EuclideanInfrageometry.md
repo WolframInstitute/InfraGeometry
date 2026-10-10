@@ -18,7 +18,7 @@ RelatedTutorials: [BreadthlessTriangleTutorial, StraighteningAtScaleTutorial]
 
 ## Functions
 
-We use **inert symbolic objects** such as `InfraSegment[p, q]`, independent of a graph substrate. `InfraMeasurement[g, obj, property]` reads an object on a graph. `RandomInfraRepresentative[g, obj]` draws one concrete representative as a vertex list.
+We use **inert symbolic objects** such as `InfraSegment[p, q]`, independent of a graph substrate. `InfraMeasurement[g, obj, property]` reads an object on a graph. Each construction has a named sampler; for example, `RandomInfraSegment[g, InfraSegment[p, q]]` draws one shortest-path vertex sequence. See [Named construction samplers](../Tutorials/NamedConstructionSamplers.md) for the family-specific carriers and overloads.
 
 Segments, rays, lines and arcs have compact graph representations. Their paths encode the representatives, allowing counts and densities to be computed without enumerating every path. These graphs are part of the Euclidean construction tools.
 
@@ -41,10 +41,10 @@ An `InfraScene` describes a construction through named objects and hypotheses. `
 
 ### Rays and lines
 
-- `InfraRay` the ray from p through q, the shortest paths from p through q that no neighbour of their last vertex prolongs; InfraRay[p, p] is the pencil at p
-- `RandomInfraRay` one random ray from p through q as a vertex list; a trailing count gives a List of them
-- `InfraLine` the line through p and q, the shortest paths through both that no neighbour of either endpoint prolongs
-- `RandomInfraLine` one random line through p and q as a vertex list; a trailing count gives a List of them
+- `InfraHalfLine` the ray from p through q, the shortest paths from p through q that no neighbour of their last vertex prolongs; InfraHalfLine[p, p] is the pencil at p
+- `RandomInfraHalfLine` one random ray from p through q as a vertex list; a trailing count gives a List of them
+- `InfraInfiniteLine` the line through p and q, the shortest paths through both that no neighbour of either endpoint prolongs
+- `RandomInfraInfiniteLine` one random line through p and q as a vertex list; a trailing count gives a List of them
 
 ### Circles and arcs
 
@@ -60,7 +60,7 @@ An `InfraScene` describes a construction through named objects and hypotheses. `
 ### Reading a construction on a graph
 
 - `InfraMeasurement` reads "Graph", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph", "Faithful", "CountingMeasure" and "RiemannianMeasure"; "Midpoint" gives the middle-layer density of a segment
-- `RandomInfraRepresentative` draws one member of an object as a vertex list; a trailing count requests several; "NextVertexFunction" -> Identity gives deterministic enumeration, and All gives every member
+- `named construction samplers` draws one member of an object as a vertex list; a trailing count requests several; "NextVertexFunction" -> Identity gives deterministic enumeration, and All gives every member
 - `Undetermined` the value of "Faithful" when the geometric hypotheses needed for a carrier are not certified
 - `InfraMemberQ` whether a vertex list is a member of a head on a graph
 - `InfraDensity` converts a vertex, vertex list, density or walk graph to vertex multiplicities
@@ -99,8 +99,8 @@ An `InfraScene` describes a construction through named objects and hypotheses. `
 
 - `MetricInterval` the interval {w : d(u, w) + d(w, v) == d(u, v)}, the union of the shortest paths from u to v
 - `FindInfraPolylineSubdivision` the fewest shortest-path legs a walk splits into, the corners of the polyline InfraSegment[p1, ..., pk]
-- `InfraRayQ` whether a walk is a ray, a shortest path from its first vertex that cannot be prolonged past its last
-- `InfraLineQ` whether a walk is a line, a shortest path that no neighbour of either endpoint prolongs
+- `InfraHalfLineQ` whether a walk is a ray, a shortest path from its first vertex that cannot be prolonged past its last
+- `InfraInfiniteLineQ` whether a walk is a line, a shortest path that no neighbour of either endpoint prolongs
 - `RandomInfraParallel` a random parallel to a line through p, drawn from the lines through p at constant distance from it
 - `InfraParallelQ` whether two lines stay at constant distance
 - `FindInfraPerpendicular` the lines through a point perpendicular to a line
@@ -126,7 +126,7 @@ An `InfraScene` describes a construction through named objects and hypotheses. `
 - `InfraCone` the cone of a given slope along a walk, apex at its first vertex and a flat base
 - `InfraSolidOfRevolution` the solid about a walk with a given radius profile
 
-- `InfraPolygon` the regular n-gon whose k-th diagonals have prescribed lengths; the polygon through given corners is the closed polyline InfraSegment[p1, ..., pn, p1]
+- `InfraRegularPolygon` the regular n-gon whose k-th diagonals have prescribed lengths; the polygon through given corners is the closed polyline InfraSegment[p1, ..., pn, p1]
 - `RandomInfraRegularPolygon` one random closed n-vertex sequence whose k-th diagonal lengths match the prescribed ones
 - `InfraRegularPolygonQ` whether a cycle is regular with respect to a tuple of diagonal lengths
 - `InfraConvexHull` the convex hull under shortest paths of a set, the closure under MetricInterval; with k, the k-th round of the closure

@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: Experimental :: InfraPolygon *)
+(* WolframInstitute`InfraGeometry` :: Experimental :: InfraRegularPolygon *)
 
 (* a regular n-gon w.r.t. the metric tuple As is a cyclic sequence v_1, ..., v_n with d(v_i, v_{i+k mod n}) satisfying As[[k]] for every i and k; a
    slot is an exact integer, a range {lo, hi} constant across i, or Automatic.  The instance is the polygon on those corners: its sides, one shortest
@@ -16,7 +16,7 @@ Options[ RandomInfraRegularPolygon ] = {
 }
 
 RandomInfraRegularPolygon[ graph_Graph, As_List, n_Integer /; n >= 3,
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraRegularPolygon ], First /@ { opts } ] &&
     1 <= Length[ As ] <= Floor[ n / 2 ] && OptionValue[ RandomInfraRegularPolygon, { opts }, Properties ] === { } &&
     ( count =!= All || OptionValue[ RandomInfraRegularPolygon, { opts }, "NextVertexFunction" ] =!= RandomChoice ) :=
   With[ {
@@ -113,11 +113,14 @@ InfraRegularPolygonQ[ graph_Graph, w_Graph, As_List ] :=
           { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] ],
     As ]
 
-RandomInfraRepresentative[ graph_Graph, InfraPolygon[ As_List, n_Integer, opts___Rule ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /;
-    ( OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+RandomInfraRegularPolygon[ graph_Graph, InfraRegularPolygon[ As_List, n_Integer, opts___Rule ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraRegularPolygon ], First /@ { samplerOpts } ] &&
+    SubsetQ[ First /@ Options[ RandomInfraRegularPolygon ], First /@ { samplerOpts, opts } ] &&
+    ( OptionValue[ RandomInfraRegularPolygon, { samplerOpts, opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   Replace[
     RandomInfraRegularPolygon[ graph, As, n, count,
-      "NextVertexFunction" -> OptionValue[ RandomInfraRepresentative, { samplerOpts }, "NextVertexFunction" ],
-      Sequence @@ FilterRules[ { opts }, Options[ RandomInfraRegularPolygon ] ] ],
-    { legs : { __Graph } :> Most @ polylineToVertexSeq @ legs, polygons_List :> Most @* polylineToVertexSeq /@ polygons } ]
+      samplerOpts, opts ],
+    { legs : { __Graph } :> Most @ Fold[ Join[ #1, Rest @ #2 ] &, TopologicalSort @ First @ legs, TopologicalSort /@ Rest @ legs ], polygons_List :> ( legs |-> Most @ Fold[ Join[ #1, Rest @ #2 ] &, TopologicalSort @ First @ legs, TopologicalSort /@ Rest @ legs ] ) /@ polygons } ]
+
+RandomInfraRegularPolygon[ graph_Graph, token_InfraPolygon, args___ ] :=
+  RandomInfraRegularPolygon[ graph, InfraRegularPolygon @@ token, args ]

@@ -34,7 +34,7 @@ GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {region = RandomInfraRepresentative[g, InfraBall[c, VertexEccentricity[g, c] - 2]]},
+    {region = RandomInfraBall[ g, InfraBall[c, VertexEccentricity[g, c] - 2] ]},
     {open = TopologicalNeighborhood[BallTopology[g, 2], region]},
     InfraSubstrateHighlight[g, {region -> StandardGreen, Complement[open, region] -> StandardRed}]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
@@ -59,7 +59,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
   {topo = BallTopology[g, 2]},
-  {ball = RandomInfraRepresentative[g, InfraBall[First @ GraphCenter[g], 4]]},
+  {ball = RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 4] ]},
   {open = TopologicalNeighborhood[topo, ball]},
   {InfraSubstrateHighlight[g, {ball -> StandardGreen, Complement[open, ball] -> StandardRed}],
    TopologicalInterior[topo, open] == open,

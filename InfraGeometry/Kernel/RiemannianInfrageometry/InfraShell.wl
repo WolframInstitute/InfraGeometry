@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+Options[ RandomInfraShell ] = { "NextVertexFunction" -> Automatic }
+
 (* WolframInstitute`InfraGeometry` :: RiemannianInfrageometry :: InfraShell *)
 
 PackageScope[ SeparatesQ ]
@@ -159,11 +161,11 @@ InfraMeasurement[ graph_Graph, shell : InfraShell[ _, _ ], All ] :=
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
       "CountingMeasure", "RiemannianMeasure" } ]
 
-RandomInfraRepresentative[ graph_Graph, shell : InfraShell[ _, _ ],
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    ( OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+RandomInfraShell[ graph_Graph, shell : InfraShell[ _, _ ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraShell ], First /@ { opts } ] &&
+    ( OptionValue[ RandomInfraShell, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
   With[ { members = Keys @ InfraMeasurement[ graph, shell, "VertexDensity" ],
-          nextFn = OptionValue[ RandomInfraRepresentative, { opts }, "NextVertexFunction" ] },
+          nextFn = OptionValue[ RandomInfraShell, { opts }, "NextVertexFunction" ] },
     { ordered = { members } },
     Which[
       count === Automatic, members,
@@ -171,3 +173,10 @@ RandomInfraRepresentative[ graph_Graph, shell : InfraShell[ _, _ ],
       nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
       IntegerQ @ count && Length @ ordered < count, { },
       True, RandomSample[ ordered, count ] ] ]
+
+RandomInfraShell[ graph_Graph, center_, radius_,
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { center, radius }, _InfraShell ] &&
+    SubsetQ[ First /@ Options[ RandomInfraShell ], First /@ { opts } ] :=
+  RandomInfraShell[ graph, InfraShell[ center, radius ], count,
+    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]

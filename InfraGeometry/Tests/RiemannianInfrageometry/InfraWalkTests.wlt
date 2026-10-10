@@ -136,7 +136,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = InfraSubstrate[ "SquareTorusGraph", "Small" ] },
     { ws = RandomInfraWalk[ g, { 1, 1 }, UpTo[ 2 ], All, Properties -> { "Simple" } ],
-      reps = RandomInfraRepresentative[ g, InfraGeodesic[ { { 1, 1 }, { 2, 1 } }, 2 ], 2 ] },
+      reps = RandomInfraGeodesic[ g, InfraGeodesic[ { { 1, 1 }, { 2, 1 } }, 2 ], 2 ] },
     { Length @ ws, ws === RandomInfraWalk[ g, { { 1, 1 } }, UpTo[ 2 ], All, Properties -> { "Simple" } ],
       AllTrue[ walkSeqs @ ws, First[ # ] === { 1, 1 } & ],
       Length @ RandomInfraGeodesic[ g, { 1, 1 }, 2, UpTo[ 2 ], All ],
@@ -1574,7 +1574,7 @@ VerificationTest[
    both sides of the germ, returned as vertex lists *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    Sort @ RandomInfraRepresentative[ g, InfraGeodesic[ { 6, 7 }, Infinity ], All ] ===
+    Sort @ RandomInfraGeodesic[ g, InfraGeodesic[ { 6, 7 }, Infinity ], All ] ===
       Sort @ walkSeqs @ RandomInfraGeodesic[ g, { 6, 7 }, Infinity, Infinity, All,
         Properties -> { "Simple" }, "Direction" -> "BothSides" ] ],
   True,
@@ -1585,7 +1585,7 @@ VerificationTest[
    5-by-5 grid run 144 maximal geodesics, against 24 grown forward from it *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    { Length @ RandomInfraRepresentative[ g, InfraGeodesic[ { 13 }, Infinity ], All ],
+    { Length @ RandomInfraGeodesic[ g, InfraGeodesic[ { 13 }, Infinity ], All ],
       Length @ RandomInfraGeodesic[ g, 13, Infinity, Infinity, All ] } ],
   { 144, 24 },
   TestID -> "InfraGeodesic-one-vertex-germ-runs-both-ways"
@@ -1593,17 +1593,17 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    { Length @ RandomInfraRepresentative[ g, InfraGeodesic[ { 6, 7 }, Infinity ], 2 ],
-      MatchQ[ RandomInfraRepresentative[ g, InfraGeodesic[ { 6, 7 }, Infinity ] ], { __Integer } ],
-      MemberQ[ RandomInfraRepresentative[ g, InfraGeodesic[ { 6, 7 }, Infinity ], All ],
-      RandomInfraRepresentative[ g, InfraGeodesic[ { 6, 7 }, Infinity ], 1 ][[ 1 ]] ] } ],
+    { Length @ RandomInfraGeodesic[ g, InfraGeodesic[ { 6, 7 }, Infinity ], 2 ],
+      MatchQ[ RandomInfraGeodesic[ g, InfraGeodesic[ { 6, 7 }, Infinity ] ], { __Integer } ],
+      MemberQ[ RandomInfraGeodesic[ g, InfraGeodesic[ { 6, 7 }, Infinity ], All ],
+      RandomInfraGeodesic[ g, InfraGeodesic[ { 6, 7 }, Infinity ], 1 ][[ 1 ]] ] } ],
   { 2, True, True },
   TestID -> "InfraGeodesic-count-and-random-sample"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    { members = RandomInfraRepresentative[ g, InfraGeodesic[ { 6, 7 }, Infinity ], All ] },
+    { members = RandomInfraGeodesic[ g, InfraGeodesic[ { 6, 7 }, Infinity ], All ] },
     InfraDensity[ g, members ] === KeySort @ Counts @ Catenate @ members ],
   True,
   TestID -> "InfraGeodesic-members-InfraDensity"
@@ -1613,8 +1613,8 @@ VerificationTest[
    simple class the budget Infinity would leave the class unbounded and the call unevaluated *)
 VerificationTest[
   With[ { g = GridGraph[ { 6, 6 } ] },
-    { one = RandomInfraRepresentative[ g, InfraGeodesic[ { 1 }, 2 ] ],
-      some = RandomInfraRepresentative[ g, InfraGeodesic[ { 1, 2 }, 3 ], 3 ] },
+    { one = RandomInfraGeodesic[ g, InfraGeodesic[ { 1 }, 2 ] ],
+      some = RandomInfraGeodesic[ g, InfraGeodesic[ { 1, 2 }, 3 ], 3 ] },
     { InfraGeodesicQ[ g, one, 2 ] && DuplicateFreeQ[ one ],
       Length[ some ] === 3 && AllTrue[ some, InfraGeodesicQ[ g, #, 3 ] && DuplicateFreeQ[ # ] && SequenceCount[ #, { 1, 2 } ] === 1 & ] } ],
   { True, True },
@@ -1903,8 +1903,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = ( SeedRandom[ 2 ]; InfraSubstrate[ "SquareTilingGraph", "Large", "KeepCoordinates" -> True ] ) },
     { c = First @ GraphCenter @ g },
-    { germ = First @ RandomInfraRepresentative[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1,
-        "NextVertexFunction" -> Identity ] },
+    { germ = First @ RandomInfraSegment[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1, "NextVertexFunction" -> Identity ] },
     { walks = Sort @ walkSeqs @ RandomInfraGeodesic[ g, germ, 2, { 10 }, All ] },
     { Length @ walks, Hash @ walks } ],
   { 59049, 4937401386186909691 },
@@ -1914,8 +1913,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = ( SeedRandom[ 2 ]; InfraSubstrate[ "SquareTilingGraph", "Large", "KeepCoordinates" -> True ] ) },
     { c = First @ GraphCenter @ g },
-    { germ = First @ RandomInfraRepresentative[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1,
-        "NextVertexFunction" -> Identity ] },
+    { germ = First @ RandomInfraSegment[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1, "NextVertexFunction" -> Identity ] },
     { walks = Sort @ walkSeqs @ RandomInfraGeodesic[ g, germ, 3, { 10 }, All ] },
     { Length @ walks, Hash @ walks } ],
   { 5741, 1211033947011603389 },
@@ -1925,8 +1923,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = ( SeedRandom[ 2 ]; InfraSubstrate[ "SquareTilingGraph", "Large", "KeepCoordinates" -> True ] ) },
     { c = First @ GraphCenter @ g },
-    { germ = First @ RandomInfraRepresentative[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1,
-        "NextVertexFunction" -> Identity ] },
+    { germ = First @ RandomInfraSegment[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1, "NextVertexFunction" -> Identity ] },
     { walks = Sort @ walkSeqs @ RandomInfraGeodesic[ g, germ, 4, { 10 }, All ] },
     { Length @ walks, Hash @ walks } ],
   { 2296, 7425623505775655544 },
@@ -1936,8 +1933,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = ( SeedRandom[ 2 ]; InfraSubstrate[ "SquareTilingGraph", "Large", "KeepCoordinates" -> True ] ) },
     { c = First @ GraphCenter @ g },
-    { germ = First @ RandomInfraRepresentative[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1,
-        "NextVertexFunction" -> Identity ] },
+    { germ = First @ RandomInfraSegment[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1, "NextVertexFunction" -> Identity ] },
     { walks = Sort @ walkSeqs @ RandomInfraGeodesic[ g, germ, 5, { 10 }, All ] },
     { Length @ walks, Hash @ walks } ],
   { 1496, 1532773979078602271 },
@@ -1947,8 +1943,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = ( SeedRandom[ 2 ]; InfraSubstrate[ "SquareTilingGraph", "Large", "KeepCoordinates" -> True ] ) },
     { c = First @ GraphCenter @ g },
-    { germ = First @ RandomInfraRepresentative[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1,
-        "NextVertexFunction" -> Identity ] },
+    { germ = First @ RandomInfraSegment[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1, "NextVertexFunction" -> Identity ] },
     { walks = Sort @ walkSeqs @ RandomInfraGeodesic[ g, germ, Infinity, { 10 }, All ] },
     { Length @ walks, Hash @ walks } ],
   { 1024, 2474424299912191782 },

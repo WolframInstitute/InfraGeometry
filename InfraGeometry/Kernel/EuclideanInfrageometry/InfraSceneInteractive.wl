@@ -117,7 +117,7 @@ CircleViewer[ g_Graph ] :=
       With[ {
           circles = If[ sel === None || r < 1, {},
             Take[
-              applySelectOption[ g, RandomInfraRepresentative[ g, InfraCircle[ p, r ], All ],
+              applySelectOption[ g, RandomInfraCircle[ g, InfraCircle[ p, r ], All ],
                 sel, True, <| "Center" -> p, "Radius" -> r |> ],
               UpTo[ n ] ] ] },
         EventHandler[

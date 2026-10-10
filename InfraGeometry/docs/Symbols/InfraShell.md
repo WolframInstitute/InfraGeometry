@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraShell
 Keywords: [shell, sphere, level set, region, symbolic object, area, counting measure, Riemannian measure]
-SeeAlso: [FindInfraShell, InfraBall, InfraSphere, InfraMeasurement, RandomInfraRepresentative, InfraInterior, InfraBoundary, InfraShellQ]
+SeeAlso: [FindInfraShell, InfraBall, InfraSphere, InfraMeasurement, RandomInfraShell, InfraInterior, InfraBoundary, InfraShellQ]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraShell]()[*c*, {*r*, *s*}]</code> is the shell about *c*: the vertices at distance between *r* and *s*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
+<code>[InfraShell]()[*c*, {*r*, *s*}]</code> is the shell about *c*: the vertices at distance between *r* and *s*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraShell]() evaluate it on a graph.
 
 <code>[InfraShell]()[*c*, *r*]</code> is the band {*r*, *r*}: the vertices at distance exactly *r*.
 
@@ -49,7 +49,7 @@ The Riemannian measure of a band *{r, s}* with *r ≥ 1* drops its two rims: it 
 
 How the number is measured: <code>[InfraMeasurement]()[*g*, [InfraShell]()[*c*, *r*], "CountingMeasure"]</code> counts the vertices at distance exactly *r* from *c*, one row of the distance matrix at the value *r*. The profile over *r* is the derivative of the ball profile, and its [LogDifferenceQuotients]() tend to one less than the dimension.
 
-The head holds the centre and the band and computes nothing. A shell has one member, the vertex set, so [RandomInfraRepresentative]() gives it as a sorted vertex list. [InfraMeasurement]() also reads `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"`, `"Faithful"` and `"Subgraph"`. [FindInfraShell]() is the level set as a function.
+The head holds the centre and the band and computes nothing. A shell has one member, the vertex set, so [RandomInfraShell]() gives it as a sorted vertex list. [InfraMeasurement]() also reads `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"`, `"Faithful"` and `"Subgraph"`. [FindInfraShell]() is the level set as a function.
 
 Corresponding notions in the classical axiom systems:
 
@@ -69,7 +69,7 @@ Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {band = InfraShell[First @ GraphCenter[g], {2, 4}]},
-    {support = RandomInfraRepresentative[g, band]},
+    {support = Replace[ band, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> RandomInfraBall[ g, token ], token_InfraShell :> RandomInfraShell[ g, token ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> RandomInfraTube[ g, token ], token_InfraCylinder :> RandomInfraCylinder[ g, token ], token_InfraCone :> RandomInfraCone[ g, token ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token ], token_InfraBallHull :> RandomInfraBallHull[ g, token ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token ], token_InfraQuadric :> RandomInfraQuadric[ g, token ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> RandomInfraIntersection[ g, token ], token_InfraUnion :> RandomInfraUnion[ g, token ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ]},
     Labeled[
       InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
       InfraMeasurement[g, band, {"CountingMeasure", "RiemannianMeasure"}]]],
@@ -103,7 +103,7 @@ The shell about two vertices at once.
 
 ```wl
 SeedRandom[1];
-RandomInfraRepresentative[PathGraph[Range[7]], InfraShell[{1, 7}, 1]]
+RandomInfraShell[ PathGraph[Range[7]], InfraShell[{1, 7}, 1] ]
 ```
 
 ## Properties and Relations

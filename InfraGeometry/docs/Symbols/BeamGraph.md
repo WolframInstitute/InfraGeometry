@@ -15,7 +15,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Details & Options
 
-The result is `InfraMeasurement[graph, InfraLine[p, q], "Graph"]`.
+The result is `InfraMeasurement[graph, InfraInfiniteLine[p, q], "Graph"]`.
 
 Each DAG has one compatible pair of maximal endpoints. The list must not be merged: its union can introduce paths that are not lines. BeamGraph[graph, germ] instead keeps a specified shortest-path germ.
 

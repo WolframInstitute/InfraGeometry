@@ -15,7 +15,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Details & Options
 
-The result is `InfraMeasurement[graph, InfraRay[p, q], "Graph"]`.
+The result is `InfraMeasurement[graph, InfraHalfLine[p, q], "Graph"]`.
 
 When p equals q, the carrier is the spray at p.
 

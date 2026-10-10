@@ -135,7 +135,7 @@ GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
     {c = First @ GraphCenter[g], p = farEnd[g], thickness = Ceiling[profileRadius[g]/2]},
-    {geodesic = RandomInfraRepresentative[g, InfraSegment[c, p]]},
+    {geodesic = RandomInfraSegment[ g, InfraSegment[c, p] ]},
     {fat = Keys @ InfraMeasurement[g, InfraTube[InfraSegment[c, p], thickness], "VertexDensity"], thin = Keys @ InfraMeasurement[g, InfraTube[geodesic, thickness], "VertexDensity"]},
     InfraSubstrateHighlight[g, {Complement[fat, thin] -> StandardBlue, thin -> StandardGreen, InfraWalk[geodesic]}]],
   {size, {"Small", "Medium", "Large"}},
@@ -150,7 +150,7 @@ GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
     {c = First @ GraphCenter[g], p = farEnd[g], radius = profileRadius[g]},
-    {geodesic = RandomInfraRepresentative[g, InfraSegment[c, p]]},
+    {geodesic = RandomInfraSegment[ g, InfraSegment[c, p] ]},
     {box = If[name == "SquareTilingGraph", InfraMeasurement[g, InfraSegment[c, p], "CountingMeasure"] + 2 s (radius + 2) + 2 s (s - 1), Nothing]},
     Show[
       Plot[Evaluate[{box, box /. s -> s - 1}], {s, 0, radius}],
@@ -252,7 +252,7 @@ SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
-    {geodesic = RandomInfraRepresentative[g, InfraSegment[First @ GraphCenter[g], farEnd[g]]]},
+    {geodesic = RandomInfraSegment[ g, InfraSegment[First @ GraphCenter[g], farEnd[g]] ]},
     InfraSubstrateHighlight[g, Append[interiorAndBoundary[g, InfraCone[geodesic, 1/2, Method -> "Balls"]], InfraWalk[geodesic]]]],
   {size, {"Small", "Medium", "Large"}},
   {name, {"SquareTilingGraph", "TriangularTilingGraph", "SquareMeshGraph"}}]
@@ -266,7 +266,7 @@ GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
     {p = farEnd[g], radius = profileRadius[g], slopes = Range[0, 3/2, 1/8]},
-    {geodesic = RandomInfraRepresentative[g, InfraSegment[First @ GraphCenter[g], p]]},
+    {geodesic = RandomInfraSegment[ g, InfraSegment[First @ GraphCenter[g], p] ]},
     Show[
       ListLinePlot[twoMeasures[g, Table[InfraBall[p, Floor[m radius]], {m, slopes}]], DataRange -> {0, 3/2}],
       ListPlot[twoMeasures[g, Table[InfraCone[geodesic, m, Method -> "Balls"], {m, slopes}]], DataRange -> {0, 3/2}],
@@ -292,7 +292,7 @@ GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
     {c = First @ GraphCenter[g], inner = Ceiling[profileRadius[g]/2]},
-    {wall = (SeedRandom[1]; RandomInfraRepresentative[g, InfraSphere[c, {inner, inner + 1}]])},
+    {wall = (SeedRandom[1]; RandomInfraSphere[ g, InfraSphere[c, {inner, inner + 1}] ])},
     InfraSubstrateHighlight[g, {InfraShell[c, {inner, inner + 1}] -> StandardGreen, wall -> StandardOrange}]],
   {size, {"Small", "Medium", "Large"}},
   {name, {"SquareTilingGraph", "TriangularTilingGraph", "SquareMeshGraph"}}]
@@ -306,7 +306,7 @@ GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
     {c = First @ GraphCenter[g], bandRadii = Range[1, Min[profileRadius[g], 6]]},
-    {walls = Table[InfraTube[(SeedRandom[1]; RandomInfraRepresentative[g, InfraSphere[c, {r, r + 1}]]), 0], {r, bandRadii}]},
+    {walls = Table[InfraTube[(SeedRandom[1]; RandomInfraSphere[ g, InfraSphere[c, {r, r + 1}] ]), 0], {r, bandRadii}]},
     {shells = InfraMeasurement[g, Table[InfraShell[c, r], {r, First[bandRadii], Last[bandRadii] + 1}], "CountingMeasure"]},
     Show[
       ListLinePlot[{Transpose[{bandRadii, Most[shells]}], Transpose[{bandRadii, Rest[shells]}]}, PlotStyle -> Gray],

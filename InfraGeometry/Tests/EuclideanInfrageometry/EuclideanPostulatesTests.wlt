@@ -34,7 +34,7 @@ VerificationTest[
 
 VerificationTest[
   Keys @ Options @ RandomInfraPoint,
-  { "PairwiseDistance", "MaxCliques" },
+  { "PairwiseDistance", "MaxCliques", "NextVertexFunction" },
   TestID -> "RandomInfraPoint-options-From-and-Distance-gone"
 ]
 
@@ -516,7 +516,7 @@ VerificationTest[
 ]
 
 (* RandomInfraSegment carries no Method any more (EuclideanInertHeads, T2): its "RandomChoice"
-   modifier on RandomInfraRepresentative is the uniform witness now, tested in InfraMeasurementTests.wlt. *)
+   modifier on NamedConstructionSampler is the uniform witness now, tested in InfraMeasurementTests.wlt. *)
 
 
 (* ===== FindInfraOsculatingShell ===== *)
@@ -709,7 +709,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     Length @ EmbeddingClosest[ g,
-      RandomInfraRepresentative[ g, InfraCircle[ 6, { 1, 2 } ], All ],
+      RandomInfraCircle[ g, InfraCircle[ 6, { 1, 2 } ], All ],
       { 6, 1.5 } ] >= 1
   ],
   True,
@@ -1005,11 +1005,11 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 10, 10 } ], p = 45 },
-    Sort[ Sort /@ RandomInfraRepresentative[ g, InfraCircle[ p, { 1, 2 } ], All ] ] ===
-      Sort[ Sort /@ RandomInfraRepresentative[ NeighborhoodGraph[ g, p, 4 ], InfraCircle[ p, { 1, 2 } ], All ] ]
+    Sort[ Sort /@ RandomInfraCircle[ g, InfraCircle[ p, { 1, 2 } ], All ] ] ===
+      Sort[ Sort /@ RandomInfraCircle[ NeighborhoodGraph[ g, p, 4 ], InfraCircle[ p, { 1, 2 } ], All ] ]
   ],
   True,
-  TestID -> "RandomInfraRepresentative-circle-locality-Metric"
+  TestID -> "NamedConstructionSampler-circle-locality-Metric"
 ]
 
 

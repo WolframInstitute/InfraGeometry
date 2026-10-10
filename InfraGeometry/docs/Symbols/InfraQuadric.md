@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraQuadric
 Keywords: [quadric, ellipse, ellipsoid, hyperbola, elliptic shell, foci, region, symbolic object]
-SeeAlso: [InfraBall, InfraShell, InfraSegment, InfraEllipse, InfraMeasurement, RandomInfraRepresentative, InfraMemberQ]
+SeeAlso: [InfraBall, InfraShell, InfraSegment, InfraEllipse, InfraMeasurement, RandomInfraQuadric, InfraMemberQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraQuadric]()[{*p_1*, …, *p_k*}, *c*]</code> is the solid of the vertices whose distances to the foci *p_i* sum to at most *c*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraRepresentative]() evaluate it on a graph.
+<code>[InfraQuadric]()[{*p_1*, …, *p_k*}, *c*]</code> is the solid of the vertices whose distances to the foci *p_i* sum to at most *c*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraQuadric]() evaluate it on a graph.
 
 <code>[InfraQuadric]()[*foci*, {*lo*, *hi*}]</code> is the band *lo ≤ Σ d(p_i, v) ≤ hi*.
 
@@ -54,7 +54,7 @@ Row[Table[
     {shell = InfraQuadric[{first, second}, {n + 2, n + 2}]},
     Labeled[
       InfraSubstrateHighlight[g, {shell, {first, second}}, "PointSizeRange" -> 17],
-      Length @ RandomInfraRepresentative[g, shell]]],
+      Length @ Replace[ shell, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> RandomInfraBall[ g, token ], token_InfraShell :> RandomInfraShell[ g, token ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> RandomInfraTube[ g, token ], token_InfraCylinder :> RandomInfraCylinder[ g, token ], token_InfraCone :> RandomInfraCone[ g, token ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token ], token_InfraBallHull :> RandomInfraBallHull[ g, token ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token ], token_InfraQuadric :> RandomInfraQuadric[ g, token ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> RandomInfraIntersection[ g, token ], token_InfraUnion :> RandomInfraUnion[ g, token ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ]]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```
 
@@ -74,8 +74,8 @@ One focus is the ball, and with the band *{r, r}* the shell.
 SeedRandom[1];
 With[
   {g = GridGraph[{7, 7}]},
-  {RandomInfraRepresentative[g, InfraQuadric[{20}, 3]] === RandomInfraRepresentative[g, InfraBall[20, 3]],
-   RandomInfraRepresentative[g, InfraQuadric[{20}, {3, 3}]] === RandomInfraRepresentative[g, InfraShell[20, 3]]}]
+  {RandomInfraQuadric[ g, InfraQuadric[{20}, 3] ] === RandomInfraBall[ g, InfraBall[20, 3] ],
+   RandomInfraQuadric[ g, InfraQuadric[{20}, {3, 3}] ] === RandomInfraShell[ g, InfraShell[20, 3] ]}]
 ```
 
 On a path graph the quadric of the level *d(p, q)* is the interval between the foci.
@@ -90,6 +90,6 @@ The quadric about two foci contains the tube about the interval between them: a 
 SeedRandom[1];
 With[
   {g = GridGraph[{7, 7}]},
-  {tube = RandomInfraRepresentative[g, InfraTube[InfraSegment[8, 42], 1]]},
-  SubsetQ[RandomInfraRepresentative[g, InfraQuadric[{8, 42}, GraphDistance[g, 8, 42] + 2]], tube]]
+  {tube = RandomInfraTube[ g, InfraTube[InfraSegment[8, 42], 1] ]},
+  SubsetQ[RandomInfraQuadric[ g, InfraQuadric[{8, 42}, GraphDistance[g, 8, 42] + 2] ], tube]]
 ```

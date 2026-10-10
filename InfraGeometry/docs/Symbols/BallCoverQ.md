@@ -31,7 +31,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {cover = FindBallCover[g, 3]},
-  {balls = RandomInfraRepresentative[g, InfraBall[#, 3]] & /@ Rest[cover]},
+  {balls = RandomInfraBall[ g, InfraBall[#, 3] ] & /@ Rest[cover]},
   {InfraSubstrateHighlight[g, {balls -> StandardBlue, Complement[VertexList[g], Union @@ balls] -> StandardRed}],
    BallCoverQ[g, 3, cover], BallCoverQ[g, 3, Rest[cover]]}]
 ```
@@ -46,7 +46,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {InfraSubstrateHighlight[g, {InfraBall[c, 2], c}],
-   BallCoverQ[g, 2, {c}, RandomInfraRepresentative[g, InfraBall[c, 2]]], BallCoverQ[g, 2, {c}]}]
+   BallCoverQ[g, 2, {c}, RandomInfraBall[ g, InfraBall[c, 2] ]], BallCoverQ[g, 2, {c}]}]
 ```
 
 ## Properties and Relations

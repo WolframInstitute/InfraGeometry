@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraParallelQ
 Keywords: [parallel, constant distance, level set, Euclid Definition 23]
-SeeAlso: [RandomInfraParallel, InfraPerpendicularQ, InfraLineQ, FindInfraShell, RandomInfraLine]
+SeeAlso: [RandomInfraParallel, InfraPerpendicularQ, InfraInfiniteLineQ, FindInfraShell, RandomInfraInfiniteLine]
 RelatedGuides: [Experimental]
 ---
 
@@ -26,7 +26,7 @@ Two consequences that catch people out.
 
 **Sharing a single vertex is enough to fail.** Two sets at otherwise constant distance return `False` as soon as they touch.
 
-The predicate does not require its arguments to be lines. It tests two vertex sets, so it accepts things that are not paths at all. Concentric shells are the clearest case: the shell at radius 3 is parallel to the shell at radius 2, at constant distance 1. If you need the arguments to be maximal shortest paths, test that separately with [InfraLineQ]().
+The predicate does not require its arguments to be lines. It tests two vertex sets, so it accepts things that are not paths at all. Concentric shells are the clearest case: the shell at radius 3 is parallel to the shell at radius 2, at constant distance 1. If you need the arguments to be maximal shortest paths, test that separately with [InfraInfiniteLineQ]().
 
 That is the difference from [RandomInfraParallel](), and it is a real one. The finder returns only *maximal shortest paths* at constant distance, and on a lattice it typically finds none. This predicate can still return `True` for sets at constant distance. A parallel can exist as a set while no parallel exists as a line.
 
@@ -49,7 +49,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line = RandomInfraLine[g, c, far]},
+  {line = RandomInfraInfiniteLine[g, c, far]},
   InfraParallelQ[g, line, line]]
 ```
 
@@ -74,7 +74,7 @@ Neither shell is a line, which shows the predicate does not require one.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  InfraLineQ[g, FindInfraShell[g, c, 3]]]
+  InfraInfiniteLineQ[g, FindInfraShell[g, c, 3]]]
 ```
 
 Two maximal shortest paths chosen independently are generally not parallel, because the distance between them varies along their length.
@@ -85,9 +85,9 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line1 = RandomInfraLine[g, c, far]},
+  {line1 = RandomInfraInfiniteLine[g, c, far]},
   {p = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line1, #] &]},
-  {line2 = RandomInfraLine[g, p, SelectFirst[VertexList[g], GraphDistance[g, p, #] == 4 &]]},
+  {line2 = RandomInfraInfiniteLine[g, p, SelectFirst[VertexList[g], GraphDistance[g, p, #] == 4 &]]},
   <|"parallel" -> InfraParallelQ[g, line1, line2],
     "distances from line2 to line1" -> Union @ Table[Min[GraphDistance[g, v, #] & /@ line1], {v, line2}]|>]
 ```

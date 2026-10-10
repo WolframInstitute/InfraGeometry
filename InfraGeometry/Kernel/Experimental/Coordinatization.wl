@@ -131,7 +131,7 @@ Options[ FindInfraOrthogonalAxes ] = {
 }
 
 FindInfraOrthogonalAxes[ g_Graph, centre_, axisLength : ( All | _Integer | UpTo[ _Integer ] | { _Integer, _Integer | Infinity } ),
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
     VertexQ[ g, centre ] || AssociationQ[ centre ] && SubsetQ[ VertexList @ g, Keys @ centre ] :=
   With[
     {
@@ -224,7 +224,7 @@ Options[ FindInfraOrthogonalRays ] = {
 }
 
 FindInfraOrthogonalRays[ g_Graph, centre_, rayLength : ( All | _Integer | UpTo[ _Integer ] | { _Integer, _Integer | Infinity } ),
-    count : ( _Integer | UpTo[ _Integer ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
     VertexQ[ g, centre ] || AssociationQ[ centre ] && SubsetQ[ VertexList @ g, Keys @ centre ] :=
   With[
     {
