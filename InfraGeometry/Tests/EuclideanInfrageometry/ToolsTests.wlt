@@ -78,7 +78,7 @@ VerificationTest[
 (* Counts promotes a list, Keys demotes a density: the two steps InfraDensity sits
    between, and the reason there is no second coercion in the API *)
 VerificationTest[
-  With[ { ball = RandomInfraRepresentative[g33, InfraBall[5, 1], All] },
+  With[ { ball = RandomInfraRepresentative[g33, InfraBall[5, 1]] },
     Keys @ InfraDensity[ g33, ball ] === Union[ ball ] &&
       InfraDensity[ g33, ball ] === KeySort @ Counts @ ball ],
   True,

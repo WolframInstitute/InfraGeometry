@@ -181,8 +181,8 @@ VerificationTest[
     SeedRandom[7];
     {Head @ RandomInfraRepresentative[g, cir], Length @ RandomInfraRepresentative[g, cir, 3],
      Length @ RandomInfraRepresentative[g, cir, UpTo[1000]],
-     AllTrue[RandomInfraRepresentative[g, cir, 20, "RandomChoice"], MemberQ[members, #] &],
-     Length @ DeleteDuplicates @ RandomInfraRepresentative[g, cir, 20, "RandomChoice"] > 1}],
+     AllTrue[RandomInfraRepresentative[g, cir, UpTo[20]], MemberQ[members, #] &],
+     Length @ DeleteDuplicates @ RandomInfraRepresentative[g, cir, UpTo[20]] > 1}],
   {List, 3, 16, True, True},
   TestID -> "InfraCircle-count-contract-and-random-draws"
 ]

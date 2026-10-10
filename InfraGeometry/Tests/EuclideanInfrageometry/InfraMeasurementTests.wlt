@@ -324,7 +324,7 @@ VerificationTest[
 (* a head without a graph is read by its search at the defaults *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
-    {RandomInfraRepresentative[g, InfraShell[13, 2], "NextVertexFunction" -> Identity] === First @ FindInfraShell[g, 13, 2],
+    {RandomInfraRepresentative[g, InfraShell[13, 2], "NextVertexFunction" -> Identity] === FindInfraShell[g, 13, 2],
      MemberQ[RandomInfraRepresentative[g, InfraBall[13, 1], All], RandomInfraRepresentative[g, InfraBall[13, 1]]],
      RandomInfraRepresentative[g, InfraPoint[13], All],
      RandomInfraRepresentative[g, InfraWalk[1, 2, 3]], RandomInfraRepresentative[g, InfraWalk[1, 3], All],
