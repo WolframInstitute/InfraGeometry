@@ -15,22 +15,17 @@ RelatedTutorials: [MetricTensorTutorial, VolumeMeasurementTutorial, DimensionTut
 
 ## Abstract
 
-**Riemannian Infrageometry** studies how to measure and distinguish graphs as geometric substrates. In contrast, synthetic infrageometry asks only whether certain assumptions are satisfied by the substrate so that constructions have given propertes studies constructions and relations of geometric objects within a substrate whose properties are fixed by postulates. Riemann began with the problem of measuring the length of curves. He viewed an $n$-dimensional manifold as an iterated **infinitesimal webbing of paths** and asked what conditions to impose on the infinitesimal element of length. Restricting it to a quadratic form gives the **metric tensor**, which captures the infinitesimal Riemannian geometry. This separates the manifold and its topology from the Riemannian structure placed on it. One can then ask for the moduli space of Riemannian structures on a fixed manifold, or go the other way and obtain topological quantities by integrating local geometric quantities, as in the Gauss–Bonnet theorem.
-
-In infrageometry the discrete **webbing of paths** is the substrate itself. The graph prescribes both the paths and their metric, so this split is not made. But we must always choose an **observer scale** $r$, which can be understood as measuring the substrate using balls of radius $r$. A Gromov–Hausdorff limit of rescaled graphs, when it exists, gives a metric space. If this metric space is a smooth Riemannian manifold, its intrinsic distance determines its Riemannian structure. Thus two such manifolds that are isometric as metric spaces are also isometric as Riemannian manifolds. The geometry is here **in one**.
+**Riemannian Infrageometry** measures and distinguishes graphs as geometric substrates. In contrast, synthetic infrageometry asks only whether certain postulates are satisfied by the substrate so that its propositions about geometric objects hold. Riemann viewed space as an **infinitesimal webbing of paths** and, by imposing conditions on the infinitesimal length element, arrived at the quadratic metric tensor as the lowest-order data satisfying those conditions. This separates the manifold from the Riemannian structure, so one can ask for the moduli space of Riemannian structures on a fixed manifold, or go the other way and obtain topological quantities from Riemannian ones. In infrageometry, the **discrete webbing of paths** given by a graph is the geometric substrate itself, and no such split occurs. We relate it to infinitesimal geometry through rescaled Gromov–Hausdorff convergence, where the scaling is determined by the **observer's scale**, offering an alternative approach to geometry: if a limit of rescaled graphs yields a metric space arising from a Riemannian manifold, then that manifold is uniquely determined up to isomorphism.
 
 ## Functions
 
-- `RandomInfraGeodesic[...]` grows paths that are shortest in every window of $r$ edges. Unlike smooth geodesics, a germ has many continuations. We ask for the least $r$ at which the most visited paths become globally shortest: proposed `InfraGeodesicStraighteningScale[...]`.
+- A geodesic at observer scale $r$, `InfraGeodesic[germ, r]`, is a family of walks that are shortest paths in every window of $r$ edges. A representative can be found with `RandomInfraGeodesic[...]`, and its edge density with `InfraMeasurement[g, geodesic, "EdgeDensity"]`.
 
-- `InfraMeasurement` measures balls of radii $0,\ldots,r$, tubes of thickness $s$ and cones of slope $s$, along axes ending at different vertices $u$ in the radius-$r$ shell.
+- We can measure the volumes of `InfraBall[p, r0]` for `r0 <= r`, `InfraTube[axis, s]` for any ray or line through $p$ and any thickness $s$, and `InfraCone[axis, s]` for slope $s$. Such measurements have asymptotic expansions in the continuous case and can be used to determine limiting curvature components. However, no sphere structure exists a priori on `InfraShell`, so the limiting linear tensors can be compared only through histograms. We can also obtain the histogram of mutual distances between points, which constrains the limiting Riemannian manifold.
 
-- Proposed `InfraDistanceDistribution[...]` gives the histogram of mutual distances in a ball or shell; `Moment` reads its moments.
+- We have `InfraTangentBundle[g, r]` which represents vectors at p by rays of length $r$, and these are compactly encoded as chains in the spray graph at $p$. We have an even simpler infra-bundle, `InfraDisplacementBundle[g, r]`, that keeps only the endpoints of rays. We have a minimal model of the Levi-Civita connection, `FindInfraLeviCivitaConnection[InfraDisplacementBundle[g, r]]`, and `InfraParallelTransport[InfraDisplacementBundle[g, r], walk]`.
 
-- `InfraTangentBundle[g, r]` has vectors represented by length-$r$ germs, chains in the spray graph. `InfraDisplacementBundle[g, r]` keeps only their endpoints. `FindInfraLeviCivitaConnection` and `InfraParallelTransport` compare and transport these displacements.
-
-- `InfraMetricTensor[g, p, r]` compares directions at scale $r$ by projection onto metric intervals.
-
+- We also have `InfraMetricTensor[g, p, r]`, which computes shortest path projections of rays, displacement commutator `DisplacementCommutator[g, d1, d2]`, and addition of displacements via midpoints with `DisplacementSum[g, d1, d2]`.
 <!-- /LLM-PROTECTED -->
 
 ---

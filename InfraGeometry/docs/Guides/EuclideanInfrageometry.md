@@ -18,11 +18,11 @@ RelatedTutorials: [BreadthlessTriangleTutorial, StraighteningAtScaleTutorial, Na
 
 ## Functions
 
-We use **inert symbolic objects** such as `InfraSegment[p, q]`, independent of a graph substrate. `InfraMeasurement[g, obj, property]` reads an object on a graph. Each construction has a named sampler; for example, `RandomInfraSegment[g, InfraSegment[p, q]]` draws one shortest-path vertex sequence. See [Named construction samplers](../Tutorials/NamedConstructionSamplers.md) for the family-specific carriers and overloads.
+- We use **inert symbolic objects** such as `InfraSegment[p, q]`, independent of a graph substrate. `InfraMeasurement[g, obj, property]` reads an object on a graph. Each construction has a named sampler; for example, `RandomInfraSegment[g, InfraSegment[p, q]]` draws one shortest-path vertex sequence. See [Named construction samplers](../Tutorials/NamedConstructionSamplers.md) for the family-specific carriers and overloads.
 
-Segments, rays, lines and arcs have compact graph representations. Their paths encode the representatives, allowing counts and densities to be computed without enumerating every path. These graphs are part of the Euclidean construction tools.
+- Segments, rays, lines and arcs have compact graph representations. Their paths encode the representatives, allowing counts and densities to be computed without enumerating every path. These graphs are part of the Euclidean construction tools.
 
-An `InfraScene` describes a construction through named objects and hypotheses. `RandomInfraInstance[scene, graph]` draws an admissible instance on a substrate, and `InfraSceneViewer[scene, graph]` displays the construction step by step.
+- An `InfraScene` describes a construction through named objects and hypotheses. `RandomInfraInstance[scene, graph]` draws an admissible instance on a substrate, and `InfraSceneViewer[scene, graph]` displays the construction step by step.
 
 <!-- /LLM-PROTECTED -->
 
