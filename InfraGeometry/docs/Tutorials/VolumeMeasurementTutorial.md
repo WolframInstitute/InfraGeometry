@@ -41,7 +41,7 @@ twoMeasures[g_, regions_] := InfraMeasurement[g, regions, #] & /@ {"CountingMeas
 A region drawn by its two measures: the interior green, the boundary blue. The counting measure counts both colours, the Riemannian measure the green vertices only.
 
 ```wl
-interiorAndBoundary[g_, region_] := With[{support = RandomInfraRepresentative[g, region]}, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}]
+interiorAndBoundary[g_, region_] := With[{support = Keys @ InfraMeasurement[g, region, "VertexDensity"]}, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}]
 ```
 
 ## Balls
@@ -59,10 +59,11 @@ GraphicsGrid @ Table[
 
 - The ball is not round. On the square tiling it is a square, on the triangular tiling a hexagon: the scaled path metric of a lattice tends to a norm, and these are its unit balls.
 - On the square lattice the ball holds $L(r) = 2r^2 + 2r + 1$ vertices, on the triangular lattice $L(r) = 3r^2 + 3r + 1$; the leading coefficient is the area of the unit ball of the norm, counted in vertex cells.
+- For every graph and integer $r \ge 1$, $\mathrm{Int} B_r(c) = B_{r-1}(c) \cup \{ w : d(c,w) = r, \text{ no neighbour of } w \text{ at distance } r+1 \text{ from } c \}$. The Riemannian count is $|B_{r-1}(c)|$ plus the size of this extra set; the one-radius shift holds exactly when the extra set is empty. At radius zero the interior is empty if $c$ has a neighbour.
 - On both lattices every vertex at distance $r \ge 1$ from $c$ has a neighbour at distance $r + 1$, so the interior of $B_r$ is $B_{r-1}$. The Riemannian measure is therefore $L(r - 1)$ for $r \ge 1$, and $0$ at $r = 0$, where the centre has a neighbour outside.
 - In the continuum the reference is the small-ball expansion of Gray and Vanhecke. On a Riemannian manifold of dimension $n$, with $\omega_n$ the volume of the Euclidean unit ball and $\mathrm{Scal}$ the scalar curvature at the centre, $\mathrm{Vol} B_r = \omega_n r^n \big( 1 - \frac{\mathrm{Scal}}{6(n+2)} r^2 + O(r^4) \big)$.
 
-The two profiles over $r = 0, \ldots, R$: the counting measure as points in the first colour, the Riemannian measure in the second; the curves are $L(r)$ and $L(r - 1)$.
+The two profiles over $r = 0, \ldots, R$: the counting measure as points in the first colour, the Riemannian measure in the second; the curves are $L(r)$ for $r \ge 0$ and $L(r - 1)$ for $r \ge 1$.
 
 ```wl
 GraphicsGrid @ Table[
@@ -71,7 +72,8 @@ GraphicsGrid @ Table[
     {radius = profileRadius[g]},
     {lattice = Switch[name, "SquareTilingGraph", 2 r^2 + 2 r + 1, "TriangularTilingGraph", 3 r^2 + 3 r + 1, _, Nothing]},
     Show[
-      Plot[Evaluate[{lattice, lattice /. r -> r - 1}], {r, 0, radius}],
+      Plot[lattice, {r, 0, radius}],
+      Plot[Evaluate[lattice /. r -> r - 1], {r, 1, radius}],
       ListPlot[twoMeasures[g, Table[InfraBall[First @ GraphCenter[g], r], {r, 0, radius}]], DataRange -> {0, radius}],
       PlotRange -> All]],
   {size, {"Small", "Medium", "Large"}},
@@ -79,7 +81,7 @@ GraphicsGrid @ Table[
 ```
 
 - On the tilings both profiles sit on their polynomials at every size: a tiling is a patch of its lattice, and a ball that stays one layer inside the patch counts as on the lattice.
-- On the mesh both profiles grow quadratically, with no closed form, and the Riemannian profile is again the counting profile one radius later.
+- On the mesh there is no closed form. The Riemannian profile at radius $r \ge 1$ is the counting profile at radius $r-1$ plus the number of outer-layer vertices with no outward neighbour; an exact shift requires this correction to vanish.
 - [[ On the hexagonal tiling, does every vertex at distance $r \ge 1$ have a neighbour at distance $r + 1$? Then its Riemannian ball count is $1 + \frac{3}{2} r(r - 1)$, the counting polynomial $1 + \frac{3}{2} r(r + 1)$ one radius earlier. ]]
 
 ## Shells
@@ -131,7 +133,7 @@ GraphicsGrid @ Table[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
     {c = First @ GraphCenter[g], p = farEnd[g], thickness = Ceiling[profileRadius[g]/2]},
     {geodesic = RandomInfraRepresentative[g, InfraSegment[c, p]]},
-    {fat = RandomInfraRepresentative[g, InfraTube[InfraSegment[c, p], thickness]], thin = RandomInfraRepresentative[g, InfraTube[geodesic, thickness]]},
+    {fat = Keys @ InfraMeasurement[g, InfraTube[InfraSegment[c, p], thickness], "VertexDensity"], thin = Keys @ InfraMeasurement[g, InfraTube[geodesic, thickness], "VertexDensity"]},
     InfraSubstrateHighlight[g, {Complement[fat, thin] -> StandardBlue, thin -> StandardGreen, InfraWalk[geodesic]}]],
   {size, {"Small", "Medium", "Large"}},
   {name, {"SquareTilingGraph", "TriangularTilingGraph", "SquareMeshGraph"}}]
@@ -172,8 +174,8 @@ GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
     {c = First @ GraphCenter[g], p = farEnd[g], thickness = Ceiling[profileRadius[g]/2]},
-    {ellipsoid = RandomInfraRepresentative[g, InfraQuadric[{c, p}, GraphDistance[g, c, p] + 2 thickness]]},
-    {tube = RandomInfraRepresentative[g, InfraTube[InfraSegment[c, p], thickness]]},
+    {ellipsoid = Keys @ InfraMeasurement[g, InfraQuadric[{c, p}, GraphDistance[g, c, p] + 2 thickness], "VertexDensity"]},
+    {tube = Keys @ InfraMeasurement[g, InfraTube[InfraSegment[c, p], thickness], "VertexDensity"]},
     InfraSubstrateHighlight[g, {Complement[ellipsoid, tube] -> StandardRed, tube -> StandardGreen, InfraSegment[c, p]}]],
   {size, {"Small", "Medium", "Large"}},
   {name, {"SquareTilingGraph", "TriangularTilingGraph", "SquareMeshGraph"}}]
@@ -189,7 +191,7 @@ GraphicsGrid @ Table[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
     {c = First @ GraphCenter[g], p = farEnd[g], radius = profileRadius[g]},
     Show[
-      ListLinePlot[twoMeasures[g, Table[InfraTube[RandomInfraRepresentative[g, InfraQuadric[{c, p}, radius + 2 s]], 0], {s, 0, radius}]], DataRange -> {0, radius}, PlotMarkers -> Automatic],
+      ListLinePlot[twoMeasures[g, Table[InfraQuadric[{c, p}, radius + 2 s], {s, 0, radius}]], DataRange -> {0, radius}, PlotMarkers -> Automatic],
       ListPlot[twoMeasures[g, Table[InfraTube[InfraSegment[c, p], s], {s, 0, radius}]], DataRange -> {0, radius}],
       PlotRange -> All]],
   {size, {"Small", "Medium", "Large"}},
@@ -221,7 +223,7 @@ The smallest counterexample to the equality on the triangular tiling, with foci 
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {beyond = focus |-> Complement[RandomInfraRepresentative[g, InfraQuadric[{a, focus}, 4]], RandomInfraRepresentative[g, InfraTube[InfraSegment[a, focus], 1]]]},
+  {beyond = focus |-> Complement[Keys @ InfraMeasurement[g, InfraQuadric[{a, focus}, 4], "VertexDensity"], Keys @ InfraMeasurement[g, InfraTube[InfraSegment[a, focus], 1], "VertexDensity"]]},
   {b = SelectFirst[FindInfraShell[g, a, 2], beyond[#] =!= {} &]},
   {x = First @ beyond[b]},
   InfraSubstrateHighlight[g, {InfraSegment[a, b], InfraSegment[b, x], InfraSegment[x, a], {a, b, x}}]]
@@ -232,7 +234,7 @@ With[
 
 ## Cones
 
-- The cone of slope $m$ about a geodesic $\gamma = (\gamma_0, \ldots, \gamma_n)$ from the apex $c = \gamma_0$ to $p = \gamma_n$ is $C_m(\gamma) = \{ v : d(v, \gamma_i) \le \lfloor m i \rfloor \text{ for some } i \}$: a ball of growing radius slid along $\gamma$.
+- The rounded cone of slope $m \ge 0$ about a geodesic $\gamma = (\gamma_0, \ldots, \gamma_n)$ from the apex $c = \gamma_0$ to $p = \gamma_n$ is $C_m(\gamma) = \{ v : d(v, \gamma_i) \le \lfloor m i \rfloor \text{ for some } i \}$: a ball of growing radius slid along $\gamma$.
 - For $m \ge 1$ the cone is the ball $B_{\lfloor mn \rfloor}(p)$ about the far end: $d(v, p) \le \lfloor m i \rfloor + n - i \le \lfloor mn \rfloor$, on every graph.
 - For $m < 1$ no closed lattice count is known. In the Euclidean plane the cone over a segment of length $R$ is the convex hull of the apex and the disk of radius $mR$ about the far end, of area $R^2 m \sqrt{1 - m^2} + m^2 R^2 (\pi - \arccos m)$. On a manifold the solid cone of radius $r$ over a set $\Omega$ of unit directions has volume $\frac{\sigma(\Omega)}{n} r^n - \frac{r^{n+2}}{6(n+2)} \int_\Omega \mathrm{Ric}(u, u) \, du + O(r^{n+4})$.
 
@@ -243,7 +245,7 @@ GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
     {geodesic = RandomInfraRepresentative[g, InfraSegment[First @ GraphCenter[g], farEnd[g]]]},
-    InfraSubstrateHighlight[g, Append[interiorAndBoundary[g, InfraCone[geodesic, 1/2]], InfraWalk[geodesic]]]],
+    InfraSubstrateHighlight[g, Append[interiorAndBoundary[g, InfraCone[geodesic, 1/2, Method -> "Balls"]], InfraWalk[geodesic]]]],
   {size, {"Small", "Medium", "Large"}},
   {name, {"SquareTilingGraph", "TriangularTilingGraph", "SquareMeshGraph"}}]
 ```
@@ -258,7 +260,7 @@ GraphicsGrid @ Table[
     {geodesic = RandomInfraRepresentative[g, InfraSegment[First @ GraphCenter[g], p]]},
     Show[
       ListLinePlot[twoMeasures[g, Table[InfraBall[p, Floor[m radius]], {m, slopes}]], DataRange -> {0, 3/2}],
-      ListPlot[twoMeasures[g, Table[InfraCone[geodesic, m], {m, slopes}]], DataRange -> {0, 3/2}],
+      ListPlot[twoMeasures[g, Table[InfraCone[geodesic, m, Method -> "Balls"], {m, slopes}]], DataRange -> {0, 3/2}],
       PlotRange -> All]],
   {size, {"Small", "Medium", "Large"}},
   {name, {"SquareTilingGraph", "TriangularTilingGraph", "SquareMeshGraph"}}]
@@ -328,7 +330,7 @@ GraphicsRow @ Table[
     {c = First @ Nearest[points, {1/2, 1/2}]},
     {hop = Mean @ Map[pt |-> EuclideanDistance[pt, c]/GraphDistance[rips, c, pt], DeleteCases[points, c]]},
     {radius = Round[1/(4 hop)]},
-    {ball = RandomInfraRepresentative[rips, InfraBall[c, radius]]},
+    {ball = Keys @ InfraMeasurement[rips, InfraBall[c, radius], "VertexDensity"]},
     {inner = InfraInterior[rips, ball]},
     Graphics[{
       Map[cell |-> With[{owner = First @ Nearest[points, RegionCentroid[cell]]},
