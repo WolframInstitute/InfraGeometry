@@ -33,7 +33,7 @@ For a ball or a tube the interior contains the region one layer thinner, with a 
 
 *Int T_s(X) = T_(s−1)(X) ∪ {w : d(w, X) = s and no neighbour of w is at distance s + 1}*,
 
-so the Riemannian measure of a ball or a tube is the counting measure one step thinner, plus the dead ends of its outer layer. The exact one-step shift holds if and only if this extra set is empty. For a ball at radius zero the interior is empty if its centre has a neighbour. On the square and the triangular grids there are no dead ends away from the rim, and the Riemannian measure of a ball of radius *r ≥ 1* is the counting measure of the ball of radius *r − 1*, the convention of the Wolfram Physics technical introduction; on the hexagonal tiling this is measured. A set every vertex of which has a neighbour outside has Riemannian measure `0`: a shell, a sphere instance, a shortest path in a graph of minimum degree three.
+so the Riemannian measure of a ball or a tube is the counting measure one step thinner, plus the dead ends of its outer layer. The exact one-step shift holds if and only if this extra set is empty. For a ball at radius zero the interior is empty if its centre has a neighbour. On the square and the triangular grids there are no dead ends away from the rim, and the Riemannian measure of a ball of radius *r ≥ 1* is the counting measure of the ball of radius *r − 1*, the convention of the Wolfram Physics technical introduction; on the hexagonal tiling this is measured. A set has Riemannian measure `0` exactly when every vertex has a neighbour outside. This holds for a shell in a connected graph with at least two vertices, and for a shortest path in a graph of minimum degree three. For a sphere instance in a band `{r, r + 1}` with `r >= 1`, it holds if every vertex at distance `r + 1` has a neighbour at distance `r + 2`.
 
 The volume profiles on the square grid, about a centre *c*, with a segment from *c* whose interval is a box of sides *a_1*, *a_2*, away from the rim:
 
@@ -44,7 +44,7 @@ The volume profiles on the square grid, about a centre *c*, with a segment from 
 | fat tube of radius *s*, about the interval | *(a_1 + 1)(a_2 + 1) + 2s(a_1 + a_2 + 2) + 2s(s − 1)* | the count at *s − 1*, for *s ≥ 1* |
 | thin tube of radius *s*, about one shortest path | no closed form for a staircase path | the count at *s − 1*, measured |
 | rounded cone of slope *m ≥ 1*, `Method -> "Balls"` | the ball about the far end | the ball about the far end |
-| sphere instance | measured | `0` |
+| sphere instance in `{r, r + 1}`, `r >= 1` | measured | `0` under the outward-neighbour condition above |
 
 The symbol page of each region carries its counts on the other lattices and its continuum expansion. A profile, the list of a measure over the size, is read by [LogDifferenceQuotients](). The quotients of the counting profile from *r = 0* and of the Riemannian profile from *r = 1* coincide on a lattice, and they are the curves of the technical introduction, section 4.5: on *Z^d* they approach the dimension as *d + d/(2r)*, from above, while the counting profile from *r = 1* approaches it as *d − d/(2r)*, from below.
 
@@ -55,6 +55,7 @@ The properties:
 | Property | Value |
 |---|---|
 | `"Graph"` | the object's own graph: one `Graph`, or a `List` of them for a family of alternatives (the DAGs of a line or a ray, the atoms of a circle) or for the pieces of a polyline |
+| `"Midpoint"` | the density of the central vertex or vertices on the shortest paths of a segment |
 | `"Cardinality"` | the number of members |
 | `"Length"` | the common length of the members, or a `List` of lengths when they differ |
 | `"VertexDensity"` | `<\|v -> occ(v)\|>`, the number of members through *v*; on a polyline, the sum of the piece densities |
@@ -63,6 +64,8 @@ The properties:
 | `"Faithful"` | `True` on a segment, ray or line; [Undetermined]() on a circle or an arc, whose graph is proved faithful only under a hypothesis this paclet does not certify, except that a circle whose cut band is connected but whose seam has one side only gives `False` |
 | `"CountingMeasure"` | the number of vertices of the support |
 | `"RiemannianMeasure"` | the number of vertices of the support all of whose neighbours lie in the support |
+
+For a segment of even length, `"Midpoint"` counts the shortest paths through each vertex in the middle layer. For odd length, it counts the shortest paths through each of the two central layers. Thus it is a density of midpoints, not a single vertex when the substrate branches.
 
 A region — a ball, shell, tube, cylinder or cone — has one member, its vertex set, and every vertex of the support has density 1. It has no `"Graph"` and no `"Length"`. A sphere is a family, searched rather than read off a graph; its `"Faithful"` is [Undetermined]().
 
@@ -76,9 +79,27 @@ On a polyline <code>[InfraSegment]()[*p1*, …, *pk*]</code> the densities are n
 
 ## Basic Examples
 
+The midpoint density of two vertices at distance 6 on the discretized plane, the square grid and the hexagonal tiling. The numbers of distinct midpoint vertices are 2, 3 and 2.
+
+```wl
+SeedRandom[1];
+Row[Table[
+  With[
+    {g = InfraSubstrate[name, "Large", "KeepCoordinates" -> True]},
+    {a = First @ GraphCenter[g]},
+    {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 6 &]},
+    {segment = InfraSegment[a, b]},
+    {midpoint = InfraMeasurement[g, segment, "Midpoint"]},
+    Labeled[
+      InfraSubstrateHighlight[g, {RandomInfraSegment[g, a, b, All], {a, b}, midpoint}],
+      name <> ": " <> ToString[Length @ midpoint] <> " midpoints"]],
+  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}], Spacer[20]]
+```
+
 A segment from the centre to a vertex four steps away on the discretized plane, the square grid and the hexagonal tiling, drawn by its densities, beside its number of shortest paths, their length and its two measures.
 
 ```wl
+SeedRandom[1];
 Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
@@ -94,6 +115,7 @@ Row[Table[
 The two measures of five regions about one centre and one shortest path on the square grid: a ball, a band of two radii, a tube, a cylinder and a cone. Each is drawn with its inner vertices in green and its boundary in blue; the counting measure counts both, the Riemannian measure the green ones.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
@@ -108,6 +130,7 @@ With[
 The graph of the segment: its source-to-sink chains are the shortest paths.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -118,6 +141,7 @@ With[
 The vertex density drawn alone, and the graph of the segment drawn on the substrate.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -133,6 +157,7 @@ With[
 Every property at once, here named beside the subgraph the segment occupies.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -144,6 +169,7 @@ With[
 A list of heads is measured head by head.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -157,6 +183,7 @@ With[
 The profiles of the regions about the centre of the square grid, under the counting measure on the left and the Riemannian measure on the right: the ball and the shell over the radius, the fat and the thin tube about a segment of length 5 over the thickness.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},
@@ -206,6 +233,7 @@ InfraMeasurement[GridGraph[{5, 5}], InfraSegment[1, 25], {"Cardinality", "Counti
 An intersection of two heads has no members, only a support and a density, the product of the two. The segment and the circles, then their intersection.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},

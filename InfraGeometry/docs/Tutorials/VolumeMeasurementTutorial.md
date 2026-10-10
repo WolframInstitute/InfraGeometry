@@ -29,6 +29,7 @@ profileRadius[g_] := Floor[(VertexEccentricity[g, First @ GraphCenter[g]] - 1)/2
 The far end $p$ of the segments: a vertex at distance $R$ from the centre, drawn after a seed.
 
 ```wl
+SeedRandom[1];
 farEnd[g_] := (SeedRandom[1]; RandomInfraPoint[g, InfraShell[First @ GraphCenter[g], profileRadius[g]]])
 ```
 
@@ -128,6 +129,7 @@ GraphicsGrid @ Table[
 The tubes of thickness $\lceil R/2 \rceil$: the thin tube green, the rest of the fat tube blue, and the geodesic.
 
 ```wl
+SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
@@ -142,6 +144,7 @@ GraphicsGrid @ Table[
 The profiles over $s = 0, \ldots, R$: the fat tube as joined points, the thin tube as points, the counting measure in the first colour and the Riemannian measure in the second. On the square tiling the curves are the box count and its value one step thinner.
 
 ```wl
+SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
@@ -241,6 +244,7 @@ With[
 The cone of slope one half about one geodesic from the centre to the far end, by its two measures, with its axis.
 
 ```wl
+SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
@@ -253,6 +257,7 @@ GraphicsGrid @ Table[
 The profiles over the slope $m = 0, \frac{1}{8}, \ldots, \frac{3}{2}$: the cone as points, the ball of radius $\lfloor mR \rfloor$ about the far end as joined points, the counting measure in the first colour and the Riemannian measure in the second.
 
 ```wl
+SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
@@ -278,6 +283,7 @@ GraphicsGrid @ Table[
 One instance in the band between the radii $\lceil R/2 \rceil$ and $\lceil R/2 \rceil + 1$, orange, drawn over the band, green.
 
 ```wl
+SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
@@ -291,6 +297,7 @@ GraphicsGrid @ Table[
 The profiles of one instance in each band $S_{r, r+1}$ over $r = 1, \ldots, \min(R, 6)$ as points, the counting measure in the first colour and the Riemannian measure in the second, with the counting measures of the two shells $S_r$ and $S_{r+1}$ as joined points.
 
 ```wl
+SeedRandom[1];
 GraphicsGrid @ Table[
   With[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
@@ -386,7 +393,7 @@ GraphicsGrid @ Table[
 - For a polynomial profile of degree $d$ with leading coefficient $c_d$ and next coefficient $c_{d-1}$, $\Delta(r) = d - \frac{c_{d-1}/c_d}{r} + O(r^{-2})$. For a lattice ball count $c_{d-1}/c_d = d/2$, so the counting profile $L(r)$ gives $d - \frac{d}{2r}$, from below, and the Riemannian profile $L(r - 1)$ gives $d + \frac{d}{2r}$, from above, at the same rate.
 - The technical introduction of the Wolfram Physics Project, [section 4.5](https://www.wolframphysics.org/technical-introduction/limiting-behavior-and-emergent-geometry/the-notion-of-dimension/), defines $V_r$ as the number of vertices within distance $r$ and $\Delta(r)$ as above. Its code applies the log-differences to the list $V_0, V_1, V_2, \ldots$ that starts at radius zero, so the value it plots at radius $r$ is computed from $V_{r-1}$. On a lattice $V_{r-1}$ is the count of the interior of $B_r$: the introduction reads the Riemannian measure.
 
-The introduction's code, beside the quotients of the paclet's two profiles, on the grid graph of the introduction.
+The introduction's reading, beside the quotients of the paclet's two profiles, on its grid graph. The first curve counts distances directly and accumulates the shell counts.
 
 ```wl
 With[
@@ -394,7 +401,7 @@ With[
   {c = First @ GraphCenter[g]},
   {ballVolumes = InfraMeasurement[g, Table[InfraBall[c, r], {r, 0, 25}], "CountingMeasure"]},
   ListLinePlot[{
-      Take[ResourceFunction["LogDifferences"][N @ First @ Values @ ResourceFunction["GraphNeighborhoodVolumes"][g, {c}]], 24],
+      Take[LogDifferenceQuotients[N @ Accumulate[Values @ KeySort @ Counts[GraphDistance[g, c]]]], 24],
       LogDifferenceQuotients[N @ InfraMeasurement[g, Table[InfraBall[c, r], {r, 1, 25}], "RiemannianMeasure"]],
       LogDifferenceQuotients[N @ Rest[ballVolumes]]},
     PlotLegends -> {"introduction", "Riemannian", "counting"}, PlotMarkers -> Automatic, GridLines -> {None, {2}}, PlotRange -> All]]
