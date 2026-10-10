@@ -29,11 +29,11 @@ Definition: <code>[InfraMeasurement]()[*graph*, *obj*, *property*]</code> is the
 
 Their difference is the number of vertices of *A* with a neighbour outside *A*, the [InfraBoundary]() of *A*; *A°* is its [InfraInterior](). In the limit of a manifold the boundary of a region has measure zero and the two agree. On a graph they do not: the boundary of a ball of radius *r* holds a share of order *1/r* of its vertices. The rim of a finite graph is not a boundary: a region that fills the graph has both measures equal to the number of vertices.
 
-For a ball or a tube the interior is one layer thinner. With *T_s(X)* the vertices within *s* of a set *X* and *s ≥ 1*,
+For a ball or a tube the interior contains the region one layer thinner, with a possible extra set in the outer layer. With *T_s(X)* the vertices within *s* of a set *X* and *s ≥ 1*,
 
 *Int T_s(X) = T_(s−1)(X) ∪ {w : d(w, X) = s and no neighbour of w is at distance s + 1}*,
 
-so the Riemannian measure of a ball or a tube is the counting measure one step thinner, plus the dead ends of its outer layer. On the square and the triangular grids there are no dead ends away from the rim, and the Riemannian measure of a ball of radius *r ≥ 1* is the counting measure of the ball of radius *r − 1*, the convention of the Wolfram Physics technical introduction; on the hexagonal tiling this is measured. A set every vertex of which has a neighbour outside has Riemannian measure `0`: a shell, a sphere instance, a shortest path in a graph of minimum degree three.
+so the Riemannian measure of a ball or a tube is the counting measure one step thinner, plus the dead ends of its outer layer. The exact one-step shift holds if and only if this extra set is empty. For a ball at radius zero the interior is empty if its centre has a neighbour. On the square and the triangular grids there are no dead ends away from the rim, and the Riemannian measure of a ball of radius *r ≥ 1* is the counting measure of the ball of radius *r − 1*, the convention of the Wolfram Physics technical introduction; on the hexagonal tiling this is measured. A set has Riemannian measure `0` exactly when every vertex has a neighbour outside. This holds for a shell in a connected graph with at least two vertices, and for a shortest path in a graph of minimum degree three. For a sphere instance in a band `{r, r + 1}` with `r >= 1`, it holds if every vertex at distance `r + 1` has a neighbour at distance `r + 2`.
 
 The volume profiles on the square grid, about a centre *c*, with a segment from *c* whose interval is a box of sides *a_1*, *a_2*, away from the rim:
 
@@ -43,8 +43,8 @@ The volume profiles on the square grid, about a centre *c*, with a segment from 
 | shell of radius *r ≥ 1* | *4r* | `0` |
 | fat tube of radius *s*, about the interval | *(a_1 + 1)(a_2 + 1) + 2s(a_1 + a_2 + 2) + 2s(s − 1)* | the count at *s − 1*, for *s ≥ 1* |
 | thin tube of radius *s*, about one shortest path | no closed form for a staircase path | the count at *s − 1*, measured |
-| cone of slope *m ≥ 1* | the ball about the far end | the ball about the far end |
-| sphere instance | measured | `0` |
+| rounded cone of slope *m ≥ 1*, `Method -> "Balls"` | the ball about the far end | the ball about the far end |
+| sphere instance in `{r, r + 1}`, `r >= 1` | measured | `0` under the outward-neighbour condition above |
 
 The symbol page of each region carries its counts on the other lattices and its continuum expansion. A profile, the list of a measure over the size, is read by [LogDifferenceQuotients](). The quotients of the counting profile from *r = 0* and of the Riemannian profile from *r = 1* coincide on a lattice, and they are the curves of the technical introduction, section 4.5: on *Z^d* they approach the dimension as *d + d/(2r)*, from above, while the counting profile from *r = 1* approaches it as *d − d/(2r)*, from below.
 
@@ -99,6 +99,7 @@ Row[Table[
 A segment from the centre to a vertex four steps away on the discretized plane, the square grid and the hexagonal tiling, drawn by its densities, beside its number of shortest paths, their length and its two measures.
 
 ```wl
+SeedRandom[1];
 Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
@@ -120,8 +121,8 @@ With[
   {c = First @ GraphCenter[g]},
   {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])]},
   {axis = RandomInfraRepresentative[g, seg]},
-  {regions = {InfraBall[c, 3], InfraShell[c, {2, 3}], InfraTube[seg, 1], InfraCylinder[axis, 1], InfraCone[axis, 1]}},
-  {supports = RandomInfraRepresentative[g, #] & /@ regions},
+  {regions = {InfraBall[c, 3], InfraShell[c, {2, 3}], InfraTube[seg, 1], InfraCylinder[axis, 1], InfraCone[axis, 1, Method -> "Balls"]}},
+  {supports = Keys @ InfraMeasurement[g, #, "VertexDensity"] & /@ regions},
   {Row[InfraSubstrateHighlight[g, {InfraInterior[g, #] -> StandardGreen, InfraBoundary[g, #] -> StandardBlue}] & /@ supports],
    InfraMeasurement[g, regions, "CountingMeasure"], InfraMeasurement[g, regions, "RiemannianMeasure"]}]
 ```
@@ -129,6 +130,7 @@ With[
 The graph of the segment: its source-to-sink chains are the shortest paths.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -139,6 +141,7 @@ With[
 The vertex density drawn alone, and the graph of the segment drawn on the substrate.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -154,6 +157,7 @@ With[
 Every property at once, here named beside the subgraph the segment occupies.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -165,6 +169,7 @@ With[
 A list of heads is measured head by head.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
@@ -228,6 +233,7 @@ InfraMeasurement[GridGraph[{5, 5}], InfraSegment[1, 25], {"Cardinality", "Counti
 An intersection of two heads has no members, only a support and a density, the product of the two. The segment and the circles, then their intersection.
 
 ```wl
+SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
