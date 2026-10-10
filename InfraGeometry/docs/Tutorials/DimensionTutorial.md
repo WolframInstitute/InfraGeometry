@@ -204,6 +204,131 @@ With[
           { centres -> StandardRed } ] ], name ] ], cases, { 1 } ] ] } ] ]
 ```
 
+## The span of points
+
+- The ball hull is the intersection of all balls containing the chosen points. [InfraBallHull]() restricts their radii when a bound is supplied.
+- In Euclidean space this is the convex hull. For $k$ points in general position its dimension is $\min(k-1,d)$.
+- A pair spans a segment, a triple a triangle. The first full-dimensional hull needs $d+1$ points.
+- On a graph we compare the number of hull vertices as the separation $L$ grows. This tests a scaling window, rather than assigning an exact dimension to one finite hull.
+
+On the plane mesh we start at a centre and follow one shortest path for the chosen separation. Each further point is chosen to keep its distances from the earlier points close to that separation. The hulls are blue and their defining points red.
+
+```wl
+SeedRandom[ 2 ];
+planeSpans = With[
+  { graph = InfraSubstrate[ "SquareMeshGraph", "Large", "KeepCoordinates" -> True ] },
+  { vertices = VertexList[ graph ], distances = GraphDistanceMatrix[ graph ], centre = First @ GraphCenter[ graph ] },
+  { endpoint = Last @ MaximalBy[ vertices, v |-> GraphDistance[ graph, centre, v ] ] },
+  { path = FindShortestPath[ graph, centre, endpoint ] },
+  Map[ spread |-> With[
+    { pair = Map[ v |-> VertexIndex[ graph, v ], path[[ { 1, spread + 1 } ]] ] },
+    { indices = Nest[ chosen |-> Append[ chosen,
+        First @ Ordering[ Total[ Abs[ distances[[ chosen ]] - spread ] ], 1 ] ], pair, 2 ] },
+    { seeds = vertices[[ indices ]] },
+    <| "Graph" -> graph, "Spread" -> spread, "Seeds" -> seeds,
+      "Hulls" -> Table[ FindInfraRepresentative[ graph, InfraBallHull[ Take[ seeds, k ] ] ], { k, 2, 4 } ] |> ],
+    { 2, 4, 6, 8 } ] ];
+GraphicsRow[ Table[ With[
+  { data = Last[ planeSpans ] },
+  Labeled[ InfraSubstrateHighlight[ data[ "Graph" ],
+    { Complement[ data[ "Hulls" ][[ k - 1 ]], Take[ data[ "Seeds" ], k ] ] -> StandardBlue,
+      Take[ data[ "Seeds" ], k ] -> { StandardRed, AbsolutePointSize[ 7 ] } } ],
+    Row[ { k, " points, L = ", data[ "Spread" ] } ] ] ], { k, 2, 4 } ] ]
+```
+
+The table computes the hull volumes and their least-squares log-log slopes. The Euclidean reference exponents are one for the pair and two for both larger sets. The mesh, path direction and short window introduce visible errors; adding a fourth point should not introduce another planar dimension.
+
+```wl
+With[
+  { spreads = Lookup[ planeSpans, "Spread" ], counts = Map[ data |-> Length /@ data[ "Hulls" ], planeSpans ] },
+  Column[ {
+    Grid[ Prepend[ MapThread[ Prepend, { counts, spreads } ], { "L", "Pair", "Triple", "Quadruple" } ], Frame -> All ],
+    Grid[ Prepend[ Table[
+      { k, Min[ k - 1, 2 ], NumberForm[ logSlope[ spreads, counts[[ All, k - 1 ]] ], { 4, 2 } ] }, { k, 2, 4 } ],
+      { "Points", "Euclidean exponent", "Measured exponent" } ], Frame -> All ],
+    ListLogLogPlot[ Map[ volumes |-> Transpose[ { spreads, volumes } ], Transpose[ counts ] ],
+      Joined -> True, PlotLegends -> { "pair", "triple", "quadruple" }, AxesLabel -> { "L", "hull vertices" } ] } ] ]
+```
+
+The separation stays below half the graph radius. Near the boundary the available ball centres cannot cut away enough vertices, so even the hull of a pair fattens. These finite-window exponents need room around the points.
+
+## A radius bound gives a lens
+
+- A bound admits only enclosing balls with radius at most that bound. Increasing it admits more balls, so their intersection shrinks.
+- Below the least enclosing radius there is no such ball; the empty intersection is the whole graph.
+- Starting at the least enclosing radius, the lens thins towards the unrestricted ball hull. On a finite mesh the final hull can retain a few vertices across its width.
+
+The same pair is shown under increasing radius bounds, followed by its unrestricted hull. The table also checks that each hull is contained in the preceding one.
+
+```wl
+SeedRandom[ 2 ];
+With[
+  { data = Last[ planeSpans ] },
+  { graph = data[ "Graph" ], pair = Take[ data[ "Seeds" ], 2 ] },
+  { enclosingRadius = Min[ Max /@ Transpose[ GraphDistance[ graph, # ] & /@ pair ] ] },
+  { bounds = DeleteDuplicates[ { enclosingRadius, enclosingRadius + 1, enclosingRadius + 2,
+      data[ "Spread" ], Infinity } ] },
+  { hulls = Map[ bound |-> FindInfraRepresentative[ graph, InfraBallHull[ pair, bound ] ], bounds ] },
+  Column[ {
+    GraphicsRow[ MapThread[ { bound, hull } |-> Labeled[
+      InfraSubstrateHighlight[ graph,
+        { Complement[ hull, pair ] -> StandardBlue, pair -> { StandardRed, AbsolutePointSize[ 7 ] } } ],
+      Row[ { "radius bound ", bound } ] ], { bounds, hulls } ] ],
+    Grid[ Prepend[ Transpose[ { bounds, Length /@ hulls } ], { "Radius bound", "Hull vertices" } ], Frame -> All ],
+    <| "Nested" -> And @@ MapThread[ SubsetQ, { Most[ hulls ], Rest[ hulls ] } ],
+      "Final hull is unrestricted" -> ( Last[ hulls ] === FindInfraRepresentative[ graph, InfraBallHull[ pair ] ] ) |> } ] ]
+```
+
+## The square-tiling trap
+
+The square tiling has a taxicab metric, whose unit ball is a diamond. The ball hull of two opposite points already fills that diamond. A third point on its side adds nothing. Thus a pair can span an area: the Euclidean span rule depends on the shape of the balls.
+
+```wl
+SeedRandom[ 2 ];
+With[
+  { graph = InfraSubstrate[ "SquareTilingGraph", "Large", "KeepCoordinates" -> True ] },
+  { centre = First @ GraphCenter[ graph ] },
+  { coordinates = GraphEmbedding[ graph ], vertices = VertexList[ graph ] },
+  { origin = coordinates[[ VertexIndex[ graph, centre ] ]], neighbours = AdjacencyList[ graph, centre ] },
+  { direction = coordinates[[ VertexIndex[ graph, First[ neighbours ] ] ]] - origin },
+  { seeds = Map[ offset |-> vertices[[ First @ Ordering[
+      Norm /@ ( coordinates - ConstantArray[ origin + offset, Length[ coordinates ] ] ), 1 ] ]],
+      { -4 direction, 4 direction, 4 Reverse[ direction ] { -1, 1 } } ] },
+  { hulls = Table[ FindInfraRepresentative[ graph, InfraBallHull[ Take[ seeds, k ] ] ], { k, 2, 3 } ] },
+  Column[ {
+    GraphicsRow[ Table[ Labeled[ InfraSubstrateHighlight[ graph,
+      { Complement[ hulls[[ k - 1 ]], Take[ seeds, k ] ] -> StandardBlue,
+        Take[ seeds, k ] -> { StandardRed, AbsolutePointSize[ 7 ] } } ], Row[ { k, " points" } ] ], { k, 2, 3 } ] ],
+    <| "Pair distance" -> GraphDistance[ graph, Sequence @@ Take[ seeds, 2 ] ],
+      "Hull volumes" -> ( Length /@ hulls ), "Same hull" -> ( First[ hulls ] === Last[ hulls ] ) |> } ] ]
+```
+
+## The span in a cube mesh
+
+The four pictures show nested hulls of two through five points at separation four. The third direction can open when a fourth point is added. The large roster mesh is too coarse for a useful three-dimensional exponent window, so these are pictures of spans rather than a dimension fit.
+
+```wl
+SeedRandom[ 2 ];
+With[
+  { graph = InfraSubstrate[ "CubeMeshGraph", "Large", "KeepCoordinates" -> True,
+      EdgeStyle -> Directive[ StandardGray, Opacity[ 0.08 ] ], VertexStyle -> Directive[ StandardGray, Opacity[ 0.08 ] ] ], spread = 4 },
+  { vertices = VertexList[ graph ], distances = GraphDistanceMatrix[ graph ], centre = First @ GraphCenter[ graph ] },
+  { endpoint = Last @ MaximalBy[ vertices, v |-> GraphDistance[ graph, centre, v ] ] },
+  { path = FindShortestPath[ graph, centre, endpoint ] },
+  { pair = Map[ v |-> VertexIndex[ graph, v ], path[[ { 1, spread + 1 } ]] ] },
+  { indices = Nest[ chosen |-> Append[ chosen,
+      First @ Ordering[ Total[ Abs[ distances[[ chosen ]] - spread ] ], 1 ] ], pair, 3 ] },
+  { seeds = vertices[[ indices ]] },
+  { hulls = Table[ FindInfraRepresentative[ graph, InfraBallHull[ Take[ seeds, k ] ] ], { k, 2, 5 } ] },
+  Column[ {
+    GraphicsGrid[ Partition[ Table[ Labeled[ InfraSubstrateHighlight[ graph,
+      { Complement[ hulls[[ k - 1 ]], Take[ seeds, k ] ] -> StandardBlue,
+        Take[ seeds, k ] -> { StandardRed, AbsolutePointSize[ 7 ] } },
+      "PointSizeRange" -> 4 ],
+      Row[ { k, " points, L = ", spread } ] ], { k, 2, 5 } ], 2 ] ],
+    Grid[ Prepend[ Transpose[ { Range[ 2, 5 ], Length /@ hulls } ], { "Points", "Hull vertices" } ], Frame -> All ] } ] ]
+```
+
 ## Related readings
 
 - [Volume Measurement](paclet:WolframInstitute/InfraGeometry/tutorial/VolumeMeasurementTutorial) compares counting and Riemannian measures of balls, shells and tubes.
