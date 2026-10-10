@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindBallCover
 Keywords: [ball cover, dominating set, r-domination, covering number, set cover, integer program]
-SeeAlso: [BallCoverQ, DominationNumber, CechComplex, InfraBall]
+SeeAlso: [BallCoverQ, BallCoverNumber, CechComplex, InfraBall]
 RelatedGuides: [InfraTopology]
 ---
 
@@ -20,7 +20,7 @@ RelatedGuides: [InfraTopology]
 
 ## Details & Options
 
-Definition: a list *C* of vertices covers a set *T* at radius *r* when every *t ∈ T* has some *c ∈ C* with *d(t, c) ≤ r*. A smallest such *C* is a minimum *r*-dominating set, and its size is <code>[DominationNumber]()[*g*, *r*]</code>. The radius defaults to 1 and the targets to [All]().
+Definition: a list *C* of vertices covers a set *T* at radius *r* when every *t ∈ T* has some *c ∈ C* with *d(t, c) ≤ r*. A smallest such *C* is a minimum *r*-dominating set, and its size is <code>[BallCoverNumber]()[*g*, *r*]</code>. The radius defaults to 1 and the targets to [All]().
 
 Finding a smallest cover is NP-hard in general. Option [Method]() chooses how:
 
@@ -100,12 +100,12 @@ With[
 
 ## Properties and Relations
 
-A cover passes [BallCoverQ](), and its length is the [DominationNumber]().
+A cover passes [BallCoverQ](), and its length is the [BallCoverNumber]().
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {cover = FindBallCover[g, 3]},
   {InfraSubstrateHighlight[g, InfraBall[#, 3] & /@ cover],
-   BallCoverQ[g, 3, cover], Length[cover] == DominationNumber[g, 3]}]
+   BallCoverQ[g, 3, cover], Length[cover] == BallCoverNumber[g, 3]}]
 ```
