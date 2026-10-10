@@ -380,3 +380,7 @@ RandomInfraRegionNearest::usage = "RandomInfraRegionNearest[graph,obj,p] samples
 
 InfraGeometricAssertion::usage = "InfraGeometricAssertion[objects, property] is an inert assertion of Distinct, Member or EqualDistance on a graph."
 InfraGeometricTest::usage = "InfraGeometricTest[graph, assertion] decides supported synthetic assertions; unsupported assertions stay unevaluated."
+
+InfraSceneMultiway::usage = "InfraSceneMultiway[scene, graph, init] gives exact finite construction states, events, group boundaries and completeness evidence."
+
+InfraBranchialGraph::usage = "InfraBranchialGraph[data, depth] gives the immediate-parent branchial graph and its saved completeness evidence."
