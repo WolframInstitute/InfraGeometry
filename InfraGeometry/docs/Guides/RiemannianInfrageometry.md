@@ -8,7 +8,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/RiemannianInfrageometry
 Keywords: [Riemannian geometry, graph, geodesic, infra-scale, ball, shell, tube, volume growth, dimension, scalar curvature, metric tensor]
 RelatedGuides: [EuclideanInfrageometry, InfraTopology, InfraAnalysis, InfraFiberBundles, Experimental]
-RelatedTutorials: [MetricTensorTutorial, VolumeMeasurementTutorial]
+RelatedTutorials: [MetricTensorTutorial, VolumeMeasurementTutorial, DimensionTutorial]
 ---
 
 ## Abstract
@@ -42,7 +42,7 @@ Riemannian infrageometry measures and describes a discrete substrate represented
 - On the square grid the ball of radius $r$ has counting measure $2r^2 + 2r + 1$ and Riemannian measure $2r^2 - 2r + 1$, the counting measure of the ball of radius $r - 1$; the shell has counting measure $4r$ and Riemannian measure $0$. The same shift holds on the triangular lattice before the rim, the convention of the Wolfram Physics technical introduction.
 - `InfraSubstrate` the example graph of a given name at size Small, Medium or Large, the substrates the volumes are measured on
 - `LogDifferenceQuotients` the discrete d log w / d log r of a sequence, q(r) = (log w(r) - log w(r - 1)) / (log(r + 1) - log r); a sequence of Around values carries its spread into error bars
-- `DimensionCurvatureFit` dimension and scalar curvature from log-difference quotients by regression on r(r + 1), the intercept and the slope, for the ball, sphere, tube or tube-mantle probe
+- `DimensionCurvatureFit` dimension and scalar curvature from log-difference quotients by regression on r(r + 1), the intercept and the slope, for the ball, sphere, tube or tube-mantle probe; the [Dimension tutorial](paclet:WolframInstitute/InfraGeometry/tutorial/DimensionTutorial) compares the growth reading with covering and span
 - `VolumeGrowthObservables` the ball and sphere fits at a vertex over a window as one Association: profiles, quotients, fits and the windows used
 
 ### The metric tensor
