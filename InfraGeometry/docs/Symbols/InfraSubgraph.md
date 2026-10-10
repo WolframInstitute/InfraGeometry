@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSubgraph
 Keywords: [segment, ray, line, circle, arc, support, neighborhood]
-SeeAlso: [InfraMeasurement, named construction samplers]
+SeeAlso: [InfraMeasurement]
 RelatedGuides: [Experimental]
 ---
 

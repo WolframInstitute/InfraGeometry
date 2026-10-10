@@ -9,7 +9,7 @@ URI: WolframInstitute/InfraGeometry/ref/FindInfraHomotopy
 
 ## Usage
 
-`FindInfraHomotopy[graph, a, b]` returns {InfraHomotopy[{chain}]} of elementary moves from a to b (both must share a wrapper head; InfraCircle coerces to InfraString); n / UpTo[n] / All controls multiplicity.
+`FindInfraHomotopy[graph, a, b]` gives one chain of elementary moves as a List of walk Graphs, or {} when none exists. A bounded count or All gives a List of chains. Both walks must be open or both closed.
 
 ## Details & Options
 

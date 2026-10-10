@@ -18,10 +18,9 @@ RelatedGuides: [EuclideanInfrageometry]
 
 <code>[InfraRay]()[*p*, *q*]</code> inside an [InfraScene]() is the ray construction token; [RandomInfraRay]() is the search.
 
-## Details
+## Details & Options
 
 This is the legacy compatibility spelling. New code uses `InfraHalfLine`.
- & Options
 
 Its graph — <code>[InfraMeasurement]()[*g*, *ray*, "Graph"]</code> — is one DAG with source *p*: the interval of shortest paths from *p* to *q* glued at *q* to the DAG of the extensions beyond *q*: the vertices *e* with *d(p, e) = d(p, q) + d(q, e)*, and the edges that lengthen the distance from *p* by one. Its sinks are exactly the inextensible ends, so its source-to-sink chains are exactly the rays, and `"Faithful"` is `True`.
 

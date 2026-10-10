@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSphere
 Keywords: [sphere, separating set, minimal, region, symbolic object, family, counting measure, Riemannian measure]
-SeeAlso: [RandomInfraSphere, InfraShell, InfraBall, InfraMeasurement, named construction samplers]
+SeeAlso: [RandomInfraSphere, InfraShell, InfraBall, InfraMeasurement]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 

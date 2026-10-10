@@ -18,10 +18,9 @@ RelatedGuides: [EuclideanInfrageometry]
 
 <code>[RandomInfraLine]()[*g*, *a*, *b*, *n*]</code> gives a `List` of exactly *n* lines or `{}`; `UpTo[n]` gives up to *n*; `All` gives every line.
 
-## Details
+## Details & Options
 
 This is the legacy compatibility spelling. New code uses `RandomInfraInfiniteLine`.
- & Options
 
 The default draw is random. Seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing.
 

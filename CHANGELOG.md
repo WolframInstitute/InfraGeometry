@@ -2,12 +2,16 @@
 
 ## 2.7.0 (2026-10-10)
 
+- **Breaking -- construction-specific samplers.** The public `RandomInfraRepresentative` is removed without an alias. Use the named sampler for each of the 26 supported construction and scene-operation families. `InfraHalfLine`, `InfraInfiniteLine` and `InfraRegularPolygon` preserve the old finite meanings; inert legacy heads and old named ray/line samplers and predicates remain accepted for at least this release. See the Synthetic Geometry Migration tutorial.
+- Exact `InfraMidpoint`, `InfraPerpendicularBisector` and `InfraRegionNearest` point families retain ties and decided empty answers, with deterministic support readers. The segment `"Midpoint"` density and separating `InfraPlane` are distinct existing operations. No Area or Volume property is introduced for the new heads.
+- `InfraGeometricAssertion` and `InfraGeometricTest` support Distinct, Member and EqualDistance. `InfraSceneMultiway` retains exact merged states, incoming events and bounded frontiers; `InfraBranchialGraph` records immediate-parent witnesses. `InfraSceneViewer[data]` inspects saved data without sampling. Exploration is eager and intended for finite small graphs; missing ScheduleValidity requires rebuilding the original scene syntax.
+
 - **Breaking -- the `Find...` samplers are `Random...`, random by default.** `FindInfraRepresentative`, `FindInfraLine`, `FindInfraSegment`, `FindInfraRay`, `FindInfraParallel`, `FindInfraGeodesic`, `FindInfraWalk`, `FindInfraSphere`, `FindInfraEllipse` and `FindInfraRegularPolygon` are renamed `RandomInfra...` and draw at random: seed with `SeedRandom`. A deterministic draw is `"NextVertexFunction" -> Identity`, and `All` lists every member. `FindInfraMidpoint` and `FindInfraGoldenSection` are removed; use `InfraMeasurement[graph, InfraSegment[a, b], "Midpoint"]`. A set head returns its complete support by default and `{support}` under `All` or a count of one. A point head returns one vertex by default and a list under a count.
 - **Breaking -- random point finder renamed.** `FindInfraPoint` is renamed `RandomInfraPoint`, matching Wolfram's `RandomPoint` naming for random draws. Arguments and options are unchanged; replace the head in existing calls.
 
 | Earlier | Now |
 |---|---|
-| `FindInfraRepresentative` | `RandomInfraRepresentative` |
+| `FindInfraRepresentative` | construction-specific `RandomInfra...` sampler |
 | `FindInfraSegment` | `RandomInfraSegment` |
 | `FindInfraRay` | `RandomInfraRay` |
 | `FindInfraLine` | `RandomInfraLine` |

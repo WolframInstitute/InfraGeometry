@@ -9,10 +9,22 @@ URI: WolframInstitute/InfraGeometry/ref/InfraPlane
 
 ## Usage
 
-`InfraPlane[{set}]` is the unary form (one bisecting hyperplane); InfraPlane[{set1, ..., setk}] is the multi-realisation form.
+`InfraPlane[p, q]` is the inert family of inclusion-minimal separating vertex sets in the zero distance-difference slab.
+
+`InfraPlane[p, q, {lo, hi}]` uses the stated distance-difference window.
 
 ## Details & Options
 
-Find* returns one wrapper carrying the requested realisations.
+[RandomInfraPlane]() samples the family on a graph, fixing the separating property.
+One representative is a vertex set, not a payload wrapper.
+The exact finite equidistant locus is [InfraPerpendicularBisector](), which need not separate the anchors.
+These constructions can therefore have different empty/nonempty answers.
 
-Scene-language constructors InfraPlane[p1, p2] and InfraPlane[p1, p2, {lo, hi}] are used inside InfraScene.
+## Basic Examples
+
+The middle point separates the endpoints.
+
+```wl
+SeedRandom[ 71 ]; With[ { graph = PathGraph[ Range[ 3 ] ] },
+  RandomInfraPlane[ graph, InfraPlane[ 1, 3 ], All ] ]
+```

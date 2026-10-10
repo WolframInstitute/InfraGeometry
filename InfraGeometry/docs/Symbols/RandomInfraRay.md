@@ -16,10 +16,9 @@ RelatedGuides: [EuclideanInfrageometry]
 
 <code>[RandomInfraRay]()[*g*, *O*, *v*, *n*]</code> gives a `List` of exactly *n* rays or `{}`; `UpTo[n]` gives up to *n*; `All` gives every ray.
 
-## Details
+## Details & Options
 
 This is the legacy compatibility spelling. New code uses `RandomInfraHalfLine`.
- & Options
 
 The default draw is random. Seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing.
 

@@ -41,4 +41,13 @@ Ball, Shell, Tube, Cylinder, Cone, SolidOfRevolution, BallHull, ConvexHull and Q
 Intersection and Union sample points from complete operand supports.
 Point labels that are Lists remain intact.
 
-The named functions are RandomInfraPoint, RandomInfraSegment, RandomInfraHalfLine, RandomInfraInfiniteLine, RandomInfraCircle, RandomInfraArc, RandomInfraRegularPolygon, RandomInfraPlane, RandomInfraBall, RandomInfraShell, RandomInfraSphere, RandomInfraTube, RandomInfraCylinder, RandomInfraCone, RandomInfraSolidOfRevolution, RandomInfraBallHull, RandomInfraConvexHull, RandomInfraQuadric, RandomInfraWalk, RandomInfraGeodesic, RandomInfraEllipse, RandomInfraIntersection and RandomInfraUnion.
+The named functions are RandomInfraPoint, RandomInfraSegment, RandomInfraHalfLine, RandomInfraInfiniteLine, RandomInfraCircle, RandomInfraArc, RandomInfraRegularPolygon, RandomInfraPlane, RandomInfraBall, RandomInfraShell, RandomInfraSphere, RandomInfraTube, RandomInfraCylinder, RandomInfraCone, RandomInfraSolidOfRevolution, RandomInfraBallHull, RandomInfraConvexHull, RandomInfraQuadric, RandomInfraWalk, RandomInfraGeodesic, RandomInfraEllipse, RandomInfraIntersection, RandomInfraUnion, RandomInfraMidpoint, RandomInfraPerpendicularBisector and RandomInfraRegionNearest.
+
+Exact Midpoint, PerpendicularBisector and RegionNearest are point families on finite simple undirected unweighted graphs.
+Their complete pools contain distinct raw vertices in graph order. Exact midpoint can be empty; equidistance does not imply separation; nearest support retains all ties.
+See [Synthetic geometry migration](paclet:WolframInstitute/InfraGeometry/tutorial/SyntheticGeometryMigration) for compatibility and the segment middle-layer distinction.
+
+```wl
+SeedRandom[ 71 ]; With[ { graph = CycleGraph[ 4 ] },
+  InfraSubstrateHighlight[ graph, { InfraMidpoint[ 1, 3 ], 1, 3 } ] ]
+```

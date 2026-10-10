@@ -9,4 +9,4 @@ URI: WolframInstitute/InfraGeometry/ref/FindClosestInfraPoint
 
 ## Usage
 
-`FindClosestInfraPoint[graph, line, point]` returns a List of InfraPoint atoms for the vertices on line at minimum graph distance from point; n / UpTo[n] / All controls multiplicity. line is a vertex sequence or path-shaped wrapper; point a vertex or InfraPoint.
+`FindClosestInfraPoint[graph, line, point]` returns the raw vertices on line at minimum graph distance from point; n / UpTo[n] / All controls multiplicity. line is a supported vertex sequence or walk Graph; point is a supported point input.

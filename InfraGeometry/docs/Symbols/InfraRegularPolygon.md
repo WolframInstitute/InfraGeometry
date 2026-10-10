@@ -13,4 +13,4 @@ URI: WolframInstitute/InfraGeometry/ref/InfraRegularPolygon
 
 ## Details & Options
 
-A polygon itself is the List of its sides, one directed path graph each, consecutive sides sharing a corner. Its perimeter is the total edge count of the sides.
+The bare RandomInfraRegularPolygon form returns directed Graph legs; the InfraRegularPolygon token form returns an ordered vertex sequence. The legacy InfraPolygon token has the same regular-family meaning. No corner-polygon filling is introduced.

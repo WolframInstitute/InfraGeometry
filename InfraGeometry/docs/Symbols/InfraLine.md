@@ -18,10 +18,9 @@ RelatedGuides: [EuclideanInfrageometry]
 
 <code>[InfraLine]()[*p*, *q*]</code> inside an [InfraScene]() is the line construction token; [RandomInfraLine]() is the search.
 
-## Details
+## Details & Options
 
 This is the legacy compatibility spelling. New code uses `InfraInfiniteLine`.
- & Options
 
 Definition: a line is an inextensible shortest path, one that no neighbour of either end prolongs.
 

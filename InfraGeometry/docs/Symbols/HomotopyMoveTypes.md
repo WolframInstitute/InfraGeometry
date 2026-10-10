@@ -9,6 +9,4 @@ URI: WolframInstitute/InfraGeometry/ref/HomotopyMoveTypes
 
 ## Usage
 
-`HomotopyMoveTypes[chain]` applies HomotopyMoveType to each consecutive pair in chain.
-
-`HomotopyMoveTypes[InfraHomotopy[{chain}]`] returns the labels for the unary wrapper; HomotopyMoveTypes[InfraHomotopy[reps]] returns one label list per realisation.
+`HomotopyMoveTypes[chain]` applies HomotopyMoveType to each consecutive pair of a homotopy chain.

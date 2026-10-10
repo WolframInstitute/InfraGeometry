@@ -9,7 +9,7 @@ URI: WolframInstitute/InfraGeometry/ref/FindInfraHomotopyRepresentative
 
 ## Usage
 
-`FindInfraHomotopyRepresentative[graph, obj]` returns {head[{w}]} for a length-shortest walk in obj's homotopy class (head matches the input wrapper; InfraCircle coerces to InfraString); n / UpTo[n] / All controls multiplicity.
+`FindInfraHomotopyRepresentative[graph, obj]` gives length-shortest walk Graphs in the homotopy class of obj. An open walk keeps its endpoints fixed; a cycle keeps its base point fixed. "FreeHomotopy" -> True frees either.
 
 ## Details & Options
 

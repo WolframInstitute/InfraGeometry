@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[    390012,       8171]
-NotebookOptionsPosition[    383210,       8041]
-NotebookOutlinePosition[    384359,       8075]
-CellTagsIndexPosition[    384278,       8070]
+NotebookDataLength[    508529,      10366]
+NotebookOptionsPosition[    500987,      10227]
+NotebookOutlinePosition[    502138,      10261]
+CellTagsIndexPosition[    502056,      10256]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -24,7 +24,7 @@ Cell["InfraSceneViewer", "ObjectName",
  CellID->1224892054,ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec"],
 
 Cell[TextData[{
- Cell["   ", "ModInfo",ExpressionUUID->"1c6b8b24-43a6-4ba6-9660-4bd0264cd375"],
+ Cell["   ", "ModInfo",ExpressionUUID->"f895fc2a-997c-48f2-84da-dc030d97ff02"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -38,7 +38,7 @@ Cell[TextData[{
     StyleBox["scene", "TI"], ",", " ", 
     StyleBox["graph", "TI"]}], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "298f68c7-c320-4b21-8aa0-2ab69989f54f"],
+  "9aed642e-24ea-423d-8708-7aac43e8a30b"],
  "\[LineSeparator]",
  "is an interactive view of an ",
  Cell[BoxData[
@@ -49,10 +49,10 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "a9b8750b-26b1-4059-b688-44cf676a3b7f"],
+  "cd189d8f-4410-4063-8d7d-630a3334b55b"],
  " on a graph, stepped one construction step at a time.",
  "\n",
- Cell["   ", "ModInfo",ExpressionUUID->"3294448d-d138-40a5-b568-2f3872dd54c3"],
+ Cell["   ", "ModInfo",ExpressionUUID->"eb53a9a1-0045-48fa-83df-78c1d74aa550"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -67,10 +67,36 @@ Cell[TextData[{
     StyleBox["graph", "TI"], ",", " ", 
     StyleBox["bindings", "TI"]}], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "df1dbb69-1cee-48e2-82a7-dc68bc4add9f"],
+  "e1fcb49a-6dfa-4c0b-b300-49baa2f39d4a"],
  "\[LineSeparator]",
- "starts from an association of pre-fixed bindings."
-}], "Usage",ExpressionUUID->"d08f5784-6a92-48b5-b04b-3f2883eec1bc"],
+ "starts from an association of pre-fixed bindings.",
+ "\n",
+ Cell["   ", "ModInfo",ExpressionUUID->"449c799c-08e4-4cdc-ae18-737788760ecd"],
+ Cell[BoxData[
+  RowBox[{
+   TemplateBox[{
+     Cell[
+      TextData["InfraSceneViewer"]], 
+     "paclet:WolframInstitute/InfraGeometry/ref/InfraSceneViewer", 
+     "WolframInstitute/InfraGeometry Package Symbol"},
+    "PackageLink",
+    BaseStyle->"InlineFormula"], "[", 
+   StyleBox["data", "TI"], "]"}]], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "06bd3dd3-b276-4f20-8346-29c4e69af4d1"],
+ "\[LineSeparator]",
+ "inspects a saved ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["InfraSceneMultiway"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/InfraSceneMultiway", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "afb1616c-ae78-45d1-80d8-81797df598d3"],
+ " exploration without sampling."
+}], "Usage",ExpressionUUID->"23f23e98-6200-4f4c-b786-7f35b31adf37"],
 
 Cell[TextData[{
  "Definition: the viewer solves the scene one step at a time and draws the \
@@ -83,56 +109,56 @@ objects bound so far, through ",
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "0b74b9c9-6feb-40dd-abe8-a21716a0899d"],
+  "186cdcb8-c37d-4bd3-8d80-1df35e54009a"],
  "."
-}], "Notes",ExpressionUUID->"e3697ebc-9544-4221-af5b-df43132827b0"],
+}], "Notes",ExpressionUUID->"b0903434-255d-4d71-be36-733e9e410673"],
 
 Cell["\<\
 It exists because a construction is a sequence, not a picture. Reading Euclid \
 I.10 as a single figure hides the order; stepping it shows which object each \
 later one depends on.\
-\>", "Notes",ExpressionUUID->"46daeec1-3193-459c-a00e-b95d81f20127"],
+\>", "Notes",ExpressionUUID->"36a96309-8a29-4750-8e31-f2ddfdf78ece"],
 
-Cell["Controls, in two rows.", "Notes",ExpressionUUID->"3c518c08-8694-48bf-a02b-74b0585122f0"],
+Cell["Controls, in two rows.", "Notes",ExpressionUUID->"a3127c1e-c815-4904-a22d-104012f00349"],
 
 Cell[BoxData[GridBox[{
    {Cell["      ", "ModInfo",ExpressionUUID->
-     "a6817cc7-f8ca-4ddd-bd01-b19e22d42c69"], Cell["Control", "TableText",
-     FontWeight->Bold,ExpressionUUID->"1a35c060-2ebc-46f4-80f2-0db478fc86df"],
+     "c790bbb6-7b33-43a8-874f-3f11c79ebb62"], Cell["Control", "TableText",
+     FontWeight->Bold,ExpressionUUID->"2c07920c-e018-4b01-90a0-bc6040a37df9"],
      Cell["Does", "TableText",
-     FontWeight->Bold,ExpressionUUID->"aa67ff8a-2819-4afc-9d9d-243962055b3b"]},
+     FontWeight->Bold,ExpressionUUID->"53515d54-5e72-4393-9329-bcd5300424fb"]},
    {Cell["      ", "ModInfo",ExpressionUUID->
-     "89ddf9b9-6925-4f9a-a32f-aad7894cbbda"], Cell[
+     "0dcbc807-53c5-46e2-afbd-cee772b33c95"], Cell[
     "step arrows, label menu", "TableText",ExpressionUUID->
-     "e4df78b6-b9c7-4258-a33d-463e6532a85a"], Cell[
+     "e0d226ab-eb60-4638-a9f8-f141a42da413"], Cell[
     "move between construction steps", "TableText",ExpressionUUID->
-     "5a7f9d55-9c7e-40ed-bb17-043cbfb7c8f9"]},
+     "0d886ea1-2e3a-435e-be25-fc85fa751f76"]},
    {Cell["      ", "ModInfo",ExpressionUUID->
-     "60c3b1ad-1f94-41d0-ba97-cedc8efb61ce"], Cell[
+     "9642b5b5-0a97-4f96-9cdb-e3d4288e3771"], Cell[
     "eye", "TableText",ExpressionUUID->
-     "23b98f7d-e273-478d-9bec-b196f48b17c2"], Cell[
+     "369ae356-f8a1-4c7d-98d4-20253b9447d1"], Cell[
     "hide or show the current step's object", "TableText",ExpressionUUID->
-     "38ee8b17-3b45-4863-aeb6-bb51ccca4ffe"]},
+     "bb2780e6-5651-4c51-ba9e-a64151896428"]},
    {Cell["      ", "ModInfo",ExpressionUUID->
-     "cb560b6b-7a41-4d41-a7ed-962ca2eee8f8"], Cell[
+     "234ce23f-4275-4314-98ab-451ba237ea5d"], Cell[
     "Branch / Diffuse", "TableText",ExpressionUUID->
-     "1b74dfdc-4714-4afe-b466-4a2860b8f4a3"], Cell[
+     "0321d294-8745-483b-aa5a-77a7dd9abc2f"], Cell[
     "show one realisation, or all of them overlaid", "TableText",
-     ExpressionUUID->"f6188fa7-544d-4eeb-ba36-9dc19ee33c4c"]},
+     ExpressionUUID->"8d1c8ed6-0686-48d3-a93b-a8ccb4ad75d7"]},
    {Cell["      ", "ModInfo",ExpressionUUID->
-     "f2c87dcb-9567-4f7c-837f-64b61918c0aa"], Cell[
+     "7f851c92-dbb7-4aaa-8669-eb4ee047985d"], Cell[
     "branch arrows", "TableText",ExpressionUUID->
-     "a8e10479-3f81-4515-8ab7-8c255aa277f4"], Cell[
+     "d91b64f5-ce45-4b49-babc-f3ed0314ee4c"], Cell[
     "page through realisations of the current step", "TableText",
-     ExpressionUUID->"f494ca0a-8318-4a13-b743-1de972e0bcb8"]},
+     ExpressionUUID->"bab19197-0d24-4c25-b3d0-c4bba25012b4"]},
    {Cell["      ", "ModInfo",ExpressionUUID->
-     "1a641a79-0d23-4ba8-8721-5de1918dc64a"], Cell[
+     "7fc3dbae-6ae9-48a9-8940-a80be353e367"], Cell[
     "Fixed", "TableText",ExpressionUUID->
-     "a156ccb7-b0fe-487c-8c65-68b24f18a3de"], Cell["\<\
+     "798ce545-9229-44cd-8490-4a0d6309279b"], Cell["\<\
 lock the current branch as the starting point for later steps\
-\>", "TableText",ExpressionUUID->"d2e5ea03-c667-42f5-b529-8db2484e3ff5"]}
-  }]], "2ColumnTableMod",ExpressionUUID->"ac4e2098-0825-4a19-9eef-\
-7426fd2023b6"],
+\>", "TableText",ExpressionUUID->"16890490-2d2b-4ab0-9736-6adeca34b19d"]}
+  }]], "2ColumnTableMod",ExpressionUUID->"94188917-fc37-49a4-97b2-\
+2018912d79c0"],
 
 Cell["\<\
 Branch and Diffuse are the two ways to look at a family. Diffuse draws every \
@@ -140,31 +166,31 @@ realisation at once, with intensity following multiplicity, which is the \
 right view for seeing where an object is concentrated. Branch picks one, \
 which is the right view for following a single construction through to the \
 end.\
-\>", "Notes",ExpressionUUID->"6725d3fd-dac4-43d5-abd5-dc05deace8eb"],
+\>", "Notes",ExpressionUUID->"98aac60d-cf46-4f4c-a1dd-8e1ba7c9d805"],
 
 Cell["\<\
 Fixed matters on long constructions. Without it, each step re-solves against \
 every branch of the previous ones and the instance count multiplies. Fixing a \
 branch collapses that.\
-\>", "Notes",ExpressionUUID->"d330868c-6cbf-4078-91ed-55ea38aa0672"],
+\>", "Notes",ExpressionUUID->"0b99735d-c09c-4236-b7e9-0ed931a810f0"],
 
 Cell[TextData[{
  "The rendering options ",
  Cell[BoxData["\"\<OpacityRange\>\""], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "a6cc6da6-8f5a-476d-b3b6-8bd7a0e5c89b"],
+  "e7853bda-6078-4e14-8fc1-07a3e70601b1"],
  ", ",
  Cell[BoxData["\"\<ThicknessRange\>\""], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "25f5c019-c405-41aa-bddc-0a3e41e97fae"],
+  "3fbd8e14-ab0a-48e8-be33-e87379711db9"],
  ", ",
  Cell[BoxData["\"\<PointSizeRange\>\""], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "c53f0d52-1ac4-451d-b12a-4eed96de9633"],
+  "36d18131-0a4a-4071-a626-72eec4721446"],
  " and ",
  Cell[BoxData["ImageSize"], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "407926e7-8263-497c-b509-495ff76e132e"],
+  "315d6f26-b2d4-4e02-93e8-cf4a36c87f0f"],
  " are passed through to ",
  Cell[BoxData[
   TemplateBox[{
@@ -174,9 +200,9 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "84d1cf65-aa36-4a87-8acb-20dfeea62a61"],
+  "f3696e3b-a906-40a8-92c4-7bf95c1125a2"],
  "."
-}], "Notes",ExpressionUUID->"6f47cffd-24c8-442b-bd0c-dbd6f320dc97"],
+}], "Notes",ExpressionUUID->"e688c3e0-fb5f-4811-a1f8-3bb460add2b4"],
 
 Cell[TextData[{
  "For a static figure, solve the steps yourself with ",
@@ -188,9 +214,48 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "e7c4cff9-edc3-425c-81ab-feb3fa985e5f"],
+  "ff8ba4e3-fdf1-4c4f-bed1-967b0aa86904"],
  " and lay them out as a grid. That is what the last example does."
-}], "Notes",ExpressionUUID->"16527555-f0a6-4b57-937c-9ba60b542fcc"]
+}], "Notes",ExpressionUUID->"e8927790-cc2c-4d02-97c5-55b99f86662e"],
+
+Cell["\<\
+For saved exploration data, event navigation uses individual construction \
+depths; group navigation uses the saved group boundaries. The selected \
+state's bindings and assertion statuses appear with its geometry, immediate \
+branchial neighbors and common-parent witnesses. Choose an incoming event, or \
+an earlier event in the history table, to inspect a different saved history \
+and its exact candidate values. Merged states retain all incoming choices.\
+\>", "Notes",ExpressionUUID->"c0d052a2-c143-4b76-825c-f95c19931b5f"],
+
+Cell["\<\
+A binding restriction filters saved states by literal equality and marks the \
+view as filtered. It never changes the saved initial bindings. List-valued \
+points, ordered walks, vertex sets and Graph representatives retain their \
+declared kinds.\
+\>", "Notes",ExpressionUUID->"73fd3513-f2ac-4475-9a3b-e2666431585d"],
+
+Cell["\<\
+Layer and whole-scene completeness are displayed separately, with the saved \
+stopping reasons and unfinished candidates. Pending or unsupported assertions \
+are undecided. In an incomplete layer, displayed branchial edges have \
+witnesses; missing edges do not prove nonadjacency. A complete empty layer \
+differs from a partial layer containing no observed states.\
+\>", "Notes",ExpressionUUID->"e389a7ae-ec02-4211-8b18-97a35b8d6fbd"],
+
+Cell[TextData[{
+ "Navigation reads the saved record only. To explore further, make a separate \
+explicit ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["InfraSceneMultiway"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/InfraSceneMultiway", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "faf3959c-d6ae-4001-9779-457d4bc194c2"],
+ " call and open its new record; resuming a saved run is deferred."
+}], "Notes",ExpressionUUID->"8f1f6f88-bc5a-4702-877c-030dc5ea9831"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -214,12 +279,32 @@ Cell[TextData[{
  Cell[BoxData[
   TemplateBox[{
     Cell[
+     TextData["InfraSceneMultiway"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/InfraSceneMultiway", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "4105c5a9-4a8e-4755-8028-3ac1171e53f3"],
+ " \[FilledVerySmallSquare] ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["InfraBranchialGraph"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/InfraBranchialGraph", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "b183f8d2-7e84-460e-911b-e2c38a9d7a37"],
+ " \[FilledVerySmallSquare] ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
      TextData["InfraScene"]], 
     "paclet:WolframInstitute/InfraGeometry/ref/InfraScene", 
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "f32c7948-b0b1-4885-be81-526cdfbebe00"],
+  "2e27885c-25cf-4ab5-a120-f51cb369b7fb"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -229,7 +314,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "94a96cf0-ec7a-43e9-8ed7-47fb5f6dc735"],
+  "19c06a53-7970-452d-bd62-3d0e78898ac1"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -239,7 +324,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "5e66f902-1a84-4f0b-85ed-ed91d074c125"],
+  "b2f8f399-89ad-49a6-ac36-0d8aab08a9f7"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -249,7 +334,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "6935c8eb-c93b-4126-a3af-d9a1c5316ee8"],
+  "15390e38-8fd3-4c04-9cf3-d29973d2050e"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -259,8 +344,8 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "0856e7b3-85fb-4276-9a7f-f56dc8f0fa58"]
-}], "SeeAlso",ExpressionUUID->"4e59d6b1-b6d5-45b5-b175-f01ad372cb11"]
+  "0b6344d3-6ff8-4b8b-8108-b4ece9d8b34e"]
+}], "SeeAlso",ExpressionUUID->"35baaafa-20aa-4207-9c1e-1cf9b89e263d"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -287,8 +372,8 @@ Cell[TextData[Cell[BoxData[
   BaseStyle->"Link",
   ButtonData->
    "paclet:WolframInstitute/InfraGeometry/guide/EuclideanInfrageometry"]], \
-"InlineFormula",ExpressionUUID->"54c11b56-83e9-4806-aa6e-7bc1a3214412"]], \
-"MoreAbout",ExpressionUUID->"36bc8f01-c2e9-4396-87b8-9bee19f681c4"]
+"InlineFormula",ExpressionUUID->"d0c9bb9b-5990-461a-adca-610ab256df9f"]], \
+"MoreAbout",ExpressionUUID->"1938d623-385e-420f-a7f6-8059271b4ad6"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -350,7 +435,7 @@ Cell[BoxData[
 Cell["\<\
 Build a scene and open the viewer on it. The slider steps through the \
 construction.\
-\>", "ExampleText",ExpressionUUID->"a3afec06-3c6b-4c79-9b84-4be25c8b3956"],
+\>", "ExampleText",ExpressionUUID->"5cdb0fe4-83af-4b59-a553-c68e46b50eca"],
 
 Cell[CellGroupData[{
 
@@ -428,7 +513,7 @@ Cell[BoxData[{
    "\n", "  ", 
    RowBox[{"InfraSceneViewer", "[", 
     RowBox[{"scene", ",", " ", "g"}], "]"}]}], "]"}]}], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"4f5fba7a-6058-4923-8489-86b70ba620ed"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"a4965e96-4031-4389-924c-2e493431141a"],
 
 Cell[BoxData[
  DynamicModuleBox[{
@@ -492,33 +577,35 @@ InfraSceneInteractive`PackagePrivate`new$ =
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a, 
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b, MTNB$p83y2n21f6yu`cA, MTNB$p83y2n21f6yu`cB, 
+PackagePrivate`b, MTNB$4w5o83kqepmw`cA, MTNB$4w5o83kqepmw`cB, 
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u}, "Constructions" -> <|
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a -> WolframInstitute`InfraGeometry`InfraPoint[5], 
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`b -> WolframInstitute`InfraGeometry`InfraPoint[26], 
-                    MTNB$p83y2n21f6yu`cA -> 
+                    MTNB$4w5o83kqepmw`cA -> 
                     WolframInstitute`InfraGeometry`InfraCircle[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`a, 3], MTNB$p83y2n21f6yu`cB -> 
+PackagePrivate`a, 3], MTNB$4w5o83kqepmw`cB -> 
                     WolframInstitute`InfraGeometry`InfraCircle[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`b, 3], 
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u -> WolframInstitute`InfraGeometry`InfraIntersection[
-                    MTNB$p83y2n21f6yu`cA, MTNB$p83y2n21f6yu`cB]|>, 
+                    MTNB$4w5o83kqepmw`cA, MTNB$4w5o83kqepmw`cB]|>, 
                     "Assertions" -> {}, "DependencyGraph" -> None, 
                     "Steps" -> {{
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a}, {
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b}, {MTNB$p83y2n21f6yu`cA}, {MTNB$p83y2n21f6yu`cB}, {
+PackagePrivate`b}, {MTNB$4w5o83kqepmw`cA}, {MTNB$4w5o83kqepmw`cB}, {
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u}}, "Labels" -> {
                     "point a", "point b", "circle around a", 
-                    "circle around b", "they meet"}, "ManualSteps" -> True|>], 
+                    "circle around b", "they meet"}, "ManualSteps" -> True, 
+                    "ScheduleValidity" -> <|
+                    "Valid" -> True, "Reasons" -> {}|>|>], 
                     Graph[CompressedData["
 1:eJwl1FV4EAQUBeCNZsRGbTBiQcdI6UZQCUEQ6U4RGCAtjRISgtIhipSAhNLd
 nR/SHYp0gzT8fDz8576el3OjWnSqFRsYEBCQTcR3E5CQRCQmiCQkJRnJCSaE
@@ -747,36 +834,39 @@ PackagePrivate`new$ = WolframInstitute`InfraGeometry`RandomInfraInstance[
                     
                     WolframInstitute`InfraGeometry`InfraScene[<|
                     "Objects" -> {
+                    
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a, 
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b, MTNB$p83y2n21f6yu`cA, MTNB$p83y2n21f6yu`cB, 
+PackagePrivate`b, MTNB$4w5o83kqepmw`cA, MTNB$4w5o83kqepmw`cB, 
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u}, "Constructions" -> <|
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a -> WolframInstitute`InfraGeometry`InfraPoint[5], 
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`b -> WolframInstitute`InfraGeometry`InfraPoint[26], 
-                    MTNB$p83y2n21f6yu`cA -> 
+                    MTNB$4w5o83kqepmw`cA -> 
                     WolframInstitute`InfraGeometry`InfraCircle[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`a, 3], MTNB$p83y2n21f6yu`cB -> 
+PackagePrivate`a, 3], MTNB$4w5o83kqepmw`cB -> 
                     WolframInstitute`InfraGeometry`InfraCircle[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`b, 3], 
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u -> WolframInstitute`InfraGeometry`InfraIntersection[
-                    MTNB$p83y2n21f6yu`cA, MTNB$p83y2n21f6yu`cB]|>, 
+                    MTNB$4w5o83kqepmw`cA, MTNB$4w5o83kqepmw`cB]|>, 
                     "Assertions" -> {}, "DependencyGraph" -> None, 
                     "Steps" -> {{
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a}, {
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b}, {MTNB$p83y2n21f6yu`cA}, {MTNB$p83y2n21f6yu`cB}, {
+PackagePrivate`b}, {MTNB$4w5o83kqepmw`cA}, {MTNB$4w5o83kqepmw`cB}, {
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u}}, "Labels" -> {
                     "point a", "point b", "circle around a", 
-                    "circle around b", "they meet"}, "ManualSteps" -> True|>], 
+                    "circle around b", "they meet"}, "ManualSteps" -> True, 
+                    "ScheduleValidity" -> <|
+                    "Valid" -> True, "Reasons" -> {}|>|>], 
                     Graph[CompressedData["
 1:eJwl1FV4EAQUBeCNZsRGbTBiQcdI6UZQCUEQ6U4RGCAtjRISgtIhipSAhNLd
 nR/SHYp0gzT8fDz8576el3OjWnSqFRsYEBCQTcR3E5CQRCQmiCQkJRnJCSaE
@@ -983,33 +1073,35 @@ PackagePrivate`new$ = WolframInstitute`InfraGeometry`RandomInfraInstance[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a, 
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b, MTNB$p83y2n21f6yu`cA, MTNB$p83y2n21f6yu`cB, 
+PackagePrivate`b, MTNB$4w5o83kqepmw`cA, MTNB$4w5o83kqepmw`cB, 
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u}, "Constructions" -> <|
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a -> WolframInstitute`InfraGeometry`InfraPoint[5], 
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`b -> WolframInstitute`InfraGeometry`InfraPoint[26], 
-                    MTNB$p83y2n21f6yu`cA -> 
+                    MTNB$4w5o83kqepmw`cA -> 
                     WolframInstitute`InfraGeometry`InfraCircle[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`a, 3], MTNB$p83y2n21f6yu`cB -> 
+PackagePrivate`a, 3], MTNB$4w5o83kqepmw`cB -> 
                     WolframInstitute`InfraGeometry`InfraCircle[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`b, 3], 
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u -> WolframInstitute`InfraGeometry`InfraIntersection[
-                    MTNB$p83y2n21f6yu`cA, MTNB$p83y2n21f6yu`cB]|>, 
+                    MTNB$4w5o83kqepmw`cA, MTNB$4w5o83kqepmw`cB]|>, 
                     "Assertions" -> {}, "DependencyGraph" -> None, 
                     "Steps" -> {{
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a}, {
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b}, {MTNB$p83y2n21f6yu`cA}, {MTNB$p83y2n21f6yu`cB}, {
+PackagePrivate`b}, {MTNB$4w5o83kqepmw`cA}, {MTNB$4w5o83kqepmw`cB}, {
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u}}, "Labels" -> {
                     "point a", "point b", "circle around a", 
-                    "circle around b", "they meet"}, "ManualSteps" -> True|>], 
+                    "circle around b", "they meet"}, "ManualSteps" -> True, 
+                    "ScheduleValidity" -> <|
+                    "Valid" -> True, "Reasons" -> {}|>|>], 
                     Graph[CompressedData["
 1:eJwl1FV4EAQUBeCNZsRGbTBiQcdI6UZQCUEQ6U4RGCAtjRISgtIhipSAhNLd
 nR/SHYp0gzT8fDz8576el3OjWnSqFRsYEBCQTcR3E5CQRCQmiCQkJRnJCSaE
@@ -1217,33 +1309,35 @@ PackagePrivate`new$ = WolframInstitute`InfraGeometry`RandomInfraInstance[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a, 
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b, MTNB$p83y2n21f6yu`cA, MTNB$p83y2n21f6yu`cB, 
+PackagePrivate`b, MTNB$4w5o83kqepmw`cA, MTNB$4w5o83kqepmw`cB, 
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u}, "Constructions" -> <|
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a -> WolframInstitute`InfraGeometry`InfraPoint[5], 
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`b -> WolframInstitute`InfraGeometry`InfraPoint[26], 
-                    MTNB$p83y2n21f6yu`cA -> 
+                    MTNB$4w5o83kqepmw`cA -> 
                     WolframInstitute`InfraGeometry`InfraCircle[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`a, 3], MTNB$p83y2n21f6yu`cB -> 
+PackagePrivate`a, 3], MTNB$4w5o83kqepmw`cB -> 
                     WolframInstitute`InfraGeometry`InfraCircle[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`b, 3], 
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u -> WolframInstitute`InfraGeometry`InfraIntersection[
-                    MTNB$p83y2n21f6yu`cA, MTNB$p83y2n21f6yu`cB]|>, 
+                    MTNB$4w5o83kqepmw`cA, MTNB$4w5o83kqepmw`cB]|>, 
                     "Assertions" -> {}, "DependencyGraph" -> None, 
                     "Steps" -> {{
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a}, {
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b}, {MTNB$p83y2n21f6yu`cA}, {MTNB$p83y2n21f6yu`cB}, {
+PackagePrivate`b}, {MTNB$4w5o83kqepmw`cA}, {MTNB$4w5o83kqepmw`cB}, {
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u}}, "Labels" -> {
                     "point a", "point b", "circle around a", 
-                    "circle around b", "they meet"}, "ManualSteps" -> True|>], 
+                    "circle around b", "they meet"}, "ManualSteps" -> True, 
+                    "ScheduleValidity" -> <|
+                    "Valid" -> True, "Reasons" -> {}|>|>], 
                     Graph[CompressedData["
 1:eJwl1FV4EAQUBeCNZsRGbTBiQcdI6UZQCUEQ6U4RGCAtjRISgtIhipSAhNLd
 nR/SHYp0gzT8fDz8576el3OjWnSqFRsYEBCQTcR3E5CQRCQmiCQkJRnJCSaE
@@ -1451,33 +1545,35 @@ PackagePrivate`new$ = WolframInstitute`InfraGeometry`RandomInfraInstance[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a, 
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b, MTNB$p83y2n21f6yu`cA, MTNB$p83y2n21f6yu`cB, 
+PackagePrivate`b, MTNB$4w5o83kqepmw`cA, MTNB$4w5o83kqepmw`cB, 
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u}, "Constructions" -> <|
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a -> WolframInstitute`InfraGeometry`InfraPoint[5], 
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`b -> WolframInstitute`InfraGeometry`InfraPoint[26], 
-                    MTNB$p83y2n21f6yu`cA -> 
+                    MTNB$4w5o83kqepmw`cA -> 
                     WolframInstitute`InfraGeometry`InfraCircle[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`a, 3], MTNB$p83y2n21f6yu`cB -> 
+PackagePrivate`a, 3], MTNB$4w5o83kqepmw`cB -> 
                     WolframInstitute`InfraGeometry`InfraCircle[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`b, 3], 
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u -> WolframInstitute`InfraGeometry`InfraIntersection[
-                    MTNB$p83y2n21f6yu`cA, MTNB$p83y2n21f6yu`cB]|>, 
+                    MTNB$4w5o83kqepmw`cA, MTNB$4w5o83kqepmw`cB]|>, 
                     "Assertions" -> {}, "DependencyGraph" -> None, 
                     "Steps" -> {{
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a}, {
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b}, {MTNB$p83y2n21f6yu`cA}, {MTNB$p83y2n21f6yu`cB}, {
+PackagePrivate`b}, {MTNB$4w5o83kqepmw`cA}, {MTNB$4w5o83kqepmw`cB}, {
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u}}, "Labels" -> {
                     "point a", "point b", "circle around a", 
-                    "circle around b", "they meet"}, "ManualSteps" -> True|>], 
+                    "circle around b", "they meet"}, "ManualSteps" -> True, 
+                    "ScheduleValidity" -> <|
+                    "Valid" -> True, "Reasons" -> {}|>|>], 
                     Graph[CompressedData["
 1:eJwl1FV4EAQUBeCNZsRGbTBiQcdI6UZQCUEQ6U4RGCAtjRISgtIhipSAhNLd
 nR/SHYp0gzT8fDz8576el3OjWnSqFRsYEBCQTcR3E5CQRCQmiCQkJRnJCSaE
@@ -1684,33 +1780,35 @@ PackagePrivate`new$ = WolframInstitute`InfraGeometry`RandomInfraInstance[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a, 
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b, MTNB$p83y2n21f6yu`cA, MTNB$p83y2n21f6yu`cB, 
+PackagePrivate`b, MTNB$4w5o83kqepmw`cA, MTNB$4w5o83kqepmw`cB, 
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u}, "Constructions" -> <|
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a -> WolframInstitute`InfraGeometry`InfraPoint[5], 
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`b -> WolframInstitute`InfraGeometry`InfraPoint[26], 
-                    MTNB$p83y2n21f6yu`cA -> 
+                    MTNB$4w5o83kqepmw`cA -> 
                     WolframInstitute`InfraGeometry`InfraCircle[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`a, 3], MTNB$p83y2n21f6yu`cB -> 
+PackagePrivate`a, 3], MTNB$4w5o83kqepmw`cB -> 
                     WolframInstitute`InfraGeometry`InfraCircle[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`b, 3], 
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u -> WolframInstitute`InfraGeometry`InfraIntersection[
-                    MTNB$p83y2n21f6yu`cA, MTNB$p83y2n21f6yu`cB]|>, 
+                    MTNB$4w5o83kqepmw`cA, MTNB$4w5o83kqepmw`cB]|>, 
                     "Assertions" -> {}, "DependencyGraph" -> None, 
                     "Steps" -> {{
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a}, {
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b}, {MTNB$p83y2n21f6yu`cA}, {MTNB$p83y2n21f6yu`cB}, {
+PackagePrivate`b}, {MTNB$4w5o83kqepmw`cA}, {MTNB$4w5o83kqepmw`cB}, {
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u}}, "Labels" -> {
                     "point a", "point b", "circle around a", 
-                    "circle around b", "they meet"}, "ManualSteps" -> True|>], 
+                    "circle around b", "they meet"}, "ManualSteps" -> True, 
+                    "ScheduleValidity" -> <|
+                    "Valid" -> True, "Reasons" -> {}|>|>], 
                     Graph[CompressedData["
 1:eJwl1FV4EAQUBeCNZsRGbTBiQcdI6UZQCUEQ6U4RGCAtjRISgtIhipSAhNLd
 nR/SHYp0gzT8fDz8576el3OjWnSqFRsYEBCQTcR3E5CQRCQmiCQkJRnJCSaE
@@ -1933,33 +2031,35 @@ InfraSceneInteractive`PackagePrivate`new$ =
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a, 
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b, MTNB$p83y2n21f6yu`cA, MTNB$p83y2n21f6yu`cB, 
+PackagePrivate`b, MTNB$4w5o83kqepmw`cA, MTNB$4w5o83kqepmw`cB, 
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u}, "Constructions" -> <|
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a -> WolframInstitute`InfraGeometry`InfraPoint[5], 
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`b -> WolframInstitute`InfraGeometry`InfraPoint[26], 
-                    MTNB$p83y2n21f6yu`cA -> 
+                    MTNB$4w5o83kqepmw`cA -> 
                     WolframInstitute`InfraGeometry`InfraCircle[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`a, 3], MTNB$p83y2n21f6yu`cB -> 
+PackagePrivate`a, 3], MTNB$4w5o83kqepmw`cB -> 
                     WolframInstitute`InfraGeometry`InfraCircle[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`b, 3], 
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u -> WolframInstitute`InfraGeometry`InfraIntersection[
-                    MTNB$p83y2n21f6yu`cA, MTNB$p83y2n21f6yu`cB]|>, 
+                    MTNB$4w5o83kqepmw`cA, MTNB$4w5o83kqepmw`cB]|>, 
                     "Assertions" -> {}, "DependencyGraph" -> None, 
                     "Steps" -> {{
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a}, {
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b}, {MTNB$p83y2n21f6yu`cA}, {MTNB$p83y2n21f6yu`cB}, {
+PackagePrivate`b}, {MTNB$4w5o83kqepmw`cA}, {MTNB$4w5o83kqepmw`cB}, {
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u}}, "Labels" -> {
                     "point a", "point b", "circle around a", 
-                    "circle around b", "they meet"}, "ManualSteps" -> True|>], 
+                    "circle around b", "they meet"}, "ManualSteps" -> True, 
+                    "ScheduleValidity" -> <|
+                    "Valid" -> True, "Reasons" -> {}|>|>], 
                     Graph[CompressedData["
 1:eJwl1FV4EAQUBeCNZsRGbTBiQcdI6UZQCUEQ6U4RGCAtjRISgtIhipSAhNLd
 nR/SHYp0gzT8fDz8576el3OjWnSqFRsYEBCQTcR3E5CQRCQmiCQkJRnJCSaE
@@ -2245,7 +2345,6 @@ PackagePrivate`shown$$], " branches diffused"}]], True,
                    Part[
                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
 PackagePrivate`fixStack$$, All, 1], 
-                   
                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
 PackagePrivate`step$$], 
                   Function[
@@ -2283,33 +2382,35 @@ InfraSceneInteractive`PackagePrivate`new$ =
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a, 
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b, MTNB$p83y2n21f6yu`cA, MTNB$p83y2n21f6yu`cB, 
+PackagePrivate`b, MTNB$4w5o83kqepmw`cA, MTNB$4w5o83kqepmw`cB, 
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u}, "Constructions" -> <|
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a -> WolframInstitute`InfraGeometry`InfraPoint[5], 
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`b -> WolframInstitute`InfraGeometry`InfraPoint[26], 
-                    MTNB$p83y2n21f6yu`cA -> 
+                    MTNB$4w5o83kqepmw`cA -> 
                     WolframInstitute`InfraGeometry`InfraCircle[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`a, 3], MTNB$p83y2n21f6yu`cB -> 
+PackagePrivate`a, 3], MTNB$4w5o83kqepmw`cB -> 
                     WolframInstitute`InfraGeometry`InfraCircle[
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`b, 3], 
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u -> WolframInstitute`InfraGeometry`InfraIntersection[
-                    MTNB$p83y2n21f6yu`cA, MTNB$p83y2n21f6yu`cB]|>, 
+                    MTNB$4w5o83kqepmw`cA, MTNB$4w5o83kqepmw`cB]|>, 
                     "Assertions" -> {}, "DependencyGraph" -> None, 
                     "Steps" -> {{
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a}, {
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b}, {MTNB$p83y2n21f6yu`cA}, {MTNB$p83y2n21f6yu`cB}, {
+PackagePrivate`b}, {MTNB$4w5o83kqepmw`cA}, {MTNB$4w5o83kqepmw`cB}, {
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u}}, "Labels" -> {
                     "point a", "point b", "circle around a", 
-                    "circle around b", "they meet"}, "ManualSteps" -> True|>], 
+                    "circle around b", "they meet"}, "ManualSteps" -> True, 
+                    "ScheduleValidity" -> <|
+                    "Valid" -> True, "Reasons" -> {}|>|>], 
                     Graph[CompressedData["
 1:eJwl1FV4EAQUBeCNZsRGbTBiQcdI6UZQCUEQ6U4RGCAtjRISgtIhipSAhNLd
 nR/SHYp0gzT8fDz8576el3OjWnSqFRsYEBCQTcR3E5CQRCQmiCQkJRnJCSaE
@@ -3052,7 +3153,7 @@ PackagePrivate`reps$]]],
               Select[{WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a, 
                 WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b, MTNB$p83y2n21f6yu`cA, MTNB$p83y2n21f6yu`cB, 
+PackagePrivate`b, MTNB$4w5o83kqepmw`cA, MTNB$4w5o83kqepmw`cB, 
                 WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u}, And[
                 MemberQ[
@@ -3069,7 +3170,7 @@ PackagePrivate`hiddenSteps$$,
                    WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a -> 1, 
                     WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b -> 2, MTNB$p83y2n21f6yu`cA -> 3, MTNB$p83y2n21f6yu`cB -> 4, 
+PackagePrivate`b -> 2, MTNB$4w5o83kqepmw`cA -> 3, MTNB$4w5o83kqepmw`cB -> 4, 
                     WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u -> 5|>[
                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
@@ -3096,7 +3197,7 @@ PackagePrivate`hiddenSteps$$,
                  WolframInstitute`InfraGeometry`AlexandrovGeometry`\
 PackagePrivate`a -> 1, 
                   WolframInstitute`InfraGeometry`AlexandrovGeometry`\
-PackagePrivate`b -> 2, MTNB$p83y2n21f6yu`cA -> 3, MTNB$p83y2n21f6yu`cB -> 4, 
+PackagePrivate`b -> 2, MTNB$4w5o83kqepmw`cA -> 3, MTNB$4w5o83kqepmw`cB -> 4, 
                   WolframInstitute`InfraGeometry`Coordinatization`\
 PackagePrivate`u -> 5|>[
                  WolframInstitute`InfraGeometry`InfraSceneInteractive`\
@@ -3114,13 +3215,13 @@ PackagePrivate`obj$]]]]]]],
     "Column"],
    ImageSize->500],
   DynamicModuleValues:>{}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"4acb3139-9f9f-4559-ad3b-dec311150a44"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"12128160-1b25-4981-8c97-df7f999138cd"]
 }, Open  ]],
 
 Cell["\<\
 The first steps as stills: the two points, then the circle about the first. \
 This is what the viewer shows as you step, drawn without the interface.\
-\>", "ExampleText",ExpressionUUID->"888930a5-c839-46b2-b930-5dcdcb0570bf"],
+\>", "ExampleText",ExpressionUUID->"085b000f-9d08-4299-8703-62b28dd41407"],
 
 Cell[CellGroupData[{
 
@@ -3151,11 +3252,11 @@ Cell[BoxData[{
     "\n", "  ", 
    RowBox[{"{", 
     RowBox[{"circles", " ", "=", " ", 
-     RowBox[{"RandomInfraRepresentative", "[", 
+     RowBox[{"RandomInfraCircle", "[", " ", 
       RowBox[{"g", ",", " ", 
        RowBox[{"InfraCircle", "[", 
-        RowBox[{"p1", ",", " ", "3"}], "]"}], ",", " ", "All"}], "]"}]}], 
-    "}"}], ",", "\n", "  ", 
+        RowBox[{"p1", ",", " ", "3"}], "]"}], ",", " ", "All"}], " ", "]"}]}],
+     "}"}], ",", "\n", "  ", 
    RowBox[{"Row", "[", 
     RowBox[{"{", "\n", "    ", 
      RowBox[{
@@ -3188,7 +3289,7 @@ Cell[BoxData[{
              RowBox[{"p1", ",", " ", "p2"}], "}"}]}], "}"}]}], "]"}], ",", 
         "\n", "      ", "\"\<circle around a\>\""}], "]"}]}], "}"}], "]"}]}], 
   "]"}]}], "Input",
- CellLabel->"In[2]:= ",ExpressionUUID->"de03a922-f3fe-48dc-836c-d7cd19938ebb"],
+ CellLabel->"In[2]:= ",ExpressionUUID->"b3c940da-360b-499a-919d-321bd5fd0841"],
 
 Cell[BoxData[
  TemplateBox[{
@@ -7883,7 +7984,2092 @@ knhkjx5+AKdcmDU=
        RowBox[{#, ",", #2, ",", 
          RowBox[{"{", "}"}]}], "]"}]& )]},
   "RowDefault"]], "Output",
- CellLabel->"Out[2]= ",ExpressionUUID->"03feed05-ec62-411b-a582-0146d53d275f"]
+ CellLabel->"Out[2]= ",ExpressionUUID->"19c74f2c-e58a-4db6-bfa0-0c306ad1192e"]
+}, Open  ]],
+
+Cell["\<\
+Inspect the two histories of a merged construction state. Event depth 1 has \
+two branchial neighbors; group boundary 1 is at event depth 2. At the merged \
+state, incoming event 3 follows history {1,3}, and incoming event 4 follows \
+history {2,4}.\
+\>", "ExampleText",ExpressionUUID->"e7f38736-fca5-4355-96fe-41ccb21c2117"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", "\n", "  ", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"graph", " ", "=", " ", 
+     RowBox[{"PathGraph", "[", 
+      RowBox[{"Range", "[", "3", "]"}], "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{"scene", " ", "=", " ", 
+     RowBox[{"InfraScene", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"p", ",", " ", "q"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"InfraStep", "[", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"p", " ", "==", " ", 
+            RowBox[{"InfraMidpoint", "[", 
+             RowBox[{"1", ",", " ", "3"}], "]"}]}], ",", " ", 
+           RowBox[{"q", " ", "==", " ", 
+            RowBox[{"InfraMidpoint", "[", 
+             RowBox[{"1", ",", " ", "1"}], "]"}]}]}], "}"}], "]"}], "}"}]}], 
+      "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{"data", " ", "=", " ", 
+     RowBox[{"InfraSceneMultiway", "[", 
+      RowBox[{"scene", ",", " ", "graph"}], "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"InfraSceneViewer", "[", "data", "]"}]}], "]"}]], "Input",
+ CellLabel->"In[3]:= ",ExpressionUUID->"138afe13-e9fd-463d-8633-8797544f8389"],
+
+Cell[BoxData[
+ DynamicModuleBox[{
+  WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+navigation$$ = "Event depth", 
+  WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+boundary$$ = 0, 
+  WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+selectedState$$ = None, 
+  WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+restriction$$ = <||>, 
+  WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+incomingChoices$$ = <||>}, 
+  TagBox[GridBox[{
+     {
+      TemplateBox[{
+        InterpretationBox[
+         StyleBox[
+          GridBox[{{
+             SetterBox[
+              Dynamic[
+              WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`navigation$$, 
+               Function[
+               WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`value$, 
+                WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`navigation$$ = 
+                 WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`value$; 
+                WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`boundary$$ = 0; 
+                WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`selectedState$$ = None]], {"Event depth"}, "\"Event depth\""], 
+             
+             SetterBox[
+              Dynamic[
+              WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`navigation$$, 
+               Function[
+               WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`value$, 
+                WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`navigation$$ = 
+                 WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`value$; 
+                WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`boundary$$ = 0; 
+                WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`selectedState$$ = None]], {"Group boundary"}, 
+              "\"Group boundary\""]}}, ColumnSpacings -> 0, 
+           BaselinePosition -> {1, 1}], Deployed -> True], 
+         SetterBar[
+          Dynamic[
+          WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+navigation$$, 
+           Function[
+           WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`value$, 
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`navigation$$ = 
+             WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`value$; 
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`boundary$$ = 0; 
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`selectedState$$ = None]], {"Event depth", "Group boundary"}]], 
+        "\"  \"", 
+        DynamicBox[
+         ToBoxes[
+          PopupMenu[
+           Dynamic[
+           WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`boundary$$, 
+            Function[
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`value$, 
+             WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`boundary$$ = 
+              WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`value$; 
+             WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`selectedState$$ = None]], 
+           Keys[
+            If[
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`navigation$$ === "Event depth", 
+             <|
+             "Scene" -> WolframInstitute`InfraGeometry`InfraScene[<|
+                "Objects" -> {
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, 
+                 "Constructions" -> <|
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]|>, 
+                 "Assertions" -> {}, "DependencyGraph" -> None, 
+                 "Steps" -> {{
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}}, "Labels" -> {None}, "ManualSteps" -> True, 
+                 "ScheduleValidity" -> <|
+                  "Valid" -> True, "Reasons" -> {}|>|>], "Substrate" -> 
+              Graph[{1, 2, 3}, {Null, {{1, 2}, {2, 3}}}], 
+              "InitialBindings" -> <||>, 
+              "Options" -> <|
+               "Steps" -> All, "MaxDepth" -> DirectedInfinity[1], "MaxStates" -> 
+                DirectedInfinity[1], "MaxEvents" -> DirectedInfinity[1], 
+                "MaxCandidates" -> DirectedInfinity[1], "MaxTime" -> 
+                DirectedInfinity[1], "PoolAcquisition" -> "EagerAll", 
+                "ConstructionSettings" -> {
+                  WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                  WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]}|>, 
+              "Schedule" -> <|
+               1 -> <|"Group" -> 1, 
+                  "Targets" -> {
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p}, "Kinds" -> {"Point"}, "Expression" -> 
+                  WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                  "Dependencies" -> {}|>, 
+                2 -> <|"Group" -> 1, 
+                  "Targets" -> {
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, "Kinds" -> {"Point"}, "Expression" -> 
+                  WolframInstitute`InfraGeometry`InfraMidpoint[1, 1], 
+                  "Dependencies" -> {}|>|>, "Root" -> 1, 
+              "States" -> <|
+               1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 0, 
+                  "Group" -> 1, "Assertions" -> <||>, 
+                  "IncomingEvents" -> {}|>, 
+                2 -> <|"Bindings" -> <|
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                  "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+                3 -> <|"Bindings" -> <|
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                  "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+                4 -> <|"Bindings" -> <|
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                  "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>, 
+              "Events" -> <|
+               1 -> <|"Source" -> 1, "Target" -> 2, "Construction" -> 1, 
+                  "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                  "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                2 -> <|"Source" -> 1, "Target" -> 3, "Construction" -> 2, 
+                  "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                  "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                3 -> <|"Source" -> 2, "Target" -> 4, "Construction" -> 2, 
+                  "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                  "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                4 -> <|"Source" -> 3, "Target" -> 4, "Construction" -> 1, 
+                  "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                  "Outcome" -> "Accepted", "Assertions" -> <||>|>|>, 
+              "StateGraph" -> 
+              Graph[{1, 2, 3, 4}, {{{1, 2}, {1, 3}, {2, 4}, {3, 4}}, Null}], 
+              "Layers" -> <|
+               0 -> <|"States" -> {1}, "Complete" -> True|>, 
+                1 -> <|"States" -> {2, 3}, "Complete" -> True|>, 
+                2 -> <|"States" -> {4}, "Complete" -> True|>|>, 
+              "StepLayers" -> <|
+               0 -> <|"Depth" -> 0, "States" -> {1}, "Complete" -> True|>, 
+                1 -> <|"Depth" -> 2, "States" -> {4}, "Complete" -> True|>|>, 
+              "Instances" -> {
+                
+                WolframInstitute`InfraGeometry`InfraSceneInstance[<|
+                 WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>]}, 
+              "Expansions" -> {<|
+                "Source" -> 1, "Construction" -> 1, "PoolSize" -> 1, 
+                 "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True,
+                  "Reason" -> None|>, <|
+                "Source" -> 1, "Construction" -> 2, "PoolSize" -> 1, 
+                 "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True,
+                  "Reason" -> None|>, <|
+                "Source" -> 2, "Construction" -> 2, "PoolSize" -> 1, 
+                 "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True,
+                  "Reason" -> None|>, <|
+                "Source" -> 3, "Construction" -> 1, "PoolSize" -> 1, 
+                 "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True,
+                  "Reason" -> None|>}, "Frontier" -> {}, "Diagnostics" -> {}, 
+              "Completeness" -> <|
+               "Requested" -> True, "Scene" -> True, "Reasons" -> {}|>, 
+              "Statistics" -> <|
+               "States" -> 4, "Events" -> 4, "Candidates" -> 4, 
+                "ElapsedSeconds" -> 0.002444`3.8396461950664897|>|>["Layers"], 
+             <|
+             "Scene" -> WolframInstitute`InfraGeometry`InfraScene[<|
+                "Objects" -> {
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, 
+                 "Constructions" -> <|
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]|>, 
+                 "Assertions" -> {}, "DependencyGraph" -> None, 
+                 "Steps" -> {{
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}}, "Labels" -> {None}, "ManualSteps" -> True, 
+                 "ScheduleValidity" -> <|
+                  "Valid" -> True, "Reasons" -> {}|>|>], "Substrate" -> 
+              Graph[{1, 2, 3}, {Null, {{1, 2}, {2, 3}}}], 
+              "InitialBindings" -> <||>, 
+              "Options" -> <|
+               "Steps" -> All, "MaxDepth" -> DirectedInfinity[1], "MaxStates" -> 
+                DirectedInfinity[1], "MaxEvents" -> DirectedInfinity[1], 
+                "MaxCandidates" -> DirectedInfinity[1], "MaxTime" -> 
+                DirectedInfinity[1], "PoolAcquisition" -> "EagerAll", 
+                "ConstructionSettings" -> {
+                  WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                  WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]}|>, 
+              "Schedule" -> <|
+               1 -> <|"Group" -> 1, 
+                  "Targets" -> {
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p}, "Kinds" -> {"Point"}, "Expression" -> 
+                  WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                  "Dependencies" -> {}|>, 
+                2 -> <|"Group" -> 1, 
+                  "Targets" -> {
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, "Kinds" -> {"Point"}, "Expression" -> 
+                  WolframInstitute`InfraGeometry`InfraMidpoint[1, 1], 
+                  "Dependencies" -> {}|>|>, "Root" -> 1, 
+              "States" -> <|
+               1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 0, 
+                  "Group" -> 1, "Assertions" -> <||>, 
+                  "IncomingEvents" -> {}|>, 
+                2 -> <|"Bindings" -> <|
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                  "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+                3 -> <|"Bindings" -> <|
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                  "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+                4 -> <|"Bindings" -> <|
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                  "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>, 
+              "Events" -> <|
+               1 -> <|"Source" -> 1, "Target" -> 2, "Construction" -> 1, 
+                  "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                  "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                2 -> <|"Source" -> 1, "Target" -> 3, "Construction" -> 2, 
+                  "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                  "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                3 -> <|"Source" -> 2, "Target" -> 4, "Construction" -> 2, 
+                  "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                  "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                4 -> <|"Source" -> 3, "Target" -> 4, "Construction" -> 1, 
+                  "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                  "Outcome" -> "Accepted", "Assertions" -> <||>|>|>, 
+              "StateGraph" -> 
+              Graph[{1, 2, 3, 4}, {{{1, 2}, {1, 3}, {2, 4}, {3, 4}}, Null}], 
+              "Layers" -> <|
+               0 -> <|"States" -> {1}, "Complete" -> True|>, 
+                1 -> <|"States" -> {2, 3}, "Complete" -> True|>, 
+                2 -> <|"States" -> {4}, "Complete" -> True|>|>, 
+              "StepLayers" -> <|
+               0 -> <|"Depth" -> 0, "States" -> {1}, "Complete" -> True|>, 
+                1 -> <|"Depth" -> 2, "States" -> {4}, "Complete" -> True|>|>, 
+              "Instances" -> {
+                
+                WolframInstitute`InfraGeometry`InfraSceneInstance[<|
+                 WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>]}, 
+              "Expansions" -> {<|
+                "Source" -> 1, "Construction" -> 1, "PoolSize" -> 1, 
+                 "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True,
+                  "Reason" -> None|>, <|
+                "Source" -> 1, "Construction" -> 2, "PoolSize" -> 1, 
+                 "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True,
+                  "Reason" -> None|>, <|
+                "Source" -> 2, "Construction" -> 2, "PoolSize" -> 1, 
+                 "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True,
+                  "Reason" -> None|>, <|
+                "Source" -> 3, "Construction" -> 1, "PoolSize" -> 1, 
+                 "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True,
+                  "Reason" -> None|>}, "Frontier" -> {}, "Diagnostics" -> {}, 
+              "Completeness" -> <|
+               "Requested" -> True, "Scene" -> True, "Reasons" -> {}|>, 
+              "Statistics" -> <|
+               "States" -> 4, "Events" -> 4, "Candidates" -> 4, 
+                "ElapsedSeconds" -> 0.002444`3.8396461950664897|>|>[
+             "StepLayers"]]]], StandardForm]]},
+       "RowDefault"]},
+     {
+      TemplateBox[{"\"Binding restriction: \"", 
+        InputFieldBox[
+         Dynamic[
+         WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+restriction$$], Expression], "\"  \"", 
+        ButtonBox[
+        "\"Clear restriction\"", 
+         ButtonFunction :> (
+          WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+restriction$$ = <||>), Appearance -> Automatic, Evaluator -> Automatic, 
+         Method -> "Preemptive"]},
+       "RowDefault"]},
+     {
+      DynamicBox[ToBoxes[
+        With[{
+         WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+collection$ = 
+          If[WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`navigation$$ === "Event depth", 
+            <|
+            "Scene" -> WolframInstitute`InfraGeometry`InfraScene[<|
+               "Objects" -> {
+                 WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, 
+                "Constructions" -> <|
+                 WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]|>, 
+                "Assertions" -> {}, "DependencyGraph" -> None, 
+                "Steps" -> {{
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}}, "Labels" -> {None}, "ManualSteps" -> True, 
+                "ScheduleValidity" -> <|"Valid" -> True, "Reasons" -> {}|>|>],
+              "Substrate" -> Graph[{1, 2, 3}, {Null, {{1, 2}, {2, 3}}}], 
+             "InitialBindings" -> <||>, 
+             "Options" -> <|
+              "Steps" -> All, "MaxDepth" -> DirectedInfinity[1], "MaxStates" -> 
+               DirectedInfinity[1], "MaxEvents" -> DirectedInfinity[1], 
+               "MaxCandidates" -> DirectedInfinity[1], "MaxTime" -> 
+               DirectedInfinity[1], "PoolAcquisition" -> "EagerAll", 
+               "ConstructionSettings" -> {
+                 WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                 WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]}|>, 
+             "Schedule" -> <|
+              1 -> <|"Group" -> 1, 
+                 "Targets" -> {
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p}, "Kinds" -> {"Point"}, "Expression" -> 
+                 WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                 "Dependencies" -> {}|>, 
+               2 -> <|"Group" -> 1, 
+                 "Targets" -> {
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, "Kinds" -> {"Point"}, "Expression" -> 
+                 WolframInstitute`InfraGeometry`InfraMidpoint[1, 1], 
+                 "Dependencies" -> {}|>|>, "Root" -> 1, 
+             "States" -> <|
+              1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 0, 
+                 "Group" -> 1, "Assertions" -> <||>, "IncomingEvents" -> {}|>,
+                2 -> <|"Bindings" -> <|
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                 "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+               3 -> <|"Bindings" -> <|
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                 "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+               4 -> <|
+                "Bindings" -> <|
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                 "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>, 
+             "Events" -> <|
+              1 -> <|"Source" -> 1, "Target" -> 2, "Construction" -> 1, 
+                 "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                 "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+               2 -> <|"Source" -> 1, "Target" -> 3, "Construction" -> 2, 
+                 "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                 "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+               3 -> <|"Source" -> 2, "Target" -> 4, "Construction" -> 2, 
+                 "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                 "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+               4 -> <|"Source" -> 3, "Target" -> 4, "Construction" -> 1, 
+                 "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                 "Outcome" -> "Accepted", "Assertions" -> <||>|>|>, 
+             "StateGraph" -> 
+             Graph[{1, 2, 3, 4}, {{{1, 2}, {1, 3}, {2, 4}, {3, 4}}, Null}], 
+             "Layers" -> <|
+              0 -> <|"States" -> {1}, "Complete" -> True|>, 
+               1 -> <|"States" -> {2, 3}, "Complete" -> True|>, 
+               2 -> <|"States" -> {4}, "Complete" -> True|>|>, 
+             "StepLayers" -> <|
+              0 -> <|"Depth" -> 0, "States" -> {1}, "Complete" -> True|>, 
+               1 -> <|"Depth" -> 2, "States" -> {4}, "Complete" -> True|>|>, 
+             "Instances" -> {
+               
+               WolframInstitute`InfraGeometry`InfraSceneInstance[<|
+                WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                 WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>]}, 
+             "Expansions" -> {<|
+               "Source" -> 1, "Construction" -> 1, "PoolSize" -> 1, 
+                "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True, 
+                "Reason" -> None|>, <|
+               "Source" -> 1, "Construction" -> 2, "PoolSize" -> 1, 
+                "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True, 
+                "Reason" -> None|>, <|
+               "Source" -> 2, "Construction" -> 2, "PoolSize" -> 1, 
+                "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True, 
+                "Reason" -> None|>, <|
+               "Source" -> 3, "Construction" -> 1, "PoolSize" -> 1, 
+                "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True, 
+                "Reason" -> None|>}, "Frontier" -> {}, "Diagnostics" -> {}, 
+             "Completeness" -> <|
+              "Requested" -> True, "Scene" -> True, "Reasons" -> {}|>, 
+             "Statistics" -> <|
+              "States" -> 4, "Events" -> 4, "Candidates" -> 4, 
+               "ElapsedSeconds" -> 0.002444`3.8396461950664897|>|>[
+            "Layers"], 
+            <|
+            "Scene" -> WolframInstitute`InfraGeometry`InfraScene[<|
+               "Objects" -> {
+                 WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, 
+                "Constructions" -> <|
+                 WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]|>, 
+                "Assertions" -> {}, "DependencyGraph" -> None, 
+                "Steps" -> {{
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}}, "Labels" -> {None}, "ManualSteps" -> True, 
+                "ScheduleValidity" -> <|"Valid" -> True, "Reasons" -> {}|>|>],
+              "Substrate" -> Graph[{1, 2, 3}, {Null, {{1, 2}, {2, 3}}}], 
+             "InitialBindings" -> <||>, 
+             "Options" -> <|
+              "Steps" -> All, "MaxDepth" -> DirectedInfinity[1], "MaxStates" -> 
+               DirectedInfinity[1], "MaxEvents" -> DirectedInfinity[1], 
+               "MaxCandidates" -> DirectedInfinity[1], "MaxTime" -> 
+               DirectedInfinity[1], "PoolAcquisition" -> "EagerAll", 
+               "ConstructionSettings" -> {
+                 WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                 WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]}|>, 
+             "Schedule" -> <|
+              1 -> <|"Group" -> 1, 
+                 "Targets" -> {
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p}, "Kinds" -> {"Point"}, "Expression" -> 
+                 WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                 "Dependencies" -> {}|>, 
+               2 -> <|"Group" -> 1, 
+                 "Targets" -> {
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, "Kinds" -> {"Point"}, "Expression" -> 
+                 WolframInstitute`InfraGeometry`InfraMidpoint[1, 1], 
+                 "Dependencies" -> {}|>|>, "Root" -> 1, 
+             "States" -> <|
+              1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 0, 
+                 "Group" -> 1, "Assertions" -> <||>, "IncomingEvents" -> {}|>,
+                2 -> <|"Bindings" -> <|
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                 "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+               3 -> <|"Bindings" -> <|
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                 "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+               4 -> <|"Bindings" -> <|
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                 "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>, 
+             "Events" -> <|
+              1 -> <|"Source" -> 1, "Target" -> 2, "Construction" -> 1, 
+                 "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                 "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+               2 -> <|"Source" -> 1, "Target" -> 3, "Construction" -> 2, 
+                 "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                 "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+               3 -> <|"Source" -> 2, "Target" -> 4, "Construction" -> 2, 
+                 "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                 "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+               4 -> <|"Source" -> 3, "Target" -> 4, "Construction" -> 1, 
+                 "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                 "Outcome" -> "Accepted", "Assertions" -> <||>|>|>, 
+             "StateGraph" -> 
+             Graph[{1, 2, 3, 4}, {{{1, 2}, {1, 3}, {2, 4}, {3, 4}}, Null}], 
+             "Layers" -> <|
+              0 -> <|"States" -> {1}, "Complete" -> True|>, 
+               1 -> <|"States" -> {2, 3}, "Complete" -> True|>, 
+               2 -> <|"States" -> {4}, "Complete" -> True|>|>, 
+             "StepLayers" -> <|
+              0 -> <|"Depth" -> 0, "States" -> {1}, "Complete" -> True|>, 
+               1 -> <|"Depth" -> 2, "States" -> {4}, "Complete" -> True|>|>, 
+             "Instances" -> {
+               
+               WolframInstitute`InfraGeometry`InfraSceneInstance[<|
+                WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                 WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>]}, 
+             "Expansions" -> {<|
+               "Source" -> 1, "Construction" -> 1, "PoolSize" -> 1, 
+                "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True, 
+                "Reason" -> None|>, <|
+               "Source" -> 1, "Construction" -> 2, "PoolSize" -> 1, 
+                "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True, 
+                "Reason" -> None|>, <|
+               "Source" -> 2, "Construction" -> 2, "PoolSize" -> 1, 
+                "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True, 
+                "Reason" -> None|>, <|
+               "Source" -> 3, "Construction" -> 1, "PoolSize" -> 1, 
+                "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True, 
+                "Reason" -> None|>}, "Frontier" -> {}, "Diagnostics" -> {}, 
+             "Completeness" -> <|
+              "Requested" -> True, "Scene" -> True, "Reasons" -> {}|>, 
+             "Statistics" -> <|
+              "States" -> 4, "Events" -> 4, "Candidates" -> 4, 
+               "ElapsedSeconds" -> 0.002444`3.8396461950664897|>|>[
+            "StepLayers"]]}, {
+         WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+layer$ = Lookup[
+           WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`collection$, 
+            Key[
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`boundary$$], 
+            First[
+             Values[
+             WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`collection$]]]}, {
+         WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+depth$ = If[
+           WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`navigation$$ === "Event depth", 
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`boundary$$, 
+            
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`layer$["Depth"]], 
+          WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+matching$ = If[
+            AssociationQ[
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`restriction$$], 
+            Select[
+             
+             WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`layer$["States"], 
+             Function[
+             WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id$, 
+              AllTrue[
+               Keys[
+               WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`restriction$$], 
+               Function[
+               WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`name$, 
+                And[
+                 KeyExistsQ[
+                  <|
+                  1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 0, 
+                    "Group" -> 1, "Assertions" -> <||>, 
+                    "IncomingEvents" -> {}|>, 
+                   2 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+                   3 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+                   4 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>[
+                  WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id$]["Bindings"], 
+                  WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`name$], Lookup[
+                   <|
+                   1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 0,
+                     "Group" -> 1, "Assertions" -> <||>, 
+                    "IncomingEvents" -> {}|>, 
+                    2 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+                    3 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+                    4 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>[
+                   WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id$]["Bindings"], 
+                   Key[
+                   WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`name$]] === 
+                 Lookup[WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`restriction$$, 
+                   Key[
+                   WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`name$]]]]]]], {}]}, {
+         WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+projection$ = 
+          WolframInstitute`InfraGeometry`InfraBranchialGraph[<|
+            "Scene" -> WolframInstitute`InfraGeometry`InfraScene[<|
+               "Objects" -> {
+                 WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, 
+                "Constructions" -> <|
+                 WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]|>, 
+                "Assertions" -> {}, "DependencyGraph" -> None, 
+                "Steps" -> {{
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}}, "Labels" -> {None}, "ManualSteps" -> True, 
+                "ScheduleValidity" -> <|"Valid" -> True, "Reasons" -> {}|>|>],
+              "Substrate" -> Graph[{1, 2, 3}, {Null, {{1, 2}, {2, 3}}}], 
+             "InitialBindings" -> <||>, 
+             "Options" -> <|
+              "Steps" -> All, "MaxDepth" -> DirectedInfinity[1], "MaxStates" -> 
+               DirectedInfinity[1], "MaxEvents" -> DirectedInfinity[1], 
+               "MaxCandidates" -> DirectedInfinity[1], "MaxTime" -> 
+               DirectedInfinity[1], "PoolAcquisition" -> "EagerAll", 
+               "ConstructionSettings" -> {
+                 WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                 WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]}|>, 
+             "Schedule" -> <|
+              1 -> <|"Group" -> 1, 
+                 "Targets" -> {
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p}, "Kinds" -> {"Point"}, "Expression" -> 
+                 WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                 "Dependencies" -> {}|>, 
+               2 -> <|"Group" -> 1, 
+                 "Targets" -> {
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, "Kinds" -> {"Point"}, "Expression" -> 
+                 WolframInstitute`InfraGeometry`InfraMidpoint[1, 1], 
+                 "Dependencies" -> {}|>|>, "Root" -> 1, 
+             "States" -> <|
+              1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 0, 
+                 "Group" -> 1, "Assertions" -> <||>, "IncomingEvents" -> {}|>,
+                2 -> <|"Bindings" -> <|
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                 "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+               3 -> <|"Bindings" -> <|
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                 "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+               4 -> <|"Bindings" -> <|
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                 "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>, 
+             "Events" -> <|
+              1 -> <|"Source" -> 1, "Target" -> 2, "Construction" -> 1, 
+                 "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                 "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+               2 -> <|"Source" -> 1, "Target" -> 3, "Construction" -> 2, 
+                 "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                 "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+               3 -> <|"Source" -> 2, "Target" -> 4, "Construction" -> 2, 
+                 "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                 "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+               4 -> <|"Source" -> 3, "Target" -> 4, "Construction" -> 1, 
+                 "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                 "Outcome" -> "Accepted", "Assertions" -> <||>|>|>, 
+             "StateGraph" -> 
+             Graph[{1, 2, 3, 4}, {{{1, 2}, {1, 3}, {2, 4}, {3, 4}}, Null}], 
+             "Layers" -> <|
+              0 -> <|"States" -> {1}, "Complete" -> True|>, 
+               1 -> <|"States" -> {2, 3}, "Complete" -> True|>, 
+               2 -> <|"States" -> {4}, "Complete" -> True|>|>, 
+             "StepLayers" -> <|
+              0 -> <|"Depth" -> 0, "States" -> {1}, "Complete" -> True|>, 
+               1 -> <|"Depth" -> 2, "States" -> {4}, "Complete" -> True|>|>, 
+             "Instances" -> {
+               
+               WolframInstitute`InfraGeometry`InfraSceneInstance[<|
+                WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                 WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>]}, 
+             "Expansions" -> {<|
+               "Source" -> 1, "Construction" -> 1, "PoolSize" -> 1, 
+                "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True, 
+                "Reason" -> None|>, <|
+               "Source" -> 1, "Construction" -> 2, "PoolSize" -> 1, 
+                "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True, 
+                "Reason" -> None|>, <|
+               "Source" -> 2, "Construction" -> 2, "PoolSize" -> 1, 
+                "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True, 
+                "Reason" -> None|>, <|
+               "Source" -> 3, "Construction" -> 1, "PoolSize" -> 1, 
+                "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> True, 
+                "Reason" -> None|>}, "Frontier" -> {}, "Diagnostics" -> {}, 
+             "Completeness" -> <|
+              "Requested" -> True, "Scene" -> True, "Reasons" -> {}|>, 
+             "Statistics" -> <|
+              "States" -> 4, "Events" -> 4, "Candidates" -> 4, 
+               "ElapsedSeconds" -> 0.002444`3.8396461950664897|>|>, 
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`depth$]}, {
+         WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+branchial$ = Subgraph[
+            
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`projection$["Graph"], 
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`matching$], 
+          WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+witnesses$ = KeySelect[
+            
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`projection$["Witnesses"], 
+            Function[
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`edge$, 
+             ContainsAll[
+             WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`matching$, 
+              Apply[
+              List, WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`edge$]]]]}, 
+         WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+selectedState$$ = If[
+            MemberQ[
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`matching$, 
+             WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`selectedState$$], 
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`selectedState$$, 
+            First[
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`matching$, None]]; Column[{
+            Row[{
+              If[
+               TrueQ[
+                
+                WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`layer$["Complete"]], "Complete", "Partial exploration"], 
+              " at ", 
+              ToLowerCase[
+              WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`navigation$$], " ", 
+              WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`boundary$$, "; event depth ", 
+              WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`depth$}], 
+            Row[{"Whole scene: ", 
+              Which[
+               TrueQ[
+                <|
+                "Scene" -> 
+                 WolframInstitute`InfraGeometry`InfraScene[<|
+                   "Objects" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, "Constructions" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]|>, 
+                    "Assertions" -> {}, "DependencyGraph" -> None, 
+                    "Steps" -> {{
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}}, "Labels" -> {None}, "ManualSteps" -> True, 
+                    "ScheduleValidity" -> <|
+                    "Valid" -> True, "Reasons" -> {}|>|>], "Substrate" -> 
+                 Graph[{1, 2, 3}, {Null, {{1, 2}, {2, 3}}}], 
+                 "InitialBindings" -> <||>, 
+                 "Options" -> <|
+                  "Steps" -> All, "MaxDepth" -> DirectedInfinity[1], 
+                   "MaxStates" -> DirectedInfinity[1], "MaxEvents" -> 
+                   DirectedInfinity[1], "MaxCandidates" -> 
+                   DirectedInfinity[1], "MaxTime" -> DirectedInfinity[1], 
+                   "PoolAcquisition" -> "EagerAll", "ConstructionSettings" -> {
+                    WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                    WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]}|>, 
+                 "Schedule" -> <|
+                  1 -> <|"Group" -> 1, 
+                    "Targets" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p}, "Kinds" -> {"Point"}, "Expression" -> 
+                    WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                    "Dependencies" -> {}|>, 
+                   2 -> <|"Group" -> 1, 
+                    "Targets" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, "Kinds" -> {"Point"}, "Expression" -> 
+                    WolframInstitute`InfraGeometry`InfraMidpoint[1, 1], 
+                    "Dependencies" -> {}|>|>, "Root" -> 1, 
+                 "States" -> <|
+                  1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 0, 
+                    "Group" -> 1, "Assertions" -> <||>, 
+                    "IncomingEvents" -> {}|>, 
+                   2 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+                   3 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+                   4 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>, 
+                 "Events" -> <|
+                  1 -> <|"Source" -> 1, "Target" -> 2, "Construction" -> 1, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                   2 -> <|"Source" -> 1, "Target" -> 3, "Construction" -> 2, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                   3 -> <|"Source" -> 2, "Target" -> 4, "Construction" -> 2, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                   4 -> <|"Source" -> 3, "Target" -> 4, "Construction" -> 1, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>|>, 
+                 "StateGraph" -> 
+                 Graph[{1, 2, 3, 
+                   4}, {{{1, 2}, {1, 3}, {2, 4}, {3, 4}}, Null}], 
+                 "Layers" -> <|
+                  0 -> <|"States" -> {1}, "Complete" -> True|>, 
+                   1 -> <|"States" -> {2, 3}, "Complete" -> True|>, 
+                   2 -> <|"States" -> {4}, "Complete" -> True|>|>, 
+                 "StepLayers" -> <|
+                  0 -> <|"Depth" -> 0, "States" -> {1}, "Complete" -> True|>, 
+                   1 -> <|"Depth" -> 2, "States" -> {4}, "Complete" -> 
+                    True|>|>, "Instances" -> {
+                   
+                   WolframInstitute`InfraGeometry`InfraSceneInstance[<|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>]}, 
+                 "Expansions" -> {<|
+                   "Source" -> 1, "Construction" -> 1, "PoolSize" -> 1, 
+                    "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                    True, "Reason" -> None|>, <|
+                   "Source" -> 1, "Construction" -> 2, "PoolSize" -> 1, 
+                    "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                    True, "Reason" -> None|>, <|
+                   "Source" -> 2, "Construction" -> 2, "PoolSize" -> 1, 
+                    "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                    True, "Reason" -> None|>, <|
+                   "Source" -> 3, "Construction" -> 1, "PoolSize" -> 1, 
+                    "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                    True, "Reason" -> None|>}, "Frontier" -> {}, 
+                 "Diagnostics" -> {}, 
+                 "Completeness" -> <|
+                  "Requested" -> True, "Scene" -> True, "Reasons" -> {}|>, 
+                 "Statistics" -> <|
+                  "States" -> 4, "Events" -> 4, "Candidates" -> 4, 
+                   "ElapsedSeconds" -> 0.002444`3.8396461950664897|>|>[
+                "Completeness"]["Scene"]], "Complete", 
+               ContainsAny[
+                <|
+                "Scene" -> 
+                 WolframInstitute`InfraGeometry`InfraScene[<|
+                   "Objects" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, "Constructions" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]|>, 
+                    "Assertions" -> {}, "DependencyGraph" -> None, 
+                    "Steps" -> {{
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}}, "Labels" -> {None}, "ManualSteps" -> True, 
+                    "ScheduleValidity" -> <|
+                    "Valid" -> True, "Reasons" -> {}|>|>], "Substrate" -> 
+                 Graph[{1, 2, 3}, {Null, {{1, 2}, {2, 3}}}], 
+                 "InitialBindings" -> <||>, 
+                 "Options" -> <|
+                  "Steps" -> All, "MaxDepth" -> DirectedInfinity[1], 
+                   "MaxStates" -> DirectedInfinity[1], "MaxEvents" -> 
+                   DirectedInfinity[1], "MaxCandidates" -> 
+                   DirectedInfinity[1], "MaxTime" -> DirectedInfinity[1], 
+                   "PoolAcquisition" -> "EagerAll", "ConstructionSettings" -> {
+                    WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                    WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]}|>, 
+                 "Schedule" -> <|
+                  1 -> <|"Group" -> 1, 
+                    "Targets" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p}, "Kinds" -> {"Point"}, "Expression" -> 
+                    WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                    "Dependencies" -> {}|>, 
+                   2 -> <|"Group" -> 1, 
+                    "Targets" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, "Kinds" -> {"Point"}, "Expression" -> 
+                    WolframInstitute`InfraGeometry`InfraMidpoint[1, 1], 
+                    "Dependencies" -> {}|>|>, "Root" -> 1, 
+                 "States" -> <|
+                  1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 0, 
+                    "Group" -> 1, "Assertions" -> <||>, 
+                    "IncomingEvents" -> {}|>, 
+                   2 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+                   3 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+                   4 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>, 
+                 "Events" -> <|
+                  1 -> <|"Source" -> 1, "Target" -> 2, "Construction" -> 1, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                   2 -> <|"Source" -> 1, "Target" -> 3, "Construction" -> 2, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                   3 -> <|"Source" -> 2, "Target" -> 4, "Construction" -> 2, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                   4 -> <|"Source" -> 3, "Target" -> 4, "Construction" -> 1, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>|>, 
+                 "StateGraph" -> 
+                 Graph[{1, 2, 3, 
+                   4}, {{{1, 2}, {1, 3}, {2, 4}, {3, 4}}, Null}], 
+                 "Layers" -> <|
+                  0 -> <|"States" -> {1}, "Complete" -> True|>, 
+                   1 -> <|"States" -> {2, 3}, "Complete" -> True|>, 
+                   2 -> <|"States" -> {4}, "Complete" -> True|>|>, 
+                 "StepLayers" -> <|
+                  0 -> <|"Depth" -> 0, "States" -> {1}, "Complete" -> True|>, 
+                   1 -> <|"Depth" -> 2, "States" -> {4}, "Complete" -> 
+                    True|>|>, "Instances" -> {
+                   
+                   WolframInstitute`InfraGeometry`InfraSceneInstance[<|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>]}, 
+                 "Expansions" -> {<|
+                   "Source" -> 1, "Construction" -> 1, "PoolSize" -> 1, 
+                    "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                    True, "Reason" -> None|>, <|
+                   "Source" -> 1, "Construction" -> 2, "PoolSize" -> 1, 
+                    "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                    True, "Reason" -> None|>, <|
+                   "Source" -> 2, "Construction" -> 2, "PoolSize" -> 1, 
+                    "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                    True, "Reason" -> None|>, <|
+                   "Source" -> 3, "Construction" -> 1, "PoolSize" -> 1, 
+                    "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                    True, "Reason" -> None|>}, "Frontier" -> {}, 
+                 "Diagnostics" -> {}, 
+                 "Completeness" -> <|
+                  "Requested" -> True, "Scene" -> True, "Reasons" -> {}|>, 
+                 "Statistics" -> <|
+                  "States" -> 4, "Events" -> 4, "Candidates" -> 4, 
+                   "ElapsedSeconds" -> 0.002444`3.8396461950664897|>|>[
+                "Completeness"]["Reasons"], {"Unsupported", "UnboundInput"}], 
+               "Undecided", True, "Partial exploration"]}], 
+            
+            If[<|"Scene" -> 
+               WolframInstitute`InfraGeometry`InfraScene[<|
+                 "Objects" -> {
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, 
+                  "Constructions" -> <|
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]|>, 
+                  "Assertions" -> {}, "DependencyGraph" -> None, 
+                  "Steps" -> {{
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}}, "Labels" -> {None}, "ManualSteps" -> True, 
+                  "ScheduleValidity" -> <|
+                   "Valid" -> True, "Reasons" -> {}|>|>], "Substrate" -> 
+               Graph[{1, 2, 3}, {Null, {{1, 2}, {2, 3}}}], 
+               "InitialBindings" -> <||>, 
+               "Options" -> <|
+                "Steps" -> All, "MaxDepth" -> DirectedInfinity[1], 
+                 "MaxStates" -> DirectedInfinity[1], "MaxEvents" -> 
+                 DirectedInfinity[1], "MaxCandidates" -> DirectedInfinity[1], 
+                 "MaxTime" -> DirectedInfinity[1], "PoolAcquisition" -> 
+                 "EagerAll", "ConstructionSettings" -> {
+                   WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                   WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]}|>, 
+               "Schedule" -> <|
+                1 -> <|"Group" -> 1, 
+                   "Targets" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p}, "Kinds" -> {"Point"}, "Expression" -> 
+                   WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                   "Dependencies" -> {}|>, 
+                 2 -> <|"Group" -> 1, 
+                   "Targets" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, "Kinds" -> {"Point"}, "Expression" -> 
+                   WolframInstitute`InfraGeometry`InfraMidpoint[1, 1], 
+                   "Dependencies" -> {}|>|>, "Root" -> 1, 
+               "States" -> <|
+                1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 0, 
+                   "Group" -> 1, "Assertions" -> <||>, 
+                   "IncomingEvents" -> {}|>, 
+                 2 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                   "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+                 3 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                   "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+                 4 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                   "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>, 
+               "Events" -> <|
+                1 -> <|"Source" -> 1, "Target" -> 2, "Construction" -> 1, 
+                   "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                   "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                 2 -> <|"Source" -> 1, "Target" -> 3, "Construction" -> 2, 
+                   "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                   "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                 3 -> <|"Source" -> 2, "Target" -> 4, "Construction" -> 2, 
+                   "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                   "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                 4 -> <|"Source" -> 3, "Target" -> 4, "Construction" -> 1, 
+                   "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                   "Outcome" -> "Accepted", "Assertions" -> <||>|>|>, 
+               "StateGraph" -> 
+               Graph[{1, 2, 3, 4}, {{{1, 2}, {1, 3}, {2, 4}, {3, 4}}, Null}], 
+               "Layers" -> <|
+                0 -> <|"States" -> {1}, "Complete" -> True|>, 
+                 1 -> <|"States" -> {2, 3}, "Complete" -> True|>, 
+                 2 -> <|"States" -> {4}, "Complete" -> True|>|>, 
+               "StepLayers" -> <|
+                0 -> <|"Depth" -> 0, "States" -> {1}, "Complete" -> True|>, 
+                 1 -> <|"Depth" -> 2, "States" -> {4}, "Complete" -> True|>|>,
+                "Instances" -> {
+                 
+                 WolframInstitute`InfraGeometry`InfraSceneInstance[<|
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>]}, 
+               "Expansions" -> {<|
+                 "Source" -> 1, "Construction" -> 1, "PoolSize" -> 1, 
+                  "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                  True, "Reason" -> None|>, <|
+                 "Source" -> 1, "Construction" -> 2, "PoolSize" -> 1, 
+                  "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                  True, "Reason" -> None|>, <|
+                 "Source" -> 2, "Construction" -> 2, "PoolSize" -> 1, 
+                  "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                  True, "Reason" -> None|>, <|
+                 "Source" -> 3, "Construction" -> 1, "PoolSize" -> 1, 
+                  "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                  True, "Reason" -> None|>}, "Frontier" -> {}, 
+               "Diagnostics" -> {}, 
+               "Completeness" -> <|
+                "Requested" -> True, "Scene" -> True, "Reasons" -> {}|>, 
+               "Statistics" -> <|
+                "States" -> 4, "Events" -> 4, "Candidates" -> 4, 
+                 "ElapsedSeconds" -> 0.002444`3.8396461950664897|>|>[
+              "Completeness"]["Reasons"] === {}, Nothing, 
+             Row[{"Exploration boundary: ", 
+               Row[
+                <|
+                "Scene" -> 
+                 WolframInstitute`InfraGeometry`InfraScene[<|
+                   "Objects" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, "Constructions" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]|>, 
+                    "Assertions" -> {}, "DependencyGraph" -> None, 
+                    "Steps" -> {{
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}}, "Labels" -> {None}, "ManualSteps" -> True, 
+                    "ScheduleValidity" -> <|
+                    "Valid" -> True, "Reasons" -> {}|>|>], "Substrate" -> 
+                 Graph[{1, 2, 3}, {Null, {{1, 2}, {2, 3}}}], 
+                 "InitialBindings" -> <||>, 
+                 "Options" -> <|
+                  "Steps" -> All, "MaxDepth" -> DirectedInfinity[1], 
+                   "MaxStates" -> DirectedInfinity[1], "MaxEvents" -> 
+                   DirectedInfinity[1], "MaxCandidates" -> 
+                   DirectedInfinity[1], "MaxTime" -> DirectedInfinity[1], 
+                   "PoolAcquisition" -> "EagerAll", "ConstructionSettings" -> {
+                    WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                    WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]}|>, 
+                 "Schedule" -> <|
+                  1 -> <|"Group" -> 1, 
+                    "Targets" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p}, "Kinds" -> {"Point"}, "Expression" -> 
+                    WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                    "Dependencies" -> {}|>, 
+                   2 -> <|"Group" -> 1, 
+                    "Targets" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, "Kinds" -> {"Point"}, "Expression" -> 
+                    WolframInstitute`InfraGeometry`InfraMidpoint[1, 1], 
+                    "Dependencies" -> {}|>|>, "Root" -> 1, 
+                 "States" -> <|
+                  1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 0, 
+                    "Group" -> 1, "Assertions" -> <||>, 
+                    "IncomingEvents" -> {}|>, 
+                   2 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+                   3 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+                   4 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>, 
+                 "Events" -> <|
+                  1 -> <|"Source" -> 1, "Target" -> 2, "Construction" -> 1, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                   2 -> <|"Source" -> 1, "Target" -> 3, "Construction" -> 2, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                   3 -> <|"Source" -> 2, "Target" -> 4, "Construction" -> 2, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                   4 -> <|"Source" -> 3, "Target" -> 4, "Construction" -> 1, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>|>, 
+                 "StateGraph" -> 
+                 Graph[{1, 2, 3, 
+                   4}, {{{1, 2}, {1, 3}, {2, 4}, {3, 4}}, Null}], "Layers" -> 
+                 <|0 -> <|"States" -> {1}, "Complete" -> True|>, 
+                   1 -> <|"States" -> {2, 3}, "Complete" -> True|>, 
+                   2 -> <|"States" -> {4}, "Complete" -> True|>|>, 
+                 "StepLayers" -> <|
+                  0 -> <|"Depth" -> 0, "States" -> {1}, "Complete" -> True|>, 
+                   1 -> <|"Depth" -> 2, "States" -> {4}, "Complete" -> 
+                    True|>|>, "Instances" -> {
+                   
+                   WolframInstitute`InfraGeometry`InfraSceneInstance[<|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>]}, 
+                 "Expansions" -> {<|
+                   "Source" -> 1, "Construction" -> 1, "PoolSize" -> 1, 
+                    "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                    True, "Reason" -> None|>, <|
+                   "Source" -> 1, "Construction" -> 2, "PoolSize" -> 1, 
+                    "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                    True, "Reason" -> None|>, <|
+                   "Source" -> 2, "Construction" -> 2, "PoolSize" -> 1, 
+                    "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                    True, "Reason" -> None|>, <|
+                   "Source" -> 3, "Construction" -> 1, "PoolSize" -> 1, 
+                    "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                    True, "Reason" -> None|>}, "Frontier" -> {}, 
+                 "Diagnostics" -> {}, 
+                 "Completeness" -> <|
+                  "Requested" -> True, "Scene" -> True, "Reasons" -> {}|>, 
+                 "Statistics" -> <|
+                  "States" -> 4, "Events" -> 4, "Candidates" -> 4, 
+                   "ElapsedSeconds" -> 0.002444`3.8396461950664897|>|>[
+                "Completeness"]["Reasons"], ", "]}]], 
+            If[
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`restriction$$ === <||>, Nothing, 
+             
+             Row[{"Filtered view: ", 
+               WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`restriction$$}]], 
+            Row[{"Saved initial bindings: ", 
+              <|
+              "Scene" -> WolframInstitute`InfraGeometry`InfraScene[<|
+                 "Objects" -> {
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, 
+                  "Constructions" -> <|
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]|>, 
+                  "Assertions" -> {}, "DependencyGraph" -> None, 
+                  "Steps" -> {{
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}}, "Labels" -> {None}, "ManualSteps" -> True, 
+                  "ScheduleValidity" -> <|
+                   "Valid" -> True, "Reasons" -> {}|>|>], "Substrate" -> 
+               Graph[{1, 2, 3}, {Null, {{1, 2}, {2, 3}}}], 
+               "InitialBindings" -> <||>, 
+               "Options" -> <|
+                "Steps" -> All, "MaxDepth" -> DirectedInfinity[1], 
+                 "MaxStates" -> DirectedInfinity[1], "MaxEvents" -> 
+                 DirectedInfinity[1], "MaxCandidates" -> DirectedInfinity[1], 
+                 "MaxTime" -> DirectedInfinity[1], "PoolAcquisition" -> 
+                 "EagerAll", "ConstructionSettings" -> {
+                   WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                   WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]}|>, 
+               "Schedule" -> <|
+                1 -> <|"Group" -> 1, 
+                   "Targets" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p}, "Kinds" -> {"Point"}, "Expression" -> 
+                   WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                   "Dependencies" -> {}|>, 
+                 2 -> <|"Group" -> 1, 
+                   "Targets" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, "Kinds" -> {"Point"}, "Expression" -> 
+                   WolframInstitute`InfraGeometry`InfraMidpoint[1, 1], 
+                   "Dependencies" -> {}|>|>, "Root" -> 1, 
+               "States" -> <|
+                1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 0, 
+                   "Group" -> 1, "Assertions" -> <||>, 
+                   "IncomingEvents" -> {}|>, 
+                 2 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                   "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+                 3 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                   "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+                 4 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                   "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>, 
+               "Events" -> <|
+                1 -> <|"Source" -> 1, "Target" -> 2, "Construction" -> 1, 
+                   "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                   "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                 2 -> <|"Source" -> 1, "Target" -> 3, "Construction" -> 2, 
+                   "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                   "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                 3 -> <|"Source" -> 2, "Target" -> 4, "Construction" -> 2, 
+                   "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                   "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                 4 -> <|"Source" -> 3, "Target" -> 4, "Construction" -> 1, 
+                   "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                   "Outcome" -> "Accepted", "Assertions" -> <||>|>|>, 
+               "StateGraph" -> 
+               Graph[{1, 2, 3, 4}, {{{1, 2}, {1, 3}, {2, 4}, {3, 4}}, Null}], 
+               "Layers" -> <|
+                0 -> <|"States" -> {1}, "Complete" -> True|>, 
+                 1 -> <|"States" -> {2, 3}, "Complete" -> True|>, 
+                 2 -> <|"States" -> {4}, "Complete" -> True|>|>, 
+               "StepLayers" -> <|
+                0 -> <|"Depth" -> 0, "States" -> {1}, "Complete" -> True|>, 
+                 1 -> <|"Depth" -> 2, "States" -> {4}, "Complete" -> True|>|>,
+                "Instances" -> {
+                 
+                 WolframInstitute`InfraGeometry`InfraSceneInstance[<|
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>]}, 
+               "Expansions" -> {<|
+                 "Source" -> 1, "Construction" -> 1, "PoolSize" -> 1, 
+                  "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                  True, "Reason" -> None|>, <|
+                 "Source" -> 1, "Construction" -> 2, "PoolSize" -> 1, 
+                  "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                  True, "Reason" -> None|>, <|
+                 "Source" -> 2, "Construction" -> 2, "PoolSize" -> 1, 
+                  "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                  True, "Reason" -> None|>, <|
+                 "Source" -> 3, "Construction" -> 1, "PoolSize" -> 1, 
+                  "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                  True, "Reason" -> None|>}, "Frontier" -> {}, 
+               "Diagnostics" -> {}, 
+               "Completeness" -> <|
+                "Requested" -> True, "Scene" -> True, "Reasons" -> {}|>, 
+               "Statistics" -> <|
+                "States" -> 4, "Events" -> 4, "Candidates" -> 4, 
+                 "ElapsedSeconds" -> 0.002444`3.8396461950664897|>|>[
+              "InitialBindings"]}], 
+            
+            If[<|"Scene" -> 
+               WolframInstitute`InfraGeometry`InfraScene[<|
+                 "Objects" -> {
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, 
+                  "Constructions" -> <|
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]|>, 
+                  "Assertions" -> {}, "DependencyGraph" -> None, 
+                  "Steps" -> {{
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}}, "Labels" -> {None}, "ManualSteps" -> True, 
+                  "ScheduleValidity" -> <|
+                   "Valid" -> True, "Reasons" -> {}|>|>], "Substrate" -> 
+               Graph[{1, 2, 3}, {Null, {{1, 2}, {2, 3}}}], 
+               "InitialBindings" -> <||>, 
+               "Options" -> <|
+                "Steps" -> All, "MaxDepth" -> DirectedInfinity[1], 
+                 "MaxStates" -> DirectedInfinity[1], "MaxEvents" -> 
+                 DirectedInfinity[1], "MaxCandidates" -> DirectedInfinity[1], 
+                 "MaxTime" -> DirectedInfinity[1], "PoolAcquisition" -> 
+                 "EagerAll", "ConstructionSettings" -> {
+                   WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                   WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]}|>, 
+               "Schedule" -> <|
+                1 -> <|"Group" -> 1, 
+                   "Targets" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p}, "Kinds" -> {"Point"}, "Expression" -> 
+                   WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                   "Dependencies" -> {}|>, 
+                 2 -> <|"Group" -> 1, 
+                   "Targets" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, "Kinds" -> {"Point"}, "Expression" -> 
+                   WolframInstitute`InfraGeometry`InfraMidpoint[1, 1], 
+                   "Dependencies" -> {}|>|>, "Root" -> 1, 
+               "States" -> <|
+                1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 0, 
+                   "Group" -> 1, "Assertions" -> <||>, 
+                   "IncomingEvents" -> {}|>, 
+                 2 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                   "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+                 3 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                   "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+                 4 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                   "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>, 
+               "Events" -> <|
+                1 -> <|"Source" -> 1, "Target" -> 2, "Construction" -> 1, 
+                   "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                   "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                 2 -> <|"Source" -> 1, "Target" -> 3, "Construction" -> 2, 
+                   "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                   "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                 3 -> <|"Source" -> 2, "Target" -> 4, "Construction" -> 2, 
+                   "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                   "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                 4 -> <|"Source" -> 3, "Target" -> 4, "Construction" -> 1, 
+                   "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                   "Outcome" -> "Accepted", "Assertions" -> <||>|>|>, 
+               "StateGraph" -> 
+               Graph[{1, 2, 3, 4}, {{{1, 2}, {1, 3}, {2, 4}, {3, 4}}, Null}], 
+               "Layers" -> <|
+                0 -> <|"States" -> {1}, "Complete" -> True|>, 
+                 1 -> <|"States" -> {2, 3}, "Complete" -> True|>, 
+                 2 -> <|"States" -> {4}, "Complete" -> True|>|>, 
+               "StepLayers" -> <|
+                0 -> <|"Depth" -> 0, "States" -> {1}, "Complete" -> True|>, 
+                 1 -> <|"Depth" -> 2, "States" -> {4}, "Complete" -> True|>|>,
+                "Instances" -> {
+                 
+                 WolframInstitute`InfraGeometry`InfraSceneInstance[<|
+                  WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                   WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>]}, 
+               "Expansions" -> {<|
+                 "Source" -> 1, "Construction" -> 1, "PoolSize" -> 1, 
+                  "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                  True, "Reason" -> None|>, <|
+                 "Source" -> 1, "Construction" -> 2, "PoolSize" -> 1, 
+                  "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                  True, "Reason" -> None|>, <|
+                 "Source" -> 2, "Construction" -> 2, "PoolSize" -> 1, 
+                  "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                  True, "Reason" -> None|>, <|
+                 "Source" -> 3, "Construction" -> 1, "PoolSize" -> 1, 
+                  "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                  True, "Reason" -> None|>}, "Frontier" -> {}, 
+               "Diagnostics" -> {}, 
+               "Completeness" -> <|
+                "Requested" -> True, "Scene" -> True, "Reasons" -> {}|>, 
+               "Statistics" -> <|
+                "States" -> 4, "Events" -> 4, "Candidates" -> 4, 
+                 "ElapsedSeconds" -> 0.002444`3.8396461950664897|>|>[
+              "Frontier"] === {}, Nothing, 
+             Grid[
+              Prepend[
+               Map[
+                Function[
+                WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`obligation, 
+                 Lookup[
+                 WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`obligation, {
+                  "Source", "Construction", "NextCandidate", "Reason"}]], 
+                <|
+                "Scene" -> 
+                 WolframInstitute`InfraGeometry`InfraScene[<|
+                   "Objects" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, "Constructions" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]|>, 
+                    "Assertions" -> {}, "DependencyGraph" -> None, 
+                    "Steps" -> {{
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}}, "Labels" -> {None}, "ManualSteps" -> True, 
+                    "ScheduleValidity" -> <|
+                    "Valid" -> True, "Reasons" -> {}|>|>], "Substrate" -> 
+                 Graph[{1, 2, 3}, {Null, {{1, 2}, {2, 3}}}], 
+                 "InitialBindings" -> <||>, 
+                 "Options" -> <|
+                  "Steps" -> All, "MaxDepth" -> DirectedInfinity[1], 
+                   "MaxStates" -> DirectedInfinity[1], "MaxEvents" -> 
+                   DirectedInfinity[1], "MaxCandidates" -> 
+                   DirectedInfinity[1], "MaxTime" -> DirectedInfinity[1], 
+                   "PoolAcquisition" -> "EagerAll", "ConstructionSettings" -> {
+                    WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                    WolframInstitute`InfraGeometry`InfraMidpoint[1, 1]}|>, 
+                 "Schedule" -> <|
+                  1 -> <|"Group" -> 1, 
+                    "Targets" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p}, "Kinds" -> {"Point"}, "Expression" -> 
+                    WolframInstitute`InfraGeometry`InfraMidpoint[1, 3], 
+                    "Dependencies" -> {}|>, 
+                   2 -> <|"Group" -> 1, 
+                    "Targets" -> {
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q}, "Kinds" -> {"Point"}, "Expression" -> 
+                    WolframInstitute`InfraGeometry`InfraMidpoint[1, 1], 
+                    "Dependencies" -> {}|>|>, "Root" -> 1, 
+                 "States" -> <|
+                  1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 0, 
+                    "Group" -> 1, "Assertions" -> <||>, 
+                    "IncomingEvents" -> {}|>, 
+                   2 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+                   3 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+                   4 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>, 
+                 "Events" -> <|
+                  1 -> <|"Source" -> 1, "Target" -> 2, "Construction" -> 1, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                   2 -> <|"Source" -> 1, "Target" -> 3, "Construction" -> 2, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                   3 -> <|"Source" -> 2, "Target" -> 4, "Construction" -> 2, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                   4 -> <|"Source" -> 3, "Target" -> 4, "Construction" -> 1, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>|>, 
+                 "StateGraph" -> 
+                 Graph[{1, 2, 3, 
+                   4}, {{{1, 2}, {1, 3}, {2, 4}, {3, 4}}, Null}], 
+                 "Layers" -> <|
+                  0 -> <|"States" -> {1}, "Complete" -> True|>, 
+                   1 -> <|"States" -> {2, 3}, "Complete" -> True|>, 
+                   2 -> <|"States" -> {4}, "Complete" -> True|>|>, 
+                 "StepLayers" -> <|
+                  0 -> <|"Depth" -> 0, "States" -> {1}, "Complete" -> True|>, 
+                   1 -> <|"Depth" -> 2, "States" -> {4}, "Complete" -> 
+                    True|>|>, "Instances" -> {
+                   
+                   WolframInstitute`InfraGeometry`InfraSceneInstance[<|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>]}, 
+                 "Expansions" -> {<|
+                   "Source" -> 1, "Construction" -> 1, "PoolSize" -> 1, 
+                    "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                    True, "Reason" -> None|>, <|
+                   "Source" -> 1, "Construction" -> 2, "PoolSize" -> 1, 
+                    "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                    True, "Reason" -> None|>, <|
+                   "Source" -> 2, "Construction" -> 2, "PoolSize" -> 1, 
+                    "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                    True, "Reason" -> None|>, <|
+                   "Source" -> 3, "Construction" -> 1, "PoolSize" -> 1, 
+                    "SelectedPoolSize" -> 1, "Examined" -> 1, "Complete" -> 
+                    True, "Reason" -> None|>}, "Frontier" -> {}, 
+                 "Diagnostics" -> {}, 
+                 "Completeness" -> <|
+                  "Requested" -> True, "Scene" -> True, "Reasons" -> {}|>, 
+                 "Statistics" -> <|
+                  "States" -> 4, "Events" -> 4, "Candidates" -> 4, 
+                   "ElapsedSeconds" -> 0.002444`3.8396461950664897|>|>[
+                "Frontier"]], {
+               "Unfinished state", "Construction", "Next candidate", 
+                "Reason"}], Alignment -> Left]], 
+            If[
+            WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`matching$ === {}, 
+             Column[{"No matching saved states at this boundary.", 
+               If[
+                And[
+                 TrueQ[
+                  
+                  WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`layer$["Complete"]], 
+                 WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`restriction$$ === <||>], "This layer is exhaustively empty.", 
+                "This view makes no negative existence claim."], 
+               WolframInstitute`InfraGeometry`InfraSubstrateHighlight[
+                Graph[{1, 2, 3}, {Null, {{1, 2}, {2, 3}}}], {}, 
+                Apply[Sequence, {}]]}], 
+             
+             With[{WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`state$ = <|
+                1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 0, 
+                   "Group" -> 1, "Assertions" -> <||>, 
+                   "IncomingEvents" -> {}|>, 
+                 2 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                   "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+                 3 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                   "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+                 4 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                   "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>[
+                WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`selectedState$$]}, {
+              WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`historyStates$ = Reverse[
+                 DeleteCases[
+                  NestWhileList[
+                   Function[
+                   WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id$, 
+                    
+                    With[{WolframInstitute`InfraGeometry`\
+InfraSceneInteractive`PackagePrivate`eventID$ = 
+                    Lookup[WolframInstitute`InfraGeometry`\
+InfraSceneInteractive`PackagePrivate`incomingChoices$$, 
+                    Key[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id$], 
+                    First[
+                    <|
+                    1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 
+                    0, "Group" -> 1, "Assertions" -> <||>, 
+                    "IncomingEvents" -> {}|>, 
+                    2 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+                    3 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+                    4 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id$]["IncomingEvents"], None]]}, 
+                    If[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`eventID$ === None, None, 
+                    <|1 -> <|
+                    "Source" -> 1, "Target" -> 2, "Construction" -> 1, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                    2 -> <|"Source" -> 1, "Target" -> 3, "Construction" -> 2, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                    3 -> <|"Source" -> 2, "Target" -> 4, "Construction" -> 2, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                    4 -> <|"Source" -> 3, "Target" -> 4, "Construction" -> 1, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>|>[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`eventID$]["Source"]]]], 
+                   WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`selectedState$$, 
+                   Function[
+                   WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id, 
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id =!= None], 1, 
+                   WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`state$["Depth"] + 1], None]]}, {
+              WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`history$ = Map[
+                 Function[
+                 WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id$, 
+                  Lookup[
+                  WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`incomingChoices$$, 
+                   Key[
+                   WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id$], 
+                   First[
+                    <|
+                    1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 
+                    0, "Group" -> 1, "Assertions" -> <||>, 
+                    "IncomingEvents" -> {}|>, 
+                    2 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+                    3 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+                    4 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id$]["IncomingEvents"]]]], 
+                 Rest[
+                 WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`historyStates$]], 
+               WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`neighbors$ = 
+               AdjacencyList[
+                WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`branchial$, 
+                 WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`selectedState$$]}, 
+              Column[{
+                Row[{"State: ", 
+                  PopupMenu[
+                   Dynamic[
+                   WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`selectedState$$], 
+                   WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`matching$], "; event depth ", 
+                  
+                  WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`state$["Depth"], "; next group ", 
+                  
+                  WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`state$["Group"]}], 
+                Row[{"Bindings: ", 
+                  
+                  WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`state$["Bindings"]}], 
+                If[
+                 MemberQ[
+                  Values[
+                   
+                   WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`state$["Assertions"]], "Unsupported"], 
+                 "Undecided: an unsupported assertion blocks this state.", 
+                 If[
+                  MemberQ[
+                   Values[
+                    
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`state$["Assertions"]], "Pending"], 
+                  "Undecided: assertions are pending at this state.", 
+                  "Assertions decided."]], 
+                Row[{"Assertions: ", 
+                  
+                  WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`state$["Assertions"]}], 
+                Row[{
+                  WolframInstitute`InfraGeometry`InfraSubstrateHighlight[
+                   Graph[{1, 2, 3}, {Null, {{1, 2}, {2, 3}}}], 
+                   KeyValueMap[
+                    
+                    Function[{
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`name$, 
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`representative$}, 
+                    If[
+                    VertexQ[
+                    Graph[{1, 2, 3}, {Null, {{1, 2}, {2, 3}}}], 
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`representative$], <|
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`representative$ -> 1|>, 
+                    Switch[
+                    
+                    Lookup[<|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> "Point", 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> "Point"|>, 
+                    Key[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`name$], "Exact"], "Point", <|
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`representative$ -> 1|>, "VertexSet", 
+                    If[
+                    VertexQ[
+                    Graph[{1, 2, 3}, {Null, {{1, 2}, {2, 3}}}], 
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`representative$], <|
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`representative$ -> 1|>, 
+                    AssociationThread[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`representative$, 
+                    ConstantArray[1, 
+                    Length[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`representative$]]]], "Walk", 
+                    If[
+                    And[
+                    ListQ[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`representative$], 
+                    Not[
+                    VertexQ[
+                    Graph[{1, 2, 3}, {Null, {{1, 2}, {2, 3}}}], 
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`representative$]]], 
+                    WolframInstitute`InfraGeometry`InfraWalk[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`representative$], 
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`representative$], 
+                    Blank[], 
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`representative$]]], 
+                    
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`state$["Bindings"]], 
+                   Apply[Sequence, {}]], 
+                  Graph[
+                  WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`branchial$, VertexLabels -> "Name", 
+                   VertexStyle -> {
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`selectedState$$ -> StandardRed}]}], 
+                
+                Row[{"Branchial neighbors: ", 
+                  WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`neighbors$}], 
+                If[
+                 TrueQ[
+                  
+                  WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`projection$["Complete"]], 
+                 If[
+                 WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`restriction$$ === <||>, "Branchial layer complete.", 
+                  "Saved branchial layer complete; this view is filtered."], 
+                 "Branchial edges have saved witnesses; missing edges are \
+undecided."], 
+                
+                Row[{"Common-parent witnesses: ", 
+                  WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`witnesses$}], 
+                If[
+                WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`state$["IncomingEvents"] === {}, 
+                 "Initial state: no incoming event.", 
+                 Row[{"Incoming event: ", 
+                   PopupMenu[
+                    Dynamic[
+                    Lookup[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`incomingChoices$$, 
+                    Key[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`selectedState$$], 
+                    First[
+                    
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`state$["IncomingEvents"]]], 
+                    Function[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`value$, 
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`incomingChoices$$ = 
+                    Append[WolframInstitute`InfraGeometry`\
+InfraSceneInteractive`PackagePrivate`incomingChoices$$, 
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`selectedState$$ -> 
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`value$]]], 
+                    
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`state$["IncomingEvents"]]}]], 
+                
+                Row[{"History event IDs: ", 
+                  WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`history$}], 
+                Grid[
+                 Prepend[
+                  Map[
+                   Function[
+                   WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id$, 
+                    
+                    With[{WolframInstitute`InfraGeometry`\
+InfraSceneInteractive`PackagePrivate`event$ = <|
+                    1 -> <|"Source" -> 1, "Target" -> 2, "Construction" -> 1, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                    2 -> <|"Source" -> 1, "Target" -> 3, "Construction" -> 2, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                    3 -> <|"Source" -> 2, "Target" -> 4, "Construction" -> 2, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 1, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>, 
+                    4 -> <|"Source" -> 3, "Target" -> 4, "Construction" -> 1, 
+                    "Group" -> 1, "CandidateIndex" -> 1, "Candidate" -> 2, 
+                    "Outcome" -> "Accepted", "Assertions" -> <||>|>|>[
+                    Lookup[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`incomingChoices$$, 
+                    Key[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id$], 
+                    First[
+                    <|
+                    1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 
+                    0, "Group" -> 1, "Assertions" -> <||>, 
+                    "IncomingEvents" -> {}|>, 
+                    2 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+                    3 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+                    4 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id$]["IncomingEvents"]]]]}, {
+                    PopupMenu[
+                    Dynamic[
+                    Lookup[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`incomingChoices$$, 
+                    Key[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id$], 
+                    First[
+                    <|
+                    1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 
+                    0, "Group" -> 1, "Assertions" -> <||>, 
+                    "IncomingEvents" -> {}|>, 
+                    2 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+                    3 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+                    4 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id$]["IncomingEvents"]]], 
+                    Function[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`value$, 
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`incomingChoices$$ = 
+                    Append[WolframInstitute`InfraGeometry`\
+InfraSceneInteractive`PackagePrivate`incomingChoices$$, 
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id$ -> 
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`value$]]], 
+                    <|
+                    1 -> <|"Bindings" -> <||>, "Completed" -> {}, "Depth" -> 
+                    0, "Group" -> 1, "Assertions" -> <||>, 
+                    "IncomingEvents" -> {}|>, 
+                    2 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2|>, "Completed" -> {1}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {1}|>, 
+                    3 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {2}, "Depth" -> 1, "Group" -> 1, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {2}|>, 
+                    4 -> <|"Bindings" -> <|
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`p -> 2, 
+                    WolframInstitute`InfraGeometry`ConstructionGraphs`\
+PackagePrivate`q -> 1|>, "Completed" -> {1, 2}, "Depth" -> 2, "Group" -> 2, 
+                    "Assertions" -> <||>, "IncomingEvents" -> {3, 4}|>|>[
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id$]["IncomingEvents"]], 
+                    
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`event$["Source"], 
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`id$, 
+                    
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`event$["Construction"], 
+                    
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`event$["CandidateIndex"], 
+                    
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`event$["Candidate"], 
+                    
+                    WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`event$["Outcome"]}]], 
+                   Rest[
+                   WolframInstitute`InfraGeometry`InfraSceneInteractive`\
+PackagePrivate`historyStates$]], {
+                  "Event", "From", "To", "Construction", "Candidate index", 
+                   "Saved candidate", "Outcome"}], Alignment -> Left]}]]]}, 
+           Alignment -> Left]], StandardForm],
+       TrackedSymbols:>{
+        WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+navigation$$, 
+         WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+boundary$$, 
+         WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+selectedState$$, 
+         WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+restriction$$, 
+         WolframInstitute`InfraGeometry`InfraSceneInteractive`PackagePrivate`\
+incomingChoices$$}]}
+    },
+    DefaultBaseStyle->"Column",
+    GridBoxAlignment->{"Columns" -> {{Left}}},
+    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+   "Column"],
+  DynamicModuleValues:>{}]], "Output",
+ CellLabel->"Out[3]= ",ExpressionUUID->"9828a06a-d6ac-4d08-bf1c-945523ecfd9d"]
 }, Open  ]]
 }, Open  ]],
 
@@ -8010,7 +10196,7 @@ Cell["WolframInstitute`InfraGeometry`", "Categorization",
  CellID->468444828,ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191"],
 
 Cell["WolframInstitute/InfraGeometry/ref/InfraSceneViewer", "Categorization",
- CellLabel->"URI",ExpressionUUID->"8544dc9a-8873-43cc-a835-1a2d8aa52eff"]
+ CellLabel->"URI",ExpressionUUID->"e9584dcf-3fb1-4bf7-90f9-f77193ab9fa0"]
 }, Closed]],
 
 Cell["Keywords", "KeywordsSection",
@@ -8062,14 +10248,14 @@ ExpressionUUID->"c207366e-060a-406b-a297-9e30e1628f43"
 (*CellTagsOutline
 CellTagsIndex->{
  "ExtendedExamples"->{
-  Cell[378068, 7891, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+  Cell[495845, 10077, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
    CellTags->"ExtendedExamples",
    CellID->533848431]}
  }
 *)
 (*CellTagsIndex
 CellTagsIndex->{
- {"ExtendedExamples", 384082, 8063}
+ {"ExtendedExamples", 501859, 10249}
  }
 *)
 (*NotebookFileOutline
@@ -8077,99 +10263,108 @@ Notebook[{
 Cell[CellGroupData[{
 Cell[576, 22, 114, 1, 70, "ObjectName",ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec",
  CellID->1224892054],
-Cell[693, 25, 1728, 47, 70, "Usage",ExpressionUUID->"d08f5784-6a92-48b5-b04b-3f2883eec1bc"],
-Cell[2424, 74, 538, 13, 70, "Notes",ExpressionUUID->"e3697ebc-9544-4221-af5b-df43132827b0"],
-Cell[2965, 89, 260, 4, 70, "Notes",ExpressionUUID->"46daeec1-3193-459c-a00e-b95d81f20127"],
-Cell[3228, 95, 94, 0, 70, "Notes",ExpressionUUID->"3c518c08-8694-48bf-a02b-74b0585122f0"],
-Cell[3325, 97, 2047, 37, 70, "2ColumnTableMod",ExpressionUUID->"ac4e2098-0825-4a19-9eef-7426fd2023b6"],
-Cell[5375, 136, 390, 6, 70, "Notes",ExpressionUUID->"6725d3fd-dac4-43d5-abd5-dc05deace8eb"],
-Cell[5768, 144, 261, 4, 70, "Notes",ExpressionUUID->"d330868c-6cbf-4078-91ed-55ea38aa0672"],
-Cell[6032, 150, 1068, 28, 70, "Notes",ExpressionUUID->"6f47cffd-24c8-442b-bd0c-dbd6f320dc97"],
-Cell[7103, 180, 539, 12, 70, "Notes",ExpressionUUID->"16527555-f0a6-4b57-937c-9ba60b542fcc"]
+Cell[693, 25, 2634, 73, 70, "Usage",ExpressionUUID->"23f23e98-6200-4f4c-b786-7f35b31adf37"],
+Cell[3330, 100, 538, 13, 70, "Notes",ExpressionUUID->"b0903434-255d-4d71-be36-733e9e410673"],
+Cell[3871, 115, 260, 4, 70, "Notes",ExpressionUUID->"36a96309-8a29-4750-8e31-f2ddfdf78ece"],
+Cell[4134, 121, 94, 0, 70, "Notes",ExpressionUUID->"a3127c1e-c815-4904-a22d-104012f00349"],
+Cell[4231, 123, 2047, 37, 70, "2ColumnTableMod",ExpressionUUID->"94188917-fc37-49a4-97b2-2018912d79c0"],
+Cell[6281, 162, 390, 6, 70, "Notes",ExpressionUUID->"98aac60d-cf46-4f4c-a1dd-8e1ba7c9d805"],
+Cell[6674, 170, 261, 4, 70, "Notes",ExpressionUUID->"0b99735d-c09c-4236-b7e9-0ed931a810f0"],
+Cell[6938, 176, 1068, 28, 70, "Notes",ExpressionUUID->"e688c3e0-fb5f-4811-a1f8-3bb460add2b4"],
+Cell[8009, 206, 539, 12, 70, "Notes",ExpressionUUID->"e8927790-cc2c-4d02-97c5-55b99f86662e"],
+Cell[8551, 220, 539, 7, 70, "Notes",ExpressionUUID->"c0d052a2-c143-4b76-825c-f95c19931b5f"],
+Cell[9093, 229, 327, 5, 70, "Notes",ExpressionUUID->"73fd3513-f2ac-4475-9a3b-e2666431585d"],
+Cell[9423, 236, 446, 6, 70, "Notes",ExpressionUUID->"e389a7ae-ec02-4211-8b18-97a35b8d6fbd"],
+Cell[9872, 244, 573, 13, 70, "Notes",ExpressionUUID->"8f1f6f88-bc5a-4702-877c-030dc5ea9831"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[7679, 197, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
+Cell[10482, 262, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
  CellID->1559318232],
-Cell[8141, 212, 1836, 50, 70, "SeeAlso",ExpressionUUID->"4e59d6b1-b6d5-45b5-b175-f01ad372cb11"]
+Cell[10944, 277, 2560, 70, 70, "SeeAlso",ExpressionUUID->"35baaafa-20aa-4207-9c1e-1cf9b89e263d"]
 }, Open  ]],
-Cell[9992, 265, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
+Cell[13519, 350, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
  CellID->792424486],
 Cell[CellGroupData[{
-Cell[10452, 281, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
+Cell[13979, 366, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
  CellID->38303248],
-Cell[10571, 284, 321, 6, 70, "MoreAbout",ExpressionUUID->"36bc8f01-c2e9-4396-87b8-9bee19f681c4"]
+Cell[14098, 369, 321, 6, 70, "MoreAbout",ExpressionUUID->"1938d623-385e-420f-a7f6-8059271b4ad6"]
 }, Open  ]],
-Cell[10907, 293, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
+Cell[14434, 378, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
  CellID->47113304],
 Cell[CellGroupData[{
-Cell[11403, 310, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
+Cell[14930, 395, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
  CellID->1718580883],
-Cell[11937, 326, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
+Cell[15464, 411, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
  CellID->1969679695]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[12250, 335, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
+Cell[15777, 420, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
  CellID->880084151],
-Cell[12695, 349, 171, 3, 70, "ExampleText",ExpressionUUID->"a3afec06-3c6b-4c79-9b84-4be25c8b3956"],
+Cell[16222, 434, 171, 3, 70, "ExampleText",ExpressionUUID->"5cdb0fe4-83af-4b59-a553-c68e46b50eca"],
 Cell[CellGroupData[{
-Cell[12891, 356, 2923, 74, 70, "Input",ExpressionUUID->"4f5fba7a-6058-4923-8489-86b70ba620ed"],
-Cell[15817, 432, 148232, 2684, 70, "Output",ExpressionUUID->"4acb3139-9f9f-4559-ad3b-dec311150a44"]
+Cell[16418, 441, 2923, 74, 70, "Input",ExpressionUUID->"a4965e96-4031-4389-924c-2e493431141a"],
+Cell[19344, 517, 149049, 2700, 70, "Output",ExpressionUUID->"12128160-1b25-4981-8c97-df7f999138cd"]
 }, Open  ]],
-Cell[164064, 3119, 235, 3, 70, "ExampleText",ExpressionUUID->"888930a5-c839-46b2-b930-5dcdcb0570bf"],
+Cell[168408, 3220, 235, 3, 70, "ExampleText",ExpressionUUID->"085b000f-9d08-4299-8703-62b28dd41407"],
 Cell[CellGroupData[{
-Cell[164324, 3126, 2536, 64, 70, "Input",ExpressionUUID->"de03a922-f3fe-48dc-836c-d7cd19938ebb"],
-Cell[166863, 3192, 211156, 4693, 70, "Output",ExpressionUUID->"03feed05-ec62-411b-a582-0146d53d275f"]
+Cell[168668, 3227, 2538, 64, 70, "Input",ExpressionUUID->"b3c940da-360b-499a-919d-321bd5fd0841"],
+Cell[171209, 3293, 211156, 4693, 70, "Output",ExpressionUUID->"19c74f2c-e58a-4db6-bfa0-0c306ad1192e"]
+}, Open  ]],
+Cell[382380, 7989, 335, 5, 70, "ExampleText",ExpressionUUID->"e7f38736-fca5-4355-96fe-41ccb21c2117"],
+Cell[CellGroupData[{
+Cell[382740, 7998, 1166, 29, 70, "Input",ExpressionUUID->"138afe13-e9fd-463d-8633-8797544f8389"],
+Cell[383909, 8029, 111887, 2042, 70, "Output",ExpressionUUID->"9828a06a-d6ac-4d08-bf1c-945523ecfd9d"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[378068, 7891, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+Cell[495845, 10077, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
  CellTags->"ExtendedExamples",
  CellID->533848431],
-Cell[378558, 7906, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
+Cell[496335, 10092, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
  CellID->1293636265],
-Cell[378803, 7913, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
+Cell[496580, 10099, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
  CellID->1020263627],
-Cell[379071, 7920, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
+Cell[496848, 10106, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
  CellID->2061341341],
-Cell[379318, 7927, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
+Cell[497095, 10113, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
  CellID->258228157],
-Cell[379569, 7934, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
+Cell[497346, 10120, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
  CellID->2123667759],
-Cell[379831, 7941, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
+Cell[497608, 10127, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
  CellID->1305812373],
-Cell[380086, 7948, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
+Cell[497863, 10134, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
  CellID->1653164318],
-Cell[380346, 7955, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
+Cell[498123, 10141, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
  CellID->589267740]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[380632, 7965, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
+Cell[498409, 10151, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
  CellID->311882160],
-Cell[380745, 7968, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
+Cell[498522, 10154, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
  CellID->341476719],
 Cell[CellGroupData[{
-Cell[381246, 7984, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
+Cell[499023, 10170, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
  CellID->1755438392],
-Cell[381734, 7999, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
+Cell[499511, 10185, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
  CellID->686433507],
-Cell[381871, 8003, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
+Cell[499648, 10189, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
  CellID->605800465],
-Cell[382032, 8007, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
+Cell[499809, 10193, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
  CellID->468444828],
-Cell[382190, 8011, 151, 1, 70, "Categorization",ExpressionUUID->"8544dc9a-8873-43cc-a835-1a2d8aa52eff"]
+Cell[499967, 10197, 151, 1, 70, "Categorization",ExpressionUUID->"e9584dcf-3fb1-4bf7-90f9-f77193ab9fa0"]
 }, Closed]],
-Cell[382356, 8015, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
+Cell[500133, 10201, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
  CellID->477174294],
 Cell[CellGroupData[{
-Cell[382491, 8020, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
+Cell[500268, 10206, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
  CellID->1872225408],
-Cell[382614, 8023, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
+Cell[500391, 10209, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
  CellID->1562036412],
-Cell[382766, 8027, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
+Cell[500543, 10213, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
  CellID->158391909],
-Cell[382906, 8031, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
+Cell[500683, 10217, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
  CellID->1360575930],
-Cell[383045, 8035, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
+Cell[500822, 10221, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
  CellID->793782254]
 }, Closed]]
 }, Open  ]]

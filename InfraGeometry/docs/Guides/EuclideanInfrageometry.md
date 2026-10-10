@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/EuclideanInfrageometry
 Keywords: [Euclidean geometry, shell, synthetic geometry, graph, symbolic object, point, segment, ray, line, parallel, perpendicular, circle, arc, bisector, ellipse, ball, tube, cylinder, cone, polygon, hull, angle, scalar product, scene]
 RelatedGuides: [RiemannianInfrageometry, InfraSubstrates, Experimental]
-RelatedTutorials: [BreadthlessTriangleTutorial, StraighteningAtScaleTutorial]
+RelatedTutorials: [BreadthlessTriangleTutorial, StraighteningAtScaleTutorial, NamedConstructionSamplers, SyntheticGeometryMigration]
 ---
 
 <!-- LLM-PROTECTED: Do not rewrite the Abstract or Functions sections unless explicitly asked. -->
@@ -60,12 +60,19 @@ An `InfraScene` describes a construction through named objects and hypotheses. `
 ### Reading a construction on a graph
 
 - `InfraMeasurement` reads "Graph", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph", "Faithful", "CountingMeasure" and "RiemannianMeasure"; "Midpoint" gives the middle-layer density of a segment
-- `named construction samplers` draws one member of an object as a vertex list; a trailing count requests several; "NextVertexFunction" -> Identity gives deterministic enumeration, and All gives every member
+- `RandomInfraMidpoint`, `RandomInfraPerpendicularBisector`, `RandomInfraRegionNearest` sample raw points from exact families; All retains every candidate
 - `Undetermined` the value of "Faithful" when the geometric hypotheses needed for a carrier are not certified
 - `InfraMemberQ` whether a vertex list is a member of a head on a graph
 - `InfraDensity` converts a vertex, vertex list, density or walk graph to vertex multiplicities
 - `InfraIntersection` the symbolic intersection of two objects, with the product of their vertex densities
 - `InfraUnion` the symbolic union of two objects, with the sum of their vertex densities
+
+### Exact point families
+
+- `InfraMidpoint` the exact equal-half-distance point family; odd endpoint distance gives no midpoint
+- `InfraPerpendicularBisector` the finite equidistant locus, without a separation or angle claim
+- `InfraRegionNearest` every finite-distance nearest support vertex, retaining ties
+- `InfraGeometricAssertion`, `InfraGeometricTest` inert assertions and the Distinct, Member and EqualDistance registry
 
 ### Graphs of a construction
 
@@ -87,7 +94,9 @@ An `InfraScene` describes a construction through named objects and hypotheses. `
 - `InfraStep` one construction encapsulated as a step of a scene; a second argument labels it
 - `RandomInfraInstance` draws an admissible instance of a scene on a graph, returning an InfraSceneInstance binding
 - `InfraSceneInstance` one solved binding of a scene; with an object name, that object read out of it
-- `InfraSceneViewer` a step-by-step view of a scene on a graph
+- `InfraSceneMultiway` exact finite construction states with retained incoming events and explicit bounded frontiers
+- `InfraBranchialGraph` same-depth states sharing an immediate predecessor, with witnesses and completeness
+- `InfraSceneViewer` a step-by-step scene view, or an inspector for a saved finite exploration without sampling
 
 ### Experimental
 
@@ -112,10 +121,10 @@ An `InfraScene` describes a construction through named objects and hypotheses. `
 - `InfraCircleQ` whether a cycle is a circle, a cyclic edge chain whose vertex set is a metric shell
 - `InfraSphere` the family of inclusion-minimal connected subsets of the shell {v : d(c, v) == r} that separate c from the outside
 - `RandomInfraSphere` random separating connected subsets of a shell, as vertex lists
-- `InfraPlane` the bisecting hyperplane of p1 and p2
+- `InfraPlane` the existing family of separating vertex sets between p1 and p2; distinct from the exact equidistant locus
 - `FindInfraBisectingHyperplane` the perpendicular bisector {v : d(p1, v) == d(p2, v)}, or the slab around it
 - `InfraEllipse` the ellipse with foci p1 and p2, the shortest separating cycle in the level set {v : d(p1, v) + d(p2, v) == c}
-- `RandomInfraEllipse` one random such cycle as a cyclic vertex list
+- `RandomInfraEllipse` one random such directed cycle Graph
 - `InfraEllipseQ` whether a cycle is an ellipse
 - `InfraQuadric` the solid {v : sum_i w_i d(p_i, v) <= c} about the foci p_i; one focus is the ball, two the ellipse, a band {c, c} the elliptic shell, weights {1, -1} a hyperbola branch
 
@@ -127,7 +136,7 @@ An `InfraScene` describes a construction through named objects and hypotheses. `
 - `InfraSolidOfRevolution` the solid about a walk with a given radius profile
 
 - `InfraRegularPolygon` the regular n-gon whose k-th diagonals have prescribed lengths; the polygon through given corners is the closed polyline InfraSegment[p1, ..., pn, p1]
-- `RandomInfraRegularPolygon` one random closed n-vertex sequence whose k-th diagonal lengths match the prescribed ones
+- `RandomInfraRegularPolygon` regular polygons as directed Graph legs in the bare form, or ordered vertex sequences with a token
 - `InfraRegularPolygonQ` whether a cycle is regular with respect to a tuple of diagonal lengths
 - `InfraConvexHull` the convex hull under shortest paths of a set, the closure under MetricInterval; with k, the k-th round of the closure
 - `InfraBallHull` the intersection of the closed balls containing a set, of radius at most r, {r} exactly r or {r, s} between; without a radius the Mazur hull
