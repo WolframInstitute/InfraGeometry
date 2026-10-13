@@ -11,160 +11,175 @@ RelatedTutorials: [BreadthlessTriangleTutorial, StraighteningAtScaleTutorial, Na
 ---
 
 <!-- LLM-PROTECTED: Do not rewrite the Abstract or Functions sections unless explicitly asked. -->
+<!-- The protected Functions prose was moved verbatim into the Abstract on 2026-10-13 (user's call):
+     markup only, symbols linked, the dead names InfraGeometricScene and InfraGeometricSceneViewer
+     replaced by InfraScene and InfraSceneViewer, bold dropped. build_docs.wls renders each
+     paragraph as its own GuideAbstract cell. -->
 
 ## Abstract
 
-**Euclidean Infrageometry** studies natural geometric objects on arbitrary graph substrates using **synthetic methods**. It enumerates these objects, studies their mutual relations, applies operations to them, and performs iterative constructions. If space is represented by a large graph, which we may view as a web of paths, human geometry can be viewed as an idealized theory based on our large-scale perception of **infinitesimality**. This leads to the idealization of space as a "continuous web" supporting idealized objects such as the "breadthless line." In contrast, Infrageometry works directly with the discrete substrate at an observer's scale and aggregates instead of subdivides. Consequently, objects at the least scale may not be unique, leading to **multi-objects**, so that constructions generate branching **multiway systems**. Although concrete representatives may differ across branches, the system is "causally invariant" in the sense that the dependency graph of construction steps is the same in every branch. We associate each multi-object with **vertex and edge densities** that count the representatives containing each vertex or edge, obtaining a measure by dividing by the total number of representatives. We expect that, under a suitable notion of **Gromov-Hausdorff convergence**, these measures converge weakly to Dirac measures supported on classical "thin" geometric objects. We also expect that a suitable axiomatization of Euclidean infrageometry can be formulated and the notion of  Euclidean-like graphs can be defined so that subdivision and convergence converges to the continuous axiomatic Euclidean geometry.
+Euclidean Infrageometry studies natural geometric objects on arbitrary graph substrates using synthetic methods. It enumerates these objects, studies their mutual relations, applies operations to them, and performs iterative constructions. If space is represented by a large graph, which we may view as a web of paths, human geometry can be viewed as an idealized theory based on our large-scale perception of infinitesimality. This leads to the idealization of space as a "continuous web" supporting idealized objects such as the "breadthless line." In contrast, Infrageometry works directly with the discrete substrate at an observer's scale and aggregates instead of subdivides. Consequently, objects at the least scale may not be unique, leading to multi-objects, so that constructions generate branching multiway systems. Although concrete representatives may differ across branches, the system is "causally invariant" in the sense that the dependency graph of construction steps is the same in every branch. We associate each multi-object with vertex and edge densities that count the representatives containing each vertex or edge, obtaining a measure by dividing by the total number of representatives. We expect that, under a suitable notion of Gromov-Hausdorff convergence, these measures converge weakly to Dirac measures supported on classical "thin" geometric objects. We also expect that a suitable axiomatization of Euclidean infrageometry can be formulated and the notion of  Euclidean-like graphs can be defined so that subdivision and convergence converges to the continuous axiomatic Euclidean geometry.
 
-## Functions
+We use inert objects such as <code>[InfraSegment]()[*p*, *q*]</code>, independent of a graph substrate. <code>[InfraMeasurement]()[*g*, *obj*, *property*]</code> then computes a property of an object on a concrete graph. Each object also has a named sampler; for example, <code>[RandomInfraSegment]()[*g*, InfraSegment[*p*, *q*], *k*]</code> gives up to *k* shortest paths from *p* to *q* as vertex lists.
 
-- We use **inert objects** such as `InfraSegment[p, q]`, independent of a graph substrate. `InfraMeasurement[g, obj, property]` then computes a property of an object on a concrete graph. Each object also has a named sampler; for example, `RandomInfraSegment[g, InfraSegment[p, q], k]` gives up to k shortest paths from p to q as vertex lists.
+Segments, rays, lines and arcs have compact representations as directed acyclic graphs such that the chains correspond to individual representatives. This allows densities to be computed efficiently without enumerating every path.
 
-- Segments, rays, lines and arcs have compact representations as directed acyclic graphs such that the **chains correspond to individual representatives**. This allows densities to be computed efficiently without enumerating every path.
-
-- Inspired by [GeometricScene](https://reference.wolfram.com/language/ref/GeometricScene.html), `InfraGeometricScene` lets us describe a construction through named objects and hypotheses. `RandomInfraInstance[scene, graph]` draws an admissible instance on a given substrate, and `InfraGeometricSceneViewer[scene, graph]` displays the construction step by step in both the causal and branchial directions.
+Inspired by [GeometricScene](https://reference.wolfram.com/language/ref/GeometricScene.html), [InfraScene]() lets us describe a construction through named objects and hypotheses. <code>[RandomInfraInstance]()[*scene*, *graph*]</code> draws an admissible instance on a given substrate, and <code>[InfraSceneViewer]()[*scene*, *graph*]</code> displays the construction step by step in both the causal and branchial directions.
 
 <!-- /LLM-PROTECTED -->
 
----
+## Functions
 
 ### Points
 
-- `InfraPoint` the point, a vertex drawn from a region inside a scene
-- `RandomInfraPoint` a vertex drawn from a region, a vertex List, a ball or any other region; a count gives a List of vertices, "PairwiseDistance" constrains the tuple
+- `InfraPoint` a point, a vertex drawn from a region inside a scene
+- `RandomInfraPoint` a random vertex of a region, or a tuple of vertices at prescribed mutual distances
+- `GraphDistance` (WL) the path metric $d$ of the substrate
 
 ### Segments
 
-- `InfraSegment` the segment from p to q, every shortest path between them at once; with more points, the polyline of their consecutive segments
-- `RandomInfraSegment` one random shortest path from p to q as a vertex list; a trailing count gives a List of them
-- `InfraSegmentQ` whether a walk is a shortest path
+- `InfraSegment` the segment from $p$ to $q$, all shortest paths between them at once
+- `RandomInfraSegment` random shortest paths from $p$ to $q$ as vertex lists
+- `FindShortestPath` (WL) one shortest path from $p$ to $q$
+
+- `InfraSegmentQ`, `UniqueInfraSegmentQ`, `FindInfraPolylineSubdivision`, `MetricInterval`
 
 ### Rays and lines
 
-- `InfraHalfLine` the ray from p through q, the shortest paths from p through q that no neighbour of their last vertex prolongs; InfraHalfLine[p, p] is the pencil at p
-- `RandomInfraHalfLine` one random ray from p through q as a vertex list; a trailing count gives a List of them
-- `InfraInfiniteLine` the line through p and q, the shortest paths through both that no neighbour of either endpoint prolongs
-- `RandomInfraInfiniteLine` one random line through p and q as a vertex list; a trailing count gives a List of them
+- `InfraHalfLine` the ray from $p$ through $q$, the shortest paths no neighbour prolongs past their end
+- `InfraInfiniteLine` the line through $p$ and $q$, the shortest paths no neighbour prolongs at either end
+- `RandomInfraHalfLine`, `RandomInfraInfiniteLine` random rays and lines as vertex lists
+
+- `InfraHalfLineQ`, `InfraInfiniteLineQ`
 
 ### Circles and arcs
 
-- `InfraCircle` the circles around c at radius r, or in the band {r, s}: the shortest cycles of the band that separate c from the outside
-- `InfraArc` the arc around c from p1 to pk through the intermediate points, the shortest paths of the band graph of the circle through p1; InfraArc[c, {p, p}] is the closed arc
+- `InfraCircle` the circles about $c$ at radius $r$, the shortest cycles of the shell that separate $c$ from the outside
+- `InfraArc` the arc about $c$ through an ordered list of points
+- `RandomInfraCircle`, `RandomInfraArc` random circles and arcs
+
+- `InfraCircleQ`
 
 ### Balls and shells
 
-- `InfraBall` the closed ball {v : d(c, v) <= r} about a vertex or a vertex set
-- `InfraShell` the shell {v : rmin <= d(c, v) <= rmax} about a vertex or a vertex set, a level set of the distance
-- `FindInfraShell` the shell {v : d(c, v) == r}, or the band {rmin, rmax}, as a sorted vertex list
+- `InfraBall` the closed ball $\{v : d(c, v) \le r\}$ about a vertex or a vertex set
+- `InfraShell` the shell $\{v : r_{min} \le d(c, v) \le r_{max}\}$, a level set of the distance
+- `FindInfraShell` the shell or band as a sorted vertex list
+- `NeighborhoodGraph` (WL) the ball as an induced subgraph
 
-### Reading a construction on a graph
-
-- `InfraMeasurement` reads "Graph", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph", "Faithful", "CountingMeasure" and "RiemannianMeasure"; "Midpoint" gives the middle-layer density of a segment
-- `RandomInfraMidpoint`, `RandomInfraPerpendicularBisector`, `RandomInfraRegionNearest` sample raw points from exact families; All retains every candidate
-- `Undetermined` the value of "Faithful" when the geometric hypotheses needed for a carrier are not certified
-- `InfraMemberQ` whether a vertex list is a member of a head on a graph
-- `InfraDensity` converts a vertex, vertex list, density or walk graph to vertex multiplicities
-- `InfraIntersection` the symbolic intersection of two objects, with the product of their vertex densities
-- `InfraUnion` the symbolic union of two objects, with the sum of their vertex densities
+- `RandomInfraBall`, `RandomInfraShell`, `InfraBallQ`, `InfraShellQ`
 
 ### Exact point families
 
-- `InfraMidpoint` the exact equal-half-distance point family; odd endpoint distance gives no midpoint
-- `InfraPerpendicularBisector` the finite equidistant locus, without a separation or angle claim
-- `InfraRegionNearest` every finite-distance nearest support vertex, retaining ties
-- `InfraGeometricAssertion`, `InfraGeometricTest` inert assertions and the Distinct, Member and EqualDistance registry
+- `InfraMidpoint` the vertices at half the distance from both endpoints; empty at odd distance
+- `InfraPerpendicularBisector` the equidistant locus $\{v : d(p, v) = d(q, v)\}$
+- `InfraRegionNearest` the nearest vertices of a region, ties retained
+- `RandomInfraMidpoint`, `RandomInfraPerpendicularBisector`, `RandomInfraRegionNearest` random members of these families
+
+### Reading a construction on a graph
+
+- `InfraMeasurement` a property of an object on a graph: its graph, cardinality, length, densities or measures
+- `InfraDensity` the vertex multiplicities of a vertex, vertex list, density or walk graph
+- `InfraMemberQ` whether a vertex list is a member of an object on a graph
+- `InfraIntersection` the intersection of two objects, with the product of their densities
+- `InfraUnion` the union of two objects, with the sum of their densities
+- `Undetermined` the value of "Faithful" when the hypotheses behind a carrier are not certified
+
+- `RandomInfraIntersection`, `RandomInfraUnion`, `InfraGeometricAssertion`, `InfraGeometricTest`
 
 ### Graphs of a construction
 
-- `SprayGraph` the spray graph at p, the DAG of all maximal shortest paths starting at p; also accepts a source set or density
-- `IntervalGraph` the interval graph from p to q, the DAG whose source-to-sink paths are exactly the shortest paths from p to q; with more points, the List of consecutive interval DAGs
-- `RayGraph` the DAG of maximal shortest paths starting at p and passing through q; p == q gives the spray at p
-- `BeamGraph` the List of DAGs of lines through p and q, one per compatible pair of maximal endpoints; also accepts a shortest-path germ
-- `ArcGraph` the arc carrier around c through an ordered point list; two distinct endpoints give the interval DAG in the radial band, and closed arcs use seam carriers
-- `PathSubgraph` the union of all shortest paths from u to v as a substrate subgraph
+- `IntervalGraph` the directed acyclic graph whose source-to-sink paths are the shortest paths from $p$ to $q$
+- `SprayGraph` the directed acyclic graph of all maximal shortest paths from $p$
+- `RayGraph` the directed acyclic graph of maximal shortest paths from $p$ through $q$
+- `BeamGraph` the directed acyclic graphs of the lines through $p$ and $q$
+- `ArcGraph` the carrier graph of an arc about $c$
+- `PathSubgraph` the union of all shortest paths from $u$ to $v$ as a subgraph
+- `InfraSubgraph` the subgraph induced on the support of an object, optionally thickened
+
+- `Subgraph` (WL), `HighlightGraph` (WL)
 
 ### Substrates and drawing
 
-- `InfraSubstrate` the named example graphs at size "Small", "Medium" or "Large", listed on the Infra Substrates guide
-- `InfraSubstrateHighlight` the densities of a list of objects drawn on a graph, the i-th object in the i-th palette color; a Directive styles the objects after it
+- `InfraSubstrate` the named example graphs at size "Small", "Medium" or "Large"
+- `InfraSubstrateHighlight` the densities of a list of objects drawn on a graph, one palette colour each
 
 ### Scenes
 
-- `InfraScene` a symbolic multi-construction stated before any graph: the objects, and hypotheses that construct them or assert relations between them
-- `InfraStep` one construction encapsulated as a step of a scene; a second argument labels it
-- `RandomInfraInstance` draws an admissible instance of a scene on a graph, returning an InfraSceneInstance binding
-- `InfraSceneInstance` one solved binding of a scene; with an object name, that object read out of it
-- `InfraSceneMultiway` exact finite construction states with retained incoming events and explicit bounded frontiers
-- `InfraBranchialGraph` same-depth states sharing an immediate predecessor, with witnesses and completeness
-- `InfraSceneViewer` a step-by-step scene view, or an inspector for a saved finite exploration without sampling
+- `InfraScene` a construction stated before any graph: named objects and hypotheses
+- `InfraStep` one construction step of a scene
+- `RandomInfraInstance` an admissible instance of a scene on a graph
+- `InfraSceneInstance` one solved binding of a scene
+- `InfraSceneMultiway` the finite multiway system of construction states
+- `InfraBranchialGraph` the branchial graph of construction states at one depth
+- `InfraSceneViewer` a step-by-step view of a scene
 
-### Experimental
+- `InfraIntersectQ`, `InfraPlaneQ`, `GeometricScene` (WL), `RandomInstance` (WL)
 
-- `FindInfraReflection` the reflections x' of x through a, the vertices with d(x, a) == d(a, x') on a shortest path through a
+### Experimental: incidence and reflection
+
+- `FindInfraReflection` the reflections of $x$ through $a$, the vertices $x'$ with $d(x, a) = d(a, x')$ on a shortest path through $a$
 - `FindInfraCommonPoint` the points lying on every listed line
-- `FindClosestInfraPoint` the vertices of a line at minimum distance from a point, the feet of the point on the line
-- `FindInfraEquidistantSet` the vertices equidistant from p1, ..., pn as a sorted vertex list; a trailing {lo, hi} thickens each bisector to a slab
-- `InfraReachableQ` whether p1 and p2 lie in the same connected component
-
-- `MetricInterval` the interval {w : d(u, w) + d(w, v) == d(u, v)}, the union of the shortest paths from u to v
-- `FindInfraPolylineSubdivision` the fewest shortest-path legs a walk splits into, the corners of the polyline InfraSegment[p1, ..., pk]
-- `InfraHalfLineQ` whether a walk is a ray, a shortest path from its first vertex that cannot be prolonged past its last
-- `InfraInfiniteLineQ` whether a walk is a line, a shortest path that no neighbour of either endpoint prolongs
-- `RandomInfraParallel` a random parallel to a line through p, drawn from the lines through p at constant distance from it
-- `InfraParallelQ` whether two lines stay at constant distance
-- `FindInfraPerpendicular` the lines through a point perpendicular to a line
-- `InfraPerpendicularQ` whether two lines meet perpendicularly at every common vertex
 - `FindInfraCommonLine` the lines containing every listed vertex
-- `LineCount` the number of distinct lines in a graph
-- `UniversalLineQ` whether some pair of vertices spans a line filling a whole connected component, the Chen-Chvatal property
+- `FindClosestInfraPoint` the feet of a point on a line
+- `FindInfraEquidistantSet` the vertices equidistant from $p_1, \dots, p_n$
 
-- `InfraCircleQ` whether a cycle is a circle, a cyclic edge chain whose vertex set is a metric shell
-- `InfraSphere` the family of inclusion-minimal connected subsets of the shell {v : d(c, v) == r} that separate c from the outside
-- `RandomInfraSphere` random separating connected subsets of a shell, as vertex lists
-- `InfraPlane` the existing family of separating vertex sets between p1 and p2; distinct from the exact equidistant locus
-- `FindInfraBisectingHyperplane` the perpendicular bisector {v : d(p1, v) == d(p2, v)}, or the slab around it
-- `InfraEllipse` the ellipse with foci p1 and p2, the shortest separating cycle in the level set {v : d(p1, v) + d(p2, v) == c}
-- `RandomInfraEllipse` one random such directed cycle Graph
-- `InfraEllipseQ` whether a cycle is an ellipse
-- `InfraQuadric` the solid {v : sum_i w_i d(p_i, v) <= c} about the foci p_i; one focus is the ball, two the ellipse, a band {c, c} the elliptic shell, weights {1, -1} a hyperbola branch
+- `InfraReachableQ`, `LineCount`, `UniversalLineQ`
 
-- `InfraBallQ` whether a vertex set is a closed ball
-- `InfraShellQ` whether a vertex set is a shell {v : d(c, v) == r} for some centre c and radius r
-- `InfraTube` the tube {v : d(a_i, v) <= r_i for some i} along a core, the profile a radius, a band, a list along the core or a function of the position; Method "Balls" or "Sliced"
-- `InfraCylinder` the cylinder of radius r about a walk, the sliced tube with flat ends
-- `InfraCone` the cone of a given slope along a walk, apex at its first vertex and a flat base
+### Experimental: parallels and perpendiculars
+
+- `RandomInfraParallel` a random parallel to a line through $p$, at constant distance from it
+- `FindInfraPerpendicular` the lines through a point perpendicular to a line
+- `FindInfraBisectingHyperplane` the perpendicular bisector $\{v : d(p_1, v) = d(p_2, v)\}$, or a slab about it
+
+- `InfraParallelQ`, `InfraPerpendicularQ`
+
+### Experimental: spheres, planes and conics
+
+- `InfraSphere` the inclusion-minimal connected subsets of a shell that separate $c$ from the outside
+- `InfraPlane` the separating vertex sets between $p_1$ and $p_2$
+- `InfraEllipse` the ellipse with foci $p_1, p_2$, a shortest separating cycle of $\{v : d(p_1, v) + d(p_2, v) = c\}$
+- `InfraQuadric` the solid $\{v : \sum w_i d(p_i, v) \le c\}$; balls, ellipses and hyperbola branches as special cases
+
+- `RandomInfraSphere`, `RandomInfraPlane`, `RandomInfraEllipse`, `RandomInfraQuadric`, `InfraEllipseQ`
+
+### Experimental: solids
+
+- `InfraTube` the tube along a core, the union of the balls of radius $r_i$ about its vertices $a_i$
+- `InfraCylinder` the cylinder of radius $r$ about a walk, with flat ends
+- `InfraCone` the cone of a given slope along a walk, apex at its first vertex
 - `InfraSolidOfRevolution` the solid about a walk with a given radius profile
 
-- `InfraRegularPolygon` the regular n-gon whose k-th diagonals have prescribed lengths; the polygon through given corners is the closed polyline InfraSegment[p1, ..., pn, p1]
-- `RandomInfraRegularPolygon` regular polygons as directed Graph legs in the bare form, or ordered vertex sequences with a token
-- `InfraRegularPolygonQ` whether a cycle is regular with respect to a tuple of diagonal lengths
-- `InfraConvexHull` the convex hull under shortest paths of a set, the closure under MetricInterval; with k, the k-th round of the closure
-- `InfraBallHull` the intersection of the closed balls containing a set, of radius at most r, {r} exactly r or {r, s} between; without a radius the Mazur hull
+- `RandomInfraTube`, `RandomInfraCylinder`, `RandomInfraCone`, `RandomInfraSolidOfRevolution`
 
-- `InfraAngle` the angle at p between q1 and q2 in radians, Method "Arclength" or "Alexandrov", the comparison angle of the three distances
-- `InfraScalarProduct` the product d(o, u) d(o, v) cos(theta) based at o, the polar form of the metric at curvature 0
-- `FindInfraLinearCombination` the vertices realising a linear combination of vertices based at o
+### Experimental: polygons and hulls
 
-- `FindInfraOrthogonalAxes` a maximal set of mutually perpendicular lines through a centre c, each a vertex list
-- `FindInfraOrthogonalRays` a maximal set of mutually perpendicular rays from a centre c, each a vertex list
-- `FindInfraSpanningAxes` n mutually well-separated longest shortest paths across a graph, with no fixed centre
-- `OrthogonalCoordinates` the signed position of the foot of each vertex on each of a list of axes, counted from the centre c
+- `InfraRegularPolygon` the regular $n$-gon whose diagonals have prescribed lengths
+- `InfraConvexHull` the convex hull of a set under shortest paths
+- `InfraBallHull` the intersection of the closed balls containing a set
 
-- `InfraDistance` the distance between two objects, aggregated over their vertex sets
-- `InfraBoundary` the boundary of a vertex set, density or object, as a sorted vertex list
-- `InfraInterior` the interior of a vertex set, density or object, as a sorted vertex list
-- `InfraEqualQ` whether two objects are equal; Method chooses set, multiset, overlap or diffuse equality
+- `RandomInfraRegularPolygon`, `RandomInfraConvexHull`, `RandomInfraBallHull`, `InfraRegularPolygonQ`
 
-- `InfraIntersectQ` the hypothesis that two objects of a scene meet
-- `InfraPlaneQ` the hypothesis that a set of a scene lies in the bisector slab of p1 and p2 and separates them
-- `PointViewer`, `SegmentViewer`, `ShellViewer`, `CircleViewer` interactive viewers for points, shortest-path segments, shells and circles
+### Experimental: angles and linear structure
 
-### Possible cleanup
+- `InfraAngle` the angle at $p$ between $q_1$ and $q_2$, by arclength or by Alexandrov comparison
+- `InfraScalarProduct` the product $d(o, u) d(o, v) \cos \theta$ based at $o$
+- `FindInfraLinearCombination` the vertices realising a linear combination of vertices based at $o$
 
-- `InfraSubgraph` induces the substrate subgraph on an object's support; the unthickened form is also InfraMeasurement[g, obj, "Subgraph"], while obj -> t provides neighbourhood thickening
-- `UniqueInfraSegmentQ` tests whether the segment's "Cardinality" is 1
+### Experimental: orthogonal axes
 
-### Not here
+- `FindInfraOrthogonalAxes` a maximal set of mutually perpendicular lines through a centre
+- `FindInfraOrthogonalRays` a maximal set of mutually perpendicular rays from a centre
+- `FindInfraSpanningAxes` $n$ well-separated longest shortest paths across a graph
+- `OrthogonalCoordinates` the signed position of the foot of each vertex on each axis
 
-- not here: an invariant of four points, and the inverse of every head, the values of its unknowns for a given vertex set
-- not here: the geodesics at a scale and the volume measurements, which are on the Riemannian Infrageometry guide
+### Experimental: sets
+
+- `InfraDistance` the distance between two objects
+- `InfraBoundary` the boundary of a vertex set, density or object
+- `InfraInterior` the interior of a vertex set, density or object
+- `InfraEqualQ` whether two objects are equal, as sets, multisets, by overlap or diffusely
+
+### Experimental: viewers
+
+- `PointViewer`, `SegmentViewer`, `ShellViewer`, `CircleViewer` interactive viewers for points, segments, shells and circles
