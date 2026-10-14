@@ -140,31 +140,23 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                If[ ListQ @ ink[ "Walk" ] && record[ "OpacityRange" ] =!= None && FreeQ[ Last @ item, "OpacityRange" ],
                  "OpacityRange" -> { 1, 1 }, Nothing ] |> ] |> ],
         objects ] },
-    { entries = Join[ objectEntries,
-        MapIndexed[
-          { e, k } |-> With[ { record = parseHighlightStyle[ Automatic, ranges ] },
-            <| "Verts" -> spread @ KeySort @ Counts @ e[ "Knots" ], "Edges" -> <| |>, "Faint" -> { }, "Walk" -> None, "Knots" -> { },
-               "Color" -> palette[[ 1 + Mod[ Length @ objectEntries + First @ k - 1, Length @ palette ] ]],
-               "Record" -> Join[ record, <|
-                 "ThicknessRange" -> span[ record[ "ThicknessRange" ], substrateThickness, "ThicknessRange" ],
-                 "PointSizeRange" -> span[ record[ "PointSizeRange" ], Automatic, "PointSizeRange" ] |> ] |> ],
-          Select[ objectEntries, #[ "Knots" ] =!= { } & ] ] ] },
+    { entries = Catenate @ Map[
+        e |-> If[ e[ "Knots" ] === { }, { e },
+          { e, <| "Verts" -> spread @ AssociationMap[ 1 &, e[ "Knots" ] ], "Edges" -> <| |>, "Faint" -> { }, "Walk" -> None, "Knots" -> { },
+                 "Color" -> e[ "Color" ],
+                 "Record" -> Append[ e[ "Record" ], "PointSizeRange" -> Replace[ e[ "Record" ][ "PointSizeRange" ],
+                   None :> span[ ranges[ "PointSizeRange" ], Automatic, "PointSizeRange" ] ] ] |> } ],
+        objectEntries ] },
     { vMasses = Merge[ ( e |-> ( { e[ "Color" ], #[[ 1 ]], If[ e[ "Record" ][ "PointSizeRange" ] === None, 0, #[[ 2 ]] ], e[ "Record" ] } & /@
         e[ "Verts" ] ) ) /@ entries, Identity ],
-      eMasses = Merge[ ( e |-> ( { e[ "Color" ], #[[ 1 ]], #[[ 2 ]], e[ "Record" ] } & /@ e[ "Edges" ] ) ) /@ entries, Identity ],
-      fMasses = Merge[ ( e |-> AssociationMap[ { e[ "Color" ], e[ "Record" ] } &, e[ "Faint" ] ] ) /@ entries, Identity ] },
+      eMasses = Merge[ ( e |-> ( { e[ "Color" ], #[[ 1 ]], #[[ 2 ]], e[ "Record" ] } & /@ e[ "Edges" ] ) ) /@ entries, Last ],
+      fMasses = Merge[ ( e |-> AssociationMap[ { e[ "Color" ], e[ "Record" ] } &, e[ "Faint" ] ] ) /@ entries, Last ] },
     { lerp  = { spec, w } |-> If[ ListQ @ spec, spec[[ 1 ]] + ( spec[[ 2 ]] - spec[[ 1 ]] ) w, spec w ],
-      grow  = { range, r } |-> First @ range + ( Last @ range - First @ range ) r,
-      blend = cs |-> {
-        Replace[ DeleteDuplicates @ cs[[ All, 1 ]], { { c_ } :> c, _ :> Blend[ cs[[ All, 1 ]], cs[[ All, 2 ]] ] } ],
-        Min[ 1, Total @ cs[[ All, 2 ]] ],
-        Min[ 1, Total @ cs[[ All, 3 ]] ],
-        cs[[ -1, 4 ]] } },
+      grow  = { range, r } |-> First @ range + ( Last @ range - First @ range ) r },
       {
           edgeData = Join[
             KeyValueMap[
-              { ue, cs } |-> With[ { el = blend @ cs },
-                { color = el[[ 1 ]], w = el[[ 2 ]], r = el[[ 3 ]], rec = el[[ 4 ]] },
+              { ue, el } |-> With[ { color = el[[ 1 ]], w = el[[ 2 ]], r = el[[ 3 ]], rec = el[[ 4 ]] },
                 { oList = If[ rec[ "OpacityRange" ] === None, { },
                     { Opacity[ lerp[ rec[ "OpacityRange" ], w ] ] } ],
                   tList = If[ rec[ "ThicknessRange" ] === None, { },
@@ -178,10 +170,10 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                 |> ],
               eMasses ],
             KeyValueMap[
-              { ue, cs } |-> With[ { rec = cs[[ -1, 2 ]] },
+              { ue, el } |-> With[ { rec = el[[ 2 ]] },
                 <|
                   "EdgeStyle" -> ( ue -> Directive[
-                      Replace[ DeleteDuplicates @ cs[[ All, 1 ]], { { c_ } :> c, colors_ :> Blend @ colors } ],
+                      el[[ 1 ]],
                       Sequence @@ If[ rec[ "OpacityRange" ] === None, { }, { Opacity[ First @ Flatten @ { rec[ "OpacityRange" ] } ] } ],
                       Sequence @@ If[ rec[ "ThicknessRange" ] === None, { }, { AbsoluteThickness[ First @ rec[ "ThicknessRange" ] ] } ],
                       Sequence @@ List @@ rec[ "EdgeDir" ],
@@ -193,7 +185,7 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
           vertexData = KeyValueMap[
             { v, cs } |-> With[ {
                 shapes = KeyValueMap[
-                  { sign, part } |-> With[ { el = blend @ part },
+                  { sign, part } |-> With[ { el = Last @ part },
                     { color = el[[ 1 ]], w = el[[ 2 ]], r = el[[ 3 ]], rec = el[[ 4 ]] },
                     { oList = If[ rec[ "OpacityRange" ] === None, { },
                         { Opacity[ lerp[ rec[ "OpacityRange" ], w ] ] } ],

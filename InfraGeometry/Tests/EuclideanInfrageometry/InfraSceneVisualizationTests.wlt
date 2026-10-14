@@ -58,7 +58,7 @@ VerificationTest[
         { 1, 16 }                                   -> Red } ]
   ],
   Graph,
-  TestID -> "InfraSubstrateHighlight-multiple-objects-blend"
+  TestID -> "InfraSubstrateHighlight-multiple-objects"
 ]
 
 VerificationTest[
@@ -436,16 +436,13 @@ VerificationTest[
   TestID -> "InfraSubstrateHighlight-polygon-corners-drop-the-closure"
 ]
 
-(* the knots are appended after the listed objects and take the next palette colour by order,
-   so a knot dot is the midpoint of the chain's colour and its own: one chain, knot 4 *)
+(* the knots are painted right after their own chain, in the chain's colour: one chain, knot 4 *)
 VerificationTest[
   With[ { g = PathGraph @ Range[ 11 ] },
     With[ { opts = Options @ InfraSubstrateHighlight[ g, { FindInfraPolylineSubdivision[ g, Range[ 11 ], "MaxLength" -> 3 ] } ] },
-      ColorDistance[
-        First @ Cases[ VertexShapeFunction /. opts, ( 4 -> f_ ) :> First @ Cases[ f, _RGBColor, Infinity ] ],
-        Blend[ Take[ strikeOutPalette, 2 ], { 1, 1 } ] ] < 10^-6 ] ],
-  True,
-  TestID -> "InfraSubstrateHighlight-knots-take-the-next-palette-colour"
+      First @ Cases[ VertexShapeFunction /. opts, ( 4 -> f_ ) :> First @ Cases[ f, _RGBColor, Infinity ] ] ] ],
+  First @ strikeOutPalette,
+  TestID -> "InfraSubstrateHighlight-knots-take-their-object-colour"
 ]
 
 (* a bundle of geodesics between the same two points does NOT chain -- every leg
@@ -722,10 +719,69 @@ VerificationTest[
     With[ {
         once  = Lookup[ EdgeStyle /. Options @ InfraSubstrateHighlight[ g, { InfraSegment[ 1, 7 ] }, "ThicknessRange" -> 8 ], UndirectedEdge[ 1, 2 ] ],
         twice = Lookup[ EdgeStyle /. Options @ InfraSubstrateHighlight[ g, { InfraSegment[ 1, 7 ], InfraSegment[ 1, 7 ] }, "ThicknessRange" -> 8 ], UndirectedEdge[ 1, 2 ] ] },
-      { Cases[ once, _AbsoluteThickness ], Cases[ twice, _AbsoluteThickness ],
-        ColorDistance[ First @ Cases[ twice, _RGBColor ], Blend[ Take[ strikeOutPalette, 2 ], { 1, 1 } ] ] < 10^-6 } ] ],
+      { Cases[ once, _AbsoluteThickness ], Cases[ twice, _AbsoluteThickness ], First @ Cases[ twice, _RGBColor ] === strikeOutPalette[[ 2 ]] } ] ],
   { { AbsoluteThickness[ 8 ] }, { AbsoluteThickness[ 8 ] }, True },
-  TestID -> "InfraSubstrateHighlight-overlap-blends-colour"
+  TestID -> "InfraSubstrateHighlight-overlap-last-object-wins-colour"
+]
+
+(* objects are painted in list order: where they overlap, the colour drawn is the last object's, never a blend *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    ( items |-> With[ { opts = Options @ InfraSubstrateHighlight[ g, items ] },
+        { First @ Cases[ Lookup[ EdgeStyle /. opts, # ], _?ColorQ ] & /@ { UndirectedEdge[ 1, 2 ], UndirectedEdge[ 2, 3 ], UndirectedEdge[ 3, 4 ] },
+          First @ Cases[ # /. ( GraphHighlightStyle /. opts ), _?ColorQ, Infinity ] & /@ { 1, 2, 3, 4 } } ] ) /@
+      { { InfraWalk[ { 1, 2, 3 } ] -> Red, InfraWalk[ { 2, 3, 4 } ] -> Blue },
+        { InfraWalk[ { 2, 3, 4 } ] -> Blue, InfraWalk[ { 1, 2, 3 } ] -> Red } } ],
+  { { { Red, Blue, Blue }, { Red, Blue, Blue, Blue } },
+    { { Red, Red, Blue }, { Red, Red, Red, Blue } } },
+  TestID -> "InfraSubstrateHighlight-last-object-wins-explicit-colours"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    With[ { opts = Options @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ], InfraWalk[ { 2, 3, 4 } ] } ] },
+      { First @ Cases[ Lookup[ EdgeStyle /. opts, # ], _?ColorQ ] & /@ { UndirectedEdge[ 1, 2 ], UndirectedEdge[ 2, 3 ] },
+        First @ Cases[ # /. ( GraphHighlightStyle /. opts ), _?ColorQ, Infinity ] & /@ { 1, 2 } } ] ],
+  { strikeOutPalette[[ { 1, 2 } ]], strikeOutPalette[[ { 1, 2 } ]] },
+  TestID -> "InfraSubstrateHighlight-last-object-wins-palette-colours"
+]
+
+(* a later dot covers an earlier one completely: its colour, its own size, nothing of the earlier dot left *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    With[ { f = 13 /. ( VertexShapeFunction /. Options @ InfraSubstrateHighlight[ g, { <| 12 -> 1, 13 -> 3 |> -> Red, <| 13 -> 1 |> -> Blue } ] ) },
+      { Cases[ f[ { 0, 0 }, 13, { 1, 1 } ], _?ColorQ, Infinity ], Cases[ f[ { 0, 0 }, 13, { 1, 1 } ], Disk[ _, { r_, _ } ] :> r, Infinity ] } ] ],
+  { { Blue }, { 1 } },
+  TestID -> "InfraSubstrateHighlight-last-object-wins-on-a-dot"
+]
+
+(* a chain's knots wear the chain's colour, not a palette one, at the base size however many chains share them;
+   a later object paints over them like over any vertex *)
+VerificationTest[
+  With[ { g = PathGraph @ Range[ 11 ] },
+    With[ { legs = FindInfraPolylineSubdivision[ g, Range[ 11 ], "MaxLength" -> 3 ] },
+      { styled = Options @ InfraSubstrateHighlight[ g, { Directive[ StandardGreen ], legs } ],
+        twice  = Options @ InfraSubstrateHighlight[ g, { legs, legs } ],
+        under  = Options @ InfraSubstrateHighlight[ g, { legs -> Red, InfraWalk[ Range[ 11 ] ] -> Blue } ] },
+      { Union @ Cases[ VertexShapeFunction /. styled, ( _ -> f_Function ) :> Splice @ Cases[ f, _?ColorQ, Infinity ] ],
+        Union @ Cases[ VertexShapeFunction /. twice, ( _ -> f_Function ) :> Splice @ Cases[ f, _?ColorQ, Infinity ] ],
+        Union @ dotScales @ twice,
+        FreeQ[ under, Red ] } ] ],
+  { { StandardGreen }, { strikeOutPalette[[ 2 ]] }, { 1 }, True },
+  TestID -> "InfraSubstrateHighlight-knots-in-their-object-colour-and-place"
+]
+
+(* a family of geodesics under a family of midpoints: the midpoints in exactly their own colour, the endpoints in the geodesics' *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    With[ { mids = RandomInfraMidpoint[ g, 1, 13, All ] },
+      { opts = Options @ InfraSubstrateHighlight[ g, { Directive[ StandardBlue ], Splice @ RandomInfraSegment[ g, 1, 13, All ],
+          Directive[ StandardRed, AbsolutePointSize[ 9 ] ], mids } ] },
+      { Union @ Cases[ Lookup[ VertexShapeFunction /. opts, mids ], _?ColorQ, Infinity ],
+        Union @ Cases[ { 1, 13 } /. ( GraphHighlightStyle /. opts ), _?ColorQ, Infinity ],
+        Union @ Cases[ EdgeStyle /. opts, _?ColorQ, Infinity ] } ] ],
+  { { StandardRed }, { StandardBlue }, { StandardBlue } },
+  TestID -> "InfraSubstrateHighlight-midpoints-over-geodesics-keep-their-colour"
 ]
 
 (* a list of heads, or of walks, as one entry is a family: its ink is the sum of its members' inks *)
