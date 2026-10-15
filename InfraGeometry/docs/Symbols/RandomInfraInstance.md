@@ -14,7 +14,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 `RandomInfraInstance[scene, graph]` draws one admissible [InfraSceneInstance]().
 
-`RandomInfraInstance[scene, graph, n]` gives exactly *n* distinct instances, or `{}` when fewer exist. `UpTo[n]` gives at most *n*. `All` enumerates every instance in deterministic construction order.
+`RandomInfraInstance[scene, graph, n]` gives exactly *n* distinct instances, or `{}` when fewer exist. `UpTo[n]` gives at most *n*. `All` enumerates every instance in construction order when the construction and selection callbacks are deterministic.
 
 `RandomInfraInstance[scene, graph, bindings]` fixes the given `Association` of bindings. A count may precede *bindings*.
 
@@ -30,8 +30,15 @@ An object already bound is not constructed again. A partly fixed tuple construct
 |---|---|---|
 | `"NextVertexFunction"` | `Automatic` | random candidate order for bounded counts; `Identity` for `All` |
 | `"Steps"` | `All` | how many scene steps to construct |
+| `RandomSeeding` | `Automatic` | seed for one local stream covering the complete search |
 
-`"NextVertexFunction" -> Identity` gives deterministic descent. Ambient `SeedRandom` controls random draws. `All` with `Automatic` makes no draw.
+With deterministic construction callbacks, `"NextVertexFunction" -> Identity` gives deterministic descent, and `All` with the default `"NextVertexFunction" -> Automatic` makes no random draw. Stochastic construction callbacks or explicit stochastic candidate ordering and pruning use the local scene stream.
+
+`RandomSeeding -> Automatic` freshly seeds each call. An integer or string gives a reproducible call; a saved `RandomGeneratorState` restores that state locally. `Inherited` uses a local snapshot of the current generator state. Every setting restores the outer random state afterward, so successive `Inherited` calls can repeat.
+
+The seed applies once to the complete search, including random candidate-selection callbacks and nested geometry samplers. Counts, initial bindings and `"Steps"` retain their existing meanings. A stochastic callback with `All` can prune the search; `All` is exhaustive only for the retained tree.
+
+This follows Wolfram's [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html) and [RandomSeeding](https://reference.wolfram.com/language/ref/RandomSeeding.html) convention. Named geometry samplers instead use ambient `SeedRandom`, like [RandomPoint](https://reference.wolfram.com/language/ref/RandomPoint.html) and [RandomChoice](https://reference.wolfram.com/language/ref/RandomChoice.html). To migrate an externally seeded scene example, supply `RandomSeeding -> seed` directly; use `Inherited` when a local snapshot of an externally seeded stream is intended.
 
 A function such as `(RandomSample[#, UpTo[2]] &)` keeps at most two candidate extensions at each construction. Failure then means failure in the retained tree. `RandomChoice` follows just one route, without backtracking, and is not accepted with `All`.
 
@@ -64,7 +71,7 @@ With[
   {c = First @ GraphCenter[g]},
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
-  {instance = (SeedRandom[1]; RandomInfraInstance[scene, g])},
+  {instance = RandomInfraInstance[scene, g, RandomSeeding -> 1]},
   {InfraSubstrateHighlight[g, {InfraSceneInstance[instance, seg1], c}], instance}]
 ```
 
@@ -113,8 +120,35 @@ With[
   {c = First @ GraphCenter[g]},
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
-  {segments = (SeedRandom[1]; InfraSceneInstance[#, seg1] & /@ RandomInfraInstance[ scene, g, All, "NextVertexFunction" -> (RandomSample[#, UpTo[2]] &) ])},
+  {segments = InfraSceneInstance[#, seg1] & /@ RandomInfraInstance[ scene, g, All,
+      "NextVertexFunction" -> (RandomSample[#, UpTo[2]] &), RandomSeeding -> 1 ]},
   {InfraSubstrateHighlight[g, {segments, c}], Length @ segments}]
+```
+
+### RandomSeeding
+
+Repeat a complete scene search with an explicit seed.
+
+```wl
+ClearAll[p, q];
+With[
+  {g = GridGraph[{3, 3}]},
+  {scene = InfraScene[{p, q}, {p == InfraPoint[], q == InfraPoint[], InfraDistance[p, q] == 2}]},
+  {instance = RandomInfraInstance[scene, g, RandomSeeding -> 123]},
+  {InfraSubstrateHighlight[g, {InfraSceneInstance[instance, {p, q}]}],
+   instance === RandomInfraInstance[scene, g, RandomSeeding -> 123]}]
+```
+
+An inherited seed snapshots the ambient state without advancing it; repeated calls can return the same instance.
+
+```wl
+SeedRandom[123];
+ClearAll[p];
+With[
+  {g = GridGraph[{3, 3}]},
+  {scene = InfraScene[{p}, {p == InfraPoint[]}]},
+  {instance = RandomInfraInstance[scene, g, RandomSeeding -> Inherited]},
+  instance === RandomInfraInstance[scene, g, RandomSeeding -> Inherited]]
 ```
 
 ## Properties and Relations

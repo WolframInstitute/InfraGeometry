@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- `RandomInfraInstance` now accepts `RandomSeeding -> Automatic`, following Wolfram's `RandomInstance` convention. The complete scene search uses one local random stream and restores the outer generator state. Use an integer or string seed for reproducible calls, `Inherited` for a local snapshot of the current state, or a saved `RandomGeneratorState`. Migrate scene calls controlled only by `SeedRandom` to an explicit option; repeated `Inherited` calls can repeat because the outer stream does not advance. Named geometry samplers retain ambient `SeedRandom`, following `RandomPoint` and `RandomChoice`.
+
+- Dimension tutorial paired profiles use native table layout so both plot legends remain visible.
+
 ## 2.7.1
 
 - Restrict exact explorer callbacks to explicit deterministic profile and query domains.

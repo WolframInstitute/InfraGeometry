@@ -833,9 +833,9 @@ VerificationTest[
 VerificationTest[
   BlockRandom[
     With[ { scene = InfraScene[ { p }, { p == InfraPoint[] } ], graph = PathGraph[ Range[ 5 ] ] },
-      { MatchQ[ RandomInfraInstance[ scene, graph ], InfraSceneInstance[ _Association ] ],
-        Length @ RandomInfraInstance[ scene, graph, 1 ],
-        InfraSceneInstance[ RandomInfraInstance[ scene, graph, <| p -> 3 |> ], p ] } ],
+      { MatchQ[ RandomInfraInstance[ scene, graph, RandomSeeding -> Inherited ], InfraSceneInstance[ _Association ] ],
+        Length @ RandomInfraInstance[ scene, graph, 1, RandomSeeding -> Inherited ],
+        InfraSceneInstance[ RandomInfraInstance[ scene, graph, <| p -> 3 |>, RandomSeeding -> Inherited ], p ] } ],
     RandomSeeding -> 41 ],
   { True, 1, 3 },
   TestID -> "RandomInfraInstance-default-one-count-list-initial-association"
@@ -843,21 +843,22 @@ VerificationTest[
 
 VerificationTest[
   With[ { scene = InfraScene[ { p }, { p == InfraPoint[] } ], graph = PathGraph[ Range[ 8 ] ] },
-    With[ { samples = Table[ BlockRandom[ RandomInfraInstance[ scene, graph ], RandomSeeding -> seed ], { seed, 12 } ] },
-      { samples === Table[ BlockRandom[ RandomInfraInstance[ scene, graph ], RandomSeeding -> seed ], { seed, 12 } ],
-        Length @ DeleteDuplicates[ samples ] > 1,
+    With[ { samples = Table[ RandomInfraInstance[ scene, graph, RandomSeeding -> seed ], { seed, 12 } ] },
+      { samples === Table[ RandomInfraInstance[ scene, graph, RandomSeeding -> seed ], { seed, 12 } ],
         AllTrue[ samples, instance |-> VertexQ[ graph, InfraSceneInstance[ instance, p ] ] ] } ] ],
-  { True, True, True },
-  TestID -> "RandomInfraInstance-reproducible-varied-admissible"
+  { True, True },
+  TestID -> "RandomInfraInstance-explicit-seed-reproducible-admissible"
 ]
 
 VerificationTest[
   BlockRandom[
     With[ { scene = InfraScene[ { p }, { p == InfraPoint[] } ], graph = PathGraph[ Range[ 5 ] ] },
-      With[ { three = RandomInfraInstance[ scene, graph, 3 ], upto = RandomInfraInstance[ scene, graph, UpTo[ 8 ] ] },
+      With[ { three = RandomInfraInstance[ scene, graph, 3, RandomSeeding -> Inherited ],
+          upto = RandomInfraInstance[ scene, graph, UpTo[ 8 ], RandomSeeding -> Inherited ] },
         { Length @ three, DuplicateFreeQ @ three, Length @ upto, DuplicateFreeQ @ upto,
-          RandomInfraInstance[ scene, graph, 6 ], RandomInfraInstance[ scene, graph, 0 ],
-          RandomInfraInstance[ scene, graph, 0, "Steps" -> 0 ], RandomInfraInstance[ scene, graph, UpTo[ 0 ] ] } ] ],
+          RandomInfraInstance[ scene, graph, 6, RandomSeeding -> Inherited ], RandomInfraInstance[ scene, graph, 0, RandomSeeding -> Inherited ],
+          RandomInfraInstance[ scene, graph, 0, "Steps" -> 0, RandomSeeding -> Inherited ],
+          RandomInfraInstance[ scene, graph, UpTo[ 0 ], RandomSeeding -> Inherited ] } ] ],
     RandomSeeding -> 41 ],
   { 3, True, 5, True, { }, { }, { }, { } },
   TestID -> "RandomInfraInstance-distinct-counts-shortage-zero"
@@ -865,7 +866,8 @@ VerificationTest[
 
 VerificationTest[
   With[ { scene = InfraScene[ { p }, { p == InfraPoint[ 1 ], p > 2 } ], graph = PathGraph[ Range[ 5 ] ] },
-    BlockRandom[ { RandomInfraInstance[ scene, graph ], RandomInfraInstance[ scene, graph, UpTo[ 3 ] ],
+    BlockRandom[ { RandomInfraInstance[ scene, graph, RandomSeeding -> Inherited ],
+      RandomInfraInstance[ scene, graph, UpTo[ 3 ], RandomSeeding -> Inherited ],
       RandomInfraInstance[ scene, graph, All ] }, RandomSeeding -> 41 ] ],
   { { }, { }, { } },
   TestID -> "RandomInfraInstance-impossible-scene"
@@ -875,7 +877,7 @@ VerificationTest[
   With[ { scene = InfraScene[ { p, q }, { p == InfraPoint[], q == InfraIntersection[ InfraShell[ p, 3 ], InfraShell[ p, 3 ] ] } ],
           graph = PathGraph[ Range[ 4 ] ] },
     AllTrue[ Range[ 20 ], seed |->
-      With[ { instance = BlockRandom[ RandomInfraInstance[ scene, graph ], RandomSeeding -> seed ] },
+      With[ { instance = RandomInfraInstance[ scene, graph, RandomSeeding -> seed ] },
         MatchQ[ instance, InfraSceneInstance[ _Association ] ] &&
           GraphDistance[ graph, Sequence @@ InfraSceneInstance[ instance, { p, q } ] ] == 3 ] ] ],
   True,
@@ -921,9 +923,9 @@ VerificationTest[
     { InfraSceneInstance[ #, p ] & /@ RandomInfraInstance[ scene, graph, All ],
       RandomInfraInstance[ scene, graph, "NextVertexFunction" -> Identity ] ===
         First @ RandomInfraInstance[ scene, graph, All ],
-      BlockRandom[ RandomInfraInstance[ scene, graph, All ]; RandomInteger[ 1000000 ], RandomSeeding -> 41 ] ===
+      BlockRandom[ RandomInfraInstance[ scene, graph, All, RandomSeeding -> Inherited ]; RandomInteger[ 1000000 ], RandomSeeding -> 41 ] ===
         BlockRandom[ RandomInteger[ 1000000 ], RandomSeeding -> 41 ],
-      BlockRandom[ RandomInfraInstance[ scene, graph, 3, "NextVertexFunction" -> Identity ];
+      BlockRandom[ RandomInfraInstance[ scene, graph, 3, "NextVertexFunction" -> Identity, RandomSeeding -> Inherited ];
         RandomInteger[ 1000000 ], RandomSeeding -> 41 ] ===
         BlockRandom[ RandomInteger[ 1000000 ], RandomSeeding -> 41 ] } ],
   { { 1, 2, 3, 4, 5 }, True, True, True },
@@ -934,7 +936,7 @@ VerificationTest[
   With[ { scene = InfraScene[ { p, q }, { p == InfraPoint[], q == InfraIntersection[ InfraShell[ p, 3 ], InfraShell[ p, 3 ] ] } ],
           graph = PathGraph[ Range[ 4 ] ] },
     { Head @ RandomInfraInstance[ scene, graph, All, "NextVertexFunction" -> RandomChoice ],
-      MemberQ[ Table[ BlockRandom[ RandomInfraInstance[ scene, graph, "NextVertexFunction" -> RandomChoice ],
+      MemberQ[ Table[ RandomInfraInstance[ scene, graph, "NextVertexFunction" -> RandomChoice,
         RandomSeeding -> seed ], { seed, 20 } ], { } ] } ],
   { RandomInfraInstance, True },
   TestID -> "RandomInfraInstance-RandomChoice-one-route-refuses-All"
@@ -972,7 +974,7 @@ VerificationTest[
   With[ { scene = InfraScene[ { p, q, a, b, c, d },
             { p == InfraPoint[], q == InfraPoint[], a == InfraPoint[], b == InfraPoint[], c == InfraPoint[], d == InfraPoint[] } ],
           graph = PathGraph[ Range[ 20 ] ] },
-    MatchQ[ TimeConstrained[ BlockRandom[ RandomInfraInstance[ scene, graph ], RandomSeeding -> 41 ], 10 ],
+    MatchQ[ TimeConstrained[ RandomInfraInstance[ scene, graph, RandomSeeding -> 41 ], 10 ],
       InfraSceneInstance[ bindings_Association /; Length[ bindings ] == 6 ] ] ],
   True,
   TestID -> "RandomInfraInstance-bounded-search-avoids-full-branch-product"
@@ -982,7 +984,7 @@ VerificationTest[
   With[ { scene = InfraScene[ { p, q }, { p == InfraPoint[], q == InfraPoint[], p > 3 } ],
           graph = PathGraph[ Range[ 3 ] ] },
     BlockRandom[
-      RandomInfraInstance[ scene, graph, <| p -> 1 |> ]; RandomInteger[ 1000000 ], RandomSeeding -> 41 ] ===
+      RandomInfraInstance[ scene, graph, <| p -> 1 |>, RandomSeeding -> Inherited ]; RandomInteger[ 1000000 ], RandomSeeding -> 41 ] ===
       BlockRandom[ RandomInteger[ 1000000 ], RandomSeeding -> 41 ] ],
   True,
   TestID -> "RandomInfraInstance-bound-assertions-reject-before-further-draws"

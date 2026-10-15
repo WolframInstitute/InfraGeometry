@@ -237,13 +237,12 @@ InfraSceneInstance[ bindings_Association, sym_ ] /; ! ListQ[ sym ] :=
 InfraSceneInstance[ bindings_Association, syms_List ] :=
   bindings /@ syms
 
-Options[ RandomInfraInstance ] = { "NextVertexFunction" -> Automatic, "Steps" -> All }
+Options[ RandomInfraInstance ] = { "NextVertexFunction" -> Automatic, "Steps" -> All, RandomSeeding -> Automatic }
 
 RandomInfraInstance[ scene_InfraScene, graph_Graph,
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    init : _Association : <| |>, opts : OptionsPattern[] ] /;
-    count =!= All || OptionValue[ RandomInfraInstance, { opts }, "NextVertexFunction" ] =!= RandomChoice :=
-  With[ { result = Catch[
+    init : _Association : <| |>, opts : OptionsPattern[] ] :=
+  With[ { result = BlockRandom[ Catch[
     If[ AnyTrue[ scene[ "Assertions" ], assertion |-> MatchQ[ assertion,
         ( target_ == rhs_ ) /; ( AnyTrue[ scene[ "Objects" ], object |-> object === target ] ||
           ( ListQ[ target ] && target =!= { } && AllTrue[ target,
@@ -254,8 +253,9 @@ RandomInfraInstance[ scene_InfraScene, graph_Graph,
     With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
           objects = scene[ "Objects" ], constructions = scene[ "Constructions" ],
           steps = Replace[ OptionValue[ "Steps" ], n_Integer :> UpTo[ n ] ],
-          nextFunction = Replace[ OptionValue[ "NextVertexFunction" ],
-            Automatic -> If[ count === All, Identity, RandomSample ] ] },
+          nextFunction = Replace[ OptionValue[ "NextVertexFunction" ], {
+            Automatic -> If[ count === All, Identity, RandomSample ],
+            RandomChoice :> If[ count === All, Throw[ "UnsupportedConstruction", "UnsupportedConstruction" ], RandomChoice ] } ] },
     { pool = expression |-> With[ { settings = Cases[ expression, _Rule ],
         token = DeleteCases[ expression, ( "Select" | "Branches" ) -> _ ] },
       { members = Which[
@@ -340,7 +340,7 @@ RandomInfraInstance[ scene_InfraScene, graph_Graph,
     Switch[ count,
       Automatic, First[ instances, { } ],
       _Integer, If[ Length @ instances < count, { }, instances ],
-      _, instances ] ], "UnsupportedConstruction" ] },
+      _, instances ] ], "UnsupportedConstruction" ], RandomSeeding -> OptionValue[ RandomSeeding ] ] },
     result /; result =!= "UnsupportedConstruction" ]
 
 pointQ[ graph_Graph, x_ ] :=

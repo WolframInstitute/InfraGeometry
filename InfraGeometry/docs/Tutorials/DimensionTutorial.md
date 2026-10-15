@@ -128,7 +128,7 @@ dimensionProfiles = Map[
       "Box" -> -logSlope[ boxRadii + 1/2, boxCounts ], "UnshiftedBox" -> -logSlope[ boxRadii, boxCounts ],
       "Growth" -> logSlope[ growthRadii, growthCounts ], "VertexVolume" -> logSlope[ growthRadii, volumes ] |> ] ],
   dimensionSubstrates ];
-GraphicsGrid[ Map[
+Grid[ Map[
   data |-> {
     ListLogLogPlot[ Transpose[ { data[ "BoxRadii" ] + 1/2, data[ "BoxCounts" ] } ],
       Joined -> True, AxesLabel -> { "r + 1/2", "cover count" }, PlotLabel -> data[ "Name" ] ],
@@ -141,7 +141,7 @@ GraphicsGrid[ Map[
 The normalized profiles against a horizontal target line: the box count multiplied by the shifted radius to the reference dimension, and the growth counts divided by the radius to that dimension. A flat profile supports the reference exponent over that window.
 
 ```wl
-GraphicsGrid[ Map[
+Grid[ Map[
   data |-> With[
     { box = data[ "BoxCounts" ] ( data[ "BoxRadii" ] + 1/2 ) ^ data[ "Reference" ],
       growth = data[ "GrowthCounts" ] / data[ "GrowthRadii" ] ^ data[ "Reference" ],
