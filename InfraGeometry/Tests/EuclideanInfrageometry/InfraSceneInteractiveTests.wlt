@@ -95,6 +95,22 @@ VerificationTest[ ! FreeQ[ savedViewerSnapshot[ savedBounded, 2, 4 ], "Partial e
   TestID -> "SavedViewer-missing-incoming-event-partial-label" ]
 VerificationTest[ ! FreeQ[ savedViewerSnapshot[ savedBounded, 2, 4 ], "EventLimit" ], True,
   TestID -> "SavedViewer-actual-boundary-reason" ]
+VerificationTest[
+	With[ { data = InfraSceneMultiway[ savedDiamond[ "Scene" ], savedDiamond[ "Substrate" ], "MaxDepth" -> 1 ] },
+		{ before = data, randomState = $RandomGeneratorState },
+		{ observed = Reap[ Internal`HandlerBlock[
+			{ "Message", If[ TrueQ[ Last[ # ] ], Sow[ ToString[ #, InputForm ] ] ] & },
+			savedViewerSnapshot[ data, 1, None, <| |>, <| |>, "Group boundary" ] ] ] },
+		{ Last[ observed ] === { },
+			MatchQ[ First[ observed ], _Column ] &&
+				! FreeQ[ First[ observed ], "Partial exploration" ] && ! FreeQ[ First[ observed ], "DepthLimit" ] &&
+				! FreeQ[ First[ observed ], "This view makes no negative existence claim." ] &&
+				FreeQ[ First[ observed ], "This layer is exhaustively empty." | _InfraBranchialGraph | _Subgraph | _KeySelect ],
+			data === before, $RandomGeneratorState === randomState } ],
+	{ True, True, True, True },
+	TestID -> "SavedViewer-unreached-group-boundary-is-partial-message-free-and-neutral"
+]
+
 VerificationTest[ ! FreeQ[ savedViewerSnapshot[ savedPending, 1, 2 ], "Undecided: assertions are pending at this state." ],
   True, TestID -> "SavedViewer-pending-prefix-is-undecided" ]
 VerificationTest[ ! FreeQ[ savedViewerSnapshot[ savedUnsupported, 1, 2 ],
