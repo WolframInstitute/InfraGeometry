@@ -90,7 +90,11 @@ InfraSubstrateHighlight[ graph_Graph, obj : Except[ _List ], opts : OptionsPatte
   InfraSubstrateHighlight[ graph, { obj }, opts ]
 
 InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
-  With[ {
+  With[ { dimension = Length @ First[ GraphEmbedding @ graph, { 0, 0 } ] },
+    { disk = If[ dimension === 3,
+        { point, radius } |-> Sphere[ point, Max @ Flatten @ { radius } ], Disk ],
+      circle = If[ dimension === 3,
+        { point, radius } |-> { Opacity[ .25 ], Sphere[ point, Max @ Flatten @ { radius } ] }, Circle ],
       ranges = <|
         "OpacityRange"   -> OptionValue[ "OpacityRange" ],
         "ThicknessRange" -> OptionValue[ "ThicknessRange" ],
@@ -134,6 +138,7 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
              "Knots"  -> ink[ "Knots" ],
              "Color"  -> Lookup[ record, "Color", palette[[ 1 + Mod[ First @ idx - 1, Length @ palette ] ]] ],
              "Record" -> Join[ record, <|
+               If[ dimension === 3 && record[ "Arrowheads" ] === True, "Arrowheads" -> Arrowheads[ .035 ], Nothing ],
                "ThicknessRange" -> span[ record[ "ThicknessRange" ], substrateThickness, "ThicknessRange" ],
                "PointSizeRange" -> If[ ink[ "EdgeDensity" ] =!= <| |> && FreeQ[ Last @ item, "PointSizeRange" | _AbsolutePointSize ], None,
                  span[ record[ "PointSizeRange" ], Automatic, "PointSizeRange" ] ],
@@ -200,17 +205,17 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                         With[ {
                             body  = Flatten @ { color, oList, vDirs },
                             scale = 1 + ( Replace[ Last @ dot, Automatic -> $InfraRangeTop[ "PointSizeRange" ] ] - 1 ) r },
-                          <| "VSF" -> ( v -> If[ sign > 0, Append[ body, Disk[ #1, scale #3 ] ] &, Append[ ring, Circle[ #1, scale #3 ] ] & ] ) |> ],
+                          <| "VSF" -> ( v -> If[ sign > 0, Append[ body, disk[ #1, scale #3 ] ] &, Append[ ring, circle[ #1, scale #3 ] ] & ] ) |> ],
                       dot =!= None || ! FreeQ[ vDirs, _AbsolutePointSize | _PointSize ],
                         With[ {
                             body   = Flatten[ { color, oList, If[ dot === None, { }, { AbsolutePointSize[ grow[ dot, r ] ] } ], vDirs } ],
                             radius = If[ dot === None, None, Offset[ { 1, 1 } grow[ dot, r ] / 2 ] ] },
                           <| "VSF" -> ( v -> Which[
                               sign > 0,        Append[ body, Point[ #1 ] ] &,
-                              radius === None, Append[ ring, Circle[ #1, #3 ] ] &,
-                              True,            Append[ ring, Circle[ #1, radius ] ] & ] ) |> ],
+                              radius === None, Append[ ring, circle[ #1, #3 ] ] &,
+                              True,            Append[ ring, circle[ #1, radius ] ] & ] ) |> ],
                       sign < 0,
-                        <| "VSF" -> ( v -> ( Append[ ring, Circle[ #1, #3 ] ] & ) ),
+                        <| "VSF" -> ( v -> ( Append[ ring, circle[ #1, #3 ] ] & ) ),
                            "VSize" -> If[ rec[ "VertexSize" ] === None, Nothing, v -> rec[ "VertexSize" ] ] |>,
                       True,
                         <| "Style" -> Style[ v, Directive[ color, Sequence @@ oList, Sequence @@ vDirs ] ],
@@ -233,7 +238,7 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
               With[ { runs = SplitBy[ Partition[ e[ "Walk" ], 2, 1 ], edgeStyle[ UndirectedEdge @@ Sort @ # ] & ] },
                 MapIndexed[
                   { steps, position } |-> { UndirectedEdge @@ Sort @ # & /@ steps,
-                              coords /@ Prepend[ Last /@ steps, First @ First @ steps ],
+                              Lookup[ coords, Key /@ Prepend[ Last /@ steps, First @ First @ steps ] ],
                               First[ position ] === Length[ runs ],
                               e[ "Record" ][ "Arrowheads" ] },
                   runs ] ] ],
@@ -241,9 +246,9 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
             e_Association /; e[ "Record" ][ "Arrowheads" ] === True && e[ "Record" ][ "EdgeShapeFunction" ] === None &&
               ListQ[ e[ "Walk" ] ] && Length[ e[ "Walk" ] ] >= 2 :>
               Last @ e[ "Walk" ] -> With[ {
-                  tip   = coords @ Last @ e[ "Walk" ],
+                  tip   = Lookup[ coords, Key @ Last @ e[ "Walk" ] ],
                   style = Lookup[ edgeStyle, UndirectedEdge @@ Sort @ Take[ e[ "Walk" ], -2 ], Directive[ e[ "Color" ] ] ] },
-                { u    = Normalize[ tip - coords @ e[ "Walk" ][[ -2 ]] ],
+                { u    = Normalize[ tip - Lookup[ coords, Key @ e[ "Walk" ][[ -2 ]] ] ],
                   size = 5 + 2 First[ Cases[ style, AbsoluteThickness[ t_ ] :> t ], substrateThickness ],
                   ink  = First[ Cases[ style, _?ColorQ ], e[ "Color" ] ] },
                 { If[ First @ ColorConvert[ ink, "LAB" ] > 0.6, GrayLevel[ 0.1 ], StandardYellow ], u, { - Last @ u, First @ u }, size } ] ],
@@ -274,7 +279,7 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
             EdgeStyle           -> MapAt[ spell, DeleteCases[ Cases[ edgeData,   kv_Association :> kv[ "EdgeStyle" ] ], Nothing ], { All, 1 } ],
             EdgeShapeFunction   -> MapAt[ spell, Join[ DeleteCases[ Cases[ edgeData, kv_Association :> kv[ "EdgeShapeFunction" ] ], Nothing ], joinRules ], { All, 1 } ],
             VertexShapeFunction -> Normal @ Join[ vertexShapes, Association @ KeyValueMap[
-              { v, hs } |-> v -> With[ { shape = Lookup[ vertexShapes, Key @ v, Disk[ #1, #3 ] & ], hs = hs },
+              { v, hs } |-> v -> With[ { shape = Lookup[ vertexShapes, Key @ v, disk[ #1, #3 ] & ], hs = hs },
                 { shape[ ## ],
                   ( { fill, u, side, size } |-> With[ { tip = #1 - First[ #3 ] u },
                     { fill, Opacity[ 1 ], EdgeForm[ ], Polygon[ { tip, Offset[ size ( 0.75 side - u ), tip ], Offset[ size ( - 0.75 side - u ), tip ] } ] } ] ) @@@ hs } & ],
@@ -291,7 +296,10 @@ infraInk[ graph_Graph, x_ ] :=
   Which[
     VertexQ[ graph, x ] || AssociationQ[ x ],
       <| "VertexDensity" -> InfraDensity[ graph, x ], "EdgeDensity" -> <| |>, "Walk" -> None, "Knots" -> { } |>,
-    MatchQ[ x, InfraWalk[ _List ] ] && ! VertexQ[ graph, First @ x ],
+    MatchQ[ x, _UndirectedEdge ] && EdgeQ[ graph, x ],
+      <| "VertexDensity" -> <| |>, "EdgeDensity" -> <| UndirectedEdge @@ Sort[ List @@ x ] -> 1 |>,
+         "Walk" -> None, "Knots" -> { } |>,
+    MatchQ[ x, InfraWalk[ _List ] ],
       With[ { walk = First @ x },
         <| "VertexDensity" -> InfraDensity[ graph, If[ Length @ walk > 1 && First @ walk === Last @ walk, Most @ walk, walk ] ],
            "EdgeDensity"   -> KeySort @ Counts[ UndirectedEdge @@ Sort @ # & /@ Partition[ walk, 2, 1 ] ],
@@ -344,21 +352,24 @@ infraInk[ graph_Graph, x_ ] :=
              Append[ member, First @ member ], member ],
            "Knots"         -> { } |> ],
     GraphQ[ x ],
-      With[ { walk = Which[
+      With[ { literal = UndirectedGraphQ[ x ] && AllTrue[ VertexList @ x, VertexQ[ graph, # ] & ] },
+        { walk = Which[
+          literal,                            None,
           closedWalkQ @ x,                     closeWalk @ walkSequence @ x,
           positionSpelledQ @ x || PathGraphQ @ x, walkSequence @ x,
           True,                                None ] },
-        <| "VertexDensity" -> InfraDensity[ graph, x ],
-           "EdgeDensity"   -> If[ walk === None,
-             KeySort @ GroupBy[
+        <| "VertexDensity" -> If[ literal, KeySort @ Counts @ VertexList @ x, InfraDensity[ graph, x ] ],
+           "EdgeDensity"   -> Which[
+             walk =!= None, KeySort @ Counts[ UndirectedEdge @@ Sort @ # & /@ Partition[ walk, 2, 1 ] ],
+             UndirectedGraphQ @ x, KeySort @ Counts[ UndirectedEdge @@ Sort[ List @@ # ] & /@ EdgeList @ x ],
+             True, KeySort @ GroupBy[
                With[ { inNbr = GroupBy[ EdgeList @ x, Last -> First ], outNbr = GroupBy[ EdgeList @ x, First -> Last ], order = TopologicalSort @ x },
                  { alpha = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ inNbr, Key @ w, { } ],
                          { { } -> 1, ps_ :> Total @ Lookup[ a, Key /@ ps ] } ] ], <| |>, order ],
                    beta = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ outNbr, Key @ w, { } ],
                          { { } -> 1, qs_ :> Total @ Lookup[ a, Key /@ qs ] } ] ], <| |>, Reverse @ order ] },
                  # -> Lookup[ alpha, Key @ First @ # ] Lookup[ beta, Key @ Last @ # ] & /@ EdgeList @ x ],
-               ( UndirectedEdge @@ Sort[ List @@ First @ # ] & ) -> Last, Total ],
-             KeySort @ Counts[ UndirectedEdge @@ Sort @ # & /@ Partition[ walk, 2, 1 ] ] ],
+               ( UndirectedEdge @@ Sort[ List @@ First @ # ] & ) -> Last, Total ] ],
            "Walk"          -> walk,
            "Knots"         -> { } |> ],
     MatchQ[ x, { _Graph, __Graph } ] && NoneTrue[ x, closedWalkQ ] &&

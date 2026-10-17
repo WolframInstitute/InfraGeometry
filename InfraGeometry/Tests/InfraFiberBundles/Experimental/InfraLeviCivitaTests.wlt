@@ -295,4 +295,34 @@ VerificationTest[
   TestID -> "InfraCanonicalOneForm-grid-geodesic-spray"
 ]
 
+
+VerificationTest[
+  With[ { fib = InfraDisplacementBundle[ PathGraph[ Range[ 6 ] ], 1 ],
+      connection = InfraConnection[ { UndirectedEdge[ { 3, 2 }, { 4, 3 } ] } ] },
+    { InfraConnectionQ[ fib, connection ],
+      InfraParallelTransport[ fib, connection, { 3, 4 } ],
+      InfraParallelTransport[ fib, connection, { 3, 4, 5 } ],
+      InfraParallelTransport[ fib, connection, { 3 } ],
+      Head @ InfraParallelTransport[ InfraFibration[ fib ], connection, { 3, 4 } ] } ],
+  { False, <| { 3, 2 } -> { 4, 3 } |>, <| |>, <| { 3, 2 } -> { 3, 2 }, { 3, 4 } -> { 3, 4 } |>, InfraParallelTransport },
+  TestID -> "InfraParallelTransport-Experimental-partial-model-remains-distinct-from-general-reader"
+]
+
+VerificationTest[
+  With[ { fib = InfraDisplacementBundle[ CompleteGraph[ 3 ], 1 ] },
+    { connection = InfraConnection[ {
+        UndirectedEdge[ { 1, 2 }, { 2, 1 } ], UndirectedEdge[ { 1, 2 }, { 2, 3 } ] } ] },
+    Head @ InfraParallelTransport[ fib, connection, { 1, 2 } ] ],
+  InfraParallelTransport,
+  TestID -> "InfraParallelTransport-Experimental-model-rejects-ambiguous-matching"
+]
+
+VerificationTest[
+  With[ { fib = InfraDisplacementBundle[ PathGraph[ { { 1 }, { 2 }, { 3 }, { 4 } } ], 1 ],
+      connection = InfraConnection[ { UndirectedEdge[ { { 2 }, { 1 } }, { { 3 }, { 2 } } ] } ] },
+    InfraParallelTransport[ fib, connection, { { 2 }, { 3 } } ] ],
+  <| { { 2 }, { 1 } } -> { { 3 }, { 2 } } |>,
+  TestID -> "InfraParallelTransport-Experimental-partial-model-preserves-literal-list-labels"
+]
+
 EndTestSection[]

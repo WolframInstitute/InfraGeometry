@@ -3,7 +3,6 @@ Template: Guide
 Name: InfraFiberBundles
 Title: Infra Fiber Bundles
 Context: WolframInstitute`InfraGeometry`
-ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/InfraFiberBundles
 Keywords: [fibration, fiber bundle, fibered graph, base graph, fiber, tangent bundle, displacement bundle, section, connection, parallel transport, holonomy, Levi-Civita]
@@ -12,56 +11,59 @@ RelatedGuides: [EuclideanInfrageometry, RiemannianInfrageometry, InfraTopology, 
 
 ## Abstract
 
-A fibration of graphs is a total graph with a projection of its vertices onto a base graph; the fiber over a base vertex is the subgraph on its preimage. The tangent, cotangent and displacement bundles of a graph at a scale are fibrations over it. A section picks a total vertex over each base vertex. A connection chooses the lifts of the base edges, and transport around a closed walk permutes a fiber, its holonomy. The Levi-Civita connection is the connection of the displacement bundle that the metric singles out. The names of parallel transport, holonomy, holonomy angle, covariant derivative and canonical one-form also exist in the InfraGaugeTheory paclet with other signatures; load the two paclets in separate kernels or call the symbols by their full context.
+A fibered graph is an inert total graph with a vertex projection. Its base is reconstructed from that projection and its total edges. General operations generate examples, extend sections, choose complete connections and read transport and monodromy. Graph bundles additionally require a common fiber graph and transverse matchings preserving fiber adjacency. Particular tangent and metric-selected models are Experimental constructions within this category.
 
 ## Functions
 
-### Fibrations
+### Fibered graphs
 
-- `InfraFibration` a fibration, the total graph with the projection of its vertices onto the base
-- `InfraTotalGraph`, `InfraFibrationAssociation` the total graph, and the projection as an association
-- `InfraBaseGraph` the base graph reconstructed from the projection
-- `InfraFiber`, `InfraFibers` the fiber over a base vertex, or over every base vertex
-- `RandomInfraFibration` a random fibration over a base graph
+- `InfraFibration` the total graph and its projection, as an inert object
+- `InfraTotalGraph`, `InfraFibrationAssociation` the two structural primitives
+- `InfraBaseGraph` the reconstructed base, including isolated projection values
+- `InfraFiber`, `InfraFibers` the induced graph over one base vertex or every base vertex
+- `RandomInfraFibration` random nonempty fibers and transverse edges over a prescribed base
 
-- `InfraFibrationQ`, `InfraFiberBundleQ`, `IsomorphicGraphQ` (WL), `GraphProduct` (WL)
-
-### The tangent, cotangent and displacement bundles
-
-- `InfraRays` the rays of length $r$ from a vertex
-- `InfraTangentBundle` the rays of length $r$ over their first vertex
-- `InfraCotangentBundle` the reversed rays over their last vertex
-- `InfraDisplacementBundle` the pairs of vertices at distance $r$ over their first vertex
-- `InfraBundleMorphism` the natural maps between bundles over one base
-
-- `InfraBundleMorphismQ`
+- `InfraFibrationQ`, `InfraFiberBundleQ`, `InfraBundleMorphismQ`
 
 ### Sections
 
-- `InfraSection` a section, a map from base vertices to total vertices over them
-- `RandomInfraSection` a random total vertex over every base vertex
-- `FindInfraSection` continuous sections over the whole base
+- `InfraSection` an inert right inverse on a chosen base domain
+- `RandomInfraSection` sample a section, restrict its domain or extend prescribed values
+- `InfraContinuousSectionQ` test adjacency preservation on the section's domain
+- `InfraParallelSectionQ` test agreement with a selected complete connection
 
-- `InfraSectionQ`, `InfraContinuousSectionQ`
+- `InfraSectionQ`
 
-### Connections and holonomy
+### Connections and transport
 
-- `InfraConnection` a connection, one lift of each base edge at each total vertex
-- `RandomInfraConnection` a connection from a random maximum matching over every base edge
-- `FindInfraHorizontalLift` the lifts of a base walk along a connection
-- `InfraParallelTransport` the transport of a fiber along a walk
-- `InfraHolonomy` the transport around a closed walk, as a permutation of the fiber
+- `InfraConnection` an inert selection of transverse edges
+- `RandomInfraConnection` select complete perfect matchings over every base edge
+- `InfraHorizontalLift` the unique ordered lift from a specified starting vertex
+- `InfraParallelTransport` the induced fiber bijection along a base walk
+- `InfraHolonomy` the fiber permutation around a closed walk
+- `InfraFlatConnectionQ` test trivial global monodromy over all base cycles
 
-- `InfraConnectionQ`, `InfraFlatConnectionQ`, `FindIndependentEdgeSet` (WL), `PermutationCycles` (WL)
+- `InfraConnectionQ`, `PermutationCycles` (WL)
 
-### The Levi-Civita connection
+### Visualization
 
-- `FindInfraLeviCivitaConnection` the Levi-Civita connection of a displacement bundle
-- `InfraParallelTransport` every Levi-Civita realisation of transport along a walk
-- `InfraHolonomyAngle` the angle of the holonomy around a loop
-- `InfraCovariantDerivative` the covariant derivative of a section along a walk
-- `InfraCanonicalOneForm` the pairing of a vector with the step to a vertex
+- `InfraFiberedGraphHighlight` highlight sections, connections, walks and fiber graphs in circular, three-dimensional or total-layout views
+- `InfraFiberedGraphViewer` inspect fibers, section values and connections by hovering over the total and base graphs
+- `InfraSubstrateHighlight` highlight ordinary objects on the total graph
 
-### Examples
+### Experimental models
 
-- `InfraFiberedSubstrate` the named example fibrations: products, coverings, bundles over grids, tori and spheres, and branched fibrations
+- `InfraRays` geodesic rays of a fixed length
+- `InfraTangentBundle`, `InfraCotangentBundle` rays over their initial vertices and reversed rays over their terminal vertices
+- `InfraDisplacementBundle` pairs of base vertices at a fixed distance
+- `InfraBundleMorphism` natural maps between these particular models
+- `InfraFiberedSubstrate` a catalogue of products, coverings, branched examples and geometric models
+- `FindInfraLeviCivitaConnection` metric-selected partial matchings of a displacement model
+- `InfraHolonomyAngle`, `InfraCovariantDerivative`, `InfraCanonicalOneForm` metric measurements in that model
+
+### Migration
+
+- `FindInfraSection` the retained deterministic counted spelling for continuous-section enumeration
+- `FindInfraHorizontalLift` the retained counted spelling of the unique lift on a complete connection
+
+The ordinary samplers use external SeedRandom, a count argument and NextVertexFunction. The default section class is set-theoretic; Properties -> {"Continuous"} requests adjacency preservation on every overload. All enumeration is deterministic by default. The Levi-Civita model's partial transport retains its existing model-specific call forms; general literal fibrations require a complete connection. The InfraGaugeTheory paclet uses some of the same names with different signatures; load it separately or use full contexts.

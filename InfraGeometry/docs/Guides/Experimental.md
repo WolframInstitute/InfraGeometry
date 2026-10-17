@@ -95,3 +95,11 @@ Research functions not yet settled into a branch: walks and their singularities,
 - `IntegrationMap` the cochain averaged from a form over each clique
 
 - `FormDegree`, `CochainDegree`, `OrderedCochainValue`, `NaiveDifferential`, `AntisymmetrizedCup`
+
+### Particular fibered graph models
+
+- `InfraTangentBundle`, `InfraCotangentBundle`, `InfraDisplacementBundle` ray and distance-pair constructions
+- `InfraRays`, `InfraBundleMorphism`, `InfraFiberedSubstrate` their rays, natural maps and example catalogue
+- `FindInfraLeviCivitaConnection`, `InfraHolonomyAngle`, `InfraCovariantDerivative`, `InfraCanonicalOneForm` metric-selected transport and measurements
+
+These remain loaded in the Infra Fiber Bundles category. Their particular geometric assumptions are separate from its general inert objects and complete connections.

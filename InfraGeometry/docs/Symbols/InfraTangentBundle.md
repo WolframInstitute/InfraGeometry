@@ -16,6 +16,9 @@ RelatedGuides: [InfraFiberBundles, InfraAnalysis]
 
 ## Details & Options
 
+- This is a particular Experimental construction in the Infra Fiber Bundles category. Its existing call forms remain available.
+
+
 - A tangent vector at *p* at scale *r* is a ray of length *r* from *p*, as given by [InfraRays]().
 - [InfraTangentBundle]() is inert. [InfraTotalGraph]() builds its total graph on every call; <code>[InfraFibration]()[*fib*]</code> builds it once.
 - The scale *r* must be a positive integer.
@@ -26,6 +29,7 @@ RelatedGuides: [InfraFiberBundles, InfraAnalysis]
 The tangent bundle of a grid at scale 2, the rays over the vertex 6 drawn.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["GridTangentBundle", "Small"]},
   {total = InfraTotalGraph[fib]},
@@ -35,6 +39,7 @@ With[
 The same rays drawn on the grid.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {g = First @ InfraFiberedSubstrate["GridTangentBundle", "Small"]},
   InfraSubstrateHighlight[g, InfraWalk /@ InfraRays[g, 6, 2]]]
@@ -45,6 +50,7 @@ With[
 The tangent bundle of the grid at scales 1 and 2.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {g = GridGraph[{4, 4}]},
   GraphicsRow[InfraTotalGraph @ InfraTangentBundle[g, #] & /@ {1, 2}]]
@@ -53,6 +59,7 @@ With[
 The tangent bundle of the octahedron at scale 2 from the catalogue.
 
 ```wl
+SeedRandom[ 7 ];
 InfraTotalGraph @ InfraFiberedSubstrate["OctahedronTangentBundle"]
 ```
 
@@ -61,6 +68,7 @@ InfraTotalGraph @ InfraFiberedSubstrate["OctahedronTangentBundle"]
 On the grid, a triangle-free graph, a fiber of rays has no edges.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["GridTangentBundle", "Small"]},
   {InfraFiber[fib, 6], EdgeCount @ InfraFiber[fib, 6]}]
@@ -69,6 +77,7 @@ With[
 The truncation to a shorter scale is a bundle morphism.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {g = GridGraph[{4, 4}]},
   InfraBundleMorphismQ[InfraTangentBundle[g, 2], InfraTangentBundle[g, 1], ray |-> Take[ray, 2]]]

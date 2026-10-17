@@ -23,12 +23,16 @@ RelatedGuides: [InfraFiberBundles]
 - [InfraFibration]() is inert. It holds the graph and the projection, and every function of the Infra Fiber Bundles guide reads them through [InfraTotalGraph]() and [InfraFibrationAssociation]().
 - The constructions [InfraTangentBundle](), [InfraCotangentBundle]() and [InfraDisplacementBundle]() are fibrations as well. They recompute their total graph on every call; <code>[InfraFibration]()[*fib*]</code> computes it once.
 - [InfraFibration]() does not check the edge lifting property. That is [InfraFibrationQ]().
+- General evaluators support finite simple undirected unweighted total graphs. Unsupported graph domains remain unevaluated.
+- An association projection has exactly one key for every total vertex. List-valued and pattern-like vertex labels are literal keys; readers use [Key]() for lookup.
+- The reconstructed base includes projection values represented by isolated total vertices.
 
 ## Basic Examples
 
 The cycle of length 8 over the square, the vertex *i* over *i* mod 4. The fiber over 1 is drawn.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFibration[CycleGraph[8], i |-> Mod[i, 4, 1]]},
   {total = InfraTotalGraph[fib]},
@@ -38,6 +42,7 @@ With[
 A literal fibration from the catalogue, the Moebius ladder over a cycle, each fiber in its own colour.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["MoebiusLadderCover", "Small"]},
   {total = InfraTotalGraph[fib]},
@@ -49,6 +54,7 @@ With[
 The projection may be an association instead of a function. Both give the same base.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {byFunction = InfraFibration[CycleGraph[8], i |-> Mod[i, 4, 1]]},
   {byAssociation = InfraFibration[CycleGraph[8], AssociationThread[Range[8], Mod[Range[8], 4, 1]]]},
@@ -58,6 +64,7 @@ With[
 A construction converted to a literal fibration keeps its total graph.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {bundle = InfraFiberedSubstrate["GridDisplacementBundle", "Small"]},
   {fib = InfraFibration[bundle]},

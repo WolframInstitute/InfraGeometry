@@ -312,27 +312,27 @@ CochainCupOne::usage = "CochainCupOne[g, a, b] is the Steenrod cup-1 product of 
 
 AntisymmetrizedCup::usage = "AntisymmetrizedCup[g, a, b] is an alias of CochainCup, the name the antisymmetrised product carried before it became the cup product.";
 
-InfraFibration::usage = "InfraFibration[total, proj] is a fibration of graphs: the total graph with its projection to the base, an association or a function on the vertices of total.\nInfraFibration[fib] gives the construction fib, such as InfraTangentBundle[g, r], as a literal InfraFibration, computing its total graph once.";
+InfraFibration::usage = "InfraFibration[total, projection] represents a fibered graph with its vertex projection. InfraFibration[fib] evaluates a construction as a literal fibered graph.";
 InfraTotalGraph::usage = "InfraTotalGraph[fib] gives the total graph of the fibration fib.";
 InfraFibrationAssociation::usage = "InfraFibrationAssociation[fib] gives the projection of fib as an association <|x -> p, ...|> from total vertices to base vertices.";
 InfraBaseGraph::usage = "InfraBaseGraph[fib] gives the base graph of fib: the projected vertices, p and q adjacent iff some total edge projects onto {p, q}.";
 InfraFiber::usage = "InfraFiber[fib, p] gives the fiber over the base vertex p, the subgraph of the total graph on the vertices projecting to p.";
 InfraFibers::usage = "InfraFibers[fib] gives the association <|p -> fiber, ...|> of the fibers of fib over every base vertex.";
 InfraFibrationQ::usage = "InfraFibrationQ[fib] tests the edge lifting property: every total vertex over p has a neighbour over every base neighbour of p.";
-InfraFiberBundleQ::usage = "InfraFiberBundleQ[fib] tests whether fib is a fiber bundle: isomorphic fibers, exactly one lift of each base edge at each vertex, trivial over every ball of radius 1.";
-RandomInfraFibration::usage = "RandomInfraFibration[base] gives a random InfraFibration over base, each fiber drawn around its base vertex. Options \"VerticalVertices\", \"VerticalEdges\", \"HorizontalEdgesRadius\", \"HorizontalEdgesDensity\", \"IsomorphicFibers\".";
+InfraFiberBundleQ::usage = "InfraFiberBundleQ[fib] tests whether fib has isomorphic fibers and product structure over each base edge.";
+RandomInfraFibration::usage = "RandomInfraFibration[base] gives a random fibered graph whose reconstructed base is base. Options \"VerticalVertices\", \"VerticalEdges\", \"HorizontalEdgesDensity\", \"IsomorphicFibers\".";
 InfraBundleMorphismQ::usage = "InfraBundleMorphismQ[fib1, fib2, F, f] tests whether F maps total vertices of fib1 to total vertices of fib2 over f, and edges to edges or vertices; f defaults to Identity.";
 InfraSection::usage = "InfraSection[s] is a section of a fibration, the association s from base vertices to total vertices over them; it carries no graph.";
 InfraSectionQ::usage = "InfraSectionQ[fib, InfraSection[s]] tests whether s[p] lies over p for every key p of s.";
 InfraContinuousSectionQ::usage = "InfraContinuousSectionQ[fib, InfraSection[s]] tests whether s is a section of fib mapping every base edge between its keys to a total edge.";
-RandomInfraSection::usage = "RandomInfraSection[fib] gives an InfraSection choosing a random total vertex in every fiber of fib.";
-FindInfraSection::usage = "FindInfraSection[fib, n] gives n continuous sections of fib over the whole base, as InfraSection objects.";
-InfraConnection::usage = "InfraConnection[edges] is a connection: horizontal edges of the total graph chosen as lifts, at most one per fiber vertex and base neighbour, every existing lift chosen.";
-InfraConnectionQ::usage = "InfraConnectionQ[fib, InfraConnection[edges]] tests whether edges are horizontal total edges giving exactly one lift wherever the total graph has one.";
-InfraFlatConnectionQ::usage = "InfraFlatConnectionQ[fib, conn] tests whether conn is a connection whose horizontal leaves, the components of its edges, each project injectively to the base.";
-RandomInfraConnection::usage = "RandomInfraConnection[fib] gives an InfraConnection from a random maximum matching of the total edges over every base edge.";
-FindInfraHorizontalLift::usage = "FindInfraHorizontalLift[fib, conn, x, walk, n] gives n lifts of the base walk along the edges of conn, each starting at the total vertex x.";
-InfraParallelTransport::usage = "InfraParallelTransport[fib, conn, walk] gives the transport <|x -> y, ...|> along walk of the fiber over its first vertex; blocked vertices are dropped.\nInfraParallelTransport[InfraDisplacementBundle[g, r], walk] gives the Levi-Civita transports along walk, a list with one transport for each choice among the best angle-isometries over its edges. Option Method (\"Arclength\", \"Alexandrov\").";
+RandomInfraSection::usage = "RandomInfraSection[fib] draws a section; a domain restricts it, and an InfraSection seed fixes values for extension. Options Properties, \"NextVertexFunction\".";
+FindInfraSection::usage = "FindInfraSection[fib, n] gives n continuous sections in deterministic order. Use RandomInfraSection for new constructions.";
+InfraConnection::usage = "InfraConnection[edges] represents chosen horizontal edges of a fibered graph.";
+InfraConnectionQ::usage = "InfraConnectionQ[fib, connection] tests whether connection gives a perfect matching between the whole fibers over each base edge.";
+InfraFlatConnectionQ::usage = "InfraFlatConnectionQ[fib, conn] tests whether a complete connection has trivial global monodromy.";
+RandomInfraConnection::usage = "RandomInfraConnection[fib] draws one complete connection; a trailing count gives several or all. Option \"NextVertexFunction\".";
+FindInfraHorizontalLift::usage = "FindInfraHorizontalLift[fib, connection, start, walk, n] gives the counted list of lifts. Use InfraHorizontalLift for the unique lift of a complete connection.";
+InfraParallelTransport::usage = "InfraParallelTransport[fib, connection, walk] gives the fiber bijection along walk. InfraParallelTransport[InfraDisplacementBundle[g, r], walk] gives the experimental metric-selected transports.";
 InfraHolonomy::usage = "InfraHolonomy[fib, conn, loop] gives the transport around a closed walk as Cycles on the positions of the fiber over its first vertex.";
 InfraRays::usage = "InfraRays[g, p, r] gives the rays of length r from p: the walks {p, u1, ..., ur} with d(p, ui) = i.";
 InfraTangentBundle::usage = "InfraTangentBundle[g, r] is the tangent bundle of g at scale r: the total vertices are the rays of length r, projected to their first vertex, two rays adjacent iff at every position their vertices are equal or adjacent.";
@@ -384,3 +384,8 @@ InfraGeometricTest::usage = "InfraGeometricTest[graph, assertion] decides suppor
 InfraSceneMultiway::usage = "InfraSceneMultiway[scene, graph, init] gives exact finite construction states, events, group boundaries and completeness evidence."
 
 InfraBranchialGraph::usage = "InfraBranchialGraph[data, depth] gives the immediate-parent branchial graph and its saved completeness evidence."
+
+InfraParallelSectionQ::usage = "InfraParallelSectionQ[fib, connection, section] tests whether section is preserved by connection along the base edges in its domain.";
+InfraHorizontalLift::usage = "InfraHorizontalLift[fib, connection, start, walk] gives the unique horizontal lift of a base walk from start.";
+InfraFiberedGraphHighlight::usage = "InfraFiberedGraphHighlight[fib, items] draws sections, connections, fibers and walks on a fibered graph. Option Method.";
+InfraFiberedGraphViewer::usage = "InfraFiberedGraphViewer[fib, items] inspects fibers, sections and connection lifts interactively.";

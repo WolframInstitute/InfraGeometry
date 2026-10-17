@@ -17,13 +17,16 @@ RelatedGuides: [InfraFiberBundles]
 ## Details & Options
 
 - The base is the reconstructed [InfraBaseGraph]().
-- [InfraFiberBundleQ]() asks more: isomorphic fibers and local triviality.
+- This is the project's lift-existence convention. It does not impose the unique incoming-edge lifting used by some standard graph-fibration definitions.
+- [InfraFiberBundleQ]() additionally requires a common fiber graph and unique transverse matchings preserving fiber adjacency.
+- A nonempty list is tested by conjunction. An empty result list is False and does not establish existence.
 
 ## Basic Examples
 
 The double cover of a cycle is a fibration. Deleting one total edge breaks it: its two endpoints, drawn, lose their lift of a base edge.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["CycleDoubleCover", "Small"]},
   {total = InfraTotalGraph[fib]},
@@ -35,6 +38,7 @@ With[
 Every entry of the catalogue is a fibration.
 
 ```wl
+SeedRandom[ 7 ];
 AllTrue[InfraFiberedSubstrate[All], InfraFibrationQ @ InfraFiberedSubstrate[#, "Small"] &]
 ```
 
@@ -43,6 +47,7 @@ AllTrue[InfraFiberedSubstrate[All], InfraFibrationQ @ InfraFiberedSubstrate[#, "
 A branched fibration has fibers of different sizes and is still a fibration.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["BranchedCycleFibration", "Small"]},
   {InfraTotalGraph[fib], InfraFibrationQ[fib], InfraFiberBundleQ[fib]}]

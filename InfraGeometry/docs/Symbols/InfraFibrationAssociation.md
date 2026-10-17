@@ -18,6 +18,7 @@ RelatedGuides: [InfraFiberBundles]
 
 - [InfraFibrationAssociation]() is one of the two primitives of a fibration; the other is [InfraTotalGraph]().
 - For a literal fibration given by a function, the function is evaluated on every vertex of the total graph.
+- Association projections must cover exactly the total vertices. Every vertex is one literal key, including a list-valued label.
 - The tangent and displacement bundles project a ray or a pair to its first vertex. The cotangent bundle projects a reversed ray to its last vertex.
 
 ## Basic Examples
@@ -25,6 +26,7 @@ RelatedGuides: [InfraFiberBundles]
 The total vertices that project to the base vertex 6 of the grid tangent bundle.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["GridTangentBundle", "Small"]},
   {total = InfraTotalGraph[fib], proj = InfraFibrationAssociation[fib]},
@@ -34,6 +36,7 @@ With[
 The number of total vertices over each base vertex, drawn as a density on the base: the corners carry the fewest rays.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["GridTangentBundle", "Small"]},
   InfraSubstrateHighlight[First @ fib, {Counts @ Values @ InfraFibrationAssociation[fib]}]]
@@ -44,5 +47,6 @@ With[
 A ray of the cotangent bundle projects to its last vertex.
 
 ```wl
+SeedRandom[ 7 ];
 Take[Normal @ InfraFibrationAssociation @ InfraCotangentBundle[GridGraph[{4, 4}], 2], 3]
 ```

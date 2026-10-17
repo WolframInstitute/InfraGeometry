@@ -16,6 +16,9 @@ RelatedGuides: [InfraFiberBundles, InfraAnalysis]
 
 ## Details & Options
 
+- This is a particular Experimental construction in the Infra Fiber Bundles category. Its existing call forms remain available.
+
+
 - Only the first and last vertices of the vector and the first vertex of the target are read, so a ray of [InfraRays]() and a pair of [InfraDisplacementBundle]() both work as the vector.
 - The pairing is the polar form of the path metric at *x*.
 
@@ -24,6 +27,7 @@ RelatedGuides: [InfraFiberBundles, InfraAnalysis]
 The vector from 6 two steps up the grid, and its pairing with the four steps from 6.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {g = First @ InfraFiberedSubstrate["GridTangentBundle", "Small"]},
   {rayVector = {6, 7, 8}},
@@ -36,6 +40,7 @@ With[
 A ray of length *r* from the centre, paired with its own first step, gives *r*, for every ray of length 1 and 2.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {g = GridGraph[{5, 5}]},
   Table[Union[InfraCanonicalOneForm[g, #, Rest @ #] & /@ InfraRays[g, 13, r]], {r, 1, 2}]]

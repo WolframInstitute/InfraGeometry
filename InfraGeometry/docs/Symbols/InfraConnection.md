@@ -2,54 +2,51 @@
 Template: Symbol
 Name: InfraConnection
 Context: WolframInstitute`InfraGeometry`
-ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraConnection
-Keywords: [connection, horizontal edge, lift, horizontal leaf, inert map]
-SeeAlso: [InfraConnectionQ, InfraFlatConnectionQ, RandomInfraConnection, FindInfraLeviCivitaConnection, InfraParallelTransport, InfraHolonomy, FindInfraHorizontalLift]
+Keywords: [connection, perfect matching, horizontal edge, inert object]
+SeeAlso: [InfraConnectionQ, RandomInfraConnection, InfraHorizontalLift, InfraParallelTransport, InfraHolonomy, InfraFlatConnectionQ]
 RelatedGuides: [InfraFiberBundles]
 ---
 
 ## Usage
 
-<code>[InfraConnection]()[*edges*]</code> is a connection: horizontal edges of the total graph chosen as lifts, at most one per fiber vertex and base neighbour, every existing lift chosen.
+<code>[InfraConnection]()[*edges*]</code> is an inert description of horizontal edges chosen for transport in a fibered graph.
 
 ## Details & Options
 
-- [InfraConnection]() is inert and carries no graph. The fibration is given to each function that reads it.
-- An edge is horizontal when its endpoints lie over different base vertices.
-- <code>[Graph]()[*total vertices*, *edges*]</code> is the connection graph. Its components are the horizontal leaves.
-- [InfraConnectionQ]() checks that *edges* is a connection of a given fibration.
+- The head carries no graph. Readers receive the fibered graph as a separate argument.
+- A complete connection chooses a perfect matching between the whole fibers over each base edge. It contains no vertical edges.
+- [InfraConnectionQ]() checks this condition, including total vertices with no available transverse edge.
+- The order and orientation of the undirected edges do not affect the connection. Repeated edges are not a matching.
+- <code>[Graph]()[[VertexList]()[[InfraTotalGraph]()[*fib*]], *edges*]</code> gives its graph. Its connected components are the horizontal leaves.
+- Connections are supported on finite simple undirected unweighted total graphs.
 
 ## Basic Examples
 
-The horizontal edges of the prism form a connection: each vertex has one lift of each base edge.
+A double covering of a square has one horizontal leaf. A circuit around the square exchanges its two sheets.
 
 ```wl
+SeedRandom[ 1 ];
 With[
-  {fib = InfraFiberedSubstrate["CycleProductBundle", "Small"]},
-  {total = InfraTotalGraph[fib]},
-  {conn = InfraConnection @ Select[EdgeList[total], First @ First @ # =!= First @ Last @ # &]},
-  InfraSubstrateHighlight[total, Prepend[InfraWalk /@ List @@@ First @ conn, Directive[StandardRed]]]]
-```
-
-The same on the Moebius ladder: one horizontal leaf runs twice around the cycle.
-
-```wl
-With[
-  {fib = InfraFiberedSubstrate["MoebiusLadderCover", "Small"]},
-  {total = InfraTotalGraph[fib]},
-  {conn = InfraConnection @ Select[EdgeList[total], First @ First @ # =!= First @ Last @ # &]},
-  InfraSubstrateHighlight[total, Prepend[InfraWalk /@ List @@@ First @ conn, Directive[StandardRed]]]]
+  { total = CycleGraph[ 8 ] },
+  { fib = InfraFibration[ total, vertex |-> Mod[ vertex, 4, 1 ] ] },
+  { connection = InfraConnection[ EdgeList @ total ] },
+  { InfraFiberedGraphHighlight[ fib, connection ],
+    InfraConnectionQ[ fib, connection ],
+    InfraHolonomy[ fib, connection, { 1, 2, 3, 4, 1 } ] }
+]
 ```
 
 ## Properties and Relations
 
-The Levi-Civita connection of the octahedron is an [InfraConnection]() of its displacement bundle.
+An isolated base vertex needs no horizontal edges. The empty edge set can therefore be a complete connection.
 
 ```wl
+SeedRandom[ 1 ];
 With[
-  {fib = InfraFiberedSubstrate["OctahedronDisplacementBundle"]},
-  {conn = FindInfraLeviCivitaConnection[fib]},
-  {Head[conn], Length @ First @ conn, InfraConnectionQ[fib, conn]}]
+  { fib = InfraFibration[ Graph[ { 1, 2 }, { } ], <| 1 -> "p", 2 -> "p" |> ] },
+  { InfraConnectionQ[ fib, InfraConnection[ { } ] ],
+    InfraParallelTransport[ fib, InfraConnection[ { } ], { "p" } ] }
+]
 ```

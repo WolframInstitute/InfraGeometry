@@ -18,6 +18,9 @@ RelatedGuides: [InfraFiberBundles]
 
 ## Details & Options
 
+- This is a particular Experimental construction in the Infra Fiber Bundles category. Its existing call forms remain available.
+
+
 - The angle is a mean of unsigned angles, so it does not tell the sense of the rotation. Directions that do not move, and directions whose transport is blocked, are left out.
 - The form without a connection is InfraGaugeTheory's holonomy angle: the least angle over every choice among the best angle-isometries along the loop.
 
@@ -32,6 +35,7 @@ Options:
 The Levi-Civita connection of the octahedron and a face: the directions at 1 turn by one arc radian.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["OctahedronDisplacementBundle"]},
   {face = {1, 2, 3, 1}},
@@ -41,6 +45,7 @@ With[
 The least angle over the four Levi-Civita transports around the same face.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["OctahedronDisplacementBundle"]},
   {face = {1, 2, 3, 1}},
@@ -54,6 +59,7 @@ With[
 Under the comparison angle of the polar form the same face gives $\pi/3$.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["OctahedronDisplacementBundle"]},
   {face = {1, 2, 3, 1}},

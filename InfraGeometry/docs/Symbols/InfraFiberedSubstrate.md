@@ -20,6 +20,9 @@ RelatedGuides: [InfraFiberBundles, InfraSubstrates]
 
 ## Details & Options
 
+- This is a particular Experimental construction in the Infra Fiber Bundles category. Its existing call forms remain available.
+
+
 An entry is a fibration head: a construction [InfraTangentBundle]() or [InfraDisplacementBundle](), or a literal [InfraFibration](). Every fibration function takes it as it is.
 
 The roster has five groups:
@@ -32,19 +35,20 @@ The roster has five groups:
 | `"Displacement"` | `InfraDisplacementBundle[g, 1]` | over the same four bases |
 | `"NonBundle"` | fibers of different sizes | `"BranchedCycleFibration"`, `"BranchedGridFibration"` |
 
-The torus and the sphere mesh are [InfraSubstrate]() graphs, drawn where they live. The grid is a full `GridGraph`. The octahedron has one size.
+The torus and sphere mesh use the corresponding combinatorial base graphs. The grid is a full `GridGraph`. The octahedron has one size.
 
-A literal entry has the total vertices `{p, k}`, the `k`-th vertex over the base vertex `p`. Its fiber is drawn on a small circle around `p`.
+A literal entry has total vertices `{p, k}`, the `k`-th vertex over the base vertex `p`. Structural evaluation stores no drawing coordinates; [InfraFiberedGraphHighlight]() arranges its fibers over the base.
 
 *size* may also be a raw size of the base: the length of a cycle, the dimensions of a grid or a torus, the cell area of a sphere mesh.
 
 ## Basic Examples
 
-Nine entries at the small size. Each fiber is drawn around its base vertex.
+Nine entries at the small size. Each marked fiber is arranged around its base vertex.
 
 ```wl
+SeedRandom[ 7 ];
 GraphicsGrid @ Partition[
-  InfraTotalGraph @ InfraFiberedSubstrate[#, "Small"] & /@ {
+  InfraFiberedGraphHighlight[ InfraFiberedSubstrate[ #, "Small" ] ] & /@ {
     "CycleProductBundle", "MoebiusLadderCover", "CycleDoubleCover",
     "GridProductBundle", "TriangularTorusDoubleCover", "BranchedGridFibration",
     "GridTangentBundle", "GridDisplacementBundle", "OctahedronDisplacementBundle"},
@@ -54,6 +58,7 @@ GraphicsGrid @ Partition[
 The roster.
 
 ```wl
+SeedRandom[ 7 ];
 Normal @ InfraFiberedSubstrate[]
 ```
 
@@ -62,6 +67,7 @@ Normal @ InfraFiberedSubstrate[]
 The trivial and covering entries are fiber bundles. The branched entries are fibrations but not bundles.
 
 ```wl
+SeedRandom[ 7 ];
 Table[
   name -> InfraFiberBundleQ @ InfraFiberedSubstrate[name, "Small"],
   {name, Join @@ Lookup[InfraFiberedSubstrate[], {"Trivial", "Covering", "NonBundle"}]}]
@@ -70,6 +76,7 @@ Table[
 The prism and the Moebius ladder have the same base and the same fiber. Only the twist tells them apart.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {prism = InfraTotalGraph @ InfraFiberedSubstrate["CycleProductBundle", "Small"]},
   {moebius = InfraTotalGraph @ InfraFiberedSubstrate["MoebiusLadderCover", "Small"]},
@@ -81,6 +88,7 @@ With[
 The tangent and displacement entries are fibrations, but not fiber bundles in the sense of [InfraFiberBundleQ]().
 
 ```wl
+SeedRandom[ 7 ];
 Table[
   name -> {InfraFibrationQ[#], InfraFiberBundleQ[#]} & @ InfraFiberedSubstrate[name, "Small"],
   {name, {"GridTangentBundle", "GridDisplacementBundle", "OctahedronTangentBundle", "OctahedronDisplacementBundle"}}]

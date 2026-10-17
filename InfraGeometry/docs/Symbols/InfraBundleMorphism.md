@@ -16,6 +16,9 @@ RelatedGuides: [InfraFiberBundles]
 
 ## Details & Options
 
+- This is a particular Experimental construction in the Infra Fiber Bundles category. Its existing call forms remain available.
+
+
 The natural maps between the bundles of one base graph *g*:
 
 | From | To | Map |
@@ -33,6 +36,7 @@ The natural maps between the bundles of one base graph *g*:
 The rays over the vertex 6 of the grid tangent bundle at scale 2, their truncations at scale 1 and their endpoint pairs in the displacement bundle at scale 2.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {g = First @ InfraFiberedSubstrate["GridTangentBundle", "Small"]},
   {tangent = InfraTangentBundle[g, 2], tangent1 = InfraTangentBundle[g, 1], displacementBundle = InfraDisplacementBundle[g, 2]},
@@ -49,6 +53,7 @@ With[
 The three maps out of the tangent bundle are bundle morphisms.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {g = GridGraph[{4, 4}]},
   {tangent = InfraTangentBundle[g, 2]},
@@ -60,6 +65,7 @@ With[
 Sending a ray to its first step instead of its endpoint does not land in the displacement bundle at the same scale.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {g = GridGraph[{4, 4}]},
   InfraBundleMorphismQ[InfraTangentBundle[g, 2], InfraDisplacementBundle[g, 2], ray |-> {First @ ray, ray[[2]]}]]

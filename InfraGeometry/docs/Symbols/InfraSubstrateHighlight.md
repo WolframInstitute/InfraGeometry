@@ -23,10 +23,12 @@ This is the only rendering primitive in the paclet. Every viewer and every figur
 Every object becomes a vertex density and an edge density:
 
 - a vertex, or a density `<|v -> m|>`: its own mass, no edges;
+- a native undirected edge belonging to the substrate: that edge, with no vertex mass;
 - `InfraWalk[{p1, ..., pk}]`: visit counts and the traversal counts of its steps;
 - a Euclidean head — [InfraSegment](), [InfraCircle]() and the rest: its `"VertexDensity"` and `"EdgeDensity"` from [InfraMeasurement]();
 - a region head — [InfraBall](), [InfraShell]() and the rest — or an [InfraIntersection](): its `"VertexDensity"`, no edges;
-- a walk graph, a cycle graph or a DAG: its occupation;
+- a native undirected subgraph whose vertices belong literally to the substrate: its vertices and edges, once each;
+- a position-spelled walk graph or a DAG: its occupation;
 - a leg chain: the walk through its legs, with its knots drawn on top;
 - a vertex list that is an induced path or an induced cycle in its own order, as every shortest path is: the walk through it;
 - any other vertex list: a set, `1` on its vertices, no edges;
@@ -37,6 +39,7 @@ An object with edges is a line, drawn by its edge counts. Any other object is dr
 Density `1` draws at the base: the substrate's own vertex size and edge thickness, in the object's color. Within one object the lightest mass draws at the base and the heaviest at the top, by default four times the base for a stroke and three times for a dot. An object whose masses are all equal, such as a set, a region or a walk that never repeats an edge, looks like the substrate itself, colored.
 
 The opacity follows each mass divided by the object's heaviest, along `"OpacityRange"`. A single walk is opaque, so a walk that reuses edges stays one path, its repeated edges thicker.
+Use `InfraWalk[walk]` to specify an ordered traversal; a native undirected graph does not prescribe one.
 
 A density may carry negative masses. A positive mass is a filled dot and a negative mass an empty ring of the same size, both in the object's color; size and opacity follow the absolute mass, as above. A zero mass is not drawn: the vertex keeps the substrate's own style. Edges are not signed.
 

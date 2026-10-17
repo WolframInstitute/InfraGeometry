@@ -93,10 +93,10 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[{total = InfraTotalGraph[RandomInfraFibration[GridGraph[{3, 3}], "VerticalVertices" -> 2]]},
-    Length[DeleteDuplicates[GraphEmbedding[total]]] == VertexCount[total]],
-  True,
-  TestID -> "RandomInfraFibration-fibers-drawn-around-the-base"
+  Trace[ RandomInfraFibration[ GridGraph[ { 3, 3 } ], "VerticalVertices" -> 2 ],
+    HoldPattern[ GraphEmbedding[ ___ ] ], TraceInternal -> True ],
+  { },
+  TestID -> "RandomInfraFibration-structural-generation-has-no-embedding"
 ]
 
 (* ===== InfraBaseGraph ===== *)
@@ -177,7 +177,7 @@ VerificationTest[
   TestID -> "InfraFiberBundleQ-two-lifts"
 ]
 
-(* ===== InfraFiberBundleQ: local triviality ===== *)
+(* ===== InfraFiberBundleQ: edgewise fiber products ===== *)
 
 VerificationTest[
   With[{total = GraphProduct[PathGraph[{1, 2}], CompleteGraph[3], "Cartesian"]},
@@ -192,7 +192,7 @@ VerificationTest[
       UndirectedEdge[{2, 1}, {3, 1}], UndirectedEdge[{2, 2}, {3, 2}],
       UndirectedEdge[{3, 1}, {1, 2}], UndirectedEdge[{3, 2}, {1, 1}]}},
     InfraFiberBundleQ[InfraFibration[Graph[verts, edges], First]]],
-  False,
+  True,
   TestID -> "InfraFiberBundleQ-TwistedTriangle"
 ]
 
@@ -213,11 +213,11 @@ VerificationTest[
   TestID -> "InfraFiberBundleQ-MobiusBundle"
 ]
 
-(* the connected double cover is locally trivial over the square, not over the triangle, whose ball of radius 1 is the whole triangle *)
+(* Nontrivial monodromy is compatible with edgewise local products. *)
 VerificationTest[
   {InfraFiberBundleQ[InfraFibration[CycleGraph[8], i |-> Mod[i, 4, 1]]],
    InfraFiberBundleQ[InfraFibration[CycleGraph[6], i |-> Mod[i, 3, 1]]]},
-  {True, False},
+  {True, True},
   TestID -> "InfraFiberBundleQ-double-covers"
 ]
 
@@ -251,6 +251,130 @@ VerificationTest[
   InfraBundleMorphismQ[InfraFibration[CycleGraph[8], i |-> Mod[i, 4, 1]], InfraFibration[CycleGraph[8], i |-> Mod[i, 4, 1]], i |-> Mod[i + 1, 8, 1], p |-> Mod[p + 1, 4, 1]],
   True,
   TestID -> "InfraBundleMorphismQ-deck-shift"
+]
+
+VerificationTest[
+  With[ { total = Graph[ Range[ 6 ], { UndirectedEdge[ 1, 2 ], UndirectedEdge[ 2, 3 ], UndirectedEdge[ 4, 5 ], UndirectedEdge[ 5, 6 ],
+        UndirectedEdge[ 1, 5 ], UndirectedEdge[ 2, 4 ], UndirectedEdge[ 3, 6 ] } ] },
+    InfraFiberBundleQ[ InfraFibration[ total, AssociationThread[ Range[ 6 ], { "p", "p", "p", "q", "q", "q" } ] ] ] ],
+  False,
+  TestID -> "InfraFiberBundleQ-matching-must-preserve-fiber-adjacency"
+]
+
+VerificationTest[
+  With[ { vertices = { { 1, "a" }, { 2, "b" }, { 3, "c" }, { 4, "d" } } },
+    { projection = AssociationThread[ vertices, { { "p", 1 }, { "p", 1 }, { "q", 2 }, { "q", 2 } } ],
+      total = Graph[ vertices, UndirectedEdge @@@ Partition[ vertices, 2, 1 ] ] },
+    { fib = InfraFibration[ total, projection ] },
+    { InfraFibrationAssociation[ fib ] === projection,
+      VertexList[ InfraFiber[ fib, { "p", 1 } ] ] === Take[ vertices, 2 ],
+      VertexList[ InfraBaseGraph[ fib ] ] === { { "p", 1 }, { "q", 2 } },
+      EdgeList[ InfraBaseGraph[ fib ] ] === { UndirectedEdge[ { "p", 1 }, { "q", 2 } ] } } ],
+  { True, True, True, True },
+  TestID -> "InfraFibration-literal-list-total-and-base-vertices"
+]
+
+VerificationTest[
+  With[ { vertices = { Blank[ Integer ], Alternatives[ "left", "right" ], "end" } },
+    { total = Graph[ vertices, UndirectedEdge @@@ Partition[ vertices, 2, 1 ] ],
+      projection = AssociationThread[ vertices, { "p", "q", "q" } ] },
+    { fib = InfraFibration[ total, projection ] },
+    { InfraFibrationAssociation[ fib ] === projection,
+      VertexList[ InfraFiber[ fib, "p" ] ] === Take[ vertices, 1 ],
+      InfraBundleMorphismQ[ fib, fib, AssociationThread[ vertices, vertices ] ] } ],
+  { True, True, True },
+  TestID -> "InfraFibration-patternlike-vertices-are-literal"
+]
+
+VerificationTest[
+  With[ { total = PathGraph[ Range[ 3 ] ] },
+    { missing = InfraFibration[ total, <| 1 -> "p", 2 -> "q" |> ],
+      extra = InfraFibration[ total, <| 1 -> "p", 2 -> "q", 3 -> "r", 4 -> "s" |> ] },
+    { Head @ InfraFibrationAssociation[ missing ], Head @ InfraFibrationAssociation[ extra ],
+      Head @ InfraBaseGraph[ missing ], Head @ InfraFibrationQ[ missing ], Head @ InfraFiberBundleQ[ extra ] } ],
+  { InfraFibrationAssociation, InfraFibrationAssociation, InfraBaseGraph, InfraFibrationQ, InfraFiberBundleQ },
+  TestID -> "InfraFibration-malformed-projections-remain-unevaluated"
+]
+
+VerificationTest[
+  With[ { directed = Graph[ { 1 -> 2 } ], weighted = Graph[ CycleGraph[ 3 ], EdgeWeight -> { 1, 2, 3 } ] },
+    Map[ total |-> With[ { fib = InfraFibration[ total, Identity ] },
+      { Head @ InfraTotalGraph[ fib ], Head @ InfraBaseGraph[ fib ], Head @ RandomInfraFibration[ total ] } ],
+      { directed, weighted } ] ],
+  { { InfraTotalGraph, InfraBaseGraph, RandomInfraFibration }, { InfraTotalGraph, InfraBaseGraph, RandomInfraFibration } },
+  TestID -> "InfraFibration-directed-and-weighted-domain-is-unsupported"
+]
+
+VerificationTest[
+  With[ { base = PathGraph[ Range[ 3 ] ] },
+    { fib = RandomInfraFibration[ base, "VerticalVertices" -> 3, "VerticalEdges" -> 0,
+        "HorizontalEdgesDensity" -> All ] },
+    { EdgeCount @ InfraTotalGraph[ fib ], EdgeList @ InfraBaseGraph[ fib ] === EdgeList @ base,
+      InfraFibrationQ[ fib ], InfraFiberBundleQ[ fib ] } ],
+  { 18, True, True, False },
+  TestID -> "RandomInfraFibration-complete-joins-preserve-requested-base"
+]
+
+VerificationTest[
+  With[ { base = CycleGraph[ 4 ] },
+    Head /@ { RandomInfraFibration[ base, "HorizontalEdgesRadius" -> 2 ],
+      RandomInfraFibration[ base, "HorizontalEdgesDensity" -> 0 ],
+      RandomInfraFibration[ base, "UnknownOption" -> True ],
+      RandomInfraFibration[ base, "VerticalVertices" -> { 0, 2 } ],
+      RandomInfraFibration[ base, "IsomorphicFibers" -> "Unknown" ] } ],
+  ConstantArray[ RandomInfraFibration, 5 ],
+  TestID -> "RandomInfraFibration-unsupported-options-remain-unevaluated"
+]
+
+VerificationTest[
+  With[ { base = Graph[ { { "p", 1 }, { "q", 2 }, { "isolated", 3 } },
+        { UndirectedEdge[ { "p", 1 }, { "q", 2 } ] } ] },
+    { fib = RandomInfraFibration[ base, "VerticalVertices" -> 2, "HorizontalEdgesDensity" -> All ] },
+    { VertexList @ InfraBaseGraph[ fib ] === VertexList @ base,
+      EdgeList @ InfraBaseGraph[ fib ] === EdgeList @ base,
+      VertexCount @ InfraFiber[ fib, { "isolated", 3 } ], InfraFibrationQ[ fib ] } ],
+  { True, True, 2, True },
+  TestID -> "RandomInfraFibration-preserves-isolated-and-list-base-vertices"
+]
+
+VerificationTest[
+  With[ { fib = RandomInfraFibration[ Graph[ { }, { } ] ] },
+    { VertexCount @ InfraTotalGraph[ fib ], InfraFibrationAssociation[ fib ], VertexCount @ InfraBaseGraph[ fib ],
+      InfraFibrationQ[ fib ], InfraFiberBundleQ[ fib ] } ],
+  { 0, <| |>, 0, True, True },
+  TestID -> "RandomInfraFibration-empty-base"
+]
+
+VerificationTest[
+  SeedRandom[ 17 ];
+  With[ { expected = Table[ RandomInteger[ { 3, 5 } ], { 12 } ] },
+    SeedRandom[ 17 ];
+    With[ { fib = RandomInfraFibration[ Graph[ Range[ 12 ], { } ], "VerticalVertices" -> { 3, 5 } ] },
+      VertexCount /@ Values @ InfraFibers[ fib ] === expected ] ],
+  True,
+  TestID -> "RandomInfraFibration-integer-range-is-discrete-uniform"
+]
+
+VerificationTest[
+  With[ { fib = RandomInfraFibration[ CycleGraph[ 4 ], "VerticalVertices" -> 2, "VerticalVertices" -> 3 ] },
+    VertexCount @ InfraTotalGraph[ fib ] ],
+  8,
+  TestID -> "RandomInfraFibration-first-duplicate-option"
+]
+
+VerificationTest[
+  With[ { fib = InfraFibration[ CycleGraph[ 6 ], point |-> Mod[ point, 3, 1 ] ] },
+    { InfraFibrationQ[ { } ], InfraFiberBundleQ[ { } ], InfraFibrationQ[ { fib } ], InfraFiberBundleQ[ { fib } ] } ],
+  { False, False, True, True },
+  TestID -> "InfraFibration-counted-predicate-shapes"
+]
+
+VerificationTest[
+  With[ { base = CycleGraph[ 3 ] },
+    { fib = RandomInfraFibration[ base, { "VerticalVertices" -> 2, "VerticalVertices" -> 3 } ] },
+    { VertexCount @ InfraTotalGraph[ fib ], IsomorphicGraphQ[ InfraBaseGraph[ fib ], base ] } ],
+  { 6, True },
+  TestID -> "RandomInfraFibration-standard-option-list-and-first-duplicate"
 ]
 
 EndTestSection[]
