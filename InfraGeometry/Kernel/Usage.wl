@@ -254,11 +254,11 @@ MetricDimension::usage = "MetricDimension[g] gives the metric dimension of g: th
 
 ResistanceCoordinates::usage = "ResistanceCoordinates[g] gives the association vertex -> spectral embedding Phi with ||Phi(u)-Phi(v)||^2 == EffectiveResistance[g,u,v]; options \"Rescaling\" (\"ResistanceMatching\" | \"None\" | \"Diffusion\"->t), \"Dimension\", \"Origin\". ResistanceCoordinates[g, v] gives the coordinates of v. The graph must be connected.";
 
-FindBallCover::usage = "FindBallCover[g, r] returns a minimum r-ball cover of g: a smallest set of centres whose radius-r balls cover every vertex (a minimum r-dominating set). FindBallCover[g, r, targets] covers only the given vertex subset (centres still chosen from all of g). FindBallCover[g, r, targets, count] returns a list of up to count covers for an integer count or UpTo[count], or of every one for All; count defaults to 1 (a single cover, not in a list). With \"Exhaustive\" the list holds distinct minimum covers, with \"Greedy\" and \"Symmetric\" the method's one cover. Option Method (\"Exhaustive\" (default) exact integer program, \"Greedy\" repeatedly takes the centre covering the most uncovered targets -- fast but not minimum in general, even on vertex-transitive graphs, \"Symmetric\" smallest cover that is a union of orbits of single automorphisms, a vertex fixed by all of them its own orbit -- exact when a minimum cover is orbit-shaped and on a graph without symmetry, an upper bound otherwise).";
+FindBallCover::usage = "FindBallCover[g, r, target] finds centres whose radius-r balls cover target (default All), minimizing their number by default. An explicit count requests distinct minima. Option Method."
 
-BallCoverQ::usage = "BallCoverQ[g, r, S] tests whether the radius-r balls around the centres S cover every vertex of g. BallCoverQ[g, r, S, targets] tests coverage of the given vertex subset.";
+BallCoverQ::usage = "BallCoverQ[g, r, centres, target] tests whether the radius-r balls around centres cover target (default All), using the distances of g."
 
-BallCoverNumber::usage = "BallCoverNumber[g, r, targets] gives the number of balls in the radius-r cover found by FindBallCover. The default Method gives the least number; other methods give an upper bound.";
+BallCoverNumber::usage = "BallCoverNumber[g, r, target] gives the minimum number of radius-r balls covering target (default All), with centres and distances in g. Option Method."
 
 OllivierRicciCurvature::usage = "OllivierRicciCurvature[g] returns Association[edge -> kappa] with the Ollivier-Ricci curvature kappa(u, v) = 1 - W_1(mu_u, mu_v) / d(u, v), where mu_x is uniform on N(x) and W_1 is the Wasserstein-1 distance under graph distance (alpha = 0). The values are machine numbers.";
 

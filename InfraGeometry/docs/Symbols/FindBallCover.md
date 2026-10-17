@@ -12,100 +12,153 @@ RelatedGuides: [InfraTopology]
 
 ## Usage
 
-<code>[FindBallCover]()[*g*, *r*]</code> gives a smallest list of centres whose closed balls of radius *r* cover every vertex of *g*.
+<code>[FindBallCover]()[*g*, *r*]</code> gives a list of centres whose closed balls of radius *r* cover every vertex of *g*, minimizing their number by default.
 
-<code>[FindBallCover]()[*g*, *r*, *targets*]</code> covers only the vertices of *targets*; the centres may be any vertices of *g*.
+<code>[FindBallCover]()[*g*, *r*, *target*]</code> covers the vertices of *target*, using centres anywhere in *g*.
 
-<code>[FindBallCover]()[*g*, *r*, *targets*, *n*]</code> gives up to *n* smallest covers, and [All]() gives every one.
+<code>[FindBallCover]()[*g*, *r*, *target*, *n*]</code> gives exactly *n* different minimum covers, or an empty list if fewer exist.
+
+<code>[FindBallCover]()[*g*, *r*, *target*, [UpTo]()[*n*]]</code> gives at most *n* different minimum covers.
+
+<code>[FindBallCover]()[*g*, *r*, *target*, [All]()]</code> gives every minimum cover.
 
 ## Details & Options
 
-Definition: a list *C* of vertices covers a set *T* at radius *r* when every *t ∈ T* has some *c ∈ C* with *d(t, c) ≤ r*. A smallest such *C* is a minimum *r*-dominating set, and its size is <code>[BallCoverNumber]()[*g*, *r*]</code>. The radius defaults to 1 and the targets to [All]().
+A centre set $C$ covers a target $T$ when every target vertex is at graph distance at most $r$ from some centre. Its balls and distances are read on the ambient graph *g*. The graph is finite, undirected and unweighted; the radius is a nonnegative integer, defaulting to 1. The target defaults to [All]().
 
-Finding a smallest cover is NP-hard in general. Option [Method]() chooses how:
+A target can be a vertex, a vertex list, a density association, a graph carrier or an abstract region such as [InfraBall](). Only its vertex support matters; density masses are ignored. A literal vertex of *g* takes precedence over list interpretation. An association can specify a target set without this ambiguity.
 
-| Value | Cover |
+| Option | Default | Description |
+|---|---|---|
+| [Method]() | [Automatic]() | algorithm used to find the cover |
+
+| Method value | Guarantee |
 |---|---|
-| `"Exhaustive"` (default) | an integer linear program: a smallest cover |
-| `"Greedy"` | the centre covering the most uncovered targets, again and again: fast, often larger |
-| `"Symmetric"` | a union of orbits of single automorphisms of *g*, a vertex fixed by all of them its own orbit: smallest when a smallest cover has that shape, larger otherwise; on a graph without symmetry every vertex is an orbit and the cover is the exhaustive one |
+| [Automatic]() | a minimum cover, found by integer linear programming |
+| `"IntegerLinearProgramming"` | the same exact optimization, explicitly selected |
+| `"Greedy"` | a feasible cover obtained by repeatedly choosing a centre covering the most uncovered targets |
 
-With a count *n* the result is a list of up to *n* covers, and [All]() gives every one. `"Exhaustive"` finds the smallest covers by testing every list of centres of the smallest size, which is feasible only on small graphs. `"Greedy"` and `"Symmetric"` have one cover each, so their list holds that one.
+`"Exhaustive"` remains an alias for `"IntegerLinearProgramming"`. `"Symmetric"` is unsupported because its restricted covers need not attain the ordinary covering number.
+
+The result without a count is one centre list. An explicit count gives a list of centre lists; in particular, explicit 1 gives a one-element list. Counts occupy the fourth argument, after the target. Exact methods enumerate different minimum centre sets in deterministic order. Enumeration can be expensive even when finding one cover is fast. `"Greedy"` supports only the form without a count.
+
+The empty target has one minimum cover, the empty centre list. The count-less result is `{}`, while explicit 1, [UpTo]()[1] and [All]() give `{{}}`. An empty association `<||>` specifies an empty target even when `{}` is itself a vertex label.
 
 ## Basic Examples
 
-A smallest cover by balls of radius 3 of the discretized plane, the square tiling and the hexagonal tiling, each ball in its own colour.
+Find one minimum cover of a cycle by balls of radius one:
 
 ```wl
-GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    InfraSubstrateHighlight[g, InfraBall[#, 3] & /@ FindBallCover[g, 3]]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
+FindBallCover[ CycleGraph[ 6 ], 1 ]
 ```
 
-The ball of radius 4 about the centre, gray, and the centres of a smallest cover of it by balls of radius 2, red. A centre may lie outside the target.
+---
+
+A smallest cover by balls of radius three on the plane mesh, square tiling and hexagonal tiling:
 
 ```wl
-SeedRandom[1];
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {target = RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 4] ]},
-    InfraSubstrateHighlight[g, {target -> StandardGray, FindBallCover[g, 2, target] -> StandardRed}]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
+	With[
+		{ graph = InfraSubstrate[ name, "Small", "KeepCoordinates" -> True ] },
+		InfraSubstrateHighlight[ graph, InfraBall[ #, 3 ] & /@ FindBallCover[ graph, 3 ] ] ],
+	{ name, { "SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph" } } ]
+```
+
+---
+
+Cover a radius-four ball by radius-two balls, using the ambient graph for centres and distances:
+
+```wl
+GraphicsRow @ Table[
+	With[
+		{ graph = InfraSubstrate[ name, "Small", "KeepCoordinates" -> True ] },
+		{ target = InfraBall[ First @ GraphCenter[ graph ], 4 ] },
+		InfraSubstrateHighlight[ graph,
+			{ target -> StandardGray, FindBallCover[ graph, 2, target ] -> StandardRed } ] ],
+	{ name, { "SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph" } } ]
 ```
 
 ## Scope
 
-The hexagon has three smallest covers by balls of radius 1.
+The cycle has three minimum covers; request every one:
 
 ```wl
-With[
-  {g = CycleGraph[6]},
-  {covers = FindBallCover[g, 1, All, All]},
-  {GraphicsRow[InfraSubstrateHighlight[g, InfraBall[#, 1] & /@ #] & /@ covers], covers}]
+FindBallCover[ CycleGraph[ 6 ], 1, All, All ]
 ```
 
-With a count the methods that have one cover give a list of it. The greedy cover of the hexagon, as a list.
+---
+
+An explicit count of one retains the outer list:
 
 ```wl
-With[
-  {g = CycleGraph[6]},
-  {covers = FindBallCover[g, 1, All, All, Method -> "Greedy"]},
-  {GraphicsRow[InfraSubstrateHighlight[g, InfraBall[#, 1] & /@ #] & /@ covers], covers}]
+FindBallCover[ CycleGraph[ 6 ], 1, All, 1 ]
+```
+
+---
+
+Requesting four minimum covers gives no answers because only three exist:
+
+```wl
+FindBallCover[ CycleGraph[ 6 ], 1, All, 4 ]
+```
+
+---
+
+A bounded count returns the available minimum covers:
+
+```wl
+FindBallCover[ CycleGraph[ 6 ], 1, All, UpTo[ 4 ] ]
+```
+
+---
+
+The empty target has one empty minimum cover:
+
+```wl
+FindBallCover[ CycleGraph[ 6 ], 1, <||>, All ]
 ```
 
 ## Options
 
 ### Method
 
-The three methods on the hexagonal tiling at radius 2. Only the exhaustive cover is smallest.
+Select the exact integer program explicitly:
 
 ```wl
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {covers = Table[FindBallCover[g, 2, Method -> method], {method, {"Exhaustive", "Greedy", "Symmetric"}}]},
-  {GraphicsRow[InfraSubstrateHighlight[g, InfraBall[#, 2] & /@ #] & /@ covers], Length /@ covers}]
+FindBallCover[ CycleGraph[ 6 ], 1, Method -> "IntegerLinearProgramming" ]
 ```
 
-The discretized plane has no symmetry, so every vertex is an orbit and the symmetric cover is the exhaustive one.
+---
+
+A greedy cover can use more balls than a minimum cover; each picture shows its covering balls:
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
-  {covers = Table[FindBallCover[g, 2, Method -> method], {method, {"Exhaustive", "Symmetric"}}]},
-  {GraphicsRow[InfraSubstrateHighlight[g, InfraBall[#, 2] & /@ #] & /@ covers], Length /@ covers}]
+	{ graph = GraphData[ "CuboctahedralGraph" ] },
+	{ methods = { Automatic, "Greedy" } },
+	GraphicsRow @ Map[
+		method |-> With[
+			{ centres = FindBallCover[ graph, 1, Method -> method ] },
+			Labeled[ InfraSubstrateHighlight[ graph, InfraBall[ #, 1 ] & /@ centres ],
+				Row[ { method, ": ", Length[ centres ], " balls" } ] ] ], methods ] ]
 ```
 
 ## Properties and Relations
 
-A cover passes [BallCoverQ](), and its length is the [BallCoverNumber]().
+A found cover satisfies the coverage predicate:
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {cover = FindBallCover[g, 3]},
-  {InfraSubstrateHighlight[g, InfraBall[#, 3] & /@ cover],
-   BallCoverQ[g, 3, cover], Length[cover] == BallCoverNumber[g, 3]}]
+	{ graph = CycleGraph[ 12 ] },
+	BallCoverQ[ graph, 1, FindBallCover[ graph, 1 ] ] ]
+```
+
+---
+
+The length of a minimum cover is the covering number:
+
+```wl
+With[
+	{ graph = CycleGraph[ 12 ] },
+	Length @ FindBallCover[ graph, 1 ] == BallCoverNumber[ graph, 1 ] ]
 ```

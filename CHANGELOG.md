@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Breaking -- exact ball-cover numbers and explicit count shapes.** `BallCoverNumber` always returns the minimum. Both cover operations default to `Method -> Automatic`; `"IntegerLinearProgramming"` names the exact algorithm and `"Exhaustive"` remains an alias. Replace greedy number calls by `Length @ FindBallCover[..., Method -> "Greedy"]`. `"Symmetric"` is unsupported because it restricts admissible covers. Targets remain positional and now accept existing regions and native vertex supports, interpreted on the ambient graph. Without a count `FindBallCover` returns one centre list; explicit `1` returns a list containing it. A fourth-argument integer requests exactly that many different minimum covers, or `{}` on shortage; use `UpTo[n]` for the earlier bounded behavior. `All` enumerates all minima. Greedy accepts no explicit count.
+
 - `RandomInfraInstance` now accepts `RandomSeeding -> Automatic`, following Wolfram's `RandomInstance` convention. The complete scene search uses one local random stream and restores the outer generator state. Use an integer or string seed for reproducible calls, `Inherited` for a local snapshot of the current state, or a saved `RandomGeneratorState`. Migrate scene calls controlled only by `SeedRandom` to an explicit option; repeated `Inherited` calls can repeat because the outer stream does not advance. Named geometry samplers retain ambient `SeedRandom`, following `RandomPoint` and `RandomChoice`.
 
 - Dimension tutorial paired profiles use native table layout so both plot legends remain visible.
