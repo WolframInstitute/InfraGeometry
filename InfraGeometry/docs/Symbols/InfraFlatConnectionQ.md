@@ -2,56 +2,59 @@
 Template: Symbol
 Name: InfraFlatConnectionQ
 Context: WolframInstitute`InfraGeometry`
-ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraFlatConnectionQ
-Keywords: [flat connection, holonomy, horizontal leaf, curvature]
+Keywords: [trivial global monodromy, flat connection, horizontal leaves]
 SeeAlso: [InfraConnection, InfraConnectionQ, InfraHolonomy, InfraParallelTransport, InfraFiberBundleQ]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
 
-<code>[InfraFlatConnectionQ]()[*fib*, *conn*]</code> tests whether *conn* is a connection whose horizontal leaves, the components of its edges, each project injectively to the base.
+<code>[InfraFlatConnectionQ]()[*fib*, *connection*]</code> tests whether a complete connection has trivial global monodromy.
+
+<code>[InfraFlatConnectionQ]()[*fib*, {*connection1*, *connection2*, ...}]</code> tests every member of a nonempty collection.
 
 ## Details & Options
 
-- A walk in the connection graph projects to a walk of the base with the same transport. So every holonomy is trivial iff no horizontal leaf meets a fiber twice.
-- *conn* must first satisfy [InfraConnectionQ]().
+- The existing name retains its global-monodromy meaning: transport around every closed base walk must be the identity.
+- Equivalently, the projection is injective on every connected component of the connection graph.
+- The test includes every disconnected base component and first requires [InfraConnectionQ]().
+- A graph supplies no faces, so this predicate is not a curvature test relative to a face system.
+- Every complete connection over a forest has trivial monodromy.
+- An empty collection returns False. The unique empty connection on a base without edges has trivial monodromy.
 
 ## Basic Examples
 
-The horizontal leaves of the prism, each in its own colour: two sheets, each meeting every fiber once. The connection is flat.
+Two separate cycles give trivial monodromy. One cycle covering the base twice exchanges the sheets.
 
 ```wl
+SeedRandom[ 1 ];
 With[
-  {fib = InfraFiberedSubstrate["CycleProductBundle", "Small"]},
-  {total = InfraTotalGraph[fib]},
-  {conn = InfraConnection @ Select[EdgeList[total], First @ First @ # =!= First @ Last @ # &]},
-  {InfraSubstrateHighlight[total, InfraDensity[total, #] & /@ ConnectedComponents @ Graph[VertexList[total], First @ conn]],
-    InfraFlatConnectionQ[fib, conn]}]
-```
-
-On the Moebius ladder there is one leaf, and it meets every fiber twice. The connection is not flat.
-
-```wl
-With[
-  {fib = InfraFiberedSubstrate["MoebiusLadderCover", "Small"]},
-  {total = InfraTotalGraph[fib]},
-  {conn = InfraConnection @ Select[EdgeList[total], First @ First @ # =!= First @ Last @ # &]},
-  {InfraSubstrateHighlight[total, InfraDensity[total, #] & /@ ConnectedComponents @ Graph[VertexList[total], First @ conn]],
-    InfraFlatConnectionQ[fib, conn]}]
+  { totals = {
+      Graph[ Range[ 8 ], Join[ EdgeList @ CycleGraph[ 4 ], EdgeList @ IndexGraph[ CycleGraph[ 4 ], 5 ] ] ],
+      CycleGraph[ 8 ]
+    } },
+  { fibrations = InfraFiberedGraph[ #, vertex |-> Mod[ vertex, 4, 1 ] ] & /@ totals,
+    connections = InfraConnection[ EdgeList @ # ] & /@ totals },
+  { GraphicsRow @ MapThread[ InfraFiberedGraphHighlight, { fibrations, connections } ],
+    MapThread[ InfraFlatConnectionQ, { fibrations, connections } ] }
+]
 ```
 
 ## Properties and Relations
 
-The holonomy around the cycle is trivial on the prism and swaps the sheets on the Moebius ladder.
+All complete connections on this path base have trivial global monodromy.
 
 ```wl
-Table[
-  With[
-    {fib = InfraFiberedSubstrate[name, "Small"]},
-    {conn = InfraConnection @ Select[EdgeList @ InfraTotalGraph[fib], First @ First @ # =!= First @ Last @ # &]},
-    name -> InfraHolonomy[fib, conn, Append[Range[8], 1]]],
-  {name, {"CycleProductBundle", "MoebiusLadderCover"}}]
+SeedRandom[ 1 ];
+With[
+  { fib = RandomInfraFiberedGraph[
+      PathGraph[ Range[ 3 ] ], "VerticalVertexCount" -> { 2 }, "VerticalEdgeCount" -> { 0 },
+      Properties -> { "IsomorphicFibers" }, "HorizontalEdgeCount" -> All
+    ] },
+  { connections = RandomInfraConnection[ fib, All ] },
+  { Length @ connections, InfraFlatConnectionQ[ fib, connections ] }
+]
 ```

@@ -6,8 +6,9 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraFibers
 Keywords: [fibers, fibration, preimages]
-SeeAlso: [InfraFiber, InfraFibration, InfraFibrationAssociation, InfraBaseGraph, InfraFiberBundleQ]
+SeeAlso: [InfraFiber, InfraFiberedGraph, InfraProjection, InfraBaseSpace, InfraFiberBundleQ]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -21,7 +22,7 @@ The fibers of a branched fibration over a grid, each in its own colour: a vertex
 ```wl
 With[
   {fib = InfraFiberedSubstrate["BranchedGridFibration", "Small"]},
-  {total = InfraTotalGraph[fib]},
+  {total = InfraTotalSpace[fib]},
   InfraSubstrateHighlight[total, InfraDensity[total, VertexList @ #] & /@ Values @ InfraFibers[fib]]]
 ```
 

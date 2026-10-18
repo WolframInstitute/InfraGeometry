@@ -5,49 +5,46 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSection
-Keywords: [section, vector field, displacement, inert map]
-SeeAlso: [InfraSectionQ, InfraContinuousSectionQ, RandomInfraSection, FindInfraSection, InfraCovariantDerivative, InfraFibration]
+Keywords: [section, partial section, inert map, projection]
+SeeAlso: [InfraSectionQ, InfraContinuousSectionQ, InfraParallelSectionQ, RandomInfraSection, InfraFiberedGraph, InfraFiberedGraphHighlight]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
 
-<code>[InfraSection]()[*s*]</code> is a section of a fibration, the association *s* from base vertices to total vertices over them; it carries no graph.
+<code>[InfraSection]()[*s*]</code> describes a section by an association from base vertices to total vertices; it carries no graph.
 
 ## Details & Options
 
-- [InfraSection]() is inert. The fibration it is a section of is given to each function that reads it: [InfraSectionQ](), [InfraContinuousSectionQ](), [InfraCovariantDerivative]().
-- The keys of *s* may be a part of the base: a section over a subset.
-- A section of [InfraTangentBundle]() is a vector field at the scale of the bundle. A section of [InfraDisplacementBundle]() is a displacement.
+- The head is inert. [InfraSectionQ]() checks the right-inverse condition in a specified fibered graph.
+- The keys of *s* give its domain, which may be a subset of the reconstructed base.
+- [InfraContinuousSectionQ]() checks adjacency preservation. [InfraParallelSectionQ]() checks compatibility with a chosen complete connection.
+- `InfraSection[<||>]` is the empty partial section.
+- [RandomInfraSection]() constructs sections on a domain or extends a prescribed section without changing its values.
+- `Properties -> {"Continuous"}` selects the continuous class explicitly in every sampler call form.
+- Vertices and association keys are literal expressions, including list-valued labels.
 
 ## Basic Examples
 
-The up field on the grid: every vertex below the top row moved one step up, a section of the displacement bundle at scale 1. On the grid it reads as the vertical edges.
+A partial section chooses values in two fibers.
 
 ```wl
+SeedRandom[7];
 With[
-  {g = First @ InfraFiberedSubstrate["GridDisplacementBundle", "Small"]},
-  {up = InfraSection @ AssociationMap[p |-> {p, p + 1}, Select[Range[16], Mod[#, 4] != 0 &]]},
-  InfraSubstrateHighlight[g, Prepend[InfraWalk /@ Values @ First @ up, Directive[StandardBlue]]]]
+  {fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> { 3 },
+    "VerticalEdgeCount" -> { 0 }, "HorizontalEdgeCount" -> All]},
+  {partial = RandomInfraSection[fib, {1, 3}]},
+  InfraFiberedGraphHighlight[fib, partial]]
 ```
 
-The same section in the total graph: its values, with the total edges between them.
+The same inert section is read in the context of its fibered graph.
 
 ```wl
+SeedRandom[7];
 With[
-  {fib = InfraFiberedSubstrate["GridDisplacementBundle", "Small"]},
-  {total = InfraTotalGraph[fib]},
-  {up = InfraSection @ AssociationMap[p |-> {p, p + 1}, Select[Range[16], Mod[#, 4] != 0 &]]},
-  InfraSubstrateHighlight[total, Prepend[InfraWalk /@ List @@@ EdgeList @ Subgraph[total, Values @ First @ up], Directive[StandardBlue]]]]
-```
-
-## Properties and Relations
-
-The up field is a section, and it is continuous: every base edge between its keys goes to a total edge.
-
-```wl
-With[
-  {fib = InfraFiberedSubstrate["GridDisplacementBundle", "Small"]},
-  {up = InfraSection @ AssociationMap[p |-> {p, p + 1}, Select[Range[16], Mod[#, 4] != 0 &]]},
-  {InfraSectionQ[fib, up], InfraContinuousSectionQ[fib, up]}]
+  {fib = InfraFiberedGraph[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[2, 4]}],
+    <|1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b"|>]},
+  {section = InfraSection[<|"a" -> 1, "b" -> 3|>]},
+  {InfraFiberedGraphHighlight[fib, section], InfraSectionQ[fib, section], InfraContinuousSectionQ[fib, section]}]
 ```

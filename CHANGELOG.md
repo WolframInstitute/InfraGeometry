@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 2.7.4 (2026-10-18)
+
+- Add the inert `InfraFiberedGraph` description, reconstructed base, canonical `InfraTotalSpace`, `InfraBaseSpace` and `InfraProjection` readers, independent fiber and lifting predicates, and edge-lift multiplicities. Legacy `InfraFibration` descriptions and readers remain supported.
+- Add `RandomInfraFiberedGraph` with optional fibration, covering and bundle properties. Count options use scalar upper bounds, singleton exact counts and inclusive uniform ranges; ordinary sampling uses ambient `SeedRandom`.
+- Extend prescribed section values to continuous sections, construct complete connections, and inspect transport and holonomy through the fibered graph highlighter and viewer. The foundation and Experimental InfraBundles tutorials separate general graph theory from scale reduction and emergence questions.
+- Add `InfraScenePlot` for static rendering of saved scene instances and explicitly requested families at saved anchors. Native subgraphs and edges are accepted by the substrate highlighter.
+
 ## 2.7.3 (2026-10-18)
 
 - Add `RandomBallCover`, uniformly sampling distinct minimum centre sets with ambient `SeedRandom` control. An omitted count gives one cover; strict integers, `UpTo[n]` and `All` retain explicit family semantics. Exact sampling enumerates all minima before a positive draw. `FindBallCover` remains nonrandom, and its explicit greedy method remains a feasible-cover approximation. Randomized greedy is not introduced.

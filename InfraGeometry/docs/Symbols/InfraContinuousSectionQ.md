@@ -5,40 +5,49 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraContinuousSectionQ
-Keywords: [continuous section, smooth section, displacement, vector field]
-SeeAlso: [InfraSection, InfraSectionQ, FindInfraSection, RandomInfraSection, InfraDisplacementBundle]
+Keywords: [continuous section, partial section, adjacency preservation]
+SeeAlso: [InfraSection, InfraSectionQ, InfraParallelSectionQ, RandomInfraSection, InfraFiberedGraphHighlight]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
 
-<code>[InfraContinuousSectionQ]()[*fib*, [InfraSection]()[*s*]]</code> tests whether *s* is a section of *fib* mapping every base edge between its keys to a total edge.
+<code>[InfraContinuousSectionQ]()[*fib*, [InfraSection]()[*s*]]</code> tests whether *s* is a section mapping every base edge between its keys to a total edge.
+
+<code>[InfraContinuousSectionQ]()[*fib*, {*section1*, *section2*, ...}]</code> tests every section in a nonempty collection.
 
 ## Details & Options
 
-- Only base edges with both endpoints among the keys of *s* are checked, so a section over a part of the base is continuous when it is continuous there.
-- On a displacement bundle a continuous section is a continuous displacement: adjacent vertices move to adjacent or equal vertices.
+- Only base edges with both endpoints in the section's domain are checked.
+- The right-inverse condition checked by [InfraSectionQ]() is also required.
+- An empty partial section is continuous. An empty collection returns [False]().
+- Continuity concerns the total graph. [InfraParallelSectionQ]() imposes the additional condition specified by a chosen complete connection.
+- [RandomInfraSection]() with `Properties -> {"Continuous"}` constructs sections of this class.
 
 ## Basic Examples
 
-The up field on the grid is continuous: its values, with the total edges between them, form a copy of the base under it.
+The two sheets of a product covering are continuous sections.
 
 ```wl
+SeedRandom[7];
 With[
-  {fib = InfraFiberedSubstrate["GridDisplacementBundle", "Small"]},
-  {total = InfraTotalGraph[fib]},
-  {up = InfraSection @ AssociationMap[p |-> {p, p + 1}, Select[Range[16], Mod[#, 4] != 0 &]]},
-  {InfraSubstrateHighlight[total, Prepend[InfraWalk /@ List @@@ EdgeList @ Subgraph[total, Values @ First @ up], Directive[StandardBlue]]],
-    InfraContinuousSectionQ[fib, up]}]
+  {fib = InfraFiberedGraph[GraphProduct[CycleGraph[4], Graph[{1, 2}, {}], "Cartesian"], First]},
+  {sections = RandomInfraSection[fib, All, Properties -> {"Continuous"}]},
+  {GraphicsRow[InfraFiberedGraphHighlight[fib, #] & /@ sections], InfraContinuousSectionQ[fib, sections]}]
 ```
 
-A random section is not: few of the total edges between its values remain.
+Switching sheets across a base edge breaks continuity.
 
 ```wl
+SeedRandom[7];
 With[
-  {fib = InfraFiberedSubstrate["GridDisplacementBundle", "Small"]},
-  {total = InfraTotalGraph[fib]},
-  {random = (SeedRandom[2]; RandomInfraSection[fib])},
-  {InfraSubstrateHighlight[total, Prepend[InfraWalk /@ List @@@ EdgeList @ Subgraph[total, Values @ First @ random], Directive[StandardBlue]]],
-    InfraContinuousSectionQ[fib, random]}]
+  {fib = InfraFiberedGraph[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[2, 4]}],
+    <|1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b"|>]},
+  {section = InfraSection[<|"a" -> 1, "b" -> 4|>]},
+  {InfraFiberedGraphHighlight[fib, section], InfraSectionQ[fib, section], InfraContinuousSectionQ[fib, section]}]
 ```
+
+## Possible Issues
+
+Continuity on a partial domain does not imply that a continuous global extension exists. [RandomInfraSection]() returns `{}` when the requested extension class is empty.

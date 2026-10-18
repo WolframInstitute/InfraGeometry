@@ -6,8 +6,9 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraBundleMorphismQ
 Keywords: [bundle morphism, graph homomorphism, fibration map]
-SeeAlso: [InfraBundleMorphism, InfraFibration, InfraTangentBundle, InfraDisplacementBundle, InfraCotangentBundle]
+SeeAlso: [InfraBundleMorphism, InfraFiberedGraph, InfraTangentBundle, InfraDisplacementBundle, InfraCotangentBundle]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -33,8 +34,8 @@ With[
   {endpoint = ray |-> {First @ ray, Last @ ray}},
   {rays = VertexList @ InfraFiber[tangent, 6]},
   {GraphicsRow[{
-      InfraSubstrateHighlight[InfraTotalGraph[tangent], {InfraDensity[InfraTotalGraph[tangent], rays]}],
-      InfraSubstrateHighlight[InfraTotalGraph[displacementBundle], {InfraDensity[InfraTotalGraph[displacementBundle], endpoint /@ rays]}]}],
+      InfraSubstrateHighlight[InfraTotalSpace[tangent], {InfraDensity[InfraTotalSpace[tangent], rays]}],
+      InfraSubstrateHighlight[InfraTotalSpace[displacementBundle], {InfraDensity[InfraTotalSpace[displacementBundle], endpoint /@ rays]}]}],
     InfraBundleMorphismQ[tangent, displacementBundle, endpoint]}]
 ```
 
@@ -43,8 +44,9 @@ Swapping the two sheets is a bundle morphism of the prism and of the Moebius lad
 ```wl
 With[
   {prism = InfraFiberedSubstrate["CycleProductBundle", "Small"], moebius = InfraFiberedSubstrate["MoebiusLadderCover", "Small"]},
-  {swap = totalVertex |-> {First @ totalVertex, 3 - Last @ totalVertex}, turn = totalVertex |-> {Mod[First @ totalVertex + 1, 8, 1], Last @ totalVertex}},
-  {GraphicsRow[{InfraTotalGraph[prism], InfraTotalGraph[moebius]}],
+  {swap = totalVertex |-> {First @ totalVertex, 3 - Last @ totalVertex},
+    turn = totalVertex |-> {Mod[First @ totalVertex + 1, 8, 1], Last @ totalVertex}},
+  {GraphicsRow[{InfraTotalSpace[prism], InfraTotalSpace[moebius]}],
     InfraBundleMorphismQ[prism, prism, swap], InfraBundleMorphismQ[moebius, moebius, swap],
     InfraBundleMorphismQ[prism, prism, turn, i |-> Mod[i + 1, 8, 1]], InfraBundleMorphismQ[moebius, moebius, turn, i |-> Mod[i + 1, 8, 1]]}]
 ```

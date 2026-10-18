@@ -7,6 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/Experimental
 Keywords: [experimental, walks, walk space, homotopy, differential forms, cochains, resolving sets, effective resistance, Ollivier-Ricci curvature, eccentricity]
 RelatedGuides: [EuclideanInfrageometry, RiemannianInfrageometry, InfraTopology, InfraAnalysis, InfraFiberBundles, InfraSubstrates]
+RelatedTutorials: [ExperimentalInfraBundles]
 ---
 
 ## Abstract
@@ -95,3 +96,14 @@ Research functions not yet settled into a branch: walks and their singularities,
 - `IntegrationMap` the cochain averaged from a form over each clique
 
 - `FormDegree`, `CochainDegree`, `OrderedCochainValue`, `NaiveDifferential`, `AntisymmetrizedCup`
+
+### Particular fibered graph models
+
+- `InfraTangentBundle`, `InfraCotangentBundle`, `InfraDisplacementBundle` ray and distance-pair constructions
+- `InfraRays`, `InfraBundleMorphism`, `InfraFiberedSubstrate` their rays, natural maps and example catalogue
+- `RandomInfraFibration` the compatibility generator with the earlier cyclic-width interpretation
+- `FindInfraLeviCivitaConnection`, `InfraHolonomyAngle`, `InfraCovariantDerivative`, `InfraCanonicalOneForm` metric-selected transport and measurements
+
+These remain loaded in the Infra Fiber Bundles category. Their particular geometric assumptions are separate from its general inert objects and complete connections.
+
+The [Experimental Infra Bundles tutorial](paclet:WolframInstitute/InfraGeometry/tutorial/ExperimentalInfraBundles) separates exact finite observations from proposed scale reduction and completion research. General fibered graphs and their structural predicates are covered by [Infra Bundles](paclet:WolframInstitute/InfraGeometry/tutorial/InfraBundles).

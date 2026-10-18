@@ -4,42 +4,130 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* Ported from InfraGaugeTheory Kernel/Connections.wl at e5dc83b; InfraGaugeTheory keeps its own copy *)
 
-InfraConnectionQ[ fib : _[ _Graph, __ ], InfraConnection[ edges_List ] ] :=
-  With[ { proj = InfraFibrationAssociation @ fib, total = InfraTotalGraph @ fib },
-    { connection = Graph[ VertexList @ total, edges ] },
-    AllTrue[ edges, EdgeQ[ total, # ] && proj @ First @ # =!= proj @ Last @ # & ] &&
-      AllTrue[ VertexList @ total,
-        x |-> Sort[ proj /@ AdjacencyList[ connection, x ] ] === Sort @ DeleteCases[ DeleteDuplicates[ proj /@ AdjacencyList[ total, x ] ], proj @ x ] ] ]
+InfraConnectionQ[ fib : _[ _Graph, __ ], InfraConnection[ edges_List ] ] /;
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
+  With[ { total = InfraTotalSpace @ fib, base = InfraBaseSpace @ fib, projection = InfraProjection @ fib },
+    { vertices = VertexList @ total, baseVertices = VertexList @ base },
+    { index = AssociationThread[ vertices, Range @ Length @ vertices ],
+      baseIndex = AssociationThread[ baseVertices, Range @ Length @ baseVertices ] },
+    AllTrue[ edges, MatchQ[ #, UndirectedEdge[ _, _ ] ] && EdgeQ[ total, # ] & ] &&
+      With[ { indexedEdges = Lookup[ index, Key /@ ( List @@ # ) ] & /@ edges,
+          projected = Lookup[ baseIndex, Key /@ Lookup[ projection, Key /@ vertices ] ] },
+        DuplicateFreeQ[ Sort /@ indexedEdges ] &&
+          AllTrue[ indexedEdges, projected[[ First @ # ]] =!= projected[[ Last @ # ]] & ] &&
+          With[ { connection = Graph[ Range @ Length @ vertices, UndirectedEdge @@@ indexedEdges ], indexedBase = IndexGraph @ base },
+            AllTrue[ Range @ Length @ vertices,
+              vertex |-> Sort[ projected[[ AdjacencyList[ connection, vertex ] ]] ] ===
+                Sort @ AdjacencyList[ indexedBase, projected[[ vertex ]] ] ] ] ] ]
 
-(* Every walk in the connection graph projects to a base walk with the same transport, so the holonomy of every loop is trivial
-   iff no walk joins two vertices of one fiber, i.e. iff every horizontal leaf projects injectively *)
+InfraConnectionQ[ fib : _[ _Graph, __ ], connections_List ] /;
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
+  connections =!= { } && And @@ ( InfraConnectionQ[ fib, # ] & /@ connections )
 
-InfraFlatConnectionQ[ fib : _[ _Graph, __ ], conn : InfraConnection[ edges_List ] ] :=
-  With[ { proj = InfraFibrationAssociation @ fib },
-    InfraConnectionQ[ fib, conn ] && AllTrue[ ConnectedComponents @ Graph[ Keys @ proj, edges ], DuplicateFreeQ[ Lookup[ proj, # ] ] & ] ]
+(* Global monodromy is trivial iff every horizontal leaf projects injectively to the base. *)
 
-RandomInfraConnection[ fib : _[ _Graph, __ ] ] :=
-  With[ { proj = InfraFibrationAssociation @ fib, total = InfraTotalGraph @ fib },
-    { horizontal = Select[ EdgeList @ total, proj[ #[[ 1 ]] ] =!= proj[ #[[ 2 ]] ] & ] },
-    InfraConnection @ Catenate[ FindIndependentEdgeSet @ Graph @ RandomSample @ # & /@ Values @ GroupBy[ horizontal, Sort[ proj /@ List @@ # ] & ] ] ]
+InfraFlatConnectionQ[ fib : _[ _Graph, __ ], connection : InfraConnection[ edges_List ] ] /;
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
+  InfraConnectionQ[ fib, connection ] &&
+    With[ { projection = InfraProjection @ fib },
+      AllTrue[ ConnectedComponents @ Graph[ VertexList @ InfraTotalSpace @ fib, edges ],
+        DuplicateFreeQ[ Lookup[ projection, Key /@ # ] ] & ] ]
 
-FindInfraHorizontalLift[ fib : _[ _Graph, __ ], InfraConnection[ edges_List ], start_, walk_List, count : ( _Integer | UpTo[ _Integer ] | All ) ] :=
-  With[ { proj = InfraFibrationAssociation @ fib },
-    { connection = Graph[ Keys @ proj, edges ] },
-    { lifts = Fold[
-        { partial, q } |-> Catenate @ Map[ lift |-> ( Append[ lift, # ] & /@ Select[ AdjacencyList[ connection, Last @ lift ], proj @ # === q & ] ), partial ],
-        If[ Lookup[ proj, Key @ start ] === First @ walk, { { start } }, { } ],
-        Rest @ walk ] },
-    Replace[ count, { All -> lifts, UpTo[ n_ ] :> Take[ lifts, UpTo[ n ] ], n_Integer :> If[ Length @ lifts >= n, Take[ lifts, n ], { } ] } ] ]
+InfraFlatConnectionQ[ fib : _[ _Graph, __ ], connections_List ] /;
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
+  connections =!= { } && And @@ ( InfraFlatConnectionQ[ fib, # ] & /@ connections )
 
-InfraParallelTransport[ fib : _[ _Graph, __ ], InfraConnection[ edges_List ], walk_List ] :=
-  With[ { proj = InfraFibrationAssociation @ fib },
-    { connection = Graph[ Keys @ proj, edges ] },
-    { step = { x, q } |-> First[ Select[ AdjacencyList[ connection, x ], proj @ # === q & ], Missing[ ] ] },
-    DeleteMissing @ AssociationMap[
-      x |-> Fold[ If[ MissingQ @ #1, #1, step[ #1, #2 ] ] &, x, Rest @ walk ],
-      Keys @ Select[ proj, # === First @ walk & ] ] ]
+Options[ RandomInfraConnection ] = { "NextVertexFunction" -> Automatic }
 
-InfraHolonomy[ fib : _[ _Graph, __ ], conn_InfraConnection, loop : { p_, ___, p_ } ] :=
-  With[ { transport = InfraParallelTransport[ fib, conn, loop ], fiber = Keys @ Select[ InfraFibrationAssociation @ fib, # === p & ] },
-    PermutationCycles @ Lookup[ AssociationThread[ fiber, Range @ Length @ fiber ], Values @ transport ] /; Sort @ Values @ transport === Sort @ fiber ]
+RandomInfraConnection[ fib : _[ _Graph, __ ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /;
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] &&
+    SubsetQ[ First /@ Options[ RandomInfraConnection ], First /@ Flatten @ { opts } ] &&
+    With[ { next = OptionValue[ RandomInfraConnection, { opts }, "NextVertexFunction" ] },
+      ! MatchQ[ next, _String | _Integer | _Real | _Rational | _Complex | _List | _Association | _Rule | _RuleDelayed ] &&
+        ( count =!= All || next =!= RandomChoice ) ] :=
+  With[ { total = InfraTotalSpace @ fib, base = InfraBaseSpace @ fib, projection = InfraProjection @ fib,
+      cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
+      next = Replace[ OptionValue[ RandomInfraConnection, { opts }, "NextVertexFunction" ],
+        Automatic :> If[ count === All, Identity, RandomSample ] ] },
+    { vertices = VertexList @ total, indexedTotal = IndexGraph @ total },
+    { index = AssociationThread[ vertices, Range @ Length @ vertices ],
+      fibers = GroupBy[ Range @ Length @ vertices, Lookup[ projection, Key @ vertices[[ # ]] ] & ] },
+    { groups = Map[
+        edge |-> With[ { left = Lookup[ fibers, Key @ First @ edge ], right = Lookup[ fibers, Key @ Last @ edge ] },
+          { left, right, Graph[ Join[ left, right ],
+              Catenate @ Map[ source |-> UndirectedEdge[ source, # ] & /@
+                Select[ right, EdgeQ[ indexedTotal, UndirectedEdge[ source, # ] ] & ], left ] ] } ],
+        EdgeList @ base ] },
+    { slots = Catenate @ MapIndexed[ { group, position } |-> ( { First @ position, # } & /@ First @ group ), groups ],
+      starts = Most @ FoldList[ Plus, 1, Length /@ ( First /@ groups ) ],
+      feasible = AllTrue[ groups, Length @ First @ # === Length @ #[[ 2 ]] &&
+        Length @ FindIndependentEdgeSet[ #[[ 3 ]] ] === Length @ First @ # & ],
+      order = candidates |-> If[ candidates === { }, { True, { } },
+        With[ { labels = vertices[[ candidates ]] },
+          { selected = next @ labels },
+          { selectedList = If[ MemberQ[ labels, Verbatim @ selected ], { selected }, selected ] },
+          If[ ListQ @ selectedList && DuplicateFreeQ @ selectedList &&
+              AllTrue[ selectedList, MemberQ[ labels, Verbatim @ # ] & ],
+            { True, Lookup[ index, Key /@ selectedList ] }, { False, { } } ] ] ] },
+    (* A maximum matching decides feasibility; the stack enumerates in candidate order and stops at the requested count. *)
+    { search = Reap @ NestWhile[
+        Apply[ { stack, found, valid } |-> With[ { chosen = First @ stack },
+          If[ Length @ chosen === Length @ slots,
+            ( Sow @ InfraConnection @ MapThread[
+                { slot, target } |-> UndirectedEdge[ vertices[[ Last @ slot ]], vertices[[ target ]] ], { slots, chosen } ];
+              { Rest @ stack, found + 1, valid } ),
+            With[ { position = Length @ chosen + 1 },
+              { group = slots[[ position, 1 ]], source = slots[[ position, 2 ]] },
+              { used = Drop[ chosen, starts[[ group ]] - 1 ],
+                left = Drop[ groups[[ group, 1 ]], position - starts[[ group ]] + 1 ] },
+              { candidates = Select[ groups[[ group, 2 ]], target |->
+                  ! MemberQ[ used, target ] && EdgeQ[ groups[[ group, 3 ]], UndirectedEdge[ source, target ] ] &&
+                    Length @ FindIndependentEdgeSet @ Subgraph[ groups[[ group, 3 ]],
+                      Join[ left, Complement[ groups[[ group, 2 ]], Append[ used, target ] ] ] ] === Length @ left ] },
+              { ordered = order @ candidates },
+              { Join[ Append[ chosen, # ] & /@ Last @ ordered, Rest @ stack ], found, First @ ordered } ] ] ] ],
+        { If[ feasible, { { } }, { } ], 0, True },
+        state |-> First @ state =!= { } && state[[ 2 ]] < cap && Last @ state ] },
+    { members = Catenate @ Last @ search },
+    Switch[ count,
+      Automatic, First[ members, { } ],
+      All, members,
+      _UpTo, members,
+      _, If[ Length @ members < count, { }, members ] ] /; Last @ First @ search ]
+
+InfraHorizontalLift[ fib : _[ _Graph, __ ], connection : InfraConnection[ edges_List ], start_, walk : { __ } ] /;
+    TrueQ[ InfraConnectionQ[ fib, connection ] ] && VertexQ[ InfraTotalSpace @ fib, start ] &&
+    Lookup[ InfraProjection @ fib, Key @ start ] === First @ walk &&
+    With[ { base = InfraBaseSpace @ fib },
+      AllTrue[ walk, VertexQ[ base, # ] & ] && AllTrue[ Partition[ walk, 2, 1 ], EdgeQ[ base, UndirectedEdge @@ # ] & ] ] :=
+  With[ { vertices = VertexList @ InfraTotalSpace @ fib, projection = InfraProjection @ fib },
+    { index = AssociationThread[ vertices, Range @ Length @ vertices ], projected = Lookup[ projection, Key /@ vertices ] },
+    { indexedConnection = Graph[ Range @ Length @ vertices, UndirectedEdge @@@ ( Lookup[ index, Key /@ ( List @@ # ) ] & /@ edges ) ] },
+    vertices[[ FoldList[
+      { vertex, baseVertex } |-> First @ Select[ AdjacencyList[ indexedConnection, vertex ], projected[[ # ]] === baseVertex & ],
+      Lookup[ index, Key @ start ], Rest @ walk ] ]] ]
+
+InfraParallelTransport[ fib : _[ _Graph, __ ], connection_InfraConnection, walk : { __ } ] /;
+    TrueQ[ InfraConnectionQ[ fib, connection ] ] &&
+    With[ { base = InfraBaseSpace @ fib },
+      AllTrue[ walk, VertexQ[ base, # ] & ] && AllTrue[ Partition[ walk, 2, 1 ], EdgeQ[ base, UndirectedEdge @@ # ] & ] ] :=
+  AssociationMap[ start |-> Last @ InfraHorizontalLift[ fib, connection, start, walk ],
+    VertexList @ InfraFiber[ fib, First @ walk ] ]
+
+InfraHolonomy[ fib : _[ _Graph, __ ], connection_InfraConnection, loop : { __ } ] /;
+    First @ loop === Last @ loop && TrueQ[ InfraConnectionQ[ fib, connection ] ] &&
+    With[ { base = InfraBaseSpace @ fib },
+      AllTrue[ loop, VertexQ[ base, # ] & ] && AllTrue[ Partition[ loop, 2, 1 ], EdgeQ[ base, UndirectedEdge @@ # ] & ] ] :=
+  With[ { transport = InfraParallelTransport[ fib, connection, loop ], fiber = VertexList @ InfraFiber[ fib, First @ loop ] },
+    { index = AssociationThread[ fiber, Range @ Length @ fiber ] },
+    PermutationCycles @ Lookup[ index, Key /@ Lookup[ transport, Key /@ fiber ] ] ]
+
+FindInfraHorizontalLift[ fib : _[ _Graph, __ ], connection_InfraConnection, start_, walk_List,
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All ) ] :=
+  With[ { lift = InfraHorizontalLift[ fib, connection, start, walk ] },
+    Switch[ count,
+      All, { lift },
+      _UpTo, Take[ { lift }, count ],
+      _, If[ count > 1, { }, Take[ { lift }, count ] ] ] /; ListQ @ lift ]

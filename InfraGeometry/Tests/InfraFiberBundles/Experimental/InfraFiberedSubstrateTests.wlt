@@ -16,8 +16,9 @@ VerificationTest[
 ]
 
 VerificationTest[
-  Head /@ (InfraFiberedSubstrate[#, "Small"] & /@ InfraFiberedSubstrate[All]),
-  Join[ConstantArray[InfraFibration, 5], ConstantArray[InfraTangentBundle, 4], ConstantArray[InfraDisplacementBundle, 4], ConstantArray[InfraFibration, 2]],
+  Head /@ ( InfraFiberedSubstrate[ #, "Small" ] & /@ InfraFiberedSubstrate[ All ] ),
+  Join[ ConstantArray[ InfraFiberedGraph, 5 ], ConstantArray[ InfraTangentBundle, 4 ],
+    ConstantArray[ InfraDisplacementBundle, 4 ], ConstantArray[ InfraFiberedGraph, 2 ] ],
   TestID -> "InfraFiberedSubstrate-heads"
 ]
 
@@ -31,7 +32,7 @@ VerificationTest[
 
 VerificationTest[
   {InfraFiberedSubstrate["GridTangentBundle", "Small"] === InfraTangentBundle[GridGraph[{4, 4}], 2],
-    InfraFiberedSubstrate["OctahedronDisplacementBundle", "Large"] === InfraDisplacementBundle[EdgeDelete[CompleteGraph[6], {1 <-> 4, 2 <-> 5, 3 <-> 6}], 1],
+    InfraFiberedSubstrate["OctahedronDisplacementBundle", "Large"] === InfraDisplacementBundle[EdgeDelete[CompleteGraph[6], {UndirectedEdge[1, 4], UndirectedEdge[2, 5], UndirectedEdge[3, 6]}], 1],
     VertexList @ First @ InfraFiberedSubstrate["TriangularTorusDisplacementBundle", "Small"] === VertexList @ TorusTessellation[{6, 6}, "Triangular"]},
   {True, True, True},
   TestID -> "InfraFiberedSubstrate-bundle-bases"
@@ -103,22 +104,22 @@ VerificationTest[
   TestID -> "InfraFiberedSubstrate-tangent-and-displacement-are-not-bundles"
 ]
 
-(* ===== the drawing ===== *)
+(* ===== structure and presentation ===== *)
 
 VerificationTest[
-  With[{entries = InfraFiberedSubstrate[#, "Small"] & /@ {"CycleProductBundle", "MoebiusLadderCover", "CycleDoubleCover",
-      "GridProductBundle", "TriangularTorusDoubleCover", "BranchedGridFibration", "GridTangentBundle", "GridDisplacementBundle", "OctahedronDisplacementBundle"}},
-    {Head @ GraphicsGrid @ Partition[InfraTotalGraph /@ entries, 3], Union[Options[InfraTotalGraph @ #, VertexCoordinates] =!= {VertexCoordinates -> Automatic} & /@ entries]}],
-  {Graphics, {True}},
-  TestID -> "InfraFiberedSubstrate-grid-of-nine-drawn"
+  Union[Options[InfraTotalGraph @ InfraFiberedSubstrate[#, "Small"], VertexCoordinates] & /@ InfraFiberedSubstrate[All]],
+  {{VertexCoordinates -> Automatic}},
+  TestID -> "InfraFiberedSubstrate-totals-do-not-store-layout"
 ]
 
 VerificationTest[
   With[{fib = InfraFiberedSubstrate["CycleDoubleCover", "Small"]},
-    {coordinates = AssociationThread[VertexList @ InfraTotalGraph @ fib, GraphEmbedding @ InfraTotalGraph @ fib]},
-    Union @ Round[Norm[coordinates[{#, 1}] - coordinates[{#, 2}]] & /@ Range[8], 10.^-6]],
-  {Round[2 / 3 EuclideanDistance @@ Take[GraphEmbedding @ CycleGraph[8], 2], 10.^-6]},
-  TestID -> "InfraFiberedSubstrate-fibers-on-small-circles"
+    {Sort[VertexList[InfraFiber[fib, 1]]], EdgeCount[InfraFiber[fib, 1]],
+      Lookup[InfraFibrationAssociation[fib], Key[{1, 2}]],
+      EdgeQ[InfraTotalGraph[fib], UndirectedEdge[{8, 1}, {1, 2}]],
+      EdgeQ[InfraTotalGraph[fib], UndirectedEdge[{8, 1}, {1, 1}]]}],
+  {{{1, 1}, {1, 2}}, 0, 1, True, False},
+  TestID -> "InfraFiberedSubstrate-cover-fibers-and-twist"
 ]
 
 EndTestSection[]

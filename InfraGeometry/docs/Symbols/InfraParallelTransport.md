@@ -2,66 +2,83 @@
 Template: Symbol
 Name: InfraParallelTransport
 Context: WolframInstitute`InfraGeometry`
-ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraParallelTransport
-Keywords: [parallel transport, connection, Levi-Civita, realisation, walk]
-SeeAlso: [InfraConnection, InfraHolonomy, InfraHolonomyAngle, FindInfraLeviCivitaConnection, FindInfraHorizontalLift, InfraDisplacementBundle]
+Keywords: [parallel transport, fiber bijection, connection, walk]
+SeeAlso: [InfraConnection, InfraConnectionQ, InfraHorizontalLift, InfraHolonomy, InfraParallelSectionQ, InfraHolonomyAngle, FindInfraLeviCivitaConnection]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
 
-<code>[InfraParallelTransport]()[*fib*, *conn*, *walk*]</code> gives the transport along *walk* of the fiber over its first vertex, an association from each fiber vertex to the end of its horizontal lift; vertices whose lift is blocked are dropped.
+<code>[InfraParallelTransport]()[*fib*, *connection*, *walk*]</code> gives the total fiber bijection along a base walk as an association from each starting vertex to the endpoint of its horizontal lift.
 
-<code>[InfraParallelTransport]()[[InfraDisplacementBundle]()[*g*, *r*], *walk*]</code> gives the Levi-Civita transports along *walk*, a list with one transport for each choice among the best angle-isometries over its edges.
+<code>[InfraParallelTransport]()[[InfraDisplacementBundle]()[*graph*, *radius*], *walk*]</code> gives the list of metric-selected transports in the Experimental displacement-bundle model.
+
+<code>[InfraParallelTransport]()[[InfraDisplacementBundle]()[*graph*, *radius*], *connection*, *walk*]</code> retains the Experimental model's partial transport, omitting starting directions whose lift is blocked.
 
 ## Details & Options
 
-- With a connection, a fiber vertex follows the unique edge of *conn* over each step of *walk*.
-- Without a connection, over each step *p* -> *q* the transports are the injections of the direction sphere at *p* into the direction sphere at *q* that best match their angles, with the geodesics through *q* kept straight. There are usually several. The list holds every composite along *walk*, without duplicates.
-- [FindInfraLeviCivitaConnection]() keeps the first transport over each edge. [InfraHolonomyAngle]() without a connection is the least angle over the list.
-- The Levi-Civita realisations are listed in full, with no cap. A long walk through vertices with many directions can give many of them.
+- The general fibered-graph reader requires a valid complete connection and a nonempty base walk. It never drops blocked vertices or chooses between ambiguous lifts.
+- Keys follow <code>[VertexList]()[[InfraFiber]()[*fib*, [First]()[*walk*]]]</code>. List-valued and expression-valued vertices are literal association keys.
+- A one-vertex walk gives the identity association. Concatenating walks composes their transports; reversing a walk gives the inverse bijection.
+- The readers with an explicit connection consume no random draws and take no options. Unsupported input remains unevaluated.
+- The Experimental displacement overload with an explicit connection accepts partial matchings. Each surviving lift is unique; ambiguous matchings remain unevaluated. Converting the model to a literal InfraFiberedGraph selects the general complete-connection contract.
+- The Experimental two-argument displacement form lists every composite of its best angle-matching injections, without duplicates. It is a particular model and may have several results.
 
-Options of the Levi-Civita form:
+Options of the Experimental displacement form:
 
-| Option | Default | Values |
+| Option | Default | Meaning |
 |---|---|---|
-| [Method]() | `"Arclength"` | `"Arclength"`: the angle between two directions at *p* is their distance in the graph with the open ball of radius *r* about *p* deleted, over *r*; `"Alexandrov"`: the comparison angle of the polar form |
+| [Method]() | `"Arclength"` | `"Arclength"` or `"Alexandrov"` angle comparison. |
 
 ## Basic Examples
 
-On the Moebius ladder the transport around the cycle swaps the two sheets. The two lifts are drawn.
+The two lifts of the base cycle exchange the sheets of a double covering.
 
 ```wl
+SeedRandom[ 1 ];
 With[
-  {fib = InfraFiberedSubstrate["MoebiusLadderCover", "Small"]},
-  {total = InfraTotalGraph[fib]},
-  {conn = InfraConnection @ Select[EdgeList[total], First @ First @ # =!= First @ Last @ # &]},
-  {loop = Append[Range[8], 1]},
-  {InfraSubstrateHighlight[total, InfraWalk @ First @ FindInfraHorizontalLift[fib, conn, #, loop, 1] & /@ {{1, 1}, {1, 2}}],
-    Normal @ InfraParallelTransport[fib, conn, loop]}]
+  { total = CycleGraph[ 8 ] },
+  { fib = InfraFiberedGraph[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
+    connection = InfraConnection[ EdgeList @ total ] },
+  { loop = { 1, 2, 3, 4, 1 } },
+  { lifts = InfraHorizontalLift[ fib, connection, #, loop ] & /@ { 1, 5 } },
+  { InfraFiberedGraphHighlight[ fib, InfraWalk /@ lifts ],
+    InfraParallelTransport[ fib, connection, loop ] }
+]
 ```
 
-The Levi-Civita transports of the directions at 1 around a face of the octahedron. There are four, each drawn as the face with every direction joined to its image.
+## Properties and Relations
+
+The reverse transport is the inverse map. A zero-length walk is the identity.
 
 ```wl
+SeedRandom[ 1 ];
 With[
-  {fib = InfraFiberedSubstrate["OctahedronDisplacementBundle"]},
-  {oct = First @ fib, face = {1, 2, 3, 1}},
-  {transports = InfraParallelTransport[fib, face]},
-  GraphicsRow[
-    InfraSubstrateHighlight[oct, Join[{InfraWalk[face], Directive[StandardBlue]},
-      InfraWalk[{Last @ First @ #, Last @ Last @ #}] & /@ Select[Normal @ #, First @ # =!= Last @ # &]]] & /@ transports]]
+  { total = CycleGraph[ 8 ] },
+  { fib = InfraFiberedGraph[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
+    connection = InfraConnection[ EdgeList @ total ] },
+  { walk = { 1, 2, 3 } },
+  { forward = InfraParallelTransport[ fib, connection, walk ],
+    backward = InfraParallelTransport[ fib, connection, Reverse @ walk ] },
+  { And @@ KeyValueMap[ { source, target } |-> Lookup[ backward, Key @ target ] === source, forward ],
+    InfraParallelTransport[ fib, connection, { 1 } ] }
+]
 ```
 
-## Scope
+## Possible Issues
 
-The single Levi-Civita connection transports along one of the realisations. Over an edge of the octahedron there are two, and the connection takes the first.
+A partial matching is not a complete connection, so it is not accepted by this reader.
 
 ```wl
+SeedRandom[ 1 ];
 With[
-  {fib = InfraFiberedSubstrate["OctahedronDisplacementBundle"]},
-  {conn = FindInfraLeviCivitaConnection[fib]},
-  {Length @ InfraParallelTransport[fib, {1, 2}], InfraParallelTransport[fib, conn, {1, 2}] === First @ InfraParallelTransport[fib, {1, 2}]}]
+  { fib = InfraFiberedGraph[
+      Graph[ Range[ 4 ], { UndirectedEdge[ 1, 3 ] } ],
+      <| 1 -> "p", 2 -> "p", 3 -> "q", 4 -> "q" |>
+    ] },
+  Head @ InfraParallelTransport[ fib, InfraConnection[ { UndirectedEdge[ 1, 3 ] } ], { "p", "q" } ]
+]
 ```

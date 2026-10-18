@@ -6,8 +6,9 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraTangentBundle
 Keywords: [tangent bundle, ray, vector field, scale]
-SeeAlso: [InfraRays, InfraCotangentBundle, InfraDisplacementBundle, InfraBundleMorphism, InfraTotalGraph, InfraFiberedSubstrate]
+SeeAlso: [InfraRays, InfraCotangentBundle, InfraDisplacementBundle, InfraBundleMorphism, InfraTotalSpace, InfraFiberedSubstrate]
 RelatedGuides: [InfraFiberBundles, InfraAnalysis]
+RelatedTutorials: [ExperimentalInfraBundles]
 ---
 
 ## Usage
@@ -16,8 +17,11 @@ RelatedGuides: [InfraFiberBundles, InfraAnalysis]
 
 ## Details & Options
 
+- This is a particular Experimental construction in the Infra Fiber Bundles category. Its existing call forms remain available.
+
+
 - A tangent vector at *p* at scale *r* is a ray of length *r* from *p*, as given by [InfraRays]().
-- [InfraTangentBundle]() is inert. [InfraTotalGraph]() builds its total graph on every call; <code>[InfraFibration]()[*fib*]</code> builds it once.
+- [InfraTangentBundle]() is inert. [InfraTotalSpace]() builds its total graph on every call; <code>[InfraFiberedGraph]()[*fib*]</code> builds it once.
 - The scale *r* must be a positive integer.
 - At scale 1 a ray is an edge, and the tangent bundle has the same total graph as the displacement bundle at scale 1.
 
@@ -26,15 +30,17 @@ RelatedGuides: [InfraFiberBundles, InfraAnalysis]
 The tangent bundle of a grid at scale 2, the rays over the vertex 6 drawn.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["GridTangentBundle", "Small"]},
-  {total = InfraTotalGraph[fib]},
+  {total = InfraTotalSpace[fib]},
   InfraSubstrateHighlight[total, {InfraDensity[total, VertexList @ InfraFiber[fib, 6]]}]]
 ```
 
 The same rays drawn on the grid.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {g = First @ InfraFiberedSubstrate["GridTangentBundle", "Small"]},
   InfraSubstrateHighlight[g, InfraWalk /@ InfraRays[g, 6, 2]]]
@@ -45,15 +51,17 @@ With[
 The tangent bundle of the grid at scales 1 and 2.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {g = GridGraph[{4, 4}]},
-  GraphicsRow[InfraTotalGraph @ InfraTangentBundle[g, #] & /@ {1, 2}]]
+  GraphicsRow[InfraTotalSpace @ InfraTangentBundle[g, #] & /@ {1, 2}]]
 ```
 
 The tangent bundle of the octahedron at scale 2 from the catalogue.
 
 ```wl
-InfraTotalGraph @ InfraFiberedSubstrate["OctahedronTangentBundle"]
+SeedRandom[ 7 ];
+InfraTotalSpace @ InfraFiberedSubstrate["OctahedronTangentBundle"]
 ```
 
 ## Properties and Relations
@@ -61,6 +69,7 @@ InfraTotalGraph @ InfraFiberedSubstrate["OctahedronTangentBundle"]
 On the grid, a triangle-free graph, a fiber of rays has no edges.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["GridTangentBundle", "Small"]},
   {InfraFiber[fib, 6], EdgeCount @ InfraFiber[fib, 6]}]
@@ -69,6 +78,7 @@ With[
 The truncation to a shorter scale is a bundle morphism.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {g = GridGraph[{4, 4}]},
   InfraBundleMorphismQ[InfraTangentBundle[g, 2], InfraTangentBundle[g, 1], ray |-> Take[ray, 2]]]

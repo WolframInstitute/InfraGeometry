@@ -6,8 +6,9 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraFiber
 Keywords: [fiber, fibration, preimage]
-SeeAlso: [InfraFibers, InfraFibration, InfraFibrationAssociation, InfraTotalGraph, InfraBaseGraph]
+SeeAlso: [InfraFibers, InfraFiberedGraph, InfraProjection, InfraTotalSpace, InfraBaseSpace]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -21,7 +22,7 @@ The fiber of the grid product bundle over the base vertex 6 is a triangle.
 ```wl
 With[
   {fib = InfraFiberedSubstrate["GridProductBundle", "Small"]},
-  {total = InfraTotalGraph[fib]},
+  {total = InfraTotalSpace[fib]},
   GraphicsRow[{InfraSubstrateHighlight[total, {InfraDensity[total, VertexList @ InfraFiber[fib, 6]]}], InfraFiber[fib, 6]}]]
 ```
 

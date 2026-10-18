@@ -5,37 +5,91 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraSection
-Keywords: [random section, random vector field]
-SeeAlso: [InfraSection, InfraSectionQ, InfraContinuousSectionQ, FindInfraSection, RandomInfraFibration, RandomInfraConnection]
+Keywords: [section, partial section, section extension, continuous section, sampling]
+SeeAlso: [InfraSection, InfraSectionQ, InfraContinuousSectionQ, InfraParallelSectionQ, RandomInfraFiberedGraph, RandomInfraConnection, InfraFiberedGraphHighlight]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
 
-<code>[RandomInfraSection]()[*fib*]</code> gives an [InfraSection]() choosing a random total vertex in every fiber of *fib*.
+<code>[RandomInfraSection]()[*fib*]</code> gives one [InfraSection]() over the whole reconstructed base of *fib*.
+
+<code>[RandomInfraSection]()[*fib*, *domain*]</code> gives a section over the list of base vertices *domain*.
+
+<code>[RandomInfraSection]()[*fib*, *partial*]</code> extends the [InfraSection]() *partial* over the whole base, preserving every prescribed binding.
+
+<code>[RandomInfraSection]()[*fib*, *specification*, *count*]</code> requests several sections; *specification* may be omitted.
 
 ## Details & Options
 
-- [SeedRandom]() in front of the call gives the same section again.
-- The section is not continuous in general; [FindInfraSection]() gives continuous ones.
+- The default `Properties -> {}` selects set-theoretic sections on every call form.
+- `Properties -> {"Continuous"}` requires adjacency preservation on the induced base subgraph of the target domain.
+- A seed must be a valid partial section. A valid discontinuous seed has no continuous extension, but still has set-theoretic extensions.
+- A domain is a list of literal base vertices. A seed is wrapped in [InfraSection](), so these call forms are distinct.
+- An omitted count or [Automatic]() returns one section directly, or `{}` if none is found.
+- A nonnegative integer *n* returns exactly *n* distinct sections, or `{}` on shortage. [UpTo]()[*n*] returns at most *n*. [All]() returns the complete finite class.
+- `"NextVertexFunction" -> Automatic` uses random candidate order for bounded searches. [SeedRandom]() controls the ambient random stream.
+- `"NextVertexFunction" -> Identity` is deterministic. [All]() with default ordering is also deterministic and consumes no sampler random draws.
+- [RandomSample]() randomizes candidate order with backtracking. [RandomChoice]() pursues one route without backtracking and is unsupported with [All]().
+- A callback receives the candidate total vertices of the next fiber. It may return one literal candidate or a duplicate-free list of candidates in the desired order. Returning a subset prunes the search.
+- A list that is itself a candidate vertex is interpreted as that single vertex. Otherwise a returned list specifies the candidate order.
+- Bounded requests stop after enough sections are found. Randomized search order does not imply uniform sampling over continuous sections or extensions.
+- `{}` denotes no result. The unique section over an empty domain is `InfraSection[<||>]`.
+- Unsupported options, data and callback results leave the call unevaluated.
+
+| Option | Default | Meaning |
+|---|---|---|
+| [Properties]() | `{}` | Set-theoretic sections, or `{"Continuous"}` for adjacency-preserving sections. |
+| `"NextVertexFunction"` | [Automatic]() | Candidate order or selection at each fiber. |
 
 ## Basic Examples
 
-A random vector field at scale 2 on the grid: one ray of length 2 at every vertex.
+Choose values in two fibers and extend them continuously across the whole cycle.
 
 ```wl
+SeedRandom[7];
 With[
-  {fib = InfraFiberedSubstrate["GridTangentBundle", "Small"]},
-  {field = (SeedRandom[1]; RandomInfraSection[fib])},
-  InfraSubstrateHighlight[First @ fib, InfraWalk /@ Values @ First @ field]]
+  {fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> { 3 },
+    "VerticalEdgeCount" -> { 0 }, "HorizontalEdgeCount" -> All]},
+  {partial = RandomInfraSection[fib, {1, 3}]},
+  {section = RandomInfraSection[fib, partial, Properties -> {"Continuous"}]},
+  InfraFiberedGraphHighlight[fib, {partial, section}]]
 ```
 
-A random section of the prism is a section, and it is continuous only if it stays on one sheet.
+The product covering has two continuous sections, one on each sheet.
 
 ```wl
+SeedRandom[7];
 With[
-  {fib = InfraFiberedSubstrate["CycleProductBundle", "Small"]},
-  {total = InfraTotalGraph[fib]},
-  {section = (SeedRandom[1]; RandomInfraSection[fib])},
-  {InfraSubstrateHighlight[total, {InfraDensity[total, Values @ First @ section]}], InfraSectionQ[fib, section], InfraContinuousSectionQ[fib, section]}]
+  {fib = InfraFiberedGraph[GraphProduct[CycleGraph[4], Graph[{1, 2}, {}], "Cartesian"], First]},
+  {sections = RandomInfraSection[fib, All, Properties -> {"Continuous"}]},
+  GraphicsRow[InfraFiberedGraphHighlight[fib, #] & /@ sections]]
 ```
+
+## Scope
+
+A domain restricts the target. A seed fixes values and extends across all base components.
+
+```wl
+SeedRandom[7];
+With[
+  {fib = InfraFiberedGraph[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[2, 4]}],
+    <|1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b"|>]},
+  {partial = RandomInfraSection[fib, {"a"}, "NextVertexFunction" -> Identity]},
+  {partial, RandomInfraSection[fib, partial, Properties -> {"Continuous"}, "NextVertexFunction" -> Identity]}]
+```
+
+## Possible Issues
+
+A continuous partial section can fail to extend. Values on opposite sheets at the ends of this path cannot be joined by a continuous section.
+
+```wl
+SeedRandom[7];
+With[
+  {fib = InfraFiberedGraph[GraphProduct[PathGraph[{1, 2, 3}], Graph[{1, 2}, {}], "Cartesian"], First]},
+  {partial = InfraSection[<|1 -> {1, 1}, 3 -> {3, 2}|>]},
+  {InfraContinuousSectionQ[fib, partial], RandomInfraSection[fib, partial, Properties -> {"Continuous"}]}]
+```
+
+A pruning callback may miss existing solutions. An empty result then concerns the retained search tree.

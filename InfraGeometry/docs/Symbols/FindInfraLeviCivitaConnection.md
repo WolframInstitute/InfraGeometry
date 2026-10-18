@@ -16,6 +16,9 @@ RelatedGuides: [InfraFiberBundles]
 
 ## Details & Options
 
+- This is a particular Experimental construction in the Infra Fiber Bundles category. Its existing call forms remain available.
+
+
 - The best angle-isometries over an edge are usually several. The connection keeps the first, as InfraGaugeTheory does. All of them are read by <code>[InfraParallelTransport]()[[InfraDisplacementBundle]()[*g*, *r*], *walk*]</code> and <code>[InfraHolonomyAngle]()[[InfraDisplacementBundle]()[*g*, *r*], *loop*]</code>.
 - A dropped lift sends a direction to a non-adjacent direction. Where lifts are dropped, the result need not satisfy [InfraConnectionQ]().
 
@@ -30,6 +33,7 @@ Options:
 The Levi-Civita connection of the octahedron is a connection of its displacement bundle, and it is not flat. Its holonomy around a face is drawn: the face, and every direction at 1 joined to its image.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["OctahedronDisplacementBundle"]},
   {conn = FindInfraLeviCivitaConnection[fib], face = {1, 2, 3, 1}},
@@ -42,6 +46,7 @@ With[
 The list form gives every realisation. Around the face there are four; the connection follows one of them.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["OctahedronDisplacementBundle"]},
   {conn = FindInfraLeviCivitaConnection[fib], face = {1, 2, 3, 1}},
@@ -53,6 +58,7 @@ With[
 The triangular torus from the catalogue: the hexagon around a vertex, with the Levi-Civita holonomy angle of the connection and the least angle over the realisations.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["TriangularTorusDisplacementBundle", "Small"]},
   {torusGraph = First @ fib},
@@ -68,6 +74,7 @@ With[
 Under `"Alexandrov"` the octahedron gives the same connection.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["OctahedronDisplacementBundle"]},
   Sort @ First @ FindInfraLeviCivitaConnection[fib, Method -> "Alexandrov"] === Sort @ First @ FindInfraLeviCivitaConnection[fib]]

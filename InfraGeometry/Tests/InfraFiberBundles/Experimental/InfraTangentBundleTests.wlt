@@ -30,6 +30,12 @@ VerificationTest[
   TestID -> "InfraRays-scale-zero-corner-and-cycle"
 ]
 
+VerificationTest[
+  InfraRays[PathGraph[{{0, 0}, {1, 0}, {2, 0}}], {0, 0}, 2],
+  {{{0, 0}, {1, 0}, {2, 0}}},
+  TestID -> "InfraRays-tuple-vertices-are-literal"
+]
+
 (* ===== the total graphs ===== *)
 
 VerificationTest[
@@ -76,28 +82,34 @@ VerificationTest[
 
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    DuplicateFreeQ[GraphEmbedding[InfraTotalGraph[#]]] & /@
-      {InfraTangentBundle[g, 2], InfraDisplacementBundle[g, 2], InfraCotangentBundle[g, 2], InfraTangentBundle[GridGraph[{5, 5}], 4]}],
-  {True, True, True, True},
-  TestID -> "InfraTangentBundle-vertex-coordinates-distinct"
+    Options[InfraTotalGraph[#], VertexCoordinates] & /@
+      {InfraTangentBundle[g, 2], InfraDisplacementBundle[g, 2], InfraCotangentBundle[g, 2]}],
+  ConstantArray[{VertexCoordinates -> Automatic}, 3],
+  TestID -> "InfraTangentBundle-totals-do-not-store-layout"
 ]
 
-(* each fiber is drawn within a third of the shortest base edge from its base vertex *)
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    {fib = InfraTangentBundle[g, 2]},
-    {coordinates = AssociationThread[VertexList[InfraTotalGraph[fib]], GraphEmbedding[InfraTotalGraph[fib]]],
-      base = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-    Max[KeyValueMap[{x, p} |-> EuclideanDistance[coordinates[x], base[p]], InfraFibrationAssociation[fib]]] <= 1/3 + 10^-6],
-  True,
-  TestID -> "InfraTangentBundle-fibers-stacked-over-the-base"
+    {drawn = Graph[g, VertexCoordinates -> Table[{i, (-1)^i}, {i, VertexCount[g]}]]},
+    Map[head |-> {InfraTotalGraph[head[g, 2]] === InfraTotalGraph[head[drawn, 2]],
+        InfraFibrationAssociation[head[g, 2]] === InfraFibrationAssociation[head[drawn, 2]]},
+      {InfraTangentBundle, InfraDisplacementBundle, InfraCotangentBundle}]],
+  ConstantArray[{True, True}, 3],
+  TestID -> "InfraTangentBundle-structure-is-independent-of-base-layout"
 ]
 
 VerificationTest[
-  {InfraFibrationQ[#], InfraFiberBundleQ[#]} & /@
-    {InfraTangentBundle[GridGraph[{4, 4}], 2], InfraDisplacementBundle[GridGraph[{4, 4}], 2], InfraTangentBundle[CycleGraph[8], 2],
-      InfraDisplacementBundle[CycleGraph[8], 2]},
-  {{True, False}, {True, False}, {True, True}, {True, True}},
+  Table[With[{fib = head[g, 2]},
+      {VertexCount[InfraTotalGraph[fib]], EdgeCount[InfraTotalGraph[fib]], InfraFibrationAssociation[fib]}],
+    {g, {Graph[{}, {}], PathGraph[{1, 2}]}}, {head, {InfraTangentBundle, InfraDisplacementBundle, InfraCotangentBundle}}],
+  ConstantArray[{0, 0, <||>}, {2, 3}],
+  TestID -> "InfraTangentBundle-empty-ray-and-displacement-sets"
+]
+
+VerificationTest[
+  Table[{InfraFibrationQ[head[g, 2]], InfraFiberBundleQ[head[g, 2]]},
+    {g, {GridGraph[{4, 4}], CycleGraph[8]}}, {head, {InfraTangentBundle, InfraCotangentBundle, InfraDisplacementBundle}}],
+  {{{True, False}, {True, False}, {True, False}}, {{True, True}, {True, True}, {True, True}}},
   TestID -> "InfraTangentBundle-fibration-everywhere-bundle-on-the-cycle"
 ]
 
@@ -142,7 +154,7 @@ VerificationTest[
     {tangent = InfraTangentBundle[g, 2], displacement = InfraDisplacementBundle[g, 2], tangent1 = InfraTangentBundle[g, 1]},
     {endpoint = InfraBundleMorphism[tangent, displacement], truncate = InfraBundleMorphism[tangent, tangent1]},
     {up = InfraSection @ AssociationMap[p |-> {p, p + 1, p + 2}, {1, 2, 5, 6, 9, 10, 13, 14}]},
-    {conn = (SeedRandom[1]; RandomInfraConnection @ displacement)},
+    {conn = RandomInfraConnection[displacement, "NextVertexFunction" -> Identity]},
     {InfraBundleMorphismQ[tangent, displacement, endpoint],
       InfraBundleMorphismQ[tangent, tangent1, truncate],
       InfraBundleMorphismQ[tangent, displacement, ray |-> {First @ ray, ray[[2]]}],
@@ -150,9 +162,32 @@ VerificationTest[
       InfraContinuousSectionQ[displacement, InfraSection[endpoint /@ First @ up]],
       VertexCount /@ {InfraFiber[tangent, 6], InfraFiber[displacement, 6]},
       IsomorphicGraphQ[InfraBaseGraph @ InfraFibration @ displacement, g],
-      InfraHolonomy[displacement, conn, {6, 7, 11, 10, 6}]}],
-  {True, True, False, True, True, {10, 6}, True, Cycles[{{1, 4, 6, 5, 3, 2}}]},
+      conn === {}}],
+  {True, True, False, True, True, {10, 6}, True, True},
   TestID -> "InfraTangentBundle-prototype-acceptance"
+]
+
+VerificationTest[
+  With[ { graph = CycleGraph[ 8 ] },
+    Map[ head |-> With[ { model = head[ graph, 2 ] },
+        { literal = InfraFiberedGraph[ model ], legacy = InfraFibration[ model ] },
+        { Head[ literal ], Head[ legacy ], InfraTotalSpace[ literal ] === InfraTotalGraph[ model ],
+          InfraProjection[ literal ] === InfraFibrationAssociation[ model ],
+          InfraBaseSpace[ literal ] === InfraBaseGraph[ model ],
+          InfraTotalSpace[ legacy ] === InfraTotalSpace[ literal ] } ],
+      { InfraTangentBundle, InfraCotangentBundle, InfraDisplacementBundle } ] ],
+  ConstantArray[ { InfraFiberedGraph, InfraFibration, True, True, True, True }, 3 ],
+  TestID -> "InfraTangentBundle-canonical-readers-and-both-literal-materializers"
+]
+
+VerificationTest[
+  With[ { graph = CycleGraph[ 8 ] },
+    Table[ predicate[ head[ graph, 2 ] ],
+      { head, { InfraTangentBundle, InfraCotangentBundle, InfraDisplacementBundle } },
+      { predicate, { InfraFiberedGraphQ, InfraEqualFiberSizesQ, InfraIsomorphicFibersQ,
+          InfraAtMostOneEdgeLiftQ, InfraUniqueEdgeLiftingQ, InfraCoveringQ } } ] ],
+  ConstantArray[ True, { 3, 6 } ],
+  TestID -> "InfraTangentBundle-model-predicates-use-canonical-fibered-graphs"
 ]
 
 EndTestSection[]

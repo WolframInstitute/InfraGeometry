@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: InfraFiberBundles :: InfraLeviCivita *)
+(* WolframInstitute`InfraGeometry` :: InfraFiberBundles :: Experimental :: InfraLeviCivita *)
 
 (* Ported from InfraGaugeTheory Kernel/LeviCivita.wl and VectorTransport.wl at e5dc83b; InfraGaugeTheory keeps its own copy *)
 
@@ -9,6 +9,29 @@ Package[ "WolframInstitute`InfraGeometry`" ]
    straightest continuations (geodesics auto-parallel); every composite along the walk, deduplicated, in InfraGaugeTheory's order *)
 
 Options[ InfraParallelTransport ] = { Method -> "Arclength" }
+
+
+(* The Experimental displacement model retains partial transport: a blocked starting direction is omitted. *)
+
+InfraParallelTransport[ fib : InfraDisplacementBundle[ _Graph, _Integer?Positive ],
+    InfraConnection[ edges_List ], walk : { __ } ] :=
+  With[ { total = InfraTotalSpace @ fib, projection = InfraProjection @ fib, base = InfraBaseSpace @ fib },
+    With[ { vertices = VertexList @ total },
+      { index = AssociationThread[ vertices, Range @ Length @ vertices ], projected = Lookup[ projection, Key /@ vertices ] },
+      { indexedEdges = Lookup[ index, Key /@ ( List @@ # ) ] & /@ edges },
+      { connection = Graph[ Range @ Length @ vertices, UndirectedEdge @@@ indexedEdges ] },
+      With[ { starts = Pick[ Range @ Length @ vertices, # === First @ walk & /@ projected ],
+          step = { vertex, baseVertex } |-> If[ vertex === 0, 0,
+            First[ Select[ AdjacencyList[ connection, vertex ], projected[[ # ]] === baseVertex & ], 0 ] ] },
+        { targets = Fold[ step, #, Rest @ walk ] & /@ starts },
+        Association @ MapThread[
+          { source, target } |-> If[ target === 0, Nothing, vertices[[ source ]] -> vertices[[ target ]] ], { starts, targets } ] ] /;
+        DuplicateFreeQ[ Sort /@ indexedEdges ] &&
+          AllTrue[ indexedEdges, projected[[ First @ # ]] =!= projected[[ Last @ # ]] & ] &&
+          AllTrue[ Range @ Length @ vertices, DuplicateFreeQ[ projected[[ AdjacencyList[ connection, # ] ]] ] & ] ] /;
+      GraphQ @ total && AssociationQ @ projection && GraphQ @ base &&
+        AllTrue[ edges, MatchQ[ #, UndirectedEdge[ _, _ ] ] && EdgeQ[ total, # ] & ] &&
+        AllTrue[ walk, VertexQ[ base, # ] & ] && AllTrue[ Partition[ walk, 2, 1 ], EdgeQ[ base, UndirectedEdge @@ # ] & ] ]
 
 InfraParallelTransport[ InfraDisplacementBundle[ graph_Graph, r_Integer?Positive ], walk : { __ }, opts : OptionsPattern[] ] /;
     MatchQ[ OptionValue[ InfraParallelTransport, { opts }, Method ], "Arclength" | "Alexandrov" ] :=

@@ -2,88 +2,253 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: InfraFiberBundles :: InfraFibration *)
 
-(* Ported from InfraGaugeTheory Kernel/FiberedGraph.wl at e5dc83b; InfraGaugeTheory keeps its own copy *)
-
-InfraTotalGraph[ InfraFibration[ total_Graph, _ ] ] :=
+InfraTotalSpace[ head_[ total_Graph, _ ] ] /;
+    MemberQ[ { InfraFiberedGraph, InfraFibration }, head ] &&
+      SimpleGraphQ[ total ] && UndirectedGraphQ[ total ] && ! WeightedGraphQ[ total ] && ! EdgeTaggedGraphQ[ total ] :=
   total
 
-InfraFibrationAssociation[ InfraFibration[ total_Graph, proj_ ] ] :=
-  AssociationMap[ proj, VertexList @ total ]
+InfraProjection[ fib : head_[ total_Graph, projection_ ] ] /;
+    MemberQ[ { InfraFiberedGraph, InfraFibration }, head ] && GraphQ[ InfraTotalSpace[ fib ] ] &&
+      ( ! AssociationQ[ projection ] || Length[ projection ] == VertexCount[ total ] &&
+        AllTrue[ VertexList[ total ], KeyExistsQ[ projection, # ] & ] ) :=
+  AssociationMap[
+    vertex |-> If[ AssociationQ[ projection ], Lookup[ projection, Key[ vertex ] ], projection[ vertex ] ],
+    VertexList[ total ] ]
 
-InfraBaseGraph[ fib : _[ _Graph, __ ] ] :=
-  With[ { proj = InfraFibrationAssociation @ fib, total = InfraTotalGraph @ fib },
-    Graph[ DeleteDuplicates @ Values @ proj,
-      DeleteDuplicates @ Select[ UndirectedEdge @@ Sort[ proj /@ List @@ # ] & /@ EdgeList @ total, #[[ 1 ]] =!= #[[ 2 ]] & ] ] ]
+InfraBaseSpace[ fib : _[ _Graph, __ ] ] /;
+    AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraTotalSpace[ fib ] ] :=
+  With[ { projection = InfraProjection[ fib ], total = InfraTotalSpace[ fib ] },
+    Graph[ DeleteDuplicates[ Values[ projection ] ],
+      DeleteDuplicates @ Select[
+        UndirectedEdge @@ Sort[ Lookup[ projection, Key /@ List @@ # ] ] & /@ EdgeList[ total ],
+        First[ # ] =!= Last[ # ] & ] ] ]
 
-InfraFiber[ fib : _[ _Graph, __ ], p_ ] :=
-  Subgraph[ InfraTotalGraph @ fib, Keys @ Select[ InfraFibrationAssociation @ fib, # === p & ] ]
+InfraTotalGraph[ fib : _[ _Graph, __ ] ] /; GraphQ[ InfraTotalSpace[ fib ] ] :=
+  InfraTotalSpace[ fib ]
 
-InfraFibers[ fib : _[ _Graph, __ ] ] :=
-  With[ { proj = InfraFibrationAssociation @ fib, total = InfraTotalGraph @ fib },
-    Subgraph[ total, # ] & /@ GroupBy[ Keys @ proj, proj ] ]
+InfraFibrationAssociation[ fib : _[ _Graph, __ ] ] /; AssociationQ[ InfraProjection[ fib ] ] :=
+  InfraProjection[ fib ]
 
-InfraFibrationQ[ fib : _[ _Graph, __ ] ] :=
-  With[ { proj = InfraFibrationAssociation @ fib, total = InfraTotalGraph @ fib },
-    { base = InfraBaseGraph @ InfraFibration[ total, proj ] },
-    AllTrue[ VertexList @ total, x |-> SubsetQ[ proj /@ AdjacencyList[ total, x ], AdjacencyList[ base, proj @ x ] ] ] ]
+InfraBaseGraph[ fib : _[ _Graph, __ ] ] /; GraphQ[ InfraBaseSpace[ fib ] ] :=
+  InfraBaseSpace[ fib ]
 
-(* Local triviality over the closed ball B(p, 1): with exactly one lift of every base edge, the horizontal edges over the ball form a covering of
-   it, and the covering is trivial iff each of its components projects injectively, i.e. iff every loop in the ball has trivial holonomy *)
+InfraFiber[ fib : _[ _Graph, __ ], point_ ] /;
+    AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraTotalSpace[ fib ] ] :=
+  Subgraph[ InfraTotalSpace[ fib ], Keys @ Select[ InfraProjection[ fib ], # === point & ] ]
 
-InfraFiberBundleQ[ fib : _[ _Graph, __ ] ] :=
-  With[ { proj = InfraFibrationAssociation @ fib, total = InfraTotalGraph @ fib },
-    { base = InfraBaseGraph @ InfraFibration[ total, proj ], preimages = GroupBy[ Keys @ proj, proj ] },
-    { fibers = Values[ Subgraph[ total, # ] & /@ preimages ] },
-    AllTrue[ Rest @ fibers, IsomorphicGraphQ[ First @ fibers, # ] & ] &&
-      AllTrue[ VertexList @ total,
-        x |-> Sort @ DeleteCases[ proj /@ AdjacencyList[ total, x ], proj @ x ] === Sort @ AdjacencyList[ base, proj @ x ] ] &&
-      AllTrue[ VertexList @ base,
-        p |-> With[ { over = Catenate[ preimages /@ VertexList @ NeighborhoodGraph[ base, p ] ] },
-          AllTrue[
-            ConnectedComponents @ Graph[ over, Select[ EdgeList @ Subgraph[ total, over ], proj @ #[[ 1 ]] =!= proj @ #[[ 2 ]] & ] ],
-            DuplicateFreeQ[ proj /@ # ] & ] ] ] ]
+InfraFibers[ fib : _[ _Graph, __ ] ] /;
+    AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraTotalSpace[ fib ] ] :=
+  With[ { projection = InfraProjection[ fib ], total = InfraTotalSpace[ fib ] },
+    Subgraph[ total, # ] & /@ GroupBy[ VertexList[ total ], Lookup[ projection, Key[ # ] ] & ] ]
 
-Options[ RandomInfraFibration ] = {
-  "VerticalVertices" -> 1,
-  "VerticalEdges" -> 0,
-  "HorizontalEdgesRadius" -> 1,
-  "HorizontalEdgesDensity" -> 1,
-  "IsomorphicFibers" -> False
+InfraEdgeLiftMultiplicity[ fib : _[ _Graph, __ ] ] /;
+    AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraBaseSpace[ fib ] ] :=
+  With[ { total = InfraTotalSpace[ fib ], base = InfraBaseSpace[ fib ], projection = InfraProjection[ fib ] },
+    { vertices = VertexList[ total ], points = VertexList[ base ], indexedTotal = IndexGraph[ total ], indexedBase = IndexGraph[ base ] },
+    { positions = AssociationThread[ vertices, Range @ Length[ vertices ] ],
+      basePositions = AssociationThread[ points, Range @ Length[ points ] ] },
+    AssociationMap[ vertex |-> With[
+      { counts = Counts @ Lookup[ projection, Key /@ vertices[[ AdjacencyList[ indexedTotal, Lookup[ positions, Key[ vertex ] ] ] ]] ],
+        neighbors = points[[ AdjacencyList[ indexedBase, Lookup[ basePositions, Key @ Lookup[ projection, Key[ vertex ] ] ] ] ]] },
+      AssociationMap[ Lookup[ counts, Key[ # ], 0 ] &, neighbors ] ], vertices ] ]
+
+InfraFiberedGraphQ[ fibs : { __ } ] :=
+  And @@ ( InfraFiberedGraphQ /@ fibs )
+
+InfraFiberedGraphQ[ { } ] :=
+  False
+
+InfraFiberedGraphQ[ fib : _[ _Graph, __ ] ] /;
+    AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraBaseSpace[ fib ] ] :=
+  True
+
+InfraEqualFiberSizesQ[ fibs : { __ } ] :=
+  And @@ ( InfraEqualFiberSizesQ /@ fibs )
+
+InfraEqualFiberSizesQ[ { } ] :=
+  False
+
+InfraEqualFiberSizesQ[ fib : _[ _Graph, __ ] ] /;
+    AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraBaseSpace[ fib ] ] :=
+  Length[ DeleteDuplicates[ Values @ Counts @ Values @ InfraProjection[ fib ] ] ] <= 1
+
+InfraIsomorphicFibersQ[ fibs : { __ } ] :=
+  And @@ ( InfraIsomorphicFibersQ /@ fibs )
+
+InfraIsomorphicFibersQ[ { } ] :=
+  False
+
+InfraIsomorphicFibersQ[ fib : _[ _Graph, __ ] ] /;
+    AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraBaseSpace[ fib ] ] :=
+  With[ { fibers = Values @ InfraFibers[ fib ] },
+    Length[ fibers ] < 2 || AllTrue[ Rest[ fibers ], IsomorphicGraphQ[ First[ fibers ], # ] & ] ]
+
+InfraFibrationQ[ fibs : { __ } ] :=
+  And @@ ( InfraFibrationQ /@ fibs )
+
+InfraFibrationQ[ { } ] :=
+  False
+
+InfraFibrationQ[ fib : _[ _Graph, __ ] ] /;
+    AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraBaseSpace[ fib ] ] :=
+  AllTrue[ Catenate[ Values /@ Values @ InfraEdgeLiftMultiplicity[ fib ] ], Positive ]
+
+InfraAtMostOneEdgeLiftQ[ fibs : { __ } ] :=
+  And @@ ( InfraAtMostOneEdgeLiftQ /@ fibs )
+
+InfraAtMostOneEdgeLiftQ[ { } ] :=
+  False
+
+InfraAtMostOneEdgeLiftQ[ fib : _[ _Graph, __ ] ] /;
+    AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraBaseSpace[ fib ] ] :=
+  AllTrue[ Catenate[ Values /@ Values @ InfraEdgeLiftMultiplicity[ fib ] ], # <= 1 & ]
+
+InfraUniqueEdgeLiftingQ[ fibs : { __ } ] :=
+  And @@ ( InfraUniqueEdgeLiftingQ /@ fibs )
+
+InfraUniqueEdgeLiftingQ[ { } ] :=
+  False
+
+InfraUniqueEdgeLiftingQ[ fib : _[ _Graph, __ ] ] /;
+    AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraBaseSpace[ fib ] ] :=
+  AllTrue[ Catenate[ Values /@ Values @ InfraEdgeLiftMultiplicity[ fib ] ], # == 1 & ]
+
+InfraCoveringQ[ fibs : { __ } ] :=
+  And @@ ( InfraCoveringQ /@ fibs )
+
+InfraCoveringQ[ { } ] :=
+  False
+
+InfraCoveringQ[ fib : _[ _Graph, __ ] ] /;
+    AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraBaseSpace[ fib ] ] :=
+  InfraUniqueEdgeLiftingQ[ fib ] && AllTrue[ Values @ InfraFibers[ fib ], EdgeCount[ # ] == 0 & ]
+
+InfraFiberBundleQ[ fibs : { __ } ] :=
+  And @@ ( InfraFiberBundleQ /@ fibs )
+
+InfraFiberBundleQ[ { } ] :=
+  False
+
+InfraFiberBundleQ[ fib : _[ _Graph, __ ] ] /;
+    AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraBaseSpace[ fib ] ] :=
+  With[ { projection = InfraProjection[ fib ], total = InfraTotalSpace[ fib ],
+      base = InfraBaseSpace[ fib ], fibers = InfraFibers[ fib ] },
+    { vertices = VertexList[ total ], indexed = IndexGraph[ total ] },
+    { positions = AssociationThread[ vertices, Range @ Length[ vertices ] ] },
+    InfraIsomorphicFibersQ[ fib ] && InfraUniqueEdgeLiftingQ[ fib ] &&
+      AllTrue[ EdgeList[ base ], edge |-> With[
+        { source = Lookup[ fibers, Key[ First[ edge ] ] ], target = Lookup[ fibers, Key[ Last[ edge ] ] ] },
+        { transport = AssociationMap[
+            vertex |-> First @ Select[ vertices[[ AdjacencyList[ indexed, Lookup[ positions, Key[ vertex ] ] ] ]],
+              Lookup[ projection, Key[ # ] ] === Last[ edge ] & ], VertexList[ source ] ] },
+        Sort[ UndirectedEdge @@ Sort[ Lookup[ transport, Key /@ List @@ # ] ] & /@ EdgeList[ source ] ] ===
+          Sort[ UndirectedEdge @@ Sort[ List @@ # ] & /@ EdgeList[ target ] ] ] ] ]
+
+Options[ RandomInfraFiberedGraph ] = {
+  Properties -> { },
+  "VerticalVertexCount" -> { 1 },
+  "VerticalEdgeCount" -> { 0 },
+  "HorizontalEdgeCount" -> Automatic
 }
 
-RandomInfraFibration[ base_Graph, opts : OptionsPattern[] ] :=
-  With[ { draw = spec |-> If[ ListQ @ spec, RandomReal @ spec, spec ], iso = TrueQ @ OptionValue[ "IsomorphicFibers" ] },
-    { sizes = If[ iso,
-        ConstantArray[ Round @ draw @ OptionValue[ "VerticalVertices" ], VertexCount @ base ],
-        Table[ Round @ draw @ OptionValue[ "VerticalVertices" ], VertexCount @ base ] ] },
-    { fibers = AssociationThread[ VertexList @ base, MapThread[ { p, n } |-> ( { p, # } & /@ Range @ n ), { VertexList @ base, sizes } ] ] },
-    { template = n |-> With[ { m = Min[ Max[ 0, Round @ draw @ OptionValue[ "VerticalEdges" ] ], n ( n - 1 ) / 2 ] },
-        If[ n > 1 && m > 0, EdgeList @ RandomGraph[ { n, m } ], { } ] ] },
-    { shared = If[ iso, template @ First[ sizes, 0 ], None ] },
-    { vertical = Catenate @ Map[
-        fiber |-> Replace[ If[ iso, shared, template @ Length @ fiber ], Thread[ Range @ Length @ fiber -> fiber ], { 2 } ],
-        Values @ fibers ] },
-    { dist = GraphDistanceMatrix @ base, radius = Max[ 0, Round @ draw @ OptionValue[ "HorizontalEdgesRadius" ] ] },
-    { pairs = Select[ Subsets[ Range @ VertexCount @ base, { 2 } ], dist[[ #[[ 1 ]], #[[ 2 ]] ]] <= radius & ] },
-    (* the fiber vertex i over p meets j over q iff i / n1 and j / n2 nearly agree: a diagonal matching, widened by the density *)
-    { horizontal = Catenate @ Map[
-        pair |-> With[ { f1 = fibers @ VertexList[ base ][[ First @ pair ]], f2 = fibers @ VertexList[ base ][[ Last @ pair ]] },
-          { n1 = Length @ f1, n2 = Length @ f2, density = draw @ OptionValue[ "HorizontalEdgesDensity" ] },
-          UndirectedEdge[ f1[[ First @ # ]], f2[[ Last @ # ]] ] & /@
-            Select[ Tuples[ { Range @ n1, Range @ n2 } ], Mod[ First[ # ] n2 - Last[ # ] n1, n1 n2 ] < density Max[ n1, n2 ] & ] ],
-        pairs ] },
-    { coordinates = AssociationThread[ VertexList @ base, GraphEmbedding @ base ] },
-    { scale = Min[ 1, EuclideanDistance @@ ( coordinates /@ List @@ # ) & /@ EdgeList @ base ] / 3 },
-    { vertices = Catenate @ Values @ fibers },
-    InfraFibration[
-      Graph[ vertices, Join[ vertical, horizontal ],
-        VertexCoordinates -> Catenate @ KeyValueMap[
-          { p, fiber } |-> Thread[ fiber -> ( coordinates[ p ] + scale # & /@ If[ Length @ fiber == 1, { { 0, 0 } }, CirclePoints @ Length @ fiber ] ) ],
-          fibers ] ],
-      AssociationMap[ First, vertices ] ] ]
+RandomInfraFiberedGraph[ base_Graph, opts : OptionsPattern[] ] /;
+    SubsetQ[ First /@ Options[ RandomInfraFiberedGraph ], First /@ Flatten @ { opts } ] &&
+    With[ { properties = OptionValue[ RandomInfraFiberedGraph, { opts }, Properties ],
+        vertices = OptionValue[ RandomInfraFiberedGraph, { opts }, "VerticalVertexCount" ],
+        vertical = OptionValue[ RandomInfraFiberedGraph, { opts }, "VerticalEdgeCount" ],
+        horizontal = OptionValue[ RandomInfraFiberedGraph, { opts }, "HorizontalEdgeCount" ] },
+      SimpleGraphQ[ base ] && UndirectedGraphQ[ base ] && ! WeightedGraphQ[ base ] && ! EdgeTaggedGraphQ[ base ] &&
+      ListQ[ properties ] && SubsetQ[ { "EqualFiberSizes", "IsomorphicFibers", "Fibration", "AtMostOneEdgeLift",
+        "UniqueEdgeLifting", "FiberBundle", "Covering" }, properties ] &&
+      ( MatchQ[ vertices, _Integer?Positive | { _Integer?Positive } ] ||
+        MatchQ[ vertices, { lo_Integer?Positive, hi_Integer?Positive } /; lo <= hi ] ) &&
+      ( MatchQ[ vertical, _Integer?NonNegative | { _Integer?NonNegative } ] ||
+        MatchQ[ vertical, { lo_Integer?NonNegative, hi_Integer?NonNegative } /; lo <= hi ] ) &&
+      ( MemberQ[ { Automatic, All }, horizontal ] || MatchQ[ horizontal, _Integer?NonNegative | { _Integer?NonNegative } ] ||
+        MatchQ[ horizontal, { lo_Integer?NonNegative, hi_Integer?NonNegative } /; lo <= hi ] ) &&
+      With[ { range = Which[ IntegerQ[ vertices ], { 1, vertices }, Length[ vertices ] == 1, { First[ vertices ], First[ vertices ] },
+            True, vertices ],
+          unique = ! DisjointQ[ properties, { "UniqueEdgeLifting", "FiberBundle", "Covering" } ] ||
+            ContainsAll[ properties, { "Fibration", "AtMostOneEdgeLift" } ],
+          covering = MemberQ[ properties, "Covering" ] },
+        { atMost = unique || MemberQ[ properties, "AtMostOneEdgeLift" ],
+          lifting = unique || MemberQ[ properties, "Fibration" ] },
+        { lower = If[ lifting, Last[ range ], 1 ],
+          upper = If[ atMost, First[ range ], First[ range ]^2 ],
+          verticalCapacity = If[ covering, 0, Binomial[ First[ range ], 2 ] ] },
+        VertexCount[ base ] == 0 ||
+          ( IntegerQ[ vertical ] || Last[ vertical ] <= verticalCapacity ) &&
+          ( EdgeCount[ base ] == 0 || Which[
+            horizontal === Automatic, True,
+            horizontal === All, ! atMost || Last[ range ] == 1,
+            IntegerQ[ horizontal ], horizontal >= lower,
+            True, First[ horizontal ] >= lower && Last[ horizontal ] <= upper ] ) ] ] :=
+  With[ { properties = DeleteDuplicates @ OptionValue[ RandomInfraFiberedGraph, { opts }, Properties ],
+      vertexSpecification = OptionValue[ RandomInfraFiberedGraph, { opts }, "VerticalVertexCount" ],
+      verticalSpecification = OptionValue[ RandomInfraFiberedGraph, { opts }, "VerticalEdgeCount" ],
+      horizontalSpecification = OptionValue[ RandomInfraFiberedGraph, { opts }, "HorizontalEdgeCount" ],
+      points = VertexList[ base ] },
+    { range = Which[ IntegerQ[ vertexSpecification ], { 1, vertexSpecification },
+        Length[ vertexSpecification ] == 1, { First[ vertexSpecification ], First[ vertexSpecification ] }, True, vertexSpecification ],
+      unique = ! DisjointQ[ properties, { "UniqueEdgeLifting", "FiberBundle", "Covering" } ] ||
+        ContainsAll[ properties, { "Fibration", "AtMostOneEdgeLift" } ],
+      commonSize = ! DisjointQ[ properties, { "EqualFiberSizes", "IsomorphicFibers", "FiberBundle" } ],
+      isomorphic = ! DisjointQ[ properties, { "IsomorphicFibers", "FiberBundle" } ],
+      covering = MemberQ[ properties, "Covering" ], bundle = MemberQ[ properties, "FiberBundle" ],
+      drawCount = { specification, lower, upper } |-> Which[
+        specification === Automatic, RandomInteger[ { lower, upper } ],
+        specification === All, upper,
+        IntegerQ[ specification ], RandomInteger[ { lower, Min[ specification, upper ] } ],
+        Length[ specification ] == 1, First[ specification ],
+        True, RandomInteger[ specification ] ] },
+    { atMost = unique || MemberQ[ properties, "AtMostOneEdgeLift" ],
+      lifting = unique || MemberQ[ properties, "Fibration" ],
+      groups = If[ points === { }, { }, If[ commonSize, { Range @ Length[ points ] },
+        If[ unique, ConnectedComponents @ IndexGraph[ base ], List /@ Range @ Length[ points ] ] ] ],
+      template = count |-> With[
+        { edgeCount = drawCount[ verticalSpecification, 0, If[ covering, 0, Binomial[ count, 2 ] ] ] },
+        If[ edgeCount == 0, Graph[ Range[ count ], { } ], RandomGraph[ { count, edgeCount } ] ] ] },
+    { sizes = Lookup[ Association @ Catenate @ Map[ group |-> With[ { count = RandomInteger[ range ] },
+        Thread[ group -> ConstantArray[ count, Length[ group ] ] ] ], groups ], Range @ Length[ points ] ] },
+    { fibers = AssociationThread[ points, MapThread[
+        { point, count } |-> Table[ { point, index }, { index, count } ], { points, sizes } ] ],
+      templates = If[ isomorphic && sizes =!= { },
+        ConstantArray[ template[ First[ sizes ] ], Length[ sizes ] ], template /@ sizes ] },
+    { vertical = Catenate @ MapThread[
+        { fiber, graph } |-> ( UndirectedEdge @@ fiber[[ List @@ # ]] & /@ EdgeList[ graph ] ),
+        { Values[ fibers ], templates } ],
+      automorphisms = If[ bundle && templates =!= { }, GraphAutomorphismGroup[ First[ templates ] ], None ] },
+    { horizontal = Catenate @ Map[ edge |-> With[
+        { source = Lookup[ fibers, Key[ First[ edge ] ] ], target = Lookup[ fibers, Key[ Last[ edge ] ] ] },
+        { sourceCount = Length[ source ], targetCount = Length[ target ] },
+        { count = drawCount[ horizontalSpecification, If[ lifting, Max[ sourceCount, targetCount ], 1 ],
+            If[ atMost, Min[ sourceCount, targetCount ], sourceCount targetCount ] ],
+          pairs = Tuples[ { Range[ sourceCount ], Range[ targetCount ] } ] },
+        { selected = Which[
+            horizontalSpecification === All, pairs,
+            bundle, Transpose[ { Range[ sourceCount ], PermutationList[ RandomPermutation[ automorphisms ], sourceCount ] } ],
+            unique, Transpose[ { Range[ sourceCount ], RandomSample @ Range[ targetCount ] } ],
+            atMost, Transpose[ { RandomSample[ Range[ sourceCount ], count ], RandomSample[ Range[ targetCount ], count ] } ],
+            lifting,
+              (* The remaining budget must cover every isolated endpoint; this does not force a perfect matching. *)
+              Nest[ chosen |-> Append[ chosen, RandomChoice @ Select[ Complement[ pairs, chosen ], pair |-> With[
+                { extended = Append[ chosen, pair ] },
+                Max[ sourceCount - Length @ DeleteDuplicates[ First /@ extended ],
+                  targetCount - Length @ DeleteDuplicates[ Last /@ extended ] ] <= count - Length[ extended ] ] ] ], { }, count ],
+            True, RandomSample[ pairs, count ] ] },
+        UndirectedEdge[ source[[ First[ # ] ]], target[[ Last[ # ] ]] ] & /@ selected ], EdgeList[ base ] ] },
+    { vertices = Catenate[ Values[ fibers ] ] },
+    InfraFiberedGraph[ Graph[ vertices, Join[ vertical, horizontal ] ], AssociationMap[ First, vertices ] ] ]
 
-InfraBundleMorphismQ[ fib1 : _[ _Graph, __ ], fib2 : _[ _Graph, __ ], map_, baseMap_ : Identity ] :=
-  With[ { total1 = InfraTotalGraph @ fib1, total2 = InfraTotalGraph @ fib2, proj1 = InfraFibrationAssociation @ fib1, proj2 = InfraFibrationAssociation @ fib2 },
-    { close = { a, b } |-> a === b || EdgeQ[ total2, UndirectedEdge[ a, b ] ] },
-    AllTrue[ VertexList @ total1, Lookup[ proj2, Key[ map @ # ] ] === baseMap[ proj1 @ # ] & ] &&
-      AllTrue[ EdgeList @ total1, close @@ ( map /@ List @@ # ) & ] ]
+InfraBundleMorphismQ[ fib1 : _[ _Graph, __ ], fib2 : _[ _Graph, __ ], map_, baseMap_ : Identity ] /;
+    AssociationQ[ InfraProjection[ fib1 ] ] && AssociationQ[ InfraProjection[ fib2 ] ] :=
+  With[ { total1 = InfraTotalSpace[ fib1 ], total2 = InfraTotalSpace[ fib2 ],
+      projection1 = InfraProjection[ fib1 ], projection2 = InfraProjection[ fib2 ],
+      apply = { function, vertex } |-> If[ AssociationQ[ function ], Lookup[ function, Key[ vertex ] ], function[ vertex ] ] },
+    { positions = AssociationThread[ VertexList[ total2 ], Range @ VertexCount[ total2 ] ], indexed = IndexGraph[ total2 ] },
+    ( ! AssociationQ[ map ] || AllTrue[ VertexList[ total1 ], KeyExistsQ[ map, # ] & ] ) &&
+      ( ! AssociationQ[ baseMap ] || AllTrue[ Values[ projection1 ], KeyExistsQ[ baseMap, # ] & ] ) &&
+      AllTrue[ VertexList[ total1 ], vertex |-> With[ { image = apply[ map, vertex ] },
+        KeyExistsQ[ positions, image ] && Lookup[ projection2, Key[ image ] ] === apply[ baseMap, Lookup[ projection1, Key[ vertex ] ] ] ] ] &&
+      AllTrue[ EdgeList[ total1 ], edge |-> With[ { images = apply[ map, # ] & /@ List @@ edge },
+        First[ images ] === Last[ images ] || EdgeQ[ indexed, UndirectedEdge @@ Lookup[ positions, Key /@ images ] ] ] ] ]

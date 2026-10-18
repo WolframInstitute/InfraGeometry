@@ -16,6 +16,9 @@ RelatedGuides: [InfraFiberBundles]
 
 ## Details & Options
 
+- This is a particular Experimental construction in the Infra Fiber Bundles category. Its existing call forms remain available.
+
+
 - The derivative at *p* is the displacement *p* -> *x*. It is zero, *x* = *p*, when *conn* carries <code>*s*[*q*]</code> back to <code>*s*[*p*]</code>.
 - The arrow is carried by the Levi-Civita transports whatever *conn* is. For a *conn* other than [FindInfraLeviCivitaConnection]() the result mixes the two connections.
 - A vertex where *s* has no value, or where the transport is blocked, gets [Missing]().
@@ -31,6 +34,7 @@ Options:
 The up field on the grid along a walk to the right: the Levi-Civita connection carries each value to the next, and the derivative is zero at every step.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["GridDisplacementBundle", "Small"]},
   {g = First @ fib, conn = FindInfraLeviCivitaConnection[fib]},
@@ -43,6 +47,7 @@ With[
 A field that turns from up to the right between the first two vertices of the walk has a nonzero derivative there, and zero after.
 
 ```wl
+SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["GridDisplacementBundle", "Small"]},
   {g = First @ fib, conn = FindInfraLeviCivitaConnection[fib]},

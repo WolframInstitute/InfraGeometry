@@ -2,42 +2,60 @@
 Template: Symbol
 Name: InfraConnectionQ
 Context: WolframInstitute`InfraGeometry`
-ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraConnectionQ
-Keywords: [connection, lift, horizontal edge]
-SeeAlso: [InfraConnection, InfraFlatConnectionQ, RandomInfraConnection, FindInfraLeviCivitaConnection, InfraFibrationQ]
+Keywords: [complete connection, perfect matching, lift, predicate]
+SeeAlso: [InfraConnection, RandomInfraConnection, InfraHorizontalLift, InfraFlatConnectionQ, InfraParallelSectionQ]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
 
-<code>[InfraConnectionQ]()[*fib*, [InfraConnection]()[*edges*]]</code> tests whether *edges* are horizontal total edges giving exactly one lift wherever the total graph has one.
+<code>[InfraConnectionQ]()[*fib*, *connection*]</code> tests whether *connection* gives a perfect matching between the whole fibers over every base edge.
+
+<code>[InfraConnectionQ]()[*fib*, {*connection1*, *connection2*, ...}]</code> tests every member of a nonempty collection.
 
 ## Details & Options
 
-- Every edge must be an edge of the total graph between two different fibers.
-- At every total vertex *x* over *p*, the edges at *x* must lie over every base neighbour of *p* that the total graph reaches from *x*, each exactly once.
+- Every chosen edge must be a transverse edge of the total graph.
+- Every total vertex over a base vertex must have exactly one chosen neighbour over each adjacent base vertex.
+- The condition includes fiber vertices without any available lift. Saturating only the vertices that have available lifts is insufficient.
+- An empty collection returns False; it does not establish existence. The object <code>[InfraConnection]()[{}]</code> is distinct and can be valid when the base has no edges.
+- An unsupported fibered graph or undecided member remains unevaluated.
 
 ## Basic Examples
 
-The horizontal edges of the prism are a connection. Without one of them they are not: its two endpoints, drawn, lose a lift.
+Removing one edge from a complete matching leaves two fiber vertices without a lift.
 
 ```wl
+SeedRandom[ 1 ];
 With[
-  {fib = InfraFiberedSubstrate["CycleProductBundle", "Small"]},
-  {total = InfraTotalGraph[fib]},
-  {horizontal = Select[EdgeList[total], First @ First @ # =!= First @ Last @ # &]},
-  {InfraSubstrateHighlight[total, {InfraDensity[total, List @@ First @ horizontal]}],
-    InfraConnectionQ[fib, InfraConnection[horizontal]], InfraConnectionQ[fib, InfraConnection[Rest @ horizontal]]}]
+  { fib = InfraFiberedGraph[
+      Graph[ Range[ 4 ], UndirectedEdge @@@ Tuples[ { { 1, 2 }, { 3, 4 } } ] ],
+      <| 1 -> "p", 2 -> "p", 3 -> "q", 4 -> "q" |>
+    ] },
+  { connection = RandomInfraConnection[ fib, "NextVertexFunction" -> Identity ] },
+  { InfraFiberedGraphHighlight[ fib, connection ],
+    InfraConnectionQ[ fib, connection ],
+    InfraConnectionQ[ fib, InfraConnection[ Rest @ First @ connection ] ],
+    InfraConnectionQ[ fib, RandomInfraConnection[ fib, All ] ] }
+]
 ```
 
 ## Possible Issues
 
-[RandomInfraConnection]() chooses a maximum matching over each base edge. Where it is not perfect, the result is not a connection.
+A single available edge does not connect the whole two-vertex fibers. No complete connection exists.
 
 ```wl
+SeedRandom[ 1 ];
 With[
-  {fib = InfraFiberedSubstrate["GridDisplacementBundle", "Small"]},
-  InfraConnectionQ[fib, (SeedRandom[1]; RandomInfraConnection[fib])]]
+  { fib = InfraFiberedGraph[
+      Graph[ Range[ 4 ], { UndirectedEdge[ 1, 3 ] } ],
+      <| 1 -> "p", 2 -> "p", 3 -> "q", 4 -> "q" |>
+    ] },
+  { InfraFiberedGraphHighlight[ fib ],
+    InfraConnectionQ[ fib, InfraConnection[ { UndirectedEdge[ 1, 3 ] } ] ],
+    RandomInfraConnection[ fib ] }
+]
 ```
