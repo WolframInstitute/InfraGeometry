@@ -765,8 +765,8 @@ VerificationTest[
 VerificationTest[
   With[{g = TessellationGraph[{4, 4}, 2]},
     {c = First @ VertexList @ g},
-    Sort @ InfraIntersection[ g, RandomInfraBall[ g, InfraBall[c, 1] ], RandomInfraBall[ g, InfraBall[c, 2] ] ] ===
-      Sort @ RandomInfraBall[ g, InfraBall[c, 1] ]],
+    Sort @ InfraIntersection[ g, InfraSupport[ g, InfraBall[c, 1] ], InfraSupport[ g, InfraBall[c, 2] ] ] ===
+      Sort @ InfraSupport[ g, InfraBall[c, 1] ]],
   True,
   TestID -> "InfraIntersection-on-a-list-labelled-substrate"
 ]
@@ -779,7 +779,7 @@ VerificationTest[
     {scene = InfraScene[{p}, {p == InfraIntersection[InfraBall[c, 1], InfraBall[c, 2]]}]},
     {instances = RandomInfraInstance[ scene, g, All ]},
     AllTrue[instances, VertexQ[g, InfraSceneInstance[#, p]] &] &&
-      Sort[InfraSceneInstance[#, p] & /@ instances] === Sort @ RandomInfraBall[ g, InfraBall[c, 1] ]],
+      Sort[InfraSceneInstance[#, p] & /@ instances] === Sort @ InfraSupport[ g, InfraBall[c, 1] ]],
   True,
   TestID -> "InfraScene-intersection-binds-substrate-vertices"
 ]
@@ -791,7 +791,7 @@ VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     {scene = InfraScene[{ba, bb, m}, {ba == InfraBall[7, 1], bb == InfraBall[9, 1], m == InfraUnion[ba, bb]}]},
     Sort[InfraSceneInstance[#, m] & /@ RandomInfraInstance[ scene, g, All ]] ===
-      Union[RandomInfraBall[ g, InfraBall[7, 1] ], RandomInfraBall[ g, InfraBall[9, 1] ]]],
+      Union[InfraSupport[ g, InfraBall[7, 1] ], InfraSupport[ g, InfraBall[9, 1] ]]],
   True,
   TestID -> "InfraScene-union-token-binds-every-vertex-of-either"
 ]

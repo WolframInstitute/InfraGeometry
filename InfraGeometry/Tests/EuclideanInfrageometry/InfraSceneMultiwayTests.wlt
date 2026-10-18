@@ -315,9 +315,9 @@ VerificationTest[
 ]
 
 VerificationTest[
-  Internal`InheritedBlock[ { RandomInfraBall },
-    RandomInfraBall[ graph_Graph, InfraBall[ "SetFixture" ], All ] := { { 3, 1, 1 }, { 1, 3 } };
-    With[ { data = InfraSceneMultiway[ InfraScene[ { region }, { region == InfraBall[ "SetFixture" ] } ],
+  Internal`InheritedBlock[ { RandomInfraSphere },
+    RandomInfraSphere[ graph_Graph, InfraSphere[ "SetFixture" ], All ] := { { 3, 1, 1 }, { 1, 3 } };
+    With[ { data = InfraSceneMultiway[ InfraScene[ { region }, { region == InfraSphere[ "SetFixture" ] } ],
         PathGraph[ Range[ 3 ] ] ] },
       { Length[ data[ "States" ] ], Length[ data[ "Events" ] ], data[ "Instances" ],
         Lookup[ Values[ data[ "Events" ] ], "Candidate" ] } ] ],

@@ -567,8 +567,8 @@ VerificationTest[
      InfraSegmentQ[g, RandomInfraSegment[g, 1, 13, All]],
      InfraLineQ[g, RandomInfraLine[g, 1, 21, All]],
      InfraShellQ[g, FindInfraShell[g, 13, 2]],
-     InfraBallQ[g, RandomInfraBall[ g, InfraBall[13, 2] ]],
-     InfraMemberQ[g, InfraQuadric[{11, 15}, {6, 6}], First @ RandomInfraQuadric[ g, InfraQuadric[{11, 15}, {6, 6}], All ]],
+     InfraBallQ[g, InfraSupport[ g, InfraBall[13, 2] ]],
+     InfraMemberQ[g, InfraQuadric[{11, 15}, {6, 6}], InfraSupport[ g, InfraQuadric[{11, 15}, {6, 6}] ]],
      InfraWalkQ[g, Select[ RandomInfraWalk[ g, 1, UpTo[ 6 ], All, Properties -> { "Simple" },
          "StoppingCondition" -> ( Last[ # ] === 13 & ) ], Last @ Last @ VertexList @ # === 13 & ]],
      InfraPlaneQ[g, FindInfraBisectingHyperplane[g, 11, 15], 11, 15],
@@ -576,7 +576,7 @@ VerificationTest[
      InfraParallelQ[g, geodesicGraph @ {1, 2, 3, 4, 5},
        RandomInfraParallel[g, {1, 2, 3, 4, 5}, 6, All]],
      InfraRegularPolygonQ[g, RandomInfraRegularPolygon[g, {1}, 4, 1], {1}],
-     InfraMemberQ[g, InfraSolidOfRevolution[{1, 2, 3}, 1], First @ RandomInfraSolidOfRevolution[ g, InfraSolidOfRevolution[{1, 2, 3}, 1], All ]]}],
+     InfraMemberQ[g, InfraSolidOfRevolution[{1, 2, 3}, 1], InfraSupport[ g, InfraSolidOfRevolution[{1, 2, 3}, 1] ]]}],
   ConstantArray[True, 12],
   TestID -> "predicates-accept-their-own-constructor-output"
 ]
@@ -625,7 +625,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     {InfraShellQ[g, InfraDensity[g, FindInfraShell[g, 13, 2]]],
-     InfraBallQ[g, InfraDensity[g, RandomInfraBall[ g, InfraBall[13, 2] ]]]}],
+     InfraBallQ[g, InfraDensity[g, InfraSupport[ g, InfraBall[13, 2] ]]]}],
   {True, True},
   TestID -> "set-predicates-accept-densities"
 ]

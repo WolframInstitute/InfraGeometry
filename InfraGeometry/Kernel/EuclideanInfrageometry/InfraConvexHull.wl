@@ -1,7 +1,5 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-Options[ RandomInfraConvexHull ] = { "NextVertexFunction" -> Automatic }
-
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraConvexHull *)
 
 (* the k-th round of the interval closure: round 0 is S, round i + 1 the union of the intervals I(u, v) = { w : d(u, w) + d(w, v) == d(u, v) }
@@ -38,26 +36,3 @@ InfraMeasurement[ graph_Graph, hull : InfraConvexHull[ _, ___ ], All ] :=
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
       "CountingMeasure", "RiemannianMeasure" } ]
 
-RandomInfraConvexHull[ graph_Graph, hull : InfraConvexHull[ _ ] | InfraConvexHull[ _, _Integer?( n |-> n >= 0 ) | Infinity ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraConvexHull ], First /@ { opts } ] &&
-    ( OptionValue[ RandomInfraConvexHull, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
-  With[ { members = Keys @ InfraMeasurement[ graph, hull, "VertexDensity" ],
-          nextFn = OptionValue[ RandomInfraConvexHull, { opts }, "NextVertexFunction" ] },
-    { ordered = { members } },
-    Which[
-      count === Automatic, members,
-      count === All,       ordered,
-      nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
-      IntegerQ @ count && Length @ ordered < count, { },
-      True, RandomSample[ ordered, count ] ] ]
-
-RandomInfraConvexHull[ graph_Graph, seeds_, rounds : _Integer?( n |-> n >= 0 ) | Infinity,
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { seeds, rounds }, _InfraConvexHull ] &&
-    SubsetQ[ First /@ Options[ RandomInfraConvexHull ], First /@ { opts } ] :=
-  RandomInfraConvexHull[ graph, InfraConvexHull[ seeds, rounds ], count,
-    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]
-
-RandomInfraConvexHull[ graph_Graph, seeds_, opts : OptionsPattern[] ] /;
-    ! MatchQ[ seeds, _InfraConvexHull ] && SubsetQ[ First /@ Options[ RandomInfraConvexHull ], First /@ { opts } ] :=
-  RandomInfraConvexHull[ graph, InfraConvexHull[ seeds ], Automatic, opts ]

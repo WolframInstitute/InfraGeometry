@@ -139,16 +139,16 @@ VerificationTest[
 
 
 VerificationTest[
-  RandomInfraBall[ PathGraph[ Range[ 5 ] ], 3, 1, All ],
-  { { 2, 3, 4 } },
-  TestID -> "synthetic-ball-counts-regions-not-support-points"
+  InfraSupport[ PathGraph[ Range[ 5 ] ], InfraBall[ 3, 1 ] ],
+  { 2, 3, 4 },
+  TestID -> "synthetic-ball-support-is-its-vertex-set"
 ]
 
 
 VerificationTest[
-  RandomInfraShell[ PathGraph[ Range[ 5 ] ], 3, { 1, 2 }, All ],
-  { { 1, 2, 4, 5 } },
-  TestID -> "synthetic-shell-band-single-region"
+  InfraSupport[ PathGraph[ Range[ 5 ] ], InfraShell[ 3, { 1, 2 } ] ],
+  { 1, 2, 4, 5 },
+  TestID -> "synthetic-shell-band-support"
 ]
 
 
@@ -160,53 +160,52 @@ VerificationTest[
 
 
 VerificationTest[
-  RandomInfraTube[ PathGraph[ Range[ 5 ] ], { 2, 3 }, 1, All, Method -> "Balls" ],
-  { { 1, 2, 3, 4 } },
+  InfraSupport[ PathGraph[ Range[ 5 ] ], InfraTube[ { 2, 3 }, 1, Method -> "Balls" ] ],
+  { 1, 2, 3, 4 },
   TestID -> "synthetic-tube-balls-support"
 ]
 
 
 VerificationTest[
-  RandomInfraCylinder[ PathGraph[ Range[ 5 ] ], { 2, 3 }, 0, All, Method -> "Balls" ],
-  { { 2, 3 } },
+  InfraSupport[ PathGraph[ Range[ 5 ] ], InfraCylinder[ { 2, 3 }, 0, Method -> "Balls" ] ],
+  { 2, 3 },
   TestID -> "synthetic-cylinder-forwards-explicit-method"
 ]
 
 
 VerificationTest[
-  RandomInfraCone[ PathGraph[ Range[ 5 ] ], { 2, 3 }, 1, All, Method -> "Balls" ],
-  { { 2, 3, 4 } },
+  InfraSupport[ PathGraph[ Range[ 5 ] ], InfraCone[ { 2, 3 }, 1, Method -> "Balls" ] ],
+  { 2, 3, 4 },
   TestID -> "synthetic-cone-preserves-apex-profile"
 ]
 
 
 VerificationTest[
-  RandomInfraSolidOfRevolution[ PathGraph[ Range[ 5 ] ], { 2, 3 }, i |-> 0, All, Method -> "Balls" ],
-  { { 2, 3 } },
+  InfraSupport[ PathGraph[ Range[ 5 ] ], InfraSolidOfRevolution[ { 2, 3 }, i |-> 0, Method -> "Balls" ] ],
+  { 2, 3 },
   TestID -> "synthetic-revolution-preserves-function-profile"
 ]
 
 
 VerificationTest[
-  RandomInfraBallHull[ PathGraph[ { 1, 2, 3 } ], InfraBallHull[ { 2 } ], All ],
-  { { 2 } },
-  TestID -> "synthetic-ball-hull-omitted-band-token-count"
+  InfraSupport[ PathGraph[ { 1, 2, 3 } ], InfraBallHull[ { 2 } ] ],
+  { 2 },
+  TestID -> "synthetic-ball-hull-omitted-band"
 ]
 
 
 VerificationTest[
   With[ { graph = PathGraph[ { 1, 2, 3 } ] },
-    { RandomInfraConvexHull[ graph, { 1, 3 }, 0, All ],
-      RandomInfraConvexHull[ graph, InfraConvexHull[ { 1, 3 } ], All ],
-      RandomInfraConvexHull[ graph, InfraConvexHull[ { 1, 3 } ], 2 ] } ],
-  { { { 1, 3 } }, { { 1, 2, 3 } }, {} },
-  TestID -> "synthetic-convex-hull-round-is-distinct-from-count"
+    { InfraSupport[ graph, InfraConvexHull[ { 1, 3 }, 0 ] ],
+      InfraSupport[ graph, InfraConvexHull[ { 1, 3 } ] ] } ],
+  { { 1, 3 }, { 1, 2, 3 } },
+  TestID -> "synthetic-convex-hull-round-zero-is-the-seed-set"
 ]
 
 
 VerificationTest[
-  RandomInfraQuadric[ PathGraph[ { 1, 2, 3 } ], { 1, 3 }, { 0, 0 }, { 1, -1 }, All ],
-  { { 2 } },
+  InfraSupport[ PathGraph[ { 1, 2, 3 } ], InfraQuadric[ { 1, 3 }, { 0, 0 }, { 1, -1 } ] ],
+  { 2 },
   TestID -> "synthetic-quadric-retains-signed-weight-band"
 ]
 
@@ -248,11 +247,9 @@ VerificationTest[
 
 
 VerificationTest[
-  With[ { graph = PathGraph[ { 1, 2 } ] },
-    { RandomInfraShell[ graph, 1, 5, All ], RandomInfraShell[ graph, 1, 5, 1 ],
-      RandomInfraShell[ graph, 1, 5, 2 ] } ],
-  { { {} }, { {} }, {} },
-  TestID -> "synthetic-empty-region-is-one-representative"
+  InfraSupport[ PathGraph[ { 1, 2 } ], InfraShell[ 1, 5 ] ],
+  { },
+  TestID -> "synthetic-empty-region-has-empty-support"
 ]
 
 
@@ -285,7 +282,7 @@ VerificationTest[
       RandomInfraSegment[ graph, InfraSegment[ 1, 5 ], All ];
       RandomInfraHalfLine[ graph, InfraHalfLine[ 2, 3 ], All ];
       RandomInfraInfiniteLine[ graph, InfraInfiniteLine[ 2, 3 ], All ];
-      RandomInfraBall[ graph, 3, 1, "NextVertexFunction" -> Identity ];
+      InfraSupport[ graph, InfraBall[ 3, 1 ] ];
       RandomInfraUnion[ graph, { InfraBall[ 1, 0 ], InfraBall[ 5, 0 ] }, All ];
       InfraMeasurement[ graph, InfraHalfLine[ 2, 3 ], "VertexDensity" ];
       RandomInteger[ 1000000 ], RandomSeeding -> 71 ] ===
@@ -296,12 +293,12 @@ VerificationTest[
 
 VerificationTest[
   With[ { graph = PathGraph[ Range[ 3 ] ] },
-    Head /@ { RandomInfraBall[ graph, 2, 1, -1 ], RandomInfraPoint[ graph, -1 ],
+    Head /@ { RandomInfraPoint[ graph, -1 ],
       RandomInfraSegment[ graph, InfraSegment[ 1, 3 ], -1 ],
       RandomInfraCircle[ graph, 2, 1, "Typo" -> 1 ],
       RandomInfraWalk[ graph, InfraWalk[ 1, 2 ], Properties -> { "Simple" } ],
       RandomInfraIntersection[ graph, { InfraBall[ 1, 0 ] }, "NextVertexFunction" -> RandomSample ] } ],
-  { RandomInfraBall, RandomInfraPoint, RandomInfraSegment, RandomInfraCircle, RandomInfraWalk, RandomInfraIntersection },
+  { RandomInfraPoint, RandomInfraSegment, RandomInfraCircle, RandomInfraWalk, RandomInfraIntersection },
   TestID -> "synthetic-unsupported-counts-options-and-token-growth-rules"
 ]
 

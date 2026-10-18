@@ -67,7 +67,7 @@ Inspired by [GeometricScene](https://reference.wolfram.com/language/ref/Geometri
 - `FindInfraShell` the shell or band as a sorted vertex list
 - `NeighborhoodGraph` (WL) the ball as an induced subgraph
 
-- `RandomInfraBall`, `RandomInfraShell`, `InfraBallQ`, `InfraShellQ`
+- `InfraBallQ`, `InfraShellQ`
 
 ### Exact point families
 
@@ -79,6 +79,7 @@ Inspired by [GeometricScene](https://reference.wolfram.com/language/ref/Geometri
 ### Reading a construction on a graph
 
 - `InfraMeasurement` a property of an object on a graph: its graph, cardinality, length, densities or measures
+- `InfraSupport` the support of an object on a graph, the sorted vertex list its members pass through
 - `InfraDensity` the vertex multiplicities of a vertex, vertex list, density or walk graph
 - `InfraMemberQ` whether a vertex list is a member of an object on a graph
 - `InfraIntersection` the intersection of two objects, with the product of their densities
@@ -142,7 +143,7 @@ Inspired by [GeometricScene](https://reference.wolfram.com/language/ref/Geometri
 - `InfraEllipse` the ellipse with foci $p_1, p_2$, a shortest separating cycle of $\{v : d(p_1, v) + d(p_2, v) = c\}$
 - `InfraQuadric` the solid $\{v : \sum w_i d(p_i, v) \le c\}$; balls, ellipses and hyperbola branches as special cases
 
-- `RandomInfraSphere`, `RandomInfraPlane`, `RandomInfraEllipse`, `RandomInfraQuadric`, `InfraEllipseQ`
+- `RandomInfraSphere`, `RandomInfraPlane`, `RandomInfraEllipse`, `InfraEllipseQ`
 
 ### Experimental: solids
 
@@ -151,15 +152,13 @@ Inspired by [GeometricScene](https://reference.wolfram.com/language/ref/Geometri
 - `InfraCone` the cone of a given slope along a walk, apex at its first vertex
 - `InfraSolidOfRevolution` the solid about a walk with a given radius profile
 
-- `RandomInfraTube`, `RandomInfraCylinder`, `RandomInfraCone`, `RandomInfraSolidOfRevolution`
-
 ### Experimental: polygons and hulls
 
 - `InfraRegularPolygon` the regular $n$-gon whose diagonals have prescribed lengths
 - `InfraConvexHull` the convex hull of a set under shortest paths
 - `InfraBallHull` the intersection of the closed balls containing a set
 
-- `RandomInfraRegularPolygon`, `RandomInfraConvexHull`, `RandomInfraBallHull`, `InfraRegularPolygonQ`
+- `RandomInfraRegularPolygon`, `InfraRegularPolygonQ`
 
 ### Experimental: angles and linear structure
 

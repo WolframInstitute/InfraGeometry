@@ -88,7 +88,7 @@ With[
   {c = First @ GraphCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])},
   InfraSubstrateHighlight[g,
-    {RandomInfraBall[ g, InfraBall[c, 3] ], InfraArc[c, {p, p}, "RadiusDelta" -> 1]}]]
+    {InfraSupport[ g, InfraBall[c, 3] ], InfraArc[c, {p, p}, "RadiusDelta" -> 1]}]]
 ```
 
 Overlaps add. The two segments share their start and blend there. The walk is one stroke.

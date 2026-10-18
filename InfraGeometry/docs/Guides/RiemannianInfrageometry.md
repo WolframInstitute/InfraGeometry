@@ -49,7 +49,7 @@ We also have <code>[InfraMetricTensor]()[*g*, *p*, *r*]</code>, which computes s
 - `InfraCone` the cone of slope $s$ along a ray
 - `NeighborhoodGraph` (WL) the ball as an induced subgraph
 
-- `FindInfraShell`, `RandomInfraShell`, `RandomInfraBall`, `RandomInfraTube`, `RandomInfraCone`
+- `FindInfraShell`, `InfraSupport`
 
 ### Volume measurements
 

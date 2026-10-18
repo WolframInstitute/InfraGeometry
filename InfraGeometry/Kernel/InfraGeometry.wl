@@ -345,29 +345,11 @@ PackageExport[InfraLineQ]
 
 PackageExport[InfraPolygon]
 
-PackageExport[RandomInfraBall]
-
-PackageExport[RandomInfraShell]
-
-PackageExport[RandomInfraTube]
-
-PackageExport[RandomInfraCylinder]
-
-PackageExport[RandomInfraCone]
-
-PackageExport[RandomInfraSolidOfRevolution]
-
 PackageExport[RandomInfraCircle]
 
 PackageExport[RandomInfraArc]
 
 PackageExport[RandomInfraPlane]
-
-PackageExport[RandomInfraBallHull]
-
-PackageExport[RandomInfraConvexHull]
-
-PackageExport[RandomInfraQuadric]
 
 PackageExport[RandomInfraIntersection]
 

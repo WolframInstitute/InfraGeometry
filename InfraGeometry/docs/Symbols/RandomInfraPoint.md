@@ -181,7 +181,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {outside = Complement[VertexList[g], RandomInfraBall[ g, InfraBall[c, 6] ]]},
+  {outside = Complement[VertexList[g], InfraSupport[ g, InfraBall[c, 6] ]]},
   {points = (SeedRandom[1]; RandomInfraPoint[g, outside, 3])},
   {InfraSubstrateHighlight[g, {outside, points}], points}]
 ```
@@ -243,7 +243,7 @@ SeedRandom[1];
 With[
   {g = GridGraph[{9, 9}]},
   {c = First @ GraphCenter[g]},
-  {Sort @ RandomInfraPoint[g, InfraShell[c, 3], All] === RandomInfraShell[ g, InfraShell[c, 3] ]}]
+  {Sort @ RandomInfraPoint[g, InfraShell[c, 3], All] === InfraSupport[ g, InfraShell[c, 3] ]}]
 ```
 
 The distance to a set is the least distance to one of its points: the shell about two vertices is the outer layer of the union of the two balls, and does not contain the vertices.
@@ -252,7 +252,7 @@ The distance to a set is the least distance to one of its points: the shell abou
 SeedRandom[1];
 With[
   {g = GridGraph[{10, 10}]},
-  {shell = RandomInfraShell[ g, InfraShell[{45, 47}, 2] ]},
+  {shell = InfraSupport[ g, InfraShell[{45, 47}, 2] ]},
   {Length @ shell, MemberQ[shell, 45]}]
 ```
 

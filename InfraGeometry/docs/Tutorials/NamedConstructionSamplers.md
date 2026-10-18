@@ -22,9 +22,11 @@ With[ { graph = PathGraph[ Range[ 5 ] ] },
   RandomInfraHalfLine[ graph, InfraHalfLine[ 2, 3 ], All ] ]
 ```
 
+A region head has one member, its vertex set, so it has no sampler: `InfraSupport` reads the set and `RandomInfraPoint` draws vertices of it.
+
 ```wolfram
-With[ { graph = PathGraph[ Range[ 5 ] ] },
-  RandomInfraBall[ graph, InfraBall[ 3, 1 ], All ] ]
+SeedRandom[ 1 ]; With[ { graph = PathGraph[ Range[ 5 ] ] },
+  { InfraSupport[ graph, InfraBall[ 3, 1 ] ], RandomInfraPoint[ graph, InfraBall[ 3, 1 ], 2 ] } ]
 ```
 
 The old inert Ray, Line and Polygon spellings remain supported for this release.
@@ -37,11 +39,11 @@ Negative counts and unsupported options stay unevaluated.
 Default All and Identity do not advance random state.
 An explicit legacy stochastic selector retains its original action.
 
-Ball, Shell, Tube, Cylinder, Cone, SolidOfRevolution, BallHull, ConvexHull and Quadric each have one set representative, including an empty set.
+Ball, Shell, Tube, Cylinder, Cone, SolidOfRevolution, BallHull, ConvexHull and Quadric each have one member, their support, possibly empty; `InfraSupport[graph, head]` reads it and there is no `RandomInfra...` sampler for them.
 Intersection and Union sample points from complete operand supports.
 Point labels that are Lists remain intact.
 
-The named functions are RandomInfraPoint, RandomInfraSegment, RandomInfraHalfLine, RandomInfraInfiniteLine, RandomInfraCircle, RandomInfraArc, RandomInfraRegularPolygon, RandomInfraPlane, RandomInfraBall, RandomInfraShell, RandomInfraSphere, RandomInfraTube, RandomInfraCylinder, RandomInfraCone, RandomInfraSolidOfRevolution, RandomInfraBallHull, RandomInfraConvexHull, RandomInfraQuadric, RandomInfraWalk, RandomInfraGeodesic, RandomInfraEllipse, RandomInfraIntersection, RandomInfraUnion, RandomInfraMidpoint, RandomInfraPerpendicularBisector and RandomInfraRegionNearest.
+The named functions are RandomInfraPoint, RandomInfraSegment, RandomInfraHalfLine, RandomInfraInfiniteLine, RandomInfraCircle, RandomInfraArc, RandomInfraRegularPolygon, RandomInfraPlane, RandomInfraSphere, RandomInfraWalk, RandomInfraGeodesic, RandomInfraEllipse, RandomInfraIntersection, RandomInfraUnion, RandomInfraMidpoint, RandomInfraPerpendicularBisector and RandomInfraRegionNearest.
 
 Exact Midpoint, PerpendicularBisector and RegionNearest are point families on finite simple undirected unweighted graphs.
 Their complete pools contain distinct raw vertices in graph order. Exact midpoint can be empty; equidistance does not imply separation; nearest support retains all ties.

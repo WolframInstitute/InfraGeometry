@@ -43,7 +43,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {cover = FindBallCover[g, 3]},
-  {balls = RandomInfraBall[ g, InfraBall[#, 3] ] & /@ Rest[cover]},
+  {balls = InfraSupport[ g, InfraBall[#, 3] ] & /@ Rest[cover]},
   {InfraSubstrateHighlight[g, {balls -> StandardBlue, Complement[VertexList[g], Union @@ balls] -> StandardRed}],
    BallCoverQ[g, 3, cover], BallCoverQ[g, 3, Rest[cover]]}]
 ```

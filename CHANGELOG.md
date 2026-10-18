@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+## 2.8.0 (2026-10-18)
+
+- **Breaking -- region samplers removed.** `RandomInfraBall`, `RandomInfraShell`, `RandomInfraTube`, `RandomInfraCylinder`, `RandomInfraCone`, `RandomInfraSolidOfRevolution`, `RandomInfraBallHull`, `RandomInfraConvexHull` and `RandomInfraQuadric` are removed without an alias. A region head has exactly one member, its vertex set (`"Cardinality"` is the constant 1), so these samplers drew nothing: the count-less call returned the support and any count above one returned `{}`. `RandomInfra...` is reserved for heads that are genuine families (segments, half-lines, lines, circles, arcs, spheres, planes, ellipses, polygons, walks, geodesics, scene instances); the region keeps its reader. `RandomInfraPlane` stays, since the separating sets of a plane are a family.
+- Add `InfraSupport[graph, head]`, the sorted vertex list the members of any head pass through (`Keys @ InfraMeasurement[graph, head, "VertexDensity"]`): the region itself for a set head, the metric interval for a segment, the union of the members for any chain family. A `List` of heads gives a `List` of supports. Random points of a region remain `RandomInfraPoint[graph, region, n]`, the counterpart of Wolfram's `RandomPoint[region, n]`.
+- The scene engine, the multiway explorer and the substrate highlighter resolve a region token through `InfraSupport`; the bound value is unchanged.
+- Fix: an unknown property of a head that defines only its own `InfraMeasurement` readings (through UpValues, as a sister paclet's heads do) now stays unevaluated and silent. The generic `"Cardinality"`, `"Length"`, `"VertexDensity"`, `"EdgeDensity"` and `InfraMemberQ` clauses apply only when the head has a `"Graph"` reading, and the `"Subgraph"`, `"CountingMeasure"` and `"RiemannianMeasure"` clauses only when it has a `"VertexDensity"`; before, `InfraMeasurement[g, head, "Length"]` on such a head emitted `VertexList::graph` and `Table::iterb`.
+
+| Earlier | Now |
+|---|---|
+| `RandomInfraBall[g, InfraBall[c, r]]` | `InfraSupport[g, InfraBall[c, r]]` |
+| `RandomInfraBall[g, c, r]` | `InfraSupport[g, InfraBall[c, r]]` |
+| `RandomInfraBall[g, ball, All]` | `{InfraSupport[g, ball]}` |
+| `RandomInfraBall[g, ball, n]` meant as random points | `RandomInfraPoint[g, ball, n]` |
+| `RandomInfraShell[g, InfraShell[c, {r, s}]]` | `InfraSupport[g, InfraShell[c, {r, s}]]` or `FindInfraShell[g, c, {r, s}]` |
+| `RandomInfraTube[g, core, s, Method -> m]` | `InfraSupport[g, InfraTube[core, s, Method -> m]]` |
+| `RandomInfraCylinder[g, axis, r]`, `RandomInfraCone[g, axis, s]`, `RandomInfraSolidOfRevolution[g, axis, profile]` | `InfraSupport[g, InfraCylinder[axis, r]]`, `InfraSupport[g, InfraCone[axis, s]]`, `InfraSupport[g, InfraSolidOfRevolution[axis, profile]]` |
+| `RandomInfraBallHull[g, S, r]`, `RandomInfraConvexHull[g, S, k]` | `InfraSupport[g, InfraBallHull[S, r]]`, `InfraSupport[g, InfraConvexHull[S, k]]` |
+| `RandomInfraQuadric[g, foci, c, weights]` | `InfraSupport[g, InfraQuadric[foci, c, weights]]` |
+| `RandomInfra<Region>[g, region, "NextVertexFunction" -> Identity]` | `InfraSupport[g, region]` |
+
 ## 2.7.4 (2026-10-18)
 
 - Add the inert `InfraFiberedGraph` description, reconstructed base, canonical `InfraTotalSpace`, `InfraBaseSpace` and `InfraProjection` readers, independent fiber and lifting predicates, and edge-lift multiplicities. Legacy `InfraFibration` descriptions and readers remain supported.

@@ -122,7 +122,7 @@ dimensionProfiles = Map[
 			target = InfraBall[ centre, radius ] },
 		{ boxCounts = Map[ r |-> Length @ FindBallCover[ graph, r, target, Method -> "Greedy" ], boxRadii ],
 			growthCounts = Map[ s |-> Length @ FindBallCover[ graph, 1, InfraBall[ centre, s ], Method -> "Greedy" ], growthRadii ],
-      volumes = Map[ s |-> Length @ RandomInfraBall[ graph, InfraBall[ centre, s ], "NextVertexFunction" -> Identity ], growthRadii ] },
+      volumes = Map[ s |-> Length @ InfraSupport[ graph, InfraBall[ centre, s ] ], growthRadii ] },
     Join[ data, <| "BoxRadii" -> boxRadii, "BoxCounts" -> boxCounts,
       "GrowthRadii" -> growthRadii, "GrowthCounts" -> growthCounts, "Volumes" -> volumes,
       "Box" -> -logSlope[ boxRadii + 1/2, boxCounts ], "UnshiftedBox" -> -logSlope[ boxRadii, boxCounts ],
@@ -226,7 +226,7 @@ planeSpans = With[
         First @ Ordering[ Total[ Abs[ distances[[ chosen ]] - spread ] ], 1 ] ], pair, 2 ] },
     { seeds = vertices[[ indices ]] },
     <| "Graph" -> graph, "Spread" -> spread, "Seeds" -> seeds,
-      "Hulls" -> Table[ RandomInfraBallHull[ graph, InfraBallHull[ Take[ seeds, k ] ], "NextVertexFunction" -> Identity ], { k, 2, 4 } ] |> ],
+      "Hulls" -> Table[ InfraSupport[ graph, InfraBallHull[ Take[ seeds, k ] ] ], { k, 2, 4 } ] |> ],
     { 2, 4, 6, 8 } ] ];
 GraphicsRow[ Table[ With[
   { data = Last[ planeSpans ] },
@@ -268,7 +268,7 @@ With[
   { enclosingRadius = Min[ Max /@ Transpose[ GraphDistance[ graph, # ] & /@ pair ] ] },
   { bounds = DeleteDuplicates[ { enclosingRadius, enclosingRadius + 1, enclosingRadius + 2,
       data[ "Spread" ], Infinity } ] },
-  { hulls = Map[ bound |-> RandomInfraBallHull[ graph, InfraBallHull[ pair, bound ], "NextVertexFunction" -> Identity ], bounds ] },
+  { hulls = Map[ bound |-> InfraSupport[ graph, InfraBallHull[ pair, bound ] ], bounds ] },
   Column[ {
     GraphicsRow[ MapThread[ { bound, hull } |-> Labeled[
       InfraSubstrateHighlight[ graph,
@@ -276,7 +276,7 @@ With[
       Row[ { "radius bound ", bound } ] ], { bounds, hulls } ] ],
     Grid[ Prepend[ Transpose[ { bounds, Length /@ hulls } ], { "Radius bound", "Hull vertices" } ], Frame -> All ],
     <| "Nested" -> And @@ MapThread[ SubsetQ, { Most[ hulls ], Rest[ hulls ] } ],
-      "Final hull is unrestricted" -> ( Last[ hulls ] === RandomInfraBallHull[ graph, InfraBallHull[ pair ], "NextVertexFunction" -> Identity ] ) |> } ] ]
+      "Final hull is unrestricted" -> ( Last[ hulls ] === InfraSupport[ graph, InfraBallHull[ pair ] ] ) |> } ] ]
 ```
 
 ## The square-tiling trap
@@ -294,7 +294,7 @@ With[
   { seeds = Map[ offset |-> vertices[[ First @ Ordering[
       Norm /@ ( coordinates - ConstantArray[ origin + offset, Length[ coordinates ] ] ), 1 ] ]],
       { -4 direction, 4 direction, 4 Reverse[ direction ] { -1, 1 } } ] },
-  { hulls = Table[ RandomInfraBallHull[ graph, InfraBallHull[ Take[ seeds, k ] ], "NextVertexFunction" -> Identity ], { k, 2, 3 } ] },
+  { hulls = Table[ InfraSupport[ graph, InfraBallHull[ Take[ seeds, k ] ] ], { k, 2, 3 } ] },
   Column[ {
     GraphicsRow[ Table[ Labeled[ InfraSubstrateHighlight[ graph,
       { Complement[ hulls[[ k - 1 ]], Take[ seeds, k ] ] -> StandardBlue,
@@ -319,7 +319,7 @@ With[
   { indices = Nest[ chosen |-> Append[ chosen,
       First @ Ordering[ Total[ Abs[ distances[[ chosen ]] - spread ] ], 1 ] ], pair, 3 ] },
   { seeds = vertices[[ indices ]] },
-  { hulls = Table[ RandomInfraBallHull[ graph, InfraBallHull[ Take[ seeds, k ] ], "NextVertexFunction" -> Identity ], { k, 2, 5 } ] },
+  { hulls = Table[ InfraSupport[ graph, InfraBallHull[ Take[ seeds, k ] ] ], { k, 2, 5 } ] },
   Column[ {
     GraphicsGrid[ Partition[ Table[ Labeled[ InfraSubstrateHighlight[ graph,
       { Complement[ hulls[[ k - 1 ]], Take[ seeds, k ] ] -> StandardBlue,
