@@ -66,6 +66,28 @@ FindBallCover[ graph_Graph, radius_Integer?( r |-> r >= 0 ), target_ : All,
 								True, Take[ covers, count ] ] ] ] ] ] ] /;
 			AssociationQ[ density ] && AllTrue[ Keys[ density ], vertex |-> VertexQ[ graph, vertex ] ] ]
 
+Options[ RandomBallCover ] = { Method -> Automatic }
+
+RandomBallCover[ graph_Graph, opts : OptionsPattern[] ] :=
+	With[ { cover = RandomBallCover[ graph, 1, All, opts ] }, cover /; ListQ[ cover ] ]
+
+RandomBallCover[ graph_Graph, radius_Integer?( r |-> r >= 0 ), target_ : All,
+	count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All ) : Automatic,
+	opts : OptionsPattern[] ] /; UndirectedGraphQ[ graph ] && ! WeightedGraphQ[ graph ] &&
+	( ! OptionQ[ target ] || VertexQ[ graph, target ] ||
+		( ListQ[ target ] && AllTrue[ target, vertex |-> VertexQ[ graph, vertex ] ] ) ) &&
+	SubsetQ[ { Method }, First /@ Flatten[ { opts } ] ] &&
+	MatchQ[ OptionValue[ RandomBallCover, { opts }, Method ], Automatic | "IntegerLinearProgramming" | "Exhaustive" ] :=
+	With[ { covers = FindBallCover[ graph, radius, target, If[ count === 0 || count === UpTo[ 0 ], 0, All ],
+		FilterRules[ Flatten[ { opts } ], Options[ FindBallCover ] ] ] },
+		Which[
+			count === 0 || count === UpTo[ 0 ], { },
+			count === All, covers,
+			count === Automatic, RandomChoice[ covers ],
+			IntegerQ[ count ] && count > Length[ covers ], { },
+			True, RandomSample[ covers, If[ IntegerQ[ count ], count, Min[ First[ count ], Length[ covers ] ] ] ] ] /;
+		ListQ[ covers ] ]
+
 BallCoverQ[ graph_Graph, radius_Integer?( r |-> r >= 0 ), centres_List, target_ : All ] /;
 	UndirectedGraphQ[ graph ] && ! WeightedGraphQ[ graph ] && AllTrue[ centres, vertex |-> VertexQ[ graph, vertex ] ] :=
 	With[

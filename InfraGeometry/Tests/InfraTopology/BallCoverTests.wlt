@@ -256,4 +256,137 @@ VerificationTest[
 	TestID -> "BallCover-rule-valued-vertex-list-is-a-target"
 ]
 
+VerificationTest[
+	{ Names[ "System`RandomBallCover" ], Options[ RandomBallCover ] },
+	{ { }, { Method -> Automatic } },
+	TestID -> "RandomBallCover-public-name-and-options"
+]
+
+VerificationTest[
+	With[ { graph = PathGraph[ Range[ 4 ] ], family = { { 1, 3 }, { 1, 4 }, { 2, 3 }, { 2, 4 } } },
+		{ expected = BlockRandom[ SeedRandom[ 1801 ]; RandomChoice[ family ] ] },
+		{ BlockRandom[ SeedRandom[ 1801 ]; RandomBallCover[ graph ] ] === expected,
+			RandomBallCover[ graph, 1, All, All ] === family } ],
+	{ True, True },
+	TestID -> "RandomBallCover-uniform-choice-from-complete-minimum-family"
+]
+
+VerificationTest[
+	With[ { graph = PathGraph[ Range[ 4 ] ], family = { { 1, 3 }, { 1, 4 }, { 2, 3 }, { 2, 4 } } },
+		{ expected = BlockRandom[ SeedRandom[ 1802 ]; RandomSample[ family, 3 ] ] },
+		{ BlockRandom[ SeedRandom[ 1802 ]; RandomBallCover[ graph, 1, All, 3 ] ] === expected,
+			BlockRandom[ SeedRandom[ 1802 ]; RandomBallCover[ graph, 1, All, UpTo[ 3 ] ] ] === expected,
+			Sort @ BlockRandom[ SeedRandom[ 1802 ]; RandomBallCover[ graph, 1, All, UpTo[ 8 ] ] ] === family } ],
+	{ True, True, True },
+	TestID -> "RandomBallCover-counts-use-uniform-sampling-without-replacement"
+]
+
+VerificationTest[
+	With[ { graph = PathGraph[ Range[ 4 ] ] },
+		{ sample = BlockRandom[ SeedRandom[ 1803 ]; RandomBallCover[ graph, 1, All, 1 ] ] },
+		{ Length[ sample ], BallCoverQ[ graph, 1, First[ sample ] ], Length[ First[ sample ] ],
+			RandomBallCover[ graph, 1, All, 5 ], RandomBallCover[ graph, 1, All, 0 ], RandomBallCover[ graph, 1, All, UpTo[ 0 ] ] } ],
+	{ 1, True, 2, { }, { }, { } },
+	TestID -> "RandomBallCover-count-shapes-and-strict-shortage"
+]
+
+VerificationTest[
+	With[ { graph = PathGraph[ Range[ 4 ] ], family = { { 1, 3 }, { 1, 4 }, { 2, 3 }, { 2, 4 } } },
+		{ expected = BlockRandom[ SeedRandom[ 1804 ]; RandomChoice[ family ]; RandomInteger[ 10^9, 3 ] ] },
+		BlockRandom[ SeedRandom[ 1804 ]; RandomBallCover[ graph, 1 ]; RandomInteger[ 10^9, 3 ] ] === expected ],
+	True,
+	TestID -> "RandomBallCover-consumes-the-ambient-random-state"
+]
+
+VerificationTest[
+	With[ { graph = PathGraph[ Range[ 4 ] ] },
+		{ expected = BlockRandom[ SeedRandom[ 1805 ]; RandomInteger[ 10^9, 3 ] ] },
+		BlockRandom[
+			SeedRandom[ 1805 ];
+			RandomBallCover[ graph, 1, All, All ]; RandomBallCover[ graph, 1, All, 0 ];
+			RandomBallCover[ graph, 1, All, UpTo[ 0 ] ]; RandomBallCover[ graph, 1, All, 5 ];
+			RandomInteger[ 10^9, 3 ] === expected ] ],
+	True,
+	TestID -> "RandomBallCover-All-zero-and-shortage-preserve-random-state"
+]
+
+VerificationTest[
+	With[ { graph = CycleGraph[ 3 ] },
+		{ RandomBallCover[ graph, 1, <| |> ], RandomBallCover[ graph, 1, <| |>, 1 ],
+			RandomBallCover[ graph, 1, <| |>, 2 ], RandomBallCover[ graph, 1, <| |>, UpTo[ 2 ] ],
+			RandomBallCover[ graph, 1, <| |>, All ], RandomBallCover[ Graph[ { }, { } ] ] } ],
+	{ { }, { { } }, { }, { { } }, { { } }, { } },
+	TestID -> "RandomBallCover-unique-empty-minimum-cover"
+]
+
+VerificationTest[
+	With[ { graph = StarGraph[ 4 ] },
+		{ RandomBallCover[ graph, 1, { 2, 3, 4 } ], RandomBallCover[ graph, 1, { 2, 3, 4 }, All ] } ],
+	{ { 1 }, { { 1 } } },
+	TestID -> "RandomBallCover-centres-may-lie-outside-target"
+]
+
+VerificationTest[
+	With[ { graph = PathGraph[ Range[ 7 ] ] },
+		RandomBallCover[ graph, 1, InfraBall[ 4, 2 ], All ] === FindBallCover[ graph, 1, { 2, 3, 4, 5, 6 }, All ] ],
+	True,
+	TestID -> "RandomBallCover-direct-InfraBall-target"
+]
+
+VerificationTest[
+	With[ { vertices = { { }, { 1, 2 }, { { 1 } }, Blank[ Integer ], All, "end" } },
+		{ graph = PathGraph[ vertices ] },
+		{ RandomBallCover[ graph, 0, { } ], RandomBallCover[ graph, 0, { 1, 2 } ],
+			RandomBallCover[ graph, 0, { { 1 } } ], RandomBallCover[ graph, 0, Blank[ Integer ] ],
+			RandomBallCover[ graph, 0, <| All -> 0 |> ], RandomBallCover[ graph, 0, <| |> ] } ],
+	{ { { } }, { { 1, 2 } }, { { { 1 } } }, { Blank[ Integer ] }, { All }, { } },
+	TestID -> "RandomBallCover-literal-empty-nested-list-pattern-and-All-labels"
+]
+
+VerificationTest[
+	With[ { graph = Graph[ { 1, 2, <| 1 -> 1, 2 -> 1 |> }, { } ], vertices = { a -> b, c -> d } },
+		{ RandomBallCover[ graph, 0, { 1, 2 }, All ], RandomBallCover[ graph, 0, <| 1 -> 1, 2 -> 1 |>, All ],
+			RandomBallCover[ Graph[ vertices, { } ], 0, vertices ] } ],
+	{ { { 1, 2 } }, { { <| 1 -> 1, 2 -> 1 |> } }, { a -> b, c -> d } },
+	TestID -> "RandomBallCover-preserves-target-and-rule-label-interpretation"
+]
+
+VerificationTest[
+	With[ { graph = CycleGraph[ 4 ] },
+		And[
+			RandomBallCover[ graph, 1, All, All, Method -> "Exhaustive", Method -> "Greedy" ] === FindBallCover[ graph, 1, All, All ],
+			MatchQ[ RandomBallCover[ graph, 1, Method -> "Greedy", Method -> "Exhaustive" ], _RandomBallCover ],
+			RandomBallCover[ graph, 1, All, All, { { Method -> "IntegerLinearProgramming" } } ] === FindBallCover[ graph, 1, All, All ] ] ],
+	True,
+	TestID -> "RandomBallCover-first-option-wins-and-nested-options"
+]
+
+VerificationTest[
+	With[ { graph = CycleGraph[ 3 ] },
+		And[
+			MatchQ[ RandomBallCover[ graph, Method -> "Greedy" ], _RandomBallCover ],
+			MatchQ[ RandomBallCover[ graph, 1, Method -> "Greedy" ], _RandomBallCover ],
+			MatchQ[ RandomBallCover[ graph, 1, All, All, Method -> "Unknown" ], _RandomBallCover ],
+			MatchQ[ RandomBallCover[ graph, 1, "UnknownOption" -> 1 ], _RandomBallCover ],
+			MatchQ[ RandomBallCover[ graph, 1, All, 0, Method -> "Greedy" ], _RandomBallCover ],
+			MatchQ[ RandomBallCover[ graph, 1, <| 8 -> 0 |>, 0 ], _RandomBallCover ],
+			MatchQ[ RandomBallCover[ graph, 1, <| 8 -> 0 |>, UpTo[ 0 ] ], _RandomBallCover ],
+			MatchQ[ RandomBallCover[ graph, 1, <| 8 -> 0 |>, All ], _RandomBallCover ],
+			MatchQ[ RandomBallCover[ graph, 1, unknownRegion[ 2 ] ], _RandomBallCover ],
+			MatchQ[ RandomBallCover[ graph, 1, All, Automatic ], _RandomBallCover ],
+			MatchQ[ RandomBallCover[ graph, 1, All, -1 ], _RandomBallCover ] ] ],
+	True,
+	TestID -> "RandomBallCover-unsupported-options-targets-and-counts-stay-symbolic"
+]
+
+VerificationTest[
+	With[ { graph = PathGraph[ { -1, 1.5, 2 } ], directed = Graph[ { 1, 2 }, { DirectedEdge[ 1, 2 ] } ],
+		weighted = Graph[ { UndirectedEdge[ 1, 2 ] }, EdgeWeight -> { 2 } ] },
+		And[
+			MatchQ[ RandomBallCover[ graph, -1 ], _RandomBallCover ], MatchQ[ RandomBallCover[ graph, 1.5 ], _RandomBallCover ],
+			MatchQ[ RandomBallCover[ directed ], _RandomBallCover ], MatchQ[ RandomBallCover[ weighted, 1 ], _RandomBallCover ] ] ],
+	True,
+	TestID -> "RandomBallCover-unsupported-radii-directed-and-weighted-graphs"
+]
+
 EndTestSection[]

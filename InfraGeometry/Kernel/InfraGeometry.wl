@@ -153,6 +153,7 @@ PackageExport[CechFiltration]
 PackageExport[BallIntersectionBifiltration]
 
 PackageExport[FindBallCover]
+PackageExport[RandomBallCover]
 PackageExport[BallCoverQ]
 PackageExport[BallCoverNumber]
 

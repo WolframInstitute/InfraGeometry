@@ -258,6 +258,8 @@ FindBallCover::usage = "FindBallCover[g, r, target] finds centres whose radius-r
 
 BallCoverQ::usage = "BallCoverQ[g, r, centres, target] tests whether the radius-r balls around centres cover target (default All), using the distances of g."
 
+RandomBallCover::usage = "RandomBallCover[g, r, target] uniformly samples a minimum radius-r ball cover of target (default All). An explicit count samples distinct minima without replacement. Option Method."
+
 BallCoverNumber::usage = "BallCoverNumber[g, r, target] gives the minimum number of radius-r balls covering target (default All), with centres and distances in g. Option Method."
 
 OllivierRicciCurvature::usage = "OllivierRicciCurvature[g] returns Association[edge -> kappa] with the Ollivier-Ricci curvature kappa(u, v) = 1 - W_1(mu_u, mu_v) / d(u, v), where mu_x is uniform on N(x) and W_1 is the Wasserstein-1 distance under graph distance (alpha = 0). The values are machine numbers.";

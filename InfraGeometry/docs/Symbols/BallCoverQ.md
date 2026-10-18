@@ -2,11 +2,11 @@
 Template: Symbol
 Name: BallCoverQ
 Context: WolframInstitute`InfraGeometry`
-ContextPath: [WolframInstitute`DiscreteGeometry`]
+ContextPath: []
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/BallCoverQ
 Keywords: [ball cover, dominating set, r-domination, covering]
-SeeAlso: [FindBallCover, BallCoverNumber, InfraBall]
+SeeAlso: [FindBallCover, RandomBallCover, BallCoverNumber, InfraBall]
 RelatedGuides: [InfraTopology]
 ---
 

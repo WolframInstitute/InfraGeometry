@@ -2,11 +2,11 @@
 Template: Symbol
 Name: FindBallCover
 Context: WolframInstitute`InfraGeometry`
-ContextPath: [WolframInstitute`DiscreteGeometry`]
+ContextPath: []
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindBallCover
 Keywords: [ball cover, dominating set, r-domination, covering number, set cover, integer program]
-SeeAlso: [BallCoverQ, BallCoverNumber, CechComplex, InfraBall]
+SeeAlso: [RandomBallCover, BallCoverQ, BallCoverNumber, CechComplex, InfraBall]
 RelatedGuides: [InfraTopology]
 ---
 
@@ -38,9 +38,11 @@ A target can be a vertex, a vertex list, a density association, a graph carrier 
 | `"IntegerLinearProgramming"` | the same exact optimization, explicitly selected |
 | `"Greedy"` | a feasible cover obtained by repeatedly choosing a centre covering the most uncovered targets |
 
-`"Exhaustive"` remains an alias for `"IntegerLinearProgramming"`. `"Symmetric"` is unsupported because its restricted covers need not attain the ordinary covering number.
+`"Exhaustive"` remains a compatibility alias for `"IntegerLinearProgramming"`; it does not describe a separate brute-force algorithm. These strings are method values of this function, not solver method names of [LinearOptimization](). `"Symmetric"` is unsupported because its restricted covers need not attain the ordinary covering number.
 
-The result without a count is one centre list. An explicit count gives a list of centre lists; in particular, explicit 1 gives a one-element list. Counts occupy the fourth argument, after the target. Exact methods enumerate different minimum centre sets in deterministic order. Enumeration can be expensive even when finding one cover is fast. `"Greedy"` supports only the form without a count.
+The result without a count is one centre list. An explicit count gives a list of centre lists; in particular, explicit 1 gives a one-element list. Counts occupy the fourth argument, after the target. Exact methods enumerate distinct minimum centre sets. A single optimum is a solver-selected witness, not an intrinsic canonical choice; it need not be the first entry of [All](). Calls with different counts are not promised to form nested prefixes. Enumeration can be expensive even when finding one cover is fast. Use [RandomBallCover]() to sample uniformly from the minimum family.
+
+`"Greedy"` supports only the form without a count. It breaks equal maximum-gain ties by the current candidate order, without random draws. Its result is feasible but need not be minimum or inclusion-minimal. An inclusion-minimal cover has no removable centre; a minimum cover has the fewest centres.
 
 The empty target has one minimum cover, the empty centre list. The count-less result is `{}`, while explicit 1, [UpTo]()[1] and [All]() give `{{}}`. An empty association `<||>` specifies an empty target even when `{}` is itself a vertex label.
 
