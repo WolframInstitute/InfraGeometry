@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSubstrateHighlight
 Keywords: [visualization, diffuse rendering, density, highlight, palette]
-SeeAlso: [InfraSceneViewer, InfraScene, InfraMeasurement, InfraDensity, InfraWalk]
+SeeAlso: [InfraScenePlot, InfraSceneViewer, InfraScene, InfraMeasurement, InfraDensity, InfraWalk]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 

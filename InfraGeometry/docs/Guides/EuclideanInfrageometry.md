@@ -112,6 +112,7 @@ Inspired by [GeometricScene](https://reference.wolfram.com/language/ref/Geometri
 - `InfraSceneInstance` one solved binding of a scene
 - `InfraSceneMultiway` the finite multiway system of construction states
 - `InfraBranchialGraph` the branchial graph of construction states at one depth
+- `InfraScenePlot` a static figure from saved scene bindings, or explicit geometry at those bindings
 - `InfraSceneViewer` a step-by-step view of a scene
 
 - `InfraIntersectQ`, `InfraPlaneQ`, `GeometricScene` (WL), `RandomInstance` (WL)

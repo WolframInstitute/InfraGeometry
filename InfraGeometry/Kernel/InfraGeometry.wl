@@ -108,6 +108,7 @@ PackageExport[SegmentViewer]
 PackageExport[ShellViewer]
 PackageExport[CircleViewer]
 PackageExport[InfraSceneViewer]
+PackageExport[InfraScenePlot]
 
 (* RiemannianInfrageometry *)
 
