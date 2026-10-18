@@ -7,6 +7,7 @@ URI: WolframInstitute/InfraGeometry/ref/InfraConnection
 Keywords: [connection, perfect matching, horizontal edge, inert object]
 SeeAlso: [InfraConnectionQ, RandomInfraConnection, InfraHorizontalLift, InfraParallelTransport, InfraHolonomy, InfraFlatConnectionQ]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -19,8 +20,8 @@ RelatedGuides: [InfraFiberBundles]
 - A complete connection chooses a perfect matching between the whole fibers over each base edge. It contains no vertical edges.
 - [InfraConnectionQ]() checks this condition, including total vertices with no available transverse edge.
 - The order and orientation of the undirected edges do not affect the connection. Repeated edges are not a matching.
-- <code>[Graph]()[[VertexList]()[[InfraTotalGraph]()[*fib*]], *edges*]</code> gives its graph. Its connected components are the horizontal leaves.
-- Connections are supported on finite simple undirected unweighted total graphs.
+- <code>[Graph]()[[VertexList]()[[InfraTotalSpace]()[*fib*]], *edges*]</code> gives its graph. Its connected components are the horizontal leaves.
+- Connections are supported on finite simple undirected unweighted untagged total graphs.
 
 ## Basic Examples
 
@@ -30,7 +31,7 @@ A double covering of a square has one horizontal leaf. A circuit around the squa
 SeedRandom[ 1 ];
 With[
   { total = CycleGraph[ 8 ] },
-  { fib = InfraFibration[ total, vertex |-> Mod[ vertex, 4, 1 ] ] },
+  { fib = InfraFiberedGraph[ total, vertex |-> Mod[ vertex, 4, 1 ] ] },
   { connection = InfraConnection[ EdgeList @ total ] },
   { InfraFiberedGraphHighlight[ fib, connection ],
     InfraConnectionQ[ fib, connection ],
@@ -45,7 +46,7 @@ An isolated base vertex needs no horizontal edges. The empty edge set can theref
 ```wl
 SeedRandom[ 1 ];
 With[
-  { fib = InfraFibration[ Graph[ { 1, 2 }, { } ], <| 1 -> "p", 2 -> "p" |> ] },
+  { fib = InfraFiberedGraph[ Graph[ { 1, 2 }, { } ], <| 1 -> "p", 2 -> "p" |> ] },
   { InfraConnectionQ[ fib, InfraConnection[ { } ] ],
     InfraParallelTransport[ fib, InfraConnection[ { } ], { "p" } ] }
 ]

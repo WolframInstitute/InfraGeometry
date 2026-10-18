@@ -69,4 +69,4 @@ InfraFiberedSubstrate[ name_String /; MemberQ[ InfraFiberedSubstrate[ All ], nam
               Catenate @ Map[ edge |-> UndirectedEdge @@@ Tuples[
                 { Lookup[ fibers, Key @ First @ edge ], Lookup[ fibers, Key @ Last @ edge ] } ], EdgeList @ base ] ] } ] ] },
     Replace[ spec, { _Graph, edges_List } :> With[ { total = Graph @ edges },
-      InfraFibration[ total, AssociationMap[ First, VertexList @ total ] ] ] ] ]
+      InfraFiberedGraph[ total, AssociationMap[ First, VertexList @ total ] ] ] ] ]

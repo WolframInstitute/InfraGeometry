@@ -7,6 +7,7 @@ URI: WolframInstitute/InfraGeometry/ref/InfraParallelTransport
 Keywords: [parallel transport, fiber bijection, connection, walk]
 SeeAlso: [InfraConnection, InfraConnectionQ, InfraHorizontalLift, InfraHolonomy, InfraParallelSectionQ, InfraHolonomyAngle, FindInfraLeviCivitaConnection]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -23,7 +24,7 @@ RelatedGuides: [InfraFiberBundles]
 - Keys follow <code>[VertexList]()[[InfraFiber]()[*fib*, [First]()[*walk*]]]</code>. List-valued and expression-valued vertices are literal association keys.
 - A one-vertex walk gives the identity association. Concatenating walks composes their transports; reversing a walk gives the inverse bijection.
 - The readers with an explicit connection consume no random draws and take no options. Unsupported input remains unevaluated.
-- The Experimental displacement overload with an explicit connection accepts partial matchings. Each surviving lift is unique; ambiguous matchings remain unevaluated. Converting the model to a literal InfraFibration selects the general complete-connection contract.
+- The Experimental displacement overload with an explicit connection accepts partial matchings. Each surviving lift is unique; ambiguous matchings remain unevaluated. Converting the model to a literal InfraFiberedGraph selects the general complete-connection contract.
 - The Experimental two-argument displacement form lists every composite of its best angle-matching injections, without duplicates. It is a particular model and may have several results.
 
 Options of the Experimental displacement form:
@@ -40,7 +41,7 @@ The two lifts of the base cycle exchange the sheets of a double covering.
 SeedRandom[ 1 ];
 With[
   { total = CycleGraph[ 8 ] },
-  { fib = InfraFibration[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
+  { fib = InfraFiberedGraph[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
     connection = InfraConnection[ EdgeList @ total ] },
   { loop = { 1, 2, 3, 4, 1 } },
   { lifts = InfraHorizontalLift[ fib, connection, #, loop ] & /@ { 1, 5 } },
@@ -57,7 +58,7 @@ The reverse transport is the inverse map. A zero-length walk is the identity.
 SeedRandom[ 1 ];
 With[
   { total = CycleGraph[ 8 ] },
-  { fib = InfraFibration[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
+  { fib = InfraFiberedGraph[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
     connection = InfraConnection[ EdgeList @ total ] },
   { walk = { 1, 2, 3 } },
   { forward = InfraParallelTransport[ fib, connection, walk ],
@@ -74,7 +75,7 @@ A partial matching is not a complete connection, so it is not accepted by this r
 ```wl
 SeedRandom[ 1 ];
 With[
-  { fib = InfraFibration[
+  { fib = InfraFiberedGraph[
       Graph[ Range[ 4 ], { UndirectedEdge[ 1, 3 ] } ],
       <| 1 -> "p", 2 -> "p", 3 -> "q", 4 -> "q" |>
     ] },

@@ -170,4 +170,40 @@ VerificationTest[
   TestID -> "Fibered-highlight-explicit-items-and-standard-option-list"
 ]
 
+VerificationTest[
+  With[ { vertices = { { "left", 1 }, { "right", 2 }, { "top", 3 } } },
+    { total = PathGraph[ vertices ], coordinates = { { 0, 0 }, { 2, 1 }, { 4, 0 } } },
+    { fib = InfraFiberedGraph[ total, Identity ],
+      rules = MapThread[ Rule, { Reverse @ vertices, Reverse @ coordinates } ] },
+    Map[ method |-> Check[ With[ { drawing = InfraFiberedGraphHighlight[ fib,
+          { Style[ InfraSection @ AssociationThread[ vertices, vertices ], StandardRed ] },
+          Method -> method, "BaseVertexCoordinates" -> rules ] },
+        GraphQ[ drawing ] && VertexList[ drawing ] === vertices && EdgeList[ drawing ] === EdgeList[ total ] ], False ],
+      { "CircularFiber", "3DFiber", "HighlightFiber" } ] ],
+  { True, True, True },
+  TestID -> "Fibered-highlight-general-head-all-views-with-literal-coordinate-rules"
+]
+
+VerificationTest[
+  With[ { vertices = { { 2, 0 }, { 0, 0 }, { 1, 0 } }, coordinates = { { 4, 0 }, { 0, 0 }, { 2, 0 } } },
+    { fib = InfraFiberedGraph[ PathGraph[ vertices ], Identity ],
+      rules = MapThread[ Rule, { Reverse @ vertices, Reverse @ coordinates } ] },
+    Map[ specification |-> GraphEmbedding @ InfraFiberedGraphHighlight[ fib, { },
+        "BaseVertexCoordinates" -> specification, "BaseVertexCoordinates" -> <| |> ],
+      { coordinates, rules, Association @ rules } ] ],
+  ConstantArray[ { { 4, 0 }, { 0, 0 }, { 2, 0 } }, 3 ],
+  SameTest -> ( #1 == #2 & ),
+  TestID -> "Fibered-highlight-native-coordinate-forms-preserve-vertex-order-and-first-option"
+]
+
+VerificationTest[
+  With[ { fib = InfraFiberedGraph[ PathGraph[ Range[ 3 ] ], Identity ] },
+    Map[ coordinates |-> Check[
+      Head @ InfraFiberedGraphHighlight[ fib, { }, "BaseVertexCoordinates" -> coordinates ], "Message" ],
+      { { { 0, 0 }, { 1, 0 } }, { 1 -> { 0, 0 }, 2 -> { 1, 0 } },
+        { 1 -> { 0, 0 }, 2 -> { 1, 0 }, 3 -> { 2, 0, 1 } } } ] ],
+  ConstantArray[ InfraFiberedGraphHighlight, 3 ],
+  TestID -> "Fibered-highlight-incomplete-native-coordinate-forms-remain-unevaluated"
+]
+
 EndTestSection[ ]

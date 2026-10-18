@@ -8,6 +8,7 @@ URI: WolframInstitute/InfraGeometry/ref/InfraBundleMorphism
 Keywords: [bundle morphism, endpoint map, truncation, reversal, natural map]
 SeeAlso: [InfraBundleMorphismQ, InfraTangentBundle, InfraCotangentBundle, InfraDisplacementBundle, InfraRays]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [ExperimentalInfraBundles]
 ---
 
 ## Usage
@@ -43,9 +44,9 @@ With[
   {truncate = InfraBundleMorphism[tangent, tangent1], endpoint = InfraBundleMorphism[tangent, displacementBundle]},
   {rays = VertexList @ InfraFiber[tangent, 6]},
   GraphicsRow[{
-    InfraSubstrateHighlight[InfraTotalGraph[tangent], {InfraDensity[InfraTotalGraph[tangent], rays]}],
-    InfraSubstrateHighlight[InfraTotalGraph[tangent1], {InfraDensity[InfraTotalGraph[tangent1], truncate /@ rays]}],
-    InfraSubstrateHighlight[InfraTotalGraph[displacementBundle], {InfraDensity[InfraTotalGraph[displacementBundle], endpoint /@ rays]}]}]]
+    InfraSubstrateHighlight[InfraTotalSpace[tangent], {InfraDensity[InfraTotalSpace[tangent], rays]}],
+    InfraSubstrateHighlight[InfraTotalSpace[tangent1], {InfraDensity[InfraTotalSpace[tangent1], truncate /@ rays]}],
+    InfraSubstrateHighlight[InfraTotalSpace[displacementBundle], {InfraDensity[InfraTotalSpace[displacementBundle], endpoint /@ rays]}]}]]
 ```
 
 ## Scope
@@ -57,7 +58,8 @@ SeedRandom[ 7 ];
 With[
   {g = GridGraph[{4, 4}]},
   {tangent = InfraTangentBundle[g, 2]},
-  InfraBundleMorphismQ[tangent, #, InfraBundleMorphism[tangent, #]] & /@ {InfraDisplacementBundle[g, 2], InfraTangentBundle[g, 1], InfraCotangentBundle[g, 2]}]
+  InfraBundleMorphismQ[tangent, #, InfraBundleMorphism[tangent, #]] & /@
+    {InfraDisplacementBundle[g, 2], InfraTangentBundle[g, 1], InfraCotangentBundle[g, 2]}]
 ```
 
 ## Possible Issues

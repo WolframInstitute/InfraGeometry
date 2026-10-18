@@ -7,6 +7,7 @@ URI: WolframInstitute/InfraGeometry/ref/FindInfraHorizontalLift
 Keywords: [legacy horizontal lift, counted compatibility form]
 SeeAlso: [InfraHorizontalLift, InfraConnection, InfraParallelTransport, InfraHolonomy]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -29,7 +30,7 @@ The legacy singleton list contains the same sequence returned directly by the ca
 SeedRandom[ 1 ];
 With[
   { total = CycleGraph[ 8 ] },
-  { fib = InfraFibration[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
+  { fib = InfraFiberedGraph[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
     connection = InfraConnection[ EdgeList @ total ] },
   { loop = { 1, 2, 3, 4, 1 } },
   { InfraHorizontalLift[ fib, connection, 1, loop ],

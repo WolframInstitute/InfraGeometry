@@ -7,6 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/InfraFiberBundles
 Keywords: [fibration, fiber bundle, fibered graph, base graph, fiber, tangent bundle, displacement bundle, section, connection, parallel transport, holonomy, Levi-Civita]
 RelatedGuides: [EuclideanInfrageometry, RiemannianInfrageometry, InfraTopology, InfraAnalysis, InfraSubstrates, Experimental]
+RelatedTutorials: [InfraBundles, ExperimentalInfraBundles]
 ---
 
 ## Abstract
@@ -17,13 +18,16 @@ A fibered graph is an inert total graph with a vertex projection. Its base is re
 
 ### Fibered graphs
 
-- `InfraFibration` the total graph and its projection, as an inert object
-- `InfraTotalGraph`, `InfraFibrationAssociation` the two structural primitives
-- `InfraBaseGraph` the reconstructed base, including isolated projection values
+- `InfraFiberedGraph` the total graph and its projection, as an inert object
+- `InfraTotalSpace`, `InfraProjection` the total graph and the projection association
+- `InfraBaseSpace` the reconstructed base, including isolated projection values
 - `InfraFiber`, `InfraFibers` the induced graph over one base vertex or every base vertex
-- `RandomInfraFibration` random nonempty fibers and transverse edges over a prescribed base
+- `RandomInfraFiberedGraph` nonempty fibers and transverse edges under explicit property and count constraints
+- `InfraEdgeLiftMultiplicity` the transverse neighbour count at every total vertex over every adjacent base vertex
 
-- `InfraFibrationQ`, `InfraFiberBundleQ`, `InfraBundleMorphismQ`
+- `InfraFiberedGraphQ`, `InfraEqualFiberSizesQ`, `InfraIsomorphicFibersQ`
+- `InfraFibrationQ`, `InfraAtMostOneEdgeLiftQ`, `InfraUniqueEdgeLiftingQ`
+- `InfraFiberBundleQ`, `InfraCoveringQ`, `InfraBundleMorphismQ`
 
 ### Sections
 
@@ -58,12 +62,17 @@ A fibered graph is an inert total graph with a vertex projection. Its base is re
 - `InfraDisplacementBundle` pairs of base vertices at a fixed distance
 - `InfraBundleMorphism` natural maps between these particular models
 - `InfraFiberedSubstrate` a catalogue of products, coverings, branched examples and geometric models
+- `RandomInfraFibration` the Experimental compatibility generator with its earlier cyclic-width options
 - `FindInfraLeviCivitaConnection` metric-selected partial matchings of a displacement model
 - `InfraHolonomyAngle`, `InfraCovariantDerivative`, `InfraCanonicalOneForm` metric measurements in that model
 
 ### Migration
 
+- `InfraFibration` the retained inert head accepted alongside `InfraFiberedGraph`
+- `InfraTotalGraph`, `InfraBaseGraph`, `InfraFibrationAssociation` compatibility spellings of the structural readers
 - `FindInfraSection` the retained deterministic counted spelling for continuous-section enumeration
 - `FindInfraHorizontalLift` the retained counted spelling of the unique lift on a complete connection
 
-The ordinary samplers use external SeedRandom, a count argument and NextVertexFunction. The default section class is set-theoretic; Properties -> {"Continuous"} requests adjacency preservation on every overload. All enumeration is deterministic by default. The Levi-Civita model's partial transport retains its existing model-specific call forms; general literal fibrations require a complete connection. The InfraGaugeTheory paclet uses some of the same names with different signatures; load it separately or use full contexts.
+The fibered-graph sampler uses external SeedRandom, a conjunction of Properties and vertex/edge count specifications. Section and connection samplers use external SeedRandom, a result count and NextVertexFunction. The default section class is set-theoretic; Properties -> {"Continuous"} requests adjacency preservation on every overload. All enumeration is deterministic by default. The Levi-Civita model's partial transport retains its existing model-specific call forms; general literal fibered graphs require a complete connection. The InfraGaugeTheory paclet uses some of the same names with different signatures; load it separately or use full contexts.
+
+The [Infra Bundles tutorial](paclet:WolframInstitute/InfraGeometry/tutorial/InfraBundles) develops the finite definitions and their implications. The [Experimental Infra Bundles tutorial](paclet:WolframInstitute/InfraGeometry/tutorial/ExperimentalInfraBundles) treats model-specific constructions, scale observations and proposed completion questions separately.

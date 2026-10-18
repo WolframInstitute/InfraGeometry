@@ -8,6 +8,7 @@ URI: WolframInstitute/InfraGeometry/ref/FindInfraSection
 Keywords: [continuous section, compatibility, global section]
 SeeAlso: [RandomInfraSection, InfraSection, InfraContinuousSectionQ, InfraParallelSectionQ]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -32,7 +33,7 @@ The old and current call forms give the same two sheets of this product covering
 ```wl
 SeedRandom[7];
 With[
-  {fib = InfraFibration[GraphProduct[CycleGraph[4], Graph[{1, 2}, {}], "Cartesian"], First]},
+  {fib = InfraFiberedGraph[GraphProduct[CycleGraph[4], Graph[{1, 2}, {}], "Cartesian"], First]},
   {sections = FindInfraSection[fib, All]},
   {GraphicsRow[InfraFiberedGraphHighlight[fib, #] & /@ sections],
     sections === RandomInfraSection[fib, All, Properties -> {"Continuous"}, "NextVertexFunction" -> Identity]}]
@@ -43,6 +44,6 @@ The connected double covering has no global continuous section.
 ```wl
 SeedRandom[7];
 With[
-  {fib = InfraFibration[CycleGraph[8], i |-> Mod[i, 4, 1]]},
+  {fib = InfraFiberedGraph[CycleGraph[8], i |-> Mod[i, 4, 1]]},
   {InfraFiberedGraphHighlight[fib], FindInfraSection[fib, All]}]
 ```

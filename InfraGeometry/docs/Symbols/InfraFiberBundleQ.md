@@ -5,9 +5,10 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraFiberBundleQ
-Keywords: [fiber bundle, local triviality, isomorphic fibers, covering]
-SeeAlso: [InfraFibrationQ, InfraFibration, InfraFibers, InfraFlatConnectionQ, InfraFiberedSubstrate]
+Keywords: [graph bundle, Cartesian graph bundle, isomorphic fibers, covering]
+SeeAlso: [InfraFiberedGraph, InfraIsomorphicFibersQ, InfraUniqueEdgeLiftingQ, InfraCoveringQ, InfraFlatConnectionQ, InfraFibers]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -18,8 +19,11 @@ RelatedGuides: [InfraFiberBundles]
 
 - The fibers must be mutually isomorphic, including across disconnected base components.
 - Every total vertex has exactly one transverse neighbour over each adjacent base vertex. Each resulting fiber bijection preserves vertical adjacency.
-- Twisted coverings are bundles. Trivial monodromy is a separate question, tested for a selected connection by [InfraFlatConnectionQ]().
-- A nonempty list is tested by conjunction. An empty list is False; the empty fibered graph is a bundle.
+- This is the finite Cartesian graph-bundle condition. The inverse image of a base edge is a Cartesian product of that edge with the common fiber, respecting the projection.
+- No topology or higher-dimensional cells are supplied by the predicate.
+- Twisted coverings with a common sheet count are bundles. Trivial monodromy is a separate question, tested for a selected connection by [InfraFlatConnectionQ]().
+- A covering may have different sheet counts on disconnected base components; such a covering is not a bundle with one common fiber.
+- A nonempty list is tested by conjunction. An empty list is False; the empty fibered graph is a bundle. Unsupported inputs remain unevaluated.
 
 ## Basic Examples
 
@@ -28,8 +32,8 @@ The cycle of length 8 over the square and the cycle of length 6 over the triangl
 ```wl
 SeedRandom[ 7 ];
 With[
-  {square = InfraFibration[CycleGraph[8], i |-> Mod[i, 4, 1]]},
-  {triangle = InfraFibration[CycleGraph[6], i |-> Mod[i, 3, 1]]},
+  {square = InfraFiberedGraph[CycleGraph[8], i |-> Mod[i, 4, 1]]},
+  {triangle = InfraFiberedGraph[CycleGraph[6], i |-> Mod[i, 3, 1]]},
   {InfraFiberedGraphHighlight[square], InfraFiberBundleQ[square], InfraFiberedGraphHighlight[triangle], InfraFiberBundleQ[triangle]}]
 ```
 

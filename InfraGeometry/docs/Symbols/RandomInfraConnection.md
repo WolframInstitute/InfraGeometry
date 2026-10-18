@@ -5,8 +5,9 @@ Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraConnection
 Keywords: [random connection, perfect matching, sampling, enumeration]
-SeeAlso: [InfraConnection, InfraConnectionQ, InfraHorizontalLift, InfraHolonomy, RandomInfraFibration, RandomInfraSection]
+SeeAlso: [InfraConnection, InfraConnectionQ, InfraHorizontalLift, InfraHolonomy, RandomInfraFiberedGraph, RandomInfraSection]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -40,9 +41,9 @@ Two vertices per fiber over a hexagon, with complete joins between adjacent fibe
 ```wl
 SeedRandom[ 3 ];
 With[
-  { fib = RandomInfraFibration[
-      CycleGraph[ 6 ], "VerticalVertices" -> 2, "VerticalEdges" -> 0,
-      "IsomorphicFibers" -> True, "HorizontalEdgesDensity" -> All
+  { fib = RandomInfraFiberedGraph[
+      CycleGraph[ 6 ], "VerticalVertexCount" -> { 2 }, "VerticalEdgeCount" -> { 0 },
+      Properties -> { "IsomorphicFibers" }, "HorizontalEdgeCount" -> All
     ] },
   { connection = RandomInfraConnection[ fib ] },
   { InfraFiberedGraphHighlight[ fib, connection ],
@@ -56,7 +57,7 @@ There are exactly two perfect matchings between these fibers.
 ```wl
 SeedRandom[ 1 ];
 With[
-  { fib = InfraFibration[
+  { fib = InfraFiberedGraph[
       Graph[ Range[ 4 ], UndirectedEdge @@@ Tuples[ { { 1, 2 }, { 3, 4 } } ] ],
       <| 1 -> "p", 2 -> "p", 3 -> "q", 4 -> "q" |>
     ] },
@@ -73,7 +74,7 @@ Equal fiber sizes and positive degrees do not guarantee a perfect matching: two 
 ```wl
 SeedRandom[ 1 ];
 With[
-  { fib = InfraFibration[
+  { fib = InfraFiberedGraph[
       Graph[ Range[ 6 ], UndirectedEdge @@@ { { 1, 4 }, { 2, 4 }, { 3, 5 }, { 3, 6 } } ],
       <| 1 -> "p", 2 -> "p", 3 -> "p", 4 -> "q", 5 -> "q", 6 -> "q" |>
     ] },

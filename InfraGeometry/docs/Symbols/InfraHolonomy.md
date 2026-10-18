@@ -7,6 +7,7 @@ URI: WolframInstitute/InfraGeometry/ref/InfraHolonomy
 Keywords: [holonomy, monodromy, permutation, connection, loop]
 SeeAlso: [InfraConnection, InfraHorizontalLift, InfraParallelTransport, InfraFlatConnectionQ, InfraHolonomyAngle]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -29,7 +30,7 @@ One circuit exchanges the sheets; retracing one edge has identity holonomy.
 SeedRandom[ 1 ];
 With[
   { total = CycleGraph[ 8 ] },
-  { fib = InfraFibration[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
+  { fib = InfraFiberedGraph[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
     connection = InfraConnection[ EdgeList @ total ] },
   { InfraFiberedGraphHighlight[ fib, connection ],
     InfraHolonomy[ fib, connection, { 1, 2, 3, 4, 1 } ],
@@ -46,7 +47,7 @@ The index convention is visible when the fiber vertices have a deliberately chos
 SeedRandom[ 1 ];
 With[
   { total = Graph[ { 1, 7, 4, 2, 3, 5, 6, 8, 9 }, EdgeList @ CycleGraph[ 9 ] ] },
-  { fib = InfraFibration[ total, vertex |-> Mod[ vertex, 3, 1 ] ],
+  { fib = InfraFiberedGraph[ total, vertex |-> Mod[ vertex, 3, 1 ] ],
     connection = InfraConnection[ EdgeList @ total ] },
   { VertexList @ InfraFiber[ fib, 1 ],
     InfraParallelTransport[ fib, connection, { 1, 2, 3, 1 } ],

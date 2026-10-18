@@ -5,8 +5,8 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 (* Ported from InfraGaugeTheory Kernel/Connections.wl at e5dc83b; InfraGaugeTheory keeps its own copy *)
 
 InfraConnectionQ[ fib : _[ _Graph, __ ], InfraConnection[ edges_List ] ] /;
-    AssociationQ[ InfraFibrationAssociation @ fib ] && GraphQ[ InfraBaseGraph @ fib ] :=
-  With[ { total = InfraTotalGraph @ fib, base = InfraBaseGraph @ fib, projection = InfraFibrationAssociation @ fib },
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
+  With[ { total = InfraTotalSpace @ fib, base = InfraBaseSpace @ fib, projection = InfraProjection @ fib },
     { vertices = VertexList @ total, baseVertices = VertexList @ base },
     { index = AssociationThread[ vertices, Range @ Length @ vertices ],
       baseIndex = AssociationThread[ baseVertices, Range @ Length @ baseVertices ] },
@@ -21,20 +21,20 @@ InfraConnectionQ[ fib : _[ _Graph, __ ], InfraConnection[ edges_List ] ] /;
                 Sort @ AdjacencyList[ indexedBase, projected[[ vertex ]] ] ] ] ] ]
 
 InfraConnectionQ[ fib : _[ _Graph, __ ], connections_List ] /;
-    AssociationQ[ InfraFibrationAssociation @ fib ] && GraphQ[ InfraBaseGraph @ fib ] :=
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
   connections =!= { } && And @@ ( InfraConnectionQ[ fib, # ] & /@ connections )
 
 (* Global monodromy is trivial iff every horizontal leaf projects injectively to the base. *)
 
 InfraFlatConnectionQ[ fib : _[ _Graph, __ ], connection : InfraConnection[ edges_List ] ] /;
-    AssociationQ[ InfraFibrationAssociation @ fib ] && GraphQ[ InfraBaseGraph @ fib ] :=
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
   InfraConnectionQ[ fib, connection ] &&
-    With[ { projection = InfraFibrationAssociation @ fib },
-      AllTrue[ ConnectedComponents @ Graph[ VertexList @ InfraTotalGraph @ fib, edges ],
+    With[ { projection = InfraProjection @ fib },
+      AllTrue[ ConnectedComponents @ Graph[ VertexList @ InfraTotalSpace @ fib, edges ],
         DuplicateFreeQ[ Lookup[ projection, Key /@ # ] ] & ] ]
 
 InfraFlatConnectionQ[ fib : _[ _Graph, __ ], connections_List ] /;
-    AssociationQ[ InfraFibrationAssociation @ fib ] && GraphQ[ InfraBaseGraph @ fib ] :=
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
   connections =!= { } && And @@ ( InfraFlatConnectionQ[ fib, # ] & /@ connections )
 
 Options[ RandomInfraConnection ] = { "NextVertexFunction" -> Automatic }
@@ -42,12 +42,12 @@ Options[ RandomInfraConnection ] = { "NextVertexFunction" -> Automatic }
 RandomInfraConnection[ fib : _[ _Graph, __ ],
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
     opts : OptionsPattern[] ] /;
-    AssociationQ[ InfraFibrationAssociation @ fib ] && GraphQ[ InfraBaseGraph @ fib ] &&
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] &&
     SubsetQ[ First /@ Options[ RandomInfraConnection ], First /@ Flatten @ { opts } ] &&
     With[ { next = OptionValue[ RandomInfraConnection, { opts }, "NextVertexFunction" ] },
       ! MatchQ[ next, _String | _Integer | _Real | _Rational | _Complex | _List | _Association | _Rule | _RuleDelayed ] &&
         ( count =!= All || next =!= RandomChoice ) ] :=
-  With[ { total = InfraTotalGraph @ fib, base = InfraBaseGraph @ fib, projection = InfraFibrationAssociation @ fib,
+  With[ { total = InfraTotalSpace @ fib, base = InfraBaseSpace @ fib, projection = InfraProjection @ fib,
       cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
       next = Replace[ OptionValue[ RandomInfraConnection, { opts }, "NextVertexFunction" ],
         Automatic :> If[ count === All, Identity, RandomSample ] ] },
@@ -98,11 +98,11 @@ RandomInfraConnection[ fib : _[ _Graph, __ ],
       _, If[ Length @ members < count, { }, members ] ] /; Last @ First @ search ]
 
 InfraHorizontalLift[ fib : _[ _Graph, __ ], connection : InfraConnection[ edges_List ], start_, walk : { __ } ] /;
-    TrueQ[ InfraConnectionQ[ fib, connection ] ] && VertexQ[ InfraTotalGraph @ fib, start ] &&
-    Lookup[ InfraFibrationAssociation @ fib, Key @ start ] === First @ walk &&
-    With[ { base = InfraBaseGraph @ fib },
+    TrueQ[ InfraConnectionQ[ fib, connection ] ] && VertexQ[ InfraTotalSpace @ fib, start ] &&
+    Lookup[ InfraProjection @ fib, Key @ start ] === First @ walk &&
+    With[ { base = InfraBaseSpace @ fib },
       AllTrue[ walk, VertexQ[ base, # ] & ] && AllTrue[ Partition[ walk, 2, 1 ], EdgeQ[ base, UndirectedEdge @@ # ] & ] ] :=
-  With[ { vertices = VertexList @ InfraTotalGraph @ fib, projection = InfraFibrationAssociation @ fib },
+  With[ { vertices = VertexList @ InfraTotalSpace @ fib, projection = InfraProjection @ fib },
     { index = AssociationThread[ vertices, Range @ Length @ vertices ], projected = Lookup[ projection, Key /@ vertices ] },
     { indexedConnection = Graph[ Range @ Length @ vertices, UndirectedEdge @@@ ( Lookup[ index, Key /@ ( List @@ # ) ] & /@ edges ) ] },
     vertices[[ FoldList[
@@ -111,14 +111,14 @@ InfraHorizontalLift[ fib : _[ _Graph, __ ], connection : InfraConnection[ edges_
 
 InfraParallelTransport[ fib : _[ _Graph, __ ], connection_InfraConnection, walk : { __ } ] /;
     TrueQ[ InfraConnectionQ[ fib, connection ] ] &&
-    With[ { base = InfraBaseGraph @ fib },
+    With[ { base = InfraBaseSpace @ fib },
       AllTrue[ walk, VertexQ[ base, # ] & ] && AllTrue[ Partition[ walk, 2, 1 ], EdgeQ[ base, UndirectedEdge @@ # ] & ] ] :=
   AssociationMap[ start |-> Last @ InfraHorizontalLift[ fib, connection, start, walk ],
     VertexList @ InfraFiber[ fib, First @ walk ] ]
 
 InfraHolonomy[ fib : _[ _Graph, __ ], connection_InfraConnection, loop : { __ } ] /;
     First @ loop === Last @ loop && TrueQ[ InfraConnectionQ[ fib, connection ] ] &&
-    With[ { base = InfraBaseGraph @ fib },
+    With[ { base = InfraBaseSpace @ fib },
       AllTrue[ loop, VertexQ[ base, # ] & ] && AllTrue[ Partition[ loop, 2, 1 ], EdgeQ[ base, UndirectedEdge @@ # ] & ] ] :=
   With[ { transport = InfraParallelTransport[ fib, connection, loop ], fiber = VertexList @ InfraFiber[ fib, First @ loop ] },
     { index = AssociationThread[ fiber, Range @ Length @ fiber ] },

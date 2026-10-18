@@ -6,8 +6,9 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraCotangentBundle
 Keywords: [cotangent bundle, covector, reversed ray]
-SeeAlso: [InfraTangentBundle, InfraRays, InfraBundleMorphism, InfraCanonicalOneForm, InfraTotalGraph]
+SeeAlso: [InfraTangentBundle, InfraRays, InfraBundleMorphism, InfraCanonicalOneForm, InfraTotalSpace]
 RelatedGuides: [InfraFiberBundles, InfraAnalysis]
+RelatedTutorials: [ExperimentalInfraBundles]
 ---
 
 ## Usage
@@ -39,7 +40,7 @@ The cotangent bundle of the grid at scale 2, the fiber over 6 drawn.
 SeedRandom[ 7 ];
 With[
   {fib = InfraCotangentBundle[GridGraph[{4, 4}], 2]},
-  {total = InfraTotalGraph[fib]},
+  {total = InfraTotalSpace[fib]},
   InfraSubstrateHighlight[total, {InfraDensity[total, VertexList @ InfraFiber[fib, 6]]}]]
 ```
 

@@ -15,7 +15,7 @@ Options[ InfraParallelTransport ] = { Method -> "Arclength" }
 
 InfraParallelTransport[ fib : InfraDisplacementBundle[ _Graph, _Integer?Positive ],
     InfraConnection[ edges_List ], walk : { __ } ] :=
-  With[ { total = InfraTotalGraph @ fib, projection = InfraFibrationAssociation @ fib, base = InfraBaseGraph @ fib },
+  With[ { total = InfraTotalSpace @ fib, projection = InfraProjection @ fib, base = InfraBaseSpace @ fib },
     With[ { vertices = VertexList @ total },
       { index = AssociationThread[ vertices, Range @ Length @ vertices ], projected = Lookup[ projection, Key /@ vertices ] },
       { indexedEdges = Lookup[ index, Key /@ ( List @@ # ) ] & /@ edges },

@@ -15,47 +15,76 @@ InfraRays[ g_Graph, p_, r_Integer?NonNegative ] :=
 (* The vertexwise rule: two tuples of base vertices are adjacent iff at every position their entries are equal or adjacent,
    so the adjacency matrix is the product over positions of the sparse closeness matrix restricted to the tuples *)
 
-InfraTotalGraph[ InfraTangentBundle[ g_Graph, r_Integer?Positive ] ] :=
+InfraTotalSpace[ InfraTangentBundle[ g_Graph, r_Integer?Positive ] ] :=
   With[ { rays = Catenate[ InfraRays[ g, #, r ] & /@ VertexList @ g ] },
     If[ rays === { }, Graph[ { }, { } ], With[
       { close = AdjacencyMatrix @ g + IdentityMatrix[ VertexCount @ g, SparseArray ], indices = Map[ VertexIndex[ g, # ] &, rays, { 2 } ] },
       { adjacency = UpperTriangularize[ Times @@ ( close[[ #, # ]] & /@ Transpose @ indices ), 1 ] },
       Graph[ rays, UndirectedEdge @@@ Map[ rays[[ # ]] &, Sort @ adjacency[ "NonzeroPositions" ], { 2 } ] ] ] ] ]
 
-InfraTotalGraph[ InfraCotangentBundle[ g_Graph, r_Integer?Positive ] ] :=
-  With[ { tangent = InfraTotalGraph @ InfraTangentBundle[ g, r ] },
+InfraTotalSpace[ InfraCotangentBundle[ g_Graph, r_Integer?Positive ] ] :=
+  With[ { tangent = InfraTotalSpace @ InfraTangentBundle[ g, r ] },
     Graph[ Reverse /@ VertexList @ tangent, Map[ Reverse, EdgeList @ tangent, { 2 } ] ] ]
 
-InfraTotalGraph[ InfraDisplacementBundle[ g_Graph, r_Integer?Positive ] ] :=
+InfraTotalSpace[ InfraDisplacementBundle[ g_Graph, r_Integer?Positive ] ] :=
   With[ { indices = If[ VertexCount @ g === 0, { }, Position[ GraphDistanceMatrix @ g, r, { 2 } ] ] },
     If[ indices === { }, Graph[ { }, { } ], With[
       { close = AdjacencyMatrix @ g + IdentityMatrix[ VertexCount @ g, SparseArray ], pairs = Part[ VertexList @ g, # ] & /@ indices },
       { adjacency = UpperTriangularize[ close[[ First /@ indices, First /@ indices ]] close[[ Last /@ indices, Last /@ indices ]], 1 ] },
       Graph[ pairs, UndirectedEdge @@@ Map[ pairs[[ # ]] &, Sort @ adjacency[ "NonzeroPositions" ], { 2 } ] ] ] ] ]
 
-InfraFibrationAssociation[ InfraTangentBundle[ g_Graph, r_Integer?Positive ] ] :=
+InfraProjection[ InfraTangentBundle[ g_Graph, r_Integer?Positive ] ] :=
   AssociationMap[ First, Catenate[ InfraRays[ g, #, r ] & /@ VertexList @ g ] ]
 
 (* A covector at p is a ray arriving at p, the reversal of a ray leaving p *)
 
-InfraFibrationAssociation[ InfraCotangentBundle[ g_Graph, r_Integer?Positive ] ] :=
+InfraProjection[ InfraCotangentBundle[ g_Graph, r_Integer?Positive ] ] :=
   AssociationMap[ Last, Reverse /@ Catenate[ InfraRays[ g, #, r ] & /@ VertexList @ g ] ]
 
-InfraFibrationAssociation[ InfraDisplacementBundle[ g_Graph, r_Integer?Positive ] ] :=
+InfraProjection[ InfraDisplacementBundle[ g_Graph, r_Integer?Positive ] ] :=
   AssociationMap[ First, Part[ VertexList @ g, # ] & /@ If[ VertexCount @ g === 0, { }, Position[ GraphDistanceMatrix @ g, r, { 2 } ] ] ]
 
-InfraFibration[ fib : ( _InfraTangentBundle | _InfraCotangentBundle | _InfraDisplacementBundle ) ] :=
-  InfraFibration[ InfraTotalGraph @ fib, InfraFibrationAssociation @ fib ]
+InfraFiberedGraph[ fib : ( InfraTangentBundle[ _Graph, _Integer?Positive ] |
+    InfraCotangentBundle[ _Graph, _Integer?Positive ] | InfraDisplacementBundle[ _Graph, _Integer?Positive ] ) ] :=
+  InfraFiberedGraph[ InfraTotalSpace @ fib, InfraProjection @ fib ]
+
+InfraFibration[ fib : ( InfraTangentBundle[ _Graph, _Integer?Positive ] |
+    InfraCotangentBundle[ _Graph, _Integer?Positive ] | InfraDisplacementBundle[ _Graph, _Integer?Positive ] ) ] :=
+  InfraFibration[ InfraTotalSpace @ fib, InfraProjection @ fib ]
 
 (* Materialize a model's total graph once before applying the structural predicates. *)
 
+InfraFiberedGraphQ[ fib : ( InfraTangentBundle[ _Graph, _Integer?Positive ] |
+    InfraCotangentBundle[ _Graph, _Integer?Positive ] | InfraDisplacementBundle[ _Graph, _Integer?Positive ] ) ] :=
+  InfraFiberedGraphQ[ InfraFiberedGraph[ fib ] ]
+
+InfraEqualFiberSizesQ[ fib : ( InfraTangentBundle[ _Graph, _Integer?Positive ] |
+    InfraCotangentBundle[ _Graph, _Integer?Positive ] | InfraDisplacementBundle[ _Graph, _Integer?Positive ] ) ] :=
+  InfraEqualFiberSizesQ[ InfraFiberedGraph[ fib ] ]
+
+InfraIsomorphicFibersQ[ fib : ( InfraTangentBundle[ _Graph, _Integer?Positive ] |
+    InfraCotangentBundle[ _Graph, _Integer?Positive ] | InfraDisplacementBundle[ _Graph, _Integer?Positive ] ) ] :=
+  InfraIsomorphicFibersQ[ InfraFiberedGraph[ fib ] ]
+
+InfraAtMostOneEdgeLiftQ[ fib : ( InfraTangentBundle[ _Graph, _Integer?Positive ] |
+    InfraCotangentBundle[ _Graph, _Integer?Positive ] | InfraDisplacementBundle[ _Graph, _Integer?Positive ] ) ] :=
+  InfraAtMostOneEdgeLiftQ[ InfraFiberedGraph[ fib ] ]
+
+InfraUniqueEdgeLiftingQ[ fib : ( InfraTangentBundle[ _Graph, _Integer?Positive ] |
+    InfraCotangentBundle[ _Graph, _Integer?Positive ] | InfraDisplacementBundle[ _Graph, _Integer?Positive ] ) ] :=
+  InfraUniqueEdgeLiftingQ[ InfraFiberedGraph[ fib ] ]
+
+InfraCoveringQ[ fib : ( InfraTangentBundle[ _Graph, _Integer?Positive ] |
+    InfraCotangentBundle[ _Graph, _Integer?Positive ] | InfraDisplacementBundle[ _Graph, _Integer?Positive ] ) ] :=
+  InfraCoveringQ[ InfraFiberedGraph[ fib ] ]
+
 InfraFibrationQ[ fib : ( InfraTangentBundle[ _Graph, _Integer?Positive ] |
     InfraCotangentBundle[ _Graph, _Integer?Positive ] | InfraDisplacementBundle[ _Graph, _Integer?Positive ] ) ] :=
-  InfraFibrationQ[ InfraFibration[ fib ] ]
+  InfraFibrationQ[ InfraFiberedGraph[ fib ] ]
 
 InfraFiberBundleQ[ fib : ( InfraTangentBundle[ _Graph, _Integer?Positive ] |
     InfraCotangentBundle[ _Graph, _Integer?Positive ] | InfraDisplacementBundle[ _Graph, _Integer?Positive ] ) ] :=
-  InfraFiberBundleQ[ InfraFibration[ fib ] ]
+  InfraFiberBundleQ[ InfraFiberedGraph[ fib ] ]
 
 InfraBundleMorphism[ InfraTangentBundle[ g_Graph, r_Integer ], InfraDisplacementBundle[ h_Graph, r_Integer ] ] /;
     Sort @ VertexList @ g === Sort @ VertexList @ h && Sort[ Sort /@ EdgeList @ g ] === Sort[ Sort /@ EdgeList @ h ] :=

@@ -6,8 +6,9 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraFiberedGraphViewer
 Keywords: [fibered graph, fibration, viewer, hover, section, connection, lift]
-SeeAlso: [InfraFiberedGraphHighlight, InfraFibration, InfraSection, InfraConnection, InfraFiber, InfraBaseGraph]
+SeeAlso: [InfraFiberedGraphHighlight, InfraFiberedGraph, InfraSection, InfraConnection, InfraFiber, InfraBaseSpace]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -49,8 +50,8 @@ Inspect a continuous section and a connection over the hexagon.
 ```wl
 SeedRandom[7];
 With[
-  {fib = RandomInfraFibration[CycleGraph[6], "VerticalVertices" -> 3,
-    "IsomorphicFibers" -> True, "HorizontalEdgesDensity" -> All]},
+  {fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> { 3 },
+    Properties -> { "IsomorphicFibers" }, "HorizontalEdgeCount" -> All]},
   {partial = RandomInfraSection[fib, {1, 3}]},
   {section = RandomInfraSection[fib, partial, Properties -> {"Continuous"}]},
   {connection = RandomInfraConnection[fib]},
@@ -64,7 +65,7 @@ Inspect the same kind of object with upright three-dimensional fibers.
 ```wl
 SeedRandom[7];
 With[
-  {fib = RandomInfraFibration[CycleGraph[4], "VerticalVertices" -> 3, "HorizontalEdgesDensity" -> All]},
+  {fib = RandomInfraFiberedGraph[CycleGraph[4], "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All]},
   {connection = RandomInfraConnection[fib]},
   InfraFiberedGraphViewer[fib, {connection -> StandardBlue}, Method -> "3DFiber"]]
 ```
@@ -74,5 +75,5 @@ With[
 The viewer leaves an unsupported view unevaluated.
 
 ```wl
-InfraFiberedGraphViewer[InfraFibration[CycleGraph[4], Identity], {}, Method -> "Unrecognized"]
+InfraFiberedGraphViewer[InfraFiberedGraph[CycleGraph[4], Identity], {}, Method -> "Unrecognized"]
 ```

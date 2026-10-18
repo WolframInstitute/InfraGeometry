@@ -7,6 +7,7 @@ URI: WolframInstitute/InfraGeometry/ref/InfraFlatConnectionQ
 Keywords: [trivial global monodromy, flat connection, horizontal leaves]
 SeeAlso: [InfraConnection, InfraConnectionQ, InfraHolonomy, InfraParallelTransport, InfraFiberBundleQ]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -35,7 +36,7 @@ With[
       Graph[ Range[ 8 ], Join[ EdgeList @ CycleGraph[ 4 ], EdgeList @ IndexGraph[ CycleGraph[ 4 ], 5 ] ] ],
       CycleGraph[ 8 ]
     } },
-  { fibrations = InfraFibration[ #, vertex |-> Mod[ vertex, 4, 1 ] ] & /@ totals,
+  { fibrations = InfraFiberedGraph[ #, vertex |-> Mod[ vertex, 4, 1 ] ] & /@ totals,
     connections = InfraConnection[ EdgeList @ # ] & /@ totals },
   { GraphicsRow @ MapThread[ InfraFiberedGraphHighlight, { fibrations, connections } ],
     MapThread[ InfraFlatConnectionQ, { fibrations, connections } ] }
@@ -49,9 +50,9 @@ All complete connections on this path base have trivial global monodromy.
 ```wl
 SeedRandom[ 1 ];
 With[
-  { fib = RandomInfraFibration[
-      PathGraph[ Range[ 3 ] ], "VerticalVertices" -> 2, "VerticalEdges" -> 0,
-      "IsomorphicFibers" -> True, "HorizontalEdgesDensity" -> All
+  { fib = RandomInfraFiberedGraph[
+      PathGraph[ Range[ 3 ] ], "VerticalVertexCount" -> { 2 }, "VerticalEdgeCount" -> { 0 },
+      Properties -> { "IsomorphicFibers" }, "HorizontalEdgeCount" -> All
     ] },
   { connections = RandomInfraConnection[ fib, All ] },
   { Length @ connections, InfraFlatConnectionQ[ fib, connections ] }

@@ -6,8 +6,9 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraTangentBundle
 Keywords: [tangent bundle, ray, vector field, scale]
-SeeAlso: [InfraRays, InfraCotangentBundle, InfraDisplacementBundle, InfraBundleMorphism, InfraTotalGraph, InfraFiberedSubstrate]
+SeeAlso: [InfraRays, InfraCotangentBundle, InfraDisplacementBundle, InfraBundleMorphism, InfraTotalSpace, InfraFiberedSubstrate]
 RelatedGuides: [InfraFiberBundles, InfraAnalysis]
+RelatedTutorials: [ExperimentalInfraBundles]
 ---
 
 ## Usage
@@ -20,7 +21,7 @@ RelatedGuides: [InfraFiberBundles, InfraAnalysis]
 
 
 - A tangent vector at *p* at scale *r* is a ray of length *r* from *p*, as given by [InfraRays]().
-- [InfraTangentBundle]() is inert. [InfraTotalGraph]() builds its total graph on every call; <code>[InfraFibration]()[*fib*]</code> builds it once.
+- [InfraTangentBundle]() is inert. [InfraTotalSpace]() builds its total graph on every call; <code>[InfraFiberedGraph]()[*fib*]</code> builds it once.
 - The scale *r* must be a positive integer.
 - At scale 1 a ray is an edge, and the tangent bundle has the same total graph as the displacement bundle at scale 1.
 
@@ -32,7 +33,7 @@ The tangent bundle of a grid at scale 2, the rays over the vertex 6 drawn.
 SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["GridTangentBundle", "Small"]},
-  {total = InfraTotalGraph[fib]},
+  {total = InfraTotalSpace[fib]},
   InfraSubstrateHighlight[total, {InfraDensity[total, VertexList @ InfraFiber[fib, 6]]}]]
 ```
 
@@ -53,14 +54,14 @@ The tangent bundle of the grid at scales 1 and 2.
 SeedRandom[ 7 ];
 With[
   {g = GridGraph[{4, 4}]},
-  GraphicsRow[InfraTotalGraph @ InfraTangentBundle[g, #] & /@ {1, 2}]]
+  GraphicsRow[InfraTotalSpace @ InfraTangentBundle[g, #] & /@ {1, 2}]]
 ```
 
 The tangent bundle of the octahedron at scale 2 from the catalogue.
 
 ```wl
 SeedRandom[ 7 ];
-InfraTotalGraph @ InfraFiberedSubstrate["OctahedronTangentBundle"]
+InfraTotalSpace @ InfraFiberedSubstrate["OctahedronTangentBundle"]
 ```
 
 ## Properties and Relations

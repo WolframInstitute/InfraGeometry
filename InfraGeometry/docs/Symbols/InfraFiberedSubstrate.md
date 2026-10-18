@@ -6,13 +6,14 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraFiberedSubstrate
 Keywords: [fibration, fiber bundle, covering, tangent bundle, displacement bundle, example, roster]
-SeeAlso: [InfraSubstrate, InfraFibration, InfraTangentBundle, InfraDisplacementBundle, InfraTotalGraph, InfraFibrationQ, InfraFiberBundleQ, FindInfraLeviCivitaConnection]
+SeeAlso: [InfraSubstrate, InfraFiberedGraph, InfraTangentBundle, InfraDisplacementBundle, InfraTotalSpace, InfraFibrationQ, InfraFiberBundleQ, FindInfraLeviCivitaConnection]
 RelatedGuides: [InfraFiberBundles, InfraSubstrates]
+RelatedTutorials: [ExperimentalInfraBundles]
 ---
 
 ## Usage
 
-<code>[InfraFiberedSubstrate]()[*name*, *size*]</code> is the example fibration *name* at *size* `"Small"`, `"Medium"` or `"Large"`.
+<code>[InfraFiberedSubstrate]()[*name*, *size*]</code> is the example fibered graph *name* at *size* `"Small"`, `"Medium"` or `"Large"`.
 
 <code>[InfraFiberedSubstrate]()[*name*]</code> is the `"Medium"` size.
 
@@ -23,7 +24,7 @@ RelatedGuides: [InfraFiberBundles, InfraSubstrates]
 - This is a particular Experimental construction in the Infra Fiber Bundles category. Its existing call forms remain available.
 
 
-An entry is a fibration head: a construction [InfraTangentBundle]() or [InfraDisplacementBundle](), or a literal [InfraFibration](). Every fibration function takes it as it is.
+An entry is a fibered-graph construction: a construction [InfraTangentBundle]() or [InfraDisplacementBundle](), or a literal [InfraFiberedGraph](). The general readers accept these construction heads.
 
 The roster has five groups:
 
@@ -78,8 +79,8 @@ The prism and the Moebius ladder have the same base and the same fiber. Only the
 ```wl
 SeedRandom[ 7 ];
 With[
-  {prism = InfraTotalGraph @ InfraFiberedSubstrate["CycleProductBundle", "Small"]},
-  {moebius = InfraTotalGraph @ InfraFiberedSubstrate["MoebiusLadderCover", "Small"]},
+  {prism = InfraTotalSpace @ InfraFiberedSubstrate["CycleProductBundle", "Small"]},
+  {moebius = InfraTotalSpace @ InfraFiberedSubstrate["MoebiusLadderCover", "Small"]},
   GraphicsRow[{prism, moebius}]]
 ```
 

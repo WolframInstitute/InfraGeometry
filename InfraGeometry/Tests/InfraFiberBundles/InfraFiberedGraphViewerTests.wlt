@@ -60,4 +60,25 @@ VerificationTest[
   TestID -> "Fibered-viewer-explicit-items-and-standard-option-list"
 ]
 
+VerificationTest[
+  With[ { vertices = { { "p", 1 }, { "q", 2 } }, coordinates = { { 0, 0 }, { 2, 0 } } },
+    { fib = InfraFiberedGraph[ PathGraph[ vertices ], Identity ],
+      rules = MapThread[ Rule, { Reverse @ vertices, Reverse @ coordinates } ] },
+    Table[ Check[ Head @ InfraFiberedGraphViewer[ fib, { }, Method -> method,
+        "BaseVertexCoordinates" -> specification, "BaseVertexCoordinates" -> <| |> ], "Message" ],
+      { method, { "CircularFiber", "3DFiber", "HighlightFiber" } }, { specification, { coordinates, rules } } ] ],
+  ConstantArray[ DynamicModule, { 3, 2 } ],
+  TestID -> "Fibered-viewer-general-head-native-coordinate-forms-and-first-option"
+]
+
+VerificationTest[
+  With[ { fib = InfraFiberedGraph[ PathGraph[ Range[ 3 ] ], Identity ] },
+    Map[ coordinates |-> Check[
+      Head @ InfraFiberedGraphViewer[ fib, { }, "BaseVertexCoordinates" -> coordinates ], "Message" ],
+      { { { 0, 0 }, { 1, 0 } }, { 1 -> { 0, 0 }, 2 -> { 1, 0 } },
+        { 1 -> { 0, 0 }, 2 -> { 1, 0 }, 3 -> { 2, 0, 1 } } } ] ],
+  ConstantArray[ InfraFiberedGraphViewer, 3 ],
+  TestID -> "Fibered-viewer-incomplete-native-coordinate-forms-remain-unevaluated"
+]
+
 EndTestSection[ ]

@@ -167,4 +167,27 @@ VerificationTest[
   TestID -> "InfraTangentBundle-prototype-acceptance"
 ]
 
+VerificationTest[
+  With[ { graph = CycleGraph[ 8 ] },
+    Map[ head |-> With[ { model = head[ graph, 2 ] },
+        { literal = InfraFiberedGraph[ model ], legacy = InfraFibration[ model ] },
+        { Head[ literal ], Head[ legacy ], InfraTotalSpace[ literal ] === InfraTotalGraph[ model ],
+          InfraProjection[ literal ] === InfraFibrationAssociation[ model ],
+          InfraBaseSpace[ literal ] === InfraBaseGraph[ model ],
+          InfraTotalSpace[ legacy ] === InfraTotalSpace[ literal ] } ],
+      { InfraTangentBundle, InfraCotangentBundle, InfraDisplacementBundle } ] ],
+  ConstantArray[ { InfraFiberedGraph, InfraFibration, True, True, True, True }, 3 ],
+  TestID -> "InfraTangentBundle-canonical-readers-and-both-literal-materializers"
+]
+
+VerificationTest[
+  With[ { graph = CycleGraph[ 8 ] },
+    Table[ predicate[ head[ graph, 2 ] ],
+      { head, { InfraTangentBundle, InfraCotangentBundle, InfraDisplacementBundle } },
+      { predicate, { InfraFiberedGraphQ, InfraEqualFiberSizesQ, InfraIsomorphicFibersQ,
+          InfraAtMostOneEdgeLiftQ, InfraUniqueEdgeLiftingQ, InfraCoveringQ } } ] ],
+  ConstantArray[ True, { 3, 6 } ],
+  TestID -> "InfraTangentBundle-model-predicates-use-canonical-fibered-graphs"
+]
+
 EndTestSection[]

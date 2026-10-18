@@ -8,6 +8,7 @@ URI: WolframInstitute/InfraGeometry/ref/InfraParallelSectionQ
 Keywords: [parallel section, connection, parallel transport, horizontal section]
 SeeAlso: [InfraSection, InfraSectionQ, InfraContinuousSectionQ, InfraConnection, InfraConnectionQ, InfraParallelTransport, RandomInfraSection]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -33,7 +34,7 @@ The connection chooses one of the available lifts. A section following another l
 ```wl
 SeedRandom[7];
 With[
-  {fib = InfraFibration[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[1, 4], UndirectedEdge[2, 3], UndirectedEdge[2, 4]}],
+  {fib = InfraFiberedGraph[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[1, 4], UndirectedEdge[2, 3], UndirectedEdge[2, 4]}],
     <|1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b"|>]},
   {connection = InfraConnection[{UndirectedEdge[1, 3], UndirectedEdge[2, 4]}], section = InfraSection[<|"a" -> 1, "b" -> 4|>]},
   {InfraFiberedGraphHighlight[fib, {connection, section}],
@@ -45,7 +46,7 @@ A section that follows the matching is parallel.
 ```wl
 SeedRandom[7];
 With[
-  {fib = InfraFibration[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[1, 4], UndirectedEdge[2, 3], UndirectedEdge[2, 4]}],
+  {fib = InfraFiberedGraph[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[1, 4], UndirectedEdge[2, 3], UndirectedEdge[2, 4]}],
     <|1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b"|>]},
   {connection = InfraConnection[{UndirectedEdge[1, 3], UndirectedEdge[2, 4]}], section = InfraSection[<|"a" -> 1, "b" -> 3|>]},
   {InfraFiberedGraphHighlight[fib, {connection, section}], InfraParallelSectionQ[fib, connection, section]}]

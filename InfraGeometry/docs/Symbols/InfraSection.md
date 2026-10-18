@@ -6,8 +6,9 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSection
 Keywords: [section, partial section, inert map, projection]
-SeeAlso: [InfraSectionQ, InfraContinuousSectionQ, InfraParallelSectionQ, RandomInfraSection, InfraFibration, InfraFiberedGraphHighlight]
+SeeAlso: [InfraSectionQ, InfraContinuousSectionQ, InfraParallelSectionQ, RandomInfraSection, InfraFiberedGraph, InfraFiberedGraphHighlight]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -31,8 +32,8 @@ A partial section chooses values in two fibers.
 ```wl
 SeedRandom[7];
 With[
-  {fib = RandomInfraFibration[CycleGraph[6], "VerticalVertices" -> 3,
-    "VerticalEdges" -> 0, "HorizontalEdgesDensity" -> All]},
+  {fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> { 3 },
+    "VerticalEdgeCount" -> { 0 }, "HorizontalEdgeCount" -> All]},
   {partial = RandomInfraSection[fib, {1, 3}]},
   InfraFiberedGraphHighlight[fib, partial]]
 ```
@@ -42,7 +43,7 @@ The same inert section is read in the context of its fibered graph.
 ```wl
 SeedRandom[7];
 With[
-  {fib = InfraFibration[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[2, 4]}],
+  {fib = InfraFiberedGraph[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[2, 4]}],
     <|1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b"|>]},
   {section = InfraSection[<|"a" -> 1, "b" -> 3|>]},
   {InfraFiberedGraphHighlight[fib, section], InfraSectionQ[fib, section], InfraContinuousSectionQ[fib, section]}]

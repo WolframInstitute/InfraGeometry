@@ -7,6 +7,7 @@ URI: WolframInstitute/InfraGeometry/ref/InfraConnectionQ
 Keywords: [complete connection, perfect matching, lift, predicate]
 SeeAlso: [InfraConnection, RandomInfraConnection, InfraHorizontalLift, InfraFlatConnectionQ, InfraParallelSectionQ]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -30,7 +31,7 @@ Removing one edge from a complete matching leaves two fiber vertices without a l
 ```wl
 SeedRandom[ 1 ];
 With[
-  { fib = InfraFibration[
+  { fib = InfraFiberedGraph[
       Graph[ Range[ 4 ], UndirectedEdge @@@ Tuples[ { { 1, 2 }, { 3, 4 } } ] ],
       <| 1 -> "p", 2 -> "p", 3 -> "q", 4 -> "q" |>
     ] },
@@ -49,7 +50,7 @@ A single available edge does not connect the whole two-vertex fibers. No complet
 ```wl
 SeedRandom[ 1 ];
 With[
-  { fib = InfraFibration[
+  { fib = InfraFiberedGraph[
       Graph[ Range[ 4 ], { UndirectedEdge[ 1, 3 ] } ],
       <| 1 -> "p", 2 -> "p", 3 -> "q", 4 -> "q" |>
     ] },

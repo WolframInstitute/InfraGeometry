@@ -3,37 +3,37 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 (* WolframInstitute`InfraGeometry` :: InfraFiberBundles :: InfraSection *)
 
 InfraSectionQ[ fib : _[ _Graph, __ ], InfraSection[ section_Association ] ] /;
-    AssociationQ[ InfraFibrationAssociation @ fib ] && GraphQ[ InfraBaseGraph @ fib ] :=
-  With[ { projection = InfraFibrationAssociation @ fib },
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
+  With[ { projection = InfraProjection @ fib },
     AllTrue[ Normal @ section,
       binding |-> KeyExistsQ[ projection, Last @ binding ] && Lookup[ projection, Key @ Last @ binding ] === First @ binding ] ]
 
 InfraSectionQ[ fib : _[ _Graph, __ ], sections_List ] /;
-    AssociationQ[ InfraFibrationAssociation @ fib ] && GraphQ[ InfraBaseGraph @ fib ] :=
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
   sections =!= { } && And @@ ( InfraSectionQ[ fib, # ] & /@ sections )
 
 InfraContinuousSectionQ[ fib : _[ _Graph, __ ], section : InfraSection[ values_Association ] ] /;
-    AssociationQ[ InfraFibrationAssociation @ fib ] && GraphQ[ InfraBaseGraph @ fib ] :=
-  With[ { total = InfraTotalGraph @ fib },
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
+  With[ { total = InfraTotalSpace @ fib },
     { positions = AssociationThread[ VertexList @ total, Range @ VertexCount @ total ], indexed = IndexGraph @ total },
     InfraSectionQ[ fib, section ] &&
-      AllTrue[ Select[ EdgeList @ InfraBaseGraph @ fib, edge |-> AllTrue[ List @@ edge, KeyExistsQ[ values, # ] & ] ],
+      AllTrue[ Select[ EdgeList @ InfraBaseSpace @ fib, edge |-> AllTrue[ List @@ edge, KeyExistsQ[ values, # ] & ] ],
         EdgeQ[ indexed, UndirectedEdge @@ Lookup[ positions, Key /@ Lookup[ values, Key /@ List @@ # ] ] ] & ] ]
 
 InfraContinuousSectionQ[ fib : _[ _Graph, __ ], sections_List ] /;
-    AssociationQ[ InfraFibrationAssociation @ fib ] && GraphQ[ InfraBaseGraph @ fib ] :=
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
   sections =!= { } && And @@ ( InfraContinuousSectionQ[ fib, # ] & /@ sections )
 
 InfraParallelSectionQ[ fib : _[ _Graph, __ ], connection_InfraConnection, section : InfraSection[ values_Association ] ] /;
-    AssociationQ[ InfraFibrationAssociation @ fib ] && GraphQ[ InfraBaseGraph @ fib ] &&
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] &&
     TrueQ[ InfraConnectionQ[ fib, connection ] ] :=
   InfraSectionQ[ fib, section ] &&
-    AllTrue[ Select[ EdgeList @ InfraBaseGraph @ fib, edge |-> AllTrue[ List @@ edge, KeyExistsQ[ values, # ] & ] ],
+    AllTrue[ Select[ EdgeList @ InfraBaseSpace @ fib, edge |-> AllTrue[ List @@ edge, KeyExistsQ[ values, # ] & ] ],
       edge |-> Lookup[ InfraParallelTransport[ fib, connection, List @@ edge ], Key @ Lookup[ values, Key @ First @ edge ] ] ===
         Lookup[ values, Key @ Last @ edge ] ]
 
 InfraParallelSectionQ[ fib : _[ _Graph, __ ], connection_InfraConnection, sections_List ] /;
-    AssociationQ[ InfraFibrationAssociation @ fib ] && GraphQ[ InfraBaseGraph @ fib ] &&
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] &&
     TrueQ[ InfraConnectionQ[ fib, connection ] ] :=
   sections =!= { } && And @@ ( InfraParallelSectionQ[ fib, connection, # ] & /@ sections )
 
@@ -43,7 +43,7 @@ RandomInfraSection[ fib : _[ _Graph, __ ],
     specification : ( _List | InfraSection[ _Association ] ) : InfraSection[ <| |> ],
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
     opts : OptionsPattern[] ] /;
-    AssociationQ[ InfraFibrationAssociation @ fib ] && GraphQ[ InfraBaseGraph @ fib ] &&
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] &&
     SubsetQ[ First /@ Options[ RandomInfraSection ], First /@ Flatten @ { opts } ] &&
     ( OptionValue[ RandomInfraSection, { opts }, Properties ] === { } ||
       OptionValue[ RandomInfraSection, { opts }, Properties ] === { "Continuous" } ) &&
@@ -51,9 +51,9 @@ RandomInfraSection[ fib : _[ _Graph, __ ],
       _String | _Integer | _Real | _Rational | _Complex | _List | _Association | _Rule | _RuleDelayed ] &&
     ( count =!= All || OptionValue[ RandomInfraSection, { opts }, "NextVertexFunction" ] =!= RandomChoice ) &&
     If[ ListQ @ specification,
-      AllTrue[ specification, point |-> AnyTrue[ VertexList @ InfraBaseGraph @ fib, # === point & ] ],
+      AllTrue[ specification, point |-> AnyTrue[ VertexList @ InfraBaseSpace @ fib, # === point & ] ],
       TrueQ[ InfraSectionQ[ fib, specification ] ] ] :=
-  With[ { projection = InfraFibrationAssociation @ fib, total = InfraTotalGraph @ fib, base = InfraBaseGraph @ fib,
+  With[ { projection = InfraProjection @ fib, total = InfraTotalSpace @ fib, base = InfraBaseSpace @ fib,
           continuous = OptionValue[ RandomInfraSection, { opts }, Properties ] === { "Continuous" },
           cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
           nextFunction = If[ count === All && OptionValue[ RandomInfraSection, { opts }, "NextVertexFunction" ] === Automatic,
@@ -104,5 +104,5 @@ RandomInfraSection[ fib : _[ _Graph, __ ],
 
 FindInfraSection[ fib : _[ _Graph, __ ],
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All ) ] /;
-    AssociationQ[ InfraFibrationAssociation @ fib ] && GraphQ[ InfraBaseGraph @ fib ] :=
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
   RandomInfraSection[ fib, count, Properties -> { "Continuous" }, "NextVertexFunction" -> Identity ]

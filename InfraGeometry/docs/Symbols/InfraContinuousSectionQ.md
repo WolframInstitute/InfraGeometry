@@ -8,6 +8,7 @@ URI: WolframInstitute/InfraGeometry/ref/InfraContinuousSectionQ
 Keywords: [continuous section, partial section, adjacency preservation]
 SeeAlso: [InfraSection, InfraSectionQ, InfraParallelSectionQ, RandomInfraSection, InfraFiberedGraphHighlight]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -31,7 +32,7 @@ The two sheets of a product covering are continuous sections.
 ```wl
 SeedRandom[7];
 With[
-  {fib = InfraFibration[GraphProduct[CycleGraph[4], Graph[{1, 2}, {}], "Cartesian"], First]},
+  {fib = InfraFiberedGraph[GraphProduct[CycleGraph[4], Graph[{1, 2}, {}], "Cartesian"], First]},
   {sections = RandomInfraSection[fib, All, Properties -> {"Continuous"}]},
   {GraphicsRow[InfraFiberedGraphHighlight[fib, #] & /@ sections], InfraContinuousSectionQ[fib, sections]}]
 ```
@@ -41,7 +42,7 @@ Switching sheets across a base edge breaks continuity.
 ```wl
 SeedRandom[7];
 With[
-  {fib = InfraFibration[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[2, 4]}],
+  {fib = InfraFiberedGraph[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[2, 4]}],
     <|1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b"|>]},
   {section = InfraSection[<|"a" -> 1, "b" -> 4|>]},
   {InfraFiberedGraphHighlight[fib, section], InfraSectionQ[fib, section], InfraContinuousSectionQ[fib, section]}]

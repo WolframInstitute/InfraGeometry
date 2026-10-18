@@ -6,8 +6,9 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraSection
 Keywords: [section, partial section, section extension, continuous section, sampling]
-SeeAlso: [InfraSection, InfraSectionQ, InfraContinuousSectionQ, InfraParallelSectionQ, RandomInfraFibration, RandomInfraConnection, InfraFiberedGraphHighlight]
+SeeAlso: [InfraSection, InfraSectionQ, InfraContinuousSectionQ, InfraParallelSectionQ, RandomInfraFiberedGraph, RandomInfraConnection, InfraFiberedGraphHighlight]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -49,8 +50,8 @@ Choose values in two fibers and extend them continuously across the whole cycle.
 ```wl
 SeedRandom[7];
 With[
-  {fib = RandomInfraFibration[CycleGraph[6], "VerticalVertices" -> 3,
-    "VerticalEdges" -> 0, "HorizontalEdgesDensity" -> All]},
+  {fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> { 3 },
+    "VerticalEdgeCount" -> { 0 }, "HorizontalEdgeCount" -> All]},
   {partial = RandomInfraSection[fib, {1, 3}]},
   {section = RandomInfraSection[fib, partial, Properties -> {"Continuous"}]},
   InfraFiberedGraphHighlight[fib, {partial, section}]]
@@ -61,7 +62,7 @@ The product covering has two continuous sections, one on each sheet.
 ```wl
 SeedRandom[7];
 With[
-  {fib = InfraFibration[GraphProduct[CycleGraph[4], Graph[{1, 2}, {}], "Cartesian"], First]},
+  {fib = InfraFiberedGraph[GraphProduct[CycleGraph[4], Graph[{1, 2}, {}], "Cartesian"], First]},
   {sections = RandomInfraSection[fib, All, Properties -> {"Continuous"}]},
   GraphicsRow[InfraFiberedGraphHighlight[fib, #] & /@ sections]]
 ```
@@ -73,7 +74,7 @@ A domain restricts the target. A seed fixes values and extends across all base c
 ```wl
 SeedRandom[7];
 With[
-  {fib = InfraFibration[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[2, 4]}],
+  {fib = InfraFiberedGraph[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[2, 4]}],
     <|1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b"|>]},
   {partial = RandomInfraSection[fib, {"a"}, "NextVertexFunction" -> Identity]},
   {partial, RandomInfraSection[fib, partial, Properties -> {"Continuous"}, "NextVertexFunction" -> Identity]}]
@@ -86,7 +87,7 @@ A continuous partial section can fail to extend. Values on opposite sheets at th
 ```wl
 SeedRandom[7];
 With[
-  {fib = InfraFibration[GraphProduct[PathGraph[{1, 2, 3}], Graph[{1, 2}, {}], "Cartesian"], First]},
+  {fib = InfraFiberedGraph[GraphProduct[PathGraph[{1, 2, 3}], Graph[{1, 2}, {}], "Cartesian"], First]},
   {partial = InfraSection[<|1 -> {1, 1}, 3 -> {3, 2}|>]},
   {InfraContinuousSectionQ[fib, partial], RandomInfraSection[fib, partial, Properties -> {"Continuous"}]}]
 ```

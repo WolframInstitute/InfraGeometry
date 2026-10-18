@@ -6,8 +6,9 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraFiberedGraphHighlight
 Keywords: [fibered graph, fibration, highlight, visualization, section, connection, lift]
-SeeAlso: [InfraFiberedGraphViewer, InfraSubstrateHighlight, InfraFibration, InfraSection, InfraConnection, InfraHorizontalLift, InfraFiber]
+SeeAlso: [InfraFiberedGraphViewer, InfraSubstrateHighlight, InfraFiberedGraph, InfraSection, InfraConnection, InfraHorizontalLift, InfraFiber]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -20,7 +21,7 @@ RelatedGuides: [InfraFiberBundles]
 
 ## Details & Options
 
-The result is a native [Graph]() or [Graph3D]() with the same vertices and edges as [InfraTotalGraph]()[*fib*].
+The result is a native [Graph]() or [Graph3D]() with the same vertices and edges as [InfraTotalSpace]()[*fib*].
 Drawing coordinates belong to this result; the fibered graph itself remains unchanged.
 
 - [InfraSection]() highlights its selected vertices and existing image edges.
@@ -73,8 +74,8 @@ A partial section, a continuous extension and a connection over the hexagon.
 ```wl
 SeedRandom[7];
 With[
-  {fib = RandomInfraFibration[CycleGraph[6], "VerticalVertices" -> 3, "VerticalEdges" -> 0,
-    "IsomorphicFibers" -> True, "HorizontalEdgesDensity" -> All]},
+  {fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> { 3 }, "VerticalEdgeCount" -> { 0 },
+    Properties -> { "IsomorphicFibers" }, "HorizontalEdgeCount" -> All]},
   {partial = RandomInfraSection[fib, {1, 3}]},
   {section = RandomInfraSection[fib, partial, Properties -> {"Continuous"}]},
   {connection = RandomInfraConnection[fib]},
@@ -86,7 +87,7 @@ The same structure in three views.
 ```wl
 SeedRandom[7];
 With[
-  {fib = RandomInfraFibration[CycleGraph[6], "VerticalVertices" -> 3, "HorizontalEdgesDensity" -> All]},
+  {fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All]},
   {section = RandomInfraSection[fib, Properties -> {"Continuous"}]},
   {connection = RandomInfraConnection[fib]},
   GraphicsRow[InfraFiberedGraphHighlight[fib, {section, connection}, Method -> #] & /@
@@ -100,7 +101,7 @@ Repeated traversals of a lifted walk retain their strength.
 ```wl
 SeedRandom[7];
 With[
-  {fib = RandomInfraFibration[CycleGraph[4], "VerticalVertices" -> 2, "HorizontalEdgesDensity" -> All]},
+  {fib = RandomInfraFiberedGraph[CycleGraph[4], "VerticalVertexCount" -> { 2 }, "HorizontalEdgeCount" -> All]},
   {connection = RandomInfraConnection[fib]},
   {start = First @ VertexList @ InfraFiber[fib, 1]},
   {lift = InfraHorizontalLift[fib, connection, start, {1, 2, 1, 2, 3}]},
@@ -113,7 +114,7 @@ A fiber is an ordinary graph-shaped highlight.
 ```wl
 SeedRandom[7];
 With[
-  {fib = RandomInfraFibration[CycleGraph[4], "VerticalVertices" -> 3, "VerticalEdges" -> 2]},
+  {fib = RandomInfraFiberedGraph[CycleGraph[4], "VerticalVertexCount" -> { 3 }, "VerticalEdgeCount" -> { 2 }]},
   InfraFiberedGraphHighlight[fib, {Directive[StandardRed], InfraFiber[fib, 1]}, Method -> "HighlightFiber"]]
 ```
 
@@ -122,11 +123,11 @@ With[
 An unsupported view stays unevaluated.
 
 ```wl
-InfraFiberedGraphHighlight[InfraFibration[CycleGraph[4], Identity], {}, Method -> "Unrecognized"]
+InfraFiberedGraphHighlight[InfraFiberedGraph[CycleGraph[4], Identity], {}, Method -> "Unrecognized"]
 ```
 
 The empty fibered graph still has a native graph drawing.
 
 ```wl
-InfraFiberedGraphHighlight[InfraFibration[Graph[{}, {}], <||>]]
+InfraFiberedGraphHighlight[InfraFiberedGraph[Graph[{}, {}], <||>]]
 ```

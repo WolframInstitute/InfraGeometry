@@ -5,49 +5,29 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraTotalGraph
-Keywords: [total graph, fibration, bundle]
-SeeAlso: [InfraFibration, InfraFibrationAssociation, InfraBaseGraph, InfraFiber, InfraTangentBundle, InfraDisplacementBundle, InfraFiberedSubstrate]
+Keywords: [compatibility, fibered graph, InfraTotalSpace]
+SeeAlso: [InfraTotalSpace, InfraFiberedGraph, InfraTotalSpace, InfraBaseSpace, InfraProjection]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
 
-<code>[InfraTotalGraph]()[*fib*]</code> gives the total graph of the fibration *fib*.
+<code>[InfraTotalGraph]()[*fib*]</code> gives the total graph of *fib* using the compatibility spelling.
 
 ## Details & Options
 
-- [InfraTotalGraph]() is one of the two primitives of a fibration; the other is [InfraFibrationAssociation](). Every other function of the Infra Fiber Bundles guide is written over these two.
-- For a literal <code>[InfraFibration]()[*total*, *proj*]</code> it is *total*. For a construction it is computed: the rays of [InfraTangentBundle](), the reversed rays of [InfraCotangentBundle](), the pairs of [InfraDisplacementBundle]().
-- Structural evaluation performs no embedding. Use [InfraFiberedGraphHighlight]() for drawings arranged over the reconstructed base.
+- Use [InfraTotalSpace]() for new code.
+- Supported inputs and results are the same as for [InfraTotalSpace]().
+- Both canonical [InfraFiberedGraph]() and legacy [InfraFibration]() literals are supported.
+- Unsupported graph domains remain unevaluated. Like [InfraTotalSpace](), this reader does not validate the projection.
 
 ## Basic Examples
 
-Three fibrations over the same grid: a product with a triangle, the tangent bundle at scale 2 and the displacement bundle at scale 1.
+The compatibility reader accepts a canonical fibered graph.
 
 ```wl
 SeedRandom[ 7 ];
-GraphicsRow[InfraTotalGraph /@ {
-  InfraFiberedSubstrate["GridProductBundle", "Small"],
-  InfraFiberedSubstrate["GridTangentBundle", "Small"],
-  InfraFiberedSubstrate["GridDisplacementBundle", "Small"]}]
-```
-
-The rays of the tangent bundle over the base vertex 6.
-
-```wl
-SeedRandom[ 7 ];
-With[
-  {total = InfraTotalGraph @ InfraFiberedSubstrate["GridTangentBundle", "Small"]},
-  InfraSubstrateHighlight[total, {InfraDensity[total, Select[VertexList @ total, First @ # == 6 &]]}]]
-```
-
-## Properties and Relations
-
-The base graph is reconstructed from the total graph and the projection.
-
-```wl
-SeedRandom[ 7 ];
-With[
-  {fib = InfraFiberedSubstrate["MoebiusLadderCover", "Small"]},
-  GraphicsRow[{InfraTotalGraph[fib], InfraBaseGraph[fib]}]]
+With[ { fib = InfraFiberedGraph[ CycleGraph[ 8 ], vertex |-> Mod[ vertex, 4, 1 ] ] },
+  InfraTotalGraph[ fib ] ]
 ```

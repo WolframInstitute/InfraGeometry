@@ -303,8 +303,10 @@ VerificationTest[
       InfraParallelTransport[ fib, connection, { 3, 4 } ],
       InfraParallelTransport[ fib, connection, { 3, 4, 5 } ],
       InfraParallelTransport[ fib, connection, { 3 } ],
-      Head @ InfraParallelTransport[ InfraFibration[ fib ], connection, { 3, 4 } ] } ],
-  { False, <| { 3, 2 } -> { 4, 3 } |>, <| |>, <| { 3, 2 } -> { 3, 2 }, { 3, 4 } -> { 3, 4 } |>, InfraParallelTransport },
+      Head @ InfraParallelTransport[ InfraFibration[ fib ], connection, { 3, 4 } ],
+      Head @ InfraParallelTransport[ InfraFiberedGraph[ fib ], connection, { 3, 4 } ] } ],
+  { False, <| { 3, 2 } -> { 4, 3 } |>, <| |>, <| { 3, 2 } -> { 3, 2 }, { 3, 4 } -> { 3, 4 } |>,
+    InfraParallelTransport, InfraParallelTransport },
   TestID -> "InfraParallelTransport-Experimental-partial-model-remains-distinct-from-general-reader"
 ]
 

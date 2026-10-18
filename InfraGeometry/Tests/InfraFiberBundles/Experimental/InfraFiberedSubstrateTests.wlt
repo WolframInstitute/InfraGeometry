@@ -16,8 +16,9 @@ VerificationTest[
 ]
 
 VerificationTest[
-  Head /@ (InfraFiberedSubstrate[#, "Small"] & /@ InfraFiberedSubstrate[All]),
-  Join[ConstantArray[InfraFibration, 5], ConstantArray[InfraTangentBundle, 4], ConstantArray[InfraDisplacementBundle, 4], ConstantArray[InfraFibration, 2]],
+  Head /@ ( InfraFiberedSubstrate[ #, "Small" ] & /@ InfraFiberedSubstrate[ All ] ),
+  Join[ ConstantArray[ InfraFiberedGraph, 5 ], ConstantArray[ InfraTangentBundle, 4 ],
+    ConstantArray[ InfraDisplacementBundle, 4 ], ConstantArray[ InfraFiberedGraph, 2 ] ],
   TestID -> "InfraFiberedSubstrate-heads"
 ]
 

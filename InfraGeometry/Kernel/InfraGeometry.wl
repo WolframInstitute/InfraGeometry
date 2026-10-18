@@ -181,6 +181,19 @@ PackageExport[DisplacementPlot]
 
 (* InfraFiberBundles *)
 
+PackageExport[InfraFiberedGraph]
+PackageExport[InfraTotalSpace]
+PackageExport[InfraProjection]
+PackageExport[InfraBaseSpace]
+PackageExport[InfraFiberedGraphQ]
+PackageExport[InfraEqualFiberSizesQ]
+PackageExport[InfraIsomorphicFibersQ]
+PackageExport[InfraEdgeLiftMultiplicity]
+PackageExport[InfraAtMostOneEdgeLiftQ]
+PackageExport[InfraUniqueEdgeLiftingQ]
+PackageExport[InfraCoveringQ]
+PackageExport[RandomInfraFiberedGraph]
+
 PackageExport[InfraFibration]
 PackageExport[InfraTotalGraph]
 PackageExport[InfraFibrationAssociation]

@@ -330,4 +330,31 @@ VerificationTest[
   TestID -> "InfraConnection-unsupported-graph-domains-stay-unevaluated"
 ]
 
+VerificationTest[
+  With[ { fib = InfraFiberedGraph[ CycleGraph[ 6 ], vertex |-> Mod[ vertex, 3, 1 ] ],
+      connection = InfraConnection[ EdgeList @ CycleGraph[ 6 ] ] },
+    { first = InfraParallelTransport[ fib, connection, { 1, 2 } ],
+      second = InfraParallelTransport[ fib, connection, { 2, 3 } ],
+      joined = InfraParallelTransport[ fib, connection, { 1, 2, 3 } ],
+      reverse = InfraParallelTransport[ fib, connection, { 3, 2, 1 } ] },
+    { InfraConnectionQ[ fib, connection ], InfraParallelTransport[ fib, connection, { 1 } ],
+      And @@ KeyValueMap[ { source, target } |-> Lookup[ joined, Key @ source ] === Lookup[ second, Key @ target ], first ],
+      And @@ KeyValueMap[ { source, target } |-> Lookup[ reverse, Key @ target ] === source, joined ],
+      InfraHorizontalLift[ fib, connection, 1, { 1, 2, 3, 1 } ],
+      InfraHolonomy[ fib, connection, { 1, 2, 3, 1 } ], InfraFlatConnectionQ[ fib, connection ] } ],
+  { True, <| 1 -> 1, 4 -> 4 |>, True, True, { 1, 2, 3, 4 }, Cycles[ { { 1, 2 } } ], False },
+  TestID -> "InfraConnection-general-fibered-graph-transport-and-holonomy-laws"
+]
+
+VerificationTest[
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 4 ], { UndirectedEdge[ 1, 3 ] } ],
+      <| 1 -> "p", 2 -> "p", 3 -> "q", 4 -> "q" |> ],
+      connection = InfraConnection[ { UndirectedEdge[ 1, 3 ] } ] },
+    { InfraConnectionQ[ fib, connection ], RandomInfraConnection[ fib, All ],
+      Head @ InfraHorizontalLift[ fib, connection, 1, { "p", "q" } ],
+      Head @ InfraParallelTransport[ fib, connection, { "p", "q" } ] } ],
+  { False, { }, InfraHorizontalLift, InfraParallelTransport },
+  TestID -> "InfraConnection-general-fibered-graph-still-requires-complete-matchings"
+]
+
 EndTestSection[ ]

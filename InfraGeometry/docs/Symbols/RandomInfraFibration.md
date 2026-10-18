@@ -6,8 +6,9 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraFibration
 Keywords: [random fibration, random fibered graph, fiber]
-SeeAlso: [InfraFibration, InfraFibrationQ, InfraFiberBundleQ, InfraFiberedSubstrate, RandomInfraSection, RandomInfraConnection]
-RelatedGuides: [InfraFiberBundles]
+SeeAlso: [RandomInfraFiberedGraph, InfraFiberedGraph, InfraFibration, InfraFibrationQ, InfraFiberBundleQ, InfraFiberedSubstrate, RandomInfraSection, RandomInfraConnection]
+RelatedGuides: [InfraFiberBundles, Experimental]
+RelatedTutorials: [ExperimentalInfraBundles]
 ---
 
 ## Usage
@@ -16,6 +17,8 @@ RelatedGuides: [InfraFiberBundles]
 
 ## Details & Options
 
+- This is an Experimental compatibility sampler. Use [RandomInfraFiberedGraph]() for new general constructions.
+- Its existing options, scalar exact counts, count ranges, vertical-edge clipping and cyclic-width rule are retained. They are distinct from the new count grammar.
 - The supported base is a finite simple undirected unweighted graph, including isolated vertices and the empty graph.
 - Every fiber is nonempty. Its vertices are pairs {*p*, *k*}, where *p* is a base vertex.
 - Integer count ranges use [RandomInteger](). Real density ranges use [RandomReal](). Excess requested vertical edges are capped at the complete graph's edge count.

@@ -5,34 +5,29 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraBaseGraph
-Keywords: [base graph, fibration, projection]
-SeeAlso: [InfraFibration, InfraTotalGraph, InfraFibrationAssociation, InfraFiber, InfraFibers]
+Keywords: [compatibility, fibered graph, InfraBaseSpace]
+SeeAlso: [InfraBaseSpace, InfraFiberedGraph, InfraTotalSpace, InfraBaseSpace, InfraProjection]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
 
-<code>[InfraBaseGraph]()[*fib*]</code> gives the base graph of *fib*: the projected vertices, *p* and *q* adjacent iff some total edge projects onto {*p*, *q*}.
+<code>[InfraBaseGraph]()[*fib*]</code> gives the reconstructed base graph of *fib* using the compatibility spelling.
 
 ## Details & Options
 
-- A fibration does not store its base. [InfraBaseGraph]() reconstructs it from [InfraTotalGraph]() and [InfraFibrationAssociation]().
-- A base vertex over which there is no total vertex is not in the base graph.
+- Use [InfraBaseSpace]() for new code.
+- Supported inputs and results are the same as for [InfraBaseSpace]().
+- Both canonical [InfraFiberedGraph]() and legacy [InfraFibration]() literals are supported.
+- Unsupported graph domains and malformed projections remain unevaluated.
 
 ## Basic Examples
 
-The Moebius ladder and the cycle it lies over.
+The compatibility reader accepts a canonical fibered graph.
 
 ```wl
-With[
-  {fib = InfraFiberedSubstrate["MoebiusLadderCover", "Small"]},
-  GraphicsRow[{InfraTotalGraph[fib], InfraBaseGraph[fib]}]]
-```
-
-The base of the grid tangent bundle is the grid it was built on.
-
-```wl
-With[
-  {fib = InfraFiberedSubstrate["GridTangentBundle", "Small"]},
-  {InfraBaseGraph[fib], IsomorphicGraphQ[InfraBaseGraph[fib], First @ fib]}]
+SeedRandom[ 7 ];
+With[ { fib = InfraFiberedGraph[ CycleGraph[ 8 ], vertex |-> Mod[ vertex, 4, 1 ] ] },
+  InfraBaseGraph[ fib ] ]
 ```

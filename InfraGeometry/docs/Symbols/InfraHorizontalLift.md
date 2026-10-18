@@ -7,6 +7,7 @@ URI: WolframInstitute/InfraGeometry/ref/InfraHorizontalLift
 Keywords: [horizontal lift, path lifting, connection, walk]
 SeeAlso: [InfraConnection, InfraConnectionQ, InfraParallelTransport, InfraHolonomy, InfraWalk, FindInfraHorizontalLift]
 RelatedGuides: [InfraFiberBundles]
+RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
@@ -30,12 +31,12 @@ A loop in the base of this double covering lifts from one sheet to the other.
 SeedRandom[ 1 ];
 With[
   { total = CycleGraph[ 8 ] },
-  { fib = InfraFibration[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
+  { fib = InfraFiberedGraph[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
     connection = InfraConnection[ EdgeList @ total ] },
   { loop = { 1, 2, 3, 4, 1 } },
   { lift = InfraHorizontalLift[ fib, connection, 1, loop ] },
   { InfraFiberedGraphHighlight[ fib, { connection, InfraWalk[ lift ] } ],
-    lift, Lookup[ InfraFibrationAssociation[ fib ], Key /@ lift ] }
+    lift, Lookup[ InfraProjection[ fib ], Key /@ lift ] }
 ]
 ```
 
@@ -47,7 +48,7 @@ Retracing an edge retraces its lift. A zero-length walk stays at its starting ve
 SeedRandom[ 1 ];
 With[
   { total = CycleGraph[ 8 ] },
-  { fib = InfraFibration[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
+  { fib = InfraFiberedGraph[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
     connection = InfraConnection[ EdgeList @ total ] },
   { InfraHorizontalLift[ fib, connection, 1, { 1, 2, 1, 2 } ],
     InfraHorizontalLift[ fib, connection, 1, { 1 } ] }
@@ -62,7 +63,7 @@ The starting vertex must lie over the first base vertex. An unsupported call sta
 SeedRandom[ 1 ];
 With[
   { total = CycleGraph[ 8 ] },
-  { fib = InfraFibration[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
+  { fib = InfraFiberedGraph[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
     connection = InfraConnection[ EdgeList @ total ] },
   Head @ InfraHorizontalLift[ fib, connection, 2, { 1, 2 } ]
 ]

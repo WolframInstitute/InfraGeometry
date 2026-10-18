@@ -322,4 +322,26 @@ VerificationTest[
   TestID -> "InfraSection-connected-double-cover-has-no-continuous-section"
 ]
 
+VerificationTest[
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 6 ],
+        { UndirectedEdge[ 1, 3 ], UndirectedEdge[ 2, 4 ], UndirectedEdge[ 3, 5 ] } ],
+      <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b", 5 -> "c", 6 -> "c" |> ] },
+    { extensions = RandomInfraSection[ fib, InfraSection[ <| "c" -> 5 |> ], All, Properties -> { "Continuous" } ] },
+    { InfraFibrationQ[ fib ], InfraContinuousSectionQ[ fib, extensions ], extensions,
+      RandomInfraSection[ fib, InfraSection[ <| "a" -> 2 |> ], All, Properties -> { "Continuous" } ],
+      Length @ RandomInfraSection[ fib, InfraSection[ <| "c" -> 5 |> ], All ] } ],
+  { False, True, { InfraSection[ <| "a" -> 1, "b" -> 3, "c" -> 5 |> ] }, { }, 4 },
+  TestID -> "InfraSection-general-fibered-graph-supports-sections-without-edge-lifting"
+]
+
+VerificationTest[
+  With[ { fib = InfraFiberedGraph[ CompleteGraph[ 4 ], <| 1 -> "p", 2 -> "p", 3 -> "q", 4 -> "q" |> ],
+      connection = InfraConnection[ { UndirectedEdge[ 1, 3 ], UndirectedEdge[ 2, 4 ] } ] },
+    { InfraContinuousSectionQ[ fib, InfraSection[ <| "p" -> 1, "q" -> 4 |> ] ],
+      InfraParallelSectionQ[ fib, connection, InfraSection[ <| "p" -> 1, "q" -> 4 |> ] ],
+      InfraParallelSectionQ[ fib, connection, InfraSection[ <| "p" -> 1, "q" -> 3 |> ] ] } ],
+  { True, False, True },
+  TestID -> "InfraParallelSection-general-fibered-graph-keeps-connection-relative-contract"
+]
+
 EndTestSection[ ]

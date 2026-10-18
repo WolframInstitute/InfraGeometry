@@ -12,17 +12,24 @@ InfraFiberedGraphViewer[ fib : _[ _Graph, __ ], object : Except[ _List | _Rule |
   InfraFiberedGraphViewer[ fib, { object }, opts ]
 
 InfraFiberedGraphViewer[ fib : _[ _Graph, __ ], items_List, opts : OptionsPattern[] ] /;
-    GraphQ[ InfraTotalGraph[ fib ] ] && AssociationQ[ InfraFibrationAssociation[ fib ] ] &&
+    GraphQ[ InfraTotalSpace[ fib ] ] && AssociationQ[ InfraProjection[ fib ] ] &&
       SubsetQ[ First /@ Options[ InfraFiberedGraphViewer ], First /@ Flatten[ { opts } ] ] &&
       MemberQ[ { "CircularFiber", "3DFiber", "HighlightFiber" }, OptionValue[ InfraFiberedGraphViewer, { opts }, Method ] ] &&
-      MatchQ[ OptionValue[ InfraFiberedGraphViewer, { opts }, "BaseVertexCoordinates" ], Automatic | _Association ] &&
-      ( OptionValue[ InfraFiberedGraphViewer, { opts }, "BaseVertexCoordinates" ] === Automatic ||
-        With[ { coordinates = OptionValue[ InfraFiberedGraphViewer, { opts }, "BaseVertexCoordinates" ] },
-          AllTrue[ VertexList @ InfraBaseGraph[ fib ],
-            KeyExistsQ[ coordinates, # ] && MatchQ[ Lookup[ coordinates, Key @ # ], { _?NumericQ, _?NumericQ } ] & ] ] ) &&
+      With[ { coordinates = OptionValue[ InfraFiberedGraphViewer, { opts }, "BaseVertexCoordinates" ],
+          vertices = VertexList @ InfraBaseSpace[ fib ] },
+        Which[
+          coordinates === Automatic, True,
+          AssociationQ[ coordinates ], AllTrue[ vertices,
+            KeyExistsQ[ coordinates, # ] && MatchQ[ Lookup[ coordinates, Key @ # ], { _?NumericQ, _?NumericQ } ] & ],
+          ListQ[ coordinates ] && AllTrue[ coordinates, MatchQ[ #, { _?NumericQ, _?NumericQ } ] & ],
+            Length[ coordinates ] === Length[ vertices ],
+          ListQ[ coordinates ] && AllTrue[ coordinates, MatchQ[ #, _Rule | _RuleDelayed ] & ],
+            With[ { rules = Association @ DeleteDuplicatesBy[ coordinates, First ] },
+              AllTrue[ vertices, KeyExistsQ[ rules, # ] && MatchQ[ Lookup[ rules, Key @ # ], { _?NumericQ, _?NumericQ } ] & ] ],
+          True, False ] ] &&
       MatchQ[ OptionValue[ InfraFiberedGraphViewer, { opts }, "FiberRadius" ], Automatic | _?Positive ] :=
   Module[ { structures },
-    With[ { total = InfraTotalGraph @ fib, projection = InfraFibrationAssociation @ fib, base = InfraBaseGraph @ fib },
+    With[ { total = InfraTotalSpace @ fib, projection = InfraProjection @ fib, base = InfraBaseSpace @ fib },
       structures[ object_ ] :=
         Which[
           VertexQ[ total, object ], { },
@@ -32,11 +39,17 @@ InfraFiberedGraphViewer[ fib : _[ _Graph, __ ], items_List, opts : OptionsPatter
           True, { } ];
       With[ { objects = Catenate[ structures /@ items ] },
         { sections = First /@ Cases[ objects, _InfraSection ], connections = First /@ Cases[ objects, _InfraConnection ] },
-        { baseCoordinates = Replace[ OptionValue[ InfraFiberedGraphViewer, { opts }, "BaseVertexCoordinates" ],
-        Automatic :> AssociationThread[ VertexList @ base,
-          GraphEmbedding @ Graph[ base, GraphLayout -> OptionValue[ InfraFiberedGraphViewer, { opts }, "BaseGraphLayout" ] ] ] ] },
+        { baseCoordinates = With[ { coordinates = OptionValue[ InfraFiberedGraphViewer, { opts }, "BaseVertexCoordinates" ] },
+            Which[
+              coordinates === Automatic, AssociationThread[ VertexList @ base,
+                GraphEmbedding @ Graph[ base,
+                  GraphLayout -> OptionValue[ InfraFiberedGraphViewer, { opts }, "BaseGraphLayout" ] ] ],
+              AssociationQ[ coordinates ], coordinates,
+              AllTrue[ coordinates, MatchQ[ #, _Rule | _RuleDelayed ] & ],
+                Association @ DeleteDuplicatesBy[ coordinates, First ],
+              True, AssociationThread[ VertexList @ base, coordinates ] ] ] },
     { drawing = InfraFiberedGraphHighlight[ fib, { }, "BaseVertexCoordinates" -> baseCoordinates, opts ] },
-    { coordinates = GraphEmbedding @ drawing, literal = InfraFibration[ drawing, projection ] },
+    { coordinates = GraphEmbedding @ drawing, literal = InfraFiberedGraph[ drawing, projection ] },
     DynamicModule[ { hovered = { } },
       Column[ {
         Row[ {

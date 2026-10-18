@@ -17,25 +17,37 @@ InfraFiberedGraphHighlight[ fib : _[ _Graph, __ ], object : Except[ _List | _Rul
   InfraFiberedGraphHighlight[ fib, { object }, opts ]
 
 InfraFiberedGraphHighlight[ fib : _[ _Graph, __ ], items_List, opts : OptionsPattern[] ] /;
-    GraphQ[ InfraTotalGraph[ fib ] ] && AssociationQ[ InfraFibrationAssociation[ fib ] ] &&
+    GraphQ[ InfraTotalSpace[ fib ] ] && AssociationQ[ InfraProjection[ fib ] ] &&
       SubsetQ[ First /@ Options[ InfraFiberedGraphHighlight ], First /@ Flatten[ { opts } ] ] &&
       MemberQ[ { "CircularFiber", "3DFiber", "HighlightFiber" }, OptionValue[ InfraFiberedGraphHighlight, { opts }, Method ] ] &&
-      MatchQ[ OptionValue[ InfraFiberedGraphHighlight, { opts }, "BaseVertexCoordinates" ], Automatic | _Association ] &&
-      ( OptionValue[ InfraFiberedGraphHighlight, { opts }, "BaseVertexCoordinates" ] === Automatic ||
-        With[ { coordinates = OptionValue[ InfraFiberedGraphHighlight, { opts }, "BaseVertexCoordinates" ] },
-          AllTrue[ VertexList @ InfraBaseGraph[ fib ],
-            KeyExistsQ[ coordinates, # ] && MatchQ[ Lookup[ coordinates, Key @ # ], { _?NumericQ, _?NumericQ } ] & ] ] ) &&
+      With[ { coordinates = OptionValue[ InfraFiberedGraphHighlight, { opts }, "BaseVertexCoordinates" ],
+          vertices = VertexList @ InfraBaseSpace[ fib ] },
+        Which[
+          coordinates === Automatic, True,
+          AssociationQ[ coordinates ], AllTrue[ vertices,
+            KeyExistsQ[ coordinates, # ] && MatchQ[ Lookup[ coordinates, Key @ # ], { _?NumericQ, _?NumericQ } ] & ],
+          ListQ[ coordinates ] && AllTrue[ coordinates, MatchQ[ #, { _?NumericQ, _?NumericQ } ] & ],
+            Length[ coordinates ] === Length[ vertices ],
+          ListQ[ coordinates ] && AllTrue[ coordinates, MatchQ[ #, _Rule | _RuleDelayed ] & ],
+            With[ { rules = Association @ DeleteDuplicatesBy[ coordinates, First ] },
+              AllTrue[ vertices, KeyExistsQ[ rules, # ] && MatchQ[ Lookup[ rules, Key @ # ], { _?NumericQ, _?NumericQ } ] & ] ],
+          True, False ] ] &&
       MatchQ[ OptionValue[ InfraFiberedGraphHighlight, { opts }, "FiberRadius" ], Automatic | _?Positive ] :=
   Module[ { convert, family },
-    With[ { total = InfraTotalGraph @ fib, projection = InfraFibrationAssociation @ fib,
-            base = InfraBaseGraph @ fib, method = OptionValue[ InfraFiberedGraphHighlight, { opts }, Method ] },
+    With[ { total = InfraTotalSpace @ fib, projection = InfraProjection @ fib,
+            base = InfraBaseSpace @ fib, method = OptionValue[ InfraFiberedGraphHighlight, { opts }, Method ] },
       { fibers = GroupBy[ VertexList @ total, Lookup[ projection, Key @ # ] & ],
         palette = ColorData[ 112, "ColorList" ],
         baseCoordinates = If[ method === "HighlightFiber", <| |>,
-          Replace[ OptionValue[ InfraFiberedGraphHighlight, { opts }, "BaseVertexCoordinates" ],
-            Automatic :> AssociationThread[ VertexList @ base,
-              GraphEmbedding @ Graph[ base,
-                GraphLayout -> OptionValue[ InfraFiberedGraphHighlight, { opts }, "BaseGraphLayout" ] ] ] ] ] },
+          With[ { coordinates = OptionValue[ InfraFiberedGraphHighlight, { opts }, "BaseVertexCoordinates" ] },
+            Which[
+              coordinates === Automatic, AssociationThread[ VertexList @ base,
+                GraphEmbedding @ Graph[ base,
+                  GraphLayout -> OptionValue[ InfraFiberedGraphHighlight, { opts }, "BaseGraphLayout" ] ] ],
+              AssociationQ[ coordinates ], coordinates,
+              AllTrue[ coordinates, MatchQ[ #, _Rule | _RuleDelayed ] & ],
+                Association @ DeleteDuplicatesBy[ coordinates, First ],
+              True, AssociationThread[ VertexList @ base, coordinates ] ] ] ] },
       { radius = If[ method === "HighlightFiber", None,
           Replace[ OptionValue[ InfraFiberedGraphHighlight, { opts }, "FiberRadius" ], Automatic :>
             Min[ Prepend[ Select[
