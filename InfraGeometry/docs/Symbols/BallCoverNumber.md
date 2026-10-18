@@ -12,79 +12,93 @@ RelatedGuides: [InfraTopology]
 
 ## Usage
 
-<code>[BallCoverNumber]()[*g*, *r*]</code> gives the number *N(r)* of closed balls of radius *r* in the cover of *g* that [FindBallCover]() finds.
+<code>[BallCoverNumber]()[*g*, *r*]</code> gives the minimum number of closed balls of radius *r* needed to cover every vertex of *g*.
 
-<code>[BallCoverNumber]()[*g*, *r*, *targets*]</code> gives the number of such balls in the cover of the vertices of *targets*.
+<code>[BallCoverNumber]()[*g*, *r*, *target*]</code> gives the minimum number needed to cover the vertices of *target*, using centres anywhere in *g*.
 
 ## Details & Options
 
-Definition: *N(r)* is the length of <code>[FindBallCover]()[*g*, *r*, *targets*]</code> under the same [Method](). With the default `"Exhaustive"` it is the least number of balls of radius *r* that cover: the size of a smallest *r*-dominating set, which graph theory calls the *r*-domination number of *g*, the domination number at *r* = 1. The radius defaults to 1 and the targets to [All]().
+The covering number is the minimum size of a centre set whose closed radius-*r* balls cover the target. For the whole graph this is the *r*-domination number, and at radius one the domination number. The graph is finite, undirected and unweighted; the radius is a nonnegative integer, defaulting to 1. The target defaults to [All]().
 
-Option [Method]() chooses the cover that is counted, as in [FindBallCover]():
+Targets can be vertices, vertex lists, density associations, graph carriers or abstract regions such as [InfraBall](). Only vertex support matters. A literal vertex takes precedence over list interpretation. All centres and shortest paths belong to the ambient graph.
 
-| Value | Count |
-|---|---|
-| `"Exhaustive"` (default) | the least number, by an integer linear program |
-| `"Greedy"` | the size of the greedy cover: an upper bound, fast on graphs where the program is slow |
-| `"Symmetric"` | the size of the smallest cover that is a union of orbits of single automorphisms: the least number when a smallest cover has that shape, an upper bound otherwise |
+| Option | Default | Description |
+|---|---|---|
+| [Method]() | [Automatic]() | exact algorithm used to compute the minimum |
 
-*N(0)* is the number of vertices. The least *N(r)* does not increase with *r*, and it is 1 from the radius of the graph, the least eccentricity, on.
+[Automatic]() and `"IntegerLinearProgramming"` solve the exact integer program. `"Exhaustive"` remains a migration alias. `"Greedy"` and `"Symmetric"` are unsupported: the covering number is always the minimum. Obtain a greedy upper bound by taking the [Length]() of a `"Greedy"` [FindBallCover]() result.
 
-How fast *N(r)* falls as *r* grows is a measure of dimension.
+At radius zero the number is the size of the target support. It is zero for an empty target and does not increase with radius. For a nonempty connected graph covered in full, it is one from the graph radius onward.
 
 ## Basic Examples
 
-*N(r)* against the radius on the discretized plane, the square tiling and the hexagonal tiling, from the number of vertices down to 1.
+Compute the minimum number of radius-two balls covering a cycle:
+
+```wl
+BallCoverNumber[ CycleGraph[ 7 ], 2 ]
+```
+
+---
+
+The covering number falls with radius on the plane mesh, square tiling and hexagonal tiling:
 
 ```wl
 ListLogPlot[
-  Table[
-    With[
-      {g = InfraSubstrate[name, "Small"]},
-      Table[{r, BallCoverNumber[g, r]}, {r, 0, GraphRadius[g]}]],
-    {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}],
-  Joined -> True,
-  PlotLegends -> {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"},
-  AxesLabel -> {"r", "N(r)"}]
+	Table[
+		With[
+			{ graph = InfraSubstrate[ name, "Small" ] },
+			Table[ { r, BallCoverNumber[ graph, r ] }, { r, 0, GraphRadius[ graph ] } ] ],
+		{ name, { "SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph" } } ],
+	Joined -> True,
+	PlotLegends -> { "SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph" },
+	AxesLabel -> { "r", "N(r)" } ]
 ```
 
 ## Scope
 
-With targets: the number of balls of radius 2 that cover the ball of radius 4 about the centre.
+Cover a radius-four ball within the surrounding hexagonal tiling:
 
 ```wl
 With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {target = RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 4], "NextVertexFunction" -> Identity ]},
-  {InfraSubstrateHighlight[g, {target -> StandardGray, FindBallCover[g, 2, target] -> StandardRed}], BallCoverNumber[g, 2, target]}]
+	{ graph = InfraSubstrate[ "HexagonalTilingGraph", "Small" ] },
+	BallCoverNumber[ graph, 2, InfraBall[ First @ GraphCenter[ graph ], 4 ] ] ]
+```
+
+---
+
+An empty target needs no balls:
+
+```wl
+BallCoverNumber[ CycleGraph[ 6 ], 1, <||> ]
 ```
 
 ## Options
 
 ### Method
 
-The three counts on the hexagonal tiling at radius 2. Only the exhaustive count is the least number.
+Select the exact integer program explicitly:
 
 ```wl
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small"]},
-  Table[BallCoverNumber[g, 2, Method -> method], {method, {"Exhaustive", "Greedy", "Symmetric"}}]]
-```
-
-The greedy count is at hand where the exact program is slow. The greedy *N(r)* against the radius on the discretized plane of medium size.
-
-```wl
-With[
-  {g = InfraSubstrate["SquareMeshGraph", "Medium"]},
-  ListLogPlot[Table[{r, BallCoverNumber[g, r, Method -> "Greedy"]}, {r, 1, GraphRadius[g]}], Joined -> True, AxesLabel -> {"r", "N(r)"}]]
+BallCoverNumber[ GraphData[ "CuboctahedralGraph" ], 1, Method -> "IntegerLinearProgramming" ]
 ```
 
 ## Properties and Relations
 
-On a cycle and on a path with *n* vertices, *N(r)* is *⌈n/(2r + 1)⌉*: each ball holds at most *2r + 1* vertices.
+The greedy cover supplies an upper bound; on the cuboctahedron it needs an extra ball:
 
 ```wl
-{InfraSubstrateHighlight[CycleGraph[12], InfraBall[#, 1] & /@ FindBallCover[CycleGraph[12], 1]],
- And @@ Flatten @ Table[BallCoverNumber[CycleGraph[n], r] == Ceiling[n/(2 r + 1)], {n, 3, 20}, {r, 1, 3}],
- And @@ Flatten @ Table[BallCoverNumber[PathGraph[Range[n]], r] == Ceiling[n/(2 r + 1)], {n, 2, 20}, {r, 1, 3}]}
+With[
+	{ graph = GraphData[ "CuboctahedralGraph" ] },
+	Grid[ { { "Minimum", "Greedy upper bound" },
+		{ BallCoverNumber[ graph, 1 ], Length @ FindBallCover[ graph, 1, Method -> "Greedy" ] } }, Frame -> All ] ]
+```
+
+---
+
+On a cycle or a path with *n* vertices, the covering number is the ceiling of *n* divided by *2r + 1*:
+
+```wl
+Table[
+	{ n, BallCoverNumber[ CycleGraph[ n ], 1 ], BallCoverNumber[ PathGraph[ Range[ n ] ], 1 ], Ceiling[ n / 3 ] },
+	{ n, 3, 12 } ]
 ```

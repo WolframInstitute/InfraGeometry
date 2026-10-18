@@ -64,14 +64,15 @@ With[
 ## Covering a region
 
 - Let $N_r(T)$ be the least number of closed balls of radius $r$ covering the target vertices $T$. Their centres may be anywhere in the graph.
-- [FindBallCover]() gives the centres. [BallCoverNumber]() gives their number. The default method finds a smallest cover; the greedy method gives an upper bound.
+- [FindBallCover]() gives covering centres and minimizes their number by default. [BallCoverNumber]() always gives the minimum. The length of a greedy cover gives an upper bound.
+- The target is read within the surrounding graph: centres may lie outside it, and shortest paths may leave it. Replacing the graph by the target's induced graph changes this question.
 - We first find an exact cover on a small square tiling. The target is gray and each covering ball has its own colour.
 
 ```wl
 SeedRandom[ 2 ];
 With[
   { graph = InfraSubstrate[ "SquareTilingGraph", "Small", "KeepCoordinates" -> True ] },
-  { target = RandomInfraBall[ graph, InfraBall[ First @ GraphCenter[ graph ], 4 ], "NextVertexFunction" -> Identity ], radius = 2 },
+	{ target = InfraBall[ First @ GraphCenter[ graph ], 4 ], radius = 2 },
   { centres = FindBallCover[ graph, radius, target ] },
   Column[ {
     InfraSubstrateHighlight[ graph, Join[ { target -> StandardGray },
@@ -88,7 +89,7 @@ SeedRandom[ 2 ];
 GraphicsGrid[ Partition[ Map[
   data |-> With[
     { graph = data[ "Graph" ], centre = data[ "Centre" ], targetRadius = data[ "Radius" ] },
-    { radius = Max[ 1, Floor[ targetRadius / 3 ] ], target = RandomInfraBall[ graph, InfraBall[ centre, targetRadius ], "NextVertexFunction" -> Identity ] },
+		{ radius = Max[ 1, Floor[ targetRadius / 3 ] ], target = InfraBall[ centre, targetRadius ] },
     { centres = FindBallCover[ graph, radius, target, Method -> "Greedy" ] },
     Labeled[
       InfraSubstrateHighlight[ graph, Join[ { target -> StandardGray },
@@ -118,10 +119,9 @@ dimensionProfiles = Map[
   data |-> With[
     { graph = data[ "Graph" ], centre = data[ "Centre" ], radius = data[ "Radius" ] },
     { boxRadii = Range[ Floor[ radius / 2 ] ], growthRadii = Range[ 3, radius ],
-      target = RandomInfraBall[ graph, InfraBall[ centre, radius ], "NextVertexFunction" -> Identity ] },
-    { boxCounts = Map[ r |-> BallCoverNumber[ graph, r, target, Method -> "Greedy" ], boxRadii ],
-      growthCounts = Map[ s |-> BallCoverNumber[ graph, 1,
-        RandomInfraBall[ graph, InfraBall[ centre, s ], "NextVertexFunction" -> Identity ], Method -> "Greedy" ], growthRadii ],
+			target = InfraBall[ centre, radius ] },
+		{ boxCounts = Map[ r |-> Length @ FindBallCover[ graph, r, target, Method -> "Greedy" ], boxRadii ],
+			growthCounts = Map[ s |-> Length @ FindBallCover[ graph, 1, InfraBall[ centre, s ], Method -> "Greedy" ], growthRadii ],
       volumes = Map[ s |-> Length @ RandomInfraBall[ graph, InfraBall[ centre, s ], "NextVertexFunction" -> Identity ], growthRadii ] },
     Join[ data, <| "BoxRadii" -> boxRadii, "BoxCounts" -> boxCounts,
       "GrowthRadii" -> growthRadii, "GrowthCounts" -> growthCounts, "Volumes" -> volumes,
@@ -184,20 +184,20 @@ SeedRandom[ 2 ];
 With[
   { square = InfraSubstrate[ "SquareTilingGraph", "Small", "KeepCoordinates" -> True ],
     mesh = dimensionSubstrates[[ 1 ]][ "Graph" ] },
-  { cases = { { square, "Square tiling", "Exhaustive", Range[ 1, 3 ] },
+	{ cases = { { square, "Square tiling", Automatic, Range[ 1, 3 ] },
       { mesh, "Plane mesh", "Greedy", Range[ 2, 8 ] } } },
   Column[ {
     Grid[ Prepend[ Join @@ Apply[
       { graph, name, method, radii } |-> Map[
         r |-> With[
-          { target = RandomInfraBall[ graph, InfraBall[ First @ GraphCenter[ graph ], 2 r ], "NextVertexFunction" -> Identity ] },
-          { count = BallCoverNumber[ graph, r, target, Method -> method ] },
+					{ target = InfraBall[ First @ GraphCenter[ graph ], 2 r ] },
+					{ count = Length @ FindBallCover[ graph, r, target, Method -> method ] },
           { name, method, r, count, NumberForm[ N[ Log[ 2, count ] ], { 4, 2 } ] } ], radii ], cases, { 1 } ],
       { "Substrate", "Method", "r", "Cover count", "log2 count" } ], Frame -> All ],
     GraphicsRow[ Apply[
       { graph, name, method, radii } |-> With[
         { r = radii[[ 2 ]], centre = First @ GraphCenter[ graph ] },
-        { target = RandomInfraBall[ graph, InfraBall[ centre, 2 r ], "NextVertexFunction" -> Identity ] },
+				{ target = InfraBall[ centre, 2 r ] },
         { centres = FindBallCover[ graph, r, target, Method -> method ] },
         Labeled[ InfraSubstrateHighlight[ graph, Join[ { target -> StandardGray },
           MapIndexed[ { point, index } |-> InfraBall[ point, r ] -> ColorData[ 97 ][ First[ index ] ], centres ],

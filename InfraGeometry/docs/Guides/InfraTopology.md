@@ -41,7 +41,7 @@ The topology of a substrate is read off its metric balls. The closed balls of on
 
 ### Ball covers and the covering dimension
 
-- `FindBallCover` a smallest set of centres whose $r$-balls cover the substrate
+- `FindBallCover` centres whose $r$-balls cover a target, minimizing their number by default
 - `BallCoverNumber` the covering number $N(r)$, the $r$-domination number
 - `BallCoverQ` whether the $r$-balls about a set of centres cover the substrate
 - `InfraBallHull` the intersection of all closed balls containing a set
