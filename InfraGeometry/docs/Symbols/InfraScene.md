@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraScene
 Keywords: [scene, construction, Euclid I.1, hypothesis, assertion, ruler and compass]
-SeeAlso: [RandomInfraInstance, InfraSceneInstance, InfraStep, InfraIntersection, InfraDistance, InfraSceneViewer]
+SeeAlso: [InfraScenePlot, RandomInfraInstance, InfraSceneInstance, InfraStep, InfraIntersection, InfraDistance, InfraSceneViewer]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 

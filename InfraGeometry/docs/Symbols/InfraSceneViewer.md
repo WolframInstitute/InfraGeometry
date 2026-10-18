@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSceneViewer
 Keywords: [viewer, interactive, construction, step, branch]
-SeeAlso: [InfraSceneMultiway, InfraBranchialGraph, InfraScene, RandomInfraInstance, InfraSubstrateHighlight, InfraSceneInstance, InfraStep]
+SeeAlso: [InfraScenePlot, InfraSceneMultiway, InfraBranchialGraph, InfraScene, RandomInfraInstance, InfraSubstrateHighlight, InfraSceneInstance, InfraStep]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -40,7 +40,7 @@ Fixed matters on long constructions. Without it, each step re-solves against eve
 
 The rendering options `"OpacityRange"`, `"ThicknessRange"`, `"PointSizeRange"` and `ImageSize` are passed through to [InfraSubstrateHighlight]().
 
-For a static figure, solve the steps yourself with [RandomInfraInstance]() and lay them out as a grid. That is what the last example does.
+For a static figure from saved bindings, use [InfraScenePlot]().
 
 For saved exploration data, event navigation uses individual construction depths; group navigation uses the saved group boundaries.
 The selected state's bindings and assertion statuses appear with its geometry, immediate branchial neighbors and common-parent witnesses.

@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSceneInstance
 Keywords: [scene, instance, binding, solution]
-SeeAlso: [RandomInfraInstance, InfraScene, InfraSubstrateHighlight, InfraSceneViewer]
+SeeAlso: [InfraScenePlot, RandomInfraInstance, InfraScene, InfraSubstrateHighlight, InfraSceneViewer]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -20,7 +20,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 [RandomInfraInstance]() returns one instance by default, or a list when a count is given. An instance is a symbolic representation of a solved branch: it stores the bindings for later retrieval.
 
-A value is what the construction of the object realised on the graph: a vertex for a point or an intersection, a vertex list for a segment, a ray or a line, a cyclic vertex list for a circle. So an instance's objects are drawn by [InfraSubstrateHighlight]() directly, a circle once it is closed into a walk.
+A value is what the construction of the object realised on the graph: a vertex for a point or an intersection, a vertex list for a segment, a ray or a line, a cyclic vertex list for a circle. [InfraScenePlot]() draws the saved objects according to their declared kinds.
 
 An object the instance does not bind reads as `Missing["KeyAbsent", x]`. The second argument also reads a bare `Association` of bindings.
 
