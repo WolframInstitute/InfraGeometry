@@ -23,6 +23,7 @@ PackageExport[InfraMeasurement]
 PackageExport[Undetermined]
 PackageExport[InfraMemberQ]
 PackageExport[InfraSubgraph]
+PackageExport[InfraSupport]
 
 PackageExport[InfraDensity]
 

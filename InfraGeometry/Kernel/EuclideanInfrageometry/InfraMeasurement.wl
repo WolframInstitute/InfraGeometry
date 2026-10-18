@@ -77,13 +77,14 @@ InfraMeasurement[ graph_Graph,
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] ], "Cardinality" ] :=
-  Total @ Map[
-    dag |-> With[ { inNbr = GroupBy[ EdgeList @ dag, Last -> First ] },
-      { alpha = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ inNbr, Key @ w, { } ],
-              { { } -> 1, ps_ :> Total @ Lookup[ a, Key /@ ps ] } ] ],
-          <| |>, TopologicalSort @ dag ] },
-      Total @ Lookup[ alpha, Key /@ Pick[ VertexList @ dag, VertexOutDegree @ dag, 0 ] ] ],
-    Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ] ]
+  With[ { dags = Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ] },
+    Total @ Map[
+      dag |-> With[ { inNbr = GroupBy[ EdgeList @ dag, Last -> First ] },
+        { alpha = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ inNbr, Key @ w, { } ],
+                { { } -> 1, ps_ :> Total @ Lookup[ a, Key /@ ps ] } ] ],
+            <| |>, TopologicalSort @ dag ] },
+        Total @ Lookup[ alpha, Key /@ Pick[ VertexList @ dag, VertexOutDegree @ dag, 0 ] ] ],
+      dags ] /; MatchQ[ dags, { ___Graph } ] ]
 
 InfraMeasurement[ graph_Graph, density_Association, "VertexDensity" ] :=
   KeySort @ density
@@ -94,18 +95,19 @@ InfraMeasurement[ graph_Graph,
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] |
                   InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] ], "VertexDensity" ] :=
-  KeySort @ Merge[
-    Map[
-      dag |-> With[ { inNbr = GroupBy[ EdgeList @ dag, Last -> First ],
-                      outNbr = GroupBy[ EdgeList @ dag, First -> Last ],
-                      order = TopologicalSort @ dag },
-        { alpha = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ inNbr, Key @ w, { } ],
-                { { } -> 1, ps_ :> Total @ Lookup[ a, Key /@ ps ] } ] ], <| |>, order ],
-          beta = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ outNbr, Key @ w, { } ],
-                { { } -> 1, qs_ :> Total @ Lookup[ a, Key /@ qs ] } ] ], <| |>, Reverse @ order ] },
-        AssociationMap[ Lookup[ alpha, Key @ # ] Lookup[ beta, Key @ # ] &, VertexList @ dag ] ],
-      Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ] ],
-    Total ]
+  With[ { dags = Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ] },
+    KeySort @ Merge[
+      Map[
+        dag |-> With[ { inNbr = GroupBy[ EdgeList @ dag, Last -> First ],
+                        outNbr = GroupBy[ EdgeList @ dag, First -> Last ],
+                        order = TopologicalSort @ dag },
+          { alpha = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ inNbr, Key @ w, { } ],
+                  { { } -> 1, ps_ :> Total @ Lookup[ a, Key /@ ps ] } ] ], <| |>, order ],
+            beta = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ outNbr, Key @ w, { } ],
+                  { { } -> 1, qs_ :> Total @ Lookup[ a, Key /@ qs ] } ] ], <| |>, Reverse @ order ] },
+          AssociationMap[ Lookup[ alpha, Key @ # ] Lookup[ beta, Key @ # ] &, VertexList @ dag ] ],
+        dags ],
+      Total ] /; MatchQ[ dags, { ___Graph } ] ]
 
 InfraMeasurement[ graph_Graph,
     obj : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List | InfraIntersection[ __ ] | InfraUnion[ __ ] | InfraCircle[ _, _, ___ ] |
@@ -113,42 +115,47 @@ InfraMeasurement[ graph_Graph,
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] |
                   InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] ], "EdgeDensity" ] :=
-  KeySort @ Merge[
-    Map[
-      dag |-> With[ { inNbr = GroupBy[ EdgeList @ dag, Last -> First ],
-                      outNbr = GroupBy[ EdgeList @ dag, First -> Last ],
-                      order = TopologicalSort @ dag },
-        { alpha = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ inNbr, Key @ w, { } ],
-                { { } -> 1, ps_ :> Total @ Lookup[ a, Key /@ ps ] } ] ], <| |>, order ],
-          beta = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ outNbr, Key @ w, { } ],
-                { { } -> 1, qs_ :> Total @ Lookup[ a, Key /@ qs ] } ] ], <| |>, Reverse @ order ] },
-        Association[ # -> Lookup[ alpha, Key @ First @ # ] Lookup[ beta, Key @ Last @ # ] & /@ EdgeList @ dag ] ],
-      Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ] ],
-    Total ]
+  With[ { dags = Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ] },
+    KeySort @ Merge[
+      Map[
+        dag |-> With[ { inNbr = GroupBy[ EdgeList @ dag, Last -> First ],
+                        outNbr = GroupBy[ EdgeList @ dag, First -> Last ],
+                        order = TopologicalSort @ dag },
+          { alpha = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ inNbr, Key @ w, { } ],
+                  { { } -> 1, ps_ :> Total @ Lookup[ a, Key /@ ps ] } ] ], <| |>, order ],
+            beta = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ outNbr, Key @ w, { } ],
+                  { { } -> 1, qs_ :> Total @ Lookup[ a, Key /@ qs ] } ] ], <| |>, Reverse @ order ] },
+          Association[ # -> Lookup[ alpha, Key @ First @ # ] Lookup[ beta, Key @ Last @ # ] & /@ EdgeList @ dag ] ],
+        dags ],
+      Total ] /; MatchQ[ dags, { ___Graph } ] ]
 
 InfraMeasurement[ graph_Graph,
     obj : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List | InfraSegment[ _, _, __ ] | InfraArc[ _, Except[ { p_, ___, p_ }, { _, _, __ } ], ___ ] |
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] ], "Length" ] :=
-  Replace[
-    Union @@ Map[
-      dag |-> DeleteCases[ Infinity ] @ Union @ Flatten @ Table[ GraphDistance[ dag, s, t ],
-          { s, Pick[ VertexList @ dag, VertexInDegree @ dag, 0 ] },
-          { t, Pick[ VertexList @ dag, VertexOutDegree @ dag, 0 ] } ],
-      Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ] ],
-    { one_ } :> one ]
+  With[ { dags = Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ] },
+    Replace[
+      Union @@ Map[
+        dag |-> DeleteCases[ Infinity ] @ Union @ Flatten @ Table[ GraphDistance[ dag, s, t ],
+            { s, Pick[ VertexList @ dag, VertexInDegree @ dag, 0 ] },
+            { t, Pick[ VertexList @ dag, VertexOutDegree @ dag, 0 ] } ],
+        dags ],
+      { one_ } :> one ] /; MatchQ[ dags, { ___Graph } ] ]
 
 InfraMeasurement[ graph_Graph, obj : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List ], "Subgraph" ] :=
-  Subgraph[ graph, Keys @ InfraMeasurement[ graph, obj, "VertexDensity" ] ]
+  With[ { density = InfraMeasurement[ graph, obj, "VertexDensity" ] },
+    Subgraph[ graph, Keys @ density ] /; AssociationQ @ density ]
 
 InfraMeasurement[ graph_Graph, obj : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List ], "CountingMeasure" ] :=
-  Length @ InfraMeasurement[ graph, obj, "VertexDensity" ]
+  With[ { density = InfraMeasurement[ graph, obj, "VertexDensity" ] },
+    Length @ density /; AssociationQ @ density ]
 
 InfraMeasurement[ graph_Graph, obj : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List ], "RiemannianMeasure" ] :=
-  With[ { support = Keys @ InfraMeasurement[ graph, obj, "VertexDensity" ] },
+  With[ { density = InfraMeasurement[ graph, obj, "VertexDensity" ] },
+    { support = Keys @ density },
     { inside = AssociationThread[ support, True ] },
-    Count[ support, v_ /; AllTrue[ AdjacencyList[ graph, v ], TrueQ @ Lookup[ inside, Key @ # ] & ] ] ]
+    Count[ support, v_ /; AllTrue[ AdjacencyList[ graph, v ], TrueQ @ Lookup[ inside, Key @ # ] & ] ] /; AssociationQ @ density ]
 
 InfraMemberQ[ graph_Graph,
     obj : Except[ _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest | _List | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] |
@@ -156,11 +163,12 @@ InfraMemberQ[ graph_Graph,
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] ], path_List ] :=
-  path =!= { } &&
-  AnyTrue[ Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ],
-    dag |-> VertexQ[ dag, First @ path ] && VertexInDegree[ dag, First @ path ] == 0 &&
-      VertexQ[ dag, Last @ path ] && VertexOutDegree[ dag, Last @ path ] == 0 &&
-      AllTrue[ Partition[ path, 2, 1 ], EdgeQ[ dag, DirectedEdge @@ # ] & ] ]
+  With[ { dags = Replace[ InfraMeasurement[ graph, obj, "Graph" ], dag_Graph :> { dag } ] },
+    path =!= { } &&
+    AnyTrue[ dags,
+      dag |-> VertexQ[ dag, First @ path ] && VertexInDegree[ dag, First @ path ] == 0 &&
+        VertexQ[ dag, Last @ path ] && VertexOutDegree[ dag, Last @ path ] == 0 &&
+        AllTrue[ Partition[ path, 2, 1 ], EdgeQ[ dag, DirectedEdge @@ # ] & ] ] /; MatchQ[ dags, { ___Graph } ] ]
 
 InfraSubgraph[ graph_Graph, obj_ -> t_Integer ] :=
   Subgraph[ graph,
@@ -168,6 +176,13 @@ InfraSubgraph[ graph_Graph, obj_ -> t_Integer ] :=
 
 InfraSubgraph[ graph_Graph, obj : Except[ _Rule | _RuleDelayed ] ] :=
   InfraMeasurement[ graph, obj, "Subgraph" ]
+
+InfraSupport[ graph_Graph, objs : { __ } ] :=
+  InfraSupport[ graph, # ] & /@ objs
+
+InfraSupport[ graph_Graph, obj : Except[ _List ] ] :=
+  With[ { density = InfraMeasurement[ graph, obj, "VertexDensity" ] },
+    Keys @ density /; AssociationQ @ density ]
 
 InfraMeasurement[ graph_Graph, InfraIntersection[ objs__ ], "VertexDensity" ] :=
   With[ { densities = InfraMeasurement[ graph, #, "VertexDensity" ] & /@ { objs } },
