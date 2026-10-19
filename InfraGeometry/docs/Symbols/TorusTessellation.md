@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/TorusTessellation
 Keywords: [torus, flat torus, square lattice, triangular lattice, honeycomb, Cayley graph, wraparound]
-SeeAlso: [TessellationGraph, InfraSubstrate, FindInfraShell, InfraSegment, InfraSubstrateHighlight]
+SeeAlso: [TessellationGraph, InfraSubstrate, InfraShell, InfraSegment, InfraSubstrateHighlight]
 RelatedGuides: [InfraSubstrates]
 ---
 
@@ -60,7 +60,7 @@ The shell sizes on a 12 × 12 square torus. They grow by 4 at every step, as in 
 ```wl
 With[
   {g = TorusTessellation[{12, 12}, "Square"]},
-  Table[Length @ FindInfraShell[g, {1, 1}, r], {r, 0, 12}]]
+  Table[Length @ Keys @ InfraMeasurement[ g, InfraShell[ {1, 1}, r ], "VertexDensity" ], {r, 0, 12}]]
 ```
 
 ## Properties and Relations

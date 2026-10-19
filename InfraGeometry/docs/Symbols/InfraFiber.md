@@ -23,7 +23,7 @@ The fiber of the grid product bundle over the base vertex 6 is a triangle.
 With[
   {fib = InfraFiberedSubstrate["GridProductBundle", "Small"]},
   {total = InfraTotalSpace[fib]},
-  GraphicsRow[{InfraSubstrateHighlight[total, {InfraDensity[total, VertexList @ InfraFiber[fib, 6]]}], InfraFiber[fib, 6]}]]
+  GraphicsRow[{InfraSubstrateHighlight[total, {InfraMeasurement[total, VertexList @ InfraFiber[fib, 6], "VertexDensity" ]}], InfraFiber[fib, 6]}]]
 ```
 
 The fiber of the grid tangent bundle over 6: ten rays of length 2 and no edge between them.

@@ -12,7 +12,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Usage
 
-<code>[InfraSphere]()[*c*, {*r*, *s*}]</code> is the sphere about *c*: the family of inclusion-minimal connected subsets of the shell [InfraShell]()[*c*, {*r*, *s*}] that separate the side of *c* from the far side. It is a symbolic object; [InfraMeasurement]() and [RandomInfraSphere]() evaluate it on a graph.
+<code>[InfraSphere]()[*c*, {*r*, *s*}]</code> is the sphere about *c*: the family of inclusion-minimal connected subsets of the shell [InfraShell]()[*c*, {*r*, *s*}] that separate the side of *c* from the far side. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
 
 <code>[InfraSphere]()[*c*, *r*]</code> is the band {*r*, *r*}.
 
@@ -31,7 +31,7 @@ The family may have many members. The shell is a set of points; the sphere is th
 | `"CountingMeasure"` | the number of vertices in some member |
 | `"RiemannianMeasure"` | the number of vertices of the support all of whose neighbours lie in it; `0` for a sphere of one radius *r ≥ 1*, since every vertex of it has a neighbour at distance *r − 1* |
 
-`"Faithful"` is `Undetermined`. A sphere has no `"Graph"`.
+`"Faithful"` stays unevaluated. A sphere has no `"Graph"`.
 
 The Riemannian measure of a sphere instance in a band *{r, r + 1}*, *r ≥ 1*, is `0` too, whenever every vertex at distance *r + 1* has a neighbour at distance *r + 2*: each vertex of the instance then has a neighbour outside the band.
 
@@ -53,7 +53,7 @@ Row[Table[
     {c = First @ GraphCenter[g]},
     {family = InfraSphere[c, 3]},
     Labeled[
-      InfraSubstrateHighlight[g, {InfraShell[c, 3], Replace[ family, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> RandomInfraBall[ g, token ], token_InfraShell :> RandomInfraShell[ g, token ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> RandomInfraTube[ g, token ], token_InfraCylinder :> RandomInfraCylinder[ g, token ], token_InfraCone :> RandomInfraCone[ g, token ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token ], token_InfraBallHull :> RandomInfraBallHull[ g, token ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token ], token_InfraQuadric :> RandomInfraQuadric[ g, token ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> RandomInfraIntersection[ g, token ], token_InfraUnion :> RandomInfraUnion[ g, token ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ], c}],
+      InfraSubstrateHighlight[g, {InfraShell[c, 3], Replace[ family, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraShell :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCylinder :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCone :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSolidOfRevolution :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraBallHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraConvexHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraQuadric :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ], c}],
       InfraMeasurement[g, family, {"Cardinality", "CountingMeasure", "RiemannianMeasure"}]]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```
@@ -96,5 +96,5 @@ SeedRandom[1];
 With[
   {g = GridGraph[{7, 7}]},
   {members = RandomInfraSphere[ g, InfraSphere[25, {2, 3}], All ]},
-  {ConnectedGraphQ @ Subgraph[g, #] & /@ members, AllTrue[members, SubsetQ[FindInfraShell[g, 25, {2, 3}], #] &]}]
+  {ConnectedGraphQ @ Subgraph[g, #] & /@ members, AllTrue[members, SubsetQ[Keys @ InfraMeasurement[ g, InfraShell[ 25, {2, 3} ], "VertexDensity" ], #] &]}]
 ```

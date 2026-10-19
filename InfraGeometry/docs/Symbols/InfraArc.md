@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraArc
 Keywords: [arc, circle, band, minor arc, symbolic object]
-SeeAlso: [ArcGraph, InfraCircle, InfraSegment, InfraMeasurement, RandomInfraArc, Undetermined, FindInfraShell]
+SeeAlso: [ArcGraph, InfraCircle, InfraSegment, InfraMeasurement, RandomInfraArc, InfraShell]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraArc]()[*c*, {*p*, *q*}]</code> is the arc around *c* from *p* to *q*: the minor arcs of the circle through *p* and *q*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraArc]() evaluate it on a graph.
+<code>[InfraArc]()[*c*, {*p*, *q*}]</code> is the arc around *c* from *p* to *q*: the minor arcs of the circle through *p* and *q*. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
 
 <code>[InfraArc]()[*c*, {*p1*, …, *pk*}]</code> is the polyline of the minor arcs from each point to the next.
 
@@ -26,7 +26,7 @@ Option `"RadiusDelta" -> {deltaIn, deltaOut}` widens the band to *r* − *deltaI
 
 Its graph — <code>[InfraMeasurement]()[*g*, *arc*, "Graph"]</code> — is the interval of shortest paths of the band from *p* to *q*, with arrows of rising band distance from *p*. It is the same object [InfraSegment]() is on the whole graph. Its chains are those shortest paths, all of one length.
 
-That they are exactly the minor arcs needs the winding functional on the substrate, and *p* and *q* on a common circle. Nothing here certifies either, so `"Faithful"` is [Undetermined]().
+That they are exactly the minor arcs needs the winding functional on the substrate, and *p* and *q* on a common circle. Nothing here certifies either, so `"Faithful"` stays unevaluated.
 
 The arc is empty when *q* leaves the band or the band disconnects *p* from *q*. On a lattice the bare shell has no two adjacent vertices, so it joins no two of its points: widen the band.
 
@@ -81,7 +81,7 @@ With[
   {c = First @ GraphCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 3]])},
   {q = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[c, 3]])},
-  {InfraSubstrateHighlight[g, {FindInfraShell[g, c, 3], c, p, q}],
+  {InfraSubstrateHighlight[g, {Keys @ InfraMeasurement[ g, InfraShell[ c, 3 ], "VertexDensity" ], c, p, q}],
    InfraMeasurement[g, InfraArc[c, {p, q}], "Cardinality"]}]
 ```
 
@@ -117,7 +117,7 @@ The two half-rings between antipodes of the radius-2 hexagon of the triangular t
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {ring = FindInfraShell[g, c, 2]},
+  {ring = Keys @ InfraMeasurement[ g, InfraShell[ c, 2 ], "VertexDensity" ]},
   {p = First @ ring},
   {q = First @ Select[ring, GraphDistance[Subgraph[g, ring], p, #] == 6 &]},
   {arc = InfraArc[c, {p, q}]},
@@ -189,7 +189,7 @@ With[
   {circle = InfraCircle[c, {2, 4}]},
   {InfraSubstrateHighlight[g, {InfraArc[c, {p, p}, "RadiusDelta" -> 2], c, p}],
    InfraMeasurement[g, InfraArc[c, {p, p}, "RadiusDelta" -> 2], "Cardinality"],
-   Count[Replace[ circle, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> RandomInfraBall[ g, token, All ], token_InfraShell :> RandomInfraShell[ g, token, All ], token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> RandomInfraTube[ g, token, All ], token_InfraCylinder :> RandomInfraCylinder[ g, token, All ], token_InfraCone :> RandomInfraCone[ g, token, All ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, All ], token_InfraBallHull :> RandomInfraBallHull[ g, token, All ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, All ], token_InfraQuadric :> RandomInfraQuadric[ g, token, All ], token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> RandomInfraIntersection[ g, token, All ], token_InfraUnion :> RandomInfraUnion[ g, token, All ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ], _?(MemberQ[#, p] &)], InfraMeasurement[g, circle, "Cardinality"]}]
+   Count[Replace[ circle, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraShell :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraCylinder :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraCone :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraSolidOfRevolution :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraBallHull :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraConvexHull :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraQuadric :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ], _?(MemberQ[#, p] &)], InfraMeasurement[g, circle, "Cardinality"]}]
 ```
 
 On the closed arc the search sweeps the band directly and finds as many circles as the graph carries.
@@ -202,10 +202,10 @@ With[
   {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 2]])},
   {closedArc = InfraArc[c, {p, p}, "RadiusDelta" -> 2]},
   {InfraSubstrateHighlight[g, {closedArc, c, p}],
-   InfraMeasurement[g, closedArc, "Cardinality"], Length @ Replace[ closedArc, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> RandomInfraBall[ g, token, All ], token_InfraShell :> RandomInfraShell[ g, token, All ], token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> RandomInfraTube[ g, token, All ], token_InfraCylinder :> RandomInfraCylinder[ g, token, All ], token_InfraCone :> RandomInfraCone[ g, token, All ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token, All ], token_InfraBallHull :> RandomInfraBallHull[ g, token, All ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token, All ], token_InfraQuadric :> RandomInfraQuadric[ g, token, All ], token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> RandomInfraIntersection[ g, token, All ], token_InfraUnion :> RandomInfraUnion[ g, token, All ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ]}]
+   InfraMeasurement[g, closedArc, "Cardinality"], Length @ Replace[ closedArc, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraShell :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraCylinder :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraCone :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraSolidOfRevolution :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraBallHull :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraConvexHull :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraQuadric :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ]}]
 ```
 
-The arc's `"Faithful"` is [Undetermined](). The circle's is too, unless its cut band is connected and its seam has one side only.
+The arc's `"Faithful"` stays unevaluated. The circle's is too, unless its cut band is connected and its seam has one side only.
 
 ```wl
 With[

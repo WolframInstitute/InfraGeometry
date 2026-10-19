@@ -12,7 +12,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Usage
 
-<code>[InfraRay]()[*p*, *q*]</code> is the ray from *p* through *q*: every shortest path from *p* through *q* that cannot be prolonged past its last vertex. It is a symbolic object; [InfraMeasurement]() and [RandomInfraHalfLine]() evaluate it on a graph.
+<code>[InfraRay]()[*p*, *q*]</code> is the ray from *p* through *q*: every shortest path from *p* through *q* that cannot be prolonged past its last vertex. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
 
 <code>[InfraRay]()[*p*, *p*]</code> is the pencil at *p*: every ray from *p*.
 

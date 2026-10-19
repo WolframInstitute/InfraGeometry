@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraTotalGraph
 Keywords: [compatibility, fibered graph, InfraTotalSpace]
-SeeAlso: [InfraTotalSpace, InfraFiberedGraph, InfraTotalSpace, InfraBaseSpace, InfraProjection]
+SeeAlso: [InfraTotalSpace, InfraFiberedGraph, InfraBaseSpace, InfraProjection]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
 ---

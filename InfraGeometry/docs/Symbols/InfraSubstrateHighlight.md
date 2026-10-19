@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSubstrateHighlight
 Keywords: [visualization, diffuse rendering, density, highlight, palette]
-SeeAlso: [InfraScenePlot, InfraSceneViewer, InfraScene, InfraMeasurement, InfraDensity, InfraWalk]
+SeeAlso: [InfraScenePlot, InfraSceneViewer, InfraScene, InfraMeasurement, InfraWalk]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -88,7 +88,7 @@ With[
   {c = First @ GraphCenter[g]},
   {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])},
   InfraSubstrateHighlight[g,
-    {RandomInfraBall[ g, InfraBall[c, 3] ], InfraArc[c, {p, p}, "RadiusDelta" -> 1]}]]
+    {Keys @ InfraMeasurement[ g, InfraBall[c, 3], "VertexDensity" ], InfraArc[c, {p, p}, "RadiusDelta" -> 1]}]]
 ```
 
 Overlaps add. The two segments share their start and blend there. The walk is one stroke.

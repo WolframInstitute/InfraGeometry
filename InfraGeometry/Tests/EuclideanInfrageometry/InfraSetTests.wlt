@@ -24,15 +24,15 @@ VerificationTest[
 VerificationTest[
   With[ { g = PathGraph @ Range[ 7 ],
           t = Graph[ { {1, 1}, {2, 1} }, { {1, 1} <-> {2, 1} } ] },
-    { InfraDensity[ g, 3 ], InfraDensity[ g, { 3, 1, 3 } ], InfraDensity[ g, <| 3 -> 2 |> ],
-      InfraDensity[ t, {1, 1} ] } ],
+    { InfraMeasurement[ g, 3, "VertexDensity" ], InfraMeasurement[ g, { 3, 1, 3 }, "VertexDensity" ], InfraMeasurement[ g, <| 3 -> 2 |>, "VertexDensity" ],
+      InfraMeasurement[ t, {1, 1}, "VertexDensity" ] } ],
   { <| 3 -> 1 |>, <| 1 -> 1, 3 -> 2 |>, <| 3 -> 2 |>, <| {1, 1} -> 1 |> },
   TestID -> "anchor-rule-reads-every-shape"
 ]
 
 (* a set is already its support, and InfraUnion sorts it *)
 VerificationTest[
-  With[ { g = PathGraph @ Range[ 7 ] }, Sort @ InfraUnion[ g, RandomInfraBall[ g, InfraBall[4, 2] ] ] ],
+  With[ { g = PathGraph @ Range[ 7 ] }, Sort @ InfraUnion[ g, Keys @ InfraMeasurement[ g, InfraBall[4, 2], "VertexDensity" ] ] ],
   {2, 3, 4, 5, 6},
   TestID -> "set-from-InfraBall-support"
 ]
@@ -71,7 +71,7 @@ VerificationTest[
 
 (* Output is the sorted List, and the density over the same support agrees with it. *)
 VerificationTest[
-  With[ { g = GridGraph[ {3, 3} ], ball = RandomInfraBall[ GridGraph[ {3, 3} ], InfraBall[5, 1] ] },
+  With[ { g = GridGraph[ {3, 3} ], ball = Keys @ InfraMeasurement[ GridGraph[ {3, 3} ], InfraBall[5, 1], "VertexDensity" ] },
     { InfraBoundary[ g, ball ],
       InfraBoundary[ g, ball ] === InfraBoundary[ g, <| 2 -> 1, 4 -> 1, 5 -> 1, 6 -> 1, 8 -> 1 |> ] } ],
   { { 2, 4, 6, 8 }, True },
@@ -232,8 +232,8 @@ VerificationTest[
    measure on that same support, which agrees with the occupation reader *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    With[ { ball = RandomInfraBall[ g, InfraBall[13, 2] ] },
-      { d = InfraDensity[ g, ball ] },
+    With[ { ball = Keys @ InfraMeasurement[ g, InfraBall[13, 2], "VertexDensity" ] },
+      { d = InfraMeasurement[ g, ball, "VertexDensity" ] },
       { Keys @ d === Sort @ ball,
         Values @ d === ConstantArray[ 1, Length @ d ],
         d === KeySort @ Counts @ ball } ]
@@ -245,8 +245,8 @@ VerificationTest[
 (* the shape is the kind: a vertex, a multiset and a walk graph are three reads *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
-    { InfraDensity[ g, 7 ], InfraDensity[ g, <| 3 -> 1, 4 -> 1 |> ],
-      InfraDensity[ g, geodesicGraph @ { 1, 2, 3 } ] } ],
+    { InfraMeasurement[ g, 7, "VertexDensity" ], InfraMeasurement[ g, <| 3 -> 1, 4 -> 1 |>, "VertexDensity" ],
+      InfraMeasurement[ g, geodesicGraph @ { 1, 2, 3 }, "VertexDensity" ] } ],
   { <| 7 -> 1 |>, <| 3 -> 1, 4 -> 1 |>, <| 1 -> 1, 2 -> 1, 3 -> 1 |> },
   TestID -> "shapes-stay-distinct"
 ]
@@ -265,10 +265,10 @@ VerificationTest[
 (* ===== density canonical form ===== *)
 
 (* The weights are the true geodesic occupation: counted by brute force over the
-   whole enumerated family, they agree with the raw InfraDensity merge. *)
+   whole enumerated family, they agree with the raw InfraMeasurement merge. *)
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    {m = InfraDensity[g, RandomInfraSegment[g, 1, 16, All]]},
+    {m = InfraMeasurement[g, RandomInfraSegment[g, 1, 16, All], "VertexDensity" ]},
     {paths = RandomInfraSegment[g, 1, 16, All]},
     AllTrue[Keys[m], m[#] == Count[paths, p_ /; MemberQ[p, #]] &]],
   True,
@@ -279,7 +279,7 @@ VerificationTest[
    even when their supports were discovered in different orders. *)
 VerificationTest[
   With[{g = GridGraph[{3, 3}]},
-    InfraDensity[g, <| 9 -> 1, 1 -> 1 |>] === InfraDensity[g, {9, 1}] === <| 1 -> 1, 9 -> 1 |>],
+    InfraMeasurement[g, <| 9 -> 1, 1 -> 1 |>, "VertexDensity" ] === InfraMeasurement[g, {9, 1}, "VertexDensity" ] === <| 1 -> 1, 9 -> 1 |>],
   True,
   TestID -> "density-key-order-canonicalised"
 ]

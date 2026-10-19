@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/OrthogonalCoordinates
 Keywords: [orthogonal coordinates, Cartesian coordinates, shortest-path projection, signed position, walks, tie, fibration]
 SeeAlso: [FindInfraOrthogonalAxes, FindInfraOrthogonalRays, RadarCoordinates, ResistanceCoordinates, InfraFibration, InfraBaseGraph, FindInfraPerpendicular]
-RelatedGuides: [Experimental]
+RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage

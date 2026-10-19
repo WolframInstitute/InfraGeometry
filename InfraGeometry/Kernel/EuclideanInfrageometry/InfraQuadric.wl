@@ -1,7 +1,5 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-Options[ RandomInfraQuadric ] = { "NextVertexFunction" -> Automatic }
-
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraQuadric *)
 
 (* the band { v : lo <= Sum_i w_i d(a_i, v) <= hi } with d(a_i, v) the distance to the anchor's vertices, as InfraBall reads its centre; a bare
@@ -16,7 +14,7 @@ InfraMeasurement[ graph_Graph, InfraQuadric[ foci_List, c : Except[ _List ], wei
 
 InfraMeasurement[ graph_Graph, InfraQuadric[ foci_List, { lo_, hi_ }, weights_List ], "VertexDensity" ] /; Length @ weights == Length @ foci :=
   With[ { dm = GraphDistanceMatrix @ graph },
-    { sums = weights . Map[ focus |-> Min /@ Transpose @ dm[[ VertexIndex[ graph, # ] & /@ Keys @ InfraDensity[ graph, focus ] ]], foci ] },
+    { sums = weights . Map[ focus |-> Min /@ Transpose @ dm[[ VertexIndex[ graph, # ] & /@ Keys @ InfraMeasurement[ graph, focus, "VertexDensity" ] ]], foci ] },
     AssociationThread[ Sort @ Pick[ VertexList @ graph, Thread[ lo <= sums <= hi ] ], 1 ] ]
 
 InfraMeasurement[ graph_Graph, quadric : InfraQuadric[ _List, _, ___ ], "EdgeDensity" ] :=
@@ -33,32 +31,5 @@ InfraMeasurement[ graph_Graph, quadric : InfraQuadric[ _List, _, ___ ], All ] :=
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
       "CountingMeasure", "RiemannianMeasure" } ]
 
-RandomInfraQuadric[ graph_Graph, quadric : InfraQuadric[ _List, _ ] | InfraQuadric[ _List, _, _List ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraQuadric ], First /@ { opts } ] &&
-    ( OptionValue[ RandomInfraQuadric, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
-  With[ { members = Keys @ InfraMeasurement[ graph, quadric, "VertexDensity" ],
-          nextFn = OptionValue[ RandomInfraQuadric, { opts }, "NextVertexFunction" ] },
-    { ordered = { members } },
-    Which[
-      count === Automatic, members,
-      count === All,       ordered,
-      nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
-      IntegerQ @ count && Length @ ordered < count, { },
-      True, RandomSample[ ordered, count ] ] ]
-
 InfraMemberQ[ graph_Graph, quadric : InfraQuadric[ _List, _, ___ ], vs_List ] :=
   Union @ vs === Keys @ InfraMeasurement[ graph, quadric, "VertexDensity" ]
-
-RandomInfraQuadric[ graph_Graph, foci_List, level_,
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { foci, level }, _InfraQuadric ] &&
-    SubsetQ[ First /@ Options[ RandomInfraQuadric ], First /@ { opts } ] :=
-  RandomInfraQuadric[ graph, InfraQuadric[ foci, level ], count,
-    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]
-
-RandomInfraQuadric[ graph_Graph, foci_List, level_, weights_List,
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { foci, level, weights }, _InfraQuadric ] &&
-    SubsetQ[ First /@ Options[ RandomInfraQuadric ], First /@ { opts } ] :=
-  RandomInfraQuadric[ graph, InfraQuadric[ foci, level, weights ], count,
-    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]

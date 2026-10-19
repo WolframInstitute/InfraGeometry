@@ -19,7 +19,7 @@ FindBallCover[ graph_Graph, radius_Integer?( r |-> r >= 0 ), target_ : All,
 		{ density = Which[
 			target === All, AssociationThread[ VertexList[ graph ], 1 ],
 			VertexQ[ graph, target ], Association[ target -> 1 ],
-			AtomQ[ target ] || MatchQ[ target, _List | _Association | _Graph ], InfraDensity[ graph, target ],
+			AtomQ[ target ] || MatchQ[ target, _List | _Association | _Graph ], InfraMeasurement[ graph, target, "VertexDensity" ],
 			True, Quiet[ InfraMeasurement[ graph, target, "VertexDensity" ] ] ] },
 		With[
 			{ targets = Keys[ density ], method = OptionValue[ FindBallCover, { opts }, Method ] },
@@ -94,7 +94,7 @@ BallCoverQ[ graph_Graph, radius_Integer?( r |-> r >= 0 ), centres_List, target_ 
 		{ density = Which[
 			target === All, AssociationThread[ VertexList[ graph ], 1 ],
 			VertexQ[ graph, target ], Association[ target -> 1 ],
-			AtomQ[ target ] || MatchQ[ target, _List | _Association | _Graph ], InfraDensity[ graph, target ],
+			AtomQ[ target ] || MatchQ[ target, _List | _Association | _Graph ], InfraMeasurement[ graph, target, "VertexDensity" ],
 			True, Quiet[ InfraMeasurement[ graph, target, "VertexDensity" ] ] ] },
 		With[
 			{ index = AssociationThread[ VertexList[ graph ], Range[ VertexCount[ graph ] ] ], distances = GraphDistanceMatrix[ graph ] },

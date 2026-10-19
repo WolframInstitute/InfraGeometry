@@ -107,3 +107,12 @@ Research functions not yet settled into a branch: walks and their singularities,
 These remain loaded in the Infra Fiber Bundles category. Their particular geometric assumptions are separate from its general inert objects and complete connections.
 
 The [Experimental Infra Bundles tutorial](paclet:WolframInstitute/InfraGeometry/tutorial/ExperimentalInfraBundles) separates exact finite observations from proposed scale reduction and completion research. General fibered graphs and their structural predicates are covered by [Infra Bundles](paclet:WolframInstitute/InfraGeometry/tutorial/InfraBundles).
+
+
+### Object relations
+
+- `InfraEqualQ` whether two objects are equal as sets or multisets, by overlap, or diffusely
+
+### Construction viewers
+
+- `PointViewer`, `SegmentViewer`, `ShellViewer`, `CircleViewer` interactive viewers for points, segments, shells and circles

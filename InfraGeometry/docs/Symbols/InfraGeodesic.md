@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraGeodesic
 Keywords: [geodesic, infra-scale, window graph, extension, germ, inert head]
-SeeAlso: [RandomInfraGeodesic, InfraGeodesicQ, InfraMeasurement, RandomInfraGeodesic, InfraHalfLine, InfraInfiniteLine]
+SeeAlso: [RandomInfraGeodesic, InfraGeodesicQ, InfraMeasurement, InfraHalfLine, InfraInfiniteLine]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraGeodesic]()[*germ*, *s*]</code> is the geodesics at infra-scale *s* through *germ*, a vertex list: the walks extending *germ* in which every *s* consecutive vertices together with the next one form a shortest path. It is inert; [InfraMeasurement]() and [RandomInfraGeodesic]() evaluate it on a graph.
+<code>[InfraGeodesic]()[*germ*, *s*]</code> is the geodesics at infra-scale *s* through *germ*, a vertex list: the walks extending *germ* in which every *s* consecutive vertices together with the next one form a shortest path. It is inert; [InfraMeasurement]() evaluates it on a graph.
 
 ## Details & Options
 

@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSubstrate
 Keywords: [substrate, example graph, surface graph, tiling, mesh, roster]
-SeeAlso: [TessellationGraph, TorusTessellation, GraphCenter, FindInfraShell, InfraSubstrateHighlight, RandomInfraPoint]
+SeeAlso: [TessellationGraph, TorusTessellation, GraphCenter, InfraShell, InfraSubstrateHighlight, RandomInfraPoint]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -66,7 +66,7 @@ Row @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    Labeled[InfraSubstrateHighlight[g, {FindInfraShell[g, c, 4], c}], name]],
+    Labeled[InfraSubstrateHighlight[g, {Keys @ InfraMeasurement[ g, InfraShell[ c, 4 ], "VertexDensity" ], c}], name]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```
 

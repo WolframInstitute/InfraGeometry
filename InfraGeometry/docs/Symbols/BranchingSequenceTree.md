@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/BranchingSequenceTree
 Keywords: [spherically symmetric tree, branching sequence, rooted tree, growth profile, volume growth]
-SeeAlso: [BetheGraph, SierpinskiGraph, FindInfraShell, InfraSubstrate]
+SeeAlso: [BetheGraph, SierpinskiGraph, InfraShell, InfraSubstrate]
 RelatedGuides: [InfraSubstrates]
 ---
 
@@ -50,7 +50,7 @@ The shells about the root, each in its colour, have the sizes [FoldList]()[[Time
 With[
   {b = {3, 1, 2, 1, 2}},
   {g = BranchingSequenceTree[b]},
-  {shells = Table[FindInfraShell[g, {0, 1}, k], {k, Length[b]}]},
+  {shells = Table[Keys @ InfraMeasurement[ g, InfraShell[ {0, 1}, k ], "VertexDensity" ], {k, Length[b]}]},
   {InfraSubstrateHighlight[g, shells], Length /@ shells == Rest @ FoldList[Times, 1, b]}]
 ```
 

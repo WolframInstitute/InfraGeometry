@@ -53,12 +53,12 @@ savedViewerInk[ data_, depth_: 0, state_: None ] :=
     First @ Cases[ savedViewerSnapshot[ data, depth, state ], savedInk[ items_ ] :> items, Infinity ] ]
 
 savedDiamond = InfraSceneMultiway[
-  InfraScene[ { savedP, savedQ }, { InfraStep[ {
+  InfraScene[ { savedP, savedQ }, { InfraSceneStep[ {
     savedP == InfraMidpoint[ 1, 3 ], savedQ == InfraMidpoint[ 1, 1 ] } ] } ], PathGraph[ Range[ 3 ] ] ];
 savedPointPair = InfraSceneMultiway[ InfraScene[ { savedP, savedQ },
-  { InfraStep[ { savedP == InfraPoint[ ], savedQ == InfraPoint[ ] } ] } ], PathGraph[ { 1, 2 } ] ];
+  { InfraSceneStep[ { savedP == InfraPoint[ ], savedQ == InfraPoint[ ] } ] } ], PathGraph[ { 1, 2 } ] ];
 savedPending = InfraSceneMultiway[ InfraScene[ { savedP, savedQ },
-  { InfraStep[ { savedP == InfraPoint[ ] } ], InfraStep[ { savedQ == InfraPoint[ ] } ], savedP < savedQ } ],
+  { InfraSceneStep[ { savedP == InfraPoint[ ] } ], InfraSceneStep[ { savedQ == InfraPoint[ ] } ], savedP < savedQ } ],
   PathGraph[ { 1, 2 } ], "Steps" -> 1 ];
 savedUnsupported = InfraSceneMultiway[ InfraScene[ { savedP },
   { savedP == InfraPoint[ ], InfraGeometricAssertion[ { savedP }, "NotRegistered" ] } ], PathGraph[ { 1, 2 } ] ];
@@ -153,8 +153,8 @@ VerificationTest[ BlockRandom[ SeedRandom[ 159 ]; With[ { expected = RandomInteg
   True, TestID -> "SavedViewer-navigation-and-redraw-RNG-neutral" ]
 VerificationTest[ With[ { before = savedDiamond }, savedViewerSnapshot[ savedDiamond, 2, 4, <| |>, <| 4 -> 4 |> ];
     before === savedDiamond ], True, TestID -> "SavedViewer-saved-record-immutable" ]
-VerificationTest[ Block[ { RandomInfraInstance, RandomInfraPoint, RandomInfraMidpoint, InfraSceneMultiway },
-    RandomInfraInstance[ ___ ] := Throw[ "SamplerCalled" ]; RandomInfraPoint[ ___ ] := Throw[ "SamplerCalled" ];
+VerificationTest[ Block[ { RandomInfraSceneInstance, RandomInfraPoint, RandomInfraMidpoint, InfraSceneMultiway },
+    RandomInfraSceneInstance[ ___ ] := Throw[ "SamplerCalled" ]; RandomInfraPoint[ ___ ] := Throw[ "SamplerCalled" ];
     RandomInfraMidpoint[ ___ ] := Throw[ "SamplerCalled" ]; InfraSceneMultiway[ ___ ] := Throw[ "ExplorerCalled" ];
     Catch[ Head[ savedViewerSnapshot[ savedDiamond, 2, 4 ] ] ] ], Column,
   TestID -> "SavedViewer-redraw-never-samples-or-explores" ]
@@ -164,7 +164,7 @@ VerificationTest[ GraphQ[ InfraSubstrateHighlight[ CycleGraph[ 4 ], { InfraPerpe
   True, TestID -> "SavedViewer-bisector-family-public-renderer" ]
 VerificationTest[ GraphQ[ InfraSubstrateHighlight[ PathGraph[ Range[ 3 ] ], { InfraRegionNearest[ { 1, 3 }, 2 ] } ] ],
   True, TestID -> "SavedViewer-nearest-family-public-renderer" ]
-VerificationTest[ With[ { data = InfraSceneMultiway[ InfraScene[ { savedP }, { savedP == InfraMidpoint[ 1, 2 ] } ],
+VerificationTest[ With[ { data = InfraSceneMultiway[ InfraScene[ { savedP }, { savedP == InfraPoint[ InfraShell[ 1, 5 ] ] } ],
       PathGraph[ { 1, 2 } ] ] }, ! FreeQ[ savedViewerSnapshot[ data, 1 ], "This layer is exhaustively empty." ] ],
   True, TestID -> "SavedViewer-decided-empty-layer" ]
 

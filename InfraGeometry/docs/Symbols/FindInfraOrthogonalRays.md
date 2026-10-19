@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraOrthogonalRays
 Keywords: [orthogonal frame, perpendicular rays, negative, reflection, projection test, clique, vertex list]
 SeeAlso: [FindInfraOrthogonalAxes, OrthogonalCoordinates, RandomInfraHalfLine, RandomInfraInfiniteLine, InfraPerpendicularQ, FindInfraSpanningAxes, InfraSubstrateHighlight]
-RelatedGuides: [Experimental]
+RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage

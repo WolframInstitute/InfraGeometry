@@ -23,7 +23,7 @@ The fibers of a branched fibration over a grid, each in its own colour: a vertex
 With[
   {fib = InfraFiberedSubstrate["BranchedGridFibration", "Small"]},
   {total = InfraTotalSpace[fib]},
-  InfraSubstrateHighlight[total, InfraDensity[total, VertexList @ #] & /@ Values @ InfraFibers[fib]]]
+  InfraSubstrateHighlight[total, InfraMeasurement[total, VertexList @ #, "VertexDensity" ] & /@ Values @ InfraFibers[fib]]]
 ```
 
 The sizes of the fibers of the grid displacement bundle, drawn as a density on the base: two neighbours at a corner, four inside.

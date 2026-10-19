@@ -24,14 +24,14 @@ Needs["WolframInstitute`InfraGeometry`"]
 The pencil: every germ of length $r$ at $p$, as a vertex list, read off the geodesic spray graph.
 
 ```wl
-pencil[g_, p_, r_] := With[{spray = SprayGraph[g, p]}, Join @@ Map[FindPath[spray, p, #, {r}, All] &, FindInfraShell[g, p, r]]]
+pencil[g_, p_, r_] := With[{spray = SprayGraph[g, p]}, Join @@ Map[FindPath[spray, p, #, {r}, All] &, Keys @ InfraMeasurement[ g, InfraShell[ p, r ], "VertexDensity" ]]]
 ```
 
 The tensor as the table over germs and shell vertices; the tied parameters are reduced by the selector.
 
 ```wl
 germTensor[g_, p_, r_, select_ : Mean] := With[
-  {d = GraphDistanceMatrix @ g, shell = FindInfraShell[g, p, r]},
+  {d = GraphDistanceMatrix @ g, shell = Keys @ InfraMeasurement[ g, InfraShell[ p, r ], "VertexDensity" ]},
   {toShell = d[[All, VertexIndex[g, #] & /@ shell]]},
   Map[germ |-> Map[alongGerm |-> select @ Pick[Range[0, r], alongGerm, Min @ alongGerm], Transpose @ toShell[[VertexIndex[g, #] & /@ germ]]], pencil[g, p, r]] / N[r]]
 ```
@@ -39,7 +39,7 @@ germTensor[g_, p_, r_, select_ : Mean] := With[
 The multiplicity of a shell vertex: the number of germs ending there.
 
 ```wl
-germMultiplicity[g_, p_, r_] := Lookup[Counts[Last /@ pencil[g, p, r]], FindInfraShell[g, p, r]]
+germMultiplicity[g_, p_, r_] := Lookup[Counts[Last /@ pencil[g, p, r]], Keys @ InfraMeasurement[ g, InfraShell[ p, r ], "VertexDensity" ]]
 ```
 
 ## The pencil at a point
@@ -57,7 +57,7 @@ GraphicsGrid @ Table[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
     {p = First @ GraphCenter @ g},
     {r = Floor[GraphRadius[g]/2]},
-    {spray = Subgraph[SprayGraph[g, p], RandomInfraBall[ g, InfraBall[p, r] ]]},
+    {spray = Subgraph[SprayGraph[g, p], Keys @ InfraMeasurement[ g, InfraBall[p, r], "VertexDensity" ]]},
     Graph[g, EdgeShapeFunction -> Map[e |-> (UndirectedEdge @@ e) -> With[{u = First @ e},
         Function[{points, edge}, With[{q = If[First @ edge === u, points, Reverse @ points]},
           {Line[points], StandardRed, Opacity[1], Arrowheads[Small], Arrow @ BezierCurve[{q[[1]], Mean[q] + 0.2 Cross[q[[2]] - q[[1]]], q[[2]]}]}]]],
@@ -86,7 +86,7 @@ GraphicsGrid @ Table[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
     {p = First @ GraphCenter @ g, d = GraphDistanceMatrix @ g},
     {r = Floor[GraphRadius[g]/2]},
-    {shell = FindInfraShell[g, p, r]},
+    {shell = Keys @ InfraMeasurement[ g, InfraShell[ p, r ], "VertexDensity" ]},
     {germ = First @ pencil[g, p, r]},
     {parameter = Map[end |-> With[{alongGerm = d[[VertexIndex[g, end], VertexIndex[g, #] & /@ germ]]}, Mean @ Pick[Range[0, r], alongGerm, Min @ alongGerm]], shell] / N[r]},
     {probe = shell[[First @ Ordering[Abs[parameter - 1/2], 1]]]},
@@ -112,7 +112,7 @@ GraphicsGrid @ Table[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
     {p = First @ GraphCenter @ g, d = GraphDistanceMatrix @ g},
     {r = Floor[GraphRadius[g]/2]},
-    {shell = FindInfraShell[g, p, r]},
+    {shell = Keys @ InfraMeasurement[ g, InfraShell[ p, r ], "VertexDensity" ]},
     {germ = First @ pencil[g, p, r]},
     {parameter = AssociationThread[shell, Map[end |-> With[{alongGerm = d[[VertexIndex[g, end], VertexIndex[g, #] & /@ germ]]}, Mean @ Pick[Range[0, r], alongGerm, Min @ alongGerm]], shell] / N[r]]},
     {colour = t |-> Blend[{StandardBlue, StandardYellow, StandardRed}, t]},
@@ -137,7 +137,7 @@ GraphicsGrid @ Table[
     {p = First @ GraphCenter @ g, d = GraphDistanceMatrix @ g},
     {r = Floor[GraphRadius[g]/2], coordinates = AssociationThread[VertexList @ g, GraphEmbedding @ g]},
     {angle = end |-> Mod[ArcTan @@ (coordinates[end] - coordinates[p]), 2 Pi]},
-    {shell = SortBy[FindInfraShell[g, p, r], angle]},
+    {shell = SortBy[Keys @ InfraMeasurement[ g, InfraShell[ p, r ], "VertexDensity" ], angle]},
     {germs = SortBy[pencil[g, p, r], germ |-> {angle[Last @ germ], angle[germ[[Ceiling[(r + 1)/2]]]]}]},
     {toShell = d[[All, VertexIndex[g, #] & /@ shell]]},
     MatrixPlot[Map[germ |-> Map[alongGerm |-> Mean @ Pick[Range[0, r], alongGerm, Min @ alongGerm], Transpose @ toShell[[VertexIndex[g, #] & /@ germ]]], germs] / N[r], AspectRatio -> 1]],
@@ -158,7 +158,7 @@ GraphicsGrid @ Table[
     {r = Floor[GraphRadius[g]/2], coordinates = AssociationThread[VertexList @ g, GraphEmbedding @ g]},
     {direction = end |-> Normalize[coordinates[end] - coordinates[p]]},
     {angle = end |-> Mod[ArcTan @@ (coordinates[end] - coordinates[p]), 2 Pi]},
-    {shell = SortBy[FindInfraShell[g, p, r], angle]},
+    {shell = SortBy[Keys @ InfraMeasurement[ g, InfraShell[ p, r ], "VertexDensity" ], angle]},
     {germs = SortBy[pencil[g, p, r], germ |-> {angle[Last @ germ], angle[germ[[Ceiling[(r + 1)/2]]]]}]},
     MatrixPlot[Outer[Dot, direction[Last @ #] & /@ germs, direction /@ shell, 1], AspectRatio -> 1]],
   {size, {"Small", "Medium", "Large"}},
@@ -175,7 +175,7 @@ GraphicsGrid @ Table[
     {r = Floor[GraphRadius[g]/2], coordinates = AssociationThread[VertexList @ g, GraphEmbedding @ g]},
     {direction = end |-> Normalize[coordinates[end] - coordinates[p]]},
     {angle = end |-> Mod[ArcTan @@ (coordinates[end] - coordinates[p]), 2 Pi]},
-    {shell = SortBy[FindInfraShell[g, p, r], angle]},
+    {shell = SortBy[Keys @ InfraMeasurement[ g, InfraShell[ p, r ], "VertexDensity" ], angle]},
     {germs = SortBy[pencil[g, p, r], germ |-> {angle[Last @ germ], angle[germ[[Ceiling[(r + 1)/2]]]]}]},
     MatrixPlot[Clip[Outer[Dot, direction[Last @ #] & /@ germs, direction /@ shell, 1], {0, 1}], AspectRatio -> 1]],
   {size, {"Small", "Medium", "Large"}},
@@ -194,7 +194,7 @@ GraphicsGrid @ Table[
     {g = (SeedRandom[2]; InfraSubstrate[name, size])},
     {c = First @ GraphCenter @ g},
     {r = Floor[GraphRadius[g]/2]},
-    {shell = FindInfraShell[g, c, r]},
+    {shell = Keys @ InfraMeasurement[ g, InfraShell[ c, r ], "VertexDensity" ]},
     {u = First @ shell},
     {minus = Select[shell, GraphDistance[g, u, #] == 2 r &]},
     InfraSubstrateHighlight[g, {

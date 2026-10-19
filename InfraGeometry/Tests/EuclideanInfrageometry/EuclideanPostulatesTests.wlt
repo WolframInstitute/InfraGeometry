@@ -466,35 +466,35 @@ VerificationTest[
    pinned against brute force in InfraLineTests.wlt (EuclideanInertHeads, T3); this
    whole section tested the old Method / Properties / DAG-pool API, since removed. *)
 
-(* ===== FindInfraShell ===== *)
+(* ===== InfraShell ===== *)
 
 (* the level surface { v : d(c, v) = r }; the separating subsets are RandomInfraSphere's, InfraSphereTests.wlt *)
 
 VerificationTest[
   With[{g = PathGraph[Range[5]]},
-    Sort @ FindInfraShell[g, 3, 2]
+    Sort @ Keys @ InfraMeasurement[ g, InfraShell[ 3, 2 ], "VertexDensity" ]
   ],
   {1, 5},
-  TestID -> "FindInfraShell-default-equidistant"
+  TestID -> "InfraShell-default-equidistant"
 ]
 
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    With[{result = FindInfraShell[g, 6, {1, 2}]},
+    With[{result = Keys @ InfraMeasurement[ g, InfraShell[ 6, {1, 2} ], "VertexDensity" ]},
       result =!= {} &&
       AllTrue[result, v |-> 1 <= GraphDistance[g, 6, v] <= 2]
     ]
   ],
   True,
-  TestID -> "FindInfraShell-range-radius"
+  TestID -> "InfraShell-range-radius"
 ]
 
 VerificationTest[
   With[{g = PetersenGraph[]},
-    MatchQ[FindInfraShell[g, 1, 2], {__Integer}]
+    MatchQ[Keys @ InfraMeasurement[ g, InfraShell[ 1, 2 ], "VertexDensity" ], {__Integer}]
   ],
   True,
-  TestID -> "FindInfraShell-default-single-result"
+  TestID -> "InfraShell-default-single-result"
 ]
 
 VerificationTest[
@@ -950,9 +950,9 @@ VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     With[ { pool = InfraMeasurement[ g, InfraLine[ { 6, 7 } ], "Graph" ] },
       MatchQ[ pool, { _Graph, __Graph } ] &&
-      Total[ Max @ InfraDensity[ g, # ] & /@ pool ] === Length @ infraSpread @ pool &&
+      Total[ Max @ InfraMeasurement[ g, #, "VertexDensity" ] & /@ pool ] === Length @ infraSpread @ pool &&
       InfraMeasurement[ g, InfraLine[ { 6, 7 } ], "Cardinality" ] === Length @ infraSpread @ pool &&
-      Total @ InfraDensity[ g, pool ] === Total[ Length /@ infraSpread @ pool ] &&
+      Total @ InfraMeasurement[ g, pool, "VertexDensity" ] === Total[ Length /@ infraSpread @ pool ] &&
       Sort @ Union[ First /@ infraSpread @ pool ] === { 1, 13 } &&
       Sort @ Union[ Last /@ infraSpread @ pool ] === { 4, 16 }
     ]
@@ -989,7 +989,7 @@ VerificationTest[
   TestID -> "RandomInfraGeodesic-germ-count-contract"
 ]
 
-(* FindInfraShell / the circle's representatives: a bounded radius makes the answer depend only on
+(* InfraShell / the circle's representatives: a bounded radius makes the answer depend only on
    the ball B(p, r + 1) / B(p, r + 2) around the centre.  The "Metric" and
    "Separating" recipes are graph-intrinsic; the "Embedding" recipe still
    uses the full graph for its spectral coordinates, so the local-vs-global
@@ -997,10 +997,10 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 10, 10 } ], p = 45 },
-    FindInfraShell[ g, p, 2 ] === FindInfraShell[ NeighborhoodGraph[ g, p, 3 ], p, 2 ]
+    Keys @ InfraMeasurement[ g, InfraShell[ p, 2 ], "VertexDensity" ] === Keys @ InfraMeasurement[ NeighborhoodGraph[ g, p, 3 ], InfraShell[ p, 2 ], "VertexDensity" ]
   ],
   True,
-  TestID -> "FindInfraShell-locality-Metric"
+  TestID -> "InfraShell-locality-Metric"
 ]
 
 VerificationTest[

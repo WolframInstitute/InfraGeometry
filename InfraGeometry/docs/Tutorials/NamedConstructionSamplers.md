@@ -24,7 +24,7 @@ With[ { graph = PathGraph[ Range[ 5 ] ] },
 
 ```wolfram
 With[ { graph = PathGraph[ Range[ 5 ] ] },
-  RandomInfraBall[ graph, InfraBall[ 3, 1 ], All ] ]
+  Keys @ InfraMeasurement[ graph, InfraBall[ 3, 1 ], "VertexDensity" ] ]
 ```
 
 The old inert Ray, Line and Polygon spellings remain supported for this release.
@@ -37,15 +37,18 @@ Negative counts and unsupported options stay unevaluated.
 Default All and Identity do not advance random state.
 An explicit legacy stochastic selector retains its original action.
 
-Ball, Shell, Tube, Cylinder, Cone, SolidOfRevolution, BallHull, ConvexHull and Quadric each have one set representative, including an empty set.
-Intersection and Union sample points from complete operand supports.
+Ball, Shell, Tube, Cylinder, Cone, SolidOfRevolution, BallHull, ConvexHull and Quadric are fixed vertex sets, including an empty set.
+Read their vertices with `Keys @ InfraMeasurement[graph, object, "VertexDensity"]`.
+Intersection and Union combine the operand densities; they have no random constructor.
+Use RandomInfraPoint on a region to sample its points.
 Point labels that are Lists remain intact.
 
-The named functions are RandomInfraPoint, RandomInfraSegment, RandomInfraHalfLine, RandomInfraInfiniteLine, RandomInfraCircle, RandomInfraArc, RandomInfraRegularPolygon, RandomInfraPlane, RandomInfraBall, RandomInfraShell, RandomInfraSphere, RandomInfraTube, RandomInfraCylinder, RandomInfraCone, RandomInfraSolidOfRevolution, RandomInfraBallHull, RandomInfraConvexHull, RandomInfraQuadric, RandomInfraWalk, RandomInfraGeodesic, RandomInfraEllipse, RandomInfraIntersection, RandomInfraUnion, RandomInfraMidpoint, RandomInfraPerpendicularBisector and RandomInfraRegionNearest.
+The named functions are RandomInfraPoint, RandomInfraSegment, RandomInfraHalfLine, RandomInfraInfiniteLine, RandomInfraCircle, RandomInfraArc, RandomInfraRegularPolygon, RandomInfraPlane, RandomInfraSphere, RandomInfraWalk, RandomInfraGeodesic, RandomInfraEllipse, RandomInfraMidpoint and RandomInfraRegionNearest.
 
-Exact Midpoint, PerpendicularBisector and RegionNearest are point families on finite simple undirected unweighted graphs.
-Their complete pools contain distinct raw vertices in graph order. Exact midpoint can be empty; equidistance does not imply separation; nearest support retains all ties.
-See [Synthetic geometry migration](paclet:WolframInstitute/InfraGeometry/tutorial/SyntheticGeometryMigration) for compatibility and the segment middle-layer distinction.
+Midpoint and RegionNearest are point families on finite simple undirected unweighted graphs.
+Their complete pools contain distinct raw vertices in graph order. Midpoint uses the central layer or two central layers of the oriented segment graph; RegionNearest retains all distance-minimizing ties.
+PerpendicularBisector is the unique finite equidistant locus. Use InfraPoint[InfraPerpendicularBisector[p,q]] to choose a point on it.
+See [Synthetic geometry migration](paclet:WolframInstitute/InfraGeometry/tutorial/SyntheticGeometryMigration) for compatibility and midpoint density.
 
 ```wl
 SeedRandom[ 71 ]; With[ { graph = CycleGraph[ 4 ] },

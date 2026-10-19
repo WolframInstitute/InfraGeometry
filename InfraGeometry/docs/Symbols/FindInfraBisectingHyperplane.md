@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraBisectingHyperplane
 Keywords: [perpendicular bisector, hyperplane, bisector, separating set, Euclid I.10]
 SeeAlso: [InfraPlane, InfraMeasurement, FindInfraEquidistantSet]
-RelatedGuides: [Experimental]
+RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage

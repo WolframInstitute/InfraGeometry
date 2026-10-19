@@ -42,7 +42,7 @@ quotientExplorerRecords[ data_ ] :=
 
 VerificationTest[
   With[ { graph = PathGraph[ Range[ 3 ] ],
-      scene = InfraScene[ { p, q }, { InfraStep[ { p == InfraMidpoint[ 1, 3 ], q == InfraMidpoint[ 1, 1 ] } ] } ] },
+      scene = InfraScene[ { p, q }, { InfraSceneStep[ { p == InfraMidpoint[ 1, 3 ], q == InfraMidpoint[ 1, 1 ] } ] } ] },
     { reference = unmergedSceneReference[ {
         { 1, { p }, { }, bindings |-> RandomInfraMidpoint[ graph, InfraMidpoint[ 1, 3 ], All ] },
         { 1, { q }, { }, bindings |-> RandomInfraMidpoint[ graph, InfraMidpoint[ 1, 1 ], All ] } }, <| |> ],
@@ -54,8 +54,8 @@ VerificationTest[
 
 VerificationTest[
   With[ { graph = PathGraph[ { 1, 2 } ],
-      scene = InfraScene[ { p, q, r }, { InfraStep[ { p == InfraPoint[], q == InfraPoint[] } ],
-        InfraStep[ { r == InfraMidpoint[ p, p ] } ], p < q } ] },
+      scene = InfraScene[ { p, q, r }, { InfraSceneStep[ { p == InfraPoint[], q == InfraPoint[] } ],
+        InfraSceneStep[ { r == InfraMidpoint[ p, p ] } ], p < q } ] },
     { reference = unmergedSceneReference[ {
         { 1, { p }, { }, bindings |-> VertexList[ graph ] },
         { 1, { q }, { }, bindings |-> VertexList[ graph ] },
@@ -77,7 +77,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { graph = PathGraph[ Range[ 3 ] ],
-      scene = InfraScene[ { p, q }, { InfraStep[ { p == InfraMidpoint[ 1, 3 ], q == InfraMidpoint[ 1, 1 ] } ] } ] },
+      scene = InfraScene[ { p, q }, { InfraSceneStep[ { p == InfraMidpoint[ 1, 3 ], q == InfraMidpoint[ 1, 1 ] } ] } ] },
     { reference = unmergedSceneReference[ {
         { 1, { p }, { }, bindings |-> { 2 } }, { 1, { q }, { }, bindings |-> { 1 } } }, <| p -> 2 |> ],
       observed = quotientExplorerRecords[ InfraSceneMultiway[ scene, graph, <| p -> 2 |> ] ] },
@@ -86,22 +86,22 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { scene = InfraScene[ { p, q }, { InfraStep[ { p == InfraPoint[] } ], InfraStep[ { q == InfraMidpoint[ p, p ] } ] } ],
+  With[ { scene = InfraScene[ { p, q }, { InfraSceneStep[ { p == InfraPoint[] } ], InfraSceneStep[ { q == InfraMidpoint[ p, p ] } ] } ],
       graph = PathGraph[ { 1, 2 } ] },
     Map[ steps |-> Sort[ InfraSceneMultiway[ scene, graph, "Steps" -> steps ][ "Instances" ] ] ===
-      Sort[ RandomInfraInstance[ scene, graph, All, <| |>, "Steps" -> steps ] ], { 0, 1, 2, All } ] ],
+      Sort[ RandomInfraSceneInstance[ scene, graph, All, <| |>, "Steps" -> steps ] ], { 0, 1, 2, All } ] ],
   { True, True, True, True }, TestID -> "multiway-all-group-boundaries-agree-with-sampler"
 ]
 
 VerificationTest[
-  With[ { scene = InfraScene[ { p, q }, { InfraStep[ { q == InfraMidpoint[ p, p ], p == InfraPoint[] } ] } ] },
+  With[ { scene = InfraScene[ { p, q }, { InfraSceneStep[ { q == InfraMidpoint[ p, p ], p == InfraPoint[] } ] } ] },
     { data = InfraSceneMultiway[ scene, PathGraph[ { 1, 2 } ] ] },
     { Lookup[ Values[ data[ "Events" ] ], "Construction" ], Length[ data[ "Instances" ] ], data[ "Completeness" ][ "Scene" ] } ],
   { { 2, 2, 1, 1 }, 2, True }, TestID -> "multiway-dependent-constructions-in-one-manual-group"
 ]
 
 VerificationTest[
-  Head[ InfraSceneMultiway[ InfraScene[ { p, q }, { InfraStep[ { p == InfraMidpoint[ q, q ], q == InfraPoint[] } ] } ],
+  Head[ InfraSceneMultiway[ InfraScene[ { p, q }, { InfraSceneStep[ { p == InfraMidpoint[ q, q ], q == InfraPoint[] } ] } ],
     PathGraph[ { 1, 2 } ] ] ],
   InfraSceneMultiway, TestID -> "multiway-rejects-sampler-order-violating-manual-group"
 ]
@@ -125,14 +125,14 @@ VerificationTest[
   Map[ hypotheses |-> Head[ InfraSceneMultiway[ InfraScene[ { p, q }, hypotheses ], PathGraph[ { 1, 2 } ] ] ], {
     { p == InfraPoint[], p == InfraMidpoint[ 1, 1 ] },
     { { p, q } == InfraSegment[ 1, 2 ], p == InfraPoint[] },
-    { InfraStep[ { p == InfraPoint[] } ], q == InfraPoint[] },
-    { InfraStep[ { p == InfraPoint[] } ], InfraStep[ { p == InfraMidpoint[ 1, 1 ] } ] } } ],
+    { InfraSceneStep[ { p == InfraPoint[] } ], q == InfraPoint[] },
+    { InfraSceneStep[ { p == InfraPoint[] } ], InfraSceneStep[ { p == InfraMidpoint[ 1, 1 ] } ] } } ],
   ConstantArray[ InfraSceneMultiway, 4 ], TestID -> "multiway-rejects-preloss-duplicate-and-mixed-schedules"
 ]
 
 VerificationTest[
-  Head[ InfraSceneMultiway[ InfraScene[ { p, q }, { InfraStep[ { q == InfraMidpoint[ p, p ] } ],
-    InfraStep[ { p == InfraPoint[] } ] } ], PathGraph[ { 1, 2 } ] ] ],
+  Head[ InfraSceneMultiway[ InfraScene[ { p, q }, { InfraSceneStep[ { q == InfraMidpoint[ p, p ] } ],
+    InfraSceneStep[ { p == InfraPoint[] } ] } ], PathGraph[ { 1, 2 } ] ] ],
   InfraSceneMultiway, TestID -> "multiway-rejects-dependency-in-later-group"
 ]
 
@@ -168,8 +168,8 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { scene = InfraScene[ { p, q }, { InfraStep[ { } ], InfraStep[ { p == InfraPoint[] } ],
-      InfraStep[ { } ], InfraStep[ { q == InfraMidpoint[ p, p ] } ], InfraStep[ { } ] } ] },
+  With[ { scene = InfraScene[ { p, q }, { InfraSceneStep[ { } ], InfraSceneStep[ { p == InfraPoint[] } ],
+      InfraSceneStep[ { } ], InfraSceneStep[ { q == InfraMidpoint[ p, p ] } ], InfraSceneStep[ { } ] } ] },
     { data = InfraSceneMultiway[ scene, PathGraph[ { 1, 2 } ] ] },
     { Lookup[ Values[ data[ "StepLayers" ] ], "Depth" ], data[ "States" ][ 1 ][ "Group" ],
       DeleteDuplicates[ Lookup[ Values[ data[ "States" ] ], "Group" ] ], data[ "Completeness" ][ "Scene" ] } ],
@@ -177,7 +177,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { scene = InfraScene[ { p, q }, { InfraStep[ { p == InfraPoint[] } ], InfraStep[ { q == InfraPoint[] } ] } ] },
+  With[ { scene = InfraScene[ { p, q }, { InfraSceneStep[ { p == InfraPoint[] } ], InfraSceneStep[ { q == InfraPoint[] } ] } ] },
     { data = InfraSceneMultiway[ scene, PathGraph[ { 1, 2 } ], "MaxDepth" -> 0 ] },
     { Keys[ data[ "Layers" ] ], Lookup[ Values[ data[ "StepLayers" ] ], "Complete" ],
       data[ "Completeness" ][ "Reasons" ], data[ "Instances" ] } ],
@@ -209,7 +209,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { scene = InfraScene[ { p, q }, { InfraStep[ { p == InfraMidpoint[ 1, 2 ] } ], InfraStep[ { q == InfraPoint[] } ] } ] },
+  With[ { scene = InfraScene[ { p, q }, { InfraSceneStep[ { p == InfraPoint[ InfraShell[ 1, 9 ] ] } ], InfraSceneStep[ { q == InfraPoint[] } ] } ] },
     { data = InfraSceneMultiway[ scene, PathGraph[ { 1, 2 } ] ] },
     { Lookup[ Values[ data[ "Layers" ] ], "States" ], Lookup[ Values[ data[ "Layers" ] ], "Complete" ],
       data[ "Completeness" ][ "Scene" ] } ],
@@ -315,9 +315,9 @@ VerificationTest[
 ]
 
 VerificationTest[
-  Internal`InheritedBlock[ { RandomInfraBall },
-    RandomInfraBall[ graph_Graph, InfraBall[ "SetFixture" ], All ] := { { 3, 1, 1 }, { 1, 3 } };
-    With[ { data = InfraSceneMultiway[ InfraScene[ { region }, { region == InfraBall[ "SetFixture" ] } ],
+  Internal`InheritedBlock[ { RandomInfraSphere },
+    RandomInfraSphere[ graph_Graph, InfraSphere[ "SetFixture" ], All ] := { { 3, 1, 1 }, { 1, 3 } };
+    With[ { data = InfraSceneMultiway[ InfraScene[ { region }, { region == InfraSphere[ "SetFixture" ] } ],
         PathGraph[ Range[ 3 ] ] ] },
       { Length[ data[ "States" ] ], Length[ data[ "Events" ] ], data[ "Instances" ],
         Lookup[ Values[ data[ "Events" ] ], "Candidate" ] } ] ],
@@ -341,7 +341,7 @@ VerificationTest[
     { data = InfraSceneMultiway[ scene, graph ] },
     { Length[ data[ "Instances" ] ], First[ data[ "Expansions" ] ][ "PoolSize" ],
       First[ data[ "Expansions" ] ][ "SelectedPoolSize" ], First[ Values[ data[ "Events" ] ] ][ "CandidateIndex" ],
-      data[ "Completeness" ][ "Scene" ], data[ "Instances" ] === RandomInfraInstance[ scene, graph, All ] } ],
+      data[ "Completeness" ][ "Scene" ], data[ "Instances" ] === RandomInfraSceneInstance[ scene, graph, All ] } ],
   { 1, 2, 1, 1, True, True }, TestID -> "multiway-declared-branches-preserves-eager-acquisition-cost"
 ]
 
@@ -360,7 +360,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { graph = PathGraph[ { 1, 2 } ],
-      scene = InfraScene[ { p, q }, { InfraStep[ { p == InfraPoint[], q == InfraPoint[] } ] } ] },
+      scene = InfraScene[ { p, q }, { InfraSceneStep[ { p == InfraPoint[], q == InfraPoint[] } ] } ] },
     { reference = unmergedSceneReference[ {
         { 1, { p }, { }, bindings |-> VertexList[ graph ] },
         { 1, { q }, { }, bindings |-> VertexList[ graph ] } }, <| |> ], data = InfraSceneMultiway[ scene, graph ] },
@@ -386,7 +386,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { graph = PathGraph[ Range[ 3 ] ],
-      scene = InfraScene[ { p, q }, { InfraStep[ { p == InfraPoint[] } ], InfraStep[ { q == InfraPoint[] } ], p < q } ] },
+      scene = InfraScene[ { p, q }, { InfraSceneStep[ { p == InfraPoint[] } ], InfraSceneStep[ { q == InfraPoint[] } ], p < q } ] },
     { data = InfraSceneMultiway[ scene, graph, "Steps" -> 1 ] },
     { data[ "Completeness" ], DeleteDuplicates[ Values[ # [ "Assertions" ] ] & /@ Values[ data[ "States" ] ] ],
       AllTrue[ data[ "Frontier" ], obligation |-> obligation[ "Reason" ] === "StepsLimit" ] } ],
@@ -522,13 +522,13 @@ VerificationTest[
 
 VerificationTest[
   ( instance |-> instance[[ 1 ]][ sceneTarget ] ) /@ InfraSceneMultiway[ InfraScene[ { sceneTarget }, { sceneTarget == InfraIntersection[ InfraBall[ 1, 1 ], InfraBall[ 3, 1 ] ] } ], PathGraph[ { 1, 2, 3 } ] ][ "Instances" ],
-  { 2 },
+  { { 2 } },
   TestID -> "synthetic-t8-dispatch-Intersection"
 ]
 
 VerificationTest[
   ( instance |-> instance[[ 1 ]][ sceneTarget ] ) /@ InfraSceneMultiway[ InfraScene[ { sceneTarget }, { sceneTarget == InfraUnion[ InfraBall[ 1, 0 ], InfraBall[ 3, 0 ] ] } ], PathGraph[ { 1, 2, 3 } ] ][ "Instances" ],
-  { 1, 3 },
+  { { 1, 3 } },
   TestID -> "synthetic-t8-dispatch-Union"
 ]
 
@@ -540,7 +540,7 @@ VerificationTest[
 
 VerificationTest[
   ( instance |-> instance[[ 1 ]][ sceneTarget ] ) /@ InfraSceneMultiway[ InfraScene[ { sceneTarget }, { sceneTarget == InfraPerpendicularBisector[ 1, 2 ] } ], CompleteGraph[ 3 ] ][ "Instances" ],
-  { 3 },
+  { { 3 } },
   TestID -> "synthetic-t8-dispatch-PerpendicularBisector"
 ]
 

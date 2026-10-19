@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraPoint
 Keywords: [point, vertex, scene token, density]
-SeeAlso: [RandomInfraPoint, InfraDensity, InfraScene, InfraDistance]
+SeeAlso: [RandomInfraPoint, InfraMeasurement, InfraScene, InfraDistance]
 RelatedGuides: [Experimental]
 ---
 
@@ -26,7 +26,7 @@ A point is a vertex. The head is a token of the scene language and holds no valu
 |---|---|
 | one vertex | *v* |
 | several candidate points | `{a, b, …}` — a plain list |
-| a measure on vertices | `<\|v -> m, …\|>`, see [InfraDensity]() |
+| a measure on vertices | `<\|v -> m, …\|>`, see [InfraMeasurement]() |
 
 The vertex label is carried verbatim, including a list label such as `{i, j}` on a grid or tessellation.
 
@@ -70,10 +70,10 @@ SeedRandom[1];
 Module[{a, b, c},
   With[
     {scene = InfraScene[{a, b, c},
-       {InfraStep[{a == InfraPoint[13]}, "a"],
-        InfraStep[{b == InfraPoint[], InfraDistance[a, b] == 3}, "b"],
-        InfraStep[{c == InfraPoint[], InfraDistance[a, c] == 4}, "c"]}]},
-    {instances = RandomInfraInstance[ scene, GridGraph[{5, 5}], All ]},
+       {InfraSceneStep[{a == InfraPoint[13]}, "a"],
+        InfraSceneStep[{b == InfraPoint[], InfraDistance[a, b] == 3}, "b"],
+        InfraSceneStep[{c == InfraPoint[], InfraDistance[a, c] == 4}, "c"]}]},
+    {instances = RandomInfraSceneInstance[ scene, GridGraph[{5, 5}], All ]},
     {Length[instances], InfraSceneInstance[First[instances], a], InfraSceneInstance[First[instances], b]}]]
 ```
 
@@ -82,5 +82,5 @@ Module[{a, b, c},
 A list of vertices with repeats is a counting measure.
 
 ```wl
-InfraDensity[GridGraph[{3, 3}], {4, 9, 4}]
+InfraMeasurement[GridGraph[{3, 3}], {4, 9, 4}, "VertexDensity" ]
 ```

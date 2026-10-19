@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraInfiniteLine
 Keywords: [line, inextensible shortest path, atoms, germ, symbolic object]
-SeeAlso: [BeamGraph, RandomInfraInfiniteLine, InfraInfiniteLineQ, InfraMeasurement, RandomInfraInfiniteLine, RandomInfraGeodesic, InfraSegment, InfraHalfLine]
+SeeAlso: [BeamGraph, RandomInfraInfiniteLine, InfraInfiniteLineQ, InfraMeasurement, RandomInfraGeodesic, InfraSegment, InfraHalfLine]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraInfiniteLine]()[*p*, *q*]</code> is the line through *p* and *q*: every inextensible shortest path through *p* and then *q*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraInfiniteLine]() evaluate it on a graph.
+<code>[InfraInfiniteLine]()[*p*, *q*]</code> is the line through *p* and *q*: every inextensible shortest path through *p* and then *q*. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
 
 <code>[InfraInfiniteLine]()[*germ*]</code> is the line through a shortest-path germ: every inextensible shortest path that contains the germ as a contiguous stretch. The germ is a vertex, a vertex list, a walk graph or a shortest-path DAG.
 

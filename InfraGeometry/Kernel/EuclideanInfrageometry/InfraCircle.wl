@@ -19,7 +19,7 @@ Options[ RandomInfraCircle ] = { "NextVertexFunction" -> Automatic }
    S = (s1, ..., sm) of the seam, N(S, u, v) with u ~ s1 and v ~ sm in one component of the cut band is s1 -> ... -> sm -> v, the interval DAG of
    the cut band from v to u, and the closing arrow u -> {s1, 3/2}, the cycles S v gamma u of least length that separate (design Thm. seam).  A
    one-sided bank relation witnesses a failure of (W) or of the annulus, hence "Faithful" -> False there; otherwise neither hypothesis is
-   certified and "Faithful" is Undetermined.  The circle through a point is the closed arc InfraArc[c, {p, p}] *)
+   certified and "Faithful" stays unevaluated.  The circle through a point is the closed arc InfraArc[c, {p, p}] *)
 
 InfraMeasurement[ graph_Graph, InfraCircle[ center_, rs : ( _?NumericQ | { _?NumericQ, _?NumericQ } ) ], "Graph" ] :=
   With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ] },
@@ -130,7 +130,7 @@ InfraMeasurement[ graph_Graph, InfraCircle[ center_, rs : ( _?NumericQ | { _?Num
             { x, f } |-> ( { x, # } -> f If[ # =!= reference @ x && separatesQ @ Prepend[ FindShortestPath[ cut, #, reference @ x ], x ], 1, -1 ] & /@
               attached @ x ),
             { active, flips } ] ] ] },
-    If[ Length @ Union @ Values @ bank == 1, False, Undetermined ] ]
+    False /; Length @ Union @ Values @ bank == 1 ]
 
 InfraMeasurement[ graph_Graph, obj : InfraCircle[ _, _ ], "VertexDensity" ] :=
   KeySort @ Merge[

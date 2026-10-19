@@ -5,7 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraBranchialGraph
 Keywords: [synthetic geometry, graph, construction]
-SeeAlso: [InfraSceneMultiway, InfraSceneViewer, InfraStep]
+SeeAlso: [InfraSceneMultiway, InfraSceneViewer, InfraSceneStep]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -30,7 +30,7 @@ The two first-construction states share the root.
 ```wl
 SeedRandom[ 71 ]; With[
   { graph = PathGraph[ Range[ 3 ] ] },
-  { scene = InfraScene[ { p, q }, { InfraStep[ { p == InfraMidpoint[ 1, 3 ], q == InfraMidpoint[ 1, 1 ] } ] } ] },
+  { scene = InfraScene[ { p, q }, { InfraSceneStep[ { p == InfraMidpoint[ 1, 3 ], q == InfraMidpoint[ 1, 1 ] } ] } ] },
   { data = InfraSceneMultiway[ scene, graph ] },
   InfraBranchialGraph[ data, 1 ][ "Graph" ] ]
 ```
@@ -40,7 +40,7 @@ Read their common-parent witness.
 ```wl
 SeedRandom[ 71 ]; With[
   { graph = PathGraph[ Range[ 3 ] ] },
-  { scene = InfraScene[ { p, q }, { InfraStep[ { p == InfraMidpoint[ 1, 3 ], q == InfraMidpoint[ 1, 1 ] } ] } ] },
+  { scene = InfraScene[ { p, q }, { InfraSceneStep[ { p == InfraMidpoint[ 1, 3 ], q == InfraMidpoint[ 1, 1 ] } ] } ] },
   { data = InfraSceneMultiway[ scene, graph ] },
   InfraBranchialGraph[ data, 1 ][ "Witnesses" ] ]
 ```

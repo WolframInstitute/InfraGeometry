@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/SprayGraph
 Keywords: [spray of shortest paths, exponential map, breadth-first search, shortest-path DAG, shortest paths]
-SeeAlso: [InfraMeasurement, RandomInfraGeodesic, FindInfraShell, InfraBall]
+SeeAlso: [InfraMeasurement, RandomInfraGeodesic, InfraShell, InfraBall]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -92,7 +92,7 @@ With[
 
 ## Properties and Relations
 
-A layer of the spray is a shell: the vertices at depth *r* are [FindInfraShell]()`[g, c, r]`, and their number is the shell area.
+A layer of the spray is a shell: the vertices at depth *r* are `Keys @ InfraMeasurement[g, InfraShell[c, r], "VertexDensity"]`, and their number is the shell area.
 
 ```wl
 SeedRandom[1];
@@ -100,8 +100,8 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {sprayDag = SprayGraph[g, c, "AxisLength" -> 3]},
-  {InfraSubstrateHighlight[g, {sprayDag, FindInfraShell[g, c, 3]}],
-   Sort @ Complement[VertexList[sprayDag], RandomInfraBall[ g, InfraBall[c, 2] ]] === FindInfraShell[g, c, 3],
+  {InfraSubstrateHighlight[g, {sprayDag, Keys @ InfraMeasurement[ g, InfraShell[ c, 3 ], "VertexDensity" ]}],
+   Sort @ Complement[VertexList[sprayDag], Keys @ InfraMeasurement[ g, InfraBall[c, 2], "VertexDensity" ]] === Keys @ InfraMeasurement[ g, InfraShell[ c, 3 ], "VertexDensity" ],
    VertexCount[sprayDag] === InfraMeasurement[g, InfraBall[c, 3], "CountingMeasure"]}]
 ```
 

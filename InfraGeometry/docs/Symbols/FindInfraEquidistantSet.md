@@ -5,6 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraEquidistantSet
+SeeAlso: [InfraEquidistantSet, InfraPerpendicularBisector, InfraMeasurement]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -16,6 +17,10 @@ RelatedGuides: [EuclideanInfrageometry]
 
 
 ## Details & Options
+
+[InfraEquidistantSet]() is the inert object for the exact multipoint locus.
+[InfraMeasurement]() with "VertexDensity" reads that locus on a concrete graph, excluding vertices at infinite distance from the anchors.
+This finder remains available for the vertex-list and thickened distance-difference forms.
 
 The set $\{v : d(p_1,v) = \dots = d(p_n,v)\}$ is the intersection of the $n-1$ consecutive perpendicular bisectors $\{v : d(p_i,v) = d(p_{i+1},v)\}$. For two points it is their bisector, for three points it is where the circumcentre would be.
 
@@ -64,7 +69,8 @@ With[
 
 ## Properties and Relations
 
-Every midpoint of two vertices is equidistant from them, so [InfraMeasurement]() with `"Midpoint"` lands inside the bisector.
+At even endpoint distance, every midpoint vertex is equidistant from the two anchors, so [InfraMeasurement]() with `"Midpoint"` lands inside the equidistant locus.
+At odd endpoint distance, the two central layers need not be equidistant.
 
 ```wl
 With[

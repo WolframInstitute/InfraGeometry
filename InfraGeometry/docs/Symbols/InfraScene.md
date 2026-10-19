@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraScene
 Keywords: [scene, construction, Euclid I.1, hypothesis, assertion, ruler and compass]
-SeeAlso: [InfraScenePlot, RandomInfraInstance, InfraSceneInstance, InfraStep, InfraIntersection, InfraDistance, InfraSceneViewer]
+SeeAlso: [InfraScenePlot, RandomInfraSceneInstance, InfraSceneInstance, InfraSceneStep, InfraIntersection, InfraDistance, InfraSceneViewer]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -14,13 +14,13 @@ RelatedGuides: [EuclideanInfrageometry]
 
 <code>[InfraScene]()[{*x1*, *x2*, …}, {*hyp1*, *hyp2*, …}]</code> is a construction stated before any graph: the objects *xi*, and hypotheses that construct them or assert relations between them.
 
-<code>[InfraScene]()[{*x1*, …}, {[InfraStep]()[{*hyp1*, …}, *label*], …}]</code> groups the hypotheses into labelled steps.
+<code>[InfraScene]()[{*x1*, …}, {[InfraSceneStep]()[{*hyp1*, …}, *label*], …}]</code> groups the hypotheses into labelled steps.
 
 ## Details & Options
 
-Definition: a scene is a list of objects and a list of hypotheses. A **construction** is a hypothesis `x == token`, whose left side is an object. Every other hypothesis is an **assertion**. A scene computes nothing; [RandomInfraInstance]() solves it on a graph.
+Definition: a scene is a list of objects and a list of hypotheses. A **construction** is a hypothesis `x == token`, whose left side is an object. Every other hypothesis is an **assertion**. A scene computes nothing; [RandomInfraSceneInstance]() solves it on a graph.
 
-The right side of a construction is a **symbolic construction token** with object names in place of points. Evaluation is postponed until [RandomInfraInstance]() supplies a graph and resolves those names. [InfraPoint]()`[v]` is the vertex *v*, and <code>[InfraPoint]()[*v*, *d*]</code> every vertex at distance *d* from *v*. [InfraSegment]()`[x, y]` is a shortest path from *x* to *y*, and [InfraHalfLine]()`[x, y]` and [InfraInfiniteLine]()`[x, y]` a ray and a line. [InfraCircle]()`[x, r]` is a circle about *x* at radius *r*, or in the band `{r, s}`. [InfraIntersection]()`[x, y]` is a vertex the two objects share; an operand may be a token itself.
+The right side of a construction is a **symbolic construction token** with object names in place of points. Evaluation is postponed until [RandomInfraSceneInstance]() supplies a graph and resolves those names. [InfraPoint]()`[v]` is the vertex *v*, and <code>[InfraPoint]()[*v*, *d*]</code> every vertex at distance *d* from *v*. [InfraSegment]()`[x, y]` is a shortest path from *x* to *y*, and [InfraHalfLine]()`[x, y]` and [InfraInfiniteLine]()`[x, y]` a ray and a line. [InfraCircle]()`[x, r]` is a circle about *x* at radius *r*, or in the band `{r, s}`. [InfraIntersection]()`[x, y]` is a vertex the two objects share; an operand may be a token itself.
 
 A token stands for its realisations, and each realisation is one branch. So a construction binds its object to a single vertex, or a single vertex list, per branch, and the branches multiply from one construction to the next.
 
@@ -28,7 +28,7 @@ The token is the head itself: the second argument of [InfraCircle]() is always a
 
 An assertion is a predicate on objects: a comparison of [InfraDistance]() values, or one of the `Infra*Q` tests without its graph (`InfraSegmentQ[s]`, `InfraCircleQ[c]`, `InfraParallelQ[l1, l2]` and a few more). The graph is supplied when the scene is solved, and a branch survives only if every assertion holds on it. An `Infra*Q` test that cannot be given the graph is refused with `InfraScene::badassertion`.
 
-Without [InfraStep](), the steps are the levels of the dependency graph of the constructions: first the objects that depend on no other object, then those that depend only on them, and so on. With it, the steps are the ones written, in order.
+Without [InfraSceneStep](), the steps are the levels of the dependency graph of the constructions: first the objects that depend on no other object, then those that depend only on them, and so on. With it, the steps are the ones written, in order.
 
 The objects are ordinary symbols, so they must have no value when the scene is built; `ClearAll` them first.
 
@@ -48,12 +48,12 @@ With[
   {a = First @ GraphCenter[g]},
   {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {scene = InfraScene[{pA, pB, circleA, circleB, meet},
-     {InfraStep[{pA == InfraPoint[a]}, "point A"],
-      InfraStep[{pB == InfraPoint[b]}, "point B"],
-      InfraStep[{circleA == InfraCircle[pA, {4, 5}]}, "circle about A"],
-      InfraStep[{circleB == InfraCircle[pB, {4, 5}]}, "circle about B"],
-      InfraStep[{meet == InfraIntersection[circleA, circleB]}, "where they meet"]}]},
-  {solved = RandomInfraInstance[ scene, g, All ]},
+     {InfraSceneStep[{pA == InfraPoint[a]}, "point A"],
+      InfraSceneStep[{pB == InfraPoint[b]}, "point B"],
+      InfraSceneStep[{circleA == InfraCircle[pA, {4, 5}]}, "circle about A"],
+      InfraSceneStep[{circleB == InfraCircle[pB, {4, 5}]}, "circle about B"],
+      InfraSceneStep[{meet == InfraPoint[ InfraIntersection[circleA, circleB] ]}, "where they meet"]}]},
+  {solved = RandomInfraSceneInstance[ scene, g, All ]},
   {cycleA = InfraSceneInstance[First @ solved, circleA]},
   {cycleB = InfraSceneInstance[First @ solved, circleB]},
   InfraSubstrateHighlight[g,
@@ -69,7 +69,7 @@ With[
   {scene = InfraScene[{pA, pB, circleA, circleB, meet},
      {pA == InfraPoint[1], pB == InfraPoint[2],
       circleA == InfraCircle[pA, {4, 5}], circleB == InfraCircle[pB, {4, 5}],
-      meet == InfraIntersection[circleA, circleB]}]},
+      meet == InfraPoint[ InfraIntersection[circleA, circleB] ]}]},
   {scene["DependencyGraph"], scene["Objects"], scene["Steps"]}]
 ```
 
@@ -86,9 +86,9 @@ With[
   {scene = InfraScene[{pA, pB, circleA, circleB, meet},
      {pA == InfraPoint[a], pB == InfraPoint[b],
       circleA == InfraCircle[pA, {4, 5}], circleB == InfraCircle[pB, {4, 5}],
-      meet == InfraIntersection[circleA, circleB],
+      meet == InfraPoint[ InfraIntersection[circleA, circleB] ],
       InfraDistance[meet, rim] < InfraDistance[pA, rim]}]},
-  {kept = InfraSceneInstance[#, meet] & /@ RandomInfraInstance[ scene, g, All ]},
+  {kept = InfraSceneInstance[#, meet] & /@ RandomInfraSceneInstance[ scene, g, All ]},
   {InfraSubstrateHighlight[g, Join[{a, b, rim}, kept]], scene["Assertions"], kept}]
 ```
 
@@ -106,9 +106,9 @@ With[
   {scene = InfraScene[{pA, pB, circleA, circleB, meet},
      {pA == InfraPoint[a], pB == InfraPoint[b],
       circleA == InfraCircle[pA, 4], circleB == InfraCircle[pB, 4],
-      meet == InfraIntersection[circleA, circleB]}]},
-  {InfraSubstrateHighlight[g, {FindInfraShell[g, a, 4], a, b}],
-   RandomInfraCircle[ g, InfraCircle[a, 4], All ], RandomInfraInstance[ scene, g, All ]}]
+      meet == InfraPoint[ InfraIntersection[circleA, circleB] ]}]},
+  {InfraSubstrateHighlight[g, {Keys @ InfraMeasurement[ g, InfraShell[ a, 4 ], "VertexDensity" ], a, b}],
+   RandomInfraCircle[ g, InfraCircle[a, 4], All ], RandomInfraSceneInstance[ scene, g, All ]}]
 ```
 
 On the discretized plane a single radius suffices: its shells are cycles by accident of the mesh.
@@ -123,8 +123,8 @@ With[
   {scene = InfraScene[{pA, pB, circleA, circleB, meet},
      {pA == InfraPoint[a], pB == InfraPoint[b],
       circleA == InfraCircle[pA, 4], circleB == InfraCircle[pB, 4],
-      meet == InfraIntersection[circleA, circleB]}]},
-  {solved = RandomInfraInstance[ scene, g, All ]},
+      meet == InfraPoint[ InfraIntersection[circleA, circleB] ]}]},
+  {solved = RandomInfraSceneInstance[ scene, g, All ]},
   {InfraSubstrateHighlight[g, Join[{a, b}, InfraSceneInstance[#, meet] & /@ solved]],
    Length @ solved}]
 ```
@@ -140,7 +140,7 @@ With[
   {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
   {scene = InfraScene[{pA, pB, circleA, meet},
      {pA == InfraPoint[a], pB == InfraPoint[b], circleA == InfraCircle[pA, {4, 5}],
-      meet == InfraIntersection[circleA, InfraCircle[pB, {4, 5}]]}]},
-  {meets = InfraSceneInstance[#, meet] & /@ RandomInfraInstance[ scene, g, All ]},
+      meet == InfraPoint[ InfraIntersection[circleA, InfraCircle[pB, {4, 5}]] ]}]},
+  {meets = InfraSceneInstance[#, meet] & /@ RandomInfraSceneInstance[ scene, g, All ]},
   {InfraSubstrateHighlight[g, Join[{a, b}, meets]], meets}]
 ```

@@ -26,7 +26,7 @@ FindInfraEquidistantSet[ graph_Graph, pts_List /; Length[ pts ] <= 1, { _Integer
 FindAdvancingInfraFront[ graph_Graph, origin_, steps_Integer ] :=
   With[
     { vl  = VertexList[ graph ],
-      src = Keys @ InfraDensity[ graph, origin ] },
+      src = Keys @ InfraMeasurement[ graph, origin, "VertexDensity" ] },
     { adj  = AssociationMap[ AdjacencyList[ graph, # ] &, vl ],
       vidx = AssociationThread[ vl, Range[ Length @ vl ] ],
       dm   = GraphDistanceMatrix[ graph ] },
@@ -46,7 +46,7 @@ Options[ InfraInterior ] = { Method -> "Combinatorial" }
 
 InfraBoundary[ g_Graph, s_, opts : OptionsPattern[] ] /;
     MatchQ[ OptionValue[ InfraBoundary, { opts }, Method ], "Combinatorial" | "Alexandrov" | { "Combinatorial" | "Alexandrov", ___ } ] :=
-  With[ { vs = Keys @ InfraDensity[ g, s ] },
+  With[ { vs = Keys @ InfraMeasurement[ g, s, "VertexDensity" ] },
     Switch[ Replace[ OptionValue[ Method ], { m_String, ___ } :> m ],
       "Combinatorial", Union @ GraphBoundary[ g, vs ],
       "Alexandrov",    Union @ TopologicalBoundary[
@@ -56,7 +56,7 @@ InfraBoundary[ g_Graph, s_, opts : OptionsPattern[] ] /;
 
 InfraInterior[ g_Graph, s_, opts : OptionsPattern[] ] /;
     MatchQ[ OptionValue[ InfraInterior, { opts }, Method ], "Combinatorial" | "Alexandrov" | { "Combinatorial" | "Alexandrov", ___ } ] :=
-  With[ { vs = Keys @ InfraDensity[ g, s ] },
+  With[ { vs = Keys @ InfraMeasurement[ g, s, "VertexDensity" ] },
     Switch[ Replace[ OptionValue[ Method ], { m_String, ___ } :> m ],
       "Combinatorial", Union @ GraphInterior[ g, vs ],
       "Alexandrov",    Union @ TopologicalInterior[

@@ -12,7 +12,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Usage
 
-<code>[InfraLine]()[*p*, *q*]</code> is the line through *p* and *q*: every inextensible shortest path through *p* and then *q*. It is a symbolic object; [InfraMeasurement]() and [RandomInfraInfiniteLine]() evaluate it on a graph.
+<code>[InfraLine]()[*p*, *q*]</code> is the line through *p* and *q*: every inextensible shortest path through *p* and then *q*. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
 
 <code>[InfraLine]()[*germ*]</code> is the line through a shortest-path germ: every inextensible shortest path that contains the germ as a contiguous stretch. The germ is a vertex, a vertex list, a walk graph or a shortest-path DAG.
 

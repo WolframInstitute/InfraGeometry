@@ -86,7 +86,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {obs = VolumeGrowthObservables[g, c]},
-  {InfraSubstrateHighlight[g, {RandomInfraBall[ g, InfraBall[c, Last @ obs["BallWindow"]] ], RandomInfraBall[ g, InfraBall[c, First @ obs["BallWindow"]] ], c}],
+  {InfraSubstrateHighlight[g, {Keys @ InfraMeasurement[ g, InfraBall[c, Last @ obs["BallWindow"]], "VertexDensity" ], Keys @ InfraMeasurement[ g, InfraBall[c, First @ obs["BallWindow"]], "VertexDensity" ], c}],
    obs["BallWindow"], Keys @ obs}]
 ```
 

@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSceneViewer
 Keywords: [viewer, interactive, construction, step, branch]
-SeeAlso: [InfraScenePlot, InfraSceneMultiway, InfraBranchialGraph, InfraScene, RandomInfraInstance, InfraSubstrateHighlight, InfraSceneInstance, InfraStep]
+SeeAlso: [InfraScenePlot, InfraSceneMultiway, InfraBranchialGraph, InfraScene, RandomInfraSceneInstance, InfraSubstrateHighlight, InfraSceneInstance, InfraSceneStep]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -70,11 +70,11 @@ With[
   {p1 = First @ GraphCenter[g]},
   {p2 = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p1, 3]])},
   {scene = InfraScene[{a, b, cA, cB, u},
-     {InfraStep[{a == InfraPoint[p1]}, "point a"],
-      InfraStep[{b == InfraPoint[p2]}, "point b"],
-      InfraStep[{cA == InfraCircle[a, 3]}, "circle around a"],
-      InfraStep[{cB == InfraCircle[b, 3]}, "circle around b"],
-      InfraStep[{u == InfraIntersection[cA, cB]}, "they meet"]}]},
+     {InfraSceneStep[{a == InfraPoint[p1]}, "point a"],
+      InfraSceneStep[{b == InfraPoint[p2]}, "point b"],
+      InfraSceneStep[{cA == InfraCircle[a, 3]}, "circle around a"],
+      InfraSceneStep[{cB == InfraCircle[b, 3]}, "circle around b"],
+      InfraSceneStep[{u == InfraPoint[ InfraIntersection[cA, cB] ]}, "they meet"]}]},
   InfraSceneViewer[scene, g]]
 ```
 
@@ -103,7 +103,7 @@ At the merged state, incoming event 3 follows history {1,3}, and incoming event 
 ```wl
 With[
   {graph = PathGraph[Range[3]]},
-  {scene = InfraScene[{p, q}, {InfraStep[{p == InfraMidpoint[1, 3], q == InfraMidpoint[1, 1]}]}]},
+  {scene = InfraScene[{p, q}, {InfraSceneStep[{p == InfraMidpoint[1, 3], q == InfraMidpoint[1, 1]}]}]},
   {data = InfraSceneMultiway[scene, graph]},
   InfraSceneViewer[data]]
 ```

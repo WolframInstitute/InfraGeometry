@@ -9,7 +9,7 @@ InfraGeometricTest[ graph_Graph, InfraGeometricAssertion[ { vertex_, object_ }, 
     UndirectedGraphQ[ graph ] && SimpleGraphQ[ graph ] && ! WeightedGraphQ[ graph ] && VertexQ[ graph, vertex ] :=
   With[ { density = Which[
       VertexQ[ graph, object ], <| object -> 1 |>,
-      MatchQ[ object, _List | _Association | _Graph ], Quiet[ InfraDensity[ graph, object ] ],
+      MatchQ[ object, _List | _Association | _Graph ], Quiet[ InfraMeasurement[ graph, object, "VertexDensity" ] ],
       True, Quiet[ InfraMeasurement[ graph, object, "VertexDensity" ] ] ] },
     With[ { support = Keys @ Select[ density, value |-> value != 0 ] },
       AnyTrue[ support, point |-> point === vertex ] ] /;

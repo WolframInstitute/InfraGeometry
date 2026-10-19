@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraMeasurement
 Keywords: [segment, ray, line, circle, arc, ball, shell, tube, symbolic object, measurement, occupation, faithful, counting measure, Riemannian measure, volume]
-SeeAlso: [RandomInfraSegment, InfraMemberQ, InfraSubgraph, InfraSegment, InfraBall, InfraShell, InfraTube, InfraInterior, InfraBoundary, Undetermined]
+SeeAlso: [RandomInfraSegment, InfraMemberQ, InfraSegment, InfraBall, InfraShell, InfraTube, InfraInterior, InfraBoundary]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -16,9 +16,12 @@ RelatedGuides: [EuclideanInfrageometry]
 
 <code>[InfraMeasurement]()[*graph*, *obj*, {*property1*, ...}]</code> gives an `Association` of several properties; `All` in place of the list gives every property the object has.
 
-<code>[InfraMeasurement]()[*graph*, {*obj1*, ...}, *property*]</code> measures each object in the list.
+<code>[InfraMeasurement]()[*graph*, {*obj1*, ...}, *property*]</code> measures each construction in the list. Raw vertex lists and walk bundles instead aggregate their "VertexDensity".
 
 ## Details & Options
+
+The "VertexDensity" property also accepts raw shapes. A vertex gives unit mass; a vertex list gives its Counts; an association gives its key-sorted density. A walk graph or directed acyclic graph gives the number of source-to-sink paths through each vertex, and a bundle of walks sums their occupations. A List-valued vertex label is one point when it belongs to the substrate. Unsupported scalar anchors stay unevaluated.
+
 
 Definition: <code>[InfraMeasurement]()[*graph*, *obj*, *property*]</code> is the value of *property* of the object *obj* on *graph*. The support of *obj* is the set *A* of vertices its members pass through, `Keys @ InfraMeasurement[graph, obj, "VertexDensity"]`. The two measures of *obj* are measures of *A*:
 
@@ -60,14 +63,14 @@ The properties:
 | `"Length"` | the common length of the members, or a `List` of lengths when they differ |
 | `"VertexDensity"` | `<\|v -> occ(v)\|>`, the number of members through *v*; on a polyline, the sum of the piece densities |
 | `"EdgeDensity"` | `<\|v \[DirectedEdge] w -> occ(v -> w)\|>`, the number of members through the arrow; on a polyline, the sum of the piece densities |
-| `"Subgraph"` | the induced subgraph of the support, same as [InfraSubgraph]() |
-| `"Faithful"` | `True` on a segment, ray or line; [Undetermined]() on a circle or an arc, whose graph is proved faithful only under a hypothesis this paclet does not certify, except that a circle whose cut band is connected but whose seam has one side only gives `False` |
+| `"Subgraph"` | the subgraph induced on the support |
+| `"Faithful"` | `True` on a segment, ray or line; unevaluated on a circle or an arc, whose graph is proved faithful only under a hypothesis this paclet does not certify, except that a circle whose cut band is connected but whose seam has one side only gives `False` |
 | `"CountingMeasure"` | the number of vertices of the support |
 | `"RiemannianMeasure"` | the number of vertices of the support all of whose neighbours lie in the support |
 
 For a segment of even length, `"Midpoint"` counts the shortest paths through each vertex in the middle layer. For odd length, it counts the shortest paths through each of the two central layers. Thus it is a density of midpoints, not a single vertex when the substrate branches.
 
-A region — a ball, shell, tube, cylinder or cone — has one member, its vertex set, and every vertex of the support has density 1. It has no `"Graph"` and no `"Length"`. A sphere is a family, searched rather than read off a graph; its `"Faithful"` is [Undetermined]().
+A region — a ball, shell, tube, cylinder or cone — has one member, its vertex set, and every vertex of the support has density 1. It has no `"Graph"` and no `"Length"`. A sphere is a family, searched rather than read off a graph; its `"Faithful"` stays unevaluated.
 
 [InfraIntersection]() and [InfraUnion]() are heads on heads: neither is a family of walks, so neither has a `"Graph"`, `"Cardinality"`, `"Length"`, `"EdgeDensity"` or `"Faithful"`, and their `All` lists only the density, the subgraph and the two measures. The intersection's `"VertexDensity"` is the product of the two objects' densities on their common vertices, the union's the sum.
 
@@ -120,7 +123,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])]},
-  {axis = Replace[ seg, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> RandomInfraBall[ g, token ], token_InfraShell :> RandomInfraShell[ g, token ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> RandomInfraTube[ g, token ], token_InfraCylinder :> RandomInfraCylinder[ g, token ], token_InfraCone :> RandomInfraCone[ g, token ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token ], token_InfraBallHull :> RandomInfraBallHull[ g, token ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token ], token_InfraQuadric :> RandomInfraQuadric[ g, token ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> RandomInfraIntersection[ g, token ], token_InfraUnion :> RandomInfraUnion[ g, token ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ]},
+  {axis = Replace[ seg, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraShell :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCylinder :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCone :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSolidOfRevolution :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraBallHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraConvexHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraQuadric :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ]},
   {regions = {InfraBall[c, 3], InfraShell[c, {2, 3}], InfraTube[seg, 1], InfraCylinder[axis, 1], InfraCone[axis, 1, Method -> "Balls"]}},
   {supports = Keys @ InfraMeasurement[g, #, "VertexDensity"] & /@ regions},
   {Row[InfraSubstrateHighlight[g, {InfraInterior[g, #] -> StandardGreen, InfraBoundary[g, #] -> StandardBlue}] & /@ supports],
@@ -188,7 +191,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},
   {fat = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
-  {path = Replace[ fat, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> RandomInfraBall[ g, token ], token_InfraShell :> RandomInfraShell[ g, token ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> RandomInfraTube[ g, token ], token_InfraCylinder :> RandomInfraCylinder[ g, token ], token_InfraCone :> RandomInfraCone[ g, token ], token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ g, token ], token_InfraBallHull :> RandomInfraBallHull[ g, token ], token_InfraConvexHull :> RandomInfraConvexHull[ g, token ], token_InfraQuadric :> RandomInfraQuadric[ g, token ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> RandomInfraIntersection[ g, token ], token_InfraUnion :> RandomInfraUnion[ g, token ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ]},
+  {path = Replace[ fat, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraShell :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCylinder :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCone :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSolidOfRevolution :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraBallHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraConvexHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraQuadric :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ]},
   GraphicsRow[Table[
     ListLinePlot[{
       InfraMeasurement[g, Table[InfraBall[c, r], {r, 0, 5}], measure],

@@ -5,7 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSceneMultiway
 Keywords: [synthetic geometry, graph, construction]
-SeeAlso: [InfraBranchialGraph, InfraSceneViewer, InfraScene, RandomInfraInstance]
+SeeAlso: [InfraBranchialGraph, InfraSceneViewer, InfraScene, RandomInfraSceneInstance]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -46,7 +46,7 @@ Two construction orders merge at one terminal state.
 ```wl
 SeedRandom[ 71 ]; With[
   { graph = PathGraph[ Range[ 3 ] ] },
-  { scene = InfraScene[ { p, q }, { InfraStep[ { p == InfraMidpoint[ 1, 3 ], q == InfraMidpoint[ 1, 1 ] } ] } ] },
+  { scene = InfraScene[ { p, q }, { InfraSceneStep[ { p == InfraMidpoint[ 1, 3 ], q == InfraMidpoint[ 1, 1 ] } ] } ] },
   { data = InfraSceneMultiway[ scene, graph ] },
   data[ "StateGraph" ] ]
 ```
@@ -56,7 +56,7 @@ Inspect a bounded frontier.
 ```wl
 SeedRandom[ 71 ]; With[
   { graph = PathGraph[ Range[ 3 ] ] },
-  { scene = InfraScene[ { p, q }, { InfraStep[ { p == InfraMidpoint[ 1, 3 ], q == InfraMidpoint[ 1, 1 ] } ] } ] },
+  { scene = InfraScene[ { p, q }, { InfraSceneStep[ { p == InfraMidpoint[ 1, 3 ], q == InfraMidpoint[ 1, 1 ] } ] } ] },
   { data = InfraSceneMultiway[ scene, graph, "MaxEvents" -> 3 ] },
   { data[ "Completeness" ], data[ "Frontier" ] } ]
 ```

@@ -10,9 +10,12 @@ Options[ RandomInfraSegment ] = { "NextVertexFunction" -> Automatic }
 
 InfraMeasurement[ graph_Graph,
     InfraSegment[ p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ] ], "Graph" ] :=
-  With[ { sources = Keys @ InfraDensity[ graph, p ], targets = Keys @ InfraDensity[ graph, q ] },
-    { dp = AssociationThread[ VertexList @ graph, Min /@ Transpose[ GraphDistance[ graph, # ] & /@ sources ] ],
-      dq = AssociationThread[ VertexList @ graph, Min /@ Transpose[ GraphDistance[ graph, # ] & /@ targets ] ] },
+  With[ { vertices = VertexList[ graph ],
+      sources = Keys @ InfraMeasurement[ graph, p, "VertexDensity" ], targets = Keys @ InfraMeasurement[ graph, q, "VertexDensity" ] },
+    { indices = AssociationThread[ vertices, Range[ Length[ vertices ] ] ],
+      indexedGraph = VertexReplace[ graph, Thread[ vertices -> Range[ Length[ vertices ] ] ] ] },
+    { dp = AssociationThread[ vertices, Min /@ Transpose[ GraphDistance[ indexedGraph, # ] & /@ Lookup[ indices, Key /@ sources ] ] ],
+      dq = AssociationThread[ vertices, Min /@ Transpose[ GraphDistance[ indexedGraph, # ] & /@ Lookup[ indices, Key /@ targets ] ] ] },
     { d = Min @ Lookup[ dp, Key /@ targets ] },
     { interval = If[ d === Infinity, { },
         Select[ VertexList @ graph, Lookup[ dp, Key @ # ] + Lookup[ dq, Key @ # ] == d & ] ] },
@@ -27,8 +30,10 @@ InfraMeasurement[ graph_Graph,
     segment : InfraSegment[ Except[ _Rule | _RuleDelayed ], Except[ _Rule | _RuleDelayed ] ], "Midpoint" ] :=
   With[ { dag = InfraMeasurement[ graph, segment, "Graph" ] },
     { density = InfraMeasurement[ graph, segment, "VertexDensity" ] },
-    { sources = Select[ VertexList @ dag, VertexInDegree[ dag, # ] == 0 & ] },
-    { layers = AssociationMap[ v |-> Min[ GraphDistance[ dag, #, v ] & /@ sources ], VertexList @ dag ] },
+    { vertices = VertexList[ dag ] },
+    { indexedGraph = VertexReplace[ dag, Thread[ vertices -> Range[ Length[ vertices ] ] ] ],
+      sources = Pick[ Range[ Length[ vertices ] ], VertexInDegree[ dag ], 0 ] },
+    { layers = AssociationThread[ vertices, Min /@ Transpose[ GraphDistance[ indexedGraph, # ] & /@ sources ] ] },
     { offsets = Abs[ 2 layers - Max[ 0, Values @ layers ] ] },
     If[ VertexCount @ dag == 0, <| |>,
       KeySort @ KeyTake[ density, Keys @ Select[ offsets, # == Min @ offsets & ] ] ] ]

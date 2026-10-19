@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraHalfLine
 Keywords: [ray, half-line, direction, pencil, symbolic object]
-SeeAlso: [RayGraph, RandomInfraHalfLine, InfraHalfLineQ, InfraMeasurement, RandomInfraHalfLine, InfraInfiniteLine, InfraSegment]
+SeeAlso: [RayGraph, RandomInfraHalfLine, InfraHalfLineQ, InfraMeasurement, InfraInfiniteLine, InfraSegment]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraHalfLine]()[*p*, *q*]</code> is the ray from *p* through *q*: every shortest path from *p* through *q* that cannot be prolonged past its last vertex. It is a symbolic object; [InfraMeasurement]() and [RandomInfraHalfLine]() evaluate it on a graph.
+<code>[InfraHalfLine]()[*p*, *q*]</code> is the ray from *p* through *q*: every shortest path from *p* through *q* that cannot be prolonged past its last vertex. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
 
 <code>[InfraHalfLine]()[*p*, *p*]</code> is the pencil at *p*: every ray from *p*.
 

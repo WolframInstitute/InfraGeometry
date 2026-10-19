@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/BetheGraph
 Keywords: [Bethe lattice, Cayley tree, regular tree, exponential growth, tree]
-SeeAlso: [BranchingSequenceTree, SierpinskiGraph, FindInfraShell, InfraSubstrate]
+SeeAlso: [BranchingSequenceTree, SierpinskiGraph, InfraShell, InfraSubstrate]
 RelatedGuides: [InfraSubstrates]
 ---
 
@@ -51,7 +51,7 @@ The shells about the root, each in its colour, and their sizes 3·2^(*k* − 1).
 ```wl
 With[
   {g = BetheGraph[4, 3]},
-  {shells = Table[FindInfraShell[g, 0, k], {k, 4}]},
+  {shells = Table[Keys @ InfraMeasurement[ g, InfraShell[ 0, k ], "VertexDensity" ], {k, 4}]},
   {InfraSubstrateHighlight[g, shells], Length /@ shells}]
 ```
 

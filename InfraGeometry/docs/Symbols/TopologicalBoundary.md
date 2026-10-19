@@ -36,7 +36,7 @@ GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {ring = Complement[VertexList[g], RandomInfraBall[ g, InfraBall[c, VertexEccentricity[g, c] - 2] ]]},
+    {ring = Complement[VertexList[g], Keys @ InfraMeasurement[ g, InfraBall[c, VertexEccentricity[g, c] - 2], "VertexDensity" ]]},
     InfraSubstrateHighlight[g, {ring -> StandardGreen, TopologicalBoundary[BallTopology[g, 2], ring] -> StandardBlue}]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```
@@ -49,7 +49,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {topo = BallTopology[g, 2]},
   GraphicsRow @ Table[
-    With[{ball = RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], radius] ]},
+    With[{ball = Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], radius], "VertexDensity" ]},
       InfraSubstrateHighlight[g, {Complement[ball, TopologicalBoundary[topo, ball]] -> StandardGreen, TopologicalBoundary[topo, ball] -> StandardBlue}]],
     {radius, 4, 6}]]
 ```
@@ -63,7 +63,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {topo = BallTopology[g, 2]},
-  {ball = RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 6] ]},
+  {ball = Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], 6], "VertexDensity" ]},
   {ring = Complement[VertexList[g], ball]},
   {boundary = TopologicalBoundary[topo, ball]},
   {InfraSubstrateHighlight[g, {boundary -> StandardBlue}],
@@ -78,7 +78,7 @@ The combinatorial boundary of a ball is its outer shell at every radius. The bal
 SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {ball = RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 4] ]},
+  {ball = Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], 4], "VertexDensity" ]},
   {TopologicalBoundary[BallTopology[g, 2], ball],
    InfraSubstrateHighlight[g, {Complement[ball, InfraBoundary[g, ball]] -> StandardGreen, InfraBoundary[g, ball] -> StandardBlue}]}]
 ```

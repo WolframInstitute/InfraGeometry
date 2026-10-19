@@ -7,9 +7,9 @@ PackageExport[InfraGeometricTest]
 
 PackageExport[InfraMidpoint]
 PackageExport[InfraPerpendicularBisector]
+PackageExport[InfraEquidistantSet]
 PackageExport[InfraRegionNearest]
 PackageExport[RandomInfraMidpoint]
-PackageExport[RandomInfraPerpendicularBisector]
 PackageExport[RandomInfraRegionNearest]
 
 PackageExport[InfraPoint]
@@ -20,11 +20,8 @@ PackageExport[FindClosestInfraPoint]
 PackageExport[InfraReachableQ]
 
 PackageExport[InfraMeasurement]
-PackageExport[Undetermined]
 PackageExport[InfraMemberQ]
-PackageExport[InfraSubgraph]
 
-PackageExport[InfraDensity]
 
 PackageExport[InfraSegment]
 PackageExport[RandomInfraSegment]
@@ -50,6 +47,8 @@ PackageExport[UniversalLineQ]
 PackageExport[InfraArc]
 
 PackageExport[InfraCircle]
+PackageExport[InfraCircleThrough]
+PackageExport[RandomInfraCircleThrough]
 PackageExport[InfraCircleQ]
 
 PackageExport[InfraBall]
@@ -77,6 +76,7 @@ PackageExport[InfraInterior]
 PackageExport[InfraScalarProduct]
 PackageExport[FindInfraLinearCombination]
 PackageExport[InfraAngle]
+PackageExport[InfraComparisonAngle]
 
 PackageExport[SelectInfraWalk]
 PackageExport[EmbeddingClosest]
@@ -92,9 +92,9 @@ PackageExport[InfraDeformationSize]
 PackageExport[InfraScene]
 PackageExport[InfraSceneMultiway]
 PackageExport[InfraBranchialGraph]
-PackageExport[RandomInfraInstance]
+PackageExport[RandomInfraSceneInstance]
 PackageExport[InfraSceneInstance]
-PackageExport[InfraStep]
+PackageExport[InfraSceneStep]
 PackageExport[InfraIntersection]
 PackageExport[InfraUnion]
 PackageExport[InfraDistance]
@@ -124,7 +124,6 @@ PackageExport[InfraWalkCrossingQ]
 PackageExport[ConcatenateInfraWalk]
 
 PackageExport[InfraShell]
-PackageExport[FindInfraShell]
 PackageExport[FindInfraOsculatingShell]
 PackageExport[FindInfraShellCenter]
 PackageExport[InfraShellQ]
@@ -344,17 +343,11 @@ PackageExport[InfraLineQ]
 
 PackageExport[InfraPolygon]
 
-PackageExport[RandomInfraBall]
 
-PackageExport[RandomInfraShell]
 
-PackageExport[RandomInfraTube]
 
-PackageExport[RandomInfraCylinder]
 
-PackageExport[RandomInfraCone]
 
-PackageExport[RandomInfraSolidOfRevolution]
 
 PackageExport[RandomInfraCircle]
 
@@ -362,14 +355,9 @@ PackageExport[RandomInfraArc]
 
 PackageExport[RandomInfraPlane]
 
-PackageExport[RandomInfraBallHull]
 
-PackageExport[RandomInfraConvexHull]
 
-PackageExport[RandomInfraQuadric]
 
-PackageExport[RandomInfraIntersection]
 
-PackageExport[RandomInfraUnion]
 
 ClearAll["WolframInstitute`InfraGeometry`**`*", "WolframInstitute`InfraGeometry`*"]

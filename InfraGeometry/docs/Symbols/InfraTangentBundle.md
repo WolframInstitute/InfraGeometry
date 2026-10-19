@@ -34,7 +34,7 @@ SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["GridTangentBundle", "Small"]},
   {total = InfraTotalSpace[fib]},
-  InfraSubstrateHighlight[total, {InfraDensity[total, VertexList @ InfraFiber[fib, 6]]}]]
+  InfraSubstrateHighlight[total, {InfraMeasurement[total, VertexList @ InfraFiber[fib, 6], "VertexDensity" ]}]]
 ```
 
 The same rays drawn on the grid.

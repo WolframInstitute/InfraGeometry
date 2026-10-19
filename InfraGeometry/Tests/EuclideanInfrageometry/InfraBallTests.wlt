@@ -3,70 +3,70 @@ BeginTestSection["InfraBall"]
 (* ===== InfraBall: the representative of a ball is its sorted vertex list ===== *)
 
 VerificationTest[
-  RandomInfraBall[ PathGraph[Range[5]], InfraBall[3, 1] ],
+  Keys @ InfraMeasurement[ PathGraph[Range[5]], InfraBall[3, 1], "VertexDensity" ],
   {2, 3, 4},
   TestID -> "InfraBall-PathGraph-interior-r1"
 ]
 
 VerificationTest[
-  RandomInfraBall[ PathGraph[Range[5]], InfraBall[1, 2] ],
+  Keys @ InfraMeasurement[ PathGraph[Range[5]], InfraBall[1, 2], "VertexDensity" ],
   {1, 2, 3},
   TestID -> "InfraBall-PathGraph-endpoint-r2"
 ]
 
 VerificationTest[
-  RandomInfraBall[ CycleGraph[6], InfraBall[1, 1] ],
+  Keys @ InfraMeasurement[ CycleGraph[6], InfraBall[1, 1], "VertexDensity" ],
   {1, 2, 6},
   TestID -> "InfraBall-CycleGraph6-r1"
 ]
 
 VerificationTest[
-  RandomInfraBall[ CompleteGraph[4], InfraBall[1, 1] ],
+  Keys @ InfraMeasurement[ CompleteGraph[4], InfraBall[1, 1], "VertexDensity" ],
   {1, 2, 3, 4},
   TestID -> "InfraBall-CompleteGraph4-r1"
 ]
 
 VerificationTest[
-  RandomInfraBall[ StarGraph[5], InfraBall[1, 1] ],
+  Keys @ InfraMeasurement[ StarGraph[5], InfraBall[1, 1], "VertexDensity" ],
   {1, 2, 3, 4, 5},
   TestID -> "InfraBall-StarGraph5-hub"
 ]
 
 VerificationTest[
-  RandomInfraBall[ StarGraph[5], InfraBall[2, 1] ],
+  Keys @ InfraMeasurement[ StarGraph[5], InfraBall[2, 1], "VertexDensity" ],
   {1, 2},
   TestID -> "InfraBall-StarGraph5-leaf"
 ]
 
 VerificationTest[
-  RandomInfraBall[ PathGraph[Range[5]], InfraBall[3, 0] ],
+  Keys @ InfraMeasurement[ PathGraph[Range[5]], InfraBall[3, 0], "VertexDensity" ],
   {3},
   TestID -> "InfraBall-r0-singleton"
 ]
 
 (* an anchor of several vertices weights one carrier: the ball of a set is its closed r-neighbourhood, the union of the balls around its members *)
 VerificationTest[
-  RandomInfraBall[ PathGraph[Range[5]], InfraBall[<| 1 -> 1, 5 -> 1 |>, 1] ],
+  Keys @ InfraMeasurement[ PathGraph[Range[5]], InfraBall[<| 1 -> 1, 5 -> 1 |>, 1], "VertexDensity" ],
   {1, 2, 4, 5},
   TestID -> "InfraBall-multi-anchor"
 ]
 
 VerificationTest[
-  RandomInfraBall[ PathGraph[Range[5]], InfraBall[{1, 5}, 1] ],
+  Keys @ InfraMeasurement[ PathGraph[Range[5]], InfraBall[{1, 5}, 1], "VertexDensity" ],
   {1, 2, 4, 5},
   TestID -> "InfraBall-multi-anchor-vertex-list"
 ]
 
 (* the ball of a walk is the tube around it *)
 VerificationTest[
-  RandomInfraBall[ GridGraph[{3, 3}], InfraBall[RandomInfraSegment[GridGraph[{3, 3}], 1, 3], 1] ],
+  Keys @ InfraMeasurement[ GridGraph[{3, 3}], InfraBall[RandomInfraSegment[GridGraph[{3, 3}], 1, 3], 1], "VertexDensity" ],
   {1, 2, 3, 4, 5, 6},
   TestID -> "InfraBall-walk-anchor-is-the-tube"
 ]
 
 (* a ball is a legal HighlightGraph argument *)
 VerificationTest[
-  Head @ HighlightGraph[PathGraph[Range[5]], RandomInfraBall[ PathGraph[Range[5]], InfraBall[3, 1] ]],
+  Head @ HighlightGraph[PathGraph[Range[5]], Keys @ InfraMeasurement[ PathGraph[Range[5]], InfraBall[3, 1], "VertexDensity" ]],
   Graph,
   TestID -> "InfraBall-is-a-HighlightGraph-argument"
 ]
@@ -89,24 +89,18 @@ VerificationTest[
   TestID -> "InfraBall-no-Length-no-Graph-stays-unevaluated"
 ]
 
-VerificationTest[
-  With[ { g = GridGraph[{5, 5}] },
-    { RandomInfraBall[ g, InfraBall[13, 1], All ], RandomInfraBall[ g, InfraBall[13, 1], UpTo[3] ],
-      RandomInfraBall[ g, InfraBall[13, 1], 2 ], RandomInfraBall[ g, InfraBall[13, 1] ] } ],
-  { {{8, 12, 13, 14, 18}}, {{8, 12, 13, 14, 18}}, {}, {8, 12, 13, 14, 18} },
-  TestID -> "InfraBall-one-member-under-every-count"
-]
+
 
 VerificationTest[
   With[ { g = GridGraph[{5, 5}] },
-    { RandomInfraBall[ g, InfraBall[13, Infinity] ], RandomInfraBall[ g, InfraBall[13, 3/2] ] } ],
+    { Keys @ InfraMeasurement[ g, InfraBall[13, Infinity], "VertexDensity" ], Keys @ InfraMeasurement[ g, InfraBall[13, 3/2], "VertexDensity" ] } ],
   { Range[25], {8, 12, 13, 14, 18} },
   TestID -> "InfraBall-radius-infinite-and-fractional"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[{5, 5}] },
-    RandomInfraBall[ g, InfraBall[13, {1, 2}] ] === RandomInfraShell[ g, InfraShell[13, {1, 2}] ] ],
+    Keys @ InfraMeasurement[ g, InfraBall[13, {1, 2}], "VertexDensity" ] === Keys @ InfraMeasurement[ g, InfraShell[13, {1, 2}], "VertexDensity" ] ],
   True,
   TestID -> "InfraBall-band-is-the-shell"
 ]
@@ -205,7 +199,7 @@ VerificationTest[
 (* ===== InfraDistance between balls ===== *)
 
 VerificationTest[
-  InfraDistance[PathGraph[Range[7]], RandomInfraBall[ PathGraph[Range[7]], InfraBall[2, 1] ], RandomInfraBall[ PathGraph[Range[7]], InfraBall[7, 1] ]],
+  InfraDistance[PathGraph[Range[7]], Keys @ InfraMeasurement[ PathGraph[Range[7]], InfraBall[2, 1], "VertexDensity" ], Keys @ InfraMeasurement[ PathGraph[Range[7]], InfraBall[7, 1], "VertexDensity" ]],
   3,
   TestID -> "InfraDistance-ball-ball"
 ]

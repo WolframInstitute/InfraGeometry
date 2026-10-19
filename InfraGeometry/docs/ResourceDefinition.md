@@ -4,7 +4,7 @@ ResourceType: Paclet
 Name: WolframInstitute/InfraGeometry
 Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
-Description: Geometry as the effective description of graph limits, observed at a scale
+Description: Geometry as an effective description of large graphs
 ContributedBy: Pavel Hajek, Wolfram Institute
 Keywords: [infrageometry, geometry, graph, hypergraph, graph limit, observer, scale, geodesic, Euclidean geometry, synthetic geometry, Riemannian geometry, emergence]
 MainGuide: Documentation/English/Guides/EuclideanInfrageometry.nb
@@ -16,13 +16,34 @@ SourceControlURL: https://github.com/WolframInstitute/InfraGeometry
 
 ## Basic Description
 
-Infrageometry is geometry on graphs and hypergraphs in which ordinary geometry, Euclidean, Riemannian or projective, emerges as an effective description of a limit of graphs, as seen by an observer at a given scale. The graph is all there is: no ambient space, no coordinates. An observer scale, the number of steps the observer inspects at once, comes before every object and every measurement. A construction returns every admissible answer rather than one, and some objects fail to exist at all; both are results, not defects. Infinitesimals are replaced by sequences of growing graphs: a notion is geometric when its densities converge along such a sequence.
+This repository contains experimental code and a developing language for geometry emerging as an effective description of large graphs at a large observer scale, aligned with the vision of [Stephen Wolfram](https://writings.stephenwolfram.com/).
+
+Our goal is to demonstrate how **Euclidean, Riemannian, and symplectic geometry** emerge in limits of graphs. We view a graph as a webbing of paths and seek the essence of geometry in this webbing. An essential element is an observer who determines properties of the observed geometry.
+
+The eventual goal of infrageometry is to explain the emergence of space in hypergraph rewriting models of the universe, as described in the [Wolfram Physics Project technical introduction](https://www.wolframphysics.org/technical-introduction/). Note that hyperedges are not needed to recover the classical geometries.
+
+## Hero Image
+
+```wl
+With[
+  {image = ImageResize[
+    Import @ SelectFirst[
+      {
+        FileNameJoin[ {Quiet @ Check[ NotebookDirectory[], "" ], "..", "..", "assets", "emergent-triangle.png"} ],
+        FileNameJoin[ {Directory[], "InfraGeometry", "assets", "emergent-triangle.png"} ],
+        FileNameJoin[ {DirectoryName @ DirectoryName @ $InputFileName, "InfraGeometry", "assets", "emergent-triangle.png"} ]
+      },
+      FileExistsQ],
+    {1500, Automatic}]},
+  ImagePad[ image, {{0, 0}, {135, 135}}, Transparent]]
+```
 
 ## Details & Options
 
-- The question is not which graph represents a given manifold, but which geometric theory a computationally bounded observer builds about the discrete substrate it inhabits: which notions make sense at its scale, and which properties they satisfy. Ordinary geometry is then the idealization of macro-experience by macro-observers, and infrageometry the proto-geometry it is a limit of. Dimension, curvature and the symmetries of space are measured, not assumed.
+- Infrageometry asks which geometric objects and measurements can be defined intrinsically on a graph for a given observer, and when they converge to their classical counterparts along sequences of graphs. Dimension, curvature and symmetry are aggregated properties of the substrate that are measured rather than assumed.
 - Everything is computable at every level, so the framework is code. Where classical geometry prizes uniqueness and well-definedness, infrageometry enumerates every case, keeps the branching, aggregates robust observables and does statistics over them.
-- The paclet has three branches. The synthetic branch constructs: points, segments, walks, lines, rays, circles, ellipses, shells, balls, polygons, planes, quadrics, and the Tarski and projective axioms over them. The Riemannian branch measures: volume growth, the dimension and curvature estimators read off it, coordinatization, the metric tensor. The symplectic branch is declared and empty.
 - Install with <code>PacletInstall[ResourceObject["https://www.wolframcloud.com/obj/hajek_pavel/DeployedResources/Paclet/WolframInstitute/InfraGeometry"], ForceVersionInstall -> True]</code>, then load with <code>Needs["WolframInstitute\`InfraGeometry\`"]</code>.
-- `InfraSubstrate` lives in this paclet, in the Riemannian branch (`Kernel/InfraSubstrate.wl`); the Euclidean Infrageometry guide lists it under Substrates and Drawing because every construction needs a substrate; the Infra Substrates guide covers it with the tessellation graphs. An example is one line and the reader never sees setup code.
-- The Euclidean Infrageometry guide, [Euclidean Infrageometry](paclet:WolframInstitute/InfraGeometry/guide/EuclideanInfrageometry), is the landing page; every symbol it lists has a reference page.
+
+## Author Notes
+
+LLM generated and reviewed by Pavel Hajek on 18 October 2026 (entire notebook).

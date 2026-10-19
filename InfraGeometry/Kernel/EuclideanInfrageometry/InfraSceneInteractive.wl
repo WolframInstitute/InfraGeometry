@@ -20,7 +20,7 @@ PointViewer[ g_Graph, sym_: None ] :=
       With[ { pts = RandomInfraPoint[ g, regions[ region ], UpTo[ n ], "MaxCliques" -> 100,
           "PairwiseDistance" -> Switch[ separation, "None", None, "Max", "Max", "Range", distRange ] ] },
         If[ sym =!= None, sym = pts ];
-        InfraSubstrateHighlight[ g, { InfraDensity[ g, pts ] } ] ],
+        InfraSubstrateHighlight[ g, { InfraMeasurement[ g, pts, "VertexDensity" ] } ] ],
       Grid[ {
         { Control[ { { n, 1, "Points" }, ControlType -> InputField } ],
           Control[ { { region, "Random", "Region" }, { "Random", "Center", "Periphery" } } ] },
@@ -266,7 +266,7 @@ InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <| |>, op
           shownQ  = obj |-> ! MemberQ[ hiddenSteps, objStep[ obj ] ] },
         {
           refresh = (
-            With[ { new = RandomInfraInstance[ scene, graph, All, effInit[ ], "Steps" -> step ] },
+            With[ { new = RandomInfraSceneInstance[ scene, graph, All, effInit[ ], "Steps" -> step ] },
               If[ new === { },
                 deadQ = True,
                 deadQ = False;

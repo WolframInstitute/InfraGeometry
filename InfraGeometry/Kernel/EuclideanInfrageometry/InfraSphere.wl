@@ -49,7 +49,7 @@ RandomInfraSphere[ graph_Graph, p_, r_,
                       { Append[ First @ marked, T ], Last @ marked },
                       Fold[ { s, w } |-> self[ self, s, DeleteCases[ T, w ] ], marked, pick @ peelable ] ] ] ] },
               If[ ! admissible[ levelSet ], { }, First @ descend[ descend, { { }, <| |> }, levelSet ] ] ] ] ],
-        Keys @ InfraDensity[ graph, p ] ] },
+        Keys @ InfraMeasurement[ graph, p, "VertexDensity" ] ] },
     { shells = DeleteDuplicates[ Union /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
     Switch[ count,
       Automatic, First[ shells, { } ],
@@ -67,9 +67,6 @@ InfraMeasurement[ graph_Graph, InfraSphere[ center_, r_ ], "EdgeDensity" ] :=
 
 InfraMeasurement[ graph_Graph, InfraSphere[ center_, r_ ], "Cardinality" ] :=
   Length @ RandomInfraSphere[ graph, center, r, All ]
-
-InfraMeasurement[ _Graph, InfraSphere[ _, _ ], "Faithful" ] :=
-  Undetermined
 
 InfraMeasurement[ graph_Graph, sphere : InfraSphere[ _, _ ], All ] :=
   InfraMeasurement[ graph, sphere,

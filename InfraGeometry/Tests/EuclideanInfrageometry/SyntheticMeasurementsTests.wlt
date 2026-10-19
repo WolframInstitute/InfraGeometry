@@ -71,7 +71,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  InfraDensity[CycleGraph[4],InfraMidpoint[1,3]],
+  InfraMeasurement[CycleGraph[4],InfraMidpoint[1,3], "VertexDensity" ],
   <|2->1,4->1|>,
   TestID -> "T5-InfraMidpointdensity"
 ]
@@ -96,7 +96,7 @@ VerificationTest[
 
 VerificationTest[
   InfraMeasurement[CycleGraph[4],InfraPerpendicularBisector[1,3],"Cardinality"],
-  2,
+  1,
   TestID -> "T5-InfraPerpendicularBisectorCardinality"
 ]
 
@@ -119,13 +119,13 @@ VerificationTest[
 ]
 
 VerificationTest[
-  InfraMemberQ[CycleGraph[4],InfraPerpendicularBisector[1,3],2],
+  InfraMemberQ[CycleGraph[4],InfraPerpendicularBisector[1,3],{2,4}],
   True,
   TestID -> "T5-InfraPerpendicularBisectormember"
 ]
 
 VerificationTest[
-  InfraMemberQ[CycleGraph[4],InfraPerpendicularBisector[1,3],1],
+  InfraMemberQ[CycleGraph[4],InfraPerpendicularBisector[1,3],{2}],
   False,
   TestID -> "T5-InfraPerpendicularBisectornonmember"
 ]
@@ -161,7 +161,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  InfraDensity[CycleGraph[4],InfraPerpendicularBisector[1,3]],
+  InfraMeasurement[CycleGraph[4],InfraPerpendicularBisector[1,3], "VertexDensity" ],
   <|2->1,4->1|>,
   TestID -> "T5-InfraPerpendicularBisectordensity"
 ]
@@ -173,7 +173,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[{g=CycleGraph[4]},SeedRandom[831];With[{expected=RandomInteger[100000]},SeedRandom[831];InfraMeasurement[g,InfraPerpendicularBisector[1,3],All];InfraMemberQ[g,InfraPerpendicularBisector[1,3],2];InfraDistance[g,InfraPerpendicularBisector[1,3],1];RandomInteger[100000]===expected]],
+  With[{g=CycleGraph[4]},SeedRandom[831];With[{expected=RandomInteger[100000]},SeedRandom[831];InfraMeasurement[g,InfraPerpendicularBisector[1,3],All];InfraMemberQ[g,InfraPerpendicularBisector[1,3],{2,4}];InfraDistance[g,InfraPerpendicularBisector[1,3],1];RandomInteger[100000]===expected]],
   True,
   TestID -> "T5-InfraPerpendicularBisectorrng"
 ]
@@ -251,7 +251,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  InfraDensity[CycleGraph[4],InfraRegionNearest[{2,4},1]],
+  InfraMeasurement[CycleGraph[4],InfraRegionNearest[{2,4},1], "VertexDensity" ],
   <|2->1,4->1|>,
   TestID -> "T5-InfraRegionNearestdensity"
 ]
@@ -269,43 +269,43 @@ VerificationTest[
 ]
 
 VerificationTest[
-  InfraMeasurement[PathGraph[{1,2}],InfraMidpoint[1,2],"VertexDensity"],
+  InfraMeasurement[Graph[{1,2},{}],InfraMidpoint[1,2],"VertexDensity"],
   <||>,
   TestID -> "T5-emptyVertexDensity"
 ]
 
 VerificationTest[
-  InfraMeasurement[PathGraph[{1,2}],InfraMidpoint[1,2],"Cardinality"],
+  InfraMeasurement[Graph[{1,2},{}],InfraMidpoint[1,2],"Cardinality"],
   0,
   TestID -> "T5-emptyCardinality"
 ]
 
 VerificationTest[
-  InfraMeasurement[PathGraph[{1,2}],InfraMidpoint[1,2],"CountingMeasure"],
+  InfraMeasurement[Graph[{1,2},{}],InfraMidpoint[1,2],"CountingMeasure"],
   0,
   TestID -> "T5-emptyCountingMeasure"
 ]
 
 VerificationTest[
-  InfraMeasurement[PathGraph[{1,2}],InfraMidpoint[1,2],"RiemannianMeasure"],
+  InfraMeasurement[Graph[{1,2},{}],InfraMidpoint[1,2],"RiemannianMeasure"],
   0,
   TestID -> "T5-emptyRiemannianMeasure"
 ]
 
 VerificationTest[
-  VertexCount[InfraMeasurement[PathGraph[{1,2}],InfraMidpoint[1,2],"Subgraph"]],
+  VertexCount[InfraMeasurement[Graph[{1,2},{}],InfraMidpoint[1,2],"Subgraph"]],
   0,
   TestID -> "T5-empty-subgraph"
 ]
 
 VerificationTest[
-  InfraMemberQ[PathGraph[{1,2}],InfraMidpoint[1,2],1],
+  InfraMemberQ[Graph[{1,2},{}],InfraMidpoint[1,2],1],
   False,
   TestID -> "T5-empty-member"
 ]
 
 VerificationTest[
-  InfraDistance[PathGraph[{1,2}],InfraMidpoint[1,2],1],
+  InfraDistance[Graph[{1,2},{}],InfraMidpoint[1,2],1],
   Infinity,
   TestID -> "T5-empty-distance"
 ]
@@ -359,8 +359,8 @@ VerificationTest[
 ]
 
 VerificationTest[
-  Head[InfraDensity[PathGraph[{1,2}],InfraMidpoint[1,99]]],
-  InfraDensity,
+  Head[InfraMeasurement[PathGraph[{1,2}],InfraMidpoint[1,99], "VertexDensity" ]],
+  InfraMeasurement,
   TestID -> "T5-nonmatch60"
 ]
 
@@ -371,13 +371,13 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[{g=Graph[{{},{1},{2}},{UndirectedEdge[{},{1}],UndirectedEdge[{1},{2}]}]}, {InfraDensity[g,InfraMidpoint[{},{2}]],InfraMemberQ[g,InfraMidpoint[{},{2}],{1}],InfraDistance[g,{}, {2}]}],
+  With[{g=Graph[{{},{1},{2}},{UndirectedEdge[{},{1}],UndirectedEdge[{1},{2}]}]}, {InfraMeasurement[g,InfraMidpoint[{},{2}], "VertexDensity" ],InfraMemberQ[g,InfraMidpoint[{},{2}],{1}],InfraDistance[g,{}, {2}]}],
   {<|{1}->1|>,True,2},
   TestID -> "T5-list-labels"
 ]
 
 VerificationTest[
-  With[{g=Graph[{InfraMidpoint[1,2],x},{UndirectedEdge[InfraMidpoint[1,2],x]}]}, {InfraDensity[g,InfraMidpoint[1,2]],InfraDistance[g,InfraMidpoint[1,2],x]}],
+  With[{g=Graph[{InfraMidpoint[1,2],x},{UndirectedEdge[InfraMidpoint[1,2],x]}]}, {InfraMeasurement[g,InfraMidpoint[1,2], "VertexDensity" ],InfraDistance[g,InfraMidpoint[1,2],x]}],
   {<|InfraMidpoint[1,2]->1|>,1},
   TestID -> "T5-inert-label"
 ]
@@ -395,7 +395,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  InfraDensity[CycleGraph[4],InfraRegionNearest[InfraMidpoint[1,3],1]],
+  InfraMeasurement[CycleGraph[4],InfraRegionNearest[InfraMidpoint[1,3],1], "VertexDensity" ],
   <|2->1,4->1|>,
   TestID -> "T5-nested-nearest"
 ]
@@ -424,3 +424,38 @@ VerificationTest[
   TestID -> "T5-empty-graph-distance"
 ]
 
+
+
+VerificationTest[
+  With[ { graph = CompleteGraph[ 4 ] },
+    FindInfraEquidistantSet[ graph, { 1, 2, 3 } ] ===
+      Keys @ InfraMeasurement[ graph,
+        InfraIntersection[ InfraPerpendicularBisector[ 1, 2 ], InfraPerpendicularBisector[ 2, 3 ] ], "VertexDensity" ] ],
+  True,
+  TestID -> "bisector-multipoint-intersection"
+]
+
+VerificationTest[
+  With[ { graph = CycleGraph[ 4 ] },
+    ( instance |-> instance[[ 1 ]][ region ] ) /@
+      RandomInfraSceneInstance[ InfraScene[ { region }, { region == InfraPerpendicularBisector[ 1, 3 ] } ], graph, All ] ],
+  { { 2, 4 } },
+  TestID -> "bisector-scene-one-locus"
+]
+
+VerificationTest[
+  With[ { graph = CycleGraph[ 4 ] },
+    RandomInfraPoint[ graph, InfraPoint[ InfraPerpendicularBisector[ 1, 3 ] ], All ] ],
+  { 2, 4 },
+  TestID -> "bisector-explicit-point-family"
+]
+
+
+VerificationTest[
+  With[ { graph = PathGraph[ { 1, 2 } ] },
+    { InfraMeasurement[ graph, InfraPerpendicularBisector[ 1, 2 ], "Cardinality" ],
+      InfraMeasurement[ graph, InfraPerpendicularBisector[ 1, 2 ], "CountingMeasure" ],
+      InfraMemberQ[ graph, InfraPerpendicularBisector[ 1, 2 ], { } ] } ],
+  { 1, 0, True },
+  TestID -> "bisector-empty-locus-is-one-set"
+]

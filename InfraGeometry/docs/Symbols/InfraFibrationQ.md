@@ -36,7 +36,7 @@ With[
   {total = InfraTotalSpace[fib]},
   {cut = First @ EdgeList[total]},
   {broken = InfraFiberedGraph[EdgeDelete[total, cut], InfraProjection[fib]]},
-  {InfraSubstrateHighlight[InfraTotalSpace[broken], {InfraDensity[total, List @@ cut]}], InfraFibrationQ[fib], InfraFibrationQ[broken]}]
+  {InfraSubstrateHighlight[InfraTotalSpace[broken], {InfraMeasurement[total, List @@ cut, "VertexDensity" ]}], InfraFibrationQ[fib], InfraFibrationQ[broken]}]
 ```
 
 Every entry of the catalogue is a fibration.

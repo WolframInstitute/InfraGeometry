@@ -6,21 +6,21 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSceneInstance
 Keywords: [scene, instance, binding, solution]
-SeeAlso: [InfraScenePlot, RandomInfraInstance, InfraScene, InfraSubstrateHighlight, InfraSceneViewer]
+SeeAlso: [InfraScenePlot, RandomInfraSceneInstance, InfraScene, InfraSubstrateHighlight, InfraSceneViewer]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraSceneInstance]()[*bindings*]</code> is one solved branch of a scene: the `Association` *bindings* of its objects to their values.
+<code>[InfraSceneInstance]()[*bindings*]</code> stores an `Association` *bindings* from scene objects to their realized values.
 
 <code>[InfraSceneInstance]()[*inst*, *x*]</code> reads the value of the object *x* out of the instance *inst*, and <code>[InfraSceneInstance]()[*inst*, {*x1*, *x2*, …}]</code> the values of several.
 
 ## Details & Options
 
-[RandomInfraInstance]() returns one instance by default, or a list when a count is given. An instance is a symbolic representation of a solved branch: it stores the bindings for later retrieval.
+[RandomInfraSceneInstance]() returns one instance by default, or a list when a count is given. An instance stores bindings for later retrieval. With `"Steps" -> k`, these can be partial bindings after the first *k* steps, and need not extend to a complete solution.
 
-A value is what the construction of the object realised on the graph: a vertex for a point or an intersection, a vertex list for a segment, a ray or a line, a cyclic vertex list for a circle. [InfraScenePlot]() draws the saved objects according to their declared kinds.
+A value is what the construction of the object realised on the graph: a vertex for a point, a vertex set for an intersection, a vertex list for a segment, a ray or a line, and a cyclic vertex list for a circle. [InfraScenePlot]() draws the saved objects according to their declared kinds.
 
 An object the instance does not bind reads as `Missing["KeyAbsent", x]`. The second argument also reads a bare `Association` of bindings.
 
@@ -36,8 +36,8 @@ With[
   {scene = InfraScene[{pA, pB, circleA, circleB, meet},
      {pA == InfraPoint[83], pB == InfraPoint[87],
       circleA == InfraCircle[pA, {4, 5}], circleB == InfraCircle[pB, {4, 5}],
-      meet == InfraIntersection[circleA, circleB]}]},
-  With[{first = First @ RandomInfraInstance[ scene, g, All ]},
+      meet == InfraPoint[ InfraIntersection[circleA, circleB] ]}]},
+  With[{first = First @ RandomInfraSceneInstance[ scene, g, All ]},
     {InfraSubstrateHighlight[g,
        {InfraWalk[Append[#, First @ #]] & @ InfraSceneInstance[first, circleA],
         InfraWalk[Append[#, First @ #]] & @ InfraSceneInstance[first, circleB],
@@ -55,7 +55,7 @@ ClearAll[pA, pB, seg1];
 With[
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[41], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
-  First @ RandomInfraInstance[ scene, GridGraph[{9, 9}], All ]]
+  First @ RandomInfraSceneInstance[ scene, GridGraph[{9, 9}], All ]]
 ```
 
 ## Properties and Relations
@@ -68,7 +68,7 @@ ClearAll[pA, pB, seg1];
 With[
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[41], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
-  Counts[InfraSceneInstance[#, pB] & /@ RandomInfraInstance[ scene, GridGraph[{9, 9}], All ]]]
+  Counts[InfraSceneInstance[#, pB] & /@ RandomInfraSceneInstance[ scene, GridGraph[{9, 9}], All ]]]
 ```
 
 The accessor reads a bare `Association` the same way.

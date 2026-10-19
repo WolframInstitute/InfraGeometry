@@ -17,7 +17,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 The result is `InfraMeasurement[graph, InfraArc[c, points], "Graph"]`.
 
-Two distinct endpoints give the shortest-path interval DAG in the radial band. Additional points give consecutive carriers. Closed arcs use seam carriers. The option "RadiusDelta" widens the band, as for InfraArc. The arc hypotheses needed for geometric faithfulness are not certified; the object's "Faithful" reading is Undetermined.
+Two distinct endpoints give the shortest-path interval DAG in the radial band. Additional points give consecutive carriers. Closed arcs use seam carriers. The option "RadiusDelta" widens the band, as for InfraArc. The arc hypotheses needed for geometric faithfulness are not certified; the object's "Faithful" reading stays unevaluated.
 
 ## Basic Examples
 

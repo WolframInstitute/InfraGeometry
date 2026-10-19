@@ -34,7 +34,7 @@ A singleton region has one representative even when its set is empty.
 A decided empty point family has no representatives.
 An unsupported call remains unevaluated and must not be interpreted as an empty family.
 
-The exact midpoint family requires equal half-distances and is empty at odd endpoint distance.
+The midpoint is the central layer, or two central layers, of the oriented segment graph. Its vertex density retains the shortest-path occupation counts.
 The older segment "Midpoint" measurement retains middle-layer density and can contain two layers.
 
 ```wl

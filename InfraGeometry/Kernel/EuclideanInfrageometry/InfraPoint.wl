@@ -12,9 +12,20 @@ RandomInfraPoint[ graph_Graph, region : Except[ _Integer | UpTo[ _Integer ] | Al
     MemberQ[ { Automatic, Identity }, OptionValue[ RandomInfraPoint, { opts }, "NextVertexFunction" ] ] &&
     SubsetQ[ First /@ Options[ RandomInfraPoint ], First /@ { opts } ] :=
   With[ { pool = Which[
-            region === Automatic,                    VertexList @ graph,
-            MatchQ[ region, _List | _Association ], Keys @ InfraDensity[ graph, region ],
-            True,                                    Keys @ InfraMeasurement[ graph, region, "VertexDensity" ] ],
+            region === Automatic, VertexList @ graph,
+            VertexQ[ graph, region ], { region },
+            MatchQ[ region, _InfraUnion ],
+              Union @@ Map[ If[ VertexQ[ graph, # ], { # }, RandomInfraPoint[ graph, #, All ] ] &, List @@ region ],
+            MatchQ[ region, _InfraIntersection ],
+              Intersection @@ Map[ If[ VertexQ[ graph, # ], { # }, RandomInfraPoint[ graph, #, All ] ] &, List @@ region ],
+            MatchQ[ region, _InfraCircle ], Union @@ RandomInfraCircle[ graph, region, All ],
+            MatchQ[ region, _InfraCircleThrough ], Keys @ InfraMeasurement[ graph, region, "VertexDensity" ],
+            MatchQ[ region, _InfraPlane ], Union @@ RandomInfraPlane[ graph, region, All ],
+            MatchQ[ region, _InfraRegularPolygon | _InfraPolygon ], Union @@ RandomInfraRegularPolygon[ graph, region, All ],
+            MatchQ[ region, _InfraEllipse ], Union @@ ( VertexList /@ RandomInfraEllipse[ graph, region, All ] ),
+            MatchQ[ region, _InfraWalk ], Union @@ RandomInfraWalk[ graph, region, All ],
+            MatchQ[ region, _InfraGeodesic ], Union @@ RandomInfraGeodesic[ graph, region, All ],
+            True, Keys @ Select[ InfraMeasurement[ graph, region, "VertexDensity" ], value |-> value != 0 ] ],
           dist = OptionValue[ "PairwiseDistance" ], maxCliques = OptionValue[ "MaxCliques" ],
           deterministic = count === All || OptionValue[ "NextVertexFunction" ] === Identity },
     { n = Min[ Length @ pool, Replace[ count, { UpTo[ k_ ] :> k, All -> Infinity, Automatic -> 1 } ] ] },
@@ -63,7 +74,7 @@ FindInfraReflection[ graph_Graph, x_, a_,
               Select[ VertexList[ localG ],
                 y |-> GraphDistance[ localG, a0, y ] === r && GraphDistance[ localG, x0, y ] === 2 r ] ]
           ]
-        ] ) @@@ Tuples[ { Keys @ InfraDensity[ graph, x ], Keys @ InfraDensity[ graph, a ] } ], 1 ] },
+        ] ) @@@ Tuples[ { Keys @ InfraMeasurement[ graph, x, "VertexDensity" ], Keys @ InfraMeasurement[ graph, a, "VertexDensity" ] } ], 1 ] },
     Switch[ count,
       All,   reps,
       _UpTo, Take[ reps, count ],
@@ -105,14 +116,14 @@ FindClosestInfraPoint[ graph_Graph, line_, point_,
         True,                     { x } ] },
     { reps = DeleteDuplicates @ Flatten[
         ( { line0, point0 } |-> MinimalBy[ line0, GraphDistance[ graph, point0, # ] & ] ) @@@
-          Tuples[ { spread @ line, Keys @ InfraDensity[ graph, point ] } ], 1 ] },
+          Tuples[ { spread @ line, Keys @ InfraMeasurement[ graph, point, "VertexDensity" ] } ], 1 ] },
     Switch[ count,
       All,   reps,
       _UpTo, Take[ reps, count ],
       _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ]
 
 InfraReachableQ[ graph_Graph, p1_, p2_ ] :=
-  IntersectingQ[ VertexComponent[ graph, Keys @ InfraDensity[ graph, p1 ] ], Keys @ InfraDensity[ graph, p2 ] ]
+  IntersectingQ[ VertexComponent[ graph, Keys @ InfraMeasurement[ graph, p1, "VertexDensity" ] ], Keys @ InfraMeasurement[ graph, p2, "VertexDensity" ] ]
 
 RandomInfraPoint[ graph_Graph, InfraPoint[ ],
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ { "NextVertexFunction" }, First /@ { opts } ] &&
@@ -140,3 +151,12 @@ RandomInfraPoint[ graph_Graph, InfraPoint[ v_ ],
       nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
       IntegerQ @ count && Length @ ordered < count, { },
       True, RandomSample[ ordered, count ] ] ]
+
+
+RandomInfraPoint[ graph_Graph, InfraPoint[ region_ ],
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
+    opts : OptionsPattern[] ] /; ! VertexQ[ graph, region ] &&
+    SubsetQ[ First /@ Options[ RandomInfraPoint ], First /@ { opts } ] &&
+    MemberQ[ { Automatic, Identity }, OptionValue[ RandomInfraPoint, { opts }, "NextVertexFunction" ] ] :=
+  With[ { density = InfraMeasurement[ graph, region, "VertexDensity" ] },
+    RandomInfraPoint[ graph, region, count, opts ] /; AssociationQ[ density ] ]

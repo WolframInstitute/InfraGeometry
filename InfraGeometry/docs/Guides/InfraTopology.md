@@ -28,6 +28,11 @@ The topology of a substrate is read off its metric balls. The closed balls of on
 
 - `TransitiveReductionGraph` (WL), `TransitiveClosureGraph` (WL), `VertexInComponent` (WL), `VertexOutComponent` (WL)
 
+### Region operations
+
+- `InfraBoundary` the boundary of a vertex set, density or object
+- `InfraInterior` the interior of a vertex set, density or object
+
 ### The ball intersection complex
 
 - `BallIntersectionComplex` the order-$k$ complex of the closed $r$-balls

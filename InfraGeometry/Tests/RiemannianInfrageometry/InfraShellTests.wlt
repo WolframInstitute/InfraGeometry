@@ -8,14 +8,14 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[{5, 5}] },
-    { RandomInfraShell[ g, InfraShell[13, {1, 2}] ], RandomInfraShell[ g, InfraShell[13, {0, 0}] ],
-      RandomInfraShell[ g, InfraShell[13, {3, 2}] ], RandomInfraShell[ g, InfraShell[13, 9] ] } ],
+    { Keys @ InfraMeasurement[ g, InfraShell[13, {1, 2}], "VertexDensity" ], Keys @ InfraMeasurement[ g, InfraShell[13, {0, 0}], "VertexDensity" ],
+      Keys @ InfraMeasurement[ g, InfraShell[13, {3, 2}], "VertexDensity" ], Keys @ InfraMeasurement[ g, InfraShell[13, 9], "VertexDensity" ] } ],
   { {3, 7, 8, 9, 11, 12, 14, 15, 17, 18, 19, 23}, {13}, {}, {} },
   TestID -> "InfraShell-band-point-reversed-past-eccentricity"
 ]
 
 VerificationTest[
-  RandomInfraShell[ PathGraph[Range[7]], InfraShell[{1, 7}, 1] ],
+  Keys @ InfraMeasurement[ PathGraph[Range[7]], InfraShell[{1, 7}, 1], "VertexDensity" ],
   {2, 6},
   TestID -> "InfraShell-of-a-vertex-set-is-a-level-set-of-the-set-distance"
 ]
@@ -68,10 +68,10 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[{5, 5}] },
-    { FindInfraShell[g, 13, 2], FindInfraShell[g, 13, {1, 2}] } ===
-      { RandomInfraShell[ g, InfraShell[13, 2] ], RandomInfraShell[ g, InfraShell[13, {1, 2}] ] } ],
+    { Keys @ InfraMeasurement[ g, InfraShell[ 13, 2 ], "VertexDensity" ], Keys @ InfraMeasurement[ g, InfraShell[ 13, {1, 2} ], "VertexDensity" ] } ===
+      { Keys @ InfraMeasurement[ g, InfraShell[13, 2], "VertexDensity" ], Keys @ InfraMeasurement[ g, InfraShell[13, {1, 2}], "VertexDensity" ] } ],
   True,
-  TestID -> "FindInfraShell-is-the-level-set"
+  TestID -> "InfraShell-is-the-level-set"
 ]
 
 VerificationTest[

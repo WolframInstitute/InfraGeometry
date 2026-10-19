@@ -26,7 +26,7 @@ The corners: three vertices on the shell of radius $r$ about a centre of the gra
 corners[g_] := With[
   {c = First @ GraphCenter @ g, d = GraphDistanceMatrix @ g},
   {r = Floor[GraphRadius[g]/2]},
-  {shell = FindInfraShell[g, c, r]},
+  {shell = Keys @ InfraMeasurement[ g, InfraShell[ c, r ], "VertexDensity" ]},
   {row = end |-> d[[VertexIndex[g, end], VertexIndex[g, #] & /@ shell]]},
   {a = First @ shell},
   {b = shell[[First @ Ordering[row @ a, -1]]]},
@@ -60,7 +60,7 @@ GraphicsGrid @ Table[
     {g = (SeedRandom[2]; InfraSubstrate[name, size, "KeepCoordinates" -> True])},
     {c = First @ GraphCenter @ g},
     {r = Floor[GraphRadius[g]/2]},
-    InfraSubstrateHighlight[g, {FindInfraShell[g, c, r] -> StandardGray, corners[g] -> StandardBlue}]],
+    InfraSubstrateHighlight[g, {Keys @ InfraMeasurement[ g, InfraShell[ c, r ], "VertexDensity" ] -> StandardGray, corners[g] -> StandardBlue}]],
   {size, {"Small", "Medium", "Large"}},
   {name, {"SquareTilingGraph", "TriangularTilingGraph", "SquareMeshGraph"}}]
 ```
@@ -148,7 +148,7 @@ ListLinePlot[
         {c = First @ GraphCenter @ g, d = GraphDistanceMatrix @ g},
         Table[
           With[
-            {shell = FindInfraShell[g, c, r]},
+            {shell = Keys @ InfraMeasurement[ g, InfraShell[ c, r ], "VertexDensity" ]},
             {row = end |-> d[[VertexIndex[g, end], VertexIndex[g, #] & /@ shell]]},
             {a = First @ shell},
             {b = shell[[First @ Ordering[row @ a, -1]]]},
@@ -180,7 +180,7 @@ ListLinePlot[
         {c = First @ GraphCenter @ g, d = GraphDistanceMatrix @ g},
         Table[
           With[
-            {shell = FindInfraShell[g, c, r]},
+            {shell = Keys @ InfraMeasurement[ g, InfraShell[ c, r ], "VertexDensity" ]},
             {row = end |-> d[[VertexIndex[g, end], VertexIndex[g, #] & /@ shell]]},
             {a = First @ shell},
             {b = shell[[First @ Ordering[row @ a, -1]]]},

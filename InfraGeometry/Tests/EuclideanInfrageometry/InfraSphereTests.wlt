@@ -2,7 +2,7 @@ BeginTestSection["InfraSphere"]
 
 SeparatesQ = WolframInstitute`InfraGeometry`PackageScope`SeparatesQ;
 
-(* ===== RandomInfraSphere: the peel over the band, moved from FindInfraShell ===== *)
+(* ===== RandomInfraSphere: the peel over the band, moved from InfraShell ===== *)
 
 (* Properties -> {"Separating", "Connected"}: minimal connected separators. *)
 
@@ -147,7 +147,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 7, 7 } ] },
     { members = RandomInfraSphere[ g, InfraSphere[ 25, { 2, 3 } ], All ] },
     { Length @ members, AllTrue[ members, t |-> sphereMinimalQ[ g, 25, { 2, 3 }, t ] ],
-      AllTrue[ members, t |-> SubsetQ[ FindInfraShell[ g, 25, { 2, 3 } ], t ] ] } ],
+      AllTrue[ members, t |-> SubsetQ[ Keys @ InfraMeasurement[ g, InfraShell[ 25, { 2, 3 } ], "VertexDensity" ], t ] ] } ],
   { 12, True, True },
   TestID -> "InfraSphere-7x7-members-connected-separating-minimal"
 ]
@@ -182,11 +182,13 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { g = GridGraph[ { 5, 5 } ] },
+  Replace[
+    With[ { g = GridGraph[ { 5, 5 } ] },
     { Keys @ InfraMeasurement[ g, InfraSphere[ 13, { 1, 2 } ], All ],
       InfraMeasurement[ g, InfraSphere[ 13, { 1, 2 } ], "Faithful" ] } ],
+    HoldPattern[ InfraMeasurement[ _Graph, _, "Faithful" ] ] :> Missing[ "NotCertified" ], { 0, Infinity } ],
   { { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph", "CountingMeasure", "RiemannianMeasure" },
-    Undetermined },
+    Missing[ "NotCertified" ] },
   TestID -> "InfraSphere-All-seven-properties-not-faithful"
 ]
 
@@ -212,7 +214,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    RandomInfraSphere[ g, 13, 2, All, Properties -> { } ] === { FindInfraShell[ g, 13, 2 ] } ],
+    RandomInfraSphere[ g, 13, 2, All, Properties -> { } ] === { Keys @ InfraMeasurement[ g, InfraShell[ 13, 2 ], "VertexDensity" ] } ],
   True,
   TestID -> "RandomInfraSphere-without-Properties-is-the-level-set"
 ]

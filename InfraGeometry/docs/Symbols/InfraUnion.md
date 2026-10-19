@@ -18,7 +18,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 On heads, InfraMeasurement gives the union its "VertexDensity" — the sum of the two densities — its "Subgraph" and the two measures. It is not a family of walks, so it has no "Graph", "Cardinality", "Length", "EdgeDensity" or "Faithful".
 
-Inside InfraScene hypotheses `InfraUnion[c1, c2]` is the union token: every vertex of either object is one branch. Evaluation is postponed until the bindings resolve and the scene engine supplies the graph.
+Inside InfraScene hypotheses `InfraUnion[c1, c2]` binds the whole union as one vertex set. `InfraPoint[InfraUnion[c1, c2]]` chooses one point from it. Evaluation is postponed until the bindings resolve and the scene engine supplies the graph.
 
 ## Basic Examples
 
@@ -34,7 +34,7 @@ Two crossing segments on a grid: the density of their union is the sum of theirs
 InfraMeasurement[GridGraph[{5, 5}], InfraUnion[InfraSegment[1, 13], InfraSegment[7, 19]], "VertexDensity"]
 ```
 
-Inside a scene the union is a token: every vertex of either ball is one instance.
+Inside a scene, an explicit point of the union gives one instance per vertex of either ball.
 
 ```wl
 SeedRandom[1];
@@ -42,6 +42,6 @@ ClearAll[ballA, ballB, either];
 With[
   {g = GridGraph[{5, 5}]},
   {scene = InfraScene[{ballA, ballB, either},
-     {ballA == InfraBall[7, 1], ballB == InfraBall[9, 1], either == InfraUnion[ballA, ballB]}]},
-  Sort[InfraSceneInstance[#, either] & /@ RandomInfraInstance[ scene, g, All ]]]
+     {ballA == InfraBall[7, 1], ballB == InfraBall[9, 1], either == InfraPoint[ InfraUnion[ballA, ballB] ]}]},
+  Sort[InfraSceneInstance[#, either] & /@ RandomInfraSceneInstance[ scene, g, All ]]]
 ```

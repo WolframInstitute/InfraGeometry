@@ -41,7 +41,7 @@ SeedRandom[ 7 ];
 With[
   {fib = InfraCotangentBundle[GridGraph[{4, 4}], 2]},
   {total = InfraTotalSpace[fib]},
-  InfraSubstrateHighlight[total, {InfraDensity[total, VertexList @ InfraFiber[fib, 6]]}]]
+  InfraSubstrateHighlight[total, {InfraMeasurement[total, VertexList @ InfraFiber[fib, 6], "VertexDensity" ]}]]
 ```
 
 ## Properties and Relations

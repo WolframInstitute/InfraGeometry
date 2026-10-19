@@ -49,8 +49,11 @@ VerificationTest[
     Table[
       With[{transport = First @ InfraParallelTransport[InfraDisplacementBundle[oct, 1], {1, 2}, Method -> method]},
         AllTrue[Tuples[Keys @ transport, 2],
-          InfraAngle[oct, {Last @ #[[1]], 1, Last @ #[[2]]}, Method -> method] ==
-            InfraAngle[oct, {Last @ transport @ #[[1]], 2, Last @ transport @ #[[2]]}, Method -> method] &]],
+          If[ method === "Alexandrov", InfraComparisonAngle[ oct, { Last @ #[[1]], 1, Last @ #[[2]] } ],
+            GraphDistance[ VertexDelete[ oct, { 1 } ], Last @ #[[1]], Last @ #[[2]] ] ] ==
+            If[ method === "Alexandrov",
+              InfraComparisonAngle[ oct, { Last @ transport @ #[[1]], 2, Last @ transport @ #[[2]] } ],
+              GraphDistance[ VertexDelete[ oct, { 2 } ], Last @ transport @ #[[1]], Last @ transport @ #[[2]] ] ] &]],
       {method, {"Arclength", "Alexandrov"}}]],
   {True, True},
   TestID -> "InfraParallelTransport-Levi-Civita-octahedron-is-exact"

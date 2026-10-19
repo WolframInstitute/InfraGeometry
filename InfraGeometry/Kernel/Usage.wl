@@ -7,10 +7,8 @@ FindInfraCommonPoint::usage = "FindInfraCommonPoint[graph, lines] gives the poin
 FindClosestInfraPoint::usage = "FindClosestInfraPoint[graph, line, point] gives the vertices of line at minimum graph distance from point.";
 InfraReachableQ::usage = "InfraReachableQ[graph, p1, p2] tests whether p1 and p2 have realisations in the same connected component.";
 
-Undetermined::usage = "Undetermined is the value of the measurement \"Faithful\" on a head whose graph is faithful only under a hypothesis this paclet does not certify.";
 InfraMeasurement::usage = "InfraMeasurement[graph, obj, property] measures a Euclidean head on graph: \"Graph\", \"Cardinality\", \"Length\", \"VertexDensity\", \"EdgeDensity\", \"Subgraph\", \"Faithful\", \"CountingMeasure\" (the vertex count), \"RiemannianMeasure\" (the count without boundary). A List of properties gives an Association, All gives them all, a List of heads measures each.";
 InfraMemberQ::usage = "InfraMemberQ[graph, obj, representative] tests family membership; an exact point family accepts one raw vertex.";
-InfraSubgraph::usage = "InfraSubgraph[graph, obj] gives the subgraph of graph induced on the support of obj; InfraSubgraph[graph, obj -> t] thickens the support by t steps.";
 
 InfraSegment::usage = "InfraSegment[p1, ..., pk] is an inert ordered chain of shortest-path legs. InfraMeasurement reads its family; RandomInfraSegment samples it."
 RandomInfraSegment::usage = "RandomInfraSegment[graph, p, q] draws a random shortest path from p to q as a vertex list; a trailing n | UpTo[n] | All gives a List of vertex lists. Option \"NextVertexFunction\".";
@@ -41,7 +39,6 @@ LineCount::usage = "LineCount[graph] gives the number of distinct canonical maxi
 UniversalLineQ::usage = "UniversalLineQ[graph] tests whether some pair spans a line filling a whole connected component (Chen-Chvatal); UniversalLineQ[graph, {u, v}] tests one line.";
 
 InfraShell::usage = "InfraShell[c, r] is the inert distance-r shell; {r, s} gives a distance band."
-FindInfraShell::usage = "FindInfraShell[graph, c, r] gives the metric shell { v : d(v, c) == r } as a sorted vertex list; r may be a band {r, s}, c a vertex set.";
 InfraSphere::usage = "InfraSphere[c, r] is the inert family of minimal connected separating subsets of the distance-r shell."
 RandomInfraSphere::usage = "RandomInfraSphere[graph, c, r, n] gives n minimal separating subsets of the shell of c with radius r or band {r, s}; n may be UpTo[n] or All. Automatic randomizes candidate order; Identity preserves deterministic order. Options Properties, \"NextVertexFunction\".";
 FindInfraOsculatingShell::usage = "FindInfraOsculatingShell[graph, path, i, k] gives the shells whose level set contains the k-vertex window of path centred at position i, one per osculating centre.";
@@ -86,8 +83,9 @@ FindInfraPolylineSubdivision::usage = "FindInfraPolylineSubdivision[graph, path]
 
 InfraScalarProduct::usage = "InfraScalarProduct[graph, o, u, v] gives the base-point-relative product d(o, u) d(o, v) cos(theta), at curvature 0 the polar form (d(o,u)^2 + d(o,v)^2 - d(u,v)^2)/2. Option Method.";
 FindInfraLinearCombination::usage = "FindInfraLinearCombination[graph, o, {{lambda1, u1}, ...}] gives the vertex realisations of Sum_i lambda_i u_i based at o. Options \"ScaleMethod\", \"SumMethod\".";
-InfraAngle::usage = "InfraAngle[graph, {q1, p, q2}] gives the angle at p in radians. Option Method (\"Arclength\", \"Alexandrov\").";
-InfraMetricTensor::usage = "InfraMetricTensor[graph, p] gives the matrix of d(p, u)/d(p, v) over v, w with u the vertex of I(p, w) closest to v; with r, over the shell FindInfraShell[graph, p, r]. Option \"SelectCoordinate\".";
+InfraAngle::usage = "InfraAngle[graph, {q1, p, q2}] gives the length of InfraArc[p, {q1, q2}]. Option \"RadiusDelta\".";
+InfraComparisonAngle::usage = "InfraComparisonAngle[graph, {q1, p, q2}] gives the comparison-triangle angle at p in the constant-curvature model plane. Option \"Curvature\".";
+InfraMetricTensor::usage = "InfraMetricTensor[graph, p] gives the matrix of d(p, u)/d(p, v) over v, w with u the vertex of I(p, w) closest to v; with r, over the shell InfraShell[p, r]. Option \"SelectCoordinate\".";
 
 SelectInfraWalk::usage = "SelectInfraWalk[graph, walks, n] draws n walks (default 1) from a bundle -- vertex lists or walk graphs, cycle graphs selecting as closed walks -- treated as a metric space; n may be UpTo[n] or All, and SelectInfraWalk[graph, n] is the operator form. Options \"From\", \"Distance\", \"Metric\", \"MaxCliques\", \"Cyclic\".";
 EmbeddingClosest::usage = "EmbeddingClosest[graph, bundle, ref] keeps the bundle elements drawn closest to a Euclidean reference under GraphEmbedding; ref is {p1, p2}, {center, radius}, or a curve.";
@@ -108,7 +106,6 @@ MetricInterval::usage = "MetricInterval[graph, u, v] gives { w : d(u, w) + d(w, 
 ShortestPathMultiplicityMatrix::usage = "ShortestPathMultiplicityMatrix[graph] gives the matrix whose (i, j) entry is the number of shortest paths from the i-th to the j-th vertex, 0 when there is none.";
 MedianVertices::usage = "MedianVertices[graph, vs] gives the vertices minimising the sum of distances to vs.";
 
-InfraDensity::usage = "InfraDensity[graph, x] gives the marginal of any shape to the vertex set, <|v -> m|>, with respect to the counting measure: a vertex gives <|v -> 1|>, a vertex list its Counts, a density itself, a walk graph or a bundle its vertex occupation. It is the one coercion in the API -- Keys demotes it back to the set, Counts promotes a list to one.";
 
 FindInfraEquidistantSet::usage = "FindInfraEquidistantSet[graph, {p1, ..., pn}] gives { v : d(p1, v) == ... == d(pn, v) } as a sorted vertex list; a trailing {lo, hi} thickens each bisector to a slab.";
 InfraBoundary::usage = "InfraBoundary[graph, s] gives, as a sorted vertex list, the boundary of a vertex set, density or shape. Option Method (\"Combinatorial\", \"Alexandrov\").";
@@ -120,9 +117,9 @@ FindInfraOrthogonalRays::usage = "FindInfraOrthogonalRays[graph, c, rayLength] g
 FindInfraSpanningAxes::usage = "FindInfraSpanningAxes[graph, n] gives n mutually well-separated longest geodesics across graph, with no fixed centre. Options \"AxisDistance\", \"MinLength\", \"MinSeparation\", \"AxisThickness\", \"RandomPick\".";
 
 InfraScene::usage = "InfraScene[objects, hypotheses] builds a scene descriptor from symbolic objects and construction or assertion hypotheses. Properties \"Steps\", \"Constructions\", \"Assertions\", \"DependencyGraph\".";
-RandomInfraInstance::usage = "RandomInfraInstance[scene, graph] draws one admissible InfraSceneInstance. Options RandomSeeding, \"NextVertexFunction\", \"Steps\".";
-InfraSceneInstance::usage = "InfraSceneInstance[bindings] wraps a solved binding association; InfraSceneInstance[bindings, sym] reads one object out of it.";
-InfraStep::usage = "InfraStep[{hyp1, ...}] groups hypotheses into one construction step of a scene; a second argument labels it.";
+RandomInfraSceneInstance::usage = "RandomInfraSceneInstance[scene, graph] draws one admissible InfraSceneInstance. Options RandomSeeding, \"NextVertexFunction\", \"Steps\".";
+InfraSceneInstance::usage = "InfraSceneInstance[bindings] stores complete or partial scene bindings; InfraSceneInstance[bindings, sym] reads one object out of it.";
+InfraSceneStep::usage = "InfraSceneStep[{hyp1, ...}] groups hypotheses into one construction step of a scene; a second argument labels it.";
 InfraIntersection::usage = "InfraIntersection[graph, obj1, obj2, ...] gives the vertex-set intersection of shapes on graph -- vertex lists, densities, walk graphs, bundles -- as a sorted List. On Euclidean heads it is symbolic and InfraMeasurement gives it the common support and the product density. Inside InfraScene it is the token InfraIntersection[c1, c2], one branch per common vertex, the engine supplying the graph.";
 InfraUnion::usage = "InfraUnion[graph, obj1, obj2, ...] gives the vertex-set union of shapes on graph as a sorted List. On Euclidean heads it is symbolic and InfraMeasurement gives it the joint support and the sum density. Inside InfraScene it is the token InfraUnion[c1, c2], one branch per vertex of either, the engine supplying the graph.";
 InfraDistance::usage = "InfraDistance[graph, p, q] gives minimum ambient distance between supported nonzero vertex sets; empty or disconnected supports give Infinity. Option \"Aggregation\".";
@@ -371,26 +368,15 @@ InfraLine::usage = "InfraLine is the inert legacy compatibility spelling; use In
 RandomInfraLine::usage = "RandomInfraLine[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
 InfraLineQ::usage = "InfraLineQ is the legacy compatibility spelling; use InfraInfiniteLineQ."
 InfraPolygon::usage = "InfraPolygon is the inert legacy compatibility spelling; use InfraRegularPolygon."
-RandomInfraBall::usage = "RandomInfraBall[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
-RandomInfraShell::usage = "RandomInfraShell[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
-RandomInfraTube::usage = "RandomInfraTube[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
-RandomInfraCylinder::usage = "RandomInfraCylinder[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
-RandomInfraCone::usage = "RandomInfraCone[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
-RandomInfraSolidOfRevolution::usage = "RandomInfraSolidOfRevolution[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
 RandomInfraCircle::usage = "RandomInfraCircle[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
 RandomInfraArc::usage = "RandomInfraArc[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
 RandomInfraPlane::usage = "RandomInfraPlane[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
-RandomInfraBallHull::usage = "RandomInfraBallHull[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
-RandomInfraConvexHull::usage = "RandomInfraConvexHull[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
-RandomInfraQuadric::usage = "RandomInfraQuadric[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
-RandomInfraIntersection::usage = "RandomInfraIntersection[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
-RandomInfraUnion::usage = "RandomInfraUnion[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
 
-InfraMidpoint::usage = "InfraMidpoint[p,q] is the inert family of exact graph midpoint vertices; distinct from the central-layer segment Midpoint density."
-InfraPerpendicularBisector::usage = "InfraPerpendicularBisector[p,q] is the inert family of finite equidistant vertices, without a separation condition."
-InfraRegionNearest::usage = "InfraRegionNearest[obj,p] is the inert point family of all finite-distance minimizers in the nonzero support of obj."
-RandomInfraMidpoint::usage = "RandomInfraMidpoint[graph,p,q] samples a raw exact midpoint vertex. It also accepts InfraMidpoint[p,q]. Option NextVertexFunction."
-RandomInfraPerpendicularBisector::usage = "RandomInfraPerpendicularBisector[graph,p,q] samples a raw finite equidistant vertex. It also accepts InfraPerpendicularBisector[p,q]. Option NextVertexFunction."
+InfraMidpoint::usage = "InfraMidpoint[p,q] is the inert center of the oriented segment graph from p to q, with shortest-path occupation density."
+InfraPerpendicularBisector::usage = "InfraPerpendicularBisector[p,q] is the inert locus of vertices at equal finite graph distance from p and q."
+InfraEquidistantSet::usage = "InfraEquidistantSet[{p1,...,pn}] is the inert locus of vertices at equal finite graph distance from all anchors."
+InfraRegionNearest::usage = "InfraRegionNearest[obj,p] is the inert family of vertices in obj nearest to p in graph distance, retaining all ties."
+RandomInfraMidpoint::usage = "RandomInfraMidpoint[graph,p,q] samples a central vertex of the oriented segment graph. It also accepts InfraMidpoint[p,q]. Option NextVertexFunction."
 RandomInfraRegionNearest::usage = "RandomInfraRegionNearest[graph,obj,p] samples a raw nearest support vertex. It also accepts InfraRegionNearest[obj,p]. Option NextVertexFunction."
 
 InfraGeometricAssertion::usage = "InfraGeometricAssertion[objects, property] is an inert assertion of Distinct, Member or EqualDistance on a graph."
@@ -404,3 +390,6 @@ InfraParallelSectionQ::usage = "InfraParallelSectionQ[fib, connection, section] 
 InfraHorizontalLift::usage = "InfraHorizontalLift[fib, connection, start, walk] gives the unique horizontal lift of a base walk from start.";
 InfraFiberedGraphHighlight::usage = "InfraFiberedGraphHighlight[fib, items] draws sections, connections, fibers and walks on a fibered graph. Option Method.";
 InfraFiberedGraphViewer::usage = "InfraFiberedGraphViewer[fib, items] inspects fibers, sections and connection lifts interactively.";
+
+InfraCircleThrough::usage = "InfraCircleThrough[points, InfraCircle[c, {r, s}]] is the family of shortest separating simple circles in the band containing every prescribed point."
+RandomInfraCircleThrough::usage = "RandomInfraCircleThrough[graph, token] samples one circle through prescribed points; a count requests distinct circles. A saved carrier Graph can replace graph and token."

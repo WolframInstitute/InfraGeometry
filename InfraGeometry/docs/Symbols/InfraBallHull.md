@@ -6,13 +6,13 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraBallHull
 Keywords: [ball hull, Mazur hull, ball-convex, convex hull, region, symbolic object, covering]
-SeeAlso: [InfraConvexHull, InfraBall, InfraTube, InfraMeasurement, RandomInfraBallHull, InfraMemberQ]
+SeeAlso: [InfraConvexHull, InfraBall, InfraTube, InfraMeasurement, InfraMemberQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraBallHull]()[*S*, *r*]</code> is the intersection of the closed balls of radius at most *r* that contain *S*, and the whole graph if there is none. It is a symbolic object; [InfraMeasurement]() and [RandomInfraBallHull]() evaluate it on a graph.
+<code>[InfraBallHull]()[*S*, *r*]</code> is the intersection of the closed balls of radius at most *r* that contain *S*, and the whole graph if there is none. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
 
 <code>[InfraBallHull]()[*S*, {*r*}]</code> takes the balls of radius exactly *r*, and <code>[InfraBallHull]()[*S*, {*r*, *s*}]</code> those of radius between *r* and *s*.
 
@@ -38,12 +38,12 @@ Row[Table[
   With[
     {g = InfraSubstrate[name, "Large", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {shell = FindInfraShell[g, c, 5]},
+    {shell = Keys @ InfraMeasurement[ g, InfraShell[ c, 5 ], "VertexDensity" ]},
     {seeds = shell[[ {1, Round[Length[shell] / 3], Round[2 Length[shell] / 3]} ]]},
-    {hull = RandomInfraBallHull[ g, InfraBallHull[seeds] ]},
+    {hull = Keys @ InfraMeasurement[ g, InfraBallHull[seeds], "VertexDensity" ]},
     Labeled[
       InfraSubstrateHighlight[g, {InfraBall[c, 5], hull, seeds}, "PointSizeRange" -> 17],
-      Text[name <> ": " <> ToString[Length @ hull] <> " of " <> ToString[Length @ RandomInfraBall[ g, InfraBall[c, 5] ]] <> " vertices"]]],
+      Text[name <> ": " <> ToString[Length @ hull] <> " of " <> ToString[Length @ Keys @ InfraMeasurement[ g, InfraBall[c, 5], "VertexDensity" ]] <> " vertices"]]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
 ```
 
@@ -64,10 +64,10 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Large", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {shell = FindInfraShell[g, c, 5]},
+  {shell = Keys @ InfraMeasurement[ g, InfraShell[ c, 5 ], "VertexDensity" ]},
   {seeds = shell[[ {1, Round[Length[shell] / 3], Round[2 Length[shell] / 3]} ]]},
-  {hull = RandomInfraBallHull[ g, InfraBallHull[seeds] ]},
-  {SubsetQ[hull, seeds], RandomInfraBallHull[ g, InfraBallHull[hull] ] === hull}]
+  {hull = Keys @ InfraMeasurement[ g, InfraBallHull[seeds], "VertexDensity" ]},
+  {SubsetQ[hull, seeds], Keys @ InfraMeasurement[ g, InfraBallHull[hull], "VertexDensity" ] === hull}]
 ```
 
 The hull of at most *r* shrinks as *r* grows. On a path graph no ball of radius 1 contains 3 and 7, so the hull is the whole path; from radius 2 it is the interval.

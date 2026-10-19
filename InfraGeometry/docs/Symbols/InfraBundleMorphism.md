@@ -44,9 +44,9 @@ With[
   {truncate = InfraBundleMorphism[tangent, tangent1], endpoint = InfraBundleMorphism[tangent, displacementBundle]},
   {rays = VertexList @ InfraFiber[tangent, 6]},
   GraphicsRow[{
-    InfraSubstrateHighlight[InfraTotalSpace[tangent], {InfraDensity[InfraTotalSpace[tangent], rays]}],
-    InfraSubstrateHighlight[InfraTotalSpace[tangent1], {InfraDensity[InfraTotalSpace[tangent1], truncate /@ rays]}],
-    InfraSubstrateHighlight[InfraTotalSpace[displacementBundle], {InfraDensity[InfraTotalSpace[displacementBundle], endpoint /@ rays]}]}]]
+    InfraSubstrateHighlight[InfraTotalSpace[tangent], {InfraMeasurement[InfraTotalSpace[tangent], rays, "VertexDensity" ]}],
+    InfraSubstrateHighlight[InfraTotalSpace[tangent1], {InfraMeasurement[InfraTotalSpace[tangent1], truncate /@ rays, "VertexDensity" ]}],
+    InfraSubstrateHighlight[InfraTotalSpace[displacementBundle], {InfraMeasurement[InfraTotalSpace[displacementBundle], endpoint /@ rays, "VertexDensity" ]}]}]]
 ```
 
 ## Scope

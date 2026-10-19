@@ -132,7 +132,7 @@ With[
   {g = GridGraph[{5, 5}]},
   {row = RandomInfraParallel[g, Range[5], 13]},
   {InfraSegmentQ[g, row], InfraParallelQ[g, Range[5], row],
-   InfraParallelQ[g, FindInfraShell[g, 13, 1], FindInfraShell[g, 13, 2]]}]
+   InfraParallelQ[g, Keys @ InfraMeasurement[ g, InfraShell[ 13, 1 ], "VertexDensity" ], Keys @ InfraMeasurement[ g, InfraShell[ 13, 2 ], "VertexDensity" ]]}]
 ```
 
 Parallelism runs both ways: the first row is the parallel to the third row through a vertex of the first.

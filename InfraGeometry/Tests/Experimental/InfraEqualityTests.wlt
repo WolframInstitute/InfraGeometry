@@ -100,19 +100,19 @@ VerificationTest[
 (* ===== InfraBall ===== *)
 
 VerificationTest[
-  InfraEqualQ[ PathGraph[ Range[ 7 ] ], RandomInfraBall[ PathGraph[ Range[ 7 ] ], InfraBall[4, 1] ], RandomInfraBall[ PathGraph[ Range[ 7 ] ], InfraBall[4, 1] ] ],
+  InfraEqualQ[ PathGraph[ Range[ 7 ] ], Keys @ InfraMeasurement[ PathGraph[ Range[ 7 ] ], InfraBall[4, 1], "VertexDensity" ], Keys @ InfraMeasurement[ PathGraph[ Range[ 7 ] ], InfraBall[4, 1], "VertexDensity" ] ],
   True,
   TestID -> "InfraEqualQ-Ball-identical"
 ]
 
 VerificationTest[
-  InfraEqualQ[ PathGraph[ Range[ 7 ] ], RandomInfraBall[ PathGraph[ Range[ 7 ] ], InfraBall[4, 1] ], RandomInfraBall[ PathGraph[ Range[ 7 ] ], InfraBall[4, 2] ] ],
+  InfraEqualQ[ PathGraph[ Range[ 7 ] ], Keys @ InfraMeasurement[ PathGraph[ Range[ 7 ] ], InfraBall[4, 1], "VertexDensity" ], Keys @ InfraMeasurement[ PathGraph[ Range[ 7 ] ], InfraBall[4, 2], "VertexDensity" ] ],
   True,
   TestID -> "InfraEqualQ-Ball-nested-Diffuse-True"
 ]
 
 VerificationTest[
-  InfraEqualQ[ PathGraph[ Range[ 7 ] ], RandomInfraBall[ PathGraph[ Range[ 7 ] ], InfraBall[4, 1] ], RandomInfraBall[ PathGraph[ Range[ 7 ] ], InfraBall[4, 2] ], Method -> "Set" ],
+  InfraEqualQ[ PathGraph[ Range[ 7 ] ], Keys @ InfraMeasurement[ PathGraph[ Range[ 7 ] ], InfraBall[4, 1], "VertexDensity" ], Keys @ InfraMeasurement[ PathGraph[ Range[ 7 ] ], InfraBall[4, 2], "VertexDensity" ], Method -> "Set" ],
   False,
   TestID -> "InfraEqualQ-Ball-nested-Set-False"
 ]

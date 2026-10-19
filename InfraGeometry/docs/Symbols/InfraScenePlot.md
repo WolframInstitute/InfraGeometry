@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraScenePlot
 Keywords: [scene, static, plot, representative, segment, family]
-SeeAlso: [InfraScene, InfraSceneInstance, RandomInfraInstance, InfraSubstrateHighlight, InfraSceneViewer, InfraSegment, InfraWalk]
+SeeAlso: [InfraScene, InfraSceneInstance, RandomInfraSceneInstance, InfraSubstrateHighlight, InfraSceneViewer, InfraSegment, InfraWalk]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 

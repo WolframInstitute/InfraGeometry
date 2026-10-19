@@ -5,86 +5,36 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraAngle
-Keywords: [angle, comparison triangle, Alexandrov, arclength, radian]
-SeeAlso: [InfraScalarProduct, InfraPerpendicularQ]
+Keywords: [angle, arc, arclength, length]
+SeeAlso: [InfraArc, InfraMeasurement, InfraComparisonAngle, InfraPerpendicularQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraAngle]()[*g*, {*q1*, *p*, *q2*}]</code> gives the angle at *p* between the directions to *q1* and *q2*, in radians.
+`InfraAngle[g, {q1, p, q2}]` gives `InfraMeasurement[g, InfraArc[p, {q1, q2}], "Length"]`.
+
+`InfraAngle[g, {q1, p, q2}, "RadiusDelta" -> delta]` uses the widened arc band.
 
 ## Details & Options
 
-Definition, with `Method -> "Alexandrov"`: the angle at *p* is the angle at the corresponding corner of the Euclidean triangle with the same three side lengths.
+This is the length of the arc about `p` from `q1` to `q2`, measured in graph edges. The arc definition and its supported domain are those of [InfraArc](). All shortest arcs of the chosen band have the same length.
 
-Writing *d1 = d(p,q1)*, *d2 = d(p,q2)* and *c = d(q1,q2)*, that is
+The default `"RadiusDelta" -> 0` uses the exact distance shell of `q1`. A scalar delta widens the band outward; `{deltaIn, deltaOut}` widens it in both directions. A thin shell can have no connecting path, especially on a bipartite graph. The result then follows the arc measurement's empty-family behavior.
 
-*angle = ArcCos[(d1² + d2² − c²) / (2 d1 d2)]*
+The value has no radius or circumference normalization. A convention turning it into a dimensionless angle remains unsettled; this function makes no radian claim. A normalization involving a containing circle requires a specified circle family and rules for its possible alternatives.
 
-This is the comparison angle, and it is a closed form in three distances. Nothing else about the graph enters. It always lies in *[0, π]*.
-
-Two values come out exactly right. If *q1* and *q2* lie on opposite arms of one shortest path through *p*, then *c = d1 + d2* and the angle is exactly π. If *q2* lies on a shortest path from *p* to *q1*, then *c = |d1 − d2|* and the angle is exactly 0.
-
-Because only three distances enter, the comparison angle cannot separate configurations that share them. On a square grid the metric is ℓ¹ and the chord saturates early: two vertices on the same shell of radius 4 can be at distance 8 from each other without lying on a common line through the centre, and the angle then reads π just as a straight line does. This is a property of the substrate, not an error.
-
-`Method -> {"Alexandrov", "Curvature" -> k}` compares in the model plane of curvature *k* instead of the Euclidean one.
-
-`Method -> "Arclength"` is the default and computes something different: it takes the arclength between the two directions on the boundary around *p*, and divides by the radius. It is a synthetic radian measure, not a comparison angle, and the two methods do not agree. On a square grid the straight-line case gives 3 rather than π. It also needs the two arms at equal radius to be meaningful, since the radius appears in the denominator.
-
-The identity worth knowing is with [InfraScalarProduct](): the Alexandrov angle at curvature *k* is `ArcCos` of the scalar product divided by the two lengths, for every *k*.
-
-Corresponding notions in the classical axiom systems:
-
-| System | Name | Statement |
-|---|---|---|
-| Euclid | Definition 8, Postulate 4 | A plane angle is the inclination of two lines. All right angles are equal. |
-| Hilbert | Group III | Angle congruence is primitive, alongside segment congruence. |
-| Tarski | (derived) | No angle primitive. Angles are defined from equidistance. |
-| Birkhoff | Protractor postulate | Angles are coordinatised by the reals modulo 2π. |
+The former punched-ball detour divided by radius is a different observable. Comparison-triangle angles are now [InfraComparisonAngle]() in the Riemannian branch.
 
 ## Basic Examples
 
-Two configurations at the centre of the square tiling, each arm drawn along the line. Opposite arms of a line give exactly π. The same direction gives exactly 0.
-
-```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {line = RandomInfraInfiniteLine[g, c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
-  {i = First @ FirstPosition[line, c]},
-  {opposite = {line[[i - 4]], c, line[[i + 4]]}},
-  {same = {line[[i + 4]], c, line[[i + 2]]}},
-  {GraphicsRow[{
-     InfraSubstrateHighlight[g, {InfraWalk[line[[i ;; i - 4 ;; -1]]], InfraWalk[line[[i ;; i + 4]]], Sequence @@ opposite}],
-     InfraSubstrateHighlight[g, {InfraWalk[line[[i ;; i + 4]]], InfraWalk[line[[i ;; i + 2]]], Sequence @@ same}]}],
-   N @ InfraAngle[g, opposite, Method -> "Alexandrov"], N @ InfraAngle[g, same, Method -> "Alexandrov"]}]
-```
-
-The Alexandrov method is the closed form in three distances, and agrees with it exactly. The triangle is drawn by its three segments.
+An arc of length 6 at radius 3. The result is its edge length.
 
 ```wl
 With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {x1 = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])},
-  {x2 = (SeedRandom[4]; RandomInfraPoint[g, InfraShell[c, 4]])},
-  {d1 = GraphDistance[g, c, x1], d2 = GraphDistance[g, c, x2], chord = GraphDistance[g, x1, x2]},
-  {InfraSubstrateHighlight[g, {InfraSegment[c, x1], InfraSegment[c, x2], InfraSegment[x1, x2], c, x1, x2}],
-   N @ InfraAngle[g, {x1, c, x2}, Method -> "Alexandrov"], ArcCos[(d1^2 + d2^2 - chord^2)/(2. d1 d2)]}]
-```
-
-The two methods answer different questions. On the straight-line case, arclength gives 3 where the comparison angle gives π.
-
-```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {line = RandomInfraInfiniteLine[g, c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
-  {i = First @ FirstPosition[line, c]},
-  {arms = {line[[i - 4]], c, line[[i + 4]]}},
-  {InfraSubstrateHighlight[g, {InfraWalk[line[[i - 4 ;; i + 4]]], Sequence @@ arms}],
-   N @ InfraAngle[g, arms], N @ InfraAngle[g, arms, Method -> "Alexandrov"]}]
+  {g = CycleGraph[12]},
+  {arc = InfraArc[1, {4, 10}, "RadiusDelta" -> 3]},
+  {InfraSubstrateHighlight[g, {arc, 1, 4, 10}],
+   InfraAngle[g, {4, 1, 10}, "RadiusDelta" -> 3],
+   InfraMeasurement[g, arc, "Length"]}]
 ```

@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraSphere
 Keywords: [sphere, separating set, minimal, peel, search]
-SeeAlso: [InfraSphere, FindInfraShell, InfraShell, RandomInfraSphere, FindInfraOsculatingShell]
+SeeAlso: [InfraSphere, InfraShell, RandomInfraSphere, FindInfraOsculatingShell]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 

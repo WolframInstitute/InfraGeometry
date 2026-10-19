@@ -975,7 +975,7 @@ VerificationTest[
     scene = InfraScene[ { path }, { path == InfraWalk[ 1, 2, 3 ] } ],
     g = PathGraph[ Range[ 5 ] ]
   },
-    With[{ instances = RandomInfraInstance[ scene, g, All ] },
+    With[{ instances = RandomInfraSceneInstance[ scene, g, All ] },
       Length[ instances ] == 1 && instances[[ 1 ]][[ 1 ]][ path ] === { 1, 2, 3 }
     ]
   ],
@@ -989,7 +989,7 @@ VerificationTest[
     scene = InfraScene[ { path }, { path == InfraWalk[ 1, 3 ] } ],
     g = PathGraph[ Range[ 5 ] ]
   },
-    RandomInfraInstance[ scene, g, All ]
+    RandomInfraSceneInstance[ scene, g, All ]
   ],
   { },
   TestID -> "InfraWalk-scene-DSL-no-edge-empty"
@@ -1001,7 +1001,7 @@ VerificationTest[
     scene = InfraScene[ { path }, { path == InfraWalk[ 1, 2, 1 ] } ],
     g = PathGraph[ Range[ 3 ] ]
   },
-    With[{ instances = RandomInfraInstance[ scene, g, All ] },
+    With[{ instances = RandomInfraSceneInstance[ scene, g, All ] },
       Length[ instances ] == 1 && instances[[ 1 ]][[ 1 ]][ path ] === { 1, 2, 1 }
     ]
   ],
@@ -1604,9 +1604,9 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     { members = RandomInfraGeodesic[ g, InfraGeodesic[ { 6, 7 }, Infinity ], All ] },
-    InfraDensity[ g, members ] === KeySort @ Counts @ Catenate @ members ],
+    InfraMeasurement[ g, members, "VertexDensity" ] === KeySort @ Counts @ Catenate @ members ],
   True,
-  TestID -> "InfraGeodesic-members-InfraDensity"
+  TestID -> "InfraGeodesic-members-InfraMeasurement"
 ]
 
 (* the representative of a germ at a finite scale is a simple geodesic at that scale: without the
@@ -1903,7 +1903,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = ( SeedRandom[ 2 ]; InfraSubstrate[ "SquareTilingGraph", "Large", "KeepCoordinates" -> True ] ) },
     { c = First @ GraphCenter @ g },
-    { germ = First @ RandomInfraSegment[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1, "NextVertexFunction" -> Identity ] },
+    { germ = First @ RandomInfraSegment[ g, InfraSegment[ First @ Keys @ InfraMeasurement[ g, InfraShell[ c, 8 ], "VertexDensity" ], c ], 1, "NextVertexFunction" -> Identity ] },
     { walks = Sort @ walkSeqs @ RandomInfraGeodesic[ g, germ, 2, { 10 }, All ] },
     { Length @ walks, Hash @ walks } ],
   { 59049, 4937401386186909691 },
@@ -1913,7 +1913,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = ( SeedRandom[ 2 ]; InfraSubstrate[ "SquareTilingGraph", "Large", "KeepCoordinates" -> True ] ) },
     { c = First @ GraphCenter @ g },
-    { germ = First @ RandomInfraSegment[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1, "NextVertexFunction" -> Identity ] },
+    { germ = First @ RandomInfraSegment[ g, InfraSegment[ First @ Keys @ InfraMeasurement[ g, InfraShell[ c, 8 ], "VertexDensity" ], c ], 1, "NextVertexFunction" -> Identity ] },
     { walks = Sort @ walkSeqs @ RandomInfraGeodesic[ g, germ, 3, { 10 }, All ] },
     { Length @ walks, Hash @ walks } ],
   { 5741, 1211033947011603389 },
@@ -1923,7 +1923,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = ( SeedRandom[ 2 ]; InfraSubstrate[ "SquareTilingGraph", "Large", "KeepCoordinates" -> True ] ) },
     { c = First @ GraphCenter @ g },
-    { germ = First @ RandomInfraSegment[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1, "NextVertexFunction" -> Identity ] },
+    { germ = First @ RandomInfraSegment[ g, InfraSegment[ First @ Keys @ InfraMeasurement[ g, InfraShell[ c, 8 ], "VertexDensity" ], c ], 1, "NextVertexFunction" -> Identity ] },
     { walks = Sort @ walkSeqs @ RandomInfraGeodesic[ g, germ, 4, { 10 }, All ] },
     { Length @ walks, Hash @ walks } ],
   { 2296, 7425623505775655544 },
@@ -1933,7 +1933,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = ( SeedRandom[ 2 ]; InfraSubstrate[ "SquareTilingGraph", "Large", "KeepCoordinates" -> True ] ) },
     { c = First @ GraphCenter @ g },
-    { germ = First @ RandomInfraSegment[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1, "NextVertexFunction" -> Identity ] },
+    { germ = First @ RandomInfraSegment[ g, InfraSegment[ First @ Keys @ InfraMeasurement[ g, InfraShell[ c, 8 ], "VertexDensity" ], c ], 1, "NextVertexFunction" -> Identity ] },
     { walks = Sort @ walkSeqs @ RandomInfraGeodesic[ g, germ, 5, { 10 }, All ] },
     { Length @ walks, Hash @ walks } ],
   { 1496, 1532773979078602271 },
@@ -1943,7 +1943,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = ( SeedRandom[ 2 ]; InfraSubstrate[ "SquareTilingGraph", "Large", "KeepCoordinates" -> True ] ) },
     { c = First @ GraphCenter @ g },
-    { germ = First @ RandomInfraSegment[ g, InfraSegment[ First @ FindInfraShell[ g, c, 8 ], c ], 1, "NextVertexFunction" -> Identity ] },
+    { germ = First @ RandomInfraSegment[ g, InfraSegment[ First @ Keys @ InfraMeasurement[ g, InfraShell[ c, 8 ], "VertexDensity" ], c ], 1, "NextVertexFunction" -> Identity ] },
     { walks = Sort @ walkSeqs @ RandomInfraGeodesic[ g, germ, Infinity, { 10 }, All ] },
     { Length @ walks, Hash @ walks } ],
   { 1024, 2474424299912191782 },

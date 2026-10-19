@@ -231,7 +231,7 @@ With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {beyond = focus |-> Complement[Keys @ InfraMeasurement[g, InfraQuadric[{a, focus}, 4], "VertexDensity"], Keys @ InfraMeasurement[g, InfraTube[InfraSegment[a, focus], 1], "VertexDensity"]]},
-  {b = SelectFirst[FindInfraShell[g, a, 2], beyond[#] =!= {} &]},
+  {b = SelectFirst[Keys @ InfraMeasurement[ g, InfraShell[ a, 2 ], "VertexDensity" ], beyond[#] =!= {} &]},
   {x = First @ beyond[b]},
   InfraSubstrateHighlight[g, {InfraSegment[a, b], InfraSegment[b, x], InfraSegment[x, a], {a, b, x}}]]
 ```

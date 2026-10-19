@@ -34,7 +34,7 @@ SeedRandom[ 7 ];
 With[
   {fib = InfraFiberedSubstrate["GridDisplacementBundle", "Small"]},
   {total = InfraTotalSpace[fib]},
-  InfraSubstrateHighlight[total, {InfraDensity[total, VertexList @ InfraFiber[fib, 6]]}]]
+  InfraSubstrateHighlight[total, {InfraMeasurement[total, VertexList @ InfraFiber[fib, 6], "VertexDensity" ]}]]
 ```
 
 At scale 2 the fiber over 6 is the sphere of radius 2 about 6.

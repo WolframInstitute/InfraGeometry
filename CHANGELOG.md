@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+## 2.7.5 (2026-10-19)
+
+- Add inert `InfraCircleThrough[points, InfraCircle[center, {r,s}]]` and `RandomInfraCircleThrough`, with exact native state-DAG storage, standard measurements, uniform rank sampling, scene integration and drawing. The family minimizes cycle length after enforcing prescribed vertices, simplicity and separation; cycles are identified modulo rotation and reversal. Literal vertex identities are preserved, including pattern-shaped labels.
+- Recover non-evaluation guards from the unmerged RegionSamplers worktree. Unsupported graph/density readings now stay unevaluated without messages across generic measurements and membership.
+
+- **Breaking -- scene naming.** Rename `InfraStep` to `InfraSceneStep` and `RandomInfraInstance` to `RandomInfraSceneInstance`, without compatibility aliases. Describe scene instances as saved bindings, including partial bindings; keep construction-history and branchial exploration in an advanced guide group.
+- **Breaking -- angle measurements.** `InfraAngle` now reads the length of `InfraArc`, with `"RadiusDelta"` controlling its band. The Alexandrov comparison formulas move to experimental Riemannian `InfraComparisonAngle[..., "Curvature" -> k]`. Existing perpendicular and curve conventions retain their prior normalized detour formula.
+- Classify scalar product, linear combinations and orthogonal coordinates/axes as Riemannian. Classify planes, polygons and conics with the existing nonexperimental Euclidean shapes. Reorder the guide around Shapes, Scenes, Graphs of Multiobjects and measurements; move generic set operations out of the Euclidean guide.
+- Repair documentation-title insertion when adding generation notices, and restore generated titles from their Markdown sources without reevaluating examples.
+
+- **Breaking -- unique regions use measurements.** Remove `FindInfraShell` and the random constructors of fixed balls, shells, tubes, cylinders, cones, solids of revolution, ball hulls, convex hulls, quadrics, unions, intersections and perpendicular bisectors. Read each support with `Keys @ InfraMeasurement[graph, object, "VertexDensity"]`. Spheres and ambiguous point/path families retain their samplers.
+- **Breaking -- one measurement API.** Remove `InfraDensity` and `InfraSubgraph`; use `InfraMeasurement[..., "VertexDensity" | "Subgraph"]`, with `NeighborhoodGraph` for thickening. Raw vertices, vertex lists, graphs and associations support `"VertexDensity"`. Remove `Undetermined`; uncertified `"Faithful"` measurements stay unevaluated, while witnessed failures still give `False`.
+- Define `InfraMidpoint` by the central layer or layers of the oriented segment graph, retaining shortest-path occupation density. `RandomInfraMidpoint` samples its central vertices, including both layers at odd distance.
+- Add inert `InfraEquidistantSet[{p1,...,pn}]` with unit vertex density, set measurements and scene support. Keep `FindInfraEquidistantSet` as the existing list-returning operation.
+- Clarify nearest-region points and the multipoint equidistant locus, explain length-capped `PathSubgraph`, and reorder the Euclidean guide from substrates and drawing through geometric objects to measurements.
+
 ## 2.7.4 (2026-10-18)
 
 - Add the inert `InfraFiberedGraph` description, reconstructed base, canonical `InfraTotalSpace`, `InfraBaseSpace` and `InfraProjection` readers, independent fiber and lifting predicates, and edge-lift multiplicities. Legacy `InfraFibration` descriptions and readers remain supported.

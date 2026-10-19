@@ -128,8 +128,8 @@ VerificationTest[
 ]
 
 VerificationTest[
-	Block[ { RandomInfraInstance, InfraSceneMultiway, InfraSceneViewer, RandomInfraSegment },
-		RandomInfraInstance[ ___ ] := Throw[ "scene sampler" ];
+	Block[ { RandomInfraSceneInstance, InfraSceneMultiway, InfraSceneViewer, RandomInfraSegment },
+		RandomInfraSceneInstance[ ___ ] := Throw[ "scene sampler" ];
 		InfraSceneMultiway[ ___ ] := Throw[ "scene explorer" ];
 		InfraSceneViewer[ ___ ] := Throw[ "scene viewer" ];
 		RandomInfraSegment[ ___ ] := Throw[ "segment enumeration" ];

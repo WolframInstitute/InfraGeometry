@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraMetricTensor
 Keywords: [metric tensor, Gram matrix, projection, interval, cosine, tangent space, Euclid II.12]
-SeeAlso: [InfraScalarProduct, InfraAngle, MetricInterval, FindClosestInfraPoint, FindInfraShell, OrthogonalCoordinates]
+SeeAlso: [InfraScalarProduct, InfraAngle, MetricInterval, FindClosestInfraPoint, InfraShell, OrthogonalCoordinates]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
@@ -14,7 +14,7 @@ RelatedGuides: [RiemannianInfrageometry]
 
 <code>[InfraMetricTensor]()[*g*, *p*]</code> gives the matrix over all pairs of vertices *v*, *w* of *d(p,u) / d(p,v)*, where *u* is the vertex of the interval *I(p,w)* closest to *v*. Rows and columns follow `VertexList[g]`.
 
-<code>[InfraMetricTensor]()[*g*, *p*, *r*]</code> gives the same matrix restricted to the shell <code>[FindInfraShell]()[*g*, *p*, *r*]</code>, in the order of that shell.
+<code>[InfraMetricTensor]()[*g*, *p*, *r*]</code> gives the same matrix restricted to the shell <code>[InfraShell]()[*p*, *r*]</code>, in the order of that shell.
 
 ## Details & Options
 
@@ -53,7 +53,7 @@ GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Large", "KeepCoordinates" -> True]},
     {p = First @ GraphCenter[g]},
-    {shell = FindInfraShell[g, p, 8]},
+    {shell = Keys @ InfraMeasurement[ g, InfraShell[ p, 8 ], "VertexDensity" ]},
     {dirs = Normalize[AnnotationValue[{g, #}, VertexCoordinates] - AnnotationValue[{g, p}, VertexCoordinates]] & /@ shell},
     Show[
       ListPlot[Transpose[{Flatten[dirs . Transpose[dirs]], Flatten @ InfraMetricTensor[g, p, 8]}],
@@ -68,7 +68,7 @@ The tensor on the shell of radius 3 about the centre of the square tiling, besid
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {InfraSubstrateHighlight[g, {FindInfraShell[g, c, 3], c}],
+  {InfraSubstrateHighlight[g, {Keys @ InfraMeasurement[ g, InfraShell[ c, 3 ], "VertexDensity" ], c}],
    MatrixPlot[InfraMetricTensor[g, c, 3]]}]
 ```
 
@@ -86,7 +86,7 @@ The shell form is the submatrix of the full one on the shell.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {shellIndices = VertexIndex[g, #] & /@ FindInfraShell[g, c, 2]},
+  {shellIndices = VertexIndex[g, #] & /@ Keys @ InfraMeasurement[ g, InfraShell[ c, 2 ], "VertexDensity" ]},
   {MatrixPlot[InfraMetricTensor[g, c, 2]],
    InfraMetricTensor[g, c, 2] == InfraMetricTensor[g, c][[shellIndices, shellIndices]]}]
 ```
@@ -137,7 +137,7 @@ With[
   {c = First @ GraphCenter[g]},
   {GraphicsRow @ Table[MatrixPlot[InfraMetricTensor[g, c, r]], {r, {2, 4, 6}}],
    Table[
-     With[{shell = FindInfraShell[g, c, r]},
+     With[{shell = Keys @ InfraMeasurement[ g, InfraShell[ c, r ], "VertexDensity" ]},
        InfraMetricTensor[g, c, r] == 1 - Outer[GraphDistance[g, #1, #2] &, shell, shell]/(2 r)],
      {r, 2, 6}]}]
 ```

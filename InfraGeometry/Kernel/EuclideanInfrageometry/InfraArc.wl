@@ -8,7 +8,7 @@ Options[ RandomInfraArc ] = { "NextVertexFunction" -> Automatic, "RadiusDelta" -
    the band W = { v : rmin <= d(c, v) <= rmax } of the circle through p, widened by "RadiusDelta" -> dOut | {dIn, dOut}.  Its graph is the interval
    DAG I_A(p, q) = { v in W : d_A(p, v) + d_A(v, q) == d_A(p, q) } with the arrows of rising d_A(p, .), whose chains are exactly those geodesics --
    and hence, under the winding functional (W) and for p, q on a common circle, exactly the minor arcs, all of length d_A(p, q) (design Thm.
-   arc).  Neither hypothesis is certified here, so "Faithful" is Undetermined.  More points give the polyline of the consecutive minor arcs, each
+   arc).  Neither hypothesis is certified here, so "Faithful" stays unevaluated.  More points give the polyline of the consecutive minor arcs, each
    read on the band of the circle through its own first point -- one band, since the arc asks its points to lie on a common circle *)
 
 (* InfraArc[c, {p, p}], and its shorthand InfraArc[c, {p}], is the closed arc: the circles through p on the band of p.  The band is cut open along

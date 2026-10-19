@@ -1,15 +1,10 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-Options[ RandomInfraShell ] = { "NextVertexFunction" -> Automatic }
-
 (* WolframInstitute`InfraGeometry` :: RiemannianInfrageometry :: InfraShell *)
 
 PackageScope[ SeparatesQ ]
 
 (* the level set { v : r <= d(v, C) <= s } with d(v, C) = min_{c in C} d(v, c) *)
-
-FindInfraShell[ graph_Graph, center_, r_ ] :=
-  Keys @ InfraMeasurement[ graph, InfraShell[ center, r ], "VertexDensity" ]
 
 (* for every c equidistant from all k window vertices at common distance r, the level set { v : d(c, v) == r } *)
 
@@ -139,7 +134,7 @@ SeparatesQ[ graph_Graph, vs_List, u_, v_ ] :=
 (* the shell { v : r <= d(v, C) <= s } with d(v, C) = min_{c in C} d(v, c), the complement of the ball of radius s by the open ball of radius r *)
 
 InfraMeasurement[ graph_Graph, InfraShell[ center_, { r_, s_ } ], "VertexDensity" ] :=
-  With[ { centers = Keys @ InfraDensity[ graph, center ], n = VertexCount @ graph },
+  With[ { centers = Keys @ InfraMeasurement[ graph, center, "VertexDensity" ], n = VertexCount @ graph },
     { far = VertexList @ NeighborhoodGraph[ graph, centers, Floor @ Min[ s, n ] ],
       near = If[ r > 0, VertexList @ NeighborhoodGraph[ graph, centers, Min[ Ceiling[ r ] - 1, n ] ], { } ] },
     AssociationThread[ Complement[ far, near ], 1 ] ]
@@ -160,23 +155,3 @@ InfraMeasurement[ graph_Graph, shell : InfraShell[ _, _ ], All ] :=
   InfraMeasurement[ graph, shell,
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
       "CountingMeasure", "RiemannianMeasure" } ]
-
-RandomInfraShell[ graph_Graph, shell : InfraShell[ _, _ ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraShell ], First /@ { opts } ] &&
-    ( OptionValue[ RandomInfraShell, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
-  With[ { members = Keys @ InfraMeasurement[ graph, shell, "VertexDensity" ],
-          nextFn = OptionValue[ RandomInfraShell, { opts }, "NextVertexFunction" ] },
-    { ordered = { members } },
-    Which[
-      count === Automatic, members,
-      count === All,       ordered,
-      nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
-      IntegerQ @ count && Length @ ordered < count, { },
-      True, RandomSample[ ordered, count ] ] ]
-
-RandomInfraShell[ graph_Graph, center_, radius_,
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { center, radius }, _InfraShell ] &&
-    SubsetQ[ First /@ Options[ RandomInfraShell ], First /@ { opts } ] :=
-  RandomInfraShell[ graph, InfraShell[ center, radius ], count,
-    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]

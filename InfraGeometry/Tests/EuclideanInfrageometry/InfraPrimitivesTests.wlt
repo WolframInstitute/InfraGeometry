@@ -16,7 +16,7 @@ polylineToKnots = legs |-> If[ legs === { }, { }, Prepend[ Last @ walkSequence @
 
 (* a List is one Counts away from the density; repetition becomes mass *)
 VerificationTest[
-  { InfraDensity[ PathGraph @ Range[ 3 ], { 1, 1, 2 } ], Counts[ { a, a, b } ] },
+  { InfraMeasurement[ PathGraph @ Range[ 3 ], { 1, 1, 2 }, "VertexDensity" ], Counts[ { a, a, b } ] },
   { <| 1 -> 2, 2 -> 1 |>, <| a -> 2, b -> 1 |> },
   TestID -> "list-reads-as-density-counts"
 ]
@@ -105,7 +105,7 @@ VerificationTest[
 
 (* the volume of a set is its Length; of a family of sets, the Length of each *)
 VerificationTest[
-  { Length @ RandomInfraBall[ PathGraph @ Range[ 5 ], InfraBall[3, 2] ],
+  { Length @ Keys @ InfraMeasurement[ PathGraph @ Range[ 5 ], InfraBall[3, 2], "VertexDensity" ],
     Length /@ { { 1, 2, 3 }, { 4, 5 } } },
   { 5, { 3, 2 } },
   TestID -> "set-volume-is-Length"
@@ -170,8 +170,8 @@ VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     AllTrue[
       { RandomInfraPoint[ g, 2 ],
-        RandomInfraBall[ g, InfraBall[6, 1] ],
-        FindInfraShell[ g, 6, { 1, 1 } ],
+        Keys @ InfraMeasurement[ g, InfraBall[6, 1], "VertexDensity" ],
+        Keys @ InfraMeasurement[ g, InfraShell[ 6, { 1, 1 } ], "VertexDensity" ],
         FindInfraEquidistantSet[ g, { 1, 16 } ],
         FindInfraBisectingHyperplane[ g, 1, 16 ],
         RandomInfraSegment[ g, 1, 16 ],

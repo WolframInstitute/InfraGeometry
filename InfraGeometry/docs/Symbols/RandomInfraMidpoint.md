@@ -11,14 +11,17 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Usage
 
-<code>[RandomInfraMidpoint]()[*graph*, *p*, *q*, *count*]</code> samples the exact midpoint point family between *p* and *q*.
+<code>[RandomInfraMidpoint]()[*graph*, *p*, *q*, *count*]</code> samples the central vertices of the oriented segment graph from *p* to *q*.
 
 <code>[RandomInfraMidpoint]()[*graph*, *token*, *count*]</code> accepts an [InfraMidpoint]() token.
 
 ## Details & Options
 
-A vertex belongs exactly when both endpoint distances equal half the finite endpoint distance. Odd distance and disconnected endpoints give an empty family; equal anchors give one point.
-This differs from the segment "Midpoint" measurement, which retains middle-layer construction density and can contain two layers.
+The segment graph contains all shortest paths from *p* to *q*, oriented toward *q*.
+A central vertex minimizes Max[d(p,v),d(v,q)] within this graph.
+Even endpoint distance gives one middle layer; odd distance gives both middle layers.
+Disconnected endpoints give an empty family; equal anchors give one point.
+Sampling is uniform over distinct central vertices. The InfraMidpoint "VertexDensity" measurement separately counts shortest-path occupation at each center.
 
 The graph must be finite, simple, undirected and unweighted, with valid anchors.
 Omitted count or Automatic gives one uniformly random vertex; an empty pool gives {}.

@@ -36,8 +36,8 @@ InfraSceneMultiway[ scene_InfraScene, graph_Graph, init : _Association : <| |>, 
       Mod, Floor, Ceiling, Round, Sign, UnitStep, Unitize, Equal, Unequal, SameQ, UnsameQ, Less, LessEqual,
       Greater, GreaterEqual, Inequality, And, Or, Not, Xor, Implies, Equivalent, TrueQ, NumericQ, NumberQ,
       IntegerQ, EvenQ, OddQ, Positive, Negative, NonNegative, NonPositive,
-      InfraPoint, InfraMidpoint, InfraPerpendicularBisector, InfraRegionNearest, InfraIntersection, InfraUnion,
-      InfraSegment, InfraHalfLine, InfraRay, InfraInfiniteLine, InfraLine, InfraCircle, InfraArc,
+      InfraPoint, InfraMidpoint, InfraPerpendicularBisector, InfraEquidistantSet, InfraRegionNearest, InfraIntersection, InfraUnion,
+      InfraSegment, InfraHalfLine, InfraRay, InfraInfiniteLine, InfraLine, InfraCircle, InfraCircleThrough, InfraArc,
       InfraRegularPolygon, InfraPolygon, InfraPlane, InfraBall, InfraShell, InfraSphere, InfraTube,
       InfraCylinder, InfraCone, InfraSolidOfRevolution, InfraBallHull, InfraConvexHull, InfraQuadric,
       InfraWalk, InfraGeodesic, InfraEllipse, InfraDistance, InfraMeasurement, InfraGeometricAssertion,
@@ -111,13 +111,12 @@ InfraSceneMultiway[ scene_InfraScene, graph_Graph, init : _Association : <| |>, 
       kind = Which[
         ListQ[ keys[[ construction ]] ], ConstantArray[ "Point", Length[ targets ] ],
         VertexQ[ graph, expression ], { "Point" },
-        MatchQ[ expression, _InfraPoint | _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest |
-          _InfraIntersection | _InfraUnion ], { "Point" },
-        MatchQ[ expression, _InfraPlane | _InfraBall | _InfraShell | _InfraSphere | _InfraTube | _InfraCylinder |
-          _InfraCone | _InfraSolidOfRevolution | _InfraBallHull | _InfraConvexHull | _InfraQuadric ], { "VertexSet" },
+        MatchQ[ expression, _InfraPoint | _InfraMidpoint | _InfraRegionNearest ], { "Point" },
+        MatchQ[ expression, _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraPlane | _InfraBall | _InfraShell | _InfraSphere | _InfraTube | _InfraCylinder |
+          _InfraCone | _InfraSolidOfRevolution | _InfraBallHull | _InfraConvexHull | _InfraQuadric | _InfraIntersection | _InfraUnion ], { "VertexSet" },
         MatchQ[ expression, _InfraEllipse ], { "Graph" },
         MatchQ[ expression, _InfraSegment | _InfraHalfLine | _InfraRay | _InfraInfiniteLine | _InfraLine |
-          _InfraCircle | _InfraArc | _InfraRegularPolygon | _InfraPolygon | _InfraWalk | _InfraGeodesic ], { "Walk" },
+          _InfraCircle | _InfraCircleThrough | _InfraArc | _InfraRegularPolygon | _InfraPolygon | _InfraWalk | _InfraGeodesic ], { "Walk" },
         True, { "Exact" } ];
       schedule = Append[ schedule, construction -> <| "Group" -> group, "Targets" -> targets,
         "Kinds" -> kind, "Expression" -> expression, "Dependencies" -> dependencies[ expression ] |> ];
@@ -169,6 +168,8 @@ InfraSceneMultiway[ scene_InfraScene, graph_Graph, init : _Association : <| |>, 
     stateRecord[ bindings_, done_, statuses_ ] := <| "Bindings" -> bindings, "Completed" -> Sort[ done ],
       "Depth" -> Length[ done ], "Group" -> groupOf[ done ], "Assertions" -> statuses, "IncomingEvents" -> { } |>;
     context[ token_ ] := Replace[ token, {
+      InfraCircleThrough[ _, InfraCircle[ center_, band_ ] ] :>
+        <| "Center" -> center, "Radius" -> Mean @ Flatten[ { band } ] |>,
       ( InfraCircle | InfraShell | InfraSphere )[ center_, radius_, ___ ] :>
         <| "Center" -> center, "Radius" -> Mean @ Flatten[ { radius } ] |>,
       InfraArc[ center_, { p_, ___, p_ } | { p_ }, rules___Rule ] :>
@@ -184,10 +185,10 @@ InfraSceneMultiway[ scene_InfraScene, graph_Graph, init : _Association : <| |>, 
     selectPool[ paths_, selections_List, token_ ] := Fold[ selectPool[ #1, #2, token ] &, paths, selections ];
     selectPool[ paths_, selection_String, token_ ] /; selection =!= "EmbeddingClosest" :=
       SelectInfraWalk[ graph, paths, All, "From" -> Replace[ selection, { "Central" -> "Center", "Peripheral" -> "Periphery" } ],
-        "Cyclic" -> MatchQ[ token, ( InfraCircle | InfraRegularPolygon | InfraPolygon )[ __ ] |
+        "Cyclic" -> MatchQ[ token, ( InfraCircle | InfraCircleThrough | InfraRegularPolygon | InfraPolygon )[ __ ] |
           InfraArc[ _, { p_, ___, p_ } | { _ }, ___ ] ] ];
     selectPool[ paths_, "EmbeddingClosest", token_ ] := With[
-      { cyclic = MatchQ[ token, ( InfraCircle | InfraRegularPolygon | InfraPolygon )[ __ ] |
+      { cyclic = MatchQ[ token, ( InfraCircle | InfraCircleThrough | InfraRegularPolygon | InfraPolygon )[ __ ] |
           InfraArc[ _, { p_, ___, p_ } | { _ }, ___ ] ], information = context[ token ],
         coordinates = GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ],
         indices = AssociationThread[ VertexList[ graph ], Range[ VertexCount[ graph ] ] ] },
@@ -213,30 +214,32 @@ InfraSceneMultiway[ scene_InfraScene, graph_Graph, init : _Association : <| |>, 
         True, Replace[ token, {
           token_InfraPoint :> RandomInfraPoint[ graph, token, All ],
           token_InfraMidpoint :> RandomInfraMidpoint[ graph, token, All ],
-          token_InfraPerpendicularBisector :> RandomInfraPerpendicularBisector[ graph, token, All ],
+          token : _InfraPerpendicularBisector | _InfraEquidistantSet :> With[ { density = InfraMeasurement[ graph, token, "VertexDensity" ] },
+            { Keys[ density ] } /; AssociationQ[ density ] ],
           token_InfraRegionNearest :> RandomInfraRegionNearest[ graph, token, All ],
           token_InfraSegment :> RandomInfraSegment[ graph, token, All ],
           token_InfraHalfLine :> RandomInfraHalfLine[ graph, token, All ],
           token_InfraInfiniteLine :> RandomInfraInfiniteLine[ graph, token, All ],
           token_InfraCircle :> RandomInfraCircle[ graph, token, All ],
+        token_InfraCircleThrough :> RandomInfraCircleThrough[ graph, token, All ],
           token_InfraArc :> RandomInfraArc[ graph, token, All ],
           token_InfraRegularPolygon :> RandomInfraRegularPolygon[ graph, token, All ],
           token_InfraPlane :> RandomInfraPlane[ graph, token, All ],
-          token_InfraBall :> RandomInfraBall[ graph, token, All ],
-          token_InfraShell :> RandomInfraShell[ graph, token, All ],
+          token_InfraBall :> { Keys @ InfraMeasurement[ graph, token, "VertexDensity" ] },
+          token_InfraShell :> { Keys @ InfraMeasurement[ graph, token, "VertexDensity" ] },
           token_InfraSphere :> RandomInfraSphere[ graph, token, All ],
-          token_InfraTube :> RandomInfraTube[ graph, token, All ],
-          token_InfraCylinder :> RandomInfraCylinder[ graph, token, All ],
-          token_InfraCone :> RandomInfraCone[ graph, token, All ],
-          token_InfraSolidOfRevolution :> RandomInfraSolidOfRevolution[ graph, token, All ],
-          token_InfraBallHull :> RandomInfraBallHull[ graph, token, All ],
-          token_InfraConvexHull :> RandomInfraConvexHull[ graph, token, All ],
-          token_InfraQuadric :> RandomInfraQuadric[ graph, token, All ],
+          token_InfraTube :> { Keys @ InfraMeasurement[ graph, token, "VertexDensity" ] },
+          token_InfraCylinder :> { Keys @ InfraMeasurement[ graph, token, "VertexDensity" ] },
+          token_InfraCone :> { Keys @ InfraMeasurement[ graph, token, "VertexDensity" ] },
+          token_InfraSolidOfRevolution :> { Keys @ InfraMeasurement[ graph, token, "VertexDensity" ] },
+          token_InfraBallHull :> { Keys @ InfraMeasurement[ graph, token, "VertexDensity" ] },
+          token_InfraConvexHull :> { Keys @ InfraMeasurement[ graph, token, "VertexDensity" ] },
+          token_InfraQuadric :> { Keys @ InfraMeasurement[ graph, token, "VertexDensity" ] },
           token_InfraWalk :> RandomInfraWalk[ graph, token, All ],
           token_InfraGeodesic :> RandomInfraGeodesic[ graph, token, All ],
           token_InfraEllipse :> RandomInfraEllipse[ graph, token, All ],
-          token_InfraIntersection :> RandomInfraIntersection[ graph, token, All ],
-          token_InfraUnion :> RandomInfraUnion[ graph, token, All ],
+          token_InfraIntersection :> { Keys @ InfraMeasurement[ graph, token, "VertexDensity" ] },
+          token_InfraUnion :> { Keys @ InfraMeasurement[ graph, token, "VertexDensity" ] },
           token_InfraRay :> RandomInfraHalfLine[ graph, token, All ],
           token_InfraLine :> RandomInfraInfiniteLine[ graph, token, All ],
           token_InfraPolygon :> RandomInfraRegularPolygon[ graph, token, All ] } ] ] },

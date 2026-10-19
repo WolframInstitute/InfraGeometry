@@ -18,7 +18,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 On heads, InfraMeasurement gives the intersection its "VertexDensity" — the product of the two densities on their common vertices — its "Subgraph" and the two measures. It is not a family of walks, so it has no "Graph", "Cardinality", "Length", "EdgeDensity" or "Faithful".
 
-Inside InfraScene hypotheses `InfraIntersection[c1, c2]` is the token for where two named objects meet: every common vertex is one branch. Evaluation is postponed until the bindings resolve and the scene engine supplies the graph.
+Inside InfraScene hypotheses `InfraIntersection[c1, c2]` binds the whole intersection as one vertex set. `InfraPoint[InfraIntersection[c1, c2]]` chooses one common point. Evaluation is postponed until the bindings resolve and the scene engine supplies the graph.
 
 ## Basic Examples
 

@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraParallelQ
 Keywords: [parallel, constant distance, level set, Euclid Definition 23]
-SeeAlso: [RandomInfraParallel, InfraPerpendicularQ, InfraInfiniteLineQ, FindInfraShell, RandomInfraInfiniteLine]
+SeeAlso: [RandomInfraParallel, InfraPerpendicularQ, InfraInfiniteLineQ, InfraShell, RandomInfraInfiniteLine]
 RelatedGuides: [Experimental]
 ---
 
@@ -59,9 +59,9 @@ Concentric shells are parallel. Each vertex of the outer one is at the same dist
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {sh2 = FindInfraShell[g, c, 2]},
-  {sh3 = FindInfraShell[g, c, 3]},
-  {sh4 = FindInfraShell[g, c, 4]},
+  {sh2 = Keys @ InfraMeasurement[ g, InfraShell[ c, 2 ], "VertexDensity" ]},
+  {sh3 = Keys @ InfraMeasurement[ g, InfraShell[ c, 3 ], "VertexDensity" ]},
+  {sh4 = Keys @ InfraMeasurement[ g, InfraShell[ c, 4 ], "VertexDensity" ]},
   <|"shell 3 to shell 2" -> InfraParallelQ[g, sh2, sh3],
     "shell 4 to shell 2" -> InfraParallelQ[g, sh2, sh4],
     "distances 3 to 2" -> Union @ Table[Min[GraphDistance[g, v, #] & /@ sh2], {v, sh3}],
@@ -74,7 +74,7 @@ Neither shell is a line, which shows the predicate does not require one.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  InfraInfiniteLineQ[g, FindInfraShell[g, c, 3]]]
+  InfraInfiniteLineQ[g, Keys @ InfraMeasurement[ g, InfraShell[ c, 3 ], "VertexDensity" ]]]
 ```
 
 Two maximal shortest paths chosen independently are generally not parallel, because the distance between them varies along their length.

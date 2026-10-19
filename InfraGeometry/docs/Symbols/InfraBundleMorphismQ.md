@@ -34,8 +34,8 @@ With[
   {endpoint = ray |-> {First @ ray, Last @ ray}},
   {rays = VertexList @ InfraFiber[tangent, 6]},
   {GraphicsRow[{
-      InfraSubstrateHighlight[InfraTotalSpace[tangent], {InfraDensity[InfraTotalSpace[tangent], rays]}],
-      InfraSubstrateHighlight[InfraTotalSpace[displacementBundle], {InfraDensity[InfraTotalSpace[displacementBundle], endpoint /@ rays]}]}],
+      InfraSubstrateHighlight[InfraTotalSpace[tangent], {InfraMeasurement[InfraTotalSpace[tangent], rays, "VertexDensity" ]}],
+      InfraSubstrateHighlight[InfraTotalSpace[displacementBundle], {InfraMeasurement[InfraTotalSpace[displacementBundle], endpoint /@ rays, "VertexDensity" ]}]}],
     InfraBundleMorphismQ[tangent, displacementBundle, endpoint]}]
 ```
 

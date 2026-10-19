@@ -139,16 +139,16 @@ VerificationTest[
 
 
 VerificationTest[
-  RandomInfraBall[ PathGraph[ Range[ 5 ] ], 3, 1, All ],
-  { { 2, 3, 4 } },
-  TestID -> "synthetic-ball-counts-regions-not-support-points"
+  Keys @ InfraMeasurement[ PathGraph[ Range[ 5 ] ], InfraBall[ 3, 1 ], "VertexDensity" ],
+  { 2, 3, 4 },
+  TestID -> "synthetic-ball-support"
 ]
 
 
 VerificationTest[
-  RandomInfraShell[ PathGraph[ Range[ 5 ] ], 3, { 1, 2 }, All ],
-  { { 1, 2, 4, 5 } },
-  TestID -> "synthetic-shell-band-single-region"
+  Keys @ InfraMeasurement[ PathGraph[ Range[ 5 ] ], InfraShell[ 3, { 1, 2 } ], "VertexDensity" ],
+  { 1, 2, 4, 5 },
+  TestID -> "synthetic-shell-band-support"
 ]
 
 
@@ -160,53 +160,52 @@ VerificationTest[
 
 
 VerificationTest[
-  RandomInfraTube[ PathGraph[ Range[ 5 ] ], { 2, 3 }, 1, All, Method -> "Balls" ],
-  { { 1, 2, 3, 4 } },
+  Keys @ InfraMeasurement[ PathGraph[ Range[ 5 ] ], InfraTube[ { 2, 3 }, 1, Method -> "Balls" ], "VertexDensity" ],
+  { 1, 2, 3, 4 },
   TestID -> "synthetic-tube-balls-support"
 ]
 
 
 VerificationTest[
-  RandomInfraCylinder[ PathGraph[ Range[ 5 ] ], { 2, 3 }, 0, All, Method -> "Balls" ],
-  { { 2, 3 } },
+  Keys @ InfraMeasurement[ PathGraph[ Range[ 5 ] ], InfraCylinder[ { 2, 3 }, 0, Method -> "Balls" ], "VertexDensity" ],
+  { 2, 3 },
   TestID -> "synthetic-cylinder-forwards-explicit-method"
 ]
 
 
 VerificationTest[
-  RandomInfraCone[ PathGraph[ Range[ 5 ] ], { 2, 3 }, 1, All, Method -> "Balls" ],
-  { { 2, 3, 4 } },
+  Keys @ InfraMeasurement[ PathGraph[ Range[ 5 ] ], InfraCone[ { 2, 3 }, 1, Method -> "Balls" ], "VertexDensity" ],
+  { 2, 3, 4 },
   TestID -> "synthetic-cone-preserves-apex-profile"
 ]
 
 
 VerificationTest[
-  RandomInfraSolidOfRevolution[ PathGraph[ Range[ 5 ] ], { 2, 3 }, i |-> 0, All, Method -> "Balls" ],
-  { { 2, 3 } },
+  Keys @ InfraMeasurement[ PathGraph[ Range[ 5 ] ], InfraSolidOfRevolution[ { 2, 3 }, i |-> 0, Method -> "Balls" ], "VertexDensity" ],
+  { 2, 3 },
   TestID -> "synthetic-revolution-preserves-function-profile"
 ]
 
 
 VerificationTest[
-  RandomInfraBallHull[ PathGraph[ { 1, 2, 3 } ], InfraBallHull[ { 2 } ], All ],
-  { { 2 } },
-  TestID -> "synthetic-ball-hull-omitted-band-token-count"
+  Keys @ InfraMeasurement[ PathGraph[ { 1, 2, 3 } ], InfraBallHull[ { 2 } ], "VertexDensity" ],
+  { 2 },
+  TestID -> "synthetic-ball-hull-omitted-band"
 ]
 
 
 VerificationTest[
   With[ { graph = PathGraph[ { 1, 2, 3 } ] },
-    { RandomInfraConvexHull[ graph, { 1, 3 }, 0, All ],
-      RandomInfraConvexHull[ graph, InfraConvexHull[ { 1, 3 } ], All ],
-      RandomInfraConvexHull[ graph, InfraConvexHull[ { 1, 3 } ], 2 ] } ],
-  { { { 1, 3 } }, { { 1, 2, 3 } }, {} },
-  TestID -> "synthetic-convex-hull-round-is-distinct-from-count"
+    Keys @ InfraMeasurement[ graph, #, "VertexDensity" ] & /@
+      { InfraConvexHull[ { 1, 3 }, 0 ], InfraConvexHull[ { 1, 3 } ] } ],
+  { { 1, 3 }, { 1, 2, 3 } },
+  TestID -> "synthetic-convex-hull-round-zero-and-closure"
 ]
 
 
 VerificationTest[
-  RandomInfraQuadric[ PathGraph[ { 1, 2, 3 } ], { 1, 3 }, { 0, 0 }, { 1, -1 }, All ],
-  { { 2 } },
+  Keys @ InfraMeasurement[ PathGraph[ { 1, 2, 3 } ], InfraQuadric[ { 1, 3 }, { 0, 0 }, { 1, -1 } ], "VertexDensity" ],
+  { 2 },
   TestID -> "synthetic-quadric-retains-signed-weight-band"
 ]
 
@@ -234,25 +233,23 @@ VerificationTest[
 
 
 VerificationTest[
-  RandomInfraIntersection[ PathGraph[ { 1, 2, 3 } ], { InfraBall[ 1, 1 ], InfraBall[ 3, 1 ] }, All ],
+  Keys @ InfraMeasurement[ PathGraph[ { 1, 2, 3 } ], InfraIntersection[ InfraBall[ 1, 1 ], InfraBall[ 3, 1 ] ], "VertexDensity" ],
   { 2 },
-  TestID -> "synthetic-intersection-samples-support-points"
+  TestID -> "synthetic-intersection-support"
 ]
 
 
 VerificationTest[
-  RandomInfraUnion[ PathGraph[ { 1, 2, 3 } ], InfraUnion[ InfraBall[ 1, 0 ], InfraBall[ 3, 0 ] ], All ],
+  Keys @ InfraMeasurement[ PathGraph[ { 1, 2, 3 } ], InfraUnion[ InfraBall[ 1, 0 ], InfraBall[ 3, 0 ] ], "VertexDensity" ],
   { 1, 3 },
-  TestID -> "synthetic-union-token-samples-support-points"
+  TestID -> "synthetic-union-support"
 ]
 
 
 VerificationTest[
-  With[ { graph = PathGraph[ { 1, 2 } ] },
-    { RandomInfraShell[ graph, 1, 5, All ], RandomInfraShell[ graph, 1, 5, 1 ],
-      RandomInfraShell[ graph, 1, 5, 2 ] } ],
-  { { {} }, { {} }, {} },
-  TestID -> "synthetic-empty-region-is-one-representative"
+  Keys @ InfraMeasurement[ PathGraph[ { 1, 2 } ], InfraShell[ 1, 5 ], "VertexDensity" ],
+  {},
+  TestID -> "synthetic-empty-region-has-empty-support"
 ]
 
 
@@ -266,14 +263,14 @@ VerificationTest[
 VerificationTest[
   With[ { graph = Graph[ { {}, { 1, 2 } }, { UndirectedEdge[ {}, { 1, 2 } ] } ] },
     { RandomInfraPoint[ graph, InfraPoint[ {} ], All ],
-      RandomInfraInstance[ InfraScene[ { p }, { p == InfraPoint[ {} ] } ], graph, All ] } ],
+      RandomInfraSceneInstance[ InfraScene[ { p }, { p == InfraPoint[ {} ] } ], graph, All ] } ],
   { { {} }, { InfraSceneInstance[ <| p -> {} |> ] } },
   TestID -> "synthetic-empty-list-point-scene"
 ]
 
 VerificationTest[
   With[ { graph = PathGraph[ { 1, 2 } ] },
-    RandomInfraInstance[ InfraScene[ { region }, { region == InfraShell[ 1, 5 ] } ], graph, All ] ],
+    RandomInfraSceneInstance[ InfraScene[ { region }, { region == InfraShell[ 1, 5 ] } ], graph, All ] ],
   { InfraSceneInstance[ <| region -> {} |> ] },
   TestID -> "synthetic-empty-region-scene"
 ]
@@ -285,8 +282,8 @@ VerificationTest[
       RandomInfraSegment[ graph, InfraSegment[ 1, 5 ], All ];
       RandomInfraHalfLine[ graph, InfraHalfLine[ 2, 3 ], All ];
       RandomInfraInfiniteLine[ graph, InfraInfiniteLine[ 2, 3 ], All ];
-      RandomInfraBall[ graph, 3, 1, "NextVertexFunction" -> Identity ];
-      RandomInfraUnion[ graph, { InfraBall[ 1, 0 ], InfraBall[ 5, 0 ] }, All ];
+      Keys @ InfraMeasurement[ graph, InfraBall[ 3, 1 ], "VertexDensity" ];
+      Keys @ InfraMeasurement[ graph, InfraUnion[ InfraBall[ 1, 0 ], InfraBall[ 5, 0 ] ], "VertexDensity" ];
       InfraMeasurement[ graph, InfraHalfLine[ 2, 3 ], "VertexDensity" ];
       RandomInteger[ 1000000 ], RandomSeeding -> 71 ] ===
       BlockRandom[ RandomInteger[ 1000000 ], RandomSeeding -> 71 ] ],
@@ -296,12 +293,11 @@ VerificationTest[
 
 VerificationTest[
   With[ { graph = PathGraph[ Range[ 3 ] ] },
-    Head /@ { RandomInfraBall[ graph, 2, 1, -1 ], RandomInfraPoint[ graph, -1 ],
+    Head /@ { RandomInfraPoint[ graph, -1 ],
       RandomInfraSegment[ graph, InfraSegment[ 1, 3 ], -1 ],
       RandomInfraCircle[ graph, 2, 1, "Typo" -> 1 ],
-      RandomInfraWalk[ graph, InfraWalk[ 1, 2 ], Properties -> { "Simple" } ],
-      RandomInfraIntersection[ graph, { InfraBall[ 1, 0 ] }, "NextVertexFunction" -> RandomSample ] } ],
-  { RandomInfraBall, RandomInfraPoint, RandomInfraSegment, RandomInfraCircle, RandomInfraWalk, RandomInfraIntersection },
+      RandomInfraWalk[ graph, InfraWalk[ 1, 2 ], Properties -> { "Simple" } ] } ],
+  { RandomInfraPoint, RandomInfraSegment, RandomInfraCircle, RandomInfraWalk },
   TestID -> "synthetic-unsupported-counts-options-and-token-growth-rules"
 ]
 
@@ -314,11 +310,9 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { graph = PathGraph[ { 1, 2, 3 } ] },
-    { Head @ RandomInfraUnion[ graph, { UnknownConstruction[ 1 ] }, All ],
-      Head @ RandomInfraInstance[ InfraScene[ { p }, { p == UnknownConstruction[ 1 ] } ], graph, All ] } ],
-  { RandomInfraUnion, RandomInfraInstance },
-  TestID -> "synthetic-unsupported-set-operand-and-scene-pool"
+  Head @ RandomInfraSceneInstance[ InfraScene[ { p }, { p == UnknownConstruction[ 1 ] } ], PathGraph[ { 1, 2, 3 } ], All ],
+  RandomInfraSceneInstance,
+  TestID -> "synthetic-unsupported-scene-pool"
 ]
 
 VerificationTest[
@@ -331,8 +325,8 @@ VerificationTest[
 
 VerificationTest[
   With[ { graph = PetersenGraph[] },
-    { RandomInfraIntersection[ graph, { InfraCircle[ 1, 2 ], InfraCircle[ 7, 2 ] }, All ],
-      RandomInfraUnion[ graph, { InfraCircle[ 1, 2 ], InfraCircle[ 7, 2 ] }, All ] ===
+    { RandomInfraPoint[ graph, InfraIntersection[ InfraCircle[ 1, 2 ], InfraCircle[ 7, 2 ] ], All ],
+      RandomInfraPoint[ graph, InfraUnion[ InfraCircle[ 1, 2 ], InfraCircle[ 7, 2 ] ], All ] ===
         Union @@ Join[ RandomInfraCircle[ graph, InfraCircle[ 1, 2 ], All ],
           RandomInfraCircle[ graph, InfraCircle[ 7, 2 ], All ] ] } ],
   { { 5, 9, 10 }, True },
@@ -352,12 +346,6 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { graph = CycleGraph[ 4 ] }, RandomInfraPerpendicularBisector[ graph, 1, 3, All ] === RandomInfraPerpendicularBisector[ graph, InfraPerpendicularBisector[ 1, 3 ], All ] ],
-  True,
-  TestID -> "synthetic-t4-perpendicularbisector-bare-token"
-]
-
-VerificationTest[
   With[ { graph = CycleGraph[ 4 ] }, RandomInfraRegionNearest[ graph, InfraBall[ 2, 1 ], 1, All ] === RandomInfraRegionNearest[ graph, InfraRegionNearest[ InfraBall[ 2, 1 ], 1 ], All ] ],
   True,
   TestID -> "synthetic-t4-regionnearest-bare-token"
@@ -365,8 +353,8 @@ VerificationTest[
 
 VerificationTest[
   RandomInfraMidpoint[ PathGraph[ { 1, 2 } ], 1, 2, All ],
-  { },
-  TestID -> "synthetic-t4-k2-midpoint-empty"
+  { 1, 2 },
+  TestID -> "synthetic-t4-k2-midpoint-central-pair"
 ]
 
 VerificationTest[
@@ -377,7 +365,7 @@ VerificationTest[
 
 VerificationTest[
   RandomInfraMidpoint[ PathGraph[ Range[ 4 ] ], 1, 4, All ],
-  { },
+  { 2, 3 },
   TestID -> "synthetic-t4-odd-distance"
 ]
 
@@ -394,33 +382,27 @@ VerificationTest[
 ]
 
 VerificationTest[
-  RandomInfraPerpendicularBisector[ CompleteGraph[ 3 ], 1, 2, All ],
+  Keys @ InfraMeasurement[ CompleteGraph[ 3 ], InfraPerpendicularBisector[ 1, 2 ], "VertexDensity" ],
   { 3 },
   TestID -> "synthetic-t4-k3-bisector"
 ]
 
 VerificationTest[
-  RandomInfraPerpendicularBisector[ PathGraph[ { 1, 2 } ], 1, 2, All ],
+  Keys @ InfraMeasurement[ PathGraph[ { 1, 2 } ], InfraPerpendicularBisector[ 1, 2 ], "VertexDensity" ],
   { },
   TestID -> "synthetic-t4-k2-bisector-empty"
 ]
 
 VerificationTest[
-  RandomInfraPerpendicularBisector[ Graph[ { 1, 2, 3 }, { UndirectedEdge[ 1, 2 ] } ], 1, 3, All ],
+  Keys @ InfraMeasurement[ Graph[ { 1, 2, 3 }, { UndirectedEdge[ 1, 2 ] } ], InfraPerpendicularBisector[ 1, 3 ], "VertexDensity" ],
   { },
   TestID -> "synthetic-t4-disconnected-bisector"
 ]
 
 VerificationTest[
-  RandomInfraPerpendicularBisector[ Graph[ { 1, 2, 3 }, { UndirectedEdge[ 1, 2 ] } ], 1, 1, All ],
+  Keys @ InfraMeasurement[ Graph[ { 1, 2, 3 }, { UndirectedEdge[ 1, 2 ] } ], InfraPerpendicularBisector[ 1, 1 ], "VertexDensity" ],
   { 1, 2 },
   TestID -> "synthetic-t4-same-bisector-component"
-]
-
-VerificationTest[
-  RandomInfraPerpendicularBisector[ Graph[ { 1 }, { } ], 1, 1, All ],
-  { 1 },
-  TestID -> "synthetic-t4-isolated-bisector"
 ]
 
 VerificationTest[
@@ -496,12 +478,6 @@ VerificationTest[
 ]
 
 VerificationTest[
-  RandomInfraPerpendicularBisector[ PathGraph[ { 3, 1, 2 } ], 1, 1, All ],
-  { 3, 1, 2 },
-  TestID -> "synthetic-t4-vertex-order"
-]
-
-VerificationTest[
   With[ { graph = CycleGraph[ 4 ] }, BlockRandom[ RandomInfraMidpoint[ graph, 1, 3, All ]; RandomInfraMidpoint[ graph, 1, 3, 1, "NextVertexFunction" -> Identity ]; RandomInteger[ 1000000 ], RandomSeeding -> 71 ] === BlockRandom[ RandomInteger[ 1000000 ], RandomSeeding -> 71 ] ],
   True,
   TestID -> "synthetic-t4-midpoint-rng-neutral"
@@ -517,24 +493,6 @@ VerificationTest[
   With[ { graph = CycleGraph[ 4 ] }, Head /@ { RandomInfraMidpoint[ graph, 1, 3, -1 ], RandomInfraMidpoint[ graph, 1, 3, All, "NextVertexFunction" -> RandomChoice ], RandomInfraMidpoint[ graph, 1, 3, "Typo" -> 1 ] } ],
   { RandomInfraMidpoint, RandomInfraMidpoint, RandomInfraMidpoint },
   TestID -> "synthetic-t4-midpoint-unsupported"
-]
-
-VerificationTest[
-  With[ { graph = CycleGraph[ 4 ] }, BlockRandom[ RandomInfraPerpendicularBisector[ graph, 1, 1, All ]; RandomInfraPerpendicularBisector[ graph, 1, 1, 1, "NextVertexFunction" -> Identity ]; RandomInteger[ 1000000 ], RandomSeeding -> 71 ] === BlockRandom[ RandomInteger[ 1000000 ], RandomSeeding -> 71 ] ],
-  True,
-  TestID -> "synthetic-t4-perpendicularbisector-rng-neutral"
-]
-
-VerificationTest[
-  With[ { graph = CycleGraph[ 4 ] }, BlockRandom[ Table[ RandomInfraPerpendicularBisector[ graph, 1, 1 ], { 10 } ], RandomSeeding -> 41 ] === BlockRandom[ Table[ RandomInfraPerpendicularBisector[ graph, 1, 1 ], { 10 } ], RandomSeeding -> 41 ] ],
-  True,
-  TestID -> "synthetic-t4-perpendicularbisector-seed"
-]
-
-VerificationTest[
-  With[ { graph = CycleGraph[ 4 ] }, Head /@ { RandomInfraPerpendicularBisector[ graph, 1, 1, -1 ], RandomInfraPerpendicularBisector[ graph, 1, 1, All, "NextVertexFunction" -> RandomChoice ], RandomInfraPerpendicularBisector[ graph, 1, 1, "Typo" -> 1 ] } ],
-  { RandomInfraPerpendicularBisector, RandomInfraPerpendicularBisector, RandomInfraPerpendicularBisector },
-  TestID -> "synthetic-t4-perpendicularbisector-unsupported"
 ]
 
 VerificationTest[
@@ -556,20 +514,20 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { graph = PathGraph[ Range[ 3 ], DirectedEdges -> True ] }, Head /@ { RandomInfraMidpoint[ graph, 1, 2, All ], RandomInfraPerpendicularBisector[ graph, 1, 2, All ], RandomInfraRegionNearest[ graph, { 1 }, 2, All ] } ],
-  { RandomInfraMidpoint, RandomInfraPerpendicularBisector, RandomInfraRegionNearest },
+  With[ { graph = PathGraph[ Range[ 3 ], DirectedEdges -> True ] }, Head /@ { RandomInfraMidpoint[ graph, 1, 2, All ], InfraMeasurement[ graph, InfraPerpendicularBisector[ 1, 2 ], "VertexDensity" ], RandomInfraRegionNearest[ graph, { 1 }, 2, All ] } ],
+  { RandomInfraMidpoint, InfraMeasurement, RandomInfraRegionNearest },
   TestID -> "synthetic-t4-unsupported-directed"
 ]
 
 VerificationTest[
-  With[ { graph = Graph[ Range[ 3 ], { UndirectedEdge[ 1, 2 ], UndirectedEdge[ 2, 3 ] }, EdgeWeight -> { 1, 1 } ] }, Head /@ { RandomInfraMidpoint[ graph, 1, 2, All ], RandomInfraPerpendicularBisector[ graph, 1, 2, All ], RandomInfraRegionNearest[ graph, { 1 }, 2, All ] } ],
-  { RandomInfraMidpoint, RandomInfraPerpendicularBisector, RandomInfraRegionNearest },
+  With[ { graph = Graph[ Range[ 3 ], { UndirectedEdge[ 1, 2 ], UndirectedEdge[ 2, 3 ] }, EdgeWeight -> { 1, 1 } ] }, Head /@ { RandomInfraMidpoint[ graph, 1, 2, All ], InfraMeasurement[ graph, InfraPerpendicularBisector[ 1, 2 ], "VertexDensity" ], RandomInfraRegionNearest[ graph, { 1 }, 2, All ] } ],
+  { RandomInfraMidpoint, InfraMeasurement, RandomInfraRegionNearest },
   TestID -> "synthetic-t4-unsupported-weighted"
 ]
 
 VerificationTest[
-  With[ { graph = Graph[ Range[ 3 ], { UndirectedEdge[ 1, 1 ], UndirectedEdge[ 1, 2 ] } ] }, Head /@ { RandomInfraMidpoint[ graph, 1, 2, All ], RandomInfraPerpendicularBisector[ graph, 1, 2, All ], RandomInfraRegionNearest[ graph, { 1 }, 2, All ] } ],
-  { RandomInfraMidpoint, RandomInfraPerpendicularBisector, RandomInfraRegionNearest },
+  With[ { graph = Graph[ Range[ 3 ], { UndirectedEdge[ 1, 1 ], UndirectedEdge[ 1, 2 ] } ] }, Head /@ { RandomInfraMidpoint[ graph, 1, 2, All ], InfraMeasurement[ graph, InfraPerpendicularBisector[ 1, 2 ], "VertexDensity" ], RandomInfraRegionNearest[ graph, { 1 }, 2, All ] } ],
+  { RandomInfraMidpoint, InfraMeasurement, RandomInfraRegionNearest },
   TestID -> "synthetic-t4-unsupported-loop"
 ]
 
@@ -577,12 +535,6 @@ VerificationTest[
   Head /@ { RandomInfraMidpoint[ Graph[ { }, { } ], 1, 1, All ], RandomInfraRegionNearest[ Graph[ { }, { } ], { }, 1, All ] },
   { RandomInfraMidpoint, RandomInfraRegionNearest },
   TestID -> "synthetic-t4-empty-graph-anchors-unsupported"
-]
-
-VerificationTest[
-  With[ { graph = CycleGraph[ 4 ] }, { RandomInfraPerpendicularBisector[ graph, 1, 3, 0, "NextVertexFunction" -> Identity ], RandomInfraPerpendicularBisector[ graph, 1, 3, 1, "NextVertexFunction" -> Identity ], RandomInfraPerpendicularBisector[ graph, 1, 3, 2, "NextVertexFunction" -> Identity ], RandomInfraPerpendicularBisector[ graph, 1, 3, 3, "NextVertexFunction" -> Identity ], RandomInfraPerpendicularBisector[ graph, 1, 3, UpTo[ 3 ], "NextVertexFunction" -> Identity ], RandomInfraPerpendicularBisector[ graph, 1, 3, Automatic, "NextVertexFunction" -> Identity ] } ],
-  { { }, { 2 }, { 2, 4 }, { }, { 2, 4 }, 2 },
-  TestID -> "synthetic-t4-perpendicularbisector-counts"
 ]
 
 VerificationTest[
@@ -610,8 +562,8 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { graph = CycleGraph[ 4 ] }, Head /@ { RandomInfraMidpoint[ graph, InfraMidpoint[ 1, 3 ], "Typo" -> 1 ], RandomInfraPerpendicularBisector[ graph, InfraPerpendicularBisector[ 1, 3 ], "NextVertexFunction" -> RandomSample ], RandomInfraRegionNearest[ graph, InfraRegionNearest[ UnknownConstruction[ 1 ], 2 ], All ] } ],
-  { RandomInfraMidpoint, RandomInfraPerpendicularBisector, RandomInfraRegionNearest },
+  With[ { graph = CycleGraph[ 4 ] }, Head /@ { RandomInfraMidpoint[ graph, InfraMidpoint[ 1, 3 ], "Typo" -> 1 ], InfraMeasurement[ graph, InfraPerpendicularBisector[ 1 ], "VertexDensity" ], RandomInfraRegionNearest[ graph, InfraRegionNearest[ UnknownConstruction[ 1 ], 2 ], All ] } ],
+  { RandomInfraMidpoint, InfraMeasurement, RandomInfraRegionNearest },
   TestID -> "synthetic-t4-unsupported-token-forms"
 ]
 
@@ -632,16 +584,69 @@ VerificationTest[
 
 VerificationTest[
   With[ { graph = CycleGraph[ 4 ] },
-    BlockRandom[ { RandomInfraPerpendicularBisector[ graph, 1, 3 ], RandomInfraPerpendicularBisector[ graph, 1, 3, 2 ], RandomInteger[ 1000000 ] }, RandomSeeding -> 41 ] ===
-      BlockRandom[ { RandomChoice[ { 2, 4 } ], RandomSample[ { 2, 4 }, 2 ], RandomInteger[ 1000000 ] }, RandomSeeding -> 41 ] ],
-  True,
-  TestID -> "synthetic-t4-perpendicularbisector-ambient-uniform-law"
-]
-
-VerificationTest[
-  With[ { graph = CycleGraph[ 4 ] },
     BlockRandom[ { RandomInfraRegionNearest[ graph, { 2, 4 }, 1 ], RandomInfraRegionNearest[ graph, { 2, 4 }, 1, 2 ], RandomInteger[ 1000000 ] }, RandomSeeding -> 41 ] ===
       BlockRandom[ { RandomChoice[ { 2, 4 } ], RandomSample[ { 2, 4 }, 2 ], RandomInteger[ 1000000 ] }, RandomSeeding -> 41 ] ],
   True,
   TestID -> "synthetic-t4-regionnearest-ambient-uniform-law"
+]
+
+
+VerificationTest[
+  With[ { graph = GridGraph[ { 3, 3 } ] },
+    InfraMeasurement[ graph, InfraMidpoint[ 1, 9 ], "VertexDensity" ] ],
+  <| 3 -> 1, 5 -> 4, 7 -> 1 |>,
+  TestID -> "synthetic-midpoint-retains-central-shortest-path-occupation"
+]
+
+VerificationTest[
+  InfraMeasurement[ PathGraph[ Range[ 4 ] ], InfraMidpoint[ 1, 4 ], "VertexDensity" ],
+  <| 2 -> 1, 3 -> 1 |>,
+  TestID -> "synthetic-midpoint-odd-distance-has-two-central-layers"
+]
+
+VerificationTest[
+  With[ { graph = GridGraph[ { 3, 3 } ] },
+    { dag = InfraMeasurement[ graph, InfraSegment[ 1, 9 ], "Graph" ] },
+    Sort @ RandomInfraMidpoint[ graph, 1, 9, All ] ===
+      Sort @ MinimalBy[ VertexList[ dag ], vertex |->
+        Max[ GraphDistance[ dag, 1, vertex ], GraphDistance[ dag, vertex, 9 ] ] ] ],
+  True,
+  TestID -> "synthetic-midpoint-is-oriented-source-sink-center"
+]
+
+VerificationTest[
+  With[ { graph = GridGraph[ { 3, 3 } ] },
+    InfraMeasurement[ graph, InfraMidpoint[ 1, 9 ], "VertexDensity" ] ===
+      InfraMeasurement[ graph, InfraMidpoint[ 9, 1 ], "VertexDensity" ] ],
+  True,
+  TestID -> "synthetic-midpoint-reversing-segment-preserves-center-density"
+]
+
+VerificationTest[
+  RandomInfraMidpoint[ PathGraph[ { 4, 3, 2, 1 } ], 1, 4, All ],
+  { 3, 2 },
+  TestID -> "synthetic-midpoint-center-pool-retains-graph-vertex-order"
+]
+
+
+VerificationTest[
+  With[ { graph = PathGraph[ { 1, 2, InfraMidpoint[ 1, 2 ] } ] },
+    { RandomInfraMidpoint[ graph, 1, 2, All ],
+      InfraMeasurement[ graph, InfraMidpoint[ 1, 2 ], "VertexDensity" ] } ],
+  { { 1, 2 }, <| InfraMidpoint[ 1, 2 ] -> 1 |> },
+  TestID -> "synthetic-midpoint-sampling-keeps-token-headed-vertex-label-literal"
+]
+
+
+VerificationTest[
+  RandomInfraPoint[ PathGraph[ Range[ 3 ] ], InfraPoint[ <| 1 -> 0, 3 -> -2 |> ], All ],
+  { 3 },
+  TestID -> "synthetic-explicit-point-excludes-zero-density"
+]
+
+VerificationTest[
+  RandomInfraPoint[ PathGraph[ Range[ 3 ] ],
+    InfraPoint[ InfraIntersection[ <| 1 -> 0, 2 -> 1 |>, { 1, 2 } ] ], All ],
+  { 2 },
+  TestID -> "synthetic-composite-point-excludes-zero-density"
 ]

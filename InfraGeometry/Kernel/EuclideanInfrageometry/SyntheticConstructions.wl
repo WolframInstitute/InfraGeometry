@@ -8,14 +8,8 @@ RandomInfraMidpoint[ graph_Graph, p_, q_,
     VertexQ[ graph, p ] && VertexQ[ graph, q ] &&
     SubsetQ[ { "NextVertexFunction" }, First /@ { opts } ] &&
     MemberQ[ { Automatic, Identity }, OptionValue[ RandomInfraMidpoint, { opts }, "NextVertexFunction" ] ] :=
-  With[ { vertices = VertexList[ graph ] },
-    { indices = AssociationThread[ vertices, Range @ Length[ vertices ] ],
-      indexedGraph = VertexReplace[ graph, Thread[ vertices -> Range @ Length[ vertices ] ] ] },
-    { fromP = GraphDistance[ indexedGraph, Lookup[ indices, Key[ p ] ] ],
-      fromQ = GraphDistance[ indexedGraph, Lookup[ indices, Key[ q ] ] ] },
-    { distance = fromP[[ Lookup[ indices, Key[ q ] ] ]] },
-    { members = If[ distance === Infinity, { },
-        Pick[ vertices, MapThread[ { a, b } |-> 2 a == distance && 2 b == distance, { fromP, fromQ } ], True ] ] },
+  With[ { density = InfraMeasurement[ graph, InfraSegment[ p, q ], "Midpoint" ] },
+    { members = Select[ VertexList[ graph ], vertex |-> KeyExistsQ[ density, vertex ] ] },
     Which[
       count === Automatic, If[ members === { }, { },
         If[ OptionValue[ "NextVertexFunction" ] === Identity, First @ members, RandomChoice @ members ] ],
@@ -29,34 +23,6 @@ RandomInfraMidpoint[ graph_Graph, InfraMidpoint[ p_, q_ ],
     SubsetQ[ { "NextVertexFunction" }, First /@ { opts } ] &&
     MemberQ[ { Automatic, Identity }, OptionValue[ RandomInfraMidpoint, { opts }, "NextVertexFunction" ] ] :=
   With[ { result = RandomInfraMidpoint[ graph, p, q, count, opts ] }, result /; HoldComplete[ result ] =!= HoldComplete[ RandomInfraMidpoint[ graph, p, q, count, opts ] ] ]
-
-Options[ RandomInfraPerpendicularBisector ] = { "NextVertexFunction" -> Automatic }
-
-RandomInfraPerpendicularBisector[ graph_Graph, p_, q_,
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    UndirectedGraphQ[ graph ] && SimpleGraphQ[ graph ] && ! WeightedGraphQ[ graph ] &&
-    VertexQ[ graph, p ] && VertexQ[ graph, q ] &&
-    SubsetQ[ { "NextVertexFunction" }, First /@ { opts } ] &&
-    MemberQ[ { Automatic, Identity }, OptionValue[ RandomInfraPerpendicularBisector, { opts }, "NextVertexFunction" ] ] :=
-  With[ { vertices = VertexList[ graph ] },
-    { indices = AssociationThread[ vertices, Range @ Length[ vertices ] ],
-      indexedGraph = VertexReplace[ graph, Thread[ vertices -> Range @ Length[ vertices ] ] ] },
-    { fromP = GraphDistance[ indexedGraph, Lookup[ indices, Key[ p ] ] ],
-      fromQ = GraphDistance[ indexedGraph, Lookup[ indices, Key[ q ] ] ] },
-    { members = Pick[ vertices, MapThread[ { a, b } |-> a < Infinity && a == b, { fromP, fromQ } ], True ] },
-    Which[
-      count === Automatic, If[ members === { }, { },
-        If[ OptionValue[ "NextVertexFunction" ] === Identity, First @ members, RandomChoice @ members ] ],
-      count === All, members,
-      IntegerQ[ count ] && Length[ members ] < count, { },
-      OptionValue[ "NextVertexFunction" ] === Identity, Take[ members, count ],
-      True, RandomSample[ members, count ] ] ]
-
-RandomInfraPerpendicularBisector[ graph_Graph, InfraPerpendicularBisector[ p_, q_ ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /;
-    SubsetQ[ { "NextVertexFunction" }, First /@ { opts } ] &&
-    MemberQ[ { Automatic, Identity }, OptionValue[ RandomInfraPerpendicularBisector, { opts }, "NextVertexFunction" ] ] :=
-  With[ { result = RandomInfraPerpendicularBisector[ graph, p, q, count, opts ] }, result /; HoldComplete[ result ] =!= HoldComplete[ RandomInfraPerpendicularBisector[ graph, p, q, count, opts ] ] ]
 
 Options[ RandomInfraRegionNearest ] = { "NextVertexFunction" -> Automatic }
 
@@ -100,20 +66,33 @@ RandomInfraRegionNearest[ graph_Graph, InfraRegionNearest[ object_, p_ ],
     MemberQ[ { Automatic, Identity }, OptionValue[ RandomInfraRegionNearest, { opts }, "NextVertexFunction" ] ] :=
   With[ { result = RandomInfraRegionNearest[ graph, object, p, count, opts ] }, result /; HoldComplete[ result ] =!= HoldComplete[ RandomInfraRegionNearest[ graph, object, p, count, opts ] ] ]
 
-InfraMeasurement[ graph_Graph, object : _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest,
-    "VertexDensity" ] :=
-  With[ { members = If[ VertexQ[ graph, object ], { object },
-      Switch[ Head[ object ],
-        InfraMidpoint, RandomInfraMidpoint[ graph, object, All ],
-        InfraPerpendicularBisector, RandomInfraPerpendicularBisector[ graph, object, All ],
-        InfraRegionNearest, RandomInfraRegionNearest[ graph, object, All ] ] ] },
+InfraMeasurement[ graph_Graph, object : InfraMidpoint[ p_, q_ ], "VertexDensity" ] /;
+    VertexQ[ graph, object ] || ( UndirectedGraphQ[ graph ] && SimpleGraphQ[ graph ] && ! WeightedGraphQ[ graph ] &&
+      VertexQ[ graph, p ] && VertexQ[ graph, q ] ) :=
+  If[ VertexQ[ graph, object ], <| object -> 1 |>,
+    InfraMeasurement[ graph, InfraSegment[ p, q ], "Midpoint" ] ]
+
+InfraMeasurement[ graph_Graph, object : InfraPerpendicularBisector[ p_, q_ ], "VertexDensity" ] /;
+    VertexQ[ graph, object ] || ( UndirectedGraphQ[ graph ] && SimpleGraphQ[ graph ] && ! WeightedGraphQ[ graph ] &&
+      VertexQ[ graph, p ] && VertexQ[ graph, q ] ) :=
+  If[ VertexQ[ graph, object ], <| object -> 1 |>,
+    With[ { vertices = VertexList[ graph ] },
+      { indices = AssociationThread[ vertices, Range @ Length[ vertices ] ],
+        indexedGraph = VertexReplace[ graph, Thread[ vertices -> Range @ Length[ vertices ] ] ] },
+      { fromP = GraphDistance[ indexedGraph, Lookup[ indices, Key[ p ] ] ],
+        fromQ = GraphDistance[ indexedGraph, Lookup[ indices, Key[ q ] ] ] },
+      AssociationThread[ Pick[ vertices, MapThread[ { a, b } |-> a < Infinity && a == b, { fromP, fromQ } ], True ], 1 ] ] ]
+
+InfraMeasurement[ graph_Graph, object_InfraRegionNearest, "VertexDensity" ] :=
+  With[ { members = If[ VertexQ[ graph, object ], { object }, RandomInfraRegionNearest[ graph, object, All ] ] },
     AssociationThread[ members, 1 ] /; ListQ[ members ] ]
 
 InfraMeasurement[ graph_Graph, object : _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest,
     property : ( "Cardinality" | "CountingMeasure" | "Subgraph" | "RiemannianMeasure" ) ] :=
   With[ { density = InfraMeasurement[ graph, object, "VertexDensity" ] },
     Switch[ property,
-      "Cardinality" | "CountingMeasure", Length[ density ],
+      "Cardinality", If[ MatchQ[ object, _InfraPerpendicularBisector ], 1, Length[ density ] ],
+      "CountingMeasure", Length[ density ],
       "Subgraph", Subgraph[ graph, Keys[ density ] ],
       "RiemannianMeasure", With[ { support = Keys[ density ] },
         Count[ support, vertex_ /; AllTrue[ AdjacencyList[ graph, vertex ],
@@ -124,10 +103,12 @@ InfraMeasurement[ graph_Graph, object : _InfraMidpoint | _InfraPerpendicularBise
     AssociationMap[ property |-> InfraMeasurement[ graph, object, property ],
       { "VertexDensity", "Cardinality", "CountingMeasure", "Subgraph", "RiemannianMeasure" } ] /; AssociationQ[ density ] ]
 
-InfraMemberQ[ graph_Graph, object : _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest, vertex_ ] /;
+InfraMemberQ[ graph_Graph, object : _InfraMidpoint | _InfraRegionNearest, vertex_ ] /;
     VertexQ[ graph, vertex ] :=
   With[ { density = InfraMeasurement[ graph, object, "VertexDensity" ] },
     KeyExistsQ[ density, vertex ] /; AssociationQ[ density ] ]
 
-InfraDensity[ graph_Graph, object : _InfraMidpoint | _InfraPerpendicularBisector | _InfraRegionNearest ] :=
-  With[ { density = InfraMeasurement[ graph, object, "VertexDensity" ] }, density /; AssociationQ[ density ] ]
+
+InfraMemberQ[ graph_Graph, object_InfraPerpendicularBisector, vertices_List ] :=
+  With[ { density = InfraMeasurement[ graph, object, "VertexDensity" ] },
+    Union[ vertices ] === Sort[ Keys[ density ] ] /; AssociationQ[ density ] ]

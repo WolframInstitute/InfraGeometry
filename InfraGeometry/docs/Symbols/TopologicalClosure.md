@@ -68,7 +68,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {topo = BallTopology[g, 2]},
-  {ring = Complement[VertexList[g], RandomInfraBall[ g, InfraBall[First @ GraphCenter[g], 6] ]]},
+  {ring = Complement[VertexList[g], Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], 6], "VertexDensity" ]]},
   {closure = TopologicalClosure[topo, ring]},
   {InfraSubstrateHighlight[g, {ring -> StandardBlue, Complement[closure, ring] -> StandardRed}],
    SubsetQ[closure, ring], TopologicalClosure[topo, closure] == closure}]
@@ -83,5 +83,5 @@ With[
   {corner = First @ MinimalBy[VertexList[g], VertexDegree[g, #] &]},
   {closure = TopologicalClosure[BallTopology[g, 3], {corner}]},
   {InfraSubstrateHighlight[g, {Complement[closure, {corner}] -> StandardRed, corner -> StandardBlue}],
-   closure == RandomInfraBallHull[ g, InfraBallHull[{corner}, {3}] ]}]
+   closure == Keys @ InfraMeasurement[ g, InfraBallHull[{corner}, {3}], "VertexDensity" ]}]
 ```
