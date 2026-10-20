@@ -159,6 +159,12 @@ PackageExport[BallCoverNumber]
 
 (* InfraAnalysis *)
 
+PackageExport[InfraDifferential]
+PackageExport[InfraCodifferential]
+PackageExport[InfraIntegral]
+PackageExport[InfraAntiderivative]
+PackageExport[InfraDerivative]
+
 PackageExport[DisplacementCompose]
 PackageExport[DisplacementScale]
 PackageExport[DisplacementNegative]

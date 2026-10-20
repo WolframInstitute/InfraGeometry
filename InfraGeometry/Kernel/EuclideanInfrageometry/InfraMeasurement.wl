@@ -63,7 +63,8 @@ InfraMeasurement[ graph_Graph,
     obj : Except[ _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List | InfraIntersection[ __ ] | InfraUnion[ __ ] |
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
-                  ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] ], All ] :=
+                  ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] |
+                  _InfraIntegral | _InfraDifferential | _InfraCodifferential | _InfraAntiderivative | _InfraDerivative ], All ] :=
   InfraMeasurement[ graph, obj,
     { "Graph", "Faithful", "Cardinality", "Length", "VertexDensity", "EdgeDensity", "Subgraph",
       "CountingMeasure", "RiemannianMeasure" } ]

@@ -154,6 +154,16 @@ TessellationGenus::usage = "TessellationGenus[spec, k] is the genus of the k-th 
 
 TessellationNeighborhoodGraph::usage = "TessellationNeighborhoodGraph[{p, q}, r] is the radius-r graph-distance ball cut from the infinite regular {p, q} tessellation of its covering surface (Euclidean plane, hyperbolic plane, or closing-up sphere by the curvature (p-2)(q-2)) -- the non-compact companion to TessellationGraph, with VertexCoordinates carrying the embedding. TessellationNeighborhoodGraph[config, r] cuts the same ball from the uniform / Archimedean tiling of a longer vertex configuration (the chiral snub / elongated families are deferred). TessellationNeighborhoodGraph[{p, q}, {m, n}] is the m x n rectangular Euclidean patch of m x n cells, as in TessellationGraph[{p, q}, {m, n}].";
 
+InfraDifferential::usage = "InfraDifferential[f] is the inert 1-form df(u -> v) == f(v) - f(u) of a vertex function f, on the links of a DAG or the edges of a graph.";
+
+InfraCodifferential::usage = "InfraCodifferential[w] is the inert vertex function whose value at v is w summed over the links into v minus the links out of v.";
+
+InfraIntegral::usage = "InfraIntegral[f, obj] is the inert integral of a 0-form or 1-form f over a region, or along each member of a family of walks.";
+
+InfraAntiderivative::usage = "InfraAntiderivative[f] is the inert antiderivative F(v) == Sum over u <= v of f(u) K(u, v), K the kernel of its Method. Options Method, \"Origin\", \"Direction\".";
+
+InfraDerivative::usage = "InfraDerivative[F] is the inert derivative, the exact inverse of InfraAntiderivative with the same options. Options Method, \"Origin\", \"Direction\".";
+
 DisplacementCompose::usage = "DisplacementCompose[d1, d2, ...] composes displacements as flows, the leftmost acting first; targets are collected over every intermediate point.";
 
 DisplacementScale::usage = "DisplacementScale[g, d, t] scales displacement d by t: endpoints of the geodesics v -> d(v) rescaled to t times their length (t < 0 reflects through the base point).";
