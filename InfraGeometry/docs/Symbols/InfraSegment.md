@@ -12,146 +12,123 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Usage
 
-<code>[InfraSegment]()[*p*, *q*]</code> is the segment from *p* to *q*: every shortest path from *p* to *q* at once. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
+<code>[InfraSegment]()[*p*, *q*]</code> is the segment from *p* to *q*: the family of all shortest paths from *p* to *q*.
 
-<code>[InfraSegment]()[*p1*, *p2*, …, *pk*]</code> is the polyline of the segments [*p1*, *p2*], …, [*p(k-1)*, *pk*].
-
-<code>[InfraSegment]()[*p*, *q*]</code> inside an [InfraScene]() is the segment construction token; [RandomInfraSegment]() is the search.
+<code>[InfraSegment]()[*p1*, *p2*, …, *pk*]</code> is the polyline through *p1*, …, *pk*: a shortest path from each point to the next, joined.
 
 ## Details & Options
 
-Definition: an infra-segment between *p* and *q* is the set of all shortest paths from *p* to *q*.
+A member of <code>[InfraSegment]()[*p*, *q*]</code> is a shortest path from *p* to *q*. All members have length *d(p, q)*, and none is preferred.
 
-It carries no weights. The shortest paths are equally admissible, so nothing distinguishes them.
+The vertices on the members form the metric interval *I(p, q) = {v : d(p, v) + d(v, q) = d(p, q)}*, the support of the segment.
 
-The head holds its two points and computes nothing. Its graph — <code>[InfraMeasurement]()[*g*, *seg*, "Graph"]</code> — is the interval of shortest paths: the vertices *v* with *d(p, v) + d(v, q) = d(p, q)*, with arrows of rising distance from *p*. Its source-to-sink chains are exactly the shortest paths, each once, so `"Faithful"` is `True`.
+A segment can have many members. On the square grid, with *a* steps from *p* to *q* along one axis and *b* along the other, there are *C(a + b, a)* shortest paths, and the interval is the (*a* + 1) × (*b* + 1) rectangle with corners *p* and *q*.
 
-Every count is read off that graph by dynamic programming, never by enumeration. The graph stays small where the family is large: two vertices at distance 5 on a square grid have 10 shortest paths and a 12-vertex graph.
+[InfraSegment]() is a symbolic object: [InfraMeasurement]() evaluates it on a graph, [RandomInfraSegment]() draws members and [InfraMemberQ]() tests one. [InfraSubstrateHighlight]() draws all members at once, an edge the stronger the more members use it.
 
-A polyline is the one head whose `List` of graphs is not a family of alternatives. Its members are concatenations of one shortest path per piece, so its `"Cardinality"` is the product over the pieces and its `"Length"` the sum. Its `"VertexDensity"` stays the sum of the piece densities.
+[InfraMeasurement]() reads:
 
-The support of the segment, the keys of its `"VertexDensity"`, is the interval itself. [InfraMeasurement]() gives two measures of it:
-
-| Measure | Value |
+| Property | Value |
 |---|---|
+| `"Graph"` | the directed graph whose source-to-sink paths are the members, as [IntervalGraph]() |
+| `"Cardinality"` | the number of shortest paths |
+| `"Length"` | *d(p, q)* |
+| `"VertexDensity"` | the number of shortest paths through each vertex of the interval |
 | `"CountingMeasure"` | the number of vertices of the interval |
 | `"RiemannianMeasure"` | the number of vertices of the interval all of whose neighbours lie in it |
 
-On the square grid two vertices *a* steps apart along one axis and *b* along the other span an (*a* + 1) × (*b* + 1) rectangle, so for *a*, *b* ≥ 1 the measures are (*a* + 1)(*b* + 1) and (*a* − 1)(*b* − 1). A segment with a single shortest path is all boundary, and its Riemannian measure is `0`. The rim of the graph is not boundary: a segment whose interval is the whole graph has both measures equal to the number of vertices.
-
-A member is a vertex list; [RandomInfraSegment]() reads one, several or all of them, and [InfraMemberQ]() tests one.
+A member of a polyline is one member of each piece, joined. So the cardinality of a polyline is the product of the cardinalities of its pieces, and its length is the sum of their lengths.
 
 Corresponding notions in the classical axiom systems:
 
 | System | Name | Statement |
 |---|---|---|
-| Euclid | Postulate 1 | To draw a straight-line from any point to any point. |
-| Hilbert | I.1, I.2 | Two distinct points determine one and only one line. |
-| Tarski | Betweenness | The points *x* with *B(pxq)*, from the three-place betweenness relation. |
-| Birkhoff | Ruler postulate | The points of a line correspond to the reals, and the segment is a closed coordinate interval. |
+| Euclid | Postulate 1 | To draw a straight line from any point to any point. |
+| Hilbert | I.1, I.2 | Two distinct points determine one and only one line. Here the segment is a family. |
+| Tarski | Betweenness | The points *x* between *p* and *q*; here *d(p, x) + d(x, q) = d(p, q)*. |
 
 ## Basic Examples
 
-The segment from the centre to a vertex five steps away, on the discretized plane, the square grid and the hexagonal tiling. Every shortest path is drawn at once, an edge as strongly as the number of shortest paths through it.
+The segment from the centre to a vertex at distance 5, on the square grid and on the square mesh:
 
 ```wl
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {a = First @ GraphCenter[g]},
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
     {b = RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]},
-    {seg = InfraSegment[a, b]},
-    InfraSubstrateHighlight[g, {seg, a, b}]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
+    InfraSubstrateHighlight[g, {InfraSegment[a, b], a, b}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The interval of the same segments, its inner vertices in green and its boundary in blue. The Riemannian measure counts the green ones, the counting measure both. On the square grid the interval is a 3 × 4 rectangle with 2 inner vertices. On the discretized plane the two shortest paths differ in a single vertex, and nothing is inside.
+The number of shortest paths from the centre to each vertex at distance 4, drawn as the size of the vertex. On the grid these are the binomial coefficients 1, 4, 6, 4, 1:
 
 ```wl
-Row[Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = First @ GraphCenter[g]},
-    {seg = InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 1]]},
-    {support = Keys @ InfraMeasurement[g, seg, "VertexDensity"]},
-    Labeled[
-      InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
-      InfraMeasurement[g, seg, {"Cardinality", "CountingMeasure", "RiemannianMeasure"}]]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {shell = Keys @ InfraMeasurement[g, InfraShell[c, 4], "VertexDensity"]},
+    {counts = AssociationMap[v |-> InfraMeasurement[g, InfraSegment[c, v], "Cardinality"], shell]},
+    InfraSubstrateHighlight[g, {counts, c}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The graph of a segment on the square tiling. Every shortest path is a directed path through it.
+Three members of a segment on the grid, each a shortest path:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
   {b = RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]},
-  InfraMeasurement[g, InfraSegment[a, b], "Graph"]]
+  {members = RandomInfraSegment[g, a, b, 3, RandomSeeding -> 1]},
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[path], a, b}], {path, members}]]
 ```
 
-The graph is small where the family is large. Ten steps out on the medium square tiling: the number of shortest paths beside the number of vertices of the graph.
+## Scope
+
+A polyline through the centre. Its cardinality is the product of the cardinalities of its two pieces:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = RandomInfraPoint[g, InfraShell[a, 10], RandomSeeding -> 2]},
-  {seg = InfraSegment[a, b]},
-  {InfraSubstrateHighlight[g, {seg, a, b}],
-   InfraMeasurement[g, seg, "Cardinality"], VertexCount @ InfraMeasurement[g, seg, "Graph"]}]
-```
-
-The members are vertex lists. Three of them, each drawn as a walk.
-
-```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]},
-  {members = RandomInfraSegment[ g, InfraSegment[a, b], 3, RandomSeeding -> 1 ]},
-  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], a, b}], {member, members}]]
-```
-
-A polyline through the centre: one shortest path in, one out. Its cardinality is the product of the two pieces' cardinalities.
-
-```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
   {a = RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 2]},
-  {b = RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 5]},
+  {b = RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 4]},
   {poly = InfraSegment[a, c, b]},
-  {InfraSubstrateHighlight[g, {poly, a, c, b}],
-   InfraMeasurement[g, poly, "Cardinality"] == InfraMeasurement[g, InfraSegment[a, c], "Cardinality"] InfraMeasurement[g, InfraSegment[c, b], "Cardinality"]}]
+  InfraSubstrateHighlight[g, {poly, a, c, b},
+    PlotLabel -> {InfraMeasurement[g, poly, "Cardinality"], InfraMeasurement[g, {InfraSegment[a, c], InfraSegment[c, b]}, "Cardinality"]},
+    ImageSize -> Medium]]
 ```
 
 ## Properties and Relations
 
-The support of the segment is the metric interval between its endpoints, drawn here beneath it.
+The support of a segment is the metric interval of its endpoints. On the grid it is a rectangle; its interior, drawn over it, is what the Riemannian measure counts:
 
 ```wl
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]},
-  {seg = InfraSegment[a, b]},
-  {InfraSubstrateHighlight[g, {MetricInterval[g, a, b], seg}],
-   Sort @ Keys @ InfraMeasurement[g, seg, "VertexDensity"] === Sort @ MetricInterval[g, a, b]}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+    {seg = InfraSegment[a, RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]]},
+    {interval = Keys @ InfraMeasurement[g, seg, "VertexDensity"]},
+    InfraSubstrateHighlight[g, {interval, InfraInterior[g, interval]},
+      PlotLabel -> InfraMeasurement[g, seg, {"CountingMeasure", "RiemannianMeasure"}]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The cardinality is the number of members, and every member has the graph distance as its length.
+A segment and its graph. Every member is a directed path from the source to the sink:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {seg = InfraSegment[a, RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]]},
+  GraphicsRow[{InfraSubstrateHighlight[g, {seg}], InfraMeasurement[g, seg, "Graph"]}]]
+```
+
+It is the [IntervalGraph]() of the endpoints:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {a = First @ GraphCenter[g]},
   {b = RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]},
-  {seg = InfraSegment[a, b]},
-  {members = Replace[ seg, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraShell :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraCylinder :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraCone :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraSolidOfRevolution :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraBallHull :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraConvexHull :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraQuadric :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ]},
-  {InfraSubstrateHighlight[g, {members, a, b}],
-   Length @ members === InfraMeasurement[g, seg, "Cardinality"],
-   Union[Length[#] - 1 & /@ members] === {GraphDistance[g, a, b]}}]
+  InfraMeasurement[g, InfraSegment[a, b], "Graph"] === IntervalGraph[g, a, b]]
+```
+
+The members are as many as the cardinality, and each has length *d(p, q)*:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 8], RandomSeeding -> 1]},
+  {members = RandomInfraSegment[g, a, b, All]},
+  {Length[members] == InfraMeasurement[g, InfraSegment[a, b], "Cardinality"],
+   Union[Length /@ members] - 1 == {GraphDistance[g, a, b]}}]
 ```
