@@ -7,14 +7,22 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 Options[ RandomInfraSphere ] = {
   Properties           -> { "Separating", "Connected" },
-  "NextVertexFunction" -> Automatic
+  "NextVertexFunction" -> Automatic,
+  RandomSeeding        -> Automatic
 }
 
+RandomInfraSphere[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomInfraSphere[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomInfraSphere[ ___, RandomSeeding -> None ] ] ] ]
+
 RandomInfraSphere[ graph_Graph, p_, r_,
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; ( VertexQ[ graph, p ] || ! MatchQ[ p, _InfraSphere ] ) &&
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( ( VertexQ[ graph, p ] || ! MatchQ[ p, _InfraSphere ] ) &&
     SubsetQ[ First /@ Options[ RandomInfraSphere ], First /@ { opts } ] &&
     SubsetQ[ { "Separating", "Connected" }, OptionValue[ RandomInfraSphere, { opts }, Properties ] ] &&
-    ( count =!= All || OptionValue[ RandomInfraSphere, { opts }, "NextVertexFunction" ] =!= RandomChoice ) :=
+    ( count =!= All || OptionValue[ RandomInfraSphere, { opts }, "NextVertexFunction" ] =!= RandomChoice ) ) :=
   With[ {
       properties = OptionValue[ RandomInfraSphere, { opts }, Properties ],
       nextFn = If[ count === All &&
@@ -60,13 +68,13 @@ RandomInfraSphere[ graph_Graph, p_, r_,
 (* the sphere family's densities are the sums of its members' indicators, read off the exhaustive search *)
 
 InfraMeasurement[ graph_Graph, InfraSphere[ center_, r_ ], "VertexDensity" ] :=
-  KeySort @ Merge[ AssociationThread[ #, 1 ] & /@ RandomInfraSphere[ graph, center, r, All ], Total ]
+  KeySort @ Merge[ AssociationThread[ #, 1 ] & /@ RandomInfraSphere[ graph, center, r, All, RandomSeeding -> None ], Total ]
 
 InfraMeasurement[ graph_Graph, InfraSphere[ center_, r_ ], "EdgeDensity" ] :=
-  KeySort @ Merge[ AssociationThread[ EdgeList @ Subgraph[ graph, # ], 1 ] & /@ RandomInfraSphere[ graph, center, r, All ], Total ]
+  KeySort @ Merge[ AssociationThread[ EdgeList @ Subgraph[ graph, # ], 1 ] & /@ RandomInfraSphere[ graph, center, r, All, RandomSeeding -> None ], Total ]
 
 InfraMeasurement[ graph_Graph, InfraSphere[ center_, r_ ], "Cardinality" ] :=
-  Length @ RandomInfraSphere[ graph, center, r, All ]
+  Length @ RandomInfraSphere[ graph, center, r, All, RandomSeeding -> None ]
 
 InfraMeasurement[ graph_Graph, sphere : InfraSphere[ _, _ ], All ] :=
   InfraMeasurement[ graph, sphere,
@@ -75,5 +83,6 @@ InfraMeasurement[ graph_Graph, sphere : InfraSphere[ _, _ ], All ] :=
 
 RandomInfraSphere[ graph_Graph, InfraSphere[ center_, radius_ ],
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraSphere ], First /@ { opts } ] :=
+    opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraSphere ], First /@ { opts } ] ) :=
   RandomInfraSphere[ graph, center, radius, count, opts ]

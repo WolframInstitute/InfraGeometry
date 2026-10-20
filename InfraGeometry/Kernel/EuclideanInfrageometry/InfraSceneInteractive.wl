@@ -18,7 +18,7 @@ PointViewer[ g_Graph, sym_: None ] :=
     Manipulate[
       seed;
       With[ { pts = RandomInfraPoint[ g, regions[ region ], UpTo[ n ], "MaxCliques" -> 100,
-          "PairwiseDistance" -> Switch[ separation, "None", None, "Max", "Max", "Range", distRange ] ] },
+          "PairwiseDistance" -> Switch[ separation, "None", None, "Max", "Max", "Range", distRange ], RandomSeeding -> None ] },
         If[ sym =!= None, sym = pts ];
         InfraSubstrateHighlight[ g, { InfraMeasurement[ g, pts, "VertexDensity" ] } ] ],
       Grid[ {
@@ -45,7 +45,7 @@ SegmentViewer[ g_Graph ] :=
       With[ {
           segments = If[ sel === None || p1 === p2 || GraphDistance[ g, p1, p2 ] === Infinity, {},
             Take[
-              applySelectOption[ g, RandomInfraSegment[ g, p1, p2, All ],
+              applySelectOption[ g, RandomInfraSegment[ g, p1, p2, All, RandomSeeding -> None ],
                 sel, False, <| "Endpoints" -> { p1, p2 } |> ],
               UpTo[ n ] ] ] },
         EventHandler[
@@ -82,7 +82,7 @@ ShellViewer[ g_Graph ] :=
       With[ {
           shells = If[ r < 1, {},
             RandomInfraSphere[ g, p, r, UpTo[ n ], "NextVertexFunction" -> Identity,
-              Properties -> properties ] ] },
+              Properties -> properties, RandomSeeding -> None ] ] },
         EventHandler[
           HighlightGraph[
             InfraSubstrateHighlight[ g, { shells } ],
@@ -117,7 +117,7 @@ CircleViewer[ g_Graph ] :=
       With[ {
           circles = If[ sel === None || r < 1, {},
             Take[
-              applySelectOption[ g, RandomInfraCircle[ g, InfraCircle[ p, r ], All ],
+              applySelectOption[ g, RandomInfraCircle[ g, InfraCircle[ p, r ], All, RandomSeeding -> None ],
                 sel, True, <| "Center" -> p, "Radius" -> r |> ],
               UpTo[ n ] ] ] },
         EventHandler[

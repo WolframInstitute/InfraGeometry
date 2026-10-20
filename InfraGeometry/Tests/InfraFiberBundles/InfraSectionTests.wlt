@@ -208,17 +208,17 @@ VerificationTest[
 VerificationTest[
   With[ { fib = InfraFibration[ Graph[ Range[ 4 ], { } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
     BlockRandom[
-      { Length @ RandomInfraSection[ fib, UpTo[ 2 ], "NextVertexFunction" -> RandomChoice ],
-        RandomInfraSection[ fib, 2, "NextVertexFunction" -> RandomChoice ],
-        Head @ RandomInfraSection[ fib, All, "NextVertexFunction" -> RandomChoice ] }, RandomSeeding -> 7 ] ],
+      { Length @ RandomInfraSection[ fib, UpTo[ 2 ], "NextVertexFunction" -> RandomChoice, RandomSeeding -> None ],
+        RandomInfraSection[ fib, 2, "NextVertexFunction" -> RandomChoice, RandomSeeding -> None ],
+        Head @ RandomInfraSection[ fib, All, "NextVertexFunction" -> RandomChoice, RandomSeeding -> None ] }, RandomSeeding -> 7 ] ],
   { 1, { }, RandomInfraSection },
   TestID -> "RandomInfraSection-RandomChoice-is-one-route-and-refuses-All"
 ]
 
 VerificationTest[
   With[ { fib = InfraFibration[ Graph[ Range[ 8 ], { } ], i |-> Ceiling[ i / 2 ] ] },
-    BlockRandom[ RandomInfraSection[ fib ], RandomSeeding -> 37 ] ===
-      BlockRandom[ RandomInfraSection[ fib ], RandomSeeding -> 37 ] ],
+    BlockRandom[ RandomInfraSection[ fib, RandomSeeding -> None ], RandomSeeding -> 37 ] ===
+      BlockRandom[ RandomInfraSection[ fib, RandomSeeding -> None ], RandomSeeding -> 37 ] ],
   True,
   TestID -> "RandomInfraSection-ambient-seed-reproduces-selection"
 ]
@@ -227,7 +227,7 @@ VerificationTest[
   With[ { fib = InfraFibration[ Graph[ Range[ 8 ], { } ], i |-> Ceiling[ i / 2 ] ] },
     BlockRandom[
       With[ { state = $RandomGeneratorState },
-        RandomInfraSection[ fib ]; $RandomGeneratorState =!= state ], RandomSeeding -> 37 ] ],
+        RandomInfraSection[ fib, RandomSeeding -> None ]; $RandomGeneratorState =!= state ], RandomSeeding -> 37 ] ],
   True,
   TestID -> "RandomInfraSection-default-advances-ambient-random-state"
 ]
@@ -236,9 +236,9 @@ VerificationTest[
   With[ { fib = InfraFibration[ Graph[ Range[ 6 ], { } ], i |-> Ceiling[ i / 2 ] ] },
     BlockRandom[
       With[ { state = $RandomGeneratorState },
-        RandomInfraSection[ fib, All ];
-        RandomInfraSection[ fib, "NextVertexFunction" -> Identity ];
-        RandomInfraSection[ fib, 0 ];
+        RandomInfraSection[ fib, All, RandomSeeding -> None ];
+        RandomInfraSection[ fib, "NextVertexFunction" -> Identity, RandomSeeding -> None ];
+        RandomInfraSection[ fib, 0, RandomSeeding -> None ];
         FindInfraSection[ fib, UpTo[ 2 ] ];
         $RandomGeneratorState === state ], RandomSeeding -> 37 ] ],
   True,

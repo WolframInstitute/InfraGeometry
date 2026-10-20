@@ -76,10 +76,10 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     BlockRandom[
-      RandomInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" } ],
+      RandomInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, RandomSeeding -> None ],
       RandomSeeding -> 4 ] ===
     BlockRandom[
-      RandomInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" } ],
+      RandomInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, RandomSeeding -> None ],
       RandomSeeding -> 4 ]
   ],
   True,
@@ -95,8 +95,8 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    BlockRandom[ RandomInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, "NextVertexFunction" -> RandomSample ], RandomSeeding -> 4 ] ===
-      BlockRandom[ RandomInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, "NextVertexFunction" -> RandomSample ], RandomSeeding -> 4 ]
+    BlockRandom[ RandomInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, "NextVertexFunction" -> RandomSample, RandomSeeding -> None ], RandomSeeding -> 4 ] ===
+      BlockRandom[ RandomInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, "NextVertexFunction" -> RandomSample, RandomSeeding -> None ], RandomSeeding -> 4 ]
   ],
   True,
   TestID -> "RandomInfraSphere-RandomSample-seeded-reproducible"
@@ -105,7 +105,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     Length @ DeleteDuplicates @ Table[
-      BlockRandom[ First @ RandomInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, "NextVertexFunction" -> RandomSample ], RandomSeeding -> s ],
+      BlockRandom[ First @ RandomInfraSphere[ g, 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, "NextVertexFunction" -> RandomSample, RandomSeeding -> None ], RandomSeeding -> s ],
       { s, 1, 10 } ]
   ],
   _Integer?( # > 1 & ),
@@ -122,7 +122,7 @@ VerificationTest[
 
 VerificationTest[
   Length @ DeleteDuplicates @ Table[
-    BlockRandom[ RandomInfraSphere[ GridGraph[ { 4, 4 } ], 6, { 1, 2 }, Properties -> { "Separating", "Connected" } ],
+    BlockRandom[ RandomInfraSphere[ GridGraph[ { 4, 4 } ], 6, { 1, 2 }, Properties -> { "Separating", "Connected" }, RandomSeeding -> None ],
       RandomSeeding -> s ],
     { s, 1, 8 } ] > 1,
   True,
@@ -202,12 +202,12 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    { BlockRandom[ RandomInfraSphere[ g, InfraSphere[ 13, { 1, 2 } ] ], RandomSeeding -> 1 ] ===
-        BlockRandom[ RandomInfraSphere[ g, 13, { 1, 2 } ], RandomSeeding -> 1 ],
-      RandomInfraSphere[ g, InfraSphere[ 13, { 1, 2 } ], All ] === RandomInfraSphere[ g, 13, { 1, 2 }, All ],
-      SubsetQ[ RandomInfraSphere[ g, 13, { 1, 2 }, All ], BlockRandom[ RandomInfraSphere[ g, InfraSphere[ 13, { 1, 2 } ], 3 ], RandomSeeding -> 1 ] ],
-      Sort @ RandomInfraSphere[ g, InfraSphere[ 13, { 1, 2 } ], All, "NextVertexFunction" -> Identity ] ===
-        Sort @ RandomInfraSphere[ g, 13, { 1, 2 }, All ] } ],
+    { BlockRandom[ RandomInfraSphere[ g, InfraSphere[ 13, { 1, 2 } ], RandomSeeding -> None ], RandomSeeding -> 1 ] ===
+        BlockRandom[ RandomInfraSphere[ g, 13, { 1, 2 }, RandomSeeding -> None ], RandomSeeding -> 1 ],
+      RandomInfraSphere[ g, InfraSphere[ 13, { 1, 2 } ], All, RandomSeeding -> None ] === RandomInfraSphere[ g, 13, { 1, 2 }, All, RandomSeeding -> None ],
+      SubsetQ[ RandomInfraSphere[ g, 13, { 1, 2 }, All, RandomSeeding -> None ], BlockRandom[ RandomInfraSphere[ g, InfraSphere[ 13, { 1, 2 } ], 3, RandomSeeding -> None ], RandomSeeding -> 1 ] ],
+      Sort @ RandomInfraSphere[ g, InfraSphere[ 13, { 1, 2 } ], All, "NextVertexFunction" -> Identity, RandomSeeding -> None ] ===
+        Sort @ RandomInfraSphere[ g, 13, { 1, 2 }, All, RandomSeeding -> None ] } ],
   { True, True, True, True },
   TestID -> "InfraSphere-representative-translates-the-sampler-options"
 ]

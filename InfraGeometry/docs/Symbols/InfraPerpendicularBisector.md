@@ -57,7 +57,7 @@ Choose a point on the bisector.
 
 ```wl
 SeedRandom[ 71 ]; With[ { graph = CycleGraph[ 4 ] },
-  RandomInfraPoint[ graph, InfraPoint[ InfraPerpendicularBisector[ 1, 3 ] ] ] ]
+  RandomInfraPoint[ graph, InfraPoint[ InfraPerpendicularBisector[ 1, 3 ] ], RandomSeeding -> 71 ] ]
 ```
 
 Find the vertices equidistant from three anchors. On the complete graph with four vertices, the answer is {4}.

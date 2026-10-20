@@ -34,7 +34,7 @@ Random displacements of magnitude at most 2 on the discretized plane, the square
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    DisplacementPlot[g, (SeedRandom[1]; RandomDisplacement[g, 2])]],
+    DisplacementPlot[g, RandomDisplacement[g, 2, RandomSeeding -> 1]]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```
 
@@ -64,7 +64,7 @@ With[
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  DisplacementPlot[g, (SeedRandom[1]; RandomDisplacement[g, 2]), PlotRange -> {{-3, 5}, {-4, 4}}]]
+  DisplacementPlot[g, RandomDisplacement[g, 2, RandomSeeding -> 1], PlotRange -> {{-3, 5}, {-4, 4}}]]
 ```
 
 ## Possible Issues

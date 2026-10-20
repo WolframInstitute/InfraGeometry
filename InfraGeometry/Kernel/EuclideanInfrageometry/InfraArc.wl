@@ -1,6 +1,12 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-Options[ RandomInfraArc ] = { "NextVertexFunction" -> Automatic, "RadiusDelta" -> 0 }
+Options[ RandomInfraArc ] = { "NextVertexFunction" -> Automatic, "RadiusDelta" -> 0, RandomSeeding -> Automatic }
+
+RandomInfraArc[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomInfraArc[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomInfraArc[ ___, RandomSeeding -> None ] ] ] ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraArc *)
 
@@ -171,8 +177,9 @@ InfraMemberQ[ graph_Graph, obj : InfraArc[ _, { p_, ___, p_ } | { _ }, ___Rule ]
    point of the list *)
 
 RandomInfraArc[ graph_Graph, InfraArc[ center_, pts : ( { p_, ___, p_ } | { p_ } ), opts : RepeatedNull[ "RadiusDelta" -> _, { 0, 1 } ] ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; SubsetQ[ { "NextVertexFunction" }, First /@ { samplerOpts } ] &&
-    ( OptionValue[ RandomInfraArc, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; MemberQ[ Flatten @ { samplerOpts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ { "NextVertexFunction", RandomSeeding }, First /@ { samplerOpts } ] &&
+    ( OptionValue[ RandomInfraArc, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) ) :=
   With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ],
           delta = Replace[ Lookup[ { opts }, "RadiusDelta", 0 ], d : Except[ _List ] :> { 0, d } ] },
     { rmin = Max[ 1, Lookup[ dist, Key @ p ] - First @ delta ], rmax = Lookup[ dist, Key @ p ] + Last @ delta },
@@ -225,8 +232,9 @@ InfraMeasurement[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ },
   Total @ ( InfraMeasurement[ graph, InfraArc[ center, #, opts ], "Length" ] & /@ Partition[ First /@ Split @ pts, 2, 1 ] )
 
 RandomInfraArc[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ }, { _, _, __ } ], opts : RepeatedNull[ "RadiusDelta" -> _, { 0, 1 } ] ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; SubsetQ[ { "NextVertexFunction" }, First /@ { samplerOpts } ] &&
-    ( OptionValue[ RandomInfraArc, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; MemberQ[ Flatten @ { samplerOpts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ { "NextVertexFunction", RandomSeeding }, First /@ { samplerOpts } ] &&
+    ( OptionValue[ RandomInfraArc, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) ) :=
   With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
     { pieces = RandomInfraArc[ graph, InfraArc[ center, #, opts ],
         If[ cap === Infinity, All, UpTo[ cap ] ], samplerOpts ] & /@ Partition[ First /@ Split @ pts, 2, 1 ] },
@@ -263,8 +271,9 @@ InfraMemberQ[ graph_Graph, InfraArc[ center_, pts : Except[ { p_, ___, p_ }, { _
 
 RandomInfraArc[ graph_Graph,
     obj : InfraArc[ _, Except[ { p_, p_ }, { _, _ } ], RepeatedNull[ "RadiusDelta" -> _, { 0, 1 } ] ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ { "NextVertexFunction" }, First /@ { opts } ] &&
-    ( OptionValue[ RandomInfraArc, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ { "NextVertexFunction", RandomSeeding }, First /@ { opts } ] &&
+    ( OptionValue[ RandomInfraArc, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) ) :=
   With[ {
       cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
       nextFn = OptionValue[ RandomInfraArc, { opts }, "NextVertexFunction" ],
@@ -335,7 +344,8 @@ RandomInfraArc[ graph_Graph,
 
 RandomInfraArc[ graph_Graph, center_, points : { __ },
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { center, points }, _InfraArc ] &&
-    SubsetQ[ First /@ Options[ RandomInfraArc ], First /@ { opts } ] :=
+    opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( ! MatchQ[ First @ { center, points }, _InfraArc ] &&
+    SubsetQ[ First /@ Options[ RandomInfraArc ], First /@ { opts } ] ) :=
   RandomInfraArc[ graph, InfraArc[ center, points, "RadiusDelta" -> OptionValue[ "RadiusDelta" ] ], count,
-    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]
+    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ], RandomSeeding -> None ]

@@ -29,7 +29,7 @@ RelatedTutorials: [InfraBundles]
 - A domain is a list of literal base vertices. A seed is wrapped in [InfraSection](), so these call forms are distinct.
 - An omitted count or [Automatic]() returns one section directly, or `{}` if none is found.
 - A nonnegative integer *n* returns exactly *n* distinct sections, or `{}` on shortage. [UpTo]()[*n*] returns at most *n*. [All]() returns the complete finite class.
-- `"NextVertexFunction" -> Automatic` uses random candidate order for bounded searches. [SeedRandom]() controls the ambient random stream.
+- `"NextVertexFunction" -> Automatic` uses random candidate order for bounded searches. `RandomSeeding -> Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string gives a reproducible draw, and `Inherited` a local snapshot of the current state. The outer random state is restored afterward, as with [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html).
 - `"NextVertexFunction" -> Identity` is deterministic. [All]() with default ordering is also deterministic and consumes no sampler random draws.
 - [RandomSample]() randomizes candidate order with backtracking. [RandomChoice]() pursues one route without backtracking and is unsupported with [All]().
 - A callback receives the candidate total vertices of the next fiber. It may return one literal candidate or a duplicate-free list of candidates in the desired order. Returning a subset prunes the search.
@@ -42,6 +42,7 @@ RelatedTutorials: [InfraBundles]
 |---|---|---|
 | [Properties]() | `{}` | Set-theoretic sections, or `{"Continuous"}` for adjacency-preserving sections. |
 | `"NextVertexFunction"` | [Automatic]() | Candidate order or selection at each fiber. |
+| `RandomSeeding` | `Automatic` | seed of the local random stream |
 
 ## Basic Examples
 
@@ -51,9 +52,9 @@ Choose values in two fibers and extend them continuously across the whole cycle.
 SeedRandom[7];
 With[
   {fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> { 3 },
-    "VerticalEdgeCount" -> { 0 }, "HorizontalEdgeCount" -> All]},
-  {partial = RandomInfraSection[fib, {1, 3}]},
-  {section = RandomInfraSection[fib, partial, Properties -> {"Continuous"}]},
+    "VerticalEdgeCount" -> { 0 }, "HorizontalEdgeCount" -> All, RandomSeeding -> 7]},
+  {partial = RandomInfraSection[fib, {1, 3}, RandomSeeding -> 7]},
+  {section = RandomInfraSection[fib, partial, Properties -> {"Continuous"}, RandomSeeding -> 7]},
   InfraFiberedGraphHighlight[fib, {partial, section}]]
 ```
 
@@ -76,9 +77,20 @@ SeedRandom[7];
 With[
   {fib = InfraFiberedGraph[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[2, 4]}],
     <|1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b"|>]},
-  {partial = RandomInfraSection[fib, {"a"}, "NextVertexFunction" -> Identity]},
-  {partial, RandomInfraSection[fib, partial, Properties -> {"Continuous"}, "NextVertexFunction" -> Identity]}]
+  {partial = RandomInfraSection[fib, {"a"}, "NextVertexFunction" -> Identity, RandomSeeding -> 7]},
+  {partial, RandomInfraSection[fib, partial, Properties -> {"Continuous"}, "NextVertexFunction" -> Identity, RandomSeeding -> 7]}]
 ```
+
+## Options
+
+### RandomSeeding
+
+A fixed seed reproduces the draw, whatever state `SeedRandom` has set:
+
+```wl
+Table[SeedRandom[k]; RandomInfraSection[InfraFibration[Graph[Range[8], {}], i |-> Ceiling[i / 2]], RandomSeeding -> 7], {k, 2}]
+```
+
 
 ## Possible Issues
 
@@ -89,7 +101,7 @@ SeedRandom[7];
 With[
   {fib = InfraFiberedGraph[GraphProduct[PathGraph[{1, 2, 3}], Graph[{1, 2}, {}], "Cartesian"], First]},
   {partial = InfraSection[<|1 -> {1, 1}, 3 -> {3, 2}|>]},
-  {InfraContinuousSectionQ[fib, partial], RandomInfraSection[fib, partial, Properties -> {"Continuous"}]}]
+  {InfraContinuousSectionQ[fib, partial], RandomInfraSection[fib, partial, Properties -> {"Continuous"}, RandomSeeding -> 7]}]
 ```
 
 A pruning callback may miss existing solutions. An empty result then concerns the retained search tree.

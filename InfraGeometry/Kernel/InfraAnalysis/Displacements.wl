@@ -175,7 +175,16 @@ TranslationDisplacement[ graph_Graph, vector_List ] :=
       VertexList @ graph,
       Map[ point |-> nearest[ point, { All, First @ distance @ point + 10^-6 } ], ( # + vector & ) /@ GraphEmbedding @ graph ] ] ]
 
-RandomDisplacement[ graph_Graph, radius_ : 1 ] :=
+Options[ RandomDisplacement ] = { RandomSeeding -> Automatic }
+
+RandomDisplacement[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomDisplacement[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomDisplacement[ ___, RandomSeeding -> None ] ] ] ]
+
+RandomDisplacement[ graph_Graph, radius : Except[ _Rule | _RuleDelayed ] : 1, opts : OptionsPattern[] ] /;
+    MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] :=
   With[
     {
       order = First @ Last @ Reap[ BreadthFirstScan[ graph, First @ VertexList @ graph, { "DiscoverVertex" -> ( Sow[ #1 ] & ) } ] ],

@@ -12,13 +12,21 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 Options[ RandomInfraRegularPolygon ] = {
   Properties           -> { },
   "NextVertexFunction" -> Automatic,
-  "From"               -> All
+  "From"               -> All,
+  RandomSeeding        -> Automatic
 }
 
+RandomInfraRegularPolygon[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomInfraRegularPolygon[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomInfraRegularPolygon[ ___, RandomSeeding -> None ] ] ] ]
+
 RandomInfraRegularPolygon[ graph_Graph, As_List, n_Integer /; n >= 3,
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraRegularPolygon ], First /@ { opts } ] &&
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraRegularPolygon ], First /@ { opts } ] &&
     1 <= Length[ As ] <= Floor[ n / 2 ] && OptionValue[ RandomInfraRegularPolygon, { opts }, Properties ] === { } &&
-    ( count =!= All || OptionValue[ RandomInfraRegularPolygon, { opts }, "NextVertexFunction" ] =!= RandomChoice ) :=
+    ( count =!= All || OptionValue[ RandomInfraRegularPolygon, { opts }, "NextVertexFunction" ] =!= RandomChoice ) ) :=
   With[ {
       nextFn   = If[ count === All &&
           OptionValue[ RandomInfraRegularPolygon, { opts }, "NextVertexFunction" ] === Automatic,
@@ -114,9 +122,10 @@ InfraRegularPolygonQ[ graph_Graph, w_Graph, As_List ] :=
     As ]
 
 RandomInfraRegularPolygon[ graph_Graph, InfraRegularPolygon[ As_List, n_Integer, opts___Rule ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraRegularPolygon ], First /@ { samplerOpts } ] &&
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; MemberQ[ Flatten @ { samplerOpts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraRegularPolygon ], First /@ { samplerOpts } ] &&
     SubsetQ[ First /@ Options[ RandomInfraRegularPolygon ], First /@ { samplerOpts, opts } ] &&
-    ( OptionValue[ RandomInfraRegularPolygon, { samplerOpts, opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+    ( OptionValue[ RandomInfraRegularPolygon, { samplerOpts, opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) ) :=
   Replace[
     RandomInfraRegularPolygon[ graph, As, n, count,
       samplerOpts, opts ],

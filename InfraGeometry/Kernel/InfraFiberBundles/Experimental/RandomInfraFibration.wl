@@ -7,11 +7,18 @@ Options[ RandomInfraFibration ] = {
   "VerticalEdges" -> 0,
   "HorizontalEdgesRadius" -> 1,
   "HorizontalEdgesDensity" -> 1,
-  "IsomorphicFibers" -> False
+  "IsomorphicFibers" -> False,
+  RandomSeeding            -> Automatic
 }
 
-RandomInfraFibration[ base_Graph, opts : OptionsPattern[] ] /;
-    SubsetQ[ First /@ Options[ RandomInfraFibration ], First /@ Flatten @ { opts } ] &&
+RandomInfraFibration[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomInfraFibration[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomInfraFibration[ ___, RandomSeeding -> None ] ] ] ]
+
+RandomInfraFibration[ base_Graph, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraFibration ], First /@ Flatten @ { opts } ] &&
     With[ { vertices = OptionValue[ RandomInfraFibration, { opts }, "VerticalVertices" ],
         edges = OptionValue[ RandomInfraFibration, { opts }, "VerticalEdges" ],
         density = OptionValue[ RandomInfraFibration, { opts }, "HorizontalEdgesDensity" ] },
@@ -21,7 +28,7 @@ RandomInfraFibration[ base_Graph, opts : OptionsPattern[] ] /;
         ( MatchQ[ vertices, _Integer?Positive ] || MatchQ[ vertices, { lo_Integer?Positive, hi_Integer?Positive } /; lo <= hi ] ) &&
         ( MatchQ[ edges, _Integer?NonNegative ] || MatchQ[ edges, { lo_Integer?NonNegative, hi_Integer?NonNegative } /; lo <= hi ] ) &&
         ( density === All || NumericQ[ density ] && TrueQ[ density > 0 ] ||
-          MatchQ[ density, { lo_?NumericQ, hi_?NumericQ } /; 0 < lo <= hi ] ) ] :=
+          MatchQ[ density, { lo_?NumericQ, hi_?NumericQ } /; 0 < lo <= hi ] ) ] ) :=
   With[ { drawCount = spec |-> If[ IntegerQ[ spec ], spec, RandomInteger[ spec ] ],
       isomorphic = OptionValue[ RandomInfraFibration, { opts }, "IsomorphicFibers" ] },
     { sizes = If[ isomorphic && VertexCount[ base ] > 0,

@@ -33,8 +33,8 @@ A partial section chooses values in two fibers.
 SeedRandom[7];
 With[
   {fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> { 3 },
-    "VerticalEdgeCount" -> { 0 }, "HorizontalEdgeCount" -> All]},
-  {partial = RandomInfraSection[fib, {1, 3}]},
+    "VerticalEdgeCount" -> { 0 }, "HorizontalEdgeCount" -> All, RandomSeeding -> 7]},
+  {partial = RandomInfraSection[fib, {1, 3}, RandomSeeding -> 7]},
   InfraFiberedGraphHighlight[fib, partial]]
 ```
 

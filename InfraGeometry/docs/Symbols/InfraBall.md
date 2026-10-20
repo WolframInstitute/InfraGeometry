@@ -96,8 +96,8 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])},
-  {core = RandomInfraSegment[ g, InfraSegment[c, p] ]},
+  {p = RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]},
+  {core = RandomInfraSegment[ g, InfraSegment[c, p], RandomSeeding -> 1 ]},
   InfraSubstrateHighlight[g, {InfraBall[core, 1], core}]]
 ```
 

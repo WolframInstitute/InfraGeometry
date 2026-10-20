@@ -67,5 +67,5 @@ Choose one point of an equidistant locus.
 
 ```wl
 SeedRandom[ 71 ]; With[ { graph = CycleGraph[ 4 ] },
-  RandomInfraPoint[ graph, InfraPoint[ InfraEquidistantSet[ { 1, 3 } ] ] ] ]
+  RandomInfraPoint[ graph, InfraPoint[ InfraEquidistantSet[ { 1, 3 } ] ], RandomSeeding -> 71 ] ]
 ```

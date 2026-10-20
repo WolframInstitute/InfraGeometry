@@ -49,7 +49,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line = RandomInfraInfiniteLine[g, c, far]},
+  {line = RandomInfraInfiniteLine[g, c, far, RandomSeeding -> 1]},
   InfraParallelQ[g, line, line]]
 ```
 
@@ -85,9 +85,9 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line1 = RandomInfraInfiniteLine[g, c, far]},
+  {line1 = RandomInfraInfiniteLine[g, c, far, RandomSeeding -> 1]},
   {p = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line1, #] &]},
-  {line2 = RandomInfraInfiniteLine[g, p, SelectFirst[VertexList[g], GraphDistance[g, p, #] == 4 &]]},
+  {line2 = RandomInfraInfiniteLine[g, p, SelectFirst[VertexList[g], GraphDistance[g, p, #] == 4 &], RandomSeeding -> 1]},
   <|"parallel" -> InfraParallelQ[g, line1, line2],
     "distances from line2 to line1" -> Union @ Table[Min[GraphDistance[g, v, #] & /@ line1], {v, line2}]|>]
 ```

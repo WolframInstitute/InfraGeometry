@@ -75,10 +75,10 @@ A partial section, a continuous extension and a connection over the hexagon.
 SeedRandom[7];
 With[
   {fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> { 3 }, "VerticalEdgeCount" -> { 0 },
-    Properties -> { "IsomorphicFibers" }, "HorizontalEdgeCount" -> All]},
-  {partial = RandomInfraSection[fib, {1, 3}]},
-  {section = RandomInfraSection[fib, partial, Properties -> {"Continuous"}]},
-  {connection = RandomInfraConnection[fib]},
+    Properties -> { "IsomorphicFibers" }, "HorizontalEdgeCount" -> All, RandomSeeding -> 7]},
+  {partial = RandomInfraSection[fib, {1, 3}, RandomSeeding -> 7]},
+  {section = RandomInfraSection[fib, partial, Properties -> {"Continuous"}, RandomSeeding -> 7]},
+  {connection = RandomInfraConnection[fib, RandomSeeding -> 7]},
   InfraFiberedGraphHighlight[fib, {partial, section, connection}]]
 ```
 
@@ -87,9 +87,9 @@ The same structure in three views.
 ```wl
 SeedRandom[7];
 With[
-  {fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All]},
-  {section = RandomInfraSection[fib, Properties -> {"Continuous"}]},
-  {connection = RandomInfraConnection[fib]},
+  {fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All, RandomSeeding -> 7]},
+  {section = RandomInfraSection[fib, Properties -> {"Continuous"}, RandomSeeding -> 7]},
+  {connection = RandomInfraConnection[fib, RandomSeeding -> 7]},
   GraphicsRow[InfraFiberedGraphHighlight[fib, {section, connection}, Method -> #] & /@
     {"CircularFiber", "3DFiber", "HighlightFiber"}]]
 ```
@@ -101,8 +101,8 @@ Repeated traversals of a lifted walk retain their strength.
 ```wl
 SeedRandom[7];
 With[
-  {fib = RandomInfraFiberedGraph[CycleGraph[4], "VerticalVertexCount" -> { 2 }, "HorizontalEdgeCount" -> All]},
-  {connection = RandomInfraConnection[fib]},
+  {fib = RandomInfraFiberedGraph[CycleGraph[4], "VerticalVertexCount" -> { 2 }, "HorizontalEdgeCount" -> All, RandomSeeding -> 7]},
+  {connection = RandomInfraConnection[fib, RandomSeeding -> 7]},
   {start = First @ VertexList @ InfraFiber[fib, 1]},
   {lift = InfraHorizontalLift[fib, connection, start, {1, 2, 1, 2, 3}]},
   InfraFiberedGraphHighlight[fib, {connection -> StandardBlue, Style[InfraWalk[lift], StandardRed]},
@@ -114,7 +114,7 @@ A fiber is an ordinary graph-shaped highlight.
 ```wl
 SeedRandom[7];
 With[
-  {fib = RandomInfraFiberedGraph[CycleGraph[4], "VerticalVertexCount" -> { 3 }, "VerticalEdgeCount" -> { 2 }]},
+  {fib = RandomInfraFiberedGraph[CycleGraph[4], "VerticalVertexCount" -> { 3 }, "VerticalEdgeCount" -> { 2 }, RandomSeeding -> 7]},
   InfraFiberedGraphHighlight[fib, {Directive[StandardRed], InfraFiber[fib, 1]}, Method -> "HighlightFiber"]]
 ```
 

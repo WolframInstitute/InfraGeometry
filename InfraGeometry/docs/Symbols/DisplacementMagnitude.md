@@ -29,7 +29,7 @@ A random displacement of magnitude at most 2 on the discretized plane, the squar
 ```wl
 With[
   {graphs = InfraSubstrate[#, "Small", "KeepCoordinates" -> True] & /@ {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}},
-  {fields = (SeedRandom[1]; RandomDisplacement[#, 2]) & /@ graphs},
+  {fields = RandomDisplacement[#, 2, RandomSeeding -> 1] & /@ graphs},
   {GraphicsRow[MapThread[DisplacementPlot, {graphs, fields}]], MapThread[DisplacementMagnitude, {graphs, fields}]}]
 ```
 
@@ -60,7 +60,7 @@ The magnitude of a composite is at most the sum of the magnitudes.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {first = (SeedRandom[1]; RandomDisplacement[g, 2]), second = (SeedRandom[2]; RandomDisplacement[g, 1])},
+  {first = RandomDisplacement[g, 2, RandomSeeding -> 1], second = RandomDisplacement[g, 1, RandomSeeding -> 2]},
   {DisplacementPlot[g, DisplacementCompose[first, second]],
    DisplacementMagnitude[g, DisplacementCompose[first, second]] <= DisplacementMagnitude[g, first] + DisplacementMagnitude[g, second]}]
 ```

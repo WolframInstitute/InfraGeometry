@@ -49,7 +49,7 @@ Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {axis = RandomInfraSegment[ g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])] ]},
+    {axis = RandomInfraSegment[ g, InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]], RandomSeeding -> 1 ]},
     {cylinder = InfraCylinder[axis, 1]},
     {support = ( Keys @ InfraMeasurement[ g, cylinder, "VertexDensity" ] )},
     Labeled[

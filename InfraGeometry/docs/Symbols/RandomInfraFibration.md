@@ -26,7 +26,7 @@ RelatedTutorials: [ExperimentalInfraBundles]
 - For adjacent fibers of sizes *n* and *m*, positive numeric density *d* retains pairs (*i*, *j*) satisfying Mod[*i m* - *j n*, *n m*] < *d* Max[*n*, *m*]. This preserves the earlier diagonal-width convention; it is not an independent edge probability.
 - Density [All]() joins adjacent fibers completely. Positive numeric density always retains an edge over each base edge, but need not give every total vertex a lift.
 - Drawing coordinates are computed by [InfraFiberedGraphHighlight](), separately from construction.
-- Random draws use the ambient stream controlled by external [SeedRandom](). No per-call seed option is provided.
+- `RandomSeeding -> Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string gives a reproducible draw, and `Inherited` a local snapshot of the current state. The outer random state is restored afterward, as with [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html).
 
 | Option | Default | Values |
 |---|---|---|
@@ -35,6 +35,7 @@ RelatedTutorials: [ExperimentalInfraBundles]
 | `"HorizontalEdgesRadius"` | 1 | only 1 is supported by the over-base constructor |
 | `"HorizontalEdgesDensity"` | 1 | positive numeric width, ordered positive real range, or `All` |
 | `"IsomorphicFibers"` | `False` | whether all vertical fiber graphs are copies of one draw |
+| `RandomSeeding` | `Automatic` | an integer or string, `Inherited` |
 
 ## Basic Examples
 
@@ -44,7 +45,7 @@ A random fibered graph over a grid, with its central fiber highlighted.
 SeedRandom[ 1 ];
 With[
   { fib = RandomInfraFibration[ GridGraph[ { 3, 3 } ],
-      "VerticalVertices" -> 3, "VerticalEdges" -> 1 ] },
+      "VerticalVertices" -> 3, "VerticalEdges" -> 1, RandomSeeding -> 1 ] },
   InfraFiberedGraphHighlight[ fib, { InfraFiber[ fib, 5 ] } ] ]
 ```
 
@@ -52,7 +53,7 @@ The default total graph is a copy of the base.
 
 ```wl
 SeedRandom[ 1 ];
-With[ { fib = RandomInfraFibration[ CycleGraph[ 6 ] ] },
+With[ { fib = RandomInfraFibration[ CycleGraph[ 6 ], RandomSeeding -> 1 ] },
   { InfraFiberedGraphHighlight[ fib ], IsomorphicGraphQ[ InfraTotalGraph[ fib ], CycleGraph[ 6 ] ] } ]
 ```
 
@@ -64,7 +65,7 @@ A range gives fibers of different sizes.
 
 ```wl
 SeedRandom[ 2 ];
-With[ { fib = RandomInfraFibration[ CycleGraph[ 6 ], "VerticalVertices" -> { 1, 4 } ] },
+With[ { fib = RandomInfraFibration[ CycleGraph[ 6 ], "VerticalVertices" -> { 1, 4 }, RandomSeeding -> 2 ] },
   InfraFiberedGraphHighlight[ fib ] ]
 ```
 
@@ -75,9 +76,17 @@ Complete joins support every section choice and every matching between equal-siz
 ```wl
 SeedRandom[ 3 ];
 With[ { fib = RandomInfraFibration[ CycleGraph[ 6 ], "VerticalVertices" -> 3,
-      "IsomorphicFibers" -> True, "HorizontalEdgesDensity" -> All ] },
-  { section = RandomInfraSection[ fib, Properties -> { "Continuous" } ] },
+      "IsomorphicFibers" -> True, "HorizontalEdgesDensity" -> All, RandomSeeding -> 3 ] },
+  { section = RandomInfraSection[ fib, Properties -> { "Continuous" }, RandomSeeding -> 3 ] },
   InfraFiberedGraphHighlight[ fib, { section } ] ]
+```
+
+### RandomSeeding
+
+A fixed seed reproduces the draw, whatever state `SeedRandom` has set:
+
+```wl
+Table[SeedRandom[k]; InfraFibers @ RandomInfraFibration[Graph[Range[4], {}], "VerticalVertices" -> {2, 4}, RandomSeeding -> 7], {k, 2}]
 ```
 
 ## Possible Issues

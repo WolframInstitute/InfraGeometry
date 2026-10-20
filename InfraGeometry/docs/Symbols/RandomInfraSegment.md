@@ -18,7 +18,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Details & Options
 
-The default draw is random. Seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing.
+The default draw is random. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing. `RandomSeeding -> Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string gives a reproducible draw, and `Inherited` a local snapshot of the current state. The outer random state is restored afterward, as with [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html).
 
 A segment from *a* to *b* is a shortest path: a path whose length realizes $d(a,b)$.
 
@@ -67,15 +67,26 @@ The count-less call is one shortest path; a count gives a list.
 
 ```wl
 SeedRandom[1];
-{RandomInfraSegment[GridGraph[{4, 4}], 1, 11], RandomInfraSegment[GridGraph[{4, 4}], 1, 11, 2]}
+{RandomInfraSegment[GridGraph[{4, 4}], 1, 11, RandomSeeding -> 1], RandomInfraSegment[GridGraph[{4, 4}], 1, 11, 2, RandomSeeding -> 1]}
 ```
 
 A strict count that cannot be met gives the empty list.
 
 ```wl
 SeedRandom[1];
-RandomInfraSegment[GridGraph[{4, 4}], 1, 11, 7]
+RandomInfraSegment[GridGraph[{4, 4}], 1, 11, 7, RandomSeeding -> 1]
 ```
+
+## Options
+
+### RandomSeeding
+
+A fixed seed reproduces the draw, whatever state `SeedRandom` has set:
+
+```wl
+Table[SeedRandom[k]; RandomInfraSegment[GridGraph[{4, 4}], 1, 16, RandomSeeding -> 7], {k, 2}]
+```
+
 
 ## Properties and Relations
 

@@ -46,7 +46,7 @@ A random displacement is built to be 1-continuous.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {field = (SeedRandom[1]; RandomDisplacement[g, 2])},
+  {field = RandomDisplacement[g, 2, RandomSeeding -> 1]},
   {DisplacementPlot[g, field], ContinuousDisplacementQ[g, field]}]
 ```
 
@@ -90,6 +90,6 @@ Composites of 1-continuous displacements are 1-continuous.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {first = (SeedRandom[1]; RandomDisplacement[g, 2]), second = (SeedRandom[2]; RandomDisplacement[g, 1])},
+  {first = RandomDisplacement[g, 2, RandomSeeding -> 1], second = RandomDisplacement[g, 1, RandomSeeding -> 2]},
   {DisplacementPlot[g, DisplacementCompose[first, second]], ContinuousDisplacementQ[g, #] & /@ {first, second, DisplacementCompose[first, second]}}]
 ```

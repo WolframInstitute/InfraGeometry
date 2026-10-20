@@ -84,9 +84,9 @@ VerificationTest[
   With[ { scene = InfraScene[ { p, q, r }, { p == InfraPoint[], q == InfraPoint[], r == InfraPoint[] } ],
       graph = PathGraph[ Range[ 5 ] ] },
     With[ { observed = Reap[ RandomInfraSceneInstance[ scene, graph,
-        "NextVertexFunction" -> ( candidates |-> ( Sow[ RandomInfraPoint[ graph, InfraPoint[] ] ]; candidates ) ), RandomSeeding -> 41 ] ] },
+        "NextVertexFunction" -> ( candidates |-> ( Sow[ RandomInfraPoint[ graph, InfraPoint[], RandomSeeding -> None ] ]; candidates ) ), RandomSeeding -> 41 ] ] },
       Head[ First[ observed ] ] === InfraSceneInstance &&
-        Last[ observed ] === { BlockRandom[ Table[ RandomInfraPoint[ graph, InfraPoint[] ], 3 ], RandomSeeding -> 41 ] } ] ],
+        Last[ observed ] === { BlockRandom[ Table[ RandomInfraPoint[ graph, InfraPoint[], RandomSeeding -> None ], 3 ], RandomSeeding -> 41 ] } ] ],
   True,
   TestID -> "RandomInfraSceneInstance-nested-named-samplers-use-scene-stream"
 ]

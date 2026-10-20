@@ -61,7 +61,7 @@ Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {axis = RandomInfraSegment[ g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])] ]},
+    {axis = RandomInfraSegment[ g, InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]], RandomSeeding -> 1 ]},
     {cone = InfraCone[axis, 1/2]},
     {support = ( Keys @ InfraMeasurement[ g, cone, "VertexDensity" ] )},
     Labeled[
@@ -77,7 +77,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {axis = RandomInfraSegment[ g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])] ]},
+  {axis = RandomInfraSegment[ g, InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]], RandomSeeding -> 1 ]},
   GraphicsRow[{
     InfraSubstrateHighlight[g, {InfraCone[axis, 1], axis}],
     InfraSubstrateHighlight[g, {InfraCone[Reverse @ axis, 1], axis}]}]]
@@ -92,7 +92,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},
-  {axis = RandomInfraSegment[ g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 6]])] ]},
+  {axis = RandomInfraSegment[ g, InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 1]], RandomSeeding -> 1 ]},
   {slopes = Range[0, 2, 1/4]},
   ListLinePlot[
     Table[{m, InfraMeasurement[g, InfraCone[axis, m], measure]}, {measure, {"CountingMeasure", "RiemannianMeasure"}}, {m, slopes}],
@@ -106,7 +106,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {axis = RandomInfraSegment[ g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])] ]},
+  {axis = RandomInfraSegment[ g, InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]], RandomSeeding -> 1 ]},
   {cone = InfraCone[axis, 1, Method -> "Balls"]},
   {farBall = InfraBall[Last[axis], 4]},
   {GraphicsRow[{InfraSubstrateHighlight[g, {InfraCone[axis, 1], axis}], InfraSubstrateHighlight[g, {cone, axis}], InfraSubstrateHighlight[g, {farBall, Last[axis]}]}],
@@ -120,6 +120,6 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small"]},
   {c = First @ GraphCenter[g]},
-  {axis = RandomInfraSegment[ g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])] ]},
+  {axis = RandomInfraSegment[ g, InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]], RandomSeeding -> 1 ]},
   SubsetQ[Keys @ InfraMeasurement[ g, InfraCylinder[axis, Length[axis] - 1], "VertexDensity" ], Keys @ InfraMeasurement[ g, InfraCone[axis, 1], "VertexDensity" ]]]
 ```

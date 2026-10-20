@@ -306,7 +306,7 @@ VerificationTest[
 
 VerificationTest[
   Internal`InheritedBlock[ { RandomInfraPoint },
-    RandomInfraPoint[ graph_Graph, InfraPoint[ "DuplicateFixture" ], All ] := { 1, 1 };
+    RandomInfraPoint[ graph_Graph, InfraPoint[ "DuplicateFixture" ], All, RandomSeeding -> None ] := { 1, 1 };
     With[ { data = InfraSceneMultiway[ InfraScene[ { p }, { p == InfraPoint[ "DuplicateFixture" ] } ],
         PathGraph[ { 1, 2 } ], "MaxStates" -> 2, "MaxEvents" -> 2, "MaxCandidates" -> 2 ] },
       { Length[ data[ "States" ] ], Length[ data[ "Events" ] ], data[ "States" ][ 2 ][ "IncomingEvents" ],
@@ -316,7 +316,7 @@ VerificationTest[
 
 VerificationTest[
   Internal`InheritedBlock[ { RandomInfraSphere },
-    RandomInfraSphere[ graph_Graph, InfraSphere[ "SetFixture" ], All ] := { { 3, 1, 1 }, { 1, 3 } };
+    RandomInfraSphere[ graph_Graph, InfraSphere[ "SetFixture" ], All, RandomSeeding -> None ] := { { 3, 1, 1 }, { 1, 3 } };
     With[ { data = InfraSceneMultiway[ InfraScene[ { region }, { region == InfraSphere[ "SetFixture" ] } ],
         PathGraph[ Range[ 3 ] ] ] },
       { Length[ data[ "States" ] ], Length[ data[ "Events" ] ], data[ "Instances" ],
@@ -327,7 +327,7 @@ VerificationTest[
 
 VerificationTest[
   Internal`InheritedBlock[ { RandomInfraPoint },
-    RandomInfraPoint[ graph_Graph, InfraPoint[ "SlowFixture" ], All ] := ( Pause[ 1 ]; { 1 } );
+    RandomInfraPoint[ graph_Graph, InfraPoint[ "SlowFixture" ], All, RandomSeeding -> None ] := ( Pause[ 1 ]; { 1 } );
     With[ { data = InfraSceneMultiway[ InfraScene[ { p }, { p == InfraPoint[ "SlowFixture" ] } ],
         PathGraph[ { 1, 2 } ], "MaxTime" -> 0.1 ] },
       { data[ "Instances" ], Length[ data[ "Events" ] ], data[ "Completeness" ][ "Scene" ],
@@ -347,7 +347,7 @@ VerificationTest[
 
 VerificationTest[
   Internal`InheritedBlock[ { RandomInfraInfiniteLine },
-    RandomInfraInfiniteLine[ graph_Graph, InfraInfiniteLine[ "SelectionFixture" ], All ] :=
+    RandomInfraInfiniteLine[ graph_Graph, InfraInfiniteLine[ "SelectionFixture" ], All, RandomSeeding -> None ] :=
       { { 1, 2, 3 }, { 1, 2 }, { 3, 2, 1 } };
     With[ { data = InfraSceneMultiway[ InfraScene[ { w },
           { w == InfraInfiniteLine[ "SelectionFixture", "Select" -> "MinLength" ] } ], PathGraph[ Range[ 3 ] ] ] },

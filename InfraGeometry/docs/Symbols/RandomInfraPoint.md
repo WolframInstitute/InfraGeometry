@@ -43,7 +43,7 @@ Any symbolic object that <code>[InfraMeasurement]()[*g*, *reg*, "VertexDensity"]
 
 The count *n* is `n`, `UpTo[n]` or `All`. The *n* points are distinct. `UpTo[n]` gives at most *n*, `All` gives every vertex of the region. Without *n* the result is one vertex, not a list.
 
-Default `All` and `"NextVertexFunction" -> Identity` preserve the random state. The token form accepts only `"NextVertexFunction"`; pairwise constraints belong to the bare point sampler.
+Default `All` and `"NextVertexFunction" -> Identity` are deterministic. `RandomSeeding -> Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string gives a reproducible draw, and `Inherited` a local snapshot of the current state. The outer random state is restored afterward, as with [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html). The token form accepts only `"NextVertexFunction"`; pairwise constraints belong to the bare point sampler.
 
 An empty region gives `{}`. So does a region with fewer than *n* vertices.
 
@@ -56,12 +56,13 @@ Options:
 | `"PairwiseDistance"` | `None` (default), *d*, `{dMin, dMax}`, `"Max"`, `"Spread"` |
 | `"MaxCliques"` | bound on the clique search behind `"PairwiseDistance"` |
 | `"NextVertexFunction"` | `Automatic` (default), `Identity` |
+| `RandomSeeding` | `Automatic` (default), an integer or string, `Inherited` |
 
 `"PairwiseDistance"` is a condition on the drawn tuple, not on a single point: the *n* points are pairwise at distance *d*, or in `[dMin, dMax]`. `"Max"` takes the largest *dMin* that still admits a tuple. `"Spread"` takes the tuple whose pairwise distances vary least. The condition makes the result one jointly constrained tuple, and `{}` when none exists. `UpTo[n]` and `All` under it ask for a tuple of `Min[n, Length of the region]` points.
 
 To keep a whole construction interior, not just its anchors, cut the substrate with `CenterGraph[g, k]` and work on that graph: it is the ball of `k` hops about `GraphCenter[g]`, a negative `k` counting back from the radius and `Scaled[q]` taking the fraction `q` of it, and it carries the same vertex labels and coordinates, so the result draws on the original. Restricting the region alone pins only the anchors; a construction with slack spends it outward.
 
-The draw is random: seed with `SeedRandom` before the first call if you need a reproducible figure.
+The draw is random: give `RandomSeeding -> n` for a reproducible figure.
 
 Corresponding notions in the classical axiom systems:
 
@@ -74,12 +75,12 @@ Corresponding notions in the classical axiom systems:
 
 ## Basic Examples
 
-One point is a vertex. `SeedRandom` in front fixes the draw.
+One point is a vertex. `RandomSeeding` fixes the draw.
 
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g])},
+  {p = RandomInfraPoint[g, RandomSeeding -> 1]},
   {InfraSubstrateHighlight[g, {p}], p}]
 ```
 
@@ -88,7 +89,7 @@ A count gives a list of vertices: here five of them.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {points = (SeedRandom[1]; RandomInfraPoint[g, 5])},
+  {points = RandomInfraPoint[g, 5, RandomSeeding -> 1]},
   {InfraSubstrateHighlight[g, {points}], points}]
 ```
 
@@ -98,7 +99,7 @@ A region says where the points may lie. Three points at distance 4 from the cent
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {points = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4], 3])},
+  {points = RandomInfraPoint[g, InfraShell[c, 4], 3, RandomSeeding -> 1]},
   {InfraSubstrateHighlight[g, {InfraShell[c, 4], points, c}], points}]
 ```
 
@@ -108,7 +109,7 @@ Four points within distance 3 of the centre, drawn from a ball.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {points = (SeedRandom[1]; RandomInfraPoint[g, InfraBall[c, 3], 4])},
+  {points = RandomInfraPoint[g, InfraBall[c, 3], 4, RandomSeeding -> 1]},
   {InfraSubstrateHighlight[g, {InfraBall[c, 3], points}], points}]
 ```
 
@@ -118,7 +119,7 @@ Three points pairwise as far apart as the region allows: spread on the circle ab
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {corners = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4], 3, "PairwiseDistance" -> "Max"])},
+  {corners = RandomInfraPoint[g, InfraShell[c, 4], 3, "PairwiseDistance" -> "Max", RandomSeeding -> 1]},
   {InfraSubstrateHighlight[g, {InfraShell[c, 4], corners}], corners}]
 ```
 
@@ -129,8 +130,8 @@ The centre is one vertex and the periphery of a patch is its rim; both are verte
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {centre = RandomInfraPoint[g, GraphCenter[g]]},
-  {rim = (SeedRandom[1]; RandomInfraPoint[g, GraphPeriphery[g], 4])},
+  {centre = RandomInfraPoint[g, GraphCenter[g], RandomSeeding -> 1]},
+  {rim = RandomInfraPoint[g, GraphPeriphery[g], 4, RandomSeeding -> 1]},
   {InfraSubstrateHighlight[g, {GraphPeriphery[g], rim, centre}], centre, rim}]
 ```
 
@@ -140,7 +141,7 @@ A band of distances about a vertex.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {points = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, {2, 4}], 5])},
+  {points = RandomInfraPoint[g, InfraShell[c, {2, 4}], 5, RandomSeeding -> 1]},
   {InfraSubstrateHighlight[g, {InfraShell[c, {2, 4}], points}], points}]
 ```
 
@@ -149,7 +150,7 @@ A ball about several vertices is the union of their balls.
 ```wl
 With[
   {g = GridGraph[{10, 10}]},
-  {points = (SeedRandom[1]; RandomInfraPoint[g, InfraBall[{12, 89}, 3], 5])},
+  {points = RandomInfraPoint[g, InfraBall[{12, 89}, 3], 5, RandomSeeding -> 1]},
   {HighlightGraph[g, {InfraBall[{12, 89}, 3], points}], points}]
 ```
 
@@ -159,7 +160,7 @@ A point on a segment, a point on a line.
 With[
   {g = GridGraph[{10, 10}]},
   {segment = InfraSegment[1, 100]},
-  {points = (SeedRandom[1]; RandomInfraPoint[g, segment, 3])},
+  {points = RandomInfraPoint[g, segment, 3, RandomSeeding -> 1]},
   {HighlightGraph[g, {segment, points}], points}]
 ```
 
@@ -170,7 +171,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {region = InfraUnion[InfraShell[c, 2], InfraShell[c, 5]]},
-  {points = (SeedRandom[1]; RandomInfraPoint[g, region, 4])},
+  {points = RandomInfraPoint[g, region, 4, RandomSeeding -> 1]},
   {InfraSubstrateHighlight[g, {region, points}], points}]
 ```
 
@@ -182,7 +183,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {outside = Complement[VertexList[g], Keys @ InfraMeasurement[ g, InfraBall[c, 6], "VertexDensity" ]]},
-  {points = (SeedRandom[1]; RandomInfraPoint[g, outside, 3])},
+  {points = RandomInfraPoint[g, outside, 3, RandomSeeding -> 1]},
   {InfraSubstrateHighlight[g, {outside, points}], points}]
 ```
 
@@ -211,7 +212,7 @@ With[
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {pair = (SeedRandom[1]; RandomInfraPoint[g, 2, "PairwiseDistance" -> 4])},
+  {pair = RandomInfraPoint[g, 2, "PairwiseDistance" -> 4, RandomSeeding -> 1]},
   {InfraSubstrateHighlight[g, {pair}], GraphDistance[g, First @ pair, Last @ pair]}]
 ```
 
@@ -220,7 +221,7 @@ A range of distances.
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {triple = (SeedRandom[1]; RandomInfraPoint[g, 3, "PairwiseDistance" -> {3, 5}])},
+  {triple = RandomInfraPoint[g, 3, "PairwiseDistance" -> {3, 5}, RandomSeeding -> 1]},
   {InfraSubstrateHighlight[g, {triple}], triple}]
 ```
 
@@ -230,8 +231,16 @@ With[
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {triple = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 3], 3, "PairwiseDistance" -> "Spread"])},
+  {triple = RandomInfraPoint[g, InfraShell[c, 3], 3, "PairwiseDistance" -> "Spread", RandomSeeding -> 1]},
   {InfraSubstrateHighlight[g, {InfraShell[c, 3], triple}], triple}]
+```
+
+### RandomSeeding
+
+A fixed seed reproduces the draw, whatever state `SeedRandom` has set:
+
+```wl
+Table[SeedRandom[k]; RandomInfraPoint[GridGraph[{4, 4}], 3, RandomSeeding -> 7], {k, 2}]
 ```
 
 ## Properties and Relations

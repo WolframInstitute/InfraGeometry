@@ -63,7 +63,7 @@ Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {tube = InfraTube[InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])], 2]},
+    {tube = InfraTube[InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]], 2]},
     {support = ( Keys @ InfraMeasurement[ g, tube, "VertexDensity" ] )},
     Labeled[
       InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
@@ -77,7 +77,7 @@ The two measures against the radius, about a segment of length 6 on the square g
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},
-  {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 6]])]},
+  {seg = InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 1]]},
   ListLinePlot[
     Table[InfraMeasurement[g, InfraTube[seg, s], measure], {measure, {"CountingMeasure", "RiemannianMeasure"}}, {s, 0, 5}],
     DataRange -> {0, 5}, PlotMarkers -> Automatic, PlotLegends -> {"CountingMeasure", "RiemannianMeasure"}, AxesLabel -> {"s", None}]]
@@ -89,7 +89,7 @@ The mantle of radii 2 and 3 about a segment.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])]},
+  {seg = InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]]},
   InfraSubstrateHighlight[g, {InfraTube[seg, {2, 3}], seg}]]
 ```
 
@@ -122,7 +122,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},
-  {fat = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
+  {fat = InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 1]]},
   {intervalSize = InfraMeasurement[g, fat, "CountingMeasure"]},
   {path = ( Keys @ InfraMeasurement[ g, fat, "VertexDensity" ] )},
   Show[
@@ -139,8 +139,8 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])]},
-  {tubes = {InfraTube[seg, 1], InfraTube[Replace[ seg, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraShell :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCylinder :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCone :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSolidOfRevolution :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraBallHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraConvexHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraQuadric :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ], 1]}},
+  {seg = InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]]},
+  {tubes = {InfraTube[seg, 1], InfraTube[Replace[ seg, { token_InfraPoint :> RandomInfraPoint[ g, token, RandomSeeding -> 1 ], token_InfraSegment :> RandomInfraSegment[ g, token, RandomSeeding -> 1 ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, RandomSeeding -> 1 ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, RandomSeeding -> 1 ], token_InfraCircle :> RandomInfraCircle[ g, token, RandomSeeding -> 1 ], token_InfraArc :> RandomInfraArc[ g, token, RandomSeeding -> 1 ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, RandomSeeding -> 1 ], token_InfraPlane :> RandomInfraPlane[ g, token, RandomSeeding -> 1 ], token_InfraBall :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraShell :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSphere :> RandomInfraSphere[ g, token, RandomSeeding -> 1 ], token_InfraTube :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCylinder :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCone :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSolidOfRevolution :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraBallHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraConvexHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraQuadric :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraWalk :> RandomInfraWalk[ g, token, RandomSeeding -> 1 ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, RandomSeeding -> 1 ], token_InfraEllipse :> RandomInfraEllipse[ g, token, RandomSeeding -> 1 ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token, RandomSeeding -> 2 ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, RandomSeeding -> 2 ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, RandomSeeding -> 2 ] } ], 1]}},
   {Row[InfraSubstrateHighlight[g, {#}] & /@ tubes], InfraMeasurement[g, tubes, "CountingMeasure"]}]
 ```
 

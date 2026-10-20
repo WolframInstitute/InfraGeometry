@@ -196,16 +196,16 @@ VerificationTest[
 
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    BlockRandom[RandomInfraLine[g, 6, 7], RandomSeeding -> 17] ===
-      BlockRandom[RandomInfraLine[g, 6, 7], RandomSeeding -> 17] &&
-    InfraLineQ[g, BlockRandom[RandomInfraLine[g, 6, 7], RandomSeeding -> 17]]],
+    BlockRandom[RandomInfraLine[g, 6, 7, RandomSeeding -> None ], RandomSeeding -> 17] ===
+      BlockRandom[RandomInfraLine[g, 6, 7, RandomSeeding -> None ], RandomSeeding -> 17] &&
+    InfraLineQ[g, BlockRandom[RandomInfraLine[g, 6, 7, RandomSeeding -> None ], RandomSeeding -> 17]]],
   True,
   TestID -> "RandomInfraLine-default-is-seeded-and-valid"
 ]
 
 VerificationTest[
   Length @ DeleteDuplicates @ Table[
-    BlockRandom[RandomInfraLine[GridGraph[{4, 4}], 6, 7], RandomSeeding -> s],
+    BlockRandom[RandomInfraLine[GridGraph[{4, 4}], 6, 7, RandomSeeding -> None ], RandomSeeding -> s],
     {s, 1, 8}] > 1,
   True,
   TestID -> "RandomInfraLine-default-varies-across-seeds"
@@ -237,11 +237,11 @@ VerificationTest[
         {UndirectedEdge["s", "u"], UndirectedEdge["s", "v"], UndirectedEdge["u", "p"],
          UndirectedEdge["v", "p"], UndirectedEdge["p", "t"]}]],
       line = {"a", "b"}, p = "p"},
-    {draw = BlockRandom[RandomInfraParallel[g, line, p], RandomSeeding -> 17]},
-    {draw === BlockRandom[RandomInfraParallel[g, line, p], RandomSeeding -> 17],
+    {draw = BlockRandom[RandomInfraParallel[g, line, p, RandomSeeding -> None ], RandomSeeding -> 17]},
+    {draw === BlockRandom[RandomInfraParallel[g, line, p, RandomSeeding -> None ], RandomSeeding -> 17],
      InfraParallelQ[g, line, draw],
      Length @ DeleteDuplicates @ Table[
-       BlockRandom[RandomInfraParallel[g, line, p], RandomSeeding -> s], {s, 1, 8}] > 1}],
+       BlockRandom[RandomInfraParallel[g, line, p, RandomSeeding -> None ], RandomSeeding -> s], {s, 1, 8}] > 1}],
   {True, True, True},
   TestID -> "RandomInfraParallel-default-is-seeded-and-valid"
 ]

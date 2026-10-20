@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- **Breaking -- sampler seeding.** Every `Random*` sampler takes `RandomSeeding`, with `RandomInstance` semantics: `Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string reproduces a draw; `Inherited` takes a local snapshot of the current state; every setting restores the outer random state. `SeedRandom[n]; f[...]` no longer fixes a draw -- write `f[..., RandomSeeding -> n]`, which gives the same draw when `f` was the first random consumer. `RandomSeeding -> None` keeps the former ambient behaviour; nested sampler calls inside the paclet use it, so one seed covers a whole construction.
+- Remove the `LLM generated.` labels from the documentation; review lines stay.
+
 ## 2.7.5 (2026-10-19)
 
 - Add inert `InfraCircleThrough[points, InfraCircle[center, {r,s}]]` and `RandomInfraCircleThrough`, with exact native state-DAG storage, standard measurements, uniform rank sampling, scene integration and drawing. The family minimizes cycle length after enforcing prescribed vertices, simplicity and separation; cycles are identified modulo rotation and reversal. Literal vertex identities are preserved, including pattern-shaped labels.

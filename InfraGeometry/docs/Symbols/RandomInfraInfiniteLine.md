@@ -20,7 +20,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Details & Options
 
-The default draw is random. Seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing.
+The default draw is random. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing. `RandomSeeding -> Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string gives a reproducible draw, and `Inherited` a local snapshot of the current state. The outer random state is restored afterward, as with [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html).
 
 A line is an **inextensible shortest path**: a shortest path that no neighbour of either endpoint prolongs. [InfraInfiniteLineQ]() is the predicate, and every line returned satisfies it.
 
@@ -67,7 +67,7 @@ Row[Table[
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
      Labeled[
        InfraSubstrateHighlight[g,
-         {RandomInfraInfiniteLine[g, a, b, UpTo[3]], {a, b}},
+         {RandomInfraInfiniteLine[g, a, b, UpTo[3], RandomSeeding -> 1], {a, b}},
          "PointSizeRange" -> 15,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
          ImageSize -> 250],
@@ -88,7 +88,7 @@ The count-less call is one line; a bounded count gives a list, and a strict coun
 
 ```wl
 SeedRandom[1];
-{RandomInfraInfiniteLine[CycleGraph[6], 1, 2], RandomInfraInfiniteLine[CycleGraph[6], 1, 2, 2], RandomInfraInfiniteLine[CycleGraph[6], 1, 2, 5]}
+{RandomInfraInfiniteLine[CycleGraph[6], 1, 2, RandomSeeding -> 1], RandomInfraInfiniteLine[CycleGraph[6], 1, 2, 2, RandomSeeding -> 1], RandomInfraInfiniteLine[CycleGraph[6], 1, 2, 5, RandomSeeding -> 1]}
 ```
 
 A given shortest path prolongs to the lines containing it.
@@ -97,6 +97,17 @@ A given shortest path prolongs to the lines containing it.
 SeedRandom[1];
 RandomInfraInfiniteLine[GridGraph[{4, 4}], {1, 2, 6}, All]
 ```
+
+## Options
+
+### RandomSeeding
+
+A fixed seed reproduces the draw, whatever state `SeedRandom` has set:
+
+```wl
+Table[SeedRandom[k]; RandomInfraInfiniteLine[GridGraph[{4, 4}], 6, 7, RandomSeeding -> 7], {k, 2}]
+```
+
 
 ## Properties and Relations
 

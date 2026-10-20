@@ -2,7 +2,13 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraCircleThrough *)
 
-Options[ RandomInfraCircleThrough ] = { "NextVertexFunction" -> Automatic }
+Options[ RandomInfraCircleThrough ] = { "NextVertexFunction" -> Automatic, RandomSeeding -> Automatic }
+
+RandomInfraCircleThrough[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomInfraCircleThrough[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomInfraCircleThrough[ ___, RandomSeeding -> None ] ] ] ]
 
 (* The visited-set states retain simplicity and prescribed-point containment; a plain shortest-path DAG loses these constraints. *)
 
@@ -110,18 +116,18 @@ InfraMeasurement[ graph_Graph,
 
 RandomInfraCircleThrough[ graph_Graph, token_InfraCircleThrough,
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] /;
-    SubsetQ[ First /@ Options[ RandomInfraCircleThrough ], First /@ { opts } ] :=
+    opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraCircleThrough ], First /@ { opts } ] ) :=
   With[ { carrier = InfraMeasurement[ graph, token, "Graph" ] },
     RandomInfraCircleThrough[ carrier, count, opts ] /; GraphQ[ carrier ] ]
 
 RandomInfraCircleThrough[ carrier_Graph,
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] /;
-    DirectedGraphQ[ carrier ] && AcyclicGraphQ[ carrier ] &&
+    opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( DirectedGraphQ[ carrier ] && AcyclicGraphQ[ carrier ] &&
     AllTrue[ VertexList[ carrier ], MatchQ[ #, { _Integer, _ } ] & ] &&
     SubsetQ[ First /@ Options[ RandomInfraCircleThrough ], First /@ { opts } ] &&
-    MemberQ[ { Automatic, Identity }, OptionValue[ RandomInfraCircleThrough, { opts }, "NextVertexFunction" ] ] :=
+    MemberQ[ { Automatic, Identity }, OptionValue[ RandomInfraCircleThrough, { opts }, "NextVertexFunction" ] ] ) :=
   Module[ { source, sink, successors, suffixes, total, number, selected = <||>, draw, ranks,
       node, residual, path, targets, cumulative, choice, representatives },
     If[ VertexCount[ carrier ] == 0, Return[ {} ] ];
@@ -158,7 +164,7 @@ RandomInfraCircleThrough[ carrier_Graph,
 
 RandomInfraCircleThrough[ graph_Graph, points_List, circle_InfraCircle,
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] :=
+    opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] :=
   RandomInfraCircleThrough[ graph, InfraCircleThrough[ points, circle ], count, opts ]
 
 InfraMemberQ[ graph_Graph, token : InfraCircleThrough[ points_List, InfraCircle[ center_, { inner_Integer, outer_Integer } ] ],

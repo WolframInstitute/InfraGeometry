@@ -70,7 +70,7 @@ Dropping the far vertex breaks inextensibility, so the truncation is no longer a
 SeedRandom[1];
 With[
   {g = GridGraph[{5, 5}]},
-  {ray = RandomInfraRay[g, 1, 13]},
+  {ray = RandomInfraRay[g, 1, 13, RandomSeeding -> 1]},
   {InfraRayQ[g, ray], InfraRayQ[g, Most @ ray]}]
 ```
 

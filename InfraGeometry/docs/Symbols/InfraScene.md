@@ -46,7 +46,7 @@ ClearAll[pA, pB, circleA, circleB, meet];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
   {scene = InfraScene[{pA, pB, circleA, circleB, meet},
      {InfraSceneStep[{pA == InfraPoint[a]}, "point A"],
       InfraSceneStep[{pB == InfraPoint[b]}, "point B"],
@@ -81,8 +81,8 @@ ClearAll[pA, pB, circleA, circleB, meet];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
-  {rim = (SeedRandom[1]; RandomInfraPoint[g, GraphPeriphery[g]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
+  {rim = RandomInfraPoint[g, GraphPeriphery[g], RandomSeeding -> 1]},
   {scene = InfraScene[{pA, pB, circleA, circleB, meet},
      {pA == InfraPoint[a], pB == InfraPoint[b],
       circleA == InfraCircle[pA, {4, 5}], circleB == InfraCircle[pB, {4, 5}],
@@ -102,7 +102,7 @@ ClearAll[pA, pB, circleA, circleB, meet];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
   {scene = InfraScene[{pA, pB, circleA, circleB, meet},
      {pA == InfraPoint[a], pB == InfraPoint[b],
       circleA == InfraCircle[pA, 4], circleB == InfraCircle[pB, 4],
@@ -137,7 +137,7 @@ ClearAll[pA, pB, circleA, meet];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
   {scene = InfraScene[{pA, pB, circleA, meet},
      {pA == InfraPoint[a], pB == InfraPoint[b], circleA == InfraCircle[pA, {4, 5}],
       meet == InfraPoint[ InfraIntersection[circleA, InfraCircle[pB, {4, 5}]] ]}]},

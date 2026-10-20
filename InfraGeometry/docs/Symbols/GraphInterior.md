@@ -74,7 +74,7 @@ The interior and the boundary split the set: they are disjoint, and together the
 SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {region = Keys @ InfraMeasurement[ g, InfraBall[(SeedRandom[1]; RandomInfraPoint[g, InfraShell[First @ GraphCenter[g], 3]]), 4], "VertexDensity" ]},
+  {region = Keys @ InfraMeasurement[ g, InfraBall[RandomInfraPoint[g, InfraShell[First @ GraphCenter[g], 3], RandomSeeding -> 1], 4], "VertexDensity" ]},
   {InfraSubstrateHighlight[g, {GraphInterior[g, region] -> StandardGreen, GraphBoundary[g, region] -> StandardBlue}],
    Intersection[GraphInterior[g, region], GraphBoundary[g, region]], Sort[Join[GraphInterior[g, region], GraphBoundary[g, region]]] === Sort[region]}]
 ```

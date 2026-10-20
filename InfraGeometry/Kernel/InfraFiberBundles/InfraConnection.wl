@@ -37,16 +37,22 @@ InfraFlatConnectionQ[ fib : _[ _Graph, __ ], connections_List ] /;
     AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
   connections =!= { } && And @@ ( InfraFlatConnectionQ[ fib, # ] & /@ connections )
 
-Options[ RandomInfraConnection ] = { "NextVertexFunction" -> Automatic }
+Options[ RandomInfraConnection ] = { "NextVertexFunction" -> Automatic, RandomSeeding -> Automatic }
+
+RandomInfraConnection[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomInfraConnection[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomInfraConnection[ ___, RandomSeeding -> None ] ] ] ]
 
 RandomInfraConnection[ fib : _[ _Graph, __ ],
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] /;
-    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] &&
+    opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] &&
     SubsetQ[ First /@ Options[ RandomInfraConnection ], First /@ Flatten @ { opts } ] &&
     With[ { next = OptionValue[ RandomInfraConnection, { opts }, "NextVertexFunction" ] },
       ! MatchQ[ next, _String | _Integer | _Real | _Rational | _Complex | _List | _Association | _Rule | _RuleDelayed ] &&
-        ( count =!= All || next =!= RandomChoice ) ] :=
+        ( count =!= All || next =!= RandomChoice ) ] ) :=
   With[ { total = InfraTotalSpace @ fib, base = InfraBaseSpace @ fib, projection = InfraProjection @ fib,
       cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
       next = Replace[ OptionValue[ RandomInfraConnection, { opts }, "NextVertexFunction" ],

@@ -107,7 +107,7 @@ Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {a = First @ GraphCenter[g]},
-    {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
+    {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
     {seg = InfraSegment[a, b]},
     Labeled[
       InfraSubstrateHighlight[g, {seg, a, b}],
@@ -122,8 +122,8 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])]},
-  {axis = Replace[ seg, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraShell :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCylinder :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCone :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSolidOfRevolution :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraBallHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraConvexHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraQuadric :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ]},
+  {seg = InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]]},
+  {axis = Replace[ seg, { token_InfraPoint :> RandomInfraPoint[ g, token, RandomSeeding -> 1 ], token_InfraSegment :> RandomInfraSegment[ g, token, RandomSeeding -> 1 ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, RandomSeeding -> 1 ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, RandomSeeding -> 1 ], token_InfraCircle :> RandomInfraCircle[ g, token, RandomSeeding -> 1 ], token_InfraArc :> RandomInfraArc[ g, token, RandomSeeding -> 1 ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, RandomSeeding -> 1 ], token_InfraPlane :> RandomInfraPlane[ g, token, RandomSeeding -> 1 ], token_InfraBall :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraShell :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSphere :> RandomInfraSphere[ g, token, RandomSeeding -> 1 ], token_InfraTube :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCylinder :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCone :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSolidOfRevolution :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraBallHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraConvexHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraQuadric :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraWalk :> RandomInfraWalk[ g, token, RandomSeeding -> 1 ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, RandomSeeding -> 1 ], token_InfraEllipse :> RandomInfraEllipse[ g, token, RandomSeeding -> 1 ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token, RandomSeeding -> 2 ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, RandomSeeding -> 2 ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, RandomSeeding -> 2 ] } ]},
   {regions = {InfraBall[c, 3], InfraShell[c, {2, 3}], InfraTube[seg, 1], InfraCylinder[axis, 1], InfraCone[axis, 1, Method -> "Balls"]}},
   {supports = Keys @ InfraMeasurement[g, #, "VertexDensity"] & /@ regions},
   {Row[InfraSubstrateHighlight[g, {InfraInterior[g, #] -> StandardGreen, InfraBoundary[g, #] -> StandardBlue}] & /@ supports],
@@ -137,7 +137,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
   InfraMeasurement[g, InfraSegment[a, b], "Graph"]]
 ```
 
@@ -148,7 +148,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
   {seg = InfraSegment[a, b]},
   GraphicsRow[{
     InfraSubstrateHighlight[g, {InfraMeasurement[g, seg, "VertexDensity"]}],
@@ -164,7 +164,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
   {all = InfraMeasurement[g, InfraSegment[a, b], All]},
   {InfraSubstrateHighlight[g, {all["Subgraph"]}], Keys @ all}]
 ```
@@ -176,7 +176,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
   {heads = {InfraSegment[a, b], InfraCircle[a, {2, 4}]}},
   {InfraSubstrateHighlight[g, heads], InfraMeasurement[g, heads, "Cardinality"]}]
 ```
@@ -190,8 +190,8 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
   {c = First @ GraphCenter[g]},
-  {fat = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
-  {path = Replace[ fat, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraShell :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCylinder :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCone :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSolidOfRevolution :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraBallHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraConvexHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraQuadric :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ]},
+  {fat = InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 1]]},
+  {path = Replace[ fat, { token_InfraPoint :> RandomInfraPoint[ g, token, RandomSeeding -> 1 ], token_InfraSegment :> RandomInfraSegment[ g, token, RandomSeeding -> 1 ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, RandomSeeding -> 1 ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, RandomSeeding -> 1 ], token_InfraCircle :> RandomInfraCircle[ g, token, RandomSeeding -> 1 ], token_InfraArc :> RandomInfraArc[ g, token, RandomSeeding -> 1 ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, RandomSeeding -> 1 ], token_InfraPlane :> RandomInfraPlane[ g, token, RandomSeeding -> 1 ], token_InfraBall :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraShell :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSphere :> RandomInfraSphere[ g, token, RandomSeeding -> 1 ], token_InfraTube :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCylinder :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCone :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSolidOfRevolution :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraBallHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraConvexHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraQuadric :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraWalk :> RandomInfraWalk[ g, token, RandomSeeding -> 1 ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, RandomSeeding -> 1 ], token_InfraEllipse :> RandomInfraEllipse[ g, token, RandomSeeding -> 1 ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token, RandomSeeding -> 2 ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, RandomSeeding -> 2 ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, RandomSeeding -> 2 ] } ]},
   GraphicsRow[Table[
     ListLinePlot[{
       InfraMeasurement[g, Table[InfraBall[c, r], {r, 0, 5}], measure],
@@ -240,7 +240,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
   {seg = InfraSegment[a, b]},
   {circle = InfraCircle[a, {2, 4}]},
   {density = InfraMeasurement[g, InfraIntersection[seg, circle], "VertexDensity"]},

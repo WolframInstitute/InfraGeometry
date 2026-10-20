@@ -34,7 +34,7 @@ SeedRandom[7];
 With[
   {fib = InfraFiberedGraph[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[2, 4]}],
     <|1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b"|>]},
-  {section = RandomInfraSection[fib]},
+  {section = RandomInfraSection[fib, RandomSeeding -> 7]},
   {InfraFiberedGraphHighlight[fib, section], InfraSectionQ[fib, section]}]
 ```
 

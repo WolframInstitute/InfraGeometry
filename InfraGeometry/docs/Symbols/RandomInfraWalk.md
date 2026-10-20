@@ -18,7 +18,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Details & Options
 
-The default draw is random. Seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing.
+The default draw is random. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing. `RandomSeeding -> Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string gives a reproducible draw, and `Inherited` a local snapshot of the current state. The outer random state is restored afterward, as with [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html).
 
 The germ is the seed of the walk: a vertex, a vertex list, a walk graph, or a list of germs. A vertex is the one-vertex germ, so `RandomInfraWalk[g, p, ...]` and `RandomInfraWalk[g, {p}, ...]` are the same call. A germ is read as a vertex first, so on a substrate labelled by lists the vertex `{1, 1}` is one point, not the walk of its entries. A walk graph is read as its vertex sequence; a list of germs gives the walks grown from each.
 
@@ -50,6 +50,7 @@ The hard rules cut the class; the soft rules put a distribution on it, the weigh
 | `"NextVertexFunction"` | `Automatic` | the order the surviving candidates are tried in |
 | `"Direction"` | `"Forward"` | `"Forward"`, `"Backward"` or `"BothSides"` |
 | `"StoppingCondition"` | `None` | a predicate on the walk so far |
+| `RandomSeeding` | `Automatic` | an integer or string, `Inherited` |
 
 `"NextVertexFunction"` turns the surviving candidates and their weights into the order they are tried:
 
@@ -79,9 +80,9 @@ Three walks of 9 edges from the centre of a mesh, the soft straightness at windo
 SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
-  {c = (SeedRandom[2]; RandomInfraPoint[g, GraphCenter[g]])},
+  {c = RandomInfraPoint[g, GraphCenter[g], RandomSeeding -> 2]},
   GraphicsRow @ Table[
-    InfraSubstrateHighlight[g, {(SeedRandom[5]; RandomInfraWalk[g, c, UpTo[9], Properties -> {{"Shortest", 5, p}}]), c}, "Arrowheads" -> True],
+    InfraSubstrateHighlight[g, {RandomInfraWalk[g, c, UpTo[9], Properties -> {{"Shortest", 5, p}}, RandomSeeding -> 5], c}, "Arrowheads" -> True],
     {p, {1, 0.3, 0.01}}]]
 ```
 
@@ -103,7 +104,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {walk = RandomInfraWalk[g, a, {5}, Properties -> {"Simple"}]},
+  {walk = RandomInfraWalk[g, a, {5}, Properties -> {"Simple"}, RandomSeeding -> 1]},
   {InfraSubstrateHighlight[g, {walk, a}, "Arrowheads" -> True], Last /@ VertexList[walk]}]
 ```
 
@@ -145,8 +146,7 @@ With[
   {a = First @ GraphCenter[g]},
   GraphicsRow @ Table[
     With[
-      {walk = (SeedRandom[4];
-        RandomInfraWalk[g, a, {30}, Properties -> {{"Simple", Infinity, p}}])},
+      {walk = RandomInfraWalk[g, a, {30}, Properties -> {{"Simple", Infinity, p}}, RandomSeeding -> 4]},
       Labeled[InfraSubstrateHighlight[g, {walk, a}, "Arrowheads" -> True],
         Row[{p, ": ", 31 - Length @ DeleteDuplicates[Last /@ VertexList @ walk]}]]],
     {p, {0.01, 0.1, 1}}]]
@@ -173,10 +173,10 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 6]])},
+  {q = RandomInfraPoint[g, InfraShell[a, 6], RandomSeeding -> 1]},
   GraphicsRow @ Table[
     InfraSubstrateHighlight[g,
-      {(SeedRandom[seed]; RandomInfraWalk[g, a, {12}, Properties -> {{w |-> GraphDistance[g, Last @ w, q], 1, 0.3}}]), a, q},
+      {RandomInfraWalk[g, a, {12}, Properties -> {{w |-> GraphDistance[g, Last @ w, q], 1, 0.3}}, RandomSeeding -> seed], a, q},
       "Arrowheads" -> True],
     {seed, 3}]]
 ```
@@ -201,7 +201,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {walks = (SeedRandom[1]; RandomInfraWalk[g, a, {12}, 3, Properties -> {"Simple"}, "NextVertexFunction" -> RandomChoice])},
+  {walks = RandomInfraWalk[g, a, {12}, 3, Properties -> {"Simple"}, "NextVertexFunction" -> RandomChoice, RandomSeeding -> 1]},
   GraphicsRow[InfraSubstrateHighlight[g, {#, a}, "Arrowheads" -> True] & /@ walks]]
 ```
 
@@ -230,7 +230,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 3]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 3], RandomSeeding -> 1]},
   {grown = RandomInfraWalk[g, a, UpTo[5], All, Properties -> {"Simple"}, "StoppingCondition" -> (Last[#] === b &)]},
   {arrived = Select[grown, Last @ Last @ VertexList @ # === b &]},
   {InfraSubstrateHighlight[g, {arrived, a, b}], Length /@ {grown, arrived}}]
@@ -246,6 +246,14 @@ With[
     "StoppingCondition" -> (First[#] === 22 || Last[#] === 28 &)]},
   {stopped = Select[walks, MatchQ[Last /@ VertexList @ #, {22, __} | {__, 28}] &]},
   {InfraSubstrateHighlight[g, {stopped, {24, 25}, 22, 28}], Length /@ {walks, stopped}}]
+```
+
+### RandomSeeding
+
+A fixed seed reproduces the draw, whatever state `SeedRandom` has set:
+
+```wl
+Table[SeedRandom[k]; Last /@ VertexList @ RandomInfraWalk[GridGraph[{4, 4}], 1, {6}, Properties -> {"Simple"}, RandomSeeding -> 7], {k, 2}]
 ```
 
 ## Properties and Relations
@@ -267,7 +275,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 3]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 3], RandomSeeding -> 1]},
   {walks = Select[
     RandomInfraWalk[g, a, Infinity, All, Properties -> {"Shortest"}, "StoppingCondition" -> (Last[#] === b &)],
     Last @ Last @ VertexList @ # === b &]},
@@ -293,7 +301,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {SameQ @@ Table[Last /@ VertexList @ (SeedRandom[1]; RandomInfraWalk[g, a, {6}, Properties -> {{rule, 3, 0.3}}]), {rule, {"Stretched", "Shortest"}}]}]
+  {SameQ @@ Table[Last /@ VertexList @ RandomInfraWalk[g, a, {6}, Properties -> {{rule, 3, 0.3}}, RandomSeeding -> 1], {rule, {"Stretched", "Shortest"}}]}]
 ```
 
 The cusps, self-tangencies and triple points of a walk are read by [WalkSingularities](); a class free of one of them is a predicate on it.
@@ -317,7 +325,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {MatchQ[RandomInfraWalk[g, a, Infinity, Properties -> {}], _RandomInfraWalk], MatchQ[RandomInfraWalk[g, a, 3, All], _RandomInfraWalk]}]
+  {MatchQ[RandomInfraWalk[g, a, Infinity, Properties -> {}, RandomSeeding -> 1], _RandomInfraWalk], MatchQ[RandomInfraWalk[g, a, 3, All], _RandomInfraWalk]}]
 ```
 
 Under `Identity` the weights are ignored, so a soft rule changes nothing: the walk is the canonical walk of the hard rules.
@@ -327,6 +335,6 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {RandomInfraWalk[g, a, {4}, Properties -> {"Simple", {"Shortest", 3, 0.01}}, "NextVertexFunction" -> Identity] ===
-    RandomInfraWalk[g, a, {4}, Properties -> {"Simple"}]}]
+  {RandomInfraWalk[g, a, {4}, Properties -> {"Simple", {"Shortest", 3, 0.01}}, "NextVertexFunction" -> Identity, RandomSeeding -> 1] ===
+    RandomInfraWalk[g, a, {4}, Properties -> {"Simple"}, RandomSeeding -> 1]}]
 ```

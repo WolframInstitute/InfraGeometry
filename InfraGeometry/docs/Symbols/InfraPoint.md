@@ -41,7 +41,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
   {centre = First @ GraphCenter[g]},
-  {picks = RandomInfraPoint[g, InfraShell[centre, 4], 3]},
+  {picks = RandomInfraPoint[g, InfraShell[centre, 4], 3, RandomSeeding -> 1]},
   InfraSubstrateHighlight[g, {centre, picks}, ImageSize -> 250]]
 ```
 
@@ -51,7 +51,7 @@ A point finder returns vertices — one, or a list.
 SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {RandomInfraPoint[g, GraphCenter[g], All], Length @ RandomInfraPoint[g, 3]}]
+  {RandomInfraPoint[g, GraphCenter[g], All], Length @ RandomInfraPoint[g, 3, RandomSeeding -> 1]}]
 ```
 
 A vertex answers invariants with bare numbers; a list of regions answers with one number each.

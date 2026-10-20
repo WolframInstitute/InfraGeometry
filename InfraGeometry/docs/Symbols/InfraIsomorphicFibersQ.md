@@ -30,6 +30,6 @@ All fibers share a graph, while one transverse edge per base edge need not cover
 ```wl
 SeedRandom[ 7 ];
 With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 4 ], Properties -> { "IsomorphicFibers" },
-    "VerticalVertexCount" -> { 4 }, "VerticalEdgeCount" -> { 3 }, "HorizontalEdgeCount" -> { 1 } ] },
+    "VerticalVertexCount" -> { 4 }, "VerticalEdgeCount" -> { 3 }, "HorizontalEdgeCount" -> { 1 }, RandomSeeding -> 7 ] },
   InfraFiberedGraphHighlight[ fib ] ]
 ```

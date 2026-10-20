@@ -17,13 +17,14 @@ URI: WolframInstitute/InfraGeometry/ref/RandomInfraEllipse
 
 `RandomInfraEllipse[g, {p, q}, c, count]` uses the direct form.
 
-The default draw is random. Seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing.
+The default draw is random. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing. `RandomSeeding -> Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string gives a reproducible draw, and `Inherited` a local snapshot of the current state. The outer random state is restored afterward, as with [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html).
 
 Options:
 
 | Option | Values |
 |---|---|
 | `Properties` | default {"Separating", "Shortest"} |
+| `RandomSeeding` | `Automatic` (default), an integer or string, `Inherited` |
 
 ## Basic Examples
 
@@ -31,12 +32,22 @@ A cycle whose vertices have constant distance sum from antipodal foci. The separ
 
 ```wl
 SeedRandom[1];
-RandomInfraEllipse[CycleGraph[6], {1, 4}, 3, Properties -> {}]
+RandomInfraEllipse[CycleGraph[6], {1, 4}, 3, Properties -> {}, RandomSeeding -> 1]
 ```
 
 The same cycle with deterministic candidate order.
 
 ```wl
 SeedRandom[1];
-RandomInfraEllipse[CycleGraph[6], {1, 4}, 3, Properties -> {}, "NextVertexFunction" -> Identity]
+RandomInfraEllipse[CycleGraph[6], {1, 4}, 3, Properties -> {}, "NextVertexFunction" -> Identity, RandomSeeding -> 1]
+```
+
+## Options
+
+### RandomSeeding
+
+A fixed seed reproduces the draw, whatever state `SeedRandom` has set:
+
+```wl
+Table[SeedRandom[k]; VertexList @ RandomInfraEllipse[GridGraph[{5, 5}], {12, 14}, {4, 6}, RandomSeeding -> 7], {k, 2}]
 ```

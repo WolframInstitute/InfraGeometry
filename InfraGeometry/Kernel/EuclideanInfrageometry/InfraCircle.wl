@@ -1,6 +1,12 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-Options[ RandomInfraCircle ] = { "NextVertexFunction" -> Automatic }
+Options[ RandomInfraCircle ] = { "NextVertexFunction" -> Automatic, RandomSeeding -> Automatic }
+
+RandomInfraCircle[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomInfraCircle[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomInfraCircle[ ___, RandomSeeding -> None ] ] ] ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraCircle *)
 
@@ -211,8 +217,9 @@ InfraCircleQ[ _Graph, cycle_List ] /; Length[ cycle ] < 3 :=
   False
 
 RandomInfraCircle[ graph_Graph, InfraCircle[ center_, rs : ( _?NumericQ | { _?NumericQ, _?NumericQ } ) ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraCircle ], First /@ { opts } ] &&
-    ( OptionValue[ RandomInfraCircle, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraCircle ], First /@ { opts } ] &&
+    ( OptionValue[ RandomInfraCircle, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) ) :=
   With[ { dist = AssociationThread[ VertexList @ graph, GraphDistance[ graph, center ] ] },
     { rmin = Max[ 1, First @ Flatten @ { rs } ], rmax = Last @ Flatten @ { rs } },
     { local = Subgraph[ graph, Select[ VertexList @ graph, Lookup[ dist, Key @ # ] <= rmax + 1 & ] ] },
@@ -236,7 +243,8 @@ RandomInfraCircle[ graph_Graph, InfraCircle[ center_, rs : ( _?NumericQ | { _?Nu
 
 RandomInfraCircle[ graph_Graph, center_, radius_,
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { center, radius }, _InfraCircle ] &&
-    SubsetQ[ First /@ Options[ RandomInfraCircle ], First /@ { opts } ] :=
+    opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( ! MatchQ[ First @ { center, radius }, _InfraCircle ] &&
+    SubsetQ[ First /@ Options[ RandomInfraCircle ], First /@ { opts } ] ) :=
   RandomInfraCircle[ graph, InfraCircle[ center, radius ], count,
-    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]
+    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ], RandomSeeding -> None ]

@@ -118,16 +118,16 @@ VerificationTest[
 
 VerificationTest[
   With[ { dag = InfraMeasurement[ CircleThroughDiamondGraph[ 4 ], InfraCircleThrough[ Range[ 2, 6 ], InfraCircle[ 1, { 1, 1 } ] ], All ] },
-    BlockRandom[ SeedRandom[ 261011 ]; With[ { sample = RandomInfraCircleThrough[ dag[ "Graph" ], 5 ] },
-      Length[ sample ] == 5 && DuplicateFreeQ[ sample ] && SubsetQ[ RandomInfraCircleThrough[ dag[ "Graph" ], All ], sample ] &&
-      RandomInfraCircleThrough[ dag[ "Graph" ], 17 ] === {} && Length[ RandomInfraCircleThrough[ dag[ "Graph" ], UpTo[ 17 ] ] ] == 16 &&
-      RandomInfraCircleThrough[ dag[ "Graph" ], 0 ] === {} ] ] ], True, TestID -> "sampling-and-shortage"
+    BlockRandom[ SeedRandom[ 261011 ]; With[ { sample = RandomInfraCircleThrough[ dag[ "Graph" ], 5, RandomSeeding -> None ] },
+      Length[ sample ] == 5 && DuplicateFreeQ[ sample ] && SubsetQ[ RandomInfraCircleThrough[ dag[ "Graph" ], All, RandomSeeding -> None ], sample ] &&
+      RandomInfraCircleThrough[ dag[ "Graph" ], 17, RandomSeeding -> None ] === {} && Length[ RandomInfraCircleThrough[ dag[ "Graph" ], UpTo[ 17 ], RandomSeeding -> None ] ] == 16 &&
+      RandomInfraCircleThrough[ dag[ "Graph" ], 0, RandomSeeding -> None ] === {} ] ] ], True, TestID -> "sampling-and-shortage"
 ]
 
 VerificationTest[
   BlockRandom[ SeedRandom[ 44 ]; With[ { expected = RandomInteger[ 1000000, 10 ] },
     SeedRandom[ 44 ];
-    RandomInfraCircleThrough[ WheelGraph[ 5 ], InfraCircleThrough[ { 2 }, InfraCircle[ 1, { 1, 1 } ] ], All ];
+    RandomInfraCircleThrough[ WheelGraph[ 5 ], InfraCircleThrough[ { 2 }, InfraCircle[ 1, { 1, 1 } ] ], All, RandomSeeding -> None ];
     RandomInteger[ 1000000, 10 ] === expected ] ], True, TestID -> "all-does-not-consume-rng"
 ]
 

@@ -120,8 +120,8 @@ The entry is the foot of *v* on the interval to *w*, read off the explicit const
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = First @ GraphCenter[g]},
-  {w = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 5]])},
-  {v = (SeedRandom[12]; RandomInfraPoint[g, InfraShell[p, 4]])},
+  {w = RandomInfraPoint[g, InfraShell[p, 5], RandomSeeding -> 1]},
+  {v = RandomInfraPoint[g, InfraShell[p, 4], RandomSeeding -> 12]},
   {interval = MetricInterval[g, p, w]},
   {feet = FindClosestInfraPoint[g, interval, v, All]},
   {InfraSubstrateHighlight[g, {interval, p, v, w, feet}],

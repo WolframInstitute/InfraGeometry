@@ -66,5 +66,5 @@ Choose one of the tied nearest vertices.
 
 ```wl
 SeedRandom[ 71 ]; With[ { graph = PathGraph[ Range[ 5 ] ] },
-  RandomInfraRegionNearest[ graph, InfraRegionNearest[ { 1, 5 }, 3 ] ] ]
+  RandomInfraRegionNearest[ graph, InfraRegionNearest[ { 1, 5 }, 3 ], RandomSeeding -> 71 ] ]
 ```

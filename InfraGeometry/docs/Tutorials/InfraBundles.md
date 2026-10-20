@@ -153,11 +153,11 @@ The third is a graph bundle.
 SeedRandom[ 7 ];
 With[ { base = CycleGraph[ 6 ] },
   GraphicsRow[ InfraFiberedGraphHighlight /@ {
-    RandomInfraFiberedGraph[ base, "VerticalVertexCount" -> { 2, 4 }, "VerticalEdgeCount" -> 2 ],
+    RandomInfraFiberedGraph[ base, "VerticalVertexCount" -> { 2, 4 }, "VerticalEdgeCount" -> 2, RandomSeeding -> 7 ],
     RandomInfraFiberedGraph[ base, Properties -> { "IsomorphicFibers", "Fibration" },
-      "VerticalVertexCount" -> { 3 }, "VerticalEdgeCount" -> { 2 } ],
+      "VerticalVertexCount" -> { 3 }, "VerticalEdgeCount" -> { 2 }, RandomSeeding -> 7 ],
     RandomInfraFiberedGraph[ base, Properties -> { "FiberBundle" },
-      "VerticalVertexCount" -> { 3 }, "VerticalEdgeCount" -> { 2 } ] } ] ]
+      "VerticalVertexCount" -> { 3 }, "VerticalEdgeCount" -> { 2 }, RandomSeeding -> 7 ] } ] ]
 ```
 
 ## Sections and extensions
@@ -175,9 +175,9 @@ Complete joins let a partial section extend continuously in every choice of the 
 ```wl
 SeedRandom[ 7 ];
 With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 6 ],
-    "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All ] },
-  { partial = RandomInfraSection[ fib, { 1, 3 } ] },
-  { section = RandomInfraSection[ fib, partial, Properties -> { "Continuous" } ] },
+    "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All, RandomSeeding -> 7 ] },
+  { partial = RandomInfraSection[ fib, { 1, 3 }, RandomSeeding -> 7 ] },
+  { section = RandomInfraSection[ fib, partial, Properties -> { "Continuous" }, RandomSeeding -> 7 ] },
   InfraFiberedGraphHighlight[ fib, { partial, section } ] ]
 ```
 
@@ -217,8 +217,8 @@ The selected connection below determines the highlighted lift.
 ```wl
 SeedRandom[ 7 ];
 With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 6 ],
-    "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All ] },
-  { connection = RandomInfraConnection[ fib ] },
+    "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All, RandomSeeding -> 7 ] },
+  { connection = RandomInfraConnection[ fib, RandomSeeding -> 7 ] },
   { start = First @ VertexList @ InfraFiber[ fib, 1 ] },
   { lift = InfraHorizontalLift[ fib, connection, start, { 1, 2, 3, 4, 5, 6, 1 } ] },
   InfraFiberedGraphHighlight[ fib, { connection, InfraWalk[ lift ] } ] ]
@@ -271,9 +271,9 @@ Highlights preserve their meaning in every view.
 ```wl
 SeedRandom[ 7 ];
 With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 6 ],
-    "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All ] },
-  { section = RandomInfraSection[ fib, Properties -> { "Continuous" } ],
-    connection = RandomInfraConnection[ fib ] },
+    "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All, RandomSeeding -> 7 ] },
+  { section = RandomInfraSection[ fib, Properties -> { "Continuous" }, RandomSeeding -> 7 ],
+    connection = RandomInfraConnection[ fib, RandomSeeding -> 7 ] },
   GraphicsRow[ Map[ method |-> InfraFiberedGraphHighlight[ fib, { section, connection }, Method -> method ],
     { "CircularFiber", "3DFiber", "HighlightFiber" } ] ] ]
 ```
@@ -285,8 +285,8 @@ Live hovering requires the notebook front end.
 ```wl
 SeedRandom[ 7 ];
 With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 6 ],
-    "VerticalVertexCount" -> { 2 }, "HorizontalEdgeCount" -> All ] },
-  { connection = RandomInfraConnection[ fib ] },
+    "VerticalVertexCount" -> { 2 }, "HorizontalEdgeCount" -> All, RandomSeeding -> 7 ] },
+  { connection = RandomInfraConnection[ fib, RandomSeeding -> 7 ] },
   InfraFiberedGraphViewer[ fib, connection ] ]
 ```
 

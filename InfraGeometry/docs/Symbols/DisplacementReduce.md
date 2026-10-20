@@ -32,7 +32,7 @@ GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {target = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 3]])},
+    {target = RandomInfraPoint[g, InfraShell[c, 3], RandomSeeding -> 1]},
     {blurred = <|c -> Keys @ InfraMeasurement[ g, InfraBall[target, 1], "VertexDensity" ]|>},
     DisplacementPlot[g, {blurred, DisplacementReduce[g, blurred]}]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]

@@ -20,13 +20,13 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Details & Options
 
-The default draw is random. Seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing.
+The default draw is random. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing. `RandomSeeding -> Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string gives a reproducible draw, and `Inherited` a local snapshot of the current state. The outer random state is restored afterward, as with [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html).
 
 The count *n* may be `UpTo[n]`, which gives up to *n*, or `All`.
 
 Option `Properties` takes `{"Separating", "Connected"}` (default), `{"Separating"}` for the inclusion-minimal separating subsets that need not be connected, or `{}` for the level set as the one member.
 
-Option `"NextVertexFunction"` sees the vertices that can be peeled next and gives the ones to try, in order. `Automatic` (default) peels in random order. `Identity` gives the canonical peel; ambient `SeedRandom` reproduces a draw; `RandomSample[#, UpTo[n]] &` keeps at most *n* branches per node, and the result is then minimal among the survivors.
+Option `"NextVertexFunction"` sees the vertices that can be peeled next and gives the ones to try, in order. `Automatic` (default) peels in random order. `Identity` gives the canonical peel; `RandomSeeding` reproduces a draw; `RandomSample[#, UpTo[n]] &` keeps at most *n* branches per node, and the result is then minimal among the survivors.
 
 The search peels the shell vertex by vertex while it keeps separating. It is the specialised search behind [InfraSphere](), whose [RandomInfraSphere]() clause calls it. The family can be large: all members on a medium tiling take long.
 
@@ -48,7 +48,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  InfraSubstrateHighlight[g, RandomInfraSphere[g, c, 3, UpTo[3]]]]
+  InfraSubstrateHighlight[g, RandomInfraSphere[g, c, 3, UpTo[3], RandomSeeding -> 1]]]
 ```
 
 ## Options
@@ -59,8 +59,8 @@ With `Properties -> {"Separating"}` the subsets need not be connected, so they c
 SeedRandom[1];
 With[
   {g = GridGraph[{7, 7}]},
-  {Length /@ RandomInfraSphere[g, 25, {2, 3}, UpTo[3], Properties -> {"Separating"}],
-   Length /@ RandomInfraSphere[g, 25, {2, 3}, UpTo[3]]}]
+  {Length /@ RandomInfraSphere[g, 25, {2, 3}, UpTo[3], Properties -> {"Separating"}, RandomSeeding -> 1],
+   Length /@ RandomInfraSphere[g, 25, {2, 3}, UpTo[3], RandomSeeding -> 1]}]
 ```
 
 A pruning function caps the branches tried per node.
@@ -68,6 +68,14 @@ A pruning function caps the branches tried per node.
 ```wl
 SeedRandom[1];
 RandomInfraSphere[GridGraph[{5, 5}], 13, {1, 2}, All, "NextVertexFunction" -> (RandomSample[#, UpTo[1]] &)]
+```
+
+### RandomSeeding
+
+A fixed seed reproduces the draw, whatever state `SeedRandom` has set:
+
+```wl
+Table[SeedRandom[k]; RandomInfraSphere[GridGraph[{4, 4}], 6, {1, 2}, 1, RandomSeeding -> 7], {k, 2}]
 ```
 
 ## Properties and Relations

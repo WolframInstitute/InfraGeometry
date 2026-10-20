@@ -27,7 +27,7 @@ UpTo[n] gives at most n distinct vertices; All gives the complete pool in graph 
 Zero gives {}; negative counts and unsupported options stay unevaluated.
 
 "NextVertexFunction" defaults to Automatic. Identity selects in graph vertex order.
-These are the only supported selector values. All and Identity do not advance random state.
+These are the only supported selector values. All and Identity are deterministic. `RandomSeeding -> Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string gives a reproducible draw, and `Inherited` a local snapshot of the current state. The outer random state is restored afterward, as with [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html).
 List-valued points remain intact. For an empty-List vertex, All and count 1 distinguish {{}} from an empty pool.
 
 
@@ -44,6 +44,16 @@ Draw and highlight one point.
 
 ```wl
 SeedRandom[ 71 ]; With[ { graph = PathGraph[ Range[ 3 ] ] },
-  { point = RandomInfraRegionNearest[ graph, InfraRegionNearest[ { 1, 3 }, 2 ] ] },
+  { point = RandomInfraRegionNearest[ graph, InfraRegionNearest[ { 1, 3 }, 2 ], RandomSeeding -> 71 ] },
   InfraSubstrateHighlight[ graph, { <| point -> 1 |> } ] ]
+```
+
+## Options
+
+### RandomSeeding
+
+A fixed seed reproduces the draw, whatever state `SeedRandom` has set:
+
+```wl
+Table[SeedRandom[k]; RandomInfraRegionNearest[CycleGraph[4], {1, 3}, 2, RandomSeeding -> 7], {k, 2}]
 ```

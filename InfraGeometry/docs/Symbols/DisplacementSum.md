@@ -66,7 +66,7 @@ The sum is commutative. Two random displacements of the square tiling:
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {first = (SeedRandom[1]; RandomDisplacement[g, 2]), second = (SeedRandom[2]; RandomDisplacement[g, 1])},
+  {first = RandomDisplacement[g, 2, RandomSeeding -> 1], second = RandomDisplacement[g, 1, RandomSeeding -> 2]},
   {DisplacementPlot[g, DisplacementSum[g, first, second]], DisplacementSum[g, first, second] === DisplacementSum[g, second, first]}]
 ```
 

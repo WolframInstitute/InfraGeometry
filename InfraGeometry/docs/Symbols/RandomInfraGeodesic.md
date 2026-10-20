@@ -18,7 +18,7 @@ RelatedGuides: [RiemannianInfrageometry]
 
 ## Details & Options
 
-The default draw is random. Seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing.
+The default draw is random. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing. `RandomSeeding -> Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string gives a reproducible draw, and `Inherited` a local snapshot of the current state. The outer random state is restored afterward, as with [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html).
 
 Definition: a walk *v0*, *v1*, …, *vk* is a geodesic at infra-scale *s* when every window of *s* consecutive vertices together with the next one is a shortest path: *d(v(i−s), vi) = s* for every *i ≥ s*, and *d(v0, vi) = i* for *i < s*.
 
@@ -42,6 +42,7 @@ The search reads only the window, never a target. A target is a stopping conditi
 | `"NextVertexFunction"` | `Automatic` | `Automatic` (random candidate order by the weights for bounded counts; canonical for `All`), `Identity`, `RandomSample`, `RandomChoice` (the random walk; the count is independent runs), or a function of the candidate windows giving the ones to pursue in order |
 | `"Direction"` | `"Forward"` | `"Forward"`, `"Backward"` or `"BothSides"` |
 | `"StoppingCondition"` | `None` | a predicate on the walk so far |
+| `RandomSeeding` | `Automatic` | an integer or string, `Inherited` |
 
 ## Basic Examples
 
@@ -52,7 +53,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
   Row @ Table[
     With[
       {grown = RandomInfraGeodesic[g, a, sc, UpTo[8], All, "StoppingCondition" -> (Last[#] === b &)]},
@@ -68,7 +69,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {geo = RandomInfraGeodesic[g, a, 3, {6}]},
+  {geo = RandomInfraGeodesic[g, a, 3, {6}, RandomSeeding -> 1]},
   {InfraSubstrateHighlight[g, {geo, a}], Last /@ VertexList[geo]}]
 ```
 
@@ -109,8 +110,16 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   GraphicsRow @ Table[
-    InfraSubstrateHighlight[g, {(SeedRandom[seed]; RandomInfraGeodesic[g, a, 2, {12}, "NextVertexFunction" -> RandomChoice]), a}],
+    InfraSubstrateHighlight[g, {RandomInfraGeodesic[g, a, 2, {12}, "NextVertexFunction" -> RandomChoice, RandomSeeding -> seed], a}],
     {seed, 3}]]
+```
+
+### RandomSeeding
+
+A fixed seed reproduces the draw, whatever state `SeedRandom` has set:
+
+```wl
+Table[SeedRandom[k]; Last /@ VertexList @ RandomInfraGeodesic[GridGraph[{4, 4}], 1, Infinity, RandomSeeding -> 7], {k, 2}]
 ```
 
 ## Properties and Relations
@@ -122,7 +131,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
   {grown = RandomInfraGeodesic[g, a, Infinity, Infinity, All, "StoppingCondition" -> (Last[#] === b &)]},
   {geos = Select[grown, Last @ Last @ VertexList @ # === b &]},
   {InfraSubstrateHighlight[g, {geos, a, b}],

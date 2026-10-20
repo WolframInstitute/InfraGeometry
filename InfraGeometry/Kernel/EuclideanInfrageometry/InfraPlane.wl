@@ -1,6 +1,12 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-Options[ RandomInfraPlane ] = { "NextVertexFunction" -> Automatic }
+Options[ RandomInfraPlane ] = { "NextVertexFunction" -> Automatic, RandomSeeding -> Automatic }
+
+RandomInfraPlane[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomInfraPlane[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomInfraPlane[ ___, RandomSeeding -> None ] ] ] ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraPlane *)
 
@@ -84,12 +90,14 @@ InfraPlaneQ[ graph_Graph, h_List, p1_, p2_, window_ : 0 ] :=
   ]
 
 RandomInfraPlane[ graph_Graph, InfraPlane[ p1_, p2_, opts___Rule ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { samplerOpts } ] :=
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; MemberQ[ Flatten @ { samplerOpts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { samplerOpts } ] ) :=
   RandomInfraPlane[ graph, InfraPlane[ p1, p2, { 0, 0 }, opts ], count, samplerOpts ]
 
 RandomInfraPlane[ graph_Graph, InfraPlane[ p1_, p2_, window : { _Integer, _Integer }, opts___Rule ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { samplerOpts } ] &&
-    ( OptionValue[ RandomInfraPlane, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; MemberQ[ Flatten @ { samplerOpts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { samplerOpts } ] &&
+    ( OptionValue[ RandomInfraPlane, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) ) :=
   With[ { nextFn = OptionValue[ RandomInfraPlane, { samplerOpts }, "NextVertexFunction" ] },
     FindInfraBisectingHyperplane[ graph, p1, p2, window, count,
       "NextVertexFunction" -> If[ nextFn === Automatic, If[ count === All, Identity, RandomSample ], nextFn ],
@@ -97,14 +105,16 @@ RandomInfraPlane[ graph_Graph, InfraPlane[ p1_, p2_, window : { _Integer, _Integ
 
 RandomInfraPlane[ graph_Graph, p_, q_,
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { p, q }, _InfraPlane ] &&
-    SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { opts } ] :=
+    opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( ! MatchQ[ First @ { p, q }, _InfraPlane ] &&
+    SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { opts } ] ) :=
   RandomInfraPlane[ graph, InfraPlane[ p, q ], count,
-    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]
+    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ], RandomSeeding -> None ]
 
 RandomInfraPlane[ graph_Graph, p_, q_, window : { _Integer, _Integer },
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { p, q, window }, _InfraPlane ] &&
-    SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { opts } ] :=
+    opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( ! MatchQ[ First @ { p, q, window }, _InfraPlane ] &&
+    SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { opts } ] ) :=
   RandomInfraPlane[ graph, InfraPlane[ p, q, window ], count,
-    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]
+    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ], RandomSeeding -> None ]

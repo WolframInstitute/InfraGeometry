@@ -258,15 +258,15 @@ VerificationTest[
 
 VerificationTest[
 	{ Names[ "System`RandomBallCover" ], Options[ RandomBallCover ] },
-	{ { }, { Method -> Automatic } },
+	{ { }, { Method -> Automatic, RandomSeeding -> Automatic } },
 	TestID -> "RandomBallCover-public-name-and-options"
 ]
 
 VerificationTest[
 	With[ { graph = PathGraph[ Range[ 4 ] ], family = { { 1, 3 }, { 1, 4 }, { 2, 3 }, { 2, 4 } } },
 		{ expected = BlockRandom[ SeedRandom[ 1801 ]; RandomChoice[ family ] ] },
-		{ BlockRandom[ SeedRandom[ 1801 ]; RandomBallCover[ graph ] ] === expected,
-			RandomBallCover[ graph, 1, All, All ] === family } ],
+		{ BlockRandom[ SeedRandom[ 1801 ]; RandomBallCover[ graph, RandomSeeding -> None ] ] === expected,
+			RandomBallCover[ graph, 1, All, All, RandomSeeding -> None ] === family } ],
 	{ True, True },
 	TestID -> "RandomBallCover-uniform-choice-from-complete-minimum-family"
 ]
@@ -274,18 +274,18 @@ VerificationTest[
 VerificationTest[
 	With[ { graph = PathGraph[ Range[ 4 ] ], family = { { 1, 3 }, { 1, 4 }, { 2, 3 }, { 2, 4 } } },
 		{ expected = BlockRandom[ SeedRandom[ 1802 ]; RandomSample[ family, 3 ] ] },
-		{ BlockRandom[ SeedRandom[ 1802 ]; RandomBallCover[ graph, 1, All, 3 ] ] === expected,
-			BlockRandom[ SeedRandom[ 1802 ]; RandomBallCover[ graph, 1, All, UpTo[ 3 ] ] ] === expected,
-			Sort @ BlockRandom[ SeedRandom[ 1802 ]; RandomBallCover[ graph, 1, All, UpTo[ 8 ] ] ] === family } ],
+		{ BlockRandom[ SeedRandom[ 1802 ]; RandomBallCover[ graph, 1, All, 3, RandomSeeding -> None ] ] === expected,
+			BlockRandom[ SeedRandom[ 1802 ]; RandomBallCover[ graph, 1, All, UpTo[ 3 ], RandomSeeding -> None ] ] === expected,
+			Sort @ BlockRandom[ SeedRandom[ 1802 ]; RandomBallCover[ graph, 1, All, UpTo[ 8 ], RandomSeeding -> None ] ] === family } ],
 	{ True, True, True },
 	TestID -> "RandomBallCover-counts-use-uniform-sampling-without-replacement"
 ]
 
 VerificationTest[
 	With[ { graph = PathGraph[ Range[ 4 ] ] },
-		{ sample = BlockRandom[ SeedRandom[ 1803 ]; RandomBallCover[ graph, 1, All, 1 ] ] },
+		{ sample = BlockRandom[ SeedRandom[ 1803 ]; RandomBallCover[ graph, 1, All, 1, RandomSeeding -> None ] ] },
 		{ Length[ sample ], BallCoverQ[ graph, 1, First[ sample ] ], Length[ First[ sample ] ],
-			RandomBallCover[ graph, 1, All, 5 ], RandomBallCover[ graph, 1, All, 0 ], RandomBallCover[ graph, 1, All, UpTo[ 0 ] ] } ],
+			RandomBallCover[ graph, 1, All, 5, RandomSeeding -> None ], RandomBallCover[ graph, 1, All, 0, RandomSeeding -> None ], RandomBallCover[ graph, 1, All, UpTo[ 0 ], RandomSeeding -> None ] } ],
 	{ 1, True, 2, { }, { }, { } },
 	TestID -> "RandomBallCover-count-shapes-and-strict-shortage"
 ]
@@ -293,7 +293,7 @@ VerificationTest[
 VerificationTest[
 	With[ { graph = PathGraph[ Range[ 4 ] ], family = { { 1, 3 }, { 1, 4 }, { 2, 3 }, { 2, 4 } } },
 		{ expected = BlockRandom[ SeedRandom[ 1804 ]; RandomChoice[ family ]; RandomInteger[ 10^9, 3 ] ] },
-		BlockRandom[ SeedRandom[ 1804 ]; RandomBallCover[ graph, 1 ]; RandomInteger[ 10^9, 3 ] ] === expected ],
+		BlockRandom[ SeedRandom[ 1804 ]; RandomBallCover[ graph, 1, RandomSeeding -> None ]; RandomInteger[ 10^9, 3 ] ] === expected ],
 	True,
 	TestID -> "RandomBallCover-consumes-the-ambient-random-state"
 ]
@@ -303,8 +303,8 @@ VerificationTest[
 		{ expected = BlockRandom[ SeedRandom[ 1805 ]; RandomInteger[ 10^9, 3 ] ] },
 		BlockRandom[
 			SeedRandom[ 1805 ];
-			RandomBallCover[ graph, 1, All, All ]; RandomBallCover[ graph, 1, All, 0 ];
-			RandomBallCover[ graph, 1, All, UpTo[ 0 ] ]; RandomBallCover[ graph, 1, All, 5 ];
+			RandomBallCover[ graph, 1, All, All, RandomSeeding -> None ]; RandomBallCover[ graph, 1, All, 0, RandomSeeding -> None ];
+			RandomBallCover[ graph, 1, All, UpTo[ 0 ], RandomSeeding -> None ]; RandomBallCover[ graph, 1, All, 5, RandomSeeding -> None ];
 			RandomInteger[ 10^9, 3 ] === expected ] ],
 	True,
 	TestID -> "RandomBallCover-All-zero-and-shortage-preserve-random-state"

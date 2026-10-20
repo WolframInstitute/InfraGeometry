@@ -12,7 +12,7 @@ FindBallCover[ graph_Graph, radius_Integer?( r |-> r >= 0 ), target_ : All,
 	opts : OptionsPattern[] ] /; UndirectedGraphQ[ graph ] && ! WeightedGraphQ[ graph ] &&
 	( ! OptionQ[ target ] || VertexQ[ graph, target ] ||
 		( ListQ[ target ] && AllTrue[ target, vertex |-> VertexQ[ graph, vertex ] ] ) ) &&
-	SubsetQ[ { Method }, First /@ Flatten[ { opts } ] ] &&
+	SubsetQ[ { Method, RandomSeeding }, First /@ Flatten[ { opts } ] ] &&
 	MatchQ[ OptionValue[ FindBallCover, { opts }, Method ], Automatic | "IntegerLinearProgramming" | "Exhaustive" | "Greedy" ] &&
 	( OptionValue[ FindBallCover, { opts }, Method ] =!= "Greedy" || count === Automatic ) :=
 	With[
@@ -66,18 +66,25 @@ FindBallCover[ graph_Graph, radius_Integer?( r |-> r >= 0 ), target_ : All,
 								True, Take[ covers, count ] ] ] ] ] ] ] /;
 			AssociationQ[ density ] && AllTrue[ Keys[ density ], vertex |-> VertexQ[ graph, vertex ] ] ]
 
-Options[ RandomBallCover ] = { Method -> Automatic }
+Options[ RandomBallCover ] = { Method -> Automatic, RandomSeeding -> Automatic }
 
-RandomBallCover[ graph_Graph, opts : OptionsPattern[] ] :=
+RandomBallCover[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomBallCover[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomBallCover[ ___, RandomSeeding -> None ] ] ] ]
+
+RandomBallCover[ graph_Graph, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] :=
 	With[ { cover = RandomBallCover[ graph, 1, All, opts ] }, cover /; ListQ[ cover ] ]
 
 RandomBallCover[ graph_Graph, radius_Integer?( r |-> r >= 0 ), target_ : All,
 	count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All ) : Automatic,
-	opts : OptionsPattern[] ] /; UndirectedGraphQ[ graph ] && ! WeightedGraphQ[ graph ] &&
+	opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( UndirectedGraphQ[ graph ] && ! WeightedGraphQ[ graph ] &&
 	( ! OptionQ[ target ] || VertexQ[ graph, target ] ||
 		( ListQ[ target ] && AllTrue[ target, vertex |-> VertexQ[ graph, vertex ] ] ) ) &&
-	SubsetQ[ { Method }, First /@ Flatten[ { opts } ] ] &&
-	MatchQ[ OptionValue[ RandomBallCover, { opts }, Method ], Automatic | "IntegerLinearProgramming" | "Exhaustive" ] :=
+	SubsetQ[ { Method, RandomSeeding }, First /@ Flatten[ { opts } ] ] &&
+	MatchQ[ OptionValue[ RandomBallCover, { opts }, Method ], Automatic | "IntegerLinearProgramming" | "Exhaustive" ] ) :=
 	With[ { covers = FindBallCover[ graph, radius, target, If[ count === 0 || count === UpTo[ 0 ], 0, All ],
 		FilterRules[ Flatten[ { opts } ], Options[ FindBallCover ] ] ] },
 		Which[
@@ -111,7 +118,7 @@ BallCoverNumber[ graph_Graph, opts : OptionsPattern[] ] :=
 BallCoverNumber[ graph_Graph, radius_Integer?( r |-> r >= 0 ), target_ : All, opts : OptionsPattern[] ] /;
 	( ! OptionQ[ target ] || VertexQ[ graph, target ] ||
 		( ListQ[ target ] && AllTrue[ target, vertex |-> VertexQ[ graph, vertex ] ] ) ) &&
-	SubsetQ[ { Method }, First /@ Flatten[ { opts } ] ] &&
+	SubsetQ[ { Method, RandomSeeding }, First /@ Flatten[ { opts } ] ] &&
 	MatchQ[ OptionValue[ BallCoverNumber, { opts }, Method ], Automatic | "IntegerLinearProgramming" | "Exhaustive" ] :=
 	With[ { cover = FindBallCover[ graph, radius, target, FilterRules[ Flatten[ { opts } ], Options[ FindBallCover ] ] ] },
 		Length[ cover ] /; ListQ[ cover ] ]

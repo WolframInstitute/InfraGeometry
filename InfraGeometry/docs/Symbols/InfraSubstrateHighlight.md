@@ -73,8 +73,8 @@ Three heads, in palette order: a segment, a closed arc (the circles through a po
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])},
-  {q = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[c, 5]])},
+  {p = RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 1]},
+  {q = RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 2]},
   InfraSubstrateHighlight[g,
     {InfraSegment[c, p], InfraArc[c, {p, p}, "RadiusDelta" -> 1], InfraArc[c, {p, q}, "RadiusDelta" -> 1]}]]
 ```
@@ -86,7 +86,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])},
+  {p = RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 1]},
   InfraSubstrateHighlight[g,
     {Keys @ InfraMeasurement[ g, InfraBall[c, 3], "VertexDensity" ], InfraArc[c, {p, p}, "RadiusDelta" -> 1]}]]
 ```
@@ -98,9 +98,9 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])},
-  {q = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[c, 5]])},
-  {walk = RandomInfraSegment[ g, InfraSegment[p, q] ]},
+  {p = RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 1]},
+  {q = RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 2]},
+  {walk = RandomInfraSegment[ g, InfraSegment[p, q], RandomSeeding -> 1 ]},
   InfraSubstrateHighlight[g, {InfraSegment[c, p], InfraSegment[c, q], InfraWalk[walk]}, "Arrowheads" -> True]]
 ```
 
@@ -111,9 +111,9 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])},
-  {q = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[c, 4]])},
-  {walk = RandomInfraSegment[ g, InfraSegment[p, q] ]},
+  {p = RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]},
+  {q = RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 2]},
+  {walk = RandomInfraSegment[ g, InfraSegment[p, q], RandomSeeding -> 1 ]},
   InfraSubstrateHighlight[g, {InfraWalk[walk], <|q -> 1, p -> -1|>}]]
 ```
 
@@ -123,7 +123,7 @@ The difference of two balls is a density too: dots on the first ball, rings on t
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 3]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 3], RandomSeeding -> 1]},
   InfraSubstrateHighlight[g, {InfraUnion[InfraBall[a, 3], -InfraMeasurement[g, InfraBall[b, 3], "VertexDensity"]]}]]
 ```
 
@@ -135,7 +135,7 @@ The palette is Jeremy's strike-out sequence: three segments drawn in its first t
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {ends = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5], 3])},
+  {ends = RandomInfraPoint[g, InfraShell[c, 5], 3, RandomSeeding -> 1]},
   {InfraSubstrateHighlight[g, Table[InfraSegment[c, end], {end, ends}]], Take[ColorData[112, "ColorList"], 3]}]
 ```
 
@@ -146,7 +146,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
   GraphicsRow[{
     InfraSubstrateHighlight[g, {RandomInfraSegment[ g, InfraSegment[a, b], All ]}],
     InfraSubstrateHighlight[g, {InfraSegment[a, b]}]}]]

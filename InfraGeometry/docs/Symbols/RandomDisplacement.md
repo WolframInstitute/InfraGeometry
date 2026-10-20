@@ -22,7 +22,7 @@ Construction: the vertices are visited in breadth-first order from the first ver
 
 The result is single-valued and has magnitude at most *r*. It is 1-continuous ([ContinuousDisplacementQ]()). When the repair leaves a discontinuity after the 5 attempts, which happens at larger *r*, the call stays unevaluated.
 
-The construction draws with [RandomChoice](), so [SeedRandom]() fixes the result.
+The construction draws with [RandomChoice](). `RandomSeeding -> Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string gives a reproducible draw, and `Inherited` a local snapshot of the current state. The outer random state is restored afterward, as with [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html).
 
 ## Basic Examples
 
@@ -32,7 +32,7 @@ Random displacements of magnitude at most 2 on the discretized plane, the square
 GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {field = (SeedRandom[1]; RandomDisplacement[g, 2])},
+    {field = RandomDisplacement[g, 2, RandomSeeding -> 1]},
     DisplacementPlot[g, field]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```
@@ -48,6 +48,17 @@ With[
   {GraphicsRow[DisplacementPlot[g, #] & /@ fields], DisplacementMagnitude[g, #] & /@ fields}]
 ```
 
+## Options
+
+### RandomSeeding
+
+A fixed seed reproduces the draw, whatever state `SeedRandom` has set:
+
+```wl
+Table[SeedRandom[k]; RandomDisplacement[GridGraph[{3, 3}], RandomSeeding -> 7], {k, 2}]
+```
+
+
 ## Properties and Relations
 
 A random displacement is single-valued, has magnitude at most *r*, and here is 1-continuous.
@@ -55,7 +66,7 @@ A random displacement is single-valued, has magnitude at most *r*, and here is 1
 ```wl
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {field = (SeedRandom[1]; RandomDisplacement[g, 2])},
+  {field = RandomDisplacement[g, 2, RandomSeeding -> 1]},
   {DisplacementPlot[g, field], DisplacementSingleValuedQ[field], DisplacementMagnitude[g, field], ContinuousDisplacementQ[g, field]}]
 ```
 
@@ -64,7 +75,7 @@ The steps have length at most *r*, not exactly *r*. At *r* = 2 most steps have l
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {field = (SeedRandom[1]; RandomDisplacement[g, 2])},
+  {field = RandomDisplacement[g, 2, RandomSeeding -> 1]},
   {DisplacementPlot[g, field], Normal @ KeySort @ Counts[KeyValueMap[GraphDistance[g, #1, First[#2]] &, field]]}]
 ```
 
@@ -76,6 +87,6 @@ The construction can fail, and then the call stays unevaluated. At magnitude 3 o
 Table[
   With[
     {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-    SeedRandom[seed]; Head @ RandomDisplacement[g, 3]],
+    SeedRandom[seed]; Head @ RandomDisplacement[g, 3, RandomSeeding -> seed]],
   {seed, 10}]
 ```

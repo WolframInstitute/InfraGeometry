@@ -18,7 +18,7 @@ RelatedGuides: [Experimental]
 
 ## Details & Options
 
-The default draw is random. Seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing.
+The default draw is random. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing. `RandomSeeding -> Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string gives a reproducible draw, and `Inherited` a local snapshot of the current state. The outer random state is restored afterward, as with [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html).
 
 Write *L* for the level set $\{v : d(v, line) = d(p, line)\}$. A parallel to *line* through *p* is a shortest path *s … p … e* of *g* — so *d(s, e) = d(s, p) + d(p, e)* — with every vertex in *L*, such that no neighbour of *s* or *e* in *L* prolongs it. This reads Euclid's fifth postulate intrinsically: constant distance is what a metric can say about parallelism without a notion of direction. Inextensibility is measured inside *L*, not in *g*, so a parallel need not be a line of *g*.
 
@@ -34,6 +34,7 @@ The class is carried by a **pool**: one shortest path DAG per admissible pair of
 |---|---|---|
 | `"NextVertexFunction"` | `Automatic` (default), `Identity`, `RandomSample`, any function | a bounded or absent count takes the end pairs and the branches of each DAG in the order the function gives: `Identity` the canonical order, `RandomSample` a random order, seeded by an ambient `SeedRandom`. The class is the same under every value. |
 | `Properties` | `{}` | only the empty list; a rule on the parallel is a local law and lives on `RandomInfraGeodesic`. |
+| `RandomSeeding` | `Automatic` (default), an integer or string, `Inherited` | seed of the local random stream |
 
 Corresponding notions in the classical axiom systems:
 
@@ -55,9 +56,9 @@ Association @ Table[
      {g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]},
      {c = First @ GraphCenter[g]},
      {far = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-     {line = RandomInfraInfiniteLine[g, c, far]},
+     {line = RandomInfraInfiniteLine[g, c, far, RandomSeeding -> 1]},
      {p = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line, #] &]},
-     EdgeCount /@ RandomInfraParallel[g, line, p, UpTo[10]]],
+     EdgeCount /@ RandomInfraParallel[g, line, p, UpTo[10], RandomSeeding -> 1]],
    {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```
 
@@ -69,11 +70,11 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line = RandomInfraInfiniteLine[g, c, far]},
+  {line = RandomInfraInfiniteLine[g, c, far, RandomSeeding -> 1]},
   {p = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line, #] &]},
   InfraSubstrateHighlight[g,
     {line,
-     RandomInfraParallel[g, line, p],
+     RandomInfraParallel[g, line, p, RandomSeeding -> 1],
      {c, p}},
     "PointSizeRange" -> 15,
     VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
@@ -100,8 +101,8 @@ A strict count that cannot be met is `{}`; the line may be given as a walk graph
 
 ```wl
 SeedRandom[1];
-{RandomInfraParallel[GridGraph[{5, 5}], Range[5], 13, 2],
- RandomInfraParallel[GridGraph[{5, 5}], PathGraph[Range[5], DirectedEdges -> True], 13]}
+{RandomInfraParallel[GridGraph[{5, 5}], Range[5], 13, 2, RandomSeeding -> 1],
+ RandomInfraParallel[GridGraph[{5, 5}], PathGraph[Range[5], DirectedEdges -> True], 13, RandomSeeding -> 1]}
 ```
 
 ## Options
@@ -116,10 +117,18 @@ With[
   {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
   {far = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {line = RandomInfraInfiniteLine[g, c, far]},
+  {line = RandomInfraInfiniteLine[g, c, far, RandomSeeding -> 1]},
   {p = First @ Sort @ Select[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[line, #] &]},
-  SameQ @@ (Sort[VertexList /@ RandomInfraParallel[g, line, p, UpTo[100], "NextVertexFunction" -> #]] & /@
+  SameQ @@ (Sort[VertexList /@ RandomInfraParallel[g, line, p, UpTo[100], "NextVertexFunction" -> #, RandomSeeding -> 1]] & /@
      {Identity, RandomSample})]
+```
+
+### RandomSeeding
+
+A fixed seed reproduces the draw, whatever state `SeedRandom` has set:
+
+```wl
+Table[SeedRandom[k]; VertexList @ RandomInfraParallel[GridGraph[{5, 5}], {1, 2, 3, 4, 5}, 13, RandomSeeding -> 7], {k, 2}]
 ```
 
 ## Properties and Relations
@@ -130,7 +139,7 @@ Every parallel is a shortest path, and [InfraParallelQ]() accepts it — as it a
 SeedRandom[1];
 With[
   {g = GridGraph[{5, 5}]},
-  {row = RandomInfraParallel[g, Range[5], 13]},
+  {row = RandomInfraParallel[g, Range[5], 13, RandomSeeding -> 1]},
   {InfraSegmentQ[g, row], InfraParallelQ[g, Range[5], row],
    InfraParallelQ[g, Keys @ InfraMeasurement[ g, InfraShell[ 13, 1 ], "VertexDensity" ], Keys @ InfraMeasurement[ g, InfraShell[ 13, 2 ], "VertexDensity" ]]}]
 ```

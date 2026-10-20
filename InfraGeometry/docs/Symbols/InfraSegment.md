@@ -59,7 +59,7 @@ GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {a = First @ GraphCenter[g]},
-    {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 5]])},
+    {b = RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]},
     {seg = InfraSegment[a, b]},
     InfraSubstrateHighlight[g, {seg, a, b}]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
@@ -72,7 +72,7 @@ Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {c = First @ GraphCenter[g]},
-    {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
+    {seg = InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 1]]},
     {support = Keys @ InfraMeasurement[g, seg, "VertexDensity"]},
     Labeled[
       InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
@@ -86,7 +86,7 @@ The graph of a segment on the square tiling. Every shortest path is a directed p
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 5]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]},
   InfraMeasurement[g, InfraSegment[a, b], "Graph"]]
 ```
 
@@ -96,7 +96,7 @@ The graph is small where the family is large. Ten steps out on the medium square
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[a, 10]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 10], RandomSeeding -> 2]},
   {seg = InfraSegment[a, b]},
   {InfraSubstrateHighlight[g, {seg, a, b}],
    InfraMeasurement[g, seg, "Cardinality"], VertexCount @ InfraMeasurement[g, seg, "Graph"]}]
@@ -109,8 +109,8 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 5]])},
-  {members = RandomInfraSegment[ g, InfraSegment[a, b], 3 ]},
+  {b = RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]},
+  {members = RandomInfraSegment[ g, InfraSegment[a, b], 3, RandomSeeding -> 1 ]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], a, b}], {member, members}]]
 ```
 
@@ -120,8 +120,8 @@ A polyline through the centre: one shortest path in, one out. Its cardinality is
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {a = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[c, 4]])},
-  {b = (SeedRandom[5]; RandomInfraPoint[g, InfraShell[c, 4]])},
+  {a = RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 2]},
+  {b = RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 5]},
   {poly = InfraSegment[a, c, b]},
   {InfraSubstrateHighlight[g, {poly, a, c, b}],
    InfraMeasurement[g, poly, "Cardinality"] == InfraMeasurement[g, InfraSegment[a, c], "Cardinality"] InfraMeasurement[g, InfraSegment[c, b], "Cardinality"]}]
@@ -135,7 +135,7 @@ The support of the segment is the metric interval between its endpoints, drawn h
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 5]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]},
   {seg = InfraSegment[a, b]},
   {InfraSubstrateHighlight[g, {MetricInterval[g, a, b], seg}],
    Sort @ Keys @ InfraMeasurement[g, seg, "VertexDensity"] === Sort @ MetricInterval[g, a, b]}]
@@ -148,7 +148,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 5]])},
+  {b = RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]},
   {seg = InfraSegment[a, b]},
   {members = Replace[ seg, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraShell :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraCylinder :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraCone :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraSolidOfRevolution :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraBallHull :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraConvexHull :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraQuadric :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ]},
   {InfraSubstrateHighlight[g, {members, a, b}],

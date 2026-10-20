@@ -35,7 +35,7 @@ With[
       Graph[ Range[ 4 ], UndirectedEdge @@@ Tuples[ { { 1, 2 }, { 3, 4 } } ] ],
       <| 1 -> "p", 2 -> "p", 3 -> "q", 4 -> "q" |>
     ] },
-  { connection = RandomInfraConnection[ fib, "NextVertexFunction" -> Identity ] },
+  { connection = RandomInfraConnection[ fib, "NextVertexFunction" -> Identity, RandomSeeding -> 1 ] },
   { InfraFiberedGraphHighlight[ fib, connection ],
     InfraConnectionQ[ fib, connection ],
     InfraConnectionQ[ fib, InfraConnection[ Rest @ First @ connection ] ],
@@ -56,6 +56,6 @@ With[
     ] },
   { InfraFiberedGraphHighlight[ fib ],
     InfraConnectionQ[ fib, InfraConnection[ { UndirectedEdge[ 1, 3 ] } ] ],
-    RandomInfraConnection[ fib ] }
+    RandomInfraConnection[ fib, RandomSeeding -> 1 ] }
 ]
 ```

@@ -18,7 +18,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Details & Options
 
-The default draw is random. Seed with `SeedRandom` to reproduce it. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing.
+The default draw is random. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing. `RandomSeeding -> Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string gives a reproducible draw, and `Inherited` a local snapshot of the current state. The outer random state is restored afterward, as with [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html).
 
 A ray from *O* through *v* is a shortest path *O … v … e* with *d(O, e) = d(O, v) + d(v, e)* such that no neighbour of *e* lies one step farther from *O*. The first vertex is the origin, which is what makes it a ray rather than a line: inextensibility is required at the far end only. [InfraHalfLineQ]() is the predicate.
 
@@ -64,7 +64,7 @@ Row[Table[
      {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
      Labeled[
        InfraSubstrateHighlight[g,
-         {RandomInfraHalfLine[g, a, b, UpTo[3]], {a}},
+         {RandomInfraHalfLine[g, a, b, UpTo[3], RandomSeeding -> 1], {a}},
          "PointSizeRange" -> 15,
          VertexShapeFunction -> ({AbsolutePointSize[2.2], Point[#]} &),
          ImageSize -> 250],
@@ -85,7 +85,7 @@ The count-less call is one random ray.
 
 ```wl
 SeedRandom[1];
-RandomInfraHalfLine[GridGraph[{4, 4}], 6, 7]
+RandomInfraHalfLine[GridGraph[{4, 4}], 6, 7, RandomSeeding -> 1]
 ```
 
 Both shortest paths from 1 to its antipode on the 6-cycle are rays: nothing lies farther from 1 than 4.
@@ -94,6 +94,17 @@ Both shortest paths from 1 to its antipode on the 6-cycle are rays: nothing lies
 SeedRandom[1];
 RandomInfraHalfLine[CycleGraph[6], 1, 4, All]
 ```
+
+## Options
+
+### RandomSeeding
+
+A fixed seed reproduces the draw, whatever state `SeedRandom` has set:
+
+```wl
+Table[SeedRandom[k]; RandomInfraHalfLine[GridGraph[{4, 4}], 6, 7, RandomSeeding -> 7], {k, 2}]
+```
+
 
 ## Properties and Relations
 
@@ -112,7 +123,7 @@ With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Medium", "KeepCoordinates" -> True]},
   {a = First @ GraphCenter[g]},
   {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 5 &]},
-  {ray = RandomInfraHalfLine[g, a, b]},
+  {ray = RandomInfraHalfLine[g, a, b, RandomSeeding -> 1]},
   {First[ray] === a, GraphDistance[g, a, #] & /@ ray === Range[0, Length[ray] - 1]}]
 ```
 

@@ -76,7 +76,7 @@ The magnitude of a composite is at most the sum of the magnitudes. Two random di
 ```wl
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {first = (SeedRandom[1]; RandomDisplacement[g, 2]), second = (SeedRandom[2]; RandomDisplacement[g, 1])},
+  {first = RandomDisplacement[g, 2, RandomSeeding -> 1], second = RandomDisplacement[g, 1, RandomSeeding -> 2]},
   {DisplacementPlot[g, DisplacementCompose[first, second]],
    DisplacementMagnitude[g, first], DisplacementMagnitude[g, second], DisplacementMagnitude[g, DisplacementCompose[first, second]]}]
 ```

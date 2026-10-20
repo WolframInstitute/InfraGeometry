@@ -35,7 +35,7 @@ GraphicsRow @ Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {o = First @ GraphCenter[g]},
-    {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
+    {through = RandomInfraPoint[g, InfraShell[o, 2], RandomSeeding -> 1]},
     {ray = InfraHalfLine[o, through]},
     InfraSubstrateHighlight[g, {ray, o, through}]],
   {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
@@ -47,7 +47,7 @@ The number of rays and their length, beside the picture.
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
-  {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
+  {through = RandomInfraPoint[g, InfraShell[o, 2], RandomSeeding -> 1]},
   {ray = InfraHalfLine[o, through]},
   {InfraSubstrateHighlight[g, {ray, o, through}],
    InfraMeasurement[g, ray, "Cardinality"], InfraMeasurement[g, ray, "Length"]}]
@@ -60,8 +60,8 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
-  {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
-  {members = RandomInfraHalfLine[ g, InfraHalfLine[o, through], 3 ]},
+  {through = RandomInfraPoint[g, InfraShell[o, 2], RandomSeeding -> 1]},
+  {members = RandomInfraHalfLine[ g, InfraHalfLine[o, through], 3, RandomSeeding -> 1 ]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], o, through}], {member, members}]]
 ```
 
@@ -84,7 +84,7 @@ The origin lies on every ray, so its density is the cardinality. The vertex dens
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
-  {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
+  {through = RandomInfraPoint[g, InfraShell[o, 2], RandomSeeding -> 1]},
   {density = InfraMeasurement[g, InfraHalfLine[o, through], "VertexDensity"]},
   {InfraSubstrateHighlight[g, {density}],
    density[o] === InfraMeasurement[g, InfraHalfLine[o, through], "Cardinality"]}]
@@ -97,7 +97,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
   {o = First @ GraphCenter[g]},
-  {through = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[o, 2]])},
+  {through = RandomInfraPoint[g, InfraShell[o, 2], RandomSeeding -> 1]},
   {members = RandomInfraHalfLine[ g, InfraHalfLine[o, through], All ]},
   {InfraSubstrateHighlight[g, {members, o, through}],
    InfraHalfLineQ[g, members]}]

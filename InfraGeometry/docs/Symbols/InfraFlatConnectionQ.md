@@ -52,8 +52,7 @@ SeedRandom[ 1 ];
 With[
   { fib = RandomInfraFiberedGraph[
       PathGraph[ Range[ 3 ] ], "VerticalVertexCount" -> { 2 }, "VerticalEdgeCount" -> { 0 },
-      Properties -> { "IsomorphicFibers" }, "HorizontalEdgeCount" -> All
-    ] },
+      Properties -> { "IsomorphicFibers" }, "HorizontalEdgeCount" -> All, RandomSeeding -> 1] },
   { connections = RandomInfraConnection[ fib, All ] },
   { Length @ connections, InfraFlatConnectionQ[ fib, connections ] }
 ]

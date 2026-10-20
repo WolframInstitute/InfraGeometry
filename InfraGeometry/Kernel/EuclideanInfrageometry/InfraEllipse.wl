@@ -10,13 +10,21 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 Options[ RandomInfraEllipse ] = {
   Properties           -> { "Separating", "Shortest" },
-  "NextVertexFunction" -> Automatic
+  "NextVertexFunction" -> Automatic,
+  RandomSeeding        -> Automatic
 }
 
+RandomInfraEllipse[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomInfraEllipse[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomInfraEllipse[ ___, RandomSeeding -> None ] ] ] ]
+
 RandomInfraEllipse[ graph_Graph, foci : { _, _ }, c_,
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraEllipse ], First /@ { opts } ] &&
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraEllipse ], First /@ { opts } ] &&
     SubsetQ[ { "Separating", "Shortest" }, OptionValue[ RandomInfraEllipse, { opts }, Properties ] ] &&
-    ( count =!= All || OptionValue[ RandomInfraEllipse, { opts }, "NextVertexFunction" ] =!= RandomChoice ) :=
+    ( count =!= All || OptionValue[ RandomInfraEllipse, { opts }, "NextVertexFunction" ] =!= RandomChoice ) ) :=
   With[ {
       properties = OptionValue[ RandomInfraEllipse, { opts }, Properties ],
       nextFn     = If[ count === All &&
@@ -102,6 +110,7 @@ InfraEllipseQ[ _Graph, cycle_List ] /; Length[ cycle ] < 3 :=
 
 RandomInfraEllipse[ graph_Graph, InfraEllipse[ foci : { _, _ }, level_, geometryOpts___Rule ],
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraEllipse ], First /@ { opts } ] &&
-    SubsetQ[ First /@ Options[ RandomInfraEllipse ], First /@ { opts, geometryOpts } ] :=
+    opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraEllipse ], First /@ { opts } ] &&
+    SubsetQ[ First /@ Options[ RandomInfraEllipse ], First /@ { opts, geometryOpts } ] ) :=
   RandomInfraEllipse[ graph, foci, level, count, opts, geometryOpts ]

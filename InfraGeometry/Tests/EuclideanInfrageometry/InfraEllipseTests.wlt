@@ -158,7 +158,7 @@ VerificationTest[
 
 VerificationTest[
   Length @ DeleteDuplicates @ Table[
-    BlockRandom[ RandomInfraEllipse[ GridGraph[ { 4, 4 } ], { 2, 15 }, 4, Properties -> { } ],
+    BlockRandom[ RandomInfraEllipse[ GridGraph[ { 4, 4 } ], { 2, 15 }, 4, Properties -> { }, RandomSeeding -> None ],
       RandomSeeding -> s ],
     { s, 1, 8 } ] > 1,
   True,
@@ -167,8 +167,8 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    BlockRandom[ RandomInfraEllipse[ g, { 2, 15 }, 4, Properties -> { } ], RandomSeeding -> 23 ] ===
-      BlockRandom[ RandomInfraEllipse[ g, { 2, 15 }, 4, Properties -> { } ], RandomSeeding -> 23 ] ],
+    BlockRandom[ RandomInfraEllipse[ g, { 2, 15 }, 4, Properties -> { }, RandomSeeding -> None ], RandomSeeding -> 23 ] ===
+      BlockRandom[ RandomInfraEllipse[ g, { 2, 15 }, 4, Properties -> { }, RandomSeeding -> None ], RandomSeeding -> 23 ] ],
   True,
   TestID -> "RandomInfraEllipse-default-is-seeded"
 ]

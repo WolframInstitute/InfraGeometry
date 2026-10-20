@@ -26,7 +26,7 @@ RelatedTutorials: [InfraBundles]
 - Fiber vertex counts have minimum one. Vertical edge counts have minimum zero.
 - Scalar edge caps are intersected with the property-feasible count interval. Exact and range edge specifications must be feasible for every permitted fiber size; they are never clipped or silently conditioned on the draw.
 - Counts are discrete uniform on their admissible interval. The constructive graph distribution is not asserted to be uniform over all graphs with those counts.
-- The ambient random stream is controlled by external [SeedRandom](). There is no per-call seed option.
+- `RandomSeeding -> Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string gives a reproducible draw, and `Inherited` a local snapshot of the current state. The outer random state is restored afterward, as with [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html).
 - Unsupported options, property names, graph domains and jointly infeasible specifications leave the call unevaluated.
 - Drawing coordinates are computed separately by [InfraFiberedGraphHighlight]().
 
@@ -36,6 +36,7 @@ RelatedTutorials: [InfraBundles]
 | `"VerticalVertexCount"` | `{1}` | Fiber vertex count: upper bound, exact singleton or inclusive range. |
 | `"VerticalEdgeCount"` | `{0}` | Vertical edge count: upper bound, exact singleton or inclusive range. |
 | `"HorizontalEdgeCount"` | [Automatic]() | Count over each base edge: upper bound, exact singleton, inclusive range, `Automatic` or `All`. |
+| `RandomSeeding` | `Automatic` | seed of the local random stream |
 
 ### Joint size constraints
 
@@ -74,7 +75,7 @@ A general fibered graph with independently drawn fiber sizes.
 ```wl
 SeedRandom[ 7 ];
 With[ { fib = RandomInfraFiberedGraph[ GridGraph[ { 3, 3 } ],
-    "VerticalVertexCount" -> { 2, 4 }, "VerticalEdgeCount" -> 2 ] },
+    "VerticalVertexCount" -> { 2, 4 }, "VerticalEdgeCount" -> 2, RandomSeeding -> 7 ] },
   InfraFiberedGraphHighlight[ fib, { InfraFiber[ fib, 5 ] } ] ]
 ```
 
@@ -83,7 +84,7 @@ A graph bundle with a shared fiber graph and adjacency-preserving transverse mat
 ```wl
 SeedRandom[ 7 ];
 With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 6 ], Properties -> { "FiberBundle" },
-    "VerticalVertexCount" -> { 3 }, "VerticalEdgeCount" -> { 2 } ] },
+    "VerticalVertexCount" -> { 3 }, "VerticalEdgeCount" -> { 2 }, RandomSeeding -> 7 ] },
   InfraFiberedGraphHighlight[ fib ] ]
 ```
 
@@ -96,7 +97,7 @@ Lift existence allows several choices above a base edge.
 ```wl
 SeedRandom[ 7 ];
 With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 4 ], Properties -> { "Fibration" },
-    "VerticalVertexCount" -> { 2, 3 }, "HorizontalEdgeCount" -> All ] },
+    "VerticalVertexCount" -> { 2, 3 }, "HorizontalEdgeCount" -> All, RandomSeeding -> 7 ] },
   InfraFiberedGraphHighlight[ fib ] ]
 ```
 
@@ -107,7 +108,7 @@ A scalar permits smaller fibers. A singleton fixes the size.
 ```wl
 SeedRandom[ 7 ];
 GraphicsRow[ Map[ specification |-> InfraFiberedGraphHighlight[
-  RandomInfraFiberedGraph[ CycleGraph[ 6 ], "VerticalVertexCount" -> specification ] ],
+  RandomInfraFiberedGraph[ CycleGraph[ 6 ], "VerticalVertexCount" -> specification, RandomSeeding -> 7 ] ],
   { 3, { 3 }, { 2, 3 } } ] ]
 ```
 
@@ -117,9 +118,17 @@ A complete join between equal fibers supports every section choice and every fib
 
 ```wl
 SeedRandom[ 7 ];
-With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 6 ], "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All ] },
-  { section = RandomInfraSection[ fib, Properties -> { "Continuous" } ] },
+With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 6 ], "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All, RandomSeeding -> 7 ] },
+  { section = RandomInfraSection[ fib, Properties -> { "Continuous" }, RandomSeeding -> 7 ] },
   InfraFiberedGraphHighlight[ fib, section ] ]
+```
+
+### RandomSeeding
+
+A fixed seed reproduces the draw, whatever state `SeedRandom` has set:
+
+```wl
+Table[SeedRandom[k]; InfraFibers @ RandomInfraFiberedGraph[CycleGraph[4], "VerticalVertexCount" -> {2, 4}, RandomSeeding -> 7], {k, 2}]
 ```
 
 ## Possible Issues

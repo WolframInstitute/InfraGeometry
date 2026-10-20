@@ -38,7 +38,7 @@ With deterministic construction callbacks, `"NextVertexFunction" -> Identity` gi
 
 The seed applies once to the complete search, including random candidate-selection callbacks and nested geometry samplers. Counts, initial bindings and `"Steps"` retain their existing meanings. A stochastic callback with `All` can prune the search; `All` is exhaustive only for the retained tree.
 
-This follows Wolfram's [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html) and [RandomSeeding](https://reference.wolfram.com/language/ref/RandomSeeding.html) convention. Named geometry samplers instead use ambient `SeedRandom`, like [RandomPoint](https://reference.wolfram.com/language/ref/RandomPoint.html) and [RandomChoice](https://reference.wolfram.com/language/ref/RandomChoice.html). To migrate an externally seeded scene example, supply `RandomSeeding -> seed` directly; use `Inherited` when a local snapshot of an externally seeded stream is intended.
+This follows Wolfram's [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html) and [RandomSeeding](https://reference.wolfram.com/language/ref/RandomSeeding.html) convention. Every named geometry sampler takes the same option.
 
 A function such as `(RandomSample[#, UpTo[2]] &)` keeps at most two candidate extensions at each construction. Failure then means failure in the retained tree. `RandomChoice` follows just one route, without backtracking, and is not accepted with `All`.
 
@@ -99,7 +99,7 @@ ClearAll[pA, pB, seg1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {c = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 2]])},
+  {b = RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1]},
   {scene = InfraScene[{pA, pB, seg1},
      {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg1 == InfraSegment[pA, pB]}]},
   {segments = InfraSceneInstance[#, seg1] & /@ RandomInfraSceneInstance[ scene, g, All, <|pB -> b|> ]},

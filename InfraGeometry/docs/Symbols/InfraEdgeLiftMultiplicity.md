@@ -41,7 +41,7 @@ Complete joins between equal fibers have constant transverse multiplicity.
 
 ```wl
 SeedRandom[ 7 ];
-With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 4 ], "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All ] },
+With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 4 ], "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All, RandomSeeding -> 7 ] },
   { multiplicities = InfraEdgeLiftMultiplicity[ fib ] },
   InfraFiberedGraphHighlight[ fib, { Map[ counts |-> Total @ Values[ counts ], multiplicities ] } ] ]
 ```

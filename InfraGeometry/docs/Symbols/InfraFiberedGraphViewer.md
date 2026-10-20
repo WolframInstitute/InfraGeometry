@@ -51,10 +51,10 @@ Inspect a continuous section and a connection over the hexagon.
 SeedRandom[7];
 With[
   {fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> { 3 },
-    Properties -> { "IsomorphicFibers" }, "HorizontalEdgeCount" -> All]},
-  {partial = RandomInfraSection[fib, {1, 3}]},
-  {section = RandomInfraSection[fib, partial, Properties -> {"Continuous"}]},
-  {connection = RandomInfraConnection[fib]},
+    Properties -> { "IsomorphicFibers" }, "HorizontalEdgeCount" -> All, RandomSeeding -> 7]},
+  {partial = RandomInfraSection[fib, {1, 3}, RandomSeeding -> 7]},
+  {section = RandomInfraSection[fib, partial, Properties -> {"Continuous"}, RandomSeeding -> 7]},
+  {connection = RandomInfraConnection[fib, RandomSeeding -> 7]},
   InfraFiberedGraphViewer[fib, {partial, section, connection}]]
 ```
 
@@ -65,8 +65,8 @@ Inspect the same kind of object with upright three-dimensional fibers.
 ```wl
 SeedRandom[7];
 With[
-  {fib = RandomInfraFiberedGraph[CycleGraph[4], "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All]},
-  {connection = RandomInfraConnection[fib]},
+  {fib = RandomInfraFiberedGraph[CycleGraph[4], "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All, RandomSeeding -> 7]},
+  {connection = RandomInfraConnection[fib, RandomSeeding -> 7]},
   InfraFiberedGraphViewer[fib, {connection -> StandardBlue}, Method -> "3DFiber"]]
 ```
 

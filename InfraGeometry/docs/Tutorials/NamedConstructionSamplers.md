@@ -34,7 +34,9 @@ The old named ray and line samplers and predicates forward without drawing extra
 Omitted or Automatic count selects one representative.
 An integer requests exactly that many distinct representatives, UpTo gives at most that many, and All enumerates the complete pool.
 Negative counts and unsupported options stay unevaluated.
-Default All and Identity do not advance random state.
+Default All and Identity are deterministic.
+Every sampler takes RandomSeeding, as RandomInstance does: Automatic (default) seeds each call afresh, independently of SeedRandom; an integer or string reproduces a draw; Inherited takes a local snapshot of the current state; and the outer random state is restored afterward.
+RandomSeeding -> None draws from the ambient generator without isolating it.
 An explicit legacy stochastic selector retains its original action.
 
 Ball, Shell, Tube, Cylinder, Cone, SolidOfRevolution, BallHull, ConvexHull and Quadric are fixed vertex sets, including an empty set.
