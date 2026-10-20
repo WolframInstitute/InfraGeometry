@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 2.8.0 (2026-10-20)
+
 - **Breaking -- sampler seeding.** Every `Random*` sampler takes `RandomSeeding`, with `RandomInstance` semantics: `Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string reproduces a draw; `Inherited` takes a local snapshot of the current state; every setting restores the outer random state. `SeedRandom[n]; f[...]` no longer fixes a draw -- write `f[..., RandomSeeding -> n]`, which gives the same draw when `f` was the first random consumer. `RandomSeeding -> None` keeps the former ambient behaviour; nested sampler calls inside the paclet use it, so one seed covers a whole construction.
 - Remove the `LLM generated.` labels from the documentation; review lines stay.
 
