@@ -10,20 +10,21 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[    178815,       3375]
-NotebookOptionsPosition[    171407,       3229]
-NotebookOutlinePosition[    172578,       3264]
-CellTagsIndexPosition[    172497,       3259]
+NotebookDataLength[    182798,       3490]
+NotebookOptionsPosition[    174863,       3333]
+NotebookOutlinePosition[    176034,       3368]
+CellTagsIndexPosition[    175953,       3363]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
 Notebook[{
 
 Cell[CellGroupData[{
-Cell["RandomDisplacement", "ObjectName",ExpressionUUID->"e4bb8e43-7826-494f-aaaa-90512cb00325"],
+Cell["RandomDisplacement", "ObjectName",
+ CellID->1224892054,ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec"],
 
 Cell[TextData[{
- Cell["   ", "ModInfo",ExpressionUUID->"28e9345d-a134-460b-b2b5-771eb2c9da95"],
+ Cell["   ", "ModInfo",ExpressionUUID->"7215c097-94d5-4d55-9b3a-31c6ad2d1b2c"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -37,13 +38,13 @@ Cell[TextData[{
     StyleBox["g", "TI"], ",", " ", 
     StyleBox["r", "TI"]}], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "7dcf1278-3b78-487a-9395-37f1effcb9d2"],
+  "e327d837-4e1a-43d0-9766-dff43f410f44"],
  "\[LineSeparator]",
  "gives a random single-valued displacement of magnitude at most ",
  StyleBox["r", "TI"],
  ", built to be 1-continuous.",
  "\n",
- Cell["   ", "ModInfo",ExpressionUUID->"2202ddfc-725d-45b3-be73-48b417f96742"],
+ Cell["   ", "ModInfo",ExpressionUUID->"51ddeb2c-e547-4c3a-8d58-37800b0733e5"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -55,12 +56,12 @@ Cell[TextData[{
     BaseStyle->"InlineFormula"], "[", 
    StyleBox["g", "TI"], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "92fc95f5-42c2-4fa7-b3a6-853fa934d9b9"],
+  "a7b50dd9-8a29-4d8c-8b2c-e81388e56c98"],
  "\[LineSeparator]",
  "takes ",
  StyleBox["r", "TI"],
  " = 1."
-}], "Usage",ExpressionUUID->"6c633aaf-34e6-4103-94ac-bdd757d1e080"],
+}], "Usage",ExpressionUUID->"d2edd2db-a8d6-4dcb-ba08-03c016135754"],
 
 Cell[TextData[{
  "Construction: the vertices are visited in breadth-first order from the \
@@ -73,7 +74,7 @@ or, when there is none, a vertex of the ball that brings it closest to them. \
 Then the vertices of every edge whose targets are more than one step apart \
 are given new targets, closest to their neighbours' targets and to \
 themselves, up to 50 times; the whole construction is tried up to 5 times."
-}], "Notes",ExpressionUUID->"ecd61149-9e55-4c37-8cb0-25fae8814e09"],
+}], "Notes",ExpressionUUID->"9bece2b4-b95b-4534-89c2-2a90d874a4dc"],
 
 Cell[TextData[{
  "The result is single-valued and has magnitude at most ",
@@ -87,12 +88,12 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "ef6b3bfd-6059-44d1-82e1-2537e46c6224"],
+  "d56294d8-20d2-413c-80ec-fa372fed51cd"],
  "). When the repair leaves a discontinuity after the 5 attempts, which \
 happens at larger ",
  StyleBox["r", "TI"],
  ", the call stays unevaluated."
-}], "Notes",ExpressionUUID->"70f6ab6d-2a8a-4a84-8875-6848ed22e088"],
+}], "Notes",ExpressionUUID->"0f33aeb8-59e2-43b4-a9bc-394fd93e629a"],
 
 Cell[TextData[{
  "The construction draws with ",
@@ -102,17 +103,29 @@ Cell[TextData[{
      TextData["RandomChoice"]], "paclet:ref/RandomChoice"},
    "RefLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "651f88de-6a89-4403-b3c1-106d8bf56040"],
- ", so ",
+  "67b2d78b-e9a6-41a7-a399-ab18966a5a8a"],
+ ". ",
  Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["SeedRandom"]], "paclet:ref/SeedRandom"},
-   "RefLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "fde84bae-6f20-492c-b1ce-0cc21eb232cc"],
- " fixes the result."
-}], "Notes",ExpressionUUID->"49226dbe-96ec-48de-a760-befafc986a41"]
+  RowBox[{"RandomSeeding", " ", "->", " ", "Automatic"}]], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "b0f570e1-0a70-47e1-b1f1-bbfcf5b3abcf"],
+ " (default) seeds each call afresh, independently of ",
+ Cell[BoxData["SeedRandom"], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "cffd5127-6351-4f53-a039-a0b2e1278c3a"],
+ "; an integer or string gives a reproducible draw, and ",
+ Cell[BoxData["Inherited"], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "8d50d6f2-bbd5-408b-ac78-e3cf6b7663d9"],
+ " a local snapshot of the current state. The outer random state is restored \
+afterward, as with ",
+ ButtonBox["RandomInstance",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["https://reference.wolfram.com/language/ref/RandomInstance.html"], 
+    None}],
+ "."
+}], "Notes",ExpressionUUID->"78e875b5-3339-4c9c-b03b-1cdb8650710c"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -141,7 +154,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "347ab338-27b7-447b-934b-2a0d24fbeb4c"],
+  "6b8b0ca4-b6d7-4e14-9bbc-9ee76e1948cf"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -151,7 +164,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "85569099-b250-4d58-834b-abce8b05040c"],
+  "39ecdd25-095b-4fc7-bbc9-c03ee8d57378"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -161,7 +174,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "6c641872-cd78-4120-8099-ee7e958845ab"],
+  "344d4c2b-5e14-40b5-a6fd-cc83679cb7dc"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -171,7 +184,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "63a48add-f35e-4a55-899a-88f30e7461b0"],
+  "cdd6edcc-0d49-4b31-a8c6-f67d687ed953"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -181,8 +194,8 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "c011eab6-ccc7-4e32-b8cd-db0050dcb1b2"]
-}], "SeeAlso",ExpressionUUID->"802eda74-8250-4314-8531-36b4c30fa4dd"]
+  "3aa1926f-feb7-4ca8-8f1a-b360faaee755"]
+}], "SeeAlso",ExpressionUUID->"da2a882f-3f59-4df7-90fb-ef1236ffe414"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -209,8 +222,8 @@ Cell[TextData[Cell[BoxData[
   BaseStyle->"Link",
   ButtonData->
    "paclet:WolframInstitute/InfraGeometry/guide/InfraAnalysis"]], \
-"InlineFormula",ExpressionUUID->"393d0ecf-1c3f-47de-b75f-37bca1916613"]], \
-"MoreAbout",ExpressionUUID->"85a72cca-86eb-47b6-9452-5262cde1cbb1"]
+"InlineFormula",ExpressionUUID->"26643059-6438-467a-bb1f-6f624d614eb3"]], \
+"MoreAbout",ExpressionUUID->"91447318-9c1a-4706-a7a4-c98693e455a7"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -272,7 +285,7 @@ Cell[BoxData[
 Cell["\<\
 Random displacements of magnitude at most 2 on the discretized plane, the \
 square tiling and the hexagonal tiling: coherent flows with sinks.\
-\>", "ExampleText",ExpressionUUID->"5953e6bb-8508-4853-ab83-64b3f9c09047"],
+\>", "ExampleText",ExpressionUUID->"48858833-eb11-47d3-ae30-dcc60f6bb6cd"],
 
 Cell[CellGroupData[{
 
@@ -290,12 +303,10 @@ Cell[BoxData[
          "]"}]}], "}"}], ",", "\n", "    ", 
       RowBox[{"{", 
        RowBox[{"field", " ", "=", " ", 
-        RowBox[{"(", 
-         RowBox[{
-          RowBox[{"SeedRandom", "[", "1", "]"}], ";", " ", 
-          RowBox[{"RandomDisplacement", "[", 
-           RowBox[{"g", ",", " ", "2"}], "]"}]}], ")"}]}], "}"}], ",", "\n", 
-      "    ", 
+        RowBox[{"RandomDisplacement", "[", 
+         RowBox[{"g", ",", " ", "2", ",", " ", 
+          RowBox[{"RandomSeeding", " ", "->", " ", "1"}]}], "]"}]}], "}"}], ",",
+       "\n", "    ", 
       RowBox[{"DisplacementPlot", "[", 
        RowBox[{"g", ",", " ", "field"}], "]"}]}], "]"}], ",", "\n", "  ", 
     RowBox[{"{", 
@@ -305,7 +316,7 @@ Cell[BoxData[
         " ", "\"\<SquareTilingGraph\>\"", ",", 
         " ", "\"\<HexagonalTilingGraph\>\""}], "}"}]}], "}"}]}], 
    "]"}]}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"d9830b85-3cf7-43b8-aff2-a39f28a73180"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"61aba48d-a378-4b46-b9ca-e47319fe084c"],
 
 Cell[BoxData[
  GraphicsBox[{{}, {InsetBox[
@@ -1468,7 +1479,7 @@ bSj3/Qv44/wr4OMv1pr8Cg==
   Method->{"IgnoreImageSizeAutomaticLimit" -> True},
   PlotRange->{{0, 645.}, {-243.99134299369143`, 0}},
   PlotRangePadding->Automatic]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"e11954c8-8a91-40fe-976d-469f6045514b"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"8269f0ef-4415-42db-862d-e04d1fd7aa53"]
 }, Open  ]]
 }, Open  ]],
 
@@ -1498,7 +1509,7 @@ Cell[BoxData[
   $Line = 0; Null]], "ExampleSection",
  CellID->1293636265,ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75"],
 
-Cell["The magnitude bound 1, 2 and 3 on the square tiling.", "ExampleText",ExpressionUUID->"2ce07e8e-8277-4fa2-8f4e-badd820eba42"],
+Cell["The magnitude bound 1, 2 and 3 on the square tiling.", "ExampleText",ExpressionUUID->"db9fe09f-34bb-4d3d-8851-250ce7c313fd"],
 
 Cell[CellGroupData[{
 
@@ -1536,7 +1547,7 @@ Cell[BoxData[
        RowBox[{"DisplacementMagnitude", "[", 
         RowBox[{"g", ",", " ", "#"}], "]"}], " ", "&"}], " ", "/@", " ", 
       "fields"}]}], "}"}]}], "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"32640d2c-1a70-46d1-a293-979c3a6569bd"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"bf91f4f5-5876-423d-883f-6d63bacea067"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -1672,52 +1683,52 @@ eV/f14/NY/Nkn+xr+9q+d+/d1/V2/bp+/wIXxFC/
             DiskBox[112, 0.07071067811865477], 
             DiskBox[113, 0.07071067811865477]}}], 
          {RGBColor[0.4, 0.6, 1], Arrowheads[0.02], 
-          ArrowBox[BezierCurveBox[{{1., 0.}, {1.3, -0.7}, {2., -1.}}]], 
+          ArrowBox[BezierCurveBox[{{1., 0.}, {0.7, 0.7}, {0., 1.}}]], 
           ArrowBox[BezierCurveBox[{{0., 1.}, {0.3, 0.3}, {1., 0.}}]], 
           ArrowBox[BezierCurveBox[{{0., -1.}, {0.7, -0.7}, {1., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{2., 1.}, {2.3, 0.3}, {3., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{2., -1.}, {1.3, -1.3}, {1., -2.}}]], 
+          ArrowBox[BezierCurveBox[{{2., 1.}, {1.3, 0.7}, {1., 0.}}]], 
+          ArrowBox[BezierCurveBox[{{2., -1.}, {1.7, -0.3}, {1., 0.}}]], 
           ArrowBox[BezierCurveBox[{{-1., 0.}, {-0.3, 0.3}, {0., 1.}}]], 
           ArrowBox[BezierCurveBox[{{1., 2.}, {1.3, 1.3}, {2., 1.}}]], 
           ArrowBox[BezierCurveBox[{{-1., 2.}, {-0.7, 1.3}, {0., 1.}}]], 
           ArrowBox[BezierCurveBox[{{-1., -2.}, {-0.3, -1.7}, {0., -1.}}]], 
-          ArrowBox[BezierCurveBox[{{1., -2.}, {0.7, -1.3}, {0., -1.}}]], 
+          ArrowBox[BezierCurveBox[{{1., -2.}, {1.7, -1.7}, {2., -1.}}]], 
           ArrowBox[BezierCurveBox[{{3., 2.}, {2.3, 1.7}, {2., 1.}}]], 
-          ArrowBox[BezierCurveBox[{{3., 0.}, {2.3, -0.3}, {2., -1.}}]], 
+          ArrowBox[BezierCurveBox[{{3., 0.}, {2.7, 0.7}, {2., 1.}}]], 
           ArrowBox[BezierCurveBox[{{3., -2.}, {2.7, -1.3}, {2., -1.}}]], 
           ArrowBox[BezierCurveBox[{{-2., 1.}, {-1.7, 0.3}, {-1., 0.}}]], 
           ArrowBox[BezierCurveBox[{{-2., -1.}, {-1.3, -0.7}, {-1., 0.}}]], 
           ArrowBox[BezierCurveBox[{{0., 3.}, {0.3, 2.3}, {1., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{2., 3.}, {1.3, 2.7}, {1., 2.}}]], 
+          ArrowBox[BezierCurveBox[{{2., 3.}, {2.3, 2.3}, {3., 2.}}]], 
           ArrowBox[BezierCurveBox[{{-2., 3.}, {-1.7, 2.3}, {-1., 2.}}]], 
           ArrowBox[BezierCurveBox[{{-2., -3.}, {-1.3, -2.7}, {-1., -2.}}]], 
           ArrowBox[BezierCurveBox[{{0., -3.}, {0.7, -2.7}, {1., -2.}}]], 
           ArrowBox[BezierCurveBox[{{2., -3.}, {1.7, -2.3}, {1., -2.}}]], 
           ArrowBox[BezierCurveBox[{{4., 3.}, {3.3, 2.7}, {3., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{4., 1.}, {3.3, 0.7}, {3., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{4., -1.}, {3.3, -1.3}, {3., -2.}}]], 
+          ArrowBox[BezierCurveBox[{{4., 1.}, {3.7, 1.7}, {3., 2.}}]], 
+          ArrowBox[BezierCurveBox[{{4., -1.}, {3.7, -0.3}, {3., 0.}}]], 
           ArrowBox[BezierCurveBox[{{4., -3.}, {3.7, -2.3}, {3., -2.}}]], 
           ArrowBox[BezierCurveBox[{{-3., 0.}, {-2.7, -0.7}, {-2., -1.}}]], 
           ArrowBox[BezierCurveBox[{{-3., 2.}, {-2.7, 1.3}, {-2., 1.}}]], 
           ArrowBox[BezierCurveBox[{{-3., -2.}, {-2.3, -1.7}, {-2., -1.}}]], 
-          ArrowBox[BezierCurveBox[{{1., 4.}, {0.3, 3.7}, {0., 3.}}]], 
+          ArrowBox[BezierCurveBox[{{1., 4.}, {1.3, 3.3}, {2., 3.}}]], 
           ArrowBox[BezierCurveBox[{{-1., 4.}, {-0.7, 3.3}, {0., 3.}}]], 
-          ArrowBox[BezierCurveBox[{{3., 4.}, {2.3, 3.7}, {2., 3.}}]], 
+          ArrowBox[BezierCurveBox[{{3., 4.}, {3.3, 3.3}, {4., 3.}}]], 
           ArrowBox[BezierCurveBox[{{-3., 4.}, {-2.7, 3.3}, {-2., 3.}}]], 
           ArrowBox[BezierCurveBox[{{-3., -4.}, {-2.3, -3.7}, {-2., -3.}}]], 
           ArrowBox[BezierCurveBox[{{-1., -4.}, {-0.3, -3.7}, {0., -3.}}]], 
           ArrowBox[BezierCurveBox[{{1., -4.}, {0.7, -3.3}, {0., -3.}}]], 
           ArrowBox[BezierCurveBox[{{3., -4.}, {2.7, -3.3}, {2., -3.}}]], 
           ArrowBox[BezierCurveBox[{{5., 4.}, {4.3, 3.7}, {4., 3.}}]], 
-          ArrowBox[BezierCurveBox[{{5., 2.}, {4.3, 1.7}, {4., 1.}}]], 
-          ArrowBox[BezierCurveBox[{{5., 0.}, {4.3, -0.3}, {4., -1.}}]], 
+          ArrowBox[BezierCurveBox[{{5., 2.}, {4.7, 2.7}, {4., 3.}}]], 
+          ArrowBox[BezierCurveBox[{{5., 0.}, {4.7, 0.7}, {4., 1.}}]], 
           ArrowBox[BezierCurveBox[{{5., -2.}, {4.7, -1.3}, {4., -1.}}]], 
           ArrowBox[BezierCurveBox[{{5., -4.}, {4.7, -3.3}, {4., -3.}}]], 
-          ArrowBox[BezierCurveBox[{{-4., -1.}, {-3.3, -0.7}, {-3., 0.}}]], 
+          ArrowBox[BezierCurveBox[{{-4., -1.}, {-3.7, -1.7}, {-3., -2.}}]], 
           ArrowBox[BezierCurveBox[{{-4., 1.}, {-3.7, 0.3}, {-3., 0.}}]], 
           ArrowBox[BezierCurveBox[{{-4., 3.}, {-3.7, 2.3}, {-3., 2.}}]], 
           ArrowBox[BezierCurveBox[{{-4., -3.}, {-3.3, -2.7}, {-3., -2.}}]], 
-          ArrowBox[BezierCurveBox[{{2., 5.}, {1.3, 4.7}, {1., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{2., 5.}, {2.3, 4.3}, {3., 4.}}]], 
           ArrowBox[BezierCurveBox[{{0., 5.}, {0.3, 4.3}, {1., 4.}}]], 
           ArrowBox[BezierCurveBox[{{-2., 5.}, {-1.7, 4.3}, {-1., 4.}}]], 
           ArrowBox[BezierCurveBox[{{4., 5.}, {3.3, 4.7}, {3., 4.}}]], 
@@ -1728,18 +1739,18 @@ eV/f14/NY/Nkn+xr+9q+d+/d1/V2/bp+/wIXxFC/
           ArrowBox[BezierCurveBox[{{2., -5.}, {1.7, -4.3}, {1., -4.}}]], 
           ArrowBox[BezierCurveBox[{{4., -5.}, {3.7, -4.3}, {3., -4.}}]], 
           ArrowBox[BezierCurveBox[{{6., 5.}, {5.3, 4.7}, {5., 4.}}]], 
-          ArrowBox[BezierCurveBox[{{6., 3.}, {5.3, 2.7}, {5., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{6., 1.}, {5.3, 0.7}, {5., 0.}}]], 
+          ArrowBox[BezierCurveBox[{{6., 3.}, {5.7, 3.7}, {5., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{6., 1.}, {5.7, 1.7}, {5., 2.}}]], 
           ArrowBox[BezierCurveBox[{{6., -1.}, {5.7, -0.3}, {5., 0.}}]], 
           ArrowBox[BezierCurveBox[{{6., -3.}, {5.7, -2.3}, {5., -2.}}]], 
           ArrowBox[BezierCurveBox[{{6., -5.}, {5.7, -4.3}, {5., -4.}}]], 
-          ArrowBox[BezierCurveBox[{{-5., -2.}, {-4.3, -1.7}, {-4., -1.}}]], 
+          ArrowBox[BezierCurveBox[{{-5., -2.}, {-4.7, -2.7}, {-4., -3.}}]], 
           ArrowBox[BezierCurveBox[{{-5., 0.}, {-4.7, -0.7}, {-4., -1.}}]], 
           ArrowBox[BezierCurveBox[{{-5., 2.}, {-4.7, 1.3}, {-4., 1.}}]], 
           ArrowBox[BezierCurveBox[{{-5., 4.}, {-4.7, 3.3}, {-4., 3.}}]], 
           ArrowBox[BezierCurveBox[{{-5., -4.}, {-4.3, -3.7}, {-4., -3.}}]], 
           ArrowBox[BezierCurveBox[{{3., 6.}, {2.3, 5.7}, {2., 5.}}]], 
-          ArrowBox[BezierCurveBox[{{1., 6.}, {0.3, 5.7}, {0., 5.}}]], 
+          ArrowBox[BezierCurveBox[{{1., 6.}, {1.3, 5.3}, {2., 5.}}]], 
           ArrowBox[BezierCurveBox[{{-1., 6.}, {-0.7, 5.3}, {0., 5.}}]], 
           ArrowBox[BezierCurveBox[{{-3., 6.}, {-2.7, 5.3}, {-2., 5.}}]], 
           ArrowBox[BezierCurveBox[{{5., 6.}, {4.3, 5.7}, {4., 5.}}]], 
@@ -1751,20 +1762,20 @@ eV/f14/NY/Nkn+xr+9q+d+/d1/V2/bp+/wIXxFC/
           ArrowBox[BezierCurveBox[{{3., -6.}, {2.7, -5.3}, {2., -5.}}]], 
           ArrowBox[BezierCurveBox[{{5., -6.}, {4.7, -5.3}, {4., -5.}}]], 
           ArrowBox[BezierCurveBox[{{7., 6.}, {6.3, 5.7}, {6., 5.}}]], 
-          ArrowBox[BezierCurveBox[{{7., 4.}, {6.3, 3.7}, {6., 3.}}]], 
-          ArrowBox[BezierCurveBox[{{7., 2.}, {6.3, 1.7}, {6., 1.}}]], 
+          ArrowBox[BezierCurveBox[{{7., 4.}, {6.7, 4.7}, {6., 5.}}]], 
+          ArrowBox[BezierCurveBox[{{7., 2.}, {6.7, 2.7}, {6., 3.}}]], 
           ArrowBox[BezierCurveBox[{{7., 0.}, {6.7, 0.7}, {6., 1.}}]], 
           ArrowBox[BezierCurveBox[{{7., -2.}, {6.7, -1.3}, {6., -1.}}]], 
           ArrowBox[BezierCurveBox[{{7., -4.}, {6.7, -3.3}, {6., -3.}}]], 
           ArrowBox[BezierCurveBox[{{7., -6.}, {6.7, -5.3}, {6., -5.}}]], 
-          ArrowBox[BezierCurveBox[{{-6., -3.}, {-5.3, -2.7}, {-5., -2.}}]], 
+          ArrowBox[BezierCurveBox[{{-6., -3.}, {-5.7, -3.7}, {-5., -4.}}]], 
           ArrowBox[BezierCurveBox[{{-6., -1.}, {-5.7, -1.7}, {-5., -2.}}]], 
           ArrowBox[BezierCurveBox[{{-6., 1.}, {-5.7, 0.3}, {-5., 0.}}]], 
           ArrowBox[BezierCurveBox[{{-6., 3.}, {-5.7, 2.3}, {-5., 2.}}]], 
           ArrowBox[BezierCurveBox[{{-6., 5.}, {-5.7, 4.3}, {-5., 4.}}]], 
           ArrowBox[BezierCurveBox[{{-6., -5.}, {-5.3, -4.7}, {-5., -4.}}]], 
           ArrowBox[BezierCurveBox[{{4., 7.}, {3.3, 6.7}, {3., 6.}}]], 
-          ArrowBox[BezierCurveBox[{{2., 7.}, {1.3, 6.7}, {1., 6.}}]], 
+          ArrowBox[BezierCurveBox[{{2., 7.}, {2.3, 6.3}, {3., 6.}}]], 
           ArrowBox[BezierCurveBox[{{0., 7.}, {0.3, 6.3}, {1., 6.}}]], 
           ArrowBox[BezierCurveBox[{{-2., 7.}, {-1.7, 6.3}, {-1., 6.}}]], 
           ArrowBox[BezierCurveBox[{{-4., 7.}, {-3.7, 6.3}, {-3., 6.}}]], 
@@ -1778,9 +1789,9 @@ eV/f14/NY/Nkn+xr+9q+d+/d1/V2/bp+/wIXxFC/
           ArrowBox[BezierCurveBox[{{4., -7.}, {3.7, -6.3}, {3., -6.}}]], 
           ArrowBox[BezierCurveBox[{{6., -7.}, {5.7, -6.3}, {5., -6.}}]], 
           ArrowBox[BezierCurveBox[{{8., 7.}, {7.3, 6.7}, {7., 6.}}]], 
-          ArrowBox[BezierCurveBox[{{8., 5.}, {7.3, 4.7}, {7., 4.}}]], 
-          ArrowBox[BezierCurveBox[{{8., 3.}, {7.3, 2.7}, {7., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{8., 1.}, {7.3, 0.7}, {7., 0.}}]], 
+          ArrowBox[BezierCurveBox[{{8., 5.}, {7.7, 5.7}, {7., 6.}}]], 
+          ArrowBox[BezierCurveBox[{{8., 3.}, {7.7, 3.7}, {7., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{8., 1.}, {7.7, 1.7}, {7., 2.}}]], 
           ArrowBox[BezierCurveBox[{{8., -1.}, {7.7, -0.3}, {7., 0.}}]], 
           ArrowBox[BezierCurveBox[{{8., -3.}, {7.7, -2.3}, {7., -2.}}]], 
           ArrowBox[BezierCurveBox[{{8., -5.}, {7.7, -4.3}, {7., -4.}}]], 
@@ -1925,75 +1936,75 @@ eV/f14/NY/Nkn+xr+9q+d+/d1/V2/bp+/wIXxFC/
             DiskBox[112, 0.07071067811865477], 
             DiskBox[113, 0.07071067811865477]}}], 
          {RGBColor[0.4, 0.6, 1], Arrowheads[0.02], 
-          ArrowBox[BezierCurveBox[{{1., 0.}, {0.7, 0.7}, {0., 1.}}]], 
+          ArrowBox[BezierCurveBox[{{1., 0.}, {0.3, -0.3}, {0., -1.}}]], 
           ArrowBox[BezierCurveBox[{{0., 1.}, {-0.7, 0.7}, {-1., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{0., -1.}, {0.7, -0.7}, {1., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{2., 1.}, {1.3, 0.7}, {1., 0.}}]], 
+          ArrowBox[BezierCurveBox[{{0., -1.}, {0.3, -1.7}, {1., -2.}}]], 
+          ArrowBox[BezierCurveBox[{{2., 1.}, {0.6, 0.4}, {0., -1.}}]], 
           ArrowBox[BezierCurveBox[{{2., -1.}, {1.7, -0.3}, {1., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{-1., 0.}, {-0.3, 0.3}, {0., 1.}}]], 
-          ArrowBox[BezierCurveBox[{{1., 2.}, {0.3, 1.7}, {0., 1.}}]], 
+          ArrowBox[BezierCurveBox[{{-1., 0.}, {-0.7, -0.7}, {0., -1.}}]], 
+          ArrowBox[BezierCurveBox[{{1., 2.}, {-0.4, 1.4}, {-1., 0.}}]], 
           ArrowBox[BezierCurveBox[{{-1., 2.}, {-1.7, 1.7}, {-2., 1.}}]], 
-          ArrowBox[BezierCurveBox[{{-1., -2.}, {0.4, -1.4}, {1., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{1., -2.}, {1.4, -1.}, {1., 0.}}]], 
+          ArrowBox[BezierCurveBox[{{-1., -2.}, {0., -2.4}, {1., -2.}}]], 
+          ArrowBox[BezierCurveBox[{{1., -2.}, {1.7, -1.7}, {2., -1.}}]], 
           ArrowBox[BezierCurveBox[{{3., 2.}, {1.6, 1.4}, {1., 0.}}]], 
           ArrowBox[BezierCurveBox[{{3., 0.}, {2., 0.4}, {1., 0.}}]], 
           ArrowBox[BezierCurveBox[{{3., -2.}, {2.4, -0.6}, {1., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{-2., 1.}, {-1.3, 1.3}, {-1., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{-2., -1.}, {-0.6, -0.4}, {0., 1.}}]], 
-          ArrowBox[BezierCurveBox[{{0., 3.}, {-0.7, 2.7}, {-1., 2.}}]], 
+          ArrowBox[BezierCurveBox[{{-2., 1.}, {-1.7, 0.3}, {-1., 0.}}]], 
+          ArrowBox[BezierCurveBox[{{-2., -1.}, {-1., -1.4}, {0., -1.}}]], 
+          ArrowBox[BezierCurveBox[{{0., 3.}, {-1.4, 2.4}, {-2., 1.}}]], 
           ArrowBox[BezierCurveBox[{{2., 3.}, {0.6, 2.4}, {0., 1.}}]], 
           ArrowBox[BezierCurveBox[{{-2., 3.}, {-1.7, 2.3}, {-1., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{-2., -3.}, {-0.6, -2.4}, {0., -1.}}]], 
-          ArrowBox[BezierCurveBox[{{0., -3.}, {0.4, -2.}, {0., -1.}}]], 
-          ArrowBox[BezierCurveBox[{{2., -3.}, {1.4, -1.6}, {0., -1.}}]], 
+          ArrowBox[BezierCurveBox[{{-2., -3.}, {-1., -3.4}, {0., -3.}}]], 
+          ArrowBox[BezierCurveBox[{{0., -3.}, {1.4, -2.4}, {2., -1.}}]], 
+          ArrowBox[BezierCurveBox[{{2., -3.}, {2.4, -2.}, {2., -1.}}]], 
           ArrowBox[BezierCurveBox[{{4., 3.}, {2.6, 2.4}, {2., 1.}}]], 
           ArrowBox[BezierCurveBox[{{4., 1.}, {2.6, 0.4}, {2., -1.}}]], 
           ArrowBox[BezierCurveBox[{{4., -1.}, {3., -0.6}, {2., -1.}}]], 
           ArrowBox[BezierCurveBox[{{4., -3.}, {3.4, -1.6}, {2., -1.}}]], 
-          ArrowBox[BezierCurveBox[{{-3., 0.}, {-1.6, 0.6}, {-1., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{-3., 2.}, {-2., 1.6}, {-1., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{-3., -2.}, {-1.6, -1.4}, {-1., 0.}}]], 
+          ArrowBox[BezierCurveBox[{{-3., 0.}, {-2., -0.4}, {-1., 0.}}]], 
+          ArrowBox[BezierCurveBox[{{-3., 2.}, {-2.7, 1.3}, {-2., 1.}}]], 
+          ArrowBox[BezierCurveBox[{{-3., -2.}, {-2., -2.4}, {-1., -2.}}]], 
           ArrowBox[BezierCurveBox[{{1., 4.}, {-0.4, 3.4}, {-1., 2.}}]], 
           ArrowBox[BezierCurveBox[{{-1., 4.}, {-1.4, 3.}, {-1., 2.}}]], 
           ArrowBox[BezierCurveBox[{{3., 4.}, {1.6, 3.4}, {1., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{-3., 4.}, {-2.4, 2.6}, {-1., 2.}}]], 
+          ArrowBox[BezierCurveBox[{{-3., 4.}, {-2.7, 3.3}, {-2., 3.}}]], 
           ArrowBox[BezierCurveBox[{{-3., -4.}, {-1.6, -3.4}, {-1., -2.}}]], 
           ArrowBox[BezierCurveBox[{{-1., -4.}, {0.4, -3.4}, {1., -2.}}]], 
           ArrowBox[BezierCurveBox[{{1., -4.}, {1.4, -3.}, {1., -2.}}]], 
           ArrowBox[BezierCurveBox[{{3., -4.}, {2.4, -2.6}, {1., -2.}}]], 
           ArrowBox[BezierCurveBox[{{5., 4.}, {3.6, 3.4}, {3., 2.}}]], 
           ArrowBox[BezierCurveBox[{{5., 2.}, {3.6, 1.4}, {3., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{5., 0.}, {3.6, -0.6}, {3., -2.}}]], 
-          ArrowBox[BezierCurveBox[{{5., -2.}, {4., -1.6}, {3., -2.}}]], 
+          ArrowBox[BezierCurveBox[{{5., 0.}, {4., 0.4}, {3., 0.}}]], 
+          ArrowBox[BezierCurveBox[{{5., -2.}, {4.4, -0.6}, {3., 0.}}]], 
           ArrowBox[BezierCurveBox[{{5., -4.}, {4.4, -2.6}, {3., -2.}}]], 
-          ArrowBox[BezierCurveBox[{{-4., -1.}, {-2.6, -0.4}, {-2., 1.}}]], 
-          ArrowBox[BezierCurveBox[{{-4., 1.}, {-2.6, 1.6}, {-2., 3.}}]], 
-          ArrowBox[BezierCurveBox[{{-4., 3.}, {-3., 2.6}, {-2., 3.}}]], 
+          ArrowBox[BezierCurveBox[{{-4., -1.}, {-3., -1.4}, {-2., -1.}}]], 
+          ArrowBox[BezierCurveBox[{{-4., 1.}, {-3., 0.6}, {-2., 1.}}]], 
+          ArrowBox[BezierCurveBox[{{-4., 3.}, {-3.7, 2.3}, {-3., 2.}}]], 
           ArrowBox[BezierCurveBox[{{-4., -3.}, {-2.6, -2.4}, {-2., -1.}}]], 
           ArrowBox[BezierCurveBox[{{2., 5.}, {0.6, 4.4}, {0., 3.}}]], 
-          ArrowBox[BezierCurveBox[{{0., 5.}, {-0.4, 4.}, {0., 3.}}]], 
+          ArrowBox[BezierCurveBox[{{0., 5.}, {-1.4, 4.4}, {-2., 3.}}]], 
           ArrowBox[BezierCurveBox[{{-2., 5.}, {-2.4, 4.}, {-2., 3.}}]], 
           ArrowBox[BezierCurveBox[{{4., 5.}, {2.6, 4.4}, {2., 3.}}]], 
-          ArrowBox[BezierCurveBox[{{-4., 5.}, {-3.4, 3.6}, {-2., 3.}}]], 
+          ArrowBox[BezierCurveBox[{{-4., 5.}, {-3.7, 4.3}, {-3., 4.}}]], 
           ArrowBox[BezierCurveBox[{{-4., -5.}, {-2.6, -4.4}, {-2., -3.}}]], 
           ArrowBox[BezierCurveBox[{{-2., -5.}, {-0.6, -4.4}, {0., -3.}}]], 
-          ArrowBox[BezierCurveBox[{{0., -5.}, {0.4, -4.}, {0., -3.}}]], 
-          ArrowBox[BezierCurveBox[{{2., -5.}, {2.4, -4.}, {2., -3.}}]], 
+          ArrowBox[BezierCurveBox[{{0., -5.}, {1.4, -4.4}, {2., -3.}}]], 
+          ArrowBox[BezierCurveBox[{{2., -5.}, {1.4, -3.6}, {0., -3.}}]], 
           ArrowBox[BezierCurveBox[{{4., -5.}, {3.4, -3.6}, {2., -3.}}]], 
           ArrowBox[BezierCurveBox[{{6., 5.}, {4.6, 4.4}, {4., 3.}}]], 
           ArrowBox[BezierCurveBox[{{6., 3.}, {4.6, 2.4}, {4., 1.}}]], 
-          ArrowBox[BezierCurveBox[{{6., 1.}, {4.6, 0.4}, {4., -1.}}]], 
+          ArrowBox[BezierCurveBox[{{6., 1.}, {5., 1.4}, {4., 1.}}]], 
           ArrowBox[BezierCurveBox[{{6., -1.}, {5., -0.6}, {4., -1.}}]], 
           ArrowBox[BezierCurveBox[{{6., -3.}, {5.4, -1.6}, {4., -1.}}]], 
           ArrowBox[BezierCurveBox[{{6., -5.}, {5.4, -3.6}, {4., -3.}}]], 
           ArrowBox[BezierCurveBox[{{-5., -2.}, {-3.6, -1.4}, {-3., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{-5., 0.}, {-3.6, 0.6}, {-3., 2.}}]], 
+          ArrowBox[BezierCurveBox[{{-5., 0.}, {-4., -0.4}, {-3., 0.}}]], 
           ArrowBox[BezierCurveBox[{{-5., 2.}, {-4., 1.6}, {-3., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{-5., 4.}, {-4.4, 2.6}, {-3., 2.}}]], 
+          ArrowBox[BezierCurveBox[{{-5., 4.}, {-4.7, 3.3}, {-4., 3.}}]], 
           ArrowBox[BezierCurveBox[{{-5., -4.}, {-3.6, -3.4}, {-3., -2.}}]], 
           ArrowBox[BezierCurveBox[{{3., 6.}, {1.6, 5.4}, {1., 4.}}]], 
-          ArrowBox[BezierCurveBox[{{1., 6.}, {0.6, 5.}, {1., 4.}}]], 
-          ArrowBox[BezierCurveBox[{{-1., 6.}, {-1.4, 5.}, {-1., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{1., 6.}, {-0.4, 5.4}, {-1., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{-1., 6.}, {-2.4, 5.4}, {-3., 4.}}]], 
           ArrowBox[BezierCurveBox[{{-3., 6.}, {-3.4, 5.}, {-3., 4.}}]], 
           ArrowBox[BezierCurveBox[{{5., 6.}, {3.6, 5.4}, {3., 4.}}]], 
           ArrowBox[BezierCurveBox[{{-5., 6.}, {-4.4, 4.6}, {-3., 4.}}]], 
@@ -2001,24 +2012,24 @@ eV/f14/NY/Nkn+xr+9q+d+/d1/V2/bp+/wIXxFC/
           ArrowBox[BezierCurveBox[{{-3., -6.}, {-1.6, -5.4}, {-1., -4.}}]], 
           ArrowBox[BezierCurveBox[{{-1., -6.}, {0.4, -5.4}, {1., -4.}}]], 
           ArrowBox[BezierCurveBox[{{1., -6.}, {1.4, -5.}, {1., -4.}}]], 
-          ArrowBox[BezierCurveBox[{{3., -6.}, {3.4, -5.}, {3., -4.}}]], 
+          ArrowBox[BezierCurveBox[{{3., -6.}, {2.4, -4.6}, {1., -4.}}]], 
           ArrowBox[BezierCurveBox[{{5., -6.}, {4.4, -4.6}, {3., -4.}}]], 
           ArrowBox[BezierCurveBox[{{7., 6.}, {5.6, 5.4}, {5., 4.}}]], 
           ArrowBox[BezierCurveBox[{{7., 4.}, {5.6, 3.4}, {5., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{7., 2.}, {5.6, 1.4}, {5., 0.}}]], 
+          ArrowBox[BezierCurveBox[{{7., 2.}, {6., 2.4}, {5., 2.}}]], 
           ArrowBox[BezierCurveBox[{{7., 0.}, {6., 0.4}, {5., 0.}}]], 
           ArrowBox[BezierCurveBox[{{7., -2.}, {6.4, -0.6}, {5., 0.}}]], 
           ArrowBox[BezierCurveBox[{{7., -4.}, {6.4, -2.6}, {5., -2.}}]], 
           ArrowBox[BezierCurveBox[{{7., -6.}, {6.4, -4.6}, {5., -4.}}]], 
           ArrowBox[BezierCurveBox[{{-6., -3.}, {-4.6, -2.4}, {-4., -1.}}]], 
           ArrowBox[BezierCurveBox[{{-6., -1.}, {-4.6, -0.4}, {-4., 1.}}]], 
-          ArrowBox[BezierCurveBox[{{-6., 1.}, {-4.6, 1.6}, {-4., 3.}}]], 
-          ArrowBox[BezierCurveBox[{{-6., 3.}, {-5.4, 1.6}, {-4., 1.}}]], 
+          ArrowBox[BezierCurveBox[{{-6., 1.}, {-5., 0.6}, {-4., 1.}}]], 
+          ArrowBox[BezierCurveBox[{{-6., 3.}, {-5., 2.6}, {-4., 3.}}]], 
           ArrowBox[BezierCurveBox[{{-6., 5.}, {-5.4, 3.6}, {-4., 3.}}]], 
           ArrowBox[BezierCurveBox[{{-6., -5.}, {-4.6, -4.4}, {-4., -3.}}]], 
           ArrowBox[BezierCurveBox[{{4., 7.}, {2.6, 6.4}, {2., 5.}}]], 
-          ArrowBox[BezierCurveBox[{{2., 7.}, {1.6, 6.}, {2., 5.}}]], 
-          ArrowBox[BezierCurveBox[{{0., 7.}, {-0.4, 6.}, {0., 5.}}]], 
+          ArrowBox[BezierCurveBox[{{2., 7.}, {0.6, 6.4}, {0., 5.}}]], 
+          ArrowBox[BezierCurveBox[{{0., 7.}, {-1.4, 6.4}, {-2., 5.}}]], 
           ArrowBox[BezierCurveBox[{{-2., 7.}, {-2.4, 6.}, {-2., 5.}}]], 
           ArrowBox[BezierCurveBox[{{-4., 7.}, {-3.4, 5.6}, {-2., 5.}}]], 
           ArrowBox[BezierCurveBox[{{6., 7.}, {4.6, 6.4}, {4., 5.}}]], 
@@ -2028,11 +2039,11 @@ eV/f14/NY/Nkn+xr+9q+d+/d1/V2/bp+/wIXxFC/
           ArrowBox[BezierCurveBox[{{-2., -7.}, {-0.6, -6.4}, {0., -5.}}]], 
           ArrowBox[BezierCurveBox[{{0., -7.}, {0.4, -6.}, {0., -5.}}]], 
           ArrowBox[BezierCurveBox[{{2., -7.}, {2.4, -6.}, {2., -5.}}]], 
-          ArrowBox[BezierCurveBox[{{4., -7.}, {4.4, -6.}, {4., -5.}}]], 
+          ArrowBox[BezierCurveBox[{{4., -7.}, {3.4, -5.6}, {2., -5.}}]], 
           ArrowBox[BezierCurveBox[{{6., -7.}, {5.4, -5.6}, {4., -5.}}]], 
           ArrowBox[BezierCurveBox[{{8., 7.}, {6.6, 6.4}, {6., 5.}}]], 
           ArrowBox[BezierCurveBox[{{8., 5.}, {6.6, 4.4}, {6., 3.}}]], 
-          ArrowBox[BezierCurveBox[{{8., 3.}, {6.6, 2.4}, {6., 1.}}]], 
+          ArrowBox[BezierCurveBox[{{8., 3.}, {7., 3.4}, {6., 3.}}]], 
           ArrowBox[BezierCurveBox[{{8., 1.}, {7., 1.4}, {6., 1.}}]], 
           ArrowBox[BezierCurveBox[{{8., -1.}, {7., -0.6}, {6., -1.}}]], 
           ArrowBox[BezierCurveBox[{{8., -3.}, {7.4, -1.6}, {6., -1.}}]], 
@@ -2178,142 +2189,157 @@ eV/f14/NY/Nkn+xr+9q+d+/d1/V2/bp+/wIXxFC/
             DiskBox[112, 0.07071067811865477], 
             DiskBox[113, 0.07071067811865477]}}], 
          {RGBColor[0.4, 0.6, 1], Arrowheads[0.02], 
-          ArrowBox[BezierCurveBox[{{1., 0.}, {1.7, 0.3}, {2., 1.}}]], 
-          ArrowBox[BezierCurveBox[{{0., 1.}, {0.3, 0.3}, {1., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{0., -1.}, {0.7, -0.7}, {1., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{2., 1.}, {2.7, 1.3}, {3., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{2., -1.}, {2.7, -0.7}, {3., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{-1., 0.}, {0., -0.4}, {1., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{1., 2.}, {1.3, 1.3}, {2., 1.}}]], 
-          ArrowBox[BezierCurveBox[{{-1., 2.}, {-0.4, 0.6}, {1., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{-1., -2.}, {0.7, -2.1}, {2., -1.}}]], 
+          ArrowBox[BezierCurveBox[{{1., 0.}, {2.1, 1.3}, {2., 3.}}]], 
+          ArrowBox[BezierCurveBox[{{0., 1.}, {2.1, 1.9}, {3., 4.}}]], 
+          ArrowBox[
+           BezierCurveBox[{{0., -1.}, {2.1, -0.10000000000000009`}, {3., 
+            2.}}]], ArrowBox[
+           BezierCurveBox[{{2., 1.}, {2.1, 2.7}, {1., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{2., -1.}, {2.1, 0.7}, {1., 2.}}]], 
+          ArrowBox[
+           BezierCurveBox[{{-1., 0.}, {1.1, 0.8999999999999999}, {2., 3.}}]], 
+          ArrowBox[BezierCurveBox[{{1., 2.}, {2.1, 3.3}, {2., 5.}}]], 
+          ArrowBox[BezierCurveBox[{{-1., 2.}, {1.1, 2.9}, {2., 5.}}]], 
+          ArrowBox[BezierCurveBox[{{-1., -2.}, {1.1, -1.1}, {2., 1.}}]], 
           ArrowBox[BezierCurveBox[{{1., -2.}, {2.1, -0.7}, {2., 1.}}]], 
-          ArrowBox[BezierCurveBox[{{3., 2.}, {3.7, 2.3}, {4., 3.}}]], 
-          ArrowBox[BezierCurveBox[{{3., 0.}, {2.7, 0.7}, {2., 1.}}]], 
+          ArrowBox[BezierCurveBox[{{3., 2.}, {2.4, 3.4}, {1., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{3., 0.}, {2.1, 2.1}, {0., 3.}}]], 
           ArrowBox[BezierCurveBox[{{3., -2.}, {3.1, -0.3}, {2., 1.}}]], 
-          ArrowBox[BezierCurveBox[{{-2., 1.}, {-1., 0.6}, {0., 1.}}]], 
-          ArrowBox[BezierCurveBox[{{-2., -1.}, {-0.3, -1.1}, {1., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{0., 3.}, {0.6, 1.6}, {2., 1.}}]], 
-          ArrowBox[BezierCurveBox[{{2., 3.}, {2.3, 2.3}, {3., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{-2., 3.}, {-1.4, 1.6}, {0., 1.}}]], 
-          ArrowBox[BezierCurveBox[{{-2., -3.}, {-0.3, -3.1}, {1., -2.}}]], 
-          ArrowBox[BezierCurveBox[{{0., -3.}, {2.1, -2.1}, {3., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{2., -3.}, {3.1, -1.7}, {3., 0.}}]], 
-          ArrowBox[BezierCurveBox[{{4., 1.}, {3.7, 1.7}, {3., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{4., -1.}, {3.7, -0.3}, {3., 0.}}]], 
+          ArrowBox[
+           BezierCurveBox[{{-2., 1.}, {0.10000000000000009`, 1.9}, {1., 
+            4.}}]], ArrowBox[
+           BezierCurveBox[{{-2., -1.}, {
+            0.10000000000000009`, -0.10000000000000009`}, {1., 2.}}]], 
+          ArrowBox[BezierCurveBox[{{0., 3.}, {0.7, 3.3}, {1., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{2., 3.}, {2.4, 4.}, {2., 5.}}]], 
+          ArrowBox[
+           BezierCurveBox[{{-2., 3.}, {0.10000000000000009`, 3.9}, {1., 
+            6.}}]], ArrowBox[
+           BezierCurveBox[{{-2., -3.}, {0.10000000000000009`, -2.1}, {1., 
+            0.}}]], ArrowBox[
+           BezierCurveBox[{{0., -3.}, {2.1, -2.1}, {3., 0.}}]], 
+          ArrowBox[BezierCurveBox[{{2., -3.}, {2.1, -1.3}, {1., 0.}}]], 
+          ArrowBox[BezierCurveBox[{{4., 3.}, {3.4, 4.4}, {2., 5.}}]], 
+          ArrowBox[BezierCurveBox[{{4., 1.}, {3.1, 3.1}, {1., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{4., -1.}, {3.1, 1.1}, {1., 2.}}]], 
           ArrowBox[
            BezierCurveBox[{{4., -3.}, {3.1, -0.8999999999999999}, {1., 0.}}]],
            ArrowBox[
-           BezierCurveBox[{{-3., 0.}, {-1.3, -0.10000000000000009`}, {0., 
-            1.}}]], ArrowBox[
-           BezierCurveBox[{{-3., 2.}, {-1.7, 0.8999999999999999}, {0., 1.}}]],
-           ArrowBox[BezierCurveBox[{{-3., -2.}, {-1.3, -2.1}, {0., -1.}}]], 
-          ArrowBox[BezierCurveBox[{{1., 4.}, {1.6, 2.6}, {3., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{-1., 4.}, {-0.4, 2.6}, {1., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{3., 4.}, {3.3, 3.3}, {4., 3.}}]], 
-          ArrowBox[BezierCurveBox[{{-3., 4.}, {-2.4, 2.6}, {-1., 2.}}]], 
+           BezierCurveBox[{{-3., 0.}, {-0.8999999999999999, 
+            0.8999999999999999}, {0., 3.}}]], 
           ArrowBox[
+           BezierCurveBox[{{-3., 2.}, {-0.8999999999999999, 2.9}, {0., 5.}}]],
+           ArrowBox[
+           BezierCurveBox[{{-3., -2.}, {-0.8999999999999999, -1.1}, {0., 
+            1.}}]], ArrowBox[
+           BezierCurveBox[{{1., 4.}, {1.7, 4.3}, {2., 5.}}]], 
+          ArrowBox[BezierCurveBox[{{-1., 4.}, {0.7, 3.9}, {2., 5.}}]], 
+          ArrowBox[BezierCurveBox[{{3., 4.}, {3.4, 5.}, {3., 6.}}]], 
+          ArrowBox[
+           BezierCurveBox[{{-3., 4.}, {-0.8999999999999999, 4.9}, {0., 7.}}]],
+           ArrowBox[
            BezierCurveBox[{{-3., -4.}, {-0.8999999999999999, -3.1}, {
             0., -1.}}]], 
           ArrowBox[BezierCurveBox[{{-1., -4.}, {1.1, -3.1}, {2., -1.}}]], 
           ArrowBox[BezierCurveBox[{{1., -4.}, {2.1, -2.7}, {2., -1.}}]], 
           ArrowBox[BezierCurveBox[{{3., -4.}, {3.1, -2.3}, {2., -1.}}]], 
-          ArrowBox[BezierCurveBox[{{5., 4.}, {4.6, 3.}, {5., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{5., 2.}, {4., 2.4}, {3., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{5., 0.}, {3.7, 1.1}, {2., 1.}}]], 
+          ArrowBox[BezierCurveBox[{{5., 4.}, {4., 4.4}, {3., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{5., 2.}, {4.1, 4.1}, {2., 5.}}]], 
+          ArrowBox[BezierCurveBox[{{5., 0.}, {4.1, 2.1}, {2., 3.}}]], 
           ArrowBox[
-           BezierCurveBox[{{5., -2.}, {3.7, -0.8999999999999999}, {
-            2., -1.}}]], 
-          ArrowBox[BezierCurveBox[{{5., -4.}, {4.1, -1.9}, {2., -1.}}]], 
-          ArrowBox[BezierCurveBox[{{-4., -1.}, {-2.3, -1.1}, {-1., 0.}}]], 
+           BezierCurveBox[{{5., -2.}, {4.1, 0.10000000000000009`}, {2., 
+            1.}}]], ArrowBox[
+           BezierCurveBox[{{5., -4.}, {4.1, -1.9}, {2., -1.}}]], 
           ArrowBox[
-           BezierCurveBox[{{-4., 1.}, {-2.7, -0.10000000000000009`}, {-1., 
-            0.}}]], ArrowBox[
-           BezierCurveBox[{{-4., 3.}, {-2.7, 1.9}, {-1., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{-4., -3.}, {-2.3, -3.1}, {-1., -2.}}]], 
-          ArrowBox[BezierCurveBox[{{2., 5.}, {2.6, 3.6}, {4., 3.}}]], 
-          ArrowBox[BezierCurveBox[{{0., 5.}, {0.6, 3.6}, {2., 3.}}]], 
-          ArrowBox[BezierCurveBox[{{-2., 5.}, {-1.4, 3.6}, {0., 3.}}]], 
-          ArrowBox[BezierCurveBox[{{4., 5.}, {3.9, 3.3}, {5., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{-4., 5.}, {-3.4, 3.6}, {-2., 3.}}]], 
+           BezierCurveBox[{{-4., -1.}, {-1.9, -0.10000000000000009`}, {-1., 
+            2.}}]], ArrowBox[
+           BezierCurveBox[{{-4., 1.}, {-1.9, 1.9}, {-1., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{-4., 3.}, {-1.9, 3.9}, {-1., 6.}}]], 
+          ArrowBox[BezierCurveBox[{{-4., -3.}, {-1.9, -2.1}, {-1., 0.}}]], 
+          ArrowBox[BezierCurveBox[{{2., 5.}, {2.7, 5.3}, {3., 6.}}]], 
+          ArrowBox[BezierCurveBox[{{0., 5.}, {1.3, 3.9}, {3., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{-2., 5.}, {-0.3, 4.9}, {1., 6.}}]], 
+          ArrowBox[BezierCurveBox[{{4., 5.}, {3., 5.4}, {2., 5.}}]], 
+          ArrowBox[BezierCurveBox[{{-4., 5.}, {-2.3, 4.9}, {-1., 6.}}]], 
           ArrowBox[BezierCurveBox[{{-4., -5.}, {-1.9, -4.1}, {-1., -2.}}]], 
           ArrowBox[
            BezierCurveBox[{{-2., -5.}, {0.10000000000000009`, -4.1}, {
             1., -2.}}]], 
-          ArrowBox[BezierCurveBox[{{0., -5.}, {2.1, -4.1}, {3., -2.}}]], 
-          ArrowBox[BezierCurveBox[{{2., -5.}, {3.1, -3.7}, {3., -2.}}]], 
-          ArrowBox[BezierCurveBox[{{4., -5.}, {4.1, -3.3}, {3., -2.}}]], 
-          ArrowBox[BezierCurveBox[{{6., 5.}, {5.6, 4.}, {6., 3.}}]], 
-          ArrowBox[BezierCurveBox[{{6., 3.}, {4.6, 2.4}, {4., 1.}}]], 
-          ArrowBox[BezierCurveBox[{{6., 1.}, {4.7, 2.1}, {3., 2.}}]], 
+          ArrowBox[BezierCurveBox[{{0., -5.}, {1.1, -3.7}, {1., -2.}}]], 
+          ArrowBox[BezierCurveBox[{{2., -5.}, {2.1, -3.3}, {1., -2.}}]], 
+          ArrowBox[BezierCurveBox[{{4., -5.}, {3.1, -2.9}, {1., -2.}}]], 
+          ArrowBox[BezierCurveBox[{{6., 5.}, {4.6, 4.4}, {4., 3.}}]], 
+          ArrowBox[BezierCurveBox[{{6., 3.}, {4.7, 4.1}, {3., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{6., 1.}, {5.1, 3.1}, {3., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{6., -1.}, {5.1, 1.1}, {3., 2.}}]], 
           ArrowBox[
-           BezierCurveBox[{{6., -1.}, {4.7, 0.10000000000000009`}, {3., 
-            0.}}]], ArrowBox[
-           BezierCurveBox[{{6., -3.}, {4.7, -1.9}, {3., -2.}}]], 
-          ArrowBox[BezierCurveBox[{{6., -5.}, {5.1, -2.9}, {3., -2.}}]], 
-          ArrowBox[BezierCurveBox[{{-5., -2.}, {-3.3, -2.1}, {-2., -1.}}]], 
-          ArrowBox[BezierCurveBox[{{-5., 0.}, {-3.7, -1.1}, {-2., -1.}}]], 
+           BezierCurveBox[{{6., -3.}, {5.1, -0.8999999999999999}, {3., 0.}}]],
+           ArrowBox[BezierCurveBox[{{6., -5.}, {5.1, -2.9}, {3., -2.}}]], 
+          ArrowBox[BezierCurveBox[{{-5., -2.}, {-2.9, -1.1}, {-2., 1.}}]], 
           ArrowBox[
-           BezierCurveBox[{{-5., 2.}, {-3.7, 0.8999999999999999}, {-2., 
-            1.}}]], ArrowBox[
-           BezierCurveBox[{{-5., 4.}, {-3.7, 2.9}, {-2., 3.}}]], 
+           BezierCurveBox[{{-5., 0.}, {-2.9, 0.8999999999999999}, {-2., 
+            3.}}]], ArrowBox[
+           BezierCurveBox[{{-5., 2.}, {-2.9, 2.9}, {-2., 5.}}]], 
+          ArrowBox[BezierCurveBox[{{-5., 4.}, {-2.9, 4.9}, {-2., 7.}}]], 
           ArrowBox[BezierCurveBox[{{-5., -4.}, {-2.9, -3.1}, {-2., -1.}}]], 
-          ArrowBox[BezierCurveBox[{{3., 6.}, {2.9, 4.3}, {4., 3.}}]], 
-          ArrowBox[BezierCurveBox[{{1., 6.}, {1.6, 4.6}, {3., 4.}}]], 
-          ArrowBox[BezierCurveBox[{{-1., 6.}, {-0.4, 4.6}, {1., 4.}}]], 
-          ArrowBox[BezierCurveBox[{{-3., 6.}, {-2.4, 4.6}, {-1., 4.}}]], 
-          ArrowBox[BezierCurveBox[{{5., 6.}, {4.9, 4.3}, {6., 3.}}]], 
-          ArrowBox[BezierCurveBox[{{-5., 6.}, {-4.1, 3.9}, {-2., 3.}}]], 
+          ArrowBox[BezierCurveBox[{{1., 6.}, {1.3, 5.3}, {2., 5.}}]], 
+          ArrowBox[BezierCurveBox[{{-1., 6.}, {0.3, 4.9}, {2., 5.}}]], 
+          ArrowBox[BezierCurveBox[{{-3., 6.}, {-1.3, 5.9}, {0., 7.}}]], 
+          ArrowBox[BezierCurveBox[{{5., 6.}, {3.6, 5.4}, {3., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{-5., 6.}, {-3.3, 5.9}, {-2., 7.}}]], 
           ArrowBox[BezierCurveBox[{{-5., -6.}, {-2.9, -5.1}, {-2., -3.}}]], 
           ArrowBox[
            BezierCurveBox[{{-3., -6.}, {-0.8999999999999999, -5.1}, {
             0., -3.}}]], 
-          ArrowBox[BezierCurveBox[{{-1., -6.}, {1.1, -5.1}, {2., -3.}}]], 
+          ArrowBox[
+           BezierCurveBox[{{-1., -6.}, {0.10000000000000009`, -4.7}, {
+            0., -3.}}]], 
           ArrowBox[BezierCurveBox[{{1., -6.}, {2.1, -4.7}, {2., -3.}}]], 
-          ArrowBox[BezierCurveBox[{{3., -6.}, {3.1, -4.3}, {2., -3.}}]], 
-          ArrowBox[BezierCurveBox[{{5., -6.}, {5.1, -4.3}, {4., -3.}}]], 
-          ArrowBox[BezierCurveBox[{{7., 6.}, {5.6, 5.4}, {5., 4.}}]], 
-          ArrowBox[BezierCurveBox[{{7., 4.}, {5.6, 3.4}, {5., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{7., 2.}, {5.3, 2.1}, {4., 1.}}]], 
-          ArrowBox[BezierCurveBox[{{7., 0.}, {5.7, 1.1}, {4., 1.}}]], 
+          ArrowBox[BezierCurveBox[{{3., -6.}, {2.1, -3.9}, {0., -3.}}]], 
+          ArrowBox[BezierCurveBox[{{5., -6.}, {4.1, -3.9}, {2., -3.}}]], 
+          ArrowBox[BezierCurveBox[{{7., 6.}, {4.9, 5.1}, {4., 3.}}]], 
+          ArrowBox[BezierCurveBox[{{7., 4.}, {5.3, 4.1}, {4., 3.}}]], 
+          ArrowBox[BezierCurveBox[{{7., 2.}, {6.1, 4.1}, {4., 5.}}]], 
+          ArrowBox[BezierCurveBox[{{7., 0.}, {6.1, 2.1}, {4., 3.}}]], 
           ArrowBox[
-           BezierCurveBox[{{7., -2.}, {5.7, -0.8999999999999999}, {
-            4., -1.}}]], 
-          ArrowBox[BezierCurveBox[{{7., -4.}, {6.1, -1.9}, {4., -1.}}]], 
+           BezierCurveBox[{{7., -2.}, {6.1, 0.10000000000000009`}, {4., 
+            1.}}]], ArrowBox[
+           BezierCurveBox[{{7., -4.}, {6.1, -1.9}, {4., -1.}}]], 
           ArrowBox[BezierCurveBox[{{7., -6.}, {6.1, -3.9}, {4., -3.}}]], 
-          ArrowBox[BezierCurveBox[{{-6., -3.}, {-4.3, -3.1}, {-3., -2.}}]], 
-          ArrowBox[BezierCurveBox[{{-6., -1.}, {-4.3, -1.1}, {-3., 0.}}]], 
+          ArrowBox[BezierCurveBox[{{-6., -3.}, {-3.9, -2.1}, {-3., 0.}}]], 
           ArrowBox[
-           BezierCurveBox[{{-6., 1.}, {-4.7, -0.10000000000000009`}, {-3., 
-            0.}}]], ArrowBox[
-           BezierCurveBox[{{-6., 3.}, {-4.7, 1.9}, {-3., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{-6., 5.}, {-5.1, 2.9}, {-3., 2.}}]], 
+           BezierCurveBox[{{-6., -1.}, {-3.9, -0.10000000000000009`}, {-3., 
+            2.}}]], ArrowBox[
+           BezierCurveBox[{{-6., 1.}, {-3.9, 1.9}, {-3., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{-6., 3.}, {-3.9, 3.9}, {-3., 6.}}]], 
+          ArrowBox[BezierCurveBox[{{-6., 5.}, {-4.3, 4.9}, {-3., 6.}}]], 
           ArrowBox[BezierCurveBox[{{-6., -5.}, {-3.9, -4.1}, {-3., -2.}}]], 
-          ArrowBox[BezierCurveBox[{{4., 7.}, {3.9, 5.3}, {5., 4.}}]], 
-          ArrowBox[BezierCurveBox[{{2., 7.}, {1.9, 5.3}, {3., 4.}}]], 
-          ArrowBox[BezierCurveBox[{{0., 7.}, {0.6, 5.6}, {2., 5.}}]], 
-          ArrowBox[BezierCurveBox[{{-2., 7.}, {-1.4, 5.6}, {0., 5.}}]], 
-          ArrowBox[BezierCurveBox[{{-4., 7.}, {-3.1, 4.9}, {-1., 4.}}]], 
-          ArrowBox[BezierCurveBox[{{6., 7.}, {4.9, 5.7}, {5., 4.}}]], 
-          ArrowBox[BezierCurveBox[{{-6., 7.}, {-5.1, 4.9}, {-3., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{4., 7.}, {3.6, 6.}, {4., 5.}}]], 
+          ArrowBox[BezierCurveBox[{{2., 7.}, {1.6, 6.}, {2., 5.}}]], 
+          ArrowBox[
+           BezierCurveBox[{{0., 7.}, {-0.10000000000000009`, 5.3}, {1., 
+            4.}}]], ArrowBox[
+           BezierCurveBox[{{-2., 7.}, {-0.7, 5.9}, {1., 6.}}]], 
+          ArrowBox[BezierCurveBox[{{-4., 7.}, {-2.7, 5.9}, {-1., 6.}}]], 
+          ArrowBox[BezierCurveBox[{{6., 7.}, {3.9, 6.1}, {3., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{-6., 7.}, {-4.7, 5.9}, {-3., 6.}}]], 
           ArrowBox[BezierCurveBox[{{-6., -7.}, {-3.9, -6.1}, {-3., -4.}}]], 
           ArrowBox[BezierCurveBox[{{-4., -7.}, {-1.9, -6.1}, {-1., -4.}}]], 
           ArrowBox[
            BezierCurveBox[{{-2., -7.}, {0.10000000000000009`, -6.1}, {
             1., -4.}}]], 
           ArrowBox[BezierCurveBox[{{0., -7.}, {1.1, -5.7}, {1., -4.}}]], 
-          ArrowBox[BezierCurveBox[{{2., -7.}, {3.1, -5.7}, {3., -4.}}]], 
-          ArrowBox[BezierCurveBox[{{4., -7.}, {4.1, -5.3}, {3., -4.}}]], 
+          ArrowBox[BezierCurveBox[{{2., -7.}, {2.1, -5.3}, {1., -4.}}]], 
+          ArrowBox[BezierCurveBox[{{4., -7.}, {3.1, -4.9}, {1., -4.}}]], 
           ArrowBox[BezierCurveBox[{{6., -7.}, {5.1, -4.9}, {3., -4.}}]], 
           ArrowBox[BezierCurveBox[{{8., 7.}, {5.9, 6.1}, {5., 4.}}]], 
-          ArrowBox[BezierCurveBox[{{8., 5.}, {6.6, 4.4}, {6., 3.}}]], 
-          ArrowBox[BezierCurveBox[{{8., 3.}, {6.3, 3.1}, {5., 2.}}]], 
-          ArrowBox[BezierCurveBox[{{8., 1.}, {6.3, 1.1}, {5., 0.}}]], 
+          ArrowBox[BezierCurveBox[{{8., 5.}, {6.3, 5.1}, {5., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{8., 3.}, {6.7, 4.1}, {5., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{8., 1.}, {7.1, 3.1}, {5., 4.}}]], 
+          ArrowBox[BezierCurveBox[{{8., -1.}, {7.1, 1.1}, {5., 2.}}]], 
           ArrowBox[
-           BezierCurveBox[{{8., -1.}, {6.7, 0.10000000000000009`}, {5., 
-            0.}}]], ArrowBox[
-           BezierCurveBox[{{8., -3.}, {6.7, -1.9}, {5., -2.}}]], 
-          ArrowBox[BezierCurveBox[{{8., -5.}, {7.1, -2.9}, {5., -2.}}]], 
+           BezierCurveBox[{{8., -3.}, {7.1, -0.8999999999999999}, {5., 0.}}]],
+           ArrowBox[BezierCurveBox[{{8., -5.}, {7.1, -2.9}, {5., -2.}}]], 
           ArrowBox[BezierCurveBox[{{8., -7.}, {7.1, -4.9}, {5., -4.}}]]}},
         DefaultBaseStyle->{"PlotGraphics", "Graphics"},
         DisplayFunction->Identity,
@@ -2331,7 +2357,7 @@ eV/f14/NY/Nkn+xr+9q+d+/d1/V2/bp+/wIXxFC/
     PlotRangePadding->Automatic], ",", 
    RowBox[{"{", 
     RowBox[{"1", ",", "2", ",", "3"}], "}"}]}], "}"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"882e4719-1668-49db-be4e-b25d90dfa7b2"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"a98ee8a1-b702-445c-8ec9-983a68876ee5"]
 }, Open  ]]
 }, Open  ]],
 
@@ -2342,12 +2368,92 @@ Cell[BoxData[
   $Line = 0; Null]], "ExampleSection",
  CellID->1020263627,ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7"],
 
+Cell[CellGroupData[{
+
 Cell[BoxData[
  InterpretationBox[Cell[
   "Options", "ExampleSection",ExpressionUUID->
    "b26b6366-7922-4236-a426-38c0f5de13f0"],
   $Line = 0; Null]], "ExampleSection",
  CellID->2061341341,ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0"],
+
+Cell[CellGroupData[{
+
+Cell["RandomSeeding", "ExampleSubsection",ExpressionUUID->"5208b0e5-ab20-454c-8ae0-da20bd2a54fe"],
+
+Cell[TextData[{
+ "A fixed seed reproduces the draw, whatever state ",
+ Cell[BoxData["SeedRandom"], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "3e6a19fa-d284-4adf-ad11-9847ee2f52d5"],
+ " has set:"
+}], "ExampleText",ExpressionUUID->"4e69afc3-5a96-43b1-a489-7e020821979f"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Table", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"SeedRandom", "[", "k", "]"}], ";", " ", 
+    RowBox[{"RandomDisplacement", "[", 
+     RowBox[{
+      RowBox[{"GridGraph", "[", 
+       RowBox[{"{", 
+        RowBox[{"3", ",", " ", "3"}], "}"}], "]"}], ",", " ", 
+      RowBox[{"RandomSeeding", " ", "->", " ", "7"}]}], "]"}]}], ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"k", ",", " ", "2"}], "}"}]}], "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"24274b94-0ced-4b64-a3de-93b6a097727c"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"\[LeftAssociation]", 
+    RowBox[{
+     RowBox[{"1", "\[Rule]", 
+      RowBox[{"{", "2", "}"}]}], ",", 
+     RowBox[{"2", "\[Rule]", 
+      RowBox[{"{", "2", "}"}]}], ",", 
+     RowBox[{"4", "\[Rule]", 
+      RowBox[{"{", "1", "}"}]}], ",", 
+     RowBox[{"3", "\[Rule]", 
+      RowBox[{"{", "2", "}"}]}], ",", 
+     RowBox[{"5", "\[Rule]", 
+      RowBox[{"{", "2", "}"}]}], ",", 
+     RowBox[{"7", "\[Rule]", 
+      RowBox[{"{", "4", "}"}]}], ",", 
+     RowBox[{"6", "\[Rule]", 
+      RowBox[{"{", "3", "}"}]}], ",", 
+     RowBox[{"8", "\[Rule]", 
+      RowBox[{"{", "5", "}"}]}], ",", 
+     RowBox[{"9", "\[Rule]", 
+      RowBox[{"{", "6", "}"}]}]}], "\[RightAssociation]"}], ",", 
+   RowBox[{"\[LeftAssociation]", 
+    RowBox[{
+     RowBox[{"1", "\[Rule]", 
+      RowBox[{"{", "2", "}"}]}], ",", 
+     RowBox[{"2", "\[Rule]", 
+      RowBox[{"{", "2", "}"}]}], ",", 
+     RowBox[{"4", "\[Rule]", 
+      RowBox[{"{", "1", "}"}]}], ",", 
+     RowBox[{"3", "\[Rule]", 
+      RowBox[{"{", "2", "}"}]}], ",", 
+     RowBox[{"5", "\[Rule]", 
+      RowBox[{"{", "2", "}"}]}], ",", 
+     RowBox[{"7", "\[Rule]", 
+      RowBox[{"{", "4", "}"}]}], ",", 
+     RowBox[{"6", "\[Rule]", 
+      RowBox[{"{", "3", "}"}]}], ",", 
+     RowBox[{"8", "\[Rule]", 
+      RowBox[{"{", "5", "}"}]}], ",", 
+     RowBox[{"9", "\[Rule]", 
+      RowBox[{"{", "6", "}"}]}]}], "\[RightAssociation]"}]}], "}"}]], "Output",\
+
+ CellLabel->"Out[1]= ",ExpressionUUID->"7a79396f-834b-46d5-9317-50a116babf0d"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
 
 Cell[BoxData[
  InterpretationBox[Cell[
@@ -2369,7 +2475,7 @@ Cell[TextData[{
  "A random displacement is single-valued, has magnitude at most ",
  StyleBox["r", "TI"],
  ", and here is 1-continuous."
-}], "ExampleText",ExpressionUUID->"0799214b-993f-4da9-99a8-5fc162c608e3"],
+}], "ExampleText",ExpressionUUID->"42e757b2-81d1-4715-9245-343fe7a9577b"],
 
 Cell[CellGroupData[{
 
@@ -2385,12 +2491,10 @@ Cell[BoxData[
      "}"}], ",", "\n", "  ", 
    RowBox[{"{", 
     RowBox[{"field", " ", "=", " ", 
-     RowBox[{"(", 
-      RowBox[{
-       RowBox[{"SeedRandom", "[", "1", "]"}], ";", " ", 
-       RowBox[{"RandomDisplacement", "[", 
-        RowBox[{"g", ",", " ", "2"}], "]"}]}], ")"}]}], "}"}], ",", "\n", 
-   "  ", 
+     RowBox[{"RandomDisplacement", "[", 
+      RowBox[{"g", ",", " ", "2", ",", " ", 
+       RowBox[{"RandomSeeding", " ", "->", " ", "1"}]}], "]"}]}], "}"}], ",", 
+   "\n", "  ", 
    RowBox[{"{", 
     RowBox[{
      RowBox[{"DisplacementPlot", "[", 
@@ -2400,7 +2504,7 @@ Cell[BoxData[
       RowBox[{"g", ",", " ", "field"}], "]"}], ",", " ", 
      RowBox[{"ContinuousDisplacementQ", "[", 
       RowBox[{"g", ",", " ", "field"}], "]"}]}], "}"}]}], "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"d96fd386-4dd3-4ee6-a952-a873f52c3236"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"eece894b-0706-48b0-a04b-881d48959089"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -2805,7 +2909,7 @@ bSj3/Qv44/wr4OMv1pr8Cg==
     FormatType->TraditionalForm,
     FrameTicks->None], ",", "True", ",", "2", ",", "True"}], "}"}]], "Output",\
 
- CellLabel->"Out[1]= ",ExpressionUUID->"9cd1507b-0d85-4f61-93bb-e229f3716ee8"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"a7282e3c-1eaa-4f58-a2c9-3baee2116253"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -2829,7 +2933,7 @@ is not a section of ",
    RowBox[{
     StyleBox["g", "TI"], ",", " ", "2"}], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "a8c47e12-e901-4f1b-a987-0cd01be5889d"],
+  "93030fe4-d1cc-4db9-875e-2486ae1464ee"],
  ", whose sections move every vertex by exactly 2; ",
  Cell[BoxData[
   TemplateBox[{
@@ -2839,9 +2943,9 @@ is not a section of ",
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "14e8a403-01b3-451d-ab29-825a931f2a45"],
+  "ded5f3f2-8379-43ea-b468-30266b798e77"],
  " draws such a section, continuous or not. The counts of the step lengths:"
-}], "ExampleText",ExpressionUUID->"62b1420d-4b86-41fc-9861-d5e9b9aa8010"],
+}], "ExampleText",ExpressionUUID->"c2317c1c-98c8-4b4c-9d3d-cf525bf4fdf6"],
 
 Cell[CellGroupData[{
 
@@ -2857,12 +2961,10 @@ Cell[BoxData[
      "}"}], ",", "\n", "  ", 
    RowBox[{"{", 
     RowBox[{"field", " ", "=", " ", 
-     RowBox[{"(", 
-      RowBox[{
-       RowBox[{"SeedRandom", "[", "1", "]"}], ";", " ", 
-       RowBox[{"RandomDisplacement", "[", 
-        RowBox[{"g", ",", " ", "2"}], "]"}]}], ")"}]}], "}"}], ",", "\n", 
-   "  ", 
+     RowBox[{"RandomDisplacement", "[", 
+      RowBox[{"g", ",", " ", "2", ",", " ", 
+       RowBox[{"RandomSeeding", " ", "->", " ", "1"}]}], "]"}]}], "}"}], ",", 
+   "\n", "  ", 
    RowBox[{"{", 
     RowBox[{
      RowBox[{"DisplacementPlot", "[", 
@@ -2877,7 +2979,7 @@ Cell[BoxData[
             RowBox[{"g", ",", " ", "#1", ",", " ", 
              RowBox[{"First", "[", "#2", "]"}]}], "]"}], " ", "&"}], ",", " ",
            "field"}], "]"}], "]"}]}]}]}], "}"}]}], "]"}]], "Input",
- CellLabel->"In[2]:= ",ExpressionUUID->"2fcddbf3-ae4d-4afc-8627-876be8fa53fd"],
+ CellLabel->"In[2]:= ",ExpressionUUID->"8f8d6927-073d-4df8-a333-dde6b6c83981"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -3080,7 +3182,7 @@ eV/f14/NY/Nkn+xr+9q+d+/d1/V2/bp+/wIXxFC/
     RowBox[{
      RowBox[{"1", "\[Rule]", "11"}], ",", 
      RowBox[{"2", "\[Rule]", "102"}]}], "}"}]}], "}"}]], "Output",
- CellLabel->"Out[2]= ",ExpressionUUID->"308b1629-c074-4e25-9e65-f11a281bf9e6"]
+ CellLabel->"Out[2]= ",ExpressionUUID->"842ddbb7-af9b-47b5-9d83-02e68479cb40"]
 }, Open  ]]
 }, Open  ]],
 
@@ -3098,7 +3200,7 @@ The construction can fail, and then the call stays unevaluated. At magnitude \
 3 on the hexagonal tiling the repair does not always remove every \
 discontinuity: of the seeds 1 to 10, four give a displacement and six leave \
 the call unevaluated.\
-\>", "ExampleText",ExpressionUUID->"b7b4b2d9-627b-48af-850e-50cfe7360ddb"],
+\>", "ExampleText",ExpressionUUID->"e5bd8975-162b-4a4d-afe1-951d86f5123c"],
 
 Cell[CellGroupData[{
 
@@ -3118,10 +3220,12 @@ Cell[BoxData[
       RowBox[{"SeedRandom", "[", "seed", "]"}], ";", " ", 
       RowBox[{"Head", " ", "@", " ", 
        RowBox[{"RandomDisplacement", "[", 
-        RowBox[{"g", ",", " ", "3"}], "]"}]}]}]}], "]"}], ",", "\n", "  ", 
+        RowBox[{"g", ",", " ", "3", ",", " ", 
+         RowBox[{"RandomSeeding", " ", "->", " ", "seed"}]}], "]"}]}]}]}], 
+    "]"}], ",", "\n", "  ", 
    RowBox[{"{", 
     RowBox[{"seed", ",", " ", "10"}], "}"}]}], "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"a1b1b976-46a7-4258-878c-b2d3ba7d3c3f"],
+ CellLabel->"In[1]:= ",ExpressionUUID->"4dc8fe5b-1443-434d-ab16-f54e0f7c2c22"],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -3130,7 +3234,7 @@ Cell[BoxData[
    "RandomDisplacement", ",", "Association", ",", "Association", ",", 
    "RandomDisplacement", ",", "RandomDisplacement", ",", "RandomDisplacement",
     ",", "RandomDisplacement"}], "}"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"bf5f2314-5413-478a-96f0-41fb58b3e88e"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"b80167b8-d1a1-4b5f-9157-4347a6eb1286"]
 }, Open  ]]
 }, Open  ]],
 
@@ -3198,7 +3302,7 @@ Cell["WolframInstitute`InfraGeometry`", "Categorization",
  CellID->468444828,ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191"],
 
 Cell["WolframInstitute/InfraGeometry/ref/RandomDisplacement", "Categorization",
- CellLabel->"URI",ExpressionUUID->"04edd83c-2832-489a-b405-18544c011e95"]
+ CellLabel->"URI",ExpressionUUID->"70022982-a346-406b-b83d-e8e4b9c5fba4"]
 }, Closed]],
 
 Cell["Keywords", "KeywordsSection",
@@ -3251,129 +3355,140 @@ ExpressionUUID->"c207366e-060a-406b-a297-9e30e1628f43"
 (*CellTagsOutline
 CellTagsIndex->{
  "ExtendedExamples"->{
-  Cell[73839, 1476, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+  Cell[74392, 1487, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
    CellTags->"ExtendedExamples",
    CellID->533848431]}
  }
 *)
 (*CellTagsIndex
 CellTagsIndex->{
- {"ExtendedExamples", 172302, 3252}
+ {"ExtendedExamples", 175758, 3356}
  }
 *)
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[576, 22, 95, 0, 70, "ObjectName",ExpressionUUID->"e4bb8e43-7826-494f-aaaa-90512cb00325"],
-Cell[674, 24, 1331, 38, 70, "Usage",ExpressionUUID->"6c633aaf-34e6-4103-94ac-bdd757d1e080"],
-Cell[2008, 64, 657, 11, 70, "Notes",ExpressionUUID->"ecd61149-9e55-4c37-8cb0-25fae8814e09"],
-Cell[2668, 77, 681, 17, 70, "Notes",ExpressionUUID->"70f6ab6d-2a8a-4a84-8875-6848ed22e088"],
-Cell[3352, 96, 592, 18, 70, "Notes",ExpressionUUID->"49226dbe-96ec-48de-a760-befafc986a41"]
+Cell[576, 22, 116, 1, 70, "ObjectName",ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec",
+ CellID->1224892054],
+Cell[695, 25, 1331, 38, 70, "Usage",ExpressionUUID->"d2edd2db-a8d6-4dcb-ba08-03c016135754"],
+Cell[2029, 65, 657, 11, 70, "Notes",ExpressionUUID->"9bece2b4-b95b-4534-89c2-2a90d874a4dc"],
+Cell[2689, 78, 681, 17, 70, "Notes",ExpressionUUID->"0f33aeb8-59e2-43b4-a9bc-394fd93e629a"],
+Cell[3373, 97, 1168, 30, 70, "Notes",ExpressionUUID->"78e875b5-3339-4c9c-b03b-1cdb8650710c"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3981, 119, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
+Cell[4578, 132, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
  CellID->1559318232],
-Cell[4443, 134, 1880, 50, 70, "SeeAlso",ExpressionUUID->"802eda74-8250-4314-8531-36b4c30fa4dd"]
+Cell[5040, 147, 1880, 50, 70, "SeeAlso",ExpressionUUID->"da2a882f-3f59-4df7-90fb-ef1236ffe414"]
 }, Open  ]],
-Cell[6338, 187, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
+Cell[6935, 200, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
  CellID->792424486],
 Cell[CellGroupData[{
-Cell[6798, 203, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
+Cell[7395, 216, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
  CellID->38303248],
-Cell[6917, 206, 303, 6, 70, "MoreAbout",ExpressionUUID->"85a72cca-86eb-47b6-9452-5262cde1cbb1"]
+Cell[7514, 219, 303, 6, 70, "MoreAbout",ExpressionUUID->"91447318-9c1a-4706-a7a4-c98693e455a7"]
 }, Open  ]],
-Cell[7235, 215, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
+Cell[7832, 228, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
  CellID->47113304],
 Cell[CellGroupData[{
-Cell[7731, 232, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
+Cell[8328, 245, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
  CellID->1718580883],
-Cell[8265, 248, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
+Cell[8862, 261, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
  CellID->1969679695]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[8578, 257, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
+Cell[9175, 270, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
  CellID->880084151],
-Cell[9023, 271, 228, 3, 70, "ExampleText",ExpressionUUID->"5953e6bb-8508-4853-ab83-64b3f9c09047"],
+Cell[9620, 284, 228, 3, 70, "ExampleText",ExpressionUUID->"48858833-eb11-47d3-ae30-dcc60f6bb6cd"],
 Cell[CellGroupData[{
-Cell[9276, 278, 1181, 29, 70, "Input",ExpressionUUID->"d9830b85-3cf7-43b8-aff2-a39f28a73180"],
-Cell[10460, 309, 63330, 1161, 70, "Output",ExpressionUUID->"e11954c8-8a91-40fe-976d-469f6045514b"]
+Cell[9873, 291, 1137, 27, 70, "Input",ExpressionUUID->"61aba48d-a378-4b46-b9ca-e47319fe084c"],
+Cell[11013, 320, 63330, 1161, 70, "Output",ExpressionUUID->"8269f0ef-4415-42db-862d-e04d1fd7aa53"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[73839, 1476, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+Cell[74392, 1487, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
  CellTags->"ExtendedExamples",
  CellID->533848431],
 Cell[CellGroupData[{
-Cell[74351, 1493, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
+Cell[74904, 1504, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
  CellID->1293636265],
-Cell[74596, 1500, 130, 0, 70, "ExampleText",ExpressionUUID->"2ce07e8e-8277-4fa2-8f4e-badd820eba42"],
+Cell[75149, 1511, 130, 0, 70, "ExampleText",ExpressionUUID->"db9fe09f-34bb-4d3d-8851-250ce7c313fd"],
 Cell[CellGroupData[{
-Cell[74751, 1504, 1248, 34, 70, "Input",ExpressionUUID->"32640d2c-1a70-46d1-a293-979c3a6569bd"],
-Cell[76002, 1540, 46573, 793, 70, "Output",ExpressionUUID->"882e4719-1668-49db-be4e-b25d90dfa7b2"]
+Cell[75304, 1515, 1248, 34, 70, "Input",ExpressionUUID->"bf91f4f5-5876-423d-883f-6d63bacea067"],
+Cell[76555, 1551, 46936, 808, 70, "Output",ExpressionUUID->"a98ee8a1-b702-445c-8ec9-983a68876ee5"]
 }, Open  ]]
 }, Open  ]],
-Cell[122602, 2337, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
+Cell[123518, 2363, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
  CellID->1020263627],
-Cell[122870, 2344, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
+Cell[CellGroupData[{
+Cell[123808, 2372, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
  CellID->2061341341],
-Cell[123117, 2351, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
+Cell[CellGroupData[{
+Cell[124077, 2381, 97, 0, 70, "ExampleSubsection",ExpressionUUID->"5208b0e5-ab20-454c-8ae0-da20bd2a54fe"],
+Cell[124177, 2383, 288, 6, 70, "ExampleText",ExpressionUUID->"4e69afc3-5a96-43b1-a489-7e020821979f"],
+Cell[CellGroupData[{
+Cell[124490, 2393, 517, 13, 70, "Input",ExpressionUUID->"24274b94-0ced-4b64-a3de-93b6a097727c"],
+Cell[125010, 2408, 1524, 44, 70, "Output",ExpressionUUID->"7a79396f-834b-46d5-9317-50a116babf0d"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[126573, 2457, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
  CellID->258228157],
 Cell[CellGroupData[{
-Cell[123390, 2360, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
+Cell[126846, 2466, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
  CellID->2123667759],
-Cell[123652, 2367, 209, 4, 70, "ExampleText",ExpressionUUID->"0799214b-993f-4da9-99a8-5fc162c608e3"],
+Cell[127108, 2473, 209, 4, 70, "ExampleText",ExpressionUUID->"42e757b2-81d1-4715-9245-343fe7a9577b"],
 Cell[CellGroupData[{
-Cell[123886, 2375, 1123, 27, 70, "Input",ExpressionUUID->"d96fd386-4dd3-4ee6-a952-a873f52c3236"],
-Cell[125012, 2404, 25128, 403, 70, "Output",ExpressionUUID->"9cd1507b-0d85-4f61-93bb-e229f3716ee8"]
+Cell[127342, 2481, 1085, 25, 70, "Input",ExpressionUUID->"eece894b-0706-48b0-a04b-881d48959089"],
+Cell[128430, 2508, 25128, 403, 70, "Output",ExpressionUUID->"a7282e3c-1eaa-4f58-a2c9-3baee2116253"]
 }, Open  ]],
-Cell[150155, 2810, 1233, 33, 70, "ExampleText",ExpressionUUID->"62b1420d-4b86-41fc-9861-d5e9b9aa8010"],
+Cell[153573, 2914, 1233, 33, 70, "ExampleText",ExpressionUUID->"c2317c1c-98c8-4b4c-9d3d-cf525bf4fdf6"],
 Cell[CellGroupData[{
-Cell[151413, 2847, 1249, 32, 70, "Input",ExpressionUUID->"2fcddbf3-ae4d-4afc-8627-876be8fa53fd"],
-Cell[152665, 2881, 13728, 201, 70, "Output",ExpressionUUID->"308b1629-c074-4e25-9e65-f11a281bf9e6"]
+Cell[154831, 2951, 1211, 30, 70, "Input",ExpressionUUID->"8f8d6927-073d-4df8-a333-dde6b6c83981"],
+Cell[156045, 2983, 13728, 201, 70, "Output",ExpressionUUID->"842ddbb7-af9b-47b5-9d83-02e68479cb40"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[166442, 3088, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
+Cell[169822, 3190, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
  CellID->1305812373],
-Cell[166697, 3095, 332, 5, 70, "ExampleText",ExpressionUUID->"b7b4b2d9-627b-48af-850e-50cfe7360ddb"],
+Cell[170077, 3197, 332, 5, 70, "ExampleText",ExpressionUUID->"e5bd8975-162b-4a4d-afe1-951d86f5123c"],
 Cell[CellGroupData[{
-Cell[167054, 3104, 808, 19, 70, "Input",ExpressionUUID->"a1b1b976-46a7-4258-878c-b2d3ba7d3c3f"],
-Cell[167865, 3125, 389, 7, 70, "Output",ExpressionUUID->"bf5f2314-5413-478a-96f0-41fb58b3e88e"]
+Cell[170434, 3206, 884, 21, 70, "Input",ExpressionUUID->"4dc8fe5b-1443-434d-ab16-f54e0f7c2c22"],
+Cell[171321, 3229, 389, 7, 70, "Output",ExpressionUUID->"b80167b8-d1a1-4b5f-9157-4347a6eb1286"]
 }, Open  ]]
 }, Open  ]],
-Cell[168281, 3136, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
+Cell[171737, 3240, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
  CellID->1653164318],
-Cell[168541, 3143, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
+Cell[171997, 3247, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
  CellID->589267740]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[168827, 3153, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
+Cell[172283, 3257, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
  CellID->311882160],
-Cell[168940, 3156, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
+Cell[172396, 3260, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
  CellID->341476719],
 Cell[CellGroupData[{
-Cell[169441, 3172, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
+Cell[172897, 3276, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
  CellID->1755438392],
-Cell[169929, 3187, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
+Cell[173385, 3291, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
  CellID->686433507],
-Cell[170066, 3191, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
+Cell[173522, 3295, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
  CellID->605800465],
-Cell[170227, 3195, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
+Cell[173683, 3299, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
  CellID->468444828],
-Cell[170385, 3199, 153, 1, 70, "Categorization",ExpressionUUID->"04edd83c-2832-489a-b405-18544c011e95"]
+Cell[173841, 3303, 153, 1, 70, "Categorization",ExpressionUUID->"70022982-a346-406b-b83d-e8e4b9c5fba4"]
 }, Closed]],
-Cell[170553, 3203, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
+Cell[174009, 3307, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
  CellID->477174294],
 Cell[CellGroupData[{
-Cell[170688, 3208, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
+Cell[174144, 3312, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
  CellID->1872225408],
-Cell[170811, 3211, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
+Cell[174267, 3315, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
  CellID->1562036412],
-Cell[170963, 3215, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
+Cell[174419, 3319, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
  CellID->158391909],
-Cell[171103, 3219, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
+Cell[174559, 3323, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
  CellID->1360575930],
-Cell[171242, 3223, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
+Cell[174698, 3327, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
  CellID->793782254]
 }, Closed]]
 }, Open  ]]
