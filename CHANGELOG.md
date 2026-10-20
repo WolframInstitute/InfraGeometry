@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Add the calculus of *Infra Analysis*, five inert heads read by `InfraMeasurement`. Nothing existing changes.
+  - `InfraDifferential[f]`, reading `"Function"`: the 1-form `df(u -> v) = f(v) - f(u)` on the links of a DAG (the edges of `TransitiveReductionGraph`) or on every edge of an undirected graph. `InfraCodifferential[w]`: the 0-form, incoming minus outgoing values; `InfraCodifferential[InfraDifferential[f]]` is the Laplacian.
+  - `InfraIntegral[f, obj]`, readings `"Value"`, `"ValueDensity"`, `"Mean"`, `"Cardinality"`, `"Flux"`: the integral of a 0-form or 1-form over a region (the support of any head with a `"VertexDensity"`), or along each member of a family of walks (any head whose `"Graph"` is a DAG or a `List` of alternative DAGs, including heads of other paclets), read as a value density by one forward sweep. Polylines, closed arcs and circles stay unevaluated.
+  - `InfraAntiderivative[f, Method -> m, "Origin" -> c, "Direction" -> d]` and its exact inverse `InfraDerivative[F, ...]`, readings `"Function"` and `"Kernel"`: the accumulation over the past through the kernel of `"Volume"` (default; the derivative is Moebius inversion), `"Paths"`, `"Average"`, `"Uniform"`, `"Flow"` or `{"Weights", w}`, on a DAG or on an undirected graph in the spray order from `"Origin"`.
+  - Results on a DAG depend on the order only: adding implied edges changes nothing.
+  - The generic `All` clause of `InfraMeasurement` no longer applies to these heads.
+
 ## 2.7.5 (2026-10-19)
 
 - Add inert `InfraCircleThrough[points, InfraCircle[center, {r,s}]]` and `RandomInfraCircleThrough`, with exact native state-DAG storage, standard measurements, uniform rank sampling, scene integration and drawing. The family minimizes cycle length after enforcing prescribed vertices, simplicity and separation; cycles are identified modulo rotation and reversal. Literal vertex identities are preserved, including pattern-shaped labels.
