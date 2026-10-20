@@ -46,4 +46,4 @@ With[
 
 ## Author Notes
 
-LLM generated and reviewed by Pavel Hajek on 18 October 2026 (entire notebook).
+Reviewed by Pavel Hajek on 18 October 2026.

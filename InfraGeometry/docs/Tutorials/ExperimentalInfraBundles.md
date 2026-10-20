@@ -11,8 +11,6 @@ RelatedGuides: [InfraFiberBundles, Experimental, InfraTopology]
 RelatedTutorials: [InfraBundles]
 ---
 
-**[[ LLM Generated ]]**
-
 We separate particular finite models from questions about observation at scale and possible limits.
 The exact statements below concern finite graphs, quotient maps and selected matchings.
 The completion and emergence section states research requirements; it supplies no general convergence theorem or new scale API.

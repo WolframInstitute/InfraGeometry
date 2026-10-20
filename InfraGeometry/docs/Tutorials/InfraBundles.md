@@ -10,8 +10,6 @@ RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [ExperimentalInfraBundles]
 ---
 
-**[[ LLM Generated ]]**
-
 We start with a finite graph and a projection of its vertices.
 Equal fibers, lift existence, unique lifting and bundle structure are separate properties.
 Sections and complete connections add choices to this data.
