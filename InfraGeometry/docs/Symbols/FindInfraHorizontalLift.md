@@ -4,7 +4,7 @@ Name: FindInfraHorizontalLift
 Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraHorizontalLift
-Keywords: [legacy horizontal lift, counted compatibility form]
+Keywords: [horizontal lift, path lifting, connection, walk, counted list]
 SeeAlso: [InfraHorizontalLift, InfraConnection, InfraParallelTransport, InfraHolonomy]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
@@ -12,29 +12,40 @@ RelatedTutorials: [InfraBundles]
 
 ## Usage
 
-<code>[FindInfraHorizontalLift]()[*fib*, *connection*, *start*, *walk*, *count*]</code> is the legacy counted-list form of [InfraHorizontalLift]().
+<code>[FindInfraHorizontalLift]()[*fib*, *conn*, *x*, *walk*, *n*]</code> gives a list of at most *n* horizontal lifts of the base walk *walk* starting at the total vertex *x*, along the connection *conn*.
 
 ## Details & Options
 
-- New code uses <code>[InfraHorizontalLift]()[*fib*, *connection*, *start*, *walk*]</code>, which returns the unique vertex sequence directly.
-- The connection must be complete, and the walk and starting vertex must be valid for that reader.
-- Count 1, UpTo[*n*] with positive *n*, and All return a singleton list containing the unique lift. Count 0 and UpTo[0] return {}. An exact count above one returns {} on shortage.
-- The shim is deterministic and delegates to [InfraHorizontalLift](). It does not search partial or ambiguous connections.
-- Unsupported arguments remain unevaluated.
+A connection gives one lift of a walk from each start, so the list has at most one member, <code>[InfraHorizontalLift]()[*fib*, *conn*, *x*, *walk*]</code>. [InfraHorizontalLift]() returns that lift directly.
+
+| Count *n* | Result |
+|---|---|
+| `1`, `UpTo[n]` with *n* ≥ 1, `All` | the list of the one lift |
+| `0`, `UpTo[0]` | `{}` |
+| *n* ≥ 2 | `{}`: there are not *n* lifts |
+
+*conn* must satisfy [InfraConnectionQ](), *x* must lie over the first vertex of *walk*, and consecutive vertices of *walk* must be adjacent in the base.
 
 ## Basic Examples
 
-The legacy singleton list contains the same sequence returned directly by the canonical reader.
+A double cover of the square grid, and the lift of a square at the centre from sheet 1. It ends on sheet 2:
 
 ```wl
-SeedRandom[ 1 ];
-With[
-  { total = CycleGraph[ 8 ] },
-  { fib = InfraFiberedGraph[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
-    connection = InfraConnection[ EdgeList @ total ] },
-  { loop = { 1, 2, 3, 4, 1 } },
-  { InfraHorizontalLift[ fib, connection, 1, loop ],
-    FindInfraHorizontalLift[ fib, connection, 1, loop, 1 ],
-    FindInfraHorizontalLift[ fib, connection, 1, loop, 2 ] }
-]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {xy = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+  {fib = RandomInfraFiberedGraph[g, Properties -> {"Covering"}, "VerticalVertexCount" -> {2}, RandomSeeding -> 1]},
+  {conn = InfraConnection[EdgeList @ InfraTotalSpace[fib]]},
+  {lifts = FindInfraHorizontalLift[fib, conn, {45, 1}, {45, 46, 36, 35, 45}, 1]},
+  InfraFiberedGraphHighlight[fib, InfraWalk /@ lifts, "BaseVertexCoordinates" -> xy, PlotLabel -> lifts,
+    ImageSize -> Medium]]
+```
+
+The counted list holds the lift that [InfraHorizontalLift]() gives, and asking for two lifts gives `{}`:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  {fib = RandomInfraFiberedGraph[g, Properties -> {"Covering"}, "VerticalVertexCount" -> {2}, RandomSeeding -> 1]},
+  {conn = InfraConnection[EdgeList @ InfraTotalSpace[fib]], square = {45, 46, 36, 35, 45}},
+  {FindInfraHorizontalLift[fib, conn, {45, 1}, square, All] === {InfraHorizontalLift[fib, conn, {45, 1}, square]},
+    FindInfraHorizontalLift[fib, conn, {45, 1}, square, 2]}]
 ```

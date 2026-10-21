@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 2.8.1 (2026-10-22)
+
+- Documentation only. All 271 symbol pages rewritten lean: the definition first in plain mathematical language, no implementation or history notes, classical-axiom tables kept, examples on the square grid and the square mesh (`"SquareGridGraph"`, `"SquareMeshGraph"`) with other substrates only where the mathematics needs them, compact code with longer lines. Single figures carry `ImageSize -> Medium` and numbers a `PlotLabel`, since a bare `Graph` renders at about 100 px in the reference stylesheet. Several wrong statements of the old pages corrected; kernel behaviour found on the way is listed in the dev repo's `Work/Backlog/LeanPagesKernelFindings.md`.
+
 ## 2.8.0 (2026-10-20)
 
 - **Breaking -- sampler seeding.** Every `Random*` sampler takes `RandomSeeding`, with `RandomInstance` semantics: `Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string reproduces a draw; `Inherited` takes a local snapshot of the current state; every setting restores the outer random state. `SeedRandom[n]; f[...]` no longer fixes a draw -- write `f[..., RandomSeeding -> n]`, which gives the same draw when `f` was the first random consumer. `RandomSeeding -> None` keeps the former ambient behaviour; nested sampler calls inside the paclet use it, so one seed covers a whole construction.

@@ -18,87 +18,75 @@ RelatedGuides: [Experimental]
 
 ## Details & Options
 
-Definition: the inner vertex boundary of a set *S* of vertices of *g* is ∂*S* = {*v* ∈ *S* : some neighbour of *v* lies outside *S*}. It lies in *S*, and *S* ∖ ∂*S* is the [GraphInterior]().
+The inner boundary of a vertex set *S* is *∂S = {v ∈ S : some neighbour of v lies outside S}*. It lies in *S*, and *S* ∖ *∂S* is the [GraphInterior]().
 
-A subgraph *h* is read with its own edges: a vertex of *h* is a boundary vertex when some edge of *g* at it is not an edge of *h*. For an induced subgraph the two readings agree; a sparser subgraph has more boundary, and in a tiling every vertex of a path is a boundary vertex.
+A subgraph *h* is read with its own edges. For an induced subgraph this is the boundary of its vertex set; a sparser subgraph has more boundary.
 
-The outer boundary of *S*, the vertices outside *S* next to it, is the boundary of the complement. [InfraBoundary]() with its default method is the boundary of the vertex set, sorted; it reads a subgraph by its vertices. The boundary is one-sided, unlike the [TopologicalBoundary]() of the ball topology, which lies on both sides of a set.
+The boundary of the ball of radius *r* is the shell of radius *r*. The outer boundary of *S*, the vertices outside *S* next to it, is the boundary of the complement.
+
+The boundary is one-sided. The [TopologicalBoundary]() of the ball topology lies on both sides of a set. [InfraBoundary]() with its default method gives the boundary of the vertex set, sorted.
 
 ## Basic Examples
 
-The ball of radius 3 about the centre of the square, hexagonal and triangular tilings, its interior green and its boundary blue. The boundary of a ball is its outermost shell.
+The ball of radius 3 about the centre, its boundary drawn over it. The boundary is the shell of radius 3:
 
 ```wl
-SeedRandom[1];
-With[
-  {panels = Table[
-     With[
-       {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-       {region = Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], 3], "VertexDensity" ]},
-       {InfraSubstrateHighlight[g, {GraphInterior[g, region] -> StandardGreen, GraphBoundary[g, region] -> StandardBlue}],
-        Length[GraphBoundary[g, region]]}],
-     {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]},
-  {GraphicsRow[First /@ panels], Last /@ panels}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {ball = Keys @ InfraMeasurement[g, InfraBall[c, 3], "VertexDensity"]},
+    {shell = Keys @ InfraMeasurement[g, InfraShell[c, 3], "VertexDensity"]},
+    InfraSubstrateHighlight[g, {ball, GraphBoundary[g, ball]},
+      PlotLabel -> (Sort @ GraphBoundary[g, ball] === Sort[shell])]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-A set with a hole has a boundary on both of its sides: the ball of radius 4 less the ball of radius 1.
+A set with a hole has a boundary on both sides. The ring of the vertices at distance 2 to 4:
 
 ```wl
-SeedRandom[1];
-With[
-  {panels = Table[
-     With[
-       {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-       {region = Complement[Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], 4], "VertexDensity" ], Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], 1], "VertexDensity" ]]},
-       {InfraSubstrateHighlight[g, {GraphInterior[g, region] -> StandardGreen, GraphBoundary[g, region] -> StandardBlue}],
-        Length[GraphBoundary[g, region]]}],
-     {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]},
-  {GraphicsRow[First /@ panels], Last /@ panels}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {ring = Keys @ InfraMeasurement[g, InfraBall[c, {2, 4}], "VertexDensity"]},
+    InfraSubstrateHighlight[g, {ring, GraphBoundary[g, ring]}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
 ## Scope
 
-A subgraph counts only its own edges. The spray of radius 2 about the centre of the triangular tiling has the vertices of the ball of radius 2 but no edge within a shell, so every vertex but the centre is a boundary vertex. Read as a vertex set, the ball has 12.
+A subgraph counts only its own edges. The spray of radius 2 about the centre of the mesh has the vertices of the ball of radius 2 but none of the edges inside a shell. It has 19 boundary vertices, the ball 12:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {spray = SprayGraph[g, First @ GraphCenter[g], "AxisLength" -> 2]},
-  {GraphicsRow[InfraSubstrateHighlight[g, {AssociationThread[GraphInterior[g, #], 1] -> StandardGreen, AssociationThread[GraphBoundary[g, #], 1] -> StandardBlue}] & /@ {spray, VertexList[spray]}],
-   Length[GraphBoundary[g, #]] & /@ {spray, VertexList[spray]}}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {spray = SprayGraph[g, c, "AxisLength" -> 2]},
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {h, GraphBoundary[g, h]}, PlotLabel -> Length @ GraphBoundary[g, h]],
+    {h, {spray, VertexList[spray]}}]]
 ```
 
 ## Properties and Relations
 
-The outer boundary of a set is the boundary of its complement. For the ball of radius 3 it is the shell of radius 4, red, outside the inner boundary, blue.
+The outer boundary of a set is the boundary of its complement. For the ball of radius 3 it is the shell of radius 4, drawn outside the inner boundary:
 
 ```wl
-SeedRandom[1];
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {region = Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], 3], "VertexDensity" ]},
-    InfraSubstrateHighlight[g, {GraphBoundary[g, region] -> StandardBlue, GraphBoundary[g, Complement[VertexList[g], region]] -> StandardRed}]],
-  {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {ball = Keys @ InfraMeasurement[g, InfraBall[c, 3], "VertexDensity"]},
+    InfraSubstrateHighlight[g, {GraphBoundary[g, ball], GraphBoundary[g, Complement[VertexList[g], ball]]}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-[InfraBoundary]() with its default method gives the same vertices, sorted: here for the ball of radius 4 of the triangular tiling, its interior green.
+[InfraBoundary]() gives the same vertices, sorted:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {region = Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], 4], "VertexDensity" ]},
-  {InfraSubstrateHighlight[g, {GraphInterior[g, region] -> StandardGreen, InfraBoundary[g, region] -> StandardBlue}],
-   InfraBoundary[g, region] === Sort[GraphBoundary[g, region]]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {ball = Keys @ InfraMeasurement[g, InfraBall[c, 4], "VertexDensity"]},
+  InfraBoundary[g, ball] === Sort @ GraphBoundary[g, ball]]
 ```
 
 ## Possible Issues
 
-The whole vertex set has no boundary, since no vertex has a neighbour outside the graph. The rim of a substrate, blue, is [GraphExteriorBoundary]().
+The whole vertex set has no boundary: no vertex has a neighbour outside the graph. The rim of the substrate is [GraphExteriorBoundary]():
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {InfraSubstrateHighlight[g, {GraphExteriorBoundary[g] -> StandardBlue}], GraphBoundary[g, VertexList[g]]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  InfraSubstrateHighlight[g, {GraphExteriorBoundary[g]}, PlotLabel -> GraphBoundary[g, VertexList[g]],
+    ImageSize -> Medium]]
 ```

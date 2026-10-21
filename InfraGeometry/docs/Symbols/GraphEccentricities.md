@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/GraphEccentricities
 Keywords: [eccentricity, radius, diameter, graph center, periphery, distance matrix]
-SeeAlso: [RelativeEccentricity, GraphCenter, CenterGraph, EffectiveResistance]
+SeeAlso: [RelativeEccentricity, GraphCenter, CenterGraph, EffectiveResistance, VertexEccentricity]
 RelatedGuides: [Experimental]
 ---
 
@@ -18,68 +18,63 @@ RelatedGuides: [Experimental]
 
 ## Details & Options
 
-Definition: the eccentricity of a vertex *v* is *e*(*v*) = max *d*(*v*, *w*) over the vertices *w*, the distance to a farthest vertex. The least eccentricity is the radius of *g*, [GraphRadius](), reached on the [GraphCenter](); the largest is the diameter, [GraphDiameter](), reached on the [GraphPeriphery]().
+The eccentricity of a vertex *v* is *e(v) = max d(v, w)* over the vertices *w*, the distance to a farthest vertex.
 
-It is [VertexEccentricity]() at every vertex at once, read off one [GraphDistanceMatrix](). Any other distance matrix may be given instead, such as the [EffectiveResistance]() matrix.
+The least eccentricity is the radius of *g*, [GraphRadius](), taken on the [GraphCenter](). The largest is the diameter, [GraphDiameter](), taken on the [GraphPeriphery]().
 
-Along an edge the eccentricity changes by at most 1. On a graph with several components every eccentricity is [Infinity]().
+Along an edge the eccentricity changes by at most 1, and *e(v) ≤ e(c) + d(c, v)* for any vertex *c*.
+
+Any distance matrix can be given, such as the [EffectiveResistance]() matrix. On a graph with several components every eccentricity is [Infinity]().
 
 ## Basic Examples
 
-The level sets of the eccentricity on the square, hexagonal and triangular tilings, each in its own colour, and the least and the largest value, the radius and the diameter.
+The level sets of the eccentricity, each in its own colour, and the radius and the diameter. On the grid they are squares with sides along the axes, not the diamonds of the balls:
 
 ```wl
-With[
-  {panels = Table[
-     With[
-       {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-       {eccentricities = AssociationThread[VertexList[g], GraphEccentricities[g]]},
-       {InfraSubstrateHighlight[g, AssociationThread[#, 1] & /@ Values[KeySort @ GroupBy[Keys[eccentricities], eccentricities]]], MinMax[eccentricities]}],
-     {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]},
-  {GraphicsRow[First /@ panels], Last /@ panels}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {e = GraphEccentricities[g]},
+    {levels = Values @ KeySort @ GroupBy[Transpose[{VertexList[g], e}], Last -> First]},
+    InfraSubstrateHighlight[g, levels, PlotLabel -> MinMax[e]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-On the three tilings the eccentricity is the radius plus the distance from the centre: the farthest vertex lies across the centre, on the rim.
+The eccentricity against the distance from the centre. It grows almost as fast as the distance: *e(v) − d(c, v)* is 7, 8 or 9 on the grid and 5 or 6 on the mesh, never more than the radius:
 
 ```wl
 ListPlot[
   Table[
-    With[
-      {g = InfraSubstrate[name, "Small"]},
-      Transpose[{GraphDistance[g, First @ GraphCenter[g], #] & /@ VertexList[g], GraphEccentricities[g]}]],
-    {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}],
-  PlotLegends -> {"square", "hexagonal", "triangular"}, AxesLabel -> {"d(c, v)", "e(v)"}]
+    With[{g = InfraSubstrate[name, "Small"]},
+      Transpose[{GraphDistance[g, First @ GraphCenter[g]], GraphEccentricities[g]}]],
+    {name, {"SquareGridGraph", "SquareMeshGraph"}}],
+  PlotLegends -> {"SquareGridGraph", "SquareMeshGraph"}, AxesLabel -> {"d(c, v)", "e(v)"}]
 ```
 
 ## Scope
 
-A distance matrix: the eccentricities of the square tiling under the effective resistance, blue at the least and red at the largest. The rim is far in resistance too, and the corners, each held by one edge, are farthest.
+A distance matrix: the eccentricities of the grid in effective resistance. The vertices of least and of largest resistance eccentricity:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {eccentricities = GraphEccentricities[EffectiveResistance[g]]},
-  {InfraSubstrateHighlight[g, MapThread[#1 -> Blend[{StandardBlue, StandardRed}, #2] &, {VertexList[g], Rescale[eccentricities]}]], MinMax[eccentricities]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {e = GraphEccentricities[EffectiveResistance[g]]},
+  InfraSubstrateHighlight[g, {Pick[VertexList[g], e, Min[e]], Pick[VertexList[g], e, Max[e]]},
+    PlotLabel -> MinMax[e], ImageSize -> Medium]]
 ```
 
 ## Properties and Relations
 
-The centre, red, has the least eccentricity, the radius, and the periphery, blue, the largest, the diameter. The values agree with [VertexEccentricity]().
+The least value is the radius and the largest the diameter, and every value is the [VertexEccentricity]():
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
-  {eccentricities = GraphEccentricities[g]},
-  {InfraSubstrateHighlight[g, {GraphCenter[g] -> StandardRed, GraphPeriphery[g] -> StandardBlue}],
-   MinMax[eccentricities] == {GraphRadius[g], GraphDiameter[g]}, eccentricities === (VertexEccentricity[g, #] & /@ VertexList[g])}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {e = GraphEccentricities[g]},
+  InfraSubstrateHighlight[g, {GraphCenter[g], GraphPeriphery[g]},
+    PlotLabel -> {MinMax[e] == {GraphRadius[g], GraphDiameter[g]}, e === (VertexEccentricity[g, #] & /@ VertexList[g])},
+    ImageSize -> Medium]]
 ```
 
 ## Possible Issues
 
-On a graph with several components every eccentricity is [Infinity](); the eccentricity within a component is not given.
+On a graph with several components every eccentricity is [Infinity](), including the eccentricity within a component:
 
 ```wl
-With[
-  {g = GraphUnion[CycleGraph[5], PathGraph[{6, 7, 8}]]},
-  {g, GraphEccentricities[g]}]
+GraphEccentricities[GraphUnion[CycleGraph[5], PathGraph[{6, 7, 8}]]]
 ```

@@ -4,59 +4,116 @@ Name: InfraSceneMultiway
 Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSceneMultiway
-Keywords: [synthetic geometry, graph, construction]
-SeeAlso: [InfraBranchialGraph, InfraSceneViewer, InfraScene, RandomInfraSceneInstance]
+Keywords: [scene, multiway, construction, state, event, branch, branchial graph]
+SeeAlso: [InfraScene, RandomInfraSceneInstance, InfraSceneInstance, InfraBranchialGraph, InfraSceneViewer]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraSceneMultiway]()[*scene*, *graph*]</code> explores exact finite construction states and retains their incoming events.
+<code>[InfraSceneMultiway]()[*scene*, *g*]</code> gives the multiway system of the construction *scene* on the graph *g*: every partial construction and every step between them.
 
-<code>[InfraSceneMultiway]()[*scene*, *graph*, *bindings*, *options*]</code> starts with fixed bindings.
+<code>[InfraSceneMultiway]()[*scene*, *g*, *init*]</code> starts from the bindings in the association *init*.
 
 ## Details & Options
 
-This is an eager finite explorer for small simple undirected unweighted graphs.
-Each pool comes from its construction's named token sampler with All.
-The scene must carry valid ScheduleValidity provenance. Rebuild an older descriptor from its original object and hypothesis syntax.
-Unsupported schedules and selectors stay unevaluated. Unsupported construction pools and assertions retain diagnostics and do not certify completion.
+A state is a set of bindings: the objects constructed so far and their values. An event constructs one more object, with one of its realisations, and leads from a state to a new one. Two orders of construction that reach the same bindings reach the same state.
 
-States merge only when completed-construction IDs and exact labeled bindings agree.
-Declared sets normalize, while point labels, walk order, repeated traversals and Graph carriers retain their kinds.
-All incoming accepted or fixed events survive merging. Pending assertions remain undecided; unsupported assertions alone cannot certify an empty solution set.
+The final states are the instances of the scene, all that [RandomInfraSceneInstance]() can draw. A branch dies when an assertion fails on it.
 
-The result is an Association containing States, Events, StateGraph, Layers, StepLayers, Instances, Expansions, Frontier, Completeness, Diagnostics and saved scene/substrate/settings.
-Event layers count individual constructions. StepLayers are completed group boundaries.
-Final or requested-prefix instances are distinct from an unfinished event-depth frontier.
+The result is an [Association]():
 
-Options "Steps" (All), "MaxDepth", "MaxStates", "MaxEvents", "MaxCandidates" and "MaxTime" (Infinity) bound the request.
-Candidate limits bound examinations, not eager All-pool acquisition or temporary memory.
-State, event and candidate frontiers retain their exact unfinished obligations.
-Requested-prefix and whole-scene completeness are separate; known state vertices alone do not certify missing incoming events.
-There is no resumability or hard memory ceiling.
-Tube, cylinder and solid-of-revolution profiles must be explicit numeric radii, bands or per-axis lists; cone slopes must be numeric. Function profiles are unsupported in the explorer and are not invoked. Ordinary named samplers retain function-profile support.
-Deferred InfraDistance aggregation accepts Min, Max, Mean, Median and Total. Assertions use registered Infra queries and predicates with arithmetic, comparison and Boolean forms. Custom executable heads remain Unsupported without invocation. Literal graph vertices are recognized first, including function-headed labels.
-Repeated option rules use their first supplied value. Delayed option rules are unsupported and rejected before evaluation. A False assertion conclusively rejects a root or candidate even when another assertion is Unsupported; rejection diagnostics retain both results.
+| Key | Value |
+|---|---|
+| `"States"` | each state: its bindings, the constructions done, its depth |
+| `"Events"` | each event: its source, its target, the construction and the value chosen |
+| `"StateGraph"` | the states as vertices, the events as edges |
+| `"Layers"` | the states at each number of constructions |
+| `"StepLayers"` | the states at the end of each step of the scene |
+| `"Instances"` | the final states, as [InfraSceneInstance]() objects |
+| `"Completeness"` | whether the exploration finished, and if not, why |
+| `"Frontier"` | the work left when it did not |
+
+The exploration is exhaustive, for small graphs and short scenes. Options bound it:
+
+| Option | Default | Values |
+|---|---|---|
+| `"Steps"` | `All` | the number of scene steps to explore |
+| `"MaxDepth"`, `"MaxStates"`, `"MaxEvents"`, `"MaxCandidates"` | `Infinity` | a bound on the exploration |
+| `"MaxTime"` | `Infinity` | a time bound in seconds |
+
+[InfraBranchialGraph]() joins the states with a common parent; [InfraSceneViewer]() browses the result.
 
 ## Basic Examples
 
-Two construction orders merge at one terminal state.
+The segment from the centre of the grid to a vertex at distance 4. The two points can be placed in either order, and both orders lead to one state; from it the 4 shortest paths branch:
 
 ```wl
-SeedRandom[ 71 ]; With[
-  { graph = PathGraph[ Range[ 3 ] ] },
-  { scene = InfraScene[ { p, q }, { InfraSceneStep[ { p == InfraMidpoint[ 1, 3 ], q == InfraMidpoint[ 1, 1 ] } ] } ] },
-  { data = InfraSceneMultiway[ scene, graph ] },
-  data[ "StateGraph" ] ]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
+  {scene = InfraScene[{pA, pB, seg}, {pA == InfraPoint[a], pB == InfraPoint[b], seg == InfraSegment[pA, pB]}]},
+  InfraSceneMultiway[scene, g]["StateGraph"]]
 ```
 
-Inspect a bounded frontier.
+The instances are the final states. There is one per shortest path:
 
 ```wl
-SeedRandom[ 71 ]; With[
-  { graph = PathGraph[ Range[ 3 ] ] },
-  { scene = InfraScene[ { p, q }, { InfraSceneStep[ { p == InfraMidpoint[ 1, 3 ], q == InfraMidpoint[ 1, 1 ] } ] } ] },
-  { data = InfraSceneMultiway[ scene, graph, "MaxEvents" -> 3 ] },
-  { data[ "Completeness" ], data[ "Frontier" ] } ]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
+  {scene = InfraScene[{pA, pB, seg}, {pA == InfraPoint[a], pB == InfraPoint[b], seg == InfraSegment[pA, pB]}]},
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[InfraSceneInstance[inst, seg]], a, b}],
+    {inst, InfraSceneMultiway[scene, g]["Instances"]}]]
+```
+
+## Scope
+
+Fixed bindings start the exploration further on:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {a = First @ GraphCenter[g]},
+  {scene = InfraScene[{pA, pB, seg}, {pA == InfraPoint[a], pB == InfraPoint[], seg == InfraSegment[pA, pB]}]},
+  Length @ InfraSceneMultiway[scene, g, <|pB -> 78|>]["Instances"] == InfraMeasurement[g, InfraSegment[a, 78], "Cardinality"]]
+```
+
+The states by the number of constructions done:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
+  {scene = InfraScene[{pA, pB, seg}, {pA == InfraPoint[a], pB == InfraPoint[b], seg == InfraSegment[pA, pB]}]},
+  #["States"] & /@ InfraSceneMultiway[scene, g]["Layers"]]
+```
+
+## Options
+
+### MaxEvents
+
+A bound stops the exploration early. The result says it is incomplete, and why:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
+  {scene = InfraScene[{pA, pB, seg}, {pA == InfraPoint[a], pB == InfraPoint[b], seg == InfraSegment[pA, pB]}]},
+  InfraSceneMultiway[scene, g, "MaxEvents" -> 3]["Completeness"]]
+```
+
+## Properties and Relations
+
+[RandomInfraSceneInstance]() with `All` lists the same instances:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]},
+  {scene = InfraScene[{pA, pB, seg}, {pA == InfraPoint[a], pB == InfraPoint[b], seg == InfraSegment[pA, pB]}]},
+  Sort[InfraSceneMultiway[scene, g]["Instances"]] === Sort[RandomInfraSceneInstance[scene, g, All]]]
+```
+
+## Possible Issues
+
+A point drawn from every vertex makes every vertex a branch, and the exploration grows with the graph. Keep such scenes to small graphs; on the 3 × 3 grid the second point has 4 instances:
+
+```wl
+With[{g = GridGraph[{3, 3}]},
+  {scene = InfraScene[{pA, pB, seg}, {pA == InfraPoint[1], pB == InfraPoint[], InfraDistance[pA, pB] == 2, seg == InfraSegment[pA, pB]}]},
+  Length @ InfraSceneMultiway[scene, g]["Instances"]]
 ```

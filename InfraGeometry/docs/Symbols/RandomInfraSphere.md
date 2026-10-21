@@ -5,87 +5,94 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraSphere
-Keywords: [sphere, separating set, minimal, peel, search]
-SeeAlso: [InfraSphere, InfraShell, RandomInfraSphere, FindInfraOsculatingShell]
+Keywords: [sphere, separating set, shell, band, minimal separator]
+SeeAlso: [InfraSphere, InfraShell, RandomInfraCircle, InfraMeasurement, InfraBall]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[RandomInfraSphere]()[*g*, *c*, *r*, *n*]</code> gives a `List` of exactly *n* inclusion-minimal connected subsets of the shell of radius *r* about *c* that separate the side of *c* from the far side.
+<code>[RandomInfraSphere]()[*g*, *c*, *r*]</code> gives a random sphere of radius *r* about *c* in *g*, as a sorted vertex list.
 
-<code>[RandomInfraSphere]()[*g*, *c*, {*r*, *s*}, *n*]</code> takes the band from *r* to *s*.
+<code>[RandomInfraSphere]()[*g*, *c*, {*r*, *s*}]</code> gives a random sphere in the band of radii *r* to *s*.
 
-<code>[RandomInfraSphere]()[*g*, *c*, *r*]</code> draws one such subset.
+<code>[RandomInfraSphere]()[*g*, *c*, *r*, *n*]</code> gives a list of *n* distinct spheres.
+
+<code>[RandomInfraSphere]()[*g*, [InfraSphere]()[*c*, *r*]]</code> and <code>[RandomInfraSphere]()[*g*, [InfraSphere]()[*c*, *r*], *n*]</code> are the same with the sphere given as a token.
 
 ## Details & Options
 
-The default draw is random. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing. `RandomSeeding -> Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string gives a reproducible draw, and `Inherited` a local snapshot of the current state. The outer random state is restored afterward, as with [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html).
+The band is *L = {v : r ≤ d(c, v) ≤ s}*, the shell for *s = r*, and *ρ = (r + s)/2*. A sphere is an inclusion-minimal connected subset *S* of *L* that separates: after removing *S*, the component of *c* lies in the ball of radius *ρ* and every other vertex lies outside it.
 
-The count *n* may be `UpTo[n]`, which gives up to *n*, or `All`.
+A shell with no edges has no connected subset of more than one vertex. On the square grid, which is bipartite, a sphere of one radius does not exist by default; the band {*r*, *r* + 1} has spheres.
 
-Option `Properties` takes `{"Separating", "Connected"}` (default), `{"Separating"}` for the inclusion-minimal separating subsets that need not be connected, or `{}` for the level set as the one member.
+The peeling takes vertices out of the band one at a time while it still separates, so a sphere is minimal, not of least size.
 
-Option `"NextVertexFunction"` sees the vertices that can be peeled next and gives the ones to try, in order. `Automatic` (default) peels in random order. `Identity` gives the canonical peel; `RandomSeeding` reproduces a draw; `RandomSample[#, UpTo[n]] &` keeps at most *n* branches per node, and the result is then minimal among the survivors.
+When the band does not separate, the result is `{}`.
 
-The search peels the shell vertex by vertex while it keeps separating. It is the specialised search behind [InfraSphere](), whose [RandomInfraSphere]() clause calls it. The family can be large: all members on a medium tiling take long.
+The count *n* can be `n`, `UpTo[n]` or `All`. All spheres of a large band can take long.
 
-When the shell does not separate, as on a torus band that wraps, the result is `{}`.
+Options:
+
+| Option | Default | Values |
+|---|---|---|
+| [Properties]() | `{"Separating", "Connected"}` | `{"Separating"}` drops connectedness; `{}` gives the band itself |
+| `"NextVertexFunction"` | `Automatic` | `Automatic` peels in random order; `Identity` in vertex order; a function of the candidate list gives the vertices to try |
+| [RandomSeeding]() | `Automatic` | an integer or a string for a reproducible draw; `Inherited` to draw from the current random state |
 
 ## Basic Examples
 
-All four minimal connected separating subsets of the band 1 to 2 about the centre of a 5 by 5 grid.
+A sphere in the band {3, 4} about the centre, on the square grid and on the square mesh:
 
 ```wl
-SeedRandom[1];
-RandomInfraSphere[GridGraph[{5, 5}], 13, {1, 2}, All]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    InfraSubstrateHighlight[g, {InfraShell[c, {3, 4}], RandomInfraSphere[g, c, {3, 4}, RandomSeeding -> 1], c}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-Three separating subsets of the shell of radius 3, each drawn in its own colour on the hexagonal tiling.
+On the mesh the shell of radius 3 is a cycle, and the sphere is the whole shell, the vertices of the circle of radius 3:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  InfraSubstrateHighlight[g, RandomInfraSphere[g, c, 3, UpTo[3], RandomSeeding -> 1]]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {sphere = RandomInfraSphere[g, c, 3, RandomSeeding -> 1]},
+  InfraSubstrateHighlight[g, {sphere, c}, PlotLabel -> {Length[sphere], sphere === Sort @ RandomInfraCircle[g, c, 3]},
+    ImageSize -> Medium]]
+```
+
+Three spheres of the band {3, 4} on the grid, each of 23 vertices:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {sphere, c}, PlotLabel -> Length[sphere]],
+    {sphere, RandomInfraSphere[g, c, {3, 4}, 3, RandomSeeding -> 1]}]]
 ```
 
 ## Options
 
-With `Properties -> {"Separating"}` the subsets need not be connected, so they can be smaller.
+### Properties
+
+On the grid the shell of radius 3 separates but has no edges. Without connectedness the sphere is the whole shell of 12 vertices; with it there is none:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = GridGraph[{7, 7}]},
-  {Length /@ RandomInfraSphere[g, 25, {2, 3}, UpTo[3], Properties -> {"Separating"}, RandomSeeding -> 1],
-   Length /@ RandomInfraSphere[g, 25, {2, 3}, UpTo[3], RandomSeeding -> 1]}]
-```
-
-A pruning function caps the branches tried per node.
-
-```wl
-SeedRandom[1];
-RandomInfraSphere[GridGraph[{5, 5}], 13, {1, 2}, All, "NextVertexFunction" -> (RandomSample[#, UpTo[1]] &)]
-```
-
-### RandomSeeding
-
-A fixed seed reproduces the draw, whatever state `SeedRandom` has set:
-
-```wl
-Table[SeedRandom[k]; RandomInfraSphere[GridGraph[{4, 4}], 6, {1, 2}, 1, RandomSeeding -> 7], {k, 2}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {sphere = RandomInfraSphere[g, c, 3, Properties -> {"Separating"}, RandomSeeding -> 1]},
+  InfraSubstrateHighlight[g, {sphere, c}, PlotLabel -> {Length[sphere], RandomInfraSphere[g, c, 3]}, ImageSize -> Medium]]
 ```
 
 ## Properties and Relations
 
-Every subset separates the centre from a corner.
+Removing a sphere of the band {3, 4} leaves the centre with vertices within distance 3 only:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = GridGraph[{7, 7}]},
-  {members = RandomInfraSphere[g, 25, 2, All]},
-  {AllTrue[members, GraphDistance[VertexDelete[g, #], 25, 1] === Infinity &], Length @ members}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {sphere = RandomInfraSphere[g, c, {3, 4}, RandomSeeding -> 1]},
+  Max[GraphDistance[g, c, #] & /@ VertexComponent[VertexDelete[g, sphere], c]]]
+```
+
+The token form gives the same draw:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  RandomInfraSphere[g, InfraSphere[c, {3, 4}], RandomSeeding -> 1] === RandomInfraSphere[g, c, {3, 4}, RandomSeeding -> 1]]
 ```

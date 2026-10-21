@@ -12,50 +12,48 @@ RelatedGuides: [InfraAnalysis]
 
 ## Usage
 
-<code>[KillingDisplacementMagnitude]()[*g*]</code> gives the least magnitude of an automorphism of *g* other than the identity, and [Infinity]() when *g* has no such automorphism.
+<code>[KillingDisplacementMagnitude]()[*g*]</code> gives the least magnitude of an automorphism of *g* other than the identity, and [Infinity]() when *g* has none.
 
 ## Details & Options
 
-Definition: *min { max_v d(v, σ(v)) : σ an automorphism of g, σ ≠ id }*, the minimum over an empty set being *∞*. It is the magnitude of the displacements [FindKillingDisplacement]() gives.
+The value is *min {max_v d(v, σ(v)) : σ ≠ id an automorphism of g}*, with the minimum over the empty set *∞*. It is the magnitude of the displacements [FindKillingDisplacement]() gives.
 
-A small value means a symmetry that moves every vertex little, as a Killing field of small flow time does. On a cycle or a torus, whose translations by one step are automorphisms, it is 1. On a finite patch of a tiling the automorphisms are the symmetries of the patch, which move its rim far, so the value is large: the diameter on the square and the hexagonal tilings. A graph without symmetry gives [Infinity]().
+A small value means a symmetry that moves every vertex a little, as the flow of a Killing field for a short time does. On a torus the translations by one step give 1. A graph with a rim has few symmetries, and a graph without symmetry gives [Infinity]().
+
+The value is at most the diameter of a connected graph with a symmetry.
 
 ## Basic Examples
 
-The least magnitude of a symmetry on the discretized plane, the square, the triangular and the hexagonal tilings. The discretized plane has no symmetry.
+The square grid, the square mesh and the square torus. The least symmetry of the grid exchanges two pendant vertices; the mesh has none; the torus has the translations by one step:
 
 ```wl
-With[
-  {graphs = InfraSubstrate[#, "Small", "KeepCoordinates" -> True] & /@ {"SquareMeshGraph", "SquareTilingGraph", "TriangularTilingGraph", "HexagonalTilingGraph"}},
-  {GraphicsRow[graphs], KillingDisplacementMagnitude /@ graphs}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    InfraSubstrateHighlight[g, {}, PlotLabel -> KillingDisplacementMagnitude[g]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph", "SquareTorusGraph"}}]
 ```
 
 ## Scope
 
-A cycle and a torus have the translations by one step.
+A cycle has the rotations by one step:
 
 ```wl
-With[
-  {cycle = CycleGraph[12], torus = InfraSubstrate["SquareTorusGraph", "Small"]},
-  {GraphicsRow[{DisplacementPlot[cycle, FindKillingDisplacement[cycle]], DisplacementPlot[torus, FindKillingDisplacement[torus]]}],
-   KillingDisplacementMagnitude /@ {cycle, torus}}]
+KillingDisplacementMagnitude /@ {CycleGraph[5], CycleGraph[12]}
 ```
 
 ## Properties and Relations
 
-The value is the magnitude of the least automorphism, which [FindKillingDisplacement]() gives.
+The value is the magnitude of the least automorphism:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {killing = FindKillingDisplacement[g]},
-  {DisplacementPlot[g, killing], KillingDisplacementMagnitude[g] == DisplacementMagnitude[g, killing]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  KillingDisplacementMagnitude[g] == DisplacementMagnitude[g, FindKillingDisplacement[g]]]
 ```
 
-The value is at most the diameter of a connected graph with a symmetry. On the patches of the square and the hexagonal tilings every symmetry moves some vertex across the patch.
+Without its pendant vertices the grid is an 8 × 8 grid. Its least symmetries move some vertex 7 steps, half its diameter:
 
 ```wl
-With[
-  {graphs = InfraSubstrate[#, "Small", "KeepCoordinates" -> True] & /@ {"SquareTilingGraph", "HexagonalTilingGraph"}},
-  {GraphicsRow[DisplacementPlot[#, FindKillingDisplacement[#]] & /@ graphs], {KillingDisplacementMagnitude[#], GraphDiameter[#]} & /@ graphs}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {core = VertexDelete[g, Select[VertexList[g], VertexDegree[g, #] == 1 &]]},
+  {VertexCount[core], KillingDisplacementMagnitude[core], GraphDiameter[core]}]
 ```

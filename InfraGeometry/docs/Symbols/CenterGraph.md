@@ -12,103 +12,87 @@ RelatedGuides: [InfraSubstrates]
 
 ## Usage
 
-<code>[CenterGraph]()[*g*, *k*]</code> gives the ball of *k* hops about the centre of *g*.
+<code>[CenterGraph]()[*g*, *k*]</code> gives the subgraph of *g* induced on the ball of radius *k* about its centre.
 
-<code>[CenterGraph]()[*g*, -*k*]</code> gives the ball whose radius is *k* less than the radius of *g*.
+<code>[CenterGraph]()[*g*, −*k*]</code> gives the ball of radius *ρ − k*, where *ρ* is the radius of *g*.
 
-<code>[CenterGraph]()[*g*, Scaled[*q*]]</code> gives the ball whose radius is the fraction *q* of the radius of *g*.
+<code>[CenterGraph]()[*g*, [Scaled]()[*q*]]</code> gives the ball of radius *⌊q ρ⌋*.
 
 <code>[CenterGraph]()[*g*]</code> gives the centre of *g*.
 
 ## Details & Options
 
-The centre is `GraphCenter[g]`, the vertices of least eccentricity, and the radius `GraphRadius[g]` is that eccentricity. `CenterGraph[g, k]` is `NeighborhoodGraph[g, GraphCenter[g], k]`, the subgraph induced on the vertices within `k` hops of the centre.
+The result is the induced subgraph on *Bₖ(C) = {v : d(v, C) ≤ k}*, where *C* = [GraphCenter]()[*g*] is the set of vertices of least eccentricity and *ρ* = [GraphRadius]()[*g*] is that eccentricity. It is [NeighborhoodGraph]()[*g*, *C*, *k*].
 
-A negative `k` gives the radius `GraphRadius[g] + k`, never below 0. On a patch that is itself a ball about its centre, as the tilings are, `CenterGraph[g, -1]` is the patch without its rim.
+A negative radius never goes below 0, and in [Scaled]()[*q*] the fraction *q* is clipped to [0, 1]. A radius of *ρ* or more gives the whole graph, 0 gives the centre.
 
-`Scaled[q]` gives the radius `Floor[q GraphRadius[g]]`, with `q` clipped to `[0, 1]`: the same fraction of the radius on every size of a substrate.
+[Scaled]()[*q*] takes the same fraction of the radius on every size of a substrate.
 
-`k >= GraphRadius[g]` and `Scaled[1]` give the whole graph; `k = 0` and `Scaled[0]` give the centre.
+The cut keeps the vertex names and coordinates of *g*, so a construction made on it draws on *g*.
 
-The cut keeps the vertex labels and coordinates of `g`, so a construction made on it draws on `g`.
-
-A disconnected graph is returned whole. On a vertex-transitive graph every vertex is a centre, so every cut is the whole graph.
+A disconnected graph is returned whole.
 
 ## Basic Examples
 
-The ball of two hops about the centre of the square tiling.
-
-```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  InfraSubstrateHighlight[g, {VertexList @ CenterGraph[g, 2]}]]
-```
-
-A negative count is taken from the radius. On the three tilings, `-1` drops the rim.
+The ball of radius 3 about the centre of the square grid and of the square mesh:
 
 ```wl
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    InfraSubstrateHighlight[g, {VertexList @ CenterGraph[g, -1]}]],
-  {name, {"SquareTilingGraph", "TriangularTilingGraph", "HexagonalTilingGraph"}}]
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, InfraSubstrateHighlight[g, {VertexList @ CenterGraph[g, 3]}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-`Scaled[q]` takes a fraction of the radius, the same on every size.
+Half the radius, on the square mesh at two sizes:
 
 ```wl
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate["HexagonalTilingGraph", size, "KeepCoordinates" -> True]},
+  With[{g = InfraSubstrate["SquareMeshGraph", size, "KeepCoordinates" -> True]},
     InfraSubstrateHighlight[g, {VertexList @ CenterGraph[g, Scaled[1/2]]}]],
-  {size, {"Small", "Medium", "Large"}}]
+  {size, {"Small", "Medium"}}]
 ```
 
 ## Scope
 
-A construction made on the cut stays off the rim and draws on the whole substrate: three points drawn from the ball two hops short of the radius.
+The centre alone. On the grid it is four vertices, on the mesh one:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {core = CenterGraph[g, -2]},
-  {points = RandomInfraPoint[core, 3, RandomSeeding -> 1]},
-  InfraSubstrateHighlight[g, {VertexList @ core, points}]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, InfraSubstrateHighlight[g, {VertexList @ CenterGraph[g]}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The centre alone: on a grid of even side it is four vertices.
+A negative radius counts from the rim. Three points drawn from the mesh two hops short of the radius stay off the rim:
 
 ```wl
-With[
-  {g = GridGraph[{6, 6}]},
-  InfraSubstrateHighlight[g, {VertexList @ CenterGraph[g]}]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {core = CenterGraph[g, -2]},
+  InfraSubstrateHighlight[g, {VertexList @ core, RandomInfraPoint[core, 3, RandomSeeding -> 1]}, ImageSize -> Medium]]
 ```
 
 ## Properties and Relations
 
-The size of the cut against `k`, from minus the radius to the radius: the negative half repeats the positive one, read from the outside in.
+The number of vertices against the radius *k*, from −*ρ* to *ρ*, on the mesh. The negative half repeats the positive one:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareMeshGraph", "Small"]},
-  {r = GraphRadius[g]},
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {r = GraphRadius[g]},
   ListStepPlot[Table[{k, VertexCount @ CenterGraph[g, k]}, {k, -r, r}], AxesLabel -> {"k", "vertices"}]]
 ```
 
 ## Possible Issues
 
-A bare fraction is not a count of hops, and the call stays unevaluated. The fraction is `Scaled[q]`.
+The radius *ρ* is the eccentricity of one centre vertex, not the distance from the whole centre. On the grid the four centre vertices reach every vertex in 7 hops, two fewer than *ρ* = 9, so −1 and −2 give the whole grid:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small"]},
-  {Head @ CenterGraph[g, 0.9], VertexCount @ CenterGraph[g, Scaled[0.9]]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, Table[VertexCount @ CenterGraph[g, k], {k, -4, 0}]]
 ```
 
-The ball is round in the graph metric, not in the shape of the patch. On the square mesh a negative count trims the corners first, and `-1`, `-2` and `-3` still reach the sides.
+On a vertex-transitive graph every vertex is a centre, so every cut is the whole graph:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
-  GraphicsRow @ Table[InfraSubstrateHighlight[g, {VertexList @ CenterGraph[g, k]}], {k, {-1, -2, -3}}]]
+With[{g = InfraSubstrate["SquareTorusGraph", "Small"]}, {VertexCount[g], VertexCount @ CenterGraph[g, 1]}]
+```
+
+A bare fraction is not a radius, and the call stays unevaluated:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, Head @ CenterGraph[g, 0.5]]
 ```

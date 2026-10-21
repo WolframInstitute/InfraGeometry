@@ -5,115 +5,138 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSubstrate
-Keywords: [substrate, example graph, surface graph, tiling, mesh, roster]
-SeeAlso: [TessellationGraph, TorusTessellation, GraphCenter, InfraShell, InfraSubstrateHighlight, RandomInfraPoint]
+Keywords: [substrate, example graph, grid, mesh, tiling, torus, sphere, roster]
+SeeAlso: [TorusTessellation, GraphCenter, InfraShell, InfraBall, InfraSubstrateHighlight, RandomInfraPoint]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraSubstrate]()[*name*, *size*]</code> is the example graph *name* at *size* `"Small"`, `"Medium"` or `"Large"`.
+<code>[InfraSubstrate]()[*name*, *size*]</code> is the example graph *name* at the size `"Small"`, `"Medium"` or `"Large"`.
 
 <code>[InfraSubstrate]()[*name*]</code> is the `"Medium"` size.
 
-<code>[InfraSubstrate]()[*name*, *size*, *style*]</code> draws it in the named backdrop style; `"Default"` draws it with no style.
-
-<code>[InfraSubstrate]()[]</code> gives the roster, the names grouped by what they model. <code>[InfraSubstrate]()[All]</code> gives the flat list of names.
+<code>[InfraSubstrate]()[]</code> gives the names grouped by what they model; <code>[InfraSubstrate]()[All]</code> gives the list of names.
 
 ## Details & Options
 
-A substrate is the graph a construction runs on. Every figure in this documentation is drawn on one, so an example starts with one line and no setup code.
+A substrate is a graph a construction runs on, a discrete stand-in for a space.
 
-The roster has five classes:
-
-| Class | What it models | Names |
+| Class | Models | Names |
 |---|---|---|
-| `"OpenManifold"` | a patch of the plane or of space, with the rim removed | `"SquareMeshGraph"`, `"CubeMeshGraph"`, `"TriangularTilingGraph"`, `"SquareTilingGraph"`, `"HexagonalTilingGraph"`, `"HyperbolicTilingGraph"`, `"SquareGridGraph"`, `"CubicGridGraph"` |
-| `"ClosedManifold"` | a compact surface | `"SphereMeshGraph"`, the three tori `"SquareTorusGraph"`, `"TriangularTorusGraph"`, `"HexagonalTorusGraph"`, the uniform-length surfaces `"UniformLengthSphereGraph"`, `"UniformLengthProlateEllipsoidGraph"`, `"UniformLengthTriaxialEllipsoidGraph"`, `"BuckyballGraph"` |
+| `"OpenManifold"` | a patch of the plane or of space | `"SquareGridGraph"`, `"SquareMeshGraph"`, `"CubicGridGraph"`, `"CubeMeshGraph"`, `"SquareTilingGraph"`, `"TriangularTilingGraph"`, `"HexagonalTilingGraph"`, `"HyperbolicTilingGraph"` |
+| `"ClosedManifold"` | a compact surface | `"SphereMeshGraph"`, `"SquareTorusGraph"`, `"TriangularTorusGraph"`, `"HexagonalTorusGraph"`, `"UniformLengthSphereGraph"`, `"UniformLengthProlateEllipsoidGraph"`, `"UniformLengthTriaxialEllipsoidGraph"`, `"BuckyballGraph"` |
 | `"Fractal"` | a self-similar set | `"SierpinskiTriangleGraph"`, `"MengerCarpetGraph"`, `"MengerSpongeGraph"` |
-| `"Exotic"` | no manifold and no scaling law | `"BinaryTreeGraph"`, `"DilutedTreeGraph"`, `"CompleteGraph"` |
-| `"WolframModel"` | a Wolfram-model universe | `"wm6655"`, `"wm8619"`, `"wm1811"` |
+| `"Exotic"` | no manifold | `"BinaryTreeGraph"`, `"DilutedTreeGraph"`, `"CompleteGraph"` |
+| `"WolframModel"` | a Wolfram model universe | `"wm6655"`, `"wm8619"`, `"wm1811"` |
 
-The three tilings of the plane are cut from the infinite tiling as graph-distance balls. The three tori are [TorusTessellation]() graphs placed on a torus of revolution.
+The two main substrates of the plane:
 
-A Wolfram-model universe is named `"wm"` followed by its number in the Registry of Notable Universes. Any of the 947 entries resolves, through `ResourceFunction["WolframModelData"]`, so this needs the network.
+| Name | Small | Medium | Large |
+|---|---|---|---|
+| `"SquareGridGraph"` | 96 vertices, centre eccentricity 9 | 285, eccentricity 15 | 1020 |
+| `"SquareMeshGraph"` | 102 vertices, centre eccentricity 6 | 294, eccentricity 10 | 989 |
 
-*size* may also be a raw value: the cell measure of a mesh, the radius of a tiling, the dimensions of a grid, the generation count of a Wolfram model or a fractal.
+The square grid of side *n* is [GridGraph]()[{*n*, *n*}] without its corners and without the edges along its border, so every rim vertex has one neighbour; Small is *n* = 10, Medium *n* = 17. Its vertex coordinates are integers and its distance is the ℓ¹ distance. The square mesh is an irregular triangulation of the unit square.
 
-A substrate is **bare combinatorics** by default. A stored embedding is discarded, and a spring layout of the substrate's own dimension places the vertices. `"KeepCoordinates" -> True` draws the substrate where it lives. Every figure on a patch of the plane sets it.
+A patch has a rim, and the rim is not geometry. Anchor a construction at the centre, `First @ GraphCenter[g]`, and keep it inside. A closed surface, such as `"SphereMeshGraph"` or a torus, has no rim.
 
-A patch has a rim, and the rim is not geometry. Anchor a construction at the centre, `First @ GraphCenter[g]`, and keep it well inside the patch, or the figure shows boundary effects.
+*size* can also be a raw value: the dimensions of a grid, the cell measure of a mesh, the radius of a tiling, a generation count. A Wolfram model universe `"wm"` followed by its number in the Registry of Notable Universes needs the network.
 
-The three uniform-length substrates are packings of the surface of an ellipsoid by spheres of one diameter, the surface of axes 1, 1, 1, 5, 1, 1 and 4, 2, 1; each size has its own edge length, chosen for about 100, 300 and 1000 vertices.
-
-A substrate built by a random construction — a uniform-length surface, or any substrate with `"Inflate"` — is seeded from outside. `SeedRandom` in front of the call gives the same graph again.
-
-Options:
+A substrate built by a random construction is seeded with [SeedRandom]() in front of the call.
 
 | Option | Default | Values |
 |---|---|---|
-| `"KeepCoordinates"` | `False` | `True` draws the substrate in its own embedding |
-| `"Inflate"` | `None` | *k*, a number of new vertices over every vertex or a range `{min, max}`, for `InflateGraph[g, k]`; or `{k, opts}`, adding the options `"VerticalEdges"` and `"HorizontalEdges"` of `InflateGraph` |
-
-`Graph` options are passed on to the graph. The backdrop style is the substrate style of the size: gray edges and small gray vertices, lighter as the substrate grows.
+| `"KeepCoordinates"` | `False` | `True` draws the substrate in its own embedding instead of a spring layout |
+| `"Inflate"` | `None` | *k* new vertices over every vertex, as in `InflateGraph` |
 
 ## Basic Examples
 
-The shell of radius 4 about the centre, on the discretized plane, the square tiling and the hexagonal tiling. The same definition gives three different shapes.
+The square grid and the square mesh at size `"Small"`, with the shell of radius 4 about the centre:
 
 ```wl
-Row @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = First @ GraphCenter[g]},
-    Labeled[InfraSubstrateHighlight[g, {Keys @ InfraMeasurement[ g, InfraShell[ c, 4 ], "VertexDensity" ], c}], name]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    InfraSubstrateHighlight[g, {InfraShell[c, 4], c}, PlotLabel -> VertexCount[g]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-One substrate of each of the first four classes, labelled by the number of substrates in the class.
+The roster:
 
 ```wl
-Row[Table[
-  Labeled[InfraSubstrate[First @ InfraSubstrate[][class], "Small"], class <> ": " <> ToString[Length @ InfraSubstrate[][class]]],
-  {class, {"OpenManifold", "ClosedManifold", "Fractal", "Exotic"}}], Spacer[20]]
+InfraSubstrate[]
 ```
 
-The three sizes of the square tiling, labelled by their number of vertices.
+The number of vertices at the three sizes:
 
 ```wl
-Row @ Table[
-  With[
-    {g = InfraSubstrate["SquareTilingGraph", size, "KeepCoordinates" -> True]},
-    Labeled[g, VertexCount[g]]],
-  {size, {"Small", "Medium", "Large"}}]
+Table[VertexCount @ InfraSubstrate[name, size], {name, {"SquareGridGraph", "SquareMeshGraph"}}, {size, {"Small", "Medium", "Large"}}]
 ```
 
-A raw size: the square tiling cut at radius 5.
+## Scope
+
+Substrates without a rim: the sphere mesh and the square torus, with the ball of radius 2 about a vertex:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", 5, "KeepCoordinates" -> True]},
-  {g, VertexCount[g]}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ VertexList[g]},
+    InfraSubstrateHighlight[g, {InfraBall[c, 2], c}]],
+  {name, {"SphereMeshGraph", "SquareTorusGraph"}}]
+```
+
+A substrate of space, the cubic grid, with a ball about its centre:
+
+```wl
+With[{g = InfraSubstrate["CubicGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  InfraSubstrateHighlight[g, {InfraBall[c, 2], c}, ImageSize -> Medium]]
+```
+
+The tilings of the plane:
+
+```wl
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    InfraSubstrateHighlight[g, {InfraShell[c, 3], c}]],
+  {name, {"TriangularTilingGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
+```
+
+A raw size: the square grid of side 5, 25 vertices less the four corners:
+
+```wl
+VertexCount @ InfraSubstrate["SquareGridGraph", {5, 5}]
 ```
 
 ## Options
 
 ### KeepCoordinates
 
-By default the discretized square is laid out by springs. With `"KeepCoordinates" -> True` it is drawn in the unit square it was cut from.
+By default the mesh is laid out by springs; with `"KeepCoordinates" -> True` it is drawn in the unit square it was cut from:
 
 ```wl
-GraphicsRow[{
-  InfraSubstrate["SquareMeshGraph", "Small"],
-  InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}]
+GraphicsRow[{InfraSubstrate["SquareMeshGraph", "Small"], InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}]
 ```
 
 ## Properties and Relations
 
-The square torus substrate is the [TorusTessellation]() graph, placed in space.
+The square grid is a grid graph without its corners and its border edges:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTorusGraph", "Small"]},
-  {g, Sort @ EdgeList[g] === Sort @ EdgeList @ TorusTessellation[{10, 10}, "Square"]}]
+With[{h = GridGraph[{10, 10}]}, {border = Select[VertexList[h], VertexDegree[h, #] < 4 &]},
+  IsomorphicGraphQ[InfraSubstrate["SquareGridGraph", "Small"],
+    VertexDelete[EdgeDelete[h, Select[EdgeList[h], SubsetQ[border, List @@ #] &]], {1, 10, 91, 100}]]]
+```
+
+The square torus is the [TorusTessellation]() graph:
+
+```wl
+Sort @ EdgeList @ InfraSubstrate["SquareTorusGraph", "Small"] === Sort @ EdgeList @ TorusTessellation[{10, 10}, "Square"]
+```
+
+## Possible Issues
+
+The rim cuts large balls. On the small grid the ball about the centre has *2r² + 2r + 1* vertices only up to radius 4:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  Table[InfraMeasurement[g, InfraBall[c, r], "CountingMeasure"] - (2 r^2 + 2 r + 1), {r, 0, 7}]]
 ```

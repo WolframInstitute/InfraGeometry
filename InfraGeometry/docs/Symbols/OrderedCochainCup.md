@@ -12,68 +12,91 @@ RelatedGuides: [Experimental]
 
 ## Usage
 
-<code>[OrderedCochainCup]()[*g*, *α*, *β*]</code> gives the ordered cup product of the ordered cochains *α* and *β*, the Alexander–Whitney formula *α(v₀, …, vₚ) β(vₚ, …, vₙ)* on each increasing tuple *v₀ < … < vₙ* of a clique of *g*.
+<code>[OrderedCochainCup]()[*g*, *α*, *β*]</code> gives the Alexander–Whitney cup product *α ⌣ β* of the cochains *α* and *β* on the increasing tuples of the cliques of *g*.
 
 ## Details & Options
 
-Definition: for *α* of degree *p* and *β* of degree *q*, with *n* = *p* + *q*, *(α ∪ β)(v₀, …, vₙ) = α(v₀, …, vₚ) β(vₚ, …, vₙ)* on the increasing tuples, the front face of *α* times the back face of *β*. The order of the vertices is the one in which [Sort]() puts their names.
+For *α* of degree *p* and *β* of degree *q*, with *n = p + q*, *(α ⌣ β)(v₀, …, vₙ) = α(v₀, …, vₚ) β(vₚ, …, vₙ)* on each increasing tuple *v₀ < … < vₙ* of a clique: the front face of *α* times the back face of *β*. The order is the one in which [Sort]() puts the vertex names.
 
-It is associative and unital: both bracketings of three factors read the three consecutive faces of the tuple, and the constant 0-cochain 1 is a unit. The coboundary is a derivation for it, so the ordered cochains form a differential graded algebra.
+| Property | Statement |
+|---|---|
+| associative | *(α ⌣ β) ⌣ γ = α ⌣ (β ⌣ γ)*: both read three consecutive faces |
+| unit | the constant 0-cochain 1 |
+| Leibniz rule | *δ(α ⌣ β) = δα ⌣ β + (−1)ᵖ α ⌣ δβ* |
+| not graded-commutative | on cocycles *α ⌣ β − β ⌣ α = δ(α ⌣₁ β)*, with a plus sign when *p* and *q* are both odd and *⌣₁* the [CochainCupOne]() |
 
-It is not graded-commutative. On a triangle *v₀ < v₁ < v₂*, the 1-cochains *α*, 1 on *(v₀, v₁)*, and *β*, 1 on *(v₁, v₂)*, have *α ∪ β* = 1 and *β ∪ α* = 0 there.
+The result is an ordered cochain, defined on the increasing tuples only: read it with [OrderedCochainValue](). [CochainCup]() averages the product over the orderings of each clique, and is alternating and graded-commutative but not associative.
 
-The product of two alternating cochains is not alternating, so the result is an ordered cochain: read it with [OrderedCochainValue](), not with [CochainValue](). Its antisymmetrisation is the cup [CochainCup](), and on cohomology the two agree: the ordered cup and the cup of two cocycles differ by a coboundary. On cocycles the graded commutator *α ∪ β − (−1)^(pq) β ∪ α* is the coboundary of [CochainCupOne]().
+On the square grid there are no triangles, and the product of two 1-cochains is empty.
 
 ## Basic Examples
 
-On the mesh of a square, the ordered cup of the coboundaries of the two coordinates against the signed area of each triangle on its sorted corners, beside the cup [CochainCup]() of the same two cochains. The cup is the area; the ordered cup depends on the order of the corners and is not.
+The ordered cup of the coboundaries of the coordinates *x* and *y* of the square mesh, against the signed area of each triangle on its sorted corners. [CochainCup]() gives the area; the ordered cup depends on the order of the corners:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
-  {positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {dx = Coboundary[g, KeyMap[List, positions[[All, 1]]]], dy = Coboundary[g, KeyMap[List, positions[[All, 2]]]]},
-  ListPlot[{
-     KeyValueMap[{triangle, value} |-> {Det[Differences[Lookup[positions, triangle]]] / 2, value}, CochainCup[g, dx, dy]],
-     KeyValueMap[{triangle, value} |-> {Det[Differences[Lookup[positions, triangle]]] / 2, value}, OrderedCochainCup[g, dx, dy]]},
-   PlotLegends -> {"cup", "ordered cup"}, AxesLabel -> {"signed area", "product"}]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {pos = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+  {dx = Coboundary[g, AssociationThread[List /@ VertexList[g], GraphEmbedding[g][[All, 1]]]],
+   dy = Coboundary[g, AssociationThread[List /@ VertexList[g], GraphEmbedding[g][[All, 2]]]]},
+  {area = t |-> Det[Differences[pos /@ t]]/2},
+  ListPlot[Table[KeyValueMap[{area[#1], #2} &, cup[g, dx, dy]], {cup, {CochainCup, OrderedCochainCup}}],
+    AspectRatio -> 1, PlotLegends -> {"CochainCup", "OrderedCochainCup"}]]
 ```
 
-The ordered cup is not graded-commutative. On a triangle at the centre of the triangular tiling, the 1-cochain that is 1 on its front edge and the 1-cochain that is 1 on its back edge multiply to 1 in this order and to 0 in the other.
+The product is not graded-commutative. On a triangle *v₀ < v₁ < v₂* at the centre of the mesh, the 1-cochain that is 1 on *(v₀, v₁)* times the one that is 1 on *(v₁, v₂)* is 1; in the other order it is 0, which is not stored:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {triangle = Sort @ First @ Select[FindClique[g, {3}, All], MemberQ[center]]},
-  {front = <|triangle[[{1, 2}]] -> 1|>, back = <|triangle[[{2, 3}]] -> 1|>},
-  {Show[Graphics[{StandardBlue, Polygon[Lookup[positions, triangle]]}], g],
-   Normal @ OrderedCochainCup[g, front, back], Normal @ OrderedCochainCup[g, back, front]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {t = Sort @ First @ Select[FindClique[g, {3}, All], MemberQ[c]]},
+  {front = <|t[[{1, 2}]] -> 1|>, back = <|t[[{2, 3}]] -> 1|>},
+  InfraSubstrateHighlight[g, {InfraWalk[t[[{1, 2}]]], InfraWalk[t[[{2, 3}]]]},
+    PlotLabel -> {OrderedCochainCup[g, front, back], OrderedCochainCup[g, back, front]}, ImageSize -> Medium]]
 ```
 
 ## Properties and Relations
 
-The ordered cup is associative: for two random 1-cochains and a random 0-cochain on the triangular tiling, both bracketings give the same 2-cochain, drawn on its triangles, blue where its value on the sorted corners is positive and red where it is negative.
+Associativity and the unit, for a random 0-cochain *f* and random 1-cochains *α*, *β* on the mesh:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {firstCochain = (SeedRandom[1]; AssociationMap[RandomInteger[{-4, 4}] &, Sort /@ List @@@ EdgeList[g]]),
-   secondCochain = (SeedRandom[2]; AssociationMap[RandomInteger[{-4, 4}] &, Sort /@ List @@@ EdgeList[g]]),
-   values = (SeedRandom[3]; AssociationMap[RandomInteger[{-4, 4}] &, List /@ VertexList[g]])},
-  {product = OrderedCochainCup[g, OrderedCochainCup[g, firstCochain, secondCochain], values]},
-  {Show[Graphics[KeyValueMap[{triangle, value} |-> {If[value > 0, StandardBlue, StandardRed], Polygon[Lookup[positions, triangle]]}, product]], g],
-   KeySort[product] === KeySort[OrderedCochainCup[g, firstCochain, OrderedCochainCup[g, secondCochain, values]]]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]},
+  {edges = Sort /@ List @@@ EdgeList[g], vs = List /@ VertexList[g]},
+  {a = AssociationThread[edges, BlockRandom[RandomChoice[{-2, -1, 1, 2}, Length[edges]], RandomSeeding -> 1]],
+   b = AssociationThread[edges, BlockRandom[RandomChoice[{-2, -1, 1, 2}, Length[edges]], RandomSeeding -> 2]],
+   f = AssociationThread[vs, BlockRandom[RandomChoice[{-2, -1, 1, 2}, Length[vs]], RandomSeeding -> 3]],
+   one = AssociationThread[vs, 1]},
+  {KeySort @ OrderedCochainCup[g, OrderedCochainCup[g, f, a], b] ==
+     KeySort @ OrderedCochainCup[g, f, OrderedCochainCup[g, a, b]],
+   KeySort @ OrderedCochainCup[g, one, a] == KeySort[a] == KeySort @ OrderedCochainCup[g, a, one]}]
 ```
 
-The constant 0-cochain 1 is a unit on either side.
+The Leibniz rule, *δ(f ⌣ β) = δf ⌣ β + f ⌣ δβ*:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {cochain = Coboundary[g, AssociationMap[GraphDistance[g, First @ GraphCenter[g], First[#]] &, List /@ VertexList[g]]],
-   unit = AssociationMap[1 &, List /@ VertexList[g]]},
-  {DisplacementPlot[g, GroupBy[Join[Keys @ Select[cochain, Positive], Reverse /@ Keys @ Select[cochain, Negative]], First -> Last]],
-   {KeySort[OrderedCochainCup[g, unit, cochain]] === KeySort[cochain], KeySort[OrderedCochainCup[g, cochain, unit]] === KeySort[cochain]}}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]},
+  {edges = Sort /@ List @@@ EdgeList[g], vs = List /@ VertexList[g]},
+  {b = AssociationThread[edges, BlockRandom[RandomChoice[{-2, -1, 1, 2}, Length[edges]], RandomSeeding -> 2]],
+   f = AssociationThread[vs, BlockRandom[RandomChoice[{-2, -1, 1, 2}, Length[vs]], RandomSeeding -> 3]]},
+  {right = Merge[{OrderedCochainCup[g, Coboundary[g, f], b], OrderedCochainCup[g, f, Coboundary[g, b]]}, Total]},
+  KeySort @ Coboundary[g, OrderedCochainCup[g, f, b]] == KeySort @ DeleteCases[right, 0]]
+```
+
+On the cocycles *δx* and *δy* of the mesh, *δx ⌣ δy + δy ⌣ δx* is the coboundary of the cup-1 product:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {dx = Coboundary[g, AssociationThread[List /@ VertexList[g], GraphEmbedding[g][[All, 1]]]],
+   dy = Coboundary[g, AssociationThread[List /@ VertexList[g], GraphEmbedding[g][[All, 2]]]]},
+  {commutator = Merge[{OrderedCochainCup[g, dx, dy], OrderedCochainCup[g, dy, dx]}, Total]},
+  Max @ Abs[Values @ Merge[{commutator, -Coboundary[g, CochainCupOne[g, dx, dy]]}, Total]] < 10^-12]
+```
+
+## Possible Issues
+
+The product is defined on increasing tuples only. [CochainValue]() extends it by the sign rule, which is not the product on the reversed tuple; [OrderedCochainValue]() refuses that tuple:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {t = Sort @ First @ Select[FindClique[g, {3}, All], MemberQ[c]]},
+  {cup = OrderedCochainCup[g, <|t[[{1, 2}]] -> 1|>, <|t[[{2, 3}]] -> 1|>]},
+  {CochainValue[cup, Reverse @ t], OrderedCochainValue[cup, Reverse @ t]}]
 ```

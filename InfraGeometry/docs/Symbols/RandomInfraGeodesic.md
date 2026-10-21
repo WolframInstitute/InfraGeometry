@@ -6,158 +6,153 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraGeodesic
 Keywords: [geodesic, infra-scale, locally shortest, walk, Riemannian geodesic]
-SeeAlso: [InfraGeodesicQ, RandomInfraWalk, RandomInfraSegment, RandomInfraInfiniteLine, RandomInfraGeodesic, InfraMeasurement, SprayGraph]
+SeeAlso: [InfraGeodesic, InfraGeodesicQ, RandomInfraWalk, RandomInfraSegment, RandomInfraInfiniteLine, InfraMeasurement]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage
 
-<code>[RandomInfraGeodesic]()[*g*, *germ*, *s*, *kspec*]</code> gives one geodesic at infra-scale *s* grown from *germ*, with a length inside the budget *kspec*.
+<code>[RandomInfraGeodesic]()[*g*, *germ*, *s*, *kspec*]</code> gives a random geodesic at infra-scale *s* that extends *germ* by a number of edges within *kspec*.
 
-<code>[RandomInfraGeodesic]()[*g*, *germ*, *s*, *kspec*, *n*]</code> gives a `List` of exactly *n* geodesics or `{}`; `UpTo[n]` gives up to *n*; `All` gives every one.
+<code>[RandomInfraGeodesic]()[*g*, *germ*, *s*, *kspec*, *n*]</code> gives a list of *n* such geodesics.
+
+<code>[RandomInfraGeodesic]()[*g*, *germ*, [Infinity]()]</code> gives a random shortest path that extends *germ* until it cannot be extended.
+
+<code>[RandomInfraGeodesic]()[*g*, [InfraGeodesic]()[*germ*, *s*]]</code> gives a random member of the family [InfraGeodesic](), as a vertex list.
+
+<code>[RandomInfraGeodesic]()[*g*, [InfraGeodesic]()[*germ*, *s*], *n*]</code> gives a list of *n* members.
 
 ## Details & Options
 
-The default draw is random. Give `"NextVertexFunction" -> Identity` for deterministic descent. `All` with `Automatic` keeps the full enumeration without drawing. `RandomSeeding -> Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string gives a reproducible draw, and `Inherited` a local snapshot of the current state. The outer random state is restored afterward, as with [RandomInstance](https://reference.wolfram.com/language/ref/RandomInstance.html).
+A walk is a geodesic at infra-scale *s* when every *s* + 1 consecutive vertices form a shortest path, as [InfraGeodesicQ]() tests. At scale 1 every walk is a geodesic; at scale 2 a geodesic never steps back; at scale [Infinity]() it is a shortest path.
 
-Definition: a walk *v0*, *v1*, …, *vk* is a geodesic at infra-scale *s* when every window of *s* consecutive vertices together with the next one is a shortest path: *d(v(i−s), vi) = s* for every *i ≥ s*, and *d(v0, vi) = i* for *i < s*.
+A geodesic at a finite scale is locally shortest and may be long overall: it can go round a square and come back to where it started.
 
-The scale is how far back the observer sees. At scale `1` the condition asks only for adjacency, so every walk is a geodesic. At scale `2` it forbids stepping back, and on a graph with triangles also cutting a triangle's corner. At scale `Infinity` the whole walk is a shortest path, a segment. In between, a geodesic is locally shortest and may be globally long: it can wind round a square at scale `2`, and round a larger loop at scale `3`.
+The germ is a vertex or a vertex list, and must itself be a geodesic at scale *s*. The walk continues it past its last vertex.
 
-This is the Riemannian geodesic read by an observer with a horizon. On a manifold a geodesic minimises length between nearby points only, and it need not be the shortest path between its ends. At infra-scale *s* the same holds with "nearby" meaning "fewer than *s* steps apart".
+*kspec* is the number of edges added: `UpTo[k]`, `{k}`, `{kmin, kmax}`, or [Infinity](). At a finite scale the geodesics can be arbitrarily long, so [Infinity]() needs scale [Infinity]().
 
-The germ is a vertex, a vertex list, a walk graph, or a list of germs; a vertex is the one-vertex germ, and the germ must itself be a geodesic at scale *s* for anything to grow. *kspec* is the budget in edges added on each growing side: `UpTo[k]` (at most *k*), `{k}` (exactly *k*), `{lo, hi}`, or `Infinity`. A bare integer is no *kspec*. At a finite scale the class is infinite, so a finite budget is required; only scale `Infinity` accepts `Infinity`.
+The count *n* can be `n`, `UpTo[n]` or `All`. Fewer than *n* geodesics give `{}`.
 
-The default `"Direction"` is `"Forward"`, as for [RandomInfraWalk](): the geodesics that continue the germ past its last vertex. `"Backward"` grows before the first vertex and `"BothSides"` at both ends; at scale `Infinity` a walk germ grown on both sides gives the geodesics that contain it.
+A geodesic from the germ form is a walk graph: a directed path graph on the pairs {*i*, *v*} of position and vertex. `Last /@ VertexList[w]` is its vertex sequence.
 
-A geodesic is a walk graph: a directed path graph on the pairs `{i, v}`, the position and the vertex. `Last /@ VertexList[w]` is its vertex sequence, and `EdgeCount[w]` its length. The count-less call returns one walk graph, or `{}` when there is none.
-
-The search reads only the window, never a target. A target is a stopping condition: `"StoppingCondition" -> (Last[#] === q &)` stops each geodesic at its first arrival at *q*, and the geodesics that end at *q* are the ones left by `Select`. At scale `Infinity` the target-aware search is [RandomInfraSegment]().
-
-`RandomInfraGeodesic` is [RandomInfraWalk]() with `{"Shortest", s}` first among the rules. The options are those of [RandomInfraWalk]():
+Options:
 
 | Option | Default | Values |
 |---|---|---|
-| `Properties` | `{}` | further rules, each `rule`, `{rule, r}` or `{rule, r, p}` with the window *r* and the weight *p*: `"Simple"`, `"Shortest"`, `"Stretched"`, or an energy function of the window |
-| `"NextVertexFunction"` | `Automatic` | `Automatic` (random candidate order by the weights for bounded counts; canonical for `All`), `Identity`, `RandomSample`, `RandomChoice` (the random walk; the count is independent runs), or a function of the candidate windows giving the ones to pursue in order |
-| `"Direction"` | `"Forward"` | `"Forward"`, `"Backward"` or `"BothSides"` |
-| `"StoppingCondition"` | `None` | a predicate on the walk so far |
-| `RandomSeeding` | `Automatic` | an integer or string, `Inherited` |
+| `"Direction"` | `"Forward"` | `"Forward"`, `"Backward"` (before the first vertex), `"BothSides"` |
+| `"StoppingCondition"` | `None` | a predicate on the walk so far; the walk stops when it holds |
+| `"NextVertexFunction"` | `Automatic` | `Automatic` (random order, backtracking), `Identity` (fixed order), `RandomChoice` (one random step at a time, no backtracking) |
+| [Properties]() | `{}` | further walk rules, as in [RandomInfraWalk]() |
+| [RandomSeeding]() | `Automatic` | an integer or a string for a reproducible draw |
 
 ## Basic Examples
 
-The geodesics of at most 8 edges from the centre of the square tiling to a vertex four steps away, at infra-scales 2, 3 and `Infinity`. At scale `Infinity` they are the six shortest paths; at the smaller scales they include locally shortest walks that go round.
+A geodesic at infra-scale 4 of 12 edges from the centre, on the square grid and on the square mesh:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
-  Row @ Table[
-    With[
-      {grown = RandomInfraGeodesic[g, a, sc, UpTo[8], All, "StoppingCondition" -> (Last[#] === b &)]},
-      {geos = Select[grown, Last @ Last @ VertexList @ # === b &]},
-      Labeled[InfraSubstrateHighlight[g, {geos, a, b}], Row[{"scale ", sc, ": ", Length @ geos}]]],
-    {sc, {2, 3, Infinity}}]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    InfraSubstrateHighlight[g, {RandomInfraGeodesic[g, c, 4, {12}, RandomSeeding -> 1], c}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-One geodesic at infra-scale 3 of exactly 6 edges from the centre, beside its vertex sequence.
+All geodesics of 4 edges from the centre of the grid at scales 1, 2 and [Infinity](): every walk, the walks that never step back, and the shortest paths:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {geo = RandomInfraGeodesic[g, a, 3, {6}, RandomSeeding -> 1]},
-  {InfraSubstrateHighlight[g, {geo, a}], Last /@ VertexList[geo]}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {geodesics = RandomInfraGeodesic[g, c, s, {4}, All]},
+    InfraSubstrateHighlight[g, {geodesics, c}, PlotLabel -> Length[geodesics]]],
+  {s, {1, 2, Infinity}}]
 ```
 
-All geodesics of 4 edges from the centre, as the scale grows: every walk at scale 1, the walks that never step back at scale 2, the shortest paths at scale `Infinity`.
+A member of [InfraGeodesic]() at scale 3 through an edge at the centre: a simple geodesic that cannot be extended at either end:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  Row @ Table[
-    With[{geos = RandomInfraGeodesic[g, a, sc, {4}, All]},
-      Labeled[InfraSubstrateHighlight[g, {geos, a}], Row[{"scale ", sc, ": ", Length @ geos}]]],
-    {sc, {1, 2, Infinity}}]]
+With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {germ = {c, First @ AdjacencyList[g, c]}},
+  InfraSubstrateHighlight[g, {InfraWalk[RandomInfraGeodesic[g, InfraGeodesic[germ, 3], RandomSeeding -> 1]], germ},
+    ImageSize -> Medium]]
 ```
 
-A geodesic germ of two vertices grown on both sides: the shortest paths that contain the edge and prolong it by at most 2 edges at each end.
+## Scope
+
+The geodesics of at most 8 edges from the centre that end at a vertex 4 away, at scales 2, 3 and [Infinity](). At scale [Infinity]() they are the 4 shortest paths; at smaller scales some go round:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {germ = {a, First @ AdjacencyList[g, a]}},
-  {geos = RandomInfraGeodesic[g, germ, Infinity, UpTo[2], All, "Direction" -> "BothSides"]},
-  {InfraSubstrateHighlight[g, {geos, germ}], Length @ geos}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+    {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
+    {grown = RandomInfraGeodesic[g, a, s, UpTo[8], All, "StoppingCondition" -> (Last[#] === b &)]},
+    {ending = Select[grown, Last @ Last @ VertexList @ # === b &]},
+    InfraSubstrateHighlight[g, {ending, a, b}, PlotLabel -> Length[ending]]],
+  {s, {2, 3, Infinity}}]
+```
+
+A shortest path from the centre, extended until it cannot be:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  InfraSubstrateHighlight[g, {RandomInfraGeodesic[g, c, Infinity, RandomSeeding -> 1], c}, ImageSize -> Medium]]
 ```
 
 ## Options
 
-### NextVertexFunction
+### Direction
 
-Under `RandomChoice` the geodesic is a random one, one uniform admissible step at a time. Three geodesics at infra-scale 2 of 12 edges from the centre, one per seed.
+The shortest paths that contain an edge at the centre and extend it by at most 2 edges at each end:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  GraphicsRow @ Table[
-    InfraSubstrateHighlight[g, {RandomInfraGeodesic[g, a, 2, {12}, "NextVertexFunction" -> RandomChoice, RandomSeeding -> seed], a}],
-    {seed, 3}]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {germ = {c, First @ AdjacencyList[g, c]}},
+  {geodesics = RandomInfraGeodesic[g, germ, Infinity, UpTo[2], All, "Direction" -> "BothSides"]},
+  InfraSubstrateHighlight[g, {geodesics, germ}, PlotLabel -> Length[geodesics], ImageSize -> Medium]]
+```
+
+### NextVertexFunction
+
+Under `RandomChoice` each step is drawn uniformly among the admissible ones. Three geodesics at scale 2 of 12 edges from the centre:
+
+```wl
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {walk = RandomInfraGeodesic[g, c, 2, {12}, "NextVertexFunction" -> RandomChoice, RandomSeeding -> k]},
+    InfraSubstrateHighlight[g, {walk, c}]],
+  {k, 3}]
 ```
 
 ### RandomSeeding
 
-A fixed seed reproduces the draw, whatever state `SeedRandom` has set:
+A fixed seed gives the same geodesic whatever [SeedRandom]() has set:
 
 ```wl
-Table[SeedRandom[k]; Last /@ VertexList @ RandomInfraGeodesic[GridGraph[{4, 4}], 1, Infinity, RandomSeeding -> 7], {k, 2}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  Table[SeedRandom[k]; Last /@ VertexList @ RandomInfraGeodesic[g, 45, 3, {5}, RandomSeeding -> 7], {k, 2}]]
 ```
 
 ## Properties and Relations
 
-At scale `Infinity` the geodesics from the centre that end at *b* are the members of the segment.
+At scale [Infinity]() the geodesics that end at *b* are the members of the segment from the germ to *b*:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]},
   {grown = RandomInfraGeodesic[g, a, Infinity, Infinity, All, "StoppingCondition" -> (Last[#] === b &)]},
-  {geos = Select[grown, Last @ Last @ VertexList @ # === b &]},
-  {InfraSubstrateHighlight[g, {geos, a, b}],
-   Sort[Last /@ VertexList[#] & /@ geos] === Sort @ RandomInfraSegment[g, a, b, All]}]
+  Sort[Select[Last /@ VertexList[#] & /@ grown, Last[#] === b &]] === Sort @ RandomInfraSegment[g, a, b, All]]
 ```
 
-Every walk found passes [InfraGeodesicQ]() at its scale.
+Every geodesic found passes [InfraGeodesicQ]() at its scale:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {geos = RandomInfraGeodesic[g, a, 3, {5}, All]},
-  {InfraSubstrateHighlight[g, {geos, a}], InfraGeodesicQ[g, geos, 3]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  InfraGeodesicQ[g, RandomInfraGeodesic[g, c, 3, {5}, All], 3]]
 ```
 
-A geodesic germ of scale `Infinity` grown without a budget on both sides gives the lines through it: the vertex lists of [RandomInfraInfiniteLine]().
+## Possible Issues
+
+At a finite scale a budget is needed; without one the call stays unevaluated:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {germ = {a, First @ AdjacencyList[g, a]}},
-  {geos = RandomInfraGeodesic[g, germ, Infinity, Infinity, All, "Direction" -> "BothSides"]},
-  {InfraSubstrateHighlight[g, {geos, germ}],
-   Sort[Last /@ VertexList[#] & /@ geos] === Sort @ RandomInfraInfiniteLine[g, germ, All]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, Head @ RandomInfraGeodesic[g, 45, 3]]
 ```

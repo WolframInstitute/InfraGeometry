@@ -16,47 +16,47 @@ RelatedGuides: [InfraTopology]
 
 ## Details & Options
 
-Definition: the complexes *C^(k)_r* grow with the radius *r* and shrink with the order *k*. Over a grid of radii and orders they form a filtration in two parameters: the result is *bif[k][r] = C^(k)_r*.
+The complexes *Cᵣ⁽ᵏ⁾* grow with the radius *r* and shrink with the order *k*. Over a grid of radii and orders they form a filtration in two parameters, *bif[k][r] = Cᵣ⁽ᵏ⁾*.
 
-For a fixed radius the orders run from the Vietoris–Rips complex at *k = 2* down to the Čech complex. In *ℝ^d* the balls are convex and by Helly's theorem the ladder stops at *k = d + 1*. On a graph the balls need not be convex, and the ladder can go on.
+For a fixed radius the orders run from the Vietoris–Rips complex at *k* = 2 down to the Čech complex at *k* = [Infinity](). In *ℝᵈ* the balls are convex, and by Helly's theorem the sequence stops at *k = d + 1*. On a graph it can go on: on the square grid the four corners of a square are a simplex of order 3 at radius 1, not of order 4.
 
 The options are those of [BallIntersectionComplex](): `"Metric"`, `"IntersectionTest"`, `"MaxDimension"`.
 
 ## Basic Examples
 
-The number of simplices of sixteen random points in the plane against the radius, at orders 2, 3 and [Infinity](). Orders 3 and [Infinity]() coincide, as Helly's theorem says.
+The four corners of a square of the grid, with the graph metric. Whether they form a simplex, at orders 2, 3 and 4 and radii 1 and 2:
 
 ```wl
-With[
-  {points = (SeedRandom[3]; RandomReal[1, {16, 2}])},
-  {bifiltration = BallIntersectionBifiltration[points, Range[0.02, 0.3, 0.02], {2, 3, Infinity}]},
-  ListLinePlot[
-    Table[KeyValueMap[{#1, Length[#2]} &, bifiltration[k]], {k, {2, 3, Infinity}}],
-    PlotLegends -> {2, 3, Infinity},
-    AxesLabel -> {"r", "simplices"}]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  {corners = First /@ First @ FindCycle[{g, First @ GraphCenter[g]}, {4}]},
+  {bif = BallIntersectionBifiltration[corners, {1, 2}, {2, 3, 4}, "Metric" -> g]},
+  Table[MemberQ[bif[k][r], {1, 2, 3, 4}], {k, {2, 3, 4}}, {r, {1, 2}}]]
 ```
 
-On the square tiling, with the graph metric, the ladder does not stop at order 3. The vertices within distance 3 of the centre at radius 1: the four corners of each of the twelve squares drawn are a simplex of order 3 and not of order 4.
+The vertices within distance 3 of the centre of the grid at radius 1. The sets of four that are simplices of order 3 and not of order 4 are the 12 squares of the grid in that ball. They are drawn as a density: the size of a vertex is the number of these squares it is a corner of:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {data = Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], 3], "VertexDensity" ]},
-  {bifiltration = BallIntersectionBifiltration[data, {1}, {3, 4}, "Metric" -> g, "MaxDimension" -> 3]},
-  {gap = Complement[bifiltration[3][1], bifiltration[4][1]]},
-  {InfraSubstrateHighlight[g, {data[[#]] & /@ gap}], Length[gap]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {data = Keys @ InfraMeasurement[g, InfraBall[First @ GraphCenter[g], 3], "VertexDensity"]},
+  {bif = BallIntersectionBifiltration[data, {1}, {3, 4}, "Metric" -> g, "MaxDimension" -> 3]},
+  {gap = Complement[bif[3][1], bif[4][1]]},
+  InfraSubstrateHighlight[g, {data, data[[#]] & /@ gap}, PlotLabel -> Length[gap], ImageSize -> Medium]]
 ```
 
 ## Properties and Relations
 
-For each radius the complexes shrink as the order grows; in the plane they stop shrinking at order 3.
+For Euclidean points the sequence stops at order 3. The number of simplices of the lattice points of the ball of radius 3 against the radius, at orders 2, 3 and [Infinity](). Orders 3 and [Infinity]() agree at every radius; order 2 has more simplices from 1.15 on:
 
 ```wl
-With[
-  {points = (SeedRandom[3]; RandomReal[1, {16, 2}])},
-  {radii = Range[0.02, 0.3, 0.02]},
-  {bifiltration = BallIntersectionBifiltration[points, radii, {2, 3, 4}]},
-  {ListLinePlot[Table[KeyValueMap[{#1, Length[#2]} &, bifiltration[k]], {k, {2, 3, 4}}], PlotLegends -> {2, 3, 4}, AxesLabel -> {"r", "simplices"}],
-   AllTrue[radii, r |-> SubsetQ[bifiltration[2][r], bifiltration[3][r]] && SubsetQ[bifiltration[3][r], bifiltration[4][r]]]}]
+With[{points = Select[Tuples[Range[-3, 3], 2], Total[Abs[#]] <= 3 &]},
+  {bif = BallIntersectionBifiltration[points, Range[0.4, 1.2, 0.05], {2, 3, Infinity}]},
+  ListLinePlot[Table[KeyValueMap[{#1, Length[#2]} &, bif[k]], {k, {2, 3, Infinity}}], PlotLegends -> {2, 3, Infinity}]]
+```
+
+At every radius the complexes shrink as the order grows:
+
+```wl
+With[{points = Select[Tuples[Range[-3, 3], 2], Total[Abs[#]] <= 3 &]}, {radii = Range[0.4, 1.2, 0.1]},
+  {bif = BallIntersectionBifiltration[points, radii, {2, 3, 4}]},
+  AllTrue[radii, r |-> SubsetQ[bif[2][r], bif[3][r]] && SubsetQ[bif[3][r], bif[4][r]]]]
 ```

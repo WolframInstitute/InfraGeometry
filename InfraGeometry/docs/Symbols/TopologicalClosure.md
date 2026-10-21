@@ -16,72 +16,69 @@ RelatedGuides: [InfraTopology]
 
 ## Details & Options
 
-Definition: *topo* is read as the preorder *q ≤ p* when *q = p* or a directed path leads from *q* to *p*. The closure of a vertex is its down-set, and the closure of a set is the union of the closures of its vertices.
+The digraph *topo* is read as the preorder *q ≤ p* when *q = p* or a directed path leads from *q* to *p*. The closure of a vertex is its down-set *cl(p) = {q : q ≤ p}*, and the closure of a set is the union of the closures of its vertices.
 
-For <code>[BallTopology]()[*g*, *r*]</code> the closure of a vertex *p* is *cl(p) = {q : B_r(p) ⊆ B_r(q)}*, the vertices whose ball contains the ball at *p*. It is the intersection of the balls of radius *r* that contain *p*, so it equals the ball hull <code>[InfraBallHull]()[{*p*}, {*r*}]</code>.
+In <code>[BallTopology]()[*g*, *r*]</code> the closure of a vertex is *cl(p) = {q : Bᵣ(p) ⊆ Bᵣ(q)}*, the intersection of the balls of radius *r* that contain *p*. It is the ball hull <code>[InfraBallHull]()[{*p*}, {*r*}]</code>.
 
-The closure contains *s*, the closure of the closure is the closure, and the closure of a union is the union of the closures. A set is closed when it equals its closure.
+The closure contains *s*. The closure of the closure is the closure, and the closure of a union is the union of the closures. A set is closed when it is its own closure.
+
+On a patch of the grid a vertex far from the rim is closed.
 
 The result is a sorted vertex list.
 
 ## Basic Examples
 
-The closure of a vertex of least degree on the rim, at radius 3, on the discretized plane, the square tiling and the hexagonal tiling. The vertex is blue; the rest of its closure, the vertices whose ball contains its ball, is red.
+The closure of a vertex of least degree on the rim, at radius 3, on the square grid and on the square mesh. The closure is drawn with the vertex on top:
 
 ```wl
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {corner = First @ MinimalBy[VertexList[g], VertexDegree[g, #] &]},
-    {closure = TopologicalClosure[BallTopology[g, 3], {corner}]},
-    InfraSubstrateHighlight[g, {Complement[closure, {corner}] -> StandardRed, corner -> StandardBlue}]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    {v = First @ MinimalBy[VertexList[g], VertexDegree[g, #] &]},
+    InfraSubstrateHighlight[g, {TopologicalClosure[BallTopology[g, 3], {v}], v}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The closure of a corner of the square tiling grows with the radius, here from 1 to 4.
+The closure of that vertex of the grid grows with the radius, here from 1 to 4:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {corner = First @ Select[VertexList[g], VertexDegree[g, #] == 1 &]},
-  GraphicsRow @ Table[
-    InfraSubstrateHighlight[g, {Complement[TopologicalClosure[BallTopology[g, r], {corner}], {corner}] -> StandardRed, corner -> StandardBlue}],
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {v = First @ MinimalBy[VertexList[g], VertexDegree[g, #] &]},
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {TopologicalClosure[BallTopology[g, r], {v}], v}, PlotLabel -> r],
     {r, 1, 4}]]
 ```
 
-On a binary tree the closure of a leaf climbs its branch: radii 1, 2 and 3.
+## Scope
+
+The closure of a set. The vertices of degree 1 on the grid are not closed at radius 2; their closure takes in the two rings next to them:
 
 ```wl
-With[
-  {g = KaryTree[31]},
-  GraphicsRow @ Table[
-    InfraSubstrateHighlight[g, {Complement[TopologicalClosure[BallTopology[g, r], {31}], {31}] -> StandardRed, 31 -> StandardBlue}],
-    {r, 1, 3}]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {ends = Select[VertexList[g], VertexDegree[g, #] == 1 &]},
+  InfraSubstrateHighlight[g, {TopologicalClosure[BallTopology[g, 2], ends], ends}, ImageSize -> Medium]]
 ```
 
 ## Properties and Relations
 
-The ring outside a ball about the centre is not closed: its closure adds the vertices of the ball whose ball contains the ball of a ring vertex. The closure of the closure is the closure.
+The closure of a vertex in the ball topology is its ball hull at the same radius:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {topo = BallTopology[g, 2]},
-  {ring = Complement[VertexList[g], Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], 6], "VertexDensity" ]]},
-  {closure = TopologicalClosure[topo, ring]},
-  {InfraSubstrateHighlight[g, {ring -> StandardBlue, Complement[closure, ring] -> StandardRed}],
-   SubsetQ[closure, ring], TopologicalClosure[topo, closure] == closure}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {v = First @ MinimalBy[VertexList[g], VertexDegree[g, #] &]},
+  Table[TopologicalClosure[BallTopology[g, r], {v}] === Keys @ InfraMeasurement[g, InfraBallHull[{v}, {r}], "VertexDensity"],
+    {r, 1, 5}]]
 ```
 
-The closure of a vertex in the ball topology is its ball hull at the same radius.
+The closure is a closure operator: it contains the set, and the closure of the closure is the closure:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
-  {corner = First @ MinimalBy[VertexList[g], VertexDegree[g, #] &]},
-  {closure = TopologicalClosure[BallTopology[g, 3], {corner}]},
-  {InfraSubstrateHighlight[g, {Complement[closure, {corner}] -> StandardRed, corner -> StandardBlue}],
-   closure == Keys @ InfraMeasurement[ g, InfraBallHull[{corner}, {3}], "VertexDensity" ]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {topo = BallTopology[g, 2]},
+  {s = Keys @ InfraMeasurement[g, InfraShell[First @ GraphCenter[g], 5], "VertexDensity"]},
+  {cl = TopologicalClosure[topo, s]},
+  {SubsetQ[cl, s], TopologicalClosure[topo, cl] === cl, Length[s], Length[cl]}]
+```
+
+Away from the rim every vertex is closed. The centre of the grid is its own closure at every radius up to 4:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  Table[TopologicalClosure[BallTopology[g, r], {c}], {r, 1, 4}]]
 ```

@@ -4,67 +4,94 @@ Name: InfraRegionNearest
 Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraRegionNearest
-Keywords: [synthetic geometry, graph, nearest point, metric projection]
-SeeAlso: [RandomInfraRegionNearest, InfraMeasurement, InfraDistance, InfraPoint]
+Keywords: [nearest point, metric projection, closest point, region, distance]
+SeeAlso: [RandomInfraRegionNearest, InfraMeasurement, InfraDistance, InfraBall, InfraPoint, RegionNearest]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraRegionNearest]()[*object*, *p*]</code> is the family of vertices of *object* nearest to the query vertex *p* in graph distance, retaining all ties.
+<code>[InfraRegionNearest]()[*reg*, *p*]</code> is the set of vertices of the region *reg* nearest to the vertex *p*, with all ties.
 
 ## Details & Options
 
-This is the metric projection of a point onto a region.
-Let $S$ be the nonzero support of the vertex density of *object*, and let $S_p$ be the vertices of $S$ reachable from *p*.
-The family is $\{v \in S_p : d(p,v) = \min_{u \in S_p} d(p,u)\}$.
-It is empty when $S_p$ is empty.
-Thus the first argument specifies where the answer must lie; the second argument is the point from which distance is measured.
+With *S* the support of *reg*, the set is *{v ∈ S : d(p, v) = d(p, S)}*, where *d(p, S) = min d(p, u)* over the *u* in *S* reachable from *p*. It is the graph analogue of [RegionNearest](), the metric projection of *p* onto *reg*.
 
-For example, in the path 1--2--3--4--5, the nearest vertex of {1, 5} to 2 is 1.
-The nearest vertices of the same region to 3 are 1 and 5, tied at distance 2.
-If *p* belongs to the region, it is the unique nearest vertex.
+In the plane the nearest point of a convex region is unique. On a graph it is not: on the square grid a whole side of a ball can be nearest.
 
-The head is inert; [InfraMeasurement]() gives the complete family with unit "VertexDensity".
-[RandomInfraRegionNearest]() chooses one nearest vertex, or a requested number of distinct nearest vertices.
-One representative is a raw vertex label, including a List-valued label.
-Density weights determine the support but do not affect which vertices are nearest.
+If *p* lies in *reg*, the set is {*p*}. An empty or unreachable region gives the empty set.
 
-The region may be an inert object supported by "VertexDensity", a raw vertex, a vertex list, a numeric density association, or a graph carrier.
-The substrate must be finite, simple, undirected and unweighted, and *p* must be one of its vertices.
-Empty or unreachable regions give an empty family.
-Unsupported arguments and properties stay unevaluated.
+The region can be a symbolic region ([InfraBall](), [InfraShell](), [InfraSegment](), …), a vertex, a vertex list or an association of masses. The masses fix the support and do not weight the distance.
 
-Supported measurements are "VertexDensity", "Cardinality", "CountingMeasure", "Subgraph" and "RiemannianMeasure".
-"RiemannianMeasure" counts support vertices whose neighbours all belong to the support.
+[InfraRegionNearest]() is a symbolic object. [InfraMeasurement]() reads its `"VertexDensity"`, 1 on every nearest vertex, its `"Cardinality"` and `"CountingMeasure"`, the number of nearest vertices, `"Subgraph"` and `"RiemannianMeasure"`. [RandomInfraRegionNearest]() draws a nearest vertex, and <code>[InfraMemberQ]()[*g*, *nearest*, *v*]</code> tests one.
 
 ## Basic Examples
 
-Find the point of {1, 5} nearest to 2. The density is <|1 -> 1|>.
+The vertices of the ball of radius 2 about the centre nearest to a vertex at distance 5:
 
 ```wl
-SeedRandom[ 71 ]; With[ { graph = PathGraph[ Range[ 5 ] ] },
-  InfraMeasurement[ graph, InfraRegionNearest[ { 1, 5 }, 2 ], "VertexDensity" ] ]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {p = RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 3]},
+    InfraSubstrateHighlight[g, {InfraBall[c, 2], InfraRegionNearest[InfraBall[c, 2], p], p}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-Retain both ties when the query point is 3. The density is <|1 -> 1, 5 -> 1|>.
+On the grid the nearest set depends on the direction. Straight out from a corner of the ball one vertex is nearest; facing a side, the whole side, three vertices:
 
 ```wl
-SeedRandom[ 71 ]; With[ { graph = PathGraph[ Range[ 5 ] ] },
-  InfraMeasurement[ graph, InfraRegionNearest[ { 1, 5 }, 3 ], "VertexDensity" ] ]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {xy = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+  GraphicsRow @ Table[
+    With[{p = First @ Keys @ Select[xy, # - xy[c] == offset &]},
+      InfraSubstrateHighlight[g, {InfraBall[c, 2], InfraRegionNearest[InfraBall[c, 2], p], p},
+        PlotLabel -> InfraMeasurement[g, InfraRegionNearest[InfraBall[c, 2], p], "Cardinality"]]],
+    {offset, {{4, 0}, {3, 2}}}]]
 ```
 
-Project a point onto a ball, then draw the nearest point together with the ball and the query point.
+## Scope
+
+Every vertex of a shell is nearest to its centre:
 
 ```wl
-SeedRandom[ 71 ]; With[ { graph = PathGraph[ Range[ 7 ] ] },
-  { region = InfraBall[ 2, 1 ] },
-  InfraSubstrateHighlight[ graph, { region, InfraRegionNearest[ region, 7 ], { 7 } } ] ]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  InfraMeasurement[g, InfraRegionNearest[InfraShell[c, 3], c], "CountingMeasure"] == InfraMeasurement[g, InfraShell[c, 3], "CountingMeasure"]]
 ```
 
-Choose one of the tied nearest vertices.
+The vertices of a segment nearest to a vertex off it. Four of them tie:
 
 ```wl
-SeedRandom[ 71 ]; With[ { graph = PathGraph[ Range[ 5 ] ] },
-  RandomInfraRegionNearest[ graph, InfraRegionNearest[ { 1, 5 }, 3 ], RandomSeeding -> 71 ] ]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {seg = InfraSegment[a, RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]]},
+  {p = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 4]},
+  InfraSubstrateHighlight[g, {seg, InfraRegionNearest[seg, p], p}, PlotLabel -> InfraMeasurement[g, InfraRegionNearest[seg, p], "Cardinality"],
+    ImageSize -> Medium]]
+```
+
+[RandomInfraRegionNearest]() draws one nearest vertex:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {xy = AssociationThread[VertexList[g], GraphEmbedding[g]]}, {p = First @ Keys @ Select[xy, # - xy[c] == {3, 2} &]},
+  {RandomInfraRegionNearest[g, InfraRegionNearest[InfraBall[c, 2], p], RandomSeeding -> 1],
+   RandomInfraRegionNearest[g, InfraRegionNearest[InfraBall[c, 2], p], All]}]
+```
+
+## Properties and Relations
+
+A vertex of the region is its own nearest vertex:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {p = RandomInfraPoint[g, InfraBall[c, 2], RandomSeeding -> 1]},
+  Keys @ InfraMeasurement[g, InfraRegionNearest[InfraBall[c, 2], p], "VertexDensity"] == {p}]
+```
+
+The nearest vertices lie at the distance [InfraDistance]() gives:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {p = RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 1]},
+  {nearest = Keys @ InfraMeasurement[g, InfraRegionNearest[InfraBall[c, 2], p], "VertexDensity"]},
+  Union[GraphDistance[g, p, #] & /@ nearest] == {InfraDistance[g, InfraBall[c, 2], p]}]
 ```

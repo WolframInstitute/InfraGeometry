@@ -12,106 +12,85 @@ RelatedGuides: [Experimental]
 
 ## Usage
 
-<code>[RadarCoordinates]()[*g*, *basis*, *v*]</code> gives the distances (*d*(*v*, *b*₁), …, *d*(*v*, *b*ₖ)) of the vertex *v* of *g* from the stations *b*₁, …, *b*ₖ of *basis*.
+<code>[RadarCoordinates]()[*g*, {*b1*, …, *bk*}, *v*]</code> gives the distances *(d(v, b₁), …, d(v, bₖ))* of the vertex *v* from the stations *b1*, …, *bk*.
 
-<code>[RadarCoordinates]()[*g*, *basis*]</code> gives the association of every vertex of *g* with its radar coordinates.
+<code>[RadarCoordinates]()[*g*, {*b1*, …, *bk*}]</code> gives the association of every vertex of *g* with its radar coordinates.
 
 ## Details & Options
 
-Definition: the radar coordinates of a vertex *v* from a basis (*b*₁, …, *b*ₖ) are its distances (*d*(*v*, *b*₁), …, *d*(*v*, *b*ₖ)). The vertices of the basis are radar stations, and each vertex is located by its distances to them, as in trilateration.
+The radar coordinates of *v* are *(d(v, b₁), …, d(v, bₖ))*. Every vertex gets its own coordinates exactly when the stations form a resolving set, [ResolvingSetQ](); the least number of stations that does is the [MetricDimension]().
 
-The coordinates tell every two vertices apart exactly when the basis is a resolving set, [ResolvingSetQ](). A smallest resolving set is found by [FindResolvingSet](), and its size is the [MetricDimension]().
+A station can be a set of vertices, given as a vertex list, a density or a walk graph. Its coordinate is the distance to the set, *d(v, S) = min d(v, s)* over *s* in *S*, or another function of the distances to its vertices.
 
-A station may also be a set of vertices, given as a vertex list, a density or a walk graph. Its coordinate is the list of distances to its vertices, reduced to one number by the option `"AnchorAggregation"`: [Min]() (the default) gives the distance to the nearest vertex of the set, and any function of a list may be given.
+The point *v* can be a density; the result is then the list of the coordinates of its vertices.
 
-The point *v* may also be a density; the result is then the list of the coordinates of its vertices.
-
-| Option | Default | |
+| Option | Default | Values |
 |---|---|---|
-| `"AnchorAggregation"` | [Min]() | the function that reduces the distances to the vertices of a set station to one coordinate |
+| `"AnchorAggregation"` | [Min]() | a function that reduces the distances to the vertices of a set station to one number, such as [Max]() or [Total]() |
 
 ## Basic Examples
 
-Three stations at three corners of the square, hexagonal and triangular tilings, a vertex two steps from the centre, and a shortest path from it to each station. Its coordinates are the lengths of the three paths, in the order of the stations.
+Three stations at distance 4 from the centre, a vertex at distance 2, and a shortest path from it to each station. Its coordinates are the lengths of the paths:
 
 ```wl
-With[
-  {panels = Table[
-     With[
-       {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-       {stations = First @ FindResolvingSet[g]},
-       {site = RandomInfraPoint[g, InfraShell[First @ GraphCenter[g], 2], RandomSeeding -> 1]},
-       {InfraSubstrateHighlight[g, Join[InfraWalk[FindShortestPath[g, site, #]] & /@ stations, {stations, site}]],
-        RadarCoordinates[g, stations, site]}],
-     {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]},
-  {GraphicsRow[First /@ panels], Last /@ panels}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {stations = RandomInfraPoint[g, InfraShell[c, 4], 3, "PairwiseDistance" -> "Max", RandomSeeding -> 1]},
+    {v = RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, Join[InfraWalk[FindShortestPath[g, v, #]] & /@ stations, {stations, v}],
+      PlotLabel -> RadarCoordinates[g, stations, v]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-Two corners of one side of a grid resolve it. Drawn at its radar coordinates from them, the grid is itself again, turned by 45 degrees.
+Two corners of one side resolve a grid graph. Drawn at its radar coordinates from them, the grid is itself again, turned by 45 degrees:
 
 ```wl
-With[
-  {g = GridGraph[{6, 6}]},
-  {stations = {1, 6}},
-  {GraphicsRow[{InfraSubstrateHighlight[g, {stations}],
-     Graph[VertexList[g], EdgeList[g], VertexCoordinates -> Normal[RadarCoordinates[g, stations]]]}],
-   ResolvingSetQ[g, stations]}]
+With[{g = GridGraph[{6, 6}]}, {stations = {1, 6}},
+  GraphicsRow[{InfraSubstrateHighlight[g, {stations}],
+    Graph[VertexList[g], EdgeList[g], VertexCoordinates -> Normal[RadarCoordinates[g, stations]]]}]]
 ```
 
 ## Scope
 
-A station may be a set of vertices, given as a density. With the rim of each tiling as the one station, the coordinate is the depth of each vertex. Its level sets are rings, and the centre lies deepest, at the radius of the tiling.
+The rim of the graph as one station. The coordinate is the depth of each vertex, and its level sets are rings about the centre:
 
 ```wl
-With[
-  {panels = Table[
-     With[
-       {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-       {depth = RadarCoordinates[g, {AssociationThread[GraphExteriorBoundary[g], 1]}]},
-       {InfraSubstrateHighlight[g, Values @ KeySort @ GroupBy[Keys[depth], depth]], depth[First @ GraphCenter[g]]}],
-     {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]},
-  {GraphicsRow[First /@ panels], Last /@ panels}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    {depth = First /@ RadarCoordinates[g, {GraphExteriorBoundary[g]}]},
+    InfraSubstrateHighlight[g, Values @ KeySort @ GroupBy[Keys[depth], depth], PlotLabel -> Max[depth]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-A station given as a vertex list is read as a set, in the two-argument form as in the three-argument one: on a path, the nearer of the two ends 1 and 5, and the same station as a density.
+A density as the point gives the coordinates of each of its vertices:
 
 ```wl
-With[
-  {g = PathGraph[Range[5]]},
-  {g, RadarCoordinates[g, {{1, 5}}], RadarCoordinates[g, {{1, 5}}, 3], RadarCoordinates[g, {AssociationThread[{1, 5}, 1]}] === RadarCoordinates[g, {{1, 5}}]}]
-```
-
-A station that is a vertex list beside a station that is a vertex: the nearer end of the path and the middle. The two ends are not told apart, and the coordinates fold the path onto half of itself.
-
-```wl
-With[
-  {g = PathGraph[Range[5]]},
-  {g, RadarCoordinates[g, {{1, 5}, 3}]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {stations = RandomInfraPoint[g, InfraShell[c, 4], 3, "PairwiseDistance" -> "Max", RandomSeeding -> 1]},
+  RadarCoordinates[g, stations, InfraMeasurement[g, InfraBall[c, 1], "VertexDensity"]]]
 ```
 
 ## Options
 
 ### AnchorAggregation
 
-A station of two vertices six steps apart, read three ways on the square tiling. Each level set of the coordinate has its own colour, the least one red. [Min]() gives the distance to the nearer vertex: its level sets are the outer shells of the unions of two balls, starting at the two vertices. [Max]() gives the distance to the farther vertex: its level sets are the outer shells of the intersections of two balls, starting at the midpoints. [Total]() gives the sum of the two distances: its level sets are the infra-ellipses with the two vertices as foci, starting at the interval between them.
+A station of two vertices 6 apart, read three ways on the square grid. The vertices at [Min]() distance 3 are the outer layer of the union of two balls of radius 3, those at [Max]() distance 4 the outer layer of the intersection of two balls of radius 4, those at [Total]() distance 8 the ellipse with the two vertices as foci:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {foci = {RandomInfraPoint[g, InfraShell[First @ GraphCenter[g], 3], RandomSeeding -> 1], RandomInfraPoint[g, InfraShell[First @ GraphCenter[g], 3], RandomSeeding -> 2]}},
-  {readings = Table[RadarCoordinates[g, {AssociationThread[foci, 1]}, "AnchorAggregation" -> aggregation], {aggregation, {Min, Max, Total}}]},
-  {GraphicsRow[InfraSubstrateHighlight[g, Values @ KeySort @ GroupBy[Keys[#], #]] & /@ readings], GraphDistance[g, Sequence @@ foci]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {foci = RandomInfraPoint[g, InfraShell[c, 3], 2, "PairwiseDistance" -> 6, RandomSeeding -> 1]},
+  GraphicsRow @ KeyValueMap[
+    {f, level} |-> With[{d = First /@ RadarCoordinates[g, {foci}, "AnchorAggregation" -> f]},
+      InfraSubstrateHighlight[g, {Keys @ Select[d, # == level &], foci}, PlotLabel -> f]],
+    <|Min -> 3, Max -> 4, Total -> 8|>]]
 ```
 
 ## Properties and Relations
 
-Two corners of the square tiling do not resolve it. Drawn at its radar coordinates from them, the tiling folds along the line through the two corners onto half of itself: 113 vertices land on 64 points.
+Two opposite corners do not resolve a grid graph. Every vertex lies on a shortest path between them, so its two coordinates add up to 10, and the 6 × 6 grid collapses onto 11 points of a line:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {stations = Take[First @ FindResolvingSet[g], 2]},
-  {radar = RadarCoordinates[g, stations]},
-  {Graph[VertexList[g], EdgeList[g], VertexCoordinates -> Normal[radar]],
-   CountDistinct[Values[radar]], VertexCount[g], ResolvingSetQ[g, stations]}]
+With[{g = GridGraph[{6, 6}]}, {radar = RadarCoordinates[g, {1, 36}]},
+  Graph[VertexList[g], EdgeList[g], VertexCoordinates -> Normal[radar], PlotLabel -> CountDistinct[Values[radar]],
+    ImageSize -> Medium]]
 ```

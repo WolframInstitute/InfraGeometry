@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[     76405,       1694]
-NotebookOptionsPosition[     69302,       1555]
-NotebookOutlinePosition[     70493,       1590]
-CellTagsIndexPosition[     70413,       1585]
+NotebookDataLength[     73486,       1610]
+NotebookOptionsPosition[     67024,       1481]
+NotebookOutlinePosition[     68211,       1516]
+CellTagsIndexPosition[     68131,       1511]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -24,7 +24,7 @@ Cell["InfraFiberedGraphViewer", "ObjectName",
  CellID->1224892054,ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec"],
 
 Cell[TextData[{
- Cell["   ", "ModInfo",ExpressionUUID->"e3d3ede3-d9a9-4c10-84ea-13fab61b5b37"],
+ Cell["   ", "ModInfo",ExpressionUUID->"91a173c5-3cf9-48b5-a702-e647a9828653"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -36,13 +36,14 @@ Cell[TextData[{
     BaseStyle->"InlineFormula"], "[", 
    StyleBox["fib", "TI"], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "6fb98fee-867b-4280-8fee-c8157baf7d82"],
+  "c23eaa73-a5cc-4d27-9665-a195bbdfb890"],
  "\[LineSeparator]",
- "interactively displays the total graph and the reconstructed base of ",
+ "shows the total graph of ",
  StyleBox["fib", "TI"],
- ".",
+ " next to its base, and highlights the fiber over a vertex under the \
+mouse.",
  "\n",
- Cell["   ", "ModInfo",ExpressionUUID->"3f9e0fec-fef9-4606-aadd-1357ab71d212"],
+ Cell["   ", "ModInfo",ExpressionUUID->"0afb3e9e-d983-44ac-be2b-5373d3d03db0"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -56,36 +57,13 @@ Cell[TextData[{
     StyleBox["fib", "TI"], ",", " ", 
     RowBox[{"{", 
      RowBox[{
-      StyleBox["object1", "TI"], ",", " ", 
-      StyleBox["object2", "TI"], ",", " ", "..."}], "}"}]}], "]"}]], 
+      StyleBox["obj1", "TI"], ",", " ", 
+      StyleBox["obj2", "TI"], ",", " ", "\[Ellipsis]"}], "}"}]}], "]"}]], 
   "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "9a310953-9b27-4d82-8f7a-b32e38cddccb"],
+  "0635e1aa-087a-4425-985f-c96854415520"],
  "\[LineSeparator]",
- "displays the supplied sections, connections and other highlights while \
-inspecting fibers and lifts.",
- "\n",
- Cell["   ", "ModInfo",ExpressionUUID->"47b7b6b6-9dff-4f65-b642-2f1a1cbd112a"],
- Cell[BoxData[
-  RowBox[{
-   TemplateBox[{
-     Cell[
-      TextData["InfraFiberedGraphViewer"]], 
-     "paclet:WolframInstitute/InfraGeometry/ref/InfraFiberedGraphViewer", 
-     "WolframInstitute/InfraGeometry Package Symbol"},
-    "PackageLink",
-    BaseStyle->"InlineFormula"], "[", 
-   RowBox[{
-    StyleBox["fib", "TI"], ",", " ", 
-    StyleBox["object", "TI"]}], "]"}]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "c5bcac37-906a-426c-88c2-835b5789b2e5"],
- "\[LineSeparator]",
- "displays one highlighted object."
-}], "Usage",ExpressionUUID->"4e96ba48-4979-4132-8257-cc2f01f1575e"],
-
-Cell[TextData[{
- "The viewer uses ",
+ "shows the objects as ",
  Cell[BoxData[
   TemplateBox[{
     Cell[
@@ -94,103 +72,82 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "6512e16a-57e7-4b81-994a-c3b1ce0ad3d9"],
- " and accepts the same object list, style grammar and options. Graph \
-structure and styling options apply to the total view. Image size, \
-background, labels and text styling also apply to the base view; its \
-coordinates and layout use the base-specific options. The total graph appears \
-on the left and the reconstructed base on the right. The result is a ",
+  "b5c3f2b5-1f15-4cc2-a060-7dd1481e6e4b"],
+ " does and inspects them by hovering."
+}], "Usage",ExpressionUUID->"7ed86045-ab06-42aa-ac9a-4daad9f01f84"],
+
+Cell[TextData[{
+ "The total graph is on the left, drawn by ",
  Cell[BoxData[
   TemplateBox[{
     Cell[
-     TextData["DynamicModule"]], "paclet:ref/DynamicModule"},
-   "RefLink",
+     TextData["InfraFiberedGraphHighlight"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/InfraFiberedGraphHighlight", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "d3c64a27-b95e-4f92-9dfa-44817d5d64b9"],
- ". For a list of options, supply the item list explicitly, as in ",
- Cell[BoxData[
-  RowBox[{"InfraFiberedGraphViewer", "[", 
-   RowBox[{"fib", ",", " ", 
-    RowBox[{"{", "}"}], ",", " ", 
-    RowBox[{"{", 
-     RowBox[{"Method", " ", "->", " ", "\"\<3DFiber\>\""}], "}"}]}], "]"}]], 
-  "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "e5ee7c26-fd3b-4aa8-8995-1254aba84b2f"],
- "."
-}], "Notes",ExpressionUUID->"a11111f9-914a-43e4-b88b-aa2db9d4f57e"],
+  "274d0097-c269-4357-aa27-f64abc97d2cf"],
+ "; the base is on the right, in the plane."
+}], "Notes",ExpressionUUID->"83b62408-9417-4d97-a760-9733704f1cda"],
 
-Cell["\<\
-Hover a total vertex or a base vertex to highlight its fiber and the supplied \
-section values in that fiber.\
-\>", "Notes",ExpressionUUID->"785a7aaa-11c6-4749-85d3-2a94e3a59fea"],
+Cell["Hovering:", "Notes",ExpressionUUID->"fbbf3572-c51d-46bd-95cd-0af75eb8b6a2"],
 
-Cell["\<\
-Hover a base edge to highlight the supplied sections and connection edges \
-above that edge.\
-\>", "Notes",ExpressionUUID->"86ecefd3-2b50-4e1d-8090-2adc68a6a899"],
-
-Cell["\<\
-Supplied sections and connections retain their individual identity; several \
-objects are not combined into one mathematical section or connection.\
-\>", "Notes",ExpressionUUID->"2cb9b3d3-d014-457f-93e0-c52fb938f184"],
-
-Cell["\<\
-A walk retains its repeated visits and traversals through the shared \
-highlighting operation.\
-\>", "Notes",ExpressionUUID->"e16b76d2-942a-491a-aeeb-b5cdd0dc8372"],
-
-Cell["\<\
-The viewer materializes the supplied structure and its layout when created. \
-Hovering changes highlights only. It never calls a random section, connection \
-or fibration sampler.\
-\>", "Notes",ExpressionUUID->"3b756eaa-f08e-44ea-9980-4f3d5715b088"],
+Cell[BoxData[GridBox[{
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "9f78a2be-fe64-4aa3-a1d6-cbe3b0760db9"], Cell[
+    "Under the mouse", "TableText",
+     FontWeight->Bold,ExpressionUUID->"22ab3ea9-69a4-4fea-9211-222503d2da74"],
+     Cell["Highlighted", "TableText",
+     FontWeight->Bold,ExpressionUUID->"6ad4ba8f-9884-4099-bb77-11734a492104"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "85ef0cee-6e50-484b-bdd3-3b723fb06034"], Cell[
+    "a total vertex or a base vertex", "TableText",ExpressionUUID->
+     "541f179c-a24b-43ed-9e70-4a03aede9658"], Cell[
+    "its fiber, and the values of the sections in it", "TableText",
+     ExpressionUUID->"3d7edb0f-f959-4713-91c8-e10245e521d4"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "32b8de40-42c6-42f3-8826-e1506cf4125b"], Cell[
+    "a base edge", "TableText",ExpressionUUID->
+     "6cce2c7e-bfec-48b8-b1db-72f6294d80b0"], Cell[
+    "the section values and connection edges over it", "TableText",
+     ExpressionUUID->"bc67b3ae-fe61-4252-937f-a1e431738225"]}
+  }]], "2ColumnTableMod",ExpressionUUID->"9165829a-6aea-4278-b7be-\
+a37fe2b0837a"],
 
 Cell[TextData[{
+ "The viewer takes the objects, the styles and the options of ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["InfraFiberedGraphHighlight"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/InfraFiberedGraphHighlight", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "8c15ae94-bf4a-4677-a72e-3c788d623644"],
+ ", including ",
  Cell[BoxData[
   TemplateBox[{
     Cell[
      TextData["Method"]], "paclet:ref/Method"},
    "RefLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "453ce924-b08d-43cb-a961-71ed885194a8"],
- " accepts ",
- Cell[BoxData["\"\<CircularFiber\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "e38b90b6-fcd7-45bc-b2a4-affbe06b929a"],
+  "7d99c679-e95d-4fe0-9424-69b1c94d09ad"],
  ", ",
- Cell[BoxData["\"\<3DFiber\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "b5b641c1-3cfa-48a2-a06e-57a5f8ec85c8"],
- " and ",
- Cell[BoxData["\"\<HighlightFiber\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "c9ba0355-4b0b-4f37-b502-a56c629e71ea"],
- ". The base is drawn in the plane in every view. ",
  Cell[BoxData["\"\<BaseGraphLayout\>\""], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "6a8d353b-9d68-427c-bca8-eb1251353c4c"],
+  "4f3f9036-9c70-467a-ae74-774f51b4526c"],
  ", ",
  Cell[BoxData["\"\<BaseVertexCoordinates\>\""], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "04186404-8720-41d3-a888-76102b975be7"],
+  "db19e8ae-9c30-4465-8abe-92d7cf70d3dd"],
  " and ",
  Cell[BoxData["\"\<FiberRadius\>\""], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "6ed9e275-5e7b-4da4-9cd3-8f31441fd5a5"],
- " have the same meanings as in ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraFiberedGraphHighlight"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraFiberedGraphHighlight", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "b681a091-f64a-43dc-9da9-6569bee48044"],
- ". Unsupported view names remain unevaluated. Live hovering requires the \
-Wolfram notebook front end."
-}], "Notes",ExpressionUUID->"29e90154-6827-4e11-a050-034c3bbab20f"]
+  "373e2e7d-1b41-47f2-85c2-9cdbf2eddddc"],
+ ". The layout is fixed when the viewer is made; hovering changes only the \
+highlights. Hovering needs the notebook front end."
+}], "Notes",ExpressionUUID->"8d27c54c-4fe7-4247-9753-1a36aeda822f"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -219,7 +176,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "c35436f1-3489-4c96-b0b7-7453de5d8a03"],
+  "2bccbff5-a274-487d-adfb-542f4decf66a"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -229,7 +186,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "6c9d63fd-fbd0-4c7f-aa68-6102dfd2be10"],
+  "3b851318-b61d-4e01-883f-3d165723d4a8"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -239,7 +196,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "f05c2343-faf1-4913-af0d-99fe8b439e83"],
+  "781ff37e-c313-4455-a440-2cbcf37702b2"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -249,7 +206,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "a2461061-eb6a-4021-badb-cd7785ade25d"],
+  "9d3a5c8a-3cfa-4c7c-8511-02fe8ab08348"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -259,7 +216,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "70976773-9c57-46e9-a72f-928976f71a68"],
+  "6db32869-1b8d-4f06-91e6-6af63eaa20e5"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -269,8 +226,8 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "0e49d4b7-9d69-4e7d-969b-8aca1c7950a1"]
-}], "SeeAlso",ExpressionUUID->"9089c4f3-7dcf-4830-ab45-2c4d60c1229d"]
+  "7d365370-8a53-4bd9-93fb-c012230f8cac"]
+}], "SeeAlso",ExpressionUUID->"7bbdaf60-0df3-4ffe-b6f6-f737bec9372f"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -297,8 +254,8 @@ Cell[TextData[Cell[BoxData[
   BaseStyle->"Link",
   ButtonData->
    "paclet:WolframInstitute/InfraGeometry/guide/InfraFiberBundles"]], \
-"InlineFormula",ExpressionUUID->"bdb7d182-7df7-4457-b56a-5d1f04241885"]], \
-"MoreAbout",ExpressionUUID->"a1ffc4c5-c712-46f9-87d1-dc2c85500fa7"]
+"InlineFormula",ExpressionUUID->"af651248-af26-417e-830b-54a7648c349e"]], \
+"MoreAbout",ExpressionUUID->"8745dc16-b922-4d67-9ee0-31f0b275b4d4"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -357,16 +314,583 @@ Cell[BoxData[
   $Line = 0; Null]], "PrimaryExamplesSection",
  CellID->880084151,ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42"],
 
-Cell["\<\
-Inspect a continuous section and a connection over the hexagon.\
-\>", "ExampleText",ExpressionUUID->"d00739cf-b0a6-4ad7-afcd-98bdfc0b5675"],
+Cell["The 3 \[Times] 3 grid covered three times, with its connection:", \
+"ExampleText",ExpressionUUID->"025bdd3f-3968-4303-a2ab-b83a458571e2"],
 
 Cell[CellGroupData[{
 
-Cell[BoxData[{
- RowBox[{
-  RowBox[{"SeedRandom", "[", "7", "]"}], ";"}], "\n", 
- RowBox[{"With", "[", "\n", "  ", 
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"fib", " ", "=", " ", 
+     RowBox[{"RandomInfraFiberedGraph", "[", 
+      RowBox[{
+       RowBox[{"GridGraph", "[", 
+        RowBox[{"{", 
+         RowBox[{"3", ",", " ", "3"}], "}"}], "]"}], ",", " ", 
+       RowBox[{"\"\<VerticalVertexCount\>\"", " ", "->", " ", 
+        RowBox[{"{", "3", "}"}]}], ",", " ", 
+       RowBox[{"Properties", " ", "->", " ", 
+        RowBox[{"{", "\"\<Covering\>\"", "}"}]}], ",", "\n", "    ", 
+       RowBox[{"RandomSeeding", " ", "->", " ", "2"}]}], "]"}]}], "}"}], ",", 
+   "\n", "  ", 
+   RowBox[{"InfraFiberedGraphViewer", "[", 
+    RowBox[{"fib", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"RandomInfraConnection", "[", 
+       RowBox[{"fib", ",", " ", 
+        RowBox[{"RandomSeeding", " ", "->", " ", "1"}]}], "]"}], "}"}]}], 
+    "]"}]}], "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"3237bbed-04b5-4408-a132-ffae337cd329"],
+
+Cell[BoxData[
+ DynamicModuleBox[{
+  WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`PackagePrivate`\
+hovered$$ = {}}, 
+  TagBox[GridBox[{
+     {
+      TemplateBox[{
+        TagBox[
+         DynamicBox[
+          ToBoxes[
+           
+           With[{WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`selectedVertices$ = 
+             Which[WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$ === {}, {}, 
+               First[WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$] === "Vertex", {
+                Last[
+                WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$]}, True, 
+               Apply[List, 
+                Last[
+                WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$]]]}, {
+            WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`overlays$ = 
+             If[WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$ === {}, {}, 
+               Join[
+                If[
+                First[WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$] === "Vertex", {
+                  Style[
+                   WolframInstitute`InfraGeometry`InfraFiber[
+                    WolframInstitute`InfraGeometry`InfraFiberedGraph[
+                    
+                    Graph[{{1, 1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}, {2, 3}, {3,
+                     1}, {3, 2}, {3, 3}, {4, 1}, {4, 2}, {4, 3}, {5, 1}, {5, 
+                    2}, {5, 3}, {6, 1}, {6, 2}, {6, 3}, {7, 1}, {7, 2}, {7, 
+                    3}, {8, 1}, {8, 2}, {8, 3}, {9, 1}, {9, 2}, {9, 3}}, {
+                    Null, {{1, 6}, {2, 5}, {3, 4}, {1, 10}, {2, 12}, {3, 
+                    11}, {4, 9}, {5, 7}, {6, 8}, {4, 15}, {5, 13}, {6, 14}, {
+                    7, 18}, {8, 17}, {9, 16}, {10, 15}, {11, 14}, {12, 13}, {
+                    10, 20}, {11, 19}, {12, 21}, {13, 18}, {14, 16}, {15, 
+                    17}, {13, 23}, {14, 24}, {15, 22}, {16, 26}, {17, 27}, {
+                    18, 25}, {19, 23}, {20, 22}, {21, 24}, {22, 25}, {23, 
+                    27}, {24, 26}}}, {
+                    GraphLayout -> {"Dimension" -> 2}, 
+                    VertexCoordinates -> CompressedData["
+1:eJxTTMoPSmViYGCQBmIQXWiccXqrwWX70idHt0Y7/LVnuNWjyNXSaz9h9eHC
+DVOYHC6m+muWRlzcD5NfeCa6aqrLJXtPne8P1l17Zc8ABRc5bOfFhHyFye+H
+yVsaT5WUTLhq73xaJsRX/vD+Ayanf8rcWWHPn/qdJ0/kmr3QGZdtykHn9sPk
+Qx7sP1A+64t9dmjkLH/uf/Y6bzWSgjg/2HOn8KZo/WJy4PiizB714RlcXoxx
+lajJ4y/2h6OVlCIyX9u/4xXezhf0wb5vwSW7jXO/2veY/thwqfE5XP5+f/9M
+B92v9qcNI8/zShzdv33ODyvpOR+g/Kv2csGHd7wWfQGXd13L8zTGnMmhmoN7
+8sWzf+2T0puyp9z9bz/ZNi0h+zaTg1XJa558n9/2MHmJa4ovLGczORQbzM/L
+ZHxj3xJzzWJ5EIPDMy7BpztffrV/cFRUWFPkjz1MPpD96Jn3dUwOedYX2R7Z
+7t2/t7dSNtaMweFqdaDpnJAb9kEaMXem3P5tD5MHAJF7yV4=
+                    "], 
+                    VertexStyle -> {{3, 2} -> 
+                    RGBColor[1., 0.82352935, 0.55], {6, 1} -> 
+                    RGBColor[0.55, 0.81470575, 0.8676469], {5, 1} -> 
+                    RGBColor[
+                    0.8053417, 0.6954265000000001, 0.8784239500000001], {2, 
+                    1} -> RGBColor[0.63647065, 0.72470575, 0.91352935], {7, 
+                    2} -> RGBColor[0.932725, 0.742375, 0.6093325], {6, 2} -> 
+                    RGBColor[0.55, 0.81470575, 0.8676469], {9, 3} -> 
+                    RGBColor[
+                    0.6062063326437813, 0.8335, 0.7619646675442784], {4, 1} -> 
+                    RGBColor[0.55, 0.8182351, 0.5994118], {3, 1} -> 
+                    RGBColor[1., 0.82352935, 0.55], {6, 3} -> 
+                    RGBColor[0.55, 0.81470575, 0.8676469], {4, 2} -> 
+                    RGBColor[0.55, 0.8182351, 0.5994118], {1, 1} -> 
+                    RGBColor[0.9057646, 0.6405292, 0.55], {1, 3} -> 
+                    RGBColor[0.9057646, 0.6405292, 0.55], {5, 3} -> 
+                    RGBColor[
+                    0.8053417, 0.6954265000000001, 0.8784239500000001], {9, 
+                    1} -> RGBColor[
+                    0.6062063326437813, 0.8335, 0.7619646675442784], {3, 3} -> 
+                    RGBColor[1., 0.82352935, 0.55], {5, 2} -> 
+                    RGBColor[
+                    0.8053417, 0.6954265000000001, 0.8784239500000001], {8, 
+                    3} -> RGBColor[0.77496805, 0.67864375, 0.89882965], {1, 
+                    2} -> RGBColor[0.9057646, 0.6405292, 0.55], {7, 1} -> 
+                    RGBColor[0.932725, 0.742375, 0.6093325], {7, 3} -> 
+                    RGBColor[0.932725, 0.742375, 0.6093325], {9, 2} -> 
+                    RGBColor[
+                    0.6062063326437813, 0.8335, 0.7619646675442784], {2, 2} -> 
+                    RGBColor[0.63647065, 0.72470575, 0.91352935], {2, 3} -> 
+                    RGBColor[0.63647065, 0.72470575, 0.91352935], {8, 2} -> 
+                    RGBColor[0.77496805, 0.67864375, 0.89882965], {8, 1} -> 
+                    RGBColor[0.77496805, 0.67864375, 0.89882965], {4, 3} -> 
+                    RGBColor[0.55, 0.8182351, 0.5994118]}}], <|{1, 1} -> 
+                    1, {1, 2} -> 1, {1, 3} -> 1, {2, 1} -> 2, {2, 2} -> 
+                    2, {2, 3} -> 2, {3, 1} -> 3, {3, 2} -> 3, {3, 3} -> 
+                    3, {4, 1} -> 4, {4, 2} -> 4, {4, 3} -> 4, {5, 1} -> 
+                    5, {5, 2} -> 5, {5, 3} -> 5, {6, 1} -> 6, {6, 2} -> 
+                    6, {6, 3} -> 6, {7, 1} -> 7, {7, 2} -> 7, {7, 3} -> 
+                    7, {8, 1} -> 8, {8, 2} -> 8, {8, 3} -> 8, {9, 1} -> 
+                    9, {9, 2} -> 9, {9, 3} -> 9|>], 
+                    Last[
+                    WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$]], StandardYellow, 
+                   Opacity[0.7]]}, {}], 
+                Map[Style[
+                  WolframInstitute`InfraGeometry`InfraSection[
+                   
+                   KeyTake[#, 
+                    WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`selectedVertices$]], StandardOrange, 
+                  AbsolutePointSize[10]]& , {}], 
+                If[
+                First[WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$] === "Edge", 
+                 Map[
+                  Function[
+                  WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`edges$, 
+                   Style[
+                    WolframInstitute`InfraGeometry`InfraConnection[
+                    Select[
+                    WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`edges$, Sort[
+                    
+                    Lookup[<|{1, 1} -> 1, {1, 2} -> 1, {1, 3} -> 1, {2, 1} -> 
+                    2, {2, 2} -> 2, {2, 3} -> 2, {3, 1} -> 3, {3, 2} -> 
+                    3, {3, 3} -> 3, {4, 1} -> 4, {4, 2} -> 4, {4, 3} -> 
+                    4, {5, 1} -> 5, {5, 2} -> 5, {5, 3} -> 5, {6, 1} -> 
+                    6, {6, 2} -> 6, {6, 3} -> 6, {7, 1} -> 7, {7, 2} -> 
+                    7, {7, 3} -> 7, {8, 1} -> 8, {8, 2} -> 8, {8, 3} -> 
+                    8, {9, 1} -> 9, {9, 2} -> 9, {9, 3} -> 9|>, 
+                    Map[Key, 
+                    Apply[List, #]]]] === 
+                    Sort[WolframInstitute`InfraGeometry`\
+InfraFiberedGraphViewer`PackagePrivate`selectedVertices$]& ]], StandardPurple, 
+                    AbsoluteThickness[4]]], {{
+                    UndirectedEdge[{1, 1}, {2, 3}], 
+                    UndirectedEdge[{1, 2}, {2, 2}], 
+                    UndirectedEdge[{1, 3}, {2, 1}], 
+                    UndirectedEdge[{1, 1}, {4, 1}], 
+                    UndirectedEdge[{1, 2}, {4, 3}], 
+                    UndirectedEdge[{1, 3}, {4, 2}], 
+                    UndirectedEdge[{2, 1}, {3, 3}], 
+                    UndirectedEdge[{2, 2}, {3, 1}], 
+                    UndirectedEdge[{2, 3}, {3, 2}], 
+                    UndirectedEdge[{2, 1}, {5, 3}], 
+                    UndirectedEdge[{2, 2}, {5, 1}], 
+                    UndirectedEdge[{2, 3}, {5, 2}], 
+                    UndirectedEdge[{3, 1}, {6, 3}], 
+                    UndirectedEdge[{3, 2}, {6, 2}], 
+                    UndirectedEdge[{3, 3}, {6, 1}], 
+                    UndirectedEdge[{4, 1}, {5, 3}], 
+                    UndirectedEdge[{4, 2}, {5, 2}], 
+                    UndirectedEdge[{4, 3}, {5, 1}], 
+                    UndirectedEdge[{4, 1}, {7, 2}], 
+                    UndirectedEdge[{4, 2}, {7, 1}], 
+                    UndirectedEdge[{4, 3}, {7, 3}], 
+                    UndirectedEdge[{5, 1}, {6, 3}], 
+                    UndirectedEdge[{5, 2}, {6, 1}], 
+                    UndirectedEdge[{5, 3}, {6, 2}], 
+                    UndirectedEdge[{5, 1}, {8, 2}], 
+                    UndirectedEdge[{5, 2}, {8, 3}], 
+                    UndirectedEdge[{5, 3}, {8, 1}], 
+                    UndirectedEdge[{6, 1}, {9, 2}], 
+                    UndirectedEdge[{6, 2}, {9, 3}], 
+                    UndirectedEdge[{6, 3}, {9, 1}], 
+                    UndirectedEdge[{7, 1}, {8, 2}], 
+                    UndirectedEdge[{7, 2}, {8, 1}], 
+                    UndirectedEdge[{7, 3}, {8, 3}], 
+                    UndirectedEdge[{8, 1}, {9, 1}], 
+                    UndirectedEdge[{8, 2}, {9, 3}], 
+                    UndirectedEdge[{8, 3}, {9, 2}]}}], {}]]]}, {
+            WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`highlighted$ = 
+             WolframInstitute`InfraGeometry`InfraFiberedGraphHighlight[
+               WolframInstitute`InfraGeometry`InfraFiberedGraph[
+                
+                Graph[{{1, 1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}, {2, 3}, {3, 
+                 1}, {3, 2}, {3, 3}, {4, 1}, {4, 2}, {4, 3}, {5, 1}, {5, 2}, {
+                 5, 3}, {6, 1}, {6, 2}, {6, 3}, {7, 1}, {7, 2}, {7, 3}, {8, 
+                 1}, {8, 2}, {8, 3}, {9, 1}, {9, 2}, {9, 3}}, {
+                 Null, {{1, 6}, {2, 5}, {3, 4}, {1, 10}, {2, 12}, {3, 11}, {4,
+                   9}, {5, 7}, {6, 8}, {4, 15}, {5, 13}, {6, 14}, {7, 18}, {8,
+                   17}, {9, 16}, {10, 15}, {11, 14}, {12, 13}, {10, 20}, {11, 
+                  19}, {12, 21}, {13, 18}, {14, 16}, {15, 17}, {13, 23}, {14, 
+                  24}, {15, 22}, {16, 26}, {17, 27}, {18, 25}, {19, 23}, {20, 
+                  22}, {21, 24}, {22, 25}, {23, 27}, {24, 26}}}, {
+                 GraphLayout -> {"Dimension" -> 2}, 
+                  VertexCoordinates -> CompressedData["
+1:eJxTTMoPSmViYGCQBmIQXWiccXqrwWX70idHt0Y7/LVnuNWjyNXSaz9h9eHC
+DVOYHC6m+muWRlzcD5NfeCa6aqrLJXtPne8P1l17Zc8ABRc5bOfFhHyFye+H
+yVsaT5WUTLhq73xaJsRX/vD+Ayanf8rcWWHPn/qdJ0/kmr3QGZdtykHn9sPk
+Qx7sP1A+64t9dmjkLH/uf/Y6bzWSgjg/2HOn8KZo/WJy4PiizB714RlcXoxx
+lajJ4y/2h6OVlCIyX9u/4xXezhf0wb5vwSW7jXO/2veY/thwqfE5XP5+f/9M
+B92v9qcNI8/zShzdv33ODyvpOR+g/Kv2csGHd7wWfQGXd13L8zTGnMmhmoN7
+8sWzf+2T0puyp9z9bz/ZNi0h+zaTg1XJa558n9/2MHmJa4ovLGczORQbzM/L
+ZHxj3xJzzWJ5EIPDMy7BpztffrV/cFRUWFPkjz1MPpD96Jn3dUwOedYX2R7Z
+7t2/t7dSNtaMweFqdaDpnJAb9kEaMXem3P5tD5MHAJF7yV4=
+                   "], 
+                  VertexStyle -> {{3, 2} -> 
+                    RGBColor[1., 0.82352935, 0.55], {6, 1} -> 
+                    RGBColor[0.55, 0.81470575, 0.8676469], {5, 1} -> 
+                    RGBColor[
+                    0.8053417, 0.6954265000000001, 0.8784239500000001], {2, 
+                    1} -> RGBColor[0.63647065, 0.72470575, 0.91352935], {7, 
+                    2} -> RGBColor[0.932725, 0.742375, 0.6093325], {6, 2} -> 
+                    RGBColor[0.55, 0.81470575, 0.8676469], {9, 3} -> 
+                    RGBColor[
+                    0.6062063326437813, 0.8335, 0.7619646675442784], {4, 1} -> 
+                    RGBColor[0.55, 0.8182351, 0.5994118], {3, 1} -> 
+                    RGBColor[1., 0.82352935, 0.55], {6, 3} -> 
+                    RGBColor[0.55, 0.81470575, 0.8676469], {4, 2} -> 
+                    RGBColor[0.55, 0.8182351, 0.5994118], {1, 1} -> 
+                    RGBColor[0.9057646, 0.6405292, 0.55], {1, 3} -> 
+                    RGBColor[0.9057646, 0.6405292, 0.55], {5, 3} -> 
+                    RGBColor[
+                    0.8053417, 0.6954265000000001, 0.8784239500000001], {9, 
+                    1} -> RGBColor[
+                    0.6062063326437813, 0.8335, 0.7619646675442784], {3, 3} -> 
+                    RGBColor[1., 0.82352935, 0.55], {5, 2} -> 
+                    RGBColor[
+                    0.8053417, 0.6954265000000001, 0.8784239500000001], {8, 
+                    3} -> RGBColor[0.77496805, 0.67864375, 0.89882965], {1, 
+                    2} -> RGBColor[0.9057646, 0.6405292, 0.55], {7, 1} -> 
+                    RGBColor[0.932725, 0.742375, 0.6093325], {7, 3} -> 
+                    RGBColor[0.932725, 0.742375, 0.6093325], {9, 2} -> 
+                    RGBColor[
+                    0.6062063326437813, 0.8335, 0.7619646675442784], {2, 2} -> 
+                    RGBColor[0.63647065, 0.72470575, 0.91352935], {2, 3} -> 
+                    RGBColor[0.63647065, 0.72470575, 0.91352935], {8, 2} -> 
+                    RGBColor[0.77496805, 0.67864375, 0.89882965], {8, 1} -> 
+                    RGBColor[0.77496805, 0.67864375, 0.89882965], {4, 3} -> 
+                    RGBColor[0.55, 0.8182351, 0.5994118]}}], <|{1, 1} -> 
+                 1, {1, 2} -> 1, {1, 3} -> 1, {2, 1} -> 2, {2, 2} -> 
+                 2, {2, 3} -> 2, {3, 1} -> 3, {3, 2} -> 3, {3, 3} -> 
+                 3, {4, 1} -> 4, {4, 2} -> 4, {4, 3} -> 4, {5, 1} -> 
+                 5, {5, 2} -> 5, {5, 3} -> 5, {6, 1} -> 6, {6, 2} -> 
+                 6, {6, 3} -> 6, {7, 1} -> 7, {7, 2} -> 7, {7, 3} -> 
+                 7, {8, 1} -> 8, {8, 2} -> 8, {8, 3} -> 8, {9, 1} -> 
+                 9, {9, 2} -> 9, {9, 3} -> 9|>], 
+               Join[{
+                 WolframInstitute`InfraGeometry`InfraConnection[{
+                   UndirectedEdge[{1, 1}, {2, 3}], 
+                   UndirectedEdge[{1, 2}, {2, 2}], 
+                   UndirectedEdge[{1, 3}, {2, 1}], 
+                   UndirectedEdge[{1, 1}, {4, 1}], 
+                   UndirectedEdge[{1, 2}, {4, 3}], 
+                   UndirectedEdge[{1, 3}, {4, 2}], 
+                   UndirectedEdge[{2, 1}, {3, 3}], 
+                   UndirectedEdge[{2, 2}, {3, 1}], 
+                   UndirectedEdge[{2, 3}, {3, 2}], 
+                   UndirectedEdge[{2, 1}, {5, 3}], 
+                   UndirectedEdge[{2, 2}, {5, 1}], 
+                   UndirectedEdge[{2, 3}, {5, 2}], 
+                   UndirectedEdge[{3, 1}, {6, 3}], 
+                   UndirectedEdge[{3, 2}, {6, 2}], 
+                   UndirectedEdge[{3, 3}, {6, 1}], 
+                   UndirectedEdge[{4, 1}, {5, 3}], 
+                   UndirectedEdge[{4, 2}, {5, 2}], 
+                   UndirectedEdge[{4, 3}, {5, 1}], 
+                   UndirectedEdge[{4, 1}, {7, 2}], 
+                   UndirectedEdge[{4, 2}, {7, 1}], 
+                   UndirectedEdge[{4, 3}, {7, 3}], 
+                   UndirectedEdge[{5, 1}, {6, 3}], 
+                   UndirectedEdge[{5, 2}, {6, 1}], 
+                   UndirectedEdge[{5, 3}, {6, 2}], 
+                   UndirectedEdge[{5, 1}, {8, 2}], 
+                   UndirectedEdge[{5, 2}, {8, 3}], 
+                   UndirectedEdge[{5, 3}, {8, 1}], 
+                   UndirectedEdge[{6, 1}, {9, 2}], 
+                   UndirectedEdge[{6, 2}, {9, 3}], 
+                   UndirectedEdge[{6, 3}, {9, 1}], 
+                   UndirectedEdge[{7, 1}, {8, 2}], 
+                   UndirectedEdge[{7, 2}, {8, 1}], 
+                   UndirectedEdge[{7, 3}, {8, 3}], 
+                   UndirectedEdge[{8, 1}, {9, 1}], 
+                   UndirectedEdge[{8, 2}, {9, 3}], 
+                   UndirectedEdge[{8, 3}, {9, 2}]}]}, 
+                WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`overlays$], Method -> "HighlightFiber", 
+               "BaseVertexCoordinates" -> <|
+                1 -> {0.014412001751776593`, 1.993009029669945}, 
+                 2 -> {0., 1.0035030037213555`}, 
+                 3 -> {0.048554330341724405`, 0.015403804944799981`}, 
+                 4 -> {1.0022758325929528`, 2.0425580302905724`}, 
+                 5 -> {1.0200335646958325`, 1.021405976212242}, 
+                 6 -> {1.0381119063911635`, 0.}, 
+                 7 -> {1.9915966224275157`, 2.0275452619852503`}, 
+                 8 -> {2.0403580131929306`, 1.0399689124132265`}, 
+                 9 -> {2.026544790527366, 0.05057105978008336}|>, 
+               VertexCoordinates -> CompressedData["
+1:eJxTTMoPSmViYGCQBmIQXWiccXqrwWX70idHt0Y7/LVnuNWjyNXSaz9h9eHC
+DVOYHC6m+muWRlzcD5NfeCa6aqrLJXtPne8P1l17Zc8ABRc5bOfFhHyFye+H
+yVsaT5WUTLhq73xaJsRX/vD+Ayanf8rcWWHPn/qdJ0/kmr3QGZdtykHn9sPk
+Qx7sP1A+64t9dmjkLH/uf/Y6bzWSgjg/2HOn8KZo/WJy4PiizB714RlcXoxx
+lajJ4y/2h6OVlCIyX9u/4xXezhf0wb5vwSW7jXO/2veY/thwqfE5XP5+f/9M
+B92v9qcNI8/zShzdv33ODyvpOR+g/Kv2csGHd7wWfQGXd13L8zTGnMmhmoN7
+8sWzf+2T0puyp9z9bz/ZNi0h+zaTg1XJa558n9/2MHmJa4ovLGczORQbzM/L
+ZHxj3xJzzWJ5EIPDMy7BpztffrV/cFRUWFPkjz1MPpD96Jn3dUwOedYX2R7Z
+7t2/t7dSNtaMweFqdaDpnJAb9kEaMXem3P5tD5MHAJF7yV4=
+                "]]}, {
+            WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`shapes$ = Replace[
+               ReplaceAll[VertexShapeFunction, 
+                Options[
+                WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`highlighted$, VertexShapeFunction]], {
+               Pattern[
+                 WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`rules, 
+                  Blank[List]] :> <|
+                  Cases[
+                  WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`rules, 
+                   Blank[Rule]]|>, Blank[] -> <||>}], 
+             WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`defaultShape$ = Replace[
+               OptionValue[
+               WolframInstitute`InfraGeometry`InfraFiberedGraphViewer, {}, 
+                VertexShapeFunction], {
+               Pattern[
+                 WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`function, 
+                  Blank[Function]] :> 
+                WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`function, 
+                Pattern[
+                 WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`function, 
+                  Except[
+                   Alternatives[Automatic, None, Inherited], 
+                   Blank[Symbol]]] :> 
+                WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`function, Blank[] :> If[Length[
+                    First[CompressedData["
+1:eJxTTMoPSmViYGCQBmIQXWiccXqrwWX70idHt0Y7/LVnuNWjyNXSaz9h9eHC
+DVOYHC6m+muWRlzcD5NfeCa6aqrLJXtPne8P1l17Zc8ABRc5bOfFhHyFye+H
+yVsaT5WUTLhq73xaJsRX/vD+Ayanf8rcWWHPn/qdJ0/kmr3QGZdtykHn9sPk
+Qx7sP1A+64t9dmjkLH/uf/Y6bzWSgjg/2HOn8KZo/WJy4PiizB714RlcXoxx
+lajJ4y/2h6OVlCIyX9u/4xXezhf0wb5vwSW7jXO/2veY/thwqfE5XP5+f/9M
+B92v9qcNI8/zShzdv33ODyvpOR+g/Kv2csGHd7wWfQGXd13L8zTGnMmhmoN7
+8sWzf+2T0puyp9z9bz/ZNi0h+zaTg1XJa558n9/2MHmJa4ovLGczORQbzM/L
+ZHxj3xJzzWJ5EIPDMy7BpztffrV/cFRUWFPkjz1MPpD96Jn3dUwOedYX2R7Z
+7t2/t7dSNtaMweFqdaDpnJAb9kEaMXem3P5tD5MHAJF7yV4=
+                    "], {0, 0}]] === 3, Sphere[#, 
+                   Max[
+                    Flatten[{#3}]]]& , Disk[#, #3]& ]}]}, 
+            Graph[
+            WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`highlighted$, VertexShapeFunction -> Map[
+               Function[
+               WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`vertex$, 
+                
+                With[{WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`shape = 
+                  Lookup[WolframInstitute`InfraGeometry`\
+InfraFiberedGraphViewer`PackagePrivate`shapes$, 
+                    Key[
+                    WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`vertex$], 
+                    WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`defaultShape$], 
+                  WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`vertex = 
+                  WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`vertex$}, 
+                 WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`vertex -> (Annotation[
+                   
+                   WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`shape[
+                    SlotSequence[1]], {
+                   "TotalVertex", 
+                    WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`vertex}, "Mouse"]& )]], 
+               VertexList[
+               WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`highlighted$]]]], StandardForm], 
+          TrackedSymbols :> {
+           WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$}], 
+         EventHandlerTag[{
+          "MouseMoved" :> 
+           With[{WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`annotation$ = MouseAnnotation[]}, 
+             If[
+              MatchQ[
+              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`annotation$, {"TotalVertex", 
+                Blank[]}], 
+              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$ = {"Vertex", 
+                
+                Lookup[<|{1, 1} -> 1, {1, 2} -> 1, {1, 3} -> 1, {2, 1} -> 
+                  2, {2, 2} -> 2, {2, 3} -> 2, {3, 1} -> 3, {3, 2} -> 
+                  3, {3, 3} -> 3, {4, 1} -> 4, {4, 2} -> 4, {4, 3} -> 
+                  4, {5, 1} -> 5, {5, 2} -> 5, {5, 3} -> 5, {6, 1} -> 
+                  6, {6, 2} -> 6, {6, 3} -> 6, {7, 1} -> 7, {7, 2} -> 
+                  7, {7, 3} -> 7, {8, 1} -> 8, {8, 2} -> 8, {8, 3} -> 
+                  8, {9, 1} -> 9, {9, 2} -> 9, {9, 3} -> 9|>, 
+                 Key[
+                  Last[
+                  WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`annotation$]]]}]], 
+           "MouseExited" :> (
+            WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$ = {}), PassEventsDown -> True, Method -> 
+           "Preemptive", PassEventsUp -> True}]], 
+        TemplateBox[{20}, "Spacer1"], 
+        TagBox[
+         DynamicBox[
+          ToBoxes[
+           Graph[
+            
+            Graph[{1, 2, 3, 4, 5, 6, 7, 8, 9}, {
+             Null, {{1, 2}, {1, 4}, {2, 3}, {2, 5}, {3, 6}, {4, 5}, {4, 7}, {
+              5, 6}, {5, 8}, {6, 9}, {7, 8}, {8, 9}}}], VertexCoordinates -> 
+            Normal[<|1 -> {0.014412001751776593`, 1.993009029669945}, 
+               2 -> {0., 1.0035030037213555`}, 
+               3 -> {0.048554330341724405`, 0.015403804944799981`}, 
+               4 -> {1.0022758325929528`, 2.0425580302905724`}, 
+               5 -> {1.0200335646958325`, 1.021405976212242}, 
+               6 -> {1.0381119063911635`, 0.}, 
+               7 -> {1.9915966224275157`, 2.0275452619852503`}, 
+               8 -> {2.0403580131929306`, 1.0399689124132265`}, 
+               9 -> {2.026544790527366, 0.05057105978008336}|>], VertexStyle -> 
+            If[
+              MatchQ[
+              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$, {"Vertex", 
+                Blank[]}], {
+              Last[WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$] -> StandardYellow}, {}], EdgeStyle -> If[
+              MatchQ[
+              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$, {"Edge", 
+                Blank[]}], {
+              Last[WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$] -> StandardPurple}, {}], 
+            VertexShapeFunction -> (Annotation[
+              Disk[#, #3], {"BaseVertex", #2}, "Mouse"]& ), 
+            EdgeShapeFunction -> (Annotation[
+              Line[#], {"BaseEdge", #2}, "Mouse"]& ), 
+            Apply[Sequence, 
+             FilterRules[
+              Flatten[{}], {
+              ImageSize, Background, BaseStyle, LabelStyle, VertexLabels, 
+               EdgeLabels, PlotLabel}]]], StandardForm], 
+          TrackedSymbols :> {
+           WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$}], 
+         EventHandlerTag[{
+          "MouseMoved" :> 
+           With[{WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`annotation$ = MouseAnnotation[]}, 
+             Which[
+              MatchQ[
+              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`annotation$, {"BaseVertex", 
+                Blank[]}], 
+              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$ = {"Vertex", 
+                Last[
+                WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`annotation$]}, 
+              MatchQ[
+              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`annotation$, {"BaseEdge", 
+                Blank[]}], 
+              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$ = {"Edge", 
+                Last[
+                WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`annotation$]}, True, 
+              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$ = {}]], 
+           "MouseExited" :> (
+            WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$ = {}), PassEventsDown -> True, Method -> 
+           "Preemptive", PassEventsUp -> True}]]},
+       "RowDefault"]},
+     {
+      DynamicBox[ToBoxes[
+        Which[
+        WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`PackagePrivate`\
+hovered$$ === {}, 
+         "Hover a vertex to inspect its fiber, or a base edge to inspect \
+section and connection edges.", 
+         First[WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$] === "Vertex", 
+         Row[{"Fiber over ", 
+           Last[
+           WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$]}], True, 
+         Row[{"Lifts over ", 
+           Last[
+           WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
+PackagePrivate`hovered$$]}]], StandardForm],
+       TrackedSymbols:>{
+        WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`PackagePrivate`\
+hovered$$}]}
+    },
+    DefaultBaseStyle->"Column",
+    GridBoxAlignment->{"Columns" -> {{Left}}},
+    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+   "Column"],
+  DynamicModuleValues:>{}]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"dbed3336-1e48-4918-a845-207f77c87dfe"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "More Examples",
+ Cell[BoxData[
+  TemplateBox[{"MoreExamples", 
+    Cell[
+     BoxData[
+      FrameBox[
+       Cell["Extended examples in standardized sections.", "MoreInfoText"], 
+       BaseStyle -> "IFrameBox"]], "MoreInfoTextOuter"]},
+   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
+  "352b6acf-a93b-4224-8779-658881cdabd0"]
+}], "ExtendedExamplesSection",
+ CellTags->"ExtendedExamples",
+ CellID->533848431,ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell[
+  "Scope", "ExampleSection",ExpressionUUID->
+   "32e79d70-f7af-47ff-bb41-513374ef55db"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1293636265,ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75"],
+
+Cell["\<\
+A continuous section and a connection over the hexagon, with the fibers drawn \
+upright:\
+\>", "ExampleText",ExpressionUUID->"d567a447-312e-42f4-9067-35506cce554d"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
   RowBox[{
    RowBox[{"{", 
     RowBox[{"fib", " ", "=", " ", 
@@ -374,42 +898,32 @@ Cell[BoxData[{
       RowBox[{
        RowBox[{"CycleGraph", "[", "6", "]"}], ",", " ", 
        RowBox[{"\"\<VerticalVertexCount\>\"", " ", "->", " ", 
-        RowBox[{"{", " ", "3", " ", "}"}]}], ",", "\n", "    ", 
+        RowBox[{"{", "3", "}"}]}], ",", " ", 
        RowBox[{"Properties", " ", "->", " ", 
-        RowBox[{"{", " ", "\"\<IsomorphicFibers\>\"", " ", "}"}]}], ",", " ", 
-       
-       RowBox[{"\"\<HorizontalEdgeCount\>\"", " ", "->", " ", "All"}], ",", 
-       " ", 
-       RowBox[{"RandomSeeding", " ", "->", " ", "7"}]}], "]"}]}], "}"}], ",", 
-   "\n", "  ", 
-   RowBox[{"{", 
-    RowBox[{"partial", " ", "=", " ", 
-     RowBox[{"RandomInfraSection", "[", 
-      RowBox[{"fib", ",", " ", 
-       RowBox[{"{", 
-        RowBox[{"1", ",", " ", "3"}], "}"}], ",", " ", 
-       RowBox[{"RandomSeeding", " ", "->", " ", "7"}]}], "]"}]}], "}"}], ",", 
+        RowBox[{"{", "\"\<Fibration\>\"", "}"}]}], ",", "\n", "    ", 
+       RowBox[{"RandomSeeding", " ", "->", " ", "3"}]}], "]"}]}], "}"}], ",", 
    "\n", "  ", 
    RowBox[{"{", 
     RowBox[{"section", " ", "=", " ", 
      RowBox[{"RandomInfraSection", "[", 
-      RowBox[{"fib", ",", " ", "partial", ",", " ", 
+      RowBox[{"fib", ",", " ", 
        RowBox[{"Properties", " ", "->", " ", 
         RowBox[{"{", "\"\<Continuous\>\"", "}"}]}], ",", " ", 
-       RowBox[{"RandomSeeding", " ", "->", " ", "7"}]}], "]"}]}], "}"}], ",", 
+       RowBox[{"RandomSeeding", " ", "->", " ", "1"}]}], "]"}]}], "}"}], ",", 
    "\n", "  ", 
    RowBox[{"{", 
-    RowBox[{"connection", " ", "=", " ", 
+    RowBox[{"conn", " ", "=", " ", 
      RowBox[{"RandomInfraConnection", "[", 
       RowBox[{"fib", ",", " ", 
-       RowBox[{"RandomSeeding", " ", "->", " ", "7"}]}], "]"}]}], "}"}], ",", 
+       RowBox[{"RandomSeeding", " ", "->", " ", "1"}]}], "]"}]}], "}"}], ",", 
    "\n", "  ", 
    RowBox[{"InfraFiberedGraphViewer", "[", 
     RowBox[{"fib", ",", " ", 
      RowBox[{"{", 
-      RowBox[{"partial", ",", " ", "section", ",", " ", "connection"}], 
-      "}"}]}], "]"}]}], "]"}]}], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"d776f3dd-9227-4a5b-945c-9c947b1db614"],
+      RowBox[{"section", ",", " ", "conn"}], "}"}], ",", " ", 
+     RowBox[{"Method", " ", "->", " ", "\"\<3DFiber\>\""}]}], "]"}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"7b35a9a5-11be-409f-9115-e461d3a096d9"],
 
 Cell[BoxData[
  DynamicModuleBox[{
@@ -450,34 +964,20 @@ PackagePrivate`hovered$$] === "Vertex", {
                     Graph[{{1, 1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}, {2, 3}, {3,
                      1}, {3, 2}, {3, 3}, {4, 1}, {4, 2}, {4, 3}, {5, 1}, {5, 
                     2}, {5, 3}, {6, 1}, {6, 2}, {6, 3}}, {
-                    Null, {{1, 4}, {1, 5}, {1, 6}, {2, 4}, {2, 5}, {2, 6}, {3,
-                     4}, {3, 5}, {3, 6}, {1, 16}, {1, 17}, {1, 18}, {2, 16}, {
-                    2, 17}, {2, 18}, {3, 16}, {3, 17}, {3, 18}, {4, 7}, {4, 
-                    8}, {4, 9}, {5, 7}, {5, 8}, {5, 9}, {6, 7}, {6, 8}, {6, 
-                    9}, {7, 10}, {7, 11}, {7, 12}, {8, 10}, {8, 11}, {8, 
-                    12}, {9, 10}, {9, 11}, {9, 12}, {10, 13}, {10, 14}, {10, 
-                    15}, {11, 13}, {11, 14}, {11, 15}, {12, 13}, {12, 14}, {
-                    12, 15}, {13, 16}, {13, 17}, {13, 18}, {14, 16}, {14, 
-                    17}, {14, 18}, {15, 16}, {15, 17}, {15, 18}}}, {
-                    GraphLayout -> {"Dimension" -> 2}, 
-                    VertexCoordinates -> {{-0.5773502691896263, 
-                    0.33333333333333426`}, {-0.8660254037844389, 
-                    0.8333333333333339}, {-1.1547005383792515`, 
-                    0.33333333333333426`}, {0.2886751345948128, 
-                    0.8333333333333335}, {1.8369701987210297`*^-16, 
-                    1.333333333333333}, {-0.2886751345948125, 
-                    0.8333333333333335}, {1.1547005383792512`, 
-                    0.3333333333333327}, {0.8660254037844386, 
-                    0.8333333333333324}, {0.577350269189626, 
-                    0.3333333333333327}, {
-                    1.1547005383792515`, -0.6666666666666677}, {
-                    0.8660254037844389, -0.16666666666666813`}, {
-                    0.5773502691896263, -0.6666666666666677}, {
-                    0.28867513459481303`, -1.1666666666666665`}, {
-                    3.8285686989269494`*^-16, -0.666666666666667}, \
-{-0.28867513459481225`, -1.1666666666666665`}, {-0.5773502691896257, \
--0.666666666666666}, {-0.8660254037844384, -0.1666666666666663}, \
-{-1.154700538379251, -0.666666666666666}}, 
+                    Null, {{2, 5}, {1, 4}, {3, 5}, {1, 5}, {1, 6}, {2, 6}, {1,
+                     17}, {3, 18}, {1, 16}, {2, 16}, {4, 8}, {6, 8}, {5, 9}, {
+                    6, 7}, {7, 10}, {9, 11}, {9, 10}, {7, 12}, {8, 12}, {8, 
+                    10}, {8, 11}, {9, 12}, {7, 11}, {12, 13}, {11, 15}, {10, 
+                    14}, {13, 18}, {15, 18}, {13, 17}, {14, 16}, {14, 17}, {
+                    15, 16}, {14, 18}, {13, 16}}}, {
+                    GraphLayout -> {"Dimension" -> 3}, 
+                    VertexCoordinates -> CompressedData["
+1:eJxTTMoPSmViYGAQAmJmIFY0nuC6vPLRfu3jhTLHC+/Y//oPAvft1/pEvKja
+9nr/K4u+x0AEFX9vLwNW/wlDvTRY/JJ9P0i1xTu4OFfXPB/LylU2INUyxz/C
+zRGFqN+Prh5izid7ATTzV0HcY38HzT1yEPdjqIe6074GbO/D/Wj+sg8AG3Nj
+P8wcaDhgqJeH+ssSrP4DXPzfC6vismm7bWTB9r6BmyMI9Re6ehloOOegmb8C
+Gs4GaO6RgoYzunoArw4WYw==
+                    "], 
                     VertexStyle -> {{4, 2} -> 
                     RGBColor[0.55, 0.8182351, 0.5994118], {4, 1} -> 
                     RGBColor[0.55, 0.8182351, 0.5994118], {1, 1} -> 
@@ -515,9 +1015,9 @@ PackagePrivate`hovered$$]], StandardYellow,
                    KeyTake[#, 
                     WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
 PackagePrivate`selectedVertices$]], StandardOrange, 
-                  AbsolutePointSize[10]]& , {<|1 -> {1, 2}, 3 -> {3, 3}|>, <|
-                  1 -> {1, 2}, 2 -> {2, 2}, 3 -> {3, 3}, 4 -> {4, 3}, 
-                   5 -> {5, 2}, 6 -> {6, 3}|>}], 
+                  AbsolutePointSize[10]]& , {<|
+                  1 -> {1, 2}, 2 -> {2, 2}, 3 -> {3, 3}, 4 -> {4, 2}, 
+                   5 -> {5, 3}, 6 -> {6, 1}|>}], 
                 If[
                 First[WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
 PackagePrivate`hovered$$] === "Edge", 
@@ -541,24 +1041,24 @@ PackagePrivate`edges$, Sort[
                     Sort[WolframInstitute`InfraGeometry`\
 InfraFiberedGraphViewer`PackagePrivate`selectedVertices$]& ]], StandardPurple, 
                     AbsoluteThickness[4]]], {{
-                    UndirectedEdge[{1, 1}, {2, 2}], 
+                    UndirectedEdge[{1, 1}, {2, 1}], 
                     UndirectedEdge[{1, 2}, {2, 3}], 
-                    UndirectedEdge[{1, 3}, {2, 1}], 
-                    UndirectedEdge[{1, 1}, {6, 1}], 
-                    UndirectedEdge[{1, 2}, {6, 3}], 
-                    UndirectedEdge[{1, 3}, {6, 2}], 
+                    UndirectedEdge[{1, 3}, {2, 2}], 
+                    UndirectedEdge[{1, 1}, {6, 2}], 
+                    UndirectedEdge[{1, 2}, {6, 1}], 
+                    UndirectedEdge[{1, 3}, {6, 3}], 
                     UndirectedEdge[{2, 1}, {3, 2}], 
-                    UndirectedEdge[{2, 2}, {3, 1}], 
-                    UndirectedEdge[{2, 3}, {3, 3}], 
-                    UndirectedEdge[{3, 1}, {4, 3}], 
+                    UndirectedEdge[{2, 2}, {3, 3}], 
+                    UndirectedEdge[{2, 3}, {3, 1}], 
+                    UndirectedEdge[{3, 1}, {4, 2}], 
                     UndirectedEdge[{3, 2}, {4, 1}], 
-                    UndirectedEdge[{3, 3}, {4, 2}], 
-                    UndirectedEdge[{4, 1}, {5, 3}], 
-                    UndirectedEdge[{4, 2}, {5, 2}], 
+                    UndirectedEdge[{3, 3}, {4, 3}], 
+                    UndirectedEdge[{4, 1}, {5, 2}], 
+                    UndirectedEdge[{4, 2}, {5, 3}], 
                     UndirectedEdge[{4, 3}, {5, 1}], 
                     UndirectedEdge[{5, 1}, {6, 2}], 
-                    UndirectedEdge[{5, 2}, {6, 1}], 
-                    UndirectedEdge[{5, 3}, {6, 3}]}}], {}]]]}, {
+                    UndirectedEdge[{5, 2}, {6, 3}], 
+                    UndirectedEdge[{5, 3}, {6, 1}]}}], {}]]]}, {
             WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
 PackagePrivate`highlighted$ = 
              WolframInstitute`InfraGeometry`InfraFiberedGraphHighlight[
@@ -567,34 +1067,20 @@ PackagePrivate`highlighted$ =
                 Graph[{{1, 1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}, {2, 3}, {3, 
                  1}, {3, 2}, {3, 3}, {4, 1}, {4, 2}, {4, 3}, {5, 1}, {5, 2}, {
                  5, 3}, {6, 1}, {6, 2}, {6, 3}}, {
-                 Null, {{1, 4}, {1, 5}, {1, 6}, {2, 4}, {2, 5}, {2, 6}, {3, 
-                  4}, {3, 5}, {3, 6}, {1, 16}, {1, 17}, {1, 18}, {2, 16}, {2, 
-                  17}, {2, 18}, {3, 16}, {3, 17}, {3, 18}, {4, 7}, {4, 8}, {4,
-                   9}, {5, 7}, {5, 8}, {5, 9}, {6, 7}, {6, 8}, {6, 9}, {7, 
-                  10}, {7, 11}, {7, 12}, {8, 10}, {8, 11}, {8, 12}, {9, 10}, {
-                  9, 11}, {9, 12}, {10, 13}, {10, 14}, {10, 15}, {11, 13}, {
-                  11, 14}, {11, 15}, {12, 13}, {12, 14}, {12, 15}, {13, 16}, {
-                  13, 17}, {13, 18}, {14, 16}, {14, 17}, {14, 18}, {15, 16}, {
-                  15, 17}, {15, 18}}}, {
-                 GraphLayout -> {"Dimension" -> 2}, 
-                  VertexCoordinates -> {{-0.5773502691896263, 
-                   0.33333333333333426`}, {-0.8660254037844389, 
-                   0.8333333333333339}, {-1.1547005383792515`, 
-                   0.33333333333333426`}, {0.2886751345948128, 
-                   0.8333333333333335}, {1.8369701987210297`*^-16, 
-                   1.333333333333333}, {-0.2886751345948125, 
-                   0.8333333333333335}, {1.1547005383792512`, 
-                   0.3333333333333327}, {0.8660254037844386, 
-                   0.8333333333333324}, {0.577350269189626, 
-                   0.3333333333333327}, {
-                   1.1547005383792515`, -0.6666666666666677}, {
-                   0.8660254037844389, -0.16666666666666813`}, {
-                   0.5773502691896263, -0.6666666666666677}, {
-                   0.28867513459481303`, -1.1666666666666665`}, {
-                   3.8285686989269494`*^-16, -0.666666666666667}, \
-{-0.28867513459481225`, -1.1666666666666665`}, {-0.5773502691896257, \
--0.666666666666666}, {-0.8660254037844384, -0.1666666666666663}, \
-{-1.154700538379251, -0.666666666666666}}, 
+                 Null, {{2, 5}, {1, 4}, {3, 5}, {1, 5}, {1, 6}, {2, 6}, {1, 
+                  17}, {3, 18}, {1, 16}, {2, 16}, {4, 8}, {6, 8}, {5, 9}, {6, 
+                  7}, {7, 10}, {9, 11}, {9, 10}, {7, 12}, {8, 12}, {8, 10}, {
+                  8, 11}, {9, 12}, {7, 11}, {12, 13}, {11, 15}, {10, 14}, {13,
+                   18}, {15, 18}, {13, 17}, {14, 16}, {14, 17}, {15, 16}, {14,
+                   18}, {13, 16}}}, {
+                 GraphLayout -> {"Dimension" -> 3}, 
+                  VertexCoordinates -> CompressedData["
+1:eJxTTMoPSmViYGAQAmJmIFY0nuC6vPLRfu3jhTLHC+/Y//oPAvft1/pEvKja
+9nr/K4u+x0AEFX9vLwNW/wlDvTRY/JJ9P0i1xTu4OFfXPB/LylU2INUyxz/C
+zRGFqN+Prh5izid7ATTzV0HcY38HzT1yEPdjqIe6074GbO/D/Wj+sg8AG3Nj
+P8wcaDhgqJeH+ssSrP4DXPzfC6vismm7bWTB9r6BmyMI9Re6ehloOOegmb8C
+Gs4GaO6RgoYzunoArw4WYw==
+                   "], 
                   VertexStyle -> {{4, 2} -> 
                     RGBColor[0.55, 0.8182351, 0.5994118], {4, 1} -> 
                     RGBColor[0.55, 0.8182351, 0.5994118], {1, 1} -> 
@@ -625,30 +1111,27 @@ PackagePrivate`highlighted$ =
                Join[{
                  
                  WolframInstitute`InfraGeometry`InfraSection[<|
-                  1 -> {1, 2}, 3 -> {3, 3}|>], 
-                 
-                 WolframInstitute`InfraGeometry`InfraSection[<|
-                  1 -> {1, 2}, 2 -> {2, 2}, 3 -> {3, 3}, 4 -> {4, 3}, 
-                   5 -> {5, 2}, 6 -> {6, 3}|>], 
+                  1 -> {1, 2}, 2 -> {2, 2}, 3 -> {3, 3}, 4 -> {4, 2}, 
+                   5 -> {5, 3}, 6 -> {6, 1}|>], 
                  WolframInstitute`InfraGeometry`InfraConnection[{
-                   UndirectedEdge[{1, 1}, {2, 2}], 
+                   UndirectedEdge[{1, 1}, {2, 1}], 
                    UndirectedEdge[{1, 2}, {2, 3}], 
-                   UndirectedEdge[{1, 3}, {2, 1}], 
-                   UndirectedEdge[{1, 1}, {6, 1}], 
-                   UndirectedEdge[{1, 2}, {6, 3}], 
-                   UndirectedEdge[{1, 3}, {6, 2}], 
+                   UndirectedEdge[{1, 3}, {2, 2}], 
+                   UndirectedEdge[{1, 1}, {6, 2}], 
+                   UndirectedEdge[{1, 2}, {6, 1}], 
+                   UndirectedEdge[{1, 3}, {6, 3}], 
                    UndirectedEdge[{2, 1}, {3, 2}], 
-                   UndirectedEdge[{2, 2}, {3, 1}], 
-                   UndirectedEdge[{2, 3}, {3, 3}], 
-                   UndirectedEdge[{3, 1}, {4, 3}], 
+                   UndirectedEdge[{2, 2}, {3, 3}], 
+                   UndirectedEdge[{2, 3}, {3, 1}], 
+                   UndirectedEdge[{3, 1}, {4, 2}], 
                    UndirectedEdge[{3, 2}, {4, 1}], 
-                   UndirectedEdge[{3, 3}, {4, 2}], 
-                   UndirectedEdge[{4, 1}, {5, 3}], 
-                   UndirectedEdge[{4, 2}, {5, 2}], 
+                   UndirectedEdge[{3, 3}, {4, 3}], 
+                   UndirectedEdge[{4, 1}, {5, 2}], 
+                   UndirectedEdge[{4, 2}, {5, 3}], 
                    UndirectedEdge[{4, 3}, {5, 1}], 
                    UndirectedEdge[{5, 1}, {6, 2}], 
-                   UndirectedEdge[{5, 2}, {6, 1}], 
-                   UndirectedEdge[{5, 3}, {6, 3}]}]}, 
+                   UndirectedEdge[{5, 2}, {6, 3}], 
+                   UndirectedEdge[{5, 3}, {6, 1}]}]}, 
                 WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
 PackagePrivate`overlays$], Method -> "HighlightFiber", 
                "BaseVertexCoordinates" -> <|
@@ -658,24 +1141,13 @@ PackagePrivate`overlays$], Method -> "HighlightFiber",
                  4 -> {0.8660254037844389, -0.5000000000000012}, 
                  5 -> {3.8285686989269494`*^-16, -1.}, 
                  6 -> {-0.8660254037844384, -0.4999999999999994}|>, 
-               VertexCoordinates -> {{-0.5773502691896263, 
-                0.33333333333333426`}, {-0.8660254037844389, 
-                0.8333333333333339}, {-1.1547005383792515`, 
-                0.33333333333333426`}, {0.2886751345948128, 
-                0.8333333333333335}, {1.8369701987210297`*^-16, 
-                1.333333333333333}, {-0.2886751345948125, 
-                0.8333333333333335}, {1.1547005383792512`, 
-                0.3333333333333327}, {0.8660254037844386, 
-                0.8333333333333324}, {0.577350269189626, 
-                0.3333333333333327}, {
-                1.1547005383792515`, -0.6666666666666677}, {
-                0.8660254037844389, -0.16666666666666813`}, {
-                0.5773502691896263, -0.6666666666666677}, {
-                0.28867513459481303`, -1.1666666666666665`}, {
-                3.8285686989269494`*^-16, -0.666666666666667}, \
-{-0.28867513459481225`, -1.1666666666666665`}, {-0.5773502691896257, \
--0.666666666666666}, {-0.8660254037844384, -0.1666666666666663}, \
-{-1.154700538379251, -0.666666666666666}}]}, {
+               VertexCoordinates -> CompressedData["
+1:eJxTTMoPSmViYGAQAmJmIFY0nuC6vPLRfu3jhTLHC+/Y//oPAvft1/pEvKja
+9nr/K4u+x0AEFX9vLwNW/wlDvTRY/JJ9P0i1xTu4OFfXPB/LylU2INUyxz/C
+zRGFqN+Prh5izid7ATTzV0HcY38HzT1yEPdjqIe6074GbO/D/Wj+sg8AG3Nj
+P8wcaDhgqJeH+ssSrP4DXPzfC6vismm7bWTB9r6BmyMI9Re6ehloOOegmb8C
+Gs4GaO6RgoYzunoArw4WYw==
+                "], Method -> "3DFiber"]}, {
             WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
 PackagePrivate`shapes$ = Replace[
                ReplaceAll[VertexShapeFunction, 
@@ -693,8 +1165,8 @@ PackagePrivate`rules,
              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
 PackagePrivate`defaultShape$ = Replace[
                OptionValue[
-               WolframInstitute`InfraGeometry`InfraFiberedGraphViewer, {}, 
-                VertexShapeFunction], {
+               WolframInstitute`InfraGeometry`InfraFiberedGraphViewer, {
+                Method -> "3DFiber"}, VertexShapeFunction], {
                Pattern[
                  WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
 PackagePrivate`function, 
@@ -709,25 +1181,13 @@ PackagePrivate`function,
                    Blank[Symbol]]] :> 
                 WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
 PackagePrivate`function, Blank[] :> If[Length[
-                    
-                    First[{{-0.5773502691896263, 
-                    0.33333333333333426`}, {-0.8660254037844389, 
-                    0.8333333333333339}, {-1.1547005383792515`, 
-                    0.33333333333333426`}, {0.2886751345948128, 
-                    0.8333333333333335}, {1.8369701987210297`*^-16, 
-                    1.333333333333333}, {-0.2886751345948125, 
-                    0.8333333333333335}, {1.1547005383792512`, 
-                    0.3333333333333327}, {0.8660254037844386, 
-                    0.8333333333333324}, {0.577350269189626, 
-                    0.3333333333333327}, {
-                    1.1547005383792515`, -0.6666666666666677}, {
-                    0.8660254037844389, -0.16666666666666813`}, {
-                    0.5773502691896263, -0.6666666666666677}, {
-                    0.28867513459481303`, -1.1666666666666665`}, {
-                    3.8285686989269494`*^-16, -0.666666666666667}, \
-{-0.28867513459481225`, -1.1666666666666665`}, {-0.5773502691896257, \
--0.666666666666666}, {-0.8660254037844384, -0.1666666666666663}, \
-{-1.154700538379251, -0.666666666666666}}, {0, 0}]] === 3, Sphere[#, 
+                    First[CompressedData["
+1:eJxTTMoPSmViYGAQAmJmIFY0nuC6vPLRfu3jhTLHC+/Y//oPAvft1/pEvKja
+9nr/K4u+x0AEFX9vLwNW/wlDvTRY/JJ9P0i1xTu4OFfXPB/LylU2INUyxz/C
+zRGFqN+Prh5izid7ATTzV0HcY38HzT1yEPdjqIe6074GbO/D/Wj+sg8AG3Nj
+P8wcaDhgqJeH+ssSrP4DXPzfC6vismm7bWTB9r6BmyMI9Re6ehloOOegmb8C
+Gs4GaO6RgoYzunoArw4WYw==
+                    "], {0, 0}]] === 3, Sphere[#, 
                    Max[
                     Flatten[{#3}]]]& , Disk[#, #3]& ]}]}, 
             Graph[
@@ -824,486 +1284,6 @@ PackagePrivate`hovered$$] -> StandardPurple}, {}],
               Line[#], {"BaseEdge", #2}, "Mouse"]& ), 
             Apply[Sequence, 
              FilterRules[
-              Flatten[{}], {
-              ImageSize, Background, BaseStyle, LabelStyle, VertexLabels, 
-               EdgeLabels, PlotLabel}]]], StandardForm], 
-          TrackedSymbols :> {
-           WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$}], 
-         EventHandlerTag[{
-          "MouseMoved" :> 
-           With[{WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`annotation$ = MouseAnnotation[]}, 
-             Which[
-              MatchQ[
-              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`annotation$, {"BaseVertex", 
-                Blank[]}], 
-              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$ = {"Vertex", 
-                Last[
-                WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`annotation$]}, 
-              MatchQ[
-              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`annotation$, {"BaseEdge", 
-                Blank[]}], 
-              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$ = {"Edge", 
-                Last[
-                WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`annotation$]}, True, 
-              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$ = {}]], 
-           "MouseExited" :> (
-            WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$ = {}), PassEventsDown -> True, Method -> 
-           "Preemptive", PassEventsUp -> True}]]},
-       "RowDefault"]},
-     {
-      DynamicBox[ToBoxes[
-        Which[
-        WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`PackagePrivate`\
-hovered$$ === {}, 
-         "Hover a vertex to inspect its fiber, or a base edge to inspect \
-section and connection edges.", 
-         First[WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$] === "Vertex", 
-         Row[{"Fiber over ", 
-           Last[
-           WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$]}], True, 
-         Row[{"Lifts over ", 
-           Last[
-           WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$]}]], StandardForm],
-       TrackedSymbols:>{
-        WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`PackagePrivate`\
-hovered$$}]}
-    },
-    DefaultBaseStyle->"Column",
-    GridBoxAlignment->{"Columns" -> {{Left}}},
-    GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
-   "Column"],
-  DynamicModuleValues:>{}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"037251a0-acc9-48b0-b208-b0bec8cc400e"]
-}, Open  ]]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[TextData[{
- "More Examples",
- Cell[BoxData[
-  TemplateBox[{"MoreExamples", 
-    Cell[
-     BoxData[
-      FrameBox[
-       Cell["Extended examples in standardized sections.", "MoreInfoText"], 
-       BaseStyle -> "IFrameBox"]], "MoreInfoTextOuter"]},
-   "MoreInfoOpenerButtonTemplate"]],ExpressionUUID->
-  "352b6acf-a93b-4224-8779-658881cdabd0"]
-}], "ExtendedExamplesSection",
- CellTags->"ExtendedExamples",
- CellID->533848431,ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- InterpretationBox[Cell[
-  "Scope", "ExampleSection",ExpressionUUID->
-   "32e79d70-f7af-47ff-bb41-513374ef55db"],
-  $Line = 0; Null]], "ExampleSection",
- CellID->1293636265,ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75"],
-
-Cell["\<\
-Inspect the same kind of object with upright three-dimensional fibers.\
-\>", "ExampleText",ExpressionUUID->"c2741bba-8073-49d6-a7f6-6cf356084397"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[{
- RowBox[{
-  RowBox[{"SeedRandom", "[", "7", "]"}], ";"}], "\n", 
- RowBox[{"With", "[", "\n", "  ", 
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{"fib", " ", "=", " ", 
-     RowBox[{"RandomInfraFiberedGraph", "[", 
-      RowBox[{
-       RowBox[{"CycleGraph", "[", "4", "]"}], ",", " ", 
-       RowBox[{"\"\<VerticalVertexCount\>\"", " ", "->", " ", 
-        RowBox[{"{", " ", "3", " ", "}"}]}], ",", " ", 
-       RowBox[{"\"\<HorizontalEdgeCount\>\"", " ", "->", " ", "All"}], ",", 
-       " ", 
-       RowBox[{"RandomSeeding", " ", "->", " ", "7"}]}], "]"}]}], "}"}], ",", 
-   "\n", "  ", 
-   RowBox[{"{", 
-    RowBox[{"connection", " ", "=", " ", 
-     RowBox[{"RandomInfraConnection", "[", 
-      RowBox[{"fib", ",", " ", 
-       RowBox[{"RandomSeeding", " ", "->", " ", "7"}]}], "]"}]}], "}"}], ",", 
-   "\n", "  ", 
-   RowBox[{"InfraFiberedGraphViewer", "[", 
-    RowBox[{"fib", ",", " ", 
-     RowBox[{"{", 
-      RowBox[{"connection", " ", "->", " ", "StandardBlue"}], "}"}], ",", " ", 
-     RowBox[{"Method", " ", "->", " ", "\"\<3DFiber\>\""}]}], "]"}]}], 
-  "]"}]}], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"dc253fcc-6717-4192-9a6a-a2eec3d35819"],
-
-Cell[BoxData[
- DynamicModuleBox[{
-  WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`PackagePrivate`\
-hovered$$ = {}}, 
-  TagBox[GridBox[{
-     {
-      TemplateBox[{
-        TagBox[
-         DynamicBox[
-          ToBoxes[
-           
-           With[{WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`selectedVertices$ = 
-             Which[WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$ === {}, {}, 
-               First[WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$] === "Vertex", {
-                Last[
-                WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$]}, True, 
-               Apply[List, 
-                Last[
-                WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$]]]}, {
-            WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`overlays$ = 
-             If[WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$ === {}, {}, 
-               Join[
-                If[
-                First[WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$] === "Vertex", {
-                  Style[
-                   WolframInstitute`InfraGeometry`InfraFiber[
-                    WolframInstitute`InfraGeometry`InfraFiberedGraph[
-                    
-                    Graph[{{1, 1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}, {2, 3}, {3,
-                     1}, {3, 2}, {3, 3}, {4, 1}, {4, 2}, {4, 3}}, {
-                    Null, {{1, 4}, {1, 5}, {1, 6}, {2, 4}, {2, 5}, {2, 6}, {3,
-                     4}, {3, 5}, {3, 6}, {1, 10}, {1, 11}, {1, 12}, {2, 10}, {
-                    2, 11}, {2, 12}, {3, 10}, {3, 11}, {3, 12}, {4, 7}, {4, 
-                    8}, {4, 9}, {5, 7}, {5, 8}, {5, 9}, {6, 7}, {6, 8}, {6, 
-                    9}, {7, 10}, {7, 11}, {7, 12}, {8, 10}, {8, 11}, {8, 
-                    12}, {9, 10}, {9, 11}, {9, 12}}}, {
-                    GraphLayout -> {"Dimension" -> 3}, 
-                    VertexCoordinates -> {{-0.7113248654051871, \
--0.05555555555555454, 
-                    Rational[1, 2]}, {-1., 0.11111111111111212`, 
-                    1}, {-1.2886751345948129`, -0.05555555555555454, 
-                    Rational[1, 2]}, {
-                    0.2886751345948122, 0.9444444444444444, 
-                    Rational[1, 2]}, {-7.044813998280222*^-16, 
-                    1.1111111111111112`, 1}, {-0.28867513459481364`, 
-                    0.9444444444444444, 
-                    Rational[1, 2]}, {
-                    1.2886751345948129`, -0.055555555555556684`, 
-                    Rational[1, 2]}, {1., 0.11111111111110997`, 1}, {
-                    0.7113248654051871, -0.055555555555556684`, 
-                    Rational[1, 2]}, {
-                    0.28867513459481353`, -1.0555555555555556`, 
-                    Rational[1, 2]}, {
-                    6.049014748177263*^-16, -0.8888888888888888, 
-                    1}, {-0.2886751345948123, -1.0555555555555556`, 
-                    Rational[1, 2]}}, 
-                    VertexStyle -> {{4, 2} -> 
-                    RGBColor[0.55, 0.8182351, 0.5994118], {4, 1} -> 
-                    RGBColor[0.55, 0.8182351, 0.5994118], {1, 1} -> 
-                    RGBColor[0.9057646, 0.6405292, 0.55], {1, 2} -> 
-                    RGBColor[0.9057646, 0.6405292, 0.55], {3, 2} -> 
-                    RGBColor[1., 0.82352935, 0.55], {2, 2} -> 
-                    RGBColor[0.63647065, 0.72470575, 0.91352935], {2, 1} -> 
-                    RGBColor[0.63647065, 0.72470575, 0.91352935], {2, 3} -> 
-                    RGBColor[0.63647065, 0.72470575, 0.91352935], {3, 1} -> 
-                    RGBColor[1., 0.82352935, 0.55], {3, 3} -> 
-                    RGBColor[1., 0.82352935, 0.55], {4, 3} -> 
-                    RGBColor[0.55, 0.8182351, 0.5994118], {1, 3} -> 
-                    RGBColor[0.9057646, 0.6405292, 0.55]}}], <|{1, 1} -> 
-                    1, {1, 2} -> 1, {1, 3} -> 1, {2, 1} -> 2, {2, 2} -> 
-                    2, {2, 3} -> 2, {3, 1} -> 3, {3, 2} -> 3, {3, 3} -> 
-                    3, {4, 1} -> 4, {4, 2} -> 4, {4, 3} -> 4|>], 
-                    Last[
-                    WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$]], StandardYellow, 
-                   Opacity[0.7]]}, {}], 
-                Map[Style[
-                  WolframInstitute`InfraGeometry`InfraSection[
-                   
-                   KeyTake[#, 
-                    WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`selectedVertices$]], StandardOrange, 
-                  AbsolutePointSize[10]]& , {}], 
-                If[
-                First[WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$] === "Edge", 
-                 Map[
-                  Function[
-                  WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`edges$, 
-                   Style[
-                    WolframInstitute`InfraGeometry`InfraConnection[
-                    Select[
-                    WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`edges$, Sort[
-                    
-                    Lookup[<|{1, 1} -> 1, {1, 2} -> 1, {1, 3} -> 1, {2, 1} -> 
-                    2, {2, 2} -> 2, {2, 3} -> 2, {3, 1} -> 3, {3, 2} -> 
-                    3, {3, 3} -> 3, {4, 1} -> 4, {4, 2} -> 4, {4, 3} -> 4|>, 
-                    Map[Key, 
-                    Apply[List, #]]]] === 
-                    Sort[WolframInstitute`InfraGeometry`\
-InfraFiberedGraphViewer`PackagePrivate`selectedVertices$]& ]], StandardPurple, 
-                    AbsoluteThickness[4]]], {{
-                    UndirectedEdge[{1, 1}, {2, 2}], 
-                    UndirectedEdge[{1, 2}, {2, 3}], 
-                    UndirectedEdge[{1, 3}, {2, 1}], 
-                    UndirectedEdge[{1, 1}, {4, 1}], 
-                    UndirectedEdge[{1, 2}, {4, 3}], 
-                    UndirectedEdge[{1, 3}, {4, 2}], 
-                    UndirectedEdge[{2, 1}, {3, 2}], 
-                    UndirectedEdge[{2, 2}, {3, 1}], 
-                    UndirectedEdge[{2, 3}, {3, 3}], 
-                    UndirectedEdge[{3, 1}, {4, 3}], 
-                    UndirectedEdge[{3, 2}, {4, 1}], 
-                    UndirectedEdge[{3, 3}, {4, 2}]}}], {}]]]}, {
-            WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`highlighted$ = 
-             WolframInstitute`InfraGeometry`InfraFiberedGraphHighlight[
-               WolframInstitute`InfraGeometry`InfraFiberedGraph[
-                
-                Graph[{{1, 1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}, {2, 3}, {3, 
-                 1}, {3, 2}, {3, 3}, {4, 1}, {4, 2}, {4, 3}}, {
-                 Null, {{1, 4}, {1, 5}, {1, 6}, {2, 4}, {2, 5}, {2, 6}, {3, 
-                  4}, {3, 5}, {3, 6}, {1, 10}, {1, 11}, {1, 12}, {2, 10}, {2, 
-                  11}, {2, 12}, {3, 10}, {3, 11}, {3, 12}, {4, 7}, {4, 8}, {4,
-                   9}, {5, 7}, {5, 8}, {5, 9}, {6, 7}, {6, 8}, {6, 9}, {7, 
-                  10}, {7, 11}, {7, 12}, {8, 10}, {8, 11}, {8, 12}, {9, 10}, {
-                  9, 11}, {9, 12}}}, {
-                 GraphLayout -> {"Dimension" -> 3}, 
-                  VertexCoordinates -> {{-0.7113248654051871, \
--0.05555555555555454, 
-                    Rational[1, 2]}, {-1., 0.11111111111111212`, 
-                    1}, {-1.2886751345948129`, -0.05555555555555454, 
-                    Rational[1, 2]}, {
-                    0.2886751345948122, 0.9444444444444444, 
-                    Rational[1, 2]}, {-7.044813998280222*^-16, 
-                    1.1111111111111112`, 1}, {-0.28867513459481364`, 
-                    0.9444444444444444, 
-                    Rational[1, 2]}, {
-                    1.2886751345948129`, -0.055555555555556684`, 
-                    Rational[1, 2]}, {1., 0.11111111111110997`, 1}, {
-                    0.7113248654051871, -0.055555555555556684`, 
-                    Rational[1, 2]}, {
-                    0.28867513459481353`, -1.0555555555555556`, 
-                    Rational[1, 2]}, {
-                    6.049014748177263*^-16, -0.8888888888888888, 
-                    1}, {-0.2886751345948123, -1.0555555555555556`, 
-                    Rational[1, 2]}}, 
-                  VertexStyle -> {{4, 2} -> 
-                    RGBColor[0.55, 0.8182351, 0.5994118], {4, 1} -> 
-                    RGBColor[0.55, 0.8182351, 0.5994118], {1, 1} -> 
-                    RGBColor[0.9057646, 0.6405292, 0.55], {1, 2} -> 
-                    RGBColor[0.9057646, 0.6405292, 0.55], {3, 2} -> 
-                    RGBColor[1., 0.82352935, 0.55], {2, 2} -> 
-                    RGBColor[0.63647065, 0.72470575, 0.91352935], {2, 1} -> 
-                    RGBColor[0.63647065, 0.72470575, 0.91352935], {2, 3} -> 
-                    RGBColor[0.63647065, 0.72470575, 0.91352935], {3, 1} -> 
-                    RGBColor[1., 0.82352935, 0.55], {3, 3} -> 
-                    RGBColor[1., 0.82352935, 0.55], {4, 3} -> 
-                    RGBColor[0.55, 0.8182351, 0.5994118], {1, 3} -> 
-                    RGBColor[0.9057646, 0.6405292, 0.55]}}], <|{1, 1} -> 
-                 1, {1, 2} -> 1, {1, 3} -> 1, {2, 1} -> 2, {2, 2} -> 
-                 2, {2, 3} -> 2, {3, 1} -> 3, {3, 2} -> 3, {3, 3} -> 
-                 3, {4, 1} -> 4, {4, 2} -> 4, {4, 3} -> 4|>], 
-               Join[{WolframInstitute`InfraGeometry`InfraConnection[{
-                    UndirectedEdge[{1, 1}, {2, 2}], 
-                    UndirectedEdge[{1, 2}, {2, 3}], 
-                    UndirectedEdge[{1, 3}, {2, 1}], 
-                    UndirectedEdge[{1, 1}, {4, 1}], 
-                    UndirectedEdge[{1, 2}, {4, 3}], 
-                    UndirectedEdge[{1, 3}, {4, 2}], 
-                    UndirectedEdge[{2, 1}, {3, 2}], 
-                    UndirectedEdge[{2, 2}, {3, 1}], 
-                    UndirectedEdge[{2, 3}, {3, 3}], 
-                    UndirectedEdge[{3, 1}, {4, 3}], 
-                    UndirectedEdge[{3, 2}, {4, 1}], 
-                    UndirectedEdge[{3, 3}, {4, 2}]}] -> 
-                 RGBColor[0.4, 0.6, 1]}, 
-                WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`overlays$], Method -> "HighlightFiber", 
-               "BaseVertexCoordinates" -> <|
-                1 -> {-1., 1.0106430996148606`*^-15}, 
-                 2 -> {-7.044813998280222*^-16, 1.}, 
-                 3 -> {1., -1.133107779529596*^-15}, 
-                 4 -> {6.049014748177263*^-16, -1.}|>, 
-               VertexCoordinates -> {{-0.7113248654051871, \
--0.05555555555555454, 
-                  Rational[1, 2]}, {-1., 0.11111111111111212`, 
-                  1}, {-1.2886751345948129`, -0.05555555555555454, 
-                  Rational[1, 2]}, {0.2886751345948122, 0.9444444444444444, 
-                  Rational[1, 2]}, {-7.044813998280222*^-16, 
-                  1.1111111111111112`, 1}, {-0.28867513459481364`, 
-                  0.9444444444444444, 
-                  Rational[1, 2]}, {
-                 1.2886751345948129`, -0.055555555555556684`, 
-                  Rational[1, 2]}, {1., 0.11111111111110997`, 1}, {
-                 0.7113248654051871, -0.055555555555556684`, 
-                  Rational[1, 2]}, {
-                 0.28867513459481353`, -1.0555555555555556`, 
-                  Rational[1, 2]}, {
-                 6.049014748177263*^-16, -0.8888888888888888, 
-                  1}, {-0.2886751345948123, -1.0555555555555556`, 
-                  Rational[1, 2]}}, Method -> "3DFiber"]}, {
-            WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`shapes$ = Replace[
-               ReplaceAll[VertexShapeFunction, 
-                Options[
-                WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`highlighted$, VertexShapeFunction]], {
-               Pattern[
-                 WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`rules, 
-                  Blank[List]] :> <|
-                  Cases[
-                  WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`rules, 
-                   Blank[Rule]]|>, Blank[] -> <||>}], 
-             WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`defaultShape$ = Replace[
-               OptionValue[
-               WolframInstitute`InfraGeometry`InfraFiberedGraphViewer, {
-                Method -> "3DFiber"}, VertexShapeFunction], {
-               Pattern[
-                 WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`function, 
-                  Blank[Function]] :> 
-                WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`function, 
-                Pattern[
-                 WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`function, 
-                  Except[
-                   Alternatives[Automatic, None, Inherited], 
-                   Blank[Symbol]]] :> 
-                WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`function, Blank[] :> If[Length[
-                    First[{{-0.7113248654051871, -0.05555555555555454, 
-                    Rational[1, 2]}, {-1., 0.11111111111111212`, 
-                    1}, {-1.2886751345948129`, -0.05555555555555454, 
-                    Rational[1, 2]}, {
-                    0.2886751345948122, 0.9444444444444444, 
-                    Rational[1, 2]}, {-7.044813998280222*^-16, 
-                    1.1111111111111112`, 1}, {-0.28867513459481364`, 
-                    0.9444444444444444, 
-                    Rational[1, 2]}, {
-                    1.2886751345948129`, -0.055555555555556684`, 
-                    Rational[1, 2]}, {1., 0.11111111111110997`, 1}, {
-                    0.7113248654051871, -0.055555555555556684`, 
-                    Rational[1, 2]}, {
-                    0.28867513459481353`, -1.0555555555555556`, 
-                    Rational[1, 2]}, {
-                    6.049014748177263*^-16, -0.8888888888888888, 
-                    1}, {-0.2886751345948123, -1.0555555555555556`, 
-                    Rational[1, 2]}}, {0, 0}]] === 3, Sphere[#, 
-                   Max[
-                    Flatten[{#3}]]]& , Disk[#, #3]& ]}]}, 
-            Graph[
-            WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`highlighted$, VertexShapeFunction -> Map[
-               Function[
-               WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`vertex$, 
-                
-                With[{WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`shape = 
-                  Lookup[WolframInstitute`InfraGeometry`\
-InfraFiberedGraphViewer`PackagePrivate`shapes$, 
-                    Key[
-                    WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`vertex$], 
-                    WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`defaultShape$], 
-                  WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`vertex = 
-                  WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`vertex$}, 
-                 WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`vertex -> (Annotation[
-                   
-                   WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`shape[
-                    SlotSequence[1]], {
-                   "TotalVertex", 
-                    WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`vertex}, "Mouse"]& )]], 
-               VertexList[
-               WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`highlighted$]]]], StandardForm], 
-          TrackedSymbols :> {
-           WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$}], 
-         EventHandlerTag[{
-          "MouseMoved" :> 
-           With[{WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`annotation$ = MouseAnnotation[]}, 
-             If[
-              MatchQ[
-              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`annotation$, {"TotalVertex", 
-                Blank[]}], 
-              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$ = {"Vertex", 
-                
-                Lookup[<|{1, 1} -> 1, {1, 2} -> 1, {1, 3} -> 1, {2, 1} -> 
-                  2, {2, 2} -> 2, {2, 3} -> 2, {3, 1} -> 3, {3, 2} -> 
-                  3, {3, 3} -> 3, {4, 1} -> 4, {4, 2} -> 4, {4, 3} -> 4|>, 
-                 Key[
-                  Last[
-                  WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`annotation$]]]}]], 
-           "MouseExited" :> (
-            WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$ = {}), PassEventsDown -> True, Method -> 
-           "Preemptive", PassEventsUp -> True}]], 
-        TemplateBox[{20}, "Spacer1"], 
-        TagBox[
-         DynamicBox[
-          ToBoxes[
-           Graph[
-            Graph[{1, 2, 3, 4}, {Null, {{1, 2}, {1, 4}, {2, 3}, {3, 4}}}], 
-            VertexCoordinates -> 
-            Normal[<|1 -> {-1., 1.0106430996148606`*^-15}, 
-               2 -> {-7.044813998280222*^-16, 1.}, 
-               3 -> {1., -1.133107779529596*^-15}, 
-               4 -> {6.049014748177263*^-16, -1.}|>], VertexStyle -> If[
-              MatchQ[
-              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$, {"Vertex", 
-                Blank[]}], {
-              Last[WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$] -> StandardYellow}, {}], EdgeStyle -> If[
-              MatchQ[
-              WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$, {"Edge", 
-                Blank[]}], {
-              Last[WolframInstitute`InfraGeometry`InfraFiberedGraphViewer`\
-PackagePrivate`hovered$$] -> StandardPurple}, {}], 
-            VertexShapeFunction -> (Annotation[
-              Disk[#, #3], {"BaseVertex", #2}, "Mouse"]& ), 
-            EdgeShapeFunction -> (Annotation[
-              Line[#], {"BaseEdge", #2}, "Mouse"]& ), 
-            Apply[Sequence, 
-             FilterRules[
               Flatten[{Method -> "3DFiber"}], {
               ImageSize, Background, BaseStyle, LabelStyle, VertexLabels, 
                EdgeLabels, PlotLabel}]]], StandardForm], 
@@ -1366,7 +1346,7 @@ hovered$$}]}
     GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
    "Column"],
   DynamicModuleValues:>{}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"cfba89b7-f271-4550-9084-3679f9fd15f2"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"53ff9a2b-c13b-4037-a82c-c6c24a0baf4d"]
 }, Open  ]]
 }, Open  ]],
 
@@ -1398,66 +1378,12 @@ Cell[BoxData[
   $Line = 0; Null]], "ExampleSection",
  CellID->2123667759,ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438"],
 
-Cell[CellGroupData[{
-
 Cell[BoxData[
  InterpretationBox[Cell[
   "Possible Issues", "ExampleSection",ExpressionUUID->
    "dda06a82-eb41-4b48-8510-6cb821647761"],
   $Line = 0; Null]], "ExampleSection",
  CellID->1305812373,ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f"],
-
-Cell["The viewer leaves an unsupported view unevaluated.", "ExampleText",ExpressionUUID->"2a8cfd09-acff-4c5d-a3ff-41b1db436741"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"InfraFiberedGraphViewer", "[", 
-  RowBox[{
-   RowBox[{"InfraFiberedGraph", "[", 
-    RowBox[{
-     RowBox[{"CycleGraph", "[", "4", "]"}], ",", " ", "Identity"}], "]"}], ",",
-    " ", 
-   RowBox[{"{", "}"}], ",", " ", 
-   RowBox[{"Method", " ", "->", " ", "\"\<Unrecognized\>\""}]}], 
-  "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"9382edbb-00be-4e7a-8613-d55d5896770e"],
-
-Cell[BoxData[
- RowBox[{"InfraFiberedGraphViewer", "[", 
-  RowBox[{
-   RowBox[{"InfraFiberedGraph", "[", 
-    RowBox[{
-     GraphicsBox[
-      NamespaceBox["NetworkGraphics",
-       DynamicModuleBox[{Typeset`graph = HoldComplete[
-         Graph[{1, 2, 3, 4}, {Null, 
-           SparseArray[
-           Automatic, {4, 4}, 0, {
-            1, {{0, 2, 4, 6, 8}, {{2}, {4}, {1}, {3}, {2}, {4}, {1}, {3}}}, 
-             Pattern}]}, {GraphLayout -> "CircularEmbedding"}]]}, 
-        TagBox[
-         GraphicsGroupBox[
-          GraphicsComplexBox[{{-1., 
-           1.0106430996148606`*^-15}, {-7.044813998280222*^-16, 1.}, {
-           1., -1.133107779529596*^-15}, {6.049014748177263*^-16, -1.}}, {
-            {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
-             0.], ArrowBox[{{1, 2}, {1, 4}, {2, 3}, {3, 4}}, 
-              0.02261146496815286]}, 
-            {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-             DiskBox[1, 0.02261146496815286], DiskBox[2, 0.02261146496815286],
-              DiskBox[3, 0.02261146496815286], 
-             DiskBox[4, 0.02261146496815286]}}]],
-         MouseAppearanceTag["NetworkGraphics"]],
-        AllowKernelInitialization->False]],
-      DefaultBaseStyle->"NetworkGraphics",
-      FormatType->TraditionalForm,
-      FrameTicks->None], ",", "Identity"}], "]"}], ",", 
-   RowBox[{"{", "}"}], ",", 
-   RowBox[{"Method", "\[Rule]", "\<\"Unrecognized\"\>"}]}], "]"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"af1ab2a8-c5e9-48a1-9834-239b41faf866"]
-}, Open  ]]
-}, Open  ]],
 
 Cell[BoxData[
  InterpretationBox[Cell[
@@ -1524,7 +1450,7 @@ Cell["WolframInstitute`InfraGeometry`", "Categorization",
 
 Cell["WolframInstitute/InfraGeometry/ref/InfraFiberedGraphViewer", \
 "Categorization",
- CellLabel->"URI",ExpressionUUID->"515d6f92-db47-423d-a580-28425754e714"]
+ CellLabel->"URI",ExpressionUUID->"80ed88a3-4eeb-4a05-a883-5245e026e772"]
 }, Closed]],
 
 Cell["Keywords", "KeywordsSection",
@@ -1560,9 +1486,9 @@ TaggingRules->{
    "title" -> "InfraFiberedGraphViewer", "context" -> 
     "WolframInstitute`InfraGeometry`", 
     "keywords" -> {
-     "fibered graph", "fibration", "viewer", "hover", "section", "connection",
-       "lift"}, "summary" -> "", "paclet" -> "WolframInstitute/InfraGeometry",
-     "uri" -> "WolframInstitute/InfraGeometry/ref/InfraFiberedGraphViewer", 
+     "fibered graph", "viewer", "hover", "fiber", "section", "connection", 
+      "lift"}, "summary" -> "", "paclet" -> "WolframInstitute/InfraGeometry", 
+    "uri" -> "WolframInstitute/InfraGeometry/ref/InfraFiberedGraphViewer", 
     "type" -> "Symbol", "index" -> True, "language" -> "en"}},
 CreateCellID->True,
 CellContext->CellGroup,
@@ -1577,14 +1503,14 @@ ExpressionUUID->"c207366e-060a-406b-a297-9e30e1628f43"
 (*CellTagsOutline
 CellTagsIndex->{
  "ExtendedExamples"->{
-  Cell[39551, 894, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+  Cell[38918, 860, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
    CellTags->"ExtendedExamples",
    CellID->533848431]}
  }
 *)
 (*CellTagsIndex
 CellTagsIndex->{
- {"ExtendedExamples", 70219, 1578}
+ {"ExtendedExamples", 67937, 1504}
  }
 *)
 (*NotebookFileOutline
@@ -1592,107 +1518,97 @@ Notebook[{
 Cell[CellGroupData[{
 Cell[576, 22, 121, 1, 70, "ObjectName",ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec",
  CellID->1224892054],
-Cell[700, 25, 2138, 59, 70, "Usage",ExpressionUUID->"4e96ba48-4979-4132-8257-cc2f01f1575e"],
-Cell[2841, 86, 1437, 34, 70, "Notes",ExpressionUUID->"a11111f9-914a-43e4-b88b-aa2db9d4f57e"],
-Cell[4281, 122, 189, 3, 70, "Notes",ExpressionUUID->"785a7aaa-11c6-4749-85d3-2a94e3a59fea"],
-Cell[4473, 127, 172, 3, 70, "Notes",ExpressionUUID->"86ecefd3-2b50-4e1d-8090-2adc68a6a899"],
-Cell[4648, 132, 227, 3, 70, "Notes",ExpressionUUID->"2cb9b3d3-d014-457f-93e0-c52fb938f184"],
-Cell[4878, 137, 174, 3, 70, "Notes",ExpressionUUID->"e16b76d2-942a-491a-aeeb-b5cdd0dc8372"],
-Cell[5055, 142, 259, 4, 70, "Notes",ExpressionUUID->"3b756eaa-f08e-44ea-9980-4f3d5715b088"],
-Cell[5317, 148, 1743, 44, 70, "Notes",ExpressionUUID->"29e90154-6827-4e11-a050-034c3bbab20f"]
+Cell[700, 25, 1853, 51, 70, "Usage",ExpressionUUID->"7ed86045-ab06-42aa-ac9a-4daad9f01f84"],
+Cell[2556, 78, 520, 12, 70, "Notes",ExpressionUUID->"83b62408-9417-4d97-a760-9733704f1cda"],
+Cell[3079, 92, 81, 0, 70, "Notes",ExpressionUUID->"fbbf3572-c51d-46bd-95cd-0af75eb8b6a2"],
+Cell[3163, 94, 1113, 20, 70, "2ColumnTableMod",ExpressionUUID->"9165829a-6aea-4278-b7be-a37fe2b0837a"],
+Cell[4279, 116, 1313, 33, 70, "Notes",ExpressionUUID->"8d27c54c-4fe7-4247-9753-1a36aeda822f"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[7097, 197, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
+Cell[5629, 154, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
  CellID->1559318232],
-Cell[7559, 212, 2191, 60, 70, "SeeAlso",ExpressionUUID->"9089c4f3-7dcf-4830-ab45-2c4d60c1229d"]
+Cell[6091, 169, 2191, 60, 70, "SeeAlso",ExpressionUUID->"7bbdaf60-0df3-4ffe-b6f6-f737bec9372f"]
 }, Open  ]],
-Cell[9765, 275, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
+Cell[8297, 232, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
  CellID->792424486],
 Cell[CellGroupData[{
-Cell[10225, 291, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
+Cell[8757, 248, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
  CellID->38303248],
-Cell[10344, 294, 311, 6, 70, "MoreAbout",ExpressionUUID->"a1ffc4c5-c712-46f9-87d1-dc2c85500fa7"]
+Cell[8876, 251, 311, 6, 70, "MoreAbout",ExpressionUUID->"8745dc16-b922-4d67-9ee0-31f0b275b4d4"]
 }, Open  ]],
-Cell[10670, 303, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
+Cell[9202, 260, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
  CellID->47113304],
 Cell[CellGroupData[{
-Cell[11166, 320, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
+Cell[9698, 277, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
  CellID->1718580883],
-Cell[11700, 336, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
+Cell[10232, 293, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
  CellID->1969679695]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[12013, 345, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
+Cell[10545, 302, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
  CellID->880084151],
-Cell[12458, 359, 149, 2, 70, "ExampleText",ExpressionUUID->"d00739cf-b0a6-4ad7-afcd-98bdfc0b5675"],
+Cell[10990, 316, 143, 1, 70, "ExampleText",ExpressionUUID->"025bdd3f-3968-4303-a2ab-b83a458571e2"],
 Cell[CellGroupData[{
-Cell[12632, 365, 1913, 46, 70, "Input",ExpressionUUID->"d776f3dd-9227-4a5b-945c-9c947b1db614"],
-Cell[14548, 413, 24954, 475, 70, "Output",ExpressionUUID->"037251a0-acc9-48b0-b208-b0bec8cc400e"]
+Cell[11158, 321, 955, 23, 70, "Input",ExpressionUUID->"3237bbed-04b5-4408-a132-ffae337cd329"],
+Cell[12116, 346, 26753, 508, 70, "Output",ExpressionUUID->"dbed3336-1e48-4918-a845-207f77c87dfe"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[39551, 894, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+Cell[38918, 860, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
  CellTags->"ExtendedExamples",
  CellID->533848431],
 Cell[CellGroupData[{
-Cell[40063, 911, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
+Cell[39430, 877, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
  CellID->1293636265],
-Cell[40308, 918, 156, 2, 70, "ExampleText",ExpressionUUID->"c2741bba-8073-49d6-a7f6-6cf356084397"],
+Cell[39675, 884, 174, 3, 70, "ExampleText",ExpressionUUID->"d567a447-312e-42f4-9067-35506cce554d"],
 Cell[CellGroupData[{
-Cell[40489, 924, 1173, 28, 70, "Input",ExpressionUUID->"dc253fcc-6717-4192-9a6a-a2eec3d35819"],
-Cell[41665, 954, 21049, 414, 70, "Output",ExpressionUUID->"cfba89b7-f271-4550-9084-3679f9fd15f2"]
+Cell[39874, 891, 1421, 34, 70, "Input",ExpressionUUID->"7b35a9a5-11be-409f-9115-e461d3a096d9"],
+Cell[41298, 927, 21283, 421, 70, "Output",ExpressionUUID->"53ff9a2b-c13b-4037-a82c-c6c24a0baf4d"]
 }, Open  ]]
 }, Open  ]],
-Cell[62741, 1372, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
+Cell[62608, 1352, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
  CellID->1020263627],
-Cell[63009, 1379, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
+Cell[62876, 1359, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
  CellID->2061341341],
-Cell[63256, 1386, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
+Cell[63123, 1366, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
  CellID->258228157],
-Cell[63507, 1393, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
+Cell[63374, 1373, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
  CellID->2123667759],
-Cell[CellGroupData[{
-Cell[63791, 1402, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
+Cell[63636, 1380, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
  CellID->1305812373],
-Cell[64046, 1409, 128, 0, 70, "ExampleText",ExpressionUUID->"2a8cfd09-acff-4c5d-a3ff-41b1db436741"],
-Cell[CellGroupData[{
-Cell[64199, 1413, 405, 10, 70, "Input",ExpressionUUID->"9382edbb-00be-4e7a-8613-d55d5896770e"],
-Cell[64607, 1425, 1535, 32, 70, "Output",ExpressionUUID->"af1ab2a8-c5e9-48a1-9834-239b41faf866"]
-}, Open  ]]
-}, Open  ]],
-Cell[66169, 1461, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
+Cell[63891, 1387, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
  CellID->1653164318],
-Cell[66429, 1468, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
+Cell[64151, 1394, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
  CellID->589267740]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[66715, 1478, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
+Cell[64437, 1404, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
  CellID->311882160],
-Cell[66828, 1481, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
+Cell[64550, 1407, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
  CellID->341476719],
 Cell[CellGroupData[{
-Cell[67329, 1497, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
+Cell[65051, 1423, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
  CellID->1755438392],
-Cell[67817, 1512, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
+Cell[65539, 1438, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
  CellID->686433507],
-Cell[67954, 1516, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
+Cell[65676, 1442, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
  CellID->605800465],
-Cell[68115, 1520, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
+Cell[65837, 1446, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
  CellID->468444828],
-Cell[68273, 1524, 160, 2, 70, "Categorization",ExpressionUUID->"515d6f92-db47-423d-a580-28425754e714"]
+Cell[65995, 1450, 160, 2, 70, "Categorization",ExpressionUUID->"80ed88a3-4eeb-4a05-a883-5245e026e772"]
 }, Closed]],
-Cell[68448, 1529, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
+Cell[66170, 1455, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
  CellID->477174294],
 Cell[CellGroupData[{
-Cell[68583, 1534, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
+Cell[66305, 1460, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
  CellID->1872225408],
-Cell[68706, 1537, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
+Cell[66428, 1463, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
  CellID->1562036412],
-Cell[68858, 1541, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
+Cell[66580, 1467, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
  CellID->158391909],
-Cell[68998, 1545, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
+Cell[66720, 1471, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
  CellID->1360575930],
-Cell[69137, 1549, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
+Cell[66859, 1475, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
  CellID->793782254]
 }, Closed]]
 }, Open  ]]

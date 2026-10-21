@@ -6,104 +6,60 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSceneViewer
 Keywords: [viewer, interactive, construction, step, branch]
-SeeAlso: [InfraScenePlot, InfraSceneMultiway, InfraBranchialGraph, InfraScene, RandomInfraSceneInstance, InfraSubstrateHighlight, InfraSceneInstance, InfraSceneStep]
+SeeAlso: [InfraScene, InfraScenePlot, InfraSceneMultiway, InfraBranchialGraph, RandomInfraSceneInstance, InfraSceneStep, InfraSubstrateHighlight]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraSceneViewer]()[*scene*, *graph*]</code> is an interactive view of an [InfraScene]() on a graph, stepped one construction step at a time.
+<code>[InfraSceneViewer]()[*scene*, *g*]</code> is an interactive view of the construction *scene* on the graph *g*, one step at a time.
 
-<code>[InfraSceneViewer]()[*scene*, *graph*, *bindings*]</code> starts from an association of pre-fixed bindings.
+<code>[InfraSceneViewer]()[*scene*, *g*, *init*]</code> starts from the bindings in the association *init*.
 
-<code>[InfraSceneViewer]()[*data*]</code> inspects a saved [InfraSceneMultiway]() exploration without sampling.
+<code>[InfraSceneViewer]()[*data*]</code> browses the result *data* of [InfraSceneMultiway]().
 
 ## Details & Options
 
-Definition: the viewer solves the scene one step at a time and draws the objects bound so far, through [InfraSubstrateHighlight]().
-
-It exists because a construction is a sequence, not a picture. Reading Euclid I.10 as a single figure hides the order; stepping it shows which object each later one depends on.
-
-Controls, in two rows.
+A construction is a sequence, not a picture. The viewer solves the scene step by step and draws the objects bound so far with [InfraSubstrateHighlight]().
 
 | Control | Does |
 |---|---|
-| step arrows, label menu | move between construction steps |
-| eye | hide or show the current step's object |
+| step arrows, step menu | move between the steps of the scene |
+| eye | hide or show the object of the current step |
 | Branch / Diffuse | show one realisation, or all of them overlaid |
-| branch arrows | page through realisations of the current step |
-| Fixed | lock the current branch as the starting point for later steps |
+| branch arrows | page through the realisations of the current step |
+| Fixed | keep the current branch for the later steps |
 
-Branch and Diffuse are the two ways to look at a family. Diffuse draws every realisation at once, with intensity following multiplicity, which is the right view for seeing where an object is concentrated. Branch picks one, which is the right view for following a single construction through to the end.
+Diffuse draws every realisation at once, the more often a vertex is used the stronger; Branch follows one construction to the end. Without Fixed every step is solved over all branches of the earlier ones, and their number multiplies.
 
-Fixed matters on long constructions. Without it, each step re-solves against every branch of the previous ones and the instance count multiplies. Fixing a branch collapses that.
+<code>[InfraSceneViewer]()[*data*]</code> reads the saved states and events and samples nothing. It shows the bindings of a state, the events into it and its neighbours in the [InfraBranchialGraph]().
 
-The rendering options `"OpacityRange"`, `"ThicknessRange"`, `"PointSizeRange"` and `ImageSize` are passed through to [InfraSubstrateHighlight]().
+| Option | Default |
+|---|---|
+| `"OpacityRange"`, `"ThicknessRange"`, `"PointSizeRange"` | those of [InfraSubstrateHighlight]() |
+| [ImageSize]() | 500 |
 
-For a static figure from saved bindings, use [InfraScenePlot]().
-
-For saved exploration data, event navigation uses individual construction depths; group navigation uses the saved group boundaries.
-The selected state's bindings and assertion statuses appear with its geometry, immediate branchial neighbors and common-parent witnesses.
-Choose an incoming event, or an earlier event in the history table, to inspect a different saved history and its exact candidate values.
-Merged states retain all incoming choices.
-
-A binding restriction filters saved states by literal equality and marks the view as filtered.
-It never changes the saved initial bindings.
-List-valued points, ordered walks, vertex sets and Graph representatives retain their declared kinds.
-
-Layer and whole-scene completeness are displayed separately, with the saved stopping reasons and unfinished candidates.
-Pending or unsupported assertions are undecided.
-In an incomplete layer, displayed branchial edges have witnesses; missing edges do not prove nonadjacency.
-A complete empty layer differs from a partial layer containing no observed states.
-
-Navigation reads the saved record only.
-To explore further, make a separate explicit [InfraSceneMultiway]() call and open its new record; resuming a saved run is deferred.
+[InfraScenePlot]() draws one instance as a static figure.
 
 ## Basic Examples
 
-Build a scene and open the viewer on it. The slider steps through the construction.
+Euclid I.1 on the square mesh, step by step:
 
 ```wl
-ClearAll[a, b, cA, cB, u];
-With[
-  {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
-  {p1 = First @ GraphCenter[g]},
-  {p2 = RandomInfraPoint[g, InfraShell[p1, 3], RandomSeeding -> 1]},
-  {scene = InfraScene[{a, b, cA, cB, u},
-     {InfraSceneStep[{a == InfraPoint[p1]}, "point a"],
-      InfraSceneStep[{b == InfraPoint[p2]}, "point b"],
-      InfraSceneStep[{cA == InfraCircle[a, 3]}, "circle around a"],
-      InfraSceneStep[{cB == InfraCircle[b, 3]}, "circle around b"],
-      InfraSceneStep[{u == InfraPoint[ InfraIntersection[cA, cB] ]}, "they meet"]}]},
+With[{g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 3], RandomSeeding -> 2]},
+  {scene = InfraScene[{pA, pB, cA, cB, meet},
+     {InfraSceneStep[{pA == InfraPoint[a], pB == InfraPoint[b]}, "two points"],
+      InfraSceneStep[{cA == InfraCircle[pA, 3]}, "circle about A"], InfraSceneStep[{cB == InfraCircle[pB, 3]}, "circle about B"],
+      InfraSceneStep[{meet == InfraPoint[InfraIntersection[cA, cB]]}, "where they meet"]}]},
   InfraSceneViewer[scene, g]]
 ```
 
-The first steps as stills: the two points, then the circle about the first. This is what the viewer shows as you step, drawn without the interface.
+The states of a multiway exploration, browsed:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
-  {p1 = First @ GraphCenter[g]},
-  {p2 = RandomInfraPoint[g, InfraShell[p1, 3], RandomSeeding -> 1]},
-  {circles = RandomInfraCircle[ g, InfraCircle[p1, 3], All ]},
-  Row[{
-    Labeled[InfraSubstrateHighlight[g, {{p1, p2}}], "points a and b"],
-    Labeled[
-      InfraSubstrateHighlight[g,
-        {Table[Graph[DirectedEdge @@@ Partition[circle, 2, 1, 1]], {circle, circles}],
-         {p1, p2}}],
-      "circle around a"]}]]
-```
-
-Inspect the two histories of a merged construction state.
-Event depth 1 has two branchial neighbors; group boundary 1 is at event depth 2.
-At the merged state, incoming event 3 follows history {1,3}, and incoming event 4 follows history {2,4}.
-
-```wl
-With[
-  {graph = PathGraph[Range[3]]},
-  {scene = InfraScene[{p, q}, {InfraSceneStep[{p == InfraMidpoint[1, 3], q == InfraMidpoint[1, 1]}]}]},
-  {data = InfraSceneMultiway[scene, graph]},
-  InfraSceneViewer[data]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
+  {scene = InfraScene[{pA, pB, seg}, {pA == InfraPoint[a], pB == InfraPoint[b], seg == InfraSegment[pA, pB]}]},
+  InfraSceneViewer[InfraSceneMultiway[scene, g]]]
 ```

@@ -4,68 +4,90 @@ Name: InfraEquidistantSet
 Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraEquidistantSet
-Keywords: [equidistant locus, graph, circumcentre, synthetic geometry]
+Keywords: [equidistant locus, bisector, circumcentre, symbolic object]
 SeeAlso: [InfraPerpendicularBisector, FindInfraEquidistantSet, InfraMeasurement, InfraMemberQ, InfraPoint]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraEquidistantSet]()[{*p1*, ..., *pn*}]</code> is the inert locus of vertices at equal finite graph distance from all the anchors.
+<code>[InfraEquidistantSet]()[{*p1*, …, *pn*}]</code> is the set of the vertices at equal finite distance from all the points *pᵢ*.
 
 ## Details & Options
 
-On a graph with path distance $d$, the locus is $\{v : d(p_1,v) = \dots = d(p_n,v) < \infty\}$.
-It is one unique vertex set. There is no random equidistant-set constructor.
-The head is inert; [InfraMeasurement]() reads it on a concrete graph.
+The set is *E(p₁, …, pₙ) = {v : d(p₁, v) = … = d(pₙ, v) < ∞}*, the intersection of the bisectors of consecutive points. For two points it is [InfraPerpendicularBisector](). For three points it is the set of the circumcentres, which on a graph can be empty or have several vertices.
 
-For two anchors it is [InfraPerpendicularBisector]()[*p1*, *p2*].
-For three anchors it is the graph analogue of the circumcentre locus.
-For $n \ge 2$ anchors it is the intersection of the $n-1$ consecutive perpendicular bisectors.
-Repeated anchors do not change the locus.
-A single anchor gives its connected component. An empty anchor list gives every vertex of the graph.
-Anchors in distinct connected components give the empty locus.
+One point gives its connected component, no point the whole graph. Repeated points do not change the set.
 
-The substrate must be finite, simple, undirected and unweighted, and all anchors must be vertices.
-List-valued vertex labels are supported: each anchor remains a single entry of the outer list.
-Unsupported arguments and properties stay unevaluated.
+[InfraEquidistantSet]() is a symbolic object: [InfraMeasurement]() evaluates it on a graph, and [FindInfraEquidistantSet]() gives the same set as a list. It has one member, the set itself.
 
-"VertexDensity" gives weight 1 to each locus vertex.
-"Cardinality" is 1, including when the locus is empty.
-"CountingMeasure" counts the locus vertices; "Subgraph" gives the subgraph induced on them.
-"RiemannianMeasure" counts locus vertices whose neighbours all lie in the locus.
-[InfraMemberQ]()[*graph*, *object*, *vertices*] tests whether *vertices* is the complete locus, independently of ordering or repetition.
+| Property | Value |
+|---|---|
+| `"VertexDensity"` | 1 on each vertex of the set |
+| `"Cardinality"` | 1, also when the set is empty |
+| `"CountingMeasure"` | the number of vertices |
+| `"RiemannianMeasure"` | the number of vertices all of whose neighbours lie in the set |
+| `"Subgraph"` | the subgraph induced on the set |
 
-[RandomInfraPoint]() with [InfraPoint]()[*object*] chooses a vertex of the locus.
-The older [FindInfraEquidistantSet]() returns an explicit vertex list and also supports a thickened distance-difference window.
+<code>[RandomInfraPoint]()[*g*, [InfraPoint]()[*set*]]</code> draws a vertex of the set.
 
 ## Basic Examples
 
-Read the vertices equidistant from 1, 2 and 3 in the complete graph on four vertices. The density is <|4 -> 1|>.
+The circumcentres of three points of the circle of radius 4, on the square grid and on the square mesh:
 
 ```wl
-SeedRandom[ 71 ]; With[ { graph = CompleteGraph[ 4 ] },
-  InfraMeasurement[ graph, InfraEquidistantSet[ { 1, 2, 3 } ], "VertexDensity" ] ]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {pts = RandomInfraPoint[g, InfraShell[c, 4], 3, RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {InfraEquidistantSet[pts], pts}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-Draw the common equidistant locus of vertices 1 and 3 on a four-cycle.
+The set is one object; on the mesh it has three vertices, none of them interior:
 
 ```wl
-SeedRandom[ 71 ]; With[ { graph = CycleGraph[ 4 ] },
-  InfraSubstrateHighlight[ graph, { InfraEquidistantSet[ { 1, 3 } ], { 1, 3 } } ] ]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pts = RandomInfraPoint[g, InfraShell[c, 4], 3, RandomSeeding -> 1]},
+  InfraMeasurement[g, InfraEquidistantSet[pts], {"Cardinality", "CountingMeasure", "RiemannianMeasure"}]]
 ```
 
-Read the number of objects and their number of vertices separately. An empty bisector is one set with no vertices.
+## Scope
+
+For two points it is the perpendicular bisector:
 
 ```wl
-SeedRandom[ 71 ]; With[ { graph = PathGraph[ { 1, 2 } ] },
-  { object = InfraEquidistantSet[ { 1, 2 } ] },
-  { InfraMeasurement[ graph, object, "Cardinality" ], InfraMeasurement[ graph, object, "CountingMeasure" ] } ]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
+  InfraSubstrateHighlight[g, {InfraEquidistantSet[{a, b}], {a, b}},
+    PlotLabel -> (InfraMeasurement[g, InfraEquidistantSet[{a, b}], "VertexDensity"] ===
+      InfraMeasurement[g, InfraPerpendicularBisector[a, b], "VertexDensity"]),
+    ImageSize -> Medium]]
 ```
 
-Choose one point of an equidistant locus.
+A random circumcentre:
 
 ```wl
-SeedRandom[ 71 ]; With[ { graph = CycleGraph[ 4 ] },
-  RandomInfraPoint[ graph, InfraPoint[ InfraEquidistantSet[ { 1, 3 } ] ], RandomSeeding -> 71 ] ]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pts = RandomInfraPoint[g, InfraShell[c, 4], 3, RandomSeeding -> 1]},
+  RandomInfraPoint[g, InfraPoint[InfraEquidistantSet[pts]], RandomSeeding -> 1]]
+```
+
+## Properties and Relations
+
+[InfraMemberQ]() is true only for the whole set:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pts = RandomInfraPoint[g, InfraShell[c, 4], 3, RandomSeeding -> 1]},
+  {set = FindInfraEquidistantSet[g, pts]},
+  {InfraMemberQ[g, InfraEquidistantSet[pts], set], InfraMemberQ[g, InfraEquidistantSet[pts], Rest[set]]}]
+```
+
+## Possible Issues
+
+An empty set still counts as one object. Three points of the grid at the distances 11, 9 and 6 have no circumcentre:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {pts = RandomInfraPoint[g, 3, RandomSeeding -> 1]},
+  InfraMeasurement[g, InfraEquidistantSet[pts], {"Cardinality", "CountingMeasure"}]]
 ```

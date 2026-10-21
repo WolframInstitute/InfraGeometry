@@ -5,70 +5,61 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/DisplacementMagnitude
-Keywords: [displacement, magnitude, scale, step length, norm]
-SeeAlso: [KillingDisplacementMagnitude, RandomDisplacement, DisplacementScale, DisplacementCompose, InfraDisplacementBundle]
+Keywords: [displacement, magnitude, norm, longest step, scale]
+SeeAlso: [KillingDisplacementMagnitude, DisplacementScale, DisplacementCompose, RandomDisplacement, InfraDisplacementBundle]
 RelatedGuides: [InfraAnalysis]
 ---
 
 ## Usage
 
-<code>[DisplacementMagnitude]()[*g*, *d*]</code> is the magnitude of the displacement *d*: the longest step, the largest distance in *g* from a vertex to a vertex of its value.
+<code>[DisplacementMagnitude]()[*g*, *d*]</code> is the magnitude of the displacement *d*: the length of its longest step in *g*.
 
 ## Details & Options
 
-Definition: *‖D‖ = max { d(v, w) : v a vertex, w ∈ D(v) }*.
+The magnitude is *‖D‖ = max {d(v, w) : w ∈ D(v)}*, the maximum over all vertices *v*.
 
-The magnitude is the scale of the displacement, the *r* of a flow for time *r*. A single-valued displacement whose steps all have length *r* is a section of the displacement bundle <code>[InfraDisplacementBundle]()[*g*, *r*]</code>, the step *v* → *w* being the total vertex {*v*, *w*}.
+It is the scale of the displacement, the time *r* of a flow of a unit vector field. The identity has magnitude 0.
 
-It is subadditive under composition, *‖D2 ∘ D1‖ ≤ ‖D1‖ + ‖D2‖*, and the identity has magnitude 0. The least magnitude of a symmetry of *g* is [KillingDisplacementMagnitude]().
+It is subadditive under composition, *‖D₂ ∘ D₁‖ ≤ ‖D₁‖ + ‖D₂‖*.
+
+The longest step decides, so a single step at the rim can set the magnitude.
+
+The least magnitude of a symmetry of *g* is [KillingDisplacementMagnitude]().
 
 ## Basic Examples
 
-A random displacement of magnitude at most 2 on the discretized plane, the square tiling and the hexagonal tiling, and its magnitude.
+The magnitude of the step right, on the square grid and on the square mesh. On the grid a pendant vertex of the top or the bottom row steps to the next pendant vertex, three steps away:
 
 ```wl
-With[
-  {graphs = InfraSubstrate[#, "Small", "KeepCoordinates" -> True] & /@ {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}},
-  {fields = RandomDisplacement[#, 2, RandomSeeding -> 1] & /@ graphs},
-  {GraphicsRow[MapThread[DisplacementPlot, {graphs, fields}]], MapThread[DisplacementMagnitude, {graphs, fields}]}]
+GraphicsRow @ KeyValueMap[
+  {name, s} |-> With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    {t = TranslationDisplacement[g, {s, 0}]},
+    DisplacementPlot[g, t, PlotLabel -> DisplacementMagnitude[g, t]]],
+  <|"SquareGridGraph" -> 1, "SquareMeshGraph" -> 1/8|>]
 ```
 
-## Scope
-
-The longest step decides. The translation of the square tiling by one step has magnitude 2: at the rim the translated position lies outside the patch, and the nearest vertices are two steps away.
+The steps from the centre scaled by 0, 1, …, 6 have magnitude 0, 1, …, 6, on the grid and on the mesh:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {translation = TranslationDisplacement[g, {1, 1}]},
-  {DisplacementPlot[g, translation], DisplacementMagnitude[g, translation]}]
+Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    Table[DisplacementMagnitude[g, DisplacementScale[g, <|c -> AdjacencyList[g, c]|>, t]], {t, 0, 6}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
 ## Properties and Relations
 
-The magnitude grows with the scaling factor on the 12-cycle, up to the distance 6 of opposite vertices.
+The magnitude is subadditive. Two random displacements of the mesh, of magnitudes 1 and 2, and their composite:
 
 ```wl
-With[
-  {g = CycleGraph[12]},
-  {rotation = FindKillingDisplacement[g]},
-  {DisplacementPlot[g, Table[DisplacementScale[g, rotation, t], {t, 3}]], Table[DisplacementMagnitude[g, DisplacementScale[g, rotation, t]], {t, 8}]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {d1 = RandomDisplacement[g, 1, RandomSeeding -> 1], d2 = RandomDisplacement[g, 2, RandomSeeding -> 2]},
+  DisplacementMagnitude[g, #] & /@ {d1, d2, DisplacementCompose[d1, d2]}]
 ```
 
-The magnitude of a composite is at most the sum of the magnitudes.
+The least magnitude of a symmetry is the magnitude of the symmetry [FindKillingDisplacement]() gives:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {first = RandomDisplacement[g, 2, RandomSeeding -> 1], second = RandomDisplacement[g, 1, RandomSeeding -> 2]},
-  {DisplacementPlot[g, DisplacementCompose[first, second]],
-   DisplacementMagnitude[g, DisplacementCompose[first, second]] <= DisplacementMagnitude[g, first] + DisplacementMagnitude[g, second]}]
-```
-
-The least magnitude of a symmetry of the cycle is 1, the rotation by one step.
-
-```wl
-With[
-  {g = CycleGraph[12]},
-  {DisplacementPlot[g, FindKillingDisplacement[g]], DisplacementMagnitude[g, FindKillingDisplacement[g]], KillingDisplacementMagnitude[g]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {DisplacementMagnitude[g, FindKillingDisplacement[g]], KillingDisplacementMagnitude[g]}]
 ```

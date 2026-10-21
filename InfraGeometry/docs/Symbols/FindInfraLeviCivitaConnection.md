@@ -5,77 +5,91 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraLeviCivitaConnection
-Keywords: [Levi-Civita connection, metric connection, displacement bundle, parallel transport]
+Keywords: [Levi-Civita connection, metric connection, displacement bundle, parallel transport, holonomy]
 SeeAlso: [InfraParallelTransport, InfraHolonomyAngle, InfraHolonomy, InfraCovariantDerivative, InfraDisplacementBundle, InfraConnectionQ, InfraConnection]
 RelatedGuides: [InfraFiberBundles]
 ---
 
 ## Usage
 
-<code>[FindInfraLeviCivitaConnection]()[[InfraDisplacementBundle]()[*g*, *r*]]</code> gives the Levi-Civita [InfraConnection](): over each edge *p* -> *q* of *g* the first of the best angle-isometries from the directions at *p* to those at *q* fixing the geodesics through *q*; its lifts that are not total edges are dropped.
+<code>[FindInfraLeviCivitaConnection]()[[InfraDisplacementBundle]()[*g*, *r*]]</code> gives the Levi-Civita [InfraConnection]() of the displacement bundle: over each edge *p* – *q* of *g*, a map of the directions at *p* to the directions at *q* that best keeps the angles between them and continues the geodesics through *q* straight.
 
 ## Details & Options
 
-- This is a particular Experimental construction in the Infra Fiber Bundles category. Its existing call forms remain available.
+The directions at *p* are the vertices of the sphere *Sᵣ(p)*. Over an edge *p* – *q* the candidates are the one-to-one maps from the smaller of *Sᵣ(p)*, *Sᵣ(q)* into the larger that send each direction whose geodesic passes through *q* to its straightest continuation. The best change the angles between directions least, in the sum of squares.
 
+The best maps are usually several. The connection keeps the first; <code>[InfraParallelTransport]()[[InfraDisplacementBundle]()[*g*, *r*], *walk*]</code> gives all.
 
-- The best angle-isometries over an edge are usually several. The connection keeps the first, as InfraGaugeTheory does. All of them are read by <code>[InfraParallelTransport]()[[InfraDisplacementBundle]()[*g*, *r*], *walk*]</code> and <code>[InfraHolonomyAngle]()[[InfraDisplacementBundle]()[*g*, *r*], *loop*]</code>.
-- A dropped lift sends a direction to a non-adjacent direction. Where lifts are dropped, the result need not satisfy [InfraConnectionQ]().
+A lift *(p, u) → (q, w)* with *u ≠ w* and *u*, *w* not adjacent is not an edge of the displacement bundle and is dropped. Where lifts are dropped, or the spheres differ in size, the result is not a connection in the sense of [InfraConnectionQ]().
 
-Options:
+On the square grid at scale 1, away from the rim, the connection is the translation *(p, p + e) → (q, q + e)*, and it is flat. On the square torus it is a flat connection. On the octahedron it is a connection, and going around a face turns the four directions at a vertex by one step.
 
 | Option | Default | Values |
 |---|---|---|
-| [Method]() | `"Arclength"` | `"Arclength"`: the angle between two directions at *p* is their distance in the graph with the open ball of radius *r* about *p* deleted, over *r*; `"Alexandrov"`: the comparison angle of the polar form |
+| [Method]() | `"Arclength"` | `"Arclength"`: the angle of directions *u*, *w* at *p* is their distance in *g* without the open ball of radius *r* about *p*, over *r*; `"Alexandrov"`: the comparison angle from the polar form |
 
 ## Basic Examples
 
-The Levi-Civita connection of the octahedron is a connection of its displacement bundle, and it is not flat. Its holonomy around a face is drawn: the face, and every direction at 1 joined to its image.
+The transport over an edge at the centre at scale 1, each direction and its image in one colour. On the grid each direction goes to the parallel one. On the mesh the centre has seven directions and its neighbour five, and only two lifts are edges of the bundle:
 
 ```wl
-SeedRandom[ 7 ];
-With[
-  {fib = InfraFiberedSubstrate["OctahedronDisplacementBundle"]},
-  {conn = FindInfraLeviCivitaConnection[fib], face = {1, 2, 3, 1}},
-  {transport = InfraParallelTransport[fib, conn, face]},
-  {InfraSubstrateHighlight[First @ fib, Join[{InfraWalk[face], Directive[StandardBlue]},
-      InfraWalk[{Last @ First @ #, Last @ Last @ #}] & /@ Select[Normal @ transport, First @ # =!= Last @ # &]]],
-    InfraConnectionQ[fib, conn], InfraFlatConnectionQ[fib, conn]}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {fib = InfraDisplacementBundle[g, 1], q = First @ AdjacencyList[g, c]},
+    {transport = InfraParallelTransport[fib, FindInfraLeviCivitaConnection[fib], {c, q}]},
+    InfraSubstrateHighlight[g, KeyValueMap[{InfraWalk[#1], InfraWalk[#2]} &, transport]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The list form gives every realisation. Around the face there are four; the connection follows one of them.
+On the grid the connection is the translation on every edge whose ends are at distance at least 2 from the rim: a lift from *(p, u)* to *(q, w)* has *w − q = u − p* in coordinates.
 
 ```wl
-SeedRandom[ 7 ];
-With[
-  {fib = InfraFiberedSubstrate["OctahedronDisplacementBundle"]},
-  {conn = FindInfraLeviCivitaConnection[fib], face = {1, 2, 3, 1}},
-  {Length @ InfraParallelTransport[fib, face], MemberQ[InfraParallelTransport[fib, face], InfraParallelTransport[fib, conn, face]]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {xy = AssociationThread[VertexList[g], Round @ GraphEmbedding[g]], fib = InfraDisplacementBundle[g, 1]},
+  {conn = FindInfraLeviCivitaConnection[fib]},
+  {inner = Select[VertexList[g], Min[xy[#]] >= 3 && Max[xy[#]] <= 8 &]},
+  {lifts = Select[First @ conn, SubsetQ[inner, First /@ List @@ #] &]},
+  {Length[lifts], Union[(xy[#[[2, 2]]] - xy[#[[2, 1]]]) - (xy[#[[1, 2]]] - xy[#[[1, 1]]]) & /@ lifts]}]
+```
+
+On the square torus, with no rim, the connection is flat. On the octahedron it is a connection but not flat:
+
+```wl
+With[{torus = InfraDisplacementBundle[InfraSubstrate["SquareTorusGraph", "Small"], 1]},
+  {octahedron = InfraFiberedSubstrate["OctahedronDisplacementBundle"]},
+  Table[{InfraConnectionQ[fib, #], InfraFlatConnectionQ[fib, #]} & @ FindInfraLeviCivitaConnection[fib],
+    {fib, {torus, octahedron}}]]
 ```
 
 ## Scope
 
-The triangular torus from the catalogue: the hexagon around a vertex, with the Levi-Civita holonomy angle of the connection and the least angle over the realisations.
+On the octahedron, going around a face turns the four directions at its first vertex by one step, around the square they form:
 
 ```wl
-SeedRandom[ 7 ];
-With[
-  {fib = InfraFiberedSubstrate["TriangularTorusDisplacementBundle", "Small"]},
-  {torusGraph = First @ fib},
-  {torusVertex = First @ VertexList[torusGraph]},
-  {hexagon = Append[#, First @ #] & @ FindCycle[Subgraph[torusGraph, AdjacencyList[torusGraph, torusVertex]], {6}, 1][[1, All, 1]]},
-  {InfraSubstrateHighlight[torusGraph, {InfraWalk[hexagon]}], InfraHolonomyAngle[fib, FindInfraLeviCivitaConnection[fib], hexagon], InfraHolonomyAngle[fib, hexagon]}]
+With[{fib = InfraFiberedSubstrate["OctahedronDisplacementBundle"]}, {conn = FindInfraLeviCivitaConnection[fib]},
+  {VertexList @ InfraFiber[fib, 1], InfraHolonomy[fib, conn, {1, 2, 3, 1}],
+    InfraHolonomyAngle[fib, conn, {1, 2, 3, 1}]}]
 ```
 
 ## Options
 
 ### Method
 
-Under `"Alexandrov"` the octahedron gives the same connection.
+On the octahedron `"Alexandrov"` gives the same connection:
 
 ```wl
-SeedRandom[ 7 ];
-With[
-  {fib = InfraFiberedSubstrate["OctahedronDisplacementBundle"]},
-  Sort @ First @ FindInfraLeviCivitaConnection[fib, Method -> "Alexandrov"] === Sort @ First @ FindInfraLeviCivitaConnection[fib]]
+With[{fib = InfraFiberedSubstrate["OctahedronDisplacementBundle"]},
+  Sort @ First @ FindInfraLeviCivitaConnection[fib, Method -> "Alexandrov"] ===
+    Sort @ First @ FindInfraLeviCivitaConnection[fib]]
+```
+
+## Possible Issues
+
+Around a face of the octahedron there are four best transports. The connection follows one of them, chosen by the order of the vertices and edges:
+
+```wl
+With[{fib = InfraFiberedSubstrate["OctahedronDisplacementBundle"]}, {face = {1, 2, 3, 1}},
+  {all = InfraParallelTransport[fib, face]},
+  {chosen = InfraParallelTransport[fib, FindInfraLeviCivitaConnection[fib], face]},
+  {Length[all], MemberQ[all, chosen]}]
 ```

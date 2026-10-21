@@ -12,92 +12,91 @@ RelatedGuides: [InfraAnalysis]
 
 ## Usage
 
-<code>[PolarDisplacements]()[*g*, *c*]</code> gives the polar pair {*radial*, *angular*} about the vertex *c*: the radial displacement moves each vertex to its neighbours one step further from *c*, the angular one to its neighbours at the same distance from *c*.
+<code>[PolarDisplacements]()[*g*, *c*]</code> gives the pair {*radial*, *angular*} about the vertex *c*: the radial displacement moves each vertex to its neighbours one step further from *c*, the angular one to its neighbours at the same distance from *c*.
 
 ## Details & Options
 
-Definition: with *ρ(v) = d(c, v)*,
+With *ρ(v) = d(c, v)*, the two displacements are
 
-- *radial(v) = { u : u adjacent to v, ρ(u) = ρ(v) + 1 }*,
-- *angular(v) = { u : u adjacent to v, ρ(u) = ρ(v) }*,
+- *radial(v) = {u ∼ v : ρ(u) = ρ(v) + 1}*,
+- *angular(v) = {u ∼ v : ρ(u) = ρ(v)}*,
 
-and a vertex with no such neighbour stays: its value is {*v*}. These are the discrete counterparts of the vector fields *∂_ρ* and *∂_θ* of polar coordinates, at scale 1.
+and a vertex with no such neighbour stays. They are the discrete counterparts of the polar vector fields *∂ᵨ* and *∂_θ* at scale 1.
 
-Option `"Direction"` -> `"Inward"` takes *ρ(u) = ρ(v) − 1* for the radial displacement, so the centre stays; the default is `"Outward"`. The angular displacement does not depend on it.
+Both are multivalued. On the square grid an inner vertex off the axes through *c* has two neighbours further out, a vertex on an axis three, and *c* four.
 
-The outward radial displacement is the gradient of *ρ* ([GradientDisplacement]()). On a bipartite graph, such as the square and the hexagonal tilings, no edge joins two vertices at the same distance from *c*, so the angular displacement fixes every vertex.
+On a bipartite graph, such as the square grid, no edge joins two vertices at the same distance from *c*, and the angular displacement fixes every vertex.
+
+The outward radial displacement is the gradient of *ρ* ([GradientDisplacement]()).
+
+Options:
+
+| Option | Default | Values |
+|---|---|---|
+| `"Direction"` | `"Outward"` | `"Inward"` takes *ρ(u) = ρ(v) − 1* for the radial displacement; the angular one does not change |
 
 ## Basic Examples
 
-The polar pair about the centre of the discretized plane, the square tiling and the hexagonal tiling, radial in blue and angular in orange. The two tilings are bipartite, and their angular displacement draws nothing.
+The radial displacement about the centre in blue and the angular one in red, on the square grid and on the square mesh. The grid is bipartite, and its angular displacement draws nothing:
 
 ```wl
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     DisplacementPlot[g, PolarDisplacements[g, First @ GraphCenter[g]]]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-On the triangular tiling the angular displacement runs both ways round the hexagonal distance spheres.
+The two displacements of the mesh apart. The angular one runs both ways along the distance spheres:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {polar = PolarDisplacements[g, First @ GraphCenter[g]]},
-  GraphicsRow[DisplacementPlot[g, #] & /@ polar]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  GraphicsRow[DisplacementPlot[g, #] & /@ PolarDisplacements[g, First @ GraphCenter[g]]]]
 ```
 
 ## Scope
 
-Any vertex can be the centre.
+Any vertex can be the centre. A vertex of the periphery of the mesh, of largest eccentricity:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  DisplacementPlot[g, PolarDisplacements[g, First @ Select[VertexList[g], VertexDegree[g, #] == 1 &]]]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  DisplacementPlot[g, PolarDisplacements[g, First @ GraphPeriphery[g]]]]
 ```
 
 ## Options
 
 ### Direction
 
-The inward radial displacement points towards the centre, where it stays.
+The inward radial displacement points to the centre, which stays:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
   {inward = First @ PolarDisplacements[g, c, "Direction" -> "Inward"]},
-  {DisplacementPlot[g, inward], inward[c]}]
+  DisplacementPlot[g, inward, PlotLabel -> inward[c]]]
 ```
 
 ## Properties and Relations
 
-The outward radial displacement is the gradient of the distance from the centre.
+The outward radial displacement is the gradient of the distance from the centre:
 
 ```wl
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {radial = First @ PolarDisplacements[g, c]},
-  {DisplacementPlot[g, radial], radial === GradientDisplacement[g, AssociationThread[VertexList[g], GraphDistance[g, c]]]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  First @ PolarDisplacements[g, c] === GradientDisplacement[g, AssociationThread[VertexList[g], GraphDistance[g, c]]]]
 ```
 
-The radial displacement is 1-continuous on the three tilings; the angular one only where it fixes every vertex.
+The radial displacement is 1-continuous on the grid but not on the mesh. The angular displacement of the mesh is 2-continuous, not 1-continuous:
 
 ```wl
-With[
-  {graphs = InfraSubstrate[#, "Small", "KeepCoordinates" -> True] & /@ {"SquareTilingGraph", "TriangularTilingGraph", "HexagonalTilingGraph"}},
-  {polars = PolarDisplacements[#, First @ GraphCenter[#]] & /@ graphs},
-  {GraphicsRow[MapThread[DisplacementPlot, {graphs, polars}]], MapThread[{ContinuousDisplacementQ[#1, First[#2]], ContinuousDisplacementQ[#1, Last[#2]]} &, {graphs, polars}]}]
+Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    {polar = PolarDisplacements[g, First @ GraphCenter[g]]},
+    {ContinuousDisplacementQ[g, First @ polar], ContinuousDisplacementQ[g, Last @ polar],
+     ContinuousDisplacementQ[g, Last @ polar, 2]}],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-Both displacements are multivalued: on the triangular tiling an inner vertex has two or three neighbours further out and two on its own distance sphere.
+The numbers of values of the radial displacement of the grid, with their counts. The 32 pendant vertices have no neighbour further out and stay:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {polar = PolarDisplacements[g, First @ GraphCenter[g]]},
-  {DisplacementPlot[g, polar], DisplacementSingleValuedQ /@ polar}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  KeySort @ Counts[Length /@ Values @ First @ PolarDisplacements[g, First @ GraphCenter[g]]]]
 ```

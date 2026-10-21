@@ -6,112 +6,116 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/SprayGraph
 Keywords: [spray of shortest paths, exponential map, breadth-first search, shortest-path DAG, shortest paths]
-SeeAlso: [InfraMeasurement, RandomInfraGeodesic, InfraShell, InfraBall]
+SeeAlso: [RayGraph, IntervalGraph, InfraMeasurement, RandomInfraGeodesic, InfraShell, InfraBall]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[SprayGraph]()[*g*, *c*]</code> gives the directed acyclic graph of all shortest paths from *c*: an edge *u → v* for every edge of *g* with *d(c, v) = d(c, u) + 1*.
+<code>[SprayGraph]()[*g*, *c*]</code> gives the spray at *c*: the directed acyclic graph of all shortest paths from *c*.
 
-<code>[SprayGraph]()[*g*, {*c1*, *c2*, …}]</code> measures the distance from the nearest of the sources.
+<code>[SprayGraph]()[*g*, {*c1*, *c2*, …}]</code> gives the spray of the vertex set, with the distance to the nearest *ci*.
 
-<code>[SprayGraph]()[*g*, {{*u1*, *v1*}, {*u2*, *v2*}, …}]</code> gives the union of shortest paths between the listed pairs.
+<code>[SprayGraph]()[*g*, {{*u1*, *v1*}, {*u2*, *v2*}, …}]</code> gives the union of shortest paths from each *ui* to *vi*.
 
 ## Details & Options
 
-Definition: the spray at *c* orients every edge of *g* that joins two consecutive shells about *c* outward, from the shell of radius *r* to that of radius *r* + 1. Edges inside one shell are dropped.
+The spray at *c* has an edge *u → v* for every edge *uv* of *g* with *d(c, v) = d(c, u) + 1*. Edges inside one shell about *c* are dropped.
 
-Its directed paths starting at *c* are exactly the shortest paths from *c*, each once, and the paths from *c* to a sink are the maximal ones — the shortest paths that cannot be continued away from *c*. It is the graph analogue of the exponential map at *c*: every direction the observer can walk in without turning back towards *c*, with the branching left in.
+The directed paths from *c* are exactly the shortest paths from *c*. The paths from *c* to a sink are the maximal ones: a sink is a vertex with no neighbour farther from *c*. The spray is the graph analogue of the exponential map at *c*.
 
-With several sources the distance is to the nearest source, so the spray grows out of the whole set.
+On a bipartite graph such as the square grid no edge lies inside a shell, so the spray keeps every edge of *g*.
 
-The pair form picks shortest paths between each pair and takes the union of their path graphs. It enumerates, unlike the other two forms.
+With several sources *d(c, v)* is replaced by *d(C, v) = min d(cᵢ, v)*.
+
+The pair form picks shortest paths from each *uᵢ* to *vᵢ* and takes the union of their path graphs.
+
+The spray keeps the vertex coordinates of *g*.
 
 Options:
 
 | Option | Default | Values |
 |---|---|---|
 | `"AxisLength"` | `All` | a depth *k*: keep only the vertices within distance *k* of the sources |
-| `"PathThickness"` | `0` | pair form only: `0` keeps one shortest path per pair, `Infinity` all of them, *t* those within Hausdorff distance *t* of the first |
+| `"PathThickness"` | `0` | pair form only: `0` one shortest path per pair, `Infinity` all of them, *t* those within Hausdorff distance *t* of the first |
 | `"Directed"` | `True` | `False` keeps the same edges undirected |
-
-The spray keeps the embedding of *g*, so it is drawn in place.
 
 ## Basic Examples
 
-The spray at the centre, drawn on the substrate by the maximal shortest paths through each edge, and the spray itself cut at depth 3.
+The spray at the centre to depth 4, on the square grid and on the square mesh:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  GraphicsRow[{
-    InfraSubstrateHighlight[g, {SprayGraph[g, c], c}],
-    SprayGraph[g, c, "AxisLength" -> 3]}]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    InfraSubstrateHighlight[g, {SprayGraph[g, c, "AxisLength" -> 4], c}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The spray from the centre covers the patch, and its sinks are the vertices of the rim where no step leads farther away.
+The sinks of the spray, where no step leads farther from the centre. They are the ends of the maximal shortest paths:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {sprayDag = SprayGraph[g, c]},
-  {sinks = Select[VertexList[sprayDag], VertexOutDegree[sprayDag, #] == 0 &]},
-  {InfraSubstrateHighlight[g, {sprayDag, sinks}], VertexCount[sprayDag], EdgeCount[sprayDag], Length @ sinks}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {spray = SprayGraph[g, c]}, {sinks = Select[VertexList[spray], VertexOutDegree[spray, #] == 0 &]},
+    InfraSubstrateHighlight[g, {sinks, c}, PlotLabel -> Length[sinks]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The maximal shortest paths from the centre to one sink, each a path of the spray.
+The grid is bipartite and its spray keeps all 144 edges. The mesh has triangles, and its spray keeps 173 of 255:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {sprayDag = SprayGraph[g, c]},
-  {sink = First @ Select[VertexList[sprayDag], VertexOutDegree[sprayDag, #] == 0 &]},
-  {paths = FindPath[sprayDag, c, sink, Infinity, All]},
-  {InfraSubstrateHighlight[g, {paths, c, sink}], Length @ paths}]
+Table[
+  With[{g = InfraSubstrate[name, "Small"]}, {c = First @ GraphCenter[g]},
+    {EdgeCount @ SprayGraph[g, c], EdgeCount[g]}],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+```
+
+## Scope
+
+The spray of two sources grows from both, each vertex reached from the nearer one:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 2]},
+  InfraSubstrateHighlight[g, {SprayGraph[g, {c, b}], c, b}, ImageSize -> Medium]]
 ```
 
 ## Options
 
 ### PathThickness
 
-One shortest path between the pair, every shortest path, or those within distance 1 of the first.
+One shortest path, those within Hausdorff distance 1 of it, and all 20 shortest paths between two vertices of the grid. The labels are the edge counts:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
-  {sprays = Table[SprayGraph[g, {{a, b}}, "PathThickness" -> t], {t, {0, 1, Infinity}}]},
-  {GraphicsRow @ Table[InfraSubstrateHighlight[g, {spray, a, b}], {spray, sprays}],
-   EdgeCount /@ sprays}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 6], RandomSeeding -> 2]},
+  GraphicsRow @ Table[
+    With[{spray = SprayGraph[g, {{a, b}}, "PathThickness" -> t]},
+      InfraSubstrateHighlight[g, {spray, a, b}, PlotLabel -> EdgeCount[spray]]],
+    {t, {0, 1, Infinity}}]]
 ```
 
 ## Properties and Relations
 
-A layer of the spray is a shell: the vertices at depth *r* are `Keys @ InfraMeasurement[g, InfraShell[c, r], "VertexDensity"]`, and their number is the shell area.
+The vertices at depth *r* are the shell of radius *r*, so the spray to depth *r* has the vertices of the ball:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {sprayDag = SprayGraph[g, c, "AxisLength" -> 3]},
-  {InfraSubstrateHighlight[g, {sprayDag, Keys @ InfraMeasurement[ g, InfraShell[ c, 3 ], "VertexDensity" ]}],
-   Sort @ Complement[VertexList[sprayDag], Keys @ InfraMeasurement[ g, InfraBall[c, 2], "VertexDensity" ]] === Keys @ InfraMeasurement[ g, InfraShell[ c, 3 ], "VertexDensity" ],
-   VertexCount[sprayDag] === InfraMeasurement[g, InfraBall[c, 3], "CountingMeasure"]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  Table[VertexCount @ SprayGraph[g, c, "AxisLength" -> r] == InfraMeasurement[g, InfraBall[c, r], "CountingMeasure"],
+    {r, 0, 6}]]
 ```
 
-The shortest paths from *c* to *v* are the paths of the spray from *c* to *v*; the `"Graph"` of [InfraMeasurement]()`[g, InfraSegment[c, v], "Graph"]` holds the same family.
+The paths of the spray from *c* to *v* are the shortest paths from *c* to *v*:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {through = RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]},
-  {InfraSubstrateHighlight[g, {InfraMeasurement[g, InfraSegment[c, through], "Graph"], c, through}],
-   Sort @ FindPath[SprayGraph[g, c], c, through, Infinity, All] === Sort @ FindPath[InfraMeasurement[g, InfraSegment[c, through], "Graph"], c, through, Infinity, All]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {v = RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 6]},
+  {Length @ FindPath[SprayGraph[g, c], c, v, Infinity, All], InfraMeasurement[g, InfraSegment[c, v], "Cardinality"]}]
+```
+
+The spray at *c* is the [RayGraph]() of *c* through itself:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  Sort @ EdgeList @ SprayGraph[g, c] === Sort @ EdgeList @ RayGraph[g, c, c]]
 ```

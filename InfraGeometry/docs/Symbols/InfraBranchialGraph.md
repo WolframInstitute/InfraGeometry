@@ -2,45 +2,62 @@
 Template: Symbol
 Name: InfraBranchialGraph
 Context: WolframInstitute`InfraGeometry`
+ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraBranchialGraph
-Keywords: [synthetic geometry, graph, construction]
 SeeAlso: [InfraSceneMultiway, InfraSceneViewer, InfraSceneStep]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraBranchialGraph]()[*data*, *depth*]</code> gives the observed immediate-parent branchial relation at an event depth.
+<code>[InfraBranchialGraph]()[*data*, *d*]</code> gives the branchial graph at depth *d* of the construction states recorded in *data*, an [InfraSceneMultiway]() result.
 
 ## Details & Options
 
-The input is a saved InfraSceneMultiway Association and a nonnegative event depth.
-The result contains "Graph", "Witnesses", "Complete" and "Frontier".
-Vertices are observed states at that depth, including isolated states.
-Two distinct states are adjacent when accepted or fixed incoming events share an immediate predecessor.
-Witnesses retain every common immediate parent. A distant common ancestor alone creates no edge.
-Completeness and frontier come from the saved exploration; missing edges in an incomplete layer do not prove nonadjacency.
-The function reads saved data without sampling or continuing exploration.
+The vertices are the states at depth *d*. Two states are joined when they have a common immediate parent: a state one step earlier from which an accepted event leads to each. A common ancestor further back gives no edge.
+
+The result is an association:
+
+| Key | Value |
+|---|---|
+| `"Graph"` | the branchial graph |
+| `"Depth"` | *d* |
+| `"Witnesses"` | for each edge, the common parents |
+| `"Complete"` | whether the layer at depth *d* was explored in full |
+| `"Frontier"` | the unexplored obligations above depth *d* |
+
+When the layer is not complete, a missing edge does not prove that two states have no common parent.
+
+[InfraBranchialGraph]() reads the saved data. It does not explore further. A depth that was not recorded leaves it unevaluated.
 
 ## Basic Examples
 
-The two first-construction states share the root.
+A scene that picks a neighbour *p* of the centre of the square grid, then a neighbour *q* of *p*. The four choices of *p* share the root; the sixteen states (*p*, *q*) form four groups, one per *p*:
 
 ```wl
-SeedRandom[ 71 ]; With[
-  { graph = PathGraph[ Range[ 3 ] ] },
-  { scene = InfraScene[ { p, q }, { InfraSceneStep[ { p == InfraMidpoint[ 1, 3 ], q == InfraMidpoint[ 1, 1 ] } ] } ] },
-  { data = InfraSceneMultiway[ scene, graph ] },
-  InfraBranchialGraph[ data, 1 ][ "Graph" ] ]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {scene = InfraScene[{p, q}, {InfraSceneStep[{p == InfraPoint[InfraShell[a, 1]]}], InfraSceneStep[{q == InfraPoint[InfraShell[p, 1]]}]}]},
+  {data = InfraSceneMultiway[scene, g]},
+  GraphicsRow @ Table[InfraBranchialGraph[data, d]["Graph"], {d, 1, 2}]]
 ```
 
-Read their common-parent witness.
+The groups at depth 2 and whether the layer is complete:
 
 ```wl
-SeedRandom[ 71 ]; With[
-  { graph = PathGraph[ Range[ 3 ] ] },
-  { scene = InfraScene[ { p, q }, { InfraSceneStep[ { p == InfraMidpoint[ 1, 3 ], q == InfraMidpoint[ 1, 1 ] } ] } ] },
-  { data = InfraSceneMultiway[ scene, graph ] },
-  InfraBranchialGraph[ data, 1 ][ "Witnesses" ] ]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {scene = InfraScene[{p, q}, {InfraSceneStep[{p == InfraPoint[InfraShell[a, 1]]}], InfraSceneStep[{q == InfraPoint[InfraShell[p, 1]]}]}]},
+  {branchial = InfraBranchialGraph[InfraSceneMultiway[scene, g], 2]},
+  {Length /@ ConnectedComponents[branchial["Graph"]], branchial["Complete"]}]
+```
+
+## Properties and Relations
+
+Each edge has one witness at depth 2, the state after the choice of *p*:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {scene = InfraScene[{p, q}, {InfraSceneStep[{p == InfraPoint[InfraShell[a, 1]]}], InfraSceneStep[{q == InfraPoint[InfraShell[p, 1]]}]}]},
+  {branchial = InfraBranchialGraph[InfraSceneMultiway[scene, g], 2]},
+  {EdgeCount[branchial["Graph"]], Union[Length /@ Values[branchial["Witnesses"]]]}]
 ```

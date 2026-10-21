@@ -5,7 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraDisplacementBundle
-Keywords: [displacement bundle, displacement, pair, scale, Levi-Civita]
+Keywords: [displacement bundle, displacement, pair, sphere, scale, Levi-Civita]
 SeeAlso: [InfraTangentBundle, InfraBundleMorphism, FindInfraLeviCivitaConnection, InfraParallelTransport, InfraHolonomyAngle, InfraTotalSpace, InfraFiberedSubstrate]
 RelatedGuides: [InfraFiberBundles, InfraAnalysis]
 RelatedTutorials: [ExperimentalInfraBundles]
@@ -13,59 +13,83 @@ RelatedTutorials: [ExperimentalInfraBundles]
 
 ## Usage
 
-<code>[InfraDisplacementBundle]()[*g*, *r*]</code> is the displacement bundle of *g* at scale *r*: the total vertices are the pairs {*p*, *v*} with *d*(*p*, *v*) = *r*, projected to *p*, two pairs adjacent iff their base points and their endpoints are equal or adjacent.
+<code>[InfraDisplacementBundle]()[*g*, *r*]</code> is the displacement bundle of the graph *g* at scale *r*: its total vertices are the pairs {*p*, *v*} with *d(p, v) = r*, projected to *p*.
 
 ## Details & Options
 
-- This is a particular Experimental construction in the Infra Fiber Bundles category. Its existing call forms remain available.
+The total vertices are *{(p, v) : d(p, v) = r}*. Two pairs *(p, v)* and *(q, w)* are adjacent iff *p = q* or *p ~ q*, and *v = w* or *v ~ w*, and the pairs differ.
 
+The fiber over *p* is the sphere *Sᵣ(p)*: one total vertex for each direction *p → v* at distance *r*. Two directions at *p* are adjacent iff their endpoints are. On a triangle-free graph such as the square grid the fiber at scale 1 has no edges.
 
-- The fiber over *p* is the sphere of radius *r* about *p*, one vertex for each endpoint *v*.
-- A section is a displacement: it moves each vertex *p* to a vertex at distance *r*.
-- [InfraDisplacementBundle]() is inert. [InfraTotalSpace]() builds its total graph on every call; <code>[InfraFiberedGraph]()[*fib*]</code> builds it once.
-- The Levi-Civita connection is defined on this bundle: [FindInfraLeviCivitaConnection](), and the list form of [InfraParallelTransport]() and [InfraHolonomyAngle]().
+At scale 1 the total vertices are the oriented edges of *g*, 2 |*E*| of them.
+
+A section is a displacement: it moves each vertex *p* to a vertex at distance *r*. It is continuous, [InfraContinuousSectionQ](), iff neighbouring vertices move to equal or neighbouring vertices.
+
+The bundle is a fibration on the substrates, but not a fiber bundle: the spheres differ in size where *g* is not homogeneous, and a pair has several lifts over a base edge.
+
+[InfraDisplacementBundle]() is a symbolic object. [InfraTotalSpace](), [InfraProjection](), [InfraFiber]() and the structural tests read it directly; <code>[InfraFiberedGraph]()[*fib*]</code> gives it as a literal fibered graph.
+
+The Levi-Civita connection lives on this bundle: [FindInfraLeviCivitaConnection](), [InfraParallelTransport](), [InfraHolonomyAngle](), [InfraCovariantDerivative]().
 
 ## Basic Examples
 
-The displacement bundle of a grid at scale 1, the fiber over the vertex 6 drawn.
+The fiber over the centre at scale 3 is the sphere of radius 3, drawn by the endpoints of its pairs:
 
 ```wl
-SeedRandom[ 7 ];
-With[
-  {fib = InfraFiberedSubstrate["GridDisplacementBundle", "Small"]},
-  {total = InfraTotalSpace[fib]},
-  InfraSubstrateHighlight[total, {InfraMeasurement[total, VertexList @ InfraFiber[fib, 6], "VertexDensity" ]}]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    InfraSubstrateHighlight[g, {Last /@ VertexList @ InfraFiber[InfraDisplacementBundle[g, 3], c], c}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-At scale 2 the fiber over 6 is the sphere of radius 2 about 6.
+The total graph at scale 1 over the 6 × 6 grid, every fiber drawn around its base vertex. The fiber over the centre, four directions, is marked:
 
 ```wl
-SeedRandom[ 7 ];
-With[
-  {g = GridGraph[{4, 4}]},
-  {fib = InfraDisplacementBundle[g, 2]},
-  InfraSubstrateHighlight[g, {Last /@ VertexList @ InfraFiber[fib, 6]}]]
+With[{g = InfraSubstrate["SquareGridGraph", {6, 6}, "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {xy = AssociationThread[VertexList[g], GraphEmbedding[g]], fib = InfraDisplacementBundle[g, 1]},
+  InfraFiberedGraphHighlight[fib, {InfraFiber[fib, c]}, "BaseVertexCoordinates" -> xy, ImageSize -> Medium]]
+```
+
+At scale 1 there is one total vertex for each oriented edge of the substrate:
+
+```wl
+Table[
+  With[{g = InfraSubstrate[name, "Small"]},
+    {VertexCount @ InfraTotalSpace @ InfraDisplacementBundle[g, 1], 2 EdgeCount[g]}],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
 ## Scope
 
-The displacement bundles of the catalogue at scale 1: over the grid, the triangular torus and the sphere mesh.
+The fiber over the centre has no edges on the grid. On the mesh, a triangulation, its seven directions form a cycle:
 
 ```wl
-SeedRandom[ 7 ];
-GraphicsRow[InfraTotalSpace @ InfraFiberedSubstrate[#, "Small"] & /@
-  {"GridDisplacementBundle", "TriangularTorusDisplacementBundle", "SphereMeshDisplacementBundle"}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small"]}, {fib = InfraDisplacementBundle[g, 1]},
+    InfraFiber[fib, First @ GraphCenter[g]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
 ## Properties and Relations
 
-The endpoint map from the tangent bundle is a bundle morphism. At scale 2 on the 4 x 4 grid the tangent bundle has 104 rays and 520 edges, the displacement bundle 68 pairs and 220 edges.
+The displacement bundle of the grid is a fibration but not a fiber bundle. The fibers have 4 vertices inside and 1 at the rim:
 
 ```wl
-SeedRandom[ 7 ];
-With[
-  {g = GridGraph[{4, 4}]},
+With[{fib = InfraDisplacementBundle[InfraSubstrate["SquareGridGraph", "Small"], 1]},
+  {InfraFibrationQ[fib], InfraFiberBundleQ[fib], Counts[VertexCount /@ Values @ InfraFibers[fib]]}]
+```
+
+On the square torus all fibers have 4 vertices, and still the bundle is not a fiber bundle: a pair has several lifts over a base edge.
+
+```wl
+With[{fib = InfraDisplacementBundle[InfraSubstrate["SquareTorusGraph", "Small"], 1]},
+  {InfraEqualFiberSizesQ[fib], InfraUniqueEdgeLiftingQ[fib], InfraFiberBundleQ[fib]}]
+```
+
+The endpoint map from the tangent bundle, a ray to its first and last vertex, is a bundle morphism:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
   {tangent = InfraTangentBundle[g, 2], displacement = InfraDisplacementBundle[g, 2]},
-  {InfraBundleMorphismQ[tangent, displacement, InfraBundleMorphism[tangent, displacement]],
-    {VertexCount[#], EdgeCount[#]} & /@ InfraTotalSpace /@ {tangent, displacement}}]
+  InfraBundleMorphismQ[tangent, displacement, InfraBundleMorphism[tangent, displacement]]]
 ```

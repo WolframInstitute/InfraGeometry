@@ -5,157 +5,130 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSubstrateHighlight
-Keywords: [visualization, diffuse rendering, density, highlight, palette]
-SeeAlso: [InfraScenePlot, InfraSceneViewer, InfraScene, InfraMeasurement, InfraWalk]
+Keywords: [visualization, highlight, density, palette, figure]
+SeeAlso: [InfraMeasurement, InfraWalk, InfraScenePlot, InfraSceneViewer, InfraSubstrate, HighlightGraph]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraSubstrateHighlight]()[*g*, {*obj1*, *obj2*, ...}]</code> draws the sum of the objects' densities on *g*, the *i*-th object in the *i*-th palette color.
+<code>[InfraSubstrateHighlight]()[*g*, {*obj1*, *obj2*, …}]</code> draws the objects on the graph *g*, the *i*-th in the *i*-th palette colour, a later one over an earlier.
 
-<code>[InfraSubstrateHighlight]()[*g*, *obj*]</code> draws a single object.
+<code>[InfraSubstrateHighlight]()[*g*, *obj*]</code> draws one object.
 
 ## Details & Options
 
-This is the only rendering primitive in the paclet. Every viewer and every figure calls it. The name follows `HighlightGraph`.
+[InfraSubstrateHighlight]() is the graph analogue of [HighlightGraph]() for densities. Every object becomes a vertex density and an edge density:
 
-Every object becomes a vertex density and an edge density:
-
-- a vertex, or a density `<|v -> m|>`: its own mass, no edges;
-- a native undirected edge belonging to the substrate: that edge, with no vertex mass;
-- `InfraWalk[{p1, ..., pk}]`: visit counts and the traversal counts of its steps;
-- a Euclidean head — [InfraSegment](), [InfraCircle]() and the rest: its `"VertexDensity"` and `"EdgeDensity"` from [InfraMeasurement]();
-- a region head — [InfraBall](), [InfraShell]() and the rest — or an [InfraIntersection](): its `"VertexDensity"`, no edges;
-- a native undirected subgraph whose vertices belong literally to the substrate: its vertices and edges, once each;
-- a position-spelled walk graph or a DAG: its occupation;
-- a leg chain: the walk through its legs, with its knots drawn on top;
-- a vertex list that is an induced path or an induced cycle in its own order, as every shortest path is: the walk through it;
-- any other vertex list: a set, `1` on its vertices, no edges;
-- an [InfraUnion]() or any other list — of vertex lists, graphs, heads or walks, such as the members of a head or a bundle: the sum of its members, drawn in one color, with no edges when a member has none.
-
-An object with edges is a line, drawn by its edge counts. Any other object is drawn as dots, sized by its masses, with the edges between its vertices in its color, at the bottom of `"OpacityRange"` and at the base thickness. Where a line uses such an edge, the line's stroke wins.
-
-Density `1` draws at the base: the substrate's own vertex size and edge thickness, in the object's color. Within one object the lightest mass draws at the base and the heaviest at the top, by default four times the base for a stroke and three times for a dot. An object whose masses are all equal, such as a set, a region or a walk that never repeats an edge, looks like the substrate itself, colored.
-
-The opacity follows each mass divided by the object's heaviest, along `"OpacityRange"`. A single walk is opaque, so a walk that reuses edges stays one path, its repeated edges thicker.
-Use `InfraWalk[walk]` to specify an ordered traversal; a native undirected graph does not prescribe one.
-
-A density may carry negative masses. A positive mass is a filled dot and a negative mass an empty ring of the same size, both in the object's color; size and opacity follow the absolute mass, as above. A zero mass is not drawn: the vertex keeps the substrate's own style. Edges are not signed.
-
-The objects are then summed. At each vertex and edge the strength is the sum, capped at `1`, and the color is the blend of the objects' colors weighted by their masses. Where objects overlap, the figure shows both.
-
-A head draws the edges its members use, never the chords of its support. An object with one member is drawn as one joined stroke; a family is drawn edge by edge.
-
-`"Arrowheads" -> True` puts a head on the last vertex of each walk, broader than long, its length growing with the stroke under it, black on a light stroke and gold on a dark one. An `Arrowheads` spec draws that spec instead.
-
-The list is read like a `Graphics` list. A `Directive` styles every object after it, until the next `Directive`. An entry `obj -> style` styles one object. A color in either replaces the palette color.
-
-Options:
-
-| Option | Values | Default |
+| Object | Vertex density | Edge density |
 |---|---|---|
-| `"OpacityRange"` | `None`, a scalar, or `{min, max}` | `{0.4, 1.}` |
-| `"ThicknessRange"` | `Automatic`, `None`, a base, or `{base, top}` | the substrate's own thickness, top four times it |
-| `"PointSizeRange"` | `Automatic`, `None`, a base, or `{base, top}` | the substrate's own vertex size, top three times it |
-| `"Arrowheads"` | `Automatic`, `True`, or an `Arrowheads` spec | off |
-| `"Palette"` | a list of colors | `ColorData[112]` |
+| a vertex *v* | 1 at *v* | none |
+| a density `<\|v -> m, …\|>` | the masses *m* | none |
+| a vertex list | 1 on each vertex; a list that is a path in its own order is drawn as the walk | none, or the walk |
+| <code>[InfraWalk]()[{*v1*, …, *vk*}]</code> | the visits | the traversals of its steps |
+| a family: [InfraSegment](), [InfraHalfLine](), [InfraCircle](), … | `"VertexDensity"` of [InfraMeasurement]() | `"EdgeDensity"` |
+| a region: [InfraBall](), [InfraShell](), [InfraTube](), [InfraIntersection](), … | `"VertexDensity"` | none |
+| a subgraph of *g*, a walk graph, a directed acyclic graph | its occupation | its occupation |
+| a list of such objects | the sum, in one colour | the sum |
 
-A size is in printer points, and `Automatic` is the substrate's own. For `"OpacityRange"` a scalar is the value at full strength and a pair is an envelope, interpolated by strength.
+An object with edges is drawn as a line, the stroke along each edge growing with its count; any other object as dots on its vertices, sized by mass. A mass of 1 draws at the substrate's own vertex size and edge thickness, in the object's colour; the heaviest mass of an object draws at the top of the range, by default 3 times the base size for a dot and 4 times for a stroke. The opacity follows mass over the heaviest mass, along `"OpacityRange"`.
 
-An object's own style beats the option, given in the call or by `SetOptions`, which beats the default. `AbsoluteThickness[t]` or `AbsolutePointSize[s]` in an object's style fixes that object's base. The option sizes the dots of the objects without edges; a line gets dots only from its own style. An explicit `Opacity`, any other thickness or a `PointSize` turns that object's range off. `VertexSize` is in graph units.
+A negative mass is drawn as an empty ring, a positive one as a filled dot; a zero mass is not drawn.
+
+Where objects overlap, their strengths add and their colours blend.
+
+In the list, a [Directive]() styles every object after it, and `obj -> style` one object. A colour there replaces the palette colour.
+
+| Option | Default | Values |
+|---|---|---|
+| `"OpacityRange"` | `{0.4, 1.}` | `None`, a value, or {*min*, *max*} |
+| `"ThicknessRange"` | `Automatic` | `None`, a base, or {*base*, *top*}, in printer points |
+| `"PointSizeRange"` | `Automatic` | `None`, a base, or {*base*, *top*}, in printer points |
+| `"Arrowheads"` | `Automatic` | `True` puts a head at the end of each walk, or an [Arrowheads]() spec |
+| `"Palette"` | `Automatic` | a list of colours; `Automatic` is [ColorData]()[112] |
+
+Options of [Graph]() are passed on.
 
 ## Basic Examples
 
-Three heads, in palette order: a segment, a closed arc (the circles through a point) and an arc.
+A ball, a segment and a vertex on the square grid and the square mesh:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {p = RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 1]},
-  {q = RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 2]},
-  InfraSubstrateHighlight[g,
-    {InfraSegment[c, p], InfraArc[c, {p, p}, "RadiusDelta" -> 1], InfraArc[c, {p, q}, "RadiusDelta" -> 1]}]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {b = RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {InfraBall[c, 2], InfraSegment[c, b], b}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-A `Directive` colors the objects after it.
+A density is drawn by its masses. The number of shortest paths from the centre through each vertex of the ball of radius 4:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {p = RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 1]},
-  InfraSubstrateHighlight[g,
-    {Keys @ InfraMeasurement[ g, InfraBall[c, 3], "VertexDensity" ], InfraArc[c, {p, p}, "RadiusDelta" -> 1]}]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {ball = Keys @ InfraMeasurement[g, InfraBall[c, 4], "VertexDensity"]},
+  InfraSubstrateHighlight[g, AssociationMap[InfraMeasurement[g, InfraSegment[c, #], "Cardinality"] &, ball], ImageSize -> Medium]]
 ```
 
-Overlaps add. The two segments share their start and blend there. The walk is one stroke.
+Two segments from the centre and a walk between their ends, with an arrowhead at its end. Where objects meet, their colours blend:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {p = RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 1]},
-  {q = RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 2]},
-  {walk = RandomInfraSegment[ g, InfraSegment[p, q], RandomSeeding -> 1 ]},
-  InfraSubstrateHighlight[g, {InfraSegment[c, p], InfraSegment[c, q], InfraWalk[walk]}, "Arrowheads" -> True]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {p = RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 1]}, {q = RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 5]},
+  InfraSubstrateHighlight[g, {InfraSegment[c, p], InfraSegment[c, q], InfraWalk[RandomInfraSegment[g, p, q, RandomSeeding -> 1]]},
+    "Arrowheads" -> True, ImageSize -> Medium]]
 ```
 
-A negative mass is an empty ring. The boundary of a walk from *p* to *q* is *q* minus *p*: a dot at the end, a ring at the start, drawn with the walk.
+## Scope
+
+A negative mass is an empty ring. The boundary of a walk from *p* to *q* is *q* minus *p*:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {p = RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]},
-  {q = RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 2]},
-  {walk = RandomInfraSegment[ g, InfraSegment[p, q], RandomSeeding -> 1 ]},
-  InfraSubstrateHighlight[g, {InfraWalk[walk], <|q -> 1, p -> -1|>}]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {p = RandomInfraPoint[g, InfraShell[c, 3], RandomSeeding -> 1]}, {q = RandomInfraPoint[g, InfraShell[c, 3], RandomSeeding -> 2]},
+  InfraSubstrateHighlight[g, {InfraWalk[RandomInfraSegment[g, p, q, RandomSeeding -> 1]], <|q -> 1, p -> -1|>}, ImageSize -> Medium]]
 ```
 
-The difference of two balls is a density too: dots on the first ball, rings on the second. Where they overlap the masses cancel to `0`, and a zero mass is not drawn.
+The difference of two balls: dots on the first, rings on the second, nothing where they cancel:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
   {b = RandomInfraPoint[g, InfraShell[a, 3], RandomSeeding -> 1]},
-  InfraSubstrateHighlight[g, {InfraUnion[InfraBall[a, 3], -InfraMeasurement[g, InfraBall[b, 3], "VertexDensity"]]}]]
+  InfraSubstrateHighlight[g, {InfraUnion[InfraBall[a, 3], -InfraMeasurement[g, InfraBall[b, 3], "VertexDensity"]]}, ImageSize -> Medium]]
+```
+
+A [Directive]() colours the objects after it; a rule colours one:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  InfraSubstrateHighlight[g, {Directive[StandardBlue], InfraShell[c, 2], InfraShell[c, 4], c -> StandardRed}, ImageSize -> Medium]]
+```
+
+## Options
+
+### ThicknessRange
+
+A wider range makes the busy edges of a segment stand out:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {seg = InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 1]]},
+  GraphicsRow[{InfraSubstrateHighlight[g, {seg}], InfraSubstrateHighlight[g, {seg}, "ThicknessRange" -> {1, 8}]}]]
+```
+
+### Palette
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  InfraSubstrateHighlight[g, Table[InfraShell[c, r], {r, 1, 4}], "Palette" -> {StandardRed, StandardOrange, StandardGreen, StandardBlue},
+    ImageSize -> Medium]]
 ```
 
 ## Properties and Relations
 
-The palette is Jeremy's strike-out sequence: three segments drawn in its first three colours.
+The list of all members of a segment draws as the segment:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {ends = RandomInfraPoint[g, InfraShell[c, 5], 3, RandomSeeding -> 1]},
-  {InfraSubstrateHighlight[g, Table[InfraSegment[c, end], {end, ends}]], Take[ColorData[112, "ColorList"], 3]}]
-```
-
-A list of vertex lists is one object, the sum of its members: here the shortest paths of a segment, which draw as the head does.
-
-```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
   {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
-  GraphicsRow[{
-    InfraSubstrateHighlight[g, {RandomInfraSegment[ g, InfraSegment[a, b], All ]}],
-    InfraSubstrateHighlight[g, {InfraSegment[a, b]}]}]]
-```
-
-A list of heads is one object too: two crossing segments in one color.
-
-```wl
-With[
-  {g = GridGraph[{9, 9}]},
-  InfraSubstrateHighlight[g, {{InfraSegment[37, 45], InfraSegment[5, 77]}}, ImageSize -> 250]]
+  InfraSubstrateHighlight[g, {RandomInfraSegment[g, a, b, All]}] === InfraSubstrateHighlight[g, {InfraSegment[a, b]}]]
 ```

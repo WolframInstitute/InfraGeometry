@@ -12,56 +12,72 @@ RelatedGuides: [Experimental]
 
 ## Usage
 
-<code>[ResolvingSetQ]()[*g*, *basis*]</code> tests whether every vertex of *g* is determined by its distances to the vertices of *basis*.
+<code>[ResolvingSetQ]()[*g*, {*b1*, …, *bk*}]</code> tests whether every vertex of *g* is determined by its distances to the vertices *b1*, …, *bk*.
 
 ## Details & Options
 
-Definition: a list *B* = (*b*₁, …, *b*ₖ) of vertices resolves *g* when the radar map *v* ↦ (*d*(*v*, *b*₁), …, *d*(*v*, *b*ₖ)) is injective on the vertices of *g*: for every two vertices *u* ≠ *v* some *b* in *B* has *d*(*u*, *b*) ≠ *d*(*v*, *b*). The map is [RadarCoordinates]().
+A list *B = (b₁, …, bₖ)* of vertices resolves *g* when the map *v ↦ (d(v, b₁), …, d(v, bₖ))* is injective on the vertices of *g*: for every two vertices *u ≠ v* some *bᵢ* has *d(u, bᵢ) ≠ d(v, bᵢ)*. The map is [RadarCoordinates]().
 
-A list that contains a resolving set resolves, and so does every list of all the vertices but one. A smallest resolving set is a metric basis, found by [FindResolvingSet](); its size is the [MetricDimension]().
+A list that contains a resolving set resolves. A smallest resolving set is a metric basis, found by [FindResolvingSet](); its size is the [MetricDimension]().
+
+Two vertices at the same distance from every other vertex are twins, and only a list that contains one of them can tell them apart.
+
+The basis must consist of vertices. [RadarCoordinates]() also accepts sets of vertices as stations.
 
 ## Basic Examples
 
-Two corners of the square, hexagonal and triangular tilings, red, tell apart only the vertices on the line between them: every other vertex, orange, has a mirror image at the same two distances. Three corners resolve each tiling.
+Two vertices at distance 4 from the centre do not resolve the square grid or the square mesh. The vertices that share their distances with another vertex are drawn in red:
 
 ```wl
-With[
-  {panels = Table[
-     With[
-       {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-       {stations = First @ FindResolvingSet[g]},
-       {twoStations = Take[stations, 2]},
-       {unresolved = Catenate @ Select[Values @ GroupBy[VertexList[g], RadarCoordinates[g, twoStations, #] &], Length[#] > 1 &]},
-       {InfraSubstrateHighlight[g, {AssociationThread[unresolved, 1] -> StandardOrange, twoStations -> StandardRed}],
-        {ResolvingSetQ[g, twoStations], ResolvingSetQ[g, stations]}}],
-     {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]},
-  {GraphicsRow[First /@ panels], Last /@ panels}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {stations = RandomInfraPoint[g, InfraShell[c, 4], 2, RandomSeeding -> 1]},
+    {classes = GatherBy[VertexList[g], RadarCoordinates[g, stations, #] &]},
+    {unresolved = Catenate @ Select[classes, Length[#] > 1 &]},
+    InfraSubstrateHighlight[g, {unresolved, stations}, PlotLabel -> ResolvingSetQ[g, stations]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-Two vertices of the 8-cycle resolve it unless they are opposite.
+A metric basis of the square mesh has three vertices. Without any one of them it no longer resolves:
 
 ```wl
-With[
-  {g = CycleGraph[8]},
-  {GraphicsRow[Table[InfraSubstrateHighlight[g, {{1, k}}], {k, 2, 5}]], Table[ResolvingSetQ[g, {1, k}], {k, 2, 5}]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {basis = First @ FindResolvingSet[g]},
+  InfraSubstrateHighlight[g, {basis},
+    PlotLabel -> {ResolvingSetQ[g, basis], Table[ResolvingSetQ[g, Delete[basis, k]], {k, 3}]},
+    ImageSize -> Medium]]
+```
+
+Two vertices of the 8-cycle resolve it unless they are opposite:
+
+```wl
+Table[ResolvingSetQ[CycleGraph[8], {1, k}], {k, 2, 5}]
 ```
 
 ## Properties and Relations
 
-One vertex resolves a path only from an end, and it resolves no other graph.
+A list resolves exactly when the radar coordinates from it are distinct:
 
 ```wl
-With[
-  {g = PathGraph[Range[6]]},
-  {InfraSubstrateHighlight[g, {Select[VertexList[g], ResolvingSetQ[g, {#}] &]}], Table[ResolvingSetQ[g, {k}], {k, 6}]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {basis = First @ FindResolvingSet[g]},
+  Table[{CountDistinct[Values[RadarCoordinates[g, Take[basis, k]]]], ResolvingSetQ[g, Take[basis, k]]},
+    {k, 3}]]
 ```
 
-A list resolves exactly when the radar coordinates from it are distinct. Two corners of the hexagonal tiling give 109 vertices 67 coordinates, three corners give them 109.
+One vertex resolves a path exactly when it is an end:
 
 ```wl
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {stations = First @ FindResolvingSet[g]},
-  {InfraSubstrateHighlight[g, {stations}],
-   Table[{CountDistinct[Values[RadarCoordinates[g, Take[stations, k]]]], ResolvingSetQ[g, Take[stations, k]]}, {k, 2, 3}]}]
+Table[ResolvingSetQ[PathGraph[Range[6]], {k}], {k, 6}]
+```
+
+## Possible Issues
+
+The rim vertices of the square grid are leaves, and the two leaves at a corner are twins. All the other vertices together do not resolve the grid; with one of the two added they do:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {vertexAt = AssociationThread[Round @ GraphEmbedding[g], VertexList[g]]},
+  {twins = vertexAt /@ {{1, 2}, {2, 1}}}, {others = Complement[VertexList[g], twins]},
+  InfraSubstrateHighlight[g, {twins},
+    PlotLabel -> {ResolvingSetQ[g, others], ResolvingSetQ[g, Append[others, First @ twins]]}, ImageSize -> Medium]]
 ```

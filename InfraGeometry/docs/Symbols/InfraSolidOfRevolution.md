@@ -5,70 +5,88 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSolidOfRevolution
-Keywords: [solid of revolution, profile, sliced tube, region, symbolic object, volume]
+Keywords: [solid of revolution, surface of revolution, profile, sliced tube, region, symbolic object, volume]
 SeeAlso: [InfraTube, InfraCylinder, InfraCone, InfraBall, InfraMeasurement, InfraMemberQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraSolidOfRevolution]()[*axis*, *profile*]</code> is the solid about *axis* whose radius along the axis is *profile*: the vertices within the radius of the axis vertex they project to, with flat ends. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
+<code>[InfraSolidOfRevolution]()[*axis*, *profile*]</code> is the solid about the walk *axis* whose radius at the *i*-th axis vertex is the *i*-th entry of *profile*.
 
-<code>[InfraSolidOfRevolution]()[*axis*, *profile*, Method -> "Balls"]</code> is the rounded solid, the union of the balls of radius *r_i* about the axis vertices.
+<code>[InfraSolidOfRevolution]()[*axis*, *profile*, Method -> "Balls"]</code> is the union of the balls of the profile radii about the axis vertices.
 
 ## Details & Options
 
-Definition: the solid of revolution of the profile *r_1, …, r_m* about the axis *a_1, …, a_m* is the sliced tube <code>[InfraTube]()[*axis*, *profile*, Method -> "Sliced"]</code>. Slice *i* is the set of vertices whose nearest axis vertex is *a_i*, a tie lying in every nearest slice, and *v* is in the solid when *d(a_i, v) ≤ r_i* for its slice. The profile is read at the discrete foot of the perpendicular, so a jump of the profile is a sharp step.
+For the axis *a₁, …, aₘ* and the radii *r₁, …, rₘ*, a vertex *v* belongs to the solid when *d(aᵢ, v) ≤ rᵢ* for an axis vertex *aᵢ* nearest to *v*. The nearest axis vertex is the foot of the perpendicular from *v*: the radius is read slice by slice, and a jump of the profile is a sharp step.
 
-*profile* is a list of radii or bands, one per axis vertex, or a function of the position *i*; a band *{s, t}* keeps the vertices at distance between *s* and *t*, and the band *{r, r}* is the surface. A pair of numbers is a band constant along the axis.
+The axis is prolonged straight past both ends, and the vertices nearer a prolongation than the axis are cut, so the ends are flat. With `Method -> "Balls"` the solid is the union of the balls *B_{rᵢ}(aᵢ)*, with round ends and no sharp steps.
 
-The axis is a walk: a vertex, a vertex list, or a path or cycle graph. It is prolonged straight on past both ends, and the vertices nearer a prolongation than the axis are cut, so the ends are flat. A closed axis has no ends.
+*profile* is a list with one entry per axis vertex, or a function of the position *i*. An entry {*s*, *t*} keeps the vertices at distance *s* to *t*; the constant band {*r*, *r*} gives the surface of revolution.
 
-[InfraCylinder]() is the constant profile and [InfraCone]() the linear one, *r_i = slope (i − 1)*. <code>Method -> "Balls"</code> drops the slicing.
+[InfraCylinder]() is the constant profile, [InfraCone]() the linear profile *rᵢ = m (i − 1)*.
 
-The head computes nothing. A solid has one member, the vertex set. [InfraMeasurement]() reads `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"`, `"Faithful"` and `"Subgraph"`, and the two measures.
+[InfraSolidOfRevolution]() is a symbolic object, a region with one member, its vertex set. [InfraMeasurement]() reads its density and the two measures.
 
 ## Basic Examples
 
-A strip of width 3 with one row of width 7, a sharp step, about a row of the square grid; the profile as a list, a function of the position, and rounded.
+A solid about a shortest path of 7 vertices from the centre, its radius rising from 1 to 3 and back:
 
 ```wl
-With[
-  {g = GridGraph[{11, 11}]},
-  {axis = 55 + Range[2, 8]},
-  GraphicsRow[{
-    InfraSubstrateHighlight[g, {InfraSolidOfRevolution[axis, {1, 1, 1, 3, 1, 1, 1}], axis}],
-    InfraSubstrateHighlight[g, {InfraSolidOfRevolution[axis, i |-> 1 + Floor[3 Sin[Pi (i - 1)/6]]], axis}],
-    InfraSubstrateHighlight[g, {InfraSolidOfRevolution[axis, {1, 1, 1, 3, 1, 1, 1}, Method -> "Balls"], axis}]}]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {axis = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 2], RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {InfraSolidOfRevolution[axis, {1, 2, 3, 3, 3, 2, 1}], axis}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+```
+
+A sharp step of the profile, sliced and as a union of balls. The balls round the ends and spread the step into a diamond:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {axis = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 2], RandomSeeding -> 1]},
+  GraphicsRow @ Table[
+    InfraSubstrateHighlight[g, {InfraSolidOfRevolution[axis, {1, 1, 1, 3, 1, 1, 1}, Method -> method], axis},
+      PlotLabel -> InfraMeasurement[g, InfraSolidOfRevolution[axis, {1, 1, 1, 3, 1, 1, 1}, Method -> method], "CountingMeasure"]],
+    {method, {"Sliced", "Balls"}}]]
+```
+
+## Scope
+
+A profile can be a function of the position along the axis:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {axis = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 2], RandomSeeding -> 1]},
+  InfraSubstrateHighlight[g, {InfraSolidOfRevolution[axis, i |-> Round[3 Sin[Pi (i - 1)/6]]], axis}, ImageSize -> Medium]]
+```
+
+The constant band {2, 2} is the surface of revolution:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {axis = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 2], RandomSeeding -> 1]},
+  InfraSubstrateHighlight[g, {InfraSolidOfRevolution[axis, {2, 2}], axis}, ImageSize -> Medium]]
 ```
 
 ## Properties and Relations
 
-The constant profile is the cylinder, and the linear profile the cone.
+The constant profile is the cylinder, and the linear profile the cone:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = GridGraph[{11, 11}]},
-  {axis = 55 + Range[2, 8]},
-  {Keys @ InfraMeasurement[ g, InfraSolidOfRevolution[axis, ConstantArray[1, 7]], "VertexDensity" ] === Keys @ InfraMeasurement[ g, InfraCylinder[axis, 1], "VertexDensity" ],
-   Keys @ InfraMeasurement[ g, InfraSolidOfRevolution[axis, i |-> i - 1], "VertexDensity" ] === Keys @ InfraMeasurement[ g, InfraCone[axis, 1], "VertexDensity" ]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Medium"]}, {c = First @ GraphCenter[g]},
+  {axis = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 2], RandomSeeding -> 1]},
+  {Keys @ InfraMeasurement[g, InfraSolidOfRevolution[axis, ConstantArray[2, 7]], "VertexDensity"] ==
+     Keys @ InfraMeasurement[g, InfraCylinder[axis, 2], "VertexDensity"],
+   Keys @ InfraMeasurement[g, InfraSolidOfRevolution[axis, i |-> i - 1], "VertexDensity"] ==
+     Keys @ InfraMeasurement[g, InfraCone[axis, 1], "VertexDensity"]}]
 ```
 
-The two measures of the solid.
+The balls contain the sliced solid:
 
 ```wl
-With[
-  {g = GridGraph[{11, 11}]},
-  {axis = 55 + Range[2, 8]},
-  InfraMeasurement[g, InfraSolidOfRevolution[axis, {1, 1, 1, 3, 1, 1, 1}], {"CountingMeasure", "RiemannianMeasure"}]]
-```
-
-The surface of revolution is the band profile *{r, r}*: the vertices at distance exactly *r* from their axis vertex.
-
-```wl
-With[
-  {g = GridGraph[{11, 11}]},
-  {axis = 55 + Range[2, 8]},
-  InfraSubstrateHighlight[g, {InfraSolidOfRevolution[axis, {2, 2}], axis}]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Medium"]}, {c = First @ GraphCenter[g]},
+  {axis = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 2], RandomSeeding -> 1]},
+  SubsetQ[Keys @ InfraMeasurement[g, InfraSolidOfRevolution[axis, {1, 2, 3, 3, 3, 2, 1}, Method -> "Balls"], "VertexDensity"],
+    Keys @ InfraMeasurement[g, InfraSolidOfRevolution[axis, {1, 2, 3, 3, 3, 2, 1}], "VertexDensity"]]]
 ```

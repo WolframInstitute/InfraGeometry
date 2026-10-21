@@ -5,44 +5,95 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/PathSubgraph
-SeeAlso: [InfraSegment, InfraMeasurement, FindPath, Subgraph, GraphUnion]
+Keywords: [shortest path, simple path, detour, path union, segment]
+SeeAlso: [IntervalGraph, InfraSegment, InfraMeasurement, FindPath, GraphUnion]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-`PathSubgraph[graph, u, v]` returns the union of all shortest u-v paths.
+<code>[PathSubgraph]()[*g*, *u*, *v*]</code> gives the union of all shortest paths from *u* to *v*.
 
-`PathSubgraph[graph, u, v, k]` (or UpTo[k]) caps path length; PathSubgraph[graph, u, v, All] returns the full simple-path subgraph.
+<code>[PathSubgraph]()[*g*, *u*, *v*, *k*]</code> gives the union of all simple paths from *u* to *v* with at most *k* edges.
+
+<code>[PathSubgraph]()[*g*, *u*, *v*, All]</code> gives the union of all simple paths from *u* to *v*.
 
 ## Details & Options
 
-The option `"Directed" -> True` orients each path from *u* to *v*. Use `"Directed" -> False` for its undirected edge union.
+The graph is *⋃ {P : P a simple path from u to v, |P| ≤ k}*, with *|P|* the number of edges. The default cap is *k = d(u, v)*, so the default is the union of the shortest paths, the same edges as the [IntervalGraph]().
 
-The length cap counts edges. The default equals the segment graph on an unweighted substrate. A larger cap adds detours, which the segment excludes. `All` includes every simple path between the endpoints.
+A cap above *d(u, v)* adds detours. On a bipartite graph such as the square grid every path from *u* to *v* has the parity of *d(u, v)*, so the caps *d(u, v) + 2j* and *d(u, v) + 2j + 1* give the same graph.
 
-This is a union of path **edges**, not the subgraph induced on their vertices. The latter can contain additional edges that violate the cap. The graph does not retain which edges belonged to the same path.
+It is a union of path edges, not the subgraph induced on their vertices: an edge joining two path vertices is left out unless it lies on a path within the cap.
 
-The construction uses the built-ins `FindPath`, `PathGraph` and `GraphUnion`. Enumerating all simple paths can be expensive.
+A cap below *d(u, v)* gives the empty graph. For *u* = *v* the result is the single vertex *u*. `UpTo[k]` is the same as *k*.
+
+Options:
+
+| Option | Default | Values |
+|---|---|---|
+| `"Directed"` | `True` | `True` orients every path from *u* to *v*; `False` gives undirected edges |
+
+Enumerating all simple paths grows fast with the cap.
 
 ## Basic Examples
 
-On a six-cycle, the two routes from 1 to 3 have lengths 2 and 4. Increasing the cap adds the longer route.
+The paths of length at most *d(u, v) + 2* between the centre and a vertex at distance 3, on the square grid and on the square mesh:
 
 ```wl
-SeedRandom[1];
-With[
-  { graph = CycleGraph[6] },
-  GraphicsRow[PathSubgraph[graph, 1, 3, #, "Directed" -> False] & /@ {2, 4}]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {u = First @ GraphCenter[g]},
+    {v = RandomInfraPoint[g, InfraShell[u, 3], RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {PathSubgraph[g, u, v, 5, "Directed" -> False], u, v}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The default segment has just the short route. Its support subgraph is available through the measurement API.
+On the grid, the caps 3 and 4 give the same graph, and so do 5 and 6. The vertex and edge counts:
 
 ```wl
-SeedRandom[1];
-With[
-  { graph = CycleGraph[6] },
-  {PathSubgraph[graph, 1, 3],
-   InfraMeasurement[graph, InfraSegment[1, 3], "Graph"],
-   InfraMeasurement[graph, InfraSegment[1, 3], "Subgraph"]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {u = First @ GraphCenter[g]},
+  {v = RandomInfraPoint[g, InfraShell[u, 3], RandomSeeding -> 1]},
+  Table[k -> {VertexCount[#], EdgeCount[#]} & @ PathSubgraph[g, u, v, k], {k, 3, 6}]]
+```
+
+## Options
+
+### Directed
+
+`"Directed" -> False` keeps the same edges without orientation:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {u = First @ GraphCenter[g]},
+  {v = RandomInfraPoint[g, InfraShell[u, 3], RandomSeeding -> 1]},
+  DirectedGraphQ /@ {PathSubgraph[g, u, v], PathSubgraph[g, u, v, "Directed" -> False]}]
+```
+
+## Properties and Relations
+
+With the default cap the edges are those of the [IntervalGraph]():
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {u = First @ GraphCenter[g]},
+  {v = RandomInfraPoint[g, InfraShell[u, 4], RandomSeeding -> 1]},
+  Sort @ EdgeList @ PathSubgraph[g, u, v] === Sort @ EdgeList @ IntervalGraph[g, u, v]]
+```
+
+## Possible Issues
+
+With detours the directed union is not acyclic: two paths can cross an edge in opposite directions. The edges used both ways:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {u = First @ GraphCenter[g]},
+  {v = RandomInfraPoint[g, InfraShell[u, 3], RandomSeeding -> 1]}, {h = PathSubgraph[g, u, v, 5]},
+  {AcyclicGraphQ[h], Select[EdgeList[h], MemberQ[EdgeList[h], Reverse[#]] &]}]
+```
+
+Draw such a union with `"Directed" -> False`.
+
+A cap below the distance gives the empty graph:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {u = First @ GraphCenter[g]},
+  {v = RandomInfraPoint[g, InfraShell[u, 3], RandomSeeding -> 1]},
+  {VertexCount @ PathSubgraph[g, u, v, 2], EmptyGraphQ @ PathSubgraph[g, u, v, 2]}]
 ```

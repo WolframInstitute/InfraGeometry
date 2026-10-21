@@ -12,68 +12,65 @@ RelatedGuides: [InfraSubstrates]
 
 ## Usage
 
-<code>[BoundarylessGraph]()[*g*]</code> deletes every edge of *g* whose two ends lie on its rim, then the vertices this leaves without an edge.
+<code>[BoundarylessGraph]()[*g*]</code> deletes every edge of *g* with both ends on its rim, then the vertices this leaves without an edge.
 
 <code>[BoundarylessGraph]()[*mr*]</code> does the same on the edges of the mesh region *mr*, whose rim is its boundary.
 
 ## Details & Options
 
-Definition: let *∂g* be the rim, <code>[GraphExteriorBoundary]()[*g*]</code>. The result is *g* without the edges {*u*, *v*} with *u*, *v* ∈ *∂g*, and without the vertices that then have no edge.
+With *∂g* the rim, <code>[GraphExteriorBoundary]()[*g*]</code>, the result is *g* − {*uv* : *u*, *v* ∈ *∂g*}, without its isolated vertices.
 
-The contour of the rim disappears, while a rim vertex with an edge inward stays as a whisker. The graph models an open window onto the geometry, a patch with no contour drawn round it.
+The contour of the rim disappears, and a rim vertex with an edge inward stays as a whisker. The graph models an open subset of the plane or of space: a window onto the geometry with no curve drawn round it.
 
-The vertex coordinates are kept, in their own dimension; `"KeepCoordinates"` -> [False]() drops them. The rim of a graph is the one of [GraphExteriorBoundary](), with no method to choose; the rim of a mesh region is exact, and its vertices are numbered as in [MeshCoordinates](). [Graph]() options are passed on to the graph.
+On the *n* × *n* grid the contour has 4(*n* − 1) edges and the four corners are left isolated, so *n*² − 4 vertices remain.
 
-The patches of [InfraSubstrate]() are made this way: the tilings from balls of [TessellationNeighborhoodGraph](), the grids from [GridGraph](), the meshes from their mesh regions.
+The patches of [InfraSubstrate]() are made this way: the grids from [GridGraph](), the tilings from balls of [TessellationNeighborhoodGraph](), the meshes from their mesh regions.
+
+| Option | Default | Values |
+|---|---|---|
+| `"KeepCoordinates"` | [True]() | [False]() drops the vertex coordinates |
+
+[Graph]() options are passed on.
 
 ## Basic Examples
 
-The 8 × 8 grid, a ball of the triangular tiling and a triangulated disk with the rim contour removed, and the number of edges removed from each.
+The 10 × 10 grid and a triangulated square without their contours, labelled with the number of edges removed:
 
 ```wl
-With[
-  {mesh = DiscretizeRegion[Disk[], MaxCellMeasure -> 0.01]},
-  {graphs = {GridGraph[{8, 8}], TessellationNeighborhoodGraph[{3, 6}, 4], MeshConnectivityGraph[mesh, 0]}},
-  {windows = {BoundarylessGraph[graphs[[1]]], BoundarylessGraph[graphs[[2]]], BoundarylessGraph[mesh]}},
-  {GraphicsRow[windows], EdgeCount /@ graphs - EdgeCount /@ windows}]
+With[{mesh = DiscretizeRegion[Rectangle[], MaxCellMeasure -> 0.0085]}, {grid = GridGraph[{10, 10}]},
+  GraphicsRow[{Graph[BoundarylessGraph[grid], PlotLabel -> EdgeCount[grid] - EdgeCount[BoundarylessGraph[grid]]],
+    Graph[BoundarylessGraph[mesh], PlotLabel -> MeshCellCount[mesh, 1] - EdgeCount[BoundarylessGraph[mesh]]]}]]
+```
+
+The removed edges are the edges between two rim vertices:
+
+```wl
+With[{g = GridGraph[{10, 10}]}, {rim = GraphExteriorBoundary[g]},
+  InfraSubstrateHighlight[g, {Subgraph[g, rim]}, PlotLabel -> EdgeCount[Subgraph[g, rim]], ImageSize -> Medium]]
 ```
 
 ## Options
 
 ### KeepCoordinates
 
-Without the coordinates the graph is laid out by springs.
+Without the coordinates the graph is laid out by springs:
 
 ```wl
-GraphicsRow @ Table[BoundarylessGraph[GridGraph[{8, 8}], "KeepCoordinates" -> keep], {keep, {True, False}}]
+GraphicsRow @ Table[BoundarylessGraph[GridGraph[{10, 10}], "KeepCoordinates" -> keep], {keep, {True, False}}]
 ```
 
 ## Properties and Relations
 
-The square tiling substrate is the ball of radius 7 of the square tiling without its rim contour.
+The square grid substrate is the 10 × 10 grid without its contour, with 10² − 4 vertices:
 
 ```wl
-With[
-  {window = BoundarylessGraph[TessellationNeighborhoodGraph[{4, 4}, 7]]},
-  {window, Sort[EdgeList[window]] === Sort[EdgeList @ InfraSubstrate["SquareTilingGraph", "Small"]]}]
+With[{window = BoundarylessGraph[GridGraph[{10, 10}]]},
+  {VertexCount[window], Sort @ EdgeList[window] === Sort @ EdgeList @ InfraSubstrate["SquareGridGraph", "Small"]}]
 ```
 
-The removed edges are the edges among the rim vertices, drawn thick.
+The graph of a mesh gives the same window as the mesh region:
 
 ```wl
-With[
-  {g = TessellationNeighborhoodGraph[{3, 6}, 4]},
-  {rim = GraphExteriorBoundary[g]},
-  {InfraSubstrateHighlight[g, {rim}],
-   EdgeCount[g] - EdgeCount[BoundarylessGraph[g]] == EdgeCount[Subgraph[g, rim]]}]
-```
-
-The graph of a mesh gives the same window as the mesh region: the disk without its rim from the graph and from the mesh region, and the numbers of edges removed.
-
-```wl
-With[
-  {mesh = DiscretizeRegion[Disk[], MaxCellMeasure -> 0.01]},
-  {graph = IndexGraph @ MeshConnectivityGraph[mesh, 0]},
-  {windows = {BoundarylessGraph[graph], BoundarylessGraph[mesh]}},
-  {GraphicsRow[windows], EdgeCount[graph] - EdgeCount /@ windows}]
+With[{mesh = DiscretizeRegion[Rectangle[], MaxCellMeasure -> 0.0085]}, {graph = IndexGraph @ MeshConnectivityGraph[mesh, 0]},
+  Sort[Sort /@ EdgeList @ BoundarylessGraph[graph]] === Sort[Sort /@ EdgeList @ BoundarylessGraph[mesh]]]
 ```

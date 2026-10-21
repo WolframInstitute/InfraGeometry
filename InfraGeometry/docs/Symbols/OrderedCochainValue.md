@@ -12,59 +12,60 @@ RelatedGuides: [Experimental]
 
 ## Usage
 
-<code>[OrderedCochainValue]()[*α*, {*v*₀, …, *v*ₖ}]</code> gives the value of the ordered *k*-cochain *α* on an increasing tuple *v₀ < … < vₖ*, and `Missing["NonIncreasingTuple", tuple]` on any other tuple.
+<code>[OrderedCochainValue]()[*α*, {*v₀*, …, *vₖ*}]</code> gives the value of the ordered cochain *α* on the increasing tuple *v₀ < … < vₖ*.
 
 ## Details & Options
 
-Definition: with the vertices in a linear order, an ordered *k*-cochain is a function on the increasing (*k* + 1)-tuples of the cliques alone, extended by 0 to the increasing tuples that span no clique. The order is the one in which [Sort]() puts the vertex names.
+An ordered *k*-cochain is a function on the increasing *(k + 1)*-tuples of the cliques, in the order in which [Sort]() puts the vertex names. It is stored like an alternating cochain, `<|{v0, …, vk} -> value|>`, one value per clique, and a value 0 is not stored.
 
-Restricting an alternating cochain to the increasing tuples identifies the alternating and the ordered *k*-cochains as vector spaces, one value per *k*-simplex, so both are stored alike, `<|{v0, ..., vk} -> value|>`. The identification does not respect the products: extended by the sign rule, the ordered cup of two alternating cochains is not their Alexander–Whitney product on the other orderings. An ordered cochain is therefore read on the increasing tuples only.
+On an increasing tuple [OrderedCochainValue]() gives the stored value, or 0. On any other tuple it gives `Missing["NonIncreasingTuple", tuple]`: an ordered cochain has no value there. [CochainValue]() would extend it by the sign rule, which is right for alternating cochains only.
 
-[OrderedCochainCup]() and [CochainCupOne]() give ordered cochains, and [OrderedCochainValue]() reads them. On an increasing tuple it agrees with [CochainValue]().
+[OrderedCochainCup]() and [CochainCupOne]() give ordered cochains.
 
 ## Basic Examples
 
-The ordered cup of the coboundaries of the distances from the centre of the triangular tiling and from a vertex three steps away, drawn on its triangles, blue where it is positive and red where it is negative. On a triangle at the centre it has a value on the increasing ordering of the corners and none on the five others.
+The ordered cup *δx ⌣ δy* of the coordinates on a triangle at the centre of the square mesh, read on the six orderings of its corners. Only the increasing one has a value:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {apex = RandomInfraPoint[g, InfraShell[center, 3], RandomSeeding -> 1]},
-  {cup = OrderedCochainCup[g,
-     Coboundary[g, AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]],
-     Coboundary[g, AssociationMap[GraphDistance[g, apex, First[#]] &, List /@ VertexList[g]]]]},
-  {triangle = First @ Select[Keys[cup], MemberQ[center]]},
-  {Show[Graphics[KeyValueMap[{simplex, value} |-> {If[value > 0, StandardBlue, StandardRed], Polygon[Lookup[positions, simplex]]}, cup]], g],
-   Normal @ AssociationMap[OrderedCochainValue[cup, #] &, Permutations[triangle]]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {dx = Coboundary[g, AssociationThread[List /@ VertexList[g], GraphEmbedding[g][[All, 1]]]],
+   dy = Coboundary[g, AssociationThread[List /@ VertexList[g], GraphEmbedding[g][[All, 2]]]]},
+  {t = Sort @ First @ Select[FindClique[g, {3}, All], MemberQ[c]]},
+  {cup = OrderedCochainCup[g, dx, dy]},
+  AssociationMap[OrderedCochainValue[cup, #] &, Permutations[t]]]
+```
+
+An increasing tuple that is not stored gives 0. The product of the 1-cochain that is 1 on the front edge of a triangle with the one that is 1 on its back edge vanishes on every other triangle:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {triangles = Sort /@ FindClique[g, {3}, All]}, {t = First @ Select[triangles, MemberQ[c]]},
+  {cup = OrderedCochainCup[g, <|t[[{1, 2}]] -> 1|>, <|t[[{2, 3}]] -> 1|>]},
+  InfraSubstrateHighlight[g, {t}, PlotLabel -> Counts[OrderedCochainValue[cup, #] & /@ triangles],
+    ImageSize -> Medium]]
 ```
 
 ## Properties and Relations
 
-On an increasing tuple the two readings agree, whatever the convention of the cochain.
+On increasing tuples [OrderedCochainValue]() and [CochainValue]() agree. On the reversed tuples [CochainValue]() applies the sign of the permutation:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {apex = RandomInfraPoint[g, InfraShell[center, 3], RandomSeeding -> 1]},
-  {cup = OrderedCochainCup[g,
-     Coboundary[g, AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]],
-     Coboundary[g, AssociationMap[GraphDistance[g, apex, First[#]] &, List /@ VertexList[g]]]]},
-  {Show[Graphics[{StandardBlue, Polygon[Lookup[positions, #]] & /@ Keys[cup]}], g],
-   AllTrue[Keys[cup], OrderedCochainValue[cup, #] == CochainValue[cup, #] &]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {dx = Coboundary[g, AssociationThread[List /@ VertexList[g], GraphEmbedding[g][[All, 1]]]],
+   dy = Coboundary[g, AssociationThread[List /@ VertexList[g], GraphEmbedding[g][[All, 2]]]]},
+  {cup = OrderedCochainCup[g, dx, dy]},
+  {AllTrue[Keys[cup], OrderedCochainValue[cup, #] == CochainValue[cup, #] &],
+   AllTrue[Keys[cup], CochainValue[cup, Reverse[#]] == -cup[#] &],
+   Union[Head /@ (OrderedCochainValue[cup, Reverse[#]] & /@ Keys[cup])]}]
 ```
 
-An increasing tuple that is not stored gives 0, not [Missing](): a triangle on which the ordered cup vanishes.
+## Possible Issues
+
+The cochain carries no graph, so an increasing tuple that spans no clique also gives 0. A tuple with a repeated vertex is not increasing:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {apex = RandomInfraPoint[g, InfraShell[center, 3], RandomSeeding -> 1]},
-  {cup = OrderedCochainCup[g,
-     Coboundary[g, AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]],
-     Coboundary[g, AssociationMap[GraphDistance[g, apex, First[#]] &, List /@ VertexList[g]]]]},
-  {triangle = First @ Complement[Sort /@ FindClique[g, {3}, All], Keys[cup]]},
-  {Show[Graphics[{StandardBlue, Polygon[Lookup[positions, triangle]]}], g], OrderedCochainValue[cup, triangle]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {t = Sort @ First @ Select[FindClique[g, {3}, All], MemberQ[c]]},
+  {cup = OrderedCochainCup[g, <|t[[{1, 2}]] -> 1|>, <|t[[{2, 3}]] -> 1|>]},
+  {OrderedCochainValue[cup, Take[Sort @ VertexList[g], 3]], OrderedCochainValue[cup, t[[{1, 1, 2}]]]}]
 ```

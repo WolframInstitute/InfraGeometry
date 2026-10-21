@@ -5,54 +5,65 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/ShortestPathMultiplicityMatrix
-Keywords: [shortest paths, shortest paths, multiplicity, count matrix, path counting]
-SeeAlso: [InfraSegment, InfraMeasurement, RandomInfraSegment, SprayGraph]
+Keywords: [shortest paths, multiplicity, count matrix, path counting, geodetic]
+SeeAlso: [InfraSegment, InfraMeasurement, RandomInfraSegment, UniqueInfraSegmentQ, SprayGraph]
 RelatedGuides: [Experimental]
 ---
 
 ## Usage
 
-<code>[ShortestPathMultiplicityMatrix]()[*graph*]</code> gives the matrix whose *(i, j)* entry is the number of shortest paths from the *i*-th to the *j*-th vertex, 0 when there is none.
+<code>[ShortestPathMultiplicityMatrix]()[*g*]</code> gives the matrix whose entry *(i, j)* is the number of shortest paths from the *i*-th to the *j*-th vertex of *g*.
 
 ## Details & Options
 
-The vertices are taken in the order of <code>VertexList[*graph*]</code>. The diagonal is 1: the one path of length 0. Two vertices of different components have no path, and the entry is 0.
+The entry *σ(u, v)* is the number of shortest paths from *u* to *v*, the `"Cardinality"` of <code>[InfraSegment]()[*u*, *v*]</code>. The vertices are in the order of [VertexList]().
 
-The matrix is symmetric for an undirected graph. The entry *(i, j)* is the `"Cardinality"` of the segment from the *i*-th to the *j*-th vertex, <code>[InfraMeasurement]()[*graph*, [InfraSegment]()[*u*, *v*], "Cardinality"]</code>, for all pairs at once.
+The diagonal is 1, the path of length 0. Between two components the entry is 0. On an undirected graph the matrix is symmetric.
 
-The distance matrix is the built-in <code>GraphDistanceMatrix</code>; the earlier release returned it beside the counts, as a pair, and this function returns the counts only.
+On the square grid, with *a* steps from *u* to *v* along one axis and *b* along the other, *σ(u, v) = C(a + b, a)*.
+
+All entries are 1 exactly when every two vertices are joined by one shortest path, as on a tree or an odd cycle; [UniqueInfraSegmentQ]() tests this.
+
+The distance matrix is [GraphDistanceMatrix]().
 
 ## Basic Examples
 
-The numbers of shortest paths on the 3 × 3 grid. The opposite corners are joined by 6 = C(4, 2) shortest paths.
+The number of shortest paths from the centre to every vertex, drawn as the size of the vertex, on the square grid and on the square mesh. On the grid the largest is *C(8, 4) = 70*, at the corner four steps right and four up:
+
+```wl
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {row = ShortestPathMultiplicityMatrix[g][[First @ FirstPosition[VertexList[g], c]]]},
+    InfraSubstrateHighlight[g, {AssociationThread[VertexList[g], row], c}, PlotLabel -> Max[row]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+```
+
+On the 3 × 3 grid graph opposite corners are joined by *C(4, 2) = 6* shortest paths:
 
 ```wl
 MatrixForm @ ShortestPathMultiplicityMatrix[GridGraph[{3, 3}]]
 ```
 
-The matrix of a cycle: the opposite vertices of a cycle of even length are joined by two shortest paths.
-
-```wl
-MatrixPlot @ ShortestPathMultiplicityMatrix[CycleGraph[6]]
-```
-
 ## Properties and Relations
 
-The matrix is the cardinality of the segment between every pair.
+A row of the matrix is the cardinality of the segments from one vertex:
 
 ```wl
-With[
-  {g = GridGraph[{3, 3}]},
-  And @@ Table[ShortestPathMultiplicityMatrix[g][[1, j]] == InfraMeasurement[g, InfraSegment[1, j], "Cardinality"], {j, 2, 9}]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  ShortestPathMultiplicityMatrix[g][[First @ FirstPosition[VertexList[g], c]]] ==
+    (InfraMeasurement[g, InfraSegment[c, #], "Cardinality"] & /@ VertexList[g])]
 ```
 
-On a path graph, or any tree, every entry is 1.
+On a tree and on an odd cycle every entry is 1; opposite vertices of an even cycle are joined by two shortest paths:
 
 ```wl
-Union @ Flatten @ ShortestPathMultiplicityMatrix[PathGraph[Range[6]]]
+Table[{Union @ Flatten @ ShortestPathMultiplicityMatrix[g], UniqueInfraSegmentQ[g]},
+  {g, {KaryTree[15], CycleGraph[7], CycleGraph[6]}}]
 ```
 
-The matrix of a disconnected graph is zero between the components.
+## Possible Issues
+
+Between two components there is no path, and the entry is 0:
 
 ```wl
 MatrixForm @ ShortestPathMultiplicityMatrix[Graph[{1, 2, 3, 4}, {1 <-> 2, 3 <-> 4}]]

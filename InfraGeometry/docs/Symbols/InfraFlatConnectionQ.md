@@ -4,56 +4,78 @@ Name: InfraFlatConnectionQ
 Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraFlatConnectionQ
-Keywords: [trivial global monodromy, flat connection, horizontal leaves]
-SeeAlso: [InfraConnection, InfraConnectionQ, InfraHolonomy, InfraParallelTransport, InfraFiberBundleQ]
+Keywords: [flat connection, trivial monodromy, holonomy, horizontal leaves, predicate]
+SeeAlso: [InfraConnection, InfraConnectionQ, InfraHolonomy, InfraParallelTransport, RandomInfraConnection, InfraFiberBundleQ]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
 
-<code>[InfraFlatConnectionQ]()[*fib*, *connection*]</code> tests whether a complete connection has trivial global monodromy.
+<code>[InfraFlatConnectionQ]()[*fib*, *conn*]</code> gives `True` if the complete connection *conn* has trivial holonomy around every closed walk of the base.
 
-<code>[InfraFlatConnectionQ]()[*fib*, {*connection1*, *connection2*, ...}]</code> tests every member of a nonempty collection.
+<code>[InfraFlatConnectionQ]()[*fib*, {*conn1*, *conn2*, …}]</code> gives `True` if every *connᵢ* does.
 
 ## Details & Options
 
-- The existing name retains its global-monodromy meaning: transport around every closed base walk must be the identity.
-- Equivalently, the projection is injective on every connected component of the connection graph.
-- The test includes every disconnected base component and first requires [InfraConnectionQ]().
-- A graph supplies no faces, so this predicate is not a curvature test relative to a face system.
-- Every complete connection over a forest has trivial monodromy.
-- An empty collection returns False. The unique empty connection on a base without edges has trivial monodromy.
+The condition is *hol(γ) = id* for every closed base walk *γ*, with *hol* the holonomy of [InfraHolonomy]().
+
+Equivalently, every connected component of the graph of connection edges, a horizontal leaf, meets each fiber at most once. On a connected base each leaf is then a global section, and the connection identifies every fiber with one fixed fiber.
+
+Over a tree every connection is flat. On a connected base with *V* vertices and *E* edges, with fibers of *k* points joined completely, there are *(k!)ᴱ* connections and *(k!)ⱽ⁻¹* of them are flat.
+
+The test covers every component of the base. A graph has no faces, so the test is global and not a curvature measured on faces.
+
+*conn* must be a complete connection, as [InfraConnectionQ]() tests; otherwise the result is `False`. The empty list gives `False`.
 
 ## Basic Examples
 
-Two separate cycles give trivial monodromy. One cycle covering the base twice exchanges the sheets.
+The prism and the Moebius ladder with their connections. The prism's connection is flat; on the Moebius ladder the transport around the cycle exchanges the two ends of the rung:
 
 ```wl
-SeedRandom[ 1 ];
-With[
-  { totals = {
-      Graph[ Range[ 8 ], Join[ EdgeList @ CycleGraph[ 4 ], EdgeList @ IndexGraph[ CycleGraph[ 4 ], 5 ] ] ],
-      CycleGraph[ 8 ]
-    } },
-  { fibrations = InfraFiberedGraph[ #, vertex |-> Mod[ vertex, 4, 1 ] ] & /@ totals,
-    connections = InfraConnection[ EdgeList @ # ] & /@ totals },
-  { GraphicsRow @ MapThread[ InfraFiberedGraphHighlight, { fibrations, connections } ],
-    MapThread[ InfraFlatConnectionQ, { fibrations, connections } ] }
-]
+GraphicsRow @ Table[
+  With[{fib = InfraFiberedSubstrate[name, "Small"]}, {conn = RandomInfraConnection[fib, RandomSeeding -> 1]},
+    InfraFiberedGraphHighlight[fib, {conn}, PlotLabel -> InfraFlatConnectionQ[fib, conn]]],
+  {name, {"CycleProductBundle", "MoebiusLadderCover"}}]
+```
+
+Fibers of two points over the 2 × 3 grid, joined completely. Of the 2⁷ = 128 connections, 2⁵ = 32 are flat:
+
+```wl
+With[{fib = RandomInfraFiberedGraph[GridGraph[{2, 3}], "VerticalVertexCount" -> {2}, "HorizontalEdgeCount" -> All,
+    RandomSeeding -> 1]},
+  {conns = RandomInfraConnection[fib, All]},
+  {Length[conns], Count[conns, conn_ /; InfraFlatConnectionQ[fib, conn]]}]
+```
+
+## Scope
+
+Over a spanning tree of the 3 × 3 grid all 2⁸ = 256 connections are flat:
+
+```wl
+With[{fib = RandomInfraFiberedGraph[FindSpanningTree[GridGraph[{3, 3}]], "VerticalVertexCount" -> {2},
+    "HorizontalEdgeCount" -> All, RandomSeeding -> 1]},
+  {conns = RandomInfraConnection[fib, All]},
+  {Length[conns], InfraFlatConnectionQ[fib, conns]}]
 ```
 
 ## Properties and Relations
 
-All complete connections on this path base have trivial global monodromy.
+The horizontal leaves are the components of the connection graph. The prism has two leaves, each meeting every fiber once; the Moebius ladder has one, meeting every fiber twice:
 
 ```wl
-SeedRandom[ 1 ];
-With[
-  { fib = RandomInfraFiberedGraph[
-      PathGraph[ Range[ 3 ] ], "VerticalVertexCount" -> { 2 }, "VerticalEdgeCount" -> { 0 },
-      Properties -> { "IsomorphicFibers" }, "HorizontalEdgeCount" -> All, RandomSeeding -> 1] },
-  { connections = RandomInfraConnection[ fib, All ] },
-  { Length @ connections, InfraFlatConnectionQ[ fib, connections ] }
-]
+Table[
+  With[{fib = InfraFiberedSubstrate[name, "Small"]}, {conn = RandomInfraConnection[fib, RandomSeeding -> 1]},
+    Length /@ ConnectedComponents @ Graph[VertexList @ InfraTotalSpace[fib], First @ conn]],
+  {name, {"CycleProductBundle", "MoebiusLadderCover"}}]
+```
+
+On the grid the two faces decide: a connection is flat exactly when its holonomy around both faces is the identity:
+
+```wl
+With[{fib = RandomInfraFiberedGraph[GridGraph[{2, 3}], "VerticalVertexCount" -> {2}, "HorizontalEdgeCount" -> All,
+    RandomSeeding -> 1]},
+  {conns = RandomInfraConnection[fib, All]},
+  AllTrue[conns, conn |-> InfraFlatConnectionQ[fib, conn] ===
+    AllTrue[{{1, 2, 4, 3, 1}, {3, 4, 6, 5, 3}}, InfraHolonomy[fib, conn, #] === Cycles[{}] &]]]
 ```

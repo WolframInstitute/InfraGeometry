@@ -12,74 +12,78 @@ RelatedGuides: [Experimental]
 
 ## Usage
 
-<code>[ResistanceQ]()[*r*]</code> tests whether the numeric matrix *r* is the resistance distance matrix of a connected graph with nonnegative conductances.
+<code>[ResistanceQ]()[*r*]</code> tests whether the numeric matrix *r* is the effective resistance matrix of a connected graph with nonnegative conductances.
 
 ## Details & Options
 
-Definition: [ResistanceQ]() gives [True]() when *r* is a square numeric matrix, symmetric with zero diagonal, and the matrix *B* = −*P* *r* *P*/2, with *P* = *I* − *J*/*n* and *J* the matrix of ones, has *n* − 1 eigenvalues above 10⁻⁹, the rest being zero, and its pseudoinverse *L* = *B*⁺ has no entry above 10⁻⁹ off the diagonal. Anything else gives [False](), an [Infinity]() entry included.
+Let *P = I − J/n*, with *J* the matrix of ones, and *B = −P r P/2*. The symmetric matrix *r* with zero diagonal is a resistance matrix exactly when *B* is positive semidefinite of rank *n − 1* and *L = B⁺* has no positive entry off the diagonal. Then *L* is the Laplacian of the graph and *−Lᵢⱼ* the conductance between *i* and *j*. So a resistance matrix determines its graph.
 
-*L* is then the Laplacian of the graph, and −*L*ᵢⱼ the conductance between *i* and *j*. The graph is connected because *B* has rank *n* − 1, and its conductances are nonnegative because *L* has no positive entry off the diagonal.
+The rank condition says that *r* is of negative type: *rᵢⱼ = ‖xᵢ − xⱼ‖²* for points *xᵢ* of a Euclidean space (Schoenberg), the points being the [ResistanceCoordinates](). Negative type alone is not enough: the distance matrix of a cycle is of negative type and not a resistance matrix.
 
-The eigenvalue condition implies that *r* is of negative type: *r*ᵢⱼ = ‖*x*ᵢ − *x*ⱼ‖² for some points *x*ᵢ of a Euclidean space, by a theorem of Schoenberg. Every resistance matrix is of negative type, the points being its [ResistanceCoordinates](). That is necessary and not sufficient: the second condition rejects the distance matrices of the cycles and of the square tiling, which are of negative type.
+The tolerance is 10⁻⁹. A matrix with an [Infinity]() entry gives [False]().
+
+On a tree the distance matrix is the resistance matrix.
 
 ## Basic Examples
 
-The resistance matrices of the square, hexagonal and triangular tilings pass.
+The resistance matrix of the square mesh passes, its distance matrix does not:
 
 ```wl
-With[
-  {graphs = InfraSubstrate[#, "Small", "KeepCoordinates" -> True] & /@ {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}},
-  {GraphicsRow[graphs], ResistanceQ[EffectiveResistance[#]] & /@ graphs}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]},
+  GraphicsRow @ Table[ArrayPlot[m, PlotLabel -> ResistanceQ[m]],
+    {m, {EffectiveResistance[g], GraphDistanceMatrix[g]}}]]
 ```
 
-On a tree the distances are the resistances, and the distance matrix passes. The distance matrices of the complete bipartite graph *K*₂,₃ and of the discretized plane fail.
+On a tree the distances are the resistances, and the distance matrix passes:
 
 ```wl
-With[
-  {graphs = {KaryTree[15], CompleteGraph[{2, 3}], InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}},
-  {GraphicsRow[graphs], ResistanceQ[GraphDistanceMatrix[#]] & /@ graphs}]
+With[{g = KaryTree[15]},
+  {ResistanceQ[GraphDistanceMatrix[g]], Max @ Abs[EffectiveResistance[g] - GraphDistanceMatrix[g]] < 10^-9}]
 ```
 
 ## Scope
 
-The distance matrices of the cycles are not resistance matrices, though they are of negative type. The Laplacian that the distance matrix of the 5-cycle determines gives each of the five chords of the pentagon the conductance −2/5, a negative one, and that of the 4-cycle has rank 2 instead of 3. The resistance matrix of the 5-cycle passes.
+The distance matrices of the cycles of length 4 and more fail; their resistance matrices pass:
 
 ```wl
-With[
-  {hops = GraphDistanceMatrix[CycleGraph[5]]},
-  {laplacian = PseudoInverse[-(IdentityMatrix[5] - 1/5) . hops . (IdentityMatrix[5] - 1/5)/2]},
-  {MatrixPlot[DiagonalMatrix[Diagonal[laplacian]] - laplacian], ResistanceQ /@ {hops, GraphDistanceMatrix[CycleGraph[4]], EffectiveResistance[CycleGraph[5]]}, Union[Flatten[DiagonalMatrix[Diagonal[laplacian]] - laplacian]]}]
+{Table[ResistanceQ[GraphDistanceMatrix[CycleGraph[n]]], {n, 3, 8}],
+ Table[ResistanceQ[EffectiveResistance[CycleGraph[n]]], {n, 3, 8}]}
 ```
 
-The distance matrix of the square tiling fails too: the Laplacian it determines has 4276 positive entries off the diagonal. The squared distances of three collinear points break the triangle inequality, which every resistance distance obeys.
+The matrix *L* that the distance matrix of the 5-cycle determines gives each edge the conductance 8/5 and each chord the negative conductance −2/5:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {hops = N[GraphDistanceMatrix[g]]},
-  {laplacian = PseudoInverse[-(IdentityMatrix[113] - 1/113) . hops . (IdentityMatrix[113] - 1/113)/2]},
-  {MatrixPlot[DiagonalMatrix[Diagonal[laplacian]] - laplacian], ResistanceQ[hops], Count[Flatten[laplacian - DiagonalMatrix[Diagonal[laplacian]]], _?(# > 10^-9 &)],
-   ResistanceQ[{{0, 1, 4}, {1, 0, 1}, {4, 1, 0}}]}]
+With[{r = GraphDistanceMatrix[CycleGraph[5]]}, {p = IdentityMatrix[5] - 1/5},
+  MatrixForm @ PseudoInverse[-p . r . p/2]]
 ```
 
 ## Properties and Relations
 
-A resistance matrix determines its graph: the Laplacian recovered from it is [KirchhoffMatrix](), and the conductances it gives are the edges of the graph.
+A resistance matrix determines its graph: the matrix *L* recovered from the resistances of the mesh is its [KirchhoffMatrix]():
 
 ```wl
-With[
-  {g = PetersenGraph[]},
-  {resistances = EffectiveResistance[g]},
-  {laplacian = PseudoInverse[-(IdentityMatrix[10] - 1/10) . resistances . (IdentityMatrix[10] - 1/10)/2]},
-  {AdjacencyGraph[Round[DiagonalMatrix[Diagonal[laplacian]] - laplacian]], ResistanceQ[resistances], Round[laplacian] === Normal[KirchhoffMatrix[g]]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {r = EffectiveResistance[g], n = VertexCount[g]},
+  {p = IdentityMatrix[n] - 1/n}, {laplacian = PseudoInverse[-p . r . p/2]},
+  Max @ Abs[laplacian - KirchhoffMatrix[g]] < 10^-9]
 ```
 
 ## Possible Issues
 
-A matrix with an infinite entry is no resistance matrix of a connected graph. The resistances of a graph with two components are [Infinity]() between them, and [ResistanceQ]() gives [False]() on the matrix.
+The squared distances of three points on a line are of negative type, but they break the triangle inequality, which resistances obey:
 
 ```wl
-With[
-  {g = GraphUnion[PathGraph[{1, 2, 3}], PathGraph[{4, 5}]]},
-  {g, MatrixPlot[EffectiveResistance[g] /. Infinity -> 3], ResistanceQ[EffectiveResistance[g]]}]
+ResistanceQ[{{0, 1, 4}, {1, 0, 1}, {4, 1, 0}}]
+```
+
+Symmetry is tested without a tolerance. The computed resistance matrix of the square grid is not exactly symmetric, and fails; its symmetric part passes:
+
+```wl
+With[{r = EffectiveResistance[InfraSubstrate["SquareGridGraph", "Small"]]},
+  {ResistanceQ[r], Max @ Abs[r - Transpose[r]], ResistanceQ[(r + Transpose[r])/2]}]
+```
+
+A matrix with an infinite entry gives [False](). Between the components of a graph the resistance is [Infinity]():
+
+```wl
+ResistanceQ @ EffectiveResistance[GraphUnion[PathGraph[{1, 2, 3}], PathGraph[{4, 5}]]]
 ```

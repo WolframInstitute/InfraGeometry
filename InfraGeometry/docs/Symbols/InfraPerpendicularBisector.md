@@ -4,64 +4,102 @@ Name: InfraPerpendicularBisector
 Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraPerpendicularBisector
-Keywords: [synthetic geometry, graph, equidistant locus, perpendicular bisector]
-SeeAlso: [InfraEquidistantSet, FindInfraEquidistantSet, InfraMeasurement, InfraPoint, InfraRegionNearest, InfraPlane]
+Keywords: [perpendicular bisector, equidistant locus, bisector, midpoint]
+SeeAlso: [InfraEquidistantSet, FindInfraEquidistantSet, InfraMidpoint, InfraMeasurement, InfraRegionNearest, InfraPlane]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraPerpendicularBisector]()[*p*, *q*]</code> is the locus of vertices at equal finite graph distance from *p* and *q*.
+<code>[InfraPerpendicularBisector]()[*p*, *q*]</code> is the perpendicular bisector of *p* and *q*: the vertices at equal distance from *p* and *q*.
 
 ## Details & Options
 
-On a graph with path distance $d$, the locus is the unique vertex set $\{v : d(p,v) = d(q,v) < \infty\}$.
-The head is inert; [InfraMeasurement]() reads its properties on a concrete graph.
-Its "VertexDensity" has weight 1 at each vertex of the locus.
-Its "Cardinality" is 1, including for the empty locus; "CountingMeasure" counts its vertices.
-[InfraMemberQ]()[*graph*, *bisector*, *vertices*] tests whether *vertices* is the complete locus, independently of ordering or repeated vertices.
-There is no random bisector: use [RandomInfraPoint]() with an [InfraPoint]() token to choose a point of the locus.
+The bisector is *{v : d(p, v) = d(q, v) < ∞}*.
 
-The graph must be finite, simple, undirected and unweighted, with valid vertex anchors.
-Equal anchors give their connected component; disconnected anchors give the empty set.
-The locus need not separate the anchors or form a line, and it does not assert an angle.
-[InfraPlane]() instead describes a family of separating vertex sets.
+In the plane it is a line. On a graph it can be a line, a thick region or empty:
 
-The inert multipoint analogue is [InfraEquidistantSet]()[{*p1*, ..., *pn*}], the equidistant locus $\{v : d(p_1,v) = \dots = d(p_n,v) < \infty\}$.
-It is the intersection of the $n-1$ consecutive perpendicular bisectors.
-[InfraMeasurement]() reads its complete locus on the graph.
-The existing [FindInfraEquidistantSet]()[*graph*, {*p1*, ..., *pn*}] returns a vertex list on a connected substrate; its optional distance-difference window gives a thickened locus.
-For three points this is the graph analogue of the circumcentre locus.
+- In a bipartite graph, such as the square grid, *d(p, v) − d(q, v)* has the parity of *d(p, q)*, so at odd distance the bisector is empty.
+- On the square grid, for *q* = *p* + (2, 0) it is the line *x* = 1 relative to *p*. For *q* = *p* + (*a*, *a*) it contains two whole quadrants, the bisector of the ℓ¹ norm.
 
-Supported measurements are "VertexDensity", "Cardinality", "CountingMeasure", "Subgraph" and "RiemannianMeasure".
-"RiemannianMeasure" counts support vertices whose neighbours all belong to the support.
-Unsupported arguments and properties stay unevaluated.
+The bisector need not separate *p* from *q*. [InfraPlane]() is the family of separating sets.
+
+[InfraPerpendicularBisector]() is a symbolic object. [InfraMeasurement]() reads its `"VertexDensity"`, 1 on every vertex of the bisector, its `"CountingMeasure"`, `"RiemannianMeasure"` and `"Subgraph"`. Its `"Cardinality"` is 1: the bisector is one vertex set, even when empty. <code>[InfraMemberQ]()[*g*, *bisector*, *vs*]</code> tests whether *vs* is the whole bisector.
+
+Equal anchors give their connected component. [InfraEquidistantSet]() is the bisector of several points.
 
 ## Basic Examples
 
-Read the bisector of vertices 1 and 3 on a four-cycle. Its vertices are 2 and 4.
+The bisector of the centre and a vertex at distance 2, on the square grid and on the square mesh:
 
 ```wl
-SeedRandom[ 71 ]; With[ { graph = CycleGraph[ 4 ] },
-  InfraMeasurement[ graph, InfraPerpendicularBisector[ 1, 3 ], "VertexDensity" ] ]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+    {q = RandomInfraPoint[g, InfraShell[p, 2], RandomSeeding -> 2]},
+    InfraSubstrateHighlight[g, {InfraPerpendicularBisector[p, q], p, q}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-Draw the complete locus.
+On the square grid the shape depends on the direction from *p* to *q*: a straight line, a staircase, two quadrants:
 
 ```wl
-SeedRandom[ 71 ]; With[ { graph = CycleGraph[ 4 ] },
-  InfraSubstrateHighlight[ graph, { InfraPerpendicularBisector[ 1, 3 ] } ] ]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+  {xy = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+  GraphicsRow @ Table[
+    With[{q = First @ Keys @ Select[xy, # - xy[p] == offset &]},
+      InfraSubstrateHighlight[g, {InfraPerpendicularBisector[p, q], p, q},
+        PlotLabel -> InfraMeasurement[g, InfraPerpendicularBisector[p, q], "CountingMeasure"]]],
+    {offset, {{2, 0}, {3, 1}, {2, 2}}}]]
 ```
 
-Choose a point on the bisector.
+## Scope
+
+At odd distance on the square grid the bisector is empty:
 
 ```wl
-SeedRandom[ 71 ]; With[ { graph = CycleGraph[ 4 ] },
-  RandomInfraPoint[ graph, InfraPoint[ InfraPerpendicularBisector[ 1, 3 ] ], RandomSeeding -> 71 ] ]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {p = First @ GraphCenter[g]},
+  Table[InfraMeasurement[g, InfraPerpendicularBisector[p, RandomInfraPoint[g, InfraShell[p, r], RandomSeeding -> 1]], "CountingMeasure"],
+    {r, 1, 4}]]
 ```
 
-Find the vertices equidistant from three anchors. On the complete graph with four vertices, the answer is {4}.
+A random point of the bisector:
 
 ```wl
-SeedRandom[ 71 ]; Keys @ InfraMeasurement[ CompleteGraph[ 4 ], InfraEquidistantSet[ { 1, 2, 3 } ], "VertexDensity" ]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+  {q = RandomInfraPoint[g, InfraShell[p, 4], RandomSeeding -> 1]},
+  {x = RandomInfraPoint[g, InfraPerpendicularBisector[p, q], RandomSeeding -> 1]},
+  InfraSubstrateHighlight[g, {InfraPerpendicularBisector[p, q], p, q, x}, PlotLabel -> {GraphDistance[g, p, x], GraphDistance[g, q, x]},
+    ImageSize -> Medium]]
+```
+
+## Properties and Relations
+
+At even distance the [InfraMidpoint]() is the part of the bisector inside the interval:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Medium"]}, {p = First @ GraphCenter[g]},
+  {q = RandomInfraPoint[g, InfraShell[p, 6], RandomSeeding -> 1]},
+  {interval = Keys @ InfraMeasurement[g, InfraSegment[p, q], "VertexDensity"]},
+  Intersection[Keys @ InfraMeasurement[g, InfraPerpendicularBisector[p, q], "VertexDensity"], interval] ==
+    Keys @ InfraMeasurement[g, InfraMidpoint[p, q], "VertexDensity"]]
+```
+
+The equidistant set of three points is the intersection of two bisectors:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {p = First @ GraphCenter[g]},
+  {q = RandomInfraPoint[g, InfraShell[p, 4], RandomSeeding -> 1]}, {r = RandomInfraPoint[g, InfraShell[p, 4], RandomSeeding -> 3]},
+  Keys @ InfraMeasurement[g, InfraEquidistantSet[{p, q, r}], "VertexDensity"] ==
+    Keys @ InfraMeasurement[g, InfraIntersection[InfraPerpendicularBisector[p, q], InfraPerpendicularBisector[q, r]], "VertexDensity"]]
+```
+
+## Possible Issues
+
+A list of properties is not supported; ask for each property on its own:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {p = First @ GraphCenter[g]},
+  {bisector = InfraPerpendicularBisector[p, RandomInfraPoint[g, InfraShell[p, 2], RandomSeeding -> 1]]},
+  {AssociationQ @ InfraMeasurement[g, bisector, {"Cardinality", "CountingMeasure"}],
+   InfraMeasurement[g, bisector, #] & /@ {"Cardinality", "CountingMeasure"}}]
 ```

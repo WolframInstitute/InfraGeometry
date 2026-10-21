@@ -18,94 +18,68 @@ RelatedGuides: [InfraSubstrates]
 
 ## Details & Options
 
-The roster of [InfraSubstrate]() is written as held code: [InfraSubstrate]() evaluates it, and [InfraSubstrateCode]() prints it. The printed code is therefore the code that runs, with the size table replaced by the value *size* selects, and it names only exported functions.
+The result is a [HoldForm]() of the construction, with the size table replaced by the value *size* selects. It is the code [InfraSubstrate]() runs, and it uses exported functions only.
 
-[ReleaseHold]() of the code gives the graph that [InfraSubstrate]() draws with the style `"Default"`. The style is not code; splice it back with [Sequence]() @@ <code>[InfraSubstrateStyle]()[*size*]</code>.
+[ReleaseHold]() of the code gives the substrate drawn with the style `"Default"`. The style is not code; <code>[Graph]()[*g*, [Sequence]() @@ [InfraSubstrateStyle]()[*size*]]</code> splices it back.
 
-The code also carries what the options add: the layout of a substrate without `"KeepCoordinates"` -> [True](), and the call of [InflateGraph]() for `"Inflate"`. A Wolfram-model universe carries its rule and initial condition.
+The code carries what the options add: a spring layout unless `"KeepCoordinates"` -> [True](), and the call of [InflateGraph]() for `"Inflate"`. The options are those of [InfraSubstrate](); [Graph]() options are passed on into the code.
 
-The options are those of [InfraSubstrate](): `"KeepCoordinates"` and `"Inflate"`. [Graph]() options are passed on into the code.
-
-The result is a [HoldForm](), so it reads as code in an output cell.
-
-A substrate drawn from a random construction is seeded from outside. Building the code evaluates it once, so set the seed after building the code and before [ReleaseHold]().
+Building the code builds the graph once. For a random construction, fix the seed after building the code and before [ReleaseHold]().
 
 ## Basic Examples
 
-The code of the discretized plane, the square tiling and the hexagonal tiling, beside the graph it builds.
+The code of the square grid:
 
 ```wl
-Grid[
-  Table[
-    With[
-      {code = InfraSubstrateCode[name, "Small", "KeepCoordinates" -> True]},
-      {code, ReleaseHold[code]}],
-    {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}],
-  Alignment -> Left]
+InfraSubstrateCode["SquareGridGraph", "Small", "KeepCoordinates" -> True]
 ```
 
-Without `"KeepCoordinates"` the code lays the substrate out by springs.
+[ReleaseHold]() builds the square grid and the square mesh:
 
 ```wl
-With[
-  {code = InfraSubstrateCode["SquareTilingGraph", "Small"]},
-  {code, ReleaseHold[code]}]
+GraphicsRow @ Table[
+  With[{g = ReleaseHold @ InfraSubstrateCode[name, "Small", "KeepCoordinates" -> True]}, Graph[g, PlotLabel -> VertexCount[g]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
 ## Scope
 
-A torus: the flat torus graph, placed on a torus of revolution.
+Without `"KeepCoordinates"` the code lays the substrate out by springs:
 
 ```wl
-With[
-  {code = InfraSubstrateCode["SquareTorusGraph", "Small", "KeepCoordinates" -> True]},
-  {code, ReleaseHold[code]}]
+InfraSubstrateCode["SquareGridGraph", "Small"]
 ```
 
-An inflated substrate: the code calls [InflateGraph]() with the amount and the options.
+An inflated substrate: the code calls [InflateGraph]() with the amount and the options:
 
 ```wl
-With[
-  {code = InfraSubstrateCode["HexagonalTilingGraph", "Small", "Inflate" -> {2, "VerticalEdges" -> 1}, "KeepCoordinates" -> True]},
-  {code, (SeedRandom[1]; ReleaseHold[code])}]
-```
-
-The diluted tree: every vertex has one child, except at the depths 0, 3, 8 and 15, one less than the squares, where it has two.
-
-```wl
-With[
-  {code = InfraSubstrateCode["DilutedTreeGraph", "Small"]},
-  {code, ReleaseHold[code]}]
+InfraSubstrateCode["SquareMeshGraph", "Small", "Inflate" -> {2, "VerticalEdges" -> 1}, "KeepCoordinates" -> True]
 ```
 
 ## Properties and Relations
 
-With the seed set after the build, the code gives the substrate drawn with no style.
+The code gives the substrate drawn with no style, and with the style of its size spliced in, the substrate as drawn:
 
 ```wl
-With[
-  {code = InfraSubstrateCode["SquareTilingGraph", "Small", "Inflate" -> 2, "KeepCoordinates" -> True]},
-  {graph = (SeedRandom[1]; ReleaseHold[code])},
-  {substrate = (SeedRandom[1]; InfraSubstrate["SquareTilingGraph", "Small", "Default", "Inflate" -> 2, "KeepCoordinates" -> True])},
-  {graph, graph === substrate}]
+With[{g = ReleaseHold @ InfraSubstrateCode["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {g === InfraSubstrate["SquareMeshGraph", "Small", "Default", "KeepCoordinates" -> True],
+   Graph[g, Sequence @@ InfraSubstrateStyle["Small"]] === InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}]
 ```
 
-The style of the size spliced in gives the substrate as [InfraSubstrate]() draws it.
+For a random construction, the seed set after the build gives the substrate drawn at that seed:
 
 ```wl
-With[
-  {graph = ReleaseHold @ InfraSubstrateCode["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {styled = Graph[graph, Sequence @@ InfraSubstrateStyle["Small"]]},
-  {styled, styled === InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]}]
+With[{code = InfraSubstrateCode["SquareGridGraph", "Small", "Inflate" -> 2, "KeepCoordinates" -> True]},
+  BlockRandom[ReleaseHold[code], RandomSeeding -> 1] ===
+    BlockRandom[InfraSubstrate["SquareGridGraph", "Small", "Default", "Inflate" -> 2, "KeepCoordinates" -> True], RandomSeeding -> 1]]
 ```
 
 ## Possible Issues
 
-A seed set before the code is built is spent on the build. The graph then differs from the substrate drawn at that seed.
+A seed set before the code is built is spent on the build, and the graph differs from the substrate drawn at that seed:
 
 ```wl
-With[
-  {graph = (SeedRandom[1]; ReleaseHold[InfraSubstrateCode["SquareTilingGraph", "Small", "Inflate" -> 2, "KeepCoordinates" -> True]])},
-  {substrate = (SeedRandom[1]; InfraSubstrate["SquareTilingGraph", "Small", "Default", "Inflate" -> 2, "KeepCoordinates" -> True])},
-  {GraphicsRow[{graph, substrate}], graph === substrate}]
+BlockRandom[ReleaseHold @ InfraSubstrateCode["SquareGridGraph", "Small", "Inflate" -> 2, "KeepCoordinates" -> True],
+    RandomSeeding -> 1] ===
+  BlockRandom[InfraSubstrate["SquareGridGraph", "Small", "Default", "Inflate" -> 2, "KeepCoordinates" -> True], RandomSeeding -> 1]
 ```

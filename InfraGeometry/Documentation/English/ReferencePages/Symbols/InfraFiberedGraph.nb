@@ -10,20 +10,21 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[     39515,        979]
-NotebookOptionsPosition[     32070,        838]
-NotebookOutlinePosition[     33226,        873]
-CellTagsIndexPosition[     33147,        868]
+NotebookDataLength[     97884,       2222]
+NotebookOptionsPosition[     89652,       2064]
+NotebookOutlinePosition[     90837,       2100]
+CellTagsIndexPosition[     90757,       2095]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
 Notebook[{
 
 Cell[CellGroupData[{
-Cell["InfraFiberedGraph", "ObjectName",ExpressionUUID->"cb49f5fd-71a0-400e-99ba-dd239d338939"],
+Cell["InfraFiberedGraph", "ObjectName",
+ CellID->1224892054,ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec"],
 
 Cell[TextData[{
- Cell["   ", "ModInfo",ExpressionUUID->"9e6c3dfc-9942-4cff-8bb7-2db02dfe7e29"],
+ Cell["   ", "ModInfo",ExpressionUUID->"c0673e16-8438-49c7-8593-484f1ee20627"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -35,15 +36,19 @@ Cell[TextData[{
     BaseStyle->"InlineFormula"], "[", 
    RowBox[{
     StyleBox["total", "TI"], ",", " ", 
-    StyleBox["projection", "TI"]}], "]"}]], "InlineFormula",
+    StyleBox["proj", "TI"]}], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "76d03f17-dd65-4e1f-b6ba-3717ccbfc0e7"],
+  "a841dafa-1897-4a7f-8d03-203eb29fd4f5"],
  "\[LineSeparator]",
- "is an inert fibered graph with total graph ",
+ "is the fibered graph with total graph ",
  StyleBox["total", "TI"],
- " and a vertex projection given by an association or a function.",
+ " and projection ",
+ StyleBox["proj", "TI"],
+ ", an association or a function on the vertices of ",
+ StyleBox["total", "TI"],
+ ".",
  "\n",
- Cell["   ", "ModInfo",ExpressionUUID->"fd5e606f-9d2c-43f4-8410-cafe5126b105"],
+ Cell["   ", "ModInfo",ExpressionUUID->"41dfb906-c950-4c86-8245-60f253c8a6d2"],
  Cell[BoxData[
   RowBox[{
    TemplateBox[{
@@ -55,116 +60,135 @@ Cell[TextData[{
     BaseStyle->"InlineFormula"], "[", 
    StyleBox["model", "TI"], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "ac9f0797-0049-4d8c-a8a6-2d20d5e71549"],
+  "154094e5-2223-4bf2-920d-6e8f97c045f1"],
  "\[LineSeparator]",
- "materializes an Experimental construction as a literal fibered graph, \
-computing its total graph once."
-}], "Usage",ExpressionUUID->"f1b588cf-51b9-4ff1-acb9-b97d1419bb20"],
-
-Cell["\<\
-The general object imposes no equal-size, lifting, matching or triviality \
-condition. Separate predicates test these properties.\
-\>", "Notes",ExpressionUUID->"bd423e62-67ef-450d-9145-02253bafb9e8"],
-
-Cell["\<\
-Readers support finite simple undirected unweighted untagged total graphs. \
-Unsupported graph domains remain unevaluated; projection-dependent readers \
-also leave malformed association projections unevaluated.\
-\>", "Notes",ExpressionUUID->"9daf6dd4-d4d4-41ef-ab5c-55fb5aa78e23"],
-
-Cell["\<\
-An association projection has exactly one key for each total vertex. A \
-function projection is evaluated at each total vertex.\
-\>", "Notes",ExpressionUUID->"fd1a1c66-af84-4a2d-9198-bd1d0ae0e2b5"],
-
-Cell["\<\
-Edge-tagged graphs are unsupported; readers do not discard or merge edge tags.\
-\>", "Notes",ExpressionUUID->"f8e61632-fc5e-4163-920b-8aec514a3bb5"],
-
-Cell[TextData[{
- "Vertex labels are literal expressions. List-valued and pattern-like \
-vertices remain individual association keys; use ",
+ "gives the fibered graph of a construction such as ",
  Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["Key"]], "paclet:ref/Key"},
-   "RefLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "6a149226-1332-48ce-9cd5-bcf0623a979d"],
- " for literal lookup."
-}], "Notes",ExpressionUUID->"b4712879-1ba8-41fb-9188-d3d7b15330a4"],
-
-Cell[TextData[{
- Cell[BoxData["InfraTotalSpace"], "InlineFormula",
+  RowBox[{
+   TemplateBox[{
+     Cell[
+      TextData["InfraDisplacementBundle"]], 
+     "paclet:WolframInstitute/InfraGeometry/ref/InfraDisplacementBundle", 
+     "WolframInstitute/InfraGeometry Package Symbol"},
+    "PackageLink",
+    BaseStyle->"InlineFormula"], "[", 
+   RowBox[{
+    StyleBox["g", "TI"], ",", " ", 
+    StyleBox["r", "TI"]}], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "bb3b4a87-3bdf-43d8-87a9-6cb3896ed565"],
- " gives the total graph and ",
- Cell[BoxData["InfraProjection"], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "0278b96e-df8b-4c90-ac9c-1e97bfa712f5"],
- " gives the projection association."
-}], "Notes",ExpressionUUID->"673d44b2-d6b1-4f74-83b3-cd1ab8760184"],
+  "43f4d880-5f38-4f1b-879a-477d18d81a6a"],
+ ", with its total graph computed."
+}], "Usage",ExpressionUUID->"e49848f5-1fc2-4aaf-a9e0-03b887b8cfef"],
 
 Cell[TextData[{
- Cell[BoxData["InfraBaseSpace"], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "cd746a3e-4e71-4179-9947-95d95f3f605e"],
- " reconstructs the base. Its vertices are all projection values, including \
-those represented only by isolated total vertices."
-}], "Notes",ExpressionUUID->"9ab1e9e6-46b9-45a1-8aef-4c051d4d6621"],
-
-Cell["\<\
-Distinct base vertices are adjacent exactly when a total edge joins their \
-fibers. Edges within a fiber are vertical and collapse under projection.\
-\>", "Notes",ExpressionUUID->"40131db2-3083-4a15-b877-579a48c1948e"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraFiber"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraFiber", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "3dac10b1-e9ec-4c67-a593-5c3104a30407"],
- " gives the induced graph on one projection preimage. ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraFibers"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraFibers", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "aa1620ee-05a8-4539-9f30-1884737d936b"],
- " gives all fibers as an association."
-}], "Notes",ExpressionUUID->"9ba5d246-09a6-4ad9-9e26-d3c839a73ff7"],
-
-Cell["\<\
-The empty graph with the empty projection is a valid fibered graph.\
-\>", "Notes",ExpressionUUID->"c2281cf6-c976-4b47-8a75-d1606ea289bc"],
+ "A fibered graph is a graph ",
+ StyleBox["E", "TI"],
+ " with a map ",
+ StyleBox["\[Pi]", "TI"],
+ " on its vertices. The fiber over ",
+ StyleBox["p", "TI"],
+ " is the induced subgraph on ",
+ StyleBox["F(p) = \[Pi]\:207b\.b9(p)", "TI"],
+ "."
+}], "Notes",ExpressionUUID->"ec2dfbf0-1ef5-4871-a876-0fc13be406e9"],
 
 Cell[TextData[{
- "The head stays inert even when its arguments are unsupported. ",
- Cell[BoxData["InfraFiberedGraphQ"], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "0d691d1f-cb97-42a7-8907-b36345fdd376"],
- " recognizes supported literal objects; supported Experimental models are \
-materialized by their explicit category methods."
-}], "Notes",ExpressionUUID->"0f080141-7fb2-4ba5-8995-6b647333b9c9"],
+ "The base ",
+ StyleBox["B", "TI"],
+ " is reconstructed, not given. Its vertices are the values of ",
+ StyleBox["\[Pi]", "TI"],
+ ", and ",
+ StyleBox["p \[NotEqual] q", "TI"],
+ " are adjacent when some edge of ",
+ StyleBox["E", "TI"],
+ " joins ",
+ StyleBox["F(p)", "TI"],
+ " and ",
+ StyleBox["F(q)", "TI"],
+ "."
+}], "Notes",ExpressionUUID->"10e112b0-6ae1-42ca-b147-b5e944d6c417"],
 
 Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraFibration"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraFibration", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "8a97150f-0b5e-4df0-a6ee-71e79fdb60cc"],
- " remains a compatibility head. New constructions use ",
+ "An edge inside a fiber is vertical and collapses under ",
+ StyleBox["\[Pi]", "TI"],
+ ". An edge between two fibers is transverse."
+}], "Notes",ExpressionUUID->"ac06ae96-875b-4587-8e31-33a2da441eef"],
+
+Cell[TextData[{
+ "No condition is imposed: fibers may have different sizes, and a vertex over \
+",
+ StyleBox["p", "TI"],
+ " may have no neighbour over a neighbour of ",
+ StyleBox["p", "TI"],
+ ". The predicates add the conditions:"
+}], "Notes",ExpressionUUID->"4667d0da-9765-481b-aa80-9fa20015d956"],
+
+Cell[BoxData[GridBox[{
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "c7a57bfe-28e3-46ea-b12d-ce947b8e5990"], Cell["Predicate", "TableText",
+     FontWeight->Bold,ExpressionUUID->"40584866-e7d8-41d1-b074-dae3377a8a7e"],
+     Cell["Condition", "TableText",
+     FontWeight->Bold,ExpressionUUID->"5ac70b4a-26af-45db-aa4a-31f8c1b6e1b8"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "46a97bd0-4f76-4f81-8402-fc29bd70c63d"], Cell[TextData[Cell[BoxData[
+     TemplateBox[{
+       Cell[
+        TextData["InfraFibrationQ"]], 
+       "paclet:WolframInstitute/InfraGeometry/ref/InfraFibrationQ", 
+       "WolframInstitute/InfraGeometry Package Symbol"},
+      "PackageLink",
+      BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+     "15763982-4edb-4344-a51d-74535df4137d"]], "TableText",ExpressionUUID->
+     "2c4e925e-4314-45fb-a7af-f0cb50107a88"], Cell[TextData[{
+     "every vertex over ",
+     StyleBox["p", "TI"],
+     " has a neighbour over every neighbour of ",
+     StyleBox["p", "TI"]
+    }], "TableText",ExpressionUUID->"8ac4ff55-608a-470c-ad53-4e7601563c52"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "2662f628-c00d-4e45-989e-0dbdabb3d592"], Cell[TextData[Cell[BoxData[
+     TemplateBox[{
+       Cell[
+        TextData["InfraUniqueEdgeLiftingQ"]], 
+       "paclet:WolframInstitute/InfraGeometry/ref/InfraUniqueEdgeLiftingQ", 
+       "WolframInstitute/InfraGeometry Package Symbol"},
+      "PackageLink",
+      BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+     "4313981b-e5a3-4346-87a1-6fac26c2b08a"]], "TableText",ExpressionUUID->
+     "f811d1dc-e1c1-4255-8a28-236aef04357c"], Cell[
+    "exactly one such neighbour", "TableText",ExpressionUUID->
+     "83dac74b-7286-44de-8265-3df854709f89"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "b4d8f73a-cd20-4472-a745-e44da96f04a8"], Cell[TextData[Cell[BoxData[
+     TemplateBox[{
+       Cell[
+        TextData["InfraCoveringQ"]], 
+       "paclet:WolframInstitute/InfraGeometry/ref/InfraCoveringQ", 
+       "WolframInstitute/InfraGeometry Package Symbol"},
+      "PackageLink",
+      BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+     "6b98c1e7-f2f3-41c0-9e57-50135f50567f"]], "TableText",ExpressionUUID->
+     "d647b78b-9178-4a30-98a8-7f75da70b227"], Cell[
+    "unique lifting and no vertical edges", "TableText",ExpressionUUID->
+     "bf2ac241-83ad-4a45-8c7d-8c9d89f3cbe8"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "b5dc7fe0-9b84-4b66-a4e8-e7a421518a9e"], Cell[TextData[Cell[BoxData[
+     TemplateBox[{
+       Cell[
+        TextData["InfraFiberBundleQ"]], 
+       "paclet:WolframInstitute/InfraGeometry/ref/InfraFiberBundleQ", 
+       "WolframInstitute/InfraGeometry Package Symbol"},
+      "PackageLink",
+      BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+     "bc57c5c1-fdb3-4743-b30f-df40f28c9a82"]], "TableText",ExpressionUUID->
+     "13beb729-9f87-4a1b-9836-c71743dd7941"], Cell["\<\
+isomorphic fibers, unique lifting, and the matchings preserve the fibers' \
+edges\
+\>", "TableText",ExpressionUUID->"dfb2280d-8ad7-469e-9711-2ef8c3aeb2f5"]}
+  }]], "2ColumnTableMod",ExpressionUUID->"8442991c-f388-4c72-8c3e-\
+e25fc12a6d37"],
+
+Cell[TextData[{
  Cell[BoxData[
   TemplateBox[{
     Cell[
@@ -173,9 +197,93 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "8e4f2fc3-356e-4378-a24d-337144776ad3"],
+  "7f781991-d62c-4af4-97db-27afecd855fd"],
+ " is a symbolic object. The readers evaluate it:"
+}], "Notes",ExpressionUUID->"ccd1b751-9941-4947-8bfd-45f62c1b28dd"],
+
+Cell[BoxData[GridBox[{
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "392b3852-9636-4a19-abcd-adc586873bc2"], Cell["Reader", "TableText",
+     FontWeight->Bold,ExpressionUUID->"e6a9c3a7-6573-4df7-b13e-3988f08cb844"],
+     Cell["Value", "TableText",
+     FontWeight->Bold,ExpressionUUID->"481f100e-4d3f-46ee-abdf-184a2f5af566"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "ec5b90c1-2773-464f-bc23-be92ecef0e99"], Cell[TextData[Cell[BoxData[
+     TemplateBox[{
+       Cell[
+        TextData["InfraTotalSpace"]], 
+       "paclet:WolframInstitute/InfraGeometry/ref/InfraTotalSpace", 
+       "WolframInstitute/InfraGeometry Package Symbol"},
+      "PackageLink",
+      BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+     "c0f37b81-43f5-4a9e-bf90-c4553a964f06"]], "TableText",ExpressionUUID->
+     "b4269a5b-46f3-4b04-93b1-dd78ca6ef4a1"], Cell[TextData[{
+     "the total graph ",
+     StyleBox["E", "TI"]
+    }], "TableText",ExpressionUUID->"80689c9b-138c-4efe-b38a-fa2481040eb1"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "801bfbc0-5cd7-4ea1-8b65-75057b4c3a17"], Cell[TextData[Cell[BoxData[
+     TemplateBox[{
+       Cell[
+        TextData["InfraBaseSpace"]], 
+       "paclet:WolframInstitute/InfraGeometry/ref/InfraBaseSpace", 
+       "WolframInstitute/InfraGeometry Package Symbol"},
+      "PackageLink",
+      BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+     "21b4912a-2b5e-4ce6-a07d-cd014fb5c79e"]], "TableText",ExpressionUUID->
+     "96a46d8b-ff08-4065-849e-b78c8bc7c4fc"], Cell[TextData[{
+     "the base ",
+     StyleBox["B", "TI"]
+    }], "TableText",ExpressionUUID->"19c783f7-d605-4171-9f45-d1b0c39205dd"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "4658bffd-3d53-4755-90ce-14b4e5b5ed40"], Cell[TextData[Cell[BoxData[
+     TemplateBox[{
+       Cell[
+        TextData["InfraProjection"]], 
+       "paclet:WolframInstitute/InfraGeometry/ref/InfraProjection", 
+       "WolframInstitute/InfraGeometry Package Symbol"},
+      "PackageLink",
+      BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+     "137a872d-eed5-45ef-9439-e56831fab33b"]], "TableText",ExpressionUUID->
+     "f82c04d9-ebd6-4990-8af8-2105130496b3"], Cell[TextData[{
+     StyleBox["\[Pi]", "TI"],
+     " as an association"
+    }], "TableText",ExpressionUUID->"a76b9b57-4629-42c4-a671-1abaf9259fad"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "c9ed6126-f013-4ade-9dcf-332341c74d1a"], Cell[TextData[Cell[BoxData[
+     TemplateBox[{
+       Cell[
+        TextData["InfraFiber"]], 
+       "paclet:WolframInstitute/InfraGeometry/ref/InfraFiber", 
+       "WolframInstitute/InfraGeometry Package Symbol"},
+      "PackageLink",
+      BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+     "941bc218-e815-4635-bd60-2971b01dc6a8"]], "TableText",ExpressionUUID->
+     "82ccf9b2-66f5-48ea-a4ad-c295a8a4d564"], Cell[
+    "the fiber over one base vertex", "TableText",ExpressionUUID->
+     "ac2f9897-3d16-4f4e-a428-ce9b04a29123"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "bdcdbf7f-b06b-4a52-b1f7-b9c83caa412c"], Cell[TextData[Cell[BoxData[
+     TemplateBox[{
+       Cell[
+        TextData["InfraFibers"]], 
+       "paclet:WolframInstitute/InfraGeometry/ref/InfraFibers", 
+       "WolframInstitute/InfraGeometry Package Symbol"},
+      "PackageLink",
+      BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+     "c4c09321-5438-4e69-9ea0-352ea2cec0ad"]], "TableText",ExpressionUUID->
+     "a4c7e40b-7799-4560-a813-6d4246cd6ff9"], Cell[
+    "all fibers, as an association", "TableText",ExpressionUUID->
+     "02a2fe7e-6c69-4e39-8bc1-eb5b2eeaf8b9"]}
+  }]], "2ColumnTableMod",ExpressionUUID->"4d0117f0-bd05-4784-9ed3-\
+dfb5ba4c9f6c"],
+
+Cell[TextData[{
+ "The total graph is finite, simple, undirected, unweighted and without edge \
+tags. An association projection has a key for every vertex of ",
+ StyleBox["total", "TI"],
  "."
-}], "Notes",ExpressionUUID->"23a29d9d-ba18-4d5b-a0f3-ee1c25934a7e"]
+}], "Notes",ExpressionUUID->"93eda9a0-837d-41b0-872c-77c138d382fe"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -204,7 +312,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "6ba06cd5-f780-4170-8168-5c603900e429"],
+  "3e3f2333-57de-41c9-957d-2bbcb362f2f6"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -214,7 +322,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "d11c6c86-a90c-4803-94c7-60cb0024a09b"],
+  "3c18565e-aed3-4c2a-acd5-37a42c64f274"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -224,7 +332,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "c41070a8-677f-4c14-aa72-eec9dbecfc6a"],
+  "6b9955dd-44e1-4d20-8001-8e9e949cda39"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -234,7 +342,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "74f1d77a-3b38-48ef-9c68-8305da0f18af"],
+  "68aed4fb-5396-4aa2-bbd3-dd87fcf9ce97"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -244,7 +352,17 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "35869800-433a-4a80-bb9e-2f10a32e2cb2"],
+  "0ca00cc2-fa10-4c96-a818-e764bd26eec9"],
+ " \[FilledVerySmallSquare] ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["InfraFibers"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/InfraFibers", 
+    "WolframInstitute/InfraGeometry Package Symbol"},
+   "PackageLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "e8a6a2f4-2575-42e2-aa29-1b2e87cd80f8"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -254,7 +372,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "03f84426-468a-44db-b03f-1f6d647eb453"],
+  "0b2218ed-d859-4ebc-abf3-3d9faf3e9813"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -264,18 +382,18 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "87797260-6442-45e0-8f6c-55bfdc700d72"],
+  "b7765257-b883-4529-9233-0697d7c671cb"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
     Cell[
-     TextData["InfraFibration"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraFibration", 
+     TextData["InfraFiberBundleQ"]], 
+    "paclet:WolframInstitute/InfraGeometry/ref/InfraFiberBundleQ", 
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "72b7a39f-e88b-4d1d-90ae-fe5ddf14695f"]
-}], "SeeAlso",ExpressionUUID->"deb807a5-e133-4f14-b99b-d53bcbbd2703"]
+  "3ecf4bc2-835f-4720-ad75-c8ac694d406c"]
+}], "SeeAlso",ExpressionUUID->"ffd05f3e-3109-4acf-98d6-0ab74870c4e7"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -302,8 +420,8 @@ Cell[TextData[Cell[BoxData[
   BaseStyle->"Link",
   ButtonData->
    "paclet:WolframInstitute/InfraGeometry/guide/InfraFiberBundles"]], \
-"InlineFormula",ExpressionUUID->"5a377ba2-c8f9-4877-93ea-3f2cb378d290"]], \
-"MoreAbout",ExpressionUUID->"b40f781a-e796-4fd9-bd47-866269d28e00"]
+"InlineFormula",ExpressionUUID->"8a6ec65b-9541-414e-a9b4-b78553b9552b"]], \
+"MoreAbout",ExpressionUUID->"4d53a51f-600b-46a8-ab33-c20d29a6856f"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -362,256 +480,1150 @@ Cell[BoxData[
   $Line = 0; Null]], "PrimaryExamplesSection",
  CellID->880084151,ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42"],
 
-Cell["A cycle wraps twice around its reconstructed square base.", \
-"ExampleText",ExpressionUUID->"7ec8c57e-418e-429a-9cc7-aa8a46f2a60c"],
+Cell["\<\
+The cycle of length 8 wraps twice around its base, the cycle of length 4. The \
+fiber over 1 is drawn:\
+\>", "ExampleText",ExpressionUUID->"8393f34b-ceac-4038-a86b-e7aea8979e69"],
 
 Cell[CellGroupData[{
-
-Cell[BoxData[{
- RowBox[{
-  RowBox[{"SeedRandom", "[", " ", "7", " ", "]"}], ";"}], "\n", 
- RowBox[{"With", "[", " ", 
-  RowBox[{
-   RowBox[{"{", " ", 
-    RowBox[{"fib", " ", "=", " ", 
-     RowBox[{"InfraFiberedGraph", "[", " ", 
-      RowBox[{
-       RowBox[{"CycleGraph", "[", " ", "8", " ", "]"}], ",", " ", 
-       RowBox[{"vertex", " ", "|->", " ", 
-        RowBox[{"Mod", "[", " ", 
-         RowBox[{"vertex", ",", " ", "4", ",", " ", "1"}], " ", "]"}]}]}], 
-      " ", "]"}]}], " ", "}"}], ",", "\n", "  ", 
-   RowBox[{"InfraFiberedGraphHighlight", "[", " ", 
-    RowBox[{"fib", ",", " ", 
-     RowBox[{"{", " ", 
-      RowBox[{"InfraFiber", "[", " ", 
-       RowBox[{"fib", ",", " ", "1"}], " ", "]"}], " ", "}"}]}], " ", "]"}]}],
-   " ", "]"}]}], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"8c56dd74-8b99-457b-a0ae-cd88ebb447e0"],
 
 Cell[BoxData[
- RowBox[{"InfraFiberedGraphHighlight", "[", 
+ RowBox[{"With", "[", 
   RowBox[{
-   RowBox[{"InfraFiberedGraph", "[", 
-    RowBox[{
-     GraphicsBox[
-      NamespaceBox["NetworkGraphics",
-       DynamicModuleBox[{Typeset`graph = HoldComplete[
-         Graph[{1, 2, 3, 4, 5, 6, 7, 8}, {Null, 
-           SparseArray[
-           Automatic, {8, 8}, 0, {
-            1, {{0, 2, 4, 6, 8, 10, 12, 14, 16}, {{2}, {8}, {1}, {3}, {2}, {
-              4}, {3}, {5}, {4}, {6}, {5}, {7}, {6}, {8}, {1}, {7}}}, 
-             Pattern}]}, {GraphLayout -> "CircularEmbedding"}]]}, 
-        TagBox[
-         GraphicsGroupBox[
-          GraphicsComplexBox[{{-0.707106781186548, 
-           0.7071067811865482}, {-7.044813998280222*^-16, 1.}, {
-           0.707106781186547, 0.7071067811865467}, {
-           1., -1.133107779529596*^-15}, {
-           0.7071067811865481, -0.7071067811865483}, {
-           6.049014748177263*^-16, -1.}, {-0.707106781186547, \
--0.7071067811865468}, {-1., 1.0106430996148606`*^-15}}, {
-            {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
-             0.], ArrowBox[{{1, 2}, {1, 8}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {
-              6, 7}, {7, 8}}, 0.02261146496815286]}, 
-            {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-             DiskBox[1, 0.02261146496815286], DiskBox[2, 0.02261146496815286],
-              DiskBox[3, 0.02261146496815286], 
-             DiskBox[4, 0.02261146496815286], DiskBox[5, 0.02261146496815286],
-              DiskBox[6, 0.02261146496815286], 
-             DiskBox[7, 0.02261146496815286], 
-             DiskBox[8, 0.02261146496815286]}}]],
-         MouseAppearanceTag["NetworkGraphics"]],
-        AllowKernelInitialization->False]],
-      DefaultBaseStyle->"NetworkGraphics",
-      FormatType->TraditionalForm,
-      FrameTicks->None], ",", 
-     RowBox[{"Function", "[", 
-      RowBox[{"vertex", ",", 
-       RowBox[{"Mod", "[", 
-        RowBox[{"vertex", ",", "4", ",", "1"}], "]"}]}], "]"}]}], "]"}], ",", 
-   
    RowBox[{"{", 
-    RowBox[{"Subgraph", "[", 
-     RowBox[{
-      RowBox[{"InfraTotalGraph", "[", 
-       RowBox[{"InfraFiberedGraph", "[", 
-        RowBox[{
-         GraphicsBox[
-          NamespaceBox["NetworkGraphics",
-           DynamicModuleBox[{Typeset`graph = HoldComplete[
-             Graph[{1, 2, 3, 4, 5, 6, 7, 8}, {Null, 
-               SparseArray[
-               Automatic, {8, 8}, 0, {
-                1, {{0, 2, 4, 6, 8, 10, 12, 14, 16}, {{2}, {8}, {1}, {3}, {
-                  2}, {4}, {3}, {5}, {4}, {6}, {5}, {7}, {6}, {8}, {1}, {7}}},
-                  Pattern}]}, {GraphLayout -> "CircularEmbedding"}]]}, 
-            
-            TagBox[GraphicsGroupBox[
-              GraphicsComplexBox[{{-0.707106781186548, 
-               0.7071067811865482}, {-7.044813998280222*^-16, 1.}, {
-               0.707106781186547, 0.7071067811865467}, {
-               1., -1.133107779529596*^-15}, {
-               0.7071067811865481, -0.7071067811865483}, {
-               6.049014748177263*^-16, -1.}, {-0.707106781186547, \
--0.7071067811865468}, {-1., 1.0106430996148606`*^-15}}, {
-                {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], 
-                 Arrowheads[0.], 
-                 ArrowBox[{{1, 2}, {1, 8}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6,
-                   7}, {7, 8}}, 0.02261146496815286]}, 
-                {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-                 DiskBox[1, 0.02261146496815286], 
-                 DiskBox[2, 0.02261146496815286], 
-                 DiskBox[3, 0.02261146496815286], 
-                 DiskBox[4, 0.02261146496815286], 
-                 DiskBox[5, 0.02261146496815286], 
-                 DiskBox[6, 0.02261146496815286], 
-                 DiskBox[7, 0.02261146496815286], 
-                 DiskBox[8, 0.02261146496815286]}}]],
-             MouseAppearanceTag["NetworkGraphics"]],
-            AllowKernelInitialization->False]],
-          DefaultBaseStyle->"NetworkGraphics",
-          FormatType->TraditionalForm,
-          FrameTicks->None], ",", 
-         RowBox[{"Function", "[", 
-          RowBox[{"vertex", ",", 
-           RowBox[{"Mod", "[", 
-            RowBox[{"vertex", ",", "4", ",", "1"}], "]"}]}], "]"}]}], "]"}], 
-       "]"}], ",", 
-      RowBox[{"Keys", "[", 
-       RowBox[{"InfraFibrationAssociation", "[", "]"}], "]"}]}], "]"}], 
-    "}"}]}], "]"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"628eabdf-c32d-46bc-bb5e-bbbcc9ee6ffb"]
-}, Open  ]],
-
-Cell["\<\
-A general projection can have unequal fibers and missing lifts.\
-\>", "ExampleText",ExpressionUUID->"e7ee23d3-ed82-4376-a05c-f4f2f6573477"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[{
- RowBox[{
-  RowBox[{"SeedRandom", "[", " ", "7", " ", "]"}], ";"}], "\n", 
- RowBox[{"With", "[", " ", 
-  RowBox[{
-   RowBox[{"{", " ", 
     RowBox[{"fib", " ", "=", " ", 
-     RowBox[{"InfraFiberedGraph", "[", " ", 
+     RowBox[{"InfraFiberedGraph", "[", 
       RowBox[{
-       RowBox[{"PathGraph", "[", " ", 
-        RowBox[{"Range", "[", " ", "6", " ", "]"}], " ", "]"}], ",", " ", 
-       RowBox[{"<|", " ", 
-        RowBox[{
-         RowBox[{"1", " ", "->", " ", "\"\<a\>\""}], ",", " ", 
-         RowBox[{"2", " ", "->", " ", "\"\<a\>\""}], ",", " ", 
-         RowBox[{"3", " ", "->", " ", "\"\<b\>\""}], ",", " ", 
-         RowBox[{"4", " ", "->", " ", "\"\<c\>\""}], ",", " ", 
-         RowBox[{"5", " ", "->", " ", "\"\<c\>\""}], ",", " ", 
-         RowBox[{"6", " ", "->", " ", "\"\<c\>\""}]}], " ", "|>"}]}], " ", 
-      "]"}]}], " ", "}"}], ",", "\n", "  ", 
-   RowBox[{"GraphicsRow", "[", " ", 
-    RowBox[{"{", " ", 
+       RowBox[{"CycleGraph", "[", "8", "]"}], ",", " ", 
+       RowBox[{"v", " ", "|->", " ", 
+        RowBox[{"Mod", "[", 
+         RowBox[{"v", ",", " ", "4", ",", " ", "1"}], "]"}]}]}], "]"}]}], 
+    "}"}], ",", "\n", "  ", 
+   RowBox[{"GraphicsRow", "[", 
+    RowBox[{"{", 
      RowBox[{
-      RowBox[{"InfraFiberedGraphHighlight", "[", " ", "fib", " ", "]"}], ",", 
-      " ", 
-      RowBox[{"InfraBaseSpace", "[", " ", "fib", " ", "]"}]}], " ", "}"}], 
-    " ", "]"}]}], " ", "]"}]}], "Input",
- CellLabel->"In[2]:= ",ExpressionUUID->"f21a6a19-e3e7-403e-961a-96656223ffdb"],
+      RowBox[{"InfraFiberedGraphHighlight", "[", 
+       RowBox[{"fib", ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"InfraFiber", "[", 
+          RowBox[{"fib", ",", " ", "1"}], "]"}], "}"}]}], "]"}], ",", " ", 
+      RowBox[{"InfraBaseSpace", "[", "fib", "]"}]}], "}"}], "]"}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"3b2ba460-c4bf-4d28-a6ba-18b39ec297a2"],
 
 Cell[BoxData[
  GraphicsBox[{{}, {InsetBox[
-     RowBox[{"InfraFiberedGraphHighlight", "(", 
-      RowBox[{"InfraFiberedGraph", "(", 
-       RowBox[{
-        GraphicsBox[
-         NamespaceBox["NetworkGraphics",
-          DynamicModuleBox[{Typeset`graph = HoldComplete[
-            
-            Graph[{1, 2, 3, 4, 5, 6}, {
-             Null, {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}}}]]}, 
-           
-           TagBox[GraphicsGroupBox[
-             GraphicsComplexBox[{{0., 9.797174393178826*^-16}, {1., 
-              8.572527594031472*^-16}, {2., 7.347880794884119*^-16}, {3., 
-              4.898587196589412*^-16}, {4., 2.449293598294706*^-16}, {5., 
-              0.}}, {
-               {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], 
-                Arrowheads[0.], 
-                ArrowBox[{{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}}, 
-                 0.043048128342245986`]}, 
-               {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-                DiskBox[1, 0.043048128342245986], 
-                DiskBox[2, 0.043048128342245986], 
-                DiskBox[3, 0.043048128342245986], 
-                DiskBox[4, 0.043048128342245986], 
-                DiskBox[5, 0.043048128342245986], 
-                DiskBox[6, 0.043048128342245986]}}]],
-            MouseAppearanceTag["NetworkGraphics"]],
-           AllowKernelInitialization->False]],
-         DefaultBaseStyle->"NetworkGraphics",
-         FormatType->TraditionalForm,
-         FrameTicks->None], ",", 
-        RowBox[{"\[LeftAssociation]", 
-         RowBox[{
-          RowBox[{"1", "\[Rule]", "\<\"a\"\>"}], ",", 
-          RowBox[{"2", "\[Rule]", "\<\"a\"\>"}], ",", 
-          RowBox[{"3", "\[Rule]", "\<\"b\"\>"}], ",", 
-          RowBox[{"4", "\[Rule]", "\<\"c\"\>"}], ",", 
-          RowBox[{"5", "\[Rule]", "\<\"c\"\>"}], ",", 
-          RowBox[{"6", "\[Rule]", "\<\"c\"\>"}]}], "\[RightAssociation]"}]}], 
-       ")"}], ")"}], {166.9666666666667, -22.46666666666667}, {
-     Center, Center}, {314., 25.},
+     FormBox[
+      GraphicsBox[
+       NamespaceBox["NetworkGraphics",
+        DynamicModuleBox[{Typeset`graph = HoldComplete[
+          Graph[{1, 2, 3, 4, 5, 6, 7, 8}, {Null, 
+            SparseArray[
+            Automatic, {8, 8}, 0, {
+             1, {{0, 2, 4, 6, 8, 10, 12, 14, 16}, {{2}, {8}, {1}, {3}, {2}, {
+               4}, {3}, {5}, {4}, {6}, {5}, {7}, {6}, {8}, {1}, {7}}}, 
+              Pattern}]}, {
+           GraphLayout -> {
+             "Dimension" -> 2, "VertexLayout" -> "CircularEmbedding"}, 
+            VertexCoordinates -> {{-0.6666666666666667, 
+             1.0106430996148606`*^-15}, {0.3333333333333326, 1.}, {
+             1.3333333333333333`, -1.133107779529596*^-15}, {
+             0.3333333333333339, -1.}, {-1.3333333333333333`, 
+             1.0106430996148606`*^-15}, {-0.33333333333333404`, 1.}, {
+             0.6666666666666667, -1.133107779529596*^-15}, \
+{-0.3333333333333327, -1.}}, VertexShapeFunction -> {5 -> (Append[{
+                 RGBColor[0.790588, 0.201176, 0.], 
+                 Opacity[1.]}, 
+                Disk[#, 1 #3]]& ), 1 -> (Append[{
+                 RGBColor[0.790588, 0.201176, 0.], 
+                 Opacity[1.]}, 
+                Disk[#, 1 #3]]& )}, 
+            VertexStyle -> {
+             5 -> RGBColor[0.9057646, 0.6405292, 0.55], 7 -> 
+              RGBColor[1., 0.82352935, 0.55], 3 -> 
+              RGBColor[1., 0.82352935, 0.55], 1 -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], 8 -> 
+              RGBColor[0.55, 0.8182351, 0.5994118], 2 -> 
+              RGBColor[0.63647065, 0.72470575, 0.91352935], 6 -> 
+              RGBColor[0.63647065, 0.72470575, 0.91352935], 4 -> 
+              RGBColor[0.55, 0.8182351, 0.5994118]}}]]}, 
+         TagBox[GraphicsGroupBox[{
+            {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], 
+             LineBox[{{
+               DynamicLocation["VertexID$1", Automatic, Center], 
+                DynamicLocation["VertexID$2", Automatic, Center]}, {
+               DynamicLocation["VertexID$1", Automatic, Center], 
+                DynamicLocation["VertexID$8", Automatic, Center]}, {
+               DynamicLocation["VertexID$2", Automatic, Center], 
+                DynamicLocation["VertexID$3", Automatic, Center]}, {
+               DynamicLocation["VertexID$3", Automatic, Center], 
+                DynamicLocation["VertexID$4", Automatic, Center]}, {
+               DynamicLocation["VertexID$4", Automatic, Center], 
+                DynamicLocation["VertexID$5", Automatic, Center]}, {
+               DynamicLocation["VertexID$5", Automatic, Center], 
+                DynamicLocation["VertexID$6", Automatic, Center]}, {
+               DynamicLocation["VertexID$6", Automatic, Center], 
+                DynamicLocation["VertexID$7", Automatic, Center]}, {
+               DynamicLocation["VertexID$7", Automatic, Center], 
+                DynamicLocation["VertexID$8", Automatic, Center]}}]}, 
+            {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+             TagBox[
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               {RGBColor[0.790588, 0.201176, 0.], Opacity[1.], 
+                DiskBox[{-0.6666666666666667, 1.0106430996148606`*^-15}, 
+                 0.027800407331975557]}},
+              "DynamicName",
+              BoxID -> "VertexID$1"], 
+             TagBox[
+              {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+               DiskBox[{0.3333333333333326, 1.}, 0.027800407331975557]},
+              "DynamicName",
+              BoxID -> "VertexID$2"], 
+             TagBox[
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[{1.3333333333333333`, -1.133107779529596*^-15}, 
+                0.027800407331975557]},
+              "DynamicName",
+              BoxID -> "VertexID$3"], 
+             TagBox[
+              {RGBColor[0.55, 0.8182351, 0.5994118], 
+               DiskBox[{0.3333333333333339, -1.}, 0.027800407331975557]},
+              "DynamicName",
+              BoxID -> "VertexID$4"], 
+             TagBox[
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               {RGBColor[0.790588, 0.201176, 0.], Opacity[1.], 
+                DiskBox[{-1.3333333333333333`, 1.0106430996148606`*^-15}, 
+                 0.027800407331975557]}},
+              "DynamicName",
+              BoxID -> "VertexID$5"], 
+             TagBox[
+              {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+               DiskBox[{-0.33333333333333404`, 1.}, 0.027800407331975557]},
+              "DynamicName",
+              BoxID -> "VertexID$6"], 
+             TagBox[
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[{0.6666666666666667, -1.133107779529596*^-15}, 
+                0.027800407331975557]},
+              "DynamicName",
+              BoxID -> "VertexID$7"], 
+             TagBox[
+              {RGBColor[0.55, 0.8182351, 0.5994118], 
+               DiskBox[{-0.3333333333333327, -1.}, 0.027800407331975557]},
+              "DynamicName",
+              BoxID -> "VertexID$8"]}}],
+          MouseAppearanceTag["NetworkGraphics"]],
+         AllowKernelInitialization->False]],
+       DefaultBaseStyle->"NetworkGraphics",
+       FormatType->TraditionalForm,
+       FrameTicks->None],
+      TraditionalForm], {160., -159.7608}, {Center, Center}, {300., 299.5216},
+     
      BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}], 
     InsetBox[
-     RowBox[{"InfraBaseSpace", "(", 
-      RowBox[{"InfraFiberedGraph", "(", 
-       RowBox[{
-        GraphicsBox[
-         NamespaceBox["NetworkGraphics",
-          DynamicModuleBox[{Typeset`graph = HoldComplete[
-            
-            Graph[{1, 2, 3, 4, 5, 6}, {
-             Null, {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}}}]]}, 
-           
-           TagBox[GraphicsGroupBox[
-             GraphicsComplexBox[{{0., 9.797174393178826*^-16}, {1., 
-              8.572527594031472*^-16}, {2., 7.347880794884119*^-16}, {3., 
-              4.898587196589412*^-16}, {4., 2.449293598294706*^-16}, {5., 
-              0.}}, {
-               {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], 
-                Arrowheads[0.], 
-                ArrowBox[{{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}}, 
-                 0.043048128342245986`]}, 
-               {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-                DiskBox[1, 0.043048128342245986], 
-                DiskBox[2, 0.043048128342245986], 
-                DiskBox[3, 0.043048128342245986], 
-                DiskBox[4, 0.043048128342245986], 
-                DiskBox[5, 0.043048128342245986], 
-                DiskBox[6, 0.043048128342245986]}}]],
-            MouseAppearanceTag["NetworkGraphics"]],
-           AllowKernelInitialization->False]],
-         DefaultBaseStyle->"NetworkGraphics",
-         FormatType->TraditionalForm,
-         FrameTicks->None], ",", 
-        RowBox[{"\[LeftAssociation]", 
-         RowBox[{
-          RowBox[{"1", "\[Rule]", "\<\"a\"\>"}], ",", 
-          RowBox[{"2", "\[Rule]", "\<\"a\"\>"}], ",", 
-          RowBox[{"3", "\[Rule]", "\<\"b\"\>"}], ",", 
-          RowBox[{"4", "\[Rule]", "\<\"c\"\>"}], ",", 
-          RowBox[{"5", "\[Rule]", "\<\"c\"\>"}], ",", 
-          RowBox[{"6", "\[Rule]", "\<\"c\"\>"}]}], "\[RightAssociation]"}]}], 
-       ")"}], ")"}], {485.9, -22.46666666666667}, {Center, Center}, {284., 25.},
+     FormBox[
+      GraphicsBox[
+       NamespaceBox["NetworkGraphics",
+        DynamicModuleBox[{Typeset`graph = HoldComplete[
+          Graph[{1, 2, 3, 4}, {Null, {{1, 2}, {1, 4}, {2, 3}, {3, 4}}}]]}, 
+         TagBox[
+          GraphicsGroupBox[
+           GraphicsComplexBox[{{-1., 
+            1.0106430996148606`*^-15}, {-7.044813998280222*^-16, 1.}, {
+            1., -1.133107779529596*^-15}, {6.049014748177263*^-16, -1.}}, {
+             {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
+              0.], ArrowBox[{{1, 2}, {1, 4}, {2, 3}, {3, 4}}, 
+               0.02261146496815286]}, 
+             {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+              DiskBox[1, 0.02261146496815286], 
+              DiskBox[2, 0.02261146496815286], 
+              DiskBox[3, 0.02261146496815286], 
+              DiskBox[4, 0.02261146496815286]}}]],
+          MouseAppearanceTag["NetworkGraphics"]],
+         AllowKernelInitialization->False]],
+       DefaultBaseStyle->"NetworkGraphics",
+       FormatType->TraditionalForm,
+       FrameTicks->None],
+      TraditionalForm], {480., -159.7608}, {Center, Center}, {300., 299.5216},
      
      BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}]}, {}},
-  ImageSize->{637.8666666666667, 44.93333333333334},
+  ImageSize->{640., 319.5216},
   Method->{"IgnoreImageSizeAutomaticLimit" -> True},
-  PlotRange->{{0, 637.8666666666667}, {-44.93333333333334, 0}},
+  PlotRange->{{0, 640.}, {-319.5216, 0}},
   PlotRangePadding->Automatic]], "Output",
- CellLabel->"Out[2]= ",ExpressionUUID->"22043b4d-41ba-4042-ba50-e1e9d2aea9b7"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"ae0c9144-2d34-442c-9bc1-f799594b83e2"]
+}, Open  ]],
+
+Cell["\<\
+The square grid projected to its columns. The fibers are the columns and the \
+base is a path:\
+\>", "ExampleText",ExpressionUUID->"a9befb35-dff9-4a73-b563-7d6b54fe9488"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"g", " ", "=", " ", 
+     RowBox[{"InfraSubstrate", "[", 
+      RowBox[{"\"\<SquareGridGraph\>\"", ",", " ", "\"\<Small\>\"", ",", " ", 
+       
+       RowBox[{"\"\<KeepCoordinates\>\"", " ", "->", " ", "True"}]}], "]"}]}],
+     "}"}], ",", "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{"fib", " ", "=", " ", 
+     RowBox[{"InfraFiberedGraph", "[", 
+      RowBox[{"g", ",", " ", 
+       RowBox[{"AssociationThread", "[", 
+        RowBox[{
+         RowBox[{"VertexList", "[", "g", "]"}], ",", " ", 
+         RowBox[{"Round", " ", "@", " ", 
+          RowBox[{
+           RowBox[{"GraphEmbedding", "[", "g", "]"}], "[", 
+           RowBox[{"[", 
+            RowBox[{"All", ",", " ", "1"}], "]"}], "]"}]}]}], "]"}]}], 
+      "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"GraphicsRow", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"InfraSubstrateHighlight", "[", 
+       RowBox[{"g", ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"InfraFiber", "[", 
+          RowBox[{"fib", ",", " ", "5"}], "]"}], "}"}]}], "]"}], ",", " ", 
+      RowBox[{"InfraBaseSpace", "[", "fib", "]"}]}], "}"}], "]"}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[2]:= ",ExpressionUUID->"dc62dc64-18e6-4ddf-9c84-d34d2528a0ec"],
+
+Cell[BoxData[
+ GraphicsBox[{{}, {InsetBox[
+     FormBox[
+      GraphicsBox[
+       NamespaceBox["NetworkGraphics",
+        DynamicModuleBox[{Typeset`graph = HoldComplete[
+          
+          Graph[{2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 
+           20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36,
+            37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 
+           53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
+            70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 
+           86, 87, 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 99}, {
+           Null, {{1, 10}, {9, 10}, {2, 11}, {10, 11}, {3, 12}, {11, 12}, {4, 
+            13}, {12, 13}, {5, 14}, {13, 14}, {6, 15}, {14, 15}, {7, 16}, {15,
+             16}, {8, 17}, {16, 17}, {17, 18}, {10, 20}, {19, 20}, {11, 21}, {
+            20, 21}, {12, 22}, {21, 22}, {13, 23}, {22, 23}, {14, 24}, {23, 
+            24}, {15, 25}, {24, 25}, {16, 26}, {25, 26}, {17, 27}, {26, 27}, {
+            27, 28}, {20, 30}, {29, 30}, {21, 31}, {30, 31}, {22, 32}, {31, 
+            32}, {23, 33}, {32, 33}, {24, 34}, {33, 34}, {25, 35}, {34, 35}, {
+            26, 36}, {35, 36}, {27, 37}, {36, 37}, {37, 38}, {30, 40}, {39, 
+            40}, {31, 41}, {40, 41}, {32, 42}, {41, 42}, {33, 43}, {42, 43}, {
+            34, 44}, {43, 44}, {35, 45}, {44, 45}, {36, 46}, {45, 46}, {37, 
+            47}, {46, 47}, {47, 48}, {40, 50}, {49, 50}, {41, 51}, {50, 51}, {
+            42, 52}, {51, 52}, {43, 53}, {52, 53}, {44, 54}, {53, 54}, {45, 
+            55}, {54, 55}, {46, 56}, {55, 56}, {47, 57}, {56, 57}, {57, 58}, {
+            50, 60}, {59, 60}, {51, 61}, {60, 61}, {52, 62}, {61, 62}, {53, 
+            63}, {62, 63}, {54, 64}, {63, 64}, {55, 65}, {64, 65}, {56, 66}, {
+            65, 66}, {57, 67}, {66, 67}, {67, 68}, {60, 70}, {69, 70}, {61, 
+            71}, {70, 71}, {62, 72}, {71, 72}, {63, 73}, {72, 73}, {64, 74}, {
+            73, 74}, {65, 75}, {74, 75}, {66, 76}, {75, 76}, {67, 77}, {76, 
+            77}, {77, 78}, {70, 80}, {79, 80}, {71, 81}, {80, 81}, {72, 82}, {
+            81, 82}, {73, 83}, {82, 83}, {74, 84}, {83, 84}, {75, 85}, {84, 
+            85}, {76, 86}, {85, 86}, {77, 87}, {86, 87}, {87, 88}, {80, 89}, {
+            81, 90}, {82, 91}, {83, 92}, {84, 93}, {85, 94}, {86, 95}, {87, 
+            96}}}, {EdgeStyle -> {
+              Directive[
+               GrayLevel[0.62], 
+               Opacity[0.35]], UndirectedEdge[45, 46] -> Directive[
+                RGBColor[0.790588, 0.201176, 0.], 
+                Opacity[1.], 
+                AbsoluteThickness[1.]], UndirectedEdge[48, 49] -> Directive[
+                RGBColor[0.790588, 0.201176, 0.], 
+                Opacity[1.], 
+                AbsoluteThickness[1.]], UndirectedEdge[49, 50] -> Directive[
+                RGBColor[0.790588, 0.201176, 0.], 
+                Opacity[1.], 
+                AbsoluteThickness[1.]], UndirectedEdge[46, 47] -> Directive[
+                RGBColor[0.790588, 0.201176, 0.], 
+                Opacity[1.], 
+                AbsoluteThickness[1.]], UndirectedEdge[44, 45] -> Directive[
+                RGBColor[0.790588, 0.201176, 0.], 
+                Opacity[1.], 
+                AbsoluteThickness[1.]], UndirectedEdge[42, 43] -> Directive[
+                RGBColor[0.790588, 0.201176, 0.], 
+                Opacity[1.], 
+                AbsoluteThickness[1.]], UndirectedEdge[41, 42] -> Directive[
+                RGBColor[0.790588, 0.201176, 0.], 
+                Opacity[1.], 
+                AbsoluteThickness[1.]], UndirectedEdge[43, 44] -> Directive[
+                RGBColor[0.790588, 0.201176, 0.], 
+                Opacity[1.], 
+                AbsoluteThickness[1.]], UndirectedEdge[47, 48] -> Directive[
+                RGBColor[0.790588, 0.201176, 0.], 
+                Opacity[1.], 
+                AbsoluteThickness[1.]]}, 
+            GraphHighlight -> {48, 49, 44, 42, 41, 45, 50, 46, 43, 47}, 
+            GraphHighlightStyle -> {48 -> {VertexStyle -> {
+                  Directive[
+                   RGBColor[0.790588, 0.201176, 0.], 
+                   Opacity[1.]]}}, 41 -> {VertexStyle -> {
+                  Directive[
+                   RGBColor[0.790588, 0.201176, 0.], 
+                   Opacity[1.]]}}, 50 -> {VertexStyle -> {
+                  Directive[
+                   RGBColor[0.790588, 0.201176, 0.], 
+                   Opacity[1.]]}}, 46 -> {VertexStyle -> {
+                  Directive[
+                   RGBColor[0.790588, 0.201176, 0.], 
+                   Opacity[1.]]}}, 47 -> {VertexStyle -> {
+                  Directive[
+                   RGBColor[0.790588, 0.201176, 0.], 
+                   Opacity[1.]]}}, 45 -> {VertexStyle -> {
+                  Directive[
+                   RGBColor[0.790588, 0.201176, 0.], 
+                   Opacity[1.]]}}, 42 -> {VertexStyle -> {
+                  Directive[
+                   RGBColor[0.790588, 0.201176, 0.], 
+                   Opacity[1.]]}}, 44 -> {VertexStyle -> {
+                  Directive[
+                   RGBColor[0.790588, 0.201176, 0.], 
+                   Opacity[1.]]}}, 49 -> {VertexStyle -> {
+                  Directive[
+                   RGBColor[0.790588, 0.201176, 0.], 
+                   Opacity[1.]]}}, 43 -> {VertexStyle -> {
+                  Directive[
+                   RGBColor[0.790588, 0.201176, 0.], 
+                   Opacity[1.]]}}}, 
+            GraphLayout -> {
+             "Dimension" -> 2, 
+              "VertexLayout" -> {"GridEmbedding", "Dimension" -> {10, 10}}}, 
+            VertexCoordinates -> CompressedData["
+1:eJx11EEKwjAUhOHgqsssssgiixhyD3MGTyCCa6/uEVQ0iB9NoUz/Usgwb16P
+1/v5dgghXF73Wz/X4/R9GP+8wRFOcIYLXOE29s8NY183OMIJznCBK6yfzrnm
+oi81wgnOcIEr3ODpz7mYiz7iQhOc4QJXuMHTnz1xTuaij7TQDBe4wg2e/uyt
+vXFO5qKPvNACV7jB0597ZI/tjXMyF32UhVa4wZ3v3HP3zF7bI+dmTvpSG9x5
+v/rvTHbP7LU9cm7mpC+1o6v/jnvuXtlje+Ocfrk8AR3NT+Y=
+             "], VertexSize -> {{"Scaled", 0.013}}, VertexStyle -> {
+              Directive[
+               GrayLevel[0.62], 
+               Opacity[0.5], 
+               EdgeForm[{
+                 GrayLevel[0], 
+                 Opacity[0.65]}]]}}]]}, 
+         TagBox[GraphicsGroupBox[{
+            {GrayLevel[0.62], Opacity[0.35], CapForm["Round"], 
+             LineBox[{
+              DynamicLocation["VertexID$1", Automatic, Center], 
+               DynamicLocation["VertexID$10", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$2", Automatic, Center], 
+               DynamicLocation["VertexID$11", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$3", Automatic, Center], 
+               DynamicLocation["VertexID$12", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$4", Automatic, Center], 
+               DynamicLocation["VertexID$13", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$5", Automatic, Center], 
+               DynamicLocation["VertexID$14", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$6", Automatic, Center], 
+               DynamicLocation["VertexID$15", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$7", Automatic, Center], 
+               DynamicLocation["VertexID$16", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$8", Automatic, Center], 
+               DynamicLocation["VertexID$17", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$9", Automatic, Center], 
+               DynamicLocation["VertexID$10", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$10", Automatic, Center], 
+               DynamicLocation["VertexID$11", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$10", Automatic, Center], 
+               DynamicLocation["VertexID$20", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$11", Automatic, Center], 
+               DynamicLocation["VertexID$12", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$11", Automatic, Center], 
+               DynamicLocation["VertexID$21", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$12", Automatic, Center], 
+               DynamicLocation["VertexID$13", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$12", Automatic, Center], 
+               DynamicLocation["VertexID$22", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$13", Automatic, Center], 
+               DynamicLocation["VertexID$14", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$13", Automatic, Center], 
+               DynamicLocation["VertexID$23", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$14", Automatic, Center], 
+               DynamicLocation["VertexID$15", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$14", Automatic, Center], 
+               DynamicLocation["VertexID$24", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$15", Automatic, Center], 
+               DynamicLocation["VertexID$16", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$15", Automatic, Center], 
+               DynamicLocation["VertexID$25", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$16", Automatic, Center], 
+               DynamicLocation["VertexID$17", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$16", Automatic, Center], 
+               DynamicLocation["VertexID$26", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$17", Automatic, Center], 
+               DynamicLocation["VertexID$18", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$17", Automatic, Center], 
+               DynamicLocation["VertexID$27", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$19", Automatic, Center], 
+               DynamicLocation["VertexID$20", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$20", Automatic, Center], 
+               DynamicLocation["VertexID$21", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$20", Automatic, Center], 
+               DynamicLocation["VertexID$30", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$21", Automatic, Center], 
+               DynamicLocation["VertexID$22", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$21", Automatic, Center], 
+               DynamicLocation["VertexID$31", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$22", Automatic, Center], 
+               DynamicLocation["VertexID$23", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$22", Automatic, Center], 
+               DynamicLocation["VertexID$32", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$23", Automatic, Center], 
+               DynamicLocation["VertexID$24", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$23", Automatic, Center], 
+               DynamicLocation["VertexID$33", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$24", Automatic, Center], 
+               DynamicLocation["VertexID$25", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$24", Automatic, Center], 
+               DynamicLocation["VertexID$34", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$25", Automatic, Center], 
+               DynamicLocation["VertexID$26", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$25", Automatic, Center], 
+               DynamicLocation["VertexID$35", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$26", Automatic, Center], 
+               DynamicLocation["VertexID$27", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$26", Automatic, Center], 
+               DynamicLocation["VertexID$36", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$27", Automatic, Center], 
+               DynamicLocation["VertexID$28", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$27", Automatic, Center], 
+               DynamicLocation["VertexID$37", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$29", Automatic, Center], 
+               DynamicLocation["VertexID$30", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$30", Automatic, Center], 
+               DynamicLocation["VertexID$31", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$30", Automatic, Center], 
+               DynamicLocation["VertexID$40", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$31", Automatic, Center], 
+               DynamicLocation["VertexID$32", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$31", Automatic, Center], 
+               DynamicLocation["VertexID$41", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$32", Automatic, Center], 
+               DynamicLocation["VertexID$33", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$32", Automatic, Center], 
+               DynamicLocation["VertexID$42", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$33", Automatic, Center], 
+               DynamicLocation["VertexID$34", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$33", Automatic, Center], 
+               DynamicLocation["VertexID$43", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$34", Automatic, Center], 
+               DynamicLocation["VertexID$35", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$34", Automatic, Center], 
+               DynamicLocation["VertexID$44", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$35", Automatic, Center], 
+               DynamicLocation["VertexID$36", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$35", Automatic, Center], 
+               DynamicLocation["VertexID$45", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$36", Automatic, Center], 
+               DynamicLocation["VertexID$37", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$36", Automatic, Center], 
+               DynamicLocation["VertexID$46", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$37", Automatic, Center], 
+               DynamicLocation["VertexID$38", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$37", Automatic, Center], 
+               DynamicLocation["VertexID$47", Automatic, Center]}], 
+             {RGBColor[0.790588, 0.201176, 0.], AbsoluteThickness[1.], 
+              Opacity[1.], 
+              LineBox[{
+               DynamicLocation["VertexID$39", Automatic, Center], 
+                DynamicLocation["VertexID$40", Automatic, Center]}]}, 
+             {RGBColor[0.790588, 0.201176, 0.], AbsoluteThickness[1.], 
+              Opacity[1.], 
+              LineBox[{
+               DynamicLocation["VertexID$40", Automatic, Center], 
+                DynamicLocation["VertexID$41", Automatic, Center]}]}, 
+             LineBox[{
+              DynamicLocation["VertexID$40", Automatic, Center], 
+               DynamicLocation["VertexID$50", Automatic, Center]}], 
+             {RGBColor[0.790588, 0.201176, 0.], AbsoluteThickness[1.], 
+              Opacity[1.], 
+              LineBox[{
+               DynamicLocation["VertexID$41", Automatic, Center], 
+                DynamicLocation["VertexID$42", Automatic, Center]}]}, 
+             LineBox[{
+              DynamicLocation["VertexID$41", Automatic, Center], 
+               DynamicLocation["VertexID$51", Automatic, Center]}], 
+             {RGBColor[0.790588, 0.201176, 0.], AbsoluteThickness[1.], 
+              Opacity[1.], 
+              LineBox[{
+               DynamicLocation["VertexID$42", Automatic, Center], 
+                DynamicLocation["VertexID$43", Automatic, Center]}]}, 
+             LineBox[{
+              DynamicLocation["VertexID$42", Automatic, Center], 
+               DynamicLocation["VertexID$52", Automatic, Center]}], 
+             {RGBColor[0.790588, 0.201176, 0.], AbsoluteThickness[1.], 
+              Opacity[1.], 
+              LineBox[{
+               DynamicLocation["VertexID$43", Automatic, Center], 
+                DynamicLocation["VertexID$44", Automatic, Center]}]}, 
+             LineBox[{
+              DynamicLocation["VertexID$43", Automatic, Center], 
+               DynamicLocation["VertexID$53", Automatic, Center]}], 
+             {RGBColor[0.790588, 0.201176, 0.], AbsoluteThickness[1.], 
+              Opacity[1.], 
+              LineBox[{
+               DynamicLocation["VertexID$44", Automatic, Center], 
+                DynamicLocation["VertexID$45", Automatic, Center]}]}, 
+             LineBox[{
+              DynamicLocation["VertexID$44", Automatic, Center], 
+               DynamicLocation["VertexID$54", Automatic, Center]}], 
+             {RGBColor[0.790588, 0.201176, 0.], AbsoluteThickness[1.], 
+              Opacity[1.], 
+              LineBox[{
+               DynamicLocation["VertexID$45", Automatic, Center], 
+                DynamicLocation["VertexID$46", Automatic, Center]}]}, 
+             LineBox[{
+              DynamicLocation["VertexID$45", Automatic, Center], 
+               DynamicLocation["VertexID$55", Automatic, Center]}], 
+             {RGBColor[0.790588, 0.201176, 0.], AbsoluteThickness[1.], 
+              Opacity[1.], 
+              LineBox[{
+               DynamicLocation["VertexID$46", Automatic, Center], 
+                DynamicLocation["VertexID$47", Automatic, Center]}]}, 
+             LineBox[{
+              DynamicLocation["VertexID$46", Automatic, Center], 
+               DynamicLocation["VertexID$56", Automatic, Center]}], 
+             {RGBColor[0.790588, 0.201176, 0.], AbsoluteThickness[1.], 
+              Opacity[1.], 
+              LineBox[{
+               DynamicLocation["VertexID$47", Automatic, Center], 
+                DynamicLocation["VertexID$48", Automatic, Center]}]}, 
+             LineBox[{
+              DynamicLocation["VertexID$47", Automatic, Center], 
+               DynamicLocation["VertexID$57", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$49", Automatic, Center], 
+               DynamicLocation["VertexID$50", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$50", Automatic, Center], 
+               DynamicLocation["VertexID$51", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$50", Automatic, Center], 
+               DynamicLocation["VertexID$60", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$51", Automatic, Center], 
+               DynamicLocation["VertexID$52", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$51", Automatic, Center], 
+               DynamicLocation["VertexID$61", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$52", Automatic, Center], 
+               DynamicLocation["VertexID$53", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$52", Automatic, Center], 
+               DynamicLocation["VertexID$62", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$53", Automatic, Center], 
+               DynamicLocation["VertexID$54", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$53", Automatic, Center], 
+               DynamicLocation["VertexID$63", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$54", Automatic, Center], 
+               DynamicLocation["VertexID$55", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$54", Automatic, Center], 
+               DynamicLocation["VertexID$64", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$55", Automatic, Center], 
+               DynamicLocation["VertexID$56", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$55", Automatic, Center], 
+               DynamicLocation["VertexID$65", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$56", Automatic, Center], 
+               DynamicLocation["VertexID$57", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$56", Automatic, Center], 
+               DynamicLocation["VertexID$66", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$57", Automatic, Center], 
+               DynamicLocation["VertexID$58", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$57", Automatic, Center], 
+               DynamicLocation["VertexID$67", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$59", Automatic, Center], 
+               DynamicLocation["VertexID$60", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$60", Automatic, Center], 
+               DynamicLocation["VertexID$61", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$60", Automatic, Center], 
+               DynamicLocation["VertexID$70", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$61", Automatic, Center], 
+               DynamicLocation["VertexID$62", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$61", Automatic, Center], 
+               DynamicLocation["VertexID$71", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$62", Automatic, Center], 
+               DynamicLocation["VertexID$63", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$62", Automatic, Center], 
+               DynamicLocation["VertexID$72", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$63", Automatic, Center], 
+               DynamicLocation["VertexID$64", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$63", Automatic, Center], 
+               DynamicLocation["VertexID$73", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$64", Automatic, Center], 
+               DynamicLocation["VertexID$65", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$64", Automatic, Center], 
+               DynamicLocation["VertexID$74", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$65", Automatic, Center], 
+               DynamicLocation["VertexID$66", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$65", Automatic, Center], 
+               DynamicLocation["VertexID$75", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$66", Automatic, Center], 
+               DynamicLocation["VertexID$67", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$66", Automatic, Center], 
+               DynamicLocation["VertexID$76", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$67", Automatic, Center], 
+               DynamicLocation["VertexID$68", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$67", Automatic, Center], 
+               DynamicLocation["VertexID$77", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$69", Automatic, Center], 
+               DynamicLocation["VertexID$70", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$70", Automatic, Center], 
+               DynamicLocation["VertexID$71", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$70", Automatic, Center], 
+               DynamicLocation["VertexID$80", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$71", Automatic, Center], 
+               DynamicLocation["VertexID$72", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$71", Automatic, Center], 
+               DynamicLocation["VertexID$81", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$72", Automatic, Center], 
+               DynamicLocation["VertexID$73", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$72", Automatic, Center], 
+               DynamicLocation["VertexID$82", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$73", Automatic, Center], 
+               DynamicLocation["VertexID$74", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$73", Automatic, Center], 
+               DynamicLocation["VertexID$83", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$74", Automatic, Center], 
+               DynamicLocation["VertexID$75", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$74", Automatic, Center], 
+               DynamicLocation["VertexID$84", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$75", Automatic, Center], 
+               DynamicLocation["VertexID$76", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$75", Automatic, Center], 
+               DynamicLocation["VertexID$85", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$76", Automatic, Center], 
+               DynamicLocation["VertexID$77", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$76", Automatic, Center], 
+               DynamicLocation["VertexID$86", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$77", Automatic, Center], 
+               DynamicLocation["VertexID$78", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$77", Automatic, Center], 
+               DynamicLocation["VertexID$87", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$79", Automatic, Center], 
+               DynamicLocation["VertexID$80", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$80", Automatic, Center], 
+               DynamicLocation["VertexID$81", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$80", Automatic, Center], 
+               DynamicLocation["VertexID$89", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$81", Automatic, Center], 
+               DynamicLocation["VertexID$82", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$81", Automatic, Center], 
+               DynamicLocation["VertexID$90", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$82", Automatic, Center], 
+               DynamicLocation["VertexID$83", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$82", Automatic, Center], 
+               DynamicLocation["VertexID$91", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$83", Automatic, Center], 
+               DynamicLocation["VertexID$84", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$83", Automatic, Center], 
+               DynamicLocation["VertexID$92", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$84", Automatic, Center], 
+               DynamicLocation["VertexID$85", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$84", Automatic, Center], 
+               DynamicLocation["VertexID$93", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$85", Automatic, Center], 
+               DynamicLocation["VertexID$86", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$85", Automatic, Center], 
+               DynamicLocation["VertexID$94", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$86", Automatic, Center], 
+               DynamicLocation["VertexID$87", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$86", Automatic, Center], 
+               DynamicLocation["VertexID$95", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$87", Automatic, Center], 
+               DynamicLocation["VertexID$88", Automatic, Center]}], 
+             LineBox[{
+              DynamicLocation["VertexID$87", Automatic, Center], 
+               DynamicLocation["VertexID$96", Automatic, Center]}]}, 
+            {GrayLevel[0.62], Opacity[0.5], EdgeForm[{GrayLevel[0], Opacity[
+             0.65]}], 
+             TagBox[DiskBox[{1., 2.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$1"], 
+             TagBox[DiskBox[{1., 3.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$2"], 
+             TagBox[DiskBox[{1., 4.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$3"], 
+             TagBox[DiskBox[{1., 5.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$4"], 
+             TagBox[DiskBox[{1., 6.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$5"], 
+             TagBox[DiskBox[{1., 7.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$6"], 
+             TagBox[DiskBox[{1., 8.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$7"], 
+             TagBox[DiskBox[{1., 9.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$8"], 
+             TagBox[DiskBox[{2., 1.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$9"], 
+             TagBox[DiskBox[{2., 2.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$10"], 
+             TagBox[DiskBox[{2., 3.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$11"], 
+             TagBox[DiskBox[{2., 4.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$12"], 
+             TagBox[DiskBox[{2., 5.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$13"], 
+             TagBox[DiskBox[{2., 6.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$14"], 
+             TagBox[DiskBox[{2., 7.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$15"], 
+             TagBox[DiskBox[{2., 8.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$16"], 
+             TagBox[DiskBox[{2., 9.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$17"], 
+             TagBox[DiskBox[{2., 10.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$18"], 
+             TagBox[DiskBox[{3., 1.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$19"], 
+             TagBox[DiskBox[{3., 2.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$20"], 
+             TagBox[DiskBox[{3., 3.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$21"], 
+             TagBox[DiskBox[{3., 4.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$22"], 
+             TagBox[DiskBox[{3., 5.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$23"], 
+             TagBox[DiskBox[{3., 6.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$24"], 
+             TagBox[DiskBox[{3., 7.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$25"], 
+             TagBox[DiskBox[{3., 8.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$26"], 
+             TagBox[DiskBox[{3., 9.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$27"], 
+             TagBox[DiskBox[{3., 10.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$28"], 
+             TagBox[DiskBox[{4., 1.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$29"], 
+             TagBox[DiskBox[{4., 2.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$30"], 
+             TagBox[DiskBox[{4., 3.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$31"], 
+             TagBox[DiskBox[{4., 4.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$32"], 
+             TagBox[DiskBox[{4., 5.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$33"], 
+             TagBox[DiskBox[{4., 6.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$34"], 
+             TagBox[DiskBox[{4., 7.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$35"], 
+             TagBox[DiskBox[{4., 8.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$36"], 
+             TagBox[DiskBox[{4., 9.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$37"], 
+             TagBox[DiskBox[{4., 10.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$38"], 
+             TagBox[
+              {RGBColor[0.790588, 0.201176, 0.], Opacity[1.], 
+               DiskBox[{5., 1.}, 0.08273149339882606]},
+              "DynamicName",
+              BoxID -> "VertexID$39"], 
+             TagBox[
+              {RGBColor[0.790588, 0.201176, 0.], Opacity[1.], 
+               DiskBox[{5., 2.}, 0.08273149339882606]},
+              "DynamicName",
+              BoxID -> "VertexID$40"], 
+             TagBox[
+              {RGBColor[0.790588, 0.201176, 0.], Opacity[1.], 
+               DiskBox[{5., 3.}, 0.08273149339882606]},
+              "DynamicName",
+              BoxID -> "VertexID$41"], 
+             TagBox[
+              {RGBColor[0.790588, 0.201176, 0.], Opacity[1.], 
+               DiskBox[{5., 4.}, 0.08273149339882606]},
+              "DynamicName",
+              BoxID -> "VertexID$42"], 
+             TagBox[
+              {RGBColor[0.790588, 0.201176, 0.], Opacity[1.], 
+               DiskBox[{5., 5.}, 0.08273149339882606]},
+              "DynamicName",
+              BoxID -> "VertexID$43"], 
+             TagBox[
+              {RGBColor[0.790588, 0.201176, 0.], Opacity[1.], 
+               DiskBox[{5., 6.}, 0.08273149339882606]},
+              "DynamicName",
+              BoxID -> "VertexID$44"], 
+             TagBox[
+              {RGBColor[0.790588, 0.201176, 0.], Opacity[1.], 
+               DiskBox[{5., 7.}, 0.08273149339882606]},
+              "DynamicName",
+              BoxID -> "VertexID$45"], 
+             TagBox[
+              {RGBColor[0.790588, 0.201176, 0.], Opacity[1.], 
+               DiskBox[{5., 8.}, 0.08273149339882606]},
+              "DynamicName",
+              BoxID -> "VertexID$46"], 
+             TagBox[
+              {RGBColor[0.790588, 0.201176, 0.], Opacity[1.], 
+               DiskBox[{5., 9.}, 0.08273149339882606]},
+              "DynamicName",
+              BoxID -> "VertexID$47"], 
+             TagBox[
+              {RGBColor[0.790588, 0.201176, 0.], Opacity[1.], 
+               DiskBox[{5., 10.}, 0.08273149339882606]},
+              "DynamicName",
+              BoxID -> "VertexID$48"], 
+             TagBox[DiskBox[{6., 1.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$49"], 
+             TagBox[DiskBox[{6., 2.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$50"], 
+             TagBox[DiskBox[{6., 3.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$51"], 
+             TagBox[DiskBox[{6., 4.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$52"], 
+             TagBox[DiskBox[{6., 5.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$53"], 
+             TagBox[DiskBox[{6., 6.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$54"], 
+             TagBox[DiskBox[{6., 7.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$55"], 
+             TagBox[DiskBox[{6., 8.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$56"], 
+             TagBox[DiskBox[{6., 9.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$57"], 
+             TagBox[DiskBox[{6., 10.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$58"], 
+             TagBox[DiskBox[{7., 1.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$59"], 
+             TagBox[DiskBox[{7., 2.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$60"], 
+             TagBox[DiskBox[{7., 3.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$61"], 
+             TagBox[DiskBox[{7., 4.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$62"], 
+             TagBox[DiskBox[{7., 5.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$63"], 
+             TagBox[DiskBox[{7., 6.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$64"], 
+             TagBox[DiskBox[{7., 7.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$65"], 
+             TagBox[DiskBox[{7., 8.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$66"], 
+             TagBox[DiskBox[{7., 9.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$67"], 
+             TagBox[DiskBox[{7., 10.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$68"], 
+             TagBox[DiskBox[{8., 1.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$69"], 
+             TagBox[DiskBox[{8., 2.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$70"], 
+             TagBox[DiskBox[{8., 3.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$71"], 
+             TagBox[DiskBox[{8., 4.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$72"], 
+             TagBox[DiskBox[{8., 5.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$73"], 
+             TagBox[DiskBox[{8., 6.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$74"], 
+             TagBox[DiskBox[{8., 7.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$75"], 
+             TagBox[DiskBox[{8., 8.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$76"], 
+             TagBox[DiskBox[{8., 9.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$77"], 
+             TagBox[DiskBox[{8., 10.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$78"], 
+             TagBox[DiskBox[{9., 1.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$79"], 
+             TagBox[DiskBox[{9., 2.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$80"], 
+             TagBox[DiskBox[{9., 3.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$81"], 
+             TagBox[DiskBox[{9., 4.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$82"], 
+             TagBox[DiskBox[{9., 5.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$83"], 
+             TagBox[DiskBox[{9., 6.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$84"], 
+             TagBox[DiskBox[{9., 7.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$85"], 
+             TagBox[DiskBox[{9., 8.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$86"], 
+             TagBox[DiskBox[{9., 9.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$87"], 
+             TagBox[DiskBox[{9., 10.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$88"], 
+             TagBox[DiskBox[{10., 2.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$89"], 
+             TagBox[DiskBox[{10., 3.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$90"], 
+             TagBox[DiskBox[{10., 4.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$91"], 
+             TagBox[DiskBox[{10., 5.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$92"], 
+             TagBox[DiskBox[{10., 6.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$93"], 
+             TagBox[DiskBox[{10., 7.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$94"], 
+             TagBox[DiskBox[{10., 8.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$95"], 
+             TagBox[DiskBox[{10., 9.}, 0.08273149339882606],
+              "DynamicName",
+              BoxID -> "VertexID$96"]}}],
+          MouseAppearanceTag["NetworkGraphics"]],
+         AllowKernelInitialization->False]],
+       DefaultBaseStyle->"NetworkGraphics",
+       FormatType->TraditionalForm,
+       FrameTicks->None],
+      TraditionalForm], {160., -159.76080000000002}, {Center, Center}, {300., 299.52160000000003},
+     
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}], 
+    InsetBox[
+     FormBox[
+      GraphicsBox[
+       NamespaceBox["NetworkGraphics",
+        DynamicModuleBox[{Typeset`graph = HoldComplete[
+          
+          Graph[{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, {
+           Null, {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 
+            9}, {9, 10}}}]]}, 
+         TagBox[
+          GraphicsGroupBox[
+           GraphicsComplexBox[{{0., 1.7145055188062944`*^-15}, {1., 
+            1.5920408388915593`*^-15}, {2., 1.469576158976824*^-15}, {3., 
+            1.3471114790620886`*^-15}, {4., 1.2246467991473533`*^-15}, {5., 
+            9.797174393178826*^-16}, {6., 7.34788079488412*^-16}, {7., 
+            4.898587196589414*^-16}, {8., 2.449293598294707*^-16}, {9., 0.}}, {
+             {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
+              0.], ArrowBox[{{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {
+               7, 8}, {8, 9}, {9, 10}}, 0.061894273127753294`]}, 
+             {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+              DiskBox[1, 0.061894273127753294], 
+              DiskBox[2, 0.061894273127753294], 
+              DiskBox[3, 0.061894273127753294], 
+              DiskBox[4, 0.061894273127753294], 
+              DiskBox[5, 0.061894273127753294], 
+              DiskBox[6, 0.061894273127753294], 
+              DiskBox[7, 0.061894273127753294], 
+              DiskBox[8, 0.061894273127753294], 
+              DiskBox[9, 0.061894273127753294], 
+              DiskBox[10, 0.061894273127753294]}}]],
+          MouseAppearanceTag["NetworkGraphics"]],
+         AllowKernelInitialization->False]],
+       DefaultBaseStyle->"NetworkGraphics",
+       FormatType->TraditionalForm,
+       FrameTicks->None],
+      TraditionalForm], {480., -159.76080000000002}, {Center, Center}, {300., 299.52160000000003},
+     
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}]}, {}},
+  ImageSize->{640., 319.52160000000003`},
+  Method->{"IgnoreImageSizeAutomaticLimit" -> True},
+  PlotRange->{{0, 640.}, {-319.52160000000003`, 0}},
+  PlotRangePadding->Automatic]], "Output",
+ CellLabel->"Out[2]= ",ExpressionUUID->"2dcd1978-9f45-431e-8cda-75d84ba948be"]
 }, Open  ]]
 }, Open  ]],
 
@@ -641,70 +1653,171 @@ Cell[BoxData[
   $Line = 0; Null]], "ExampleSection",
  CellID->1293636265,ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75"],
 
-Cell["\<\
-Materialize a particular model before repeated structural queries.\
-\>", "ExampleText",ExpressionUUID->"96067e5b-c140-4ac0-9eb6-0a3ddf60dbab"],
+Cell[TextData[{
+ "A projection can give fibers of different sizes and vertices without lifts. \
+Over ",
+ Cell[BoxData["\"\<b\>\""], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "cf74e35f-2e37-49da-ad1b-f693af453756"],
+ " there is one vertex; the vertex 1 over ",
+ Cell[BoxData["\"\<a\>\""], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "2965bee9-08ff-4669-8e48-d943c224ced7"],
+ " and the vertices 5 and 6 over ",
+ Cell[BoxData["\"\<c\>\""], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "72a0d762-cdc9-493e-98cf-3297199e7504"],
+ " have no neighbour over ",
+ Cell[BoxData["\"\<b\>\""], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "77c9b7ad-e372-43cb-9cea-c2e0b7658c35"],
+ ":"
+}], "ExampleText",ExpressionUUID->"9a5d8d7f-c4a4-4203-9130-370716fa38b3"],
 
 Cell[CellGroupData[{
 
-Cell[BoxData[{
- RowBox[{
-  RowBox[{"SeedRandom", "[", " ", "7", " ", "]"}], ";"}], "\n", 
- RowBox[{"With", "[", " ", 
+Cell[BoxData[
+ RowBox[{"With", "[", 
   RowBox[{
-   RowBox[{"{", " ", 
-    RowBox[{"model", " ", "=", " ", 
-     RowBox[{"InfraDisplacementBundle", "[", " ", 
-      RowBox[{
-       RowBox[{"CycleGraph", "[", " ", "8", " ", "]"}], ",", " ", "1"}], " ", 
-      "]"}]}], " ", "}"}], ",", "\n", "  ", 
-   RowBox[{"{", " ", 
+   RowBox[{"{", 
     RowBox[{"fib", " ", "=", " ", 
-     RowBox[{"InfraFiberedGraph", "[", " ", "model", " ", "]"}]}], " ", "}"}],
-    ",", "\n", "  ", 
-   RowBox[{"InfraFiberedGraphHighlight", "[", " ", "fib", " ", "]"}]}], " ", 
-  "]"}]}], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"5ceace16-13e1-40d6-a024-318780a8d7ba"],
+     RowBox[{"InfraFiberedGraph", "[", 
+      RowBox[{
+       RowBox[{"PathGraph", "[", 
+        RowBox[{"Range", "[", "6", "]"}], "]"}], ",", "\n", "    ", 
+       RowBox[{"<|", 
+        RowBox[{
+         RowBox[{"1", " ", "->", " ", "\"\<a\>\""}], ",", " ", 
+         RowBox[{"2", " ", "->", " ", "\"\<a\>\""}], ",", " ", 
+         RowBox[{"3", " ", "->", " ", "\"\<b\>\""}], ",", " ", 
+         RowBox[{"4", " ", "->", " ", "\"\<c\>\""}], ",", " ", 
+         RowBox[{"5", " ", "->", " ", "\"\<c\>\""}], ",", " ", 
+         RowBox[{"6", " ", "->", " ", "\"\<c\>\""}]}], "|>"}]}], "]"}]}], 
+    "}"}], ",", "\n", "  ", 
+   RowBox[{"GraphicsRow", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"InfraFiberedGraphHighlight", "[", 
+       RowBox[{"fib", ",", " ", 
+        RowBox[{"Method", " ", "->", " ", "\"\<HighlightFiber\>\""}]}], "]"}],
+       ",", " ", 
+      RowBox[{"InfraBaseSpace", "[", "fib", "]"}]}], "}"}], "]"}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"b52d9652-a1e2-442f-9ba9-42e195a2ba84"],
 
 Cell[BoxData[
- RowBox[{"InfraFiberedGraphHighlight", "[", 
-  RowBox[{"InfraFiberedGraph", "[", 
-   RowBox[{"InfraDisplacementBundle", "[", 
+ GraphicsBox[{{}, {InsetBox[
+     FormBox[
+      GraphicsBox[
+       NamespaceBox["NetworkGraphics",
+        DynamicModuleBox[{Typeset`graph = HoldComplete[
+          
+          Graph[{1, 2, 3, 4, 5, 6}, {
+           Null, {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}}}, {
+           GraphLayout -> {"Dimension" -> 2}, 
+            VertexCoordinates -> {{0., 9.797174393178826*^-16}, {1., 
+             8.572527594031472*^-16}, {2., 7.347880794884119*^-16}, {3., 
+             4.898587196589412*^-16}, {4., 2.449293598294706*^-16}, {5., 0.}},
+             VertexStyle -> {
+             2 -> RGBColor[0.9057646, 0.6405292, 0.55], 1 -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], 3 -> 
+              RGBColor[0.63647065, 0.72470575, 0.91352935], 6 -> 
+              RGBColor[1., 0.82352935, 0.55], 5 -> 
+              RGBColor[1., 0.82352935, 0.55], 4 -> 
+              RGBColor[1., 0.82352935, 0.55]}}]]}, 
+         TagBox[
+          GraphicsGroupBox[
+           GraphicsComplexBox[{{0., 9.797174393178826*^-16}, {1., 
+            8.572527594031472*^-16}, {2., 7.347880794884119*^-16}, {3., 
+            4.898587196589412*^-16}, {4., 2.449293598294706*^-16}, {5., 0.}}, {
+             {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
+              0.], ArrowBox[{{1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}}, 
+               0.043048128342245986`]}, 
+             {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[1, 0.043048128342245986]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[2, 0.043048128342245986]}, 
+              {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+               DiskBox[3, 0.043048128342245986]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[4, 0.043048128342245986]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[5, 0.043048128342245986]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[6, 0.043048128342245986]}}}]],
+          MouseAppearanceTag["NetworkGraphics"]],
+         AllowKernelInitialization->False]],
+       DefaultBaseStyle->"NetworkGraphics",
+       FormatType->TraditionalForm,
+       FrameTicks->None],
+      TraditionalForm], {160., -19.41424129554658}, {Center, Center}, {300., 18.828482591093163},
+     
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}], 
+    InsetBox[
+     FormBox[
+      GraphicsBox[
+       NamespaceBox["NetworkGraphics",
+        DynamicModuleBox[{Typeset`graph = HoldComplete[
+          Graph[{"a", "b", "c"}, {Null, {{1, 2}, {2, 3}}}]]}, 
+         TagBox[
+          GraphicsGroupBox[
+           GraphicsComplexBox[{{0., 3.6739403974420594`*^-16}, {1., 
+            2.4492935982947064`*^-16}, {2., 0.}}, {
+             {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
+              0.], ArrowBox[{{1, 2}, {2, 3}}, 0.02261146496815286]}, 
+             {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+              DiskBox[1, 0.02261146496815286], 
+              DiskBox[2, 0.02261146496815286], 
+              DiskBox[3, 0.02261146496815286]}}]],
+          MouseAppearanceTag["NetworkGraphics"]],
+         AllowKernelInitialization->False]],
+       DefaultBaseStyle->"NetworkGraphics",
+       FormatType->TraditionalForm,
+       FrameTicks->None],
+      TraditionalForm], {480., -19.41424129554658}, {Center, Center}, {300., 18.828482591093163},
+     
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}]}, {}},
+  ImageSize->{640., 38.82848259109316},
+  Method->{"IgnoreImageSizeAutomaticLimit" -> True},
+  PlotRange->{{0, 640.}, {-38.82848259109316, 0}},
+  PlotRangePadding->Automatic]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"dd545208-31da-4412-b76a-0f6ceb6e7b29"]
+}, Open  ]],
+
+Cell["A construction gives the same fibers as its fibered graph:", \
+"ExampleText",ExpressionUUID->"a6ff138e-842a-406e-8deb-a734e0ac4e84"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"model", " ", "=", " ", 
+     RowBox[{"InfraDisplacementBundle", "[", 
+      RowBox[{
+       RowBox[{"GridGraph", "[", 
+        RowBox[{"{", 
+         RowBox[{"4", ",", " ", "4"}], "}"}], "]"}], ",", " ", "1"}], "]"}]}],
+     "}"}], ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"fib", " ", "=", " ", 
+     RowBox[{"InfraFiberedGraph", "[", "model", "]"}]}], "}"}], ",", "\n", 
+   "  ", 
+   RowBox[{"{", 
     RowBox[{
-     GraphicsBox[
-      NamespaceBox["NetworkGraphics",
-       DynamicModuleBox[{Typeset`graph = HoldComplete[
-         Graph[{1, 2, 3, 4, 5, 6, 7, 8}, {Null, 
-           SparseArray[
-           Automatic, {8, 8}, 0, {
-            1, {{0, 2, 4, 6, 8, 10, 12, 14, 16}, {{2}, {8}, {1}, {3}, {2}, {
-              4}, {3}, {5}, {4}, {6}, {5}, {7}, {6}, {8}, {1}, {7}}}, 
-             Pattern}]}, {GraphLayout -> "CircularEmbedding"}]]}, 
-        TagBox[
-         GraphicsGroupBox[
-          GraphicsComplexBox[{{-0.707106781186548, 
-           0.7071067811865482}, {-7.044813998280222*^-16, 1.}, {
-           0.707106781186547, 0.7071067811865467}, {
-           1., -1.133107779529596*^-15}, {
-           0.7071067811865481, -0.7071067811865483}, {
-           6.049014748177263*^-16, -1.}, {-0.707106781186547, \
--0.7071067811865468}, {-1., 1.0106430996148606`*^-15}}, {
-            {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
-             0.], ArrowBox[{{1, 2}, {1, 8}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {
-              6, 7}, {7, 8}}, 0.02261146496815286]}, 
-            {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-             DiskBox[1, 0.02261146496815286], DiskBox[2, 0.02261146496815286],
-              DiskBox[3, 0.02261146496815286], 
-             DiskBox[4, 0.02261146496815286], DiskBox[5, 0.02261146496815286],
-              DiskBox[6, 0.02261146496815286], 
-             DiskBox[7, 0.02261146496815286], 
-             DiskBox[8, 0.02261146496815286]}}]],
-         MouseAppearanceTag["NetworkGraphics"]],
-        AllowKernelInitialization->False]],
-      DefaultBaseStyle->"NetworkGraphics",
-      FormatType->TraditionalForm,
-      FrameTicks->None], ",", "1"}], "]"}], "]"}], "]"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"5992df51-ca8a-4135-b1f0-f7299cac8287"]
+     RowBox[{"Head", "[", "fib", "]"}], ",", " ", 
+     RowBox[{
+      RowBox[{"InfraFibers", "[", "fib", "]"}], " ", "===", " ", 
+      RowBox[{"InfraFibers", "[", "model", "]"}]}]}], "}"}]}], "]"}]], "Input",\
+
+ CellLabel->"In[2]:= ",ExpressionUUID->"ea060f50-2c91-479a-b551-a822c352935d"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"InfraFiberedGraph", ",", "True"}], "}"}]], "Output",
+ CellLabel->"Out[2]= ",ExpressionUUID->"a44252b2-4bca-4086-a5f6-fc70c946b951"]
 }, Open  ]]
 }, Open  ]],
 
@@ -729,6 +1842,8 @@ Cell[BoxData[
   $Line = 0; Null]], "ExampleSection",
  CellID->258228157,ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95"],
 
+Cell[CellGroupData[{
+
 Cell[BoxData[
  InterpretationBox[Cell[
   "Properties & Relations", "ExampleSection",ExpressionUUID->
@@ -736,12 +1851,123 @@ Cell[BoxData[
   $Line = 0; Null]], "ExampleSection",
  CellID->2123667759,ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438"],
 
+Cell["\<\
+The fibers partition the vertices of the total graph. The vertical edges are \
+the edges of the fibers, here 72 of the 144 edges of the grid:\
+\>", "ExampleText",ExpressionUUID->"7c95d270-7a67-443a-801e-925c4004d0d9"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"g", " ", "=", " ", 
+     RowBox[{"InfraSubstrate", "[", 
+      RowBox[{"\"\<SquareGridGraph\>\"", ",", " ", "\"\<Small\>\"", ",", " ", 
+       
+       RowBox[{"\"\<KeepCoordinates\>\"", " ", "->", " ", "True"}]}], "]"}]}],
+     "}"}], ",", "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{"fib", " ", "=", " ", 
+     RowBox[{"InfraFiberedGraph", "[", 
+      RowBox[{"g", ",", " ", 
+       RowBox[{"AssociationThread", "[", 
+        RowBox[{
+         RowBox[{"VertexList", "[", "g", "]"}], ",", " ", 
+         RowBox[{"Round", " ", "@", " ", 
+          RowBox[{
+           RowBox[{"GraphEmbedding", "[", "g", "]"}], "[", 
+           RowBox[{"[", 
+            RowBox[{"All", ",", " ", "1"}], "]"}], "]"}]}]}], "]"}]}], 
+      "]"}]}], "}"}], ",", "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"Total", "[", 
+       RowBox[{"VertexCount", " ", "/@", " ", 
+        RowBox[{"InfraFibers", "[", "fib", "]"}]}], "]"}], " ", "==", " ", 
+      RowBox[{"VertexCount", "[", "g", "]"}]}], ",", " ", 
+     RowBox[{"Total", "[", 
+      RowBox[{"EdgeCount", " ", "/@", " ", 
+       RowBox[{"InfraFibers", "[", "fib", "]"}]}], "]"}], ",", "\n", "   ", 
+     RowBox[{"EdgeCount", "[", "g", "]"}]}], "}"}]}], "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"c2ee2ec4-b6fe-4a1f-8803-50f366d9d98e"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"True", ",", "72", ",", "144"}], "}"}]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"46adc9a7-ab38-4f29-83dc-347c6c724288"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
 Cell[BoxData[
  InterpretationBox[Cell[
   "Possible Issues", "ExampleSection",ExpressionUUID->
    "dda06a82-eb41-4b48-8510-6cb821647761"],
   $Line = 0; Null]], "ExampleSection",
  CellID->1305812373,ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f"],
+
+Cell["\<\
+An association projection that misses a vertex is not a fibered graph. The \
+readers stay unevaluated:\
+\>", "ExampleText",ExpressionUUID->"953c8c85-907b-44e7-9965-ba38c2a3b70f"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"InfraBaseSpace", " ", "@", " ", 
+  RowBox[{"InfraFiberedGraph", "[", 
+   RowBox[{
+    RowBox[{"CycleGraph", "[", "4", "]"}], ",", " ", 
+    RowBox[{"<|", 
+     RowBox[{
+      RowBox[{"1", " ", "->", " ", "\"\<a\>\""}], ",", " ", 
+      RowBox[{"2", " ", "->", " ", "\"\<a\>\""}], ",", " ", 
+      RowBox[{"3", " ", "->", " ", "\"\<b\>\""}]}], "|>"}]}], 
+   "]"}]}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"aec74cc1-2751-4577-ba68-e8063aed255f"],
+
+Cell[BoxData[
+ RowBox[{"InfraBaseSpace", "[", 
+  RowBox[{"InfraFiberedGraph", "[", 
+   RowBox[{
+    GraphicsBox[
+     NamespaceBox["NetworkGraphics",
+      DynamicModuleBox[{Typeset`graph = HoldComplete[
+        Graph[{1, 2, 3, 4}, {Null, 
+          SparseArray[
+          Automatic, {4, 4}, 0, {
+           1, {{0, 2, 4, 6, 8}, {{2}, {4}, {1}, {3}, {2}, {4}, {1}, {3}}}, 
+            Pattern}]}, {GraphLayout -> "CircularEmbedding"}]]}, 
+       TagBox[
+        GraphicsGroupBox[
+         GraphicsComplexBox[{{-1., 
+          1.0106430996148606`*^-15}, {-7.044813998280222*^-16, 1.}, {
+          1., -1.133107779529596*^-15}, {6.049014748177263*^-16, -1.}}, {
+           {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
+            0.], ArrowBox[{{1, 2}, {1, 4}, {2, 3}, {3, 4}}, 
+             0.02261146496815286]}, 
+           {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+            DiskBox[1, 0.02261146496815286], DiskBox[2, 0.02261146496815286], 
+            DiskBox[3, 0.02261146496815286], 
+            DiskBox[4, 0.02261146496815286]}}]],
+        MouseAppearanceTag["NetworkGraphics"]],
+       AllowKernelInitialization->False]],
+     DefaultBaseStyle->"NetworkGraphics",
+     FormatType->TraditionalForm,
+     FrameTicks->None], ",", 
+    RowBox[{"\[LeftAssociation]", 
+     RowBox[{
+      RowBox[{"1", "\[Rule]", "\<\"a\"\>"}], ",", 
+      RowBox[{"2", "\[Rule]", "\<\"a\"\>"}], ",", 
+      RowBox[{"3", "\[Rule]", "\<\"b\"\>"}]}], "\[RightAssociation]"}]}], 
+   "]"}], "]"}]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"81852a8b-1f3e-45d8-a458-4bec30f55562"]
+}, Open  ]]
+}, Open  ]],
 
 Cell[BoxData[
  InterpretationBox[Cell[
@@ -807,7 +2033,7 @@ Cell["WolframInstitute`InfraGeometry`", "Categorization",
  CellID->468444828,ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191"],
 
 Cell["WolframInstitute/InfraGeometry/ref/InfraFiberedGraph", "Categorization",
- CellLabel->"URI",ExpressionUUID->"93426528-6201-48d5-9e7e-bc7b7579a1b2"]
+ CellLabel->"URI",ExpressionUUID->"10c7c1b3-6d0a-4a6c-bc11-1e6407ceb975"]
 }, Closed]],
 
 Cell["Keywords", "KeywordsSection",
@@ -843,8 +2069,9 @@ TaggingRules->{
    "title" -> "InfraFiberedGraph", "context" -> 
     "WolframInstitute`InfraGeometry`", 
     "keywords" -> {
-     "fibered graph", "total space", "projection", "inert object"}, "summary" -> 
-    "", "paclet" -> "WolframInstitute/InfraGeometry", "uri" -> 
+     "fibered graph", "total space", "base", "projection", "fiber", 
+      "symbolic object"}, "summary" -> "", "paclet" -> 
+    "WolframInstitute/InfraGeometry", "uri" -> 
     "WolframInstitute/InfraGeometry/ref/InfraFiberedGraph", "type" -> 
     "Symbol", "index" -> True, "language" -> "en"}},
 CreateCellID->True,
@@ -860,124 +2087,140 @@ ExpressionUUID->"c207366e-060a-406b-a297-9e30e1628f43"
 (*CellTagsOutline
 CellTagsIndex->{
  "ExtendedExamples"->{
-  Cell[24015, 619, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+  Cell[73306, 1631, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
    CellTags->"ExtendedExamples",
    CellID->533848431]}
  }
 *)
 (*CellTagsIndex
 CellTagsIndex->{
- {"ExtendedExamples", 32953, 861}
+ {"ExtendedExamples", 90562, 2088}
  }
 *)
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[576, 22, 94, 0, 70, "ObjectName",ExpressionUUID->"cb49f5fd-71a0-400e-99ba-dd239d338939"],
-Cell[673, 24, 1429, 37, 70, "Usage",ExpressionUUID->"f1b588cf-51b9-4ff1-acb9-b97d1419bb20"],
-Cell[2105, 63, 209, 3, 70, "Notes",ExpressionUUID->"bd423e62-67ef-450d-9145-02253bafb9e8"],
-Cell[2317, 68, 291, 4, 70, "Notes",ExpressionUUID->"9daf6dd4-d4d4-41ef-ab5c-55fb5aa78e23"],
-Cell[2611, 74, 207, 3, 70, "Notes",ExpressionUUID->"fd1a1c66-af84-4a2d-9198-bd1d0ae0e2b5"],
-Cell[2821, 79, 158, 2, 70, "Notes",ExpressionUUID->"f8e61632-fc5e-4163-920b-8aec514a3bb5"],
-Cell[2982, 83, 437, 11, 70, "Notes",ExpressionUUID->"b4712879-1ba8-41fb-9188-d3d7b15330a4"],
-Cell[3422, 96, 427, 9, 70, "Notes",ExpressionUUID->"673d44b2-d6b1-4f74-83b3-cd1ab8760184"],
-Cell[3852, 107, 349, 6, 70, "Notes",ExpressionUUID->"9ab1e9e6-46b9-45a1-8aef-4c051d4d6621"],
-Cell[4204, 115, 228, 3, 70, "Notes",ExpressionUUID->"40131db2-3083-4a15-b877-579a48c1948e"],
-Cell[4435, 120, 811, 21, 70, "Notes",ExpressionUUID->"9ba5d246-09a6-4ad9-9e26-d3c839a73ff7"],
-Cell[5249, 143, 147, 2, 70, "Notes",ExpressionUUID->"c2281cf6-c976-4b47-8a75-d1606ea289bc"],
-Cell[5399, 147, 417, 7, 70, "Notes",ExpressionUUID->"0f080141-7fb2-4ba5-8995-6b647333b9c9"],
-Cell[5819, 156, 796, 21, 70, "Notes",ExpressionUUID->"23a29d9d-ba18-4d5b-a0f3-ee1c25934a7e"]
+Cell[576, 22, 115, 1, 70, "ObjectName",ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec",
+ CellID->1224892054],
+Cell[694, 25, 1940, 55, 70, "Usage",ExpressionUUID->"e49848f5-1fc2-4aaf-a9e0-03b887b8cfef"],
+Cell[2637, 82, 324, 10, 70, "Notes",ExpressionUUID->"ec2dfbf0-1ef5-4871-a876-0fc13be406e9"],
+Cell[2964, 94, 394, 14, 70, "Notes",ExpressionUUID->"10e112b0-6ae1-42ca-b147-b5e944d6c417"],
+Cell[3361, 110, 216, 4, 70, "Notes",ExpressionUUID->"ac06ae96-875b-4587-8e31-33a2da441eef"],
+Cell[3580, 116, 298, 7, 70, "Notes",ExpressionUUID->"4667d0da-9765-481b-aa80-9fa20015d956"],
+Cell[3881, 125, 3188, 63, 70, "2ColumnTableMod",ExpressionUUID->"8442991c-f388-4c72-8c3e-e25fc12a6d37"],
+Cell[7072, 190, 462, 11, 70, "Notes",ExpressionUUID->"ccd1b751-9941-4947-8bfd-45f62c1b28dd"],
+Cell[7537, 203, 3710, 75, 70, "2ColumnTableMod",ExpressionUUID->"4d0117f0-bd05-4784-9ed3-dfb5ba4c9f6c"],
+Cell[11250, 280, 258, 5, 70, "Notes",ExpressionUUID->"93eda9a0-837d-41b0-872c-77c138d382fe"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[6652, 182, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
+Cell[11545, 290, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
  CellID->1559318232],
-Cell[7114, 197, 2901, 80, 70, "SeeAlso",ExpressionUUID->"deb807a5-e133-4f14-b99b-d53bcbbd2703"]
+Cell[12007, 305, 3254, 90, 70, "SeeAlso",ExpressionUUID->"ffd05f3e-3109-4acf-98d6-0ab74870c4e7"]
 }, Open  ]],
-Cell[10030, 280, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
+Cell[15276, 398, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
  CellID->792424486],
 Cell[CellGroupData[{
-Cell[10490, 296, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
+Cell[15736, 414, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
  CellID->38303248],
-Cell[10609, 299, 311, 6, 70, "MoreAbout",ExpressionUUID->"b40f781a-e796-4fd9-bd47-866269d28e00"]
+Cell[15855, 417, 311, 6, 70, "MoreAbout",ExpressionUUID->"4d53a51f-600b-46a8-ab33-c20d29a6856f"]
 }, Open  ]],
-Cell[10935, 308, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
+Cell[16181, 426, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
  CellID->47113304],
 Cell[CellGroupData[{
-Cell[11431, 325, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
+Cell[16677, 443, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
  CellID->1718580883],
-Cell[11965, 341, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
+Cell[17211, 459, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
  CellID->1969679695]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[12278, 350, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
+Cell[17524, 468, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
  CellID->880084151],
-Cell[12723, 364, 137, 1, 70, "ExampleText",ExpressionUUID->"7ec8c57e-418e-429a-9cc7-aa8a46f2a60c"],
+Cell[17969, 482, 188, 3, 70, "ExampleText",ExpressionUUID->"8393f34b-ceac-4038-a86b-e7aea8979e69"],
 Cell[CellGroupData[{
-Cell[12885, 369, 844, 20, 70, "Input",ExpressionUUID->"8c56dd74-8b99-457b-a0ae-cd88ebb447e0"],
-Cell[13732, 391, 4446, 93, 70, "Output",ExpressionUUID->"628eabdf-c32d-46bc-bb5e-bbbcc9ee6ffb"]
+Cell[18182, 489, 832, 22, 70, "Input",ExpressionUUID->"3b2ba460-c4bf-4d28-a6ba-18b39ec297a2"],
+Cell[19017, 513, 6944, 141, 70, "Output",ExpressionUUID->"ae0c9144-2d34-442c-9bc1-f799594b83e2"]
 }, Open  ]],
-Cell[18193, 487, 149, 2, 70, "ExampleText",ExpressionUUID->"e7ee23d3-ed82-4376-a05c-f4f2f6573477"],
+Cell[25976, 657, 180, 3, 70, "ExampleText",ExpressionUUID->"a9befb35-dff9-4a73-b563-7d6b54fe9488"],
 Cell[CellGroupData[{
-Cell[18367, 493, 1205, 27, 70, "Input",ExpressionUUID->"f21a6a19-e3e7-403e-961a-96656223ffdb"],
-Cell[19575, 522, 4391, 91, 70, "Output",ExpressionUUID->"22043b4d-41ba-4042-ba50-e1e9d2aea9b7"]
+Cell[26181, 664, 1273, 33, 70, "Input",ExpressionUUID->"dc62dc64-18e6-4ddf-9c84-d34d2528a0ec"],
+Cell[27457, 699, 45800, 926, 70, "Output",ExpressionUUID->"2dcd1978-9f45-431e-8cda-75d84ba948be"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[24015, 619, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+Cell[73306, 1631, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
  CellTags->"ExtendedExamples",
  CellID->533848431],
 Cell[CellGroupData[{
-Cell[24527, 636, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
+Cell[73818, 1648, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
  CellID->1293636265],
-Cell[24772, 643, 152, 2, 70, "ExampleText",ExpressionUUID->"96067e5b-c140-4ac0-9eb6-0a3ddf60dbab"],
+Cell[74063, 1655, 816, 19, 70, "ExampleText",ExpressionUUID->"9a5d8d7f-c4a4-4203-9130-370716fa38b3"],
 Cell[CellGroupData[{
-Cell[24949, 649, 712, 17, 70, "Input",ExpressionUUID->"5ceace16-13e1-40d6-a024-318780a8d7ba"],
-Cell[25664, 668, 1971, 38, 70, "Output",ExpressionUUID->"5992df51-ca8a-4135-b1f0-f7299cac8287"]
+Cell[74904, 1678, 1132, 27, 70, "Input",ExpressionUUID->"b52d9652-a1e2-442f-9ba9-42e195a2ba84"],
+Cell[76039, 1707, 3840, 77, 70, "Output",ExpressionUUID->"dd545208-31da-4412-b76a-0f6ceb6e7b29"]
+}, Open  ]],
+Cell[79894, 1787, 138, 1, 70, "ExampleText",ExpressionUUID->"a6ff138e-842a-406e-8deb-a734e0ac4e84"],
+Cell[CellGroupData[{
+Cell[80057, 1792, 780, 22, 70, "Input",ExpressionUUID->"ea060f50-2c91-479a-b551-a822c352935d"],
+Cell[80840, 1816, 171, 3, 70, "Output",ExpressionUUID->"a44252b2-4bca-4086-a5f6-fc70c946b951"]
 }, Open  ]]
 }, Open  ]],
-Cell[27662, 710, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
+Cell[81038, 1823, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
  CellID->1020263627],
-Cell[27930, 717, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
+Cell[81306, 1830, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
  CellID->2061341341],
-Cell[28177, 724, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
+Cell[81553, 1837, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
  CellID->258228157],
-Cell[28428, 731, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
+Cell[CellGroupData[{
+Cell[81826, 1846, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
  CellID->2123667759],
-Cell[28690, 738, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
+Cell[82088, 1853, 227, 3, 70, "ExampleText",ExpressionUUID->"7c95d270-7a67-443a-801e-925c4004d0d9"],
+Cell[CellGroupData[{
+Cell[82340, 1860, 1382, 34, 70, "Input",ExpressionUUID->"c2ee2ec4-b6fe-4a1f-8803-50f366d9d98e"],
+Cell[83725, 1896, 168, 3, 70, "Output",ExpressionUUID->"46adc9a7-ab38-4f29-83dc-347c6c724288"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[83942, 1905, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
  CellID->1305812373],
-Cell[28945, 745, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
+Cell[84197, 1912, 188, 3, 70, "ExampleText",ExpressionUUID->"953c8c85-907b-44e7-9965-ba38c2a3b70f"],
+Cell[CellGroupData[{
+Cell[84410, 1919, 478, 11, 70, "Input",ExpressionUUID->"aec74cc1-2751-4577-ba68-e8063aed255f"],
+Cell[84891, 1932, 1609, 35, 70, "Output",ExpressionUUID->"81852a8b-1f3e-45d8-a458-4bec30f55562"]
+}, Open  ]]
+}, Open  ]],
+Cell[86527, 1971, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
  CellID->1653164318],
-Cell[29205, 752, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
+Cell[86787, 1978, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
  CellID->589267740]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[29491, 762, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
+Cell[87073, 1988, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
  CellID->311882160],
-Cell[29604, 765, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
+Cell[87186, 1991, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
  CellID->341476719],
 Cell[CellGroupData[{
-Cell[30105, 781, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
+Cell[87687, 2007, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
  CellID->1755438392],
-Cell[30593, 796, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
+Cell[88175, 2022, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
  CellID->686433507],
-Cell[30730, 800, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
+Cell[88312, 2026, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
  CellID->605800465],
-Cell[30891, 804, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
+Cell[88473, 2030, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
  CellID->468444828],
-Cell[31049, 808, 152, 1, 70, "Categorization",ExpressionUUID->"93426528-6201-48d5-9e7e-bc7b7579a1b2"]
+Cell[88631, 2034, 152, 1, 70, "Categorization",ExpressionUUID->"10c7c1b3-6d0a-4a6c-bc11-1e6407ceb975"]
 }, Closed]],
-Cell[31216, 812, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
+Cell[88798, 2038, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
  CellID->477174294],
 Cell[CellGroupData[{
-Cell[31351, 817, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
+Cell[88933, 2043, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
  CellID->1872225408],
-Cell[31474, 820, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
+Cell[89056, 2046, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
  CellID->1562036412],
-Cell[31626, 824, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
+Cell[89208, 2050, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
  CellID->158391909],
-Cell[31766, 828, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
+Cell[89348, 2054, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
  CellID->1360575930],
-Cell[31905, 832, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
+Cell[89487, 2058, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
  CellID->793782254]
 }, Closed]]
 }, Open  ]]

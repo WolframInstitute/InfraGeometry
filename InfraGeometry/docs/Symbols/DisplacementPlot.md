@@ -5,83 +5,78 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/DisplacementPlot
-Keywords: [displacement, plot, arrows, vector field, flow, visualization]
-SeeAlso: [RandomDisplacement, PolarDisplacements, TranslationDisplacement, DisplacementCompose, InfraSubstrateHighlight]
+Keywords: [displacement, plot, arrows, vector field, flow]
+SeeAlso: [TranslationDisplacement, PolarDisplacements, RandomDisplacement, GradientDisplacement, DisplacementScale]
 RelatedGuides: [InfraAnalysis]
 ---
 
 ## Usage
 
-<code>[DisplacementPlot]()[*g*, *d*]</code> draws the displacement *d* as bent arrows over the embedding of *g*.
+<code>[DisplacementPlot]()[*g*, *d*]</code> draws the displacement *d* as arrows over the embedding of *g*.
 
-<code>[DisplacementPlot]()[*g*, {*d1*, *d2*, ...}]</code> draws several displacements, the *k*-th in the *k*-th of [StandardBlue](), [StandardRed](), [StandardGreen]() and the further Standard colours in turn.
+<code>[DisplacementPlot]()[*g*, {*d1*, *d2*, …}]</code> draws several displacements, each in its own colour.
 
 ## Details & Options
 
-Each step from *v* to a vertex *w ≠ v* of *d*(*v*) is an arrow from the coordinates of *v* to those of *w*, bent to its right, so that the two arrows of an exchanged pair do not overlap. A vertex whose value is {*v*} draws nothing, and the identity draws the bare graph.
+Each step from *v* to a vertex *w ≠ v* of *d*(*v*) is an arrow from *v* to *w*, bent to its right, so that the two arrows of an exchanged pair do not overlap. A vertex whose value is {*v*} draws nothing; the identity draws the bare graph.
 
-The graph is drawn in light gray at the coordinates [GraphEmbedding]() gives: its own [VertexCoordinates]() when it has them, a computed layout otherwise. The colours are, in this order, `StandardBlue`, `StandardRed`, `StandardGreen`, `StandardOrange`, `StandardPurple`, `StandardCyan`, `StandardBrown` and `StandardPink`, repeated when there are more displacements.
+The graph is drawn in light gray at the coordinates [GraphEmbedding]() gives. The colours are, in turn, [StandardBlue](), [StandardRed](), [StandardGreen](), [StandardOrange](), [StandardPurple](), [StandardCyan](), [StandardBrown]() and [StandardPink]().
 
-The embedding must be planar: with three-dimensional coordinates the call stays unevaluated.
+The embedding must be planar. With three-dimensional coordinates the call stays unevaluated.
 
 [DisplacementPlot]() takes the options of [Graphics]().
 
 ## Basic Examples
 
-Random displacements of magnitude at most 2 on the discretized plane, the square tiling and the hexagonal tiling.
+A random displacement of magnitude 1 on the square grid and on the square mesh:
 
 ```wl
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    DisplacementPlot[g, RandomDisplacement[g, 2, RandomSeeding -> 1]]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    DisplacementPlot[g, RandomDisplacement[g, 1, RandomSeeding -> 1]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-Two displacements in two colours: the radial and the angular displacement about the centre of the triangular tiling.
+Two displacements in two colours: the radial displacement about the centre of the mesh in blue, the angular one in red:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
   DisplacementPlot[g, PolarDisplacements[g, First @ GraphCenter[g]]]]
 ```
 
 ## Scope
 
-A displacement given at a few vertices draws only there. Each step from the centre of the hexagonal tiling, with twice and three times it.
+A displacement given at a few vertices draws only there. The four steps from the centre of the grid, scaled by 1, 2 and 3:
 
 ```wl
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {steps = <|First @ GraphCenter[g] -> AdjacencyList[g, First @ GraphCenter[g]]|>},
-  DisplacementPlot[g, Table[DisplacementScale[g, steps, t], {t, 3}]]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  DisplacementPlot[g, Table[DisplacementScale[g, <|c -> AdjacencyList[g, c]|>, t], {t, 3}]]]
 ```
 
 ## Options
 
-[PlotRange]() shows a part of the graph: the centre of the square tiling under a random displacement.
+### PlotLabel
+
+A label carries a number with the picture, here the magnitude:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  DisplacementPlot[g, RandomDisplacement[g, 2, RandomSeeding -> 1], PlotRange -> {{-3, 5}, {-4, 4}}]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {d = RandomDisplacement[g, 2, RandomSeeding -> 1]},
+  DisplacementPlot[g, d, PlotLabel -> DisplacementMagnitude[g, d]]]
 ```
 
 ## Possible Issues
 
-A vertex that stays is not drawn. The angular displacement of the square tiling fixes every vertex, and only the radial one shows.
+A vertex that stays is not drawn. The grid is bipartite, so the angular displacement fixes every vertex, and only the radial one shows:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {polar = PolarDisplacements[g, First @ GraphCenter[g]]},
-  {DisplacementPlot[g, polar], AllTrue[Keys[Last[polar]], Last[polar][#] === {#} &]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  DisplacementPlot[g, PolarDisplacements[g, First @ GraphCenter[g]]]]
 ```
 
-The arrows are planar. A substrate with three-dimensional coordinates, such as the tori and the sphere mesh with `"KeepCoordinates"` -> `True`, cannot be drawn, and the call stays unevaluated; without the option it is drawn at a planar layout. The translation of the square torus by one step, with and without the coordinates:
+With three-dimensional coordinates the call stays unevaluated:
 
 ```wl
-With[
-  {planar = InfraSubstrate["SquareTorusGraph", "Small"], solid = InfraSubstrate["SquareTorusGraph", "Small", "KeepCoordinates" -> True]},
-  {Head @ DisplacementPlot[solid, FindKillingDisplacement[solid]], DisplacementPlot[planar, FindKillingDisplacement[planar]]}]
+With[{g = InfraSubstrate["CubicGridGraph", "Small", "KeepCoordinates" -> True]},
+  Head @ DisplacementPlot[g, RandomDisplacement[g, 1, RandomSeeding -> 1]]]
 ```

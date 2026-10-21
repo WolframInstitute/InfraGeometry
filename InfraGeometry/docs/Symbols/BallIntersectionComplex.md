@@ -12,118 +12,115 @@ RelatedGuides: [InfraTopology]
 
 ## Usage
 
-<code>[BallIntersectionComplex]()[*data*, *r*, *k*]</code> gives the order-*k* complex of the closed balls of radius *r* about the points of *data*: a set of balls is a simplex when every *k* of them have a common point.
+<code>[BallIntersectionComplex]()[*data*, *r*, *k*]</code> gives the order-*k* complex of the balls of radius *r* about the points of *data*: a set of balls is a simplex when every *k* of them have a common point.
 
-<code>[BallIntersectionComplex]()[*data*, *r*]</code> takes *k* = [Infinity](), the Čech complex.
+<code>[BallIntersectionComplex]()[*data*, *r*]</code> takes *k* = [Infinity](): the Čech complex.
 
 ## Details & Options
 
-Definition: let *B_i* be the closed ball of radius *r* about the *i*-th point. A set *σ* of positions is a simplex of *C^(k)_r* when every subset of *σ* with *min(k, |σ|)* elements has balls with a common point.
+Let *Bᵢ* be the closed ball of radius *r* about the *i*-th point. A set *σ* of positions is a simplex of *Cᵣ⁽ᵏ⁾* when every subset of *σ* with *min(k, |σ|)* elements has balls with a common point.
 
-At *k = 2* every pair of balls meets. For Euclidean points that is the Vietoris–Rips complex at scale *2r*, the pairs at distance at most *2r* and every set all of whose pairs are such. At *k* = [Infinity]() all the balls of *σ* meet: the Čech complex, the nerve of the balls. In between the complexes are nested, *C^(2) ⊇ C^(3) ⊇ … ⊇* Čech.
+At *k* = 2 it is the Vietoris–Rips complex of the pairs at distance at most *2r*, for Euclidean points and for a graph at integer *r*. At *k* = [Infinity]() it is the Čech complex, the nerve of the balls. In between, *C⁽²⁾ ⊇ C⁽³⁾ ⊇ … ⊇ C⁽∞⁾*.
 
-Balls in *ℝ^d* are convex, and by Helly's theorem the ladder stops at *k = d + 1*: in the plane order 3 is already Čech. On a graph it may go further.
+Balls in *ℝᵈ* are convex, and by Helly's theorem the sequence stops at *k = d + 1*. On a graph it can go on, already on the square grid.
 
-A simplex is a sorted list of positions in *data*, not of the points themselves. The complex is built level by level, a set being tested only when all its faces are in, so it is closed under faces.
+A simplex is a sorted list of positions in *data*.
 
-Euclidean balls about the points have a common point when their centres fit in a ball of radius *r*, the test of [MiniballRadius]().
-
-Options:
-
-| Option | Values | Default |
+| Option | Default | Values |
 |---|---|---|
-| `"Metric"` | [Automatic]() (Euclidean points), a [Graph]() *g* (*data* are vertices of *g*), a distance matrix of *data*, or a distance function | [Automatic]() |
-| `"IntersectionTest"` | a function of the common region of Euclidean balls that must give `True` | [Automatic](), the region is not empty |
-| `"MaxDimension"` | the largest dimension of a simplex | [Infinity]() |
+| `"Metric"` | [Automatic]() | [Automatic]() for Euclidean points; a graph *g*; a distance matrix of *data*; a distance function |
+| `"IntersectionTest"` | [Automatic]() | a test on the common region of Euclidean balls; [Automatic]() asks for a nonempty region |
+| `"MaxDimension"` | [Infinity]() | the largest dimension of a simplex |
 
-The common point of the balls depends on the metric:
+The common point depends on the metric:
 
-| `"Metric"` | the balls meet when | order 2 |
-|---|---|---|
-| [Automatic]() | some point of space lies within *r* of every centre | the Vietoris–Rips complex at *2r* |
-| a [Graph]() *g* | some vertex of *g*, in *data* or not, lies within *r* of every centre | the Vietoris–Rips complex at *2r* for integer *r*; two vertices at distance *d* have meeting balls from *r* = ⌈*d*/2⌉, so *r* = 1/2 gives no edge |
-| a matrix or a function | some point of *data* lies within *r* of every centre | in general neither: a pair is an edge only when a third point or one of the two lies within *r* of both |
+| `"Metric"` | the balls meet when |
+|---|---|
+| [Automatic]() | <code>[MiniballRadius]()[*points*] ≤ *r*</code> |
+| a graph *g* | some vertex of *g* lies within *r* of every centre |
+| a matrix or a function | some point of *data* lies within *r* of every centre |
 
 ## Basic Examples
 
-The three corners of an equilateral triangle of side 1, with disks of radius 0.55. Every pair of disks meets, so the triangle is a simplex of order 2; the three have no common point, so it is not one of the Čech complex.
+The balls of radius 1 about the four corners of a square of the grid. Every three meet, at a corner, but the four have no common vertex: the square is a simplex of order 3, not of order 4:
 
 ```wl
-With[
-  {points = N @ CirclePoints[1/Sqrt[3], 3]},
-  GraphicsRow @ Table[
-    With[{complex = BallIntersectionComplex[points, 0.55, k]},
-      Graphics[{
-        {StandardBlue, Opacity[0.15], Disk[#, 0.55] & /@ points},
-        {StandardRed, Opacity[0.4], Polygon[points[[#]]] & /@ Select[complex, Length[#] == 3 &]},
-        {StandardRed, Line[points[[#]]] & /@ Select[complex, Length[#] == 2 &]},
-        Point[points]},
-        PlotLabel -> k]],
-    {k, {2, Infinity}}]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {corners = First /@ First @ FindCycle[{g, First @ GraphCenter[g]}, {4}]},
+  InfraSubstrateHighlight[g, InfraBall[#, 1] & /@ corners,
+    PlotLabel -> Table[MemberQ[BallIntersectionComplex[corners, 1, k, "Metric" -> g], {1, 2, 3, 4}], {k, {3, 4}}],
+    ImageSize -> Medium]]
 ```
 
-The balls of radius 1 about the four corners of a square of the square tiling meet three at a time, at a corner, but not all four. The four corners are a simplex of order 3 and not of order 4.
+An equilateral triangle of side 1 with disks of radius 0.55. The disks meet in pairs but have no common point: the triangle is a simplex of order 2, not of order 3:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {corners = First /@ First @ FindCycle[{g, First @ GraphCenter[g]}, {4}]},
-  {InfraSubstrateHighlight[g, InfraBall[#, 1] & /@ corners],
-   MemberQ[BallIntersectionComplex[corners, 1, 3, "Metric" -> g], {1, 2, 3, 4}],
-   MemberQ[BallIntersectionComplex[corners, 1, 4, "Metric" -> g], {1, 2, 3, 4}]}]
+With[{points = N @ CirclePoints[1 / Sqrt[3], 3]},
+  GraphicsRow @ Table[
+    With[{complex = BallIntersectionComplex[points, 0.55, k]},
+      Graphics[{{StandardBlue, Opacity[0.15], Disk[#, 0.55] & /@ points},
+        {StandardRed, Opacity[0.4], Polygon[points[[#]]] & /@ Select[complex, Length[#] == 3 &]}, Point[points]},
+        PlotLabel -> k]],
+    {k, {2, 3}}]]
+```
+
+## Scope
+
+The vertices within distance 3 of the centre of the grid, at radius 1, with the graph metric. The number of simplices of each size at orders 2, 3, 4 and [Infinity](). Orders 2 and 3 agree, and so do 4 and [Infinity](); the 12 sets of four between them are the squares of the grid:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  {data = Keys @ InfraMeasurement[g, InfraBall[First @ GraphCenter[g], 3], "VertexDensity"]},
+  Table[Counts[Length /@ BallIntersectionComplex[data, 1, k, "Metric" -> g]], {k, {2, 3, 4, Infinity}}]]
 ```
 
 ## Options
 
 ### Metric
 
-On a path two vertices at distance 2 have balls of radius 1 that meet at the vertex between them. With the distance matrix of the two vertices alone that vertex is not a candidate, and the balls do not meet.
+Two vertices of the grid at distance 2. With the graph their balls of radius 1 meet at a vertex between them; with the distance matrix of the two alone they do not:
 
 ```wl
-With[
-  {g = PathGraph[Range[5]]},
-  {InfraSubstrateHighlight[g, {InfraBall[1, 1], InfraBall[3, 1]}],
-   BallIntersectionComplex[{1, 3}, 1, 2, "Metric" -> g],
-   BallIntersectionComplex[{1, 3}, 1, 2, "Metric" -> {{0, 2}, {2, 0}}]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {pair = {c, RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1]}},
+  {BallIntersectionComplex[pair, 1, 2, "Metric" -> g], BallIntersectionComplex[pair, 1, 2, "Metric" -> {{0, 2}, {2, 0}}]}]
 ```
 
 ### IntersectionTest
 
-At radius 0.6 the three disks about the triangle meet in a small region. Asking for a common region of area more than 0.05 drops the triangle.
+At radius 0.6 the three disks about the triangle meet in a small region. Asking for an area above 0.05 drops the triangle:
 
 ```wl
-With[
-  {points = N @ CirclePoints[1/Sqrt[3], 3]},
-  {Graphics[{{StandardBlue, Opacity[0.15], Disk[#, 0.6] & /@ points}, Point[points]}],
-   BallIntersectionComplex[points, 0.6, Infinity, "IntersectionTest" -> (RegionMeasure[#] > 0.05 &)]}]
+With[{points = N @ CirclePoints[1 / Sqrt[3], 3]},
+  Table[MemberQ[BallIntersectionComplex[points, 0.6, Infinity, "IntersectionTest" -> test], {1, 2, 3}],
+    {test, {Automatic, RegionMeasure[#] > 0.05 &}}]]
 ```
 
 ### MaxDimension
 
-`"MaxDimension"` -> 1 keeps the vertices and the edges.
+`"MaxDimension" -> 1` keeps the vertices and the edges:
 
 ```wl
-With[
-  {points = (SeedRandom[3]; RandomReal[1, {16, 2}])},
-  {complex = BallIntersectionComplex[points, 0.15, 2, "MaxDimension" -> 1]},
-  Graphics[{{StandardRed, Line[points[[#]]] & /@ Select[complex, Length[#] == 2 &]}, Point[points]}]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  {data = Keys @ InfraMeasurement[g, InfraBall[First @ GraphCenter[g], 3], "VertexDensity"]},
+  Counts[Length /@ BallIntersectionComplex[data, 1, 2, "Metric" -> g, "MaxDimension" -> 1]]]
 ```
 
 ## Properties and Relations
 
-The edges of order 2 are the pairs at distance at most *2r*, and in the plane order 3 is the Čech complex. Order 2 has one triangle more.
+The edges of order 2 are the pairs at distance at most *2r*:
 
 ```wl
-With[
-  {points = (SeedRandom[3]; RandomReal[1, {16, 2}])},
-  {rips = BallIntersectionComplex[points, 0.15, 2]},
-  {cech = BallIntersectionComplex[points, 0.15, Infinity]},
-  {Graphics[{
-     {StandardBlue, Opacity[0.15], Disk[#, 0.15] & /@ points},
-     {StandardRed, Opacity[0.4], Polygon[points[[#]]] & /@ Complement[rips, cech]},
-     {StandardRed, Line[points[[#]]] & /@ Select[rips, Length[#] == 2 &]},
-     Point[points]}],
-   Select[rips, Length[#] == 2 &] == Select[Subsets[Range[16], {2}], EuclideanDistance @@ points[[#]] <= 0.3 &],
-   BallIntersectionComplex[points, 0.15, 3] == cech,
-   Complement[rips, cech]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  {data = Keys @ InfraMeasurement[g, InfraBall[First @ GraphCenter[g], 3], "VertexDensity"]},
+  Select[BallIntersectionComplex[data, 1, 2, "Metric" -> g], Length[#] == 2 &] ===
+    Select[Subsets[Range @ Length[data], {2}], GraphDistance[g, ##] <= 2 & @@ data[[#]] &]]
+```
+
+For points in the plane order 3 is the Čech complex. The lattice points of the ball of radius 3, at radius 1.2:
+
+```wl
+With[{points = Select[Tuples[Range[-3, 3], 2], Total[Abs[#]] <= 3 &]},
+  {BallIntersectionComplex[points, 1.2, 3] === BallIntersectionComplex[points, 1.2],
+   Length /@ {BallIntersectionComplex[points, 1.2, 2], BallIntersectionComplex[points, 1.2]}}]
 ```

@@ -6,83 +6,62 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraHalfLineQ
 Keywords: [ray, half-line, shortest path, inextensible, predicate]
-SeeAlso: [InfraHalfLine, RandomInfraHalfLine, InfraSegmentQ, InfraInfiniteLineQ]
+SeeAlso: [InfraHalfLine, RandomInfraHalfLine, InfraSegmentQ, InfraInfiniteLineQ, InfraRayQ]
 RelatedGuides: [Experimental]
 ---
 
 ## Usage
 
-<code>[InfraHalfLineQ]()[*g*, *ray*]</code> tests whether *ray* is a ray in *g*: a shortest path from its own first vertex that cannot be prolonged past its last.
+<code>[InfraHalfLineQ]()[*g*, *ray*]</code> tests whether the vertex list *ray* is a ray in *g*: a shortest path from its first vertex that cannot be prolonged past its last.
 
-<code>[InfraHalfLineQ]()[*g*, {*ray1*, …}]</code> tests every ray of a list, such as the one <code>[RandomInfraHalfLine]()[*g*, *O*, *v*, All]</code> returns.
+<code>[InfraHalfLineQ]()[*g*, {*ray₁*, *ray₂*, …}]</code> tests every ray of a list.
 
 ## Details & Options
 
-Two conditions, and the asymmetry between them is the whole definition:
+A ray *v₀, …, vₖ* is a shortest path, *k = d(v₀, vₖ)*, such that no neighbour of *vₖ* lies at distance *k* + 1 from *v₀*.
 
-| Condition | Why |
-|---|---|
-| the sequence is a shortest path | a ray is straight, so [InfraSegmentQ]() must hold |
-| no neighbour of the last vertex sits one step farther from the first | the far end is inextensible |
+Only the far end must be inextensible. The origin is an end by choice, so a ray can start anywhere. A line ([InfraInfiniteLineQ]()) is inextensible at both ends, and is a ray from either end.
 
-Inextensibility is required **only at the far end**. The origin is an endpoint by fiat — that is exactly what distinguishes a ray from a line ([InfraInfiniteLineQ]() asks for inextensibility at both ends), and it means a ray may start anywhere, not only at a peripheral vertex.
-
-Sequences shorter than two vertices are `False`: a single vertex has no direction.
-
-The predicate is the companion of [RandomInfraHalfLine](), which prolongs a shortest path outward until no neighbour prolongs it, so every ray that finder returns satisfies it.
+A list of fewer than two vertices is not a ray. A walk graph, such as a directed path graph, is read as its walks.
 
 ## Basic Examples
 
-On a path the whole graph is a ray from either end.
+A ray from the centre through a vertex at distance 2. Without its last vertex it can be prolonged, and read backwards it ends at the centre, which can be prolonged too:
 
 ```wl
-InfraHalfLineQ[PathGraph[Range[5]], {1, 2, 3, 4, 5}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {ray = RandomInfraHalfLine[g, c, RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1], RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {ray, c},
+      PlotLabel -> {InfraHalfLineQ[g, ray], InfraHalfLineQ[g, Most @ ray], InfraHalfLineQ[g, Reverse @ ray]}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-A proper initial segment is not — it can still be prolonged.
+## Scope
+
+A list of rays is tested as a whole. All 140 rays from the centre of the grid through a vertex at distance 2:
 
 ```wl
-InfraHalfLineQ[PathGraph[Range[5]], {1, 2, 3}]
-```
-
-But a ray need not begin at the periphery. This one starts in the middle and runs to the leaf.
-
-```wl
-InfraHalfLineQ[PathGraph[Range[5]], {3, 4, 5}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {rays = RandomInfraHalfLine[g, c, RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1], All]},
+  {Length[rays], InfraHalfLineQ[g, rays]}]
 ```
 
 ## Properties and Relations
 
-Every ray [RandomInfraHalfLine]() produces satisfies the predicate; the list is accepted as a whole.
+A line is a ray from either end; a ray need not be a line:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = GridGraph[{5, 5}]},
-  InfraHalfLineQ[g, RandomInfraHalfLine[g, 1, 13, All]]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {q = RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1]},
+  {line = RandomInfraInfiniteLine[g, c, q, RandomSeeding -> 1], ray = RandomInfraHalfLine[g, c, q, RandomSeeding -> 1]},
+  {InfraHalfLineQ[g, line], InfraHalfLineQ[g, Reverse @ line], InfraInfiniteLineQ[g, ray]}]
 ```
 
-Dropping the far vertex breaks inextensibility, so the truncation is no longer a ray.
+## Possible Issues
+
+A single vertex is not a ray, and a walk round a cycle is not a shortest path:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = GridGraph[{5, 5}]},
-  {ray = RandomInfraHalfLine[g, 1, 13, RandomSeeding -> 1]},
-  {InfraHalfLineQ[g, ray], InfraHalfLineQ[g, Most @ ray]}]
-```
-
-A ray is a shortest path that stops only because it must; a walk right round a cycle is not a shortest path at all.
-
-```wl
-InfraHalfLineQ[CycleGraph[6], {1, 2, 3, 4, 5, 6}]
-```
-
-Every ray of a pencil satisfies the predicate.
-
-```wl
-SeedRandom[1];
-With[
-  {g = GridGraph[{3, 3}]},
-  AllTrue[RandomInfraHalfLine[g, 5, 5, All], InfraHalfLineQ[g, #] &]]
+{InfraHalfLineQ[PathGraph[Range[5]], {5}], InfraHalfLineQ[CycleGraph[6], {1, 2, 3, 4, 5, 6}]}
 ```

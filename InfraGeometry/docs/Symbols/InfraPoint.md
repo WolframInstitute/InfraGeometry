@@ -5,82 +5,75 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraPoint
-Keywords: [point, vertex, scene token, density]
-SeeAlso: [RandomInfraPoint, InfraMeasurement, InfraScene, InfraDistance]
+Keywords: [point, vertex, scene, region]
+SeeAlso: [RandomInfraPoint, InfraScene, RandomInfraSceneInstance, InfraDistance, InfraMeasurement]
 RelatedGuides: [Experimental]
 ---
 
 ## Usage
 
-<code>[InfraPoint]()[*v*]</code> inside an [InfraScene]() is the point token at vertex *v*.
+<code>[InfraPoint]()[*v*]</code> is the point at the vertex *v*.
 
-<code>[InfraPoint]()[]</code> inside an [InfraScene]() names a point to be solved for, drawn from every vertex.
+<code>[InfraPoint]()[]</code> is a point to be found: any vertex of the graph.
+
+<code>[InfraPoint]()[*reg*]</code> is a point to be found in the region *reg*.
 
 ## Details & Options
 
-Definition: an infra-point is one vertex of the substrate, carried by its label verbatim.
+A point is a vertex. The label of the vertex is the point; there is no separate point object.
 
-A point is a vertex. The head is a token of the scene language and holds no value of its own. A condition on a point, such as its distance to another point, is an assertion of the scene. A construction on a graph rarely has one answer, but the multiplicity does not live in this head: a family of candidate points is a vertex `List`, and a measure on vertices is a density `<|v -> m|>`.
+[InfraPoint]() is a symbolic object. In an [InfraScene]() it constructs a point: <code>*p* == [InfraPoint]()[]</code> lets *p* range over every vertex, and the assertions of the scene select the admissible ones. [RandomInfraSceneInstance]() solves the scene on a graph.
 
-| you have | use |
+As a region of [RandomInfraPoint]() it is the vertex set it names:
+
+| Region | Vertices |
 |---|---|
-| one vertex | *v* |
-| several candidate points | `{a, b, …}` — a plain list |
-| a measure on vertices | `<\|v -> m, …\|>`, see [InfraMeasurement]() |
+| <code>[InfraPoint]()[*v*]</code> | {*v*} |
+| <code>[InfraPoint]()[]</code> | every vertex |
+| <code>[InfraPoint]()[*reg*]</code> | the vertices of *reg* |
 
-The vertex label is carried verbatim, including a list label such as `{i, j}` on a grid or tessellation.
-
-Invariants are functions of the graph and a vertex, not accessors: `InfraMeasurement[g, InfraBall[v, r], "CountingMeasure"]` gives the bare number for one vertex, and the list of regions one number per vertex.
+Several candidate points are a vertex list, and a weighted set of points is a density `<|v -> m, …|>`.
 
 ## Basic Examples
 
-A point is a vertex, and several candidate points are a vertex list. The centre of a grid and three random points at distance 4 from it.
+A point at distance 3 from the centre, solved in a scene. All its instances on the square grid and on the square mesh form the circle of radius 3:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
-  {centre = First @ GraphCenter[g]},
-  {picks = RandomInfraPoint[g, InfraShell[centre, 4], 3, RandomSeeding -> 1]},
-  InfraSubstrateHighlight[g, {centre, picks}, ImageSize -> 250]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {scene = InfraScene[{pA, pB}, {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 3}]},
+    InfraSubstrateHighlight[g, {InfraSceneInstance[#, pB] & /@ RandomInfraSceneInstance[scene, g, All], c}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-A point finder returns vertices — one, or a list.
+A point given by a region. The circle of radius 3 as the region gives the same points as the distance condition:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {RandomInfraPoint[g, GraphCenter[g], All], Length @ RandomInfraPoint[g, 3, RandomSeeding -> 1]}]
+Table[
+  With[{g = InfraSubstrate[name, "Small"]}, {c = First @ GraphCenter[g]},
+    {byDistance = InfraScene[{pA, pB}, {pA == InfraPoint[c], pB == InfraPoint[], InfraDistance[pA, pB] == 3}],
+     byRegion = InfraScene[{pA, pB}, {pA == InfraPoint[c], pB == InfraPoint[InfraShell[c, 3]]}]},
+    Sort[InfraSceneInstance[#, pB] & /@ RandomInfraSceneInstance[byDistance, g, All]] ===
+      Sort[InfraSceneInstance[#, pB] & /@ RandomInfraSceneInstance[byRegion, g, All]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-A vertex answers invariants with bare numbers; a list of regions answers with one number each.
+## Scope
+
+As a region of [RandomInfraPoint](): one vertex, every vertex, the vertices of a ball:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {InfraMeasurement[g, InfraBall[c, 3], "CountingMeasure"], InfraMeasurement[g, {InfraBall[c, 3], InfraBall[First @ GraphPeriphery[g], 3]}, "CountingMeasure"]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {RandomInfraPoint[g, InfraPoint[c], All], Length @ RandomInfraPoint[g, InfraPoint[], All],
+   Sort @ RandomInfraPoint[g, InfraPoint[InfraBall[c, 1]], All]}]
 ```
 
-In a scene the token is solved on the graph. Here *a* is the centre of a 5 × 5 grid, *b* any of the 8 vertices at distance 3 from it, and *c* any of the 4 vertices at distance 4 from it, the corners: 32 instances.
+Two points at distance 4 from each other and at distance 4 from the centre. The admissible second points on the mesh, for one first point:
 
 ```wl
-SeedRandom[1];
-Module[{a, b, c},
-  With[
-    {scene = InfraScene[{a, b, c},
-       {InfraSceneStep[{a == InfraPoint[13]}, "a"],
-        InfraSceneStep[{b == InfraPoint[], InfraDistance[a, b] == 3}, "b"],
-        InfraSceneStep[{c == InfraPoint[], InfraDistance[a, c] == 4}, "c"]}]},
-    {instances = RandomInfraSceneInstance[ scene, GridGraph[{5, 5}], All ]},
-    {Length[instances], InfraSceneInstance[First[instances], a], InfraSceneInstance[First[instances], b]}]]
-```
-
-## Properties and Relations
-
-A list of vertices with repeats is a counting measure.
-
-```wl
-InfraMeasurement[GridGraph[{3, 3}], {4, 9, 4}, "VertexDensity" ]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {a = RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]},
+  {scene = InfraScene[{pA, pB}, {pA == InfraPoint[a], pB == InfraPoint[InfraShell[c, 4]], InfraDistance[pA, pB] == 4}]},
+  InfraSubstrateHighlight[g, {InfraShell[c, 4], InfraSceneInstance[#, pB] & /@ RandomInfraSceneInstance[scene, g, All], a, c},
+    ImageSize -> Medium]]
 ```
