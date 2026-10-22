@@ -52,39 +52,35 @@ FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
                       ( UndirectedEdge | DirectedEdge )[ u_, v_ ] /;
                         MemberQ[ nodes, u ] && MemberQ[ nodes, v ] :> UndirectedEdge[ u, v ] ] },
                   Graph[ nodes, DeleteDuplicates[ Join[ paired, direct ] ] ] ] },
-              (* for X connected, q1 in X, q2 not in N[X], the neighbours in N(X) of the component D of q2 in aux - N[X] form a minimal
-                 separator of q1 and q2; from the one of X = {q1}, X = C(S) + x for x in S, C(S) the side of q1 of S, reaches every other
-                 (Berry, Bordat, Cogis 1999) *)
-              { labels = VertexList[ aux ], adjacency = AdjacencyMatrix[ aux ] },
-              { size = Length[ labels ], neighbours = Sort /@ adjacency[ "AdjacencyLists" ],
-                source = First @ Lookup[ PositionIndex[ labels ], Key[ q1 ] ], target = First @ Lookup[ PositionIndex[ labels ], Key[ q2 ] ] },
+              (* the minimal q1-q2 separators S of aux, generated from the one nearest q1 by S -> N(C(S) + x) cut down to the neighbours
+                 of the component of q2, for x in S, C(S) the component of q1 in aux - S (Berry, Bordat, Cogis 1999) *)
+              { labels = VertexList[ aux ], adjacency = AdjacencyMatrix[ aux ],
+                source = VertexIndex[ aux, q1 ], target = VertexIndex[ aux, q2 ] },
+              { size = Length[ labels ], neighbours = Sort /@ adjacency[ "AdjacencyLists" ] },
               { indicator = set |-> Normal @ SparseArray[ Thread[ List /@ set -> 1 ], { size } ] },
-              (* components by sparse products, 1.7 s for the 3885 planes of a mesh slab {-1, 1} where VertexDelete + VertexComponent took 13.7 s *)
+              (* a component by sparse products: 1.7 s for the 3885 planes of a mesh slab {-1, 1} where VertexDelete + VertexComponent took 13.7 s *)
               { component = { open, seed } |-> FixedPoint[ reach |-> open Unitize[ reach + adjacency . reach ], open UnitVector[ size, seed ] ] },
-              { close = { blocked, candidates } |-> With[ { far = component[ 1 - Unitize[ blocked ], target ] },
-                  Pick[ candidates, Unitize[ Map[ v |-> Total[ far[[ neighbours[[ v ]] ]] ], candidates ] ], 1 ] ] },
-              { successors = separator |-> With[ { cut = indicator[ separator ] },
-                  { side = component[ 1 - cut, source ] },
-                  Map[ x |-> close[ side + cut + indicator[ neighbours[[ x ]] ],
+              { nearest = { blocked, candidates } |-> With[ { far = component[ 1 - Unitize[ blocked ], target ] },
+                  Pick[ candidates, Unitize[ ( adjacency . far )[[ candidates ]] ], 1 ] ] },
+              { successors = separator |-> With[ { cut = indicator[ separator ] }, { side = component[ 1 - cut, source ] },
+                  Map[ x |-> nearest[ side + cut + indicator[ neighbours[[ x ]] ],
                       Union[ DeleteCases[ separator, x ], Pick[ neighbours[[ x ]], ( side + cut )[[ neighbours[[ x ]] ]], 0 ] ] ],
                     Select[ separator, x |-> adjacency[[ x, target ]] == 0 ] ] ] },
-              { minimal = Which[
+              { planes = Which[
                   ! MemberQ[ properties, "Separating" ],
                     If[ bisector =!= { } && ConnectedGraphQ @ Subgraph[ graph, bisector ], List /@ bisector, { } ],
-                  q1 === q2 || EdgeQ[ aux, UndirectedEdge[ q1, q2 ] ], { },
-                  True, With[ { start = close[ indicator[ Append[ neighbours[[ source ]], source ] ], neighbours[[ source ]] ] },
-                    Map[ set |-> Sort @ labels[[ set ]], First @ NestWhile[
-                      state |-> With[ { seen = state[[ 2 ]] },
-                        { new = Select[ DeleteDuplicates @ Catenate @ Map[ successors, Last @ state ], set |-> ! KeyExistsQ[ seen, set ] ] },
-                        { Join[ First @ state, new ], Join[ seen, AssociationThread[ new, True ] ], new } ],
-                      { { start }, <| start -> True |>, { start } },
-                      state |-> Last @ state =!= { } ] ] ] ] },
+                  q1 === q2 || adjacency[[ source, target ]] == 1, { },
+                  True, With[ { start = nearest[ indicator[ Append[ neighbours[[ source ]], source ] ], neighbours[[ source ]] ] },
+                    Map[ set |-> Sort @ labels[[ set ]], Keys @ First @ NestWhile[
+                      state |-> With[ { seen = First @ state },
+                        { next = Select[ DeleteDuplicates @ Catenate @ Map[ successors, Last @ state ], set |-> ! KeyExistsQ[ seen, set ] ] },
+                        { Join[ seen, AssociationThread[ next, True ] ], next } ],
+                      { <| start -> True |>, { start } }, Last @ # =!= { } & ] ] ] ] },
               { admissible = Sort @ If[ MemberQ[ properties, "Connected" ],
-                  Select[ minimal, set |-> set =!= { } && ConnectedGraphQ @ Subgraph[ graph, set ] ], minimal ],
-                cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
+                  Select[ planes, set |-> set =!= { } && ConnectedGraphQ @ Subgraph[ graph, set ] ], planes ] },
+              { cap = Replace[ count, { All -> Length @ admissible, Automatic -> 1, UpTo[ n_ ] :> n } ] },
               If[ admissible === { }, { },
-                Take[ Replace[ nextFn @ admissible, chosen_ /; MemberQ[ admissible, Verbatim @ chosen ] :> { chosen } ],
-                  UpTo[ Min[ cap, Length @ admissible ] ] ] ] ] ] ],
+                Take[ Replace[ nextFn @ admissible, chosen_ /; MemberQ[ admissible, Verbatim @ chosen ] :> { chosen } ], UpTo[ cap ] ] ] ] ] ],
         Tuples[ { Keys @ InfraMeasurement[ graph, p1, "VertexDensity" ], Keys @ InfraMeasurement[ graph, p2, "VertexDensity" ] } ], { 1 } ] },
     With[ { reps = DeleteDuplicates[ Union /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
         Switch[ count,

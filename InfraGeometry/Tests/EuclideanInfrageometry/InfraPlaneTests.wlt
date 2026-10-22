@@ -18,7 +18,7 @@ VerificationTest[
   TestID -> "NamedConstructionSampler-InfraPlane-random-and-seeded"
 ]
 
-PlaneOracle[ g_Graph, p_, q_, window_List ] :=
+planeOracle[ g_Graph, p_, q_, window_List ] :=
   With[ { slab = FindInfraBisectingHyperplane[ g, p, q, window ],
       separatesQ = set |-> ! MemberQ[ VertexComponent[ VertexDelete[ g, set ], p ], q ] },
     Sort @ Select[ Subsets[ slab ], set |-> separatesQ[ set ] && NoneTrue[ set, v |-> separatesQ[ DeleteCases[ set, v ] ] ] ] ]
@@ -26,12 +26,12 @@ PlaneOracle[ g_Graph, p_, q_, window_List ] :=
 VerificationTest[
   And @@ Join[
     Flatten @ Table[ Sort @ FindInfraBisectingHyperplane[ GridGraph[ { 4, 4 } ], 1, q, w, All, Properties -> { "Separating" } ] ===
-      PlaneOracle[ GridGraph[ { 4, 4 } ], 1, q, w ], { q, 2, 16 }, { w, { { 0, 0 }, { -1, 1 } } } ],
+      planeOracle[ GridGraph[ { 4, 4 } ], 1, q, w ], { q, 2, 16 }, { w, { { 0, 0 }, { -1, 1 } } } ],
     Table[ Sort @ FindInfraBisectingHyperplane[ PetersenGraph[ ], 1, q, { -1, 1 }, All, Properties -> { "Separating" } ] ===
-      PlaneOracle[ PetersenGraph[ ], 1, q, { -1, 1 } ], { q, 2, 10 } ],
+      planeOracle[ PetersenGraph[ ], 1, q, { -1, 1 } ], { q, 2, 10 } ],
     BlockRandom[ SeedRandom[ 261022 ]; Table[ With[ { g = RandomGraph[ { 8, RandomInteger[ { 8, 16 } ] } ] },
       { q = RandomInteger[ { 2, 8 } ], w = RandomChoice[ { { 0, 0 }, { -1, 1 }, { -2, 2 } } ] },
-      ! ConnectedGraphQ[ g ] || Sort @ FindInfraBisectingHyperplane[ g, 1, q, w, All, Properties -> { "Separating" } ] === PlaneOracle[ g, 1, q, w ] ],
+      ! ConnectedGraphQ[ g ] || Sort @ FindInfraBisectingHyperplane[ g, 1, q, w, All, Properties -> { "Separating" } ] === planeOracle[ g, 1, q, w ] ],
       { 25 } ] ] ],
   True,
   TestID -> "Separating-planes-are-all-minimal-separators-in-the-slab"
