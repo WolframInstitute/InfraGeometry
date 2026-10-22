@@ -241,27 +241,24 @@ EmbeddingClosest[ graph_Graph, paths : { __Graph }, ref_ ] :=
     Lookup[ AssociationThread[ seqs -> carriers ], result ] /; ListQ[ result ] ]
 
 EmbeddingClosest[ graph_Graph, paths_List, { p_, q_ } ] /; VertexQ[ graph, p ] && VertexQ[ graph, q ] :=
-  If[ Length[ paths ] <= 1, paths,
-    With[ { coords = GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ],
-            vertexIndex = AssociationThread[ VertexList[ graph ], Range @ VertexCount[ graph ] ] },
-      EmbeddingClosest[ graph, paths, Line[ coords[[ Lookup[ vertexIndex, { p, q } ] ]] ] ] ] ]
+  With[ { coords = GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ] },
+    EmbeddingClosest[ graph, paths, Line[ coords[[ VertexIndex[ graph, # ] & /@ { p, q } ]] ] ] ]
 
 EmbeddingClosest[ graph_Graph, paths_List, crv_ ] /;
     MatchQ[ crv, _Line | _BSplineCurve | _BezierCurve | _Circle ] ||
     MatrixQ[ crv, NumericQ ] && Last[ Dimensions[ crv ] ] === 2 && Length[ crv ] >= 3 :=
-  If[ Length[ paths ] <= 1, paths,
-    With[ { coords = N @ GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ],
-            vertexIndex = AssociationThread[ VertexList[ graph ], Range @ VertexCount[ graph ] ],
-            curve = N @ Replace[ crv, {
-              BSplineCurve[ pts_, o___ ] :> Line[ BSplineFunction[ pts, o ] /@ Subdivide[ 0., 1., Max[ 64, 4 Length[ pts ] ] ] ],
-              BezierCurve[ pts_, ___ ] :> Line[ BezierFunction[ pts ] /@ Subdivide[ 0., 1., Max[ 64, 4 Length[ pts ] ] ] ],
-              Circle[ c_, r_ : 1, arc : { _, _ } : { 0, 2 Pi } ] :>
-                Line[ ( t |-> c + r { Cos[ t ], Sin[ t ] } ) /@ Subdivide[ N @ arc[[ 1 ]], N @ arc[[ 2 ]], 256 ] ],
-              pts_List :> Line[ pts ] } ] },
-      MinimalBy[ paths,
-        path |-> RegionHausdorffDistance[
-          If[ Length[ path ] >= 2, Line[ coords[[ Lookup[ vertexIndex, path ] ]] ], Point[ coords[[ vertexIndex @ First @ path ]] ] ],
-          curve ] ] ] ]
+  With[ { coords = N @ GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ],
+          vertexIndex = AssociationThread[ VertexList[ graph ], Range @ VertexCount[ graph ] ],
+          curve = N @ Replace[ crv, {
+            BSplineCurve[ pts_, o___ ] :> Line[ BSplineFunction[ pts, o ] /@ Subdivide[ 0., 1., Max[ 64, 4 Length[ pts ] ] ] ],
+            BezierCurve[ pts_, ___ ] :> Line[ BezierFunction[ pts ] /@ Subdivide[ 0., 1., Max[ 64, 4 Length[ pts ] ] ] ],
+            Circle[ c_, r_ : 1, arc : { _, _ } : { 0, 2 Pi } ] :>
+              Line[ ( t |-> c + r { Cos[ t ], Sin[ t ] } ) /@ Subdivide[ N @ arc[[ 1 ]], N @ arc[[ 2 ]], 256 ] ],
+            pts_List :> Line[ pts ] } ] },
+    MinimalBy[ paths,
+      path |-> RegionHausdorffDistance[
+        If[ Length[ path ] >= 2, Line[ coords[[ Lookup[ vertexIndex, path ] ]] ], Point[ coords[[ vertexIndex @ First @ path ]] ] ],
+        curve ] ] ]
 
 EmbeddingClosest[ graph_Graph, ref_List ] :=
   EmbeddingClosest[ graph, #, ref ] &

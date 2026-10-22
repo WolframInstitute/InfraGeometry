@@ -186,7 +186,7 @@ InfraSceneMultiway[ scene_InfraScene, graph_Graph, init : _Association : <| |>, 
     selectPool[ paths_, selection_String, token_ ] /; selection =!= "EmbeddingClosest" :=
       SelectInfraWalk[ graph, paths, All, "From" -> Replace[ selection, { "Central" -> "Center", "Peripheral" -> "Periphery" } ],
         "Cyclic" -> MatchQ[ token, ( InfraCircle | InfraCircleThrough | InfraRegularPolygon | InfraPolygon )[ __ ] |
-          InfraArc[ _, { p_, ___, p_ } | { _ }, ___ ] ] ];
+          InfraArc[ _, { p_, ___, p_ } | { _ }, ___ ] ], RandomSeeding -> None ];
     selectPool[ paths_, "EmbeddingClosest", token_ ] := With[
       { cyclic = MatchQ[ token, ( InfraCircle | InfraCircleThrough | InfraRegularPolygon | InfraPolygon )[ __ ] |
           InfraArc[ _, { p_, ___, p_ } | { _ }, ___ ] ], information = context[ token ],

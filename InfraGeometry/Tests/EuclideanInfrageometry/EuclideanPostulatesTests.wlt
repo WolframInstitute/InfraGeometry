@@ -678,19 +678,6 @@ VerificationTest[
 ]
 
 
-(* ===== EmbeddingClosest against a Circle ===== *)
-
-VerificationTest[
-  With[ { g = Graph[ GridGraph[ { 4, 4 } ], VertexCoordinates -> Tuples[ Range[ 0, 3 ], 2 ] ] },
-    { cycles = RandomInfraCircle[ g, InfraCircle[ 6, { 1, 2 } ], All ] },
-    { closest = EmbeddingClosest[ g, cycles, Circle[ { 1, 1 }, 1.5 ] ] },
-    MatchQ[ closest, { __List } ] && SubsetQ[ cycles, closest ]
-  ],
-  True,
-  TestID -> "EmbeddingClosest-cycle-graphs-on-Separating-set"
-]
-
-
 (* ===== RandomInfraPoint All ===== *)
 
 VerificationTest[

@@ -91,9 +91,9 @@ applySelectOption[ graph_Graph, paths_, "EmbeddingClosest", False, KeyValuePatte
   EmbeddingClosest[ graph, paths,
     Line @ resolveEmbeddingCoords[ graph, Automatic ][[ VertexIndex[ graph, # ] & /@ { p, q } ]] ]
 applySelectOption[ graph_Graph, paths_, name_String, True,  _ ] :=
-  SelectInfraWalk[ graph, paths, All, "From" -> selectFromName[ name ], "Cyclic" -> True ]
+  SelectInfraWalk[ graph, paths, All, "From" -> selectFromName[ name ], "Cyclic" -> True, RandomSeeding -> None ]
 applySelectOption[ graph_Graph, paths_, name_String, False, _ ] :=
-  SelectInfraWalk[ graph, paths, All, "From" -> selectFromName[ name ] ]
+  SelectInfraWalk[ graph, paths, All, "From" -> selectFromName[ name ], RandomSeeding -> None ]
 
 selectFromName[ "Central"    ] :=
   "Center"
