@@ -16,7 +16,7 @@ RelatedGuides: [InfraSubstrates]
 
 <code>[TessellationGenus]()[*spec*]</code> gives the genus of the first map.
 
-<code>[TessellationGenus]()[*g*, *spec*]</code> gives the genus of the closed orientable surface that carries the map with graph *g* and type *spec*.
+<code>[TessellationGenus]()[*g*, *spec*]</code> gives *(2 − χ)/2* for the map with graph *g* and type *spec*: the genus of its surface when the surface is orientable.
 
 ## Details & Options
 
@@ -33,6 +33,8 @@ With every vertex of curvature *κ*, *χ = Vκ*, so *γ = 1 − Vκ/2*. For {*p*
 A uniform map is built on a map of its regular parent type by rectification and truncation. These keep the surface, so the uniform map has the genus of its parent.
 
 The genus of the map can exceed the least genus of a surface on which *g* embeds.
+
+The form with a graph sees only *V*, *E* and *spec*, not whether the surface is orientable. On a non-orientable surface of Euler characteristic *χ* the value *(2 − χ)/2* is half its non-orientable genus *2 − χ*: a half-integer when that genus is odd, an integer, read like an orientable genus, when it is even.
 
 ## Basic Examples
 
@@ -100,7 +102,7 @@ The genus can exist where the graph does not. The truncation of the 2 × 2 squar
 {TessellationGenus[{4, 8, 8}, 2], TessellationGraph[{4, 8, 8}, 2]}
 ```
 
-On a surface that is not orientable the value is not a number of handles. The complete graph on six vertices carries the hemi-icosahedron, a {3, 5} map on the projective plane, of Euler characteristic 1:
+On a surface that is not orientable the value is not a number of handles. The complete graph on six vertices carries the hemi-icosahedron, a {3, 5} map on the projective plane, of Euler characteristic 1 and non-orientable genus 1, and the value is 1/2:
 
 ```wl
 {TessellationEulerCharacteristic[CompleteGraph[6], {3, 5}], TessellationGenus[CompleteGraph[6], {3, 5}]}

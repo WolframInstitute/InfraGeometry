@@ -22,7 +22,7 @@ The balls of radius *r* about the points have a common point exactly when *r ≥
 
 One point has radius 0. For a triangle without an obtuse angle the radius is the circumradius; for an obtuse triangle it is half the longest side. The points may lie in any dimension.
 
-The result is a machine number, except the exact 0 for a single point.
+Exact points give the exact radius, approximate points a machine number.
 
 ## Basic Examples
 
@@ -55,6 +55,12 @@ With[{corners = Tuples[{0, 1}, 3]},
     PlotLabel -> MiniballRadius[corners]]]
 ```
 
+Exact points give an exact radius, approximate ones a machine number:
+
+```wl
+{MiniballRadius[{{0, 0}, {2, 0}, {1, 3/2}}], MiniballRadius[N @ {{0, 0}, {2, 0}, {1, 3/2}}]}
+```
+
 One point has radius 0, and so do equal points:
 
 ```wl
@@ -71,12 +77,4 @@ With[{points = N @ {{0, 0}, {2, 0}, {1, 1.5}}}, {rho = MiniballRadius[points]},
     Graphics[{{StandardBlue, Opacity[0.15], Disk[#, s] & /@ points}, Point[points]},
       PlotLabel -> MemberQ[CechComplex[points, s], {1, 2, 3}]],
     {s, {0.9 rho, rho}}]]
-```
-
-## Possible Issues
-
-The radius of exact points is a machine number, not an exact one:
-
-```wl
-{MiniballRadius[Tuples[{0, 1}, 3]], Sqrt[3] / 2}
 ```

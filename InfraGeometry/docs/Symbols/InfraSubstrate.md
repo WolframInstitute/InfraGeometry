@@ -37,11 +37,11 @@ The two main substrates of the plane:
 | `"SquareGridGraph"` | 96 vertices, centre eccentricity 9 | 285, eccentricity 15 | 1020 |
 | `"SquareMeshGraph"` | 102 vertices, centre eccentricity 6 | 294, eccentricity 10 | 989 |
 
-The square grid of side *n* is [GridGraph]()[{*n*, *n*}] without its corners and without the edges along its border, so every rim vertex has one neighbour; Small is *n* = 10, Medium *n* = 17. Its vertex coordinates are integers and its distance is the ℓ¹ distance. The square mesh is an irregular triangulation of the unit square.
+The square grid of side *n* is [GridGraph]()[{*n*, *n*}] without its corners and without the edges along its border, so every rim vertex has one neighbour; Small is *n* = 10, Medium *n* = 17. The pendant rim is intended: the small grid has 32 vertices of degree 1, and the 64 others have the four neighbours of the plane lattice. Its vertex coordinates are integers and its distance is the ℓ¹ distance. The square mesh is an irregular triangulation of the unit square.
 
 A patch has a rim, and the rim is not geometry. Anchor a construction at the centre, `First @ GraphCenter[g]`, and keep it inside. A closed surface, such as `"SphereMeshGraph"` or a torus, has no rim.
 
-*size* can also be a raw value: the dimensions of a grid, the cell measure of a mesh, the radius of a tiling, a generation count. A Wolfram model universe `"wm"` followed by its number in the Registry of Notable Universes needs the network.
+*size* can also be a raw value: the dimensions of a grid or a torus, or one number *n* for the side *n* in every direction, the cell measure of a mesh, the radius of a tiling, a generation count. A Wolfram model universe `"wm"` followed by its number in the Registry of Notable Universes needs the network.
 
 A substrate built by a random construction is seeded with [SeedRandom]() in front of the call.
 
@@ -100,10 +100,10 @@ GraphicsRow @ Table[
   {name, {"TriangularTilingGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```
 
-A raw size: the square grid of side 5, 25 vertices less the four corners:
+A raw size: the square grid of side 5, 25 vertices less the four corners, given by its dimensions or by its side:
 
 ```wl
-VertexCount @ InfraSubstrate["SquareGridGraph", {5, 5}]
+{VertexCount @ InfraSubstrate["SquareGridGraph", {5, 5}], VertexCount @ InfraSubstrate["SquareGridGraph", 5]}
 ```
 
 ## Options

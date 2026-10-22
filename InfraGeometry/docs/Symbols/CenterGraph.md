@@ -14,17 +14,17 @@ RelatedGuides: [InfraSubstrates]
 
 <code>[CenterGraph]()[*g*, *k*]</code> gives the subgraph of *g* induced on the ball of radius *k* about its centre.
 
-<code>[CenterGraph]()[*g*, −*k*]</code> gives the ball of radius *ρ − k*, where *ρ* is the radius of *g*.
+<code>[CenterGraph]()[*g*, −*k*]</code> gives the ball of radius *e − k*, where *e* is the largest distance from the centre; it drops the *k* outermost layers.
 
-<code>[CenterGraph]()[*g*, [Scaled]()[*q*]]</code> gives the ball of radius *⌊q ρ⌋*.
+<code>[CenterGraph]()[*g*, [Scaled]()[*q*]]</code> gives the ball of radius *⌊q e⌋*.
 
 <code>[CenterGraph]()[*g*]</code> gives the centre of *g*.
 
 ## Details & Options
 
-The result is the induced subgraph on *Bₖ(C) = {v : d(v, C) ≤ k}*, where *C* = [GraphCenter]()[*g*] is the set of vertices of least eccentricity and *ρ* = [GraphRadius]()[*g*] is that eccentricity. It is [NeighborhoodGraph]()[*g*, *C*, *k*].
+The result is the induced subgraph on *Bₖ(C) = {v : d(v, C) ≤ k}*, where *C* = [GraphCenter]()[*g*] is the set of vertices of least eccentricity. It is [NeighborhoodGraph]()[*g*, *C*, *k*]. The negative and the scaled radii count from *e = maxᵥ d(v, C)*, the eccentricity of the centre set, so *B_e(C)* is the whole graph.
 
-A negative radius never goes below 0, and in [Scaled]()[*q*] the fraction *q* is clipped to [0, 1]. A radius of *ρ* or more gives the whole graph, 0 gives the centre.
+A negative radius never goes below 0, and in [Scaled]()[*q*] the fraction *q* is clipped to [0, 1]. A radius of *e* or more gives the whole graph, 0 gives the centre. When the centre is one vertex, *e* is the radius [GraphRadius]()[*g*]; a larger centre reaches every vertex sooner.
 
 [Scaled]()[*q*] takes the same fraction of the radius on every size of a substrate.
 
@@ -68,9 +68,16 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}
   InfraSubstrateHighlight[g, {VertexList @ core, RandomInfraPoint[core, 3, RandomSeeding -> 1]}, ImageSize -> Medium]]
 ```
 
+On the grid the centre is four vertices. They reach every vertex in 7 hops, two fewer than the radius 9, and −1 drops the 8 vertices at distance 7:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {core = CenterGraph[g, -1]},
+  InfraSubstrateHighlight[g, {VertexList @ core}, PlotLabel -> VertexCount[g] - VertexCount[core], ImageSize -> Medium]]
+```
+
 ## Properties and Relations
 
-The number of vertices against the radius *k*, from −*ρ* to *ρ*, on the mesh. The negative half repeats the positive one:
+The number of vertices against the radius *k*, from −*e* to *e*, on the mesh. The negative half repeats the positive one:
 
 ```wl
 With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {r = GraphRadius[g]},
@@ -78,12 +85,6 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {r = GraphRadius[g]},
 ```
 
 ## Possible Issues
-
-The radius *ρ* is the eccentricity of one centre vertex, not the distance from the whole centre. On the grid the four centre vertices reach every vertex in 7 hops, two fewer than *ρ* = 9, so −1 and −2 give the whole grid:
-
-```wl
-With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, Table[VertexCount @ CenterGraph[g, k], {k, -4, 0}]]
-```
 
 On a vertex-transitive graph every vertex is a centre, so every cut is the whole graph:
 

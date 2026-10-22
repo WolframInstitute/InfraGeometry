@@ -20,7 +20,7 @@ Let *P = I − J/n*, with *J* the matrix of ones, and *B = −P r P/2*. The symm
 
 The rank condition says that *r* is of negative type: *rᵢⱼ = ‖xᵢ − xⱼ‖²* for points *xᵢ* of a Euclidean space (Schoenberg), the points being the [ResistanceCoordinates](). Negative type alone is not enough: the distance matrix of a cycle is of negative type and not a resistance matrix.
 
-The tolerance is 10⁻⁹. A matrix with an [Infinity]() entry gives [False]().
+Each test has the tolerance 10⁻⁹: an asymmetry or a diagonal entry up to 10⁻⁹ counts as 0, as in a computed resistance matrix. A matrix with an [Infinity]() entry gives [False]().
 
 On a tree the distance matrix is the resistance matrix.
 
@@ -57,6 +57,12 @@ With[{r = GraphDistanceMatrix[CycleGraph[5]]}, {p = IdentityMatrix[5] - 1/5},
   MatrixForm @ PseudoInverse[-p . r . p/2]]
 ```
 
+The computed resistance matrix of the square grid is symmetric only up to rounding, and passes:
+
+```wl
+With[{r = EffectiveResistance[InfraSubstrate["SquareGridGraph", "Small"]]}, {Max @ Abs[r - Transpose[r]], ResistanceQ[r]}]
+```
+
 ## Properties and Relations
 
 A resistance matrix determines its graph: the matrix *L* recovered from the resistances of the mesh is its [KirchhoffMatrix]():
@@ -73,13 +79,6 @@ The squared distances of three points on a line are of negative type, but they b
 
 ```wl
 ResistanceQ[{{0, 1, 4}, {1, 0, 1}, {4, 1, 0}}]
-```
-
-Symmetry is tested without a tolerance. The computed resistance matrix of the square grid is not exactly symmetric, and fails; its symmetric part passes:
-
-```wl
-With[{r = EffectiveResistance[InfraSubstrate["SquareGridGraph", "Small"]]},
-  {ResistanceQ[r], Max @ Abs[r - Transpose[r]], ResistanceQ[(r + Transpose[r])/2]}]
 ```
 
 A matrix with an infinite entry gives [False](). Between the components of a graph the resistance is [Infinity]():
