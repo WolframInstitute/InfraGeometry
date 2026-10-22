@@ -40,6 +40,7 @@ The distance between two walks is the Hausdorff distance of their vertex sets in
 | `"Metric"` | `"Hausdorff"` | `"Frechet"`: the largest distance between vertices at the same position; `"MeanFrechet"`: the mean |
 | `"Cyclic"` | `False` | `True` compares closed walks up to rotation |
 | `"MaxCliques"` | `All` | the number of candidate tuples searched under `"Distance"` |
+| [RandomSeeding]() | `Automatic` | an integer or a string for a reproducible draw; `Inherited` to draw from the current random state |
 
 With `All` the result is every eligible walk. With a smaller count the walks are drawn at random from them.
 
@@ -96,11 +97,12 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}
     {m, {"Hausdorff", "Frechet"}}]]
 ```
 
-## Possible Issues
+### RandomSeeding
 
-With a finite count and several eligible walks, the draw is random, and there is no seed. Twenty draws of one central member give several different walks:
+With a finite count and several eligible walks the draw is random. Twenty draws of one central member give several walks; with a seed they give one:
 
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {seg = InfraMeasurement[g, InfraSegment[45, 78], "Graph"]},
-  Length @ Union @ Table[VertexList /@ SelectInfraWalk[g, seg, "From" -> "Center"], {20}] > 1]
+  {Length @ Union @ Table[VertexList /@ SelectInfraWalk[g, seg, "From" -> "Center"], {20}],
+   Length @ Union @ Table[VertexList /@ SelectInfraWalk[g, seg, "From" -> "Center", RandomSeeding -> 1], {20}]}]
 ```

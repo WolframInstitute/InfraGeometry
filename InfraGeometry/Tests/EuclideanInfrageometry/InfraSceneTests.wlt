@@ -512,6 +512,27 @@ VerificationTest[
   TestID -> "InfraDistance-multiset-multiset"
 ]
 
+VerificationTest[
+  With[ { g = PathGraph @ Range @ 5 },
+    Table[ InfraDistance[ g, x, 3, "Aggregation" -> agg ], { x, { { }, <| 2 -> 0 |> } }, { agg, { Min, Max, Mean } } ] ],
+  { { Infinity, Infinity, Infinity }, { Infinity, Infinity, Infinity } },
+  TestID -> "InfraDistance-empty-support-is-Infinity-under-every-aggregation"
+]
+
+VerificationTest[
+  With[ { g = PathGraph @ Range @ 5 },
+    Head /@ { InfraIntersection[ g, { 2, 3 }, { 3, 9 } ], InfraUnion[ g, { 2, 3 }, <| 9 -> 1 |> ], InfraIntersection[ g, { 2 }, <| 9 -> 1 |> ] } ],
+  { InfraIntersection, InfraUnion, InfraIntersection },
+  TestID -> "InfraIntersection-InfraUnion-missing-vertex-stays-unevaluated"
+]
+
+VerificationTest[
+  With[ { g = PathGraph @ Range @ 5 },
+    { InfraIntersection[ g, { 2, 3, 4 }, <| 3 -> 2, 4 -> 1, 5 -> 1 |> ], InfraUnion[ g, { 1, 2 }, { 2, 4 } ] } ],
+  { { 3, 4 }, { 1, 2, 4 } },
+  TestID -> "InfraIntersection-InfraUnion-vertex-sets"
+]
+
 (* Symmetry: InfraDistance[g, p, q] == InfraDistance[g, q, p] for any two
    multi-realisation arguments under any aggregator over the pairwise matrix. *)
 VerificationTest[

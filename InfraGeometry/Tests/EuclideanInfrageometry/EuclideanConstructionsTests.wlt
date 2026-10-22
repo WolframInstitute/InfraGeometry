@@ -163,6 +163,19 @@ VerificationTest[
   TestID -> "FindClosestInfraPoint-ray-graph"
 ]
 
+VerificationTest[
+  FindClosestInfraPoint[ GridGraph[ { 5, 5 } ], { { 1, 2, 3, 4, 5 }, { 1, 6, 11, 16, 21 } }, 13, All ],
+  { 3, 11 },
+  TestID -> "FindClosestInfraPoint-list-of-vertex-lists"
+]
+
+VerificationTest[
+  With[ { g = VertexReplace[ GridGraph[ { 3, 3 } ], Thread[ Range[ 9 ] -> Tuples[ Range[ 3 ], 2 ] ] ] },
+    FindClosestInfraPoint[ g, { { 1, 1 }, { 1, 2 }, { 1, 3 } }, { 3, 2 }, All ] ],
+  { { 1, 2 } },
+  TestID -> "FindClosestInfraPoint-list-labelled-vertex-list-is-one-line"
+]
+
 (* ===== FindInfraBisectingHyperplane ===== *)
 
 (* Properties -> {} (default): the bisector slab itself as a single

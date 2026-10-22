@@ -5,7 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/EmbeddingClosest
-Keywords: [straightest path, Hausdorff distance, embedding, drawing, digital straight line, selection]
+Keywords: [straightest path, Hausdorff distance, embedding, drawing, digital straight line, digital circle, selection]
 SeeAlso: [FindEmbeddingClosestPath, SelectInfraWalk, RandomInfraSegment, RandomInfraCircle, GraphEmbedding]
 ---
 
@@ -15,19 +15,17 @@ SeeAlso: [FindEmbeddingClosestPath, SelectInfraWalk, RandomInfraSegment, RandomI
 
 <code>[EmbeddingClosest]()[*g*, *walks*, {*p*, *q*}]</code> keeps the walks drawn closest to the straight segment from the vertex *p* to the vertex *q*.
 
-<code>[EmbeddingClosest]()[*g*, *cycles*, {*c*, *r*}]</code> compares the cycles with the circle of radius *r* about the vertex *c*.
-
 <code>[EmbeddingClosest]()[*g*, *ref*]</code> is the operator form.
 
 ## Details & Options
 
 A walk is drawn as the polygonal line through the positions of its vertices in [GraphEmbedding]() of *g*: the vertex coordinates when *g* has them, a spring embedding otherwise. Closeness is the Hausdorff distance between that line and the reference. All walks at the least distance are kept.
 
-The walks can be vertex lists or walk graphs; a walk graph comes back as a graph. The curve can be a [Line](), [BSplineCurve](), [BezierCurve]() or a list of points.
+The walks can be vertex lists or walk graphs; a walk graph comes back as a graph. A cycle graph is drawn closed; a vertex list is drawn as given, so a closed walk lists its first vertex again at the end.
+
+The curve can be a [Line](), [BSplineCurve](), [BezierCurve](), [Circle]() or a list of points, in the coordinates of the embedding.
 
 The selection uses the drawing, not the graph metric. Shortest paths all have the same length; on the square grid the ones closest to the straight segment are the staircases that stay nearest the diagonal.
-
-For cycles given as vertex lists, the circle form returns every cycle, ordered by the largest deviation *|‖x − c‖ − r|* of a vertex position *x*. Cycle graphs keep only those at the least Hausdorff distance from the circle.
 
 ## Basic Examples
 
@@ -37,8 +35,7 @@ The shortest paths from the centre to a point at distance 6, and those drawn clo
 GraphicsRow @ Table[
   With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
     {b = RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 2]},
-    {line = Line[AnnotationValue[{g, #}, VertexCoordinates] & /@ {c, b}]},
-    {closest = EmbeddingClosest[g, RandomInfraSegment[g, c, b, All], line]},
+    {closest = EmbeddingClosest[g, RandomInfraSegment[g, c, b, All], {c, b}]},
     InfraSubstrateHighlight[g, {InfraSegment[c, b], InfraWalk /@ closest}, PlotLabel -> Length[closest]]],
   {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
@@ -48,8 +45,7 @@ The operator form:
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
   {b = RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 2]},
-  {line = Line[AnnotationValue[{g, #}, VertexCoordinates] & /@ {c, b}]},
-  EmbeddingClosest[g, line][RandomInfraSegment[g, c, b, All]] == EmbeddingClosest[g, RandomInfraSegment[g, c, b, All], line]]
+  EmbeddingClosest[g, {c, b}][RandomInfraSegment[g, c, b, All]] == EmbeddingClosest[g, RandomInfraSegment[g, c, b, All], {c, b}]]
 ```
 
 ## Scope
@@ -63,13 +59,23 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}
   InfraSubstrateHighlight[g, {InfraWalk /@ EmbeddingClosest[g, RandomInfraSegment[g, c, b, All], arc]}, ImageSize -> Medium]]
 ```
 
-## Possible Issues
-
-The vertices of the substrates are integers, so a pair {*p*, *q*} of vertices also matches the circle form {*c*, *r*}, and that reading wins: all 20 paths come back, ordered. Give the segment as a [Line]() of the two positions instead:
+A [Circle](). Of the 16 cycles in the band 2 ≤ *d*(*c*, *v*) ≤ 4 about the centre, the ones drawn closest to the circle of radius 3:
 
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
-  {b = RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 2]},
-  {members = RandomInfraSegment[g, c, b, All], line = Line[AnnotationValue[{g, #}, VertexCoordinates] & /@ {c, b}]},
-  {Length @ EmbeddingClosest[g, members, {c, b}], Length @ EmbeddingClosest[g, members, line]}]
+  {cycles = RandomInfraCircle[g, InfraCircle[c, {2, 4}], All]},
+  {closest = EmbeddingClosest[g, Append[#, First[#]] & /@ cycles, Circle[{5, 5}, 3]]},
+  InfraSubstrateHighlight[g, {InfraWalk /@ closest, c}, PlotLabel -> Length[closest], ImageSize -> Medium]]
+```
+
+## Possible Issues
+
+A pair {*c*, *r*} is not a circle. When *r* is a vertex it is the segment from *c* to the vertex *r*; otherwise the call stays unevaluated. A circle is a [Circle]() in the coordinates of the embedding:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {cycles = Append[#, First[#]] & /@ RandomInfraCircle[g, InfraCircle[c, {2, 4}], All]},
+  {Head @ EmbeddingClosest[g, cycles, {c, 3.}],
+   EmbeddingClosest[g, cycles, {c, 3}] ==
+     EmbeddingClosest[g, cycles, Line[AnnotationValue[{g, #}, VertexCoordinates] & /@ {c, 3}]]}]
 ```

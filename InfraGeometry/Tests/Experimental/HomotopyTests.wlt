@@ -170,6 +170,15 @@ VerificationTest[
   TestID -> "HomotopicQ-multi-AllTrue-conjunction"
 ]
 
+(* a list of vertex lists is the same bundle as the list of their walk graphs *)
+VerificationTest[
+  With[ { grid23 = GridGraph[ { 2, 3 } ] }, { paths = RandomInfraSegment[ grid23, 1, 6, All ] },
+    { Length @ FindInfraHomotopy[ grid23, paths, paths, All, "NullHomotopicCycles" -> { 3, 4 } ],
+      HomotopicQ[ grid23, paths, { 1, 2, 4, 6 }, "NullHomotopicCycles" -> { 3, 4 } ] } ],
+  { 9, True },
+  TestID -> "FindInfraHomotopy-list-of-vertex-lists-is-a-bundle"
+]
+
 (* ===== The count contract on chains ===== *)
 
 (* count-less one chain, All the List of chains -- the same contract every other

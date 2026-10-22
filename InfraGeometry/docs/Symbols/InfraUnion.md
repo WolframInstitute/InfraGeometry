@@ -97,3 +97,11 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {a = First @ GraphCenter[
   Sort @ RandomInfraPoint[g, InfraUnion[InfraShell[a, 2], InfraShell[b, 2]], All] ===
     InfraUnion[g, RandomInfraPoint[g, InfraShell[a, 2], All], RandomInfraPoint[g, InfraShell[b, 2], All]]]
 ```
+
+## Possible Issues
+
+With a graph, every vertex must be a vertex of *g*; otherwise the call stays unevaluated. The corner 1 is not a vertex of the grid:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {VertexQ[g, 1], Head @ InfraUnion[g, {1, 2}, {3}]}]
+```

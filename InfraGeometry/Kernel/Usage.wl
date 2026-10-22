@@ -11,7 +11,7 @@ InfraMeasurement::usage = "InfraMeasurement[graph, obj, property] reads a proper
 InfraMemberQ::usage = "InfraMemberQ[graph, obj, representative] tests family membership; an exact point family accepts one raw vertex.";
 
 InfraSegment::usage = "InfraSegment[p1, ..., pk] is an inert ordered chain of shortest-path legs. InfraMeasurement reads its family; RandomInfraSegment samples it."
-RandomInfraSegment::usage = "RandomInfraSegment[graph, p, q] draws a random shortest path from p to q as a vertex list; a trailing n | UpTo[n] | All gives a List of vertex lists. Options RandomSeeding, \"NextVertexFunction\".";
+RandomInfraSegment::usage = "RandomInfraSegment[graph, p, q] draws a random shortest path from p to q as a vertex list, a trailing n a List of n; RandomInfraSegment[graph, InfraSegment[p1, ..., pk]] draws a polyline. Options RandomSeeding, \"NextVertexFunction\".";
 InfraWalkQ::usage = "InfraWalkQ[graph, walk] tests whether walk is a walk: consecutive vertices adjacent (revisits allowed).";
 InfraSegmentQ::usage = "InfraSegmentQ[graph, walk] tests whether walk is a shortest path.";
 UniqueInfraSegmentQ::usage = "UniqueInfraSegmentQ[graph, u, v] tests whether the u-v shortest path is unique; UniqueInfraSegmentQ[graph] tests the geodetic property.";
@@ -87,8 +87,8 @@ InfraAngle::usage = "InfraAngle[graph, {q1, p, q2}] gives the length of InfraArc
 InfraComparisonAngle::usage = "InfraComparisonAngle[graph, {q1, p, q2}] gives the comparison-triangle angle at p in the constant-curvature model plane. Option \"Curvature\".";
 InfraMetricTensor::usage = "InfraMetricTensor[graph, p] gives the matrix of d(p, u)/d(p, v) over v, w with u the vertex of I(p, w) closest to v; with r, over the shell InfraShell[p, r]. Option \"SelectCoordinate\".";
 
-SelectInfraWalk::usage = "SelectInfraWalk[graph, walks, n] draws n walks (default 1) from a bundle -- vertex lists or walk graphs, cycle graphs selecting as closed walks -- treated as a metric space; n may be UpTo[n] or All, and SelectInfraWalk[graph, n] is the operator form. Options \"From\", \"Distance\", \"Metric\", \"MaxCliques\", \"Cyclic\".";
-EmbeddingClosest::usage = "EmbeddingClosest[graph, bundle, ref] keeps the bundle elements drawn closest to a Euclidean reference under GraphEmbedding; ref is {p1, p2}, {center, radius}, or a curve.";
+SelectInfraWalk::usage = "SelectInfraWalk[graph, walks, n] draws n walks (default 1) from a bundle of vertex lists or walk graphs treated as a metric space; SelectInfraWalk[graph, n] is the operator form. Options \"From\", \"Distance\", \"Metric\", \"MaxCliques\", \"Cyclic\", RandomSeeding.";
+EmbeddingClosest::usage = "EmbeddingClosest[graph, walks, curve] keeps the walks drawn closest, in Hausdorff distance under GraphEmbedding, to a Line, BSplineCurve, BezierCurve or Circle; {p, q} of vertices is the segment from p to q.";
 FindEmbeddingClosestPath::usage = "FindEmbeddingClosestPath[graph, curve] snaps an embedded curve to a walk graph, mapping sampled points to nearest vertices and joining them by geodesics.";
 SprayGraph::usage = "SprayGraph[graph, c] gives the BFS DAG rooted at c, whose directed source-to-sink paths are exactly the maximal shortest paths from c; SprayGraph[graph, pairs] gives the union of shortest paths between listed pairs.";
 PathSubgraph::usage = "PathSubgraph[graph, u, v] gives the union of all shortest u-v paths; a trailing length cap or All widens it to longer simple paths.";

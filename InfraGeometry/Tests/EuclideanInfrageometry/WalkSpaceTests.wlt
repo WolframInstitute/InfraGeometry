@@ -84,6 +84,38 @@ VerificationTest[
   TestID -> "FindEmbeddingClosestPath-traces-connected-walk"
 ]
 
+VerificationTest[
+  With[ { g = Graph[ GridGraph[ { 5, 5 } ], VertexCoordinates -> Tuples[ Range[ 0, 4 ], 2 ] ] },
+    { w = walkSeq @ FindEmbeddingClosestPath[ g, Circle[ { 2, 2 }, 2 ] ] },
+    { First @ w === Last @ w, AllTrue[ Partition[ w, 2, 1 ], EdgeQ[ g, UndirectedEdge @@ # ] & ],
+      AllTrue[ Tuples[ Range[ 0, 4 ], 2 ][[ w ]], x |-> Abs[ Norm[ x - { 2, 2 } ] - 2 ] <= 1 ] } ],
+  { True, True, True },
+  TestID -> "FindEmbeddingClosestPath-Circle"
+]
+
+VerificationTest[
+  With[ { g = Graph[ GridGraph[ { 3, 3 } ], VertexCoordinates -> Tuples[ Range[ 0, 2 ], 2 ] ] },
+    Sort @ EmbeddingClosest[ g, RandomInfraSegment[ g, 1, 9, All ], { 1, 9 } ] ],
+  { { 1, 2, 5, 6, 9 }, { 1, 2, 5, 8, 9 }, { 1, 4, 5, 6, 9 }, { 1, 4, 5, 8, 9 } },
+  TestID -> "EmbeddingClosest-vertex-pair-is-the-straight-segment"
+]
+
+VerificationTest[
+  With[ { g = Graph[ GridGraph[ { 3, 3 } ], VertexCoordinates -> Tuples[ Range[ 0, 2 ], 2 ] ],
+          cycles = { { 1, 2, 3, 6, 9, 8, 7, 4, 1 }, { 1, 2, 5, 4, 1 } } },
+    { EmbeddingClosest[ g, cycles, Circle[ { 1, 1 }, 1 ] ],
+      VertexCount /@ EmbeddingClosest[ g, Graph[ DirectedEdge @@@ Partition[ Most @ #, 2, 1, 1 ] ] & /@ cycles, Circle[ { 1, 1 }, 1 ] ] } ],
+  { { { 1, 2, 3, 6, 9, 8, 7, 4, 1 } }, { 8 } },
+  TestID -> "EmbeddingClosest-Circle-keeps-the-closest-cycles-as-lists-and-graphs"
+]
+
+VerificationTest[
+  With[ { g = Graph[ GridGraph[ { 3, 3 } ], VertexCoordinates -> Tuples[ Range[ 0, 2 ], 2 ] ] },
+    Head @ EmbeddingClosest[ g, { { 1, 2, 5, 4, 1 }, { 2, 3, 6, 5, 2 } }, { 5, 1.5 } ] ],
+  EmbeddingClosest,
+  TestID -> "EmbeddingClosest-centre-radius-pair-is-not-a-reference"
+]
+
 (* ===== Count contract: strict n, UpTo, All ===== *)
 
 VerificationTest[
@@ -535,6 +567,37 @@ VerificationTest[
   ],
   True,
   TestID -> "SelectInfraWalk-EmbeddingClosest-chained-operator-form"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] }, { paths = RandomInfraSegment[ g, 1, 25, All ] },
+    { BlockRandom[ SelectInfraWalk[ g, paths, 3, RandomSeeding -> 5 ], RandomSeeding -> 1 ] ===
+        BlockRandom[ SelectInfraWalk[ g, paths, 3, RandomSeeding -> 5 ], RandomSeeding -> 2 ],
+      SelectInfraWalk[ g, paths, 3, RandomSeeding -> 5 ] ===
+        BlockRandom[ SelectInfraWalk[ g, paths, 3, RandomSeeding -> None ], RandomSeeding -> 5 ],
+      SelectInfraWalk[ g, 3, RandomSeeding -> 5 ][ paths ] === SelectInfraWalk[ g, paths, 3, RandomSeeding -> 5 ] } ],
+  { True, True, True },
+  TestID -> "SelectInfraWalk-RandomSeeding-integer-seed-is-reproducible"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] }, { dag = InfraMeasurement[ g, InfraSegment[ 1, 25 ], "Graph" ] },
+    { VertexList /@ SelectInfraWalk[ g, dag, 2, "From" -> "Center", RandomSeeding -> 3 ] ===
+        VertexList /@ SelectInfraWalk[ g, dag, 2, "From" -> "Center", RandomSeeding -> 3 ],
+      Length @ DeleteDuplicates @ Table[
+        BlockRandom[ SeedRandom[ 1 ]; SelectInfraWalk[ g, RandomInfraSegment[ g, 1, 25, All ], 3 ] ], 10 ] > 1 } ],
+  { True, True },
+  TestID -> "SelectInfraWalk-RandomSeeding-Automatic-is-fresh-and-graphs-are-seeded"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] }, { paths = RandomInfraSegment[ g, 1, 25, All ] },
+    BlockRandom[ SelectInfraWalk[ g, paths, 3, RandomSeeding -> None ]; $RandomGeneratorState, RandomSeeding -> 17 ] =!=
+      BlockRandom[ $RandomGeneratorState, RandomSeeding -> 17 ] &&
+    BlockRandom[ SelectInfraWalk[ g, paths, 3, RandomSeeding -> 4 ]; $RandomGeneratorState, RandomSeeding -> 17 ] ===
+      BlockRandom[ $RandomGeneratorState, RandomSeeding -> 17 ] ],
+  True,
+  TestID -> "SelectInfraWalk-RandomSeeding-None-draws-from-the-ambient-stream"
 ]
 
 

@@ -17,11 +17,11 @@ SeeAlso: [EmbeddingClosest, InfraGenericQ, WalkSingularities, InfraWalk, GraphEm
 
 The curve is sampled at points *x₁, x₂, …*. Each point goes to its nearest vertex in [GraphEmbedding]() of *g*, repeats in a row are dropped, and each vertex is joined to the next by a shortest path. The result is the walk through all of them, as a directed path graph.
 
-The curve can be a [Line](), a [BSplineCurve](), a [BezierCurve]() or a list of points, in the coordinates of the embedding. A spline is sampled at *max(64, 4n)* parameter values, with *n* control points. A line or a point list is used as given, so it should be sampled finely.
+The curve can be a [Line](), a [BSplineCurve](), a [BezierCurve](), a [Circle]() or a list of points, in the coordinates of the embedding. A spline is sampled at *max(64, 4n)* parameter values, with *n* control points, and a circle at 257 points. A line or a point list is used as given, so it should be sampled finely.
 
 The walk can have singularities the curve does not: a strand snapped twice to the same edge is a self-tangency, and a crossing need not be a double point.
 
-Unlike [EmbeddingClosest](), which selects among given walks, this constructs one walk, so it works for any curve.
+Unlike [EmbeddingClosest](), which selects among given walks, this constructs one walk.
 
 ## Basic Examples
 
@@ -31,8 +31,7 @@ A circle of radius 3.5 snapped to the grid, and of radius 0.35 to the mesh, whos
 GraphicsRow @ Table[
   With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {o = Mean @ GraphEmbedding[g], r = 0.35 Max[GraphEmbedding[g]]},
-    {circle = Line[Table[o + r {Cos[t], Sin[t]}, {t, 0, 2 Pi, Pi/40}]]},
-    InfraSubstrateHighlight[g, {FindEmbeddingClosestPath[g, circle]}]],
+    InfraSubstrateHighlight[g, {FindEmbeddingClosestPath[g, Circle[o, r]]}]],
   {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
