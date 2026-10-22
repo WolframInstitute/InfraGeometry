@@ -990,4 +990,12 @@ VerificationTest[
   TestID -> "RandomInfraSceneInstance-bound-assertions-reject-before-further-draws"
 ]
 
+(* the walk of a directed graph stops at a sink: a branching DAG gives one source-to-sink path *)
+VerificationTest[
+  MatchQ[ WolframInstitute`InfraGeometry`PackageScope`walkSequence /@ { Graph[ { 1 -> 2, 1 -> 3 } ], Graph[ { 1 -> 2, 2 -> 3, 1 -> 4, 4 -> 3 } ] },
+    { { 1, 2 | 3 }, { 1, 2 | 4, 3 } } ],
+  True,
+  TestID -> "walkSequence-stops-at-a-sink"
+]
+
 EndTestSection[]

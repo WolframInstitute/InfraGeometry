@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraEllipse
 Keywords: [ellipse, foci, distance sum, separating cycle, conic, symbolic object]
-SeeAlso: [RandomInfraEllipse, InfraEllipseQ, InfraCircle, InfraQuadric, RandomInfraPoint]
+SeeAlso: [RandomInfraEllipse, InfraEllipseQ, InfraMeasurement, InfraCircle, InfraQuadric, RandomInfraPoint]
 ---
 
 ## Usage
@@ -19,7 +19,7 @@ SeeAlso: [RandomInfraEllipse, InfraEllipseQ, InfraCircle, InfraQuadric, RandomIn
 
 The band is *E = {v : s₁ ≤ d(p, v) + d(q, v) ≤ s₂}*. A member of the ellipse is a cycle of the subgraph induced on *E*. By default it must separate a vertex with sum below *s₁* from a vertex with sum above *s₂*, and only the shortest such cycles count.
 
-[InfraEllipse]() is a symbolic object: [RandomInfraEllipse]() draws its members as directed cycle graphs, and [RandomInfraPoint]() reads it as the region of their vertices.
+[InfraEllipse]() is a symbolic object: [RandomInfraEllipse]() draws its members as directed cycle graphs, [InfraMeasurement]() reads `"VertexDensity"` and `"EdgeDensity"`, the number of members through each vertex and each edge, and `"Cardinality"`, their number, and [RandomInfraPoint]() reads it as the region of their vertices.
 
 In the plane every level is a closed curve. On a graph an exact level often carries no separating cycle, and a band of width 1 or 2 does.
 
@@ -33,13 +33,13 @@ Options, given inside the head:
 
 ## Basic Examples
 
-The ellipse on the band of sums 6 to 8, with the centre and a point at distance 2 as foci:
+The ellipse on the band of sums 6 to 8, with the centre and a point at distance 2 as foci, drawn with all its members:
 
 ```wl
 GraphicsRow @ Table[
   With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
     {q = RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1]},
-    InfraSubstrateHighlight[g, {RandomInfraEllipse[g, InfraEllipse[{c, q}, {6, 8}], RandomSeeding -> 1], c, q}]],
+    InfraSubstrateHighlight[g, {InfraEllipse[{c, q}, {6, 8}], c, q}]],
   {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
@@ -49,7 +49,7 @@ The number of members for the level 6 and the bands {6, 7} and {6, 8}. The exact
 Table[
   With[{g = InfraSubstrate[name, "Small"]}, {c = First @ GraphCenter[g]},
     {q = RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1]},
-    Table[Length @ RandomInfraEllipse[g, InfraEllipse[{c, q}, s], All], {s, {6, {6, 7}, {6, 8}}}]],
+    Table[InfraMeasurement[g, InfraEllipse[{c, q}, s], "Cardinality"], {s, {6, {6, 7}, {6, 8}}}]],
   {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 

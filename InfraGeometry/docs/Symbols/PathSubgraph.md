@@ -44,7 +44,7 @@ The paths of length at most *d(u, v) + 2* between the centre and a vertex at dis
 GraphicsRow @ Table[
   With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {u = First @ GraphCenter[g]},
     {v = RandomInfraPoint[g, InfraShell[u, 3], RandomSeeding -> 1]},
-    InfraSubstrateHighlight[g, {PathSubgraph[g, u, v, 5, "Directed" -> False], u, v}]],
+    InfraSubstrateHighlight[g, {PathSubgraph[g, u, v, 5], u, v}]],
   {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
@@ -80,15 +80,13 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {u = First @ GraphCenter[
 
 ## Possible Issues
 
-With detours the directed union is not acyclic: two paths can cross an edge in opposite directions. The edges used both ways:
+With detours the directed union is not acyclic: two paths can cross an edge in opposite directions. It has no count of paths through an edge, and [InfraSubstrateHighlight]() draws it as its set of edges. The edges used both ways:
 
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {u = First @ GraphCenter[g]},
   {v = RandomInfraPoint[g, InfraShell[u, 3], RandomSeeding -> 1]}, {h = PathSubgraph[g, u, v, 5]},
   {AcyclicGraphQ[h], Select[EdgeList[h], MemberQ[EdgeList[h], Reverse[#]] &]}]
 ```
-
-Draw such a union with `"Directed" -> False`.
 
 A cap below the distance gives the empty graph:
 

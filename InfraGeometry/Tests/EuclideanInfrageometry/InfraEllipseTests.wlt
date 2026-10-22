@@ -173,4 +173,17 @@ VerificationTest[
   TestID -> "RandomInfraEllipse-default-is-seeded"
 ]
 
+(* with the 2-side of K_{2,3} as foci every vertex has distance sum 2, so the members are the three 4-cycles: 3 through a focus, 2 through
+   every other vertex and through every edge; the separating class there is empty *)
+VerificationTest[
+  With[ { k = CompleteGraph[ { 2, 3 } ] },
+    { InfraMeasurement[ k, InfraEllipse[ { 1, 2 }, 2, Properties -> { } ], { "VertexDensity", "EdgeDensity", "Cardinality" } ],
+      InfraMeasurement[ k, InfraEllipse[ { 1, 2 }, 2 ], { "VertexDensity", "EdgeDensity", "Cardinality" } ] } ],
+  { <| "VertexDensity" -> <| 1 -> 3, 2 -> 3, 3 -> 2, 4 -> 2, 5 -> 2 |>,
+       "EdgeDensity" -> AssociationThread[ UndirectedEdge @@@ { { 1, 3 }, { 1, 4 }, { 1, 5 }, { 2, 3 }, { 2, 4 }, { 2, 5 } }, 2 ],
+       "Cardinality" -> 3 |>,
+    <| "VertexDensity" -> <| |>, "EdgeDensity" -> <| |>, "Cardinality" -> 0 |> },
+  TestID -> "InfraMeasurement-InfraEllipse-counts-members-through-vertices-and-edges"
+]
+
 EndTestSection[]

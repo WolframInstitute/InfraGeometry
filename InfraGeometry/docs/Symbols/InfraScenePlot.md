@@ -20,7 +20,7 @@ RelatedGuides: [EuclideanInfrageometry]
 
 The objects are drawn with [InfraSubstrateHighlight](), in declaration order, the *i*-th in the *i*-th palette colour. Objects the instance does not bind are left out.
 
-A name draws its saved value: a point as a vertex, a segment, half-line or line as its walk, a region as its vertex set. A token in the list draws the whole family at the saved values: <code>[InfraSegment]()[*pA*, *pB*]</code> draws every shortest path between the saved points, not the one the instance chose.
+A name draws its saved value: a point as a vertex, a segment, half-line or line as its walk, a circle, closed arc or regular polygon as its closed walk, a region as its vertex set. A token in the list draws the whole family at the saved values: <code>[InfraSegment]()[*pA*, *pB*]</code> draws every shortest path between the saved points, not the one the instance chose.
 
 The list is read as by [InfraSubstrateHighlight](): a [Directive]() styles the objects after it, and `obj -> style` or <code>[Style]()[*obj*, …]</code> styles one object. [InfraScenePlot]() takes the options of [InfraSubstrateHighlight]() and of [Graph]().
 
@@ -70,6 +70,14 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}
   InfraScenePlot[scene, g, RandomInfraSceneInstance[scene, g, RandomSeeding -> 1], {disk, pA}, ImageSize -> Medium]]
 ```
 
+A saved circle is drawn as a closed walk:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {scene = InfraScene[{pA, cA}, {pA == InfraPoint[a], cA == InfraCircle[pA, {3, 4}]}]},
+  InfraScenePlot[scene, g, RandomInfraSceneInstance[scene, g, RandomSeeding -> 1], {cA, pA}, ImageSize -> Medium]]
+```
+
 ## Options
 
 Colours by [Directive]() and by rule, and a plot label:
@@ -81,16 +89,4 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}
   InfraScenePlot[scene, g, RandomInfraSceneInstance[scene, g, RandomSeeding -> 1],
     {Directive[StandardGray], InfraSegment[pA, pB], pA -> StandardRed, pB -> StandardBlue},
     PlotLabel -> "all shortest paths", ImageSize -> Medium]]
-```
-
-## Possible Issues
-
-A saved circle is drawn without its closing edge. Close it by hand with [InfraSubstrateHighlight]():
-
-```wl
-With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
-  {scene = InfraScene[{pA, cA}, {pA == InfraPoint[a], cA == InfraCircle[pA, {3, 4}]}]},
-  {inst = RandomInfraSceneInstance[scene, g, RandomSeeding -> 1]},
-  GraphicsRow[{InfraScenePlot[scene, g, inst, {cA, pA}],
-    InfraSubstrateHighlight[g, {InfraWalk[Append[InfraSceneInstance[inst, cA], First @ InfraSceneInstance[inst, cA]]], a}]}]]
 ```

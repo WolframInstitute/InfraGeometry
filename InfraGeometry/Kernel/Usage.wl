@@ -68,7 +68,7 @@ InfraRegularPolygonQ::usage = "InfraRegularPolygonQ[graph, cycle, As] tests whet
 
 InfraQuadric::usage = "InfraQuadric[foci, c, weights] is the inert signed weighted distance sublevel; a band c selects both bounds and omitted weights are 1."
 
-InfraEllipse::usage = "InfraEllipse names the metric-ellipse construction -- a cycle lying on an elliptic shell -- and carries no value of its own; RandomInfraEllipse is the search and gives a directed cycle graph.";
+InfraEllipse::usage = "InfraEllipse[{p, q}, s] is the inert ellipse with foci p, q and distance sum s | {s1, s2}, the separating shortest cycles of the level set. InfraMeasurement reads its family; RandomInfraEllipse samples it.";
 RandomInfraEllipse::usage = "RandomInfraEllipse[graph, {p1, p2}, c] gives one shortest separating cycle in the level surface { v : d(p1, v) + d(p2, v) == c }; a trailing n | UpTo[n] | All sets the count. Automatic randomizes candidate order; Identity preserves deterministic order. Options RandomSeeding, Properties, \"NextVertexFunction\".";
 InfraEllipseQ::usage = "InfraEllipseQ[graph, cycle] tests whether cycle is a cyclic edge chain whose vertex set is an elliptic shell InfraQuadric[{p1, p2}, {c, c}] for some foci.";
 

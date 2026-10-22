@@ -59,6 +59,17 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}
   InfraSubstrateHighlight[g, {windows, InfraWalk[germ]}, ImageSize -> Medium]]
 ```
 
+## Scope
+
+The family drawn whole, each edge as strong as the number of members through it. The geodesics at scale 4 through a shortest path of two edges from the centre of the mesh, and their number:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {germ = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1], RandomSeeding -> 1]},
+  InfraSubstrateHighlight[g, {InfraGeodesic[germ, 4], InfraWalk[germ]},
+    PlotLabel -> Length @ RandomInfraGeodesic[g, InfraGeodesic[germ, 4], All], ImageSize -> Medium]]
+```
+
 ## Properties and Relations
 
 The number of windows at scales 1, 2 and 3 on the grid: the vertices, the directed edges reached, and the windows of three vertices reached:
