@@ -69,6 +69,12 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}
     InfraSubstrateHighlight[g, {RandomInfraPlane[g, InfraPlane[45, 56], RandomSeeding -> s], 45, 56}], {s, 3}]]
 ```
 
+There are 1369 of them, of 8, 9 or 10 vertices:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, Counts[Length /@ RandomInfraPlane[g, InfraPlane[45, 56], All]]]
+```
+
 ## Possible Issues
 
 At odd distance on the grid no vertex is equidistant, and there is no plane; the window {−1, 1} gives one:

@@ -30,13 +30,13 @@ On a bipartite graph *d(p, v) − d(q, v)* has the parity of *d(p, q)*. On the s
 
 Adjacent points have no plane: no vertex set separates them.
 
-The count *n* can be `n`, `UpTo[n]` or `All`. Finding more than one plane can take long.
+The count *n* can be `n`, `UpTo[n]` or `All`. The draw is uniform over all the planes, and they can be many: a slab {−1, 1} of the mesh has thousands.
 
 Options:
 
 | Option | Default | Values |
 |---|---|---|
-| `"NextVertexFunction"` | `Automatic` | `Automatic` random; `Identity` the first planes in vertex order |
+| `"NextVertexFunction"` | `Automatic` | `Automatic` random; `Identity` the first planes in sorted order |
 | [RandomSeeding]() | `Automatic` | an integer or a string for a reproducible draw; `Inherited` to draw from the current random state |
 
 ## Basic Examples
@@ -67,6 +67,23 @@ Two planes of a diagonal pair:
 With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
   {q = RandomInfraPoint[g, InfraShell[p, 2], RandomSeeding -> 1]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {plane, p, q}], {plane, RandomInfraPlane[g, p, q, 2, RandomSeeding -> 1]}]]
+```
+
+## Scope
+
+Three planes in the slab {−1, 1} on the mesh, which has 3885 planes:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+  {q = RandomInfraPoint[g, InfraShell[p, 2], RandomSeeding -> 1]},
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {plane, p, q}],
+    {plane, RandomInfraPlane[g, p, q, {-1, 1}, 3, RandomSeeding -> 1]}]]
+```
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {p = First @ GraphCenter[g]},
+  {q = RandomInfraPoint[g, InfraShell[p, 2], RandomSeeding -> 1]},
+  Length @ RandomInfraPlane[g, p, q, {-1, 1}, All]]
 ```
 
 ## Properties and Relations
