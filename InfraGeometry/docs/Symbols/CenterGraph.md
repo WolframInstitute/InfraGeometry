@@ -26,7 +26,7 @@ The result is the induced subgraph on *Bₖ(C) = {v : d(v, C) ≤ k}*, where *C*
 
 A negative radius never goes below 0, and in [Scaled]()[*q*] the fraction *q* is clipped to [0, 1]. A radius of *e* or more gives the whole graph, 0 gives the centre. When the centre is one vertex, *e* is the radius [GraphRadius]()[*g*]; a larger centre reaches every vertex sooner.
 
-[Scaled]()[*q*] takes the same fraction of the radius on every size of a substrate.
+[Scaled]()[*q*] takes the same fraction of *e* on every size of a substrate.
 
 The cut keeps the vertex names and coordinates of *g*, so a construction made on it draws on *g*.
 

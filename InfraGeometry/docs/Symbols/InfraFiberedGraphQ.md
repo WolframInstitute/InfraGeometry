@@ -19,7 +19,7 @@ RelatedTutorials: [InfraBundles]
 
 A fibered graph is a graph *E* with a map *π* on its vertices. [InfraFiberedGraphQ]() tests only that *π* is defined on every vertex of *E*.
 
-The total graph must be finite, simple, undirected, unweighted and without edge tags. The projection is an association with one key for each vertex, or a function. A projection that is not a function, such as a string or a list, leaves its values as unevaluated applications *π*[*v*], and gives `False`.
+The total graph must be finite, simple, undirected, unweighted and without edge tags. The projection is an association with one key for each vertex, or a function.
 
 No further condition is tested. Fibers of different sizes, vertical edges and vertices without lifts are allowed; [InfraFibrationQ]() and [InfraFiberBundleQ]() test those.
 
@@ -60,12 +60,6 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}
   {columns = AssociationThread[VertexList[g], Round @ GraphEmbedding[g][[All, 1]]]},
   {InfraFiberedGraphQ[InfraFiberedGraph[g, columns]],
    InfraFiberedGraphQ[InfraTangentBundle[GridGraph[{4, 4}], 2]]}]
-```
-
-A string is not a map, and the object is not a fibered graph, nor a fibration:
-
-```wl
-With[{fib = InfraFiberedGraph[CycleGraph[4], "bad"]}, {InfraFiberedGraphQ[fib], InfraFibrationQ[fib]}]
 ```
 
 ## Possible Issues

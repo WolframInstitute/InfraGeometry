@@ -60,8 +60,7 @@ CenterGraph[ graph_Graph, hops_Integer : 0 ] :=
 		graph,
 		With[
 			{ center = GraphCenter[ graph ] },
-			(* the eccentricity of the centre set, max over v of d(v, C) *)
-			{ outer = Max[ Min /@ Transpose[ GraphDistance[ graph, # ] & /@ center ] ] },
+			{ outer = VertexEccentricity[ VertexContract[ graph, center ], First @ center ] },
 			NeighborhoodGraph[ graph, center, If[ hops < 0, Max[ 0, outer + hops ], hops ] ]
 		]
 	]
@@ -71,7 +70,7 @@ CenterGraph[ graph_Graph, Scaled[ fraction_?NumericQ ] ] :=
 		graph,
 		With[
 			{ center = GraphCenter[ graph ] },
-			{ outer = Max[ Min /@ Transpose[ GraphDistance[ graph, # ] & /@ center ] ] },
+			{ outer = VertexEccentricity[ VertexContract[ graph, center ], First @ center ] },
 			CenterGraph[ graph, Floor[ Clip[ fraction, { 0, 1 } ] * outer ] ]
 		]
 	]
