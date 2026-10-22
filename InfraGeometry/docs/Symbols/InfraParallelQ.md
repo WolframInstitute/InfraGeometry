@@ -12,7 +12,7 @@ RelatedGuides: [Experimental]
 
 ## Usage
 
-<code>[InfraParallelQ]()[*g*, *l₁*, *l₂*]</code> tests whether the vertex lists *l₁* and *l₂* are parallel in *g*: disjoint, with every vertex of *l₁* at the same distance from *l₂*.
+<code>[InfraParallelQ]()[*g*, *l₁*, *l₂*]</code> tests whether the vertex list *l₁* is parallel to *l₂* in *g*: disjoint from it, with every vertex of *l₁* at the same distance from *l₂*.
 
 <code>[InfraParallelQ]()[*g*, *l₁*, *l₂*, *t*]</code> allows that distance to vary by up to *t*.
 
@@ -24,11 +24,13 @@ RelatedGuides: [Experimental]
 
 Disjointness is Euclid's Definition 23: parallels do not meet. So a line is not parallel to itself, and two sets that share one vertex are not parallel.
 
-The test is not symmetric: it measures from *l₁* to *l₂*. The arguments need not be lines; concentric shells are parallel. Test lines separately with [InfraInfiniteLineQ]().
+The test is not symmetric: it measures from *l₁* to *l₂*, and *l₁* lies on a level set of *l₂*. The arguments need not be lines; concentric shells are parallel. Test lines separately with [InfraInfiniteLineQ]().
+
+A set in another component of *g* is at constant distance `Infinity` from *l₂*, so it is parallel to *l₂*; the empty set is parallel to every set, and every set to the empty set.
 
 A walk graph, or a list of them, is read as its walks, and every walk of *l₁* is tested against every walk of *l₂*.
 
-[RandomInfraParallel]() constructs a parallel line through a point.
+[RandomInfraParallel]() constructs a parallel through a point of a level set of the line, so its parallel is parallel to the line.
 
 Corresponding notions in the classical axiom systems:
 

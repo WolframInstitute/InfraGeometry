@@ -16,7 +16,7 @@ RelatedGuides: [Experimental]
 
 ## Details & Options
 
-[InfraLineQ]() takes the same arguments as [InfraInfiniteLineQ]() and gives the same result. New code uses [InfraInfiniteLineQ]().
+[InfraLineQ]() takes the same arguments as [InfraInfiniteLineQ]() and gives the same result. New code uses [InfraInfiniteLineQ](). Like it, the test takes a line, not the head [InfraLine]()[*p*, *q*]; membership in that family is [InfraMemberQ]().
 
 ## Basic Examples
 

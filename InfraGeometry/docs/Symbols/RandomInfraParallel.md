@@ -109,7 +109,7 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[
 
 ## Properties and Relations
 
-A parallel is a shortest path, and every vertex of it is at the same distance from the line:
+A parallel is a shortest path, and every vertex of it is at the same distance from the line, so it is parallel to the line:
 
 ```wl
 With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
@@ -117,7 +117,7 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[
   {line = RandomInfraInfiniteLine[g, c, a, RandomSeeding -> 1]},
   {p = RandomInfraPoint[g, InfraShell[line, 2], RandomSeeding -> 7]},
   {par = RandomInfraParallel[g, line, p, RandomSeeding -> 1]},
-  {InfraSegmentQ[g, par], InfraParallelQ[g, VertexList[par], line]}]
+  {InfraSegmentQ[g, par], InfraParallelQ[g, par, line]}]
 ```
 
 ## Possible Issues

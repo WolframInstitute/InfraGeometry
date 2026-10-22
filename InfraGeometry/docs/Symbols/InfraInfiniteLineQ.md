@@ -22,7 +22,7 @@ A line *v₀, …, vₖ* is a shortest path, *k = d(v₀, vₖ)*, such that no n
 
 A line is a [InfraHalfLineQ]() ray from either end. It need not reach the rim of the graph: it ends where no neighbour is farther from the other end.
 
-A list of fewer than two vertices is not a line. A walk graph, such as a directed path graph from [FindInfraPerpendicular](), is read as its walks.
+A list of fewer than two vertices is not a line. A walk graph, such as a directed path graph from [FindInfraPerpendicular](), is read as its walks. The test takes a line itself, not the head [InfraInfiniteLine]()[*p*, *q*], which names the family of lines through *p* and *q*; membership in that family is [InfraMemberQ]()[*g*, [InfraInfiniteLine]()[*p*, *q*], *walk*].
 
 ## Basic Examples
 
@@ -71,4 +71,13 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}
   {y = AssociationThread[VertexList[g], GraphEmbedding[g][[All, 2]]]}, {row = Select[VertexList[g], y[#] == y[c] &]},
   InfraSubstrateHighlight[g, {row}, PlotLabel -> {InfraInfiniteLineQ[g, row], InfraInfiniteLineQ[g, Take[row, 5]]},
     ImageSize -> Medium]]
+```
+
+A line through *p* and *q* is a member of the family [InfraInfiniteLine]()[*p*, *q*]; the same walk without its last vertex is not:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {q = RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1]},
+  {line = RandomInfraInfiniteLine[g, c, q, RandomSeeding -> 1]},
+  {InfraMemberQ[g, InfraInfiniteLine[c, q], line], InfraMemberQ[g, InfraInfiniteLine[c, q], Most @ line]}]
 ```

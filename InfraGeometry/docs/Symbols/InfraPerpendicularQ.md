@@ -12,13 +12,13 @@ RelatedGuides: [Experimental]
 
 ## Usage
 
-<code>[InfraPerpendicularQ]()[*g*, *l1*, *l2*]</code> tests whether the lines *l1* and *l2* of *g* are perpendicular at every vertex they share.
+<code>[InfraPerpendicularQ]()[*g*, *l1*, *l2*]</code> tests whether the lines *l1* and *l2* of *g* meet in exactly one vertex and are perpendicular there.
 
 ## Details & Options
 
-With the default method, *l1* and *l2* are perpendicular at a common vertex when the feet of the perpendiculars from the vertices of each line onto the other lie in *l1 ∩ l2*. The foot of *x* on a line is the midpoint of two vertices of the line at equal distance from *x*.
+With the default method, *l1* and *l2* are perpendicular at their common vertex when the feet of the perpendiculars from the vertices of each line onto the other lie in *l1 ∩ l2*. A foot of *x* on a line is a centre vertex, along the line, of two vertices of the line at equal distance from *x* (two when the piece between them has an even number of vertices), or the nearest vertex of the line to *x* when it is unique.
 
-Lines that do not meet are not perpendicular. Lines on a graph can meet in more than one vertex; the test must then hold at each.
+Perpendicular lines meet in exactly one vertex. Lines that do not meet, or share two or more vertices, are not perpendicular under any method; in particular a line is not perpendicular to itself.
 
 There is no single right angle on a graph. The methods are not equivalent:
 
@@ -26,7 +26,7 @@ There is no single right angle on a graph. The methods are not equivalent:
 |---|---|
 | `"Projection"` (default) | the feet lie in the intersection |
 | `"Coordinate"` | the feet are balanced about the meeting point, measured along each line |
-| `"Arclength"` | the four angles at the meeting point are equal, each measured as a detour around a ball |
+| `"Arclength"` | the four angles at the meeting point are equal, each measured as a detour around a ball, infinite when the ball cuts every detour |
 | `"Alexandrov"` | the four comparison angles at the meeting point are equal |
 
 Sub-options go inside the method: `{"Projection", "Equality" -> e}` compares the feet with the intersection by [InfraEqualQ](), with `e` one of `"Subset"` (default), `"Set"`, `"Multiset"`, `"Diffuse"`, `"Overlap"`; `{"Coordinate", "ZeroTest" -> z}`; `{"Arclength", "Tolerance" -> t}` and `{"Alexandrov", "Tolerance" -> t, "Curvature" -> k}`, with *t* in radians.
@@ -36,7 +36,7 @@ Sub-options go inside the method: `{"Projection", "Equality" -> e}` compares the
 | [Method]() | `"Projection"` | a method or `{method, subopts}` |
 | `"Radius"` | `All` | *r*: test only within distance *r* of the meeting point |
 
-The default test is strict: a perpendicular built by [FindInfraPerpendicular]() as in Euclid I.12 generally fails it and passes with `"Equality" -> "Overlap"`.
+The default test is strict: a perpendicular built by [FindInfraPerpendicular]() as in Euclid I.12 generally fails it, and `"Equality" -> "Overlap"` accepts it when it meets the line in one vertex.
 
 Corresponding notions in the classical axiom systems:
 
@@ -59,7 +59,7 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}
     {l, {column, stairs}}]]
 ```
 
-A perpendicular from a vertex to a line through the centre, constructed by [FindInfraPerpendicular](). The default test rejects it, the `"Overlap"` equality accepts it:
+A perpendicular from a vertex to a line through the centre, constructed by [FindInfraPerpendicular](). On the grid it shares two vertices with the line, and no test accepts it; on the mesh the default test rejects it and the `"Overlap"` equality accepts it:
 
 ```wl
 GraphicsRow @ Table[
@@ -92,7 +92,7 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[
 
 ## Properties and Relations
 
-Of all perpendiculars [FindInfraPerpendicular]() constructs within distance 3 of the vertex, the number constructed, the number the default test accepts and the number `"Overlap"` accepts:
+Of all perpendiculars [FindInfraPerpendicular]() constructs within distance 3 of the vertex, the number constructed, the number the default test accepts, the number `"Overlap"` accepts and the number that meet the line in one vertex:
 
 ```wl
 Table[
@@ -102,13 +102,12 @@ Table[
     {p = RandomInfraPoint[g, Complement[RandomInfraPoint[g, InfraShell[c, 2], All], l1], RandomSeeding -> 1]},
     {perps = VertexList /@ FindInfraPerpendicular[g, l1, p, All, "Radius" -> 3]},
     {Length[perps], Count[InfraPerpendicularQ[g, l1, #] & /@ perps, True],
-     Count[InfraPerpendicularQ[g, l1, #, Method -> {"Projection", "Equality" -> "Overlap"}] & /@ perps, True]}],
+     Count[InfraPerpendicularQ[g, l1, #, Method -> {"Projection", "Equality" -> "Overlap"}] & /@ perps, True],
+     Count[perps, l_ /; Length[Intersection[l1, l]] == 1]}],
   {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-## Possible Issues
-
-A line passes the default test with itself: it has no vertex outside the intersection, so there is no foot to check. Lines that do not meet are never perpendicular:
+A line is not perpendicular to itself, and lines that do not meet are never perpendicular:
 
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},

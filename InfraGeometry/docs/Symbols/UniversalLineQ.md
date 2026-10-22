@@ -23,8 +23,6 @@ In the plane a line through two points misses almost every point. In a graph a l
 
 Chen and Chvátal conjectured that a metric space on *n* points with no universal line has at least *n* distinct lines, the metric form of the de Bruijn–Erdős theorem.
 
-The test reads every maximal geodesic of *g*, and is slow on graphs beyond a few dozen vertices.
-
 ## Basic Examples
 
 On the 3 × 4 grid the line through two adjacent vertices, or through opposite corners, is universal; the line through two vertices on a short diagonal is not:
@@ -48,4 +46,10 @@ Which small graphs have a universal line. Two antipodal vertices of an even cycl
 ```wl
 UniversalLineQ /@ <|"C5" -> CycleGraph[5], "C6" -> CycleGraph[6], "Petersen" -> PetersenGraph[],
   "K4" -> CompleteGraph[4], "star" -> StarGraph[5]|>
+```
+
+The square grid has a universal line; the square mesh has none:
+
+```wl
+Table[UniversalLineQ[InfraSubstrate[name, "Small"]], {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
