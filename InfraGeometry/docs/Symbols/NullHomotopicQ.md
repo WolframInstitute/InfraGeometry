@@ -35,8 +35,9 @@ Options:
 | `"FreeHomotopy"` | `False` | `True` lets the base point move |
 | `"MaxLength"` | `Automatic` | the longest walk a chain may pass through |
 | `"MaxMoves"` | [Infinity]() | the longest chain searched |
+| [Method]() | `"Exhaustive"` | `"Exhaustive"`, `"Greedy"` |
 
-The search is exhaustive and grows fast with the length of the cycle.
+The exhaustive search grows fast with the length of the cycle. The greedy search moves the walk ever closer to its base point and stops when no move does; its `False` means only that the descent stalled.
 
 ## Basic Examples
 
@@ -81,4 +82,14 @@ The cycle graph has no triangle, and its one cycle is not null-homotopic. Declar
 
 ```wl
 Table[NullHomotopicQ[CycleGraph[6], Range[6], "NullHomotopicCycles" -> k], {k, {3, 6}}]
+```
+
+### Method
+
+The boundary of the ladder of two squares, from the middle of a long side. Each square removed leaves a corner as far from the base point as before, so the greedy descent stalls where the exhaustive search contracts the walk:
+
+```wl
+With[{g = Graph[Range[6], {1 <-> 2, 2 <-> 3, 4 <-> 5, 5 <-> 6, 1 <-> 4, 2 <-> 5, 3 <-> 6}]},
+  Table[NullHomotopicQ[g, {2, 3, 6, 5, 4, 1}, "NullHomotopicCycles" -> 4, Method -> m],
+    {m, {"Exhaustive", "Greedy"}}]]
 ```

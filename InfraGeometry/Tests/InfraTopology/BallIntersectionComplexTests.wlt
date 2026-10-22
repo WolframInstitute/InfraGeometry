@@ -97,4 +97,12 @@ VerificationTest[
     TestID -> "MiniballRadius-one-point-exact-zero"
 ]
 
+(* exact points give the exact radius: the cube, an acute and an obtuse triangle, a corner tetrahedron *)
+VerificationTest[
+    {MiniballRadius[Tuples[{0, 1}, 3]], MiniballRadius[{{0, 0}, {2, 0}, {1, 3/2}}], MiniballRadius[{{0, 0}, {2, 0}, {1, 2/5}}],
+     MiniballRadius[{{0, 0, 0}, {4, 0, 0}, {0, 2, 0}, {0, 0, 1}}], MachineNumberQ @ MiniballRadius[N @ Tuples[{0, 1}, 3]]},
+    {Sqrt[3]/2, 13/12, 1, 5 Sqrt[17/21]/2, True},
+    TestID -> "MiniballRadius-exact-input-exact-output"
+]
+
 EndTestSection[]

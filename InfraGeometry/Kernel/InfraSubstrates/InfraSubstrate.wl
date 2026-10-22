@@ -52,15 +52,15 @@ InfraSubstrate[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || StringM
         "HyperbolicTilingGraph", BoundarylessGraph[
           TessellationNeighborhoodGraph[ { 3, 7 }, size /. { "Small" -> 3, "Medium" -> 4, "Large" -> 5 } ] ],
         "SquareGridGraph", BoundarylessGraph[
-          GridGraph[ size /. { "Small" -> { 10, 10 }, "Medium" -> { 17, 17 }, "Large" -> { 32, 32 } } ] ],
+          GridGraph[ Replace[ size /. { "Small" -> { 10, 10 }, "Medium" -> { 17, 17 }, "Large" -> { 32, 32 } }, n_Integer :> { n, n } ] ] ],
         "CubicGridGraph", With[
-          { dims = size /. { "Small" -> { 5, 5, 5 }, "Medium" -> { 7, 7, 7 }, "Large" -> { 10, 10, 10 } } },
+          { dims = Replace[ size /. { "Small" -> { 5, 5, 5 }, "Medium" -> { 7, 7, 7 }, "Large" -> { 10, 10, 10 } }, n_Integer :> { n, n, n } ] },
           BoundarylessGraph[
             Graph[ GridGraph @ dims, VertexCoordinates -> Reverse /@ Tuples[ Range /@ Reverse @ dims ] ] ] ],
         "SquareTorusGraph" | "TriangularTorusGraph" | "HexagonalTorusGraph", With[
-          { dims = size /. If[ name === "HexagonalTorusGraph",
+          { dims = Replace[ size /. If[ name === "HexagonalTorusGraph",
               { "Small" -> { 7, 7 }, "Medium" -> { 15, 10 }, "Large" -> { 25, 20 } },
-              { "Small" -> { 10, 10 }, "Medium" -> { 20, 15 }, "Large" -> { 40, 25 } } ] },
+              { "Small" -> { 10, 10 }, "Medium" -> { 20, 15 }, "Large" -> { 40, 25 } } ], k_Integer :> { k, k } ] },
           { m = First @ dims, n = Last @ dims, torus = TorusTessellation[ dims, StringDelete[ name, "TorusGraph" ] ] },
           Graph[ torus, VertexCoordinates -> Map[
             v |-> With[ { s = If[ Length @ v >= 3, v[[ 3 ]], 0 ] },
@@ -84,7 +84,7 @@ InfraSubstrate[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || StringM
         (* the branching sequence doubles on the levels whose index is a perfect power 1/exponent, so
            the tree grows subexponentially: its ball of radius r carries about r^(1/exponent) branchings *)
         "DilutedTreeGraph", With[
-          { spec = size /. { "Small" -> { 1/2, 16 }, "Medium" -> { 1/2, 26 }, "Large" -> { 1/2, 42 } } },
+          { spec = Replace[ size /. { "Small" -> { 1/2, 16 }, "Medium" -> { 1/2, 26 }, "Large" -> { 1/2, 42 } }, n_Integer :> { 1/2, n } ] },
           { exponent = First @ spec, depth = Last @ spec },
           BranchingSequenceTree @ Table[
             If[ MemberQ[ Ceiling[ Range[ depth ]^( 1 / exponent ) ], level ], 2, 1 ], { level, depth } ] ],
@@ -151,16 +151,18 @@ InfraSubstrateCode[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || Str
           HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 6, 3 }, radius ] ] ],
         "HyperbolicTilingGraph", With[ { radius = size /. { "Small" -> 3, "Medium" -> 4, "Large" -> 5 } },
           HoldComplete @ BoundarylessGraph[ TessellationNeighborhoodGraph[ { 3, 7 }, radius ] ] ],
-        "SquareGridGraph", With[ { dims = size /. { "Small" -> { 10, 10 }, "Medium" -> { 17, 17 }, "Large" -> { 32, 32 } } },
+        "SquareGridGraph", With[
+          { dims = Replace[ size /. { "Small" -> { 10, 10 }, "Medium" -> { 17, 17 }, "Large" -> { 32, 32 } }, n_Integer :> { n, n } ] },
           HoldComplete @ BoundarylessGraph[ GridGraph @ dims ] ],
-        "CubicGridGraph", With[ { dims = size /. { "Small" -> { 5, 5, 5 }, "Medium" -> { 7, 7, 7 }, "Large" -> { 10, 10, 10 } } },
+        "CubicGridGraph", With[
+          { dims = Replace[ size /. { "Small" -> { 5, 5, 5 }, "Medium" -> { 7, 7, 7 }, "Large" -> { 10, 10, 10 } }, n_Integer :> { n, n, n } ] },
           HoldComplete @ BoundarylessGraph[
             Graph[ GridGraph @ dims, VertexCoordinates -> Reverse /@ Tuples[ Range /@ Reverse @ dims ] ] ] ],
         "SquareTorusGraph" | "TriangularTorusGraph" | "HexagonalTorusGraph", With[
           { shape = StringDelete[ name, "TorusGraph" ],
-            dims = size /. If[ name === "HexagonalTorusGraph",
+            dims = Replace[ size /. If[ name === "HexagonalTorusGraph",
               { "Small" -> { 7, 7 }, "Medium" -> { 15, 10 }, "Large" -> { 25, 20 } },
-              { "Small" -> { 10, 10 }, "Medium" -> { 20, 15 }, "Large" -> { 40, 25 } } ] },
+              { "Small" -> { 10, 10 }, "Medium" -> { 20, 15 }, "Large" -> { 40, 25 } } ], k_Integer :> { k, k } ] },
           { m = First @ dims, n = Last @ dims },
           HoldComplete @ With[
             { torus = TorusTessellation[ dims, shape ] },
@@ -192,7 +194,8 @@ InfraSubstrateCode[ name_String /; MemberQ[ InfraSubstrate[ All ], name ] || Str
           HoldComplete @ KaryTree @ count ],
         "CompleteGraph", With[ { count = size /. { "Small" -> 10, "Medium" -> 30, "Large" -> 90 } },
           HoldComplete @ CompleteGraph @ count ],
-        "DilutedTreeGraph", With[ { spec = size /. { "Small" -> { 1/2, 16 }, "Medium" -> { 1/2, 26 }, "Large" -> { 1/2, 42 } } },
+        "DilutedTreeGraph", With[
+          { spec = Replace[ size /. { "Small" -> { 1/2, 16 }, "Medium" -> { 1/2, 26 }, "Large" -> { 1/2, 42 } }, n_Integer :> { 1/2, n } ] },
           { exponent = First @ spec, depth = Last @ spec },
           HoldComplete @ BranchingSequenceTree @ Table[
             If[ MemberQ[ Ceiling[ Range[ depth ]^( 1 / exponent ) ], level ], 2, 1 ], { level, depth } ] ],

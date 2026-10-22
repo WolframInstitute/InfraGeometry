@@ -176,4 +176,18 @@ VerificationTest[
     TestID -> "ResistanceQ-non-matrix"
 ]
 
+(* a rounding asymmetry below the tolerance 10^-9 is symmetric; one above it is not *)
+VerificationTest[
+    With[{r = EffectiveResistance[CycleGraph[5]]}, {e = ReplacePart[ConstantArray[0, {5, 5}], {1, 2} -> 1]},
+        {ResistanceQ[r + 10^-12 e], ResistanceQ[r + 10^-3 e]}],
+    {True, False},
+    TestID -> "ResistanceQ-symmetry-within-tolerance"
+]
+
+VerificationTest[
+    ResistanceQ @ EffectiveResistance @ InfraSubstrate["SquareGridGraph", "Small"],
+    True,
+    TestID -> "ResistanceQ-computed-resistances-of-the-square-grid"
+]
+
 EndTestSection[]

@@ -431,6 +431,23 @@ VerificationTest[
   TestID -> "NullHomotopicQ-on-a-cycle-graph"
 ]
 
+(* the ladder of two squares: greedy descent stalls where the exhaustive search finds the homotopy *)
+VerificationTest[
+  With[ { g = Graph[ Range[ 6 ], { 1 <-> 2, 2 <-> 3, 4 <-> 5, 5 <-> 6, 1 <-> 4, 2 <-> 5, 3 <-> 6 } ] },
+    { HomotopicQ[ g, { 1, 2, 3, 6 }, { 1, 4, 5, 6 }, "NullHomotopicCycles" -> 4 ],
+      HomotopicQ[ g, { 1, 2, 3, 6 }, { 1, 4, 5, 6 }, "NullHomotopicCycles" -> 4, Method -> "Greedy" ] } ],
+  { True, False },
+  TestID -> "HomotopicQ-honours-Method"
+]
+
+VerificationTest[
+  With[ { g = Graph[ Range[ 6 ], { 1 <-> 2, 2 <-> 3, 4 <-> 5, 5 <-> 6, 1 <-> 4, 2 <-> 5, 3 <-> 6 } ] },
+    { NullHomotopicQ[ g, { 2, 3, 6, 5, 4, 1 }, "NullHomotopicCycles" -> 4 ],
+      NullHomotopicQ[ g, { 2, 3, 6, 5, 4, 1 }, "NullHomotopicCycles" -> 4, Method -> "Greedy" ] } ],
+  { True, False },
+  TestID -> "NullHomotopicQ-honours-Method"
+]
+
 EndTestSection[]
 
 (* an open walk and a closed one are never in one homotopy class; the call is a non-match *)

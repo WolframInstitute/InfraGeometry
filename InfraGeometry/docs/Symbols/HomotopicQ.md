@@ -35,8 +35,9 @@ A family of walks, such as a list of walk graphs, gives `True` when every pair f
 | `"FreeHomotopy"` | `False` | `True` frees the endpoints of an open walk, the base point of a closed one |
 | `"MaxLength"` | `Automatic` | the longest walk, in vertices, the search visits; `Automatic` is the longer walk plus twice the longest filled cycle, at least 3 |
 | `"MaxMoves"` | `Infinity` | the most moves in a chain |
+| [Method]() | `"Exhaustive"` | `"Exhaustive"`, `"Greedy"` |
 
-The search is breadth first over all walks up to `"MaxLength"`, so `False` means no chain within that length.
+The exhaustive search is breadth first over all walks up to `"MaxLength"`, so `False` means no chain within that length. The greedy search takes the move that brings the walk closest to the target, in the Hausdorff distance, and stops when no move brings it closer; its `False` means only that the descent stalled.
 
 ## Basic Examples
 
@@ -69,6 +70,16 @@ With free endpoints every two walks of a connected graph are homotopic, as two p
 With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
   {members = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1], All]},
   HomotopicQ[g, First @ members, Last @ members, "FreeHomotopy" -> True]]
+```
+
+### Method
+
+On the ladder of two squares, with the squares filled, the two paths round the ladder are homotopic. The greedy descent stalls at once, since every move keeps a vertex at distance 1 from the other path:
+
+```wl
+With[{g = Graph[Range[6], {1 <-> 2, 2 <-> 3, 4 <-> 5, 5 <-> 6, 1 <-> 4, 2 <-> 5, 3 <-> 6}]},
+  Table[HomotopicQ[g, {1, 2, 3, 6}, {1, 4, 5, 6}, "NullHomotopicCycles" -> 4, Method -> m],
+    {m, {"Exhaustive", "Greedy"}}]]
 ```
 
 ## Properties and Relations
