@@ -31,7 +31,7 @@ The count *n* can be `n`, `UpTo[n]` or `All`. With the default `Properties -> {}
 | Option | Default | Values |
 |---|---|---|
 | [Properties]() | `{}` | `{}`: the bisector or slab; `{"Separating"}`: its inclusion-minimal subsets that separate *p₁* from *p₂*; `{"Separating", "Connected"}`: those that are connected |
-| `"NextVertexFunction"` | `Identity` | the order in which the search for a class tries vertices |
+| `"NextVertexFunction"` | `Identity` | a function applied to the class in sorted order: `Identity` keeps it, `RandomSample` shuffles it |
 
 Corresponding notions in the classical axiom systems:
 
