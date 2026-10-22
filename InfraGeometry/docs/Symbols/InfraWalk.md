@@ -23,6 +23,8 @@ A walk is a vertex sequence with each vertex adjacent to the next; vertices and 
 
 In a scene, <code>[InfraWalk]()[*p1*, …, *pk*]</code> is literal: its one realisation is the vertex list of the points, when consecutive points are adjacent, and there is none otherwise. Unlike [InfraSegment](), it does not join the points by shortest paths.
 
+The `"VertexDensity"` of a walk in [InfraMeasurement]() is its number of visits to each vertex, in both spellings; a vertex sequence that is not a walk of the graph has none.
+
 A walk returned by [RandomInfraWalk]() or [RandomInfraGeodesic]() is a [Graph](): a directed path on the position pairs {*i*, *v*}, a closed walk a directed cycle on them. `Last /@ VertexList[w]` gives its vertex sequence.
 
 ## Basic Examples

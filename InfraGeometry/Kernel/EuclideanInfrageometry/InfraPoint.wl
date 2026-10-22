@@ -130,7 +130,14 @@ FindClosestInfraPoint[ graph_Graph, line_, point_,
       _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ]
 
 InfraReachableQ[ graph_Graph, p1_, p2_ ] :=
-  IntersectingQ[ VertexComponent[ graph, Keys @ InfraMeasurement[ graph, p1, "VertexDensity" ] ], Keys @ InfraMeasurement[ graph, p2, "VertexDensity" ] ]
+  With[ { density1 = InfraMeasurement[ graph, p1, "VertexDensity" ], density2 = InfraMeasurement[ graph, p2, "VertexDensity" ] },
+    IntersectingQ[ VertexComponent[ graph, Keys @ density1 ], Keys @ density2 ] /; AssociationQ @ density1 && AssociationQ @ density2 ]
+
+(* every vertex the point can be is one member, so the density of a point token is 1 on its pool *)
+
+InfraMeasurement[ graph_Graph, point : InfraPoint[ ___ ], "VertexDensity" ] :=
+  With[ { pool = RandomInfraPoint[ graph, point, All, RandomSeeding -> None ] },
+    AssociationThread[ Sort @ pool, 1 ] /; ListQ @ pool ]
 
 RandomInfraPoint[ graph_Graph, InfraPoint[ ],
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&

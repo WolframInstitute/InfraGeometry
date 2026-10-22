@@ -15,7 +15,7 @@ SeeAlso: [InfraDistance, InfraWalkQ, ConnectedComponents, VertexComponent, Graph
 
 ## Details & Options
 
-*p* and *q* are vertices, vertex lists or regions such as <code>[InfraBall]()[*c*, *r*]</code>. The test is whether some vertex of *p* and some vertex of *q* lie in one connected component of *g*, that is *d(u, v) < ∞* for some *u* in *p* and *v* in *q*.
+*p* and *q* are vertices, vertex lists, regions such as <code>[InfraBall]()[*c*, *r*]</code>, walks <code>[InfraWalk]()[*path*]</code> or point tokens [InfraPoint](). The test is whether some vertex of *p* and some vertex of *q* lie in one connected component of *g*, that is *d(u, v) < ∞* for some *u* in *p* and *v* in *q*.
 
 On a connected graph every two vertices are reachable.
 
@@ -46,6 +46,14 @@ A ball lies in one component, however large:
 With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
   {cut = VertexDelete[g, Select[VertexList[g], Mod[#, 10] == 6 &]]},
   Table[InfraReachableQ[cut, InfraBall[45, r], 47], {r, {1, 5, 20}}]]
+```
+
+A walk and a point token across the cut, and on the same side:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  {cut = VertexDelete[g, Select[VertexList[g], Mod[#, 10] == 6 &]]},
+  {InfraReachableQ[cut, InfraWalk[{43, 44, 45}], InfraPoint[47]], InfraReachableQ[cut, InfraWalk[{43, 44, 45}], InfraPoint[42]]}]
 ```
 
 ## Properties and Relations

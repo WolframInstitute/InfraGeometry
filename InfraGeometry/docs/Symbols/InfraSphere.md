@@ -37,7 +37,7 @@ On a bipartite graph, such as the square grid, no two vertices at the same dista
 | `"CountingMeasure"` | the number of vertices in some member |
 | `"RiemannianMeasure"` | the number of those vertices all of whose neighbours are in some member |
 
-A sphere has no `"Graph"`, and `"Faithful"` stays unevaluated. [RandomInfraSphere]() draws members, one by default.
+A sphere has no `"Graph"`, and `"Faithful"` stays unevaluated. [RandomInfraSphere]() draws members, one by default, and [InfraMemberQ]() tests a vertex set.
 
 ## Basic Examples
 

@@ -81,6 +81,10 @@ InfraMeasurement[ graph_Graph, sphere : InfraSphere[ _, _ ], All ] :=
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
       "CountingMeasure", "RiemannianMeasure" } ]
 
+InfraMemberQ[ graph_Graph, InfraSphere[ center_, r_ ], vertices_List ] :=
+  With[ { members = RandomInfraSphere[ graph, center, r, All, RandomSeeding -> None ] },
+    MemberQ[ members, Union @ vertices ] /; ListQ @ members ]
+
 RandomInfraSphere[ graph_Graph, InfraSphere[ center_, radius_ ],
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
     opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&

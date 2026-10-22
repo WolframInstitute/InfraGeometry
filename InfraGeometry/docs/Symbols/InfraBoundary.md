@@ -18,7 +18,7 @@ RelatedGuides: [InfraTopology]
 
 The boundary is the inner vertex boundary *∂S = {v ∈ S : some neighbour of v is not in S}*. The rest of *S* is the [InfraInterior](), and *S* is the disjoint union of the two.
 
-The set *s* can be a vertex list, a density, a region such as [InfraBall]() or [InfraSegment](), or a graph. Only its vertices count.
+The set *s* can be a vertex list, a density, a region such as [InfraBall]() or [InfraSegment](), a walk <code>[InfraWalk]()[*path*]</code>, a point token [InfraPoint](), or a graph. Only its vertices count.
 
 On the square grid, away from the rim, the boundary of the ball *Bᵣ(c)* is the circle *Sᵣ(c)*, with *4r* vertices. In general the boundary of a ball lies in its circle, and a vertex of the circle with no neighbour farther out is not on it. A curve is all boundary.
 
@@ -110,5 +110,3 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]
   InfraSubstrateHighlight[g, {InfraBall[c, 6], Complement[circle, bd]},
     PlotLabel -> {Length[circle], Length[bd]}, ImageSize -> Medium]]
 ```
-
-A walk is not a set of vertices here. Give its vertex list instead of <code>[InfraWalk]()[*path*]</code>.

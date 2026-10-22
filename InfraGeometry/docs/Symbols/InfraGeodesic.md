@@ -22,7 +22,7 @@ The geodesic is the Riemannian geodesic seen by an observer who compares only po
 
 The germ must itself be a geodesic at scale *s*.
 
-[InfraGeodesic]() is a symbolic object: [RandomInfraGeodesic]() draws members, and [InfraMeasurement]() gives its `"Graph"`.
+[InfraGeodesic]() is a symbolic object: [RandomInfraGeodesic]() draws members, and [InfraMeasurement]() gives its `"Graph"`. The other readings of [InfraMeasurement]() are those of the family: `"Cardinality"` the number of members, `"Length"` their lengths, `"VertexDensity"` and `"EdgeDensity"` the number of members through each vertex and each directed edge. [InfraMemberQ]() tests a member. At scale [Infinity]() the family is the line through the germ, <code>[InfraInfiniteLine]()[*germ*]</code>, and the readings are computed on its atoms without listing the members; at a finite scale the members are listed.
 
 The `"Graph"` is the window graph of the forward extensions of *germ*. A vertex is a window, the last *s* vertices of a walk or fewer at the start. A window *w₁*, …, *wₘ* has an arrow to the window that appends *v* when *d(w₁, v) = m*. The walks of *k* edges from the germ's window are the *k*-step geodesic extensions of *germ*, revisits included. At scale 1 the windows are vertices; at scale 2 they are directed edges. At scale [Infinity]() the graph is the part of the graph of <code>[InfraHalfLine]()[*p*, *q*]</code> past *q*, with *p* and *q* the ends of the germ.
 
@@ -88,7 +88,24 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[
     Sort @ EdgeList @ Subgraph[ray, VertexOutComponent[ray, q]]]
 ```
 
+On the 6-cycle the members at scale 2 through an edge are the five Hamiltonian paths that hold it, so every vertex lies on all five:
+
+```wl
+InfraMeasurement[CycleGraph[6], InfraGeodesic[{1, 2}, 2], {"Cardinality", "Length", "VertexDensity"}]
+```
+
+At scale [Infinity]() the family through an edge of the grid is the line through it, with the same number of members and the same density:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {germ = {c, First @ AdjacencyList[g, c]}},
+  InfraMeasurement[g, InfraGeodesic[germ, Infinity], {"Cardinality", "VertexDensity"}] ===
+    InfraMeasurement[g, InfraInfiniteLine[germ], {"Cardinality", "VertexDensity"}]]
+```
+
 ## Possible Issues
+
+At a finite scale the readings other than `"Graph"` list every member. At small scales the members are nearly all simple walks through the germ, and their number grows exponentially with the size of the graph; at scale 1 on the Small grid the list takes more than a minute.
 
 A germ that is not a geodesic at the scale has no members, and its graph stays unevaluated. Stepping back fails at scale 2:
 

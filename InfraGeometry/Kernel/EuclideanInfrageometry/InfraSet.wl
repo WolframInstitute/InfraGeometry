@@ -46,20 +46,18 @@ Options[ InfraInterior ] = { Method -> "Combinatorial" }
 
 InfraBoundary[ g_Graph, s_, opts : OptionsPattern[] ] /;
     MatchQ[ OptionValue[ InfraBoundary, { opts }, Method ], "Combinatorial" | "Alexandrov" | { "Combinatorial" | "Alexandrov", ___ } ] :=
-  With[ { vs = Keys @ InfraMeasurement[ g, s, "VertexDensity" ] },
+  With[ { density = InfraMeasurement[ g, s, "VertexDensity" ] },
     Switch[ Replace[ OptionValue[ Method ], { m_String, ___ } :> m ],
-      "Combinatorial", Union @ GraphBoundary[ g, vs ],
+      "Combinatorial", Union @ GraphBoundary[ g, Keys @ density ],
       "Alexandrov",    Union @ TopologicalBoundary[
-        BallTopology[ g, Lookup[ Replace[ OptionValue[ Method ], { { _String, o___ } :> { o }, _ -> { } } ], "Radius", 1 ] ], vs ]
-    ]
-  ]
+        BallTopology[ g, Lookup[ Replace[ OptionValue[ Method ], { { _String, o___ } :> { o }, _ -> { } } ], "Radius", 1 ] ], Keys @ density ] ] /;
+      AssociationQ @ density ]
 
 InfraInterior[ g_Graph, s_, opts : OptionsPattern[] ] /;
     MatchQ[ OptionValue[ InfraInterior, { opts }, Method ], "Combinatorial" | "Alexandrov" | { "Combinatorial" | "Alexandrov", ___ } ] :=
-  With[ { vs = Keys @ InfraMeasurement[ g, s, "VertexDensity" ] },
+  With[ { density = InfraMeasurement[ g, s, "VertexDensity" ] },
     Switch[ Replace[ OptionValue[ Method ], { m_String, ___ } :> m ],
-      "Combinatorial", Union @ GraphInterior[ g, vs ],
+      "Combinatorial", Union @ GraphInterior[ g, Keys @ density ],
       "Alexandrov",    Union @ TopologicalInterior[
-        BallTopology[ g, Lookup[ Replace[ OptionValue[ Method ], { { _String, o___ } :> { o }, _ -> { } } ], "Radius", 1 ] ], vs ]
-    ]
-  ]
+        BallTopology[ g, Lookup[ Replace[ OptionValue[ Method ], { { _String, o___ } :> { o }, _ -> { } } ], "Radius", 1 ] ], Keys @ density ] ] /;
+      AssociationQ @ density ]

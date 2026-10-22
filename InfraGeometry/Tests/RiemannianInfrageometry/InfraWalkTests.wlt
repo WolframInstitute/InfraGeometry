@@ -1950,4 +1950,57 @@ VerificationTest[
   TestID -> "RandomInfraGeodesic-tutorial-beam-scale-Infinity"
 ]
 
+(* ===== the readings of InfraGeodesic are read off its members ===== *)
+
+(* on the 6-cycle the members at scale 2 through an edge are the five Hamiltonian paths holding it: every vertex lies on all five *)
+VerificationTest[
+  InfraMeasurement[ CycleGraph[ 6 ], InfraGeodesic[ { 1, 2 }, 2 ], { "VertexDensity", "Cardinality", "Length" } ],
+  <| "VertexDensity" -> <| 1 -> 5, 2 -> 5, 3 -> 5, 4 -> 5, 5 -> 5, 6 -> 5 |>, "Cardinality" -> 5, "Length" -> 5 |>,
+  TestID -> "InfraGeodesic-readings-on-the-6-cycle"
+]
+
+(* on a path the one member through an edge at scale Infinity is the whole path, extended backwards as well as forwards *)
+VerificationTest[
+  InfraMeasurement[ PathGraph[ Range[ 5 ] ], InfraGeodesic[ { 2, 3 }, Infinity ], { "VertexDensity", "EdgeDensity", "Cardinality" } ],
+  <| "VertexDensity" -> <| 1 -> 1, 2 -> 1, 3 -> 1, 4 -> 1, 5 -> 1 |>,
+     "EdgeDensity" -> <| DirectedEdge[ 1, 2 ] -> 1, DirectedEdge[ 2, 3 ] -> 1, DirectedEdge[ 3, 4 ] -> 1, DirectedEdge[ 4, 5 ] -> 1 |>,
+     "Cardinality" -> 1 |>,
+  TestID -> "InfraGeodesic-readings-on-a-path"
+]
+
+(* the vertex density counts the members through each vertex, at a finite scale and at Infinity *)
+VerificationTest[
+  With[ { g = GridGraph[ { 3, 4 } ] },
+    Table[ InfraMeasurement[ g, InfraGeodesic[ { 5, 6 }, s ], "VertexDensity" ] ===
+        KeySort @ Counts @ Catenate @ RandomInfraGeodesic[ g, InfraGeodesic[ { 5, 6 }, s ], All ], { s, { 2, Infinity } } ] ],
+  { True, True },
+  TestID -> "InfraGeodesic-VertexDensity-counts-the-members"
+]
+
+(* a member is a maximal geodesic through the germ; a proper part of one is not a member *)
+VerificationTest[
+  With[ { g = PathGraph[ Range[ 5 ] ] },
+    { InfraMemberQ[ g, InfraGeodesic[ { 2, 3 }, Infinity ], { 1, 2, 3, 4, 5 } ],
+      InfraMemberQ[ g, InfraGeodesic[ { 2, 3 }, Infinity ], { 2, 3, 4, 5 } ] } ],
+  { True, False },
+  TestID -> "InfraGeodesic-member-is-a-maximal-geodesic"
+]
+
+(* ===== the vertex density of a walk token ===== *)
+
+(* a walk counts each vertex as often as it visits it, in both spellings *)
+VerificationTest[
+  With[ { g = PathGraph[ Range[ 4 ] ] },
+    { InfraMeasurement[ g, InfraWalk[ 1, 2, 3, 2 ], "VertexDensity" ], InfraMeasurement[ g, InfraWalk[ { 1, 2, 3, 2 } ], "VertexDensity" ] } ],
+  { <| 1 -> 1, 2 -> 2, 3 -> 1 |>, <| 1 -> 1, 2 -> 2, 3 -> 1 |> },
+  TestID -> "InfraWalk-VertexDensity-counts-the-visits"
+]
+
+(* a vertex sequence that is not a walk of the graph has no density *)
+VerificationTest[
+  Head @ InfraMeasurement[ PathGraph[ Range[ 4 ] ], InfraWalk[ 1, 3 ], "VertexDensity" ],
+  InfraMeasurement,
+  TestID -> "InfraWalk-VertexDensity-of-a-non-walk-stays-unevaluated"
+]
+
 EndTestSection[]

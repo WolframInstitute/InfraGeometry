@@ -650,3 +650,11 @@ VerificationTest[
   { 2 },
   TestID -> "synthetic-composite-point-excludes-zero-density"
 ]
+
+(* a list of properties gives an Association for the three synthetic heads too; on the 4-cycle all three are { 2, 4 } *)
+VerificationTest[
+  InfraMeasurement[ CycleGraph[ 4 ], #, { "VertexDensity", "CountingMeasure" } ] & /@
+    { InfraMidpoint[ 1, 3 ], InfraPerpendicularBisector[ 1, 3 ], InfraRegionNearest[ InfraBall[ 3, 1 ], 1 ] },
+  ConstantArray[ <| "VertexDensity" -> <| 2 -> 1, 4 -> 1 |>, "CountingMeasure" -> 2 |>, 3 ],
+  TestID -> "synthetic-heads-take-a-property-list"
+]

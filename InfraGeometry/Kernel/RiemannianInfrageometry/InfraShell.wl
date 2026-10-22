@@ -155,3 +155,7 @@ InfraMeasurement[ graph_Graph, shell : InfraShell[ _, _ ], All ] :=
   InfraMeasurement[ graph, shell,
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
       "CountingMeasure", "RiemannianMeasure" } ]
+
+InfraMemberQ[ graph_Graph, shell : InfraShell[ _, _ ], vertices_List ] :=
+  With[ { density = InfraMeasurement[ graph, shell, "VertexDensity" ] },
+    Union @ vertices === Keys @ density /; AssociationQ @ density ]

@@ -80,4 +80,13 @@ VerificationTest[
   TestID -> "InfraShell-draws"
 ]
 
+(* the one member of a shell or a band is its vertex set *)
+VerificationTest[
+  With[ { g = GridGraph[ { 3, 3 } ] },
+    { InfraMemberQ[ g, InfraShell[ 5, 1 ], { 8, 6, 4, 2 } ], InfraMemberQ[ g, InfraShell[ 5, 1 ], { 2, 4 } ],
+      InfraMemberQ[ g, InfraShell[ 1, { 1, 2 } ], { 2, 3, 4, 5, 7 } ] } ],
+  { True, False, True },
+  TestID -> "InfraMemberQ-shell-member-is-its-vertex-set"
+]
+
 EndTestSection[]
