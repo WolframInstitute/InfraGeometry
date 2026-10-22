@@ -370,7 +370,7 @@ walkSequence[ w_Graph ] :=
                 { u, prev } |-> First[ VertexOutComponent[ w, { u }, { 1 } ], None ],
                 { u, prev } |-> First[ DeleteCases[ AdjacencyList[ w, u ], prev ], None ] ] },
         { seq = TakeWhile[
-            First /@ NestList[ { nextOf @@ #, First @ # } &, { start, None }, VertexCount @ w ],
+            First /@ NestWhileList[ { nextOf @@ #, First @ # } &, { start, None }, First @ # =!= None &, 1, VertexCount @ w ],
             # =!= None & ] },
         If[ closedWalkQ @ w, Most @ seq, seq ] ] ]
 

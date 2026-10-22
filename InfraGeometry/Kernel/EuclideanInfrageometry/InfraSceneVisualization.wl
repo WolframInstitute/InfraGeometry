@@ -352,17 +352,24 @@ infraInk[ graph_Graph, x_ ] :=
                KeyExistsQ[ edges, UndirectedEdge @@ Sort @ { Last @ member, First @ member } ],
              Append[ member, First @ member ], member ],
            "Knots"         -> { } |> ],
+    MatchQ[ x, _InfraGeodesic ],
+      infraInk[ graph, InfraWalk /@ RandomInfraGeodesic[ graph, x, All, RandomSeeding -> None ] ],
+    MatchQ[ x, _InfraEllipse ],
+      infraInk[ graph, RandomInfraEllipse[ graph, x, All, RandomSeeding -> None ] ],
     GraphQ[ x ],
-      With[ { literal = UndirectedGraphQ[ x ] && AllTrue[ VertexList @ x, VertexQ[ graph, # ] & ] },
+      With[ { literal = UndirectedGraphQ[ x ] && AllTrue[ VertexList @ x, VertexQ[ graph, # ] & ],
+          cycle = ConnectedGraphQ[ x ] && EdgeCount[ x ] == VertexCount[ x ] && If[ DirectedGraphQ @ x,
+            AllTrue[ Join[ VertexInDegree @ x, VertexOutDegree @ x ], # == 1 & ], AllTrue[ VertexDegree @ x, # == 2 & ] ] },
         { walk = Which[
-          literal,                            None,
-          closedWalkQ @ x,                     closeWalk @ walkSequence @ x,
+          literal,                                None,
+          cycle,                                  closeWalk @ walkSequence @ x,
           positionSpelledQ @ x || PathGraphQ @ x, walkSequence @ x,
-          True,                                None ] },
+          True,                                   None ] },
         <| "VertexDensity" -> If[ literal, KeySort @ Counts @ VertexList @ x, InfraMeasurement[ graph, x, "VertexDensity" ] ],
            "EdgeDensity"   -> Which[
              walk =!= None, KeySort @ Counts[ UndirectedEdge @@ Sort @ # & /@ Partition[ walk, 2, 1 ] ],
              UndirectedGraphQ @ x, KeySort @ Counts[ UndirectedEdge @@ Sort[ List @@ # ] & /@ EdgeList @ x ],
+             ! LoopFreeGraphQ @ x || ! AcyclicGraphQ @ x, AssociationMap[ 1 &, Union[ UndirectedEdge @@ Sort[ List @@ # ] & /@ EdgeList @ x ] ],
              True, KeySort @ GroupBy[
                With[ { inNbr = GroupBy[ EdgeList @ x, Last -> First ], outNbr = GroupBy[ EdgeList @ x, First -> Last ], order = TopologicalSort @ x },
                  { alpha = Fold[ { a, w } |-> Append[ a, w -> Replace[ Lookup[ inNbr, Key @ w, { } ],
@@ -373,7 +380,7 @@ infraInk[ graph_Graph, x_ ] :=
                ( UndirectedEdge @@ Sort[ List @@ First @ # ] & ) -> Last, Total ] ],
            "Walk"          -> walk,
            "Knots"         -> { } |> ],
-    MatchQ[ x, { _Graph, __Graph } ] && NoneTrue[ x, closedWalkQ ] &&
+    MatchQ[ x, { _Graph, __Graph } ] && AllTrue[ x, w |-> positionSpelledQ @ w || PathGraphQ @ w ] &&
       AllTrue[ Partition[ walkSequence /@ x, 2, 1 ], Last @ First @ # === First @ Last @ # & ],
       With[ { knots = Prepend[ Last @ walkSequence @ # & /@ x, First @ walkSequence @ First @ x ] },
         Append[ infraInk[ graph, InfraWalk @ polylineToVertexSeq @ x ],

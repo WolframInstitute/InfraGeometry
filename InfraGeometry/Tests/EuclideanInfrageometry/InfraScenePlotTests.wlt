@@ -190,3 +190,31 @@ VerificationTest[
 	{ True, True, True, True },
 	TestID -> "InfraScenePlot-defaults-preserve-native-layout-styling-and-format"
 ]
+
+ClearAll[ scenePlotCircle, scenePlotLoop, scenePlotArc, scenePlotSquare, scenePlotTriangle ]
+
+(* a circle, a closed arc and a regular polygon are saved as open vertex lists and drawn closed;
+   an open arc stays open and a closed polyline, saved closed, is not closed twice *)
+VerificationTest[
+	With[ { scene = InfraScene[
+		{ scenePlotA, scenePlotB, scenePlotC, scenePlotCircle, scenePlotLoop, scenePlotArc, scenePlotSquare, scenePlotTriangle }, {
+			scenePlotA == InfraPoint[], scenePlotB == InfraPoint[], scenePlotC == InfraPoint[],
+			scenePlotCircle == InfraCircle[ scenePlotA, { 1, 2 } ], scenePlotLoop == InfraArc[ scenePlotA, { scenePlotB, scenePlotB } ],
+			scenePlotArc == InfraArc[ scenePlotA, { scenePlotB, scenePlotC } ], scenePlotSquare == InfraRegularPolygon[ { 2 }, 4 ],
+			scenePlotTriangle == InfraSegment[ scenePlotA, scenePlotB, scenePlotC, scenePlotA ] } ] },
+		scenePlotItems[ InfraScenePlot[ scene, GridGraph[ { 3, 3 } ],
+			InfraSceneInstance[ <| scenePlotA -> 5, scenePlotB -> 2, scenePlotC -> 6, scenePlotCircle -> { 1, 2, 3, 6, 9, 8, 7, 4 },
+				scenePlotLoop -> { 2, 3, 6, 9, 8, 7, 4, 1 }, scenePlotArc -> { 2, 3, 6 }, scenePlotSquare -> { 1, 2, 5, 4 },
+				scenePlotTriangle -> { 5, 2, 3, 6, 5 } |> ],
+			{ scenePlotCircle, scenePlotLoop, scenePlotArc, scenePlotSquare, scenePlotTriangle } ] ] ],
+	{ InfraWalk[ { 1, 2, 3, 6, 9, 8, 7, 4, 1 } ], InfraWalk[ { 2, 3, 6, 9, 8, 7, 4, 1, 2 } ], InfraWalk[ { 2, 3, 6 } ],
+		InfraWalk[ { 1, 2, 5, 4, 1 } ], InfraWalk[ { 5, 2, 3, 6, 5 } ] },
+	TestID -> "InfraScenePlot-saved-closed-constructions-drawn-closed"
+]
+
+VerificationTest[
+	scenePlotItems[ InfraScenePlot[ scenePlotScene, CycleGraph[ 4 ], scenePlotInstance,
+		{ InfraGeodesic[ { scenePlotA, scenePlotB }, 2 ], InfraEllipse[ { scenePlotA, scenePlotB }, 2 ] } ] ],
+	{ InfraGeodesic[ { 1, 3 }, 2 ], InfraEllipse[ { 1, 3 }, 2 ] },
+	TestID -> "InfraScenePlot-geodesic-and-ellipse-tokens-draw-at-the-saved-points"
+]

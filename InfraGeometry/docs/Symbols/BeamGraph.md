@@ -27,12 +27,12 @@ In the germ form the middle interval *I(p, q)* is replaced by the germ itself.
 
 ## Basic Examples
 
-The DAGs of the line through the centre and a vertex at distance 2 on the square grid, drawn together, and their number:
+The DAGs of the line through the centre and a vertex at distance 2 on the square grid, drawn as one object, and their number. Each edge is as strong as the number of lines through it:
 
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
   {q = RandomInfraPoint[g, InfraShell[p, 2], RandomSeeding -> 1]}, {dags = BeamGraph[g, p, q]},
-  InfraSubstrateHighlight[g, Join[dags, {p, q}], PlotLabel -> Length[dags], ImageSize -> Medium]]
+  InfraSubstrateHighlight[g, {dags, p, q}, PlotLabel -> Length[dags], ImageSize -> Medium]]
 ```
 
 Three of the DAGs on the square mesh, each drawn with its source and its sink:

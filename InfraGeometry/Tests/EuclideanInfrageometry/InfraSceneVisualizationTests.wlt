@@ -1019,3 +1019,70 @@ VerificationTest[
   { 12 -> "Square", 13 -> "Square" },
   TestID -> "InfraSubstrateHighlight-explicit-shape-wins-on-a-negative-mass"
 ]
+
+
+(* ===== only a path or a cycle is a walk: a DAG, a list of DAGs, a digraph with cycles draw as densities ===== *)
+
+(* two branching DAGs end to start: each counts its source-to-sink paths, and the list is their sum, not a polyline *)
+VerificationTest[
+  With[ { g = GridGraph[ { 3, 3 } ], dags = { Graph[ { 1 -> 2, 1 -> 4, 2 -> 5, 4 -> 5 } ], Graph[ { 5 -> 6, 5 -> 8, 6 -> 9, 8 -> 9 } ] } },
+    { ink = infraInk[ g, dags ] },
+    { ink[ "VertexDensity" ], Values @ ink[ "EdgeDensity" ], ink[ "Walk" ], ink[ "Knots" ] } ],
+  { <| 1 -> 2, 2 -> 1, 4 -> 1, 5 -> 4, 6 -> 1, 8 -> 1, 9 -> 2 |>, ConstantArray[ 1, 8 ], None, { } },
+  TestID -> "infraInk-list-of-DAGs-is-the-sum-of-path-densities"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 4, 4 } ] },
+    { dags = BeamGraph[ g, 6, 7 ] },
+    { Head @ InfraSubstrateHighlight[ g, { dags } ],
+      Total @ infraInk[ g, dags ][ "EdgeDensity" ] === Total @ InfraMeasurement[ g, InfraInfiniteLine[ 6, 7 ], "EdgeDensity" ] } ],
+  { Graph, True },
+  TestID -> "InfraSubstrateHighlight-list-of-DAGs-draws-the-line"
+]
+
+(* a digraph with a cycle that is not itself a cycle has no path density: it draws as its support, every edge once *)
+VerificationTest[
+  With[ { g = GridGraph[ { 3, 3 } ], h = Graph[ { 1 -> 2, 2 -> 3, 1 -> 4, 4 -> 5, 5 -> 2, 2 -> 5, 5 -> 6, 6 -> 3 } ] },
+    { ink = infraInk[ g, h ] },
+    { Head @ InfraSubstrateHighlight[ g, { h } ], ink[ "VertexDensity" ], ink[ "EdgeDensity" ], ink[ "Walk" ] } ],
+  { Graph, AssociationThread[ Range[ 6 ] -> 1 ],
+    AssociationThread[ UndirectedEdge @@@ { { 1, 2 }, { 1, 4 }, { 2, 3 }, { 2, 5 }, { 3, 6 }, { 4, 5 }, { 5, 6 } } -> 1 ], None },
+  TestID -> "infraInk-cyclic-digraph-is-its-support"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 3, 3 } ] },
+    { Head @ InfraSubstrateHighlight[ g, { PathSubgraph[ g, 1, 3, 4 ] } ], infraInk[ g, Graph[ { 1 -> 2, 2 -> 5, 5 -> 4, 4 -> 1 } ] ][ "Walk" ] } ],
+  { Graph, { 1, 2, 5, 4, 1 } },
+  TestID -> "InfraSubstrateHighlight-PathSubgraph-with-detours-and-directed-cycle"
+]
+
+
+(* ===== family heads without a measurement of their own draw their members ===== *)
+
+(* on the 3 x 3 grid the maximal shortest paths through 5, 6 are 1, 4, 5, 6, 9 and 1, 2, 5, 6, 9 and their mirrors 7, 4, 5, 6, 3
+   and 7, 8, 5, 6, 3: four members through the edge 5 - 6 *)
+VerificationTest[
+  With[ { g = GridGraph[ { 3, 3 } ] },
+    { ink = infraInk[ g, InfraGeodesic[ { 5, 6 }, Infinity ] ] },
+    { Head @ InfraSubstrateHighlight[ g, { InfraGeodesic[ { 5, 6 }, Infinity ] } ], ink[ "VertexDensity" ],
+      ink[ "EdgeDensity" ][ UndirectedEdge[ 5, 6 ] ], ink[ "Walk" ] } ],
+  { Graph, <| 1 -> 2, 2 -> 1, 3 -> 2, 4 -> 2, 5 -> 4, 6 -> 4, 7 -> 2, 8 -> 1, 9 -> 2 |>, 4, None },
+  TestID -> "InfraSubstrateHighlight-InfraGeodesic-draws-its-members"
+]
+
+VerificationTest[
+  infraInk[ PathGraph @ Range[ 5 ], InfraGeodesic[ { 2, 3 }, 2 ] ][ "Walk" ],
+  { 1, 2, 3, 4, 5 },
+  TestID -> "infraInk-InfraGeodesic-one-member-is-a-walk"
+]
+
+VerificationTest[
+  With[ { g = CycleGraph[ 6 ] },
+    { ink = infraInk[ g, InfraEllipse[ { 1, 4 }, 3, Properties -> { } ] ], empty = infraInk[ g, InfraEllipse[ { 1, 4 }, 1 ] ] },
+    { Head @ InfraSubstrateHighlight[ g, { InfraEllipse[ { 1, 4 }, 3, Properties -> { } ] } ], ink[ "VertexDensity" ], Length @ ink[ "Walk" ],
+      First @ ink[ "Walk" ] === Last @ ink[ "Walk" ], empty[ "VertexDensity" ], empty[ "EdgeDensity" ] } ],
+  { Graph, AssociationThread[ Range[ 6 ] -> 1 ], 7, True, <| |>, <| |> },
+  TestID -> "InfraSubstrateHighlight-InfraEllipse-draws-its-cycles"
+]

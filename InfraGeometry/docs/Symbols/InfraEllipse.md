@@ -33,13 +33,13 @@ Options, given inside the head:
 
 ## Basic Examples
 
-The ellipse on the band of sums 6 to 8, with the centre and a point at distance 2 as foci:
+The ellipse on the band of sums 6 to 8, with the centre and a point at distance 2 as foci, drawn with all its members:
 
 ```wl
 GraphicsRow @ Table[
   With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
     {q = RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1]},
-    InfraSubstrateHighlight[g, {RandomInfraEllipse[g, InfraEllipse[{c, q}, {6, 8}], RandomSeeding -> 1], c, q}]],
+    InfraSubstrateHighlight[g, {InfraEllipse[{c, q}, {6, 8}], c, q}]],
   {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 

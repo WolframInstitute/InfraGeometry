@@ -27,8 +27,12 @@ RelatedGuides: [EuclideanInfrageometry]
 | a vertex list | 1 on each vertex; a list that is a path in its own order is drawn as the walk | none, or the walk |
 | <code>[InfraWalk]()[{*v1*, …, *vk*}]</code> | the visits | the traversals of its steps |
 | a family: [InfraSegment](), [InfraHalfLine](), [InfraCircle](), … | `"VertexDensity"` of [InfraMeasurement]() | `"EdgeDensity"` |
+| a family [InfraGeodesic]() or [InfraEllipse]() | the sum over its members | the sum over its members |
 | a region: [InfraBall](), [InfraShell](), [InfraTube](), [InfraIntersection](), … | `"VertexDensity"` | none |
-| a subgraph of *g*, a walk graph, a directed acyclic graph | its occupation | its occupation |
+| a subgraph of *g* | 1 on each vertex | 1 on each edge |
+| a walk graph, a directed path or cycle | the visits | the traversals, drawn as the walk |
+| a directed acyclic graph | the source-to-sink paths through each vertex | the paths through each edge |
+| any other directed graph | 1 on each vertex | 1 on each edge |
 | a list of such objects | the sum, in one colour | the sum |
 
 An object with edges is drawn as a line, the stroke along each edge growing with its count; any other object as dots on its vertices, sized by mass. A mass of 1 draws at the substrate's own vertex size and edge thickness, in the object's colour; the heaviest mass of an object draws at the top of the range, by default 3 times the base size for a dot and 4 times for a stroke. The opacity follows mass over the heaviest mass, along `"OpacityRange"`.
