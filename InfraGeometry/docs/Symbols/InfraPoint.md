@@ -24,7 +24,7 @@ A point is a vertex. The label of the vertex is the point; there is no separate 
 
 [InfraPoint]() is a symbolic object. In an [InfraScene]() it constructs a point: <code>*p* == [InfraPoint]()[]</code> lets *p* range over every vertex, and the assertions of the scene select the admissible ones. [RandomInfraSceneInstance]() solves the scene on a graph.
 
-As a region of [RandomInfraPoint]() it is the vertex set it names:
+As a region of [RandomInfraPoint]() it is the vertex set it names, and its `"VertexDensity"` in [InfraMeasurement]() is 1 on that set:
 
 | Region | Vertices |
 |---|---|
@@ -66,6 +66,14 @@ As a region of [RandomInfraPoint](): one vertex, every vertex, the vertices of a
 With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
   {RandomInfraPoint[g, InfraPoint[c], All], Length @ RandomInfraPoint[g, InfraPoint[], All],
    Sort @ RandomInfraPoint[g, InfraPoint[InfraBall[c, 1]], All]}]
+```
+
+A point of a segment can be any vertex of its interval. The segment from the centre 45 to 67 counts the shortest paths through each vertex; the point weighs every vertex 1:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {seg = InfraSegment[45, 67]},
+  GraphicsRow[{InfraSubstrateHighlight[g, {InfraMeasurement[g, seg, "VertexDensity"]}],
+    InfraSubstrateHighlight[g, {InfraMeasurement[g, InfraPoint[seg], "VertexDensity"]}]}]]
 ```
 
 Two points at distance 4 from each other and at distance 4 from the centre. The admissible second points on the mesh, for one first point:

@@ -204,4 +204,11 @@ VerificationTest[
   TestID -> "InfraDistance-ball-ball"
 ]
 
+(* the one member of a ball is its vertex set, in any order *)
+VerificationTest[
+  With[ { g = GridGraph[ { 3, 3 } ] }, { InfraMemberQ[ g, InfraBall[ 1, 1 ], { 4, 1, 2 } ], InfraMemberQ[ g, InfraBall[ 1, 1 ], { 1, 2 } ] } ],
+  { True, False },
+  TestID -> "InfraMemberQ-ball-member-is-its-vertex-set"
+]
+
 EndTestSection[]

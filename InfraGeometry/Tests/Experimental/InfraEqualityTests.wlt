@@ -183,4 +183,20 @@ VerificationTest[
   TestID -> "InfraEqualQ-lattice-monotonicity"
 ]
 
+(* point and walk tokens are compared through their vertex densities: a walk's revisits count as multiplicity *)
+VerificationTest[
+  With[ { g = PathGraph[ Range[ 4 ] ] },
+    { InfraEqualQ[ g, InfraPoint[ 2 ], 2 ], InfraEqualQ[ g, InfraWalk[ 1, 2, 3 ], { 1, 2, 3 }, Method -> "Multiset" ],
+      InfraEqualQ[ g, InfraWalk[ 1, 2, 1 ], { 1, 2 }, Method -> "Multiset" ], InfraEqualQ[ g, InfraWalk[ 1, 2, 1 ], { 1, 2 }, Method -> "Set" ] } ],
+  { True, True, False, True },
+  TestID -> "InfraEqualQ-on-point-and-walk-tokens"
+]
+
+(* an object without a vertex density is a non-match *)
+VerificationTest[
+  Head @ InfraEqualQ[ PathGraph[ Range[ 3 ] ], InfraWalk[ 1, 3 ], 1 ],
+  InfraEqualQ,
+  TestID -> "InfraEqualQ-stays-unevaluated-without-a-density"
+]
+
 EndTestSection[]

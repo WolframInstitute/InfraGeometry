@@ -18,7 +18,7 @@ RelatedGuides: [InfraTopology]
 
 The interior is *int S = {v ∈ S : every neighbour of v is in S}*, the set *S* minus its [InfraBoundary]().
 
-The set *s* can be a vertex list, a density, a region such as [InfraBall]() or [InfraSegment](), or a graph. Only its vertices count.
+The set *s* can be a vertex list, a density, a region such as [InfraBall]() or [InfraSegment](), a walk <code>[InfraWalk]()[*path*]</code>, a point token [InfraPoint](), or a graph. Only its vertices count.
 
 The interior is what the `"RiemannianMeasure"` of [InfraMeasurement]() counts. On the square grid, away from the rim, the interior of the ball *Bᵣ(c)* is the ball *Bᵣ₋₁(c)*, with *2r² − 2r + 1* vertices. A curve has an empty interior. The whole graph is its own interior.
 
@@ -91,6 +91,9 @@ The rim of the graph is not a boundary, so the whole graph is its own interior:
 With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, InfraInterior[g, VertexList[g]] === Sort @ VertexList[g]]
 ```
 
-## Possible Issues
+A walk has the interior of its vertex set. A closed walk round a square of side 2 is a curve and has none; the square it bounds has its centre 56:
 
-A walk is not a set of vertices here. Give its vertex list instead of <code>[InfraWalk]()[*path*]</code>.
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  {InfraInterior[g, InfraWalk[{45, 46, 47, 57, 67, 66, 65, 55, 45}]], InfraInterior[g, {45, 46, 47, 55, 56, 57, 65, 66, 67}]}]
+```

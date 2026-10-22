@@ -24,7 +24,9 @@ A family — [InfraSegment](), [InfraHalfLine](), [InfraInfiniteLine](), [InfraC
 
 Members are oriented: a member of <code>[InfraSegment]()[*p*, *q*]</code> runs from *p* to *q*. A member of a circle is a cyclic vertex list, its first vertex not repeated, and is recognised up to rotation and direction.
 
-A region — [InfraTube](), [InfraCylinder](), [InfraCone](), [InfraQuadric](), [InfraPerpendicularBisector](), [InfraEquidistantSet]() — has one member, its vertex set. The order and repetition of *vs* do not matter.
+The members of [InfraGeodesic]() are its simple geodesics that cannot be extended, those of [InfraSphere]() its minimal separating sets, as [RandomInfraGeodesic]() and [RandomInfraSphere]() list them.
+
+A region — [InfraBall](), [InfraShell](), [InfraTube](), [InfraCylinder](), [InfraCone](), [InfraQuadric](), [InfraPerpendicularBisector](), [InfraEquidistantSet]() — has one member, its vertex set. The order and repetition of *vs* do not matter.
 
 A point family — [InfraMidpoint](), [InfraRegionNearest]() — has vertices as members.
 
@@ -79,6 +81,23 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[
   InfraMemberQ[g, InfraTube[c, 1], Reverse @ Prepend[AdjacencyList[g, c], c]]]
 ```
 
+The ball of radius 2, the tube of radius 2 about its centre and the band of radii 0 to 2 are one region:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {ball = Keys @ InfraMeasurement[g, InfraBall[c, 2], "VertexDensity"]},
+  InfraMemberQ[g, #, ball] & /@ {InfraBall[c, 2], InfraTube[c, 2], InfraShell[c, {0, 2}]}]
+```
+
+A sphere in the band of radii 1 and 2 on the grid. A member drawn by [RandomInfraSphere]() passes; the whole band separates the centre too, but it is not minimal:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {sphere = InfraSphere[c, {1, 2}]}, {member = RandomInfraSphere[g, sphere, RandomSeeding -> 1]},
+  {band = Keys @ InfraMeasurement[g, InfraShell[c, {1, 2}], "VertexDensity"]},
+  InfraSubstrateHighlight[g, {member, c}, PlotLabel -> (InfraMemberQ[g, sphere, #] & /@ {member, band}), ImageSize -> Medium]]
+```
+
 ## Properties and Relations
 
 A shortest path is a segment, and a member of the segment between its ends, but not a member of the line through them: it can be prolonged:
@@ -96,14 +115,4 @@ Every member listed by [RandomInfraSegment]() passes the test:
 With[{g = InfraSubstrate["SquareMeshGraph", "Medium"]}, {a = First @ GraphCenter[g]},
   {b = RandomInfraPoint[g, InfraShell[a, 7], RandomSeeding -> 1]},
   AllTrue[RandomInfraSegment[g, a, b, All], InfraMemberQ[g, InfraSegment[a, b], #] &]]
-```
-
-## Possible Issues
-
-A ball and a shell have no membership test, and [InfraMemberQ]() stays unevaluated. The tube about the centre is the same region and has one:
-
-```wl
-With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
-  {ball = Keys @ InfraMeasurement[g, InfraBall[c, 2], "VertexDensity"]},
-  BooleanQ /@ {InfraMemberQ[g, InfraBall[c, 2], ball], InfraMemberQ[g, InfraTube[c, 2], ball]}]
 ```

@@ -62,6 +62,14 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {p = First @ GraphCenter[
     {r, 1, 4}]]
 ```
 
+Several properties at once. The bisector is one vertex set, so its cardinality is 1:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {p = First @ GraphCenter[g]},
+  {bisector = InfraPerpendicularBisector[p, RandomInfraPoint[g, InfraShell[p, 2], RandomSeeding -> 1]]},
+  InfraMeasurement[g, bisector, {"Cardinality", "CountingMeasure", "RiemannianMeasure"}]]
+```
+
 A random point of the bisector:
 
 ```wl
@@ -91,15 +99,4 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {p = First @ GraphCenter[
   {q = RandomInfraPoint[g, InfraShell[p, 4], RandomSeeding -> 1]}, {r = RandomInfraPoint[g, InfraShell[p, 4], RandomSeeding -> 3]},
   Keys @ InfraMeasurement[g, InfraEquidistantSet[{p, q, r}], "VertexDensity"] ==
     Keys @ InfraMeasurement[g, InfraIntersection[InfraPerpendicularBisector[p, q], InfraPerpendicularBisector[q, r]], "VertexDensity"]]
-```
-
-## Possible Issues
-
-A list of properties is not supported; ask for each property on its own:
-
-```wl
-With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {p = First @ GraphCenter[g]},
-  {bisector = InfraPerpendicularBisector[p, RandomInfraPoint[g, InfraShell[p, 2], RandomSeeding -> 1]]},
-  {AssociationQ @ InfraMeasurement[g, bisector, {"Cardinality", "CountingMeasure"}],
-   InfraMeasurement[g, bisector, #] & /@ {"Cardinality", "CountingMeasure"}}]
 ```

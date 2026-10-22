@@ -18,6 +18,8 @@ RelatedGuides: [EuclideanInfrageometry]
 
 <code>[InfraMeasurement]()[*g*, {*obj1*, *obj2*, …}, *prop*]</code> gives the property of each object.
 
+<code>[InfraMeasurement]()[*g*, {*v1*, *v2*, …}, *prop*]</code> gives the property of the vertex set {*v1*, *v2*, …}.
+
 ## Details & Options
 
 An object is a family or a region. A family — [InfraSegment](), [InfraHalfLine](), [InfraInfiniteLine](), [InfraCircle](), [InfraArc]() — has many members, walks on *g*. A region — [InfraBall](), [InfraShell](), [InfraTube](), [InfraCylinder](), [InfraCone]() — has one member, its vertex set.
@@ -51,7 +53,11 @@ On the square grid, away from the rim, with a segment whose interval is an (*a* 
 | shell of radius *r ≥ 1* | *4r* | 0 |
 | tube of radius *s* about the segment | *(a + 1)(b + 1) + 2s(a + b + 2) + 2s(s − 1)* | the count at *s − 1*, for *s ≥ 1* |
 
-A vertex, a vertex list, an association of masses and a walk graph also have a `"VertexDensity"`. A list of vertex lists or walk graphs has the sum of their densities.
+A vertex, an association of masses and a walk graph also have a `"VertexDensity"`, and so do the tokens [InfraWalk](), its number of visits to each vertex, and [InfraPoint](), 1 on the vertices it can be. A list of vertex lists or walk graphs has the sum of their densities.
+
+A list of vertices is one vertex set for every property: its density counts repeated vertices, and its `"CountingMeasure"`, `"RiemannianMeasure"` and `"Subgraph"` are those of the set. Any other list is measured object by object.
+
+The members of <code>[InfraGeodesic]()[*germ*, *s*]</code> are listed to read its `"Cardinality"`, `"Length"` and densities; its `"Graph"` is a window graph, not a graph of the members.
 
 ## Basic Examples
 
@@ -152,14 +158,16 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {ball = InfraBall[First @
     Values @ InfraMeasurement[g, ball, {"CountingMeasure", "RiemannianMeasure"}]]
 ```
 
-## Possible Issues
-
-A vertex list is a list of objects for every property except `"VertexDensity"`. Its counting measure is a list of ones:
+A vertex list is one set. The ball of radius 2 given as its vertex list has the measures of the ball:
 
 ```wl
-With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
-  {InfraMeasurement[g, {45, 46, 47}, "CountingMeasure"], Length @ InfraMeasurement[g, {45, 46, 47}, "VertexDensity"]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {support = Keys @ InfraMeasurement[g, InfraBall[c, 2], "VertexDensity"]},
+  InfraMeasurement[g, support, {"CountingMeasure", "RiemannianMeasure"}] ===
+    InfraMeasurement[g, InfraBall[c, 2], {"CountingMeasure", "RiemannianMeasure"}]]
 ```
+
+## Possible Issues
 
 A shell of the square grid has no two adjacent vertices, so it carries no circle. The band of radii 3 and 4 carries one:
 

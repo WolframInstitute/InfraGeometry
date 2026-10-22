@@ -481,6 +481,37 @@ InfraMeasurement[ graph_Graph, InfraGeodesic[ germ : { __ }, scale : ( _Integer?
         Last @ # =!= { } & ] },
     Graph[ Keys @ closure[[ 2 ]], First @ closure ] ]
 
+(* the members are simple, so a vertex's count of visits over the members is the number of members through it *)
+
+InfraMeasurement[ graph_Graph, geodesic : InfraGeodesic[ germ : { __ }, scale : ( _Integer?Positive | Infinity ) ], "VertexDensity" ] /;
+    AllTrue[ germ, VertexQ[ graph, # ] & ] && ( Length[ germ ] == 1 || InfraGeodesicQ[ graph, germ, scale ] ) :=
+  KeySort @ Counts @ Catenate @ RandomInfraGeodesic[ graph, geodesic, All, RandomSeeding -> None ]
+
+InfraMeasurement[ graph_Graph, geodesic : InfraGeodesic[ germ : { __ }, scale : ( _Integer?Positive | Infinity ) ], "EdgeDensity" ] /;
+    AllTrue[ germ, VertexQ[ graph, # ] & ] && ( Length[ germ ] == 1 || InfraGeodesicQ[ graph, germ, scale ] ) :=
+  KeySort @ Counts @ Catenate[
+    ( member |-> DirectedEdge @@@ Partition[ member, 2, 1 ] ) /@ RandomInfraGeodesic[ graph, geodesic, All, RandomSeeding -> None ] ]
+
+InfraMeasurement[ graph_Graph, geodesic : InfraGeodesic[ germ : { __ }, scale : ( _Integer?Positive | Infinity ) ], "Cardinality" ] /;
+    AllTrue[ germ, VertexQ[ graph, # ] & ] && ( Length[ germ ] == 1 || InfraGeodesicQ[ graph, germ, scale ] ) :=
+  Length @ RandomInfraGeodesic[ graph, geodesic, All, RandomSeeding -> None ]
+
+InfraMeasurement[ graph_Graph, geodesic : InfraGeodesic[ germ : { __ }, scale : ( _Integer?Positive | Infinity ) ], "Length" ] /;
+    AllTrue[ germ, VertexQ[ graph, # ] & ] && ( Length[ germ ] == 1 || InfraGeodesicQ[ graph, germ, scale ] ) :=
+  Replace[ Union[ Length /@ RandomInfraGeodesic[ graph, geodesic, All, RandomSeeding -> None ] - 1 ], { one_ } :> one ]
+
+InfraMemberQ[ graph_Graph, geodesic : InfraGeodesic[ germ : { __ }, scale : ( _Integer?Positive | Infinity ) ], path_List ] /;
+    AllTrue[ germ, VertexQ[ graph, # ] & ] && ( Length[ germ ] == 1 || InfraGeodesicQ[ graph, germ, scale ] ) :=
+  MemberQ[ RandomInfraGeodesic[ graph, geodesic, All, RandomSeeding -> None ], path ]
+
+InfraMeasurement[ graph_Graph, InfraWalk[ vertices : Repeated[ _, { 2, Infinity } ] ], "VertexDensity" ] /;
+    AllTrue[ Partition[ { vertices }, 2, 1 ], EdgeQ[ graph, UndirectedEdge @@ # ] & ] :=
+  KeySort @ Counts @ { vertices }
+
+InfraMeasurement[ graph_Graph, InfraWalk[ vertices : { _, __ } ], "VertexDensity" ] /;
+    AllTrue[ Partition[ vertices, 2, 1 ], EdgeQ[ graph, UndirectedEdge @@ # ] & ] :=
+  KeySort @ Counts @ vertices
+
 ConcatenateInfraWalk[ path1_, path2_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
   With[ { walksOf = w |-> With[ { vs = VertexList @ w },

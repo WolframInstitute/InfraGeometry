@@ -225,4 +225,14 @@ VerificationTest[
   TestID -> "InfraSphere-draws"
 ]
 
+(* the members of a sphere are its minimal separating sets; the whole band separates but is not minimal *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    { AllTrue[ RandomInfraSphere[ g, InfraSphere[ 13, { 1, 2 } ], All ], InfraMemberQ[ g, InfraSphere[ 13, { 1, 2 } ], # ] & ],
+      InfraMemberQ[ g, InfraSphere[ 13, { 1, 2 } ], Reverse @ { 8, 9, 12, 14, 17, 18, 19 } ],
+      InfraMemberQ[ g, InfraSphere[ 13, { 1, 2 } ], Keys @ InfraMeasurement[ g, InfraShell[ 13, { 1, 2 } ], "VertexDensity" ] ] } ],
+  { True, True, False },
+  TestID -> "InfraMemberQ-sphere-members-are-its-family"
+]
+
 EndTestSection[]
