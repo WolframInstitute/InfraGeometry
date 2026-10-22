@@ -60,7 +60,10 @@ InfraFiberedGraphQ[ { } ] :=
 
 InfraFiberedGraphQ[ fib : _[ _Graph, __ ] ] /;
     AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraBaseSpace[ fib ] ] :=
-  True
+  Replace[ fib, {
+    ( InfraFiberedGraph | InfraFibration )[ _, projection : Except[ _Association | _Symbol ] ] :>
+      NoneTrue[ Values @ InfraProjection[ fib ], MatchQ[ #, HoldPattern[ projection[ _ ] ] ] & ],
+    _ -> True } ]
 
 InfraEqualFiberSizesQ[ fibs : { __ } ] :=
   And @@ ( InfraEqualFiberSizesQ /@ fibs )
@@ -70,7 +73,7 @@ InfraEqualFiberSizesQ[ { } ] :=
 
 InfraEqualFiberSizesQ[ fib : _[ _Graph, __ ] ] /;
     AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraBaseSpace[ fib ] ] :=
-  Length[ DeleteDuplicates[ Values @ Counts @ Values @ InfraProjection[ fib ] ] ] <= 1
+  InfraFiberedGraphQ[ fib ] && Length[ DeleteDuplicates[ Values @ Counts @ Values @ InfraProjection[ fib ] ] ] <= 1
 
 InfraIsomorphicFibersQ[ fibs : { __ } ] :=
   And @@ ( InfraIsomorphicFibersQ /@ fibs )
@@ -81,7 +84,7 @@ InfraIsomorphicFibersQ[ { } ] :=
 InfraIsomorphicFibersQ[ fib : _[ _Graph, __ ] ] /;
     AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraBaseSpace[ fib ] ] :=
   With[ { fibers = Values @ InfraFibers[ fib ] },
-    Length[ fibers ] < 2 || AllTrue[ Rest[ fibers ], IsomorphicGraphQ[ First[ fibers ], # ] & ] ]
+    InfraFiberedGraphQ[ fib ] && ( Length[ fibers ] < 2 || AllTrue[ Rest[ fibers ], IsomorphicGraphQ[ First[ fibers ], # ] & ] ) ]
 
 InfraFibrationQ[ fibs : { __ } ] :=
   And @@ ( InfraFibrationQ /@ fibs )
@@ -91,7 +94,7 @@ InfraFibrationQ[ { } ] :=
 
 InfraFibrationQ[ fib : _[ _Graph, __ ] ] /;
     AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraBaseSpace[ fib ] ] :=
-  AllTrue[ Catenate[ Values /@ Values @ InfraEdgeLiftMultiplicity[ fib ] ], Positive ]
+  InfraFiberedGraphQ[ fib ] && AllTrue[ Catenate[ Values /@ Values @ InfraEdgeLiftMultiplicity[ fib ] ], Positive ]
 
 InfraAtMostOneEdgeLiftQ[ fibs : { __ } ] :=
   And @@ ( InfraAtMostOneEdgeLiftQ /@ fibs )
@@ -101,7 +104,7 @@ InfraAtMostOneEdgeLiftQ[ { } ] :=
 
 InfraAtMostOneEdgeLiftQ[ fib : _[ _Graph, __ ] ] /;
     AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraBaseSpace[ fib ] ] :=
-  AllTrue[ Catenate[ Values /@ Values @ InfraEdgeLiftMultiplicity[ fib ] ], # <= 1 & ]
+  InfraFiberedGraphQ[ fib ] && AllTrue[ Catenate[ Values /@ Values @ InfraEdgeLiftMultiplicity[ fib ] ], # <= 1 & ]
 
 InfraUniqueEdgeLiftingQ[ fibs : { __ } ] :=
   And @@ ( InfraUniqueEdgeLiftingQ /@ fibs )
@@ -111,7 +114,7 @@ InfraUniqueEdgeLiftingQ[ { } ] :=
 
 InfraUniqueEdgeLiftingQ[ fib : _[ _Graph, __ ] ] /;
     AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraBaseSpace[ fib ] ] :=
-  AllTrue[ Catenate[ Values /@ Values @ InfraEdgeLiftMultiplicity[ fib ] ], # == 1 & ]
+  InfraFiberedGraphQ[ fib ] && AllTrue[ Catenate[ Values /@ Values @ InfraEdgeLiftMultiplicity[ fib ] ], # == 1 & ]
 
 InfraCoveringQ[ fibs : { __ } ] :=
   And @@ ( InfraCoveringQ /@ fibs )

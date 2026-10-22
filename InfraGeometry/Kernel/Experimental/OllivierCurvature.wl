@@ -68,8 +68,8 @@ EffectiveResistance[ g_Graph, vs_List ] /; SubsetQ[ VertexList[ g ], vs ] :=
 
 ResistanceQ[ r_ ? ( MatrixQ[ #, NumericQ ] & ) ] :=
     SquareMatrixQ[ r ] &&
-    (Transpose[ r ] === r || N @ Transpose[ r ] == N @ r) &&
-    AllTrue[ Diagonal[ r ], # == 0 & ] &&
+    Max[ Abs[ r - Transpose[ r ] ] ] <= 10^-9 &&
+    Max[ Abs @ Diagonal[ r ] ] <= 10^-9 &&
     With[ { n = Length[ r ] },
         { p = IdentityMatrix[ n ] - 1 / n },
         { b = N[ -p . r . p / 2 ] },

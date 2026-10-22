@@ -377,4 +377,15 @@ VerificationTest[
   TestID -> "RandomInfraFibration-standard-option-list-and-first-duplicate"
 ]
 
+(* a projection that is not a map, so that its values are inert applications, is not a fibered graph *)
+VerificationTest[
+  With[ { predicates = { InfraFiberedGraphQ, InfraEqualFiberSizesQ, InfraIsomorphicFibersQ,
+        InfraFibrationQ, InfraAtMostOneEdgeLiftQ, InfraUniqueEdgeLiftingQ, InfraCoveringQ, InfraFiberBundleQ } },
+    { #[ InfraFiberedGraph[ CycleGraph[ 4 ], "bad" ] ] & /@ predicates,
+      InfraFiberedGraphQ /@ { InfraFibration[ CycleGraph[ 4 ], { 1, 2 } ], InfraFiberedGraph[ CycleGraph[ 4 ], Mod[ #, 2 ] & ],
+        InfraFiberedGraph[ CycleGraph[ 4 ], Floor ] } } ],
+  { ConstantArray[ False, 8 ], { False, True, True } },
+  TestID -> "InfraFiberedGraphQ-projection-that-is-not-a-map"
+]
+
 EndTestSection[]
