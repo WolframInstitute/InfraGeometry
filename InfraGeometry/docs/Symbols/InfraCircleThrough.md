@@ -33,8 +33,6 @@ The order and repetition of the points do not matter. The radii satisfy *1 ≤ r
 | `"VertexDensity"` | the number of circles through each vertex |
 | `"EdgeDensity"` | the number of circles through each edge |
 
-The family is found by a search over vertex sets, which can take exponential time on a wide band.
-
 ## Basic Examples
 
 The shortest circles of the band {1, 3} through a vertex at distance 3, on the square grid and on the square mesh:
@@ -75,6 +73,15 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}
   {pq = RandomInfraPoint[g, InfraShell[c, 2], 2, "PairwiseDistance" -> "Max", RandomSeeding -> 1]},
   {circle = InfraCircleThrough[pq, InfraCircle[c, {1, 2}]]},
   InfraSubstrateHighlight[g, {circle, c, pq}, PlotLabel -> InfraMeasurement[g, circle, {"Cardinality", "Length"}], ImageSize -> Medium]]
+```
+
+The 7 circles of length 14 through a vertex at distance 3 on the mesh, in the band {2, 3}:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {p = RandomInfraPoint[g, InfraShell[c, 3], RandomSeeding -> 1]},
+  {circle = InfraCircleThrough[{p}, InfraCircle[c, {2, 3}]]},
+  InfraSubstrateHighlight[g, {circle, c, p}, PlotLabel -> InfraMeasurement[g, circle, {"Cardinality", "Length"}], ImageSize -> Medium]]
 ```
 
 A point outside the band gives the empty family:

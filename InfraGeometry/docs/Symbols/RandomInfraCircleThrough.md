@@ -30,7 +30,7 @@ A point outside the band, or one with fewer than two neighbours in it, gives `{}
 
 The draw is uniform over the circles. A circle is a vertex list *v₁, …, vₖ*, the edge *vₖv₁* closing it.
 
-The count *n* can be `n`, `UpTo[n]` or `All`. The search runs over vertex sets and can take very long on a wide band.
+The count *n* can be `n`, `UpTo[n]` or `All`.
 
 Options:
 

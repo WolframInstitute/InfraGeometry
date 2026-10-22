@@ -22,7 +22,8 @@ InfraMeasurement[ graph_Graph,
     { vertices, indexed, vertexIndex, centerIndex, requested, distances, band, adjacency, exterior, root, requiredMask,
       initial, frontier, layers, transitions = <||>, accepted = {}, minimumLength = Infinity, depth = 1,
       next, reduction = <||>, registry = <||>, successors = <| 1 -> {} |>, labels = <||>,
-      suffixCounts = <| 1 -> 1 |>, children, signature, identifier, source, dag, allStates = 0, retained = 0, carrier },
+      suffixCounts = <| 1 -> 1 |>, children, signature, identifier, source, dag, carrier,
+      blocks, moves, bandGraph, position, bandDistances, witnesses, masks, closings, closing, bound, exhausted },
     vertices = VertexList[ graph ];
     indexed = IndexGraph[ graph ];
     vertexIndex = AssociationThread[ vertices, Range[ Length[ vertices ] ] ];
@@ -35,26 +36,62 @@ InfraMeasurement[ graph_Graph,
     root = First[ requested ];
     requiredMask = Total[ 2^(requested - 1) ];
     initial = { 2^(root - 1), root, 0 };
-    frontier = If[ SubsetQ[ band, requested ], { initial }, {} ];
+    (* the search over simple paths hung the kernel on the mesh band {2, 3}: a state is kept only when its depth plus a lower bound on the
+       rest of the cycle fits the bound, raised from the least conceivable length until a cycle is accepted; a cycle lies in one block of the
+       band, and only a block with every requested vertex can carry one *)
+    blocks = If[ SubsetQ[ band, requested ], Union @@ Select[ KVertexConnectedComponents[ Subgraph[ indexed, band ], 2 ],
+      block |-> Length[ block ] >= 3 && SubsetQ[ block, requested ] ], {} ];
+    (* a cycle that cuts c off from an exterior neighbour x of a rim vertex y meets every path c ... y, x, so it meets a fixed shortest one *)
+    witnesses = Join[ List /@ requested, Map[
+      rim |-> Select[ FindShortestPath[ indexed, centerIndex, rim ], index |-> distances[[ index ]] >= inner && MemberQ[ blocks, index ] ],
+      Select[ band, index |-> distances[[ index ]] == outer && IntersectingQ[ AdjacencyList[ indexed, index ], exterior ] ] ] ];
+    exhausted = blocks === {} || MemberQ[ witnesses, {} ];
+    If[ ! exhausted,
+      moves = AssociationMap[ index |-> Intersection[ AdjacencyList[ indexed, index ], blocks ], blocks ];
+      bandGraph = Subgraph[ indexed, blocks ];
+      position = AssociationThread[ VertexList[ bandGraph ], Range[ VertexCount[ bandGraph ] ] ];
+      bandDistances = GraphDistanceMatrix[ bandGraph ];
+      masks = Map[ set |-> Total[ 2^(set - 1) ], witnesses ];
+      (* the rest of a cycle from v through an unmet set W is at least min over w in W of d(v, w) + d(w, root), and its last vertex is an
+         unvisited neighbour u of the root, at least d(v, u) + 1 *)
+      closings = Map[ set |-> Min /@ Transpose[ Map[ index |->
+          bandDistances[[ position[ index ] ]] + bandDistances[[ position[ index ], position[ root ] ]], set ] ], witnesses ];
+      closing = state |-> Max[
+        1 + Min[ bandDistances[[ position[ state[[ 2 ]] ],
+          Lookup[ position, Select[ moves[ root ], index |-> index === state[[ 2 ]] || BitGet[ state[[ 1 ]], index - 1 ] == 0 ] ] ]] ],
+        closings[[ Flatten @ Position[ BitAnd[ state[[ 1 ]], masks ], 0 ], position[ state[[ 2 ]] ] ]] ];
+      bound = Max[ 2, Length[ requested ] - 1, closing[ initial ] - 1 ];
+      exhausted = closing[ initial ] === Infinity
+    ];
     layers = {};
-    While[ frontier =!= {},
-      layers = Join[ layers, { frontier } ];
-      allStates += Length[ frontier ];
-      If[ depth >= Max[ 3, Length[ requested ] ],
-        accepted = Select[ frontier, state |->
-          BitAnd[ state[[ 1 ]], requiredMask ] == requiredMask &&
-          state[[ 3 ]] < state[[ 2 ]] && MemberQ[ adjacency[ state[[ 2 ]] ], root ] &&
-          With[ { removed = Select[ band, index |-> BitGet[ state[[ 1 ]], index - 1 ] == 1 ] },
-            Intersection[ exterior, VertexComponent[ VertexDelete[ indexed, removed ], centerIndex ] ] === {} ] ];
-        If[ accepted =!= {}, minimumLength = depth; Break[] ]
-      ];
-      Scan[ state |-> (
-        next = ({ BitSet[ state[[ 1 ]], # - 1 ], #, If[ depth == 1, #, state[[ 3 ]] ] } &) /@
-          Select[ adjacency[ state[[ 2 ]] ], index |-> BitGet[ state[[ 1 ]], index - 1 ] == 0 ];
-        AssociateTo[ transitions, state -> next ]
-      ), frontier ];
-      frontier = DeleteDuplicates @ Catenate[ (state |-> Lookup[ transitions, Key[ state ] ]) /@ frontier ];
-      depth++
+    While[ accepted === {} && ! exhausted && bound < Length[ blocks ],
+      bound++;
+      exhausted = True;
+      transitions = <||>;
+      depth = 1;
+      frontier = { initial };
+      layers = {};
+      While[ frontier =!= {},
+        layers = Join[ layers, { frontier } ];
+        If[ depth >= Max[ 3, Length[ requested ] ],
+          accepted = Select[ frontier, state |->
+            BitAnd[ state[[ 1 ]], requiredMask ] == requiredMask &&
+            state[[ 3 ]] < state[[ 2 ]] && MemberQ[ adjacency[ state[[ 2 ]] ], root ] &&
+            With[ { removed = Select[ band, index |-> BitGet[ state[[ 1 ]], index - 1 ] == 1 ] },
+              Intersection[ exterior, VertexComponent[ VertexDelete[ indexed, removed ], centerIndex ] ] === {} ] ];
+          If[ accepted =!= {}, minimumLength = depth; Break[] ]
+        ];
+        Scan[ state |-> (
+          next = Select[ ({ BitSet[ state[[ 1 ]], # - 1 ], #, If[ depth == 1, #, state[[ 3 ]] ] } &) /@
+            Select[ moves[ state[[ 2 ]] ], index |-> BitGet[ state[[ 1 ]], index - 1 ] == 0 ],
+            child |-> With[ { length = depth + closing[ child ] },
+              If[ bound < length < Infinity, exhausted = False ];
+              length <= bound ] ];
+          AssociateTo[ transitions, state -> next ]
+        ), frontier ];
+        frontier = DeleteDuplicates @ Catenate[ (state |-> Lookup[ transitions, Key[ state ] ]) /@ frontier ];
+        depth++
+      ]
     ];
     Scan[ layer |-> Scan[ state |-> (
       children = If[ MemberQ[ accepted, state ], { 1 },
@@ -62,7 +99,6 @@ InfraMeasurement[ graph_Graph,
           Lookup[ transitions, Key[ state ], {} ] ], 0 ] ];
       If[ children === {},
         AssociateTo[ reduction, state -> 0 ],
-        retained++;
         signature = { state[[ 2 ]], Sort[ children ] };
         identifier = Lookup[ registry, Key[ signature ], 0 ];
         If[ identifier == 0,
