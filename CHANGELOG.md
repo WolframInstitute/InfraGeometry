@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 2.8.2 (2026-10-22)
+
+- Documentation only. Remove the migration-era tutorials *Synthetic Geometry Migration* and *Named Construction Samplers*; the Euclidean guide no longer lists them.
+
 ## 2.8.1 (2026-10-22)
 
 - Documentation only. All 271 symbol pages rewritten lean: the definition first in plain mathematical language, no implementation or history notes, classical-axiom tables kept, examples on the square grid and the square mesh (`"SquareGridGraph"`, `"SquareMeshGraph"`) with other substrates only where the mathematics needs them, compact code with longer lines. Single figures carry `ImageSize -> Medium` and numbers a `PlotLabel`, since a bare `Graph` renders at about 100 px in the reference stylesheet. Several wrong statements of the old pages corrected; kernel behaviour found on the way is listed in the dev repo's `Work/Backlog/LeanPagesKernelFindings.md`.

@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/EuclideanInfrageometry
 Keywords: [Euclidean geometry, shell, synthetic geometry, graph, symbolic object, point, segment, ray, line, parallel, perpendicular, circle, arc, bisector, ellipse, ball, tube, cylinder, cone, polygon, hull, angle, shapes, gestalt, scene]
 RelatedGuides: [RiemannianInfrageometry, InfraSubstrates, Experimental]
-RelatedTutorials: [BreadthlessTriangleTutorial, StraighteningAtScaleTutorial, NamedConstructionSamplers, SyntheticGeometryMigration]
+RelatedTutorials: [BreadthlessTriangleTutorial, StraighteningAtScaleTutorial]
 ---
 
 <!-- LLM-PROTECTED: Do not rewrite the Abstract or Functions sections unless explicitly asked. -->
