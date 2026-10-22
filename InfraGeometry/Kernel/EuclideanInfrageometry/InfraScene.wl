@@ -139,19 +139,24 @@ InfraDistance[ graph_Graph, p_, q_, opts : OptionsPattern[] ] /;
       { indices = AssociationThread[ vertices, Range[ Length[ vertices ] ] ],
         indexedGraph = VertexReplace[ graph, Thread[ vertices -> Range[ Length[ vertices ] ] ] ],
         supports = Keys /@ Map[ density |-> Select[ density, value |-> value != 0 ], densities ] },
-      OptionValue[ "Aggregation" ] @ Flatten @ Outer[
-        { source, target } |-> GraphDistance[ indexedGraph, Lookup[ indices, Key[ source ] ], Lookup[ indices, Key[ target ] ] ],
-        supports[[ 1 ]], supports[[ 2 ]], 1 ] ] /;
+      If[ MemberQ[ supports, { } ], Infinity,
+        OptionValue[ "Aggregation" ] @ Flatten @ Outer[
+          { source, target } |-> GraphDistance[ indexedGraph, Lookup[ indices, Key[ source ] ], Lookup[ indices, Key[ target ] ] ],
+          supports[[ 1 ]], supports[[ 2 ]], 1 ] ] ] /;
       AllTrue[ densities, density |-> AssociationQ[ density ] && AllTrue[ Values[ density ], NumericQ ] &&
         AllTrue[ Keys[ density ], vertex |-> VertexQ[ graph, vertex ] ] ] ]
 
 $infraRealisationPattern = _List | _Association | _Graph
 
 InfraIntersection[ graph_Graph, args__ ] /; AllTrue[ { args }, MatchQ[ $infraRealisationPattern ] ] :=
-  Intersection @@ ( infraVertexSet[ graph, # ] & /@ { args } )
+  With[ { densities = InfraMeasurement[ graph, #, "VertexDensity" ] & /@ { args } },
+    Intersection @@ Keys @ densities /;
+      AllTrue[ densities, density |-> AssociationQ[ density ] && AllTrue[ Keys @ density, vertex |-> VertexQ[ graph, vertex ] ] ] ]
 
 InfraUnion[ graph_Graph, args__ ] /; AllTrue[ { args }, MatchQ[ $infraRealisationPattern ] ] :=
-  Union @@ ( infraVertexSet[ graph, # ] & /@ { args } )
+  With[ { densities = InfraMeasurement[ graph, #, "VertexDensity" ] & /@ { args } },
+    Union @@ Keys @ densities /;
+      AllTrue[ densities, density |-> AssociationQ[ density ] && AllTrue[ Keys @ density, vertex |-> VertexQ[ graph, vertex ] ] ] ]
 
 InfraScene[ objects_List, hypotheses_List ] /;
   MemberQ[ hypotheses, _InfraSceneStep ] &&

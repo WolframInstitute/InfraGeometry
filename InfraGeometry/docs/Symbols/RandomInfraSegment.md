@@ -127,3 +127,10 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {a = First @ GraphCenter[
   {b = RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]},
   {RandomInfraSegment[g, a, b, 11, RandomSeeding -> 1], Length @ RandomInfraSegment[g, a, b, UpTo[11], RandomSeeding -> 1]}]
 ```
+
+A third vertex after the endpoints is a count, not a corner: <code>[RandomInfraSegment]()[*g*, *a*, *c*, *b*]</code> with an integer *b* is *b* shortest paths from *a* to *c*. The polyline from *a* through *c* to *b* is <code>[RandomInfraSegment]()[*g*, [InfraSegment]()[*a*, *c*, *b*]]</code>. With the vertex 3 as *b*, three paths from 23 to the centre, and one member of the polyline:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {RandomInfraSegment[g, 23, c, 3, RandomSeeding -> 1], RandomInfraSegment[g, InfraSegment[23, c, 3], RandomSeeding -> 1]}]
+```

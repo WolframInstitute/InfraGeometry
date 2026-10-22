@@ -24,7 +24,7 @@ It is not a metric on sets: *d(P, Q)* = 0 whenever *P* and *Q* meet, and the tri
 
 In any connected graph two balls are at distance *max(0, d(a, b) − r − s)*: a shortest path from *a* to *b* leaves the first ball at step *r* and enters the second *s* steps before *b*.
 
-An empty set, or sets in different components, are at distance [Infinity]().
+An empty set, or sets in different components, are at distance [Infinity](), whatever the aggregation.
 
 `"Aggregation"` replaces the minimum by another function of the list of all pair distances:
 
@@ -96,7 +96,7 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Medium"]}, {a = First @ GraphCenter
 
 ## Possible Issues
 
-An empty set is at distance [Infinity]() from everything; with `"Aggregation" -> Max` it is at distance −[Infinity]():
+An empty set is at distance [Infinity]() from everything, also under `"Aggregation" -> Max`, where the maximum of no distances would be −[Infinity]():
 
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {a = First @ GraphCenter[g]},

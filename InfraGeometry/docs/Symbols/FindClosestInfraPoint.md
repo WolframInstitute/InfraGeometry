@@ -19,7 +19,7 @@ SeeAlso: [FindInfraPerpendicular, FindInfraCommonPoint, RandomInfraInfiniteLine,
 
 The closest vertices are the feet *{v ∈ l : d(p, v) = d(p, l)}*, with *d(p, l) = min d(p, v)* over the vertices *v* of the line *l*.
 
-A line can be a vertex list, a walk graph or a list of walk graphs. A list of walks gives the feet on each of them, pooled.
+A line can be a vertex list, a walk graph, or a list of vertex lists or walk graphs. A list of walks gives the feet on each of them, pooled.
 
 The point can be a vertex or a region. A region gives the feet of each of its vertices, pooled.
 
@@ -59,4 +59,13 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}
   {members = PathGraph[#, DirectedEdges -> True] & /@ RandomInfraSegment[g, c, b, All]},
   {feet = FindClosestInfraPoint[g, members, p]},
   InfraSubstrateHighlight[g, {members, p, feet}, PlotLabel -> Union[GraphDistance[g, p, #] & /@ feet], ImageSize -> Medium]]
+```
+
+The same members as vertex lists give the same feet:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 1], p = RandomInfraPoint[g, InfraShell[c, 3], RandomSeeding -> 1]},
+  {members = RandomInfraSegment[g, c, b, All]},
+  FindClosestInfraPoint[g, members, p] == FindClosestInfraPoint[g, PathGraph[#, DirectedEdges -> True] & /@ members, p]]
 ```

@@ -7,11 +7,22 @@ Options[ SelectInfraWalk ] = {
   "Distance"   -> None,
   "Metric"     -> "Hausdorff",
   "MaxCliques" -> All,
-  "Cyclic"     -> False
+  "Cyclic"     -> False,
+  RandomSeeding -> Automatic
 }
+
+SelectInfraWalk[ graph_Graph, countSpec : ( _Integer | UpTo[ _Integer ] | All ), opts : OptionsPattern[] ] :=
+  SelectInfraWalk[ graph, #, countSpec, opts ] &
+
+SelectInfraWalk[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      SelectInfraWalk[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ SelectInfraWalk[ ___, RandomSeeding -> None ] ] ] ]
 
 SelectInfraWalk[ graph_Graph, dags : { __Graph },
             countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] /;
+    MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
     NoneTrue[ dags, ! LoopFreeGraphQ @ # || ! AcyclicGraphQ @ # ||
       AllTrue[ VertexList @ #, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ # ] === Range @ VertexCount @ # & ] &&
     MatchQ[ OptionValue[ SelectInfraWalk, { opts }, "From" ], "MinLength" | "MaxLength" ] &&
@@ -20,10 +31,11 @@ SelectInfraWalk[ graph_Graph, dags : { __Graph },
     { picked = Pick[ dags, lengths,
         If[ OptionValue[ SelectInfraWalk, { opts }, "From" ] === "MaxLength", Max, Min ] @ lengths ] },
     If[ countSpec === All, Replace[ picked, { one_Graph } :> one ],
-      SelectInfraWalk[ graph, picked, countSpec, "From" -> All ] ] ]
+      SelectInfraWalk[ graph, picked, countSpec, "From" -> All, RandomSeeding -> None ] ] ]
 
 SelectInfraWalk[ graph_Graph, walks : { __Graph },
-            countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] :=
+            countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] /;
+    MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] :=
   With[ {
       carriersOf = w |-> With[ { vs = VertexList @ w },
         If[ ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w ||
@@ -47,6 +59,7 @@ SelectInfraWalk[ graph_Graph, walks : { __Graph },
 
 SelectInfraWalk[ graph_Graph, dag_Graph,
             countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] /;
+    MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
     ! ( ! LoopFreeGraphQ @ dag || ! AcyclicGraphQ @ dag ) &&
     ! ( AllTrue[ VertexList @ dag, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ dag ] === Range @ VertexCount @ dag ) &&
     OptionValue[ SelectInfraWalk, { opts }, "From" ] === "MostVisited" &&
@@ -76,10 +89,12 @@ SelectInfraWalk[ graph_Graph, dag_Graph,
           Fold[ { found, x } |-> If[ Length @ found >= need, found, Join[ found, self[ self, Append[ path, x ], need - Length @ found ] ] ],
             { },
             tight[ Last @ path ] ] ] },
-    PathGraph[ #, DirectedEdges -> True ] & /@ SelectInfraWalk[ graph, tightDFS[ tightDFS, { source }, cap ], countSpec, "From" -> All ] ]
+    PathGraph[ #, DirectedEdges -> True ] & /@
+      SelectInfraWalk[ graph, tightDFS[ tightDFS, { source }, cap ], countSpec, "From" -> All, RandomSeeding -> None ] ]
 
 SelectInfraWalk[ graph_Graph, w_Graph,
-            countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] :=
+            countSpec : ( _Integer | UpTo[ _Integer ] | All ) : 1, opts : OptionsPattern[] ] /;
+    MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] :=
   SelectInfraWalk[ graph,
     With[ { vs = VertexList @ w },
       If[ ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w ||
@@ -91,6 +106,7 @@ SelectInfraWalk[ graph_Graph, w_Graph,
     countSpec, opts ]
 
 SelectInfraWalk[ graph_Graph, walks_List, UpTo[ n_Integer ], opts : OptionsPattern[] ] /;
+    MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
     MatchQ[ OptionValue[ SelectInfraWalk, { opts }, "From" ],
       All | "Center" | "Periphery" | "MostVisited" | "Bottleneck" | "MinLength" | "MaxLength" | _Rule | { "Min" | "Max", _ } ] :=
   With[ { from = OptionValue[ "From" ], distSpec = OptionValue[ "Distance" ], cyclic = TrueQ @ OptionValue[ "Cyclic" ],
@@ -190,19 +206,17 @@ SelectInfraWalk[ graph_Graph, walks_List, UpTo[ n_Integer ], opts : OptionsPatte
                     { found = FindClique[ aux, { Min[ size, VertexCount @ aux ], VertexCount @ aux }, maxCl ] },
                     If[ found === { }, { }, RandomSample[ RandomChoice[ found ], UpTo[ size ] ] ] ] ] ] ] ] ] ]
 
-SelectInfraWalk[ graph_Graph, walks_List, All, opts : OptionsPattern[] ] :=
+SelectInfraWalk[ graph_Graph, walks_List, All, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] :=
   With[ { result = SelectInfraWalk[ graph, walks, UpTo[ Length[ walks ] ], opts ] },
     result /; ListQ[ result ] ]
 
-SelectInfraWalk[ graph_Graph, walks_List, n_Integer : 1, opts : OptionsPattern[] ] :=
+SelectInfraWalk[ graph_Graph, walks_List, n_Integer : 1, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] :=
   With[ { result = SelectInfraWalk[ graph, walks, UpTo[ n ], opts ] },
     If[ Length[ result ] < n, { }, result ] /; ListQ[ result ] ]
 
-SelectInfraWalk[ graph_Graph, countSpec : ( _Integer | UpTo[ _Integer ] | All ), opts : OptionsPattern[] ] :=
-  SelectInfraWalk[ graph, #, countSpec, opts ] &
-
 EmbeddingClosest[ graph_Graph, w_Graph, ref_ ] :=
-  EmbeddingClosest[ graph, { w }, ref ]
+  With[ { result = EmbeddingClosest[ graph, { w }, ref ] },
+    result /; ListQ[ result ] ]
 
 EmbeddingClosest[ graph_Graph, paths : { __Graph }, ref_ ] :=
   With[ {
@@ -214,76 +228,45 @@ EmbeddingClosest[ graph_Graph, paths : { __Graph }, ref_ ] :=
             DeleteDuplicates @ Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
               { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ] ] ] ],
       seqOf = w |-> With[ { vs = VertexList @ w },
-        Which[
-          AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs, Last /@ SortBy[ vs, First ],
-          EdgeCount @ w == 0, vs,
-          True, Reap[ DepthFirstScan[ w,
-            SelectFirst[ vs, If[ DirectedGraphQ @ w, VertexInDegree[ w, # ] == 0, VertexDegree[ w, # ] == 1 ] &, First @ vs ],
-            { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] ] },
+        { seq = Which[
+            AllTrue[ vs, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ vs ] === Range @ Length @ vs, Last /@ SortBy[ vs, First ],
+            EdgeCount @ w == 0, vs,
+            True, Reap[ DepthFirstScan[ w,
+              SelectFirst[ vs, If[ DirectedGraphQ @ w, VertexInDegree[ w, # ] == 0, VertexDegree[ w, # ] == 1 ] &, First @ vs ],
+              { "PrevisitVertex" -> ( Sow[ #1 ] & ) } ] ][[ 2, 1 ]] ] },
+        If[ ( ! LoopFreeGraphQ @ w || ! AcyclicGraphQ @ w ) && First @ seq =!= Last @ seq, Append[ seq, First @ seq ], seq ] ] },
     { carriers = Catenate[ carriersOf /@ paths ] },
     { seqs = seqOf /@ carriers },
-    Lookup[ AssociationThread[ seqs -> carriers ],
-      Which[
-        ! ( AllTrue[ carriers, ! LoopFreeGraphQ @ # || ! AcyclicGraphQ @ # & ] && MatchQ[ ref, { _, _?NumericQ } ] ),
-          EmbeddingClosest[ graph, seqs, ref ],
-        Length @ seqs <= 1, seqs,
-        True,
-          With[ { coords = GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ],
-                  vertexIndex = AssociationThread[ VertexList[ graph ], Range @ VertexCount[ graph ] ] },
-            { centerPt = coords[[ vertexIndex[ First @ ref ] ]] },
-            MinimalBy[ seqs,
-              cycle |-> If[ Length @ cycle < 3, Infinity,
-                With[ { pts = coords[[ Lookup[ vertexIndex, cycle ] ]], nPts = Max[ 64, 4 * Length @ cycle ] },
-                  { circlePoints = Table[ centerPt + Last[ ref ] * { Cos[ t ], Sin[ t ] }, { t, 0, 2 Pi - 2 Pi / nPts, 2 Pi / nPts } ] },
-                  RegionHausdorffDistance[
-                    Line[ Append[ pts, First @ pts ] ],
-                    Line[ Append[ circlePoints, First @ circlePoints ] ] ] ] ] ] ] ] ] ]
+    { result = EmbeddingClosest[ graph, seqs, ref ] },
+    Lookup[ AssociationThread[ seqs -> carriers ], result ] /; ListQ[ result ] ]
 
-EmbeddingClosest[ graph_Graph, paths_List, { p1_, p2_ } ] /; Length[ paths ] <= 1 :=
-  paths
-
-EmbeddingClosest[ graph_Graph, paths_List, { p1_, p2_ } ] :=
-  With[ { coords = GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ],
-          vertexIndex = AssociationThread[ VertexList[ graph ], Range @ VertexCount[ graph ] ] },
-    { ends = coords[[ Lookup[ vertexIndex, { p1, p2 } ] ]] },
-    MinimalBy[ paths,
-      path |-> If[ Length @ path >= 2, RegionHausdorffDistance[ Line[ coords[[ Lookup[ vertexIndex, path ] ]] ], Line[ ends ] ], 0 ] ]
-  ]
-
-EmbeddingClosest[ graph_Graph, sets_List, { center_, radius_?NumericQ } ] :=
-  With[ { coords = GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ],
-          vertexIndex = AssociationThread[ VertexList[ graph ], Range @ VertexCount[ graph ] ] },
-    { centerPt = coords[[ vertexIndex @ center ]] },
-    SortBy[ sets,
-      set |-> If[ set === { }, Infinity,
-        Max[ Abs[ EuclideanDistance[ centerPt, # ] - radius ] & /@
-              coords[[ Lookup[ vertexIndex, set ] ]] ] ] ]
-  ]
+EmbeddingClosest[ graph_Graph, paths_List, { p_, q_ } ] /; VertexQ[ graph, p ] && VertexQ[ graph, q ] :=
+  If[ Length[ paths ] <= 1, paths,
+    With[ { coords = GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ],
+            vertexIndex = AssociationThread[ VertexList[ graph ], Range @ VertexCount[ graph ] ] },
+      EmbeddingClosest[ graph, paths, Line[ coords[[ Lookup[ vertexIndex, { p, q } ] ]] ] ] ] ]
 
 EmbeddingClosest[ graph_Graph, paths_List, crv_ ] /;
-    ( MatchQ[ crv, _Line | _BSplineCurve | _BezierCurve ] ||
-      MatrixQ[ crv, NumericQ ] && Last[ Dimensions[ crv ] ] === 2 && Length[ crv ] >= 3 ) && Length[ paths ] <= 1 :=
-  paths
-
-EmbeddingClosest[ graph_Graph, paths_List, crv_ ] /;
-    MatchQ[ crv, _Line | _BSplineCurve | _BezierCurve ] ||
+    MatchQ[ crv, _Line | _BSplineCurve | _BezierCurve | _Circle ] ||
     MatrixQ[ crv, NumericQ ] && Last[ Dimensions[ crv ] ] === 2 && Length[ crv ] >= 3 :=
-  With[ { coords = GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ],
-          vertexIndex = AssociationThread[ VertexList[ graph ], Range @ VertexCount[ graph ] ],
-          curvePts = Replace[ crv, {
-            Line[ pts_ ] :> pts,
-            BSplineCurve[ pts_, o___ ] :> BSplineFunction[ pts, o ] /@ Subdivide[ 0., 1., Max[ 64, 4 Length[ pts ] ] ],
-            BezierCurve[ pts_, ___ ] :> BezierFunction[ pts ] /@ Subdivide[ 0., 1., Max[ 64, 4 Length[ pts ] ] ] } ] },
-    MinimalBy[ paths,
-      path |-> RegionHausdorffDistance[
-        If[ Length[ path ] >= 2, Line[ coords[[ Lookup[ vertexIndex, path ] ]] ], Point[ coords[[ vertexIndex @ First @ path ]] ] ],
-        Line[ curvePts ] ] ]
-  ]
+  If[ Length[ paths ] <= 1, paths,
+    With[ { coords = N @ GraphEmbedding[ Graph[ graph, GraphLayout -> "SpringEmbedding" ] ],
+            vertexIndex = AssociationThread[ VertexList[ graph ], Range @ VertexCount[ graph ] ],
+            curve = N @ Replace[ crv, {
+              BSplineCurve[ pts_, o___ ] :> Line[ BSplineFunction[ pts, o ] /@ Subdivide[ 0., 1., Max[ 64, 4 Length[ pts ] ] ] ],
+              BezierCurve[ pts_, ___ ] :> Line[ BezierFunction[ pts ] /@ Subdivide[ 0., 1., Max[ 64, 4 Length[ pts ] ] ] ],
+              Circle[ c_, r_ : 1, arc : { _, _ } : { 0, 2 Pi } ] :>
+                Line[ ( t |-> c + r { Cos[ t ], Sin[ t ] } ) /@ Subdivide[ N @ arc[[ 1 ]], N @ arc[[ 2 ]], 256 ] ],
+              pts_List :> Line[ pts ] } ] },
+      MinimalBy[ paths,
+        path |-> RegionHausdorffDistance[
+          If[ Length[ path ] >= 2, Line[ coords[[ Lookup[ vertexIndex, path ] ]] ], Point[ coords[[ vertexIndex @ First @ path ]] ] ],
+          curve ] ] ] ]
 
 EmbeddingClosest[ graph_Graph, ref_List ] :=
   EmbeddingClosest[ graph, #, ref ] &
 
-EmbeddingClosest[ graph_Graph, crv : ( _Line | _BSplineCurve | _BezierCurve ) ] :=
+EmbeddingClosest[ graph_Graph, crv : ( _Line | _BSplineCurve | _BezierCurve | _Circle ) ] :=
   EmbeddingClosest[ graph, #, crv ] &
 
 FindEmbeddingClosestPath[ graph_Graph, curve_ ] :=
@@ -291,7 +274,9 @@ FindEmbeddingClosestPath[ graph_Graph, curve_ ] :=
           curvePts = Replace[ curve, {
             Line[ pts_ ] :> pts,
             BSplineCurve[ pts_, o___ ] :> BSplineFunction[ pts, o ] /@ Subdivide[ 0., 1., Max[ 64, 4 Length[ pts ] ] ],
-            BezierCurve[ pts_, ___ ] :> BezierFunction[ pts ] /@ Subdivide[ 0., 1., Max[ 64, 4 Length[ pts ] ] ] } ] },
+            BezierCurve[ pts_, ___ ] :> BezierFunction[ pts ] /@ Subdivide[ 0., 1., Max[ 64, 4 Length[ pts ] ] ],
+            Circle[ c_, r_ : 1, arc : { _, _ } : { 0, 2 Pi } ] :>
+              ( t |-> c + r { Cos[ t ], Sin[ t ] } ) /@ Subdivide[ N @ arc[[ 1 ]], N @ arc[[ 2 ]], 256 ] } ] },
     { anchors = First /@ Split[
         Nearest[ coords -> VertexList[ graph ], curvePts ][[ All, 1 ]] ] },
     { walk = Fold[

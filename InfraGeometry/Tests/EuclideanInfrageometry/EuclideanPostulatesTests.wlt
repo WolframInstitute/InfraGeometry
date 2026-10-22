@@ -678,39 +678,13 @@ VerificationTest[
 ]
 
 
-(* ===== EmbeddingClosest dispatch for InfraShell ===== *)
-
-(* Sets ranked by directed Hausdorff distance to the Euclidean sphere of
-   radius r centered at c. *)
+(* ===== EmbeddingClosest against a Circle ===== *)
 
 VerificationTest[
-  With[ { g = GridGraph[ { 4, 4 } ] },
-    MatchQ[
-      EmbeddingClosest[ g,
-        List /@ Select[ VertexList[ g ], GraphDistance[ g, 6, # ] == 1 & ],
-        { 6, 1 } ],
-      { __List } ]
-  ],
-  True,
-  TestID -> "EmbeddingClosest-set-family-returns-sets"
-]
-
-VerificationTest[
-  With[ { g = GridGraph[ { 4, 4 } ] },
-    Length @ EmbeddingClosest[ g, List /@ VertexList[ g ], { 6, 1 } ]
-  ],
-  16,
-  TestID -> "EmbeddingClosest-set-family-all-vertices"
-]
-
-
-(* ===== EmbeddingClosest dispatch for InfraCircle (pre-existing) ===== *)
-
-VerificationTest[
-  With[ { g = GridGraph[ { 4, 4 } ] },
-    Length @ EmbeddingClosest[ g,
-      RandomInfraCircle[ g, InfraCircle[ 6, { 1, 2 } ], All ],
-      { 6, 1.5 } ] >= 1
+  With[ { g = Graph[ GridGraph[ { 4, 4 } ], VertexCoordinates -> Tuples[ Range[ 0, 3 ], 2 ] ] },
+    { cycles = RandomInfraCircle[ g, InfraCircle[ 6, { 1, 2 } ], All ] },
+    { closest = EmbeddingClosest[ g, cycles, Circle[ { 1, 1 }, 1.5 ] ] },
+    MatchQ[ closest, { __List } ] && SubsetQ[ cycles, closest ]
   ],
   True,
   TestID -> "EmbeddingClosest-cycle-graphs-on-Separating-set"

@@ -103,3 +103,9 @@ With a graph the arguments are vertex sets. Geometric objects are not read, and 
 With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {a = First @ GraphCenter[g]},
   Head @ InfraIntersection[g, InfraBall[a, 2], InfraBall[a, 1]]]
 ```
+
+A vertex that is not in *g* also leaves the call unevaluated. The corner 1 is not a vertex of the grid:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {VertexQ[g, 1], Head @ InfraIntersection[g, {1, 2, 3}, {2, 3, 4}]}]
+```

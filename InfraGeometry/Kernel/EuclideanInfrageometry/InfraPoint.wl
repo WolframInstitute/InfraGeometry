@@ -119,6 +119,7 @@ FindClosestInfraPoint[ graph_Graph, line_, point_,
         AssociationQ @ x,         Keys @ x,
         GraphQ @ x,               walksOf @ x,
         MatchQ[ x, { __Graph } ], Catenate[ walksOf /@ x ],
+        MatchQ[ x, { __List } ] && ! AllTrue[ x, vertex |-> VertexQ[ graph, vertex ] ], x,
         x === { },                { },
         True,                     { x } ] },
     { reps = DeleteDuplicates @ Flatten[
