@@ -16,7 +16,7 @@ RelatedGuides: [Experimental]
 
 ## Details & Options
 
-With the default method, *l1* and *l2* are perpendicular at their common vertex when the feet of the perpendiculars from the vertices of each line onto the other lie in *l1 ∩ l2*. A foot of *x* on a line is the midpoint, along the line, of two vertices of the line at equal distance from *x*, or the nearest vertex of the line to *x* when it is unique.
+With the default method, *l1* and *l2* are perpendicular at their common vertex when the feet of the perpendiculars from the vertices of each line onto the other lie in *l1 ∩ l2*. A foot of *x* on a line is a centre vertex, along the line, of two vertices of the line at equal distance from *x* (two when the piece between them has an even number of vertices), or the nearest vertex of the line to *x* when it is unique.
 
 Perpendicular lines meet in exactly one vertex. Lines that do not meet, or share two or more vertices, are not perpendicular under any method; in particular a line is not perpendicular to itself.
 

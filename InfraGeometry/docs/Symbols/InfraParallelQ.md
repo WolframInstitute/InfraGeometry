@@ -12,23 +12,25 @@ RelatedGuides: [Experimental]
 
 ## Usage
 
-<code>[InfraParallelQ]()[*g*, *l₁*, *l₂*]</code> tests whether the vertex lists *l₁* and *l₂* are parallel in *g*: disjoint, with every vertex of each at the same distance from the other.
+<code>[InfraParallelQ]()[*g*, *l₁*, *l₂*]</code> tests whether the vertex list *l₁* is parallel to *l₂* in *g*: disjoint from it, with every vertex of *l₁* at the same distance from *l₂*.
 
-<code>[InfraParallelQ]()[*g*, *l₁*, *l₂*, *t*]</code> allows these distances to vary by up to *t*.
+<code>[InfraParallelQ]()[*g*, *l₁*, *l₂*, *t*]</code> allows that distance to vary by up to *t*.
 
 <code>[InfraParallelQ]()[*m*, *i₁*, *i₂*]</code> reads the distances from the matrix *m*, with *i₁* and *i₂* lists of row indices.
 
 ## Details & Options
 
-*l₁* is parallel to *l₂* when they are disjoint, *d(v, l₂)* is the same for every *v* in *l₁* and *d(w, l₁)* is the same for every *w* in *l₂*, where *d(v, l₂)* is the least distance from *v* to a vertex of *l₂*. Both constants are then the distance *d(l₁, l₂)*.
+*l₁* is parallel to *l₂* when they are disjoint and *d(v, l₂)* is the same for every *v* in *l₁*, where *d(v, l₂)* is the least distance from *v* to a vertex of *l₂*.
 
 Disjointness is Euclid's Definition 23: parallels do not meet. So a line is not parallel to itself, and two sets that share one vertex are not parallel.
 
-The test is symmetric. The arguments need not be lines; concentric shells are parallel. Test lines separately with [InfraInfiniteLineQ](). An empty list is not a line, and the test with one stays unevaluated.
+The test is not symmetric: it measures from *l₁* to *l₂*, and *l₁* lies on a level set of *l₂*. The arguments need not be lines; concentric shells are parallel. Test lines separately with [InfraInfiniteLineQ]().
+
+A set in another component of *g* is at constant distance `Infinity` from *l₂*, so it is parallel to *l₂*; the empty set is parallel to every set, and every set to the empty set.
 
 A walk graph, or a list of them, is read as its walks, and every walk of *l₁* is tested against every walk of *l₂*.
 
-[RandomInfraParallel]() constructs a parallel through a point. It is at constant distance from the line, but the line need not be at constant distance from it, so the test can reject it.
+[RandomInfraParallel]() constructs a parallel through a point of a level set of the line, so its parallel is parallel to the line.
 
 Corresponding notions in the classical axiom systems:
 
@@ -84,7 +86,7 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[
 
 ## Properties and Relations
 
-The test is symmetric. Every vertex of a short piece of a row is at distance 2 from the row two above, but the vertices of that row are at different distances from the piece, so neither order passes:
+The test is not symmetric. Every vertex of a short piece of a row is at distance 2 from the row two above, but the vertices of that row are at different distances from the piece:
 
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},

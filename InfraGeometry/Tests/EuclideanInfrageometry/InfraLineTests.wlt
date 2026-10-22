@@ -337,24 +337,44 @@ VerificationTest[
   TestID -> "UniversalLineQ-non-vertex-stays-unevaluated"
 ]
 
-(* ===== InfraParallelQ: symmetric, an empty line a non-match ===== *)
+(* ===== InfraParallelQ: l1 parallel to l2 is one-sided, the parallels of RandomInfraParallel pass ===== *)
 
-(* on the 6 x 6 grid the piece {2, 3, 4} of the first row is at distance 2 from the third row, but the third row is not at
-   constant distance from the piece; parallelism asks both *)
+(* on the 6 x 6 grid the piece {2, 3, 4} of the first row is at distance 2 from the third row, so it is parallel to the row; the
+   row is not at constant distance from the piece, so it is not parallel to the piece *)
 VerificationTest[
   With[ { g = GridGraph[ { 6, 6 } ], piece = { 2, 3, 4 }, row = Range[ 13, 18 ] },
     { InfraParallelQ[ g, piece, row ], InfraParallelQ[ g, row, piece ], InfraParallelQ[ g, Range[ 1, 6 ], row ],
-      InfraParallelQ[ GraphDistanceMatrix @ g, piece, row ] } ],
-  { False, False, True, False },
-  TestID -> "InfraParallelQ-symmetric"
+      InfraParallelQ[ GraphDistanceMatrix @ g, piece, row ], InfraParallelQ[ GraphDistanceMatrix @ g, row, piece ] } ],
+  { True, False, True, True, False },
+  TestID -> "InfraParallelQ-one-sided"
 ]
 
+(* the parallel through a vertex two rows above the first row is the third row, and it is parallel to the first *)
+VerificationTest[
+  With[ { g = GridGraph[ { 6, 6 } ] }, { parallel = RandomInfraParallel[ g, Range[ 1, 6 ], 14, RandomSeeding -> 1 ] },
+    { VertexList @ parallel, InfraParallelQ[ g, parallel, Range[ 1, 6 ] ] } ],
+  { Range[ 13, 18 ], True },
+  TestID -> "InfraParallelQ-accepts-RandomInfraParallel"
+]
+
+(* the empty set is disjoint from every set and at constant distance from it, and every set is at constant distance Infinity
+   from the empty set and from a set in another component *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    MatchQ[ #, _InfraParallelQ ] & /@ { InfraParallelQ[ g, { 1, 2, 3, 4 }, { } ], InfraParallelQ[ g, { }, { 1, 2, 3, 4 } ],
-      InfraParallelQ[ GraphDistanceMatrix @ g, { 1, 2, 3, 4 }, { } ] } ],
-  { True, True, True },
-  TestID -> "InfraParallelQ-empty-line-unevaluated"
+    { InfraParallelQ[ g, { 1, 2, 3, 4 }, { } ], InfraParallelQ[ g, { }, { 1, 2, 3, 4 } ], InfraParallelQ[ GraphDistanceMatrix @ g, { 1, 2, 3, 4 }, { } ],
+      InfraParallelQ[ Graph[ { 1 <-> 2, 3 <-> 4 } ], { 1, 2 }, { 3, 4 } ] } ],
+  { True, True, True, True },
+  TestID -> "InfraParallelQ-empty-line-and-other-component"
+]
+
+(* ===== FindInfraPerpendicular: the feet of an even base are its two centre vertices ===== *)
+
+(* on C7 the vertices 1 and 4 of the line 1, 2, 3, 4 are both at distance 2 from 6, so the base 1, ..., 4 has the centre vertices 2 and 3;
+   the perpendiculars through them do not depend on the orientation of the line *)
+VerificationTest[
+  Sort[ VertexList /@ FindInfraPerpendicular[ CycleGraph[ 7 ], #, 6, All ] ] & /@ { { 1, 2, 3, 4 }, { 4, 3, 2, 1 } },
+  { { { 2, 1, 7, 6 }, { 3, 4, 5, 6 } }, { { 2, 1, 7, 6 }, { 3, 4, 5, 6 } } },
+  TestID -> "FindInfraPerpendicular-even-base-both-centres"
 ]
 
 (* ===== InfraPerpendicularQ: lines meet in exactly one vertex, the answer is a Boolean ===== *)

@@ -293,12 +293,12 @@ FindInfraPerpendicular[ graph_Graph, line_, point_,
             With[ { inside = Select[ Range @ Length @ line0, VertexQ[ workGraph, line0[[ # ]] ] & ] },
               { distances = GraphDistance[ workGraph, point0, line0[[ # ]] ] & /@ inside },
               { nearest = Pick[ inside, distances, Min @ distances ] },
-              (* Euclid I.12: the midpoint along the line of each pair of line vertices equidistant from the point, and the nearest vertex
-                 when it is unique, where the circle of radius d(point, line) touches the line *)
-              { feet = Select[ DeleteCases[ DeleteDuplicates @ Join[ Flatten[
-                  ( group |-> Map[ pair |-> line0[[ Min @ pair + Ceiling[ ( Max @ pair - Min @ pair + 1 ) / 2 ] - 1 ]], Subsets[ group, { 2 } ] ]
-                  ) /@ Values @ GroupBy[ Transpose @ { inside, distances }, Last -> First ],
-                  1 ], If[ Length @ nearest == 1, line0[[ nearest ]], { } ] ], point0 ], VertexQ[ workGraph, # ] & ] },
+              (* Euclid I.12: the centre vertices, one or two, of the piece of the line between two line vertices equidistant from the
+                 point, and the nearest vertex when it is unique, where the circle of radius d(point, line) touches the line *)
+              { feet = Select[ DeleteCases[ DeleteDuplicates @ Join[
+                  Catenate[ ( { lo, hi } |-> line0[[ lo + Floor[ ( hi - lo ) / 2 ] ;; lo + Ceiling[ ( hi - lo ) / 2 ] ]] ) @@@
+                    Catenate[ Subsets[ #, { 2 } ] & /@ Values @ GroupBy[ Transpose @ { inside, distances }, Last -> First ] ] ],
+                  If[ Length @ nearest == 1, line0[[ nearest ]], { } ] ], point0 ], VertexQ[ workGraph, # ] & ] },
               Select[
                 DeleteDuplicates @ Map[ canonical, Catenate[
                   Map[ foot |-> Catenate[ extensions /@
@@ -377,21 +377,20 @@ InfraInfiniteLineQ[ graph_Graph, segment_List ] /; Length[ segment ] >= 2 :=
 InfraInfiniteLineQ[ _Graph, segment_List ] /; Length[ segment ] < 2 :=
   False
 
-(* l1, l2 disjoint, d(v, l2) constant over v in l1 and d(w, l1) constant over w in l2, up to threshold; the two constants are then
-   both d(l1, l2) *)
+(* l1 is parallel to l2: disjoint, and d(v, l2) constant over v in l1 up to threshold -- l1 lies on a level set of l2, as the parallels of
+   RandomInfraParallel do; the relation is not symmetric *)
 
-InfraParallelQ[ distanceMatrix_List, l1 : { __ }, l2 : { __ }, threshold_ : 0 ] :=
+InfraParallelQ[ distanceMatrix_List, l1_List, l2_List, threshold_ : 0 ] :=
   ! IntersectingQ[ l1, l2 ] &&
-  With[ { block = distanceMatrix[[ l1, l2 ]] },
-    AllTrue[ { Min /@ block, Min /@ Transpose @ block },
-      d |-> Equal @@ d || Max[ d ] - Min[ d ] <= threshold ] ]
+  With[ { d = Min /@ distanceMatrix[[ l1, l2 ]] },
+    Equal @@ d || Max[ d ] - Min[ d ] <= threshold ]
 
-InfraParallelQ[ graph_Graph, l1 : { __ }, l2 : { __ }, threshold_ : 0 ] /; SubsetQ[ VertexList @ graph, Join[ l1, l2 ] ] :=
+InfraParallelQ[ graph_Graph, l1_List, l2_List, threshold_ : 0 ] /; SubsetQ[ VertexList @ graph, Join[ l1, l2 ] ] :=
   InfraParallelQ[ GraphDistanceMatrix @ graph, VertexIndex[ graph, # ] & /@ l1, VertexIndex[ graph, # ] & /@ l2, threshold ]
 
 InfraParallelQ[ graph_Graph,
-    l1 : _Graph | { __Graph } | { __ },
-    l2 : _Graph | { __Graph } | { __ },
+    l1 : _Graph | { __Graph } | _List,
+    l2 : _Graph | { __Graph } | _List,
     threshold_ : 0 ] /; ! MatchQ[ { l1, l2 }, { Except[ { __Graph }, _List ], Except[ { __Graph }, _List ] } ] :=
   With[ {
       walksOf = w |-> With[ { vs = VertexList @ w },
@@ -439,15 +438,15 @@ InfraPerpendicularQ[ graph_Graph, l1_, l2_, opts : OptionsPattern[] ] /;
         { localG,
           If[ ball === All, seq1, Select[ seq1, MemberQ[ ball, # ] & ] ],
           If[ ball === All, seq2, Select[ seq2, MemberQ[ ball, # ] & ] ] } ],
-      (* the feet of point on line inside h: the midpoint along the line of each pair of line vertices equidistant from point, and the
-         nearest vertex when it is unique, where the circle of radius d(point, line) touches the line *)
+      (* the feet of point on line inside h: the centre vertices, one or two, of the piece of the line between two line vertices
+         equidistant from point, and the nearest vertex when it is unique, where the circle of radius d(point, line) touches the line *)
       feet = { h, line, point } |-> With[ { inside = Select[ Range @ Length @ line, VertexQ[ h, line[[ # ]] ] & ] },
         { distances = GraphDistance[ h, point, line[[ # ]] ] & /@ inside },
         { nearest = Pick[ inside, distances, Min @ distances ] },
-        Select[ DeleteCases[ DeleteDuplicates @ Join[ Flatten[
-          ( group |-> Map[ pair |-> line[[ Min @ pair + Ceiling[ ( Max @ pair - Min @ pair + 1 ) / 2 ] - 1 ]], Subsets[ group, { 2 } ] ]
-          ) /@ Values @ GroupBy[ Transpose @ { inside, distances }, Last -> First ],
-          1 ], If[ Length @ nearest == 1, line[[ nearest ]], { } ] ], point ], VertexQ[ h, # ] & ] ] },
+        Select[ DeleteCases[ DeleteDuplicates @ Join[
+          Catenate[ ( { lo, hi } |-> line[[ lo + Floor[ ( hi - lo ) / 2 ] ;; lo + Ceiling[ ( hi - lo ) / 2 ] ]] ) @@@
+            Catenate[ Subsets[ #, { 2 } ] & /@ Values @ GroupBy[ Transpose @ { inside, distances }, Last -> First ] ] ],
+          If[ Length @ nearest == 1, line[[ nearest ]], { } ] ], point ], VertexQ[ h, # ] & ] ] },
     {
       projectionQ = p |-> With[ { loc = localize @ p, equality = Lookup[ mtdOpts, "Equality", "Subset" ] },
         { localCommon = Intersection[ loc[[ 2 ]], loc[[ 3 ]] ] },

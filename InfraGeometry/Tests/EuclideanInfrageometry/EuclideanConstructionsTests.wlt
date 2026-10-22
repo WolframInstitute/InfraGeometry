@@ -11,19 +11,20 @@ walkSeqs[ ws_List ] := walkSeq /@ ws
 
 (* ===== FindInfraPerpendicular ===== *)
 
-(* C5, line {1,2,3,4}, point 5: foot is 2, perpendicular line is the maximal
-   geodesic {5, 1, 2} (canonical orientation: lex-min of seq and reverse). *)
+(* C5, line {1,2,3,4}, point 5: the base 1, ..., 4 has the centre vertices 2
+   and 3, the feet, and the perpendiculars are the maximal geodesics {5, 1, 2}
+   and {5, 4, 3}, mirror images under the reflection fixing 5. *)
 
 VerificationTest[
-  Sort /@ infraSpread @ FindInfraPerpendicular[CycleGraph[5], {1, 2, 3, 4}, 5, All],
-  { { 1, 2, 5 } },
+  Sort @ Map[ Sort, infraSpread @ FindInfraPerpendicular[CycleGraph[5], {1, 2, 3, 4}, 5, All] ],
+  { { 1, 2, 5 }, { 3, 4, 5 } },
   TestID -> "FindInfraPerpendicular-CycleGraph5-Metric"
 ]
 
 VerificationTest[
-  GraphQ @ FindInfraPerpendicular[CycleGraph[5], {1, 2, 3, 4}, 5, All],
+  AllTrue[ FindInfraPerpendicular[CycleGraph[5], {1, 2, 3, 4}, 5, All], GraphQ ],
   True,
-  TestID -> "FindInfraPerpendicular-returns-a-graph"
+  TestID -> "FindInfraPerpendicular-returns-graphs"
 ]
 
 VerificationTest[

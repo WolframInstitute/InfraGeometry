@@ -18,7 +18,7 @@ RelatedGuides: [Experimental]
 
 ## Details & Options
 
-The default construction is Euclid I.12. Two vertices *a*, *b* of the line at the same distance from *p* are the base of an isosceles triangle; the midpoint of the base along the line is a foot *f*. When one vertex of the line is nearest to *p* it is a foot too: the circle about *p* through it touches the line there. The perpendiculars are the longest lines through a foot *f* and *p*; a shorter line through *f* and *p* is not returned.
+The default construction is Euclid I.12. Two vertices *a*, *b* of the line at the same distance from *p* are the base of an isosceles triangle; the centre vertex of the base along the line is a foot *f*, and a base with an even number of vertices has two. When one vertex of the line is nearest to *p* it is a foot too: the circle about *p* through it touches the line there. The perpendiculars are the longest lines through a foot *f* and *p*; a shorter line through *f* and *p* is not returned.
 
 When *p* lies on the line there is no foot apart from *p*, and the result is `{}`. Erecting a perpendicular at a point of the line is Euclid I.11.
 
@@ -66,7 +66,7 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[
 
 ### Radius
 
-On the square grid a point at distance 2 from a line has 548 perpendiculars. Built inside the balls of radius 2, 3 and 4 about the point, there are 0, 6 and 12. The ball of radius 2 holds the two nearest vertices of the line but not the midpoint of the base they span, so it holds no foot:
+On the square grid a point at distance 2 from a line has 548 perpendiculars. Built inside the balls of radius 2, 3 and 4 about the point, there are 0, 6 and 12. The ball of radius 2 holds the two nearest vertices of the line but not the centre of the base they span, so it holds no foot:
 
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},

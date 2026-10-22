@@ -220,24 +220,25 @@ Options[ FindInfraSpanningAxes ] = {
 (* the candidates are the geodesics between pairs at distance at least "MinLength"; each next axis is a candidate farthest from the chosen
    axes, its score the least distance to one of them, until the count is reached or no candidate is "MinSeparation" away *)
 
-FindInfraSpanningAxes[ g_Graph, count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All ) : 1, opts : OptionsPattern[] ] /;
+FindInfraSpanningAxes[ g_Graph,
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All ) : 1, opts : OptionsPattern[] ] /;
     MemberQ[ { "MinEndpoint", "Separation", "Hausdorff" }, OptionValue[ FindInfraSpanningAxes, { opts }, "AxisDistance" ] ] :=
   With[
     {
       vertices  = VertexList @ g,
       dm        = GraphDistanceMatrix @ g,
       cap       = Replace[ count, { All -> Infinity, UpTo[ n_ ] :> n } ],
-      metric    = OptionValue[ FindInfraSpanningAxes, { opts }, "AxisDistance" ],
-      thickness = OptionValue[ FindInfraSpanningAxes, { opts }, "AxisThickness" ],
-      pick      = If[ TrueQ @ OptionValue[ FindInfraSpanningAxes, { opts }, "RandomPick" ], RandomChoice, First ],
+      metric    = OptionValue[ "AxisDistance" ],
+      thickness = OptionValue[ "AxisThickness" ],
+      pick      = If[ TrueQ @ OptionValue[ "RandomPick" ], RandomChoice, First ],
       hausdorff = block |-> Max[ Max[ Min /@ block ], Max[ Min /@ Transpose @ block ] ]
     },
-    { least = Replace[ OptionValue[ FindInfraSpanningAxes, { opts }, "MinLength" ], Automatic -> Max @ dm ] },
+    { least = Replace[ OptionValue[ "MinLength" ], Automatic -> Max @ dm ] },
     { paths = Map[ VertexIndex[ g, # ] &, Catenate[
         Apply[ { i, j } |-> FindPath[ g, vertices[[ i ]], vertices[[ j ]], { dm[[ i, j ]] }, All ] ] /@
           Select[ Position[ dm, d_ /; least <= d < Infinity, { 2 } ], Apply[ Less ] ] ], { 2 } ] },
     { first = If[ paths === { } || cap == 0, { }, pick @ paths ] },
-    { separation = Replace[ OptionValue[ FindInfraSpanningAxes, { opts }, "MinSeparation" ], Automatic :> ( Length @ first - 1 ) / 2 ] },
+    { separation = Replace[ OptionValue[ "MinSeparation" ], Automatic :> ( Length @ first - 1 ) / 2 ] },
     { score = { axes, path } |-> Switch[ metric,
         "MinEndpoint", Min @ dm[[ path[[ { 1, -1 } ]], Catenate[ #[[ { 1, -1 } ]] & /@ axes ] ]],
         "Separation",  Min @ dm[[ path, Union @@ axes ]],
