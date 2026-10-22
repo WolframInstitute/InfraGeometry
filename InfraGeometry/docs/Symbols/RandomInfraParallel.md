@@ -20,7 +20,7 @@ RelatedGuides: [Experimental]
 
 ## Details & Options
 
-Let *L = {v : d(v, line) = d(p, line)}* be the level set of *p*. A parallel to *line* through *p* is a shortest path *(s, …, p, …, e)* of *g* with all its vertices in *L* that no neighbour of *s* or *e* in *L* prolongs. A parallel need not be a line of *g*: it is inextensible inside *L* only.
+Let *L = {v : d(v, line) = d(p, line)}* be the level set of *p*. A parallel to *line* through *p* is a shortest path *(s, …, p, …, e)* of *g* with all its vertices in *L* that no neighbour of *s* or *e* in *L* prolongs. A parallel need not be a line of *g*: it is inextensible inside *L* only. Its vertices are all at distance *d(p, line)* from the line, but the line need not be at constant distance from it, so [InfraParallelQ](), which asks both, can reject it.
 
 Through a vertex of a row of the square grid there is exactly one parallel to another row, and it is the row. Where the line bends, the level set bends with it, and the parallels are short and can be several. A vertex with no neighbour in *L* has no parallel.
 
@@ -109,7 +109,7 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[
 
 ## Properties and Relations
 
-A parallel is a shortest path, and every vertex of it is at the same distance from the line:
+A parallel is a shortest path, and every vertex of it is at distance 2 from the line:
 
 ```wl
 With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
@@ -117,12 +117,12 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[
   {line = RandomInfraInfiniteLine[g, c, a, RandomSeeding -> 1]},
   {p = RandomInfraPoint[g, InfraShell[line, 2], RandomSeeding -> 7]},
   {par = RandomInfraParallel[g, line, p, RandomSeeding -> 1]},
-  {InfraSegmentQ[g, par], InfraParallelQ[g, VertexList[par], line]}]
+  {InfraSegmentQ[g, par], Union @ Table[Min @ Table[GraphDistance[g, v, w], {w, line}], {v, VertexList[par]}]}]
 ```
 
 ## Possible Issues
 
-[InfraParallelQ]() measures distances from its first argument only. The line is not at constant distance from its parallel, so the test fails in that order:
+[InfraParallelQ]() asks for a constant distance both ways. The line runs on past the ends of its parallel, and its last vertices are farther from it, so the test rejects the pair:
 
 ```wl
 With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
@@ -130,5 +130,5 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[
   {line = RandomInfraInfiniteLine[g, c, a, RandomSeeding -> 1]},
   {p = RandomInfraPoint[g, InfraShell[line, 2], RandomSeeding -> 7]},
   {par = VertexList @ RandomInfraParallel[g, line, p, RandomSeeding -> 1]},
-  {InfraParallelQ[g, par, line], InfraParallelQ[g, line, par]}]
+  {InfraParallelQ[g, par, line], Table[Min @ Table[GraphDistance[g, v, w], {w, par}], {v, line}]}]
 ```

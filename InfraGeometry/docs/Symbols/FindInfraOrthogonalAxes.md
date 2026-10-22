@@ -94,6 +94,14 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
   {Length[sets], Union[Length /@ sets]}]
 ```
 
+The `"Projection"` method of [InfraPerpendicularQ](). Perpendicular lines meet in one vertex, so the axes meet only at *c*; at length 2 on the grid the set is the straight cross:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {axes = FindInfraOrthogonalAxes[g, 45, 2, Properties -> "Projection"]},
+  InfraSubstrateHighlight[g, Append[InfraWalk /@ axes, 45], PlotLabel -> Length[axes], ImageSize -> Medium]]
+```
+
 ### AxisCount
 
 The sets of exactly two axes of length 2 on the grid: the straight cross and two crosses that turn at the centre:
@@ -128,12 +136,4 @@ A right angle and a straight angle look the same to the test. From the centre 45
 
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {GraphDistance[g, 65, 47], GraphDistance[g, 65, 25]}]
-```
-
-The `"Projection"` method of [InfraPerpendicularQ]() admits, besides the straight cross, four bent axes that share a half with it:
-
-```wl
-With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
-  {axes = FindInfraOrthogonalAxes[g, 45, 2, Properties -> "Projection"]},
-  InfraSubstrateHighlight[g, Append[InfraWalk /@ axes, 45], PlotLabel -> Length[axes], ImageSize -> Medium]]
 ```
