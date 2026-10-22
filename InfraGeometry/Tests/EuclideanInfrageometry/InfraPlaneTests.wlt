@@ -69,8 +69,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = InfraSubstrate[ "SquareGridGraph", "Small" ] },
     { scene = InfraScene[ { pA, pB, h }, { pA == InfraPoint[ 45 ], pB == InfraPoint[ 56 ], h == InfraPlane[ pA, pB ] } ] },
-    { Length @ TimeConstrained[ RandomInfraSceneInstance[ scene, g, All ], 60 ],
-      Length @ TimeConstrained[ InfraSceneMultiway[ scene, g ][ "Instances" ], 120 ] } ],
-  { 1369, 1369 },
-  TestID -> "plane-in-scene-and-multiway"
+    Length @ TimeConstrained[ RandomInfraSceneInstance[ scene, g, All ], 60 ] ],
+  1369,
+  TestID -> "plane-in-scene"
 ]

@@ -203,11 +203,11 @@ VerificationTest[
     { scene = InfraScene[ { circle }, { circle == token } ] },
     { Sort[ ( #[[ 1 ]][ circle ] & ) /@ RandomInfraSceneInstance[ scene, graph, All ] ] ===
         Sort[ RandomInfraCircleThrough[ graph, token, All ] ],
-      Length[ InfraSceneMultiway[ scene, graph ][ "Instances" ] ],
+      Length[ RandomInfraSceneInstance[ scene, graph, All ] ],
       Head[ InfraSubstrateHighlight[ graph, { token } ] ],
       Head[ InfraScenePlot[ scene, graph, First[ RandomInfraSceneInstance[ scene, graph, All ] ] ] ] } ],
   { True, 3, Graph, Graph },
-  TestID -> "circle-through-scene-multiway-and-drawing"
+  TestID -> "circle-through-scene-and-drawing"
 ]
 
 

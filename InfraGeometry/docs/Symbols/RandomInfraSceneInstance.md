@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraSceneInstance
 Keywords: [scene, construction, instance, backtracking, constraint]
-SeeAlso: [InfraScene, InfraSceneInstance, InfraSceneStep, InfraSceneMultiway, InfraScenePlot]
+SeeAlso: [InfraScene, InfraSceneInstance, InfraSceneStep, InfraScenePlot]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 

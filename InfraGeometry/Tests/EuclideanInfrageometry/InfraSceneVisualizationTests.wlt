@@ -1089,3 +1089,10 @@ VerificationTest[
   { Graph, <| 1 -> 3, 2 -> 3, 3 -> 2, 4 -> 2, 5 -> 2 |>, { 2, 2, 2, 2, 2, 2 }, None, { 1, 2, 3, 4, 5, 6, 1 }, <| |>, <| |> },
   TestID -> "InfraSubstrateHighlight-InfraEllipse-draws-its-family"
 ]
+
+VerificationTest[ GraphQ[ InfraSubstrateHighlight[ PathGraph[ Range[ 3 ] ], { InfraMidpoint[ 1, 3 ] } ] ],
+  True, TestID -> "InfraSubstrateHighlight-midpoint-family" ]
+VerificationTest[ GraphQ[ InfraSubstrateHighlight[ CycleGraph[ 4 ], { InfraPerpendicularBisector[ 1, 3 ] } ] ],
+  True, TestID -> "InfraSubstrateHighlight-bisector-family" ]
+VerificationTest[ GraphQ[ InfraSubstrateHighlight[ PathGraph[ Range[ 3 ] ], { InfraRegionNearest[ { 1, 3 }, 2 ] } ] ],
+  True, TestID -> "InfraSubstrateHighlight-nearest-family" ]
