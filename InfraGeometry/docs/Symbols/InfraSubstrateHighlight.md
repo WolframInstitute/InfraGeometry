@@ -26,11 +26,10 @@ RelatedGuides: [EuclideanInfrageometry]
 | a density `<\|v -> m, …\|>` | the masses *m* | none |
 | a vertex list | 1 on each vertex; a list that is a path in its own order is drawn as the walk | none, or the walk |
 | <code>[InfraWalk]()[{*v1*, …, *vk*}]</code> | the visits | the traversals of its steps |
-| a family: [InfraSegment](), [InfraHalfLine](), [InfraCircle](), … | `"VertexDensity"` of [InfraMeasurement]() | `"EdgeDensity"` |
-| a family [InfraGeodesic]() or [InfraEllipse]() | the sum over its members | the sum over its members |
+| a family: [InfraSegment](), [InfraHalfLine](), [InfraCircle](), [InfraGeodesic](), [InfraEllipse](), … | `"VertexDensity"` of [InfraMeasurement](); one member is drawn as its walk | `"EdgeDensity"` |
 | a region: [InfraBall](), [InfraShell](), [InfraTube](), [InfraIntersection](), … | `"VertexDensity"` | none |
 | a subgraph of *g* | 1 on each vertex | 1 on each edge |
-| a walk graph, a directed path or cycle | the visits | the traversals, drawn as the walk |
+| a directed path or cycle, a walk graph | the visits | the traversals, drawn as the walk |
 | a directed acyclic graph | the source-to-sink paths through each vertex | the paths through each edge |
 | any other directed graph | 1 on each vertex | 1 on each edge |
 | a list of such objects | the sum, in one colour | the sum |

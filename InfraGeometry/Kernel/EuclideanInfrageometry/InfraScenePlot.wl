@@ -19,8 +19,8 @@ InfraScenePlot[ scene_InfraScene, graph_Graph, InfraSceneInstance[ bindings_Asso
 					MatchQ[ expression, _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraPlane | _InfraBall | _InfraShell | _InfraSphere | _InfraTube | _InfraCylinder |
 						_InfraCone | _InfraSolidOfRevolution | _InfraBallHull | _InfraConvexHull | _InfraQuadric | _InfraIntersection | _InfraUnion ], "VertexSet",
 					MatchQ[ expression, _InfraEllipse ], "Graph",
-					MatchQ[ expression, _InfraSegment | _InfraHalfLine | _InfraRay | _InfraInfiniteLine | _InfraLine |
-						_InfraCircle | _InfraCircleThrough | _InfraArc | _InfraRegularPolygon | _InfraPolygon | _InfraWalk | _InfraGeodesic ], "Walk",
+					MatchQ[ expression, _InfraCircle | _InfraCircleThrough | _InfraRegularPolygon | _InfraPolygon | InfraArc[ _, { p_, ___, p_ } | { _ }, ___ ] ], "Cycle",
+					MatchQ[ expression, _InfraSegment | _InfraHalfLine | _InfraRay | _InfraInfiniteLine | _InfraLine | _InfraArc | _InfraWalk | _InfraGeodesic ], "Walk",
 					True, "Exact" ] ] ], scene[ "Constructions" ] ];
 		geometryHeads = { InfraWalk, InfraSegment, InfraHalfLine, InfraRay, InfraInfiniteLine, InfraLine, InfraCircle, InfraCircleThrough, InfraArc,
 			InfraMidpoint, InfraPerpendicularBisector, InfraEquidistantSet, InfraRegionNearest, InfraBall, InfraShell, InfraSphere, InfraTube,
@@ -40,7 +40,7 @@ InfraScenePlot[ scene_InfraScene, graph_Graph, InfraSceneInstance[ bindings_Asso
 		drawable[ expression_ ] := Which[
 			KeyExistsQ[ bindings, expression ], With[ { value = Lookup[ bindings, Key[ expression ] ] },
 				VertexQ[ graph, value ] || GraphQ[ value ] || AssociationQ[ value ] ||
-				( ListQ[ value ] && MemberQ[ { "Walk", "VertexSet" }, Lookup[ kinds, Key[ expression ], "Exact" ] ] ) ||
+				( ListQ[ value ] && MemberQ[ { "Walk", "Cycle", "VertexSet" }, Lookup[ kinds, Key[ expression ], "Exact" ] ] ) ||
 				MemberQ[ geometryHeads, Head[ value ] ] ],
 			VertexQ[ graph, expression ] || GraphQ[ expression ] || AssociationQ[ expression ] || MatchQ[ expression, _Directive ], True,
 			MatchQ[ expression, Style[ _, __ ] | _Rule ], drawable[ First[ expression ] ],
@@ -52,10 +52,8 @@ InfraScenePlot[ scene_InfraScene, graph_Graph, InfraSceneInstance[ bindings_Asso
 			KeyExistsQ[ bindings, expression ], With[ { value = Lookup[ bindings, Key[ expression ] ] },
 				Which[
 					VertexQ[ graph, value ], Association[ value -> 1 ],
-					ListQ[ value ] && Lookup[ kinds, Key[ expression ], "Exact" ] === "Walk",
-					InfraWalk[ If[ First[ value ] =!= Last[ value ] && MatchQ[ Lookup[ scene[ "Constructions" ], Key[ expression ] ],
-							_InfraCircle | _InfraCircleThrough | _InfraRegularPolygon | _InfraPolygon | InfraArc[ _, { p_, ___, p_ } | { _ }, ___ ] ],
-						Append[ value, First[ value ] ], value ] ],
+					ListQ[ value ] && Lookup[ kinds, Key[ expression ], "Exact" ] === "Walk", InfraWalk[ value ],
+					ListQ[ value ] && Lookup[ kinds, Key[ expression ], "Exact" ] === "Cycle", InfraWalk[ closeWalk @ value ],
 					ListQ[ value ] && Lookup[ kinds, Key[ expression ], "Exact" ] === "VertexSet", AssociationThread[ value, ConstantArray[ 1, Length[ value ] ] ],
 					True, value ] ],
 			VertexQ[ graph, expression ], Association[ expression -> 1 ],

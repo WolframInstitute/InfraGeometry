@@ -1059,17 +1059,17 @@ VerificationTest[
 ]
 
 
-(* ===== family heads without a measurement of their own draw their members ===== *)
+(* ===== the geodesic and the ellipse are family heads: their ink is their "VertexDensity" and "EdgeDensity", one member a walk ===== *)
 
 (* on the 3 x 3 grid the maximal shortest paths through 5, 6 are 1, 4, 5, 6, 9 and 1, 2, 5, 6, 9 and their mirrors 7, 4, 5, 6, 3
-   and 7, 8, 5, 6, 3: four members through the edge 5 - 6 *)
+   and 7, 8, 5, 6, 3: four members through the edge 5 - 6; the readings are InfraMeasurement's on InfraGeodesic *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
     { ink = infraInk[ g, InfraGeodesic[ { 5, 6 }, Infinity ] ] },
     { Head @ InfraSubstrateHighlight[ g, { InfraGeodesic[ { 5, 6 }, Infinity ] } ], ink[ "VertexDensity" ],
       ink[ "EdgeDensity" ][ UndirectedEdge[ 5, 6 ] ], ink[ "Walk" ] } ],
   { Graph, <| 1 -> 2, 2 -> 1, 3 -> 2, 4 -> 2, 5 -> 4, 6 -> 4, 7 -> 2, 8 -> 1, 9 -> 2 |>, 4, None },
-  TestID -> "InfraSubstrateHighlight-InfraGeodesic-draws-its-members"
+  TestID -> "InfraSubstrateHighlight-InfraGeodesic-draws-its-family"
 ]
 
 VerificationTest[
@@ -1078,11 +1078,14 @@ VerificationTest[
   TestID -> "infraInk-InfraGeodesic-one-member-is-a-walk"
 ]
 
+(* with the 2-side of K_{2,3} as foci every vertex has distance sum 2, so the three 4-cycles are the members: 3 through a focus, 2 through
+   every other vertex and every edge; on the 6-cycle the one member is drawn closed, and an empty family draws nothing *)
 VerificationTest[
-  With[ { g = CycleGraph[ 6 ] },
-    { ink = infraInk[ g, InfraEllipse[ { 1, 4 }, 3, Properties -> { } ] ], empty = infraInk[ g, InfraEllipse[ { 1, 4 }, 1 ] ] },
-    { Head @ InfraSubstrateHighlight[ g, { InfraEllipse[ { 1, 4 }, 3, Properties -> { } ] } ], ink[ "VertexDensity" ], Length @ ink[ "Walk" ],
-      First @ ink[ "Walk" ] === Last @ ink[ "Walk" ], empty[ "VertexDensity" ], empty[ "EdgeDensity" ] } ],
-  { Graph, AssociationThread[ Range[ 6 ] -> 1 ], 7, True, <| |>, <| |> },
-  TestID -> "InfraSubstrateHighlight-InfraEllipse-draws-its-cycles"
+  With[ { k = CompleteGraph[ { 2, 3 } ], g = CycleGraph[ 6 ] },
+    { ink = infraInk[ k, InfraEllipse[ { 1, 2 }, 2, Properties -> { } ] ], one = infraInk[ g, InfraEllipse[ { 1, 4 }, 3, Properties -> { } ] ],
+      empty = infraInk[ g, InfraEllipse[ { 1, 4 }, 1 ] ] },
+    { Head @ InfraSubstrateHighlight[ k, { InfraEllipse[ { 1, 2 }, 2, Properties -> { } ] } ], ink[ "VertexDensity" ], Values @ ink[ "EdgeDensity" ],
+      ink[ "Walk" ], one[ "Walk" ], empty[ "VertexDensity" ], empty[ "EdgeDensity" ] } ],
+  { Graph, <| 1 -> 3, 2 -> 3, 3 -> 2, 4 -> 2, 5 -> 2 |>, { 2, 2, 2, 2, 2, 2 }, None, { 1, 2, 3, 4, 5, 6, 1 }, <| |>, <| |> },
+  TestID -> "InfraSubstrateHighlight-InfraEllipse-draws-its-family"
 ]

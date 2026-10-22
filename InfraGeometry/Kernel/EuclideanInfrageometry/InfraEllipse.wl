@@ -114,3 +114,17 @@ RandomInfraEllipse[ graph_Graph, InfraEllipse[ foci : { _, _ }, level_, geometry
     ( SubsetQ[ First /@ Options[ RandomInfraEllipse ], First /@ { opts } ] &&
     SubsetQ[ First /@ Options[ RandomInfraEllipse ], First /@ { opts, geometryOpts } ] ) :=
   RandomInfraEllipse[ graph, foci, level, count, opts, geometryOpts ]
+
+(* the members are simple cycles, so the count of visits over the members is the number of members through a vertex or an edge *)
+
+InfraMeasurement[ graph_Graph, ellipse : InfraEllipse[ { _, _ }, _, ___Rule ], "VertexDensity" ] :=
+  With[ { members = RandomInfraEllipse[ graph, ellipse, All, RandomSeeding -> None ] },
+    KeySort @ Counts @ Catenate[ VertexList /@ members ] /; ListQ @ members ]
+
+InfraMeasurement[ graph_Graph, ellipse : InfraEllipse[ { _, _ }, _, ___Rule ], "EdgeDensity" ] :=
+  With[ { members = RandomInfraEllipse[ graph, ellipse, All, RandomSeeding -> None ] },
+    KeySort @ Counts[ UndirectedEdge @@ Sort[ List @@ # ] & /@ Catenate[ EdgeList /@ members ] ] /; ListQ @ members ]
+
+InfraMeasurement[ graph_Graph, ellipse : InfraEllipse[ { _, _ }, _, ___Rule ], "Cardinality" ] :=
+  With[ { members = RandomInfraEllipse[ graph, ellipse, All, RandomSeeding -> None ] },
+    Length @ members /; ListQ @ members ]
