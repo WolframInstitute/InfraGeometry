@@ -34,7 +34,7 @@ The result is an [Association]():
 | `"Completeness"` | whether the exploration finished, and if not, why |
 | `"Frontier"` | the work left when it did not |
 
-The exploration is exhaustive, for small graphs and short scenes. Options bound it; by default they are `Infinity`, so the result is exact, and a bound makes it partial, as `"Completeness"` reports:
+The exploration is exhaustive, for small graphs and short scenes. By default it is unbounded and the result exact; a bound makes it partial, and `"Completeness"` says so:
 
 | Option | Default | Values |
 |---|---|---|
@@ -118,7 +118,7 @@ With[{g = GridGraph[{3, 3}]},
   Length @ InfraSceneMultiway[scene, g]["Instances"]]
 ```
 
-With two free points every pair of vertices is a branch, and on the grid the exploration does not finish in 30 seconds. A bound stops it:
+With two free points every pair of vertices is a branch, too many to explore on the grid. A bound stops the exploration early:
 
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
