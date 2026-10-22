@@ -133,15 +133,11 @@ InfraReachableQ[ graph_Graph, p1_, p2_ ] :=
   With[ { density1 = InfraMeasurement[ graph, p1, "VertexDensity" ], density2 = InfraMeasurement[ graph, p2, "VertexDensity" ] },
     IntersectingQ[ VertexComponent[ graph, Keys @ density1 ], Keys @ density2 ] /; AssociationQ @ density1 && AssociationQ @ density2 ]
 
-InfraMeasurement[ graph_Graph, InfraPoint[ ], "VertexDensity" ] :=
-  KeySort @ AssociationThread[ VertexList @ graph, 1 ]
+(* every vertex the point can be is one member, so the density of a point token is 1 on its pool *)
 
-InfraMeasurement[ graph_Graph, InfraPoint[ vertex_ ], "VertexDensity" ] /; VertexQ[ graph, vertex ] :=
-  <| vertex -> 1 |>
-
-InfraMeasurement[ graph_Graph, InfraPoint[ region_ ], "VertexDensity" ] /; ! VertexQ[ graph, region ] :=
-  With[ { density = InfraMeasurement[ graph, region, "VertexDensity" ] },
-    AssociationThread[ Keys @ Select[ density, mass |-> mass != 0 ], 1 ] /; AssociationQ @ density ]
+InfraMeasurement[ graph_Graph, point : InfraPoint[ ___ ], "VertexDensity" ] :=
+  With[ { pool = RandomInfraPoint[ graph, point, All, RandomSeeding -> None ] },
+    AssociationThread[ Sort @ pool, 1 ] /; ListQ @ pool ]
 
 RandomInfraPoint[ graph_Graph, InfraPoint[ ],
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&

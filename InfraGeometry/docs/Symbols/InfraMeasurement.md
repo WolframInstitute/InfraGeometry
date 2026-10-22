@@ -55,9 +55,9 @@ On the square grid, away from the rim, with a segment whose interval is an (*a* 
 
 A vertex, an association of masses and a walk graph also have a `"VertexDensity"`, and so do the tokens [InfraWalk](), its number of visits to each vertex, and [InfraPoint](), 1 on the vertices it can be. A list of vertex lists or walk graphs has the sum of their densities.
 
-A list of vertices is one vertex set for every property: its density counts repeated vertices, and its `"CountingMeasure"`, `"RiemannianMeasure"` and `"Subgraph"` are those of the set. Any other list is measured object by object.
+A list of vertices is one vertex set for every property: its density counts repeated vertices, and its `"CountingMeasure"`, `"RiemannianMeasure"` and `"Subgraph"` are those of the set, as for a density. Any other list is measured object by object.
 
-The members of <code>[InfraGeodesic]()[*germ*, *s*]</code> are listed to read its `"Cardinality"`, `"Length"` and densities; its `"Graph"` is a window graph, not a graph of the members.
+The members of <code>[InfraGeodesic]()[*germ*, *s*]</code> at a finite scale *s* are listed to read its `"Cardinality"`, `"Length"` and densities; its `"Graph"` is a window graph, not a graph of the members. At scale [Infinity]() the family is <code>[InfraInfiniteLine]()[*germ*]</code> and is read as such.
 
 ## Basic Examples
 

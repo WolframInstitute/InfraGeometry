@@ -668,4 +668,12 @@ VerificationTest[
   TestID -> "InfraMeasurement-vertex-list-property-list-and-All"
 ]
 
+(* a density has the properties of a set: All on the corner square's density gives its four set readings *)
+VerificationTest[
+  With[ { readings = InfraMeasurement[ GridGraph[ { 3, 3 } ], <| 1 -> 1, 2 -> 1, 4 -> 1, 5 -> 2 |>, All ] },
+    { Keys @ readings, readings[ "CountingMeasure" ], readings[ "RiemannianMeasure" ], VertexList @ readings[ "Subgraph" ] } ],
+  { { "VertexDensity", "Subgraph", "CountingMeasure", "RiemannianMeasure" }, 4, 1, { 1, 2, 4, 5 } },
+  TestID -> "InfraMeasurement-density-All-is-the-set-readings"
+]
+
 EndTestSection[]

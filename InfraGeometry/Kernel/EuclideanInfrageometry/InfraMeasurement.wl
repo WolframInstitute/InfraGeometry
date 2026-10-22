@@ -7,22 +7,12 @@ InfraMeasurement[ graph_Graph, objs : { __ }, spec_ ] /;
       ( spec =!= "VertexDensity" || ! MatchQ[ objs, { ( _Graph | _List ) .. } ] ) :=
   InfraMeasurement[ graph, #, spec ] & /@ objs
 
-InfraMeasurement[ graph_Graph, vertices : { __ }, property : "Subgraph" | "CountingMeasure" | "RiemannianMeasure" ] /;
+InfraMeasurement[ graph_Graph, vertices : { __ }, property : "Subgraph" | "CountingMeasure" | "RiemannianMeasure" | { __String } | All ] /;
     VertexQ[ graph, vertices ] || AllTrue[ vertices, vertex |-> VertexQ[ graph, vertex ] ] :=
-  With[ { support = Keys @ InfraMeasurement[ graph, vertices, "VertexDensity" ] },
-    Switch[ property,
-      "Subgraph", Subgraph[ graph, support ],
-      "CountingMeasure", Length @ support,
-      "RiemannianMeasure", Count[ support, vertex_ /; SubsetQ[ support, AdjacencyList[ graph, vertex ] ] ] ] ]
+  InfraMeasurement[ graph, InfraMeasurement[ graph, vertices, "VertexDensity" ], property ]
 
-InfraMeasurement[ graph_Graph, vertices : { __ },
-    properties : { ( "VertexDensity" | "Subgraph" | "CountingMeasure" | "RiemannianMeasure" ) .. } ] /;
-    VertexQ[ graph, vertices ] || AllTrue[ vertices, vertex |-> VertexQ[ graph, vertex ] ] :=
-  AssociationMap[ property |-> InfraMeasurement[ graph, vertices, property ], properties ]
-
-InfraMeasurement[ graph_Graph, vertices : { __ }, All ] /;
-    VertexQ[ graph, vertices ] || AllTrue[ vertices, vertex |-> VertexQ[ graph, vertex ] ] :=
-  InfraMeasurement[ graph, vertices, { "VertexDensity", "Subgraph", "CountingMeasure", "RiemannianMeasure" } ]
+InfraMeasurement[ graph_Graph, density_Association, All ] :=
+  InfraMeasurement[ graph, density, { "VertexDensity", "Subgraph", "CountingMeasure", "RiemannianMeasure" } ]
 
 (* a List of balls, shells and constant tubes reads every support off one GraphDistanceMatrix, the distance to a core the Min over its columns
    and the interval of a segment the two rows summing to the distance: one single-source GraphDistance costs 34 ms on a 989-vertex mesh, the
@@ -77,7 +67,8 @@ InfraMeasurement[ graph_Graph, obj : Except[ _InfraCircleThrough | _InfraEquidis
   AssociationMap[ InfraMeasurement[ graph, obj, # ] &, props ]
 
 InfraMeasurement[ graph_Graph,
-    obj : Except[ _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List | InfraIntersection[ __ ] | InfraUnion[ __ ] |
+    obj : Except[ _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List |
+                  _Association | InfraIntersection[ __ ] | InfraUnion[ __ ] |
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] ], All ] :=
