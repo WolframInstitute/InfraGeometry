@@ -217,86 +217,40 @@ Options[ FindInfraSpanningAxes ] = {
   "RandomPick"    -> False
 }
 
-FindInfraSpanningAxes[ g_Graph, All, opts : OptionsPattern[] ] :=
+(* the candidates are the geodesics between pairs at distance at least "MinLength"; each next axis is a candidate farthest from the chosen
+   axes, its score the least distance to one of them, until the count is reached or no candidate is "MinSeparation" away *)
+
+FindInfraSpanningAxes[ g_Graph, count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All ) : 1, opts : OptionsPattern[] ] /;
+    MemberQ[ { "MinEndpoint", "Separation", "Hausdorff" }, OptionValue[ FindInfraSpanningAxes, { opts }, "AxisDistance" ] ] :=
   With[
-    { vertices = VertexList[ g ], distMatrix = GraphDistanceMatrix[ g ] },
-    { maxDist = Max[ distMatrix ] },
-    { epsilon = maxDist - Replace[ OptionValue[ "MinLength" ], Automatic -> maxDist ] },
     {
-      paths = Flatten[
-        FindPath[ g, vertices[[ #[[ 1 ]] ]], vertices[[ #[[ 2 ]] ]], { distMatrix[[ #[[ 1 ]], #[[ 2 ]] ]] }, All ] & /@ Select[
-          DeleteDuplicatesBy[ Position[ distMatrix, _?( # >= maxDist - epsilon & ) ], Sort ],
-          #[[ 1 ]] =!= #[[ 2 ]] &
-        ],
-        1
-      ],
-      distanceFunction = "AxisDistance" /. { opts } /. "AxisDistance" -> "MinEndpoint",
-      thickness = "AxisThickness" /. { opts } /. "AxisThickness" -> 0,
-      pick = If[ ! TrueQ[ "RandomPick" /. { opts } /. "RandomPick" -> False ], First, RandomChoice ],
-      vertexIndex = AssociationThread[ vertices, Range @ Length @ vertices ],
-      hausdorff = sub |-> Max[ Max[ Min /@ sub ], Max[ Min /@ Transpose @ sub ] ]
+      vertices  = VertexList @ g,
+      dm        = GraphDistanceMatrix @ g,
+      cap       = Replace[ count, { All -> Infinity, UpTo[ n_ ] :> n } ],
+      metric    = OptionValue[ FindInfraSpanningAxes, { opts }, "AxisDistance" ],
+      thickness = OptionValue[ FindInfraSpanningAxes, { opts }, "AxisThickness" ],
+      pick      = If[ TrueQ @ OptionValue[ FindInfraSpanningAxes, { opts }, "RandomPick" ], RandomChoice, First ],
+      hausdorff = block |-> Max[ Max[ Min /@ block ], Max[ Min /@ Transpose @ block ] ]
     },
-    {
-      minSeparation = Replace[ "MinSeparation" /. { opts } /. "MinSeparation" -> Automatic,
-        Automatic :> ( Length[ First[ paths, { } ] ] - 1 ) / 2
-      ]
-    },
-    If[ paths === { },
-      { },
-      With[
-        { first = pick[ paths ] },
+    { least = Replace[ OptionValue[ FindInfraSpanningAxes, { opts }, "MinLength" ], Automatic -> Max @ dm ] },
+    { paths = Map[ VertexIndex[ g, # ] &, Catenate[
+        Apply[ { i, j } |-> FindPath[ g, vertices[[ i ]], vertices[[ j ]], { dm[[ i, j ]] }, All ] ] /@
+          Select[ Position[ dm, d_ /; least <= d < Infinity, { 2 } ], Apply[ Less ] ] ], { 2 } ] },
+    { first = If[ paths === { } || cap == 0, { }, pick @ paths ] },
+    { separation = Replace[ OptionValue[ FindInfraSpanningAxes, { opts }, "MinSeparation" ], Automatic :> ( Length @ first - 1 ) / 2 ] },
+    { score = { axes, path } |-> Switch[ metric,
+        "MinEndpoint", Min @ dm[[ path[[ { 1, -1 } ]], Catenate[ #[[ { 1, -1 } ]] & /@ axes ] ]],
+        "Separation",  Min @ dm[[ path, Union @@ axes ]],
+        "Hausdorff",   Min[ hausdorff[ dm[[ path, # ]] ] & /@ axes ] ] },
+    { axes = If[ first === { }, { },
         First @ NestWhile[
-          Apply[ { axes, previousIndices, previousEndpoints, candidates, done } |-> With[
-            {
-              scores = Switch[ distanceFunction,
-                "MinEndpoint",
-                ( Min[
-                  distMatrix[[ vertexIndex[ #[[ 1 ]] ], previousEndpoints ]],
-                  distMatrix[[ vertexIndex[ #[[ -1 ]] ], previousEndpoints ]] ] & ) /@ candidates,
-                "Hausdorff",
-                ( p |-> hausdorff[ distMatrix[[ Lookup[ vertexIndex, p ], previousIndices ]] ] ) /@ candidates,
-                "Separation",
-                ( p |-> Min[ distMatrix[[ Lookup[ vertexIndex, p ], previousIndices ]] ] ) /@ candidates,
-                _, None
-              ]
-            },
-            If[ scores === None || Max[ scores ] < minSeparation,
-              { axes, previousIndices, previousEndpoints, candidates, True },
-              With[
-                { next = pick[ candidates[[ Flatten @ Position[ scores, Max[ scores ] ] ]] ] },
-                {
-                  closeAxes = If[ thickness == 0,
-                    { next },
-                    Select[ candidates, hausdorff[ distMatrix[[ Lookup[ vertexIndex, # ], Lookup[ vertexIndex, next ] ]] ] <= thickness & ]
-                  ]
-                },
-                {
-                  Join[ axes, closeAxes ],
-                  Union[ previousIndices, Flatten[ Lookup[ vertexIndex, # ] & /@ closeAxes ] ],
-                  Union[ previousEndpoints, Flatten[ { vertexIndex[ #[[ 1 ]] ], vertexIndex[ #[[ -1 ]] ] } & /@ closeAxes ] ],
-                  Complement[ candidates, closeAxes ],
-                  False
-                }
-              ]
-            ]
-          ] ],
-          {
-            { first },
-            Lookup[ vertexIndex, first ],
-            { vertexIndex[ first[[ 1 ]] ], vertexIndex[ first[[ -1 ]] ] },
-            Complement[ paths, { first } ],
-            False
-          },
-          Apply[ { axes, previousIndices, previousEndpoints, candidates, done } |-> candidates =!= { } && ! done ]
-        ]
-      ]
-    ]
-  ]
-
-FindInfraSpanningAxes[ g_Graph, UpTo[ n_Integer ], opts : OptionsPattern[] ] :=
-  Take[ FindInfraSpanningAxes[ g, All, opts ], UpTo[ n ] ]
-
-FindInfraSpanningAxes[ g_Graph, n_Integer : 1, opts : OptionsPattern[] ] :=
-  With[ { result = FindInfraSpanningAxes[ g, UpTo[ n ], opts ] },
-    If[ Length[ result ] >= n, Take[ result, n ], { } ]
+          Apply[ { chosen, candidates } |-> With[ { scores = score[ chosen, # ] & /@ candidates },
+            If[ Max @ scores < separation,
+              { chosen, { } },
+              With[ { next = pick @ Pick[ candidates, scores, Max @ scores ] },
+                { close = If[ thickness == 0, { next }, Select[ candidates, hausdorff[ dm[[ #, next ]] ] <= thickness & ] ] },
+                { Join[ chosen, close ], Complement[ candidates, close ] } ] ] ] ],
+          { { first }, DeleteCases[ paths, first ] },
+          Apply[ { chosen, candidates } |-> candidates =!= { } && Length @ chosen < cap ] ] ] },
+    Map[ vertices[[ # ]] &, If[ IntegerQ @ count && Length @ axes < count, { }, Take[ axes, UpTo[ cap ] ] ] ]
   ]

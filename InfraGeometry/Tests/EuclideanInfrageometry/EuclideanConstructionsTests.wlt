@@ -42,17 +42,16 @@ VerificationTest[
   TestID -> "FindInfraPerpendicular-strict-1"
 ]
 
-(* Q-side dispatch on C5: the metric branch gives one path graph, the Alexandrov
-   branch nothing at all (smoke test).  C5 is
-   a degenerate configuration -- the metric perpendicular shares two vertices
-   with `line`, so Q-side tests legitimately reject it.  Substantive Q-side
-   tests live in the mesh-graph notebook demo. *)
+(* Q-side dispatch on C5: C5 is a degenerate configuration -- every line
+   through 5 shares two vertices with `line`, and perpendicular lines meet in
+   one vertex, so the Q-side methods find nothing.  Substantive Q-side tests
+   live in the mesh-graph notebook demo. *)
 
 VerificationTest[
-  GraphQ @ FindInfraPerpendicular[CycleGraph[5], {1, 2, 3, 4}, 5, All,
+  FindInfraPerpendicular[CycleGraph[5], {1, 2, 3, 4}, 5, All,
     Method -> "Projection"],
-  True,
-  TestID -> "FindInfraPerpendicular-CycleGraph5-Projection-shape"
+  { },
+  TestID -> "FindInfraPerpendicular-CycleGraph5-Projection-none"
 ]
 
 VerificationTest[
@@ -63,13 +62,13 @@ VerificationTest[
 ]
 
 (* Radius option: same setup, restrict to NeighborhoodGraph[g, 5, 1].  The
-   1-ball around 5 in C5 is {5, 1, 4}; line {1, 2, 3, 4} restricted is {1, 4}.
-   Foot recipe finds... no equidistant pair with the right parity, so should
-   return empty.  Just check it does not crash and returns a walk graph. *)
+   1-ball around 5 in C5 is {5, 1, 4}; the equidistant pair 1, 4 of the line
+   {1, 2, 3, 4} has its midpoint 2 along the line outside the ball, and the
+   nearest vertex is not unique, so there is no foot in the ball. *)
 
 VerificationTest[
-  GraphQ @ FindInfraPerpendicular[CycleGraph[5], {1, 2, 3, 4}, 5, All, "Radius" -> 1],
-  True,
+  FindInfraPerpendicular[CycleGraph[5], {1, 2, 3, 4}, 5, All, "Radius" -> 1],
+  { },
   TestID -> "FindInfraPerpendicular-Radius-1"
 ]
 
