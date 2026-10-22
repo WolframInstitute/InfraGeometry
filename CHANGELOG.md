@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+Fixes of the kernel findings of the lean-pages rewrite (dev repo `Work/Backlog/LeanPagesKernelFindings.md`).
+
+- **Drawing.** `InfraSubstrateHighlight` draws a DAG or a list of DAGs by their path counts and a directed graph with a cycle by its support, with no messages; `InfraGeodesic` and `InfraEllipse` draw by their readings like every family head. `InfraScenePlot` draws saved circles, closed arcs and regular polygons closed.
+- **Measurement.** `InfraWalk` and `InfraPoint` have a `"VertexDensity"`; `InfraGeodesic` readings count its members (at scale `Infinity` they are those of `InfraInfiniteLine[germ]`); `InfraEllipse` has `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"`. A list of vertices of the graph is one vertex set for every property. Property lists work for `InfraMidpoint`, `InfraPerpendicularBisector`, `InfraRegionNearest`. `InfraMemberQ` covers `InfraBall`, `InfraShell`, `InfraSphere`. `InfraBoundary`, `InfraInterior`, `InfraEqualQ`, `InfraReachableQ`, `InfraIntersection`, `InfraUnion` stay unevaluated silently without a density.
+- **Lines.** `InfraPerpendicularQ` requires the lines to meet in exactly one vertex under every method and always gives a Boolean; feet of a perpendicular include the unique nearest vertex and both centre vertices of an even base. `InfraParallelQ` ("l1 is parallel to l2") handles the empty set and other components without messages. `UniversalLineQ` reads lines off the distance matrix (polynomial). `FindInfraSpanningAxes` with `"Hausdorff"` scores against each chosen axis and stops at the count.
+- **Smaller fixes.** `InfraDistance` of an empty support is `Infinity` under every aggregation. **Breaking:** `EmbeddingClosest` takes `{p, q}` as two vertices and a circle as `Circle[coords, r]`, and every form keeps the closest walks. `FindClosestInfraPoint` and the homotopy finders read a list of vertex lists as a bundle. `SelectInfraWalk` takes `RandomSeeding`. `ResistanceQ` has the 10^-9 tolerance its usage states. `HomotopicQ` and `NullHomotopicQ` honour `Method`. `CenterGraph[g, -k]` and `Scaled[q]` count from the eccentricity of the centre set. `InfraSubstrate` and `InfraSubstrateCode` accept a scalar raw size for list-sized substrates. `MiniballRadius` is exact for exact points.
+- **Speed.** `InfraCircleThrough` prunes its search by a lower bound on the remaining length (identical output; the Small-mesh band {2, 3} from not finishing to 0.02 s). `FindInfraBisectingHyperplane` and `RandomInfraPlane` enumerate minimal separators by closure; `{"Separating", "Connected"}` means the connected minimal separators; a random plane is uniform over the class.
+
 ## 2.8.2 (2026-10-22)
 
 - Documentation only. Remove the migration-era tutorials *Synthetic Geometry Migration* and *Named Construction Samplers*; the Euclidean guide no longer lists them.
