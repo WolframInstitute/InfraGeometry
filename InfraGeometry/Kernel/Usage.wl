@@ -39,8 +39,8 @@ LineCount::usage = "LineCount[graph] gives the number of distinct canonical maxi
 UniversalLineQ::usage = "UniversalLineQ[graph] tests whether some pair spans a line filling a whole connected component (Chen-Chvatal); UniversalLineQ[graph, {u, v}] tests one line.";
 
 InfraShell::usage = "InfraShell[c, r] is the inert distance-r shell; {r, s} gives a distance band."
-InfraSphere::usage = "InfraSphere[c, r] is the inert family of minimal connected separating subsets of the distance-r shell."
-RandomInfraSphere::usage = "RandomInfraSphere[graph, c, r, n] gives n minimal separating subsets of the shell of c with radius r or band {r, s}; n may be UpTo[n] or All. Automatic randomizes candidate order; Identity preserves deterministic order. Options RandomSeeding, Properties, \"NextVertexFunction\".";
+InfraSphere::usage = "InfraSphere[c, r] is the inert family of walls in the band r or {r, s} about c: minimal connected sets separating c from beyond."
+RandomInfraSphere::usage = "RandomInfraSphere[graph, c, r, n] gives n distinct walls about c in the band r or {r, s}, each found by a random greedy peel. Options Properties, \"NextVertexFunction\", RandomSeeding.";
 FindInfraOsculatingShell::usage = "FindInfraOsculatingShell[graph, path, i, k] gives the shells whose level set contains the k-vertex window of path centred at position i, one per osculating centre.";
 FindAdvancingInfraFront::usage = "FindAdvancingInfraFront[graph, origin, steps] gives the foliation by a bouncing wavefront as a List of sorted vertex lists: each front steps one geodesic step outward and reflects inward where it cannot.";
 FindInfraShellCenter::usage = "FindInfraShellCenter[graph, shell] recovers {center, radii} from a shell. Option Method.";
@@ -370,7 +370,7 @@ InfraLineQ::usage = "InfraLineQ is the legacy compatibility spelling; use InfraI
 InfraPolygon::usage = "InfraPolygon is the inert legacy compatibility spelling; use InfraRegularPolygon."
 RandomInfraCircle::usage = "RandomInfraCircle[graph, token] samples the construction family; All gives its complete pool. Options RandomSeeding, NextVertexFunction."
 RandomInfraArc::usage = "RandomInfraArc[graph, token] samples the construction family; All gives its complete pool. Options RandomSeeding, NextVertexFunction."
-RandomInfraPlane::usage = "RandomInfraPlane[graph, token] samples the construction family; All gives its complete pool. Options RandomSeeding, NextVertexFunction."
+RandomInfraPlane::usage = "RandomInfraPlane[graph, InfraPlane[p, q]] gives a random minimal set of the bisector separating p from q; All gives them all. Options Properties, RandomSeeding, NextVertexFunction."
 
 InfraMidpoint::usage = "InfraMidpoint[p,q] is the inert center of the oriented segment graph from p to q, with shortest-path occupation density."
 InfraPerpendicularBisector::usage = "InfraPerpendicularBisector[p,q] is the inert locus of vertices at equal finite graph distance from p and q."

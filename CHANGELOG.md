@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Walls.** `Properties -> {"Separating", "Connected"}` means a wall for spheres and planes alike: a connected separating subset of the band (`RandomInfraSphere`, `InfraSphere`) or slab (`FindInfraBisectingHyperplane`, and `RandomInfraPlane` under its new `Properties` option, default `{"Separating"}`) with no proper connected separating subset. A draw is a random greedy peel, fast and not uniform; a count gives distinct walls, `All` every wall, sorted; `"NextVertexFunction" -> Identity` the first wall of the peel. `{"Separating"}` keeps the minimal separators, now also for spheres, which now separate the centre from the vertices beyond the band. `InfraMemberQ` of `InfraSphere` tests a wall directly, without enumerating the family.
+
 ## 2.9.0 (2026-10-23)
 
 Fixes of the kernel findings of the lean-pages rewrite (dev repo `Work/Backlog/LeanPagesKernelFindings.md`).

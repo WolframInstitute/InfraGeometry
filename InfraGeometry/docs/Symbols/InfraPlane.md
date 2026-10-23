@@ -29,6 +29,8 @@ In space the perpendicular bisector of two points is a hyperplane and cuts space
 | square mesh | need not separate | can be none; the window {−1, 1} gives one |
 | *p* and *q* adjacent | | none: nothing separates them |
 
+A plane need not be connected. In the bisector *B* without *p* and *q*, a wall is a set *W ⊆ B* that separates *p* from *q*, induces a connected subgraph, and has no proper subset that does both; a connected plane is a wall. [RandomInfraPlane]() with `Properties -> {"Separating", "Connected"}` draws walls instead of planes, by a greedy search.
+
 [InfraPlane]() is a symbolic object: [RandomInfraPlane]() draws members, [InfraPlaneQ]() tests a vertex set, and in an [InfraScene]() <code>[InfraPlane]()[*p*, *q*]</code> is a construction whose realisations are the members. The whole bisector is [FindInfraBisectingHyperplane]() or [InfraPerpendicularBisector]().
 
 ## Basic Examples
@@ -73,6 +75,25 @@ There are 1369 of them, of 8, 9 or 10 vertices:
 
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, Counts[Length /@ RandomInfraPlane[g, InfraPlane[45, 56], All]]]
+```
+
+## Properties and Relations
+
+For an axis pair the plane is connected and is the only wall; for the diagonal pair no plane is connected, and there is no wall:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {walls = Properties -> {"Separating", "Connected"}},
+  {RandomInfraPlane[g, InfraPlane[45, 47], All] === RandomInfraPlane[g, InfraPlane[45, 47], All, walls],
+   RandomInfraPlane[g, InfraPlane[45, 56], All, walls]}]
+```
+
+A wall and a plane in the slab {−1, 1} on the mesh:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {RandomInfraPlane[g, InfraPlane[a, b, {-1, 1}], props, RandomSeeding -> 1], a, b}],
+    {props, {Properties -> {"Separating", "Connected"}, Properties -> {"Separating"}}}]]
 ```
 
 ## Possible Issues

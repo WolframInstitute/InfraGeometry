@@ -5,39 +5,37 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraSphere
-Keywords: [sphere, separating set, shell, band, minimal separator]
+Keywords: [sphere, wall, separating set, shell, band, minimal separator, greedy]
 SeeAlso: [InfraSphere, InfraShell, RandomInfraCircle, InfraMeasurement, InfraBall]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[RandomInfraSphere]()[*g*, *c*, *r*]</code> gives a random sphere of radius *r* about *c* in *g*, as a sorted vertex list.
+<code>[RandomInfraSphere]()[*g*, *c*, *r*]</code> gives a random sphere of radius *r* about *c* in *g*, a wall in the shell of radius *r*, as a sorted vertex list.
 
-<code>[RandomInfraSphere]()[*g*, *c*, {*r*, *s*}]</code> gives a random sphere in the band of radii *r* to *s*.
+<code>[RandomInfraSphere]()[*g*, *c*, {*r*, *s*}]</code> gives a random wall in the band of radii *r* to *s*.
 
-<code>[RandomInfraSphere]()[*g*, *c*, *r*, *n*]</code> gives a list of *n* distinct spheres.
+<code>[RandomInfraSphere]()[*g*, *c*, *r*, *n*]</code> gives a list of *n* distinct walls.
 
 <code>[RandomInfraSphere]()[*g*, [InfraSphere]()[*c*, *r*]]</code> and <code>[RandomInfraSphere]()[*g*, [InfraSphere]()[*c*, *r*], *n*]</code> are the same with the sphere given as a token.
 
 ## Details & Options
 
-The band is *L = {v : r ≤ d(c, v) ≤ s}*, the shell for *s = r*, and *ρ = (r + s)/2*. A sphere is an inclusion-minimal connected subset *S* of *L* that separates: after removing *S*, the component of *c* lies in the ball of radius *ρ* and every other vertex lies outside it.
+In the band *B = {v ≠ c : r ≤ d(c, v) ≤ s}* a wall is a set *W ⊆ B* that separates *c* from the vertices beyond *s*, induces a connected subgraph, and has no proper subset that does both. *W* separates when every path from *c* to a vertex *v* with *d(c, v) > s* meets *W*.
 
-A shell with no edges has no connected subset of more than one vertex. On the square grid, which is bipartite, a sphere of one radius does not exist by default; the band {*r*, *r* + 1} has spheres.
+One draw is a greedy search. It starts from a connected piece of *B* that separates, chosen at random, and removes one vertex at a time, chosen uniformly among the vertices whose removal leaves a connected separating set, until no vertex can go. The result is a wall: if a smaller connected separating set lay inside, some vertex outside it could still go. The draw is fast, and it is not uniform over the walls.
 
-The peeling takes vertices out of the band one at a time while it still separates, so a sphere is minimal, not of least size.
+With a count *n* the draws are distinct: each further draw runs the same search but avoids the sets all of whose walls were drawn already. `All` gives every wall, sorted; that search can take a time exponential in the size of the band.
 
-When the band does not separate, the result is `{}`.
-
-The count *n* can be `n`, `UpTo[n]` or `All`. All spheres of a large band can take long.
+On the square grid, which is bipartite, a shell of one radius has no edges, and a sphere of one radius does not exist; a band {*r*, *r* + 1} has walls, closed zigzags between its two shells. When no connected part of the band separates, the result is `{}`.
 
 Options:
 
 | Option | Default | Values |
 |---|---|---|
-| [Properties]() | `{"Separating", "Connected"}` | `{"Separating"}` drops connectedness; `{}` gives the band itself |
-| `"NextVertexFunction"` | `Automatic` | `Automatic` peels in random order; `Identity` in vertex order; a function of the candidate list gives the vertices to try |
+| [Properties]() | `{"Separating", "Connected"}` | the walls; `{"Separating"}` the minimal separating subsets of *B*, a draw uniform over all of them; `{}` the band itself |
+| `"NextVertexFunction"` | `Automatic` | `Automatic` removes a random vertex at each step; `Identity` the first removable vertex in vertex order, the same wall at every call; a function of the candidate list gives the vertices to try |
 | [RandomSeeding]() | `Automatic` | an integer or a string for a reproducible draw; `Inherited` to draw from the current random state |
 
 ## Basic Examples
@@ -60,7 +58,7 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}
     ImageSize -> Medium]]
 ```
 
-Three spheres of the band {3, 4} on the grid, each of 23 vertices:
+Three walls of the band {3, 4} on the grid, each of 23 vertices:
 
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
@@ -80,6 +78,16 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}
   InfraSubstrateHighlight[g, {sphere, c}, PlotLabel -> {Length[sphere], RandomInfraSphere[g, c, 3]}, ImageSize -> Medium]]
 ```
 
+### NextVertexFunction
+
+With `Identity` the search is deterministic. In the band {2, 3} on the grid it gives a zigzag of 15 vertices, a path whose two ends are diagonal neighbours:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {wall = RandomInfraSphere[g, c, {2, 3}, "NextVertexFunction" -> Identity]},
+  InfraSubstrateHighlight[g, {wall, c}, PlotLabel -> {Length[wall], PathGraphQ[Subgraph[g, wall]]}, ImageSize -> Medium]]
+```
+
 ## Properties and Relations
 
 Removing a sphere of the band {3, 4} leaves the centre with vertices within distance 3 only:
@@ -88,6 +96,13 @@ Removing a sphere of the band {3, 4} leaves the centre with vertices within dist
 With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
   {sphere = RandomInfraSphere[g, c, {3, 4}, RandomSeeding -> 1]},
   Max[GraphDistance[g, c, #] & /@ VertexComponent[VertexDelete[g, sphere], c]]]
+```
+
+Every draw is a member of the family:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  AllTrue[RandomInfraSphere[g, c, {3, 4}, 5, RandomSeeding -> 1], InfraMemberQ[g, InfraSphere[c, {3, 4}], #] &]]
 ```
 
 The token form gives the same draw:

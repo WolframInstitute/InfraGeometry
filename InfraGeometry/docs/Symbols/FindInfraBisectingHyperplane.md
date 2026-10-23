@@ -28,10 +28,12 @@ The bisector need not separate *p₁* from *p₂*. On the grid it does; on the m
 
 The count *n* can be `n`, `UpTo[n]` or `All`. With the default `Properties -> {}` the class has one set, the bisector or the slab itself.
 
+In the slab *B* without *p₁* and *p₂*, a wall is a set *W ⊆ B* that separates *p₁* from *p₂*, induces a connected subgraph, and has no proper subset that does both. A connected minimal separator is a wall. On the square grid the minimal separators of a diagonal pair are staircases whose vertices meet only at corners, and that bisector has no wall. The walls are found by a greedy search: from a connected separating piece of *B*, vertices are removed one at a time while the set stays connected and separating. With a count the walls are distinct; `All` searches all of them, in time that can be exponential.
+
 | Option | Default | Values |
 |---|---|---|
-| [Properties]() | `{}` | `{}`: the bisector or slab; `{"Separating"}`: its inclusion-minimal subsets that separate *p₁* from *p₂*; `{"Separating", "Connected"}`: those that are connected |
-| `"NextVertexFunction"` | `Identity` | a function applied to the class in sorted order: `Identity` keeps it, `RandomSample` shuffles it |
+| [Properties]() | `{}` | `{}`: the bisector or slab; `{"Separating"}`: its inclusion-minimal subsets that separate *p₁* from *p₂*; `{"Separating", "Connected"}`: its walls |
+| `"NextVertexFunction"` | `Identity` | for the separators a function applied to the class in sorted order, `Identity` keeping it, `RandomSample` shuffling it; for the walls a function of the removable vertices at each step, `Identity` taking the first, `RandomSample` a random one |
 
 Corresponding notions in the classical axiom systems:
 
@@ -85,7 +87,7 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}
     PlotLabel -> {Length @ FindInfraBisectingHyperplane[g, a, b], Length[wall]}, ImageSize -> Medium]]
 ```
 
-Three connected separating sets in the slab {−1, 1} at distance 5:
+Three walls in the slab {−1, 1} at distance 5, the first three the search meets:
 
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
@@ -112,6 +114,15 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}
   {bisector = FindInfraBisectingHyperplane[g, a, b]},
   {MemberQ[ConnectedComponents[VertexDelete[g, bisector]], _?(SubsetQ[#, {a, b}] &)],
    FindInfraBisectingHyperplane[g, a, b, All, Properties -> {"Separating"}]}]
+```
+
+On the grid the centre and its diagonal neighbour have 1369 minimal separators in the bisector, none of them connected, and no wall:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  {separators = FindInfraBisectingHyperplane[g, 45, 56, All, Properties -> {"Separating"}]},
+  {Length[separators], Count[separators, s_ /; ConnectedGraphQ[Subgraph[g, s]]],
+   FindInfraBisectingHyperplane[g, 45, 56, All, Properties -> {"Separating", "Connected"}]}]
 ```
 
 ## Possible Issues
