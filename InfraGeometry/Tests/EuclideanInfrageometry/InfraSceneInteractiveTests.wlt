@@ -32,3 +32,14 @@ VerificationTest[
   True,
   TestID -> "InfraSceneViewer-constructs"
 ]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 4, 4 } ],
+      scene = InfraScene[ { a, b, s }, {
+        InfraSceneStep[ { a == InfraPoint[ ], b == InfraPoint[ ] }, "two points" ],
+        InfraSceneStep[ { s == InfraSegment[ a, b ] }, "segment" ] } ] },
+    FreeQ[ InfraSceneViewer[ scene, g, <| a -> 1, b -> 16 |>, ImageSize -> 300 ], $Failed ]
+  ],
+  True,
+  TestID -> "InfraSceneViewer-steps-init-constructs"
+]
