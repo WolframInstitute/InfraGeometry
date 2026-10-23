@@ -64,8 +64,8 @@ VerificationTest[
 
 (* heads compose: the differential of an antiderivative is the differential of its "Function" *)
 VerificationTest[
-  InfraMeasurement[ differentialDiamond, InfraDifferential[ InfraAntiderivative[ differentialF, Method -> "Paths" ] ], "Function" ] ===
-    InfraMeasurement[ differentialDiamond, InfraDifferential[ InfraMeasurement[ differentialDiamond, InfraAntiderivative[ differentialF, Method -> "Paths" ], "Function" ] ], "Function" ],
+  InfraMeasurement[ differentialDiamond, InfraDifferential[ InfraAntiderivative[ differentialF, Method -> "PathCount" ] ], "Function" ] ===
+    InfraMeasurement[ differentialDiamond, InfraDifferential[ InfraMeasurement[ differentialDiamond, InfraAntiderivative[ differentialF, Method -> "PathCount" ], "Function" ] ], "Function" ],
   True,
   TestID -> "InfraDifferential-Diamond-of-an-antiderivative-head"
 ]

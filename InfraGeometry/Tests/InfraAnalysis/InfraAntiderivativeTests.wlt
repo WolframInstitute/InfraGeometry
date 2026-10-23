@@ -10,7 +10,7 @@ antiderivativeImplied = Graph[ Range[ 6 ], { 1 -> 2, 2 -> 3, 1 -> 3, 1 -> 4, 4 -
 
 antiderivativeF = <| 1 -> 5, 2 -> -2, 3 -> 7, 4 -> 1, 5 -> 3, 6 -> -4 |>
 
-antiderivativeMethods = { "Volume", "Paths", "Average", "Uniform", "Flow" }
+antiderivativeMethods = { "Zeta", "PathCount", "BackwardRandomWalk", "UniformChain", "ForwardRandomWalk" }
 
 antiderivativeRandomDAGs = ( SeedRandom[ 7 ];
   Table[ With[ { n = RandomInteger[ { 4, 8 } ] },
@@ -22,15 +22,15 @@ antiderivativeRandomForms = ( SeedRandom[ 3 ]; AssociationThread[ VertexList @ #
 VerificationTest[
   InfraMeasurement[ antiderivativeDiamond, InfraAntiderivative[ antiderivativeDiamondF ], "Function" ],
   <| 1 -> 2, 2 -> 5, 3 -> 7, 4 -> 17 |>,
-  TestID -> "InfraAntiderivative-Diamond-Volume-sums-the-past"
+  TestID -> "InfraAntiderivative-Diamond-Zeta-sums-the-past"
 ]
 
-(* "Paths" counts each u once per chain from u to v: the two chains from the bottom reach the top *)
+(* "PathCount" counts each u once per chain from u to v: the two chains from the bottom reach the top *)
 VerificationTest[
-  InfraMeasurement[ antiderivativeDiamond, InfraAntiderivative[ antiderivativeDiamondF, Method -> "Paths" ], "Function" ] -
+  InfraMeasurement[ antiderivativeDiamond, InfraAntiderivative[ antiderivativeDiamondF, Method -> "PathCount" ], "Function" ] -
     InfraMeasurement[ antiderivativeDiamond, InfraAntiderivative[ antiderivativeDiamondF ], "Function" ],
   <| 1 -> 0, 2 -> 0, 3 -> 0, 4 -> 2 |>,
-  TestID -> "InfraAntiderivative-Diamond-Paths-minus-Volume-is-f-of-the-bottom"
+  TestID -> "InfraAntiderivative-Diamond-PathCount-minus-Zeta-is-f-of-the-bottom"
 ]
 
 (* the minimal non-local case: mu(a, d) = 1 on the diamond, so the Moebius derivative reaches past the links, by f(a) *)
@@ -42,19 +42,19 @@ VerificationTest[
 
 VerificationTest[
   InfraMeasurement[ antiderivativeDiamond, InfraDerivative[ antiderivativeDiamondF ], "Function" ] -
-    InfraMeasurement[ antiderivativeDiamond, InfraDerivative[ antiderivativeDiamondF, Method -> "Paths" ], "Function" ],
+    InfraMeasurement[ antiderivativeDiamond, InfraDerivative[ antiderivativeDiamondF, Method -> "PathCount" ], "Function" ],
   <| 1 -> 0, 2 -> 0, 3 -> 0, 4 -> 2 |>,
-  TestID -> "InfraDerivative-Diamond-Volume-minus-Paths-is-f-of-the-bottom"
+  TestID -> "InfraDerivative-Diamond-Zeta-minus-PathCount-is-f-of-the-bottom"
 ]
 
 VerificationTest[
-  InfraMeasurement[ antiderivativeDiamond, InfraAntiderivative[ antiderivativeDiamondF, Method -> "Uniform" ], "Kernel" ],
+  InfraMeasurement[ antiderivativeDiamond, InfraAntiderivative[ antiderivativeDiamondF, Method -> "UniformChain" ], "Kernel" ],
   <| { 1, 1 } -> 1, { 1, 2 } -> 1, { 1, 3 } -> 1, { 1, 4 } -> 1, { 2, 2 } -> 1, { 2, 4 } -> 1/2, { 3, 3 } -> 1, { 3, 4 } -> 1/2, { 4, 4 } -> 1 |>,
-  TestID -> "InfraAntiderivative-Diamond-Uniform-kernel-is-exact"
+  TestID -> "InfraAntiderivative-Diamond-UniformChain-kernel-is-exact"
 ]
 
 VerificationTest[
-  Keys @ InfraMeasurement[ antiderivativeDiamond, InfraAntiderivative[ antiderivativeDiamondF, Method -> "Average" ], All ],
+  Keys @ InfraMeasurement[ antiderivativeDiamond, InfraAntiderivative[ antiderivativeDiamondF, Method -> "BackwardRandomWalk" ], All ],
   { "Function", "Kernel" },
   TestID -> "InfraAntiderivative-Diamond-All"
 ]
@@ -107,7 +107,7 @@ VerificationTest[
   KeySort @ Counts @ Map[
     g |-> With[ { links = List @@@ EdgeList @ TransitiveReductionGraph @ g },
       { AllTrue[ Keys @ InfraMeasurement[ g, InfraDerivative[ 0 & ], "Kernel" ], pair |-> SameQ @@ pair || MemberQ[ links, pair ] ],
-        Max @ Values @ InfraMeasurement[ g, InfraAntiderivative[ 0 &, Method -> "Paths" ], "Kernel" ] <= 1 } ],
+        Max @ Values @ InfraMeasurement[ g, InfraAntiderivative[ 0 &, Method -> "PathCount" ], "Kernel" ] <= 1 } ],
     antiderivativeRandomDAGs ],
   <| { False, False } -> 4, { True, True } -> 26 |>,
   TestID -> "InfraDerivative-RandomDAGs-Moebius-local-iff-every-interval-is-a-chain"
@@ -141,40 +141,40 @@ VerificationTest[
   TestID -> "InfraDerivative-CrownWithTop-Hall-values"
 ]
 
-(* "Flow" splits the mass of each vertex evenly over its out-links, so the sinks receive all of it *)
+(* "ForwardRandomWalk" splits the mass of each vertex evenly over its out-links, so the sinks receive all of it *)
 VerificationTest[
   AllTrue[ Transpose[ { antiderivativeRandomDAGs, antiderivativeRandomForms } ],
-    Apply[ { g, f } |-> Total @ Lookup[ InfraMeasurement[ g, InfraAntiderivative[ f, Method -> "Flow" ], "Function" ], Pick[ VertexList @ g, VertexOutDegree @ g, 0 ] ] == Total @ f ] ],
+    Apply[ { g, f } |-> Total @ Lookup[ InfraMeasurement[ g, InfraAntiderivative[ f, Method -> "ForwardRandomWalk" ], "Function" ], Pick[ VertexList @ g, VertexOutDegree @ g, 0 ] ] == Total @ f ] ],
   True,
-  TestID -> "InfraAntiderivative-RandomDAGs-Flow-conserves-mass-at-the-sinks"
+  TestID -> "InfraAntiderivative-RandomDAGs-ForwardRandomWalk-conserves-mass-at-the-sinks"
 ]
 
-(* "Average" and "Uniform" kill constants off the sources: D 1 is the indicator of the minimal elements *)
+(* "BackwardRandomWalk" and "UniformChain" kill constants off the sources: D 1 is the indicator of the minimal elements *)
 VerificationTest[
-  AllTrue[ antiderivativeRandomDAGs, g |-> AllTrue[ { "Average", "Uniform" }, m |->
+  AllTrue[ antiderivativeRandomDAGs, g |-> AllTrue[ { "BackwardRandomWalk", "UniformChain" }, m |->
     InfraMeasurement[ g, InfraDerivative[ 1 &, Method -> m ], "Function" ] === AssociationThread[ VertexList @ g, Boole @ Thread[ VertexInDegree @ g == 0 ] ] ] ],
   True,
-  TestID -> "InfraDerivative-RandomDAGs-Average-and-Uniform-kill-constants"
+  TestID -> "InfraDerivative-RandomDAGs-BackwardRandomWalk-and-UniformChain-kill-constants"
 ]
 
-(* "Uniform" is the mean of the integral of f over all chains from the sources, each chain counting both ends *)
+(* "UniformChain" is the mean of the integral of f over all chains from the sources, each chain counting both ends *)
 VerificationTest[
   AllTrue[ Transpose[ { antiderivativeRandomDAGs, antiderivativeRandomForms } ],
     Apply[ { g, f } |-> With[ { hasse = TransitiveReductionGraph @ g },
       { sources = Pick[ VertexList @ hasse, VertexInDegree @ hasse, 0 ] },
-      InfraMeasurement[ g, InfraAntiderivative[ f, Method -> "Uniform" ], "Function" ] ===
+      InfraMeasurement[ g, InfraAntiderivative[ f, Method -> "UniformChain" ], "Function" ] ===
         AssociationMap[ v |-> If[ MemberQ[ sources, v ], f[ v ],
             Mean[ Total[ Lookup[ f, # ] ] & /@ Catenate[ FindPath[ hasse, #, v, Infinity, All ] & /@ sources ] ] ],
           VertexList @ g ] ] ] ],
   True,
-  TestID -> "InfraAntiderivative-RandomDAGs-Uniform-is-the-mean-over-maximal-chains"
+  TestID -> "InfraAntiderivative-RandomDAGs-UniformChain-is-the-mean-over-maximal-chains"
 ]
 
 VerificationTest[
   InfraMeasurement[ antiderivativeImplied, InfraAntiderivative[ antiderivativeF, Method -> { "Weights", AssociationThread[ EdgeList @ TransitiveReductionGraph @ antiderivativeImplied, 1 ] } ], "Function" ] ===
-    InfraMeasurement[ antiderivativeImplied, InfraAntiderivative[ antiderivativeF, Method -> "Paths" ], "Function" ],
+    InfraMeasurement[ antiderivativeImplied, InfraAntiderivative[ antiderivativeF, Method -> "PathCount" ], "Function" ],
   True,
-  TestID -> "InfraAntiderivative-ImpliedEdgesDAG-unit-weights-are-Paths"
+  TestID -> "InfraAntiderivative-ImpliedEdgesDAG-unit-weights-are-PathCount"
 ]
 
 VerificationTest[
@@ -187,8 +187,8 @@ VerificationTest[
   TestID -> "InfraAntiderivative-ImpliedEdgesDAG-Future-is-time-reversal"
 ]
 
-(* blow up each vertex into n copies and each link into K_(n, n): "Average" and "Flow" commute with it, "Uniform" on a graded order only,
-   "Volume" and "Paths" not at all *)
+(* blow up each vertex into n copies and each link into K_(n, n): "BackwardRandomWalk" and "ForwardRandomWalk" commute with it,
+   "UniformChain" on a graded order only, "Zeta" and "PathCount" not at all *)
 VerificationTest[
   With[ { blowUp = { g, n } |-> Graph[ Flatten[ Table[ { v, i }, { v, VertexList @ g }, { i, n } ], 1 ],
             Flatten @ Table[ DirectedEdge[ { First @ e, i }, { Last @ e, j } ], { e, EdgeList @ TransitiveReductionGraph @ g }, { i, n }, { j, n } ] ] },
@@ -200,7 +200,7 @@ VerificationTest[
         commutesQ[ Graph[ { 1, 2, 3, 4 }, { 1 -> 2, 2 -> 4, 3 -> 4 } ], 2, method, blowF ] },
       { method, antiderivativeMethods } ] ],
   { { False, False, False }, { False, False, False }, { True, True, True }, { True, True, False }, { True, True, True } },
-  TestID -> "InfraAntiderivative-BlowUp-Average-Flow-commute-Uniform-on-graded-orders"
+  TestID -> "InfraAntiderivative-BlowUp-random-walks-commute-UniformChain-on-graded-orders"
 ]
 
 (* the spray order from c on an undirected substrate: u <= v iff d(c, u) + d(u, v) == d(c, v), its intervals the segments *)
@@ -212,28 +212,28 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ], f = AssociationThread[ Range[ 25 ], Prime /@ Range[ 25 ] ] },
-    { uniform = InfraMeasurement[ g, InfraAntiderivative[ f, Method -> "Uniform", "Origin" -> 7 ], "Function" ] },
+    { uniform = InfraMeasurement[ g, InfraAntiderivative[ f, Method -> "UniformChain", "Origin" -> 7 ], "Function" ] },
     AllTrue[ Range[ 25 ], v |-> uniform[ v ] == InfraMeasurement[ g, InfraIntegral[ f, InfraSegment[ 7, v ] ], "Mean" ] ] ],
   True,
-  TestID -> "InfraAntiderivative-GridGraph-spray-Uniform-is-the-mean-along-the-segment"
+  TestID -> "InfraAntiderivative-GridGraph-spray-UniformChain-is-the-mean-along-the-segment"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ], f = AssociationThread[ Range[ 25 ], Prime /@ Range[ 25 ] ] },
-    { volume = InfraMeasurement[ g, InfraAntiderivative[ f, "Origin" -> 7 ], "Function" ] },
-    AllTrue[ Range[ 25 ], v |-> volume[ v ] == InfraMeasurement[ g, InfraIntegral[ f, InfraMeasurement[ g, InfraSegment[ 7, v ], "VertexDensity" ] ], "Value" ] ] ],
+    { zeta = InfraMeasurement[ g, InfraAntiderivative[ f, "Origin" -> 7 ], "Function" ] },
+    AllTrue[ Range[ 25 ], v |-> zeta[ v ] == InfraMeasurement[ g, InfraIntegral[ f, InfraMeasurement[ g, InfraSegment[ 7, v ], "VertexDensity" ] ], "Value" ] ] ],
   True,
-  TestID -> "InfraAntiderivative-GridGraph-spray-Volume-is-the-sum-over-the-segment-support"
+  TestID -> "InfraAntiderivative-GridGraph-spray-Zeta-is-the-sum-over-the-segment-support"
 ]
 
 VerificationTest[
   SeedRandom[ 5 ];
   With[ { g = InfraSubstrate[ "HexagonalTilingGraph", "Small" ] },
     { c = First @ GraphCenter @ g, f = AssociationThread[ VertexList @ g, RandomInteger[ { -9, 9 }, VertexCount @ g ] ] },
-    { uniform = InfraMeasurement[ g, InfraAntiderivative[ f, Method -> "Uniform", "Origin" -> c ], "Function" ] },
+    { uniform = InfraMeasurement[ g, InfraAntiderivative[ f, Method -> "UniformChain", "Origin" -> c ], "Function" ] },
     AllTrue[ VertexList @ g, v |-> uniform[ v ] == InfraMeasurement[ g, InfraIntegral[ f, InfraSegment[ c, v ] ], "Mean" ] ] ],
   True,
-  TestID -> "InfraAntiderivative-HexagonalTiling-spray-Uniform-is-the-mean-along-the-segment"
+  TestID -> "InfraAntiderivative-HexagonalTiling-spray-UniformChain-is-the-mean-along-the-segment"
 ]
 
 VerificationTest[

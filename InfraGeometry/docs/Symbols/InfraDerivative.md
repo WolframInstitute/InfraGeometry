@@ -12,7 +12,7 @@ RelatedGuides: [InfraAnalysis]
 
 ## Usage
 
-<code>[InfraDerivative]()[*F*]</code> is the derivative of the vertex function *F*, the inverse of the volume antiderivative: the Möbius inversion *f(v) = Σ_(u ⪯ v) μ(u, v) F(u)*. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
+<code>[InfraDerivative]()[*F*]</code> is the derivative of the vertex function *F*, the inverse of the zeta antiderivative: the Möbius inversion *f(v) = Σ_(u ⪯ v) μ(u, v) F(u)*. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
 
 <code>[InfraDerivative]()[*F*, [Method]() -> *m*]</code> is the inverse of <code>[InfraAntiderivative]()[*f*, [Method]() -> *m*]</code>.
 
@@ -22,14 +22,14 @@ Definition: the derivative of a method with kernel *K* is the antiderivative wit
 
 It takes the options of [InfraAntiderivative](), `Method`, `"Origin"` and `"Direction"`, with the same defaults and the same order on the substrate.
 
-A path kernel *K = (1 − W)^(−1)* has the local inverse *1 − W*: *(D F)(v) = F(v) − Σ_(u ⋖ v) W(u, v) F(u)*, a finite difference over the links into *v*. For `"Paths"` it is *F(v)* minus the sum of *F* over the vertices just below *v*.
+A path kernel *K = (1 − W)^(−1)* has the local inverse *1 − W*: *(D F)(v) = F(v) − Σ_(u ⋖ v) W(u, v) F(u)*, a finite difference over the links into *v*. For `"PathCount"` it is *F(v)* minus the sum of *F* over the vertices just below *v*.
 
-The volume kernel is the zeta function of the order, and its inverse is the Möbius function *μ*. The volume derivative is local exactly when every interval of the order is a chain. An interval that is not a chain, with every proper subinterval a chain, has two or more atoms; with *c* atoms, *μ = c − 1 ≠ 0* there. The smallest case is the diamond, where *μ* of the bottom and the top is 1.
+The `"Zeta"` kernel is the zeta function of the order, and its inverse is the Möbius function *μ*. The Möbius derivative is local exactly when every interval of the order is a chain. An interval that is not a chain, with every proper subinterval a chain, has two or more atoms; with *c* atoms, *μ = c − 1 ≠ 0* there. The smallest case is the diamond, where *μ* of the bottom and the top is 1.
 
 | Reading | Value |
 |---|---|
 | `"Function"` | the derivative, an [Association]() *v* -> *(D F)(v)* in the order of `VertexList` |
-| `"Kernel"` | the inverse kernel, an [Association]() `{u, v} -> K^(-1)(u, v)` over the pairs *u ⪯ v* with a nonzero value; for `"Volume"` the Möbius function |
+| `"Kernel"` | the inverse kernel, an [Association]() `{u, v} -> K^(-1)(u, v)` over the pairs *u ⪯ v* with a nonzero value; for `"Zeta"` the Möbius function |
 
 `All` gives both. An unknown method or option, an undirected graph without an origin, or a directed graph with a cycle leaves the reading unevaluated.
 
@@ -41,12 +41,12 @@ The Möbius function of the diamond *1 < 2, 3 < 4*: it reaches from the top past
 Normal @ InfraMeasurement[Graph[{1, 2, 3, 4}, {1 -> 2, 1 -> 3, 2 -> 4, 3 -> 4}], InfraDerivative[0 &], "Kernel"]
 ```
 
-The volume and the path derivative of the same function differ at the top by its value at the bottom.
+The zeta and the path-count derivative of the same function differ at the top by its value at the bottom.
 
 ```wl
 With[
   {diamond = Graph[{1, 2, 3, 4}, {1 -> 2, 1 -> 3, 2 -> 4, 3 -> 4}], f = <|1 -> 2, 2 -> 3, 3 -> 5, 4 -> 7|>},
-  Normal /@ {InfraMeasurement[diamond, InfraDerivative[f], "Function"], InfraMeasurement[diamond, InfraDerivative[f, Method -> "Paths"], "Function"]}]
+  Normal /@ {InfraMeasurement[diamond, InfraDerivative[f], "Function"], InfraMeasurement[diamond, InfraDerivative[f, Method -> "PathCount"], "Function"]}]
 ```
 
 The derivative undoes the antiderivative from the centre of the discretized plane, the square grid and the hexagonal tiling, for every method.
@@ -57,7 +57,7 @@ Table[
   With[
     {g = InfraSubstrate[name, "Small"]},
     {c = First @ GraphCenter[g], f = AssociationThread[VertexList[g], RandomInteger[{-9, 9}, VertexCount[g]]]},
-    AllTrue[{"Volume", "Paths", "Average", "Uniform", "Flow"},
+    AllTrue[{"Zeta", "PathCount", "BackwardRandomWalk", "UniformChain", "ForwardRandomWalk"},
       InfraMeasurement[g, InfraDerivative[InfraAntiderivative[f, Method -> #, "Origin" -> c], Method -> #, "Origin" -> c], "Function"] === f &]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
 ```
@@ -83,22 +83,22 @@ With[
   Normal @ InfraMeasurement[crown, InfraDerivative[1 &], "Function"]]
 ```
 
-The path derivatives are local: their kernels live on the diagonal and the links. The volume derivative is local only where no two chains share their ends.
+The path derivatives are local: their kernels live on the diagonal and the links. The Möbius derivative is local only where no two chains share their ends.
 
 ```wl
 With[
   {dag = Graph[Range[6], {1 -> 2, 2 -> 3, 1 -> 4, 4 -> 5, 3 -> 5, 5 -> 6}]},
   {links = List @@@ EdgeList[TransitiveReductionGraph[dag]]},
   Table[m -> AllTrue[Keys @ InfraMeasurement[dag, InfraDerivative[0 &, Method -> m], "Kernel"], SameQ @@ # || MemberQ[links, #] &],
-    {m, {"Volume", "Paths", "Average", "Uniform", "Flow"}}]]
+    {m, {"Zeta", "PathCount", "BackwardRandomWalk", "UniformChain", "ForwardRandomWalk"}}]]
 ```
 
-`"Average"` and `"Uniform"` kill the constants away from the minimal elements: the derivative of 1 is the indicator of the minimal elements.
+`"BackwardRandomWalk"` and `"UniformChain"` kill the constants away from the minimal elements: the derivative of 1 is the indicator of the minimal elements.
 
 ```wl
 SeedRandom[2];
 With[
   {dag = Graph[Range[8], DirectedEdge @@@ (Sort /@ RandomSample[Subsets[Range[8], {2}], 12])]},
-  {Values @ InfraMeasurement[dag, InfraDerivative[1 &, Method -> "Average"], "Function"],
-   Values @ InfraMeasurement[dag, InfraDerivative[1 &, Method -> "Uniform"], "Function"], Boole @ Thread[VertexInDegree[dag] == 0]}]
+  {Values @ InfraMeasurement[dag, InfraDerivative[1 &, Method -> "BackwardRandomWalk"], "Function"],
+   Values @ InfraMeasurement[dag, InfraDerivative[1 &, Method -> "UniformChain"], "Function"], Boole @ Thread[VertexInDegree[dag] == 0]}]
 ```

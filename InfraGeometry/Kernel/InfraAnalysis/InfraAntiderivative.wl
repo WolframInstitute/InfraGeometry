@@ -2,9 +2,9 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: InfraAnalysis :: InfraAntiderivative *)
 
-Options[ InfraAntiderivative ] = { Method -> "Volume", "Origin" -> Automatic, "Direction" -> "Past" }
+Options[ InfraAntiderivative ] = { Method -> "Zeta", "Origin" -> Automatic, "Direction" -> "Past" }
 
-Options[ InfraDerivative ] = { Method -> "Volume", "Origin" -> Automatic, "Direction" -> "Past" }
+Options[ InfraDerivative ] = { Method -> "Zeta", "Origin" -> Automatic, "Direction" -> "Past" }
 
 InfraAntiderivative /: InfraMeasurement[ graph_Graph,
     InfraAntiderivative[ head : _InfraCodifferential | _InfraAntiderivative | _InfraDerivative, opts___ ], "Function" ] :=
@@ -17,7 +17,7 @@ InfraAntiderivative /: InfraMeasurement[ graph_Graph,
       opts : OptionsPattern[ ] ], "Function" ] /;
     SubsetQ[ First /@ Options @ InfraAntiderivative, First /@ { opts } ] &&
     MatchQ[ OptionValue[ InfraAntiderivative, { opts }, Method ],
-      "Volume" | "Paths" | "Average" | "Uniform" | "Flow" | { "Weights", _Association } ] &&
+      "Zeta" | "PathCount" | "BackwardRandomWalk" | "UniformChain" | "ForwardRandomWalk" | { "Weights", _Association } ] &&
     MatchQ[ OptionValue[ InfraAntiderivative, { opts }, "Direction" ], "Past" | "Future" ] &&
     With[ { origin = OptionValue[ InfraAntiderivative, { opts }, "Origin" ] },
       ( origin === Automatic && DirectedGraphQ @ graph && AcyclicGraphQ @ graph ) || ( UndirectedGraphQ @ graph && VertexQ[ graph, origin ] ) ] :=
@@ -30,13 +30,13 @@ InfraAntiderivative /: InfraMeasurement[ graph_Graph,
       outNbr = GroupBy[ EdgeList @ order, First -> Last ],
       vertices = Select[ VertexList @ graph, v |-> VertexQ[ order, v ] ] },
     KeyTake[
-      If[ method === "Volume",
+      If[ method === "Zeta",
         AssociationMap[ v |-> Total[ value /@ VertexInComponent[ order, { v } ] ], vertices ],
         With[ { weight = Replace[ method, {
-              "Paths" -> ( { tail, head } |-> 1 ),
-              "Average" -> ( { tail, head } |-> 1 / Length @ Lookup[ inNbr, Key @ head ] ),
-              "Flow" -> ( { tail, head } |-> 1 / Length @ Lookup[ outNbr, Key @ tail ] ),
-              "Uniform" :> With[ { chains = Fold[
+              "PathCount" -> ( { tail, head } |-> 1 ),
+              "BackwardRandomWalk" -> ( { tail, head } |-> 1 / Length @ Lookup[ inNbr, Key @ head ] ),
+              "ForwardRandomWalk" -> ( { tail, head } |-> 1 / Length @ Lookup[ outNbr, Key @ tail ] ),
+              "UniformChain" :> With[ { chains = Fold[
                     { counts, v } |-> Append[ counts, v -> Replace[ Lookup[ inNbr, Key @ v, { } ], { { } -> 1, us_ :> Total @ Lookup[ counts, Key /@ us ] } ] ],
                     <| |>, TopologicalSort @ order ] },
                 { tail, head } |-> Lookup[ chains, Key @ tail ] / Lookup[ chains, Key @ head ] ],
@@ -70,7 +70,7 @@ InfraDerivative /: InfraMeasurement[ graph_Graph,
       opts : OptionsPattern[ ] ], "Function" ] /;
     SubsetQ[ First /@ Options @ InfraDerivative, First /@ { opts } ] &&
     MatchQ[ OptionValue[ InfraDerivative, { opts }, Method ],
-      "Volume" | "Paths" | "Average" | "Uniform" | "Flow" | { "Weights", _Association } ] &&
+      "Zeta" | "PathCount" | "BackwardRandomWalk" | "UniformChain" | "ForwardRandomWalk" | { "Weights", _Association } ] &&
     MatchQ[ OptionValue[ InfraDerivative, { opts }, "Direction" ], "Past" | "Future" ] &&
     With[ { origin = OptionValue[ InfraDerivative, { opts }, "Origin" ] },
       ( origin === Automatic && DirectedGraphQ @ graph && AcyclicGraphQ @ graph ) || ( UndirectedGraphQ @ graph && VertexQ[ graph, origin ] ) ] :=
@@ -83,16 +83,16 @@ InfraDerivative /: InfraMeasurement[ graph_Graph,
       outNbr = GroupBy[ EdgeList @ order, First -> Last ],
       vertices = Select[ VertexList @ graph, v |-> VertexQ[ order, v ] ] },
     KeyTake[
-      If[ method === "Volume",
+      If[ method === "Zeta",
         Fold[
           { derivative, v } |-> Append[ derivative,
             v -> value @ v - Total @ Lookup[ derivative, Key /@ VertexInComponent[ order, Lookup[ inNbr, Key @ v, { } ] ] ] ],
           <| |>, TopologicalSort @ order ],
         With[ { weight = Replace[ method, {
-              "Paths" -> ( { tail, head } |-> 1 ),
-              "Average" -> ( { tail, head } |-> 1 / Length @ Lookup[ inNbr, Key @ head ] ),
-              "Flow" -> ( { tail, head } |-> 1 / Length @ Lookup[ outNbr, Key @ tail ] ),
-              "Uniform" :> With[ { chains = Fold[
+              "PathCount" -> ( { tail, head } |-> 1 ),
+              "BackwardRandomWalk" -> ( { tail, head } |-> 1 / Length @ Lookup[ inNbr, Key @ head ] ),
+              "ForwardRandomWalk" -> ( { tail, head } |-> 1 / Length @ Lookup[ outNbr, Key @ tail ] ),
+              "UniformChain" :> With[ { chains = Fold[
                     { counts, v } |-> Append[ counts, v -> Replace[ Lookup[ inNbr, Key @ v, { } ], { { } -> 1, us_ :> Total @ Lookup[ counts, Key /@ us ] } ] ],
                     <| |>, TopologicalSort @ order ] },
                 { tail, head } |-> Lookup[ chains, Key @ tail ] / Lookup[ chains, Key @ head ] ],

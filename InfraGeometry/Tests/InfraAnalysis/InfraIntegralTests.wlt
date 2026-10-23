@@ -201,8 +201,8 @@ VerificationTest[
 
 (* an integrand head is read through its "Function" *)
 VerificationTest[
-  InfraMeasurement[ integralDiamond, InfraIntegral[ InfraAntiderivative[ <| 1 -> 2, 2 -> 3, 3 -> 5, 4 -> 7 |>, Method -> "Paths" ], integralChains[ 1, 4 ] ], All ] ===
-    InfraMeasurement[ integralDiamond, InfraIntegral[ InfraMeasurement[ integralDiamond, InfraAntiderivative[ <| 1 -> 2, 2 -> 3, 3 -> 5, 4 -> 7 |>, Method -> "Paths" ], "Function" ], integralChains[ 1, 4 ] ], All ],
+  InfraMeasurement[ integralDiamond, InfraIntegral[ InfraAntiderivative[ <| 1 -> 2, 2 -> 3, 3 -> 5, 4 -> 7 |>, Method -> "PathCount" ], integralChains[ 1, 4 ] ], All ] ===
+    InfraMeasurement[ integralDiamond, InfraIntegral[ InfraMeasurement[ integralDiamond, InfraAntiderivative[ <| 1 -> 2, 2 -> 3, 3 -> 5, 4 -> 7 |>, Method -> "PathCount" ], "Function" ], integralChains[ 1, 4 ] ], All ],
   True,
   TestID -> "InfraIntegral-Diamond-integrand-head"
 ]

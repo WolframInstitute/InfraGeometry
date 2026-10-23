@@ -130,7 +130,7 @@ With[
   {InfraMeasurement[g, InfraIntegral[InfraCodifferential[omega], region], "Value"], InfraMeasurement[g, InfraIntegral[omega, region], "Flux"]}]
 ```
 
-The uniform antiderivative from an origin is the mean along the shortest paths from it, and the volume antiderivative the sum over the interval.
+The uniform-chain antiderivative from an origin is the mean along the shortest paths from it, and the zeta antiderivative the sum over the interval.
 
 ```wl
 SeedRandom[5];
@@ -138,7 +138,7 @@ With[
   {g = InfraSubstrate["SquareTilingGraph", "Small"]},
   {c = First @ GraphCenter[g], f = AssociationThread[VertexList[g], RandomInteger[{-9, 9}, VertexCount[g]]]},
   {q = RandomInfraPoint[g, InfraShell[c, 4]]},
-  {InfraMeasurement[g, InfraAntiderivative[f, Method -> "Uniform", "Origin" -> c], "Function"][q] == InfraMeasurement[g, InfraIntegral[f, InfraSegment[c, q]], "Mean"],
+  {InfraMeasurement[g, InfraAntiderivative[f, Method -> "UniformChain", "Origin" -> c], "Function"][q] == InfraMeasurement[g, InfraIntegral[f, InfraSegment[c, q]], "Mean"],
    InfraMeasurement[g, InfraAntiderivative[f, "Origin" -> c], "Function"][q] == InfraMeasurement[g, InfraIntegral[f, InfraMeasurement[g, InfraSegment[c, q], "VertexDensity"]], "Value"]}]
 ```
 
