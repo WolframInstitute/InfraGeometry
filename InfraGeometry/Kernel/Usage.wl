@@ -128,7 +128,7 @@ InfraIntersectQ::usage = "InfraIntersectQ[s1, s2] asserts inside an InfraScene t
 
 InfraSubstrateHighlight::usage = "InfraSubstrateHighlight[graph, {obj1, obj2, ...}] draws the objects' densities on graph in list order, the i-th in the i-th palette color, a later one over an earlier; a Directive styles the objects after it. Options \"OpacityRange\", \"ThicknessRange\", \"PointSizeRange\", \"Arrowheads\", \"Palette\".";
 InfraScenePlot::usage = "InfraScenePlot[scene, graph, instance] draws saved scene objects; InfraScenePlot[scene, graph, instance, objects] draws explicit geometry at the saved bindings.";
-InfraSceneViewer::usage = "InfraSceneViewer[scene, graph] displays scene steps. InfraSceneViewer[data] inspects saved exploration states, event histories and branchial witnesses without sampling.";
+InfraSceneViewer::usage = "InfraSceneViewer[scene, graph] is an interactive view of the construction scene on graph, one step at a time.";
 PointViewer::usage = "PointViewer[graph] is an interactive viewer for selecting points; PointViewer[graph, sym] stores the selection in sym.";
 SegmentViewer::usage = "SegmentViewer[graph] is an interactive viewer for exploring geodesic segments.";
 ShellViewer::usage = "ShellViewer[graph] is an interactive viewer for exploring metric shells.";
@@ -381,10 +381,6 @@ RandomInfraRegionNearest::usage = "RandomInfraRegionNearest[graph,obj,p] samples
 
 InfraGeometricAssertion::usage = "InfraGeometricAssertion[objects, property] is an inert assertion of Distinct, Member or EqualDistance on a graph."
 InfraGeometricTest::usage = "InfraGeometricTest[graph, assertion] decides supported synthetic assertions; unsupported assertions stay unevaluated."
-
-InfraSceneMultiway::usage = "InfraSceneMultiway[scene, graph, init] gives exact finite construction states, events, group boundaries and completeness evidence."
-
-InfraBranchialGraph::usage = "InfraBranchialGraph[data, depth] gives the immediate-parent branchial graph and its saved completeness evidence."
 
 InfraParallelSectionQ::usage = "InfraParallelSectionQ[fib, connection, section] tests whether section is preserved by connection along the base edges in its domain.";
 InfraHorizontalLift::usage = "InfraHorizontalLift[fib, connection, start, walk] gives the unique horizontal lift of a base walk from start.";

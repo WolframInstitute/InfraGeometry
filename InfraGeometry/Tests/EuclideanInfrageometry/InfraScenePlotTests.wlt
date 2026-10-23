@@ -128,9 +128,8 @@ VerificationTest[
 ]
 
 VerificationTest[
-	Block[ { RandomInfraSceneInstance, InfraSceneMultiway, InfraSceneViewer, RandomInfraSegment },
+	Block[ { RandomInfraSceneInstance, InfraSceneViewer, RandomInfraSegment },
 		RandomInfraSceneInstance[ ___ ] := Throw[ "scene sampler" ];
-		InfraSceneMultiway[ ___ ] := Throw[ "scene explorer" ];
 		InfraSceneViewer[ ___ ] := Throw[ "scene viewer" ];
 		RandomInfraSegment[ ___ ] := Throw[ "segment enumeration" ];
 		Catch[ Head[ InfraScenePlot[ scenePlotScene, CycleGraph[ 4 ], scenePlotInstance,

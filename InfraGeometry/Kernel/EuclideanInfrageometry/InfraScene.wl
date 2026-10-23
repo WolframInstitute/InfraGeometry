@@ -183,14 +183,7 @@ InfraScene[ objects_List, hypotheses_List ] /;
       "DependencyGraph" -> None,
       "Steps"           -> steps,
       "Labels"          -> labels,
-      "ManualSteps"     -> True,
-      "ScheduleValidity" -> With[
-        { declared = Select[ Catenate[ First /@ gSteps ], constructionPatternQ[ objects, # ] & ],
-          ungrouped = Select[ DeleteCases[ hypotheses, _InfraSceneStep ], constructionPatternQ[ objects, # ] & ] },
-        { targets = Catenate[ Map[ equation |-> If[ ListQ[ First[ equation ] ], First[ equation ], { First[ equation ] } ], declared ] ] },
-        <| "Valid" -> ( DuplicateFreeQ[ targets ] && ungrouped === { } ),
-          "Reasons" -> Join[ If[ DuplicateFreeQ[ targets ], { }, { "DuplicateProducers" } ],
-            If[ ungrouped === { }, { }, { "MixedConstructionGroups" } ] ] |> ]
+      "ManualSteps"     -> True
     |> ] ]
 
 InfraScene[ objects_List, hypotheses_List ] /;
@@ -222,12 +215,7 @@ InfraScene[ objects_List, hypotheses_List ] /;
       "DependencyGraph" -> dag,
       "Steps"           -> steps,
       "Labels"          -> ConstantArray[ None, Length @ steps ],
-      "ManualSteps"     -> False,
-      "ScheduleValidity" -> With[
-        { declared = Select[ hypotheses, constructionPatternQ[ objects, # ] & ] },
-        { targets = Catenate[ Map[ equation |-> If[ ListQ[ First[ equation ] ], First[ equation ], { First[ equation ] } ], declared ] ] },
-        <| "Valid" -> DuplicateFreeQ[ targets ],
-          "Reasons" -> If[ DuplicateFreeQ[ targets ], { }, { "DuplicateProducers" } ] |> ]
+      "ManualSteps"     -> False
     |> ] ]
 
 InfraScene[ data_Association ][ prop_String ] :=

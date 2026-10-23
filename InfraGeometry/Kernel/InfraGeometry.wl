@@ -90,8 +90,6 @@ PackageExport[PathSubgraph]
 PackageExport[InfraDeformationSize]
 
 PackageExport[InfraScene]
-PackageExport[InfraSceneMultiway]
-PackageExport[InfraBranchialGraph]
 PackageExport[RandomInfraSceneInstance]
 PackageExport[InfraSceneInstance]
 PackageExport[InfraSceneStep]

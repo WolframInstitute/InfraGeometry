@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSceneViewer
 Keywords: [viewer, interactive, construction, step, branch]
-SeeAlso: [InfraScene, InfraScenePlot, InfraSceneMultiway, InfraBranchialGraph, RandomInfraSceneInstance, InfraSceneStep, InfraSubstrateHighlight]
+SeeAlso: [InfraScene, InfraScenePlot, RandomInfraSceneInstance, InfraSceneStep, InfraSubstrateHighlight]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -15,8 +15,6 @@ RelatedGuides: [EuclideanInfrageometry]
 <code>[InfraSceneViewer]()[*scene*, *g*]</code> is an interactive view of the construction *scene* on the graph *g*, one step at a time.
 
 <code>[InfraSceneViewer]()[*scene*, *g*, *init*]</code> starts from the bindings in the association *init*.
-
-<code>[InfraSceneViewer]()[*data*]</code> browses the result *data* of [InfraSceneMultiway]().
 
 ## Details & Options
 
@@ -31,8 +29,6 @@ A construction is a sequence, not a picture. The viewer solves the scene step by
 | Fixed | keep the current branch for the later steps |
 
 Diffuse draws every realisation at once, the more often a vertex is used the stronger; Branch follows one construction to the end. Without Fixed every step is solved over all branches of the earlier ones, and their number multiplies.
-
-<code>[InfraSceneViewer]()[*data*]</code> reads the saved states and events and samples nothing. It shows the bindings of a state, the events into it and its neighbours in the [InfraBranchialGraph]().
 
 | Option | Default |
 |---|---|
@@ -53,13 +49,4 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]
       InfraSceneStep[{cA == InfraCircle[pA, 3]}, "circle about A"], InfraSceneStep[{cB == InfraCircle[pB, 3]}, "circle about B"],
       InfraSceneStep[{meet == InfraPoint[InfraIntersection[cA, cB]]}, "where they meet"]}]},
   InfraSceneViewer[scene, g]]
-```
-
-The states of a multiway exploration, browsed:
-
-```wl
-With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
-  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
-  {scene = InfraScene[{pA, pB, seg}, {pA == InfraPoint[a], pB == InfraPoint[b], seg == InfraSegment[pA, pB]}]},
-  InfraSceneViewer[InfraSceneMultiway[scene, g]]]
 ```

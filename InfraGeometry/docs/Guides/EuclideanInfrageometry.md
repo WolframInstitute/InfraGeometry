@@ -143,11 +143,6 @@ Inspired by [GeometricScene](https://reference.wolfram.com/language/ref/Geometri
 
 - `Subgraph` (WL), `HighlightGraph` (WL)
 
-### Construction histories
-
-- `InfraSceneMultiway` the finite multiway system of construction states
-- `InfraBranchialGraph` the graph of states at one depth that share a predecessor
-
 ### Properties and Measurements
 
 - `InfraMeasurement` a property of an object on a graph: its graph, cardinality, length, densities or measures

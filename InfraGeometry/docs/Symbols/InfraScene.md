@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraScene
 Keywords: [scene, construction, Euclid I.1, hypothesis, assertion, ruler and compass]
-SeeAlso: [RandomInfraSceneInstance, InfraSceneInstance, InfraSceneStep, InfraScenePlot, InfraSceneViewer, InfraSceneMultiway, InfraIntersection, InfraDistance]
+SeeAlso: [RandomInfraSceneInstance, InfraSceneInstance, InfraSceneStep, InfraScenePlot, InfraSceneViewer, InfraIntersection, InfraDistance]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -33,7 +33,7 @@ A token names a construction, with objects in place of points:
 | <code>[InfraIntersection]()[*x*, *y*]</code> | the vertices *x* and *y* share |
 | <code>[InfraMidpoint]()[*x*, *y*]</code>, <code>[InfraBall]()[*x*, *r*]</code>, … | a central vertex, a region, … |
 
-A construction on a graph rarely has one result. Each realisation of a token is a branch, and the branches multiply from one construction to the next. An instance is one complete branch: [RandomInfraSceneInstance]() draws instances, [InfraSceneInstance]() reads them, [InfraScenePlot]() draws one, [InfraSceneViewer]() steps through them and [InfraSceneMultiway]() lists them all.
+A construction on a graph rarely has one result. Each realisation of a token is a branch, and the branches multiply from one construction to the next. An instance is one complete branch: [RandomInfraSceneInstance]() draws instances, all of them with `All`, [InfraSceneInstance]() reads them, [InfraScenePlot]() draws one and [InfraSceneViewer]() steps through them.
 
 An assertion is a condition on objects: a comparison of [InfraDistance]() values, or a test such as `InfraSegmentQ[x]` or `InfraParallelQ[x, y]` written without its graph. A branch survives only if every assertion holds on it. A scene with a test it cannot give the graph stays unevaluated.
 
