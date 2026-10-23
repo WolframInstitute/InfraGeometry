@@ -317,7 +317,7 @@ GraphicsGrid @ Table[
 ```
 
 - An instance grows linearly in $r$, like the shells of its band, and its Riemannian measure stays zero.
-- The instance found depends on the search. On the triangular tiling either shell of the band is an instance by itself, and the one found is the outer shell. On the square tiling a wall needs vertices of both shells and is larger than either.
+- The instance found depends on the search, which removes vertices of the band in random order while the rest stays a connected separating set. On the triangular tiling either shell of the band is an instance by itself, but the instance found mixes vertices of both shells. On the square tiling a wall needs vertices of both shells and is larger than either.
 - [[ Is the size of the least sphere instance in the band $S_{r, r+1}$ of a lattice a polynomial in $r$? ]]
 
 ## The measure

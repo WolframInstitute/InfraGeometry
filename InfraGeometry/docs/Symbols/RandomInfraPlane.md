@@ -32,11 +32,14 @@ Adjacent points have no plane: no vertex set separates them.
 
 The count *n* can be `n`, `UpTo[n]` or `All`. The draw is uniform over all the planes, and they can be many: a slab {−1, 1} of the mesh has thousands.
 
+A plane need not be connected. A wall is a set *W ⊆ B* that separates *p* from *q*, induces a connected subgraph, and has no proper subset that does both. Under `Properties -> {"Separating", "Connected"}` a draw is a wall found by a greedy search: it starts from a connected separating piece of *B*, chosen at random, and removes one vertex at a time, chosen uniformly among those whose removal leaves a connected separating set, until none can go. It is fast and not uniform over the walls. With a count the walls are distinct, and `All` gives every wall, in time that can be exponential.
+
 Options:
 
 | Option | Default | Values |
 |---|---|---|
-| `"NextVertexFunction"` | `Automatic` | `Automatic` random; `Identity` the first planes in sorted order |
+| [Properties]() | `{"Separating"}` | the planes; `{"Separating", "Connected"}` the walls |
+| `"NextVertexFunction"` | `Automatic` | `Automatic` random; `Identity` the first planes in sorted order, or the first wall of the search removing the first removable vertex |
 | [RandomSeeding]() | `Automatic` | an integer or a string for a reproducible draw; `Inherited` to draw from the current random state |
 
 ## Basic Examples
@@ -84,6 +87,27 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}
 With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {p = First @ GraphCenter[g]},
   {q = RandomInfraPoint[g, InfraShell[p, 2], RandomSeeding -> 1]},
   Length @ RandomInfraPlane[g, p, q, {-1, 1}, All]]
+```
+
+## Options
+
+### Properties
+
+Three walls in the slab {−1, 1} of two points at distance 3 on the grid, each connected:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+  {q = RandomInfraPoint[g, InfraShell[p, 3], RandomSeeding -> 1]},
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {wall, p, q}, PlotLabel -> ConnectedGraphQ[Subgraph[g, wall]]],
+    {wall, RandomInfraPlane[g, p, q, {-1, 1}, 3, Properties -> {"Separating", "Connected"}, RandomSeeding -> 1]}]]
+```
+
+For a diagonal pair on the grid there are planes but no wall:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {p = First @ GraphCenter[g]},
+  {q = RandomInfraPoint[g, InfraShell[p, 2], RandomSeeding -> 1]},
+  {Length @ RandomInfraPlane[g, p, q, RandomSeeding -> 1], RandomInfraPlane[g, p, q, All, Properties -> {"Separating", "Connected"}]}]
 ```
 
 ## Properties and Relations
