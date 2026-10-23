@@ -13,83 +13,101 @@ RelatedTutorials: [InfraBundles]
 
 ## Usage
 
-<code>[RandomInfraSection]()[*fib*]</code> gives one [InfraSection]() over the whole reconstructed base of *fib*.
+<code>[RandomInfraSection]()[*fib*]</code> gives a random [InfraSection]() of *fib* over the whole base.
 
-<code>[RandomInfraSection]()[*fib*, *domain*]</code> gives a section over the list of base vertices *domain*.
+<code>[RandomInfraSection]()[*fib*, {*p₁*, *p₂*, …}]</code> gives a random section over the base vertices *pᵢ*.
 
-<code>[RandomInfraSection]()[*fib*, *partial*]</code> extends the [InfraSection]() *partial* over the whole base, preserving every prescribed binding.
+<code>[RandomInfraSection]()[*fib*, [InfraSection]()[*s*]]</code> extends the partial section *s* to the whole base, keeping its values.
 
-<code>[RandomInfraSection]()[*fib*, *specification*, *count*]</code> requests several sections; *specification* may be omitted.
+<code>[RandomInfraSection]()[*fib*, *spec*, *n*]</code> gives a list of *n* distinct sections; *spec* may be omitted.
 
 ## Details & Options
 
-- The default `Properties -> {}` selects set-theoretic sections on every call form.
-- `Properties -> {"Continuous"}` requires adjacency preservation on the induced base subgraph of the target domain.
-- A seed must be a valid partial section. A valid discontinuous seed has no continuous extension, but still has set-theoretic extensions.
-- A domain is a list of literal base vertices. A seed is wrapped in [InfraSection](), so these call forms are distinct.
-- An omitted count or [Automatic]() returns one section directly, or `{}` if none is found.
-- A nonnegative integer *n* returns exactly *n* distinct sections, or `{}` on shortage. [UpTo]()[*n*] returns at most *n*. [All]() returns the complete finite class.
-- `"NextVertexFunction" -> Automatic` uses random candidate order for bounded searches. [SeedRandom]() controls the ambient random stream.
-- `"NextVertexFunction" -> Identity` is deterministic. [All]() with default ordering is also deterministic and consumes no sampler random draws.
-- [RandomSample]() randomizes candidate order with backtracking. [RandomChoice]() pursues one route without backtracking and is unsupported with [All]().
-- A callback receives the candidate total vertices of the next fiber. It may return one literal candidate or a duplicate-free list of candidates in the desired order. Returning a subset prunes the search.
-- A list that is itself a candidate vertex is interpreted as that single vertex. Otherwise a returned list specifies the candidate order.
-- Bounded requests stop after enough sections are found. Randomized search order does not imply uniform sampling over continuous sections or extensions.
-- `{}` denotes no result. The unique section over an empty domain is `InfraSection[<||>]`.
-- Unsupported options, data and callback results leave the call unevaluated.
+A section chooses one vertex *s(p)* in the fiber over each *p*. Without conditions there are *∏ₚ |Fₚ|* sections over the whole base.
 
-| Option | Default | Meaning |
+With `Properties -> {"Continuous"}` every base edge *pq* of the domain goes to a total edge *s(p)s(q)*. A continuous section is a copy of its domain inside the total graph, and it may not exist.
+
+The count *n* can be `n`, `UpTo[n]` or `All`. Without a count the result is one section; when none exists, or fewer than *n*, the result is `{}`. The section over an empty domain is `InfraSection[<||>]`.
+
+The draws are not uniform over the continuous sections.
+
+Options:
+
+| Option | Default | Values |
 |---|---|---|
-| [Properties]() | `{}` | Set-theoretic sections, or `{"Continuous"}` for adjacency-preserving sections. |
-| `"NextVertexFunction"` | [Automatic]() | Candidate order or selection at each fiber. |
+| [Properties]() | `{}` | `{}` for all sections, `{"Continuous"}` for continuous ones |
+| `"NextVertexFunction"` | `Automatic` | random order; `Identity` the vertex order; a function choosing or ordering the candidates in a fiber |
+| [RandomSeeding]() | `Automatic` | an integer or a string for a reproducible draw; `Inherited` to draw from the current random state |
 
 ## Basic Examples
 
-Choose values in two fibers and extend them continuously across the whole cycle.
+A random section of a fibered graph over the 4 × 4 grid:
 
 ```wl
-SeedRandom[7];
-With[
-  {fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> { 3 },
-    "VerticalEdgeCount" -> { 0 }, "HorizontalEdgeCount" -> All]},
-  {partial = RandomInfraSection[fib, {1, 3}]},
-  {section = RandomInfraSection[fib, partial, Properties -> {"Continuous"}]},
-  InfraFiberedGraphHighlight[fib, {partial, section}]]
+With[{fib = RandomInfraFiberedGraph[GridGraph[{4, 4}], "VerticalVertexCount" -> {1, 3}, RandomSeeding -> 1]},
+  InfraFiberedGraphHighlight[fib, {RandomInfraSection[fib, RandomSeeding -> 1]}, ImageSize -> Medium]]
 ```
 
-The product covering has two continuous sections, one on each sheet.
+On the product double covering, the value {6, 1} over 6 extends continuously only to the sheet through it:
 
 ```wl
-SeedRandom[7];
-With[
-  {fib = InfraFiberedGraph[GraphProduct[CycleGraph[4], Graph[{1, 2}, {}], "Cartesian"], First]},
-  {sections = RandomInfraSection[fib, All, Properties -> {"Continuous"}]},
-  GraphicsRow[InfraFiberedGraphHighlight[fib, #] & /@ sections]]
+With[{fib = InfraFiberedGraph[GraphProduct[GridGraph[{4, 4}], Graph[{1, 2}, {}], "Cartesian"], First]},
+  {s = InfraSection[<|6 -> {6, 1}|>]},
+  {ext = RandomInfraSection[fib, s, Properties -> {"Continuous"}, RandomSeeding -> 1]},
+  GraphicsRow[{InfraFiberedGraphHighlight[fib, {s}], InfraFiberedGraphHighlight[fib, {ext, s}]}]]
 ```
 
 ## Scope
 
-A domain restricts the target. A seed fixes values and extends across all base components.
+A section over the first row of the grid:
 
 ```wl
-SeedRandom[7];
-With[
-  {fib = InfraFiberedGraph[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[2, 4]}],
-    <|1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b"|>]},
-  {partial = RandomInfraSection[fib, {"a"}, "NextVertexFunction" -> Identity]},
-  {partial, RandomInfraSection[fib, partial, Properties -> {"Continuous"}, "NextVertexFunction" -> Identity]}]
+With[{fib = InfraFiberedGraph[GraphProduct[GridGraph[{4, 4}], Graph[{1, 2}, {}], "Cartesian"], First]},
+  RandomInfraSection[fib, {1, 2, 3, 4}, RandomSeeding -> 1]]
+```
+
+All sections. Their number is the product of the fiber sizes:
+
+```wl
+With[{fib = RandomInfraFiberedGraph[GridGraph[{3, 3}], "VerticalVertexCount" -> {1, 3}, RandomSeeding -> 1]},
+  {Length @ RandomInfraSection[fib, All], Times @@ (VertexCount /@ InfraFibers[fib])}]
+```
+
+## Options
+
+### Properties
+
+The product double covering of the grid has 2¹⁶ sections and 2 continuous ones, its sheets:
+
+```wl
+With[{fib = InfraFiberedGraph[GraphProduct[GridGraph[{4, 4}], Graph[{1, 2}, {}], "Cartesian"], First]},
+  Length /@ {RandomInfraSection[fib, All], RandomInfraSection[fib, All, Properties -> {"Continuous"}]}]
+```
+
+### RandomSeeding
+
+A fixed seed gives the same draw whatever [SeedRandom]() has set:
+
+```wl
+With[{fib = RandomInfraFiberedGraph[GridGraph[{3, 3}], "VerticalVertexCount" -> {1, 3}, RandomSeeding -> 1]},
+  Table[SeedRandom[k]; RandomInfraSection[fib, RandomSeeding -> 7], {k, 2}]]
 ```
 
 ## Possible Issues
 
-A continuous partial section can fail to extend. Values on opposite sheets at the ends of this path cannot be joined by a continuous section.
+A continuous partial section need not extend. The values below lie over two vertices that are not adjacent, so the partial section is continuous; they lie on different sheets, so no continuous section joins them. Without the condition the extension exists:
 
 ```wl
-SeedRandom[7];
-With[
-  {fib = InfraFiberedGraph[GraphProduct[PathGraph[{1, 2, 3}], Graph[{1, 2}, {}], "Cartesian"], First]},
-  {partial = InfraSection[<|1 -> {1, 1}, 3 -> {3, 2}|>]},
-  {InfraContinuousSectionQ[fib, partial], RandomInfraSection[fib, partial, Properties -> {"Continuous"}]}]
+With[{fib = InfraFiberedGraph[GraphProduct[GridGraph[{4, 4}], Graph[{1, 2}, {}], "Cartesian"], First]},
+  {s = InfraSection[<|1 -> {1, 1}, 16 -> {16, 2}|>]},
+  {InfraContinuousSectionQ[fib, s], RandomInfraSection[fib, s, Properties -> {"Continuous"}, RandomSeeding -> 1],
+   InfraSectionQ[fib, RandomInfraSection[fib, s, RandomSeeding -> 1]]}]
 ```
 
-A pruning callback may miss existing solutions. An empty result then concerns the retained search tree.
+A random double covering that exchanges the sheets around a square has no continuous section:
+
+```wl
+With[{fib = RandomInfraFiberedGraph[GridGraph[{4, 4}],
+    Properties -> {"Covering"}, "VerticalVertexCount" -> {2}, RandomSeeding -> 1]},
+  RandomInfraSection[fib, All, Properties -> {"Continuous"}]]
+```

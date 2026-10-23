@@ -12,67 +12,80 @@ RelatedGuides: [Experimental]
 
 ## Usage
 
-<code>[IntegrationMap]()[*g*, *ω*]</code> gives the alternating cochain *Iω* of the *k*-form *ω*: on each (*k* + 1)-clique of *g*, the mean over its vertices of the germ at the vertex on the others, with the sign of its position.
+<code>[IntegrationMap]()[*g*, *ω*]</code> gives the alternating cochain *Iω* of the *k*-form *ω*: on each *(k + 1)*-clique, the signed mean of the germs at its vertices.
 
 ## Details & Options
 
-Definition: *(Iω)(v₀, …, vₖ) = (1/(k + 1)) Σᵢ (−1)ⁱ ω(vᵢ; v₀, …, v̂ᵢ, …, vₖ)*, the sum over the positions *i* = 0, …, *k*. It maps the *k*-forms to the *k*-cochains.
+*(Iω)(v₀, …, vₖ) = (1/(k + 1)) Σᵢ (−1)ⁱ ω(vᵢ; v₀, …, v̂ᵢ, …, vₖ)*, the sum over *i = 0, …, k*. *I* maps the *k*-forms to the *k*-cochains.
 
 On a 1-form it is the antisymmetric part across each edge, *(Iω)(u, v) = (ω(u; v) − ω(v; u))/2*. On a 0-form it is the 0-cochain of the same values.
 
-*I(Rα) = α* for every cochain *α* and in every degree, [RestrictionMap]() being *R*: moving *vᵢ* to the front of *(v₀, …, vₖ)* costs (−1)ⁱ, so each term of the mean is *α(v₀, …, vₖ)*. So *I* is onto. From degree 1 on, *R(Iω)* is not *ω* in general: *I* reads a germ only on the tuples that span a clique with its vertex. On 1-forms *R(Iω)* is the antisymmetrisation of *ω* across each edge, the orthogonal projection onto the image of *R*.
+| Identity | Statement |
+|---|---|
+| left inverse of [RestrictionMap]() | *I(Rα) = α*, so *I* is onto |
+| Stokes | *I(dω) = δ(Iω)*, with *d* the [FormDifferential]() and *δ* the [Coboundary]() |
+| naive differential | *I(d₀ω) = (2/3) δ(Iω)* in degree 1, [NaiveDifferential]() |
+| not a ring map | *I(Rα ∧ Rβ) = 2 α ∪ β* for 1-cochains, [FormWedge](), [CochainCup]() |
 
-*I* is a chain map, *I(dω) = δ(Iω)*, the discrete Stokes theorem of [FormDifferential](); for the naive differential the integral is (*k* + 1)/(*k* + 2) of *δ(Iω)* ([NaiveDifferential]()). It is not a ring map: for cochains *α*, *β* of degrees *p*, *q*, *I(Rα ∧ Rβ) = ((p + q)!/(p! q!)) α ∪ β* on every graph tried ([FormWedge](), [CochainCup]()).
+*R(Iω)* is not *ω* in general. In degree 1 it is the antisymmetric part of *ω* across each edge, the orthogonal projection onto the image of *R*.
 
 A value 0 is not stored in the cochain.
 
 ## Basic Examples
 
-The gradient of the distance from the centre of the triangular tiling integrates to the coboundary of the distance: on each step from one shell to the next, (1 − (−1))/2 = 1. The cochain is drawn by an arc along each edge in the direction in which it is positive.
+The gradient of the distance from the centre integrates to the coboundary of the distance, on the square grid and on the square mesh:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = First @ GraphCenter[g]},
-  {cochain = IntegrationMap[g, FormDifferential[g, ZeroForm[g, GraphDistance[g, center, #] &]]]},
-  {DisplacementPlot[g, GroupBy[Join[Keys @ Select[cochain, Positive], Reverse /@ Keys @ Select[cochain, Negative]], First -> Last]],
-   KeySort[cochain] === KeySort[Coboundary[g, AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]]]}]
+Table[
+  With[{g = InfraSubstrate[name, "Small"]}, {c = First @ GraphCenter[g]},
+    KeySort @ IntegrationMap[g, FormDifferential[g, ZeroForm[g, GraphDistance[g, c, #] &]]] ==
+      KeySort @ Coboundary[g, AssociationThread[List /@ VertexList[g], GraphDistance[g, c]]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-A random 1-form, left, and the restriction of its integral, right, each drawn by an arc from *v* to *w* where the germ at *v* is positive on the step to *w*, blue, or negative, orange. The integral keeps the antisymmetric part across each edge; the restriction back to the forms keeps about half of the energy, the sum of the squares of the germ values.
+On a random 1-form on the mesh the integral is the antisymmetric part across each edge:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {form = (SeedRandom[1]; AssociationMap[node |-> AssociationMap[RandomInteger[{-4, 4}] &, List /@ AdjacencyList[g, node]], VertexList[g]])},
-  {projected = RestrictionMap[g, IntegrationMap[g, form]]},
-  {GraphicsRow[{
-     DisplacementPlot[g, {Map[Catenate @* Keys @* Select[Positive], form], Map[Catenate @* Keys @* Select[Negative], form]}],
-     DisplacementPlot[g, {Map[Catenate @* Keys @* Select[Positive], projected], Map[Catenate @* Keys @* Select[Negative], projected]}]}],
-   N[Total[Catenate[Values /@ Values[projected]]^2] / Total[Catenate[Values /@ Values[form]]^2]]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]},
+  {germ = v |-> AssociationThread[List /@ AdjacencyList[g, v], RandomInteger[{-4, 4}, VertexDegree[g, v]]]},
+  {w = BlockRandom[AssociationMap[germ, VertexList[g]], RandomSeeding -> 1]},
+  {iw = IntegrationMap[g, w]},
+  AllTrue[Sort /@ List @@@ EdgeList[g],
+    CochainValue[iw, #] == (FormValue[w, #[[1]], {#[[2]]}] - FormValue[w, #[[2]], {#[[1]]}])/2 &]]
 ```
 
 ## Properties and Relations
 
-*I(Rα) = α*: a random 1-cochain with values ±1 and ±2 against the integral of its restriction, edge by edge, on the diagonal.
+Restricting the integral keeps the antisymmetric part only. For 100 random 1-forms on the mesh the part of the energy, the sum of the squares of the germ values, it keeps is about 1/2:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small"]},
-  {cochain = (SeedRandom[1]; AssociationMap[RandomChoice[{-2, -1, 1, 2}] &, Sort /@ List @@@ EdgeList[g]])},
-  {integral = IntegrationMap[g, RestrictionMap[g, cochain]]},
-  ListPlot[Transpose[{Values[cochain], Lookup[integral, Keys[cochain], 0]}], AxesLabel -> {"α", "I(Rα)"}]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]},
+  {germ = v |-> AssociationThread[List /@ AdjacencyList[g, v], RandomInteger[{-4, 4}, VertexDegree[g, v]]]},
+  {energy = w |-> Total[Catenate[Values /@ Values[w]]^2]},
+  Histogram @ Table[
+    With[{w = BlockRandom[AssociationMap[germ, VertexList[g]], RandomSeeding -> s]},
+      N[energy[RestrictionMap[g, IntegrationMap[g, w]]] / energy[w]]],
+    {s, 100}]]
 ```
 
-The energy that the restriction of the integral keeps, over 100 random 1-forms on the triangular tiling, concentrates near 1/2: on an edge with germ values *a* and *b* it keeps (*a* − *b*)²/2 of *a*² + *b*².
+Stokes and the naive differential, for a random 1-form on the mesh:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small"]},
-  Histogram[Table[
-    With[
-      {form = (SeedRandom[seedNumber];
-        AssociationMap[node |-> AssociationMap[RandomInteger[{-4, 4}] &, List /@ AdjacencyList[g, node]], VertexList[g]])},
-      N[Total[Catenate[Values /@ Values[RestrictionMap[g, IntegrationMap[g, form]]]]^2] / Total[Catenate[Values /@ Values[form]]^2]]],
-    {seedNumber, 100}]]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]},
+  {germ = v |-> AssociationThread[List /@ AdjacencyList[g, v], RandomInteger[{-4, 4}, VertexDegree[g, v]]]},
+  {w = BlockRandom[AssociationMap[germ, VertexList[g]], RandomSeeding -> 1]},
+  {exact = KeySort @ Coboundary[g, IntegrationMap[g, w]]},
+  {KeySort @ IntegrationMap[g, FormDifferential[g, w]] == exact,
+   KeySort @ IntegrationMap[g, NaiveDifferential[g, w]] == 2/3 exact}]
+```
+
+*I(Rα) = α*, and the integral of a wedge of restrictions is twice the cup product, for random 1-cochains on the mesh:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {edges = Sort /@ List @@@ EdgeList[g]},
+  {a = AssociationThread[edges, BlockRandom[RandomChoice[{-2, -1, 1, 2}, Length[edges]], RandomSeeding -> 1]],
+   b = AssociationThread[edges, BlockRandom[RandomChoice[{-2, -1, 1, 2}, Length[edges]], RandomSeeding -> 2]]},
+  {KeySort @ IntegrationMap[g, RestrictionMap[g, a]] == KeySort[a],
+   KeySort @ IntegrationMap[g, FormWedge[RestrictionMap[g, a], RestrictionMap[g, b]]] ==
+     2 KeySort @ CochainCup[g, a, b]}]
 ```

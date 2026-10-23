@@ -186,7 +186,7 @@ VerificationTest[
   SeedRandom[ 31 ];
   With[ { expected = Table[ RandomInteger[ { 1, 7 } ], { 15 } ] },
     SeedRandom[ 31 ];
-    With[ { fib = RandomInfraFiberedGraph[ Graph[ Range[ 15 ], { } ], "VerticalVertexCount" -> 7 ] },
+    With[ { fib = RandomInfraFiberedGraph[ Graph[ Range[ 15 ], { } ], "VerticalVertexCount" -> 7, RandomSeeding -> None ] },
       VertexCount /@ Values @ InfraFibers[ fib ] === expected ] ],
   True,
   TestID -> "RandomInfraFiberedGraph-scalar-vertex-count-is-uniform-positive-upper-bound"
@@ -196,7 +196,7 @@ VerificationTest[
   SeedRandom[ 42 ];
   With[ { expected = Table[ RandomInteger[ { 5, 7 } ], { 15 } ] },
     SeedRandom[ 42 ];
-    With[ { fib = RandomInfraFiberedGraph[ Graph[ Range[ 15 ], { } ], "VerticalVertexCount" -> { 5, 7 } ] },
+    With[ { fib = RandomInfraFiberedGraph[ Graph[ Range[ 15 ], { } ], "VerticalVertexCount" -> { 5, 7 }, RandomSeeding -> None ] },
       VertexCount /@ Values @ InfraFibers[ fib ] === expected ] ],
   True,
   TestID -> "RandomInfraFiberedGraph-range-vertex-count-is-inclusive-discrete-uniform"
@@ -204,7 +204,7 @@ VerificationTest[
 
 VerificationTest[
   SeedRandom[ 2 ];
-  With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 5 ], "VerticalVertexCount" -> { 3 }, "VerticalEdgeCount" -> 99 ] },
+  With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 5 ], "VerticalVertexCount" -> { 3 }, "VerticalEdgeCount" -> 99, RandomSeeding -> None ] },
     AllTrue[ EdgeCount /@ Values @ InfraFibers[ fib ], Between[ { 0, 3 } ] ] ],
   True,
   TestID -> "RandomInfraFiberedGraph-scalar-edge-cap-respects-capacity"
@@ -223,7 +223,7 @@ VerificationTest[
 VerificationTest[
   SeedRandom[ 9 ];
   With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 6 ], Properties -> { "EqualFiberSizes" },
-      "VerticalVertexCount" -> { 2, 5 }, "VerticalEdgeCount" -> 4 ] },
+      "VerticalVertexCount" -> { 2, 5 }, "VerticalEdgeCount" -> 4, RandomSeeding -> None ] },
     { InfraEqualFiberSizesQ[ fib ], AllTrue[ VertexCount /@ Values @ InfraFibers[ fib ], Between[ { 2, 5 } ] ] } ],
   { True, True },
   TestID -> "RandomInfraFiberedGraph-equal-fiber-sizes-share-one-draw"
@@ -232,7 +232,7 @@ VerificationTest[
 VerificationTest[
   SeedRandom[ 4 ];
   With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 5 ], Properties -> { "IsomorphicFibers" },
-      "VerticalVertexCount" -> { 3, 5 }, "VerticalEdgeCount" -> { 1, 3 } ] },
+      "VerticalVertexCount" -> { 3, 5 }, "VerticalEdgeCount" -> { 1, 3 }, RandomSeeding -> None ] },
     { InfraEqualFiberSizesQ[ fib ], InfraIsomorphicFibersQ[ fib ] } ],
   { True, True },
   TestID -> "RandomInfraFiberedGraph-isomorphic-fibers-share-a-template"
@@ -241,10 +241,10 @@ VerificationTest[
 VerificationTest[
   SeedRandom[ 13 ];
   With[ { first = RandomInfraFiberedGraph[ CycleGraph[ 4 ],
-      Properties -> { "IsomorphicFibers", "Fibration" }, "VerticalVertexCount" -> { 3, 4 } ] },
+      Properties -> { "IsomorphicFibers", "Fibration" }, "VerticalVertexCount" -> { 3, 4 }, RandomSeeding -> None ] },
     SeedRandom[ 13 ];
     first === RandomInfraFiberedGraph[ CycleGraph[ 4 ],
-      Properties -> { "Fibration", "IsomorphicFibers", "Fibration" }, "VerticalVertexCount" -> { 3, 4 } ] ],
+      Properties -> { "Fibration", "IsomorphicFibers", "Fibration" }, "VerticalVertexCount" -> { 3, 4 }, RandomSeeding -> None ] ],
   True,
   TestID -> "RandomInfraFiberedGraph-properties-are-an-order-independent-conjunction"
 ]
@@ -252,7 +252,7 @@ VerificationTest[
 VerificationTest[
   SeedRandom[ 6 ];
   With[ { fib = RandomInfraFiberedGraph[ PathGraph[ { "p", "q" } ], Properties -> { "Fibration" },
-      "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> { 4 } ] },
+      "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> { 4 }, RandomSeeding -> None ] },
     { InfraFibrationQ[ fib ], EdgeCount @ InfraTotalSpace[ fib ], VertexCount @ InfraBaseSpace[ fib ] } ],
   { True, 4, 2 },
   TestID -> "RandomInfraFiberedGraph-fibration-construction-covers-every-endpoint"
@@ -262,8 +262,8 @@ VerificationTest[
   SeedRandom[ 27 ];
   With[ { samples = Table[
       RandomInfraFiberedGraph[ PathGraph[ { 1, 2 } ], Properties -> { "Fibration" },
-        "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> { 4 } ], { 60 } ] },
-    { And @@ ( InfraFibrationQ /@ samples ), AnyTrue[ samples, RandomInfraConnection[ # ] === { } & ] } ],
+        "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> { 4 }, RandomSeeding -> None ], { 60 } ] },
+    { And @@ ( InfraFibrationQ /@ samples ), AnyTrue[ samples, RandomInfraConnection[ #, RandomSeeding -> None ] === { } & ] } ],
   { True, True },
   TestID -> "RandomInfraFiberedGraph-weak-fibrations-include-Hall-obstructions"
 ]
@@ -279,7 +279,7 @@ VerificationTest[
 VerificationTest[
   SeedRandom[ 21 ];
   With[ { base = Graph[ Range[ 4 ], { UndirectedEdge[ 1, 2 ], UndirectedEdge[ 3, 4 ] } ] },
-    { fib = RandomInfraFiberedGraph[ base, Properties -> { "UniqueEdgeLifting" }, "VerticalVertexCount" -> { 2, 5 } ] },
+    { fib = RandomInfraFiberedGraph[ base, Properties -> { "UniqueEdgeLifting" }, "VerticalVertexCount" -> { 2, 5 }, RandomSeeding -> None ] },
     { counts = VertexCount /@ Values @ InfraFibers[ fib ] },
     { InfraUniqueEdgeLiftingQ[ fib ], counts[[ 1 ]] == counts[[ 2 ]], counts[[ 3 ]] == counts[[ 4 ]],
       AllTrue[ counts, Between[ { 2, 5 } ] ] } ],
@@ -290,10 +290,10 @@ VerificationTest[
 VerificationTest[
   SeedRandom[ 18 ];
   With[ { first = RandomInfraFiberedGraph[ CycleGraph[ 3 ], Properties -> { "UniqueEdgeLifting" },
-      "VerticalVertexCount" -> { 2, 4 } ] },
+      "VerticalVertexCount" -> { 2, 4 }, RandomSeeding -> None ] },
     SeedRandom[ 18 ];
     first === RandomInfraFiberedGraph[ CycleGraph[ 3 ], Properties -> { "AtMostOneEdgeLift", "Fibration" },
-      "VerticalVertexCount" -> { 2, 4 } ] ],
+      "VerticalVertexCount" -> { 2, 4 }, RandomSeeding -> None ] ],
   True,
   TestID -> "RandomInfraFiberedGraph-unique-lifting-is-existence-and-at-most-one"
 ]
@@ -317,7 +317,7 @@ VerificationTest[
   SeedRandom[ 19 ];
   And @@ Table[
     InfraFiberBundleQ @ RandomInfraFiberedGraph[ CycleGraph[ 3 ], Properties -> { "FiberBundle" },
-      "VerticalVertexCount" -> { 4 }, "VerticalEdgeCount" -> { 3 } ], { 12 } ],
+      "VerticalVertexCount" -> { 4 }, "VerticalEdgeCount" -> { 3 }, RandomSeeding -> None ], { 12 } ],
   True,
   TestID -> "RandomInfraFiberedGraph-bundle-transports-are-fiber-automorphisms"
 ]
@@ -341,7 +341,7 @@ VerificationTest[
 VerificationTest[
   SeedRandom[ 8 ];
   With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 6 ], Properties -> { "Fibration" },
-      "VerticalVertexCount" -> { 3, 4 }, "HorizontalEdgeCount" -> { 4, 6 } ] },
+      "VerticalVertexCount" -> { 3, 4 }, "HorizontalEdgeCount" -> { 4, 6 }, RandomSeeding -> None ] },
     { projection = InfraProjection[ fib ], total = InfraTotalSpace[ fib ] },
     { InfraFibrationQ[ fib ],
       AllTrue[ EdgeList @ InfraBaseSpace[ fib ], edge |->
@@ -370,7 +370,7 @@ VerificationTest[
 VerificationTest[
   SeedRandom[ 5 ];
   InfraFibrationQ @ RandomInfraFiberedGraph[ CycleGraph[ 8 ], Properties -> { "Fibration" },
-    "VerticalVertexCount" -> { 2, 4 }, "HorizontalEdgeCount" -> 4 ],
+    "VerticalVertexCount" -> { 2, 4 }, "HorizontalEdgeCount" -> 4, RandomSeeding -> None ],
   True,
   TestID -> "RandomInfraFiberedGraph-horizontal-scalar-cap-adapts-to-actual-sizes"
 ]
@@ -427,9 +427,9 @@ VerificationTest[
 
 VerificationTest[
   SeedRandom[ 77 ];
-  With[ { first = RandomInfraFiberedGraph[ CycleGraph[ 4 ], "VerticalVertexCount" -> { 2, 4 }, "VerticalEdgeCount" -> 3 ] },
+  With[ { first = RandomInfraFiberedGraph[ CycleGraph[ 4 ], "VerticalVertexCount" -> { 2, 4 }, "VerticalEdgeCount" -> 3, RandomSeeding -> None ] },
     SeedRandom[ 77 ];
-    first === RandomInfraFiberedGraph[ CycleGraph[ 4 ], "VerticalVertexCount" -> { 2, 4 }, "VerticalEdgeCount" -> 3 ] ],
+    first === RandomInfraFiberedGraph[ CycleGraph[ 4 ], "VerticalVertexCount" -> { 2, 4 }, "VerticalEdgeCount" -> 3, RandomSeeding -> None ] ],
   True,
   TestID -> "RandomInfraFiberedGraph-uses-the-ambient-random-stream"
 ]

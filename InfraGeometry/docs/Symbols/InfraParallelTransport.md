@@ -12,73 +12,103 @@ RelatedTutorials: [InfraBundles]
 
 ## Usage
 
-<code>[InfraParallelTransport]()[*fib*, *connection*, *walk*]</code> gives the total fiber bijection along a base walk as an association from each starting vertex to the endpoint of its horizontal lift.
+<code>[InfraParallelTransport]()[*fib*, *conn*, *walk*]</code> gives the parallel transport along the base walk *walk* for the connection *conn*: the association from each vertex of the first fiber to the end of its horizontal lift.
 
-<code>[InfraParallelTransport]()[[InfraDisplacementBundle]()[*graph*, *radius*], *walk*]</code> gives the list of metric-selected transports in the Experimental displacement-bundle model.
+<code>[InfraParallelTransport]()[[InfraDisplacementBundle]()[*g*, *r*], *walk*]</code> gives the list of Levi-Civita transports along *walk* in the displacement bundle of *g* at scale *r*.
 
-<code>[InfraParallelTransport]()[[InfraDisplacementBundle]()[*graph*, *radius*], *connection*, *walk*]</code> retains the Experimental model's partial transport, omitting starting directions whose lift is blocked.
+<code>[InfraParallelTransport]()[[InfraDisplacementBundle]()[*g*, *r*], *conn*, *walk*]</code> gives the transport along *walk* for a partial connection *conn* of the displacement bundle, leaving out the directions whose lift is blocked.
 
 ## Details & Options
 
-- The general fibered-graph reader requires a valid complete connection and a nonempty base walk. It never drops blocked vertices or chooses between ambiguous lifts.
-- Keys follow <code>[VertexList]()[[InfraFiber]()[*fib*, [First]()[*walk*]]]</code>. List-valued and expression-valued vertices are literal association keys.
-- A one-vertex walk gives the identity association. Concatenating walks composes their transports; reversing a walk gives the inverse bijection.
-- The readers with an explicit connection consume no random draws and take no options. Unsupported input remains unevaluated.
-- The Experimental displacement overload with an explicit connection accepts partial matchings. Each surviving lift is unique; ambiguous matchings remain unevaluated. Converting the model to a literal InfraFiberedGraph selects the general complete-connection contract.
-- The Experimental two-argument displacement form lists every composite of its best angle-matching injections, without duplicates. It is a particular model and may have several results.
+For a walk *γ* from *p* to *q* the transport is the map *τ_γ : Fₚ → F_q* sending *x* to the end of the horizontal lift of *γ* from *x*. For a complete connection it is a bijection.
 
-Options of the Experimental displacement form:
+Transport composes along walks, *τ_{γδ} = τ_δ ∘ τ_γ*; the reversed walk gives the inverse map, and a walk of length 0 the identity. Transports along two walks with the same ends differ iff the loop formed by them has a nontrivial holonomy.
 
-| Option | Default | Meaning |
+The connection must satisfy [InfraConnectionQ](). Otherwise the call stays unevaluated.
+
+In the displacement bundle at scale *r* the fiber over *p* is the sphere *Sᵣ(p)*. Over each step *p → q*, the Levi-Civita transports are the injections *Sᵣ(p) → Sᵣ(q)* that best preserve the angles between directions, with the directions along a geodesic through *q* sent to their straightest continuation. There are usually several; the result lists every composite along the walk.
+
+Option of the displacement-bundle form:
+
+| Option | Default | Values |
 |---|---|---|
-| [Method]() | `"Arclength"` | `"Arclength"` or `"Alexandrov"` angle comparison. |
+| [Method]() | `"Arclength"` | `"Arclength"` compares angles by distances around the punctured ball, `"Alexandrov"` by the polar form *(d(p,u)² + d(p,w)² − d(u,w)²)/2* |
 
 ## Basic Examples
 
-The two lifts of the base cycle exchange the sheets of a double covering.
+A random double covering of the 4 × 4 grid. Transport around the square 6, 7, 11, 10 exchanges the two vertices of the fiber over 6:
 
 ```wl
-SeedRandom[ 1 ];
-With[
-  { total = CycleGraph[ 8 ] },
-  { fib = InfraFiberedGraph[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
-    connection = InfraConnection[ EdgeList @ total ] },
-  { loop = { 1, 2, 3, 4, 1 } },
-  { lifts = InfraHorizontalLift[ fib, connection, #, loop ] & /@ { 1, 5 } },
-  { InfraFiberedGraphHighlight[ fib, InfraWalk /@ lifts ],
-    InfraParallelTransport[ fib, connection, loop ] }
-]
+With[{fib = RandomInfraFiberedGraph[GridGraph[{4, 4}],
+    Properties -> {"Covering"}, "VerticalVertexCount" -> {2}, RandomSeeding -> 1]},
+  {conn = RandomInfraConnection[fib, RandomSeeding -> 1]}, {loop = {6, 7, 11, 10, 6}},
+  InfraFiberedGraphHighlight[fib, InfraWalk[InfraHorizontalLift[fib, conn, #, loop]] & /@ {{6, 1}, {6, 2}},
+    PlotLabel -> InfraParallelTransport[fib, conn, loop], ImageSize -> Medium]]
+```
+
+So the transports from 6 to 11 along the two sides of the square differ:
+
+```wl
+With[{fib = RandomInfraFiberedGraph[GridGraph[{4, 4}],
+    Properties -> {"Covering"}, "VerticalVertexCount" -> {2}, RandomSeeding -> 1]},
+  {conn = RandomInfraConnection[fib, RandomSeeding -> 1]},
+  {InfraParallelTransport[fib, conn, {6, 7, 11}], InfraParallelTransport[fib, conn, {6, 10, 11}]}]
+```
+
+## Scope
+
+The displacement bundle of the 4 × 4 grid at scale 1, its fibers the four directions at a vertex. The Levi-Civita transports over the step from 6 to 7:
+
+```wl
+InfraParallelTransport[InfraDisplacementBundle[GridGraph[{4, 4}], 1], {6, 7}]
+```
+
+With the Levi-Civita connection of the grid, transport around a square is the identity:
+
+```wl
+With[{fib = InfraDisplacementBundle[GridGraph[{4, 4}], 1]},
+  InfraParallelTransport[fib, FindInfraLeviCivitaConnection[fib], {6, 7, 11, 10, 6}]]
+```
+
+## Options
+
+### Method
+
+The polar form matches more injections over the same step:
+
+```wl
+With[{fib = InfraDisplacementBundle[GridGraph[{4, 4}], 1]},
+  Length /@ {InfraParallelTransport[fib, {6, 7}], InfraParallelTransport[fib, {6, 7}, Method -> "Alexandrov"]}]
 ```
 
 ## Properties and Relations
 
-The reverse transport is the inverse map. A zero-length walk is the identity.
+The reversed walk gives the inverse map, and a walk of length 0 the identity:
 
 ```wl
-SeedRandom[ 1 ];
-With[
-  { total = CycleGraph[ 8 ] },
-  { fib = InfraFiberedGraph[ total, vertex |-> Mod[ vertex, 4, 1 ] ],
-    connection = InfraConnection[ EdgeList @ total ] },
-  { walk = { 1, 2, 3 } },
-  { forward = InfraParallelTransport[ fib, connection, walk ],
-    backward = InfraParallelTransport[ fib, connection, Reverse @ walk ] },
-  { And @@ KeyValueMap[ { source, target } |-> Lookup[ backward, Key @ target ] === source, forward ],
-    InfraParallelTransport[ fib, connection, { 1 } ] }
-]
+With[{fib = RandomInfraFiberedGraph[GridGraph[{4, 4}], "VerticalVertexCount" -> {2}, "HorizontalEdgeCount" -> All,
+    RandomSeeding -> 1]}, {conn = RandomInfraConnection[fib, RandomSeeding -> 1]},
+  {forward = InfraParallelTransport[fib, conn, {6, 7, 11, 12}],
+   backward = InfraParallelTransport[fib, conn, {12, 11, 7, 6}]},
+  {Lookup[backward, Key /@ Values[forward]] === Keys[forward], InfraParallelTransport[fib, conn, {6}]}]
+```
+
+Transport along a walk is the composite of the transports along its parts:
+
+```wl
+With[{fib = RandomInfraFiberedGraph[GridGraph[{4, 4}], "VerticalVertexCount" -> {2}, "HorizontalEdgeCount" -> All,
+    RandomSeeding -> 1]}, {conn = RandomInfraConnection[fib, RandomSeeding -> 1]},
+  {first = InfraParallelTransport[fib, conn, {6, 7, 11}],
+   second = InfraParallelTransport[fib, conn, {11, 12, 16}]},
+  Lookup[second, Key /@ Values[first]] === Values[InfraParallelTransport[fib, conn, {6, 7, 11, 12, 16}]]]
 ```
 
 ## Possible Issues
 
-A partial matching is not a complete connection, so it is not accepted by this reader.
+A partial matching is not a complete connection. The call stays unevaluated:
 
 ```wl
-SeedRandom[ 1 ];
-With[
-  { fib = InfraFiberedGraph[
-      Graph[ Range[ 4 ], { UndirectedEdge[ 1, 3 ] } ],
-      <| 1 -> "p", 2 -> "p", 3 -> "q", 4 -> "q" |>
-    ] },
-  Head @ InfraParallelTransport[ fib, InfraConnection[ { UndirectedEdge[ 1, 3 ] } ], { "p", "q" } ]
-]
+With[{fib = InfraFiberedGraph[Graph[Range[4], {UndirectedEdge[1, 3]}],
+    <|1 -> "p", 2 -> "p", 3 -> "q", 4 -> "q"|>]},
+  Head @ InfraParallelTransport[fib, InfraConnection[{UndirectedEdge[1, 3]}], {"p", "q"}]]
 ```

@@ -6,136 +6,133 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraShell
 Keywords: [shell, sphere, level set, region, symbolic object, area, counting measure, Riemannian measure]
-SeeAlso: [InfraShell, InfraBall, InfraSphere, InfraMeasurement, InfraInterior, InfraBoundary, InfraShellQ]
+SeeAlso: [InfraBall, InfraSphere, InfraMeasurement, InfraInterior, InfraBoundary, InfraShellQ]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraShell]()[*c*, {*r*, *s*}]</code> is the shell about *c*: the vertices at distance between *r* and *s*. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
+<code>[InfraShell]()[*c*, *r*]</code> is the shell of radius *r* about the vertex *c*: the vertices at distance exactly *r* from *c*.
 
-<code>[InfraShell]()[*c*, *r*]</code> is the band {*r*, *r*}: the vertices at distance exactly *r*.
-
-<code>[InfraShell]()[*c*, *r*]</code> inside an [InfraScene]() is the shell construction token.
+<code>[InfraShell]()[*c*, {*r*, *s*}]</code> is the band of the vertices at distance between *r* and *s* from *c*.
 
 ## Details & Options
 
-Definition: the shell of radius *r* about *c* is *S_r(c) = {v : d(c, v) = r}*, a level set of the distance from *c*; the band is *{v : r ≤ d(c, v) ≤ s}*. *c* is a vertex or a vertex list, and then *d(v, C) = min d(v, c)*.
+The shell is *Sᵣ(c) = {v : d(c, v) = r}*, a level set of the distance from *c*. The band is *{v : r ≤ d(c, v) ≤ s}*.
 
-The shell is not a curve. On the square grid no two of its vertices are adjacent. The connected subsets of it that separate the centre from the outside are the family [InfraSphere](), which may be empty.
+The centre can be a vertex list *C*. Then *d(v, C) = min d(v, c)* over *c* in *C*.
 
-A shell is all boundary. [InfraMeasurement]() gives two measures, and they part completely on it:
+[InfraShell]() is a symbolic object: [InfraMeasurement]() evaluates it on a graph and [InfraSubstrateHighlight]() draws it.
+
+A shell is not a curve. On the square grid no two of its vertices are adjacent. The connected subsets of a shell that separate the centre from the outside form [InfraSphere]().
+
+A shell is all boundary, so its two measures part completely:
 
 | Measure | Value |
 |---|---|
-| `"CountingMeasure"` | *\|S_r(c)\|*, the shell area *A(r)* |
-| `"RiemannianMeasure"` | `0` for a single shell: every vertex of it has a neighbour at distance *r − 1*, and the neighbours of the centre lie at distance 1 |
+| `"CountingMeasure"` | the number of vertices of the shell, the area *A(r)* |
+| `"RiemannianMeasure"` | 0: every vertex of the shell has a neighbour outside it |
 
-The shell area at *r = 1* is the degree of the centre. Over *r* on a lattice it is the coordination sequence of crystallography, the difference of consecutive ball counts, *A(r) = L(r) − L(r − 1)* for *r ≥ 1*, with *L* the lattice count of [InfraBall](), and *A(0) = 1*:
+On the square grid, away from the rim, *A(r) = 4r* for *r ≥ 1*; on the cubic grid *A(r) = 4r² + 2*. In general *A(r)* is the difference of consecutive ball volumes. On a Riemannian manifold of dimension *n*, *A(r) = n ωₙ rⁿ⁻¹ (1 − R r² / (6n) + O(r⁴))*, with *R* the scalar curvature at *c*.
 
-| Lattice | Substrate | `"CountingMeasure"` *A(r)*, *r ≥ 1* |
-|---|---|---|
-| *Z*, the path | — | *2* |
-| *Z²* | `"SquareTilingGraph"` | *4r* |
-| *Z³* | `"CubicGridGraph"` | *4r² + 2* |
-| triangular | `"TriangularTilingGraph"` | *6r* |
-| hexagonal | `"HexagonalTilingGraph"` | *3r* |
+The Riemannian measure of a band drops its two rims. On the square grid, away from the rim, the band {*r*, *s*} with *r* ≥ 1 has the Riemannian measure of the counting measure of the band {*r* + 1, *s* − 1}.
 
-Past the eccentricity the shell is empty. The substrates are finite patches, and a shell follows the table while it stays inside the patch: on the medium cubic grid, to *r = 3*.
+A radius past the eccentricity of *c* gives the empty shell.
 
-In the continuum the reference is the area of the shortest path sphere. On a Riemannian manifold of dimension *n*, with *ω_n* the volume of the Euclidean unit ball and *Scal(c)* the scalar curvature at the centre, *Vol ∂B_r(c) = n ω_n r^(n−1) (1 − Scal(c) r² / (6n) + O(r⁴))*, the derivative in *r* of the ball's expansion. On a lattice the shell is the boundary of a polygon, not of a round ball, as on [InfraBall]().
-
-The Riemannian measure of a band *{r, s}* with *r ≥ 1* drops its two rims: it counts the band *{r + 1, s − 1}* and the vertices at distance *s* that have no neighbour at distance *s + 1*. On the square and the triangular grids, away from the rim, there are none, and it is the counting measure of the band *{r + 1, s − 1}*; on the hexagonal tiling this is measured.
-
-How the number is measured: <code>[InfraMeasurement]()[*g*, [InfraShell]()[*c*, *r*], "CountingMeasure"]</code> counts the vertices at distance exactly *r* from *c*, one row of the distance matrix at the value *r*. The profile over *r* is the derivative of the ball profile, and its [LogDifferenceQuotients]() tend to one less than the dimension.
-
-The head holds the centre and the band and computes nothing. A shell is one fixed vertex set. `Keys @ InfraMeasurement[g, InfraShell[c, r], "VertexDensity"]` gives its sorted vertices. [InfraMeasurement]() also reads `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"`, `"Faithful"` and `"Subgraph"`.
+In an [InfraScene](), <code>[InfraShell]()[*p*, *r*]</code> is the shell about the point *p*.
 
 Corresponding notions in the classical axiom systems:
 
 | System | Name | Statement |
 |---|---|---|
-| Euclid | Postulate 3 | To draw a circle with any center and radius; the shell is its locus of points. |
-| Tarski | Equidistance | The set equidistant from a centre, from the four-place congruence relation. |
+| Euclid | Postulate 3 | To describe a circle with any centre and distance; the shell is its locus. |
+| Tarski | Equidistance | The points at the same distance from a centre. |
 | Hilbert | (defined) | Not primitive; defined through segment congruence. |
 
 ## Basic Examples
 
-The band of radii 2 to 4 about the centre of the discretized plane, the square grid and the hexagonal tiling. The Riemannian measure keeps the middle shell, in green; the two rims, in blue, are boundary.
+The shell of radius 3 about the centre, on the square grid and on the square mesh:
 
 ```wl
-SeedRandom[1];
-Row[Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {band = InfraShell[First @ GraphCenter[g], {2, 4}]},
-    {support = ( Keys @ InfraMeasurement[ g, band, "VertexDensity" ] )},
-    Labeled[
-      InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
-      InfraMeasurement[g, band, {"CountingMeasure", "RiemannianMeasure"}]]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    InfraSubstrateHighlight[g, {InfraShell[c, 3], c}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The shell area against the radius on the same three substrates: *4 r* on the square grid, *3 r* on the hexagonal tiling, and no formula on the mesh.
+The shell area against the radius. On the grid it is *4r* until the shell reaches the rim:
 
 ```wl
-With[
-  {names = {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}},
-  ListLinePlot[
-    Table[
-      With[{g = InfraSubstrate[name, "Medium"]}, Table[InfraMeasurement[g, InfraShell[First @ GraphCenter[g], r], "CountingMeasure"], {r, 1, 7}]],
-      {name, names}],
-    DataRange -> {1, 7}, PlotMarkers -> Automatic, PlotLegends -> names, AxesLabel -> {"r", "A(r)"}]]
+ListLinePlot[Table[
+    With[{g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+      Table[InfraMeasurement[g, InfraShell[c, r], "CountingMeasure"], {r, 1, 10}]],
+    {name, {"SquareGridGraph", "SquareMeshGraph"}}],
+  DataRange -> {1, 10}, PlotMarkers -> Automatic, PlotLegends -> {"SquareGridGraph", "SquareMeshGraph"}]
+```
+
+The band of radii 1 to 3, with its interior drawn over it. The Riemannian measure counts the interior; on the grid it is the middle shell:
+
+```wl
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {band = InfraShell[c, {1, 3}]},
+    InfraSubstrateHighlight[g, {band, InfraInterior[g, Keys @ InfraMeasurement[g, band, "VertexDensity"]]},
+      PlotLabel -> InfraMeasurement[g, band, {"CountingMeasure", "RiemannianMeasure"}]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
 ## Scope
 
-Single shells of radius 2 to 5, one colour each. Each is all boundary, so its Riemannian measure is 0.
+The shells of radius 1 to 5 about the centre of the grid. Each has Riemannian measure 0:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {shells = Table[InfraShell[First @ GraphCenter[g], r], {r, 2, 5}]},
-  {InfraSubstrateHighlight[g, shells], InfraMeasurement[g, shells, "CountingMeasure"], InfraMeasurement[g, shells, "RiemannianMeasure"]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {shells = Table[InfraShell[c, r], {r, 1, 5}]},
+  InfraSubstrateHighlight[g, shells, PlotLabel -> InfraMeasurement[g, shells, "RiemannianMeasure"],
+    ImageSize -> Medium]]
 ```
 
-The shell about two vertices at once.
+The shell of radius 2 about a shortest path, the vertices at distance 2 from it:
 
 ```wl
-SeedRandom[1];
-Keys @ InfraMeasurement[ PathGraph[Range[7]], InfraShell[{1, 7}, 1], "VertexDensity" ]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {path = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1], RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {InfraShell[path, 2], InfraWalk[path]}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
 ## Properties and Relations
 
-The shell area of the triangular tiling and of the large cubic grid, as points, against *6r* and *4r² + 2*, as curves.
+The shell areas are the differences of the ball volumes:
 
 ```wl
-GraphicsRow[MapThread[
-  {substrate, maxRadius, shellArea} |-> Show[
-    Plot[shellArea, {r, 1, maxRadius}],
-    ListPlot[
-      Table[InfraMeasurement[substrate, InfraShell[First @ GraphCenter[substrate], r], "CountingMeasure"], {r, 1, maxRadius}],
-      DataRange -> {1, maxRadius}, PlotMarkers -> Automatic]],
-  {{InfraSubstrate["TriangularTilingGraph", "Medium"], InfraSubstrate["CubicGridGraph", "Large"]}, {6, 4}, {6 r, 4 r^2 + 2}}]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {Table[InfraMeasurement[g, InfraShell[c, r], "CountingMeasure"], {r, 1, 6}],
+   Differences @ Table[InfraMeasurement[g, InfraBall[c, r], "CountingMeasure"], {r, 0, 6}]}]
 ```
 
-Inside a scene the token names the shell about a point, and [RandomInfraSceneInstance]() binds it to the same vertex set. Two shells meet in a few vertices, one per branch.
+On the grid no two vertices of a shell are adjacent; on the mesh the shells contain edges. The number of edges inside the shells of radius 1 to 5:
 
 ```wl
-SeedRandom[1];
-ClearAll[pA, pB, shellA, shellB, meet];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 2]])},
-  {constr = InfraScene[{pA, pB, shellA, shellB, meet},
-     {pA == InfraPoint[c], pB == InfraPoint[b],
-      shellA == InfraShell[pA, 2], shellB == InfraShell[pB, 2],
-      meet == InfraPoint[ InfraIntersection[shellA, shellB] ]}]},
-  {solved = RandomInfraSceneInstance[ constr, g, All ]},
-  InfraSubstrateHighlight[g,
-    Join[{InfraSceneInstance[First @ solved, shellA],
-          InfraSceneInstance[First @ solved, shellB]},
-      InfraSceneInstance[#, meet] & /@ solved]]]
+Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    Table[EdgeCount @ InfraMeasurement[g, InfraShell[c, r], "Subgraph"], {r, 1, 5}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+```
+
+On the cubic grid the shell area is *4r² + 2* until the shell reaches the rim, here at radius 3:
+
+```wl
+With[{g = InfraSubstrate["CubicGridGraph", "Medium"]}, {c = First @ GraphCenter[g]},
+  {Table[InfraMeasurement[g, InfraShell[c, r], "CountingMeasure"], {r, 1, 5}], Table[4 r^2 + 2, {r, 1, 5}]}]
+```
+
+## Possible Issues
+
+Past the eccentricity the shell is empty:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {VertexEccentricity[g, c], InfraMeasurement[g, InfraShell[c, 12], "CountingMeasure"]}]
 ```

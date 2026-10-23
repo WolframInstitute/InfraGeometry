@@ -5,52 +5,37 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraLineQ
-Keywords: [line, inextensible shortest path, predicate]
-SeeAlso: [RandomInfraLine, InfraLine, InfraSegmentQ, InfraRayQ]
+Keywords: [line, inextensible shortest path, predicate, alias]
+SeeAlso: [InfraInfiniteLineQ, RandomInfraLine, InfraLine, InfraSegmentQ]
 RelatedGuides: [Experimental]
 ---
 
 ## Usage
 
-<code>[InfraLineQ]()[*g*, *walk*]</code> tests whether *walk* is a line in *g*: a shortest path that no neighbour of either endpoint prolongs.
-
-<code>[InfraLineQ]()[*g*, *lines*]</code> tests every line of an [InfraLine]() bundle or pool.
+<code>[InfraLineQ]()[*g*, *walk*]</code> is the older name of <code>[InfraInfiniteLineQ]()[*g*, *walk*]</code>: it tests whether *walk* is a shortest path that no neighbour of either end prolongs.
 
 ## Details & Options
 
-This is the legacy compatibility spelling. New code uses `InfraInfiniteLineQ`.
-
-Two conditions: the sequence is a shortest path ([InfraSegmentQ]()), and stepping off either end to a neighbour gives a walk that is no longer a shortest path — no neighbour of the first vertex lies one step farther from the last, and no neighbour of the last lies one step farther from the first. Both tests are single distance lookups.
-
-Sequences shorter than two vertices are `False`.
-
-The predicate is the companion of [RandomInfraLine](), and every line that finder returns satisfies it under every `Method`.
+[InfraLineQ]() takes the same arguments as [InfraInfiniteLineQ]() and gives the same result. New code uses [InfraInfiniteLineQ](). Like it, the test takes a line, not the head [InfraLine]()[*p*, *q*]; membership in that family is [InfraMemberQ]().
 
 ## Basic Examples
 
-On a path the whole graph is a line; any proper stretch is not, since it can still be prolonged.
+A line through the centre of the square grid, and the same walk without its last vertex, which can be prolonged:
 
 ```wl
-{InfraLineQ[PathGraph[Range[5]], {1, 2, 3, 4, 5}], InfraLineQ[PathGraph[Range[5]], {2, 3, 4}]}
-```
-
-On the 6-cycle a shortest path of length 3 reaches the antipode and is a line; one of length 2 is not.
-
-```wl
-{InfraLineQ[CycleGraph[6], {1, 2, 3, 4}], InfraLineQ[CycleGraph[6], {1, 2, 3}]}
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {line = RandomInfraInfiniteLine[g, c, RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1], RandomSeeding -> 1]},
+  InfraSubstrateHighlight[g, {line, c}, PlotLabel -> {InfraLineQ[g, line], InfraLineQ[g, Most @ line]},
+    ImageSize -> Medium]]
 ```
 
 ## Properties and Relations
 
-Every line [RandomInfraLine]() produces satisfies the predicate; the pool is accepted as a whole.
+[InfraLineQ]() and [InfraInfiniteLineQ]() agree:
 
 ```wl
-SeedRandom[1];
-InfraLineQ[GridGraph[{4, 4}], RandomInfraLine[GridGraph[{4, 4}], 6, 7, All]]
-```
-
-A line on a grid runs from boundary to boundary; the grid row {1, 2, 3, 4} is a line, the stretch {2, 3} is not.
-
-```wl
-{InfraLineQ[GridGraph[{4, 4}], {1, 2, 3, 4}], InfraLineQ[GridGraph[{4, 4}], {2, 3}]}
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {lines = RandomInfraInfiniteLine[g, c, RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1], All]},
+  {InfraLineQ[g, lines], InfraInfiniteLineQ[g, lines],
+   InfraLineQ[g, Most /@ lines] === InfraInfiniteLineQ[g, Most /@ lines]}]
 ```

@@ -13,36 +13,60 @@ RelatedTutorials: [InfraBundles]
 
 ## Usage
 
-<code>[InfraSectionQ]()[*fib*, [InfraSection]()[*s*]]</code> tests whether every value of the association *s* lies over its key.
+<code>[InfraSectionQ]()[*fib*, [InfraSection]()[*s*]]</code> gives [True]() if every value *s(p)* is a total vertex of *fib* over *p*, and [False]() otherwise.
 
-<code>[InfraSectionQ]()[*fib*, {*section1*, *section2*, ...}]</code> tests whether every section in a nonempty collection satisfies this condition.
+<code>[InfraSectionQ]()[*fib*, {*sec₁*, *sec₂*, …}]</code> gives [True]() if every *secᵢ* is a section of *fib*.
 
 ## Details & Options
 
-- The keys of *s* specify its domain. They need not cover the whole reconstructed base.
-- The right-inverse condition is `projection[s[p]] == p` on that domain, with literal association keys.
-- `InfraSection[<||>]` is a valid empty partial section.
-- An empty collection returns [False](). It is distinct from one empty section.
-- Undecided predicates in a collection remain as a conjunction. Malformed objects and unsupported fibered data remain unevaluated.
+The condition is *π(s(p)) = p* for every key *p* of *s*. The keys need not cover the base: a partial section is a section of its domain.
+
+Only the projection is tested. Continuity is tested by [InfraContinuousSectionQ](), compatibility with a connection by [InfraParallelSectionQ]().
+
+The empty section `InfraSection[<||>]` is a section. An empty list gives [False]().
 
 ## Basic Examples
 
-A section picks one vertex in each selected fiber.
+A random section of a fibered graph over the 4 × 4 grid:
 
 ```wl
-SeedRandom[7];
-With[
-  {fib = InfraFiberedGraph[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[2, 4]}],
-    <|1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b"|>]},
-  {section = RandomInfraSection[fib]},
-  {InfraFiberedGraphHighlight[fib, section], InfraSectionQ[fib, section]}]
+With[{fib = RandomInfraFiberedGraph[GridGraph[{4, 4}], "VerticalVertexCount" -> {1, 3}, RandomSeeding -> 1]},
+  {s = RandomInfraSection[fib, RandomSeeding -> 1]},
+  InfraFiberedGraphHighlight[fib, {s}, PlotLabel -> InfraSectionQ[fib, s], ImageSize -> Medium]]
 ```
 
-The projection distinguishes a valid partial section from a value in the wrong fiber.
+On the product double covering of the grid, the value over 6 must be {6, 1} or {6, 2}. A value over 7, or a vertex that does not exist, fails:
 
 ```wl
-SeedRandom[7];
-With[
-  {fib = InfraFiberedGraph[PathGraph[{1, 2}], Identity]},
-  InfraSectionQ[fib, #] & /@ {InfraSection[<|1 -> 1|>], InfraSection[<|1 -> 2|>], InfraSection[<||>]}]
+With[{fib = InfraFiberedGraph[GraphProduct[GridGraph[{4, 4}], Graph[{1, 2}, {}], "Cartesian"], First]},
+  InfraSectionQ[fib, InfraSection[<|6 -> #|>]] & /@ {{6, 1}, {6, 2}, {7, 1}, {6, 3}}]
+```
+
+## Scope
+
+A list of sections is tested together. The two sheets of the product covering:
+
+```wl
+With[{fib = InfraFiberedGraph[GraphProduct[GridGraph[{4, 4}], Graph[{1, 2}, {}], "Cartesian"], First]},
+  InfraSectionQ[fib, RandomInfraSection[fib, All, Properties -> {"Continuous"}]]]
+```
+
+## Properties and Relations
+
+A section need not be continuous. A random section of the product covering jumps between the sheets:
+
+```wl
+With[{fib = InfraFiberedGraph[GraphProduct[GridGraph[{4, 4}], Graph[{1, 2}, {}], "Cartesian"], First]},
+  {s = RandomInfraSection[fib, RandomSeeding -> 1]},
+  InfraFiberedGraphHighlight[fib, {s}, PlotLabel -> {InfraSectionQ[fib, s], InfraContinuousSectionQ[fib, s]},
+    ImageSize -> Medium]]
+```
+
+## Possible Issues
+
+The empty section is a section, but an empty list of sections gives [False]():
+
+```wl
+With[{fib = InfraFiberedGraph[GraphProduct[GridGraph[{4, 4}], Graph[{1, 2}, {}], "Cartesian"], First]},
+  {InfraSectionQ[fib, InfraSection[<||>]], InfraSectionQ[fib, {}]}]
 ```

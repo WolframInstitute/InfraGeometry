@@ -34,7 +34,7 @@ VerificationTest[
 
 VerificationTest[
   Keys @ Options @ RandomInfraPoint,
-  { "PairwiseDistance", "MaxCliques", "NextVertexFunction" },
+  { "PairwiseDistance", "MaxCliques", "NextVertexFunction", RandomSeeding },
   TestID -> "RandomInfraPoint-options-From-and-Distance-gone"
 ]
 
@@ -221,7 +221,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 7, 7 } ] },
     { shell = Select[ VertexList @ g, GraphDistance[ g, 25, # ] == 3 & ],
       gap = s |-> Min[ GraphDistance[ g, #[[ 1 ]], #[[ 2 ]] ] & /@ Subsets[ s, { 2 } ] ] },
-    { pts = ( SeedRandom[ 1 ]; RandomInfraPoint[ g, InfraShell[ GraphCenter @ g, 3 ], 3, "PairwiseDistance" -> "Max" ] ) },
+    { pts = ( SeedRandom[ 1 ]; RandomInfraPoint[ g, InfraShell[ GraphCenter @ g, 3 ], 3, "PairwiseDistance" -> "Max", RandomSeeding -> None ] ) },
     Length @ pts == 3 && SubsetQ[ shell, pts ] && gap @ pts == Max[ gap /@ Subsets[ shell, { 3 } ] ] ],
   True,
   TestID -> "RandomInfraPoint-spread-on-the-circle-about-the-center"
@@ -233,7 +233,7 @@ VerificationTest[
       Tuples[ { { InfraBall[ 25, 3 ], InfraShell[ 25, { 2, 3 } ], InfraSegment[ 1, 49 ], InfraUnion[ InfraBall[ 1, 2 ], InfraBall[ 49, 2 ] ] },
         Range[ 5 ] } ],
       Apply[ { reg, seed } |-> With[ { pool = Keys @ InfraMeasurement[ g, reg, "VertexDensity" ] },
-        { pts = ( SeedRandom[ seed ]; RandomInfraPoint[ g, reg, 3, "PairwiseDistance" -> { 2, 4 } ] ) },
+        { pts = ( SeedRandom[ seed ]; RandomInfraPoint[ g, reg, 3, "PairwiseDistance" -> { 2, 4 }, RandomSeeding -> None ] ) },
         Length @ pts == 3 && DuplicateFreeQ @ pts && SubsetQ[ pool, pts ] &&
           AllTrue[ Subsets[ pts, { 2 } ], 2 <= GraphDistance[ g, #[[ 1 ]], #[[ 2 ]] ] <= 4 & ] ] ] ] ],
   True,
@@ -243,7 +243,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 7, 7 } ] },
     AllTrue[ Range[ 5 ],
-      seed |-> With[ { pts = ( SeedRandom[ seed ]; RandomInfraPoint[ g, InfraBall[ 25, 2 ], 2, "PairwiseDistance" -> "Max" ] ) },
+      seed |-> With[ { pts = ( SeedRandom[ seed ]; RandomInfraPoint[ g, InfraBall[ 25, 2 ], 2, "PairwiseDistance" -> "Max", RandomSeeding -> None ] ) },
         SubsetQ[ Select[ VertexList @ g, GraphDistance[ g, 25, # ] <= 2 & ], pts ] && GraphDistance[ g, Sequence @@ pts ] == 4 ] ] ],
   True,
   TestID -> "RandomInfraPoint-Max-draws-lie-in-the-region"
@@ -352,7 +352,7 @@ VerificationTest[
         degSum = w |-> VertexDegree[GridGraph[{4, 4}], w[[-2]]] + VertexDegree[GridGraph[{4, 4}], w[[-1]]]},
     BlockRandom[
       Length @ walkSeqs @ endingAt[RandomInfraGeodesic[g, 1, Infinity, Infinity, All, stopAt[16],
-        "NextVertexFunction" -> MinimalBy[degSum] /* (RandomSample[#, UpTo[1]] &)], 16] <= 1,
+        "NextVertexFunction" -> MinimalBy[degSum] /* (RandomSample[#, UpTo[1]] &), RandomSeeding -> None ], 16] <= 1,
       RandomSeeding -> 42
     ]
   ],
@@ -440,7 +440,7 @@ VerificationTest[
   With[{g = GridGraph[{4, 4}]},
     BlockRandom[
       Length @ walkSeqs @ endingAt[RandomInfraGeodesic[g, 1, 2, Infinity, All, stopAt[16],
-        Properties -> { "Simple", { "Stretched", 2 } }, "NextVertexFunction" -> (RandomSample[#, UpTo[1]] &)], 16] <= 1,
+        Properties -> { "Simple", { "Stretched", 2 } }, "NextVertexFunction" -> (RandomSample[#, UpTo[1]] &), RandomSeeding -> None ], 16] <= 1,
       RandomSeeding -> 42
     ]
   ],
@@ -678,45 +678,6 @@ VerificationTest[
 ]
 
 
-(* ===== EmbeddingClosest dispatch for InfraShell ===== *)
-
-(* Sets ranked by directed Hausdorff distance to the Euclidean sphere of
-   radius r centered at c. *)
-
-VerificationTest[
-  With[ { g = GridGraph[ { 4, 4 } ] },
-    MatchQ[
-      EmbeddingClosest[ g,
-        List /@ Select[ VertexList[ g ], GraphDistance[ g, 6, # ] == 1 & ],
-        { 6, 1 } ],
-      { __List } ]
-  ],
-  True,
-  TestID -> "EmbeddingClosest-set-family-returns-sets"
-]
-
-VerificationTest[
-  With[ { g = GridGraph[ { 4, 4 } ] },
-    Length @ EmbeddingClosest[ g, List /@ VertexList[ g ], { 6, 1 } ]
-  ],
-  16,
-  TestID -> "EmbeddingClosest-set-family-all-vertices"
-]
-
-
-(* ===== EmbeddingClosest dispatch for InfraCircle (pre-existing) ===== *)
-
-VerificationTest[
-  With[ { g = GridGraph[ { 4, 4 } ] },
-    Length @ EmbeddingClosest[ g,
-      RandomInfraCircle[ g, InfraCircle[ 6, { 1, 2 } ], All ],
-      { 6, 1.5 } ] >= 1
-  ],
-  True,
-  TestID -> "EmbeddingClosest-cycle-graphs-on-Separating-set"
-]
-
-
 (* ===== RandomInfraPoint All ===== *)
 
 VerificationTest[
@@ -750,9 +711,9 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { g = GridGraph[ { 6, 6 } ], line = First @ RandomInfraLine[ GridGraph[ { 6, 6 } ], 1, 2, 1 ] },
-    BlockRandom[ RandomInfraParallel[ g, line, 20, 1, "NextVertexFunction" -> RandomSample ], RandomSeeding -> 3 ] ===
-      BlockRandom[ RandomInfraParallel[ g, line, 20, 1, "NextVertexFunction" -> RandomSample ], RandomSeeding -> 3 ]
+  With[ { g = GridGraph[ { 6, 6 } ], line = First @ RandomInfraLine[ GridGraph[ { 6, 6 } ], 1, 2, 1, RandomSeeding -> None ] },
+    BlockRandom[ RandomInfraParallel[ g, line, 20, 1, "NextVertexFunction" -> RandomSample, RandomSeeding -> None ], RandomSeeding -> 3 ] ===
+      BlockRandom[ RandomInfraParallel[ g, line, 20, 1, "NextVertexFunction" -> RandomSample, RandomSeeding -> None ], RandomSeeding -> 3 ]
   ],
   True,
   TestID -> "RandomInfraParallel-RandomSample-seeded-reproducible"

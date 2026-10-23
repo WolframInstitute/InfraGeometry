@@ -12,88 +12,86 @@ RelatedGuides: [InfraAnalysis]
 
 ## Usage
 
-<code>[DisplacementCommutator]()[*g*, *d1*, *d2*]</code> is the commutator loop of the displacements: *d1*, then *d2*, then the inverse of *d1*, then the inverse of *d2*.
+<code>[DisplacementCommutator]()[*g*, *d1*, *d2*]</code> is the commutator loop of the displacements *d1* and *d2*: *d1*, then *d2*, then the inverse of *d1*, then the inverse of *d2*.
 
 <code>[DisplacementCommutator]()[*g*, *d1*, *d2*, *v*]</code> gives its value at the vertex *v*.
 
 ## Details & Options
 
-Definition: with [Method]() -> `"Inverse"`, the default, the loop is *D2⁻¹ ∘ D1⁻¹ ∘ D2 ∘ D1*, the inverses those of [DisplacementInverse](). For two bijections it is their group commutator, and the identity exactly when they commute.
+The loop is *D₂⁻¹ ∘ D₁⁻¹ ∘ D₂ ∘ D₁*, with the inverses of [DisplacementInverse](). For two bijections it is their group commutator, the identity exactly when they commute.
 
-With [Method]() -> `"Negative"` the inverses are replaced by the metric negatives of [DisplacementNegative](): the loop is *(−D2) ∘ (−D1) ∘ D2 ∘ D1*, each negative taken at the vertex the loop has reached. This loop needs neither bijections nor relation inverses, and it is [DisplacementBracket]().
+For the flows of two vector fields *X*, *Y* at scale *r* the loop moves each point by *r²[X, Y] + O(r³)*, so a loop that closes reads a vanishing bracket.
 
-| Method | the loop |
-|---|---|
-| `"Inverse"` (default) | *D1*, *D2*, the inverse relation of *D1*, the inverse relation of *D2* |
-| `"Negative"` | *D1*, *D2*, the metric negative of *D1*, the metric negative of *D2* |
+The inverse of a displacement that is not injective has several values, and the loop then spreads.
 
-For the flows of two vector fields at scale *r* the loop moves each point by *r²* times the Lie bracket *[X, Y]*, up to *O(r³)* and the sign convention of the bracket, so a loop that closes reads a vanishing bracket. On a graph the loop is a displacement, multivalued where an inverse or a negative is.
+The commutator of two automorphisms is an automorphism, and exchanging the two inverts it.
 
-The commutator of two automorphisms is an automorphism, and exchanging the two displacements inverts it.
+Options:
+
+| Option | Default | Values |
+|---|---|---|
+| [Method]() | `"Inverse"` | `"Negative"` replaces the inverses by the metric negatives of [DisplacementNegative](), each taken at the vertex the loop has reached; this is [DisplacementBracket]() |
 
 ## Basic Examples
 
-On the 12-cycle the commutator of the rotation by one step and a reflection is the rotation by two steps, an automorphism of magnitude 2.
+The commutator of the steps right and up, on the square grid and on the square mesh, with the number of vertices where the loop closes. On the grid it fails only at the top and the right; on the mesh it closes at 12 of the 102 vertices, and at 30 it has no value, where an inverse was empty:
 
 ```wl
-With[
-  {g = CycleGraph[12]},
-  {rotation = FindKillingDisplacement[g], reflection = AssociationMap[{Mod[2 - #, 12, 1]} &, VertexList[g]]},
-  {loop = DisplacementCommutator[g, rotation, reflection]},
-  {DisplacementPlot[g, loop], loop[1], DisplacementIsomorphismQ[g, loop], DisplacementMagnitude[g, loop]}]
+GraphicsRow @ KeyValueMap[
+  {name, s} |-> With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    {loop = DisplacementCommutator[g, TranslationDisplacement[g, {s, 0}], TranslationDisplacement[g, {0, s}]]},
+    DisplacementPlot[g, loop, PlotLabel -> Count[VertexList[g], v_ /; loop[v] === {v}]]],
+  <|"SquareGridGraph" -> 1, "SquareMeshGraph" -> 1/8|>]
 ```
 
-On the 6 × 6 grid the steps right and up commute away from the rim: the loop is the identity on the 16 vertices of the lower left 4 × 4 block. Near the top row and the right column the clamped steps are not injective, and the inverses carry a vertex back to every vertex with the same image.
+On a 12-cycle the commutator of the rotation by one step and a reflection is the rotation by two steps:
 
 ```wl
-With[
-  {g = GridGraph[{6, 6}]},
-  {right = TranslationDisplacement[g, {1, 0}], up = TranslationDisplacement[g, {0, 1}]},
-  {loop = DisplacementCommutator[g, right, up]},
-  {DisplacementPlot[g, loop], Count[Keys[loop], v_ /; loop[v] === {v}]}]
+With[{g = CycleGraph[12]},
+  {rotation = FindKillingDisplacement[g], reflection = AssociationMap[{Mod[2 - #, 12, 1]} &, Range[12]]},
+  {loop = DisplacementCommutator[g, rotation, reflection]},
+  DisplacementPlot[g, loop, PlotLabel -> {loop[1], DisplacementMagnitude[g, loop]}]]
 ```
 
 ## Scope
 
-The value at one vertex.
+The value at one vertex. Near the top right corner of the grid the clamped steps are not injective, and the loop spreads:
 
 ```wl
-With[
-  {g = GridGraph[{6, 6}]},
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
   {right = TranslationDisplacement[g, {1, 0}], up = TranslationDisplacement[g, {0, 1}]},
-  {DisplacementPlot[g, <|30 -> DisplacementCommutator[g, right, up, 30]|>], DisplacementCommutator[g, right, up, 30]}]
+  {DisplacementCommutator[g, right, up, 45], DisplacementCommutator[g, right, up, 89]}]
 ```
 
 ## Options
 
 ### Method
 
-The two loops of the steps right and up of the grid. Both close away from the rim. At the rim the inverse loop spreads over the vertices with a common image, and the loop of the metric negatives takes a single step towards the rim.
+The two loops of the steps right and up of the grid. Both close away from the rim. At the rim the inverse loop spreads over the vertices with a common image; the loop of the negatives turns along the rim:
 
 ```wl
-With[
-  {g = GridGraph[{6, 6}]},
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
   {right = TranslationDisplacement[g, {1, 0}], up = TranslationDisplacement[g, {0, 1}]},
-  GraphicsRow[Table[DisplacementPlot[g, DisplacementCommutator[g, right, up, Method -> method]], {method, {"Inverse", "Negative"}}]]]
+  GraphicsRow @ Table[
+    DisplacementPlot[g, DisplacementCommutator[g, right, up, Method -> method], PlotLabel -> method],
+    {method, {"Inverse", "Negative"}}]]
 ```
 
 ## Properties and Relations
 
-Exchanging the two automorphisms inverts their commutator.
+The commutator of two automorphisms is an automorphism, and exchanging the two inverts it:
 
 ```wl
-With[
-  {g = CycleGraph[12]},
-  {rotation = FindKillingDisplacement[g], reflection = AssociationMap[{Mod[2 - #, 12, 1]} &, VertexList[g]]},
-  {loop = DisplacementCommutator[g, rotation, reflection], swapped = DisplacementCommutator[g, reflection, rotation]},
-  {DisplacementPlot[g, {loop, swapped}], swapped === DisplacementInverse[loop]}]
+With[{g = CycleGraph[12]},
+  {rotation = FindKillingDisplacement[g], reflection = AssociationMap[{Mod[2 - #, 12, 1]} &, Range[12]]},
+  {loop = DisplacementCommutator[g, rotation, reflection]},
+  {DisplacementIsomorphismQ[g, loop], DisplacementCommutator[g, reflection, rotation] === DisplacementInverse[loop]}]
 ```
 
-`"Negative"` gives [DisplacementBracket]().
+`"Negative"` gives [DisplacementBracket]():
 
 ```wl
-With[
-  {g = GridGraph[{6, 6}]},
-  {right = TranslationDisplacement[g, {1, 0}], up = TranslationDisplacement[g, {0, 1}]},
-  {DisplacementPlot[g, DisplacementBracket[g, right, up]], DisplacementCommutator[g, right, up, Method -> "Negative"] === DisplacementBracket[g, right, up]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {right = TranslationDisplacement[g, {1/8, 0}], up = TranslationDisplacement[g, {0, 1/8}]},
+  DisplacementCommutator[g, right, up, Method -> "Negative"] === DisplacementBracket[g, right, up]]
 ```

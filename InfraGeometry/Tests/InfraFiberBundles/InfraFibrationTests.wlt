@@ -34,7 +34,7 @@ VerificationTest[
 
 VerificationTest[
   SeedRandom[1];
-  With[{fib = RandomInfraFibration[CycleGraph[4]]},
+  With[{fib = RandomInfraFibration[CycleGraph[4], RandomSeeding -> None ]},
     {InfraFibrationQ[fib], IsomorphicGraphQ[InfraBaseGraph[fib], CycleGraph[4]], Length[InfraFibers[fib]]}],
   {True, True, 4},
   TestID -> "RandomInfraFibration-default"
@@ -67,7 +67,7 @@ VerificationTest[
 
 VerificationTest[
   SeedRandom[42];
-  AllTrue[VertexCount /@ Values[InfraFibers[RandomInfraFibration[CycleGraph[5], "VerticalVertices" -> {1, 4}]]], Between[{1, 4}]],
+  AllTrue[VertexCount /@ Values[InfraFibers[RandomInfraFibration[CycleGraph[5], "VerticalVertices" -> {1, 4}, RandomSeeding -> None ]]], Between[{1, 4}]],
   True,
   TestID -> "RandomInfraFibration-RandomFiberSizes"
 ]
@@ -80,7 +80,7 @@ VerificationTest[
 
 VerificationTest[
   SeedRandom[3];
-  Equal @@ (VertexCount /@ Values[InfraFibers[RandomInfraFibration[CycleGraph[5], "VerticalVertices" -> {1, 4}, "IsomorphicFibers" -> True]]]),
+  Equal @@ (VertexCount /@ Values[InfraFibers[RandomInfraFibration[CycleGraph[5], "VerticalVertices" -> {1, 4}, "IsomorphicFibers" -> True, RandomSeeding -> None ]]]),
   True,
   TestID -> "RandomInfraFibration-IsomorphicFibers-SameSize"
 ]
@@ -225,7 +225,7 @@ VerificationTest[
 
 VerificationTest[
   SeedRandom[1];
-  With[{fib = RandomInfraFibration[CycleGraph[4]]},
+  With[{fib = RandomInfraFibration[CycleGraph[4], RandomSeeding -> None ]},
     {InfraBundleMorphismQ[fib, fib, Identity],
      With[{vertices = VertexList[InfraTotalGraph[fib]]}, {map = AssociationThread[vertices, RandomChoice[vertices, Length[vertices]]]},
        {DuplicateFreeQ[Values[map]], InfraBundleMorphismQ[fib, fib, map]}]}],
@@ -349,7 +349,7 @@ VerificationTest[
   SeedRandom[ 17 ];
   With[ { expected = Table[ RandomInteger[ { 3, 5 } ], { 12 } ] },
     SeedRandom[ 17 ];
-    With[ { fib = RandomInfraFibration[ Graph[ Range[ 12 ], { } ], "VerticalVertices" -> { 3, 5 } ] },
+    With[ { fib = RandomInfraFibration[ Graph[ Range[ 12 ], { } ], "VerticalVertices" -> { 3, 5 }, RandomSeeding -> None ] },
       VertexCount /@ Values @ InfraFibers[ fib ] === expected ] ],
   True,
   TestID -> "RandomInfraFibration-integer-range-is-discrete-uniform"

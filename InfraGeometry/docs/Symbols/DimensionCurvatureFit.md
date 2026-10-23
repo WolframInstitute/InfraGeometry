@@ -12,125 +12,114 @@ RelatedGuides: [RiemannianInfrageometry]
 
 ## Usage
 
-<code>[DimensionCurvatureFit]()[{{*r1*, *q1*}, {*r2*, *q2*}, …}]</code> fits the dimension and the scalar curvature to log-difference quotients *qi* at radii *ri*, and gives `<|"Dimension" -> d, "ScalarCurvature" -> R|>`.
+<code>[DimensionCurvatureFit]()[{{*r1*, *q1*}, {*r2*, *q2*}, …}]</code> gives `<|"Dimension" -> d, "ScalarCurvature" -> R|>` fitted to the log-difference quotients *qi* at the radii *ri*.
 
 <code>[DimensionCurvatureFit]()[{*q0*, *q1*, …}]</code> places the quotients at the radii 0, 1, 2, ….
 
 ## Details & Options
 
-Definition: the fit is the least-squares line *q = c1 + c2 x* through the points *(x, q)* with *x = r(r + 1)*. The intercept gives the dimension and the slope the curvature, by the expansion of the probe's volume.
+The fit is the least-squares line *q = c₁ + c₂ x* in *x = r(r + 1)*. The intercept gives the dimension and the slope the curvature.
 
-On a Riemannian manifold of dimension *d* and scalar curvature *R* the log-log slope of the ball volume is *d log V / d log r = d − R r² / (3(d + 2)) + O(r⁴)*. The quotient is therefore affine in *r²*, and a line through it reads *d* as the intercept and *R* as −3(*d* + 2) times the slope. This is Bishop–Gromov read as a measurement.
+On a Riemannian manifold of dimension *d* and scalar curvature *R*, the ball volume is *ωd rᵈ (1 − R r² / (6(d + 2)) + O(r⁴))*. So the log-log slope of the volume is *d − R r² / (3(d + 2))*: the intercept is *d* and *R = −3(d + 2) c₂*.
 
-On a graph *r* is an integer and the quotient is a difference across *[r, r + 1]*, not a derivative. To first order in the curvature it is affine in *r(r + 1)*, the square of the geometric-mean radius, not in *r²*; regressing on *r²* would leave an error linear in *r* in the slope, and so in *R*.
+A quotient of a graph is taken across *[r, r + 1]*, so it is regressed on *r(r + 1)*, the square of the geometric-mean radius, not on *r²*.
 
-Option `"Probe"` names the volume the quotients came from:
+`"Probe"` names the volume the quotients came from:
 
 | `"Probe"` | Volume | Dimension | Curvature read |
 |---|---|---|---|
-| `"Ball"` (default) | *V ~ r^d* | *c1* | *R = −3(c1 + 2) c2* |
-| `"Sphere"` | *A ~ r^(d−1)* | *c1* + 1 | *R = −3(c1 + 1) c2* |
-| `"Tube"` | *T ~ s^(d−1)*, about a geodesic | *c1* + 1 | *R + Ric(v, v) = −3(c1 + 2) c2* |
-| `"TubeMantle"` | *∂T ~ s^(d−2)* | *c1* + 2 | *R + Ric(v, v) = −3(c1 + 1) c2* |
+| `"Ball"` | *V ~ rᵈ* | *c₁* | *R = −3(c₁ + 2) c₂* |
+| `"Sphere"` | *A ~ rᵈ⁻¹* | *c₁ + 1* | *R = −3(c₁ + 1) c₂* |
+| `"Tube"` | *T ~ sᵈ⁻¹*, about a geodesic | *c₁ + 1* | *R + Ric(v, v) = −3(c₁ + 2) c₂* |
+| `"TubeMantle"` | *∂T ~ sᵈ⁻²* | *c₁ + 2* | *R + Ric(v, v) = −3(c₁ + 1) c₂* |
 
-For the two tube probes the `"ScalarCurvature"` entry holds *R + Ric(v, v)*, the scalar curvature plus the Ricci curvature along the core's direction *v*; subtract a ball reading of *R* over the same window to leave *Ric(v, v)*.
+For the tube probes `"ScalarCurvature"` holds *R + Ric(v, v)*, with *v* the direction of the core geodesic. A ball reading of *R* over the same window leaves *Ric(v, v)*.
 
-Option `"Dimension" -> d` fixes the dimension and fits the slope alone. The default `Automatic` fits both.
+Every point given is fitted; the window is chosen by the caller. [VolumeGrowthObservables]() chooses it. [Around]() quotients give [Around]() results.
 
-Every point given is fitted: the window is the caller's, chosen by slicing the quotients. [VolumeGrowthObservables]() chooses it automatically. The quotient convention is the caller's too: [LogDifferenceQuotients]() of a profile, or the radius-consistent quotients that [VolumeGrowthObservables]() takes. `Around` quotients give `Around` results.
+Options:
+
+| Option | Default | Values |
+|---|---|---|
+| `"Probe"` | `"Ball"` | `"Ball"`, `"Sphere"`, `"Tube"`, `"TubeMantle"` |
+| `"Dimension"` | `Automatic` | a number fixes the dimension, and only the slope is fitted |
 
 ## Basic Examples
 
-Ball quotients against *r(r + 1)* over the fitted window, and the fitted line, at the centre of a sphere mesh, the square tiling and a hyperbolic tiling. The slope falls, stays level and rises: positive, zero and negative curvature, the number above each plot.
+The shell quotients about the centre against *r(r + 1)*, with the fitted line, on the square grid and on the sphere mesh. The grid reads dimension 2 and curvature 0; on the sphere the line falls, positive curvature:
 
 ```wl
 GraphicsRow @ Table[
-  With[
-    {gr = InfraSubstrate[nm, "Large"]},
-    {obs = VolumeGrowthObservables[gr, First @ GraphCenter[gr]]},
-    {win = obs["BallWindow"], quots = obs["BallLogDifferenceQuotients"]},
-    {fitData = Table[{rad, quots[[rad]]}, {rad, win[[1]], win[[2]]}]},
-    {fit = DimensionCurvatureFit[fitData]},
+  With[{g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {areas = Table[InfraMeasurement[g, InfraShell[c, r], "CountingMeasure"], {r, 1, 6}]},
+    {data = Transpose[{Range[5], LogDifferenceQuotients[areas]}]},
+    {fit = DimensionCurvatureFit[data, "Probe" -> "Sphere"]},
     Show[
-      ListPlot[{#[[1]] (#[[1]] + 1), #[[2]]} & /@ fitData, PlotRange -> {All, {0, 3}},
-        AxesLabel -> {"r(r+1)", "q"}, PlotLabel -> Column[{nm, Round[fit["ScalarCurvature"], 0.001]}]],
-      Plot[fit["Dimension"] - fit["ScalarCurvature"] x/(3 (fit["Dimension"] + 2)), {x, 0, win[[2]] (win[[2]] + 1)},
-        PlotStyle -> Gray]]],
-  {nm, {"SphereMeshGraph", "SquareTilingGraph", "HyperbolicTilingGraph"}}]
+      ListPlot[{#1 (#1 + 1), #2} & @@@ data, PlotRange -> {{0, 32}, {0, 1.5}}, PlotLabel -> Round[Values @ fit, 0.01]],
+      Plot[fit["Dimension"] - 1 - fit["ScalarCurvature"] x/(3 fit["Dimension"]), {x, 0, 32}]]],
+  {name, {"SquareGridGraph", "SphereMeshGraph"}}]
 ```
 
-Quotients of an exact Bishop–Gromov form, dimension 2 and curvature 0.1, against *r(r + 1)*, with the fitted line; the fit gives those numbers back.
+Quotients of an exact ball expansion with *d* = 2 and *R* = 0.1 give these numbers back:
 
 ```wl
-With[
-  {qdata = Table[{r, 2 - 0.1 r (r + 1)/(3 (2 + 2))}, {r, 3, 10}]},
-  {fit = DimensionCurvatureFit[qdata]},
-  {Show[ListPlot[{#[[1]] (#[[1]] + 1), #[[2]]} & /@ qdata, AxesLabel -> {"r(r+1)", "q"}],
-     Plot[fit["Dimension"] - fit["ScalarCurvature"] x/(3 (fit["Dimension"] + 2)), {x, 0, 110}, PlotStyle -> Gray]],
-   fit}]
+DimensionCurvatureFit[Table[{r, 2 - 0.1 r (r + 1)/12}, {r, 3, 10}]]
 ```
 
-A bare list sits at the radii 0, 1, 2, …: constant quotients 2 read as a flat plane.
+A bare list sits at the radii 0, 1, 2, …. Constant quotients 2 read as the flat plane:
 
 ```wl
-With[
-  {quots = {2., 2., 2., 2.}},
-  {ListPlot[quots, DataRange -> {0, 3}, PlotRange -> {0, 3}, AxesLabel -> {"r", "q"}], DimensionCurvatureFit[quots]}]
+DimensionCurvatureFit[{2., 2., 2., 2.}]
+```
+
+## Scope
+
+[Around]() quotients give [Around]() results. The mean shell sizes over the 19 vertices of the ball of radius 2 about the centre of the square mesh read dimension 2 and curvature 0 within the error:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {sample = Keys @ InfraMeasurement[g, InfraBall[c, 2], "VertexDensity"]},
+  {areas = MeanAround /@ Transpose @
+    Table[InfraMeasurement[g, InfraShell[v, r], "CountingMeasure"], {v, sample}, {r, 1, 6}]},
+  DimensionCurvatureFit[Transpose[{Range[5], LogDifferenceQuotients[areas]}], "Probe" -> "Sphere"]]
 ```
 
 ## Options
 
 ### Probe
 
-The same quotients read as a ball, a sphere, a tube and a tube mantle: the probe moves the intercept and the factor of the slope.
+The same quotients read by the four probes. The probe moves the intercept and the factor of the slope:
 
 ```wl
-With[
-  {qdata = Table[{r, 2 - 0.1 r (r + 1)/12}, {r, 3, 10}]},
-  {ListPlot[{#[[1]] (#[[1]] + 1), #[[2]]} & /@ qdata, AxesLabel -> {"r(r+1)", "q"}],
-   Table[pr -> DimensionCurvatureFit[qdata, "Probe" -> pr], {pr, {"Ball", "Sphere", "Tube", "TubeMantle"}}]}]
+With[{data = Table[{r, 2 - 0.1 r (r + 1)/12}, {r, 3, 10}]},
+  AssociationMap[probe |-> Round[Values @ DimensionCurvatureFit[data, "Probe" -> probe], 0.001],
+    {"Ball", "Sphere", "Tube", "TubeMantle"}]]
 ```
 
 ### Dimension
 
-With the dimension fixed, only the slope is fitted: the free line in gray, the line through the intercept 2 dashed.
+With the dimension fixed at 2, only the curvature is fitted. The shell quotients of the sphere mesh, the free line and the line through the intercept 1, labelled by their curvatures:
 
 ```wl
-With[
-  {qdata = {{3, 1.9}, {4, 1.8}, {5, 1.7}}},
-  {free = DimensionCurvatureFit[qdata]},
-  {fixed = DimensionCurvatureFit[qdata, "Dimension" -> 2]},
-  {Show[
-     ListPlot[{#[[1]] (#[[1]] + 1), #[[2]]} & /@ qdata, PlotRange -> {{0, 32}, {1.5, 2.2}}, AxesLabel -> {"r(r+1)", "q"}],
-     Plot[{free["Dimension"] - free["ScalarCurvature"] x/(3 (free["Dimension"] + 2)), 2 - fixed["ScalarCurvature"] x/12}, {x, 0, 32},
-       PlotStyle -> {Gray, Dashed}]],
-   {free, fixed}}]
-```
-
-## Scope
-
-`Around` quotients carry their spread into the dimension and the curvature: here the mean profile over five vertices near the centre of the discretized plane. Fitted from radius 1 on the counting measure, the intercept is biased high by the small radii; the windowed fit of [VolumeGrowthObservables]() chooses its window by the residual.
-
-```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareMeshGraph", "Large"]},
-  {sampleSet = Take[Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], 2], "VertexDensity" ], 5]},
-  {qdata = Transpose[{Range[8], LogDifferenceQuotients[MeanAround /@ Transpose @ Table[InfraMeasurement[g, InfraBall[v, r], "CountingMeasure"], {v, sampleSet}, {r, 0, 8}]]}]},
-  {ListPlot[{#[[1]] (#[[1]] + 1), #[[2]]} & /@ qdata, PlotRange -> {All, {0, 3.5}}, AxesLabel -> {"r(r+1)", "q"}],
-   DimensionCurvatureFit[qdata]}]
+With[{g = InfraSubstrate["SphereMeshGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {areas = Table[InfraMeasurement[g, InfraShell[c, r], "CountingMeasure"], {r, 1, 6}]},
+  {data = Transpose[{Range[5], LogDifferenceQuotients[areas]}]},
+  {free = DimensionCurvatureFit[data, "Probe" -> "Sphere"]},
+  {fixed = DimensionCurvatureFit[data, "Probe" -> "Sphere", "Dimension" -> 2]},
+  Show[ListPlot[{#1 (#1 + 1), #2} & @@@ data, PlotRange -> {{0, 32}, {0, 1.5}},
+      PlotLabel -> Round[{free["ScalarCurvature"], fixed["ScalarCurvature"]}, 0.01]],
+    Plot[{free["Dimension"] - 1 - free["ScalarCurvature"] x/(3 free["Dimension"]),
+      1 - fixed["ScalarCurvature"] x/6}, {x, 0, 32}]]]
 ```
 
 ## Properties and Relations
 
-[VolumeGrowthObservables]() is this fit over the window it chooses, drawn here at the centre of the sphere mesh.
+[VolumeGrowthObservables]() is this fit over the window it chooses:
 
 ```wl
-With[
-  {g = InfraSubstrate["SphereMeshGraph", "Large"]},
-  {obs = VolumeGrowthObservables[g, First @ GraphCenter[g]]},
-  {win = obs["BallWindow"], quots = obs["BallLogDifferenceQuotients"]},
-  {fitData = Table[{rad, quots[[rad]]}, {rad, win[[1]], win[[2]]}]},
-  {ListPlot[{#[[1]] (#[[1]] + 1), #[[2]]} & /@ fitData, PlotRange -> {All, {0, 3}}, AxesLabel -> {"r(r+1)", "q"}],
-   DimensionCurvatureFit[fitData] == <|"Dimension" -> obs["BallDimension"], "ScalarCurvature" -> obs["BallScalarCurvature"]|>}]
+With[{g = InfraSubstrate["SphereMeshGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {obs = VolumeGrowthObservables[g, c]},
+  {window = obs["BallWindow"], q = obs["BallLogDifferenceQuotients"]},
+  {DimensionCurvatureFit[Table[{r, q[[r]]}, {r, window[[1]], window[[2]]}]],
+   KeyTake[obs, {"BallDimension", "BallScalarCurvature"}]}]
 ```

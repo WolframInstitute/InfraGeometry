@@ -16,35 +16,38 @@ RelatedGuides: [InfraTopology]
 
 ## Details & Options
 
-The edges of *g* are drawn faint and the arrows of *topo* in full, at the vertex coordinates of *g*. A substrate drawn with `"KeepCoordinates"` -> `True` keeps its own layout; a graph without coordinates is placed by its spring layout.
+The edges of *g* are drawn faint and the arrows of *topo* in full, at the vertex coordinates of *g*. A substrate made with `"KeepCoordinates" -> True` keeps its own layout; a graph without coordinates is drawn with its default layout.
 
-*topo* is any digraph on the vertices of *g*: the Hasse diagram of [BallTopology](), its dual, or its transitive closure. The drawing is a picture only; the topological operators read *topo* itself.
+The digraph *topo* is any digraph on the vertices of *g*: the Hasse diagram of [BallTopology](), its dual, or its transitive closure. The drawing is a picture only; the topological operators take *topo* itself.
 
 ## Basic Examples
 
-The ball topology of the hexagonal tiling at radii 1, 2 and 3. Every arrow ends near the rim.
+The ball topology of radius 3 on the square grid and on the square mesh:
 
 ```wl
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  GraphicsRow @ Table[TopologyGraph[g, BallTopology[g, r]], {r, 1, 3}]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, TopologyGraph[g, BallTopology[g, 3]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The Hasse diagram and every comparable pair, its transitive closure, on a binary tree at radius 2.
+The ball topology of the mesh at radii 1, 2 and 3. The arrows stay at the rim, and there are more of them as the radius grows, 40, 62 and 81:
 
 ```wl
-With[
-  {g = KaryTree[31]},
-  {topo = BallTopology[g, 2]},
-  GraphicsRow @ {TopologyGraph[g, topo], TopologyGraph[g, TransitiveClosureGraph[topo]]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  GraphicsRow @ Table[TopologyGraph[g, BallTopology[g, r]], {r, 1, 3}]]
 ```
 
 ## Scope
 
-A substrate without coordinates is drawn by its spring layout.
+The Hasse diagram and its transitive closure, every comparable pair, on the grid at radius 2:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareMeshGraph", "Small"]},
-  TopologyGraph[g, BallTopology[g, 1]]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {topo = BallTopology[g, 2]},
+  GraphicsRow @ {TopologyGraph[g, topo], TopologyGraph[g, TransitiveClosureGraph @ topo]}]
+```
+
+A graph without coordinates is drawn with its default layout:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, TopologyGraph[g, BallTopology[g, 1]]]
 ```

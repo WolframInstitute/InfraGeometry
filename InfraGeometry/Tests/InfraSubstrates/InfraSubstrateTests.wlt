@@ -298,4 +298,15 @@ VerificationTest[
   TestID -> "BoundarylessGraph-lattice-interior"
 ]
 
+(* a scalar raw size n of a substrate sized by a list is the side n in every direction *)
+VerificationTest[
+  {VertexCount @ InfraSubstrate["SquareGridGraph", 5],
+   Sort @ EdgeList @ InfraSubstrate["CubicGridGraph", 4] === Sort @ EdgeList @ InfraSubstrate["CubicGridGraph", {4, 4, 4}],
+   Sort @ EdgeList @ InfraSubstrate["SquareTorusGraph", 6] === Sort @ EdgeList @ InfraSubstrate["SquareTorusGraph", {6, 6}],
+   Sort @ EdgeList @ InfraSubstrate["DilutedTreeGraph", 10] === Sort @ EdgeList @ InfraSubstrate["DilutedTreeGraph", {1/2, 10}],
+   VertexCount @ ReleaseHold @ InfraSubstrateCode["SquareGridGraph", 5]},
+  {21, True, True, True, 21},
+  TestID -> "InfraSubstrate-scalar-raw-size"
+]
+
 EndTestSection[]

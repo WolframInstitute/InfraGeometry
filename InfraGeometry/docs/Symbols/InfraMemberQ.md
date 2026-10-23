@@ -5,75 +5,114 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraMemberQ
-Keywords: [segment, ray, line, circle, arc, symbolic object, membership]
-SeeAlso: [RandomInfraSegment, InfraMeasurement, InfraSegmentQ, InfraInfiniteLineQ]
+Keywords: [membership, member, segment, ray, line, circle, arc, region]
+SeeAlso: [InfraMeasurement, RandomInfraSegment, InfraSegment, InfraSegmentQ, InfraInfiniteLineQ, InfraCircle]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraMemberQ]()[*graph*, *obj*, *path*]</code> tests whether the vertex list *path* is a member of the Euclidean head *obj* on *graph*.
+<code>[InfraMemberQ]()[*g*, *obj*, *path*]</code> gives `True` if the vertex list *path* is a member of the family *obj* on the graph *g*.
+
+<code>[InfraMemberQ]()[*g*, *reg*, *vs*]</code> gives `True` if the vertex list *vs* is the vertex set of the region *reg*.
+
+<code>[InfraMemberQ]()[*g*, *pt*, *v*]</code> gives `True` if the vertex *v* belongs to the point family *pt*.
 
 ## Details & Options
 
-*path* is a member exactly when it is a source-to-sink chain of *obj*'s graph — <code>[InfraMeasurement]()[*graph*, *obj*, "Graph"]</code> — for a circle, up to rotation and direction. [InfraMemberQ]() agrees with [Named construction samplers](../Tutorials/NamedConstructionSamplers.md) on every head it reads off a graph: every vertex list it returns there passes `InfraMemberQ`, and conversely. A circle's, and a closed arc's, representative is found by the sweep instead, which can find a circle the graph misses: where the cut band is disconnected, the graph is the necklaces, and a necklace needs the circle to meet the seam in one run. For a circle or a closed arc a member is a chain with the copy of the source dropped, read up to rotation and direction.
+A family — [InfraSegment](), [InfraHalfLine](), [InfraInfiniteLine](), [InfraCircle](), [InfraArc]() — has many members. *path* is a member exactly when it is a source-to-sink path of <code>[InfraMeasurement]()[*g*, *obj*, "Graph"]</code>.
 
-Unlike [InfraSegmentQ]() or [InfraInfiniteLineQ](), which test *path* against the general definition of the class on *graph*, `InfraMemberQ` tests it against one specific head — so it also distinguishes, say, one line through two points from another line through the same points on a graph where several exist.
+Members are oriented: a member of <code>[InfraSegment]()[*p*, *q*]</code> runs from *p* to *q*. A member of a circle is a cyclic vertex list, its first vertex not repeated, and is recognised up to rotation and direction.
+
+The members of [InfraGeodesic]() are its simple geodesics that cannot be extended, those of [InfraSphere]() its minimal separating sets, as [RandomInfraGeodesic]() and [RandomInfraSphere]() list them.
+
+A region — [InfraBall](), [InfraShell](), [InfraTube](), [InfraCylinder](), [InfraCone](), [InfraQuadric](), [InfraPerpendicularBisector](), [InfraEquidistantSet]() — has one member, its vertex set. The order and repetition of *vs* do not matter.
+
+A point family — [InfraMidpoint](), [InfraRegionNearest]() — has vertices as members.
+
+[InfraSegmentQ]() and [InfraInfiniteLineQ]() test a path against a class: is it some shortest path, some line. [InfraMemberQ]() tests it against one object.
 
 ## Basic Examples
 
-Two walks from the centre to a vertex four steps away: a shortest path, which is a member of the segment, and a detour through a third vertex, which is not.
+A shortest path from the centre to a vertex at distance 4 is a member of the segment; a detour through a third vertex is not:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
-  {x = (SeedRandom[7]; RandomInfraPoint[g, InfraShell[a, 3]])},
-  {seg = InfraSegment[a, b]},
-  {member = Replace[ seg, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraShell :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCylinder :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCone :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSolidOfRevolution :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraBallHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraConvexHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraQuadric :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ]},
-  {detour = RandomInfraSegment[ g, InfraSegment[a, x, b] ]},
-  {InfraSubstrateHighlight[g, {InfraWalk[member], InfraWalk[detour], a, b}],
-   InfraMemberQ[g, seg, member], InfraMemberQ[g, seg, detour]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]}, {x = RandomInfraPoint[g, InfraShell[a, 2], RandomSeeding -> 4]},
+  {paths = {RandomInfraSegment[g, a, b, RandomSeeding -> 1], RandomInfraSegment[g, InfraSegment[a, x, b], RandomSeeding -> 1]}},
+  GraphicsRow @ Table[
+    InfraSubstrateHighlight[g, {InfraSegment[a, b], InfraWalk[path], a, b}, PlotLabel -> InfraMemberQ[g, InfraSegment[a, b], path]],
+    {path, paths}]]
 ```
 
-A shortest path found independently by [RandomInfraSegment]() is a member of the matching segment head.
+Members are oriented. The reversed path is a member of the segment from *b* to *a*:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 5]])},
-  {onePath = RandomInfraSegment[g, a, b]},
-  {InfraSubstrateHighlight[g, {InfraSegment[a, b], InfraWalk[onePath]}], InfraMemberQ[g, InfraSegment[a, b], onePath]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
+  {path = RandomInfraSegment[g, a, b, RandomSeeding -> 1]},
+  {InfraMemberQ[g, InfraSegment[a, b], Reverse @ path], InfraMemberQ[g, InfraSegment[b, a], Reverse @ path]}]
 ```
 
-A circle's member is recognised up to rotation and direction.
+## Scope
+
+A circle in the band of radii 3 and 4, and the same circle reversed and rotated, are both members:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {circle = InfraCircle[c, {2, 4}]},
-  {turned = RotateLeft[Reverse @ Replace[ circle, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraShell :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCylinder :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCone :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSolidOfRevolution :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraBallHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraConvexHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraQuadric :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ], 3]},
-  {InfraSubstrateHighlight[g, {InfraWalk[Append[turned, First @ turned]], c}, "Arrowheads" -> True],
-   InfraMemberQ[g, circle, turned]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {circle = RandomInfraCircle[g, InfraCircle[c, {3, 4}], RandomSeeding -> 1]},
+  InfraSubstrateHighlight[g, {InfraWalk[Append[circle, First @ circle]], c},
+    PlotLabel -> (InfraMemberQ[g, InfraCircle[c, {3, 4}], #] & /@ {circle, RotateLeft[Reverse @ circle, 3]}), ImageSize -> Medium]]
+```
+
+A half-line and a line drawn by their samplers are members:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 3], RandomSeeding -> 1]},
+  {InfraMemberQ[g, InfraHalfLine[a, b], RandomInfraHalfLine[g, a, b, RandomSeeding -> 1]],
+   InfraMemberQ[g, InfraInfiniteLine[a, b], RandomInfraInfiniteLine[g, a, b, RandomSeeding -> 1]]}]
+```
+
+A region has one member, its vertex set in any order. The tube of radius 1 about a vertex is the vertex and its neighbours:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  InfraMemberQ[g, InfraTube[c, 1], Reverse @ Prepend[AdjacencyList[g, c], c]]]
+```
+
+The ball of radius 2, the tube of radius 2 about its centre and the band of radii 0 to 2 are one region:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {ball = Keys @ InfraMeasurement[g, InfraBall[c, 2], "VertexDensity"]},
+  InfraMemberQ[g, #, ball] & /@ {InfraBall[c, 2], InfraTube[c, 2], InfraShell[c, {0, 2}]}]
+```
+
+A sphere in the band of radii 1 and 2 on the grid. A member drawn by [RandomInfraSphere]() passes; the whole band separates the centre too, but it is not minimal:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {sphere = InfraSphere[c, {1, 2}]}, {member = RandomInfraSphere[g, sphere, RandomSeeding -> 1]},
+  {band = Keys @ InfraMeasurement[g, InfraShell[c, {1, 2}], "VertexDensity"]},
+  InfraSubstrateHighlight[g, {member, c}, PlotLabel -> (InfraMemberQ[g, sphere, #] & /@ {member, band}), ImageSize -> Medium]]
 ```
 
 ## Properties and Relations
 
-A shortest path between other points is a segment, but not a member of this one.
+A shortest path is a segment, and a member of the segment between its ends, but not a member of the line through them: it can be prolonged:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
-  {other = RandomInfraSegment[ g, InfraSegment[a, First @ AdjacencyList[g, a]] ]},
-  {InfraSubstrateHighlight[g, {InfraSegment[a, b], InfraWalk[other]}],
-   InfraSegmentQ[g, other], InfraMemberQ[g, InfraSegment[a, b], other]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
+  {path = RandomInfraSegment[g, a, b, RandomSeeding -> 1]},
+  {InfraSegmentQ[g, path], InfraMemberQ[g, InfraSegment[a, b], path], InfraMemberQ[g, InfraInfiniteLine[a, b], path]}]
+```
+
+Every member listed by [RandomInfraSegment]() passes the test:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Medium"]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 7], RandomSeeding -> 1]},
+  AllTrue[RandomInfraSegment[g, a, b, All], InfraMemberQ[g, InfraSegment[a, b], #] &]]
 ```

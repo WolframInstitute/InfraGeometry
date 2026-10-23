@@ -16,43 +16,43 @@ RelatedGuides: [Experimental]
 
 ## Details & Options
 
-Definition: a *k*-cochain takes its values on the (*k* + 1)-cliques of a graph, the *k*-simplices of its clique complex, and *k* is its degree.
+A *k*-cochain takes its values on the (*k* + 1)-cliques of a graph, the *k*-simplices of its clique complex.
 
-A *k*-cochain is stored as `<|{v0, ..., vk} -> value|>` on the sorted cliques, and the degree is read off the first key. The empty cochain has no key, and an association keyed by anything but vertex lists is no cochain: [CochainDegree]() stays unevaluated on both.
+It is stored as `<|{v0, …, vk} -> value, …|>`, and the degree is read off a key. The empty cochain has no key and no degree.
 
-[Coboundary]() raises the degree by one, [CochainCup]() and [OrderedCochainCup]() add the degrees, [CochainCupOne]() gives one less than their sum, and [IntegrationMap]() and [RestrictionMap]() keep the degree ([FormDegree]()).
+| Operation | Degree |
+|---|---|
+| [Coboundary]() | *k* + 1 |
+| [CochainCup](), [OrderedCochainCup]() | *p* + *q* |
+| [CochainCupOne]() | *p* + *q* − 1 |
 
 ## Basic Examples
 
-A 0-cochain, its coboundary and a cup on the triangular tiling, of degrees 0, 1 and 2. The 0-cochain is the distance from the centre, drawn by its values; the 1-cochain is drawn by an arc along each edge in the direction in which it is positive; the 2-cochain, the cup of the coboundaries of the distances from the centre and from a vertex three steps away, is drawn on its triangles, blue where it is positive on the counterclockwise order of the corners and red where it is negative.
+A 0-cochain, its coboundary and a cup product on the square mesh: the distance *f* from the centre, *δf*, and *δf ∪ δy* for the coordinate *y*:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {apex = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[center, 3]]), cochain = AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]},
-  {edgeCochain = Coboundary[g, cochain]},
-  {triangleCochain = CochainCup[g, edgeCochain, Coboundary[g, AssociationMap[GraphDistance[g, apex, First[#]] &, List /@ VertexList[g]]]]},
-  {GraphicsRow[{
-     InfraSubstrateHighlight[g, KeyMap[First, cochain]],
-     DisplacementPlot[g, GroupBy[Join[Keys @ Select[edgeCochain, Positive], Reverse /@ Keys @ Select[edgeCochain, Negative]], First -> Last]],
-     Show[Graphics[KeyValueMap[
-       {triangle, value} |-> {
-         If[value Det[Differences[Lookup[positions, triangle]]] > 0, StandardBlue, StandardRed],
-         Polygon[Lookup[positions, triangle]]},
-       triangleCochain]], g]}],
-   CochainDegree /@ {cochain, edgeCochain, triangleCochain}}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {f = AssociationThread[List /@ VertexList[g], GraphDistance[g, First @ GraphCenter[g]]],
+   y = AssociationThread[List /@ VertexList[g], GraphEmbedding[g][[All, 2]]]},
+  CochainDegree /@ {f, Coboundary[g, f], CochainCup[g, Coboundary[g, f], Coboundary[g, y]]}]
 ```
 
 ## Possible Issues
 
-The empty cochain has no key to read. The coboundary of a coboundary is empty, and [CochainDegree]() of it stays unevaluated, with no message. So does a vertex function keyed by the vertices themselves, which is no cochain.
+The empty cochain has no degree, and the call stays unevaluated. On the square grid, which has no triangles, the cup of two 1-cochains is empty:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {values = AssociationMap[GraphDistance[g, First @ GraphCenter[g], #] &, VertexList[g]]},
-  {edgeCochain = Coboundary[g, KeyMap[List, values]]},
-  {DisplacementPlot[g, GroupBy[Join[Keys @ Select[edgeCochain, Positive], Reverse /@ Keys @ Select[edgeCochain, Negative]], First -> Last]],
-   Normal @ Coboundary[g, edgeCochain], Head @ CochainDegree[Coboundary[g, edgeCochain]], Head @ CochainDegree[values]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {x = AssociationThread[List /@ VertexList[g], GraphEmbedding[g][[All, 1]]],
+   y = AssociationThread[List /@ VertexList[g], GraphEmbedding[g][[All, 2]]]},
+  {cup = CochainCup[g, Coboundary[g, x], Coboundary[g, y]]},
+  {cup, Head @ CochainDegree[cup]}]
+```
+
+A vertex function keyed by the vertices is not a cochain:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  {f = AssociationThread[VertexList[g], GraphDistance[g, First @ GraphCenter[g]]]},
+  {Head @ CochainDegree[f], CochainDegree[KeyMap[List, f]]}]
 ```

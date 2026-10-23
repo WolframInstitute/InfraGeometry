@@ -5,83 +5,117 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraBallHull
-Keywords: [ball hull, Mazur hull, ball-convex, convex hull, region, symbolic object, covering]
+Keywords: [ball hull, Mazur hull, ball-convex, convex hull, region, symbolic object]
 SeeAlso: [InfraConvexHull, InfraBall, InfraTube, InfraMeasurement, InfraMemberQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraBallHull]()[*S*, *r*]</code> is the intersection of the closed balls of radius at most *r* that contain *S*, and the whole graph if there is none. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
+<code>[InfraBallHull]()[*S*]</code> is the ball hull of the vertex set *S*: the intersection of all balls that contain *S*.
 
-<code>[InfraBallHull]()[*S*, {*r*}]</code> takes the balls of radius exactly *r*, and <code>[InfraBallHull]()[*S*, {*r*, *s*}]</code> those of radius between *r* and *s*.
-
-<code>[InfraBallHull]()[*S*]</code> takes every radius: the ball hull, the smallest ball-convex superset of *S*.
+<code>[InfraBallHull]()[*S*, *r*]</code> uses the balls of radius at most *r*, <code>[InfraBallHull]()[*S*, {*r*}]</code> those of radius exactly *r*, and <code>[InfraBallHull]()[*S*, {*r*, *s*}]</code> those of radius between *r* and *s*.
 
 ## Details & Options
 
-Definition: the ball hull of *S* is the intersection of all closed balls *B_r(c)* with *S ⊆ B_r(c)*, over all centres *c*; the radius form restricts the radii. *S* is read as the core of [InfraTube]() is: a vertex, a vertex list, a density, a subgraph, or a Euclidean head through its support.
+The ball hull is *β(S) = ⋂ {Bᵨ(c) : S ⊆ Bᵨ(c)}*, over all centres *c* and the radii *ρ* allowed. When no allowed ball contains *S*, it is the whole graph.
 
-The radius is spelled as the radius of [InfraBall](): *r* means at most *r*, *{r}* exactly *r*, and *{r, s}* between *r* and *s*. The hull of *at most r* shrinks as *r* grows, since more balls cut it. The hull of *exactly r* is not monotone in *r*, and is the whole graph once every ball of radius *r* is: past the diameter of a component it is that component.
+A set equal to its ball hull is ball-convex. The ball hull is the smallest ball-convex set containing *S*.
 
-A set that is its own hull is *ball-convex*; this is the test that takes the place of a predicate. The hull of a set contained in a ball of radius *r* lies in that ball, and the hull of three vertices of a shell is smaller than the shell.
+On the square grid, away from the rim, the ball hull of *S* is the smallest box with sides at 45° containing *S*: the vertices whose *x + y* and *x − y* lie in the ranges these take on *S*. The convex hull is the box with sides parallel to the axes. Neither contains the other: the balls of the grid are not geodesically convex.
 
-The head computes nothing. A hull has one member, the vertex set. [InfraMeasurement]() reads `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"`, `"Faithful"` and `"Subgraph"`, and the two measures; all radii are read off one distance matrix.
+The ball hull of radius at most *r* shrinks as *r* grows. The ball hull of radius exactly *r* need not: large balls are blunt, and the hull grows back to the whole graph.
+
+*S* is a vertex, a vertex list, a density, a subgraph, or a geometric object through its vertices.
+
+[InfraBallHull]() is a symbolic object: [InfraMeasurement]() evaluates it on a graph. It has one member, the vertex set.
+
+| Property | Value |
+|---|---|
+| `"VertexDensity"` | 1 on each vertex of the hull |
+| `"Cardinality"` | 1 |
+| `"CountingMeasure"` | the number of vertices |
+| `"RiemannianMeasure"` | the number of vertices all of whose neighbours lie in the hull |
+| `"Subgraph"` | the subgraph induced on the hull |
 
 ## Basic Examples
 
-The ball hull of three vertices of the shell of radius 5, on the irregular mesh, the square grid and the hexagonal tiling, inside the ball they lie on.
+The ball hull of three points of the circle of radius 4, on the square grid and on the square mesh:
 
 ```wl
-SeedRandom[1];
-Row[Table[
-  With[
-    {g = InfraSubstrate[name, "Large", "KeepCoordinates" -> True]},
-    {c = First @ GraphCenter[g]},
-    {shell = Keys @ InfraMeasurement[ g, InfraShell[ c, 5 ], "VertexDensity" ]},
-    {seeds = shell[[ {1, Round[Length[shell] / 3], Round[2 Length[shell] / 3]} ]]},
-    {hull = Keys @ InfraMeasurement[ g, InfraBallHull[seeds], "VertexDensity" ]},
-    Labeled[
-      InfraSubstrateHighlight[g, {InfraBall[c, 5], hull, seeds}, "PointSizeRange" -> 17],
-      Text[name <> ": " <> ToString[Length @ hull] <> " of " <> ToString[Length @ Keys @ InfraMeasurement[ g, InfraBall[c, 5], "VertexDensity" ]] <> " vertices"]]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {pts = RandomInfraPoint[g, InfraShell[c, 4], 3, RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {InfraBallHull[pts], pts}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-On the 7 × 7 grid the hull of two vertices of the bottom row, with the balls of radius exactly 2, 6 and 8. The exact hull is not monotone in the radius, and is the whole grid at the diameter, 12.
+On the grid the ball hull is a box at 45°, the convex hull a box along the axes. The labels are their numbers of vertices:
 
 ```wl
-With[
-  {g = GridGraph[{7, 7}]},
-  GraphicsRow[InfraSubstrateHighlight[g, {InfraBallHull[{2, 6}, {#}], {2, 6}}] & /@ {2, 6, 8}]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pts = RandomInfraPoint[g, InfraShell[c, 4], 3, RandomSeeding -> 1]},
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {hull, pts}, PlotLabel -> InfraMeasurement[g, hull, "CountingMeasure"]],
+    {hull, {InfraBallHull[pts], InfraConvexHull[pts]}}]]
+```
+
+## Scope
+
+Balls of radius exactly 4, 6 and 8 on the mesh. The hull grows with the radius:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pts = RandomInfraPoint[g, InfraShell[c, 4], 3, RandomSeeding -> 1]},
+  GraphicsRow @ Table[
+    InfraSubstrateHighlight[g, {InfraBallHull[pts, {r}], pts}, PlotLabel -> InfraMeasurement[g, InfraBallHull[pts, {r}], "CountingMeasure"]],
+    {r, {4, 6, 8}}]]
+```
+
+Balls of radius at most *r* on the grid. No ball of radius 3 contains the points, so the hull is the whole graph; from radius 4 on it is the ball hull:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pts = RandomInfraPoint[g, InfraShell[c, 4], 3, RandomSeeding -> 1]},
+  Table[InfraMeasurement[g, InfraBallHull[pts, r], "CountingMeasure"], {r, 3, 8}]]
 ```
 
 ## Properties and Relations
 
-The hull contains the set, and it is ball-convex: it is its own hull.
+The hull contains *S* and is its own hull:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Large", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {shell = Keys @ InfraMeasurement[ g, InfraShell[ c, 5 ], "VertexDensity" ]},
-  {seeds = shell[[ {1, Round[Length[shell] / 3], Round[2 Length[shell] / 3]} ]]},
-  {hull = Keys @ InfraMeasurement[ g, InfraBallHull[seeds], "VertexDensity" ]},
-  {SubsetQ[hull, seeds], Keys @ InfraMeasurement[ g, InfraBallHull[hull], "VertexDensity" ] === hull}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pts = RandomInfraPoint[g, InfraShell[c, 4], 3, RandomSeeding -> 1]},
+  {hull = Keys @ InfraMeasurement[g, InfraBallHull[pts], "VertexDensity"]},
+  {SubsetQ[hull, pts], Keys @ InfraMeasurement[g, InfraBallHull[hull], "VertexDensity"] === hull}]
 ```
 
-The hull of at most *r* shrinks as *r* grows. On a path graph no ball of radius 1 contains 3 and 7, so the hull is the whole path; from radius 2 it is the interval.
+On the grid it is the 45° box, read off the coordinates *x + y* and *x − y*:
 
 ```wl
-With[
-  {g = PathGraph[Range[10]]},
-  Keys @ InfraMeasurement[g, InfraBallHull[{3, 7}, #], "VertexDensity"] & /@ {1, 2, Infinity}]
+With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pts = RandomInfraPoint[g, InfraBall[c, 6], 3, RandomSeeding -> 2]},
+  {uw = AssociationThread[VertexList[g], ({{1, 1}, {1, -1}} . #) & /@ Round[GraphEmbedding[g]]]},
+  {ranges = MinMax /@ Transpose[uw /@ pts]},
+  Select[VertexList[g], And @@ MapThread[IntervalMemberQ[Interval[#2], #1] &, {uw[#], ranges}] &] ===
+    Keys @ InfraMeasurement[g, InfraBallHull[pts], "VertexDensity"]]
 ```
 
-The ball hull and the convex hull of the same pair on the 7 × 7 grid.
+On the grid neither hull contains the other:
 
 ```wl
-With[
-  {g = GridGraph[{7, 7}]},
-  GraphicsRow[InfraSubstrateHighlight[g, {#, {2, 6}}] & /@ {InfraBallHull[{2, 6}], InfraConvexHull[{2, 6}]}]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pts = RandomInfraPoint[g, InfraShell[c, 4], 3, RandomSeeding -> 1]},
+  {ball = Keys @ InfraMeasurement[g, InfraBallHull[pts], "VertexDensity"]},
+  {convex = Keys @ InfraMeasurement[g, InfraConvexHull[pts], "VertexDensity"]},
+  {SubsetQ[ball, convex], SubsetQ[convex, ball]}]
+```
+
+A ball hull need not be geodesically convex. On the mesh its convex hull is larger:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pts = RandomInfraPoint[g, InfraShell[c, 4], 3, RandomSeeding -> 1]},
+  {hull = Keys @ InfraMeasurement[g, InfraBallHull[pts], "VertexDensity"]},
+  {Length[hull], InfraMeasurement[g, InfraConvexHull[hull], "CountingMeasure"]}]
 ```

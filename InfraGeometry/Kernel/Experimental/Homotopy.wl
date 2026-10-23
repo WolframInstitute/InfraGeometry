@@ -40,6 +40,7 @@ FindInfraHomotopy[ graph_Graph, a_, b_,
         AssociationQ @ x,             Keys @ x,
         GraphQ @ x,                   walksOf @ x,
         MatchQ[ x, { __Graph } ],     Catenate[ walksOf /@ x ],
+        MatchQ[ x, { __List } ] && ! AllTrue[ x, vertex |-> VertexQ[ graph, vertex ] ], x,
         x === { },                    { },
         True,                         { x } ] },
     { slides = ! closedQ && freeHom,
@@ -171,6 +172,7 @@ FindInfraHomotopyRepresentativeHomotopy[ graph_Graph, obj_,
         AssociationQ @ x,             Keys @ x,
         GraphQ @ x,                   walksOf @ x,
         MatchQ[ x, { __Graph } ],     Catenate[ walksOf /@ x ],
+        MatchQ[ x, { __List } ] && ! AllTrue[ x, vertex |-> VertexQ[ graph, vertex ] ], x,
         x === { },                    { },
         True,                         { x } ],
       lengthsQ = AllTrue[ faces, IntegerQ ] },
@@ -289,12 +291,12 @@ HomotopicQ[ graph_Graph, a_, b_, opts : OptionsPattern[] ] :=
         AssociationQ @ x,             Keys @ x,
         GraphQ @ x,                   walksOf @ x,
         MatchQ[ x, { __Graph } ],     Catenate[ walksOf /@ x ],
+        MatchQ[ x, { __List } ] && ! AllTrue[ x, vertex |-> VertexQ[ graph, vertex ] ], x,
         x === { },                    { },
         True,                         { x } ] },
     AllTrue[ Tuples[ { spread @ a, spread @ b } ],
         pair |-> MatchQ[ pair, { _List, _List } ] &&
-          FindInfraHomotopy[ graph, Sequence @@ If[ closedQ, loopOf /@ pair, pair ], Method -> "Exhaustive",
-            opts ] =!= { } ] /; closedQ === closedOf @ b ]
+          FindInfraHomotopy[ graph, Sequence @@ If[ closedQ, loopOf /@ pair, pair ], opts ] =!= { } ] /; closedQ === closedOf @ b ]
 
 (* a closed walk is null-homotopic iff it is homotopic, as a based loop, to the constant walk at its base point; a vertex list or an open walk graph
    is read as closed *)

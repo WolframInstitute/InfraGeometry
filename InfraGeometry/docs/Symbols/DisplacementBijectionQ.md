@@ -16,50 +16,59 @@ RelatedGuides: [InfraAnalysis]
 
 ## Details & Options
 
-Definition: *D* is a bijection when it is single-valued ([DisplacementSingleValuedQ]()) and its values, taken together, are its keys, each exactly once.
+*D* is a bijection when it is single-valued ([DisplacementSingleValuedQ]()) and its values, taken together, are its keys, each once.
 
-A bijection has an inverse map, [DisplacementInverse](), and composing the two in either order gives the identity. The test needs no graph: a bijection need not respect the edges. [DisplacementIsomorphismQ]() asks for that too, and a bijection that is 1-continuous ([ContinuousDisplacementQ]()) is already an automorphism.
+A bijection has an inverse map, [DisplacementInverse](), and both composites with it are the identity.
+
+The test needs no graph: a bijection need not respect the edges. [DisplacementIsomorphismQ]() asks for that too, and a 1-continuous bijection is already an automorphism ([ContinuousDisplacementQ]()).
+
+On a finite graph with a rim a translation is not a bijection: nothing arrives at one side.
 
 ## Basic Examples
 
-The rotation of the 12-cycle is a bijection. The step right of the 6 × 6 grid is not: the right column moves to itself, and nothing moves to the left column.
+The step right is not a bijection, on the square grid or on the square mesh:
 
 ```wl
-With[
-  {cycle = CycleGraph[12], grid = GridGraph[{6, 6}]},
-  {rotation = FindKillingDisplacement[cycle], right = TranslationDisplacement[grid, {1, 0}]},
-  {GraphicsRow[{DisplacementPlot[cycle, rotation], DisplacementPlot[grid, right]}], DisplacementBijectionQ[rotation], DisplacementBijectionQ[right]}]
+GraphicsRow @ KeyValueMap[
+  {name, s} |-> With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    {t = TranslationDisplacement[g, {s, 0}]},
+    DisplacementPlot[g, t, PlotLabel -> DisplacementBijectionQ[t]]],
+  <|"SquareGridGraph" -> 1, "SquareMeshGraph" -> 1/8|>]
+```
+
+Exchanging two vertices is a bijection. The centre of the grid and the vertex 89:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {swap = Join[AssociationMap[List, VertexList[g]], <|c -> {89}, 89 -> {c}|>]},
+  DisplacementPlot[g, swap, PlotLabel -> DisplacementBijectionQ[swap]]]
 ```
 
 ## Scope
 
-Exchanging the two ends of one edge of the cycle is a bijection of magnitude 1, but not a symmetry of the cycle.
+The square torus has no rim, and its translation by one step is a bijection, drawn at a planar layout of the torus:
 
 ```wl
-With[
-  {g = CycleGraph[12]},
-  {swap = Join[AssociationMap[List, VertexList[g]], <|1 -> {2}, 2 -> {1}|>]},
-  {DisplacementPlot[g, swap], DisplacementBijectionQ[swap], DisplacementMagnitude[g, swap], DisplacementIsomorphismQ[g, swap]}]
+With[{g = InfraSubstrate["SquareTorusGraph", "Small"]}, {translation = FindKillingDisplacement[g]},
+  DisplacementPlot[g, translation, PlotLabel -> DisplacementBijectionQ[translation]]]
 ```
 
 ## Properties and Relations
 
-A bijection composed with its inverse is the identity.
+A bijection composed with its inverse is the identity, in both orders:
 
 ```wl
-With[
-  {g = CycleGraph[12]},
-  {rotation = FindKillingDisplacement[g]},
-  {DisplacementPlot[g, {rotation, DisplacementInverse[rotation]}], DisplacementCompose[rotation, DisplacementInverse[rotation]] === AssociationMap[List, VertexList[g]]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {swap = Join[AssociationMap[List, VertexList[g]], <|c -> {89}, 89 -> {c}|>]},
+  {identity = AssociationMap[List, VertexList[g]]},
+  DisplacementCompose[swap, DisplacementInverse[swap]] === identity &&
+    DisplacementCompose[DisplacementInverse[swap], swap] === identity]
 ```
 
-Of the 720 bijections of the hexagon, 20 move no vertex more than one step, and the 12 that are 1-continuous, drawn here, are exactly its 12 symmetries. A small magnitude does not make a symmetry; continuity does.
+A bijection need not be a symmetry. The exchange of the centre with the vertex 89 moves 8 steps and is not an automorphism:
 
 ```wl
-With[
-  {g = CycleGraph[6]},
-  {bijections = AssociationThread[Range[6], List /@ #] & /@ Permutations[Range[6]]},
-  {continuous = Select[bijections, ContinuousDisplacementQ[g, #] &]},
-  {GraphicsGrid[Partition[DisplacementPlot[g, #] & /@ continuous, 6]],
-   Count[bijections, b_ /; DisplacementMagnitude[g, b] <= 1], Length[continuous], Count[continuous, b_ /; DisplacementIsomorphismQ[g, b]]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {swap = Join[AssociationMap[List, VertexList[g]], <|c -> {89}, 89 -> {c}|>]},
+  {DisplacementBijectionQ[swap], DisplacementIsomorphismQ[g, swap], DisplacementMagnitude[g, swap]}]
 ```

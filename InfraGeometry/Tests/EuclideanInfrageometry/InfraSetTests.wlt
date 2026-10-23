@@ -293,4 +293,21 @@ VerificationTest[
   TestID -> "set-valued-results-are-sorted-vertex-lists"
 ]
 
+(* a walk or a point token has the boundary and interior of its support *)
+VerificationTest[
+  With[ { g = GridGraph[ { 3, 3 } ] },
+    { InfraBoundary[ g, InfraWalk[ 1, 2, 5, 2 ] ] === InfraBoundary[ g, { 1, 2, 5 } ],
+      InfraInterior[ g, InfraPoint[ ] ] === VertexList[ g ],
+      InfraBoundary[ g, InfraPoint[ 5 ] ] === InfraBoundary[ g, { 5 } ] } ],
+  { True, True, True },
+  TestID -> "InfraBoundary-and-InfraInterior-of-walk-and-point-tokens"
+]
+
+(* an object without a vertex density is a non-match *)
+VerificationTest[
+  With[ { g = PathGraph[ Range[ 3 ] ] }, { Head @ InfraBoundary[ g, InfraWalk[ 1, 3 ] ], Head @ InfraInterior[ g, InfraWalk[ 1, 3 ] ] } ],
+  { InfraBoundary, InfraInterior },
+  TestID -> "InfraBoundary-and-InfraInterior-stay-unevaluated-without-a-density"
+]
+
 EndTestSection[]

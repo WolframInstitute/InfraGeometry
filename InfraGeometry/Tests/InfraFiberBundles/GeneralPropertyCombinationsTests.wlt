@@ -8,7 +8,7 @@ VerificationTest[
           "Fibration" -> InfraFibrationQ, "AtMostOneEdgeLift" -> InfraAtMostOneEdgeLiftQ,
           "UniqueEdgeLifting" -> InfraUniqueEdgeLiftingQ, "FiberBundle" -> InfraFiberBundleQ, "Covering" -> InfraCoveringQ |> },
       Select[ Subsets[ Keys[ predicates ] ], properties |-> With[
-        { fibered = RandomInfraFiberedGraph[ base, Properties -> properties, "VerticalVertexCount" -> { 2, 3 } ] },
+        { fibered = RandomInfraFiberedGraph[ base, Properties -> properties, "VerticalVertexCount" -> { 2, 3 }, RandomSeeding -> None ] },
         ! TrueQ[ InfraFiberedGraphQ[ fibered ] &&
           Sort[ VertexList @ InfraBaseSpace[ fibered ] ] === Sort[ VertexList[ base ] ] &&
           Sort[ Sort /@ ( List @@@ EdgeList @ InfraBaseSpace[ fibered ] ) ] ===

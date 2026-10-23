@@ -13,41 +13,58 @@ RelatedTutorials: [InfraBundles]
 
 ## Usage
 
-<code>[InfraParallelSectionQ]()[*fib*, *connection*, [InfraSection]()[*s*]]</code> tests whether transport along every base edge in the domain of *s* carries its first value to its second.
+<code>[InfraParallelSectionQ]()[*fib*, *conn*, [InfraSection]()[*s*]]</code> gives [True]() if *s* is a section that the connection *conn* transports along every base edge of its domain, and [False]() otherwise.
 
-<code>[InfraParallelSectionQ]()[*fib*, *connection*, {*section1*, *section2*, ...}]</code> tests every section in a nonempty collection.
+<code>[InfraParallelSectionQ]()[*fib*, *conn*, {*sec₁*, *sec₂*, …}]</code> gives [True]() if every *secᵢ* is parallel.
 
 ## Details & Options
 
-- The connection must satisfy [InfraConnectionQ](), which requires a perfect matching over each base edge.
-- The section must satisfy [InfraSectionQ]().
-- Only base edges with both endpoints among the section's keys are checked.
-- A parallel section is continuous in the ambient total graph. A continuous section need not be parallel for the chosen connection.
-- The empty partial section is parallel. An empty collection returns [False]().
-- An invalid or incomplete connection leaves the call unevaluated.
-- This predicate reads the specified connection and consumes no random draws.
+A section *s* is parallel when *τₚq(s(p)) = s(q)* for every base edge *pq* with both ends in its domain, where *τₚq* is the parallel transport of *conn* along *pq*. Equivalently, every edge *s(p)s(q)* belongs to *conn*.
+
+A parallel section is continuous. A continuous section need not be parallel: it may use transverse edges the connection does not choose.
+
+The horizontal lift of a path that visits each vertex once is a parallel section over the path. Around a closed walk a parallel section is fixed by the holonomy.
+
+The connection must satisfy [InfraConnectionQ](). Otherwise the call stays unevaluated. The empty section is parallel; an empty list gives [False]().
 
 ## Basic Examples
 
-The connection chooses one of the available lifts. A section following another lift remains continuous but is not parallel.
+Fibers of two vertices over the 4 × 4 grid, joined completely, with a random connection. The lift of a path along two sides of the grid is a parallel section over the path:
 
 ```wl
-SeedRandom[7];
-With[
-  {fib = InfraFiberedGraph[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[1, 4], UndirectedEdge[2, 3], UndirectedEdge[2, 4]}],
-    <|1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b"|>]},
-  {connection = InfraConnection[{UndirectedEdge[1, 3], UndirectedEdge[2, 4]}], section = InfraSection[<|"a" -> 1, "b" -> 4|>]},
-  {InfraFiberedGraphHighlight[fib, {connection, section}],
-    InfraContinuousSectionQ[fib, section], InfraParallelSectionQ[fib, connection, section]}]
+With[{fib = RandomInfraFiberedGraph[GridGraph[{4, 4}], "VerticalVertexCount" -> {2}, "HorizontalEdgeCount" -> All,
+    RandomSeeding -> 1]}, {conn = RandomInfraConnection[fib, RandomSeeding -> 1]},
+  {path = {1, 2, 3, 4, 8, 12, 16}},
+  {s = InfraSection[AssociationThread[path, InfraHorizontalLift[fib, conn, {1, 1}, path]]]},
+  InfraFiberedGraphHighlight[fib, {conn, s}, PlotLabel -> InfraParallelSectionQ[fib, conn, s],
+    ImageSize -> Medium]]
 ```
 
-A section that follows the matching is parallel.
+On these complete joins every section is continuous, but a random section is not parallel:
 
 ```wl
-SeedRandom[7];
-With[
-  {fib = InfraFiberedGraph[Graph[{1, 2, 3, 4}, {UndirectedEdge[1, 3], UndirectedEdge[1, 4], UndirectedEdge[2, 3], UndirectedEdge[2, 4]}],
-    <|1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b"|>]},
-  {connection = InfraConnection[{UndirectedEdge[1, 3], UndirectedEdge[2, 4]}], section = InfraSection[<|"a" -> 1, "b" -> 3|>]},
-  {InfraFiberedGraphHighlight[fib, {connection, section}], InfraParallelSectionQ[fib, connection, section]}]
+With[{fib = RandomInfraFiberedGraph[GridGraph[{4, 4}], "VerticalVertexCount" -> {2}, "HorizontalEdgeCount" -> All,
+    RandomSeeding -> 1]}, {conn = RandomInfraConnection[fib, RandomSeeding -> 1]},
+  {s = RandomInfraSection[fib, RandomSeeding -> 1]},
+  {InfraContinuousSectionQ[fib, s], InfraParallelSectionQ[fib, conn, s]}]
+```
+
+## Properties and Relations
+
+A covering has one connection, its transverse edges, so its continuous sections are parallel. The two sheets of the product double covering:
+
+```wl
+With[{fib = InfraFiberedGraph[GraphProduct[GridGraph[{4, 4}], Graph[{1, 2}, {}], "Cartesian"], First]},
+  {conn = RandomInfraConnection[fib, RandomSeeding -> 1]},
+  InfraParallelSectionQ[fib, conn, RandomInfraSection[fib, All, Properties -> {"Continuous"}]]]
+```
+
+A section over a square is parallel only if the transport around the square fixes its value. On a random double covering it exchanges the two values over 6, and the square has no continuous section, so no parallel one:
+
+```wl
+With[{fib = RandomInfraFiberedGraph[GridGraph[{4, 4}],
+    Properties -> {"Covering"}, "VerticalVertexCount" -> {2}, RandomSeeding -> 1]},
+  {conn = RandomInfraConnection[fib, RandomSeeding -> 1]},
+  {InfraParallelTransport[fib, conn, {6, 7, 11, 10, 6}],
+   RandomInfraSection[fib, {6, 7, 11, 10}, All, Properties -> {"Continuous"}]}]
 ```

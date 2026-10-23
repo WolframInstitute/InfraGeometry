@@ -5,14 +5,24 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraPolygon
+Keywords: [regular polygon, legacy]
+SeeAlso: [InfraRegularPolygon, RandomInfraRegularPolygon, InfraRegularPolygonQ]
 ---
 
 ## Usage
 
-`InfraPolygon[As, n]` is the family of regular n-gons whose k-th diagonals satisfy As[[k]]; RandomInfraRegularPolygon is the search and InfraRegularPolygonQ the test. The polygon through given corners is the closed polyline InfraSegment[p1, ..., pn, p1].
+<code>[InfraPolygon]()[{*a1*, …, *am*}, *n*]</code> is the older name of <code>[InfraRegularPolygon]()[{*a1*, …, *am*}, *n*]</code>.
 
 ## Details & Options
 
-This is the legacy compatibility spelling. New code uses `InfraRegularPolygon`.
+[InfraPolygon]() and [InfraRegularPolygon]() stand for the same family of regular polygons. New code uses [InfraRegularPolygon]().
 
-The bare RandomInfraRegularPolygon form returns directed Graph legs; its InfraRegularPolygon or legacy InfraPolygon token form returns an ordered vertex sequence. No new corner-polygon or filling semantics are introduced.
+## Basic Examples
+
+The two names give the same polygon:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  SameQ @@ Table[RandomInfraRegularPolygon[g, token[{2, Automatic}, 4], "From" -> 45, RandomSeeding -> 1],
+    {token, {InfraPolygon, InfraRegularPolygon}}]]
+```

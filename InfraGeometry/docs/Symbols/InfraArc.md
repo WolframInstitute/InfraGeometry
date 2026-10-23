@@ -5,215 +5,127 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraArc
-Keywords: [arc, circle, band, minor arc, symbolic object]
-SeeAlso: [ArcGraph, InfraCircle, InfraSegment, InfraMeasurement, RandomInfraArc, InfraShell]
+Keywords: [arc, circle, band, minor arc, closed arc, symbolic object]
+SeeAlso: [ArcGraph, InfraAngle, InfraCircle, InfraSegment, InfraMeasurement, RandomInfraArc, InfraShell]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraArc]()[*c*, {*p*, *q*}]</code> is the arc around *c* from *p* to *q*: the minor arcs of the circle through *p* and *q*. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
+<code>[InfraArc]()[*c*, {*p*, *q*}]</code> is the arc around *c* from *p* to *q*: the shortest paths from *p* to *q* inside the band of the circle through *p*.
 
-<code>[InfraArc]()[*c*, {*p1*, …, *pk*}]</code> is the polyline of the minor arcs from each point to the next.
+<code>[InfraArc]()[*c*, {*p1*, …, *pk*}]</code> is the polyline of the arcs from each point to the next.
 
-<code>[InfraArc]()[*c*, {*p*, *p*}]</code> is the closed arc: the circles around *c* through *p*. <code>[InfraArc]()[*c*, {*p*}]</code> is its shorthand, and <code>[InfraArc]()[*c*, {*p1*, …, *pk*, *p1*}]</code> the circles through all the points.
+<code>[InfraArc]()[*c*, {*p*, *p*}]</code> or <code>[InfraArc]()[*c*, {*p*}]</code> is the closed arc: the circles around *c* through *p*.
 
 ## Details & Options
 
-Definition: with *r* = *d(c, p)*, the band *W* is the shell { *v* : *d(c, v)* = *r* }, widened by `"RadiusDelta"`. A minor arc from *p* to *q* is a shortest path from *p* to *q* of the subgraph induced on *W*.
+With *r = d(c, p)* the band is *W = {v : r − δᵢₙ ≤ d(c, v) ≤ r + δₒᵤₜ}*. An arc from *p* to *q* is a shortest path from *p* to *q* in the subgraph induced on *W*. It is empty when *q* is not in *W* or *W* does not connect *p* to *q*.
 
-Option `"RadiusDelta" -> {deltaIn, deltaOut}` widens the band to *r* − *deltaIn* ≤ *d(c, v)* ≤ *r* + *deltaOut*. A scalar `"RadiusDelta" -> delta` means `{0, delta}`, outward only. The default is `0`.
+On a bipartite graph, such as the square grid, no two vertices of one shell are adjacent, so the bare shell carries no arc. Widen the band.
 
-Its graph — <code>[InfraMeasurement]()[*g*, *arc*, "Graph"]</code> — is the interval of shortest paths of the band from *p* to *q*, with arrows of rising band distance from *p*. It is the same object [InfraSegment]() is on the whole graph. Its chains are those shortest paths, all of one length.
+The closed arc is the family of the circles of the band through *p*: the shortest cycles of *W* through *p* whose removal cuts *c* off from everything beyond the band. These are the members of [InfraCircle]() through *p*. <code>[InfraArc]()[*c*, {*p*, *q*, *p*}]</code> keeps the circles through *q* as well.
 
-That they are exactly the minor arcs needs the winding functional on the substrate, and *p* and *q* on a common circle. Nothing here certifies either, so `"Faithful"` stays unevaluated.
+Arcs are not unique. On the square grid with the band {*r*, *r* + 1}, away from the rim, the circle through a vertex at distance *r* is unique and has length *8r*: the circle of the ℓ¹ norm, whose circumference is 8 times its radius, not 2π.
 
-The arc is empty when *q* leaves the band or the band disconnects *p* from *q*. On a lattice the bare shell has no two adjacent vertices, so it joins no two of its points: widen the band.
+[InfraArc]() is a symbolic object: [InfraMeasurement]() evaluates it on a graph and [RandomInfraArc]() draws members. A member is a vertex list; a closed member does not repeat its first vertex, and its length counts the closing edge.
 
-**An arc need not be unique.** Between two points of a band there are in general many shortest paths, and through a point many circles; a trailing count of [RandomInfraArc]() gives them all.
+| Property | Value |
+|---|---|
+| `"Graph"` | the DAG of the arcs, as [ArcGraph]() |
+| `"Cardinality"` | the number of arcs |
+| `"Length"` | their common length; `{}` when there is none |
+| `"VertexDensity"` | the number of arcs through each vertex |
 
-**The closed arc.** A list that returns to its first point names a closed arc, not a polyline there and back. It is the circle through *p*, the compass opened to *p* (Euclid's third postulate): <code>[InfraArc]()[*c*, {*p*, *p*}, "RadiusDelta" -> *delta*]</code> has the members of the circle of the band of *p* that pass through *p*. It is not empty, though a shortest path from *p* to *p* is trivial: its members are cycles that leave *p* and return to *p* around *c*, separating *c* from everything beyond the band. <code>[InfraArc]()[*c*, {*p*, *q*, *p*}]</code> keeps those that pass through *q* too. Its members are cyclic vertex lists whose first vertex is not repeated, and its `"Length"` counts the closing edge.
+The cardinality of a polyline is the product over its pieces. Each piece uses the band of its own first point.
 
-Its graph is the circle's shape: the atom at *p* of the band unrolled along a seam through *p*, a DAG from *p* to a copy `{p, 3/2}` of *p* whose chains are the circles through *p*. It is that atom only where the unrolled band applies (its cut band is connected and its seam has two sides) and *p* lies on a circle of its band. Off a circle the paths of the unrolled band from *p* to its copy include closed walks that run out to a circle and back, which are no circles, so the graph is the necklaces of that seam whose run meets *p*, again closed on a copy `{s1, 3/2}` of their source. Where the unrolled band does not apply the graph is those necklaces too. A necklace needs the circle to meet its seam in one run, so it can miss a circle.
+Options:
 
-On a bipartite substrate the bare shell has no circle: use `"RadiusDelta" -> 1`.
+| Option | Default | Values |
+|---|---|---|
+| `"RadiusDelta"` | `0` | *δ* for the band {*r*, *r* + *δ*}; {*δᵢₙ*, *δₒᵤₜ*} for {*r* − *δᵢₙ*, *r* + *δₒᵤₜ*} |
 
-A list that does not return to its first point is the open polyline, as before; a point repeated in a row inside it counts once, so <code>[InfraArc]()[*c*, {*p*, *m*, *m*, *q*}]</code> is <code>[InfraArc]()[*c*, {*p*, *m*, *q*}]</code>.
+Corresponding notion in the classical axiom systems:
 
-A polyline arc reads each piece on the band of the circle through its own first point. Its members concatenate one arc per piece, so its `"Cardinality"` is the product over the pieces. Through an intermediate point *m* at the radius of *p* that lies on a minor arc from *p* to *q*, the members of <code>[InfraArc]()[*c*, {*p*, *m*, *q*}]</code> are the minor arcs from *p* to *q* through *m*.
-
-**The search.** On an open arc, [RandomInfraArc]() reads the members off the graph. On a closed arc it sweeps the band directly: for *k* = 3, 4, … it takes every cycle of length *k* of the band (`FindCycle`) and keeps those through *p* whose removal leaves *c* in a component reaching no further than the band; the first *k* with a survivor gives the circles, and the members are those through every point of the list. It does not read the graph, so it is the check on it. Each length is enumerated in full before the filter, so the sweep is fast on a band one or two vertices thick and slow on a wide one.
+| System | Name | Statement |
+|---|---|---|
+| Euclid | Postulate 3 | To describe a circle with any centre and distance; the closed arc is the circle drawn by a compass opened to *p*. |
 
 ## Basic Examples
 
-An arc of the circle of radius 3 about the centre, on the band widened one step each way, on the square, hexagonal and triangular tilings. An edge is drawn as strongly as the number of minor arcs through it.
+An arc of the circle of radius 3 between two of its points that are farthest apart, on the square grid and on the square mesh:
 
 ```wl
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = First @ GraphCenter[g]},
-    {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 3]])},
-    {q = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[c, 3]])},
-    {arc = InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}]},
-    InfraSubstrateHighlight[g, {arc, c, p, q}]],
-  {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {pq = RandomInfraPoint[g, InfraShell[c, 3], 2, "PairwiseDistance" -> "Max", RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {InfraArc[c, pq, "RadiusDelta" -> 1], c, pq}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The number of minor arcs and their length, beside the picture.
-
-```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 3]])},
-  {q = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[c, 3]])},
-  {arc = InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}]},
-  {InfraSubstrateHighlight[g, {arc, c, p, q}],
-   InfraMeasurement[g, arc, "Cardinality"], InfraMeasurement[g, arc, "Length"]}]
-```
-
-On the bare distance shell the two points are joined by no arc: a shell of the square tiling has no two adjacent vertices.
-
-```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 3]])},
-  {q = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[c, 3]])},
-  {InfraSubstrateHighlight[g, {Keys @ InfraMeasurement[ g, InfraShell[ c, 3 ], "VertexDensity" ], c, p, q}],
-   InfraMeasurement[g, InfraArc[c, {p, q}], "Cardinality"]}]
-```
-
-The members are vertex lists. Three minor arcs, each drawn as a walk.
-
-```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 3]])},
-  {q = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[c, 3]])},
-  {members = RandomInfraArc[ g, InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}], UpTo[3] ]},
-  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], c, p, q}], {member, members}]]
-```
-
-Through the intermediate vertex 12 the polyline keeps two of the four minor arcs, those that pass through it.
-
-```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 3]])},
-  {q = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[c, 3]])},
-  {polyline = InfraArc[c, {p, 12, q}, "RadiusDelta" -> {1, 1}]},
-  {InfraSubstrateHighlight[g, {polyline, c, p, 12, q}],
-   InfraMeasurement[g, polyline, "Cardinality"], InfraMeasurement[g, InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}], "Cardinality"]}]
-```
-
-The two half-rings between antipodes of the radius-2 hexagon of the triangular tiling.
-
-```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {ring = Keys @ InfraMeasurement[ g, InfraShell[ c, 2 ], "VertexDensity" ]},
-  {p = First @ ring},
-  {q = First @ Select[ring, GraphDistance[Subgraph[g, ring], p, #] == 6 &]},
-  {arc = InfraArc[c, {p, q}]},
-  {InfraSubstrateHighlight[g, {arc, c, p, q}],
-   InfraMeasurement[g, arc, "Cardinality"], InfraMeasurement[g, arc, "Length"]}]
-```
-
-The closed arc: the circles through a vertex at distance 2 from the centre, the band of *p* widened two steps outward, on the square, hexagonal and triangular tilings.
+The closed arc through a point at distance 3. On the grid it is one circle, on the mesh many:
 
 ```wl
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = First @ GraphCenter[g]},
-    {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 2]])},
-    InfraSubstrateHighlight[g, {InfraArc[c, {p}, "RadiusDelta" -> 2], c, p}]],
-  {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {p = RandomInfraPoint[g, InfraShell[c, 3], RandomSeeding -> 1]}, {circle = InfraArc[c, {p}, "RadiusDelta" -> 1]},
+    InfraSubstrateHighlight[g, {circle, c, p}, PlotLabel -> InfraMeasurement[g, circle, {"Cardinality", "Length"}]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-On the square tiling, the number of these circles and their length, beside the picture.
+The number of arcs and their length on the mesh:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 2]])},
-  {circle = InfraArc[c, {p, p}, "RadiusDelta" -> 2]},
-  {InfraSubstrateHighlight[g, {circle, c, p}],
-   InfraMeasurement[g, circle, "Cardinality"], InfraMeasurement[g, circle, "Length"]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pq = RandomInfraPoint[g, InfraShell[c, 3], 2, "PairwiseDistance" -> "Max", RandomSeeding -> 1]},
+  InfraMeasurement[g, InfraArc[c, pq, "RadiusDelta" -> 1], {"Cardinality", "Length"}]]
 ```
 
-Every circle through *p*, found by the search, each drawn as its directed cycle.
+## Scope
+
+A polyline through an intermediate vertex *m* at distance 3 keeps the arcs that pass through *m*. Its cardinality is the number of arcs through *m*:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 2]])},
-  {allCircles = RandomInfraArc[ g, InfraArc[c, {p, p}, "RadiusDelta" -> 2], All ]},
-  {InfraSubstrateHighlight[g, {Table[Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], {oneCircle, allCircles}], c, p}],
-   Length @ allCircles}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pq = RandomInfraPoint[g, InfraShell[c, 3], 2, "PairwiseDistance" -> "Max", RandomSeeding -> 1]},
+  {density = InfraMeasurement[g, InfraArc[c, pq, "RadiusDelta" -> 1], "VertexDensity"]},
+  {m = First @ MinimalBy[Select[Keys[density], GraphDistance[g, c, #] == 3 &], density]},
+  {polyline = InfraArc[c, {First[pq], m, Last[pq]}, "RadiusDelta" -> 1]},
+  InfraSubstrateHighlight[g, {polyline, c, pq, m}, PlotLabel -> {InfraMeasurement[g, polyline, "Cardinality"], density[m]},
+    ImageSize -> Medium]]
 ```
 
-Through a second point the circles are fewer; <code>[InfraArc]()[*c*, {*p*}]</code> is the same as <code>[InfraArc]()[*c*, {*p*, *p*}]</code>.
+## Options
+
+### RadiusDelta
+
+The bare shell of the grid carries no arc. The band {3, 4} carries one, the band {2, 4} a shorter family that cuts inside:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 2]])},
-  {q = (SeedRandom[5]; RandomInfraPoint[g, InfraShell[c, 2]])},
-  {both = InfraArc[c, {p, q, p}, "RadiusDelta" -> 2]},
-  {InfraSubstrateHighlight[g, {both, c, p, q}],
-   InfraMeasurement[g, both, "Cardinality"],
-   InfraMeasurement[g, InfraArc[c, {p}, "RadiusDelta" -> 2], "Cardinality"] == InfraMeasurement[g, InfraArc[c, {p, p}, "RadiusDelta" -> 2], "Cardinality"]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pq = RandomInfraPoint[g, InfraShell[c, 3], 2, "PairwiseDistance" -> "Max", RandomSeeding -> 1]},
+  GraphicsRow @ Table[
+    InfraSubstrateHighlight[g, {InfraArc[c, pq, "RadiusDelta" -> delta], InfraShell[c, 3], pq},
+      PlotLabel -> InfraMeasurement[g, InfraArc[c, pq, "RadiusDelta" -> delta], {"Cardinality", "Length"}]],
+    {delta, {0, 1, {1, 1}}}]]
 ```
 
 ## Properties and Relations
 
-The closed arc through *p* has the members of the circle of the same band that pass through *p*.
+On the square grid the closed arc through a vertex at distance *r*, with the band {*r*, *r* + 1}, is one circle of length *8r*:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 2]])},
-  {circle = InfraCircle[c, {2, 4}]},
-  {InfraSubstrateHighlight[g, {InfraArc[c, {p, p}, "RadiusDelta" -> 2], c, p}],
-   InfraMeasurement[g, InfraArc[c, {p, p}, "RadiusDelta" -> 2], "Cardinality"],
-   Count[Replace[ circle, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraShell :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraCylinder :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraCone :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraSolidOfRevolution :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraBallHull :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraConvexHull :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraQuadric :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ], _?(MemberQ[#, p] &)], InfraMeasurement[g, circle, "Cardinality"]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  Table[InfraMeasurement[g, InfraArc[c, {RandomInfraPoint[g, InfraShell[c, r], RandomSeeding -> 1]}, "RadiusDelta" -> 1],
+    {"Cardinality", "Length"}], {r, 1, 7}]]
 ```
 
-On the closed arc the search sweeps the band directly and finds as many circles as the graph carries.
+The closed arc through *p* has the circles of [InfraCircle]() that pass through *p*:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 2]])},
-  {closedArc = InfraArc[c, {p, p}, "RadiusDelta" -> 2]},
-  {InfraSubstrateHighlight[g, {closedArc, c, p}],
-   InfraMeasurement[g, closedArc, "Cardinality"], Length @ Replace[ closedArc, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraShell :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraCylinder :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraCone :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraSolidOfRevolution :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraBallHull :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraConvexHull :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraQuadric :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ]}]
-```
-
-The arc's `"Faithful"` stays unevaluated. The circle's is too, unless its cut band is connected and its seam has one side only.
-
-```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 3]])},
-  {q = (SeedRandom[2]; RandomInfraPoint[g, InfraShell[c, 3]])},
-  {arc = InfraArc[c, {p, q}, "RadiusDelta" -> {1, 1}]},
-  {InfraSubstrateHighlight[g, {arc, c, p, q}],
-   InfraMeasurement[g, arc, "Faithful"]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {p = RandomInfraPoint[g, InfraShell[c, 3], RandomSeeding -> 1]},
+  {closed = RandomInfraArc[g, InfraArc[c, {p}, "RadiusDelta" -> 1], All]},
+  {circles = Select[RandomInfraCircle[g, InfraCircle[c, {3, 4}], All], MemberQ[#, p] &]},
+  Sort[Sort /@ closed] === Sort[Sort /@ circles]]
 ```

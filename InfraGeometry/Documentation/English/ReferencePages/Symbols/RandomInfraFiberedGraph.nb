@@ -10,29 +10,33 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[     67873,       1593]
-NotebookOptionsPosition[     57827,       1412]
-NotebookOutlinePosition[     59017,       1448]
-CellTagsIndexPosition[     58937,       1443]
+NotebookDataLength[    135163,       2720]
+NotebookOptionsPosition[    125809,       2543]
+NotebookOutlinePosition[    127001,       2579]
+CellTagsIndexPosition[    126920,       2574]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
 Notebook[{
 
 Cell[CellGroupData[{
-Cell["RandomInfraFiberedGraph", "ObjectName",ExpressionUUID->"827c7b76-c260-47d4-a8c4-ae0eebb65e06"],
-
-Cell["LLM generated.", "Notes",ExpressionUUID->"79c130ce-53b0-4f71-b5a2-3a8a8125a4bc"],
+Cell["RandomInfraFiberedGraph", "ObjectName",
+ CellID->1224892054,ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec"],
 
 Cell[TextData[{
- Cell["   ", "ModInfo",ExpressionUUID->"4dbdd60a-1b7d-4a5b-8683-56ecdbf3ce34"],
+ Cell["   ", "ModInfo",ExpressionUUID->"be76610a-9304-4063-9be6-319204f0194e"],
  Cell[BoxData[
-  RowBox[{"RandomInfraFiberedGraph", "[", 
-   RowBox[{
-    StyleBox["base", "TI"], ",", " ", 
-    StyleBox["options", "TI"]}], "]"}]], "InlineFormula",
+  RowBox[{
+   TemplateBox[{
+     Cell[
+      TextData["RandomInfraFiberedGraph"]], 
+     "paclet:WolframInstitute/InfraGeometry/ref/RandomInfraFiberedGraph", 
+     "WolframInstitute/InfraGeometry Package Symbol"},
+    "PackageLink",
+    BaseStyle->"InlineFormula"], "[", 
+   StyleBox["base", "TI"], "]"}]], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "99ebefce-2de8-49c0-8db5-1461361e3644"],
+  "b629cadb-1b12-42bf-961d-72159e8cc208"],
  "\[LineSeparator]",
  "gives a random ",
  Cell[BoxData[
@@ -43,347 +47,264 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "c8fd1ff4-db52-486b-b786-37383c8c6c6b"],
- " with the prescribed reconstructed base and selected properties.",
+  "21f33e4e-fba4-48bf-82be-78b88c2c5f72"],
+ " whose base is the graph ",
+ StyleBox["base", "TI"],
+ ".",
  "\n"
-}], "Usage",ExpressionUUID->"fcbc1d4e-3501-4150-a565-bac28ed863f6"],
-
-Cell["\<\
-The base is a finite simple undirected unweighted untagged graph, including \
-isolated vertices and the empty graph.\
-\>", "Notes",ExpressionUUID->"22a2d28c-fd85-4da2-bc91-91ef0b51b68e"],
+}], "Usage",ExpressionUUID->"34e666b5-226f-4cf7-8ffd-308a7e77eb98"],
 
 Cell[TextData[{
- "Every base vertex has a nonempty fiber. Total vertices are pairs {",
+ "The fiber over a base vertex ",
+ StyleBox["p", "TI"],
+ " has the vertices {",
+ StyleBox["p", "TI"],
+ ", 1}, \[Ellipsis], {",
  StyleBox["p", "TI"],
  ", ",
- StyleBox["k", "TI"],
- "}, with ",
- StyleBox["p", "TI"],
- " a literal base vertex."
-}], "Notes",ExpressionUUID->"6d90c063-ed7a-4dfd-a8d2-4c94b5bbd5ce"],
-
-Cell["\<\
-Transverse edges occur only over base edges. At least one transverse edge is \
-retained over every base edge, so the reconstructed base has exactly the \
-supplied vertices and edges.\
-\>", "Notes",ExpressionUUID->"1fa3b293-c15f-4ec1-9d42-47d3e293875e"],
+ StyleBox["n", "TI"],
+ "}, ",
+ StyleBox["n \[GreaterEqual] 1", "TI"],
+ ", and random vertical edges. Transverse edges lie only over base edges, at \
+least one over each, so the base of the result is exactly ",
+ StyleBox["base", "TI"],
+ "."
+}], "Notes",ExpressionUUID->"896c7b05-ae81-40c6-8a85-01f5d4493e76"],
 
 Cell[TextData[{
  Cell[BoxData["Properties"], "InlineFormula",
   FontSize->0.9 Inherited,ExpressionUUID->
-  "5a5a90eb-a673-4998-9fa7-bf941fd1e421"],
- " is a flat list interpreted by conjunction. The allowed strings are ",
- Cell[BoxData["\"\<EqualFiberSizes\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "dd8f9928-f885-476d-beb1-f1f0a23ecacf"],
- ", ",
- Cell[BoxData["\"\<IsomorphicFibers\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "9beae491-da7e-4f91-820b-6fc3016c8602"],
- ", ",
- Cell[BoxData["\"\<Fibration\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "5c9166b8-53cf-47a8-9de2-c79fd0708534"],
- ", ",
- Cell[BoxData["\"\<AtMostOneEdgeLift\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "f50dc0d0-9d6a-4246-a4b0-9d8909ba3b1b"],
- ", ",
- Cell[BoxData["\"\<UniqueEdgeLifting\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "4c77dce7-b43e-4e33-8bb3-6b4a3339da46"],
- ", ",
- Cell[BoxData["\"\<FiberBundle\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "c7ff537c-c2d4-4928-a15e-d5777f89a441"],
- " and ",
- Cell[BoxData["\"\<Covering\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "4dbfbe73-8d2f-41f3-a847-43157283bbf8"],
- ". Order and repetition do not change the constraints."
-}], "Notes",ExpressionUUID->"ccd0a8f7-3939-4219-ad38-7fe232ccf7da"],
-
-Cell["\<\
-The empty property list requests a general fibered graph. It does not require \
-lift existence or equal fiber sizes.\
-\>", "Notes",ExpressionUUID->"f63289d9-7742-480b-bb39-123dd6217e15"],
-
-Cell[TextData[{
- "A scalar count ",
- StyleBox["n", "TI"],
- " is an upper bound. A singleton {",
- StyleBox["n", "TI"],
- "} requests exactly ",
- StyleBox["n", "TI"],
- ". A pair {",
- StyleBox["lo", "TI"],
- ", ",
- StyleBox["hi", "TI"],
- "} requests a discrete uniform integer in the inclusive range."
-}], "Notes",ExpressionUUID->"c237e273-7313-4090-859b-966a1a318fae"],
-
-Cell["\<\
-Fiber vertex counts have minimum one. Vertical edge counts have minimum zero.\
-\
-\>", "Notes",ExpressionUUID->"91723558-8ad7-4018-a280-98c84dff62fc"],
-
-Cell["\<\
-Scalar edge caps are intersected with the property-feasible count interval. \
-Exact and range edge specifications must be feasible for every permitted \
-fiber size; they are never clipped or silently conditioned on the draw.\
-\>", "Notes",ExpressionUUID->"8a13436e-10d9-4a21-ad41-46d061d51ffd"],
-
-Cell["\<\
-Counts are discrete uniform on their admissible interval. The constructive \
-graph distribution is not asserted to be uniform over all graphs with those \
-counts.\
-\>", "Notes",ExpressionUUID->"db57104c-77c7-4f8a-a875-6ba54e8be351"],
-
-Cell[TextData[{
- "The ambient random stream is controlled by external ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["SeedRandom"]], "paclet:ref/SeedRandom"},
-   "RefLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "f1cdfd3f-f4e6-4bd9-95da-7faf3dad0847"],
- ". There is no per-call seed option."
-}], "Notes",ExpressionUUID->"896d8176-cb4c-4970-bc68-cef9c9eb1616"],
-
-Cell["\<\
-Unsupported options, property names, graph domains and jointly infeasible \
-specifications leave the call unevaluated.\
-\>", "Notes",ExpressionUUID->"a1fd10cb-f2dd-4a2f-8e14-1a966b3485be"],
-
-Cell[TextData[{
- "Drawing coordinates are computed separately by ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraFiberedGraphHighlight"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraFiberedGraphHighlight", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "259ffb5b-5b43-49eb-833a-b4bbbb381d72"],
- "."
-}], "Notes",ExpressionUUID->"5f70b86c-f9ee-4192-bfcd-e1ae0def0b5d"],
+  "183a6bdb-88c7-40f9-8b3b-5d0435a32411"],
+ " is a list of conditions, all imposed:"
+}], "Notes",ExpressionUUID->"533b83af-7d1f-4810-8d83-935d374ed0bf"],
 
 Cell[BoxData[GridBox[{
    {Cell["      ", "ModInfo",ExpressionUUID->
-     "cb87b00c-275b-4e58-ae7a-e8d1439f35ff"], Cell["Option", "TableText",
-     FontWeight->Bold,ExpressionUUID->"e1112f93-6980-49c9-aec0-f8494144901a"],
-     Cell["Default", "TableText",
-     FontWeight->Bold,ExpressionUUID->"83d5d5a3-d23e-47ac-8af0-c4340d3fc6c0"],
-     Cell["Meaning", "TableText",
-     FontWeight->Bold,ExpressionUUID->"21257bf4-8c07-4a1e-90c6-275bb42853c8"]},
+     "3e03433a-7d2a-4079-81f0-c45c92e303f2"], Cell["Property", "TableText",
+     FontWeight->Bold,ExpressionUUID->"77d5c6fb-d94a-4ac4-a31e-ad0d50baf252"],
+     Cell["Condition", "TableText",
+     FontWeight->Bold,ExpressionUUID->"37eeea5a-2b0e-424a-b950-0a10ed09eba7"]},
    {Cell["      ", "ModInfo",ExpressionUUID->
-     "66a0e0cf-fde7-4d45-8384-2f6382a919fb"], Cell[TextData[Cell[BoxData[
+     "dae2bd88-6400-40d5-96a0-04f39222284a"], Cell[TextData[Cell[
+    BoxData["\"\<EqualFiberSizes\>\""], "InlineFormula",
+     FontSize->0.9 Inherited,ExpressionUUID->
+     "a81ac87d-c4fa-4a29-8495-dbf00c172c2f"]], "TableText",ExpressionUUID->
+     "c946f398-3c23-4217-a0c2-0a109c87947f"], Cell[
+    "all fibers have the same size", "TableText",ExpressionUUID->
+     "dacc0ad4-fcd0-4161-ad9e-83d3141dd4a2"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "01ac5dbf-3b6d-4bed-93fa-d25d3577acf9"], Cell[TextData[Cell[
+    BoxData["\"\<IsomorphicFibers\>\""], "InlineFormula",
+     FontSize->0.9 Inherited,ExpressionUUID->
+     "09ed40d7-f408-41b9-b4e8-d763f72d1bb2"]], "TableText",ExpressionUUID->
+     "794fc924-e3e3-4b7f-8bb6-09858ed3d852"], Cell[
+    "all fibers are copies of one random graph", "TableText",ExpressionUUID->
+     "1b285928-47d4-42fc-910b-0d0ebefe8a22"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "19e7c61a-7821-4b23-beb6-b122ebf3dcc0"], Cell[TextData[Cell[
+    BoxData["\"\<Fibration\>\""], "InlineFormula",
+     FontSize->0.9 Inherited,ExpressionUUID->
+     "cb098fe4-d7ed-4e1a-85b3-8836bf4cd8fc"]], "TableText",ExpressionUUID->
+     "1eeeb0fe-cfd8-458f-8c0f-d1be3543d02e"], Cell["\<\
+every vertex has at least one neighbour over each base neighbour\
+\>", "TableText",ExpressionUUID->"71363810-2076-4350-bfba-0d7ebb9d6df1"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "33ef79ea-fc43-4876-af19-71f79fd30edf"], Cell[TextData[Cell[
+    BoxData["\"\<AtMostOneEdgeLift\>\""], "InlineFormula",
+     FontSize->0.9 Inherited,ExpressionUUID->
+     "0863cb84-2835-4a91-9741-e8663c940a43"]], "TableText",ExpressionUUID->
+     "a1394cfb-2147-45ab-ba93-bb0ad6dd1abe"], Cell["\<\
+every vertex has at most one neighbour over each base neighbour\
+\>", "TableText",ExpressionUUID->"c697a2cf-7665-4b93-8e74-d83f60272cfe"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "63fe842a-3fcc-4f00-8d28-26d7e7a3fea0"], Cell[TextData[Cell[
+    BoxData["\"\<UniqueEdgeLifting\>\""], "InlineFormula",
+     FontSize->0.9 Inherited,ExpressionUUID->
+     "8eb9ea95-5fc3-4510-92cf-eef338d92846"]], "TableText",ExpressionUUID->
+     "1c86a9fa-1ddb-4236-8801-46068af9e12c"], Cell["\<\
+exactly one neighbour: a perfect matching over each base edge\
+\>", "TableText",ExpressionUUID->"6462338c-ab1a-4869-8485-942839bd7cb3"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "28791a6b-bbba-42d8-ac81-986306089c3b"], Cell[TextData[Cell[
+    BoxData["\"\<FiberBundle\>\""], "InlineFormula",
+     FontSize->0.9 Inherited,ExpressionUUID->
+     "2876efa1-82e5-4d83-b625-202dc77cf870"]], "TableText",ExpressionUUID->
+     "1c7c9ffd-c483-4d5c-98f6-e1977350ab1b"], Cell["\<\
+isomorphic fibers and matchings that preserve the fiber edges\
+\>", "TableText",ExpressionUUID->"f2e84f9b-54f7-4479-8a4f-c8709d7bf1c2"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "06895905-c8dd-4baa-b388-b6c272d87519"], Cell[TextData[Cell[
+    BoxData["\"\<Covering\>\""], "InlineFormula",
+     FontSize->0.9 Inherited,ExpressionUUID->
+     "8c8881b4-772a-4db2-9e6d-6dd3d700bd3c"]], "TableText",ExpressionUUID->
+     "f41e109d-2302-4152-98f5-f34f91a8ae6f"], Cell[
+    "unique edge lifting and no vertical edges", "TableText",ExpressionUUID->
+     "d24bfe79-1826-4ea9-8bda-ab2a3ed0f49b"]}
+  }]], "2ColumnTableMod",ExpressionUUID->"23d1355a-1079-4185-81fb-\
+fc357e40ae26"],
+
+Cell[TextData[{
+ "A count is ",
+ StyleBox["n", "TI"],
+ " (at most ",
+ StyleBox["n", "TI"],
+ "), {",
+ StyleBox["n", "TI"],
+ "} (exactly ",
+ StyleBox["n", "TI"],
+ ") or {",
+ StyleBox["lo", "TI"],
+ ", ",
+ StyleBox["hi", "TI"],
+ "} (uniform between ",
+ StyleBox["lo", "TI"],
+ " and ",
+ StyleBox["hi", "TI"],
+ "). Over an edge with fibers of sizes ",
+ StyleBox["n", "TI"],
+ ", ",
+ StyleBox["m", "TI"],
+ " there are 1 to ",
+ StyleBox["nm", "TI"],
+ " transverse edges, at least max(",
+ StyleBox["n", "TI"],
+ ", ",
+ StyleBox["m", "TI"],
+ ") with ",
+ Cell[BoxData["\"\<Fibration\>\""], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "f8c27a5b-a929-4247-9472-71de93db293e"],
+ ", at most min(",
+ StyleBox["n", "TI"],
+ ", ",
+ StyleBox["m", "TI"],
+ ") with ",
+ Cell[BoxData["\"\<AtMostOneEdgeLift\>\""], "InlineFormula",
+  FontSize->0.9 Inherited,ExpressionUUID->
+  "218fc68e-9d2e-4c58-b717-4229820b9fd5"],
+ ", and ",
+ StyleBox["n = m", "TI"],
+ " with unique edge lifting. An infeasible request stays unevaluated."
+}], "Notes",ExpressionUUID->"c2ea7278-2f7c-4dea-b089-ea662c55e4d1"],
+
+Cell["\<\
+The graph is not uniform among the graphs with the drawn counts.\
+\>", "Notes",ExpressionUUID->"1013ed9c-21b5-441d-a6fc-cbda5d83a551"],
+
+Cell["Options:", "Notes",ExpressionUUID->"820ed76b-827d-498f-a717-f318b25ae368"],
+
+Cell[BoxData[GridBox[{
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "8e38e8f2-ed67-4c30-83c4-26082cede6a6"], Cell["Option", "TableText",
+     FontWeight->Bold,ExpressionUUID->"fc83b11b-7db4-47a2-bc39-d85b962188cc"],
+     Cell["Default", "TableText",
+     FontWeight->Bold,ExpressionUUID->"a26dc9a4-67c5-4ea7-afd2-340b82552007"],
+     Cell["Values", "TableText",
+     FontWeight->Bold,ExpressionUUID->"377b07a6-ea4e-4473-ac51-57a3cbf6a8e9"]},
+   {Cell["      ", "ModInfo",ExpressionUUID->
+     "a5f05a3e-e5ac-4359-8a86-8b8859ca7a0e"], Cell[TextData[Cell[BoxData[
      TemplateBox[{
        Cell[
         TextData["Properties"]], "paclet:ref/Properties"},
       "RefLink",
       BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-     "2efd4d81-3ad9-4315-8412-0e274f71c99e"]], "TableText",ExpressionUUID->
-     "1a2e59e5-af1e-447d-8653-4f5ed1252d72"], Cell[TextData[Cell[BoxData[
+     "0f3f8a11-b9c6-4df8-a712-1f8ffb2b2eb8"]], "TableText",ExpressionUUID->
+     "9028e00d-244c-4d3d-b720-246992ed87fc"], Cell[TextData[Cell[BoxData[
      RowBox[{"{", "}"}]], "InlineFormula",
      FontSize->0.9 Inherited,ExpressionUUID->
-     "3582e1f7-7137-4df4-9d6f-aa99223b020f"]], "TableText",ExpressionUUID->
-     "570c1fe3-9d0d-470f-a4a0-960ecc27637e"], Cell[
-    "Conjunction of the requested structural properties.", "TableText",
-     ExpressionUUID->"a34e066b-5fb3-4f40-a307-c59a2e05118e"]},
+     "ed209877-72da-4422-968f-b7c4d696c8b1"]], "TableText",ExpressionUUID->
+     "18a613db-2599-444d-9cd1-f7c79af8eac3"], Cell[
+    "a list of the properties above", "TableText",ExpressionUUID->
+     "ade970fc-2e18-4755-a8fc-985b4584e7a7"]},
    {Cell["      ", "ModInfo",ExpressionUUID->
-     "05124912-84ac-4551-9446-462bb6b33089"], Cell[TextData[Cell[
+     "cf7ed32d-c26a-4840-8283-4730cfa6d25d"], Cell[TextData[Cell[
     BoxData["\"\<VerticalVertexCount\>\""], "InlineFormula",
      FontSize->0.9 Inherited,ExpressionUUID->
-     "cdbe7b5d-34eb-486f-881b-279b1c021396"]], "TableText",ExpressionUUID->
-     "ad620433-2b3d-414c-9aca-948cbe61891a"], Cell[TextData[Cell[BoxData[
+     "bd15d0fd-2031-49ce-b5ef-7623121d0401"]], "TableText",ExpressionUUID->
+     "7a65dd6d-bea2-475b-a017-8ca051db2efe"], Cell[TextData[Cell[BoxData[
      RowBox[{"{", "1", "}"}]], "InlineFormula",
      FontSize->0.9 Inherited,ExpressionUUID->
-     "7778693b-7a4b-4448-9821-fb62fcaaacd8"]], "TableText",ExpressionUUID->
-     "f1e17819-7196-4c4d-a68f-a83de7bc6f29"], Cell["\<\
-Fiber vertex count: upper bound, exact singleton or inclusive range.\
-\>", "TableText",ExpressionUUID->"517f2d9e-b98e-4ac2-bf76-4467601b780f"]},
+     "11e0c4e6-9314-4616-9372-083c2141552e"]], "TableText",ExpressionUUID->
+     "e8367c43-ab3e-4fb9-9d4e-65e7a04a902a"], Cell[TextData[{
+     "the fiber size: ",
+     StyleBox["n", "TI"],
+     ", {",
+     StyleBox["n", "TI"],
+     "} or {",
+     StyleBox["lo", "TI"],
+     ", ",
+     StyleBox["hi", "TI"],
+     "}"
+    }], "TableText",ExpressionUUID->"8a71a48b-4ff1-49a3-bebf-d1fd6398dffc"]},
    {Cell["      ", "ModInfo",ExpressionUUID->
-     "fe85f6a0-82e0-4aec-9ef0-4b9f1961d3b2"], Cell[TextData[Cell[
+     "3ff57f2a-d66a-4088-8f44-06ede9a43591"], Cell[TextData[Cell[
     BoxData["\"\<VerticalEdgeCount\>\""], "InlineFormula",
      FontSize->0.9 Inherited,ExpressionUUID->
-     "c52ed413-7496-443c-883a-7911a73b4849"]], "TableText",ExpressionUUID->
-     "a11cb92d-29ae-4cbb-a658-e75ed6edbf1b"], Cell[TextData[Cell[BoxData[
+     "d41e73fb-b62a-49da-b5fa-a834cc9dfa71"]], "TableText",ExpressionUUID->
+     "8c02fe5e-a083-4c06-bbad-86af107a9d5f"], Cell[TextData[Cell[BoxData[
      RowBox[{"{", "0", "}"}]], "InlineFormula",
      FontSize->0.9 Inherited,ExpressionUUID->
-     "1751b968-e481-4b05-8f96-7e7669f88e02"]], "TableText",ExpressionUUID->
-     "6448de25-3f22-490b-9b1c-dcea935c1d0e"], Cell["\<\
-Vertical edge count: upper bound, exact singleton or inclusive range.\
-\>", "TableText",ExpressionUUID->"3b52f4b5-07e1-440b-9e7e-9f847fe79479"]},
+     "532936a0-50ac-4e4a-a9c2-5f15b8fb1831"]], "TableText",ExpressionUUID->
+     "0639ffde-fa8b-4501-a197-e59fba562aea"], Cell[TextData[{
+     "the number of edges in a fiber: ",
+     StyleBox["n", "TI"],
+     ", {",
+     StyleBox["n", "TI"],
+     "} or {",
+     StyleBox["lo", "TI"],
+     ", ",
+     StyleBox["hi", "TI"],
+     "}"
+    }], "TableText",ExpressionUUID->"704ae3df-119d-4795-bc26-2399f55a3565"]},
    {Cell["      ", "ModInfo",ExpressionUUID->
-     "89e156c0-ab47-4029-afc9-2ca4de4907ba"], Cell[TextData[Cell[
+     "8804ec56-3efa-476e-9c5b-c81d536e2f40"], Cell[TextData[Cell[
     BoxData["\"\<HorizontalEdgeCount\>\""], "InlineFormula",
      FontSize->0.9 Inherited,ExpressionUUID->
-     "fab211c1-bf4f-49ad-affe-b496e1c3ad9f"]], "TableText",ExpressionUUID->
-     "e6bd568e-de25-4f73-8101-1c33d89eae9a"], Cell[TextData[Cell[BoxData[
-     TemplateBox[{
-       Cell[
-        TextData["Automatic"]], "paclet:ref/Automatic"},
-      "RefLink",
-      BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-     "da8d1a50-bc95-409c-8c74-075da0c0b462"]], "TableText",ExpressionUUID->
-     "f2d8776e-a473-4efb-a0a7-13e94737c0b6"], Cell[TextData[{
-     "Count over each base edge: upper bound, exact singleton, inclusive \
-range, ",
+     "5b5fde33-1021-47cf-b0b1-5affde99926a"]], "TableText",ExpressionUUID->
+     "90de54fb-74ee-4564-a43b-951a07bd204f"], Cell[TextData[Cell[BoxData[
+    "Automatic"], "InlineFormula",
+     FontSize->0.9 Inherited,ExpressionUUID->
+     "a5a9ba19-fee5-4390-a4d3-45da20039b34"]], "TableText",ExpressionUUID->
+     "4e609e3a-e0ed-4678-9eaa-2f9b7b49bacb"], Cell[TextData[{
+     "the number of transverse edges over a base edge: ",
+     StyleBox["n", "TI"],
+     ", {",
+     StyleBox["n", "TI"],
+     "}, {",
+     StyleBox["lo", "TI"],
+     ", ",
+     StyleBox["hi", "TI"],
+     "}; ",
      Cell[BoxData["Automatic"], "InlineFormula",
       FontSize->0.9 Inherited,ExpressionUUID->
-      "ef33af98-6779-4124-999e-3e63b55455a6"],
-     " or ",
+      "9596dd09-48fa-40fd-85b6-764b2de7aadf"],
+     " a feasible random count; ",
      Cell[BoxData["All"], "InlineFormula",
       FontSize->0.9 Inherited,ExpressionUUID->
-      "e653d620-3293-454f-9d52-1c5274426c04"],
-     "."
-    }], "TableText",ExpressionUUID->"15850aff-bbec-4978-b948-ba3b02ee56f6"]}
-  }]], "3ColumnTableMod",ExpressionUUID->"f0519713-e305-4eb5-92a3-\
-a313e7990891"],
-
-Cell[TextData[{
- "Ordinarily each fiber size is drawn independently. ",
- Cell[BoxData["\"\<EqualFiberSizes\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "c460dd1a-40b6-472b-9ef0-468597f1b4f5"],
- ", ",
- Cell[BoxData["\"\<IsomorphicFibers\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "ea7bf0e9-1f8f-4bc6-8df1-52c5b0e99edf"],
- " and ",
- Cell[BoxData["\"\<FiberBundle\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "88b451bd-314a-40ff-985a-49051858fb40"],
- " use one size draw over the whole base. ",
- Cell[BoxData["\"\<UniqueEdgeLifting\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "4288d95f-26e7-4fb5-b786-b1c1ee6c407a"],
- " and ",
- Cell[BoxData["\"\<Covering\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "bd279e48-b2cf-4f18-8a17-fe3e70b9814d"],
- " use one size draw per connected base component, unless a global equal-size \
-property is also requested. ",
- Cell[BoxData["\"\<IsomorphicFibers\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "496778ba-67bb-481f-b7e2-598646c4cffb"],
- " and ",
- Cell[BoxData["\"\<FiberBundle\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "b896f236-a051-4aca-a716-9b4291ce5852"],
- " share one vertical graph template across all fibers. A graph bundle uses \
-fiber isomorphisms for its transverse matchings; it can have nontrivial \
-monodromy."
-}], "Notes",ExpressionUUID->"c812a662-3cb7-4c0d-8753-7b1dd92de74e"],
-
-Cell[TextData[{
- "For a fiber of size ",
- StyleBox["n", "TI"],
- ", the vertical count ranges from zero to ",
- StyleBox["n", "TI"],
- " (",
- StyleBox["n", "TI"],
- " - 1) / 2. ",
- Cell[BoxData["\"\<Covering\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "853a7ad3-c26d-45df-bbd8-4b07168b6903"],
- " forces the count to zero. A scalar vertical cap permits this restriction; \
-an exact positive count or a range containing positive counts is incompatible \
-with ",
- Cell[BoxData["\"\<Covering\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "7d6d2f98-c7a4-4671-8cb9-8493617796ca"],
- "."
-}], "Notes",ExpressionUUID->"4c1c6743-fc8f-4c98-8abf-2b927df7c511"],
-
-Cell[TextData[{
- "For adjacent fiber sizes ",
- StyleBox["n", "TI"],
- " and ",
- StyleBox["m", "TI"],
- ", the requested properties give these feasible counts. Combined properties \
-impose all their constraints."
-}], "Notes",ExpressionUUID->"11051943-2793-4463-b5b3-71dd60a32121"],
-
-Cell[BoxData[GridBox[{
+      "cec15438-b99b-4da8-a053-9aab17c04b3d"],
+     " the complete join"
+    }], "TableText",ExpressionUUID->"56d86f26-2098-4dc9-9b38-a31d612a1f88"]},
    {Cell["      ", "ModInfo",ExpressionUUID->
-     "727c1e6e-0686-4f91-bf30-f91706b39063"], Cell["Property", "TableText",
-     FontWeight->Bold,ExpressionUUID->"6939f7a3-9bda-43fe-94dc-1cd6fabeec43"],
-     Cell["Feasible transverse edge counts", "TableText",
-     FontWeight->Bold,ExpressionUUID->"b2855e33-3c2f-4bb7-adf3-130e6f6c4755"]},
-   {Cell["      ", "ModInfo",ExpressionUUID->
-     "1894b7e8-5613-45a3-a825-5cd1bcbba62c"], Cell[
-    "No lifting constraint", "TableText",ExpressionUUID->
-     "79cdff50-2cb0-46d6-a586-9e4953cbf646"], Cell[
-    "1 through n m", "TableText",ExpressionUUID->
-     "d3682f00-7e0f-4a80-a66b-10806d7ce1fc"]},
-   {Cell["      ", "ModInfo",ExpressionUUID->
-     "5d1e0710-9d3e-4d93-8f3d-b07782b7fc4d"], Cell[TextData[Cell[
-    BoxData["\"\<Fibration\>\""], "InlineFormula",
+     "853dbdc2-07a5-4f79-a7c5-c1bf1156930a"], Cell[TextData[Cell[BoxData[
+     TemplateBox[{
+       Cell[
+        TextData["RandomSeeding"]], "paclet:ref/RandomSeeding"},
+      "RefLink",
+      BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+     "3444a929-f01e-4877-948c-4eda71ebecc5"]], "TableText",ExpressionUUID->
+     "e6474e96-8615-40ee-a8ba-4d93ff4fa1a8"], Cell[TextData[Cell[BoxData[
+    "Automatic"], "InlineFormula",
      FontSize->0.9 Inherited,ExpressionUUID->
-     "7f3f0863-a776-46e5-aca5-3776908fbfdd"]], "TableText",ExpressionUUID->
-     "6529ad44-e1f8-44eb-a8ca-6176b311790a"], Cell["\<\
-Max[n,m] through n m; every vertex has a transverse neighbour\
-\>", "TableText",ExpressionUUID->"4088ba05-54e7-4bc1-ba6e-bbca712385ec"]},
-   {Cell["      ", "ModInfo",ExpressionUUID->
-     "34db8986-f5ce-4c9a-866c-259303d5ccae"], Cell[TextData[Cell[
-    BoxData["\"\<AtMostOneEdgeLift\>\""], "InlineFormula",
-     FontSize->0.9 Inherited,ExpressionUUID->
-     "11d517c1-2656-46a6-be96-5eae0ed5382f"]], "TableText",ExpressionUUID->
-     "6e8625ff-4e8f-443f-ba30-e270af4eb82f"], Cell[
-    "1 through Min[n,m]; the edges form a matching", "TableText",
-     ExpressionUUID->"56af04aa-1b90-4f12-b715-c8444e7d3280"]},
-   {Cell["      ", "ModInfo",ExpressionUUID->
-     "1226dff5-db9a-430b-bc90-6a611555b4bf"], Cell[TextData[{
-     Cell[BoxData["\"\<UniqueEdgeLifting\>\""], "InlineFormula",
+     "98292d83-380e-4e95-9206-dd2700f29a8c"]], "TableText",ExpressionUUID->
+     "1756ec33-5286-47f6-b45c-4a988820e411"], Cell[TextData[{
+     "an integer or a string for a reproducible draw; ",
+     Cell[BoxData["Inherited"], "InlineFormula",
       FontSize->0.9 Inherited,ExpressionUUID->
-      "32b3a3ba-063f-4fbb-94d8-c43ad1d5d5b0"],
-     ", or both ",
-     Cell[BoxData["\"\<Fibration\>\""], "InlineFormula",
-      FontSize->0.9 Inherited,ExpressionUUID->
-      "a050e18b-191f-4a2b-9e12-7f9935cb19a2"],
-     " and ",
-     Cell[BoxData["\"\<AtMostOneEdgeLift\>\""], "InlineFormula",
-      FontSize->0.9 Inherited,ExpressionUUID->
-      "e5d6ae52-01d3-4f09-9a17-690c3b092609"]
-    }], "TableText",ExpressionUUID->"8313ad82-aee3-4a2f-9364-f7b591aae748"], 
-    Cell["n, with n = m; a perfect matching", "TableText",ExpressionUUID->
-     "75fe76dd-a1a5-4825-a68e-0be9551dec25"]},
-   {Cell["      ", "ModInfo",ExpressionUUID->
-     "b448e604-64e3-4403-8fd6-196a848500c1"], Cell[TextData[Cell[
-    BoxData["\"\<FiberBundle\>\""], "InlineFormula",
-     FontSize->0.9 Inherited,ExpressionUUID->
-     "d66fb191-e8a0-4581-9b77-aadabfe6abb0"]], "TableText",ExpressionUUID->
-     "0fbc5a7f-67c3-404d-b589-a0fd9ea852a7"], Cell[
-    "n, with n = m; the matching preserves fiber adjacency", "TableText",
-     ExpressionUUID->"4d6b4044-135b-4e0c-b6dc-21393097dcc6"]},
-   {Cell["      ", "ModInfo",ExpressionUUID->
-     "b5ba682d-ce60-42cc-a120-6094d499884e"], Cell[TextData[Cell[
-    BoxData["\"\<Covering\>\""], "InlineFormula",
-     FontSize->0.9 Inherited,ExpressionUUID->
-     "04db8ba8-6660-48c5-972e-87aac67fdd13"]], "TableText",ExpressionUUID->
-     "870d227c-3154-4f4f-b825-c4242738a868"], Cell[
-    "n, with n = m and no vertical edges", "TableText",ExpressionUUID->
-     "2a9dca98-e461-4d8b-aaaa-c1aaddf4a177"]}
-  }]], "2ColumnTableMod",ExpressionUUID->"93178e4b-d2c8-4697-a28f-\
-7997059dc9f3"],
-
-Cell[TextData[{
- Cell[BoxData["Automatic"], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "5298a728-472d-4faf-bdef-571861c67f82"],
- " draws a feasible count and constructs edges satisfying the properties. ",
- Cell[BoxData["All"], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "5990e74d-f372-444d-9ce6-951b45897369"],
- " uses the complete join of adjacent fibers; it is accepted only when this \
-satisfies every requested property. In particular, a complete join with \
-unique lifting requires both adjacent fibers to be singletons."
-}], "Notes",ExpressionUUID->"0b755728-8364-4b79-985a-a1643c7b5d29"]
+      "af8dd2ed-1fb9-4d37-8e9a-10d13869df91"],
+     " to draw from the current random state"
+    }], "TableText",ExpressionUUID->"4a551192-1e1a-4b78-967d-17685bd38abf"]}
+  }]], "3ColumnTableMod",ExpressionUUID->"0eb46a85-66ab-40ec-bc28-\
+4770c34d00a9"]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -412,7 +333,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "b8482ec5-bc3e-43c7-be7f-49d722b1f90a"],
+  "497497c3-5a71-4ba6-8759-10b14e37e46f"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -422,7 +343,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "ba08ec73-3a71-4e53-97a3-b4603a47ce0c"],
+  "ba6f8dc7-1cf1-4c07-b7f1-ad68574de4c6"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -432,7 +353,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "a54a1987-2a3e-4519-b285-9299bc4b4100"],
+  "2fb45b59-dc39-44b3-a00e-5bf97cfb1a89"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -442,7 +363,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "afd6fc91-0d3c-4d78-88a0-524c411801aa"],
+  "dd44945b-1757-4286-b325-e5d6fa8e0ee0"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -452,7 +373,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "66e54850-ba95-4abe-89ea-290f09c96f4d"],
+  "7ead9092-4fca-4932-89eb-2aca40e13527"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -462,7 +383,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "d287d3b9-901b-4e56-9433-0443d6a36ac0"],
+  "30c7ca8f-0c7b-4ac7-b7bb-1b1f4cb681e8"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -472,7 +393,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "99cca515-1bf9-423a-a4fe-2cb69e93e414"],
+  "9761baa5-f95e-462e-becd-3ca79fc313f8"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -482,7 +403,7 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "e70dbb01-f5c8-4d75-b663-5e549c89cbda"],
+  "204f7cb7-5962-407a-bc44-e65dbd3a772c"],
  " \[FilledVerySmallSquare] ",
  Cell[BoxData[
   TemplateBox[{
@@ -492,8 +413,8 @@ Cell[TextData[{
     "WolframInstitute/InfraGeometry Package Symbol"},
    "PackageLink",
    BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "9111abd0-019e-449c-85c6-6620a68a1e37"]
-}], "SeeAlso",ExpressionUUID->"94c0c444-d92f-419c-a825-b8084e7290a0"]
+  "222b1a8e-a3e4-4d3c-93bc-d943621df45f"]
+}], "SeeAlso",ExpressionUUID->"5391110c-c262-4a70-aa8c-ddcfb9bf77cc"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -520,8 +441,8 @@ Cell[TextData[Cell[BoxData[
   BaseStyle->"Link",
   ButtonData->
    "paclet:WolframInstitute/InfraGeometry/guide/InfraFiberBundles"]], \
-"InlineFormula",ExpressionUUID->"cb3c101b-29b9-412c-aab1-ee139a8d771e"]], \
-"MoreAbout",ExpressionUUID->"76d8f915-2c04-438d-a2f5-0b52813a9cc3"]
+"InlineFormula",ExpressionUUID->"fe98979a-4dd0-4871-a917-014b7cf91713"]], \
+"MoreAbout",ExpressionUUID->"6ba7d837-c0dc-4667-b85d-87225f495bc4"]
 }, Open  ]],
 
 Cell[TextData[{
@@ -581,196 +502,534 @@ Cell[BoxData[
  CellID->880084151,ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42"],
 
 Cell["\<\
-A general fibered graph with independently drawn fiber sizes.\
-\>", "ExampleText",ExpressionUUID->"ad92dffc-90f0-42a5-ba06-9b8ce5c71ee4"],
+A random fibered graph over the 4 \[Times] 4 grid with fibers of 1 to 3 \
+vertices. Its base is the grid:\
+\>", "ExampleText",ExpressionUUID->"a4b8d63b-ad7d-4492-8e01-bd57820c3a38"],
 
 Cell[CellGroupData[{
 
-Cell[BoxData[{
- RowBox[{
-  RowBox[{"SeedRandom", "[", " ", "7", " ", "]"}], ";"}], "\n", 
- RowBox[{"With", "[", " ", 
+Cell[BoxData[
+ RowBox[{"With", "[", 
   RowBox[{
-   RowBox[{"{", " ", 
+   RowBox[{"{", 
     RowBox[{"fib", " ", "=", " ", 
-     RowBox[{"RandomInfraFiberedGraph", "[", " ", 
+     RowBox[{"RandomInfraFiberedGraph", "[", 
       RowBox[{
-       RowBox[{"GridGraph", "[", " ", 
-        RowBox[{"{", " ", 
-         RowBox[{"3", ",", " ", "3"}], " ", "}"}], " ", "]"}], ",", "\n", 
-       "    ", 
+       RowBox[{"GridGraph", "[", 
+        RowBox[{"{", 
+         RowBox[{"4", ",", " ", "4"}], "}"}], "]"}], ",", " ", 
        RowBox[{"\"\<VerticalVertexCount\>\"", " ", "->", " ", 
-        RowBox[{"{", " ", 
-         RowBox[{"2", ",", " ", "4"}], " ", "}"}]}], ",", " ", 
-       RowBox[{"\"\<VerticalEdgeCount\>\"", " ", "->", " ", "2"}]}], " ", 
-      "]"}]}], " ", "}"}], ",", "\n", "  ", 
-   RowBox[{"InfraFiberedGraphHighlight", "[", " ", 
-    RowBox[{"fib", ",", " ", 
-     RowBox[{"{", " ", 
-      RowBox[{"InfraFiber", "[", " ", 
-       RowBox[{"fib", ",", " ", "5"}], " ", "]"}], " ", "}"}]}], " ", "]"}]}],
-   " ", "]"}]}], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"29071a12-8979-476d-8fe0-6fa56a57a19e"],
+        RowBox[{"{", 
+         RowBox[{"1", ",", " ", "3"}], "}"}]}], ",", " ", 
+       RowBox[{"\"\<VerticalEdgeCount\>\"", " ", "->", " ", "2"}], ",", "\n", 
+       "    ", 
+       RowBox[{"RandomSeeding", " ", "->", " ", "1"}]}], "]"}]}], "}"}], ",", 
+   "\n", "  ", 
+   RowBox[{"GraphicsRow", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"InfraFiberedGraphHighlight", "[", "fib", "]"}], ",", " ", 
+      RowBox[{"InfraBaseSpace", "[", "fib", "]"}]}], "}"}], "]"}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"95c7aba2-0512-4e5b-a900-c60e84e4b1b9"],
 
 Cell[BoxData[
- RowBox[{"InfraFiberedGraphHighlight", "[", 
-  RowBox[{
-   RowBox[{"RandomInfraFiberedGraph", "[", 
-    RowBox[{
-     GraphicsBox[
-      NamespaceBox["NetworkGraphics",
-       DynamicModuleBox[{Typeset`graph = HoldComplete[
-         Graph[{1, 2, 3, 4, 5, 6, 7, 8, 9}, {Null, 
-           SparseArray[
-           Automatic, {9, 9}, 0, {
-            1, {{0, 2, 5, 7, 10, 14, 17, 19, 22, 24}, {{2}, {4}, {1}, {3}, {
-              5}, {2}, {6}, {1}, {5}, {7}, {2}, {4}, {6}, {8}, {3}, {5}, {
-              9}, {4}, {8}, {5}, {7}, {9}, {6}, {8}}}, Pattern}]}, {
-          GraphLayout -> {"GridEmbedding", "Dimension" -> {3, 3}}}]]}, 
-        TagBox[
-         GraphicsGroupBox[
-          GraphicsComplexBox[{{1., 1.}, {1., 2.}, {1., 3.}, {2., 1.}, {2., 
-           2.}, {2., 3.}, {3., 1.}, {3., 2.}, {3., 3.}}, {
-            {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
-             0.], ArrowBox[{{1, 2}, {1, 4}, {2, 3}, {2, 5}, {3, 6}, {4, 5}, {
-              4, 7}, {5, 6}, {5, 8}, {6, 9}, {7, 8}, {8, 9}}, 
-              0.02261146496815286]}, 
-            {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-             DiskBox[1, 0.02261146496815286], DiskBox[2, 0.02261146496815286],
-              DiskBox[3, 0.02261146496815286], 
-             DiskBox[4, 0.02261146496815286], DiskBox[5, 0.02261146496815286],
-              DiskBox[6, 0.02261146496815286], 
-             DiskBox[7, 0.02261146496815286], DiskBox[8, 0.02261146496815286],
-              DiskBox[9, 0.02261146496815286]}}]],
-         MouseAppearanceTag["NetworkGraphics"]],
-        AllowKernelInitialization->False]],
-      DefaultBaseStyle->"NetworkGraphics",
-      FormatType->TraditionalForm,
-      FrameTicks->None], ",", 
-     RowBox[{"\<\"VerticalVertexCount\"\>", "\[Rule]", 
-      RowBox[{"{", 
-       RowBox[{"2", ",", "4"}], "}"}]}], ",", 
-     RowBox[{"\<\"VerticalEdgeCount\"\>", "\[Rule]", "2"}]}], "]"}], ",", 
-   RowBox[{"{", 
-    RowBox[{"Subgraph", "[", 
-     RowBox[{
-      RowBox[{"InfraTotalGraph", "[", 
-       RowBox[{"RandomInfraFiberedGraph", "[", 
-        RowBox[{
-         GraphicsBox[
-          NamespaceBox["NetworkGraphics",
-           DynamicModuleBox[{Typeset`graph = HoldComplete[
-             Graph[{1, 2, 3, 4, 5, 6, 7, 8, 9}, {Null, 
-               SparseArray[
-               Automatic, {9, 9}, 0, {
-                1, {{0, 2, 5, 7, 10, 14, 17, 19, 22, 24}, {{2}, {4}, {1}, {
-                  3}, {5}, {2}, {6}, {1}, {5}, {7}, {2}, {4}, {6}, {8}, {3}, {
-                  5}, {9}, {4}, {8}, {5}, {7}, {9}, {6}, {8}}}, Pattern}]}, {
-              GraphLayout -> {"GridEmbedding", "Dimension" -> {3, 3}}}]]}, 
-            
-            TagBox[GraphicsGroupBox[
-              GraphicsComplexBox[{{1., 1.}, {1., 2.}, {1., 3.}, {2., 1.}, {2.,
-                2.}, {2., 3.}, {3., 1.}, {3., 2.}, {3., 3.}}, {
-                {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], 
-                 Arrowheads[0.], 
-                 ArrowBox[{{1, 2}, {1, 4}, {2, 3}, {2, 5}, {3, 6}, {4, 5}, {4,
-                   7}, {5, 6}, {5, 8}, {6, 9}, {7, 8}, {8, 9}}, 
-                  0.02261146496815286]}, 
-                {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-                 DiskBox[1, 0.02261146496815286], 
-                 DiskBox[2, 0.02261146496815286], 
-                 DiskBox[3, 0.02261146496815286], 
-                 DiskBox[4, 0.02261146496815286], 
-                 DiskBox[5, 0.02261146496815286], 
-                 DiskBox[6, 0.02261146496815286], 
-                 DiskBox[7, 0.02261146496815286], 
-                 DiskBox[8, 0.02261146496815286], 
-                 DiskBox[9, 0.02261146496815286]}}]],
-             MouseAppearanceTag["NetworkGraphics"]],
-            AllowKernelInitialization->False]],
-          DefaultBaseStyle->"NetworkGraphics",
-          FormatType->TraditionalForm,
-          FrameTicks->None], ",", 
-         RowBox[{"\<\"VerticalVertexCount\"\>", "\[Rule]", 
-          RowBox[{"{", 
-           RowBox[{"2", ",", "4"}], "}"}]}], ",", 
-         RowBox[{"\<\"VerticalEdgeCount\"\>", "\[Rule]", "2"}]}], "]"}], 
-       "]"}], ",", 
-      RowBox[{"Keys", "[", 
-       RowBox[{"InfraFibrationAssociation", "[", "]"}], "]"}]}], "]"}], 
-    "}"}]}], "]"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"3956b6f2-7749-4f5e-bb1c-47cbe6ddd867"]
+ GraphicsBox[{{}, {InsetBox[
+     FormBox[
+      GraphicsBox[
+       NamespaceBox["NetworkGraphics",
+        DynamicModuleBox[{Typeset`graph = HoldComplete[
+          
+          Graph[{{1, 1}, {1, 2}, {2, 1}, {3, 1}, {3, 2}, {4, 1}, {4, 2}, {5, 
+           1}, {6, 1}, {7, 1}, {8, 1}, {8, 2}, {9, 1}, {10, 1}, {11, 1}, {12, 
+           1}, {13, 1}, {13, 2}, {13, 3}, {14, 1}, {15, 1}, {15, 2}, {16, 
+           1}, {16, 2}, {16, 3}}, {
+           Null, {{17, 19}, {1, 3}, {2, 8}, {1, 8}, {3, 4}, {3, 5}, {3, 9}, {
+            4, 6}, {5, 7}, {4, 10}, {5, 10}, {7, 12}, {6, 12}, {7, 11}, {6, 
+            11}, {8, 9}, {8, 13}, {9, 10}, {9, 14}, {10, 11}, {10, 12}, {10, 
+            15}, {11, 16}, {13, 14}, {13, 17}, {13, 19}, {14, 15}, {14, 20}, {
+            15, 16}, {15, 21}, {15, 22}, {16, 25}, {19, 20}, {17, 20}, {20, 
+            21}, {20, 22}, {22, 24}, {21, 24}, {22, 23}}}, {
+           GraphLayout -> {"Dimension" -> 2}, 
+            VertexCoordinates -> CompressedData["
+1:eJxTTMoPSmViYGCQBGIQXbb1lO7kQi4HBtflH2K+sjusS+q9pJXLCuf7XXgy
+Z3cWg8Ofd3YB+0I4HOa8v9oUeOGL/b8MJmGnQA4H4SnbZjD2P4XzO3S3iDko
+XLffIcAnvOMdu8OBDLPDTMwX98P4K6sORz8J5nDYoTtT6WIeg8OMy6bTF/cx
+OFT0a/05OYHBYU60SOw3wff2JSvdH03tZXBQ8f6as1Dwir1cm4lHVSacvx/G
+v3aVL8UpjMPB4lNr/51F7+25H0lMWTmRwWFvjRS/Fv97e33/08xqcu/t3dpU
+atiBfAaFNTtWrvWzb1ihlMXW997+VMBjzVeKXA4/shcadk7avd9AneXHfqC/
+d0xlv37e9Lr9tL8qx6aeZIXLxy9lCvmbz+DA8CFGetVtQ/tFp7tsV936Ys8A
+BYo+CnybFz+F86P/snIndV6x3/HkTkNc0J79CS2pD5odVtp3bLdovsV63b7N
+4qZqU9GZ/TB5AILfrb8=
+             "], 
+            VertexStyle -> {{4, 2} -> 
+              RGBColor[0.55, 0.8182351, 0.5994118], {11, 1} -> 
+              RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], {13, 
+               3} -> RGBColor[
+               0.853586489106202, 0.6634, 0.7527515552212277], {16, 1} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {4, 1} -> 
+              RGBColor[0.55, 0.8182351, 0.5994118], {13, 1} -> 
+              RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], {1, 1} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {16, 3} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {1, 2} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {3, 2} -> 
+              RGBColor[1., 0.82352935, 0.55], {8, 2} -> 
+              RGBColor[0.77496805, 0.67864375, 0.89882965], {15, 1} -> 
+              RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], {15, 
+               2} -> RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], {2, 
+               1} -> RGBColor[0.63647065, 0.72470575, 0.91352935], {6, 1} -> 
+              RGBColor[0.55, 0.81470575, 0.8676469], {16, 2} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {14, 1} -> 
+              RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], {
+               3, 1} -> RGBColor[1., 0.82352935, 0.55], {13, 2} -> 
+              RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], {8, 1} -> 
+              RGBColor[0.77496805, 0.67864375, 0.89882965], {12, 1} -> 
+              RGBColor[0.875796249294775, 0.844949583254975, 0.55], {9, 1} -> 
+              RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], {10, 
+               1} -> RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], {
+               7, 1} -> RGBColor[0.932725, 0.742375, 0.6093325], {5, 1} -> 
+              RGBColor[
+               0.8053417, 0.6954265000000001, 0.8784239500000001]}}]]}, 
+         TagBox[GraphicsGroupBox[GraphicsComplexBox[CompressedData["
+1:eJxTTMoPSmViYGCQBGIQXbb1lO7kQi4HBtflH2K+sjusS+q9pJXLCuf7XXgy
+Z3cWg8Ofd3YB+0I4HOa8v9oUeOGL/b8MJmGnQA4H4SnbZjD2P4XzO3S3iDko
+XLffIcAnvOMdu8OBDLPDTMwX98P4K6sORz8J5nDYoTtT6WIeg8OMy6bTF/cx
+OFT0a/05OYHBYU60SOw3wff2JSvdH03tZXBQ8f6as1Dwir1cm4lHVSacvx/G
+v3aVL8UpjMPB4lNr/51F7+25H0lMWTmRwWFvjRS/Fv97e33/08xqcu/t3dpU
+atiBfAaFNTtWrvWzb1ihlMXW997+VMBjzVeKXA4/shcadk7avd9AneXHfqC/
+d0xlv37e9Lr9tL8qx6aeZIXLxy9lCvmbz+DA8CFGetVtQ/tFp7tsV936Ys8A
+BYo+CnybFz+F86P/snIndV6x3/HkTkNc0J79CS2pD5odVtp3bLdovsV63b7N
+4qZqU9GZ/TB5AILfrb8=
+            "], {
+             {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
+              0.], ArrowBox[{{1, 3}, {1, 8}, {2, 8}, {3, 4}, {3, 5}, {3, 9}, {
+               4, 6}, {4, 10}, {5, 7}, {5, 10}, {6, 11}, {6, 12}, {7, 11}, {7,
+                12}, {8, 9}, {8, 13}, {9, 10}, {9, 14}, {10, 11}, {10, 12}, {
+               10, 15}, {11, 16}, {13, 14}, {13, 17}, {13, 19}, {14, 15}, {14,
+                20}, {15, 16}, {15, 21}, {15, 22}, {16, 25}, {17, 19}, {17, 
+               20}, {19, 20}, {20, 21}, {20, 22}, {21, 24}, {22, 23}, {22, 
+               24}}, 0.03452010873410809]}, 
+             {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[1, 0.03452010873410809]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[2, 0.03452010873410809]}, 
+              {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+               DiskBox[3, 0.03452010873410809]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[4, 0.03452010873410809]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[5, 0.03452010873410809]}, 
+              {RGBColor[0.55, 0.8182351, 0.5994118], 
+               DiskBox[6, 0.03452010873410809]}, 
+              {RGBColor[0.55, 0.8182351, 0.5994118], 
+               DiskBox[7, 0.03452010873410809]}, 
+              {RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], 
+               DiskBox[8, 0.03452010873410809]}, 
+              {RGBColor[0.55, 0.81470575, 0.8676469], 
+               DiskBox[9, 0.03452010873410809]}, 
+              {RGBColor[0.932725, 0.742375, 0.6093325], 
+               DiskBox[10, 0.03452010873410809]}, 
+              {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+               DiskBox[11, 0.03452010873410809]}, 
+              {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+               DiskBox[12, 0.03452010873410809]}, 
+              {RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], 
+               DiskBox[13, 0.03452010873410809]}, 
+              {RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], 
+               DiskBox[14, 0.03452010873410809]}, 
+              {RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], 
+               DiskBox[15, 0.03452010873410809]}, 
+              {RGBColor[0.875796249294775, 0.844949583254975, 0.55], 
+               DiskBox[16, 0.03452010873410809]}, 
+              {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+               DiskBox[17, 0.03452010873410809]}, 
+              {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+               DiskBox[18, 0.03452010873410809]}, 
+              {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+               DiskBox[19, 0.03452010873410809]}, 
+              {RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], 
+               DiskBox[20, 0.03452010873410809]}, 
+              {RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+               DiskBox[21, 0.03452010873410809]}, 
+              {RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+               DiskBox[22, 0.03452010873410809]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[23, 0.03452010873410809]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[24, 0.03452010873410809]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[25, 0.03452010873410809]}}}]],
+          MouseAppearanceTag["NetworkGraphics"]],
+         AllowKernelInitialization->False]],
+       DefaultBaseStyle->"NetworkGraphics",
+       FormatType->TraditionalForm,
+       FrameTicks->None],
+      TraditionalForm], {160., -159.72656652209247}, {Center, Center}, {300., 299.45313304418494},
+     
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}], 
+    InsetBox[
+     FormBox[
+      GraphicsBox[
+       NamespaceBox["NetworkGraphics",
+        DynamicModuleBox[{Typeset`graph = HoldComplete[
+          
+          Graph[{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, {
+           Null, {{1, 2}, {1, 5}, {2, 3}, {2, 6}, {3, 4}, {3, 7}, {4, 8}, {5, 
+            6}, {5, 9}, {6, 7}, {6, 10}, {7, 8}, {7, 11}, {8, 12}, {9, 10}, {
+            9, 13}, {10, 11}, {10, 14}, {11, 12}, {11, 15}, {12, 16}, {13, 
+            14}, {14, 15}, {15, 16}}}]]}, 
+         TagBox[
+          GraphicsGroupBox[
+           GraphicsComplexBox[{{2.991880418152058, 2.994806175331746}, {
+            2.052115655644264, 3.041378619118289}, {0.9872829004978497, 
+            3.039676807890941}, {0.047767320410946335`, 2.991562031618823}, {
+            3.0409629029303074`, 2.054109831142082}, {2.069647961931377, 
+            2.070697755860177}, {0.9709426706275397, 2.0691335371131405`}, {
+            0., 2.0515027657536526`}, {3.0421188179995893`, 
+            0.9886305621326477}, {2.0711242265790637`, 0.9706011099805419}, {
+            0.9724302362542171, 0.9705846237813567}, {0.0009362295835169121, 
+            0.9860870430905067}, {2.9949950577037256`, 0.04908333166637502}, {
+            2.05468240387988, 0.000272492437364269}, {0.9898089256235408, 
+            0.}, {0.049320336477429505`, 0.046156188718390334`}}, {
+             {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
+              0.], ArrowBox[{{1, 2}, {1, 5}, {2, 3}, {2, 6}, {3, 4}, {3, 7}, {
+               4, 8}, {5, 6}, {5, 9}, {6, 7}, {6, 10}, {7, 8}, {7, 11}, {8, 
+               12}, {9, 10}, {9, 13}, {10, 11}, {10, 14}, {11, 12}, {11, 
+               15}, {12, 16}, {13, 14}, {14, 15}, {15, 16}}, 
+               0.03054080718566017]}, 
+             {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+              DiskBox[1, 0.03054080718566017], 
+              DiskBox[2, 0.03054080718566017], 
+              DiskBox[3, 0.03054080718566017], 
+              DiskBox[4, 0.03054080718566017], 
+              DiskBox[5, 0.03054080718566017], 
+              DiskBox[6, 0.03054080718566017], 
+              DiskBox[7, 0.03054080718566017], 
+              DiskBox[8, 0.03054080718566017], 
+              DiskBox[9, 0.03054080718566017], 
+              DiskBox[10, 0.03054080718566017], 
+              DiskBox[11, 0.03054080718566017], 
+              DiskBox[12, 0.03054080718566017], 
+              DiskBox[13, 0.03054080718566017], 
+              DiskBox[14, 0.03054080718566017], 
+              DiskBox[15, 0.03054080718566017], 
+              DiskBox[16, 0.03054080718566017]}}]],
+          MouseAppearanceTag["NetworkGraphics"]],
+         AllowKernelInitialization->False]],
+       DefaultBaseStyle->"NetworkGraphics",
+       FormatType->TraditionalForm,
+       FrameTicks->None],
+      TraditionalForm], {480., -159.72656652209247}, {Center, Center}, {300., 299.45313304418494},
+     
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}]}, {}},
+  ImageSize->{640., 319.45313304418494`},
+  Method->{"IgnoreImageSizeAutomaticLimit" -> True},
+  PlotRange->{{0, 640.}, {-319.45313304418494`, 0}},
+  PlotRangePadding->Automatic]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"ab4a37f7-7c5b-4330-9208-ceaa1cd876a5"]
 }, Open  ]],
 
 Cell["\<\
-A graph bundle with a shared fiber graph and adjacency-preserving transverse \
-matchings.\
-\>", "ExampleText",ExpressionUUID->"a8cc092e-1ba6-4162-ab28-2e4870fc07db"],
+A random fiber bundle with fibers a path of 3 vertices. Transport around a \
+square can reverse the path:\
+\>", "ExampleText",ExpressionUUID->"66ddd281-d106-4727-8293-05b601690953"],
 
 Cell[CellGroupData[{
 
-Cell[BoxData[{
- RowBox[{
-  RowBox[{"SeedRandom", "[", " ", "7", " ", "]"}], ";"}], "\n", 
- RowBox[{"With", "[", " ", 
+Cell[BoxData[
+ RowBox[{"With", "[", 
   RowBox[{
-   RowBox[{"{", " ", 
+   RowBox[{"{", 
     RowBox[{"fib", " ", "=", " ", 
-     RowBox[{"RandomInfraFiberedGraph", "[", " ", 
+     RowBox[{"RandomInfraFiberedGraph", "[", 
       RowBox[{
-       RowBox[{"CycleGraph", "[", " ", "6", " ", "]"}], ",", " ", 
+       RowBox[{"GridGraph", "[", 
+        RowBox[{"{", 
+         RowBox[{"4", ",", " ", "4"}], "}"}], "]"}], ",", " ", 
        RowBox[{"Properties", " ", "->", " ", 
-        RowBox[{"{", " ", "\"\<FiberBundle\>\"", " ", "}"}]}], ",", "\n", 
-       "    ", 
+        RowBox[{"{", "\"\<FiberBundle\>\"", "}"}]}], ",", "\n", "    ", 
        RowBox[{"\"\<VerticalVertexCount\>\"", " ", "->", " ", 
-        RowBox[{"{", " ", "3", " ", "}"}]}], ",", " ", 
+        RowBox[{"{", "3", "}"}]}], ",", " ", 
        RowBox[{"\"\<VerticalEdgeCount\>\"", " ", "->", " ", 
-        RowBox[{"{", " ", "2", " ", "}"}]}]}], " ", "]"}]}], " ", "}"}], ",", 
+        RowBox[{"{", "2", "}"}]}], ",", " ", 
+       RowBox[{"RandomSeeding", " ", "->", " ", "1"}]}], "]"}]}], "}"}], ",", 
    "\n", "  ", 
-   RowBox[{"InfraFiberedGraphHighlight", "[", " ", "fib", " ", "]"}]}], " ", 
-  "]"}]}], "Input",
- CellLabel->"In[2]:= ",ExpressionUUID->"d1926ea8-7ac7-4947-b052-fe6940ac80a7"],
+   RowBox[{"{", 
+    RowBox[{"conn", " ", "=", " ", 
+     RowBox[{"RandomInfraConnection", "[", 
+      RowBox[{"fib", ",", " ", 
+       RowBox[{"RandomSeeding", " ", "->", " ", "1"}]}], "]"}]}], "}"}], ",", 
+   "\n", "  ", 
+   RowBox[{"InfraFiberedGraphHighlight", "[", 
+    RowBox[{"fib", ",", " ", 
+     RowBox[{"PlotLabel", " ", "->", " ", 
+      RowBox[{"InfraHolonomy", "[", 
+       RowBox[{"fib", ",", " ", "conn", ",", " ", 
+        RowBox[{"{", 
+         RowBox[{
+         "6", ",", " ", "7", ",", " ", "11", ",", " ", "10", ",", " ", "6"}], 
+         "}"}]}], "]"}]}], ",", " ", 
+     RowBox[{"ImageSize", " ", "->", " ", "Medium"}]}], "]"}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[2]:= ",ExpressionUUID->"ee45d2ed-a9f6-4849-a99c-56e49f69c25e"],
 
 Cell[BoxData[
- RowBox[{"InfraFiberedGraphHighlight", "[", 
-  RowBox[{"RandomInfraFiberedGraph", "[", 
-   RowBox[{
-    GraphicsBox[
-     NamespaceBox["NetworkGraphics",
-      DynamicModuleBox[{Typeset`graph = HoldComplete[
-        Graph[{1, 2, 3, 4, 5, 6}, {Null, 
-          SparseArray[
-          Automatic, {6, 6}, 0, {
-           1, {{0, 2, 4, 6, 8, 10, 12}, {{2}, {6}, {1}, {3}, {2}, {4}, {3}, {
-             5}, {4}, {6}, {1}, {5}}}, Pattern}]}, {
-         GraphLayout -> "CircularEmbedding"}]]}, 
-       TagBox[
-        GraphicsGroupBox[
-         GraphicsComplexBox[{{-0.8660254037844389, 0.5000000000000008}, {
-          1.8369701987210297`*^-16, 1.}, {0.8660254037844386, 
-          0.4999999999999993}, {0.8660254037844389, -0.5000000000000012}, {
-          3.8285686989269494`*^-16, -1.}, {-0.8660254037844384, \
--0.4999999999999994}}, {
-           {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
-            0.], ArrowBox[{{1, 2}, {1, 6}, {2, 3}, {3, 4}, {4, 5}, {5, 6}}, 
-             0.02261146496815286]}, 
-           {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-            DiskBox[1, 0.02261146496815286], DiskBox[2, 0.02261146496815286], 
-            DiskBox[3, 0.02261146496815286], DiskBox[4, 0.02261146496815286], 
-            DiskBox[5, 0.02261146496815286], 
-            DiskBox[6, 0.02261146496815286]}}]],
-        MouseAppearanceTag["NetworkGraphics"]],
-       AllowKernelInitialization->False]],
-     DefaultBaseStyle->"NetworkGraphics",
-     FormatType->TraditionalForm,
-     FrameTicks->None], ",", 
-    RowBox[{"Properties", "\[Rule]", 
-     RowBox[{"{", "\<\"FiberBundle\"\>", "}"}]}], ",", 
-    RowBox[{"\<\"VerticalVertexCount\"\>", "\[Rule]", 
-     RowBox[{"{", "3", "}"}]}], ",", 
-    RowBox[{"\<\"VerticalEdgeCount\"\>", "\[Rule]", 
-     RowBox[{"{", "2", "}"}]}]}], "]"}], "]"}]], "Output",
- CellLabel->"Out[2]= ",ExpressionUUID->"3d419f2c-48e3-4e2c-ab62-81586b95e7c2"]
+ GraphicsBox[
+  NamespaceBox["NetworkGraphics",
+   DynamicModuleBox[{Typeset`graph = HoldComplete[
+     Graph[{{1, 1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}, {2, 3}, {3, 1}, {3, 2}, {
+      3, 3}, {4, 1}, {4, 2}, {4, 3}, {5, 1}, {5, 2}, {5, 3}, {6, 1}, {6, 2}, {
+      6, 3}, {7, 1}, {7, 2}, {7, 3}, {8, 1}, {8, 2}, {8, 3}, {9, 1}, {9, 2}, {
+      9, 3}, {10, 1}, {10, 2}, {10, 3}, {11, 1}, {11, 2}, {11, 3}, {12, 1}, {
+      12, 2}, {12, 3}, {13, 1}, {13, 2}, {13, 3}, {14, 1}, {14, 2}, {14, 3}, {
+      15, 1}, {15, 2}, {15, 3}, {16, 1}, {16, 2}, {16, 3}}, {
+      Null, {{1, 2}, {1, 3}, {4, 5}, {4, 6}, {7, 8}, {7, 9}, {10, 11}, {10, 
+       12}, {13, 14}, {13, 15}, {16, 17}, {16, 18}, {19, 20}, {19, 21}, {22, 
+       23}, {22, 24}, {25, 26}, {25, 27}, {28, 29}, {28, 30}, {31, 32}, {31, 
+       33}, {34, 35}, {34, 36}, {37, 38}, {37, 39}, {40, 41}, {40, 42}, {43, 
+       44}, {43, 45}, {46, 47}, {46, 48}, {1, 4}, {2, 5}, {3, 6}, {1, 13}, {2,
+        14}, {3, 15}, {4, 7}, {5, 9}, {6, 8}, {4, 16}, {5, 17}, {6, 18}, {7, 
+       10}, {8, 12}, {9, 11}, {7, 19}, {8, 20}, {9, 21}, {10, 22}, {11, 23}, {
+       12, 24}, {13, 16}, {14, 17}, {15, 18}, {13, 25}, {14, 26}, {15, 27}, {
+       16, 19}, {17, 20}, {18, 21}, {16, 28}, {17, 29}, {18, 30}, {19, 22}, {
+       20, 23}, {21, 24}, {19, 31}, {20, 33}, {21, 32}, {22, 34}, {23, 36}, {
+       24, 35}, {25, 28}, {26, 30}, {27, 29}, {25, 37}, {26, 38}, {27, 39}, {
+       28, 31}, {29, 32}, {30, 33}, {28, 40}, {29, 41}, {30, 42}, {31, 34}, {
+       32, 35}, {33, 36}, {31, 43}, {32, 44}, {33, 45}, {34, 46}, {35, 47}, {
+       36, 48}, {37, 40}, {38, 41}, {39, 42}, {40, 43}, {41, 44}, {42, 45}, {
+       43, 46}, {44, 48}, {45, 47}}}, {
+      GraphLayout -> {"Dimension" -> 2}, ImageSize -> Medium, PlotLabel -> 
+       Cycles[{{2, 3}}], VertexCoordinates -> CompressedData["
+1:eJw90mtMkmEUB/B3rwH2YpqXlS3n1FlEa+F14WY+z6ycSwQvZR9YqSSrpQUr
+rdZiM7WMLJca4BzpvFCyYR/SkqHtrUkt0TQDQZ2uNIRGFqh4DSjahLP9d/bf
+73w8kRxeDhdFECTGnf9bkUiOE+7FINNmmEztIcIgv0NIvpUEi36fCK+7gcGb
+c4yRhAGC139sDIzMi1F4somX1BFMgszPRmnfJQQWNM4IlvQYvJhJ1kcJHMDj
+RFtezdFoO2CExDsoO0lQlhTL+iKxAk5QK7yuxWBKQ0811WzyejxNSbfxdIDY
+n+J42kWEEcFrmSulnSBMpYALfAzqdaUarmwY9/ixjrZH/uUY9HvZsPsK2wXk
+twbYxlxfGGY4kkVYRGFAtpGqohC9HucMGfykQuHDstea/BYXaNQmStprEThN
+H6S6gnygI7dLs6R2AI+jd9LrWbPLoEpuE681uoCUHXJ2NdAKJnJMAZoAH5jw
+SiLKLDR5fZSxUZtdOAYmOBrO2ywXQLamgqYte/EThVuOe5z/95eopAKDvJb0
+hNJmC9CP+xel5vnC+QykXT9uB8kKWlzoQaLXZeT199o3KLRTZ7rfYRZAngt9
+Iq9D4IE6DcdZYwdz/Gtql8YBPD602c69YF4GgnhzRIu701hDPvvDrWBBxNqz
+4L7/2MlMFlw2ef1r2/j5Tv4Y6D09798stAAkQqGUdzHB9ufMx8VDdoCvhqk2
+s8dwj2uyvlMtkRhcL26NFdb34TGUbev4CgkqRSTDaKIBiJ3RH0SDBK9vjMze
+pUhRqJCaJd2+ajxfhp5y8tz/E3X7TOguHXiwlnb8WbUDeHzHMDlNfNgOojNW
+SloD1Xj3YpO6UmHd6jrAyAh3Tv0xeZ3tJJA5Qh1QGqfLz+X04wVV3G+VUA7u
+99IrpwgGcI8+ua/i6jDu8X/oc3dq
+        "], 
+       VertexStyle -> {{10, 3} -> 
+         RGBColor[
+          0.9207770278456882, 0.6826351392284409, 0.6368128359549172], {9, 3} -> 
+         RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], {14, 3} -> 
+         RGBColor[
+          0.6066190282218077, 0.7882047774225539, 0.9014428338661691], {13, 
+          2} -> RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], {14, 
+          2} -> RGBColor[
+          0.6066190282218077, 0.7882047774225539, 0.9014428338661691], {2, 1} -> 
+         RGBColor[0.63647065, 0.72470575, 0.91352935], {12, 2} -> 
+         RGBColor[0.875796249294775, 0.844949583254975, 0.55], {3, 3} -> 
+         RGBColor[1., 0.82352935, 0.55], {4, 1} -> 
+         RGBColor[0.55, 0.8182351, 0.5994118], {8, 2} -> 
+         RGBColor[0.77496805, 0.67864375, 0.89882965], {15, 3} -> 
+         RGBColor[0.93721050009403, 0.76480250047015, 0.5980316497461191], {
+          13, 1} -> RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], {
+          5, 2} -> RGBColor[
+          0.8053417, 0.6954265000000001, 0.8784239500000001], {15, 1} -> 
+         RGBColor[0.93721050009403, 0.76480250047015, 0.5980316497461191], {6,
+           1} -> RGBColor[0.55, 0.81470575, 0.8676469], {8, 1} -> 
+         RGBColor[0.77496805, 0.67864375, 0.89882965], {2, 3} -> 
+         RGBColor[0.63647065, 0.72470575, 0.91352935], {7, 3} -> 
+         RGBColor[0.932725, 0.742375, 0.6093325], {4, 2} -> 
+         RGBColor[0.55, 0.8182351, 0.5994118], {14, 1} -> 
+         RGBColor[
+          0.6066190282218077, 0.7882047774225539, 0.9014428338661691], {16, 
+          2} -> RGBColor[0.9057646, 0.6405292, 0.55], {1, 3} -> 
+         RGBColor[0.9057646, 0.6405292, 0.55], {7, 2} -> 
+         RGBColor[0.932725, 0.742375, 0.6093325], {12, 3} -> 
+         RGBColor[0.875796249294775, 0.844949583254975, 0.55], {10, 1} -> 
+         RGBColor[
+          0.9207770278456882, 0.6826351392284409, 0.6368128359549172], {5, 1} -> 
+         RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], {10, 2} -> 
+         RGBColor[
+          0.9207770278456882, 0.6826351392284409, 0.6368128359549172], {6, 2} -> 
+         RGBColor[0.55, 0.81470575, 0.8676469], {2, 2} -> 
+         RGBColor[0.63647065, 0.72470575, 0.91352935], {12, 1} -> 
+         RGBColor[0.875796249294775, 0.844949583254975, 0.55], {16, 3} -> 
+         RGBColor[0.9057646, 0.6405292, 0.55], {4, 3} -> 
+         RGBColor[0.55, 0.8182351, 0.5994118], {9, 1} -> 
+         RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], {3, 2} -> 
+         RGBColor[1., 0.82352935, 0.55], {9, 2} -> 
+         RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], {5, 3} -> 
+         RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], {1, 1} -> 
+         RGBColor[0.9057646, 0.6405292, 0.55], {8, 3} -> 
+         RGBColor[0.77496805, 0.67864375, 0.89882965], {7, 1} -> 
+         RGBColor[0.932725, 0.742375, 0.6093325], {16, 1} -> 
+         RGBColor[0.9057646, 0.6405292, 0.55], {13, 3} -> 
+         RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], {6, 3} -> 
+         RGBColor[0.55, 0.81470575, 0.8676469], {1, 2} -> 
+         RGBColor[0.9057646, 0.6405292, 0.55], {15, 2} -> 
+         RGBColor[0.93721050009403, 0.76480250047015, 0.5980316497461191], {
+          11, 3} -> RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], {
+          11, 2} -> RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], {
+          3, 1} -> RGBColor[1., 0.82352935, 0.55], {11, 1} -> 
+         RGBColor[0.7395686114767829, 0.6995088331139304, 0.955]}}]]}, 
+    TagBox[GraphicsGroupBox[GraphicsComplexBox[CompressedData["
+1:eJw90mtMkmEUB/B3rwH2YpqXlS3n1FlEa+F14WY+z6ycSwQvZR9YqSSrpQUr
+rdZiM7WMLJca4BzpvFCyYR/SkqHtrUkt0TQDQZ2uNIRGFqh4DSjahLP9d/bf
+73w8kRxeDhdFECTGnf9bkUiOE+7FINNmmEztIcIgv0NIvpUEi36fCK+7gcGb
+c4yRhAGC139sDIzMi1F4somX1BFMgszPRmnfJQQWNM4IlvQYvJhJ1kcJHMDj
+RFtezdFoO2CExDsoO0lQlhTL+iKxAk5QK7yuxWBKQ0811WzyejxNSbfxdIDY
+n+J42kWEEcFrmSulnSBMpYALfAzqdaUarmwY9/ixjrZH/uUY9HvZsPsK2wXk
+twbYxlxfGGY4kkVYRGFAtpGqohC9HucMGfykQuHDstea/BYXaNQmStprEThN
+H6S6gnygI7dLs6R2AI+jd9LrWbPLoEpuE681uoCUHXJ2NdAKJnJMAZoAH5jw
+SiLKLDR5fZSxUZtdOAYmOBrO2ywXQLamgqYte/EThVuOe5z/95eopAKDvJb0
+hNJmC9CP+xel5vnC+QykXT9uB8kKWlzoQaLXZeT199o3KLRTZ7rfYRZAngt9
+Iq9D4IE6DcdZYwdz/Gtql8YBPD602c69YF4GgnhzRIu701hDPvvDrWBBxNqz
+4L7/2MlMFlw2ef1r2/j5Tv4Y6D09798stAAkQqGUdzHB9ufMx8VDdoCvhqk2
+s8dwj2uyvlMtkRhcL26NFdb34TGUbev4CgkqRSTDaKIBiJ3RH0SDBK9vjMze
+pUhRqJCaJd2+ajxfhp5y8tz/E3X7TOguHXiwlnb8WbUDeHzHMDlNfNgOojNW
+SloD1Xj3YpO6UmHd6jrAyAh3Tv0xeZ3tJJA5Qh1QGqfLz+X04wVV3G+VUA7u
+99IrpwgGcI8+ua/i6jDu8X/oc3dq
+       "], {
+        {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[0.], 
+         ArrowBox[{{1, 2}, {1, 3}, {1, 4}, {1, 13}, {2, 5}, {2, 14}, {3, 6}, {
+          3, 15}, {4, 5}, {4, 6}, {4, 7}, {4, 16}, {5, 9}, {5, 17}, {6, 8}, {
+          6, 18}, {7, 8}, {7, 9}, {7, 10}, {7, 19}, {8, 12}, {8, 20}, {9, 
+          11}, {9, 21}, {10, 11}, {10, 12}, {10, 22}, {11, 23}, {12, 24}, {13,
+           14}, {13, 15}, {13, 16}, {13, 25}, {14, 17}, {14, 26}, {15, 18}, {
+          15, 27}, {16, 17}, {16, 18}, {16, 19}, {16, 28}, {17, 20}, {17, 
+          29}, {18, 21}, {18, 30}, {19, 20}, {19, 21}, {19, 22}, {19, 31}, {
+          20, 23}, {20, 33}, {21, 24}, {21, 32}, {22, 23}, {22, 24}, {22, 
+          34}, {23, 36}, {24, 35}, {25, 26}, {25, 27}, {25, 28}, {25, 37}, {
+          26, 30}, {26, 38}, {27, 29}, {27, 39}, {28, 29}, {28, 30}, {28, 
+          31}, {28, 40}, {29, 32}, {29, 41}, {30, 33}, {30, 42}, {31, 32}, {
+          31, 33}, {31, 34}, {31, 43}, {32, 35}, {32, 44}, {33, 36}, {33, 
+          45}, {34, 35}, {34, 36}, {34, 46}, {35, 47}, {36, 48}, {37, 38}, {
+          37, 39}, {37, 40}, {38, 41}, {39, 42}, {40, 41}, {40, 42}, {40, 
+          43}, {41, 44}, {42, 45}, {43, 44}, {43, 45}, {43, 46}, {44, 48}, {
+          45, 47}, {46, 47}, {46, 48}}, 0.03429440301594004]}, 
+        {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+         {RGBColor[0.9057646, 0.6405292, 0.55], 
+          DiskBox[1, 0.03429440301594004]}, 
+         {RGBColor[0.9057646, 0.6405292, 0.55], 
+          DiskBox[2, 0.03429440301594004]}, 
+         {RGBColor[0.9057646, 0.6405292, 0.55], 
+          DiskBox[3, 0.03429440301594004]}, 
+         {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+          DiskBox[4, 0.03429440301594004]}, 
+         {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+          DiskBox[5, 0.03429440301594004]}, 
+         {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+          DiskBox[6, 0.03429440301594004]}, 
+         {RGBColor[1., 0.82352935, 0.55], DiskBox[7, 0.03429440301594004]}, 
+         {RGBColor[1., 0.82352935, 0.55], DiskBox[8, 0.03429440301594004]}, 
+         {RGBColor[1., 0.82352935, 0.55], DiskBox[9, 0.03429440301594004]}, 
+         {RGBColor[0.55, 0.8182351, 0.5994118], 
+          DiskBox[10, 0.03429440301594004]}, 
+         {RGBColor[0.55, 0.8182351, 0.5994118], 
+          DiskBox[11, 0.03429440301594004]}, 
+         {RGBColor[0.55, 0.8182351, 0.5994118], 
+          DiskBox[12, 0.03429440301594004]}, 
+         {RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], 
+          DiskBox[13, 0.03429440301594004]}, 
+         {RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], 
+          DiskBox[14, 0.03429440301594004]}, 
+         {RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], 
+          DiskBox[15, 0.03429440301594004]}, 
+         {RGBColor[0.55, 0.81470575, 0.8676469], 
+          DiskBox[16, 0.03429440301594004]}, 
+         {RGBColor[0.55, 0.81470575, 0.8676469], 
+          DiskBox[17, 0.03429440301594004]}, 
+         {RGBColor[0.55, 0.81470575, 0.8676469], 
+          DiskBox[18, 0.03429440301594004]}, 
+         {RGBColor[0.932725, 0.742375, 0.6093325], 
+          DiskBox[19, 0.03429440301594004]}, 
+         {RGBColor[0.932725, 0.742375, 0.6093325], 
+          DiskBox[20, 0.03429440301594004]}, 
+         {RGBColor[0.932725, 0.742375, 0.6093325], 
+          DiskBox[21, 0.03429440301594004]}, 
+         {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+          DiskBox[22, 0.03429440301594004]}, 
+         {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+          DiskBox[23, 0.03429440301594004]}, 
+         {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+          DiskBox[24, 0.03429440301594004]}, 
+         {RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], 
+          DiskBox[25, 0.03429440301594004]}, 
+         {RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], 
+          DiskBox[26, 0.03429440301594004]}, 
+         {RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], 
+          DiskBox[27, 0.03429440301594004]}, 
+         {RGBColor[
+          0.9207770278456882, 0.6826351392284409, 0.6368128359549172], 
+          DiskBox[28, 0.03429440301594004]}, 
+         {RGBColor[
+          0.9207770278456882, 0.6826351392284409, 0.6368128359549172], 
+          DiskBox[29, 0.03429440301594004]}, 
+         {RGBColor[
+          0.9207770278456882, 0.6826351392284409, 0.6368128359549172], 
+          DiskBox[30, 0.03429440301594004]}, 
+         {RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], 
+          DiskBox[31, 0.03429440301594004]}, 
+         {RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], 
+          DiskBox[32, 0.03429440301594004]}, 
+         {RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], 
+          DiskBox[33, 0.03429440301594004]}, 
+         {RGBColor[0.875796249294775, 0.844949583254975, 0.55], 
+          DiskBox[34, 0.03429440301594004]}, 
+         {RGBColor[0.875796249294775, 0.844949583254975, 0.55], 
+          DiskBox[35, 0.03429440301594004]}, 
+         {RGBColor[0.875796249294775, 0.844949583254975, 0.55], 
+          DiskBox[36, 0.03429440301594004]}, 
+         {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+          DiskBox[37, 0.03429440301594004]}, 
+         {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+          DiskBox[38, 0.03429440301594004]}, 
+         {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+          DiskBox[39, 0.03429440301594004]}, 
+         {RGBColor[
+          0.6066190282218077, 0.7882047774225539, 0.9014428338661691], 
+          DiskBox[40, 0.03429440301594004]}, 
+         {RGBColor[
+          0.6066190282218077, 0.7882047774225539, 0.9014428338661691], 
+          DiskBox[41, 0.03429440301594004]}, 
+         {RGBColor[
+          0.6066190282218077, 0.7882047774225539, 0.9014428338661691], 
+          DiskBox[42, 0.03429440301594004]}, 
+         {RGBColor[0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+          DiskBox[43, 0.03429440301594004]}, 
+         {RGBColor[0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+          DiskBox[44, 0.03429440301594004]}, 
+         {RGBColor[0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+          DiskBox[45, 0.03429440301594004]}, 
+         {RGBColor[0.9057646, 0.6405292, 0.55], 
+          DiskBox[46, 0.03429440301594004]}, 
+         {RGBColor[0.9057646, 0.6405292, 0.55], 
+          DiskBox[47, 0.03429440301594004]}, 
+         {RGBColor[0.9057646, 0.6405292, 0.55], 
+          DiskBox[48, 0.03429440301594004]}}}]],
+     MouseAppearanceTag["NetworkGraphics"]],
+    AllowKernelInitialization->False]],
+  DefaultBaseStyle->"NetworkGraphics",
+  FormatType->TraditionalForm,
+  FrameTicks->None,
+  ImageSize->Medium,
+  PlotLabel->FormBox[
+    RowBox[{"Cycles", "[", 
+      RowBox[{"(", "\[NoBreak]", 
+        GridBox[{{"2", "3"}}, RowSpacings -> 1, ColumnSpacings -> 1, 
+         RowAlignments -> Baseline, ColumnAlignments -> Center], "\[NoBreak]",
+         ")"}], "]"}], TraditionalForm]]], "Output",
+ CellLabel->"Out[2]= ",ExpressionUUID->"474a54ef-0723-4006-a5b0-a6a68f0f02d9"]
 }, Open  ]]
 }, Open  ]],
 
@@ -816,356 +1075,1301 @@ Cell[BoxData[
 
 Cell[CellGroupData[{
 
-Cell["Properties", "ExampleSubsection",ExpressionUUID->"1e1c7213-5105-4f7f-8cf2-98a4d7eebb60"],
+Cell["Properties", "ExampleSubsection",ExpressionUUID->"503d427f-fb24-43a0-8b13-c06bd19cb9b5"],
 
-Cell["Lift existence allows several choices above a base edge.", "ExampleText",ExpressionUUID->"0baf47f8-4660-40a5-a745-6df730532f56"],
+Cell["\<\
+Fibers of 3 vertices with lift existence, lift uniqueness and both. The \
+numbers of neighbours of a vertex over a base neighbour:\
+\>", "ExampleText",ExpressionUUID->"36f3f6b4-a212-41a5-ac52-d26a3dfd32d8"],
 
 Cell[CellGroupData[{
-
-Cell[BoxData[{
- RowBox[{
-  RowBox[{"SeedRandom", "[", " ", "7", " ", "]"}], ";"}], "\n", 
- RowBox[{"With", "[", " ", 
-  RowBox[{
-   RowBox[{"{", " ", 
-    RowBox[{"fib", " ", "=", " ", 
-     RowBox[{"RandomInfraFiberedGraph", "[", " ", 
-      RowBox[{
-       RowBox[{"CycleGraph", "[", " ", "4", " ", "]"}], ",", " ", 
-       RowBox[{"Properties", " ", "->", " ", 
-        RowBox[{"{", " ", "\"\<Fibration\>\"", " ", "}"}]}], ",", "\n", 
-       "    ", 
-       RowBox[{"\"\<VerticalVertexCount\>\"", " ", "->", " ", 
-        RowBox[{"{", " ", 
-         RowBox[{"2", ",", " ", "3"}], " ", "}"}]}], ",", " ", 
-       RowBox[{"\"\<HorizontalEdgeCount\>\"", " ", "->", " ", "All"}]}], " ", 
-      "]"}]}], " ", "}"}], ",", "\n", "  ", 
-   RowBox[{"InfraFiberedGraphHighlight", "[", " ", "fib", " ", "]"}]}], " ", 
-  "]"}]}], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"847e5917-d80b-431f-853c-2392a74ce87e"],
 
 Cell[BoxData[
- RowBox[{"InfraFiberedGraphHighlight", "[", 
-  RowBox[{"RandomInfraFiberedGraph", "[", 
+ RowBox[{"GraphicsRow", " ", "@", " ", 
+  RowBox[{"Table", "[", "\n", "  ", 
    RowBox[{
-    GraphicsBox[
-     NamespaceBox["NetworkGraphics",
-      DynamicModuleBox[{Typeset`graph = HoldComplete[
-        Graph[{1, 2, 3, 4}, {Null, 
-          SparseArray[
-          Automatic, {4, 4}, 0, {
-           1, {{0, 2, 4, 6, 8}, {{2}, {4}, {1}, {3}, {2}, {4}, {1}, {3}}}, 
-            Pattern}]}, {GraphLayout -> "CircularEmbedding"}]]}, 
-       TagBox[
-        GraphicsGroupBox[
-         GraphicsComplexBox[{{-1., 
-          1.0106430996148606`*^-15}, {-7.044813998280222*^-16, 1.}, {
-          1., -1.133107779529596*^-15}, {6.049014748177263*^-16, -1.}}, {
-           {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
-            0.], ArrowBox[{{1, 2}, {1, 4}, {2, 3}, {3, 4}}, 
-             0.02261146496815286]}, 
-           {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-            DiskBox[1, 0.02261146496815286], DiskBox[2, 0.02261146496815286], 
-            DiskBox[3, 0.02261146496815286], 
-            DiskBox[4, 0.02261146496815286]}}]],
-        MouseAppearanceTag["NetworkGraphics"]],
-       AllowKernelInitialization->False]],
-     DefaultBaseStyle->"NetworkGraphics",
-     FormatType->TraditionalForm,
-     FrameTicks->None], ",", 
-    RowBox[{"Properties", "\[Rule]", 
-     RowBox[{"{", "\<\"Fibration\"\>", "}"}]}], ",", 
-    RowBox[{"\<\"VerticalVertexCount\"\>", "\[Rule]", 
-     RowBox[{"{", 
-      RowBox[{"2", ",", "3"}], "}"}]}], ",", 
-    RowBox[{"\<\"HorizontalEdgeCount\"\>", "\[Rule]", "All"}]}], "]"}], 
-  "]"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"8fca6428-9e56-49db-a912-9e6e42bdc905"]
-}, Open  ]]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["VerticalVertexCount", "ExampleSubsection",ExpressionUUID->"a15870dd-8186-458a-96f2-845f7b726545"],
-
-Cell["A scalar permits smaller fibers. A singleton fixes the size.", \
-"ExampleText",ExpressionUUID->"540fe463-211d-4b59-b26c-c09f6c730e82"],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[{
- RowBox[{
-  RowBox[{"SeedRandom", "[", " ", "7", " ", "]"}], ";"}], "\n", 
- RowBox[{"GraphicsRow", "[", " ", 
-  RowBox[{"Map", "[", " ", 
-   RowBox[{
-    RowBox[{"specification", " ", "|->", " ", 
-     RowBox[{"InfraFiberedGraphHighlight", "[", "\n", "  ", 
-      RowBox[{"RandomInfraFiberedGraph", "[", " ", 
-       RowBox[{
-        RowBox[{"CycleGraph", "[", " ", "6", " ", "]"}], ",", " ", 
-        RowBox[{"\"\<VerticalVertexCount\>\"", " ", "->", " ", 
-         "specification"}]}], " ", "]"}], " ", "]"}]}], ",", "\n", "  ", 
-    RowBox[{"{", " ", 
-     RowBox[{"3", ",", " ", 
-      RowBox[{"{", " ", "3", " ", "}"}], ",", " ", 
-      RowBox[{"{", " ", 
-       RowBox[{"2", ",", " ", "3"}], " ", "}"}]}], " ", "}"}]}], " ", "]"}], 
-  " ", "]"}]}], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"712ab9b2-a30e-410e-8e15-f5704bebe1d0"],
+    RowBox[{"With", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"fib", " ", "=", " ", 
+        RowBox[{"RandomInfraFiberedGraph", "[", 
+         RowBox[{
+          RowBox[{"GridGraph", "[", 
+           RowBox[{"{", 
+            RowBox[{"4", ",", " ", "4"}], "}"}], "]"}], ",", " ", 
+          RowBox[{"Properties", " ", "->", " ", 
+           RowBox[{"{", "prop", "}"}]}], ",", " ", 
+          RowBox[{"\"\<VerticalVertexCount\>\"", " ", "->", " ", 
+           RowBox[{"{", "3", "}"}]}], ",", "\n", "      ", 
+          RowBox[{"RandomSeeding", " ", "->", " ", "1"}]}], "]"}]}], "}"}], ",",
+       " ", 
+      RowBox[{"{", 
+       RowBox[{"counts", " ", "=", " ", 
+        RowBox[{"Catenate", "[", 
+         RowBox[{"Values", " ", "/@", " ", 
+          RowBox[{"Values", " ", "@", " ", 
+           RowBox[{"InfraEdgeLiftMultiplicity", "[", "fib", "]"}]}]}], 
+         "]"}]}], "}"}], ",", "\n", "    ", 
+      RowBox[{"InfraFiberedGraphHighlight", "[", 
+       RowBox[{"fib", ",", " ", 
+        RowBox[{"PlotLabel", " ", "->", " ", 
+         RowBox[{"Union", "[", "counts", "]"}]}]}], "]"}]}], "]"}], ",", "\n",
+     "  ", 
+    RowBox[{"{", 
+     RowBox[{"prop", ",", " ", 
+      RowBox[{"{", 
+       RowBox[{"\"\<Fibration\>\"", ",", " ", "\"\<AtMostOneEdgeLift\>\"", ",",
+         " ", "\"\<UniqueEdgeLifting\>\""}], "}"}]}], "}"}]}], 
+   "]"}]}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"89f6a48c-ecdc-4c14-8d29-d97c57cb0178"],
 
 Cell[BoxData[
  GraphicsBox[{{}, {InsetBox[
-     RowBox[{"InfraFiberedGraphHighlight", "(", 
-      RowBox[{"RandomInfraFiberedGraph", "(", 
-       RowBox[{
-        GraphicsBox[
-         NamespaceBox["NetworkGraphics",
-          DynamicModuleBox[{Typeset`graph = HoldComplete[
-            Graph[{1, 2, 3, 4, 5, 6}, {Null, 
-              SparseArray[
-              Automatic, {6, 6}, 0, {
-               1, {{0, 2, 4, 6, 8, 10, 12}, {{2}, {6}, {1}, {3}, {2}, {4}, {
-                 3}, {5}, {4}, {6}, {1}, {5}}}, Pattern}]}, {
-             GraphLayout -> "CircularEmbedding"}]]}, 
-           
-           TagBox[GraphicsGroupBox[
-             GraphicsComplexBox[{{-0.8660254037844389, 0.5000000000000008}, {
-              1.8369701987210297`*^-16, 1.}, {0.8660254037844386, 
-              0.4999999999999993}, {
-              0.8660254037844389, -0.5000000000000012}, {
-              3.8285686989269494`*^-16, -1.}, {-0.8660254037844384, \
--0.4999999999999994}}, {
-               {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], 
-                Arrowheads[0.], 
-                ArrowBox[{{1, 2}, {1, 6}, {2, 3}, {3, 4}, {4, 5}, {5, 6}}, 
-                 0.02261146496815286]}, 
-               {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-                DiskBox[1, 0.02261146496815286], 
-                DiskBox[2, 0.02261146496815286], 
-                DiskBox[3, 0.02261146496815286], 
-                DiskBox[4, 0.02261146496815286], 
-                DiskBox[5, 0.02261146496815286], 
-                DiskBox[6, 0.02261146496815286]}}]],
-            MouseAppearanceTag["NetworkGraphics"]],
-           AllowKernelInitialization->False]],
-         DefaultBaseStyle->"NetworkGraphics",
-         FormatType->TraditionalForm,
-         FrameTicks->None], ",", 
-        RowBox[{"\<\"VerticalVertexCount\"\>", "\[Rule]", "3"}]}], ")"}], 
-      ")"}], {105.4625, -242.4625}, {Center, Center}, {196., 470.00000000000006},
-     
-     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}], 
-    InsetBox[
-     RowBox[{"InfraFiberedGraphHighlight", "(", 
-      RowBox[{"RandomInfraFiberedGraph", "(", 
-       RowBox[{
-        GraphicsBox[
-         NamespaceBox["NetworkGraphics",
-          DynamicModuleBox[{Typeset`graph = HoldComplete[
-            Graph[{1, 2, 3, 4, 5, 6}, {Null, 
-              SparseArray[
-              Automatic, {6, 6}, 0, {
-               1, {{0, 2, 4, 6, 8, 10, 12}, {{2}, {6}, {1}, {3}, {2}, {4}, {
-                 3}, {5}, {4}, {6}, {1}, {5}}}, Pattern}]}, {
-             GraphLayout -> "CircularEmbedding"}]]}, 
-           
-           TagBox[GraphicsGroupBox[
-             GraphicsComplexBox[{{-0.8660254037844389, 0.5000000000000008}, {
-              1.8369701987210297`*^-16, 1.}, {0.8660254037844386, 
-              0.4999999999999993}, {
-              0.8660254037844389, -0.5000000000000012}, {
-              3.8285686989269494`*^-16, -1.}, {-0.8660254037844384, \
--0.4999999999999994}}, {
-               {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], 
-                Arrowheads[0.], 
-                ArrowBox[{{1, 2}, {1, 6}, {2, 3}, {3, 4}, {4, 5}, {5, 6}}, 
-                 0.02261146496815286]}, 
-               {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-                DiskBox[1, 0.02261146496815286], 
-                DiskBox[2, 0.02261146496815286], 
-                DiskBox[3, 0.02261146496815286], 
-                DiskBox[4, 0.02261146496815286], 
-                DiskBox[5, 0.02261146496815286], 
-                DiskBox[6, 0.02261146496815286]}}]],
-            MouseAppearanceTag["NetworkGraphics"]],
-           AllowKernelInitialization->False]],
-         DefaultBaseStyle->"NetworkGraphics",
-         FormatType->TraditionalForm,
-         FrameTicks->None], ",", 
-        RowBox[{"\<\"VerticalVertexCount\"\>", "\[Rule]", 
-         RowBox[{"{", "3", "}"}]}]}], ")"}], 
-      ")"}], {317.38750000000005, -242.4625}, {Center, Center}, {198.00000000000003, 470.00000000000006},
-     
-     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}], 
-    InsetBox[
-     RowBox[{"InfraFiberedGraphHighlight", "(", 
-      RowBox[{"RandomInfraFiberedGraph", "(", 
-       RowBox[{
-        GraphicsBox[
-         NamespaceBox["NetworkGraphics",
-          DynamicModuleBox[{Typeset`graph = HoldComplete[
-            Graph[{1, 2, 3, 4, 5, 6}, {Null, 
-              SparseArray[
-              Automatic, {6, 6}, 0, {
-               1, {{0, 2, 4, 6, 8, 10, 12}, {{2}, {6}, {1}, {3}, {2}, {4}, {
-                 3}, {5}, {4}, {6}, {1}, {5}}}, Pattern}]}, {
-             GraphLayout -> "CircularEmbedding"}]]}, 
-           
-           TagBox[GraphicsGroupBox[
-             GraphicsComplexBox[{{-0.8660254037844389, 0.5000000000000008}, {
-              1.8369701987210297`*^-16, 1.}, {0.8660254037844386, 
-              0.4999999999999993}, {
-              0.8660254037844389, -0.5000000000000012}, {
-              3.8285686989269494`*^-16, -1.}, {-0.8660254037844384, \
--0.4999999999999994}}, {
-               {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], 
-                Arrowheads[0.], 
-                ArrowBox[{{1, 2}, {1, 6}, {2, 3}, {3, 4}, {4, 5}, {5, 6}}, 
-                 0.02261146496815286]}, 
-               {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-                DiskBox[1, 0.02261146496815286], 
-                DiskBox[2, 0.02261146496815286], 
-                DiskBox[3, 0.02261146496815286], 
-                DiskBox[4, 0.02261146496815286], 
-                DiskBox[5, 0.02261146496815286], 
-                DiskBox[6, 0.02261146496815286]}}]],
-            MouseAppearanceTag["NetworkGraphics"]],
-           AllowKernelInitialization->False]],
-         DefaultBaseStyle->"NetworkGraphics",
-         FormatType->TraditionalForm,
-         FrameTicks->None], ",", 
-        RowBox[{"\<\"VerticalVertexCount\"\>", "\[Rule]", 
+     FormBox[
+      GraphicsBox[
+       NamespaceBox["NetworkGraphics",
+        DynamicModuleBox[{Typeset`graph = HoldComplete[
+          
+          Graph[{{1, 1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}, {2, 3}, {3, 1}, {3, 
+           2}, {3, 3}, {4, 1}, {4, 2}, {4, 3}, {5, 1}, {5, 2}, {5, 3}, {6, 
+           1}, {6, 2}, {6, 3}, {7, 1}, {7, 2}, {7, 3}, {8, 1}, {8, 2}, {8, 
+           3}, {9, 1}, {9, 2}, {9, 3}, {10, 1}, {10, 2}, {10, 3}, {11, 1}, {
+           11, 2}, {11, 3}, {12, 1}, {12, 2}, {12, 3}, {13, 1}, {13, 2}, {13, 
+           3}, {14, 1}, {14, 2}, {14, 3}, {15, 1}, {15, 2}, {15, 3}, {16, 
+           1}, {16, 2}, {16, 3}}, {Null, CompressedData["
+1:eJwVxel5gyAAANCoHN4iIBBFFNR4G2fpCFmg+3Tatj/e9+zn++vjPx6Pnz//
+B8hHHvBgAHzoIR8E0M+9LCgARhHECIMQhTACEQwBRRSVgECKCCxxgtMoCeOQ
+Y46riGMWsqgKq0SmIpWxSlWiEhGLWGYkKwtS0JzkNH9mddFQVjJaEU4qyktO
+GGlLTXRpqKEt1cRwyWQluWCKCa645R3vq451YlRODcLJQY5iUKN0Tfs0ta7b
+2jxfzauZ66mem8nYttO9XvViVrPprV3N0i7tZl3nemcHO/ZDN/Rjd/a7PezZ
+n+493u4ar+F+rdMyb9M2r+u+nMux7cu+nuf7uPf7eB/Xfp3XLy91Hxg=
+            "]}, {
+           GraphLayout -> {"Dimension" -> 2}, PlotLabel -> {1, 2, 3}, 
+            VertexCoordinates -> CompressedData["
+1:eJw90mtMkmEUB/B3rwH2YpqXlS3n1FlEa+F14WY+z6ycSwQvZR9YqSSrpQUr
+rdZiM7WMLJca4BzpvFCyYR/SkqHtrUkt0TQDQZ2uNIRGFqh4DSjahLP9d/bf
+73w8kRxeDhdFECTGnf9bkUiOE+7FINNmmEztIcIgv0NIvpUEi36fCK+7gcGb
+c4yRhAGC139sDIzMi1F4somX1BFMgszPRmnfJQQWNM4IlvQYvJhJ1kcJHMDj
+RFtezdFoO2CExDsoO0lQlhTL+iKxAk5QK7yuxWBKQ0811WzyejxNSbfxdIDY
+n+J42kWEEcFrmSulnSBMpYALfAzqdaUarmwY9/ixjrZH/uUY9HvZsPsK2wXk
+twbYxlxfGGY4kkVYRGFAtpGqohC9HucMGfykQuHDstea/BYXaNQmStprEThN
+H6S6gnygI7dLs6R2AI+jd9LrWbPLoEpuE681uoCUHXJ2NdAKJnJMAZoAH5jw
+SiLKLDR5fZSxUZtdOAYmOBrO2ywXQLamgqYte/EThVuOe5z/95eopAKDvJb0
+hNJmC9CP+xel5vnC+QykXT9uB8kKWlzoQaLXZeT199o3KLRTZ7rfYRZAngt9
+Iq9D4IE6DcdZYwdz/Gtql8YBPD602c69YF4GgnhzRIu701hDPvvDrWBBxNqz
+4L7/2MlMFlw2ef1r2/j5Tv4Y6D09798stAAkQqGUdzHB9ufMx8VDdoCvhqk2
+s8dwj2uyvlMtkRhcL26NFdb34TGUbev4CgkqRSTDaKIBiJ3RH0SDBK9vjMze
+pUhRqJCaJd2+ajxfhp5y8tz/E3X7TOguHXiwlnb8WbUDeHzHMDlNfNgOojNW
+SloD1Xj3YpO6UmHd6jrAyAh3Tv0xeZ3tJJA5Qh1QGqfLz+X04wVV3G+VUA7u
+99IrpwgGcI8+ua/i6jDu8X/oc3dq
+             "], 
+            VertexStyle -> {{10, 3} -> 
+              RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], {
+               9, 3} -> RGBColor[
+               0.6062063326437813, 0.8335, 0.7619646675442784], {14, 3} -> 
+              RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], {
+               13, 2} -> RGBColor[
+               0.853586489106202, 0.6634, 0.7527515552212277], {14, 2} -> 
+              RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], {
+               2, 1} -> RGBColor[0.63647065, 0.72470575, 0.91352935], {12, 2} -> 
+              RGBColor[0.875796249294775, 0.844949583254975, 0.55], {3, 3} -> 
+              RGBColor[1., 0.82352935, 0.55], {4, 1} -> 
+              RGBColor[0.55, 0.8182351, 0.5994118], {8, 2} -> 
+              RGBColor[0.77496805, 0.67864375, 0.89882965], {15, 3} -> 
+              RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], {13, 
+               1} -> RGBColor[
+               0.853586489106202, 0.6634, 0.7527515552212277], {5, 2} -> 
+              RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], {
+               15, 1} -> RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], {6, 
+               1} -> RGBColor[0.55, 0.81470575, 0.8676469], {8, 1} -> 
+              RGBColor[0.77496805, 0.67864375, 0.89882965], {2, 3} -> 
+              RGBColor[0.63647065, 0.72470575, 0.91352935], {7, 3} -> 
+              RGBColor[0.932725, 0.742375, 0.6093325], {4, 2} -> 
+              RGBColor[0.55, 0.8182351, 0.5994118], {14, 1} -> 
+              RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], {
+               16, 2} -> RGBColor[0.9057646, 0.6405292, 0.55], {1, 3} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {7, 2} -> 
+              RGBColor[0.932725, 0.742375, 0.6093325], {12, 3} -> 
+              RGBColor[0.875796249294775, 0.844949583254975, 0.55], {10, 1} -> 
+              RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], {
+               5, 1} -> RGBColor[
+               0.8053417, 0.6954265000000001, 0.8784239500000001], {10, 2} -> 
+              RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], {
+               6, 2} -> RGBColor[0.55, 0.81470575, 0.8676469], {2, 2} -> 
+              RGBColor[0.63647065, 0.72470575, 0.91352935], {12, 1} -> 
+              RGBColor[0.875796249294775, 0.844949583254975, 0.55], {16, 3} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {4, 3} -> 
+              RGBColor[0.55, 0.8182351, 0.5994118], {9, 1} -> 
+              RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], {3, 
+               2} -> RGBColor[1., 0.82352935, 0.55], {9, 2} -> 
+              RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], {5, 
+               3} -> RGBColor[
+               0.8053417, 0.6954265000000001, 0.8784239500000001], {1, 1} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {8, 3} -> 
+              RGBColor[0.77496805, 0.67864375, 0.89882965], {7, 1} -> 
+              RGBColor[0.932725, 0.742375, 0.6093325], {16, 1} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {13, 3} -> 
+              RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], {6, 3} -> 
+              RGBColor[0.55, 0.81470575, 0.8676469], {1, 2} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {15, 2} -> 
+              RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], {11, 
+               3} -> RGBColor[
+               0.7395686114767829, 0.6995088331139304, 0.955], {11, 2} -> 
+              RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], {3, 1} -> 
+              RGBColor[1., 0.82352935, 0.55], {11, 1} -> 
+              RGBColor[0.7395686114767829, 0.6995088331139304, 0.955]}}]]}, 
+         TagBox[GraphicsGroupBox[GraphicsComplexBox[CompressedData["
+1:eJw90mtMkmEUB/B3rwH2YpqXlS3n1FlEa+F14WY+z6ycSwQvZR9YqSSrpQUr
+rdZiM7WMLJca4BzpvFCyYR/SkqHtrUkt0TQDQZ2uNIRGFqh4DSjahLP9d/bf
+73w8kRxeDhdFECTGnf9bkUiOE+7FINNmmEztIcIgv0NIvpUEi36fCK+7gcGb
+c4yRhAGC139sDIzMi1F4somX1BFMgszPRmnfJQQWNM4IlvQYvJhJ1kcJHMDj
+RFtezdFoO2CExDsoO0lQlhTL+iKxAk5QK7yuxWBKQ0811WzyejxNSbfxdIDY
+n+J42kWEEcFrmSulnSBMpYALfAzqdaUarmwY9/ixjrZH/uUY9HvZsPsK2wXk
+twbYxlxfGGY4kkVYRGFAtpGqohC9HucMGfykQuHDstea/BYXaNQmStprEThN
+H6S6gnygI7dLs6R2AI+jd9LrWbPLoEpuE681uoCUHXJ2NdAKJnJMAZoAH5jw
+SiLKLDR5fZSxUZtdOAYmOBrO2ywXQLamgqYte/EThVuOe5z/95eopAKDvJb0
+hNJmC9CP+xel5vnC+QykXT9uB8kKWlzoQaLXZeT199o3KLRTZ7rfYRZAngt9
+Iq9D4IE6DcdZYwdz/Gtql8YBPD602c69YF4GgnhzRIu701hDPvvDrWBBxNqz
+4L7/2MlMFlw2ef1r2/j5Tv4Y6D09798stAAkQqGUdzHB9ufMx8VDdoCvhqk2
+s8dwj2uyvlMtkRhcL26NFdb34TGUbev4CgkqRSTDaKIBiJ3RH0SDBK9vjMze
+pUhRqJCaJd2+ajxfhp5y8tz/E3X7TOguHXiwlnb8WbUDeHzHMDlNfNgOojNW
+SloD1Xj3YpO6UmHd6jrAyAh3Tv0xeZ3tJJA5Qh1QGqfLz+X04wVV3G+VUA7u
+99IrpwgGcI8+ua/i6jDu8X/oc3dq
+            "], {
+             {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
+              0.], ArrowBox[CompressedData["
+1:eJwVxel5gyAAANCoHN4iIBBFFNR4G2fpCFmg+3Tatj/e9+zn++vjPx6Pnz//
+e8CDHvIyH/jQR34egAAGKCgABiGIAAEUYhjCCJaQIoxCFCGCSkRxglPMMMdV
+GIcs5GEVJRGPqljEMlaJSGSiUpHKVGUkK7M6JznNnwUpaNEQRjipiCYtMSUr
+ealLQxnltKKattQwwSRTrOOCS654x3tuK1l1wolBjNLJQY7KqUGNT/N81bpu
+a1NP9dy0zdS8mln3etGr3tquXdq13Yw1i1nN1rlu6M7e9UM/9nt/WmcHO9rD
+nu5y7+Eer/Gelml7rfM6b8u+HMu57uu57fu138d1vI/7vM73LzMBHxg=
+               "], 0.03429440301594004]}, 
+             {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[1, 0.03429440301594004]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[2, 0.03429440301594004]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[3, 0.03429440301594004]}, 
+              {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+               DiskBox[4, 0.03429440301594004]}, 
+              {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+               DiskBox[5, 0.03429440301594004]}, 
+              {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+               DiskBox[6, 0.03429440301594004]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[7, 0.03429440301594004]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[8, 0.03429440301594004]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[9, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.8182351, 0.5994118], 
+               DiskBox[10, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.8182351, 0.5994118], 
+               DiskBox[11, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.8182351, 0.5994118], 
+               DiskBox[12, 0.03429440301594004]}, 
+              {RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], 
+               DiskBox[13, 0.03429440301594004]}, 
+              {RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], 
+               DiskBox[14, 0.03429440301594004]}, 
+              {RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], 
+               DiskBox[15, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.81470575, 0.8676469], 
+               DiskBox[16, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.81470575, 0.8676469], 
+               DiskBox[17, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.81470575, 0.8676469], 
+               DiskBox[18, 0.03429440301594004]}, 
+              {RGBColor[0.932725, 0.742375, 0.6093325], 
+               DiskBox[19, 0.03429440301594004]}, 
+              {RGBColor[0.932725, 0.742375, 0.6093325], 
+               DiskBox[20, 0.03429440301594004]}, 
+              {RGBColor[0.932725, 0.742375, 0.6093325], 
+               DiskBox[21, 0.03429440301594004]}, 
+              {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+               DiskBox[22, 0.03429440301594004]}, 
+              {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+               DiskBox[23, 0.03429440301594004]}, 
+              {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+               DiskBox[24, 0.03429440301594004]}, 
+              {RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], 
+               DiskBox[25, 0.03429440301594004]}, 
+              {RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], 
+               DiskBox[26, 0.03429440301594004]}, 
+              {RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], 
+               DiskBox[27, 0.03429440301594004]}, 
+              {RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], 
+               DiskBox[28, 0.03429440301594004]}, 
+              {RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], 
+               DiskBox[29, 0.03429440301594004]}, 
+              {RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], 
+               DiskBox[30, 0.03429440301594004]}, 
+              {RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], 
+               DiskBox[31, 0.03429440301594004]}, 
+              {RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], 
+               DiskBox[32, 0.03429440301594004]}, 
+              {RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], 
+               DiskBox[33, 0.03429440301594004]}, 
+              {RGBColor[0.875796249294775, 0.844949583254975, 0.55], 
+               DiskBox[34, 0.03429440301594004]}, 
+              {RGBColor[0.875796249294775, 0.844949583254975, 0.55], 
+               DiskBox[35, 0.03429440301594004]}, 
+              {RGBColor[0.875796249294775, 0.844949583254975, 0.55], 
+               DiskBox[36, 0.03429440301594004]}, 
+              {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+               DiskBox[37, 0.03429440301594004]}, 
+              {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+               DiskBox[38, 0.03429440301594004]}, 
+              {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+               DiskBox[39, 0.03429440301594004]}, 
+              {RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], 
+               DiskBox[40, 0.03429440301594004]}, 
+              {RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], 
+               DiskBox[41, 0.03429440301594004]}, 
+              {RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], 
+               DiskBox[42, 0.03429440301594004]}, 
+              {RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+               DiskBox[43, 0.03429440301594004]}, 
+              {RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+               DiskBox[44, 0.03429440301594004]}, 
+              {RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+               DiskBox[45, 0.03429440301594004]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[46, 0.03429440301594004]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[47, 0.03429440301594004]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[48, 0.03429440301594004]}}}]],
+          MouseAppearanceTag["NetworkGraphics"]],
+         AllowKernelInitialization->False]],
+       DefaultBaseStyle->"NetworkGraphics",
+       FormatType->TraditionalForm,
+       FrameTicks->None,
+       PlotLabel->FormBox[
          RowBox[{"{", 
-          RowBox[{"2", ",", "3"}], "}"}]}]}], ")"}], 
-      ")"}], {532.8125, -242.4625}, {Center, Center}, {203.0000000000001, 470.00000000000006},
+           RowBox[{"1", ",", "2", ",", "3"}], "}"}], TraditionalForm]],
+      TraditionalForm], {107.5, -112.1118526206213}, {Center, Center}, {200., 209.2237052412426},
+     
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}], 
+    InsetBox[
+     FormBox[
+      GraphicsBox[
+       NamespaceBox["NetworkGraphics",
+        DynamicModuleBox[{Typeset`graph = HoldComplete[
+          
+          Graph[{{1, 1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}, {2, 3}, {3, 1}, {3, 
+           2}, {3, 3}, {4, 1}, {4, 2}, {4, 3}, {5, 1}, {5, 2}, {5, 3}, {6, 
+           1}, {6, 2}, {6, 3}, {7, 1}, {7, 2}, {7, 3}, {8, 1}, {8, 2}, {8, 
+           3}, {9, 1}, {9, 2}, {9, 3}, {10, 1}, {10, 2}, {10, 3}, {11, 1}, {
+           11, 2}, {11, 3}, {12, 1}, {12, 2}, {12, 3}, {13, 1}, {13, 2}, {13, 
+           3}, {14, 1}, {14, 2}, {14, 3}, {15, 1}, {15, 2}, {15, 3}, {16, 
+           1}, {16, 2}, {16, 3}}, {
+           Null, {{1, 6}, {3, 5}, {1, 13}, {4, 7}, {6, 9}, {6, 16}, {9, 10}, {
+            7, 12}, {8, 19}, {7, 21}, {10, 22}, {11, 24}, {14, 17}, {15, 
+            18}, {13, 27}, {15, 25}, {14, 26}, {16, 21}, {18, 19}, {18, 28}, {
+            21, 22}, {19, 23}, {20, 24}, {20, 31}, {21, 33}, {19, 32}, {22, 
+            36}, {27, 30}, {25, 28}, {26, 39}, {25, 38}, {27, 37}, {30, 31}, {
+            28, 40}, {31, 36}, {32, 35}, {32, 45}, {31, 43}, {34, 46}, {39, 
+            42}, {41, 43}, {44, 48}, {45, 47}, {43, 46}}}, {
+           GraphLayout -> {"Dimension" -> 2}, PlotLabel -> {0, 1}, 
+            VertexCoordinates -> CompressedData["
+1:eJw90mtMkmEUB/B3rwH2YpqXlS3n1FlEa+F14WY+z6ycSwQvZR9YqSSrpQUr
+rdZiM7WMLJca4BzpvFCyYR/SkqHtrUkt0TQDQZ2uNIRGFqh4DSjahLP9d/bf
+73w8kRxeDhdFECTGnf9bkUiOE+7FINNmmEztIcIgv0NIvpUEi36fCK+7gcGb
+c4yRhAGC139sDIzMi1F4somX1BFMgszPRmnfJQQWNM4IlvQYvJhJ1kcJHMDj
+RFtezdFoO2CExDsoO0lQlhTL+iKxAk5QK7yuxWBKQ0811WzyejxNSbfxdIDY
+n+J42kWEEcFrmSulnSBMpYALfAzqdaUarmwY9/ixjrZH/uUY9HvZsPsK2wXk
+twbYxlxfGGY4kkVYRGFAtpGqohC9HucMGfykQuHDstea/BYXaNQmStprEThN
+H6S6gnygI7dLs6R2AI+jd9LrWbPLoEpuE681uoCUHXJ2NdAKJnJMAZoAH5jw
+SiLKLDR5fZSxUZtdOAYmOBrO2ywXQLamgqYte/EThVuOe5z/95eopAKDvJb0
+hNJmC9CP+xel5vnC+QykXT9uB8kKWlzoQaLXZeT199o3KLRTZ7rfYRZAngt9
+Iq9D4IE6DcdZYwdz/Gtql8YBPD602c69YF4GgnhzRIu701hDPvvDrWBBxNqz
+4L7/2MlMFlw2ef1r2/j5Tv4Y6D09798stAAkQqGUdzHB9ufMx8VDdoCvhqk2
+s8dwj2uyvlMtkRhcL26NFdb34TGUbev4CgkqRSTDaKIBiJ3RH0SDBK9vjMze
+pUhRqJCaJd2+ajxfhp5y8tz/E3X7TOguHXiwlnb8WbUDeHzHMDlNfNgOojNW
+SloD1Xj3YpO6UmHd6jrAyAh3Tv0xeZ3tJJA5Qh1QGqfLz+X04wVV3G+VUA7u
+99IrpwgGcI8+ua/i6jDu8X/oc3dq
+             "], 
+            VertexStyle -> {{10, 3} -> 
+              RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], {
+               9, 3} -> RGBColor[
+               0.6062063326437813, 0.8335, 0.7619646675442784], {14, 3} -> 
+              RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], {
+               13, 2} -> RGBColor[
+               0.853586489106202, 0.6634, 0.7527515552212277], {14, 2} -> 
+              RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], {
+               2, 1} -> RGBColor[0.63647065, 0.72470575, 0.91352935], {12, 2} -> 
+              RGBColor[0.875796249294775, 0.844949583254975, 0.55], {3, 3} -> 
+              RGBColor[1., 0.82352935, 0.55], {4, 1} -> 
+              RGBColor[0.55, 0.8182351, 0.5994118], {8, 2} -> 
+              RGBColor[0.77496805, 0.67864375, 0.89882965], {15, 3} -> 
+              RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], {13, 
+               1} -> RGBColor[
+               0.853586489106202, 0.6634, 0.7527515552212277], {5, 2} -> 
+              RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], {
+               15, 1} -> RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], {6, 
+               1} -> RGBColor[0.55, 0.81470575, 0.8676469], {8, 1} -> 
+              RGBColor[0.77496805, 0.67864375, 0.89882965], {2, 3} -> 
+              RGBColor[0.63647065, 0.72470575, 0.91352935], {7, 3} -> 
+              RGBColor[0.932725, 0.742375, 0.6093325], {4, 2} -> 
+              RGBColor[0.55, 0.8182351, 0.5994118], {14, 1} -> 
+              RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], {
+               16, 2} -> RGBColor[0.9057646, 0.6405292, 0.55], {1, 3} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {7, 2} -> 
+              RGBColor[0.932725, 0.742375, 0.6093325], {12, 3} -> 
+              RGBColor[0.875796249294775, 0.844949583254975, 0.55], {10, 1} -> 
+              RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], {
+               5, 1} -> RGBColor[
+               0.8053417, 0.6954265000000001, 0.8784239500000001], {10, 2} -> 
+              RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], {
+               6, 2} -> RGBColor[0.55, 0.81470575, 0.8676469], {2, 2} -> 
+              RGBColor[0.63647065, 0.72470575, 0.91352935], {12, 1} -> 
+              RGBColor[0.875796249294775, 0.844949583254975, 0.55], {16, 3} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {4, 3} -> 
+              RGBColor[0.55, 0.8182351, 0.5994118], {9, 1} -> 
+              RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], {3, 
+               2} -> RGBColor[1., 0.82352935, 0.55], {9, 2} -> 
+              RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], {5, 
+               3} -> RGBColor[
+               0.8053417, 0.6954265000000001, 0.8784239500000001], {1, 1} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {8, 3} -> 
+              RGBColor[0.77496805, 0.67864375, 0.89882965], {7, 1} -> 
+              RGBColor[0.932725, 0.742375, 0.6093325], {16, 1} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {13, 3} -> 
+              RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], {6, 3} -> 
+              RGBColor[0.55, 0.81470575, 0.8676469], {1, 2} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {15, 2} -> 
+              RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], {11, 
+               3} -> RGBColor[
+               0.7395686114767829, 0.6995088331139304, 0.955], {11, 2} -> 
+              RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], {3, 1} -> 
+              RGBColor[1., 0.82352935, 0.55], {11, 1} -> 
+              RGBColor[0.7395686114767829, 0.6995088331139304, 0.955]}}]]}, 
+         TagBox[GraphicsGroupBox[GraphicsComplexBox[CompressedData["
+1:eJw90mtMkmEUB/B3rwH2YpqXlS3n1FlEa+F14WY+z6ycSwQvZR9YqSSrpQUr
+rdZiM7WMLJca4BzpvFCyYR/SkqHtrUkt0TQDQZ2uNIRGFqh4DSjahLP9d/bf
+73w8kRxeDhdFECTGnf9bkUiOE+7FINNmmEztIcIgv0NIvpUEi36fCK+7gcGb
+c4yRhAGC139sDIzMi1F4somX1BFMgszPRmnfJQQWNM4IlvQYvJhJ1kcJHMDj
+RFtezdFoO2CExDsoO0lQlhTL+iKxAk5QK7yuxWBKQ0811WzyejxNSbfxdIDY
+n+J42kWEEcFrmSulnSBMpYALfAzqdaUarmwY9/ixjrZH/uUY9HvZsPsK2wXk
+twbYxlxfGGY4kkVYRGFAtpGqohC9HucMGfykQuHDstea/BYXaNQmStprEThN
+H6S6gnygI7dLs6R2AI+jd9LrWbPLoEpuE681uoCUHXJ2NdAKJnJMAZoAH5jw
+SiLKLDR5fZSxUZtdOAYmOBrO2ywXQLamgqYte/EThVuOe5z/95eopAKDvJb0
+hNJmC9CP+xel5vnC+QykXT9uB8kKWlzoQaLXZeT199o3KLRTZ7rfYRZAngt9
+Iq9D4IE6DcdZYwdz/Gtql8YBPD602c69YF4GgnhzRIu701hDPvvDrWBBxNqz
+4L7/2MlMFlw2ef1r2/j5Tv4Y6D09798stAAkQqGUdzHB9ufMx8VDdoCvhqk2
+s8dwj2uyvlMtkRhcL26NFdb34TGUbev4CgkqRSTDaKIBiJ3RH0SDBK9vjMze
+pUhRqJCaJd2+ajxfhp5y8tz/E3X7TOguHXiwlnb8WbUDeHzHMDlNfNgOojNW
+SloD1Xj3YpO6UmHd6jrAyAh3Tv0xeZ3tJJA5Qh1QGqfLz+X04wVV3G+VUA7u
+99IrpwgGcI8+ua/i6jDu8X/oc3dq
+            "], {
+             {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
+              0.], ArrowBox[{{1, 6}, {1, 13}, {3, 5}, {4, 7}, {6, 9}, {6, 
+               16}, {7, 12}, {7, 21}, {8, 19}, {9, 10}, {10, 22}, {11, 24}, {
+               13, 27}, {14, 17}, {14, 26}, {15, 18}, {15, 25}, {16, 21}, {18,
+                19}, {18, 28}, {19, 23}, {19, 32}, {20, 24}, {20, 31}, {21, 
+               22}, {21, 33}, {22, 36}, {25, 28}, {25, 38}, {26, 39}, {27, 
+               30}, {27, 37}, {28, 40}, {30, 31}, {31, 36}, {31, 43}, {32, 
+               35}, {32, 45}, {34, 46}, {39, 42}, {41, 43}, {43, 46}, {44, 
+               48}, {45, 47}}, 0.03429440301594004]}, 
+             {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[1, 0.03429440301594004]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[2, 0.03429440301594004]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[3, 0.03429440301594004]}, 
+              {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+               DiskBox[4, 0.03429440301594004]}, 
+              {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+               DiskBox[5, 0.03429440301594004]}, 
+              {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+               DiskBox[6, 0.03429440301594004]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[7, 0.03429440301594004]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[8, 0.03429440301594004]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[9, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.8182351, 0.5994118], 
+               DiskBox[10, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.8182351, 0.5994118], 
+               DiskBox[11, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.8182351, 0.5994118], 
+               DiskBox[12, 0.03429440301594004]}, 
+              {RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], 
+               DiskBox[13, 0.03429440301594004]}, 
+              {RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], 
+               DiskBox[14, 0.03429440301594004]}, 
+              {RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], 
+               DiskBox[15, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.81470575, 0.8676469], 
+               DiskBox[16, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.81470575, 0.8676469], 
+               DiskBox[17, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.81470575, 0.8676469], 
+               DiskBox[18, 0.03429440301594004]}, 
+              {RGBColor[0.932725, 0.742375, 0.6093325], 
+               DiskBox[19, 0.03429440301594004]}, 
+              {RGBColor[0.932725, 0.742375, 0.6093325], 
+               DiskBox[20, 0.03429440301594004]}, 
+              {RGBColor[0.932725, 0.742375, 0.6093325], 
+               DiskBox[21, 0.03429440301594004]}, 
+              {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+               DiskBox[22, 0.03429440301594004]}, 
+              {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+               DiskBox[23, 0.03429440301594004]}, 
+              {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+               DiskBox[24, 0.03429440301594004]}, 
+              {RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], 
+               DiskBox[25, 0.03429440301594004]}, 
+              {RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], 
+               DiskBox[26, 0.03429440301594004]}, 
+              {RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], 
+               DiskBox[27, 0.03429440301594004]}, 
+              {RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], 
+               DiskBox[28, 0.03429440301594004]}, 
+              {RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], 
+               DiskBox[29, 0.03429440301594004]}, 
+              {RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], 
+               DiskBox[30, 0.03429440301594004]}, 
+              {RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], 
+               DiskBox[31, 0.03429440301594004]}, 
+              {RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], 
+               DiskBox[32, 0.03429440301594004]}, 
+              {RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], 
+               DiskBox[33, 0.03429440301594004]}, 
+              {RGBColor[0.875796249294775, 0.844949583254975, 0.55], 
+               DiskBox[34, 0.03429440301594004]}, 
+              {RGBColor[0.875796249294775, 0.844949583254975, 0.55], 
+               DiskBox[35, 0.03429440301594004]}, 
+              {RGBColor[0.875796249294775, 0.844949583254975, 0.55], 
+               DiskBox[36, 0.03429440301594004]}, 
+              {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+               DiskBox[37, 0.03429440301594004]}, 
+              {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+               DiskBox[38, 0.03429440301594004]}, 
+              {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+               DiskBox[39, 0.03429440301594004]}, 
+              {RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], 
+               DiskBox[40, 0.03429440301594004]}, 
+              {RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], 
+               DiskBox[41, 0.03429440301594004]}, 
+              {RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], 
+               DiskBox[42, 0.03429440301594004]}, 
+              {RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+               DiskBox[43, 0.03429440301594004]}, 
+              {RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+               DiskBox[44, 0.03429440301594004]}, 
+              {RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+               DiskBox[45, 0.03429440301594004]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[46, 0.03429440301594004]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[47, 0.03429440301594004]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[48, 0.03429440301594004]}}}]],
+          MouseAppearanceTag["NetworkGraphics"]],
+         AllowKernelInitialization->False]],
+       DefaultBaseStyle->"NetworkGraphics",
+       FormatType->TraditionalForm,
+       FrameTicks->None,
+       PlotLabel->FormBox[
+         RowBox[{"{", 
+           RowBox[{"0", ",", "1"}], "}"}], TraditionalForm]],
+      TraditionalForm], {322.5, -112.1118526206213}, {Center, Center}, {200., 209.2237052412426},
+     
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}], 
+    InsetBox[
+     FormBox[
+      GraphicsBox[
+       NamespaceBox["NetworkGraphics",
+        DynamicModuleBox[{Typeset`graph = HoldComplete[
+          
+          Graph[{{1, 1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}, {2, 3}, {3, 1}, {3, 
+           2}, {3, 3}, {4, 1}, {4, 2}, {4, 3}, {5, 1}, {5, 2}, {5, 3}, {6, 
+           1}, {6, 2}, {6, 3}, {7, 1}, {7, 2}, {7, 3}, {8, 1}, {8, 2}, {8, 
+           3}, {9, 1}, {9, 2}, {9, 3}, {10, 1}, {10, 2}, {10, 3}, {11, 1}, {
+           11, 2}, {11, 3}, {12, 1}, {12, 2}, {12, 3}, {13, 1}, {13, 2}, {13, 
+           3}, {14, 1}, {14, 2}, {14, 3}, {15, 1}, {15, 2}, {15, 3}, {16, 
+           1}, {16, 2}, {16, 3}}, {
+           Null, {{1, 5}, {2, 4}, {3, 6}, {1, 13}, {2, 14}, {3, 15}, {4, 8}, {
+            5, 7}, {6, 9}, {4, 16}, {5, 18}, {6, 17}, {7, 10}, {8, 12}, {9, 
+            11}, {7, 21}, {8, 19}, {9, 20}, {10, 22}, {11, 24}, {12, 23}, {13,
+             16}, {14, 18}, {15, 17}, {13, 27}, {14, 25}, {15, 26}, {16, 
+            19}, {17, 20}, {18, 21}, {16, 30}, {17, 28}, {18, 29}, {19, 22}, {
+            20, 24}, {21, 23}, {19, 32}, {20, 31}, {21, 33}, {22, 36}, {23, 
+            34}, {24, 35}, {25, 28}, {26, 30}, {27, 29}, {25, 39}, {26, 37}, {
+            27, 38}, {28, 33}, {29, 31}, {30, 32}, {28, 40}, {29, 41}, {30, 
+            42}, {31, 35}, {32, 36}, {33, 34}, {31, 44}, {32, 45}, {33, 43}, {
+            34, 48}, {35, 46}, {36, 47}, {37, 40}, {38, 41}, {39, 42}, {40, 
+            43}, {41, 45}, {42, 44}, {43, 48}, {44, 46}, {45, 47}}}, {
+           GraphLayout -> {"Dimension" -> 2}, PlotLabel -> {1}, 
+            VertexCoordinates -> CompressedData["
+1:eJw90mtMkmEUB/B3rwH2YpqXlS3n1FlEa+F14WY+z6ycSwQvZR9YqSSrpQUr
+rdZiM7WMLJca4BzpvFCyYR/SkqHtrUkt0TQDQZ2uNIRGFqh4DSjahLP9d/bf
+73w8kRxeDhdFECTGnf9bkUiOE+7FINNmmEztIcIgv0NIvpUEi36fCK+7gcGb
+c4yRhAGC139sDIzMi1F4somX1BFMgszPRmnfJQQWNM4IlvQYvJhJ1kcJHMDj
+RFtezdFoO2CExDsoO0lQlhTL+iKxAk5QK7yuxWBKQ0811WzyejxNSbfxdIDY
+n+J42kWEEcFrmSulnSBMpYALfAzqdaUarmwY9/ixjrZH/uUY9HvZsPsK2wXk
+twbYxlxfGGY4kkVYRGFAtpGqohC9HucMGfykQuHDstea/BYXaNQmStprEThN
+H6S6gnygI7dLs6R2AI+jd9LrWbPLoEpuE681uoCUHXJ2NdAKJnJMAZoAH5jw
+SiLKLDR5fZSxUZtdOAYmOBrO2ywXQLamgqYte/EThVuOe5z/95eopAKDvJb0
+hNJmC9CP+xel5vnC+QykXT9uB8kKWlzoQaLXZeT199o3KLRTZ7rfYRZAngt9
+Iq9D4IE6DcdZYwdz/Gtql8YBPD602c69YF4GgnhzRIu701hDPvvDrWBBxNqz
+4L7/2MlMFlw2ef1r2/j5Tv4Y6D09798stAAkQqGUdzHB9ufMx8VDdoCvhqk2
+s8dwj2uyvlMtkRhcL26NFdb34TGUbev4CgkqRSTDaKIBiJ3RH0SDBK9vjMze
+pUhRqJCaJd2+ajxfhp5y8tz/E3X7TOguHXiwlnb8WbUDeHzHMDlNfNgOojNW
+SloD1Xj3YpO6UmHd6jrAyAh3Tv0xeZ3tJJA5Qh1QGqfLz+X04wVV3G+VUA7u
+99IrpwgGcI8+ua/i6jDu8X/oc3dq
+             "], 
+            VertexStyle -> {{10, 3} -> 
+              RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], {
+               9, 3} -> RGBColor[
+               0.6062063326437813, 0.8335, 0.7619646675442784], {14, 3} -> 
+              RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], {
+               13, 2} -> RGBColor[
+               0.853586489106202, 0.6634, 0.7527515552212277], {14, 2} -> 
+              RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], {
+               2, 1} -> RGBColor[0.63647065, 0.72470575, 0.91352935], {12, 2} -> 
+              RGBColor[0.875796249294775, 0.844949583254975, 0.55], {3, 3} -> 
+              RGBColor[1., 0.82352935, 0.55], {4, 1} -> 
+              RGBColor[0.55, 0.8182351, 0.5994118], {8, 2} -> 
+              RGBColor[0.77496805, 0.67864375, 0.89882965], {15, 3} -> 
+              RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], {13, 
+               1} -> RGBColor[
+               0.853586489106202, 0.6634, 0.7527515552212277], {5, 2} -> 
+              RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], {
+               15, 1} -> RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], {6, 
+               1} -> RGBColor[0.55, 0.81470575, 0.8676469], {8, 1} -> 
+              RGBColor[0.77496805, 0.67864375, 0.89882965], {2, 3} -> 
+              RGBColor[0.63647065, 0.72470575, 0.91352935], {7, 3} -> 
+              RGBColor[0.932725, 0.742375, 0.6093325], {4, 2} -> 
+              RGBColor[0.55, 0.8182351, 0.5994118], {14, 1} -> 
+              RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], {
+               16, 2} -> RGBColor[0.9057646, 0.6405292, 0.55], {1, 3} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {7, 2} -> 
+              RGBColor[0.932725, 0.742375, 0.6093325], {12, 3} -> 
+              RGBColor[0.875796249294775, 0.844949583254975, 0.55], {10, 1} -> 
+              RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], {
+               5, 1} -> RGBColor[
+               0.8053417, 0.6954265000000001, 0.8784239500000001], {10, 2} -> 
+              RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], {
+               6, 2} -> RGBColor[0.55, 0.81470575, 0.8676469], {2, 2} -> 
+              RGBColor[0.63647065, 0.72470575, 0.91352935], {12, 1} -> 
+              RGBColor[0.875796249294775, 0.844949583254975, 0.55], {16, 3} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {4, 3} -> 
+              RGBColor[0.55, 0.8182351, 0.5994118], {9, 1} -> 
+              RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], {3, 
+               2} -> RGBColor[1., 0.82352935, 0.55], {9, 2} -> 
+              RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], {5, 
+               3} -> RGBColor[
+               0.8053417, 0.6954265000000001, 0.8784239500000001], {1, 1} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {8, 3} -> 
+              RGBColor[0.77496805, 0.67864375, 0.89882965], {7, 1} -> 
+              RGBColor[0.932725, 0.742375, 0.6093325], {16, 1} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {13, 3} -> 
+              RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], {6, 3} -> 
+              RGBColor[0.55, 0.81470575, 0.8676469], {1, 2} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {15, 2} -> 
+              RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], {11, 
+               3} -> RGBColor[
+               0.7395686114767829, 0.6995088331139304, 0.955], {11, 2} -> 
+              RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], {3, 1} -> 
+              RGBColor[1., 0.82352935, 0.55], {11, 1} -> 
+              RGBColor[0.7395686114767829, 0.6995088331139304, 0.955]}}]]}, 
+         TagBox[GraphicsGroupBox[GraphicsComplexBox[CompressedData["
+1:eJw90mtMkmEUB/B3rwH2YpqXlS3n1FlEa+F14WY+z6ycSwQvZR9YqSSrpQUr
+rdZiM7WMLJca4BzpvFCyYR/SkqHtrUkt0TQDQZ2uNIRGFqh4DSjahLP9d/bf
+73w8kRxeDhdFECTGnf9bkUiOE+7FINNmmEztIcIgv0NIvpUEi36fCK+7gcGb
+c4yRhAGC139sDIzMi1F4somX1BFMgszPRmnfJQQWNM4IlvQYvJhJ1kcJHMDj
+RFtezdFoO2CExDsoO0lQlhTL+iKxAk5QK7yuxWBKQ0811WzyejxNSbfxdIDY
+n+J42kWEEcFrmSulnSBMpYALfAzqdaUarmwY9/ixjrZH/uUY9HvZsPsK2wXk
+twbYxlxfGGY4kkVYRGFAtpGqohC9HucMGfykQuHDstea/BYXaNQmStprEThN
+H6S6gnygI7dLs6R2AI+jd9LrWbPLoEpuE681uoCUHXJ2NdAKJnJMAZoAH5jw
+SiLKLDR5fZSxUZtdOAYmOBrO2ywXQLamgqYte/EThVuOe5z/95eopAKDvJb0
+hNJmC9CP+xel5vnC+QykXT9uB8kKWlzoQaLXZeT199o3KLRTZ7rfYRZAngt9
+Iq9D4IE6DcdZYwdz/Gtql8YBPD602c69YF4GgnhzRIu701hDPvvDrWBBxNqz
+4L7/2MlMFlw2ef1r2/j5Tv4Y6D09798stAAkQqGUdzHB9ufMx8VDdoCvhqk2
+s8dwj2uyvlMtkRhcL26NFdb34TGUbev4CgkqRSTDaKIBiJ3RH0SDBK9vjMze
+pUhRqJCaJd2+ajxfhp5y8tz/E3X7TOguHXiwlnb8WbUDeHzHMDlNfNgOojNW
+SloD1Xj3YpO6UmHd6jrAyAh3Tv0xeZ3tJJA5Qh1QGqfLz+X04wVV3G+VUA7u
+99IrpwgGcI8+ua/i6jDu8X/oc3dq
+            "], {
+             {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
+              0.], ArrowBox[{{1, 5}, {1, 13}, {2, 4}, {2, 14}, {3, 6}, {3, 
+               15}, {4, 8}, {4, 16}, {5, 7}, {5, 18}, {6, 9}, {6, 17}, {7, 
+               10}, {7, 21}, {8, 12}, {8, 19}, {9, 11}, {9, 20}, {10, 22}, {
+               11, 24}, {12, 23}, {13, 16}, {13, 27}, {14, 18}, {14, 25}, {15,
+                17}, {15, 26}, {16, 19}, {16, 30}, {17, 20}, {17, 28}, {18, 
+               21}, {18, 29}, {19, 22}, {19, 32}, {20, 24}, {20, 31}, {21, 
+               23}, {21, 33}, {22, 36}, {23, 34}, {24, 35}, {25, 28}, {25, 
+               39}, {26, 30}, {26, 37}, {27, 29}, {27, 38}, {28, 33}, {28, 
+               40}, {29, 31}, {29, 41}, {30, 32}, {30, 42}, {31, 35}, {31, 
+               44}, {32, 36}, {32, 45}, {33, 34}, {33, 43}, {34, 48}, {35, 
+               46}, {36, 47}, {37, 40}, {38, 41}, {39, 42}, {40, 43}, {41, 
+               45}, {42, 44}, {43, 48}, {44, 46}, {45, 47}}, 
+               0.03429440301594004]}, 
+             {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[1, 0.03429440301594004]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[2, 0.03429440301594004]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[3, 0.03429440301594004]}, 
+              {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+               DiskBox[4, 0.03429440301594004]}, 
+              {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+               DiskBox[5, 0.03429440301594004]}, 
+              {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+               DiskBox[6, 0.03429440301594004]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[7, 0.03429440301594004]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[8, 0.03429440301594004]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[9, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.8182351, 0.5994118], 
+               DiskBox[10, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.8182351, 0.5994118], 
+               DiskBox[11, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.8182351, 0.5994118], 
+               DiskBox[12, 0.03429440301594004]}, 
+              {RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], 
+               DiskBox[13, 0.03429440301594004]}, 
+              {RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], 
+               DiskBox[14, 0.03429440301594004]}, 
+              {RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], 
+               DiskBox[15, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.81470575, 0.8676469], 
+               DiskBox[16, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.81470575, 0.8676469], 
+               DiskBox[17, 0.03429440301594004]}, 
+              {RGBColor[0.55, 0.81470575, 0.8676469], 
+               DiskBox[18, 0.03429440301594004]}, 
+              {RGBColor[0.932725, 0.742375, 0.6093325], 
+               DiskBox[19, 0.03429440301594004]}, 
+              {RGBColor[0.932725, 0.742375, 0.6093325], 
+               DiskBox[20, 0.03429440301594004]}, 
+              {RGBColor[0.932725, 0.742375, 0.6093325], 
+               DiskBox[21, 0.03429440301594004]}, 
+              {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+               DiskBox[22, 0.03429440301594004]}, 
+              {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+               DiskBox[23, 0.03429440301594004]}, 
+              {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+               DiskBox[24, 0.03429440301594004]}, 
+              {RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], 
+               DiskBox[25, 0.03429440301594004]}, 
+              {RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], 
+               DiskBox[26, 0.03429440301594004]}, 
+              {RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], 
+               DiskBox[27, 0.03429440301594004]}, 
+              {RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], 
+               DiskBox[28, 0.03429440301594004]}, 
+              {RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], 
+               DiskBox[29, 0.03429440301594004]}, 
+              {RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], 
+               DiskBox[30, 0.03429440301594004]}, 
+              {RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], 
+               DiskBox[31, 0.03429440301594004]}, 
+              {RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], 
+               DiskBox[32, 0.03429440301594004]}, 
+              {RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], 
+               DiskBox[33, 0.03429440301594004]}, 
+              {RGBColor[0.875796249294775, 0.844949583254975, 0.55], 
+               DiskBox[34, 0.03429440301594004]}, 
+              {RGBColor[0.875796249294775, 0.844949583254975, 0.55], 
+               DiskBox[35, 0.03429440301594004]}, 
+              {RGBColor[0.875796249294775, 0.844949583254975, 0.55], 
+               DiskBox[36, 0.03429440301594004]}, 
+              {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+               DiskBox[37, 0.03429440301594004]}, 
+              {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+               DiskBox[38, 0.03429440301594004]}, 
+              {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+               DiskBox[39, 0.03429440301594004]}, 
+              {RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], 
+               DiskBox[40, 0.03429440301594004]}, 
+              {RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], 
+               DiskBox[41, 0.03429440301594004]}, 
+              {RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], 
+               DiskBox[42, 0.03429440301594004]}, 
+              {RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+               DiskBox[43, 0.03429440301594004]}, 
+              {RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+               DiskBox[44, 0.03429440301594004]}, 
+              {RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+               DiskBox[45, 0.03429440301594004]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[46, 0.03429440301594004]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[47, 0.03429440301594004]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[48, 0.03429440301594004]}}}]],
+          MouseAppearanceTag["NetworkGraphics"]],
+         AllowKernelInitialization->False]],
+       DefaultBaseStyle->"NetworkGraphics",
+       FormatType->TraditionalForm,
+       FrameTicks->None,
+       PlotLabel->FormBox[
+         RowBox[{"{", "1", "}"}], TraditionalForm]],
+      TraditionalForm], {537.5, -112.1118526206213}, {Center, Center}, {200., 209.2237052412426},
      
      BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}]}, {}},
-  ImageSize->{641.7750000000001, 484.925},
+  ImageSize->{645., 224.2237052412426},
   Method->{"IgnoreImageSizeAutomaticLimit" -> True},
-  PlotRange->{{0, 641.7750000000001}, {-484.925, 0}},
+  PlotRange->{{0, 645.}, {-224.2237052412426, 0}},
   PlotRangePadding->Automatic]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"d702fec3-5244-4861-be5a-a88aac9f0959"]
+ CellLabel->"Out[1]= ",ExpressionUUID->"122b570a-398e-4ba7-b4a1-a9788729c728"]
 }, Open  ]]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
-Cell["HorizontalEdgeCount", "ExampleSubsection",ExpressionUUID->"265f8489-b369-4064-aea2-a30cf3fc780f"],
+Cell["VerticalVertexCount", "ExampleSubsection",ExpressionUUID->"50617506-5ab3-4766-b75a-fa2863178311"],
 
 Cell["\<\
-A complete join between equal fibers supports every section choice and every \
-fiber matching.\
-\>", "ExampleText",ExpressionUUID->"8a06f535-c0b4-4926-8de6-ace4620735a3"],
+A bound, an exact size and a range. The fiber sizes that occur:\
+\>", "ExampleText",ExpressionUUID->"f607c5f2-b005-4448-87ae-6e1590dac877"],
 
 Cell[CellGroupData[{
 
-Cell[BoxData[{
- RowBox[{
-  RowBox[{"SeedRandom", "[", " ", "7", " ", "]"}], ";"}], "\n", 
- RowBox[{"With", "[", " ", 
+Cell[BoxData[
+ RowBox[{"Table", "[", "\n", "  ", 
   RowBox[{
-   RowBox[{"{", " ", 
-    RowBox[{"fib", " ", "=", " ", 
-     RowBox[{"RandomInfraFiberedGraph", "[", " ", 
-      RowBox[{
-       RowBox[{"CycleGraph", "[", " ", "6", " ", "]"}], ",", " ", 
-       RowBox[{"\"\<VerticalVertexCount\>\"", " ", "->", " ", 
-        RowBox[{"{", " ", "3", " ", "}"}]}], ",", " ", 
-       RowBox[{"\"\<HorizontalEdgeCount\>\"", " ", "->", " ", "All"}]}], " ", 
-      "]"}]}], " ", "}"}], ",", "\n", "  ", 
-   RowBox[{"{", " ", 
-    RowBox[{"section", " ", "=", " ", 
-     RowBox[{"RandomInfraSection", "[", " ", 
-      RowBox[{"fib", ",", " ", 
-       RowBox[{"Properties", " ", "->", " ", 
-        RowBox[{"{", " ", "\"\<Continuous\>\"", " ", "}"}]}]}], " ", "]"}]}], 
-    " ", "}"}], ",", "\n", "  ", 
-   RowBox[{"InfraFiberedGraphHighlight", "[", " ", 
-    RowBox[{"fib", ",", " ", "section"}], " ", "]"}]}], " ", "]"}]}], "Input",\
-
- CellLabel->"In[1]:= ",ExpressionUUID->"5dd04625-1347-4c1d-8657-35f62257da38"],
+   RowBox[{"With", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"fib", " ", "=", " ", 
+       RowBox[{"RandomInfraFiberedGraph", "[", 
+        RowBox[{
+         RowBox[{"GridGraph", "[", 
+          RowBox[{"{", 
+           RowBox[{"4", ",", " ", "4"}], "}"}], "]"}], ",", " ", 
+         RowBox[{"\"\<VerticalVertexCount\>\"", " ", "->", " ", "spec"}], ",",
+          " ", 
+         RowBox[{"RandomSeeding", " ", "->", " ", "1"}]}], "]"}]}], "}"}], ",",
+      "\n", "    ", 
+     RowBox[{"Union", " ", "@", " ", 
+      RowBox[{"Values", "[", 
+       RowBox[{"VertexCount", " ", "/@", " ", 
+        RowBox[{"InfraFibers", "[", "fib", "]"}]}], "]"}]}]}], "]"}], ",", 
+   "\n", "  ", 
+   RowBox[{"{", 
+    RowBox[{"spec", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"3", ",", " ", 
+       RowBox[{"{", "3", "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"2", ",", " ", "3"}], "}"}]}], "}"}]}], "}"}]}], 
+  "]"}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"e48d20fd-b522-477a-909f-24ffe8f9213b"],
 
 Cell[BoxData[
- RowBox[{"InfraFiberedGraphHighlight", "[", 
+ RowBox[{"{", 
   RowBox[{
-   RowBox[{"RandomInfraFiberedGraph", "[", 
-    RowBox[{
-     GraphicsBox[
-      NamespaceBox["NetworkGraphics",
-       DynamicModuleBox[{Typeset`graph = HoldComplete[
-         Graph[{1, 2, 3, 4, 5, 6}, {Null, 
-           SparseArray[
-           Automatic, {6, 6}, 0, {
-            1, {{0, 2, 4, 6, 8, 10, 12}, {{2}, {6}, {1}, {3}, {2}, {4}, {3}, {
-              5}, {4}, {6}, {1}, {5}}}, Pattern}]}, {
-          GraphLayout -> "CircularEmbedding"}]]}, 
-        TagBox[
-         GraphicsGroupBox[
-          GraphicsComplexBox[{{-0.8660254037844389, 0.5000000000000008}, {
-           1.8369701987210297`*^-16, 1.}, {0.8660254037844386, 
-           0.4999999999999993}, {0.8660254037844389, -0.5000000000000012}, {
-           3.8285686989269494`*^-16, -1.}, {-0.8660254037844384, \
--0.4999999999999994}}, {
-            {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
-             0.], ArrowBox[{{1, 2}, {1, 6}, {2, 3}, {3, 4}, {4, 5}, {5, 6}}, 
-              0.02261146496815286]}, 
-            {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-             DiskBox[1, 0.02261146496815286], DiskBox[2, 0.02261146496815286],
-              DiskBox[3, 0.02261146496815286], 
-             DiskBox[4, 0.02261146496815286], DiskBox[5, 0.02261146496815286],
-              DiskBox[6, 0.02261146496815286]}}]],
-         MouseAppearanceTag["NetworkGraphics"]],
-        AllowKernelInitialization->False]],
-      DefaultBaseStyle->"NetworkGraphics",
-      FormatType->TraditionalForm,
-      FrameTicks->None], ",", 
-     RowBox[{"\<\"VerticalVertexCount\"\>", "\[Rule]", 
-      RowBox[{"{", "3", "}"}]}], ",", 
-     RowBox[{"\<\"HorizontalEdgeCount\"\>", "\[Rule]", "All"}]}], "]"}], ",", 
-   
-   RowBox[{"RandomInfraSection", "[", 
-    RowBox[{
+   RowBox[{"{", 
+    RowBox[{"1", ",", "2", ",", "3"}], "}"}], ",", 
+   RowBox[{"{", "3", "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"2", ",", "3"}], "}"}]}], "}"}]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"b8435b25-c841-4082-8f7e-3a24ee0470fa"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["HorizontalEdgeCount", "ExampleSubsection",ExpressionUUID->"8b96decd-ba74-4a5c-9cfa-8ee7b6b622c2"],
+
+Cell["\<\
+One transverse edge over each base edge, and the complete join:\
+\>", "ExampleText",ExpressionUUID->"333255cd-0efb-4e6a-acc5-8be407998737"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"GraphicsRow", " ", "@", " ", 
+  RowBox[{"Table", "[", "\n", "  ", 
+   RowBox[{
+    RowBox[{"InfraFiberedGraphHighlight", " ", "@", " ", 
      RowBox[{"RandomInfraFiberedGraph", "[", 
       RowBox[{
-       GraphicsBox[
-        NamespaceBox["NetworkGraphics",
-         DynamicModuleBox[{Typeset`graph = HoldComplete[
-           Graph[{1, 2, 3, 4, 5, 6}, {Null, 
-             SparseArray[
-             Automatic, {6, 6}, 0, {
-              1, {{0, 2, 4, 6, 8, 10, 12}, {{2}, {6}, {1}, {3}, {2}, {4}, {
-                3}, {5}, {4}, {6}, {1}, {5}}}, Pattern}]}, {
-            GraphLayout -> "CircularEmbedding"}]]}, 
-          
-          TagBox[GraphicsGroupBox[
-            GraphicsComplexBox[{{-0.8660254037844389, 0.5000000000000008}, {
-             1.8369701987210297`*^-16, 1.}, {0.8660254037844386, 
-             0.4999999999999993}, {0.8660254037844389, -0.5000000000000012}, {
-             3.8285686989269494`*^-16, -1.}, {-0.8660254037844384, \
--0.4999999999999994}}, {
-              {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
-               0.], ArrowBox[{{1, 2}, {1, 6}, {2, 3}, {3, 4}, {4, 5}, {5, 6}},
-                 0.02261146496815286]}, 
-              {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-               DiskBox[1, 0.02261146496815286], 
-               DiskBox[2, 0.02261146496815286], 
-               DiskBox[3, 0.02261146496815286], 
-               DiskBox[4, 0.02261146496815286], 
-               DiskBox[5, 0.02261146496815286], 
-               DiskBox[6, 0.02261146496815286]}}]],
-           MouseAppearanceTag["NetworkGraphics"]],
-          AllowKernelInitialization->False]],
-        DefaultBaseStyle->"NetworkGraphics",
-        FormatType->TraditionalForm,
-        FrameTicks->None], ",", 
-       RowBox[{"\<\"VerticalVertexCount\"\>", "\[Rule]", 
-        RowBox[{"{", "3", "}"}]}], ",", 
-       RowBox[{"\<\"HorizontalEdgeCount\"\>", "\[Rule]", "All"}]}], "]"}], ",", 
-     RowBox[{"Properties", "\[Rule]", 
-      RowBox[{"{", "\<\"Continuous\"\>", "}"}]}]}], "]"}]}], "]"}]], "Output",\
+       RowBox[{"GridGraph", "[", 
+        RowBox[{"{", 
+         RowBox[{"4", ",", " ", "4"}], "}"}], "]"}], ",", "\n", "    ", 
+       RowBox[{"\"\<VerticalVertexCount\>\"", " ", "->", " ", 
+        RowBox[{"{", "2", "}"}]}], ",", " ", 
+       RowBox[{"\"\<HorizontalEdgeCount\>\"", " ", "->", " ", "h"}], ",", " ", 
+       RowBox[{"RandomSeeding", " ", "->", " ", "1"}]}], "]"}]}], ",", "\n", 
+    "  ", 
+    RowBox[{"{", 
+     RowBox[{"h", ",", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", "1", "}"}], ",", " ", "All"}], "}"}]}], "}"}]}], 
+   "]"}]}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"0532531f-d422-4793-8b54-14a4c26d5ee4"],
 
- CellLabel->"Out[1]= ",ExpressionUUID->"09215c60-0d16-4b20-be98-4ba086fc1007"]
+Cell[BoxData[
+ GraphicsBox[{{}, {InsetBox[
+     FormBox[
+      GraphicsBox[
+       NamespaceBox["NetworkGraphics",
+        DynamicModuleBox[{Typeset`graph = HoldComplete[
+          
+          Graph[{{1, 1}, {1, 2}, {2, 1}, {2, 2}, {3, 1}, {3, 2}, {4, 1}, {4, 
+           2}, {5, 1}, {5, 2}, {6, 1}, {6, 2}, {7, 1}, {7, 2}, {8, 1}, {8, 
+           2}, {9, 1}, {9, 2}, {10, 1}, {10, 2}, {11, 1}, {11, 2}, {12, 1}, {
+           12, 2}, {13, 1}, {13, 2}, {14, 1}, {14, 2}, {15, 1}, {15, 2}, {16, 
+           1}, {16, 2}}, {
+           Null, {{2, 4}, {1, 10}, {3, 5}, {3, 12}, {5, 8}, {5, 13}, {7, 
+            15}, {9, 11}, {9, 18}, {12, 14}, {11, 19}, {13, 15}, {13, 21}, {
+            15, 23}, {18, 19}, {17, 25}, {19, 22}, {20, 27}, {21, 23}, {21, 
+            29}, {24, 32}, {26, 28}, {28, 30}, {29, 32}}}, {
+           GraphLayout -> {"Dimension" -> 2}, 
+            VertexCoordinates -> CompressedData["
+1:eJxTTMoPSmViYGBQAGIQXbb1lO7kQi4HBtflH2K+sjusS+q9pJXLCudvqmw+
+9f4Nk8Ofd3YB+0I4HC779tzju/jbHsaf8/5qU+CFL/b/MpiEnQI5HISnbJvB
+2P8Uzu/Q3SLmoHDdfocAn/COd+wOBzLMDjMxX9wP4/OpJHVKXONy2KE7U+li
+HoODy0UVvQ0XWeH8PzVXjlwXYHao6Nf6c3ICg0N6iN7lexJ/7GH86Q3HO5N7
+v9iXrHR/NLWXwYFr28xlqpxP4XwV7685CwWv2Mu1mXhUZcL5+2F8q/q1E8tu
+cDlYfGrtv7PovX2RToEZ3xVWOL+ge/vBu8LMDntrpPi1+N/b+xZ+OfNK7o89
+jJ/wSym2evIXe7c2lRp2IH/uygDfUNGncL7JwouOPxSu2DesUMpi63tvL/JV
+YoYX05X9MP6UC4tUv5RzOSwImRRQrLjS/kxt6qnuYlY4/4jfwkbDT0wODB9i
+pFfdNrT/+v24z6Tbv+1h/EWnu2xX3fpizwAFij4KfJsXP4XzN/xmfLnR8rq9
+QrL0phMLl9vPmPXiw4SXF/bD+AB8huJg
+             "], 
+            VertexStyle -> {{3, 2} -> RGBColor[1., 0.82352935, 0.55], {6, 1} -> 
+              RGBColor[0.55, 0.81470575, 0.8676469], {5, 1} -> 
+              RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], {7,
+                2} -> RGBColor[0.932725, 0.742375, 0.6093325], {2, 1} -> 
+              RGBColor[0.63647065, 0.72470575, 0.91352935], {12, 2} -> 
+              RGBColor[0.875796249294775, 0.844949583254975, 0.55], {6, 2} -> 
+              RGBColor[0.55, 0.81470575, 0.8676469], {4, 1} -> 
+              RGBColor[0.55, 0.8182351, 0.5994118], {11, 2} -> 
+              RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], {3, 1} -> 
+              RGBColor[1., 0.82352935, 0.55], {10, 2} -> 
+              RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], {
+               4, 2} -> RGBColor[0.55, 0.8182351, 0.5994118], {1, 1} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {12, 1} -> 
+              RGBColor[0.875796249294775, 0.844949583254975, 0.55], {9, 1} -> 
+              RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], {13, 
+               2} -> RGBColor[
+               0.853586489106202, 0.6634, 0.7527515552212277], {14, 1} -> 
+              RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], {
+               5, 2} -> RGBColor[
+               0.8053417, 0.6954265000000001, 0.8784239500000001], {11, 1} -> 
+              RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], {15, 
+               1} -> RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], {16, 
+               1} -> RGBColor[0.9057646, 0.6405292, 0.55], {1, 2} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {7, 1} -> 
+              RGBColor[0.932725, 0.742375, 0.6093325], {9, 2} -> 
+              RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], {2, 
+               2} -> RGBColor[0.63647065, 0.72470575, 0.91352935], {16, 2} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {13, 1} -> 
+              RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], {8, 2} -> 
+              RGBColor[0.77496805, 0.67864375, 0.89882965], {8, 1} -> 
+              RGBColor[0.77496805, 0.67864375, 0.89882965], {15, 2} -> 
+              RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], {10, 
+               1} -> RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], {
+               14, 2} -> RGBColor[
+               0.6066190282218077, 0.7882047774225539, 
+                0.9014428338661691]}}]]}, 
+         TagBox[GraphicsGroupBox[GraphicsComplexBox[CompressedData["
+1:eJxTTMoPSmViYGBQAGIQXbb1lO7kQi4HBtflH2K+sjusS+q9pJXLCudvqmw+
+9f4Nk8Ofd3YB+0I4HC779tzju/jbHsaf8/5qU+CFL/b/MpiEnQI5HISnbJvB
+2P8Uzu/Q3SLmoHDdfocAn/COd+wOBzLMDjMxX9wP4/OpJHVKXONy2KE7U+li
+HoODy0UVvQ0XWeH8PzVXjlwXYHao6Nf6c3ICg0N6iN7lexJ/7GH86Q3HO5N7
+v9iXrHR/NLWXwYFr28xlqpxP4XwV7685CwWv2Mu1mXhUZcL5+2F8q/q1E8tu
+cDlYfGrtv7PovX2RToEZ3xVWOL+ge/vBu8LMDntrpPi1+N/b+xZ+OfNK7o89
+jJ/wSym2evIXe7c2lRp2IH/uygDfUNGncL7JwouOPxSu2DesUMpi63tvL/JV
+YoYX05X9MP6UC4tUv5RzOSwImRRQrLjS/kxt6qnuYlY4/4jfwkbDT0wODB9i
+pFfdNrT/+v24z6Tbv+1h/EWnu2xX3fpizwAFij4KfJsXP4XzN/xmfLnR8rq9
+QrL0phMLl9vPmPXiw4SXF/bD+AB8huJg
+            "], {
+             {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
+              0.], ArrowBox[{{1, 10}, {2, 4}, {3, 5}, {3, 12}, {5, 8}, {5, 
+               13}, {7, 15}, {9, 11}, {9, 18}, {11, 19}, {12, 14}, {13, 15}, {
+               13, 21}, {15, 23}, {17, 25}, {18, 19}, {19, 22}, {20, 27}, {21,
+                23}, {21, 29}, {24, 32}, {26, 28}, {28, 30}, {29, 32}}, 
+               0.034854119583273405`]}, 
+             {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[1, 0.034854119583273405]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[2, 0.034854119583273405]}, 
+              {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+               DiskBox[3, 0.034854119583273405]}, 
+              {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+               DiskBox[4, 0.034854119583273405]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[5, 0.034854119583273405]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[6, 0.034854119583273405]}, 
+              {RGBColor[0.55, 0.8182351, 0.5994118], 
+               DiskBox[7, 0.034854119583273405]}, 
+              {RGBColor[0.55, 0.8182351, 0.5994118], 
+               DiskBox[8, 0.034854119583273405]}, 
+              {RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], 
+               DiskBox[9, 0.034854119583273405]}, 
+              {RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], 
+               DiskBox[10, 0.034854119583273405]}, 
+              {RGBColor[0.55, 0.81470575, 0.8676469], 
+               DiskBox[11, 0.034854119583273405]}, 
+              {RGBColor[0.55, 0.81470575, 0.8676469], 
+               DiskBox[12, 0.034854119583273405]}, 
+              {RGBColor[0.932725, 0.742375, 0.6093325], 
+               DiskBox[13, 0.034854119583273405]}, 
+              {RGBColor[0.932725, 0.742375, 0.6093325], 
+               DiskBox[14, 0.034854119583273405]}, 
+              {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+               DiskBox[15, 0.034854119583273405]}, 
+              {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+               DiskBox[16, 0.034854119583273405]}, 
+              {RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], 
+               DiskBox[17, 0.034854119583273405]}, 
+              {RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], 
+               DiskBox[18, 0.034854119583273405]}, 
+              {RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], 
+               DiskBox[19, 0.034854119583273405]}, 
+              {RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], 
+               DiskBox[20, 0.034854119583273405]}, 
+              {RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], 
+               DiskBox[21, 0.034854119583273405]}, 
+              {RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], 
+               DiskBox[22, 0.034854119583273405]}, 
+              {RGBColor[0.875796249294775, 0.844949583254975, 0.55], 
+               DiskBox[23, 0.034854119583273405]}, 
+              {RGBColor[0.875796249294775, 0.844949583254975, 0.55], 
+               DiskBox[24, 0.034854119583273405]}, 
+              {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+               DiskBox[25, 0.034854119583273405]}, 
+              {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+               DiskBox[26, 0.034854119583273405]}, 
+              {RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], 
+               DiskBox[27, 0.034854119583273405]}, 
+              {RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], 
+               DiskBox[28, 0.034854119583273405]}, 
+              {RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+               DiskBox[29, 0.034854119583273405]}, 
+              {RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+               DiskBox[30, 0.034854119583273405]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[31, 0.034854119583273405]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[32, 0.034854119583273405]}}}]],
+          MouseAppearanceTag["NetworkGraphics"]],
+         AllowKernelInitialization->False]],
+       DefaultBaseStyle->"NetworkGraphics",
+       FormatType->TraditionalForm,
+       FrameTicks->None],
+      TraditionalForm], {160., -135.65927196446}, {Center, Center}, {300., 251.31854392892},
+     
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}], 
+    InsetBox[
+     FormBox[
+      GraphicsBox[
+       NamespaceBox["NetworkGraphics",
+        DynamicModuleBox[{Typeset`graph = HoldComplete[
+          
+          Graph[{{1, 1}, {1, 2}, {2, 1}, {2, 2}, {3, 1}, {3, 2}, {4, 1}, {4, 
+           2}, {5, 1}, {5, 2}, {6, 1}, {6, 2}, {7, 1}, {7, 2}, {8, 1}, {8, 
+           2}, {9, 1}, {9, 2}, {10, 1}, {10, 2}, {11, 1}, {11, 2}, {12, 1}, {
+           12, 2}, {13, 1}, {13, 2}, {14, 1}, {14, 2}, {15, 1}, {15, 2}, {16, 
+           1}, {16, 2}}, {
+           Null, {{1, 3}, {1, 4}, {2, 3}, {2, 4}, {1, 9}, {1, 10}, {2, 9}, {2,
+             10}, {3, 5}, {3, 6}, {4, 5}, {4, 6}, {3, 11}, {3, 12}, {4, 11}, {
+            4, 12}, {5, 7}, {5, 8}, {6, 7}, {6, 8}, {5, 13}, {5, 14}, {6, 
+            13}, {6, 14}, {7, 15}, {7, 16}, {8, 15}, {8, 16}, {9, 11}, {9, 
+            12}, {10, 11}, {10, 12}, {9, 17}, {9, 18}, {10, 17}, {10, 18}, {
+            11, 13}, {11, 14}, {12, 13}, {12, 14}, {11, 19}, {11, 20}, {12, 
+            19}, {12, 20}, {13, 15}, {13, 16}, {14, 15}, {14, 16}, {13, 21}, {
+            13, 22}, {14, 21}, {14, 22}, {15, 23}, {15, 24}, {16, 23}, {16, 
+            24}, {17, 19}, {17, 20}, {18, 19}, {18, 20}, {17, 25}, {17, 26}, {
+            18, 25}, {18, 26}, {19, 21}, {19, 22}, {20, 21}, {20, 22}, {19, 
+            27}, {19, 28}, {20, 27}, {20, 28}, {21, 23}, {21, 24}, {22, 23}, {
+            22, 24}, {21, 29}, {21, 30}, {22, 29}, {22, 30}, {23, 31}, {23, 
+            32}, {24, 31}, {24, 32}, {25, 27}, {25, 28}, {26, 27}, {26, 28}, {
+            27, 29}, {27, 30}, {28, 29}, {28, 30}, {29, 31}, {29, 32}, {30, 
+            31}, {30, 32}}}, {
+           GraphLayout -> {"Dimension" -> 2}, 
+            VertexCoordinates -> CompressedData["
+1:eJxTTMoPSmViYGBQAGIQXbb1lO7kQi4HBtflH2K+sjusS+q9pJXLCudvqmw+
+9f4Nk8Ofd3YB+0I4HC779tzju/jbHsaf8/5qU+CFL/b/MpiEnQI5HISnbJvB
+2P8Uzu/Q3SLmoHDdfocAn/COd+wOBzLMDjMxX9wP4/OpJHVKXONy2KE7U+li
+HoODy0UVvQ0XWeH8PzVXjlwXYHao6Nf6c3ICg0N6iN7lexJ/7GH86Q3HO5N7
+v9iXrHR/NLWXwYFr28xlqpxP4XwV7685CwWv2Mu1mXhUZcL5+2F8q/q1E8tu
+cDlYfGrtv7PovX2RToEZ3xVWOL+ge/vBu8LMDntrpPi1+N/b+xZ+OfNK7o89
+jJ/wSym2evIXe7c2lRp2IH/uygDfUNGncL7JwouOPxSu2DesUMpi63tvL/JV
+YoYX05X9MP6UC4tUv5RzOSwImRRQrLjS/kxt6qnuYlY4/4jfwkbDT0wODB9i
+pFfdNrT/+v24z6Tbv+1h/EWnu2xX3fpizwAFij4KfJsXP4XzN/xmfLnR8rq9
+QrL0phMLl9vPmPXiw4SXF/bD+AB8huJg
+             "], 
+            VertexStyle -> {{3, 2} -> RGBColor[1., 0.82352935, 0.55], {6, 1} -> 
+              RGBColor[0.55, 0.81470575, 0.8676469], {5, 1} -> 
+              RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], {7,
+                2} -> RGBColor[0.932725, 0.742375, 0.6093325], {2, 1} -> 
+              RGBColor[0.63647065, 0.72470575, 0.91352935], {12, 2} -> 
+              RGBColor[0.875796249294775, 0.844949583254975, 0.55], {6, 2} -> 
+              RGBColor[0.55, 0.81470575, 0.8676469], {4, 1} -> 
+              RGBColor[0.55, 0.8182351, 0.5994118], {11, 2} -> 
+              RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], {3, 1} -> 
+              RGBColor[1., 0.82352935, 0.55], {10, 2} -> 
+              RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], {
+               4, 2} -> RGBColor[0.55, 0.8182351, 0.5994118], {1, 1} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {12, 1} -> 
+              RGBColor[0.875796249294775, 0.844949583254975, 0.55], {9, 1} -> 
+              RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], {13, 
+               2} -> RGBColor[
+               0.853586489106202, 0.6634, 0.7527515552212277], {14, 1} -> 
+              RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], {
+               5, 2} -> RGBColor[
+               0.8053417, 0.6954265000000001, 0.8784239500000001], {11, 1} -> 
+              RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], {15, 
+               1} -> RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], {16, 
+               1} -> RGBColor[0.9057646, 0.6405292, 0.55], {1, 2} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {7, 1} -> 
+              RGBColor[0.932725, 0.742375, 0.6093325], {9, 2} -> 
+              RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], {2, 
+               2} -> RGBColor[0.63647065, 0.72470575, 0.91352935], {16, 2} -> 
+              RGBColor[0.9057646, 0.6405292, 0.55], {13, 1} -> 
+              RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], {8, 2} -> 
+              RGBColor[0.77496805, 0.67864375, 0.89882965], {8, 1} -> 
+              RGBColor[0.77496805, 0.67864375, 0.89882965], {15, 2} -> 
+              RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], {10, 
+               1} -> RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], {
+               14, 2} -> RGBColor[
+               0.6066190282218077, 0.7882047774225539, 
+                0.9014428338661691]}}]]}, 
+         TagBox[GraphicsGroupBox[GraphicsComplexBox[CompressedData["
+1:eJxTTMoPSmViYGBQAGIQXbb1lO7kQi4HBtflH2K+sjusS+q9pJXLCudvqmw+
+9f4Nk8Ofd3YB+0I4HC779tzju/jbHsaf8/5qU+CFL/b/MpiEnQI5HISnbJvB
+2P8Uzu/Q3SLmoHDdfocAn/COd+wOBzLMDjMxX9wP4/OpJHVKXONy2KE7U+li
+HoODy0UVvQ0XWeH8PzVXjlwXYHao6Nf6c3ICg0N6iN7lexJ/7GH86Q3HO5N7
+v9iXrHR/NLWXwYFr28xlqpxP4XwV7685CwWv2Mu1mXhUZcL5+2F8q/q1E8tu
+cDlYfGrtv7PovX2RToEZ3xVWOL+ge/vBu8LMDntrpPi1+N/b+xZ+OfNK7o89
+jJ/wSym2evIXe7c2lRp2IH/uygDfUNGncL7JwouOPxSu2DesUMpi63tvL/JV
+YoYX05X9MP6UC4tUv5RzOSwImRRQrLjS/kxt6qnuYlY4/4jfwkbDT0wODB9i
+pFfdNrT/+v24z6Tbv+1h/EWnu2xX3fpizwAFij4KfJsXP4XzN/xmfLnR8rq9
+QrL0phMLl9vPmPXiw4SXF/bD+AB8huJg
+            "], {
+             {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
+              0.], ArrowBox[{{1, 3}, {1, 4}, {1, 9}, {1, 10}, {2, 3}, {2, 
+               4}, {2, 9}, {2, 10}, {3, 5}, {3, 6}, {3, 11}, {3, 12}, {4, 
+               5}, {4, 6}, {4, 11}, {4, 12}, {5, 7}, {5, 8}, {5, 13}, {5, 
+               14}, {6, 7}, {6, 8}, {6, 13}, {6, 14}, {7, 15}, {7, 16}, {8, 
+               15}, {8, 16}, {9, 11}, {9, 12}, {9, 17}, {9, 18}, {10, 11}, {
+               10, 12}, {10, 17}, {10, 18}, {11, 13}, {11, 14}, {11, 19}, {11,
+                20}, {12, 13}, {12, 14}, {12, 19}, {12, 20}, {13, 15}, {13, 
+               16}, {13, 21}, {13, 22}, {14, 15}, {14, 16}, {14, 21}, {14, 
+               22}, {15, 23}, {15, 24}, {16, 23}, {16, 24}, {17, 19}, {17, 
+               20}, {17, 25}, {17, 26}, {18, 19}, {18, 20}, {18, 25}, {18, 
+               26}, {19, 21}, {19, 22}, {19, 27}, {19, 28}, {20, 21}, {20, 
+               22}, {20, 27}, {20, 28}, {21, 23}, {21, 24}, {21, 29}, {21, 
+               30}, {22, 23}, {22, 24}, {22, 29}, {22, 30}, {23, 31}, {23, 
+               32}, {24, 31}, {24, 32}, {25, 27}, {25, 28}, {26, 27}, {26, 
+               28}, {27, 29}, {27, 30}, {28, 29}, {28, 30}, {29, 31}, {29, 
+               32}, {30, 31}, {30, 32}}, 0.034854119583273405`]}, 
+             {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[1, 0.034854119583273405]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[2, 0.034854119583273405]}, 
+              {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+               DiskBox[3, 0.034854119583273405]}, 
+              {RGBColor[0.63647065, 0.72470575, 0.91352935], 
+               DiskBox[4, 0.034854119583273405]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[5, 0.034854119583273405]}, 
+              {RGBColor[1., 0.82352935, 0.55], 
+               DiskBox[6, 0.034854119583273405]}, 
+              {RGBColor[0.55, 0.8182351, 0.5994118], 
+               DiskBox[7, 0.034854119583273405]}, 
+              {RGBColor[0.55, 0.8182351, 0.5994118], 
+               DiskBox[8, 0.034854119583273405]}, 
+              {RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], 
+               DiskBox[9, 0.034854119583273405]}, 
+              {RGBColor[0.8053417, 0.6954265000000001, 0.8784239500000001], 
+               DiskBox[10, 0.034854119583273405]}, 
+              {RGBColor[0.55, 0.81470575, 0.8676469], 
+               DiskBox[11, 0.034854119583273405]}, 
+              {RGBColor[0.55, 0.81470575, 0.8676469], 
+               DiskBox[12, 0.034854119583273405]}, 
+              {RGBColor[0.932725, 0.742375, 0.6093325], 
+               DiskBox[13, 0.034854119583273405]}, 
+              {RGBColor[0.932725, 0.742375, 0.6093325], 
+               DiskBox[14, 0.034854119583273405]}, 
+              {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+               DiskBox[15, 0.034854119583273405]}, 
+              {RGBColor[0.77496805, 0.67864375, 0.89882965], 
+               DiskBox[16, 0.034854119583273405]}, 
+              {RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], 
+               DiskBox[17, 0.034854119583273405]}, 
+              {RGBColor[0.6062063326437813, 0.8335, 0.7619646675442784], 
+               DiskBox[18, 0.034854119583273405]}, 
+              {RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], 
+               DiskBox[19, 0.034854119583273405]}, 
+              {RGBColor[
+               0.9207770278456882, 0.6826351392284409, 0.6368128359549172], 
+               DiskBox[20, 0.034854119583273405]}, 
+              {RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], 
+               DiskBox[21, 0.034854119583273405]}, 
+              {RGBColor[0.7395686114767829, 0.6995088331139304, 0.955], 
+               DiskBox[22, 0.034854119583273405]}, 
+              {RGBColor[0.875796249294775, 0.844949583254975, 0.55], 
+               DiskBox[23, 0.034854119583273405]}, 
+              {RGBColor[0.875796249294775, 0.844949583254975, 0.55], 
+               DiskBox[24, 0.034854119583273405]}, 
+              {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+               DiskBox[25, 0.034854119583273405]}, 
+              {RGBColor[0.853586489106202, 0.6634, 0.7527515552212277], 
+               DiskBox[26, 0.034854119583273405]}, 
+              {RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], 
+               DiskBox[27, 0.034854119583273405]}, 
+              {RGBColor[
+               0.6066190282218077, 0.7882047774225539, 0.9014428338661691], 
+               DiskBox[28, 0.034854119583273405]}, 
+              {RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+               DiskBox[29, 0.034854119583273405]}, 
+              {RGBColor[
+               0.93721050009403, 0.76480250047015, 0.5980316497461191], 
+               DiskBox[30, 0.034854119583273405]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[31, 0.034854119583273405]}, 
+              {RGBColor[0.9057646, 0.6405292, 0.55], 
+               DiskBox[32, 0.034854119583273405]}}}]],
+          MouseAppearanceTag["NetworkGraphics"]],
+         AllowKernelInitialization->False]],
+       DefaultBaseStyle->"NetworkGraphics",
+       FormatType->TraditionalForm,
+       FrameTicks->None],
+      TraditionalForm], {480., -135.65927196446}, {Center, Center}, {300., 251.31854392892},
+     
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}]}, {}},
+  ImageSize->{640., 271.31854392892},
+  Method->{"IgnoreImageSizeAutomaticLimit" -> True},
+  PlotRange->{{0, 640.}, {-271.31854392892, 0}},
+  PlotRangePadding->Automatic]], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"ea434c0b-de2e-44b9-8720-da54d59f3eaf"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["RandomSeeding", "ExampleSubsection",ExpressionUUID->"bb46eb63-7b07-417e-870e-f2fad0fbcfbb"],
+
+Cell[TextData[{
+ "A fixed seed gives the same draw whatever ",
+ Cell[BoxData[
+  TemplateBox[{
+    Cell[
+     TextData["SeedRandom"]], "paclet:ref/SeedRandom"},
+   "RefLink",
+   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
+  "cb68eef1-2dab-43b8-ad65-96520003761e"],
+ " has set:"
+}], "ExampleText",ExpressionUUID->"d1f7989e-8dc5-4b9f-9afa-bda966f48ab2"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"SameQ", " ", "@@", " ", 
+  RowBox[{"Table", "[", "\n", "  ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"SeedRandom", "[", "k", "]"}], ";", " ", 
+     RowBox[{"RandomInfraFiberedGraph", "[", 
+      RowBox[{
+       RowBox[{"GridGraph", "[", 
+        RowBox[{"{", 
+         RowBox[{"4", ",", " ", "4"}], "}"}], "]"}], ",", " ", 
+       RowBox[{"\"\<VerticalVertexCount\>\"", " ", "->", " ", 
+        RowBox[{"{", 
+         RowBox[{"1", ",", " ", "3"}], "}"}]}], ",", " ", 
+       RowBox[{"RandomSeeding", " ", "->", " ", "7"}]}], "]"}]}], ",", "\n", 
+    "  ", 
+    RowBox[{"{", 
+     RowBox[{"k", ",", " ", "3"}], "}"}]}], "]"}]}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"8ad98bbd-834f-4562-87fb-99cd74e243c2"],
+
+Cell[BoxData["True"], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"0ae61d06-3f03-4b01-92ad-c7c8a36090e1"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
@@ -1194,126 +2398,53 @@ Cell[BoxData[
  CellID->1305812373,ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f"],
 
 Cell["\<\
-An exact vertical edge is incompatible with a vertex-count cap that permits \
-singleton fibers. The call remains unevaluated even if some size draws could \
-support that edge.\
-\>", "ExampleText",ExpressionUUID->"cfc0ef85-a37f-4eb3-ad4c-ca65f4b34b9d"],
+An exact vertical edge needs fibers of at least 2 vertices. A bound of 3 \
+allows fibers of 1 vertex, so the call stays unevaluated:\
+\>", "ExampleText",ExpressionUUID->"39fe3979-9d5b-45e3-bf5e-978ead7fcde8"],
 
 Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{"RandomInfraFiberedGraph", "[", " ", 
-  RowBox[{
-   RowBox[{"CycleGraph", "[", " ", "4", " ", "]"}], ",", " ", 
-   RowBox[{"\"\<VerticalVertexCount\>\"", " ", "->", " ", "3"}], ",", " ", 
-   RowBox[{"\"\<VerticalEdgeCount\>\"", " ", "->", " ", 
-    RowBox[{"{", " ", "1", " ", "}"}]}]}], " ", "]"}]], "Input",
- CellLabel->"In[1]:= ",ExpressionUUID->"4245a2d1-8e0c-47e5-8157-531b56baaa06"],
+ RowBox[{"Head", " ", "@", " ", 
+  RowBox[{"RandomInfraFiberedGraph", "[", 
+   RowBox[{
+    RowBox[{"GridGraph", "[", 
+     RowBox[{"{", 
+      RowBox[{"4", ",", " ", "4"}], "}"}], "]"}], ",", " ", 
+    RowBox[{"\"\<VerticalVertexCount\>\"", " ", "->", " ", "3"}], ",", " ", 
+    RowBox[{"\"\<VerticalEdgeCount\>\"", " ", "->", " ", 
+     RowBox[{"{", "1", "}"}]}]}], "]"}]}]], "Input",
+ CellLabel->"In[1]:= ",ExpressionUUID->"1856e6d4-38ba-48ba-87fa-d9963ed89248"],
 
-Cell[BoxData[
- RowBox[{"RandomInfraFiberedGraph", "[", 
-  RowBox[{
-   GraphicsBox[
-    NamespaceBox["NetworkGraphics",
-     DynamicModuleBox[{Typeset`graph = HoldComplete[
-       Graph[{1, 2, 3, 4}, {Null, 
-         SparseArray[
-         Automatic, {4, 4}, 0, {
-          1, {{0, 2, 4, 6, 8}, {{2}, {4}, {1}, {3}, {2}, {4}, {1}, {3}}}, 
-           Pattern}]}, {GraphLayout -> "CircularEmbedding"}]]}, 
-      TagBox[
-       GraphicsGroupBox[
-        GraphicsComplexBox[{{-1., 
-         1.0106430996148606`*^-15}, {-7.044813998280222*^-16, 1.}, {
-         1., -1.133107779529596*^-15}, {6.049014748177263*^-16, -1.}}, {
-          {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[0.],
-            ArrowBox[{{1, 2}, {1, 4}, {2, 3}, {3, 4}}, 
-            0.02261146496815286]}, 
-          {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-           DiskBox[1, 0.02261146496815286], DiskBox[2, 0.02261146496815286], 
-           DiskBox[3, 0.02261146496815286], 
-           DiskBox[4, 0.02261146496815286]}}]],
-       MouseAppearanceTag["NetworkGraphics"]],
-      AllowKernelInitialization->False]],
-    DefaultBaseStyle->"NetworkGraphics",
-    FormatType->TraditionalForm,
-    FrameTicks->None], ",", 
-   RowBox[{"\<\"VerticalVertexCount\"\>", "\[Rule]", "3"}], ",", 
-   RowBox[{"\<\"VerticalEdgeCount\"\>", "\[Rule]", 
-    RowBox[{"{", "1", "}"}]}]}], "]"}]], "Output",
- CellLabel->"Out[1]= ",ExpressionUUID->"a76eb584-55ea-4a3d-801d-3a93c5367943"]
+Cell[BoxData["RandomInfraFiberedGraph"], "Output",
+ CellLabel->"Out[1]= ",ExpressionUUID->"88bd4c3b-983f-4ec5-9794-708306c9ce4b"]
 }, Open  ]],
 
 Cell["\<\
-Complete joins of two-point fibers do not have unique edge lifting.\
-\>", "ExampleText",ExpressionUUID->"ec8d3bc0-8ae4-4207-902e-83dcd0797136"],
+The complete join of two fibers of 2 vertices is not a matching, so it does \
+not have unique edge lifting:\
+\>", "ExampleText",ExpressionUUID->"5e827b1d-bd82-4a35-8277-07db97ce976c"],
 
 Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{"RandomInfraFiberedGraph", "[", " ", 
-  RowBox[{
-   RowBox[{"CycleGraph", "[", " ", "4", " ", "]"}], ",", " ", 
-   RowBox[{"Properties", " ", "->", " ", 
-    RowBox[{"{", " ", "\"\<UniqueEdgeLifting\>\"", " ", "}"}]}], ",", "\n", 
-   "  ", 
-   RowBox[{"\"\<VerticalVertexCount\>\"", " ", "->", " ", 
-    RowBox[{"{", " ", "2", " ", "}"}]}], ",", " ", 
-   RowBox[{"\"\<HorizontalEdgeCount\>\"", " ", "->", " ", "All"}]}], " ", 
-  "]"}]], "Input",
- CellLabel->"In[2]:= ",ExpressionUUID->"cf72bf68-0a82-4db0-aa75-23f2d1f80e0a"],
+ RowBox[{"Head", " ", "@", " ", 
+  RowBox[{"RandomInfraFiberedGraph", "[", 
+   RowBox[{
+    RowBox[{"GridGraph", "[", 
+     RowBox[{"{", 
+      RowBox[{"4", ",", " ", "4"}], "}"}], "]"}], ",", "\n", "  ", 
+    RowBox[{"Properties", " ", "->", " ", 
+     RowBox[{"{", "\"\<UniqueEdgeLifting\>\"", "}"}]}], ",", " ", 
+    RowBox[{"\"\<VerticalVertexCount\>\"", " ", "->", " ", 
+     RowBox[{"{", "2", "}"}]}], ",", " ", 
+    RowBox[{"\"\<HorizontalEdgeCount\>\"", " ", "->", " ", "All"}]}], 
+   "]"}]}]], "Input",
+ CellLabel->"In[2]:= ",ExpressionUUID->"30d502d8-b44d-4daf-8a1f-c321dafb948e"],
 
-Cell[BoxData[
- RowBox[{"RandomInfraFiberedGraph", "[", 
-  RowBox[{
-   GraphicsBox[
-    NamespaceBox["NetworkGraphics",
-     DynamicModuleBox[{Typeset`graph = HoldComplete[
-       Graph[{1, 2, 3, 4}, {Null, 
-         SparseArray[
-         Automatic, {4, 4}, 0, {
-          1, {{0, 2, 4, 6, 8}, {{2}, {4}, {1}, {3}, {2}, {4}, {1}, {3}}}, 
-           Pattern}]}, {GraphLayout -> "CircularEmbedding"}]]}, 
-      TagBox[
-       GraphicsGroupBox[
-        GraphicsComplexBox[{{-1., 
-         1.0106430996148606`*^-15}, {-7.044813998280222*^-16, 1.}, {
-         1., -1.133107779529596*^-15}, {6.049014748177263*^-16, -1.}}, {
-          {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[0.],
-            ArrowBox[{{1, 2}, {1, 4}, {2, 3}, {3, 4}}, 
-            0.02261146496815286]}, 
-          {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[0.7]}], 
-           DiskBox[1, 0.02261146496815286], DiskBox[2, 0.02261146496815286], 
-           DiskBox[3, 0.02261146496815286], 
-           DiskBox[4, 0.02261146496815286]}}]],
-       MouseAppearanceTag["NetworkGraphics"]],
-      AllowKernelInitialization->False]],
-    DefaultBaseStyle->"NetworkGraphics",
-    FormatType->TraditionalForm,
-    FrameTicks->None], ",", 
-   RowBox[{"Properties", "\[Rule]", 
-    RowBox[{"{", "\<\"UniqueEdgeLifting\"\>", "}"}]}], ",", 
-   RowBox[{"\<\"VerticalVertexCount\"\>", "\[Rule]", 
-    RowBox[{"{", "2", "}"}]}], ",", 
-   RowBox[{"\<\"HorizontalEdgeCount\"\>", "\[Rule]", "All"}]}], 
-  "]"}]], "Output",
- CellLabel->"Out[2]= ",ExpressionUUID->"1db8fca1-6e5b-47a5-9d8a-35354d3bb3a5"]
-}, Open  ]],
-
-Cell[TextData[{
- "The Experimental compatibility sampler ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["RandomInfraFibration"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/RandomInfraFibration", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "16e619d4-31e4-4950-aaad-5926f9660268"],
- " keeps its earlier options and cyclic-width interpretation. Its numeric \
-options are not the count grammar of this function."
-}], "ExampleText",ExpressionUUID->"8dca790b-f800-40d7-b1b2-b25430862cb6"]
+Cell[BoxData["RandomInfraFiberedGraph"], "Output",
+ CellLabel->"Out[2]= ",ExpressionUUID->"1cbb615e-72f2-4666-98eb-1bda79203afa"]
+}, Open  ]]
 }, Open  ]],
 
 Cell[BoxData[
@@ -1381,7 +2512,7 @@ Cell["WolframInstitute`InfraGeometry`", "Categorization",
 
 Cell["WolframInstitute/InfraGeometry/ref/RandomInfraFiberedGraph", \
 "Categorization",
- CellLabel->"URI",ExpressionUUID->"d3a37274-f66c-4a05-b0d5-7a09cb5f8b39"]
+ CellLabel->"URI",ExpressionUUID->"3b75b3f4-9d99-4e4f-85ca-6e3509eac125"]
 }, Closed]],
 
 Cell["Keywords", "KeywordsSection",
@@ -1435,163 +2566,159 @@ ExpressionUUID->"c207366e-060a-406b-a297-9e30e1628f43"
 (*CellTagsOutline
 CellTagsIndex->{
  "ExtendedExamples"->{
-  Cell[31787, 778, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+  Cell[48039, 1037, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
    CellTags->"ExtendedExamples",
    CellID->533848431]}
  }
 *)
 (*CellTagsIndex
 CellTagsIndex->{
- {"ExtendedExamples", 58743, 1436}
+ {"ExtendedExamples", 126725, 2567}
  }
 *)
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[576, 22, 100, 0, 70, "ObjectName",ExpressionUUID->"827c7b76-c260-47d4-a8c4-ae0eebb65e06"],
-Cell[679, 24, 86, 0, 70, "Notes",ExpressionUUID->"79c130ce-53b0-4f71-b5a2-3a8a8125a4bc"],
-Cell[768, 26, 860, 22, 70, "Usage",ExpressionUUID->"fcbc1d4e-3501-4150-a565-bac28ed863f6"],
-Cell[1631, 50, 196, 3, 70, "Notes",ExpressionUUID->"22a2d28c-fd85-4da2-bc91-91ef0b51b68e"],
-Cell[1830, 55, 267, 8, 70, "Notes",ExpressionUUID->"6d90c063-ed7a-4dfd-a8d2-4c94b5bbd5ce"],
-Cell[2100, 65, 262, 4, 70, "Notes",ExpressionUUID->"1fa3b293-c15f-4ec1-9d42-47d3e293875e"],
-Cell[2365, 71, 1393, 33, 70, "Notes",ExpressionUUID->"ccd0a8f7-3939-4219-ad38-7fe232ccf7da"],
-Cell[3761, 106, 196, 3, 70, "Notes",ExpressionUUID->"f63289d9-7742-480b-bb39-123dd6217e15"],
-Cell[3960, 111, 364, 12, 70, "Notes",ExpressionUUID->"c237e273-7313-4090-859b-966a1a318fae"],
-Cell[4327, 125, 159, 3, 70, "Notes",ExpressionUUID->"91723558-8ad7-4018-a280-98c84dff62fc"],
-Cell[4489, 130, 304, 4, 70, "Notes",ExpressionUUID->"8a13436e-10d9-4a21-ad41-46d061d51ffd"],
-Cell[4796, 136, 242, 4, 70, "Notes",ExpressionUUID->"db57104c-77c7-4f8a-a875-6ba54e8be351"],
-Cell[5041, 142, 399, 10, 70, "Notes",ExpressionUUID->"896d8176-cb4c-4970-bc68-cef9c9eb1616"],
-Cell[5443, 154, 198, 3, 70, "Notes",ExpressionUUID->"a1fd10cb-f2dd-4a2f-8e14-1a966b3485be"],
-Cell[5644, 159, 486, 12, 70, "Notes",ExpressionUUID->"5f70b86c-f9ee-4192-bfcd-e1ae0def0b5d"],
-Cell[6133, 173, 3955, 72, 70, "3ColumnTableMod",ExpressionUUID->"f0519713-e305-4eb5-92a3-a313e7990891"],
-Cell[10091, 247, 1500, 33, 70, "Notes",ExpressionUUID->"c812a662-3cb7-4c0d-8753-7b1dd92de74e"],
-Cell[11594, 282, 691, 18, 70, "Notes",ExpressionUUID->"4c1c6743-fc8f-4c98-8abf-2b927df7c511"],
-Cell[12288, 302, 277, 7, 70, "Notes",ExpressionUUID->"11051943-2793-4463-b5b3-71dd60a32121"],
-Cell[12568, 311, 3441, 61, 70, "2ColumnTableMod",ExpressionUUID->"93178e4b-d2c8-4697-a28f-7997059dc9f3"],
-Cell[16012, 374, 632, 11, 70, "Notes",ExpressionUUID->"0b755728-8364-4b79-985a-a1643c7b5d29"]
+Cell[576, 22, 121, 1, 70, "ObjectName",ExpressionUUID->"8393d601-4014-44ba-afc9-60862df940ec",
+ CellID->1224892054],
+Cell[700, 25, 1024, 29, 70, "Usage",ExpressionUUID->"34e666b5-226f-4cf7-8ffd-308a7e77eb98"],
+Cell[1727, 56, 479, 15, 70, "Notes",ExpressionUUID->"896c7b05-ae81-40c6-8a85-01f5d4493e76"],
+Cell[2209, 73, 257, 5, 70, "Notes",ExpressionUUID->"533b83af-7d1f-4810-8d83-935d374ed0bf"],
+Cell[2469, 80, 3746, 63, 70, "2ColumnTableMod",ExpressionUUID->"23d1355a-1079-4185-81fb-fc357e40ae26"],
+Cell[6218, 145, 1084, 42, 70, "Notes",ExpressionUUID->"c2ea7278-2f7c-4dea-b089-ea662c55e4d1"],
+Cell[7305, 189, 144, 2, 70, "Notes",ExpressionUUID->"1013ed9c-21b5-441d-a6fc-cbda5d83a551"],
+Cell[7452, 193, 80, 0, 70, "Notes",ExpressionUUID->"820ed76b-827d-498f-a717-f318b25ae368"],
+Cell[7535, 195, 5250, 111, 70, "3ColumnTableMod",ExpressionUUID->"0eb46a85-66ab-40ec-bc28-4770c34d00a9"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[16681, 390, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
+Cell[12822, 311, 459, 13, 70, "SeeAlsoSection",ExpressionUUID->"6019c63b-8124-433f-bd7e-253812d6da0e",
  CellID->1559318232],
-Cell[17143, 405, 3304, 90, 70, "SeeAlso",ExpressionUUID->"94c0c444-d92f-419c-a825-b8084e7290a0"]
+Cell[13284, 326, 3304, 90, 70, "SeeAlso",ExpressionUUID->"5391110c-c262-4a70-aa8c-ddcfb9bf77cc"]
 }, Open  ]],
-Cell[20462, 498, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
+Cell[16603, 419, 435, 12, 70, "TechNotesSection",ExpressionUUID->"fc30b7bb-1c24-4df4-b93c-2a46876a3e74",
  CellID->792424486],
 Cell[CellGroupData[{
-Cell[20922, 514, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
+Cell[17063, 435, 116, 1, 70, "MoreAboutSection",ExpressionUUID->"090ecd4e-77ab-48e0-ba7a-1f9acccd0dd5",
  CellID->38303248],
-Cell[21041, 517, 311, 6, 70, "MoreAbout",ExpressionUUID->"76d8f915-2c04-438d-a2f5-0b52813a9cc3"]
+Cell[17182, 438, 311, 6, 70, "MoreAbout",ExpressionUUID->"6ba7d837-c0dc-4667-b85d-87225f495bc4"]
 }, Open  ]],
-Cell[21367, 526, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
+Cell[17508, 447, 471, 13, 70, "RelatedLinksSection",ExpressionUUID->"c8e1cebd-677a-4282-8b17-38a138b1b0ea",
  CellID->47113304],
 Cell[CellGroupData[{
-Cell[21863, 543, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
+Cell[18004, 464, 531, 14, 70, "ExamplesInitializationSection",ExpressionUUID->"6961daab-c21b-4e4b-b6ac-a9a47f06ffa5",
  CellID->1718580883],
-Cell[22397, 559, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
+Cell[18538, 480, 276, 4, 70, "ExampleInitialization",ExpressionUUID->"7dcb178c-574f-4ea8-8531-ff0dec195502",
  CellID->1969679695]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[22710, 568, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
+Cell[18851, 489, 442, 12, 70, "PrimaryExamplesSection",ExpressionUUID->"4d971e0b-a467-44b1-b908-78f8a7482a42",
  CellID->880084151],
-Cell[23155, 582, 147, 2, 70, "ExampleText",ExpressionUUID->"ad92dffc-90f0-42a5-ba06-9b8ce5c71ee4"],
+Cell[19296, 503, 191, 3, 70, "ExampleText",ExpressionUUID->"a4b8d63b-ad7d-4492-8e01-bd57820c3a38"],
 Cell[CellGroupData[{
-Cell[23327, 588, 1011, 24, 70, "Input",ExpressionUUID->"29071a12-8979-476d-8fe0-6fa56a57a19e"],
-Cell[24341, 614, 4336, 87, 70, "Output",ExpressionUUID->"3956b6f2-7749-4f5e-bb1c-47cbe6ddd867"]
+Cell[19512, 510, 920, 23, 70, "Input",ExpressionUUID->"95c7aba2-0512-4e5b-a900-c60e84e4b1b9"],
+Cell[20435, 535, 11391, 202, 70, "Output",ExpressionUUID->"ab4a37f7-7c5b-4330-9208-ceaa1cd876a5"]
 }, Open  ]],
-Cell[28692, 704, 175, 3, 70, "ExampleText",ExpressionUUID->"a8cc092e-1ba6-4162-ab28-2e4870fc07db"],
+Cell[31841, 740, 191, 3, 70, "ExampleText",ExpressionUUID->"66ddd281-d106-4727-8293-05b601690953"],
 Cell[CellGroupData[{
-Cell[28892, 711, 907, 20, 70, "Input",ExpressionUUID->"d1926ea8-7ac7-4947-b052-fe6940ac80a7"],
-Cell[29802, 733, 1936, 39, 70, "Output",ExpressionUUID->"3d419f2c-48e3-4e2c-ab62-81586b95e7c2"]
+Cell[32057, 747, 1463, 35, 70, "Input",ExpressionUUID->"ee45d2ed-a9f6-4849-a99c-56e49f69c25e"],
+Cell[33523, 784, 14467, 247, 70, "Output",ExpressionUUID->"474a54ef-0723-4006-a5b0-a6a68f0f02d9"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[31787, 778, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
+Cell[48039, 1037, 487, 13, 70, "ExtendedExamplesSection",ExpressionUUID->"a6228140-1981-46f0-88fc-4d129033136d",
  CellTags->"ExtendedExamples",
  CellID->533848431],
-Cell[32277, 793, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
+Cell[48529, 1052, 242, 5, 70, "ExampleSection",ExpressionUUID->"6d08f999-4c69-4709-9b28-82906be6ee75",
  CellID->1293636265],
-Cell[32522, 800, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
+Cell[48774, 1059, 265, 5, 70, "ExampleSection",ExpressionUUID->"85bb6475-fccb-4f83-9c4c-95411a492aa7",
  CellID->1020263627],
 Cell[CellGroupData[{
-Cell[32812, 809, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
+Cell[49064, 1068, 244, 5, 70, "ExampleSection",ExpressionUUID->"3276b1d7-cf51-4f3b-970a-56b0e7c469f0",
  CellID->2061341341],
 Cell[CellGroupData[{
-Cell[33081, 818, 94, 0, 70, "ExampleSubsection",ExpressionUUID->"1e1c7213-5105-4f7f-8cf2-98a4d7eebb60"],
-Cell[33178, 820, 134, 0, 70, "ExampleText",ExpressionUUID->"0baf47f8-4660-40a5-a745-6df730532f56"],
+Cell[49333, 1077, 94, 0, 70, "ExampleSubsection",ExpressionUUID->"503d427f-fb24-43a0-8b13-c06bd19cb9b5"],
+Cell[49430, 1079, 216, 3, 70, "ExampleText",ExpressionUUID->"36f3f6b4-a212-41a5-ac52-d26a3dfd32d8"],
 Cell[CellGroupData[{
-Cell[33337, 824, 908, 20, 70, "Input",ExpressionUUID->"847e5917-d80b-431f-853c-2392a74ce87e"],
-Cell[34248, 846, 1678, 36, 70, "Output",ExpressionUUID->"8fca6428-9e56-49db-a912-9e6e42bdc905"]
+Cell[49671, 1086, 1552, 37, 70, "Input",ExpressionUUID->"89f6a48c-ecdc-4c14-8d29-d97c57cb0178"],
+Cell[51226, 1125, 43438, 754, 70, "Output",ExpressionUUID->"122b570a-398e-4ba7-b4a1-a9788729c728"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[35975, 888, 103, 0, 70, "ExampleSubsection",ExpressionUUID->"a15870dd-8186-458a-96f2-845f7b726545"],
-Cell[36081, 890, 140, 1, 70, "ExampleText",ExpressionUUID->"540fe463-211d-4b59-b26c-c09f6c730e82"],
+Cell[94713, 1885, 103, 0, 70, "ExampleSubsection",ExpressionUUID->"50617506-5ab3-4766-b75a-fa2863178311"],
+Cell[94819, 1887, 149, 2, 70, "ExampleText",ExpressionUUID->"f607c5f2-b005-4448-87ae-6e1590dac877"],
 Cell[CellGroupData[{
-Cell[36246, 895, 857, 19, 70, "Input",ExpressionUUID->"712ab9b2-a30e-410e-8e15-f5704bebe1d0"],
-Cell[37106, 916, 6382, 131, 70, "Output",ExpressionUUID->"d702fec3-5244-4861-be5a-a88aac9f0959"]
+Cell[94993, 1893, 1073, 29, 70, "Input",ExpressionUUID->"e48d20fd-b522-477a-909f-24ffe8f9213b"],
+Cell[96069, 1924, 294, 8, 70, "Output",ExpressionUUID->"b8435b25-c841-4082-8f7e-3a24ee0470fa"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[43537, 1053, 103, 0, 70, "ExampleSubsection",ExpressionUUID->"265f8489-b369-4064-aea2-a30cf3fc780f"],
-Cell[43643, 1055, 180, 3, 70, "ExampleText",ExpressionUUID->"8a06f535-c0b4-4926-8de6-ace4620735a3"],
+Cell[96412, 1938, 103, 0, 70, "ExampleSubsection",ExpressionUUID->"8b96decd-ba74-4a5c-9cfa-8ee7b6b622c2"],
+Cell[96518, 1940, 149, 2, 70, "ExampleText",ExpressionUUID->"333255cd-0efb-4e6a-acc5-8be407998737"],
 Cell[CellGroupData[{
-Cell[43848, 1062, 1071, 24, 70, "Input",ExpressionUUID->"5dd04625-1347-4c1d-8657-35f62257da38"],
-Cell[44922, 1088, 3829, 79, 70, "Output",ExpressionUUID->"09215c60-0d16-4b20-be98-4ba086fc1007"]
+Cell[96692, 1946, 883, 21, 70, "Input",ExpressionUUID->"0532531f-d422-4793-8b54-14a4c26d5ee4"],
+Cell[97578, 1969, 21024, 359, 70, "Output",ExpressionUUID->"ea434c0b-de2e-44b9-8720-da54d59f3eaf"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[118651, 2334, 97, 0, 70, "ExampleSubsection",ExpressionUUID->"bb46eb63-7b07-417e-870e-f2fad0fbcfbb"],
+Cell[118751, 2336, 369, 10, 70, "ExampleText",ExpressionUUID->"d1f7989e-8dc5-4b9f-9afa-bda966f48ab2"],
+Cell[CellGroupData[{
+Cell[119145, 2350, 739, 18, 70, "Input",ExpressionUUID->"8ad98bbd-834f-4562-87fb-99cd74e243c2"],
+Cell[119887, 2370, 110, 1, 70, "Output",ExpressionUUID->"0ae61d06-3f03-4b01-92ad-c7c8a36090e1"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
-Cell[48790, 1172, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
+Cell[120036, 2376, 248, 5, 70, "ExampleSection",ExpressionUUID->"1cd6234d-1e3c-431d-9989-71f3025eee95",
  CellID->258228157],
-Cell[49041, 1179, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
+Cell[120287, 2383, 259, 5, 70, "ExampleSection",ExpressionUUID->"0e0d5f37-f3c9-4474-a22b-9f10dcc8b438",
  CellID->2123667759],
 Cell[CellGroupData[{
-Cell[49325, 1188, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
+Cell[120571, 2392, 252, 5, 70, "ExampleSection",ExpressionUUID->"9397dd0b-9de4-443a-9371-be2b75148f2f",
  CellID->1305812373],
-Cell[49580, 1195, 261, 4, 70, "ExampleText",ExpressionUUID->"cfc0ef85-a37f-4eb3-ad4c-ca65f4b34b9d"],
+Cell[120826, 2399, 218, 3, 70, "ExampleText",ExpressionUUID->"39fe3979-9d5b-45e3-bf5e-978ead7fcde8"],
 Cell[CellGroupData[{
-Cell[49866, 1203, 411, 7, 70, "Input",ExpressionUUID->"4245a2d1-8e0c-47e5-8157-531b56baaa06"],
-Cell[50280, 1212, 1470, 31, 70, "Output",ExpressionUUID->"a76eb584-55ea-4a3d-801d-3a93c5367943"]
+Cell[121069, 2406, 479, 10, 70, "Input",ExpressionUUID->"1856e6d4-38ba-48ba-87fa-d9963ed89248"],
+Cell[121551, 2418, 129, 1, 70, "Output",ExpressionUUID->"88bd4c3b-983f-4ec5-9794-708306c9ce4b"]
 }, Open  ]],
-Cell[51765, 1246, 153, 2, 70, "ExampleText",ExpressionUUID->"ec8d3bc0-8ae4-4207-902e-83dcd0797136"],
+Cell[121695, 2422, 193, 3, 70, "ExampleText",ExpressionUUID->"5e827b1d-bd82-4a35-8277-07db97ce976c"],
 Cell[CellGroupData[{
-Cell[51943, 1252, 547, 11, 70, "Input",ExpressionUUID->"cf72bf68-0a82-4db0-aa75-23f2d1f80e0a"],
-Cell[52493, 1265, 1575, 34, 70, "Output",ExpressionUUID->"1db8fca1-6e5b-47a5-9d8a-35354d3bb3a5"]
+Cell[121913, 2429, 604, 13, 70, "Input",ExpressionUUID->"30d502d8-b44d-4daf-8a1f-c321dafb948e"],
+Cell[122520, 2444, 129, 1, 70, "Output",ExpressionUUID->"1cbb615e-72f2-4666-98eb-1bda79203afa"]
+}, Open  ]]
 }, Open  ]],
-Cell[54083, 1302, 596, 13, 70, "ExampleText",ExpressionUUID->"8dca790b-f800-40d7-b1b2-b25430862cb6"]
-}, Open  ]],
-Cell[54694, 1318, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
+Cell[122676, 2449, 257, 5, 70, "ExampleSection",ExpressionUUID->"c5507407-1b71-491f-84b6-3f5747264ef7",
  CellID->1653164318],
-Cell[54954, 1325, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
+Cell[122936, 2456, 249, 5, 70, "ExampleSection",ExpressionUUID->"ce9d5678-57c6-4712-bdd3-87904919f71e",
  CellID->589267740]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[55240, 1335, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
+Cell[123222, 2466, 110, 1, 70, "MetadataSection",ExpressionUUID->"2b9a20c0-4684-4af0-ae90-008bcb3cd5bd",
  CellID->311882160],
-Cell[55353, 1338, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
+Cell[123335, 2469, 476, 12, 70, "History",ExpressionUUID->"0647d953-178d-43da-935e-923bdb2c5046",
  CellID->341476719],
 Cell[CellGroupData[{
-Cell[55854, 1354, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
+Cell[123836, 2485, 485, 13, 70, "CategorizationSection",ExpressionUUID->"a29a9a03-1747-4a1c-b242-c8059c9e5329",
  CellID->1755438392],
-Cell[56342, 1369, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
+Cell[124324, 2500, 134, 2, 70, "Categorization",ExpressionUUID->"d3672960-eef7-49f2-a47e-fce423fec36a",
  CellID->686433507],
-Cell[56479, 1373, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
+Cell[124461, 2504, 158, 2, 70, "Categorization",ExpressionUUID->"e9337bb6-80d8-4427-9444-53c8416845ec",
  CellID->605800465],
-Cell[56640, 1377, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
+Cell[124622, 2508, 155, 2, 70, "Categorization",ExpressionUUID->"a09e9c4d-8ab9-4ae7-b585-c517016e8191",
  CellID->468444828],
-Cell[56798, 1381, 160, 2, 70, "Categorization",ExpressionUUID->"d3a37274-f66c-4a05-b0d5-7a09cb5f8b39"]
+Cell[124780, 2512, 160, 2, 70, "Categorization",ExpressionUUID->"3b75b3f4-9d99-4e4f-85ca-6e3509eac125"]
 }, Closed]],
-Cell[56973, 1386, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
+Cell[124955, 2517, 110, 1, 70, "KeywordsSection",ExpressionUUID->"ef06640c-42c9-4c00-9a6c-9b632e3752b6",
  CellID->477174294],
 Cell[CellGroupData[{
-Cell[57108, 1391, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
+Cell[125090, 2522, 120, 1, 70, "TemplatesSection",ExpressionUUID->"119176c2-887f-409f-a0c9-b72561b7624c",
  CellID->1872225408],
-Cell[57231, 1394, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
+Cell[125213, 2525, 149, 2, 70, "Template",ExpressionUUID->"1b15e1f4-90c6-45fb-bbe0-ea52939f5d72",
  CellID->1562036412],
-Cell[57383, 1398, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
+Cell[125365, 2529, 137, 2, 70, "Template",ExpressionUUID->"9e18a772-50d9-48d2-8436-649cdc9f97ec",
  CellID->158391909],
-Cell[57523, 1402, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
+Cell[125505, 2533, 136, 2, 70, "Template",ExpressionUUID->"1e946dbb-3373-40d7-b302-c6d742eac1b9",
  CellID->1360575930],
-Cell[57662, 1406, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
+Cell[125644, 2537, 137, 2, 70, "Template",ExpressionUUID->"aee0c783-3703-4eff-afcc-bcf11e35c648",
  CellID->793782254]
 }, Closed]]
 }, Open  ]]

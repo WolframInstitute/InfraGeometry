@@ -12,69 +12,95 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Usage
 
-<code>[InfraConvexHull]()[*S*, *k*]</code> is the *k*-th round of the interval closure of *S*: round 0 is *S*, and each round adds every shortest path between two of its vertices. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
+<code>[InfraConvexHull]()[*S*]</code> is the convex hull of the vertex set *S*: the smallest set that contains *S* and every shortest path between two of its vertices.
 
-<code>[InfraConvexHull]()[*S*]</code> is the convex hull: the fixed point of the rounds, the smallest set containing *S* and every shortest path between two of its vertices.
+<code>[InfraConvexHull]()[*S*, *k*]</code> is the *k*-th round of the interval closure of *S*.
 
 ## Details & Options
 
-Definition: with the metric interval *I(u, v) = {w : d(u, w) + d(w, v) = d(u, v)}*, round *k + 1* of *S* is the union of the intervals *I(u, v)* over the vertices *u, v* of round *k*. *S* is read as the core of [InfraTube]() is: a vertex, a vertex list, a density, a subgraph, or a Euclidean head through its support.
+With the interval *I(u, v) = {w : d(u, w) + d(w, v) = d(u, v)}*, round 0 is *S* and round *k + 1* is the union of the intervals *I(u, v)* over the vertices *u*, *v* of round *k*. The rounds grow until they stop; the last one is the convex hull.
 
-A set that is its own hull is *geodesically convex*; this is the test that takes the place of a predicate.
+A set equal to its convex hull is geodesically convex.
 
-The rounds increase and are bounded by the graph, so the convex hull is reached after finitely many. On the substrates below it is reached after two rounds; on the Petersen graph it takes three.
+On the square grid, away from the rim, the convex hull of *S* is the smallest box with sides parallel to the axes that contains *S*. On other graphs the hull can need several rounds, and it can jump: a few points of the mesh have a thin hull, one more point a thick one.
 
-The head computes nothing. A hull has one member, the vertex set. [InfraMeasurement]() reads `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"`, `"Faithful"` and `"Subgraph"`, and the two measures; all rounds are read off one distance matrix.
+*S* is a vertex, a vertex list, a density, a subgraph, or a geometric object through its vertices.
+
+[InfraConvexHull]() is a symbolic object: [InfraMeasurement]() evaluates it on a graph. It has one member, the vertex set.
+
+| Property | Value |
+|---|---|
+| `"VertexDensity"` | 1 on each vertex of the hull |
+| `"Cardinality"` | 1 |
+| `"CountingMeasure"` | the number of vertices |
+| `"RiemannianMeasure"` | the number of vertices all of whose neighbours lie in the hull |
+| `"Subgraph"` | the subgraph induced on the hull |
 
 ## Basic Examples
 
-The rounds 0, 1 and 2 of the interval closure of three vertices of the shell of radius 5, on the irregular mesh, the square grid and the hexagonal tiling.
+The convex hull of four points of the circle of radius 4, on the square grid and on the square mesh:
 
 ```wl
-GraphicsGrid @ Table[
-  With[
-    {g = InfraSubstrate[name, "Large", "KeepCoordinates" -> True]},
-    {c = First @ GraphCenter[g]},
-    {shell = Keys @ InfraMeasurement[ g, InfraShell[ c, 5 ], "VertexDensity" ]},
-    {seeds = shell[[ {1, Round[Length[shell] / 3], Round[2 Length[shell] / 3]} ]]},
-    InfraSubstrateHighlight[g, {InfraConvexHull[seeds, round], seeds}, "PointSizeRange" -> 17]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}},
-  {round, {0, 1, 2}}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {pts = RandomInfraPoint[g, InfraShell[c, 4], 4, RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {InfraConvexHull[pts], pts}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The sizes of the rounds of three vertices of the Petersen graph.
+The rounds 0, 1 and 2 on the mesh. Round 2 adds two vertices, and later rounds add none:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = PetersenGraph[]},
-  Length @ Keys @ InfraMeasurement[ g, InfraConvexHull[{1, 2, 8}, #], "VertexDensity" ] & /@ Range[0, 4]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pts = RandomInfraPoint[g, InfraShell[c, 4], 4, RandomSeeding -> 1]},
+  GraphicsRow @ Table[
+    InfraSubstrateHighlight[g, {InfraConvexHull[pts, k], pts}, PlotLabel -> InfraMeasurement[g, InfraConvexHull[pts, k], "CountingMeasure"]],
+    {k, 0, 2}]]
+```
+
+## Scope
+
+On the Petersen graph three vertices need three rounds, and the hull is the whole graph:
+
+```wl
+Table[InfraMeasurement[PetersenGraph[], InfraConvexHull[{1, 2, 8}, k], "CountingMeasure"], {k, 0, 4}]
 ```
 
 ## Properties and Relations
 
-The hull of two vertices of a path graph is the interval between them, and one round of two vertices is already the interval.
+The sizes of the hulls of 2 to 5 points of the circle of radius 4. On the mesh the hull of three points is thin, the hull of four thick:
 
 ```wl
-With[
-  {g = PathGraph[Range[10]]},
-  Keys @ InfraMeasurement[g, InfraConvexHull[{3, 7}, 1], "VertexDensity"]]
+Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    Table[InfraMeasurement[g, InfraConvexHull[RandomInfraPoint[g, InfraShell[c, 4], k, RandomSeeding -> 1]], "CountingMeasure"], {k, 2, 5}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The hull is geodesically convex: it is its own hull, and it contains every round.
+On the grid the hull is the bounding box of the points:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = GridGraph[{7, 7}]},
-  {hull = Keys @ InfraMeasurement[ g, InfraConvexHull[{2, 6, 40}], "VertexDensity" ]},
-  {Keys @ InfraMeasurement[ g, InfraConvexHull[hull], "VertexDensity" ] === hull, SubsetQ[hull, Keys @ InfraMeasurement[ g, InfraConvexHull[{2, 6, 40}, 1], "VertexDensity" ]]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pts = RandomInfraPoint[g, InfraBall[c, 6], 3, RandomSeeding -> 2]},
+  {xy = AssociationThread[VertexList[g], Round[GraphEmbedding[g]]]}, {ranges = MinMax /@ Transpose[xy /@ pts]},
+  Select[VertexList[g], And @@ MapThread[IntervalMemberQ[Interval[#2], #1] &, {xy[#], ranges}] &] ===
+    Keys @ InfraMeasurement[g, InfraConvexHull[pts], "VertexDensity"]]
 ```
 
-The convex hull and the ball hull of the same pair on the 7 × 7 grid.
+The hull is its own hull and contains every round:
 
 ```wl
-With[
-  {g = GridGraph[{7, 7}]},
-  GraphicsRow[InfraSubstrateHighlight[g, {#, {2, 6}}] & /@ {InfraConvexHull[{2, 6}], InfraBallHull[{2, 6}]}]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pts = RandomInfraPoint[g, InfraShell[c, 4], 4, RandomSeeding -> 1]},
+  {hull = Keys @ InfraMeasurement[g, InfraConvexHull[pts], "VertexDensity"]},
+  {Keys @ InfraMeasurement[g, InfraConvexHull[hull], "VertexDensity"] === hull,
+   AllTrue[Range[0, 3], SubsetQ[hull, Keys @ InfraMeasurement[g, InfraConvexHull[pts, #], "VertexDensity"]] &]}]
+```
+
+The ball hull and the convex hull of the same points; see [InfraBallHull]():
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pts = RandomInfraPoint[g, InfraShell[c, 4], 3, RandomSeeding -> 1]},
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {hull, pts}], {hull, {InfraConvexHull[pts], InfraBallHull[pts]}}]]
 ```

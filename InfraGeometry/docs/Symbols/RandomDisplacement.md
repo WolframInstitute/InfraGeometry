@@ -12,70 +12,83 @@ RelatedGuides: [InfraAnalysis]
 
 ## Usage
 
-<code>[RandomDisplacement]()[*g*, *r*]</code> gives a random single-valued displacement of magnitude at most *r*, built to be 1-continuous.
+<code>[RandomDisplacement]()[*g*, *r*]</code> gives a random 1-continuous single-valued displacement of *g* of magnitude at most *r*.
 
 <code>[RandomDisplacement]()[*g*]</code> takes *r* = 1.
 
 ## Details & Options
 
-Construction: the vertices are visited in breadth-first order from the first vertex of *g*. Each takes a random vertex of its ball of radius *r* that lies within one step of the targets already given to its neighbours, or, when there is none, a vertex of the ball that brings it closest to them. Then the vertices of every edge whose targets are more than one step apart are given new targets, closest to their neighbours' targets and to themselves, up to 50 times; the whole construction is tried up to 5 times.
+The result *D* has one value at each vertex, every step has length at most *r*, *d(v, D(v)) ≤ r*, and *D* is 1-continuous: the values at the ends of every edge are at most one step apart ([ContinuousDisplacementQ]()). It is the discrete counterpart of the flow of a random smooth vector field.
 
-The result is single-valued and has magnitude at most *r*. It is 1-continuous ([ContinuousDisplacementQ]()). When the repair leaves a discontinuity after the 5 attempts, which happens at larger *r*, the call stays unevaluated.
+The steps are not all of length *r*. So the result is in general not a section of <code>[InfraDisplacementBundle]()[*g*, *r*]</code>, whose sections move every vertex by exactly *r*; [RandomInfraSection]() draws those.
 
-The construction draws with [RandomChoice](), so [SeedRandom]() fixes the result.
+A random choice that is not 1-continuous is repaired a bounded number of times. When the repair fails, the call stays unevaluated.
+
+Options:
+
+| Option | Default | Values |
+|---|---|---|
+| [RandomSeeding]() | `Automatic` | an integer or a string for a reproducible draw; `Inherited` to draw from the current random state |
+
+With the default every call draws afresh, and [SeedRandom]() does not fix the result.
 
 ## Basic Examples
 
-Random displacements of magnitude at most 2 on the discretized plane, the square tiling and the hexagonal tiling: coherent flows with sinks.
+A random displacement of magnitude at most 2 on the square grid and on the square mesh:
 
 ```wl
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {field = (SeedRandom[1]; RandomDisplacement[g, 2])},
-    DisplacementPlot[g, field]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    DisplacementPlot[g, RandomDisplacement[g, 2, RandomSeeding -> 1]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-## Scope
-
-The magnitude bound 1, 2 and 3 on the square tiling.
+The bounds 1, 2 and 3 on the grid, each with its magnitude:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {fields = Table[SeedRandom[1]; RandomDisplacement[g, r], {r, 3}]},
-  {GraphicsRow[DisplacementPlot[g, #] & /@ fields], DisplacementMagnitude[g, #] & /@ fields}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  GraphicsRow @ Table[
+    With[{d = RandomDisplacement[g, r, RandomSeeding -> 1]},
+      DisplacementPlot[g, d, PlotLabel -> DisplacementMagnitude[g, d]]],
+    {r, 3}]]
+```
+
+## Options
+
+### RandomSeeding
+
+A fixed seed gives the same draw whatever [SeedRandom]() has set:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  SameQ @@ Table[SeedRandom[k]; RandomDisplacement[g, 2, RandomSeeding -> 7], {k, 3}]]
 ```
 
 ## Properties and Relations
 
-A random displacement is single-valued, has magnitude at most *r*, and here is 1-continuous.
+The result is single-valued, of magnitude at most *r*, and 1-continuous:
 
 ```wl
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {field = (SeedRandom[1]; RandomDisplacement[g, 2])},
-  {DisplacementPlot[g, field], DisplacementSingleValuedQ[field], DisplacementMagnitude[g, field], ContinuousDisplacementQ[g, field]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {d = RandomDisplacement[g, 2, RandomSeeding -> 1]},
+  {DisplacementSingleValuedQ[d], DisplacementMagnitude[g, d], ContinuousDisplacementQ[g, d]}]
 ```
 
-The steps have length at most *r*, not exactly *r*. At *r* = 2 most steps have length 2 and some have length 1, so the displacement is not a section of <code>[InfraDisplacementBundle]()[*g*, 2]</code>, whose sections move every vertex by exactly 2; [RandomInfraSection]() draws such a section, continuous or not. The counts of the step lengths:
+The step lengths at *r* = 2, with their counts. On the mesh 24 vertices stay:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {field = (SeedRandom[1]; RandomDisplacement[g, 2])},
-  {DisplacementPlot[g, field], Normal @ KeySort @ Counts[KeyValueMap[GraphDistance[g, #1, First[#2]] &, field]]}]
+Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    {d = RandomDisplacement[g, 2, RandomSeeding -> 1]},
+    KeySort @ Counts @ KeyValueMap[GraphDistance[g, #1, First[#2]] &, d]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
 ## Possible Issues
 
-The construction can fail, and then the call stays unevaluated. At magnitude 3 on the hexagonal tiling the repair does not always remove every discontinuity: of the seeds 1 to 10, four give a displacement and six leave the call unevaluated.
+The repair can fail, and the call then stays unevaluated. On the hexagonal tiling at *r* = 3, six of the seeds 1 to 10 fail:
 
 ```wl
-Table[
-  With[
-    {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-    SeedRandom[seed]; Head @ RandomDisplacement[g, 3]],
-  {seed, 10}]
+With[{g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
+  Table[Head @ RandomDisplacement[g, 3, RandomSeeding -> seed], {seed, 10}]]
 ```

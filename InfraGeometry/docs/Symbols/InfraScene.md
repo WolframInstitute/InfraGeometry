@@ -6,141 +6,118 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraScene
 Keywords: [scene, construction, Euclid I.1, hypothesis, assertion, ruler and compass]
-SeeAlso: [InfraScenePlot, RandomInfraSceneInstance, InfraSceneInstance, InfraSceneStep, InfraIntersection, InfraDistance, InfraSceneViewer]
+SeeAlso: [RandomInfraSceneInstance, InfraSceneInstance, InfraSceneStep, InfraScenePlot, InfraSceneViewer, InfraIntersection, InfraDistance]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraScene]()[{*x1*, *x2*, …}, {*hyp1*, *hyp2*, …}]</code> is a construction stated before any graph: the objects *xi*, and hypotheses that construct them or assert relations between them.
+<code>[InfraScene]()[{*x1*, *x2*, …}, {*hyp1*, *hyp2*, …}]</code> is the construction of the objects *x1*, *x2*, … under the hypotheses *hyp1*, *hyp2*, …, stated before any graph.
 
 <code>[InfraScene]()[{*x1*, …}, {[InfraSceneStep]()[{*hyp1*, …}, *label*], …}]</code> groups the hypotheses into labelled steps.
 
+<code>*scene*["*prop*"]</code> gives the property *prop* of the scene.
+
 ## Details & Options
 
-Definition: a scene is a list of objects and a list of hypotheses. A **construction** is a hypothesis `x == token`, whose left side is an object. Every other hypothesis is an **assertion**. A scene computes nothing; [RandomInfraSceneInstance]() solves it on a graph.
+A hypothesis `x == token` with an object on the left is a construction. Every other hypothesis is an assertion.
 
-The right side of a construction is a **symbolic construction token** with object names in place of points. Evaluation is postponed until [RandomInfraSceneInstance]() supplies a graph and resolves those names. [InfraPoint]()`[v]` is the vertex *v*, and <code>[InfraPoint]()[*v*, *d*]</code> every vertex at distance *d* from *v*. [InfraSegment]()`[x, y]` is a shortest path from *x* to *y*, and [InfraHalfLine]()`[x, y]` and [InfraInfiniteLine]()`[x, y]` a ray and a line. [InfraCircle]()`[x, r]` is a circle about *x* at radius *r*, or in the band `{r, s}`. [InfraIntersection]()`[x, y]` is a vertex the two objects share; an operand may be a token itself.
+A token names a construction, with objects in place of points:
 
-A token stands for its realisations, and each realisation is one branch. So a construction binds its object to a single vertex, or a single vertex list, per branch, and the branches multiply from one construction to the next.
+| Token | Realisation |
+|---|---|
+| <code>[InfraPoint]()[*v*]</code>, <code>[InfraPoint]()[]</code> | the vertex *v*; any vertex |
+| <code>[InfraSegment]()[*x*, *y*]</code> | a shortest path from *x* to *y* |
+| <code>[InfraHalfLine]()[*x*, *y*]</code>, <code>[InfraInfiniteLine]()[*x*, *y*]</code> | a ray, a line |
+| <code>[InfraCircle]()[*x*, *r*]</code> | a circle about *x* of radius *r*, or in a band {*r*, *s*} |
+| <code>[InfraIntersection]()[*x*, *y*]</code> | the vertices *x* and *y* share |
+| <code>[InfraMidpoint]()[*x*, *y*]</code>, <code>[InfraBall]()[*x*, *r*]</code>, … | a central vertex, a region, … |
 
-The token is the head itself: the second argument of [InfraCircle]() is always a radius or a band. The circle through a point is the closed arc [InfraArc]()`[x, {p, p}]`.
+A construction on a graph rarely has one result. Each realisation of a token is a branch, and the branches multiply from one construction to the next. An instance is one complete branch: [RandomInfraSceneInstance]() draws instances, all of them with `All`, [InfraSceneInstance]() reads them, [InfraScenePlot]() draws one and [InfraSceneViewer]() steps through them.
 
-An assertion is a predicate on objects: a comparison of [InfraDistance]() values, or one of the `Infra*Q` tests without its graph (`InfraSegmentQ[s]`, `InfraCircleQ[c]`, `InfraParallelQ[l1, l2]` and a few more). The graph is supplied when the scene is solved, and a branch survives only if every assertion holds on it. An `Infra*Q` test that cannot be given the graph is refused with `InfraScene::badassertion`.
+An assertion is a condition on objects: a comparison of [InfraDistance]() values, or a test such as `InfraSegmentQ[x]` or `InfraParallelQ[x, y]` written without its graph. A branch survives only if every assertion holds on it. A scene with a test it cannot give the graph stays unevaluated.
 
-Without [InfraSceneStep](), the steps are the levels of the dependency graph of the constructions: first the objects that depend on no other object, then those that depend only on them, and so on. With it, the steps are the ones written, in order.
+The steps are the levels of the dependency graph: first the objects that depend on no other, then those that depend only on them, and so on. With [InfraSceneStep]() they are the steps written, in order.
 
-The objects are ordinary symbols, so they must have no value when the scene is built; `ClearAll` them first.
+| Property | Value |
+|---|---|
+| `"Objects"` | the objects |
+| `"Constructions"` | the constructions, `<\|x -> token, …\|>` |
+| `"Assertions"` | the assertions |
+| `"Steps"` | the objects of each step |
+| `"Labels"` | the step labels |
+| `"DependencyGraph"` | which object depends on which; `None` for written steps |
 
-A scene answers `"Objects"`, `"Constructions"`, `"Assertions"`, `"Steps"`, `"Labels"` and `"DependencyGraph"`. The dependency graph is `None` when the steps are written by hand.
+The objects are symbols without values.
 
-**A construction can stall.** Euclid never postulated that the two circles of I.1 meet, and on a graph they need not. On a square grid a single distance shell spans no cycle, so the circles of I.1 at one radius do not exist. That is the continuity assumption Euclid left unstated, showing up as an empty result. A band two radii thick carries the circles, and there the construction goes through.
+A construction can stall. Euclid never postulated that the two circles of I.1 meet, and on a graph they need not. A shell of the square grid has no two adjacent vertices, so there is no circle of one radius; a band of two radii carries circles, and there the construction goes through.
 
 ## Basic Examples
 
-Euclid I.1 on the square tiling: two points four steps apart, a circle in the band `{4, 5}` about each, and the vertices where the circles meet. On a lattice two circles meet along an edge rather than at a vertex, so there are several meeting vertices.
+Euclid I.1: two points at distance 3, a circle about each through the other, and a vertex where they meet. On the grid the circles need a band:
 
 ```wl
-SeedRandom[1];
-ClearAll[pA, pB, circleA, circleB, meet];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
-  {scene = InfraScene[{pA, pB, circleA, circleB, meet},
-     {InfraSceneStep[{pA == InfraPoint[a]}, "point A"],
-      InfraSceneStep[{pB == InfraPoint[b]}, "point B"],
-      InfraSceneStep[{circleA == InfraCircle[pA, {4, 5}]}, "circle about A"],
-      InfraSceneStep[{circleB == InfraCircle[pB, {4, 5}]}, "circle about B"],
-      InfraSceneStep[{meet == InfraPoint[ InfraIntersection[circleA, circleB] ]}, "where they meet"]}]},
-  {solved = RandomInfraSceneInstance[ scene, g, All ]},
-  {cycleA = InfraSceneInstance[First @ solved, circleA]},
-  {cycleB = InfraSceneInstance[First @ solved, circleB]},
-  InfraSubstrateHighlight[g,
-    Join[{InfraWalk[Append[cycleA, First @ cycleA]], InfraWalk[Append[cycleB, First @ cycleB]], a, b},
-      InfraSceneInstance[#, meet] & /@ solved]]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[First @ spec, "Medium", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+    {b = RandomInfraPoint[g, InfraShell[a, 3], RandomSeeding -> 2]},
+    {scene = InfraScene[{pA, pB, cA, cB, meet}, {pA == InfraPoint[a], pB == InfraPoint[b],
+       cA == InfraCircle[pA, Last @ spec], cB == InfraCircle[pB, Last @ spec], meet == InfraPoint[InfraIntersection[cA, cB]]}]},
+    {inst = RandomInfraSceneInstance[scene, g, RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g,
+      Join[InfraWalk[Append[#, First @ #]] & /@ InfraSceneInstance[inst, {cA, cB}], InfraSceneInstance[inst, {pA, pB, meet}]]]],
+  {spec, {{"SquareGridGraph", {3, 4}}, {"SquareMeshGraph", 3}}}]
 ```
 
-Euclid I.1 without steps: they are read off the dependencies, three levels deep. The dependency graph, beside the objects and the steps.
+The steps are read off the dependencies, three levels deep. Each circle depends on its centre, the meeting point on both circles:
 
 ```wl
-ClearAll[pA, pB, circleA, circleB, meet];
-With[
-  {scene = InfraScene[{pA, pB, circleA, circleB, meet},
-     {pA == InfraPoint[1], pB == InfraPoint[2],
-      circleA == InfraCircle[pA, {4, 5}], circleB == InfraCircle[pB, {4, 5}],
-      meet == InfraPoint[ InfraIntersection[circleA, circleB] ]}]},
-  {scene["DependencyGraph"], scene["Objects"], scene["Steps"]}]
+With[{scene = InfraScene[{pA, pB, cA, cB, meet}, {pA == InfraPoint[45], pB == InfraPoint[48],
+     cA == InfraCircle[pA, {3, 4}], cB == InfraCircle[pB, {3, 4}], meet == InfraPoint[InfraIntersection[cA, cB]]}]},
+  {scene["Steps"], EdgeList @ scene["DependencyGraph"]}]
 ```
 
-An assertion keeps the branches it holds on: here the meeting vertices nearer than *A* to a vertex of the rim.
+## Scope
+
+An assertion selects branches. The second point is any vertex at distance 4 from the first, so there are as many instances as vertices on the shell, 16 on the grid:
 
 ```wl
-SeedRandom[1];
-ClearAll[pA, pB, circleA, circleB, meet];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
-  {rim = (SeedRandom[1]; RandomInfraPoint[g, GraphPeriphery[g]])},
-  {scene = InfraScene[{pA, pB, circleA, circleB, meet},
-     {pA == InfraPoint[a], pB == InfraPoint[b],
-      circleA == InfraCircle[pA, {4, 5}], circleB == InfraCircle[pB, {4, 5}],
-      meet == InfraPoint[ InfraIntersection[circleA, circleB] ],
-      InfraDistance[meet, rim] < InfraDistance[pA, rim]}]},
-  {kept = InfraSceneInstance[#, meet] & /@ RandomInfraSceneInstance[ scene, g, All ]},
-  {InfraSubstrateHighlight[g, Join[{a, b, rim}, kept]], scene["Assertions"], kept}]
+With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {scene = InfraScene[{pA, pB}, {pA == InfraPoint[a], pB == InfraPoint[], InfraDistance[pA, pB] == 4}]},
+  {ends = InfraSceneInstance[#, pB] & /@ RandomInfraSceneInstance[scene, g, All]},
+  InfraSubstrateHighlight[g, {ends, a}, PlotLabel -> Length[ends], ImageSize -> Medium]]
+```
+
+Written steps keep their labels:
+
+```wl
+With[{scene = InfraScene[{pA, pB, seg},
+     {InfraSceneStep[{pA == InfraPoint[45], pB == InfraPoint[49]}, "two points"], InfraSceneStep[{seg == InfraSegment[pA, pB]}, "the segment"]}]},
+  {scene["Steps"], scene["Labels"]}]
 ```
 
 ## Properties and Relations
 
-At a single radius the square tiling has no circle, so the construction finds nothing. The shell about *A* is drawn: it has no two adjacent vertices.
+Every vertex where the circles meet, one per instance. On the grid the circles meet along edges, so there are more meeting vertices than the two of the plane:
 
 ```wl
-SeedRandom[1];
-ClearAll[pA, pB, circleA, circleB, meet];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
-  {scene = InfraScene[{pA, pB, circleA, circleB, meet},
-     {pA == InfraPoint[a], pB == InfraPoint[b],
-      circleA == InfraCircle[pA, 4], circleB == InfraCircle[pB, 4],
-      meet == InfraPoint[ InfraIntersection[circleA, circleB] ]}]},
-  {InfraSubstrateHighlight[g, {Keys @ InfraMeasurement[ g, InfraShell[ a, 4 ], "VertexDensity" ], a, b}],
-   RandomInfraCircle[ g, InfraCircle[a, 4], All ], RandomInfraSceneInstance[ scene, g, All ]}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[First @ spec, "Medium", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+    {b = RandomInfraPoint[g, InfraShell[a, 3], RandomSeeding -> 2]},
+    {scene = InfraScene[{pA, pB, cA, cB, meet}, {pA == InfraPoint[a], pB == InfraPoint[b],
+       cA == InfraCircle[pA, Last @ spec], cB == InfraCircle[pB, Last @ spec], meet == InfraPoint[InfraIntersection[cA, cB]]}]},
+    {meets = Union[InfraSceneInstance[#, meet] & /@ RandomInfraSceneInstance[scene, g, All]]},
+    InfraSubstrateHighlight[g, {InfraShell[a, Last @ spec], InfraShell[b, Last @ spec], meets, {a, b}}, PlotLabel -> Length[meets]]],
+  {spec, {{"SquareGridGraph", {3, 4}}, {"SquareMeshGraph", 3}}}]
 ```
 
-On the discretized plane a single radius suffices: its shells are cycles by accident of the mesh.
+## Possible Issues
+
+At one radius the square grid has no circle, and Euclid I.1 has no instance:
 
 ```wl
-SeedRandom[1];
-ClearAll[pA, pB, circleA, circleB, meet];
-With[
-  {g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = SelectFirst[VertexList[g], GraphDistance[g, a, #] == 4 &]},
-  {scene = InfraScene[{pA, pB, circleA, circleB, meet},
-     {pA == InfraPoint[a], pB == InfraPoint[b],
-      circleA == InfraCircle[pA, 4], circleB == InfraCircle[pB, 4],
-      meet == InfraPoint[ InfraIntersection[circleA, circleB] ]}]},
-  {solved = RandomInfraSceneInstance[ scene, g, All ]},
-  {InfraSubstrateHighlight[g, Join[{a, b}, InfraSceneInstance[#, meet] & /@ solved]],
-   Length @ solved}]
-```
-
-An operand of [InfraIntersection]() may be a token, bound to no name.
-
-```wl
-SeedRandom[1];
-ClearAll[pA, pB, circleA, meet];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
-  {scene = InfraScene[{pA, pB, circleA, meet},
-     {pA == InfraPoint[a], pB == InfraPoint[b], circleA == InfraCircle[pA, {4, 5}],
-      meet == InfraPoint[ InfraIntersection[circleA, InfraCircle[pB, {4, 5}]] ]}]},
-  {meets = InfraSceneInstance[#, meet] & /@ RandomInfraSceneInstance[ scene, g, All ]},
-  {InfraSubstrateHighlight[g, Join[{a, b}, meets]], meets}]
+With[{g = InfraSubstrate["SquareGridGraph", "Medium"]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 3], RandomSeeding -> 2]},
+  {scene = InfraScene[{pA, pB, cA, cB, meet}, {pA == InfraPoint[a], pB == InfraPoint[b],
+     cA == InfraCircle[pA, 3], cB == InfraCircle[pB, 3], meet == InfraPoint[InfraIntersection[cA, cB]]}]},
+  RandomInfraSceneInstance[scene, g, All]]
 ```

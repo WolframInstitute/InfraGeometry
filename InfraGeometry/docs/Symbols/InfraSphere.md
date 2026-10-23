@@ -5,96 +5,88 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraSphere
-Keywords: [sphere, separating set, minimal, region, symbolic object, family, counting measure, Riemannian measure]
-SeeAlso: [RandomInfraSphere, InfraShell, InfraBall, InfraMeasurement]
+Keywords: [sphere, separating set, minimal separator, shell, family, symbolic object]
+SeeAlso: [RandomInfraSphere, InfraShell, InfraBall, InfraCircle, InfraMeasurement]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraSphere]()[*c*, {*r*, *s*}]</code> is the sphere about *c*: the family of inclusion-minimal connected subsets of the shell [InfraShell]()[*c*, {*r*, *s*}] that separate the side of *c* from the far side. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
+<code>[InfraSphere]()[*c*, *r*]</code> is the sphere of radius *r* about *c*: the family of minimal connected subsets of the shell of radius *r* that separate *c* from the far side.
 
-<code>[InfraSphere]()[*c*, *r*]</code> is the band {*r*, *r*}.
+<code>[InfraSphere]()[*c*, {*r*, *s*}]</code> is the sphere in the band of radii *r* to *s*.
 
 ## Details & Options
 
-Definition: a sphere of the shell *S* is a subset *T ⊆ S* such that the induced subgraph on *T* is connected, deleting *T* leaves the component of *c* within the mean radius and every other vertex beyond it, and no proper subset of *T* does.
+A member is a set *T* of vertices with *r ≤ d(c, v) ≤ s* such that
 
-The family may be empty. On a bipartite graph, such as the square grid and the hexagonal tiling, no two vertices at the same distance from *c* are adjacent, so a shell of one radius has no connected subset of more than one vertex and carries no sphere. A band of two radii carries spheres on the square grid. When the shell wraps around, as on a torus, and does not separate, the family is empty as well.
+- *T* is connected,
+- deleting *T* leaves the component of *c* within distance *(r + s)/2* of *c* and every other vertex beyond it,
+- no proper subset of *T* has both properties.
 
-The family may have many members. The shell is a set of points; the sphere is the family of its connected separating subsets, and it is searched, not read off a graph: no polynomial-size faithful graph of the family is known. [RandomInfraSphere]() is the search.
+The shell is a set of points; the sphere is a family of connected surfaces in it. It can be empty or have many members.
 
-[InfraMeasurement]() reads the family through the exhaustive search, so it is expensive. `"VertexDensity"` is the sum of the indicators of the members, `"EdgeDensity"` the sum of their induced edge sets, `"Cardinality"` their number. The two measures are read on the support of the density, the union of the members:
+On a bipartite graph, such as the square grid, no two vertices at the same distance from *c* are adjacent. A shell of one radius then has no connected subset of more than one vertex, and the sphere of one radius is empty. A band of two radii carries spheres. On the square mesh the shell is a connected ring and is its own sphere.
 
-| Measure | Value |
+[InfraSphere]() is a symbolic object. Its members are found by search, not read off a graph, and [InfraMeasurement]() searches all of them:
+
+| Property | Value |
 |---|---|
+| `"Cardinality"` | the number of members |
+| `"VertexDensity"` | the number of members containing each vertex |
 | `"CountingMeasure"` | the number of vertices in some member |
-| `"RiemannianMeasure"` | the number of vertices of the support all of whose neighbours lie in it; `0` for a sphere of one radius *r ≥ 1*, since every vertex of it has a neighbour at distance *r − 1* |
+| `"RiemannianMeasure"` | the number of those vertices all of whose neighbours are in some member |
 
-`"Faithful"` stays unevaluated. A sphere has no `"Graph"`.
-
-The Riemannian measure of a sphere instance in a band *{r, r + 1}*, *r ≥ 1*, is `0` too, whenever every vertex at distance *r + 1* has a neighbour at distance *r + 2*: each vertex of the instance then has a neighbour outside the band.
-
-No count is known. The family has no closed formula for its number of members, and one instance none for its size: the size of one instance bounds the size of no other. The reference is the shell it lies in, whose count [InfraShell]() gives on a lattice. In the continuum a sphere instance stands for the geodesic sphere, of area *n ω_n r^(n−1) (1 − Scal(c) r² / (6n) + O(r⁴))*.
-
-How the number is measured: one instance *T*, <code>[RandomInfraSphere]()[*g*, [InfraSphere]()[*c*, {*r*, *r* + 1}]]</code>, found greedily, is a vertex list, and <code>[InfraMeasurement]()[*g*, [InfraTube]()[*T*, 0], *measure*]</code> measures it as a region. The profile is the list of the instance sizes over *r*, a profile of instances, not of the family.
-
-[RandomInfraSphere]() gives members: the count and `"NextVertexFunction"` are passed to [RandomInfraSphere](). Without a count it gives one member, a sorted vertex list.
+A sphere has no `"Graph"`, and `"Faithful"` stays unevaluated. [RandomInfraSphere]() draws members, one by default, and [InfraMemberQ]() tests a vertex set.
 
 ## Basic Examples
 
-The shell of radius 3, and the sphere in it, on the discretized plane, the square grid and the hexagonal tiling, labelled with the number of members and the two measures. The shell of the mesh is a connected ring and is its own sphere; the two lattices are bipartite, and the family is empty.
+A sphere of radius 3 about the centre, drawn over its shell. On the grid it needs the band of radii 2 and 3; on the mesh it is the whole shell of radius 3:
 
 ```wl
-SeedRandom[1];
-Row[Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = First @ GraphCenter[g]},
-    {family = InfraSphere[c, 3]},
-    Labeled[
-      InfraSubstrateHighlight[g, {InfraShell[c, 3], Replace[ family, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraShell :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCylinder :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCone :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSolidOfRevolution :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraBallHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraConvexHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraQuadric :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ], c}],
-      InfraMeasurement[g, family, {"Cardinality", "CountingMeasure", "RiemannianMeasure"}]]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[First @ spec, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    InfraSubstrateHighlight[g, {InfraShell[c, Last @ spec], RandomInfraSphere[g, InfraSphere[c, Last @ spec], RandomSeeding -> 1], c}]],
+  {spec, {{"SquareGridGraph", {2, 3}}, {"SquareMeshGraph", 3}}}]
 ```
 
-The four minimal connected separators in the band 1 to 2 about the centre of a 5 by 5 grid, each drawn on its own.
+The four members of the sphere in the band of radii 1 and 2 on the grid:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = GridGraph[{5, 5}]},
-  {members = RandomInfraSphere[ g, InfraSphere[13, {1, 2}], All ]},
-  Row[InfraSubstrateHighlight[g, {#, 13}] & /@ members]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {member, c}], {member, RandomInfraSphere[g, InfraSphere[c, {1, 2}], All]}]]
+```
+
+## Scope
+
+On the grid the sphere of one radius is empty; on the mesh it has one member:
+
+```wl
+Table[With[{g = InfraSubstrate[name, "Small"]}, {c = First @ GraphCenter[g]}, InfraMeasurement[g, InfraSphere[c, 3], "Cardinality"]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+```
+
+In the band of radii 1 and 2 on the grid the four members together cover 8 of the 12 vertices of the band:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {InfraMeasurement[g, InfraSphere[c, {1, 2}], "Cardinality"], InfraMeasurement[g, InfraSphere[c, {1, 2}], "CountingMeasure"],
+   InfraMeasurement[g, InfraShell[c, {1, 2}], "CountingMeasure"]}]
 ```
 
 ## Properties and Relations
 
-Measuring the family of the 5 by 5 grid: four members, eight vertices in their union, none of them inside.
+Every member is connected and lies in the band:
 
 ```wl
-InfraMeasurement[GridGraph[{5, 5}], InfraSphere[13, {1, 2}], {"Cardinality", "Faithful", "CountingMeasure", "RiemannianMeasure"}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {band = Keys @ InfraMeasurement[g, InfraShell[c, {1, 2}], "VertexDensity"]},
+  AllTrue[RandomInfraSphere[g, InfraSphere[c, {1, 2}], All], ConnectedGraphQ[Subgraph[g, #]] && SubsetQ[band, #] &]]
 ```
 
-The size of one instance per band *{r, r + 1}* about the centre of the square grid, as points, against the count of the band, as a curve.
+On the mesh the sphere of radius 3 is the shell:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
-  {c = First @ GraphCenter[g]},
-  ListPlot[{
-    Table[Length[RandomInfraSphere[ g, InfraSphere[c, {r, r + 1}] ]], {r, 1, 6}],
-    Table[InfraMeasurement[g, InfraShell[c, {r, r + 1}], "CountingMeasure"], {r, 1, 6}]},
-    DataRange -> {1, 6}, Joined -> {False, True}, PlotMarkers -> Automatic, AxesLabel -> {"r", None}]]
-```
-
-A member is connected and is contained in the shell.
-
-```wl
-SeedRandom[1];
-With[
-  {g = GridGraph[{7, 7}]},
-  {members = RandomInfraSphere[ g, InfraSphere[25, {2, 3}], All ]},
-  {ConnectedGraphQ @ Subgraph[g, #] & /@ members, AllTrue[members, SubsetQ[Keys @ InfraMeasurement[ g, InfraShell[ 25, {2, 3} ], "VertexDensity" ], #] &]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  Sort @ RandomInfraSphere[g, InfraSphere[c, 3], RandomSeeding -> 1] == Keys @ InfraMeasurement[g, InfraShell[c, 3], "VertexDensity"]]
 ```

@@ -196,16 +196,16 @@ VerificationTest[
 
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    BlockRandom[RandomInfraLine[g, 6, 7], RandomSeeding -> 17] ===
-      BlockRandom[RandomInfraLine[g, 6, 7], RandomSeeding -> 17] &&
-    InfraLineQ[g, BlockRandom[RandomInfraLine[g, 6, 7], RandomSeeding -> 17]]],
+    BlockRandom[RandomInfraLine[g, 6, 7, RandomSeeding -> None ], RandomSeeding -> 17] ===
+      BlockRandom[RandomInfraLine[g, 6, 7, RandomSeeding -> None ], RandomSeeding -> 17] &&
+    InfraLineQ[g, BlockRandom[RandomInfraLine[g, 6, 7, RandomSeeding -> None ], RandomSeeding -> 17]]],
   True,
   TestID -> "RandomInfraLine-default-is-seeded-and-valid"
 ]
 
 VerificationTest[
   Length @ DeleteDuplicates @ Table[
-    BlockRandom[RandomInfraLine[GridGraph[{4, 4}], 6, 7], RandomSeeding -> s],
+    BlockRandom[RandomInfraLine[GridGraph[{4, 4}], 6, 7, RandomSeeding -> None ], RandomSeeding -> s],
     {s, 1, 8}] > 1,
   True,
   TestID -> "RandomInfraLine-default-varies-across-seeds"
@@ -237,11 +237,11 @@ VerificationTest[
         {UndirectedEdge["s", "u"], UndirectedEdge["s", "v"], UndirectedEdge["u", "p"],
          UndirectedEdge["v", "p"], UndirectedEdge["p", "t"]}]],
       line = {"a", "b"}, p = "p"},
-    {draw = BlockRandom[RandomInfraParallel[g, line, p], RandomSeeding -> 17]},
-    {draw === BlockRandom[RandomInfraParallel[g, line, p], RandomSeeding -> 17],
+    {draw = BlockRandom[RandomInfraParallel[g, line, p, RandomSeeding -> None ], RandomSeeding -> 17]},
+    {draw === BlockRandom[RandomInfraParallel[g, line, p, RandomSeeding -> None ], RandomSeeding -> 17],
      InfraParallelQ[g, line, draw],
      Length @ DeleteDuplicates @ Table[
-       BlockRandom[RandomInfraParallel[g, line, p], RandomSeeding -> s], {s, 1, 8}] > 1}],
+       BlockRandom[RandomInfraParallel[g, line, p, RandomSeeding -> None ], RandomSeeding -> s], {s, 1, 8}] > 1}],
   {True, True, True},
   TestID -> "RandomInfraParallel-default-is-seeded-and-valid"
 ]
@@ -315,6 +315,113 @@ VerificationTest[
   UniversalLineQ[ CycleGraph[ 5 ] ],
   False,
   TestID -> "UniversalLineQ-C5-none"
+]
+
+(* the line through u, v is read off the distance matrix, so a graph with no universal line is decided in polynomial time *)
+VerificationTest[
+  TimeConstrained[ UniversalLineQ[ CycleGraph[ 15 ] ], 3 ],
+  False,
+  TestID -> "UniversalLineQ-polynomial-odd-cycle"
+]
+
+(* on the 3 x 4 grid the universal lines are spanned by the 17 edges and the 2 long diagonals *)
+VerificationTest[
+  With[ { g = GridGraph[ { 3, 4 } ] }, Count[ Subsets[ VertexList @ g, { 2 } ], p_ /; UniversalLineQ[ g, p ] ] ],
+  19,
+  TestID -> "UniversalLineQ-grid-3x4-pairs"
+]
+
+VerificationTest[
+  MatchQ[ UniversalLineQ[ CycleGraph[ 4 ], { 1, 9 } ], _UniversalLineQ ],
+  True,
+  TestID -> "UniversalLineQ-non-vertex-stays-unevaluated"
+]
+
+(* ===== InfraParallelQ: l1 parallel to l2 is one-sided, the parallels of RandomInfraParallel pass ===== *)
+
+(* on the 6 x 6 grid the piece {2, 3, 4} of the first row is at distance 2 from the third row, so it is parallel to the row; the
+   row is not at constant distance from the piece, so it is not parallel to the piece *)
+VerificationTest[
+  With[ { g = GridGraph[ { 6, 6 } ], piece = { 2, 3, 4 }, row = Range[ 13, 18 ] },
+    { InfraParallelQ[ g, piece, row ], InfraParallelQ[ g, row, piece ], InfraParallelQ[ g, Range[ 1, 6 ], row ],
+      InfraParallelQ[ GraphDistanceMatrix @ g, piece, row ], InfraParallelQ[ GraphDistanceMatrix @ g, row, piece ] } ],
+  { True, False, True, True, False },
+  TestID -> "InfraParallelQ-one-sided"
+]
+
+(* the parallel through a vertex two rows above the first row is the third row, and it is parallel to the first *)
+VerificationTest[
+  With[ { g = GridGraph[ { 6, 6 } ] }, { parallel = RandomInfraParallel[ g, Range[ 1, 6 ], 14, RandomSeeding -> 1 ] },
+    { VertexList @ parallel, InfraParallelQ[ g, parallel, Range[ 1, 6 ] ] } ],
+  { Range[ 13, 18 ], True },
+  TestID -> "InfraParallelQ-accepts-RandomInfraParallel"
+]
+
+(* the empty set is disjoint from every set and at constant distance from it, and every set is at constant distance Infinity
+   from the empty set and from a set in another component *)
+VerificationTest[
+  With[ { g = GridGraph[ { 4, 4 } ] },
+    { InfraParallelQ[ g, { 1, 2, 3, 4 }, { } ], InfraParallelQ[ g, { }, { 1, 2, 3, 4 } ], InfraParallelQ[ GraphDistanceMatrix @ g, { 1, 2, 3, 4 }, { } ],
+      InfraParallelQ[ Graph[ { 1 <-> 2, 3 <-> 4 } ], { 1, 2 }, { 3, 4 } ] } ],
+  { True, True, True, True },
+  TestID -> "InfraParallelQ-empty-line-and-other-component"
+]
+
+(* ===== FindInfraPerpendicular: the feet of an even base are its two centre vertices ===== *)
+
+(* on C7 the vertices 1 and 4 of the line 1, 2, 3, 4 are both at distance 2 from 6, so the base 1, ..., 4 has the centre vertices 2 and 3;
+   the perpendiculars through them do not depend on the orientation of the line *)
+VerificationTest[
+  Sort[ VertexList /@ FindInfraPerpendicular[ CycleGraph[ 7 ], #, 6, All ] ] & /@ { { 1, 2, 3, 4 }, { 4, 3, 2, 1 } },
+  { { { 2, 1, 7, 6 }, { 3, 4, 5, 6 } }, { { 2, 1, 7, 6 }, { 3, 4, 5, 6 } } },
+  TestID -> "FindInfraPerpendicular-even-base-both-centres"
+]
+
+(* ===== InfraPerpendicularQ: lines meet in exactly one vertex, the answer is a Boolean ===== *)
+
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ], row = Range[ 11, 15 ] },
+    Table[ { InfraPerpendicularQ[ g, row, row, Method -> m ], InfraPerpendicularQ[ g, row, { 3, 8, 13, 14, 15 }, Method -> m ] },
+      { m, { "Projection", "Coordinate", "Arclength", "Alexandrov" } } ] ],
+  ConstantArray[ { False, False }, 4 ],
+  TestID -> "InfraPerpendicularQ-sharing-two-vertices-False"
+]
+
+(* removing the centre of a star cuts every arc: the four arclength angles are all infinite, hence equal; on the cross with the
+   chord 1 <-> 3 one arc survives and the angles differ *)
+VerificationTest[
+  { InfraPerpendicularQ[ StarGraph[ 5 ], { 2, 1, 3 }, { 4, 1, 5 }, Method -> "Arclength" ],
+    InfraPerpendicularQ[ Graph[ { 0 <-> 1, 0 <-> 2, 0 <-> 3, 0 <-> 4, 1 <-> 3 } ], { 1, 0, 2 }, { 3, 0, 4 }, Method -> "Arclength" ] },
+  { True, False },
+  TestID -> "InfraPerpendicularQ-Arclength-cut-arcs-Boolean"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    InfraPerpendicularQ[ g, Range[ 11, 15 ], { 3, 8, 13, 18, 23 }, Method -> "Arclength" ] ],
+  True,
+  TestID -> "InfraPerpendicularQ-Arclength-grid-cross"
+]
+
+(* ===== FindInfraPerpendicular: the tangent foot ===== *)
+
+(* 13 is at distance 2 from the first row of the 5 x 5 grid, and the ball of radius 2 about it meets the row only in the foot 3 *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    { perps = Replace[ FindInfraPerpendicular[ g, Range[ 1, 5 ], 13, All, "Radius" -> 2 ], w_Graph :> { w } ] },
+    { MemberQ[ VertexList /@ perps, { 3, 8, 13, 18, 23 } ], AllTrue[ perps, SubsetQ[ VertexList @ #, { 3, 13 } ] & ] } ],
+  { True, True },
+  TestID -> "FindInfraPerpendicular-Radius-keeps-the-tangent-foot"
+]
+
+(* the staircase 6, 7, 12, 13, 18, 19, 24, 25 has 7 and 13 at distance 2 from 3; the midpoint of that base along the line is 12, at
+   distance 3, so the ball of radius 2 about 3 holds no foot *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ], line = { 6, 7, 12, 13, 18, 19, 24, 25 } },
+    { FindInfraPerpendicular[ g, line, 3, All, "Radius" -> 2 ],
+      MemberQ[ Flatten[ { FindInfraPerpendicular[ g, line, 3, All ] } ], w_ /; MemberQ[ VertexList @ w, 12 ] ] } ],
+  { { }, True },
+  TestID -> "FindInfraPerpendicular-Radius-midpoint-along-the-line"
 ]
 
 (* ===== FindInfraCommonLine ===== *)

@@ -51,7 +51,7 @@ Row[Table[
   With[
     {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
     {p = First @ GraphCenter[g]},
-    {q = RandomInfraPoint[g, InfraShell[p, 5]], f = AssociationThread[VertexList[g], RandomInteger[{-9, 9}, VertexCount[g]]]},
+    {q = RandomInfraPoint[g, InfraShell[p, 5], RandomSeeding -> 1], f = AssociationThread[VertexList[g], RandomInteger[{-9, 9}, VertexCount[g]]]},
     Labeled[InfraSubstrateHighlight[g, {InfraSegment[p, q], p, q}],
       Normal @ InfraMeasurement[g, InfraIntegral[InfraDifferential[f], InfraSegment[p, q]], "ValueDensity"]]],
   {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
@@ -64,7 +64,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = First @ GraphCenter[g]},
-  {q = RandomInfraPoint[g, InfraShell[p, 5]], f = AssociationThread[VertexList[g], RandomInteger[{-9, 9}, VertexCount[g]]]},
+  {q = RandomInfraPoint[g, InfraShell[p, 5], RandomSeeding -> 1], f = AssociationThread[VertexList[g], RandomInteger[{-9, 9}, VertexCount[g]]]},
   {density = InfraMeasurement[g, InfraIntegral[f, InfraSegment[p, q]], "ValueDensity"]},
   BarChart[Values[density], ChartLabels -> Keys[density]]]
 ```
@@ -87,7 +87,7 @@ SeedRandom[2];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = First @ GraphCenter[g]},
-  {q = RandomInfraPoint[g, InfraShell[p, 2]], f = AssociationThread[VertexList[g], RandomInteger[{-9, 9}, VertexCount[g]]]},
+  {q = RandomInfraPoint[g, InfraShell[p, 2], RandomSeeding -> 1], f = AssociationThread[VertexList[g], RandomInteger[{-9, 9}, VertexCount[g]]]},
   {InfraSubstrateHighlight[g, {InfraHalfLine[p, q], p, q}],
    Length @ InfraMeasurement[g, InfraIntegral[InfraDifferential[f], InfraHalfLine[p, q]], "ValueDensity"],
    InfraMeasurement[g, InfraHalfLine[p, q], "Cardinality"]}]
@@ -114,7 +114,7 @@ SeedRandom[3];
 With[
   {g = InfraSubstrate["HexagonalTilingGraph", "Small"]},
   {p = First @ GraphCenter[g]},
-  {line = InfraInfiniteLine[p, RandomInfraPoint[g, InfraShell[p, 2]]], f = AssociationThread[VertexList[g], RandomInteger[{-9, 9}, VertexCount[g]]]},
+  {line = InfraInfiniteLine[p, RandomInfraPoint[g, InfraShell[p, 2], RandomSeeding -> 1]], f = AssociationThread[VertexList[g], RandomInteger[{-9, 9}, VertexCount[g]]]},
   {density = InfraMeasurement[g, InfraIntegral[f, line], "ValueDensity"]},
   {InfraMeasurement[g, InfraIntegral[f, line], "Mean"] == Total[Keys[density] Values[density]] / Total[density],
    InfraMeasurement[g, InfraIntegral[f, line], "Cardinality"] == Total[density] == InfraMeasurement[g, line, "Cardinality"]}]
@@ -137,7 +137,7 @@ SeedRandom[5];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small"]},
   {c = First @ GraphCenter[g], f = AssociationThread[VertexList[g], RandomInteger[{-9, 9}, VertexCount[g]]]},
-  {q = RandomInfraPoint[g, InfraShell[c, 4]]},
+  {q = RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]},
   {InfraMeasurement[g, InfraAntiderivative[f, Method -> "UniformChain", "Origin" -> c], "Function"][q] == InfraMeasurement[g, InfraIntegral[f, InfraSegment[c, q]], "Mean"],
    InfraMeasurement[g, InfraAntiderivative[f, "Origin" -> c], "Function"][q] == InfraMeasurement[g, InfraIntegral[f, InfraMeasurement[g, InfraSegment[c, q], "VertexDensity"]], "Value"]}]
 ```

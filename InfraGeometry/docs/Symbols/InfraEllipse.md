@@ -5,23 +5,66 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraEllipse
+Keywords: [ellipse, foci, distance sum, separating cycle, conic, symbolic object]
+SeeAlso: [RandomInfraEllipse, InfraEllipseQ, InfraMeasurement, InfraCircle, InfraQuadric, RandomInfraPoint]
 ---
 
 ## Usage
 
-`InfraEllipse[{p, q}, band]` is an inert family of shortest separating cycles in a distance-sum level band.
+<code>[InfraEllipse]()[{*p*, *q*}, *s*]</code> is the ellipse with foci *p* and *q* and distance sum *s*: the shortest cycles on the level set *d(p, v) + d(q, v) = s* that separate its inside from its outside.
+
+<code>[InfraEllipse]()[{*p*, *q*}, {*s1*, *s2*}]</code> is the ellipse on the band *s1 ≤ d(p, v) + d(q, v) ≤ s2*.
 
 ## Details & Options
 
-[RandomInfraEllipse]() evaluates the family on a graph.
-A scalar band fixes one distance sum; a two-element band gives lower and upper bounds.
-One representative is a directed cycle Graph. This head does not wrap a List of realized cycles.
-Properties follow the existing ellipse sampler.
+The band is *E = {v : s₁ ≤ d(p, v) + d(q, v) ≤ s₂}*. A member of the ellipse is a cycle of the subgraph induced on *E*. By default it must separate a vertex with sum below *s₁* from a vertex with sum above *s₂*, and only the shortest such cycles count.
+
+[InfraEllipse]() is a symbolic object: [RandomInfraEllipse]() draws its members as directed cycle graphs, [InfraMeasurement]() reads `"VertexDensity"` and `"EdgeDensity"`, the number of members through each vertex and each edge, and `"Cardinality"`, their number, and [RandomInfraPoint]() reads it as the region of their vertices.
+
+In the plane every level is a closed curve. On a graph an exact level often carries no separating cycle, and a band of width 1 or 2 does.
+
+With equal foci, <code>[InfraEllipse]()[{*c*, *c*}, 2*r*]</code> is the circle <code>[InfraCircle]()[*c*, *r*]</code>.
+
+Options, given inside the head:
+
+| Option | Default | Values |
+|---|---|---|
+| [Properties]() | `{"Separating", "Shortest"}` | any subset; `{}` keeps every cycle of the band |
 
 ## Basic Examples
 
-An antipodal distance-sum cycle, without the separating requirement.
+The ellipse on the band of sums 6 to 8, with the centre and a point at distance 2 as foci, drawn with all its members:
 
 ```wl
-SeedRandom[ 71 ]; RandomInfraEllipse[ CycleGraph[ 4 ], InfraEllipse[ { 1, 3 }, 2, Properties -> { } ], All ]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {q = RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {InfraEllipse[{c, q}, {6, 8}], c, q}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+```
+
+The number of members for the level 6 and the bands {6, 7} and {6, 8}. The exact level carries none:
+
+```wl
+Table[
+  With[{g = InfraSubstrate[name, "Small"]}, {c = First @ GraphCenter[g]},
+    {q = RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1]},
+    Table[InfraMeasurement[g, InfraEllipse[{c, q}, s], "Cardinality"], {s, {6, {6, 7}, {6, 8}}}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+```
+
+## Properties and Relations
+
+With equal foci and sum *2r* the ellipse is the circle of radius *r*:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  Sort[Sort @* VertexList /@ RandomInfraEllipse[g, InfraEllipse[{c, c}, 6], All]] ==
+    Sort[Sort /@ RandomInfraCircle[g, InfraCircle[c, 3], All]]]
+```
+
+Without the separating condition the whole cycle graph is an ellipse for antipodal foci, every vertex having sum 3:
+
+```wl
+RandomInfraEllipse[CycleGraph[6], InfraEllipse[{1, 4}, 3, Properties -> {}], All]
 ```

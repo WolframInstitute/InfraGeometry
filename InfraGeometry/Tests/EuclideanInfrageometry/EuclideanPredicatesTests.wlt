@@ -266,15 +266,21 @@ VerificationTest[
   TestID -> "InfraPerpendicularQ-disjoint-False"
 ]
 
-(* CycleGraph[5] line {1, 2, 3, 4} meets line {5, 1, 2} at {1, 2}; the foot
-   of perpendicular from 5 onto {1, 2, 3, 4} is 2 (in the intersection), and
-   feet from 3, 4 onto {5, 1, 2} lie at {5, 1}, so the Projection-with-Subset
-   test fails on the symmetric leg.  Overlap (loosest) passes. *)
+(* CycleGraph[5] line {1, 2, 3, 4} meets line {5, 1, 2} in the edge {1, 2}:
+   perpendicular lines meet in one vertex, so even the loosest equality fails. *)
 VerificationTest[
   InfraPerpendicularQ[CycleGraph[5], {1, 2, 3, 4}, {5, 1, 2},
                       Method -> {"Projection", "Equality" -> "Overlap"}],
+  False,
+  TestID -> "InfraPerpendicularQ-Projection-Overlap-shared-edge-False"
+]
+
+(* the middle row and column of the 5 x 5 grid meet in the centre only, and
+   every foot from one onto the other is the centre *)
+VerificationTest[
+  InfraPerpendicularQ[GridGraph[{5, 5}], {11, 12, 13, 14, 15}, {3, 8, 13, 18, 23}],
   True,
-  TestID -> "InfraPerpendicularQ-Projection-Overlap-cycle"
+  TestID -> "InfraPerpendicularQ-Projection-grid-cross"
 ]
 
 VerificationTest[
@@ -368,8 +374,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  InfraPerpendicularQ[CycleGraph[5], geodesicGraph @ {1, 2, 3, 4}, geodesicGraph @ {5, 1, 2},
-                      Method -> {"Projection", "Equality" -> "Overlap"}],
+  InfraPerpendicularQ[GridGraph[{5, 5}], geodesicGraph @ {11, 12, 13, 14, 15}, geodesicGraph @ {3, 8, 13, 18, 23}],
   True,
   TestID -> "InfraPerpendicularQ-walk-graph-input"
 ]

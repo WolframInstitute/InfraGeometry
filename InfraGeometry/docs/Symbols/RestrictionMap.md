@@ -12,62 +12,67 @@ RelatedGuides: [Experimental]
 
 ## Usage
 
-<code>[RestrictionMap]()[*g*, *α*]</code> gives the form *Rα* of the alternating *k*-cochain *α*: its germ at the vertex *v* reads *α* with *v* prepended, *(Rα)(v; w₁, …, wₖ) = α(v, w₁, …, wₖ)*.
+<code>[RestrictionMap]()[*g*, *α*]</code> gives the form *Rα* of the alternating *k*-cochain *α*, whose germ at *v* is *α* with *v* put in front: *(Rα)(v; w₁, …, wₖ) = α(v, w₁, …, wₖ)*.
 
 ## Details & Options
 
-Definition: *(Rα)(v; w₁, …, wₖ) = α(v, w₁, …, wₖ)* for every vertex *v* and every *k*-tuple of distinct neighbours of *v*. It maps the *k*-cochains to the *k*-forms.
+*R* maps the *k*-cochains to the *k*-forms. *Rα* vanishes on every tuple of neighbours that does not span a clique with *v*, and a vertex on no clique where *α* has a value gets no germ.
 
-*Rα* vanishes on every tuple of neighbours that does not span a clique with *v*, since *α* does. A vertex that lies on no clique where *α* has a value gets no germ.
+[IntegrationMap]() is a left inverse: *I(Rα) = α* in every degree, so *R* is injective. In degree 1 the image is the forms antisymmetric across every edge, *ω(v; w) = −ω(w; v)*.
 
-[IntegrationMap]() is a left inverse, *I(Rα) = α* in every degree, so *R* is injective. In degree 1 its image is the forms that are antisymmetric across every edge, *ω(v; w) = −ω(w; v)*.
+In degree 0 a cochain and its form carry the same values. The restriction of a coboundary is the gradient: *(R δf)(v; w) = f(w) − f(v)*, the [FormDifferential]() of the [ZeroForm]() of *f*.
 
-In degree 0 a cochain and its form carry the same values, and the restriction of the coboundary of a 0-cochain *f* is the gradient of its 0-form: *(Rδf)(v; w) = δf(v, w) = f(w) − f(v)*.
+On the square grid there are no triangles, so no 2-cochains and no 2-forms; on the square mesh there are 154 triangles.
 
 ## Basic Examples
 
-The coboundary of the distance from the centre of the triangular tiling, left, drawn by an arc along each edge in the direction in which it is 1, and its restriction, right, drawn by an arc from *v* to *w* where the germ at *v* is positive on the step to *w*, blue, or negative, orange. On each step between two shells the germ at the inner end is 1 towards the outer end, and the germ at the outer end is −1 towards the inner end.
+The 2-cochain that is 1 on one triangle at the centre of the mesh. Its form has a germ at each corner, on the other two corners, with the sign of putting the corner in front:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {cochain = Coboundary[g, AssociationMap[GraphDistance[g, First @ GraphCenter[g], First[#]] &, List /@ VertexList[g]]]},
-  {form = RestrictionMap[g, cochain]},
-  GraphicsRow[{
-    DisplacementPlot[g, GroupBy[Join[Keys @ Select[cochain, Positive], Reverse /@ Keys @ Select[cochain, Negative]], First -> Last]],
-    DisplacementPlot[g, {Map[Catenate @* Keys @* Select[Positive], form], Map[Catenate @* Keys @* Select[Negative], form]}]}]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {t = Sort @ First @ Select[FindClique[g, {3}, All], MemberQ[c]]}, {form = RestrictionMap[g, <|t -> 1|>]},
+  InfraSubstrateHighlight[g, {t}, PlotLabel -> (FormValue[form, #, DeleteCases[t, #]] & /@ t),
+    ImageSize -> Medium]]
 ```
 
-The restriction of the 2-cochain that is 1 on one triangle at the centre has a germ at each of its three corners, on the pair of the other two, with the sign of moving the corner to the front.
+The restriction of the coboundary of the distance from the centre is the gradient of the distance:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = First @ GraphCenter[g], positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {triangle = Sort @ First @ Select[FindClique[g, {3}, All], MemberQ[center]]},
-  {Show[Graphics[{StandardBlue, Polygon[Lookup[positions, triangle]]}], g], triangle, Normal[Normal /@ RestrictionMap[g, <|triangle -> 1|>]]}]
+Table[
+  With[{g = InfraSubstrate[name, "Small"]}, {c = First @ GraphCenter[g]},
+    {f = AssociationThread[List /@ VertexList[g], GraphDistance[g, c]]},
+    KeySort[KeySort /@ RestrictionMap[g, Coboundary[g, f]]] ==
+      KeySort[KeySort /@ FormDifferential[g, ZeroForm[g, GraphDistance[g, c, #] &]]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
 ## Properties and Relations
 
-The restriction of the coboundary of a 0-cochain is the gradient of its 0-form, here for the distance from the centre.
+[IntegrationMap]() undoes the restriction, for random 1- and 2-cochains on the mesh:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = First @ GraphCenter[g]},
-  {form = RestrictionMap[g, Coboundary[g, AssociationMap[GraphDistance[g, center, First[#]] &, List /@ VertexList[g]]]]},
-  {gradient = FormDifferential[g, ZeroForm[g, GraphDistance[g, center, #] &]]},
-  {DisplacementPlot[g, {Map[Catenate @* Keys @* Select[Positive], gradient], Map[Catenate @* Keys @* Select[Negative], gradient]}],
-   KeySort[KeySort /@ form] === KeySort[KeySort /@ gradient]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]},
+  {edges = Sort /@ List @@@ EdgeList[g], triangles = Sort /@ FindClique[g, {3}, All]},
+  {a1 = AssociationThread[edges, BlockRandom[RandomChoice[{-2, -1, 1, 2}, Length[edges]], RandomSeeding -> 1]],
+   a2 = AssociationThread[triangles,
+     BlockRandom[RandomChoice[{-2, -1, 1, 2}, Length[triangles]], RandomSeeding -> 2]]},
+  Table[KeySort[IntegrationMap[g, RestrictionMap[g, a]]] == KeySort[a], {a, {a1, a2}}]]
 ```
 
-[IntegrationMap]() undoes the restriction: a random 1-cochain with values ±1 and ±2, drawn by an arc along each edge in the direction in which it is positive, comes back from its form unchanged.
+In degree 1 the form of a cochain is antisymmetric across every edge:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {cochain = (SeedRandom[1]; AssociationMap[RandomChoice[{-2, -1, 1, 2}] &, Sort /@ List @@@ EdgeList[g]])},
-  {DisplacementPlot[g, GroupBy[Join[Keys @ Select[cochain, Positive], Reverse /@ Keys @ Select[cochain, Negative]], First -> Last]],
-   KeySort[IntegrationMap[g, RestrictionMap[g, cochain]]] === KeySort[cochain]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {edges = Sort /@ List @@@ EdgeList[g]},
+  {a = AssociationThread[edges, BlockRandom[RandomChoice[{-2, -1, 1, 2}, Length[edges]], RandomSeeding -> 1]]},
+  {form = RestrictionMap[g, a]},
+  AllTrue[edges, FormValue[form, #[[1]], {#[[2]]}] == -FormValue[form, #[[2]], {#[[1]]}] &]]
+```
+
+## Possible Issues
+
+The cochain is not checked against the graph. The square grid has no triangles, yet a value on three of its vertices gives germs:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {t = Take[VertexList[g], 3]},
+  {Length @ FindClique[g, {3}, All], Normal /@ RestrictionMap[g, <|t -> 1|>]}]
 ```

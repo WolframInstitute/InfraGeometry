@@ -12,41 +12,37 @@ RelatedGuides: [Experimental]
 
 ## Usage
 
-<code>[FormDegree]()[*ω*]</code> gives the degree *k* of the form *ω*, the length of the tuples on which its germs are stored.
+<code>[FormDegree]()[*ω*]</code> gives the degree *k* of the form *ω*, the length of the neighbour tuples on which its germs are stored.
 
 ## Details & Options
 
-Definition: a *k*-form takes its germs on the *k*-tuples of neighbours of each vertex, and *k* is its degree.
+A *k*-form has at every vertex *v* a germ on the *k*-tuples of neighbours of *v* ([FormValue]()).
 
-The degree is read off the first germ that holds a value. A form whose germs hold tuples of different lengths is not a form of one degree, and the zero form, with every germ empty, has no degree: [FormDegree]() stays unevaluated.
+The degree is read off a germ that holds a value. The zero form, all of whose germs are empty, has no degree.
 
-[ZeroForm]() gives degree 0, [FormDifferential]() raises the degree by one, [FormWedge]() adds the degrees, and [RestrictionMap]() and [IntegrationMap]() keep the degree ([CochainDegree]()).
+| Operation | Degree |
+|---|---|
+| [ZeroForm]() | 0 |
+| [FormDifferential]() | *k* + 1 |
+| [FormWedge]() | *p* + *q* |
+| [IntegrationMap](), [RestrictionMap]() | *k* |
 
 ## Basic Examples
 
-A 0-form, its gradient and the wedge of two gradients on the triangular tiling, of degrees 0, 1 and 2. The 0-form is the distance from the centre, drawn by its values; the 1-form is drawn by its steps, blue where it is positive and orange where it is negative; the 2-form by its germ at the centre, a matrix over the pairs of neighbours.
+A 0-form, its gradient and a wedge of two gradients on the square grid. The grid has no triangles, yet the 2-form *dx ∧ dy* is not 0:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = First @ GraphCenter[g]},
-  {apex = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[center, 3]]), form = ZeroForm[g, GraphDistance[g, center, #] &]},
-  {gradient = FormDifferential[g, form]},
-  {twoForm = FormWedge[gradient, FormDifferential[g, ZeroForm[g, GraphDistance[g, apex, #] &]]]},
-  {GraphicsRow[{
-     InfraSubstrateHighlight[g, First /@ form],
-     DisplacementPlot[g, {Map[Catenate @* Keys @* Select[Positive], gradient], Map[Catenate @* Keys @* Select[Negative], gradient]}],
-     MatrixPlot[Table[FormValue[twoForm, center, {nbr, neighbour}], {nbr, AdjacencyList[g, center]}, {neighbour, AdjacencyList[g, center]}]]}],
-   FormDegree /@ {form, gradient, twoForm}}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {x = ZeroForm[g, AssociationThread[VertexList[g], GraphEmbedding[g][[All, 1]]]],
+   y = ZeroForm[g, AssociationThread[VertexList[g], GraphEmbedding[g][[All, 2]]]]},
+  FormDegree /@ {x, FormDifferential[g, x], FormWedge[FormDifferential[g, x], FormDifferential[g, y]]}]
 ```
 
 ## Possible Issues
 
-The zero form has no degree to read: every germ of the gradient of a constant is empty. [FormDegree]() stays unevaluated, with no message.
+The zero form has no degree, and the call stays unevaluated. Every germ of the gradient of a constant is empty:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {gradient = FormDifferential[g, ZeroForm[g, 1 &]]},
-  {InfraSubstrateHighlight[g, AssociationMap[1 &, VertexList[g]]], Union[Length /@ Values[gradient]], Head @ FormDegree[gradient]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {df = FormDifferential[g, ZeroForm[g, 1 &]]},
+  {Union @ Values[df], Head @ FormDegree[df]}]
 ```

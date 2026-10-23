@@ -13,130 +13,114 @@ RelatedTutorials: [InfraBundles]
 
 ## Usage
 
-<code>[RandomInfraFiberedGraph]()[*base*, *options*]</code> gives a random [InfraFiberedGraph]() with the prescribed reconstructed base and selected properties.
+<code>[RandomInfraFiberedGraph]()[*base*]</code> gives a random [InfraFiberedGraph]() whose base is the graph *base*.
 
 ## Details & Options
 
-- The base is a finite simple undirected unweighted untagged graph, including isolated vertices and the empty graph.
-- Every base vertex has a nonempty fiber. Total vertices are pairs {*p*, *k*}, with *p* a literal base vertex.
-- Transverse edges occur only over base edges. At least one transverse edge is retained over every base edge, so the reconstructed base has exactly the supplied vertices and edges.
-- `Properties` is a flat list interpreted by conjunction. The allowed strings are `"EqualFiberSizes"`, `"IsomorphicFibers"`, `"Fibration"`, `"AtMostOneEdgeLift"`, `"UniqueEdgeLifting"`, `"FiberBundle"` and `"Covering"`. Order and repetition do not change the constraints.
-- The empty property list requests a general fibered graph. It does not require lift existence or equal fiber sizes.
-- A scalar count *n* is an upper bound. A singleton {*n*} requests exactly *n*. A pair {*lo*, *hi*} requests a discrete uniform integer in the inclusive range.
-- Fiber vertex counts have minimum one. Vertical edge counts have minimum zero.
-- Scalar edge caps are intersected with the property-feasible count interval. Exact and range edge specifications must be feasible for every permitted fiber size; they are never clipped or silently conditioned on the draw.
-- Counts are discrete uniform on their admissible interval. The constructive graph distribution is not asserted to be uniform over all graphs with those counts.
-- The ambient random stream is controlled by external [SeedRandom](). There is no per-call seed option.
-- Unsupported options, property names, graph domains and jointly infeasible specifications leave the call unevaluated.
-- Drawing coordinates are computed separately by [InfraFiberedGraphHighlight]().
+The fiber over a base vertex *p* has the vertices {*p*, 1}, …, {*p*, *n*}, *n ≥ 1*, and random vertical edges. Transverse edges lie only over base edges, at least one over each, so the base of the result is exactly *base*.
 
-| Option | Default | Meaning |
-|---|---|---|
-| [Properties]() | `{}` | Conjunction of the requested structural properties. |
-| `"VerticalVertexCount"` | `{1}` | Fiber vertex count: upper bound, exact singleton or inclusive range. |
-| `"VerticalEdgeCount"` | `{0}` | Vertical edge count: upper bound, exact singleton or inclusive range. |
-| `"HorizontalEdgeCount"` | [Automatic]() | Count over each base edge: upper bound, exact singleton, inclusive range, `Automatic` or `All`. |
+`Properties` is a list of conditions, all imposed:
 
-### Joint size constraints
-
-Ordinarily each fiber size is drawn independently.
-`"EqualFiberSizes"`, `"IsomorphicFibers"` and `"FiberBundle"` use one size draw over the whole base.
-`"UniqueEdgeLifting"` and `"Covering"` use one size draw per connected base component, unless a global equal-size property is also requested.
-`"IsomorphicFibers"` and `"FiberBundle"` share one vertical graph template across all fibers.
-A graph bundle uses fiber isomorphisms for its transverse matchings; it can have nontrivial monodromy.
-
-For a fiber of size *n*, the vertical count ranges from zero to *n* (*n* - 1) / 2.
-`"Covering"` forces the count to zero.
-A scalar vertical cap permits this restriction; an exact positive count or a range containing positive counts is incompatible with `"Covering"`.
-
-### Horizontal count constraints
-
-For adjacent fiber sizes *n* and *m*, the requested properties give these feasible counts.
-Combined properties impose all their constraints.
-
-| Property | Feasible transverse edge counts |
+| Property | Condition |
 |---|---|
-| No lifting constraint | 1 through n m |
-| `"Fibration"` | Max[n,m] through n m; every vertex has a transverse neighbour |
-| `"AtMostOneEdgeLift"` | 1 through Min[n,m]; the edges form a matching |
-| `"UniqueEdgeLifting"`, or both `"Fibration"` and `"AtMostOneEdgeLift"` | n, with n = m; a perfect matching |
-| `"FiberBundle"` | n, with n = m; the matching preserves fiber adjacency |
-| `"Covering"` | n, with n = m and no vertical edges |
+| `"EqualFiberSizes"` | all fibers have the same size |
+| `"IsomorphicFibers"` | all fibers are copies of one random graph |
+| `"Fibration"` | every vertex has at least one neighbour over each base neighbour |
+| `"AtMostOneEdgeLift"` | every vertex has at most one neighbour over each base neighbour |
+| `"UniqueEdgeLifting"` | exactly one neighbour: a perfect matching over each base edge |
+| `"FiberBundle"` | isomorphic fibers and matchings that preserve the fiber edges |
+| `"Covering"` | unique edge lifting and no vertical edges |
 
-`Automatic` draws a feasible count and constructs edges satisfying the properties.
-`All` uses the complete join of adjacent fibers; it is accepted only when this satisfies every requested property.
-In particular, a complete join with unique lifting requires both adjacent fibers to be singletons.
+A count is *n* (at most *n*), {*n*} (exactly *n*) or {*lo*, *hi*} (uniform between *lo* and *hi*). Over an edge with fibers of sizes *n*, *m* there are 1 to *nm* transverse edges, at least max(*n*, *m*) with `"Fibration"`, at most min(*n*, *m*) with `"AtMostOneEdgeLift"`, and *n = m* with unique edge lifting. An infeasible request stays unevaluated.
+
+The graph is not uniform among the graphs with the drawn counts.
+
+Options:
+
+| Option | Default | Values |
+|---|---|---|
+| [Properties]() | `{}` | a list of the properties above |
+| `"VerticalVertexCount"` | `{1}` | the fiber size: *n*, {*n*} or {*lo*, *hi*} |
+| `"VerticalEdgeCount"` | `{0}` | the number of edges in a fiber: *n*, {*n*} or {*lo*, *hi*} |
+| `"HorizontalEdgeCount"` | `Automatic` | the number of transverse edges over a base edge: *n*, {*n*}, {*lo*, *hi*}; `Automatic` a feasible random count; `All` the complete join |
+| [RandomSeeding]() | `Automatic` | an integer or a string for a reproducible draw; `Inherited` to draw from the current random state |
 
 ## Basic Examples
 
-A general fibered graph with independently drawn fiber sizes.
+A random fibered graph over the 4 × 4 grid with fibers of 1 to 3 vertices. Its base is the grid:
 
 ```wl
-SeedRandom[ 7 ];
-With[ { fib = RandomInfraFiberedGraph[ GridGraph[ { 3, 3 } ],
-    "VerticalVertexCount" -> { 2, 4 }, "VerticalEdgeCount" -> 2 ] },
-  InfraFiberedGraphHighlight[ fib, { InfraFiber[ fib, 5 ] } ] ]
+With[{fib = RandomInfraFiberedGraph[GridGraph[{4, 4}], "VerticalVertexCount" -> {1, 3}, "VerticalEdgeCount" -> 2,
+    RandomSeeding -> 1]},
+  GraphicsRow[{InfraFiberedGraphHighlight[fib], InfraBaseSpace[fib]}]]
 ```
 
-A graph bundle with a shared fiber graph and adjacency-preserving transverse matchings.
+A random fiber bundle with fibers a path of 3 vertices. Transport around a square can reverse the path:
 
 ```wl
-SeedRandom[ 7 ];
-With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 6 ], Properties -> { "FiberBundle" },
-    "VerticalVertexCount" -> { 3 }, "VerticalEdgeCount" -> { 2 } ] },
-  InfraFiberedGraphHighlight[ fib ] ]
+With[{fib = RandomInfraFiberedGraph[GridGraph[{4, 4}], Properties -> {"FiberBundle"},
+    "VerticalVertexCount" -> {3}, "VerticalEdgeCount" -> {2}, RandomSeeding -> 1]},
+  {conn = RandomInfraConnection[fib, RandomSeeding -> 1]},
+  InfraFiberedGraphHighlight[fib, PlotLabel -> InfraHolonomy[fib, conn, {6, 7, 11, 10, 6}], ImageSize -> Medium]]
 ```
 
 ## Options
 
 ### Properties
 
-Lift existence allows several choices above a base edge.
+Fibers of 3 vertices with lift existence, lift uniqueness and both. The numbers of neighbours of a vertex over a base neighbour:
 
 ```wl
-SeedRandom[ 7 ];
-With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 4 ], Properties -> { "Fibration" },
-    "VerticalVertexCount" -> { 2, 3 }, "HorizontalEdgeCount" -> All ] },
-  InfraFiberedGraphHighlight[ fib ] ]
+GraphicsRow @ Table[
+  With[{fib = RandomInfraFiberedGraph[GridGraph[{4, 4}], Properties -> {prop}, "VerticalVertexCount" -> {3},
+      RandomSeeding -> 1]}, {counts = Catenate[Values /@ Values @ InfraEdgeLiftMultiplicity[fib]]},
+    InfraFiberedGraphHighlight[fib, PlotLabel -> Union[counts]]],
+  {prop, {"Fibration", "AtMostOneEdgeLift", "UniqueEdgeLifting"}}]
 ```
 
 ### VerticalVertexCount
 
-A scalar permits smaller fibers. A singleton fixes the size.
+A bound, an exact size and a range. The fiber sizes that occur:
 
 ```wl
-SeedRandom[ 7 ];
-GraphicsRow[ Map[ specification |-> InfraFiberedGraphHighlight[
-  RandomInfraFiberedGraph[ CycleGraph[ 6 ], "VerticalVertexCount" -> specification ] ],
-  { 3, { 3 }, { 2, 3 } } ] ]
+Table[
+  With[{fib = RandomInfraFiberedGraph[GridGraph[{4, 4}], "VerticalVertexCount" -> spec, RandomSeeding -> 1]},
+    Union @ Values[VertexCount /@ InfraFibers[fib]]],
+  {spec, {3, {3}, {2, 3}}}]
 ```
 
 ### HorizontalEdgeCount
 
-A complete join between equal fibers supports every section choice and every fiber matching.
+One transverse edge over each base edge, and the complete join:
 
 ```wl
-SeedRandom[ 7 ];
-With[ { fib = RandomInfraFiberedGraph[ CycleGraph[ 6 ], "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All ] },
-  { section = RandomInfraSection[ fib, Properties -> { "Continuous" } ] },
-  InfraFiberedGraphHighlight[ fib, section ] ]
+GraphicsRow @ Table[
+  InfraFiberedGraphHighlight @ RandomInfraFiberedGraph[GridGraph[{4, 4}],
+    "VerticalVertexCount" -> {2}, "HorizontalEdgeCount" -> h, RandomSeeding -> 1],
+  {h, {{1}, All}}]
+```
+
+### RandomSeeding
+
+A fixed seed gives the same draw whatever [SeedRandom]() has set:
+
+```wl
+SameQ @@ Table[
+  SeedRandom[k]; RandomInfraFiberedGraph[GridGraph[{4, 4}], "VerticalVertexCount" -> {1, 3}, RandomSeeding -> 7],
+  {k, 3}]
 ```
 
 ## Possible Issues
 
-An exact vertical edge is incompatible with a vertex-count cap that permits singleton fibers.
-The call remains unevaluated even if some size draws could support that edge.
+An exact vertical edge needs fibers of at least 2 vertices. A bound of 3 allows fibers of 1 vertex, so the call stays unevaluated:
 
 ```wl
-RandomInfraFiberedGraph[ CycleGraph[ 4 ], "VerticalVertexCount" -> 3, "VerticalEdgeCount" -> { 1 } ]
+Head @ RandomInfraFiberedGraph[GridGraph[{4, 4}], "VerticalVertexCount" -> 3, "VerticalEdgeCount" -> {1}]
 ```
 
-Complete joins of two-point fibers do not have unique edge lifting.
+The complete join of two fibers of 2 vertices is not a matching, so it does not have unique edge lifting:
 
 ```wl
-RandomInfraFiberedGraph[ CycleGraph[ 4 ], Properties -> { "UniqueEdgeLifting" },
-  "VerticalVertexCount" -> { 2 }, "HorizontalEdgeCount" -> All ]
+Head @ RandomInfraFiberedGraph[GridGraph[{4, 4}],
+  Properties -> {"UniqueEdgeLifting"}, "VerticalVertexCount" -> {2}, "HorizontalEdgeCount" -> All]
 ```
-
-The Experimental compatibility sampler [RandomInfraFibration]() keeps its earlier options and cyclic-width interpretation.
-Its numeric options are not the count grammar of this function.

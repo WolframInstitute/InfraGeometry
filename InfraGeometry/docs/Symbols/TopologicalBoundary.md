@@ -16,69 +16,55 @@ RelatedGuides: [InfraTopology]
 
 ## Details & Options
 
-Definition: *bd(s) = cl(s) ∖ int(s) = cl(s) ∩ cl(V ∖ s)*, where *V* is the vertex set of *topo*, *cl* is [TopologicalClosure]() and *int* is [TopologicalInterior]().
+The boundary is *bd(s) = cl(s) ∖ int(s) = cl(s) ∩ cl(V ∖ s)*, with *V* the vertices of *topo*, *cl* the [TopologicalClosure]() and *int* the [TopologicalInterior]().
 
-The boundary is two-sided: it may hold vertices outside *s*, and *s* and its complement have the same boundary. It is empty exactly when *s* is open and closed.
+The boundary is two-sided: it can hold vertices outside *s*, and *s* and *V ∖ s* have the same boundary. It is empty exactly when *s* is open and closed.
 
-In the ball topology of a patch of a tiling, a vertex far from the rim is open and closed, so no boundary reaches it.
-
-<code>[InfraBoundary]()[*g*, *s*, Method -> {"Alexandrov", "Radius" -> *r*}]</code> is this boundary in the ball topology of radius *r*. The default method of [InfraBoundary]() is the combinatorial boundary: the vertices of *s* with a neighbour outside *s*.
+On a patch of the grid a vertex far from the rim is open and closed in the ball topology, so it is never on a boundary. This is unlike the combinatorial boundary, the vertices of *s* with a neighbour outside *s*: that is [InfraBoundary](). <code>[InfraBoundary]()[*g*, *s*, Method -> {"Alexandrov", "Radius" -> *r*}]</code> is the topological boundary.
 
 The result is a sorted vertex list.
 
 ## Basic Examples
 
-The ring outside a ball about the centre, in the ball topology of radius 2, on the discretized plane, the square tiling and the hexagonal tiling. The ring is green; its boundary, blue, lies outside it.
+The ring outside a ball about the centre, in the ball topology of radius 2, on the square grid and on the square mesh. The ring is drawn with its boundary on top. The boundary lies outside the ring:
 
 ```wl
-SeedRandom[1];
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = First @ GraphCenter[g]},
-    {ring = Complement[VertexList[g], Keys @ InfraMeasurement[ g, InfraBall[c, VertexEccentricity[g, c] - 2], "VertexDensity" ]]},
-    InfraSubstrateHighlight[g, {ring -> StandardGreen, TopologicalBoundary[BallTopology[g, 2], ring] -> StandardBlue}]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
+  With[{g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {ball = Keys @ InfraMeasurement[g, InfraBall[c, VertexEccentricity[g, c] - 2], "VertexDensity"]},
+    {ring = Complement[VertexList[g], ball]},
+    InfraSubstrateHighlight[g, {ring, TopologicalBoundary[BallTopology[g, 2], ring]}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The balls of radius 4, 5 and 6 about the centre of the square tiling, at radius 2. The boundary is empty while the ball stays more than two steps from the rim. Closer, it is the set of vertices of the ball whose ball contains the ball of a vertex outside.
+The balls of radius 5 to 8 about the centre of the grid, at radius 2. The boundary is empty while the ball keeps away from the rim and grows as it comes near, to 0, 4, 16 and 28 vertices:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {topo = BallTopology[g, 2]},
+With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {topo = BallTopology[g, 2]},
   GraphicsRow @ Table[
-    With[{ball = Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], radius], "VertexDensity" ]},
-      InfraSubstrateHighlight[g, {Complement[ball, TopologicalBoundary[topo, ball]] -> StandardGreen, TopologicalBoundary[topo, ball] -> StandardBlue}]],
-    {radius, 4, 6}]]
+    With[{ball = Keys @ InfraMeasurement[g, InfraBall[First @ GraphCenter[g], k], "VertexDensity"]},
+      {bd = TopologicalBoundary[topo, ball]},
+      InfraSubstrateHighlight[g, {ball, bd}, PlotLabel -> Length[bd]]],
+    {k, 5, 8}]]
 ```
 
 ## Properties and Relations
 
-A set and its complement have one boundary, the intersection of their closures. [InfraBoundary]() with the method `"Alexandrov"` gives the same set.
+A set and its complement have one boundary, the intersection of their closures. [InfraBoundary]() with the method `"Alexandrov"` gives the same set:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {topo = BallTopology[g, 2]},
-  {ball = Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], 6], "VertexDensity" ]},
-  {ring = Complement[VertexList[g], ball]},
-  {boundary = TopologicalBoundary[topo, ball]},
-  {InfraSubstrateHighlight[g, {boundary -> StandardBlue}],
-   boundary == TopologicalBoundary[topo, ring],
-   boundary == Intersection[TopologicalClosure[topo, ball], TopologicalClosure[topo, ring]],
-   boundary == InfraBoundary[g, ball, Method -> {"Alexandrov", "Radius" -> 2}]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Medium"]}, {topo = BallTopology[g, 2]},
+  {ball = Keys @ InfraMeasurement[g, InfraBall[First @ GraphCenter[g], 8], "VertexDensity"]},
+  {rest = Complement[VertexList[g], ball], bd = TopologicalBoundary[topo, ball]},
+  {bd === TopologicalBoundary[topo, rest],
+   bd === Intersection[TopologicalClosure[topo, ball], TopologicalClosure[topo, rest]],
+   bd === InfraBoundary[g, ball, Method -> {"Alexandrov", "Radius" -> 2}]}]
 ```
 
-The combinatorial boundary of a ball is its outer shell at every radius. The ball of radius 4 about the centre of the square tiling has that shell, drawn blue on the right, and no topological boundary at radius 2.
+The combinatorial boundary of the ball of radius 5 on the grid is its circle of 20 vertices. Its topological boundary is empty:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {ball = Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], 4], "VertexDensity" ]},
-  {TopologicalBoundary[BallTopology[g, 2], ball],
-   InfraSubstrateHighlight[g, {Complement[ball, InfraBoundary[g, ball]] -> StandardGreen, InfraBoundary[g, ball] -> StandardBlue}]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Medium"]},
+  {ball = Keys @ InfraMeasurement[g, InfraBall[First @ GraphCenter[g], 5], "VertexDensity"]},
+  {Length @ InfraBoundary[g, ball], TopologicalBoundary[BallTopology[g, 2], ball]}]
 ```

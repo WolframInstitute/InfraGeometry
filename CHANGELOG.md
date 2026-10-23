@@ -2,12 +2,38 @@
 
 ## Unreleased
 
+## 2.10.0 (2026-10-23)
+
 - Add the calculus of *Infra Analysis*, five inert heads read by `InfraMeasurement`. Nothing existing changes.
   - `InfraDifferential[f]`, reading `"Function"`: the 1-form `df(u -> v) = f(v) - f(u)` on the links of a DAG (the edges of `TransitiveReductionGraph`) or on every edge of an undirected graph. `InfraCodifferential[w]`: the 0-form, incoming minus outgoing values; `InfraCodifferential[InfraDifferential[f]]` is the Laplacian.
   - `InfraIntegral[f, obj]`, readings `"Value"`, `"ValueDensity"`, `"Mean"`, `"Cardinality"`, `"Flux"`: the integral of a 0-form or 1-form over a region (the support of any head with a `"VertexDensity"`), or along each member of a family of walks (any head whose `"Graph"` is a DAG or a `List` of alternative DAGs, including heads of other paclets), read as a value density by one forward sweep. Polylines, closed arcs and circles stay unevaluated.
   - `InfraAntiderivative[f, Method -> m, "Origin" -> c, "Direction" -> d]` and its exact inverse `InfraDerivative[F, ...]`, readings `"Function"` and `"Kernel"`: the accumulation `F(v) = Sum[f(u) K(u, v), u <= v]` over the past through a kernel `K` of the incidence algebra, on a DAG or on an undirected graph in the spray order from `"Origin"`. `Method` names the kernel: `"Zeta"` (default; `K = 1` on every pair, the derivative is Moebius inversion), `"PathCount"` (the number of chains from `u` to `v`), `"BackwardRandomWalk"` (the probability that the backward random walk from `v`, each step to a uniformly random predecessor, visits `u`), `"ForwardRandomWalk"` (the probability that the forward random walk from `u`, each step to a uniformly random successor, visits `v`), `"UniformChain"` (the probability that a uniformly random maximal chain from the sources to `v` passes through `u`) or `{"Weights", w}` (chains weighted by `w` on the links).
   - Results on a DAG depend on the order only: adding implied edges changes nothing.
   - The generic `All` clause of `InfraMeasurement` no longer applies to these heads.
+
+## 2.9.0 (2026-10-23)
+
+Fixes of the kernel findings of the lean-pages rewrite (dev repo `Work/Backlog/LeanPagesKernelFindings.md`).
+
+- **Breaking:** `InfraSceneMultiway`, `InfraBranchialGraph` and `InfraSceneViewer[data]` removed.
+- **Drawing.** `InfraSubstrateHighlight` draws a DAG or a list of DAGs by their path counts and a directed graph with a cycle by its support, with no messages; `InfraGeodesic` and `InfraEllipse` draw by their readings like every family head. `InfraScenePlot` draws saved circles, closed arcs and regular polygons closed.
+- **Measurement.** `InfraWalk` and `InfraPoint` have a `"VertexDensity"`; `InfraGeodesic` readings count its members (at scale `Infinity` they are those of `InfraInfiniteLine[germ]`); `InfraEllipse` has `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"`. A list of vertices of the graph is one vertex set for every property. Property lists work for `InfraMidpoint`, `InfraPerpendicularBisector`, `InfraRegionNearest`. `InfraMemberQ` covers `InfraBall`, `InfraShell`, `InfraSphere`. `InfraBoundary`, `InfraInterior`, `InfraEqualQ`, `InfraReachableQ`, `InfraIntersection`, `InfraUnion` stay unevaluated silently without a density.
+- **Lines.** `InfraPerpendicularQ` requires the lines to meet in exactly one vertex under every method and always gives a Boolean; feet of a perpendicular include the unique nearest vertex and both centre vertices of an even base. `InfraParallelQ` ("l1 is parallel to l2") handles the empty set and other components without messages. `UniversalLineQ` reads lines off the distance matrix (polynomial). `FindInfraSpanningAxes` with `"Hausdorff"` scores against each chosen axis and stops at the count.
+- **Smaller fixes.** `InfraDistance` of an empty support is `Infinity` under every aggregation. **Breaking:** `EmbeddingClosest` takes `{p, q}` as two vertices and a circle as `Circle[coords, r]`, and every form keeps the closest walks. `FindClosestInfraPoint` and the homotopy finders read a list of vertex lists as a bundle. `SelectInfraWalk` takes `RandomSeeding`. `ResistanceQ` has the 10^-9 tolerance its usage states. `HomotopicQ` and `NullHomotopicQ` honour `Method`. `CenterGraph[g, -k]` and `Scaled[q]` count from the eccentricity of the centre set. `InfraSubstrate` and `InfraSubstrateCode` accept a scalar raw size for list-sized substrates. `MiniballRadius` is exact for exact points.
+- **Speed.** `InfraCircleThrough` prunes its search by a lower bound on the remaining length (identical output; the Small-mesh band {2, 3} from not finishing to 0.02 s). `FindInfraBisectingHyperplane` and `RandomInfraPlane` enumerate minimal separators by closure; `{"Separating", "Connected"}` means the connected minimal separators; a random plane is uniform over the class.
+
+## 2.8.2 (2026-10-22)
+
+- Documentation only. Remove the migration-era tutorials *Synthetic Geometry Migration* and *Named Construction Samplers*; the Euclidean guide no longer lists them.
+
+## 2.8.1 (2026-10-22)
+
+- Documentation only. All 271 symbol pages rewritten lean: the definition first in plain mathematical language, no implementation or history notes, classical-axiom tables kept, examples on the square grid and the square mesh (`"SquareGridGraph"`, `"SquareMeshGraph"`) with other substrates only where the mathematics needs them, compact code with longer lines. Single figures carry `ImageSize -> Medium` and numbers a `PlotLabel`, since a bare `Graph` renders at about 100 px in the reference stylesheet. Several wrong statements of the old pages corrected; kernel behaviour found on the way is listed in the dev repo's `Work/Backlog/LeanPagesKernelFindings.md`.
+
+## 2.8.0 (2026-10-20)
+
+- **Breaking -- sampler seeding.** Every `Random*` sampler takes `RandomSeeding`, with `RandomInstance` semantics: `Automatic` (default) seeds each call afresh, independently of `SeedRandom`; an integer or string reproduces a draw; `Inherited` takes a local snapshot of the current state; every setting restores the outer random state. `SeedRandom[n]; f[...]` no longer fixes a draw -- write `f[..., RandomSeeding -> n]`, which gives the same draw when `f` was the first random consumer. `RandomSeeding -> None` keeps the former ambient behaviour; nested sampler calls inside the paclet use it, so one seed covers a whole construction.
+- Remove the `LLM generated.` labels from the documentation; review lines stay.
 
 ## 2.7.5 (2026-10-19)
 

@@ -6,90 +6,104 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraQuadric
 Keywords: [quadric, ellipse, ellipsoid, hyperbola, elliptic shell, foci, region, symbolic object]
-SeeAlso: [InfraBall, InfraShell, InfraSegment, InfraEllipse, InfraMeasurement, InfraMemberQ]
+SeeAlso: [InfraBall, InfraShell, InfraSegment, InfraEllipse, InfraPerpendicularBisector, InfraMeasurement, InfraMemberQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraQuadric]()[{*p_1*, …, *p_k*}, *c*]</code> is the solid of the vertices whose distances to the foci *p_i* sum to at most *c*. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
+<code>[InfraQuadric]()[{*p1*, …, *pk*}, *c*]</code> is the region of the vertices whose distances to the foci *p1*, …, *pk* sum to at most *c*.
 
-<code>[InfraQuadric]()[*foci*, {*lo*, *hi*}]</code> is the band *lo ≤ Σ d(p_i, v) ≤ hi*.
+<code>[InfraQuadric]()[*foci*, {*lo*, *hi*}]</code> is the band of the vertices whose distance sum lies between *lo* and *hi*.
 
-<code>[InfraQuadric]()[*foci*, *c*, {*w_1*, …, *w_k*}]</code> uses the signed sum *Σ w_i d(p_i, v)*.
+<code>[InfraQuadric]()[*foci*, *c*, {*w1*, …, *wk*}]</code> uses the weighted sum *Σ wᵢ d(pᵢ, v)*.
 
 ## Details & Options
 
-Definition: the quadric of the foci *p_1, …, p_k* and the level *c* is *{v : Σ_i w_i d(p_i, v) ≤ c}*, the weights all 1 when omitted. A pair *{lo, hi}* for the level is the band *{v : lo ≤ Σ_i w_i d(p_i, v) ≤ hi}*.
+The quadric is *{v : Σᵢ wᵢ d(pᵢ, v) ≤ c}*, and the band *{v : lo ≤ Σᵢ wᵢ d(pᵢ, v) ≤ hi}*. The weights are 1 when omitted.
 
-Each focus is read as the centre of [InfraBall]() is: a vertex, or a density, whose distance is the distance to its vertices.
-
-| Foci | Weights | Solid |
+| Foci | Weights | Region |
 |---|---|---|
-| one | 1 | the ball; the band *{r, r}* is the shell |
-| two | 1, 1 | the ellipse; the band *{c, c}* is the elliptic shell |
-| two | 1, −1 | a hyperbola branch; the band *{0, 0}* is the bisector |
-| *k* | any | the general quadric |
+| one | 1 | the ball; the band {*r*, *r*} is the shell |
+| two | 1, 1 | the ellipse; the band {*c*, *c*} is the elliptic shell |
+| two | 1, −1 | a branch of a hyperbola; the band {0, 0} is the perpendicular bisector |
 
-On a path graph the band *{d(p, q), d(p, q)}* about two foci is the interval between them.
+The elliptic shell of level *d(p, q)* is the metric interval *I(p, q)*, the support of [InfraSegment]()[*p*, *q*]: the degenerate ellipse.
 
-On the square grid the signed quadric degenerates as the *ℓ¹* metric does: with the foci *(2, 4)* and *(6, 4)* of the *7 × 7* grid, *d(p, v) − d(q, v) = |x − 2| − |x − 6|*, so a branch is a straight column.
+On the square grid the shapes are those of the ℓ¹ norm. The ellipse is a hexagon, and a branch of the hyperbola with foci on one row is a straight column. The grid is bipartite, so an elliptic shell whose level differs from *d(p, q)* in parity is empty.
 
-A weight list of the wrong length leaves the call unevaluated.
+A focus can be a vertex or a vertex set; the distance is then the distance to the set.
 
-The head computes nothing. A quadric has one member, the vertex set. [InfraMeasurement]() reads `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"`, `"Faithful"` and `"Subgraph"`, and the two measures; the sum is read off one distance matrix.
+[InfraQuadric]() is a symbolic object, a region with one member, its vertex set. [InfraMeasurement]() reads its density, 1 on every vertex, and the two measures. A weight list of the wrong length leaves it unevaluated.
 
 ## Basic Examples
 
-The elliptic shell of two points at distance 6, on the irregular mesh, the square grid and the hexagonal tiling, with the band of slack 2.
+The ellipse of two foci at distance 4, of level 6, on the square grid and on the square mesh:
 
 ```wl
-SeedRandom[1];
-Row[Table[
-  With[
-    {g = InfraSubstrate[name, "Large", "KeepCoordinates" -> True]},
-    {first = First @ GraphCenter[g]},
-    {second = First @ Sort @ Select[VertexList[g], GraphDistance[g, first, #] == 6 &]},
-    {n = GraphDistance[g, first, second]},
-    {shell = InfraQuadric[{first, second}, {n + 2, n + 2}]},
-    Labeled[
-      InfraSubstrateHighlight[g, {shell, {first, second}}, "PointSizeRange" -> 17],
-      Length @ ( Keys @ InfraMeasurement[ g, shell, "VertexDensity" ] )]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+    {q = RandomInfraPoint[g, InfraShell[p, 4], RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {InfraQuadric[{p, q}, 6], p, q}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The elliptic shell of two corners of a small grid, and a hyperbola branch, which on the square grid is a straight column.
+The elliptic shells of levels 4, 6 and 8 about two foci on one row of the grid. Level 4 is the interval between them:
 
 ```wl
-GraphicsRow[{
-  InfraSubstrateHighlight[GridGraph[{4, 4}], {InfraQuadric[{2, 15}, {4, 4}], {2, 15}}],
-  InfraSubstrateHighlight[GridGraph[{7, 7}], {InfraQuadric[{11, 39}, {2, 2}, {1, -1}], {11, 39}}]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {xy = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+  {p = First @ Keys @ Select[xy, # - xy[c] == {-2, 0} &]}, {q = First @ Keys @ Select[xy, # - xy[c] == {2, 0} &]},
+  InfraSubstrateHighlight[g, {InfraQuadric[{p, q}, {8, 8}], InfraQuadric[{p, q}, {6, 6}], InfraQuadric[{p, q}, {4, 4}], p, q},
+    ImageSize -> Medium]]
+```
+
+## Scope
+
+A branch of the hyperbola, *d(p, v) − d(q, v) = 2*. On the grid, with the foci on one column, it is a straight row; on the mesh it bends:
+
+```wl
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+    {q = RandomInfraPoint[g, InfraShell[p, 4], RandomSeeding -> 3]},
+    InfraSubstrateHighlight[g, {InfraQuadric[{p, q}, {2, 2}, {1, -1}], p, q}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+```
+
+Three foci pairwise at distance 5, and the regions of levels 13, 11 and 9. No vertex has a distance sum below 9:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {foci = RandomInfraPoint[g, InfraShell[c, 3], 3, "PairwiseDistance" -> "Max", RandomSeeding -> 1]},
+  InfraSubstrateHighlight[g, {InfraQuadric[foci, 13], InfraQuadric[foci, 11], InfraQuadric[foci, 9], foci}, ImageSize -> Medium]]
 ```
 
 ## Properties and Relations
 
-One focus is the ball, and with the band *{r, r}* the shell.
+The elliptic shell of level *d(p, q)* is the interval of the segment:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = GridGraph[{7, 7}]},
-  {Keys @ InfraMeasurement[ g, InfraQuadric[{20}, 3], "VertexDensity" ] === Keys @ InfraMeasurement[ g, InfraBall[20, 3], "VertexDensity" ],
-   Keys @ InfraMeasurement[ g, InfraQuadric[{20}, {3, 3}], "VertexDensity" ] === Keys @ InfraMeasurement[ g, InfraShell[20, 3], "VertexDensity" ]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Medium"]}, {p = First @ GraphCenter[g]},
+  {q = RandomInfraPoint[g, InfraShell[p, 5], RandomSeeding -> 1]},
+  Keys @ InfraMeasurement[g, InfraQuadric[{p, q}, {5, 5}], "VertexDensity"] == Keys @ InfraMeasurement[g, InfraSegment[p, q], "VertexDensity"]]
 ```
 
-On a path graph the quadric of the level *d(p, q)* is the interval between the foci.
+One focus gives the ball, and the band {0, 0} with weights 1, −1 the perpendicular bisector:
 
 ```wl
-Keys @ InfraMeasurement[PathGraph[Range[9]], InfraQuadric[{3, 7}, {4, 4}], "VertexDensity"]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {p = First @ GraphCenter[g]},
+  {q = RandomInfraPoint[g, InfraShell[p, 4], RandomSeeding -> 1]},
+  {Keys @ InfraMeasurement[g, InfraQuadric[{p}, 3], "VertexDensity"] == Keys @ InfraMeasurement[g, InfraBall[p, 3], "VertexDensity"],
+   Keys @ InfraMeasurement[g, InfraQuadric[{p, q}, {0, 0}, {1, -1}], "VertexDensity"] ==
+     Keys @ InfraMeasurement[g, InfraPerpendicularBisector[p, q], "VertexDensity"]}]
 ```
 
-The quadric about two foci contains the tube about the interval between them: a vertex within *s* of the interval has slack at most *2 s*.
+## Possible Issues
+
+On the square grid an elliptic shell of the wrong parity is empty. The sizes of the shells of levels 4 to 8 about two foci at distance 4:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = GridGraph[{7, 7}]},
-  {tube = Keys @ InfraMeasurement[ g, InfraTube[InfraSegment[8, 42], 1], "VertexDensity" ]},
-  SubsetQ[Keys @ InfraMeasurement[ g, InfraQuadric[{8, 42}, GraphDistance[g, 8, 42] + 2], "VertexDensity" ], tube]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {p = First @ GraphCenter[g]},
+  {q = RandomInfraPoint[g, InfraShell[p, 4], RandomSeeding -> 1]},
+  Table[InfraMeasurement[g, InfraQuadric[{p, q}, {k, k}], "CountingMeasure"], {k, 4, 8}]]
 ```

@@ -118,16 +118,16 @@ VerificationTest[
 
 VerificationTest[
   With[ { dag = InfraMeasurement[ CircleThroughDiamondGraph[ 4 ], InfraCircleThrough[ Range[ 2, 6 ], InfraCircle[ 1, { 1, 1 } ] ], All ] },
-    BlockRandom[ SeedRandom[ 261011 ]; With[ { sample = RandomInfraCircleThrough[ dag[ "Graph" ], 5 ] },
-      Length[ sample ] == 5 && DuplicateFreeQ[ sample ] && SubsetQ[ RandomInfraCircleThrough[ dag[ "Graph" ], All ], sample ] &&
-      RandomInfraCircleThrough[ dag[ "Graph" ], 17 ] === {} && Length[ RandomInfraCircleThrough[ dag[ "Graph" ], UpTo[ 17 ] ] ] == 16 &&
-      RandomInfraCircleThrough[ dag[ "Graph" ], 0 ] === {} ] ] ], True, TestID -> "sampling-and-shortage"
+    BlockRandom[ SeedRandom[ 261011 ]; With[ { sample = RandomInfraCircleThrough[ dag[ "Graph" ], 5, RandomSeeding -> None ] },
+      Length[ sample ] == 5 && DuplicateFreeQ[ sample ] && SubsetQ[ RandomInfraCircleThrough[ dag[ "Graph" ], All, RandomSeeding -> None ], sample ] &&
+      RandomInfraCircleThrough[ dag[ "Graph" ], 17, RandomSeeding -> None ] === {} && Length[ RandomInfraCircleThrough[ dag[ "Graph" ], UpTo[ 17 ], RandomSeeding -> None ] ] == 16 &&
+      RandomInfraCircleThrough[ dag[ "Graph" ], 0, RandomSeeding -> None ] === {} ] ] ], True, TestID -> "sampling-and-shortage"
 ]
 
 VerificationTest[
   BlockRandom[ SeedRandom[ 44 ]; With[ { expected = RandomInteger[ 1000000, 10 ] },
     SeedRandom[ 44 ];
-    RandomInfraCircleThrough[ WheelGraph[ 5 ], InfraCircleThrough[ { 2 }, InfraCircle[ 1, { 1, 1 } ] ], All ];
+    RandomInfraCircleThrough[ WheelGraph[ 5 ], InfraCircleThrough[ { 2 }, InfraCircle[ 1, { 1, 1 } ] ], All, RandomSeeding -> None ];
     RandomInteger[ 1000000, 10 ] === expected ] ], True, TestID -> "all-does-not-consume-rng"
 ]
 
@@ -203,13 +203,51 @@ VerificationTest[
     { scene = InfraScene[ { circle }, { circle == token } ] },
     { Sort[ ( #[[ 1 ]][ circle ] & ) /@ RandomInfraSceneInstance[ scene, graph, All ] ] ===
         Sort[ RandomInfraCircleThrough[ graph, token, All ] ],
-      Length[ InfraSceneMultiway[ scene, graph ][ "Instances" ] ],
+      Length[ RandomInfraSceneInstance[ scene, graph, All ] ],
       Head[ InfraSubstrateHighlight[ graph, { token } ] ],
       Head[ InfraScenePlot[ scene, graph, First[ RandomInfraSceneInstance[ scene, graph, All ] ] ] ] } ],
   { True, 3, Graph, Graph },
-  TestID -> "circle-through-scene-multiway-and-drawing"
+  TestID -> "circle-through-scene-and-drawing"
 ]
 
+
+VerificationTest[
+  With[ { graph = InfraSubstrate[ "SquareMeshGraph", "Small" ] }, { center = First @ GraphCenter[ graph ] },
+    { point = RandomInfraPoint[ graph, InfraShell[ center, 3 ], RandomSeeding -> 1 ] },
+    { band = Select[ VertexList[ graph ], 2 <= GraphDistance[ graph, center, # ] <= 3 & ],
+      outside = Select[ VertexList[ graph ], 3 < GraphDistance[ graph, center, # ] < Infinity & ] },
+    { data = TimeConstrained[ InfraMeasurement[ graph, InfraCircleThrough[ { point }, InfraCircle[ center, { 2, 3 } ] ], All ], 60 ] },
+    { admitted = Select[ ( First /@ # & ) /@ FindCycle[ Subgraph[ graph, band ], { 3, data[ "Length" ] }, All ],
+        cycle |-> MemberQ[ cycle, point ] && Intersection[ outside, VertexComponent[ VertexDelete[ graph, cycle ], center ] ] === {} ] },
+    { data[ "Cardinality" ], data[ "Length" ], Union[ Length /@ admitted ],
+      Sort[ Sort /@ admitted ] === Sort[ Sort /@ RandomInfraCircleThrough[ data[ "Graph" ], All ] ] } ],
+  { 7, 14, { 14 }, True },
+  TestID -> "mesh-band-2-3-bounded-cycle-oracle"
+]
+
+VerificationTest[
+  With[ { graph = InfraSubstrate[ "SquareMeshGraph", "Small" ] }, { center = First @ GraphCenter[ graph ] },
+    { band = Select[ VertexList[ graph ], 3 <= GraphDistance[ graph, center, # ] <= 4 & ],
+      outside = Select[ VertexList[ graph ], 4 < GraphDistance[ graph, center, # ] < Infinity & ] },
+    { points = BlockRandom[ SeedRandom[ 3 ]; RandomSample[ band, 2 ] ] },
+    { data = TimeConstrained[ InfraMeasurement[ graph, InfraCircleThrough[ points, InfraCircle[ center, { 3, 4 } ] ], All ], 60 ] },
+    { admitted = Select[ ( First /@ # & ) /@ FindCycle[ Subgraph[ graph, band ], { 3, data[ "Length" ] }, All ],
+        cycle |-> SubsetQ[ cycle, points ] && Intersection[ outside, VertexComponent[ VertexDelete[ graph, cycle ], center ] ] === {} ] },
+    data[ "Cardinality" ] > 0 && Union[ Length /@ admitted ] === { data[ "Length" ] } &&
+      Sort[ Sort /@ admitted ] === Sort[ Sort /@ RandomInfraCircleThrough[ data[ "Graph" ], All ] ] ],
+  True,
+  TestID -> "mesh-band-3-4-pair-bounded-cycle-oracle"
+]
+
+VerificationTest[
+  With[ { graph = InfraSubstrate[ "SquareGridGraph", "Small" ] }, { center = First @ GraphCenter[ graph ] },
+    { pendants = Select[ VertexList[ graph ], 2 <= GraphDistance[ graph, center, # ] <= 4 && VertexDegree[ graph, # ] == 1 & ] },
+    { pendants =!= {},
+      Union @ Map[ point |-> InfraMeasurement[ graph, InfraCircleThrough[ { point }, InfraCircle[ center, { 2, 4 } ] ], { "Cardinality", "Length" } ],
+        pendants ] } ],
+  { True, { <| "Cardinality" -> 0, "Length" -> Infinity |> } },
+  TestID -> "rim-pendant-lies-on-no-circle"
+]
 
 VerificationTest[
   Head @ InfraMeasurement[ StarGraph[ 5 ], InfraCircleThrough[ {}, InfraCircle[ 1, { 1, 1 } ] ], "VertexDensity" ],

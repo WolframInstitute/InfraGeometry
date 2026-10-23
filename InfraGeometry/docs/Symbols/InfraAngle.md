@@ -12,29 +12,71 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Usage
 
-`InfraAngle[g, {q1, p, q2}]` gives `InfraMeasurement[g, InfraArc[p, {q1, q2}], "Length"]`.
-
-`InfraAngle[g, {q1, p, q2}, "RadiusDelta" -> delta]` uses the widened arc band.
+<code>[InfraAngle]()[*g*, {*q1*, *p*, *q2*}]</code> gives the angle at *p* between *q1* and *q2*: the length of the arc around *p* from *q1* to *q2*.
 
 ## Details & Options
 
-This is the length of the arc about `p` from `q1` to `q2`, measured in graph edges. The arc definition and its supported domain are those of [InfraArc](). All shortest arcs of the chosen band have the same length.
+The angle is *∠(q₁, p, q₂) = length of* <code>[InfraArc]()[*p*, {*q1*, *q2*}]</code>, the number of edges of a shortest path from *q₁* to *q₂* in the band of the circle about *p* through *q₁*. All arcs of the band have that length.
 
-The default `"RadiusDelta" -> 0` uses the exact distance shell of `q1`. A scalar delta widens the band outward; `{deltaIn, deltaOut}` widens it in both directions. A thin shell can have no connecting path, especially on a bipartite graph. The result then follows the arc measurement's empty-family behavior.
+The angle is a length in edges. It is not divided by the radius, and it is not in radians.
 
-The value has no radius or circumference normalization. A convention turning it into a dimensionless angle remains unsettled; this function makes no radian claim. A normalization involving a containing circle requires a specified circle family and rules for its possible alternatives.
+On the square grid with the band {*r*, *r* + 1}, *r = d(p, q₁)*, the angle is the ℓ¹ length of the arc of the circle *|x| + |y| = r*: a right angle is *2r*, a straight angle *4r*, the full turn, *q₂ = q₁*, is *8r*.
 
-The former punched-ball detour divided by radius is a different observable. Comparison-triangle angles are now [InfraComparisonAngle]() in the Riemannian branch.
+When no arc joins *q₁* to *q₂* the result is `{}`. On a bipartite graph this is always so for the bare shell.
+
+| Option | Default | Values |
+|---|---|---|
+| `"RadiusDelta"` | `0` | *δ* for the band {*r*, *r* + *δ*}; {*δᵢₙ*, *δₒᵤₜ*} for {*r* − *δᵢₙ*, *r* + *δₒᵤₜ*} |
 
 ## Basic Examples
 
-An arc of length 6 at radius 3. The result is its edge length.
+The angle at the centre between two farthest points of the circle of radius 3, on the square grid and on the square mesh, with the arc that measures it:
 
 ```wl
-With[
-  {g = CycleGraph[12]},
-  {arc = InfraArc[1, {4, 10}, "RadiusDelta" -> 3]},
-  {InfraSubstrateHighlight[g, {arc, 1, 4, 10}],
-   InfraAngle[g, {4, 1, 10}, "RadiusDelta" -> 3],
-   InfraMeasurement[g, arc, "Length"]}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+    {qq = RandomInfraPoint[g, InfraShell[p, 3], 2, "PairwiseDistance" -> "Max", RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {InfraArc[p, qq, "RadiusDelta" -> 1], p, qq},
+      PlotLabel -> InfraAngle[g, {First[qq], p, Last[qq]}, "RadiusDelta" -> 1]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+```
+
+The angle is the length of the arc:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+  {qq = RandomInfraPoint[g, InfraShell[p, 3], 2, "PairwiseDistance" -> "Max", RandomSeeding -> 1]},
+  InfraAngle[g, {First[qq], p, Last[qq]}, "RadiusDelta" -> 1] == InfraMeasurement[g, InfraArc[p, qq, "RadiusDelta" -> 1], "Length"]]
+```
+
+## Scope
+
+Right, straight and full angles on the square grid, for the radii 2 to 6. They are *2r*, *4r* and *8r*:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+  {pos = AssociationThread[VertexList[g], Round @ GraphEmbedding[g]]}, {at = AssociationThread[Values[pos], Keys[pos]]},
+  Table[InfraAngle[g, {at[pos[p] + {r, 0}], p, at[pos[p] + q]}, "RadiusDelta" -> 1], {q, {{0, r}, {-r, 0}, {r, 0}}}, {r, 2, 6}]]
+```
+
+## Options
+
+### RadiusDelta
+
+On the grid the bare shell joins nothing, so the default band gives `{}`:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+  {qq = RandomInfraPoint[g, InfraShell[p, 3], 2, "PairwiseDistance" -> "Max", RandomSeeding -> 1]},
+  Table[InfraAngle[g, {First[qq], p, Last[qq]}, "RadiusDelta" -> delta], {delta, {0, 1, {1, 1}}}]]
+```
+
+## Possible Issues
+
+The angle grows with the radius. The right angle on the grid at the radii 2 to 6, divided by the radius, is the constant 2:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+  {pos = AssociationThread[VertexList[g], Round @ GraphEmbedding[g]]}, {at = AssociationThread[Values[pos], Keys[pos]]},
+  Table[InfraAngle[g, {at[pos[p] + {r, 0}], p, at[pos[p] + {0, r}]}, "RadiusDelta" -> 1] / r, {r, 2, 6}]]
 ```

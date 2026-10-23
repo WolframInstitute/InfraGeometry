@@ -12,15 +12,15 @@ RelatedGuides: [InfraSubstrates]
 
 ## Usage
 
-<code>[InfraSubstrateStyle]()[*size*]</code> gives the list of [Graph]() options a substrate of size *size* is drawn with: `"Small"`, `"Medium"` or `"Large"`, and `"Default"` for none.
+<code>[InfraSubstrateStyle]()[*size*]</code> gives the list of [Graph]() options a substrate of size `"Small"`, `"Medium"` or `"Large"` is drawn with; `"Default"` gives none.
 
 <code>[InfraSubstrateStyle]()[*name*, *size*]</code> gives the style of the named substrate at *size*.
 
-<code>[InfraSubstrateStyle]()[]</code> lists the styles, the default ones and the custom ones. <code>[InfraSubstrateStyle]()[All]</code> gives them as one list.
+<code>[InfraSubstrateStyle]()[]</code> lists the default and the custom styles; <code>[InfraSubstrateStyle]()[All]</code> gives them as one list.
 
 ## Details & Options
 
-A substrate is a backdrop: the construction drawn on it carries the colour. The style draws the substrate in gray, [StandardGray]() edges and faintly filled vertex disks with a dark outline, lighter as the substrate grows.
+A substrate is a backdrop, and the construction drawn on it carries the colour. The style draws it in gray: [StandardGray]() edges and faintly filled vertex disks with a dark outline, lighter as the substrate grows.
 
 | *size* | Edge opacity | Vertex opacity | Vertex size |
 |---|---|---|---|
@@ -28,64 +28,53 @@ A substrate is a backdrop: the construction drawn on it carries the colour. The 
 | `"Medium"` | 0.3 | 0.45 | 0.009 |
 | `"Large"` | 0.22 | 0.33 | 0.006 |
 
-The vertex size is a fraction of the diagonal of the drawing, so a vertex stays one small dot however many vertices the substrate has.
+The vertex size is a fraction of the diagonal of the drawing, so a vertex stays one small dot however many vertices there are.
 
-Every named substrate takes the style of its size. A custom look for one substrate is one more definition <code>[InfraSubstrateStyle]()[*name*, *size*] = …</code>, and the listing then shows it under `"Custom"`.
+Every named substrate takes the style of its size. A substrate at a raw size takes the style of its vertex count: up to 250 `"Small"`, up to 800 `"Medium"`, more `"Large"`.
 
-To draw a graph of one's own like a substrate, splice the style into it: <code>[Graph]()[*g*, [Sequence]() @@ [InfraSubstrateStyle]()[*size*]]</code>.
+A custom look for one substrate is one more definition <code>[InfraSubstrateStyle]()[*name*, *size*] = …</code>, listed under `"Custom"`. Any graph is drawn like a substrate by <code>[Graph]()[*g*, [Sequence]() @@ [InfraSubstrateStyle]()[*size*]]</code>.
 
 ## Basic Examples
 
-A ball of the hyperbolic tiling by squares, five at every vertex, with no style and in the three styles.
+The square mesh with no style and in the three styles:
 
 ```wl
-With[
-  {g = TessellationNeighborhoodGraph[{4, 5}, 4]},
-  GraphicsRow @ Table[Graph[g, Sequence @@ InfraSubstrateStyle[style]], {style, {"Default", "Small", "Medium", "Large"}}]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "Default", "KeepCoordinates" -> True]},
+  GraphicsRow @ Table[Graph[g, Sequence @@ InfraSubstrateStyle[style], PlotLabel -> style],
+    {style, {"Default", "Small", "Medium", "Large"}}]]
 ```
 
-The small style, beside the ball drawn in it.
+The small style:
 
 ```wl
-With[
-  {g = TessellationNeighborhoodGraph[{4, 5}, 4]},
-  {Graph[g, Sequence @@ InfraSubstrateStyle["Small"]], InfraSubstrateStyle["Small"]}]
+InfraSubstrateStyle["Small"]
 ```
 
 ## Scope
 
-The listing: four default styles and no custom one.
+The listing: four default styles and no custom one:
 
 ```wl
-With[
-  {g = TessellationNeighborhoodGraph[{3, 7}, 3]},
-  {GraphicsRow @ Table[Graph[g, Sequence @@ InfraSubstrateStyle[style]], {style, InfraSubstrateStyle[All]}], Normal @ InfraSubstrateStyle[]}]
+InfraSubstrateStyle[]
 ```
 
-A named substrate takes the style of its size.
+A graph of one's own drawn like a substrate, a ball of the hyperbolic tiling by squares:
 
 ```wl
-With[
-  {g = TessellationNeighborhoodGraph[{3, 7}, 3]},
-  {Graph[g, Sequence @@ InfraSubstrateStyle["HyperbolicTilingGraph", "Small"]],
-   InfraSubstrateStyle["HyperbolicTilingGraph", "Small"] === InfraSubstrateStyle["Small"]}]
+Graph[TessellationNeighborhoodGraph[{4, 5}, 4], Sequence @@ InfraSubstrateStyle["Small"], ImageSize -> Medium]
 ```
 
 ## Properties and Relations
 
-[InfraSubstrate]() draws a substrate with the style of its size spliced into its drawing with no style.
+[InfraSubstrate]() splices the style of the size into the substrate drawn with no style:
 
 ```wl
-With[
-  {plain = InfraSubstrate["SquareTilingGraph", "Small", "Default", "KeepCoordinates" -> True]},
-  {styled = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {GraphicsRow[{plain, styled}], styled === Graph[plain, Sequence @@ InfraSubstrateStyle["Small"]]}]
+InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True] ===
+  Graph[InfraSubstrate["SquareGridGraph", "Small", "Default", "KeepCoordinates" -> True], Sequence @@ InfraSubstrateStyle["Small"]]
 ```
 
-A substrate at a raw size takes the style of the size its vertex count falls in: up to 250 vertices small, up to 800 medium, more large. The square tiling cut at radius 7, 15 and 25, its vertex counts and vertex sizes:
+At a raw size the vertex count picks the style. Grids of 10 × 10, 20 × 20 and 35 × 35, with 96, 396 and 1221 vertices, take the vertex sizes of the small, medium and large style:
 
 ```wl
-With[
-  {tilings = Table[InfraSubstrate["SquareTilingGraph", radius, "KeepCoordinates" -> True], {radius, {7, 15, 25}}]},
-  {GraphicsRow[tilings], VertexCount /@ tilings, Options[#, VertexSize] & /@ tilings}]
+Table[Options[InfraSubstrate["SquareGridGraph", dims], VertexSize], {dims, {{10, 10}, {20, 20}, {35, 35}}}]
 ```

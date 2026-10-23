@@ -5,99 +5,87 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/DisplacementScale
-Keywords: [displacement, scalar multiple, geodesic continuation, midpoint, reflection, straightest geodesic]
-SeeAlso: [DisplacementNegative, DisplacementSum, DisplacementCompose, DisplacementMagnitude, DisplacementPlot]
+Keywords: [displacement, scaling, scalar multiple, geodesic continuation, straightness]
+SeeAlso: [DisplacementNegative, DisplacementSum, DisplacementCompose, DisplacementMagnitude, DisplacementReduce, DisplacementPlot]
 RelatedGuides: [InfraAnalysis]
 ---
 
 ## Usage
 
-<code>[DisplacementScale]()[*g*, *d*, *t*]</code> scales the displacement *d* by *t*: each step from *v* to a vertex *w* of *d*(*v*) is carried along the shortest paths of *g* from *v* through *w* to the vertices nearest the distance |*t*| *d*(*v*, *w*), and for *t* < 0 through *v* in the opposite direction.
+<code>[DisplacementScale]()[*g*, *d*, *t*]</code> is the displacement *d* scaled by *t*: each step is carried along the shortest paths of *g* to *|t|* times its length, through its base vertex for *t* < 0.
 
 ## Details & Options
 
-Definition: let *a* → *b* be a step of *D*. For *t ≥ 0* the candidates are the vertices on a shortest path from *a* through *b*: the interval, *d(a, x) + d(x, b) = d(a, b)*, and the vertices beyond *b*, *d(a, x) = d(a, b) + d(b, x)*. For *t < 0* they are the vertices beyond *a* on a shortest path from *b*, *d(b, x) = d(b, a) + d(a, x)*. Of the candidates, *tD* keeps those whose distance from *a* is nearest to *|t| d(a, b)*, and of these the straightest. The value of *tD* at *a* is the union over the steps from *a*.
+Let *a* → *b* be a step of *D*. For *t ≥ 0* the candidates are the vertices *x* on a shortest path from *a* through *b*, *d(a, x) + d(x, b) = d(a, b)* or *d(a, x) = d(a, b) + d(b, x)*. For *t < 0* they are the vertices on a shortest path from *b* through *a*, *d(b, x) = d(b, a) + d(a, x)*.
 
-The straightest candidates are those through which the largest fraction of the shortest paths between the two outer vertices of the aligned triple pass: *σ(p, q) σ(q, s) / σ(p, s)* for the triple *p*, *q*, *s* with *q* in the middle, *σ* the number of shortest paths. On the square and triangular tilings this continues a step straight on. On the hexagonal tiling no shortest path goes straight through a vertex, and twice a step has two values.
+Of the candidates, *tD(a)* keeps those with *d(a, x)* nearest to *|t| d(a, b)*, and of these the straightest. The straightest *x* carries the largest share of shortest paths through the middle vertex of the triple, *σ(p, q) σ(q, s) / σ(p, s)* for the triple *p, q, s* with *q* in the middle, *σ* the number of shortest paths. On the square grid this continues a step straight on.
 
-Ties are kept. Half a step of length 1 is both of its ends, since 0 and 1 are equally near 1/2. Where the straight continuation leaves the graph, at the rim, the step bends to the straightest vertices still reached; where every continuation ends, at the far side of a cycle, it stops there.
+Ties are kept, so a scaled step can have several values. Half a step of length 1 is both of its ends.
 
-*t* = 1 gives *D*, *t* = 0 the identity and *t* = −1 is [DisplacementNegative](). Scaling is not exactly multiplicative: *s(tD)* and *(st)D* can differ where the shortest paths end or fork.
+*t* = 1 gives *D*, *t* = 0 the identity and *t* = −1 is [DisplacementNegative]().
+
+In the plane *s(tX) = (st)X*. On a graph scaling is not exactly multiplicative, and *tD* is not the *t*-fold composite of *D*.
 
 ## Basic Examples
 
-A single step from the centre, scaled by 1, 2, 3 and 4, on the square, triangular and hexagonal tilings. On the first two the multiples go straight on; on the hexagonal tiling they fork.
+One step from the centre scaled by 1, 2, 3 and 4, on the square grid and on the square mesh. On the grid the multiples go straight on; on the mesh they fork:
 
 ```wl
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {step = <|First @ GraphCenter[g] -> {First @ AdjacencyList[g, First @ GraphCenter[g]]}|>},
-    DisplacementPlot[g, Table[DisplacementScale[g, step, t], {t, 4}]]],
-  {name, {"SquareTilingGraph", "TriangularTilingGraph", "HexagonalTilingGraph"}}]
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    DisplacementPlot[g, Table[DisplacementScale[g, <|c -> {First @ AdjacencyList[g, c]}|>, t], {t, 4}]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The rotation of the 12-cycle by one step and three times it.
+The step right of the grid scaled by 2 and by −1:
 
 ```wl
-With[
-  {g = CycleGraph[12]},
-  {rotation = FindKillingDisplacement[g]},
-  {tripled = DisplacementScale[g, rotation, 3]},
-  {DisplacementPlot[g, {rotation, tripled}], tripled[1]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {right = TranslationDisplacement[g, {1, 0}]},
+  GraphicsRow @ Table[DisplacementPlot[g, DisplacementScale[g, right, t], PlotLabel -> t], {t, {2, -1}}]]
 ```
 
 ## Scope
 
-The step right on the 6 × 6 grid scaled by 2, by −1 and by 1/2. In the interior the doubled step goes two steps right. Next to the right column the straight continuation leaves the grid, and the doubled step turns to the two vertices beyond the last step. The halved step has both ends of the step as its values; the vertex itself is not drawn.
+Half a step is both of its ends:
 
 ```wl
-With[
-  {g = GridGraph[{6, 6}]},
-  {right = TranslationDisplacement[g, {1, 0}]},
-  GraphicsRow[Table[DisplacementPlot[g, DisplacementScale[g, right, t]], {t, {2, -1, 1/2}}]]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  DisplacementScale[g, <|c -> {First @ AdjacencyList[g, c]}|>, 1/2]]
 ```
 
-On the cycle a third of three times the rotation is the rotation.
+The scales 0 and 1 are the identity and the displacement:
 
 ```wl
-With[
-  {g = CycleGraph[12]},
-  {rotation = FindKillingDisplacement[g]},
-  {third = DisplacementScale[g, DisplacementScale[g, rotation, 3], 1/3]},
-  {DisplacementPlot[g, third], third === rotation}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {t = TranslationDisplacement[g, {1/8, 0}]},
+  {DisplacementScale[g, t, 0] === AssociationMap[List, VertexList[g]], DisplacementScale[g, t, 1] === t}]
 ```
 
 ## Properties and Relations
 
-The magnitude grows with the factor while the shortest paths last. On the 12-cycle they end at the opposite vertex, at distance 6, so 7 times the rotation is the map to the opposite vertex, as 6 times is.
+A step of length 1 scaled by *t* lands at distance *t*. On the mesh, the distances of the values from the centre:
 
 ```wl
-With[
-  {g = CycleGraph[12]},
-  {rotation = FindKillingDisplacement[g]},
-  {DisplacementPlot[g, DisplacementScale[g, rotation, 7]],
-   Table[DisplacementMagnitude[g, DisplacementScale[g, rotation, t]], {t, 1, 7}],
-   DisplacementScale[g, rotation, 7] === DisplacementScale[g, rotation, 6]}]
-```
-
-Scaling by −1 is [DisplacementNegative]().
-
-```wl
-With[
-  {g = GridGraph[{6, 6}]},
-  {right = TranslationDisplacement[g, {1, 0}]},
-  {DisplacementPlot[g, DisplacementScale[g, right, -1]], DisplacementScale[g, right, -1] === DisplacementNegative[g, right]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  Table[GraphDistance[g, c, #] & /@ DisplacementScale[g, <|c -> {First @ AdjacencyList[g, c]}|>, t][c], {t, 0, 4}]]
 ```
 
 ## Possible Issues
 
-Scaling is not composition. Three times the step right is the step three to the right where the grid allows it, while the composite of three steps right stops at the rim one step at a time.
+Scaling is not composition. At the vertex 75 of the grid three times the step right, in blue, bends to the two pendant vertices at distance 3; three steps right, in red, stop at the pendant vertex at distance 2:
 
 ```wl
-With[
-  {g = GridGraph[{6, 6}]},
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
   {right = TranslationDisplacement[g, {1, 0}]},
-  {GraphicsRow[{DisplacementPlot[g, DisplacementScale[g, right, 3]], DisplacementPlot[g, DisplacementCompose[right, right, right]]}],
-   DisplacementScale[g, right, 3] === DisplacementCompose[right, right, right]}]
+  {tripled = DisplacementScale[g, right, 3], composite = DisplacementCompose[right, right, right]},
+  DisplacementPlot[g, {KeyTake[tripled, {75}], KeyTake[composite, {75}]}, PlotLabel -> {tripled[75], composite[75]}]]
+```
+
+Scaling is not exactly multiplicative. On the mesh twice the double of a step is not four times the step:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {step = <|c -> {First @ AdjacencyList[g, c]}|>},
+  {DisplacementScale[g, DisplacementScale[g, step, 2], 2][c], DisplacementScale[g, step, 4][c]}]
 ```

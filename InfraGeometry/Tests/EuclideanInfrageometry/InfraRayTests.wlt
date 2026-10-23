@@ -140,16 +140,16 @@ VerificationTest[
 
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    BlockRandom[RandomInfraRay[g, 6, 7], RandomSeeding -> 17] ===
-      BlockRandom[RandomInfraRay[g, 6, 7], RandomSeeding -> 17] &&
-    InfraRayQ[g, BlockRandom[RandomInfraRay[g, 6, 7], RandomSeeding -> 17]]],
+    BlockRandom[RandomInfraRay[g, 6, 7, RandomSeeding -> None ], RandomSeeding -> 17] ===
+      BlockRandom[RandomInfraRay[g, 6, 7, RandomSeeding -> None ], RandomSeeding -> 17] &&
+    InfraRayQ[g, BlockRandom[RandomInfraRay[g, 6, 7, RandomSeeding -> None ], RandomSeeding -> 17]]],
   True,
   TestID -> "RandomInfraRay-default-is-seeded-and-valid"
 ]
 
 VerificationTest[
   Length @ DeleteDuplicates @ Table[
-    BlockRandom[RandomInfraRay[GridGraph[{4, 4}], 6, 7], RandomSeeding -> s],
+    BlockRandom[RandomInfraRay[GridGraph[{4, 4}], 6, 7, RandomSeeding -> None ], RandomSeeding -> s],
     {s, 1, 8}] > 1,
   True,
   TestID -> "RandomInfraRay-default-varies-across-seeds"

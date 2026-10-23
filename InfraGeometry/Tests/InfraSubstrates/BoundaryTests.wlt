@@ -306,4 +306,14 @@ VerificationTest[
 	TestID -> "CenterGraph-disconnected-returns-the-graph"
 ]
 
+(* the 4 x 4 grid: four centre vertices of eccentricity 4, every vertex within 2 of the centre set *)
+VerificationTest[
+	With[
+		{g = GridGraph[{4, 4}]},
+		VertexCount @ CenterGraph[g, #] & /@ {-1, -2, Scaled[1/2], Scaled[1]}
+	],
+	{12, 4, 12, 16},
+	TestID -> "CenterGraph-negative-and-scaled-count-from-the-centre-set"
+]
+
 EndTestSection[]

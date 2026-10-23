@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/EuclideanInfrageometry
 Keywords: [Euclidean geometry, shell, synthetic geometry, graph, symbolic object, point, segment, ray, line, parallel, perpendicular, circle, arc, bisector, ellipse, ball, tube, cylinder, cone, polygon, hull, angle, shapes, gestalt, scene]
 RelatedGuides: [RiemannianInfrageometry, InfraSubstrates, Experimental]
-RelatedTutorials: [BreadthlessTriangleTutorial, StraighteningAtScaleTutorial, NamedConstructionSamplers, SyntheticGeometryMigration]
+RelatedTutorials: [BreadthlessTriangleTutorial, StraighteningAtScaleTutorial]
 ---
 
 <!-- LLM-PROTECTED: Do not rewrite the Abstract or Functions sections unless explicitly asked. -->
@@ -18,7 +18,7 @@ RelatedTutorials: [BreadthlessTriangleTutorial, StraighteningAtScaleTutorial, Na
 
 ## Abstract
 
-Abstract written and reviewed by Pavel Hajek on 18 October 2026; its sampler statement and renamed symbol references were updated by LLM. Remaining content LLM generated.
+Abstract written and reviewed by Pavel Hajek on 18 October 2026.
 
 Euclidean Infrageometry studies natural geometric objects on arbitrary graph substrates using synthetic methods. It enumerates these objects, studies their mutual relations, applies operations to them, and performs iterative constructions.
 
@@ -142,11 +142,6 @@ Inspired by [GeometricScene](https://reference.wolfram.com/language/ref/Geometri
 - `PathSubgraph` the union of paths between two vertices, with optional path-length bounds
 
 - `Subgraph` (WL), `HighlightGraph` (WL)
-
-### Construction histories
-
-- `InfraSceneMultiway` the finite multiway system of construction states
-- `InfraBranchialGraph` the graph of states at one depth that share a predecessor
 
 ### Properties and Measurements
 

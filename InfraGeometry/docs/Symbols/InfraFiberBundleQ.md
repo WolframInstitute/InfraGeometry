@@ -5,54 +5,83 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraFiberBundleQ
-Keywords: [graph bundle, Cartesian graph bundle, isomorphic fibers, covering]
-SeeAlso: [InfraFiberedGraph, InfraIsomorphicFibersQ, InfraUniqueEdgeLiftingQ, InfraCoveringQ, InfraFlatConnectionQ, InfraFibers]
+Keywords: [fiber bundle, graph bundle, Cartesian graph bundle, isomorphic fibers, covering, twist, predicate]
+SeeAlso: [InfraFiberedGraph, InfraIsomorphicFibersQ, InfraUniqueEdgeLiftingQ, InfraCoveringQ, InfraFlatConnectionQ, InfraHolonomy, InfraFibers]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
 
-<code>[InfraFiberBundleQ]()[*fib*]</code> tests whether *fib* has a common fiber graph and an adjacency-preserving matching over every base edge.
+<code>[InfraFiberBundleQ]()[*fib*]</code> gives `True` if *fib* is a fiber bundle: its fibers are copies of one graph, and over every base edge the transverse edges match the two fibers by a graph isomorphism.
 
 ## Details & Options
 
-- The fibers must be mutually isomorphic, including across disconnected base components.
-- Every total vertex has exactly one transverse neighbour over each adjacent base vertex. Each resulting fiber bijection preserves vertical adjacency.
-- This is the finite Cartesian graph-bundle condition. The inverse image of a base edge is a Cartesian product of that edge with the common fiber, respecting the projection.
-- No topology or higher-dimensional cells are supplied by the predicate.
-- Twisted coverings with a common sheet count are bundles. Trivial monodromy is a separate question, tested for a selected connection by [InfraFlatConnectionQ]().
-- A covering may have different sheet counts on disconnected base components; such a covering is not a bundle with one common fiber.
-- A nonempty list is tested by conjunction. An empty list is False; the empty fibered graph is a bundle. Unsupported inputs remain unevaluated.
+The conditions are:
+
+| Condition | Test |
+|---|---|
+| all fibers isomorphic to one graph *F* | [InfraIsomorphicFibersQ]() |
+| at every vertex over *p*, exactly one lift of each base edge *pq* | [InfraUniqueEdgeLiftingQ]() |
+| the matching *F(p) → F(q)* maps the edges of *F(p)* onto the edges of *F(q)* | |
+
+Over each base edge the bundle is then a product: the part over *pq* is the Cartesian product of the edge with *F*.
+
+The product need not be global. Composing the matchings around a base cycle gives a permutation of a fiber, the holonomy, which [InfraHolonomy]() computes; it can be nontrivial. The prism and the Moebius ladder are both bundles over a cycle with fiber an edge.
+
+A bundle with fibers without edges is a covering ([InfraCoveringQ]()). A covering whose base components carry different numbers of sheets is not a bundle, since its fibers are not all isomorphic.
+
+The empty fibered graph is a bundle. A list of objects gives `True` when every member is a bundle; the empty list gives `False`.
 
 ## Basic Examples
 
-The cycle of length 8 over the square and the cycle of length 6 over the triangle are both twisted double coverings and hence bundles.
+The prism and the Moebius ladder over the cycle of length 8. Both are bundles with an edge as fiber. They differ only by a twist over one base edge, which [InfraHolonomy]() detects:
 
 ```wl
-SeedRandom[ 7 ];
-With[
-  {square = InfraFiberedGraph[CycleGraph[8], i |-> Mod[i, 4, 1]]},
-  {triangle = InfraFiberedGraph[CycleGraph[6], i |-> Mod[i, 3, 1]]},
-  {InfraFiberedGraphHighlight[square], InfraFiberBundleQ[square], InfraFiberedGraphHighlight[triangle], InfraFiberBundleQ[triangle]}]
+GraphicsRow @ Table[
+  With[{fib = InfraFiberedSubstrate[name, "Small"]},
+    InfraFiberedGraphHighlight[fib, PlotLabel -> InfraFiberBundleQ[fib]]],
+  {name, {"CycleProductBundle", "MoebiusLadderCover"}}]
 ```
 
-The trivial and covering entries of the catalogue are fiber bundles, the branched ones are not.
+A random double covering of the square grid, drawn over the grid. Where two edges cross, the sheets are exchanged:
 
 ```wl
-SeedRandom[ 7 ];
-Table[
-  name -> InfraFiberBundleQ @ InfraFiberedSubstrate[name, "Small"],
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {fib = RandomInfraFiberedGraph[g, "VerticalVertexCount" -> {2}, Properties -> {"FiberBundle"},
+    RandomSeeding -> 1]},
+  InfraFiberedGraphHighlight[fib, "BaseVertexCoordinates" -> GraphEmbedding[g],
+    PlotLabel -> InfraFiberBundleQ[fib], ImageSize -> Medium]]
+```
+
+## Scope
+
+The products and the coverings of the catalogue are bundles, the branched fibrations are not:
+
+```wl
+Table[name -> InfraFiberBundleQ @ InfraFiberedSubstrate[name, "Small"],
   {name, Join @@ Lookup[InfraFiberedSubstrate[], {"Trivial", "Covering", "NonBundle"}]}]
+```
+
+## Properties and Relations
+
+Isomorphic fibers and unique lifting are not enough. Here the fiber is a path *a − b − c*, and the matching sends *a, b, c* to *a, c, b*, which breaks the edge *ab*:
+
+```wl
+With[{fib = InfraFiberedGraph[Graph[{
+    {"p", "a"} <-> {"p", "b"}, {"p", "b"} <-> {"p", "c"}, {"q", "a"} <-> {"q", "b"}, {"q", "b"} <-> {"q", "c"},
+    {"p", "a"} <-> {"q", "a"}, {"p", "b"} <-> {"q", "c"}, {"p", "c"} <-> {"q", "b"}}], First]},
+  InfraFiberedGraphHighlight[fib, ImageSize -> Medium,
+    PlotLabel -> {InfraIsomorphicFibersQ[fib], InfraUniqueEdgeLiftingQ[fib], InfraFiberBundleQ[fib]}]]
 ```
 
 ## Possible Issues
 
-The tangent and displacement entries of the catalogue are fibrations, but not fiber bundles in this sense. Over the grid the fibers have different sizes, drawn here as a density on the base.
+The displacement bundles are fibrations but not bundles. Over the grid the fibers differ in size; over the triangular torus they agree, but a base edge has several lifts at a vertex:
 
 ```wl
-SeedRandom[ 7 ];
-With[
-  {fib = InfraFiberedSubstrate["GridDisplacementBundle", "Small"]},
-  {InfraSubstrateHighlight[First @ fib, {VertexCount /@ InfraFibers[fib]}], InfraFibrationQ[fib], InfraFiberBundleQ[fib]}]
+Table[
+  With[{fib = InfraFiberedSubstrate[name, "Small"]},
+    name -> {InfraEqualFiberSizesQ[fib], InfraUniqueEdgeLiftingQ[fib], InfraFiberBundleQ[fib]}],
+  {name, {"GridDisplacementBundle", "TriangularTorusDisplacementBundle"}}]
 ```

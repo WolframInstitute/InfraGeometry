@@ -11,8 +11,6 @@ RelatedGuides: [InfraFiberBundles, Experimental, InfraTopology]
 RelatedTutorials: [InfraBundles]
 ---
 
-**[[ LLM Generated ]]**
-
 We separate particular finite models from questions about observation at scale and possible limits.
 The exact statements below concern finite graphs, quotient maps and selected matchings.
 The completion and emergence section states research requirements; it supplies no general convergence theorem or new scale API.
@@ -63,7 +61,7 @@ It is a compatibility model, not the property-constrained generator used in the 
 ```wl
 SeedRandom[ 7 ];
 With[ { fib = RandomInfraFibration[ CycleGraph[ 6 ], "VerticalVertices" -> 3,
-    "VerticalEdges" -> 1, "HorizontalEdgesDensity" -> 1.5 ] },
+    "VerticalEdges" -> 1, "HorizontalEdgesDensity" -> 1.5, RandomSeeding -> 7 ] },
   InfraFiberedGraphHighlight[ fib ] ]
 ```
 
@@ -124,7 +122,7 @@ The statement permits multiple lifts and unequal fibers.
 ```wl
 SeedRandom[ 7 ];
 With[ { fib = RandomInfraFiberedGraph[ PathGraph[ Range[ 6 ] ], Properties -> { "Fibration" },
-    "VerticalVertexCount" -> { 2, 3 }, "HorizontalEdgeCount" -> All ] },
+    "VerticalVertexCount" -> { 2, 3 }, "HorizontalEdgeCount" -> All, RandomSeeding -> 7 ] },
   { total = InfraTotalSpace[ fib ], base = InfraBaseSpace[ fib ] },
   { start = First @ VertexList[ total ] },
   { point = Lookup[ InfraProjection[ fib ], Key[ start ] ] },

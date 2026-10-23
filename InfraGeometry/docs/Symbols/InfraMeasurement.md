@@ -5,244 +5,176 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraMeasurement
-Keywords: [segment, ray, line, circle, arc, ball, shell, tube, symbolic object, measurement, occupation, faithful, counting measure, Riemannian measure, volume]
-SeeAlso: [RandomInfraSegment, InfraMemberQ, InfraSegment, InfraBall, InfraShell, InfraTube, InfraInterior, InfraBoundary]
+Keywords: [measurement, density, occupation, cardinality, length, faithful, counting measure, Riemannian measure, volume]
+SeeAlso: [InfraMemberQ, InfraSegment, InfraBall, InfraShell, InfraTube, InfraInterior, InfraBoundary, InfraSubstrateHighlight]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraMeasurement]()[*graph*, *obj*, *property*]</code> measures a symbolic object on *graph*: a Euclidean head — [InfraSegment](), [InfraHalfLine](), [InfraInfiniteLine](), [InfraCircle](), [InfraArc]() — or a region — [InfraBall](), [InfraShell](), [InfraTube](), [InfraCylinder](), [InfraCone](), [InfraSphere]().
+<code>[InfraMeasurement]()[*g*, *obj*, *prop*]</code> gives the property *prop* of the object *obj* on the graph *g*.
 
-<code>[InfraMeasurement]()[*graph*, *obj*, {*property1*, ...}]</code> gives an `Association` of several properties; `All` in place of the list gives every property the object has.
+<code>[InfraMeasurement]()[*g*, *obj*, {*prop1*, *prop2*, …}]</code> gives an [Association]() of several properties; `All` in place of the list gives every property *obj* has.
 
-<code>[InfraMeasurement]()[*graph*, {*obj1*, ...}, *property*]</code> measures each construction in the list. Raw vertex lists and walk bundles instead aggregate their "VertexDensity".
+<code>[InfraMeasurement]()[*g*, {*obj1*, *obj2*, …}, *prop*]</code> gives the property of each object.
+
+<code>[InfraMeasurement]()[*g*, {*v1*, *v2*, …}, *prop*]</code> gives the property of the vertex set {*v1*, *v2*, …}.
 
 ## Details & Options
 
-The "VertexDensity" property also accepts raw shapes. A vertex gives unit mass; a vertex list gives its Counts; an association gives its key-sorted density. A walk graph or directed acyclic graph gives the number of source-to-sink paths through each vertex, and a bundle of walks sums their occupations. A List-valued vertex label is one point when it belongs to the substrate. Unsupported scalar anchors stay unevaluated.
+An object is a family or a region. A family — [InfraSegment](), [InfraHalfLine](), [InfraInfiniteLine](), [InfraCircle](), [InfraArc]() — has many members, walks on *g*. A region — [InfraBall](), [InfraShell](), [InfraTube](), [InfraCylinder](), [InfraCone]() — has one member, its vertex set.
 
-
-Definition: <code>[InfraMeasurement]()[*graph*, *obj*, *property*]</code> is the value of *property* of the object *obj* on *graph*. The support of *obj* is the set *A* of vertices its members pass through, `Keys @ InfraMeasurement[graph, obj, "VertexDensity"]`. The two measures of *obj* are measures of *A*:
-
-| Measure | Value |
-|---|---|
-| `"CountingMeasure"` | *\|A\|*, the number of vertices of the support |
-| `"RiemannianMeasure"` | *\|A°\|*, where *A° = {v ∈ A : every neighbour of v lies in A}*: the count without the boundary |
-
-Their difference is the number of vertices of *A* with a neighbour outside *A*, the [InfraBoundary]() of *A*; *A°* is its [InfraInterior](). In the limit of a manifold the boundary of a region has measure zero and the two agree. On a graph they do not: the boundary of a ball of radius *r* holds a share of order *1/r* of its vertices. The rim of a finite graph is not a boundary: a region that fills the graph has both measures equal to the number of vertices.
-
-For a ball or a tube the interior contains the region one layer thinner, with a possible extra set in the outer layer. With *T_s(X)* the vertices within *s* of a set *X* and *s ≥ 1*,
-
-*Int T_s(X) = T_(s−1)(X) ∪ {w : d(w, X) = s and no neighbour of w is at distance s + 1}*,
-
-so the Riemannian measure of a ball or a tube is the counting measure one step thinner, plus the dead ends of its outer layer. The exact one-step shift holds if and only if this extra set is empty. For a ball at radius zero the interior is empty if its centre has a neighbour. On the square and the triangular grids there are no dead ends away from the rim, and the Riemannian measure of a ball of radius *r ≥ 1* is the counting measure of the ball of radius *r − 1*, the convention of the Wolfram Physics technical introduction; on the hexagonal tiling this is measured. A set has Riemannian measure `0` exactly when every vertex has a neighbour outside. This holds for a shell in a connected graph with at least two vertices, and for a shortest path in a graph of minimum degree three. For a sphere instance in a band `{r, r + 1}` with `r >= 1`, it holds if every vertex at distance `r + 1` has a neighbour at distance `r + 2`.
-
-The volume profiles on the square grid, about a centre *c*, with a segment from *c* whose interval is a box of sides *a_1*, *a_2*, away from the rim:
-
-| Region | `"CountingMeasure"` | `"RiemannianMeasure"` |
-|---|---|---|
-| ball of radius *r* | *2r² + 2r + 1* | *2r² − 2r + 1* for *r ≥ 1*, `0` at *r = 0* |
-| shell of radius *r ≥ 1* | *4r* | `0` |
-| fat tube of radius *s*, about the interval | *(a_1 + 1)(a_2 + 1) + 2s(a_1 + a_2 + 2) + 2s(s − 1)* | the count at *s − 1*, for *s ≥ 1* |
-| thin tube of radius *s*, about one shortest path | no closed form for a staircase path | the count at *s − 1*, measured |
-| rounded cone of slope *m ≥ 1*, `Method -> "Balls"` | the ball about the far end | the ball about the far end |
-| sphere instance in `{r, r + 1}`, `r >= 1` | measured | `0` under the outward-neighbour condition above |
-
-The symbol page of each region carries its counts on the other lattices and its continuum expansion. A profile, the list of a measure over the size, is read by [LogDifferenceQuotients](). The quotients of the counting profile from *r = 0* and of the Riemannian profile from *r = 1* coincide on a lattice, and they are the curves of the technical introduction, section 4.5: on *Z^d* they approach the dimension as *d + d/(2r)*, from above, while the counting profile from *r = 1* approaches it as *d − d/(2r)*, from below.
-
-A Euclidean head is a **symbolic abstract representation** of an object: it holds its points and options, with **evaluation postponed** until a graph is supplied. `InfraMeasurement` evaluates its properties on that graph, reading every property off the head's **graph** — an acyclic directed graph whose source-to-sink chains are exactly the head's members — by one forward and one backward sweep of a dynamic-programming count, never by enumeration. A circle's graph is a `List` of atoms of the unrolled band along a radial seam (necklaces where the cut band is disconnected or the seam has one side only; see [InfraCircle]()). Each is an acyclic DAG from a seam vertex *x* to a copy `{x, 3/2}` of it, so a circle is a chain read as a closed walk, **opened** at *x*. A circle's member is the chain with the copy dropped, a cyclic vertex list whose first vertex is not repeated. The closed arc has the same shape on the atom at its point.
-
-The properties:
+The support *A* is the set of vertices the members pass through; *occ(v)* is the number of members through *v*.
 
 | Property | Value |
 |---|---|
-| `"Graph"` | the object's own graph: one `Graph`, or a `List` of them for a family of alternatives (the DAGs of a line or a ray, the atoms of a circle) or for the pieces of a polyline |
-| `"Midpoint"` | the density of the central vertex or vertices on the shortest paths of a segment |
+| `"Graph"` | a directed acyclic graph whose source-to-sink paths are the members, or a list of them |
 | `"Cardinality"` | the number of members |
-| `"Length"` | the common length of the members, or a `List` of lengths when they differ |
-| `"VertexDensity"` | `<\|v -> occ(v)\|>`, the number of members through *v*; on a polyline, the sum of the piece densities |
-| `"EdgeDensity"` | `<\|v \[DirectedEdge] w -> occ(v -> w)\|>`, the number of members through the arrow; on a polyline, the sum of the piece densities |
-| `"Subgraph"` | the subgraph induced on the support |
-| `"Faithful"` | `True` on a segment, ray or line; unevaluated on a circle or an arc, whose graph is proved faithful only under a hypothesis this paclet does not certify, except that a circle whose cut band is connected but whose seam has one side only gives `False` |
-| `"CountingMeasure"` | the number of vertices of the support |
-| `"RiemannianMeasure"` | the number of vertices of the support all of whose neighbours lie in the support |
+| `"Length"` | the length of the members, or the list of lengths when they differ |
+| `"VertexDensity"` | `<\|v -> occ(v), …\|>` over the support |
+| `"EdgeDensity"` | the number of members through each directed edge |
+| `"Subgraph"` | the subgraph of *g* induced on the support |
+| `"Faithful"` | `True` when the paths of `"Graph"` are exactly the members |
+| `"Midpoint"` | on a segment, the number of members through each central vertex |
+| `"CountingMeasure"` | *\|A\|* |
+| `"RiemannianMeasure"` | *\|A°\|*, with *A° = {v ∈ A : every neighbour of v lies in A}* |
 
-For a segment of even length, `"Midpoint"` counts the shortest paths through each vertex in the middle layer. For odd length, it counts the shortest paths through each of the two central layers. Thus it is a density of midpoints, not a single vertex when the substrate branches.
+A region has no `"Graph"` and no `"Length"`; its density is 1 on the support. The density of an [InfraIntersection]() is the product of the densities of its parts, that of an [InfraUnion]() the sum.
 
-A region — a ball, shell, tube, cylinder or cone — has one member, its vertex set, and every vertex of the support has density 1. It has no `"Graph"` and no `"Length"`. A sphere is a family, searched rather than read off a graph; its `"Faithful"` stays unevaluated.
+*A°* is the [InfraInterior]() of *A*. On a manifold the boundary of a region has measure zero; on a graph it does not, and for a ball of radius *r* the two measures differ by a share of order *1/r*. The rim of a finite graph is not a boundary.
 
-[InfraIntersection]() and [InfraUnion]() are heads on heads: neither is a family of walks, so neither has a `"Graph"`, `"Cardinality"`, `"Length"`, `"EdgeDensity"` or `"Faithful"`, and their `All` lists only the density, the subgraph and the two measures. The intersection's `"VertexDensity"` is the product of the two objects' densities on their common vertices, the union's the sum.
+For the *s*-neighbourhood *Tₛ(X)* of a vertex set *X* and *s ≥ 1*, *Tₛ(X)° = Tₛ₋₁(X) ∪ {w : d(w, X) = s, no neighbour of w at distance s + 1}*: the Riemannian measure of a ball or tube is the counting measure one step thinner, plus the dead ends of the outer layer.
 
-A density, an association of vertex masses, is an object too: its `"VertexDensity"` is itself. So a union or an intersection may take densities as parts, and their masses may be negative: the union of a density *d* and its negative `-`*d* is zero at every vertex of *d*.
+On the square grid, away from the rim, with a segment whose interval is an (*a* + 1) × (*b* + 1) rectangle:
 
-A circle takes a radius `r` or a band `{r, s}`, a scalar `r` meaning `{r, r}`. The circle through a point is the closed arc <code>[InfraArc]()[*c*, {*p*, *p*}]</code>, which widens the band of *p* with `"RadiusDelta" -> delta | {deltaIn, deltaOut}` (default `0`). A scalar *delta* means `{0, delta}`, outward only.
+| Region | `"CountingMeasure"` | `"RiemannianMeasure"` |
+|---|---|---|
+| ball of radius *r* | *2r² + 2r + 1* | *2r² − 2r + 1* for *r ≥ 1* |
+| shell of radius *r ≥ 1* | *4r* | 0 |
+| tube of radius *s* about the segment | *(a + 1)(b + 1) + 2s(a + b + 2) + 2s(s − 1)* | the count at *s − 1*, for *s ≥ 1* |
 
-On a polyline <code>[InfraSegment]()[*p1*, …, *pk*]</code> the densities are not member counts: they are the sums of the piece densities. On the 5 × 5 grid, <code>[InfraSegment]()[1, 13, 25]</code> has 36 members, while its density at the centre 13 is 12.
+A vertex, an association of masses and a walk graph also have a `"VertexDensity"`, and so do the tokens [InfraWalk](), its number of visits to each vertex, and [InfraPoint](), 1 on the vertices it can be. A list of vertex lists or walk graphs has the sum of their densities.
+
+A list of vertices is one vertex set for every property: its density counts repeated vertices, and its `"CountingMeasure"`, `"RiemannianMeasure"` and `"Subgraph"` are those of the set, as for a density. Any other list is measured object by object.
+
+The members of <code>[InfraGeodesic]()[*germ*, *s*]</code> at a finite scale *s* are listed to read its `"Cardinality"`, `"Length"` and densities; its `"Graph"` is a window graph, not a graph of the members. At scale [Infinity]() the family is <code>[InfraInfiniteLine]()[*germ*]</code> and is read as such.
 
 ## Basic Examples
 
-The midpoint density of two vertices at distance 6 on the discretized plane, the square grid and the hexagonal tiling. The numbers of distinct midpoint vertices are 2, 3 and 2.
+A segment from the centre to a vertex at distance 4: its cardinality, length and two measures:
 
 ```wl
-SeedRandom[1];
-Row[Table[
-  With[
-    {g = InfraSubstrate[name, "Large", "KeepCoordinates" -> True]},
-    {a = First @ GraphCenter[g]},
-    {b = First @ Sort @ Select[VertexList[g], GraphDistance[g, a, #] == 6 &]},
-    {segment = InfraSegment[a, b]},
-    {midpoint = InfraMeasurement[g, segment, "Midpoint"]},
-    Labeled[
-      InfraSubstrateHighlight[g, {RandomInfraSegment[g, a, b, All], {a, b}, midpoint}],
-      name <> ": " <> ToString[Length @ midpoint] <> " midpoints"]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}], Spacer[20]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+    {seg = InfraSegment[a, RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]]},
+    {props = {"Cardinality", "Length", "CountingMeasure", "RiemannianMeasure"}},
+    InfraSubstrateHighlight[g, {seg}, PlotLabel -> Values @ InfraMeasurement[g, seg, props]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-A segment from the centre to a vertex four steps away on the discretized plane, the square grid and the hexagonal tiling, drawn by its densities, beside its number of shortest paths, their length and its two measures.
+A ball, a band and a tube, each with its interior drawn over it. The counting measure counts the region, the Riemannian measure its interior:
 
 ```wl
-SeedRandom[1];
-Row[Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {a = First @ GraphCenter[g]},
-    {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
-    {seg = InfraSegment[a, b]},
-    Labeled[
-      InfraSubstrateHighlight[g, {seg, a, b}],
-      InfraMeasurement[g, seg, {"Cardinality", "Length", "CountingMeasure", "RiemannianMeasure"}]]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {seg = InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]]},
+  GraphicsRow @ Table[
+    InfraSubstrateHighlight[g, {region, InfraInterior[g, region]},
+      PlotLabel -> Values @ InfraMeasurement[g, region, {"CountingMeasure", "RiemannianMeasure"}]],
+    {region, {InfraBall[c, 3], InfraShell[c, {2, 3}], InfraTube[seg, 1]}}]]
 ```
 
-The two measures of five regions about one centre and one shortest path on the square grid: a ball, a band of two radii, a tube, a cylinder and a cone. Each is drawn with its inner vertices in green and its boundary in blue; the counting measure counts both, the Riemannian measure the green ones.
+The vertex density and the edge density of a segment:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {seg = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])]},
-  {axis = Replace[ seg, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraShell :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCylinder :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCone :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSolidOfRevolution :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraBallHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraConvexHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraQuadric :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ]},
-  {regions = {InfraBall[c, 3], InfraShell[c, {2, 3}], InfraTube[seg, 1], InfraCylinder[axis, 1], InfraCone[axis, 1, Method -> "Balls"]}},
-  {supports = Keys @ InfraMeasurement[g, #, "VertexDensity"] & /@ regions},
-  {Row[InfraSubstrateHighlight[g, {InfraInterior[g, #] -> StandardGreen, InfraBoundary[g, #] -> StandardBlue}] & /@ supports],
-   InfraMeasurement[g, regions, "CountingMeasure"], InfraMeasurement[g, regions, "RiemannianMeasure"]}]
-```
-
-The graph of the segment: its source-to-sink chains are the shortest paths.
-
-```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
-  InfraMeasurement[g, InfraSegment[a, b], "Graph"]]
-```
-
-The vertex density drawn alone, and the graph of the segment drawn on the substrate.
-
-```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
-  {seg = InfraSegment[a, b]},
-  GraphicsRow[{
-    InfraSubstrateHighlight[g, {InfraMeasurement[g, seg, "VertexDensity"]}],
-    InfraSubstrateHighlight[g, {InfraMeasurement[g, seg, "Graph"]}]}]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {seg = InfraSegment[a, RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]]},
+  GraphicsRow[{InfraSubstrateHighlight[g, {InfraMeasurement[g, seg, "VertexDensity"]}],
+    InfraSubstrateHighlight[g, {InfraMeasurement[g, seg, "EdgeDensity"]}]}]]
 ```
 
 ## Scope
 
-Every property at once, here named beside the subgraph the segment occupies.
+`All` gives every property the object has. A segment has a graph and a length, a ball does not:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
-  {all = InfraMeasurement[g, InfraSegment[a, b], All]},
-  {InfraSubstrateHighlight[g, {all["Subgraph"]}], Keys @ all}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  Keys @ InfraMeasurement[g, #, All] & /@ {InfraSegment[c, 49], InfraBall[c, 3]}]
 ```
 
-A list of heads is measured head by head.
+A list of objects is measured object by object. The volume profile of the ball on the square grid, *2r² + 2r + 1*:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
-  {heads = {InfraSegment[a, b], InfraCircle[a, {2, 4}]}},
-  {InfraSubstrateHighlight[g, heads], InfraMeasurement[g, heads, "Cardinality"]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Medium"]}, {c = First @ GraphCenter[g]},
+  InfraMeasurement[g, Table[InfraBall[c, r], {r, 0, 6}], "CountingMeasure"]]
+```
+
+A segment cut by a ball. The density of the intersection is the product of the densities:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {seg = InfraSegment[a, RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]]},
+  {cut = InfraMeasurement[g, InfraIntersection[seg, InfraBall[a, 2]], "VertexDensity"]},
+  GraphicsRow[{InfraSubstrateHighlight[g, {InfraBall[a, 2], seg}], InfraSubstrateHighlight[g, {cut}]}]]
+```
+
+Five shortest paths and the sum of their densities:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 6], RandomSeeding -> 1]},
+  {walks = RandomInfraSegment[g, a, b, 5, RandomSeeding -> 1]},
+  InfraSubstrateHighlight[g, {InfraMeasurement[g, walks, "VertexDensity"]}, ImageSize -> Medium]]
 ```
 
 ## Properties and Relations
 
-The profiles of the regions about the centre of the square grid, under the counting measure on the left and the Riemannian measure on the right: the ball and the shell over the radius, the fat and the thin tube about a segment of length 5 over the thickness.
+The tube about a segment on the square grid, against *(a + 1)(b + 1) + 2s(a + b + 2) + 2s(s − 1)* with *a* = 3, *b* = 2:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
-  {c = First @ GraphCenter[g]},
-  {fat = InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 5]])]},
-  {path = Replace[ fat, { token_InfraPoint :> RandomInfraPoint[ g, token ], token_InfraSegment :> RandomInfraSegment[ g, token ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token ], token_InfraCircle :> RandomInfraCircle[ g, token ], token_InfraArc :> RandomInfraArc[ g, token ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token ], token_InfraPlane :> RandomInfraPlane[ g, token ], token_InfraBall :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraShell :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSphere :> RandomInfraSphere[ g, token ], token_InfraTube :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCylinder :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraCone :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraSolidOfRevolution :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraBallHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraConvexHull :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraQuadric :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraWalk :> RandomInfraWalk[ g, token ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token ], token_InfraEllipse :> RandomInfraEllipse[ g, token ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token ], token_InfraLine :> RandomInfraInfiniteLine[ g, token ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token ] } ]},
-  GraphicsRow[Table[
-    ListLinePlot[{
-      InfraMeasurement[g, Table[InfraBall[c, r], {r, 0, 5}], measure],
-      InfraMeasurement[g, Table[InfraShell[c, r], {r, 0, 5}], measure],
-      InfraMeasurement[g, Table[InfraTube[fat, s], {s, 0, 5}], measure],
-      InfraMeasurement[g, Table[InfraTube[path, s], {s, 0, 5}], measure]},
-      DataRange -> {0, 5}, PlotMarkers -> Automatic, PlotLegends -> {"ball", "shell", "fat tube", "thin tube"}],
-    {measure, {"CountingMeasure", "RiemannianMeasure"}}]]]
+With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {xy = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+  {b = First @ Keys @ Select[xy, # - xy[c] == {3, 2} &]},
+  InfraMeasurement[g, Table[InfraTube[InfraSegment[c, b], s], {s, 0, 5}], "CountingMeasure"] ==
+    Table[12 + 14 s + 2 s (s - 1), {s, 0, 5}]]
 ```
 
-The support is the key set of the vertex density. The counting measure is its size, the Riemannian measure the size of its interior.
+The Riemannian measure of the ball of radius *r* minus the counting measure of the ball of radius *r − 1*. It is 0 on the grid; on the mesh the dead ends of the outer layer add to the interior:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {ball = InfraBall[First @ GraphCenter[g], 4]},
+ListLinePlot[
+  Table[With[{g = InfraSubstrate[name, "Medium"]}, {c = First @ GraphCenter[g]},
+    Table[InfraMeasurement[g, InfraBall[c, r], "RiemannianMeasure"] - InfraMeasurement[g, InfraBall[c, r - 1], "CountingMeasure"],
+      {r, 7}]],
+    {name, {"SquareGridGraph", "SquareMeshGraph"}}],
+  PlotMarkers -> Automatic, PlotLegends -> {"SquareGridGraph", "SquareMeshGraph"}]
+```
+
+The two measures are the sizes of the support and of its interior:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {ball = InfraBall[First @ GraphCenter[g], 3]},
   {support = Keys @ InfraMeasurement[g, ball, "VertexDensity"]},
-  {{Length @ support, Length @ InfraInterior[g, support]}, InfraMeasurement[g, ball, {"CountingMeasure", "RiemannianMeasure"}]}]
+  {Length @ support, Length @ InfraInterior[g, support]} ==
+    Values @ InfraMeasurement[g, ball, {"CountingMeasure", "RiemannianMeasure"}]]
 ```
 
-On the square grid and the hexagonal tiling the Riemannian measure of the ball of radius *r* is the counting measure of the ball of radius *r − 1*, and their difference is 0. On the discretized plane it is not: a vertex at distance *r* with no neighbour at distance *r + 1* is inside the ball.
+A vertex list is one set. The ball of radius 2 given as its vertex list has the measures of the ball:
 
 ```wl
-With[
-  {names = {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}},
-  ListLinePlot[
-    Table[
-      With[
-        {g = InfraSubstrate[name, "Medium"]},
-        {c = First @ GraphCenter[g]},
-        Table[InfraMeasurement[g, InfraBall[c, r], "RiemannianMeasure"] - InfraMeasurement[g, InfraBall[c, r - 1], "CountingMeasure"], {r, 1, 7}]],
-      {name, names}],
-    DataRange -> {1, 7}, PlotRange -> All, PlotMarkers -> Automatic, PlotLegends -> names, AxesLabel -> {"r", None}]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {support = Keys @ InfraMeasurement[g, InfraBall[c, 2], "VertexDensity"]},
+  InfraMeasurement[g, support, {"CountingMeasure", "RiemannianMeasure"}] ===
+    InfraMeasurement[g, InfraBall[c, 2], {"CountingMeasure", "RiemannianMeasure"}]]
 ```
 
-A segment between opposite corners of a grid fills it, and the rim of the grid is not a boundary: both measures are 25.
+## Possible Issues
+
+A shell of the square grid has no two adjacent vertices, so it carries no circle. The band of radii 3 and 4 carries one:
 
 ```wl
-InfraMeasurement[GridGraph[{5, 5}], InfraSegment[1, 25], {"Cardinality", "CountingMeasure", "RiemannianMeasure"}]
-```
-
-An intersection of two heads has no members, only a support and a density, the product of the two. The segment and the circles, then their intersection.
-
-```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {b = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[a, 4]])},
-  {seg = InfraSegment[a, b]},
-  {circle = InfraCircle[a, {2, 4}]},
-  {density = InfraMeasurement[g, InfraIntersection[seg, circle], "VertexDensity"]},
-  {GraphicsRow[{InfraSubstrateHighlight[g, {seg, circle}], InfraSubstrateHighlight[g, {density}]}], density}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    InfraSubstrateHighlight[g, {InfraShell[c, band], InfraCircle[c, band]},
+      PlotLabel -> InfraMeasurement[g, InfraCircle[c, band], "Cardinality"]]],
+  {band, {3, {3, 4}}}]
 ```

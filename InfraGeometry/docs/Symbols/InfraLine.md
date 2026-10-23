@@ -5,140 +5,53 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraLine
-Keywords: [line, inextensible shortest path, atoms, germ, symbolic object]
-SeeAlso: [BeamGraph, RandomInfraLine, InfraLineQ, InfraMeasurement, RandomInfraInfiniteLine, RandomInfraGeodesic, InfraSegment, InfraRay]
+Keywords: [line, inextensible shortest path, germ, legacy, symbolic object]
+SeeAlso: [InfraInfiniteLine, RandomInfraLine, RandomInfraInfiniteLine, InfraLineQ, InfraMeasurement, InfraRay]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraLine]()[*p*, *q*]</code> is the line through *p* and *q*: every inextensible shortest path through *p* and then *q*. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
+<code>[InfraLine]()[*p*, *q*]</code> is the line through *p* and *q*, the same as <code>[InfraInfiniteLine]()[*p*, *q*]</code>.
 
-<code>[InfraLine]()[*germ*]</code> is the line through a shortest-path germ: every inextensible shortest path that contains the germ as a contiguous stretch. The germ is a vertex, a vertex list, a walk graph or a shortest-path DAG.
-
-<code>[InfraLine]()[*p*, *q*]</code> inside an [InfraScene]() is the line construction token; [RandomInfraLine]() is the search.
+<code>[InfraLine]()[*germ*]</code> is the line through the shortest path *germ*, the same as <code>[InfraInfiniteLine]()[*germ*]</code>.
 
 ## Details & Options
 
-This is the legacy compatibility spelling. New code uses `InfraInfiniteLine`.
+[InfraLine]() is the older name of [InfraInfiniteLine](). New code uses [InfraInfiniteLine]().
 
-Definition: a line is an inextensible shortest path, one that no neighbour of either end prolongs.
+A line is an inextensible shortest path: a shortest path that no neighbour of either end prolongs. <code>[InfraLine]()[*p*, *q*]</code> is the family of all lines through *p* and then *q*.
 
-Its graph — <code>[InfraMeasurement]()[*g*, *line*, "Graph"]</code> — is a `List` of DAGs, one per pair of ends (*a*, *b*) that is compatible, *d(a, b) = d(a, p) + d(p, q) + d(q, b)*, and maximal, no neighbour of *a* or *b* lengthening *d(a, b)*. The DAG for (*a*, *b*) is the union of the intervals *I(a, p)*, *I(p, q)* and *I(q, b)*. Its chains are exactly the lines with those ends, and every line is a chain of exactly one DAG, so `"Faithful"` is `True`.
-
-The list is not optional. The union of the DAGs can carry chains that are not shortest paths: through the edge 1–2 of the 6-cycle there are three DAGs and three lines, while their union would add a fourth path that is not a shortest path.
-
-The DAGs are alternatives, so the counts add across them. The family can be astronomical while the list stays small.
-
-With *p* = *q*, <code>[InfraLine]()[*p*, *p*]</code> is every maximal shortest path through *p*, once per orientation.
-
-The germ form keeps the germ's own edges in the middle. Its DAG for the ends (*a*, *b*) is the union of the intervals *I(a, p)* and *I(q, b)* with the edges of the germ from *p* to *q* in place of *I(p, q)*. For a straight germ these are the DAGs of `InfraLine[p, q]`. For a bent germ there are fewer, since *I(p, q)* is a rectangle and the DAG keeps only the germ. A vertex germ is `InfraLine[p, p]`.
+[InfraMeasurement](), [InfraMemberQ](), [InfraSubstrateHighlight]() and [RandomInfraInfiniteLine]() read <code>[InfraLine]()[…]</code> as <code>[InfraInfiniteLine]()[…]</code>. [RandomInfraLine]() and [InfraLineQ]() are the older names of [RandomInfraInfiniteLine]() and [InfraInfiniteLineQ]().
 
 ## Basic Examples
 
-The line through the centre and a vertex two steps away, on the square, hexagonal and triangular tilings. It runs both ways, out to the rim.
+The line through the centre and a vertex at distance 2, on the square grid and on the square mesh. On the grid two points lie on thousands of lines:
 
 ```wl
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {p = First @ GraphCenter[g]},
-    {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 2]])},
-    {line = InfraLine[p, q]},
-    InfraSubstrateHighlight[g, {line, p, q}]],
-  {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+    {q = RandomInfraPoint[g, InfraShell[p, 2], RandomSeeding -> 1]}, {line = InfraLine[p, q]},
+    InfraSubstrateHighlight[g, {line, p, q}, PlotLabel -> InfraMeasurement[g, line, "Cardinality"]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The number of DAGs carrying the lines, the number of lines and their length, beside the picture.
+Three of the lines, each drawn as a walk:
 
 ```wl
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {p = First @ GraphCenter[g]},
-  {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 2]])},
-  {line = InfraLine[p, q]},
-  {InfraSubstrateHighlight[g, {line, p, q}],
-   Length @ InfraMeasurement[g, line, "Graph"], InfraMeasurement[g, line, "Cardinality"],
-   InfraMeasurement[g, line, "Length"]}]
-```
-
-Three of the lines, each drawn as a walk.
-
-```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {p = First @ GraphCenter[g]},
-  {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 2]])},
-  {members = RandomInfraInfiniteLine[ g, InfraLine[p, q], 3 ]},
-  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[member], p, q}], {member, members}]]
-```
-
-The lines through an edge at the centre, and the first DAG of their list on its own. Each DAG carries the lines between one pair of ends.
-
-```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {p = First @ GraphCenter[g]},
-  {q = First @ AdjacencyList[g, p]},
-  {line = InfraLine[p, q]},
-  GraphicsRow[{
-    InfraSubstrateHighlight[g, {line, p, q}],
-    InfraSubstrateHighlight[g, {First @ InfraMeasurement[g, line, "Graph"], p, q}]}]]
-```
-
-The line through a shortest-path germ, beside the line through its two ends. The ends of a bent germ lie on the lines of the rectangle between them, the germ on those that run along it.
-
-```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {p = First @ GraphCenter[g]},
-  {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 2]])},
-  {germ = First @ RandomInfraSegment[g, p, q, All]},
-  {GraphicsRow @ {
-    Labeled[InfraSubstrateHighlight[g, {InfraLine[germ], InfraWalk[germ], p, q}], "germ"],
-    Labeled[InfraSubstrateHighlight[g, {InfraLine[p, q], p, q}], "ends"]},
-   InfraMeasurement[g, InfraLine[germ], "Cardinality"], InfraMeasurement[g, InfraLine[p, q], "Cardinality"]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+  {q = RandomInfraPoint[g, InfraShell[p, 2], RandomSeeding -> 1]},
+  {lines = RandomInfraLine[g, InfraLine[p, q], 3, RandomSeeding -> 1]},
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[line], p, q}], {line, lines}]]
 ```
 
 ## Properties and Relations
 
-The anchors lie on every line, so their density is the cardinality. The vertex density, drawn alone, is heaviest at the two anchors.
+[InfraLine]() and [InfraInfiniteLine]() have the same measurements:
 
 ```wl
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {p = First @ GraphCenter[g]},
-  {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 2]])},
-  {density = InfraMeasurement[g, InfraLine[p, q], "VertexDensity"]},
-  {InfraSubstrateHighlight[g, {density}],
-   {density[p], density[q]} === ConstantArray[InfraMeasurement[g, InfraLine[p, q], "Cardinality"], 2]}]
-```
-
-Every member satisfies [InfraLineQ]().
-
-```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {p = First @ GraphCenter[g]},
-  {q = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 2]])},
-  {members = RandomInfraInfiniteLine[ g, InfraLine[p, q], All ]},
-  {InfraSubstrateHighlight[g, {members, p, q}],
-   InfraLineQ[g, members]}]
-```
-
-The lines through a germ are the lines of [RandomInfraLine]() at that germ, and the geodesics that [RandomInfraGeodesic]() grows from it on both sides without a budget.
-
-```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {a = First @ GraphCenter[g]},
-  {germ = {a, First @ AdjacencyList[g, a]}},
-  {members = RandomInfraInfiniteLine[ g, InfraLine[germ], All ]},
-  {InfraSubstrateHighlight[g, {members, germ}],
-   Sort @ members === Sort @ RandomInfraLine[g, germ, All],
-   Length @ members === InfraMeasurement[g, InfraLine[germ], "Cardinality"]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {p = First @ GraphCenter[g]},
+  {q = RandomInfraPoint[g, InfraShell[p, 2], RandomSeeding -> 1]},
+  {props = {"Cardinality", "Length", "CountingMeasure"}},
+  InfraMeasurement[g, InfraLine[p, q], props] === InfraMeasurement[g, InfraInfiniteLine[p, q], props]]
 ```

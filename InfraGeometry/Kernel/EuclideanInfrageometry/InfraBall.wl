@@ -25,6 +25,10 @@ InfraMeasurement[ graph_Graph, ball : InfraBall[ _, _ ], All ] :=
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
       "CountingMeasure", "RiemannianMeasure" } ]
 
+InfraMemberQ[ graph_Graph, ball : InfraBall[ _, _ ], vertices_List ] :=
+  With[ { density = InfraMeasurement[ graph, ball, "VertexDensity" ] },
+    Union @ vertices === Keys @ density /; AssociationQ @ density ]
+
 (* vs is a closed ball iff some c in vs has { v : d(c, v) <= max_{w in vs} d(c, w) } == vs; a family of sets passes iff each does *)
 
 InfraBallQ[ graph_Graph, fam_Association ] :=

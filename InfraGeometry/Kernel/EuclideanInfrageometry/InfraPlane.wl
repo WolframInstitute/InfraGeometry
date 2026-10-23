@@ -1,6 +1,12 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-Options[ RandomInfraPlane ] = { "NextVertexFunction" -> Automatic }
+Options[ RandomInfraPlane ] = { "NextVertexFunction" -> Automatic, RandomSeeding -> Automatic }
+
+RandomInfraPlane[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomInfraPlane[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomInfraPlane[ ___, RandomSeeding -> None ] ] ] ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraPlane *)
 
@@ -46,22 +52,35 @@ FindInfraBisectingHyperplane[ graph_Graph, p1_, p2_,
                       ( UndirectedEdge | DirectedEdge )[ u_, v_ ] /;
                         MemberQ[ nodes, u ] && MemberQ[ nodes, v ] :> UndirectedEdge[ u, v ] ] },
                   Graph[ nodes, DeleteDuplicates[ Join[ paired, direct ] ] ] ] },
-              { tests = Map[
-                  property |-> Switch[ property,
-                    "Separating", T |-> SeparatesQ[ aux, T, q1, q2 ],
-                    "Connected",  T |-> T =!= { } && ConnectedGraphQ @ Subgraph[ graph, T ] ],
-                  properties ] },
-              { admissible = T |-> AllTrue[ tests, # @ T & ] },
-              { pick = cands |-> Replace[ nextFn @ cands, chosen_ /; MemberQ[ cands, Verbatim @ chosen ] :> { chosen } ],
-                cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ] },
-              { descend = { self, state, T } |-> If[ Length @ First @ state >= cap || KeyExistsQ[ Last @ state, T ],
-                  state,
-                  With[ { marked = { First @ state, Append[ Last @ state, T -> True ] },
-                          peelable = Select[ T, w |-> admissible[ DeleteCases[ T, w ] ] ] },
-                    If[ peelable === { },
-                      { Append[ First @ marked, T ], Last @ marked },
-                      Fold[ { s, w } |-> self[ self, s, DeleteCases[ T, w ] ], marked, pick @ peelable ] ] ] ] },
-              If[ ! admissible[ bisector ], { }, First @ descend[ descend, { { }, <| |> }, bisector ] ] ] ] ],
+              (* the minimal q1-q2 separators S of aux, generated from the one nearest q1 by S -> N(C(S) + x) cut down to the neighbours
+                 of the component of q2, for x in S, C(S) the component of q1 in aux - S (Berry, Bordat, Cogis 1999) *)
+              { labels = VertexList[ aux ], adjacency = AdjacencyMatrix[ aux ],
+                source = VertexIndex[ aux, q1 ], target = VertexIndex[ aux, q2 ] },
+              { size = Length[ labels ], neighbours = Sort /@ adjacency[ "AdjacencyLists" ] },
+              { indicator = set |-> Normal @ SparseArray[ Thread[ List /@ set -> 1 ], { size } ] },
+              (* a component by sparse products: 1.7 s for the 3885 planes of a mesh slab {-1, 1} where VertexDelete + VertexComponent took 13.7 s *)
+              { component = { open, seed } |-> FixedPoint[ reach |-> open Unitize[ reach + adjacency . reach ], open UnitVector[ size, seed ] ] },
+              { nearest = { blocked, candidates } |-> With[ { far = component[ 1 - Unitize[ blocked ], target ] },
+                  Pick[ candidates, Unitize[ ( adjacency . far )[[ candidates ]] ], 1 ] ] },
+              { successors = separator |-> With[ { cut = indicator[ separator ] }, { side = component[ 1 - cut, source ] },
+                  Map[ x |-> nearest[ side + cut + indicator[ neighbours[[ x ]] ],
+                      Union[ DeleteCases[ separator, x ], Pick[ neighbours[[ x ]], ( side + cut )[[ neighbours[[ x ]] ]], 0 ] ] ],
+                    Select[ separator, x |-> adjacency[[ x, target ]] == 0 ] ] ] },
+              { planes = Which[
+                  ! MemberQ[ properties, "Separating" ],
+                    If[ bisector =!= { } && ConnectedGraphQ @ Subgraph[ graph, bisector ], List /@ bisector, { } ],
+                  q1 === q2 || adjacency[[ source, target ]] == 1, { },
+                  True, With[ { start = nearest[ indicator[ Append[ neighbours[[ source ]], source ] ], neighbours[[ source ]] ] },
+                    Map[ set |-> Sort @ labels[[ set ]], Keys @ First @ NestWhile[
+                      state |-> With[ { seen = First @ state },
+                        { next = Select[ DeleteDuplicates @ Catenate @ Map[ successors, Last @ state ], set |-> ! KeyExistsQ[ seen, set ] ] },
+                        { Join[ seen, AssociationThread[ next, True ] ], next } ],
+                      { <| start -> True |>, { start } }, Last @ # =!= { } & ] ] ] ] },
+              { admissible = Sort @ If[ MemberQ[ properties, "Connected" ],
+                  Select[ planes, set |-> set =!= { } && ConnectedGraphQ @ Subgraph[ graph, set ] ], planes ] },
+              { cap = Replace[ count, { All -> Length @ admissible, Automatic -> 1, UpTo[ n_ ] :> n } ] },
+              If[ admissible === { }, { },
+                Take[ Replace[ nextFn @ admissible, chosen_ /; MemberQ[ admissible, Verbatim @ chosen ] :> { chosen } ], UpTo[ cap ] ] ] ] ] ],
         Tuples[ { Keys @ InfraMeasurement[ graph, p1, "VertexDensity" ], Keys @ InfraMeasurement[ graph, p2, "VertexDensity" ] } ], { 1 } ] },
     With[ { reps = DeleteDuplicates[ Union /@ DeleteDuplicates @ Flatten[ results, 1 ] ] },
         Switch[ count,
@@ -84,12 +103,14 @@ InfraPlaneQ[ graph_Graph, h_List, p1_, p2_, window_ : 0 ] :=
   ]
 
 RandomInfraPlane[ graph_Graph, InfraPlane[ p1_, p2_, opts___Rule ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { samplerOpts } ] :=
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; MemberQ[ Flatten @ { samplerOpts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { samplerOpts } ] ) :=
   RandomInfraPlane[ graph, InfraPlane[ p1, p2, { 0, 0 }, opts ], count, samplerOpts ]
 
 RandomInfraPlane[ graph_Graph, InfraPlane[ p1_, p2_, window : { _Integer, _Integer }, opts___Rule ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { samplerOpts } ] &&
-    ( OptionValue[ RandomInfraPlane, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, samplerOpts : OptionsPattern[] ] /; MemberQ[ Flatten @ { samplerOpts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { samplerOpts } ] &&
+    ( OptionValue[ RandomInfraPlane, { samplerOpts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) ) :=
   With[ { nextFn = OptionValue[ RandomInfraPlane, { samplerOpts }, "NextVertexFunction" ] },
     FindInfraBisectingHyperplane[ graph, p1, p2, window, count,
       "NextVertexFunction" -> If[ nextFn === Automatic, If[ count === All, Identity, RandomSample ], nextFn ],
@@ -97,14 +118,16 @@ RandomInfraPlane[ graph_Graph, InfraPlane[ p1_, p2_, window : { _Integer, _Integ
 
 RandomInfraPlane[ graph_Graph, p_, q_,
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { p, q }, _InfraPlane ] &&
-    SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { opts } ] :=
+    opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( ! MatchQ[ First @ { p, q }, _InfraPlane ] &&
+    SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { opts } ] ) :=
   RandomInfraPlane[ graph, InfraPlane[ p, q ], count,
-    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]
+    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ], RandomSeeding -> None ]
 
 RandomInfraPlane[ graph_Graph, p_, q_, window : { _Integer, _Integer },
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] /; ! MatchQ[ First @ { p, q, window }, _InfraPlane ] &&
-    SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { opts } ] :=
+    opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( ! MatchQ[ First @ { p, q, window }, _InfraPlane ] &&
+    SubsetQ[ First /@ Options[ RandomInfraPlane ], First /@ { opts } ] ) :=
   RandomInfraPlane[ graph, InfraPlane[ p, q, window ], count,
-    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ]
+    "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ], RandomSeeding -> None ]

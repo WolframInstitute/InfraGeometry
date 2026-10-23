@@ -61,8 +61,8 @@ VerificationTest[
 
 VerificationTest[
   With[ { graph = PathGraph[ Range[ 5 ] ] },
-    BlockRandom[ RandomInfraHalfLine[ graph, 2, 3, UpTo[ 3 ] ], RandomSeeding -> 41 ] ===
-      BlockRandom[ RandomInfraRay[ graph, 2, 3, UpTo[ 3 ] ], RandomSeeding -> 41 ] ],
+    BlockRandom[ RandomInfraHalfLine[ graph, 2, 3, UpTo[ 3 ], RandomSeeding -> None ], RandomSeeding -> 41 ] ===
+      BlockRandom[ RandomInfraRay[ graph, 2, 3, UpTo[ 3 ], RandomSeeding -> None ], RandomSeeding -> 41 ] ],
   True,
   TestID -> "synthetic-halfline-bare-legacy-seeded-alias"
 ]
@@ -70,8 +70,8 @@ VerificationTest[
 
 VerificationTest[
   With[ { graph = PathGraph[ Range[ 5 ] ] },
-    BlockRandom[ RandomInfraInfiniteLine[ graph, { 2, 3 }, UpTo[ 3 ] ], RandomSeeding -> 41 ] ===
-      BlockRandom[ RandomInfraLine[ graph, { 2, 3 }, UpTo[ 3 ] ], RandomSeeding -> 41 ] ],
+    BlockRandom[ RandomInfraInfiniteLine[ graph, { 2, 3 }, UpTo[ 3 ], RandomSeeding -> None ], RandomSeeding -> 41 ] ===
+      BlockRandom[ RandomInfraLine[ graph, { 2, 3 }, UpTo[ 3 ], RandomSeeding -> None ], RandomSeeding -> 41 ] ],
   True,
   TestID -> "synthetic-infiniteline-bare-sequence-legacy-seeded-alias"
 ]
@@ -278,10 +278,10 @@ VerificationTest[
 VerificationTest[
   With[ { graph = PathGraph[ Range[ 5 ] ] },
     BlockRandom[
-      RandomInfraPoint[ graph, All ];
-      RandomInfraSegment[ graph, InfraSegment[ 1, 5 ], All ];
-      RandomInfraHalfLine[ graph, InfraHalfLine[ 2, 3 ], All ];
-      RandomInfraInfiniteLine[ graph, InfraInfiniteLine[ 2, 3 ], All ];
+      RandomInfraPoint[ graph, All, RandomSeeding -> None ];
+      RandomInfraSegment[ graph, InfraSegment[ 1, 5 ], All, RandomSeeding -> None ];
+      RandomInfraHalfLine[ graph, InfraHalfLine[ 2, 3 ], All, RandomSeeding -> None ];
+      RandomInfraInfiniteLine[ graph, InfraInfiniteLine[ 2, 3 ], All, RandomSeeding -> None ];
       Keys @ InfraMeasurement[ graph, InfraBall[ 3, 1 ], "VertexDensity" ];
       Keys @ InfraMeasurement[ graph, InfraUnion[ InfraBall[ 1, 0 ], InfraBall[ 5, 0 ] ], "VertexDensity" ];
       InfraMeasurement[ graph, InfraHalfLine[ 2, 3 ], "VertexDensity" ];
@@ -478,13 +478,13 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { graph = CycleGraph[ 4 ] }, BlockRandom[ RandomInfraMidpoint[ graph, 1, 3, All ]; RandomInfraMidpoint[ graph, 1, 3, 1, "NextVertexFunction" -> Identity ]; RandomInteger[ 1000000 ], RandomSeeding -> 71 ] === BlockRandom[ RandomInteger[ 1000000 ], RandomSeeding -> 71 ] ],
+  With[ { graph = CycleGraph[ 4 ] }, BlockRandom[ RandomInfraMidpoint[ graph, 1, 3, All, RandomSeeding -> None ]; RandomInfraMidpoint[ graph, 1, 3, 1, "NextVertexFunction" -> Identity, RandomSeeding -> None ]; RandomInteger[ 1000000 ], RandomSeeding -> 71 ] === BlockRandom[ RandomInteger[ 1000000 ], RandomSeeding -> 71 ] ],
   True,
   TestID -> "synthetic-t4-midpoint-rng-neutral"
 ]
 
 VerificationTest[
-  With[ { graph = CycleGraph[ 4 ] }, BlockRandom[ Table[ RandomInfraMidpoint[ graph, 1, 3 ], { 10 } ], RandomSeeding -> 41 ] === BlockRandom[ Table[ RandomInfraMidpoint[ graph, 1, 3 ], { 10 } ], RandomSeeding -> 41 ] ],
+  With[ { graph = CycleGraph[ 4 ] }, BlockRandom[ Table[ RandomInfraMidpoint[ graph, 1, 3, RandomSeeding -> None ], { 10 } ], RandomSeeding -> 41 ] === BlockRandom[ Table[ RandomInfraMidpoint[ graph, 1, 3, RandomSeeding -> None ], { 10 } ], RandomSeeding -> 41 ] ],
   True,
   TestID -> "synthetic-t4-midpoint-seed"
 ]
@@ -496,13 +496,13 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { graph = CycleGraph[ 4 ] }, BlockRandom[ RandomInfraRegionNearest[ graph, { 1, 3 }, 2, All ]; RandomInfraRegionNearest[ graph, { 1, 3 }, 2, 1, "NextVertexFunction" -> Identity ]; RandomInteger[ 1000000 ], RandomSeeding -> 71 ] === BlockRandom[ RandomInteger[ 1000000 ], RandomSeeding -> 71 ] ],
+  With[ { graph = CycleGraph[ 4 ] }, BlockRandom[ RandomInfraRegionNearest[ graph, { 1, 3 }, 2, All, RandomSeeding -> None ]; RandomInfraRegionNearest[ graph, { 1, 3 }, 2, 1, "NextVertexFunction" -> Identity, RandomSeeding -> None ]; RandomInteger[ 1000000 ], RandomSeeding -> 71 ] === BlockRandom[ RandomInteger[ 1000000 ], RandomSeeding -> 71 ] ],
   True,
   TestID -> "synthetic-t4-regionnearest-rng-neutral"
 ]
 
 VerificationTest[
-  With[ { graph = CycleGraph[ 4 ] }, BlockRandom[ Table[ RandomInfraRegionNearest[ graph, { 1, 3 }, 2 ], { 10 } ], RandomSeeding -> 41 ] === BlockRandom[ Table[ RandomInfraRegionNearest[ graph, { 1, 3 }, 2 ], { 10 } ], RandomSeeding -> 41 ] ],
+  With[ { graph = CycleGraph[ 4 ] }, BlockRandom[ Table[ RandomInfraRegionNearest[ graph, { 1, 3 }, 2, RandomSeeding -> None ], { 10 } ], RandomSeeding -> 41 ] === BlockRandom[ Table[ RandomInfraRegionNearest[ graph, { 1, 3 }, 2, RandomSeeding -> None ], { 10 } ], RandomSeeding -> 41 ] ],
   True,
   TestID -> "synthetic-t4-regionnearest-seed"
 ]
@@ -576,7 +576,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { graph = CycleGraph[ 4 ] },
-    BlockRandom[ { RandomInfraMidpoint[ graph, 1, 3 ], RandomInfraMidpoint[ graph, 1, 3, 2 ], RandomInteger[ 1000000 ] }, RandomSeeding -> 41 ] ===
+    BlockRandom[ { RandomInfraMidpoint[ graph, 1, 3, RandomSeeding -> None ], RandomInfraMidpoint[ graph, 1, 3, 2, RandomSeeding -> None ], RandomInteger[ 1000000 ] }, RandomSeeding -> 41 ] ===
       BlockRandom[ { RandomChoice[ { 2, 4 } ], RandomSample[ { 2, 4 }, 2 ], RandomInteger[ 1000000 ] }, RandomSeeding -> 41 ] ],
   True,
   TestID -> "synthetic-t4-midpoint-ambient-uniform-law"
@@ -584,7 +584,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { graph = CycleGraph[ 4 ] },
-    BlockRandom[ { RandomInfraRegionNearest[ graph, { 2, 4 }, 1 ], RandomInfraRegionNearest[ graph, { 2, 4 }, 1, 2 ], RandomInteger[ 1000000 ] }, RandomSeeding -> 41 ] ===
+    BlockRandom[ { RandomInfraRegionNearest[ graph, { 2, 4 }, 1, RandomSeeding -> None ], RandomInfraRegionNearest[ graph, { 2, 4 }, 1, 2, RandomSeeding -> None ], RandomInteger[ 1000000 ] }, RandomSeeding -> 41 ] ===
       BlockRandom[ { RandomChoice[ { 2, 4 } ], RandomSample[ { 2, 4 }, 2 ], RandomInteger[ 1000000 ] }, RandomSeeding -> 41 ] ],
   True,
   TestID -> "synthetic-t4-regionnearest-ambient-uniform-law"
@@ -649,4 +649,12 @@ VerificationTest[
     InfraPoint[ InfraIntersection[ <| 1 -> 0, 2 -> 1 |>, { 1, 2 } ] ], All ],
   { 2 },
   TestID -> "synthetic-composite-point-excludes-zero-density"
+]
+
+(* a list of properties gives an Association for the three synthetic heads too; on the 4-cycle all three are { 2, 4 } *)
+VerificationTest[
+  InfraMeasurement[ CycleGraph[ 4 ], #, { "VertexDensity", "CountingMeasure" } ] & /@
+    { InfraMidpoint[ 1, 3 ], InfraPerpendicularBisector[ 1, 3 ], InfraRegionNearest[ InfraBall[ 3, 1 ], 1 ] },
+  ConstantArray[ <| "VertexDensity" -> <| 2 -> 1, 4 -> 1 |>, "CountingMeasure" -> 2 |>, 3 ],
+  TestID -> "synthetic-heads-take-a-property-list"
 ]

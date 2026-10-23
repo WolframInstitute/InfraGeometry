@@ -5,139 +5,88 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraScenePlot
-Keywords: [scene, static, plot, representative, segment, family]
-SeeAlso: [InfraScene, InfraSceneInstance, RandomInfraSceneInstance, InfraSubstrateHighlight, InfraSceneViewer, InfraSegment, InfraWalk]
+Keywords: [scene, plot, instance, figure, segment, family]
+SeeAlso: [InfraScene, InfraSceneInstance, RandomInfraSceneInstance, InfraSubstrateHighlight, InfraSceneViewer]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraScenePlot]()[*scene*, *graph*, *instance*]</code> draws the bound declared objects of *scene* in the saved *instance* on *graph*.
+<code>[InfraScenePlot]()[*scene*, *g*, *inst*]</code> draws the objects of *scene* bound in the instance *inst* on the graph *g*.
 
-<code>[InfraScenePlot]()[*scene*, *graph*, *instance*, *objects*]</code> draws the specified list of objects, resolving their names from *instance*.
-
-<!-- #| annotation: 26.10.18: A concrete sampled binding and its mathematical construction family are different display objects. This adapter adds presentation only; scene sampling, assertion evaluation and interactive exploration remain separate. -->
+<code>[InfraScenePlot]()[*scene*, *g*, *inst*, {*obj1*, *obj2*, …}]</code> draws the listed objects, their names read from *inst*.
 
 ## Details & Options
 
-- The result is a static [Graph](). The instance has the form <code>[InfraSceneInstance]()[*bindings*]</code>. A fourth positional [List]() denotes display objects; supply default-form options as a sequence of rules.
-- The default display follows declaration order, omits unbound objects and excludes extra initial bindings. Explicitly requested unresolved names remain unevaluated.
-- A named side draws its saved walk. An explicit <code>[InfraSegment]()[*a*, *b*]</code> draws all shortest paths between its saved endpoint values. Further assertions on the sampled side are not reapplied to this family.
-- Object kinds come from the scene declarations. Literal vertex labels and saved values are preserved; an undeclared list binding needs an explicit interpretation such as [InfraWalk]().
-- Plotting uses [InfraSubstrateHighlight]() without solving the scene or choosing representatives, and preserves the ambient random state. [InfraSceneViewer]() provides interactive exploration.
-- Styling uses the [InfraSubstrateHighlight]() grammar: [Directive]() items, <code>[Style]()[*object*, *directives*]</code> and object-style rules. Style payloads are left unchanged.
+The objects are drawn with [InfraSubstrateHighlight](), in declaration order, the *i*-th in the *i*-th palette colour. Objects the instance does not bind are left out.
 
-| Option | Default | Description |
-|---|---|---|
-| Options of [InfraSubstrateHighlight]() | inherited | Density styling and [HighlightGraph]() options; the first duplicate option takes precedence |
+A name draws its saved value: a point as a vertex, a segment, half-line or line as its walk, a circle, closed arc or regular polygon as its closed walk, a region as its vertex set. A token in the list draws the whole family at the saved values: <code>[InfraSegment]()[*pA*, *pB*]</code> draws every shortest path between the saved points, not the one the instance chose.
+
+The list is read as by [InfraSubstrateHighlight](): a [Directive]() styles the objects after it, and `obj -> style` or <code>[Style]()[*obj*, …]</code> styles one object. [InfraScenePlot]() takes the options of [InfraSubstrateHighlight]() and of [Graph]().
+
+[InfraScenePlot]() does not solve the scene; [RandomInfraSceneInstance]() does. [InfraSceneViewer]() steps through it interactively.
 
 ## Basic Examples
 
-Draw the saved point and selected side:
+A point at distance 5 from the centre and a segment to it, drawn in the order the objects are declared:
 
 ```wl
-SeedRandom[ 101 ];
-ClearAll[ a, b, ab ];
-With[
-	{ g = GridGraph[ { 3, 3 } ] },
-	{ scene = InfraScene[ { a, b, ab }, { a == InfraPoint[ ], b == InfraPoint[ ], ab == InfraSegment[ a, b ] } ] },
-	{ instance = InfraSceneInstance[ <| a -> 1, b -> 9, ab -> { 1, 2, 3, 6, 9 } |> ] },
-	InfraScenePlot[ scene, g, instance ] ]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+    {scene = InfraScene[{seg, pA, pB},
+       {pA == InfraPoint[a], pB == InfraPoint[], InfraDistance[pA, pB] == 5, seg == InfraSegment[pA, pB]}]},
+    InfraScenePlot[scene, g, RandomInfraSceneInstance[scene, g, RandomSeeding -> 1]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
-<!-- => a Graph highlighting the saved two points and four-edge side -->
 
-
----
-
-Compare one saved path with the complete segment at the same endpoints:
+The saved segment, one shortest path, against the token at the saved points, all of them:
 
 ```wl
-SeedRandom[ 101 ];
-ClearAll[ a, b, ab ];
-With[
-	{ g = GridGraph[ { 3, 3 } ] },
-	{ scene = InfraScene[ { a, b, ab }, { a == InfraPoint[ ], b == InfraPoint[ ], ab == InfraSegment[ a, b ] } ] },
-	{ instance = InfraSceneInstance[ <| a -> 1, b -> 9, ab -> { 1, 2, 3, 6, 9 } |> ] },
-	GraphicsRow[ {
-		InfraScenePlot[ scene, g, instance, { ab, a, b } ],
-		InfraScenePlot[ scene, g, instance, { InfraSegment[ a, b ], a, b } ] } ] ]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {scene = InfraScene[{pA, pB, seg},
+     {pA == InfraPoint[a], pB == InfraPoint[], InfraDistance[pA, pB] == 5, seg == InfraSegment[pA, pB]}]},
+  {inst = RandomInfraSceneInstance[scene, g, RandomSeeding -> 1]},
+  GraphicsRow[{InfraScenePlot[scene, g, inst, {seg, pA, pB}],
+    InfraScenePlot[scene, g, inst, {InfraSegment[pA, pB], pA, pB}]}]]
 ```
-<!-- => a GraphicsRow containing the saved-path and complete-segment graphs -->
-
 
 ## Scope
 
-A partial instance can draw a family before any side is selected:
+A partial instance draws what it binds. After the first step there are only the points:
 
 ```wl
-SeedRandom[ 101 ];
-ClearAll[ a, b, ab ];
-With[
-	{ g = GridGraph[ { 3, 3 } ] },
-	{ scene = InfraScene[ { a, b, ab }, { a == InfraPoint[ ], b == InfraPoint[ ], ab == InfraSegment[ a, b ] } ] },
-	{ instance = InfraSceneInstance[ <| a -> 1, b -> 9 |> ] },
-	InfraScenePlot[ scene, g, instance, { InfraSegment[ a, b ], a, b } ] ]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {scene = InfraScene[{pA, pB, seg},
+     {InfraSceneStep[{pA == InfraPoint[a], pB == InfraPoint[], InfraDistance[pA, pB] == 5}],
+      InfraSceneStep[{seg == InfraSegment[pA, pB]}]}]},
+  InfraScenePlot[scene, g, RandomInfraSceneInstance[scene, g, "Steps" -> 1, RandomSeeding -> 1], ImageSize -> Medium]]
 ```
-<!-- => a Graph highlighting the complete segment at the saved points -->
 
-
----
-
-The default display skips the unbound side:
+A saved region is drawn as its vertex set:
 
 ```wl
-SeedRandom[ 101 ];
-ClearAll[ a, b, ab ];
-With[
-	{ g = GridGraph[ { 3, 3 } ] },
-	{ scene = InfraScene[ { a, b, ab }, { a == InfraPoint[ ], b == InfraPoint[ ], ab == InfraSegment[ a, b ] } ] },
-	InfraScenePlot[ scene, g, InfraSceneInstance[ <| a -> 1, b -> 9 |> ] ] ]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {scene = InfraScene[{pA, disk}, {pA == InfraPoint[a], disk == InfraBall[pA, 3]}]},
+  InfraScenePlot[scene, g, RandomInfraSceneInstance[scene, g, RandomSeeding -> 1], {disk, pA}, ImageSize -> Medium]]
 ```
-<!-- => a Graph highlighting only the two bound points -->
 
-
----
-
-A requested side without a saved value remains unevaluated:
+A saved circle is drawn as a closed walk:
 
 ```wl
-ClearAll[ a, b, ab ];
-With[
-	{ scene = InfraScene[ { a, b, ab }, { a == InfraPoint[ ], b == InfraPoint[ ], ab == InfraSegment[ a, b ] } ] },
-	InfraScenePlot[ scene, PathGraph[ Range[ 3 ] ], InfraSceneInstance[ <| a -> 1, b -> 3 |> ], { ab } ] ]
+With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {scene = InfraScene[{pA, cA}, {pA == InfraPoint[a], cA == InfraCircle[pA, {3, 4}]}]},
+  InfraScenePlot[scene, g, RandomInfraSceneInstance[scene, g, RandomSeeding -> 1], {cA, pA}, ImageSize -> Medium]]
 ```
-<!-- => the requested missing-side expression, unevaluated -->
-
 
 ## Options
 
-Apply object styles and ordinary graph options:
+Colours by [Directive]() and by rule, and a plot label:
 
 ```wl
-SeedRandom[ 101 ];
-ClearAll[ a, b ];
-With[
-	{ g = GridGraph[ { 3, 3 } ] },
-	{ scene = InfraScene[ { a, b }, { a == InfraPoint[ ], b == InfraPoint[ ] } ] },
-	{ instance = InfraSceneInstance[ <| a -> 1, b -> 9 |> ] },
-	InfraScenePlot[ scene, g, instance, {
-		Directive[ StandardBlue ], InfraSegment[ a, b ],
-		Style[ a, StandardRed, AbsolutePointSize[ 8 ] ], b -> StandardGreen },
-		"OpacityRange" -> { 0.2, 1 }, ImageSize -> 300, PlotLabel -> "Fixed endpoints" ] ]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+  {scene = InfraScene[{pA, pB, seg},
+     {pA == InfraPoint[a], pB == InfraPoint[], InfraDistance[pA, pB] == 5, seg == InfraSegment[pA, pB]}]},
+  InfraScenePlot[scene, g, RandomInfraSceneInstance[scene, g, RandomSeeding -> 1],
+    {Directive[StandardGray], InfraSegment[pA, pB], pA -> StandardRed, pB -> StandardBlue},
+    PlotLabel -> "all shortest paths", ImageSize -> Medium]]
 ```
-<!-- => a Graph with the requested object styles, image size and plot label -->
-
-
-## Properties and Relations
-
-An explicit empty list draws the substrate without highlights:
-
-```wl
-SeedRandom[ 101 ];
-ClearAll[ a ];
-With[
-	{ scene = InfraScene[ { a }, { a == InfraPoint[ ] } ] },
-	InfraScenePlot[ scene, CycleGraph[ 4 ], InfraSceneInstance[ <| a -> 1 |> ], { } ] ]
-```
-<!-- => the unhighlighted four-cycle Graph -->
-

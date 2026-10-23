@@ -12,263 +12,172 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Usage
 
-<code>[RandomInfraPoint]()[*g*]</code> gives one random vertex of *g*.
+<code>[RandomInfraPoint]()[*g*]</code> gives a random vertex of the graph *g*.
 
-<code>[RandomInfraPoint]()[*g*, *n*]</code> gives a list of *n* distinct vertices of *g*.
+<code>[RandomInfraPoint]()[*g*, *n*]</code> gives a list of *n* distinct random vertices of *g*.
 
-<code>[RandomInfraPoint]()[*g*, *reg*]</code> gives one random vertex of the region *reg*.
+<code>[RandomInfraPoint]()[*g*, *reg*]</code> gives a random vertex of the region *reg*.
 
-<code>[RandomInfraPoint]()[*g*, *reg*, *n*]</code> gives a list of *n* distinct vertices of the region *reg*.
-
-<code>[RandomInfraPoint]()[*g*, [InfraPoint]()[*p*], *count*]</code> samples the fixed point family. The token keeps an integer or List-valued point distinct from a bare count or region argument.
-
-<code>[RandomInfraPoint]()[*g*, [InfraPoint]()[], *count*]</code> samples all graph vertices.
+<code>[RandomInfraPoint]()[*g*, *reg*, *n*]</code> gives a list of *n* distinct random vertices of *reg*.
 
 ## Details & Options
 
-Definition: a point of *g* drawn from a region of *g*, after `RandomPoint[reg]` and `RandomPoint[reg, n]`.
+[RandomInfraPoint]() is the graph analogue of [RandomPoint](). Its points are vertices, drawn uniformly from the region when no condition is given.
 
-The region *reg* is the place where the points may lie:
+A region is a set of vertices, given as:
 
-| Region | Meaning |
+| Region | Vertices |
 |---|---|
-| a vertex `List`, `{v1, v2, …}` | those vertices |
-| a density `<\|v -> m, …\|>` | its keys, the support |
-| [InfraBall]()`[c, r]` | within distance *r* of *c* |
-| [InfraShell]()`[c, r]`, [InfraShell]()`[c, {r, s}]` | at distance *r* from *c*; between *r* and *s* |
-| [InfraSegment]()`[a, b]`, [InfraInfiniteLine]()`[a, b]`, … | the vertices of the object |
-| [InfraUnion]()`[reg1, reg2]`, [InfraIntersection]()`[reg1, reg2]` | the union, the common part |
+| `{v1, v2, …}` | the listed vertices |
+| `<\|v -> m, …\|>` | the support of the density |
+| <code>[InfraBall]()[*c*, *r*]</code>, <code>[InfraShell]()[*c*, *r*]</code>, <code>[InfraSegment]()[*a*, *b*]</code>, … | the vertices of the object |
+| <code>[InfraUnion]()[*reg1*, *reg2*]</code>, <code>[InfraIntersection]()[*reg1*, *reg2*]</code> | the union, the intersection |
+| <code>[InfraPoint]()[*v*]</code>, <code>[InfraPoint]()[]</code> | the vertex *v*; every vertex |
 
-Any symbolic object that <code>[InfraMeasurement]()[*g*, *reg*, "VertexDensity"]</code> reads is a region. A single vertex is `{v}`, never bare: a bare integer is a count.
+A single vertex is the region `{v}`. A bare integer is a count.
 
-The count *n* is `n`, `UpTo[n]` or `All`. The *n* points are distinct. `UpTo[n]` gives at most *n*, `All` gives every vertex of the region. Without *n* the result is one vertex, not a list.
+The count *n* can be `n`, `UpTo[n]` or `All`. An empty region, or a region with fewer than *n* vertices, gives `{}`.
 
-Default `All` and `"NextVertexFunction" -> Identity` preserve the random state. The token form accepts only `"NextVertexFunction"`; pairwise constraints belong to the bare point sampler.
+`"PairwiseDistance"` is a condition on the whole tuple, not on one point:
 
-An empty region gives `{}`. So does a region with fewer than *n* vertices.
+| Value | The *n* points are |
+|---|---|
+| *d* | pairwise at distance *d* |
+| {*dMin*, *dMax*} | pairwise at distance between *dMin* and *dMax* |
+| `"Max"` | pairwise as far apart as the region allows |
+| `"Spread"` | pairwise at distances as equal as possible |
 
-The distance from a vertex to a set *C* is *d(v, C) = min d(v, c)* over *c* in *C*. So <code>[InfraBall]()[{c1, c2}, r]</code> is the union of the two balls, and <code>[InfraShell]()[{c1, c2}, r]</code> is the outer layer of that union.
+When no tuple meets the condition, the result is `{}`.
 
 Options:
 
-| Option | Values |
-|---|---|
-| `"PairwiseDistance"` | `None` (default), *d*, `{dMin, dMax}`, `"Max"`, `"Spread"` |
-| `"MaxCliques"` | bound on the clique search behind `"PairwiseDistance"` |
-| `"NextVertexFunction"` | `Automatic` (default), `Identity` |
-
-`"PairwiseDistance"` is a condition on the drawn tuple, not on a single point: the *n* points are pairwise at distance *d*, or in `[dMin, dMax]`. `"Max"` takes the largest *dMin* that still admits a tuple. `"Spread"` takes the tuple whose pairwise distances vary least. The condition makes the result one jointly constrained tuple, and `{}` when none exists. `UpTo[n]` and `All` under it ask for a tuple of `Min[n, Length of the region]` points.
-
-To keep a whole construction interior, not just its anchors, cut the substrate with `CenterGraph[g, k]` and work on that graph: it is the ball of `k` hops about `GraphCenter[g]`, a negative `k` counting back from the radius and `Scaled[q]` taking the fraction `q` of it, and it carries the same vertex labels and coordinates, so the result draws on the original. Restricting the region alone pins only the anchors; a construction with slack spends it outward.
-
-The draw is random: seed with `SeedRandom` before the first call if you need a reproducible figure.
-
-Corresponding notions in the classical axiom systems:
-
-| System | Name | Statement |
+| Option | Default | Values |
 |---|---|---|
-| Euclid | Definition 1 | A point is that of which there is no part. |
-| Hilbert | Group I | Points are one of the three primitive kinds of object. |
-| Tarski | primitive | Variables range over points. There is no other sort. |
-| Birkhoff | Ruler postulate | Points are what the reals coordinate. |
+| `"PairwiseDistance"` | `None` | *d*, {*dMin*, *dMax*}, `"Max"`, `"Spread"` |
+| `"MaxCliques"` | `All` | the number of candidate tuples searched under `"PairwiseDistance"` |
+| `"NextVertexFunction"` | `Automatic` | `Identity` takes the first vertices of the region instead of random ones |
+| [RandomSeeding]() | `Automatic` | an integer or a string for a reproducible draw; `Inherited` or `None` to draw from the current random state |
+
+With the default `RandomSeeding -> Automatic` every call draws afresh, and [SeedRandom]() does not fix the result.
 
 ## Basic Examples
 
-One point is a vertex. `SeedRandom` in front fixes the draw.
+Five random points on the square grid and on the square mesh:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g])},
-  {InfraSubstrateHighlight[g, {p}], p}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    InfraSubstrateHighlight[g, {RandomInfraPoint[g, 5, RandomSeeding -> 1]}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-A count gives a list of vertices: here five of them.
+A region says where the points may lie. Three points at distance 4 from the centre:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {points = (SeedRandom[1]; RandomInfraPoint[g, 5])},
-  {InfraSubstrateHighlight[g, {points}], points}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    InfraSubstrateHighlight[g, {InfraShell[c, 4], RandomInfraPoint[g, InfraShell[c, 4], 3, RandomSeeding -> 1], c}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-A region says where the points may lie. Three points at distance 4 from the centre, drawn from a shell.
+Three points on the circle of radius 4, pairwise as far apart as possible. On the grid they are 8 apart, twice the radius; in the plane the side of such a triangle is √3 times the radius:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {points = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4], 3])},
-  {InfraSubstrateHighlight[g, {InfraShell[c, 4], points, c}], points}]
-```
-
-Four points within distance 3 of the centre, drawn from a ball.
-
-```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {points = (SeedRandom[1]; RandomInfraPoint[g, InfraBall[c, 3], 4])},
-  {InfraSubstrateHighlight[g, {InfraBall[c, 3], points}], points}]
-```
-
-Three points pairwise as far apart as the region allows: spread on the circle about the centre.
-
-```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {corners = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4], 3, "PairwiseDistance" -> "Max"])},
-  {InfraSubstrateHighlight[g, {InfraShell[c, 4], corners}], corners}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {corners = RandomInfraPoint[g, InfraShell[c, 4], 3, "PairwiseDistance" -> "Max", RandomSeeding -> 1]},
+  InfraSubstrateHighlight[g, {InfraShell[c, 4], corners}, PlotLabel -> (GraphDistance[g, ##] & @@@ Subsets[corners, {2}]), ImageSize -> Medium]]
 ```
 
 ## Scope
 
-The centre is one vertex and the periphery of a patch is its rim; both are vertex lists, so both are regions.
+Points from a ball, a band and a segment:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {centre = RandomInfraPoint[g, GraphCenter[g]]},
-  {rim = (SeedRandom[1]; RandomInfraPoint[g, GraphPeriphery[g], 4])},
-  {InfraSubstrateHighlight[g, {GraphPeriphery[g], rim, centre}], centre, rim}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 1]},
+  GraphicsRow @ Table[
+    InfraSubstrateHighlight[g, {region, RandomInfraPoint[g, region, 4, RandomSeeding -> 1]}],
+    {region, {InfraBall[c, 2], InfraShell[c, {3, 4}], InfraSegment[c, b]}}]]
 ```
 
-A band of distances about a vertex.
+The points at distance 4 from both *a* and *b*, the intersection of two circles. They are the apexes of the equilateral triangles on *ab*, as in Euclid I.1:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {points = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, {2, 4}], 5])},
-  {InfraSubstrateHighlight[g, {InfraShell[c, {2, 4}], points}], points}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+    {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
+    {apex = RandomInfraPoint[g, InfraIntersection[InfraShell[a, 4], InfraShell[b, 4]], All]},
+    InfraSubstrateHighlight[g, {InfraShell[a, 4], InfraShell[b, 4], apex}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-A ball about several vertices is the union of their balls.
+A vertex list is a region. Points outside the ball of radius 4:
 
 ```wl
-With[
-  {g = GridGraph[{10, 10}]},
-  {points = (SeedRandom[1]; RandomInfraPoint[g, InfraBall[{12, 89}, 3], 5])},
-  {HighlightGraph[g, {InfraBall[{12, 89}, 3], points}], points}]
-```
-
-A point on a segment, a point on a line.
-
-```wl
-With[
-  {g = GridGraph[{10, 10}]},
-  {segment = InfraSegment[1, 100]},
-  {points = (SeedRandom[1]; RandomInfraPoint[g, segment, 3])},
-  {HighlightGraph[g, {segment, points}], points}]
-```
-
-Points in either of two regions.
-
-```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {region = InfraUnion[InfraShell[c, 2], InfraShell[c, 5]]},
-  {points = (SeedRandom[1]; RandomInfraPoint[g, region, 4])},
-  {InfraSubstrateHighlight[g, {region, points}], points}]
-```
-
-Points outside a region: take the complement as a vertex list.
-
-```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {outside = Complement[VertexList[g], Keys @ InfraMeasurement[ g, InfraBall[c, 6], "VertexDensity" ]]},
-  {points = (SeedRandom[1]; RandomInfraPoint[g, outside, 3])},
-  {InfraSubstrateHighlight[g, {outside, points}], points}]
-```
-
-Points at the same distance from two anchors: the intersection of two shells, here the anti-diagonal of a grid.
-
-```wl
-With[
-  {g = GridGraph[{9, 9}]},
-  {region = InfraIntersection[InfraShell[1, 8], InfraShell[81, 8]]},
-  {points = RandomInfraPoint[g, region, All]},
-  {HighlightGraph[g, {region, points}], points}]
-```
-
-An empty region, or a region with fewer vertices than the count, gives an empty list.
-
-```wl
-With[
-  {g = GridGraph[{5, 5}]},
-  {RandomInfraPoint[g, {}], RandomInfraPoint[g, InfraShell[13, 100], 2], RandomInfraPoint[g, {1, 2}, 3]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {outside = Complement[VertexList[g], Keys @ InfraMeasurement[g, InfraBall[c, 4], "VertexDensity"]]},
+  InfraSubstrateHighlight[g, {outside, RandomInfraPoint[g, outside, 5, RandomSeeding -> 1]}, ImageSize -> Medium]]
 ```
 
 ## Options
 
-`"PairwiseDistance"` takes a distance: two points at distance 4 from each other.
+### PairwiseDistance
+
+Three points pairwise at distance 4, joined by segments into an equilateral triangle:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {pair = (SeedRandom[1]; RandomInfraPoint[g, 2, "PairwiseDistance" -> 4])},
-  {InfraSubstrateHighlight[g, {pair}], GraphDistance[g, First @ pair, Last @ pair]}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    {triple = RandomInfraPoint[g, 3, "PairwiseDistance" -> 4, RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {InfraSegment @@ Append[triple, First @ triple], triple}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-A range of distances.
+`"Spread"` makes the pairwise distances as equal as possible. Three points of the circle of radius 3 on the mesh:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {triple = (SeedRandom[1]; RandomInfraPoint[g, 3, "PairwiseDistance" -> {3, 5}])},
-  {InfraSubstrateHighlight[g, {triple}], triple}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {triple = RandomInfraPoint[g, InfraShell[c, 3], 3, "PairwiseDistance" -> "Spread", RandomSeeding -> 1]},
+  InfraSubstrateHighlight[g, {InfraShell[c, 3], triple}, PlotLabel -> (GraphDistance[g, ##] & @@@ Subsets[triple, {2}]), ImageSize -> Medium]]
 ```
 
-`"Spread"` takes the tuple whose pairwise distances are the most alike: three points about the centre.
+### RandomSeeding
+
+A fixed seed gives the same draw whatever [SeedRandom]() has set:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {triple = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 3], 3, "PairwiseDistance" -> "Spread"])},
-  {InfraSubstrateHighlight[g, {InfraShell[c, 3], triple}], triple}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  Table[SeedRandom[k]; RandomInfraPoint[g, 3, RandomSeeding -> 7], {k, 3}]]
 ```
 
 ## Properties and Relations
 
-`RandomInfraPoint[g, reg, All]` is the vertex set of the region.
+<code>[RandomInfraPoint]()[*g*, *reg*, All]</code> is the vertex set of the region:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = GridGraph[{9, 9}]},
-  {c = First @ GraphCenter[g]},
-  {Sort @ RandomInfraPoint[g, InfraShell[c, 3], All] === Keys @ InfraMeasurement[ g, InfraShell[c, 3], "VertexDensity" ]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  Sort @ RandomInfraPoint[g, InfraShell[c, 3], All] === Keys @ InfraMeasurement[g, InfraShell[c, 3], "VertexDensity"]]
 ```
 
-The distance to a set is the least distance to one of its points: the shell about two vertices is the outer layer of the union of the two balls, and does not contain the vertices.
+## Possible Issues
+
+A bare integer is a count, not a vertex. The vertex 5 is the region `{5}`:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = GridGraph[{10, 10}]},
-  {shell = Keys @ InfraMeasurement[ g, InfraShell[{45, 47}, 2], "VertexDensity" ]},
-  {Length @ shell, MemberQ[shell, 45]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  {RandomInfraPoint[g, 5, RandomSeeding -> 1], RandomInfraPoint[g, {5}]}]
 ```
 
-The spellings of the earlier releases translate to a region.
+Without a fixed seed every call draws afresh, even after [SeedRandom]():
 
-| Earlier | Now |
-|---|---|
-| `"Distance" -> d` | `"PairwiseDistance" -> d` |
-| `"From" -> "Center"` | `RandomInfraPoint[g, GraphCenter[g]]` |
-| `"From" -> "Periphery"` | `RandomInfraPoint[g, GraphPeriphery[g]]` |
-| `"From" -> {v1, …}`, `SelectInfraPoint[g, vs, n]` | `RandomInfraPoint[g, vs, n]` |
-| `"From" ->` a density | `RandomInfraPoint[g, density]` |
-| `"From" -> a -> r`, `RandomInfraPoint[g, a, r]` | `RandomInfraPoint[g, InfraShell[a, r]]` |
-| `"From" -> a -> {r, s}` | `RandomInfraPoint[g, InfraShell[a, {r, s}]]` |
-| `"From" -> a -> {0, r}` | `RandomInfraPoint[g, InfraBall[a, r]]` |
-| `"From" -> a -> "Max"` | `RandomInfraPoint[g, InfraShell[a, VertexEccentricity[g, a]]]` |
-| `"From" -> {a, b} -> r` | `RandomInfraPoint[g, InfraIntersection[InfraShell[a, r], InfraShell[b, r]]]` |
-| `InfraCenter[g]` | `First @ GraphCenter[g]` |
-| `"From" -> {"Center", k}` | removed; cut the substrate with `CenterGraph[g, k]` |
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  Table[SeedRandom[1]; RandomInfraPoint[g, 3], {2}]]
+```
+
+A region with fewer vertices than the count gives `{}`; `UpTo` gives what there is:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  {RandomInfraPoint[g, {}], RandomInfraPoint[g, {2, 3}, 3], RandomInfraPoint[g, {2, 3}, UpTo[3]]}]
+```

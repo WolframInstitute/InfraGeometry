@@ -6,149 +6,112 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraMetricTensor
 Keywords: [metric tensor, Gram matrix, projection, interval, cosine, tangent space, Euclid II.12]
-SeeAlso: [InfraScalarProduct, InfraAngle, MetricInterval, FindClosestInfraPoint, InfraShell, OrthogonalCoordinates]
+SeeAlso: [InfraScalarProduct, InfraComparisonAngle, MetricInterval, FindClosestInfraPoint, InfraShell, OrthogonalCoordinates]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraMetricTensor]()[*g*, *p*]</code> gives the matrix over all pairs of vertices *v*, *w* of *d(p,u) / d(p,v)*, where *u* is the vertex of the interval *I(p,w)* closest to *v*. Rows and columns follow `VertexList[g]`.
+<code>[InfraMetricTensor]()[*g*, *p*]</code> gives the matrix *T* over all pairs of vertices *v*, *w* of *g*, with *T[v, w] = d(p, u) / d(p, v)* for *u* the vertex of the interval *I(p, w)* closest to *v*.
 
-<code>[InfraMetricTensor]()[*g*, *p*, *r*]</code> gives the same matrix restricted to the shell <code>[InfraShell]()[*p*, *r*]</code>, in the order of that shell.
+<code>[InfraMetricTensor]()[*g*, *p*, *r*]</code> gives the matrix over the vertices of the shell <code>[InfraShell]()[*p*, *r*]</code>.
 
 ## Details & Options
 
-Definition: the interval is *I(p,w) = {u : d(p,u) + d(u,w) = d(p,w)}*, the vertices on some geodesic from *p* to *w*. The foot of *v* on it is a vertex *u* of the interval at least distance from *v*. The entry is the distance of the foot from the base, over the distance of *v* from the base:
+The interval is *I(p, w) = {u : d(p, u) + d(u, w) = d(p, w)}*, the vertices on the shortest paths from *p* to *w*. The vertex *u* of *I(p, w)* closest to *v* is the foot of *v*, and *T[v, w]* is the length of the projection of *v* on the direction of *w*, over the length of *v*. Rows are *v*, columns *w*. The rows and columns of the full matrix follow [VertexList](); those of the shell matrix follow the sorted shell.
 
-*T[v, w] = d(p,u) / d(p,v)*
+In the plane the foot of *v* on the segment from *p* to *w* gives *T = max(0, cos θ)* on a circle about *p*, with *θ* the angle at *p*: the Gram matrix of the unit directions, an obtuse angle read as 0. This is Euclid's projection of Book II, Propositions 12 and 13.
 
-Rows are *v*, the projected vertex; columns are *w*, the end of the interval.
+The row and the column of *p* are 0; the diagonal elsewhere is 1. In general *0 ≤ T[v, w] ≤ d(p, w)/d(p, v)*, and *T* is not symmetric.
 
-In the plane, the nearest point of the segment *[p,w]* to *v* lies at distance *clamp(|v| cos θ, 0, |w|)* from *p*, where θ is the angle at *p*. So *T = clamp(cos θ, 0, |w|/|v|)*, and on a circle about *p* it is *max(0, cos θ)*: the Gram matrix of the unit directions, with every angle of 90° or more read as 0. This is Euclid's projection of Book II, Propositions 12 and 13.
+On the square grid the foot is unique, and on a shell of radius *r*, *T[v, w] = 1 − d(v, w)/(2r)* at every radius. So the grid tensor does not approach the cosine: two axis directions read 0, as in the plane, but two diagonal directions at a right angle read 1/2.
 
-The row of *p* is 0, the column of *p* is 0, and the diagonal off *p* is 1. Every entry satisfies *0 ≤ T[v,w] ≤ d(p,w)/d(p,v)*. The matrix is not symmetric in general; on a shell it is symmetric on the square grid.
+The foot need not be unique. `"SelectCoordinate"` says which value *d(p, u)* of the tied feet is used:
 
-On the square grid the interval is a box and the foot is the coordinate clamp, unique. Then *T[v,w] = (d(p,v) + d(p,w) − d(v,w)) / (2 d(p,v))*, the Gromov product of *v* and *w* at *p* over *d(p,v)*. On a shell of radius *r* this is *1 − d(v,w)/(2r)* at every radius. The tensor is scale-invariant on the grid, so it does not approach the cosine as the radius grows: two diagonal directions at a right angle read 1/2, where the plane reads 0.
-
-On a periodic tiling the rescaled path metric tends to a polyhedral norm, not the Euclidean one, and the tensor tends to the projection tensor of that norm. It approaches *max(0, cos θ)* only on substrates whose large-scale metric is round, such as a fine isotropic mesh.
-
-The foot need not be unique. Where the large-scale norm has flat faces, as on the triangular tiling, *d(v, ·)* is constant along whole stretches of the interval, and many vertices tie. Option `"SelectCoordinate"` says which index *d(p,u)* of the tied feet is kept:
-
-| Value | Entry |
-|---|---|
-| `Min` (default) | the smallest index |
-| `Max` | the largest index |
-| `Mean`, `Median` | the mean or median, a rational |
-| `All` | the list of tied indices |
-| *f* | *f* applied to that list |
-
-The graph is assumed connected. The whole distance matrix is computed once and serves every row.
+| Option | Default | Values |
+|---|---|---|
+| `"SelectCoordinate"` | [Min]() | [Min](), [Max](), [Mean](), `All` (the list of the tied values), or a function of that list |
 
 ## Basic Examples
 
-The tensor on a shell of radius 8 against the cosine of the angle between the two directions, on the discretized plane, the square tiling and the hexagonal tiling. The gray curve is the plane's value *max(0, cos θ)*.
+One row of the tensor on the circle of radius 4: the projection of a fixed vertex on the direction of each vertex of the circle, drawn as the size of the vertex:
 
 ```wl
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Large", "KeepCoordinates" -> True]},
-    {p = First @ GraphCenter[g]},
-    {shell = Keys @ InfraMeasurement[ g, InfraShell[ p, 8 ], "VertexDensity" ]},
-    {dirs = Normalize[AnnotationValue[{g, #}, VertexCoordinates] - AnnotationValue[{g, p}, VertexCoordinates]] & /@ shell},
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+    {circle = Keys @ InfraMeasurement[g, InfraShell[p, 4], "VertexDensity"]},
+    {v = RandomInfraPoint[g, InfraShell[p, 4], RandomSeeding -> 1]},
+    {row = InfraMetricTensor[g, p, 4][[First @ FirstPosition[circle, v]]]},
+    InfraSubstrateHighlight[g, {AssociationThread[circle, row], v, p}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+```
+
+The tensor on the circle of radius 6 against the cosine of the angle at the centre, with the plane's value *max(0, cos θ)*. The entries are multiples of 1/6, and on both substrates some obtuse angles read positive; on the grid the entries are *1 − d(v, w)/12*:
+
+```wl
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Medium", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+    {circle = Keys @ InfraMeasurement[g, InfraShell[p, 6], "VertexDensity"]},
+    {xy = AssociationThread[VertexList[g], GraphEmbedding[g]]},
+    {dirs = Normalize[xy[#] - xy[p]] & /@ circle},
     Show[
-      ListPlot[Transpose[{Flatten[dirs . Transpose[dirs]], Flatten @ InfraMetricTensor[g, p, 8]}],
-        PlotRange -> {{-1, 1}, {0, 1}}, PlotLabel -> name],
-      Plot[Max[0, x], {x, -1, 1}, PlotStyle -> Gray]]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
+      ListPlot[Transpose[{Flatten[dirs . Transpose[dirs]], Flatten @ InfraMetricTensor[g, p, 6]}],
+        PlotRange -> {{-1, 1}, {0, 1}}],
+      Plot[Max[0, x], {x, -1, 1}]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The tensor on the shell of radius 3 about the centre of the square tiling, beside the shell it is read on.
+Along a path, based at an end, *T[v, w] = min(d(p, v), d(p, w)) / d(p, v)*:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {InfraSubstrateHighlight[g, {Keys @ InfraMeasurement[ g, InfraShell[ c, 3 ], "VertexDensity" ], c}],
-   MatrixPlot[InfraMetricTensor[g, c, 3]]}]
+MatrixForm @ InfraMetricTensor[PathGraph[Range[5]], 1]
 ```
 
-Along a path, based at an end, the entry is *min(d(p,v), d(p,w)) / d(p,v)*.
+## Scope
+
+The shell matrix is the submatrix of the full one on the shell:
 
 ```wl
-With[
-  {tensor = InfraMetricTensor[PathGraph[Range[5]], 1]},
-  {MatrixPlot[tensor], MatrixForm[tensor]}]
-```
-
-The shell form is the submatrix of the full one on the shell.
-
-```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {shellIndices = VertexIndex[g, #] & /@ Keys @ InfraMeasurement[ g, InfraShell[ c, 2 ], "VertexDensity" ]},
-  {MatrixPlot[InfraMetricTensor[g, c, 2]],
-   InfraMetricTensor[g, c, 2] == InfraMetricTensor[g, c][[shellIndices, shellIndices]]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {p = First @ GraphCenter[g]},
+  {indices = VertexIndex[g, #] & /@ Keys @ InfraMeasurement[g, InfraShell[p, 2], "VertexDensity"]},
+  InfraMetricTensor[g, p, 2] == InfraMetricTensor[g, p][[indices, indices]]]
 ```
 
 ## Options
 
-On the hexagon, the interval from 1 to 5 is 1, 6, 5, and its vertices 1 and 5 are both at distance 2 from 3. The four rules read that tie differently.
+### SelectCoordinate
+
+On the hexagon the interval from 1 to 5 is 1, 6, 5, and both its ends are 2 away from 3. The rules read that tie differently:
 
 ```wl
-With[
-  {g = CycleGraph[6]},
-  {InfraSubstrateHighlight[g, {MetricInterval[g, 1, 5], 3}],
-   Table[sel -> InfraMetricTensor[g, 1, "SelectCoordinate" -> sel][[3, 5]], {sel, {Min, Max, Mean, All}}]}]
-```
-
-On the triangular tiling the ties are the rule rather than the exception. The entries of a shell where the smallest and the largest foot differ, drawn as a matrix, and their fraction.
-
-```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Medium"]},
-  {p = First @ GraphCenter[g]},
-  {gap = InfraMetricTensor[g, p, 4, "SelectCoordinate" -> Max] - InfraMetricTensor[g, p, 4]},
-  {MatrixPlot[gap], N @ Count[Flatten @ gap, _?Positive]/Length[Flatten @ gap]}]
+Table[sel -> InfraMetricTensor[CycleGraph[6], 1, "SelectCoordinate" -> sel][[3, 5]], {sel, {Min, Max, Mean, All}}]
 ```
 
 ## Properties and Relations
 
-The entry is the foot of *v* on the interval to *w*, read off the explicit construction: the interval, the feet of *v* on it, and the three points.
+On a shell of the square grid the tensor is *1 − d(v, w)/(2r)*, at every radius:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {p = First @ GraphCenter[g]},
-  {w = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[p, 5]])},
-  {v = (SeedRandom[12]; RandomInfraPoint[g, InfraShell[p, 4]])},
-  {interval = MetricInterval[g, p, w]},
-  {feet = FindClosestInfraPoint[g, interval, v, All]},
-  {InfraSubstrateHighlight[g, {interval, p, v, w, feet}],
-   Min[GraphDistance[g, p, #] & /@ feet]/GraphDistance[g, p, v],
-   InfraMetricTensor[g, p][[VertexIndex[g, v], VertexIndex[g, w]]]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Medium"]}, {p = First @ GraphCenter[g]},
+  Table[With[{circle = Keys @ InfraMeasurement[g, InfraShell[p, r], "VertexDensity"]},
+      InfraMetricTensor[g, p, r] == 1 - Outer[GraphDistance[g, #1, #2] &, circle, circle]/(2 r)], {r, 2, 6}]]
 ```
 
-On a shell of the square tiling the tensor is one minus the distance over twice the radius, at every radius.
+The entry is the foot of *v* on the interval to *w*. The interval, the feet of *v* on it, and the entry computed from them:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
-  {c = First @ GraphCenter[g]},
-  {GraphicsRow @ Table[MatrixPlot[InfraMetricTensor[g, c, r]], {r, {2, 4, 6}}],
-   Table[
-     With[{shell = Keys @ InfraMeasurement[ g, InfraShell[ c, r ], "VertexDensity" ]},
-       InfraMetricTensor[g, c, r] == 1 - Outer[GraphDistance[g, #1, #2] &, shell, shell]/(2 r)],
-     {r, 2, 6}]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+  {w = RandomInfraPoint[g, InfraShell[p, 5], RandomSeeding -> 1]},
+  {v = RandomInfraPoint[g, InfraShell[p, 4], RandomSeeding -> 2]},
+  {interval = MetricInterval[g, p, w]}, {feet = FindClosestInfraPoint[g, interval, v, All]},
+  {entry = InfraMetricTensor[g, p][[VertexIndex[g, v], VertexIndex[g, w]]]},
+  InfraSubstrateHighlight[g, {interval, feet, v, w, p}, PlotLabel -> {Min[GraphDistance[g, p, #] & /@ feet]/4, entry},
+    ImageSize -> Medium]]
 ```
 
-The comparison cosine of [InfraScalarProduct]() reads −1 for two orthogonal neighbours of the centre, the same as for two opposite ones. The tensor reads 0 for both, which is right for the orthogonal pair.
+For two perpendicular neighbours of the centre of the grid the comparison scalar product is −1, the value of two opposite ones. The tensor on the circle of radius 1 reads 0 for them, the plane's value at a right angle:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {InfraSubstrateHighlight[g, {c, 2, 6, 11}],
-   {InfraScalarProduct[g, c, 2, 6], InfraScalarProduct[g, c, 2, 11]},
-   MatrixForm @ InfraMetricTensor[g, c, 1]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  {Table[InfraScalarProduct[g, 45, 55, v], {v, {46, 35}}], MatrixForm @ InfraMetricTensor[g, 45, 1]}]
 ```

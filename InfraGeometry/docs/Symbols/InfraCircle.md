@@ -5,201 +5,116 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraCircle
-Keywords: [circle, radius, band, separating cycle, unrolled band, atom, necklace, seam, symbolic object]
+Keywords: [circle, radius, band, separating cycle, symbolic object]
 SeeAlso: [InfraCircleThrough, InfraArc, InfraMeasurement, RandomInfraCircle, InfraShell]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraCircle]()[*c*, *r*]</code> is the family of circles around *c* at radius *r*. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
+<code>[InfraCircle]()[*c*, *r*]</code> is the family of circles around *c* in the shell of radius *r*.
 
-<code>[InfraCircle]()[*c*, {*r*, *s*}]</code> is the family in the band *r* ≤ *d(c, v)* ≤ *s*; a scalar *r* means `{r, r}`.
-
-The same expression inside an [InfraScene]() is the circle construction token.
+<code>[InfraCircle]()[*c*, {*r*, *s*}]</code> is the family of circles around *c* in the band *r ≤ d(c, v) ≤ s*.
 
 ## Details & Options
 
-[InfraCircleThrough]() imposes an arbitrary prescribed vertex set in an explicit center and band before minimizing circle length.
+Let *W = {v : r ≤ d(c, v) ≤ s}*. A circle of *W* is a shortest cycle of the subgraph induced on *W* among those whose removal cuts *c* off from every vertex beyond *W*. When nothing lies beyond *W* the condition is empty.
 
-Definition: a circle of the band *W* around *c* is a shortest cycle of the subgraph induced on *W* whose removal leaves *c* in a component that reaches no further than the band.
+A circle need not exist. On a bipartite graph, such as the square grid, no two vertices of one shell are adjacent, so a single shell carries no circle. On the square grid the band {*r*, *r* + 1} does. On the mesh a single shell usually carries one.
 
-The second argument is always a radius or a band, never a point, so a vertex label that is an integer or a pair cannot be mistaken for one. There are no options.
+A circle need not be unique. On the square grid, away from the rim, the band {*r*, *r* + 1} carries one circle and the band {*r*, *r* + 2} carries *16ʳ⁻¹*, all of length *8r*: the circle of the ℓ¹ norm.
 
-Euclid's third postulate describes a circle with any centre and distance: the circle is named by its radius. The circle through a point *p* is drawn by a compass opened to *p*, an arc that closes: it is the closed arc <code>[InfraArc]()[*c*, {*p*, *p*}]</code>, the circles of the band of *p* that pass through *p*.
+[InfraCircle]() is a symbolic object: [InfraMeasurement]() evaluates it on a graph and [RandomInfraCircle]() draws members. A member is a cyclic vertex list; its first vertex is not repeated, and its length is its number of vertices.
 
-**A circle need not exist.** On a lattice a single distance shell has no two adjacent vertices, so it spans no cycle and the family is empty. This is what a sphere of one-vertex thickness is on a lattice, not a defect of the definition.
+| Property | Value |
+|---|---|
+| `"Graph"` | a list of DAGs; each runs from a vertex *x* to a copy `{x, 3/2}` of it, and its paths are the circles through *x* opened at *x* |
+| `"Cardinality"` | the number of circles |
+| `"Length"` | their common length; `{}` when there is none |
+| `"VertexDensity"` | the number of circles through each vertex |
 
-Widening the radius to a band fixes it, and **the band thickness that suffices tracks the girth of the tiling**. On the square tiling, girth 4, the band `{r, r + 1}` already carries a circle. On the hexagonal tiling, girth 6, it does not: the band has to reach `{r, r + 2}`. On the triangular tiling, girth 3, a single shell carries a circle; on an irregular mesh it usually does, its vertices being adjacent by accident of the mesh.
+The circles of the band of *p* that pass through *p* are the closed arc <code>[InfraArc]()[*c*, {*p*}]</code>. [InfraCircleThrough]() asks for circles through several given points.
 
-Its graph — <code>[InfraMeasurement]()[*g*, *circle*, "Graph"]</code> — is a `List` of **atoms** of the unrolled band. The band is cut along a radial seam, the band part of a shortest path from *c* to the nearest vertex outside the band, and unrolled: the circles through a seam vertex *x* are the shortest paths of the cyclic cover of the band from *x* to a second copy of *x*. An atom is the DAG of those paths for one seam vertex, with the earlier seam vertices removed, so every circle lies in exactly one atom, at its first seam vertex. Only the atoms of least length are kept: an atom at a seam vertex that no shortest circle meets carries longer closed walks only. The atom is projected to the vertices of the graph, and its sink is kept as the separate vertex `{x, 3/2}`, a copy of its source *x*. So the atom is acyclic, its chains from *x* to `{x, 3/2}` are the circles read as closed walks, and its `"Cardinality"` and `"Length"` are the chain count and the length of the circle.
-
-The two sides of the seam are told apart by separation alone: two neighbours of a seam vertex lie on the same side iff the cycle through them and the cut band does not separate. No coordinates enter, and a circle may meet the seam any number of times.
-
-The atoms need the cut band to be connected and the two sides to occur on the seam. Where the cut band is disconnected, or the seam has one side only, the graph is a `List` of **necklaces** instead, cut from the band along the same seam: a DAG with one source *s1* and one sink, a copy `{s1, 3/2}` of its source, again the cycle family opened at its closing arrow. A necklace needs the circle to meet the seam in one run, so it can miss a circle.
-
-A member is a chain of the graph read as a cyclic vertex list: the copy of the source is dropped and the first vertex is not repeated. The `"Length"` of a circle of *k* vertices is *k*.
-
-**The search.** <code>[RandomInfraCircle]()[*g*, *circle*, *n*]</code> sweeps the band directly: for *k* = 3, 4, … it takes every cycle of length *k* of the band (`FindCycle`) and keeps those whose removal leaves *c* in a component reaching no further than the band; the first *k* with a survivor gives the members. It does not read the graph, so it is the check on it, and it still answers where nothing lies beyond the band and separation is vacuous. Each length is enumerated in full before the filter, so the sweep is fast on a band one or two vertices thick and does not finish in reasonable time on a wide one, such as `{3, 6}` on the square tiling.
-
-Every member separates. That the atoms carry every circle exactly once needs the winding functional, an invariant of the substrate that is nonzero exactly on the separating cycles, and a connected cut band; nothing here certifies the first. So `"Faithful"` stays unevaluated, except that it is `False` where the cut band is connected and the seam has one side only: there the winding functional or the annulus is witnessed to fail.
+In an [InfraScene](), <code>[InfraCircle]()[*c*, *r*]</code> is the circle about the point *c*.
 
 Corresponding notions in the classical axiom systems:
 
 | System | Name | Statement |
 |---|---|---|
-| Euclid | Postulate 3 | To draw a circle with any center and radius. |
-| Hilbert | (not primitive) | Circles are defined from congruence, not postulated. |
-| Tarski | Equidistance | The locus of points equidistant from a centre, from the four-place congruence relation. |
-| Birkhoff | Ruler postulate | The locus at fixed ruler distance from a point. |
+| Euclid | Postulate 3 | To describe a circle with any centre and distance. |
+| Hilbert | (not primitive) | Circles are defined from congruence. |
+| Tarski | Equidistance | The points at a fixed distance from a centre, from the congruence relation. |
 
 ## Basic Examples
 
-The circles of the band `{2, 4}` about the centre, on the square, hexagonal and triangular tilings. An edge is drawn as strongly as the number of circles through it.
+The circles of the band {3, 4} about the centre, on the square grid and on the square mesh:
 
 ```wl
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = First @ GraphCenter[g]},
-    {circle = InfraCircle[c, {2, 4}]},
-    InfraSubstrateHighlight[g, {circle, c}]],
-  {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    InfraSubstrateHighlight[g, {InfraCircle[c, {3, 4}], c}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The band `{2, 4}` on the square tiling: the number of circles, their length and the number of atoms carrying them, beside the picture.
+Their number and length. The grid has one circle, the mesh many:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {circle = InfraCircle[c, {2, 4}]},
-  {InfraSubstrateHighlight[g, {circle, c}],
-   InfraMeasurement[g, circle, "Cardinality"], InfraMeasurement[g, circle, "Length"],
-   Length @ InfraMeasurement[g, circle, "Graph"]}]
+Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    InfraMeasurement[g, InfraCircle[c, {3, 4}], {"Cardinality", "Length"}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-At a single radius the circle exists on the irregular mesh and not on the two lattices: their shell has no two adjacent vertices. Each picture shows the shell and the circles found in it, labelled by their number.
+One circle of the mesh, drawn as a closed walk:
 
 ```wl
-SeedRandom[1];
-Row @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = First @ GraphCenter[g]},
-    {circles = RandomInfraCircle[ g, InfraCircle[c, 4], All ]},
-    Labeled[
-      InfraSubstrateHighlight[g,
-        {Keys @ InfraMeasurement[ g, InfraShell[ c, 4 ], "VertexDensity" ],
-         Table[Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], {oneCircle, circles}]}],
-      Length @ circles]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
-```
-
-The thickness needed follows the girth: on the hexagonal tiling the band `{4, 5}` is still empty, and `{4, 6}` carries the circles.
-
-```wl
-SeedRandom[1];
-Row @ Table[
-  With[
-    {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-    {c = First @ GraphCenter[g]},
-    {circles = RandomInfraCircle[ g, InfraCircle[c, band], All ]},
-    Labeled[
-      InfraSubstrateHighlight[g,
-        {Keys @ InfraMeasurement[ g, InfraShell[ c, band ], "VertexDensity" ],
-         Table[Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], {oneCircle, circles}]}],
-      Length @ circles]],
-  {band, {4, {4, 5}, {4, 6}}}]
-```
-
-One circle about the centre of each lattice, at the band each one needs, drawn as its directed cycle.
-
-```wl
-SeedRandom[1];
-GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[First @ spec, "Small", "KeepCoordinates" -> True]},
-    {c = First @ GraphCenter[g]},
-    {oneCircle = RandomInfraCircle[ g, InfraCircle[c, Last @ spec] ]},
-    InfraSubstrateHighlight[g, {Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], c},
-      "Arrowheads" -> True]],
-  {spec, {{"SquareTilingGraph", {4, 5}}, {"HexagonalTilingGraph", {4, 6}}, {"TriangularTilingGraph", 4}}}]
-```
-
-A member is a cyclic vertex list. Drawn as a walk, it closes back on its first vertex.
-
-```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {closedWalk = RandomInfraCircle[ g, InfraCircle[c, {2, 4}] ]},
-  InfraSubstrateHighlight[g, {InfraWalk[Append[closedWalk, First @ closedWalk]], c}]]
-```
-
-The circles of the band `{4, 5}` that pass through a vertex at distance 4 are the closed arc through it, [InfraArc]().
-
-```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {p = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])},
-  {circle = InfraArc[c, {p, p}, "RadiusDelta" -> 1]},
-  {InfraSubstrateHighlight[g, {circle, c, p}],
-   InfraMeasurement[g, circle, "Cardinality"], InfraMeasurement[g, circle, "Length"]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {circle = RandomInfraCircle[g, InfraCircle[c, {3, 4}], RandomSeeding -> 1]},
+  InfraSubstrateHighlight[g, {InfraWalk[Append[circle, First @ circle]], c}, ImageSize -> Medium]]
 ```
 
 ## Scope
 
-Every circle of the band `{2, 4}` on the square tiling, drawn at once. A bounded count gives a list, and a strict count that cannot be met gives `{ }`.
+The shell of radius 3 alone. It carries no circle on the grid and one on the mesh:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {circle = InfraCircle[c, {2, 4}]},
-  {circles = Replace[ circle, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraShell :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraCylinder :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraCone :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraSolidOfRevolution :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraBallHull :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraConvexHull :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraQuadric :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ]},
-  {InfraSubstrateHighlight[g, {Table[Graph[DirectedEdge @@@ Partition[oneCircle, 2, 1, 1]], {oneCircle, circles}]}],
-   Length @ circles, Length @ Replace[ circle, { token_InfraPoint :> RandomInfraPoint[ g, token, 3 ], token_InfraSegment :> RandomInfraSegment[ g, token, 3 ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, 3 ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, 3 ], token_InfraCircle :> RandomInfraCircle[ g, token, 3 ], token_InfraArc :> RandomInfraArc[ g, token, 3 ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, 3 ], token_InfraPlane :> RandomInfraPlane[ g, token, 3 ], token_InfraBall :> { }, token_InfraShell :> { }, token_InfraSphere :> RandomInfraSphere[ g, token, 3 ], token_InfraTube :> { }, token_InfraCylinder :> { }, token_InfraCone :> { }, token_InfraSolidOfRevolution :> { }, token_InfraBallHull :> { }, token_InfraConvexHull :> { }, token_InfraQuadric :> { }, token_InfraWalk :> RandomInfraWalk[ g, token, 3 ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, 3 ], token_InfraEllipse :> RandomInfraEllipse[ g, token, 3 ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token, 3 ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, 3 ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, 3 ] } ], Replace[ circle, { token_InfraPoint :> RandomInfraPoint[ g, token, 20 ], token_InfraSegment :> RandomInfraSegment[ g, token, 20 ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, 20 ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, 20 ], token_InfraCircle :> RandomInfraCircle[ g, token, 20 ], token_InfraArc :> RandomInfraArc[ g, token, 20 ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, 20 ], token_InfraPlane :> RandomInfraPlane[ g, token, 20 ], token_InfraBall :> { }, token_InfraShell :> { }, token_InfraSphere :> RandomInfraSphere[ g, token, 20 ], token_InfraTube :> { }, token_InfraCylinder :> { }, token_InfraCone :> { }, token_InfraSolidOfRevolution :> { }, token_InfraBallHull :> { }, token_InfraConvexHull :> { }, token_InfraQuadric :> { }, token_InfraWalk :> RandomInfraWalk[ g, token, 20 ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, 20 ], token_InfraEllipse :> RandomInfraEllipse[ g, token, 20 ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token, 20 ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, 20 ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, 20 ] } ]}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    InfraSubstrateHighlight[g, {InfraShell[c, 3], InfraCircle[c, 3], c}, PlotLabel -> InfraMeasurement[g, InfraCircle[c, 3], "Cardinality"]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+```
+
+A thicker band gives more circles. On the grid the band {2, 4} carries 16 circles of length 16, each edge drawn by the number of circles through it:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  InfraSubstrateHighlight[g, {InfraCircle[c, {2, 4}], c},
+    PlotLabel -> InfraMeasurement[g, InfraCircle[c, {2, 4}], {"Cardinality", "Length"}], ImageSize -> Medium]]
 ```
 
 ## Properties and Relations
 
-A circle lies in its band, and consecutive vertices are adjacent, the last and the first too.
+On the square grid the bands {*r*, *r* + 1} and {*r*, *r* + 2}: one circle and *16ʳ⁻¹* circles, of length *8r*:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {band = Keys @ InfraMeasurement[ g, InfraShell[ c, {2, 4} ], "VertexDensity" ]},
-  {closedWalk = RandomInfraCircle[ g, InfraCircle[c, {2, 4}] ]},
-  {InfraSubstrateHighlight[g, {band, InfraWalk[Append[closedWalk, First @ closedWalk]]}],
-   SubsetQ[band, closedWalk], AllTrue[Partition[closedWalk, 2, 1, 1], EdgeQ[g, UndirectedEdge @@ #] &]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  Table[{InfraMeasurement[g, InfraCircle[c, {r, r + 1}], "Cardinality"], InfraMeasurement[g, InfraCircle[c, {r, r + 2}], "Cardinality"],
+    16^(r - 1), InfraMeasurement[g, InfraCircle[c, {r, r + 2}], "Length"]}, {r, 1, 5}]]
 ```
 
-The search sweeps the band directly and finds as many circles as the atoms carry.
+Every circle separates: without it, the vertices still joined to *c* lie within distance 3, inside the band {3, 4}:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {circle = InfraCircle[c, {2, 4}]},
-  {InfraSubstrateHighlight[g, {circle, c}],
-   InfraMeasurement[g, circle, "Cardinality"], Length @ Replace[ circle, { token_InfraPoint :> RandomInfraPoint[ g, token, All ], token_InfraSegment :> RandomInfraSegment[ g, token, All ], token_InfraHalfLine :> RandomInfraHalfLine[ g, token, All ], token_InfraInfiniteLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraCircle :> RandomInfraCircle[ g, token, All ], token_InfraArc :> RandomInfraArc[ g, token, All ], token_InfraRegularPolygon :> RandomInfraRegularPolygon[ g, token, All ], token_InfraPlane :> RandomInfraPlane[ g, token, All ], token_InfraBall :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraShell :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraSphere :> RandomInfraSphere[ g, token, All ], token_InfraTube :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraCylinder :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraCone :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraSolidOfRevolution :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraBallHull :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraConvexHull :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraQuadric :> { Keys @ InfraMeasurement[ g, token, "VertexDensity" ] }, token_InfraWalk :> RandomInfraWalk[ g, token, All ], token_InfraGeodesic :> RandomInfraGeodesic[ g, token, All ], token_InfraEllipse :> RandomInfraEllipse[ g, token, All ], token_InfraIntersection :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraUnion :> Keys @ InfraMeasurement[ g, token, "VertexDensity" ], token_InfraRay :> RandomInfraHalfLine[ g, token, All ], token_InfraLine :> RandomInfraInfiniteLine[ g, token, All ], token_InfraPolygon :> RandomInfraRegularPolygon[ g, token, All ] } ]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  Union @ Table[Max[GraphDistance[g, c, #] & /@ First @ ConnectedComponents[VertexDelete[g, circle], {c}]],
+    {circle, RandomInfraCircle[g, InfraCircle[c, {3, 4}], All]}]]
 ```
 
-An atom is acyclic: its chains run from the seam vertex *x* to the copy `{x, 3/2}` of it, the circles through *x* opened at *x*.
+The members of the closed arc through *p* are the circles through *p*:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {atom = First @ InfraMeasurement[g, InfraCircle[c, {2, 4}], "Graph"]},
-  {InfraSubstrateHighlight[g, {atom, c}, "Arrowheads" -> True],
-   AcyclicGraphQ[atom], Select[VertexList[atom], VertexInDegree[atom, #] == 0 &],
-   Select[VertexList[atom], VertexOutDegree[atom, #] == 0 &]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {p = RandomInfraPoint[g, InfraShell[c, 3], RandomSeeding -> 1]},
+  Sort[Sort /@ RandomInfraArc[g, InfraArc[c, {p}, "RadiusDelta" -> 1], All]] ===
+    Sort[Sort /@ Select[RandomInfraCircle[g, InfraCircle[c, {3, 4}], All], MemberQ[#, p] &]]]
 ```

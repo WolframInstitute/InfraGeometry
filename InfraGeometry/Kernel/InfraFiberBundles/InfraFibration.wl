@@ -148,11 +148,18 @@ Options[ RandomInfraFiberedGraph ] = {
   Properties -> { },
   "VerticalVertexCount" -> { 1 },
   "VerticalEdgeCount" -> { 0 },
-  "HorizontalEdgeCount" -> Automatic
+  "HorizontalEdgeCount" -> Automatic,
+  RandomSeeding         -> Automatic
 }
 
-RandomInfraFiberedGraph[ base_Graph, opts : OptionsPattern[] ] /;
-    SubsetQ[ First /@ Options[ RandomInfraFiberedGraph ], First /@ Flatten @ { opts } ] &&
+RandomInfraFiberedGraph[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomInfraFiberedGraph[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomInfraFiberedGraph[ ___, RandomSeeding -> None ] ] ] ]
+
+RandomInfraFiberedGraph[ base_Graph, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraFiberedGraph ], First /@ Flatten @ { opts } ] &&
     With[ { properties = OptionValue[ RandomInfraFiberedGraph, { opts }, Properties ],
         vertices = OptionValue[ RandomInfraFiberedGraph, { opts }, "VerticalVertexCount" ],
         vertical = OptionValue[ RandomInfraFiberedGraph, { opts }, "VerticalEdgeCount" ],
@@ -182,7 +189,7 @@ RandomInfraFiberedGraph[ base_Graph, opts : OptionsPattern[] ] /;
             horizontal === Automatic, True,
             horizontal === All, ! atMost || Last[ range ] == 1,
             IntegerQ[ horizontal ], horizontal >= lower,
-            True, First[ horizontal ] >= lower && Last[ horizontal ] <= upper ] ) ] ] :=
+            True, First[ horizontal ] >= lower && Last[ horizontal ] <= upper ] ) ] ] ) :=
   With[ { properties = DeleteDuplicates @ OptionValue[ RandomInfraFiberedGraph, { opts }, Properties ],
       vertexSpecification = OptionValue[ RandomInfraFiberedGraph, { opts }, "VerticalVertexCount" ],
       verticalSpecification = OptionValue[ RandomInfraFiberedGraph, { opts }, "VerticalEdgeCount" ],

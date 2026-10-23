@@ -1,25 +1,25 @@
 Package["WolframInstitute`InfraGeometry`"]
 
 InfraPoint::usage = "InfraPoint is the scene-language token for a point. InfraPoint[] draws from the whole vertex list, InfraPoint[v] names one vertex. It is not a wrapper: a point IS a vertex of the substrate, carrying its label verbatim.";
-RandomInfraPoint::usage = "RandomInfraPoint[graph, reg, n] draws n distinct vertices of the region reg, a vertex List, a density or a symbolic region such as InfraBall; with no reg, of graph; with no n, one vertex. Options \"PairwiseDistance\", \"MaxCliques\".";
+RandomInfraPoint::usage = "RandomInfraPoint[graph, reg, n] draws n distinct vertices of the region reg, a vertex List, a density or a symbolic region such as InfraBall; with no reg, of graph; with no n, one vertex. Options RandomSeeding, \"PairwiseDistance\", \"MaxCliques\".";
 FindInfraReflection::usage = "FindInfraReflection[graph, x, a] gives the reflections x' of x through a: the vertices with B(x, a, x') and d(a, x) == d(a, x').";
 FindInfraCommonPoint::usage = "FindInfraCommonPoint[graph, lines] gives the points lying on every listed line.";
 FindClosestInfraPoint::usage = "FindClosestInfraPoint[graph, line, point] gives the vertices of line at minimum graph distance from point.";
 InfraReachableQ::usage = "InfraReachableQ[graph, p1, p2] tests whether p1 and p2 have realisations in the same connected component.";
 
-InfraMeasurement::usage = "InfraMeasurement[graph, obj, property] measures a Euclidean head on graph: \"Graph\", \"Cardinality\", \"Length\", \"VertexDensity\", \"EdgeDensity\", \"Subgraph\", \"Faithful\", \"CountingMeasure\" (the vertex count), \"RiemannianMeasure\" (the count without boundary). A List of properties gives an Association, All gives them all, a List of heads measures each.";
+InfraMeasurement::usage = "InfraMeasurement[graph, obj, property] reads a property (\"Graph\", \"Cardinality\", \"VertexDensity\", ...) of the inert head obj on graph; a List of properties or All gives an Association.";
 InfraMemberQ::usage = "InfraMemberQ[graph, obj, representative] tests family membership; an exact point family accepts one raw vertex.";
 
 InfraSegment::usage = "InfraSegment[p1, ..., pk] is an inert ordered chain of shortest-path legs. InfraMeasurement reads its family; RandomInfraSegment samples it."
-RandomInfraSegment::usage = "RandomInfraSegment[graph, p, q] draws a random shortest path from p to q as a vertex list; a trailing n | UpTo[n] | All gives a List of vertex lists. Option \"NextVertexFunction\".";
+RandomInfraSegment::usage = "RandomInfraSegment[graph, p, q] draws a random shortest path from p to q as a vertex list, a trailing n a List of n; RandomInfraSegment[graph, InfraSegment[p1, ..., pk]] draws a polyline. Options RandomSeeding, \"NextVertexFunction\".";
 InfraWalkQ::usage = "InfraWalkQ[graph, walk] tests whether walk is a walk: consecutive vertices adjacent (revisits allowed).";
 InfraSegmentQ::usage = "InfraSegmentQ[graph, walk] tests whether walk is a shortest path.";
 UniqueInfraSegmentQ::usage = "UniqueInfraSegmentQ[graph, u, v] tests whether the u-v shortest path is unique; UniqueInfraSegmentQ[graph] tests the geodetic property.";
 
 InfraWalk::usage = "InfraWalk[p1, ..., pk] inside InfraScene is the literal walk through p1, ..., pk, and InfraWalk[{p1, ..., pk}] in InfraSubstrateHighlight one oriented walk. A walk itself is a Graph: a directed path on the position pairs {i, v}, a closed walk a directed cycle on them; Last /@ VertexList gives the vertex sequence.";
-RandomInfraWalk::usage = "RandomInfraWalk[graph, germ, kspec] grows the germ into walk graphs, each step under the rules of Properties: rule, {rule, r} or {rule, r, p}, an energy on the last r vertices, a filter at p = 0 and a weight p^energy above. Automatic randomizes candidate order; Identity preserves deterministic order. Options Properties, \"StoppingCondition\", \"NextVertexFunction\", \"Direction\".";
+RandomInfraWalk::usage = "RandomInfraWalk[graph, germ, kspec] grows the germ into walk graphs, each step under the rules of Properties: rule, {rule, r} or {rule, r, p}, an energy on the last r vertices, a filter at p = 0 and a weight p^energy above. Automatic randomizes candidate order; Identity preserves deterministic order. Options RandomSeeding, Properties, \"StoppingCondition\", \"NextVertexFunction\", \"Direction\".";
 InfraGeodesic::usage = "InfraGeodesic[germ, scale] is the inert family of simple maximal scale-geodesics through a nonempty vertex-list germ."
-RandomInfraGeodesic::usage = "RandomInfraGeodesic[graph, germ, scale, kspec] grows the geodesics at infra-scale scale -- RandomInfraWalk with {\"Shortest\", scale} first among the rules. Automatic randomizes candidate order; Identity preserves deterministic order. Options Properties, \"StoppingCondition\", \"NextVertexFunction\", \"Direction\".";
+RandomInfraGeodesic::usage = "RandomInfraGeodesic[graph, germ, scale, kspec] grows the geodesics at infra-scale scale -- RandomInfraWalk with {\"Shortest\", scale} first among the rules. Automatic randomizes candidate order; Identity preserves deterministic order. Options RandomSeeding, Properties, \"StoppingCondition\", \"NextVertexFunction\", \"Direction\".";
 InfraGeodesicQ::usage = "InfraGeodesicQ[graph, walk, scale] tests whether every window of scale consecutive vertices of walk plus the next one is a shortest path; scale 1 gives InfraWalkQ and Infinity gives InfraSegmentQ.";
 WalkSingularities::usage = "WalkSingularities[walk] gives the singularities of a walk (a vertex list or a walk graph; a cycle graph is read on its cyclic core) as parameter data: \"SelfIntersections\" (position groups sharing a vertex), \"SelfTangencies\" (oriented interval groups sharing an arc), \"Cusps\" (mirrored blocks).";
 InfraImmersedQ::usage = "InfraImmersedQ[graph, walk] tests whether walk is an immersed walk: a walk with no cusp (no backtrack).";
@@ -28,19 +28,19 @@ InfraWalkCrossingQ::usage = "InfraWalkCrossingQ[graph, walk, v, r] tests whether
 ConcatenateInfraWalk::usage = "ConcatenateInfraWalk[path1, path2] joins every compatible walk pair, those with Last[walk1] === First[walk2].";
 
 InfraInfiniteLine::usage = "InfraInfiniteLine[p, q] is the inert family of maximal shortest walks through p then q; a single germ retains its middle edges."
-RandomInfraInfiniteLine::usage = "RandomInfraInfiniteLine[graph, p, q] gives one line through p and q as a vertex list -- an inextensible shortest path through both; a trailing n | UpTo[n] | All gives a List. RandomInfraInfiniteLine[graph, seq] prolongs a given shortest path. Automatic randomizes candidate order; Identity preserves deterministic order.";
-RandomInfraParallel::usage = "RandomInfraParallel[graph, line, p] gives one parallel to line through p: a geodesic through p inextensible within the level set { v : d(v, line) == d(p, line) }; a trailing n | UpTo[n] | All sets the count, All giving the pool. Automatic randomizes candidate order; Identity preserves deterministic order.";
+RandomInfraInfiniteLine::usage = "RandomInfraInfiniteLine[graph, p, q] gives one line through p and q as a vertex list -- an inextensible shortest path through both; a trailing n | UpTo[n] | All gives a List. RandomInfraInfiniteLine[graph, seq] prolongs a given shortest path. Automatic randomizes candidate order; Identity preserves deterministic order. Option RandomSeeding.";
+RandomInfraParallel::usage = "RandomInfraParallel[graph, line, p] gives one parallel to line through p: a geodesic through p inextensible within the level set { v : d(v, line) == d(p, line) }; a trailing n | UpTo[n] | All sets the count, All giving the pool. Automatic randomizes candidate order; Identity preserves deterministic order. Option RandomSeeding.";
 FindInfraPerpendicular::usage = "FindInfraPerpendicular[graph, line, point] gives the lines through point perpendicular to line. Options Method, \"Radius\".";
 FindInfraCommonLine::usage = "FindInfraCommonLine[graph, vertices] gives the canonical lines containing every listed vertex.";
 InfraInfiniteLineQ::usage = "InfraInfiniteLineQ[graph, walk] tests whether walk is a line: a shortest path that no neighbour of either endpoint prolongs.";
-InfraParallelQ::usage = "InfraParallelQ[graph, l1, l2] tests whether two lines stay at constant distance; a trailing threshold allows that distance to vary.";
-InfraPerpendicularQ::usage = "InfraPerpendicularQ[graph, l1, l2] tests whether two lines meet perpendicularly at every common vertex. Options Method, \"Radius\".";
+InfraParallelQ::usage = "InfraParallelQ[graph, l1, l2] tests whether l1 is parallel to l2: disjoint from it and at constant distance from it; a trailing threshold allows the distance to vary.";
+InfraPerpendicularQ::usage = "InfraPerpendicularQ[graph, l1, l2] tests whether two lines meet in exactly one vertex and are perpendicular there. Options Method, \"Radius\".";
 LineCount::usage = "LineCount[graph] gives the number of distinct canonical maximal geodesics in graph.";
 UniversalLineQ::usage = "UniversalLineQ[graph] tests whether some pair spans a line filling a whole connected component (Chen-Chvatal); UniversalLineQ[graph, {u, v}] tests one line.";
 
 InfraShell::usage = "InfraShell[c, r] is the inert distance-r shell; {r, s} gives a distance band."
 InfraSphere::usage = "InfraSphere[c, r] is the inert family of minimal connected separating subsets of the distance-r shell."
-RandomInfraSphere::usage = "RandomInfraSphere[graph, c, r, n] gives n minimal separating subsets of the shell of c with radius r or band {r, s}; n may be UpTo[n] or All. Automatic randomizes candidate order; Identity preserves deterministic order. Options Properties, \"NextVertexFunction\".";
+RandomInfraSphere::usage = "RandomInfraSphere[graph, c, r, n] gives n minimal separating subsets of the shell of c with radius r or band {r, s}; n may be UpTo[n] or All. Automatic randomizes candidate order; Identity preserves deterministic order. Options RandomSeeding, Properties, \"NextVertexFunction\".";
 FindInfraOsculatingShell::usage = "FindInfraOsculatingShell[graph, path, i, k] gives the shells whose level set contains the k-vertex window of path centred at position i, one per osculating centre.";
 FindAdvancingInfraFront::usage = "FindAdvancingInfraFront[graph, origin, steps] gives the foliation by a bouncing wavefront as a List of sorted vertex lists: each front steps one geodesic step outward and reflects inward where it cannot.";
 FindInfraShellCenter::usage = "FindInfraShellCenter[graph, shell] recovers {center, radii} from a shell. Option Method.";
@@ -63,20 +63,20 @@ InfraCircleQ::usage = "InfraCircleQ[graph, cycle] tests whether cycle is a cycli
 InfraArc::usage = "InfraArc[c, {p1, ..., pk}] is the arc around c through the points, the geodesics of the band of the circle through p1; InfraArc[c, {p, p}] is the closed arc, the circles through p. Option \"RadiusDelta\".";
 
 InfraRegularPolygon::usage = "InfraRegularPolygon[As, n] is the family of regular n-gons whose k-th diagonals satisfy As[[k]]; RandomInfraRegularPolygon is the search. The polygon through given corners is the closed polyline InfraSegment[p1, ..., pn, p1].";
-RandomInfraRegularPolygon::usage = "RandomInfraRegularPolygon[graph, As, n] gives one closed n-vertex sequence whose k-th diagonal distances all match As[[k]] (each slot an Integer, {lo, hi}, or Automatic); a trailing n | UpTo[n] | All sets the count. Automatic randomizes candidate order; Identity preserves deterministic order. Options \"NextVertexFunction\", \"From\".";
+RandomInfraRegularPolygon::usage = "RandomInfraRegularPolygon[graph, As, n] gives one closed n-vertex sequence whose k-th diagonal distances all match As[[k]] (each slot an Integer, {lo, hi}, or Automatic); a trailing n | UpTo[n] | All sets the count. Automatic randomizes candidate order; Identity preserves deterministic order. Options RandomSeeding, \"NextVertexFunction\", \"From\".";
 InfraRegularPolygonQ::usage = "InfraRegularPolygonQ[graph, cycle, As] tests whether cycle is regular with respect to the diagonal-distance tuple As.";
 
 InfraQuadric::usage = "InfraQuadric[foci, c, weights] is the inert signed weighted distance sublevel; a band c selects both bounds and omitted weights are 1."
 
-InfraEllipse::usage = "InfraEllipse names the metric-ellipse construction -- a cycle lying on an elliptic shell -- and carries no value of its own; RandomInfraEllipse is the search and gives a directed cycle graph.";
-RandomInfraEllipse::usage = "RandomInfraEllipse[graph, {p1, p2}, c] gives one shortest separating cycle in the level surface { v : d(p1, v) + d(p2, v) == c }; a trailing n | UpTo[n] | All sets the count. Automatic randomizes candidate order; Identity preserves deterministic order. Options Properties, \"NextVertexFunction\".";
+InfraEllipse::usage = "InfraEllipse[{p, q}, s] is the inert ellipse with foci p, q and distance sum s | {s1, s2}, the separating shortest cycles of the level set. InfraMeasurement reads its family; RandomInfraEllipse samples it.";
+RandomInfraEllipse::usage = "RandomInfraEllipse[graph, {p1, p2}, c] gives one shortest separating cycle in the level surface { v : d(p1, v) + d(p2, v) == c }; a trailing n | UpTo[n] | All sets the count. Automatic randomizes candidate order; Identity preserves deterministic order. Options RandomSeeding, Properties, \"NextVertexFunction\".";
 InfraEllipseQ::usage = "InfraEllipseQ[graph, cycle] tests whether cycle is a cyclic edge chain whose vertex set is an elliptic shell InfraQuadric[{p1, p2}, {c, c}] for some foci.";
 
 InfraPlane::usage = "InfraPlane[p1, p2] inside InfraScene is the bisecting hyperplane of p1 and p2; FindInfraBisectingHyperplane is the search. A plane itself is a sorted vertex list.";
 FindInfraBisectingHyperplane::usage = "FindInfraBisectingHyperplane[graph, p1, p2] gives the perpendicular bisector { v : d(p1, v) == d(p2, v) }; a positional {lo, hi} widens it to a slab. Options Properties, \"NextVertexFunction\".";
 
 InfraHalfLine::usage = "InfraHalfLine[p, q] is the inert family of maximal shortest walks from p through q; equal anchors give a pencil."
-RandomInfraHalfLine::usage = "RandomInfraHalfLine[graph, p, q] gives one ray from p through q as a vertex list -- a shortest path from p through q that no neighbour of its last vertex prolongs; a trailing n | UpTo[n] | All gives a List of them. Automatic randomizes candidate order; Identity preserves deterministic order.";
+RandomInfraHalfLine::usage = "RandomInfraHalfLine[graph, p, q] gives one ray from p through q as a vertex list -- a shortest path from p through q that no neighbour of its last vertex prolongs; a trailing n | UpTo[n] | All gives a List of them. Automatic randomizes candidate order; Identity preserves deterministic order. Option RandomSeeding.";
 InfraHalfLineQ::usage = "InfraHalfLineQ[graph, ray] tests whether ray is a pointed half-line: a shortest path from its own first vertex that cannot be prolonged past its last.";
 
 FindInfraPolylineSubdivision::usage = "FindInfraPolylineSubdivision[graph, path] chunks a walk into the fewest geodesic legs whose knots are walk vertices. Option \"MaxLength\" caps each leg.";
@@ -87,8 +87,8 @@ InfraAngle::usage = "InfraAngle[graph, {q1, p, q2}] gives the length of InfraArc
 InfraComparisonAngle::usage = "InfraComparisonAngle[graph, {q1, p, q2}] gives the comparison-triangle angle at p in the constant-curvature model plane. Option \"Curvature\".";
 InfraMetricTensor::usage = "InfraMetricTensor[graph, p] gives the matrix of d(p, u)/d(p, v) over v, w with u the vertex of I(p, w) closest to v; with r, over the shell InfraShell[p, r]. Option \"SelectCoordinate\".";
 
-SelectInfraWalk::usage = "SelectInfraWalk[graph, walks, n] draws n walks (default 1) from a bundle -- vertex lists or walk graphs, cycle graphs selecting as closed walks -- treated as a metric space; n may be UpTo[n] or All, and SelectInfraWalk[graph, n] is the operator form. Options \"From\", \"Distance\", \"Metric\", \"MaxCliques\", \"Cyclic\".";
-EmbeddingClosest::usage = "EmbeddingClosest[graph, bundle, ref] keeps the bundle elements drawn closest to a Euclidean reference under GraphEmbedding; ref is {p1, p2}, {center, radius}, or a curve.";
+SelectInfraWalk::usage = "SelectInfraWalk[graph, walks, n] draws n walks (default 1) from a bundle of vertex lists or walk graphs treated as a metric space; SelectInfraWalk[graph, n] is the operator form. Options \"From\", \"Distance\", \"Metric\", \"MaxCliques\", \"Cyclic\", RandomSeeding.";
+EmbeddingClosest::usage = "EmbeddingClosest[graph, walks, curve] keeps the walks drawn closest, in Hausdorff distance under GraphEmbedding, to a Line, BSplineCurve, BezierCurve or Circle; {p, q} of vertices is the segment from p to q.";
 FindEmbeddingClosestPath::usage = "FindEmbeddingClosestPath[graph, curve] snaps an embedded curve to a walk graph, mapping sampled points to nearest vertices and joining them by geodesics.";
 SprayGraph::usage = "SprayGraph[graph, c] gives the BFS DAG rooted at c, whose directed source-to-sink paths are exactly the maximal shortest paths from c; SprayGraph[graph, pairs] gives the union of shortest paths between listed pairs.";
 PathSubgraph::usage = "PathSubgraph[graph, u, v] gives the union of all shortest u-v paths; a trailing length cap or All widens it to longer simple paths.";
@@ -128,7 +128,7 @@ InfraIntersectQ::usage = "InfraIntersectQ[s1, s2] asserts inside an InfraScene t
 
 InfraSubstrateHighlight::usage = "InfraSubstrateHighlight[graph, {obj1, obj2, ...}] draws the objects' densities on graph in list order, the i-th in the i-th palette color, a later one over an earlier; a Directive styles the objects after it. Options \"OpacityRange\", \"ThicknessRange\", \"PointSizeRange\", \"Arrowheads\", \"Palette\".";
 InfraScenePlot::usage = "InfraScenePlot[scene, graph, instance] draws saved scene objects; InfraScenePlot[scene, graph, instance, objects] draws explicit geometry at the saved bindings.";
-InfraSceneViewer::usage = "InfraSceneViewer[scene, graph] displays scene steps. InfraSceneViewer[data] inspects saved exploration states, event histories and branchial witnesses without sampling.";
+InfraSceneViewer::usage = "InfraSceneViewer[scene, graph] is an interactive view of the construction scene on graph, one step at a time.";
 PointViewer::usage = "PointViewer[graph] is an interactive viewer for selecting points; PointViewer[graph, sym] stores the selection in sym.";
 SegmentViewer::usage = "SegmentViewer[graph] is an interactive viewer for exploring geodesic segments.";
 ShellViewer::usage = "ShellViewer[graph] is an interactive viewer for exploring metric shells.";
@@ -150,7 +150,7 @@ TessellationCurvature::usage = "TessellationCurvature[spec] is the combinatorial
 
 TessellationEulerCharacteristic::usage = "TessellationEulerCharacteristic[graph, spec] is the Euler characteristic V - E + F of the closed map with skeleton graph and type spec, a symbol {p, q} or a vertex configuration.";
 
-TessellationGenus::usage = "TessellationGenus[spec, k] is the genus of the k-th map of type spec, counted as in TessellationGraph, from spec and its size alone. TessellationGenus[graph, spec] is (2 - chi)/2 for the map with skeleton graph and type spec.";
+TessellationGenus::usage = "TessellationGenus[spec, k] is the genus of the k-th map of type spec, counted as in TessellationGraph, from spec and its size alone. TessellationGenus[graph, spec] is (2 - chi)/2 for the map with skeleton graph and type spec, a half-integer on some non-orientable maps.";
 
 TessellationNeighborhoodGraph::usage = "TessellationNeighborhoodGraph[{p, q}, r] is the radius-r graph-distance ball cut from the infinite regular {p, q} tessellation of its covering surface (Euclidean plane, hyperbolic plane, or closing-up sphere by the curvature (p-2)(q-2)) -- the non-compact companion to TessellationGraph, with VertexCoordinates carrying the embedding. TessellationNeighborhoodGraph[config, r] cuts the same ball from the uniform / Archimedean tiling of a longer vertex configuration (the chiral snub / elongated families are deferred). TessellationNeighborhoodGraph[{p, q}, {m, n}] is the m x n rectangular Euclidean patch of m x n cells, as in TessellationGraph[{p, q}, {m, n}].";
 
@@ -190,7 +190,7 @@ DisplacementIsomorphismQ::usage = "DisplacementIsomorphismQ[g, d] tests whether 
 
 ContinuousDisplacementQ::usage = "ContinuousDisplacementQ[g, d, k] tests k-continuity of displacement d (default k = 1). Method -> \"Weak\" requires one close target pair across each edge; \"Hausdorff\" requires every target to have a close partner; \"Strong\" requires every cross-pair to be close.";
 
-RandomDisplacement::usage = "RandomDisplacement[g, r] generates a random continuous displacement of magnitude at most r (default 1): a random continuous section of the scale-r tangent bundle.";
+RandomDisplacement::usage = "RandomDisplacement[g, r] generates a random continuous displacement of magnitude at most r (default 1): a random continuous section of the scale-r tangent bundle. Option RandomSeeding.";
 
 FindKillingDisplacement::usage = "FindKillingDisplacement[g] finds the nontrivial graph automorphism of least displacement magnitude, as a displacement. FindKillingDisplacement[g, All] returns all minimal ones.";
 
@@ -214,7 +214,7 @@ BoundarylessGraph::usage = "BoundarylessGraph[g] deletes every edge joining two 
 
 GraphEccentricities::usage = "GraphEccentricities[g] gives the eccentricity max_w d(v, w) of every vertex, in VertexList order -- the list form of VertexEccentricity. Also takes a distance matrix. Values run from GraphRadius[g] to GraphDiameter[g].";
 
-CenterGraph::usage = "CenterGraph[g, k] gives NeighborhoodGraph[g, GraphCenter[g], k]; a negative k gives the radius GraphRadius[g] + k. CenterGraph[g, Scaled[q]] gives the radius Floor[q GraphRadius[g]].";
+CenterGraph::usage = "CenterGraph[g, k] gives NeighborhoodGraph[g, GraphCenter[g], k]; with e the largest distance from the centre, a negative k gives the radius e + k and Scaled[q] the radius Floor[q e].";
 
 RelativeEccentricity::usage = "RelativeEccentricity[g] gives (e(v) - radius)/(diameter - radius) for each vertex in VertexList order -- 0 on GraphCenter, 1 on GraphPeriphery. Also takes a distance matrix. Identically 0 when diameter == radius or the graph is disconnected.";
 
@@ -244,7 +244,7 @@ InflatedVertex::usage = "InflatedVertex[v, i] is the i-th fiber vertex over base
 
 InfraSubstrateStyle::usage = "InfraSubstrateStyle[size] is the Graph option list a substrate backdrop is drawn with at size \"Small\" | \"Medium\" | \"Large\" -- StandardGray edges on an opacity ladder and faintly filled outlined vertex disks at a scaled 0.013 | 0.009 | 0.006 of the coordinate diagonal, fading as the substrate grows, so one style draws one dot on every graph -- and \"Default\" is none. InfraSubstrateStyle[name, size] is the style of the named substrate at that size: every substrate falls back to the size default today, and a custom look for one substrate is one more definition. Splice a style into any graph construction: Graph[g, Sequence @@ InfraSubstrateStyle[\"Medium\"]] -- the way to draw a hand-built object (a Wolfram-model graph in particular) exactly like the roster substrates. InfraSubstrateStyle[] lists the available styles in an Association with \"Default\" and \"Custom\" keys; InfraSubstrateStyle[All] gives the flat list of all default and custom styles.";
 
-InfraSubstrate::usage = "InfraSubstrate[name, size] is the named example substrate at size \"Small\", \"Medium\" or \"Large\", or at a raw spec (a cell measure, a radius, grid dimensions, a generation count); a substrate drawn from a random construction is seeded from outside, with SeedRandom, so the same seed recovers the same graph; a call consumes the random stream like any other draw. Each substrate is one explicit definition in Kernel/InfraSubstrates/InfraSubstrate.wl, with its size table and its exceptions (an interior strip, a kept embedding) written into the definition. A Wolfram-model universe is named by its Registry of Notable Universes number, as in InfraSubstrate[\"wm6655\", 11], and any of the 947 registry entries resolves through ResourceFunction[\"WolframModelData\"]. InfraSubstrate[name, size, style] overrides the ambient style, which defaults to the InfraSubstrateStyle of that size since a substrate is a backdrop; pass \"Default\" for none. A substrate is bare combinatorics by default -- a stored embedding is discarded and a spring layout of its own dimension places the vertices; option \"KeepCoordinates\" -> True draws the substrate where it lives instead. Any substrate inflates: option \"Inflate\" -> k is InflateGraph[g, k], k new vertices over every vertex (a number or a {min, max} range), and \"Inflate\" -> {k, opts} passes InflateGraph its \"VerticalEdges\" and \"HorizontalEdges\". InfraSubstrate[] lists the roster classified by what a substrate models (\"OpenManifold\" -- boundaryless patches, open subsets delivered with the rim contour removed; \"ClosedManifold\" -- compact tessellated surfaces; \"Fractal\" -- self-similar, Hausdorff dimension between the integers; \"Exotic\" -- graphs with no manifold model and no scaling law; \"WolframModel\"); InfraSubstrate[All] is the flat name list; InfraSubstrate[name] is the \"Medium\" size. Graph options are forwarded.";
+InfraSubstrate::usage = "InfraSubstrate[name, size] is the named example substrate at size \"Small\", \"Medium\" or \"Large\", or at a raw spec (a cell measure, a radius, grid dimensions or one side n for {n, n}, a generation count); a substrate drawn from a random construction is seeded from outside, with SeedRandom, so the same seed recovers the same graph; a call consumes the random stream like any other draw. Each substrate is one explicit definition in Kernel/InfraSubstrates/InfraSubstrate.wl, with its size table and its exceptions (an interior strip, a kept embedding) written into the definition. A Wolfram-model universe is named by its Registry of Notable Universes number, as in InfraSubstrate[\"wm6655\", 11], and any of the 947 registry entries resolves through ResourceFunction[\"WolframModelData\"]. InfraSubstrate[name, size, style] overrides the ambient style, which defaults to the InfraSubstrateStyle of that size since a substrate is a backdrop; pass \"Default\" for none. A substrate is bare combinatorics by default -- a stored embedding is discarded and a spring layout of its own dimension places the vertices; option \"KeepCoordinates\" -> True draws the substrate where it lives instead. Any substrate inflates: option \"Inflate\" -> k is InflateGraph[g, k], k new vertices over every vertex (a number or a {min, max} range), and \"Inflate\" -> {k, opts} passes InflateGraph its \"VerticalEdges\" and \"HorizontalEdges\". InfraSubstrate[] lists the roster classified by what a substrate models (\"OpenManifold\" -- boundaryless patches, open subsets delivered with the rim contour removed; \"ClosedManifold\" -- compact tessellated surfaces; \"Fractal\" -- self-similar, Hausdorff dimension between the integers; \"Exotic\" -- graphs with no manifold model and no scaling law; \"WolframModel\"); InfraSubstrate[All] is the flat name list; InfraSubstrate[name] is the \"Medium\" size. Graph options are forwarded.";
 
 InfraSubstrateCode::usage = "InfraSubstrateCode[name, size] is the code behind InfraSubstrate[name, size]: the held construction, without the backdrop style, wrapped in a Graph call only when a layout clause or a forwarded option has to attach to it, whose ReleaseHold evaluates to the graph InfraSubstrate draws at the same seed with the \"Default\" style (building the code realizes the graph once, so set the seed after the build). It is HoldForm, so an output cell shows it as typeset code. The roster definition is itself held code -- InfraSubstrate evaluates it, InfraSubstrateCode prints it -- so the printed code cannot drift from the code that runs, and it names no symbol the reader cannot see. Baked in: the size table collapsed to the value the size selects, the rule and initial condition of a Wolfram-model universe, the layout dimension and the inflation call; the style is presentation and is spliced back with Sequence @@ InfraSubstrateStyle[size]. Takes the options of InfraSubstrate, and Graph options are forwarded.";
 
@@ -266,7 +266,7 @@ FindBallCover::usage = "FindBallCover[g, r, target] finds centres whose radius-r
 
 BallCoverQ::usage = "BallCoverQ[g, r, centres, target] tests whether the radius-r balls around centres cover target (default All), using the distances of g."
 
-RandomBallCover::usage = "RandomBallCover[g, r, target] uniformly samples a minimum radius-r ball cover of target (default All). An explicit count samples distinct minima without replacement. Option Method."
+RandomBallCover::usage = "RandomBallCover[g, r, target] uniformly samples a minimum radius-r ball cover of target (default All). An explicit count samples distinct minima without replacement. Options RandomSeeding, Method."
 
 BallCoverNumber::usage = "BallCoverNumber[g, r, target] gives the minimum number of radius-r balls covering target (default All), with centres and distances in g. Option Method."
 
@@ -276,7 +276,7 @@ EffectiveResistance::usage = "EffectiveResistance[g, u, v] returns the Klein-Ran
 
 ResistanceQ::usage = "ResistanceQ[r] tests whether the numeric matrix r is the resistance distance matrix of a connected graph with nonnegative conductances: r is symmetric with zero diagonal, the doubly centred matrix B = -P r P / 2, P = I - J / n, is positive semidefinite of rank n - 1, and its pseudoinverse, the Laplacian, has no positive entry off the diagonal (tolerance 10^-9).";
 
-MiniballRadius::usage = "MiniballRadius[pts] returns the radius of the smallest enclosing ball of the points (BoundingRegion[pts, 'MinBall']).";
+MiniballRadius::usage = "MiniballRadius[pts] gives the radius of the smallest ball that contains the points, exact for exact points.";
 
 BallIntersectionComplex::usage = "BallIntersectionComplex[data, r, k] returns the order-k ball-intersection complex of closed radius-r balls: a simplex is admitted iff every k-subset of its balls has a common point. k = Infinity is Cech (the nerve), k = 2 is the pairwise complex, 2 < k < Infinity interpolates. For the Euclidean metric, and for a Graph at integer r, k = 2 is VietorisRipsComplex[data, 2 r]; with a matrix or a function it is not in general. Options: 'Metric'->EuclideanDistance|matrix|Graph|fn (Euclidean uses the exact miniball test, where a common point is any point of space; with a matrix or a function the common point must be a data point; with a Graph it is any vertex of the graph), 'IntersectionTest'->fn applied to the common region (default = non-empty), 'MaxDimension'->k.";
 
@@ -333,7 +333,7 @@ InfraEdgeLiftMultiplicity::usage = "InfraEdgeLiftMultiplicity[fib] gives each to
 InfraAtMostOneEdgeLiftQ::usage = "InfraAtMostOneEdgeLiftQ[fib] tests whether every total vertex has at most one neighbor over each adjacent base vertex.";
 InfraUniqueEdgeLiftingQ::usage = "InfraUniqueEdgeLiftingQ[fib] tests whether every total vertex has exactly one neighbor over each adjacent base vertex.";
 InfraCoveringQ::usage = "InfraCoveringQ[fib] tests unique edge lifting and the absence of vertical edges.";
-RandomInfraFiberedGraph::usage = "RandomInfraFiberedGraph[base] draws a fibered graph over base. Options Properties, \"VerticalVertexCount\", \"VerticalEdgeCount\", \"HorizontalEdgeCount\".";
+RandomInfraFiberedGraph::usage = "RandomInfraFiberedGraph[base] draws a fibered graph over base. Options RandomSeeding, Properties, \"VerticalVertexCount\", \"VerticalEdgeCount\", \"HorizontalEdgeCount\".";
 InfraFibration::usage = "InfraFibration[total, projection] is the inert legacy spelling of InfraFiberedGraph. InfraFibration[model] materializes an experimental construction.";
 InfraTotalGraph::usage = "InfraTotalGraph[fib] is the legacy spelling of InfraTotalSpace[fib].";
 InfraFibrationAssociation::usage = "InfraFibrationAssociation[fib] is the legacy spelling of InfraProjection[fib].";
@@ -342,17 +342,17 @@ InfraFiber::usage = "InfraFiber[fib, p] gives the fiber over the base vertex p, 
 InfraFibers::usage = "InfraFibers[fib] gives the association <|p -> fiber, ...|> of the fibers of fib over every base vertex.";
 InfraFibrationQ::usage = "InfraFibrationQ[fib] tests the edge lifting property: every total vertex over p has a neighbour over every base neighbour of p.";
 InfraFiberBundleQ::usage = "InfraFiberBundleQ[fib] tests whether fib has isomorphic fibers and product structure over each base edge.";
-RandomInfraFibration::usage = "RandomInfraFibration[base] is the experimental legacy cyclic-band generator. Use RandomInfraFiberedGraph for general construction.";
+RandomInfraFibration::usage = "RandomInfraFibration[base] is the experimental legacy cyclic-band generator. Use RandomInfraFiberedGraph for general construction. Option RandomSeeding.";
 InfraBundleMorphismQ::usage = "InfraBundleMorphismQ[fib1, fib2, F, f] tests whether F maps total vertices of fib1 to total vertices of fib2 over f, and edges to edges or vertices; f defaults to Identity.";
 InfraSection::usage = "InfraSection[s] represents prescribed section values as an association from base vertices to total vertices.";
 InfraSectionQ::usage = "InfraSectionQ[fib, InfraSection[s]] tests whether s[p] lies over p for every key p of s.";
 InfraContinuousSectionQ::usage = "InfraContinuousSectionQ[fib, InfraSection[s]] tests whether s is a section of fib mapping every base edge between its keys to a total edge.";
-RandomInfraSection::usage = "RandomInfraSection[fib] draws a section; a domain restricts it, and an InfraSection seed fixes values for extension. Options Properties, \"NextVertexFunction\".";
+RandomInfraSection::usage = "RandomInfraSection[fib] draws a section; a domain restricts it, and an InfraSection seed fixes values for extension. Options RandomSeeding, Properties, \"NextVertexFunction\".";
 FindInfraSection::usage = "FindInfraSection[fib, n] gives n continuous sections in deterministic order. Use RandomInfraSection for new constructions.";
 InfraConnection::usage = "InfraConnection[edges] represents chosen horizontal edges of a fibered graph.";
 InfraConnectionQ::usage = "InfraConnectionQ[fib, connection] tests whether connection gives a perfect matching between the whole fibers over each base edge.";
 InfraFlatConnectionQ::usage = "InfraFlatConnectionQ[fib, conn] tests whether a complete connection has trivial global monodromy.";
-RandomInfraConnection::usage = "RandomInfraConnection[fib] draws one complete connection; a trailing count gives several or all. Option \"NextVertexFunction\".";
+RandomInfraConnection::usage = "RandomInfraConnection[fib] draws one complete connection; a trailing count gives several or all. Options RandomSeeding, \"NextVertexFunction\".";
 FindInfraHorizontalLift::usage = "FindInfraHorizontalLift[fib, connection, start, walk, n] gives the counted list of lifts. Use InfraHorizontalLift for the unique lift of a complete connection.";
 InfraParallelTransport::usage = "InfraParallelTransport[fib, connection, walk] gives the fiber bijection along walk. InfraParallelTransport[InfraDisplacementBundle[g, r], walk] gives the experimental metric-selected transports.";
 InfraHolonomy::usage = "InfraHolonomy[fib, conn, loop] gives the transport around a closed walk as Cycles on the positions of the fiber over its first vertex.";
@@ -365,36 +365,32 @@ FindInfraLeviCivitaConnection::usage = "FindInfraLeviCivitaConnection[InfraDispl
 InfraHolonomyAngle::usage = "InfraHolonomyAngle[InfraDisplacementBundle[g, r], conn, loop] gives the unsigned rotation angle of the directions around loop under conn: the mean angle between each moved direction and its image, in arc radians.\nInfraHolonomyAngle[InfraDisplacementBundle[g, r], loop] gives the least such angle over the Levi-Civita transports of InfraParallelTransport. Option Method (\"Arclength\", \"Alexandrov\").";
 InfraCovariantDerivative::usage = "InfraCovariantDerivative[InfraDisplacementBundle[g, r], conn, InfraSection[s], walk] gives <|p -> x, ...|>: for each step p -> q of walk, conn carries s[q] back to p, the arrow from s[p] to that image is carried to p by the Levi-Civita transports at its own length, and x is the endpoint nearest to p, x == p for zero. The arrow is carried by the Levi-Civita transports whatever conn is. Option Method.";
 InfraCanonicalOneForm::usage = "InfraCanonicalOneForm[g, {x, ..., v}, {y, ...}] gives the canonical 1-form at the vector x -> v on the step to y: the pairing (d(x,v)^2 + d(x,y)^2 - d(v,y)^2)/2.";
-InfraFiberedSubstrate::usage = "InfraFiberedSubstrate[name, size] is the named example fibration at size \"Small\", \"Medium\" or \"Large\", or at a raw spec of its base (a cycle length, grid or torus dimensions, a mesh size): a construction head InfraTangentBundle[g, 2] or InfraDisplacementBundle[g, 1] over a base taken from InfraSubstrate where one exists, or a literal InfraFibration whose total vertices {p, k} sit on a small circle around their base vertex p. InfraFiberedSubstrate[] lists the roster by group (\"Trivial\" -- products; \"Covering\" -- twisted double covers and the Moebius ladder; \"Tangent\" and \"Displacement\" -- the two bundles over a grid, a triangular torus, the octahedron and a sphere mesh; \"NonBundle\" -- fibrations with non-isomorphic fibers); InfraFiberedSubstrate[All] is the flat name list; InfraFiberedSubstrate[name] is the \"Medium\" size. The octahedron has one size.";
+InfraFiberedSubstrate::usage = "InfraFiberedSubstrate[name, size] is the named example fibration at size \"Small\", \"Medium\" or \"Large\", or at a raw spec of its base (a cycle length, grid or torus dimensions, a mesh size): an InfraFiberedGraph whose total vertices {p, k} lie over their base vertex p, or the construction head InfraTangentBundle[g, 2] or InfraDisplacementBundle[g, 1]. InfraFiberedSubstrate[] lists the roster by group (\"Trivial\" -- products; \"Covering\" -- twisted double covers and the Moebius ladder; \"Tangent\" and \"Displacement\" -- the two bundles over a grid, a triangular torus, the octahedron and a sphere mesh; \"NonBundle\" -- fibrations with non-isomorphic fibers); InfraFiberedSubstrate[All] is the flat name list; InfraFiberedSubstrate[name] is the \"Medium\" size. The octahedron has one size.";
 
 IntervalGraph::usage = "IntervalGraph[graph, p, q] gives the DAG of all shortest paths from p to q. More points give the list of consecutive interval DAGs.";
 RayGraph::usage = "RayGraph[graph, p, q] gives the DAG of maximal shortest paths from p through q; RayGraph[graph, p, p] gives the spray at p.";
 BeamGraph::usage = "BeamGraph[graph, p, q] gives the list of DAGs of lines through p and q, one per compatible pair of maximal endpoints. BeamGraph[graph, germ] keeps the specified shortest-path germ.";
 ArcGraph::usage = "ArcGraph[graph, c, points] gives the arc carrier around c through the ordered point list. Option \"RadiusDelta\" widens the radial band.";
 InfraRay::usage = "InfraRay is the inert legacy compatibility spelling; use InfraHalfLine."
-RandomInfraRay::usage = "RandomInfraRay[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+RandomInfraRay::usage = "RandomInfraRay[graph, token] samples the construction family; All gives its complete pool. Options RandomSeeding, NextVertexFunction."
 InfraRayQ::usage = "InfraRayQ is the legacy compatibility spelling; use InfraHalfLineQ."
 InfraLine::usage = "InfraLine is the inert legacy compatibility spelling; use InfraInfiniteLine."
-RandomInfraLine::usage = "RandomInfraLine[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+RandomInfraLine::usage = "RandomInfraLine[graph, token] samples the construction family; All gives its complete pool. Options RandomSeeding, NextVertexFunction."
 InfraLineQ::usage = "InfraLineQ is the legacy compatibility spelling; use InfraInfiniteLineQ."
 InfraPolygon::usage = "InfraPolygon is the inert legacy compatibility spelling; use InfraRegularPolygon."
-RandomInfraCircle::usage = "RandomInfraCircle[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
-RandomInfraArc::usage = "RandomInfraArc[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
-RandomInfraPlane::usage = "RandomInfraPlane[graph, token] samples the construction family; All gives its complete pool. Option NextVertexFunction."
+RandomInfraCircle::usage = "RandomInfraCircle[graph, token] samples the construction family; All gives its complete pool. Options RandomSeeding, NextVertexFunction."
+RandomInfraArc::usage = "RandomInfraArc[graph, token] samples the construction family; All gives its complete pool. Options RandomSeeding, NextVertexFunction."
+RandomInfraPlane::usage = "RandomInfraPlane[graph, token] samples the construction family; All gives its complete pool. Options RandomSeeding, NextVertexFunction."
 
 InfraMidpoint::usage = "InfraMidpoint[p,q] is the inert center of the oriented segment graph from p to q, with shortest-path occupation density."
 InfraPerpendicularBisector::usage = "InfraPerpendicularBisector[p,q] is the inert locus of vertices at equal finite graph distance from p and q."
 InfraEquidistantSet::usage = "InfraEquidistantSet[{p1,...,pn}] is the inert locus of vertices at equal finite graph distance from all anchors."
 InfraRegionNearest::usage = "InfraRegionNearest[obj,p] is the inert family of vertices in obj nearest to p in graph distance, retaining all ties."
-RandomInfraMidpoint::usage = "RandomInfraMidpoint[graph,p,q] samples a central vertex of the oriented segment graph. It also accepts InfraMidpoint[p,q]. Option NextVertexFunction."
-RandomInfraRegionNearest::usage = "RandomInfraRegionNearest[graph,obj,p] samples a raw nearest support vertex. It also accepts InfraRegionNearest[obj,p]. Option NextVertexFunction."
+RandomInfraMidpoint::usage = "RandomInfraMidpoint[graph,p,q] samples a central vertex of the oriented segment graph. It also accepts InfraMidpoint[p,q]. Options RandomSeeding, NextVertexFunction."
+RandomInfraRegionNearest::usage = "RandomInfraRegionNearest[graph,obj,p] samples a raw nearest support vertex. It also accepts InfraRegionNearest[obj,p]. Options RandomSeeding, NextVertexFunction."
 
 InfraGeometricAssertion::usage = "InfraGeometricAssertion[objects, property] is an inert assertion of Distinct, Member or EqualDistance on a graph."
 InfraGeometricTest::usage = "InfraGeometricTest[graph, assertion] decides supported synthetic assertions; unsupported assertions stay unevaluated."
-
-InfraSceneMultiway::usage = "InfraSceneMultiway[scene, graph, init] gives exact finite construction states, events, group boundaries and completeness evidence."
-
-InfraBranchialGraph::usage = "InfraBranchialGraph[data, depth] gives the immediate-parent branchial graph and its saved completeness evidence."
 
 InfraParallelSectionQ::usage = "InfraParallelSectionQ[fib, connection, section] tests whether section is preserved by connection along the base edges in its domain.";
 InfraHorizontalLift::usage = "InfraHorizontalLift[fib, connection, start, walk] gives the unique horizontal lift of a base walk from start.";
@@ -402,4 +398,4 @@ InfraFiberedGraphHighlight::usage = "InfraFiberedGraphHighlight[fib, items] draw
 InfraFiberedGraphViewer::usage = "InfraFiberedGraphViewer[fib, items] inspects fibers, sections and connection lifts interactively.";
 
 InfraCircleThrough::usage = "InfraCircleThrough[points, InfraCircle[c, {r, s}]] is the family of shortest separating simple circles in the band containing every prescribed point."
-RandomInfraCircleThrough::usage = "RandomInfraCircleThrough[graph, token] samples one circle through prescribed points; a count requests distinct circles. A saved carrier Graph can replace graph and token."
+RandomInfraCircleThrough::usage = "RandomInfraCircleThrough[graph, token] samples one circle through prescribed points; a count requests distinct circles. A saved carrier Graph can replace graph and token. Option RandomSeeding."

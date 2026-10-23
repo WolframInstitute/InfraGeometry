@@ -478,6 +478,39 @@ VerificationTest[
   TestID -> "FindInfraSpanningAxes-strict-fail-too-many"
 ]
 
+(* "Hausdorff" scores a candidate by its least Hausdorff distance to one chosen axis, so on the 5 x 5 grid the axes are a few
+   diametral geodesics, pairwise at least half a diameter apart, not all 140 of them *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] }, { axes = FindInfraSpanningAxes[ g, All, "AxisDistance" -> "Hausdorff" ] },
+    { dm = GraphDistanceMatrix @ g },
+    { hausdorff = { a, b } |-> Max[ Max[ Min /@ dm[[ a, b ]] ], Max[ Min /@ dm[[ b, a ]] ] ] },
+    { Length @ axes < 10, AllTrue[ Subsets[ axes, { 2 } ], hausdorff @@ # >= 4 & ] } ],
+  { True, True },
+  TestID -> "FindInfraSpanningAxes-Hausdorff-against-each-axis"
+]
+
+VerificationTest[
+  TimeConstrained[ Length @ FindInfraSpanningAxes[ GridGraph[ { 4, 6 } ], 2, "MinLength" -> 6, "AxisDistance" -> "Hausdorff" ], 10 ],
+  2,
+  TestID -> "FindInfraSpanningAxes-stops-at-the-count"
+]
+
+VerificationTest[
+  MatchQ[ FindInfraSpanningAxes[ GridGraph[ { 4, 4 } ], All, "AxisDistance" -> "Frechet" ], _FindInfraSpanningAxes ],
+  True,
+  TestID -> "FindInfraSpanningAxes-unknown-AxisDistance-unevaluated"
+]
+
+(* ===== FindInfraOrthogonalAxes with an InfraPerpendicularQ method ===== *)
+
+(* perpendicular lines meet in one vertex, so the "Projection" axes meet only at the centre *)
+VerificationTest[
+  With[ { g = GridGraph[ { 7, 7 } ] }, { axes = FindInfraOrthogonalAxes[ g, 25, 2, Properties -> "Projection" ] },
+    { Length @ axes, AllTrue[ Subsets[ axes, { 2 } ], Intersection @@ # === { 25 } & ] } ],
+  { 2, True },
+  TestID -> "FindInfraOrthogonalAxes-Projection-axes-meet-at-the-centre"
+]
+
 (* ===== Z-valued OrthogonalCoordinates from a center ===== *)
 
 (* PathGraph[5] at 3 with the default frame from FindInfraOrthogonalAxes:

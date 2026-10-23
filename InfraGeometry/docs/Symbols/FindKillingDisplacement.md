@@ -12,75 +12,64 @@ RelatedGuides: [InfraAnalysis]
 
 ## Usage
 
-<code>[FindKillingDisplacement]()[*g*]</code> finds an automorphism of *g* other than the identity of least magnitude, as a displacement.
+<code>[FindKillingDisplacement]()[*g*]</code> gives an automorphism of *g* other than the identity of least magnitude, as a displacement.
 
-<code>[FindKillingDisplacement]()[*g*, [All]()]</code> gives every one of least magnitude.
+<code>[FindKillingDisplacement]()[*g*, [All]()]</code> gives all of least magnitude.
 
 ## Details & Options
 
-Definition: among the automorphisms *σ ≠ id* of *g*, those with the least magnitude *max_v d(v, σ(v))*, each as the displacement *v* -> {*σ(v)*}. They are the discrete Killing displacements ([DisplacementIsomorphismQ]()) that move the vertices least, and their magnitude is [KillingDisplacementMagnitude]().
+The result is an automorphism *σ ≠ id* of *g* minimizing *max {d(v, σ(v))}*, as the displacement *v* -> {*σ(v)*}. It is a discrete Killing displacement ([DisplacementIsomorphismQ]()) that moves the vertices least, and its magnitude is [KillingDisplacementMagnitude]().
 
-Every automorphism is listed, from [GraphAutomorphismGroup](), so the group must be of moderate order.
+In the plane the translations by a small vector are isometries that move every point a little. On a torus the translations by one step play this part, of magnitude 1. A graph with a rim has fewer symmetries; on the square grid the least ones exchange pendant vertices at the corners.
 
-On a cycle or a torus the least automorphisms are the translations by one step. On a finite patch of a tiling the only automorphisms are the symmetries of the patch, which move its rim far: by the diameter on the square and the hexagonal tilings.
+A graph without symmetry has none: the form with [All]() gives {}, and the form without stays unevaluated.
+
+The whole automorphism group is listed, so its order must be moderate.
 
 ## Basic Examples
 
-The least automorphisms of the 12-cycle are the two rotations by one step.
+The least symmetry of the square grid exchanges two pendant vertices at a corner:
 
 ```wl
-With[
-  {g = CycleGraph[12]},
-  {rotations = FindKillingDisplacement[g, All]},
-  {DisplacementPlot[g, rotations], DisplacementMagnitude[g, #] & /@ rotations}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {killing = FindKillingDisplacement[g]},
+  DisplacementPlot[g, killing, PlotLabel -> DisplacementMagnitude[g, killing]]]
 ```
 
-The least symmetry of the square, the triangular and the hexagonal tilings, and its magnitude. On the triangular tiling it is a rotation by a sixth of a turn; on the square tiling every symmetry moves a corner of the patch to another.
+There are 15, the exchanges at any nonempty set of the four corners, all of magnitude 2. The one at all four corners:
 
 ```wl
-With[
-  {graphs = InfraSubstrate[#, "Small", "KeepCoordinates" -> True] & /@ {"SquareTilingGraph", "TriangularTilingGraph", "HexagonalTilingGraph"}},
-  {killings = FindKillingDisplacement /@ graphs},
-  {GraphicsRow[MapThread[DisplacementPlot, {graphs, killings}]], MapThread[DisplacementMagnitude, {graphs, killings}]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {all = FindKillingDisplacement[g, All]},
+  DisplacementPlot[g, First @ MaximalBy[all, Count[Keys[#], v_ /; #[v] =!= {v}] &],
+    PlotLabel -> {Length[all], Union[DisplacementMagnitude[g, #] & /@ all]}]]
 ```
 
 ## Scope
 
-The square torus has no rim. Its least automorphisms are the four translations by one step, drawn at a planar layout of the torus.
+The square torus has no rim. Its least automorphisms are the four translations by one step, drawn at a planar layout of the torus:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTorusGraph", "Small"]},
-  {translations = FindKillingDisplacement[g, All]},
-  {DisplacementPlot[g, First[translations]], Length[translations], DisplacementMagnitude[g, First[translations]]}]
+With[{g = InfraSubstrate["SquareTorusGraph", "Small"]}, {translations = FindKillingDisplacement[g, All]},
+  DisplacementPlot[g, First @ translations,
+    PlotLabel -> {Length[translations], DisplacementMagnitude[g, First @ translations]}]]
 ```
 
 ## Properties and Relations
 
-A least automorphism is a Killing displacement: an automorphism and a 1-continuous bijection.
+A least automorphism is a 1-continuous bijection:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
   {killing = FindKillingDisplacement[g]},
-  {DisplacementPlot[g, killing], DisplacementIsomorphismQ[g, killing], DisplacementBijectionQ[killing], ContinuousDisplacementQ[g, killing]}]
+  {DisplacementIsomorphismQ[g, killing], DisplacementBijectionQ[killing], ContinuousDisplacementQ[g, killing]}]
 ```
 
 ## Possible Issues
 
-The least symmetry need not be a motion of the whole graph. On the square grid with pendant vertices at its rim, it exchanges two pendant vertices at a corner and fixes everything else.
+The square mesh has no symmetry. The form with [All]() gives the empty list, and the form without stays unevaluated:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
-  {killing = FindKillingDisplacement[g]},
-  {DisplacementPlot[g, killing], Select[Keys[killing], killing[#] =!= {#} &], DisplacementMagnitude[g, killing]}]
-```
-
-On a graph without symmetry, such as the discretized plane, there is no Killing displacement. The form with [All]() gives the empty list, and the one-argument form stays unevaluated, with no message.
-
-```wl
-With[
-  {g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
-  {g, FindKillingDisplacement[g, All], FindKillingDisplacement[g]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {FindKillingDisplacement[g, All], Head @ FindKillingDisplacement[g]}]
 ```

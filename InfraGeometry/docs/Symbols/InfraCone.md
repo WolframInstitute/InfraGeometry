@@ -12,114 +12,102 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Usage
 
-<code>[InfraCone]()[*axis*, *slope*]</code> is the cone along *axis* with apex *axis*[[1]]: the vertices within *slope* (*i* − 1) of the *i*-th vertex of the axis they project to, with a flat base. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
-
-<code>[InfraCone]()[*axis*, *slope*, Method -> "Balls"]</code> is the rounded cone, the union of the balls of radius *slope* (*i* − 1) about the vertices of the axis.
+<code>[InfraCone]()[*axis*, *m*]</code> is the cone of slope *m* along the walk *axis*, with its apex at the first vertex of the axis and a flat base at the last.
 
 ## Details & Options
 
-Definition: with the axis *a_1, …, a_n*, the cone of slope *m* is the sliced tube <code>[InfraTube]()[*axis*, *i* |-> *m* (*i* − 1), Method -> "Sliced"]</code>. Slice *i* is the set of vertices whose nearest axis vertex is *a_i*, a tie lying in every nearest slice, and *v* is in the cone when *d(a_i, v) ≤ m (i − 1)* for its slice: the radius grows linearly from the apex, and is read at the axis vertex the vertex projects to.
+Let the axis be *a₁, …, aₙ*. The cone is the cylinder whose radius grows from the apex: *v* is in the cone when *d(aᵢ, v) ≤ ⌊m (i − 1)⌋* for an axis vertex *aᵢ* nearest to *v*. It is the sliced tube <code>[InfraTube]()[*axis*, *i* |-> *m* (*i* − 1), Method -> "Sliced"]</code>.
 
-A radius is a whole number of steps, so the radius *m (i − 1)* is rounded down: a cone of slope 1/2 grows by one step every second vertex of the axis, and its mantle is a staircase.
+A radius is a whole number of steps. A cone of slope 1/2 grows by one step every second axis vertex, and its side is a staircase.
 
-The axis is prolonged straight on past both ends and the vertices nearer a prolongation than the axis are cut, so the base is flat: the cone keeps a full row at the last axis vertex. <code>Method -> "Balls"</code> drops the slicing and rounds the base. The rounded cone of the earlier releases is <code>[InfraTube]()[*axis*, *i* |-> *m* (*i* − 1)]</code>.
+The base is flat: as for [InfraCylinder](), the vertices nearer the prolongation of the axis than the axis are cut off. Reverse the axis to put the apex at the other end. Slope 0 gives the axis.
 
-*axis* is a walk: a vertex list, for example one representative of a segment or a ray, or a path or cycle graph. Reverse it for the other apex. Slope 0 gives the axis.
-
-[InfraMeasurement]() gives two measures of a cone:
+On the square grid, away from the rim, the cone of slope 1 along a straight axis of *n* edges is a triangle with *(n + 1)²* vertices, *(n − 1)²* of them interior.
 
 | Measure | Value |
 |---|---|
 | `"CountingMeasure"` | the number of vertices of the cone |
-| `"RiemannianMeasure"` | the number of vertices of the cone all of whose neighbours lie in it: the count without the mantle and the base |
+| `"RiemannianMeasure"` | the number of vertices of its [InfraInterior](), those all of whose neighbours lie in the cone |
 
 The apex is boundary, and so is the axis near it, where the cone is thinner than one step.
 
-A slope *m ≥ 1* gives a ball under <code>Method -> "Balls"</code>. When the axis *a_1, …, a_n* is a shortest path, the rounded cone of slope *m ≥ 1* is <code>[InfraBall]()[*a_n*, ⌊*m* (*n* − 1)⌋]</code>, the ball about the far end: a vertex within *⌊m (i − 1)⌋* of *a_i* is within *⌊m (i − 1)⌋ + n − i ≤ ⌊m (n − 1)⌋* of *a_n*, by the triangle inequality along the axis. So the counts of [InfraBall]() apply. For *0 < m < 1* no lattice count is known, and the cone is measured.
+[InfraCone]() is a symbolic object: [InfraMeasurement]() evaluates it on a graph. It has one member, the vertex set.
 
-In the continuum two cones are the references. In the Euclidean plane the union of the disks of radius *m t* about the points at distance *t* along a segment of length *R*, for *0 ≤ m < 1*, is the convex hull of the apex and the far disk of radius *m R*, with area
+| Option | Default | Values |
+|---|---|---|
+| [Method]() | `"Sliced"` | `"Sliced"`: a flat base; `"Balls"`: the union of the balls of radius *⌊m (i − 1)⌋* about the axis vertices, with a round base |
 
-*m R² √(1 − m²) + m² R² (π − arccos m)*.
-
-In a Riemannian manifold of dimension *n* the angular cone *{exp_p(t u) : u ∈ Ω, 0 ≤ t ≤ r}* over a set *Ω* of unit directions at the apex *p*, of spherical measure *σ(Ω)*, has volume
-
-*σ(Ω) r^n / n − r^(n+2) / (6(n + 2)) ∫_Ω Ric(u, u) dσ + O(r^(n+3))*.
-
-Over the round cap *Ω* of half-angle *α* about the axis direction *v*, *∫_Ω Ric(u, u) dσ = c_⊥ Scal + (c_∥ − c_⊥) Ric(v, v)*, with *c_∥ = |S^(n−2)| ∫_0^α cos² t sin^(n−2) t dt* and *c_⊥ = (σ(Ω) − c_∥)/(n − 1)*: a thin cone reads the Ricci curvature along its axis. The rounded cone of this head is the hull, not an angular cone; it agrees with the angular cone of half-angle *arcsin m* within distance *R (1 − m)* of the apex.
-
-How the number is measured: <code>[InfraMeasurement]()[*g*, [InfraCone]()[*axis*, *m*], *measure*]</code> takes the vertices within *⌊m (i − 1)⌋* of the axis vertex they project to, or the union of the balls of radius *⌊m (i − 1)⌋* about the vertices of the axis under <code>Method -> "Balls"</code>, and counts them, or counts their [InfraInterior](). The profile is the list over the slope.
-
-The head computes nothing. A cone has one member, the vertex set. [InfraMeasurement]() also reads `"VertexDensity"`, `"EdgeDensity"`, `"Cardinality"`, `"Faithful"` and `"Subgraph"`.
+With `Method -> "Balls"` and *m ≥ 1* along a shortest path, the cone is the ball of radius *⌊m (n − 1)⌋* about the far end *aₙ*: by the triangle inequality every ball about *aᵢ* lies in it.
 
 ## Basic Examples
 
-The cone of slope 1/2 along a shortest path on the discretized plane, the square grid and the hexagonal tiling. The Riemannian measure counts the inner vertices, in green; the counting measure adds the boundary, in blue.
+The cone of slope 1/2 along a shortest path of length 4, on the square grid and on the square mesh:
 
 ```wl
-SeedRandom[1];
-Row[Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = First @ GraphCenter[g]},
-    {axis = RandomInfraSegment[ g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])] ]},
-    {cone = InfraCone[axis, 1/2]},
-    {support = ( Keys @ InfraMeasurement[ g, cone, "VertexDensity" ] )},
-    Labeled[
-      InfraSubstrateHighlight[g, {InfraInterior[g, support] -> StandardGreen, InfraBoundary[g, support] -> StandardBlue}],
-      InfraMeasurement[g, cone, {"CountingMeasure", "RiemannianMeasure"}]]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {axis = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1], RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {InfraCone[axis, 1/2], axis}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The same axis read from the other end gives the other apex; the base is a full row.
+The cone of slope 1 along a straight axis of the grid and its interior, with the two measures *(n + 1)² = 49* and *(n − 1)² = 25* for *n* = 6:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {axis = RandomInfraSegment[ g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])] ]},
-  GraphicsRow[{
-    InfraSubstrateHighlight[g, {InfraCone[axis, 1], axis}],
-    InfraSubstrateHighlight[g, {InfraCone[Reverse @ axis, 1], axis}]}]]
+With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {q = SelectFirst[Keys @ InfraMeasurement[g, InfraShell[c, 6], "VertexDensity"], InfraMeasurement[g, InfraSegment[c, #], "Cardinality"] == 1 &]},
+  {cone = InfraCone[First @ RandomInfraSegment[g, c, q, All], 1]},
+  InfraSubstrateHighlight[g, {cone, InfraInterior[g, Keys @ InfraMeasurement[g, cone, "VertexDensity"]]},
+    PlotLabel -> InfraMeasurement[g, cone, {"CountingMeasure", "RiemannianMeasure"}], ImageSize -> Medium]]
+```
+
+## Scope
+
+The reversed axis puts the apex at the other end:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {axis = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1], RandomSeeding -> 1]},
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraCone[a, 1], a}], {a, {axis, Reverse[axis]}}]]
+```
+
+## Options
+
+### Method
+
+The cone of slope 1 with a flat base, with a round base, and the ball of radius 4 about the far end. The last two are equal:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {axis = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1], RandomSeeding -> 1]},
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {region, axis}],
+    {region, {InfraCone[axis, 1], InfraCone[axis, 1, Method -> "Balls"], InfraBall[Last[axis], 4]}}]]
+```
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {axis = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1], RandomSeeding -> 1]},
+  Keys @ InfraMeasurement[g, InfraCone[axis, 1, Method -> "Balls"], "VertexDensity"] ===
+    Keys @ InfraMeasurement[g, InfraBall[Last[axis], 4], "VertexDensity"]]
 ```
 
 ## Properties and Relations
 
-The two measures against the slope, along a shortest path of length 6 on the square grid. Slope 0 is the axis, all boundary.
+The two measures against the slope, along a shortest path of length 6 on the grid. Slope 0 is the axis, all boundary:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Medium"]},
-  {c = First @ GraphCenter[g]},
-  {axis = RandomInfraSegment[ g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 6]])] ]},
-  {slopes = Range[0, 2, 1/4]},
+With[{g = InfraSubstrate["SquareGridGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {axis = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 1], RandomSeeding -> 1]},
   ListLinePlot[
-    Table[{m, InfraMeasurement[g, InfraCone[axis, m], measure]}, {measure, {"CountingMeasure", "RiemannianMeasure"}}, {m, slopes}],
-    PlotMarkers -> Automatic, PlotLegends -> {"CountingMeasure", "RiemannianMeasure"}, AxesLabel -> {"slope", None}]]
+    Table[{m, InfraMeasurement[g, InfraCone[axis, m], measure]}, {measure, {"CountingMeasure", "RiemannianMeasure"}}, {m, 0, 3/2, 1/4}],
+    PlotMarkers -> Automatic, PlotLegends -> {"CountingMeasure", "RiemannianMeasure"}]]
 ```
 
-The cone of slope 1 along a shortest path, sliced, rounded, and the ball of radius the length of the axis about the far end. The rounded cone is that ball; the sliced one keeps the base flat.
+The cone of slope *m* lies in the cylinder of radius *m (n − 1)*:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {axis = RandomInfraSegment[ g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])] ]},
-  {cone = InfraCone[axis, 1, Method -> "Balls"]},
-  {farBall = InfraBall[Last[axis], 4]},
-  {GraphicsRow[{InfraSubstrateHighlight[g, {InfraCone[axis, 1], axis}], InfraSubstrateHighlight[g, {cone, axis}], InfraSubstrateHighlight[g, {farBall, Last[axis]}]}],
-   ( Keys @ InfraMeasurement[ g, cone, "VertexDensity" ] ) === ( Keys @ InfraMeasurement[ g, farBall, "VertexDensity" ] )}]
-```
-
-The cone is contained in the cylinder of radius *slope* (*n* − 1).
-
-```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small"]},
-  {c = First @ GraphCenter[g]},
-  {axis = RandomInfraSegment[ g, InfraSegment[c, (SeedRandom[1]; RandomInfraPoint[g, InfraShell[c, 4]])] ]},
-  SubsetQ[Keys @ InfraMeasurement[ g, InfraCylinder[axis, Length[axis] - 1], "VertexDensity" ], Keys @ InfraMeasurement[ g, InfraCone[axis, 1], "VertexDensity" ]]]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {axis = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1], RandomSeeding -> 1]},
+  SubsetQ[Keys @ InfraMeasurement[g, InfraCylinder[axis, Length[axis] - 1], "VertexDensity"],
+    Keys @ InfraMeasurement[g, InfraCone[axis, 1], "VertexDensity"]]]
 ```

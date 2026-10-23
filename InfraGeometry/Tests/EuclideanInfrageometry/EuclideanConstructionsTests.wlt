@@ -11,19 +11,20 @@ walkSeqs[ ws_List ] := walkSeq /@ ws
 
 (* ===== FindInfraPerpendicular ===== *)
 
-(* C5, line {1,2,3,4}, point 5: foot is 2, perpendicular line is the maximal
-   geodesic {5, 1, 2} (canonical orientation: lex-min of seq and reverse). *)
+(* C5, line {1,2,3,4}, point 5: the base 1, ..., 4 has the centre vertices 2
+   and 3, the feet, and the perpendiculars are the maximal geodesics {5, 1, 2}
+   and {5, 4, 3}, mirror images under the reflection fixing 5. *)
 
 VerificationTest[
-  Sort /@ infraSpread @ FindInfraPerpendicular[CycleGraph[5], {1, 2, 3, 4}, 5, All],
-  { { 1, 2, 5 } },
+  Sort @ Map[ Sort, infraSpread @ FindInfraPerpendicular[CycleGraph[5], {1, 2, 3, 4}, 5, All] ],
+  { { 1, 2, 5 }, { 3, 4, 5 } },
   TestID -> "FindInfraPerpendicular-CycleGraph5-Metric"
 ]
 
 VerificationTest[
-  GraphQ @ FindInfraPerpendicular[CycleGraph[5], {1, 2, 3, 4}, 5, All],
+  AllTrue[ FindInfraPerpendicular[CycleGraph[5], {1, 2, 3, 4}, 5, All], GraphQ ],
   True,
-  TestID -> "FindInfraPerpendicular-returns-a-graph"
+  TestID -> "FindInfraPerpendicular-returns-graphs"
 ]
 
 VerificationTest[
@@ -42,17 +43,16 @@ VerificationTest[
   TestID -> "FindInfraPerpendicular-strict-1"
 ]
 
-(* Q-side dispatch on C5: the metric branch gives one path graph, the Alexandrov
-   branch nothing at all (smoke test).  C5 is
-   a degenerate configuration -- the metric perpendicular shares two vertices
-   with `line`, so Q-side tests legitimately reject it.  Substantive Q-side
-   tests live in the mesh-graph notebook demo. *)
+(* Q-side dispatch on C5: C5 is a degenerate configuration -- every line
+   through 5 shares two vertices with `line`, and perpendicular lines meet in
+   one vertex, so the Q-side methods find nothing.  Substantive Q-side tests
+   live in the mesh-graph notebook demo. *)
 
 VerificationTest[
-  GraphQ @ FindInfraPerpendicular[CycleGraph[5], {1, 2, 3, 4}, 5, All,
+  FindInfraPerpendicular[CycleGraph[5], {1, 2, 3, 4}, 5, All,
     Method -> "Projection"],
-  True,
-  TestID -> "FindInfraPerpendicular-CycleGraph5-Projection-shape"
+  { },
+  TestID -> "FindInfraPerpendicular-CycleGraph5-Projection-none"
 ]
 
 VerificationTest[
@@ -63,13 +63,13 @@ VerificationTest[
 ]
 
 (* Radius option: same setup, restrict to NeighborhoodGraph[g, 5, 1].  The
-   1-ball around 5 in C5 is {5, 1, 4}; line {1, 2, 3, 4} restricted is {1, 4}.
-   Foot recipe finds... no equidistant pair with the right parity, so should
-   return empty.  Just check it does not crash and returns a walk graph. *)
+   1-ball around 5 in C5 is {5, 1, 4}; the equidistant pair 1, 4 of the line
+   {1, 2, 3, 4} has its midpoint 2 along the line outside the ball, and the
+   nearest vertex is not unique, so there is no foot in the ball. *)
 
 VerificationTest[
-  GraphQ @ FindInfraPerpendicular[CycleGraph[5], {1, 2, 3, 4}, 5, All, "Radius" -> 1],
-  True,
+  FindInfraPerpendicular[CycleGraph[5], {1, 2, 3, 4}, 5, All, "Radius" -> 1],
+  { },
   TestID -> "FindInfraPerpendicular-Radius-1"
 ]
 
@@ -161,6 +161,19 @@ VerificationTest[
   FindClosestInfraPoint[GridGraph[{5, 5}], geodesicGraph @ {1, 2, 3, 4, 5}, 13, All],
   { 3 },
   TestID -> "FindClosestInfraPoint-ray-graph"
+]
+
+VerificationTest[
+  FindClosestInfraPoint[ GridGraph[ { 5, 5 } ], { { 1, 2, 3, 4, 5 }, { 1, 6, 11, 16, 21 } }, 13, All ],
+  { 3, 11 },
+  TestID -> "FindClosestInfraPoint-list-of-vertex-lists"
+]
+
+VerificationTest[
+  With[ { g = VertexReplace[ GridGraph[ { 3, 3 } ], Thread[ Range[ 9 ] -> Tuples[ Range[ 3 ], 2 ] ] ] },
+    FindClosestInfraPoint[ g, { { 1, 1 }, { 1, 2 }, { 1, 3 } }, { 3, 2 }, All ] ],
+  { { 1, 2 } },
+  TestID -> "FindClosestInfraPoint-list-labelled-vertex-list-is-one-line"
 ]
 
 (* ===== FindInfraBisectingHyperplane ===== *)

@@ -5,26 +5,88 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraPlane
+Keywords: [plane, hyperplane, bisector, perpendicular bisector, separator, symbolic object]
+SeeAlso: [RandomInfraPlane, InfraPlaneQ, FindInfraBisectingHyperplane, InfraPerpendicularBisector, InfraScene]
 ---
 
 ## Usage
 
-`InfraPlane[p, q]` is the inert family of inclusion-minimal separating vertex sets in the zero distance-difference slab.
+<code>[InfraPlane]()[*p*, *q*]</code> is the bisecting plane of *p* and *q*: the family of the minimal vertex sets equidistant from *p* and *q* that separate them.
 
-`InfraPlane[p, q, {lo, hi}]` uses the stated distance-difference window.
+<code>[InfraPlane]()[*p*, *q*, {*lo*, *hi*}]</code> takes the vertices *v* with *lo ≤ d(p, v) − d(q, v) ≤ hi* in place of the equidistant ones.
 
 ## Details & Options
 
-[RandomInfraPlane]() samples the family on a graph, fixing the separating property.
-One representative is a vertex set, not a payload wrapper.
-The exact finite equidistant locus is [InfraPerpendicularBisector](), which need not separate the anchors.
-These constructions can therefore have different empty/nonempty answers.
+A member of <code>[InfraPlane]()[*p*, *q*]</code> is a vertex set *H* in the bisector *{v : d(p, v) = d(q, v)}* such that every path from *p* to *q* meets *H*, and no smaller subset of *H* does.
+
+In space the perpendicular bisector of two points is a hyperplane and cuts space into two half-spaces. On a graph the bisector can be thick, empty or not separating, so the plane is a thin separating part of it, and need not be unique.
+
+| Case | Bisector | Plane |
+|---|---|---|
+| square grid, *p* and *q* on one axis at even distance | the line between them | that line without its two rim vertices |
+| square grid, *p* and *q* diagonal neighbours | two opposite quadrants | many, of different shapes |
+| square grid, odd distance | empty | none; the window {−1, 1} gives one |
+| square mesh | need not separate | can be none; the window {−1, 1} gives one |
+| *p* and *q* adjacent | | none: nothing separates them |
+
+[InfraPlane]() is a symbolic object: [RandomInfraPlane]() draws members, [InfraPlaneQ]() tests a vertex set, and in an [InfraScene]() <code>[InfraPlane]()[*p*, *q*]</code> is a construction whose realisations are the members. The whole bisector is [FindInfraBisectingHyperplane]() or [InfraPerpendicularBisector]().
 
 ## Basic Examples
 
-The middle point separates the endpoints.
+A plane between the centre and a vertex at distance 4. On the mesh the bisector does not separate, so the window is {−1, 1}:
 
 ```wl
-SeedRandom[ 71 ]; With[ { graph = PathGraph[ Range[ 3 ] ] },
-  RandomInfraPlane[ graph, InfraPlane[ 1, 3 ], All ] ]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[First @ spec, "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+    {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {RandomInfraPlane[g, InfraPlane[a, b, Last @ spec], RandomSeeding -> 1], a, b}]],
+  {spec, {{"SquareGridGraph", {0, 0}}, {"SquareMeshGraph", {-1, 1}}}}]
+```
+
+Two points on one axis of the grid. The bisector is the line between them; the plane, drawn over it, leaves out its two rim vertices, which have one neighbour each:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {bisector = FindInfraBisectingHyperplane[g, 45, 47], planes = RandomInfraPlane[g, InfraPlane[45, 47], All]},
+  InfraSubstrateHighlight[g, {bisector, planes, 45, 47}, ImageSize -> Medium]]
+```
+
+In a scene the plane is a construction:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  {scene = InfraScene[{pA, pB, h}, {pA == InfraPoint[45], pB == InfraPoint[47], h == InfraPlane[pA, pB]}]},
+  RandomInfraSceneInstance[scene, g, All]]
+```
+
+## Scope
+
+The plane need not be unique. Three planes between 45 and its diagonal neighbour 56:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  GraphicsRow @ Table[
+    InfraSubstrateHighlight[g, {RandomInfraPlane[g, InfraPlane[45, 56], RandomSeeding -> s], 45, 56}], {s, 3}]]
+```
+
+There are 1369 of them, of 8, 9 or 10 vertices:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, Counts[Length /@ RandomInfraPlane[g, InfraPlane[45, 56], All]]]
+```
+
+## Possible Issues
+
+At odd distance on the grid no vertex is equidistant, and there is no plane; the window {−1, 1} gives one:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  {RandomInfraPlane[g, InfraPlane[45, 48], RandomSeeding -> 1],
+   RandomInfraPlane[g, InfraPlane[45, 48, {-1, 1}], RandomSeeding -> 1]}]
+```
+
+Adjacent vertices have no plane, whatever the window:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, RandomInfraPlane[g, InfraPlane[45, 46, {-1, 1}], All]]
 ```

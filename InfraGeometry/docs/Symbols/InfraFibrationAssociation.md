@@ -5,7 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraFibrationAssociation
-Keywords: [compatibility, fibered graph, InfraProjection]
+Keywords: [projection, older name, InfraProjection]
 SeeAlso: [InfraProjection, InfraFiberedGraph, InfraTotalSpace, InfraBaseSpace]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
@@ -13,21 +13,25 @@ RelatedTutorials: [InfraBundles]
 
 ## Usage
 
-<code>[InfraFibrationAssociation]()[*fib*]</code> gives the projection association of *fib* using the compatibility spelling.
+<code>[InfraFibrationAssociation]()[*fib*]</code> is the older name of <code>[InfraProjection]()[*fib*]</code>: the projection of *fib* as an association from each total vertex to its base vertex.
 
 ## Details & Options
 
-- Use [InfraProjection]() for new code.
-- Supported inputs and results are the same as for [InfraProjection]().
-- Both canonical [InfraFiberedGraph]() and legacy [InfraFibration]() literals are supported.
-- Unsupported graph domains and malformed projections remain unevaluated.
+Use [InfraProjection]() in new code. Both names accept the same fibered graphs and give the same association. A function projection is evaluated at every vertex.
 
 ## Basic Examples
 
-The compatibility reader accepts a canonical fibered graph.
+The projection of the cycle of length 8 onto the cycle of length 4:
 
 ```wl
-SeedRandom[ 7 ];
-With[ { fib = InfraFiberedGraph[ CycleGraph[ 8 ], vertex |-> Mod[ vertex, 4, 1 ] ] },
-  InfraFibrationAssociation[ fib ] ]
+InfraFibrationAssociation @ InfraFiberedGraph[CycleGraph[8], v |-> Mod[v, 4, 1]]
+```
+
+## Properties and Relations
+
+It is [InfraProjection]():
+
+```wl
+With[{fib = InfraFiberedSubstrate["GridProductBundle", "Small"]},
+  InfraFibrationAssociation[fib] === InfraProjection[fib]]
 ```

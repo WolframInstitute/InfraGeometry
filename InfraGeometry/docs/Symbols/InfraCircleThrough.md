@@ -5,68 +5,111 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraCircleThrough
-Keywords: [circle, prescribed points, separating cycle, exact family, DAG]
+Keywords: [circle, prescribed points, separating cycle, band]
 SeeAlso: [InfraCircle, InfraArc, RandomInfraCircleThrough, InfraMeasurement, InfraMemberQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-`InfraCircleThrough[points, InfraCircle[center, {r, s}]]` denotes the shortest separating simple circles in the given band containing every prescribed point.
-
-The head is inert. [InfraMeasurement]() reads its exact family on a graph, and [RandomInfraCircleThrough]() samples its members.
+<code>[InfraCircleThrough]()[{*p1*, …, *pk*}, [InfraCircle]()[*c*, {*r*, *s*}]]</code> is the family of the shortest circles around *c* in the band {*r*, *s*} that pass through every point *pᵢ*.
 
 ## Details & Options
 
-Graphs are finite, simple, undirected and unweighted. The band has integer radii `1 <= r <= s`. `points` is a nonempty list of literal graph vertices, and `center` is a literal graph vertex. The order and repetitions of the requested points have no effect.
+Let *W = {v : r ≤ d(c, v) ≤ s}*. A member is a simple cycle in *W* that contains every *pᵢ* and whose removal cuts *c* off from every vertex beyond *W*. Among those cycles the shortest are kept, all of them.
 
-A member is a simple cycle contained in `{v : r <= d(center, v) <= s}`. Deleting its vertices must separate the center from the vertices in its connected component whose distance exceeds `s`. An empty outside set makes this separation condition vacuous, as for [InfraCircle]().
+The points come first and the length second. So the circles through the points can be longer than the circles of <code>[InfraCircle]()[*c*, {*r*, *s*}]</code>, and when none of those passes through the points, filtering them gives nothing while [InfraCircleThrough]() still has members.
 
-First impose every requested point, simplicity and separation. Then minimize the length and retain every tie. This can yield a longer circle than the unconstrained shortest circles in the band. Filtering those unconstrained shortest circles afterward can incorrectly give an empty result.
+The order and repetition of the points do not matter. The radii satisfy *1 ≤ r ≤ s*. A point outside the band gives the empty family: cardinality 0 and length `Infinity`.
 
-Representatives are open cyclic vertex lists, with an implicit last-to-first edge. Rotations and reversal identify the same circle. The first requested vertex in `VertexList[graph]` order is the start; its second vertex precedes its last vertex in that graph order. Each distinct circle therefore has one canonical encoding.
-
-A valid request can have an empty family, including when a requested vertex is outside the band. Its cardinality is `0`, length is `Infinity`, and carrier is an empty directed graph. Unsupported domains stay unevaluated.
-
-This construction keeps the center and band explicit. It does not infer a Euclidean circumcenter from arbitrary prescribed points. The existing closed `InfraArc[c, {p, p}]` describes circles through one point using that arc's radial-band construction; this head imposes an arbitrary prescribed set before minimization.
-
-Measurements:
+[InfraCircleThrough]() is a symbolic object: [InfraMeasurement]() evaluates it on a graph and [RandomInfraCircleThrough]() draws members. A member is a cyclic vertex list; its first vertex is not repeated.
 
 | Property | Value |
 |---|---|
-| `"Graph"` | exact directed acyclic carrier |
-| `"Faithful"` | `True`: complete carrier paths correspond bijectively to circles |
-| `"Cardinality"` | number of distinct minimum circles |
-| `"Length"` | their common circumference in graph edges |
-| `"VertexDensity"` | number of circles containing each substrate vertex |
-| `"EdgeDensity"` | number of circles using each undirected substrate edge |
-| `"Subgraph"` | induced subgraph on the nonzero vertex support |
-| `"CountingMeasure"` | number of vertices in that support |
-| `"RiemannianMeasure"` | support vertices whose ambient neighbors all lie in the support |
-
-`All` returns these properties in an Association. Counts and densities are computed from carrier path counts without expanding every circle.
-
-The carrier is an ordinary Graph. Its vertices have the form `{stateID, substrateVertex}`. Its unique source and sink project to the same requested start vertex. A complete source-to-sink path decodes to a circle by `Last /@ Most[path]`. Arbitrary carrier subpaths are partial walks. The compiler remembers visited vertex sets, removes dead states and merges equal continuation families; its construction can take exponential time.
+| `"Graph"` | a DAG whose source-to-sink paths are the circles |
+| `"Faithful"` | `True` |
+| `"Cardinality"` | the number of circles |
+| `"Length"` | their common length |
+| `"VertexDensity"` | the number of circles through each vertex |
+| `"EdgeDensity"` | the number of circles through each edge |
 
 ## Basic Examples
 
-The rim of a wheel passes through both prescribed vertices and separates its center.
+The shortest circles of the band {1, 3} through a vertex at distance 3, on the square grid and on the square mesh:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = WheelGraph[5]},
-  {circle = InfraCircleThrough[{2, 4}, InfraCircle[1, {1, 1}]]},
-  {InfraSubstrateHighlight[g, {circle, 1, 2, 4}],
-   InfraMeasurement[g, circle, {"Cardinality", "Length"}]}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {p = RandomInfraPoint[g, InfraShell[c, 3], RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {InfraCircleThrough[{p}, InfraCircle[c, {1, 3}]], c, p}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-Four prescribed rim vertices of a complete graph admit three distinct minimum circles.
+They are longer than the shortest circles of the band:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = CompleteGraph[5]},
-  {circle = InfraCircleThrough[{2, 3, 4, 5}, InfraCircle[1, {1, 1}]]},
-  {InfraMeasurement[g, circle, "Cardinality"], RandomInfraCircleThrough[g, circle, All]}]
+Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {p = RandomInfraPoint[g, InfraShell[c, 3], RandomSeeding -> 1]},
+    InfraMeasurement[g, #, {"Cardinality", "Length"}] & /@ {InfraCircleThrough[{p}, InfraCircle[c, {1, 3}]], InfraCircle[c, {1, 3}]}],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+```
+
+The two circles through the point on the grid:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {p = RandomInfraPoint[g, InfraShell[c, 3], RandomSeeding -> 1]},
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[Append[circle, First @ circle]], c, p}],
+    {circle, RandomInfraCircleThrough[g, InfraCircleThrough[{p}, InfraCircle[c, {1, 3}]], All]}]]
+```
+
+## Scope
+
+Circles through two farthest points of the shell of radius 2 on the mesh, in the band {1, 2}:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pq = RandomInfraPoint[g, InfraShell[c, 2], 2, "PairwiseDistance" -> "Max", RandomSeeding -> 1]},
+  {circle = InfraCircleThrough[pq, InfraCircle[c, {1, 2}]]},
+  InfraSubstrateHighlight[g, {circle, c, pq}, PlotLabel -> InfraMeasurement[g, circle, {"Cardinality", "Length"}], ImageSize -> Medium]]
+```
+
+The 7 circles of length 14 through a vertex at distance 3 on the mesh, in the band {2, 3}:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {p = RandomInfraPoint[g, InfraShell[c, 3], RandomSeeding -> 1]},
+  {circle = InfraCircleThrough[{p}, InfraCircle[c, {2, 3}]]},
+  InfraSubstrateHighlight[g, {circle, c, p}, PlotLabel -> InfraMeasurement[g, circle, {"Cardinality", "Length"}], ImageSize -> Medium]]
+```
+
+A point outside the band gives the empty family:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {p = RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 1]},
+  InfraMeasurement[g, InfraCircleThrough[{p}, InfraCircle[c, {1, 3}]], {"Cardinality", "Length"}]]
+```
+
+## Properties and Relations
+
+No shortest circle of the band passes through the point, so filtering [InfraCircle]() gives nothing:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {p = RandomInfraPoint[g, InfraShell[c, 3], RandomSeeding -> 1]},
+  {Select[RandomInfraCircle[g, InfraCircle[c, {1, 3}], All], MemberQ[#, p] &],
+   InfraMeasurement[g, InfraCircleThrough[{p}, InfraCircle[c, {1, 3}]], "Cardinality"]}]
+```
+
+## Possible Issues
+
+A point with only one neighbour in the band lies on no cycle. Of two farthest points of the shell of radius 3 on the grid, the first has one neighbour in the band {1, 3} and no circle, the second two neighbours and two circles:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {pq = RandomInfraPoint[g, InfraShell[c, 3], 2, "PairwiseDistance" -> "Max", RandomSeeding -> 1]},
+  {band = Subgraph[g, Keys @ InfraMeasurement[g, InfraShell[c, {1, 3}], "VertexDensity"]]},
+  {VertexDegree[band, #] & /@ pq, InfraMeasurement[g, InfraCircleThrough[{#}, InfraCircle[c, {1, 3}]], "Cardinality"] & /@ pq}]
 ```

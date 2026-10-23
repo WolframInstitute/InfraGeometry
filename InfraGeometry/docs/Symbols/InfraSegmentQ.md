@@ -14,69 +14,70 @@ RelatedGuides: [Experimental]
 
 <code>[InfraSegmentQ]()[*g*, *walk*]</code> tests whether the vertex list *walk* is a shortest path of *g*.
 
-<code>[InfraSegmentQ]()[*g*, {*walk1*, *walk2*, …}]</code> tests whether every walk in the list is a shortest path.
+<code>[InfraSegmentQ]()[*g*, {*walk1*, *walk2*, …}]</code> tests whether every walk of the list is a shortest path.
 
-<code>[InfraSegmentQ]()[*g*, *dag*]</code> tests a walk graph or a directed acyclic graph: every source-to-sink path must be a shortest path.
+<code>[InfraSegmentQ]()[*g*, *dag*]</code> tests whether every source-to-sink path of the directed acyclic graph *dag* is a shortest path.
 
 ## Details & Options
 
-A walk {*v0*, …, *vk*} is a shortest path when consecutive vertices are adjacent and *k* = *d(v0, vk)*: no shorter walk joins its ends.
+A walk *(v₀, …, vₖ)* is a shortest path when consecutive vertices are adjacent and *k = d(v₀, vₖ)*.
 
-The predicate takes a walk, never an object. <code>[InfraSegmentQ]()[*g*, [InfraSegment]()[*a*, *b*]]</code> stays unevaluated. Test a member of the segment, or the segment's graph, or ask [InfraMemberQ]() whether a walk belongs to one particular segment.
+A walk of one vertex gives `False`.
 
-A single vertex is not a segment, so a walk of one vertex gives `False`.
+The predicate takes walks, not objects: <code>[InfraSegmentQ]()[*g*, [InfraSegment]()[*a*, *b*]]</code> stays unevaluated. To test whether a walk is a member of a given segment, use [InfraMemberQ]().
 
-A list of walks is the shape [RandomInfraSegment]() returns with a count, and the graph of a segment, <code>[InfraMeasurement]()[*g*, *seg*, "Graph"]</code>, is a DAG. So the output of either can be passed straight in.
+A walk can be given as a path graph, and the graph of a segment, <code>[InfraMeasurement]()[*g*, *seg*, "Graph"]</code>, is a DAG whose source-to-sink paths are its members.
 
-Inside an [InfraScene](), `InfraSegmentQ[s]` with one argument is the assertion that the binding *s* is a shortest path. The scene supplies the graph.
+Inside an [InfraScene](), <code>[InfraSegmentQ]()[*s*]</code> asserts that the object *s* is a shortest path of the scene's graph.
 
-[InfraGeodesicQ]() is the local version: every window of a given number of steps is a shortest path. At scale `Infinity` it is this predicate.
+[InfraGeodesicQ]() is the local version: every window of a given number of steps is a shortest path.
 
 ## Basic Examples
 
-Two walks from the same start to the same end. The first is a shortest path; the second makes a detour.
+A shortest path from the centre to a vertex at distance 4, and a walk between the same two vertices through a vertex off the segment:
 
 ```wl
-With[{g = GridGraph[{5, 5}]},
-  Row[Table[
-    Labeled[
-      InfraSubstrateHighlight[g, {InfraWalk[w], First[w], Last[w]},
-        "Arrowheads" -> True, ImageSize -> 180],
-      InfraSegmentQ[g, w]],
-    {w, {{1, 2, 3, 8, 13}, {1, 6, 7, 2, 3, 8, 13}}}]]]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+    {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
+    {x = RandomInfraPoint[g, InfraIntersection[InfraShell[a, 3], InfraShell[b, 3]], RandomSeeding -> 1]},
+    {path = FindShortestPath[g, a, b], detour = Join[FindShortestPath[g, a, x], Rest @ FindShortestPath[g, x, b]]},
+    InfraSubstrateHighlight[g, {InfraWalk[path], InfraWalk[detour], a, b},
+      PlotLabel -> {InfraSegmentQ[g, path], InfraSegmentQ[g, detour]}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-A list of walks, and the graph of a segment.
+All members of a segment, as a list of walks and as the graph of the segment:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = GridGraph[{5, 5}]},
-  {InfraSegmentQ[g, RandomInfraSegment[g, 1, 13, All]],
-   InfraSegmentQ[g, InfraMeasurement[g, InfraSegment[1, 13], "Graph"]]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {a = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 1]},
+  {InfraSegmentQ[g, RandomInfraSegment[g, a, b, All]], InfraSegmentQ[g, InfraMeasurement[g, InfraSegment[a, b], "Graph"]]}]
 ```
 
 ## Properties and Relations
 
-A detour can be a geodesic at a small scale without being a shortest path between its endpoints. Every two-step window of the second walk above is a shortest path.
+A walk that turns twice around a square on the grid is a geodesic at scale 2, every two steps being a shortest path, but it is not a shortest path between its ends:
 
 ```wl
-With[
-  {g = GridGraph[{5, 5}], w = {1, 6, 7, 2, 3, 8, 13}},
-  {InfraGeodesicQ[g, w, 2], InfraSegmentQ[g, w]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {vertexAt = AssociationThread[Round @ GraphEmbedding[g], VertexList[g]]},
+  {walk = vertexAt /@ {{5, 5}, {6, 5}, {7, 5}, {8, 5}, {8, 6}, {8, 7}, {8, 8}, {7, 8}, {6, 8}, {5, 8}}},
+  InfraSubstrateHighlight[g, {InfraWalk[walk]}, PlotLabel -> {InfraGeodesicQ[g, walk, 2], InfraSegmentQ[g, walk]},
+    ImageSize -> Medium]]
 ```
 
-Every line is a shortest path.
-
-```wl
-SeedRandom[1];
-With[
-  {g = GridGraph[{4, 4}]},
-  InfraSegmentQ[g, RandomInfraInfiniteLine[g, 6, 7, All]]]
-```
-
-On the 6-cycle the walk halfway round is a shortest path; one step more is not.
+On the 6-cycle the walk halfway round is a shortest path; one step more is not:
 
 ```wl
 {InfraSegmentQ[CycleGraph[6], {1, 2, 3, 4}], InfraSegmentQ[CycleGraph[6], {1, 2, 3, 4, 5}]}
+```
+
+## Possible Issues
+
+A segment object is not a walk, and the call stays unevaluated. A single vertex is not a shortest path:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {a = First @ GraphCenter[g]},
+  {InfraSegmentQ[g, InfraSegment[a, 46]], InfraSegmentQ[g, {a}]}]
 ```

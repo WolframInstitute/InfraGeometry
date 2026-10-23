@@ -10,6 +10,16 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 MiniballRadius[ { _ } ] :=
   0
 
+MiniballRadius[ pts_List ] /; MatrixQ[ pts, NumericQ ] && Precision[ pts ] === Infinity :=
+  With[
+    { ball = BoundingRegion[ N @ pts, "MinBall" ] },
+    { support = Select[ pts, Abs[ Norm[ N @ # - First @ ball ] - Last @ ball ] <= 10^-8 ( 1 + Last @ ball ) & ] },
+    { edges = # - First @ support & /@ Rest @ support },
+    (* the centre s + E^T l of the sphere through the support in its affine hull solves 2 E E^T l = ( |e|^2 )_e *)
+    { centre = First @ support + PseudoInverse[ 2 edges . Transpose @ edges ] . Map[ # . # &, edges ] . edges },
+    Norm[ centre - First @ support ]
+  ]
+
 MiniballRadius[ pts_List ] :=
   BoundingRegion[ N @ pts, "MinBall" ][[ 2 ]]
 

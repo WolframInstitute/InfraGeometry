@@ -78,7 +78,7 @@ SeedRandom[1];
 With[
   {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
   {p = First @ GraphCenter[g]},
-  {q = RandomInfraPoint[g, InfraShell[p, 5]], f = AssociationThread[VertexList[g], RandomInteger[{-9, 9}, VertexCount[g]]]},
+  {q = RandomInfraPoint[g, InfraShell[p, 5], RandomSeeding -> 1], f = AssociationThread[VertexList[g], RandomInteger[{-9, 9}, VertexCount[g]]]},
   {Normal @ InfraMeasurement[g, InfraIntegral[InfraDifferential[f], InfraSegment[p, q]], "ValueDensity"],
    f[q] - f[p], InfraMeasurement[g, InfraSegment[p, q], "Cardinality"]}]
 ```

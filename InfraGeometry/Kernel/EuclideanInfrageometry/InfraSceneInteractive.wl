@@ -18,7 +18,7 @@ PointViewer[ g_Graph, sym_: None ] :=
     Manipulate[
       seed;
       With[ { pts = RandomInfraPoint[ g, regions[ region ], UpTo[ n ], "MaxCliques" -> 100,
-          "PairwiseDistance" -> Switch[ separation, "None", None, "Max", "Max", "Range", distRange ] ] },
+          "PairwiseDistance" -> Switch[ separation, "None", None, "Max", "Max", "Range", distRange ], RandomSeeding -> None ] },
         If[ sym =!= None, sym = pts ];
         InfraSubstrateHighlight[ g, { InfraMeasurement[ g, pts, "VertexDensity" ] } ] ],
       Grid[ {
@@ -45,7 +45,7 @@ SegmentViewer[ g_Graph ] :=
       With[ {
           segments = If[ sel === None || p1 === p2 || GraphDistance[ g, p1, p2 ] === Infinity, {},
             Take[
-              applySelectOption[ g, RandomInfraSegment[ g, p1, p2, All ],
+              applySelectOption[ g, RandomInfraSegment[ g, p1, p2, All, RandomSeeding -> None ],
                 sel, False, <| "Endpoints" -> { p1, p2 } |> ],
               UpTo[ n ] ] ] },
         EventHandler[
@@ -82,7 +82,7 @@ ShellViewer[ g_Graph ] :=
       With[ {
           shells = If[ r < 1, {},
             RandomInfraSphere[ g, p, r, UpTo[ n ], "NextVertexFunction" -> Identity,
-              Properties -> properties ] ] },
+              Properties -> properties, RandomSeeding -> None ] ] },
         EventHandler[
           HighlightGraph[
             InfraSubstrateHighlight[ g, { shells } ],
@@ -117,7 +117,7 @@ CircleViewer[ g_Graph ] :=
       With[ {
           circles = If[ sel === None || r < 1, {},
             Take[
-              applySelectOption[ g, RandomInfraCircle[ g, InfraCircle[ p, r ], All ],
+              applySelectOption[ g, RandomInfraCircle[ g, InfraCircle[ p, r ], All, RandomSeeding -> None ],
                 sel, True, <| "Center" -> p, "Radius" -> r |> ],
               UpTo[ n ] ] ] },
         EventHandler[
@@ -148,121 +148,26 @@ Options[ InfraSceneViewer ] = {
   ImageSize        -> 500
 }
 
-InfraSceneViewer[ data_Association, opts : OptionsPattern[] ] /;
-		ContainsAll[ Keys[ data ], { "Scene", "Substrate", "InitialBindings", "Schedule", "States", "Events",
-			"Layers", "StepLayers", "Completeness", "Frontier" } ] && GraphQ[ data[ "Substrate" ] ] &&
-		AllTrue[ { "InitialBindings", "Schedule", "States", "Events", "Layers", "StepLayers" },
-			key |-> AssociationQ[ data[ key ] ] ] && data[ "Layers" ] =!= <| |> &&
-		SubsetQ[ First /@ Options[ InfraSceneViewer ], First /@ { opts } ] :=
-	With[ { graph = data[ "Substrate" ], states = data[ "States" ], events = data[ "Events" ],
-			kinds = Association @ Catenate[ Map[ entry |-> Normal @ AssociationThread[ entry[ "Targets" ], entry[ "Kinds" ] ],
-				Values[ data[ "Schedule" ] ] ] ],
-			highlightOptions = FilterRules[ { opts }, Options[ InfraSubstrateHighlight ] ] },
-		DynamicModule[ { navigation = "Event depth", boundary = First @ Keys[ data[ "Layers" ] ],
-				selectedState = None, restriction = <| |>, incomingChoices = <| |> },
-			Column[ {
-				Row[ { SetterBar[ Dynamic[ navigation, value |-> ( navigation = value; boundary = 0; selectedState = None ) ],
-						{ "Event depth", "Group boundary" } ], "  ",
-					Dynamic[ PopupMenu[ Dynamic[ boundary, value |-> ( boundary = value; selectedState = None ) ],
-						Keys @ If[ navigation === "Event depth", data[ "Layers" ], data[ "StepLayers" ] ] ] ] } ],
-				Row[ { "Binding restriction: ", InputField[ Dynamic[ restriction ], Expression ], "  ",
-					Button[ "Clear restriction", restriction = <| |> ] } ],
-				Dynamic[ With[ { collection = If[ navigation === "Event depth", data[ "Layers" ], data[ "StepLayers" ] ] },
-					{ layer = Lookup[ collection, Key[ boundary ], First @ Values[ collection ] ] },
-					{ depth = If[ navigation === "Event depth", boundary, layer[ "Depth" ] ],
-						matching = If[ AssociationQ[ restriction ], Select[ layer[ "States" ], id |-> AllTrue[ Keys[ restriction ],
-							name |-> KeyExistsQ[ states[ id ][ "Bindings" ], name ] &&
-								Lookup[ states[ id ][ "Bindings" ], Key[ name ] ] === Lookup[ restriction, Key[ name ] ] ] ], { } ] },
-					selectedState = If[ MemberQ[ matching, selectedState ], selectedState, First[ matching, None ] ];
-					Column[ {
-						Row[ { If[ TrueQ[ layer[ "Complete" ] ], "Complete", "Partial exploration" ],
-							" at ", ToLowerCase[ navigation ], " ", boundary, "; event depth ", depth } ],
-						Row[ { "Whole scene: ", Which[ TrueQ[ data[ "Completeness" ][ "Scene" ] ], "Complete",
-							ContainsAny[ data[ "Completeness" ][ "Reasons" ], { "Unsupported", "UnboundInput" } ], "Undecided",
-							True, "Partial exploration" ] } ],
-						If[ data[ "Completeness" ][ "Reasons" ] === { }, Nothing,
-							Row[ { "Exploration boundary: ", Row[ data[ "Completeness" ][ "Reasons" ], ", " ] } ] ],
-						If[ restriction === <| |>, Nothing, Row[ { "Filtered view: ", restriction } ] ],
-						Row[ { "Saved initial bindings: ", data[ "InitialBindings" ] } ],
-						If[ data[ "Frontier" ] === { }, Nothing,
-							Grid[ Prepend[ Map[ obligation |-> Lookup[ obligation,
-									{ "Source", "Construction", "NextCandidate", "Reason" } ], data[ "Frontier" ] ],
-								{ "Unfinished state", "Construction", "Next candidate", "Reason" } ], Alignment -> Left ] ],
-						If[ matching === { },
-							Column[ { "No matching saved states at this boundary.",
-								If[ TrueQ[ layer[ "Complete" ] ] && restriction === <| |>,
-									"This layer is exhaustively empty.", "This view makes no negative existence claim." ],
-								InfraSubstrateHighlight[ graph, { }, Sequence @@ highlightOptions ] } ],
-							With[ { projection = InfraBranchialGraph[ data, depth ] },
-								{ branchial = Subgraph[ projection[ "Graph" ], matching ],
-									witnesses = KeySelect[ projection[ "Witnesses" ], edge |-> ContainsAll[ matching, List @@ edge ] ] },
-								{ state = states[ selectedState ] },
-								{ historyStates = Reverse @ DeleteCases[ NestWhileList[
-										id |-> With[ { eventID = Lookup[ incomingChoices, Key[ id ],
-												First[ states[ id ][ "IncomingEvents" ], None ] ] },
-											If[ eventID === None, None, events[ eventID ][ "Source" ] ] ],
-										selectedState, id |-> id =!= None, 1, state[ "Depth" ] + 1 ], None ] },
-								{ history = Map[ id |-> Lookup[ incomingChoices, Key[ id ], First[ states[ id ][ "IncomingEvents" ] ] ],
-										Rest[ historyStates ] ],
-									neighbors = AdjacencyList[ branchial, selectedState ] },
-								Column[ {
-									Row[ { "State: ", PopupMenu[ Dynamic[ selectedState ], matching ],
-										"; event depth ", state[ "Depth" ], "; next group ", state[ "Group" ] } ],
-									Row[ { "Bindings: ", state[ "Bindings" ] } ],
-									If[ MemberQ[ Values[ state[ "Assertions" ] ], "Unsupported" ],
-										"Undecided: an unsupported assertion blocks this state.",
-										If[ MemberQ[ Values[ state[ "Assertions" ] ], "Pending" ],
-											"Undecided: assertions are pending at this state.", "Assertions decided." ] ],
-									Row[ { "Assertions: ", state[ "Assertions" ] } ],
-									Row[ {
-										InfraSubstrateHighlight[ graph, KeyValueMap[ { name, representative } |->
-											If[ VertexQ[ graph, representative ], Association[ representative -> 1 ],
-												Switch[ Lookup[ kinds, Key[ name ], "Exact" ],
-												"Point", Association[ representative -> 1 ],
-												"VertexSet", If[ VertexQ[ graph, representative ], Association[ representative -> 1 ],
-													AssociationThread[ representative, ConstantArray[ 1, Length[ representative ] ] ] ],
-												"Walk", If[ ListQ[ representative ] && ! VertexQ[ graph, representative ],
-													InfraWalk[ representative ], representative ],
-												_, representative ] ], state[ "Bindings" ] ], Sequence @@ highlightOptions ],
-										Graph[ branchial, VertexLabels -> "Name", VertexStyle -> { selectedState -> StandardRed } ] } ],
-									Row[ { "Branchial neighbors: ", neighbors } ],
-									If[ TrueQ[ projection[ "Complete" ] ],
-										If[ restriction === <| |>, "Branchial layer complete.", "Saved branchial layer complete; this view is filtered." ],
-										"Branchial edges have saved witnesses; missing edges are undecided." ],
-									Row[ { "Common-parent witnesses: ", witnesses } ],
-									If[ state[ "IncomingEvents" ] === { }, "Initial state: no incoming event.",
-										Row[ { "Incoming event: ", PopupMenu[
-											Dynamic[ Lookup[ incomingChoices, Key[ selectedState ], First[ state[ "IncomingEvents" ] ] ],
-												value |-> ( incomingChoices = Append[ incomingChoices, selectedState -> value ] ) ],
-											state[ "IncomingEvents" ] ] } ] ],
-									Row[ { "History event IDs: ", history } ],
-									Grid[ Prepend[ Map[ id |-> With[ { event = events[ Lookup[ incomingChoices, Key[ id ],
-												First[ states[ id ][ "IncomingEvents" ] ] ] ] },
-											{ PopupMenu[ Dynamic[ Lookup[ incomingChoices, Key[ id ], First[ states[ id ][ "IncomingEvents" ] ] ],
-													value |-> ( incomingChoices = Append[ incomingChoices, id -> value ] ) ],
-													states[ id ][ "IncomingEvents" ] ],
-												event[ "Source" ], id, event[ "Construction" ], event[ "CandidateIndex" ],
-												event[ "Candidate" ], event[ "Outcome" ] } ], Rest[ historyStates ] ],
-										{ "Event", "From", "To", "Construction", "Candidate index", "Saved candidate", "Outcome" } ],
-										Alignment -> Left ] } ] ] ] }, Alignment -> Left ] ],
-					TrackedSymbols :> { navigation, boundary, selectedState, restriction, incomingChoices } ] }, Alignment -> Left ] ] ]
-
-
 InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <| |>, opts : OptionsPattern[ ] ] :=
   With[ {
-      nSteps  = Length @ scene[ "Steps" ],
-      labels  = scene[ "Labels" ],
-      objects = scene[ "Objects" ],
-      imgW    = OptionValue[ InfraSceneViewer, { opts }, ImageSize ],
-      hlOpts  = FilterRules[ Join[ { opts }, Options[ InfraSceneViewer ] ], Options[ InfraSubstrateHighlight ] ],
-      objStep = Association @@ Flatten[ MapIndexed[
+      nSteps   = Length @ scene[ "Steps" ],
+      steps    = scene[ "Steps" ],
+      labels   = scene[ "Labels" ],
+      objects  = scene[ "Objects" ],
+      imgW     = OptionValue[ InfraSceneViewer, { opts }, ImageSize ],
+      hlOpts   = FilterRules[ Join[ { opts }, Options[ InfraSceneViewer ] ], Options[ InfraSubstrateHighlight ] ],
+      lineCol  = LightDarkSwitched[ GrayLevel[ .8 ], GrayLevel[ .35 ] ],
+      mutedCol = LightDarkSwitched[ GrayLevel[ .55 ], GrayLevel[ .6 ] ],
+      objStep  = Association @@ Flatten[ MapIndexed[
         { syms, i } |-> ( ( # -> First[ i ] ) & /@ Flatten[ { syms } ] ), scene[ "Steps" ] ] ] },
+    { stepText = k |-> Row[ { "step ", k, "/", nSteps,
+        If[ labels[[ k ]] === None, "", Row[ { ": ", labels[[ k ]] } ] ] } ] },
     DynamicModule[ {
-        step = 1, branch = 1, mode = "Branch",
+        step = 1, branch = 1, mode = "Branch", menuQ = False,
         fixStack = { }, hiddenSteps = { },
         shown = { }, shownStep = 1, deadQ = False },
       With[ {
-          effInit = ( If[ fixStack === { }, init, Last[ fixStack ][[ 2 ]] ] ) &,
+          effInit = ( Join[ init, Sequence @@ fixStack[[ All, 2 ]] ] ) &,
           shownQ  = obj |-> ! MemberQ[ hiddenSteps, objStep[ obj ] ] },
         {
           refresh = (
@@ -277,60 +182,74 @@ InfraSceneViewer[ scene_InfraScene, graph_Graph, init : _Association : <| |>, op
           goStep = s |-> (
             step = Clip[ s, { 1, nSteps } ];
             branch = 1;
+            refresh[ ] ),
+          toggleHidden = k |-> (
+            hiddenSteps = If[ MemberQ[ hiddenSteps, k ], DeleteCases[ hiddenSteps, k ], Append[ hiddenSteps, k ] ] ),
+          togglePin = k |-> (
+            If[ MemberQ[ fixStack[[ All, 1 ]], k ],
+              fixStack = Select[ fixStack, First[ # ] < k & ],
+              If[ k <= shownStep && shown =!= { },
+                fixStack = SortBy[ Append[ fixStack, { k, KeySelect[ shown[[ Min[ branch, Length @ shown ], 1 ]],
+                  key |-> objStep[ key ] <= k ] } ], First ] ] ];
             refresh[ ] ) },
         refresh[ ];
-        Pane[ Column[ {
-          Grid[ { {
-            Spacer[ 30 ],
-            Row[ {
-              iconButton[ leftArrowIcon, goStep[ step - 1 ] ], "  ",
-              ActionMenu[
-                Dynamic @ textChip[ Row[ { "step ", step, "/", nSteps,
-                  If[ labels[[ step ]] === None, "", Row[ { ": ", labels[[ step ]] } ] ],
-                  "  ", downChevron } ] ],
-                Table[
-                  Row[ { "step ", k,
-                    If[ labels[[ k ]] === None, "", Row[ { ": ", labels[[ k ]] } ] ] } ] :> goStep[ k ],
-                  { k, nSteps } ],
-                Appearance -> None ],
-              "  ", iconButton[ rightArrowIcon, goStep[ step + 1 ] ] } ],
-            Dynamic @ iconButton[
-              If[ MemberQ[ hiddenSteps, step ], eyeClosedIcon, eyeOpenIcon ],
-              If[ MemberQ[ hiddenSteps, step ],
-                hiddenSteps = DeleteCases[ hiddenSteps, step ],
-                hiddenSteps = Append[ hiddenSteps, step ] ] ]
-          } }, Alignment -> { { Center, Center, Right }, Center },
-            ItemSize -> { { 2.4, Scaled[ .8 ], 2.4 }, Automatic } ],
-          Grid[ { {
-            SetterBar[ Dynamic @ mode, { "Branch", "Diffuse" } ],
-            Dynamic @ Which[
-              deadQ, alertChip[ Row[ { "does not exist \[LongDash] showing step ", shownStep } ] ],
-              mode === "Diffuse", textChip[ Row[ { Length @ shown, " branches diffused" } ] ],
-              True, Row[ {
-                Checkbox[ Dynamic[ MemberQ[ fixStack[[ All, 1 ]], step ],
-                  nv |-> (
-                    If[ nv,
-                      fixStack = Append[ fixStack, { step, shown[[ Min[ branch, Length @ shown ], 1 ]] } ],
-                      fixStack = Select[ fixStack, First[ # ] < step & ] ];
-                    refresh[ ] ) ] ], " Fixed",
-                Spacer[ 14 ],
-                iconButton[ leftArrowIcon, branch = Max[ branch - 1, 1 ] ],
-                textChip[ Row[ { "branch ", Min[ branch, Max[ Length @ shown, 1 ] ],
-                  "/", Length @ shown } ] ],
-                iconButton[ rightArrowIcon, branch = Min[ branch + 1, Max[ Length @ shown, 1 ] ] ] } ] ]
-          } }, Alignment -> { { Left, Right }, Center },
-            ItemSize -> { { Scaled[ .4 ], Scaled[ .6 ] }, Automatic } ],
-          Dynamic @ If[ shown === { },
-            InfraSubstrateHighlight[ graph, { }, Sequence @@ hlOpts, ImageSize -> imgW ],
-            InfraSubstrateHighlight[ graph,
-              If[ mode === "Diffuse",
-                With[ { boundKeys = Keys @ First[ shown ][[ 1 ]] },
-                  ( obj |-> With[ { reps = DeleteDuplicates[ #[[ 1 ]][ obj ] & /@ shown ] },
-                      If[ AllTrue[ reps, pointQ[ graph, # ] & ], KeySort @ Counts @ reps, reps ] ] ) /@
-                  Select[ objects, MemberQ[ boundKeys, # ] && shownQ[ # ] & ] ],
-                Values @ KeySelect[ shown[[ Min[ branch, Length @ shown ], 1 ]], shownQ ] ],
-              Sequence @@ hlOpts, ImageSize -> imgW ] ]
-        }, Alignment -> Center ], ImageSize -> imgW ]
+        Framed[
+          Column[ {
+            Pane[ Dynamic @ Grid[ { {
+                Grid[ { {
+                  pill[ {
+                    iconButton[ chevron[ 1, step > 1 ], goStep[ step - 1 ] ],
+                    stepText[ step ],
+                    iconButton[ chevron[ -1, step < nSteps ], goStep[ step + 1 ] ] }, True ],
+                  iconButton[ eyeIcon[ MemberQ[ hiddenSteps, step ] ], toggleHidden[ step ] ] } },
+                  Spacings -> { .6, 0 }, Alignment -> { Left, Center } ],
+                iconButton[ barIcon[ menuGlyph, menuQ ], menuQ = ! menuQ ] } },
+              Alignment -> { { Left, Right }, Center }, ItemSize -> { { Scaled[ .78 ], Scaled[ .22 ] }, Automatic } ],
+              ImageSize -> imgW, FrameMargins -> { { 8, 8 }, { 5, 5 } } ],
+            Overlay[ {
+              Dynamic @ If[ shown === { },
+                InfraSubstrateHighlight[ graph, { }, Sequence @@ hlOpts, ImageSize -> imgW ],
+                InfraSubstrateHighlight[ graph,
+                  If[ mode === "Diffuse",
+                    With[ { boundKeys = Keys @ First[ shown ][[ 1 ]] },
+                      ( obj |-> With[ { reps = DeleteDuplicates[ #[[ 1 ]][ obj ] & /@ shown ] },
+                          If[ AllTrue[ reps, pointQ[ graph, # ] & ], KeySort @ Counts @ reps, reps ] ] ) /@
+                      Select[ objects, MemberQ[ boundKeys, # ] && shownQ[ # ] & ] ],
+                    Values @ KeySelect[ shown[[ Min[ branch, Length @ shown ], 1 ]], shownQ ] ],
+                  Sequence @@ hlOpts, ImageSize -> imgW ] ],
+              Dynamic @ If[ ! menuQ, "",
+                Pane[ Framed[
+                  Style[ Grid[ Table[ With[ { k = k }, {
+                      Item[ iconButton[ Row[ { Style[ StringRiffle[ ToString /@ Flatten[ { steps[[ k ]] } ], ", " ], Bold ], "  ",
+                          Style[ Replace[ labels[[ k ]], None -> "" ], mutedCol ] } ], goStep[ k ] ],
+                        Background -> If[ k === step, LightDarkSwitched[ GrayLevel[ .93 ], GrayLevel[ .3 ] ], None ] ],
+                      iconButton[ eyeIcon[ MemberQ[ hiddenSteps, k ] ], toggleHidden[ k ] ],
+                      iconButton[ barIcon[ pinGlyph, MemberQ[ fixStack[[ All, 1 ]], k ], k <= shownStep ], togglePin[ k ] ] } ],
+                    { k, nSteps } ],
+                    Alignment -> { { Left, Center, Center }, Center }, Spacings -> { { 0, 1.5, .4 }, .5 } ],
+                    12, FontFamily -> "Helvetica", LightDarkSwitched[ GrayLevel[ .15 ], White ] ],
+                  Background -> LightDarkSwitched[ White, GrayLevel[ .2 ] ], FrameStyle -> lineCol,
+                  RoundingRadius -> 6, FrameMargins -> 6 ],
+                  ImageMargins -> { { 0, 8 }, { 0, 6 } } ] ] },
+              All, 2, Alignment -> { Right, Top } ],
+            Pane[ Dynamic @ Grid[ { {
+                If[ deadQ,
+                  alertChip[ Row[ { "does not exist \[LongDash] showing step ", shownStep } ] ],
+                  With[ { n = Length @ shown, enabledQ = mode === "Branch" && Length @ shown > 1 },
+                    pill[ {
+                      If[ enabledQ, iconButton[ chevron[ 1, True ], branch = Max[ branch - 1, 1 ] ], chevron[ 1, False ] ],
+                      If[ mode === "Diffuse", "all", Row[ { "branch ", Min[ branch, Max[ n, 1 ] ], "/", n } ] ],
+                      If[ enabledQ, iconButton[ chevron[ -1, True ], branch = Min[ branch + 1, Max[ n, 1 ] ] ], chevron[ -1, False ] ] },
+                      enabledQ ] ] ],
+                Grid[ { {
+                  iconButton[ barIcon[ pinGlyph, MemberQ[ fixStack[[ All, 1 ]], step ], step <= shownStep ], togglePin[ step ] ],
+                  iconButton[ barIcon[ stackGlyph, mode === "Diffuse" ], mode = If[ mode === "Diffuse", "Branch", "Diffuse" ] ] } },
+                  Spacings -> { .4, 0 } ] } },
+              Alignment -> { { Left, Right }, Center }, ItemSize -> { { Scaled[ .78 ], Scaled[ .22 ] }, Automatic } ],
+              ImageSize -> imgW, FrameMargins -> { { 8, 8 }, { 5, 5 } } ]
+          }, Spacings -> 0, Dividers -> { None, { 2 -> lineCol, 3 -> lineCol } } ],
+          FrameStyle -> lineCol, Background -> LightDarkSwitched[ White, GrayLevel[ .12 ] ],
+          RoundingRadius -> 4, FrameMargins -> 0 ]
       ]
     ]
   ]
@@ -343,37 +262,45 @@ makeIcon[ icon_, roundedSide_: "both", widthFactor_: 1, heightFactor_: 1,
     { Thick, StandardBlue, icon } },
     ImageSize -> 20 { widthFactor, heightFactor }, AspectRatio -> Full, PlotRangePadding -> None ]
 
-leftArrowIcon  :=
-  makeIcon[ Line[ { { .25, .5 }, { -.25, 0 }, { .25, -.5 } } ], "left", 1, 1.45 ]
-rightArrowIcon :=
-  makeIcon[ Line[ { { -.25, .5 }, { .25, 0 }, { -.25, -.5 } } ], "right", 1, 1.45 ]
-
-downChevron :=
-  Graphics[ { StandardBlue, Thick, CapForm[ "Round" ],
-    Line[ { { -1, .35 }, { 0, -.5 }, { 1, .35 } } ] },
-    ImageSize -> 11, AspectRatio -> 1, PlotRangePadding -> None ]
+barIcon[ glyph_, activeQ_ : False, enabledQ_ : True ] :=
+  makeIcon[ If[ enabledQ, glyph, { LightDarkSwitched[ GrayLevel[ .72 ], GrayLevel[ .45 ] ], glyph } ], "both", 1.3, 1.1,
+    If[ activeQ,
+      LightDarkSwitched[ Lighter[ StandardBlue, .8 ], Darker[ StandardBlue, .45 ] ],
+      LightDarkSwitched[ GrayLevel[ .93 ], GrayLevel[ .3 ] ] ] ]
 
 eyeGlyph = { Circle[ { 0, 0 }, { .7, .45 } ], Disk[ { 0, 0 }, .18 ] }
 
-eyeOpenIcon   :=
-  makeIcon[ eyeGlyph, "both", 1.2, 1 ]
-eyeClosedIcon :=
-  makeIcon[ { eyeGlyph, Line[ { { -.85, -.6 }, { .85, .6 } } ] }, "both", 1.2, 1,
-    LightDarkSwitched[ GrayLevel[ .75 ], GrayLevel[ .22 ] ] ]
+eyeIcon[ hiddenQ_ ] :=
+  barIcon[ If[ hiddenQ, { eyeGlyph, Line[ { { -.8, -.55 }, { .8, .55 } } ] }, eyeGlyph ] ]
 
-textChip[ content_ ] :=
+menuGlyph = Line /@ { { { -.55, .4 }, { .55, .4 } }, { { -.55, 0 }, { .55, 0 } }, { { -.55, -.4 }, { .55, -.4 } } }
+
+pinGlyph = { Line[ { { 0, -.05 }, { 0, -.75 } } ],
+  Polygon[ { { -.22, .7 }, { .22, .7 }, { .16, .3 }, { .4, -.05 }, { -.4, -.05 }, { -.16, .3 } } ] }
+
+stackGlyph = { Line[ { { -.65, .14 }, { 0, .48 }, { .65, .14 }, { 0, -.2 }, { -.65, .14 } } ],
+  Line[ { { -.65, -.2 }, { 0, -.54 }, { .65, -.2 } } ] }
+
+chevron[ dir_, enabledQ_ ] :=
+  Graphics[ { If[ enabledQ, StandardBlue, LightDarkSwitched[ GrayLevel[ .72 ], GrayLevel[ .45 ] ] ],
+      AbsoluteThickness[ 1.6 ], CapForm[ "Round" ], JoinForm[ "Round" ],
+      Line[ { { dir .3, .9 }, { -dir .3, 0 }, { dir .3, -.9 } } ] },
+    ImageSize -> { 12, 15 }, AspectRatio -> Full, PlotRange -> { { -.8, .8 }, { -1.1, 1.1 } } ]
+
+pill[ content_List, enabledQ_ ] :=
   Framed[
-    Style[ content, 13, Bold, FontFamily -> "Helvetica", LightDarkSwitched[ GrayLevel[ .15 ], White ] ],
-    Background -> LightDarkSwitched[ GrayLevel[ .9 ], GrayLevel[ .3 ] ],
-    FrameStyle -> StandardBlue, RoundingRadius -> 5,
-    FrameMargins -> { { 10, 10 }, { 5, 5 } }, ContentPadding -> False ]
+    Style[ Grid[ { content }, Spacings -> { .5, 0 }, Alignment -> { Center, Center } ], 12, FontFamily -> "Helvetica", LineBreakWithin -> False,
+      If[ enabledQ, LightDarkSwitched[ GrayLevel[ .15 ], White ], LightDarkSwitched[ GrayLevel[ .6 ], GrayLevel[ .5 ] ] ] ],
+    Background -> LightDarkSwitched[ GrayLevel[ .96 ], GrayLevel[ .22 ] ],
+    FrameStyle -> LightDarkSwitched[ GrayLevel[ If[ enabledQ, .75, .86 ] ], GrayLevel[ .4 ] ],
+    RoundingRadius -> 11, FrameMargins -> { { 6, 6 }, { 2, 2 } }, ContentPadding -> False ]
 
 alertChip[ content_ ] :=
   Framed[
-    Style[ content, 13, Bold, FontFamily -> "Helvetica", StandardRed ],
+    Style[ content, 12, FontFamily -> "Helvetica", StandardRed ],
     Background -> LightDarkSwitched[ Lighter[ StandardRed, 0.9 ], GrayLevel[ .25 ] ],
-    FrameStyle -> StandardRed, RoundingRadius -> 5,
-    FrameMargins -> { { 10, 10 }, { 5, 5 } }, ContentPadding -> False ]
+    FrameStyle -> StandardRed, RoundingRadius -> 11,
+    FrameMargins -> { { 10, 10 }, { 3, 3 } }, ContentPadding -> False ]
 
 SetAttributes[ iconButton, HoldRest ]
 

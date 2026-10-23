@@ -37,13 +37,19 @@ InfraParallelSectionQ[ fib : _[ _Graph, __ ], connection_InfraConnection, sectio
     TrueQ[ InfraConnectionQ[ fib, connection ] ] :=
   sections =!= { } && And @@ ( InfraParallelSectionQ[ fib, connection, # ] & /@ sections )
 
-Options[ RandomInfraSection ] = { Properties -> { }, "NextVertexFunction" -> Automatic }
+Options[ RandomInfraSection ] = { Properties -> { }, "NextVertexFunction" -> Automatic, RandomSeeding -> Automatic }
+
+RandomInfraSection[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomInfraSection[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomInfraSection[ ___, RandomSeeding -> None ] ] ] ]
 
 RandomInfraSection[ fib : _[ _Graph, __ ],
     specification : ( _List | InfraSection[ _Association ] ) : InfraSection[ <| |> ],
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic,
-    opts : OptionsPattern[] ] /;
-    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] &&
+    opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] &&
     SubsetQ[ First /@ Options[ RandomInfraSection ], First /@ Flatten @ { opts } ] &&
     ( OptionValue[ RandomInfraSection, { opts }, Properties ] === { } ||
       OptionValue[ RandomInfraSection, { opts }, Properties ] === { "Continuous" } ) &&
@@ -52,7 +58,7 @@ RandomInfraSection[ fib : _[ _Graph, __ ],
     ( count =!= All || OptionValue[ RandomInfraSection, { opts }, "NextVertexFunction" ] =!= RandomChoice ) &&
     If[ ListQ @ specification,
       AllTrue[ specification, point |-> AnyTrue[ VertexList @ InfraBaseSpace @ fib, # === point & ] ],
-      TrueQ[ InfraSectionQ[ fib, specification ] ] ] :=
+      TrueQ[ InfraSectionQ[ fib, specification ] ] ] ) :=
   With[ { projection = InfraProjection @ fib, total = InfraTotalSpace @ fib, base = InfraBaseSpace @ fib,
           continuous = OptionValue[ RandomInfraSection, { opts }, Properties ] === { "Continuous" },
           cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
@@ -105,4 +111,4 @@ RandomInfraSection[ fib : _[ _Graph, __ ],
 FindInfraSection[ fib : _[ _Graph, __ ],
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All ) ] /;
     AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
-  RandomInfraSection[ fib, count, Properties -> { "Continuous" }, "NextVertexFunction" -> Identity ]
+  RandomInfraSection[ fib, count, Properties -> { "Continuous" }, "NextVertexFunction" -> Identity, RandomSeeding -> None ]

@@ -118,9 +118,9 @@ VerificationTest[
 VerificationTest[
   With[ { graph = CompleteGraph[ 4 ] },
     ( instance |-> instance[[ 1 ]][ locus ] ) /@
-      InfraSceneMultiway[ InfraScene[ { locus }, { locus == InfraEquidistantSet[ { 1, 2, 3 } ] } ], graph ][ "Instances" ] ],
+      RandomInfraSceneInstance[ InfraScene[ { locus }, { locus == InfraEquidistantSet[ { 1, 2, 3 } ] } ], graph, All ] ],
   { { 4 } },
-  TestID -> "equidistant-multiway-one-vertex-set"
+  TestID -> "equidistant-scene-three-centres-one-vertex-set"
 ]
 
 VerificationTest[

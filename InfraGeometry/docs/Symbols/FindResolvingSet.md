@@ -5,94 +5,84 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindResolvingSet
-Keywords: [resolving set, metric basis, metric dimension, radar coordinates, landmarks, exhaustive search]
+Keywords: [resolving set, metric basis, metric dimension, radar coordinates, landmarks, twins, exhaustive search]
 SeeAlso: [ResolvingSetQ, MetricDimension, RadarCoordinates]
 RelatedGuides: [Experimental]
 ---
 
 ## Usage
 
-<code>[FindResolvingSet]()[*g*]</code> gives a list holding one smallest resolving set of *g*, a metric basis, empty for the graph of one vertex.
+<code>[FindResolvingSet]()[*g*]</code> gives a list holding one smallest resolving set of *g*, a metric basis.
 
-<code>[FindResolvingSet]()[*g*, *n*]</code> gives up to *n* resolving sets in order of size, the smallest first; those of the smallest size are metric bases, the later ones need not be minimal.
+<code>[FindResolvingSet]()[*g*, *n*]</code> gives up to *n* resolving sets in order of size, the smallest first.
 
 <code>[FindResolvingSet]()[*g*, *n*, *m*]</code> takes the sizes of the sets from *m*: [All](), a largest size *k*, {*min*, *max*}, or {*k*} for the size *k* only.
 
 ## Details & Options
 
-Definition: a set *B* of vertices resolves *g* when every vertex is determined by its distances to the vertices of *B*, [ResolvingSetQ](). A smallest resolving set is a metric basis, and its size is the [MetricDimension]().
+A set *B* of vertices resolves *g* when every vertex is determined by its distances to the vertices of *B* ([ResolvingSetQ]()). A smallest resolving set is a metric basis, and its size is the [MetricDimension]().
 
-The search is exhaustive. It tries every set of each size in turn, from the empty set on, and stops once it holds *n* sets. A metric basis of *k* vertices out of *N* is found after at most (*N* choose *k*) tests at the size *k*, so the search is fast when the metric dimension is small, and slow otherwise.
+The search is exhaustive. It tests every set of each size in turn, from the empty set on, and stops when it holds *n* sets. A metric basis of *k* vertices out of *N* costs up to *C(N, k)* tests at the size *k*: fast when the metric dimension is small, slow otherwise.
 
-The empty set resolves the graph of one vertex and no graph with more. After the sets of the smallest size come larger ones, and those may contain smaller resolving sets. When no set of the sizes *m* resolves *g*, the result is {}.
+Two vertices with the same neighbours, twins, have the same distance to every other vertex. A resolving set holds one of every pair of twins.
+
+The sets of the smallest size are metric bases; later ones need not be minimal. The empty set resolves only the graph of one vertex. When no set of the sizes *m* resolves *g*, the result is {}.
 
 ## Basic Examples
 
-A metric basis of the square, hexagonal and triangular tilings: three corners.
+A metric basis of the square mesh, three vertices:
 
 ```wl
-With[
-  {graphs = InfraSubstrate[#, "Small", "KeepCoordinates" -> True] & /@ {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}},
-  {bases = First @ FindResolvingSet[#] & /@ graphs},
-  {GraphicsRow[MapThread[InfraSubstrateHighlight[#1, {#2}] &, {graphs, bases}]], bases}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {basis = First @ FindResolvingSet[g]},
+  InfraSubstrateHighlight[g, {basis}, PlotLabel -> basis, ImageSize -> Medium]]
 ```
 
-A metric basis of a path, a cycle, a grid and the Petersen graph: one end, two neighbours, two corners of one side and three vertices.
+A metric basis of the 8 × 8 grid graph: two corners of one side. Every vertex is determined by its distances to two corners:
 
 ```wl
-With[
-  {graphs = {PathGraph[Range[6]], CycleGraph[8], GridGraph[{4, 4}], PetersenGraph[]}},
-  {bases = First @ FindResolvingSet[#] & /@ graphs},
-  {GraphicsRow[MapThread[InfraSubstrateHighlight[#1, {#2}] &, {graphs, bases}]], Length /@ bases}]
+With[{g = GridGraph[{8, 8}]}, {basis = First @ FindResolvingSet[g]},
+  InfraSubstrateHighlight[g, {basis}, PlotLabel -> basis, ImageSize -> Medium]]
 ```
 
 ## Scope
 
-Up to *n* sets: the 6-cycle has twelve metric bases, every pair of vertices except the three opposite pairs.
+Up to *n* sets of a given size. The 6-cycle has 12 metric bases, every pair of vertices but the three opposite pairs:
 
 ```wl
-With[
-  {g = CycleGraph[6]},
-  {bases = FindResolvingSet[g, 20, {2}]},
-  {GraphicsGrid[Partition[InfraSubstrateHighlight[g, {#}] & /@ bases, 4]], Length[bases]}]
+With[{g = CycleGraph[6]}, {bases = FindResolvingSet[g, 20, {2}]},
+  {Length[bases], Complement[Subsets[Range[6], {2}], Sort /@ bases]}]
 ```
 
-The sizes: no two vertices resolve the square tiling, and 728 sets of three do. Three of them, chosen at random, are drawn.
+The empty set resolves the graph of one vertex and comes first. On two vertices one vertex resolves, and the empty set does not:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {pairs = FindResolvingSet[g, 1000, {2}], triples = FindResolvingSet[g, 1000, {3}]},
-  {GraphicsRow[InfraSubstrateHighlight[g, {#}] & /@ (SeedRandom[1]; RandomSample[triples, 3])], Length[pairs], Length[triples]}]
-```
-
-The empty set resolves the one-vertex graph and comes first, followed by its vertex; on the graph of two vertices a single vertex resolves, and the empty set does not.
-
-```wl
-With[
-  {graphs = {Graph[{1}, {}], PathGraph[{1, 2}]}},
-  {GraphicsRow[graphs], FindResolvingSet[#, 3] & /@ graphs}]
+FindResolvingSet[#, 3] & /@ {Graph[{1}, {}], PathGraph[{1, 2}]}
 ```
 
 ## Properties and Relations
 
-Every set found resolves the graph, and the first has [MetricDimension]() vertices.
+Every set found resolves the graph, and the first has [MetricDimension]() vertices. The Petersen graph:
 
 ```wl
-With[
-  {g = PetersenGraph[]},
-  {bases = FindResolvingSet[g, 6]},
-  {GraphicsRow[InfraSubstrateHighlight[g, {#}] & /@ bases],
-   AllTrue[bases, ResolvingSetQ[g, #] &], Length[First[bases]] == MetricDimension[g]}]
+With[{g = PetersenGraph[]}, {bases = FindResolvingSet[g, 6]},
+  {AllTrue[bases, ResolvingSetQ[g, #] &], Length[First @ bases] == MetricDimension[g]}]
 ```
 
 ## Possible Issues
 
-Past the smallest size the sets need not be minimal. On a path the third set found, {4, 5}, contains the resolving set {5}.
+Twins raise the metric dimension. The square grid substrate is the 8 × 8 grid with a pendant vertex at both ends of every row and column, so two pendant vertices hang from each corner. No three vertices resolve it, while one vertex from each of the four pairs of twins does:
 
 ```wl
-With[
-  {g = PathGraph[Range[5]]},
-  {sets = FindResolvingSet[g, 3]},
-  {GraphicsRow[InfraSubstrateHighlight[g, {#}] & /@ sets], sets}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {leaves = Select[VertexList[g], VertexDegree[g, #] == 1 &]},
+  {twins = Select[Subsets[leaves, {2}], AdjacencyList[g, First[#]] == AdjacencyList[g, Last[#]] &]},
+  InfraSubstrateHighlight[g, twins, PlotLabel -> {FindResolvingSet[g, 1, 3], ResolvingSetQ[g, First /@ twins]},
+    ImageSize -> Medium]]
+```
+
+Past the smallest size the sets need not be minimal. On a path the third set found, {4, 5}, contains the resolving set {5}:
+
+```wl
+FindResolvingSet[PathGraph[Range[5]], 3]
 ```

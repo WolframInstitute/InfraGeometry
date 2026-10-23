@@ -4,61 +4,109 @@ Name: InfraMidpoint
 Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraMidpoint
-Keywords: [synthetic geometry, graph, construction]
-SeeAlso: [RandomInfraMidpoint, InfraMeasurement, InfraMemberQ, InfraDistance]
+Keywords: [midpoint, bisection, segment, centre, shortest path]
+SeeAlso: [RandomInfraMidpoint, InfraSegment, InfraPerpendicularBisector, InfraMeasurement, InfraMemberQ]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
 ## Usage
 
-<code>[InfraMidpoint]()[*p*, *q*]</code> is the center of the oriented segment graph from *p* to *q*.
+<code>[InfraMidpoint]()[*p*, *q*]</code> is the midpoint of *p* and *q*: the central vertices of the shortest paths from *p* to *q*.
 
 ## Details & Options
 
-The graph must be finite, simple, undirected and unweighted, with valid vertex anchors.
-Unsupported arguments and properties stay unevaluated.
-The head is inert until a graph-aware reader or named sampler evaluates it.
+The midpoint is *M(p, q) = {v ∈ I(p, q) : max(d(p, v), d(v, q)) = ⌈d(p, q)/2⌉}*, with *I(p, q)* the metric interval of *p* and *q*.
 
-One representative is one raw vertex label, including a List-valued label.
-The complete family has distinct central vertices in graph vertex order.
-Its vertex density counts the shortest paths from *p* to *q* through each central vertex.
-Supported measurements are "VertexDensity", "Cardinality", "CountingMeasure", "Subgraph" and "RiemannianMeasure".
-The last measure uses the existing interior-support law.
-"Graph", "EdgeDensity", "Length", "Area" and "Volume" are unsupported for these point families.
+For even *d(p, q)* it is the middle layer of the interval, the vertices with *d(p, v) = d(v, q)*. For odd *d(p, q)* there is no such vertex, and the midpoint is the two central layers.
 
-The segment graph contains all shortest paths from *p* to *q*, oriented toward *q*.
-A central vertex minimizes Max[d(p,v),d(v,q)] within this graph.
-For even endpoint distance this selects one middle layer; for odd distance it selects both middle layers.
-Disconnected endpoints give an empty family; equal anchors give one point.
-The "VertexDensity" measurement equals the segment "Midpoint" measurement.
-RandomInfraMidpoint samples the distinct central vertices uniformly, independently of their occupation densities.
+A midpoint is not unique. On the square grid, with *a* steps from *p* to *q* along one axis and *b* along the other and *a + b = 2k*, the middle layer is a diagonal of the rectangle between them. The number of shortest paths through its vertex *i* steps along the first axis is *C(k, i) C(k, a − i)*.
+
+[InfraMidpoint]() is a symbolic object. [InfraMeasurement]() reads:
+
+| Property | Value |
+|---|---|
+| `"VertexDensity"` | the number of shortest paths from *p* to *q* through each central vertex |
+| `"Cardinality"` | the number of central vertices |
+| `"CountingMeasure"` | the number of central vertices |
+| `"Subgraph"` | the subgraph induced on the central vertices |
+| `"RiemannianMeasure"` | the number of central vertices all of whose neighbours are central |
+
+[RandomInfraMidpoint]() draws a central vertex, uniformly. <code>[InfraMemberQ]()[*g*, [InfraMidpoint]()[*p*, *q*], *v*]</code> tests a vertex.
+
+Equal anchors give the anchor; disconnected anchors give the empty set.
+
+Corresponding notion in the classical axiom systems:
+
+| System | Name | Statement |
+|---|---|---|
+| Euclid | I.10 | To bisect a given finite straight line. Here the bisection point is a set. |
 
 ## Basic Examples
 
-Draw the complete support.
+The midpoint of the centre and a vertex at distance 6, drawn over the segment:
 
 ```wl
-SeedRandom[ 71 ]; With[ { graph = CycleGraph[ 4 ] },
-  InfraSubstrateHighlight[ graph, { InfraMidpoint[ 1, 3 ] } ] ]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+    {q = RandomInfraPoint[g, InfraShell[p, 6], RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {InfraSegment[p, q], InfraMidpoint[p, q], p, q}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-Read every candidate without sampling.
+On the grid, three steps along each axis: the midpoint is a diagonal of four vertices, with 1, 9, 9 and 1 shortest paths through them:
 
 ```wl
-SeedRandom[ 71 ]; With[ { graph = CycleGraph[ 4 ] },
-  RandomInfraMidpoint[ graph, InfraMidpoint[ 1, 3 ], All ] ]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+  {xy = AssociationThread[VertexList[g], GraphEmbedding[g]]}, {q = First @ Keys @ Select[xy, # - xy[p] == {3, 3} &]},
+  {density = InfraMeasurement[g, InfraMidpoint[p, q], "VertexDensity"]},
+  InfraSubstrateHighlight[g, {InfraSegment[p, q], density, p, q}, PlotLabel -> Values[density], ImageSize -> Medium]]
 ```
 
-Read both middle layers of a segment with odd length.
+## Scope
+
+At odd distance the midpoint is the two central layers. Three steps along one axis and two along the other:
 
 ```wl
-SeedRandom[ 71 ]; With[ { graph = PathGraph[ Range[ 4 ] ] },
-  InfraMeasurement[ graph, InfraMidpoint[ 1, 4 ], "VertexDensity" ] ]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+  {xy = AssociationThread[VertexList[g], GraphEmbedding[g]]}, {q = First @ Keys @ Select[xy, # - xy[p] == {3, 2} &]},
+  InfraSubstrateHighlight[g, {InfraSegment[p, q], InfraMidpoint[p, q], p, q},
+    PlotLabel -> InfraMeasurement[g, InfraMidpoint[p, q], "Cardinality"], ImageSize -> Medium]]
 ```
 
-Read the shortest-path occupation density at the center of a branching segment.
+[RandomInfraMidpoint]() draws one central vertex; `All` gives them all:
 
 ```wl
-SeedRandom[ 71 ]; With[ { graph = GridGraph[ { 3, 3 } ] },
-  InfraMeasurement[ graph, InfraMidpoint[ 1, 9 ], "VertexDensity" ] ]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {p = First @ GraphCenter[g]},
+  {q = RandomInfraPoint[g, InfraShell[p, 6], RandomSeeding -> 1]},
+  {RandomInfraMidpoint[g, InfraMidpoint[p, q], RandomSeeding -> 1], RandomInfraMidpoint[g, InfraMidpoint[p, q], All]}]
+```
+
+## Properties and Relations
+
+At even distance every shortest path passes through the midpoint once, so the density adds up to the number of shortest paths:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Medium"]}, {p = First @ GraphCenter[g]},
+  {q = RandomInfraPoint[g, InfraShell[p, 8], RandomSeeding -> 1]},
+  Total @ InfraMeasurement[g, InfraMidpoint[p, q], "VertexDensity"] == InfraMeasurement[g, InfraSegment[p, q], "Cardinality"]]
+```
+
+At even distance the midpoint lies on the [InfraPerpendicularBisector](), and is the part of it inside the interval:
+
+```wl
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+    {q = RandomInfraPoint[g, InfraShell[p, 4], RandomSeeding -> 2]},
+    InfraSubstrateHighlight[g, {InfraPerpendicularBisector[p, q], InfraMidpoint[p, q], p, q}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+```
+
+## Possible Issues
+
+`"Cardinality"` counts central vertices, not shortest paths:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {p = First @ GraphCenter[g]},
+  {q = RandomInfraPoint[g, InfraShell[p, 4], RandomSeeding -> 1]},
+  {InfraMeasurement[g, InfraMidpoint[p, q], "Cardinality"], InfraMeasurement[g, InfraSegment[p, q], "Cardinality"]}]
 ```

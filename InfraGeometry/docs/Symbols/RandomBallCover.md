@@ -6,168 +6,79 @@ ContextPath: []
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomBallCover
 Keywords: [random ball cover, minimum cover, dominating set, uniform sampling, nonuniqueness]
-SeeAlso: [FindBallCover, BallCoverNumber, BallCoverQ, InfraBall, SeedRandom, RandomSample]
+SeeAlso: [FindBallCover, BallCoverNumber, BallCoverQ, InfraBall, RandomSeeding]
 RelatedGuides: [InfraTopology]
 ---
 
 ## Usage
 
-<code>[RandomBallCover]()[*g*, *r*]</code> gives a uniformly chosen minimum centre set whose closed radius-*r* balls cover every vertex of *g*.
+<code>[RandomBallCover]()[*g*, *r*]</code> gives a smallest cover of *g* by balls of radius *r*, chosen at random.
 
-<code>[RandomBallCover]()[*g*, *r*, *target*]</code> samples a minimum cover of *target*, using centres anywhere in *g*.
+<code>[RandomBallCover]()[*g*, *r*, *target*]</code> gives a random smallest cover of the vertices of *target*.
 
-<code>[RandomBallCover]()[*g*, *r*, *target*, *n*]</code> gives exactly *n* distinct minimum covers, sampled without replacement, or an empty list if fewer exist.
-
-<code>[RandomBallCover]()[*g*, *r*, *target*, [UpTo]()[*n*]]</code> samples at most *n* distinct minimum covers.
-
-<code>[RandomBallCover]()[*g*, *r*, *target*, [All]()]</code> gives every minimum cover in deterministic enumeration order.
+<code>[RandomBallCover]()[*g*, *r*, *target*, *n*]</code> gives *n* different random smallest covers.
 
 ## Details & Options
 
-A centre set covers a target when every target vertex is at graph distance at most *r* from some centre. A minimum cover has the fewest centres among
-all such sets. Each distinct minimum centre set has equal sampling probability; different permutations of the same centres are one cover.
+A smallest cover of *T* at radius *r* is a set *C* of [BallCoverNumber]() vertices with *T ⊆ ⋃ Bᵣ(c)*, *c ∈ C*. There are often many. [RandomBallCover]() draws one uniformly from all of them; [FindBallCover]() gives one with no preferred choice.
 
-The graph is finite, undirected and unweighted; the radius is a nonnegative integer, defaulting to 1. The target defaults to [All](). It accepts a
-vertex, vertex list, density association, graph carrier or abstract region such as [InfraBall](). Only vertex support matters. A literal vertex takes
-precedence over list interpretation. Centres and distances belong to the ambient graph.
+The target can be a vertex, a vertex list, a density or a region such as [InfraBall](). Only its vertices count. It defaults to [All](), and the radius defaults to 1.
 
-Omitting the count gives one centre list. Every explicit count gives a list of centre lists; explicit 1 therefore gives a one-element list. Counts
-occupy the fourth argument, after the target. Integer counts are strict, while [UpTo]() permits fewer. Sampling is without replacement within a call;
-separate calls can repeat.
+The count *n* can be *n*, [UpTo]()[*n*] or [All](). With a count the result is a list of different covers, `{}` when fewer than *n* exist. [All]() gives every smallest cover, in a fixed order.
 
-The sampler uses the ambient random state. [SeedRandom]() reproduces a draw, and [BlockRandom]() isolates it. [All](), 0 and [UpTo]()[0] do not
-consume random numbers. [All]() returns the same complete family as [FindBallCover]() with [All](); its order has no intrinsic geometric meaning.
+Every draw lists all smallest covers first. Their number can grow fast with the size of the target.
 
-| Option | Default | Description |
+| Option | Default | Values |
 |---|---|---|
-| [Method]() | [Automatic]() | exact algorithm used to determine the minimum-cover family |
+| [Method]() | [Automatic]() | [Automatic](), `"IntegerLinearProgramming"` |
+| [RandomSeeding]() | [Automatic]() | an integer or a string for a reproducible draw; `Inherited` to draw from the current random state |
 
-[Automatic]() and `"IntegerLinearProgramming"` use exact integer optimization. `"Exhaustive"` is a compatibility alias for that algorithm. These are
-method values of this function, not the solver method names of [LinearOptimization](). `"Greedy"` is unsupported; a greedy cover need not be minimum.
-
-A positive bounded sample request first enumerates every minimum centre set, even for one draw. This family can have exponential size. The count controls the number returned,
-not the search effort; there is no heuristic fallback.
-
-The empty target has one minimum cover, the empty centre list. Omitting the count gives `{}`; explicit 1, [UpTo]()[1] and [All]() give `{{}}`. An
-empty association `<||>` specifies an empty target even when `{}` is itself a vertex label.
+With the default `RandomSeeding -> Automatic` every call draws afresh, and [SeedRandom]() does not fix the result.
 
 ## Basic Examples
 
-Sample one minimum cover of a six-cycle:
+Three random smallest covers of the ball of radius 2 about the centre of the grid by balls of radius 1. There are 7 such covers:
 
-#| annotation: 26.10.18: FindShortestPath illustrates witness selection without a canonical tie rule; FindBallCover retains that role. RandomPoint and RandomSample motivate ambient seeding for the separate sampler. Here the distribution is explicitly uniform over minimum centre sets, implemented by complete exact enumeration. No native RandomBallCover counterpart or extra cover wrapper is assumed.
 ```wl
-SeedRandom[ 101 ];
-RandomBallCover[ CycleGraph[ 6 ], 1 ]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  GraphicsRow @ Map[cover |-> InfraSubstrateHighlight[g, {InfraBall[c, 2], cover}],
+    RandomBallCover[g, 1, InfraBall[c, 2], 3, RandomSeeding -> 1]]]
 ```
 
----
-
-Draw two different minimum covers and show their covering balls:
+A random smallest cover of the cycle with 9 vertices:
 
 ```wl
-SeedRandom[ 101 ];
-With[
-	{ graph = CycleGraph[ 6 ] },
-	{ covers = RandomBallCover[ graph, 1, All, 2 ] },
-	GraphicsRow @ Map[
-		centres |-> Labeled[ InfraSubstrateHighlight[ graph,
-			InfraBall[ #, 1 ] & /@ centres ], centres ], covers ] ]
-```
-
----
-
-Cover a ball inside an ambient cycle:
-
-```wl
-SeedRandom[ 101 ];
-RandomBallCover[ CycleGraph[ 8 ], 1, InfraBall[ 1, 2 ] ]
+RandomBallCover[CycleGraph[9], 1, RandomSeeding -> 1]
 ```
 
 ## Scope
 
-An explicit count of one retains the outer list:
+The cycle with 9 vertices has three smallest covers at radius 1. Asking for four gives `{}`; [UpTo]() gives the three in random order:
 
 ```wl
-SeedRandom[ 101 ];
-RandomBallCover[ CycleGraph[ 6 ], 1, All, 1 ]
+Table[RandomBallCover[CycleGraph[9], 1, All, n, RandomSeeding -> 1], {n, {4, UpTo[4]}}]
 ```
 
----
-
-A strict request for four covers fails because only three exist:
+[All]() gives every smallest cover, as [FindBallCover]() does:
 
 ```wl
-SeedRandom[ 101 ];
-RandomBallCover[ CycleGraph[ 6 ], 1, All, 4 ]
-```
-
----
-
-A bounded request returns the three available covers in random order:
-
-```wl
-SeedRandom[ 101 ];
-RandomBallCover[ CycleGraph[ 6 ], 1, All, UpTo[ 4 ] ]
-```
-
----
-
-Enumerate every minimum cover without a random draw:
-
-```wl
-RandomBallCover[ CycleGraph[ 6 ], 1, All, All ]
-```
-
----
-
-The empty target has one empty minimum cover:
-
-```wl
-RandomBallCover[ CycleGraph[ 6 ], 1, <||>, All ]
+RandomBallCover[CycleGraph[9], 1, All, All] === FindBallCover[CycleGraph[9], 1, All, All]
 ```
 
 ## Options
 
-### Method
+### RandomSeeding
 
-Select exact integer optimization explicitly:
+A fixed seed gives the same draw whatever [SeedRandom]() has set:
 
 ```wl
-SeedRandom[ 101 ];
-RandomBallCover[ CycleGraph[ 6 ], 1, Method -> "IntegerLinearProgramming" ]
+Table[SeedRandom[k]; RandomBallCover[CycleGraph[9], 1, RandomSeeding -> 7], {k, 3}]
 ```
 
 ## Properties and Relations
 
-The found and sampled covers have the same minimum size:
+The draw is uniform. The three smallest covers of the cycle with 9 vertices come up about equally often in 300 draws:
 
 ```wl
-SeedRandom[ 101 ];
-With[
-	{ graph = CycleGraph[ 6 ] },
-	Grid[ { { "Minimum size", "Found cover", "Random cover" },
-		{ BallCoverNumber[ graph, 1 ], FindBallCover[ graph, 1 ], RandomBallCover[ graph, 1 ] } }, Frame -> All ] ]
+Counts @ Table[RandomBallCover[CycleGraph[9], 1, RandomSeeding -> k], {k, 300}]
 ```
-
----
-
-Resetting the seed repeats a draw:
-
-```wl
-With[
-	{ graph = CycleGraph[ 6 ] },
-	{ first = ( SeedRandom[ 101 ]; RandomBallCover[ graph, 1 ] ) },
-	SeedRandom[ 101 ];
-	RandomBallCover[ graph, 1 ] === first ]
-```
-
-## Possible Issues
-
-A random greedy trajectory is a different distribution from uniform sampling of minimum covers. Randomized greedy is not a method of this sampler:
-
-```wl
-RandomBallCover[ CycleGraph[ 6 ], 1, Method -> "Greedy" ]
-```
-
-The input remains unevaluated.

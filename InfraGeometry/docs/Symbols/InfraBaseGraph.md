@@ -5,7 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraBaseGraph
-Keywords: [compatibility, fibered graph, InfraBaseSpace]
+Keywords: [base graph, base space, fibered graph]
 SeeAlso: [InfraBaseSpace, InfraFiberedGraph, InfraTotalSpace, InfraProjection]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
@@ -13,21 +13,17 @@ RelatedTutorials: [InfraBundles]
 
 ## Usage
 
-<code>[InfraBaseGraph]()[*fib*]</code> gives the reconstructed base graph of *fib* using the compatibility spelling.
+<code>[InfraBaseGraph]()[*fib*]</code> is another name for <code>[InfraBaseSpace]()[*fib*]</code>, the base graph of the fibered graph *fib*.
 
 ## Details & Options
 
-- Use [InfraBaseSpace]() for new code.
-- Supported inputs and results are the same as for [InfraBaseSpace]().
-- Both canonical [InfraFiberedGraph]() and legacy [InfraFibration]() literals are supported.
-- Unsupported graph domains and malformed projections remain unevaluated.
+The base has the projected vertices, and *p ≠ q* are adjacent iff some total edge joins the fiber over *p* to the fiber over *q*. [InfraBaseSpace]() has the details.
 
 ## Basic Examples
 
-The compatibility reader accepts a canonical fibered graph.
+The base of the displacement bundle of the square grid, under both names:
 
 ```wl
-SeedRandom[ 7 ];
-With[ { fib = InfraFiberedGraph[ CycleGraph[ 8 ], vertex |-> Mod[ vertex, 4, 1 ] ] },
-  InfraBaseGraph[ fib ] ]
+With[{fib = InfraDisplacementBundle[InfraSubstrate["SquareGridGraph", "Small"], 1]},
+  InfraBaseGraph[fib] === InfraBaseSpace[fib]]
 ```

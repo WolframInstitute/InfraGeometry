@@ -130,7 +130,7 @@ VerificationTest[
 
 (* random displacements are continuous sections of the scale-r tangent bundle *)
 VerificationTest[
-    SeedRandom[7]; With[{d = RandomDisplacement[dispGrid, 2]},
+    SeedRandom[7]; With[{d = RandomDisplacement[dispGrid, 2, RandomSeeding -> None ]},
       {ContinuousDisplacementQ[dispGrid, d], DisplacementMagnitude[dispGrid, d] <= 2}],
     {True, True},
     TestID -> "Displacement-random-continuous"
@@ -163,8 +163,8 @@ VerificationTest[
 (* a random displacement is continuous, or the call stays unevaluated when the repair leaves a discontinuity *)
 VerificationTest[
     With[{graph = InfraSubstrate["HexagonalTilingGraph", "Small"]},
-        {SeedRandom[1]; ContinuousDisplacementQ[graph, RandomDisplacement[graph, 3]],
-         SeedRandom[2]; Head @ RandomDisplacement[graph, 3]}],
+        {SeedRandom[1]; ContinuousDisplacementQ[graph, RandomDisplacement[graph, 3, RandomSeeding -> None ]],
+         SeedRandom[2]; Head @ RandomDisplacement[graph, 3, RandomSeeding -> None ]}],
     {True, RandomDisplacement},
     TestID -> "Displacement-random-unevaluated-on-failure"
 ]

@@ -5,7 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraFiberedGraphHighlight
-Keywords: [fibered graph, fibration, highlight, visualization, section, connection, lift]
+Keywords: [fibered graph, highlight, drawing, fiber, section, connection, lift]
 SeeAlso: [InfraFiberedGraphViewer, InfraSubstrateHighlight, InfraFiberedGraph, InfraSection, InfraConnection, InfraHorizontalLift, InfraFiber]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
@@ -13,121 +13,116 @@ RelatedTutorials: [InfraBundles]
 
 ## Usage
 
-<code>[InfraFiberedGraphHighlight]()[*fib*]</code> draws the fibered graph *fib*.
+<code>[InfraFiberedGraphHighlight]()[*fib*]</code> draws the fibered graph *fib*, each fiber placed at its base vertex.
 
-<code>[InfraFiberedGraphHighlight]()[*fib*, {*object1*, *object2*, ...}]</code> highlights sections, connections, walks and ordinary total-graph objects on *fib*.
-
-<code>[InfraFiberedGraphHighlight]()[*fib*, *object*]</code> highlights a single object.
+<code>[InfraFiberedGraphHighlight]()[*fib*, {*obj1*, *obj2*, …}]</code> draws *fib* with fibers, sections, connections, walks and other objects highlighted.
 
 ## Details & Options
 
-The result is a native [Graph]() or [Graph3D]() with the same vertices and edges as [InfraTotalSpace]()[*fib*].
-Drawing coordinates belong to this result; the fibered graph itself remains unchanged.
+The result is a [Graph]() or [Graph3D]() with the vertices and edges of the total graph. Only the drawing has coordinates; *fib* is unchanged.
 
-- [InfraSection]() highlights its selected vertices and existing image edges.
-- [InfraConnection]() highlights its chosen edges, without adding vertex mass.
-  A later connection can restyle section image edges while leaving section vertex marks visible.
-- [InfraWalk]() preserves the ordered lift, repeated visits and repeated traversals.
-- A native fiber graph, such as [InfraFiber]()[*fib*, *p*], highlights its vertices and edges.
-- A vertex density association uses the ordinary [InfraSubstrateHighlight]() semantics.
-- A list of alternative sections or connections draws separate members, not one mathematical section or connection.
-  Styles around such a family apply to each member.
-  Literal list-valued vertices, walks, densities and native graph aggregates retain their ordinary meaning.
+The three views:
 
-Styling uses the [InfraSubstrateHighlight]() grammar.
-A [Directive]() entry styles subsequent objects.
-`Style[object, style]` and `object -> style` style one object.
-Put an object-style rule inside the item list; top-level rules are options.
-The single-object form excludes lists and rules.
-For a list of options, supply the item list explicitly, as in `InfraFiberedGraphHighlight[fib, {}, {Method -> "3DFiber"}]`.
+| [Method]() | Drawing |
+|---|---|
+| `"CircularFiber"` | each fiber on a small circle around its base vertex |
+| `"3DFiber"` | each fiber on an upright ellipse above its base vertex |
+| `"HighlightFiber"` | the total graph in its own layout, the fibers told apart by colour |
 
-| Option | Default | Meaning |
+The objects:
+
+| Object | Highlights |
+|---|---|
+| a vertex, a list of vertices, <code>[InfraFiber]()[*fib*, *p*]</code> | vertices and the edges between them |
+| <code>[InfraSection]()[*s*]</code> | the chosen vertices and the edges joining them |
+| <code>[InfraConnection]()[*edges*]</code> | the chosen edges |
+| <code>[InfraWalk]()[*w*]</code> | a walk in the total graph, such as a lift from [InfraHorizontalLift]() |
+| `<\|v -> m, …\|>` | a density on the total vertices |
+
+A list of sections or connections draws each member separately.
+
+Styling follows [InfraSubstrateHighlight](): a [Directive]() styles the objects after it, and `Style[obj, style]` or `obj -> style` inside the list styles one object.
+
+Options:
+
+| Option | Default | Values |
 |---|---|---|
-| [Method]() | `"CircularFiber"` | `"CircularFiber"`, `"3DFiber"` or `"HighlightFiber"` |
-| `"BaseGraphLayout"` | [Automatic]() | A native graph layout for the reconstructed base |
-| `"BaseVertexCoordinates"` | [Automatic]() | An association from literal base vertices to planar coordinates |
-| `"FiberRadius"` | [Automatic]() | A positive drawing scale for the circular and three-dimensional views |
+| [Method]() | `"CircularFiber"` | `"CircularFiber"`, `"3DFiber"`, `"HighlightFiber"` |
+| `"BaseGraphLayout"` | [Automatic]() | a [GraphLayout]() value for the base |
+| `"BaseVertexCoordinates"` | [Automatic]() | planar coordinates of the base vertices, as a list or an association |
+| `"FiberRadius"` | [Automatic]() | the radius of the fiber circles; by default a third of the shortest base edge, at most 1/3 |
 
-`"CircularFiber"` arranges each fiber on a small circle around its base vertex.
-`"3DFiber"` places the fiber on an upright ellipse above that vertex.
-`"HighlightFiber"` colors the fibers in the total graph's own layout.
-All three views draw every supplied overlay.
-
-Explicit base coordinates override the base layout.
-The automatic fiber radius is one third of the shortest positive drawn base-edge length, capped at one third.
-When the base has no positive drawn edge length, the radius is one third.
-The total-layout view computes neither a base embedding nor a fiber radius.
-Singleton fibers sit at the base point in the circular view, and above it in the three-dimensional view.
-The base-coordinate options do not change the total-layout view.
-
-Graph options and [InfraSubstrateHighlight]() options are forwarded with their ordinary meanings.
-The first occurrence of a repeated option takes precedence.
-Unsupported method names, malformed base-coordinate selectors and nonpositive fiber radii leave the call unevaluated.
-
-The function performs no section or connection sampling.
-Any stochastic layout is presentation work; use explicit coordinates for a fixed drawing.
+Options of [Graph]() and [InfraSubstrateHighlight]() are passed on.
 
 ## Basic Examples
 
-A partial section, a continuous extension and a connection over the hexagon.
+The fiber over 6 in the product of the 4 × 4 grid with a triangle, and in the displacement bundle of the grid:
 
 ```wl
-SeedRandom[7];
-With[
-  {fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> { 3 }, "VerticalEdgeCount" -> { 0 },
-    Properties -> { "IsomorphicFibers" }, "HorizontalEdgeCount" -> All]},
-  {partial = RandomInfraSection[fib, {1, 3}]},
-  {section = RandomInfraSection[fib, partial, Properties -> {"Continuous"}]},
-  {connection = RandomInfraConnection[fib]},
-  InfraFiberedGraphHighlight[fib, {partial, section, connection}]]
+GraphicsRow @ Table[
+  With[{fib = InfraFiberedSubstrate[name, "Small"]}, InfraFiberedGraphHighlight[fib, {InfraFiber[fib, 6]}]],
+  {name, {"GridProductBundle", "GridDisplacementBundle"}}]
 ```
 
-The same structure in three views.
+A covering of the 3 × 3 grid with three sheets, and the lift of the face 1, 2, 5, 4 from the vertex {1, 1}. It ends on another sheet:
 
 ```wl
-SeedRandom[7];
-With[
-  {fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> { 3 }, "HorizontalEdgeCount" -> All]},
-  {section = RandomInfraSection[fib, Properties -> {"Continuous"}]},
-  {connection = RandomInfraConnection[fib]},
-  GraphicsRow[InfraFiberedGraphHighlight[fib, {section, connection}, Method -> #] & /@
-    {"CircularFiber", "3DFiber", "HighlightFiber"}]]
+With[{fib = RandomInfraFiberedGraph[GridGraph[{3, 3}], "VerticalVertexCount" -> {3}, Properties -> {"Covering"},
+    RandomSeeding -> 2]},
+  {lift = InfraHorizontalLift[fib, RandomInfraConnection[fib, RandomSeeding -> 1], {1, 1}, {1, 2, 5, 4, 1}]},
+  InfraFiberedGraphHighlight[fib, {InfraWalk[lift]}, PlotLabel -> Last[lift], ImageSize -> Medium]]
 ```
 
 ## Scope
 
-Repeated traversals of a lifted walk retain their strength.
+A fibration over the hexagon with fibers of three points. A continuous section, and a connection:
 
 ```wl
-SeedRandom[7];
-With[
-  {fib = RandomInfraFiberedGraph[CycleGraph[4], "VerticalVertexCount" -> { 2 }, "HorizontalEdgeCount" -> All]},
-  {connection = RandomInfraConnection[fib]},
-  {start = First @ VertexList @ InfraFiber[fib, 1]},
-  {lift = InfraHorizontalLift[fib, connection, start, {1, 2, 1, 2, 3}]},
-  InfraFiberedGraphHighlight[fib, {connection -> StandardBlue, Style[InfraWalk[lift], StandardRed]},
-    "Arrowheads" -> True]]
+With[{fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> {3}, Properties -> {"Fibration"},
+    RandomSeeding -> 3]},
+  {section = RandomInfraSection[fib, Properties -> {"Continuous"}, RandomSeeding -> 1]},
+  {conn = RandomInfraConnection[fib, RandomSeeding -> 1]},
+  GraphicsRow[{InfraFiberedGraphHighlight[fib, {section}], InfraFiberedGraphHighlight[fib, {conn}]}]]
 ```
 
-A fiber is an ordinary graph-shaped highlight.
+A partial section over the vertices 1 and 3, and a style for one object:
 
 ```wl
-SeedRandom[7];
-With[
-  {fib = RandomInfraFiberedGraph[CycleGraph[4], "VerticalVertexCount" -> { 3 }, "VerticalEdgeCount" -> { 2 }]},
-  InfraFiberedGraphHighlight[fib, {Directive[StandardRed], InfraFiber[fib, 1]}, Method -> "HighlightFiber"]]
+With[{fib = RandomInfraFiberedGraph[CycleGraph[6], "VerticalVertexCount" -> {3}, Properties -> {"Fibration"},
+    RandomSeeding -> 3]},
+  {partial = RandomInfraSection[fib, {1, 3}, RandomSeeding -> 1]},
+  InfraFiberedGraphHighlight[fib, {partial, InfraFiber[fib, 5] -> StandardBlue}, ImageSize -> Medium]]
+```
+
+## Options
+
+### Method
+
+The lifted face of the grid covering in the three views:
+
+```wl
+With[{fib = RandomInfraFiberedGraph[GridGraph[{3, 3}], "VerticalVertexCount" -> {3}, Properties -> {"Covering"},
+    RandomSeeding -> 2]},
+  {lift = InfraHorizontalLift[fib, RandomInfraConnection[fib, RandomSeeding -> 1], {1, 1}, {1, 2, 5, 4, 1}]},
+  GraphicsRow @ Table[InfraFiberedGraphHighlight[fib, {InfraWalk[lift]}, Method -> m],
+    {m, {"CircularFiber", "3DFiber", "HighlightFiber"}}]]
+```
+
+### BaseVertexCoordinates
+
+A random double covering of the square grid, drawn over the grid's own coordinates. Where two edges cross, the sheets are exchanged:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {fib = RandomInfraFiberedGraph[g, "VerticalVertexCount" -> {2}, Properties -> {"Covering"},
+    RandomSeeding -> 1]},
+  InfraFiberedGraphHighlight[fib, "BaseVertexCoordinates" -> GraphEmbedding[g], ImageSize -> Medium]]
 ```
 
 ## Possible Issues
 
-An unsupported view stays unevaluated.
+An unknown view leaves the call unevaluated:
 
 ```wl
-InfraFiberedGraphHighlight[InfraFiberedGraph[CycleGraph[4], Identity], {}, Method -> "Unrecognized"]
-```
-
-The empty fibered graph still has a native graph drawing.
-
-```wl
-InfraFiberedGraphHighlight[InfraFiberedGraph[Graph[{}, {}], <||>]]
+Head @ InfraFiberedGraphHighlight[InfraFiberedSubstrate["CycleDoubleCover", "Small"], {}, Method -> "Unknown"]
 ```

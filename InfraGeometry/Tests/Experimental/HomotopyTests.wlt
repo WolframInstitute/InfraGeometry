@@ -170,6 +170,15 @@ VerificationTest[
   TestID -> "HomotopicQ-multi-AllTrue-conjunction"
 ]
 
+(* a list of vertex lists is the same bundle as the list of their walk graphs *)
+VerificationTest[
+  With[ { grid23 = GridGraph[ { 2, 3 } ] }, { paths = RandomInfraSegment[ grid23, 1, 6, All ] },
+    { Length @ FindInfraHomotopy[ grid23, paths, paths, All, "NullHomotopicCycles" -> { 3, 4 } ],
+      HomotopicQ[ grid23, paths, { 1, 2, 4, 6 }, "NullHomotopicCycles" -> { 3, 4 } ] } ],
+  { 9, True },
+  TestID -> "FindInfraHomotopy-list-of-vertex-lists-is-a-bundle"
+]
+
 (* ===== The count contract on chains ===== *)
 
 (* count-less one chain, All the List of chains -- the same contract every other
@@ -420,6 +429,23 @@ VerificationTest[
   NullHomotopicQ[CycleGraph[4], geodesicCycleGraph @ {1, 2, 3, 4}, "NullHomotopicCycles" -> {4}],
   True,
   TestID -> "NullHomotopicQ-on-a-cycle-graph"
+]
+
+(* the ladder of two squares: greedy descent stalls where the exhaustive search finds the homotopy *)
+VerificationTest[
+  With[ { g = Graph[ Range[ 6 ], { 1 <-> 2, 2 <-> 3, 4 <-> 5, 5 <-> 6, 1 <-> 4, 2 <-> 5, 3 <-> 6 } ] },
+    { HomotopicQ[ g, { 1, 2, 3, 6 }, { 1, 4, 5, 6 }, "NullHomotopicCycles" -> 4 ],
+      HomotopicQ[ g, { 1, 2, 3, 6 }, { 1, 4, 5, 6 }, "NullHomotopicCycles" -> 4, Method -> "Greedy" ] } ],
+  { True, False },
+  TestID -> "HomotopicQ-honours-Method"
+]
+
+VerificationTest[
+  With[ { g = Graph[ Range[ 6 ], { 1 <-> 2, 2 <-> 3, 4 <-> 5, 5 <-> 6, 1 <-> 4, 2 <-> 5, 3 <-> 6 } ] },
+    { NullHomotopicQ[ g, { 2, 3, 6, 5, 4, 1 }, "NullHomotopicCycles" -> 4 ],
+      NullHomotopicQ[ g, { 2, 3, 6, 5, 4, 1 }, "NullHomotopicCycles" -> 4, Method -> "Greedy" ] } ],
+  { True, False },
+  TestID -> "NullHomotopicQ-honours-Method"
 ]
 
 EndTestSection[]

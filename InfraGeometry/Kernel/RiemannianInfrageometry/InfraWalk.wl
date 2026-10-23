@@ -19,17 +19,26 @@ Options[ RandomInfraWalk ] = {
   Properties           -> { },
   "StoppingCondition"  -> None,
   "NextVertexFunction" -> Automatic,
-  "Direction"          -> "Forward"
+  "Direction"          -> "Forward",
+  RandomSeeding        -> Automatic
 }
 
-RandomInfraWalk[ graph_Graph, germ_, opts : OptionsPattern[] ] /; ( VertexQ[ graph, germ ] || ! MatchQ[ germ, _InfraWalk | _InfraGeodesic ] ) &&
-    SubsetQ[ First /@ Options[ RandomInfraWalk ], First /@ { opts } ] :=
+RandomInfraWalk[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomInfraWalk[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomInfraWalk[ ___, RandomSeeding -> None ] ] ] ]
+
+RandomInfraWalk[ graph_Graph, germ_, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( ( VertexQ[ graph, germ ] || ! MatchQ[ germ, _InfraWalk | _InfraGeodesic ] ) &&
+    SubsetQ[ First /@ Options[ RandomInfraWalk ], First /@ { opts } ] ) :=
   With[ { result = RandomInfraWalk[ graph, germ, Infinity, Automatic, opts ] },
     result /; Head[ result ] =!= RandomInfraWalk ]
 
 RandomInfraWalk[ graph_Graph, germ_,
     kspec : ( UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ),
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; ( VertexQ[ graph, germ ] || ! MatchQ[ germ, _InfraWalk | _InfraGeodesic ] ) &&
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( ( VertexQ[ graph, germ ] || ! MatchQ[ germ, _InfraWalk | _InfraGeodesic ] ) &&
     SubsetQ[ Keys @ Options @ RandomInfraWalk, Keys @ Flatten @ { opts } ] &&
     With[ { rules     = OptionValue[ RandomInfraWalk, { opts }, Properties ],
             condition = OptionValue[ RandomInfraWalk, { opts }, "StoppingCondition" ],
@@ -43,7 +52,7 @@ RandomInfraWalk[ graph_Graph, germ_,
       ( condition === None || ! MatchQ[ condition, _Integer | _List | _String | _Rule ] ) &&
       ( nextFn =!= RandomChoice || count =!= All ) &&
       ( kspec =!= Infinity || MemberQ[ triples, { "Simple" | "Shortest", Infinity, p_ /; SubsetQ[ First /@ Options[ RandomInfraWalk ], First /@ { opts } ] &&
-    p == 0 } ] ) ] :=
+    p == 0 } ] ) ] ) :=
   With[ {
       cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
       walksOf = w |-> With[ { vs = VertexList @ w },
@@ -174,19 +183,28 @@ Options[ RandomInfraGeodesic ] = {
   Properties           -> { },
   "StoppingCondition"  -> None,
   "NextVertexFunction" -> Automatic,
-  "Direction"          -> "Forward"
+  "Direction"          -> "Forward",
+  RandomSeeding        -> Automatic
 }
 
-RandomInfraGeodesic[ graph_Graph, germ_, scale : ( _Integer?Positive | Infinity ), opts : OptionsPattern[] ] /; ( VertexQ[ graph, germ ] || ! MatchQ[ germ, _InfraWalk | _InfraGeodesic ] ) &&
-    SubsetQ[ First /@ Options[ RandomInfraGeodesic ], First /@ { opts } ] :=
+RandomInfraGeodesic[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomInfraGeodesic[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomInfraGeodesic[ ___, RandomSeeding -> None ] ] ] ]
+
+RandomInfraGeodesic[ graph_Graph, germ_, scale : ( _Integer?Positive | Infinity ), opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( ( VertexQ[ graph, germ ] || ! MatchQ[ germ, _InfraWalk | _InfraGeodesic ] ) &&
+    SubsetQ[ First /@ Options[ RandomInfraGeodesic ], First /@ { opts } ] ) :=
   With[ { result = RandomInfraGeodesic[ graph, germ, scale, Infinity, Automatic, opts ] },
     result /; Head[ result ] =!= RandomInfraGeodesic ]
 
 RandomInfraGeodesic[ graph_Graph, germ_,
     scale : ( _Integer?Positive | Infinity ),
     kspec : ( UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ),
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; ( VertexQ[ graph, germ ] || ! MatchQ[ germ, _InfraWalk | _InfraGeodesic ] ) &&
-    SubsetQ[ First /@ Options[ RandomInfraGeodesic ], First /@ { opts } ] :=
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( ( VertexQ[ graph, germ ] || ! MatchQ[ germ, _InfraWalk | _InfraGeodesic ] ) &&
+    SubsetQ[ First /@ Options[ RandomInfraGeodesic ], First /@ { opts } ] ) :=
   With[ { result = RandomInfraWalk[ graph, germ, kspec, count,
       Properties -> Prepend[ OptionValue[ RandomInfraGeodesic, { opts }, Properties ], { "Shortest", scale } ],
       Sequence @@ FilterRules[ { opts }, Except[ Properties ] ] ] },
@@ -433,11 +451,12 @@ InfraWalkCrossingQ[ graph_Graph, x : ( _Graph | _List ), at_, r_Integer ] /;
     Length[ ps ] == 2 && crossQ @@ ps ]
 
 RandomInfraGeodesic[ graph_Graph, InfraGeodesic[ germ : { __ }, scale : ( _Integer?Positive | Infinity ) ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ { "NextVertexFunction" }, First /@ { opts } ] &&
-    ( OptionValue[ RandomInfraGeodesic, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ { "NextVertexFunction", RandomSeeding }, First /@ { opts } ] &&
+    ( OptionValue[ RandomInfraGeodesic, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) ) :=
   With[ { walks = RandomInfraGeodesic[ graph, germ, scale, Infinity, count,
       Properties -> { "Simple" }, "Direction" -> "BothSides",
-      "NextVertexFunction" -> OptionValue[ RandomInfraGeodesic, { opts }, "NextVertexFunction" ] ] },
+      "NextVertexFunction" -> OptionValue[ RandomInfraGeodesic, { opts }, "NextVertexFunction" ], RandomSeeding -> None ] },
     Replace[ walks, { w_Graph :> Last /@ SortBy[ VertexList @ w, First ], l_List :> ( Last /@ SortBy[ VertexList @ #, First ] & ) /@ l } ] /; ! MatchQ[ walks, _RandomInfraGeodesic ] ]
 
 (* the window graph of the scale-r geodesics through the germ, read forward: a vertex is a window, the last <= r vertices of a walk, and a
@@ -461,6 +480,40 @@ InfraMeasurement[ graph_Graph, InfraGeodesic[ germ : { __ }, scale : ( _Integer?
         { { }, <| source -> True |>, { source } },
         Last @ # =!= { } & ] },
     Graph[ Keys @ closure[[ 2 ]], First @ closure ] ]
+
+(* at scale Infinity a maximal geodesic through the germ is a line through it, and the readings are the dynamic programming on the atoms of
+   InfraInfiniteLine[germ]; at a finite scale the members are simple, a rule no window graph sees, so the readings list them: the members being
+   simple, a vertex's count of visits over them is the number of members through it *)
+
+InfraMeasurement[ graph_Graph, InfraGeodesic[ germ : { __ }, Infinity ], property : "VertexDensity" | "EdgeDensity" | "Cardinality" | "Length" ] /;
+    AllTrue[ germ, VertexQ[ graph, # ] & ] && ( Length[ germ ] == 1 || InfraGeodesicQ[ graph, germ, Infinity ] ) :=
+  InfraMeasurement[ graph, InfraInfiniteLine[ germ ], property ]
+
+InfraMemberQ[ graph_Graph, InfraGeodesic[ germ : { __ }, Infinity ], path_List ] /;
+    AllTrue[ germ, VertexQ[ graph, # ] & ] && ( Length[ germ ] == 1 || InfraGeodesicQ[ graph, germ, Infinity ] ) :=
+  InfraMemberQ[ graph, InfraInfiniteLine[ germ ], path ]
+
+InfraMeasurement[ graph_Graph, geodesic : InfraGeodesic[ germ : { __ }, scale_Integer?Positive ],
+    property : "VertexDensity" | "EdgeDensity" | "Cardinality" | "Length" ] /;
+    AllTrue[ germ, VertexQ[ graph, # ] & ] && ( Length[ germ ] == 1 || InfraGeodesicQ[ graph, germ, scale ] ) :=
+  With[ { members = RandomInfraGeodesic[ graph, geodesic, All, RandomSeeding -> None ] },
+    Switch[ property,
+      "VertexDensity", KeySort @ Counts @ Catenate @ members,
+      "EdgeDensity",   KeySort @ Counts @ Catenate[ ( member |-> DirectedEdge @@@ Partition[ member, 2, 1 ] ) /@ members ],
+      "Cardinality",   Length @ members,
+      "Length",        Replace[ Union[ Length /@ members - 1 ], { one_ } :> one ] ] ]
+
+InfraMemberQ[ graph_Graph, geodesic : InfraGeodesic[ germ : { __ }, scale_Integer?Positive ], path_List ] /;
+    AllTrue[ germ, VertexQ[ graph, # ] & ] && ( Length[ germ ] == 1 || InfraGeodesicQ[ graph, germ, scale ] ) :=
+  MemberQ[ RandomInfraGeodesic[ graph, geodesic, All, RandomSeeding -> None ], path ]
+
+(* the density of a literal walk counts its visits to each vertex *)
+
+InfraMeasurement[ graph_Graph, InfraWalk[ vertices__ ], "VertexDensity" ] /; InfraWalkQ[ graph, { vertices } ] :=
+  KeySort @ Counts @ { vertices }
+
+InfraMeasurement[ graph_Graph, InfraWalk[ vertices_List ], "VertexDensity" ] /; InfraWalkQ[ graph, vertices ] :=
+  KeySort @ Counts @ vertices
 
 ConcatenateInfraWalk[ path1_, path2_,
     count : ( _Integer | UpTo[ _Integer ] | All ) : All ] :=
@@ -496,8 +549,9 @@ ConcatenateInfraWalk[ path1_, path2_,
       _,     If[ Length @ reps < count, { }, Take[ reps, count ] ] ] ]
 
 RandomInfraWalk[ graph_Graph, InfraWalk[ vs : Repeated[ _, { 2, Infinity } ] ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ { "NextVertexFunction" }, First /@ { opts } ] &&
-    ( OptionValue[ RandomInfraWalk, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ { "NextVertexFunction", RandomSeeding }, First /@ { opts } ] &&
+    ( OptionValue[ RandomInfraWalk, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) ) :=
   With[ { members = If[ Length[ { vs } ] >= 2 &&
           AllTrue[ Partition[ { vs }, 2, 1 ], EdgeQ[ graph, UndirectedEdge @@ # ] & ], { { vs } }, { } ],
           nextFn = OptionValue[ RandomInfraWalk, { opts }, "NextVertexFunction" ] },

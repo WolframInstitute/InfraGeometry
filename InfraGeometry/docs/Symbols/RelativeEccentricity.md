@@ -12,71 +12,77 @@ RelatedGuides: [Experimental]
 
 ## Usage
 
-<code>[RelativeEccentricity]()[*g*]</code> gives (*e*(*v*) − *r*)/(*D* − *r*) for every vertex *v* of *g*, in the order of [VertexList](): 0 on the centre and 1 on the periphery.
+<code>[RelativeEccentricity]()[*g*]</code> gives the list of the relative eccentricities *(e(v) − r)/(D − r)* of the vertices *v* of *g*, in the order of [VertexList]().
 
-<code>[RelativeEccentricity]()[*m*]</code> gives the same numbers for the points of the distance matrix *m*.
+<code>[RelativeEccentricity]()[*m*]</code> gives the relative eccentricities of the points of the distance matrix *m*.
 
 ## Details & Options
 
-Definition: with *e*(*v*) the eccentricity of *v*, [GraphEccentricities](), *r* the radius and *D* the diameter of *g*, the relative eccentricity is *t*(*v*) = (*e*(*v*) − *r*)/(*D* − *r*). It runs from 0 exactly on the [GraphCenter]() to 1 exactly on the [GraphPeriphery]().
+With *e(v)* the eccentricity of *v*, [GraphEccentricities](), *r* the radius and *D* the diameter, the relative eccentricity is *t(v) = (e(v) − r)/(D − r)*. It is 0 exactly on the [GraphCenter]() and 1 exactly on the [GraphPeriphery]().
 
-On a graph the eccentricity is an integer, so *t* takes at most *D* − *r* + 1 values, 0, 1/(*D* − *r*), …, 1. The sets {*t* ≤ *q*} are nested, and each holds the centre.
+The eccentricity is an integer, so *t* takes at most *D − r + 1* values: 0, 1/(*D − r*), …, 1.
 
-When *D* = *r*, as on a vertex-transitive graph, and on a graph with several components, every value is 0.
+On the square grid *e(v) = r + d(v, C)*, with *C* the centre, so *t(v) = d(v, C)/(D − r)* and the level sets of *t* are the rings about the centre.
+
+When *D = r*, as on a vertex-transitive graph, and on a disconnected graph, every value is 0.
 
 ## Basic Examples
 
-The relative eccentricity on the square, hexagonal and triangular tilings, blue at 0 and red at 1, and the number of its values. On a tiling it is the distance from the centre divided by the radius.
-
-```wl
-With[
-  {panels = Table[
-     With[
-       {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-       {depths = RelativeEccentricity[g]},
-       {InfraSubstrateHighlight[g, MapThread[#1 -> Blend[{StandardBlue, StandardRed}, #2] &, {VertexList[g], depths}]], CountDistinct[depths]}],
-     {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]},
-  {GraphicsRow[First /@ panels], Last /@ panels}]
-```
-
-The vertices with relative eccentricity at least 3/4, the outer rings of each tiling.
+The relative eccentricity on the square grid and on the square mesh, blue at 0 and red at 1, and the number of its values:
 
 ```wl
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    InfraSubstrateHighlight[g, {AssociationThread[Pick[VertexList[g], Thread[RelativeEccentricity[g] >= 3/4]], 1]}]],
-  {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {t = RelativeEccentricity[g]},
+    InfraSubstrateHighlight[g, MapThread[#1 -> Blend[{StandardBlue, StandardRed}, #2] &, {VertexList[g], t}],
+      PlotLabel -> CountDistinct[t]]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+```
+
+The vertices of relative eccentricity at least 3/4, the outer part of each graph:
+
+```wl
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    InfraSubstrateHighlight[g, {Pick[VertexList[g], Thread[RelativeEccentricity[g] >= 3/4]]}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
 ## Scope
 
-The level sets follow the shape of the graph: on a 16 × 6 grid they are bands across it, rising from its middle toward both ends, and on the irregular discretized plane they are rings about its middle.
+A distance matrix gives the same values as its graph:
 
 ```wl
-GraphicsRow @ Table[
-  InfraSubstrateHighlight[g, MapThread[#1 -> Blend[{StandardBlue, StandardRed}, #2] &, {VertexList[g], RelativeEccentricity[g]}]],
-  {g, {GridGraph[{16, 6}], InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}}]
+With[{g = PathGraph[Range[5]]}, {RelativeEccentricity[g], RelativeEccentricity[GraphDistanceMatrix[g]]}]
 ```
 
 ## Properties and Relations
 
-The relative eccentricity is the eccentricity rescaled to the interval from 0 to 1. Its zeros are the [GraphCenter]() and its ones the [GraphPeriphery]().
+The zeros are the centre, the ones the periphery, and the values are the eccentricities rescaled to the interval from 0 to 1:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
-  {depths = RelativeEccentricity[g]},
-  {InfraSubstrateHighlight[g, {Pick[VertexList[g], depths, 0] -> StandardBlue, Pick[VertexList[g], depths, 1] -> StandardRed}],
-   depths == Rescale[GraphEccentricities[g]], Pick[VertexList[g], depths, 0] === GraphCenter[g], Sort[Pick[VertexList[g], depths, 1]] === Sort[GraphPeriphery[g]]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {t = RelativeEccentricity[g]},
+  {Pick[VertexList[g], t, 0] === GraphCenter[g], Sort @ Pick[VertexList[g], t, 1] === Sort @ GraphPeriphery[g],
+   t == Rescale[GraphEccentricities[g]]}]
+```
+
+On the square grid the relative eccentricity is the distance to the centre divided by *D − r*:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {ctr = GraphCenter[g]},
+  {r = GraphRadius[g], d = GraphDiameter[g]}, {depth = Table[Min[GraphDistance[g, v, #] & /@ ctr], {v, VertexList[g]}]},
+  {RelativeEccentricity[g] == depth/(d - r), {r, d}}]
 ```
 
 ## Possible Issues
 
-On a vertex-transitive graph every vertex is both centre and periphery, and the relative eccentricity is 0 everywhere, not 1 on the periphery.
+On a vertex-transitive graph every vertex is both centre and periphery, and the value is 0, not 1:
 
 ```wl
-With[
-  {g = CycleGraph[8]},
-  {g, RelativeEccentricity[g], GraphPeriphery[g]}]
+{RelativeEccentricity[CycleGraph[8]], GraphPeriphery[CycleGraph[8]]}
+```
+
+On a disconnected graph every value is 0:
+
+```wl
+RelativeEccentricity[GraphUnion[PathGraph[{1, 2, 3}], PathGraph[{4, 5}]]]
 ```

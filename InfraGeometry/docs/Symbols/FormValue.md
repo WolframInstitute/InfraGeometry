@@ -12,67 +12,60 @@ RelatedGuides: [Experimental]
 
 ## Usage
 
-<code>[FormValue]()[*ω*, *v*, {*w*₁, …, *w*ₖ}]</code> gives *ω(v; w₁, …, wₖ)*, the value of the germ of the *k*-form *ω* at the vertex *v* on a tuple of neighbours of *v*.
+<code>[FormValue]()[*ω*, *v*, {*w₁*, …, *wₖ*}]</code> gives *ω(v; w₁, …, wₖ)*, the value of the germ of the *k*-form *ω* at the vertex *v* on a tuple of neighbours of *v*.
 
 ## Details & Options
 
-Definition: a *k*-form *ω* assigns to every vertex *v* an alternating function on the *k*-tuples of distinct neighbours of *v*, *ω(v; wσ(1), …, wσ(k)) = sgn(σ) ω(v; w₁, …, wₖ)* for every permutation *σ*.
+A *k*-form assigns to every vertex *v* a germ: an alternating function of the *k*-tuples of distinct neighbours of *v*, *ω(v; wσ₍₁₎, …, wσ₍ₖ₎) = sgn(σ) ω(v; w₁, …, wₖ)*.
 
-A germ is stored on the sorted tuples, `<|v -> <|{w1, ..., wk} -> value|>|>`. [FormValue]() sorts the tuple, as [Sort]() orders the vertex names, and multiplies the stored value by the sign of the sorting permutation. A tuple with a repeated vertex gives 0, and so does a tuple that is not stored, of any length: a value 0 is not stored, and a vertex that is not a neighbour of *v* carries no value. A form is read as an element of the whole exterior algebra, whose components of every other degree are 0.
+A step from *v* to a neighbour *w* is a tangent vector at *v*. A 1-form germ is a function of the steps, *ω(v; w)* its value on the step to *w*. A 0-form is read on the empty tuple {}.
 
-The tuple need not span a clique. From degree 2 on, a germ also takes values on tuples of neighbours that span no clique, where every cochain vanishes; that is what separates the forms from the cochains read by [CochainValue]().
+A form is stored as `<|v -> <|{w1, …, wk} -> value, …|>, …|>` on the sorted tuples. The value on any tuple is the stored value on the sorted tuple times the sign of the sorting permutation.
 
-At scale 1 a tangent vector at *v* is a step from *v* to a neighbour *w*. A 1-form germ is a linear function of the steps from *v*: *ω(v; w)* is its value on the step to *w*. For a 0-form the tuple is {}.
+The value is 0 on a tuple with a repeated vertex, on a vertex that is not a neighbour, on a tuple whose stored value is 0 and on a tuple of another length than the degree.
+
+The tuple need not span a clique. On the square grid no two neighbours of a vertex are adjacent, so every 2-cochain is 0 while a 2-form need not be. This is what separates forms from cochains ([CochainValue]()).
 
 ## Basic Examples
 
-The gradient of the distance from the centre of the triangular tiling, at the centre: 1 on the step to every neighbour.
+The gradient of the distance from the centre at a vertex *v* at distance 2, as a density on the neighbours of *v*: a dot on a step outward, value 1, a ring on a step inward, value −1. On the mesh a step inside the shell has value 0 and is not drawn:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = First @ GraphCenter[g]},
-  {gradient = FormDifferential[g, ZeroForm[g, GraphDistance[g, center, #] &]]},
-  {DisplacementPlot[g, <|center -> AdjacencyList[g, center]|>], FormValue[gradient, center, {#}] & /@ AdjacencyList[g, center]}]
-```
-
-At a neighbour of the centre the gradient is −1 on the step back to the centre, an orange arc, 0 on the two steps inside its shell, and 1 on the three steps outward, blue arcs.
-
-```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = First @ GraphCenter[g]},
-  {gradient = FormDifferential[g, ZeroForm[g, GraphDistance[g, center, #] &]]},
-  {node = First @ AdjacencyList[g, center]},
-  {DisplacementPlot[g, {
-     <|node -> Select[AdjacencyList[g, node], FormValue[gradient, node, {#}] > 0 &]|>,
-     <|node -> Select[AdjacencyList[g, node], FormValue[gradient, node, {#}] < 0 &]|>}],
-   Normal @ AssociationMap[FormValue[gradient, node, {#}] &, AdjacencyList[g, node]]}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {df = FormDifferential[g, ZeroForm[g, AssociationThread[VertexList[g], GraphDistance[g, c]]]],
+     v = RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1]},
+    InfraSubstrateHighlight[g, {c, v, AssociationMap[FormValue[df, v, {#}] &, AdjacencyList[g, v]]}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
 ## Scope
 
-A tuple is read in any order, with the sign of its sorting permutation. The germ at the centre of a 2-form, the wedge of the gradients of the distances from the centre and from a vertex three steps away, as a matrix over the ordered pairs of neighbours of the centre: it is antisymmetric, and its diagonal, the pairs with a repeated vertex, is 0.
+A tuple is read in any order, with the sign of its sorting permutation. The germ of *dx ∧ dy* at the centre of the grid, over the ordered pairs of the four neighbours: the determinant of the two steps, ±1 on perpendicular steps and 0 on opposite ones:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = First @ GraphCenter[g]},
-  {apex = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[center, 3]])},
-  {twoForm = FormWedge[
-     FormDifferential[g, ZeroForm[g, GraphDistance[g, center, #] &]],
-     FormDifferential[g, ZeroForm[g, GraphDistance[g, apex, #] &]]]},
-  {matrix = Table[FormValue[twoForm, center, {nbr, neighbour}], {nbr, AdjacencyList[g, center]}, {neighbour, AdjacencyList[g, center]}]},
-  {MatrixPlot[matrix], matrix == -Transpose[matrix]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {x = ZeroForm[g, AssociationThread[VertexList[g], GraphEmbedding[g][[All, 1]]]],
+   y = ZeroForm[g, AssociationThread[VertexList[g], GraphEmbedding[g][[All, 2]]]]},
+  {wedge = FormWedge[FormDifferential[g, x], FormDifferential[g, y]]},
+  MatrixForm @ Table[FormValue[wedge, c, {u, w}], {u, AdjacencyList[g, c]}, {w, AdjacencyList[g, c]}]]
 ```
 
-The length of the tuple is not checked, and a tuple of another length than the degree gives 0, the value of the component of that degree. The gradient of the distance, a 1-form, read on one neighbour and on a pair of neighbours.
+A tuple of another length than the degree gives 0. The gradient, a 1-form, on one neighbour and on two:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = First @ GraphCenter[g]},
-  {gradient = FormDifferential[g, ZeroForm[g, GraphDistance[g, center, #] &]]},
-  {DisplacementPlot[g, <|center -> Take[AdjacencyList[g, center], 2]|>],
-   {FormValue[gradient, center, Take[AdjacencyList[g, center], 1]], FormValue[gradient, center, Take[AdjacencyList[g, center], 2]]}}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {df = FormDifferential[g, ZeroForm[g, AssociationThread[VertexList[g], GraphDistance[g, c]]]]},
+  {FormValue[df, c, Take[AdjacencyList[g, c], 1]], FormValue[df, c, Take[AdjacencyList[g, c], 2]]}]
+```
+
+## Properties and Relations
+
+The value of the gradient *df* on the step from *v* to *w* is *f(w) − f(v)*. The coordinate *x* on the mesh:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {x = AssociationThread[VertexList[g], GraphEmbedding[g][[All, 1]]]},
+  {dx = FormDifferential[g, ZeroForm[g, x]]},
+  AllTrue[EdgeList[g], FormValue[dx, First[#], {Last[#]}] == x[Last[#]] - x[First[#]] &]]
 ```

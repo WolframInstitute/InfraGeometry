@@ -16,69 +16,60 @@ RelatedGuides: [Experimental]
 
 ## Details & Options
 
-Definition: for a *p*-form *ω* and a *q*-form *η*, with *n* = *p* + *q*, *(ω ∧ η)(v; w₁, …, wₙ) = Σ sgn(σ) ω(v; wσ(1), …, wσ(p)) η(v; wσ(p+1), …, wσ(n))*, the sum over the shuffles *σ*, the permutations that keep the first *p* and the last *q* places in order. For two 1-forms *(ω ∧ η)(v; w₁, w₂) = ω(v; w₁) η(v; w₂) − ω(v; w₂) η(v; w₁)*.
+For a *p*-form *ω* and a *q*-form *η*, with *n* = *p* + *q*, *(ω ∧ η)(v; w₁, …, wₙ)* is the sum of *sgn(σ) ω(v; wσ₍₁₎, …, wσ₍ₚ₎) η(v; wσ₍ₚ₊₁₎, …, wσ₍ₙ₎)* over the shuffles *σ*, the permutations that keep the first *p* and the last *q* places in order. For two 1-forms, *(ω ∧ η)(v; w₁, w₂) = ω(v; w₁) η(v; w₂) − ω(v; w₂) η(v; w₁)*.
 
 On 0-forms it is the product of functions, and a 0-form times a *k*-form multiplies the germ at each vertex by the value there.
 
-It is associative and graded-commutative, *η ∧ ω = (−1)^(pq) ω ∧ η*: at each vertex it is the exterior product of the alternating functions of the steps from the vertex. In particular *ω ∧ ω = 0* for a 1-form.
+The product is associative and graded-commutative, *η ∧ ω = ω ∧ η* with a minus sign when *p* and *q* are both odd. So *ω ∧ ω = 0* for a 1-form.
 
-The differential is not a derivation for it. On 0-forms *d(f ∧ g) − df ∧ g − f ∧ dg = df ⊙ dg*, the product of the two gradients step by step, *(f(w) − f(v))(g(w) − g(v))*; it is of second order in the increments and has no smooth counterpart.
+The differential is not a derivation for it: on 0-forms *d(f ∧ h) − df ∧ h − f ∧ dh* is the step-by-step product *(f(w) − f(v))(h(w) − h(v))* of the gradients.
 
-[IntegrationMap]() does not carry it to the cup product: for cochains *α*, *β* of degrees *p*, *q*, *I(Rα ∧ Rβ) = ((p + q)!/(p! q!)) α ∪ β* on every graph tried ([CochainCup]()), a factor 2 for two 1-cochains.
+On the square grid *(dx ∧ dy)(v; w₁, w₂)* is the determinant of the steps *w₁ − v* and *w₂ − v*, ±1 or 0. The grid has no triangles, so the integral of every 2-form is 0. On the square mesh the integral of *dx ∧ dy* is *2 δx ∪ δy* ([CochainCup]()), twice the signed area of each triangle.
 
-The product keeps the vertices at which both forms have a germ.
+The product has a germ at the vertices where both factors have one.
 
 ## Basic Examples
 
-The wedge of the gradients of the two coordinates of the square tiling. At a vertex *v* its value on two neighbours *w₁*, *w₂* is the determinant of *w₁ − v* and *w₂ − v*, twice the signed area of the triangle *v w₁ w₂*: ±2 on two perpendicular steps, 0 on two opposite ones. The germ at the centre, as a matrix over the ordered pairs of neighbours, beside its integral: the square tiling has no triangles, so every 2-cochain on it is 0, while the 2-form is not.
+The germ of *dx ∧ dy* at the centre of the grid, over the ordered pairs of its four neighbours, and the integral of the 2-form, which is 0:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {positions = AssociationThread[VertexList[g], GraphEmbedding[g]], center = First @ GraphCenter[g]},
-  {wedge = FormWedge[FormDifferential[g, ZeroForm[g, positions[[All, 1]]]], FormDifferential[g, ZeroForm[g, positions[[All, 2]]]]]},
-  {MatrixPlot[Table[FormValue[wedge, center, {nbr, neighbour}], {nbr, AdjacencyList[g, center]}, {neighbour, AdjacencyList[g, center]}]],
-   Normal @ IntegrationMap[g, wedge]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {x = ZeroForm[g, AssociationThread[VertexList[g], GraphEmbedding[g][[All, 1]]]],
+   y = ZeroForm[g, AssociationThread[VertexList[g], GraphEmbedding[g][[All, 2]]]]},
+  {wedge = FormWedge[FormDifferential[g, x], FormDifferential[g, y]]},
+  {MatrixForm @ Table[FormValue[wedge, c, {u, w}], {u, AdjacencyList[g, c]}, {w, AdjacencyList[g, c]}],
+   IntegrationMap[g, wedge]}]
 ```
 
-On the triangulated mesh of a square the integral of the same 2-form is twice the cup of the coboundaries of the coordinates, which is the signed area of each triangle: the factor (*p* + *q*)!/(*p*! *q*!) = 2.
+On the mesh the integral of *dx ∧ dy* is twice the cup *δx ∪ δy* on every triangle:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
-  {positions = AssociationThread[VertexList[g], GraphEmbedding[g]]},
-  {xCoordinate = positions[[All, 1]], yCoordinate = positions[[All, 2]]},
-  {integral = IntegrationMap[g, FormWedge[FormDifferential[g, ZeroForm[g, xCoordinate]], FormDifferential[g, ZeroForm[g, yCoordinate]]]],
-   cup = CochainCup[g, Coboundary[g, KeyMap[List, xCoordinate]], Coboundary[g, KeyMap[List, yCoordinate]]]},
-  {ListPlot[Transpose[{Values[cup], Lookup[integral, Keys[cup], 0]}], AxesLabel -> {"δx ∪ δy", "I(dx ∧ dy)"}],
-   MinMax[Lookup[integral, Keys[cup], 0] / Values[cup]]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {x = AssociationThread[VertexList[g], GraphEmbedding[g][[All, 1]]],
+   y = AssociationThread[VertexList[g], GraphEmbedding[g][[All, 2]]]},
+  {integral = IntegrationMap[g, FormWedge[FormDifferential[g, ZeroForm[g, x]], FormDifferential[g, ZeroForm[g, y]]]],
+   cup = CochainCup[g, Coboundary[g, KeyMap[List, x]], Coboundary[g, KeyMap[List, y]]]},
+  {Length[cup], Max @ Abs[Lookup[integral, Keys[cup]] - 2 Values[cup]] < 10^-12}]
 ```
 
 ## Properties and Relations
 
-The wedge is graded-commutative. For the gradients of the distances from the centre of the triangular tiling and from a vertex three steps away, exchanging the factors changes the sign, and the wedge of a gradient with itself is 0. The germ of their wedge at the centre is drawn as a matrix over the ordered pairs of neighbours.
+The wedge is graded-commutative. For the gradients of the distances from the centre and from a vertex at distance 4 on the mesh, exchanging the factors changes the sign, and the wedge of a gradient with itself is 0:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {center = First @ GraphCenter[g]},
-  {apex = (SeedRandom[1]; RandomInfraPoint[g, InfraShell[center, 3]])},
-  {gradient = FormDifferential[g, ZeroForm[g, GraphDistance[g, center, #] &]],
-   otherGradient = FormDifferential[g, ZeroForm[g, GraphDistance[g, apex, #] &]]},
-  {MatrixPlot[Table[
-     FormValue[FormWedge[gradient, otherGradient], center, {nbr, neighbour}],
-     {nbr, AdjacencyList[g, center]}, {neighbour, AdjacencyList[g, center]}]],
-   KeySort[KeySort /@ FormWedge[otherGradient, gradient]] === KeySort[KeySort /@ -FormWedge[gradient, otherGradient]],
-   Union[Length /@ Values[FormWedge[gradient, gradient]]]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]},
+  {df = FormDifferential[g, ZeroForm[g, AssociationThread[VertexList[g], GraphDistance[g, c]]]],
+   dh = FormDifferential[g, ZeroForm[g, AssociationThread[VertexList[g], GraphDistance[g, b]]]]},
+  {KeySort /@ FormWedge[dh, df] == KeySort /@ -FormWedge[df, dh], Union @ Values @ FormWedge[df, df]}]
 ```
 
-The differential fails the Leibniz rule. For the distance *f* from the centre, *d(f ∧ f) − 2 f ∧ df* is the square of the gradient: 1 on every step between two shells, in both directions.
+The differential fails the Leibniz rule. For the distance *f* from the centre of the grid, *d(f ∧ f) − 2 f ∧ df* is the square of the gradient, 1 on every step:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {form = ZeroForm[g, GraphDistance[g, First @ GraphCenter[g], #] &]},
-  {gradient = FormDifferential[g, form]},
-  {leibniz = DeleteCases[Merge[{FormDifferential[g, FormWedge[form, form]], -2 FormWedge[form, gradient]}, Merge[#, Total] &], 0, {2}]},
-  {DisplacementPlot[g, Map[Catenate @* Keys @* Select[Positive], leibniz]], KeySort[KeySort /@ leibniz] === KeySort[KeySort /@ gradient^2]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  {f = ZeroForm[g, AssociationThread[VertexList[g], GraphDistance[g, First @ GraphCenter[g]]]]},
+  {df = FormDifferential[g, f]},
+  {defect = Merge[{FormDifferential[g, FormWedge[f, f]], -2 FormWedge[f, df]}, Merge[#, Total] &]},
+  {Union @ Flatten[Values /@ Values[defect]], KeySort /@ defect == KeySort /@ df^2}]
 ```

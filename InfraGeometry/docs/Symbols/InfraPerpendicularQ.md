@@ -12,75 +12,106 @@ RelatedGuides: [Experimental]
 
 ## Usage
 
-<code>[InfraPerpendicularQ]()[*g*, *l1*, *l2*]</code> tests whether the two lines are perpendicular.
+<code>[InfraPerpendicularQ]()[*g*, *l1*, *l2*]</code> tests whether the lines *l1* and *l2* of *g* meet in exactly one vertex and are perpendicular there.
 
 ## Details & Options
 
-Definition, with the default `Method -> "Projection"`: at each common vertex, the foot of the perpendicular from one line onto the other must lie in the intersection of the two lines.
+With the default method, *l1* and *l2* are perpendicular at their common vertex when the feet of the perpendiculars from the vertices of each line onto the other lie in *l1 ∩ l2*. A foot of *x* on a line is a centre vertex, along the line, of two vertices of the line at equal distance from *x* (two when the piece between them has an even number of vertices), or the nearest vertex of the line to *x* when it is unique.
 
-The test is a conjunction over all common vertices. It is `False` when the lines do not meet.
+Perpendicular lines meet in exactly one vertex. Lines that do not meet, or share two or more vertices, are not perpendicular under any method; in particular a line is not perpendicular to itself.
 
-There is no single right definition of a right angle on a graph, so there are several methods and they are **not** equivalent.
+There is no single right angle on a graph. The methods are not equivalent:
 
-| Method | Tests |
+| Method | Perpendicular when |
 |---|---|
-| `"Projection"` (default) | the foot of the perpendicular lies in the intersection |
-| `"Coordinate"` | signed projection coordinates of the feet are centred on the meeting point |
-| `"Arclength"` | the four corner wedge angles at the meeting point are equal within a tolerance |
-| `"Alexandrov"` | the same, with comparison angles in the model plane of curvature *k* |
+| `"Projection"` (default) | the feet lie in the intersection |
+| `"Coordinate"` | the feet are balanced about the meeting point, measured along each line |
+| `"Arclength"` | the four angles at the meeting point are equal, each measured as a detour around a ball, infinite when the ball cuts every detour |
+| `"Alexandrov"` | the four comparison angles at the meeting point are equal |
 
-Sub-options live inside the method spec, because their natural units differ per family. `"Projection"` takes `"Equality"`, forwarded to [InfraEqualQ](): `"Subset"` is the default, and `"Set"`, `"Multiset"`, `"Diffuse"` and `"Overlap"` are also accepted. `"Coordinate"` takes `"ZeroTest"`. `"Arclength"` and `"Alexandrov"` take `"Tolerance"` in radians, and `"Alexandrov"` takes `"Curvature"`. Use `"Curvature" -> 0` for the synthetic right-angle test.
+Sub-options go inside the method: `{"Projection", "Equality" -> e}` compares the feet with the intersection by [InfraEqualQ](), with `e` one of `"Subset"` (default), `"Set"`, `"Multiset"`, `"Diffuse"`, `"Overlap"`; `{"Coordinate", "ZeroTest" -> z}`; `{"Arclength", "Tolerance" -> t}` and `{"Alexandrov", "Tolerance" -> t, "Curvature" -> k}`, with *t* in radians.
 
-The top-level option `"Radius" -> r` localises the test to the *r*-neighbourhood of the meeting point.
+| Option | Default | Values |
+|---|---|---|
+| [Method]() | `"Projection"` | a method or `{method, subopts}` |
+| `"Radius"` | `All` | *r*: test only within distance *r* of the meeting point |
 
-**The default is strict.** A line produced by [FindInfraPerpendicular]() with its default Euclid I.12 construction is generally rejected by this predicate under `"Equality" -> "Subset"`, and accepted under `"Equality" -> "Overlap"`. The construction and the test are asking different questions: one lays off an isosceles base and takes its midpoint, the other demands that projections land exactly in the intersection. On a lattice those come apart. If you want the two to agree, pass `"Overlap"`.
+The default test is strict: a perpendicular built by [FindInfraPerpendicular]() as in Euclid I.12 generally fails it, and `"Equality" -> "Overlap"` accepts it when it meets the line in one vertex.
 
-Two lines on a lattice can also meet in more than one vertex, which has no analogue in the plane, and the conjunction then has to hold at each of them.
+Corresponding notions in the classical axiom systems:
+
+| System | Name | Statement |
+|---|---|---|
+| Euclid | Definition I.10 | A line standing on a line makes the adjacent angles equal; each is right. |
+| Euclid | Postulate 4 | All right angles are equal. |
 
 ## Basic Examples
 
-A line and a perpendicular to it, produced by the construction. The default test rejects it; the `"Overlap"` equality accepts it.
+The row and the column through the centre of the square grid are perpendicular; the row and a staircase through the centre are not:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {l1 = RandomInfraInfiniteLine[g, c, far]},
-  {p = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[l1, #] &]},
-  {l2 = VertexList @ First @ FindInfraPerpendicular[g, l1, p, 1, "Radius" -> 3]},
-  <|"default (Subset)" -> InfraPerpendicularQ[g, l1, l2],
-    "Overlap" -> InfraPerpendicularQ[g, l1, l2, Method -> {"Projection", "Equality" -> "Overlap"}],
-    "common vertices" -> Intersection[l1, l2]|>]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {vertexAt = AssociationThread[Round @ GraphEmbedding[g], VertexList[g]]},
+  {row = vertexAt /@ Table[{x, 5}, {x, 10}], column = vertexAt /@ Table[{5, y}, {y, 10}],
+   stairs = vertexAt /@ Catenate @ Table[{{k, k + 1}, {k + 1, k + 1}}, {k, 8}]},
+  GraphicsRow @ Table[
+    InfraSubstrateHighlight[g, {InfraWalk[row], InfraWalk[l]}, PlotLabel -> InfraPerpendicularQ[g, row, l]],
+    {l, {column, stairs}}]]
 ```
 
-The four methods on the same pair of lines. They are not equivalent, though on this pair all four reject.
+A perpendicular from a vertex to a line through the centre, constructed by [FindInfraPerpendicular](). On the grid it shares two vertices with the line, and no test accepts it; on the mesh the default test rejects it and the `"Overlap"` equality accepts it:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {l1 = RandomInfraInfiniteLine[g, c, far]},
-  {p = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 2 && ! MemberQ[l1, #] &]},
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {a = RandomInfraPoint[g, InfraShell[c, 3], RandomSeeding -> 1]},
+    {l1 = RandomInfraInfiniteLine[g, c, a, RandomSeeding -> 1]},
+    {p = RandomInfraPoint[g, Complement[RandomInfraPoint[g, InfraShell[c, 2], All], l1], RandomSeeding -> 1]},
+    {l2 = VertexList @ First @ FindInfraPerpendicular[g, l1, p, 1, "Radius" -> 3]},
+    InfraSubstrateHighlight[g, {InfraWalk[l1], InfraWalk[l2], p},
+      PlotLabel -> {InfraPerpendicularQ[g, l1, l2],
+        InfraPerpendicularQ[g, l1, l2, Method -> {"Projection", "Equality" -> "Overlap"}]}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+```
+
+## Options
+
+### Method
+
+The four methods on the constructed perpendicular of the mesh. Only the `"Overlap"` equality accepts it:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {a = RandomInfraPoint[g, InfraShell[c, 3], RandomSeeding -> 1]},
+  {l1 = RandomInfraInfiniteLine[g, c, a, RandomSeeding -> 1]},
+  {p = RandomInfraPoint[g, Complement[RandomInfraPoint[g, InfraShell[c, 2], All], l1], RandomSeeding -> 1]},
   {l2 = VertexList @ First @ FindInfraPerpendicular[g, l1, p, 1, "Radius" -> 3]},
-  Association @ Table[
-    ToString[m] -> InfraPerpendicularQ[g, l1, l2, Method -> m],
-    {m, {"Projection", "Coordinate", "Arclength", {"Alexandrov", "Curvature" -> 0}}}]]
+  AssociationMap[InfraPerpendicularQ[g, l1, l2, Method -> #] &,
+    {"Projection", {"Projection", "Equality" -> "Overlap"}, "Coordinate", "Arclength", "Alexandrov"}]]
 ```
 
 ## Properties and Relations
 
-Lines that do not meet are never perpendicular, whatever the method.
+Of all perpendiculars [FindInfraPerpendicular]() constructs within distance 3 of the vertex, the number constructed, the number the default test accepts, the number `"Overlap"` accepts and the number that meet the line in one vertex:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {c = First @ GraphCenter[g]},
-  {far = SelectFirst[VertexList[g], GraphDistance[g, c, #] == 4 &]},
-  {l1 = RandomInfraInfiniteLine[g, c, far]},
-  InfraPerpendicularQ[g, l1, Complement[VertexList[g], l1][[1 ;; 3]]]]
+Table[
+  With[{g = InfraSubstrate[name, "Small"]}, {c = First @ GraphCenter[g]},
+    {a = RandomInfraPoint[g, InfraShell[c, 3], RandomSeeding -> 1]},
+    {l1 = RandomInfraInfiniteLine[g, c, a, RandomSeeding -> 1]},
+    {p = RandomInfraPoint[g, Complement[RandomInfraPoint[g, InfraShell[c, 2], All], l1], RandomSeeding -> 1]},
+    {perps = VertexList /@ FindInfraPerpendicular[g, l1, p, All, "Radius" -> 3]},
+    {Length[perps], Count[InfraPerpendicularQ[g, l1, #] & /@ perps, True],
+     Count[InfraPerpendicularQ[g, l1, #, Method -> {"Projection", "Equality" -> "Overlap"}] & /@ perps, True],
+     Count[perps, l_ /; Length[Intersection[l1, l]] == 1]}],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+```
+
+A line is not perpendicular to itself, and lines that do not meet are never perpendicular:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {vertexAt = AssociationThread[Round @ GraphEmbedding[g], VertexList[g]]},
+  {row = vertexAt /@ Table[{x, 5}, {x, 10}], other = vertexAt /@ Table[{x, 7}, {x, 10}]},
+  {InfraPerpendicularQ[g, row, row], InfraPerpendicularQ[g, row, other]}]
 ```

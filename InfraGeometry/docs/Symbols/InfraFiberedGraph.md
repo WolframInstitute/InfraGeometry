@@ -5,58 +5,96 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraFiberedGraph
-Keywords: [fibered graph, total space, projection, inert object]
-SeeAlso: [InfraFiberedGraphQ, InfraTotalSpace, InfraBaseSpace, InfraProjection, InfraFiber, RandomInfraFiberedGraph, InfraFibrationQ, InfraFibration]
+Keywords: [fibered graph, total space, base, projection, fiber, symbolic object]
+SeeAlso: [InfraFiberedGraphQ, InfraTotalSpace, InfraBaseSpace, InfraProjection, InfraFiber, InfraFibers, RandomInfraFiberedGraph, InfraFibrationQ, InfraFiberBundleQ]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
 ---
 
 ## Usage
 
-<code>[InfraFiberedGraph]()[*total*, *projection*]</code> is an inert fibered graph with total graph *total* and a vertex projection given by an association or a function.
+<code>[InfraFiberedGraph]()[*total*, *proj*]</code> is the fibered graph with total graph *total* and projection *proj*, an association or a function on the vertices of *total*.
 
-<code>[InfraFiberedGraph]()[*model*]</code> materializes an Experimental construction as a literal fibered graph, computing its total graph once.
+<code>[InfraFiberedGraph]()[*model*]</code> gives the fibered graph of a construction such as <code>[InfraDisplacementBundle]()[*g*, *r*]</code>, with its total graph computed.
 
 ## Details & Options
 
-- The general object imposes no equal-size, lifting, matching or triviality condition. Separate predicates test these properties.
-- Readers support finite simple undirected unweighted untagged total graphs. Unsupported graph domains remain unevaluated; projection-dependent readers also leave malformed association projections unevaluated.
-- An association projection has exactly one key for each total vertex. A function projection is evaluated at each total vertex.
-- Edge-tagged graphs are unsupported; readers do not discard or merge edge tags.
-- Vertex labels are literal expressions. List-valued and pattern-like vertices remain individual association keys; use [Key]() for literal lookup.
-- [InfraTotalSpace]() gives the total graph and [InfraProjection]() gives the projection association.
-- [InfraBaseSpace]() reconstructs the base. Its vertices are all projection values, including those represented only by isolated total vertices.
-- Distinct base vertices are adjacent exactly when a total edge joins their fibers. Edges within a fiber are vertical and collapse under projection.
-- [InfraFiber]() gives the induced graph on one projection preimage. [InfraFibers]() gives all fibers as an association.
-- The empty graph with the empty projection is a valid fibered graph.
-- The head stays inert even when its arguments are unsupported. [InfraFiberedGraphQ]() recognizes supported literal objects; supported Experimental models are materialized by their explicit category methods.
-- [InfraFibration]() remains a compatibility head. New constructions use [InfraFiberedGraph]().
+A fibered graph is a graph *E* with a map *π* on its vertices. The fiber over *p* is the induced subgraph on *F(p) = π⁻¹(p)*.
+
+The base *B* is reconstructed, not given. Its vertices are the values of *π*, and *p ≠ q* are adjacent when some edge of *E* joins *F(p)* and *F(q)*.
+
+An edge inside a fiber is vertical and collapses under *π*. An edge between two fibers is transverse.
+
+No condition is imposed: fibers may have different sizes, and a vertex over *p* may have no neighbour over a neighbour of *p*. The predicates add the conditions:
+
+| Predicate | Condition |
+|---|---|
+| [InfraFibrationQ]() | every vertex over *p* has a neighbour over every neighbour of *p* |
+| [InfraUniqueEdgeLiftingQ]() | exactly one such neighbour |
+| [InfraCoveringQ]() | unique lifting and no vertical edges |
+| [InfraFiberBundleQ]() | isomorphic fibers, unique lifting, and the matchings preserve the fibers' edges |
+
+[InfraFiberedGraph]() is a symbolic object. The readers evaluate it:
+
+| Reader | Value |
+|---|---|
+| [InfraTotalSpace]() | the total graph *E* |
+| [InfraBaseSpace]() | the base *B* |
+| [InfraProjection]() | *π* as an association |
+| [InfraFiber]() | the fiber over one base vertex |
+| [InfraFibers]() | all fibers, as an association |
+
+The total graph is finite, simple, undirected, unweighted and without edge tags. An association projection has a key for every vertex of *total*.
 
 ## Basic Examples
 
-A cycle wraps twice around its reconstructed square base.
+The cycle of length 8 wraps twice around its base, the cycle of length 4. The fiber over 1 is drawn:
 
 ```wl
-SeedRandom[ 7 ];
-With[ { fib = InfraFiberedGraph[ CycleGraph[ 8 ], vertex |-> Mod[ vertex, 4, 1 ] ] },
-  InfraFiberedGraphHighlight[ fib, { InfraFiber[ fib, 1 ] } ] ]
+With[{fib = InfraFiberedGraph[CycleGraph[8], v |-> Mod[v, 4, 1]]},
+  GraphicsRow[{InfraFiberedGraphHighlight[fib, {InfraFiber[fib, 1]}], InfraBaseSpace[fib]}]]
 ```
 
-A general projection can have unequal fibers and missing lifts.
+The square grid projected to its columns. The fibers are the columns and the base is a path:
 
 ```wl
-SeedRandom[ 7 ];
-With[ { fib = InfraFiberedGraph[ PathGraph[ Range[ 6 ] ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "c", 5 -> "c", 6 -> "c" |> ] },
-  GraphicsRow[ { InfraFiberedGraphHighlight[ fib ], InfraBaseSpace[ fib ] } ] ]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {fib = InfraFiberedGraph[g, AssociationThread[VertexList[g], Round @ GraphEmbedding[g][[All, 1]]]]},
+  GraphicsRow[{InfraSubstrateHighlight[g, {InfraFiber[fib, 5]}], InfraBaseSpace[fib]}]]
 ```
 
 ## Scope
 
-Materialize a particular model before repeated structural queries.
+A projection can give fibers of different sizes and vertices without lifts. Over `"b"` there is one vertex; the vertex 1 over `"a"` and the vertices 5 and 6 over `"c"` have no neighbour over `"b"`:
 
 ```wl
-SeedRandom[ 7 ];
-With[ { model = InfraDisplacementBundle[ CycleGraph[ 8 ], 1 ] },
-  { fib = InfraFiberedGraph[ model ] },
-  InfraFiberedGraphHighlight[ fib ] ]
+With[{fib = InfraFiberedGraph[PathGraph[Range[6]],
+    <|1 -> "a", 2 -> "a", 3 -> "b", 4 -> "c", 5 -> "c", 6 -> "c"|>]},
+  GraphicsRow[{InfraFiberedGraphHighlight[fib, Method -> "HighlightFiber"], InfraBaseSpace[fib]}]]
+```
+
+A construction gives the same fibers as its fibered graph:
+
+```wl
+With[{model = InfraDisplacementBundle[GridGraph[{4, 4}], 1]}, {fib = InfraFiberedGraph[model]},
+  {Head[fib], InfraFibers[fib] === InfraFibers[model]}]
+```
+
+## Properties and Relations
+
+The fibers partition the vertices of the total graph. The vertical edges are the edges of the fibers, here 72 of the 144 edges of the grid:
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {fib = InfraFiberedGraph[g, AssociationThread[VertexList[g], Round @ GraphEmbedding[g][[All, 1]]]]},
+  {Total[VertexCount /@ InfraFibers[fib]] == VertexCount[g], Total[EdgeCount /@ InfraFibers[fib]],
+   EdgeCount[g]}]
+```
+
+## Possible Issues
+
+An association projection that misses a vertex is not a fibered graph. The readers stay unevaluated:
+
+```wl
+InfraBaseSpace @ InfraFiberedGraph[CycleGraph[4], <|1 -> "a", 2 -> "a", 3 -> "b"|>]
 ```

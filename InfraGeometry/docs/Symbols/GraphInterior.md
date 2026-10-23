@@ -18,86 +18,83 @@ RelatedGuides: [Experimental]
 
 ## Details & Options
 
-Definition: the interior of a set *S* of vertices of *g* is int *S* = {*v* ∈ *S* : every neighbour of *v* lies in *S*}, the vertices whose closed ball of radius 1 lies in *S*. It is *S* less its [GraphBoundary]().
+The interior of a vertex set *S* is *int S = {v ∈ S : every neighbour of v lies in S}*, the vertices whose ball of radius 1 lies in *S*. It is *S* less its [GraphBoundary]().
 
-The interior of an intersection is the intersection of the interiors, and a smaller set has a smaller interior. The interior of the ball of radius *r* contains the ball of radius *r* − 1, and equals it where the graph goes on beyond the ball.
+The interior of an intersection is the intersection of the interiors. The interior of the ball of radius *r* contains the ball of radius *r* − 1, and is equal to it where the graph goes on beyond the ball.
 
-A subgraph *h* is read with its own edges: a vertex of *h* is interior when every edge of *g* at it is an edge of *h*. For an induced subgraph the two readings agree; a path has no interior.
+Taking the interior again shrinks the set again: it is the interior of a closure space, not of a topology. The [TopologicalInterior]() of the ball topology does not move.
 
-[InfraInterior]() with its default method is the interior of the vertex set, sorted; it reads a subgraph by its vertices. It is the interior of a closure space, not of a topology: taking the interior again shrinks the set again, while the [TopologicalInterior]() of the ball topology stays put.
+A subgraph *h* is read with its own edges. For an induced subgraph this is the interior of its vertex set; a sparser subgraph has a smaller interior.
+
+[InfraInterior]() with its default method gives the interior of the vertex set, sorted.
 
 ## Basic Examples
 
-The ball of radius 4 about the centre of the square, hexagonal and triangular tilings, and its interior taken again and again: the balls of radius 3, 2, 1 and 0. Each is drawn by its boundary, in its own colour.
+The ball of radius 3 and its interior, taken again and again. The interiors are the balls of radius 2, 1 and 0:
 
 ```wl
-SeedRandom[1];
-With[
-  {panels = Table[
-     With[
-       {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-       {interiors = NestList[GraphInterior[g, #] &, Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], 4], "VertexDensity" ], 4]},
-       {InfraSubstrateHighlight[g, AssociationThread[GraphBoundary[g, #], 1] & /@ interiors], Length /@ interiors}],
-     {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]},
-  {GraphicsRow[First /@ panels], Last /@ panels}]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {interiors = NestList[GraphInterior[g, #] &, Keys @ InfraMeasurement[g, InfraBall[c, 3], "VertexDensity"], 3]},
+    InfraSubstrateHighlight[g, interiors, PlotLabel -> Length /@ interiors]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The interior of a ring, green, is a thinner ring: the ball of radius 4 less the ball of radius 1, its boundary blue.
+The interior of the ring of the vertices at distance 2 to 4 is the thinner ring at distance 3:
 
 ```wl
-SeedRandom[1];
 GraphicsRow @ Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {region = Complement[Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], 4], "VertexDensity" ], Keys @ InfraMeasurement[ g, InfraBall[First @ GraphCenter[g], 1], "VertexDensity" ]]},
-    InfraSubstrateHighlight[g, {GraphInterior[g, region] -> StandardGreen, GraphBoundary[g, region] -> StandardBlue}]],
-  {name, {"SquareTilingGraph", "HexagonalTilingGraph", "TriangularTilingGraph"}}]
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {ring = Keys @ InfraMeasurement[g, InfraBall[c, {2, 4}], "VertexDensity"]},
+    InfraSubstrateHighlight[g, {ring, GraphInterior[g, ring]}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
 ## Scope
 
-A subgraph counts only its own edges. The spray of radius 2 about the centre of the triangular tiling has no edge within a shell, so its interior is the centre alone, green. Read as a vertex set, the ball of radius 2 has the seven vertices of the ball of radius 1 inside.
+A subgraph counts only its own edges. The spray of radius 2 about the centre of the mesh lacks the edges inside a shell, so its interior is the centre alone. The ball of radius 2 has the 8 vertices of the ball of radius 1 inside:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {spray = SprayGraph[g, First @ GraphCenter[g], "AxisLength" -> 2]},
-  {GraphicsRow[InfraSubstrateHighlight[g, {AssociationThread[GraphInterior[g, #], 1] -> StandardGreen, AssociationThread[GraphBoundary[g, #], 1] -> StandardBlue}] & /@ {spray, VertexList[spray]}],
-   Length[GraphInterior[g, #]] & /@ {spray, VertexList[spray]}}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {spray = SprayGraph[g, c, "AxisLength" -> 2]},
+  GraphicsRow @ Table[InfraSubstrateHighlight[g, {h, GraphInterior[g, h]}, PlotLabel -> Length @ GraphInterior[g, h]],
+    {h, {spray, VertexList[spray]}}]]
 ```
 
 ## Properties and Relations
 
-The interior and the boundary split the set: they are disjoint, and together they are the set.
+The interior and the boundary split the set:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {region = Keys @ InfraMeasurement[ g, InfraBall[(SeedRandom[1]; RandomInfraPoint[g, InfraShell[First @ GraphCenter[g], 3]]), 4], "VertexDensity" ]},
-  {InfraSubstrateHighlight[g, {GraphInterior[g, region] -> StandardGreen, GraphBoundary[g, region] -> StandardBlue}],
-   Intersection[GraphInterior[g, region], GraphBoundary[g, region]], Sort[Join[GraphInterior[g, region], GraphBoundary[g, region]]] === Sort[region]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {ball = Keys @ InfraMeasurement[g, InfraBall[c, 4], "VertexDensity"]},
+  {DisjointQ[GraphInterior[g, ball], GraphBoundary[g, ball]],
+   Sort @ Join[GraphInterior[g, ball], GraphBoundary[g, ball]] === Sort[ball]}]
 ```
 
-The whole vertex set is its own interior: the rim of a substrate is no boundary in this sense. It is [GraphExteriorBoundary](), blue.
+[InfraInterior]() gives the same vertices, sorted:
 
 ```wl
-With[
-  {g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {InfraSubstrateHighlight[g, {GraphExteriorBoundary[g] -> StandardBlue}], Sort[GraphInterior[g, VertexList[g]]] === Sort[VertexList[g]]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  {ball = Keys @ InfraMeasurement[g, InfraBall[c, 4], "VertexDensity"]},
+  InfraInterior[g, ball] === Sort @ GraphInterior[g, ball]]
 ```
 
 ## Possible Issues
 
-Where the graph ends, the interior of a ball is more than the smaller ball. The interior of the ball of radius 6 about a neighbour of the centre of the square tiling is the ball of radius 5, green, and the 11 vertices at distance 6 that lie on the rim, orange: they have no neighbour outside the ball. The boundary, blue, lies on the far side only.
+Where the graph ends, the interior of a ball is more than the smaller ball. The ball of radius 4 about the centre of the grid reaches the rim in two vertices, drawn, which have no neighbour outside the ball. Its interior has 27 vertices, the ball of radius 3 has 25:
 
 ```wl
-SeedRandom[1];
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {offCentre = First @ AdjacencyList[g, First @ GraphCenter[g]]},
-  {region = Keys @ InfraMeasurement[ g, InfraBall[offCentre, 6], "VertexDensity" ]},
-  {extra = Complement[GraphInterior[g, region], Keys @ InfraMeasurement[ g, InfraBall[offCentre, 5], "VertexDensity" ]]},
-  {InfraSubstrateHighlight[g, {AssociationThread[Keys @ InfraMeasurement[ g, InfraBall[offCentre, 5], "VertexDensity" ], 1] -> StandardGreen, AssociationThread[extra, 1] -> StandardOrange, AssociationThread[GraphBoundary[g, region], 1] -> StandardBlue}],
-   Length[extra]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {interior = GraphInterior[g, Keys @ InfraMeasurement[g, InfraBall[c, 4], "VertexDensity"]],
+   smaller = Keys @ InfraMeasurement[g, InfraBall[c, 3], "VertexDensity"]},
+  InfraSubstrateHighlight[g, {smaller, Complement[interior, smaller]}, PlotLabel -> Length /@ {interior, smaller},
+    ImageSize -> Medium]]
+```
+
+The whole vertex set is its own interior: the rim of the substrate is not a boundary.
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
+  Sort @ GraphInterior[g, VertexList[g]] === Sort @ VertexList[g]]
 ```

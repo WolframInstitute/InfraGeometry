@@ -95,7 +95,7 @@ GraphicsGrid @ Table[
     InfraSubstrateHighlight[g, {
       shell -> StandardGray,
       InfraWalk[germ] -> StandardRed,
-      InfraWalk[RandomInfraSegment[g, probe, First @ feet]] -> StandardOrange,
+      InfraWalk[RandomInfraSegment[g, probe, First @ feet, RandomSeeding -> 1]] -> StandardOrange,
       feet -> StandardOrange,
       {probe, p} -> StandardBlue}]],
   {size, {"Small", "Medium", "Large"}},

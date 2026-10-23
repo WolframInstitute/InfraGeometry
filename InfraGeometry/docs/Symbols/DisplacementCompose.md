@@ -12,81 +12,76 @@ RelatedGuides: [InfraAnalysis]
 
 ## Usage
 
-<code>[DisplacementCompose]()[*d1*, *d2*, ...]</code> composes the displacements as flows, *d1* acting first: the value at *v* collects the values of *d2* at every vertex of *d1*(*v*), and so on.
+<code>[DisplacementCompose]()[*d1*, *d2*, …]</code> is the composite of the displacements, *d1* acting first.
 
 ## Details & Options
 
-Definition: a displacement is a map *D* from the vertices to sets of vertices, given as an [Association]() *v* -> {*w1*, *w2*, ...}. The composite of *D1* and *D2* is the relation composite *(D2 ∘ D1)(v) = ∪ { D2(u) : u ∈ D1(v) }*. More arguments compose from the left: <code>[DisplacementCompose]()[*d1*, *d2*, *d3*]</code> is *D3 ∘ D2 ∘ D1*.
+The composite is *(D₂ ∘ D₁)(v) = ⋃ {D₂(u) : u ∈ D₁(v)}*: the values collect over every intermediate vertex. More arguments compose in turn, <code>[DisplacementCompose]()[*d1*, *d2*, *d3*]</code> = *D₃ ∘ D₂ ∘ D₁*.
 
-Composition needs no graph. It is associative, the identity *v* -> {*v*} is its unit, and it is not commutative. A composite of single-valued displacements is single-valued.
+Composition needs no graph. It is associative, the identity *v* -> {*v*} is its unit, and it is not commutative.
 
-Composition is not addition. For the flows of two vector fields the Baker–Campbell–Hausdorff formula gives *Φ_Y ∘ Φ_X = exp(X + Y + [X, Y]/2 + ⋯)*. [DisplacementSum]() removes the bracket term by taking the midpoints of the two orders, and [DisplacementCommutator]() and [DisplacementBracket]() measure it.
+A composite of single-valued displacements is single-valued, and a composite of 1-continuous displacements is 1-continuous ([ContinuousDisplacementQ]()).
 
-The magnitude is subadditive, *‖D2 ∘ D1‖ ≤ ‖D1‖ + ‖D2‖*, by the triangle inequality ([DisplacementMagnitude]()).
+The magnitude is subadditive, *‖D₂ ∘ D₁‖ ≤ ‖D₁‖ + ‖D₂‖* ([DisplacementMagnitude]()).
 
-The keys of the composite are the keys of *d1*. Each later displacement needs a value at every vertex the earlier ones reach.
+Composition is not addition. For two flows the two orders differ by the bracket of the fields; [DisplacementSum]() takes the midpoints of the two orders, and [DisplacementCommutator]() measures the difference.
+
+Each later displacement needs a value at every vertex the earlier ones reach. The keys of the composite are those of *d1*.
 
 ## Basic Examples
 
-On the 6 × 6 grid the step right followed by the step up is the diagonal step. On the top row and the right column the steps stop at the rim, so the composite runs along the rim there, and the corner stays.
+The step right followed by the step up, on the square grid and on the square mesh:
 
 ```wl
-With[
-  {g = GridGraph[{6, 6}]},
-  {right = TranslationDisplacement[g, {1, 0}], up = TranslationDisplacement[g, {0, 1}]},
-  DisplacementPlot[g, DisplacementCompose[right, up]]]
+GraphicsRow @ KeyValueMap[
+  {name, s} |-> With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    DisplacementPlot[g, DisplacementCompose[TranslationDisplacement[g, {s, 0}], TranslationDisplacement[g, {0, s}]]]],
+  <|"SquareGridGraph" -> 1, "SquareMeshGraph" -> 1/8|>]
 ```
 
-On the 12-cycle the least symmetry is the rotation by one step. Three of them compose to the rotation by three steps, blue and orange.
+Values collect over the intermediate vertices. Two outward radial steps from the centre of the grid reach the 8 vertices at distance 2:
 
 ```wl
-With[
-  {g = CycleGraph[12]},
-  {rotation = FindKillingDisplacement[g]},
-  {composite = DisplacementCompose[rotation, rotation, rotation]},
-  {DisplacementPlot[g, {rotation, composite}], composite[1]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {radial = First @ PolarDisplacements[g, c]}, {twoSteps = DisplacementCompose[radial, radial]},
+  DisplacementPlot[g, KeyTake[twoSteps, {c}], PlotLabel -> Length[twoSteps[c]]]]
 ```
 
 ## Scope
 
-Values collect over every intermediate vertex. Two outward steps reach every vertex two steps further out: from the centre of the square tiling the eight vertices at distance 2, from the vertex 12, off the axes, three vertices. The composite is drawn at these two vertices only.
+Three steps right. Each step stops at the rim:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {radial = First @ PolarDisplacements[g, First @ GraphCenter[g]]},
-  {twoSteps = DisplacementCompose[radial, radial]},
-  {DisplacementPlot[g, KeyTake[twoSteps, {First @ GraphCenter[g], 12}]], twoSteps[12]}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
+  {right = TranslationDisplacement[g, {1, 0}]},
+  DisplacementPlot[g, DisplacementCompose[right, right, right]]]
 ```
 
 ## Properties and Relations
 
-The order matters. The rotation of the 12-cycle followed by a reflection, and the reflection followed by the rotation, are reflections about different axes.
+The order matters. The steps right and up commute on the grid except at 2 vertices of the rim; on the mesh the two orders differ at 51 of the 102 vertices, drawn in red:
 
 ```wl
-With[
-  {g = CycleGraph[12]},
-  {rotation = FindKillingDisplacement[g], reflection = AssociationMap[{Mod[2 - #, 12, 1]} &, VertexList[g]]},
-  {GraphicsRow[{DisplacementPlot[g, DisplacementCompose[rotation, reflection]], DisplacementPlot[g, DisplacementCompose[reflection, rotation]]}],
-   DisplacementCompose[rotation, reflection] === DisplacementCompose[reflection, rotation]}]
+GraphicsRow @ KeyValueMap[
+  {name, s} |-> With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
+    {right = TranslationDisplacement[g, {s, 0}], up = TranslationDisplacement[g, {0, s}]},
+    {differ = Select[VertexList[g], DisplacementCompose[right, up][#] =!= DisplacementCompose[up, right][#] &]},
+    InfraSubstrateHighlight[g, {differ}, PlotLabel -> Length[differ]]],
+  <|"SquareGridGraph" -> 1, "SquareMeshGraph" -> 1/8|>]
 ```
 
-The magnitude of a composite is at most the sum of the magnitudes. Two random displacements of the square tiling, of magnitudes 2 and 1, compose to magnitude 3.
+The magnitude is subadditive. Two random displacements of the mesh, of magnitudes 1 and 2, and their composite:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small", "KeepCoordinates" -> True]},
-  {first = (SeedRandom[1]; RandomDisplacement[g, 2]), second = (SeedRandom[2]; RandomDisplacement[g, 1])},
-  {DisplacementPlot[g, DisplacementCompose[first, second]],
-   DisplacementMagnitude[g, first], DisplacementMagnitude[g, second], DisplacementMagnitude[g, DisplacementCompose[first, second]]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {d1 = RandomDisplacement[g, 1, RandomSeeding -> 1], d2 = RandomDisplacement[g, 2, RandomSeeding -> 2]},
+  DisplacementMagnitude[g, #] & /@ {d1, d2, DisplacementCompose[d1, d2]}]
 ```
 
-A bijection composed with its inverse is the identity, which [DisplacementPlot]() draws as the bare graph.
+The composite of 1-continuous single-valued displacements is 1-continuous and single-valued:
 
 ```wl
-With[
-  {g = CycleGraph[12]},
-  {rotation = FindKillingDisplacement[g]},
-  {identity = DisplacementCompose[rotation, DisplacementInverse[rotation]]},
-  {DisplacementPlot[g, identity], identity === AssociationMap[List, VertexList[g]]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]},
+  {d = DisplacementCompose[RandomDisplacement[g, 1, RandomSeeding -> 1], RandomDisplacement[g, 2, RandomSeeding -> 2]]},
+  {ContinuousDisplacementQ[g, d], DisplacementSingleValuedQ[d]}]
 ```

@@ -53,7 +53,7 @@ FindInfraOsculatingShell[ graph_Graph, path_, i_Integer, k_Integer,
           1 ],
         { Last, First } ] },
     { sets = DeleteDuplicates @ Catenate[ RandomInfraSphere[ graph, #[[ 1 ]], #[[ 2 ]], All,
-        Properties -> OptionValue[ Properties ], "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ] ] & /@ pairs ] },
+        Properties -> OptionValue[ Properties ], "NextVertexFunction" -> OptionValue[ "NextVertexFunction" ], RandomSeeding -> None ] & /@ pairs ] },
     Switch[ count,
       All,   sets,
       _UpTo, Take[ sets, count ],
@@ -155,3 +155,7 @@ InfraMeasurement[ graph_Graph, shell : InfraShell[ _, _ ], All ] :=
   InfraMeasurement[ graph, shell,
     { "Faithful", "Cardinality", "VertexDensity", "EdgeDensity", "Subgraph",
       "CountingMeasure", "RiemannianMeasure" } ]
+
+InfraMemberQ[ graph_Graph, shell : InfraShell[ _, _ ], vertices_List ] :=
+  With[ { density = InfraMeasurement[ graph, shell, "VertexDensity" ] },
+    Union @ vertices === Keys @ density /; AssociationQ @ density ]

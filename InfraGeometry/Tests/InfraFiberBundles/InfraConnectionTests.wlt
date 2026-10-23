@@ -77,9 +77,9 @@ VerificationTest[
     With[ { fib = InfraFibration[ Graph[ Range[ 4 ], UndirectedEdge @@@ Tuples[ { { 1, 2 }, { 3, 4 } } ] ],
         <| 1 -> "p", 2 -> "p", 3 -> "q", 4 -> "q" |> ] },
       SeedRandom[ 318 ];
-      With[ { first = RandomInfraConnection[ fib ] },
+      With[ { first = RandomInfraConnection[ fib, RandomSeeding -> None ] },
         SeedRandom[ 318 ];
-        { Head @ first, InfraConnectionQ[ fib, first ], first === RandomInfraConnection[ fib, Automatic ] } ] ] ],
+        { Head @ first, InfraConnectionQ[ fib, first ], first === RandomInfraConnection[ fib, Automatic, RandomSeeding -> None ] } ] ] ],
   { InfraConnection, True, True },
   TestID -> "RandomInfraConnection-single-shape-and-ambient-seed"
 ]
@@ -120,10 +120,10 @@ VerificationTest[
       SeedRandom[ 792 ];
       With[ { reference = RandomInteger[ 10 ^ 9, 4 ] },
         SeedRandom[ 792 ];
-        RandomInfraConnection[ fib, All ];
+        RandomInfraConnection[ fib, All, RandomSeeding -> None ];
         With[ { allQuiet = RandomInteger[ 10 ^ 9, 4 ] === reference },
           SeedRandom[ 792 ];
-          RandomInfraConnection[ fib, "NextVertexFunction" -> Identity ];
+          RandomInfraConnection[ fib, "NextVertexFunction" -> Identity, RandomSeeding -> None ];
           { allQuiet, RandomInteger[ 10 ^ 9, 4 ] === reference } ] ] ] ],
   { True, True },
   TestID -> "RandomInfraConnection-All-and-Identity-do-not-draw"
@@ -145,10 +145,10 @@ VerificationTest[
     SeedRandom[ 29 ];
     With[ { fib = InfraFibration[ Graph[ Range[ 4 ], UndirectedEdge @@@ Tuples[ { { 1, 2 }, { 3, 4 } } ] ],
         <| 1 -> "p", 2 -> "p", 3 -> "q", 4 -> "q" |> ] },
-      { InfraConnectionQ[ fib, RandomInfraConnection[ fib, "NextVertexFunction" -> RandomChoice ] ],
-        Length @ RandomInfraConnection[ fib, UpTo[ 3 ], "NextVertexFunction" -> RandomChoice ],
-        RandomInfraConnection[ fib, 2, "NextVertexFunction" -> RandomChoice ],
-        Head @ RandomInfraConnection[ fib, All, "NextVertexFunction" -> RandomChoice ] } ] ],
+      { InfraConnectionQ[ fib, RandomInfraConnection[ fib, "NextVertexFunction" -> RandomChoice, RandomSeeding -> None ] ],
+        Length @ RandomInfraConnection[ fib, UpTo[ 3 ], "NextVertexFunction" -> RandomChoice, RandomSeeding -> None ],
+        RandomInfraConnection[ fib, 2, "NextVertexFunction" -> RandomChoice, RandomSeeding -> None ],
+        Head @ RandomInfraConnection[ fib, All, "NextVertexFunction" -> RandomChoice, RandomSeeding -> None ] } ] ],
   { True, 1, { }, RandomInfraConnection },
   TestID -> "RandomInfraConnection-RandomChoice-keeps-one-route"
 ]

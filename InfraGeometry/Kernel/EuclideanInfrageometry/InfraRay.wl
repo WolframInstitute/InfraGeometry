@@ -25,12 +25,19 @@ InfraMeasurement[ graph_Graph,
 (* a ray from p through q: a geodesic p ... q ... e with d(p, e) == d(p, q) + d(q, e) that no neighbour of e prolongs.  Found on the substrate
    directly, by prolonging a geodesic from p to q one outward step at a time, independently of the ray DAG *)
 
-Options[ RandomInfraHalfLine ] = { "NextVertexFunction" -> Automatic }
+Options[ RandomInfraHalfLine ] = { "NextVertexFunction" -> Automatic, RandomSeeding -> Automatic }
+
+RandomInfraHalfLine[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomInfraHalfLine[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomInfraHalfLine[ ___, RandomSeeding -> None ] ] ] ]
 
 RandomInfraHalfLine[ graph_Graph, p_, q_,
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; ( VertexQ[ graph, p ] || ! MatchQ[ p, _InfraHalfLine | _InfraRay ] ) &&
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( ( VertexQ[ graph, p ] || ! MatchQ[ p, _InfraHalfLine | _InfraRay ] ) &&
     SubsetQ[ First /@ Options[ RandomInfraHalfLine ], First /@ { opts } ] &&
-    ( count =!= All || OptionValue[ RandomInfraHalfLine, { opts }, "NextVertexFunction" ] =!= RandomChoice ) :=
+    ( count =!= All || OptionValue[ RandomInfraHalfLine, { opts }, "NextVertexFunction" ] =!= RandomChoice ) ) :=
   With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
           dp  = AssociationThread[ VertexList @ graph, GraphDistance[ graph, p ] ],
           nextFn = If[ count === All &&
@@ -53,7 +60,7 @@ RandomInfraHalfLine[ graph_Graph, p_, q_,
             k === Infinity, { },
             k === 0,        { { p } },
           True,           RandomInfraSegment[ graph, p, q,
-            If[ cap === Infinity, All, UpTo[ cap ] ], "NextVertexFunction" -> nextFn ] ],
+            If[ cap === Infinity, All, UpTo[ cap ] ], "NextVertexFunction" -> nextFn, RandomSeeding -> None ] ],
           0 },
         state |-> First @ state =!= { } && Last @ state < cap ] },
     Switch[ count,
@@ -95,8 +102,9 @@ InfraHalfLineQ[ _Graph, ray_List ] /; Length[ ray ] < 2 :=
 
 RandomInfraHalfLine[ graph_Graph,
     obj : ( InfraHalfLine | InfraRay )[ Except[ _Rule | _RuleDelayed ], Except[ _Rule | _RuleDelayed ] ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraHalfLine ], First /@ { opts } ] &&
-    ( OptionValue[ RandomInfraHalfLine, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraHalfLine ], First /@ { opts } ] &&
+    ( OptionValue[ RandomInfraHalfLine, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) ) :=
   With[ {
       cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
       nextFn = OptionValue[ RandomInfraHalfLine, { opts }, "NextVertexFunction" ],

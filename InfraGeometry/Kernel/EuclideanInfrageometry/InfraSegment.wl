@@ -1,6 +1,12 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-Options[ RandomInfraSegment ] = { "NextVertexFunction" -> Automatic }
+Options[ RandomInfraSegment ] = { "NextVertexFunction" -> Automatic, RandomSeeding -> Automatic }
+
+RandomInfraSegment[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
+  With[ { result = BlockRandom[
+      RandomInfraSegment[ Sequence @@ DeleteCases[ { args }, RandomSeeding -> _ ], RandomSeeding -> None ],
+      RandomSeeding -> FirstCase[ { args }, ( RandomSeeding -> seed_ ) :> seed, Automatic ] ] },
+    result /; ! MatchQ[ result, HoldPattern[ RandomInfraSegment[ ___, RandomSeeding -> None ] ] ] ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraSegment *)
 
@@ -52,8 +58,9 @@ InfraMeasurement[ graph_Graph,
 
 RandomInfraSegment[ graph_Graph,
     segment : InfraSegment[ p : Except[ _Rule | _RuleDelayed ], mid : Repeated[ Except[ _Rule | _RuleDelayed ], { 1, Infinity } ], p_ ],
-    Automatic, opts : OptionsPattern[ RandomInfraSegment ] ] /; SubsetQ[ First /@ Options[ RandomInfraSegment ], First /@ { opts } ] &&
-    OptionValue[ RandomInfraSegment, { opts }, "NextVertexFunction" ] === Identity :=
+    Automatic, opts : OptionsPattern[ RandomInfraSegment ] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraSegment ], First /@ { opts } ] &&
+    OptionValue[ RandomInfraSegment, { opts }, "NextVertexFunction" ] === Identity ) :=
   Replace[ With[ { sides = Partition[ { p, mid, p }, 2, 1 ] },
     { dags = InfraMeasurement[ graph, InfraSegment @@ #, "Graph" ] & /@ sides },
     { arcs = Catenate @ MapIndexed[ { dag, i } |-> ( { First @ i, # } & /@ EdgeList @ dag ), dags ] },
@@ -75,24 +82,25 @@ RandomInfraSegment[ graph_Graph,
         Fold[ Join[ #1, Rest @ #2 ] &,
           MapIndexed[ { side, i } |-> If[ SameQ @@ side, { First @ side }, TopologicalSort @ Graph[ Cases[ chosen, { First @ i, arc_ } :> arc ] ] ],
             sides ] ] ] ] ],
-    { } :> First[ RandomInfraSegment[ graph, segment, UpTo[ 1 ], "NextVertexFunction" -> Identity ], { } ] ]
+    { } :> First[ RandomInfraSegment[ graph, segment, UpTo[ 1 ], "NextVertexFunction" -> Identity, RandomSeeding -> None ], { } ] ]
 
 RandomInfraSegment[ graph_Graph,
     InfraSegment[ pts : Repeated[ Except[ _Rule | _RuleDelayed ], { 3, Infinity } ] ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraSegment ], First /@ { opts } ] &&
-    ( OptionValue[ RandomInfraSegment, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraSegment ], First /@ { opts } ] &&
+    ( OptionValue[ RandomInfraSegment, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) ) :=
   With[ { sides = Partition[ { pts }, 2, 1 ],
           nextFn = OptionValue[ RandomInfraSegment, { opts }, "NextVertexFunction" ] },
     { cardinality = Times @@ ( InfraMeasurement[ graph, InfraSegment @@ #, "Cardinality" ] & /@ sides ) },
     { cap = Replace[ count, { Automatic -> 1, UpTo[ n_ ] :> n } ] },
     { sampleOne = ignored |-> With[
         { members = RandomInfraSegment[ graph, InfraSegment @@ #, Automatic,
-            "NextVertexFunction" -> nextFn ] & /@ sides },
+            "NextVertexFunction" -> nextFn, RandomSeeding -> None ] & /@ sides },
         If[ MemberQ[ members, { } ], { },
           Fold[ Join[ #1, Rest @ #2 ] &, First @ members, Rest @ members ] ] ] },
     { enumerate = ignored |-> With[
         { pieces = RandomInfraSegment[ graph, InfraSegment @@ #, All,
-            "NextVertexFunction" -> nextFn ] & /@ sides },
+            "NextVertexFunction" -> nextFn, RandomSeeding -> None ] & /@ sides },
         Fold[ { as, bs } |-> Catenate @ Map[ a |-> ( Join[ a, Rest @ # ] & /@ bs ), as ],
           First @ pieces, Rest @ pieces ] ] },
     { members = Which[
@@ -154,8 +162,9 @@ InfraMemberQ[ graph_Graph,
    interval DAG.  The count-less call is one geodesic, a bounded count a List of them, All the whole class *)
 
 RandomInfraSegment[ graph_Graph, p_, q_,
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[ RandomInfraSegment ] ] /; ( VertexQ[ graph, p ] || ! MatchQ[ p, _InfraSegment ] ) &&
-    SubsetQ[ First /@ Options[ RandomInfraSegment ], First /@ { opts } ] :=
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[ RandomInfraSegment ] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( ( VertexQ[ graph, p ] || ! MatchQ[ p, _InfraSegment ] ) &&
+    SubsetQ[ First /@ Options[ RandomInfraSegment ], First /@ { opts } ] ) :=
   RandomInfraSegment[ graph, InfraSegment[ p, q ], count, opts ]
 
 InfraWalkQ[ graph_Graph, ws : { __Graph } ] :=
@@ -226,8 +235,9 @@ UniqueInfraSegmentQ[ graph_Graph ] :=
 
 RandomInfraSegment[ graph_Graph,
     obj : InfraSegment[ Except[ _Rule | _RuleDelayed ], Except[ _Rule | _RuleDelayed ] ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; SubsetQ[ First /@ Options[ RandomInfraSegment ], First /@ { opts } ] &&
-    ( OptionValue[ RandomInfraSegment, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) :=
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraSegment ], First /@ { opts } ] &&
+    ( OptionValue[ RandomInfraSegment, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) ) :=
   With[ {
       cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
       nextFn = OptionValue[ RandomInfraSegment, { opts }, "NextVertexFunction" ],

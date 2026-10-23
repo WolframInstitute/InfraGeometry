@@ -357,7 +357,7 @@ VerificationTest[
 
 VerificationTest[
   Length @ DeleteDuplicates @ Table[
-    BlockRandom[ RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4 ],
+    BlockRandom[ RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 1 }, 4, RandomSeeding -> None ],
       RandomSeeding -> s ],
     { s, 1, 8 } ] > 1,
   True,
@@ -366,8 +366,8 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    BlockRandom[ RandomInfraRegularPolygon[ g, { 1 }, 4 ], RandomSeeding -> 23 ] ===
-      BlockRandom[ RandomInfraRegularPolygon[ g, { 1 }, 4 ], RandomSeeding -> 23 ] ],
+    BlockRandom[ RandomInfraRegularPolygon[ g, { 1 }, 4, RandomSeeding -> None ], RandomSeeding -> 23 ] ===
+      BlockRandom[ RandomInfraRegularPolygon[ g, { 1 }, 4, RandomSeeding -> None ], RandomSeeding -> 23 ] ],
   True,
   TestID -> "RandomInfraRegularPolygon-default-is-seeded"
 ]
