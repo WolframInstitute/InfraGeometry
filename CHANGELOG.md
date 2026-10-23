@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 2.10.0 (2026-10-23)
+
+- Add the calculus of *Infra Analysis*, five inert heads read by `InfraMeasurement`. Nothing existing changes.
+  - `InfraDifferential[f]`, reading `"Function"`: the 1-form `df(u -> v) = f(v) - f(u)` on the links of a DAG (the edges of `TransitiveReductionGraph`) or on every edge of an undirected graph. `InfraCodifferential[w]`: the 0-form, incoming minus outgoing values; `InfraCodifferential[InfraDifferential[f]]` is the Laplacian.
+  - `InfraIntegral[f, obj]`, readings `"Value"`, `"ValueDensity"`, `"Mean"`, `"Cardinality"`, `"Flux"`: the integral of a 0-form or 1-form over a region (the support of any head with a `"VertexDensity"`), or along each member of a family of walks (any head whose `"Graph"` is a DAG or a `List` of alternative DAGs, including heads of other paclets), read as a value density by one forward sweep. Polylines, closed arcs and circles stay unevaluated.
+  - `InfraAntiderivative[f, Method -> m, "Origin" -> c, "Direction" -> d]` and its exact inverse `InfraDerivative[F, ...]`, readings `"Function"` and `"Kernel"`: the accumulation `F(v) = Sum[f(u) K(u, v), u <= v]` over the past through a kernel `K` of the incidence algebra, on a DAG or on an undirected graph in the spray order from `"Origin"`. `Method` names the kernel: `"Zeta"` (default; `K = 1` on every pair, the derivative is Moebius inversion), `"PathCount"` (the number of chains from `u` to `v`), `"BackwardRandomWalk"` (the probability that the backward random walk from `v`, each step to a uniformly random predecessor, visits `u`), `"ForwardRandomWalk"` (the probability that the forward random walk from `u`, each step to a uniformly random successor, visits `v`), `"UniformChain"` (the probability that a uniformly random maximal chain from the sources to `v` passes through `u`) or `{"Weights", w}` (chains weighted by `w` on the links).
+  - Results on a DAG depend on the order only: adding implied edges changes nothing.
+  - The generic `All` clause of `InfraMeasurement` no longer applies to these heads.
+
 ## 2.9.2 (2026-10-23)
 
 - **Walls.** `Properties -> {"Separating", "Connected"}` means a wall for spheres and planes alike: a connected separating subset of the band (`RandomInfraSphere`, `InfraSphere`) or slab (`FindInfraBisectingHyperplane`, and `RandomInfraPlane` under its new `Properties` option, default `{"Separating"}`) with no proper connected separating subset. A draw is a random greedy peel, fast and not uniform; a count gives distinct walls, `All` every wall, sorted; `"NextVertexFunction" -> Identity` the first wall of the peel. `{"Separating"}` keeps the minimal separators, now also for spheres, which now separate the centre from the vertices beyond the band. `InfraMemberQ` of `InfraSphere` tests a wall directly, without enumerating the family.
