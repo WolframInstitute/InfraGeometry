@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 2.9.0 (2026-10-23)
+
 Fixes of the kernel findings of the lean-pages rewrite (dev repo `Work/Backlog/LeanPagesKernelFindings.md`).
 
 - **Breaking:** `InfraSceneMultiway`, `InfraBranchialGraph` and `InfraSceneViewer[data]` removed.
