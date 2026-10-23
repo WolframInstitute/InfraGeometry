@@ -39,8 +39,8 @@ LineCount::usage = "LineCount[graph] gives the number of distinct canonical maxi
 UniversalLineQ::usage = "UniversalLineQ[graph] tests whether some pair spans a line filling a whole connected component (Chen-Chvatal); UniversalLineQ[graph, {u, v}] tests one line.";
 
 InfraShell::usage = "InfraShell[c, r] is the inert distance-r shell; {r, s} gives a distance band."
-InfraSphere::usage = "InfraSphere[c, r] is the inert family of connected minimal sets in the shell r or band {r, s} that separate c from beyond it."
-RandomInfraSphere::usage = "RandomInfraSphere[graph, c, r, n] gives n random connected minimal sets in the shell r or band {r, s} separating c from beyond it. Options Properties, \"NextVertexFunction\", RandomSeeding.";
+InfraSphere::usage = "InfraSphere[c, r] is the inert family of minimal connected separating subsets of the distance-r shell."
+RandomInfraSphere::usage = "RandomInfraSphere[graph, c, r, n] gives n minimal separating subsets of the shell of c with radius r or band {r, s}; n may be UpTo[n] or All. Automatic randomizes candidate order; Identity preserves deterministic order. Options RandomSeeding, Properties, \"NextVertexFunction\".";
 FindInfraOsculatingShell::usage = "FindInfraOsculatingShell[graph, path, i, k] gives the shells whose level set contains the k-vertex window of path centred at position i, one per osculating centre.";
 FindAdvancingInfraFront::usage = "FindAdvancingInfraFront[graph, origin, steps] gives the foliation by a bouncing wavefront as a List of sorted vertex lists: each front steps one geodesic step outward and reflects inward where it cannot.";
 FindInfraShellCenter::usage = "FindInfraShellCenter[graph, shell] recovers {center, radii} from a shell. Option Method.";

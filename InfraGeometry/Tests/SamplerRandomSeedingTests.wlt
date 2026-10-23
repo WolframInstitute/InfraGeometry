@@ -18,7 +18,7 @@ samplerCalls = <|
   RandomInfraEllipse -> ( RandomInfraEllipse[ GridGraph[ { 5, 5 } ], { 12, 14 }, { 4, 6 }, ## ] & ),
   RandomInfraPlane -> ( RandomInfraPlane[ GridGraph[ { 7, 7 } ], InfraPlane[ 9, 41 ], ## ] & ),
   RandomInfraRegularPolygon -> ( RandomInfraRegularPolygon[ GridGraph[ { 5, 5 } ], { 2 }, 4, ## ] & ),
-  RandomInfraSphere -> ( RandomInfraSphere[ GridGraph[ { 4, 4 } ], 6, { 1, 2 }, 1, Properties -> { "Separating" }, ## ] & ),
+  RandomInfraSphere -> ( RandomInfraSphere[ GridGraph[ { 4, 4 } ], 6, { 1, 2 }, 1, Properties -> { "Separating", "Connected" }, ## ] & ),
   RandomInfraMidpoint -> ( RandomInfraMidpoint[ CycleGraph[ 4 ], 1, 3, ## ] & ),
   RandomInfraRegionNearest -> ( RandomInfraRegionNearest[ CycleGraph[ 4 ], { 1, 3 }, 2, ## ] & ),
   RandomInfraWalk -> ( RandomInfraWalk[ GridGraph[ { 4, 4 } ], 1, { 6 }, Properties -> { "Simple" }, ## ] & ),

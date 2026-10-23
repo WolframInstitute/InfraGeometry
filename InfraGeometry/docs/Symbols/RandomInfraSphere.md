@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraSphere
 Keywords: [sphere, separating set, shell, band, minimal separator]
-SeeAlso: [InfraSphere, InfraShell, InfraMemberQ, InfraMeasurement, RandomInfraPlane]
+SeeAlso: [InfraSphere, InfraShell, RandomInfraCircle, InfraMeasurement, InfraBall]
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
@@ -22,98 +22,77 @@ RelatedGuides: [EuclideanInfrageometry]
 
 ## Details & Options
 
-The band is *L = {v ≠ c : r ≤ d(c, v) ≤ s}*, the shell for *s = r*, and the exterior is *E = {v : d(c, v) > s}*. A sphere is a connected subset *S* of *L* that separates *c* from *E*, so that every path from *c* to *E* meets *S*, and is minimal: no proper subset of *S* separates.
+The band is *L = {v : r ≤ d(c, v) ≤ s}*, the shell for *s = r*, and *ρ = (r + s)/2*. A sphere is an inclusion-minimal connected subset *S* of *L* that separates: after removing *S*, the component of *c* lies in the ball of radius *ρ* and every other vertex lies outside it.
 
-On the square mesh a shell is a ring and is its own sphere. A band of two radii has many spheres, all connected: 60 for {1, 2} about the centre, 2100 for {2, 3}.
+A shell with no edges has no connected subset of more than one vertex. On the square grid, which is bipartite, a sphere of one radius does not exist by default; the band {*r*, *r* + 1} has spheres.
 
-On the square grid the minimal separators about the centre are not connected, and the result is `{}`. `Properties -> {"Separating"}` gives the minimal separators themselves.
+The peeling takes vertices out of the band one at a time while it still separates, so a sphere is minimal, not of least size.
 
-When nothing lies beyond the band, *E* is empty, and the only minimal separator is the empty set.
+When the band does not separate, the result is `{}`.
 
-The count *n* can be `n`, `UpTo[n]` or `All`. A draw is uniform over all the spheres; `All` gives them sorted.
+The count *n* can be `n`, `UpTo[n]` or `All`. All spheres of a large band can take long.
 
 Options:
 
 | Option | Default | Values |
 |---|---|---|
-| [Properties]() | `{"Separating", "Connected"}` | `{"Separating"}` the minimal separators; `{}` the band itself |
-| `"NextVertexFunction"` | `Automatic` | `Automatic` random; `Identity` the first spheres in sorted order; a function of the sorted list of spheres |
+| [Properties]() | `{"Separating", "Connected"}` | `{"Separating"}` drops connectedness; `{}` gives the band itself |
+| `"NextVertexFunction"` | `Automatic` | `Automatic` peels in random order; `Identity` in vertex order; a function of the candidate list gives the vertices to try |
 | [RandomSeeding]() | `Automatic` | an integer or a string for a reproducible draw; `Inherited` to draw from the current random state |
 
 ## Basic Examples
 
-A minimal separator in the band {2, 3} about the centre of the square grid, and a sphere in the same band of the square mesh:
+A sphere in the band {3, 4} about the centre, on the square grid and on the square mesh:
 
 ```wl
 GraphicsRow @ Table[
-  With[{g = InfraSubstrate[First @ spec, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
-    {sphere = RandomInfraSphere[g, c, {2, 3}, Properties -> Last @ spec, RandomSeeding -> 1]},
-    InfraSubstrateHighlight[g, {InfraShell[c, {2, 3}], sphere, c}]],
-  {spec, {{"SquareGridGraph", {"Separating"}}, {"SquareMeshGraph", {"Separating", "Connected"}}}}]
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    InfraSubstrateHighlight[g, {InfraShell[c, {3, 4}], RandomInfraSphere[g, c, {3, 4}, RandomSeeding -> 1], c}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-On the mesh the shell of radius 3 is its own sphere:
+On the mesh the shell of radius 3 is a cycle, and the sphere is the whole shell, the vertices of the circle of radius 3:
 
 ```wl
 With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
   {sphere = RandomInfraSphere[g, c, 3, RandomSeeding -> 1]},
-  InfraSubstrateHighlight[g, {sphere, c},
-    PlotLabel -> (sphere === Keys @ InfraMeasurement[g, InfraShell[c, 3], "VertexDensity"]), ImageSize -> Medium]]
+  InfraSubstrateHighlight[g, {sphere, c}, PlotLabel -> {Length[sphere], sphere === Sort @ RandomInfraCircle[g, c, 3]},
+    ImageSize -> Medium]]
 ```
 
-Three spheres of the band {2, 3} on the mesh:
+Three spheres of the band {3, 4} on the grid, each of 23 vertices:
 
 ```wl
-With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {sphere, c}, PlotLabel -> Length[sphere]],
-    {sphere, RandomInfraSphere[g, c, {2, 3}, 3, RandomSeeding -> 1]}]]
+    {sphere, RandomInfraSphere[g, c, {3, 4}, 3, RandomSeeding -> 1]}]]
 ```
 
 ## Options
 
 ### Properties
 
-On the grid the bands {1, 2} and {2, 3} have 16 and 161 minimal separators, and none is connected:
-
-```wl
-With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
-  Table[Length @ RandomInfraSphere[g, c, b, All, Properties -> p],
-    {b, {{1, 2}, {2, 3}}}, {p, {{"Separating"}, {"Separating", "Connected"}}}]]
-```
-
-A minimal separator of the grid band {2, 3} falls into pieces that touch only diagonally:
+On the grid the shell of radius 3 separates but has no edges. Without connectedness the sphere is the whole shell of 12 vertices; with it there is none:
 
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
-  {wall = RandomInfraSphere[g, c, {2, 3}, Properties -> {"Separating"}, RandomSeeding -> 1]},
-  InfraSubstrateHighlight[g, {wall, c}, PlotLabel -> Length @ ConnectedComponents @ Subgraph[g, wall],
-    ImageSize -> Medium]]
+  {sphere = RandomInfraSphere[g, c, 3, Properties -> {"Separating"}, RandomSeeding -> 1]},
+  InfraSubstrateHighlight[g, {sphere, c}, PlotLabel -> {Length[sphere], RandomInfraSphere[g, c, 3]}, ImageSize -> Medium]]
 ```
 
 ## Properties and Relations
 
-A sphere of the band {1, 2} separates the centre from every vertex beyond distance 2, and no vertex can be removed from it:
+Removing a sphere of the band {3, 4} leaves the centre with vertices within distance 3 only:
 
 ```wl
 With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
-  {sphere = RandomInfraSphere[g, c, {1, 2}, RandomSeeding -> 1]},
-  {far = Select[VertexList[g], GraphDistance[g, c, #] > 2 &]},
-  {separatesQ = s |-> ! IntersectingQ[VertexComponent[VertexDelete[g, s], c], far]},
-  {separatesQ[sphere], NoneTrue[sphere, separatesQ[DeleteCases[sphere, #]] &]}]
+  {sphere = RandomInfraSphere[g, c, {3, 4}, RandomSeeding -> 1]},
+  Max[GraphDistance[g, c, #] & /@ VertexComponent[VertexDelete[g, sphere], c]]]
 ```
 
 The token form gives the same draw:
 
 ```wl
-With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
-  RandomInfraSphere[g, InfraSphere[c, {1, 2}], RandomSeeding -> 1] === RandomInfraSphere[g, c, {1, 2}, RandomSeeding -> 1]]
-```
-
-## Possible Issues
-
-On the mesh nothing lies beyond radius 6. The empty set is then the only minimal separator, and it is not connected:
-
-```wl
-With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g]},
-  RandomInfraSphere[g, c, 6, All, Properties -> #] & /@ {{"Separating"}, {"Separating", "Connected"}}]
+With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
+  RandomInfraSphere[g, InfraSphere[c, {3, 4}], RandomSeeding -> 1] === RandomInfraSphere[g, c, {3, 4}, RandomSeeding -> 1]]
 ```
