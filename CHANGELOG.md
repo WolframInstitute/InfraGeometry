@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 2.10.1 (2026-10-23)
+
+- Documentation only. The five Infra Analysis calculus pages (`InfraDifferential`, `InfraCodifferential`, `InfraIntegral`, `InfraAntiderivative`, `InfraDerivative`) follow the lean page standard: definition first, examples on the square grid and mesh.
+
 ## 2.10.0 (2026-10-23)
 
 - Add the calculus of *Infra Analysis*, five inert heads read by `InfraMeasurement`. Nothing existing changes.

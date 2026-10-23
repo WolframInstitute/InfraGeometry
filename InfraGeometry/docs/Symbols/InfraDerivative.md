@@ -12,93 +12,94 @@ RelatedGuides: [InfraAnalysis]
 
 ## Usage
 
-<code>[InfraDerivative]()[*F*]</code> is the derivative of the vertex function *F*, the inverse of the zeta antiderivative: the Möbius inversion *f(v) = Σ_(u ⪯ v) μ(u, v) F(u)*. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
+<code>[InfraDerivative]()[*F*]</code> is the derivative of the vertex function *F*, the inverse of the zeta antiderivative: the Möbius inversion *f(v) = Σ μ(u, v) F(u)*, the sum over the *u ⪯ v*.
 
 <code>[InfraDerivative]()[*F*, [Method]() -> *m*]</code> is the inverse of <code>[InfraAntiderivative]()[*f*, [Method]() -> *m*]</code>.
 
 ## Details & Options
 
-Definition: the derivative of a method with kernel *K* is the antiderivative with the inverse kernel, *D_K = I_(K^(−1))*, so that *D_K I_K f = f* and *I_K D_K F = F* exactly.
+The derivative of a method with kernel *K* is the antiderivative with the inverse kernel *K⁻¹*. It inverts [InfraAntiderivative]() exactly, on both sides.
 
-It takes the options of [InfraAntiderivative](), `Method`, `"Origin"` and `"Direction"`, with the same defaults and the same order on the substrate.
+The options [Method](), `"Origin"` and `"Direction"` are those of [InfraAntiderivative](), with the same defaults and the same order on the substrate.
 
-A path kernel *K = (1 − W)^(−1)* has the local inverse *1 − W*: *(D F)(v) = F(v) − Σ_(u ⋖ v) W(u, v) F(u)*, a finite difference over the links into *v*. For `"PathCount"` it is *F(v)* minus the sum of *F* over the vertices just below *v*.
+A path kernel *K = (1 − W)⁻¹* has the inverse *1 − W*, a finite difference over the links into *v*: *(DF)(v) = F(v) − Σ W(u, v) F(u)*, the sum over the links *u ⋖ v*. For `"PathCount"` it is *F(v)* minus the sum of *F* just below *v*.
 
-The `"Zeta"` kernel is the zeta function of the order, and its inverse is the Möbius function *μ*. The Möbius derivative is local exactly when every interval of the order is a chain. An interval that is not a chain, with every proper subinterval a chain, has two or more atoms; with *c* atoms, *μ = c − 1 ≠ 0* there. The smallest case is the diamond, where *μ* of the bottom and the top is 1.
+The `"Zeta"` kernel is the zeta function of the order, and its inverse is the Möbius function *μ*. The Möbius derivative reaches past the links: it is local exactly when every interval of the order is a chain. On an interval that is not a chain, all of whose proper subintervals are chains, *μ* is the number of atoms minus 1. The smallest such interval is the diamond, with *μ* = 1 from the bottom to the top.
 
 | Reading | Value |
 |---|---|
-| `"Function"` | the derivative, an [Association]() *v* -> *(D F)(v)* in the order of `VertexList` |
-| `"Kernel"` | the inverse kernel, an [Association]() `{u, v} -> K^(-1)(u, v)` over the pairs *u ⪯ v* with a nonzero value; for `"Zeta"` the Möbius function |
+| `"Function"` | the derivative, an [Association]() *v* -> *(DF)(v)* |
+| `"Kernel"` | the [Association]() `{u, v} -> K⁻¹(u, v)` of the nonzero values; for `"Zeta"` the Möbius function |
 
-`All` gives both. An unknown method or option, an undirected graph without an origin, or a directed graph with a cycle leaves the reading unevaluated.
+`All` gives both. An unknown method, an undirected graph without an origin or a directed graph with a cycle leaves the reading unevaluated.
 
 ## Basic Examples
 
-The Möbius function of the diamond *1 < 2, 3 < 4*: it reaches from the top past the links to the bottom.
+The Möbius function *μ(c, v)* of the order from the centre *c*, the derivative of the indicator of *c*. Negative values are drawn as rings. On the grid it is −1 on the four neighbours and 1 on the four diagonal vertices, whose intervals are squares with two atoms. On the mesh a vertex at distance 2 has *μ* = 2: its interval has three atoms:
 
 ```wl
-Normal @ InfraMeasurement[Graph[{1, 2, 3, 4}, {1 -> 2, 1 -> 3, 2 -> 4, 3 -> 4}], InfraDerivative[0 &], "Kernel"]
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+    {mu = InfraMeasurement[g, InfraDerivative[<|c -> 1|>, "Origin" -> c], "Function"]},
+    InfraSubstrateHighlight[g, {mu, c}]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The zeta and the path-count derivative of the same function differ at the top by its value at the bottom.
+The Möbius function of the diamond *1 < 2, 3 < 4*. It reaches from the top past the links to the bottom:
 
 ```wl
-With[
-  {diamond = Graph[{1, 2, 3, 4}, {1 -> 2, 1 -> 3, 2 -> 4, 3 -> 4}], f = <|1 -> 2, 2 -> 3, 3 -> 5, 4 -> 7|>},
-  Normal /@ {InfraMeasurement[diamond, InfraDerivative[f], "Function"], InfraMeasurement[diamond, InfraDerivative[f, Method -> "PathCount"], "Function"]}]
+InfraMeasurement[Graph[{1 -> 2, 1 -> 3, 2 -> 4, 3 -> 4}], InfraDerivative[0 &], "Kernel"]
 ```
 
-The derivative undoes the antiderivative from the centre of the discretized plane, the square grid and the hexagonal tiling, for every method.
+The zeta and the path-count derivative of the same function differ at the top by its value at the bottom:
 
 ```wl
-SeedRandom[1];
-Table[
-  With[
-    {g = InfraSubstrate[name, "Small"]},
-    {c = First @ GraphCenter[g], f = AssociationThread[VertexList[g], RandomInteger[{-9, 9}, VertexCount[g]]]},
-    AllTrue[{"Zeta", "PathCount", "BackwardRandomWalk", "UniformChain", "ForwardRandomWalk"},
-      InfraMeasurement[g, InfraDerivative[InfraAntiderivative[f, Method -> #, "Origin" -> c], Method -> #, "Origin" -> c], "Function"] === f &]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]
+With[{diamond = Graph[{1 -> 2, 1 -> 3, 2 -> 4, 3 -> 4}]}, {f = <|1 -> 2, 2 -> 3, 3 -> 5, 4 -> 7|>},
+  Table[InfraMeasurement[diamond, InfraDerivative[f, Method -> m], "Function"], {m, {"Zeta", "PathCount"}}]]
 ```
 
 ## Properties and Relations
 
-On the product order of *Z²*, the light-cone lattice, the Möbius derivative is the mixed second difference *F(i, j) − F(i − 1, j) − F(i, j − 1) + F(i − 1, j − 1)*: in the null coordinates *i*, *j* the discrete wave operator.
+The derivative undoes the antiderivative from the centre, for every method:
 
 ```wl
-With[
-  {lattice = Graph[Flatten[Table[{i, j}, {i, 0, 4}, {j, 0, 4}], 1],
-     Flatten @ Table[{If[i < 4, DirectedEdge[{i, j}, {i + 1, j}], Nothing], If[j < 4, DirectedEdge[{i, j}, {i, j + 1}], Nothing]}, {i, 0, 4}, {j, 0, 4}]]},
+Table[
+  With[{g = InfraSubstrate[name, "Small"]}, {c = First @ GraphCenter[g]},
+    {f = AssociationMap[Mod[#^2, 11] &, VertexList[g]]},
+    AllTrue[{"Zeta", "PathCount", "BackwardRandomWalk", "UniformChain", "ForwardRandomWalk"},
+      InfraMeasurement[g, InfraDerivative[InfraAntiderivative[f, Method -> #, "Origin" -> c], Method -> #, "Origin" -> c],
+        "Function"] === f &]],
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+```
+
+On the product order of *Z²*, the light-cone lattice, the Möbius derivative is the mixed second difference *F(i, j) − F(i − 1, j) − F(i, j − 1) + F(i − 1, j − 1)*, in the null coordinates *i*, *j* the discrete wave operator:
+
+```wl
+With[{lattice = RelationGraph[MemberQ[{{1, 0}, {0, 1}}, #2 - #1] &, Tuples[Range[0, 4], 2]]},
   {bigF = AssociationThread[VertexList[lattice], Prime[Range[25]]]},
-  InfraMeasurement[lattice, InfraDerivative[bigF], "Function"] ===
-    AssociationMap[Lookup[bigF, Key[#], 0] - Lookup[bigF, Key[# - {1, 0}], 0] - Lookup[bigF, Key[# - {0, 1}], 0] + Lookup[bigF, Key[# - {1, 1}], 0] &, VertexList[lattice]]]
+  {box = {1, -1, -1, 1} . Lookup[bigF, {#, # - {1, 0}, # - {0, 1}, # - {1, 1}}, 0] &},
+  InfraMeasurement[lattice, InfraDerivative[bigF], "Function"] === AssociationMap[box, VertexList[lattice]]]
 ```
 
-P. Hall's theorem: the Möbius derivative of 1 at *v* is *1 − χ*, *χ* the Euler characteristic of the order complex of the strict past of *v*. Over a crown, whose order complex is a circle, it is 1.
+P. Hall's theorem: the Möbius derivative of 1 at *v* is *1 − χ*, *χ* the Euler characteristic of the order complex of the strict past of *v*. Over the crown *1, 2 < 3, 4 < 5* that complex is a circle, *χ* = 0, and the value at the top is 1:
 
 ```wl
-With[
-  {crown = Graph[Range[5], {1 -> 3, 1 -> 4, 2 -> 3, 2 -> 4, 3 -> 5, 4 -> 5}]},
-  Normal @ InfraMeasurement[crown, InfraDerivative[1 &], "Function"]]
+InfraMeasurement[Graph[{1 -> 3, 1 -> 4, 2 -> 3, 2 -> 4, 3 -> 5, 4 -> 5}], InfraDerivative[1 &], "Function"]
 ```
 
-The path derivatives are local: their kernels live on the diagonal and the links. The Möbius derivative is local only where no two chains share their ends.
+The path derivatives are local: their kernels live on the diagonal and the links. The Möbius kernel also has the pair {1, 5}, whose interval holds two chains:
 
 ```wl
-With[
-  {dag = Graph[Range[6], {1 -> 2, 2 -> 3, 1 -> 4, 4 -> 5, 3 -> 5, 5 -> 6}]},
-  {links = List @@@ EdgeList[TransitiveReductionGraph[dag]]},
-  Table[m -> AllTrue[Keys @ InfraMeasurement[dag, InfraDerivative[0 &, Method -> m], "Kernel"], SameQ @@ # || MemberQ[links, #] &],
+With[{dag = Graph[{1 -> 2, 2 -> 3, 1 -> 3, 1 -> 4, 4 -> 5, 3 -> 5, 5 -> 6, 1 -> 6, 7 -> 5}]},
+  {local = Join[List @@@ EdgeList[TransitiveReductionGraph[dag]], {#, #} & /@ VertexList[dag]]},
+  Table[m -> Complement[Keys @ InfraMeasurement[dag, InfraDerivative[0 &, Method -> m], "Kernel"], local],
     {m, {"Zeta", "PathCount", "BackwardRandomWalk", "UniformChain", "ForwardRandomWalk"}}]]
 ```
 
-`"BackwardRandomWalk"` and `"UniformChain"` kill the constants away from the minimal elements: the derivative of 1 is the indicator of the minimal elements.
+The backward random walk and the uniform chain kill the constants away from the minimal elements: the derivative of 1 is the indicator of the minimal elements 1 and 7:
 
 ```wl
-SeedRandom[2];
-With[
-  {dag = Graph[Range[8], DirectedEdge @@@ (Sort /@ RandomSample[Subsets[Range[8], {2}], 12])]},
-  {Values @ InfraMeasurement[dag, InfraDerivative[1 &, Method -> "BackwardRandomWalk"], "Function"],
-   Values @ InfraMeasurement[dag, InfraDerivative[1 &, Method -> "UniformChain"], "Function"], Boole @ Thread[VertexInDegree[dag] == 0]}]
+With[{dag = Graph[{1 -> 2, 2 -> 3, 1 -> 3, 1 -> 4, 4 -> 5, 3 -> 5, 5 -> 6, 1 -> 6, 7 -> 5}]},
+  Table[m -> InfraMeasurement[dag, InfraDerivative[1 &, Method -> m], "Function"],
+    {m, {"BackwardRandomWalk", "UniformChain"}}]]
 ```

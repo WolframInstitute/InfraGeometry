@@ -12,153 +12,130 @@ RelatedGuides: [InfraAnalysis]
 
 ## Usage
 
-<code>[InfraAntiderivative]()[*f*]</code> is the antiderivative of the vertex function *f*: *F(v) = Σ_(u ⪯ v) f(u)*, the sum of *f* over the past of each vertex. It is a symbolic object; [InfraMeasurement]() evaluates it on a graph.
+<code>[InfraAntiderivative]()[*f*]</code> is the antiderivative of the vertex function *f*: the sum of *f* over the past of each vertex.
 
-<code>[InfraAntiderivative]()[*f*, [Method]() -> *m*]</code> accumulates *f* through the kernel of the method *m*: *F(v) = Σ_(u ⪯ v) f(u) K(u, v)*.
+<code>[InfraAntiderivative]()[*f*, [Method]() -> *m*]</code> sums *f* over the past with the kernel of the method *m*.
 
 ## Details & Options
 
-Definition: the antiderivative with kernel *K* is *(I_K f)(v) = Σ_(u ⪯ v) f(u) K(u, v)*, where *K* is a function on the pairs *u ⪯ v* of the order with *K(v, v) = 1*, an element of its incidence algebra. [InfraDerivative]() is its exact inverse.
-
-The order:
+The antiderivative with kernel *K* is *F(v) = Σ f(u) K(u, v)*, the sum over the *u ⪯ v*, with *K(v, v) = 1*. [InfraDerivative]() is its exact inverse.
 
 | Substrate | Order *u ⪯ v* | Links *u ⋖ v* |
 |---|---|---|
-| directed acyclic graph | *v* is reachable from *u* | the edges of `TransitiveReductionGraph` |
-| undirected graph, `"Origin" -> c` | the spray order, *d(c, u) + d(u, v) = d(c, v)* | the edges of <code>[SprayGraph]()[*g*, *c*]</code> |
+| directed acyclic graph | *v* is reachable from *u* | the edges of [TransitiveReductionGraph]() |
+| undirected graph, `"Origin" -> c` | *u* lies on a shortest path from *c* to *v* | the edges of <code>[SprayGraph]()[*g*, *c*]</code> |
 
-On a directed acyclic graph everything reads the links, so adding an implied edge changes nothing. From an origin the intervals of the order are the segments: *u ⪯ v* exactly when *u* lies on a shortest path from *c* to *v*. Vertices that *c* does not reach are left out.
+From an origin the intervals of the order are the supports of the segments. On a directed acyclic graph an implied edge changes nothing.
 
-*f* is a 0-form: an [Association]() *v* -> *x*, in which a missing vertex counts as 0, or a function applied to each vertex. A head with a `"Function"` reading is read through it.
+*f* is an [Association]() *v* -> *x*, a missing vertex counting as 0, or a function applied to each vertex.
 
-| Option | Default | Value |
+| Option | Default | Values |
 |---|---|---|
 | [Method]() | `"Zeta"` | the kernel, below |
-| `"Origin"` | `Automatic` | `Automatic` on a directed acyclic graph; a vertex *c*, required on an undirected graph |
-| `"Direction"` | `"Past"` | `"Past"`, or `"Future"`, which reverses the order |
+| `"Origin"` | `Automatic` | a vertex *c*, required on an undirected graph |
+| `"Direction"` | `"Past"` | `"Future"` reverses the order |
 
-Every method but `"Zeta"` is a path kernel *K = (1 − W)^(−1)*: *K(u, v)* sums, over the chains from *u* to *v*, the product of a weight *W* on their links, and *F(v) = f(v) + Σ_(u ⋖ v) W(u, v) F(u)*.
+Every method but `"Zeta"` is a path kernel *K = (1 − W)⁻¹*, a weight *W* on the links multiplied along the chains from *u* to *v*. Then *F(v) = f(v) + Σ W(u, v) F(u)*, the sum over the links *u ⋖ v*.
 
-| [Method]() | *K(u, v)* | *W* | *F(v)* |
-|---|---|---|---|
-| `"Zeta"` | 1 on every pair *u ⪯ v*, the zeta function of the incidence algebra | — | the sum of *f* over the past; from an origin, over the support of <code>[InfraSegment]()[*c*, *v*]</code> |
-| `"PathCount"` | the number of chains from *u* to *v* | *W = 1* | the sum of *f(u)* times the number of chains from *u* to *v* |
-| `"BackwardRandomWalk"` | the probability that the backward random walk from *v*, each step to a uniformly random predecessor, visits *u* | *W(u, v) = 1 / indeg(v)* | the expected integral of *f* along the random walk back from *v* |
-| `"ForwardRandomWalk"` | the probability that the forward random walk from *u*, each step to a uniformly random successor, visits *v* | *W(u, v) = 1 / outdeg(u)* | the mass of *f* reaching *v* when each vertex splits its mass evenly over its out-links |
-| `"UniformChain"` | the probability that a uniformly random maximal chain from the sources to *v* passes through *u* | *W(u, v) = N(u) / N(v)*, *N* the number of chains from the minimal elements | the mean integral of *f* over the chains from the minimal elements; from an origin the `"Mean"` of the integral of *f* along <code>[InfraSegment]()[*c*, *v*]</code> |
-| `{"Weights", w}` | the sum over the chains from *u* to *v* of the product of *w* on their links | *W = w*, an [Association]() on the links | |
-
-The degrees are those of the links. Arithmetic stays exact.
+| [Method]() | *K(u, v)* | *W(u, v)* |
+|---|---|---|
+| `"Zeta"` | 1, the zeta function of the order | — |
+| `"PathCount"` | the number of chains from *u* to *v* | 1 |
+| `"BackwardRandomWalk"` | the probability that the walk back from *v* to uniformly random predecessors visits *u* | 1 / indeg(*v*) |
+| `"ForwardRandomWalk"` | the probability that the walk forward from *u* to uniformly random successors visits *v* | 1 / outdeg(*u*) |
+| `"UniformChain"` | the probability that a uniformly random maximal chain to *v* passes through *u* | *N(u) / N(v)*, *N* the number of maximal chains |
+| `{"Weights", w}` | the sum over the chains from *u* to *v* of the product of *w* | *w* |
 
 | Reading | Value |
 |---|---|
-| `"Function"` | the antiderivative, an [Association]() *v* -> *F(v)* in the order of `VertexList` |
-| `"Kernel"` | the kernel, an [Association]() `{u, v} -> K(u, v)` over the pairs *u ⪯ v* with a nonzero value |
+| `"Function"` | the antiderivative, an [Association]() *v* -> *F(v)* |
+| `"Kernel"` | the [Association]() `{u, v} -> K(u, v)` of the nonzero values |
 
-`All` gives both. An unknown method or option, an undirected graph without an origin, or a directed graph with a cycle leaves the reading unevaluated.
+`All` gives both. An unknown method, an undirected graph without an origin or a directed graph with a cycle leaves the reading unevaluated.
 
 ## Basic Examples
 
-The zeta and the path-count antiderivative of a function on the diamond *1 < 2, 3 < 4*. They differ at the top, which two chains join to the bottom.
+The antiderivative of 1 from the centre: at each vertex *v*, the number of vertices of the segment from the centre to *v*. On the grid, away from the pendant vertices of the rim, it is *(a + 1)(b + 1)*, with *a* and *b* the steps along the two axes:
 
 ```wl
-With[
-  {diamond = Graph[{1, 2, 3, 4}, {1 -> 2, 1 -> 3, 2 -> 4, 3 -> 4}], f = <|1 -> 2, 2 -> 3, 3 -> 5, 4 -> 7|>},
-  Normal /@ {InfraMeasurement[diamond, InfraAntiderivative[f], "Function"], InfraMeasurement[diamond, InfraAntiderivative[f, Method -> "PathCount"], "Function"]}]
-```
-
-The zeta antiderivative of 1 from the centre of the discretized plane, the square grid and the hexagonal tiling: the number of vertices of the segment from the centre to each vertex.
-
-```wl
-Row[Table[
-  With[
-    {g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]},
-    {c = First @ GraphCenter[g]},
+GraphicsRow @ Table[
+  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
     InfraSubstrateHighlight[g, {InfraMeasurement[g, InfraAntiderivative[1 &, "Origin" -> c], "Function"], c}]],
-  {name, {"SquareMeshGraph", "SquareTilingGraph", "HexagonalTilingGraph"}}]]
+  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-The kernel of the uniform-chain method on the diamond: from the bottom, each of the two chains to the top carries half.
+On the diamond *1 < 2, 3 < 4* the zeta and the path-count antiderivative differ at the top, which two chains join to the bottom:
 
 ```wl
-Normal @ InfraMeasurement[Graph[{1, 2, 3, 4}, {1 -> 2, 1 -> 3, 2 -> 4, 3 -> 4}], InfraAntiderivative[1 &, Method -> "UniformChain"], "Kernel"]
+With[{diamond = Graph[{1 -> 2, 1 -> 3, 2 -> 4, 3 -> 4}]}, {f = <|1 -> 2, 2 -> 3, 3 -> 5, 4 -> 7|>},
+  Table[InfraMeasurement[diamond, InfraAntiderivative[f, Method -> m], "Function"], {m, {"Zeta", "PathCount"}}]]
 ```
 
 ## Scope
 
-Every method on the function 1, at a vertex two steps along each axis from the centre of the square grid. The segment to it is a 3 × 3 square with 6 shortest paths. `"Zeta"` counts its 9 vertices, `"PathCount"` counts each vertex once per shortest path from it, `"BackwardRandomWalk"` and `"UniformChain"` give the 5 vertices of every shortest path, and `"ForwardRandomWalk"` the mass it holds when every vertex starts with 1 and passes what it holds on, evenly over its out-links.
+Every method on the function 1 at the vertex (7, 7) of the grid, centre (5, 5). The segment to it is a 3 × 3 square. `"Zeta"` counts its 9 vertices, `"PathCount"` each vertex once per chain from it, `"BackwardRandomWalk"` and `"UniformChain"` the 5 vertices of a shortest path:
 
 ```wl
-With[
-  {g = InfraSubstrate["SquareTilingGraph", "Small"]},
-  {c = First @ GraphCenter[g]},
-  {q = First @ MaximalBy[Keys @ InfraMeasurement[g, InfraShell[c, 4], "VertexDensity"], InfraMeasurement[g, InfraSegment[c, #], "Cardinality"] &]},
-  Table[m -> InfraMeasurement[g, InfraAntiderivative[1 &, Method -> m, "Origin" -> c], "Function"][q], {m, {"Zeta", "PathCount", "BackwardRandomWalk", "UniformChain", "ForwardRandomWalk"}}]]
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {q = First @ Nearest[GraphEmbedding[g] -> VertexList[g], {7, 7}]},
+  Table[m -> InfraMeasurement[g, InfraAntiderivative[1 &, Method -> m, "Origin" -> c], "Function"][q],
+    {m, {"Zeta", "PathCount", "BackwardRandomWalk", "UniformChain", "ForwardRandomWalk"}}]]
 ```
 
-`"Future"` accumulates over the future instead, the antiderivative on the reversed graph.
+## Options
+
+### Direction
+
+`"Future"` sums over the future, the antiderivative on the reversed graph:
 
 ```wl
-With[
-  {dag = Graph[Range[6], {1 -> 2, 2 -> 3, 1 -> 3, 1 -> 4, 4 -> 5, 3 -> 5, 5 -> 6}], f = AssociationThread[Range[6], {5, -2, 7, 1, 3, -4}]},
-  InfraMeasurement[dag, InfraAntiderivative[f, "Direction" -> "Future"], "Function"] === InfraMeasurement[ReverseGraph[dag], InfraAntiderivative[f], "Function"]]
+With[{dag = Graph[{1 -> 2, 2 -> 3, 1 -> 3, 1 -> 4, 4 -> 5, 3 -> 5, 5 -> 6, 1 -> 6}]},
+  {f = <|1 -> 5, 2 -> -2, 3 -> 7, 4 -> 1, 5 -> 3, 6 -> -4|>},
+  {InfraMeasurement[dag, InfraAntiderivative[f, "Direction" -> "Future"], "Function"],
+   InfraMeasurement[dag, InfraAntiderivative[f, "Direction" -> "Future"], "Function"] ===
+     InfraMeasurement[ReverseGraph[dag], InfraAntiderivative[f], "Function"]}]
 ```
 
 ## Properties and Relations
 
-[InfraDerivative]() with the same options inverts the antiderivative, in both orders and for every method.
+[InfraDerivative]() with the same method inverts the antiderivative, in both orders:
 
 ```wl
-SeedRandom[1];
-With[
-  {dag = Graph[Range[8], DirectedEdge @@@ (Sort /@ RandomSample[Subsets[Range[8], {2}], 12])]},
-  {f = AssociationThread[Range[8], RandomInteger[{-9, 9}, 8]]},
-  Table[
-    {InfraMeasurement[dag, InfraDerivative[InfraAntiderivative[f, Method -> m], Method -> m], "Function"] === f,
+With[{dag = Graph[{1 -> 2, 2 -> 3, 1 -> 3, 1 -> 4, 4 -> 5, 3 -> 5, 5 -> 6, 1 -> 6}]},
+  {f = <|1 -> 5, 2 -> -2, 3 -> 7, 4 -> 1, 5 -> 3, 6 -> -4|>},
+  Table[m -> {
+     InfraMeasurement[dag, InfraDerivative[InfraAntiderivative[f, Method -> m], Method -> m], "Function"] === f,
      InfraMeasurement[dag, InfraAntiderivative[InfraDerivative[f, Method -> m], Method -> m], "Function"] === f},
     {m, {"Zeta", "PathCount", "BackwardRandomWalk", "UniformChain", "ForwardRandomWalk"}}]]
 ```
 
-The antiderivative reads the order, not its encoding: the transitive closure gives the same function.
+The forward random walk carries all the mass to the maximal elements. Here the only maximal element is 6:
 
 ```wl
-With[
-  {dag = Graph[Range[6], {1 -> 2, 2 -> 3, 1 -> 4, 4 -> 5, 3 -> 5, 5 -> 6}], f = AssociationThread[Range[6], {5, -2, 7, 1, 3, -4}]},
-  Table[InfraMeasurement[dag, InfraAntiderivative[f, Method -> m], "Function"] === InfraMeasurement[TransitiveClosureGraph[dag], InfraAntiderivative[f, Method -> m], "Function"],
-    {m, {"Zeta", "PathCount", "BackwardRandomWalk", "UniformChain", "ForwardRandomWalk"}}]]
+With[{dag = Graph[{1 -> 2, 2 -> 3, 1 -> 3, 1 -> 4, 4 -> 5, 3 -> 5, 5 -> 6, 1 -> 6}]},
+  {f = <|1 -> 5, 2 -> -2, 3 -> 7, 4 -> 1, 5 -> 3, 6 -> -4|>},
+  {InfraMeasurement[dag, InfraAntiderivative[f, Method -> "ForwardRandomWalk"], "Function"][6], Total[f]}]
 ```
 
-The forward random walk carries all the mass to the maximal elements.
+From an origin *c*, the zeta antiderivative at *v* is the sum of *f* over the segment from *c* to *v*, and the uniform-chain antiderivative the mean of the integral of *f* along it:
 
 ```wl
-SeedRandom[2];
-With[
-  {dag = Graph[Range[8], DirectedEdge @@@ (Sort /@ RandomSample[Subsets[Range[8], {2}], 12])]},
-  {f = AssociationThread[Range[8], RandomInteger[{0, 9}, 8]]},
-  {Total @ Lookup[InfraMeasurement[dag, InfraAntiderivative[f, Method -> "ForwardRandomWalk"], "Function"], Pick[Range[8], VertexOutDegree[dag], 0]], Total[f]}]
+With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {c = First @ GraphCenter[g], f = Mod[#^2, 11] &},
+  {zeta = InfraMeasurement[g, InfraAntiderivative[f, "Origin" -> c], "Function"],
+   uniform = InfraMeasurement[g, InfraAntiderivative[f, Method -> "UniformChain", "Origin" -> c], "Function"]},
+  {AllTrue[VertexList[g],
+     zeta[#] == Total[f /@ Keys @ InfraMeasurement[g, InfraSegment[c, #], "VertexDensity"]] &],
+   AllTrue[VertexList[g], uniform[#] == InfraMeasurement[g, InfraIntegral[f, InfraSegment[c, #]], "Mean"] &]}]
 ```
 
-From an origin, the uniform-chain antiderivative is the mean of the integral of *f* along the shortest paths from the origin, and the zeta antiderivative is the sum of *f* over the segment.
+Blow each vertex of the diamond up into two copies and each link into the four links between the copies, spread *f* evenly and add the copies back. The random walks and, on this graded order, `"UniformChain"` commute with the blow-up; `"Zeta"` and `"PathCount"` count the new chains and do not:
 
 ```wl
-SeedRandom[3];
-With[
-  {g = InfraSubstrate["HexagonalTilingGraph", "Small"]},
-  {c = First @ GraphCenter[g], f = AssociationThread[VertexList[g], RandomInteger[{-9, 9}, VertexCount[g]]]},
-  {uniform = InfraMeasurement[g, InfraAntiderivative[f, Method -> "UniformChain", "Origin" -> c], "Function"],
-   zeta = InfraMeasurement[g, InfraAntiderivative[f, "Origin" -> c], "Function"]},
-  {AllTrue[VertexList[g], uniform[#] == InfraMeasurement[g, InfraIntegral[f, InfraSegment[c, #]], "Mean"] &],
-   AllTrue[VertexList[g], zeta[#] == Total @ Lookup[f, Keys @ InfraMeasurement[g, InfraSegment[c, #], "VertexDensity"]] &]}]
-```
-
-Blow up each vertex into *n* copies and each link into the complete bipartite graph between them, spread *f* evenly over the copies and sum the antiderivative back. `"BackwardRandomWalk"` and `"ForwardRandomWalk"` commute with this; `"UniformChain"` does on a graded order, such as the diamond; `"Zeta"` and `"PathCount"` count the new chains and do not.
-
-```wl
-With[
-  {diamond = Graph[{1, 2, 3, 4}, {1 -> 2, 1 -> 3, 2 -> 4, 3 -> 4}], f = <|1 -> 2, 2 -> -1, 3 -> 5, 4 -> 3|>},
-  {big = Graph[Flatten[Table[{v, i}, {v, 4}, {i, 2}], 1], Flatten @ Table[DirectedEdge[{First[e], i}, {Last[e], j}], {e, EdgeList[diamond]}, {i, 2}, {j, 2}]]},
-  {spread = Association @ Flatten @ Table[{v, i} -> f[v] / 2, {v, 4}, {i, 2}]},
-  Table[
-    m -> (Table[Sum[InfraMeasurement[big, InfraAntiderivative[spread, Method -> m], "Function"][{v, i}], {i, 2}], {v, 4}] === Values @ InfraMeasurement[diamond, InfraAntiderivative[f, Method -> m], "Function"]),
+With[{diamond = Graph[{1 -> 2, 1 -> 3, 2 -> 4, 3 -> 4}], f = <|1 -> 2, 2 -> -1, 3 -> 5, 4 -> 3|>},
+  {big = Graph[Flatten @ Table[DirectedEdge[{First[e], i}, {Last[e], j}], {e, EdgeList[diamond]}, {i, 2}, {j, 2}]],
+   spread = Association @ Flatten @ Table[{v, i} -> f[v] / 2, {v, 4}, {i, 2}]},
+  Table[m -> (Values @ InfraMeasurement[diamond, InfraAntiderivative[f, Method -> m], "Function"] ===
+      Total /@ Partition[Values @ KeySort @
+        InfraMeasurement[big, InfraAntiderivative[spread, Method -> m], "Function"], 2]),
     {m, {"Zeta", "PathCount", "BackwardRandomWalk", "UniformChain", "ForwardRandomWalk"}}]]
 ```
