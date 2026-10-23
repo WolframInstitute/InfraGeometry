@@ -22,13 +22,14 @@ A construction is a sequence, not a picture. The viewer solves the scene step by
 
 | Control | Does |
 |---|---|
-| step arrows, step menu | move between the steps of the scene |
-| eye | hide or show the object of the current step |
-| Branch / Diffuse | show one realisation, or all of them overlaid |
+| step arrows | move between the steps of the scene |
+| eye | hide or show the objects of the current step |
+| menu | list the steps by their objects, each with an eye and a pin |
 | branch arrows | page through the realisations of the current step |
-| Fixed | keep the current branch for the later steps |
+| pin | keep the current branch from this step on; unpinning a step also drops the pins after it |
+| diffuse | show all realisations overlaid; the branch arrows grey out and read "all" |
 
-Diffuse draws every realisation at once, the more often a vertex is used the stronger; Branch follows one construction to the end. Without Fixed every step is solved over all branches of the earlier ones, and their number multiplies.
+Diffuse draws every realisation at once, the more often a vertex is used the stronger; the branch view follows one construction to the end. Without a pin every step is solved over all branches of the earlier ones, and their number multiplies. A step can be pinned once it has been reached.
 
 | Option | Default |
 |---|---|
