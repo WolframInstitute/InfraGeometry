@@ -8,6 +8,7 @@ PackageScope[ $InfraAccentPointSize ]
 PackageScope[ $InfraOpacityRange ]
 PackageScope[ $InfraEdgeThickness ]
 PackageScope[ $InfraArrowheadSize ]
+PackageScope[ $InfraArrowheadContour ]
 PackageScope[ $InfraRangeTop ]
 PackageScope[ infraInk ]
 PackageScope[ parseHighlightStyle ]
@@ -15,7 +16,8 @@ PackageScope[ normalizeHighlightSpec ]
 
 $InfraOpacityRange  = { 0.40, 1.0 }
 $InfraEdgeThickness = 1.
-$InfraArrowheadSize = 14
+$InfraArrowheadSize    = 14
+$InfraArrowheadContour = 2
 $InfraRangeTop      = <| "ThicknessRange" -> 4, "PointSizeRange" -> 3 |>
 
 $InfraPointSizes      = <| Small -> 4, Medium -> 7, Large -> 10 |>
@@ -246,7 +248,8 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                               e[ "Record" ][ "Arrowheads" ] },
                   runs ] ] ],
           (* the head: two barbs, slightly arced, in the walk's colour, a point bolder than its stroke, the tip on the last vertex,
-             along the last two edges (one edge of a mesh zigzags, two give the walk's direction) *)
+             along the last two edges (one edge of a mesh zigzags, two give the walk's direction); the same curve drawn first in black
+             and wider is its contour, so the head reads where it lies on its own walk *)
           heads = Cases[ entries,
             e_Association /; e[ "Record" ][ "Arrowheads" ] === True && e[ "Record" ][ "EdgeShapeFunction" ] === None &&
               ListQ[ e[ "Walk" ] ] && Length[ e[ "Walk" ] ] >= 2 :>
@@ -256,11 +259,14 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                 { u         = Normalize[ tip - Lookup[ coords, Key @ e[ "Walk" ][[ - Min[ 3, Length @ e[ "Walk" ] ] ]] ] ],
                   thickness = First[ Cases[ style, AbsoluteThickness[ t_ ] :> t ], substrateThickness ] },
                 { side = { - Last @ u, First @ u }, size = $InfraArrowheadSize + 2 thickness },
-                { e[ "Color" ], AbsoluteThickness[ thickness + 1 ], CapForm[ "Round" ], JoinForm[ "Round" ],
-                  BezierCurve[ {
+                { barbs = BezierCurve[ {
                       Offset[ size ( - u + 0.5 side ), tip ], Offset[ size ( - 0.5 u + 0.15 side ), tip ], tip,
                       Offset[ size ( - 0.5 u - 0.15 side ), tip ], Offset[ size ( - u - 0.5 side ), tip ] },
-                    SplineDegree -> 2 ] } ] ]
+                    SplineDegree -> 2 ] },
+                {
+                  { Black, AbsoluteThickness[ thickness + 1 + $InfraArrowheadContour ], CapForm[ "Round" ], JoinForm[ "Round" ], barbs },
+                  { e[ "Color" ], AbsoluteThickness[ thickness + 1 ], CapForm[ "Round" ], JoinForm[ "Round" ], barbs }
+                } ] ]
         },
         {
           vertexShapes = Association @ Cases[ vertexData, kv_Association /; KeyExistsQ[ kv, "VSF" ] :> kv[ "VSF" ] ]

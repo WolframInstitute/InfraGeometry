@@ -10,7 +10,8 @@ shapesAt           = opts |-> Association @ Cases[ VertexShapeFunction /. opts,
 ringScales         = opts |-> Catenate @ Cases[ VertexShapeFunction /. opts,
   ( _ -> f_Function ) :> Cases[ f[ { 0, 0 }, None, { 1, 1 } ], Circle[ _, { r_, _ } ] :> r, Infinity ], Infinity ];
 headsOf            = drawing |-> Cases[ Epilog /. Options[ drawing, Epilog ],
-  { c_, AbsoluteThickness[ t_ ], CapForm[ "Round" ], JoinForm[ "Round" ], b_BezierCurve } :> { c, t, b }, Infinity ];
+  { { k_, AbsoluteThickness[ tk_ ], CapForm[ "Round" ], JoinForm[ "Round" ], b_BezierCurve },
+    { c_, AbsoluteThickness[ t_ ], CapForm[ "Round" ], JoinForm[ "Round" ], b_BezierCurve } } :> { c, t, b, { k, tk } }, Infinity ];
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
@@ -521,6 +522,19 @@ VerificationTest[
       { StandardYellow, strikeOutPalette[[ 2 ]] } ],
   { StandardYellow, strikeOutPalette[[ 2 ]] },
   TestID -> "InfraSubstrateHighlight-Arrowheads-in-the-walks-colour"
+]
+
+(* each head is two strokes of the same barbs: a black contour two points wider underneath, the walk's colour on top,
+   so the head reads where it lies on its own walk *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    ( t |-> With[ { drawing = InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] -> StandardBlue }, "Arrowheads" -> True, "ThicknessRange" -> t ] },
+      { Count[ Epilog /. Options[ drawing, Epilog ], _BezierCurve, Infinity ],
+        Last @ First @ headsOf @ drawing,
+        First @ First @ headsOf @ drawing } ] ) /@ { Automatic, 3 } ],
+  { { 2, { Black, 4 }, StandardBlue }, { 2, { Black, 6 }, StandardBlue } },
+  SameTest -> Equal,
+  TestID -> "InfraSubstrateHighlight-Arrowheads-black-contour-under-the-colour"
 ]
 
 (* the tip is the last vertex and the head points along the last two edges (one edge of a mesh zigzags):
