@@ -46,6 +46,7 @@ parseHighlightStyle[ spec_, defaults_Association ] :=
         ( d : ( _PointSize | _AbsolutePointSize ) ) :>
           MapAt[ Append[ #, d ] &, rec, "VertexDir" ],
         ( a : ( _Arrowheads | True | False ) ) :> Append[ rec, "Arrowheads" -> resolveArrowSpec[ a ] ],
+        ( "Arrowheads" -> a_ ) :> Append[ rec, "Arrowheads" -> resolveArrowSpec[ a ] ],
         c_?ColorQ :> Append[ rec, "Color" -> c ],
         d_ :> MapAt[ Append[ #, d ] &, MapAt[ Append[ #, d ] &, rec, "VertexDir" ], "EdgeDir" ]
       } ],

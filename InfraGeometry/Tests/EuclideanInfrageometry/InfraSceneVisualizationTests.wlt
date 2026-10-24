@@ -557,6 +557,19 @@ VerificationTest[
   TestID -> "InfraSubstrateHighlight-Arrowheads-per-object"
 ]
 
+(* the option's name works inside an object's style list too, obj -> {..., "Arrowheads" -> True}, as "ThicknessRange" does:
+   it arms or disarms that object and never reaches the stroke or dot directives *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    With[ { a = InfraWalk[ { 1, 2, 3 } ], b = InfraWalk[ { 21, 22, 23 } ] },
+      { Length @ headsOf @ InfraSubstrateHighlight[ g, { a -> { StandardBlue, "Arrowheads" -> True }, b } ],
+        Length @ headsOf @ InfraSubstrateHighlight[ g, { a, b -> { "Arrowheads" -> False } }, "Arrowheads" -> True ],
+        FreeQ[ Options[ InfraSubstrateHighlight[ g, { a -> { StandardBlue, "Arrowheads" -> True } } ], { EdgeStyle, VertexShapeFunction } ],
+          "Arrowheads" ] } ] ],
+  { 1, 1, True },
+  TestID -> "InfraSubstrateHighlight-Arrowheads-option-name-in-a-style-list"
+]
+
 (* the head joins an Epilog the caller passes instead of replacing it *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
