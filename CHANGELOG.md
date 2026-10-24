@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 2.10.2 (2026-10-25)
+
+- **Drawing.** `InfraSubstrateHighlight` with `"Arrowheads" -> True` (the option, or per walk in its style list as `{..., "Arrowheads" -> True}`) marks the end of a walk with an open head of two slightly arced barbs (`BezierCurve`, `SplineDegree -> 2`, round caps and joins; no shaft, no `Polygon`) in the walk's own colour, replacing the filled triangle drawn as the last vertex's shape.
+  - The head is drawn as an `Epilog`, so it lies over every vertex disk; a caller's `Epilog` is kept and the head added to it, and without the option there is no `Epilog`. It is a point bolder than the walk's stroke and opaque on a translucent substrate.
+  - Its size is absolute, `$InfraArrowheadSize + 2 thickness` printer's points (`$InfraArrowheadSize = 14`), independent of `ImageSize`. Its direction is taken from the third-last vertex to the tip, so a single zigzag mesh edge does not turn it.
+  - An explicit `Arrowheads[...]` spec, an `EdgeShapeFunction` and the 3D branch keep their behaviour.
+  - Fix: a per-object style list containing `"Arrowheads" -> v` fell through to a junk directive and drew no head; it now arms or disarms that object like `obj -> True`.
+- Documentation. The `InfraSubstrateHighlight` and `InfraWalk` reference pages are rebuilt with the new head.
+
 ## 2.10.1 (2026-10-23)
 
 - Documentation only. The five Infra Analysis calculus pages (`InfraDifferential`, `InfraCodifferential`, `InfraIntegral`, `InfraAntiderivative`, `InfraDerivative`) follow the lean page standard: definition first, examples on the square grid and mesh.
