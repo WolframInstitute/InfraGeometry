@@ -7,9 +7,11 @@
 - **Drawing.** `InfraSubstrateHighlight` with `"Arrowheads" -> True` (the option, or per walk in its style list as `{..., "Arrowheads" -> True}`) marks the end of a walk with an open head of two slightly arced barbs (`BezierCurve`, `SplineDegree -> 2`, round caps and joins; no shaft, no `Polygon`) in the walk's own colour, replacing the filled triangle drawn as the last vertex's shape.
   - The head is drawn as an `Epilog`, so it lies over every vertex disk; a caller's `Epilog` is kept and the head added to it, and without the option there is no `Epilog`. It is a point bolder than the walk's stroke and opaque on a translucent substrate.
   - Its size is absolute, `$InfraArrowheadSize + 2 thickness` printer's points (`$InfraArrowheadSize = 14`), independent of `ImageSize`. Its direction is taken from the third-last vertex to the tip, so a single zigzag mesh edge does not turn it.
-  - An explicit `Arrowheads[...]` spec, an `EdgeShapeFunction` and the 3D branch keep their behaviour.
+  - Each barb carries a thin black contour: drawn first in black, `$InfraArrowheadContour = 2` points wider, then in the walk's colour on top, so the head reads where it lies on its own walk.
+  - An `Arrowheads[s]` spec, in a walk's style list or as `"Arrowheads" -> Arrowheads[s]`, sizes and places the same arced, contoured head as `Arrow` would its own: `s` a fraction of the plot width or `Tiny`, `Small`, `Medium`, `Large` (absolute), a list of sizes or `{s, pos}` pairs for several heads, a negative size reversed. Wolfram's `Arrow` draws it along the walk with the shaft invisible. `True` keeps the absolute default.
+  - A spec that carries its own head graphic (`Arrowheads[{{s, pos, g}}]`), an `EdgeShapeFunction` and the 3D branch (`True` is `Arrowheads[.035]`) keep their behaviour.
   - Fix: a per-object style list containing `"Arrowheads" -> v` fell through to a junk directive and drew no head; it now arms or disarms that object like `obj -> True`.
-- Documentation. The `InfraSubstrateHighlight` and `InfraWalk` reference pages are rebuilt with the new head.
+- Documentation. The `InfraSubstrateHighlight` and `InfraWalk` reference pages are rebuilt with the new head. `InfraSubstrateHighlight` gains an `Arrowheads` option example (`True`, `Arrowheads[Small]`, `Arrowheads[Large]`), and its two-segments-and-a-walk example ends inside the mesh (shell 4, another seed) so the head no longer reads as a hook on the rim.
 
 ## 2.10.1 (2026-10-23)
 
