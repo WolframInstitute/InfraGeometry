@@ -7,6 +7,7 @@ PackageScope[ $InfraPointSizes ]
 PackageScope[ $InfraAccentPointSize ]
 PackageScope[ $InfraOpacityRange ]
 PackageScope[ $InfraEdgeThickness ]
+PackageScope[ $InfraArrowheadSize ]
 PackageScope[ $InfraRangeTop ]
 PackageScope[ infraInk ]
 PackageScope[ parseHighlightStyle ]
@@ -14,6 +15,7 @@ PackageScope[ normalizeHighlightSpec ]
 
 $InfraOpacityRange  = { 0.40, 1.0 }
 $InfraEdgeThickness = 1.
+$InfraArrowheadSize = 14
 $InfraRangeTop      = <| "ThicknessRange" -> 4, "PointSizeRange" -> 3 |>
 
 $InfraPointSizes      = <| Small -> 4, Medium -> 7, Large -> 10 |>
@@ -242,17 +244,22 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                               First[ position ] === Length[ runs ],
                               e[ "Record" ][ "Arrowheads" ] },
                   runs ] ] ],
-          heads = Merge[ Cases[ entries,
+          (* the head: two barbs, slightly arced, in the walk's colour, a point bolder than its stroke, the tip on the last vertex,
+             along the last two edges (one edge of a mesh zigzags, two give the walk's direction) *)
+          heads = Cases[ entries,
             e_Association /; e[ "Record" ][ "Arrowheads" ] === True && e[ "Record" ][ "EdgeShapeFunction" ] === None &&
               ListQ[ e[ "Walk" ] ] && Length[ e[ "Walk" ] ] >= 2 :>
-              Last @ e[ "Walk" ] -> With[ {
+              With[ {
                   tip   = Lookup[ coords, Key @ Last @ e[ "Walk" ] ],
-                  style = Lookup[ edgeStyle, UndirectedEdge @@ Sort @ Take[ e[ "Walk" ], -2 ], Directive[ e[ "Color" ] ] ] },
-                { u    = Normalize[ tip - Lookup[ coords, Key @ e[ "Walk" ][[ -2 ]] ] ],
-                  size = 5 + 2 First[ Cases[ style, AbsoluteThickness[ t_ ] :> t ], substrateThickness ],
-                  ink  = First[ Cases[ style, _?ColorQ ], e[ "Color" ] ] },
-                { If[ First @ ColorConvert[ ink, "LAB" ] > 0.6, GrayLevel[ 0.1 ], StandardYellow ], u, { - Last @ u, First @ u }, size } ] ],
-            Identity ]
+                  style = Lookup[ edgeStyle, UndirectedEdge @@ Sort @ Take[ e[ "Walk" ], -2 ], Directive[ ] ] },
+                { u         = Normalize[ tip - Lookup[ coords, Key @ e[ "Walk" ][[ - Min[ 3, Length @ e[ "Walk" ] ] ]] ] ],
+                  thickness = First[ Cases[ style, AbsoluteThickness[ t_ ] :> t ], substrateThickness ] },
+                { side = { - Last @ u, First @ u }, size = $InfraArrowheadSize + 2 thickness },
+                { e[ "Color" ], AbsoluteThickness[ thickness + 1 ], CapForm[ "Round" ], JoinForm[ "Round" ],
+                  BezierCurve[ {
+                      Offset[ size ( - u + 0.5 side ), tip ], Offset[ size ( - 0.5 u + 0.15 side ), tip ], tip,
+                      Offset[ size ( - 0.5 u - 0.15 side ), tip ], Offset[ size ( - u - 0.5 side ), tip ] },
+                    SplineDegree -> 2 ] } ] ]
         },
         {
           vertexShapes = Association @ Cases[ vertexData, kv_Association /; KeyExistsQ[ kv, "VSF" ] :> kv[ "VSF" ] ]
@@ -278,13 +285,9 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
           Sequence @@ DeleteCases[ {
             EdgeStyle           -> MapAt[ spell, DeleteCases[ Cases[ edgeData,   kv_Association :> kv[ "EdgeStyle" ] ], Nothing ], { All, 1 } ],
             EdgeShapeFunction   -> MapAt[ spell, Join[ DeleteCases[ Cases[ edgeData, kv_Association :> kv[ "EdgeShapeFunction" ] ], Nothing ], joinRules ], { All, 1 } ],
-            VertexShapeFunction -> Normal @ Join[ vertexShapes, Association @ KeyValueMap[
-              { v, hs } |-> v -> With[ { shape = Lookup[ vertexShapes, Key @ v, disk[ #1, #3 ] & ], hs = hs },
-                { shape[ ## ],
-                  ( { fill, u, side, size } |-> With[ { tip = #1 - First[ #3 ] u },
-                    { fill, Opacity[ 1 ], EdgeForm[ ], Polygon[ { tip, Offset[ size ( 0.75 side - u ), tip ], Offset[ size ( - 0.75 side - u ), tip ] } ] } ] ) @@@ hs } & ],
-              heads ] ],
-            VertexSize          -> DeleteCases[ Cases[ vertexData, kv_Association /; KeyExistsQ[ kv, "VSize" ] :> kv[ "VSize" ] ], Nothing ]
+            VertexShapeFunction -> Normal @ vertexShapes,
+            VertexSize          -> DeleteCases[ Cases[ vertexData, kv_Association /; KeyExistsQ[ kv, "VSize" ] :> kv[ "VSize" ] ], Nothing ],
+            Epilog              -> If[ heads === { }, { }, { OptionValue[ Epilog ], heads } ]
           }, _ -> { } ],
           FilterRules[ { opts }, Options @ HighlightGraph ] ]
     ]

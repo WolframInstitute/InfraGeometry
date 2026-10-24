@@ -9,8 +9,8 @@ shapesAt           = opts |-> Association @ Cases[ VertexShapeFunction /. opts,
   ( v_ -> f_Function ) :> v -> Sort @ Cases[ f[ { 0, 0 }, None, { 1, 1 } ], ( h : Disk | Circle | Point )[ ___ ] :> h, Infinity ], { 1 } ];
 ringScales         = opts |-> Catenate @ Cases[ VertexShapeFunction /. opts,
   ( _ -> f_Function ) :> Cases[ f[ { 0, 0 }, None, { 1, 1 } ], Circle[ _, { r_, _ } ] :> r, Infinity ], Infinity ];
-headOf             = { opts, v } |-> Cases[ ( v /. ( VertexShapeFunction /. opts ) )[ { 0, 0 }, v, { 0.1, 0.1 } ], { c_, Opacity[ 1 ], EdgeForm[ ], p_Polygon } :>
-  { c, Round[ Norm @ Mean @ Cases[ p, Offset[ d_, _ ] :> d, Infinity ], 0.01 ], Round[ Norm[ Subtract @@ Cases[ p, Offset[ d_, _ ] :> d, Infinity ] ], 0.01 ] }, Infinity ];
+headsOf            = drawing |-> Cases[ Epilog /. Options[ drawing, Epilog ],
+  { c_, AbsoluteThickness[ t_ ], CapForm[ "Round" ], JoinForm[ "Round" ], b_BezierCurve } :> { c, t, b }, Infinity ];
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
@@ -494,52 +494,76 @@ VerificationTest[
   TestID -> "InfraPointSizes-closed-table"
 ]
 
-(* the default head sits on the walk's last vertex, drawn on top of it *)
+(* the default head is an Epilog, drawn over the dots: none without the option, one open head per walk with it, no polygon anywhere *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] }, With[ { seg = geodesicGraph @ RandomInfraSegment[ g, 1, 25 ] },
-    { FreeQ[ Options @ InfraSubstrateHighlight[ g, { seg } ], _Polygon ],
-      Length @ headOf[ Options @ InfraSubstrateHighlight[ g, { seg }, "Arrowheads" -> True ], 25 ] } ] ],
-  { True, 1 },
+    { FreeQ[ Options @ InfraSubstrateHighlight[ g, { seg } ], Epilog | _Polygon ],
+      Length @ headsOf @ InfraSubstrateHighlight[ g, { seg }, "Arrowheads" -> True ],
+      FreeQ[ Options @ InfraSubstrateHighlight[ g, { seg }, "Arrowheads" -> True ], _Polygon ] } ] ],
+  { True, 1, True },
   TestID -> "InfraSubstrateHighlight-Arrowheads-off-by-default-drawn-when-on"
 ]
 
-(* the head is in printer points, 5 + 2 t long for a stroke of t points, and broader than long *)
+(* the head is a point bolder than the stroke's thickness t and its barbs are 14 + 2 t printer points long, behind the tip *)
 VerificationTest[
-  With[ { g = GridGraph[ { 5, 5 } ] }, With[ { seg = InfraWalk @ RandomInfraSegment[ g, 1, 25 ] },
-    ( t |-> Rest @ First @ headOf[ Options @ InfraSubstrateHighlight[ g, { seg }, "Arrowheads" -> True, "ThicknessRange" -> t ], 25 ] ) /@
-      { Automatic, 2, 9 } ] ],
-  { { 7., 10.5 }, { 9., 13.5 }, { 23., 34.5 } },
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    ( t |-> With[ { head = First @ headsOf @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] }, "Arrowheads" -> True, "ThicknessRange" -> t ] },
+      { head[[ 2 ]], - Min @ Cases[ head[[ 3 ]], Offset[ d_, _ ] :> Last @ d, Infinity ] } ] ) /@ { Automatic, 2, 9 } ],
+  { { 2, 16 }, { 3, 18 }, { 10, 32 } },
+  SameTest -> Equal,
   TestID -> "InfraSubstrateHighlight-Arrowheads-scaled-to-the-stroke"
 ]
 
-(* the head contrasts with the stroke under it: black on a light stroke, gold on a dark one *)
+(* the head is in the walk's own colour *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    ( c |-> First @ First @ headOf[ Options @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] -> c }, "Arrowheads" -> True ], 3 ] ) /@
+    ( c |-> First @ First @ headsOf @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] -> c }, "Arrowheads" -> True ] ) /@
       { StandardYellow, strikeOutPalette[[ 2 ]] } ],
-  { GrayLevel[ 0.1 ], StandardYellow },
-  TestID -> "InfraSubstrateHighlight-Arrowheads-contrast-the-stroke"
+  { StandardYellow, strikeOutPalette[[ 2 ]] },
+  TestID -> "InfraSubstrateHighlight-Arrowheads-in-the-walks-colour"
 ]
 
-(* a one-step walk is drawn with its head, so a 1-cochain edge shows its orientation: one head at v, none at u *)
+(* the tip is the last vertex and the head points along the last two edges (one edge of a mesh zigzags):
+   the barbs are symmetric about the direction from the third-last vertex to the tip *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    Length @ headOf[ Options @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2 } ] }, "Arrowheads" -> True ], # ] & /@ { 2, 1 } ],
-  { 1, 0 },
+    With[ { head = First @ headsOf @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3, 8 } ] }, "Arrowheads" -> True ],
+            c    = AssociationThread[ VertexList @ g -> GraphEmbedding @ g ] },
+      { head[[ 3, 1, 3 ]] == c[ 8 ],
+        Norm[ Normalize @ Total @ Cases[ head[[ 3 ]], Offset[ d_, _ ] :> d, Infinity ][[ { 1, -1 } ]] + Normalize[ c[ 8 ] - c[ 2 ] ] ] < 10^-9 } ] ],
+  { True, True },
+  TestID -> "InfraSubstrateHighlight-Arrowheads-along-the-walk"
+]
+
+(* a one-step walk is drawn with its head, so a 1-cochain edge shows its orientation: one head, its tip at v *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    With[ { heads = headsOf @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2 } ] }, "Arrowheads" -> True ] },
+      { Length @ heads, heads[[ 1, 3, 1, 3 ]] } ] ],
+  { 1, { 1., 2. } },
   TestID -> "InfraSubstrateHighlight-Arrowheads-one-step-walk"
 ]
 
 (* an object carries its own head: obj -> True arms that object alone, obj -> False disarms it
-   against an armed option.  One head per armed path object: an ArrowBox for an explicit spec, a polygon for True. *)
+   against an armed option.  One head per armed path object: an ArrowBox for an explicit spec, an open head for True. *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     With[ { a = geodesicGraph @ RandomInfraSegment[ g, 1, 5 ], b = geodesicGraph @ RandomInfraSegment[ g, 21, 25 ] },
-      ( heads = ( e |-> Count[ ToBoxes @ e, ArrowBox, Infinity, Heads -> True ] + Count[ VertexShapeFunction /. Options @ e, _Polygon, Infinity ] ) );
+      ( heads = ( e |-> Count[ ToBoxes @ e, ArrowBox, Infinity, Heads -> True ] + Length @ headsOf @ e ) );
       { heads @ InfraSubstrateHighlight[ g, { a -> True, b } ],
         heads @ InfraSubstrateHighlight[ g, { Style[ a, Arrowheads[ 0.09 ] ], b } ],
         heads @ InfraSubstrateHighlight[ g, { a, b -> False }, "Arrowheads" -> True ] } ] ],
   { 1, 1, 1 },
   TestID -> "InfraSubstrateHighlight-Arrowheads-per-object"
+]
+
+(* the head joins an Epilog the caller passes instead of replacing it *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    With[ { drawing = InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] }, "Arrowheads" -> True, Epilog -> { Red, Disk[ ] } ] },
+      { Length @ headsOf @ drawing, Count[ Epilog /. Options[ drawing, Epilog ], _Disk, Infinity ] } ] ],
+  { 1, 1 },
+  TestID -> "InfraSubstrateHighlight-Arrowheads-keep-the-callers-Epilog"
 ]
 
 (* an object's own spec overrides the option's size for that object.  The head spec is read off
@@ -555,11 +579,12 @@ VerificationTest[
   TestID -> "InfraSubstrateHighlight-Arrowheads-object-overrides-option"
 ]
 
-(* the head is opaque on a substrate whose vertices are drawn translucent: it carries its own Opacity[1] *)
+(* the head is opaque on a substrate whose vertices are drawn translucent: an Epilog is outside the vertex style *)
 VerificationTest[
   With[ { g = Graph[ GridGraph[ { 5, 5 } ], VertexStyle -> Directive[ GrayLevel[ 0.62 ], Opacity[ 0.45 ] ] ] },
-    Length @ headOf[ Options @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] }, "Arrowheads" -> True ], 3 ] ],
-  1,
+    { Length @ headsOf @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] }, "Arrowheads" -> True ],
+      FreeQ[ Epilog /. Options[ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] }, "Arrowheads" -> True ], Epilog ], _Opacity ] } ],
+  { 1, True },
   TestID -> "InfraSubstrateHighlight-Arrowheads-opaque-on-a-styled-substrate"
 ]
 
