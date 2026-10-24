@@ -559,14 +559,13 @@ VerificationTest[
 ]
 
 (* an object carries its own head: obj -> True arms that object alone, obj -> False disarms it
-   against an armed option.  One head per armed path object: an ArrowBox for an explicit spec, an open head for True. *)
+   against an armed option.  One open head per armed path object, for True and for an Arrowheads spec alike. *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     With[ { a = geodesicGraph @ RandomInfraSegment[ g, 1, 5 ], b = geodesicGraph @ RandomInfraSegment[ g, 21, 25 ] },
-      ( heads = ( e |-> Count[ ToBoxes @ e, ArrowBox, Infinity, Heads -> True ] + Length @ headsOf @ e ) );
-      { heads @ InfraSubstrateHighlight[ g, { a -> True, b } ],
-        heads @ InfraSubstrateHighlight[ g, { Style[ a, Arrowheads[ 0.09 ] ], b } ],
-        heads @ InfraSubstrateHighlight[ g, { a, b -> False }, "Arrowheads" -> True ] } ] ],
+      { Length @ headsOf @ InfraSubstrateHighlight[ g, { a -> True, b } ],
+        Length @ headsOf @ InfraSubstrateHighlight[ g, { Style[ a, Arrowheads[ 0.09 ] ], b } ],
+        Length @ headsOf @ InfraSubstrateHighlight[ g, { a, b -> False }, "Arrowheads" -> True ] } ] ],
   { 1, 1, 1 },
   TestID -> "InfraSubstrateHighlight-Arrowheads-per-object"
 ]
@@ -593,16 +592,14 @@ VerificationTest[
   TestID -> "InfraSubstrateHighlight-Arrowheads-keep-the-callers-Epilog"
 ]
 
-(* an object's own spec overrides the option's size for that object.  The head spec is read off
-   the EdgeShapeFunction rules, not the boxes: it sits inside the drawing function's body and
-   never surfaces as an ArrowheadsBox. *)
+(* an object's own spec overrides the option for that object: its head is sized by the spec, with no
+   head at the option's absolute size *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     With[ { seg = geodesicGraph @ RandomInfraSegment[ g, 1, 5 ] },
-      DeleteDuplicates @ Cases[
-        Options[ InfraSubstrateHighlight[ g, { seg -> Arrowheads[ 0.09 ] }, "Arrowheads" -> True ],
-          EdgeShapeFunction ], _Arrowheads, Infinity ] ] ],
-  { Arrowheads[ 0.09 ] },
+      With[ { epilog = Epilog /. Options[ InfraSubstrateHighlight[ g, { seg -> Arrowheads[ 0.09 ] }, "Arrowheads" -> True ], Epilog ] },
+        { Cases[ epilog, Arrowheads[ l_List ] :> l[[ All, 1 ]], Infinity ], Count[ epilog, _Offset, Infinity ] } ] ] ],
+  { { { 0.09 } }, 0 },
   TestID -> "InfraSubstrateHighlight-Arrowheads-object-overrides-option"
 ]
 
@@ -613,6 +610,92 @@ VerificationTest[
       FreeQ[ Epilog /. Options[ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] }, "Arrowheads" -> True ], Epilog ], _Opacity ] } ],
   { 1, True },
   TestID -> "InfraSubstrateHighlight-Arrowheads-opaque-on-a-styled-substrate"
+]
+
+(* an Arrowheads spec, as a style token, as the option, or as the option's bare size, draws the same open head through
+   Wolfram's Arrow, its size handed to Arrowheads untouched: one head per walk, no filled polygon, no head on the stroke *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ], w = InfraWalk[ { 1, 2, 3 } ] },
+    ( drawing |-> With[ { opts = Options @ drawing },
+        { Cases[ Epilog /. opts, Arrowheads[ l_List ] :> l[[ All, 1 ]], Infinity ], Length @ headsOf @ drawing,
+          FreeQ[ opts, _Polygon ], FreeQ[ EdgeShapeFunction /. opts, _Arrowheads ] } ] ) /@ {
+      InfraSubstrateHighlight[ g, { w -> { StandardBlue, Arrowheads[ 0.05 ] } } ],
+      InfraSubstrateHighlight[ g, { w -> Arrowheads[ Small ] } ],
+      InfraSubstrateHighlight[ g, { w }, "Arrowheads" -> Arrowheads[ Large ] ],
+      InfraSubstrateHighlight[ g, { w }, "Arrowheads" -> Medium ] } ],
+  { { { { 0.05 } }, 1, True, True }, { { { Small } }, 1, True, True }, { { { Large } }, 1, True, True }, { { { Medium } }, 1, True, True } },
+  TestID -> "InfraSubstrateHighlight-Arrowheads-spec-sizes-the-open-head"
+]
+
+(* the head rides on an Arrow whose shaft is invisible, Opacity[0]; the head graphic restores full opacity and carries
+   the walk's colour, a point bolder than its stroke, over the black contour *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    With[ { drawing = InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] -> StandardRed }, "Arrowheads" -> Arrowheads[ Large ] ] },
+      { Length @ Cases[ Epilog /. Options[ drawing, Epilog ],
+          { Opacity[ 0 ], Arrowheads[ { { _, _, Graphics[ { Opacity[ 1 ], __ } ] } } ], _Arrow }, Infinity ],
+        First[ headsOf @ drawing ][[ { 1, 2, 4 } ]] } ] ],
+  { 1, { StandardRed, 2, { Black, 4 } } },
+  SameTest -> Equal,
+  TestID -> "InfraSubstrateHighlight-Arrowheads-spec-invisible-shaft"
+]
+
+(* the Arrow runs along the walk with the vertex before the tip left out, so its head points from the third-last
+   vertex to the tip, as the absolute head does *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    With[ { c = AssociationThread[ VertexList @ g -> GraphEmbedding @ g ] },
+      Cases[ Epilog /. Options[ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3, 8 } ] }, "Arrowheads" -> Arrowheads[ Small ] ], Epilog ],
+        Arrow[ points_ ] :> points == Lookup[ c, { 1, 2, 8 } ], Infinity ] ] ],
+  { True },
+  TestID -> "InfraSubstrateHighlight-Arrowheads-spec-along-the-walk"
+]
+
+(* a list of specs places one head per spec as Arrow does: plain sizes evenly from tail to tip, a negative one reversed,
+   {s, pos} at pos *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ], w = InfraWalk[ { 1, 2, 3 } ] },
+    ( spec |-> With[ { drawing = InfraSubstrateHighlight[ g, { w }, "Arrowheads" -> spec ] },
+        { Length @ headsOf @ drawing, Cases[ Epilog /. Options[ drawing, Epilog ], Arrowheads[ l_List ] :> l[[ All, { 1, 2 } ]], Infinity ] } ] ) /@
+      { Arrowheads[ { -0.05, 0.05 } ], Arrowheads[ { { 0.05, 0.5 } } ], Arrowheads[ { 0.05, { Small, 0.3 }, 0.05 } ] } ],
+  { { 2, { { { -0.05, Automatic }, { 0.05, Automatic } } } },
+    { 1, { { { 0.05, 0.5 } } } },
+    { 3, { { { 0.05, Automatic }, { Small, 0.3 }, { 0.05, Automatic } } } } },
+  TestID -> "InfraSubstrateHighlight-Arrowheads-list-of-specs"
+]
+
+(* a spec carrying its own head graphic is Wolfram's, drawn as given: Arrow on the walk's last stroke, no open head *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ], spec = Arrowheads[ { { 0.1, 1, Graphics[ Disk[ ] ] } } ] },
+    With[ { opts = Options @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] -> spec } ] },
+      { DeleteDuplicates @ Cases[ EdgeShapeFunction /. opts, _Arrowheads, Infinity ] === { spec }, FreeQ[ opts, Epilog ] } ] ],
+  { True, True },
+  TestID -> "InfraSubstrateHighlight-Arrowheads-own-graphic-drawn-as-given"
+]
+
+(* drawn, the head's size means what it means to Arrow: Small is smaller than Large, both absolute, while a number is a
+   fraction of the width, so its head doubles with the ImageSize; read off the black contour's pixels, which nothing
+   else draws *)
+VerificationTest[
+  With[ { g = GridGraph[ { 5, 5 } ] },
+    { ink = { spec, size } |-> Count[ ImageData[ Rasterize[
+        InfraSubstrateHighlight[ g, { InfraWalk[ { 7, 8, 9 } ] -> StandardBlue }, "Arrowheads" -> spec, ImageSize -> size ],
+        "Image", Background -> White, ImageResolution -> 72 ], "Byte" ], px_ /; Max[ px ] < 60, { 2 } ] },
+    { ink[ None, 300 ] < ink[ Arrowheads[ Small ], 300 ] < ink[ Arrowheads[ Large ], 300 ],
+      ink[ Arrowheads[ Large ], 600 ] < 1.25 ink[ Arrowheads[ Large ], 300 ],
+      ink[ Arrowheads[ 0.1 ], 600 ] > 1.6 ink[ Arrowheads[ 0.1 ], 300 ] } ],
+  { True, True, True },
+  TestID -> "InfraSubstrateHighlight-Arrowheads-spec-drawn-at-Arrows-size"
+]
+
+(* in 3D an Arrowheads spec, and True as Arrowheads[.035], stay Wolfram's own head on the last stroke *)
+VerificationTest[
+  With[ { g = Graph[ GridGraph[ { 3, 3, 3 } ], VertexCoordinates -> Tuples[ Range[ 3 ], 3 ] ] },
+    ( spec |-> With[ { opts = Options @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] }, "Arrowheads" -> spec ] },
+        { DeleteDuplicates @ Cases[ EdgeShapeFunction /. opts, _Arrowheads, Infinity ], FreeQ[ opts, Epilog ] } ] ) /@
+      { True, Arrowheads[ Small ] } ],
+  { { { Arrowheads[ 0.035 ] }, True }, { { Arrowheads[ Small ] }, True } },
+  TestID -> "InfraSubstrateHighlight-Arrowheads-3D-unchanged"
 ]
 
 (* the stroke rules are keyed as the graph stores its edges, so a run whose first edge is stored reversed keeps its stroke *)

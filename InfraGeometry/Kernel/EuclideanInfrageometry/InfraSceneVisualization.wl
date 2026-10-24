@@ -245,28 +245,40 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                   { steps, position } |-> { UndirectedEdge @@ Sort @ # & /@ steps,
                               Lookup[ coords, Key /@ Prepend[ Last /@ steps, First @ First @ steps ] ],
                               First[ position ] === Length[ runs ],
-                              e[ "Record" ][ "Arrowheads" ] },
+                              Replace[ e[ "Record" ][ "Arrowheads" ], a_Arrowheads /; dimension =!= 3 && FreeQ[ a, _Graphics ] -> None ] },
                   runs ] ] ],
           (* the head: two barbs, slightly arced, in the walk's colour, a point bolder than its stroke, the tip on the last vertex,
              along the last two edges (one edge of a mesh zigzags, two give the walk's direction); the same curve drawn first in black
-             and wider is its contour, so the head reads where it lies on its own walk *)
+             and wider is its contour, so the head reads where it lies on its own walk.  True draws it at an absolute size; an
+             Arrowheads spec hands it to Wolfram's Arrow as the head graphic, so the spec's sizes and positions mean what they mean
+             to Arrow, along the walk with the vertex before the tip left out, drawn with an invisible shaft *)
           heads = Cases[ entries,
-            e_Association /; e[ "Record" ][ "Arrowheads" ] === True && e[ "Record" ][ "EdgeShapeFunction" ] === None &&
-              ListQ[ e[ "Walk" ] ] && Length[ e[ "Walk" ] ] >= 2 :>
+            e_Association /; MatchQ[ e[ "Record" ][ "Arrowheads" ], True | ( a_Arrowheads /; dimension =!= 3 && FreeQ[ a, _Graphics ] ) ] &&
+              e[ "Record" ][ "EdgeShapeFunction" ] === None && ListQ[ e[ "Walk" ] ] && Length[ e[ "Walk" ] ] >= 2 :>
               With[ {
-                  tip   = Lookup[ coords, Key @ Last @ e[ "Walk" ] ],
+                  spec  = e[ "Record" ][ "Arrowheads" ],
+                  shaft = Lookup[ coords, Key /@ If[ Length @ e[ "Walk" ] >= 3, Delete[ e[ "Walk" ], -2 ], e[ "Walk" ] ] ],
                   style = Lookup[ edgeStyle, UndirectedEdge @@ Sort @ Take[ e[ "Walk" ], -2 ], Directive[ ] ] },
-                { u         = Normalize[ tip - Lookup[ coords, Key @ e[ "Walk" ][[ - Min[ 3, Length @ e[ "Walk" ] ] ]] ] ],
+                { tip       = Last @ shaft,
+                  u         = Normalize[ Last @ shaft - shaft[[ -2 ]] ],
                   thickness = First[ Cases[ style, AbsoluteThickness[ t_ ] :> t ], substrateThickness ] },
-                { side = { - Last @ u, First @ u }, size = $InfraArrowheadSize + 2 thickness },
-                { barbs = BezierCurve[ {
+                { side   = { - Last @ u, First @ u },
+                  size   = $InfraArrowheadSize + 2 thickness,
+                  stroke = barbs |-> {
+                    { Black, AbsoluteThickness[ thickness + 1 + $InfraArrowheadContour ], CapForm[ "Round" ], JoinForm[ "Round" ], barbs },
+                    { e[ "Color" ], AbsoluteThickness[ thickness + 1 ], CapForm[ "Round" ], JoinForm[ "Round" ], barbs } } },
+                If[ spec === True,
+                  stroke @ BezierCurve[ {
                       Offset[ size ( - u + 0.5 side ), tip ], Offset[ size ( - 0.5 u + 0.15 side ), tip ], tip,
                       Offset[ size ( - 0.5 u - 0.15 side ), tip ], Offset[ size ( - u - 0.5 side ), tip ] },
-                    SplineDegree -> 2 ] },
-                {
-                  { Black, AbsoluteThickness[ thickness + 1 + $InfraArrowheadContour ], CapForm[ "Round" ], JoinForm[ "Round" ], barbs },
-                  { e[ "Color" ], AbsoluteThickness[ thickness + 1 ], CapForm[ "Round" ], JoinForm[ "Round" ], barbs }
-                } ] ]
+                    SplineDegree -> 2 ],
+                  With[ { head = Graphics[ { Opacity[ 1 ],
+                      stroke @ BezierCurve[ { { -1, 0.5 }, { -0.5, 0.15 }, { 0, 0 }, { -0.5, -0.15 }, { -1, -0.5 } }, SplineDegree -> 2 ] } ] },
+                    { Opacity[ 0 ],
+                      Arrowheads @ Replace[ If[ ListQ @ First @ spec, First @ spec, { First @ spec } ], {
+                        { s_, pos_ } :> { s, pos, head },
+                        s : Except[ _List ] :> { s, Automatic, head } }, { 1 } ],
+                      Arrow @ shaft } ] ] ] ]
         },
         {
           vertexShapes = Association @ Cases[ vertexData, kv_Association /; KeyExistsQ[ kv, "VSF" ] :> kv[ "VSF" ] ]

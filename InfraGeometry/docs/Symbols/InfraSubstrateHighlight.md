@@ -47,7 +47,7 @@ In the list, a [Directive]() styles every object after it, and `obj -> style` on
 | `"OpacityRange"` | `{0.4, 1.}` | `None`, a value, or {*min*, *max*} |
 | `"ThicknessRange"` | `Automatic` | `None`, a base, or {*base*, *top*}, in printer points |
 | `"PointSizeRange"` | `Automatic` | `None`, a base, or {*base*, *top*}, in printer points |
-| `"Arrowheads"` | `Automatic` | `True` puts a head at the end of each walk, or an [Arrowheads]() spec |
+| `"Arrowheads"` | `Automatic` | `True` puts an open head at the end of each walk; an [Arrowheads]() spec sizes and places it as for [Arrow]() |
 | `"Palette"` | `Automatic` | a list of colours; `Automatic` is [ColorData]()[112] |
 
 Options of [Graph]() are passed on.
