@@ -2,18 +2,25 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: RiemannianInfrageometry :: InfraWalk *)
 
-(* growth of a germ under the Properties rules until the stopping condition fires, the length budget kspec is spent, or no admissible step remains.
-   A rule is rule, {rule, r} or {rule, r, p}.  It reads the window of scale r, the last r vertices of the growing side with the candidate appended,
-   through an energy, a non-negative number that is 0 exactly when the rule holds: p == 0 drops a candidate of positive energy, 0 < p <= 1 weighs
-   it p^energy.  The rules act in their order, so "Stretched" compares the candidates the hard rules before it left.
+(* growth of a germ under the Properties until the stopping condition fires, the length budget kspec is spent, or no admissible step remains.
+   A property reads the window of scale r, the last r vertices of the growing side with the candidate appended, through an energy.  "Simple",
+   {"Simple", r} or {"Simple", r, p} counts the candidate's earlier visits in the window: p == 0 drops a candidate of positive count, 0 < p <= 1
+   weighs it p^count.  "Straightness" -> {β, r} is the defect of the window w = (w_1, ..., w_m) summed over its vertices,
+   D(w) = Σ_{i < m} (m - i) - d(w_i, w_m), and f -> {β, r} the energy f[window], a predicate read as 0 for True and Infinity for False; a
+   candidate of energy Infinity is dropped, the others weigh Exp[-β Δ], Δ the energy above the step's least, and β Infinity keeps the least.
+   A weight is carried as its logarithm, so none underflows.  RandomInfraGeodesic's rule {geodesicRule, r} drops a candidate whose window is
+   not a shortest path.  The properties act in their order.
    The next-vertex function turns the surviving, weighted candidates into the order they are tried: Automatic, RandomSample and RandomChoice read
    the weights, Identity and a function ignore them; RandomChoice never backtracks, so its count is that many independent runs.  The germ is a vertex first, then a vertex list, a walk graph, or a bundle of germs; kspec counts the edges added per
-   growing side, and kspec Infinity needs a hard rule that bounds the class, bare "Simple" or bare "Shortest".
+   growing side, and kspec Infinity needs a hard rule that bounds the class, bare "Simple" or the geodesic rule at scale Infinity.
    "BothSides" offers three moves per outer step -- both sides, front only, back only, joint first so a greedy witness keeps the synchronous
-   trajectory -- each side ordered by its own weights, so a joint move weighs the product of its sides.  The one window neither side sees alone
-   holds both new ends, the whole joined walk once it is short enough; the hard "Simple" and "Shortest" re-check it.  Its budget is Max[la, ra], the
-   edges added on the longer side.  The stopping condition reads the whole walk after every step under every direction, and the germ once
-   it has an edge *)
+   trajectory.  Under hard rules alone each side is ordered by its own candidates; the one window neither side sees alone holds both new ends,
+   the whole joined walk once it is short enough, and the hard "Simple" and the geodesic rule re-check it.  Under a weighted property the joint
+   move draws the back end on the joined walk, then the front end on the joined walk with its new back end, so the window of either end is the
+   joined walk.  Its budget is Max[la, ra], the edges added on the longer side.  The stopping condition reads the whole walk after every step
+   under every direction, and the germ once it has an edge *)
+
+RandomInfraWalk::rule = "The walk property `1` is removed; write `2`."
 
 Options[ RandomInfraWalk ] = {
   Properties           -> { },
@@ -35,6 +42,21 @@ RandomInfraWalk[ graph_Graph, germ_, opts : OptionsPattern[] ] /; MemberQ[ Flatt
   With[ { result = RandomInfraWalk[ graph, germ, Infinity, Automatic, opts ] },
     result /; Head[ result ] =!= RandomInfraWalk ]
 
+(* the rule triples of 2.11 and "Stretched" are refused with the spelling that replaces them, once per call *)
+
+RandomInfraWalk[ _Graph, _, UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity, rest___ ] /; MemberQ[ { rest }, RandomSeeding -> None ] :=
+  With[ { old = FirstCase[ Catenate @ Cases[ { rest }, ( Properties -> rules_List ) :> rules ],
+      "Shortest" | "Stretched" | { Except[ "Simple" | geodesicRule ], _ } | { Except[ "Simple" ], _, _ } | Except[ _String | _List | _Rule ], None, { 1 } ] },
+    Null /; old =!= None && Message[ RandomInfraWalk::rule, ToString[ old, InputForm ], Replace[ old, {
+      { "Shortest" | "Stretched", r_, p_ /; p > 0 } :> ToString[ "Straightness" -> { -Log[ N @ p ], r }, InputForm ],
+      { "Stretched", r_, ___ }                     :> ToString[ "Straightness" -> { Infinity, r }, InputForm ],
+      "Stretched"                                  :> ToString[ "Straightness" -> Infinity, InputForm ],
+      { "Shortest", r_, ___ }                      :> "RandomInfraGeodesic[graph, germ, " <> ToString[ r ] <> ", kspec]",
+      "Shortest"                                   :> "RandomInfraGeodesic[graph, germ, Infinity, kspec]",
+      { f_, r_, p_ /; p > 0 }                      :> ToString[ f -> { -Log[ N @ p ], r }, InputForm ],
+      { f_, r_, ___ }                              :> ToString[ f -> { Infinity, r }, InputForm ],
+      f_                                           :> ToString[ f -> Infinity, InputForm ] } ] ] ]
+
 RandomInfraWalk[ graph_Graph, germ_,
     kspec : ( UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ),
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
@@ -42,17 +64,16 @@ RandomInfraWalk[ graph_Graph, germ_,
     SubsetQ[ Keys @ Options @ RandomInfraWalk, Keys @ Flatten @ { opts } ] &&
     With[ { rules     = OptionValue[ RandomInfraWalk, { opts }, Properties ],
             condition = OptionValue[ RandomInfraWalk, { opts }, "StoppingCondition" ],
-            nextFn    = OptionValue[ RandomInfraWalk, { opts }, "NextVertexFunction" ] },
-      { triples = If[ ListQ @ rules,
-          Replace[ rules, { { rule_, r_, p_ } :> { rule, r, p }, { rule_, r_ } :> { rule, r, 0 }, rule_ :> { rule, Infinity, 0 } }, { 1 } ],
-          { { } } ] },
-      AllTrue[ triples, MatchQ[ {
-          "Simple" | "Shortest" | "Stretched" | Except[ _String | _List | _Rule ], _Integer?Positive | Infinity, _?( NumericQ[ # ] && 0 <= # <= 1 & ) } ] ] &&
+            nextFn    = OptionValue[ RandomInfraWalk, { opts }, "NextVertexFunction" ],
+            scale     = _Integer?Positive | Infinity,
+            beta      = Infinity | _?( NumericQ[ # ] && # >= 0 & ) },
+      ListQ[ rules ] &&
+      AllTrue[ rules, MatchQ[ "Simple" | { "Simple", scale } | { "Simple", scale, _?( NumericQ[ # ] && 0 <= # <= 1 & ) } | { geodesicRule, scale } |
+          ( ( "Straightness" | Except[ _String | _List | _Rule ] ) -> ( beta | { beta, scale } ) ) ] ] &&
       MatchQ[ OptionValue[ RandomInfraWalk, { opts }, "Direction" ], "Forward" | "Backward" | "BothSides" ] &&
       ( condition === None || ! MatchQ[ condition, _Integer | _List | _String | _Rule ] ) &&
       ( nextFn =!= RandomChoice || count =!= All ) &&
-      ( kspec =!= Infinity || MemberQ[ triples, { "Simple" | "Shortest", Infinity, p_ /; SubsetQ[ First /@ Options[ RandomInfraWalk ], First /@ { opts } ] &&
-    p == 0 } ] ) ] ) :=
+      ( kspec =!= Infinity || MemberQ[ rules, "Simple" | { "Simple" | geodesicRule, Infinity } | { "Simple", Infinity, _?( # == 0 & ) } ] ) ] ) :=
   With[ {
       cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
       walksOf = w |-> With[ { vs = VertexList @ w },
@@ -68,8 +89,13 @@ RandomInfraWalk[ graph_Graph, germ_,
             Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
               { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
           True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ],
-      rules = Replace[ OptionValue[ RandomInfraWalk, { opts }, Properties ],
-        { { rule_, r_, p_ } :> { rule, r, If[ p == 0, 0, p ] }, { rule_, r_ } :> { rule, r, 0 }, rule_ :> { rule, Infinity, 0 } }, { 1 } ],
+      (* a hard or p-weighted rule is {kind, r, p}, a β-weighted property {kind, r} -> β *)
+      rules = Replace[ OptionValue[ RandomInfraWalk, { opts }, Properties ], {
+          "Simple"                 :> { "Simple", Infinity, 0 },
+          { kind_, r_ }            :> { kind, r, 0 },
+          { kind_, r_, p_ }        :> { kind, r, If[ p == 0, 0, p ] },
+          ( kind_ -> { b_, r_ } )  :> ( { kind, r } -> b ),
+          ( kind_ -> b_ )          :> ( { kind, Infinity } -> b ) }, { 1 } ],
       condition = OptionValue[ RandomInfraWalk, { opts }, "StoppingCondition" ],
       nextFn    = If[ count === All &&
           OptionValue[ RandomInfraWalk, { opts }, "NextVertexFunction" ] === Automatic,
@@ -83,20 +109,32 @@ RandomInfraWalk[ graph_Graph, germ_,
         GraphQ @ #,                                                          walksOf @ #,
         ListQ @ #,                                                           Catenate[ #0 /@ # ],
         True,                                                                { } ] &,
-      soft    = AnyTrue[ rules, Last[ # ] =!= 0 & ],
-      sampler = nextFn === RandomChoice,
-      (* the energy of a rule on each candidate's window; all windows of a step have one length, so the least defect is the farthest candidate *)
-      energies = { rule, walk, cs } |-> With[ { window = Take[ walk, -Min[ rule[[ 2 ]], Length @ walk ] ] },
-        Switch[ First @ rule,
-          "Simple",    Count[ window, # ] & /@ cs,
-          "Shortest",  ( Length[ window ] - GraphDistance[ graph, First @ window, # ] & ) /@ cs,
-          "Stretched", # - Min[ # ] & @ ( ( Length[ window ] - GraphDistance[ graph, First @ window, # ] & ) /@ cs ),
-          _,           Replace[ First[ rule ][ Append[ window, # ] ], { True -> 0, False -> 1 } ] & /@ cs ] ],
+      weighted = ! AllTrue[ rules, MatchQ[ { _, _, 0 } ] ],
+      sampler  = nextFn === RandomChoice,
+      (* the energy of a property on each candidate's window, the window holding the candidate last: the defect D_i of its piece from w_i,
+         summed over i for "Straightness", read from w_1 alone for the geodesic rule *)
+      energies = { kind, r, walk, cs } |-> With[ { window = Take[ walk, -Min[ r, Length @ walk ] ] },
+        Switch[ kind,
+          "Simple",       Count[ window, # ] & /@ cs,
+          geodesicRule,   ( Length[ window ] - GraphDistance[ graph, First @ window, # ] & ) /@ cs,
+          "Straightness", ( c |-> With[ { w = Append[ window, c ] },
+                            Total @ Table[ ( Length[ w ] - i ) - GraphDistance[ graph, w[[ i ]], c ], { i, Length[ w ] - 1 } ] ] ) /@ cs,
+          _,              Replace[ kind[ Append[ window, # ] ], { True -> 0, False -> Infinity } ] & /@ cs ] ],
       stopQ = If[ condition === None, False &, Length[ # ] >= 2 && TrueQ[ condition @ # ] & ] },
+    (* the candidates come with the logarithms ls of their weights.  A weighted RandomSample repeats a candidate whose weight is below
+       $MachineEpsilon of the total, so a draw reads only the candidates within $MachineEpsilon times their number of the best, and a
+       permutation draws the rest after them in the same way *)
     { order = Which[
-      nextFn === Identity,                                       { walk, cs, ws } |-> cs,
-        sampler,                                                  { walk, cs, ws } |-> { If[ Equal @@ ws, RandomChoice @ cs, RandomChoice[ ws -> cs ] ] },
-        MatchQ[ nextFn, Automatic | RandomSample ],               { walk, cs, ws } |-> If[ Equal @@ ws, RandomSample @ cs, RandomSample[ ws -> cs ] ],
+      nextFn === Identity,                                       { walk, cs, ls } |-> cs,
+        sampler,                                                  { walk, cs, ls } |->
+          With[ { top = ( # >= Max[ ls ] + Log[ $MachineEpsilon Length @ ls ] & ) /@ ls },
+            { ws = Exp[ Pick[ ls, top ] - Max[ ls ] ], tops = Pick[ cs, top ] },
+            { If[ Equal @@ ws, RandomChoice @ tops, RandomChoice[ ws -> tops ] ] } ],
+        MatchQ[ nextFn, Automatic | RandomSample ],               { walk, cs, ls } |-> First @ NestWhile[
+          Apply[ { done, c, l } |-> With[ { top = ( # >= Max[ l ] + Log[ $MachineEpsilon Length @ l ] & ) /@ l },
+            { ws = Exp[ Pick[ l, top ] - Max[ l ] ], tops = Pick[ c, top ] },
+            { Join[ done, If[ Equal @@ ws, RandomSample @ tops, RandomSample[ ws -> tops ] ] ], Pick[ c, top, False ], Pick[ l, top, False ] } ] ],
+          { { }, cs, ls }, #[[ 2 ]] =!= { } & ],
         (* the next-vertex function sees the candidate windows and gives the ones to pursue in order, one window read as the list of it *)
         True, With[ { f = Replace[ nextFn, { fn_, _Integer?Positive | Infinity } :> fn ],
                       r = Replace[ nextFn, { { _, s : ( _Integer?Positive | Infinity ) } :> s, _ -> Infinity } ] },
@@ -104,16 +142,27 @@ RandomInfraWalk[ graph_Graph, germ_,
             Last /@ Replace[ f @ windows, chosen_ /; MemberQ[ windows, Verbatim @ chosen ] :> { chosen } ] ] ] ],
       joinedQ = With[ { checks = Replace[ rules, {
             { "Simple", r_, 0 }   :> ( w |-> Length[ w ] - 1 > r || First @ w =!= Last @ w ),
-            { "Shortest", r_, 0 } :> ( w |-> Length[ w ] - 1 > r || GraphDistance[ graph, First @ w, Last @ w ] == Length[ w ] - 1 ),
+            { geodesicRule, r_, 0 } :> ( w |-> Length[ w ] - 1 > r || GraphDistance[ graph, First @ w, Last @ w ] == Length[ w ] - 1 ),
             _ -> Nothing }, { 1 } ] },
         If[ checks === { }, True &, w |-> AllTrue[ checks, #[ w ] & ] ] ] },
+    (* a weight is read from the step's least energy, a factor common to the candidates *)
     { cands = walk |-> With[ { scored = Fold[
-            { state, rule } |-> With[ { e = energies[ rule, walk, First @ state ] },
-              If[ Last @ rule === 0,
-                With[ { keep = ( # == 0 & ) /@ e }, { Pick[ First @ state, keep ], Pick[ Last @ state, keep ] } ],
-                (* the weight is read from the step's least energy, a factor common to the candidates, so the soft "Shortest" and "Stretched" weigh alike *)
-                { First @ state, Last[ state ] Last[ rule ] ^ ( e - Min[ e ] ) } ] ],
-            { #, ConstantArray[ 1, Length @ # ] } & @ AdjacencyList[ graph, Last @ walk ],
+            { state, rule } |-> Which[
+              MatchQ[ rule, { _, _, 0 } ],
+                With[ { keep = ( # == 0 & ) /@ energies[ First @ rule, rule[[ 2 ]], walk, First @ state ] },
+                  { Pick[ First @ state, keep ], Pick[ Last @ state, keep ] } ],
+              ListQ @ rule,
+                With[ { e = energies[ First @ rule, rule[[ 2 ]], walk, First @ state ] },
+                  { First @ state, Last[ state ] + ( e - Min[ e ] ) Log[ N @ Last @ rule ] } ],
+              True,
+                With[ { e = energies[ First @ First @ rule, Last @ First @ rule, walk, First @ state ] },
+                  { finite = ( # < Infinity & ) /@ e },
+                  { live = Pick[ e, finite ], cs = Pick[ First @ state, finite ], ls = Pick[ Last @ state, finite ] },
+                  { least = Min @ live },
+                  If[ Last @ rule === Infinity,
+                    With[ { keep = ( # == least & ) /@ live }, { Pick[ cs, keep ], Pick[ ls, keep ] } ],
+                    { cs, ls - N[ Last @ rule ] ( live - least ) } ] ] ],
+            { #, ConstantArray[ 0, Length @ # ] } & @ AdjacencyList[ graph, Last @ walk ],
             rules ] },
         If[ First @ scored === { }, { }, order[ walk, First @ scored, Last @ scored ] ] ] },
     { results = Map[ walk0 |-> If[ ! AllTrue[ walk0, VertexQ[ graph, # ] & ], { },
@@ -139,13 +188,16 @@ RandomInfraWalk[ graph_Graph, germ_,
               With[ { backCands = If[ la < stepsMax, cands @ Reverse @ walk, { } ],
                       fwdCands  = If[ ra < stepsMax, cands @ walk, { } ] },
                 Join[
-                  Flatten[ Outer[ { Prepend[ Append[ walk, #2 ], #1 ], la + 1, ra + 1 } &, backCands, fwdCands, 1 ], 1 ],
+                  Which[
+                    ! weighted,      Flatten[ Outer[ { Prepend[ Append[ walk, #2 ], #1 ], la + 1, ra + 1 } &, backCands, fwdCands, 1 ], 1 ],
+                    ra < stepsMax,   Catenate[ ( b |-> ( { Prepend[ Append[ walk, # ], b ], la + 1, ra + 1 } & ) /@ cands @ Prepend[ walk, b ] ) /@ backCands ],
+                    True,            { } ],
                   { Append[ walk, # ], la, ra + 1 } & /@ fwdCands,
                   { Prepend[ walk, # ], la + 1, ra } & /@ backCands ] ] },
           (* the hot loops reach the closures through an Association, an atom, so no closure call or With renames their bodies *)
           { engine = <| "Candidates" -> cands, "Step" -> step, "Joined" -> joinedQ, "Stop" -> stopQ |> },
           { run = runCap |-> Which[
-              Length[ walk0 ] >= 2 && AnyTrue[ rules, MatchQ[ #, { "Shortest", _, 0 } ] && ! InfraGeodesicQ[ graph, walk0, #[[ 2 ]] ] & ], { },
+              Length[ walk0 ] >= 2 && AnyTrue[ rules, MatchQ[ #, { geodesicRule, _, 0 } ] && ! InfraGeodesicQ[ graph, walk0, #[[ 2 ]] ] & ], { },
               direction =!= "BothSides",
                 If[ direction === "Backward", Reverse /@ # &, Identity ] @ With[
                   { descend = With[ { self = #0, walk = #1, found = #2 },
@@ -206,7 +258,7 @@ RandomInfraGeodesic[ graph_Graph, germ_,
     ( ( VertexQ[ graph, germ ] || ! MatchQ[ germ, _InfraWalk | _InfraGeodesic ] ) &&
     SubsetQ[ First /@ Options[ RandomInfraGeodesic ], First /@ { opts } ] ) :=
   With[ { result = RandomInfraWalk[ graph, germ, kspec, count,
-      Properties -> Prepend[ OptionValue[ RandomInfraGeodesic, { opts }, Properties ], { "Shortest", scale } ],
+      Properties -> Prepend[ OptionValue[ RandomInfraGeodesic, { opts }, Properties ], { geodesicRule, scale } ],
       Sequence @@ FilterRules[ { opts }, Except[ Properties ] ] ] },
     result /; Head[ result ] =!= RandomInfraWalk ]
 

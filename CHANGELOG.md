@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+## 2.12.0 (2026-10-25)
+
+- **Breaking -- one straightness property for `RandomInfraWalk`.** `Properties -> {"Simple", "Straightness" -> β}` replaces the rule triples `{"Shortest", r, p}` and `{"Stretched", r, p}`, which were one rule under two names (the soft forms weighed alike, the hard `"Stretched"` was the `p -> 0` limit of the soft `"Shortest"`). `"Straightness" -> {β, r}` reads the window of scale *r* (default `Infinity`, the whole walk), and `f -> β`, `f -> {β, r}` takes a user energy `f[window]` in place of the defect. *β* is a non-negative number or `Infinity`. A caller on an old spelling breaks loudly: the call stays unevaluated with the message `RandomInfraWalk::rule`, which names the property that replaces it.
+
+  | Today | New |
+  |---|---|
+  | `"Simple"`, `{"Simple", r}`, `{"Simple", r, p}` | unchanged |
+  | `{"Shortest", r, p}`, `0 < p <= 1` | `"Straightness" -> {-Log[p], r}` |
+  | `{"Stretched", r, p}`, `0 < p <= 1` | `"Straightness" -> {-Log[p], r}` |
+  | `{"Stretched", r}`, `{"Stretched", r, 0}` | `"Straightness" -> {Infinity, r}` |
+  | `"Shortest"`, `{"Shortest", r}`, `{"Shortest", r, 0}` | `RandomInfraGeodesic[g, germ, r, kspec]` |
+  | `{f, r, p}`, `0 < p <= 1` | `f -> {-Log[p], r}` |
+  | `f`, `{f, r}`, `{f, r, 0}` | `f -> {Infinity, r}` |
+
+- **How the weight is computed.** For a window *w* = (*w*₁, …, *w*ₘ), the candidate last, the defect of its piece from *wᵢ* is *Dᵢ* = (*m* − *i*) − *d*(*wᵢ*, *wₘ*), 0 exactly when that piece is a shortest path, and the defect of the window is the sum *D* = Σ *Dᵢ* over its vertices (before, only *D*₁ was read; the sum sees a bend at every scale up to *r*, and is straighter at moderate *β*: 30 walks of 12 edges on the Large square mesh end 10.6 apart at *β* = 1.2 against 8.2). A candidate *v* weighs `Exp[-β Δ(v)]`, Δ(*v*) = *D*(*w* + *v*) − min over the candidates, which counts the earlier vertices of the window the step does not move away from. `β = 0` is the plain random walk, `β = Infinity` keeps the candidates of Δ = 0, and a walk is a shortest path at scale *r* exactly when every step has defect 0.
+- **Energies.** A user energy may be `Infinity`, which forbids the window at every *β*; a predicate reads `True` as 0 and `False` as `Infinity` (it was 1), so `pred -> β` filters as the hard `{pred, r}` did. Under `Infinity` the energies left keep their least, so a numeric `f -> {Infinity, r}` keeps the best candidates where the hard `{f, r}` kept only those of energy 0.
+- **`"BothSides"` straight across the germ.** Under a weighted property the window of a step is the joined walk: a step at both ends draws the new first vertex on the whole walk, then the new last vertex on the whole walk with that new first vertex. The two-sided walk of 12 + 12 edges at *β* = 14 on the Large square-mesh core ends 23 apart for 13 of seeds 1–20 and never below 20 (mean 22.5), against 7 of 20 and as low as 18 (mean 21.4) before. Under hard rules alone (`"Simple"`, `RandomInfraGeodesic`) nothing changes, seeded draws included.
+- **No crash at large β.** Wolfram's weighted `RandomSample` returns a candidate twice when its weight is below about `$MachineEpsilon` of the total, which crashed the depth-first search at `p = 10^-9`. The weights are now carried as logarithms; a draw reads only the candidates within `$MachineEpsilon` times their number of the best, and `RandomSample` tries the rest after them in the same way, so an exact budget is still met wherever the canonical order meets it.
+- `kspec = Infinity` needs the bare `"Simple"`; `RandomInfraGeodesic` keeps its own bound at scale `Infinity`. Seeded weighted draws whose candidate lists hold a weight far below the best, and seeded weighted `"BothSides"` draws, differ from 2.11.0.
+- Documentation. The `RandomInfraWalk` page explains the defect, the excess defect and the weight, with one step on the square mesh labelled by Δ and a row of walks at *β* = 0, 1, 5, `Infinity`; it says what the defect does not see (on the square grid every monotone staircase is a shortest path, so *β* = `Infinity` is a random staircase).
+
 ## 2.11.0 (2026-10-25)
 
 - **Breaking -- the walk's arrowhead is asked for by a directive only.** `InfraSubstrateHighlight` has no `"Arrowheads"` option any more (so neither have `InfraScenePlot` and `InfraFiberedGraphHighlight`, which take its options), and an object's style no longer reads `True`, `False` or `"Arrowheads" -> v`. Write an `Arrowheads` directive in the walk's style instead, `InfraWalk[...] -> {StandardBlue, Arrowheads[Automatic]}`, or in `Style[obj, ...]` or a `Directive` of the list, which arms every following walk; `Arrowheads[{}]` disarms one object. A caller on the old spelling breaks loudly: the option draws no head and prints `OptionValue::nodef`, a token in a style list shows Wolfram's invalid-directive box.

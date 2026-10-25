@@ -332,7 +332,7 @@ VerificationTest[
    geodesic DAG, and there is no Properties or Method axis to reject any more. *)
 
 (* The narrowed bundles now come from RandomInfraGeodesic at scale Infinity, where
-   "Shortest" is the segment class and a selector refines it; the endpoint is a
+   the shortest window is the segment class and a selector refines it; the endpoint is a
    stopping condition, and the walks that end there a Select. *)
 
 VerificationTest[
@@ -404,7 +404,7 @@ VerificationTest[
   TestID -> "RandomInfraWalk-Simple-no-repeats"
 ]
 
-(* The local geodesic rules live on RandomInfraGeodesic: "Shortest" at scale
+(* The local geodesic rules live on RandomInfraGeodesic: the shortest window at scale
    Infinity is the global geodesic from the first vertex. *)
 
 VerificationTest[
@@ -430,22 +430,22 @@ VerificationTest[
 VerificationTest[
   With[{g = CycleGraph[6]},
     Sort @ walkSeqs @ endingAt[RandomInfraGeodesic[g, 1, 2, Infinity, All, stopAt[4],
-        Properties -> { "Simple", { "Stretched", 2 } }], 4]
+        Properties -> { "Simple", "Straightness" -> { Infinity, 2 } }], 4]
   ],
   Sort[{{1, 2, 3, 4}, {1, 6, 5, 4}}],
-  TestID -> "RandomInfraGeodesic-Stretched-scale-2-cycle-symmetric"
+  TestID -> "RandomInfraGeodesic-Straightness-scale-2-cycle-symmetric"
 ]
 
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
     BlockRandom[
       Length @ walkSeqs @ endingAt[RandomInfraGeodesic[g, 1, 2, Infinity, All, stopAt[16],
-        Properties -> { "Simple", { "Stretched", 2 } }, "NextVertexFunction" -> (RandomSample[#, UpTo[1]] &), RandomSeeding -> None ], 16] <= 1,
+        Properties -> { "Simple", "Straightness" -> { Infinity, 2 } }, "NextVertexFunction" -> (RandomSample[#, UpTo[1]] &), RandomSeeding -> None ], 16] <= 1,
       RandomSeeding -> 42
     ]
   ],
   True,
-  TestID -> "RandomInfraGeodesic-Stretched-pruning-beam-1"
+  TestID -> "RandomInfraGeodesic-Straightness-pruning-beam-1"
 ]
 
 (* A selector composed with "Simple" still gives simple walks. *)

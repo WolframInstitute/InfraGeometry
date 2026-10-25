@@ -1,7 +1,7 @@
 BeginTestSection["MethodLadder"]
 
 (* the generic class: no cusp, no third visit, no self-tangency *)
-genericRules = { { "Simple", 2 }, w |-> Count[ w, Last @ w ] <= 2 && WalkSingularities[ w ][ "SelfTangencies" ] === { } };
+genericRules = { { "Simple", 2 }, ( w |-> Count[ w, Last @ w ] <= 2 && WalkSingularities[ w ][ "SelfTangencies" ] === { } ) -> Infinity };
 
 (* ===================== The class-invariance contract ===================== *)
 
@@ -98,10 +98,10 @@ VerificationTest[
   TestID -> "RandomInfraGeodesic-germ-class-invariant-under-NextVertexFunction"
 ]
 
-(* a soft rule weighs the candidates and never filters them: the class is the
+(* a finite β weighs the candidates and never filters them: the class is the
    same under Identity, RandomSample and Automatic, which draws by the weights *)
 VerificationTest[
-  With[ { call = f |-> RandomInfraWalk[ GridGraph[ { 4, 4 } ], 6, { 4 }, All, Properties -> { "Simple", { "Shortest", 3, 0.3 } },
+  With[ { call = f |-> RandomInfraWalk[ GridGraph[ { 4, 4 } ], 6, { 4 }, All, Properties -> { "Simple", "Straightness" -> { 1.2, 3 } },
       "NextVertexFunction" -> f ] },
     { classInvariantQ[ call ], classInvariantQ[ f |-> call[ f /. RandomSample -> Automatic ] ] } ],
   { True, True },

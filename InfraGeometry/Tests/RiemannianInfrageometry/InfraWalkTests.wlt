@@ -1,7 +1,7 @@
 BeginTestSection["InfraWalk"]
 
 (* the generic class: no cusp, no third visit, no self-tangency *)
-genericRules = { { "Simple", 2 }, w |-> Count[ w, Last @ w ] <= 2 && WalkSingularities[ w ][ "SelfTangencies" ] === { } };
+genericRules = { { "Simple", 2 }, ( w |-> Count[ w, Last @ w ] <= 2 && WalkSingularities[ w ][ "SelfTangencies" ] === { } ) -> Infinity };
 
 walkGraph       = walk |-> PathGraph[ MapIndexed[ { First @ #2, #1 } &, walk ], DirectedEdges -> True ];
 closedWalkGraph = walk |-> With[ { core = MapIndexed[ { First @ #2, #1 } &, If[ Length[ walk ] >= 2 && First @ walk === Last @ walk, Most @ walk, walk ] ] },
@@ -348,7 +348,7 @@ VerificationTest[
 
 (* ===================== RandomInfraGeodesic ===================== *)
 
-(* Scale Infinity, the rule "Shortest" on the whole walk, is exactly the segment class:
+(* Scale Infinity, the shortest window on the whole walk, is exactly the segment class:
    the arrivals at 9 are the geodesics from 1 to 9. *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
@@ -420,7 +420,7 @@ VerificationTest[
 VerificationTest[
   With[ { g = CycleGraph[ 6 ] },
     Sort @ walkSeqs @ RandomInfraGeodesic[ g, 1, 1, { 3 }, All,
-      Properties -> { { w |-> Length[ w ] == 2, 1 } } ] ===
+      Properties -> { ( w |-> Length[ w ] == 2 ) -> { Infinity, 1 } } ] ===
       Sort @ walkSeqs @ RandomInfraWalk[ g, 1, { 3 }, All, Properties -> { } ]
   ],
   True,
@@ -430,7 +430,7 @@ VerificationTest[
 (* A bare predicate is a custom local law; True keeps the whole class. *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
-    Sort @ walkSeqs @ RandomInfraGeodesic[ g, 1, 1, { 4 }, All, Properties -> { "Simple", { True &, 1 } } ] ===
+    Sort @ walkSeqs @ RandomInfraGeodesic[ g, 1, 1, { 4 }, All, Properties -> { "Simple", ( True & ) -> { Infinity, 1 } } ] ===
       Sort @ walkSeqs @ RandomInfraWalk[ g, 1, { 4 }, All, Properties -> { "Simple" } ]
   ],
   True,
@@ -530,23 +530,25 @@ VerificationTest[
 ]
 
 
-(* ===================== RandomInfraGeodesic is RandomInfraWalk with "Shortest" ===================== *)
+(* ===================== RandomInfraGeodesic is RandomInfraWalk with a shortest window ===================== *)
 
-(* the geodesic finder is the general finder with {"Shortest", scale} first
-   among the rules; its Properties -> { } is the "Shortest" class, and the bare
-   class at scale 1 is RandomInfraWalk's Properties -> { } *)
+(* the geodesic finder is the general finder with the window of scale s a
+   shortest path, first among the rules: the predicate d(w_1, w_m) == m - 1 at
+   window s, read as a forbidding energy; the bare class at scale 1 is
+   RandomInfraWalk's Properties -> { } *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ], c = CycleGraph[ 6 ] },
+    { shortest = { h, s } |-> ( ( w |-> GraphDistance[ h, First @ w, Last @ w ] == Length[ w ] - 1 ) -> { Infinity, s } ) },
     { Sort @ walkSeqs @ RandomInfraGeodesic[ g, 1, 2, UpTo[ 6 ], All, Properties -> { "Simple" } ] ===
         Sort @ walkSeqs @ RandomInfraWalk[ g, 1, UpTo[ 6 ], All,
-          Properties -> { { "Shortest", 2 }, "Simple" } ],
+          Properties -> { shortest[ g, 2 ], "Simple" } ],
       Sort @ walkSeqs @ RandomInfraGeodesic[ c, 1, 3, { 6 }, All, Properties -> { { "Simple", 2 } } ] ===
         Sort @ walkSeqs @ RandomInfraWalk[ c, 1, { 6 }, All,
-          Properties -> { { "Shortest", 3 }, { "Simple", 2 } } ],
+          Properties -> { shortest[ c, 3 ], { "Simple", 2 } } ],
       Sort @ walkSeqs @ RandomInfraGeodesic[ g, 1, 1, { 6 }, All ] ===
         Sort @ walkSeqs @ RandomInfraWalk[ g, 1, { 6 }, All, Properties -> { } ] } ],
   { True, True, True },
-  TestID -> "RandomInfraGeodesic-is-RandomInfraWalk-with-Shortest"
+  TestID -> "RandomInfraGeodesic-is-RandomInfraWalk-with-a-shortest-window"
 ]
 
 (* the window is the horizon of the rule: the walk winding once round
@@ -555,11 +557,10 @@ VerificationTest[
    InfraGeodesicQ's threshold *)
 VerificationTest[
   With[ { g = CycleGraph[ 6 ], winding = { 1, 2, 3, 4, 5, 6, 1 } },
-    { MemberQ[ walkSeqs @ RandomInfraWalk[ g, 1, { 6 }, All,
-          Properties -> { { "Shortest", # }, { "Simple", 2 } } ], winding ],
+    { MemberQ[ walkSeqs @ RandomInfraGeodesic[ g, 1, #, { 6 }, All, Properties -> { { "Simple", 2 } } ], winding ],
       InfraGeodesicQ[ g, winding, # ] } & /@ { 2, 3, 4, Infinity } ],
   { { True, True }, { True, True }, { False, False }, { False, False } },
-  TestID -> "RandomInfraWalk-Shortest-window-semantics"
+  TestID -> "RandomInfraGeodesic-window-semantics"
 ]
 
 (* a geodesic between two points is an endpoint condition on the geodesics
@@ -581,7 +582,8 @@ VerificationTest[
     { Sort @ walkSeqs @ RandomInfraGeodesic[ g, 1, 3, Infinity, All, Properties -> { "Simple" },
           "NextVertexFunction" -> Identity ] ===
         Sort @ walkSeqs @ RandomInfraWalk[ g, 1, Infinity, All,
-          Properties -> { { "Shortest", 3 }, "Simple" }, "NextVertexFunction" -> Identity ],
+          Properties -> { ( w |-> GraphDistance[ g, First @ w, Last @ w ] == Length[ w ] - 1 ) -> { Infinity, 3 }, "Simple" },
+          "NextVertexFunction" -> Identity ],
       Sort @ walkSeqs @ RandomInfraGeodesic[ g, 1, 3, Infinity, All, Properties -> { "Simple" },
         "NextVertexFunction" -> Identity ] } ],
   { True, { { 1, 2, 3, 4, 5, 6 }, { 1, 6, 5, 4, 3, 2 } } },
@@ -599,15 +601,17 @@ VerificationTest[
 
 (* ===================== Walk germs ===================== *)
 
-(* on a walk germ too the geodesic finder is the general finder with
-   {"Shortest", scale} added to the rules *)
+(* on a walk germ too the geodesic finder is the general finder with a
+   shortest window of the scale added to the rules; under "BothSides" that
+   window is read on the joined walk *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
     Sort @ walkSeqs @ RandomInfraGeodesic[ g, { 4, 5 }, 2, UpTo[ 3 ], All, Properties -> { "Simple" }, "Direction" -> "BothSides" ] ===
       Sort @ walkSeqs @ RandomInfraWalk[ g, { 4, 5 }, UpTo[ 3 ], All,
-        Properties -> { { "Shortest", 2 }, "Simple" }, "Direction" -> "BothSides" ] ],
+        Properties -> { ( w |-> GraphDistance[ g, First @ w, Last @ w ] == Length[ w ] - 1 ) -> { Infinity, 2 }, "Simple" },
+        "Direction" -> "BothSides" ] ],
   True,
-  TestID -> "RandomInfraGeodesic-walk-germ-is-RandomInfraWalk-with-Shortest"
+  TestID -> "RandomInfraGeodesic-walk-germ-is-RandomInfraWalk-with-a-shortest-window"
 ]
 
 (* the extensions of a germ at a scale are geodesics at that scale, so a germ
@@ -618,11 +622,10 @@ VerificationTest[
     { RandomInfraGeodesic[ g, { 41, 42, 41 }, 2, { 2 }, All, "Direction" -> "BothSides" ],
       RandomInfraGeodesic[ g, { 41, 42, 41 }, 2, { 2 }, "Direction" -> "BothSides" ],
       RandomInfraGeodesic[ g, { 41, 42, 41 }, Infinity, UpTo[ 2 ], All, "Direction" -> "BothSides" ],
-      RandomInfraWalk[ g, { 41, 42, 41 }, { 2 }, All, Properties -> { { "Shortest", 2 } }, "Direction" -> "BothSides" ],
       RandomInfraGeodesic[ h, { 1, 2, 5, 4 }, 3, UpTo[ 2 ], All, "Direction" -> "BothSides" ],
       With[ { exts = walkSeqs @ RandomInfraGeodesic[ h, { 1, 2, 5, 4 }, 2, UpTo[ 2 ], All, "Direction" -> "BothSides" ] },
         exts =!= { } && AllTrue[ exts, w |-> InfraGeodesicQ[ h, w, 2 ] ] ] } ],
-  { { }, { }, { }, { }, { }, True },
+  { { }, { }, { }, { }, True },
   TestID -> "RandomInfraGeodesic-non-geodesic-germ-has-no-extension"
 ]
 
@@ -765,7 +768,7 @@ VerificationTest[
 ]
 
 (* the two-sided Cartesian is re-checked as a whole geodesic: without the
-   joined "Shortest" filter C6 emits {5, 6, 1, 2, 3}, with d(5, 3) = 2 *)
+   joined shortest-window filter C6 emits {5, 6, 1, 2, 3}, with d(5, 3) = 2 *)
 VerificationTest[
   AllTrue[
     walkSeqs @ RandomInfraGeodesic[ CycleGraph[ 6 ], { 1 }, Infinity, Infinity, All, "Direction" -> "BothSides" ],
@@ -775,7 +778,7 @@ VerificationTest[
 ]
 
 (* the two sides move independently: in C4 no joint step survives the joined
-   "Shortest" filter -- {4, 1, 2, 3} has d(4, 3) = 1 -- and the maximal
+   shortest-window filter -- {4, 1, 2, 3} has d(4, 3) = 1 -- and the maximal
    geodesics through the edge {1, 2} are reached one side at a time *)
 VerificationTest[
   Sort @ walkSeqs @ RandomInfraGeodesic[ CycleGraph[ 4 ], { 1, 2 }, Infinity, Infinity, All, "Direction" -> "BothSides" ],
@@ -949,9 +952,9 @@ VerificationTest[
 
 (* the random walk straightened: the window defect is the number of edges the
    window wastes against a shortest path.  Forbidding a defect above 1 in the last
-   eight steps, or drawing the next vertex with weight Exp[ -2 defect ], carries the
-   walk farther from its start per edge than the uniform draw, in the mean over
-   forty seeds *)
+   eight steps, or drawing the next vertex with weight Exp[ -2 Δ ], Δ the excess
+   of the summed defect, carries the walk farther from its start per edge than
+   the uniform draw, in the mean over forty seeds *)
 VerificationTest[
   With[ { g = GridGraph[ { 24, 24 } ], k = 30, r = 8, start = 300 },
     { defect = w |-> Length[ w ] - 1 - GraphDistance[ g, First @ w, Last @ w ],
@@ -961,8 +964,8 @@ VerificationTest[
           RandomSeeding -> seed ],
         { seed, 40 } ] },
     { uniform = draw[ { "Simple" } ] },
-    { draw[ { "Simple", { w |-> defect[ w ] <= 1, r } } ] > uniform,
-      draw[ { "Simple", { "Shortest", r, Exp[ -2 ] } } ] > uniform } ],
+    { draw[ { "Simple", ( w |-> defect[ w ] <= 1 ) -> { Infinity, r } } ] > uniform,
+      draw[ { "Simple", "Straightness" -> { 2, r } } ] > uniform } ],
   { True, True },
   TestID -> "RandomInfraWalk-random-walk-straightened-by-the-window-defect"
 ]
@@ -1445,23 +1448,25 @@ VerificationTest[
     { class = rule |-> Sort @ walkSeqs @ RandomInfraWalk[ g, 1, { 6 }, All, Properties -> { rule } ] },
     { class[ "Simple" ] === Sort @ Select[ bare, DuplicateFreeQ ],
       class[ { "Simple", 2 } ] === Sort @ Select[ bare, WalkSingularities[ # ][ "Cusps" ] === { } & ],
-      class[ w |-> Count[ w, Last @ w ] <= 2 ] === Sort @ Select[ bare, Max[ Counts @ # ] <= 2 & ],
-      class[ w |-> WalkSingularities[ w ][ "SelfTangencies" ] === { } ] ===
+      class[ ( w |-> Count[ w, Last @ w ] <= 2 ) -> Infinity ] === Sort @ Select[ bare, Max[ Counts @ # ] <= 2 & ],
+      class[ ( w |-> WalkSingularities[ w ][ "SelfTangencies" ] === { } ) -> Infinity ] ===
         Sort @ Select[ bare, WalkSingularities[ # ][ "SelfTangencies" ] === { } & ] } ],
   { True, True, True, True },
   TestID -> "singularity-classes-equal-census-filters"
 ]
 
-(* only a hard bare "Simple" or "Shortest" bounds the class, so only they admit
-   an unbounded budget: a windowed rule, a soft rule or a predicate does not *)
+(* only the hard bare "Simple" bounds the class of RandomInfraWalk, so only it
+   admits an unbounded budget: a windowed rule, a soft rule, "Straightness" or a
+   predicate does not; RandomInfraGeodesic at scale Infinity is bounded too *)
 VerificationTest[
   With[ { g = PathGraph[ Range[ 4 ] ] },
-    { MatchQ[ RandomInfraWalk[ g, 1, Infinity, All, Properties -> { w |-> Count[ w, Last @ w ] <= 2 } ], _RandomInfraWalk ],
+    { MatchQ[ RandomInfraWalk[ g, 1, Infinity, All, Properties -> { ( w |-> Count[ w, Last @ w ] <= 2 ) -> Infinity } ], _RandomInfraWalk ],
       MatchQ[ RandomInfraWalk[ g, 1, Infinity, All, Properties -> { { "Simple", 3 } } ], _RandomInfraWalk ],
       MatchQ[ RandomInfraWalk[ g, 1, Infinity, All, Properties -> { { "Simple", Infinity, 0.5 } } ], _RandomInfraWalk ],
+      MatchQ[ RandomInfraWalk[ g, 1, Infinity, All, Properties -> { "Straightness" -> Infinity } ], _RandomInfraWalk ],
       walkSeqs @ RandomInfraWalk[ g, 1, Infinity, All, Properties -> { { "Simple", Infinity } } ],
-      walkSeqs @ RandomInfraWalk[ g, 1, Infinity, All, Properties -> { "Shortest" } ] } ],
-  { True, True, True, { { 1, 2, 3, 4 } }, { { 1, 2, 3, 4 } } },
+      walkSeqs @ RandomInfraGeodesic[ g, 1, Infinity, Infinity, All ] } ],
+  { True, True, True, True, { { 1, 2, 3, 4 } }, { { 1, 2, 3, 4 } } },
   TestID -> "only-a-bare-hard-rule-bounds-the-class"
 ]
 
@@ -1692,7 +1697,7 @@ VerificationTest[
 ]
 
 (* the argument after the germ is the scale: at a scale naming a vertex, the
-   class "Shortest" at a finite scale is unbounded, so kspec Infinity is
+   class of shortest windows at a finite scale is unbounded, so kspec Infinity is
    refused -- there is no two-point reading *)
 VerificationTest[
   MatchQ[ RandomInfraGeodesic[ GridGraph[ { 9, 9 } ], 41, 61, Infinity, All ], _RandomInfraGeodesic ],
@@ -1700,7 +1705,7 @@ VerificationTest[
   TestID -> "RandomInfraGeodesic-vertex-after-the-germ-is-a-scale"
 ]
 
-(* "Shortest" at a finite scale does not bound the class *)
+(* the shortest window at a finite scale does not bound the class *)
 VerificationTest[
   MatchQ[ RandomInfraGeodesic[ CycleGraph[ 6 ], { 1 }, 2 ], _RandomInfraGeodesic ],
   True,
@@ -1712,7 +1717,7 @@ VerificationTest[
    tip arrives first, at 22 on the left or at 28 on the right *)
 VerificationTest[
   With[ { g = GridGraph[ { 7, 7 } ] },
-    { ws = walkSeqs @ RandomInfraWalk[ g, { 24, 25 }, Infinity, All, Properties -> { "Shortest" }, "Direction" -> "BothSides",
+    { ws = walkSeqs @ RandomInfraGeodesic[ g, { 24, 25 }, Infinity, Infinity, All, "Direction" -> "BothSides",
         "StoppingCondition" -> ( First[ # ] === 22 || Last[ # ] === 28 & ) ] },
     { ws =!= { },
       AllTrue[ ws, Count[ Most @ Rest @ #, 22 | 28 ] == 0 & ],
@@ -1724,14 +1729,14 @@ VerificationTest[
 (* ===================== Rules: a window and a weight ===================== *)
 
 (* the blog's controlled randomness, one line per walk: nine steps from the
-   centre of the square mesh, the straightness at window 5 weighted by p; at
-   p = 1 the rule is soft and indifferent, so Automatic draws the uniform walk,
+   centre of the square mesh, the straightness at window 5 at β = 0, 1, 5; at
+   β = 0 the property is indifferent, so Automatic draws the uniform walk,
    not the canonical one, which goes back and forth on one edge *)
 VerificationTest[
   With[ { g = InfraSubstrate[ "SquareMeshGraph", "Medium", "KeepCoordinates" -> True ] },
     { c = ( SeedRandom[ 1 ]; RandomInfraPoint[ g, GraphCenter[ g ], RandomSeeding -> None ] ) },
-    { ws = Table[ BlockRandom[ RandomInfraWalk[ g, c, UpTo[ 9 ], Properties -> { { "Shortest", 5, p } }, RandomSeeding -> None ], RandomSeeding -> 3 ],
-        { p, { 1, 0.3, 0.01 } } ] },
+    { ws = Table[ BlockRandom[ RandomInfraWalk[ g, c, UpTo[ 9 ], Properties -> { "Straightness" -> { b, 5 } }, RandomSeeding -> None ], RandomSeeding -> 3 ],
+        { b, { 0, 1, 5 } } ] },
     { AllTrue[ ws, GraphQ ], EdgeCount /@ ws, AllTrue[ walkSeq /@ ws, First[ # ] === c && InfraWalkQ[ g, # ] & ],
       Length @ DeleteDuplicates @ walkSeq @ First @ ws > 2 } ],
   { True, { 9, 9, 9 }, True, True },
@@ -1750,25 +1755,26 @@ VerificationTest[
   TestID -> "RandomInfraWalk-soft-simple-rarely-crosses"
 ]
 
-(* a rule is any energy of the window: the walk pulled toward q by the weight
-   p^d(tip, q) at window 1 ends nearer q than the uniform random walk, in the
-   mean over forty seeds *)
+(* a property is any energy of the window: the walk pulled toward q by the
+   weight Exp[ -1.2 d(tip, q) ] at window 1 ends nearer q than the uniform
+   random walk, in the mean over forty seeds *)
 VerificationTest[
   With[ { g = GridGraph[ { 20, 20 } ], start = 1, q = 400 },
     { endDistance = rules |-> Mean @ Table[
         BlockRandom[ GraphDistance[ g, Last @ walkSeq @ RandomInfraWalk[ g, start, UpTo[ 20 ], Properties -> rules,
           "NextVertexFunction" -> RandomChoice, RandomSeeding -> None ], q ], RandomSeeding -> seed ], { seed, 40 } ] },
-    endDistance[ { { w |-> GraphDistance[ g, Last @ w, q ], 1, 0.3 } } ] < endDistance[ { } ] ],
+    endDistance[ { ( w |-> GraphDistance[ g, Last @ w, q ] ) -> { 1.2, 1 } } ] < endDistance[ { } ] ],
   True,
   TestID -> "RandomInfraWalk-energy-function-pulls-toward-a-point"
 ]
 
-(* a predicate is the 0/1 energy: the predicate at window 2 gives the walks
-   2.0.2 gave with its global window at 2 *)
+(* a predicate is the 0/Infinity energy, False forbidding the window at every
+   β: the predicate at window 2 gives the walks 2.0.2 gave with its global
+   window at 2 *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     Sort @ walkSeqs @ RandomInfraWalk[ g, 13, { 4 }, All,
-      Properties -> { "Simple", { w |-> VertexDegree[ g, First @ w ] + VertexDegree[ g, Last @ w ] >= 7, 2 } } ] ],
+      Properties -> { "Simple", ( w |-> VertexDegree[ g, First @ w ] + VertexDegree[ g, Last @ w ] >= 7 ) -> { 1, 2 } } ] ],
   { { 13, 8, 3, 2, 7 }, { 13, 8, 3, 4, 9 }, { 13, 8, 7, 2, 3 }, { 13, 8, 7, 6, 11 }, { 13, 8, 7, 12, 11 }, { 13, 8, 7, 12, 17 },
     { 13, 8, 9, 4, 3 }, { 13, 8, 9, 10, 15 }, { 13, 8, 9, 14, 15 }, { 13, 8, 9, 14, 19 }, { 13, 12, 7, 2, 3 }, { 13, 12, 7, 6, 11 },
     { 13, 12, 7, 8, 3 }, { 13, 12, 7, 8, 9 }, { 13, 12, 11, 6, 7 }, { 13, 12, 11, 16, 17 }, { 13, 12, 17, 16, 11 }, { 13, 12, 17, 18, 19 },
@@ -1780,20 +1786,100 @@ VerificationTest[
   TestID -> "RandomInfraWalk-windowed-predicate-is-the-2.0.2-class"
 ]
 
-(* no combination of rule and order is refused: Identity and a function order
-   ignore the weights, so a soft rule under them gives the walks of the hard
-   rules alone; and the soft "Stretched" weighs as the soft "Shortest", the two
-   energies differing by a constant on each step *)
+(* no combination of property and order is refused: Identity and a function
+   order ignore the weights, so a weighted property under them gives the walks
+   of the hard rules alone *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     { soft = { order, rules } |-> RandomInfraWalk[ g, 6, { 4 }, 5, Properties -> rules, "NextVertexFunction" -> order, RandomSeeding -> None ] },
-    { soft[ Identity, { "Simple", { "Shortest", 3, 0.3 } } ] === soft[ Identity, { "Simple" } ],
-      soft[ Reverse, { "Simple", { "Shortest", 3, 0.3 } } ] === soft[ Reverse, { "Simple" } ],
-      Table[ BlockRandom[ soft[ order, { "Simple", { "Stretched", 3, 0.3 } } ], RandomSeeding -> seed ] ===
-          BlockRandom[ soft[ order, { "Simple", { "Shortest", 3, 0.3 } } ], RandomSeeding -> seed ],
-        { order, { Automatic, RandomSample, RandomChoice } }, { seed, 3 } ] } ],
-  { True, True, ConstantArray[ True, { 3, 3 } ] },
+    { soft[ Identity, { "Simple", "Straightness" -> { 1.2, 3 } } ] === soft[ Identity, { "Simple" } ],
+      soft[ Reverse, { "Simple", "Straightness" -> { 1.2, 3 } } ] === soft[ Reverse, { "Simple" } ] } ],
+  { True, True },
   TestID -> "RandomInfraWalk-no-rule-and-order-is-refused"
+]
+
+(* "Straightness" is the defect of the window summed over its vertices,
+   D(w) = Sum[ (m - i) - d(w_i, w_m), i < m ]: written out as a user energy it
+   gives the same walks, walk for walk, under every weighted order, window and β *)
+VerificationTest[
+  With[ { g = InfraSubstrate[ "SquareMeshGraph", "Medium", "KeepCoordinates" -> True ] },
+    { c = First @ GraphCenter @ g,
+      defect = w |-> Total @ Table[ ( Length[ w ] - i ) - GraphDistance[ g, w[[ i ]], Last @ w ], { i, Length[ w ] - 1 } ] },
+    Union @ Flatten @ Table[
+      RandomInfraWalk[ g, c, { 8 }, Properties -> { "Simple", "Straightness" -> { b, r } }, "NextVertexFunction" -> order, RandomSeeding -> seed ] ===
+        RandomInfraWalk[ g, c, { 8 }, Properties -> { "Simple", defect -> { b, r } }, "NextVertexFunction" -> order, RandomSeeding -> seed ],
+      { order, { Automatic, RandomSample, RandomChoice } }, { b, { 0, 1.2, 5, Infinity } }, { r, { 3, Infinity } }, { seed, 2 } ] ],
+  { True },
+  TestID -> "RandomInfraWalk-Straightness-is-the-summed-defect"
+]
+
+(* at β = Infinity every step takes a candidate of least summed defect, and a
+   walk whose steps all have defect 0 is a shortest path at the scale of its
+   window: on the square grid from the centre it always is *)
+VerificationTest[
+  With[ { g = GridGraph[ { 11, 11 } ] },
+    Table[ InfraGeodesicQ[ g, walkSeq @ RandomInfraWalk[ g, 61, { 5 }, Properties -> { "Simple", "Straightness" -> { Infinity, r } },
+        RandomSeeding -> seed ], r ], { r, { 2, 3, Infinity } }, { seed, 5 } ] ],
+  ConstantArray[ True, { 3, 5 } ],
+  TestID -> "RandomInfraWalk-Straightness-Infinity-is-geodesic-on-the-grid"
+]
+
+(* under "BothSides" the window of a step is the joined walk: a joint move
+   draws the back end, then the front end on the walk with its new back end,
+   so at β = Infinity the two halves are one shortest path *)
+VerificationTest[
+  With[ { g = GridGraph[ { 11, 11 } ] },
+    Table[ InfraGeodesicQ[ g, walkSeq @ RandomInfraWalk[ g, 61, { 4 }, Properties -> { "Simple", "Straightness" -> Infinity },
+        "Direction" -> "BothSides", "NextVertexFunction" -> order, RandomSeeding -> seed ] ],
+      { order, { Automatic, RandomChoice } }, { seed, 10 } ] ],
+  ConstantArray[ True, { 2, 10 } ],
+  TestID -> "RandomInfraWalk-Straightness-BothSides-is-one-walk"
+]
+
+(* a weight far below $MachineEpsilon of the step's best is never drawn and is
+   tried last, so no β draws a candidate twice: the two-sided walk of Renata's
+   item 4 at β = 20, 30, 700 and Infinity has its full 24 edges and no repeat *)
+VerificationTest[
+  With[ { core = CenterGraph[ InfraSubstrate[ "SquareMeshGraph", "Large", "KeepCoordinates" -> True ], Scaled[ 9 / 10 ] ] },
+    { c = First @ GraphCenter @ core },
+    Table[ With[ { w = RandomInfraWalk[ core, c, { 12 }, Properties -> { "Simple", "Straightness" -> b }, "Direction" -> "BothSides", RandomSeeding -> 1 ] },
+        { EdgeCount @ w, DuplicateFreeQ @ walkSeq @ w } ], { b, { 20, 30, 700, Infinity } } ] ],
+  ConstantArray[ { 24, True }, 4 ],
+  TestID -> "RandomInfraWalk-Straightness-large-beta-no-repeat"
+]
+
+(* the rule triples and "Stretched" of 2.11 are refused, unevaluated, with a
+   message naming the property that replaces them *)
+VerificationTest[
+  With[ { g = GridGraph[ { 4, 4 } ] },
+    MatchQ[ RandomInfraWalk[ g, 1, { 3 }, Properties -> { "Simple", { "Shortest", 3, 0.3 } } ], _RandomInfraWalk ] ],
+  True,
+  { RandomInfraWalk::rule },
+  TestID -> "RandomInfraWalk-soft-Shortest-refused"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 4, 4 } ] },
+    MatchQ[ RandomInfraWalk[ g, 1, { 3 }, Properties -> { { "Stretched", 2 } } ], _RandomInfraWalk ] ],
+  True,
+  { RandomInfraWalk::rule },
+  TestID -> "RandomInfraWalk-Stretched-refused"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 4, 4 } ] },
+    MatchQ[ RandomInfraWalk[ g, 1, Infinity, Properties -> { "Shortest" } ], _RandomInfraWalk ] ],
+  True,
+  { RandomInfraWalk::rule },
+  TestID -> "RandomInfraWalk-hard-Shortest-refused"
+]
+
+VerificationTest[
+  With[ { g = GridGraph[ { 4, 4 } ] },
+    MatchQ[ RandomInfraWalk[ g, 1, { 3 }, Properties -> { { Length[ # ] &, 2, 0.5 } } ], _RandomInfraWalk ] ],
+  True,
+  { RandomInfraWalk::rule },
+  TestID -> "RandomInfraWalk-energy-triple-refused"
 ]
 
 (* the removed spellings are non-matches: the global window, the old rule
@@ -1813,20 +1899,21 @@ VerificationTest[
   TestID -> "RandomInfraWalk-removed-spellings-unevaluated"
 ]
 
-(* "Stretched" keeps the candidates farthest from the window start among those
-   the hard rules before it left: with All it is the class the order
-   MaximalBy[w |-> d(First @ w, Last @ w)] gave on 2.0.2 at the window 3,
-   246 of the 2730 simple walks of five edges from the centre of the
-   triangular tiling *)
+(* β = Infinity keeps the candidates of least energy among those the hard
+   rules before it left: with the end defect of the window as the energy it is
+   the class the order MaximalBy[w |-> d(First @ w, Last @ w)] gave on 2.0.2 at
+   the window 3, 246 of the 2730 simple walks of five edges from the centre of
+   the triangular tiling *)
 VerificationTest[
   With[ { t = InfraSubstrate[ "TriangularTilingGraph", "Small" ] },
     { c = First @ GraphCenter @ t },
-    { stretched = Sort @ walkSeqs @ RandomInfraWalk[ t, c, { 5 }, All, Properties -> { "Simple", { "Stretched", 3 } } ],
+    { stretched = Sort @ walkSeqs @ RandomInfraWalk[ t, c, { 5 }, All,
+        Properties -> { "Simple", ( w |-> Length[ w ] - 1 - GraphDistance[ t, First @ w, Last @ w ] ) -> { Infinity, 3 } } ],
       ordered = Sort @ walkSeqs @ RandomInfraWalk[ t, c, { 5 }, All, Properties -> { "Simple" },
         "NextVertexFunction" -> { MaximalBy[ w |-> GraphDistance[ t, First @ w, Last @ w ] ], 3 } ] },
     { Length @ stretched, stretched === ordered, Take[ stretched, 3 ] } ],
   { 246, True, { { 2, 1, 6, 17, 34, 57 }, { 2, 1, 6, 17, 34, 58 }, { 2, 1, 6, 17, 35, 47 } } },
-  TestID -> "RandomInfraWalk-Stretched-is-the-farthest-order"
+  TestID -> "RandomInfraWalk-least-end-defect-is-the-farthest-order"
 ]
 
 (* "Simple" at a window forbids a return only within it: round a hexagon of
@@ -1847,31 +1934,33 @@ VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     { class = Sort @ walkSeqs @ RandomInfraWalk[ g, 6, { 4 }, All, Properties -> { "Simple" }, "NextVertexFunction" -> Identity, RandomSeeding -> None ] },
     BlockRandom[
-      Sort @ walkSeqs @ RandomInfraWalk[ g, 6, { 4 }, All, Properties -> { "Simple", { "Shortest", 3, 0.3 } }, "NextVertexFunction" -> #, RandomSeeding -> None ] === class,
+      Sort @ walkSeqs @ RandomInfraWalk[ g, 6, { 4 }, All, Properties -> { "Simple", "Straightness" -> { 1.2, 3 } }, "NextVertexFunction" -> #, RandomSeeding -> None ] === class,
       RandomSeeding -> 5 ] & /@ { Identity, Automatic, RandomSample } ],
   { True, True, True },
   TestID -> "RandomInfraWalk-soft-rule-keeps-the-class"
 ]
 
-(* p = 1 is soft and weighs every candidate alike: under a seed it is the plain
+(* β = 0 weighs every candidate alike: under a seed it is the plain
    RandomSample, written or as Automatic; and the weighted permutation still
    backtracks, so an exact budget finds a walk wherever the canonical order does *)
 VerificationTest[
   With[ { g = GridGraph[ { 12, 12 } ] },
-    { BlockRandom[ RandomInfraWalk[ g, 66, UpTo[ 8 ], 3, Properties -> { "Simple", { "Shortest", 3, 1 } }, "NextVertexFunction" -> RandomSample, RandomSeeding -> None ],
+    { BlockRandom[ RandomInfraWalk[ g, 66, UpTo[ 8 ], 3, Properties -> { "Simple", "Straightness" -> { 0, 3 } }, "NextVertexFunction" -> RandomSample, RandomSeeding -> None ],
         RandomSeeding -> 4 ] ===
-        BlockRandom[ RandomInfraWalk[ g, 66, UpTo[ 8 ], 3, Properties -> { "Simple", { "Shortest", 3, 1 } }, RandomSeeding -> None ], RandomSeeding -> 4 ] ===
+        BlockRandom[ RandomInfraWalk[ g, 66, UpTo[ 8 ], 3, Properties -> { "Simple", "Straightness" -> { 0, 3 } }, RandomSeeding -> None ], RandomSeeding -> 4 ] ===
         BlockRandom[ RandomInfraWalk[ g, 66, UpTo[ 8 ], 3, Properties -> { "Simple" }, "NextVertexFunction" -> RandomSample, RandomSeeding -> None ], RandomSeeding -> 4 ],
       AllTrue[ Tuples[ { { 1, 66, 144 }, { 10, 40 } } ], Apply[ { v, k } |->
         GraphQ @ RandomInfraWalk[ g, v, { k }, Properties -> { "Simple" }, RandomSeeding -> None ] ===
-          GraphQ @ BlockRandom[ RandomInfraWalk[ g, v, { k }, Properties -> { "Simple", { "Shortest", 4, 0.3 } }, RandomSeeding -> None ], RandomSeeding -> 6 ] ] ] } ],
+          GraphQ @ BlockRandom[ RandomInfraWalk[ g, v, { k }, Properties -> { "Simple", "Straightness" -> { 1.2, 4 } }, RandomSeeding -> None ], RandomSeeding -> 6 ] ] ] } ],
   { True, True },
   TestID -> "RandomInfraWalk-weight-one-is-uniform-and-exact-budgets-are-met"
 ]
 
 (* the physicist's walk on the 30-by-30 grid, forty seeds, thirty steps: the
    end-to-end distance per edge falls as the straightness at window 8 is
-   weighted more weakly, and the self-intersections rise as they cost less *)
+   weighted more weakly, β = 1.2, 0.5, 0 (above β = 1 it saturates near 0.91:
+   on the grid every staircase is a shortest path), and the self-intersections
+   rise as they cost less *)
 VerificationTest[
   With[ { g = GridGraph[ { 30, 30 } ], start = 435 },
     { mean = { rules, f } |-> Mean @ Table[
@@ -1879,7 +1968,7 @@ VerificationTest[
           RandomSeeding -> seed ], { seed, 40 } ],
       stretch = w |-> N[ GraphDistance[ g, First @ w, Last @ w ] / ( Length[ w ] - 1 ) ],
       crossings = w |-> Length[ w ] - Length[ DeleteDuplicates @ w ] },
-    { Greater @@ ( mean[ { { "Shortest", 8, # } }, stretch ] & /@ { 0.01, 0.3, 1 } ),
+    { Greater @@ ( mean[ { "Straightness" -> { #, 8 } }, stretch ] & /@ { 1.2, 0.5, 0 } ),
       Less @@ ( mean[ { { "Simple", Infinity, # } }, crossings ] & /@ { 0, 0.1, 1 } ) } ],
   { True, True },
   TestID -> "RandomInfraWalk-soft-rules-interpolate"
