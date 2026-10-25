@@ -24,13 +24,6 @@ $InfraAccentPointSize = 12
 $InfraStrikeOutPalette :=
   ColorData[ 112, "ColorList" ]
 
-resolveArrowSpec[ spec_ ] :=
-  Replace[ spec, {
-    Automatic | None | False -> None,
-    True -> True,
-    a_Arrowheads :> a,
-    other_ :> Arrowheads[ other ] } ]
-
 parseHighlightStyle[ spec_, defaults_Association ] :=
   Replace[
     Fold[
@@ -45,13 +38,12 @@ parseHighlightStyle[ spec_, defaults_Association ] :=
           MapAt[ Append[ #, d ] &, rec, "EdgeDir" ],
         ( d : ( _PointSize | _AbsolutePointSize ) ) :>
           MapAt[ Append[ #, d ] &, rec, "VertexDir" ],
-        ( a : ( _Arrowheads | True | False ) ) :> Append[ rec, "Arrowheads" -> resolveArrowSpec[ a ] ],
-        ( "Arrowheads" -> a_ ) :> Append[ rec, "Arrowheads" -> resolveArrowSpec[ a ] ],
+        a_Arrowheads :> Append[ rec, "Arrowheads" -> a ],
         c_?ColorQ :> Append[ rec, "Color" -> c ],
         d_ :> MapAt[ Append[ #, d ] &, MapAt[ Append[ #, d ] &, rec, "VertexDir" ], "EdgeDir" ]
       } ],
       Join[ defaults, <|
-        "VertexDir" -> { }, "EdgeDir" -> { }, "EdgeStyle" -> None,
+        "VertexDir" -> { }, "EdgeDir" -> { }, "EdgeStyle" -> None, "Arrowheads" -> None,
         "EdgeShapeFunction" -> None, "VertexSize" -> None, "VertexShapeFunction" -> None |> ],
       normalizeHighlightSpec @ spec ],
     r_Association :> With[ {
@@ -83,7 +75,6 @@ Options[ InfraSubstrateHighlight ] = Join[
     "OpacityRange"   :> $InfraOpacityRange,
     "ThicknessRange" -> Automatic,
     "PointSizeRange" -> Automatic,
-    "Arrowheads"     -> Automatic,
     "Palette"        -> Automatic
   },
   Options[ HighlightGraph ]
@@ -101,8 +92,7 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
       ranges = <|
         "OpacityRange"   -> OptionValue[ "OpacityRange" ],
         "ThicknessRange" -> OptionValue[ "ThicknessRange" ],
-        "PointSizeRange" -> OptionValue[ "PointSizeRange" ],
-        "Arrowheads"     -> resolveArrowSpec @ OptionValue[ "Arrowheads" ] |>,
+        "PointSizeRange" -> OptionValue[ "PointSizeRange" ] |>,
       palette = Replace[ OptionValue[ "Palette" ], {
         Automatic :> $InfraStrikeOutPalette,
         c : Except[ _List ] :> { c } } ],
@@ -141,7 +131,6 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
              "Knots"  -> ink[ "Knots" ],
              "Color"  -> Lookup[ record, "Color", palette[[ 1 + Mod[ First @ idx - 1, Length @ palette ] ]] ],
              "Record" -> Join[ record, <|
-               If[ dimension === 3 && record[ "Arrowheads" ] === True, "Arrowheads" -> Arrowheads[ .035 ], Nothing ],
                "ThicknessRange" -> span[ record[ "ThicknessRange" ], substrateThickness, "ThicknessRange" ],
                "PointSizeRange" -> If[ ink[ "EdgeDensity" ] =!= <| |> && FreeQ[ Last @ item, "PointSizeRange" | _AbsolutePointSize ], None,
                  span[ record[ "PointSizeRange" ], Automatic, "PointSizeRange" ] ],
@@ -245,13 +234,14 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                               First[ position ] === Length[ runs ],
                               Replace[ e[ "Record" ][ "Arrowheads" ], a_Arrowheads /; dimension =!= 3 && FreeQ[ a, _Graphics ] -> None ] },
                   runs ] ] ],
-          (* the head: two barbs, slightly arced, the tip on the last vertex, along the last two edges (one edge of a mesh
-             zigzags, two give the walk's direction); as broad as the walk's last edge, contour included: the curve drawn first
-             in black at the edge's thickness, then in the walk's colour at half of it, so the head reads where it lies on its own walk.  True draws it at an absolute size; an
-             Arrowheads spec hands it to Wolfram's Arrow as the head graphic, so the spec's sizes and positions mean what they mean
-             to Arrow, along the walk with the vertex before the tip left out, drawn with an invisible shaft *)
+          (* the head, asked for by an Arrowheads directive in the walk's style: two barbs, slightly arced, the tip on the last
+             vertex, along the last two edges (one edge of a mesh zigzags, two give the walk's direction); as broad as the walk's
+             last edge, contour included: the curve drawn first in black at the edge's thickness, then in the walk's colour at
+             half of it, so the head reads where it lies on its own walk.  Arrowheads[Automatic] draws it at an absolute size;
+             any other Arrowheads spec hands it to Wolfram's Arrow as the head graphic, so the spec's sizes and positions mean
+             what they mean to Arrow, along the walk with the vertex before the tip left out, drawn with an invisible shaft *)
           heads = Cases[ entries,
-            e_Association /; MatchQ[ e[ "Record" ][ "Arrowheads" ], True | ( a_Arrowheads /; dimension =!= 3 && FreeQ[ a, _Graphics ] ) ] &&
+            e_Association /; MatchQ[ e[ "Record" ][ "Arrowheads" ], a_Arrowheads /; dimension =!= 3 && FreeQ[ a, _Graphics ] ] &&
               e[ "Record" ][ "EdgeShapeFunction" ] === None && ListQ[ e[ "Walk" ] ] && Length[ e[ "Walk" ] ] >= 2 :>
               With[ {
                   spec  = e[ "Record" ][ "Arrowheads" ],
@@ -265,7 +255,7 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                   stroke = barbs |-> {
                     { Black, AbsoluteThickness[ thickness ], CapForm[ "Round" ], JoinForm[ "Round" ], barbs },
                     { e[ "Color" ], AbsoluteThickness[ thickness / 2 ], CapForm[ "Round" ], JoinForm[ "Round" ], barbs } } },
-                If[ spec === True,
+                If[ spec === Arrowheads[ Automatic ],
                   stroke @ BezierCurve[ {
                       Offset[ size ( - u + 0.5 side ), tip ], Offset[ size ( - 0.5 u + 0.15 side ), tip ], tip,
                       Offset[ size ( - 0.5 u - 0.15 side ), tip ], Offset[ size ( - u - 0.5 side ), tip ] },

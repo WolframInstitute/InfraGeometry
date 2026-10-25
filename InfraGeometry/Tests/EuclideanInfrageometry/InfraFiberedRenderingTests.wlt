@@ -21,7 +21,7 @@ VerificationTest[
 VerificationTest[
   With[ { graph = Graph3D[ PathGraph[ Range[ 3 ] ], VertexCoordinates -> { { 0, 0, 0 }, { 1, 0, 1 }, { 2, 0, 0 } } ] },
     Check[ With[ { drawing = InfraSubstrateHighlight[ graph,
-        { <| 1 -> 1, 3 -> 1 |>, InfraWalk[ { 1, 2, 1, 2, 3 } ] }, "Arrowheads" -> True ] },
+        { <| 1 -> 1, 3 -> 1 |>, InfraWalk[ { 1, 2, 1, 2, 3 } ] -> Arrowheads[ Automatic ] } ] },
       GraphQ[ drawing ] && Length @ First @ GraphEmbedding[ drawing ] === 3 &&
         FreeQ[ Options[ drawing, VertexShapeFunction ], Disk | Circle ] ], False ] ],
   True,

@@ -40,14 +40,13 @@ A negative mass is drawn as an empty ring, a positive one as a filled dot; a zer
 
 Where objects overlap, their strengths add and their colours blend.
 
-In the list, a [Directive]() styles every object after it, and `obj -> style` one object. A colour there replaces the palette colour.
+In the list, a [Directive]() styles every object after it, and `obj -> style` one object. A colour there replaces the palette colour. An [Arrowheads]() spec there ends a walk with an open head in the walk's colour: <code>[Arrowheads]()[[Automatic]()]</code> at a fixed size, any other spec sized and placed as for [Arrow]().
 
 | Option | Default | Values |
 |---|---|---|
 | `"OpacityRange"` | `{0.4, 1.}` | `None`, a value, or {*min*, *max*} |
 | `"ThicknessRange"` | `Automatic` | `None`, a base, or {*base*, *top*}, in printer points |
 | `"PointSizeRange"` | `Automatic` | `None`, a base, or {*base*, *top*}, in printer points |
-| `"Arrowheads"` | `Automatic` | `True` puts an open head at the end of each walk; an [Arrowheads]() spec sizes and places it as for [Arrow]() |
 | `"Palette"` | `Automatic` | a list of colours; `Automatic` is [ColorData]()[112] |
 
 Options of [Graph]() are passed on.
@@ -77,8 +76,8 @@ Two segments from the centre and a walk between their ends, with an arrowhead at
 ```wl
 With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
   {p = RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 1]}, {q = RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 14]},
-  InfraSubstrateHighlight[g, {InfraSegment[c, p], InfraSegment[c, q], InfraWalk[RandomInfraSegment[g, p, q, RandomSeeding -> 1]]},
-    "Arrowheads" -> True, ImageSize -> Medium]]
+  InfraSubstrateHighlight[g, {InfraSegment[c, p], InfraSegment[c, q], InfraWalk[RandomInfraSegment[g, p, q, RandomSeeding -> 1]] -> Arrowheads[Automatic]},
+    ImageSize -> Medium]]
 ```
 
 ## Scope
@@ -106,6 +105,14 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}
   InfraSubstrateHighlight[g, {Directive[StandardBlue], InfraShell[c, 2], InfraShell[c, 4], c -> StandardRed}, ImageSize -> Medium]]
 ```
 
+An [Arrowheads]() directive ends a walk with a head: `Automatic` at a fixed size, `Small` and `Large` as for [Arrow]():
+
+```wl
+With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {w = InfraWalk[RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 1], RandomSeeding -> 1]]},
+  GraphicsRow[InfraSubstrateHighlight[g, {w -> #}] & /@ {Arrowheads[Automatic], Arrowheads[Small], Arrowheads[Large]}]]
+```
+
 ## Options
 
 ### ThicknessRange
@@ -116,16 +123,6 @@ A wider range makes the busy edges of a segment stand out:
 With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
   {seg = InfraSegment[c, RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 1]]},
   GraphicsRow[{InfraSubstrateHighlight[g, {seg}], InfraSubstrateHighlight[g, {seg}, "ThicknessRange" -> {1, 8}]}]]
-```
-
-### Arrowheads
-
-`True` draws the head at a fixed size; an [Arrowheads]() spec sizes it as for [Arrow](), here `Small` and `Large`:
-
-```wl
-With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
-  {w = InfraWalk[RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 5], RandomSeeding -> 1], RandomSeeding -> 1]]},
-  GraphicsRow[InfraSubstrateHighlight[g, {w}, "Arrowheads" -> #] & /@ {True, Arrowheads[Small], Arrowheads[Large]}]]
 ```
 
 ### Palette

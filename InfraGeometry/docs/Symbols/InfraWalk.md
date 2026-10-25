@@ -19,7 +19,7 @@ SeeAlso: [InfraWalkQ, RandomInfraWalk, WalkSingularities, InfraSubstrateHighligh
 
 A walk is a vertex sequence with each vertex adjacent to the next; vertices and edges may repeat. It is closed when it ends where it starts. [InfraWalkQ]() tests the condition.
 
-[InfraSubstrateHighlight]() draws <code>[InfraWalk]()[{*v1*, …, *vk*}]</code> along its edges, an edge run more than once the stronger. `"Arrowheads" -> True` marks its direction.
+[InfraSubstrateHighlight]() draws <code>[InfraWalk]()[{*v1*, …, *vk*}]</code> along its edges, an edge run more than once the stronger. An [Arrowheads]() directive in its style, <code>[InfraWalk]()[…] -> [Arrowheads]()[[Automatic]()]</code>, marks its direction.
 
 In a scene, <code>[InfraWalk]()[*p1*, …, *pk*]</code> is literal: its one realisation is the vertex list of the points, when consecutive points are adjacent, and there is none otherwise. Unlike [InfraSegment](), it does not join the points by shortest paths.
 
@@ -33,8 +33,8 @@ A closed walk round a square of side 2, with its direction:
 
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]},
-  InfraSubstrateHighlight[g, {InfraWalk[{45, 46, 47, 57, 67, 66, 65, 55, 45}], 45},
-    "Arrowheads" -> True, ImageSize -> Medium]]
+  InfraSubstrateHighlight[g, {InfraWalk[{45, 46, 47, 57, 67, 66, 65, 55, 45}] -> Arrowheads[Automatic], 45},
+    ImageSize -> Medium]]
 ```
 
 In a scene: a point at distance 1 from the centre, a point at distance 2, and the walk through the three. Only adjacent points give a walk, so there are 12 instances on the grid, and each first step is shared by three of them:

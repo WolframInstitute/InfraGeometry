@@ -126,7 +126,7 @@ InfraDistance::usage = "InfraDistance[graph, p, q] gives minimum ambient distanc
 InfraPlaneQ::usage = "InfraPlaneQ[graph, h, p1, p2] tests whether h lies in the bisector slab of p1, p2 and separates them; a trailing window widens the slab. The graph-free InfraPlaneQ[h, p1, p2] is the InfraScene assertion.";
 InfraIntersectQ::usage = "InfraIntersectQ[s1, s2] asserts inside an InfraScene that two sets intersect; evaluation is postponed until bindings resolve, which is why it exists rather than the built-in IntersectingQ.";
 
-InfraSubstrateHighlight::usage = "InfraSubstrateHighlight[graph, {obj1, obj2, ...}] draws the objects' densities on graph in list order, the i-th in the i-th palette color, a later one over an earlier; a Directive styles the objects after it. Options \"OpacityRange\", \"ThicknessRange\", \"PointSizeRange\", \"Arrowheads\", \"Palette\".";
+InfraSubstrateHighlight::usage = "InfraSubstrateHighlight[graph, {obj1, obj2, ...}] draws the objects' densities on graph in list order, the i-th in the i-th palette color, a later one over an earlier; a Directive styles the objects after it. Options \"OpacityRange\", \"ThicknessRange\", \"PointSizeRange\", \"Palette\".";
 InfraScenePlot::usage = "InfraScenePlot[scene, graph, instance] draws saved scene objects; InfraScenePlot[scene, graph, instance, objects] draws explicit geometry at the saved bindings.";
 InfraSceneViewer::usage = "InfraSceneViewer[scene, graph] is an interactive view of the construction scene on graph, one step at a time.";
 PointViewer::usage = "PointViewer[graph] is an interactive viewer for selecting points; PointViewer[graph, sym] stores the selection in sym.";
