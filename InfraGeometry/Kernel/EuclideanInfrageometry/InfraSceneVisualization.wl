@@ -235,9 +235,9 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                               Replace[ e[ "Record" ][ "Arrowheads" ], a_Arrowheads /; dimension =!= 3 && FreeQ[ a, _Graphics ] -> None ] },
                   runs ] ] ],
           (* the head, asked for by an Arrowheads directive in the walk's style: two barbs, slightly arced, the tip on the last
-             vertex, along the last two edges (one edge of a mesh zigzags, two give the walk's direction); as broad as the walk's
-             last edge, contour included: the curve drawn first in black at the edge's thickness, then in the walk's colour at
-             half of it, so the head reads where it lies on its own walk.  Arrowheads[Automatic] draws it at an absolute size;
+             vertex, along the last two edges (one edge of a mesh zigzags, two give the walk's direction); one stroke as broad as
+             the walk's last edge, in a darker shade of the walk's colour, so the head reads where it lies on its own walk.
+             Arrowheads[Automatic] draws it at an absolute size;
              any other Arrowheads spec hands it to Wolfram's Arrow as the head graphic, so the spec's sizes and positions mean
              what they mean to Arrow, along the walk with the vertex before the tip left out, drawn with an invisible shaft *)
           heads = Cases[ entries,
@@ -252,9 +252,7 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                   thickness = First[ Cases[ style, AbsoluteThickness[ t_ ] :> t ], substrateThickness ] },
                 { side   = { - Last @ u, First @ u },
                   size   = $InfraArrowheadSize + 2 thickness,
-                  stroke = barbs |-> {
-                    { Black, AbsoluteThickness[ thickness ], CapForm[ "Round" ], JoinForm[ "Round" ], barbs },
-                    { e[ "Color" ], AbsoluteThickness[ thickness / 2 ], CapForm[ "Round" ], JoinForm[ "Round" ], barbs } } },
+                  stroke = barbs |-> { Darker @ e[ "Color" ], AbsoluteThickness[ thickness ], CapForm[ "Round" ], JoinForm[ "Round" ], barbs } },
                 If[ spec === Arrowheads[ Automatic ],
                   stroke @ BezierCurve[ {
                       Offset[ size ( - u + 0.5 side ), tip ], Offset[ size ( - 0.5 u + 0.15 side ), tip ], tip,

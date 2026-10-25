@@ -10,8 +10,7 @@ shapesAt           = opts |-> Association @ Cases[ VertexShapeFunction /. opts,
 ringScales         = opts |-> Catenate @ Cases[ VertexShapeFunction /. opts,
   ( _ -> f_Function ) :> Cases[ f[ { 0, 0 }, None, { 1, 1 } ], Circle[ _, { r_, _ } ] :> r, Infinity ], Infinity ];
 headsOf            = drawing |-> Cases[ Epilog /. Options[ drawing, Epilog ],
-  { { k_, AbsoluteThickness[ tk_ ], CapForm[ "Round" ], JoinForm[ "Round" ], b_BezierCurve },
-    { c_, AbsoluteThickness[ t_ ], CapForm[ "Round" ], JoinForm[ "Round" ], b_BezierCurve } } :> { c, t, b, { k, tk } }, Infinity ];
+  { c_, AbsoluteThickness[ t_ ], CapForm[ "Round" ], JoinForm[ "Round" ], b_BezierCurve } :> { c, t, b }, Infinity ];
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
@@ -513,39 +512,38 @@ VerificationTest[
   TestID -> "InfraSubstrateHighlight-Arrowheads-no-option"
 ]
 
-(* the head's colour is half the stroke's thickness t and its barbs are 14 + 2 t printer points long, behind the tip *)
+(* the head is as broad as the stroke, thickness t, and its barbs are 14 + 2 t printer points long, behind the tip *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     ( t |-> With[ { head = First @ headsOf @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] -> Arrowheads[ Automatic ] }, "ThicknessRange" -> t ] },
       { head[[ 2 ]], - Min @ Cases[ head[[ 3 ]], Offset[ d_, _ ] :> Last @ d, Infinity ] } ] ) /@ { Automatic, 2, 9 } ],
-  { { 0.5, 16 }, { 1, 18 }, { 4.5, 32 } },
+  { { 1, 16 }, { 2, 18 }, { 9, 32 } },
   SameTest -> Equal,
   TestID -> "InfraSubstrateHighlight-Arrowheads-scaled-to-the-stroke"
 ]
 
-(* the head is in the walk's own colour *)
+(* the head is in a darker shade of the walk's own colour *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     ( c |-> First @ First @ headsOf @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] -> { c, Arrowheads[ Automatic ] } } ] ) /@
       { StandardYellow, strikeOutPalette[[ 2 ]] } ],
-  { StandardYellow, strikeOutPalette[[ 2 ]] },
+  Darker /@ { StandardYellow, strikeOutPalette[[ 2 ]] },
   TestID -> "InfraSubstrateHighlight-Arrowheads-in-the-walks-colour"
 ]
 
-(* each head is two strokes of the same barbs: a black contour underneath, the walk's colour on top, so the head reads
-   where it lies on its own walk; the whole head, contour included, is as broad as the walk's edge: black at the edge's
-   thickness t, the colour at t / 2 *)
+(* each head is one stroke of its barbs, no contour: Darker of the walk's colour, so the head reads where it lies on its
+   own walk, exactly as broad as the walk's edge, with no minimum breadth *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     ( t |-> With[ { drawing = InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] -> { StandardBlue, Arrowheads[ Automatic ] } }, "ThicknessRange" -> t ] },
       { Count[ Epilog /. Options[ drawing, Epilog ], _BezierCurve, Infinity ],
-        Last @ First @ headsOf @ drawing,
+        FreeQ[ Epilog /. Options[ drawing, Epilog ], Black ],
         First @ First @ headsOf @ drawing,
         First[ headsOf @ drawing ][[ 2 ]],
-        Union @ Cases[ EdgeStyle /. Options[ drawing, EdgeStyle ], ( UndirectedEdge[ 2, 3 ] -> d_ ) :> First @ Cases[ d, AbsoluteThickness[ w_ ] :> w, Infinity ], Infinity ] } ] ) /@ { Automatic, 3 } ],
-  { { 2, { Black, 1 }, StandardBlue, 0.5, { 1 } }, { 2, { Black, 3 }, StandardBlue, 1.5, { 3 } } },
+        Union @ Cases[ EdgeStyle /. Options[ drawing, EdgeStyle ], ( UndirectedEdge[ 2, 3 ] -> d_ ) :> First @ Cases[ d, AbsoluteThickness[ w_ ] :> w, Infinity ], Infinity ] } ] ) /@ { Automatic, 0.5, 3 } ],
+  { { 1, True, Darker[ StandardBlue ], 1, { 1 } }, { 1, True, Darker[ StandardBlue ], 0.5, { 0.5 } }, { 1, True, Darker[ StandardBlue ], 3, { 3 } } },
   SameTest -> Equal,
-  TestID -> "InfraSubstrateHighlight-Arrowheads-black-contour-under-the-colour"
+  TestID -> "InfraSubstrateHighlight-Arrowheads-one-darker-stroke-at-the-edges-breadth"
 ]
 
 (* the tip is the last vertex and the head points along the last two edges (one edge of a mesh zigzags):
@@ -636,15 +634,15 @@ VerificationTest[
   TestID -> "InfraSubstrateHighlight-Arrowheads-spec-sizes-the-open-head"
 ]
 
-(* the head rides on an Arrow whose shaft is invisible, Opacity[0]; the head graphic restores full opacity and carries
-   the walk's colour at half its stroke over the black contour at its stroke *)
+(* the head rides on an Arrow whose shaft is invisible, Opacity[0]; the head graphic restores full opacity and is the
+   same one stroke, Darker of the walk's colour at the walk's breadth *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     With[ { drawing = InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] -> { StandardRed, Arrowheads[ Large ] } } ] },
       { Length @ Cases[ Epilog /. Options[ drawing, Epilog ],
           { Opacity[ 0 ], Arrowheads[ { { _, _, Graphics[ { Opacity[ 1 ], __ } ] } } ], _Arrow }, Infinity ],
-        First[ headsOf @ drawing ][[ { 1, 2, 4 } ]] } ] ],
-  { 1, { StandardRed, 0.5, { Black, 1 } } },
+        First[ headsOf @ drawing ][[ { 1, 2 } ]] } ] ],
+  { 1, { Darker[ StandardRed ], 1 } },
   SameTest -> Equal,
   TestID -> "InfraSubstrateHighlight-Arrowheads-spec-invisible-shaft"
 ]
