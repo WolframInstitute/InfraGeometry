@@ -8,7 +8,6 @@ PackageScope[ $InfraAccentPointSize ]
 PackageScope[ $InfraOpacityRange ]
 PackageScope[ $InfraEdgeThickness ]
 PackageScope[ $InfraArrowheadSize ]
-PackageScope[ $InfraArrowheadContour ]
 PackageScope[ $InfraRangeTop ]
 PackageScope[ infraInk ]
 PackageScope[ parseHighlightStyle ]
@@ -16,8 +15,7 @@ PackageScope[ normalizeHighlightSpec ]
 
 $InfraOpacityRange  = { 0.40, 1.0 }
 $InfraEdgeThickness = 1.
-$InfraArrowheadSize    = 14
-$InfraArrowheadContour = 2
+$InfraArrowheadSize = 14
 $InfraRangeTop      = <| "ThicknessRange" -> 4, "PointSizeRange" -> 3 |>
 
 $InfraPointSizes      = <| Small -> 4, Medium -> 7, Large -> 10 |>
@@ -247,9 +245,9 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                               First[ position ] === Length[ runs ],
                               Replace[ e[ "Record" ][ "Arrowheads" ], a_Arrowheads /; dimension =!= 3 && FreeQ[ a, _Graphics ] -> None ] },
                   runs ] ] ],
-          (* the head: two barbs, slightly arced, in the walk's colour, a point bolder than its stroke, the tip on the last vertex,
-             along the last two edges (one edge of a mesh zigzags, two give the walk's direction); the same curve drawn first in black
-             and wider is its contour, so the head reads where it lies on its own walk.  True draws it at an absolute size; an
+          (* the head: two barbs, slightly arced, the tip on the last vertex, along the last two edges (one edge of a mesh
+             zigzags, two give the walk's direction); as broad as the walk's last edge, contour included: the curve drawn first
+             in black at the edge's thickness, then in the walk's colour at half of it, so the head reads where it lies on its own walk.  True draws it at an absolute size; an
              Arrowheads spec hands it to Wolfram's Arrow as the head graphic, so the spec's sizes and positions mean what they mean
              to Arrow, along the walk with the vertex before the tip left out, drawn with an invisible shaft *)
           heads = Cases[ entries,
@@ -265,8 +263,8 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                 { side   = { - Last @ u, First @ u },
                   size   = $InfraArrowheadSize + 2 thickness,
                   stroke = barbs |-> {
-                    { Black, AbsoluteThickness[ thickness + 1 + $InfraArrowheadContour ], CapForm[ "Round" ], JoinForm[ "Round" ], barbs },
-                    { e[ "Color" ], AbsoluteThickness[ thickness + 1 ], CapForm[ "Round" ], JoinForm[ "Round" ], barbs } } },
+                    { Black, AbsoluteThickness[ thickness ], CapForm[ "Round" ], JoinForm[ "Round" ], barbs },
+                    { e[ "Color" ], AbsoluteThickness[ thickness / 2 ], CapForm[ "Round" ], JoinForm[ "Round" ], barbs } } },
                 If[ spec === True,
                   stroke @ BezierCurve[ {
                       Offset[ size ( - u + 0.5 side ), tip ], Offset[ size ( - 0.5 u + 0.15 side ), tip ], tip,

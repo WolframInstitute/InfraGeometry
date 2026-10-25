@@ -505,12 +505,12 @@ VerificationTest[
   TestID -> "InfraSubstrateHighlight-Arrowheads-off-by-default-drawn-when-on"
 ]
 
-(* the head is a point bolder than the stroke's thickness t and its barbs are 14 + 2 t printer points long, behind the tip *)
+(* the head's colour is half the stroke's thickness t and its barbs are 14 + 2 t printer points long, behind the tip *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     ( t |-> With[ { head = First @ headsOf @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] }, "Arrowheads" -> True, "ThicknessRange" -> t ] },
       { head[[ 2 ]], - Min @ Cases[ head[[ 3 ]], Offset[ d_, _ ] :> Last @ d, Infinity ] } ] ) /@ { Automatic, 2, 9 } ],
-  { { 2, 16 }, { 3, 18 }, { 10, 32 } },
+  { { 0.5, 16 }, { 1, 18 }, { 4.5, 32 } },
   SameTest -> Equal,
   TestID -> "InfraSubstrateHighlight-Arrowheads-scaled-to-the-stroke"
 ]
@@ -524,15 +524,18 @@ VerificationTest[
   TestID -> "InfraSubstrateHighlight-Arrowheads-in-the-walks-colour"
 ]
 
-(* each head is two strokes of the same barbs: a black contour two points wider underneath, the walk's colour on top,
-   so the head reads where it lies on its own walk *)
+(* each head is two strokes of the same barbs: a black contour underneath, the walk's colour on top, so the head reads
+   where it lies on its own walk; the whole head, contour included, is as broad as the walk's edge: black at the edge's
+   thickness t, the colour at t / 2 *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     ( t |-> With[ { drawing = InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] -> StandardBlue }, "Arrowheads" -> True, "ThicknessRange" -> t ] },
       { Count[ Epilog /. Options[ drawing, Epilog ], _BezierCurve, Infinity ],
         Last @ First @ headsOf @ drawing,
-        First @ First @ headsOf @ drawing } ] ) /@ { Automatic, 3 } ],
-  { { 2, { Black, 4 }, StandardBlue }, { 2, { Black, 6 }, StandardBlue } },
+        First @ First @ headsOf @ drawing,
+        First[ headsOf @ drawing ][[ 2 ]],
+        Union @ Cases[ EdgeStyle /. Options[ drawing, EdgeStyle ], ( UndirectedEdge[ 2, 3 ] -> d_ ) :> First @ Cases[ d, AbsoluteThickness[ w_ ] :> w, Infinity ], Infinity ] } ] ) /@ { Automatic, 3 } ],
+  { { 2, { Black, 1 }, StandardBlue, 0.5, { 1 } }, { 2, { Black, 3 }, StandardBlue, 1.5, { 3 } } },
   SameTest -> Equal,
   TestID -> "InfraSubstrateHighlight-Arrowheads-black-contour-under-the-colour"
 ]
@@ -628,14 +631,14 @@ VerificationTest[
 ]
 
 (* the head rides on an Arrow whose shaft is invisible, Opacity[0]; the head graphic restores full opacity and carries
-   the walk's colour, a point bolder than its stroke, over the black contour *)
+   the walk's colour at half its stroke over the black contour at its stroke *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     With[ { drawing = InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3 } ] -> StandardRed }, "Arrowheads" -> Arrowheads[ Large ] ] },
       { Length @ Cases[ Epilog /. Options[ drawing, Epilog ],
           { Opacity[ 0 ], Arrowheads[ { { _, _, Graphics[ { Opacity[ 1 ], __ } ] } } ], _Arrow }, Infinity ],
         First[ headsOf @ drawing ][[ { 1, 2, 4 } ]] } ] ],
-  { 1, { StandardRed, 2, { Black, 4 } } },
+  { 1, { StandardRed, 0.5, { Black, 1 } } },
   SameTest -> Equal,
   TestID -> "InfraSubstrateHighlight-Arrowheads-spec-invisible-shaft"
 ]
@@ -674,14 +677,15 @@ VerificationTest[
 ]
 
 (* drawn, the head's size means what it means to Arrow: Small is smaller than Large, both absolute, while a number is a
-   fraction of the width, so its head doubles with the ImageSize; read off the black contour's pixels, which nothing
-   else draws *)
+   fraction of the width, so its head doubles with the ImageSize; read off the pixels the head changes against the same
+   drawing without it *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
-    { ink = { spec, size } |-> Count[ ImageData[ Rasterize[
+    { pixels = { spec, size } |-> ImageData[ Rasterize[
         InfraSubstrateHighlight[ g, { InfraWalk[ { 7, 8, 9 } ] -> StandardBlue }, "Arrowheads" -> spec, ImageSize -> size ],
-        "Image", Background -> White, ImageResolution -> 72 ], "Byte" ], px_ /; Max[ px ] < 60, { 2 } ] },
-    { ink[ None, 300 ] < ink[ Arrowheads[ Small ], 300 ] < ink[ Arrowheads[ Large ], 300 ],
+        "Image", Background -> White, ImageResolution -> 72 ], "Byte" ] },
+    { ink = { spec, size } |-> Count[ Map[ Max, Abs[ pixels[ spec, size ] - pixels[ None, size ] ], { 2 } ], d_ /; d > 40, { 2 } ] },
+    { 0 < ink[ Arrowheads[ Small ], 300 ] < ink[ Arrowheads[ Large ], 300 ],
       ink[ Arrowheads[ Large ], 600 ] < 1.25 ink[ Arrowheads[ Large ], 300 ],
       ink[ Arrowheads[ 0.1 ], 600 ] > 1.6 ink[ Arrowheads[ 0.1 ], 300 ] } ],
   { True, True, True },
