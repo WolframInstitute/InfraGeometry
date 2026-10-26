@@ -220,4 +220,4 @@ If the coordinates and transport are required to preserve fiber graphs, the bije
 
 This is the finite gauge interpretation in Ioana Milea's Fibered Graph Gauge Theory Basics, unpublished, 2026.
 It does not supply a face system or a continuum limit.
-The general holonomy reader remains a permutation of one finite fiber, and the retained flat-connection predicate remains the test of trivial global monodromy.
+The general holonomy reader remains a permutation of one finite fiber, and [InfraTrivialMonodromyQ]() tests trivial global monodromy.

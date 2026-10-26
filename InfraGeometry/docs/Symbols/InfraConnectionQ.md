@@ -5,7 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraConnectionQ
 Keywords: [connection, perfect matching, lift, predicate]
-SeeAlso: [InfraConnection, RandomInfraConnection, InfraHorizontalLift, InfraFlatConnectionQ, FindInfraLeviCivitaConnection]
+SeeAlso: [InfraConnection, RandomInfraConnection, InfraHorizontalLift, InfraTrivialMonodromyQ, FindInfraLeviCivitaConnection]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
 ---

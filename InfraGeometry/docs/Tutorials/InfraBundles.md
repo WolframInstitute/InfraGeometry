@@ -254,7 +254,7 @@ With[ { fib = InfraFiberedGraph[ CycleGraph[ 8 ], vertex |-> Mod[ vertex, 4, 1 ]
   InfraHolonomy[ fib, connection, { 1, 2, 3, 4, 1 } ] ]
 ```
 
-The retained flat-connection predicate tests *trivial global monodromy*: every closed base walk acts identically.
+[InfraTrivialMonodromyQ]() tests *trivial global monodromy*: every closed base walk acts identically.
 This is equivalent to every horizontal leaf projecting injectively.
 Indeed, two vertices in one leaf over the same base vertex give a lifted closed walk between them.
 Conversely, a closed walk with distinct lift endpoints places two such vertices in one leaf.

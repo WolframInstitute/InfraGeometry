@@ -5,7 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraConnection
 Keywords: [connection, perfect matching, horizontal edge, parallel transport, holonomy, horizontal leaf]
-SeeAlso: [InfraConnectionQ, RandomInfraConnection, InfraHorizontalLift, InfraParallelTransport, InfraHolonomy, InfraFlatConnectionQ]
+SeeAlso: [InfraConnectionQ, RandomInfraConnection, InfraHorizontalLift, InfraParallelTransport, InfraHolonomy, InfraTrivialMonodromyQ]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
 ---
@@ -22,7 +22,7 @@ A connection moves each vertex of *F(p)* to one vertex of *F(q)*: following *H* 
 
 A connection exists only if adjacent fibers have the same size and the total edges between them contain a perfect matching. A fibered graph can have many connections; a covering has exactly one, all its edges.
 
-The connected components of *H* are the horizontal leaves. The connection is flat, [InfraFlatConnectionQ](), when every leaf meets every fiber at most once.
+The connected components of *H* are the horizontal leaves. The connection has trivial global monodromy, [InfraTrivialMonodromyQ](), when every leaf meets every fiber at most once.
 
 [InfraConnection]() is a symbolic object: it carries no graph. [InfraConnectionQ]() tests it against a fibered graph, [RandomInfraConnection]() draws one and [InfraFiberedGraphHighlight]() draws it.
 
@@ -56,7 +56,7 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
   {fib = RandomInfraFiberedGraph[g, "VerticalVertexCount" -> {2}, "HorizontalEdgeCount" -> All, RandomSeeding -> 1]},
   {conn = RandomInfraConnection[fib, RandomSeeding -> 1]},
   {leaves = ConnectedComponents @ Graph[VertexList @ InfraTotalSpace[fib], First @ conn]},
-  {Length[leaves], InfraFlatConnectionQ[fib, conn]}]
+  {Length[leaves], InfraTrivialMonodromyQ[fib, conn]}]
 ```
 
 ## Properties and Relations
@@ -67,7 +67,7 @@ With two vertices in every fiber and all total edges, each base edge carries two
 With[{fib = RandomInfraFiberedGraph[CycleGraph[4], "VerticalVertexCount" -> {2}, "HorizontalEdgeCount" -> All,
     RandomSeeding -> 1]},
   {all = RandomInfraConnection[fib, All]},
-  {Length[all], Count[InfraFlatConnectionQ[fib, #] & /@ all, True]}]
+  {Length[all], Count[InfraTrivialMonodromyQ[fib, #] & /@ all, True]}]
 ```
 
 A covering has one connection, the set of all its edges:

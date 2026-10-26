@@ -89,7 +89,7 @@ VerificationTest[
     { RandomInfraConnection[ fib ], RandomInfraConnection[ fib, All ], RandomInfraConnection[ fib, 2 ],
       RandomInfraConnection[ fib, UpTo[ 2 ] ], InfraConnectionQ[ fib, InfraConnection[ { } ] ],
       InfraConnectionQ[ fib, { InfraConnection[ { } ] } ], InfraConnectionQ[ fib, { } ],
-      InfraFlatConnectionQ[ fib, InfraConnection[ { } ] ], InfraFlatConnectionQ[ fib, { } ] } ],
+      InfraTrivialMonodromyQ[ fib, InfraConnection[ { } ] ], InfraTrivialMonodromyQ[ fib, { } ] } ],
   { InfraConnection[ { } ], { InfraConnection[ { } ] }, { }, { InfraConnection[ { } ] }, True, True, False, True, False },
   TestID -> "RandomInfraConnection-unique-empty-connection-is-not-absence"
 ]
@@ -108,7 +108,7 @@ VerificationTest[
         Tuples[ { { 1, 2 }, { 3, 4 } } ], Tuples[ { { 3, 4 }, { 5, 6 } } ] ] ],
       <| 1 -> "p", 2 -> "p", 3 -> "q", 4 -> "q", 5 -> "r", 6 -> "r" |> ] },
     { members = RandomInfraConnection[ fib, All ] },
-    { Length @ members, DuplicateFreeQ @ members, InfraConnectionQ[ fib, members ], InfraFlatConnectionQ[ fib, members ] } ],
+    { Length @ members, DuplicateFreeQ @ members, InfraConnectionQ[ fib, members ], InfraTrivialMonodromyQ[ fib, members ] } ],
   { 4, True, True, True },
   TestID -> "RandomInfraConnection-independent-edge-matchings-multiply"
 ]
@@ -254,7 +254,7 @@ VerificationTest[
   With[ { fib = InfraFibration[ CycleGraph[ 8 ], vertex |-> Mod[ vertex, 4, 1 ] ],
       connection = InfraConnection[ EdgeList @ CycleGraph[ 8 ] ] },
     { InfraHolonomy[ fib, connection, { 1, 2, 3, 4, 1 } ], InfraHolonomy[ fib, connection, { 1, 2, 1 } ],
-      InfraHolonomy[ fib, connection, { 1 } ], InfraFlatConnectionQ[ fib, connection ] } ],
+      InfraHolonomy[ fib, connection, { 1 } ], InfraTrivialMonodromyQ[ fib, connection ] } ],
   { Cycles[ { { 1, 2 } } ], Cycles[ { } ], Cycles[ { } ], False },
   TestID -> "InfraHolonomy-twisted-double-cover-and-identity-walk"
 ]
@@ -271,9 +271,9 @@ VerificationTest[
   With[ { fib = InfraFibration[ GraphProduct[ CompleteGraph[ 3 ], CycleGraph[ 4 ], "Cartesian" ], Last ] },
     { connection = RandomInfraConnection[ fib, "NextVertexFunction" -> Identity ] },
     { InfraConnectionQ[ fib, connection ], InfraHolonomy[ fib, connection, { 1, 2, 3, 4, 1 } ],
-      InfraFlatConnectionQ[ fib, connection ] } ],
+      InfraTrivialMonodromyQ[ fib, connection ] } ],
   { True, Cycles[ { } ], True },
-  TestID -> "InfraFlatConnectionQ-product-bundle-has-trivial-global-monodromy"
+  TestID -> "InfraTrivialMonodromyQ-product-bundle-has-trivial-global-monodromy"
 ]
 
 VerificationTest[
@@ -281,9 +281,9 @@ VerificationTest[
     { fib = InfraFibration[ total, <| 1 -> 1, 2 -> 2, 3 -> 3, 4 -> 4, 5 -> 1, 6 -> 2, 7 -> 3, 8 -> 4,
         9 -> "p", 10 -> "q", 11 -> "p", 12 -> "q" |> ],
       connection = InfraConnection[ Join[ EdgeList @ CycleGraph[ 8 ], { UndirectedEdge[ 9, 10 ], UndirectedEdge[ 11, 12 ] } ] ] },
-    { InfraConnectionQ[ fib, connection ], InfraFlatConnectionQ[ fib, connection ] } ],
+    { InfraConnectionQ[ fib, connection ], InfraTrivialMonodromyQ[ fib, connection ] } ],
   { True, False },
-  TestID -> "InfraFlatConnectionQ-checks-all-disconnected-base-components"
+  TestID -> "InfraTrivialMonodromyQ-checks-all-disconnected-base-components"
 ]
 
 VerificationTest[
@@ -296,7 +296,7 @@ VerificationTest[
         InfraHorizontalLift[ fib, connection, 1, { 1, 2, 3, 4, 1 } ];
         InfraParallelTransport[ fib, connection, { 1, 2, 3, 4, 1 } ];
         InfraHolonomy[ fib, connection, { 1, 2, 3, 4, 1 } ];
-        InfraFlatConnectionQ[ fib, connection ];
+        InfraTrivialMonodromyQ[ fib, connection ];
         RandomInteger[ 10 ^ 9, 4 ] === reference ] ] ],
   True,
   TestID -> "InfraConnection-readers-consume-no-random-draws"
@@ -313,9 +313,9 @@ VerificationTest[
 VerificationTest[
   With[ { fib = InfraFibration[ Graph[ { }, { } ], <| |> ] },
     { InfraConnectionQ[ fib, { InfraConnection[ { } ], unknown } ],
-      InfraFlatConnectionQ[ fib, { InfraConnection[ { } ], unknown } ] } ],
+      InfraTrivialMonodromyQ[ fib, { InfraConnection[ { } ], unknown } ] } ],
   With[ { fib = InfraFibration[ Graph[ { }, { } ], <| |> ] },
-    { InfraConnectionQ[ fib, unknown ], InfraFlatConnectionQ[ fib, unknown ] } ],
+    { InfraConnectionQ[ fib, unknown ], InfraTrivialMonodromyQ[ fib, unknown ] } ],
   TestID -> "InfraConnectionQ-collection-does-not-turn-undecided-members-into-False"
 ]
 
@@ -341,7 +341,7 @@ VerificationTest[
       And @@ KeyValueMap[ { source, target } |-> Lookup[ joined, Key @ source ] === Lookup[ second, Key @ target ], first ],
       And @@ KeyValueMap[ { source, target } |-> Lookup[ reverse, Key @ target ] === source, joined ],
       InfraHorizontalLift[ fib, connection, 1, { 1, 2, 3, 1 } ],
-      InfraHolonomy[ fib, connection, { 1, 2, 3, 1 } ], InfraFlatConnectionQ[ fib, connection ] } ],
+      InfraHolonomy[ fib, connection, { 1, 2, 3, 1 } ], InfraTrivialMonodromyQ[ fib, connection ] } ],
   { True, <| 1 -> 1, 4 -> 4 |>, True, True, { 1, 2, 3, 4 }, Cycles[ { { 1, 2 } } ], False },
   TestID -> "InfraConnection-general-fibered-graph-transport-and-holonomy-laws"
 ]
@@ -355,6 +355,31 @@ VerificationTest[
       Head @ InfraParallelTransport[ fib, connection, { "p", "q" } ] } ],
   { False, { }, InfraHorizontalLift, InfraParallelTransport },
   TestID -> "InfraConnection-general-fibered-graph-still-requires-complete-matchings"
+]
+
+VerificationTest[
+  With[ { fib = InfraFiberedGraph[ CycleGraph[ 8 ], vertex |-> Mod[ vertex, 4, 1 ] ],
+      connection = InfraConnection[ EdgeList @ CycleGraph[ 8 ] ] },
+    { InfraFlatConnectionQ[ fib, connection ], InfraTrivialMonodromyQ[ fib, connection ],
+      InfraFlatConnectionQ[ fib, InfraConnection[ { } ] ], InfraTrivialMonodromyQ[ fib, InfraConnection[ { } ] ],
+      InfraFlatConnectionQ[ fib, { } ], InfraTrivialMonodromyQ[ fib, { } ] } ],
+  { False, False, False, False, False, False },
+  TestID -> "InfraTrivialMonodromyQ-legacy-spelling-preserves-negative-cases"
+]
+
+VerificationTest[
+  With[ { fib = InfraFiberedGraph[ GraphProduct[ CompleteGraph[ 2 ], CycleGraph[ 4 ], "Cartesian" ], Last ] },
+    { connection = RandomInfraConnection[ fib, "NextVertexFunction" -> Identity, RandomSeeding -> 7 ] },
+    { InfraFlatConnectionQ[ fib, connection ], InfraTrivialMonodromyQ[ fib, connection ],
+      InfraFlatConnectionQ[ fib, { connection, connection } ], InfraTrivialMonodromyQ[ fib, { connection, connection } ] } ],
+  { True, True, True, True },
+  TestID -> "InfraTrivialMonodromyQ-legacy-spelling-preserves-positive-and-list-cases"
+]
+
+VerificationTest[
+  { InfraTrivialMonodromyQ[ unknown, InfraConnection[ { } ] ], InfraFlatConnectionQ[ unknown, InfraConnection[ { } ] ] },
+  { InfraTrivialMonodromyQ[ unknown, InfraConnection[ { } ] ], InfraFlatConnectionQ[ unknown, InfraConnection[ { } ] ] },
+  TestID -> "InfraTrivialMonodromyQ-both-spellings-leave-unsupported-contexts-unevaluated"
 ]
 
 EndTestSection[ ]

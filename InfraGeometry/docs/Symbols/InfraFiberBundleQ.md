@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraFiberBundleQ
 Keywords: [fiber bundle, graph bundle, Cartesian graph bundle, isomorphic fibers, covering, twist, predicate]
-SeeAlso: [InfraFiberedGraph, InfraIsomorphicFibersQ, InfraUniqueEdgeLiftingQ, InfraCoveringQ, InfraFlatConnectionQ, InfraHolonomy, InfraFibers]
+SeeAlso: [InfraFiberedGraph, InfraIsomorphicFibersQ, InfraUniqueEdgeLiftingQ, InfraCoveringQ, InfraTrivialMonodromyQ, InfraHolonomy, InfraFibers]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
 ---

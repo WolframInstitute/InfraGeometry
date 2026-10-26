@@ -26,6 +26,17 @@ InfraConnectionQ[ fib : _[ _Graph, __ ], connections_List ] /;
 
 (* Global monodromy is trivial iff every horizontal leaf projects injectively to the base. *)
 
+InfraTrivialMonodromyQ[ fib : _[ _Graph, __ ], connection : InfraConnection[ edges_List ] ] /;
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
+  InfraConnectionQ[ fib, connection ] &&
+    With[ { projection = InfraProjection @ fib },
+      AllTrue[ ConnectedComponents @ Graph[ VertexList @ InfraTotalSpace @ fib, edges ],
+        DuplicateFreeQ[ Lookup[ projection, Key /@ # ] ] & ] ]
+
+InfraTrivialMonodromyQ[ fib : _[ _Graph, __ ], connections_List ] /;
+    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
+  connections =!= { } && And @@ ( InfraTrivialMonodromyQ[ fib, # ] & /@ connections )
+
 InfraFlatConnectionQ[ fib : _[ _Graph, __ ], connection : InfraConnection[ edges_List ] ] /;
     AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
   InfraConnectionQ[ fib, connection ] &&

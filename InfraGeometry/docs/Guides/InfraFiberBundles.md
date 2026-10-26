@@ -12,7 +12,30 @@ RelatedTutorials: [InfraBundles, ExperimentalInfraBundles]
 
 ## Abstract
 
-A fibered graph is an inert total graph with a vertex projection. Its base is reconstructed from that projection and its total edges. General operations generate examples, extend sections, choose complete connections and read transport and monodromy. Graph bundles additionally require a common fiber graph and transverse matchings preserving fiber adjacency. Particular tangent and metric-selected models are Experimental constructions within this category.
+<!-- LLM-PROTECTED: Preserve Pavel Hajek's wording; correct only what is wrong or unclear. Keep bold emphasis and linked inline function calls. -->
+
+Abstract written and reviewed by Pavel Hajek on 25 October 2026.
+
+Infra fiber bundles are **minimal models of fibrations on graphs**.
+Unlike lattice gauge theory, which usually uses continuous or discrete labels for parallel transport on edges and gauge transformations at vertices, infra fiber bundles operate with **unlabeled graphs** and a vertex projection, and all structure is aggregated from the graph structure of fibers and their connectivity.
+
+It turns out that there are natural minimal models of **sections, connections and holonomy**, and that certain natural properties make sense even at the **infra-level**, where all the information is given just by binary vertex connectivity and the projection.
+Partially defined sections can be extended while preserving their prescribed values.
+
+We use inert objects such as <code>[InfraFiberedGraph]()[*g*, *projection*]</code>.
+<code>[RandomInfraSection]()[*fib*, *partial*, *k*]</code> samples sections extending a prescribed partial section, and <code>[RandomInfraConnection]()[*fib*, *k*]</code> samples complete connections.
+<code>[InfraHolonomy]()[*fib*, *connection*, *loop*]</code> gives the permutation of a fiber obtained by transport around a closed base walk.
+
+There are many natural examples of fibered graphs.
+For example, a connected undirected graph can be seen as a fibered graph over a path graph when coordinatized by shortest-path distance from a source.
+Other examples come from the Wolfram Physics Project, where graph coordinatization means assigning labels to vertices, for example using chosen shortest-path projections to orthogonal paths.
+Fibers can be understood as **internal degrees of freedom** which are not seen by the observer using these paths to coordinatize.
+
+It turns out that there are natural constructions of **tangent and cotangent fiber bundles**, <code>[InfraTangentBundle]()[*g*, *r*]</code> and <code>[InfraCotangentBundle]()[*g*, *r*]</code>, that can be used to define infra notions of a **Levi-Civita connection** and a **canonical 1-form**, respectively.
+The current metric constructions use the displacement model.
+These are expected to converge to the corresponding objects under a suitable **Gromov-Hausdorff limit**, with compatible convergence of projections and transport.
+
+<!-- /LLM-PROTECTED -->
 
 ## Functions
 
@@ -45,7 +68,7 @@ A fibered graph is an inert total graph with a vertex projection. Its base is re
 - `InfraHorizontalLift` the unique ordered lift from a specified starting vertex
 - `InfraParallelTransport` the induced fiber bijection along a base walk
 - `InfraHolonomy` the fiber permutation around a closed walk
-- `InfraFlatConnectionQ` test trivial global monodromy over all base cycles
+- `InfraTrivialMonodromyQ` test trivial global monodromy over all base cycles
 
 - `InfraConnectionQ`, `PermutationCycles` (WL)
 
@@ -68,6 +91,7 @@ A fibered graph is an inert total graph with a vertex projection. Its base is re
 
 ### Migration
 
+- `InfraFlatConnectionQ` the compatibility spelling of `InfraTrivialMonodromyQ`
 - `InfraFibration` the retained inert head accepted alongside `InfraFiberedGraph`
 - `InfraTotalGraph`, `InfraBaseGraph`, `InfraFibrationAssociation` compatibility spellings of the structural readers
 - `FindInfraSection` the retained deterministic counted spelling for continuous-section enumeration

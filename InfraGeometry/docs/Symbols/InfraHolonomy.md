@@ -5,7 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraHolonomy
 Keywords: [holonomy, monodromy, permutation, connection, loop, parallel transport]
-SeeAlso: [InfraConnection, InfraHorizontalLift, InfraParallelTransport, InfraFlatConnectionQ, InfraHolonomyAngle, RandomInfraConnection]
+SeeAlso: [InfraConnection, InfraHorizontalLift, InfraParallelTransport, InfraTrivialMonodromyQ, InfraHolonomyAngle, RandomInfraConnection]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
 ---
@@ -29,7 +29,7 @@ Holonomy respects the operations on loops:
 | *γ* reversed | *hol(γ)⁻¹* |
 | *γ* started at another of its vertices | a conjugate of *hol(γ)* |
 
-All holonomies are the identity exactly when [InfraFlatConnectionQ]() is `True`.
+All holonomies are the identity exactly when [InfraTrivialMonodromyQ]() is `True`.
 
 *conn* must be a complete connection, as [InfraConnectionQ]() tests, and *loop* a closed walk in the base. On a covering the transverse edges are the only connection.
 

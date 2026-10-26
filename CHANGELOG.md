@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 2.12.1 (2026-10-26)
+
+- Added `InfraTrivialMonodromyQ` as the canonical name for the complete-connection test of identity holonomy around every closed base walk. `InfraFlatConnectionQ` retains its existing behavior for compatibility.
+- Revised the Infra Fiber Bundles guide with Pavel's latest abstract, bold emphasis and linked function calls. Related reference pages and tutorials distinguish trivial global monodromy from flatness on specified faces.
+
 ## 2.12.0 (2026-10-25)
 
 - **Breaking -- one straightness property for `RandomInfraWalk`.** `Properties -> {"Simple", "Straightness" -> β}` replaces the rule triples `{"Shortest", r, p}` and `{"Stretched", r, p}`, which were one rule under two names (the soft forms weighed alike, the hard `"Stretched"` was the `p -> 0` limit of the soft `"Shortest"`). `"Straightness" -> {β, r}` reads the window of scale *r* (default `Infinity`, the whole walk), and `f -> β`, `f -> {β, r}` takes a user energy `f[window]` in place of the defect. *β* is a non-negative number or `Infinity`. A caller on an old spelling breaks loudly: the call stays unevaluated with the message `RandomInfraWalk::rule`, which names the property that replaces it.

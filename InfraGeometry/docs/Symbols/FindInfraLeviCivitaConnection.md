@@ -57,7 +57,7 @@ On the square torus, with no rim, the connection is flat. On the octahedron it i
 ```wl
 With[{torus = InfraDisplacementBundle[InfraSubstrate["SquareTorusGraph", "Small"], 1]},
   {octahedron = InfraFiberedSubstrate["OctahedronDisplacementBundle"]},
-  Table[{InfraConnectionQ[fib, #], InfraFlatConnectionQ[fib, #]} & @ FindInfraLeviCivitaConnection[fib],
+  Table[{InfraConnectionQ[fib, #], InfraTrivialMonodromyQ[fib, #]} & @ FindInfraLeviCivitaConnection[fib],
     {fib, {torus, octahedron}}]]
 ```
 

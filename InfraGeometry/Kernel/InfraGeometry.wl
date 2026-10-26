@@ -219,6 +219,7 @@ PackageExport[FindInfraSection]
 
 PackageExport[InfraConnection]
 PackageExport[InfraConnectionQ]
+PackageExport[InfraTrivialMonodromyQ]
 PackageExport[InfraFlatConnectionQ]
 PackageExport[RandomInfraConnection]
 PackageExport[FindInfraHorizontalLift]
