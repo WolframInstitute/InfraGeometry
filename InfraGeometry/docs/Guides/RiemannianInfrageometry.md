@@ -18,7 +18,7 @@ RelatedTutorials: [MetricTensorTutorial, VolumeMeasurementTutorial, DimensionTut
 
 ## Abstract
 
-Abstract written by Pavel Hajek on 18 October 2026.
+*Abstract written by Pavel Hajek on 18 October 2026.*
 
 Riemannian Infrageometry describes and distinguishes graphs as **geometric substrates**. In contrast, synthetic infrageometry asks only whether certain postulates are satisfied by the substrate so that its propositions about geometric objects hold.
 

@@ -12,7 +12,7 @@ RelatedTutorials: [ExperimentalInfraBundles]
 
 ## Abstract
 
-Research functions not yet settled into a branch: walks and their singularities, osculating shells, the space of walks near a reference curve, the homotopy of walks by elementary moves, shortest-path counts and medians, vertex boundaries and eccentricities, metric coordinates and the metric dimension, Ollivier-Ricci curvature and effective resistance, and differential forms and cochains on the cliques of a graph.
+Experimental functions that are not yet part of the main API and can change drammatically or be dropped.
 
 ## Functions
 

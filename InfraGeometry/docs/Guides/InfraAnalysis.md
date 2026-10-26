@@ -11,7 +11,7 @@ RelatedGuides: [EuclideanInfrageometry, RiemannianInfrageometry, InfraTopology, 
 
 ## Abstract
 
-Abstract written and reviewed by Pavel Hajek on 26 October 2026.
+*Abstract written by Pavel Hajek on 26 October 2026.*
 
 <!-- LLM-PROTECTED: Pavel Hajek's current notebook wording. Preserve it verbatim; formatting and symbol-link changes only unless explicitly requested. -->
 
