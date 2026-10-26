@@ -16,24 +16,17 @@ RelatedTutorials: [InfraBundles, ExperimentalInfraBundles]
 
 Abstract written and reviewed by Pavel Hajek on 25 October 2026.
 
-Infra fiber bundles are **minimal models of fibrations on graphs**.
-Unlike lattice gauge theory, which usually uses continuous or discrete labels for parallel transport on edges and gauge transformations at vertices, infra fiber bundles operate with **unlabeled graphs** and a vertex projection, and all structure is aggregated from the graph structure of fibers and their connectivity.
+Infra fiber bundles are **minimal models of fibrations on graphs**. Unlike lattice gauge theory, which usually uses continuous or discrete labels for parallel transport on edges and gauge transformations at vertices, infra fiber bundles operate with **unlabeled graphs** and a vertex projection, and all structure is derived from the fibers and their connectivity.
 
-It turns out that there are natural minimal models of **sections, connections and holonomy**, and that certain natural properties make sense even at the **infra-level**, where all the information is given just by binary vertex connectivity and the projection.
-Partially defined sections can be extended while preserving their prescribed values.
+It turns out that there are natural minimal models of **sections, connections and holonomy**, and that certain natural properties make sense even at the **infra-level**, where all the information is specified by binary vertex connectivity and the projection. We have to relax some conditions because the objects are generally only partially defined. Surprisingly, many constructions still work, and whether they are globally defined becomes a separate question. We also build **scale dependence** into our construction to study different properties at different observer scales.
 
-We use inert objects such as <code>[InfraFiberedGraph]()[*g*, *projection*]</code>.
-<code>[RandomInfraSection]()[*fib*, *partial*, *k*]</code> samples sections extending a prescribed partial section, and <code>[RandomInfraConnection]()[*fib*, *k*]</code> samples complete connections.
-<code>[InfraHolonomy]()[*fib*, *connection*, *loop*]</code> gives the permutation of a fiber obtained by transport around a closed base walk.
+We use inert objects such as <code>[InfraFiberedGraph]()[*g*, *projection*]</code>. <code>[RandomInfraSection]()[*fib*, *partial*, *k*]</code> samples sections extending a prescribed partial section, and <code>[RandomInfraConnection]()[*fib*, *k*]</code> samples complete connections. <code>[InfraHolonomy]()[*fib*, *connection*, *loop*]</code> gives the map from a fiber to itself obtained by transport around a closed base walk.
 
-There are many natural examples of fibered graphs.
-For example, a connected undirected graph can be seen as a fibered graph over a path graph when coordinatized by shortest-path distance from a source.
-Other examples come from the Wolfram Physics Project, where graph coordinatization means assigning labels to vertices, for example using chosen shortest-path projections to orthogonal paths.
-Fibers can be understood as **internal degrees of freedom** which are not seen by the observer using these paths to coordinatize.
+There are many natural examples of fibered graphs. For example, a connected **directed graph can be seen as a fibered graph over a path graph** when coordinatized by shortest-path distance from its set of sources. In InfraAnalysis, such graphs are viewed as "puffed" real lines. **Graph coordinatization** - assigning labels to vertices based on natural choices and constructions, such as shortest-path projections onto a chosen set of orthogonal paths - gives another set of examples. When coordinatization is based on observer chains, as in the Wolfram Physics Project, fibers can be understood as **internal degrees of freedom**, which are not visible to mechanical observers.
 
-It turns out that there are natural constructions of **tangent and cotangent fiber bundles**, <code>[InfraTangentBundle]()[*g*, *r*]</code> and <code>[InfraCotangentBundle]()[*g*, *r*]</code>, that can be used to define infra notions of a **Levi-Civita connection** and a **canonical 1-form**, respectively.
-The current metric constructions use the displacement model.
-These are expected to converge to the corresponding objects under a suitable **Gromov-Hausdorff limit**, with compatible convergence of projections and transport.
+There are natural constructions of **tangent and cotangent fiber bundles** at a given observer scale r: <code>[InfraTangentBundle]()[*g*, *r*]</code> and <code>[InfraCotangentBundle]()[*g*, *r*]</code>. These can be used to define infra notions of a **Levi-Civita connection** and a **canonical 1-form**, respectively. Whereas the canonical 1-form is an exact construction with a unique result, the Levi-Civita connection need not be uniquely defined. We also distinguish between rays, which take into account the internal "webbing" of the fibers, and their endpoints, called **displacements**. These give different bundles related by a bundle morphism.
+
+We expect our constructions to converge to the corresponding objects in a suitable **Gromov-Hausdorff limit** along sequences of graphs obtained by subdivision. We also want to show how graphs obtained by expansive rewriting give rise to space and continuous notions when aggregated at large observer scales.
 
 <!-- /LLM-PROTECTED -->
 

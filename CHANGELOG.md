@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 2.12.2 (2026-10-26)
+
+- Corrected grammar and smoothed wording in the Infra Fiber Bundles guide, preserving Pavel's latest text, mathematical ideas, emphasis and linked function calls.
+
 ## 2.12.1 (2026-10-26)
 
 - Added `InfraTrivialMonodromyQ` as the canonical name for the complete-connection test of identity holonomy around every closed base walk. `InfraFlatConnectionQ` retains its existing behavior for compatibility.
