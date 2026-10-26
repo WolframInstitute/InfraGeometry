@@ -18,7 +18,7 @@ RelatedTutorials: [BreadthlessTriangleTutorial, StraighteningAtScaleTutorial]
 
 ## Abstract
 
-Abstract written and reviewed by Pavel Hajek on 18 October 2026.
+Abstract written by Pavel Hajek on 18 October 2026.
 
 Euclidean Infrageometry studies natural geometric objects on arbitrary graph substrates using synthetic methods. It enumerates these objects, studies their mutual relations, applies operations to them, and performs iterative constructions.
 

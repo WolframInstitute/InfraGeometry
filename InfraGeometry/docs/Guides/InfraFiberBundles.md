@@ -14,7 +14,7 @@ RelatedTutorials: [InfraBundles, ExperimentalInfraBundles]
 
 <!-- LLM-PROTECTED: Preserve Pavel Hajek's wording; correct only what is wrong or unclear. Keep bold emphasis and linked inline function calls. -->
 
-Abstract written and reviewed by Pavel Hajek on 25 October 2026.
+Abstract written by Pavel Hajek on 25 October 2026.
 
 Infra fiber bundles are **minimal models of fibrations on graphs**. Unlike lattice gauge theory, which usually uses continuous or discrete labels for parallel transport on edges and gauge transformations at vertices, infra fiber bundles operate with **unlabeled graphs** and a vertex projection, and all structure is derived from the fibers and their connectivity.
 
