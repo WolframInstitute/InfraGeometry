@@ -16,15 +16,11 @@ Experimental functions that are not yet part of the main API and can change dram
 
 ## Functions
 
-### Walks
+- Paths, walks, path selection and homotopy are covered by [Infra Topology](paclet:WolframInstitute/InfraGeometry/guide/InfraTopology).
 
-- `InfraWalk` the walk through $p_1, \dots, p_k$, an object of a scene
-- `RandomInfraWalk` random walks grown from a germ under rules and a stopping condition
-- `WalkSingularities` the self-intersections, self-tangencies and cusps of a walk
-- `ConcatenateInfraWalk` every compatible pair of walks joined end to start
+### Wavefronts
+
 - `FindAdvancingInfraFront` the foliation by a wavefront bouncing outward from an origin
-
-- `InfraWalkQ`, `InfraImmersedQ`, `InfraGenericQ`, `InfraWalkCrossingQ`
 
 ### Osculating shells
 
@@ -32,22 +28,6 @@ Experimental functions that are not yet part of the main API and can change dram
 - `FindInfraShellCenter` the centre and radii of a shell
 
 - `InfraShellQ`
-
-### Walk space
-
-- `SelectInfraWalk` a walk drawn from a bundle
-- `EmbeddingClosest` the bundle elements drawn closest to a Euclidean reference
-- `FindEmbeddingClosestPath` an embedded curve snapped to a walk graph
-- `InfraDeformationSize` the number of edges of a reference walk that a walk replaces
-
-### Homotopy of walks
-
-- `FindInfraHomotopy` a chain of elementary moves from one walk to another
-- `FindInfraHomotopyRepresentative` the shortest walks in the homotopy class of a walk
-- `FindInfraHomotopyRepresentativeHomotopy` the chain of moves reducing a walk to a shortest representative
-- `HomotopyMoveType` an elementary move classified as "Contract", "Extend" or "Lateral"
-
-- `HomotopicQ`, `NullHomotopicQ`, `HomotopyMoveTypes`
 
 ### Shortest-path counts and medians
 
@@ -103,11 +83,6 @@ Experimental functions that are not yet part of the main API and can change dram
 - `InfraRays`, `InfraBundleMorphism`, `InfraFiberedSubstrate` their rays, natural maps and example catalogue
 - `RandomInfraFibration` the compatibility generator with the earlier cyclic-width interpretation
 - `FindInfraLeviCivitaConnection`, `InfraHolonomyAngle`, `InfraCovariantDerivative`, `InfraCanonicalOneForm` metric-selected transport and measurements
-
-These remain loaded in the Infra Fiber Bundles category. Their particular geometric assumptions are separate from its general inert objects and complete connections.
-
-The [Experimental Infra Bundles tutorial](paclet:WolframInstitute/InfraGeometry/tutorial/ExperimentalInfraBundles) separates exact finite observations from proposed scale reduction and completion research. General fibered graphs and their structural predicates are covered by [Infra Bundles](paclet:WolframInstitute/InfraGeometry/tutorial/InfraBundles).
-
 
 ### Object relations
 

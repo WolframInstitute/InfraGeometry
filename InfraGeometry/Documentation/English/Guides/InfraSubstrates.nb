@@ -5,16 +5,6 @@
 
 (* CreatedBy='Wolfram 15.0' *)
 
-(*CacheID: 234*)
-(* Internal cache information:
-NotebookFileLineBreakTest
-NotebookFileLineBreakTest
-NotebookDataPosition[       154,          7]
-NotebookDataLength[     42279,       1130]
-NotebookOptionsPosition[     32185,        933]
-NotebookOutlinePosition[     33241,        963]
-CellTagsIndexPosition[     33198,        960]
-WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
 Notebook[{
@@ -30,142 +20,132 @@ Cell[TextData[StyleBox["Abstract written by Pavel Hajek on 27 October 2026.",
 
 Cell[TextData[{
  "We consider discrete substrates given by a ",
- StyleBox["graph",
-  FontWeight->"Bold"],
- " describing connectivity between vertices. A hypothetical ",
- StyleBox["infra geometer",
-  FontWeight->"Bold"],
- " walks on it to discover its geometry. More generally, we can imagine a ",
- StyleBox["computational observer",
-  FontWeight->"Bold"],
- " with bounded computation time and memory, and ask how it perceives the \
-graph. In the Wolfram Physics Project, the ",
- StyleBox["spatial graph",
-  FontWeight->"Bold"],
- " has vertices corresponding to events in a ",
- StyleBox["simultaneity slice",
-  FontWeight->"Bold"],
- " of a causal graph for a chosen observer. Spatial connectivity comes from \
-the lowest common ancestor relation, connecting vertices just one light tick \
-away, while persistence across time comes from forward causal relations."
+ StyleBox["graph", FontWeight->"Bold"],
+ ". A hypothetical ",
+ StyleBox["infra geometer", FontWeight->"Bold"],
+ " walks on the graph, organizes his observations and builds a notion of ",
+ StyleBox["graph geometry", FontWeight->"Bold"],
+ ". In general, we can imagine a ",
+ StyleBox["computational observer", FontWeight->"Bold"],
+ " with bounded computation time and memory, and ask how it perceives the graph."
 }], "GuideAbstract",
  CellChangeTimes->{{4.002010704666335*^9, 4.002011267203738*^9}, {
   4.002011442684883*^9, 4.002011446331736*^9}, {4.0020326467859697`*^9, 
   4.002033017630068*^9}, {4.002040152842187*^9, 4.0020402141066227`*^9}, {
-  4.0020427610127897`*^9, 4.002042914646401*^9}},
+  4.0020427610127897`*^9, 4.002042914646401*^9}, {4.0020789549552813`*^9, 
+  4.00207921239046*^9}, {4.0020801657617702`*^9, 4.0020801928532143`*^9}, {
+  4.0020936485969*^9, 4.002093657685149*^9}},
  CellID->2001916300,ExpressionUUID->"75054519-3f0e-4f60-81da-a28e4f963afc"],
 
 Cell[TextData[{
- "The geometric perception of a substrate depends on the observer. As a \
-minimal model of this dependence, we introduce a scalar ",
- StyleBox["observer scale",
-  FontWeight->"Bold"],
- ": the smallest meaningful size, at which the observer aggregates or \
-measures using balls of that scale. This lets us study ",
- StyleBox["renormalization of the geometry",
-  FontWeight->"Bold"],
+ "The substrate we consider here would be called a ",
+ StyleBox["spatial graph", FontWeight->"Bold"],
+ " in the Wolfram Physics Project. Its vertices correspond to events in a ",
+ StyleBox["simultaneity slice", FontWeight->"Bold"],
+ " of the causal graph of a single rewriting history, for a chosen observer. ",
+ StyleBox["Spatial connectivity", FontWeight->"Bold"],
+ " comes from the lowest common ancestor relation, connecting vertices just one light tick away, while ",
+ StyleBox["persistence", FontWeight->"Bold"],
+ " across time comes from forward causal relations. This is how space emerges in the hypergraph rewriting model for a particular observer."
+}], "GuideAbstract",
+ CellChangeTimes->{{4.002010704666335*^9, 4.002011267203738*^9}, {
+  4.002011442684883*^9, 4.002011446331736*^9}, {4.0020326467859697`*^9, 
+  4.002033017630068*^9}, {4.002040152842187*^9, 4.0020402141066227`*^9}, {
+  4.0020427610127897`*^9, 4.002042914646401*^9}, {4.0020789549552813`*^9, 
+  4.00207921239046*^9}, {4.0020801657617702`*^9, 4.002080191963084*^9}},
+ CellID->1184494191,ExpressionUUID->"3177c3de-564a-4d37-ac02-c53fc885e50c"],
+
+Cell[TextData[{
+ "As a minimal model of dependence on the observer, we introduce the scalar ",
+ StyleBox["observer scale", FontWeight->"Bold"],
+ " ",
+ Cell[BoxData[StyleBox["r", "TI"]], "InlineFormula", FontSize->0.9 Inherited],
+ ". The observer aggregates his measurements at this scale. In concrete cases, we can think of him using balls of radius ",
+ Cell[BoxData[StyleBox["r", "TI"]], "InlineFormula", FontSize->0.9 Inherited],
+ " for his measurements. Making constructions and measurements depend on scale allows us to study ",
+ StyleBox["renormalization of the geometry", FontWeight->"Bold"],
  "."
 }], "GuideAbstract",
  CellChangeTimes->{{4.002010704666335*^9, 4.002011267203738*^9}, {
   4.002011442684883*^9, 4.002011446331736*^9}, {4.0020326467859697`*^9, 
   4.002033017630068*^9}, {4.002040152842187*^9, 4.002040240404932*^9}, {
-  4.002042923398301*^9, 4.0020429956676893`*^9}},
+  4.002042923398301*^9, 4.0020429956676893`*^9}, {4.002079216502541*^9, 
+  4.002079333103153*^9}, {4.0020802213757763`*^9, 4.0020802702050056`*^9}},
  CellID->1130332716,ExpressionUUID->"80665f78-7781-41f0-abeb-96cacadf6e5f"],
 
 Cell[TextData[{
- "For our purposes, we distinguish several types of substrates. ",
- StyleBox["Open substrates",
-  FontWeight->"Bold"],
- " represent infinitesimal neighborhoods of their centers, with the observer \
-scale set to the radius. As the scale and the graph grow, we have more rays \
-from the center, viewed as germs of paths. We study the emergence of a ",
- StyleBox["linear structure",
-  FontWeight->"Bold"],
+ "We distinguish several types of substrates for our purposes. ",
+ StyleBox["Open substrates", FontWeight->"Bold"],
+ " represent infinitesimal neighborhoods of their centers, with the observer scale set to the radius. As the scale and the graph grow, we have more rays from the center, viewed as germs of paths, and we can study the emergence of a ",
+ StyleBox["linear structure", FontWeight->"Bold"],
  " using midpoints, a ",
- StyleBox["metric",
-  FontWeight->"Bold"],
+ StyleBox["Riemannian metric", FontWeight->"Bold"],
  " using shortest path projection, and a ",
- StyleBox["Riemann tensor",
-  FontWeight->"Bold"],
- " using volume measurements around the center. We can cut out these patches \
-as balls, for example from plane or hyperbolic tessellations, and remove rim \
-edges to indicate potential unboundedness."
+ StyleBox["Riemann tensor", FontWeight->"Bold"],
+ " using volume measurements around the center. We can cut out these neighborhoods as balls, for example from plane or hyperbolic tessellations, and remove rim edges to indicate potential unboundedness."
 }], "GuideAbstract",
  CellChangeTimes->{{4.0020402557311277`*^9, 4.002040362425467*^9}, {
   4.002043037414935*^9, 4.002043167595098*^9}, {4.002045980082642*^9, 
-  4.002046008114118*^9}},
+  4.002046008114118*^9}, {4.002079360158504*^9, 4.002079407029973*^9}, {
+  4.0020802776636744`*^9, 4.002080293520006*^9}},
  CellID->155901886,ExpressionUUID->"e09dcc05-f317-4579-a30b-91b380d69c87"],
 
 Cell[TextData[{
  "Following Riemann, we think of space as a ",
- StyleBox["webbing of paths",
-  FontWeight->"Bold"],
+ StyleBox["webbing of paths", FontWeight->"Bold"],
  ": continuous in his case and discrete in ours. He introduced the ",
- StyleBox["Riemannian metric",
-  FontWeight->"Bold"],
- " as the simplest infinitesimal quantity producing a length element with \
-natural properties. In continuous Riemannian geometry, the metric is extra \
-data on a smooth structure. In infrageometry, all geometric information is \
-already contained in the graph, so defining continuous geometry through ",
- StyleBox["Gromov-Hausdorff limits",
-  FontWeight->"Bold"],
- " of sequences of graphs is very natural."
+ StyleBox["Riemannian metric", FontWeight->"Bold"],
+ " as the simplest infinitesimal quantity producing a length element with natural properties. In continuous Riemannian geometry, the metric is extra data on a smooth structure. In infrageometry, all geometric information is already contained in the graph, and continuous geometry is a property of ",
+ StyleBox["Gromov-Hausdorff limits", FontWeight->"Bold"],
+ " of some sequences of graphs."
 }], "GuideAbstract",
  CellChangeTimes->{{4.002040377394616*^9, 4.0020404534027863`*^9}, {
-  4.0020431821396427`*^9, 4.002043484535565*^9}},
+  4.0020431821396427`*^9, 4.002043484535565*^9}, {4.002079451869672*^9, 
+  4.0020794699427223`*^9}, {4.002080876267776*^9, 4.002080881482609*^9}},
  CellID->708479071,ExpressionUUID->"405cecf8-4c80-4983-95c5-af3eb0eac126"],
 
 Cell[TextData[{
- "For ",
- StyleBox["closed substrates",
-  FontWeight->"Bold"],
- ", we define natural sequences of ",
- StyleBox["tessellations of closed surfaces",
-  FontWeight->"Bold"],
- " that could converge to continuous Riemannian geometries. The tessellations \
-include regular and uniform maps such as flat tori and hyperbolic quotients. \
-Their ",
- StyleBox["combinatorial curvature, Euler characteristic and genus",
-  FontWeight->"Bold"],
- " describe the surface structure."
+ StyleBox["Closed substrates", FontWeight->"Bold"],
+ " represent global objects. Besides path and cycle graphs in one dimension, we consider ",
+ StyleBox["tessellation graphs of closed surfaces", FontWeight->"Bold"],
+ " coming from regular and uniform maps. These tessellations should converge to continuous Riemannian surfaces, and their combinatorial structure determines the genus, Euler characteristic and curvature. We ask whether all geometries and geometric objects, such as tangent spaces, canonical forms and tensors, can emerge in a ",
+ StyleBox["Gromov-Hausdorff limit", FontWeight->"Bold"],
+ " of metric measure spaces."
 }], "GuideAbstract",
  CellChangeTimes->{{4.002046038539044*^9, 4.002046095866781*^9}, {
-  4.002046402763092*^9, 4.002046420821972*^9}},
+  4.002046402763092*^9, 4.002046420821972*^9}, {4.002079502712295*^9, 
+  4.002079576926284*^9}, {4.0020808931854563`*^9, 4.002080966073172*^9}, {
+  4.002093766198374*^9, 4.002093851991955*^9}},
  CellID->1574399198,ExpressionUUID->"bdb61935-3c02-43c5-99f1-09c7fbd006dd"],
 
 Cell[TextData[{
  "Going in the other direction, we discretize continuous geometry using ",
- StyleBox["uniform-length graphs",
-  FontWeight->"Bold"],
- ": contact graphs of hard-sphere packings with nearly equal edge lengths. \
-These graphs capture geometry directly in their combinatorial structure, \
-since no edge labels are needed to keep track of lengths. We also use ",
- StyleBox["barycentric subdivision",
-  FontWeight->"Bold"],
+ StyleBox["uniform-length graphs", FontWeight->"Bold"],
+ ", which we construct as contact graphs of hard-sphere packings. These graphs capture geometry directly in their combinatorial structure, since no edge labels are needed to keep track of lengths. We ask whether such discretizations exist for every continuous geometry. We also use ",
+ StyleBox["barycentric subdivision", FontWeight->"Bold"],
  " to study convergence."
 }], "GuideAbstract",
  CellChangeTimes->{{4.002046038539044*^9, 4.002046095866781*^9}, {
-  4.002046402763092*^9, 4.0020464718642683`*^9}},
+  4.002046402763092*^9, 4.0020464718642683`*^9}, {4.002080979059463*^9, 
+  4.002081011175271*^9}},
  CellID->1072938307,ExpressionUUID->"8a00f0bf-3ad5-4877-a96e-3a6e80f64c3f"],
 
 Cell[TextData[{
  "We also consider the ",
- StyleBox["1-skeletons of hypergraphs",
-  FontWeight->"Bold"],
+ StyleBox["hypergraphs", FontWeight->"Bold"],
  " produced by rewriting in the ",
- StyleBox["Wolfram Model",
-  FontWeight->"Bold"],
- ". These differ from the spatial graphs above. We eventually want to ask \
-whether every Riemannian manifold is a ",
- StyleBox["Gromov-Hausdorff limit",
-  FontWeight->"Bold"],
- " of a graph sequence generated by a finite collection of rewriting rules, \
-and how its geometry is determined by properties of those rules."
+ StyleBox["Wolfram Model", FontWeight->"Bold"],
+ ". These differ from the spatial graphs above. We eventually want to ask whether every Riemannian manifold is a ",
+ StyleBox["Gromov-Hausdorff limit", FontWeight->"Bold"],
+ " of a graph sequence generated by a finite collection of rewriting rules, and how its geometry is determined by properties of those rules. We think that all classical geometry emerges from a binary connectivity relation, so we convert hypergraphs to their ",
+ StyleBox["1-skeletons", FontWeight->"Bold"],
+ ". The hyperedges themselves could lead to higher geometry."
 }], "GuideAbstract",
  CellChangeTimes->{
   4.00204334557465*^9, {4.002043488155828*^9, 4.0020434939959517`*^9}, {
    4.002045457450406*^9, 4.002045575075243*^9}, {4.002046482809784*^9, 
-   4.0020464837202997`*^9}},
+   4.0020464837202997`*^9}, {4.002093729496163*^9, 4.0020937446303253`*^9}, {
+   4.0020938574298153`*^9, 4.00209390360172*^9}},
  CellID->271001027,ExpressionUUID->"a9c131f3-1819-49db-91ca-25b12fb3b695"],
 
 Cell[TextData[{
@@ -952,189 +932,3 @@ StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "GuidePageStylesExt.nb",
 ExpressionUUID->"4f3dd705-9635-4464-b348-9b4dec79eac8"
 ]
 (* End of Notebook Content *)
-
-(* Internal cache information *)
-(*CellTagsOutline
-CellTagsIndex->{}
-*)
-(*CellTagsIndex
-CellTagsIndex->{}
-*)
-(*NotebookFileOutline
-Notebook[{
-Cell[CellGroupData[{
-Cell[576, 22, 193, 2, 86, "GuideTitle",ExpressionUUID->"a7667160-9840-4899-9a53-5b76afe3139d",
- CellID->942062912],
-Cell[772, 26, 193, 2, 28, "GuideAbstract",ExpressionUUID->"9ee7768c-ef79-4ad4-8d9d-4a522d3c2d32",
- CellID->474127402],
-Cell[968, 30, 1223, 25, 132, "GuideAbstract",ExpressionUUID->"75054519-3f0e-4f60-81da-a28e4f963afc",
- CellID->2001916300],
-Cell[2194, 57, 762, 15, 80, "GuideAbstract",ExpressionUUID->"80665f78-7781-41f0-abeb-96cacadf6e5f",
- CellID->1130332716],
-Cell[2959, 74, 1045, 22, 132, "GuideAbstract",ExpressionUUID->"e09dcc05-f317-4579-a30b-91b380d69c87",
- CellID->155901886],
-Cell[4007, 98, 863, 17, 115, "GuideAbstract",ExpressionUUID->"405cecf8-4c80-4983-95c5-af3eb0eac126",
- CellID->708479071],
-Cell[4873, 117, 693, 16, 80, "GuideAbstract",ExpressionUUID->"bdb61935-3c02-43c5-99f1-09c7fbd006dd",
- CellID->1574399198],
-Cell[5569, 135, 673, 13, 80, "GuideAbstract",ExpressionUUID->"8a00f0bf-3ad5-4877-a96e-3a6e80f64c3f",
- CellID->1072938307],
-Cell[6245, 150, 800, 18, 80, "GuideAbstract",ExpressionUUID->"a9c131f3-1819-49db-91ca-25b12fb3b695",
- CellID->271001027],
-Cell[7048, 170, 527, 13, 70, "GuideAbstract",ExpressionUUID->"81d2e9f4-a279-426b-a1f1-630d14804f9f",
- CellID->269936036],
-Cell[7578, 185, 2157, 63, 70, "GuideAbstract",ExpressionUUID->"7f01840a-5748-497e-9460-0fd0dee6f383",
- CellID->1646071735]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[9772, 253, 109, 1, 70, "GuideFunctionsSection",ExpressionUUID->"06d423fc-f964-42c1-8e04-27990c4d9592",
- CellID->1866139230],
-Cell[CellGroupData[{
-Cell[9906, 258, 127, 1, 70, "GuideFunctionsSubsection",ExpressionUUID->"510813f5-0b72-49d4-9c2c-809df50e5b89",
- CellID->606674409],
-Cell[10036, 261, 571, 14, 70, "GuideText",ExpressionUUID->"fbf2aa5e-80f7-45bb-ab93-c819e3924a9d",
- CellID->124436107],
-Cell[10610, 277, 565, 14, 70, "GuideText",ExpressionUUID->"0700d8df-1fa2-475c-a37d-b2b87d030c14",
- CellID->1896061818],
-Cell[11178, 293, 552, 14, 70, "GuideText",ExpressionUUID->"05b3c602-94b3-4cf1-ac1d-45f16cdcff7d",
- CellID->601137293]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[11767, 312, 131, 1, 70, "GuideFunctionsSubsection",ExpressionUUID->"6ead3aea-461c-42d6-9380-7a4fd7c2ec31",
- CellID->1551407963],
-Cell[11901, 315, 802, 23, 70, "GuideText",ExpressionUUID->"22fb3619-c614-44e1-a711-8310c8f2d03c",
- CellID->1914675914],
-Cell[12706, 340, 576, 14, 70, "GuideText",ExpressionUUID->"bb791324-b1be-4229-8818-d4658b9432e8",
- CellID->2063119950],
-Cell[13285, 356, 955, 28, 70, "GuideText",ExpressionUUID->"5fa118a3-c17b-4f5d-8d56-4c905b1d9729",
- CellID->1586035188],
-Cell[14243, 386, 1430, 49, 70, "GuideText",ExpressionUUID->"0d8bbcd5-4e37-4fcf-877b-3345f5f4f663",
- CellID->1926378152]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[15710, 440, 131, 1, 70, "GuideFunctionsSubsection",ExpressionUUID->"328c3760-e741-4536-94dd-7a7aee400e18",
- CellID->1174138492],
-Cell[15844, 443, 572, 14, 70, "GuideText",ExpressionUUID->"f2e7dff7-89b5-420e-bae9-d62c55fc4f9c",
- CellID->518402761],
-Cell[16419, 459, 807, 23, 70, "GuideText",ExpressionUUID->"dcd14420-a0d3-4b37-b133-fb173a988fc3",
- CellID->454048248],
-Cell[17229, 484, 546, 14, 70, "GuideText",ExpressionUUID->"173569de-e1ec-43df-b5dc-de3ada5ae11f",
- CellID->1179506345]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[17812, 503, 132, 1, 70, "GuideFunctionsSubsection",ExpressionUUID->"d913b57e-2cc2-41c2-bc5e-5e3d16317765",
- CellID->541594958],
-Cell[17947, 506, 564, 14, 70, "GuideText",ExpressionUUID->"330ea8a9-633b-42b1-835f-8cb9311d27d1",
- CellID->1550763120],
-Cell[18514, 522, 574, 14, 70, "GuideText",ExpressionUUID->"989018b4-9426-4dd7-b964-4bb9a4662eb4",
- CellID->1814217848],
-Cell[19091, 538, 500, 15, 70, "GuideText",ExpressionUUID->"65c50655-d4bf-4d7b-a129-66e46dabe1f4",
- CellID->1586551230]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[19628, 558, 130, 1, 70, "GuideFunctionsSubsection",ExpressionUUID->"36c485bd-e421-40b5-89e5-ae005b28bda9",
- CellID->2009561458],
-Cell[19761, 561, 534, 14, 70, "GuideText",ExpressionUUID->"497ea8c6-b25e-4241-bf75-5541d338315a",
- CellID->1224108237],
-Cell[20298, 577, 842, 23, 70, "GuideText",ExpressionUUID->"63820861-ced4-4524-9efe-2bedb30a1f6a",
- CellID->693800999],
-Cell[21143, 602, 584, 14, 70, "GuideText",ExpressionUUID->"fd1b347e-ca63-41bf-8896-081616b13262",
- CellID->2024670630],
-Cell[21730, 618, 767, 24, 70, "GuideText",ExpressionUUID->"1f510f41-d3d6-448d-bd55-92fc03923820",
- CellID->1760891695]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[22534, 647, 132, 1, 36, "GuideFunctionsSubsection",ExpressionUUID->"131148ce-edec-43fd-90db-d4499481b9ee",
- CellID->834578558],
-Cell[22669, 650, 542, 14, 24, "GuideText",ExpressionUUID->"4c868746-5f73-4db7-8a3c-36da7d500fb8",
- CellID->1546125749],
-Cell[23214, 666, 548, 14, 24, "GuideText",ExpressionUUID->"9f236a61-9291-41b6-8400-49f77e08e86e",
- CellID->1183334743],
-Cell[23765, 682, 566, 14, 24, "GuideText",ExpressionUUID->"b641bd40-e4f8-4af1-a22c-64f74df3be00",
- CellID->460970734]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[24368, 701, 131, 1, 36, "GuideFunctionsSubsection",ExpressionUUID->"ce562ef9-d4f9-4efc-99b6-1fe046c4ab9c",
- CellID->1561611609],
-Cell[24502, 704, 590, 15, 40, "GuideText",ExpressionUUID->"54114086-9c09-4eb9-a76c-c06459a69d1b",
- CellID->1608662476],
-Cell[25095, 721, 709, 19, 24, "GuideText",ExpressionUUID->"6930e1c4-ba5c-43d1-af8e-e64d96fccb69",
- CellID->2118602049]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[25841, 745, 130, 1, 36, "GuideFunctionsSubsection",ExpressionUUID->"068c191f-a2aa-4116-880a-533dd68fe8e8",
- CellID->2065770283],
-Cell[25974, 748, 622, 15, 40, "GuideText",ExpressionUUID->"604f62a7-e225-4121-91a4-93176662d4ca",
- CellID->1033025332]
-}, Open  ]]
-}, Open  ]],
-Cell[26623, 767, 118, 1, 73, "GuideTutorialsSection",ExpressionUUID->"44b264ad-4036-4d3f-a2b1-bcbd0beda93c",
- CellID->415694126],
-Cell[CellGroupData[{
-Cell[26766, 772, 189, 2, 67, "GuideMoreAboutSection",ExpressionUUID->"b012e9a8-8629-4330-b472-638bdb48e014",
- CellID->23220180],
-Cell[26958, 776, 395, 10, 22, "GuideMoreAbout",ExpressionUUID->"8a92a722-7589-4206-827e-8c18fa4aa800",
- CellID->1567025153],
-Cell[27356, 788, 397, 10, 22, "GuideMoreAbout",ExpressionUUID->"91cd6c01-68c9-4e6d-aaea-ac410939930e",
- CellID->1798952576],
-Cell[27756, 800, 376, 10, 22, "GuideMoreAbout",ExpressionUUID->"830c1bdc-3e4b-48d3-811b-37c897c643ba",
- CellID->573678719],
-Cell[28135, 812, 377, 10, 22, "GuideMoreAbout",ExpressionUUID->"97bde5cf-21ad-4ca7-81fe-341d20afeec8",
- CellID->1764138850],
-Cell[28515, 824, 385, 10, 22, "GuideMoreAbout",ExpressionUUID->"32d418cf-7737-4962-b957-0dee5c267d01",
- CellID->1722421468],
-Cell[28903, 836, 374, 10, 22, "GuideMoreAbout",ExpressionUUID->"5db0124d-2e0e-4e52-9018-f4962c516420",
- CellID->658051116]
-}, Open  ]],
-Cell[29292, 849, 124, 1, 73, "GuideRelatedLinksSection",ExpressionUUID->"2dc80aad-4c3c-4d8f-a33c-54b9843f3e83",
- CellID->415694148],
-Cell[CellGroupData[{
-Cell[29441, 854, 110, 1, 71, "MetadataSection",ExpressionUUID->"53451b27-c3d6-4a17-b184-231764605c71",
- CellID->311882160],
-Cell[29554, 857, 476, 12, 25, "History",ExpressionUUID->"6017444c-6c3d-46d0-bb91-418175bbbd49",
- CellID->341476719],
-Cell[CellGroupData[{
-Cell[30055, 873, 123, 1, 20, "CategorizationSection",ExpressionUUID->"40a6ec8b-7ea1-4f1a-a95a-dcdbb20940c6",
- CellID->1122911449],
-Cell[30181, 876, 133, 2, 70, "Categorization",ExpressionUUID->"4573d943-09ee-4860-9a1b-1693883dbf02",
- CellID->686433507],
-Cell[30317, 880, 158, 2, 70, "Categorization",ExpressionUUID->"ccd6df8c-019f-44d4-a5a0-f46f4bebe83a",
- CellID->605800465],
-Cell[30478, 884, 155, 2, 70, "Categorization",ExpressionUUID->"b041ec74-3470-4514-9834-691f0d414316",
- CellID->468444828],
-Cell[30636, 888, 172, 2, 70, "Categorization",ExpressionUUID->"b5f2e016-42b2-415a-a468-302267886818",
- CellID->324324562]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[30845, 895, 111, 1, 20, "KeywordsSection",ExpressionUUID->"d2c083fb-5435-4e95-a3da-3a32a1815744",
- CellID->1427428552],
-Cell[30959, 898, 105, 1, 70, "Keywords",ExpressionUUID->"714d90b2-f601-4bf8-a67e-b08d3ab1a065",
- CellID->1251852827],
-Cell[31067, 901, 109, 1, 70, "Keywords",ExpressionUUID->"b4e2ed4b-b3af-461e-be42-a18874e6944b",
- CellID->609417448],
-Cell[31179, 904, 108, 1, 70, "Keywords",ExpressionUUID->"8ddb12b7-da09-45d5-9d4b-082f8e32893c",
- CellID->1129535993],
-Cell[31290, 907, 106, 1, 70, "Keywords",ExpressionUUID->"d3369f5d-1896-4d2d-bdf3-dfec6884826a",
- CellID->355994871],
-Cell[31399, 910, 100, 1, 70, "Keywords",ExpressionUUID->"397f07ff-5522-42dc-8fcb-8c9071122fb2",
- CellID->316356355],
-Cell[31502, 913, 103, 1, 70, "Keywords",ExpressionUUID->"8cf1a4a1-c8e5-4b49-a537-5df19c75e855",
- CellID->1979232160],
-Cell[31608, 916, 107, 1, 70, "Keywords",ExpressionUUID->"7f4e183c-fd6e-4421-830a-5d32818d59c0",
- CellID->433221090],
-Cell[31718, 919, 116, 1, 70, "Keywords",ExpressionUUID->"4b838d76-68ab-4e5c-8798-ab63e460d4bb",
- CellID->1177296300],
-Cell[31837, 922, 101, 1, 70, "Keywords",ExpressionUUID->"6bd2a457-ec93-46c5-a35a-4807d342f880",
- CellID->2052074289],
-Cell[31941, 925, 104, 1, 70, "Keywords",ExpressionUUID->"f6c302a0-4828-4771-85fb-c96a9ffb1eb3",
- CellID->625204403],
-Cell[32048, 928, 109, 1, 70, "Keywords",ExpressionUUID->"a59eed46-222c-41c4-95a0-b7f84269f71d",
- CellID->172916450]
-}, Closed]]
-}, Open  ]]
-}
-]
-*)
-
-(* End of internal cache information *)
-

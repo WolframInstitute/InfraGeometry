@@ -89,7 +89,3 @@ We expect our constructions to converge to the corresponding objects in a suitab
 - `InfraTotalGraph`, `InfraBaseGraph`, `InfraFibrationAssociation` compatibility spellings of the structural readers
 - `FindInfraSection` the retained deterministic counted spelling for continuous-section enumeration
 - `FindInfraHorizontalLift` the retained counted spelling of the unique lift on a complete connection
-
-The fibered-graph sampler takes RandomSeeding, a conjunction of Properties and vertex/edge count specifications. Section and connection samplers take RandomSeeding, a result count and NextVertexFunction. The default section class is set-theoretic; Properties -> {"Continuous"} requests adjacency preservation on every overload. All enumeration is deterministic by default. The Levi-Civita model's partial transport retains its existing model-specific call forms; general literal fibered graphs require a complete connection. The InfraGaugeTheory paclet uses some of the same names with different signatures; load it separately or use full contexts.
-
-The [Infra Bundles tutorial](paclet:WolframInstitute/InfraGeometry/tutorial/InfraBundles) develops the finite definitions and their implications. The [Experimental Infra Bundles tutorial](paclet:WolframInstitute/InfraGeometry/tutorial/ExperimentalInfraBundles) treats model-specific constructions, scale observations and proposed completion questions separately.
