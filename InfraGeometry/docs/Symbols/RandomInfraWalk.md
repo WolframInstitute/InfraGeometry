@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraWalk
 Keywords: [walk, germ, self-avoiding walk, simple path, straightness, defect, window, energy, Boltzmann weight, random walk, stopping condition]
 SeeAlso: [RandomInfraGeodesic, RandomInfraSegment, RandomInfraInfiniteLine, InfraWalk, InfraWalkQ, InfraGeodesicQ, WalkSingularities]
-RelatedGuides: [EuclideanInfrageometry]
+RelatedGuides: [EuclideanInfrageometry, InfraTopology]
 ---
 
 ## Usage
@@ -39,9 +39,9 @@ Each step chooses the next vertex among the neighbours of the last one, the cand
 
   *Dᵢ*(*w*) = (*m* − *i*) − *d*(*wᵢ*, *wₘ*)
 
-is the number of edges it wastes against a shortest path: 0 exactly when that piece is a shortest path. The defect of the window is the sum over its vertices,
+is the number of edges it wastes against a shortest path: 0 exactly when that piece is a shortest path. The defect of the window is the mean over its vertices,
 
-  *D*(*w*) = *D*₁(*w*) + *D*₂(*w*) + ⋯ + *D*ₘ₋₁(*w*),
+  *D*(*w*) = (*D*₁(*w*) + *D*₂(*w*) + ⋯ + *D*ₘ₋₁(*w*)) / (*m* − 1),
 
 0 exactly when the window is a shortest path, and positive for a bend at any scale up to *r*.
 
@@ -49,13 +49,14 @@ is the number of edges it wastes against a shortest path: 0 exactly when that pi
 
   Δ(*v*) = *D*(*w* + *v*) − min_*u* *D*(*w* + *u*),
 
-so Δ counts, against the best candidate, the earlier vertices of the window that the step does not move away from. The step draws *v* with probability `Exp[-β Δ(v)]` divided by the sum of `Exp[-β Δ(u)]` over the candidates: a Boltzmann weight at inverse temperature *β*.
+so Δ is, against the best candidate, the fraction of earlier vertices of the window that the step does not move away from, between 0 and 2. The step draws *v* with probability `Exp[-β Δ(v)]` divided by the sum of `Exp[-β Δ(u)]` over the candidates: a Boltzmann weight at inverse temperature *β*. On a mesh whose path distance is close to the Euclidean one, a turn by the angle *θ* costs about *β* (1 − cos *θ*) ≈ *β* *θ*² / 2, whatever the length of the window, so *β* is a bending rigidity: turns of order 1/√*β* are typical.
 
 | *β* | The walk |
 |---|---|
 | 0 | the plain random walk: every candidate weighs alike |
-| 1 | wanders, with a preference for going on |
-| 5 | nearly straight |
+| 2 | wanders, with a preference for going on |
+| 8 | bends by about 20° per step |
+| 32 | nearly straight |
 | `Infinity` | always a candidate of Δ = 0; straightness never ends the walk, since some candidate always has Δ = 0 |
 
 A walk is a shortest path at scale *r* (`InfraGeodesicQ[g, walk, r]`) exactly when every step moves away from all the earlier vertices of its window, that is when *D*(*w* + *v*) = 0 at every step; at *β* = `Infinity` the walk takes such a step whenever one exists.
@@ -102,22 +103,22 @@ With[{g = InfraSubstrate["SquareGridGraph", "Medium"]}, {c = First @ GraphCenter
   Table[Length @ RandomInfraWalk[g, c, {k}, All, Properties -> {"Simple"}], {k, 5}]]
 ```
 
-From the random walk to a straight one: 9 edges from the centre of the square mesh at *β* = 0, 1, 5 and `Infinity`:
+From the random walk to a straight one: 9 edges from the centre of the square mesh at *β* = 0, 2, 8, 32 and `Infinity`:
 
 ```wl
 With[{g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
   GraphicsRow[Table[
     InfraSubstrateHighlight[g, {RandomInfraWalk[g, c, {9}, Properties -> {"Simple", "Straightness" -> b}, RandomSeeding -> 2], c},
       PlotLabel -> b],
-    {b, {0, 1, 5, Infinity}}], ImageSize -> Large]]
+    {b, {0, 2, 8, 32, Infinity}}], ImageSize -> Large]]
 ```
 
-One step: a walk of 6 edges from the centre of the square mesh, its candidates for the next vertex labelled by their excess defect Δ. The two candidates of Δ = 0 move away from every earlier vertex; at *β* = 1 the one of Δ = 3 is drawn *e*³ ≈ 20 times less often:
+One step: a walk of 6 edges from the centre of the square mesh, its candidates for the next vertex labelled by their excess defect Δ. The candidate of Δ = 0 moves away from every earlier vertex; the other has Δ = 6/7 and at *β* = 8 is drawn about 950 times less often, the factor `Exp[8 · 6/7]`:
 
 ```wl
 With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
-  {walk = Last /@ VertexList @ RandomInfraWalk[g, c, {6}, Properties -> {"Simple", "Straightness" -> 1}, RandomSeeding -> 1]},
-  {defect = w |-> Total @ Table[(Length[w] - i) - GraphDistance[g, w[[i]], Last[w]], {i, Length[w] - 1}],
+  {walk = Last /@ VertexList @ RandomInfraWalk[g, c, {6}, Properties -> {"Simple", "Straightness" -> 8}, RandomSeeding -> 1]},
+  {defect = w |-> Mean @ Table[(Length[w] - i) - GraphDistance[g, w[[i]], Last[w]], {i, Length[w] - 1}],
    candidates = Complement[AdjacencyList[g, Last[walk]], walk]},
   {excess = # - Min[#] & @ AssociationMap[v |-> defect[Append[walk, v]], candidates]},
   Graph[InfraSubstrateHighlight[g, Join[{InfraWalk[walk], c}, Thread[candidates -> StandardOrange]]],
@@ -179,11 +180,11 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}
     {dir, {"Forward", "Backward", "BothSides"}}]]
 ```
 
-At both ends the straightness reads the joined walk: 8 edges on each side of the centre of the square mesh at *β* = 5 make one nearly straight walk of 16 edges; the label is the distance of its ends:
+At both ends the straightness reads the joined walk: 8 edges on each side of the centre of the square mesh at *β* = 32 make one nearly straight walk of 16 edges; the label is the distance of its ends:
 
 ```wl
 With[{g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
-  {walk = RandomInfraWalk[g, c, {8}, Properties -> {"Simple", "Straightness" -> 5}, "Direction" -> "BothSides", RandomSeeding -> 2]},
+  {walk = RandomInfraWalk[g, c, {8}, Properties -> {"Simple", "Straightness" -> 32}, "Direction" -> "BothSides", RandomSeeding -> 2]},
   InfraSubstrateHighlight[g, {walk, c}, PlotLabel -> GraphDistance[g, First @ #, Last @ #] & @ (Last /@ VertexList[walk]),
     ImageSize -> Medium]]
 ```
@@ -202,11 +203,11 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}
 
 ## Properties and Relations
 
-`"Straightness"` is the summed defect *D* as an energy, walk for walk:
+`"Straightness"` is the mean defect *D* as an energy, walk for walk:
 
 ```wl
 With[{g = InfraSubstrate["SquareMeshGraph", "Medium"]}, {c = First @ GraphCenter[g]},
-  {defect = w |-> Total @ Table[(Length[w] - i) - GraphDistance[g, w[[i]], Last[w]], {i, Length[w] - 1}]},
+  {defect = w |-> Mean @ Table[(Length[w] - i) - GraphDistance[g, w[[i]], Last[w]], {i, Length[w] - 1}]},
   Table[RandomInfraWalk[g, c, {10}, Properties -> {"Straightness" -> 2}, RandomSeeding -> s] ===
     RandomInfraWalk[g, c, {10}, Properties -> {defect -> 2}, RandomSeeding -> s], {s, 5}]]
 ```
@@ -215,7 +216,7 @@ A walk is a shortest path exactly when every step has defect 0. At *β* = `Infin
 
 ```wl
 With[{g = InfraSubstrate["SquareMeshGraph", "Large"]}, {c = First @ GraphCenter[g]},
-  {defect = w |-> Total @ Table[(Length[w] - i) - GraphDistance[g, w[[i]], Last[w]], {i, Length[w] - 1}]},
+  {defect = w |-> Mean @ Table[(Length[w] - i) - GraphDistance[g, w[[i]], Last[w]], {i, Length[w] - 1}]},
   Table[With[{w = Last /@ VertexList @ RandomInfraWalk[g, c, {10}, Properties -> {"Simple", "Straightness" -> Infinity}, RandomSeeding -> s]},
     {AllTrue[Table[defect @ Take[w, k], {k, 2, Length[w]}], # == 0 &], InfraGeodesicQ[g, w]}], {s, 6}]]
 ```

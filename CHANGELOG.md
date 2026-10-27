@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **`"Straightness"` averages the defect over the window instead of summing it.** The energy of a candidate is now `D(w) = (1 / (m - 1)) Σ Dᵢ(w)`, the mean of the per-vertex defects, so the excess Δ lies in [0, 2] and the cost of a turn no longer grows with the window: under the sum a walk at `r = Infinity` froze as it grew (the mildest turning candidate at *β* = `Infinity` cost 2, 8, 7, 24, 29 after 5, 10, 20, 25, 30 edges on the Large square mesh). Under the mean a turn by *θ* on a mesh costs about *β* (1 − cos *θ*), whatever the window, so *β* is a bending rigidity with typical turn 1/√*β*; the doc page's calibration is now *β* = 0, 2, 8, 32. Minimisers, the zero set and *β* = `Infinity` are unchanged, so `RandomInfraGeodesic` and every hard rule are unaffected; a finite *β* on an old call corresponds to the new *β* times the window length. The proofs are § Infra walks of the paper `FromPavel/Research/InfraGeometry.tex`.
+
 ## 2.12.2 (2026-10-26)
 
 - Corrected grammar and smoothed wording in the Infra Fiber Bundles guide, preserving Pavel's latest text, mathematical ideas, emphasis and linked function calls.

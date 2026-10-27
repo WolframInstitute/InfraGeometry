@@ -1798,19 +1798,19 @@ VerificationTest[
   TestID -> "RandomInfraWalk-no-rule-and-order-is-refused"
 ]
 
-(* "Straightness" is the defect of the window summed over its vertices,
-   D(w) = Sum[ (m - i) - d(w_i, w_m), i < m ]: written out as a user energy it
+(* "Straightness" is the defect of the window averaged over its vertices,
+   D(w) = Mean[ (m - i) - d(w_i, w_m), i < m ]: written out as a user energy it
    gives the same walks, walk for walk, under every weighted order, window and β *)
 VerificationTest[
   With[ { g = InfraSubstrate[ "SquareMeshGraph", "Medium", "KeepCoordinates" -> True ] },
     { c = First @ GraphCenter @ g,
-      defect = w |-> Total @ Table[ ( Length[ w ] - i ) - GraphDistance[ g, w[[ i ]], Last @ w ], { i, Length[ w ] - 1 } ] },
+      defect = w |-> Mean @ Table[ ( Length[ w ] - i ) - GraphDistance[ g, w[[ i ]], Last @ w ], { i, Length[ w ] - 1 } ] },
     Union @ Flatten @ Table[
       RandomInfraWalk[ g, c, { 8 }, Properties -> { "Simple", "Straightness" -> { b, r } }, "NextVertexFunction" -> order, RandomSeeding -> seed ] ===
         RandomInfraWalk[ g, c, { 8 }, Properties -> { "Simple", defect -> { b, r } }, "NextVertexFunction" -> order, RandomSeeding -> seed ],
       { order, { Automatic, RandomSample, RandomChoice } }, { b, { 0, 1.2, 5, Infinity } }, { r, { 3, Infinity } }, { seed, 2 } ] ],
   { True },
-  TestID -> "RandomInfraWalk-Straightness-is-the-summed-defect"
+  TestID -> "RandomInfraWalk-Straightness-is-the-mean-defect"
 ]
 
 (* at β = Infinity every step takes a candidate of least summed defect, and a
