@@ -12,7 +12,16 @@ RelatedTutorials: [DimensionTutorial]
 
 ## Abstract
 
-The topology of a substrate is read off its metric balls. The closed balls of one radius $r$ generate a topology: a vertex $q$ lies in the closure of a vertex $p$ when the $r$-ball at $p$ is contained in the $r$-ball at $q$. This specialization preorder carries closure, interior, boundary, neighbourhood and continuity. A family of balls forms a complex through its intersections: a simplex is admitted when every $k$ of its balls have a common point, so $k = 2$ gives the Vietoris-Rips complex of twice the radius, $k = \infty$ the Cech complex, and the orders between interpolate. The least number $N(r)$ of balls of radius $r$ that cover the substrate falls as $r$ grows, and the rate of that fall is a dimension.
+*Abstract written by Pavel Hajek on 27 October 2026.*
+
+We consider topology as viewed by an observer at scale $r$. The **ball intersection complex**, computed by [BallIntersectionComplex](), uses the information of overlaps of cover by balls of radius $r$. A collection of $k+1$ balls forms a $k$-simplex when every subcollection of at most $m$ balls has a common point. For $m=\infty$, we obtain the **Cech complex**, computed by [CechComplex](). For $m=2$, we obtain the **Vietoris-Rips complex** with threshold $2r$.
+
+We consider several notions of **dimension** at an observer scale. A **Hausdorff-type dimension** is based on the number of balls of radius $s<r$ needed to cover a ball of radius $r$ around a point $p$. [BallCoverNumber]() computes the minimal number of balls, while [FindBallCover]() finds their centers. In particular, we can study how the number of radius-$r/2$ balls needed to cover a radius-$r$ ball changes with $r$. Another notion is based on the maximal number of **mutually orthogonal axes** of length $r$ through $p$, computed using [FindInfraOrthogonalAxes](). We also define a dimension using **equidistant sets**: starting from pairs of maximally distant points on the radius-$r$ shell around $p$, we consider their perpendicular bisectors and ask for the maximal number of independent bisectors having a nonempty common intersection. [InfraEquidistantSet]() represents this common set, and [FindInfraEquidistantSet]() computes it. A further notion uses intersections of radius-$r$ balls and asks for the smallest intersection order at which intersections of small subcollections determine whether the whole family has a common point. Finally, [VolumeGrowthObservables]() implements the Riemannian idea of extracting dimension, together with scalar curvature, from the growth of **ball and shell volumes** with radius.
+
+We also study **homotopy of paths and loops** through small deformations. "NullHomotopicCycles" specifies which cycles can be contracted. [FindInfraHomotopy]() finds deformations, while [HomotopicQ]() and [NullHomotopicQ]() test homotopy and null-homotopy. We also consider **forward deformations of shortest paths**: distance from the starting point never decreases, and excess length counts steps within distance shells. These walks can be counted using adjacency-matrix powers. [InfraDeformationSize]() measures how many edges of the reference path are replaced.
+
+Infra topology also includes the **topological properties of fibre bundles**, discussed in the [Infra Fiber Bundles](paclet:WolframInstitute/InfraGeometry/guide/InfraFiberBundles) guide.
+<!-- Dimension provenance: BlogWriting/MeetingsMaterial/Infrageometry_2026-06-07.nb, Equidistant set and dimension; GeneralMeetings/NikMeeting2.nb, Dimensions; SubProjects/DiscreteGeometry/Wiki/DiscreteGeometry/BallIntersectionComplex.md, The Helly ladder. Graph dimension criteria remain proposals. -->
 
 ## Functions
 
@@ -51,3 +60,21 @@ The topology of a substrate is read off its metric balls. The closed balls of on
 - `BallCoverNumber` the covering number $N(r)$, the $r$-domination number
 - `BallCoverQ` whether the $r$-balls about a set of centres cover the substrate
 - `InfraBallHull` the intersection of all closed balls containing a set
+
+### Notions of dimension
+
+- `InfraEquidistantSet` the common equidistant set of a list of points
+- `FindInfraEquidistantSet` the vertices at equal graph distance from all points
+- `FindInfraOrthogonalAxes` a maximal family of mutually perpendicular axes through a point
+- `VolumeGrowthObservables` dimension and scalar curvature from ball and shell volumes
+
+### Path and loop homotopy
+
+- `FindInfraHomotopy` a sequence of elementary deformations between two paths or loops
+- `HomotopicQ` whether two paths or loops are homotopic
+- `NullHomotopicQ` whether a loop can be contracted to a point
+- `FindInfraHomotopyRepresentative` the shortest representatives of a homotopy class
+- `FindInfraHomotopyRepresentativeHomotopy` a sequence of deformations to a shortest representative
+- `InfraDeformationSize` the number of edges of a reference path replaced by a deformation
+- `HomotopyMoveType` an elementary deformation classified as contraction, extension or lateral movement
+- `HomotopyMoveTypes` the types of successive deformations in a homotopy
