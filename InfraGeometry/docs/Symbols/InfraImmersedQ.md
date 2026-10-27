@@ -7,6 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraImmersedQ
 Keywords: [immersion, immersed curve, cusp, backtrack, non-backtracking walk, walk, test]
 SeeAlso: [InfraWalkQ, InfraGenericQ, WalkSingularities, RandomInfraWalk, InfraGeodesicQ]
+RelatedGuides: [InfraTopology]
 ---
 
 ## Usage

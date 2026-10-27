@@ -7,6 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraWalk
 Keywords: [walk, path, closed walk, curve, orientation, scene]
 SeeAlso: [InfraWalkQ, RandomInfraWalk, WalkSingularities, InfraSubstrateHighlight, InfraScene, InfraSegment]
+RelatedGuides: [InfraTopology]
 ---
 
 ## Usage

@@ -7,6 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraDeformationSize
 Keywords: [deformation, homotopy, walk distance, prefix, suffix, edit]
 SeeAlso: [SelectInfraWalk, FindInfraHomotopy, RandomInfraSegment, InfraWalk]
+RelatedGuides: [InfraTopology]
 ---
 
 ## Usage

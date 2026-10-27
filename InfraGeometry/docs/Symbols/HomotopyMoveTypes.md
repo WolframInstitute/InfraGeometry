@@ -7,6 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/HomotopyMoveTypes
 Keywords: [homotopy chain, move types, contraction, extension, lateral move]
 SeeAlso: [HomotopyMoveType, FindInfraHomotopy, FindInfraHomotopyRepresentativeHomotopy]
+RelatedGuides: [InfraTopology]
 ---
 
 ## Usage

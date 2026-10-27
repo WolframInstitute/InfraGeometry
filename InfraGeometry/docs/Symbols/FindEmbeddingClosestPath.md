@@ -7,6 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindEmbeddingClosestPath
 Keywords: [snap, digitize, curve, rasterize, walk, embedding, nearest vertex]
 SeeAlso: [EmbeddingClosest, InfraGenericQ, WalkSingularities, InfraWalk, GraphEmbedding]
+RelatedGuides: [InfraTopology]
 ---
 
 ## Usage

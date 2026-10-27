@@ -6,7 +6,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/IntervalGraph
 Keywords: [construction graph, shortest path, directed acyclic graph, metric interval, segment]
 SeeAlso: [InfraSegment, InfraMeasurement, RayGraph, BeamGraph, ArcGraph, SprayGraph, MetricInterval]
-RelatedGuides: [EuclideanInfrageometry]
+RelatedGuides: [EuclideanInfrageometry, InfraTopology]
 ---
 
 ## Usage

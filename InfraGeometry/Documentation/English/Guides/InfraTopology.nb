@@ -1,1555 +1,971 @@
-(* Content-type: application/vnd.wolfram.mathematica *)
-
-(*** Wolfram Notebook File ***)
-(* http://www.wolfram.com/nb *)
-
-(* CreatedBy='Wolfram 15.0' *)
-
-(*CacheID: 234*)
-(* Internal cache information:
-NotebookFileLineBreakTest
-NotebookFileLineBreakTest
-NotebookDataPosition[       154,          7]
-NotebookDataLength[     58805,       1546]
-NotebookOptionsPosition[     47872,       1371]
-NotebookOutlinePosition[     48911,       1400]
-CellTagsIndexPosition[     48868,       1397]
-WindowFrame->Normal*)
-
-(* Beginning of Notebook Content *)
-Notebook[{
-
-Cell[CellGroupData[{
-Cell["Infra Topology", "GuideTitle",
- CellID->942062912,ExpressionUUID->"a3a3c038-ca24-47b7-9945-83f1c1312fe3"],
-
-Cell[TextData[StyleBox["Abstract written by Pavel Hajek on 27 October 2026.",
- FontSlant->"Italic"]], "GuideAbstract",
- CellID->275198331,ExpressionUUID->"a9f77475-5dd5-461a-8ee8-7a71be15fca1"],
-
-Cell[TextData[{
- "We study the topology, or global structure, of an infra substrate as seen \
-by an infra observer at scale ",
- Cell[BoxData[
-  StyleBox["r", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "5128aa96-e6fa-4d48-bd14-5f179c87332f"],
- ". The ",
- StyleBox["ball intersection complex",
-  FontWeight->"Bold"],
- ", computed by ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["BallIntersectionComplex"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/BallIntersectionComplex", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "7bc8cd16-1876-426f-8f31-2f9468046890"],
- ", encodes the intersections among the balls of radius ",
- Cell[BoxData[
-  StyleBox["r", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "72f8ad6e-c17c-4824-8020-267bc1616a9f"],
- " covering the substrate. A collection of ",
- Cell[BoxData[
-  RowBox[{
-   StyleBox["k", "TI"], "+", "1"}]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "d4305a82-a763-4d16-9bbd-c29a185fa650"],
- " balls spans a ",
- Cell[BoxData[
-  StyleBox["k", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "491b00a3-e839-431a-9665-e9a74654e9a1"],
- "-simplex whenever every subcollection of at most ",
- Cell[BoxData[
-  StyleBox["m", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "5b332e9a-cbc0-4867-b57e-5bc8a3aa01a3"],
- " balls has nonempty intersection. The case ",
- Cell[BoxData[
-  RowBox[{
-   StyleBox["m", "TI"], "=", "\[Infinity]"}]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "6086ae4b-fe1a-4a6b-8890-169a5ad5d90b"],
- " recovers the ",
- StyleBox["\[CapitalCHacek]ech complex",
-  FontWeight->"Bold"],
- ", computed by ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["CechComplex"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/CechComplex", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "2e337c7e-38a5-44ea-aa84-9adf601f2295"],
- ", while ",
- Cell[BoxData[
-  RowBox[{
-   StyleBox["m", "TI"], "=", "2"}]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "fb82d728-d7e0-4f85-9976-9b20bca67bfc"],
- " recovers the ",
- StyleBox["Vietoris\[Dash]Rips complex",
-  FontWeight->"Bold"],
- " at threshold ",
- Cell[BoxData[
-  RowBox[{"2", 
-   StyleBox["r", "TI"]}]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "f2077970-2b56-405f-a733-e55964738112"],
- "."
-}], "GuideAbstract",
- CellChangeTimes->{{4.002049503088282*^9, 4.002049505070956*^9}, {
-  4.0020498514154387`*^9, 4.002049869078261*^9}, {4.002050711249585*^9, 
-  4.002050725391959*^9}},
- CellID->715985883,ExpressionUUID->"cc68bfc1-e1cc-409c-9133-372fe38a1d33"],
-
-Cell[TextData[{
- "We consider several notions of ",
- StyleBox["dimension",
-  FontWeight->"Bold"],
- " at an observer scale ",
- Cell[BoxData[
-  StyleBox["r", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "ef4e7bc0-ddb1-4a89-8eef-12a46350be0a"],
- ". A ",
- StyleBox["Hausdorff-type dimension",
-  FontWeight->"Bold"],
- " is based on the number of balls of radius ",
- Cell[BoxData[
-  RowBox[{
-   StyleBox["s", "TI"], "<", 
-   StyleBox["r", "TI"]}]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "4589b343-007c-420b-bf17-322772fbcbc0"],
- " required to cover a ball of radius ",
- Cell[BoxData[
-  StyleBox["r", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "14f3558f-3403-4dc8-8385-1e76aeee091f"],
- " centered at a point ",
- Cell[BoxData[
-  StyleBox["p", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "e744dde8-350a-4f0a-b8bf-f886220e0b69"],
- ". ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["BallCoverNumber"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/BallCoverNumber", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "d63cac4b-3952-41ed-90ef-e8155a5ba066"],
- " computes the minimal number of such balls, while ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["FindBallCover"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindBallCover", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "3af54af4-051c-4593-8016-8da3b4ac9541"],
- " finds their centers. In particular, we can study how the number of radius-",
- Cell[BoxData[
-  RowBox[{
-   StyleBox["r", "TI"], "/", "2"}]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "93e34dcd-ba84-48c9-83ee-6ce484db7f7d"],
- " balls needed to cover a radius-",
- Cell[BoxData[
-  StyleBox["r", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "82846ecc-04d8-4494-8f41-ebd9ec58d58e"],
- " ball varies with ",
- Cell[BoxData[
-  StyleBox["r", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "74787a54-edf4-41a7-bfae-4e5cf00c33ce"],
- ". Another notion is based on the maximal number of ",
- StyleBox["mutually orthogonal axes",
-  FontWeight->"Bold"],
- " of length ",
- Cell[BoxData[
-  StyleBox["r", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "42730478-87df-48f0-b0be-20e96e0dac2e"],
- " through ",
- Cell[BoxData[
-  StyleBox["p", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "cc0dafb9-86c3-46c2-ad34-34046eb62d00"],
- ", computed by ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["FindInfraOrthogonalAxes"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraOrthogonalAxes", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "9da1f27e-be16-4fc9-9003-baf1ee91ac5a"],
- ". We also define a dimension in terms of ",
- StyleBox["equidistant sets",
-  FontWeight->"Bold"],
- ". Starting from pairs of maximally separated points on the radius-",
- Cell[BoxData[
-  StyleBox["r", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "439f581d-fb97-43df-8600-3134c14f5dbe"],
- " shell around ",
- Cell[BoxData[
-  StyleBox["p", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "82a5bc02-8ed3-421d-88e5-c62bcdd125b7"],
- ", we consider their perpendicular bisectors and determine the maximal \
-number of independent bisectors with a nonempty common intersection. ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraEquidistantSet"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraEquidistantSet", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "20782b8e-9817-40ac-bcad-6a5b4f39a4b0"],
- " represents this common set, while ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["FindInfraEquidistantSet"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraEquidistantSet", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "14deb2a4-8436-46a2-bb5e-b96c99905742"],
- " computes it. A further notion is based on intersections of radius-",
- Cell[BoxData[
-  StyleBox["r", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "712268af-441f-4f7e-943c-f36c7c2377ed"],
- " balls and asks for the smallest intersection order for which intersections \
-of small subcollections determine whether the entire family has a common \
-point. Finally, ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["VolumeGrowthObservables"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/VolumeGrowthObservables", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "ee562523-5593-4489-8dc5-d37a752b2c53"],
- " implements the Riemannian idea of extracting dimension, together with \
-scalar curvature, from the growth of ",
- StyleBox["ball and shell volumes",
-  FontWeight->"Bold"],
- " with radius."
-}], "GuideAbstract",
- CellChangeTimes->{{4.002049917615307*^9, 4.002049952194415*^9}, {
-  4.002050018279171*^9, 4.002050018846477*^9}, {4.0020507494242992`*^9, 
-  4.002050770383376*^9}, {4.0020524559042997`*^9, 4.0020524623990927`*^9}, {
-  4.002052661729475*^9, 4.0020526834019413`*^9}, {4.002052802737306*^9, 
-  4.002052814939867*^9}},
- CellID->1597156335,ExpressionUUID->"85d284c4-d34d-4a8d-9ed0-08a8b66ef8a0"],
-
-Cell[TextData[{
- "We also study ",
- StyleBox["homotopy of paths and loops",
-  FontWeight->"Bold"],
- " through local deformations. ",
- Cell[BoxData["\"\<NullHomotopicCycles\>\""], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "adf5ac99-acf3-4b3e-8937-15f2b8e55863"],
- " specifies which cycles may be contracted. ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["FindInfraHomotopy"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraHomotopy", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "6569a36b-c7b8-41de-96f1-6dfbff4a5a6a"],
- " finds sequences of deformations, while ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["HomotopicQ"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/HomotopicQ", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "cadbfce2-a71c-4c8a-82d6-e56c10ff015c"],
- " and ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["NullHomotopicQ"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/NullHomotopicQ", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "d884442d-8aac-4bea-9aac-9f1c46f6cae1"],
- " test homotopy and null-homotopy. We also consider ",
- StyleBox["controlled deformations of shortest paths",
-  FontWeight->"Bold"],
- ", keeping endpoints fixed and bounding both the excess length and the \
-distance from the reference path. One restricted family consists of ",
- StyleBox["forward walks",
-  FontWeight->"Bold"],
- ", for which distance from the starting point never decreases. Their excess \
-length counts steps within distance shells, and such walks can be counted \
-using powers of the adjacency matrix of the admissible-step graph. ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraDeformationSize"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraDeformationSize", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineFormula",ExpressionUUID->
-  "dcbe64d8-bf85-436b-8fd3-0bb3af8cd3e6"],
- " measures the extent of the change along the reference path, between the \
-common prefix and suffix."
-}], "GuideAbstract",
- CellID->1165913449,ExpressionUUID->"66ff0f01-2d08-4b9a-9f33-8d1e88f71aab"],
-
-Cell[TextData[{
- "Infra topology also includes the ",
- StyleBox["topological properties of fibre bundles",
-  FontWeight->"Bold"],
- ", discussed in the ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["Infra Fiber Bundles"]], 
-    "paclet:WolframInstitute/InfraGeometry/guide/InfraFiberBundles"},
-   "RefLinkPlain",
-   BaseStyle->{"InlineFormula"}]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "e86847fa-0f00-4f30-8795-35c002e8c162"],
- " guide."
-}], "GuideAbstract",
- CellID->848725228,ExpressionUUID->"a7410443-13a8-4810-9b63-856f59d3f1f5"]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["", "GuideFunctionsSection",
- CellID->1866139230,ExpressionUUID->"a0ea3657-4c83-4862-93c8-ecf80cebc774"],
-
-Cell[CellGroupData[{
-
-Cell["The ball topology", "GuideFunctionsSubsection",ExpressionUUID->"d4e95029-382c-40bf-ba81-58848d3eba43"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["BallTopology"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/BallTopology", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "ff8b49f6-0109-4fc8-b49c-38609a4f2834"],
- " \[LongDash] ",
- "the Hasse diagram of the specialization preorder of the ",
- Cell[BoxData[
-  StyleBox["r", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "8f856b11-85c5-4484-95ae-28ff1b510f72"],
- "-balls"
-}], "GuideText",ExpressionUUID->"b460aea8-66d1-4a09-93ed-0097705546e0"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["TopologicalClosure"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/TopologicalClosure", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "5d961d2b-9ab0-416c-b87e-4174bf663d9f"],
- " \[LongDash] ",
- "the closure of a vertex set, the union of the down-sets of its vertices"
-}], "GuideText",ExpressionUUID->"9e073eba-8fdf-4c7c-9f1f-52786fc56289"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["TopologicalInterior"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/TopologicalInterior", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "b0405e28-7ad3-4257-b36c-621ffd387fbd"],
- " \[LongDash] ",
- "the interior of a vertex set, the complement of the closure of its \
-complement"
-}], "GuideText",ExpressionUUID->"13b67146-c966-4844-af04-8ea0b714c31b"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["TopologicalBoundary"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/TopologicalBoundary", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "f57e7f75-aab3-4c8f-b6e1-61250cf0e82e"],
- " \[LongDash] ",
- "the closure minus the interior"
-}], "GuideText",ExpressionUUID->"7184e09f-52cc-4b4e-a89f-b62da5a5520d"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["TopologicalNeighborhood"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/TopologicalNeighborhood", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "12fd031d-3c66-49e4-92c7-c908b8754618"],
- " \[LongDash] ",
- "the smallest open set containing a vertex set"
-}], "GuideText",ExpressionUUID->"3959de9c-0975-4f2d-af90-56372378f1d9"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["ContinuousMapQ"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/ContinuousMapQ", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "4147b12d-adcf-4164-b672-f67f2bc2c34d"],
- " \[LongDash] ",
- "whether a vertex map is continuous between two preorders"
-}], "GuideText",ExpressionUUID->"73818652-efa4-4091-aa78-93cba6d032de"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["TopologyGraph"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/TopologyGraph", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "2f3ed6bb-052d-426c-923f-302ba74d50a2"],
- " \[LongDash] ",
- "a graph drawn with the Hasse arrows of its preorder on top"
-}], "GuideText",ExpressionUUID->"c354f28d-d931-4026-9f8f-598f3f9cbdec"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData[
-      StyleBox["TransitiveReductionGraph", FontSlant -> "Italic"]]], 
-    "paclet:ref/TransitiveReductionGraph"},
-   "RefLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "a0bb5b57-0638-4c8a-b187-d892fef40941"],
- " (WL)",
- ", ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData[
-      StyleBox["TransitiveClosureGraph", FontSlant -> "Italic"]]], 
-    "paclet:ref/TransitiveClosureGraph"},
-   "RefLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "ebecc391-a2bf-417b-abb2-6f0514621f9e"],
- " (WL)",
- ", ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData[
-      StyleBox["VertexInComponent", FontSlant -> "Italic"]]], 
-    "paclet:ref/VertexInComponent"},
-   "RefLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "3769a78b-ad25-4d53-9d39-89750105cf9d"],
- " (WL)",
- ", ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData[
-      StyleBox["VertexOutComponent", FontSlant -> "Italic"]]], 
-    "paclet:ref/VertexOutComponent"},
-   "RefLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "2356a680-6d91-42cb-b107-8eb887fd5539"],
- " (WL)"
-}], "GuideText",ExpressionUUID->"c33b72cf-d8fa-4489-8f08-8e97e61dfa56"]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["Region operations", "GuideFunctionsSubsection",ExpressionUUID->"ea4f4338-9d78-43dc-9889-3f4d48fb7752"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraBoundary"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraBoundary", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "1869bd60-6672-4061-92ba-b6fc8a2a662f"],
- " \[LongDash] ",
- "the boundary of a vertex set, density or object"
-}], "GuideText",ExpressionUUID->"97725547-81b2-4bf1-a9f4-ac190d215dcb"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraInterior"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraInterior", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "7e2e8313-8f81-411d-b14f-92fa9232e996"],
- " \[LongDash] ",
- "the interior of a vertex set, density or object"
-}], "GuideText",ExpressionUUID->"527fd9c7-8973-4810-a7a5-86f65a3b01a2"]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["The ball intersection complex", "GuideFunctionsSubsection",ExpressionUUID->"56e93116-0d91-495d-bc7f-2156a24c028d"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["BallIntersectionComplex"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/BallIntersectionComplex", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "eaa3a1d7-01da-436a-a062-5a2b2f226c92"],
- " \[LongDash] ",
- "the order-",
- Cell[BoxData[
-  StyleBox["k", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "1357c5a3-3014-4518-8494-79e62d4e274b"],
- " complex of the closed ",
- Cell[BoxData[
-  StyleBox["r", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "0569934c-2878-4275-bca5-2694c7fbe56b"],
- "-balls"
-}], "GuideText",ExpressionUUID->"554be860-42d4-4568-890c-bee78e5de6f4"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["CechComplex"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/CechComplex", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "325082d4-d522-4e66-a295-b77e9607e9ce"],
- " \[LongDash] ",
- "the nerve of the closed ",
- Cell[BoxData[
-  StyleBox["r", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "bb85864c-3845-42fc-b91f-62bc418f0a4b"],
- "-balls"
-}], "GuideText",ExpressionUUID->"06a0aea3-780c-46c4-a1df-7b7c27ecc762"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["MiniballRadius"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/MiniballRadius", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "81bcb9c4-f838-40a7-8058-6ea27062e3a3"],
- " \[LongDash] ",
- "the radius of the smallest ball enclosing a set of points"
-}], "GuideText",ExpressionUUID->"8a5f8703-06bd-4f3e-9b18-7b485f7950a4"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["BallIntersectionFiltration"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/BallIntersectionFiltration", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "39ca3655-e49c-4e5d-8b78-d16ab223f7ab"],
- " \[LongDash] ",
- "the order-",
- Cell[BoxData[
-  StyleBox["k", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "ea84b824-a4e9-4b80-80a6-cec1bfc9e735"],
- " complexes over a list of radii"
-}], "GuideText",ExpressionUUID->"55de8641-ef29-432e-80b1-acf744742177"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["CechFiltration"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/CechFiltration", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "e7234723-bb15-4f85-a780-7150018a7bd4"],
- " \[LongDash] ",
- "the Cech complexes over a list of radii"
-}], "GuideText",ExpressionUUID->"e20b42b4-368f-42ae-986a-d4ef4dbd2a2f"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["BallIntersectionBifiltration"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/BallIntersectionBifiltration", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "be93c933-7725-4b79-a0d8-65eca4fcc8a1"],
- " \[LongDash] ",
- "the complexes over the radius and the order together"
-}], "GuideText",ExpressionUUID->"e088fed6-b402-4317-99fc-8a13261ac797"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["BallIntersectionFiltrationValue"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/\
-BallIntersectionFiltrationValue", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "d8e45c5d-03de-4d78-8fc9-7bcc53382c36"],
- ", ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData[
-      StyleBox["FindClique", FontSlant -> "Italic"]]], 
-    "paclet:ref/FindClique"},
-   "RefLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "eff26056-a8b7-47e7-a120-7d0f04836b24"],
- " (WL)"
-}], "GuideText",ExpressionUUID->"42b4e22d-9993-4e81-abce-b5d14beff545"]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["Ball covers and the covering dimension", "GuideFunctionsSubsection",ExpressionUUID->"10f449b8-86b0-45f5-8cfa-51c7a7050dc6"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["FindBallCover"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindBallCover", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "130d7344-d005-42e5-a496-bbb32045973e"],
- " \[LongDash] ",
- "centres whose ",
- Cell[BoxData[
-  StyleBox["r", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "a3b3a5ec-9e2c-4312-9bd7-7910c762b13a"],
- "-balls cover a target, minimizing their number by default"
-}], "GuideText",ExpressionUUID->"6cdc6900-d728-45b7-a2d5-1aa3409bac2f"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["RandomBallCover"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/RandomBallCover", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "0e2e87ee-1cb2-48f8-b8e6-20b5ff6a9047"],
- " \[LongDash] ",
- "uniformly sampled minimum centre sets covering a target"
-}], "GuideText",ExpressionUUID->"928c905d-97b5-462b-830b-cc437484436f"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["BallCoverNumber"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/BallCoverNumber", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "60ea6422-0dad-4363-971f-d189b327e839"],
- " \[LongDash] ",
- "the covering number ",
- Cell[BoxData[
-  RowBox[{
-   StyleBox["N", "TI"], 
-   StyleBox["(",
-    SpanMaxSize->1], 
-   StyleBox["r", "TI"], 
-   StyleBox[")",
-    SpanMaxSize->1]}]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "7e45f2e3-594c-4eec-a4bc-ce676dd2d20b"],
- ", the ",
- Cell[BoxData[
-  StyleBox["r", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "d8cbf399-103d-41e7-97a8-eba410b00d0c"],
- "-domination number"
-}], "GuideText",ExpressionUUID->"93343940-970d-407a-96c2-b5243d1670bd"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["BallCoverQ"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/BallCoverQ", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "bf847372-6429-4aa5-b51b-d6930fdbbf26"],
- " \[LongDash] ",
- "whether the ",
- Cell[BoxData[
-  StyleBox["r", "TI"]], "InlineFormula",
-  FontSize->0.9 Inherited,ExpressionUUID->
-  "f200f774-22cc-4f57-b6f2-f0b4a50f8a7f"],
- "-balls about a set of centres cover the substrate"
-}], "GuideText",ExpressionUUID->"e6227213-7e93-40d2-8c9a-cb637d826ab9"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraBallHull"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraBallHull", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "cfb084ab-3553-4272-90b2-2080e1707b34"],
- " \[LongDash] ",
- "the intersection of all closed balls containing a set"
-}], "GuideText",ExpressionUUID->"cab455cb-e604-4539-aeb5-a7e3899b8bc2"]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["Notions of dimension", "GuideFunctionsSubsection",ExpressionUUID->"1efdadfd-f26d-438b-91a4-faeecd36689f"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraEquidistantSet"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraEquidistantSet", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "85b842d1-4abe-4495-b10f-211ca50e0785"],
- " \[LongDash] ",
- "the common equidistant set of a list of points"
-}], "GuideText",ExpressionUUID->"ae7efdbc-a9bd-4a09-8229-a4cba6b95f98"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["FindInfraEquidistantSet"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraEquidistantSet", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "c87dcb4f-0008-48f7-a4f3-ea388ddf2c3e"],
- " \[LongDash] ",
- "the vertices at equal graph distance from all points"
-}], "GuideText",ExpressionUUID->"1852482a-aa8b-4a80-8887-3d73bdce6b86"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["FindInfraOrthogonalAxes"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraOrthogonalAxes", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "fc1ae888-457e-4a2b-9f07-3f09e931a926"],
- " \[LongDash] ",
- "a maximal family of mutually perpendicular axes through a point"
-}], "GuideText",ExpressionUUID->"45937958-656e-4f52-879d-4181a444ab16"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["VolumeGrowthObservables"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/VolumeGrowthObservables", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "ae71c173-5c50-439e-9a00-542ba341d6d1"],
- " \[LongDash] ",
- "dimension and scalar curvature from ball and shell volumes"
-}], "GuideText",ExpressionUUID->"d1dacf8a-5ba0-4d0e-89fb-e6af5b07f4ea"]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["Paths and walks", "GuideFunctionsSubsection",ExpressionUUID->"7d68fac9-1895-4936-a115-cd32f2fd3b7b"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraWalk"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraWalk", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "ec7143fd-c7a4-4b16-b1ad-555e29c6894a"],
- " \[LongDash] ",
- "an oriented walk through a vertex sequence"
-}], "GuideText",ExpressionUUID->"f57cc1dc-1997-4687-99dd-fb87d597d9f0"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["RandomInfraWalk"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/RandomInfraWalk", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "2f792d8a-ada3-4d33-8866-b6e482bc26fa"],
- " \[LongDash] ",
- "walks grown from a germ under local rules and a stopping condition"
-}], "GuideText",ExpressionUUID->"18e2e220-c2b2-4eea-8f12-06d97753739d"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraWalkQ"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraWalkQ", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "747c87de-5cef-4d66-80ec-ea5074ce4d75"],
- " \[LongDash] ",
- "whether consecutive vertices form a walk of the substrate"
-}], "GuideText",ExpressionUUID->"440ad442-d2bb-48f3-8c98-7f321d8525bb"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["ConcatenateInfraWalk"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/ConcatenateInfraWalk", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "49691792-bd6a-4b84-989a-989c9f05108e"],
- " \[LongDash] ",
- "compatible walks joined end to start"
-}], "GuideText",ExpressionUUID->"d4496b51-fcbc-4d88-abeb-289d9757df66"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["WalkSingularities"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/WalkSingularities", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "df09754e-d38a-443c-88be-90ac36950c87"],
- " \[LongDash] ",
- "repeated vertices, repeated arcs and cusps of a walk"
-}], "GuideText",ExpressionUUID->"aa4ad693-7fa0-4359-8314-e727e34dca21"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraImmersedQ"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraImmersedQ", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "8e575821-9c30-4505-84e7-af9dbb03bd7e"],
- ", ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraGenericQ"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraGenericQ", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "49e7d1e7-54f4-4ba5-908e-7beaa1bf2e72"],
- ", ",
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraWalkCrossingQ"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraWalkCrossingQ", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "e0dc228f-31de-46a1-bb5f-846e409f637e"]
-}], "GuideText",ExpressionUUID->"bbf19a4d-cc95-4c77-b4fc-0e51fdb9f8c6"]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["Path families and deformations", "GuideFunctionsSubsection",ExpressionUUID->"a06591d2-ffc1-496f-9e75-8283842b7178"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["IntervalGraph"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/IntervalGraph", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "fda95976-921b-45f5-8c6b-da7d0fbc863d"],
- " \[LongDash] ",
- "the directed graph carrying all shortest paths between two vertices"
-}], "GuideText",ExpressionUUID->"c548e8c4-e59e-4a61-bd59-403860735688"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["PathSubgraph"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/PathSubgraph", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "9ada0aa6-291d-4f13-84c9-0fc6082794cc"],
- " \[LongDash] ",
- "the union of simple paths between two vertices within a length bound"
-}], "GuideText",ExpressionUUID->"83b1da2f-df10-4e71-82d0-c6156a0e5cd3"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["SprayGraph"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/SprayGraph", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "4a91f52a-71dd-41ac-9c62-d9ceeb8a01f8"],
- " \[LongDash] ",
- "the union of shortest paths growing outward from an origin"
-}], "GuideText",ExpressionUUID->"47552c60-3032-4b3d-b052-4ab2728aede1"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["SelectInfraWalk"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/SelectInfraWalk", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "7960a3c1-c94b-4519-962c-6e770b8f2a68"],
- " \[LongDash] ",
- "representatives selected from a family of walks"
-}], "GuideText",ExpressionUUID->"74c27ab7-34f5-46d5-bc4e-fe14b5b95423"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["EmbeddingClosest"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/EmbeddingClosest", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "862dd209-846e-4871-8006-cb210ab2cedd"],
- " \[LongDash] ",
- "the walks closest to an embedded reference curve"
-}], "GuideText",ExpressionUUID->"ccfa86e4-6edd-40c4-aca4-0d23c3ff3c62"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["FindEmbeddingClosestPath"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindEmbeddingClosestPath", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "1251d028-7af4-4ae4-bfd0-4ade3a4eae71"],
- " \[LongDash] ",
- "an embedded curve snapped to a walk graph"
-}], "GuideText",ExpressionUUID->"de2c7fea-fdd3-4bd9-8b28-8e50bd163827"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["InfraDeformationSize"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/InfraDeformationSize", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "d302cbf5-cbc7-491b-aa43-48c0cd1c82f7"],
- " \[LongDash] ",
- "the number of reference edges between the common prefix and suffix"
-}], "GuideText",ExpressionUUID->"576e2352-0f9f-421b-a58e-c0ad4123a3dd"]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["Path and loop homotopy", "GuideFunctionsSubsection",ExpressionUUID->"a4aafab7-e438-4863-977d-9c9d5ea6139e"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["FindInfraHomotopy"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/FindInfraHomotopy", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "e3757530-f02e-47ce-b8cb-90e74554d157"],
- " \[LongDash] ",
- "a witness sequence of elementary moves between paths or loops"
-}], "GuideText",ExpressionUUID->"73b23303-3d10-4fd7-8a0d-861b95e8ddfa"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["HomotopicQ"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/HomotopicQ", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "d448b3eb-2e47-4469-9a5c-7c97ae1cf4db"],
- " \[LongDash] ",
- "certified homotopy or non-homotopy, remaining unevaluated when undecided"
-}], "GuideText",ExpressionUUID->"8f37f86a-d4c4-423e-92bd-141fe794c591"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["NullHomotopicQ"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/NullHomotopicQ", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "d99af856-59fa-408e-9432-76956fcf8251"],
- " \[LongDash] ",
- "whether a loop contracts, remaining unevaluated when undecided"
-}], "GuideText",ExpressionUUID->"79d304cd-60fb-4e4f-aa22-cf2b17fc5bce"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["FindInfraHomotopyRepresentative"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/\
-FindInfraHomotopyRepresentative", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "c947df7e-1241-49e0-a4ec-3549f33b8eca"],
- " \[LongDash] ",
- "certified shortest representatives, remaining unevaluated when undecided"
-}], "GuideText",ExpressionUUID->"c832926a-abfa-4717-887c-a78f2b9c350e"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["FindInfraHomotopyRepresentativeHomotopy"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/\
-FindInfraHomotopyRepresentativeHomotopy", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "7763ec50-65d2-46ce-ab01-85c07047868d"],
- " \[LongDash] ",
- "witness chains to certified shortest representatives"
-}], "GuideText",ExpressionUUID->"ac3e5ae2-ab24-4d2b-b039-7ffbac1570df"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["HomotopyMoveType"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/HomotopyMoveType", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "c836de8a-5b76-4d76-a7cf-3371e215bddd"],
- " \[LongDash] ",
- "a length change classified as contraction, extension or lateral movement"
-}], "GuideText",ExpressionUUID->"0a097abd-2f26-4efb-8289-ea5f55610f5b"],
-
-Cell[TextData[{
- Cell[BoxData[
-  TemplateBox[{
-    Cell[
-     TextData["HomotopyMoveTypes"]], 
-    "paclet:WolframInstitute/InfraGeometry/ref/HomotopyMoveTypes", 
-    "WolframInstitute/InfraGeometry Package Symbol"},
-   "PackageLink",
-   BaseStyle->"InlineFormula"]], "InlineGuideFunction",
-  TaggingRules->{"PageType" -> "Function"},ExpressionUUID->
-  "bc83b2ed-0365-4d05-ba13-31f214fa0066"],
- " \[LongDash] ",
- "the length-change types of successive walks in a chain"
-}], "GuideText",ExpressionUUID->"3b8bd08f-9df1-4f80-bf8f-cfc1d3ef61a2"]
-}, Open  ]]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["Tech Notes", "GuideTutorialsSection",
- CellID->415694126,ExpressionUUID->"90fbef20-ae74-4ea3-a50b-de22929861f8"],
-
-Cell[TextData[Cell[BoxData[
- TemplateBox[{
-   Cell[
-    TextData["DimensionTutorial"]], 
-   "paclet:WolframInstitute/InfraGeometry/tutorial/DimensionTutorial"},
-  "RefLinkPlain",
-  BaseStyle->{
-   "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"ce4ba426-12af-4e10-9fbb-d8c9da5447c5"]], \
-"GuideTutorial",
- CellID->806871991,ExpressionUUID->"c8d52b1f-06c5-4db0-bd0a-f386b59efcef"]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["Related Guides", "GuideMoreAboutSection",
- CellChangeTimes->{{3.8430423939366693`*^9, 3.843042395176153*^9}},
- CellID->23220180,ExpressionUUID->"0c9c7cc7-143a-48e7-bf27-45dd9029bd50"],
-
-Cell[TextData[Cell[BoxData[
- TemplateBox[{
-   Cell[
-    TextData["EuclideanInfrageometry"]], 
-   "paclet:WolframInstitute/InfraGeometry/guide/EuclideanInfrageometry"},
-  "RefLinkPlain",
-  BaseStyle->{
-   "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"b4d061e7-7dda-41f9-8b64-676444ef4da7"]], \
-"GuideMoreAbout",
- CellID->1567025153,ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69"],
-
-Cell[TextData[Cell[BoxData[
- TemplateBox[{
-   Cell[
-    TextData["RiemannianInfrageometry"]], 
-   "paclet:WolframInstitute/InfraGeometry/guide/RiemannianInfrageometry"},
-  "RefLinkPlain",
-  BaseStyle->{
-   "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"84a20f70-d4d2-4fe2-b16a-6dbf42af0e79"]], \
-"GuideMoreAbout",
- CellID->1567025153,ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69"],
-
-Cell[TextData[Cell[BoxData[
- TemplateBox[{
-   Cell[
-    TextData["InfraAnalysis"]], 
-   "paclet:WolframInstitute/InfraGeometry/guide/InfraAnalysis"},
-  "RefLinkPlain",
-  BaseStyle->{
-   "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"58fd58a8-7df9-439c-ad02-3dc9365c5799"]], \
-"GuideMoreAbout",
- CellID->1567025153,ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69"],
-
-Cell[TextData[Cell[BoxData[
- TemplateBox[{
-   Cell[
-    TextData["InfraFiberBundles"]], 
-   "paclet:WolframInstitute/InfraGeometry/guide/InfraFiberBundles"},
-  "RefLinkPlain",
-  BaseStyle->{
-   "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"4a530dfd-5e1c-401f-a80a-b0b33fe7f0ee"]], \
-"GuideMoreAbout",
- CellID->1567025153,ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69"],
-
-Cell[TextData[Cell[BoxData[
- TemplateBox[{
-   Cell[
-    TextData["InfraSubstrates"]], 
-   "paclet:WolframInstitute/InfraGeometry/guide/InfraSubstrates"},
-  "RefLinkPlain",
-  BaseStyle->{
-   "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"8e4ba0e9-e99a-4e91-8c00-cfe78e12ad46"]], \
-"GuideMoreAbout",
- CellID->1567025153,ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69"],
-
-Cell[TextData[Cell[BoxData[
- TemplateBox[{
-   Cell[
-    TextData["Experimental"]], 
-   "paclet:WolframInstitute/InfraGeometry/guide/Experimental"},
-  "RefLinkPlain",
-  BaseStyle->{
-   "InlineFormula"}]], \
-"InlineFormula",ExpressionUUID->"643cc5e5-fc53-499c-8bef-209d98450aa5"]], \
-"GuideMoreAbout",
- CellID->1567025153,ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69"]
-}, Open  ]],
-
-Cell["Related Links", "GuideRelatedLinksSection",
- CellID->415694148,ExpressionUUID->"f8d14542-737b-4330-8523-975dc2960049"],
-
-Cell[CellGroupData[{
-
-Cell["Metadata", "MetadataSection",
- CellID->311882160,ExpressionUUID->"1e562958-8f54-4854-b782-f4766015b2b2"],
-
-Cell[TextData[{
- "New in: ",
- Cell["XX", "HistoryData",
-  CellTags->"New",ExpressionUUID->"8042be5c-0c76-46b3-86b4-3979f9a7592e"],
- " | Modified in: ",
- Cell[" ", "HistoryData",
-  CellTags->"Modified",ExpressionUUID->"33838997-9c86-4f7e-a86c-465a8baa0509"],
- " | Obsolete in: ",
- Cell[" ", "HistoryData",
-  CellTags->"Obsolete",ExpressionUUID->
-  "f4a6f470-53c8-4e44-a786-272e7e70dce6"]
-}], "History",
- CellID->341476719,ExpressionUUID->"6e43ae3a-1f84-4ca3-8250-559a053a9513"],
-
-Cell[CellGroupData[{
-
-Cell["Categorization", "CategorizationSection",
- CellID->1122911449,ExpressionUUID->"cbe57f1c-788c-4a86-8338-08191b5d7b7b"],
-
-Cell["Guide", "Categorization",
- CellLabel->"Entity Type",
- CellID->686433507,ExpressionUUID->"4bb65dd8-004f-4758-b626-8984c4a9f475"],
-
-Cell["WolframInstitute/InfraGeometry", "Categorization",
- CellLabel->"Paclet Name",
- CellID->605800465,ExpressionUUID->"ea3b4732-cbcc-4f28-9e20-bfabae54c52c"],
-
-Cell["WolframInstitute`InfraGeometry`", "Categorization",
- CellLabel->"Context",
- CellID->468444828,ExpressionUUID->"52afa833-5422-4969-8c91-b9af19a42a2e"],
-
-Cell["WolframInstitute/InfraGeometry/guide/InfraTopology", "Categorization",
- CellLabel->"URI",ExpressionUUID->"04efe8d6-14ef-46f0-a3b1-f690807dd470"]
-}, Closed]],
-
-Cell[CellGroupData[{
-
-Cell["Keywords", "KeywordsSection",
- CellID->1427428552,ExpressionUUID->"99169e92-9e69-4982-8b71-ac9518fe5ead"],
-
-Cell["topology", "Keywords",
- CellID->1251852827,ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9"],
-
-Cell["ball topology", "Keywords",
- CellID->1251852827,ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9"],
-
-Cell["specialization preorder", "Keywords",
- CellID->1251852827,ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9"],
-
-Cell["ball intersection complex", "Keywords",
- CellID->1251852827,ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9"],
-
-Cell["Cech complex", "Keywords",
- CellID->1251852827,ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9"],
-
-Cell["Vietoris-Rips", "Keywords",
- CellID->1251852827,ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9"],
-
-Cell["ball cover", "Keywords",
- CellID->1251852827,ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9"],
-
-Cell["covering dimension", "Keywords",
- CellID->1251852827,ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9"]
-}, Closed]]
-}, Open  ]]
-},
-WindowSize->{700, 770},
-WindowMargins->{{Automatic, 449}, {57, Automatic}},
-TaggingRules->{
- "Metadata" -> {
-   "title" -> "InfraTopology", "context" -> "WolframInstitute`InfraGeometry`",
-     "keywords" -> {
-     "topology", "ball topology", "specialization preorder", 
-      "ball intersection complex", "Cech complex", "Vietoris-Rips", 
-      "ball cover", "covering dimension"}, "summary" -> "", "paclet" -> 
-    "WolframInstitute/InfraGeometry", "uri" -> 
-    "WolframInstitute/InfraGeometry/guide/InfraTopology", "type" -> "Guide", 
-    "index" -> True, "language" -> "en"}, "Paclet" -> "None"},
-CreateCellID->True,
-CellContext->CellGroup,
-FrontEndVersion->"15.0 for Mac OS X ARM (64-bit) (July 2, 2026)",
-StyleDefinitions->FrontEnd`FileName[{"Wolfram"}, "GuidePageStylesExt.nb", 
-  CharacterEncoding -> "UTF-8"],
-ExpressionUUID->"4f3dd705-9635-4464-b348-9b4dec79eac8"
-]
-(* End of Notebook Content *)
-
-(* Internal cache information *)
-(*CellTagsOutline
-CellTagsIndex->{}
-*)
-(*CellTagsIndex
-CellTagsIndex->{}
-*)
-(*NotebookFileOutline
-Notebook[{
-Cell[CellGroupData[{
-Cell[576, 22, 111, 1, 70, "GuideTitle",ExpressionUUID->"a3a3c038-ca24-47b7-9945-83f1c1312fe3",
- CellID->942062912],
-Cell[690, 25, 193, 2, 70, "GuideAbstract",ExpressionUUID->"a9f77475-5dd5-461a-8ee8-7a71be15fca1",
- CellID->275198331],
-Cell[886, 29, 2822, 80, 70, "GuideAbstract",ExpressionUUID->"cc68bfc1-e1cc-409c-9133-372fe38a1d33",
- CellID->715985883],
-Cell[3711, 111, 5670, 150, 70, "GuideAbstract",ExpressionUUID->"85d284c4-d34d-4a8d-9ed0-08a8b66ef8a0",
- CellID->1597156335],
-Cell[9384, 263, 2437, 60, 70, "GuideAbstract",ExpressionUUID->"66ff0f01-2d08-4b9a-9f33-8d1e88f71aab",
- CellID->1165913449],
-Cell[11824, 325, 568, 16, 70, "GuideAbstract",ExpressionUUID->"a7410443-13a8-4810-9b63-856f59d3f1f5",
- CellID->848725228]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[12429, 346, 109, 1, 70, "GuideFunctionsSection",ExpressionUUID->"a0ea3657-4c83-4862-93c8-ecf80cebc774",
- CellID->1866139230],
-Cell[CellGroupData[{
-Cell[12563, 351, 108, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"d4e95029-382c-40bf-ba81-58848d3eba43"],
-Cell[12674, 353, 686, 18, 70, "GuideText",ExpressionUUID->"b460aea8-66d1-4a09-93ed-0097705546e0"],
-Cell[13363, 373, 560, 13, 70, "GuideText",ExpressionUUID->"9e073eba-8fdf-4c7c-9f1f-52786fc56289"],
-Cell[13926, 388, 570, 14, 70, "GuideText",ExpressionUUID->"13b67146-c966-4844-af04-8ea0b714c31b"],
-Cell[14499, 404, 521, 13, 70, "GuideText",ExpressionUUID->"7184e09f-52cc-4b4e-a89f-b62da5a5520d"],
-Cell[15023, 419, 544, 13, 70, "GuideText",ExpressionUUID->"3959de9c-0975-4f2d-af90-56372378f1d9"],
-Cell[15570, 434, 537, 13, 70, "GuideText",ExpressionUUID->"73818652-efa4-4091-aa78-93cba6d032de"],
-Cell[16110, 449, 537, 13, 70, "GuideText",ExpressionUUID->"c354f28d-d931-4026-9f8f-598f3f9cbdec"],
-Cell[16650, 464, 1489, 48, 70, "GuideText",ExpressionUUID->"c33b72cf-d8fa-4489-8f08-8e97e61dfa56"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[18176, 517, 108, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"ea4f4338-9d78-43dc-9889-3f4d48fb7752"],
-Cell[18287, 519, 526, 13, 70, "GuideText",ExpressionUUID->"97725547-81b2-4bf1-a9f4-ac190d215dcb"],
-Cell[18816, 534, 526, 13, 70, "GuideText",ExpressionUUID->"527fd9c7-8973-4810-a7a5-86f65a3b01a2"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[19379, 552, 120, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"56e93116-0d91-495d-bc7f-2156a24c028d"],
-Cell[19502, 554, 832, 23, 70, "GuideText",ExpressionUUID->"554be860-42d4-4568-890c-bee78e5de6f4"],
-Cell[20337, 579, 652, 18, 70, "GuideText",ExpressionUUID->"06a0aea3-780c-46c4-a1df-7b7c27ecc762"],
-Cell[20992, 599, 538, 13, 70, "GuideText",ExpressionUUID->"8a5f8703-06bd-4f3e-9b18-7b485f7950a4"],
-Cell[21533, 614, 693, 18, 70, "GuideText",ExpressionUUID->"55de8641-ef29-432e-80b1-acf744742177"],
-Cell[22229, 634, 520, 13, 70, "GuideText",ExpressionUUID->"e20b42b4-368f-42ae-986a-d4ef4dbd2a2f"],
-Cell[22752, 649, 561, 13, 70, "GuideText",ExpressionUUID->"e088fed6-b402-4317-99fc-8a13261ac797"],
-Cell[23316, 664, 826, 24, 70, "GuideText",ExpressionUUID->"42b4e22d-9993-4e81-abce-b5d14beff545"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[24179, 693, 129, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"10f449b8-86b0-45f5-8cfa-51c7a7050dc6"],
-Cell[24311, 695, 697, 18, 70, "GuideText",ExpressionUUID->"6cdc6900-d728-45b7-a2d5-1aa3409bac2f"],
-Cell[25011, 715, 538, 13, 70, "GuideText",ExpressionUUID->"928c905d-97b5-462b-830b-cc437484436f"],
-Cell[25552, 730, 938, 29, 70, "GuideText",ExpressionUUID->"93343940-970d-407a-96c2-b5243d1670bd"],
-Cell[26493, 761, 681, 18, 70, "GuideText",ExpressionUUID->"e6227213-7e93-40d2-8c9a-cb637d826ab9"],
-Cell[27177, 781, 532, 13, 70, "GuideText",ExpressionUUID->"cab455cb-e604-4539-aeb5-a7e3899b8bc2"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[27746, 799, 111, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"1efdadfd-f26d-438b-91a4-faeecd36689f"],
-Cell[27860, 801, 537, 13, 70, "GuideText",ExpressionUUID->"ae7efdbc-a9bd-4a09-8229-a4cba6b95f98"],
-Cell[28400, 816, 551, 13, 70, "GuideText",ExpressionUUID->"1852482a-aa8b-4a80-8887-3d73bdce6b86"],
-Cell[28954, 831, 562, 13, 70, "GuideText",ExpressionUUID->"45937958-656e-4f52-879d-4181a444ab16"],
-Cell[29519, 846, 557, 13, 70, "GuideText",ExpressionUUID->"d1dacf8a-5ba0-4d0e-89fb-e6af5b07f4ea"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[30113, 864, 106, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"7d68fac9-1895-4936-a115-cd32f2fd3b7b"],
-Cell[30222, 866, 513, 13, 70, "GuideText",ExpressionUUID->"f57cc1dc-1997-4687-99dd-fb87d597d9f0"],
-Cell[30738, 881, 549, 13, 70, "GuideText",ExpressionUUID->"18e2e220-c2b2-4eea-8f12-06d97753739d"],
-Cell[31290, 896, 530, 13, 70, "GuideText",ExpressionUUID->"440ad442-d2bb-48f3-8c98-7f321d8525bb"],
-Cell[31823, 911, 529, 13, 70, "GuideText",ExpressionUUID->"d4496b51-fcbc-4d88-abeb-289d9757df66"],
-Cell[32355, 926, 539, 13, 70, "GuideText",ExpressionUUID->"aa4ad693-7fa0-4359-8314-e727e34dca21"],
-Cell[32897, 941, 1222, 33, 70, "GuideText",ExpressionUUID->"bbf19a4d-cc95-4c77-b4fc-0e51fdb9f8c6"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[34156, 979, 121, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"a06591d2-ffc1-496f-9e75-8283842b7178"],
-Cell[34280, 981, 546, 13, 70, "GuideText",ExpressionUUID->"c548e8c4-e59e-4a61-bd59-403860735688"],
-Cell[34829, 996, 545, 13, 70, "GuideText",ExpressionUUID->"83b1da2f-df10-4e71-82d0-c6156a0e5cd3"],
-Cell[35377, 1011, 531, 13, 70, "GuideText",ExpressionUUID->"47552c60-3032-4b3d-b052-4ab2728aede1"],
-Cell[35911, 1026, 530, 13, 70, "GuideText",ExpressionUUID->"74c27ab7-34f5-46d5-bc4e-fe14b5b95423"],
-Cell[36444, 1041, 533, 13, 70, "GuideText",ExpressionUUID->"ccfa86e4-6edd-40c4-aca4-0d23c3ff3c62"],
-Cell[36980, 1056, 542, 13, 70, "GuideText",ExpressionUUID->"de2c7fea-fdd3-4bd9-8b28-8e50bd163827"],
-Cell[37525, 1071, 559, 13, 70, "GuideText",ExpressionUUID->"576e2352-0f9f-421b-a58e-c0ad4123a3dd"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[38121, 1089, 113, 0, 70, "GuideFunctionsSubsection",ExpressionUUID->"a4aafab7-e438-4863-977d-9c9d5ea6139e"],
-Cell[38237, 1091, 548, 13, 70, "GuideText",ExpressionUUID->"73b23303-3d10-4fd7-8a0d-861b95e8ddfa"],
-Cell[38788, 1106, 545, 13, 70, "GuideText",ExpressionUUID->"8f37f86a-d4c4-423e-92bd-141fe794c591"],
-Cell[39336, 1121, 543, 13, 70, "GuideText",ExpressionUUID->"79d304cd-60fb-4e4f-aa22-cf2b17fc5bce"],
-Cell[39882, 1136, 589, 14, 70, "GuideText",ExpressionUUID->"c832926a-abfa-4717-887c-a78f2b9c350e"],
-Cell[40474, 1152, 585, 14, 70, "GuideText",ExpressionUUID->"ac3e5ae2-ab24-4d2b-b039-7ffbac1570df"],
-Cell[41062, 1168, 557, 13, 70, "GuideText",ExpressionUUID->"0a097abd-2f26-4efb-8289-ea5f55610f5b"],
-Cell[41622, 1183, 541, 13, 70, "GuideText",ExpressionUUID->"3b8bd08f-9df1-4f80-bf8f-cfc1d3ef61a2"]
-}, Open  ]]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[42212, 1202, 118, 1, 70, "GuideTutorialsSection",ExpressionUUID->"90fbef20-ae74-4ea3-a50b-de22929861f8",
- CellID->415694126],
-Cell[42333, 1205, 386, 10, 70, "GuideTutorial",ExpressionUUID->"c8d52b1f-06c5-4db0-bd0a-f386b59efcef",
- CellID->806871991]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[42756, 1220, 189, 2, 70, "GuideMoreAboutSection",ExpressionUUID->"0c9c7cc7-143a-48e7-bf27-45dd9029bd50",
- CellID->23220180],
-Cell[42948, 1224, 395, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
- CellID->1567025153],
-Cell[43346, 1236, 397, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
- CellID->1567025153],
-Cell[43746, 1248, 377, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
- CellID->1567025153],
-Cell[44126, 1260, 385, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
- CellID->1567025153],
-Cell[44514, 1272, 381, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
- CellID->1567025153],
-Cell[44898, 1284, 375, 10, 70, "GuideMoreAbout",ExpressionUUID->"e0ff5a6e-1488-40e3-9571-e445309cac69",
- CellID->1567025153]
-}, Open  ]],
-Cell[45288, 1297, 124, 1, 70, "GuideRelatedLinksSection",ExpressionUUID->"f8d14542-737b-4330-8523-975dc2960049",
- CellID->415694148],
-Cell[CellGroupData[{
-Cell[45437, 1302, 110, 1, 70, "MetadataSection",ExpressionUUID->"1e562958-8f54-4854-b782-f4766015b2b2",
- CellID->311882160],
-Cell[45550, 1305, 476, 12, 70, "History",ExpressionUUID->"6e43ae3a-1f84-4ca3-8250-559a053a9513",
- CellID->341476719],
-Cell[CellGroupData[{
-Cell[46051, 1321, 123, 1, 70, "CategorizationSection",ExpressionUUID->"cbe57f1c-788c-4a86-8338-08191b5d7b7b",
- CellID->1122911449],
-Cell[46177, 1324, 133, 2, 70, "Categorization",ExpressionUUID->"4bb65dd8-004f-4758-b626-8984c4a9f475",
- CellID->686433507],
-Cell[46313, 1328, 158, 2, 70, "Categorization",ExpressionUUID->"ea3b4732-cbcc-4f28-9e20-bfabae54c52c",
- CellID->605800465],
-Cell[46474, 1332, 155, 2, 70, "Categorization",ExpressionUUID->"52afa833-5422-4969-8c91-b9af19a42a2e",
- CellID->468444828],
-Cell[46632, 1336, 150, 1, 70, "Categorization",ExpressionUUID->"04efe8d6-14ef-46f0-a3b1-f690807dd470"]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[46819, 1342, 111, 1, 70, "KeywordsSection",ExpressionUUID->"99169e92-9e69-4982-8b71-ac9518fe5ead",
- CellID->1427428552],
-Cell[46933, 1345, 104, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
- CellID->1251852827],
-Cell[47040, 1348, 109, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
- CellID->1251852827],
-Cell[47152, 1351, 119, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
- CellID->1251852827],
-Cell[47274, 1354, 121, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
- CellID->1251852827],
-Cell[47398, 1357, 108, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
- CellID->1251852827],
-Cell[47509, 1360, 109, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
- CellID->1251852827],
-Cell[47621, 1363, 106, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
- CellID->1251852827],
-Cell[47730, 1366, 114, 1, 70, "Keywords",ExpressionUUID->"90374130-df8e-4799-aaa2-c8b32eecdde9",
- CellID->1251852827]
-}, Closed]]
-}, Open  ]]
-}
-]
-*)
-
-(* End of internal cache information *)
+Notebook[{Cell[CellGroupData[{Cell["Infra Topology", "GuideTitle", 
+      CellID -> 942062912, ExpressionUUID -> 
+       "a3a3c038-ca24-47b7-9945-83f1c1312fe3"], 
+     Cell[TextData[StyleBox[
+        "Abstract written by Pavel Hajek on 27 October 2026.", 
+        FontSlant -> "Italic"]], "GuideAbstract", CellID -> 275198331, 
+      ExpressionUUID -> "a9f77475-5dd5-461a-8ee8-7a71be15fca1"], 
+     Cell[TextData[{"We study the topology, or global structure, of an infra \
+substrate as seen by an infra observer at scale ", 
+        Cell[BoxData[StyleBox["r", "TI"]], "InlineFormula", 
+         FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "5128aa96-e6fa-4d48-bd14-5f179c87332f"], ". The ", 
+        StyleBox["ball intersection complex", FontWeight -> "Bold"], 
+        ", computed by ", Cell[BoxData[TemplateBox[
+           {Cell[TextData["BallIntersectionComplex"]], "paclet:WolframInstitu\
+te/InfraGeometry/ref/BallIntersectionComplex", 
+            "WolframInstitute/InfraGeometry Package Symbol"}, "PackageLink", 
+           BaseStyle -> "InlineFormula"]], "InlineFormula", 
+         ExpressionUUID -> "7bc8cd16-1876-426f-8f31-2f9468046890"], 
+        ", encodes the intersections among the balls of radius ", 
+        Cell[BoxData[StyleBox["r", "TI"]], "InlineFormula", 
+         FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "72f8ad6e-c17c-4824-8020-267bc1616a9f"], 
+        " covering the substrate. A collection of ", 
+        Cell[BoxData[RowBox[{StyleBox["k", "TI"], "+", "1"}]], 
+         "InlineFormula", FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "d4305a82-a763-4d16-9bbd-c29a185fa650"], " balls spans a ", 
+        Cell[BoxData[StyleBox["k", "TI"]], "InlineFormula", 
+         FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "491b00a3-e839-431a-9665-e9a74654e9a1"], 
+        "-simplex whenever every subcollection of at most ", 
+        Cell[BoxData[StyleBox["m", "TI"]], "InlineFormula", 
+         FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "5b332e9a-cbc0-4867-b57e-5bc8a3aa01a3"], 
+        " balls has nonempty intersection. The case ", 
+        Cell[BoxData[RowBox[{StyleBox["m", "TI"], "=", "\[Infinity]"}]], 
+         "InlineFormula", FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "6086ae4b-fe1a-4a6b-8890-169a5ad5d90b"], " recovers the ", 
+        StyleBox["\[CapitalCHacek]ech complex", FontWeight -> "Bold"], 
+        ", computed by ", Cell[BoxData[TemplateBox[
+           {Cell[TextData["CechComplex"]], 
+            "paclet:WolframInstitute/InfraGeometry/ref/CechComplex", 
+            "WolframInstitute/InfraGeometry Package Symbol"}, "PackageLink", 
+           BaseStyle -> "InlineFormula"]], "InlineFormula", 
+         ExpressionUUID -> "2e337c7e-38a5-44ea-aa84-9adf601f2295"], 
+        ", while ", Cell[BoxData[RowBox[{StyleBox["m", "TI"], "=", "2"}]], 
+         "InlineFormula", FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "fb82d728-d7e0-4f85-9976-9b20bca67bfc"], " recovers the ", 
+        StyleBox["Vietoris\[Dash]Rips complex", FontWeight -> "Bold"], 
+        " at threshold ", Cell[BoxData[RowBox[{"2", StyleBox["r", "TI"]}]], 
+         "InlineFormula", FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "f2077970-2b56-405f-a733-e55964738112"], "."}], "GuideAbstract", 
+      CellChangeTimes -> {{4.002049503088282*^9, 4.002049505070956*^9}, 
+        {4.0020498514154387*^9, 4.002049869078261*^9}, {4.002050711249585*^9, 
+         4.002050725391959*^9}}, CellID -> 715985883, 
+      ExpressionUUID -> "cc68bfc1-e1cc-409c-9133-372fe38a1d33"], 
+     Cell[TextData[{"We consider several notions of ", StyleBox["dimension", 
+         FontWeight -> "Bold"], " at an observer scale ", 
+        Cell[BoxData[StyleBox["r", "TI"]], "InlineFormula", 
+         FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "ef4e7bc0-ddb1-4a89-8eef-12a46350be0a"], ". A ", 
+        StyleBox["Hausdorff-type dimension", FontWeight -> "Bold"], 
+        " is based on the number of balls of radius ", 
+        Cell[BoxData[RowBox[{StyleBox["s", "TI"], "<", StyleBox["r", 
+             "TI"]}]], "InlineFormula", FontSize -> 0.9*Inherited, 
+         ExpressionUUID -> "4589b343-007c-420b-bf17-322772fbcbc0"], 
+        " required to cover a ball of radius ", 
+        Cell[BoxData[StyleBox["r", "TI"]], "InlineFormula", 
+         FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "14f3558f-3403-4dc8-8385-1e76aeee091f"], " centered at a point ", 
+        Cell[BoxData[StyleBox["p", "TI"]], "InlineFormula", 
+         FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "e744dde8-350a-4f0a-b8bf-f886220e0b69"], ". ", 
+        Cell[BoxData[TemplateBox[{Cell[TextData["BallCoverNumber"]], 
+            "paclet:WolframInstitute/InfraGeometry/ref/BallCoverNumber", 
+            "WolframInstitute/InfraGeometry Package Symbol"}, "PackageLink", 
+           BaseStyle -> "InlineFormula"]], "InlineFormula", 
+         ExpressionUUID -> "d63cac4b-3952-41ed-90ef-e8155a5ba066"], 
+        " computes the minimal number of such balls, while ", 
+        Cell[BoxData[TemplateBox[{Cell[TextData["FindBallCover"]], 
+            "paclet:WolframInstitute/InfraGeometry/ref/FindBallCover", 
+            "WolframInstitute/InfraGeometry Package Symbol"}, "PackageLink", 
+           BaseStyle -> "InlineFormula"]], "InlineFormula", 
+         ExpressionUUID -> "3af54af4-051c-4593-8016-8da3b4ac9541"], " finds \
+their centers. In particular, we can study how the number of radius-", 
+        Cell[BoxData[RowBox[{StyleBox["r", "TI"], "/", "2"}]], 
+         "InlineFormula", FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "93e34dcd-ba84-48c9-83ee-6ce484db7f7d"], 
+        " balls needed to cover a radius-", 
+        Cell[BoxData[StyleBox["r", "TI"]], "InlineFormula", 
+         FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "82846ecc-04d8-4494-8f41-ebd9ec58d58e"], " ball varies with ", 
+        Cell[BoxData[StyleBox["r", "TI"]], "InlineFormula", 
+         FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "74787a54-edf4-41a7-bfae-4e5cf00c33ce"], 
+        ". Another notion is based on the maximal number of ", 
+        StyleBox["mutually orthogonal axes", FontWeight -> "Bold"], 
+        " of length ", Cell[BoxData[StyleBox["r", "TI"]], "InlineFormula", 
+         FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "42730478-87df-48f0-b0be-20e96e0dac2e"], " through ", 
+        Cell[BoxData[StyleBox["p", "TI"]], "InlineFormula", 
+         FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "cc0dafb9-86c3-46c2-ad34-34046eb62d00"], ", computed by ", 
+        Cell[BoxData[TemplateBox[{Cell[TextData["FindInfraOrthogonalAxes"]], 
+            "paclet:WolframInstitute/InfraGeometry/ref/FindInfraOrthogonalAxe\
+s", "WolframInstitute/InfraGeometry Package Symbol"}, "PackageLink", 
+           BaseStyle -> "InlineFormula"]], "InlineFormula", 
+         ExpressionUUID -> "9da1f27e-be16-4fc9-9003-baf1ee91ac5a"], 
+        ". We also define a dimension in terms of ", 
+        StyleBox["equidistant sets", FontWeight -> "Bold"], 
+        ". Starting from pairs of maximally separated points on the radius-", 
+        Cell[BoxData[StyleBox["r", "TI"]], "InlineFormula", 
+         FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "439f581d-fb97-43df-8600-3134c14f5dbe"], " shell around ", 
+        Cell[BoxData[StyleBox["p", "TI"]], "InlineFormula", 
+         FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "82a5bc02-8ed3-421d-88e5-c62bcdd125b7"], ", we consider their \
+perpendicular bisectors and determine the maximal number of independent \
+bisectors with a nonempty common intersection. ", 
+        Cell[BoxData[TemplateBox[{Cell[TextData["InfraEquidistantSet"]], 
+            "paclet:WolframInstitute/InfraGeometry/ref/InfraEquidistantSet", 
+            "WolframInstitute/InfraGeometry Package Symbol"}, "PackageLink", 
+           BaseStyle -> "InlineFormula"]], "InlineFormula", 
+         ExpressionUUID -> "20782b8e-9817-40ac-bcad-6a5b4f39a4b0"], 
+        " represents this common set, while ", 
+        Cell[BoxData[TemplateBox[{Cell[TextData["FindInfraEquidistantSet"]], 
+            "paclet:WolframInstitute/InfraGeometry/ref/FindInfraEquidistantSe\
+t", "WolframInstitute/InfraGeometry Package Symbol"}, "PackageLink", 
+           BaseStyle -> "InlineFormula"]], "InlineFormula", 
+         ExpressionUUID -> "14deb2a4-8436-46a2-bb5e-b96c99905742"], " \
+computes it. A further notion is based on intersections of radius-", 
+        Cell[BoxData[StyleBox["r", "TI"]], "InlineFormula", 
+         FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "712268af-441f-4f7e-943c-f36c7c2377ed"], " balls and asks for the \
+smallest intersection order for which intersections of small subcollections \
+determine whether the entire family has a common point. Finally, ", 
+        Cell[BoxData[TemplateBox[{Cell[TextData["VolumeGrowthObservables"]], 
+            "paclet:WolframInstitute/InfraGeometry/ref/VolumeGrowthObservable\
+s", "WolframInstitute/InfraGeometry Package Symbol"}, "PackageLink", 
+           BaseStyle -> "InlineFormula"]], "InlineFormula", 
+         ExpressionUUID -> "ee562523-5593-4489-8dc5-d37a752b2c53"], " \
+implements the Riemannian idea of extracting dimension, together with scalar \
+curvature, from the growth of ", StyleBox["ball and shell volumes", 
+         FontWeight -> "Bold"], " with radius."}], "GuideAbstract", 
+      CellChangeTimes -> {{4.002049917615307*^9, 4.002049952194415*^9}, 
+        {4.002050018279171*^9, 4.002050018846477*^9}, {4.0020507494242992*^9, 
+         4.002050770383376*^9}, {4.0020524559042997*^9, 
+         4.0020524623990927*^9}, {4.002052661729475*^9, 
+         4.0020526834019413*^9}, {4.002052802737306*^9, 
+         4.002052814939867*^9}}, CellID -> 1597156335, 
+      ExpressionUUID -> "85d284c4-d34d-4a8d-9ed0-08a8b66ef8a0"], 
+     Cell[TextData[{"We also study ", StyleBox["homotopy of paths and loops", 
+         FontWeight -> "Bold"], " through local deformations. ", 
+        Cell[BoxData["\"NullHomotopicCycles\""], "InlineFormula", 
+         FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "adf5ac99-acf3-4b3e-8937-15f2b8e55863"], 
+        " specifies which cycles may be contracted. ", 
+        Cell[BoxData[TemplateBox[{Cell[TextData["FindInfraHomotopy"]], 
+            "paclet:WolframInstitute/InfraGeometry/ref/FindInfraHomotopy", 
+            "WolframInstitute/InfraGeometry Package Symbol"}, "PackageLink", 
+           BaseStyle -> "InlineFormula"]], "InlineFormula", 
+         ExpressionUUID -> "6569a36b-c7b8-41de-96f1-6dfbff4a5a6a"], 
+        " finds sequences of deformations, while ", 
+        Cell[BoxData[TemplateBox[{Cell[TextData["HomotopicQ"]], 
+            "paclet:WolframInstitute/InfraGeometry/ref/HomotopicQ", 
+            "WolframInstitute/InfraGeometry Package Symbol"}, "PackageLink", 
+           BaseStyle -> "InlineFormula"]], "InlineFormula", 
+         ExpressionUUID -> "cadbfce2-a71c-4c8a-82d6-e56c10ff015c"], " and ", 
+        Cell[BoxData[TemplateBox[{Cell[TextData["NullHomotopicQ"]], 
+            "paclet:WolframInstitute/InfraGeometry/ref/NullHomotopicQ", 
+            "WolframInstitute/InfraGeometry Package Symbol"}, "PackageLink", 
+           BaseStyle -> "InlineFormula"]], "InlineFormula", 
+         ExpressionUUID -> "d884442d-8aac-4bea-9aac-9f1c46f6cae1"], 
+        " test homotopy and null-homotopy. We also consider ", 
+        StyleBox["controlled deformations of shortest paths", 
+         FontWeight -> "Bold"], ", keeping endpoints fixed and bounding both \
+the excess length and the distance from the reference path. One restricted \
+family consists of ", StyleBox["forward walks", FontWeight -> "Bold"], ", for \
+which distance from the starting point never decreases. Their excess length \
+counts steps within distance shells, and such walks can be counted using \
+powers of the adjacency matrix of the admissible-step graph. ", 
+        Cell[BoxData[TemplateBox[{Cell[TextData["InfraDeformationSize"]], 
+            "paclet:WolframInstitute/InfraGeometry/ref/InfraDeformationSize", 
+            "WolframInstitute/InfraGeometry Package Symbol"}, "PackageLink", 
+           BaseStyle -> "InlineFormula"]], "InlineFormula", 
+         ExpressionUUID -> "dcbe64d8-bf85-436b-8fd3-0bb3af8cd3e6"], " \
+measures the extent of the change along the reference path, between the \
+common prefix and suffix."}], "GuideAbstract", CellID -> 1165913449, 
+      ExpressionUUID -> "66ff0f01-2d08-4b9a-9f33-8d1e88f71aab"], 
+     Cell[TextData[{"Infra topology also includes the ", 
+        StyleBox["topological properties of fibre bundles", 
+         FontWeight -> "Bold"], ", discussed in the ", 
+        Cell[BoxData[TemplateBox[{Cell[TextData["Infra Fiber Bundles"]], 
+            "paclet:WolframInstitute/InfraGeometry/guide/InfraFiberBundles"}, 
+           "RefLinkPlain", BaseStyle -> {"InlineFormula"}]], "InlineFormula", 
+         FontSize -> 0.9*Inherited, ExpressionUUID -> 
+          "e86847fa-0f00-4f30-8795-35c002e8c162"], " guide."}], 
+      "GuideAbstract", CellID -> 848725228, ExpressionUUID -> 
+       "a7410443-13a8-4810-9b63-856f59d3f1f5"]}, Open]], 
+  Cell[CellGroupData[{Cell["", "GuideFunctionsSection", CellID -> 1866139230, 
+      ExpressionUUID -> "a0ea3657-4c83-4862-93c8-ecf80cebc774"], 
+     Cell[CellGroupData[{Cell["The ball topology", 
+         "GuideFunctionsSubsection", ExpressionUUID -> 
+          "2cd7ffe2-ec84-4b9e-848f-0b3c44a68fde"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "BallTopology"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/BallTopology", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "a241cd36-ac2a-4e84-83a4-088d2f8a8d16"], " \[LongDash] ", 
+           "the Hasse diagram of the specialization preorder of the ", 
+           Cell[BoxData[StyleBox["r", "TI"]], "InlineFormula", 
+            FontSize -> 0.9*Inherited, ExpressionUUID -> 
+             "34f5e9aa-44ce-42d9-8621-33b93e839d59"], "-balls"}], 
+         "GuideText", ExpressionUUID -> 
+          "88175481-610f-40ff-949c-2da1c8d92145"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "TopologicalClosure"]], "paclet:WolframInstitute/InfraGeomet\
+ry/ref/TopologicalClosure", "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "eb6baed9-fc44-4a19-8d06-c1178436e1e7"], " \[LongDash] ", "the \
+closure of a vertex set, the union of the down-sets of its vertices"}], 
+         "GuideText", ExpressionUUID -> 
+          "bcd3d37f-56c4-4970-bb3d-0c89faa91ab3"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "TopologicalInterior"]], "paclet:WolframInstitute/InfraGeome\
+try/ref/TopologicalInterior", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "313071b7-d260-4584-8c91-d2e449589148"], " \[LongDash] ", "the \
+interior of a vertex set, the complement of the closure of its complement"}], 
+         "GuideText", ExpressionUUID -> 
+          "0195c83c-6c4f-4d0c-ac44-80830e164034"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "TopologicalBoundary"]], "paclet:WolframInstitute/InfraGeome\
+try/ref/TopologicalBoundary", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "a21939f1-fcac-4847-a4b9-b2756c4b6279"], " \[LongDash] ", 
+           "the closure minus the interior"}], "GuideText", 
+         ExpressionUUID -> "03915c3c-5920-4111-83e6-6460d0b869db"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "TopologicalNeighborhood"]], "paclet:WolframInstitute/InfraG\
+eometry/ref/TopologicalNeighborhood", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "38441406-96f1-4964-b3dc-0ac6de6c1d42"], " \[LongDash] ", 
+           "the smallest open set containing a vertex set"}], "GuideText", 
+         ExpressionUUID -> "1295580e-82ee-4605-b04a-5c55e5f640a6"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "ContinuousMapQ"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/ContinuousMapQ", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "cc842a33-c34b-4fb5-9d6e-ece19505016c"], " \[LongDash] ", 
+           "whether a vertex map is continuous between two preorders"}], 
+         "GuideText", ExpressionUUID -> 
+          "1873a9c1-4f73-459e-8899-287ab4d0f4a6"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "TopologyGraph"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/TopologyGraph", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "a4ada60c-a279-43a5-9c8a-b4c6d437c8ab"], " \[LongDash] ", 
+           "a graph drawn with the Hasse arrows of its preorder on top"}], 
+         "GuideText", ExpressionUUID -> 
+          "75df05e8-021e-4d36-9b87-0c698b19cf75"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[StyleBox[
+                  "TransitiveReductionGraph", FontSlant -> "Italic"]]], 
+               "paclet:ref/TransitiveReductionGraph"}, "RefLink", 
+              BaseStyle -> "InlineFormula"]], "InlineGuideFunction", 
+            TaggingRules -> {"PageType" -> "Function"}, ExpressionUUID -> 
+             "822c5ba2-783a-41eb-aa17-b19470c72453"], " (WL)", ", ", 
+           Cell[BoxData[TemplateBox[{Cell[TextData[StyleBox[
+                  "TransitiveClosureGraph", FontSlant -> "Italic"]]], 
+               "paclet:ref/TransitiveClosureGraph"}, "RefLink", 
+              BaseStyle -> "InlineFormula"]], "InlineGuideFunction", 
+            TaggingRules -> {"PageType" -> "Function"}, ExpressionUUID -> 
+             "8d81e604-b614-4a0f-b353-786d5a558a75"], " (WL)", ", ", 
+           Cell[BoxData[TemplateBox[{Cell[TextData[StyleBox[
+                  "VertexInComponent", FontSlant -> "Italic"]]], 
+               "paclet:ref/VertexInComponent"}, "RefLink", BaseStyle -> 
+               "InlineFormula"]], "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "74a43e5c-9ac9-4ff5-a147-75b2217e4bb3"], " (WL)", ", ", 
+           Cell[BoxData[TemplateBox[{Cell[TextData[StyleBox[
+                  "VertexOutComponent", FontSlant -> "Italic"]]], 
+               "paclet:ref/VertexOutComponent"}, "RefLink", BaseStyle -> 
+               "InlineFormula"]], "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "d06a5a58-7838-4eac-b593-4983f8f3a516"], " (WL)"}], "GuideText", 
+         ExpressionUUID -> "0cc02874-4542-4003-b5d6-a77d77496fb3"]}, Open]], 
+     Cell[CellGroupData[{Cell["Region operations", 
+         "GuideFunctionsSubsection", ExpressionUUID -> 
+          "fc9b028f-306a-41ed-8f6c-84cec9d41292"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "InfraBoundary"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/InfraBoundary", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "92bface2-fbbe-492e-96d1-70ca7d0f1ea3"], " \[LongDash] ", 
+           "the boundary of a vertex set, density or object"}], "GuideText", 
+         ExpressionUUID -> "71c06377-5339-435b-906a-44d55b04fab0"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "InfraInterior"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/InfraInterior", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "9c6a20ea-acee-44d0-9978-a001c6a182ac"], " \[LongDash] ", 
+           "the interior of a vertex set, density or object"}], "GuideText", 
+         ExpressionUUID -> "a0577e20-182e-4e4b-a072-8402d7460d6f"]}, Open]], 
+     Cell[CellGroupData[{Cell["The ball intersection complex", 
+         "GuideFunctionsSubsection", ExpressionUUID -> 
+          "45cab64f-6db8-4a1f-b88e-4c77dcc12533"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "BallIntersectionComplex"]], "paclet:WolframInstitute/InfraG\
+eometry/ref/BallIntersectionComplex", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "18693888-63d0-4d7f-b9b1-6aad115b403a"], " \[LongDash] ", 
+           "the order-", Cell[BoxData[StyleBox["k", "TI"]], "InlineFormula", 
+            FontSize -> 0.9*Inherited, ExpressionUUID -> 
+             "f1fa6b71-7cff-4d86-be6a-5a07c52db2b2"], 
+           " complex of the closed ", Cell[BoxData[StyleBox["r", "TI"]], 
+            "InlineFormula", FontSize -> 0.9*Inherited, ExpressionUUID -> 
+             "c9c341aa-eec0-48a4-a3e7-ff990e2249ad"], "-balls"}], 
+         "GuideText", ExpressionUUID -> 
+          "fd961982-e904-4c28-be2a-418c0333b78e"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "CechComplex"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/CechComplex", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "996a58aa-dba8-440f-9d63-c4b3d0bdf3c5"], " \[LongDash] ", 
+           "the nerve of the closed ", Cell[BoxData[StyleBox["r", "TI"]], 
+            "InlineFormula", FontSize -> 0.9*Inherited, ExpressionUUID -> 
+             "b6da4f7b-6c6c-4f4f-bc41-7ab1b259aef9"], "-balls"}], 
+         "GuideText", ExpressionUUID -> 
+          "781007f9-6197-4ee9-ab67-afd35ec899e2"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "MiniballRadius"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/MiniballRadius", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "81092b09-be32-4eec-97fd-6654a6f40c30"], " \[LongDash] ", 
+           "the radius of the smallest ball enclosing a set of points"}], 
+         "GuideText", ExpressionUUID -> 
+          "ac3ffc52-b6c0-4501-a932-07dafea7f3ae"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "BallIntersectionFiltration"]], "paclet:WolframInstitute/Inf\
+raGeometry/ref/BallIntersectionFiltration", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "eb592eb8-de61-4a91-8c5c-e9c6471a4c43"], " \[LongDash] ", 
+           "the order-", Cell[BoxData[StyleBox["k", "TI"]], "InlineFormula", 
+            FontSize -> 0.9*Inherited, ExpressionUUID -> 
+             "9af9e887-a425-460c-8ec4-00413bf76b05"], 
+           " complexes over a list of radii"}], "GuideText", 
+         ExpressionUUID -> "6c410a61-2645-4ed0-b08e-f47df93a3e11"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "CechFiltration"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/CechFiltration", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "982a9906-d961-4987-a055-c6cece0ac2b2"], " \[LongDash] ", 
+           "the Cech complexes over a list of radii"}], "GuideText", 
+         ExpressionUUID -> "eaf63e18-59a2-4314-ab10-034d33b72561"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "BallIntersectionBifiltration"]], "paclet:WolframInstitute/I\
+nfraGeometry/ref/BallIntersectionBifiltration", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "80f44165-81f0-42a7-afd6-3ca24f78a308"], " \[LongDash] ", 
+           "the complexes over the radius and the order together"}], 
+         "GuideText", ExpressionUUID -> 
+          "11a47414-a92c-4d73-9ce3-95f8a6300ec7"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "BallIntersectionFiltrationValue"]], "paclet:WolframInstitut\
+e/InfraGeometry/ref/BallIntersectionFiltrationValue", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "49856fe1-daf0-4ded-b893-3ec083a8bf47"], ", ", 
+           Cell[BoxData[TemplateBox[{Cell[TextData[StyleBox["FindClique", 
+                  FontSlant -> "Italic"]]], "paclet:ref/FindClique"}, 
+              "RefLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "e09bdcdf-95a6-45de-8031-53475ce0807c"], " (WL)"}], "GuideText", 
+         ExpressionUUID -> "86a3d1ce-db7a-40e7-b9f7-3c29c49733af"]}, Open]], 
+     Cell[CellGroupData[{Cell["Ball covers and the covering dimension", 
+         "GuideFunctionsSubsection", ExpressionUUID -> 
+          "49bacf94-5a4f-400a-80dc-5bf415f63b98"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "FindBallCover"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/FindBallCover", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "606a3ec1-6141-41de-9ac8-9f334cd29f1b"], " \[LongDash] ", 
+           "centres whose ", Cell[BoxData[StyleBox["r", "TI"]], 
+            "InlineFormula", FontSize -> 0.9*Inherited, ExpressionUUID -> 
+             "973dfc5d-4ddd-4a0d-ade1-497dbd268cdd"], 
+           "-balls cover a target, minimizing their number by default"}], 
+         "GuideText", ExpressionUUID -> 
+          "d74a748f-aa75-4992-861b-734db97df86e"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "RandomBallCover"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/RandomBallCover", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "04752699-5f81-49f8-a1df-744387512838"], " \[LongDash] ", 
+           "uniformly sampled minimum centre sets covering a target"}], 
+         "GuideText", ExpressionUUID -> 
+          "cad97dc4-477c-4523-885c-b9807f6a4249"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "BallCoverNumber"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/BallCoverNumber", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "5dffb65c-df6b-415a-a839-9f3440c74a6d"], " \[LongDash] ", 
+           "the covering number ", Cell[BoxData[RowBox[{StyleBox["N", "TI"], 
+               StyleBox["(", SpanMaxSize -> 1], StyleBox["r", "TI"], StyleBox[
+                ")", SpanMaxSize -> 1]}]], "InlineFormula", 
+            FontSize -> 0.9*Inherited, ExpressionUUID -> 
+             "fec7dcb4-f4e2-4050-8f8c-8703ac8e66b6"], ", the ", 
+           Cell[BoxData[StyleBox["r", "TI"]], "InlineFormula", 
+            FontSize -> 0.9*Inherited, ExpressionUUID -> 
+             "df90d7ec-bf76-4c07-bed6-cdf9282f3487"], "-domination number"}], 
+         "GuideText", ExpressionUUID -> 
+          "c5857cee-7321-4e08-8769-4e6de5f62436"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "BallCoverQ"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/BallCoverQ", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "0e7dd701-b4f1-49ad-912a-0eb16705c7c5"], " \[LongDash] ", 
+           "whether the ", Cell[BoxData[StyleBox["r", "TI"]], 
+            "InlineFormula", FontSize -> 0.9*Inherited, ExpressionUUID -> 
+             "f0d3bc10-589f-4b9b-b950-677c37063b74"], 
+           "-balls about a set of centres cover the substrate"}], 
+         "GuideText", ExpressionUUID -> 
+          "1061302d-a765-4423-897d-7123ca64f723"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "InfraBallHull"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/InfraBallHull", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "efd65a45-0378-41aa-a36f-1b1033138393"], " \[LongDash] ", 
+           "the intersection of all closed balls containing a set"}], 
+         "GuideText", ExpressionUUID -> 
+          "817883d3-0043-4e88-bb94-12545d087f6b"]}, Open]], 
+     Cell[CellGroupData[{Cell["Notions of dimension", 
+         "GuideFunctionsSubsection", ExpressionUUID -> 
+          "614ffcea-eb6c-448d-a7dd-c50265986f93"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "InfraEquidistantSet"]], "paclet:WolframInstitute/InfraGeome\
+try/ref/InfraEquidistantSet", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "1b545e9f-e44f-4f0d-b033-461aa99a94a7"], " \[LongDash] ", 
+           "the common equidistant set of a list of points"}], "GuideText", 
+         ExpressionUUID -> "c48b585d-4350-4814-9e89-212e74caeeb0"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "FindInfraEquidistantSet"]], "paclet:WolframInstitute/InfraG\
+eometry/ref/FindInfraEquidistantSet", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "a23a25c2-3a51-4a48-b991-cbbd215feeda"], " \[LongDash] ", 
+           "the vertices at equal graph distance from all points"}], 
+         "GuideText", ExpressionUUID -> 
+          "d31334b6-de9b-499e-a333-f8533976ed09"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "FindInfraOrthogonalAxes"]], "paclet:WolframInstitute/InfraG\
+eometry/ref/FindInfraOrthogonalAxes", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "e3d8fd89-b76e-4c84-9b96-cd3a4cbb7ccb"], " \[LongDash] ", "a \
+maximal family of mutually perpendicular axes through a point"}], 
+         "GuideText", ExpressionUUID -> 
+          "bc89ba38-cbf2-42ea-a094-c83987ce3612"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "VolumeGrowthObservables"]], "paclet:WolframInstitute/InfraG\
+eometry/ref/VolumeGrowthObservables", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "2b8d89a7-21bc-4cc5-9b9c-cc437aa466e4"], " \[LongDash] ", 
+           "dimension and scalar curvature from ball and shell volumes"}], 
+         "GuideText", ExpressionUUID -> 
+          "93674375-d85b-4b30-8be3-b56f91f9e093"]}, Open]], 
+     Cell[CellGroupData[{Cell["Paths and walks", "GuideFunctionsSubsection", 
+         ExpressionUUID -> "703d25b5-bebf-46cb-b028-28f6aafad735"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData["InfraWalk"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/InfraWalk", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "6ef2736a-600e-4d80-8f82-65b89f46465e"], " \[LongDash] ", 
+           "an oriented walk through a vertex sequence"}], "GuideText", 
+         ExpressionUUID -> "92309522-264b-4975-8809-bf11e9800684"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "RandomInfraWalk"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/RandomInfraWalk", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "730ff1e0-c041-413c-805c-cd50eee5c4ab"], " \[LongDash] ", "walks \
+grown from a germ under local rules and a stopping condition"}], "GuideText", 
+         ExpressionUUID -> "6c66ff78-66d8-4bc6-94ae-d84e6fc50293"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "InfraWalkQ"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/InfraWalkQ", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "6aa5130a-25ce-4122-97c4-58a7f539ed66"], " \[LongDash] ", 
+           "whether consecutive vertices form a walk of the substrate"}], 
+         "GuideText", ExpressionUUID -> 
+          "ed7612f8-5266-4f24-ab87-f56c19b892aa"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "ConcatenateInfraWalk"]], "paclet:WolframInstitute/InfraGeom\
+etry/ref/ConcatenateInfraWalk", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "0f4f45c2-7e12-4776-86f2-1b27cebb8b28"], " \[LongDash] ", 
+           "compatible walks joined end to start"}], "GuideText", 
+         ExpressionUUID -> "bb630708-ea97-4334-9adf-ba2db109c25e"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "WalkSingularities"]], "paclet:WolframInstitute/InfraGeometr\
+y/ref/WalkSingularities", "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "fbfe3b8f-b933-43fc-a367-9e490df9f6a1"], " \[LongDash] ", 
+           "repeated vertices, repeated arcs and cusps of a walk"}], 
+         "GuideText", ExpressionUUID -> 
+          "59fb7ad0-e87d-46be-8512-f4ef3439d8e4"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "InfraImmersedQ"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/InfraImmersedQ", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "000fbd3d-33d1-4666-aa09-6f0c64b6f0c7"], ", ", 
+           Cell[BoxData[TemplateBox[{Cell[TextData["InfraGenericQ"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/InfraGenericQ", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "d67ad87b-f66a-4f39-bced-df7277cfdc03"], ", ", 
+           Cell[BoxData[TemplateBox[{Cell[TextData["InfraWalkCrossingQ"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/InfraWalkCrossingQ"\
+, "WolframInstitute/InfraGeometry Package Symbol"}, "PackageLink", 
+              BaseStyle -> "InlineFormula"]], "InlineGuideFunction", 
+            TaggingRules -> {"PageType" -> "Function"}, ExpressionUUID -> 
+             "879cd764-0b43-4400-9bf7-a6608571525b"]}], "GuideText", 
+         ExpressionUUID -> "a7855e1b-58fb-4394-819c-ba79935d9aec"]}, Open]], 
+     Cell[CellGroupData[{Cell["Path families and deformations", 
+         "GuideFunctionsSubsection", ExpressionUUID -> 
+          "f5432756-0385-4ede-a310-f5532fc87546"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "IntervalGraph"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/IntervalGraph", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "ae9374f4-04f6-4191-9040-909a549543b0"], " \[LongDash] ", "the \
+directed graph carrying all shortest paths between two vertices"}], 
+         "GuideText", ExpressionUUID -> 
+          "7799b6fe-fed1-44db-a0da-f3ed9363b813"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "PathSubgraph"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/PathSubgraph", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "a7f6ef6a-63fb-4641-a59d-d9f54844d27f"], " \[LongDash] ", "the \
+union of simple paths between two vertices within a length bound"}], 
+         "GuideText", ExpressionUUID -> 
+          "f8fc726d-d7ae-4e7f-bb18-2250e0a10057"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "SprayGraph"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/SprayGraph", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "e7d878df-968b-4cf2-8b87-dba802436a00"], " \[LongDash] ", 
+           "the union of shortest paths growing outward from an origin"}], 
+         "GuideText", ExpressionUUID -> 
+          "fec729ed-598b-4443-896a-33924260bb8a"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "SelectInfraWalk"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/SelectInfraWalk", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "52c6859c-0e84-4c46-9475-eb13df14fa04"], " \[LongDash] ", 
+           "representatives selected from a family of walks"}], "GuideText", 
+         ExpressionUUID -> "002fd903-b48f-4d12-99fe-df2796bd426d"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "EmbeddingClosest"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/EmbeddingClosest", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "6c39c109-83f9-47f8-8d72-4be42ed887ef"], " \[LongDash] ", 
+           "the walks closest to an embedded reference curve"}], "GuideText", 
+         ExpressionUUID -> "f4741707-e3a6-4615-a07e-ec1d992dd0d9"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "FindEmbeddingClosestPath"]], "paclet:WolframInstitute/Infra\
+Geometry/ref/FindEmbeddingClosestPath", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "d342c525-89dc-479f-821f-cd46415e8f54"], " \[LongDash] ", 
+           "an embedded curve snapped to a walk graph"}], "GuideText", 
+         ExpressionUUID -> "ce13164a-0cb2-43dc-ae98-fb0a10f452ac"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "InfraDeformationSize"]], "paclet:WolframInstitute/InfraGeom\
+etry/ref/InfraDeformationSize", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "354b0252-6655-45dc-bfae-2d5886aff397"], " \[LongDash] ", "the \
+number of reference edges between the common prefix and suffix"}], 
+         "GuideText", ExpressionUUID -> 
+          "7860a5b4-ecfd-4633-a0f8-46d5c6686683"]}, Open]], 
+     Cell[CellGroupData[{Cell["Controlled simple-path deformations", 
+         "GuideFunctionsSubsection", ExpressionUUID -> 
+          "8d6ec0ab-c824-4997-8f3d-e02ab9f4b075"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "InfraDeformation"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/InfraDeformation", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "adcbedad-c3ab-4bb2-a283-c4dbc788cffb"], " \[LongDash] ", "simpl\
+e paths with fixed endpoints, bounded excess length and distance from a \
+shortest reference"}], "GuideText", ExpressionUUID -> 
+          "0e4a01dc-24cf-40ad-9964-6818f3dd4c49"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "RandomInfraDeformation"]], "paclet:WolframInstitute/InfraGe\
+ometry/ref/RandomInfraDeformation", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "b20a0903-c532-41da-bb6b-fd8b0f623893"], " \[LongDash] ", 
+           "uniformly sampled distinct paths from the controlled family"}], 
+         "GuideText", ExpressionUUID -> 
+          "b7811182-1468-4f54-833f-ab5b73f58c59"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "FindInfraDeformation"]], "paclet:WolframInstitute/InfraGeom\
+etry/ref/FindInfraDeformation", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "3da27a14-3019-404a-b706-a278283dd6b4"], " \[LongDash] ", "a \
+certified chain whose intermediate simple paths respect the geometric bounds"}\
+], "GuideText", ExpressionUUID -> "fbf1f4d7-e137-4462-91f1-c83e596c0143"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "InfraMeasurement"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/InfraMeasurement", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "8f9b230b-91eb-48ca-8f86-a90bf8a4c9dd"], " \[LongDash] ", "exact \
+counts by excess, path densities and a finite-history graph"}], "GuideText", 
+         ExpressionUUID -> "855e42f5-a689-42ff-84f4-08a1192c75fb"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "InfraMemberQ"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/InfraMemberQ", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "eeec2afb-1220-4b4f-b526-d0c0e2d7610d"], " \[LongDash] ", 
+           "membership in the specified family of simple paths"}], 
+         "GuideText", ExpressionUUID -> 
+          "6c8470a9-281d-44f2-815a-44721c757cc2"]}, Open]], 
+     Cell[CellGroupData[{Cell["Forward walks", "GuideFunctionsSubsection", 
+         ExpressionUUID -> "39deec9f-132b-45dc-94f2-830004f0936b"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "InfraForwardDeformation"]], "paclet:WolframInstitute/InfraG\
+eometry/ref/InfraForwardDeformation", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "85c7382d-873e-4dd1-bb97-a0c2cf99a134"], " \[LongDash] ", 
+           "forward walks in a reference tube with bounded excess length"}], 
+         "GuideText", ExpressionUUID -> 
+          "9875e42d-00e2-490c-81da-1941fbe5836a"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "FindInfraForwardDeformation"]], "paclet:WolframInstitute/In\
+fraGeometry/ref/FindInfraForwardDeformation", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "ad2e05c2-9582-451f-8ea1-aee870c2c825"], " \[LongDash] ", 
+           "members of the forward-walk family"}], "GuideText", 
+         ExpressionUUID -> "bc45b04a-0d78-4c97-873c-2204ccd213ba"]}, Open]], 
+     Cell[CellGroupData[{Cell["Path and loop homotopy", 
+         "GuideFunctionsSubsection", ExpressionUUID -> 
+          "4b966235-bfb8-46db-834e-fbe15a956ad0"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "InfraHomotopy"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/InfraHomotopy", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "2ab98460-ce3c-4a90-96d3-1b570c22223c"], " \[LongDash] ", 
+           "an inert specification of homotopy between two walks"}], 
+         "GuideText", ExpressionUUID -> 
+          "25a086d0-e81c-4b94-8ed4-97c40f95eefe"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "FindInfraHomotopy"]], "paclet:WolframInstitute/InfraGeometr\
+y/ref/FindInfraHomotopy", "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "603f42c3-f56e-42d8-b482-45e3daf3b41f"], " \[LongDash] ", 
+           "a witness sequence of elementary moves between paths or loops"}], 
+         "GuideText", ExpressionUUID -> 
+          "ea1e236d-db30-4438-9fff-79813d90a593"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "HomotopicQ"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/HomotopicQ", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "c3b3bb02-440b-4bbf-864c-db3c98e5a348"], " \[LongDash] ", "certi\
+fied homotopy or non-homotopy, remaining unevaluated when undecided"}], 
+         "GuideText", ExpressionUUID -> 
+          "7e989e03-21a2-4e00-bbeb-10e1aee6dd83"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "NullHomotopicQ"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/NullHomotopicQ", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "fb8f054c-26ce-47a3-936a-44759ebd8287"], " \[LongDash] ", 
+           "whether a loop contracts, remaining unevaluated when undecided"}]\
+, "GuideText", ExpressionUUID -> "dc153b78-4957-4956-aae2-4997c5341f68"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "FindInfraHomotopyRepresentative"]], "paclet:WolframInstitut\
+e/InfraGeometry/ref/FindInfraHomotopyRepresentative", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "3664d41d-36d3-4539-ae28-81d6ba0fda1f"], " \[LongDash] ", "certi\
+fied shortest representatives, remaining unevaluated when undecided"}], 
+         "GuideText", ExpressionUUID -> 
+          "b4cecb23-e979-4a7c-92f5-d371d4952bbc"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "FindInfraHomotopyRepresentativeHomotopy"]], "paclet:Wolfram\
+Institute/InfraGeometry/ref/FindInfraHomotopyRepresentativeHomotopy", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "c8734d4a-5df4-438d-972b-c10a93c14250"], " \[LongDash] ", 
+           "witness chains to certified shortest representatives"}], 
+         "GuideText", ExpressionUUID -> 
+          "e2e4b7c2-18f9-44c9-a915-8ad309c28662"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "HomotopyMoveType"]], 
+               "paclet:WolframInstitute/InfraGeometry/ref/HomotopyMoveType", 
+               "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "b8fea1cd-9709-4d68-b257-bc2518b12192"], " \[LongDash] ", "a \
+length change classified as contraction, extension or lateral movement"}], 
+         "GuideText", ExpressionUUID -> 
+          "4d568cb9-24d3-4bc6-bb05-05b862133db9"], 
+        Cell[TextData[{Cell[BoxData[TemplateBox[{Cell[TextData[
+                 "HomotopyMoveTypes"]], "paclet:WolframInstitute/InfraGeometr\
+y/ref/HomotopyMoveTypes", "WolframInstitute/InfraGeometry Package Symbol"}, 
+              "PackageLink", BaseStyle -> "InlineFormula"]], 
+            "InlineGuideFunction", TaggingRules -> 
+             {"PageType" -> "Function"}, ExpressionUUID -> 
+             "f182d559-060d-49df-ad3b-d28aaa63c94e"], " \[LongDash] ", 
+           "the length-change types of successive walks in a chain"}], 
+         "GuideText", ExpressionUUID -> 
+          "b133c6ae-aac1-429e-8560-90492d0e263a"]}, Open]]}, Open]], 
+  Cell[CellGroupData[{Cell["Tech Notes", "GuideTutorialsSection", 
+      CellID -> 415694126, ExpressionUUID -> 
+       "90fbef20-ae74-4ea3-a50b-de22929861f8"], 
+     Cell[TextData[Cell[BoxData[TemplateBox[
+          {Cell[TextData["DimensionTutorial"]], 
+           "paclet:WolframInstitute/InfraGeometry/tutorial/DimensionTutorial"}\
+, "RefLinkPlain", BaseStyle -> {"InlineFormula"}]], "InlineFormula", 
+        ExpressionUUID -> "ce4ba426-12af-4e10-9fbb-d8c9da5447c5"]], 
+      "GuideTutorial", CellID -> 806871991, ExpressionUUID -> 
+       "c8d52b1f-06c5-4db0-bd0a-f386b59efcef"]}, Open]], 
+  Cell[CellGroupData[{Cell["Related Guides", "GuideMoreAboutSection", 
+      CellChangeTimes -> {{3.8430423939366693*^9, 3.843042395176153*^9}}, 
+      CellID -> 23220180, ExpressionUUID -> 
+       "0c9c7cc7-143a-48e7-bf27-45dd9029bd50"], 
+     Cell[TextData[Cell[BoxData[TemplateBox[
+          {Cell[TextData["EuclideanInfrageometry"]], "paclet:WolframInstitute\
+/InfraGeometry/guide/EuclideanInfrageometry"}, "RefLinkPlain", 
+          BaseStyle -> {"InlineFormula"}]], "InlineFormula", 
+        ExpressionUUID -> "b4d061e7-7dda-41f9-8b64-676444ef4da7"]], 
+      "GuideMoreAbout", CellID -> 1567025153, ExpressionUUID -> 
+       "e0ff5a6e-1488-40e3-9571-e445309cac69"], 
+     Cell[TextData[Cell[BoxData[TemplateBox[
+          {Cell[TextData["RiemannianInfrageometry"]], "paclet:WolframInstitut\
+e/InfraGeometry/guide/RiemannianInfrageometry"}, "RefLinkPlain", 
+          BaseStyle -> {"InlineFormula"}]], "InlineFormula", 
+        ExpressionUUID -> "84a20f70-d4d2-4fe2-b16a-6dbf42af0e79"]], 
+      "GuideMoreAbout", CellID -> 1567025153, ExpressionUUID -> 
+       "e0ff5a6e-1488-40e3-9571-e445309cac69"], 
+     Cell[TextData[Cell[BoxData[TemplateBox[{Cell[TextData["InfraAnalysis"]], 
+           "paclet:WolframInstitute/InfraGeometry/guide/InfraAnalysis"}, 
+          "RefLinkPlain", BaseStyle -> {"InlineFormula"}]], "InlineFormula", 
+        ExpressionUUID -> "58fd58a8-7df9-439c-ad02-3dc9365c5799"]], 
+      "GuideMoreAbout", CellID -> 1567025153, ExpressionUUID -> 
+       "e0ff5a6e-1488-40e3-9571-e445309cac69"], 
+     Cell[TextData[Cell[BoxData[TemplateBox[
+          {Cell[TextData["InfraFiberBundles"]], 
+           "paclet:WolframInstitute/InfraGeometry/guide/InfraFiberBundles"}, 
+          "RefLinkPlain", BaseStyle -> {"InlineFormula"}]], "InlineFormula", 
+        ExpressionUUID -> "4a530dfd-5e1c-401f-a80a-b0b33fe7f0ee"]], 
+      "GuideMoreAbout", CellID -> 1567025153, ExpressionUUID -> 
+       "e0ff5a6e-1488-40e3-9571-e445309cac69"], 
+     Cell[TextData[Cell[BoxData[TemplateBox[
+          {Cell[TextData["InfraSubstrates"]], 
+           "paclet:WolframInstitute/InfraGeometry/guide/InfraSubstrates"}, 
+          "RefLinkPlain", BaseStyle -> {"InlineFormula"}]], "InlineFormula", 
+        ExpressionUUID -> "8e4ba0e9-e99a-4e91-8c00-cfe78e12ad46"]], 
+      "GuideMoreAbout", CellID -> 1567025153, ExpressionUUID -> 
+       "e0ff5a6e-1488-40e3-9571-e445309cac69"], 
+     Cell[TextData[Cell[BoxData[TemplateBox[{Cell[TextData["Experimental"]], 
+           "paclet:WolframInstitute/InfraGeometry/guide/Experimental"}, 
+          "RefLinkPlain", BaseStyle -> {"InlineFormula"}]], "InlineFormula", 
+        ExpressionUUID -> "643cc5e5-fc53-499c-8bef-209d98450aa5"]], 
+      "GuideMoreAbout", CellID -> 1567025153, ExpressionUUID -> 
+       "e0ff5a6e-1488-40e3-9571-e445309cac69"]}, Open]], 
+  Cell["Related Links", "GuideRelatedLinksSection", CellID -> 415694148, 
+   ExpressionUUID -> "f8d14542-737b-4330-8523-975dc2960049"], 
+  Cell[CellGroupData[{Cell["Metadata", "MetadataSection", 
+      CellID -> 311882160, ExpressionUUID -> 
+       "1e562958-8f54-4854-b782-f4766015b2b2"], 
+     Cell[TextData[{"New in: ", Cell["XX", "HistoryData", CellTags -> "New", 
+         ExpressionUUID -> "8042be5c-0c76-46b3-86b4-3979f9a7592e"], 
+        " | Modified in: ", Cell[" ", "HistoryData", CellTags -> "Modified", 
+         ExpressionUUID -> "33838997-9c86-4f7e-a86c-465a8baa0509"], 
+        " | Obsolete in: ", Cell[" ", "HistoryData", CellTags -> "Obsolete", 
+         ExpressionUUID -> "f4a6f470-53c8-4e44-a786-272e7e70dce6"]}], 
+      "History", CellID -> 341476719, ExpressionUUID -> 
+       "6e43ae3a-1f84-4ca3-8250-559a053a9513"], 
+     Cell[CellGroupData[{Cell["Categorization", "CategorizationSection", 
+         CellID -> 1122911449, ExpressionUUID -> 
+          "cbe57f1c-788c-4a86-8338-08191b5d7b7b"], Cell["Guide", 
+         "Categorization", CellLabel -> "Entity Type", CellID -> 686433507, 
+         ExpressionUUID -> "4bb65dd8-004f-4758-b626-8984c4a9f475"], 
+        Cell["WolframInstitute/InfraGeometry", "Categorization", 
+         CellLabel -> "Paclet Name", CellID -> 605800465, 
+         ExpressionUUID -> "ea3b4732-cbcc-4f28-9e20-bfabae54c52c"], 
+        Cell["WolframInstitute`InfraGeometry`", "Categorization", 
+         CellLabel -> "Context", CellID -> 468444828, ExpressionUUID -> 
+          "52afa833-5422-4969-8c91-b9af19a42a2e"], 
+        Cell["WolframInstitute/InfraGeometry/guide/InfraTopology", 
+         "Categorization", CellLabel -> "URI", ExpressionUUID -> 
+          "04efe8d6-14ef-46f0-a3b1-f690807dd470"]}, Closed]], 
+     Cell[CellGroupData[{Cell["Keywords", "KeywordsSection", 
+         CellID -> 1427428552, ExpressionUUID -> 
+          "99169e92-9e69-4982-8b71-ac9518fe5ead"], Cell["topology", 
+         "Keywords", CellID -> 1251852827, ExpressionUUID -> 
+          "90374130-df8e-4799-aaa2-c8b32eecdde9"], Cell["ball topology", 
+         "Keywords", CellID -> 1251852827, ExpressionUUID -> 
+          "90374130-df8e-4799-aaa2-c8b32eecdde9"], 
+        Cell["specialization preorder", "Keywords", CellID -> 1251852827, 
+         ExpressionUUID -> "90374130-df8e-4799-aaa2-c8b32eecdde9"], 
+        Cell["ball intersection complex", "Keywords", CellID -> 1251852827, 
+         ExpressionUUID -> "90374130-df8e-4799-aaa2-c8b32eecdde9"], 
+        Cell["Cech complex", "Keywords", CellID -> 1251852827, 
+         ExpressionUUID -> "90374130-df8e-4799-aaa2-c8b32eecdde9"], 
+        Cell["Vietoris-Rips", "Keywords", CellID -> 1251852827, 
+         ExpressionUUID -> "90374130-df8e-4799-aaa2-c8b32eecdde9"], 
+        Cell["ball cover", "Keywords", CellID -> 1251852827, 
+         ExpressionUUID -> "90374130-df8e-4799-aaa2-c8b32eecdde9"], 
+        Cell["covering dimension", "Keywords", CellID -> 1251852827, 
+         ExpressionUUID -> "90374130-df8e-4799-aaa2-c8b32eecdde9"]}, 
+       Closed]]}, Open]]}, WindowSize -> {700, 770}, 
+ WindowMargins -> {{Automatic, 449}, {57, Automatic}}, 
+ TaggingRules -> {"Metadata" -> {"title" -> "InfraTopology", 
+     "context" -> "WolframInstitute`InfraGeometry`", 
+     "keywords" -> {"topology", "ball topology", "specialization preorder", 
+       "ball intersection complex", "Cech complex", "Vietoris-Rips", 
+       "ball cover", "covering dimension"}, "summary" -> "", 
+     "paclet" -> "WolframInstitute/InfraGeometry", 
+     "uri" -> "WolframInstitute/InfraGeometry/guide/InfraTopology", 
+     "type" -> "Guide", "index" -> True, "language" -> "en"}, 
+   "Paclet" -> "None"}, CreateCellID -> True, CellContext -> CellGroup, 
+ FrontEndVersion -> "15.0 for Mac OS X ARM (64-bit) (July 2, 2026)", 
+ StyleDefinitions -> FrontEnd`FileName[{"Wolfram"}, "GuidePageStylesExt.nb", 
+   CharacterEncoding -> "UTF-8"], ExpressionUUID -> 
+  "4f3dd705-9635-4464-b348-9b4dec79eac8"]

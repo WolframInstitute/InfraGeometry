@@ -7,6 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraWalkCrossingQ
 Keywords: [crossing, transverse, double point, self-intersection, touching, walk, scale]
 SeeAlso: [WalkSingularities, InfraGenericQ, InfraImmersedQ, InfraShell, InfraWalk]
+RelatedGuides: [InfraTopology]
 ---
 
 ## Usage

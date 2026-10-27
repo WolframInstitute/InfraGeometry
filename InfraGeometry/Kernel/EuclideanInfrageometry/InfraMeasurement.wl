@@ -63,12 +63,12 @@ InfraMeasurement[ graph_Graph,
         Total[ inside ( 1 - Sign[ adjacency . ( 1 - inside ) ] ) ] ],
       Keys /@ InfraMeasurement[ graph, regions, "VertexDensity" ] ] ]
 
-InfraMeasurement[ graph_Graph, obj : Except[ _InfraCircleThrough | _InfraEquidistantSet | _List ], props : { __String } ] :=
+InfraMeasurement[ graph_Graph, obj : Except[ _InfraDeformation | _InfraCircleThrough | _InfraEquidistantSet | _List ], props : { __String } ] :=
   AssociationMap[ InfraMeasurement[ graph, obj, # ] &, props ]
 
 InfraMeasurement[ graph_Graph,
-    obj : Except[ _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List |
-                  _Association | InfraIntersection[ __ ] | InfraUnion[ __ ] |
+    obj : Except[ _InfraDeformation | _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List |
+                  _Association | _InfraForwardDeformation | InfraIntersection[ __ ] | InfraUnion[ __ ] |
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] |
@@ -81,7 +81,7 @@ InfraMeasurement[ _Graph, ( InfraSegment | InfraHalfLine | InfraInfiniteLine )[ 
   True
 
 InfraMeasurement[ graph_Graph,
-    obj : Except[ _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List |
+    obj : Except[ _InfraDeformation | _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List |
                   _InfraGeodesic | InfraSegment[ _, _, __ ] | InfraArc[ _, Except[ { p_, ___, p_ }, { _, _, __ } ], ___ ] |
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
@@ -129,8 +129,8 @@ InfraMeasurement[ graph_Graph, objects : { ( _Graph | _List ) .. }, "VertexDensi
       AllTrue[ densities, AssociationQ ] ]
 
 InfraMeasurement[ graph_Graph,
-    obj : Except[ _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List |
-                  _Graph | _Association | _InfraGeodesic | _InfraWalk | _InfraPoint |
+    obj : Except[ _InfraDeformation | _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List |
+                  _Graph | _Association | _InfraGeodesic | _InfraWalk | _InfraPoint | _InfraForwardDeformation |
                   InfraIntersection[ __ ] | InfraUnion[ __ ] | InfraCircle[ _, _, ___ ] |
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
@@ -151,8 +151,8 @@ InfraMeasurement[ graph_Graph,
     Total ] /; MatchQ[ graphObject, _Graph | { ___Graph } ] ]
 
 InfraMeasurement[ graph_Graph,
-    obj : Except[ _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List |
-                  _InfraGeodesic | InfraIntersection[ __ ] | InfraUnion[ __ ] | InfraCircle[ _, _, ___ ] |
+    obj : Except[ _InfraDeformation | _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List |
+                  _InfraGeodesic | _InfraForwardDeformation | InfraIntersection[ __ ] | InfraUnion[ __ ] | InfraCircle[ _, _, ___ ] |
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
                   ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] |
@@ -172,7 +172,7 @@ InfraMeasurement[ graph_Graph,
       Total ] /; MatchQ[ dags, { ___Graph } ] ]
 
 InfraMeasurement[ graph_Graph,
-    obj : Except[ _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List |
+    obj : Except[ _InfraDeformation | _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List |
                   _InfraGeodesic | InfraSegment[ _, _, __ ] | InfraArc[ _, Except[ { p_, ___, p_ }, { _, _, __ } ], ___ ] |
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
@@ -186,23 +186,23 @@ InfraMeasurement[ graph_Graph,
         dags ],
       { one_ } :> one ] /; MatchQ[ dags, { ___Graph } ] ]
 
-InfraMeasurement[ graph_Graph, obj : Except[ _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List ], "Subgraph" ] :=
+InfraMeasurement[ graph_Graph, obj : Except[ _InfraDeformation | _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List ], "Subgraph" ] :=
   With[ { density = InfraMeasurement[ graph, obj, "VertexDensity" ] },
     Subgraph[ graph, Keys @ density ] /; AssociationQ @ density ]
 
-InfraMeasurement[ graph_Graph, obj : Except[ _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List ], "CountingMeasure" ] :=
+InfraMeasurement[ graph_Graph, obj : Except[ _InfraDeformation | _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List ], "CountingMeasure" ] :=
   With[ { density = InfraMeasurement[ graph, obj, "VertexDensity" ] },
     Length @ density /; AssociationQ @ density ]
 
-InfraMeasurement[ graph_Graph, obj : Except[ _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List ], "RiemannianMeasure" ] :=
+InfraMeasurement[ graph_Graph, obj : Except[ _InfraDeformation | _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List ], "RiemannianMeasure" ] :=
   With[ { density = InfraMeasurement[ graph, obj, "VertexDensity" ] },
     With[ { support = Keys @ density },
       { inside = AssociationThread[ support, True ] },
       Count[ support, v_ /; AllTrue[ AdjacencyList[ graph, v ], TrueQ @ Lookup[ inside, Key @ # ] & ] ] ] /; AssociationQ @ density ]
 
 InfraMemberQ[ graph_Graph,
-    obj : Except[ _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List |
-                  _InfraGeodesic | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] |
+    obj : Except[ _InfraDeformation | _InfraCircleThrough | _InfraMidpoint | _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraRegionNearest | _List |
+                  _InfraGeodesic | _InfraForwardDeformation | InfraSegment[ _, _, __ ] | InfraArc[ _, { _, _, __ } | { p_, p_ } | { _ }, ___ ] |
                   InfraCircle[ _, _, ___ ] |
                   ( InfraBall | InfraShell | InfraSphere )[ _, _ ] |
                   ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |

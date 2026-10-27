@@ -714,11 +714,13 @@ VerificationTest[
      the fibration constructions read by InfraTotalGraph and InfraFibrationAssociation (InfraFibrations T3).
      InfraFibration left the list in T3: its one-argument form converts a construction.  The hull heads InfraBallHull and
      InfraConvexHull joined it with APISurfaceCleanup T4, region heads read like InfraBall, and InfraSolidOfRevolution replaced
-     InfraRevolution in T5; InfraQuadric replaced the elliptic-shell token in T6. *)
+     InfraRevolution in T5; InfraQuadric replaced the elliptic-shell token in T6.
+     InfraDeformation and InfraForwardDeformation are inert walk families read by InfraMeasurement;
+     InfraHomotopy is an inert relation request read by FindInfraHomotopy. *)
   { "InflatedVertex",
     "InfraArc", "InfraBall", "InfraBallHull", "InfraCircle", "InfraCircleThrough", "InfraCone", "InfraConnection", "InfraConvexHull",
-    "InfraCotangentBundle", "InfraCylinder",
-    "InfraDisplacementBundle", "InfraEllipse", "InfraEquidistantSet", "InfraGeodesic", "InfraGeometricAssertion", "InfraHalfLine", "InfraInfiniteLine",
+    "InfraCotangentBundle", "InfraCylinder", "InfraDeformation",
+    "InfraDisplacementBundle", "InfraEllipse", "InfraEquidistantSet", "InfraForwardDeformation", "InfraGeodesic", "InfraGeometricAssertion", "InfraHalfLine", "InfraHomotopy", "InfraInfiniteLine",
     "InfraIntersectQ", "InfraLine", "InfraMidpoint", "InfraPerpendicularBisector", "InfraPlane", "InfraPoint",
     "InfraPolygon", "InfraQuadric", "InfraRay", "InfraRegionNearest", "InfraRegularPolygon", "InfraSceneStep", "InfraSection", "InfraSegment",
     "InfraShell", "InfraSolidOfRevolution", "InfraSphere", "InfraTangentBundle", "InfraTube", "InfraWalk" },

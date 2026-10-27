@@ -7,73 +7,67 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraHomotopyRepresentative
 Keywords: [homotopy class, shortest representative, reduced walk, geodesic in a homotopy class, fundamental group]
 SeeAlso: [FindInfraHomotopyRepresentativeHomotopy, FindInfraHomotopy, HomotopicQ, NullHomotopicQ]
+RelatedGuides: [InfraTopology]
 ---
 
 ## Usage
 
-<code>[FindInfraHomotopyRepresentative]()[*g*, *walk*]</code> gives the shortest walks homotopic to *walk*, as walk graphs.
+<code>[FindInfraHomotopyRepresentative]()[*g*, *walk*]</code> gives certified shortest walks homotopic to *walk*, as walk graphs.
 
 <code>[FindInfraHomotopyRepresentative]()[*g*, *walk*, *n*]</code> gives *n* of them.
 
 ## Details & Options
 
-The homotopy class of a walk is the set of walks reached from it by the elementary moves of [HomotopicQ](). An open walk keeps its endpoints, a closed walk its base point. The result is the walks of fewest vertices in the class, among those of at most `"MaxLength"` vertices.
+The homotopy class of a walk is the set of walks reached from it by the elementary moves of [HomotopicQ](). An open walk keeps its endpoints, a closed walk its base point. A result is returned only when minimal length is certified. Exact reduction in the face-free relation, a constant free path, or attainment of the metric lower bound can supply such a certificate.
 
-In the plane the shortest path in the class of a path is unique. On a graph there can be several, and a hole in the graph can keep a walk from shrinking.
+There can be several shortest representatives, and a hole can prevent a walk from shrinking.
 
-The search visits every walk of the class up to `"MaxLength"`, so a small `"MaxLength"` keeps it fast.
+Face search obeys `"MaxLength"`, `"MaxMoves"` and `"MaxStates"`; exact reduction and free-endpoint constructions can bypass these search budgets. A minimum in a bounded search is not automatically a minimum of the full homotopy class: reaching a shorter walk may require a longer intermediate walk. Without a certificate the call remains unevaluated.
 
-The count *n* can be `n`, `UpTo[n]` or `All`, the default. The options are those of [HomotopicQ]().
+The count *n* can be `n`, `UpTo[n]` or `All`, the default. The options are those of [HomotopicQ](), including `Method -> Automatic` and `"MaxStates" -> 1000`. `All` returns a result only when completeness of the shortest-representative family is certified; otherwise the call remains unevaluated. `UpTo[n]` can return found certified minima without claiming the family is complete.
+
+An exact integer count requires that many certified shortest representatives. A proved shortage gives `{}`; an unresolved shortage leaves the call unevaluated.
 
 ## Basic Examples
 
-A loop from the centre around a square of the grid and around two triangles of the mesh, with its shortest representative as the label. On the grid the square is a hole and the loop does not shrink; on the mesh it shrinks to its base point:
+A triangle shortcut gives the unique shortest representative:
 
 ```wl
-GraphicsRow @ Table[
-  With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
-    {members = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1], All]},
-    {loop = Join[First @ members, Rest @ Reverse @ Last @ members]},
-    InfraSubstrateHighlight[g, {InfraWalk[loop], c},
-      PlotLabel -> Last /@ VertexList[First @ FindInfraHomotopyRepresentative[g, loop, "MaxLength" -> 5]]]],
-  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+With[{g = CycleGraph[3]},
+  Map[Last, VertexList /@ FindInfraHomotopyRepresentative[g, {1, 2, 3}], {2}]]
 ```
 
-Filling the squares of the grid lets the loop shrink:
+A square loop stays nontrivial when only triangles are filled. Declaring the square a face lets it contract:
 
 ```wl
-With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
-  {members = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1], All]},
-  {loop = Join[First @ members, Rest @ Reverse @ Last @ members]},
-  Map[Last, VertexList /@ FindInfraHomotopyRepresentative[g, loop, "NullHomotopicCycles" -> 4, "MaxLength" -> 5], {2}]]
+With[{g = CycleGraph[4]},
+  Table[Map[Last, VertexList /@ FindInfraHomotopyRepresentative[g, {1, 2, 3, 4, 1},
+    "NullHomotopicCycles" -> k, "MaxLength" -> 5], {2}], {k, {3, 4}}]]
 ```
 
 ## Scope
 
-With the squares filled, a shortest path across a square has two representatives, the two sides of the square:
+With the square filled, its two shortest routes are both representatives. The search certifies the complete family:
 
 ```wl
-With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
-  {members = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1], All]},
-  Map[Last, VertexList /@ FindInfraHomotopyRepresentative[g, First @ members, "NullHomotopicCycles" -> 4, "MaxLength" -> 5], {2}]]
+With[{g = CycleGraph[4]},
+  Map[Last, VertexList /@ FindInfraHomotopyRepresentative[g, {1, 2, 3}, All,
+    "NullHomotopicCycles" -> 4, "MaxLength" -> 3], {2}]]
 ```
 
-A walk with a backtrack reduces to the walk without it:
+A backtrack reduces without any face relation:
 
 ```wl
-With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
-  {n = First @ AdjacencyList[g, c], m = Last @ AdjacencyList[g, c]},
-  Map[Last, VertexList /@ FindInfraHomotopyRepresentative[g, {n, c, m, c}, "MaxLength" -> 4], {2}]]
+With[{g = PathGraph[Range[3]]},
+  Map[Last, VertexList /@ FindInfraHomotopyRepresentative[g, {1, 2, 3, 2}], {2}]]
 ```
 
 ## Properties and Relations
 
-[FindInfraHomotopyRepresentativeHomotopy]() gives a chain of moves to a representative; its last walk is one:
+The last walk of a reduction chain is a shortest representative:
 
 ```wl
-With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
-  {members = RandomInfraSegment[g, c, RandomInfraPoint[g, InfraShell[c, 2], RandomSeeding -> 1], All]},
-  {loop = Join[First @ members, Rest @ Reverse @ Last @ members]},
-  MemberQ[FindInfraHomotopyRepresentative[g, loop, "NullHomotopicCycles" -> 4, "MaxLength" -> 5],
-    Last @ FindInfraHomotopyRepresentativeHomotopy[g, loop, "NullHomotopicCycles" -> 4, "MaxLength" -> 5]]]
+With[{g = CycleGraph[3]}, {walk = {1, 2, 3}},
+  MemberQ[FindInfraHomotopyRepresentative[g, walk],
+    Last @ FindInfraHomotopyRepresentativeHomotopy[g, walk]]]
 ```

@@ -7,6 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/EmbeddingClosest
 Keywords: [straightest path, Hausdorff distance, embedding, drawing, digital straight line, digital circle, selection]
 SeeAlso: [FindEmbeddingClosestPath, SelectInfraWalk, RandomInfraSegment, RandomInfraCircle, GraphEmbedding]
+RelatedGuides: [InfraTopology]
 ---
 
 ## Usage

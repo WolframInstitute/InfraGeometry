@@ -7,6 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraWalkQ
 Keywords: [walk, path, closed walk, adjacency, test]
 SeeAlso: [InfraWalk, RandomInfraWalk, InfraGeodesicQ, InfraSegmentQ, InfraImmersedQ, WalkSingularities]
+RelatedGuides: [InfraTopology]
 ---
 
 ## Usage

@@ -155,6 +155,12 @@ PackageExport[RandomBallCover]
 PackageExport[BallCoverQ]
 PackageExport[BallCoverNumber]
 
+PackageExport[InfraDeformation]
+PackageExport[RandomInfraDeformation]
+PackageExport[FindInfraDeformation]
+PackageExport[InfraForwardDeformation]
+PackageExport[FindInfraForwardDeformation]
+
 (* InfraAnalysis *)
 
 PackageExport[InfraDifferential]
@@ -295,6 +301,7 @@ PackageExport[ShortestPathMultiplicityMatrix]
 PackageExport[MedianVertices]
 
 PackageExport[FindInfraHomotopy]
+PackageExport[InfraHomotopy]
 PackageExport[FindInfraHomotopyRepresentative]
 PackageExport[FindInfraHomotopyRepresentativeHomotopy]
 PackageExport[HomotopicQ]

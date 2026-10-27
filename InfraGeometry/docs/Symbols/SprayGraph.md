@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/SprayGraph
 Keywords: [spray of shortest paths, exponential map, breadth-first search, shortest-path DAG, shortest paths]
 SeeAlso: [RayGraph, IntervalGraph, InfraMeasurement, RandomInfraGeodesic, InfraShell, InfraBall]
-RelatedGuides: [EuclideanInfrageometry]
+RelatedGuides: [EuclideanInfrageometry, InfraTopology]
 ---
 
 ## Usage

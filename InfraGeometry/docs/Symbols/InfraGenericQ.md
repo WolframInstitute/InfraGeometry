@@ -7,6 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraGenericQ
 Keywords: [generic curve, immersion, double point, self-intersection, self-tangency, cusp, Whitney]
 SeeAlso: [WalkSingularities, InfraImmersedQ, InfraWalkQ, InfraWalkCrossingQ, FindEmbeddingClosestPath]
+RelatedGuides: [InfraTopology]
 ---
 
 ## Usage

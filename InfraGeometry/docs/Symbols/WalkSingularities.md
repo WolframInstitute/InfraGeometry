@@ -7,6 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/WalkSingularities
 Keywords: [singularity, self-intersection, self-tangency, cusp, double point, walk, immersed curve]
 SeeAlso: [InfraImmersedQ, InfraGenericQ, InfraWalkCrossingQ, InfraWalkQ, InfraWalk, RandomInfraWalk]
+RelatedGuides: [InfraTopology]
 ---
 
 ## Usage

@@ -87,8 +87,22 @@ Infra topology also includes the **topological properties of fibre bundles**, di
 - `FindEmbeddingClosestPath` an embedded curve snapped to a walk graph
 - `InfraDeformationSize` the number of reference edges between the common prefix and suffix
 
+### Controlled simple-path deformations
+
+- `InfraDeformation` simple paths with fixed endpoints, bounded excess length and distance from a shortest reference
+- `RandomInfraDeformation` uniformly sampled distinct paths from the controlled family
+- `FindInfraDeformation` a certified chain whose intermediate simple paths respect the geometric bounds
+- `InfraMeasurement` exact counts by excess, path densities and a finite-history graph
+- `InfraMemberQ` membership in the specified family of simple paths
+
+### Forward walks
+
+- `InfraForwardDeformation` forward walks in a reference tube with bounded excess length
+- `FindInfraForwardDeformation` members of the forward-walk family
+
 ### Path and loop homotopy
 
+- `InfraHomotopy` an inert specification of homotopy between two walks
 - `FindInfraHomotopy` a witness sequence of elementary moves between paths or loops
 - `HomotopicQ` certified homotopy or non-homotopy, remaining unevaluated when undecided
 - `NullHomotopicQ` whether a loop contracts, remaining unevaluated when undecided

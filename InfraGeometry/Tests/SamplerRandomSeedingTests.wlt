@@ -1,6 +1,7 @@
 BeginTestSection[ "SamplerRandomSeeding" ]
 
 samplerCalls = <|
+  RandomInfraDeformation -> ( RandomInfraDeformation[ CycleGraph[ 4 ], InfraDeformation[ { 1, 2 }, UpTo[ 2 ] ], ## ] & ),
   RandomInfraPoint -> ( RandomInfraPoint[ GridGraph[ { 4, 4 } ], 3, ## ] & ),
   RandomInfraSegment -> ( RandomInfraSegment[ GridGraph[ { 4, 4 } ], 1, 16, ## ] & ),
   RandomInfraLine -> ( RandomInfraLine[ GridGraph[ { 4, 4 } ], 6, 7, ## ] & ),

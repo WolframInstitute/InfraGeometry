@@ -3,12 +3,13 @@ BeginTestSection["Homotopy"]
 walkGraph       = walk |-> PathGraph[ MapIndexed[ { First @ #2, #1 } &, walk ], DirectedEdges -> True ];
 closedWalkGraph = walk |-> With[ { core = MapIndexed[ { First @ #2, #1 } &, If[ Length[ walk ] >= 2 && First @ walk === Last @ walk, Most @ walk, walk ] ] },
   Graph[ core, DirectedEdge @@@ Partition[ core, 2, 1, 1 ] ] ];
-geodesicCycleGraph = WolframInstitute`InfraGeometry`PackageScope`geodesicCycleGraph;
-infraSpread        = WolframInstitute`InfraGeometry`PackageScope`infraSpread;
+geodesicCycleGraph = vertices |-> Graph[ vertices, DirectedEdge @@@ Partition[ vertices, 2, 1, 1 ] ];
 walkSeq[ w_Graph ] := Last /@ VertexList[ w ]
 walkSeqs[ w_Graph ] := { walkSeq @ w }
 walkSeqs[ ws_List ] := walkSeq /@ ws
-walkSequence = WolframInstitute`InfraGeometry`PackageScope`walkSequence;
+walkSequence = walk |-> With[ { vertices = Last /@ SortBy[ VertexList[ walk ], First ] },
+  If[ EdgeCount[ walk ] == VertexCount[ walk ] && Length[ vertices ] > 1,
+    Append[ vertices, First[ vertices ] ], vertices ] ];
 (* a chain is a List of walk graphs; read it as the sequences it passes through.
    walkSequence, not walkSeq: a closed chain's members are cycles on position pairs *)
 chainSeqs[ chain_List ] := walkSequence /@ chain
@@ -198,7 +199,7 @@ VerificationTest[
   chainSeqs @ FindInfraHomotopy[CompleteGraph[3],
     closedWalkGraph @ {1, 2, 3, 1}, closedWalkGraph @ {1},
     "NullHomotopicCycles" -> {3}],
-  {{1, 2, 3}, {1}},
+  {{1, 2, 3, 1}, {1}},
   TestID -> "Null-homotopy-triangle-loop"
 ]
 
@@ -431,24 +432,25 @@ VerificationTest[
   TestID -> "NullHomotopicQ-on-a-cycle-graph"
 ]
 
-(* the ladder of two squares: greedy descent stalls where the exhaustive search finds the homotopy *)
+(* A heuristic failure cannot prove that two paths are not homotopic. *)
 VerificationTest[
   With[ { g = Graph[ Range[ 6 ], { 1 <-> 2, 2 <-> 3, 4 <-> 5, 5 <-> 6, 1 <-> 4, 2 <-> 5, 3 <-> 6 } ] },
     { HomotopicQ[ g, { 1, 2, 3, 6 }, { 1, 4, 5, 6 }, "NullHomotopicCycles" -> 4 ],
-      HomotopicQ[ g, { 1, 2, 3, 6 }, { 1, 4, 5, 6 }, "NullHomotopicCycles" -> 4, Method -> "Greedy" ] } ],
-  { True, False },
+      MatchQ[ HomotopicQ[ g, { 1, 2, 3, 6 }, { 1, 4, 5, 6 }, "NullHomotopicCycles" -> 4, Method -> "Greedy" ],
+        True | _HomotopicQ ] } ],
+  { True, True },
   TestID -> "HomotopicQ-honours-Method"
 ]
 
 VerificationTest[
   With[ { g = Graph[ Range[ 6 ], { 1 <-> 2, 2 <-> 3, 4 <-> 5, 5 <-> 6, 1 <-> 4, 2 <-> 5, 3 <-> 6 } ] },
     { NullHomotopicQ[ g, { 2, 3, 6, 5, 4, 1 }, "NullHomotopicCycles" -> 4 ],
-      NullHomotopicQ[ g, { 2, 3, 6, 5, 4, 1 }, "NullHomotopicCycles" -> 4, Method -> "Greedy" ] } ],
-  { True, False },
+      MatchQ[ NullHomotopicQ[ g, { 2, 3, 6, 5, 4, 1 }, "NullHomotopicCycles" -> 4, Method -> "Greedy" ],
+        True | _NullHomotopicQ ] } ],
+  { True, True },
   TestID -> "NullHomotopicQ-honours-Method"
 ]
 
-EndTestSection[]
 
 (* an open walk and a closed one are never in one homotopy class; the call is a non-match *)
 VerificationTest[
@@ -456,3 +458,123 @@ VerificationTest[
   True,
   TestID -> "Open-vs-closed-unevaluated"
 ]
+
+
+VerificationTest[
+  MatchQ[ HomotopicQ[ CompleteGraph[ 3 ], { 1, 2, 3 }, { 1, 3 }, "MaxStates" -> 1 ], _HomotopicQ ],
+  True,
+  TestID -> "HomotopicQ-state-limit-is-undecided"
+]
+
+VerificationTest[
+  MatchQ[ NullHomotopicQ[ CompleteGraph[ 3 ], { 1, 2, 3 }, "MaxStates" -> 1 ], _NullHomotopicQ ],
+  True,
+  TestID -> "NullHomotopicQ-state-limit-is-undecided"
+]
+
+VerificationTest[
+  MatchQ[ HomotopicQ[ CompleteGraph[ 3 ], { 1, 2 }, { 1, 2 }, Method -> "Unsupported" ], _HomotopicQ ],
+  True,
+  TestID -> "HomotopicQ-unsupported-method-stays-unevaluated"
+]
+
+VerificationTest[
+  MatchQ[ HomotopicQ[ PathGraph[ Range[ 3 ] ], { 1, 3 }, { 1, 3 } ], _HomotopicQ ],
+  True,
+  TestID -> "HomotopicQ-invalid-walk-is-not-reflexively-true"
+]
+
+VerificationTest[
+  MatchQ[ NullHomotopicQ[ PathGraph[ Range[ 3 ] ], { 1, 2, 3 } ], _NullHomotopicQ ],
+  True,
+  TestID -> "NullHomotopicQ-invalid-closing-edge-stays-unevaluated"
+]
+
+VerificationTest[
+  MatchQ[ HomotopicQ[ PathGraph[ Range[ 3 ] ], { 1, 2 }, { 1, 2 },
+    "NullHomotopicCycles" -> { { 1, 2, 3 } } ], _HomotopicQ ],
+  True,
+  TestID -> "HomotopicQ-malformed-explicit-face-stays-unevaluated"
+]
+
+VerificationTest[
+  MatchQ[ HomotopicQ[ CompleteGraph[ 4 ], CompleteGraph[ 4 ], CompleteGraph[ 4 ] ], _HomotopicQ ],
+  True,
+  TestID -> "HomotopicQ-branching-graph-is-not-one-walk"
+]
+
+VerificationTest[
+  MatchQ[ HomotopicQ[ PathGraph[ Range[ 3 ] ], { }, { } ], _HomotopicQ ],
+  True,
+  TestID -> "HomotopicQ-empty-input-is-not-vacuously-true"
+]
+
+VerificationTest[
+  With[ { graph = PathGraph[ Range[ 4 ] ] },
+    { HomotopicQ[ graph, { 1, 2, 1 }, { 1 }, "NullHomotopicCycles" -> { 2 } ],
+      HomotopicQ[ graph, { 1, 2, 2, 1 }, { 1 }, "NullHomotopicCycles" -> { 2 } ],
+      HomotopicQ[ graph, { 1, 1 }, { 1 }, "NullHomotopicCycles" -> { 1 } ],
+      HomotopicQ[ graph, { 1, 2, 1 }, { 1 }, "NullHomotopicCycles" -> { 1 } ] } ],
+  { True, False, True, False },
+  TestID -> "Homotopy-exact-stutter-and-spur-rules-are-independent"
+]
+
+VerificationTest[
+  With[ { graph = PathGraph[ Range[ 4 ] ] },
+    { HomotopicQ[ graph, { 1, 2, 1 }, { 1 }, "NullHomotopicCycles" -> { { 1, 2 } } ],
+      HomotopicQ[ graph, { 3, 4, 3 }, { 3 }, "NullHomotopicCycles" -> { { 1, 2 } } ],
+      HomotopicQ[ graph, { 1, 1 }, { 1 }, "NullHomotopicCycles" -> { { 1 } } ],
+      HomotopicQ[ graph, { 2, 2 }, { 2 }, "NullHomotopicCycles" -> { { 1 } } ] } ],
+  { True, False, True, False },
+  TestID -> "Homotopy-explicit-small-faces-stay-local"
+]
+
+VerificationTest[
+  With[ { graph = CycleGraph[ 5 ] },
+    { HomotopicQ[ graph, closedWalkGraph[ { 1 } ], closedWalkGraph[ { 3 } ],
+        "FreeHomotopy" -> True, "NullHomotopicCycles" -> { 1, 2 } ],
+      HomotopicQ[ graph, closedWalkGraph[ { 1 } ], closedWalkGraph[ { 3 } ],
+        "FreeHomotopy" -> True, "NullHomotopicCycles" -> { } ] } ],
+  { True, False },
+  TestID -> "Homotopy-free-constant-transport-needs-allowed-spurs"
+]
+
+VerificationTest[
+  With[ { graph = CycleGraph[ 5 ], loop = closedWalkGraph[ { 1, 2, 3, 4, 5 } ] },
+    { HomotopicQ[ graph, loop, closedWalkGraph[ { 3, 4, 5, 1, 2 } ],
+        "FreeHomotopy" -> True, "NullHomotopicCycles" -> { 1, 2 } ],
+      HomotopicQ[ graph, loop, closedWalkGraph[ { 1, 5, 4, 3, 2 } ],
+        "FreeHomotopy" -> True, "NullHomotopicCycles" -> { 1, 2 } ] } ],
+  { True, False },
+  TestID -> "Homotopy-free-loop-normal-form-preserves-orientation"
+]
+
+VerificationTest[
+  With[ { graph = PathGraph[ Range[ 20 ] ], walk = Join[ Range[ 20 ], Reverse[ Most[ Range[ 20 ] ] ] ] },
+    chainSeqs @ FindInfraHomotopy[ graph, walk, { 1 }, "NullHomotopicCycles" -> { 1, 2 }, "MaxStates" -> 1 ] // Last ],
+  { 1 },
+  TestID -> "Homotopy-exact-reduction-bypasses-face-search-budget"
+]
+
+VerificationTest[
+  With[ { graph = CycleGraph[ 4 ], paths = { { 1, 2, 3 }, { 1, 4, 3 } } },
+    HomotopicQ[ graph, paths, paths, "NullHomotopicCycles" -> { 1, 2 } ] ],
+  False,
+  TestID -> "HomotopicQ-bundle-requires-every-pair"
+]
+
+VerificationTest[
+  chainSeqs @ FindInfraHomotopy[ CompleteGraph[ 3 ],
+    InfraHomotopy[ { 1, 2, 3 }, { 1, 3 }, "NullHomotopicCycles" -> { 3 } ] ],
+  { { 1, 2, 3 }, { 1, 3 } },
+  TestID -> "FindInfraHomotopy-inert-specification"
+]
+
+VerificationTest[
+  MatchQ[ FindInfraHomotopyRepresentative[ CompleteGraph[ 3 ], { 1, 2, 3 }, "MaxStates" -> 1 ],
+    _FindInfraHomotopyRepresentative ],
+  True,
+  TestID -> "Representative-does-not-claim-an-uncertified-minimum"
+]
+
+EndTestSection[]

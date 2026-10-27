@@ -7,6 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/ConcatenateInfraWalk
 Keywords: [concatenation, join, walk, path composition, polyline]
 SeeAlso: [InfraWalk, InfraSegment, RandomInfraSegment, FindInfraPolylineSubdivision, RandomInfraWalk]
+RelatedGuides: [InfraTopology]
 ---
 
 ## Usage

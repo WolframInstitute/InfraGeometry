@@ -6,8 +6,8 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraMemberQ
 Keywords: [membership, member, segment, ray, line, circle, arc, region]
-SeeAlso: [InfraMeasurement, RandomInfraSegment, InfraSegment, InfraSegmentQ, InfraInfiniteLineQ, InfraCircle]
-RelatedGuides: [EuclideanInfrageometry]
+SeeAlso: [InfraMeasurement, InfraDeformation, FindInfraDeformation, RandomInfraSegment, InfraSegment, InfraSegmentQ, InfraInfiniteLineQ, InfraCircle]
+RelatedGuides: [EuclideanInfrageometry, InfraTopology]
 ---
 
 ## Usage
@@ -25,6 +25,10 @@ A family — [InfraSegment](), [InfraHalfLine](), [InfraInfiniteLine](), [InfraC
 Members are oriented: a member of <code>[InfraSegment]()[*p*, *q*]</code> runs from *p* to *q*. A member of a circle is a cyclic vertex list, its first vertex not repeated, and is recognised up to rotation and direction.
 
 The members of [InfraGeodesic]() are its simple geodesics that cannot be extended, those of [InfraSphere]() its minimal separating sets, as [RandomInfraGeodesic]() and [RandomInfraSphere]() list them.
+
+For [InfraDeformation](), the complete vertex-list path must be simple, have the reference's ordered endpoints, stay inside its graph-distance tube, and satisfy the requested excess-length bounds. Membership is tested directly without constructing the counting graph. It does not certify a homotopy to the reference; [FindInfraDeformation]() searches for that additional certificate.
+
+For [InfraForwardDeformation](), the complete vertex-list walk must have the prescribed endpoints, stay in the reference tube, move forward through the distance shells, and satisfy the excess bound and first-arrival condition. The empty walk is not a member.
 
 A region — [InfraBall](), [InfraShell](), [InfraTube](), [InfraCylinder](), [InfraCone](), [InfraQuadric](), [InfraPerpendicularBisector](), [InfraEquidistantSet]() — has one member, its vertex set. The order and repetition of *vs* do not matter.
 

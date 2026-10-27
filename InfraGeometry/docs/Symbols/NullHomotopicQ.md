@@ -7,11 +7,12 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/NullHomotopicQ
 Keywords: [null-homotopic, contractible loop, homotopy, closed walk, fundamental group, face]
 SeeAlso: [HomotopicQ, FindInfraHomotopy, FindInfraHomotopyRepresentative, InfraWalkQ, InfraWalk]
+RelatedGuides: [InfraTopology]
 ---
 
 ## Usage
 
-<code>[NullHomotopicQ]()[*g*, *cycle*]</code> gives `True` if the closed walk *cycle* can be contracted to its base point in *g* by elementary moves.
+<code>[NullHomotopicQ]()[*g*, *cycle*]</code> gives `True` when contraction of *cycle* to a point is certified, `False` when an obstruction is certified, and remains unevaluated when undecided.
 
 ## Details & Options
 
@@ -35,9 +36,10 @@ Options:
 | `"FreeHomotopy"` | `False` | `True` lets the base point move |
 | `"MaxLength"` | `Automatic` | the longest walk a chain may pass through |
 | `"MaxMoves"` | [Infinity]() | the longest chain searched |
-| [Method]() | `"Exhaustive"` | `"Exhaustive"`, `"Greedy"` |
+| [Method]() | `Automatic` | exact reductions when available, otherwise bounded witness search; also `"Exhaustive"`, `"Greedy"` |
+| `"MaxStates"` | `1000` | maximum search states; explicit `Method -> "Exhaustive"` also permits `Infinity` |
 
-The exhaustive search grows fast with the length of the cycle. The greedy search moves the walk ever closer to its base point and stops when no move does; its `False` means only that the descent stalled.
+The exhaustive search grows fast with the length of the cycle. Reaching a search limit or a stalled greedy descent leaves the original predicate unevaluated. Only a certified obstruction gives `False`.
 
 ## Basic Examples
 
@@ -86,10 +88,11 @@ Table[NullHomotopicQ[CycleGraph[6], Range[6], "NullHomotopicCycles" -> k], {k, {
 
 ### Method
 
-The boundary of the ladder of two squares, from the middle of a long side. Each square removed leaves a corner as far from the base point as before, so the greedy descent stalls where the exhaustive search contracts the walk:
+Compare the methods on the boundary of a ladder whose squares are filled. A heuristic may fail to find a contraction. An unresolved predicate is displayed as `"Undecided"`:
 
 ```wl
 With[{g = Graph[Range[6], {1 <-> 2, 2 <-> 3, 4 <-> 5, 5 <-> 6, 1 <-> 4, 2 <-> 5, 3 <-> 6}]},
-  Table[NullHomotopicQ[g, {2, 3, 6, 5, 4, 1}, "NullHomotopicCycles" -> 4, Method -> m],
+  Table[Replace[NullHomotopicQ[g, {2, 3, 6, 5, 4, 1}, "NullHomotopicCycles" -> 4, Method -> m],
+    _NullHomotopicQ -> "Undecided"],
     {m, {"Exhaustive", "Greedy"}}]]
 ```

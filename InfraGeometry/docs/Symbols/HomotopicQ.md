@@ -7,11 +7,12 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/HomotopicQ
 Keywords: [homotopy, homotopic paths, fundamental group, elementary move, filled cycle, combinatorial homotopy]
 SeeAlso: [FindInfraHomotopy, NullHomotopicQ, FindInfraHomotopyRepresentative, HomotopyMoveTypes, RandomInfraSegment]
+RelatedGuides: [InfraTopology]
 ---
 
 ## Usage
 
-<code>[HomotopicQ]()[*g*, *a*, *b*]</code> gives `True` if the walks *a* and *b* are homotopic in *g*, and `False` otherwise.
+<code>[HomotopicQ]()[*g*, *a*, *b*]</code> gives `True` when homotopy of the walks *a* and *b* is certified, `False` when non-homotopy is certified, and remains unevaluated when undecided.
 
 ## Details & Options
 
@@ -35,9 +36,10 @@ A family of walks, such as a list of walk graphs, gives `True` when every pair f
 | `"FreeHomotopy"` | `False` | `True` frees the endpoints of an open walk, the base point of a closed one |
 | `"MaxLength"` | `Automatic` | the longest walk, in vertices, the search visits; `Automatic` is the longer walk plus twice the longest filled cycle, at least 3 |
 | `"MaxMoves"` | `Infinity` | the most moves in a chain |
-| [Method]() | `"Exhaustive"` | `"Exhaustive"`, `"Greedy"` |
+| [Method]() | `Automatic` | exact reductions when available, otherwise bounded witness search; also `"Exhaustive"`, `"Greedy"` |
+| `"MaxStates"` | `1000` | maximum search states; explicit `Method -> "Exhaustive"` also permits `Infinity` |
 
-The exhaustive search is breadth first over all walks up to `"MaxLength"`, so `False` means no chain within that length. The greedy search takes the move that brings the walk closest to the target, in the Hausdorff distance, and stops when no move brings it closer; its `False` means only that the descent stalled.
+Finding a move chain certifies `True`. A failed bounded search or stalled greedy descent does not certify `False`; the original predicate remains unevaluated. `False` requires an exact obstruction, such as incompatible fixed endpoints or unequal reduced words in the face-free relation. The search limits control computation, not the homotopy relation.
 
 ## Basic Examples
 
@@ -74,11 +76,12 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[
 
 ### Method
 
-On the ladder of two squares, with the squares filled, the two paths round the ladder are homotopic. The greedy descent stalls at once, since every move keeps a vertex at distance 1 from the other path:
+Compare the methods on two paths around a ladder whose squares are filled. A heuristic may fail to find a witness. An unresolved predicate is displayed as `"Undecided"`:
 
 ```wl
 With[{g = Graph[Range[6], {1 <-> 2, 2 <-> 3, 4 <-> 5, 5 <-> 6, 1 <-> 4, 2 <-> 5, 3 <-> 6}]},
-  Table[HomotopicQ[g, {1, 2, 3, 6}, {1, 4, 5, 6}, "NullHomotopicCycles" -> 4, Method -> m],
+  Table[Replace[HomotopicQ[g, {1, 2, 3, 6}, {1, 4, 5, 6}, "NullHomotopicCycles" -> 4, Method -> m],
+    _HomotopicQ -> "Undecided"],
     {m, {"Exhaustive", "Greedy"}}]]
 ```
 

@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/PathSubgraph
 Keywords: [shortest path, simple path, detour, path union, segment]
 SeeAlso: [IntervalGraph, InfraSegment, InfraMeasurement, FindPath, GraphUnion]
-RelatedGuides: [EuclideanInfrageometry]
+RelatedGuides: [EuclideanInfrageometry, InfraTopology]
 ---
 
 ## Usage

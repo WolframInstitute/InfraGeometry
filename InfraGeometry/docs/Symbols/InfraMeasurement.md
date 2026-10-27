@@ -6,8 +6,8 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraMeasurement
 Keywords: [measurement, density, occupation, cardinality, length, faithful, counting measure, Riemannian measure, volume]
-SeeAlso: [InfraMemberQ, InfraSegment, InfraBall, InfraShell, InfraTube, InfraInterior, InfraBoundary, InfraSubstrateHighlight]
-RelatedGuides: [EuclideanInfrageometry]
+SeeAlso: [InfraMemberQ, InfraDeformation, InfraSegment, InfraBall, InfraShell, InfraTube, InfraInterior, InfraBoundary, InfraSubstrateHighlight]
+RelatedGuides: [EuclideanInfrageometry, InfraTopology]
 ---
 
 ## Usage
@@ -58,6 +58,10 @@ A vertex, an association of masses and a walk graph also have a `"VertexDensity"
 A list of vertices is one vertex set for every property: its density counts repeated vertices, and its `"CountingMeasure"`, `"RiemannianMeasure"` and `"Subgraph"` are those of the set, as for a density. Any other list is measured object by object.
 
 The members of <code>[InfraGeodesic]()[*germ*, *s*]</code> at a finite scale *s* are listed to read its `"Cardinality"`, `"Length"` and densities; its `"Graph"` is a window graph, not a graph of the members. At scale [Infinity]() the family is <code>[InfraInfiniteLine]()[*germ*]</code> and is read as such.
+
+The simple-path family [InfraDeformation]() also has a `"CountsByExcess"` reading, an association giving the exact count at each requested excess, including zeros. Its `"Graph"` is a single directed acyclic graph of elapsed-step and path-history states with a terminal state. Source-to-terminal paths encode members; counts and projected substrate densities do not require listing them. `All` returns the graph, cardinality, counts by excess, lengths, both densities, support subgraph and two support measures. Reaching the family's `"MaxStates"` leaves these measurements unevaluated, without returning a partial count.
+
+The forward-walk family [InfraForwardDeformation]() has graph, cardinality, length and density readings. Its graphs use position states {*step*, *vertex*}; dynamic programming counts their paths without enumerating walks. The densities project to substrate vertices and directed edges, counting every visit and traversal over all members, including repetitions. The length reading is a scalar for one attainable length, otherwise a list. Support and region measures are read from these projected densities.
 
 ## Basic Examples
 

@@ -7,6 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/SelectInfraWalk
 Keywords: [walk, path space, Hausdorff distance, central path, selection, segment members]
 SeeAlso: [InfraSegment, RandomInfraSegment, RandomInfraWalk, InfraMeasurement, IntervalGraph]
+RelatedGuides: [InfraTopology]
 ---
 
 ## Usage
