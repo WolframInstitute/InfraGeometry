@@ -5,9 +5,9 @@ Context: WolframInstitute`InfraGeometry`
 ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraWalk
-Keywords: [walk, germ, self-avoiding walk, simple path, straightness, defect, window, energy, Boltzmann weight, random walk, stopping condition]
+Keywords: [walk, germ, self-avoiding walk, simple path, straightness, gain, turning angle, von Mises, window, energy, Boltzmann weight, random walk, stopping condition]
 SeeAlso: [RandomInfraGeodesic, RandomInfraSegment, RandomInfraInfiniteLine, InfraWalk, InfraWalkQ, InfraGeodesicQ, WalkSingularities]
-RelatedGuides: [EuclideanInfrageometry, InfraTopology]
+RelatedGuides: [EuclideanInfrageometry, RiemannianInfrageometry, InfraTopology]
 ---
 
 ## Usage
@@ -29,27 +29,29 @@ Each step chooses the next vertex among the neighbours of the last one, the cand
 | Property | Effect |
 |---|---|
 | `"Simple"` | no vertex twice; `{"Simple", r}` no vertex twice within the window, `{"Simple", r, p}` a repeat weighed *p* instead of forbidden |
-| `"Straightness" -> β` | each step prefers the straightest continuation: a candidate is weighed `Exp[-β Δ]`, Δ its excess defect, below |
+| `"Straightness" -> β` | each step prefers the straightest continuation: a candidate is weighed `Exp[-β Δ]`, Δ its excess energy, below |
 | `"Straightness" -> {β, r}` | the same on the window of scale *r* |
-| *f* `-> β`, *f* `-> {β, r}` | the energy `f[window]` ≥ 0 in place of the defect; `Infinity` forbids the window, and a predicate reads `True` as 0 and `False` as `Infinity` |
+| *f* `-> β`, *f* `-> {β, r}` | the energy `f[window]` ≥ 0 in place of the straightness energy; `Infinity` forbids the window, and a predicate reads `True` as 0 and `False` as `Infinity` |
 
 *β* is a non-negative number or `Infinity`. The properties act in the order given.
 
-**The defect.** For a window *w* = (*w*₁, …, *w*ₘ) the piece from *wᵢ* to the end has *m* − *i* edges, and its defect
+**The gain.** Let (*w*₀, …, *w*ₜ) be the window before the step, its tip *w*ₜ the last vertex of the walk. A candidate *v* changes the distance to each earlier vertex *wᵢ* by its *gain*
 
-  *Dᵢ*(*w*) = (*m* − *i*) − *d*(*wᵢ*, *wₘ*)
+  *gᵢ*(*v*) = *d*(*wᵢ*, *v*) − *d*(*wᵢ*, *wₜ*) ∈ {−1, 0, 1}:
 
-is the number of edges it wastes against a shortest path: 0 exactly when that piece is a shortest path. The defect of the window is the mean over its vertices,
+1 when *v* moves away from *wᵢ*, 0 when it keeps the distance, −1 when it comes back. The *mean gain*
 
-  *D*(*w*) = (*D*₁(*w*) + *D*₂(*w*) + ⋯ + *D*ₘ₋₁(*w*)) / (*m* − 1),
+  *g*(*v*) = (*g*₀(*v*) + *g*₁(*v*) + ⋯ + *g*ₜ₋₁(*v*)) / *t*
 
-0 exactly when the window is a shortest path, and positive for a bend at any scale up to *r*.
+lies between −1 and 1, and is 1 exactly when *v* moves away from every earlier vertex of the window. The tip itself is left out: its gain is always 1.
 
-**The excess defect.** Appending a candidate *v* to the window changes the term of each earlier vertex *wᵢ* by 0 when *v* is farther from *wᵢ* than the last vertex is, by 1 when it is as far, and by 2 when it is nearer. The excess defect of *v* is its defect against the best candidate *u* of the step,
+**The energy and the weight.** The energy of `"Straightness"` is *E*(*v*) = 1 − *g*(*v*), between 0 and 2, and 0 while the window is the tip alone. The excess energy of *v* is its energy against the best candidate *u* of the step,
 
-  Δ(*v*) = *D*(*w* + *v*) − min_*u* *D*(*w* + *u*),
+  Δ(*v*) = *E*(*v*) − min_*u* *E*(*u*),
 
-so Δ is, against the best candidate, the fraction of earlier vertices of the window that the step does not move away from, between 0 and 2. The step draws *v* with probability `Exp[-β Δ(v)]` divided by the sum of `Exp[-β Δ(u)]` over the candidates: a Boltzmann weight at inverse temperature *β*. On a mesh whose path distance is close to the Euclidean one, a turn by the angle *θ* costs about *β* (1 − cos *θ*) ≈ *β* *θ*² / 2, whatever the length of the window, so *β* is a bending rigidity: turns of order 1/√*β* are typical.
+and the step draws *v* with probability `Exp[-β Δ(v)]` divided by the sum of `Exp[-β Δ(u)]` over the candidates: a Boltzmann weight at inverse temperature *β*. Only differences of energies matter, so ranking by the mean gain is ranking by the total distance *d*(*w*₀, *v*) + ⋯ + *d*(*w*ₜ₋₁, *v*) to the window, and the exponential is the only weight with this property. The mean, not the sum, keeps the cost of a turn independent of the length of the window.
+
+**The turning angle.** Suppose the path distance is close to a rounding of the Euclidean one, the window is straight, and the window is not aligned with the mesh. Then for a candidate turning by the angle *θ* the mean gain is about cos *θ*: the Euclidean gain against every earlier vertex is cos *θ* up to order 1/*s*, *s* its distance to the tip, and the roundings up and down balance along the window. The weight of a step is then about `Exp[β cos θ]`, the von Mises distribution in the turning angle, and for large *β* about `Exp[-β θ^2/2]`, a Gaussian of variance 1/*β*. So *β* is a bending rigidity: turns of order 1/√*β* are typical. For a window aligned with the mesh the roundings do not balance and the mean gain is a step function of *θ*, not the cosine.
 
 | *β* | The walk |
 |---|---|
@@ -59,11 +61,11 @@ so Δ is, against the best candidate, the fraction of earlier vertices of the wi
 | 32 | nearly straight |
 | `Infinity` | always a candidate of Δ = 0; straightness never ends the walk, since some candidate always has Δ = 0 |
 
-A walk is a shortest path at scale *r* (`InfraGeodesicQ[g, walk, r]`) exactly when every step moves away from all the earlier vertices of its window, that is when *D*(*w* + *v*) = 0 at every step; at *β* = `Infinity` the walk takes such a step whenever one exists.
+A walk is a shortest path at scale *r* (`InfraGeodesicQ[g, walk, r]`) exactly when every step moves away from all the earlier vertices of its window, that is when *E*(*v*) = 0 at every step; at *β* = `Infinity` the walk takes such a step whenever one exists.
 
 Under `"Direction" -> "BothSides"` the window of a step is the joined walk: a step at both ends draws the new first vertex on the whole walk, then the new last vertex on the whole walk with that new first vertex, so the two halves are straight as one walk.
 
-The defect sees shortest paths, not Euclidean straightness. On the square grid every monotone staircase is a shortest path, so at *β* = `Infinity` the walk is a random staircase, not a straight line; a walk straight in the Euclidean sense needs a substrate whose shortest paths are straight, such as the square mesh.
+The gain sees shortest paths, not Euclidean straightness. On the square grid every monotone staircase is a shortest path, and a turn by 90° has gain 1 like the step straight on, so at *β* = `Infinity` the walk is a random staircase, not a straight line; a walk straight in the Euclidean sense needs a substrate whose shortest paths are straight, such as the square mesh.
 
 Options:
 
@@ -113,14 +115,15 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]
     {b, {0, 2, 8, 32, Infinity}}], ImageSize -> Large]]
 ```
 
-One step: a walk of 6 edges from the centre of the square mesh, its candidates for the next vertex labelled by their excess defect Δ. The candidate of Δ = 0 moves away from every earlier vertex; the other has Δ = 6/7 and at *β* = 8 is drawn about 950 times less often, the factor `Exp[8 · 6/7]`:
+One step: a walk of 6 edges from the centre of the square mesh, its candidates for the next vertex labelled by their excess energy Δ. The candidate of Δ = 0 moves away from every earlier vertex; the other has Δ = 1 and at *β* = 8 is drawn about 3000 times less often, the factor `Exp[8]`:
 
 ```wl
 With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
   {walk = Last /@ VertexList @ RandomInfraWalk[g, c, {6}, Properties -> {"Simple", "Straightness" -> 8}, RandomSeeding -> 1]},
-  {defect = w |-> Mean @ Table[(Length[w] - i) - GraphDistance[g, w[[i]], Last[w]], {i, Length[w] - 1}],
+  {energy = w |-> If[Length[w] < 3, 0,
+     1 - Mean @ Table[GraphDistance[g, w[[i]], Last[w]] - GraphDistance[g, w[[i]], w[[-2]]], {i, Length[w] - 2}]],
    candidates = Complement[AdjacencyList[g, Last[walk]], walk]},
-  {excess = # - Min[#] & @ AssociationMap[v |-> defect[Append[walk, v]], candidates]},
+  {excess = # - Min[#] & @ AssociationMap[v |-> energy[Append[walk, v]], candidates]},
   Graph[InfraSubstrateHighlight[g, Join[{InfraWalk[walk], c}, Thread[candidates -> StandardOrange]]],
     VertexLabels -> KeyValueMap[#1 -> Placed[Style[#2, 16, Bold], Above] &, excess], ImageSize -> Medium]]
 ```
@@ -203,22 +206,24 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}
 
 ## Properties and Relations
 
-`"Straightness"` is the mean defect *D* as an energy, walk for walk:
+`"Straightness"` is the energy 1 − *g*(*v*), one minus the mean gain, written out as a user energy, walk for walk:
 
 ```wl
 With[{g = InfraSubstrate["SquareMeshGraph", "Medium"]}, {c = First @ GraphCenter[g]},
-  {defect = w |-> Mean @ Table[(Length[w] - i) - GraphDistance[g, w[[i]], Last[w]], {i, Length[w] - 1}]},
+  {energy = w |-> If[Length[w] < 3, 0,
+     1 - Mean @ Table[GraphDistance[g, w[[i]], Last[w]] - GraphDistance[g, w[[i]], w[[-2]]], {i, Length[w] - 2}]]},
   Table[RandomInfraWalk[g, c, {10}, Properties -> {"Straightness" -> 2}, RandomSeeding -> s] ===
-    RandomInfraWalk[g, c, {10}, Properties -> {defect -> 2}, RandomSeeding -> s], {s, 5}]]
+    RandomInfraWalk[g, c, {10}, Properties -> {energy -> 2}, RandomSeeding -> s], {s, 5}]]
 ```
 
-A walk is a shortest path exactly when every step has defect 0. At *β* = `Infinity` on the mesh some walks of 10 edges from the centre are, and some meet a vertex where no candidate has defect 0; the pairs agree. The exact shortest paths from a germ are [RandomInfraGeodesic]():
+A walk is a shortest path exactly when every step has energy 0. At *β* = `Infinity` on the mesh some walks of 10 edges from the centre are, and some meet a vertex where no candidate has energy 0; the pairs agree. The exact shortest paths from a germ are [RandomInfraGeodesic]():
 
 ```wl
 With[{g = InfraSubstrate["SquareMeshGraph", "Large"]}, {c = First @ GraphCenter[g]},
-  {defect = w |-> Mean @ Table[(Length[w] - i) - GraphDistance[g, w[[i]], Last[w]], {i, Length[w] - 1}]},
+  {energy = w |-> If[Length[w] < 3, 0,
+     1 - Mean @ Table[GraphDistance[g, w[[i]], Last[w]] - GraphDistance[g, w[[i]], w[[-2]]], {i, Length[w] - 2}]]},
   Table[With[{w = Last /@ VertexList @ RandomInfraWalk[g, c, {10}, Properties -> {"Simple", "Straightness" -> Infinity}, RandomSeeding -> s]},
-    {AllTrue[Table[defect @ Take[w, k], {k, 2, Length[w]}], # == 0 &], InfraGeodesicQ[g, w]}], {s, 6}]]
+    {AllTrue[Table[energy @ Take[w, k], {k, 2, Length[w]}], # == 0 &], InfraGeodesicQ[g, w]}], {s, 6}]]
 ```
 
 Under `All` a finite *β* does not change the class:

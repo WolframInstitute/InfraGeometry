@@ -5,9 +5,10 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 (* growth of a germ under the Properties until the stopping condition fires, the length budget kspec is spent, or no admissible step remains.
    A property reads the window of scale r, the last r vertices of the growing side with the candidate appended, through an energy.  "Simple",
    {"Simple", r} or {"Simple", r, p} counts the candidate's earlier visits in the window: p == 0 drops a candidate of positive count, 0 < p <= 1
-   weighs it p^count.  "Straightness" -> {β, r} is the defect of the window w = (w_1, ..., w_m) averaged over its vertices,
-   D(w) = (1 / (m - 1)) Σ_{i < m} (m - i) - d(w_i, w_m), so that the cost of a turn does not grow with the window (the sum did, and a long
-   walk froze), and f -> {β, r} the energy f[window], a predicate read as 0 for True and Infinity for False; a
+   weighs it p^count.  "Straightness" -> {β, r} is 1 - g(c) for the window (w_0, ..., w_t) of tip w_t and the candidate c, with the mean gain
+   g(c) = (1 / t) Σ_{i < t} d(w_i, c) - d(w_i, w_t) in [-1, 1], and 0 while the window is the tip alone; the mean keeps the cost of a turn
+   from growing with the window (the sum did, and a long walk froze), and on a mesh g(c) is about the cosine of the turning angle, so the
+   turn is about Gaussian of variance 1/β.  f -> {β, r} is the energy f[window], a predicate read as 0 for True and Infinity for False; a
    candidate of energy Infinity is dropped, the others weigh Exp[-β Δ], Δ the energy above the step's least, and β Infinity keeps the least.
    A weight is carried as its logarithm, so none underflows.  RandomInfraGeodesic's rule {geodesicRule, r} drops a candidate whose window is
    not a shortest path.  The properties act in their order.
@@ -112,14 +113,16 @@ RandomInfraWalk[ graph_Graph, germ_,
         True,                                                                { } ] &,
       weighted = ! AllTrue[ rules, MatchQ[ { _, _, 0 } ] ],
       sampler  = nextFn === RandomChoice,
-      (* the energy of a property on each candidate's window, the window holding the candidate last: the defect D_i of its piece from w_i,
-         averaged over i for "Straightness", read from w_1 alone for the geodesic rule *)
+      (* the energy of a property on each candidate's window, the window holding the candidate last: one minus the mean gain of the step
+         against the vertices before the tip for "Straightness", the defect read from w_1 alone for the geodesic rule *)
       energies = { kind, r, walk, cs } |-> With[ { window = Take[ walk, -Min[ r, Length @ walk ] ] },
         Switch[ kind,
           "Simple",       Count[ window, # ] & /@ cs,
           geodesicRule,   ( Length[ window ] - GraphDistance[ graph, First @ window, # ] & ) /@ cs,
-          "Straightness", ( c |-> With[ { w = Append[ window, c ] },
-                            Mean @ Table[ ( Length[ w ] - i ) - GraphDistance[ graph, w[[ i ]], c ], { i, Length[ w ] - 1 } ] ] ) /@ cs,
+          "Straightness", With[ { earlier = Most @ window },
+                            { tipDistances = GraphDistance[ graph, #, Last @ window ] & /@ earlier },
+                            ( c |-> If[ earlier === { }, 0,
+                              1 - Mean[ ( GraphDistance[ graph, #, c ] & /@ earlier ) - tipDistances ] ] ) /@ cs ],
           _,              Replace[ kind[ Append[ window, # ] ], { True -> 0, False -> Infinity } ] & /@ cs ] ],
       stopQ = If[ condition === None, False &, Length[ # ] >= 2 && TrueQ[ condition @ # ] & ] },
     (* the candidates come with the logarithms ls of their weights.  A weighted RandomSample repeats a candidate whose weight is below

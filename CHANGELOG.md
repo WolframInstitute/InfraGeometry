@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## 2.12.9 (2026-10-29)
+
+- **`"Straightness"` is one minus the mean gain.** For the window (*w*₀, …, *w*ₜ) of tip *w*ₜ, a candidate *v* has the gain *gᵢ*(*v*) = *d*(*wᵢ*, *v*) − *d*(*wᵢ*, *wₜ*) ∈ {−1, 0, 1} against each earlier vertex, and the energy is *E*(*v*) = 1 − *g*(*v*), *g* the mean of the gains over *i* < *t*. The tip, whose term was always 0, is no longer in the mean, so *β* is exactly the rigidity of the angle law: on a mesh whose path distance rounds the Euclidean one, *g*(*v*) ≈ cos *θ* for a turn by *θ*, and the turning angle is von Mises, about Gaussian of variance 1/*β*. Rankings, the zero set and *β* = `Infinity` are unchanged; a finite *β* of 2.12.8 on a window of *t* + 1 vertices corresponds to *β* · *t* / (*t* + 1) now. The symbol page explains the gain and the angle law, and the Riemannian Infrageometry guide gains a section *Straight walks* with the same math in four lines. Derivation: `FromPavel/Research/Artifacts/MeanGainCosineLaw_261028.pdf`.
+
+## 2.12.8 (2026-10-28)
 
 - **`"Straightness"` averages the defect over the window instead of summing it.** The energy of a candidate is now `D(w) = (1 / (m - 1)) Σ Dᵢ(w)`, the mean of the per-vertex defects, so the excess Δ lies in [0, 2] and the cost of a turn no longer grows with the window: under the sum a walk at `r = Infinity` froze as it grew (the mildest turning candidate at *β* = `Infinity` cost 2, 8, 7, 24, 29 after 5, 10, 20, 25, 30 edges on the Large square mesh). Under the mean a turn by *θ* on a mesh costs about *β* (1 − cos *θ*), whatever the window, so *β* is a bending rigidity with typical turn 1/√*β*; the doc page's calibration is now *β* = 0, 2, 8, 32. Minimisers, the zero set and *β* = `Infinity` are unchanged, so `RandomInfraGeodesic` and every hard rule are unaffected; a finite *β* on an old call corresponds to the new *β* times the window length. The proofs are § Infra walks of the paper `FromPavel/Research/InfraGeometry.tex`.
 
