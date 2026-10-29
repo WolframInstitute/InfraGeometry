@@ -546,14 +546,14 @@ VerificationTest[
   TestID -> "InfraSubstrateHighlight-Arrowheads-one-darker-stroke-at-the-edges-breadth"
 ]
 
-(* the tip is the last vertex and the head points along the last two edges (one edge of a mesh zigzags):
-   the barbs are symmetric about the direction from the third-last vertex to the tip *)
+(* the tip is the last vertex; the walk turns by a right angle before it, so the head points along the last edge:
+   the barbs are symmetric about the direction from the second-last vertex to the tip *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     With[ { head = First @ headsOf @ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3, 8 } ] -> Arrowheads[ Automatic ] } ],
             c    = AssociationThread[ VertexList @ g -> GraphEmbedding @ g ] },
       { head[[ 3, 1, 3 ]] == c[ 8 ],
-        Norm[ Normalize @ Total @ Cases[ head[[ 3 ]], Offset[ d_, _ ] :> d, Infinity ][[ { 1, -1 } ]] + Normalize[ c[ 8 ] - c[ 2 ] ] ] < 10^-9 } ] ],
+        Norm[ Normalize @ Total @ Cases[ head[[ 3 ]], Offset[ d_, _ ] :> d, Infinity ][[ { 1, -1 } ]] + Normalize[ c[ 8 ] - c[ 3 ] ] ] < 10^-9 } ] ],
   { True, True },
   TestID -> "InfraSubstrateHighlight-Arrowheads-along-the-walk"
 ]
@@ -647,14 +647,14 @@ VerificationTest[
   TestID -> "InfraSubstrateHighlight-Arrowheads-spec-invisible-shaft"
 ]
 
-(* the Arrow runs along the walk with the vertex before the tip left out, so its head points from the third-last
-   vertex to the tip, as the absolute head does *)
+(* the Arrow leaves out the vertex before the tip when the last two edges run straight on, and keeps it at a corner,
+   so its head points as the absolute head does *)
 VerificationTest[
   With[ { g = GridGraph[ { 5, 5 } ] },
     With[ { c = AssociationThread[ VertexList @ g -> GraphEmbedding @ g ] },
-      Cases[ Epilog /. Options[ InfraSubstrateHighlight[ g, { InfraWalk[ { 1, 2, 3, 8 } ] -> Arrowheads[ Small ] } ], Epilog ],
-        Arrow[ points_ ] :> points == Lookup[ c, { 1, 2, 8 } ], Infinity ] ] ],
-  { True },
+      ( { walk, shaft } |-> Cases[ Epilog /. Options[ InfraSubstrateHighlight[ g, { InfraWalk[ walk ] -> Arrowheads[ Small ] } ], Epilog ],
+        Arrow[ points_ ] :> points == Lookup[ c, shaft ], Infinity ] ) @@@ { { { 1, 2, 3, 4 }, { 1, 2, 4 } }, { { 1, 2, 3, 8 }, { 1, 2, 3, 8 } } } ] ],
+  { { True }, { True } },
   TestID -> "InfraSubstrateHighlight-Arrowheads-spec-along-the-walk"
 ]
 

@@ -235,17 +235,20 @@ InfraSubstrateHighlight[ graph_Graph, items_List, opts : OptionsPattern[] ] :=
                               Replace[ e[ "Record" ][ "Arrowheads" ], a_Arrowheads /; dimension =!= 3 && FreeQ[ a, _Graphics ] -> None ] },
                   runs ] ] ],
           (* the head, asked for by an Arrowheads directive in the walk's style: two barbs, slightly arced, the tip on the last
-             vertex, along the last two edges (one edge of a mesh zigzags, two give the walk's direction); one stroke as broad as
-             the walk's last edge, in a darker shade of the walk's colour, so the head reads where it lies on its own walk.
-             Arrowheads[Automatic] draws it at an absolute size;
+             vertex, along the chord of the last two edges when they turn by less than 30 degrees (one edge of a mesh zigzags,
+             two give the walk's direction) and along the last edge when they turn more, so the head never sits askew on a
+             visible corner; one stroke as broad as the walk's last edge, in a darker shade of the walk's colour, so the head
+             reads where it lies on its own walk. Arrowheads[Automatic] draws it at an absolute size;
              any other Arrowheads spec hands it to Wolfram's Arrow as the head graphic, so the spec's sizes and positions mean
-             what they mean to Arrow, along the walk with the vertex before the tip left out, drawn with an invisible shaft *)
+             what they mean to Arrow, along the same shaft drawn invisibly *)
           heads = Cases[ entries,
             e_Association /; MatchQ[ e[ "Record" ][ "Arrowheads" ], a_Arrowheads /; dimension =!= 3 && FreeQ[ a, _Graphics ] ] &&
               e[ "Record" ][ "EdgeShapeFunction" ] === None && ListQ[ e[ "Walk" ] ] && Length[ e[ "Walk" ] ] >= 2 :>
               With[ {
                   spec  = e[ "Record" ][ "Arrowheads" ],
-                  shaft = Lookup[ coords, Key /@ If[ Length @ e[ "Walk" ] >= 3, Delete[ e[ "Walk" ], -2 ], e[ "Walk" ] ] ],
+                  shaft = Lookup[ coords, Key /@ If[ Length @ e[ "Walk" ] >= 3 &&
+                      VectorAngle @@ Differences @ Lookup[ coords, Key /@ Take[ e[ "Walk" ], -3 ] ] < Pi / 6,
+                    Delete[ e[ "Walk" ], -2 ], e[ "Walk" ] ] ],
                   style = Lookup[ edgeStyle, UndirectedEdge @@ Sort @ Take[ e[ "Walk" ], -2 ], Directive[ ] ] },
                 { tip       = Last @ shaft,
                   u         = Normalize[ Last @ shaft - shaft[[ -2 ]] ],
