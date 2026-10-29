@@ -430,7 +430,7 @@ VerificationTest[
 VerificationTest[
   With[{g = CycleGraph[6]},
     Sort @ walkSeqs @ endingAt[RandomInfraGeodesic[g, 1, 2, Infinity, All, stopAt[4],
-        Properties -> { "Simple", "Straightness" -> { Infinity, 2 } }], 4]
+        Properties -> { "Simple", { "Geodesic", "Window" -> 2 } }], 4]
   ],
   Sort[{{1, 2, 3, 4}, {1, 6, 5, 4}}],
   TestID -> "RandomInfraGeodesic-Straightness-scale-2-cycle-symmetric"
@@ -440,7 +440,7 @@ VerificationTest[
   With[{g = GridGraph[{4, 4}]},
     BlockRandom[
       Length @ walkSeqs @ endingAt[RandomInfraGeodesic[g, 1, 2, Infinity, All, stopAt[16],
-        Properties -> { "Simple", "Straightness" -> { Infinity, 2 } }, "NextVertexFunction" -> (RandomSample[#, UpTo[1]] &), RandomSeeding -> None ], 16] <= 1,
+        Properties -> { "Simple", { "Geodesic", "Window" -> 2 } }, "NextVertexFunction" -> (RandomSample[#, UpTo[1]] &), RandomSeeding -> None ], 16] <= 1,
       RandomSeeding -> 42
     ]
   ],

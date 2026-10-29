@@ -33,7 +33,7 @@ GraphicsRow @ Table[
   With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
     {walk = RandomInfraWalk[g, c, {10}, Properties -> props, RandomSeeding -> 3]},
     InfraSubstrateHighlight[g, {walk, c}, PlotLabel -> InfraImmersedQ[g, walk]]],
-  {props, {{}, {{"Simple", 2}}}}]
+  {props, {{}, {{"Simple", "Window" -> 2}}}}]
 ```
 
 A step back is a cusp:

@@ -1,7 +1,7 @@
 BeginTestSection["MethodLadder"]
 
 (* the generic class: no cusp, no third visit, no self-tangency *)
-genericRules = { { "Simple", 2 }, ( w |-> Count[ w, Last @ w ] <= 2 && WalkSingularities[ w ][ "SelfTangencies" ] === { } ) -> Infinity };
+genericRules = { { "Simple", "Window" -> 2 }, ( w |-> Count[ w, Last @ w ] <= 2 && WalkSingularities[ w ][ "SelfTangencies" ] === { } ) };
 
 (* ===================== The class-invariance contract ===================== *)
 
@@ -55,7 +55,7 @@ VerificationTest[
 
 VerificationTest[
   classInvariantQ[ f |-> RandomInfraWalk[ GridGraph[ { 3, 3 } ], 1, UpTo[ 6 ], All,
-    Properties -> { { "Simple", 2 } }, "StoppingCondition" -> ( Length[ # ] - Length[ DeleteDuplicates @ # ] >= 1 & ), "NextVertexFunction" -> f ] ],
+    Properties -> { { "Simple", "Window" -> 2 } }, "StoppingCondition" -> ( Length[ # ] - Length[ DeleteDuplicates @ # ] >= 1 & ), "NextVertexFunction" -> f ] ],
   True,
   TestID -> "RandomInfraWalk-pointed-class-invariant-under-NextVertexFunction"
 ]
@@ -101,7 +101,7 @@ VerificationTest[
 (* a finite β weighs the candidates and never filters them: the class is the
    same under Identity, RandomSample and Automatic, which draws by the weights *)
 VerificationTest[
-  With[ { call = f |-> RandomInfraWalk[ GridGraph[ { 4, 4 } ], 6, { 4 }, All, Properties -> { "Simple", "Straightness" -> { 1.2, 3 } },
+  With[ { call = f |-> RandomInfraWalk[ GridGraph[ { 4, 4 } ], 6, { 4 }, All, Properties -> { "Simple", { "Geodesic", "Window" -> 3, "Straightness" -> 1.2 } },
       "NextVertexFunction" -> f ] },
     { classInvariantQ[ call ], classInvariantQ[ f |-> call[ f /. RandomSample -> Automatic ] ] } ],
   { True, True },

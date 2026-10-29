@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.12.11 (2026-10-29)
+
+- **One grammar for the walk properties of `RandomInfraWalk`.** A property is a name, bare or with its sub-options: `"Simple"`, `"Geodesic"` or a function *f*, written `{name, "Window" -> r}`, and `"Geodesic"` also `{"Geodesic", "Straightness" -> β}`. `"Window"` defaults to `Infinity`, the whole walk; `"Straightness"` defaults to `Infinity`. A bare name is a constraint: `"Simple"` no vertex twice, `"Geodesic"` every window a shortest path (the walks of `RandomInfraGeodesic`, seed for seed), a predicate *f* its own filter. A finite straightness is the weight `Exp[-β Δ]` of 2.12.9, the von Mises concentration of the turning angle; a numeric *f* is the weight `Exp[-Δ]`, its scale inside *f*. The energies, the step code and every seeded draw are unchanged.
+
+  | 2.12.10 | 2.12.11 |
+  |---|---|
+  | `{"Simple", r}`, `{"Simple", r, 0}` | `{"Simple", "Window" -> r}` |
+  | `{"Simple", r, p}`, `p > 0` | removed; `{w \|-> -Log[p] (Count[w, Last[w]] - 1), "Window" -> r}` |
+  | `"Straightness" -> β`, `-> {β, r}` | `{"Geodesic", "Straightness" -> β}`, `{"Geodesic", "Window" -> r, "Straightness" -> β}` |
+  | `"Straightness" -> Infinity` (the least bent step) | `"Geodesic"` (a shortest path; a large finite β keeps the least bent step) |
+  | `pred -> β`, `pred -> {β, r}` | `pred`, `{pred, "Window" -> r}` |
+  | `f -> β`, `f -> {β, r}` | `w \|-> β f[w]`, `{w \|-> β f[w], "Window" -> r}` |
+  | `RandomInfraGeodesic[g, germ, r, k]` | unchanged; equal to `RandomInfraWalk[g, germ, k, Properties -> {{"Geodesic", "Window" -> r}}]` |
+
+  The spellings of 2.12 still evaluate as before, with the message `RandomInfraWalk::alias` naming the new spelling. The weighted `{"Simple", r, p}` is refused with `RandomInfraWalk::rule`, like the triples of 2.11. `kspec = Infinity` needs `"Simple"` or `"Geodesic"` on the whole walk.
+
 ## 2.12.9 (2026-10-29)
 
 - **`"Straightness"` is one minus the mean gain.** For the window (*w*₀, …, *w*ₜ) of tip *w*ₜ, a candidate *v* has the gain *gᵢ*(*v*) = *d*(*wᵢ*, *v*) − *d*(*wᵢ*, *wₜ*) ∈ {−1, 0, 1} against each earlier vertex, and the energy is *E*(*v*) = 1 − *g*(*v*), *g* the mean of the gains over *i* < *t*. The tip, whose term was always 0, is no longer in the mean, so *β* is exactly the rigidity of the angle law: on a mesh whose path distance rounds the Euclidean one, *g*(*v*) ≈ cos *θ* for a turn by *θ*, and the turning angle is von Mises, about Gaussian of variance 1/*β*. Rankings, the zero set and *β* = `Infinity` are unchanged; a finite *β* of 2.12.8 on a window of *t* + 1 vertices corresponds to *β* · *t* / (*t* + 1) now. The symbol page explains the gain and the angle law, and the Riemannian Infrageometry guide gains a section *Straight walks* with the same math in four lines. Derivation: `FromPavel/Research/Artifacts/MeanGainCosineLaw_261028.pdf`.

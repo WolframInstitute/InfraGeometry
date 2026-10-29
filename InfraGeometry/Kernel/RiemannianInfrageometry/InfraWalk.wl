@@ -3,18 +3,21 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 (* WolframInstitute`InfraGeometry` :: RiemannianInfrageometry :: InfraWalk *)
 
 (* growth of a germ under the Properties until the stopping condition fires, the length budget kspec is spent, or no admissible step remains.
-   A property reads the window of scale r, the last r vertices of the growing side with the candidate appended, through an energy.  "Simple",
-   {"Simple", r} or {"Simple", r, p} counts the candidate's earlier visits in the window: p == 0 drops a candidate of positive count, 0 < p <= 1
-   weighs it p^count.  "Straightness" -> {β, r} is 1 - g(c) for the window (w_0, ..., w_t) of tip w_t and the candidate c, with the mean gain
+   A property reads the window of scale r, the last r vertices of the growing side with the candidate appended, given as "Window" -> r
+   (default Infinity), through an energy.  "Simple" counts the candidate's earlier visits in the window and drops a candidate of positive
+   count.  "Geodesic" drops a candidate whose window is not a shortest path; with "Straightness" -> β finite it weighs the candidates by the
+   energy 1 - g(c) for the window (w_0, ..., w_t) of tip w_t and the candidate c, with the mean gain
    g(c) = (1 / t) Σ_{i < t} d(w_i, c) - d(w_i, w_t) in [-1, 1], and 0 while the window is the tip alone; the mean keeps the cost of a turn
    from growing with the window (the sum did, and a long walk froze), and on a mesh g(c) is about the cosine of the turning angle, so the
-   turn is about Gaussian of variance 1/β.  f -> {β, r} is the energy f[window], a predicate read as 0 for True and Infinity for False; a
-   candidate of energy Infinity is dropped, the others weigh Exp[-β Δ], Δ the energy above the step's least, and β Infinity keeps the least.
-   A weight is carried as its logarithm, so none underflows.  RandomInfraGeodesic's rule {geodesicRule, r} drops a candidate whose window is
-   not a shortest path.  The properties act in their order.
+   turning angle is von Mises of concentration β.  The energy is 0 exactly when the step moves away from every earlier vertex, so on a
+   window that is a shortest path its zero set is the geodesic rule's, and the constraint is β Infinity.  A user function f is the energy
+   f[window], a predicate read as 0 for True and Infinity for False, at β 1; a candidate of energy Infinity is dropped, the others weigh
+   Exp[-β Δ], Δ the energy above the step's least.  Internally a hard rule is {kind, r, 0} and a weight {kind, r} -> β; the 2.12 spellings
+   {"Simple", r}, "Straightness" -> β and f -> β still read as before, with the message ::alias.
+   A weight is carried as its logarithm, so none underflows.  The properties act in their order.
    The next-vertex function turns the surviving, weighted candidates into the order they are tried: Automatic, RandomSample and RandomChoice read
    the weights, Identity and a function ignore them; RandomChoice never backtracks, so its count is that many independent runs.  The germ is a vertex first, then a vertex list, a walk graph, or a bundle of germs; kspec counts the edges added per
-   growing side, and kspec Infinity needs a hard rule that bounds the class, bare "Simple" or the geodesic rule at scale Infinity.
+   growing side, and kspec Infinity needs a hard rule that bounds the class, "Simple" or "Geodesic" on the window Infinity.
    "BothSides" offers three moves per outer step -- both sides, front only, back only, joint first so a greedy witness keeps the synchronous
    trajectory.  Under hard rules alone each side is ordered by its own candidates; the one window neither side sees alone holds both new ends,
    the whole joined walk once it is short enough, and the hard "Simple" and the geodesic rule re-check it.  Under a weighted property the joint
@@ -23,6 +26,8 @@ Package[ "WolframInstitute`InfraGeometry`" ]
    under every direction, and the germ once it has an edge *)
 
 RandomInfraWalk::rule = "The walk property `1` is removed; write `2`."
+
+RandomInfraWalk::alias = "The walk property `1` is deprecated; write `2`."
 
 Options[ RandomInfraWalk ] = {
   Properties           -> { },
@@ -44,20 +49,33 @@ RandomInfraWalk[ graph_Graph, germ_, opts : OptionsPattern[] ] /; MemberQ[ Flatt
   With[ { result = RandomInfraWalk[ graph, germ, Infinity, Automatic, opts ] },
     result /; Head[ result ] =!= RandomInfraWalk ]
 
-(* the rule triples of 2.11 and "Stretched" are refused with the spelling that replaces them, once per call *)
+(* the removed spellings are refused, and the deprecated ones of 2.12 read as before, each with the spelling that replaces it, once per call *)
 
 RandomInfraWalk[ _Graph, _, UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity, rest___ ] /; MemberQ[ { rest }, RandomSeeding -> None ] :=
   With[ { old = FirstCase[ Catenate @ Cases[ { rest }, ( Properties -> rules_List ) :> rules ],
-      "Shortest" | "Stretched" | { Except[ "Simple" | geodesicRule ], _ } | { Except[ "Simple" ], _, _ } | Except[ _String | _List | _Rule ], None, { 1 } ] },
+      "Shortest" | "Stretched" | { "Simple", _, _?( # > 0 & ) } | { Except[ "Simple" ], Except[ _Rule ], ___ }, None, { 1 } ],
+      window = r |-> If[ r === Infinity, { }, { "Window" -> r } ],
+      energy = { f, b, r } |-> "{w |-> " <> ToString[ b, InputForm ] <> " " <> f <> ", \"Window\" -> " <> ToString[ r, InputForm ] <> "}" },
     Null /; old =!= None && Message[ RandomInfraWalk::rule, ToString[ old, InputForm ], Replace[ old, {
-      { "Shortest" | "Stretched", r_, p_ /; p > 0 } :> ToString[ "Straightness" -> { -Log[ N @ p ], r }, InputForm ],
-      { "Stretched", r_, ___ }                     :> ToString[ "Straightness" -> { Infinity, r }, InputForm ],
-      "Stretched"                                  :> ToString[ "Straightness" -> Infinity, InputForm ],
-      { "Shortest", r_, ___ }                      :> "RandomInfraGeodesic[graph, germ, " <> ToString[ r ] <> ", kspec]",
-      "Shortest"                                   :> "RandomInfraGeodesic[graph, germ, Infinity, kspec]",
-      { f_, r_, p_ /; p > 0 }                      :> ToString[ f -> { -Log[ N @ p ], r }, InputForm ],
-      { f_, r_, ___ }                              :> ToString[ f -> { Infinity, r }, InputForm ],
-      f_                                           :> ToString[ f -> Infinity, InputForm ] } ] ] ]
+      { "Simple", r_, p_ }                          :> energy[ "(Count[w, Last[w]] - 1)", -Log[ N @ p ], r ],
+      { "Shortest" | "Stretched", r_, p_ /; p > 0 } :> ToString[ Join[ { "Geodesic" }, window @ r, { "Straightness" -> -Log[ N @ p ] } ], InputForm ],
+      { "Shortest" | "Stretched", r_, ___ }         :> ToString[ Join[ { "Geodesic" }, window @ r ], InputForm ],
+      "Shortest" | "Stretched"                      :> ToString[ "Geodesic", InputForm ],
+      { f_, r_, p_ /; p > 0 }                       :> energy[ "(" <> ToString[ f, InputForm ] <> ")[w]", -Log[ N @ p ], r ],
+      { f_, r_, ___ }                               :> ToString[ { f, "Window" -> r }, InputForm ] } ] ] ]
+
+RandomInfraWalk[ _Graph, _, UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity, rest___ ] /; MemberQ[ { rest }, RandomSeeding -> None ] :=
+  With[ { old = FirstCase[ Catenate @ Cases[ { rest }, ( Properties -> rules_List ) :> rules ],
+      { "Simple", Except[ _Rule ] } | { "Simple", _, _?( # == 0 & ) } | ( ( "Straightness" | Except[ _String | _List | _Rule ] ) -> _ ), None, { 1 } ],
+      window = r |-> If[ r === Infinity, { }, { "Window" -> r } ] },
+    Null /; old =!= None && Message[ RandomInfraWalk::alias, ToString[ old, InputForm ], Replace[ old, {
+      { "Simple", r_, ___ }                    :> ToString[ If[ r === Infinity, "Simple", { "Simple", "Window" -> r } ], InputForm ],
+      ( "Straightness" -> { b_, r_ } )         :> ToString[ Join[ { "Geodesic" }, window @ r, If[ b === Infinity, { }, { "Straightness" -> b } ] ], InputForm ],
+      ( "Straightness" -> b_ )                 :> ToString[ Join[ { "Geodesic" }, If[ b === Infinity, { }, { "Straightness" -> b } ] ], InputForm ],
+      ( f_ -> { b_, r_ } ) /; b === Infinity   :> ToString[ Join[ { f }, window @ r ], InputForm ],
+      ( f_ -> b_ ) /; b === Infinity           :> ToString[ f, InputForm ],
+      ( f_ -> { b_, r_ } )                     :> "{w |-> " <> ToString[ b, InputForm ] <> " (" <> ToString[ f, InputForm ] <> ")[w], \"Window\" -> " <> ToString[ r, InputForm ] <> "}",
+      ( f_ -> b_ )                             :> "w |-> " <> ToString[ b, InputForm ] <> " (" <> ToString[ f, InputForm ] <> ")[w]" } ] ] ]
 
 RandomInfraWalk[ graph_Graph, germ_,
     kspec : ( UpTo[ _Integer ] | { _Integer } | { _Integer, _Integer } | Infinity ),
@@ -70,12 +88,14 @@ RandomInfraWalk[ graph_Graph, germ_,
             scale     = _Integer?Positive | Infinity,
             beta      = Infinity | _?( NumericQ[ # ] && # >= 0 & ) },
       ListQ[ rules ] &&
-      AllTrue[ rules, MatchQ[ "Simple" | { "Simple", scale } | { "Simple", scale, _?( NumericQ[ # ] && 0 <= # <= 1 & ) } | { geodesicRule, scale } |
-          ( ( "Straightness" | Except[ _String | _List | _Rule ] ) -> ( beta | { beta, scale } ) ) ] ] &&
+      AllTrue[ rules, MatchQ[ "Simple" | "Geodesic" | Except[ _String | _List | _Rule ] | { "Simple" | Except[ _String | _List | _Rule ], "Window" -> scale } |
+          ( { "Geodesic", subs : ( ( "Window" -> scale ) | ( "Straightness" -> beta ) ) ... } /; DuplicateFreeQ[ First /@ { subs } ] ) |
+          { "Simple", scale } | { "Simple", scale, _?( # == 0 & ) } | ( ( "Straightness" | Except[ _String | _List | _Rule ] ) -> ( beta | { beta, scale } ) ) ] ] &&
       MatchQ[ OptionValue[ RandomInfraWalk, { opts }, "Direction" ], "Forward" | "Backward" | "BothSides" ] &&
       ( condition === None || ! MatchQ[ condition, _Integer | _List | _String | _Rule ] ) &&
       ( nextFn =!= RandomChoice || count =!= All ) &&
-      ( kspec =!= Infinity || MemberQ[ rules, "Simple" | { "Simple" | geodesicRule, Infinity } | { "Simple", Infinity, _?( # == 0 & ) } ] ) ] ) :=
+      ( kspec =!= Infinity || MemberQ[ rules, "Simple" | "Geodesic" | { "Simple", Infinity } | { "Simple", Infinity, _?( # == 0 & ) } |
+        { "Simple", "Window" -> Infinity } | ( { "Geodesic", subs___Rule } /; ! MemberQ[ { subs }, _ -> Except[ Infinity ] ] ) ] ) ] ) :=
   With[ {
       cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
       walksOf = w |-> With[ { vs = VertexList @ w },
@@ -91,13 +111,18 @@ RandomInfraWalk[ graph_Graph, germ_,
             Catenate @ Catenate @ Table[ FindPath[ w, s, t, Infinity, All ],
               { s, Select[ vs, VertexInDegree[ w, # ] == 0 & ] }, { t, Select[ vs, VertexOutDegree[ w, # ] == 0 & ] } ],
           True, { scan @ SelectFirst[ vs, VertexDegree[ w, # ] == 1 &, First @ vs ] } ] ],
-      (* a hard or p-weighted rule is {kind, r, p}, a β-weighted property {kind, r} -> β *)
+      (* a hard rule is {kind, r, 0}, a weighted property {kind, r} -> β *)
       rules = Replace[ OptionValue[ RandomInfraWalk, { opts }, Properties ], {
-          "Simple"                 :> { "Simple", Infinity, 0 },
-          { kind_, r_ }            :> { kind, r, 0 },
-          { kind_, r_, p_ }        :> { kind, r, If[ p == 0, 0, p ] },
-          ( kind_ -> { b_, r_ } )  :> ( { kind, r } -> b ),
-          ( kind_ -> b_ )          :> ( { kind, Infinity } -> b ) }, { 1 } ],
+          "Simple"                                :> { "Simple", Infinity, 0 },
+          "Geodesic"                              :> { geodesicRule, Infinity, 0 },
+          { "Simple", "Window" -> r_ }            :> { "Simple", r, 0 },
+          { "Geodesic", subs___Rule }             :> With[ { r = Lookup[ { subs }, "Window", Infinity ], b = Lookup[ { subs }, "Straightness", Infinity ] },
+                                                       If[ b === Infinity, { geodesicRule, r, 0 }, { "Straightness", r } -> b ] ],
+          { f_, "Window" -> r_ }                  :> ( { f, r } -> 1 ),
+          { "Simple", r_, ___ }                   :> { "Simple", r, 0 },
+          ( kind_ -> { b_, r_ } )                 :> ( { kind, r } -> b ),
+          ( kind_ -> b_ )                         :> ( { kind, Infinity } -> b ),
+          f_                                      :> ( { f, Infinity } -> 1 ) }, { 1 } ],
       condition = OptionValue[ RandomInfraWalk, { opts }, "StoppingCondition" ],
       nextFn    = If[ count === All &&
           OptionValue[ RandomInfraWalk, { opts }, "NextVertexFunction" ] === Automatic,
@@ -262,7 +287,7 @@ RandomInfraGeodesic[ graph_Graph, germ_,
     ( ( VertexQ[ graph, germ ] || ! MatchQ[ germ, _InfraWalk | _InfraGeodesic ] ) &&
     SubsetQ[ First /@ Options[ RandomInfraGeodesic ], First /@ { opts } ] ) :=
   With[ { result = RandomInfraWalk[ graph, germ, kspec, count,
-      Properties -> Prepend[ OptionValue[ RandomInfraGeodesic, { opts }, Properties ], { geodesicRule, scale } ],
+      Properties -> Prepend[ OptionValue[ RandomInfraGeodesic, { opts }, Properties ], { "Geodesic", "Window" -> scale } ],
       Sequence @@ FilterRules[ { opts }, Except[ Properties ] ] ] },
     result /; Head[ result ] =!= RandomInfraWalk ]
 

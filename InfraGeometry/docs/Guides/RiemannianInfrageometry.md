@@ -49,7 +49,7 @@ We also have <code>[InfraMetricTensor]()[*g*, *p*, *r*]</code>, which computes s
 
 ### Straight walks
 
-- `RandomInfraWalk` walks grown from a germ; `"Straightness" -> β` weighs each step by its mean gain
+- `RandomInfraWalk` walks grown from a germ; `{"Geodesic", "Straightness" -> β}` weighs each step by its mean gain, and the bare `"Geodesic"` is a shortest path
 - A step from the tip $w_t$ of the window $(w_0, \dots, w_t)$ to a neighbour $v$ has the gain $g_i(v) = d(w_i, v) - d(w_i, w_t) \in \{-1, 0, 1\}$ against each earlier vertex, and the mean gain $g(v) = \frac{1}{t} \sum_{i < t} g_i(v)$.
 - The walk draws $v$ with probability proportional to $e^{\beta g(v)}$. Only differences of scores matter, so the mean gain ranks like the total distance $\sum_{i < t} d(w_i, v)$ to the window, and the exponential is the only such weight.
 - On a mesh whose path distance is a rounding of the Euclidean distance, $g(v) \approx \cos\theta$ for a turn by the angle $\theta$, since the roundings up and down balance along a window not aligned with the mesh. The turning angle follows the von Mises distribution $e^{\beta \cos\theta}$, approximately Gaussian with variance $1/\beta$.
