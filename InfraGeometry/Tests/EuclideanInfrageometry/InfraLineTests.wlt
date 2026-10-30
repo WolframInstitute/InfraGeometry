@@ -488,4 +488,18 @@ VerificationTest[
   TestID -> "FindInfraCommonLine-mixed-anchor"
 ]
 
+(* ===== a prolonged path grows both sides in turn, at most k vertices per side ===== *)
+
+VerificationTest[
+  RandomInfraInfiniteLine[CycleGraph[12], {1, 2}],
+  {10, 11, 12, 1, 2, 3, 4},
+  TestID -> "RandomInfraInfiniteLine-balanced"
+]
+
+VerificationTest[
+  {RandomInfraInfiniteLine[CycleGraph[12], {1, 2}, UpTo[1], All], RandomInfraInfiniteLine[PathGraph[Range[9]], {2, 3}, UpTo[3], All]},
+  {{{12, 1, 2, 3}}, {{1, 2, 3, 4, 5, 6}}},
+  TestID -> "RandomInfraInfiniteLine-side-budget"
+]
+
 EndTestSection[]

@@ -3,7 +3,7 @@ PacletObject[
     "Name" -> "WolframInstitute/InfraGeometry",
     "Description" -> "Geometry as an effective description of large graphs",
     "Creator" -> "Pavel Hajek",
-    "Version" -> "2.12.12",
+    "Version" -> "2.12.13",
     "WolframVersion" -> "14.3+",
     "PublisherID" -> "WolframInstitute",
     "License" -> "MIT",

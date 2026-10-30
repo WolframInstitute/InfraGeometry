@@ -106,10 +106,17 @@ RandomInfraInfiniteLine[ graph_Graph, p : Except[ _Rule | _RuleDelayed ], q : Ex
 
 RandomInfraInfiniteLine[ graph_Graph, seq_List,
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( seq =!= { } && ! VertexQ[ graph, seq ] ) :=
+  With[ { result = RandomInfraInfiniteLine[ graph, seq, Infinity, count, opts ] },
+    result /; Head[ result ] =!= RandomInfraInfiniteLine ]
+
+RandomInfraInfiniteLine[ graph_Graph, seq_List, kspec : ( UpTo[ _Integer?( n |-> n >= 0 ) ] | Infinity ),
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ), opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
     ( SubsetQ[ First /@ Options[ RandomInfraInfiniteLine ], First /@ { opts } ] &&
     seq =!= { } && ! VertexQ[ graph, seq ] &&
     ( count =!= All || OptionValue[ RandomInfraInfiniteLine, { opts }, "NextVertexFunction" ] =!= RandomChoice ) ) :=
   With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
+          budget = Replace[ kspec, UpTo[ k_ ] :> k ],
           vs = VertexList @ graph, dm = GraphDistanceMatrix @ graph,
           nextFn = If[ count === All &&
               OptionValue[ RandomInfraInfiniteLine, { opts }, "NextVertexFunction" ] === Automatic,
@@ -121,24 +128,26 @@ RandomInfraInfiniteLine[ graph_Graph, seq_List,
         nextFn === Automatic, RandomSample @ candidates,
         True, Replace[ nextFn @ candidates,
           selected_ /; MemberQ[ candidates, Verbatim @ selected ] :> { selected } ] ] },
+    { candidates = { path, added, side } |-> If[ added[[ side ]] >= budget, { }, Sort @ If[ side == 1,
+        Select[ AdjacencyList[ graph, First @ path ], dist[ #, Last @ path ] == Length @ path & ],
+        Select[ AdjacencyList[ graph, Last @ path ], dist[ First @ path, # ] == Length @ path & ] ] ] },
+    (* the side with fewer added vertices grows first, so the first line found is balanced around seq; closing a side is the last branch, so
+       every line, cut at the budget on each side, is reached exactly once, and a stuck side stays stuck because a subpath of a geodesic is a
+       geodesic *)
     { lines = Catenate @ Last @ Reap @ NestWhile[
-        Apply[ { backs, found } |-> With[ { seed = First @ backs },
-          { Join[
-              Prepend[ seed, # ] & /@ order @ Sort @ Select[ AdjacencyList[ graph, First @ seed ], dist[ #, Last @ seed ] == Length @ seed & ],
-              Rest @ backs ],
-            Last @ NestWhile[
-              Apply[ { fronts, got } |-> With[ { path = First @ fronts },
-                { nexts = order @ Sort @ Select[ AdjacencyList[ graph, Last @ path ], dist[ First @ path, # ] == Length @ path & ] },
-                Which[
-                  nexts =!= { },
-                    { Join[ Append[ path, # ] & /@ nexts, Rest @ fronts ], got },
-                  NoneTrue[ AdjacencyList[ graph, First @ path ], dist[ #, Last @ path ] == Length @ path & ],
-                    ( Sow[ path ]; { Rest @ fronts, got + 1 } ),
-                  True,
-                    { Rest @ fronts, got } ] ] ],
-              { { seed }, found },
-              state |-> First @ state =!= { } && Last @ state < cap ] } ] ],
-        { { seq }, 0 },
+        Apply[ { stack, found } |-> Apply[ { path, added, open } |->
+            If[ open === { False, False },
+              If[ candidates[ path, added, 1 ] === { } && candidates[ path, added, 2 ] === { },
+                ( Sow[ path ]; { Rest @ stack, found + 1 } ),
+                { Rest @ stack, found } ],
+              With[ { side = If[ open[[ 1 ]] && ( ! open[[ 2 ]] || added[[ 1 ]] <= added[[ 2 ]] ), 1, 2 ] },
+                { Join[
+                    { If[ side == 1, Prepend[ path, # ], Append[ path, # ] ], added + UnitVector[ 2, side ], open } & /@ order @ candidates[ path, added, side ],
+                    { { path, added, ReplacePart[ open, side -> False ] } },
+                    Rest @ stack ],
+                  found } ] ],
+            First @ stack ] ],
+        { { { seq, { 0, 0 }, { True, True } } }, 0 },
         state |-> First @ state =!= { } && Last @ state < cap ] },
     Switch[ count,
       Automatic, First[ lines, { } ],
