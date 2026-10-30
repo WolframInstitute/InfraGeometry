@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 Description: Geometry as an effective description of large graphs
 ContributedBy: Pavel Hajek, Wolfram Institute
 Keywords: [infrageometry, geometry, graph, hypergraph, graph limit, observer, scale, geodesic, Euclidean geometry, synthetic geometry, Riemannian geometry, emergence]
-MainGuide: Documentation/English/Guides/EuclideanInfrageometry.nb
+MainGuide: Documentation/English/Guides/InfraSubstrates.nb
 License: MIT
 WolframVersion: 14.3+
 Categories: [Higher Mathematical Computation]
@@ -42,7 +42,6 @@ With[
 
 - Infrageometry asks which geometric objects and measurements can be defined intrinsically on a graph for a given observer, and when they converge to their classical counterparts along sequences of graphs. Dimension, curvature and symmetry are aggregated properties of the substrate that are measured rather than assumed.
 - Everything is computable at every level, so the framework is code. Where classical geometry prizes uniqueness and well-definedness, infrageometry enumerates every case, keeps the branching, aggregates robust observables and does statistics over them.
-- Install with <code>PacletInstall[ResourceObject["https://www.wolframcloud.com/obj/hajek_pavel/DeployedResources/Paclet/WolframInstitute/InfraGeometry"], ForceVersionInstall -> True]</code>, then load with <code>Needs["WolframInstitute\`InfraGeometry\`"]</code>.
 
 ## Author Notes
 

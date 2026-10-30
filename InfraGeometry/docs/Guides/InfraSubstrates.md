@@ -6,7 +6,7 @@ Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/InfraSubstrates
 Keywords: [substrate, template graph, tessellation, regular map, torus, surface, surface-like, Euler characteristic, genus, inflation, warped product]
-RelatedGuides: [EuclideanInfrageometry, RiemannianInfrageometry, InfraTopology, InfraAnalysis, InfraFiberBundles, Experimental]
+RelatedGuides: [InfrageometryBranches, EuclideanInfrageometry, RiemannianInfrageometry, InfraTopology, InfraAnalysis, InfraFiberBundles, Experimental]
 ---
 
 ## Abstract
