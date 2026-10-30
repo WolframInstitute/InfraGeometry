@@ -83,6 +83,12 @@ RandomInfraInfiniteLine[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 
 
 RandomInfraInfiniteLine[ graph_Graph, p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ],
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( ( VertexQ[ graph, p ] || ! MatchQ[ p, _InfraInfiniteLine | _InfraLine ] ) && ( ! ListQ[ p ] || VertexQ[ graph, p ] ) ) :=
+  With[ { result = RandomInfraInfiniteLine[ graph, p, q, Infinity, count, opts ] },
+    result /; Head[ result ] =!= RandomInfraInfiniteLine ]
+
+RandomInfraInfiniteLine[ graph_Graph, p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ], kspec : ( UpTo[ _Integer?( n |-> n >= 0 ) ] | Infinity ),
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ), opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
     ( ( VertexQ[ graph, p ] || ! MatchQ[ p, _InfraInfiniteLine | _InfraLine ] ) &&
     SubsetQ[ First /@ Options[ RandomInfraInfiniteLine ], First /@ { opts } ] &&
     ( ! ListQ[ p ] || VertexQ[ graph, p ] ) &&
@@ -94,7 +100,7 @@ RandomInfraInfiniteLine[ graph_Graph, p : Except[ _Rule | _RuleDelayed ], q : Ex
     { lines = Fold[
         { found, seed } |-> If[ Length @ found >= cap, found,
           Join[ found,
-            RandomInfraInfiniteLine[ graph, seed, If[ cap === Infinity, All, UpTo[ cap - Length @ found ] ],
+            RandomInfraInfiniteLine[ graph, seed, kspec, If[ cap === Infinity, All, UpTo[ cap - Length @ found ] ],
               "NextVertexFunction" -> nextFn, RandomSeeding -> None ] ] ],
         { }, RandomInfraSegment[ graph, p, q, If[ cap === Infinity, All, UpTo[ cap ] ],
           "NextVertexFunction" -> nextFn, RandomSeeding -> None ] ] },
@@ -553,6 +559,48 @@ RandomInfraInfiniteLine[ graph_Graph, InfraInfiniteLine[ path_List ],
       nextFn === Identity, If[ IntegerQ @ count && Length @ ordered < count, { }, Take[ ordered, count ] ],
       IntegerQ @ count && Length @ ordered < count, { },
       True, RandomSample[ ordered, count ] ] ]
+
+(* with a budget of k vertices per side the token is prolonged from its shortest paths, as RandomInfraInfiniteLine[graph, seq, UpTo[k], count]
+   does, and no longer drawn uniformly from its atoms *)
+
+RandomInfraInfiniteLine[ graph_Graph, InfraInfiniteLine[ path_List ], kspec : ( UpTo[ _Integer?( n |-> n >= 0 ) ] | Infinity ),
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ), opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( ! VertexQ[ graph, path ] && path =!= { } ) :=
+  With[ { result = RandomInfraInfiniteLine[ graph, path, kspec, count, opts ] },
+    result /; Head[ result ] =!= RandomInfraInfiniteLine ]
+
+RandomInfraInfiniteLine[ graph_Graph, ( InfraInfiniteLine | InfraLine )[ p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ] ],
+    kspec : ( UpTo[ _Integer?( n |-> n >= 0 ) ] | Infinity ),
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ), opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] :=
+  With[ { result = RandomInfraInfiniteLine[ graph, p, q, kspec, count, opts ] },
+    result /; Head[ result ] =!= RandomInfraInfiniteLine ]
+
+RandomInfraInfiniteLine[ graph_Graph, InfraInfiniteLine[ germ : Except[ _Rule | _RuleDelayed ] ], kspec : ( UpTo[ _Integer?( n |-> n >= 0 ) ] | Infinity ),
+    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ), opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
+    ( SubsetQ[ First /@ Options[ RandomInfraInfiniteLine ], First /@ { opts } ] &&
+    ( VertexQ[ graph, germ ] || GraphQ[ germ ] ) &&
+    ( count =!= All || OptionValue[ RandomInfraInfiniteLine, { opts }, "NextVertexFunction" ] =!= RandomChoice ) ) :=
+  With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
+          nextFn = If[ count === All &&
+              OptionValue[ RandomInfraInfiniteLine, { opts }, "NextVertexFunction" ] === Automatic,
+            Identity, OptionValue[ RandomInfraInfiniteLine, { opts }, "NextVertexFunction" ] ] },
+    { seeds = Which[
+        VertexQ[ graph, germ ], { { germ } },
+        AllTrue[ VertexList @ germ, MatchQ[ { _Integer, _ } ] ] && Sort[ First /@ VertexList @ germ ] === Range @ VertexCount @ germ,
+          { Last /@ SortBy[ VertexList @ germ, First ] },
+        True, Catenate @ Catenate @ Table[ FindPath[ germ, s, t, Infinity, All ],
+          { s, Select[ VertexList @ germ, VertexInDegree[ germ, # ] == 0 & ] }, { t, Select[ VertexList @ germ, VertexOutDegree[ germ, # ] == 0 & ] } ] ] },
+    { lines = Fold[
+        { found, seed } |-> If[ Length @ found >= cap, found,
+          Join[ found,
+            RandomInfraInfiniteLine[ graph, seed, kspec, If[ cap === Infinity, All, UpTo[ cap - Length @ found ] ],
+              "NextVertexFunction" -> nextFn, RandomSeeding -> None ] ] ],
+        { }, If[ nextFn === Automatic, RandomSample @ seeds, seeds ] ] },
+    Switch[ count,
+      Automatic, First[ lines, { } ],
+      All,       lines,
+      _UpTo,     Take[ lines, count ],
+      _,         If[ Length @ lines < count, { }, Take[ lines, count ] ] ] ]
 
 RandomInfraInfiniteLine[ graph_Graph,
     obj : ( InfraInfiniteLine | InfraLine )[ Except[ _Rule | _RuleDelayed ], Except[ _Rule | _RuleDelayed ] ],

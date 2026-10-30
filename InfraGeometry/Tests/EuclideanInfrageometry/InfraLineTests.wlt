@@ -502,4 +502,17 @@ VerificationTest[
   TestID -> "RandomInfraInfiniteLine-side-budget"
 ]
 
+VerificationTest[
+  {RandomInfraInfiniteLine[CycleGraph[12], 1, 2, UpTo[1], All], RandomInfraInfiniteLine[PathGraph[Range[9]], 4, 6, UpTo[1], Automatic]},
+  {{{12, 1, 2, 3}}, {3, 4, 5, 6, 7}},
+  TestID -> "RandomInfraInfiniteLine-side-budget-two-points"
+]
+
+VerificationTest[
+  {RandomInfraInfiniteLine[CycleGraph[12], InfraLine[{1, 2}], UpTo[1], All], RandomInfraInfiniteLine[PathGraph[Range[9]], InfraInfiniteLine[4, 6], UpTo[1], All],
+   RandomInfraInfiniteLine[PathGraph[Range[9]], InfraInfiniteLine[5], UpTo[2], All]},
+  {{{12, 1, 2, 3}}, {{3, 4, 5, 6, 7}}, {{3, 4, 5, 6, 7}, {7, 6, 5, 4, 3}}},
+  TestID -> "RandomInfraInfiniteLine-side-budget-tokens"
+]
+
 EndTestSection[]
