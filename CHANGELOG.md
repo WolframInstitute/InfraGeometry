@@ -20,6 +20,11 @@
 - **`RandomInfraFibration` stays** as the Experimental cyclic-band generator; it now returns an `InfraFiberedGraph`.
 - **Docs.** `InfraInfiniteLine` and `RandomInfraInfiniteLine` state that a shortest path has no unique line through it: the lines through a germ are a family whose two ends are admissible only as a pair. The 4-cycle (two lines through an edge, neither containing the other) and the 6-cycle (three, not four) are the examples.
 
+## 2.12.14 (2026-10-30)
+
+- **A line grows on both sides in turn.** `RandomInfraInfiniteLine[g, path]` extends the side with fewer added vertices first; a side that cannot continue stays stopped, and the other continues alone. Before, the back side was extended to the end first, so a drawn line was lopsided. `All` gives the same lines as before.
+- **At most *k* vertices per side.** `UpTo[k]` before the count: `RandomInfraInfiniteLine[g, path, UpTo[k], n]`, `RandomInfraInfiniteLine[g, p, q, UpTo[k], n]` and the tokens `RandomInfraInfiniteLine[g, InfraInfiniteLine[...], UpTo[k], n]`. The three-argument calls keep `UpTo[n]` as the count.
+
 ## 2.12.11 (2026-10-29)
 
 - **One grammar for the walk properties of `RandomInfraWalk`.** A property is a name, bare or with its sub-options: `"Simple"`, `"Geodesic"` or a function *f*, written `{name, "Window" -> r}`, and `"Geodesic"` also `{"Geodesic", "Straightness" -> β}`. `"Window"` defaults to `Infinity`, the whole walk; `"Straightness"` defaults to `Infinity`. A bare name is a constraint: `"Simple"` no vertex twice, `"Geodesic"` every window a shortest path (the walks of `RandomInfraGeodesic`, seed for seed), a predicate *f* its own filter. A finite straightness is the weight `Exp[-β Δ]` of 2.12.9, the von Mises concentration of the turning angle; a numeric *f* is the weight `Exp[-Δ]`, its scale inside *f*. The energies, the step code and every seeded draw are unchanged.

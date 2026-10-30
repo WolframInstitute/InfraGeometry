@@ -18,6 +18,8 @@ RelatedGuides: [EuclideanInfrageometry]
 
 <code>[RandomInfraInfiniteLine]()[*g*, *p*, *q*, *n*]</code> and <code>[RandomInfraInfiniteLine]()[*g*, *path*, *n*]</code> give lists of *n* distinct lines.
 
+<code>[RandomInfraInfiniteLine]()[*g*, *path*, UpTo[*k*], *n*]</code> and <code>[RandomInfraInfiniteLine]()[*g*, *p*, *q*, UpTo[*k*], *n*]</code> add at most *k* vertices on each side.
+
 <code>[RandomInfraInfiniteLine]()[*g*, [InfraInfiniteLine]()[*p*, *q*]]</code> gives a member of the line, every line with the same probability; a count *n* gives *n* distinct members.
 
 ## Details & Options
@@ -31,6 +33,10 @@ A shortest path has no unique line through it: <code>[RandomInfraInfiniteLine]()
 In the plane two points lie on one line. On a graph they lie on many: two vertices at distance 2 lie on 9800 lines of the small square grid and on 210 of the small square mesh.
 
 The lines through *p* and *q* are the lines through the shortest paths from *p* to *q*, each line through exactly one of them.
+
+A line through a shortest path grows on both sides in turn, the shorter side first. A side that cannot continue stays stopped, and the other side continues alone.
+
+With `UpTo[k]` before the count, each side stops after *k* added vertices; a side ends earlier only where the stretch cannot continue. Without it there is no limit. A token with `UpTo[k]` is grown from its shortest paths, not drawn uniformly from its lines.
 
 The count *n* can be `n`, `UpTo[n]` or `All`. A count above the number of lines gives `{}`.
 
@@ -90,6 +96,20 @@ A line through a given shortest path contains it:
 With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
   {path = RandomInfraSegment[g, p, RandomInfraPoint[g, InfraShell[p, 3], RandomSeeding -> 1], RandomSeeding -> 1]},
   InfraSubstrateHighlight[g, {InfraWalk[RandomInfraInfiniteLine[g, path, RandomSeeding -> 1]], path}, ImageSize -> Medium]]
+```
+
+At most two vertices on each side of the shortest path:
+
+```wl
+With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+  {path = RandomInfraSegment[g, p, RandomInfraPoint[g, InfraShell[p, 3], RandomSeeding -> 1], RandomSeeding -> 1]},
+  InfraSubstrateHighlight[g, {InfraWalk[RandomInfraInfiniteLine[g, path, UpTo[2], Automatic, RandomSeeding -> 1]], path}, ImageSize -> Medium]]
+```
+
+On the 12-cycle the line through the edge 1, 2 grows three vertices back and two forward; with `UpTo[1]` one on each side:
+
+```wl
+{RandomInfraInfiniteLine[CycleGraph[12], {1, 2}], RandomInfraInfiniteLine[CycleGraph[12], {1, 2}, UpTo[1], All]}
 ```
 
 ## Properties and Relations
