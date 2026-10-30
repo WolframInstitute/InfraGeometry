@@ -57,6 +57,11 @@ Needs["WolframInstitute`InfraGeometry`"]
 
 Explore the [research documentation](https://www.wolframcloud.com/obj/hajek_pavel/DeployedResources/Paclet/WolframInstitute/InfraGeometry).
 
+## 🙏 Funding
+
+Pavel Hájek's work on this repository was supported by the John Templeton Foundation grant 63655, [Causality, Observers and Computation: A New Approach to Fundamental Physics and Metamathematics](https://www.templeton.org/grant/causality-observers-and-computation-a-new-approach-to-fundamental-physics-and-metamathematics) at the Wolfram Institute. The opinions expressed are those of the author and do not necessarily reflect the views of the John Templeton Foundation.
+
 ## ⚖️ License
 
-Code: [MIT](https://opensource.org/license/mit). Ideas: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+- Code: [MIT](LICENSE)
+- Mathematical content (notebooks, papers, notes, figures): [CC BY 4.0](LICENSE-CC-BY-4.0)
