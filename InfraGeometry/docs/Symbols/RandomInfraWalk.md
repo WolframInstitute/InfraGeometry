@@ -175,6 +175,15 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {walk, c}], {walk, walks}]]
 ```
 
+A function keeps only the candidates it returns, so `MinimalBy` keeps those of least energy. With the end defect of the window of scale 3 as the energy, every step moves as far as possible from the vertex three steps back; 246 of the 2730 self-avoiding walks of 5 edges from the centre of the triangular tiling remain:
+
+```wl
+With[{g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {defect = w |-> Length[w] - 1 - GraphDistance[g, First @ w, Last @ w]},
+  {walks = RandomInfraWalk[g, c, {5}, All, Properties -> {"Simple"}, "NextVertexFunction" -> {windows |-> MinimalBy[windows, defect], 3}]},
+  InfraSubstrateHighlight[g, {walks, c}, PlotLabel -> Length[walks], ImageSize -> Medium]]
+```
+
 ### Direction
 
 The self-avoiding walks that add at most 2 edges to a germ of one edge, forward, backward and at both ends:

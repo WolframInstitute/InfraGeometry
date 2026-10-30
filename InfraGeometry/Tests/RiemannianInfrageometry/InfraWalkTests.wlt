@@ -1883,6 +1883,23 @@ VerificationTest[
   TestID -> "RandomInfraWalk-Geodesic-is-RandomInfraGeodesic"
 ]
 
+(* the candidates of least energy are the ones MinimalBy returns as the next-vertex
+   function: with the end defect of the window of scale 3 as the energy it is the
+   class of the order MaximalBy[w |-> d(First @ w, Last @ w)] on 2.0.2, 246 of the 2730
+   simple walks of five edges from the centre of the triangular tiling *)
+VerificationTest[
+  With[ { t = InfraSubstrate[ "TriangularTilingGraph", "Small" ] },
+    { c = First @ GraphCenter @ t },
+    { defect = w |-> Length[ w ] - 1 - GraphDistance[ t, First @ w, Last @ w ] },
+    { least = Sort @ walkSeqs @ RandomInfraWalk[ t, c, { 5 }, All, Properties -> { "Simple" },
+        "NextVertexFunction" -> { windows |-> MinimalBy[ windows, defect ], 3 } ],
+      farthest = Sort @ walkSeqs @ RandomInfraWalk[ t, c, { 5 }, All, Properties -> { "Simple" },
+        "NextVertexFunction" -> { MaximalBy[ w |-> GraphDistance[ t, First @ w, Last @ w ] ], 3 } ] },
+    { Length @ least, least === farthest, Take[ least, 3 ] } ],
+  { 246, True, { { 2, 1, 6, 17, 34, 57 }, { 2, 1, 6, 17, 34, 58 }, { 2, 1, 6, 17, 35, 47 } } },
+  TestID -> "RandomInfraWalk-least-energy-is-MinimalBy"
+]
+
 (* the removed spellings are non-matches: the global window, the old rule
    names, the automatic direction, the integer and delayed conditions, and the
    property spellings of 2.12 *)

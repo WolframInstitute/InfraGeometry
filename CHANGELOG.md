@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.12.17 (2026-10-30)
+
+- **Docs and tests: the least-energy class of a user energy.** `RandomInfraWalk` with `"NextVertexFunction" -> {windows |-> MinimalBy[windows, f], r}` keeps the candidates of least energy *f* on the window of scale *r*, what the 2.12 spelling `f -> {Infinity, r}` did. The reference page shows it on the triangular tiling, 246 of the 2730 self-avoiding walks of five edges, and a test pins the class against the farthest-step order. The 2.12.16 entry is corrected: that case keeps a spelling.
+
 ## 2.12.16 (2026-10-30)
 
 - **Breaking -- every legacy spelling is gone.** Each name below forwarded to its current name with the same arguments, or wrapped it; rename and nothing else changes. Their reference pages are deleted, and `InfraMeasurement`, `InfraMemberQ`, the samplers and the scene engine no longer read the old heads.
@@ -16,7 +20,7 @@
   | `FindInfraSection[fib, n]` | `RandomInfraSection[fib, n, Properties -> {"Continuous"}, "NextVertexFunction" -> Identity]` |
   | `FindInfraHorizontalLift[fib, conn, start, walk, n]` | `InfraHorizontalLift[fib, conn, start, walk]` |
 
-- **Breaking -- the walk properties of 2.12 no longer read.** `RandomInfraWalk` drops the deprecated `{"Simple", r}`, `"Straightness" -> β` and `f -> β`, and the messages `::alias` and `::rule` that named the replacements of these and of the rules removed in 2.12.11. Each such property now leaves the call unevaluated. Write `{"Simple", "Window" -> r}` and `{"Geodesic", "Window" -> r, "Straightness" -> β}`. A user energy at β = Infinity, formerly `f -> Infinity`, has no spelling now: a function is weighed at β 1, and only a predicate drops candidates.
+- **Breaking -- the walk properties of 2.12 no longer read.** `RandomInfraWalk` drops the deprecated `{"Simple", r}`, `"Straightness" -> β` and `f -> β`, and the messages `::alias` and `::rule` that named the replacements of these and of the rules removed in 2.12.11. Each such property now leaves the call unevaluated. Write `{"Simple", "Window" -> r}` and `{"Geodesic", "Window" -> r, "Straightness" -> β}`. A user energy at β = Infinity, formerly `f -> Infinity`, is the next-vertex function `{windows |-> MinimalBy[windows, f], r}` (2.12.17).
 - **`RandomInfraFibration` stays** as the Experimental cyclic-band generator; it now returns an `InfraFiberedGraph`.
 - **Docs.** `InfraInfiniteLine` and `RandomInfraInfiniteLine` state that a shortest path has no unique line through it: the lines through a germ are a family whose two ends are admissible only as a pair. The 4-cycle (two lines through an edge, neither containing the other) and the 6-cycle (three, not four) are the examples.
 
