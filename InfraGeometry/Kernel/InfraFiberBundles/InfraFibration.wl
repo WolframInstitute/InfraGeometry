@@ -2,13 +2,12 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: InfraFiberBundles :: InfraFibration *)
 
-InfraTotalSpace[ head_[ total_Graph, _ ] ] /;
-    MemberQ[ { InfraFiberedGraph, InfraFibration }, head ] &&
-      SimpleGraphQ[ total ] && UndirectedGraphQ[ total ] && ! WeightedGraphQ[ total ] && ! EdgeTaggedGraphQ[ total ] :=
+InfraTotalSpace[ InfraFiberedGraph[ total_Graph, _ ] ] /;
+    SimpleGraphQ[ total ] && UndirectedGraphQ[ total ] && ! WeightedGraphQ[ total ] && ! EdgeTaggedGraphQ[ total ] :=
   total
 
-InfraProjection[ fib : head_[ total_Graph, projection_ ] ] /;
-    MemberQ[ { InfraFiberedGraph, InfraFibration }, head ] && GraphQ[ InfraTotalSpace[ fib ] ] &&
+InfraProjection[ fib : InfraFiberedGraph[ total_Graph, projection_ ] ] /;
+    GraphQ[ InfraTotalSpace[ fib ] ] &&
       ( ! AssociationQ[ projection ] || Length[ projection ] == VertexCount[ total ] &&
         AllTrue[ VertexList[ total ], KeyExistsQ[ projection, # ] & ] ) :=
   AssociationMap[
@@ -22,15 +21,6 @@ InfraBaseSpace[ fib : _[ _Graph, __ ] ] /;
       DeleteDuplicates @ Select[
         UndirectedEdge @@ Sort[ Lookup[ projection, Key /@ List @@ # ] ] & /@ EdgeList[ total ],
         First[ # ] =!= Last[ # ] & ] ] ]
-
-InfraTotalGraph[ fib : _[ _Graph, __ ] ] /; GraphQ[ InfraTotalSpace[ fib ] ] :=
-  InfraTotalSpace[ fib ]
-
-InfraFibrationAssociation[ fib : _[ _Graph, __ ] ] /; AssociationQ[ InfraProjection[ fib ] ] :=
-  InfraProjection[ fib ]
-
-InfraBaseGraph[ fib : _[ _Graph, __ ] ] /; GraphQ[ InfraBaseSpace[ fib ] ] :=
-  InfraBaseSpace[ fib ]
 
 InfraFiber[ fib : _[ _Graph, __ ], point_ ] /;
     AssociationQ[ InfraProjection[ fib ] ] && GraphQ[ InfraTotalSpace[ fib ] ] :=

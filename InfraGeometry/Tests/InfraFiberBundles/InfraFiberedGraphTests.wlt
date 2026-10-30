@@ -1,21 +1,9 @@
 BeginTestSection[ "InfraFiberedGraph" ]
 
 VerificationTest[
-  { InfraFiberedGraph[ total, projection ], InfraFibration[ total, projection ] },
-  { InfraFiberedGraph[ total, projection ], InfraFibration[ total, projection ] },
+  { InfraFiberedGraph[ total, projection ], InfraFiberedGraph[ total, projection ] },
+  { InfraFiberedGraph[ total, projection ], InfraFiberedGraph[ total, projection ] },
   TestID -> "InfraFiberedGraph-both-description-heads-are-inert"
-]
-
-VerificationTest[
-  With[ { total = CycleGraph[ 6 ], projection = point |-> Mod[ point, 3, 1 ] },
-    { modern = InfraFiberedGraph[ total, projection ], legacy = InfraFibration[ total, projection ] },
-    { InfraTotalSpace[ modern ] === total, InfraProjection[ modern ] === InfraProjection[ legacy ],
-      InfraBaseSpace[ modern ] === InfraBaseSpace[ legacy ],
-      InfraTotalGraph[ modern ] === InfraTotalSpace[ modern ],
-      InfraFibrationAssociation[ modern ] === InfraProjection[ modern ],
-      InfraBaseGraph[ modern ] === InfraBaseSpace[ modern ], InfraFiberedGraphQ[ { modern, legacy } ] } ],
-  ConstantArray[ True, 7 ],
-  TestID -> "InfraFiberedGraph-canonical-and-legacy-readers-agree"
 ]
 
 VerificationTest[
@@ -109,7 +97,7 @@ VerificationTest[
 VerificationTest[
   With[ { fib = InfraFiberedGraph[ CycleGraph[ 6 ], point |-> Mod[ point, 3, 1 ] ] },
     { InfraFiberBundleQ[ fib ], InfraCoveringQ[ fib ],
-      InfraFlatConnectionQ[ fib, InfraConnection[ EdgeList @ InfraTotalSpace[ fib ] ] ] } ],
+      InfraTrivialMonodromyQ[ fib, InfraConnection[ EdgeList @ InfraTotalSpace[ fib ] ] ] } ],
   { True, True, False },
   TestID -> "InfraFiberBundleQ-allows-twisted-coverings"
 ]
@@ -138,9 +126,9 @@ VerificationTest[
       extra = InfraFiberedGraph[ PathGraph[ Range[ 3 ] ], <| 1 -> "p", 2 -> "q", 3 -> "r", 4 -> "s" |> ] },
     { Head @ InfraProjection[ missing ], Head @ InfraBaseSpace[ missing ],
       Head @ InfraFiberedGraphQ[ missing ], Head @ InfraEqualFiberSizesQ[ extra ],
-      Head @ InfraEdgeLiftMultiplicity[ extra ], Head @ InfraFibrationAssociation[ missing ] } ],
+      Head @ InfraEdgeLiftMultiplicity[ extra ] } ],
   { InfraProjection, InfraBaseSpace, InfraFiberedGraphQ, InfraEqualFiberSizesQ,
-    InfraEdgeLiftMultiplicity, InfraFibrationAssociation },
+    InfraEdgeLiftMultiplicity },
   TestID -> "InfraFiberedGraph-malformed-projections-remain-unevaluated"
 ]
 

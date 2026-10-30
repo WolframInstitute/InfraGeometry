@@ -305,15 +305,4 @@ The broad object and separate predicates follow the April 2026 Meeting 1 notes o
 Ioana Milea's one-page Fibered Graph Gauge Theory Basics motivates fiber automorphisms and permutation holonomy.
 A matching of sets becomes a fiber-graph isomorphism only when it also preserves vertical adjacency.
 
-## Compatibility
-
-| Earlier spelling | Canonical spelling |
-|---|---|
-| InfraFibration | InfraFiberedGraph |
-| InfraTotalGraph | InfraTotalSpace |
-| InfraBaseGraph | InfraBaseSpace |
-| InfraFibrationAssociation | InfraProjection |
-
-Existing literal objects remain accepted by the readers and operations.
-The earlier random generator retains its distinct option grammar as Experimental compatibility functionality.
 Particular geometric models and scale or completion questions are treated in [Experimental Infra Bundles](paclet:WolframInstitute/InfraGeometry/tutorial/ExperimentalInfraBundles).

@@ -55,8 +55,8 @@ Metric-selected Levi-Civita constructions can retain partial matchings.
 A partial result need not satisfy the complete-connection predicate of the general framework.
 The model-specific transport overload omits blocked starting points; this differs from transport by a complete connection, which is a total fiber bijection.
 
-The legacy random generator remains available with its earlier vertical-count options and cyclic-width horizontal rule.
-It is a compatibility model, not the property-constrained generator used in the foundation tutorial.
+The Experimental generator has its own vertical-count options and a cyclic-width horizontal rule.
+It is a separate model, not the property-constrained generator used in the foundation tutorial.
 
 ```wl
 SeedRandom[ 7 ];

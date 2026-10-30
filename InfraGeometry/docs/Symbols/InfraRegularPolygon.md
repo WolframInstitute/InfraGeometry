@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraRegularPolygon
 Keywords: [regular polygon, equilateral triangle, square, diagonal, symbolic object, scene]
-SeeAlso: [RandomInfraRegularPolygon, InfraRegularPolygonQ, InfraPolygon, InfraSegment, InfraScene]
+SeeAlso: [RandomInfraRegularPolygon, InfraRegularPolygonQ, InfraSegment, InfraScene]
 ---
 
 ## Usage

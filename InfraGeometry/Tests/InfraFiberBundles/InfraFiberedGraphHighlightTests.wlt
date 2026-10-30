@@ -2,7 +2,7 @@ BeginTestSection[ "InfraFiberedGraphHighlight" ]
 
 VerificationTest[
   With[ { total = CycleGraph[ 6 ] },
-    { fib = InfraFibration[ total, point |-> Mod[ point, 3, 1 ] ] },
+    { fib = InfraFiberedGraph[ total, point |-> Mod[ point, 3, 1 ] ] },
     Map[ method |-> With[ { drawing = InfraFiberedGraphHighlight[ fib, Method -> method ] },
       GraphQ[ drawing ] && VertexList[ drawing ] === VertexList[ total ] && EdgeList[ drawing ] === EdgeList[ total ] ],
       { "CircularFiber", "3DFiber", "HighlightFiber" } ] ],
@@ -11,7 +11,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ PathGraph[ Range[ 3 ] ], Identity ] },
+  With[ { fib = InfraFiberedGraph[ PathGraph[ Range[ 3 ] ], Identity ] },
     { coordinates = <| 1 -> { 0, 0 }, 2 -> { 2, 0 }, 3 -> { 4, 0 } |> },
     GraphEmbedding @ InfraFiberedGraphHighlight[ fib, "BaseVertexCoordinates" -> coordinates,
       "FiberRadius" -> .4 ] ],
@@ -21,14 +21,14 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ CycleGraph[ 6 ], point |-> Mod[ point, 3, 1 ] ] },
+  With[ { fib = InfraFiberedGraph[ CycleGraph[ 6 ], point |-> Mod[ point, 3, 1 ] ] },
     Length @ First @ GraphEmbedding @ InfraFiberedGraphHighlight[ fib, Method -> "3DFiber" ] ],
   3,
   TestID -> "Fibered-highlight-three-dimensional-coordinates"
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ CycleGraph[ 6 ], point |-> Mod[ point, 3, 1 ] ] },
+  With[ { fib = InfraFiberedGraph[ CycleGraph[ 6 ], point |-> Mod[ point, 3, 1 ] ] },
     { section = InfraSection[ <| 1 -> 1, 2 -> 2, 3 -> 3 |> ],
       connection = InfraConnection[ { UndirectedEdge[ 4, 5 ] } ] },
     Map[ method |-> With[ { drawing = InfraFiberedGraphHighlight[ fib,
@@ -41,7 +41,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ PathGraph[ Range[ 3 ] ], Identity ] },
+  With[ { fib = InfraFiberedGraph[ PathGraph[ Range[ 3 ] ], Identity ] },
     { drawing = InfraFiberedGraphHighlight[ fib, { InfraWalk[ { 1, 2, 1, 2, 3 } ] },
         "BaseVertexCoordinates" -> <| 1 -> { 0, 0 }, 2 -> { 1, 0 }, 3 -> { 2, 0 } |> ] },
     Map[ edge |-> FirstCase[ PropertyValue[ { drawing, edge }, EdgeStyle ], AbsoluteThickness[ size_ ] :> size,
@@ -54,7 +54,7 @@ VerificationTest[
 VerificationTest[
   With[ { vertices = { { 1, "a" }, { 2, "b" }, { 3, "c" }, { 4, "d" } } },
     { total = Graph[ vertices, UndirectedEdge @@@ Partition[ vertices, 2, 1 ] ] },
-    { fib = InfraFibration[ total, AssociationThread[ vertices, { "p", "p", "q", "q" } ] ] },
+    { fib = InfraFiberedGraph[ total, AssociationThread[ vertices, { "p", "p", "q", "q" } ] ] },
     Map[ method |-> Check[ With[ { drawing = InfraFiberedGraphHighlight[ fib,
           { InfraSection[ AssociationThread[ { "p", "q" }, vertices[[ { 2, 3 } ]] ] ],
             InfraWalk[ vertices[[ { 1, 2, 3, 2, 1 } ]] ] }, Method -> method ] },
@@ -65,7 +65,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ CycleGraph[ 4 ], Identity ] },
+  With[ { fib = InfraFiberedGraph[ CycleGraph[ 4 ], Identity ] },
     { drawing = InfraFiberedGraphHighlight[ fib, { Directive[ StandardGreen ], InfraWalk[ { 1, 2, 3 } ] },
         ImageSize -> 240, ImageSize -> 360, VertexLabels -> "Name" ] },
     { ImageSize /. Options[ drawing, ImageSize ], ! FreeQ[ Options[ drawing, EdgeStyle ], StandardGreen ] } ],
@@ -74,21 +74,21 @@ VerificationTest[
 ]
 
 VerificationTest[
-  Head @ InfraFiberedGraphHighlight[ InfraFibration[ CycleGraph[ 4 ], Identity ], { }, Method -> "Unrecognized" ],
+  Head @ InfraFiberedGraphHighlight[ InfraFiberedGraph[ CycleGraph[ 4 ], Identity ], { }, Method -> "Unrecognized" ],
   InfraFiberedGraphHighlight,
   TestID -> "Fibered-highlight-unsupported-view-remains-unevaluated"
 ]
 
 VerificationTest[
-  GraphQ @ InfraFiberedGraphHighlight[ InfraFibration[ Graph[ { }, { } ], <| |> ] ],
+  GraphQ @ InfraFiberedGraphHighlight[ InfraFiberedGraph[ Graph[ { }, { } ], <| |> ] ],
   True,
   TestID -> "Fibered-highlight-empty-total"
 ]
 
 
 VerificationTest[
-  With[ { fib = InfraFibration[ CycleGraph[ 4 ], Identity ],
-      malformed = InfraFibration[ CycleGraph[ 4 ], <| 1 -> "p" |> ] },
+  With[ { fib = InfraFiberedGraph[ CycleGraph[ 4 ], Identity ],
+      malformed = InfraFiberedGraph[ CycleGraph[ 4 ], <| 1 -> "p" |> ] },
     { Head @ InfraFiberedGraphHighlight[ fib, { }, "UnknownOption" -> True ],
       Head @ InfraFiberedGraphHighlight[ malformed, { } ] } ],
   { InfraFiberedGraphHighlight, InfraFiberedGraphHighlight },
@@ -96,7 +96,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ PathGraph[ Range[ 3 ] ], Identity ] },
+  With[ { fib = InfraFiberedGraph[ PathGraph[ Range[ 3 ] ], Identity ] },
     Map[ coordinates |-> Check[
       Head @ InfraFiberedGraphHighlight[ fib, { }, "BaseVertexCoordinates" -> coordinates ], "Message" ],
       { <| 1 -> { 0, 0 } |>, <| 1 -> { 0, 0 }, 2 -> { 1, 0, 1 }, 3 -> { 2, 0 } |> } ] ],
@@ -105,7 +105,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ CycleGraph[ 4 ], Identity ],
+  With[ { fib = InfraFiberedGraph[ CycleGraph[ 4 ], Identity ],
       sections = { InfraSection[ <| 1 -> 1 |> ], InfraSection[ <| 2 -> 2 |> ] } },
     Map[ method |-> Check[ With[ { drawing = InfraFiberedGraphHighlight[ fib,
           { { Style[ sections, StandardRed ] }, sections -> Directive[ StandardBlue, Thick ] }, Method -> method ] },
@@ -117,7 +117,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { total = PathGraph[ Range[ 3 ] ] },
-    { fib = InfraFibration[ total, Identity ] },
+    { fib = InfraFiberedGraph[ total, Identity ] },
     { drawing = InfraFiberedGraphHighlight[ fib, { { Subgraph[ total, { 1 } ], Subgraph[ total, { 2 } ] } } ] },
     PropertyValue[ { drawing, 1 }, VertexShapeFunction ] === PropertyValue[ { drawing, 2 }, VertexShapeFunction ] ],
   True,
@@ -126,7 +126,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { vertices = { { 1, "a" }, { 2, "b" } } },
-    { fib = InfraFibration[ Graph[ vertices, { UndirectedEdge @@ vertices } ], Identity ] },
+    { fib = InfraFiberedGraph[ Graph[ vertices, { UndirectedEdge @@ vertices } ], Identity ] },
     Check[ GraphQ @ InfraFiberedGraphHighlight[ fib, { First @ vertices } ], False ] ],
   True,
   TestID -> "Fibered-highlight-literal-list-vertex-is-not-a-family"
@@ -142,7 +142,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ CycleGraph[ 4 ], Identity ],
+  With[ { fib = InfraFiberedGraph[ CycleGraph[ 4 ], Identity ],
       section = InfraSection[ <| 1 -> 1, 2 -> 2, 3 -> 3, 4 -> 4 |> ],
       connection = InfraConnection[ EdgeList @ CycleGraph[ 4 ] ] },
     Map[ method |-> With[ { drawing = InfraFiberedGraphHighlight[ fib,
@@ -155,7 +155,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ PathGraph[ Range[ 3 ] ], Identity ] },
+  With[ { fib = InfraFiberedGraph[ PathGraph[ Range[ 3 ] ], Identity ] },
     Check[ GraphQ @ InfraFiberedGraphHighlight[ fib,
       { InfraSection[ <| 1 -> 1 |> ], InfraConnection[ { } ] } ], False ] ],
   True,
@@ -163,7 +163,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ CycleGraph[ 4 ], Identity ] },
+  With[ { fib = InfraFiberedGraph[ CycleGraph[ 4 ], Identity ] },
     { drawing = InfraFiberedGraphHighlight[ fib, { }, { Method -> "3DFiber", ImageSize -> 200 } ] },
     { GraphQ[ drawing ], Length @ First @ GraphEmbedding[ drawing ], ImageSize /. Options[ drawing, ImageSize ] } ],
   { True, 3, 200 },

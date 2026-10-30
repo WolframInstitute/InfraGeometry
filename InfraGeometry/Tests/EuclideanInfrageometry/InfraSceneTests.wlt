@@ -696,8 +696,8 @@ VerificationTest[
 
 (* An exported symbol with no definitions of any kind can only be a scene token:
    an assertion head, a construction constructor, or the step container.  The
-   symbols below are exactly those.  The five Euclidean object heads -- InfraSegment,
-   InfraRay, InfraLine, InfraCircle, InfraArc -- rejoined the list on 2026-09-26
+   symbols below are exactly those.  The Euclidean object heads -- InfraSegment,
+   InfraHalfLine, InfraInfiniteLine, InfraCircle, InfraArc -- rejoined the list on 2026-09-26
    (EuclideanInertHeads): the heads themselves are always inert now, with no clause of
    their own at any arity -- every behaviour lives on InfraMeasurement, NamedConstructionSampler
    and dispatchConstruction instead.  One more means a symbol was exported with a usage
@@ -711,8 +711,8 @@ VerificationTest[
      copies it makes.  It arrived with ExampleGraphs.wl in the paclet split (T2a).  Nor is
      InfraSection and InfraConnection, the inert maps read by the section and connection functions
      (InfraFibrations T2), nor InfraTangentBundle, InfraCotangentBundle and InfraDisplacementBundle,
-     the fibration constructions read by InfraTotalGraph and InfraFibrationAssociation (InfraFibrations T3).
-     InfraFibration left the list in T3: its one-argument form converts a construction.  The hull heads InfraBallHull and
+     the fibration constructions read by InfraTotalSpace and InfraProjection (InfraFibrations T3).
+     InfraFiberedGraph left the list in T3: its one-argument form converts a construction.  The hull heads InfraBallHull and
      InfraConvexHull joined it with APISurfaceCleanup T4, region heads read like InfraBall, and InfraSolidOfRevolution replaced
      InfraRevolution in T5; InfraQuadric replaced the elliptic-shell token in T6.
      InfraDeformation and InfraForwardDeformation are inert walk families read by InfraMeasurement;
@@ -721,8 +721,8 @@ VerificationTest[
     "InfraArc", "InfraBall", "InfraBallHull", "InfraCircle", "InfraCircleThrough", "InfraCone", "InfraConnection", "InfraConvexHull",
     "InfraCotangentBundle", "InfraCylinder", "InfraDeformation",
     "InfraDisplacementBundle", "InfraEllipse", "InfraEquidistantSet", "InfraForwardDeformation", "InfraGeodesic", "InfraGeometricAssertion", "InfraHalfLine", "InfraHomotopy", "InfraInfiniteLine",
-    "InfraIntersectQ", "InfraLine", "InfraMidpoint", "InfraPerpendicularBisector", "InfraPlane", "InfraPoint",
-    "InfraPolygon", "InfraQuadric", "InfraRay", "InfraRegionNearest", "InfraRegularPolygon", "InfraSceneStep", "InfraSection", "InfraSegment",
+    "InfraIntersectQ", "InfraMidpoint", "InfraPerpendicularBisector", "InfraPlane", "InfraPoint",
+    "InfraQuadric", "InfraRegionNearest", "InfraRegularPolygon", "InfraSceneStep", "InfraSection", "InfraSegment",
     "InfraShell", "InfraSolidOfRevolution", "InfraSphere", "InfraTangentBundle", "InfraTube", "InfraWalk" },
   TestID -> "InfraScene-valueless-exports-are-scene-tokens"
 ]

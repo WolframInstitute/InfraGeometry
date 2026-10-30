@@ -796,14 +796,14 @@ VerificationTest[
 ]
 
 (* at scale Infinity the two-sided growth of a geodesic is the class of lines
-   through it: the walk engine and RandomInfraLine agree, here on a torus where
+   through it: the walk engine and RandomInfraInfiniteLine agree, here on a torus where
    the two ends interact *)
 VerificationTest[
   With[ { g = TorusGraph[ { 4, 5 } ], unoriented = w |-> Sort[ { w, Reverse @ w } ] },
     Sort[ unoriented /@ walkSeqs @ RandomInfraGeodesic[ g, { 1, 2 }, Infinity, Infinity, All, "Direction" -> "BothSides" ] ] ===
-    Sort[ unoriented /@ RandomInfraLine[ g, { 1, 2 }, All ] ] ],
+    Sort[ unoriented /@ RandomInfraInfiniteLine[ g, { 1, 2 }, All ] ] ],
   True,
-  TestID -> "RandomInfraGeodesic-BothSides-agrees-with-RandomInfraLine"
+  TestID -> "RandomInfraGeodesic-BothSides-agrees-with-RandomInfraInfiniteLine"
 ]
 
 (* an unbudgeted growth is maximal: growing a returned line again returns it *)
@@ -1664,8 +1664,8 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 9, 9 } ],
           sameQ = { a, b } |-> Sort @ VertexList @ a === Sort @ VertexList @ b && Sort @ EdgeList @ a === Sort @ EdgeList @ b },
-    { ray = InfraMeasurement[ g, InfraRay[ 41, 51 ], "Graph" ] },
-    { sameQ[ InfraMeasurement[ g, InfraGeodesic[ { 41 }, Infinity ], "Graph" ], InfraMeasurement[ g, InfraRay[ 41, 41 ], "Graph" ] ],
+    { ray = InfraMeasurement[ g, InfraHalfLine[ 41, 51 ], "Graph" ] },
+    { sameQ[ InfraMeasurement[ g, InfraGeodesic[ { 41 }, Infinity ], "Graph" ], InfraMeasurement[ g, InfraHalfLine[ 41, 41 ], "Graph" ] ],
       sameQ[ InfraMeasurement[ g, InfraGeodesic[ { 41, 42, 51 }, Infinity ], "Graph" ], Subgraph[ ray, VertexOutComponent[ ray, 51 ] ] ] } ],
   { True, True },
   TestID -> "InfraGeodesic-window-graph-at-Infinity-is-the-ray-graph"
@@ -1865,30 +1865,7 @@ VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     MatchQ[ RandomInfraWalk[ g, 1, { 3 }, Properties -> { "Simple", { "Shortest", 3, 0.3 } } ], _RandomInfraWalk ] ],
   True,
-  { RandomInfraWalk::rule },
-  TestID -> "RandomInfraWalk-soft-Shortest-refused"
-]
-
-(* a property is a name, bare or with its sub-options "Window" and "Straightness": the
-   deprecated spellings of 2.12 read as before, walk for walk, with a message *)
-VerificationTest[
-  With[ { g = InfraSubstrate[ "SquareMeshGraph", "Medium" ] },
-    { c = First @ GraphCenter @ g },
-    { walk = { rules, opts } |-> walkSeq @ RandomInfraWalk[ g, c, { 10 }, Properties -> rules, Sequence @@ opts, RandomSeeding -> 3 ] },
-    Union @ Flatten @ {
-      Table[ Quiet[ walk[ { { "Simple", r } }, { } ], RandomInfraWalk::alias ] === walk[ { { "Simple", "Window" -> r } }, { } ], { r, { 2, 3 } } ],
-      Table[ Quiet[ walk[ { "Simple", "Straightness" -> { b, r } }, { dir } ], RandomInfraWalk::alias ] ===
-          walk[ { "Simple", { "Geodesic", "Window" -> r, "Straightness" -> b } }, { dir } ],
-        { b, { 0, 1.2, 8 } }, { r, { 3, Infinity } }, { dir, { "Direction" -> "Forward", "Direction" -> "BothSides" } } ] } ],
-  { True },
-  TestID -> "RandomInfraWalk-deprecated-spellings-are-aliases"
-]
-
-VerificationTest[
-  MatchQ[ RandomInfraWalk[ GridGraph[ { 4, 4 } ], 1, { 3 }, Properties -> { { "Simple", 2 } } ], _Graph ],
-  True,
-  { RandomInfraWalk::alias },
-  TestID -> "RandomInfraWalk-deprecated-spelling-message"
+  TestID -> "RandomInfraWalk-soft-Shortest-unevaluated"
 ]
 
 (* bare "Geodesic" is the rule of RandomInfraGeodesic: the same walks seed for seed in
@@ -1906,40 +1883,9 @@ VerificationTest[
   TestID -> "RandomInfraWalk-Geodesic-is-RandomInfraGeodesic"
 ]
 
-(* the soft "Simple" of 2.12 is refused, naming the user energy that weighs a return *)
-VerificationTest[
-  MatchQ[ RandomInfraWalk[ GridGraph[ { 4, 4 } ], 1, { 3 }, Properties -> { { "Simple", Infinity, 0.5 } } ], _RandomInfraWalk ],
-  True,
-  { RandomInfraWalk::rule },
-  TestID -> "RandomInfraWalk-soft-Simple-refused"
-]
-
-VerificationTest[
-  With[ { g = GridGraph[ { 4, 4 } ] },
-    MatchQ[ RandomInfraWalk[ g, 1, { 3 }, Properties -> { { "Stretched", 2 } } ], _RandomInfraWalk ] ],
-  True,
-  { RandomInfraWalk::rule },
-  TestID -> "RandomInfraWalk-Stretched-refused"
-]
-
-VerificationTest[
-  With[ { g = GridGraph[ { 4, 4 } ] },
-    MatchQ[ RandomInfraWalk[ g, 1, Infinity, Properties -> { "Shortest" } ], _RandomInfraWalk ] ],
-  True,
-  { RandomInfraWalk::rule },
-  TestID -> "RandomInfraWalk-hard-Shortest-refused"
-]
-
-VerificationTest[
-  With[ { g = GridGraph[ { 4, 4 } ] },
-    MatchQ[ RandomInfraWalk[ g, 1, { 3 }, Properties -> { { Length[ # ] &, 2, 0.5 } } ], _RandomInfraWalk ] ],
-  True,
-  { RandomInfraWalk::rule },
-  TestID -> "RandomInfraWalk-energy-triple-refused"
-]
-
 (* the removed spellings are non-matches: the global window, the old rule
-   names, the automatic direction and the integer and delayed conditions *)
+   names, the automatic direction, the integer and delayed conditions, and the
+   property spellings of 2.12 *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     MatchQ[ #, _RandomInfraWalk ] & /@ {
@@ -1950,27 +1896,16 @@ VerificationTest[
       RandomInfraWalk[ g, 1, { 3 }, Properties -> { "Exclude" -> "Cusps" } ],
       RandomInfraWalk[ g, { 1, 2 }, { 3 }, "Direction" -> Automatic ],
       RandomInfraWalk[ g, 1, { 3 }, "StoppingCondition" -> 1 ],
-      RandomInfraWalk[ g, 1, { 3 }, "StoppingCondition" -> { Last[ # ] === 4 &, "Delay" -> 1 } ] } ],
-  { True, True, True, True, True, True, True, True },
+      RandomInfraWalk[ g, 1, { 3 }, "StoppingCondition" -> { Last[ # ] === 4 &, "Delay" -> 1 } ],
+      RandomInfraWalk[ g, 1, { 3 }, Properties -> { { "Simple", 2 } } ],
+      RandomInfraWalk[ g, 1, { 3 }, Properties -> { "Straightness" -> 1.2 } ],
+      RandomInfraWalk[ g, 1, { 3 }, Properties -> { ( Length[ # ] & ) -> 2 } ],
+      RandomInfraWalk[ g, 1, { 3 }, Properties -> { { "Simple", Infinity, 0.5 } } ],
+      RandomInfraWalk[ g, 1, { 3 }, Properties -> { { "Stretched", 2 } } ],
+      RandomInfraWalk[ g, 1, Infinity, Properties -> { "Shortest" } ],
+      RandomInfraWalk[ g, 1, { 3 }, Properties -> { { Length[ # ] &, 2, 0.5 } } ] } ],
+  ConstantArray[ True, 15 ],
   TestID -> "RandomInfraWalk-removed-spellings-unevaluated"
-]
-
-(* β = Infinity keeps the candidates of least energy among those the hard
-   rules before it left: with the end defect of the window as the energy it is
-   the class the order MaximalBy[w |-> d(First @ w, Last @ w)] gave on 2.0.2 at
-   the window 3, 246 of the 2730 simple walks of five edges from the centre of
-   the triangular tiling *)
-VerificationTest[
-  With[ { t = InfraSubstrate[ "TriangularTilingGraph", "Small" ] },
-    { c = First @ GraphCenter @ t },
-    { stretched = Sort @ walkSeqs @ RandomInfraWalk[ t, c, { 5 }, All,
-        Properties -> { "Simple", ( w |-> Length[ w ] - 1 - GraphDistance[ t, First @ w, Last @ w ] ) -> { Infinity, 3 } } ],
-      ordered = Sort @ walkSeqs @ RandomInfraWalk[ t, c, { 5 }, All, Properties -> { "Simple" },
-        "NextVertexFunction" -> { MaximalBy[ w |-> GraphDistance[ t, First @ w, Last @ w ] ], 3 } ] },
-    { Length @ stretched, stretched === ordered, Take[ stretched, 3 ] } ],
-  { 246, True, { { 2, 1, 6, 17, 34, 57 }, { 2, 1, 6, 17, 34, 58 }, { 2, 1, 6, 17, 35, 47 } } },
-  { RandomInfraWalk::alias },
-  TestID -> "RandomInfraWalk-least-end-defect-is-the-farthest-order"
 ]
 
 (* "Simple" at a window forbids a return only within it: round a hexagon of

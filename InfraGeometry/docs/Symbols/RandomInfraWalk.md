@@ -258,16 +258,9 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[
   {Head @ RandomInfraWalk[g, c, Infinity, Properties -> {{"Geodesic", "Straightness" -> 5}}], Head @ RandomInfraWalk[g, c, 3]}]
 ```
 
-The spellings of 2.12, `{"Simple", r}`, `"Straightness" -> β` and *f* `-> β`, still work with a message naming the new spelling:
+A property outside this grammar leaves the call unevaluated, such as the window written as a second entry:
 
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
   Head @ RandomInfraWalk[g, c, {6}, Properties -> {{"Simple", 2}}]]
-```
-
-The rules `{"Shortest", r, p}` and `"Stretched"` of earlier versions and the weighted `{"Simple", r, p}` are refused with the property that replaces them:
-
-```wl
-With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {c = First @ GraphCenter[g]},
-  Head @ RandomInfraWalk[g, c, {6}, Properties -> {"Simple", {"Shortest", 5, 0.3}}]]
 ```

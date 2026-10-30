@@ -28,7 +28,7 @@ RandomInfraPoint[ graph_Graph, region : Except[ _Integer | UpTo[ _Integer ] | Al
             MatchQ[ region, _InfraCircle ], Union @@ RandomInfraCircle[ graph, region, All, RandomSeeding -> None ],
             MatchQ[ region, _InfraCircleThrough ], Keys @ InfraMeasurement[ graph, region, "VertexDensity" ],
             MatchQ[ region, _InfraPlane ], Union @@ RandomInfraPlane[ graph, region, All, RandomSeeding -> None ],
-            MatchQ[ region, _InfraRegularPolygon | _InfraPolygon ], Union @@ RandomInfraRegularPolygon[ graph, region, All, RandomSeeding -> None ],
+            MatchQ[ region, _InfraRegularPolygon ], Union @@ RandomInfraRegularPolygon[ graph, region, All, RandomSeeding -> None ],
             MatchQ[ region, _InfraEllipse ], Union @@ ( VertexList /@ RandomInfraEllipse[ graph, region, All, RandomSeeding -> None ] ),
             MatchQ[ region, _InfraWalk ], Union @@ RandomInfraWalk[ graph, region, All, RandomSeeding -> None ],
             MatchQ[ region, _InfraGeodesic ], Union @@ RandomInfraGeodesic[ graph, region, All, RandomSeeding -> None ],

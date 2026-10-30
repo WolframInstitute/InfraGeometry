@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraContinuousSectionQ
 Keywords: [continuous section, partial section, adjacency preservation, displacement, weak continuity]
-SeeAlso: [InfraSection, InfraSectionQ, InfraParallelSectionQ, RandomInfraSection, FindInfraSection, InfraDisplacementBundle]
+SeeAlso: [InfraSection, InfraSectionQ, InfraParallelSectionQ, RandomInfraSection, InfraDisplacementBundle]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
 ---
@@ -58,7 +58,7 @@ A list of sections is tested member by member. The two sheets of the trivial dou
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
   {fib = InfraFiberedGraph[GraphProduct[g, Graph[{1, 2}, {}], "Cartesian"], First]},
-  InfraContinuousSectionQ[fib, FindInfraSection[fib, All]]]
+  InfraContinuousSectionQ[fib, RandomInfraSection[fib, All, Properties -> {"Continuous"}]]]
 ```
 
 ## Properties and Relations

@@ -6,27 +6,16 @@ VerificationTest[
 
 
 VerificationTest[
-  With[ { token = InfraLine[ { 1, 2 } ] }, HoldComplete[ token ] ],
-  HoldComplete[ InfraLine[ { 1, 2 } ] ],
-  TestID -> "synthetic-legacy-line-germ-stays-inert"
+  With[ { token = InfraInfiniteLine[ { 1, 2 } ] }, HoldComplete[ token ] ],
+  HoldComplete[ InfraInfiniteLine[ { 1, 2 } ] ],
+  TestID -> "synthetic-line-germ-stays-inert"
 ]
 
 
 VerificationTest[
   Keys @ InfraMeasurement[ PathGraph[ { 1, 2 } ], InfraSegment[ 1, 2 ], "Midpoint" ],
   { 1, 2 },
-  TestID -> "synthetic-legacy-midpoint-retains-middle-layers"
-]
-
-
-VerificationTest[
-  With[ { graph = PathGraph[ Range[ 5 ] ] },
-    { RandomInfraHalfLine[ graph, InfraHalfLine[ 2, 3 ], All ] ===
-        RandomInfraHalfLine[ graph, InfraRay[ 2, 3 ], All ],
-      RandomInfraInfiniteLine[ graph, InfraInfiniteLine[ 2, 3 ], All ] ===
-        RandomInfraInfiniteLine[ graph, InfraLine[ 2, 3 ], All ] } ],
-  { True, True },
-  TestID -> "synthetic-canonical-legacy-walk-families-agree"
+  TestID -> "synthetic-midpoint-retains-middle-layers"
 ]
 
 
@@ -56,24 +45,6 @@ VerificationTest[
   RandomInfraSegment[ PathGraph[ { 1, 2, 3 } ], InfraSegment[ 1, 3, 1 ], All ],
   { { 1, 2, 3, 2, 1 } },
   TestID -> "synthetic-polyline-retains-repeated-traversal"
-]
-
-
-VerificationTest[
-  With[ { graph = PathGraph[ Range[ 5 ] ] },
-    BlockRandom[ RandomInfraHalfLine[ graph, 2, 3, UpTo[ 3 ], RandomSeeding -> None ], RandomSeeding -> 41 ] ===
-      BlockRandom[ RandomInfraRay[ graph, 2, 3, UpTo[ 3 ], RandomSeeding -> None ], RandomSeeding -> 41 ] ],
-  True,
-  TestID -> "synthetic-halfline-bare-legacy-seeded-alias"
-]
-
-
-VerificationTest[
-  With[ { graph = PathGraph[ Range[ 5 ] ] },
-    BlockRandom[ RandomInfraInfiniteLine[ graph, { 2, 3 }, UpTo[ 3 ], RandomSeeding -> None ], RandomSeeding -> 41 ] ===
-      BlockRandom[ RandomInfraLine[ graph, { 2, 3 }, UpTo[ 3 ], RandomSeeding -> None ], RandomSeeding -> 41 ] ],
-  True,
-  TestID -> "synthetic-infiniteline-bare-sequence-legacy-seeded-alias"
 ]
 
 
@@ -118,7 +89,7 @@ VerificationTest[
     { bare = RandomInfraRegularPolygon[ graph, { 1, 2 }, 4, All ],
       tokens = RandomInfraRegularPolygon[ graph, InfraRegularPolygon[ { 1, 2 }, 4 ], All ] },
     { Length[ bare ], AllTrue[ First[ bare ], GraphQ ], Sort /@ tokens,
-      tokens === RandomInfraRegularPolygon[ graph, InfraPolygon[ { 1, 2 }, 4 ], All ] } ],
+      tokens === RandomInfraRegularPolygon[ graph, InfraRegularPolygon[ { 1, 2 }, 4 ], All ] } ],
   { 1, True, { { 1, 2, 3, 4 } }, True },
   TestID -> "synthetic-regular-polygon-preserves-leg-versus-token-carriers"
 ]
@@ -302,11 +273,11 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { graph = PathGraph[ { InfraLine[ 1 ], InfraRay[ 2 ] } ] },
-    { RandomInfraPoint[ graph, InfraPoint[ InfraLine[ 1 ] ], All ],
-      InfraMeasurement[ graph, InfraHalfLine[ InfraLine[ 1 ], InfraRay[ 2 ] ], "VertexDensity" ] } ],
-  { { InfraLine[ 1 ] }, <| InfraLine[ 1 ] -> 1, InfraRay[ 2 ] -> 1 |> },
-  TestID -> "synthetic-legacy-heads-inside-vertex-labels-stay-literal"
+  With[ { graph = PathGraph[ { InfraInfiniteLine[ 1 ], InfraHalfLine[ 2 ] } ] },
+    { RandomInfraPoint[ graph, InfraPoint[ InfraInfiniteLine[ 1 ] ], All ],
+      InfraMeasurement[ graph, InfraHalfLine[ InfraInfiniteLine[ 1 ], InfraHalfLine[ 2 ] ], "VertexDensity" ] } ],
+  { { InfraInfiniteLine[ 1 ] }, <| InfraHalfLine[ 2 ] -> 1, InfraInfiniteLine[ 1 ] -> 1 |> },
+  TestID -> "synthetic-heads-inside-vertex-labels-stay-literal"
 ]
 
 VerificationTest[

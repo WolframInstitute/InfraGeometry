@@ -8,13 +8,13 @@ VerificationTest[
 
 VerificationTest[
   Head /@ { InfraSectionQ[ foo, InfraSection[ <| |> ] ], InfraContinuousSectionQ[ foo, InfraSection[ <| |> ] ],
-    RandomInfraSection[ foo ], FindInfraSection[ foo, All ] },
-  { InfraSectionQ, InfraContinuousSectionQ, RandomInfraSection, FindInfraSection },
+    RandomInfraSection[ foo ] },
+  { InfraSectionQ, InfraContinuousSectionQ, RandomInfraSection },
   TestID -> "InfraSection-not-a-fibration-stays-unevaluated"
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ CycleGraph[ 8 ], i |-> Mod[ i, 4, 1 ] ] },
+  With[ { fib = InfraFiberedGraph[ CycleGraph[ 8 ], i |-> Mod[ i, 4, 1 ] ] },
     { InfraSectionQ[ fib, InfraSection[ <| 1 -> 5, 2 -> 6 |> ] ],
       InfraSectionQ[ fib, InfraSection[ <| 1 -> 2 |> ] ], InfraSectionQ[ fib, InfraSection[ <| 1 -> 9 |> ] ] } ],
   { True, False, False },
@@ -22,7 +22,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ CycleGraph[ 8 ], i |-> Mod[ i, 4, 1 ] ] },
+  With[ { fib = InfraFiberedGraph[ CycleGraph[ 8 ], i |-> Mod[ i, 4, 1 ] ] },
     InfraContinuousSectionQ[ fib, # ] & /@ {
       InfraSection[ <| 1 -> 1, 2 -> 2, 3 -> 3 |> ], InfraSection[ <| 1 -> 1, 2 -> 6 |> ],
       InfraSection[ <| 1 -> 1, 3 -> 7 |> ], InfraSection[ <| 1 -> 2 |> ], InfraSection[ <| |> ] } ],
@@ -31,7 +31,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ PathGraph[ { 1, 2 } ], Identity ],
+  With[ { fib = InfraFiberedGraph[ PathGraph[ { 1, 2 } ], Identity ],
           good = InfraSection[ <| 1 -> 1 |> ], bad = InfraSection[ <| 1 -> 2 |> ] },
     { InfraSectionQ[ fib, { good, InfraSection[ <| |> ] } ], InfraSectionQ[ fib, { good, bad } ],
       InfraContinuousSectionQ[ fib, { good } ], InfraSectionQ[ fib, { } ], InfraContinuousSectionQ[ fib, { } ],
@@ -41,7 +41,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 4 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4] } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 4 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4] } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
     { section = RandomInfraSection[ fib, "NextVertexFunction" -> Identity ] },
     { Head @ section, InfraSectionQ[ fib, section ], Keys @ First @ section,
       RandomInfraSection[ fib, Automatic, "NextVertexFunction" -> Identity ] === section } ],
@@ -50,7 +50,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 4 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4] } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 4 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4] } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
     { sections = RandomInfraSection[ fib, All ] },
     { Length @ sections, DuplicateFreeQ @ sections, InfraSectionQ[ fib, sections ],
       Count[ InfraContinuousSectionQ[ fib, # ] & /@ sections, True ] } ],
@@ -59,16 +59,15 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 4 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4] } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 4 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4] } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
     { sections = RandomInfraSection[ fib, All, Properties -> { "Continuous" } ] },
-    { Length @ sections, InfraContinuousSectionQ[ fib, sections ],
-      sections === FindInfraSection[ fib, All ] } ],
-  { 2, True, True },
-  TestID -> "RandomInfraSection-continuous-class-and-legacy-shim"
+    { Length @ sections, InfraContinuousSectionQ[ fib, sections ] } ],
+  { 2, True },
+  TestID -> "RandomInfraSection-continuous-class"
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 4 ], { UndirectedEdge[ 1, 3 ], UndirectedEdge[ 2, 4 ] } ],
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 4 ], { UndirectedEdge[ 1, 3 ], UndirectedEdge[ 2, 4 ] } ],
       <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
     { RandomInfraSection[ fib, All, { Properties -> { "Continuous" } } ],
       RandomInfraSection[ fib, All, { { Properties -> { "Continuous" } }, { { "NextVertexFunction" -> Identity } } } ] } ],
@@ -77,7 +76,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 4 ], { UndirectedEdge[ 1, 3 ], UndirectedEdge[ 2, 4 ] } ],
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 4 ], { UndirectedEdge[ 1, 3 ], UndirectedEdge[ 2, 4 ] } ],
       <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
     Length /@ { RandomInfraSection[ fib, All, { Properties -> { }, Properties -> { "Continuous" } } ],
       RandomInfraSection[ fib, All, { Properties -> { "Continuous" }, Properties -> { } } ] } ],
@@ -86,7 +85,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 4 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4] } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 4 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4] } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
     Length /@ { RandomInfraSection[ fib, 2, "NextVertexFunction" -> Identity ],
       RandomInfraSection[ fib, UpTo[ 6 ], "NextVertexFunction" -> Identity ], RandomInfraSection[ fib, 5 ],
       RandomInfraSection[ fib, 0 ], RandomInfraSection[ fib, UpTo[ 0 ] ],
@@ -96,7 +95,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 6 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4], UndirectedEdge[3, 5], UndirectedEdge[4, 6] } ],
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 6 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4], UndirectedEdge[3, 5], UndirectedEdge[4, 6] } ],
             <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b", 5 -> "c", 6 -> "c" |> ] },
     { sections = RandomInfraSection[ fib, { "a", "c" }, All, Properties -> { "Continuous" } ] },
     { Length @ sections, InfraContinuousSectionQ[ fib, sections ],
@@ -106,7 +105,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 4 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4] } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ],
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 4 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4] } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ],
           seed = InfraSection[ <| "b" -> 4 |> ] },
     { arbitrary = RandomInfraSection[ fib, seed, All ],
       continuous = RandomInfraSection[ fib, seed, Properties -> { "Continuous" }, "NextVertexFunction" -> Identity ] },
@@ -117,7 +116,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 4 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4] } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ],
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 4 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4] } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ],
           seed = InfraSection[ <| "a" -> 1, "b" -> 4 |> ] },
     { InfraSectionQ[ fib, seed ], InfraContinuousSectionQ[ fib, seed ],
       RandomInfraSection[ fib, seed, "NextVertexFunction" -> Identity ],
@@ -127,7 +126,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 6 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4], UndirectedEdge[3, 5], UndirectedEdge[4, 6] } ],
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 6 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4], UndirectedEdge[3, 5], UndirectedEdge[4, 6] } ],
             <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b", 5 -> "c", 6 -> "c" |> ],
           seed = InfraSection[ <| "a" -> 1, "c" -> 6 |> ] },
     { InfraContinuousSectionQ[ fib, seed ],
@@ -138,7 +137,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 6 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4] } ],
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 6 ], { UndirectedEdge[1, 3], UndirectedEdge[2, 4] } ],
             <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b", 5 -> "c", 6 -> "c" |> ] },
     { sections = RandomInfraSection[ fib, InfraSection[ <| "c" -> 6 |> ], All, Properties -> { "Continuous" } ] },
     { Length @ sections, InfraContinuousSectionQ[ fib, sections ],
@@ -148,7 +147,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ { }, { } ], <| |> ], empty = InfraSection[ <| |> ] },
+  With[ { fib = InfraFiberedGraph[ Graph[ { }, { } ], <| |> ], empty = InfraSection[ <| |> ] },
     { RandomInfraSection[ fib ], RandomInfraSection[ fib, All ],
       RandomInfraSection[ fib, All, Properties -> { "Continuous" } ], RandomInfraSection[ fib, 2 ],
       InfraSectionQ[ fib, empty ], InfraContinuousSectionQ[ fib, empty ] } ],
@@ -157,7 +156,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ PathGraph[ { 1, 2 } ], Identity ] },
+  With[ { fib = InfraFiberedGraph[ PathGraph[ { 1, 2 } ], Identity ] },
     { RandomInfraSection[ fib, { } ], RandomInfraSection[ fib, { }, All ],
       RandomInfraSection[ fib, { }, Properties -> { "Continuous" } ] } ],
   { InfraSection[ <| |> ], { InfraSection[ <| |> ] }, InfraSection[ <| |> ] },
@@ -167,7 +166,7 @@ VerificationTest[
 VerificationTest[
   With[ { left = { "left", 1 }, right = { "right", 2 } },
     { vertices = { { left, 1 }, { left, 2 }, { right, 1 }, { right, 2 } } },
-    { fib = InfraFibration[ Graph[ vertices, { UndirectedEdge[vertices[[ 1 ]], vertices[[ 3 ]]], UndirectedEdge[vertices[[ 2 ]], vertices[[ 4 ]]] } ],
+    { fib = InfraFiberedGraph[ Graph[ vertices, { UndirectedEdge[vertices[[ 1 ]], vertices[[ 3 ]]], UndirectedEdge[vertices[[ 2 ]], vertices[[ 4 ]]] } ],
         AssociationThread[ vertices, { left, left, right, right } ] ] },
     { seed = InfraSection @ AssociationThread[ { left }, { vertices[[ 1 ]] } ] },
     { section = RandomInfraSection[ fib, seed, Properties -> { "Continuous" }, "NextVertexFunction" -> First ] },
@@ -180,7 +179,7 @@ VerificationTest[
 VerificationTest[
   With[ { vertices = { Blank[ ], Alternatives[ "x", "y" ], "one", "two" },
           left = Blank[ Integer ], right = Alternatives[ "left", "right" ] },
-    { fib = InfraFibration[ Graph[ vertices, { UndirectedEdge[vertices[[ 1 ]], vertices[[ 3 ]]], UndirectedEdge[vertices[[ 2 ]], vertices[[ 4 ]]] } ],
+    { fib = InfraFiberedGraph[ Graph[ vertices, { UndirectedEdge[vertices[[ 1 ]], vertices[[ 3 ]]], UndirectedEdge[vertices[[ 2 ]], vertices[[ 4 ]]] } ],
         AssociationThread[ vertices, { left, left, right, right } ] ] },
     { sections = RandomInfraSection[ fib, All, Properties -> { "Continuous" } ] },
     { Length @ sections, InfraContinuousSectionQ[ fib, sections ],
@@ -191,14 +190,14 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 4 ], { } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 4 ], { } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
     Values @ First @ # & /@ RandomInfraSection[ fib, All, "NextVertexFunction" -> Reverse ] ],
   { { 2, 4 }, { 2, 3 }, { 1, 4 }, { 1, 3 } },
   TestID -> "RandomInfraSection-callback-orders-each-fiber"
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 4 ], { } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 4 ], { } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
     { RandomInfraSection[ fib, All, "NextVertexFunction" -> ( Take[ #, UpTo[ 1 ] ] & ) ],
       RandomInfraSection[ fib, All, "NextVertexFunction" -> ( { } & ) ] } ],
   { { InfraSection[ <| "a" -> 1, "b" -> 3 |> ] }, { } },
@@ -206,7 +205,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 4 ], { } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 4 ], { } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
     BlockRandom[
       { Length @ RandomInfraSection[ fib, UpTo[ 2 ], "NextVertexFunction" -> RandomChoice, RandomSeeding -> None ],
         RandomInfraSection[ fib, 2, "NextVertexFunction" -> RandomChoice, RandomSeeding -> None ],
@@ -216,7 +215,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 8 ], { } ], i |-> Ceiling[ i / 2 ] ] },
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 8 ], { } ], i |-> Ceiling[ i / 2 ] ] },
     BlockRandom[ RandomInfraSection[ fib, RandomSeeding -> None ], RandomSeeding -> 37 ] ===
       BlockRandom[ RandomInfraSection[ fib, RandomSeeding -> None ], RandomSeeding -> 37 ] ],
   True,
@@ -224,7 +223,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 8 ], { } ], i |-> Ceiling[ i / 2 ] ] },
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 8 ], { } ], i |-> Ceiling[ i / 2 ] ] },
     BlockRandom[
       With[ { state = $RandomGeneratorState },
         RandomInfraSection[ fib, RandomSeeding -> None ]; $RandomGeneratorState =!= state ], RandomSeeding -> 37 ] ],
@@ -233,21 +232,20 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 6 ], { } ], i |-> Ceiling[ i / 2 ] ] },
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 6 ], { } ], i |-> Ceiling[ i / 2 ] ] },
     BlockRandom[
       With[ { state = $RandomGeneratorState },
         RandomInfraSection[ fib, All, RandomSeeding -> None ];
         RandomInfraSection[ fib, "NextVertexFunction" -> Identity, RandomSeeding -> None ];
         RandomInfraSection[ fib, 0, RandomSeeding -> None ];
-        FindInfraSection[ fib, UpTo[ 2 ] ];
         $RandomGeneratorState === state ], RandomSeeding -> 37 ] ],
   True,
-  TestID -> "RandomInfraSection-enumeration-Identity-zero-and-legacy-do-not-draw"
+  TestID -> "RandomInfraSection-enumeration-Identity-and-zero-do-not-draw"
 ]
 
 VerificationTest[
   Module[ { visits = 0 },
-    With[ { fib = InfraFibration[ Graph[ Range[ 48 ], { } ], i |-> Ceiling[ i / 2 ] ] },
+    With[ { fib = InfraFiberedGraph[ Graph[ Range[ 48 ], { } ], i |-> Ceiling[ i / 2 ] ] },
       { section = RandomInfraSection[ fib, "NextVertexFunction" -> ( visits++; # & ) ] },
       InfraSectionQ[ fib, section ] && Length @ First @ section === 24 && visits <= 48 ] ],
   True,
@@ -255,7 +253,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ PathGraph[ { 1, 2 } ], Identity ] },
+  With[ { fib = InfraFiberedGraph[ PathGraph[ { 1, 2 } ], Identity ] },
     Head /@ { RandomInfraSection[ fib, -1 ], Quiet[ RandomInfraSection[ fib, UpTo[ -1 ] ], UpTo::innf ],
       RandomInfraSection[ fib, Properties -> { "Smooth" } ], RandomInfraSection[ fib, "Seed" -> 1 ],
       RandomInfraSection[ fib, "NextVertexFunction" -> 17 ], RandomInfraSection[ fib, { 3 } ],
@@ -265,7 +263,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 4 ], { } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 4 ], { } ], <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ] },
     Head /@ { RandomInfraSection[ fib, "NextVertexFunction" -> ( { 99 } & ) ],
       RandomInfraSection[ fib, "NextVertexFunction" -> ( { First @ #, First @ # } & ) ],
       RandomInfraSection[ fib, "NextVertexFunction" -> unknownSelector ] } ],
@@ -274,7 +272,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ Range[ 4 ], { UndirectedEdge[1, 3], UndirectedEdge[1, 4], UndirectedEdge[2, 3], UndirectedEdge[2, 4] } ],
+  With[ { fib = InfraFiberedGraph[ Graph[ Range[ 4 ], { UndirectedEdge[1, 3], UndirectedEdge[1, 4], UndirectedEdge[2, 3], UndirectedEdge[2, 4] } ],
             <| 1 -> "a", 2 -> "a", 3 -> "b", 4 -> "b" |> ], connection = InfraConnection[ { UndirectedEdge[1, 3], UndirectedEdge[2, 4] } ],
           parallel = InfraSection[ <| "a" -> 1, "b" -> 3 |> ], transverse = InfraSection[ <| "a" -> 1, "b" -> 4 |> ] },
     { InfraContinuousSectionQ[ fib, transverse ], InfraParallelSectionQ[ fib, connection, transverse ],
@@ -285,39 +283,31 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ Graph[ { }, { } ], <| |> ] },
+  With[ { fib = InfraFiberedGraph[ Graph[ { }, { } ], <| |> ] },
     InfraParallelSectionQ[ fib, InfraConnection[ { } ], InfraSection[ <| |> ] ] ],
   True,
   TestID -> "InfraParallelSectionQ-empty-base-empty-section"
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ PathGraph[ { 1, 2 } ], Identity ] },
+  With[ { fib = InfraFiberedGraph[ PathGraph[ { 1, 2 } ], Identity ] },
     Head @ InfraParallelSectionQ[ fib, InfraConnection[ { } ], InfraSection[ <| 1 -> 1, 2 -> 2 |> ] ] ],
   InfraParallelSectionQ,
   TestID -> "InfraParallelSectionQ-requires-valid-complete-connection"
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ GraphProduct[ CompleteGraph[ 3 ], CycleGraph[ 4 ], "Cartesian" ], Last ] },
-    { sections = FindInfraSection[ fib, All ] },
+  With[ { fib = InfraFiberedGraph[ GraphProduct[ CompleteGraph[ 3 ], CycleGraph[ 4 ], "Cartesian" ], Last ] },
+    { sections = RandomInfraSection[ fib, All, Properties -> { "Continuous" } ] },
     { Length @ sections, InfraContinuousSectionQ[ fib, sections ],
       Sort[ CountDistinct[ First /@ Values @ First @ # ] & /@ sections ] } ],
   { 3, True, { 1, 1, 1 } },
-  TestID -> "FindInfraSection-trivial-bundle-constant-sections"
+  TestID -> "RandomInfraSection-trivial-bundle-constant-sections"
 ]
 
 VerificationTest[
-  With[ { fib = InfraFibration[ GraphProduct[ CompleteGraph[ 3 ], CycleGraph[ 4 ], "Cartesian" ], Last ] },
-    Length /@ { FindInfraSection[ fib, 2 ], FindInfraSection[ fib, UpTo[ 2 ] ],
-      FindInfraSection[ fib, UpTo[ 5 ] ], FindInfraSection[ fib, 4 ] } ],
-  { 2, 2, 3, 0 },
-  TestID -> "FindInfraSection-retains-count-and-shortage-shapes"
-]
-
-VerificationTest[
-  With[ { fib = InfraFibration[ CycleGraph[ 8 ], i |-> Mod[ i, 4, 1 ] ] },
-    { RandomInfraSection[ fib, Properties -> { "Continuous" } ], FindInfraSection[ fib, All ] } ],
+  With[ { fib = InfraFiberedGraph[ CycleGraph[ 8 ], i |-> Mod[ i, 4, 1 ] ] },
+    { RandomInfraSection[ fib, Properties -> { "Continuous" } ], RandomInfraSection[ fib, All, Properties -> { "Continuous" } ] } ],
   { { }, { } },
   TestID -> "InfraSection-connected-double-cover-has-no-continuous-section"
 ]

@@ -409,8 +409,8 @@ VerificationTest[
 (* the 9 x 9 grid over its full straight cross: the projection is a bijection onto {-4, ..., 4}^2 and the base is the grid itself *)
 VerificationTest[
   With[{g = GridGraph[{9, 9}], c = 41},
-    With[{fib = InfraFibration[g, OrthogonalCoordinates[g, c, FindInfraOrthogonalAxes[g, c, 4]]]},
-      {Sort @ VertexList @ InfraBaseGraph @ fib, IsomorphicGraphQ[InfraBaseGraph @ fib, g], Union[VertexCount /@ Values @ InfraFibers @ fib],
+    With[{fib = InfraFiberedGraph[g, OrthogonalCoordinates[g, c, FindInfraOrthogonalAxes[g, c, 4]]]},
+      {Sort @ VertexList @ InfraBaseSpace @ fib, IsomorphicGraphQ[InfraBaseSpace @ fib, g], Union[VertexCount /@ Values @ InfraFibers @ fib],
         InfraFibrationQ @ fib}]],
   {Tuples[Range[-4, 4], 2], True, {1}, True},
   TestID -> "OrthogonalCoordinates-fibration-9x9-full-cross"
@@ -420,8 +420,8 @@ VerificationTest[
    blocks over the corners, strips of 3 over the rest of the boundary and single vertices inside; edges do not lift at the corner blocks *)
 VerificationTest[
   With[{g = GridGraph[{9, 9}], c = 41},
-    With[{fib = InfraFibration[g, OrthogonalCoordinates[g, c, FindInfraOrthogonalAxes[g, c, 2]]]},
-      {Sort @ VertexList @ InfraBaseGraph @ fib, IsomorphicGraphQ[InfraBaseGraph @ fib, GridGraph[{5, 5}]],
+    With[{fib = InfraFiberedGraph[g, OrthogonalCoordinates[g, c, FindInfraOrthogonalAxes[g, c, 2]]]},
+      {Sort @ VertexList @ InfraBaseSpace @ fib, IsomorphicGraphQ[InfraBaseSpace @ fib, GridGraph[{5, 5}]],
         KeySort @ Counts[VertexCount /@ Values @ InfraFibers @ fib], IsomorphicGraphQ[InfraFiber[fib, {2, 2}], GridGraph[{3, 3}]],
         InfraFibrationQ @ fib}]],
   {Tuples[Range[-2, 2], 2], True, <|1 -> 9, 3 -> 12, 9 -> 4|>, True, False},
@@ -430,8 +430,8 @@ VerificationTest[
 
 VerificationTest[
   With[{g = GridGraph[{5, 5, 5}], c = 63},
-    With[{fib = InfraFibration[g, OrthogonalCoordinates[g, c, FindInfraOrthogonalAxes[g, c, 2]]]},
-      {Sort @ VertexList @ InfraBaseGraph @ fib, IsomorphicGraphQ[InfraBaseGraph @ fib, g], InfraFibrationQ @ fib}]],
+    With[{fib = InfraFiberedGraph[g, OrthogonalCoordinates[g, c, FindInfraOrthogonalAxes[g, c, 2]]]},
+      {Sort @ VertexList @ InfraBaseSpace @ fib, IsomorphicGraphQ[InfraBaseSpace @ fib, g], InfraFibrationQ @ fib}]],
   {Tuples[Range[-2, 2], 3], True, True},
   TestID -> "OrthogonalCoordinates-fibration-5x5x5-cross"
 ]
@@ -441,7 +441,7 @@ VerificationTest[
   With[{g = GridGraph[{5, 5}], c = 13},
     With[{coords = OrthogonalCoordinates[g, c, FindInfraOrthogonalRays[g, c, 2]]},
       {coords[c], DuplicateFreeQ @ Values @ coords, AllTrue[Catenate @ Values @ coords, NonNegative],
-        IsomorphicGraphQ[InfraBaseGraph @ InfraFibration[g, coords], g]}]],
+        IsomorphicGraphQ[InfraBaseSpace @ InfraFiberedGraph[g, coords], g]}]],
   {{0, 0, 0, 0}, True, True, True},
   TestID -> "OrthogonalCoordinates-fibration-rays"
 ]

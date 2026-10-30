@@ -712,17 +712,17 @@ VerificationTest[
 
 (* on C_6 the extensions of 1 -> 2 beyond 2 are 2 -> 3 -> 4: vertex 5 is excluded, d(1, 5) = 2 < 1 + d(2, 5) = 4 *)
 VerificationTest[
-  With[ { ray = InfraMeasurement[ CycleGraph[ 6 ], InfraRay[ 1, 2 ], "Graph" ] },
+  With[ { ray = InfraMeasurement[ CycleGraph[ 6 ], InfraHalfLine[ 1, 2 ], "Graph" ] },
     { ext = Subgraph[ ray, VertexOutComponent[ ray, 2 ] ] },
     { Sort @ VertexList @ ext, Sort @ EdgeList @ ext } ],
   { { 2, 3, 4 }, { DirectedEdge[ 2, 3 ], DirectedEdge[ 3, 4 ] } },
-  TestID -> "InfraRay-past-q-C6"
+  TestID -> "InfraHalfLine-past-q-C6"
 ]
 
 (* the vertex set is the distance condition, and every directed path from q is a geodesic that stays geodesic behind p *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ], p1 = 6, p2 = 7 },
-    { ray = InfraMeasurement[ g, InfraRay[ p1, p2 ], "Graph" ] },
+    { ray = InfraMeasurement[ g, InfraHalfLine[ p1, p2 ], "Graph" ] },
     { ext = Subgraph[ ray, VertexOutComponent[ ray, p2 ] ] },
     Sort @ VertexList @ ext ===
       Sort @ Select[ VertexList @ g,
@@ -732,23 +732,23 @@ VerificationTest[
         GraphDistance[ g, p1, Last @ w ] == GraphDistance[ g, p1, p2 ] + Length[ w ] - 1 ]
   ],
   True,
-  TestID -> "InfraRay-past-q-GridGraph-geodesic-extensions"
+  TestID -> "InfraHalfLine-past-q-GridGraph-geodesic-extensions"
 ]
 
 (* the sinks of the ray graph are the inextensible ray ends *)
 VerificationTest[
-  With[ { ray = InfraMeasurement[ GridGraph[ { 3, 3 } ], InfraRay[ 5, 6 ], "Graph" ] },
+  With[ { ray = InfraMeasurement[ GridGraph[ { 3, 3 } ], InfraHalfLine[ 5, 6 ], "Graph" ] },
     Sort @ Select[ VertexList @ ray, VertexOutDegree[ ray, # ] == 0 & ] ],
   { 3, 9 },
-  TestID -> "InfraRay-past-q-sinks-are-ray-ends"
+  TestID -> "InfraHalfLine-past-q-sinks-are-ray-ends"
 ]
 
 (* two anchors through one point: one ray graph each, ending at the opposite corner *)
 VerificationTest[
   Map[ ray |-> Select[ VertexList @ ray, VertexOutDegree[ ray, # ] == 0 & ],
-    InfraMeasurement[ GridGraph[ { 3, 3 } ], { InfraRay[ 1, 5 ], InfraRay[ 3, 5 ] }, "Graph" ] ],
+    InfraMeasurement[ GridGraph[ { 3, 3 } ], { InfraHalfLine[ 1, 5 ], InfraHalfLine[ 3, 5 ] }, "Graph" ] ],
   { { 9 }, { 7 } },
-  TestID -> "InfraRay-past-q-two-anchors"
+  TestID -> "InfraHalfLine-past-q-two-anchors"
 ]
 
 EndTestSection[]

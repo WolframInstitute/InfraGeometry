@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/OrthogonalCoordinates
 Keywords: [orthogonal coordinates, Cartesian coordinates, shortest-path projection, signed position, walks, tie, fibration]
-SeeAlso: [FindInfraOrthogonalAxes, FindInfraOrthogonalRays, RadarCoordinates, InfraFibration, InfraBaseGraph, FindInfraPerpendicular]
+SeeAlso: [FindInfraOrthogonalAxes, FindInfraOrthogonalRays, RadarCoordinates, InfraFiberedGraph, FindInfraPerpendicular]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
@@ -32,7 +32,7 @@ A projection of several vertices is reduced to one position by `"SelectCoordinat
 |---|---|---|
 | `"SelectCoordinate"` | [Median]() | a function of the list of tied positions; `All` keeps the list |
 
-The result is a map from the vertices to the positions, and [InfraFibration]() fibres *g* over it.
+The result is a map from the vertices to the positions, and [InfraFiberedGraph]() fibres *g* over it.
 
 ## Basic Examples
 
@@ -96,7 +96,7 @@ On the cross of half-length 3 the coordinates take the 49 values {−3, …, 3}�
 ```wl
 With[{g = InfraSubstrate["SquareGridGraph", "Small"]},
   {coords = OrthogonalCoordinates[g, 45, FindInfraOrthogonalAxes[g, 45, 3]]},
-  {Length @ Union @ Values @ coords, VertexCount @ InfraBaseGraph @ InfraFibration[g, coords]}]
+  {Length @ Union @ Values @ coords, VertexCount @ InfraBaseSpace @ InfraFiberedGraph[g, coords]}]
 ```
 
 ## Possible Issues

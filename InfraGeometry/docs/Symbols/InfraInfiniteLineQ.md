@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraInfiniteLineQ
 Keywords: [line, inextensible shortest path, predicate]
-SeeAlso: [RandomInfraInfiniteLine, InfraInfiniteLine, InfraSegmentQ, InfraHalfLineQ, InfraLineQ]
+SeeAlso: [RandomInfraInfiniteLine, InfraInfiniteLine, InfraSegmentQ, InfraHalfLineQ]
 RelatedGuides: [Experimental]
 ---
 

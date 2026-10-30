@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraBaseSpace
 Keywords: [base space, base graph, quotient, projection]
-SeeAlso: [InfraFiberedGraph, InfraTotalSpace, InfraProjection, InfraFiber, InfraBaseGraph]
+SeeAlso: [InfraFiberedGraph, InfraTotalSpace, InfraProjection, InfraFiber]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
 ---
@@ -25,7 +25,6 @@ A base edge exists only if some total edge lies over it. Deleting the total edge
 
 The construction heads [InfraTangentBundle](), [InfraCotangentBundle]() and [InfraDisplacementBundle]() are fibered graphs too, and their base is the graph they are built on.
 
-[InfraBaseGraph]() is another name for the same function.
 
 ## Basic Examples
 

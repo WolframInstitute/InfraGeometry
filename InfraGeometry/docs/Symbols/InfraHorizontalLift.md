@@ -5,7 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraHorizontalLift
 Keywords: [horizontal lift, path lifting, connection, walk]
-SeeAlso: [InfraConnection, InfraConnectionQ, InfraParallelTransport, InfraHolonomy, InfraWalk, FindInfraHorizontalLift]
+SeeAlso: [InfraConnection, InfraConnectionQ, InfraParallelTransport, InfraHolonomy, InfraWalk]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
 ---

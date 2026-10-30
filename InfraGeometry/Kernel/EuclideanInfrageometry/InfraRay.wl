@@ -35,7 +35,7 @@ RandomInfraHalfLine[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } 
 
 RandomInfraHalfLine[ graph_Graph, p_, q_,
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
-    ( ( VertexQ[ graph, p ] || ! MatchQ[ p, _InfraHalfLine | _InfraRay ] ) &&
+    ( ( VertexQ[ graph, p ] || ! MatchQ[ p, _InfraHalfLine ] ) &&
     SubsetQ[ First /@ Options[ RandomInfraHalfLine ], First /@ { opts } ] &&
     ( count =!= All || OptionValue[ RandomInfraHalfLine, { opts }, "NextVertexFunction" ] =!= RandomChoice ) ) :=
   With[ { cap = Replace[ count, { All -> Infinity, Automatic -> 1, UpTo[ n_ ] :> n } ],
@@ -101,7 +101,7 @@ InfraHalfLineQ[ _Graph, ray_List ] /; Length[ ray ] < 2 :=
   False
 
 RandomInfraHalfLine[ graph_Graph,
-    obj : ( InfraHalfLine | InfraRay )[ Except[ _Rule | _RuleDelayed ], Except[ _Rule | _RuleDelayed ] ],
+    obj : InfraHalfLine[ Except[ _Rule | _RuleDelayed ], Except[ _Rule | _RuleDelayed ] ],
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
     ( SubsetQ[ First /@ Options[ RandomInfraHalfLine ], First /@ { opts } ] &&
     ( OptionValue[ RandomInfraHalfLine, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) ) :=
@@ -172,14 +172,3 @@ RandomInfraHalfLine[ graph_Graph,
       _UpTo,     If[ nextFn === Automatic, members, Take[ members, count ] ],
       _,         If[ Length[ members ] < count, { }, Take[ members, count ] ] ] ]
 
-
-Options[ RandomInfraRay ] = Options[ RandomInfraHalfLine ]
-
-RandomInfraRay[ graph_Graph, args___ ] :=
-  RandomInfraHalfLine[ graph, args ]
-
-InfraRayQ[ graph_Graph, args___ ] :=
-  InfraHalfLineQ[ graph, args ]
-
-RandomInfraHalfLine[ graph_Graph, InfraRay[ p_, q_ ], args___ ] :=
-  RandomInfraHalfLine[ graph, InfraHalfLine[ p, q ], args ]

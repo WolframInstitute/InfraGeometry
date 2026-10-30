@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/CochainCup
 Keywords: [cup product, alternating cochain, Alexander-Whitney, antisymmetrisation, clique complex, graded-commutative, associator, area]
-SeeAlso: [OrderedCochainCup, CochainCupOne, AntisymmetrizedCup, Coboundary, CochainValue, FormWedge]
+SeeAlso: [OrderedCochainCup, CochainCupOne, Coboundary, CochainValue, FormWedge]
 RelatedGuides: [Experimental]
 ---
 

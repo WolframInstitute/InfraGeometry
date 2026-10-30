@@ -11,8 +11,8 @@ VerificationTest[
 ]
 
 VerificationTest[
-  {InfraTotalGraph[InfraTangentBundle[GridGraph[{4, 4}], 0]], InfraFibrationAssociation[InfraDisplacementBundle[foo, 2]]},
-  {InfraTotalGraph[InfraTangentBundle[GridGraph[{4, 4}], 0]], InfraFibrationAssociation[InfraDisplacementBundle[foo, 2]]},
+  {InfraTotalSpace[InfraTangentBundle[GridGraph[{4, 4}], 0]], InfraProjection[InfraDisplacementBundle[foo, 2]]},
+  {InfraTotalSpace[InfraTangentBundle[GridGraph[{4, 4}], 0]], InfraProjection[InfraDisplacementBundle[foo, 2]]},
   TestID -> "InfraTangentBundle-scale-zero-and-non-graph-stay-unevaluated"
 ]
 
@@ -40,7 +40,7 @@ VerificationTest[
 
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    {VertexCount[#], EdgeCount[#]} & /@ (InfraTotalGraph /@ {InfraTangentBundle[g, 2], InfraDisplacementBundle[g, 2], InfraCotangentBundle[g, 2]})],
+    {VertexCount[#], EdgeCount[#]} & /@ (InfraTotalSpace /@ {InfraTangentBundle[g, 2], InfraDisplacementBundle[g, 2], InfraCotangentBundle[g, 2]})],
   {{104, 520}, {68, 220}, {104, 520}},
   TestID -> "InfraTangentBundle-grid-counts"
 ]
@@ -55,7 +55,7 @@ VerificationTest[
 
 (* the vertexwise rule: {6, 5, 1} and {6, 2, 1} share both ends, but 5 and 2 are not adjacent *)
 VerificationTest[
-  With[{total = InfraTotalGraph[InfraTangentBundle[GridGraph[{4, 4}], 2]]},
+  With[{total = InfraTotalSpace[InfraTangentBundle[GridGraph[{4, 4}], 2]]},
     {EdgeQ[total, UndirectedEdge[{6, 5, 1}, {6, 2, 1}]], EdgeQ[total, UndirectedEdge[{6, 5, 1}, {7, 6, 2}]]}],
   {False, True},
   TestID -> "InfraTangentBundle-vertexwise-adjacency"
@@ -63,9 +63,9 @@ VerificationTest[
 
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    {Lookup[InfraFibrationAssociation[InfraTangentBundle[g, 2]], Key[{6, 5, 1}]],
-      Lookup[InfraFibrationAssociation[InfraCotangentBundle[g, 2]], Key[{1, 5, 6}]],
-      Lookup[InfraFibrationAssociation[InfraDisplacementBundle[g, 2]], Key[{6, 1}]]}],
+    {Lookup[InfraProjection[InfraTangentBundle[g, 2]], Key[{6, 5, 1}]],
+      Lookup[InfraProjection[InfraCotangentBundle[g, 2]], Key[{1, 5, 6}]],
+      Lookup[InfraProjection[InfraDisplacementBundle[g, 2]], Key[{6, 1}]]}],
   {6, 6, 6},
   TestID -> "InfraTangentBundle-projections-first-last-first"
 ]
@@ -73,16 +73,16 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
     {fib = InfraDisplacementBundle[g, 2]},
-    {Head[InfraFibration[fib]], InfraTotalGraph[InfraFibration[fib]] === InfraTotalGraph[fib],
-      InfraFibrationAssociation[InfraFibration[fib]] === InfraFibrationAssociation[fib],
-      IsomorphicGraphQ[InfraBaseGraph[InfraFibration[fib]], g], IsomorphicGraphQ[InfraBaseGraph[InfraTangentBundle[g, 2]], g]}],
-  {InfraFibration, True, True, True, True},
-  TestID -> "InfraFibration-of-a-construction-is-literal"
+    {Head[InfraFiberedGraph[fib]], InfraTotalSpace[InfraFiberedGraph[fib]] === InfraTotalSpace[fib],
+      InfraProjection[InfraFiberedGraph[fib]] === InfraProjection[fib],
+      IsomorphicGraphQ[InfraBaseSpace[InfraFiberedGraph[fib]], g], IsomorphicGraphQ[InfraBaseSpace[InfraTangentBundle[g, 2]], g]}],
+  {InfraFiberedGraph, True, True, True, True},
+  TestID -> "InfraFiberedGraph-of-a-construction-is-literal"
 ]
 
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
-    Options[InfraTotalGraph[#], VertexCoordinates] & /@
+    Options[InfraTotalSpace[#], VertexCoordinates] & /@
       {InfraTangentBundle[g, 2], InfraDisplacementBundle[g, 2], InfraCotangentBundle[g, 2]}],
   ConstantArray[{VertexCoordinates -> Automatic}, 3],
   TestID -> "InfraTangentBundle-totals-do-not-store-layout"
@@ -91,8 +91,8 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
     {drawn = Graph[g, VertexCoordinates -> Table[{i, (-1)^i}, {i, VertexCount[g]}]]},
-    Map[head |-> {InfraTotalGraph[head[g, 2]] === InfraTotalGraph[head[drawn, 2]],
-        InfraFibrationAssociation[head[g, 2]] === InfraFibrationAssociation[head[drawn, 2]]},
+    Map[head |-> {InfraTotalSpace[head[g, 2]] === InfraTotalSpace[head[drawn, 2]],
+        InfraProjection[head[g, 2]] === InfraProjection[head[drawn, 2]]},
       {InfraTangentBundle, InfraDisplacementBundle, InfraCotangentBundle}]],
   ConstantArray[{True, True}, 3],
   TestID -> "InfraTangentBundle-structure-is-independent-of-base-layout"
@@ -100,7 +100,7 @@ VerificationTest[
 
 VerificationTest[
   Table[With[{fib = head[g, 2]},
-      {VertexCount[InfraTotalGraph[fib]], EdgeCount[InfraTotalGraph[fib]], InfraFibrationAssociation[fib]}],
+      {VertexCount[InfraTotalSpace[fib]], EdgeCount[InfraTotalSpace[fib]], InfraProjection[fib]}],
     {g, {Graph[{}, {}], PathGraph[{1, 2}]}}, {head, {InfraTangentBundle, InfraDisplacementBundle, InfraCotangentBundle}}],
   ConstantArray[{0, 0, <||>}, {2, 3}],
   TestID -> "InfraTangentBundle-empty-ray-and-displacement-sets"
@@ -139,7 +139,7 @@ VerificationTest[
 VerificationTest[
   With[{g = GridGraph[{4, 4}]},
     {tangent = InfraTangentBundle[g, 2]},
-    {displacement = InfraDisplacementBundle[InfraBaseGraph[tangent], 2]},
+    {displacement = InfraDisplacementBundle[InfraBaseSpace[tangent], 2]},
     {InfraBundleMorphismQ[tangent, displacement, InfraBundleMorphism[tangent, displacement]],
       Head[InfraBundleMorphism[tangent, InfraDisplacementBundle[GridGraph[{4, 5}], 2]]]}],
   {True, InfraBundleMorphism},
@@ -161,7 +161,7 @@ VerificationTest[
       InfraContinuousSectionQ[tangent, up],
       InfraContinuousSectionQ[displacement, InfraSection[endpoint /@ First @ up]],
       VertexCount /@ {InfraFiber[tangent, 6], InfraFiber[displacement, 6]},
-      IsomorphicGraphQ[InfraBaseGraph @ InfraFibration @ displacement, g],
+      IsomorphicGraphQ[InfraBaseSpace @ InfraFiberedGraph @ displacement, g],
       conn === {}}],
   {True, True, False, True, True, {10, 6}, True, True},
   TestID -> "InfraTangentBundle-prototype-acceptance"
@@ -170,13 +170,13 @@ VerificationTest[
 VerificationTest[
   With[ { graph = CycleGraph[ 8 ] },
     Map[ head |-> With[ { model = head[ graph, 2 ] },
-        { literal = InfraFiberedGraph[ model ], legacy = InfraFibration[ model ] },
-        { Head[ literal ], Head[ legacy ], InfraTotalSpace[ literal ] === InfraTotalGraph[ model ],
-          InfraProjection[ literal ] === InfraFibrationAssociation[ model ],
-          InfraBaseSpace[ literal ] === InfraBaseGraph[ model ],
+        { literal = InfraFiberedGraph[ model ], legacy = InfraFiberedGraph[ model ] },
+        { Head[ literal ], Head[ legacy ], InfraTotalSpace[ literal ] === InfraTotalSpace[ model ],
+          InfraProjection[ literal ] === InfraProjection[ model ],
+          InfraBaseSpace[ literal ] === InfraBaseSpace[ model ],
           InfraTotalSpace[ legacy ] === InfraTotalSpace[ literal ] } ],
       { InfraTangentBundle, InfraCotangentBundle, InfraDisplacementBundle } ] ],
-  ConstantArray[ { InfraFiberedGraph, InfraFibration, True, True, True, True }, 3 ],
+  ConstantArray[ { InfraFiberedGraph, InfraFiberedGraph, True, True, True, True }, 3 ],
   TestID -> "InfraTangentBundle-canonical-readers-and-both-literal-materializers"
 ]
 

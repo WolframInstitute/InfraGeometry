@@ -48,10 +48,6 @@ InfraFiberedGraph[ fib : ( InfraTangentBundle[ _Graph, _Integer?Positive ] |
     InfraCotangentBundle[ _Graph, _Integer?Positive ] | InfraDisplacementBundle[ _Graph, _Integer?Positive ] ) ] :=
   InfraFiberedGraph[ InfraTotalSpace @ fib, InfraProjection @ fib ]
 
-InfraFibration[ fib : ( InfraTangentBundle[ _Graph, _Integer?Positive ] |
-    InfraCotangentBundle[ _Graph, _Integer?Positive ] | InfraDisplacementBundle[ _Graph, _Integer?Positive ] ) ] :=
-  InfraFibration[ InfraTotalSpace @ fib, InfraProjection @ fib ]
-
 (* Materialize a model's total graph once before applying the structural predicates. *)
 
 InfraFiberedGraphQ[ fib : ( InfraTangentBundle[ _Graph, _Integer?Positive ] |

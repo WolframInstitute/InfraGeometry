@@ -24,7 +24,9 @@ RelatedGuides: [EuclideanInfrageometry]
 
 A line is an inextensible shortest path: a shortest path *a = v₀, …, vₖ = b*, *k = d(a, b)*, such that no neighbour of *a* or of *b* lies farther from the other end. The predicate is [InfraInfiniteLineQ]().
 
-A line need not reach the rim: on the mesh it can end at an inner vertex none of whose neighbours is farther from the other end. A line through *p* and *q* passes *p* before *q*. Its ends must be admissible as a pair: an end that is admissible on its own side can fail together with the other end.
+A line need not reach the rim: on the mesh it can end at an inner vertex none of whose neighbours is farther from the other end. A line through *p* and *q* passes *p* before *q*.
+
+A shortest path has no unique line through it: <code>[RandomInfraInfiniteLine]()[*g*, *path*, All]</code> is a family. Its ends are admissible only as a pair: an end that is admissible on its own side can fail together with the other end, so the family is smaller than the product of the two extension sets.
 
 In the plane two points lie on one line. On a graph they lie on many: two vertices at distance 2 lie on 9800 lines of the small square grid and on 210 of the small square mesh.
 
@@ -111,8 +113,14 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small"]}, {p = First @ GraphCenter[
 
 ## Possible Issues
 
+On the 4-cycle the edge 1, 2 extends to 4, 1, 2 and to 1, 2, 3, but not to 4, 1, 2, 3: two lines through one shortest path, and neither contains the other:
+
+```wl
+RandomInfraInfiniteLine[CycleGraph[4], {1, 2}, All]
+```
+
 On the hexagon three lines pass through the edge from 1 to 2, not four. The line can end at 5 on one side and at 4 on the other, but not at both: 5, 6, 1, 2, 3, 4 is not a shortest path:
 
 ```wl
-RandomInfraInfiniteLine[CycleGraph[6], 1, 2, All]
+RandomInfraInfiniteLine[CycleGraph[6], {1, 2}, All]
 ```

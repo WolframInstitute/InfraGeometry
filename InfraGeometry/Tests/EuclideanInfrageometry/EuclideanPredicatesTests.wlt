@@ -75,18 +75,18 @@ VerificationTest[
   TestID -> "InfraSegmentQ-single-vertex"
 ]
 
-(* ===== InfraLineQ ===== *)
+(* ===== InfraInfiniteLineQ ===== *)
 
 VerificationTest[
-  InfraLineQ[PathGraph[Range[5]], {1, 2, 3, 4, 5}],
+  InfraInfiniteLineQ[PathGraph[Range[5]], {1, 2, 3, 4, 5}],
   True,
-  TestID -> "InfraLineQ-maximal-geodesic"
+  TestID -> "InfraInfiniteLineQ-maximal-geodesic"
 ]
 
 VerificationTest[
-  InfraLineQ[PathGraph[Range[5]], {2, 3, 4}],
+  InfraInfiniteLineQ[PathGraph[Range[5]], {2, 3, 4}],
   False,
-  TestID -> "InfraLineQ-extendable-segment"
+  TestID -> "InfraInfiniteLineQ-extendable-segment"
 ]
 
 (* ===== InfraShellQ ===== *)
@@ -514,52 +514,52 @@ VerificationTest[
   TestID -> "InfraPlaneQ-scene-form-stays-inert"
 ]
 
-(* ===== InfraRayQ ===== *)
+(* ===== InfraHalfLineQ ===== *)
 
-(* Every ray RandomInfraRay produces satisfies its own predicate. *)
+(* Every ray RandomInfraHalfLine produces satisfies its own predicate. *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
-    AllTrue[RandomInfraRay[g, 1, 13, All], InfraRayQ[g, #] &]],
+    AllTrue[RandomInfraHalfLine[g, 1, 13, All], InfraHalfLineQ[g, #] &]],
   True,
-  TestID -> "InfraRayQ-RandomInfraRay-roundtrip-grid"
+  TestID -> "InfraHalfLineQ-RandomInfraHalfLine-roundtrip-grid"
 ]
 
 (* Truncating a ray leaves its far end extensible, so it is no longer a ray. *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
-    InfraRayQ[g, Most @ First @ RandomInfraRay[g, 1, 13, All]]],
+    InfraHalfLineQ[g, Most @ First @ RandomInfraHalfLine[g, 1, 13, All]]],
   False,
-  TestID -> "InfraRayQ-truncated-far-end-false"
+  TestID -> "InfraHalfLineQ-truncated-far-end-false"
 ]
 
 (* On a path the whole graph is a ray from either end; a proper initial segment
    is not, because it can still be prolonged. *)
 VerificationTest[
   With[{g = PathGraph[Range[5]]},
-    {InfraRayQ[g, {1, 2, 3, 4, 5}], InfraRayQ[g, {1, 2, 3}]}],
+    {InfraHalfLineQ[g, {1, 2, 3, 4, 5}], InfraHalfLineQ[g, {1, 2, 3}]}],
   {True, False},
-  TestID -> "InfraRayQ-path-whole-vs-initial-segment"
+  TestID -> "InfraHalfLineQ-path-whole-vs-initial-segment"
 ]
 
 (* Inextensibility is required only at the far end: a ray may start anywhere.
    {3, 4, 5} is a geodesic out of 3 whose far end is a leaf. *)
 VerificationTest[
-  InfraRayQ[PathGraph[Range[5]], {3, 4, 5}],
+  InfraHalfLineQ[PathGraph[Range[5]], {3, 4, 5}],
   True,
-  TestID -> "InfraRayQ-origin-need-not-be-peripheral"
+  TestID -> "InfraHalfLineQ-origin-need-not-be-peripheral"
 ]
 
 (* A closed walk round a cycle is not a geodesic, hence not a ray. *)
 VerificationTest[
-  InfraRayQ[CycleGraph[6], {1, 2, 3, 4, 5, 6}],
+  InfraHalfLineQ[CycleGraph[6], {1, 2, 3, 4, 5, 6}],
   False,
-  TestID -> "InfraRayQ-cycle-not-geodesic-false"
+  TestID -> "InfraHalfLineQ-cycle-not-geodesic-false"
 ]
 
 VerificationTest[
-  InfraRayQ[PathGraph[Range[5]], {1}],
+  InfraHalfLineQ[PathGraph[Range[5]], {1}],
   False,
-  TestID -> "InfraRayQ-singleton-false"
+  TestID -> "InfraHalfLineQ-singleton-false"
 ]
 
 (* ===== Predicates accept the shapes their constructors return ===== *)
@@ -570,14 +570,14 @@ VerificationTest[
   With[{g = GridGraph[{5, 5}]},
     {InfraSegmentQ[g, RandomInfraSegment[g, 1, 13, All]],
      InfraSegmentQ[g, RandomInfraSegment[g, 1, 13, All]],
-     InfraLineQ[g, RandomInfraLine[g, 1, 21, All]],
+     InfraInfiniteLineQ[g, RandomInfraInfiniteLine[g, 1, 21, All]],
      InfraShellQ[g, Keys @ InfraMeasurement[ g, InfraShell[ 13, 2 ], "VertexDensity" ]],
      InfraBallQ[g, Keys @ InfraMeasurement[ g, InfraBall[13, 2], "VertexDensity" ]],
      InfraMemberQ[g, InfraQuadric[{11, 15}, {6, 6}], First @ { Keys @ InfraMeasurement[ g, InfraQuadric[{11, 15}, {6, 6}], "VertexDensity" ] }],
      InfraWalkQ[g, Select[ RandomInfraWalk[ g, 1, UpTo[ 6 ], All, Properties -> { "Simple" },
          "StoppingCondition" -> ( Last[ # ] === 13 & ) ], Last @ Last @ VertexList @ # === 13 & ]],
      InfraPlaneQ[g, FindInfraBisectingHyperplane[g, 11, 15], 11, 15],
-     InfraRayQ[g, RandomInfraRay[g, 1, 13, All]],
+     InfraHalfLineQ[g, RandomInfraHalfLine[g, 1, 13, All]],
      InfraParallelQ[g, geodesicGraph @ {1, 2, 3, 4, 5},
        RandomInfraParallel[g, {1, 2, 3, 4, 5}, 6, All]],
      InfraRegularPolygonQ[g, RandomInfraRegularPolygon[g, {1}, 4, 1], {1}],
@@ -639,7 +639,7 @@ VerificationTest[
    rather than passing by virtue of its shape. *)
 VerificationTest[
   With[{g = GridGraph[{5, 5}]},
-    {InfraShellQ[g, {1, 2, 3}], InfraLineQ[g, geodesicGraph @ {1, 2, 3}],
+    {InfraShellQ[g, {1, 2, 3}], InfraInfiniteLineQ[g, geodesicGraph @ {1, 2, 3}],
      InfraParallelQ[g, geodesicGraph @ {1, 2, 3}, geodesicGraph @ {1, 6, 11}],
      InfraRegularPolygonQ[g, { geodesicGraph @ {1, 2, 3} }, {1}],
      InfraMemberQ[g, InfraSolidOfRevolution[{1, 2, 3}, 1], {1, 2}]}],

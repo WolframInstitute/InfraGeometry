@@ -83,13 +83,13 @@ RandomInfraInfiniteLine[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 
 
 RandomInfraInfiniteLine[ graph_Graph, p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ],
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
-    ( ( VertexQ[ graph, p ] || ! MatchQ[ p, _InfraInfiniteLine | _InfraLine ] ) && ( ! ListQ[ p ] || VertexQ[ graph, p ] ) ) :=
+    ( ( VertexQ[ graph, p ] || ! MatchQ[ p, _InfraInfiniteLine ] ) && ( ! ListQ[ p ] || VertexQ[ graph, p ] ) ) :=
   With[ { result = RandomInfraInfiniteLine[ graph, p, q, Infinity, count, opts ] },
     result /; Head[ result ] =!= RandomInfraInfiniteLine ]
 
 RandomInfraInfiniteLine[ graph_Graph, p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ], kspec : ( UpTo[ _Integer?( n |-> n >= 0 ) ] | Infinity ),
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ), opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
-    ( ( VertexQ[ graph, p ] || ! MatchQ[ p, _InfraInfiniteLine | _InfraLine ] ) &&
+    ( ( VertexQ[ graph, p ] || ! MatchQ[ p, _InfraInfiniteLine ] ) &&
     SubsetQ[ First /@ Options[ RandomInfraInfiniteLine ], First /@ { opts } ] &&
     ( ! ListQ[ p ] || VertexQ[ graph, p ] ) &&
     ( count =!= All || OptionValue[ RandomInfraInfiniteLine, { opts }, "NextVertexFunction" ] =!= RandomChoice ) ) :=
@@ -569,7 +569,7 @@ RandomInfraInfiniteLine[ graph_Graph, InfraInfiniteLine[ path_List ], kspec : ( 
   With[ { result = RandomInfraInfiniteLine[ graph, path, kspec, count, opts ] },
     result /; Head[ result ] =!= RandomInfraInfiniteLine ]
 
-RandomInfraInfiniteLine[ graph_Graph, ( InfraInfiniteLine | InfraLine )[ p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ] ],
+RandomInfraInfiniteLine[ graph_Graph, InfraInfiniteLine[ p : Except[ _Rule | _RuleDelayed ], q : Except[ _Rule | _RuleDelayed ] ],
     kspec : ( UpTo[ _Integer?( n |-> n >= 0 ) ] | Infinity ),
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ), opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] :=
   With[ { result = RandomInfraInfiniteLine[ graph, p, q, kspec, count, opts ] },
@@ -603,7 +603,7 @@ RandomInfraInfiniteLine[ graph_Graph, InfraInfiniteLine[ germ : Except[ _Rule | 
       _,         If[ Length @ lines < count, { }, Take[ lines, count ] ] ] ]
 
 RandomInfraInfiniteLine[ graph_Graph,
-    obj : ( InfraInfiniteLine | InfraLine )[ Except[ _Rule | _RuleDelayed ], Except[ _Rule | _RuleDelayed ] ],
+    obj : InfraInfiniteLine[ Except[ _Rule | _RuleDelayed ], Except[ _Rule | _RuleDelayed ] ],
     count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All | Automatic ) : Automatic, opts : OptionsPattern[] ] /; MemberQ[ Flatten @ { opts }, RandomSeeding -> None ] &&
     ( SubsetQ[ First /@ Options[ RandomInfraInfiniteLine ], First /@ { opts } ] &&
     ( OptionValue[ RandomInfraInfiniteLine, { opts }, "NextVertexFunction" ] =!= RandomChoice || count =!= All ) ) :=
@@ -747,14 +747,3 @@ RandomInfraInfiniteLine[ graph_Graph,
       _UpTo,     If[ nextFn === Automatic, members, Take[ members, count ] ],
       _,         If[ Length[ members ] < count, { }, Take[ members, count ] ] ] ]
 
-
-Options[ RandomInfraLine ] = Options[ RandomInfraInfiniteLine ]
-
-RandomInfraLine[ graph_Graph, args___ ] :=
-  RandomInfraInfiniteLine[ graph, args ]
-
-InfraLineQ[ graph_Graph, args___ ] :=
-  InfraInfiniteLineQ[ graph, args ]
-
-RandomInfraInfiniteLine[ graph_Graph, token_InfraLine, args___ ] :=
-  RandomInfraInfiniteLine[ graph, InfraInfiniteLine @@ token, args ]

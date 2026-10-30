@@ -23,7 +23,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  VertexCount @ InfraTotalGraph @ InfraFiberedSubstrate[#, "Small"] & /@ InfraFiberedSubstrate[All],
+  VertexCount @ InfraTotalSpace @ InfraFiberedSubstrate[#, "Small"] & /@ InfraFiberedSubstrate[All],
   {16, 48, 16, 16, 72, 104, 648, 24, 660, 48, 216, 24, 240, 12, 24},
   TestID -> "InfraFiberedSubstrate-small-total-vertex-counts"
 ]
@@ -40,16 +40,16 @@ VerificationTest[
 
 VerificationTest[
   IsomorphicGraphQ @@@ {
-    {InfraBaseGraph @ InfraFiberedSubstrate["CycleProductBundle", "Small"], CycleGraph[8]},
-    {InfraBaseGraph @ InfraFiberedSubstrate["GridProductBundle", "Small"], GridGraph[{4, 4}]},
-    {InfraBaseGraph @ InfraFiberedSubstrate["TriangularTorusDoubleCover", "Small"], TorusTessellation[{6, 6}, "Triangular"]},
-    {InfraBaseGraph @ InfraFiberedSubstrate["BranchedGridFibration", "Small"], GridGraph[{4, 4}]}},
+    {InfraBaseSpace @ InfraFiberedSubstrate["CycleProductBundle", "Small"], CycleGraph[8]},
+    {InfraBaseSpace @ InfraFiberedSubstrate["GridProductBundle", "Small"], GridGraph[{4, 4}]},
+    {InfraBaseSpace @ InfraFiberedSubstrate["TriangularTorusDoubleCover", "Small"], TorusTessellation[{6, 6}, "Triangular"]},
+    {InfraBaseSpace @ InfraFiberedSubstrate["BranchedGridFibration", "Small"], GridGraph[{4, 4}]}},
   {True, True, True, True},
   TestID -> "InfraFiberedSubstrate-literal-bases"
 ]
 
 VerificationTest[
-  {IsomorphicGraphQ[InfraBaseGraph @ InfraFiberedSubstrate["MoebiusLadderCover", 5], CycleGraph[5]],
+  {IsomorphicGraphQ[InfraBaseSpace @ InfraFiberedSubstrate["MoebiusLadderCover", 5], CycleGraph[5]],
     InfraFiberedSubstrate["SphereMeshTangentBundle", 0.5] === InfraFiberedSubstrate["SphereMeshTangentBundle", "Small"]},
   {True, True},
   TestID -> "InfraFiberedSubstrate-raw-size"
@@ -58,17 +58,17 @@ VerificationTest[
 (* ===== the total graphs: the twist is visible in the total graph ===== *)
 
 VerificationTest[
-  {IsomorphicGraphQ[InfraTotalGraph @ InfraFiberedSubstrate["CycleDoubleCover", "Small"], CycleGraph[16]],
-    IsomorphicGraphQ[InfraTotalGraph @ InfraFiberedSubstrate["MoebiusLadderCover", "Small"], CirculantGraph[16, {1, 8}]],
-    IsomorphicGraphQ[InfraTotalGraph @ InfraFiberedSubstrate["CycleProductBundle", "Small"], GraphProduct[CycleGraph[8], PathGraph[{1, 2}], "Cartesian"]],
-    IsomorphicGraphQ[InfraTotalGraph @ InfraFiberedSubstrate["CycleProductBundle", "Small"], InfraTotalGraph @ InfraFiberedSubstrate["MoebiusLadderCover", "Small"]],
-    IsomorphicGraphQ[InfraTotalGraph @ InfraFiberedSubstrate["TriangularTorusDoubleCover", "Small"], TorusTessellation[{12, 6}, "Triangular"]]},
+  {IsomorphicGraphQ[InfraTotalSpace @ InfraFiberedSubstrate["CycleDoubleCover", "Small"], CycleGraph[16]],
+    IsomorphicGraphQ[InfraTotalSpace @ InfraFiberedSubstrate["MoebiusLadderCover", "Small"], CirculantGraph[16, {1, 8}]],
+    IsomorphicGraphQ[InfraTotalSpace @ InfraFiberedSubstrate["CycleProductBundle", "Small"], GraphProduct[CycleGraph[8], PathGraph[{1, 2}], "Cartesian"]],
+    IsomorphicGraphQ[InfraTotalSpace @ InfraFiberedSubstrate["CycleProductBundle", "Small"], InfraTotalSpace @ InfraFiberedSubstrate["MoebiusLadderCover", "Small"]],
+    IsomorphicGraphQ[InfraTotalSpace @ InfraFiberedSubstrate["TriangularTorusDoubleCover", "Small"], TorusTessellation[{12, 6}, "Triangular"]]},
   {True, True, True, False, True},
   TestID -> "InfraFiberedSubstrate-covers-and-products"
 ]
 
 VerificationTest[
-  Union[Length /@ Values @ GroupBy[Values @ InfraFibrationAssociation @ InfraFiberedSubstrate[#, "Small"], Identity]] & /@ {"BranchedCycleFibration", "BranchedGridFibration"},
+  Union[Length /@ Values @ GroupBy[Values @ InfraProjection @ InfraFiberedSubstrate[#, "Small"], Identity]] & /@ {"BranchedCycleFibration", "BranchedGridFibration"},
   {{1, 2}, {1, 2}},
   TestID -> "InfraFiberedSubstrate-branched-fiber-sizes"
 ]
@@ -107,7 +107,7 @@ VerificationTest[
 (* ===== structure and presentation ===== *)
 
 VerificationTest[
-  Union[Options[InfraTotalGraph @ InfraFiberedSubstrate[#, "Small"], VertexCoordinates] & /@ InfraFiberedSubstrate[All]],
+  Union[Options[InfraTotalSpace @ InfraFiberedSubstrate[#, "Small"], VertexCoordinates] & /@ InfraFiberedSubstrate[All]],
   {{VertexCoordinates -> Automatic}},
   TestID -> "InfraFiberedSubstrate-totals-do-not-store-layout"
 ]
@@ -115,9 +115,9 @@ VerificationTest[
 VerificationTest[
   With[{fib = InfraFiberedSubstrate["CycleDoubleCover", "Small"]},
     {Sort[VertexList[InfraFiber[fib, 1]]], EdgeCount[InfraFiber[fib, 1]],
-      Lookup[InfraFibrationAssociation[fib], Key[{1, 2}]],
-      EdgeQ[InfraTotalGraph[fib], UndirectedEdge[{8, 1}, {1, 2}]],
-      EdgeQ[InfraTotalGraph[fib], UndirectedEdge[{8, 1}, {1, 1}]]}],
+      Lookup[InfraProjection[fib], Key[{1, 2}]],
+      EdgeQ[InfraTotalSpace[fib], UndirectedEdge[{8, 1}, {1, 2}]],
+      EdgeQ[InfraTotalSpace[fib], UndirectedEdge[{8, 1}, {1, 1}]]}],
   {{{1, 1}, {1, 2}}, 0, 1, True, False},
   TestID -> "InfraFiberedSubstrate-cover-fibers-and-twist"
 ]

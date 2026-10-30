@@ -205,10 +205,6 @@ PackageExport[InfraUniqueEdgeLiftingQ]
 PackageExport[InfraCoveringQ]
 PackageExport[RandomInfraFiberedGraph]
 
-PackageExport[InfraFibration]
-PackageExport[InfraTotalGraph]
-PackageExport[InfraFibrationAssociation]
-PackageExport[InfraBaseGraph]
 PackageExport[InfraFiber]
 PackageExport[InfraFibers]
 PackageExport[InfraFibrationQ]
@@ -221,14 +217,10 @@ PackageExport[InfraSectionQ]
 PackageExport[InfraContinuousSectionQ]
 PackageExport[InfraParallelSectionQ]
 PackageExport[RandomInfraSection]
-PackageExport[FindInfraSection]
-
 PackageExport[InfraConnection]
 PackageExport[InfraConnectionQ]
 PackageExport[InfraTrivialMonodromyQ]
-PackageExport[InfraFlatConnectionQ]
 PackageExport[RandomInfraConnection]
-PackageExport[FindInfraHorizontalLift]
 PackageExport[InfraHorizontalLift]
 PackageExport[InfraParallelTransport]
 PackageExport[InfraHolonomy]
@@ -339,22 +331,6 @@ PackageExport[FormWedge]
 PackageExport[CochainCup]
 PackageExport[OrderedCochainCup]
 PackageExport[CochainCupOne]
-PackageExport[AntisymmetrizedCup]
-
-PackageExport[InfraRay]
-
-PackageExport[RandomInfraRay]
-
-PackageExport[InfraRayQ]
-
-PackageExport[InfraLine]
-
-PackageExport[RandomInfraLine]
-
-PackageExport[InfraLineQ]
-
-PackageExport[InfraPolygon]
-
 
 
 

@@ -107,8 +107,3 @@ RandomInfraSection[ fib : _[ _Graph, __ ],
       All, sections,
       _UpTo, sections,
       _, If[ Length @ sections < count, { }, sections ] ] /; TrueQ[ search[[ 1, 3 ]] ] ]
-
-FindInfraSection[ fib : _[ _Graph, __ ],
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All ) ] /;
-    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
-  RandomInfraSection[ fib, count, Properties -> { "Continuous" }, "NextVertexFunction" -> Identity, RandomSeeding -> None ]

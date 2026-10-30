@@ -130,6 +130,3 @@ RandomInfraRegularPolygon[ graph_Graph, InfraRegularPolygon[ As_List, n_Integer,
     RandomInfraRegularPolygon[ graph, As, n, count,
       samplerOpts, opts ],
     { legs : { __Graph } :> Most @ Fold[ Join[ #1, Rest @ #2 ] &, TopologicalSort @ First @ legs, TopologicalSort /@ Rest @ legs ], polygons_List :> ( legs |-> Most @ Fold[ Join[ #1, Rest @ #2 ] &, TopologicalSort @ First @ legs, TopologicalSort /@ Rest @ legs ] ) /@ polygons } ]
-
-RandomInfraRegularPolygon[ graph_Graph, token_InfraPolygon, args___ ] :=
-  RandomInfraRegularPolygon[ graph, InfraRegularPolygon @@ token, args ]

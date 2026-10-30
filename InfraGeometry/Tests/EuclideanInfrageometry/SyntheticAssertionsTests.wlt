@@ -197,13 +197,13 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { graph = Graph[ { { p, InfraRay[ 1, 2 ] }, { 3, 4 } }, { UndirectedEdge[ { p, InfraRay[ 1, 2 ] }, { 3, 4 } ] } ], scene = InfraScene[ { p, q }, { q == InfraPoint[ { p, InfraRay[ 1, 2 ] } ] } ] }, ( instance |-> instance[[ 1 ]][ q ] ) /@ RandomInfraSceneInstance[ scene, graph, All, <| p -> 9 |> ] ],
-  { { p, InfraRay[ 1, 2 ] } },
+  With[ { graph = Graph[ { { p, InfraHalfLine[ 1, 2 ] }, { 3, 4 } }, { UndirectedEdge[ { p, InfraHalfLine[ 1, 2 ] }, { 3, 4 } ] } ], scene = InfraScene[ { p, q }, { q == InfraPoint[ { p, InfraHalfLine[ 1, 2 ] } ] } ] }, ( instance |-> instance[[ 1 ]][ q ] ) /@ RandomInfraSceneInstance[ scene, graph, All, <| p -> 9 |> ] ],
+  { { p, InfraHalfLine[ 1, 2 ] } },
   TestID -> "synthetic-t6-label-interior-not-rewritten"
 ]
 
 VerificationTest[
-  With[ { graph = Graph[ { { p, InfraRay[ 1, 2 ] }, { 3, 4 } }, { UndirectedEdge[ { p, InfraRay[ 1, 2 ] }, { 3, 4 } ] } ], scene = InfraScene[ { p, q }, { q == InfraPoint[ { 3, 4 } ], InfraGeometricAssertion[ { q, { p, InfraRay[ 1, 2 ] } }, "Distinct" ] } ] }, Length @ RandomInfraSceneInstance[ scene, graph, All ] ],
+  With[ { graph = Graph[ { { p, InfraHalfLine[ 1, 2 ] }, { 3, 4 } }, { UndirectedEdge[ { p, InfraHalfLine[ 1, 2 ] }, { 3, 4 } ] } ], scene = InfraScene[ { p, q }, { q == InfraPoint[ { 3, 4 } ], InfraGeometricAssertion[ { q, { p, InfraHalfLine[ 1, 2 ] } }, "Distinct" ] } ] }, Length @ RandomInfraSceneInstance[ scene, graph, All ] ],
   1,
   TestID -> "synthetic-t6-assertion-label-interior-not-dependency"
 ]

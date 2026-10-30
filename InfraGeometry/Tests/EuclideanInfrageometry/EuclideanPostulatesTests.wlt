@@ -172,7 +172,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  Sort @ RandomInfraPoint[ PathGraph[ Range[ 6 ] ], InfraLine[ 2, 3 ], All ],
+  Sort @ RandomInfraPoint[ PathGraph[ Range[ 6 ] ], InfraInfiniteLine[ 2, 3 ], All ],
   Range[ 6 ],
   TestID -> "RandomInfraPoint-pool-line"
 ]
@@ -462,7 +462,7 @@ VerificationTest[
   TestID -> "RandomInfraGeodesic-Simple-Minimal-valid-walks"
 ]
 
-(* RandomInfraLine's atoms, members, densities and the C6 compatibility fixture are
+(* RandomInfraInfiniteLine's atoms, members, densities and the C6 compatibility fixture are
    pinned against brute force in InfraLineTests.wlt (EuclideanInertHeads, T3); this
    whole section tested the old Method / Properties / DAG-pool API, since removed. *)
 
@@ -654,7 +654,7 @@ VerificationTest[
   TestID -> "RandomInfraParallel-strict-fails-when-too-few"
 ]
 
-(* All under "Exhaustive" hands back the pool itself, as RandomInfraLine does; its
+(* All under "Exhaustive" hands back the pool itself, as RandomInfraInfiniteLine does; its
    realisations are the parallels -- here the middle row of the 5 x 5 grid, one
    carrier, so the lone bundle stands alone *)
 VerificationTest[
@@ -697,13 +697,13 @@ VerificationTest[
 ]
 
 
-(* RandomInfraLine carries no Method axis any more (EuclideanInertHeads, T3): the count
+(* RandomInfraInfiniteLine carries no Method axis any more (EuclideanInertHeads, T3): the count
    fixes the mode, and its class is pinned against brute force in InfraLineTests.wlt.
    The determinism and BothSides regression guards above stay
    meaningful only for RandomInfraParallel, which the walk-family item left untouched. *)
 
 VerificationTest[
-  With[ { g = GridGraph[ { 6, 6 } ], line = First @ RandomInfraLine[ GridGraph[ { 6, 6 } ], 1, 2, 1 ] },
+  With[ { g = GridGraph[ { 6, 6 } ], line = First @ RandomInfraInfiniteLine[ GridGraph[ { 6, 6 } ], 1, 2, 1 ] },
     RandomInfraParallel[ g, line, 20, 1 ] === RandomInfraParallel[ g, line, 20, 1 ]
   ],
   True,
@@ -711,7 +711,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  With[ { g = GridGraph[ { 6, 6 } ], line = First @ RandomInfraLine[ GridGraph[ { 6, 6 } ], 1, 2, 1, RandomSeeding -> None ] },
+  With[ { g = GridGraph[ { 6, 6 } ], line = First @ RandomInfraInfiniteLine[ GridGraph[ { 6, 6 } ], 1, 2, 1, RandomSeeding -> None ] },
     BlockRandom[ RandomInfraParallel[ g, line, 20, 1, "NextVertexFunction" -> RandomSample, RandomSeeding -> None ], RandomSeeding -> 3 ] ===
       BlockRandom[ RandomInfraParallel[ g, line, 20, 1, "NextVertexFunction" -> RandomSample, RandomSeeding -> None ], RandomSeeding -> 3 ]
   ],
@@ -719,79 +719,79 @@ VerificationTest[
   TestID -> "RandomInfraParallel-RandomSample-seeded-reproducible"
 ]
 
-(* ===== RandomInfraLine[g, segment] overload (the lines through a geodesic, InfraLine[seg]) ===== *)
+(* ===== RandomInfraInfiniteLine[g, segment] overload (the lines through a geodesic, InfraInfiniteLine[seg]) ===== *)
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     With[ { seg = First @ RandomInfraSegment[ g, 1, 6, All ] },
-      With[ { lines = RandomInfraLine[ g, seg, All ] },
+      With[ { lines = RandomInfraInfiniteLine[ g, seg, All ] },
         ListQ[ lines ] && AllTrue[ lines,
           lst |-> Length[ lst ] >= Length[ seg ] && MemberQ[ Partition[ lst, Length @ seg, 1 ], seg ] ]
       ]
     ]
   ],
   True,
-  TestID -> "RandomInfraLine-segment-contains-segment"
+  TestID -> "RandomInfraInfiniteLine-segment-contains-segment"
 ]
 
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     With[ { seg = First @ RandomInfraSegment[ g, 1, 6, All ] },
-      Sort @ RandomInfraLine[ g, seg, All ] ===
-        Sort @ Select[ RandomInfraLine[ g, 1, 6, All ],
+      Sort @ RandomInfraInfiniteLine[ g, seg, All ] ===
+        Sort @ Select[ RandomInfraInfiniteLine[ g, 1, 6, All ],
           lst |-> Length[ lst ] >= Length[ seg ] && MemberQ[ Partition[ lst, Length @ seg, 1 ], seg ] ]
     ]
   ],
   True,
-  TestID -> "RandomInfraLine-segment-matches-endpoint-filtered"
+  TestID -> "RandomInfraInfiniteLine-segment-matches-endpoint-filtered"
 ]
 
 VerificationTest[
   With[ { g = PathGraph[ Range[ 5 ] ] },
-    RandomInfraLine[ g, { 2, 3 }, 1 ] === { { 1, 2, 3, 4, 5 } }
+    RandomInfraInfiniteLine[ g, { 2, 3 }, 1 ] === { { 1, 2, 3, 4, 5 } }
   ],
   True,
-  TestID -> "RandomInfraLine-segment-PathGraph-recovers-full-path"
+  TestID -> "RandomInfraInfiniteLine-segment-PathGraph-recovers-full-path"
 ]
 
 VerificationTest[
-  RandomInfraLine[ PathGraph[ Range[ 5 ] ], { 2, 3 }, 99 ],
+  RandomInfraInfiniteLine[ PathGraph[ Range[ 5 ] ], { 2, 3 }, 99 ],
   { },
-  TestID -> "RandomInfraLine-segment-strict-undersupply-Failed"
+  TestID -> "RandomInfraInfiniteLine-segment-strict-undersupply-Failed"
 ]
 
 
-(* RandomInfraLine carries no "Direction" option any more (EuclideanInertHeads, T3):
-   both the point form and the RandomInfraLine[g, seq] prolongation form always grow
+(* RandomInfraInfiniteLine carries no "Direction" option any more (EuclideanInertHeads, T3):
+   both the point form and the RandomInfraInfiniteLine[g, seq] prolongation form always grow
    from both ends, and there is no ::baddirection message left to raise. *)
 
 
-(* ===== The extensions of a geodesic: InfraLine[germ] and RandomInfraGeodesic at scale Infinity ===== *)
+(* ===== The extensions of a geodesic: InfraInfiniteLine[germ] and RandomInfraGeodesic at scale Infinity ===== *)
 
-(* the line through a germ: InfraLine[seg] spreads to RandomInfraLine, on a walk germ and on a geodesic-DAG germ *)
+(* the line through a germ: InfraInfiniteLine[seg] spreads to RandomInfraInfiniteLine, on a walk germ and on a geodesic-DAG germ *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     With[ { seg = InfraMeasurement[ g, InfraSegment[ 1, 11 ], "Graph" ] },
-      Sort @ infraSpread @ InfraMeasurement[ g, InfraLine[ { 6, 7 } ], "Graph" ] ===
-        Sort @ RandomInfraLine[ g, 6, 7, All ] &&
-      Sort @ infraSpread @ InfraMeasurement[ g, InfraLine[ seg ], "Graph" ] ===
-        Sort @ RandomInfraLine[ g, 1, 11, All ]
+      Sort @ infraSpread @ InfraMeasurement[ g, InfraInfiniteLine[ { 6, 7 } ], "Graph" ] ===
+        Sort @ RandomInfraInfiniteLine[ g, 6, 7, All ] &&
+      Sort @ infraSpread @ InfraMeasurement[ g, InfraInfiniteLine[ seg ], "Graph" ] ===
+        Sort @ RandomInfraInfiniteLine[ g, 1, 11, All ]
     ]
   ],
   True,
-  TestID -> "InfraLine-germ-is-RandomInfraLine"
+  TestID -> "InfraInfiniteLine-germ-is-RandomInfraInfiniteLine"
 ]
 
-(* a bent germ keeps its own edges in the middle, so it has fewer lines than its ends; a vertex germ, also a list-labelled one, is InfraLine[p, p] *)
+(* a bent germ keeps its own edges in the middle, so it has fewer lines than its ends; a vertex germ, also a list-labelled one, is InfraInfiniteLine[p, p] *)
 VerificationTest[
   With[ { g = GridGraph[ { 7, 7 } ], torus = InfraSubstrate[ "SquareTorusGraph", "Small" ] },
-    { Length @ InfraMeasurement[ g, InfraLine[ { 16, 23, 24 } ], "Graph" ],
-      InfraMeasurement[ g, InfraLine[ { 16, 23, 24 } ], "Cardinality" ] < InfraMeasurement[ g, InfraLine[ 16, 24 ], "Cardinality" ],
-      Sort @ infraSpread @ InfraMeasurement[ g, InfraLine[ 25 ], "Graph" ] === Sort @ infraSpread @ InfraMeasurement[ g, InfraLine[ 25, 25 ], "Graph" ],
-      Sort @ infraSpread @ InfraMeasurement[ torus, InfraLine[ { 1, 1 } ], "Graph" ] ===
-        Sort @ infraSpread @ InfraMeasurement[ torus, InfraLine[ { 1, 1 }, { 1, 1 } ], "Graph" ] } ],
+    { Length @ InfraMeasurement[ g, InfraInfiniteLine[ { 16, 23, 24 } ], "Graph" ],
+      InfraMeasurement[ g, InfraInfiniteLine[ { 16, 23, 24 } ], "Cardinality" ] < InfraMeasurement[ g, InfraInfiniteLine[ 16, 24 ], "Cardinality" ],
+      Sort @ infraSpread @ InfraMeasurement[ g, InfraInfiniteLine[ 25 ], "Graph" ] === Sort @ infraSpread @ InfraMeasurement[ g, InfraInfiniteLine[ 25, 25 ], "Graph" ],
+      Sort @ infraSpread @ InfraMeasurement[ torus, InfraInfiniteLine[ { 1, 1 } ], "Graph" ] ===
+        Sort @ infraSpread @ InfraMeasurement[ torus, InfraInfiniteLine[ { 1, 1 }, { 1, 1 } ], "Graph" ] } ],
   { 1, True, True, True },
-  TestID -> "InfraLine-germ-bent-and-vertex"
+  TestID -> "InfraInfiniteLine-germ-bent-and-vertex"
 ]
 
 (* a budget of no edge is the bundle itself: all six geodesics from 1 to 11 *)
@@ -835,7 +835,7 @@ VerificationTest[
    the budget on each side, for a budget UpTo[k], an exact {k} and a range *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ], seed = { 6, 7 } },
-    { lines = RandomInfraLine[ g, seed, All ] },
+    { lines = RandomInfraInfiniteLine[ g, seed, All ] },
     { cut = { lo, hi } |-> Union @ Select[
         Map[ line |-> With[ { pos = First @ SequencePosition[ line, seed ] },
             Take[ line, { Max[ 1, pos[[ 1 ]] - hi ], Min[ Length @ line, pos[[ 2 ]] + hi ] } ] ], lines ],
@@ -850,7 +850,7 @@ VerificationTest[
 
 VerificationTest[
   With[ { g = PathGraph[ Range[ 5 ] ], seed = { 4, 5 } },
-    { lines = RandomInfraLine[ g, seed, All ] },
+    { lines = RandomInfraInfiniteLine[ g, seed, All ] },
     { cut = { lo, hi } |-> Union @ Select[
         Map[ line |-> With[ { pos = First @ SequencePosition[ line, seed ] },
             Take[ line, { Max[ 1, pos[[ 1 ]] - hi ], Min[ Length @ line, pos[[ 2 ]] + hi ] } ] ], lines ],
@@ -870,20 +870,20 @@ VerificationTest[
       Sort @ walkSeqs @ RandomInfraGeodesic[ g, seg, Infinity, UpTo[ 1 ], All, "Direction" -> "BothSides" ] ===
         Sort @ Union @ Catenate[ walkSeqs @ RandomInfraGeodesic[ g, #, Infinity, UpTo[ 1 ], All,
             "Direction" -> "BothSides" ] & /@ infraSpread @ seg ] &&
-      Sort @ infraSpread @ InfraMeasurement[ g, InfraLine[ seg ], "Graph" ] ===
-        Sort @ Union @ Catenate[ RandomInfraLine[ g, #, All ] & /@ infraSpread @ seg ]
+      Sort @ infraSpread @ InfraMeasurement[ g, InfraInfiniteLine[ seg ], "Graph" ] ===
+        Sort @ Union @ Catenate[ RandomInfraInfiniteLine[ g, #, All ] & /@ infraSpread @ seg ]
     ]
   ],
   True,
-  TestID -> "InfraLine-bundle-germ-spreads-to-its-geodesics"
+  TestID -> "InfraInfiniteLine-bundle-germ-spreads-to-its-geodesics"
 ]
 
-(* on C_6 through the edge 1-2 the ends interact: a budget of 2 already buys all three lines, the atoms of InfraLine[{1, 2}] *)
+(* on C_6 through the edge 1-2 the ends interact: a budget of 2 already buys all three lines, the atoms of InfraInfiniteLine[{1, 2}] *)
 VerificationTest[
-  { Sort @ infraSpread @ InfraMeasurement[ CycleGraph[ 6 ], InfraLine[ { 1, 2 } ], "Graph" ],
+  { Sort @ infraSpread @ InfraMeasurement[ CycleGraph[ 6 ], InfraInfiniteLine[ { 1, 2 } ], "Graph" ],
     Sort @ walkSeqs @ RandomInfraGeodesic[ CycleGraph[ 6 ], { 1, 2 }, Infinity, UpTo[ 2 ], All, "Direction" -> "BothSides" ] },
   { Sort @ { { 6, 1, 2, 3 }, { 1, 2, 3, 4 }, { 5, 6, 1, 2 } }, Sort @ { { 6, 1, 2, 3 }, { 1, 2, 3, 4 }, { 5, 6, 1, 2 } } },
-  TestID -> "InfraLine-germ-C6-compatibility"
+  TestID -> "InfraInfiniteLine-germ-C6-compatibility"
 ]
 
 (* "Direction": only past the right end, only past the left end *)
@@ -909,23 +909,23 @@ VerificationTest[
 (* the line atoms carry the family by DP -- one atom per admissible end pair, count, occupation, lengths and ends without enumeration *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    With[ { pool = InfraMeasurement[ g, InfraLine[ { 6, 7 } ], "Graph" ] },
+    With[ { pool = InfraMeasurement[ g, InfraInfiniteLine[ { 6, 7 } ], "Graph" ] },
       MatchQ[ pool, { _Graph, __Graph } ] &&
       Total[ Max @ InfraMeasurement[ g, #, "VertexDensity" ] & /@ pool ] === Length @ infraSpread @ pool &&
-      InfraMeasurement[ g, InfraLine[ { 6, 7 } ], "Cardinality" ] === Length @ infraSpread @ pool &&
+      InfraMeasurement[ g, InfraInfiniteLine[ { 6, 7 } ], "Cardinality" ] === Length @ infraSpread @ pool &&
       Total @ InfraMeasurement[ g, pool, "VertexDensity" ] === Total[ Length /@ infraSpread @ pool ] &&
       Sort @ Union[ First /@ infraSpread @ pool ] === { 1, 13 } &&
       Sort @ Union[ Last /@ infraSpread @ pool ] === { 4, 16 }
     ]
   ],
   True,
-  TestID -> "InfraLine-germ-DP-counts-match-enumeration"
+  TestID -> "InfraInfiniteLine-germ-DP-counts-match-enumeration"
 ]
 
 (* the longest lines are a selection on the atoms, and keep the atom form *)
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
-    With[ { pool = InfraMeasurement[ g, InfraLine[ { 6, 7 } ], "Graph" ] },
+    With[ { pool = InfraMeasurement[ g, InfraInfiniteLine[ { 6, 7 } ], "Graph" ] },
       With[ { longest = SelectInfraWalk[ g, pool, All, "From" -> "MaxLength" ] },
         MatchQ[ longest, _Graph | { __Graph } ] &&
         Sort @ infraSpread @ longest === Sort @ MaximalBy[ infraSpread @ pool, Length ]
@@ -933,7 +933,7 @@ VerificationTest[
     ]
   ],
   True,
-  TestID -> "InfraLine-germ-longest-by-SelectInfraWalk"
+  TestID -> "InfraInfiniteLine-germ-longest-by-SelectInfraWalk"
 ]
 
 (* the count contract: count-less is one witness of the class, UpTo is soft, a strict n fails on under-supply *)
@@ -978,28 +978,28 @@ VerificationTest[
    enumeration, never invents realisations) *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
-    With[ { family = RandomInfraLine[ g, 1, 9, All ] },
-      MemberQ[ family, First @ RandomInfraLine[ g, 1, 9, 1 ] ] &&
-        SubsetQ[ family, RandomInfraLine[ g, 1, 9, UpTo[ 3 ] ] ] ]
+    With[ { family = RandomInfraInfiniteLine[ g, 1, 9, All ] },
+      MemberQ[ family, First @ RandomInfraInfiniteLine[ g, 1, 9, 1 ] ] &&
+        SubsetQ[ family, RandomInfraInfiniteLine[ g, 1, 9, UpTo[ 3 ] ] ] ]
   ],
   True,
-  TestID -> "RandomInfraLine-cap-subset-of-family"
+  TestID -> "RandomInfraInfiniteLine-cap-subset-of-family"
 ]
 
 VerificationTest[
-  Length @ RandomInfraLine[ GridGraph[ { 3, 3 } ], 1, 9, 3 ],
+  Length @ RandomInfraInfiniteLine[ GridGraph[ { 3, 3 } ], 1, 9, 3 ],
   3,
-  TestID -> "RandomInfraLine-strict-count-exact"
+  TestID -> "RandomInfraInfiniteLine-strict-count-exact"
 ]
 
 (* the diameter lines through opposite corners are the longest ones, a selection on the pool *)
 VerificationTest[
   With[ { g = GridGraph[ { 3, 3 } ] },
-    With[ { longest = SelectInfraWalk[ g, RandomInfraLine[ g, 1, 9, All ], All, "From" -> "MaxLength" ] },
+    With[ { longest = SelectInfraWalk[ g, RandomInfraInfiniteLine[ g, 1, 9, All ], All, "From" -> "MaxLength" ] },
       AllTrue[ longest, Length[ # ] - 1 == GraphDiameter[ g ] & ] ]
   ],
   True,
-  TestID -> "RandomInfraLine-diameter-lines-by-MaxLength"
+  TestID -> "RandomInfraInfiniteLine-diameter-lines-by-MaxLength"
 ]
 
 EndTestSection[]

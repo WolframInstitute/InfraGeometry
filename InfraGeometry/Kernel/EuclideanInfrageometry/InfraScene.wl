@@ -36,9 +36,7 @@ sceneAssertionRules[ graph_ ] :=
     InfraPlaneQ[ h_, p1_, p2_ ]  :> InfraPlaneQ[ graph, h, p1, p2 ],
     InfraCircleQ[ c_ ]           :> InfraCircleQ[ graph, c ],
     InfraInfiniteLineQ[ s_ ]             :> InfraInfiniteLineQ[ graph, s ],
-    InfraLineQ[ s_ ] :> InfraInfiniteLineQ[ graph, s ],
     InfraHalfLineQ[ s_ ] :> InfraHalfLineQ[ graph, s ],
-    InfraRayQ[ s_ ] :> InfraHalfLineQ[ graph, s ],
     InfraParallelQ[ l1_, l2_ ]   :> InfraParallelQ[ graph, l1, l2 ],
     InfraIntersectQ[ s1_, s2_ ]  :> IntersectingQ[ s1, s2 ],
     InfraRegularPolygonQ[ c_, as_ ] :> InfraRegularPolygonQ[ graph, c, as ],
@@ -66,8 +64,8 @@ constructionPatternQ[ objects_List, h_ ] :=
     ( AnyTrue[ objects, object |-> object === key ] ||
       ( ListQ[ key ] && key =!= { } && AllTrue[ key, target |-> AnyTrue[ objects, object |-> object === target ] ] &&
         ! MatchQ[ rhs, _InfraMidpoint | _InfraRegionNearest ] ) ) &&
-    MatchQ[ rhs, ( InfraPoint | InfraSegment | InfraHalfLine | InfraRay | InfraInfiniteLine | InfraLine |
-      InfraCircle | InfraCircleThrough | InfraArc | InfraRegularPolygon | InfraPolygon | InfraPlane | InfraBall | InfraShell | InfraSphere |
+    MatchQ[ rhs, ( InfraPoint | InfraSegment | InfraHalfLine | InfraInfiniteLine |
+      InfraCircle | InfraCircleThrough | InfraArc | InfraRegularPolygon | InfraPlane | InfraBall | InfraShell | InfraSphere |
       InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution | InfraBallHull | InfraConvexHull | InfraQuadric |
       InfraWalk | InfraGeodesic | InfraEllipse | InfraIntersection | InfraUnion |
       InfraMidpoint | InfraPerpendicularBisector | InfraEquidistantSet | InfraRegionNearest )[ ___ ] ] ]
@@ -116,10 +114,10 @@ selectContext[ graph_Graph, InfraArc[ c_, { p_, ___, p_ } | { p_ }, opts___Rule 
 selectContext[ _Graph, InfraArc[ _, pts_List, ___ ] ] :=
   <| "Endpoints" -> { First @ pts, Last @ pts } |>
 
-selectContext[ _Graph, ( InfraInfiniteLine | InfraLine )[ path_List, ___ ] ] :=
+selectContext[ _Graph, InfraInfiniteLine[ path_List, ___ ] ] :=
   <| "Endpoints" -> { First @ path, Last @ path } |>
 
-selectContext[ _Graph, ( InfraSegment | InfraHalfLine | InfraRay | InfraInfiniteLine | InfraLine | InfraPlane )[ p1_, p2_, ___ ] ] :=
+selectContext[ _Graph, ( InfraSegment | InfraHalfLine | InfraInfiniteLine | InfraPlane )[ p1_, p2_, ___ ] ] :=
   <| "Endpoints" -> { p1, p2 } |>
 
 selectContext[ _, _ ] :=
@@ -286,13 +284,10 @@ RandomInfraSceneInstance[ scene_InfraScene, graph_Graph,
         token_InfraGeodesic :> RandomInfraGeodesic[ graph, token, All, RandomSeeding -> None ],
         token_InfraEllipse :> RandomInfraEllipse[ graph, token, All, RandomSeeding -> None ],
         token_InfraIntersection :> { Keys @ InfraMeasurement[ graph, token, "VertexDensity" ] },
-        token_InfraUnion :> { Keys @ InfraMeasurement[ graph, token, "VertexDensity" ] },
-        token_InfraRay :> RandomInfraHalfLine[ graph, token, All, RandomSeeding -> None ],
-        token_InfraLine :> RandomInfraInfiniteLine[ graph, token, All, RandomSeeding -> None ],
-        token_InfraPolygon :> RandomInfraRegularPolygon[ graph, token, All, RandomSeeding -> None ] } ] ] },
+        token_InfraUnion :> { Keys @ InfraMeasurement[ graph, token, "VertexDensity" ] } } ] ] },
       If[ ListQ[ members ],
         capBranches[ applySelectOption[ graph, members, Lookup[ settings, "Select", None ],
-          MatchQ[ token, ( InfraCircle | InfraCircleThrough | InfraRegularPolygon | InfraPolygon )[ __ ] | InfraArc[ _, { p_, ___, p_ } | { _ }, ___ ] ],
+          MatchQ[ token, ( InfraCircle | InfraCircleThrough | InfraRegularPolygon )[ __ ] | InfraArc[ _, { p_, ___, p_ } | { _ }, ___ ] ],
           selectContext[ graph, token ] ], Lookup[ settings, "Branches", All ] ], members ] ] },
     { keys = Catenate @ Map[
         step |-> With[ { effective = Select[ step, ! KeyExistsQ[ init, # ] & ] },

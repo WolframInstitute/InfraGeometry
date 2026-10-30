@@ -61,8 +61,8 @@ VerificationTest[
 VerificationTest[
   With[ { graph = CycleGraph[ 8 ] },
     { IntervalGraph[ graph, 1, 5 ] === InfraMeasurement[ graph, InfraSegment[ 1, 5 ], "Graph" ],
-      RayGraph[ graph, 1, 2 ] === InfraMeasurement[ graph, InfraRay[ 1, 2 ], "Graph" ],
-      BeamGraph[ graph, 1, 2 ] === InfraMeasurement[ graph, InfraLine[ 1, 2 ], "Graph" ],
+      RayGraph[ graph, 1, 2 ] === InfraMeasurement[ graph, InfraHalfLine[ 1, 2 ], "Graph" ],
+      BeamGraph[ graph, 1, 2 ] === InfraMeasurement[ graph, InfraInfiniteLine[ 1, 2 ], "Graph" ],
       ArcGraph[ graph, 1, { 3, 7 }, "RadiusDelta" -> 2 ] ===
         InfraMeasurement[ graph, InfraArc[ 1, { 3, 7 }, "RadiusDelta" -> 2 ], "Graph" ] } ],
   { True, True, True, True },

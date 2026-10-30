@@ -225,7 +225,7 @@ VerificationTest[
 
 VerificationTest[
 	With[ { graph = PathGraph[ Range[ 5 ] ] },
-		{ BallCoverNumber[ graph, 1, InfraHalfLine[ 2, 3 ] ], BallCoverNumber[ graph, 1, InfraRay[ 2, 3 ] ],
+		{ BallCoverNumber[ graph, 1, InfraHalfLine[ 2, 3 ] ], BallCoverNumber[ graph, 1, InfraHalfLine[ 2, 3 ] ],
 			MatchQ[ FindBallCover[ graph, 1, unknownRegion[ 2 ] ], _FindBallCover ] } ],
 	{ 2, 2, True },
 	TestID -> "BallCover-readable-regions-and-unknown-head"

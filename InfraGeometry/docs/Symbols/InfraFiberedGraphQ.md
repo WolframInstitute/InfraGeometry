@@ -28,7 +28,6 @@ Accepted heads:
 | Head | Object |
 |---|---|
 | [InfraFiberedGraph]() | a fibered graph |
-| [InfraFibration]() | the same, older name |
 | [InfraTangentBundle](), [InfraCotangentBundle](), [InfraDisplacementBundle]() | a construction over a graph |
 
 The empty graph with the empty projection is a fibered graph.

@@ -19,10 +19,10 @@ InfraScenePlot[ scene_InfraScene, graph_Graph, InfraSceneInstance[ bindings_Asso
 					MatchQ[ expression, _InfraPerpendicularBisector | _InfraEquidistantSet | _InfraPlane | _InfraBall | _InfraShell | _InfraSphere | _InfraTube | _InfraCylinder |
 						_InfraCone | _InfraSolidOfRevolution | _InfraBallHull | _InfraConvexHull | _InfraQuadric | _InfraIntersection | _InfraUnion ], "VertexSet",
 					MatchQ[ expression, _InfraEllipse ], "Graph",
-					MatchQ[ expression, _InfraCircle | _InfraCircleThrough | _InfraRegularPolygon | _InfraPolygon | InfraArc[ _, { p_, ___, p_ } | { _ }, ___ ] ], "Cycle",
-					MatchQ[ expression, _InfraSegment | _InfraHalfLine | _InfraRay | _InfraInfiniteLine | _InfraLine | _InfraArc | _InfraWalk | _InfraGeodesic ], "Walk",
+					MatchQ[ expression, _InfraCircle | _InfraCircleThrough | _InfraRegularPolygon | InfraArc[ _, { p_, ___, p_ } | { _ }, ___ ] ], "Cycle",
+					MatchQ[ expression, _InfraSegment | _InfraHalfLine | _InfraInfiniteLine | _InfraArc | _InfraWalk | _InfraGeodesic ], "Walk",
 					True, "Exact" ] ] ], scene[ "Constructions" ] ];
-		geometryHeads = { InfraWalk, InfraSegment, InfraHalfLine, InfraRay, InfraInfiniteLine, InfraLine, InfraCircle, InfraCircleThrough, InfraArc,
+		geometryHeads = { InfraWalk, InfraSegment, InfraHalfLine, InfraInfiniteLine, InfraCircle, InfraCircleThrough, InfraArc,
 			InfraMidpoint, InfraPerpendicularBisector, InfraEquidistantSet, InfraRegionNearest, InfraBall, InfraShell, InfraSphere, InfraTube,
 			InfraCylinder, InfraCone, InfraSolidOfRevolution, InfraBallHull, InfraConvexHull, InfraQuadric, InfraIntersection, InfraUnion,
 			InfraGeodesic, InfraEllipse };

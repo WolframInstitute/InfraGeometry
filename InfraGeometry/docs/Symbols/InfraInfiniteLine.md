@@ -38,7 +38,7 @@ The line through two points is not unique. On the square grid it is a large fami
 
 The DAGs are not merged: their union can carry paths that are not shortest paths.
 
-A line through *p* and *q* contains exactly one shortest path from *p* to *q*. So the line through *p* and *q* is the disjoint union of the lines through its germs, and the germ form keeps one of them. <code>[InfraInfiniteLine]()[*p*, *p*]</code> is every inextensible shortest path through *p*, once in each direction.
+A line through *p* and *q* contains exactly one shortest path from *p* to *q*, so the line through *p* and *q* is the disjoint union of the lines through its germs. A germ has no unique line through it either: <code>[InfraInfiniteLine]()[*germ*]</code> is still a family. The two ends of a line are admissible only as a pair, so the family is smaller than the product of the two extension sets. On the 4-cycle the edge 1, 2 extends to 4, 1, 2 and to 1, 2, 3, but not to 4, 1, 2, 3. <code>[InfraInfiniteLine]()[*p*, *p*]</code> is every inextensible shortest path through *p*, once in each direction.
 
 In an [InfraScene](), <code>[InfraInfiniteLine]()[*p*, *q*]</code> is the line through the points *p* and *q*.
 
@@ -103,11 +103,17 @@ RandomInfraInfiniteLine[PathGraph[Range[5]], InfraInfiniteLine[3, 3], All]
 
 ## Properties and Relations
 
-On the 6-cycle the line through an edge has three members, one per DAG:
+On the 6-cycle the line through the edge 1, 2 has three members, one per DAG. Each side alone extends to two vertices, but the far pair 5, 4 is adjacent, so three lines, not four:
 
 ```wl
 With[{g = CycleGraph[6]}, {dags = InfraMeasurement[g, InfraInfiniteLine[1, 2], "Graph"]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {dag, 1, 2}], {dag, dags}]]
+```
+
+The same three lines, as members of the germ form:
+
+```wl
+RandomInfraInfiniteLine[CycleGraph[6], InfraInfiniteLine[{1, 2}], All]
 ```
 
 The union of the three DAGs carries the path 5, 6, 1, 2, 3, 4 from 5 to 4, which is no shortest path:
@@ -125,4 +131,12 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}
   {tails = Union[Drop[#, First @ FirstPosition[#, p] - 1] & /@ RandomInfraInfiniteLine[g, InfraInfiniteLine[p, q], All]]},
   {rays = RandomInfraHalfLine[g, InfraHalfLine[p, q], All]},
   {SubsetQ[tails, rays], Length[rays], Length[tails]}]
+```
+
+## Possible Issues
+
+A shortest path has no unique line through it. On the 4-cycle the edge 1, 2 lies on two lines, and neither contains the other:
+
+```wl
+RandomInfraInfiniteLine[CycleGraph[4], InfraInfiniteLine[{1, 2}], All]
 ```

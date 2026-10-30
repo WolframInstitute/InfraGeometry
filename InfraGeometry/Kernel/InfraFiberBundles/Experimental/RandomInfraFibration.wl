@@ -53,4 +53,4 @@ RandomInfraFibration[ base_Graph, opts : OptionsPattern[] ] /; MemberQ[ Flatten 
                   Length[ source ] Length[ target ] ] },
                 residue < density Max[ Length[ source ], Length[ target ] ] ] & ] ] ], EdgeList[ base ] ] },
     { vertices = Catenate[ Values[ fibers ] ] },
-    InfraFibration[ Graph[ vertices, Join[ vertical, horizontal ] ], AssociationMap[ First, vertices ] ] ]
+    InfraFiberedGraph[ Graph[ vertices, Join[ vertical, horizontal ] ], AssociationMap[ First, vertices ] ] ]

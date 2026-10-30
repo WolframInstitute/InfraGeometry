@@ -231,11 +231,3 @@ InfraMeasurement[ graph_Graph, obj : InfraIntersection[ __ ], All ] :=
 InfraMeasurement[ graph_Graph, obj : InfraUnion[ __ ], All ] :=
   InfraMeasurement[ graph, obj,
     { "VertexDensity", "EdgeDensity", "Subgraph", "CountingMeasure", "RiemannianMeasure" } ]
-
-InfraMeasurement[ graph_Graph, token : _InfraRay | _InfraLine | _InfraPolygon, property_ ] :=
-  InfraMeasurement[ graph, Replace[ token, { InfraRay[ args___ ] :> InfraHalfLine[ args ],
-    InfraLine[ args___ ] :> InfraInfiniteLine[ args ], InfraPolygon[ args___ ] :> InfraRegularPolygon[ args ] } ], property ]
-
-InfraMemberQ[ graph_Graph, token : _InfraRay | _InfraLine | _InfraPolygon, representative_ ] :=
-  InfraMemberQ[ graph, Replace[ token, { InfraRay[ args___ ] :> InfraHalfLine[ args ],
-    InfraLine[ args___ ] :> InfraInfiniteLine[ args ], InfraPolygon[ args___ ] :> InfraRegularPolygon[ args ] } ], representative ]

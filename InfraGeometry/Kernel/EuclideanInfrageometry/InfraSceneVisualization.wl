@@ -321,7 +321,7 @@ infraInk[ graph_Graph, x_ ] :=
       ( InfraTube | InfraCylinder | InfraCone | InfraSolidOfRevolution )[ _, _, ___Rule ] |
       ( InfraBallHull | InfraConvexHull | InfraQuadric )[ _, ___ ] | InfraIntersection[ __ ] ],
       <| "VertexDensity" -> InfraMeasurement[ graph, x, "VertexDensity" ], "EdgeDensity" -> <| |>, "Walk" -> None, "Knots" -> { } |>,
-    MatchQ[ x, ( InfraSegment | InfraHalfLine | InfraRay | InfraInfiniteLine | InfraLine | InfraCircle | InfraCircleThrough | InfraArc |
+    MatchQ[ x, ( InfraSegment | InfraHalfLine | InfraInfiniteLine | InfraCircle | InfraCircleThrough | InfraArc |
         InfraGeodesic | InfraEllipse )[ __ ] ],
       With[ {
           edges  = KeySort @ GroupBy[ Normal @ InfraMeasurement[ graph, x, "EdgeDensity" ],
@@ -350,10 +350,7 @@ infraInk[ graph_Graph, x_ ] :=
         token_InfraGeodesic :> RandomInfraGeodesic[ graph, token, All, RandomSeeding -> None ],
         token_InfraEllipse :> VertexList /@ RandomInfraEllipse[ graph, token, All, RandomSeeding -> None ],
         token_InfraIntersection :> { Keys @ InfraMeasurement[ graph, token, "VertexDensity" ] },
-        token_InfraUnion :> { Keys @ InfraMeasurement[ graph, token, "VertexDensity" ] },
-        token_InfraRay :> RandomInfraHalfLine[ graph, token, All, RandomSeeding -> None ],
-        token_InfraLine :> RandomInfraInfiniteLine[ graph, token, All, RandomSeeding -> None ],
-        token_InfraPolygon :> RandomInfraRegularPolygon[ graph, token, All, RandomSeeding -> None ] } ], None ], None ] },
+        token_InfraUnion :> { Keys @ InfraMeasurement[ graph, token, "VertexDensity" ] } } ], None ], None ] },
         <| "VertexDensity" -> If[ MatchQ[ x, InfraSegment[ p_, q__, p_ ] /; AnyTrue[ { q }, # =!= p & ] ],
                KeySort @ DeleteCases[ 0 ] @ Merge[
                  { InfraMeasurement[ graph, x, "VertexDensity" ], <| First @ x -> - InfraMeasurement[ graph, x, "Cardinality" ] |> },

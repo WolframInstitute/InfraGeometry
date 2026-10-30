@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraTotalSpace
 Keywords: [total space, total graph, fibered graph]
-SeeAlso: [InfraFiberedGraph, InfraBaseSpace, InfraProjection, InfraTotalGraph, InfraFiberedGraphHighlight]
+SeeAlso: [InfraFiberedGraph, InfraBaseSpace, InfraProjection, InfraFiberedGraphHighlight]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
 ---
@@ -23,7 +23,6 @@ An edge of *E* is vertical when it lies in one fiber and transverse when it join
 
 For <code>[InfraFiberedGraph]()[*E*, *π*]</code> the result is *E*; the projection is not checked, [InfraFiberedGraphQ]() checks it. For [InfraTangentBundle](), [InfraCotangentBundle]() and [InfraDisplacementBundle]() the total graph is built from the base on every call; <code>[InfraFiberedGraph]()[*fib*]</code> builds it once.
 
-[InfraTotalGraph]() is the older name.
 
 ## Basic Examples
 

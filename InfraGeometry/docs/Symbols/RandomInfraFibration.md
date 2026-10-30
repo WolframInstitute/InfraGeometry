@@ -6,14 +6,14 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/RandomInfraFibration
 Keywords: [random fibration, random fibered graph, fiber]
-SeeAlso: [RandomInfraFiberedGraph, InfraFiberedGraph, InfraFibration, InfraFibrationQ, InfraFiberBundleQ, InfraFiberedSubstrate, RandomInfraSection, RandomInfraConnection]
+SeeAlso: [RandomInfraFiberedGraph, InfraFiberedGraph, InfraFibrationQ, InfraFiberBundleQ, InfraFiberedSubstrate, RandomInfraSection, RandomInfraConnection]
 RelatedGuides: [InfraFiberBundles, Experimental]
 RelatedTutorials: [ExperimentalInfraBundles]
 ---
 
 ## Usage
 
-<code>[RandomInfraFibration]()[*base*]</code> gives a random [InfraFibration]() whose base is the graph *base*.
+<code>[RandomInfraFibration]()[*base*]</code> gives a random [InfraFiberedGraph]() whose base is the graph *base*.
 
 ## Details & Options
 

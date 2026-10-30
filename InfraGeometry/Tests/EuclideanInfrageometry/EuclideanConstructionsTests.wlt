@@ -86,7 +86,7 @@ VerificationTest[
   FindClosestInfraPoint[GridGraph[{5, 5}],
     geodesicGraph @ {1, 2, 3, 4, 5}, 13, All],
   { 3 },
-  TestID -> "FindClosestInfraPoint-grid-InfraLine"
+  TestID -> "FindClosestInfraPoint-grid-InfraInfiniteLine"
 ]
 
 VerificationTest[

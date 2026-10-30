@@ -133,7 +133,7 @@ VerificationTest[
      {InfraConnectionQ[fib, conn], Counts[Length[InfraParallelTransport[fib, conn, List @@ #]] & /@ EdgeList[g]]}],
    With[{fib = InfraDisplacementBundle[TorusTessellation[{6, 6}, "Square"], 1]},
      {conn = FindInfraLeviCivitaConnection[fib]},
-     {InfraConnectionQ[fib, conn], InfraFlatConnectionQ[fib, conn]}]},
+     {InfraConnectionQ[fib, conn], InfraTrivialMonodromyQ[fib, conn]}]},
   {{False, <|6 -> 96, 2 -> 12|>}, {True, True}},
   TestID -> "FindInfraLeviCivitaConnection-tori"
 ]
@@ -167,7 +167,7 @@ VerificationTest[
   With[{oct = EdgeDelete[CompleteGraph[6], {1 \[UndirectedEdge] 4, 2 \[UndirectedEdge] 5, 3 \[UndirectedEdge] 6}]},
     {fib = InfraDisplacementBundle[oct, 1]},
     {conn = FindInfraLeviCivitaConnection[fib]},
-    {Head @ conn, InfraConnectionQ[fib, conn], InfraFlatConnectionQ[fib, conn], Length @ InfraParallelTransport[fib, conn, {1, 2, 3, 1}]}],
+    {Head @ conn, InfraConnectionQ[fib, conn], InfraTrivialMonodromyQ[fib, conn], Length @ InfraParallelTransport[fib, conn, {1, 2, 3, 1}]}],
   {InfraConnection, True, False, 4},
   TestID -> "FindInfraLeviCivitaConnection-octahedron-is-a-curved-connection"
 ]
@@ -306,7 +306,7 @@ VerificationTest[
       InfraParallelTransport[ fib, connection, { 3, 4 } ],
       InfraParallelTransport[ fib, connection, { 3, 4, 5 } ],
       InfraParallelTransport[ fib, connection, { 3 } ],
-      Head @ InfraParallelTransport[ InfraFibration[ fib ], connection, { 3, 4 } ],
+      Head @ InfraParallelTransport[ InfraFiberedGraph[ fib ], connection, { 3, 4 } ],
       Head @ InfraParallelTransport[ InfraFiberedGraph[ fib ], connection, { 3, 4 } ] } ],
   { False, <| { 3, 2 } -> { 4, 3 } |>, <| |>, <| { 3, 2 } -> { 3, 2 }, { 3, 4 } -> { 3, 4 } |>,
     InfraParallelTransport, InfraParallelTransport },

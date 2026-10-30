@@ -138,6 +138,3 @@ CochainCup[ g_, alpha_, beta_ ] :=
           Union[ Sort /@ (Union @@ (Subsets[ #, { p + q + 1, p + q + 1 } ] & /@ FindClique[ g, { p + q + 1, Infinity }, All ])) ]
       ]
   ] ]
-
-AntisymmetrizedCup[ g_, alpha_, beta_ ] :=
-  CochainCup[ g, alpha, beta ]

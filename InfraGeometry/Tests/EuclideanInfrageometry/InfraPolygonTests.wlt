@@ -1,4 +1,4 @@
-BeginTestSection["InfraPolygon"]
+BeginTestSection["InfraRegularPolygon"]
 
 geodesicGraph   = WolframInstitute`InfraGeometry`PackageScope`geodesicGraph;
 walkSequence    = WolframInstitute`InfraGeometry`PackageScope`walkSequence;

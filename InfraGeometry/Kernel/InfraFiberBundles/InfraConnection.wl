@@ -37,17 +37,6 @@ InfraTrivialMonodromyQ[ fib : _[ _Graph, __ ], connections_List ] /;
     AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
   connections =!= { } && And @@ ( InfraTrivialMonodromyQ[ fib, # ] & /@ connections )
 
-InfraFlatConnectionQ[ fib : _[ _Graph, __ ], connection : InfraConnection[ edges_List ] ] /;
-    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
-  InfraConnectionQ[ fib, connection ] &&
-    With[ { projection = InfraProjection @ fib },
-      AllTrue[ ConnectedComponents @ Graph[ VertexList @ InfraTotalSpace @ fib, edges ],
-        DuplicateFreeQ[ Lookup[ projection, Key /@ # ] ] & ] ]
-
-InfraFlatConnectionQ[ fib : _[ _Graph, __ ], connections_List ] /;
-    AssociationQ[ InfraProjection @ fib ] && GraphQ[ InfraBaseSpace @ fib ] :=
-  connections =!= { } && And @@ ( InfraFlatConnectionQ[ fib, # ] & /@ connections )
-
 Options[ RandomInfraConnection ] = { "NextVertexFunction" -> Automatic, RandomSeeding -> Automatic }
 
 RandomInfraConnection[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=
@@ -141,10 +130,3 @@ InfraHolonomy[ fib : _[ _Graph, __ ], connection_InfraConnection, loop : { __ } 
     { index = AssociationThread[ fiber, Range @ Length @ fiber ] },
     PermutationCycles @ Lookup[ index, Key /@ Lookup[ transport, Key /@ fiber ] ] ]
 
-FindInfraHorizontalLift[ fib : _[ _Graph, __ ], connection_InfraConnection, start_, walk_List,
-    count : ( _Integer?( n |-> n >= 0 ) | UpTo[ _Integer?( n |-> n >= 0 ) ] | All ) ] :=
-  With[ { lift = InfraHorizontalLift[ fib, connection, start, walk ] },
-    Switch[ count,
-      All, { lift },
-      _UpTo, Take[ { lift }, count ],
-      _, If[ count > 1, { }, Take[ { lift }, count ] ] ] /; ListQ @ lift ]

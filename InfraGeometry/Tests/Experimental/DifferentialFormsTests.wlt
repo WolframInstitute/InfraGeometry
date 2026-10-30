@@ -50,7 +50,7 @@ VerificationTest[Not[fEqual[FormDifferential[claw, FormDifferential[claw, ZeroFo
 
 (* ===== Wedge vs cup: I(Ra ^ Rb) = 2 * antisym(a v b) ===== *)
 
-VerificationTest[cEqual[IntegrationMap[k4, FormWedge[RestrictionMap[k4, aC], RestrictionMap[k4, bC]]], scale[AntisymmetrizedCup[k4, aC, bC], 2]], True, TestID -> "wedge-cup-factor2-K4"]
+VerificationTest[cEqual[IntegrationMap[k4, FormWedge[RestrictionMap[k4, aC], RestrictionMap[k4, bC]]], scale[CochainCup[k4, aC, bC], 2]], True, TestID -> "wedge-cup-factor2-K4"]
 
 (* ===== Wedge on forms: strictly associative and graded-commutative ===== *)
 
@@ -64,12 +64,11 @@ VerificationTest[cEqual[OrderedCochainCup[k4, OrderedCochainCup[k4, aC, bC], cC]
 VerificationTest[Not[cEqual[OrderedCochainCup[k4, aC, bC], scale[OrderedCochainCup[k4, bC, aC], -1]]], True, TestID -> "cup-not-graded-comm-K4"]
 
 (* ===== CochainCup, the cup product: graded-commutative but NOT associative (A-infinity).
-        AntisymmetrizedCup is its alias. ===== *)
+        CochainCup is its alias. ===== *)
 
 VerificationTest[cEqual[CochainCup[k4, aC, bC], scale[CochainCup[k4, bC, aC], -1]], True, TestID -> "cup-graded-comm-K4"]
 VerificationTest[Not[cEqual[CochainCup[k4, CochainCup[k4, aC, bC], cC], CochainCup[k4, aC, CochainCup[k4, bC, cC]]]], True, TestID -> "cup-non-assoc-K4"]
 VerificationTest[DeleteCases[Merge[{CochainCup[k4, CochainCup[k4, aC, bC], cC], Map[Minus, CochainCup[k4, aC, CochainCup[k4, bC, cC]]]}, Total], 0], <|{1, 2, 3, 4} -> -1/6|>, TestID -> "cup-associator-K4-is-minus-one-sixth"]
-VerificationTest[cEqual[CochainCup[k4, aC, bC], AntisymmetrizedCup[k4, aC, bC]], True, TestID -> "antisym-cup-is-alias-of-cup"]
 VerificationTest[Not[cEqual[CochainCup[k4, aC, bC], OrderedCochainCup[k4, aC, bC]]], True, TestID -> "cup-differs-from-ordered-cup"]
 
 (* ===== The cup is unital and orientation-invariant, which the ordered cup is not ===== *)
@@ -136,9 +135,9 @@ VerificationTest[cEqual[Coboundary[torus, CochainCupOne[torus, z1, z2]], DeleteC
 (* ===== The 1/(p+q+1)! normalisation is forced: doubling it changes the H^2 class ===== *)
 
 VerificationTest[Not[h2ExactQ[torus, OrderedCochainCup[torus, z1, z2]]], True, TestID -> "torus-cup-nonzero-in-H2"]
-VerificationTest[Not[h2ExactQ[torus, AntisymmetrizedCup[torus, z1, z2]]], True, TestID -> "torus-antisym-nonzero-in-H2"]
-VerificationTest[h2ExactQ[torus, DeleteCases[Merge[{OrderedCochainCup[torus, z1, z2], Map[Minus, AntisymmetrizedCup[torus, z1, z2]]}, Total], 0]], True, TestID -> "torus-cup-and-antisym-agree-in-H2"]
-VerificationTest[h2ExactQ[torus, DeleteCases[Merge[{OrderedCochainCup[torus, z1, z2], Map[-2 # &, AntisymmetrizedCup[torus, z1, z2]]}, Total], 0]], False, TestID -> "torus-doubled-antisym-wrong-in-H2"]
+VerificationTest[Not[h2ExactQ[torus, CochainCup[torus, z1, z2]]], True, TestID -> "torus-antisym-nonzero-in-H2"]
+VerificationTest[h2ExactQ[torus, DeleteCases[Merge[{OrderedCochainCup[torus, z1, z2], Map[Minus, CochainCup[torus, z1, z2]]}, Total], 0]], True, TestID -> "torus-cup-and-antisym-agree-in-H2"]
+VerificationTest[h2ExactQ[torus, DeleteCases[Merge[{OrderedCochainCup[torus, z1, z2], Map[-2 # &, CochainCup[torus, z1, z2]]}, Total], 0]], False, TestID -> "torus-doubled-antisym-wrong-in-H2"]
 
 (* ===== Exact-cochain tests of the commutator are vacuous: each term is separately exact ===== *)
 

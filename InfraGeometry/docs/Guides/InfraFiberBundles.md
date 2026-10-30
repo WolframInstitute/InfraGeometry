@@ -78,14 +78,6 @@ We expect our constructions to converge to the corresponding objects in a suitab
 - `InfraDisplacementBundle` pairs of base vertices at a fixed distance
 - `InfraBundleMorphism` natural maps between these particular models
 - `InfraFiberedSubstrate` a catalogue of products, coverings, branched examples and geometric models
-- `RandomInfraFibration` the Experimental compatibility generator with its earlier cyclic-width options
+- `RandomInfraFibration` a random fibered graph with cyclic-width horizontal bands
 - `FindInfraLeviCivitaConnection` metric-selected partial matchings of a displacement model
 - `InfraHolonomyAngle`, `InfraCovariantDerivative`, `InfraCanonicalOneForm` metric measurements in that model
-
-### Migration
-
-- `InfraFlatConnectionQ` the compatibility spelling of `InfraTrivialMonodromyQ`
-- `InfraFibration` the retained inert head accepted alongside `InfraFiberedGraph`
-- `InfraTotalGraph`, `InfraBaseGraph`, `InfraFibrationAssociation` compatibility spellings of the structural readers
-- `FindInfraSection` the retained deterministic counted spelling for continuous-section enumeration
-- `FindInfraHorizontalLift` the retained counted spelling of the unique lift on a complete connection

@@ -5,7 +5,7 @@ Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraTrivialMonodromyQ
 Keywords: [trivial monodromy, global holonomy, holonomy, horizontal leaves, predicate]
-SeeAlso: [InfraFlatConnectionQ, InfraConnection, InfraConnectionQ, InfraHolonomy, InfraParallelTransport, RandomInfraConnection, InfraFiberBundleQ]
+SeeAlso: [InfraConnection, InfraConnectionQ, InfraHolonomy, InfraParallelTransport, RandomInfraConnection, InfraFiberBundleQ]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
 ---
@@ -29,7 +29,6 @@ It tests global path independence, rather than zero curvature on specified faces
 A flat connection can have nontrivial holonomy around a noncontractible loop.
 The fibered graph itself carries no distinguished face system.
 
-[InfraFlatConnectionQ]() is the retained compatibility spelling.
 
 *conn* must be a complete connection, as [InfraConnectionQ]() tests; otherwise the result is `False`. The empty list gives `False`.
 

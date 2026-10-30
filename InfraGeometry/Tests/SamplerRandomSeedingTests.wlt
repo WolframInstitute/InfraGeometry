@@ -4,10 +4,10 @@ samplerCalls = <|
   RandomInfraDeformation -> ( RandomInfraDeformation[ CycleGraph[ 4 ], InfraDeformation[ { 1, 2 }, UpTo[ 2 ] ], ## ] & ),
   RandomInfraPoint -> ( RandomInfraPoint[ GridGraph[ { 4, 4 } ], 3, ## ] & ),
   RandomInfraSegment -> ( RandomInfraSegment[ GridGraph[ { 4, 4 } ], 1, 16, ## ] & ),
-  RandomInfraLine -> ( RandomInfraLine[ GridGraph[ { 4, 4 } ], 6, 7, ## ] & ),
+  RandomInfraInfiniteLine -> ( RandomInfraInfiniteLine[ GridGraph[ { 4, 4 } ], 6, 7, ## ] & ),
   RandomInfraInfiniteLine -> ( RandomInfraInfiniteLine[ GridGraph[ { 4, 4 } ], 6, 7, ## ] & ),
   RandomInfraHalfLine -> ( RandomInfraHalfLine[ GridGraph[ { 4, 4 } ], 6, 7, ## ] & ),
-  RandomInfraRay -> ( RandomInfraRay[ GridGraph[ { 4, 4 } ], 6, 7, ## ] & ),
+  RandomInfraHalfLine -> ( RandomInfraHalfLine[ GridGraph[ { 4, 4 } ], 6, 7, ## ] & ),
   RandomInfraParallel -> ( RandomInfraParallel[
     Graph[ { "a", "b", "s", "u", "v", "p", "t" }, Join[ { UndirectedEdge[ "a", "b" ] },
       Flatten @ Table[ UndirectedEdge[ x, y ], { x, { "a", "b" } }, { y, { "s", "u", "v", "p", "t" } } ],
@@ -28,8 +28,8 @@ samplerCalls = <|
   RandomDisplacement -> ( RandomDisplacement[ GridGraph[ { 4, 4 } ], ## ] & ),
   RandomInfraFiberedGraph -> ( RandomInfraFiberedGraph[ CycleGraph[ 4 ], "VerticalVertexCount" -> { 2, 4 }, "VerticalEdgeCount" -> 3, ## ] & ),
   RandomInfraFibration -> ( RandomInfraFibration[ Graph[ Range[ 6 ], { } ], "VerticalVertices" -> { 3, 5 }, ## ] & ),
-  RandomInfraSection -> ( RandomInfraSection[ InfraFibration[ Graph[ Range[ 8 ], { } ], i |-> Ceiling[ i / 2 ] ], ## ] & ),
-  RandomInfraConnection -> ( RandomInfraConnection[ InfraFibration[ CompleteGraph[ 4 ], <| 1 -> "p", 2 -> "p", 3 -> "q", 4 -> "q" |> ], ## ] & )
+  RandomInfraSection -> ( RandomInfraSection[ InfraFiberedGraph[ Graph[ Range[ 8 ], { } ], i |-> Ceiling[ i / 2 ] ], ## ] & ),
+  RandomInfraConnection -> ( RandomInfraConnection[ InfraFiberedGraph[ CompleteGraph[ 4 ], <| 1 -> "p", 2 -> "p", 3 -> "q", 4 -> "q" |> ], ## ] & )
 |>;
 
 VerificationTest[
@@ -81,7 +81,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  Select[ { RandomInfraPoint, RandomInfraSegment, RandomInfraLine, RandomInfraInfiniteLine, RandomInfraArc, RandomInfraPlane,
+  Select[ { RandomInfraPoint, RandomInfraSegment, RandomInfraInfiniteLine, RandomInfraInfiniteLine, RandomInfraArc, RandomInfraPlane,
       RandomInfraRegularPolygon, RandomInfraSphere, RandomInfraWalk, RandomInfraGeodesic, RandomDisplacement,
       RandomInfraFiberedGraph, RandomInfraFibration, RandomInfraSection },
     sampler |-> With[ { call = samplerCalls @ sampler },
@@ -91,7 +91,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  Select[ { RandomInfraPoint, RandomInfraSegment, RandomInfraLine, RandomInfraInfiniteLine, RandomInfraArc, RandomInfraPlane,
+  Select[ { RandomInfraPoint, RandomInfraSegment, RandomInfraInfiniteLine, RandomInfraInfiniteLine, RandomInfraArc, RandomInfraPlane,
       RandomInfraRegularPolygon, RandomInfraSphere, RandomInfraWalk, RandomInfraGeodesic, RandomDisplacement,
       RandomInfraFiberedGraph, RandomInfraFibration, RandomInfraSection },
     sampler |-> With[ { call = samplerCalls @ sampler },
@@ -104,10 +104,9 @@ VerificationTest[
 VerificationTest[
   With[ { g = GridGraph[ { 4, 4 } ] },
     { RandomInfraPoint[ g, 3, RandomSeeding -> 2, RandomSeeding -> 9 ] === RandomInfraPoint[ g, 3, RandomSeeding -> 2 ],
-      MatchQ[ RandomInfraPoint[ g, -1, RandomSeeding -> 2 ], HoldPattern[ RandomInfraPoint[ _Graph, -1, RandomSeeding -> 2 ] ] ],
-      RandomInfraLine[ g, 6, 7, RandomSeeding -> 3 ] === RandomInfraInfiniteLine[ g, 6, 7, RandomSeeding -> 3 ] } ],
-  { True, True, True },
-  TestID -> "SamplerRandomSeeding-first-seed-wins-unknown-options-and-aliases"
+      MatchQ[ RandomInfraPoint[ g, -1, RandomSeeding -> 2 ], HoldPattern[ RandomInfraPoint[ _Graph, -1, RandomSeeding -> 2 ] ] ] } ],
+  { True, True },
+  TestID -> "SamplerRandomSeeding-first-seed-wins-and-unknown-options"
 ]
 
 EndTestSection[ ]

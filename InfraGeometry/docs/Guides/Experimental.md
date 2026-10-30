@@ -75,13 +75,13 @@ Experimental functions that are not yet part of the main API and can change dram
 - `RestrictionMap` the form read from an alternating cochain
 - `IntegrationMap` the cochain averaged from a form over each clique
 
-- `FormDegree`, `CochainDegree`, `OrderedCochainValue`, `NaiveDifferential`, `AntisymmetrizedCup`
+- `FormDegree`, `CochainDegree`, `OrderedCochainValue`, `NaiveDifferential`
 
 ### Particular fibered graph models
 
 - `InfraTangentBundle`, `InfraCotangentBundle`, `InfraDisplacementBundle` ray and distance-pair constructions
 - `InfraRays`, `InfraBundleMorphism`, `InfraFiberedSubstrate` their rays, natural maps and example catalogue
-- `RandomInfraFibration` the compatibility generator with the earlier cyclic-width interpretation
+- `RandomInfraFibration` a random fibered graph with cyclic-width horizontal bands
 - `FindInfraLeviCivitaConnection`, `InfraHolonomyAngle`, `InfraCovariantDerivative`, `InfraCanonicalOneForm` metric-selected transport and measurements
 
 ### Object relations

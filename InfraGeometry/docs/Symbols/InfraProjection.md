@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/InfraProjection
 Keywords: [projection, association, literal vertex, fibered graph]
-SeeAlso: [InfraFiberedGraph, InfraTotalSpace, InfraBaseSpace, InfraFibrationAssociation, InfraFibers]
+SeeAlso: [InfraFiberedGraph, InfraTotalSpace, InfraBaseSpace, InfraFibers]
 RelatedGuides: [InfraFiberBundles]
 RelatedTutorials: [InfraBundles]
 ---
@@ -25,7 +25,6 @@ The tangent and displacement bundles project a ray or a pair to its first vertex
 
 Total vertices are often lists. Read one with <code>[Lookup]()[*π*, [Key]()[*v*]]</code>.
 
-[InfraFibrationAssociation]() is the older name.
 
 ## Basic Examples
 

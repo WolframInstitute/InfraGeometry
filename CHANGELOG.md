@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.12.16 (2026-10-30)
+
+- **Breaking -- every legacy spelling is gone.** Each name below forwarded to its current name with the same arguments, or wrapped it; rename and nothing else changes. Their reference pages are deleted, and `InfraMeasurement`, `InfraMemberQ`, the samplers and the scene engine no longer read the old heads.
+
+  | removed | use |
+  |---|---|
+  | `InfraLine`, `RandomInfraLine`, `InfraLineQ` | `InfraInfiniteLine`, `RandomInfraInfiniteLine`, `InfraInfiniteLineQ` |
+  | `InfraRay`, `RandomInfraRay`, `InfraRayQ` | `InfraHalfLine`, `RandomInfraHalfLine`, `InfraHalfLineQ` |
+  | `InfraPolygon` | `InfraRegularPolygon` |
+  | `InfraFibration` | `InfraFiberedGraph` |
+  | `InfraTotalGraph`, `InfraBaseGraph`, `InfraFibrationAssociation` | `InfraTotalSpace`, `InfraBaseSpace`, `InfraProjection` |
+  | `InfraFlatConnectionQ` | `InfraTrivialMonodromyQ` |
+  | `AntisymmetrizedCup` | `CochainCup` |
+  | `FindInfraSection[fib, n]` | `RandomInfraSection[fib, n, Properties -> {"Continuous"}, "NextVertexFunction" -> Identity]` |
+  | `FindInfraHorizontalLift[fib, conn, start, walk, n]` | `InfraHorizontalLift[fib, conn, start, walk]` |
+
+- **Breaking -- the walk properties of 2.12 no longer read.** `RandomInfraWalk` drops the deprecated `{"Simple", r}`, `"Straightness" -> β` and `f -> β`, and the messages `::alias` and `::rule` that named the replacements of these and of the rules removed in 2.12.11. Each such property now leaves the call unevaluated. Write `{"Simple", "Window" -> r}` and `{"Geodesic", "Window" -> r, "Straightness" -> β}`. A user energy at β = Infinity, formerly `f -> Infinity`, has no spelling now: a function is weighed at β 1, and only a predicate drops candidates.
+- **`RandomInfraFibration` stays** as the Experimental cyclic-band generator; it now returns an `InfraFiberedGraph`.
+- **Docs.** `InfraInfiniteLine` and `RandomInfraInfiniteLine` state that a shortest path has no unique line through it: the lines through a germ are a family whose two ends are admissible only as a pair. The 4-cycle (two lines through an edge, neither containing the other) and the 6-cycle (three, not four) are the examples.
+
 ## 2.12.11 (2026-10-29)
 
 - **One grammar for the walk properties of `RandomInfraWalk`.** A property is a name, bare or with its sub-options: `"Simple"`, `"Geodesic"` or a function *f*, written `{name, "Window" -> r}`, and `"Geodesic"` also `{"Geodesic", "Straightness" -> β}`. `"Window"` defaults to `Infinity`, the whole walk; `"Straightness"` defaults to `Infinity`. A bare name is a constraint: `"Simple"` no vertex twice, `"Geodesic"` every window a shortest path (the walks of `RandomInfraGeodesic`, seed for seed), a predicate *f* its own filter. A finite straightness is the weight `Exp[-β Δ]` of 2.12.9, the von Mises concentration of the turning angle; a numeric *f* is the weight `Exp[-Δ]`, its scale inside *f*. The energies, the step code and every seeded draw are unchanged.

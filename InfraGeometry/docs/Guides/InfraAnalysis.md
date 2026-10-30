@@ -111,4 +111,4 @@ We also consider various versions of **differential forms** on a graph and study
 - `RestrictionMap` the form read from an alternating cochain
 - `IntegrationMap` the cochain averaged from a form over each clique
 
-- `CochainDegree`, `OrderedCochainValue`, `AntisymmetrizedCup`
+- `CochainDegree`, `OrderedCochainValue`

@@ -6,7 +6,7 @@ ContextPath: [WolframInstitute`DiscreteGeometry`]
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/ref/FindInfraOrthogonalAxes
 Keywords: [orthogonal axes, perpendicular lines, frame, projection test, clique, dimension, vertex list]
-SeeAlso: [FindInfraOrthogonalRays, OrthogonalCoordinates, InfraPerpendicularQ, FindInfraPerpendicular, FindInfraSpanningAxes, InfraFibration]
+SeeAlso: [FindInfraOrthogonalRays, OrthogonalCoordinates, InfraPerpendicularQ, FindInfraPerpendicular, FindInfraSpanningAxes, InfraFiberedGraph]
 RelatedGuides: [RiemannianInfrageometry]
 ---
 
