@@ -10,6 +10,8 @@ Our goal is to demonstrate how **Euclidean, Riemannian, and symplectic geometry*
 
 The eventual goal of infrageometry is to explain the emergence of space in hypergraph rewriting models of the universe, as described in the [Wolfram Physics Project technical introduction](https://www.wolframphysics.org/technical-introduction/). Note that hyperedges are not needed to recover the classical geometries.
 
+Explore the [research documentation](https://www.wolframcloud.com/obj/hajek_pavel/DeployedResources/Paclet/WolframInstitute/InfraGeometry).
+
 ## 🧩 From subdivision to aggregation
 
 Classical geometry assumes the possibility of infinite subdivision at every scale. This idealization gives us ideally thin objects. Infinitesimality leads to linearity and the possibility of storing geometric information in linear objects. Uniqueness plays a central role in constructions. An indivisible minimal unit — an edge — instead gives us "puffed" or multi-valued objects, multi-valued constructions, and aggregated measurements normalized by the scale.
@@ -54,8 +56,6 @@ Install from the Wolfram Cloud:
 PacletInstall["https://www.wolframcloud.com/obj/hajek_pavel/InfraGeometry.paclet", ForceVersionInstall -> True]
 Needs["WolframInstitute`InfraGeometry`"]
 ```
-
-Explore the [research documentation](https://www.wolframcloud.com/obj/hajek_pavel/DeployedResources/Paclet/WolframInstitute/InfraGeometry).
 
 ## 🙏 Funding
 
