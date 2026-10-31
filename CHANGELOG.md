@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased
+## 2.12.18 (2026-10-31)
 
-- **Kernel files named after the symbols they hold.** No code changes. Each test file follows its kernel file, and `InfraFibrationTests.wlt` is merged into `InfraFiberedGraphTests.wlt`. The themed files that hold several functions keep their names.
+- **Kernel files named after the symbols they hold, or the block of functions they hold.** No code changes. Each test file follows its kernel file, and `InfraFibrationTests.wlt` is merged into `InfraFiberedGraphTests.wlt`. Themed files whose name already describes their block keep it.
 
   | old | new |
   |---|---|
@@ -23,6 +23,9 @@
   | `InfraSubstrates/TessellationGraphs.wl` | `InfraSubstrates/TessellationGraph.wl` |
   | `InfraSubstrates/UniformLengthDiscretization.wl` | `InfraSubstrates/UniformLengthGraph.wl` |
   | `InfraTopology/BallCover.wl` | `InfraTopology/FindBallCover.wl` |
+  | `EuclideanInfrageometry/SyntheticConstructions.wl` | `EuclideanInfrageometry/MetricConstructions.wl` |
+  | `EuclideanInfrageometry/InfraSet.wl` | `EuclideanInfrageometry/InfraSetOperations.wl` |
+  | `RiemannianInfrageometry/Coordinatization.wl` | `RiemannianInfrageometry/OrthogonalCoordinates.wl` |
 
 ## 2.12.17 (2026-10-30)
 

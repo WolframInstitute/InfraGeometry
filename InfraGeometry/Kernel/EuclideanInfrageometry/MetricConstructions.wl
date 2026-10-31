@@ -1,5 +1,7 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
+(* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: MetricConstructions *)
+
 Options[ RandomInfraMidpoint ] = { "NextVertexFunction" -> Automatic, RandomSeeding -> Automatic }
 
 RandomInfraMidpoint[ args___ ] /; FreeQ[ { args }, RandomSeeding -> None, { 1 } ] :=

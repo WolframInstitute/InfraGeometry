@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: RiemannianInfrageometry :: Coordinatization *)
+(* WolframInstitute`InfraGeometry` :: RiemannianInfrageometry :: OrthogonalCoordinates *)
 
 (* the coordinate of v on a walk is the position of its shortest-path projection, the walk vertices nearest to v, counted from the projection
    of the centre's support; a tie is broken by "SelectCoordinate", the centre's own tie by the same function, so the centre reads 0 *)
