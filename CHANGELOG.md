@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.12.19 (2026-10-31)
+
+- **`FindInfraEquidistantSet` lives beside `InfraEquidistantSet`.** Moved from `InfraSetOperations.wl` to `InfraEquidistantSet.wl` with its tests. No code changes.
+- **Test fix.** `InfraSubstrate-roster-still-graphs` ignores the `::shdw` warning SetReplace raises on first load when `Global`style$` exists; it failed only in the full suite. `run_tests.wls` prints the messages of a `MessagesFailure`.
+
 ## 2.12.18 (2026-10-31)
 
 - **Kernel files named after the symbols they hold, or the block of functions they hold.** No code changes. Each test file follows its kernel file, and `InfraFibrationTests.wlt` is merged into `InfraFiberedGraphTests.wlt`. Themed files whose name already describes their block keep it.
