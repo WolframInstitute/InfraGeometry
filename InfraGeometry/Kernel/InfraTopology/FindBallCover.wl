@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: InfraTopology :: BallCover *)
+(* WolframInstitute`InfraGeometry` :: InfraTopology :: FindBallCover *)
 
 Options[ FindBallCover ] = { Method -> Automatic }
 

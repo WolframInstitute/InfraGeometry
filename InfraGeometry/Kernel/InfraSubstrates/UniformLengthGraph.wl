@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: InfraSubstrates :: UniformLengthDiscretization *)
+(* WolframInstitute`InfraGeometry` :: InfraSubstrates :: UniformLengthGraph *)
 
 Options[ UniformLengthGraph ] = {
 	"ContactTolerance" -> 0.25,

@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: InfraFiberBundles :: InfraFibration *)
+(* WolframInstitute`InfraGeometry` :: InfraFiberBundles :: InfraFiberedGraph *)
 
 InfraTotalSpace[ InfraFiberedGraph[ total_Graph, _ ] ] /;
     SimpleGraphQ[ total ] && UndirectedGraphQ[ total ] && ! WeightedGraphQ[ total ] && ! EdgeTaggedGraphQ[ total ] :=

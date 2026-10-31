@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraSceneVisualization *)
+(* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraSubstrateHighlight *)
 
 PackageScope[ $InfraStrikeOutPalette ]
 PackageScope[ $InfraPointSizes ]

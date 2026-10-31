@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: InfraTopology :: InfraDeformationCertificates *)
+(* WolframInstitute`InfraGeometry` :: InfraTopology :: FindInfraDeformation *)
 
 Options[ FindInfraDeformation ] = {
   "NullHomotopicCycles" -> { 3, 4 },

@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: InfraTopology :: InfraDeformations *)
+(* WolframInstitute`InfraGeometry` :: InfraTopology :: InfraDeformation *)
 
 Options[ InfraDeformation ] = { "TubeRadius" -> 1, "MaxStates" -> 100000 }
 Options[ RandomInfraDeformation ] = { "NextVertexFunction" -> Automatic, RandomSeeding -> Automatic }

@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: Experimental :: OllivierCurvature *)
+(* WolframInstitute`InfraGeometry` :: Experimental :: OllivierRicciCurvature *)
 
 (* kappa(u, v) = 1 - W_1(mu_u, mu_v) / d(u, v),
    mu_x = uniform on the open neighborhood N(x); idleness alpha = 0;

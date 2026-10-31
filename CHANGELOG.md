@@ -1,5 +1,29 @@
 # Changelog
 
+## Unreleased
+
+- **Kernel files named after the symbols they hold.** No code changes. Each test file follows its kernel file, and `InfraFibrationTests.wlt` is merged into `InfraFiberedGraphTests.wlt`. The themed files that hold several functions keep their names.
+
+  | old | new |
+  |---|---|
+  | `EuclideanInfrageometry/InfraLine.wl` | `EuclideanInfrageometry/InfraInfiniteLine.wl` |
+  | `EuclideanInfrageometry/InfraRay.wl` | `EuclideanInfrageometry/InfraHalfLine.wl` |
+  | `EuclideanInfrageometry/InfraPolygon.wl` | `EuclideanInfrageometry/InfraRegularPolygon.wl` |
+  | `EuclideanInfrageometry/InfraSceneVisualization.wl` | `EuclideanInfrageometry/InfraSubstrateHighlight.wl` |
+  | `EuclideanInfrageometry/InfraSceneInteractive.wl` | `EuclideanInfrageometry/InfraSceneViewer.wl` |
+  | `EuclideanInfrageometry/SyntheticAssertions.wl` | `EuclideanInfrageometry/InfraGeometricAssertion.wl` |
+  | `Experimental/InfraEquality.wl` | `Experimental/InfraEqualQ.wl` |
+  | `Experimental/InfraPolyline.wl` | `Experimental/FindInfraPolylineSubdivision.wl` |
+  | `InfraFiberBundles/InfraFibration.wl` | `InfraFiberBundles/InfraFiberedGraph.wl` |
+  | `InfraTopology/InfraDeformations.wl` | `InfraTopology/InfraDeformation.wl` |
+  | `InfraTopology/ForwardDeformations.wl` | `InfraTopology/InfraForwardDeformation.wl` |
+  | `InfraTopology/InfraDeformationCertificates.wl` | `InfraTopology/FindInfraDeformation.wl` |
+  | `InfraFiberBundles/Experimental/InfraLeviCivita.wl` | `InfraFiberBundles/Experimental/FindInfraLeviCivitaConnection.wl` |
+  | `Experimental/OllivierCurvature.wl` | `Experimental/OllivierRicciCurvature.wl` |
+  | `InfraSubstrates/TessellationGraphs.wl` | `InfraSubstrates/TessellationGraph.wl` |
+  | `InfraSubstrates/UniformLengthDiscretization.wl` | `InfraSubstrates/UniformLengthGraph.wl` |
+  | `InfraTopology/BallCover.wl` | `InfraTopology/FindBallCover.wl` |
+
 ## 2.12.17 (2026-10-30)
 
 - **Docs and tests: the least-energy class of a user energy.** `RandomInfraWalk` with `"NextVertexFunction" -> {windows |-> MinimalBy[windows, f], r}` keeps the candidates of least energy *f* on the window of scale *r*, what the 2.12 spelling `f -> {Infinity, r}` did. The reference page shows it on the triangular tiling, 246 of the 2730 self-avoiding walks of five edges, and a test pins the class against the farthest-step order. The 2.12.16 entry is corrected: that case keeps a spelling.

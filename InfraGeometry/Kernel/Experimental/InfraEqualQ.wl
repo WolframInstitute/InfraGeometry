@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: Experimental :: InfraEquality *)
+(* WolframInstitute`InfraGeometry` :: Experimental :: InfraEqualQ *)
 
 Options[ InfraEqualQ ] = { Method -> "Diffuse" }
 

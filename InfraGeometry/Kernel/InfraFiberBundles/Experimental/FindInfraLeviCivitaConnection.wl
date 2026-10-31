@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: InfraFiberBundles :: Experimental :: InfraLeviCivita *)
+(* WolframInstitute`InfraGeometry` :: InfraFiberBundles :: Experimental :: FindInfraLeviCivitaConnection *)
 
 (* Ported from InfraGaugeTheory Kernel/LeviCivita.wl and VectorTransport.wl at e5dc83b; InfraGaugeTheory keeps its own copy *)
 

@@ -463,7 +463,7 @@ VerificationTest[
 ]
 
 (* RandomInfraInfiniteLine's atoms, members, densities and the C6 compatibility fixture are
-   pinned against brute force in InfraLineTests.wlt (EuclideanInertHeads, T3); this
+   pinned against brute force in InfraInfiniteLineTests.wlt (EuclideanInertHeads, T3); this
    whole section tested the old Method / Properties / DAG-pool API, since removed. *)
 
 (* ===== InfraShell ===== *)
@@ -698,7 +698,7 @@ VerificationTest[
 
 
 (* RandomInfraInfiniteLine carries no Method axis any more (EuclideanInertHeads, T3): the count
-   fixes the mode, and its class is pinned against brute force in InfraLineTests.wlt.
+   fixes the mode, and its class is pinned against brute force in InfraInfiniteLineTests.wlt.
    The determinism and BothSides regression guards above stay
    meaningful only for RandomInfraParallel, which the walk-family item left untouched. *)
 

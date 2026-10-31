@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: InfraTopology :: ForwardDeformations *)
+(* WolframInstitute`InfraGeometry` :: InfraTopology :: InfraForwardDeformation *)
 
 Options[ InfraForwardDeformation ] = { "TubeRadius" -> 1, "FirstArrival" -> True }
 

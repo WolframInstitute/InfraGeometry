@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: InfraSubstrates :: TessellationGraphs *)
+(* WolframInstitute`InfraGeometry` :: InfraSubstrates :: TessellationGraph *)
 
 PackageScope[ regularMap ]
 PackageScope[ triangleQuotientSearch ]

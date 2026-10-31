@@ -1,6 +1,6 @@
 Package[ "WolframInstitute`InfraGeometry`" ]
 
-(* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraSceneInteractive *)
+(* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraSceneViewer *)
 
 PackageScope[ geodesicGraph ]
 PackageScope[ geodesicCycleGraph ]
