@@ -112,60 +112,6 @@ VerificationTest[
   TestID -> "measures-thickened-line-has-Riemannian-measure"
 ]
 
-(* ===== FindInfraEquidistantSet ===== *)
-
-(* Every vertex of the equidistant set sees all anchors at one common distance. *)
-VerificationTest[
-  With[ { g = GridGraph[ {5, 5} ] },
-    AllTrue[ FindInfraEquidistantSet[ g, {1, 5, 21} ],
-      v |-> SameQ @@ ( GraphDistance[ g, #, v ] & /@ {1, 5, 21} ) ] ],
-  True,
-  TestID -> "FindInfraEquidistantSet-all-equidistant"
-]
-
-(* E(p1, ..., pn) == intersection of the n-1 consecutive perpendicular bisectors. *)
-VerificationTest[
-  Module[ { g = GridGraph[ {4, 4, 4} ], ps = {1, 5, 21} },
-    Sort @ FindInfraEquidistantSet[ g, ps ] ===
-      Sort[ Intersection @@ MapThread[
-        {a, b} |-> Select[ VertexList[ g ], v |-> GraphDistance[ g, a, v ] == GraphDistance[ g, b, v ] ],
-        { Most[ ps ], Rest[ ps ] } ] ] ],
-  True,
-  TestID -> "FindInfraEquidistantSet-consecutive-bisector-identity"
-]
-
-(* For n == 2 the strict set is the window {0, 0} perpendicular bisector. *)
-VerificationTest[
-  With[ { g = GridGraph[ {5, 5} ] },
-    Sort @ FindInfraEquidistantSet[ g, {1, 25} ] ===
-      Sort @ First @ FindInfraBisectingHyperplane[ g, 1, 25, {0, 0}, All ] ],
-  True,
-  TestID -> "FindInfraEquidistantSet-n2-equals-bisector"
-]
-
-(* Three corners of the square grid meet at the centre. *)
-VerificationTest[
-  FindInfraEquidistantSet[ GridGraph[ {5, 5} ], {1, 5, 21} ],
-  {13},
-  TestID -> "FindInfraEquidistantSet-three-corners-centre"
-]
-
-(* Output is the sorted vertex list. *)
-VerificationTest[
-  FindInfraEquidistantSet[ GridGraph[ {5, 5} ], {1, 5, 21} ],
-  { 13 },
-  TestID -> "FindInfraEquidistantSet-shape"
-]
-
-(* Widening the window can only grow the set (the strict set is a subset). *)
-VerificationTest[
-  With[ { g = GridGraph[ {5, 5} ] },
-    SubsetQ[ FindInfraEquidistantSet[ g, {1, 25}, {-1, 1} ],
-             FindInfraEquidistantSet[ g, {1, 25} ] ] ],
-  True,
-  TestID -> "FindInfraEquidistantSet-window-monotone"
-]
-
 (* ===== FindAdvancingInfraFront ===== *)
 
 (* The bouncing front moves each vertex one step outward from the previous front

@@ -2,22 +2,6 @@ Package[ "WolframInstitute`InfraGeometry`" ]
 
 (* WolframInstitute`InfraGeometry` :: EuclideanInfrageometry :: InfraSetOperations *)
 
-(* { v : d(p1, v) == ... == d(pn, v) }, the intersection of the n-1 consecutive bisectors Bis(p_i, p_{i+1}); the window thickens each to lo <= d(p_i,
-   v) - d(p_{i+1}, v) <= hi *)
-
-FindInfraEquidistantSet[ graph_Graph, pts_List ] :=
-  FindInfraEquidistantSet[ graph, pts, { 0, 0 } ]
-
-FindInfraEquidistantSet[ graph_Graph, pts_List, { lo_Integer, hi_Integer } ] /; Length[ pts ] >= 2 :=
-  With[
-    { rows  = GraphDistance[ graph, # ] & /@ pts },
-    { diffs = Transpose @ MapThread[ Subtract, { Most[ rows ], Rest[ rows ] } ] },
-    Union @ Pick[ VertexList[ graph ], AllTrue[ #, lo <= # <= hi & ] & /@ diffs ]
-  ]
-
-FindInfraEquidistantSet[ graph_Graph, pts_List /; Length[ pts ] <= 1, { _Integer, _Integer } ] :=
-  Union @ VertexList[ graph ]
-
 (* each vertex u of the front S_i steps one shell outward from S_{i-1} -- to the neighbours v with d(S_{i-1}, v) = d(S_{i-1}, u) + 1 -- and reflects
    where there is no outward neighbour, stepping back to a neighbour at d(u) - 1.
    The state is the pair (S_{i-1}, S_i), so this is a NestList on consecutive fronts: the discrete second-order (wave-equation) form, momentum

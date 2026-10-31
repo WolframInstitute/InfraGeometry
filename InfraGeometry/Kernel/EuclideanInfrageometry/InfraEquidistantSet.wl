@@ -36,3 +36,19 @@ InfraMeasurement[ graph_Graph, object_InfraEquidistantSet, All ] :=
 InfraMemberQ[ graph_Graph, object_InfraEquidistantSet, vertices_List ] :=
   With[ { density = InfraMeasurement[ graph, object, "VertexDensity" ] },
     Union[ vertices ] === Sort[ Keys[ density ] ] /; AssociationQ[ density ] ]
+
+(* { v : d(p1, v) == ... == d(pn, v) }, the intersection of the n-1 consecutive bisectors Bis(p_i, p_{i+1}); the window thickens each to lo <= d(p_i,
+   v) - d(p_{i+1}, v) <= hi *)
+
+FindInfraEquidistantSet[ graph_Graph, pts_List ] :=
+  FindInfraEquidistantSet[ graph, pts, { 0, 0 } ]
+
+FindInfraEquidistantSet[ graph_Graph, pts_List, { lo_Integer, hi_Integer } ] /; Length[ pts ] >= 2 :=
+  With[
+    { rows  = GraphDistance[ graph, # ] & /@ pts },
+    { diffs = Transpose @ MapThread[ Subtract, { Most[ rows ], Rest[ rows ] } ] },
+    Union @ Pick[ VertexList[ graph ], AllTrue[ #, lo <= # <= hi & ] & /@ diffs ]
+  ]
+
+FindInfraEquidistantSet[ graph_Graph, pts_List /; Length[ pts ] <= 1, { _Integer, _Integer } ] :=
+  Union @ VertexList[ graph ]
