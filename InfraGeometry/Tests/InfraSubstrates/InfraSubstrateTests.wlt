@@ -54,8 +54,10 @@ VerificationTest[
     TestID -> "InfraSubstrate-unknown-name-no-message"
 ]
 
+(* the wm substrates load SetReplace on first use, whose PackageScope`style$ warns ::shdw
+   when an earlier test file has created Global`style$ *)
 VerificationTest[
-    AllTrue[InfraSubstrate[All], GraphQ @ InfraSubstrate[#, "Small"] &],
+    Quiet[AllTrue[InfraSubstrate[All], GraphQ @ InfraSubstrate[#, "Small"] &], General::shdw],
     True,
     TestID -> "InfraSubstrate-roster-still-graphs"
 ]

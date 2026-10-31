@@ -39,6 +39,9 @@ Scan[
                         Function[idx,
                             With[{tr = report["TestResults"][idx]},
                                 Print["  FAIL: ", tr["TestID"], " -- ", tr["Outcome"]];
+                                If[tr["Outcome"] === "MessagesFailure",
+                                    Print["    messages: ", Short[tr["ActualMessages"], 5]]
+                                ];
                             ]
                         ],
                         Join[report["TestsFailedIndices"], report["TestsFailedWithErrorsIndices"]]
