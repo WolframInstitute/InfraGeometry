@@ -9,7 +9,7 @@ Keywords: [line, triangle, shortest paths, occupation probability, weak converge
 RelatedGuides: [EuclideanInfrageometry]
 ---
 
-*Written by Pavel Hajek.*
+*Reviewed by Pavel Hajek.*
 
 Euclid describes a line as a "breadthless length". Every line we draw has some thickness; a line without breadth belongs to an idealized geometry. We ask whether such an ideal object can emerge from a discrete substrate: can a family of shortest paths, spread across a graph, concentrate on a straight segment as the graph is refined?
 

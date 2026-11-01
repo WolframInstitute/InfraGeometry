@@ -11,7 +11,7 @@ RelatedGuides: [InfrageometryBranches, EuclideanInfrageometry, RiemannianInfrage
 
 ## Abstract
 
-*Abstract written by Pavel Hajek on 27 October 2026.*
+*Reviewed by Pavel Hajek on 27 October 2026.*
 
 We consider discrete substrates given by a **graph**. A hypothetical **infra geometer** walks on the graph, organizes his observations and builds a notion of **graph geometry**. In general, we can imagine a **computational observer** with bounded computation time and memory, and ask how it perceives the graph.
 

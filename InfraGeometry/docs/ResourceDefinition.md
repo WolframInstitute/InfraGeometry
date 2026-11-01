@@ -46,3 +46,5 @@ With[
 ## Author Notes
 
 Reviewed by Pavel Hajek on 18 October 2026.
+
+The documentation was written with AI assistance. Text marked *Reviewed by Pavel Hajek* was checked by him; the rest was not individually reviewed.

@@ -12,7 +12,7 @@ RelatedTutorials: [DimensionTutorial]
 
 ## Abstract
 
-*Abstract written by Pavel Hajek on 27 October 2026.*
+*Reviewed by Pavel Hajek on 27 October 2026.*
 
 We study the topology, or global structure, of an infra substrate as seen by an infra observer at scale $r$. The **ball intersection complex**, computed by [BallIntersectionComplex](), encodes the intersections among the balls of radius $r$ covering the substrate. A collection of $k+1$ balls spans a $k$-simplex whenever every subcollection of at most $m$ balls has nonempty intersection. The case $m=\infty$ recovers the **Čech complex**, computed by [CechComplex](), while $m=2$ recovers the **Vietoris–Rips complex** at threshold $2r$.
 

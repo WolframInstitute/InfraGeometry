@@ -11,7 +11,7 @@ RelatedGuides: [InfraSubstrates, EuclideanInfrageometry, RiemannianInfrageometry
 
 ## Abstract
 
-*Abstract written by Pavel Hajek on 30 October 2026.*
+*Reviewed by Pavel Hajek on 30 October 2026.*
 
 [Infra Substrates and Observers](paclet:WolframInstitute/InfraGeometry/guide/InfraSubstrates) gives the basic point of view: a graph is a **discrete substrate** seen by an observer.
 
