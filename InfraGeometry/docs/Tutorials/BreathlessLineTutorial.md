@@ -1,10 +1,10 @@
 ---
 Template: TechNote
-Name: BreadthlessTriangleTutorial
+Name: BreathlessLineTutorial
 Title: The Breathless Line
 Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
-URI: WolframInstitute/InfraGeometry/tutorial/BreadthlessTriangleTutorial
+URI: WolframInstitute/InfraGeometry/tutorial/BreathlessLineTutorial
 Keywords: [line, triangle, shortest paths, occupation probability, weak convergence, tessellation, mesh, barycentric subdivision]
 RelatedGuides: [EuclideanInfrageometry]
 ---
