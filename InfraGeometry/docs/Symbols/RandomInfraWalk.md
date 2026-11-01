@@ -110,10 +110,10 @@ With[{g = InfraSubstrate["SquareGridGraph", "Medium"]}, {c = First @ GraphCenter
   Table[Length @ RandomInfraWalk[g, c, {k}, All, Properties -> {"Simple"}], {k, 5}]]
 ```
 
-From the random walk to a straight one: 9 edges from the centre of the square mesh at *β* = 0, 2, 8, 32 and `Infinity`:
+From the random walk to a straight one: 9 edges from the centre of the triangular tiling at *β* = 0, 2, 8, 32 and `Infinity`:
 
 ```wl
-With[{g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+With[{g = InfraSubstrate["TriangularTilingGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
   GraphicsRow[Table[
     InfraSubstrateHighlight[g, {RandomInfraWalk[g, c, {9}, Properties -> {"Simple", {"Geodesic", "Straightness" -> b}}, RandomSeeding -> 2], c},
       PlotLabel -> b],
@@ -166,10 +166,10 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]
 
 ### NextVertexFunction
 
-`RandomChoice` gives the random walk, one candidate at a time. Three independent self-avoiding runs of 12 edges:
+`RandomChoice` gives the random walk, one candidate at a time. Three independent self-avoiding runs of 12 edges on the triangular tiling:
 
 ```wl
-With[{g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+With[{g = InfraSubstrate["TriangularTilingGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
   {walks = RandomInfraWalk[g, c, {12}, 3, Properties -> {"Simple"}, "NextVertexFunction" -> RandomChoice,
     RandomSeeding -> 1]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {walk, c}], {walk, walks}]]

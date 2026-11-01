@@ -45,17 +45,17 @@ Corresponding notions in the classical axiom systems:
 
 ## Basic Examples
 
-The bisector of the centre and a vertex at distance 4, on the square grid and on the square mesh:
+The bisector of the centre and a vertex at distance 4, on the triangular and the hexagonal tiling:
 
 ```wl
 GraphicsRow @ Table[
   With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
     {b = RandomInfraPoint[g, InfraShell[a, 4], RandomSeeding -> 1]},
     InfraSubstrateHighlight[g, {FindInfraBisectingHyperplane[g, a, b], {a, b}}]],
-  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+  {name, {"TriangularTilingGraph", "HexagonalTilingGraph"}}]
 ```
 
-At distance 5 the grid has no bisector; the mesh has one:
+At distance 5 the square grid has no bisector; the square mesh has one:
 
 ```wl
 Table[

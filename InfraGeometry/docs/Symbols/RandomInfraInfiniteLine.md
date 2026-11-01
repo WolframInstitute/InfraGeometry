@@ -79,10 +79,10 @@ Table[
   {name, {"SquareGridGraph", "SquareMeshGraph"}}]
 ```
 
-Three lines through the same two points of the mesh:
+Three lines through the same two points of the triangular tiling:
 
 ```wl
-With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
+With[{g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
   {q = RandomInfraPoint[g, InfraShell[p, 2], RandomSeeding -> 1]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[line], p, q}],
     {line, RandomInfraInfiniteLine[g, InfraInfiniteLine[p, q], 3, RandomSeeding -> 1]}]]

@@ -30,14 +30,14 @@ Equal anchors give their connected component. [InfraEquidistantSet]() is the bis
 
 ## Basic Examples
 
-The bisector of the centre and a vertex at distance 2, on the square grid and on the square mesh:
+The bisector of the centre and a vertex at distance 2, on the triangular and the hexagonal tiling:
 
 ```wl
 GraphicsRow @ Table[
   With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {p = First @ GraphCenter[g]},
     {q = RandomInfraPoint[g, InfraShell[p, 2], RandomSeeding -> 2]},
     InfraSubstrateHighlight[g, {InfraPerpendicularBisector[p, q], p, q}]],
-  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+  {name, {"TriangularTilingGraph", "HexagonalTilingGraph"}}]
 ```
 
 On the square grid the shape depends on the direction from *p* to *q*: a straight line, a staircase, two quadrants:

@@ -54,14 +54,14 @@ N @ LogDifferenceQuotients[Table[2 r^2 + 2 r + 1, {r, 0, 8}]]
 
 ## Scope
 
-A sequence of [Around]() values gives quotients with error bars. The mean ball volumes over the ball of radius 1 about the centre of the square mesh:
+A sequence of [Around]() values gives quotients with uncertainties, drawn here as a band. The mean ball volumes over the ball of radius 1 about the centre of the sphere mesh; the quotients fall below 2 as the balls grow over the sphere:
 
 ```wl
-With[{g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+With[{g = InfraSubstrate["SphereMeshGraph", "Large"]}, {c = First @ GraphCenter[g]},
   {sample = Keys @ InfraMeasurement[g, InfraBall[c, 1], "VertexDensity"]},
   {volumes = MeanAround /@ Transpose @
-    Table[InfraMeasurement[g, InfraBall[v, r], "CountingMeasure"], {v, sample}, {r, 0, 6}]},
-  ListPlot[LogDifferenceQuotients[volumes], GridLines -> {None, {2}}, PlotRange -> {1.5, 3.5}]]
+    Table[InfraMeasurement[g, InfraBall[v, r], "CountingMeasure"], {v, sample}, {r, 0, 10}]},
+  ListLinePlot[LogDifferenceQuotients[volumes], IntervalMarkers -> "Bands", GridLines -> {None, {2}}, PlotRange -> {1, 3}]]
 ```
 
 ## Properties and Relations

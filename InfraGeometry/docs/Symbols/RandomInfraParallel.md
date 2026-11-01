@@ -68,7 +68,7 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small", "KeepCoordinates" -> True]}
 
 ## Scope
 
-Through some vertices of the mesh there are several parallels. A count larger than their number gives `{}`:
+Through some vertices of the mesh there are several parallels, drawn together and thicker where they share an edge. A count larger than their number gives `{}`:
 
 ```wl
 With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
@@ -77,8 +77,7 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}
   {p = RandomInfraPoint[g, InfraShell[line, 2], RandomSeeding -> 7]},
   {parallels = RandomInfraParallel[g, line, p, UpTo[10], RandomSeeding -> 1]},
   {none = RandomInfraParallel[g, line, p, 4, RandomSeeding -> 1]},
-  GraphicsRow[Append[InfraSubstrateHighlight[g, {InfraWalk[line], #, p}] & /@ parallels,
-    InfraSubstrateHighlight[g, {InfraWalk[line], p}, PlotLabel -> none]]]]
+  InfraSubstrateHighlight[g, {InfraWalk[line], parallels, p}, PlotLabel -> {Length[parallels], none}, ImageSize -> Medium]]
 ```
 
 A rim vertex of the grid at distance 2 from the line has no neighbour at that distance, and no parallel:

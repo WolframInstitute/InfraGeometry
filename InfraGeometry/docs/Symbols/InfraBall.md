@@ -106,13 +106,13 @@ With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}
   InfraSubstrateHighlight[g, Table[InfraShell[c, r], {r, 0, 4}], PlotLabel -> {volumes, Accumulate[areas]}, ImageSize -> Medium]]
 ```
 
-The interior of the ball of radius 6 contains the ball of radius 5. On the mesh it contains more: two vertices at distance 6, drawn as points, have no neighbour at distance 7. So the Riemannian measure of the larger ball exceeds the counting measure of the smaller one by 2:
+The interior of the ball of radius 4 contains the ball of radius 3. On the sphere mesh it contains more: two vertices at distance 4, drawn as points, have no neighbour at distance 5. So the Riemannian measure of the larger ball exceeds the counting measure of the smaller one by 2:
 
 ```wl
-With[{g = InfraSubstrate["SquareMeshGraph", "Medium", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
-  {extra = Complement[InfraInterior[g, InfraBall[c, 6]], Keys @ InfraMeasurement[g, InfraBall[c, 5], "VertexDensity"]]},
-  InfraSubstrateHighlight[g, {InfraBall[c, 5], InfraShell[c, 6], extra},
-    PlotLabel -> {InfraMeasurement[g, InfraBall[c, 6], "RiemannianMeasure"], InfraMeasurement[g, InfraBall[c, 5], "CountingMeasure"]},
+With[{g = InfraSubstrate["SphereMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {extra = Complement[InfraInterior[g, InfraBall[c, 4]], Keys @ InfraMeasurement[g, InfraBall[c, 3], "VertexDensity"]]},
+  InfraSubstrateHighlight[g, {InfraBall[c, 3], InfraShell[c, 4], extra},
+    PlotLabel -> {InfraMeasurement[g, InfraBall[c, 4], "RiemannianMeasure"], InfraMeasurement[g, InfraBall[c, 3], "CountingMeasure"]},
     ImageSize -> Medium]]
 ```
 

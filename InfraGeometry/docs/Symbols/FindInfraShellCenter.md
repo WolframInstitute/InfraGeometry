@@ -41,14 +41,14 @@ Corresponding notion in the classical axiom systems:
 
 ## Basic Examples
 
-The votes for the centre of the shell of radius 3. They pile up at the true centre, with 30 votes on the grid and 48 on the mesh:
+The votes for the centre of the shell of radius 3. They pile up at the true centre, with 45 votes on the triangular tiling and 15 on the hexagonal tiling:
 
 ```wl
 GraphicsRow @ Table[
   With[{g = InfraSubstrate[name, "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
     {votes = First @ Last @ FindInfraShellCenter[g, Keys @ InfraMeasurement[g, InfraShell[c, 3], "VertexDensity"]]},
     InfraSubstrateHighlight[g, {InfraShell[c, 3], votes}, PlotLabel -> MaximalBy[Normal @ votes, Last]]],
-  {name, {"SquareGridGraph", "SquareMeshGraph"}}]
+  {name, {"TriangularTilingGraph", "HexagonalTilingGraph"}}]
 ```
 
 The equidistant points of the shell are its centre alone, at radius 3:

@@ -72,11 +72,11 @@ Table[
 
 ## Scope
 
-The spray of two sources grows from both, each vertex reached from the nearer one:
+The spray of two sources on the triangular tiling grows from both, each vertex reached from the nearer one:
 
 ```wl
-With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
-  {b = RandomInfraPoint[g, InfraShell[c, 6], RandomSeeding -> 2]},
+With[{g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]}, {c = First @ GraphCenter[g]},
+  {b = RandomInfraPoint[g, InfraShell[c, 4], RandomSeeding -> 2]},
   InfraSubstrateHighlight[g, {SprayGraph[g, {c, b}], c, b}, ImageSize -> Medium]]
 ```
 

@@ -64,10 +64,10 @@ With[{g = InfraSubstrate["SquareGridGraph", "Small"]}, {a = First @ GraphCenter[
   {Length @ RandomInfraSegment[g, a, b, All], InfraMeasurement[g, InfraSegment[a, b], "Cardinality"]}]
 ```
 
-Three distinct shortest paths:
+Three distinct shortest paths on the triangular tiling:
 
 ```wl
-With[{g = InfraSubstrate["SquareMeshGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
+With[{g = InfraSubstrate["TriangularTilingGraph", "Small", "KeepCoordinates" -> True]}, {a = First @ GraphCenter[g]},
   {b = RandomInfraPoint[g, InfraShell[a, 5], RandomSeeding -> 6]},
   GraphicsRow @ Table[InfraSubstrateHighlight[g, {InfraWalk[path], a, b}],
     {path, RandomInfraSegment[g, a, b, 3, RandomSeeding -> 1]}]]

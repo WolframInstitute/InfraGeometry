@@ -67,10 +67,10 @@ GraphicsRow @ Table[UniformLengthGraph[curve, 0.2, "KeepCoordinates" -> True], {
 
 ## Scope
 
-The surface of a prolate ellipsoid. Most centres have six neighbours, at the waist and at the tips alike:
+The surface of a torus. Most centres have six neighbours, on the inner side of the ring as on the outer side:
 
 ```wl
-With[{g = BlockRandom[UniformLengthGraph[RegionBoundary @ BoundaryDiscretizeRegion @ Ellipsoid[{0, 0, 0}, {5, 1, 1}], 0.44,
+With[{g = BlockRandom[UniformLengthGraph[DiscretizeRegion @ Torus[{0, 0, 0}, {1, 3}], 0.44,
       "KeepCoordinates" -> True], RandomSeeding -> 1]},
   Graph[g, PlotLabel -> KeySort @ Counts[VertexDegree[g]], ImageSize -> Medium]]
 ```
