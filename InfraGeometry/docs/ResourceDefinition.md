@@ -7,7 +7,7 @@ Paclet: WolframInstitute/InfraGeometry
 Description: Geometry as an effective description of large graphs
 ContributedBy: Pavel Hajek, Wolfram Institute
 Keywords: [infrageometry, geometry, graph, hypergraph, graph limit, observer, scale, geodesic, Euclidean geometry, synthetic geometry, Riemannian geometry, emergence]
-MainGuide: Documentation/English/Guides/InfraSubstrates.nb
+MainGuide: Documentation/English/Guides/InfrageometryBranches.nb
 License: MIT
 WolframVersion: 14.3+
 Categories: [Higher Mathematical Computation]
