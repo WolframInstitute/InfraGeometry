@@ -2,7 +2,7 @@
 
 # 📐 Infrageometry
 
-This repository contains experimental code and a developing language for geometry emerging as an effective description of large graphs at a large observer scale, aligned with the vision of [Stephen Wolfram](https://writings.stephenwolfram.com/).
+This repository contains experimental code and a developing language for geometry emerging as an effective description of large graphs at a large observer scale. This research arose under the direction of [Stephen Wolfram](https://writings.stephenwolfram.com/).
 
 ![The emergent triangle: three colored InfraSegment families on Small, Medium, and Large square tessellation substrates, with interior corners and automatic graph layouts.](assets/emergent-triangle.png)
 

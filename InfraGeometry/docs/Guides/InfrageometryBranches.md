@@ -13,6 +13,8 @@ RelatedGuides: [InfraSubstrates, EuclideanInfrageometry, RiemannianInfrageometry
 
 *Reviewed by Pavel Hajek on 30 October 2026.*
 
+This research arose under the direction of [Stephen Wolfram](https://writings.stephenwolfram.com/).
+
 [Infra Substrates and Observers](paclet:WolframInstitute/InfraGeometry/guide/InfraSubstrates) gives the basic point of view: a graph is a **discrete substrate** seen by an observer.
 
 [Euclidean Infrageometry](paclet:WolframInstitute/InfraGeometry/guide/EuclideanInfrageometry) is the analogue of the **synthetic approach** to classical geometry. It studies objects and constructions, and not so much the substrate.

@@ -16,7 +16,7 @@ SourceControlURL: https://github.com/WolframInstitute/InfraGeometry
 
 ## Basic Description
 
-This repository contains experimental code and a developing language for geometry emerging as an effective description of large graphs at a large observer scale, aligned with the vision of [Stephen Wolfram](https://writings.stephenwolfram.com/).
+This repository contains experimental code and a developing language for geometry emerging as an effective description of large graphs at a large observer scale. This research arose under the direction of [Stephen Wolfram](https://writings.stephenwolfram.com/).
 
 Our goal is to demonstrate how **Euclidean, Riemannian, and symplectic geometry** emerge in limits of graphs. We view a graph as a webbing of paths and seek the essence of geometry in this webbing. An essential element is an observer who determines properties of the observed geometry.
 
