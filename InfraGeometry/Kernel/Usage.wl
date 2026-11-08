@@ -391,3 +391,36 @@ InfraFiberedGraphViewer::usage = "InfraFiberedGraphViewer[fib, items] inspects f
 
 InfraCircleThrough::usage = "InfraCircleThrough[points, InfraCircle[c, {r, s}]] is the family of shortest separating simple circles in the band containing every prescribed point."
 RandomInfraCircleThrough::usage = "RandomInfraCircleThrough[graph, token] samples one circle through prescribed points; a count requests distinct circles. A saved carrier Graph can replace graph and token. Option RandomSeeding."
+
+
+InfraCausalFuture::usage = "InfraCausalFuture[v] is the causal future J+(v) of the event or event set v, the events reached from it; InfraCausalFuture[v, t] keeps those whose longest chain from v has at most t edges.";
+InfraCausalPast::usage = "InfraCausalPast[v] is the causal past J-(v) of the event or event set v, the events reaching it; InfraCausalPast[v, t] keeps those whose longest chain to v has at most t edges.";
+InfraCausalFutureQ::usage = "InfraCausalFutureQ[g, set] gives True if the vertex list set is the causal future J+(v) on g of one of its elements v.";
+InfraCausalPastQ::usage = "InfraCausalPastQ[g, set] gives True if the vertex list set is the causal past J-(v) on g of one of its elements v.";
+InfraCausalDiamond::usage = "InfraCausalDiamond[p, q] is the causal diamond, J+(p) intersected with J-(q); InfraCausalDiamond[s] is the causal hull of the event set s, J+(s) intersected with J-(s).";
+InfraCausalDiamondQ::usage = "InfraCausalDiamondQ[g, set] gives True if the vertex list set has a least element p and a greatest element q on g and equals the causal diamond of p and q.";
+InfraWorldline::usage = "InfraWorldline[p, q] is the set of worldlines from p to q, every saturated chain between them; InfraWorldline[] is the set of inextendible worldlines, source to sink.";
+RandomInfraWorldline::usage = "RandomInfraWorldline[g, InfraWorldline[p, q], n] gives n distinct saturated chains from p to q drawn uniformly as vertex lists; RandomInfraWorldline[g, p, q, n] and RandomInfraWorldline[g, n] are shortcuts.";
+InfraWorldlineQ::usage = "InfraWorldlineQ[g, chain] gives True if the vertex list chain is a saturated chain on g, each pair of consecutive events an edge of the Hasse diagram.";
+InfraChainQ::usage = "InfraChainQ[g, list] gives True if the vertex list list is duplicate-free and each element precedes the next in the causal order of g.";
+InfraTimelikeGeodesic::usage = "InfraTimelikeGeodesic[p, q] is the set of timelike geodesics from p to q, every longest chain between them; InfraTimelikeGeodesic[p1, ..., pk] is the set of piecewise geodesics through the knots p1, ..., pk; InfraTimelikeGeodesic[p] is the set of longest chains starting at p; InfraTimelikeGeodesic[] is the set of longest chains of the graph.";
+RandomInfraTimelikeGeodesic::usage = "RandomInfraTimelikeGeodesic[g, InfraTimelikeGeodesic[p, q], n] gives n distinct longest chains from p to q drawn uniformly as vertex lists; RandomInfraTimelikeGeodesic[g, p, q, n] and RandomInfraTimelikeGeodesic[g, n] are shortcuts.";
+InfraTimelikeGeodesicQ::usage = "InfraTimelikeGeodesicQ[g, chain] gives True if the vertex list chain is a saturated chain on g whose number of edges is the longest-chain length from its first to its last event.";
+InfraFutureLightCone::usage = "InfraFutureLightCone[v] is the future light cone of v, the events e whose causal diamond with v is a chain; its members are the outgoing light rays, the maximal chains of the cone from v.";
+InfraPastLightCone::usage = "InfraPastLightCone[v] is the past light cone of v, the events e whose causal diamond with v is a chain; its members are the incoming light rays, the maximal chains of the cone into v.";
+RandomInfraFutureLightCone::usage = "RandomInfraFutureLightCone[g, InfraFutureLightCone[v], n] gives n distinct outgoing light rays of v drawn uniformly as vertex lists; RandomInfraFutureLightCone[g, v, n] is the shortcut.";
+RandomInfraPastLightCone::usage = "RandomInfraPastLightCone[g, InfraPastLightCone[v], n] gives n distinct incoming light rays of v drawn uniformly as vertex lists ending at v; RandomInfraPastLightCone[g, v, n] is the shortcut.";
+InfraLightRayQ::usage = "InfraLightRayQ[g, chain] gives True if the vertex list chain is a saturated chain on g equal to the causal diamond of its first and last events.";
+CausalHeight::usage = "CausalHeight[g] gives the causal height of every event, the number of edges of a longest chain from a source to it, zero exactly on the sources.";
+CausalHeightFoliation::usage = "CausalHeightFoliation[g] gives the level sets of CausalHeight[g] as sorted vertex lists, slice k holding the events whose longest chain from a source has k edges.";
+InfraSlice::usage = "InfraSlice[k] is the slice at height k, the events t(v) = k; InfraSlice[{k1, k2}] is the band of events with k1 <= t(v) <= k2.";
+InfraSliceQ::usage = "InfraSliceQ[g, set] gives True if the vertex list set is a nonempty level set of CausalHeight[g].";
+InfraAntichainQ::usage = "InfraAntichainQ[g, set] gives True if the vertex list set is duplicate-free and no two of its elements are comparable in the causal order of g.";
+
+CausalFoliationQ::usage = "CausalFoliationQ[g, slices] tests whether slices is an ordered partition of the vertices of g into nonempty antichains, with every edge directed toward a later slice."
+CausalSpatialGraphs::usage = "CausalSpatialGraphs[g, slices] gives an association from 1-based slice indexes to reconstructed undirected graphs. Two events are adjacent when they have a common ancestor in the preceding r slices, with \"AncestorDepth\" -> r (default 1). CausalSpatialGraphs[g] uses CausalHeightFoliation[g]."
+CausalSliceRelation::usage = "CausalSliceRelation[g, slices, {i, j}] associates each event in slice i with its causally related events in slice j, forward for i < j and backward for i > j. Automatic uses the causal-height foliation. Empty images are retained."
+CausalSliceMap::usage = "CausalSliceMap[g, slices, {i, j}] returns a vertex-map association when every causal image is a singleton. With \"SelectImage\" -> f, it selects f[images] from each nonempty image list; ambiguous automatic maps and selections outside the image remain unevaluated. Automatic slices uses CausalHeightFoliation[g]."
+CausalSliceKernel::usage = "CausalSliceKernel[g, slices, {i, j}] returns nested associations assigning equal weights to each event's causal images in slice j. Every row sums to one; a source event without an image leaves the call unevaluated. Automatic slices uses CausalHeightFoliation[g]."
+FindInfraCoordinateAxes::usage = "FindInfraCoordinateAxes[g, {o, a1, ...}] chooses oriented shortest-path axes through origin o and the direction vertices ai on a connected simple undirected unweighted untagged graph. It extends a deterministic shortest germ while preserving the excess of interval vertices over path vertices; axes need not be orthogonal or maximal graph lines."
+RectilinearCoordinates::usage = "RectilinearCoordinates[g, {o, a1, ...}] associates every vertex with signed integer positions of its nearest projections onto the chosen axes. Options are \"Axes\" -> Automatic or explicit oriented geodesic vertex lists, and \"SelectCoordinate\" -> Min (default), Max, First or Last. Ties use the selected axis position; the map need not be injective."

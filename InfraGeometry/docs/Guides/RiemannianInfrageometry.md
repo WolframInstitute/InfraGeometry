@@ -8,7 +8,7 @@ Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/RiemannianInfrageometry
 Keywords: [Riemannian geometry, graph, geodesic, infra-scale, ball, shell, tube, volume growth, dimension, scalar curvature, metric tensor]
 RelatedGuides: [EuclideanInfrageometry, InfraTopology, InfraAnalysis, InfraFiberBundles, Experimental]
-RelatedTutorials: [MetricTensorTutorial, VolumeMeasurementTutorial, DimensionTutorial]
+RelatedTutorials: [MetricTensorTutorial, VolumeMeasurementTutorial, DimensionTutorial, SpatialCoordinatization]
 ---
 
 <!-- LLM-PROTECTED: Do not rewrite the Abstract or Functions sections unless explicitly asked. -->
@@ -101,3 +101,14 @@ We also have <code>[InfraMetricTensor]()[*g*, *p*, *r*]</code>, which computes s
 - `FindInfraOrthogonalRays` a maximal set of mutually perpendicular rays from a centre
 - `FindInfraSpanningAxes` $n$ well-separated longest shortest paths across a graph
 - `OrthogonalCoordinates` the signed position of the foot of each vertex on each axis
+
+### Rectilinear coordinates from a frame
+
+- `FindInfraCoordinateAxes` chooses oriented shortest-path axes through an origin and direction vertices, preserving each germ's geodesic-interval excess during extension
+- `RectilinearCoordinates` maps every vertex to signed integer nearest-axis coordinates from a frame `{O, A, B, C}`, or any number of directions
+
+The spatial graph must be connected, simple, undirected, unweighted and untagged.
+The default `"SelectCoordinate" -> Min` chooses the smallest signed position at a projection tie; `Max`, `First` and `Last` are also supported.
+The `"Axes"` option accepts explicit oriented geodesic vertex lists.
+The axes need not be orthogonal, and different vertices can receive the same coordinate tuple.
+Use this association as the projection of `InfraFiberedGraph` to retain the corresponding fibers.

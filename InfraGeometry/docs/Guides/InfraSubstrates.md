@@ -17,11 +17,51 @@ We consider discrete substrates given by a **graph**. A hypothetical **infra geo
 
 The substrate we consider here would be called a **spatial graph** in the Wolfram Physics Project. Its vertices correspond to events in a **simultaneity slice** of the causal graph of a single rewriting history, for a chosen observer. **Spatial connectivity** comes from the lowest common ancestor relation, connecting vertices just one light tick away, while **persistence** across time comes from forward causal relations. This is how space emerges in the hypergraph rewriting model for a particular observer.
 
+For a concrete causal reconstruction, let D be a finite layered directed acyclic graph with layers Σ₀, …, Σₜ.
+Assume that each edge advances one layer and every maximal directed path meets every layer.
+The layers are antichains and serve as discrete Cauchy slices.
+Reconstruct the spatial graph on a layer by joining distinct events that share a parent in the preceding layer.
+This specifies the one-light-tick common-ancestor rule in this example.
+A general DAG can have several lowest common ancestors; a reconstruction rule must retain them or specify a selection.
+
+Between consecutive slices, causal ancestry gives the predecessor set $P_t(y)=\{x\in\Sigma_t:x\prec y\}$, where x ≺ y means that a directed path leads from x to y.
+Consider the diamond a → b → d and a → c → d, with slices {a}, {b, c}, {d}.
+The middle spatial graph has the edge b—c.
+Both b and c have the unique predecessor a, whereas d has the two predecessors b and c.
+Exchanging b and c preserves the causal graph, so ancestry alone cannot select one of them as the predecessor of d.
+
+Thus causal persistence is naturally a relation between slices.
+It becomes a backward function precisely when every predecessor set is a singleton.
+Otherwise, a single-valued identification requires additional observer data.
+Time evolution and coarse graining are distinct: a time step may branch or merge, whereas a coarse-graining map explicitly assigns fine vertices to coarse vertices.
+A foliation alone supplies neither a canonical such map nor a metric approximation.
+
 As a minimal model of dependence on the observer, we introduce the scalar **observer scale** $r$. The observer aggregates his measurements at this scale. In concrete cases, we can think of him using balls of radius $r$ for his measurements. Making constructions and measurements depend on scale allows us to study **renormalization of the geometry**.
+
+A chosen coarse-graining map q from fine vertices to coarse vertices transports a nonnegative finite measure by $(q_*\mu)(x)=\sum_{y:q(y)=x}\mu(y)$.
+Here μ(y) is vertex mass, including any reference weight used to express a density.
+For every coarse observable φ, $\sum_x\varphi(x)(q_*\mu)(x)=\sum_y\varphi(q(y))\mu(y)$.
+Taking φ = 1 proves preservation of total mass.
+An injection transports mass by the same pushforward rule; spreading coarse mass throughout a fiber instead requires weights summing to one.
+
+When causal ancestry is multivalued, choose weights $K_t(y,x)\geq0,\quad \sum_xK_t(y,x)=1$, supported on x ∈ Pₜ(y).
+Then $(K_{t*}\nu)(x)=\sum_yK_t(y,x)\nu(y)$ preserves total mass and records distributed ancestry.
+In the diamond, the symmetric choice sends unit mass at d to mass 1/2 at each of b and c.
+A deterministic choice sends it entirely to one predecessor.
+Both preserve mass, but only the latter selects a single predecessor.
+The weighting rule is additional data, and composing these kernels preserves mass across several slices.
 
 We distinguish several types of substrates for our purposes. **Open substrates** represent infinitesimal neighborhoods of their centers, with the observer scale set to the radius. As the scale and the graph grow, we have more rays from the center, viewed as germs of paths, and we can study the emergence of a **linear structure** using midpoints, a **Riemannian metric** using shortest path projection, and a **Riemann tensor** using volume measurements around the center. We can cut out these neighborhoods as balls, for example from plane or hyperbolic tessellations, and remove rim edges to indicate potential unboundedness.
 
 Following Riemann, we think of space as a **webbing of paths**: continuous in his case and discrete in ours. He introduced the **Riemannian metric** as the simplest infinitesimal quantity producing a length element with natural properties. In continuous Riemannian geometry, the metric is extra data on a smooth structure. In infrageometry, all geometric information is already contained in the graph, and continuous geometry is a property of **Gromov-Hausdorff limits** of some sequences of graphs.
+
+For convergence of geometric objects, use a resolution index n distinct from the time index t.
+Consider connected spatial graphs with vertex sets Vₙ and rescaled graph metrics converging in the Gromov–Hausdorff sense to a compact metric space X.
+Choose corresponding metric approximation maps fₙ : Vₙ → X.
+Weak convergence of finite occupation measures means $\sum_{v\in V_n}\varphi(f_n(v))\mu_n(v)\longrightarrow\int_X\varphi\,d\mu$ for every continuous φ on X.
+Thus geometry and measures are compared through the same maps.
+Conservation of mass alone does not imply this convergence.
+Agreement between transported measures and measures reconstructed independently from geometric objects is a further condition.
 
 **Closed substrates** represent global objects. Besides path and cycle graphs in one dimension, we consider **tessellation graphs of closed surfaces** coming from regular and uniform maps. These tessellations should converge to continuous Riemannian surfaces, and their combinatorial structure determines the genus, Euler characteristic and curvature. We ask whether all geometries and geometric objects, such as tangent spaces, canonical forms and tensors, can emerge in a **Gromov-Hausdorff limit** of metric measure spaces.
 
