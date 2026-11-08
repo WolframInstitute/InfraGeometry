@@ -64,6 +64,12 @@ in the hypergraph rewriting model for a particular observer."
 }], "GuideAbstract",
  CellID->2001916300,ExpressionUUID->"ef0ab37b-2e0d-4399-8f7e-82603ccbe925"],
 
+Cell[TextData[{"For a concrete causal reconstruction, let D be a finite layered directed acyclic graph with layers Σ₀, …, Σₜ. Assume that each edge advances one layer and every maximal directed path meets every layer. The layers are antichains and serve as discrete Cauchy slices. Reconstruct the spatial graph on a layer by joining distinct events that share a parent in the preceding layer. This specifies the one-light-tick common-ancestor rule in this example. A general DAG can have several lowest common ancestors; a reconstruction rule must retain them or specify a selection."}], "GuideAbstract", CellID -> 818280801, ExpressionUUID -> "dd3283c8-cd85-4abf-8e5f-5b322da8bbfa"],
+
+Cell[TextData[{"Between consecutive slices, causal ancestry gives the predecessor set ", Cell[BoxData[RowBox[{SubscriptBox["P", "t"], RowBox[{"(", "y", ")", "=", "{", "x", "∈"}], SubscriptBox["Σ", "t"], RowBox[{":", "x", "≺", "y", "}"}]}]], "InlineFormula", FontSize -> 0.9 Inherited], ", where x ≺ y means that a directed path leads from x to y. Consider the diamond a → b → d and a → c → d, with slices {a}, {b, c}, {d}. The middle spatial graph has the edge b—c. Both b and c have the unique predecessor a, whereas d has the two predecessors b and c. Exchanging b and c preserves the causal graph, so ancestry alone cannot select one of them as the predecessor of d."}], "GuideAbstract", CellID -> 818280802, ExpressionUUID -> "43ff773a-50ad-427b-a54a-607f0c6cb7bf"],
+
+Cell[TextData[{"Thus causal persistence is naturally a relation between slices. It becomes a backward function precisely when every predecessor set is a singleton. Otherwise, a single-valued identification requires additional observer data. Time evolution and coarse graining are distinct: a time step may branch or merge, whereas a coarse-graining map explicitly assigns fine vertices to coarse vertices. A foliation alone supplies neither a canonical such map nor a metric approximation."}], "GuideAbstract", CellID -> 818280803, ExpressionUUID -> "f405ff64-5f12-4528-89b1-d40fa009f937"],
+
 Cell[TextData[{
  "As a minimal model of dependence on the observer, we introduce the scalar \
 ",
@@ -87,6 +93,10 @@ scale allows us to study ",
  "."
 }], "GuideAbstract",
  CellID->2001916300,ExpressionUUID->"ef0ab37b-2e0d-4399-8f7e-82603ccbe925"],
+
+Cell[TextData[{"A chosen coarse-graining map q from fine vertices to coarse vertices transports a nonnegative finite measure by ", Cell[BoxData[RowBox[{RowBox[{"(", SubscriptBox["q", "*"], "μ", ")", "(", "x", ")", "="}], UnderscriptBox["∑", RowBox[{"y", ":", "q", "(", "y", ")", "=", "x"}]], RowBox[{"μ", "(", "y", ")"}]}]], "InlineFormula", FontSize -> 0.9 Inherited], ". Here μ(y) is vertex mass, including any reference weight used to express a density. For every coarse observable φ, ", Cell[BoxData[RowBox[{UnderscriptBox["∑", "x"], RowBox[{"φ", "(", "x", ")", "(", SubscriptBox["q", "*"], "μ", ")", "(", "x", ")", "="}], UnderscriptBox["∑", "y"], RowBox[{"φ", "(", "q", "(", "y", ")", ")", "μ", "(", "y", ")"}]}]], "InlineFormula", FontSize -> 0.9 Inherited], ". Taking φ = 1 proves preservation of total mass. An injection transports mass by the same pushforward rule; spreading coarse mass throughout a fiber instead requires weights summing to one."}], "GuideAbstract", CellID -> 818280804, ExpressionUUID -> "bc7ab6c5-db67-4f66-bbff-9c73bbc77378"],
+
+Cell[TextData[{"When causal ancestry is multivalued, choose weights ", Cell[BoxData[RowBox[{SubscriptBox["K", "t"], RowBox[{"(", "y", ",", "x", ")", "≥", "0", ",", " "}], UnderscriptBox["∑", "x"], SubscriptBox["K", "t"], RowBox[{"(", "y", ",", "x", ")", "=", "1"}]}]], "InlineFormula", FontSize -> 0.9 Inherited], ", supported on x ∈ Pₜ(y). Then ", Cell[BoxData[RowBox[{RowBox[{"("}], SubscriptBox["K", "t*"], RowBox[{"ν", ")", "(", "x", ")", "="}], UnderscriptBox["∑", "y"], SubscriptBox["K", "t"], RowBox[{"(", "y", ",", "x", ")", "ν", "(", "y", ")"}]}]], "InlineFormula", FontSize -> 0.9 Inherited], " preserves total mass and records distributed ancestry. In the diamond, the symmetric choice sends unit mass at d to mass 1/2 at each of b and c. A deterministic choice sends it entirely to one predecessor. Both preserve mass, but only the latter selects a single predecessor. The weighting rule is additional data, and composing these kernels preserves mass across several slices."}], "GuideAbstract", CellID -> 818280805, ExpressionUUID -> "0c8561fc-52be-4325-b7be-25dd8cdb0c73"],
 
 Cell[TextData[{
  "We distinguish several types of substrates for our purposes. ",
@@ -126,6 +136,8 @@ already contained in the graph, and continuous geometry is a property of ",
  " of some sequences of graphs."
 }], "GuideAbstract",
  CellID->2001916300,ExpressionUUID->"ef0ab37b-2e0d-4399-8f7e-82603ccbe925"],
+
+Cell[TextData[{"For convergence of geometric objects, use a resolution index n distinct from the time index t. Consider connected spatial graphs with vertex sets Vₙ and rescaled graph metrics converging in the Gromov–Hausdorff sense to a compact metric space X. Choose corresponding metric approximation maps fₙ : Vₙ → X. Weak convergence of finite occupation measures means ", Cell[BoxData[RowBox[{UnderscriptBox["∑", RowBox[{RowBox[{"v", "∈"}], SubscriptBox["V", "n"]}]], RowBox[{"φ", "("}], SubscriptBox["f", "n"], RowBox[{"(", "v", ")", ")"}], SubscriptBox["μ", "n"], RowBox[{"(", "v", ")", "→"}], SubscriptBox["∫", "X"], RowBox[{"φ", "d", "μ"}]}]], "InlineFormula", FontSize -> 0.9 Inherited], " for every continuous φ on X. Thus geometry and measures are compared through the same maps. Conservation of mass alone does not imply this convergence. Agreement between transported measures and measures reconstructed independently from geometric objects is a further condition."}], "GuideAbstract", CellID -> 818280806, ExpressionUUID -> "0793ab7b-0ba2-46c4-ab00-e92684c31e6e"],
 
 Cell[TextData[{
  StyleBox["Closed substrates",

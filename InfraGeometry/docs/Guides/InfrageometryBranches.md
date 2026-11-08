@@ -6,7 +6,7 @@ Context: WolframInstitute`InfraGeometry`
 Paclet: WolframInstitute/InfraGeometry
 URI: WolframInstitute/InfraGeometry/guide/InfrageometryBranches
 Keywords: [infrageometry, branches, overview, substrate, observer, Euclidean, Riemannian, topology, fiber bundle, analysis]
-RelatedGuides: [InfraSubstrates, EuclideanInfrageometry, RiemannianInfrageometry, InfraTopology, InfraFiberBundles, InfraAnalysis]
+RelatedGuides: [InfraSubstrates, EuclideanInfrageometry, RiemannianInfrageometry, InfraTopology, InfraCausality, InfraFiberBundles, InfraAnalysis]
 ---
 
 ## Abstract
@@ -22,6 +22,8 @@ This research arose under the direction of [Stephen Wolfram](https://writings.st
 [Riemannian Infrageometry](paclet:WolframInstitute/InfraGeometry/guide/RiemannianInfrageometry) studies the **substrate itself** from a geometric point of view.
 
 [Infra Topology](paclet:WolframInstitute/InfraGeometry/guide/InfraTopology) studies the substrate from the **global perspective**.
+
+[InfraCausality](paclet:WolframInstitute/InfraGeometry/guide/InfraCausality) studies **causal order, topology and relativistic geometry on directed acyclic graphs**.
 
 [Infra Fiber Bundles](paclet:WolframInstitute/InfraGeometry/guide/InfraFiberBundles) studies **relations between different graphs**.
 

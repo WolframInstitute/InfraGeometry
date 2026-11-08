@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.13.0 (2026-11-08)
+
+- Add fundamental causal-order, chain, worldline, light-cone and foliation constructions from InfraCausality, with one InfraCausality guide.
+- Integrate the four causal samplers with the package-wide `RandomSeeding` contract.
+- Reconstruct spatial slice graphs from a DAG and foliation using a bounded common-ancestor depth.
+- Return causal relations, selected inter-slice maps and mass-preserving transport kernels as associations.
+- Add oriented coordinate axes and signed integer projection coordinates from an origin and direction vertices.
+- Add the Spatial Coordinatization tutorial with evaluated examples and an interactive coordinate-fiber view.
+- Clarify the Euclidean and substrate guides, including measures, persistence and convergence assumptions.
+
 ## 2.12.19 (2026-10-31)
 
 - **`FindInfraEquidistantSet` lives beside `InfraEquidistantSet`.** Moved from `InfraSetOperations.wl` to `InfraEquidistantSet.wl` with its tests. No code changes.

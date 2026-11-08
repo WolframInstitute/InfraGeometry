@@ -26,6 +26,13 @@ The language must therefore change. We want to develop it from basic constructio
 
 Riemannian Infrageometry studies the graph substrate itself. Riemann described curve length in an n-manifold, which for him was an infinitesimal webbing of paths, using a symmetric metric tensor. On a graph, we begin with measurements at a chosen observer scale: volumes of synthetic objects based at a point, distributions of distances between points, and dimension estimates from ball covering numbers or maximal orthogonal systems. We also propose graph analogues of the metric tensor and Levi-Civita connection. We ask whether, and under what assumptions, these measurements and structures converge to their continuous counterparts along sequences of graphs.
 
+## InfraCausality
+
+InfraCausality contains fundamental constructions on directed acyclic graphs: chains, antichains, causal intervals, worldlines, longest chains, light cones, and causal-height slices.
+See the [InfraCausality guide](InfraGeometry/docs/Guides/InfraCausality.md) or its [Wolfram notebook](InfraGeometry/Documentation/English/Guides/InfraCausality.nb).
+These constructions are copied from [InfraCausality](https://github.com/WolframInstitute/InfraCausality); the specialized observer and physical models remain there.
+See the [Spatial Coordinatization tutorial](InfraGeometry/Documentation/English/Tutorials/SpatialCoordinatization.nb) for spatial reconstruction, frame coordinates, coordinate fibers and inter-slice maps.
+
 ## 🌀 Symplectic Infrageometry
 
 Our starting point in symplectic geometry is the pairing of momentum with infinitesimal displacement. Integrating this pairing along a path gives the abbreviated action. In infrageometry, cotangent data at a point p are represented by inward-pointing rays of length r. We also have the notion of a cotangent bundle at scale r and a canonical one-form. We plan to derive dynamics of paths through an action principle and study how Hamiltonian and symplectic descriptions emerge in the limit.

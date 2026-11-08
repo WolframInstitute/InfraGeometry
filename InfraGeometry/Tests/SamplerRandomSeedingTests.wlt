@@ -1,6 +1,10 @@
 BeginTestSection[ "SamplerRandomSeeding" ]
 
 samplerCalls = <|
+  RandomInfraWorldline -> ( RandomInfraWorldline[ Graph[ { 1 -> 2, 1 -> 3, 2 -> 4, 3 -> 4 } ], 1, 4, ## ] & ),
+  RandomInfraTimelikeGeodesic -> ( RandomInfraTimelikeGeodesic[ Graph[ { 1 -> 2, 1 -> 3, 2 -> 4, 3 -> 4 } ], 1, 4, ## ] & ),
+  RandomInfraFutureLightCone -> ( RandomInfraFutureLightCone[ Graph[ { 1 -> 2, 1 -> 3 } ], 1, ## ] & ),
+  RandomInfraPastLightCone -> ( RandomInfraPastLightCone[ Graph[ { 2 -> 1, 3 -> 1 } ], 1, ## ] & ),
   RandomInfraDeformation -> ( RandomInfraDeformation[ CycleGraph[ 4 ], InfraDeformation[ { 1, 2 }, UpTo[ 2 ] ], ## ] & ),
   RandomInfraPoint -> ( RandomInfraPoint[ GridGraph[ { 4, 4 } ], 3, ## ] & ),
   RandomInfraSegment -> ( RandomInfraSegment[ GridGraph[ { 4, 4 } ], 1, 16, ## ] & ),
@@ -81,7 +85,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  Select[ { RandomInfraPoint, RandomInfraSegment, RandomInfraInfiniteLine, RandomInfraInfiniteLine, RandomInfraArc, RandomInfraPlane,
+  Select[ { RandomInfraWorldline, RandomInfraTimelikeGeodesic, RandomInfraFutureLightCone, RandomInfraPastLightCone, RandomInfraPoint, RandomInfraSegment, RandomInfraInfiniteLine, RandomInfraInfiniteLine, RandomInfraArc, RandomInfraPlane,
       RandomInfraRegularPolygon, RandomInfraSphere, RandomInfraWalk, RandomInfraGeodesic, RandomDisplacement,
       RandomInfraFiberedGraph, RandomInfraFibration, RandomInfraSection },
     sampler |-> With[ { call = samplerCalls @ sampler },
@@ -91,7 +95,7 @@ VerificationTest[
 ]
 
 VerificationTest[
-  Select[ { RandomInfraPoint, RandomInfraSegment, RandomInfraInfiniteLine, RandomInfraInfiniteLine, RandomInfraArc, RandomInfraPlane,
+  Select[ { RandomInfraWorldline, RandomInfraTimelikeGeodesic, RandomInfraFutureLightCone, RandomInfraPastLightCone, RandomInfraPoint, RandomInfraSegment, RandomInfraInfiniteLine, RandomInfraInfiniteLine, RandomInfraArc, RandomInfraPlane,
       RandomInfraRegularPolygon, RandomInfraSphere, RandomInfraWalk, RandomInfraGeodesic, RandomDisplacement,
       RandomInfraFiberedGraph, RandomInfraFibration, RandomInfraSection },
     sampler |-> With[ { call = samplerCalls @ sampler },

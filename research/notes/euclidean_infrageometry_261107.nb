@@ -1,0 +1,252 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Wolfram 15.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       154,          7]
+NotebookDataLength[     10097,        243]
+NotebookOptionsPosition[      7510,        205]
+NotebookOutlinePosition[      7883,        221]
+CellTagsIndexPosition[      7840,        218]
+WindowTitle->Euclidean infrageometry
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell["Euclidean infrageometry", "Title",ExpressionUUID->"23f12ee9-3cb6-45d5-9553-97e63ca1cdb7"],
+
+Cell["[[ LLM Generated ]]", "Subtitle",ExpressionUUID->"eb65f5ef-daf3-4ef9-8bee-7a19f78401ae"],
+
+Cell["Core definitions", "Subtitle",ExpressionUUID->"e8b1a311-0e43-447d-9c13-e3e6199cd5fc"],
+
+Cell["\<\
+The aim is to describe geometric objects on a graph and ask when they \
+approach Euclidean objects. Let G = (V, E) be a finite connected simple \
+undirected graph with unit edge lengths and shortest-path distance d.\
+\>", "Text",ExpressionUUID->"0a35ecb6-64f8-4edb-aa7b-ed9f3ea1fc29"],
+
+Cell["Segments", "Section",ExpressionUUID->"56a3bafd-eb79-458b-b6c0-bd75e40da2ad"],
+
+Cell["\<\
+A segment from p to q is the family of all shortest paths between them. Its \
+support is the metric interval:\
+\>", "Text",ExpressionUUID->"76bdd7c8-63f9-4496-8eb5-e38d1ed97b94"],
+
+Cell[BoxData[
+ RowBox[{"I", "(", "p", ",", "q", ")", "=", "{", "v", "\[Element]", "V", ":", 
+  "d", "(", "p", ",", "v", ")", "+", "d", "(", "v", ",", "q", ")", "=", "d", "(",
+   "p", ",", "q", ")", "}"}]], "DisplayFormula",ExpressionUUID->"a745ed33-\
+c2e4-4b53-9230-2fa051f1f149"],
+
+Cell["\<\
+The distance equality says exactly that a shortest path can pass through v. \
+The supporting set is uniquely defined, although the path need not be unique.\
+\
+\>", "Text",ExpressionUUID->"fa67dfd8-33fb-4c22-8b12-a11fff5ad55a"],
+
+Cell["Densities and measures", "Section",ExpressionUUID->"b9dc05a7-3c74-4593-918b-842b81fbad2d"],
+
+Cell["\<\
+Let N be the number of shortest paths, let m = d(p, q), and let c(v) count \
+the paths containing v. Under uniform sampling of paths, the probability of \
+visiting v is:\
+\>", "Text",ExpressionUUID->"aa058eb5-fab7-4c69-9fec-864ab319a450"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"\[Rho]", "(", "v", ")", "="}], 
+  FractionBox[
+   RowBox[{"c", "(", "v", ")"}], "N"]}]], "DisplayFormula",ExpressionUUID->\
+"c5580a0c-c15f-44bc-a40f-18e11225d9bb"],
+
+Cell["\<\
+Every path visits m + 1 vertices. Counting path\[Dash]vertex incidences in \
+two ways therefore gives:\
+\>", "Text",ExpressionUUID->"6094f819-8d63-4da2-96c0-674fde258c76"],
+
+Cell[BoxData[
+ RowBox[{
+  UnderscriptBox["\[Sum]", 
+   RowBox[{"v", "\[Element]", "V"}]], 
+  RowBox[{"\[Rho]", "(", "v", ")", "=", "m", "+", "1"}]}]], "DisplayFormula",E\
+xpressionUUID->"2731200d-534e-42df-b47c-a20f4f80a5d5"],
+
+Cell["\<\
+To obtain a probability measure on the vertices, divide once more by m + 1:\
+\>", "Text",ExpressionUUID->"5cd776b0-8a5d-4ee5-a45c-878824d551de"],
+
+Cell[BoxData[
+ RowBox[{"\[Mu]", "=", 
+  FractionBox["1", 
+   RowBox[{"N", "(", "m", "+", "1", ")"}]], 
+  UnderscriptBox["\[Sum]", 
+   RowBox[{"v", "\[Element]", "V"}]], 
+  RowBox[{"c", "(", "v", ")"}], 
+  SubscriptBox["\[Delta]", "v"]}]], "DisplayFormula",ExpressionUUID->\
+"c7e19c43-53ef-4320-b8d6-c77f826c959a"],
+
+Cell["\<\
+A limiting segment may carry normalized arclength measure. A Dirac measure at \
+the whole segment instead belongs to a space of geometric objects, not to the \
+underlying space of points.\
+\>", "Text",ExpressionUUID->"77a38d23-f4a6-482d-afa6-6294e15bfb1f"],
+
+Cell["The square grid", "Section",ExpressionUUID->"91bfd384-e9a8-49b8-a94b-61d5fde06393"],
+
+Cell["\<\
+From (0, 0) to (a, b), for nonnegative integers a and b, each shortest path \
+orders a horizontal and b vertical steps. Thus:\
+\>", "Text",ExpressionUUID->"2b900885-46f7-4b97-aef9-7de2c450bad7"],
+
+Cell[BoxData[
+ RowBox[{"N", "=", 
+  RowBox[{"(", GridBox[{
+     {
+      RowBox[{"a", "+", "b"}]},
+     {"a"}
+    }], ")"}]}]], "DisplayFormula",ExpressionUUID->"46b189ff-2287-49dc-8709-\
+ad098a34417f"],
+
+Cell["\<\
+All vertices in the rectangle belong to the support. In this example, \
+stronger edges belong to more shortest paths.\
+\>", "Text",ExpressionUUID->"223d8ac7-b697-4490-9512-20ed315129dc"],
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"vertices", "=", 
+     RowBox[{"Tuples", "[", 
+      RowBox[{
+       RowBox[{"Range", "[", 
+        RowBox[{"0", ",", "3"}], "]"}], ",", "2"}], "]"}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"pairs", "=", 
+     RowBox[{"Select", "[", 
+      RowBox[{
+       RowBox[{"Subsets", "[", 
+        RowBox[{"vertices", ",", 
+         RowBox[{"{", "2", "}"}]}], "]"}], ",", 
+       RowBox[{"pair", "|->", 
+        RowBox[{
+         RowBox[{"Total", "[", 
+          RowBox[{"Abs", "[", 
+           RowBox[{"Subtract", "@@", "pair"}], "]"}], "]"}], "\[Equal]", 
+         "1"}]}]}], "]"}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"graph", "=", 
+     RowBox[{"Graph", "[", 
+      RowBox[{"vertices", ",", 
+       RowBox[{"UndirectedEdge", "@@@", "pairs"}], ",", 
+       RowBox[{"VertexCoordinates", "\[Rule]", "vertices"}]}], "]"}]}], "}"}],
+    ",", 
+   RowBox[{"{", 
+    RowBox[{"paths", "=", 
+     RowBox[{"FindPath", "[", 
+      RowBox[{"graph", ",", 
+       RowBox[{"{", 
+        RowBox[{"0", ",", "0"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"3", ",", "3"}], "}"}], ",", 
+       RowBox[{"{", "6", "}"}], ",", "All"}], "]"}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"counts", "=", 
+     RowBox[{"Counts", "[", 
+      RowBox[{"Catenate", "[", 
+       RowBox[{
+        RowBox[{"path", "|->", 
+         RowBox[{"UndirectedEdge", "@@@", 
+          RowBox[{"Partition", "[", 
+           RowBox[{"path", ",", "2", ",", "1"}], "]"}]}]}], "/@", "paths"}], 
+       "]"}], "]"}]}], "}"}], ",", 
+   RowBox[{"Graph", "[", 
+    RowBox[{"graph", ",", 
+     RowBox[{"EdgeStyle", "\[Rule]", 
+      RowBox[{"KeyValueMap", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"edge", ",", "count"}], "}"}], "|->", 
+         RowBox[{"edge", "\[Rule]", 
+          RowBox[{"Directive", "[", 
+           RowBox[{
+            RowBox[{"Opacity", "[", 
+             FractionBox["count", 
+              RowBox[{"Length", "[", "paths", "]"}]], "]"}], ",", "Thick"}], 
+           "]"}]}]}], ",", "counts"}], "]"}]}]}], "]"}]}], "]"}]], "Input",Exp\
+ressionUUID->"a19f28e4-e20b-40b7-bcf0-155132eada69"],
+
+Cell["\<\
+Rescaling a nearest-neighbor square grid preserves Manhattan distance; it \
+does not yield the Euclidean metric. A thin averaged path is therefore \
+insufficient evidence of Euclidean geometry.\
+\>", "Text",ExpressionUUID->"71f46bff-ba02-48cd-b2cf-9178a834054a"],
+
+Cell["Main question", "Section",ExpressionUUID->"8ed9895b-2581-48d3-a16f-09d2b071deb6"],
+
+Cell["\<\
+Which graph sequences, distance scales and sampling laws make these \
+constructions converge to their Euclidean counterparts? Start with segments \
+and a precise bound comparing graph distances with Euclidean distances.\
+\>", "Text",ExpressionUUID->"5b4979cc-8a71-4bcb-a3a6-170d23280750"],
+
+Cell["\<\
+Prepared with Codex from the Euclidean Infrageometry guide, 7 November 2026. \
+The project attributes the research direction to Stephen Wolfram. The \
+original guide is unchanged.\
+\>", "SmallText",ExpressionUUID->"4e2ab1b6-8147-43db-bbb7-390fa2d99bea"]
+},
+Saveable->True,
+WindowTitle->"Euclidean infrageometry",
+FrontEndVersion->"15.0 for Mac OS X ARM (64-bit) (July 2, 2026)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"a489862c-533c-4667-8998-0dd14ba9fed8"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[591, 21, 95, 0, 70, "Title",ExpressionUUID->"23f12ee9-3cb6-45d5-9553-97e63ca1cdb7"],
+Cell[689, 23, 94, 0, 70, "Subtitle",ExpressionUUID->"eb65f5ef-daf3-4ef9-8bee-7a19f78401ae"],
+Cell[786, 25, 91, 0, 70, "Subtitle",ExpressionUUID->"e8b1a311-0e43-447d-9c13-e3e6199cd5fc"],
+Cell[880, 27, 294, 4, 70, "Text",ExpressionUUID->"0a35ecb6-64f8-4edb-aa7b-ed9f3ea1fc29"],
+Cell[1177, 33, 82, 0, 70, "Section",ExpressionUUID->"56a3bafd-eb79-458b-b6c0-bd75e40da2ad"],
+Cell[1262, 35, 188, 3, 70, "Text",ExpressionUUID->"76bdd7c8-63f9-4496-8eb5-e38d1ed97b94"],
+Cell[1453, 40, 280, 4, 70, "DisplayFormula",ExpressionUUID->"a745ed33-c2e4-4b53-9230-2fa051f1f149"],
+Cell[1736, 46, 236, 4, 70, "Text",ExpressionUUID->"fa67dfd8-33fb-4c22-8b12-a11fff5ad55a"],
+Cell[1975, 52, 96, 0, 70, "Section",ExpressionUUID->"b9dc05a7-3c74-4593-918b-842b81fbad2d"],
+Cell[2074, 54, 248, 4, 70, "Text",ExpressionUUID->"aa058eb5-fab7-4c69-9fec-864ab319a450"],
+Cell[2325, 60, 198, 5, 70, "DisplayFormula",ExpressionUUID->"c5580a0c-c15f-44bc-a40f-18e11225d9bb"],
+Cell[2526, 67, 181, 3, 70, "Text",ExpressionUUID->"6094f819-8d63-4da2-96c0-674fde258c76"],
+Cell[2710, 72, 225, 5, 70, "DisplayFormula",ExpressionUUID->"2731200d-534e-42df-b47c-a20f4f80a5d5"],
+Cell[2938, 79, 154, 2, 70, "Text",ExpressionUUID->"5cd776b0-8a5d-4ee5-a45c-878824d551de"],
+Cell[3095, 83, 313, 8, 70, "DisplayFormula",ExpressionUUID->"c7e19c43-53ef-4320-b8d6-c77f826c959a"],
+Cell[3411, 93, 266, 4, 70, "Text",ExpressionUUID->"77a38d23-f4a6-482d-afa6-6294e15bfb1f"],
+Cell[3680, 99, 89, 0, 70, "Section",ExpressionUUID->"91bfd384-e9a8-49b8-a94b-61d5fde06393"],
+Cell[3772, 101, 204, 3, 70, "Text",ExpressionUUID->"2b900885-46f7-4b97-aef9-7de2c450bad7"],
+Cell[3979, 106, 201, 7, 70, "DisplayFormula",ExpressionUUID->"46b189ff-2287-49dc-8709-ad098a34417f"],
+Cell[4183, 115, 196, 3, 70, "Text",ExpressionUUID->"223d8ac7-b697-4490-9512-20ed315129dc"],
+Cell[4382, 120, 2192, 63, 70, "Input",ExpressionUUID->"a19f28e4-e20b-40b7-bcf0-155132eada69"],
+Cell[6577, 185, 272, 4, 70, "Text",ExpressionUUID->"71f46bff-ba02-48cd-b2cf-9178a834054a"],
+Cell[6852, 191, 87, 0, 70, "Section",ExpressionUUID->"8ed9895b-2581-48d3-a16f-09d2b071deb6"],
+Cell[6942, 193, 298, 4, 70, "Text",ExpressionUUID->"5b4979cc-8a71-4bcb-a3a6-170d23280750"],
+Cell[7243, 199, 263, 4, 70, "SmallText",ExpressionUUID->"4e2ab1b6-8147-43db-bbb7-390fa2d99bea"]
+}
+]
+*)
+
+(* End of internal cache information *)

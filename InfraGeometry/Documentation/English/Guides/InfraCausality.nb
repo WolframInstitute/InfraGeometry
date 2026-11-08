@@ -1,0 +1,130 @@
+Notebook[{Cell["InfraCausality", "GuideTitle"], 
+  Cell["InfraCausality contains fundamental constructions on finite directed \
+acyclic graphs. Vertices represent events, and reachability defines their \
+causal order: an event precedes another when a directed path connects them. \
+Including equality makes this relation a partial order. Chains consist of \
+comparable events, while antichains consist of mutually incomparable events. \
+The order also defines a topology whose open sets are upward closed: \
+containing an event requires containing its causal future.", 
+   "GuideAbstract"], Cell["A worldline is a saturated chain: no event can be \
+inserted between consecutive members. A longest chain between two events is \
+the discrete model used here for a timelike geodesic. The discrete light-cone \
+construction retains events whose causal interval with the anchor is itself a \
+chain. These are combinatorial definitions; recovering classical relativistic \
+geometry requires further assumptions.", "GuideAbstract"], 
+  Cell["Causal height counts the edges of a longest chain from a source to an \
+event. Its level sets are antichains, but need not meet every maximal causal \
+path. Spatial reconstruction and comparison between slices are discussed in \
+InfraSubstrates.", "GuideAbstract"], Cell["", "GuideFunctionsSection"], 
+  Cell["Causal order and intervals", "GuideFunctionsSubsection"], 
+  Cell[TextData[{StyleBox["InfraChainQ", "InlineCode"], 
+     " \[LongDash] tests an ordered chain in the reachability order"}], 
+   "GuideText"], Cell[TextData[{StyleBox["InfraAntichainQ", "InlineCode"], 
+     " \[LongDash] tests a set of mutually incomparable events"}], 
+   "GuideText"], Cell[TextData[{StyleBox["InfraCausalFuture", "InlineCode"], 
+     ", ", StyleBox["InfraCausalPast", "InlineCode"], 
+     " \[LongDash] the future and past of an event or event set"}], 
+   "GuideText"], Cell[TextData[{StyleBox["InfraCausalDiamond", "InlineCode"], 
+     " \[LongDash] the causal interval between two events"}], "GuideText"], 
+  Cell[TextData[{StyleBox["InfraCausalFutureQ", "InlineCode"], ", ", 
+     StyleBox["InfraCausalPastQ", "InlineCode"], ", ", 
+     StyleBox["InfraCausalDiamondQ", "InlineCode"], 
+     " \[LongDash] recognize the corresponding event sets"}], "GuideText"], 
+  Cell["Worldlines and discrete relativistic geometry", 
+   "GuideFunctionsSubsection"], 
+  Cell[TextData[{StyleBox["InfraWorldline", "InlineCode"], 
+     " \[LongDash] the family of saturated chains between events"}], 
+   "GuideText"], Cell[TextData[{StyleBox["InfraTimelikeGeodesic", 
+      "InlineCode"], 
+     " \[LongDash] the family of longest chains between events"}], 
+   "GuideText"], Cell[TextData[{StyleBox["InfraFutureLightCone", 
+      "InlineCode"], ", ", StyleBox["InfraPastLightCone", "InlineCode"], 
+     " \[LongDash] the discrete light cones defined by chain intervals"}], 
+   "GuideText"], Cell[TextData[{StyleBox["RandomInfraWorldline", 
+      "InlineCode"], ", ", StyleBox["RandomInfraTimelikeGeodesic", 
+      "InlineCode"], " \[LongDash] sample saturated or longest chains"}], 
+   "GuideText"], Cell[TextData[{StyleBox["RandomInfraFutureLightCone", 
+      "InlineCode"], ", ", StyleBox["RandomInfraPastLightCone", 
+      "InlineCode"], " \[LongDash] sample light rays"}], "GuideText"], 
+  Cell[TextData[{StyleBox["InfraWorldlineQ", "InlineCode"], ", ", 
+     StyleBox["InfraTimelikeGeodesicQ", "InlineCode"], ", ", 
+     StyleBox["InfraLightRayQ", "InlineCode"], 
+     " \[LongDash] test individual chains"}], "GuideText"], 
+  Cell["Time and slices", "GuideFunctionsSubsection"], 
+  Cell[TextData[{StyleBox["CausalHeight", "InlineCode"], 
+     " \[LongDash] the longest-chain length from a source to each event"}], 
+   "GuideText"], Cell[TextData[{StyleBox["CausalHeightFoliation", 
+      "InlineCode"], " \[LongDash] the antichains at each causal height"}], 
+   "GuideText"], Cell[TextData[{StyleBox["InfraSlice", "InlineCode"], 
+     " \[LongDash] a causal-height slice or a band of slices"}], 
+   "GuideText"], Cell[TextData[{StyleBox["InfraSliceQ", "InlineCode"], 
+     " \[LongDash] tests whether a set is a causal-height slice"}], 
+   "GuideText"], Cell["Measuring constructions", "GuideFunctionsSubsection"], 
+  Cell[TextData[{StyleBox["InfraMeasurement", "InlineCode"], " \[LongDash] \
+reads cardinalities, lengths, vertex and edge densities on a graph"}], 
+   "GuideText"], Cell[TextData[{StyleBox["InfraMemberQ", "InlineCode"], 
+     " \[LongDash] tests membership in a construction"}], "GuideText"], 
+  Cell["Spatial reconstruction", "GuideFunctionsSubsection"], 
+  Cell[TextData[{"", StyleBox["CausalFoliationQ", "InlineCode"], " tests an \
+ordered partition into antichains, with every causal edge directed toward a \
+later slice"}], "GuideText"], 
+  Cell[TextData[{"", StyleBox["CausalSpatialGraphs", "InlineCode"], " \
+reconstructs an undirected graph on each slice; returns an association \
+indexed from 1"}], "GuideText"], 
+  Cell[TextData[{"Two distinct events are joined when some lowest common \
+ancestor lies in the preceding ", StyleBox["\"AncestorDepth\"", 
+      "InlineCode"], " slices, with default depth 1. All lowest common \
+ancestors are retained; no unique ancestor is assumed. Equivalently, a common \
+ancestor lies in that window. At depth 1, the rule joins events sharing a \
+parent in the preceding slice. Omitting the foliation uses ", 
+     StyleBox["CausalHeightFoliation", "InlineCode"], ". The first slice has \
+no reconstructed edges in this finite past-only model."}], "GuideText"], 
+  Cell["Relations and transport between slices", "GuideFunctionsSubsection"], 
+  Cell[TextData[{"", StyleBox["CausalSliceRelation", "InlineCode"], " \
+associates each event in slice i with its causally related events in slice j"}\
+], "GuideText"], Cell[TextData[{"", StyleBox["CausalSliceMap", "InlineCode"], 
+     " returns a single-valued association when every image is unique; ", 
+     StyleBox["\"SelectImage\"", "InlineCode"], 
+     " supplies an explicit selection otherwise"}], "GuideText"], 
+  Cell[TextData[{"", StyleBox["CausalSliceKernel", "InlineCode"], " returns \
+nested associations of uniform probabilities over each nonempty causal image"}\
+], "GuideText"], Cell[TextData[{"The index pair ", 
+     StyleBox["{i, j}", "InlineCode"], " specifies the direction: forward \
+when i < j, backward when i > j. A foliation alone supplies neither a \
+preferred direction of coarse graining nor a canonical choice among several \
+images. A missing image prevents a total map or conservative kernel. Selected \
+maps need not preserve spatial adjacency or be onto the target slice. \
+Independent uniform long-range kernels need not equal compositions of \
+adjacent kernels. "}], "GuideText"], Cell["Tech Notes", 
+   "GuideTutorialsSection"], 
+  Cell[TextData[{ButtonBox["Spatial Coordinatization", BaseStyle -> "Link", 
+      ButtonData -> "paclet:WolframInstitute/InfraGeometry/tutorial/SpatialCo\
+ordinatization"]}], "GuideTutorial"], Cell["Related Guides", 
+   "GuideMoreAboutSection"], 
+  Cell[TextData[{ButtonBox["InfrageometryBranches", BaseStyle -> "Link", 
+      ButtonData -> 
+       "paclet:WolframInstitute/InfraGeometry/guide/InfrageometryBranches"]}]\
+, "GuideMoreAbout"], 
+  Cell[TextData[{ButtonBox["InfraTopology", BaseStyle -> "Link", 
+      ButtonData -> 
+       "paclet:WolframInstitute/InfraGeometry/guide/InfraTopology"]}], 
+   "GuideMoreAbout"], 
+  Cell[TextData[{ButtonBox["InfraSubstrates", BaseStyle -> "Link", 
+      ButtonData -> 
+       "paclet:WolframInstitute/InfraGeometry/guide/InfraSubstrates"]}], 
+   "GuideMoreAbout"]}, StyleDefinitions -> FrontEnd`FileName[{"Wolfram"}, 
+   "GuidePageStylesExt.nb", CharacterEncoding -> "UTF-8"], 
+ TaggingRules -> {"Metadata" -> {"title" -> "InfraCausality", 
+     "context" -> "WolframInstitute`InfraGeometry`", 
+     "keywords" -> {"causality", "DAG", "partial order", "topology", "chain", 
+       "antichain", "relativistic geometry", "foliation"}, 
+     "summary" -> "InfraCausality contains fundamental constructions on \
+finite directed acyclic graphs. Vertices represent events, and reachability \
+defines their causal order: an event precedes another when a directed path \
+connects them. Including equality makes this relation a partial order. Chains \
+consist of comparable events, while antichains consist of mutually \
+incomparable events. The order also defines a topology whose open sets are \
+upward closed: containing an event requires containing its causal future.", 
+     "paclet" -> "WolframInstitute/InfraGeometry", 
+     "uri" -> "WolframInstitute/InfraGeometry/guide/InfraCausality", 
+     "type" -> "Guide", "index" -> True, "language" -> "en"}}]
