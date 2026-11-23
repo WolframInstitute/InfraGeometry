@@ -8,7 +8,7 @@ The source repository is retained unchanged.
 
 Source: [WolframInstitute/InfraCausality, revision f98e9ef6a0693810bedf731699092814bc524491](https://github.com/WolframInstitute/InfraCausality/tree/f98e9ef6a0693810bedf731699092814bc524491), version 2.1.1.
 The copied code and documentation retain the source authorship and attribution.
-The repositories have the same Wolfram Institute MIT code license and CC BY 4.0 mathematical-content license.
+The repositories have the same Wolfram Institute MIT license.
 Codex performed the integration and verification.
 
 ## Scope
